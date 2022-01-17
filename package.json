@@ -10,7 +10,8 @@
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "test": "jest",
     "init:rename": "node scripts/init/rename.js",
-    "clean": "node scripts/clean.js"
+    "clean": "node scripts/clean.js",
+    "debug:web": "cd demo/web && yarn dev"
   },
   "repository": {
     "type": "git",
