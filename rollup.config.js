@@ -15,7 +15,7 @@ const config = {
       sourcemap: isDev
       // exports: 'auto'
     },
-    { format: 'esm', file: pkg.module, sourcemap: isDev }
+    // { format: 'esm', file: pkg.module, sourcemap: isDev }
   ],
 
   plugins: [
