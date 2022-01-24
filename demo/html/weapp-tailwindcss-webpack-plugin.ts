@@ -14,18 +14,27 @@ export class WeappTailwindcssWebpackPlugin {
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.processAssets.tapPromise(pluginName, async (assets) => {
         const entries = Object.entries(assets)
+        const { ReplaceSource } = compiler.webpack.sources
         for (let i = 0; i < entries.length; i++) {
-          const [filepath, originalSource] = entries[i]
-          console.log(filepath, originalSource)
-          const rawSource = originalSource.source()
-          // console.log(rawSource)
-          const { ReplaceSource } = compiler.webpack.sources
-          const extractions = defaultExtractor(rawSource as string)
-          const source = new ReplaceSource(originalSource)
-          if (extractions.length) {
+          const [file, originalSource] = entries[i]
+          // console.log(filepath, originalSource)
+          const rawSource = originalSource.source().toString()
+          const regex = /class="(.+)"/g
 
+          let match
+          const source = new ReplaceSource(originalSource)
+          while ((match = regex.exec(rawSource))) {
+            const original = match[1] as string
+            const startPos = match.index + match[0].indexOf(original)
+            const endPos = startPos + original.length - 1
+            const newClassName = original
+              .replace(/\[/g, '_l_')
+              .replace(/\]/g, '_r_')
+              .replace(/\//g, '-div-')
+              .replace(/\./g, '-dot-')
+            source.replace(startPos, endPos, newClassName)
           }
-          // compilation.updateAsset()
+          compilation.updateAsset(file, source)
         }
       })
     })
