@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 // in case you run into any typescript error when configuring `devServer`
 import 'webpack-dev-server'
 
@@ -21,7 +22,8 @@ const config: webpack.Configuration = {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          'style-loader',
+          // 'style-loader',
+          MiniCssExtractPlugin.loader,
           // Translates CSS into CommonJS
           'css-loader',
           // Compiles Sass to CSS
@@ -31,7 +33,13 @@ const config: webpack.Configuration = {
       }
     ]
   },
-  plugins: [new HtmlWebpackPlugin(), new WeappTailwindcssWebpackPlugin()]
+  plugins: [
+    new MiniCssExtractPlugin({
+      // filename: '[name].css'
+    }),
+    new HtmlWebpackPlugin(),
+    new WeappTailwindcssWebpackPlugin()
+  ]
 }
 
 export default config
