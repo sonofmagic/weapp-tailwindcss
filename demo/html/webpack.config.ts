@@ -4,6 +4,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 // in case you run into any typescript error when configuring `devServer`
 import 'webpack-dev-server'
 
+import { WeappTailwindcssWebpackPlugin } from './weapp-tailwindcss-webpack-plugin'
+
 const config: webpack.Configuration = {
   mode: 'development',
   entry: './src/index.js',
@@ -29,7 +31,7 @@ const config: webpack.Configuration = {
       }
     ]
   },
-  plugins: [new HtmlWebpackPlugin()]
+  plugins: [new HtmlWebpackPlugin(), new WeappTailwindcssWebpackPlugin()]
 }
 
 export default config
