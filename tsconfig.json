@@ -10,7 +10,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["webpack", "node"]
   },
   "exclude": ["dist", "node_modules", "test/types"],
   "include": ["src/**/*", "types/**/*", "test/**/*"]
