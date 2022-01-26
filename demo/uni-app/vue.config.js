@@ -1,13 +1,11 @@
-const { WeappTailwindcssWebpackPlugin } = require('../..')
+const { UniAppWeappTailwindcssWebpackPluginV4 } = require('../..')
 
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 const config = {
   configureWebpack: {
-    plugins: [
-      new WeappTailwindcssWebpackPlugin()
-    ]
+    plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
   }
 }
 
