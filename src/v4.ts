@@ -4,6 +4,9 @@ import postcss from 'postcss'
 import { ReplaceSource, ConcatSource } from 'webpack-sources'
 
 const pluginName = 'weapp-tailwindcss-webpack-plugin'
+// https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
+// https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
+// 3 个方案，由 loader 生成的 wxml
 export class UniAppWeappTailwindcssWebpackPluginV4 {
   opts: UserDefinedOptions
   constructor (opts = {}) {
@@ -82,6 +85,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
           }
         }
       )
+      // compilation.hooks.
     })
   }
 }
