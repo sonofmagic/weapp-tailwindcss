@@ -16,6 +16,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
   apply (compiler: Compiler) {
     // @ts-ignore
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      // 怎么获取到 wxml? 是在 loader 中生成的
       compilation.hooks.optimizeChunkAssets.tapPromise(
         pluginName,
         async (_chunks) => {
@@ -30,7 +31,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
               console.log(file)
               // uni * ?
               if (
-                file.match(/.+\.wxss.*$/)
+                file.match(/.+\.wxss$/)
                 // ||
                 // @ts-ignore
                 // originalSource.name === 'mini-css-extract-plugin'
@@ -56,7 +57,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
                 const source = new ConcatSource(css)
                 // @ts-ignore
                 compilation.updateAsset(file, source)
-              } else if (file.match(/.+\.wxml.*$/)) {
+              } else if (file.match(/.+\.wxml$/)) {
                 // file.match(/.+\.js.*$/) ||
                 const rawSource = originalSource.source().toString()
                 const regex = /class="(.+)"/g
@@ -85,7 +86,11 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
           }
         }
       )
-      // compilation.hooks.
     })
+    compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
+      console.log(compilation)
+      // compilation.assets
+    })
+    // compiler.hooks.et
   }
 }

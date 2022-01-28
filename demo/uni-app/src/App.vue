@@ -20,4 +20,8 @@ export default Vue.extend({
 // @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 /*每个页面公共css */
+
+page {
+  background: black;
+}
 </style>
