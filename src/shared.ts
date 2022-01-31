@@ -20,12 +20,13 @@ export function styleHandler (rawSource: string) {
   const css = root.toString()
   return css
 }
+// https://stackoverflow.com/questions/16559171/regular-expression-to-get-a-class-name-from-html
 
 export function templeteHandler (
   rawSource: string,
   cb: (sp: number, ep: number, newcls: string) => void
 ) {
-  const regex = /^class="(.+?)"/g
+  const regex = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/gmi
   let match
   while ((match = regex.exec(rawSource))) {
     const original = match[1] as string
