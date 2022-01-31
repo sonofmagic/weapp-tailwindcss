@@ -1,13 +1,8 @@
 <template>
   <view class="content">
     <view>
-      <text
-        class="text-[60rpx] text-[#cccccc] m-[12px] h-[calc(100vh-100px)]"
-        >{{ title }}</text
-      >
-      <view class="text-clip bg-slate-100 text-left text-blue-200"
-        >weapp-tailwindcss-webpack-plugin</view
-      >
+      <text class="text-[60rpx] text-[#cccccc] m-[12px] h-[calc(100vh-100px)]">{{ title }}</text>
+      <view class="text-clip bg-slate-100 text-left text-blue-200">weapp-tailwindcss-webpack-plugin</view>
     </view>
   </view>
 </template>

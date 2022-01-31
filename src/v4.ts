@@ -1,7 +1,7 @@
 import type { UserDefinedOptions } from './types'
-import type { Compiler, Chunk } from 'webpack4'
-import postcss from 'postcss'
-import { ReplaceSource, ConcatSource } from 'webpack-sources'
+import type { Compiler } from 'webpack4'
+import { styleHandler, templeteHandler } from './shared'
+import { ReplaceSource, ConcatSource, Source } from 'webpack-sources'
 
 const pluginName = 'weapp-tailwindcss-webpack-plugin'
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
@@ -14,83 +14,25 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
   }
 
   apply (compiler: Compiler) {
-    // @ts-ignore
-    compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      // 怎么获取到 wxml? 是在 loader 中生成的
-      compilation.hooks.optimizeChunkAssets.tapPromise(
-        pluginName,
-        async (_chunks) => {
-          const chunks: Chunk[] = _chunks as unknown as Chunk[]
-          for (let i = 0; i < chunks.length; i++) {
-            const chunk = chunks[i]
-            const chunkFiles = chunk.files
-            for (let j = 0; j < chunkFiles.length; j++) {
-              const file = chunkFiles[j]
-              const originalSource = compilation.assets[file]
-              // originalSource id/name
-              console.log(file)
-              // uni * ?
-              if (
-                file.match(/.+\.wxss$/)
-                // ||
-                // @ts-ignore
-                // originalSource.name === 'mini-css-extract-plugin'
-              ) {
-                const rawSource = originalSource.source()
-                const root = postcss.parse(rawSource)
-                root.walk((node, idx) => {
-                  if (node.type === 'rule') {
-                    const rep = node.selector
-                      .replace(/\\\[/g, '_l_')
-                      .replace(/\\\]/g, '_r_')
-                      .replace(/\\\(/g, '_p_')
-                      .replace(/\\\)/g, '_q_')
-                      .replace(/\\#/g, '_h_')
-                      .replace(/\\\//g, '-div-')
-                      .replace(/\\\./g, '-dot-')
-                    node.selector = rep
-                  } else if (node.type === 'comment') {
-                    node.remove()
-                  }
-                })
-                const css = root.toString()
-                const source = new ConcatSource(css)
-                // @ts-ignore
-                compilation.updateAsset(file, source)
-              } else if (file.match(/.+\.wxml$/)) {
-                // file.match(/.+\.js.*$/) ||
-                const rawSource = originalSource.source().toString()
-                const regex = /class="(.+)"/g
-
-                let match
-                // @ts-ignore
-                const source = new ReplaceSource(originalSource)
-                while ((match = regex.exec(rawSource))) {
-                  const original = match[1] as string
-                  const startPos = match.index + match[0].indexOf(original)
-                  const endPos = startPos + original.length - 1
-                  const newClassName = original
-                    .replace(/\[/g, '_l_')
-                    .replace(/\]/g, '_r_')
-                    .replace(/\(/g, '_p_')
-                    .replace(/\)/g, '_q_')
-                    .replace(/#/g, '_h_')
-                    .replace(/\//g, '-div-')
-                    .replace(/\./g, '-dot-')
-                  source.replace(startPos, endPos, newClassName)
-                }
-                // @ts-ignore
-                compilation.updateAsset(file, source)
-              }
-            }
-          }
-        }
-      )
-    })
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-      console.log(compilation)
-      // compilation.assets
+      const entries: [string, Source][] = Object.entries(compilation.assets)
+      for (let i = 0; i < entries.length; i++) {
+        const [file, originalSource] = entries[i]
+        if (file.match(/.+\.wxss$/)) {
+          const rawSource: string = originalSource.source().toString()
+
+          const css = styleHandler(rawSource)
+          const source = new ConcatSource(css)
+          compilation.updateAsset(file, source)
+        } else if (file.match(/.+\.wxml$/)) {
+          const rawSource = originalSource.source().toString()
+          const source = new ReplaceSource(originalSource)
+          templeteHandler(rawSource, (startPos, endPos, newClassName) => {
+            source.replace(startPos, endPos, newClassName)
+          })
+          compilation.updateAsset(file, source)
+        }
+      }
     })
-    // compiler.hooks.et
   }
 }
