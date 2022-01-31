@@ -1,7 +1,8 @@
 <template>
   <view>
     <view class="m-[12px]">
-      <text class="text-[60rpx] text-[#cccccc]  h-[calc(100vh-100px)]">{{ title }}!</text>
+      <view>Just in Time:</view>
+      <text class="text-[60rpx] text-[#111111]  h-[calc(100vh-100px)]">{{ title }} world!</text>
       <view class="text-clip bg-slate-100 text-left text-gray-900/90">weapp-tailwindcss-webpack-plugin</view>
       <view class="w-8 h-8 bg-[#ff0000] rounded-full"></view>
     </view>
