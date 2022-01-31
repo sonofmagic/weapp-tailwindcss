@@ -1,8 +1,9 @@
 <template>
-  <view class="content">
-    <view>
-      <text class="text-[60rpx] text-[#cccccc] m-[12px] h-[calc(100vh-100px)]">{{ title }}</text>
-      <view class="text-clip bg-slate-100 text-left text-blue-200">weapp-tailwindcss-webpack-plugin</view>
+  <view>
+    <view class="m-[12px]">
+      <text class="text-[60rpx] text-[#cccccc]  h-[calc(100vh-100px)]">{{ title }}!</text>
+      <view class="text-clip bg-slate-100 text-left text-gray-900/90">weapp-tailwindcss-webpack-plugin</view>
+      <view class="w-8 h-8 bg-[#ff0000] rounded-full"></view>
     </view>
   </view>
 </template>
@@ -20,27 +21,5 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin: 200rpx auto 50rpx auto;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
-}
+<style lang="scss">
 </style>

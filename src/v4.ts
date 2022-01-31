@@ -19,8 +19,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
         if (file.match(/.+\.wxss$/)) {
-          const rawSource: string = originalSource.source().toString()
-
+          const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource)
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

@@ -1,4 +1,6 @@
 import postcss from 'postcss'
+// JavaScript RegExp 对象是有状态的。他们会将上次成功匹配后的位置记录在 lastIndex 属性中。
+export const classRegExp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/gmi
 
 export function styleHandler (rawSource: string) {
   const root = postcss.parse(rawSource)
@@ -21,12 +23,12 @@ export function styleHandler (rawSource: string) {
   return css
 }
 // https://stackoverflow.com/questions/16559171/regular-expression-to-get-a-class-name-from-html
-
+// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
 export function templeteHandler (
   rawSource: string,
   cb: (sp: number, ep: number, newcls: string) => void
 ) {
-  const regex = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/gmi
+  const regex = classRegExp
   let match
   while ((match = regex.exec(rawSource))) {
     const original = match[1] as string
@@ -42,4 +44,5 @@ export function templeteHandler (
       .replace(/\./g, '-dot-')
     cb(startPos, endPos, newClassName)
   }
+  // match 为 null 时，会自动清除 lastIndex
 }
