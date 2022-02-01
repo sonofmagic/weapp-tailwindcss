@@ -11,7 +11,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["webpack", "node"]
+    "types": ["webpack", "node", "jest"]
   },
   "exclude": ["dist", "node_modules", "test/types"],
   "include": ["src/**/*", "types/**/*", "test/**/*"]
