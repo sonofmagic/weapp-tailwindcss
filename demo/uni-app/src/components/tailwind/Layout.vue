@@ -1,19 +1,30 @@
 <template>
   <div>
-    <view class="container">container</view>
+    <!-- <view class="container">container</view>
     <span class="decoration-clone bg-gradient-to-b from-yellow-400 to-red-500 text-transparent">
       Hello<br>
       World
     </span>
     <div class="box-border h-32 w-32 p-4 border-4 border-blue-400 bg-blue-200 rounded-md">
       <div class="h-full w-full bg-blue-400 bg-stripes bg-stripes-white"></div>
-      <!-- ... -->
     </div>
     <div class="box-content h-32 w-32 p-4 border-4 border-green-400 bg-green-200 rounded-md">
       <div class="h-full w-full bg-green-400 bg-stripes bg-stripes-white"></div>
-      <!-- ... -->
-    </div>
-    <view :class="[d]" class="item" :key="d" v-for="d in displayArray">{{d}}</view>
+    </div> -->
+    <view class=""></view>
+    <view :class="['']"></view>
+    <view :class="'bg-[#dddddd]'"></view>
+    <view
+      class="h-[100px]"
+      :class="'hello w-[100rpx]'"
+    ></view>
+    <view
+      :class="[d]"
+      class="item"
+      :key="d"
+      v-for="d in displayArray"
+    >{{d}}</view>
+
   </div>
 </template>
 
@@ -50,5 +61,3 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-</style>

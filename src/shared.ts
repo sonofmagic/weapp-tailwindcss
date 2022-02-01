@@ -1,6 +1,6 @@
 import postcss from 'postcss'
-import wxml from 'wxml'
-import type { NODE_TYPES } from 'wxml'
+import wxml from '@icebreakers/wxml'
+
 // https://github.com/yoshuawuyts/extract-html-class/blob/master/index.js
 // https://stackoverflow.com/questions/16559171/regular-expression-to-get-a-class-name-from-html
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
@@ -8,8 +8,8 @@ import type { NODE_TYPES } from 'wxml'
 // JavaScript RegExp 对象是有状态的。他们会将上次成功匹配后的位置记录在 lastIndex 属性中。
 // class="{{['item','data-v-59d503f6',d]}}"
 // wxml 这类的必须更改添加情况不然只能匹配 {{[
-export const classRegExp =
-  /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
+// export const classRegExp =
+//   /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
 
 export function cssSelectorReplacer (selector: string) {
   return selector
@@ -22,7 +22,7 @@ export function cssSelectorReplacer (selector: string) {
     .replace(/\\\./g, '-dot-')
 }
 
-export function templeteReplacer (original: string) {
+export function replaceWxml (original: string) {
   return original
     .replace(/\[/g, '_l_')
     .replace(/\]/g, '_r_')
@@ -31,6 +31,56 @@ export function templeteReplacer (original: string) {
     .replace(/#/g, '_h_')
     .replace(/\//g, '-div-')
     .replace(/\./g, '-dot-')
+}
+
+export function templeteReplacer (original: string) {
+  // {{['item','data-v-59d503f6',d]}} 特殊处理
+  // {{['h-[100px]','data-v-59d503f6','hello w-[100rpx]']}}
+  // {{['xxx',d]}}
+  const match = /{{([^{}]+)}}/.exec(original)
+
+  if (match && match[1]) {
+    // 假如需要更加细节的处理
+    // 可以匹配之后， replace() ' -> " 后 json.parse 成 js array 来做进一步的筛选(变量报错情况)
+    // `['']`
+    const strArr = match[1].slice(1, -1).split(',')
+    const result = strArr
+      .map((x) => {
+        const isVaraible = x[0] !== "'"
+        // or 或者是循环变量
+        if (isVaraible) {
+          return x
+        }
+        return replaceWxml(x)
+      })
+      .join(',')
+    // const classNameStr = match[1].replace(/'/g, '"')
+    // const className = JSON.parse(classNameStr) as string[]
+    // const result = className.map((x) => `'${replaceWxml(x)}'`).join(',')
+    return `{{[${result}]}}`
+  }
+
+  return replaceWxml(original)
+
+  // const classNameStr = match[1].replace(/'/g, '"')
+  // try {
+  //   const className = JSON.parse(classNameStr)
+  //   if (Array.isArray(className)) {
+  //     return className.map((x) =>
+  //       x
+  //         .replace(/\[/g, '_l_')
+  //         .replace(/\]/g, '_r_')
+  //         .replace(/\(/g, '_p_')
+  //         .replace(/\)/g, '_q_')
+  //         .replace(/#/g, '_h_')
+  //         .replace(/\//g, '-div-')
+  //         .replace(/\./g, '-dot-')
+  //     ).join(',')
+  //   }
+  //   console.log(className)
+  // } catch (error) {
+  //   return original
+  // }
 }
 
 export function styleHandler (rawSource: string) {
@@ -47,17 +97,21 @@ export function styleHandler (rawSource: string) {
 }
 
 export function templeteHandler (
-  rawSource: string,
-  cb: (sp: number, ep: number, newcls: string) => void
+  rawSource: string
+  // cb: (sp: number, ep: number, newcls: string) => void
 ) {
-  const parsedArray = wxml.parse(rawSource)
-  for (let i = 0; i < parsedArray.length; i++) {
-    const parsed = parsedArray[i]
-    wxml.traverse(parsed, (node, parent) => {
-
-    })
-  }
-
+  const parsed = wxml.parse(rawSource)
+  wxml.traverse(parsed, (node, parent) => {
+    if (node.type === wxml.NODE_TYPES.ELEMENT) {
+      // @ts-ignore
+      if (node.attributes.class) {
+        // @ts-ignore
+        node.attributes.class = templeteReplacer(node.attributes.class)
+      }
+    }
+  })
+  const serialized = wxml.serialize(parsed)
+  return serialized
   // const regex = classRegExp
   // let match
   // while ((match = regex.exec(rawSource))) {

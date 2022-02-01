@@ -1,8 +1,8 @@
 import type { UserDefinedOptions } from './types'
 import type { Compiler } from 'webpack4'
 import { styleHandler, templeteHandler } from './shared'
-import { ReplaceSource, ConcatSource, Source } from 'webpack-sources'
-
+import { ConcatSource, Source } from 'webpack-sources'
+// ReplaceSource,
 const pluginName = 'weapp-tailwindcss-webpack-plugin'
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
@@ -25,10 +25,8 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
           compilation.updateAsset(file, source)
         } else if (file.match(/.+\.wxml$/)) {
           const rawSource = originalSource.source().toString()
-          const source = new ReplaceSource(originalSource)
-          templeteHandler(rawSource, (startPos, endPos, newClassName) => {
-            source.replace(startPos, endPos, newClassName)
-          })
+          const wxml = templeteHandler(rawSource)
+          const source = new ConcatSource(wxml)
           compilation.updateAsset(file, source)
         }
       }
