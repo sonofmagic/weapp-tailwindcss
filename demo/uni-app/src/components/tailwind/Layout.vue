@@ -35,11 +35,11 @@
 
     选择器提前用postcss处理
     https://www.tailwindcss.cn/docs/space
-    <!-- <view class="space-x-[1.2]">
-      <view>space-x-[1.2]</view>
-      <view>space-x-[1.2]</view>
-      <view>space-x-[1.2]</view>
-    </view> -->
+    <view class="space-y-[1.6rem]">
+      <view>space-y-[1.6rem]</view>
+      <view>space-y-[1.6rem]</view>
+      <view>space-y-[1.6rem]</view>
+    </view>
     <div class="grid grid-cols-3 divide-x divide-green-500">
       <div>1</div>
       <div>2</div>
