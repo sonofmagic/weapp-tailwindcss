@@ -24,7 +24,17 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "keywords": [],
+  "keywords": [
+    "webpack",
+    "webpack-plugin",
+    "weapp",
+    "postcss",
+    "taro",
+    "uni-app",
+    "tailwindcss",
+    "mp",
+    "miniprogram"
+  ],
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "bugs": {
