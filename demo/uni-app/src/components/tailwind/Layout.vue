@@ -13,7 +13,7 @@
     </div> -->
     <view class=""></view>
     <view :class="['']"></view>
-    <view :class="'bg-[#dddddd]'"></view>
+    <view :class="'bg-[#dddddd]'">123</view>
     <view
       class="h-[100px]"
       :class="'hello w-[100rpx]'"
@@ -24,7 +24,27 @@
       :key="d"
       v-for="d in displayArray"
     >{{d}}</view>
+    <!-- <view class="float-left">float-left</view>
+    <view class="float-right">float-right</view>
+    <view class="float-none">float-none</view> -->
+    <view class="z-[55]">z-[55]</view>
+    <view class="z-[-55]">z-[-55]</view>
+    <view class="bottom-[100px]">bottom-[100px]</view>
+    <view class="bottom-[100rpx] shadow">bottom-[100rpx]</view>
+    .space-x-0-dot-5 > :not([hidden]) ~ :not([hidden])
 
+    选择器提前用postcss处理
+    https://www.tailwindcss.cn/docs/space
+    <!-- <view class="space-x-[1.2]">
+      <view>space-x-[1.2]</view>
+      <view>space-x-[1.2]</view>
+      <view>space-x-[1.2]</view>
+    </view> -->
+    <div class="grid grid-cols-3 divide-x divide-green-500">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </div>
   </div>
 </template>
 

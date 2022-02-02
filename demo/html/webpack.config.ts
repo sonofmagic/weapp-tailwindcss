@@ -5,7 +5,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 // in case you run into any typescript error when configuring `devServer`
 import 'webpack-dev-server'
 
-import { WeappTailwindcssWebpackPluginV5 } from '../../'
+// import { UniAppWeappTailwindcssWebpackPluginV5 } from '../../'
 
 const config: webpack.Configuration = {
   mode: 'development',
@@ -37,8 +37,9 @@ const config: webpack.Configuration = {
     new MiniCssExtractPlugin({
       // filename: '[name].css'
     }),
-    new HtmlWebpackPlugin(),
-    new WeappTailwindcssWebpackPluginV5()
+    new HtmlWebpackPlugin()
+    // @ts-ignore
+    // new UniAppWeappTailwindcssWebpackPluginV5()
   ]
 }
 

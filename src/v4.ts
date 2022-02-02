@@ -8,9 +8,9 @@ const pluginName = 'weapp-tailwindcss-webpack-plugin'
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
 export class UniAppWeappTailwindcssWebpackPluginV4 {
-  opts: UserDefinedOptions
-  constructor (opts = {}) {
-    this.opts = opts
+  options: UserDefinedOptions
+  constructor (options = {}) {
+    this.options = options
   }
 
   apply (compiler: Compiler) {
