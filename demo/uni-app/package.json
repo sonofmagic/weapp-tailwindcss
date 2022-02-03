@@ -100,7 +100,7 @@
     "mini-types": "*",
     "miniprogram-api-typings": "*",
     "postcss-comment": "^2.0.0",
-    "postcss-rem-to-responsive-pixel": "^5.0.2",
+    "postcss-rem-to-responsive-pixel": "^5.1.1",
     "sass": "^1.49.0",
     "sass-loader": "8",
     "typescript": "^3.0.0",
