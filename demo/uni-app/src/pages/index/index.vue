@@ -6,8 +6,14 @@
       <view class="text-clip bg-slate-100 text-left text-gray-900/90">weapp-tailwindcss-webpack-plugin</view>
       <view class="w-8 h-8 bg-[#ff0000] rounded-full"></view>
     </view> -->
-    <view class="flex flex-col items-center">
-      <Layout/>
+    <view
+      class="flex flex-col items-center"
+      :class="[
+      flag?'bg-red-900':'bg-[#fafa00]'
+      ]"
+    >
+      <Layout />
+      <tui-org-tree :treeData="treeData"></tui-org-tree>
     </view>
   </view>
 </template>
@@ -15,13 +21,36 @@
 <script lang="ts">
 import Vue from 'vue'
 import Layout from '@/components/tailwind/Layout.vue'
+
 export default Vue.extend({
   components: {
     Layout
   },
   data() {
     return {
-      title: 'Hello'
+      title: 'Hello',
+      flag: false,
+      treeData: [
+        {
+          text: 'icebreaker',
+          // align: 'vertical',
+          children: [
+            {
+              text: 'icebreaker.top',
+              children: [
+                {
+                  text: '破冰客',
+                  active: true
+                }
+              ]
+            },
+            {
+              text: '程序员名片',
+              children: []
+            }
+          ]
+        }
+      ]
     }
   },
   onLoad() {},

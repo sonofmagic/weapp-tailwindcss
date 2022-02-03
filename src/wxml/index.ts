@@ -1,5 +1,7 @@
 import wxml from '@icebreakers/wxml'
-
+import { parseExpression } from '@babel/parser'
+import { isStringLiteral, isConditionalExpression } from '@babel/types'
+// import babelTraverse from '@babel/traverse'
 // https://github.com/yoshuawuyts/extract-html-class/blob/master/index.js
 // https://stackoverflow.com/questions/16559171/regular-expression-to-get-a-class-name-from-html
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
@@ -17,7 +19,7 @@ export function replaceWxml (original: string) {
     .replace(/\(/g, '_p_')
     .replace(/\)/g, '_q_')
     .replace(/#/g, '_h_')
-    .replace(/!/g, '_i_')//! important
+    .replace(/!/g, '_i_') //! important
     .replace(/\//g, '-div-')
     .replace(/\./g, '-dot-')
 }
@@ -27,20 +29,51 @@ export function templeteReplacer (original: string) {
   // {{['h-[100px]','data-v-59d503f6','hello w-[100rpx]']}}
   // {{['xxx',d]}}
   const match = /{{([^{}]+)}}/.exec(original)
-
+  // wxml 变量处理
   if (match && match[1]) {
+    // const test = parse(match[1])
+    // console.log(test)
     // 假如需要更加细节的处理
     // 可以匹配之后， replace() ' -> " 后 json.parse 成 js array 来做进一步的筛选(变量报错情况)
     // `['']`
+    // :class="['org__text-'+(node.align || ''),node.active || collapsed?'node__label-active':'']"
     const strArr = match[1].slice(1, -1).split(',')
     const result = strArr
       .map((x) => {
-        const isVaraible = x[0] !== "'"
-        // or 或者是循环变量
-        if (isVaraible) {
+        // const ast = parse(x)
+        const ast = parseExpression(x)
+        if (isStringLiteral(ast)) {
+          return replaceWxml(x)
+        } else if (isConditionalExpression(ast)) {
+          const { test, consequent, alternate } = ast
+          const testStr = x.slice(test.start as number, test.end as number)
+          const isConsequentString = isStringLiteral(consequent)
+          const isAlternateString = isStringLiteral(alternate)
+          const consequentStr = x.slice(
+            consequent.start as number,
+            consequent.end as number
+          )
+          const alternateStr = x.slice(
+            alternate.start as number,
+            alternate.end as number
+          )
+          return `${testStr}?${
+            isConsequentString ? replaceWxml(consequentStr) : consequentStr
+          }:${isAlternateString ? replaceWxml(alternateStr) : alternateStr}`
+        } else {
+          // isVaraible
           return x
         }
-        return replaceWxml(x)
+
+        // babelTypes.isBinaryExpression(ast)
+        // babelTypes.isConditionalExpression(ast) 二元运算符
+
+        // const isVaraible = x[0] !== "'"
+        // // or 或者是循环变量
+        // if (isVaraible) {
+        //   return x
+        // }
+        // return replaceWxml(x)
       })
       .join(',')
     // const classNameStr = match[1].replace(/'/g, '"')

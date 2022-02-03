@@ -8,6 +8,8 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "resolveJsonModule": true,
+    "moduleResolution": "Node",
     "paths": {
       "@/*": ["src/*"]
     },
