@@ -17,7 +17,9 @@ module.exports = {
     require('autoprefixer')({
       remove: process.env.UNI_PLATFORM !== 'h5'
     }),
+    // tailwindcss for postcss7
     require('tailwindcss')({ config: './tailwind.config.js' }),
+    // rem 转 rpx
     require('postcss-rem-to-responsive-pixel/postcss7')({
       rootValue: 32,
       propList: ['*'],
