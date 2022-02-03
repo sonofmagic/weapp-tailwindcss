@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "weapp-tailwindcss-webpack-plugin",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",

@@ -17,6 +17,7 @@ export function replaceWxml (original: string) {
     .replace(/\(/g, '_p_')
     .replace(/\)/g, '_q_')
     .replace(/#/g, '_h_')
+    .replace(/!/g, '_i_')//! important
     .replace(/\//g, '-div-')
     .replace(/\./g, '-dot-')
 }
