@@ -66,15 +66,4 @@ export function templeteHandler (rawSource: string) {
     }
   })
   return wxml.serialize(parsed)
-
-  // const regex = classRegExp
-  // let match
-  // while ((match = regex.exec(rawSource))) {
-  //   const original = match[1] as string
-  //   const startPos = match.index + match[0].indexOf(original)
-  //   const endPos = startPos + original.length - 1
-  //   const newClassName = templeteReplacer(original)
-  //   cb(startPos, endPos, newClassName)
-  // }
-  // match 为 null 时，会自动清除 lastIndex
 }

@@ -20,6 +20,17 @@
 yarn add -D weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel tailwindcss@npm:@tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9
 ```
 
+> [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 是一个由本人撰写的 postcss 插件，支持 `rem` -> `rpx`，同时支持 `postcss7` 和 `postcss8`，[配置见此](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
+
+##### Usage
+
+```js
+// postcss 8:
+require('postcss-rem-to-responsive-pixel')
+// postcss 7:
+require('postcss-rem-to-responsive-pixel/postcss7')
+```
+
 #### 2. 然后添加 `tailwind.config.js`:
 
 ```js
@@ -151,4 +162,7 @@ TODO
 
 ## 其他小程序
 
-暂时只处理了`wxml`和`wxss`, 还未进行处理 TODO
+处理了其他小程序的:
+
+`/.+\.(?:wx|ac|jx|tt|q|c)ss$/` 样式文件和
+`/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/` 各种 `xxml` 和特殊的 `swan`
