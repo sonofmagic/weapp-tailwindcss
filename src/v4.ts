@@ -18,12 +18,12 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
-        if (file.match(/.+\.wxss$/)) {
+        if (file.match(/.+\.(?:wx|ac|jx|tt|q|c)ss$/)) {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource)
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
-        } else if (file.match(/.+\.wxml$/)) {
+        } else if (file.match(/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/)) {
           const rawSource = originalSource.source().toString()
           const wxml = templeteHandler(rawSource)
           const source = new ConcatSource(wxml)

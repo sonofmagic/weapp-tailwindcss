@@ -44,7 +44,6 @@
   },
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
   "devDependencies": {
-    "@babel/traverse": "^7.17.0",
     "@icebreakers/wxml": "^1.0.0",
     "@rollup/plugin-alias": "^3.1.8",
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -79,11 +78,13 @@
     "tslib": "^2.3.1",
     "typescript": "^4.5.5",
     "webpack": "^5.68.0",
-    "webpack4": "npm:webpack@webpack-4"
+    "webpack4": "npm:webpack@webpack-4",
+    "@babel/types": "^7.17.0"
   },
   "dependencies": {
-    "webpack-sources": "^3.2.3",
-    "@babel/types": "^7.17.0",
-    "@babel/parser": "^7.17.0"
+    "@babel/generator": "^7.17.0",
+    "@babel/parser": "^7.17.0",
+    "@babel/traverse": "^7.17.0",
+    "webpack-sources": "^3.2.3"
   }
 }

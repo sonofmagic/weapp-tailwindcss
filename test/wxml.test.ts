@@ -2,22 +2,32 @@ import { templeteReplacer } from '../src/wxml/index'
 
 describe('wxml', () => {
   it('isStringLiteral', () => {
-    const case1 =
-      "'{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}'"
+    const testCase =
+      "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
 
-    const result = templeteReplacer(case1)
+    const result = templeteReplacer(testCase)
 
     expect(result).toBe(
-      '{{[\'som-node__label\',\'data-v-59229c4a\',\'som-org__text-\'+(node.align||\'\'),node.active||collapsed?\'som-node__label-active\':\'\',d]}}'
+      '{{["som-node__label","data-v-59229c4a","som-org__text-"+(node.align||""),node.active||collapsed?"som-node__label-active":"",d]}}'
     )
   })
 
   it('isConditionalExpression', () => {
-    const case2 =
-      "'{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}'"
-    const result = templeteReplacer(case2)
+    const testCase =
+      "{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}"
+    const result = templeteReplacer(testCase)
     expect(result).toBe(
-      "{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}"
+      '{{["flex","flex-col","items-center",flag===1?"bg-red-900":"bg-_l__h_fafa00_r_"]}}'
+    )
+  })
+
+  it('nest ', () => {
+    const testCase =
+      "{{[flag?'bg-red-900':'bg-[#fafa00]',classObject,[(flag===true)?'bg-[#fafa00]':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-[#000]':'bg-[#fafa00]']}}"
+
+    const result = templeteReplacer(testCase)
+    expect(result).toBe(
+      '{{[flag?"bg-red-900":"bg-_l__h_fafa00_r_",classObject,[flag===true?"bg-_l__h_fafa00_r_":"",true?"text-sm":""],flag?flag===false?"bg-red-900":"bg-_l__h_000_r_":"bg-_l__h_fafa00_r_"]}}'
     )
   })
 

@@ -6,16 +6,25 @@
       <view class="text-clip bg-slate-100 text-left text-gray-900/90">weapp-tailwindcss-webpack-plugin</view>
       <view class="w-8 h-8 bg-[#ff0000] rounded-full"></view>
     </view> -->
-    <view
-      class="flex flex-col items-center"
-      :class="[
-      flag?'bg-red-900':'bg-[#fafa00]'
-      ]"
-    >
-      <Layout />
-      <tui-org-tree :treeData="treeData"></tui-org-tree>
-    </view>
+    <view :class="[
+      flag?'bg-red-900':'bg-[#fafa00]',
+      classObject,
+      {
+        'bg-[#fafa00]':flag===true,
+        'text-sm':true
+      },
+      flag? flag===false? 'bg-red-900': 'bg-[#000]' :'bg-[#fafa00]',
+      ]"></view>
+    <view :class="{
+        'bg-[#fafa00]':flag===true,
+        'text-sm':true
+      }"></view>
+
+    <view :class="classObject"></view>
+    <Layout />
+    <tui-org-tree :treeData="treeData"></tui-org-tree>
   </view>
+
 </template>
 
 <script lang="ts">
@@ -30,6 +39,10 @@ export default Vue.extend({
     return {
       title: 'Hello',
       flag: false,
+      classObject: {
+        'text-[20px]': true,
+        'bg-[#000000]': false
+      },
       treeData: [
         {
           text: 'icebreaker',
@@ -53,7 +66,7 @@ export default Vue.extend({
       ]
     }
   },
-  onLoad() {},
+
   methods: {}
 })
 </script>
