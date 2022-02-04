@@ -25,7 +25,13 @@ const config = {
     }),
     commonjs(),
     typescript({ tsconfig: './tsconfig.build.json' }),
-    isDev ? undefined : terser()
+    isDev
+      ? undefined
+      : terser({
+        format: {
+          comments: false
+        }
+      })
   ],
   external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : [])]
 }
