@@ -7,7 +7,7 @@ import { ConcatSource, Source } from 'webpack-sources'
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
-export class UniAppWeappTailwindcssWebpackPluginV4 {
+export class TaroWeappTailwindcssWebpackPluginV4 {
   options: UserDefinedOptions
   constructor (options = {}) {
     this.options = options
@@ -25,8 +25,8 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
           compilation.updateAsset(file, source)
         } else if (/.+\.js$/.test(file)) {
           const rawSource = originalSource.source().toString()
-          const css = jsxHandler(rawSource)
-          const source = new ConcatSource(css)
+          const jsSource = jsxHandler(rawSource)
+          const source = new ConcatSource(jsSource)
           compilation.updateAsset(file, source)
         }
         // else if (/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)) {

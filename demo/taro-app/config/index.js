@@ -1,4 +1,4 @@
-const { UniAppWeappTailwindcssWebpackPluginV4 } = require('../../../')
+const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../../')
 
 const config = {
   projectName: "myApp",
@@ -45,7 +45,7 @@ const config = {
         //plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
         plugin: {
           install: {
-            plugin: UniAppWeappTailwindcssWebpackPluginV4,
+            plugin: TaroWeappTailwindcssWebpackPluginV4,
             args: [{
               test: true
             }]
