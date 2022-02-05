@@ -118,9 +118,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+// scss 需要安装 yarn add -D sass sass-loader@^8
 // 小程序不需要 'base' 'components'，里面标签是给 html 准备的
 // @import 'tailwindcss/base';
 // @import 'tailwindcss/components';
+// @tailwind utilities;
+// or
 @import 'tailwindcss/utilities';
 /*每个页面公共css */
 </style>
