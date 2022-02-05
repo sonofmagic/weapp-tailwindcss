@@ -1,8 +1,7 @@
 import type { UserDefinedOptions } from './types'
 import type { Compiler } from 'webpack'
-import type { styleHandler, templeteHandler } from './shared'
+import type { styleHandler, templeteHandler, pluginName } from './shared'
 
-const pluginName = 'weapp-tailwindcss-webpack-plugin'
 export class UniAppWeappTailwindcssWebpackPluginV5 {
   options: UserDefinedOptions
   constructor (options = {}) {

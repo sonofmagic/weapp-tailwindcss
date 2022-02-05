@@ -1,6 +1,6 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, templeteHandler, pluginName } from '../shared'
+import { styleHandler, jsxHandler, pluginName } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 // ReplaceSource,
 
@@ -24,7 +24,10 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
         } else if (/.+\.js$/.test(file)) {
-
+          const rawSource = originalSource.source().toString()
+          const css = jsxHandler(rawSource)
+          const source = new ConcatSource(css)
+          compilation.updateAsset(file, source)
         }
         // else if (/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)) {
         //   const rawSource = originalSource.source().toString()
