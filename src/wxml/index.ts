@@ -1,11 +1,6 @@
 import wxml from '@icebreakers/wxml'
 import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
-// import {
-//   isStringLiteral,
-//   isConditionalExpression,
-//   isArrayExpression
-// } from '@babel/types'
 import generate from '@babel/generator'
 
 // import babelTraverse from '@babel/traverse'

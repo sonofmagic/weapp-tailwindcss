@@ -42,7 +42,15 @@ const config = {
     },
     webpackChain(chain, webpack) {
       chain.merge({
-        plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
+        //plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
+        plugin: {
+          install: {
+            plugin: UniAppWeappTailwindcssWebpackPluginV4,
+            args: [{
+              test: true
+            }]
+          }
+        }
       })
     }
   },
