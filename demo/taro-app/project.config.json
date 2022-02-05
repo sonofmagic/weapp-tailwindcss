@@ -1,13 +1,23 @@
 {
-  "miniprogramRoot": "./dist",
-  "projectname": "taro-app",
-  "description": "react demo",
+  "miniprogramRoot": "dist/",
+  "projectname": "myApp",
+  "description": "ge",
   "appid": "wxb3d842a4a7e3440d",
   "setting": {
     "urlCheck": true,
     "es6": false,
     "postcss": false,
-    "minified": false
+    "preloadBackgroundData": false,
+    "minified": false,
+    "newFeature": true,
+    "autoAudits": false,
+    "coverView": true,
+    "showShadowRootInWxmlPanel": false,
+    "scopeDataCheck": false,
+    "useCompilerModule": false
   },
-  "compileType": "miniprogram"
+  "compileType": "miniprogram",
+  "simulatorType": "wechat",
+  "simulatorPluginLibVersion": {},
+  "condition": {}
 }

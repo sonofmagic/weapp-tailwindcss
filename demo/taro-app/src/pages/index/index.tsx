@@ -1,24 +1,16 @@
-import { Component } from 'react'
-import { View, Text } from '@tarojs/components'
+// import { useCallback } from "react";
+import { View, Text, Button } from "@tarojs/components";
+// import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
+
+
 import './index.scss'
 
-export default class Index extends Component {
+const Index = () => {
 
-  componentWillMount() { }
 
-  componentDidMount() { }
+  return (
+    <View>123</View>
+  );
+};
 
-  componentWillUnmount() { }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
-
-  render() {
-    return (
-      <View className='index'>
-        <Text>Hello world!</Text>
-      </View>
-    )
-  }
-}
+export default Index;

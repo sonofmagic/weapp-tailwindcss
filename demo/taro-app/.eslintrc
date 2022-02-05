@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": ["taro/react"],
   "rules": {
     "react/jsx-uses-react": "off",
