@@ -1,3 +1,5 @@
+const { UniAppWeappTailwindcssWebpackPluginV4 } = require('../../../')
+
 const config = {
   projectName: "myApp",
   date: "2022-2-5",
@@ -35,7 +37,14 @@ const config = {
           generateScopedName: "[name]__[local]___[hash:base64:5]",
         },
       },
+      // tailwindcss: {},
+      // autoprefixer: {},
     },
+    webpackChain(chain, webpack) {
+      chain.merge({
+        plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
+      })
+    }
   },
   h5: {
     publicPath: "/",

@@ -154,6 +154,8 @@ module.exports = config
 
 ## taro
 
+内置 webpack 为 4 , postcss 为 8
+
 TODO
 
 ## 原生微信小程序
