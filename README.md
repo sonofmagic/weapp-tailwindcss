@@ -154,13 +154,80 @@ module.exports = config
 
 ## taro
 
-内置 webpack 为 4 , postcss 为 8
+taro 3 内置 webpack 为 `4` , postcss 为 `8`
 
-TODO
+#### 1. 于是我们开始安装:
+
+```bash
+yarn add -D weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel tailwindcss postcss autoprefixer
+```
+
+这里 `tailwindcss` 为最新的 v3 版本
+
+#### 2. 在 taro-app/config 中添加
+
+```js
+const {
+  TaroWeappTailwindcssWebpackPluginV4
+} = require('weapp-tailwindcss-webpack-plugin')
+
+const config = {
+  // ...
+  mini: {
+    webpackChain(chain, webpack) {
+      chain.merge({
+        plugin: {
+          install: {
+            plugin: TaroWeappTailwindcssWebpackPluginV4,
+            args: [
+              {
+                // ...
+              }
+            ]
+          }
+        }
+      })
+    }
+  }
+}
+```
+
+#### 3. 执行 `npx tailwindcss init`
+
+创建 `postcss.config.js` 和 `tailwind.config.js`
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+}
+```
+
+```js
+// tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  theme: {
+    extend: {}
+  },
+  plugins: []
+}
+```
+
+#### 4. 最后在 `app.scss` 引入后就可以便捷的使用了
+
+```scss
+// @tailwind utilities;
+// or
+@import 'tailwindcss/utilities';
+```
 
 ## 原生微信小程序
 
-TODO
+有方案: 目前 Todo
 
 ## 其他小程序
 
@@ -168,3 +235,9 @@ TODO
 
 `/.+\.(?:wx|ac|jx|tt|q|c)ss$/` 样式文件和
 `/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/` 各种 `xxml` 和特殊的 `swan`
+
+## Bugs & Issues
+
+由于 `uni-app` 和 `taro` 都在快速的开发中，如果遇到 Bugs 或者遇到了 Issues
+
+[欢迎提交到此处，笔者会尽快复现并修改](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
