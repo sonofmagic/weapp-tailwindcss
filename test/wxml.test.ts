@@ -31,6 +31,13 @@ describe('wxml', () => {
     )
   })
 
+  it('sm:text-3xl dark:text-sky-400', () => {
+    const testCase = 'sm:text-3xl dark:text-slate-200 bg-[#ffffaa]'
+    const result = templeteReplacer(testCase)
+    expect(result).toBe(
+      'sm_c_text-3xl dark_c_text-slate-200 bg-_l__h_ffffaa_r_'
+    )
+  })
   // it('should ', () => {
   //   const case3 =
   //     '<view class="_div data-v-59d503f6"><view class="container data-v-59d503f6">container</view><label class="decoration-clone bg-gradient-to-b from-yellow-400 to-red-500 text-transparent _span data-v-59d503f6">Hello<view class="_br data-v-59d503f6"></view>World</label><view class="box-border h-32 w-32 p-4 border-4 border-blue-400 bg-blue-200 rounded-md _div data-v-59d503f6"><view class="h-full w-full bg-blue-400 bg-stripes bg-stripes-white _div data-v-59d503f6"></view></view><view class="box-content h-32 w-32 p-4 border-4 border-green-400 bg-green-200 rounded-md _div data-v-59d503f6"><view class="h-full w-full bg-green-400 bg-stripes bg-stripes-white _div data-v-59d503f6"></view></view><block wx:for="{{displayArray}}" wx:for-item="d" wx:for-index="__i0__" wx:key="*this"><view class="{{_l_\'item\',\'data-v-59d503f6\',d]}}">{{d}}</view></block></view>'

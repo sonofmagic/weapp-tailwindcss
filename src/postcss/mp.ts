@@ -1,5 +1,5 @@
-import type { Rule } from 'postcss'
-
+import type { Rule, AtRule } from 'postcss'
+import { cssSelectorReplacer } from './shared'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
 }
@@ -7,7 +7,7 @@ function isSupportedRule (selector: string) {
 // Thanks to tailwind-one and postcss-uni-tailwind
 // https://gitee.com/23323/tailwind-one
 // https://gitee.com/hainc/postcss-uni-tailwind
-export function mpPreflight (node: Rule) {
+export function mpRulePreflight (node: Rule) {
   if (node.selector.includes(':not(template) ~ :not(template)')) {
     node.selector = node.selector.replace(
       ':not(template) ~ :not(template)',
@@ -35,7 +35,10 @@ export function mpPreflight (node: Rule) {
 
   if (!isSupportedRule(node.selector)) {
     node.remove()
+    return
   }
+
+  node.selector = cssSelectorReplacer(node.selector)
 
   node.walkDecls((decl) => {
     if (decl.prop === 'visibility') {
@@ -53,4 +56,10 @@ export function mpPreflight (node: Rule) {
       }
     }
   })
+}
+
+export function mpAtRulePreflight (node: AtRule) {
+  // if (node.name === 'media') {
+  // }
+  // do nothing
 }

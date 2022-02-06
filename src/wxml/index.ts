@@ -15,15 +15,19 @@ import generate from '@babel/generator'
 //   /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
 
 export function replaceWxml (original: string) {
-  return original
-    .replace(/\[/g, '_l_')
-    .replace(/\]/g, '_r_')
-    .replace(/\(/g, '_p_')
-    .replace(/\)/g, '_q_')
-    .replace(/#/g, '_h_')
-    .replace(/!/g, '_i_') //! important
-    .replace(/\//g, '-div-')
-    .replace(/\./g, '-dot-')
+  return (
+    original
+      .replace(/\[/g, '_l_')
+      .replace(/\]/g, '_r_')
+      .replace(/\(/g, '_p_')
+      .replace(/\)/g, '_q_')
+      .replace(/#/g, '_h_')
+      .replace(/!/g, '_i_') //! important
+      .replace(/\//g, '-div-')
+      .replace(/\./g, '-dot-')
+      // :
+      .replace(/:/g, '_c_')
+  )
 }
 
 export function templeteReplacer (original: string) {

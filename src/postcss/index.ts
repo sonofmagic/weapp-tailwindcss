@@ -1,16 +1,5 @@
 import postcss from 'postcss'
-import { mpPreflight } from './mp'
-export function cssSelectorReplacer (selector: string) {
-  return selector
-    .replace(/\\\[/g, '_l_')
-    .replace(/\\\]/g, '_r_')
-    .replace(/\\\(/g, '_p_')
-    .replace(/\\\)/g, '_q_')
-    .replace(/\\#/g, '_h_')
-    .replace(/\\!/g, '_i_') //! important
-    .replace(/\\\//g, '-div-')
-    .replace(/\\\./g, '-dot-')
-}
+import { mpRulePreflight, mpAtRulePreflight } from './mp'
 
 const isMp = true
 export function styleHandler (rawSource: string) {
@@ -19,12 +8,17 @@ export function styleHandler (rawSource: string) {
     if (node.type === 'rule') {
       if (isMp) {
         // 引用传递
-        mpPreflight(node)
-        node.selector = cssSelectorReplacer(node.selector)
+        mpRulePreflight(node)
       }
-    } else if (node.type === 'comment') {
-      node.remove()
+    } else if (node.type === 'atrule') {
+      if (isMp) {
+        mpAtRulePreflight(node)
+      }
     }
+    // 顺其自然
+    // else if (node.type === 'comment') {
+    //   node.remove()
+    // }
   })
   return root.toString()
 }

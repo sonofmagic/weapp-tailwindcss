@@ -1,12 +1,12 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development rollup -cw",
-    "build": "cross-env NODE_ENV=production rollup -c",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "test": "jest",
     "init:rename": "node scripts/init/rename.js",
@@ -69,7 +69,6 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
     "jest": "^27.4.5",
-    "postcss": "^8.4.6",
     "rollup": "^2.67.0",
     "rollup-plugin-terser": "^7.0.2",
     "semver": "^7.3.5",
@@ -85,6 +84,7 @@
     "@babel/generator": "^7.17.0",
     "@babel/parser": "^7.17.0",
     "@babel/traverse": "^7.17.0",
+    "postcss": "^8.4.6",
     "webpack-sources": "^3.2.3"
   }
 }
