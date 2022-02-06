@@ -157,15 +157,13 @@ module.exports = config
 
 ## taro
 
-taro 3 内置 webpack 为 `4` , postcss 为 `8`
+taro 3 内置 webpack 为 `4` , postcss 为 `8`, 所以可以使用 `tailwindcss` 的 v3 版本
 
 #### 1. 于是我们开始安装:
 
 ```bash
 yarn add -D weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel tailwindcss postcss autoprefixer
 ```
-
-这里 `tailwindcss` 为最新的 v3 版本
 
 #### 2. 在 taro-app/config 中添加
 
@@ -216,13 +214,21 @@ module.exports = {
   theme: {
     extend: {}
   },
-  plugins: []
+  plugins: [],
+  // v3 版本的 tailwindcss 有些不同
+  corePlugins: {
+    preflight: false
+  }
 }
 ```
 
 #### 4. 最后在 `app.scss` 引入后就可以便捷的使用了
 
+[v3 迁移指南](https://tailwindcss.com/docs/upgrade-guide#removed-color-aliases)
+
 ```scss
+// base 是必要的
+@import 'tailwindcss/base';
 // @tailwind utilities;
 // or
 @import 'tailwindcss/utilities';
@@ -230,7 +236,9 @@ module.exports = {
 
 ## 原生微信小程序
 
-有方案: 目前 Todo
+有方案， 目前先把 uni-app 和 taro 做好
+
+Todo
 
 ## 其他小程序
 
