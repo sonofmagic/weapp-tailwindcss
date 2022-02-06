@@ -14,15 +14,16 @@
         'text-sm':true
       },
       flag? flag===false? 'bg-red-900': 'bg-[#000]' :'bg-[#fafa00]',
-      ]"></view>
+      ]">Toggle</view>
     <view :class="{
         'bg-[#fafa00]':flag===true,
         'text-sm':true
-      }"></view>
+      }">Toggle</view>
+    <button @click="flag =!flag">Toggle flag</button>
 
-    <view :class="classObject"></view>
+    <!-- <view :class="classObject"></view> -->
     <Layout />
-    <tui-org-tree :treeData="treeData"></tui-org-tree>
+    
   </view>
 
 </template>

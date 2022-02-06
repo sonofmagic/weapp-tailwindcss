@@ -47,7 +47,10 @@ module.exports = {
     extend: {}
   },
   variants: {},
-  plugins: []
+  plugins: [],
+  corePlugins: {
+    preflight: false
+  }
 }
 ```
 
@@ -119,11 +122,10 @@ export default Vue.extend({
 
 <style lang="scss">
 // scss 需要安装 yarn add -D sass sass-loader@^10
-// 小程序不需要 'base' 'components'，里面标签是给 html 准备的
-// @import 'tailwindcss/base';
-// @import 'tailwindcss/components';
+// 小程序需要 'base' 来注入变量，单不需要 html preflight
+// @tailwind base;
 // @tailwind utilities;
-// or
+@import 'tailwindcss/base';
 @import 'tailwindcss/utilities';
 /*每个页面公共css */
 </style>

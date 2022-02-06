@@ -1,7 +1,13 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, templeteHandler, pluginName } from '../shared'
+import {
+  styleHandler,
+  templeteHandler,
+  pluginName,
+  getFileName
+} from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
+
 // ReplaceSource,
 
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
@@ -20,7 +26,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
         const [file, originalSource] = entries[i]
         if (/.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)) {
           const rawSource = originalSource.source().toString()
-          const css = styleHandler(rawSource)
+          const css = styleHandler(rawSource, getFileName(file))
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
         } else if (/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)) {

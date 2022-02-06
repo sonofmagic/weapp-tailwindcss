@@ -11,7 +11,7 @@
     <div class="box-content h-32 w-32 p-4 border-4 border-green-400 bg-green-200 rounded-md">
       <div class="h-full w-full bg-green-400 bg-stripes bg-stripes-white"></div>
     </div> -->
-    <view class=""></view>
+    <!-- <view class=""></view>
     <view :class="['']"></view>
     <view :class="'bg-[#dddddd]'">123</view>
     <view
@@ -23,28 +23,41 @@
       class="item"
       :key="d"
       v-for="d in displayArray"
-    >{{d}}</view>
+    >{{d}}</view> -->
     <!-- <view class="float-left">float-left</view>
     <view class="float-right">float-right</view>
     <view class="float-none">float-none</view> -->
-    <view class="z-[55]">z-[55]</view>
+    <!-- <view class="z-[55]">z-[55]</view>
     <view class="z-[-55]">z-[-55]</view>
     <view class="bottom-[100px]">bottom-[100px]</view>
-    <view class="bottom-[100rpx] shadow">bottom-[100rpx]</view>
-    .space-x-0-dot-5 > :not([hidden]) ~ :not([hidden])
+    <view class="bottom-[100rpx] shadow">bottom-[100rpx]</view> -->
+    <!-- .space-x-0-dot-5 > :not([hidden]) ~ :not([hidden])
 
     选择器提前用postcss处理
-    https://www.tailwindcss.cn/docs/space
+    https://www.tailwindcss.cn/docs/space -->
+
+    <view class="p-[20px] -mt-2 mb-[-20px] ">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
     <view class="space-y-[1.6rem]">
-      <view>space-y-[1.6rem]</view>
-      <view>space-y-[1.6rem]</view>
-      <view>space-y-[1.6rem]</view>
+      <view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view>
+      <view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+      <view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+      <view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view>
+      <view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+      <view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </view>
+      <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">
+        Default
+      </view>
     </view>
-    <div class="grid grid-cols-3 divide-x divide-green-500">
+    <!-- <div class="grid grid-cols-3 divide-x divide-green-500">
       <div>1</div>
       <div>2</div>
       <div>3</div>
-    </div>
+    </div> -->
+
   </div>
 </template>
 
