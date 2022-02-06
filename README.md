@@ -1,3 +1,5 @@
+![logo](./assets/logo.jpg)
+
 # weapp-tailwindcss-webpack-plugin
 
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
