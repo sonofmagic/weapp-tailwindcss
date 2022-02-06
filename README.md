@@ -1,6 +1,10 @@
 # weapp-tailwindcss-webpack-plugin
 
-> 把 `tailwindcss JIT` 带入小程序吧！
+> 把 `tailwindcss JIT` 思想带入小程序开发吧！
+
+- <a href="#uni-app">uni-app 使用方式</a>
+- <a href="#taro">taro 使用方式(beta)</a>
+- <a href="#native">原生小程序</a>
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
 
@@ -10,7 +14,7 @@
 
 ## Usage
 
-### uni-app
+<h3 id="uni-app">uni-app</h3>
 
 由于 `uni-app` 内置的 `webpack` 版本为 `4` , `postcss` 版本为 `7`
 
@@ -107,31 +111,20 @@ TAILWIND_MODE=watch
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-  mpType: 'app',
-  onLaunch() {
-    console.log('App Launch')
-  },
-  onShow() {
-    console.log('App Show')
-  },
-  onHide() {
-    console.log('App Hide')
-  }
+  //...
 })
 </script>
 
 <style lang="scss">
+/*每个页面公共css */
 // scss 需要安装 yarn add -D sass sass-loader@^10
 // 小程序需要 'base' 来注入变量，单不需要 html preflight
 // @tailwind base;
 // @tailwind utilities;
 @import 'tailwindcss/base';
 @import 'tailwindcss/utilities';
-/*每个页面公共css */
 </style>
 ```
-
-把工具类添加进来。
 
 #### 6. 在根目录下添加 `vue.config.js`
 
@@ -157,7 +150,7 @@ module.exports = config
 
 现在，您就可以在 `uni-app` 中使用 `jit` 的大部分特性了！
 
-## taro
+<h3 id="taro">Taro v3 (React)</h3>
 
 taro 3 内置 webpack 为 `4` , postcss 为 `8`, 所以可以使用 `tailwindcss` 的 v3 版本
 
@@ -231,26 +224,29 @@ module.exports = {
 ```scss
 // base 是必要的
 @import 'tailwindcss/base';
-// @tailwind utilities;
-// or
 @import 'tailwindcss/utilities';
 ```
 
-## 原生微信小程序
+<h3 id="native">原生小程序</h3>
+有方案，原理在我脑子里，目前没空实现
 
-有方案， 目前先把 uni-app 和 taro 做好
+TODO
 
-Todo
-
-## 其他小程序
+## 关于其他小程序
 
 处理了其他小程序的:
 
 `/.+\.(?:wx|ac|jx|tt|q|c)ss$/` 样式文件和
 `/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/` 各种 `xxml` 和特殊的 `swan`
 
+## 原理篇
+
+另写一篇文章，大意还是 `css ast`, `[xx]ml ast`, `js ast` 那一套
+
+TODO
+
 ## Bugs & Issues
 
-由于 `uni-app` 和 `taro` 都在快速的开发中，如果遇到 Bugs 或者遇到了 Issues
+由于 `uni-app` 和 `taro` 都在快速的开发中，如果遇到 Bugs 或者想提出 Issues
 
 [欢迎提交到此处，笔者会尽快复现并修改](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)

@@ -1,9 +1,12 @@
 import postcss from 'postcss'
-
+import type { StyleHandlerOptions } from '../types'
 import { mpRulePreflight, commonChunkPreflight } from './mp'
 // mpAtRulePreflight
 const isMp = true
-export function styleHandler (rawSource: string, file: string) {
+export function styleHandler (
+  rawSource: string,
+  options: StyleHandlerOptions = {}
+) {
   const root = postcss.parse(rawSource)
   // console.log(file)
   root.walk((node, idx) => {
@@ -12,7 +15,7 @@ export function styleHandler (rawSource: string, file: string) {
         // 引用传递
         // uni-app common-> main.wxss
         // taro app.wxss
-        if (file === 'main' || file === 'app') {
+        if (options.isMainChunk) {
           commonChunkPreflight(node)
         }
         mpRulePreflight(node)

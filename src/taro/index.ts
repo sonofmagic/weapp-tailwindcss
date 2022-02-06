@@ -1,6 +1,12 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, jsxHandler, pluginName, getFileName } from '../shared'
+import {
+  styleHandler,
+  jsxHandler,
+  pluginName,
+  getFileName,
+  getOptions
+} from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 // ReplaceSource,
 
@@ -8,22 +14,25 @@ import { ConcatSource, Source } from 'webpack-sources'
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
 export class TaroWeappTailwindcssWebpackPluginV4 {
-  options: UserDefinedOptions
-  constructor (options = {}) {
-    this.options = options
+  options: Required<UserDefinedOptions>
+  constructor (options: UserDefinedOptions = {}) {
+    this.options = getOptions(options)
   }
 
   apply (compiler: Compiler) {
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher } = this.options
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
-        if (/.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)) {
+        if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
-          const css = styleHandler(rawSource, getFileName(file))
+          const css = styleHandler(rawSource, {
+            isMainChunk: mainCssChunkMatcher(getFileName(file))
+          })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
-        } else if (/.+\.js$/.test(file)) {
+        } else if (jsMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const jsSource = jsxHandler(rawSource)
           const source = new ConcatSource(jsSource)

@@ -3,6 +3,7 @@ import path from 'path'
 export { styleHandler } from './postcss'
 export { templeteHandler } from './wxml'
 export { jsxHandler } from './jsx'
+export { getOptions } from './defaults'
 export const pluginName = 'weapp-tailwindcss-webpack-plugin'
 
 export function getFileName (file: string) {

@@ -4,7 +4,8 @@ import {
   styleHandler,
   templeteHandler,
   pluginName,
-  getFileName
+  getFileName,
+  getOptions
 } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 
@@ -14,22 +15,25 @@ import { ConcatSource, Source } from 'webpack-sources'
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
 export class UniAppWeappTailwindcssWebpackPluginV4 {
-  options: UserDefinedOptions
-  constructor (options = {}) {
-    this.options = options
+  options: Required<UserDefinedOptions>
+  constructor (options: UserDefinedOptions = {}) {
+    this.options = getOptions(options)
   }
 
   apply (compiler: Compiler) {
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher } = this.options
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
-        if (/.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)) {
+        if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
-          const css = styleHandler(rawSource, getFileName(file))
+          const css = styleHandler(rawSource, {
+            isMainChunk: mainCssChunkMatcher(getFileName(file))
+          })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
-        } else if (/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)) {
+        } else if (htmlMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const wxml = templeteHandler(rawSource)
           const source = new ConcatSource(wxml)
