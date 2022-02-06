@@ -51,8 +51,8 @@
       <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">
         Default
       </view>
-
     </view>
+    <view class="test">test</view>
     <!-- <view class="shadow-2xl">shadow</view> -->
     <!-- <div class="grid grid-cols-3 divide-x divide-green-500">
       <div>1</div>
@@ -95,4 +95,9 @@ export default Vue.extend({
   }
 })
 </script>
+<style lang="scss">
+.test {
+  @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+}
+</style>
 
