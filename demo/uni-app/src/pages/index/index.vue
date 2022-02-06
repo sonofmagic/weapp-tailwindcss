@@ -6,24 +6,18 @@
       <view class="text-clip bg-slate-100 text-left text-gray-900/90">weapp-tailwindcss-webpack-plugin</view>
       <view class="w-8 h-8 bg-[#ff0000] rounded-full"></view>
     </view> -->
+    <!-- flag? flag===false? 'bg-red-900': 'bg-[#000]' :'bg-[#fafa00]', -->
     <view :class="[
       flag?'bg-red-900':'bg-[#fafa00]',
-      classObject,
-      {
-        'bg-[#fafa00]':flag===true,
-        'text-sm':true
-      },
-      flag? flag===false? 'bg-red-900': 'bg-[#000]' :'bg-[#fafa00]',
       ]">Toggle</view>
     <view :class="{
         'bg-[#fafa00]':flag===true,
-        'text-sm':true
       }">Toggle</view>
     <button @click="flag =!flag">Toggle flag</button>
 
     <!-- <view :class="classObject"></view> -->
     <Layout />
-    
+
   </view>
 
 </template>
