@@ -51,7 +51,9 @@
       <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">
         Default
       </view>
+
     </view>
+    <!-- <view class="shadow-2xl">shadow</view> -->
     <!-- <div class="grid grid-cols-3 divide-x divide-green-500">
       <div>1</div>
       <div>2</div>

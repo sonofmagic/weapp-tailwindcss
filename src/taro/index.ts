@@ -1,6 +1,6 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, jsxHandler, pluginName } from '../shared'
+import { styleHandler, jsxHandler, pluginName, getFileName } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 // ReplaceSource,
 
@@ -20,7 +20,7 @@ export class TaroWeappTailwindcssWebpackPluginV4 {
         const [file, originalSource] = entries[i]
         if (/.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)) {
           const rawSource = originalSource.source().toString()
-          const css = styleHandler(rawSource)
+          const css = styleHandler(rawSource, getFileName(file))
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
         } else if (/.+\.js$/.test(file)) {

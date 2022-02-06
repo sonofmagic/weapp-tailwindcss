@@ -3,15 +3,16 @@ import postcss from 'postcss'
 import { mpRulePreflight, commonChunkPreflight } from './mp'
 // mpAtRulePreflight
 const isMp = true
-export function styleHandler (rawSource: string, file?: string) {
+export function styleHandler (rawSource: string, file: string) {
   const root = postcss.parse(rawSource)
   // console.log(file)
   root.walk((node, idx) => {
     if (node.type === 'rule') {
       if (isMp) {
         // 引用传递
-        // uni-app common-> wxss
-        if (file === 'main') {
+        // uni-app common-> main.wxss
+        // taro app.wxss
+        if (file === 'main' || file === 'app') {
           commonChunkPreflight(node)
         }
         mpRulePreflight(node)
