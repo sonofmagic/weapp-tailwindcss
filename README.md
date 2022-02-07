@@ -120,7 +120,7 @@ export default Vue.extend({
 <style lang="scss">
 /*每个页面公共css */
 // scss 需要安装 yarn add -D sass sass-loader@^10
-// 小程序需要 'base' 来注入变量，单不需要 html preflight
+// 小程序需要 'base' 来注入变量，但不需要 html preflight
 // @tailwind base;
 // @tailwind utilities;
 @import 'tailwindcss/base';
