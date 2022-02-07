@@ -1,11 +1,8 @@
-import {
-  UniAppWeappTailwindcssWebpackPluginV4,
-  TaroWeappTailwindcssWebpackPluginV4
-} from './v4'
-// import { UniAppWeappTailwindcssWebpackPluginV5 } from './v5'
+import { UniAppWeappTailwindcssWebpackPluginV4, TaroWeappTailwindcssWebpackPluginV4 } from './v4'
+// import { WeappTailwindcssWebpackPluginV5 } from './v5'
 
 export {
   UniAppWeappTailwindcssWebpackPluginV4,
   TaroWeappTailwindcssWebpackPluginV4
-  // UniAppWeappTailwindcssWebpackPluginV5
+  // WeappTailwindcssWebpackPluginV5
 }

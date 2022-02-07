@@ -2,7 +2,7 @@ import wxml from '@icebreakers/wxml'
 import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
-
+// import { defaultExtractor } from '../defaultExtractor'
 // import babelTraverse from '@babel/traverse'
 // https://github.com/yoshuawuyts/extract-html-class/blob/master/index.js
 // https://stackoverflow.com/questions/16559171/regular-expression-to-get-a-class-name-from-html
@@ -13,6 +13,8 @@ import generate from '@babel/generator'
 // wxml 这类的必须更改添加情况不然只能匹配 {{[
 // export const classRegExp =
 //   /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
+
+// tailwindcss v3 /src/lib/expandTailwindAtRules getClassCandidates
 
 export function replaceWxml (original: string) {
   return (
@@ -35,7 +37,8 @@ export function templeteReplacer (original: string) {
   // wxml 变量处理
   if (match && match[1]) {
     const ast = parseExpression(match[1])
-
+    // const extractions = defaultExtractor(match[1])
+    // console.log(extractions)
     traverse(ast, {
       StringLiteral (path) {
         path.node.value = replaceWxml(path.node.value)
