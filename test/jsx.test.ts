@@ -23,4 +23,10 @@ describe('first', () => {
     const result = jsxHandler(item)
     expect(Boolean(result)).toBe(true)
   })
+
+  it('vue2-case1', async () => {
+    const item = await getCase('vue2-case1.js')
+    const result = jsxHandler(item)
+    expect(Boolean(result)).toBe(true)
+  })
 })

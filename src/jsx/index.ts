@@ -3,6 +3,20 @@ import type { Node } from '@babel/types'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from '../wxml'
+
+// const isReact = false
+
+// const isVue2 = true
+// const isVue3 = true
+// const isVue = isVue2 || isVue3
+// react -> className
+// vue -> class/staticClass
+// function nodeMatcher (nodeKeyName: string) {
+//   return nodeKeyName === 'className'|| nodeKeyName ==='class'|| nodeKeyName ===''
+// }
+
+// var render = function () {
+// process.env
 export function jsxHandler (rawSource: string) {
   const ast = parse(rawSource)
   // ObjectExpression
@@ -17,12 +31,13 @@ export function jsxHandler (rawSource: string) {
   traverse(ast, {
     enter (path) {
       // console.log(path.node)
-
       // _tarojs_components__WEBPACK_IMPORTED_MODULE_0__
+      // if (isReact) {
+      // taro react start
       if (
         path.node.type === 'ObjectProperty' &&
         path.node.key.type === 'Identifier' &&
-        path.node.key.name === 'className'
+        (path.node.key.name === 'class' || path.node.key.name === 'staticClass' || path.node.key.name === 'className')
       ) {
         startFlag = true
         classObjectNode = path.node
@@ -45,6 +60,16 @@ export function jsxHandler (rawSource: string) {
         // start replace
         // path.node
       }
+      // taro react end
+      // }
+      // if (isVue) {
+      //   // taro vue
+      //   // @ts-ignore
+      //   if (path.node.type === 'ObjectProperty' && path.node.key.type === 'Identifier' && (path.node.key.name === 'class' || path.node.key.name === 'staticClass')) {
+      //     // @ts-ignore
+      //     // console.log('1')
+      //   }
+      // }
     },
     noScope: true
   })
