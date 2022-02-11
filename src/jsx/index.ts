@@ -1,5 +1,5 @@
 import { parse } from '@babel/parser'
-import type { Node } from '@babel/types'
+import type { Node, ObjectProperty, Identifier } from '@babel/types'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from '../wxml'
@@ -14,6 +14,19 @@ import { replaceWxml } from '../wxml'
 // function nodeMatcher (nodeKeyName: string) {
 //   return nodeKeyName === 'className'|| nodeKeyName ==='class'|| nodeKeyName ===''
 // }
+type UserMatchNode = ObjectProperty & { key: Identifier }
+
+function isSpecNode (node: Node) {
+  return node.type === 'ObjectProperty' && node.key.type === 'Identifier'
+}
+
+function reactMatcher (node: UserMatchNode) {
+  return node.key.name === 'className'
+}
+
+function vueMatcher (node: UserMatchNode) {
+  return node.key.name === 'class' || node.key.name === 'staticClass'
+}
 
 // var render = function () {
 // process.env
@@ -30,15 +43,8 @@ export function jsxHandler (rawSource: string) {
   let startFlag = false
   traverse(ast, {
     enter (path) {
-      // console.log(path.node)
-      // _tarojs_components__WEBPACK_IMPORTED_MODULE_0__
-      // if (isReact) {
-      // taro react start
-      if (
-        path.node.type === 'ObjectProperty' &&
-        path.node.key.type === 'Identifier' &&
-        (path.node.key.name === 'class' || path.node.key.name === 'staticClass' || path.node.key.name === 'className')
-      ) {
+      // react and vue2
+      if (isSpecNode(path.node) && (vueMatcher(path.node as UserMatchNode) || reactMatcher(path.node as UserMatchNode))) {
         startFlag = true
         classObjectNode = path.node
         return
@@ -54,22 +60,7 @@ export function jsxHandler (rawSource: string) {
           // 玩意变量中用户使用了 'a/s' 就会产生破坏效果
           path.node.value = replaceWxml(path.node.value)
         }
-        // 'text-[100px] font-bold underline '
-
-        // console.log(path.node)
-        // start replace
-        // path.node
       }
-      // taro react end
-      // }
-      // if (isVue) {
-      //   // taro vue
-      //   // @ts-ignore
-      //   if (path.node.type === 'ObjectProperty' && path.node.key.type === 'Identifier' && (path.node.key.name === 'class' || path.node.key.name === 'staticClass')) {
-      //     // @ts-ignore
-      //     // console.log('1')
-      //   }
-      // }
     },
     noScope: true
   })
