@@ -1,3 +1,5 @@
+const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../../')
+
 const config = {
   projectName: 'taro-vue2-app',
   date: '2022-2-11',
@@ -10,22 +12,17 @@ const config = {
   sourceRoot: 'src',
   outputRoot: 'dist',
   plugins: [],
-  defineConstants: {
-  },
+  defineConstants: {},
   copy: {
-    patterns: [
-    ],
-    options: {
-    }
+    patterns: [],
+    options: {}
   },
   framework: 'vue',
   mini: {
     postcss: {
       pxtransform: {
         enable: true,
-        config: {
-
-        }
+        config: {}
       },
       url: {
         enable: true,
@@ -40,6 +37,16 @@ const config = {
           generateScopedName: '[name]__[local]___[hash:base64:5]'
         }
       }
+    },
+    webpackChain(chain, webpack) {
+      chain.merge({
+        plugin: {
+          install: {
+            plugin: TaroWeappTailwindcssWebpackPluginV4,
+            args: []
+          }
+        }
+      })
     }
   },
   h5: {
@@ -48,8 +55,7 @@ const config = {
     postcss: {
       autoprefixer: {
         enable: true,
-        config: {
-        }
+        config: {}
       },
       cssModules: {
         enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
