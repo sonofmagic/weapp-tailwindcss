@@ -42,4 +42,12 @@ describe('first', () => {
     // await putCase('vue2-case1.result.js', result)
     expect(result).toBe(expected)
   })
+
+  it('vue3-case1', async () => {
+    const item = await getCase('vue3-case1.js')
+    const result = jsxHandler(item)
+    // const expected = await getCase('vue2-case1.result.js')
+    // await putCase('vue2-case1.result.js', result)
+    expect(result).toBe(true)
+  })
 })
