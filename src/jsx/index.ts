@@ -24,9 +24,10 @@ function reactMatcher (node: UserMatchNode) {
   return node.key.name === 'className'
 }
 
-function vueMatcher (node: UserMatchNode) {
+function vue2Matcher (node: UserMatchNode) {
   return node.key.name === 'class' || node.key.name === 'staticClass'
 }
+// vue3 hoisted
 
 // var render = function () {
 // process.env
@@ -44,7 +45,7 @@ export function jsxHandler (rawSource: string) {
   traverse(ast, {
     enter (path) {
       // react and vue2
-      if (isSpecNode(path.node) && (vueMatcher(path.node as UserMatchNode) || reactMatcher(path.node as UserMatchNode))) {
+      if (isSpecNode(path.node) && (vue2Matcher(path.node as UserMatchNode) || reactMatcher(path.node as UserMatchNode))) {
         startFlag = true
         classObjectNode = path.node
         return
