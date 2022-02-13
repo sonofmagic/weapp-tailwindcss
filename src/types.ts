@@ -15,7 +15,7 @@ export interface UserDefinedOptions {
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
-  mainCssChunkMatcher?: (name: string) => boolean
+  mainCssChunkMatcher?: (name: string, appType?: 'uni-app' | 'taro') => boolean
 }
 
 export interface StyleHandlerOptions {

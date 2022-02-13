@@ -13,19 +13,26 @@ describe('first', () => {
   it('case1 ', async () => {
     const item = await getCase('case1.js')
     const result = jsxHandler(item)
-    expect(Boolean(result)).toBe(true)
+
+    // await putCase('case1.result.js', result)
+    const expected = await getCase('case1.result.js')
+    expect(result).toBe(expected)
   })
 
   it('case2 ', async () => {
     const item = await getCase('case2.js')
     const result = jsxHandler(item)
-    expect(Boolean(result)).toBe(true)
+    // await putCase('case2.result.js', result)
+    const expected = await getCase('case2.result.js')
+    expect(result).toBe(expected)
   })
 
   it('case3 ', async () => {
     const item = await getCase('case3.js')
     const result = jsxHandler(item)
-    expect(Boolean(result)).toBe(true)
+    // await putCase('case3.result.js', result)
+    const expected = await getCase('case3.result.js')
+    expect(result).toBe(expected)
   })
 
   it('vue2-case1', async () => {

@@ -31,6 +31,13 @@ function vue2Matcher (node: UserMatchNode) {
 
 // var render = function () {
 // process.env
+
+function createMatcher () {
+  function replacer () {
+
+  }
+}
+
 export function jsxHandler (rawSource: string) {
   const ast = parse(rawSource)
   // ObjectExpression

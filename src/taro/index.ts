@@ -1,12 +1,6 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
-import {
-  styleHandler,
-  jsxHandler,
-  pluginName,
-  getFileName,
-  getOptions
-} from '../shared'
+import { styleHandler, jsxHandler, pluginName, getOptions } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 // ReplaceSource,
 
@@ -28,7 +22,7 @@ export class TaroWeappTailwindcssWebpackPluginV4 {
         if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(getFileName(file))
+            isMainChunk: mainCssChunkMatcher(file, 'taro')
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
