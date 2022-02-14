@@ -1,0 +1,6 @@
+@media (min-width: 640px) {
+  .sm_c_text-3xl {
+    font-size: 60rpx;
+    line-height: 72rpx;
+  }
+}

@@ -18,6 +18,10 @@ export interface UserDefinedOptions {
   mainCssChunkMatcher?: (name: string, appType?: 'uni-app' | 'taro') => boolean
 }
 
+export interface TaroUserDefinedOptions extends UserDefinedOptions {
+  framework: 'react' | 'vue' | 'vue3' | string
+}
+
 export interface StyleHandlerOptions {
   isMainChunk?: boolean
 }

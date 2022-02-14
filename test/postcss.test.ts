@@ -1,15 +1,16 @@
 import { styleHandler } from '../src/postcss/index'
-import { cssCasePath, readFile, resolve } from './util'
+import { cssCasePath, createGetCase, createPutCase } from './util'
 
-function getCase (casename: string) {
-  return readFile(resolve(cssCasePath, casename))
-}
+const getCase = createGetCase(cssCasePath)
+// @ts-ignore
+// eslint-disable-next-line no-unused-vars
+const putCase = createPutCase(cssCasePath)
 describe('first', () => {
   it('css @media case', async () => {
     const testCase = await getCase('media1.css')
     const result = styleHandler(testCase)
-    expect(result).toBe(
-      '@media (min-width: 640px) {\n  .sm_c_text-3xl {\n    font-size: 60rpx;\n    line-height: 72rpx;\n  }\n}\n'
-    )
+    const expected = await getCase('media1.result.css')
+    // await putCase('media1.result.css', result)
+    expect(result).toBe(expected)
   })
 })

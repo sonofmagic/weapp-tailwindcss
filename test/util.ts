@@ -19,3 +19,15 @@ export function writeFile (filepath: string, data: string) {
     encoding: 'utf-8'
   })
 }
+
+export function createGetCase (casePath: string) {
+  return function getCase (casename: string) {
+    return readFile(resolve(casePath, casename))
+  }
+}
+
+export function createPutCase (casePath: string) {
+  return function putCase (casename: string, data: string) {
+    return writeFile(resolve(casePath, casename), data)
+  }
+}

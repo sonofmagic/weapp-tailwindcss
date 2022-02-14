@@ -21,6 +21,6 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   }
 }
 
-export function getOptions (options: UserDefinedOptions) {
-  return defu<UserDefinedOptions, Required<UserDefinedOptions>>(options, defaultOptions)
+export function getOptions<T = UserDefinedOptions> (options: T) {
+  return defu<T, Required<UserDefinedOptions>>(options, defaultOptions)
 }
