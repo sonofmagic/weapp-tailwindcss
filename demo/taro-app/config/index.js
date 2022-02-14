@@ -47,7 +47,7 @@ const config = {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV4,
             args: [{
-              test: true
+              framework: 'react'
             }]
           }
         }

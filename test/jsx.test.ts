@@ -1,10 +1,10 @@
 import { jsxHandler } from '../src/jsx/index'
 import { createReplacer } from '../src/taro/replacer'
-import { jsxCasePath, createGetCase } from './util'
+import { jsxCasePath, createGetCase, createPutCase } from './util'
 
 const getCase = createGetCase(jsxCasePath)
 
-// const putCase = createPutCase(jsxCasePath)
+const putCase = createPutCase(jsxCasePath)
 
 const reactReplacer = createReplacer('react')
 const vue2Replacer = createReplacer('vue')
@@ -43,11 +43,11 @@ describe('first', () => {
     expect(result).toBe(expected)
   })
 
-  // it('vue3-case1', async () => {
-  //   const item = await getCase('vue3-case1.js')
-  //   const result = jsxHandler(item, vue3Replacer)
-  //   // const expected = await getCase('vue3-case1.result.js')
-  //   // await putCase('vue3-case1.result.js', result)
-  //   expect(result).toBe(true)
-  // })
+  it('vue3-case1', async () => {
+    const item = await getCase('vue3-case1.js')
+    const result = jsxHandler(item, vue3Replacer)
+    // const expected = await getCase('vue3-case1.result.js')
+    await putCase('vue3-case1.result.js', result)
+    expect(result).toBe(true)
+  })
 })

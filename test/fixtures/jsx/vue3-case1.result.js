@@ -1,0 +1,7 @@
+var _hoisted_1 = {
+  class: 'index'
+};
+
+var _hoisted_2 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+/* createStaticVNode */
+'d'])("<view class=\"p-_l_20px_r_ -mt-2 mb-_l_-20px_r_\">p-_l_20px_r_ -mt-2 mb-_l_-20px_r_ margin\u7684jit \u4E0D\u80FD\u8FD9\u4E48\u5199 -m-_l_20px_r_<-div-view><view class=\"space-y-_l_1-dot-6rem_r_\"><view class=\"w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_\">w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_<-div-view><view class=\"min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_\">min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_<-div-view><view class=\"max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_\">max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_<-div-view><view class=\"flex items-center justify-center h-_l_100px_r_ w-_l_100px_r_ rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0-dot-54_r_ text-_l__h_ffffff_r_\">Hello<-div-view><view class=\"border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0-dot-44_r_\">border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0-dot-44_r_<-div-view><view class=\"grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid\"><view>1<-div-view><view>2<-div-view><view>3<-div-view><-div-view><-div-view><view class=\"test\">test<-div-view>", 3);

@@ -43,7 +43,9 @@ const config = {
         plugin: {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV4,
-            args: []
+            args: [{
+              framework: 'vue2'
+            }]
           }
         }
       })
