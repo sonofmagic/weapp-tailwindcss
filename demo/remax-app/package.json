@@ -8,7 +8,9 @@
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "remax build -w -t",
+    "dev": "remax build -w -t wechat",
+    "dev:ali": "remax build -w -t ali",
+    "dev:toutiao": "remax build -w -t toutiao",
     "build": "cross-env NODE_ENV=production remax build -t"
   },
   "dependencies": {
