@@ -1,0 +1,12 @@
+{
+  "targets": [
+    "web",
+    "miniapp",
+    "wechat-miniprogram",
+    "bytedance-microapp", // 字节跳动小程序
+    "baidu-smartprogram", // 百度智能小程序
+    "kuaishou-miniprogram" // 快手小程序
+  ],
+  "webpack5": true,
+  "plugins": []
+}
