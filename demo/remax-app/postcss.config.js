@@ -13,12 +13,6 @@ module.exports = ({ options }) => ({
       propList: ['*'],
       transformUnit: 'rpx'
     }
-    // rem2rpx
-    // require('postcss-rem-to-responsive-pixel/postcss7')({
-    //   rootValue: 32,
-    //   propList: ['*'],
-    //   transformUnit: 'rpx'
-    // })
     // 添加其他插件
     // 'postcss-url': { url: 'inline', maxSize: 15 }
   }
