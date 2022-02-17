@@ -42,7 +42,6 @@ const config = {
     },
     webpackChain(chain, webpack) {
       chain.merge({
-        //plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
         plugin: {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV4,

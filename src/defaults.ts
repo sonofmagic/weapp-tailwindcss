@@ -14,6 +14,12 @@ export const defaultOptions: Required<UserDefinedOptions> = {
       case 'taro': {
         return /^app/.test(file)
       }
+      case 'remax': {
+        return /^app/.test(file)
+      }
+      case 'rax': {
+        return /^bundle/.test(file)
+      }
       default: {
         return true
       }

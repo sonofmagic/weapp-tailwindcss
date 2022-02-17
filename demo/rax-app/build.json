@@ -1,12 +1,20 @@
 {
   "targets": [
-    "web",
-    "miniapp",
+    // "miniapp",
     "wechat-miniprogram",
-    "bytedance-microapp", // 字节跳动小程序
-    "baidu-smartprogram", // 百度智能小程序
-    "kuaishou-miniprogram" // 快手小程序
+    // "bytedance-microapp", // 字节跳动小程序
+    // "baidu-smartprogram", // 百度智能小程序
+    // "kuaishou-miniprogram" // 快手小程序
   ],
   "webpack5": true,
-  "plugins": []
+  "plugins": [
+    "./build.plugin.js"
+  ],
+  "wechat-miniprogram": {
+    "nativeConfig": {
+      "appid": "wxb3d842a4a7e3440d",
+      "projectname": "rax-app"
+    }
+  },
+  "postcssrc": true
 }

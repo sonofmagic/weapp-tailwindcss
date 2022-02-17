@@ -35,7 +35,8 @@
     "jit",
     "tailwindcss jit",
     "mp",
-    "miniprogram"
+    "miniprogram",
+    "weapp-tailwindcss"
   ],
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
