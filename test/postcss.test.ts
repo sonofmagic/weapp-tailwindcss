@@ -13,4 +13,26 @@ describe('first', () => {
     // await putCase('media1.result.css', result)
     expect(result).toBe(expected)
   })
+
+  // it('main chunk remove empty var', async () => {
+  //   const testCase = await getCase('taro.dev.css')
+  //   const result = styleHandler(testCase, {
+  //     isMainChunk: true
+  //   })
+  //   const expected = await getCase('taro.dev.result.css')
+  //   // await putCase('taro.dev.result.css', result)
+  //   // expect(true).toBe(true)
+  //   expect(result).toBe(expected)
+  // })
+
+  it('main chunk build error', async () => {
+    const testCase = await getCase('taro.build.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true
+    })
+    const expected = await getCase('taro.build.result.css')
+    // await putCase('taro.build.result.css', result)
+    // expect(true).toBe(true)
+    expect(result).toBe(expected)
+  })
 })

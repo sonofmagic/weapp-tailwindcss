@@ -4,19 +4,39 @@ import { cssSelectorReplacer } from './shared'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
 }
+// ':not(template) ~ :not(template)'
+// ':not(template)~:not(template)'
+const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
+// :not([hidden])~:not([hidden])
+// :not([hidden]) ~ :not([hidden])
+const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
+export function getViewElementPreflight () {
+  const decl1 = new Declaration({
+    prop: 'box-sizing',
+    value: 'border-box'
+  })
+  const decl2 = new Declaration({
+    prop: 'border-width',
+    value: '0'
+  })
+  const decl3 = new Declaration({
+    prop: 'border-style',
+    value: 'solid'
+  })
+  const decl4 = new Declaration({
+    prop: 'border-color',
+    value: 'currentColor'
+  })
+  return [decl1, decl2, decl3, decl4]
+}
 
 export function commonChunkPreflight (node: Rule) {
-  if (node.selector.includes(':not(template) ~ :not(template)')) {
-    node.selector = node.selector.replace(
-      ':not(template) ~ :not(template)',
-      'view + view'
-    )
+  if (regexp1.test(node.selector)) {
+    node.selector = node.selector.replace(regexp1, 'view + view')
   }
-  if (node.selector.includes(':not([hidden]) ~ :not([hidden])')) {
-    node.selector = node.selector.replace(
-      ':not([hidden]) ~ :not([hidden])',
-      'view + view'
-    )
+
+  if (regexp2.test(node.selector)) {
+    node.selector = node.selector.replace(regexp2, 'view + view')
   }
   //* , ::before, ::after
   if (node.selector.includes('*')) {
@@ -25,34 +45,23 @@ export function commonChunkPreflight (node: Rule) {
   }
 
   if (node.selector.includes('*::before')) {
-    // console.log('[hit]:*::before')
     node.selector = node.selector.replace('*::before', 'view::before')
   }
 
   if (node.selector.includes('*::after')) {
-    // console.log('[hit]:*::after')
     node.selector = node.selector.replace('*::after', 'view::after')
   }
   // 变量注入和 preflight
   if (node.selector.includes('::before') && node.selector.includes('::after')) {
     node.selector = 'view,view::before,view::after'
-    const decl1 = new Declaration({
-      prop: 'box-sizing',
-      value: 'border-box'
-    })
-    const decl2 = new Declaration({
-      prop: 'border-width',
-      value: '0'
-    })
-    const decl3 = new Declaration({
-      prop: 'border-style',
-      value: 'solid'
-    })
-    const decl4 = new Declaration({
-      prop: 'border-color',
-      value: 'currentColor'
-    })
-    node.append(decl1, decl2, decl3, decl4)
+    // node.walkDecls((decl) => {
+    //   // remove empty var 来避免压缩css报错
+    //   if (/^\s*$/.test(decl.value)) {
+    //     decl.remove()
+    //   }
+    //   // console.log(decl.prop, decl.value)
+    // })
+    node.append(...getViewElementPreflight())
   }
 }
 
