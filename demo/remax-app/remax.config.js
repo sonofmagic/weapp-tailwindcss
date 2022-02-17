@@ -1,9 +1,9 @@
-const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../')
+const { RemaxWeappTailwindcssWebpackPluginV4 } = require('../../')
 
 module.exports = {
   one: true,
   output: 'dist/' + process.env.REMAX_PLATFORM,
   configWebpack ({ config, webpack, addCSSRule }) {
-    config.plugin('TaroWeappTailwindcssWebpackPluginV4').use(TaroWeappTailwindcssWebpackPluginV4)
+    config.plugin('RemaxWeappTailwindcssWebpackPluginV4').use(RemaxWeappTailwindcssWebpackPluginV4)
   }
 }
