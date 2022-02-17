@@ -19,6 +19,10 @@
     "remax": "^2.9.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "postcss": "7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "autoprefixer": "9",
+    "postcss-rem-to-responsive-pixel": "^5.1.1"
   }
 }
