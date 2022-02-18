@@ -7,6 +7,7 @@
 - <a href="#uni-app">uni-app 使用方式(vue2/3)</a>
 - <a href="#taro">taro 使用方式(react)</a>
 - <a href="#remax">remax 使用方式(react)</a>
+- <a href="#rax">rax 使用方式(react)</a>
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
 
@@ -33,6 +34,12 @@
 [使用方式](./remax.md)
 
 [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/remax-app)
+
+<h3 id="rax">rax (react)</h3>
+
+[使用方式](./rax.md)
+
+[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/rax-app)
 
 #### jit 示例
 

@@ -4,7 +4,7 @@ import Text from 'rax-text';
 
 import styles from './index.module.css';
 import Logo from '../../components/Logo';
-
+import './index.css';
 
 export default function Home() {
   const [flag] = useState(true);
