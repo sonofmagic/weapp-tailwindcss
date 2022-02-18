@@ -1,7 +1,7 @@
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
-import type { Replacer } from '../taro/replacer'
+import type { Replacer } from './replacer'
 // const isReact = false
 
 // const isVue2 = true

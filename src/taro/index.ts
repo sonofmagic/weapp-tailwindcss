@@ -2,7 +2,7 @@ import type { TaroUserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
 import { styleHandler, jsxHandler, pluginName, getOptions } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
-import { createReplacer } from './replacer'
+import { createReplacer } from '../jsx/replacer'
 // ReplaceSource,
 
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js

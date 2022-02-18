@@ -1,6 +1,8 @@
-import type { UserDefinedOptions } from './types'
-import type { Compiler } from 'webpack'
-import { styleHandler, templeteHandler, pluginName, getOptions } from './shared'
+export * from './rax'
+
+// import type { UserDefinedOptions } from './types'
+// import type { Compiler } from 'webpack'
+// import { styleHandler, templeteHandler, pluginName, getOptions } from './shared'
 
 // const isWebpack5 = Boolean(compiler.webpack)
 // const { ConcatSource } = compiler.webpack.sources
@@ -14,22 +16,22 @@ import { styleHandler, templeteHandler, pluginName, getOptions } from './shared'
 // webpack 4 optimizeChunkAssets
 // webpack 5 processAssets
 // const hookName = isWebpack5 ? 'processAssets' : 'optimizeChunkAssets'
-export class WeappTailwindcssWebpackPluginV5 {
-  options: Required<UserDefinedOptions>
-  constructor (options: UserDefinedOptions = {}) {
-    this.options = getOptions(options)
-  }
+// export class WeappTailwindcssWebpackPluginV5 {
+//   options: Required<UserDefinedOptions>
+//   constructor (options: UserDefinedOptions = {}) {
+//     this.options = getOptions(options)
+//   }
 
-  apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher } = this.options
-    compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-      const entries = Object.entries(compilation.assets)
-      for (let i = 0; i < entries.length; i++) {
+//   apply (compiler: Compiler) {
+//     const { cssMatcher, jsMatcher } = this.options
+//     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
+//       const entries = Object.entries(compilation.assets)
+//       for (let i = 0; i < entries.length; i++) {
 
-      }
-    })
-  }
-}
+//       }
+//     })
+//   }
+// }
 
 // compilation.hooks.optimizeChunkAssets.tapPromise(
 //   pluginName,
