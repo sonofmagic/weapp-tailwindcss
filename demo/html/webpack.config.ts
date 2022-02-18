@@ -7,7 +7,12 @@ import 'webpack-dev-server'
 
 // import { WeappTailwindcssWebpackPluginV5 } from '../../'
 
-import { RemaxWeappTailwindcssWebpackPluginV4, TaroWeappTailwindcssWebpackPluginV4, UniAppWeappTailwindcssWebpackPluginV4 } from 'weapp-tailwindcss-webpack-plugin'
+import {
+  RemaxWeappTailwindcssWebpackPluginV4,
+  TaroWeappTailwindcssWebpackPluginV4,
+  UniAppWeappTailwindcssWebpackPluginV4,
+  RaxTailwindcssWebpackPluginV5
+} from 'weapp-tailwindcss-webpack-plugin'
 
 const config: webpack.Configuration = {
   mode: 'development',
