@@ -11,7 +11,9 @@ import {
   RemaxWeappTailwindcssWebpackPluginV4,
   TaroWeappTailwindcssWebpackPluginV4,
   UniAppWeappTailwindcssWebpackPluginV4,
-  RaxTailwindcssWebpackPluginV5
+  RaxTailwindcssWebpackPluginV5,
+  ViteWeappTailwindcssPlugin,
+  postcssWeappTailwindcssRename
 } from 'weapp-tailwindcss-webpack-plugin'
 
 const config: webpack.Configuration = {
