@@ -37,19 +37,19 @@ const config = {
           generateScopedName: '[name]__[local]___[hash:base64:5]'
         }
       }
-    },
-    webpackChain(chain, webpack) {
-      chain.merge({
-        plugin: {
-          install: {
-            plugin: TaroWeappTailwindcssWebpackPluginV4,
-            args: [{
-              framework: 'vue3'
-            }]
-          }
-        }
-      })
     }
+    // webpackChain(chain, webpack) {
+    //   chain.merge({
+    //     plugin: {
+    //       install: {
+    //         plugin: TaroWeappTailwindcssWebpackPluginV4,
+    //         args: [{
+    //           framework: 'vue3'
+    //         }]
+    //       }
+    //     }
+    //   })
+    // }
   },
   h5: {
     publicPath: '/',

@@ -19,9 +19,6 @@ function vue2Matcher (node: UserMatchNode) {
 
 // path.node.id -> name // Identifier
 // path.node.init -> ObjectExpression
-function vue3Matcher (node: Node) {
-  return node.type === 'VariableDeclarator' && node.id.type === 'Identifier' && /_hoisted_/.test(node.id.name)
-}
 
 export function createReplacer (framework: string = 'react'): Replacer {
   let classObjectNode: Node | null
@@ -63,12 +60,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
     }
   } else if (isVue3) {
     return function replacer (path: NodePath<Node>) {
-      // react and vue2
-
-      // if (vue3Matcher(path)) {
-      //   console.log(path.node)
-      // }
-      if (vue3Matcher(path.node)) {
+      if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
 
