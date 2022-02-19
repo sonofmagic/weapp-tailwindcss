@@ -5,6 +5,7 @@
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
 
 - <a href="#uni-app">uni-app 使用方式(vue2/3)</a>
+- <a href="#uni-app-vite">uni-app for vite 使用方式(vue3)</a>
 - <a href="#taro">taro 使用方式(react)</a>
 - <a href="#remax">remax 使用方式(react)</a>
 - <a href="#rax">rax 使用方式(react)</a>
@@ -22,6 +23,12 @@
 [使用方式](./docs/uni-app.md)
 
 [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app)
+
+<h3 id="uni-app-vite">uni-app for vite (vue3)</h3>
+
+[使用方式](./docs/uni-app-vite.md)
+
+[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
 
 <h3 id="taro">Taro v3 (React)</h3>
 
