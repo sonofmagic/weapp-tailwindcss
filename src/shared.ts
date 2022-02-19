@@ -6,6 +6,8 @@ export { jsxHandler } from './jsx'
 export { getOptions } from './defaults'
 export const pluginName = 'weapp-tailwindcss-webpack-plugin'
 
+export const postcssPlugin = 'postcss-weapp-tailwindcss-rename'
+
 export function getFileName (file: string) {
   return path.basename(file, path.extname(file))
 }

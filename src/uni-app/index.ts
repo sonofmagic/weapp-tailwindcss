@@ -16,51 +16,6 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
 
   apply (compiler: Compiler) {
     const { cssMatcher, htmlMatcher, mainCssChunkMatcher } = this.options
-    // @ts-ignore
-    // compiler.hooks.compilation.tap(pluginName, (compilation) => {
-    //   // compilation.hooks.optimize.tap(pluginName, () => {
-    //   //   console.log(compilation.assets)
-    //   // })
-    //   // @ts-ignore
-    //   // compilation.hooks.optimizeChunks.tap(pluginName, (chunks) => {
-    //   //   console.log(chunks, compilation.assets)
-    //   // })
-    //   // compilation.hooks.afterOptimizeTree.tap(pluginName, (chunks, modules) => {
-    //   //   console.log(chunks, modules, compilation.assets)
-    //   // })
-    //   // // @ts-ignore
-    //   // compilation.hooks.afterOptimizeChunkModules.tap(pluginName, (chunks, modules) => {
-    //   //   console.log(chunks, modules, compilation.assets)
-    //   // })
-
-    //   compilation.hooks.additionalChunkAssets.tap(pluginName, (chunks) => {
-    //     // console.log(chunks, compilation.assets)
-    //     const entries: [string, Source][] = Object.entries(compilation.assets)
-    //     entries.forEach(([file, originalSource]) => {
-    //       console.log(file, originalSource.source().toString())
-    //     })
-    //   })
-    //   // webpack4
-    //   // compilation.hooks.buildModule.tap(pluginName, (module) => {
-    //   //   console.log(module, compilation)
-    //   // })
-    //   // compilation.hooks.rebuildModule.tap(pluginName, (module) => {
-    //   //   console.log(module, compilation)
-    //   // })
-    //   // // @ts-ignore
-    //   // compilation.hooks.failedModule.tap(pluginName, (module, error) => {
-    //   //   console.log(module, error, compilation)
-    //   // })
-    //   // compilation.hooks.succeedModule.tap(pluginName, (module) => {
-    //   //   console.log(module, compilation)
-    //   // })
-    //   // compilation.hooks.finishModules.tap(pluginName, (modules) => {
-    //   //   console.log(modules, compilation)
-    //   // })
-    //   // compilation.hooks.finishRebuildingModule.tap(pluginName, (module) => {
-    //   //   console.log(module, compilation)
-    //   // })
-    // })
 
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)

@@ -18,6 +18,8 @@ export interface UserDefinedOptions {
   mainCssChunkMatcher?: (name: string, appType?: 'uni-app' | 'taro' | 'remax' | 'rax') => boolean
 }
 
+export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher'>
+
 export interface TaroUserDefinedOptions extends UserDefinedOptions {
   framework: 'react' | 'vue' | 'vue3' | string
 }
