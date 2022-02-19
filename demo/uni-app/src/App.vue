@@ -15,7 +15,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-// 小程序不需要 'base' 'components'，里面标签是给 html 准备的
 @import 'tailwindcss/base';
 // @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';

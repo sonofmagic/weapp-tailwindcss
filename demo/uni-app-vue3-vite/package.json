@@ -2,6 +2,7 @@
   "name": "uni-preset-vue",
   "version": "0.0.0",
   "scripts": {
+    "dev": "uni -p mp-weixin",
     "dev:app": "uni -p app",
     "dev:custom": "uni -p",
     "dev:h5": "uni",
@@ -54,6 +55,10 @@
     "@dcloudio/uni-cli-shared": "^3.0.0-alpha-3031120220216001",
     "@dcloudio/vite-plugin-uni": "^3.0.0-alpha-3031120220216001",
     "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.6",
+    "postcss-rem-to-responsive-pixel": "^5.1.1",
+    "sass": "^1.49.8",
+    "tailwindcss": "^3.0.23",
     "typescript": "^4.5.2",
     "vite": "^2.8.3"
   }
