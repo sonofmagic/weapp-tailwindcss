@@ -21,7 +21,8 @@ const config = {
             plugin: TaroWeappTailwindcssWebpackPluginV4,
             args: [
               {
-                // ...
+                // 注意这一行(不传默认 react)
+                framework: 'react' // 'vue2' / 'vue3'
               }
             ]
           }

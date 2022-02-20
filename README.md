@@ -32,11 +32,15 @@
 
 [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
 
-<h3 id="taro">Taro v3 (React)</h3>
+<h3 id="taro">Taro v3 (React/vue2/vue3)</h3>
 
-[使用方式](./docs/taro.md)
+[使用方式(需要声明使用的框架!)](./docs/taro.md)
 
-[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app)
+[React Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app)
+
+[vue2 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue2-app)
+
+[vue3 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue3-app)
 
 <h3 id="remax">remax (react)</h3>
 
