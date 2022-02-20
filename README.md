@@ -102,12 +102,13 @@ TODO
 
 ## Options
 
-| 配置项                | 类型              | 描述                                             |
-| --------------------- | ----------------- | ------------------------------------------------ |
-| `htmlMatcher`         | (string)=>boolean | 匹配 `wxml`等等模板进行处理的方法                |
-| `cssMatcher`          | (string)=>boolean | 匹配 `wxss`等等样式文件的方法                    |
-| `jsMatcher`           | (string)=>boolean | 匹配 `js`文件进行处理的方法，用于 `react`        |
-| `mainCssChunkMatcher` | (string)=>boolean | 匹配 `tailwindcss jit` 生成的 `css chunk` 的方法 |
+| 配置项                    | 类型                    | 描述                                                                     |
+| ------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `htmlMatcher`             | (string)=>boolean       | 匹配 `wxml`等等模板进行处理的方法                                        |
+| `cssMatcher`              | (string)=>boolean       | 匹配 `wxss`等等样式文件的方法                                            |
+| `jsMatcher`               | (string)=>boolean       | 匹配 `js`文件进行处理的方法，用于 `react`                                |
+| `mainCssChunkMatcher`     | (string)=>boolean       | 匹配 `tailwindcss jit` 生成的 `css chunk` 的方法                         |
+| `framework` (`Taro` 特有) | `react`\|`vue2`\|`vue3` | 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react` |
 
 ## Bugs & Issues
 
