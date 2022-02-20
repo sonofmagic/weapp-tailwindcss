@@ -6,7 +6,7 @@
 
 - <a href="#uni-app">uni-app 使用方式(vue2/3)</a>
 - <a href="#uni-app-vite">uni-app for vite 使用方式(vue3)</a>
-- <a href="#taro">taro 使用方式(react)</a>
+- <a href="#taro">taro 使用方式(react/vue2/3)</a>
 - <a href="#remax">remax 使用方式(react)</a>
 - <a href="#rax">rax 使用方式(react)</a>
 
@@ -20,7 +20,7 @@
 
 ## Usage
 
-<h3 id="uni-app">uni-app (vue 2/3)</h3>
+<h3 id="uni-app">uni-app (vue2/3)</h3>
 
 [使用方式](./docs/uni-app.md)
 
@@ -32,7 +32,7 @@
 
 [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
 
-<h3 id="taro">Taro v3 (React/vue2/vue3)</h3>
+<h3 id="taro">Taro v3 (React/vue2/3)</h3>
 
 [使用方式(需要声明使用的框架!)](./docs/taro.md)
 
