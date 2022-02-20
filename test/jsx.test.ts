@@ -8,7 +8,7 @@ const putCase = createPutCase(jsxCasePath)
 
 const reactReplacer = createReplacer('react')
 const vue2Replacer = createReplacer('vue')
-const vue3Replacer = createReplacer('vue3')
+
 describe('first', () => {
   it('case1 ', async () => {
     const item = await getCase('case1.js')
@@ -45,9 +45,20 @@ describe('first', () => {
 
   it('vue3-createStaticVNode.js', async () => {
     const item = await getCase('vue3-createStaticVNode.js')
+    const vue3Replacer = createReplacer('vue3')
     const result = jsxHandler(item, vue3Replacer)
     // const expected = await getCase('vue3-case1.result.js')
     await putCase('vue3-createStaticVNode.result.js', result)
     expect(result).toBe(true)
+  })
+
+  it('vue3-render.js', async () => {
+    const item = await getCase('vue3-render.js')
+    const vue3Replacer = createReplacer('vue3')
+    const result = jsxHandler(item, vue3Replacer)
+    const expected = await getCase('vue3-case1.result.js')
+    // await putCase('vue3-render.result.js', result)
+    // expect(result).toBe(true)
+    expect(result).toBe(expected)
   })
 })

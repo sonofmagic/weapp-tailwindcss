@@ -1,6 +1,7 @@
 import type { Node, ObjectProperty, Identifier } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
 import { replaceWxml } from '../wxml'
+import { classStringReplace } from '../shared'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
 export type Replacer = (path: NodePath<Node>) => void
@@ -60,6 +61,17 @@ export function createReplacer (framework: string = 'react'): Replacer {
     }
   } else if (isVue3) {
     return function replacer (path: NodePath<Node>) {
+      if (
+        path.node.type === 'CallExpression' &&
+        path.node.arguments.length === 2 &&
+        path.node.arguments[0].type === 'StringLiteral' &&
+        path.node.arguments[1].type === 'NumericLiteral'
+      ) {
+        path.node.arguments[0].value = classStringReplace(path.node.arguments[0].value, (x) => {
+          return replaceWxml(x)
+        })
+      }
+
       if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }

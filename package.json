@@ -11,7 +11,8 @@
     "test": "jest",
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
-    "debug:web": "cd demo/web && yarn dev"
+    "debug:web": "cd demo/web && yarn dev",
+    "raw": "ts-node scripts/raw"
   },
   "repository": {
     "type": "git",
