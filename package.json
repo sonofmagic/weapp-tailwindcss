@@ -91,5 +91,8 @@
     "@babel/parser": "^7.17.3",
     "@babel/traverse": "^7.17.3",
     "webpack-sources": "^3.2.3"
+  },
+  "peerDependencies": {
+    "webpack": "^4.0.0 || ^5.0.0"
   }
 }
