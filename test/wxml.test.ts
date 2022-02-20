@@ -1,4 +1,5 @@
-import { templeteReplacer, templeteHandler } from '../src/wxml/index'
+import { templeteReplacer, replaceWxml } from '../src/wxml/index'
+import { classStringReplace } from '../src/shared'
 
 describe('wxml', () => {
   it('isStringLiteral', () => {
@@ -35,19 +36,23 @@ describe('wxml', () => {
   //     '<view class="_div data-v-59d503f6"><view class="container data-v-59d503f6">container</view><label class="decoration-clone bg-gradient-to-b from-yellow-400 to-red-500 text-transparent _span data-v-59d503f6">Hello<view class="_br data-v-59d503f6"></view>World</label><view class="box-border h-32 w-32 p-4 border-4 border-blue-400 bg-blue-200 rounded-md _div data-v-59d503f6"><view class="h-full w-full bg-blue-400 bg-stripes bg-stripes-white _div data-v-59d503f6"></view></view><view class="box-content h-32 w-32 p-4 border-4 border-green-400 bg-green-200 rounded-md _div data-v-59d503f6"><view class="h-full w-full bg-green-400 bg-stripes bg-stripes-white _div data-v-59d503f6"></view></view><block wx:for="{{displayArray}}" wx:for-item="d" wx:for-index="__i0__" wx:key="*this"><view class="{{_l_\'item\',\'data-v-59d503f6\',d]}}">{{d}}</view></block></view>'
   // })
 
-  // it('static node', () => {
-  //   const testCase =
-  //     '<view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view><view class="space-y-[1.6rem]"><view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view><view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid"><view>1</view><view>2</view><view>3</view></view></view><view class="test">test</view>'
+  it('static node = self', () => {
+    const testCase =
+      '<view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view><view class="space-y-[1.6rem]"><view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view><view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid"><view>1</view><view>2</view><view>3</view></view></view><view class="test">test</view>'
 
-  //   const regex = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
-  //   let arr
-  //   while ((arr = regex.exec(testCase)) !== null) {
-  //     console.log(`Found ${arr[0]}. Next starts at ${regex.lastIndex}.`)
-  //     // expected output: "Found foo. Next starts at 9."
-  //     // expected output: "Found foo. Next starts at 19."
-  //   }
-  //   // const s = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim.exec(testCase)
-  //   // const result = templeteHandler(testCase)
-  //   // console.log(result)
-  // })
+    expect(classStringReplace(testCase, (x) => x)).toBe(testCase)
+  })
+
+  it('static node ', () => {
+    const testCase =
+      '<view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view><view class="space-y-[1.6rem]"><view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view><view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid"><view>1</view><view>2</view><view>3</view></view></view><view class="test">test</view>'
+
+    expect(
+      classStringReplace(testCase, (x) => {
+        return replaceWxml(x)
+      })
+    ).toBe(
+      '<view class="p-_l_20px_r_ -mt-2 mb-_l_-20px_r_">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view><view class="space-y-_l_1-dot-6rem_r_"><view class="w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="flex items-center justify-center h-_l_100px_r_ w-_l_100px_r_ rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0-dot-54_r_ text-_l__h_ffffff_r_">Hello</view><view class="border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0-dot-44_r_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid"><view>1</view><view>2</view><view>3</view></view></view><view class="test">test</view>'
+    )
+  })
 })
