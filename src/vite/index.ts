@@ -12,6 +12,20 @@ export function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): P
     name: 'vite-plugin-uni-app-weapp-tailwindcss',
     config (config) {
       // add a postcss8 plugin
+      // css option fallback
+      if (typeof config.css === 'undefined') {
+        config.css = {
+          postcss: {
+            plugins: []
+          }
+        }
+      }
+      // postcss option fallback
+      if (typeof config.css.postcss === 'undefined') {
+        config.css.postcss = {
+          plugins: []
+        }
+      }
       const postcssOptions = config.css?.postcss
       if (typeof postcssOptions !== 'string') {
         postcssOptions?.plugins?.push(
