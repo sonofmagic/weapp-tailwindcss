@@ -1,5 +1,5 @@
 import path from 'path'
-import { stringReplace } from './string'
+import replace from 'regexp-replace'
 export { styleHandler } from './postcss'
 export { templeteHandler } from './wxml'
 export { jsxHandler } from './jsx'
@@ -16,5 +16,5 @@ export function getFileName (file: string) {
 export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
 
 export function classStringReplace (str: string, replacement: (string: string) => string) {
-  return stringReplace(str, classRegexp, replacement)
+  return replace(str, classRegexp, replacement)
 }

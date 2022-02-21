@@ -90,6 +90,7 @@
     "@babel/generator": "^7.17.3",
     "@babel/parser": "^7.17.3",
     "@babel/traverse": "^7.17.3",
+    "regexp-replace": "^1.0.2",
     "webpack-sources": "^3.2.3"
   },
   "peerDependencies": {
