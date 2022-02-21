@@ -12,9 +12,9 @@ export function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): P
     name: 'vite-plugin-uni-app-weapp-tailwindcss',
     config (config) {
       // add a postcss8 plugin
-      const postcss = config.css?.postcss
-      if (typeof postcss !== 'string') {
-        postcss?.plugins?.push(
+      const postcssOptions = config.css?.postcss
+      if (typeof postcssOptions !== 'string') {
+        postcssOptions?.plugins?.push(
           postcssPlugin({
             cssMatcher,
             mainCssChunkMatcher

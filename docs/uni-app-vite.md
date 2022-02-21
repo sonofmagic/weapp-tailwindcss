@@ -23,6 +23,8 @@ module.exports = {
 
 ## 3. 修改 `vite.config.[jt]s` 配置
 
+> 注意经过调试发现在项目根目录中，添加 `postcss.config.js`，无法将插件添加进 `vite.css.postcss.plugins` 中，故此处使用内联写法。
+
 ```js
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
