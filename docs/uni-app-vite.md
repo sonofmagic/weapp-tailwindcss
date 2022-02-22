@@ -26,10 +26,10 @@ module.exports = {
 ```js
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
-import { ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin'
+import { ViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin'
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [uni(), ViteWeappTailwindcssPlugin()]
+  plugins: [uni(), vwt()]
 })
 ```
 
