@@ -7,6 +7,7 @@ module.exports = {
       propList: ['*'],
       transformUnit: 'rpx'
     },
-    '../../postcss': {}
+    //'../../postcss': {}
+    'weapp-tailwindcss-webpack-plugin/postcss': {}
   }
 }
