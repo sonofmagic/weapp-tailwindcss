@@ -23,32 +23,36 @@ module.exports = {
 
 ## 3. 修改 `vite.config.[jt]s` 配置
 
-> 注意经过调试发现在项目根目录中，添加 `postcss.config.js`，无法将插件添加进 `vite.css.postcss.plugins` 中，故此处使用内联写法。
-
 ```js
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import { ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin'
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [uni(), ViteWeappTailwindcssPlugin()],
-  css: {
-    postcss: {
-      plugins: [
-        require('autoprefixer')(),
-        require('tailwindcss')(),
-        require('postcss-rem-to-responsive-pixel')({
-          rootValue: 32,
-          propList: ['*'],
-          transformUnit: 'rpx'
-        })
-      ]
-    }
-  }
+  plugins: [uni(), ViteWeappTailwindcssPlugin()]
 })
 ```
 
-## 4. 在 `src/App.vue` 中添加:
+## 4. 添加 `postcss.config.js`
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+    'postcss-rem-to-responsive-pixel': {
+      rootValue: 32,
+      propList: ['*'],
+      transformUnit: 'rpx'
+    },
+    // 注意添加 postcss 插件
+    'weapp-tailwindcss-webpack-plugin/postcss': {}
+  }
+}
+```
+
+## 5. 在 `src/App.vue` 中添加:
 
 ```vue
 <script setup lang="ts">

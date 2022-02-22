@@ -6,7 +6,7 @@ module.exports = {
       rootValue: 32,
       propList: ['*'],
       transformUnit: 'rpx'
-    }
-    // '../../postcss': {}
+    },
+    '../../postcss': {}
   }
 }
