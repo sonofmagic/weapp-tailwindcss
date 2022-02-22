@@ -2,9 +2,9 @@ import type { Plugin } from 'vite'
 import { UserDefinedOptions } from '../types'
 import { getOptions } from '../shared'
 import { templeteHandler } from '../wxml'
-import postcssPlugin from '../postcss/plugin'
+import renamePostcssPlugin from '../postcss/plugin'
 import type { Plugin as PostcssPlugin } from 'postcss'
-
+// import postcssrc from 'postcss-load-config'
 export function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): Plugin {
   const { htmlMatcher, cssMatcher, mainCssChunkMatcher } = getOptions(options)
 
@@ -13,27 +13,17 @@ export function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): P
     config (config) {
       // add a postcss8 plugin
       // css option fallback
-      if (typeof config.css === 'undefined') {
-        config.css = {
+      return {
+        css: {
           postcss: {
-            plugins: []
+            plugins: [
+              renamePostcssPlugin({
+                cssMatcher,
+                mainCssChunkMatcher
+              }) as PostcssPlugin
+            ]
           }
         }
-      }
-      // postcss option fallback
-      if (typeof config.css.postcss === 'undefined') {
-        config.css.postcss = {
-          plugins: []
-        }
-      }
-      const postcssOptions = config.css?.postcss
-      if (typeof postcssOptions !== 'string') {
-        postcssOptions?.plugins?.push(
-          postcssPlugin({
-            cssMatcher,
-            mainCssChunkMatcher
-          }) as PostcssPlugin
-        )
       }
     },
     generateBundle (opt, bundle, isWrite) {
