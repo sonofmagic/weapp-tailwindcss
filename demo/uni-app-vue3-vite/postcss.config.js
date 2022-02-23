@@ -1,3 +1,4 @@
+// 假如不起作用，请使用内联postcss
 module.exports = {
   plugins: {
     tailwindcss: {},
