@@ -9,6 +9,7 @@
 - <a href="#taro">taro 使用方式(react/vue2/3)</a>
 - <a href="#remax">remax 使用方式(react)</a>
 - <a href="#rax">rax 使用方式(react)</a>
+- <a href="#native-mina">原生小程序使用方式(mina)</a>
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
 
@@ -54,6 +55,12 @@
 
 [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/rax-app)
 
+<h3 id="native-mina">原生小程序(webpack5 mina)</h3>
+
+[使用方式](./docs/native-mina.md)
+
+[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/native-mina)
+
 #### jit 示例
 
 ```html
@@ -97,8 +104,6 @@ or `@apply`
 ## 原理篇
 
 另写一篇文章，大意还是 `css ast`, `[xx]ml ast`, `js ast` 那一套
-
-TODO
 
 ## Options
 
