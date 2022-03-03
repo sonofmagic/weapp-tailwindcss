@@ -19,6 +19,9 @@ export const defaultOptions: Required<UserDefinedOptions> = {
       case 'rax': {
         return /^bundle/.test(file)
       }
+      case 'native': {
+        return /^app/.test(file)
+      }
       default: {
         return true
       }
