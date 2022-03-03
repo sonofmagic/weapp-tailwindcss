@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWebpackPlugin = require('./plugin/MinaWebpackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
+const { NativeWeappTailwindcssWebpackPluginV5 } = require('../../')
 
 const debuggable = process.env.BUILD_TYPE !== 'release'
 
@@ -40,6 +41,9 @@ module.exports = {
             },
           },
           {
+            loader: "postcss-loader"
+          },
+          {
             loader: 'sass-loader',
             options: {
               sassOptions: { includePaths: [resolve('src', 'styles'), resolve('src')] },
@@ -72,6 +76,7 @@ module.exports = {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
       BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
     }),
+    new NativeWeappTailwindcssWebpackPluginV5()
   ],
   optimization: {
     splitChunks: {
