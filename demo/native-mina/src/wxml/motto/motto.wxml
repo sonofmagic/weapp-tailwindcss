@@ -1,0 +1,4 @@
+<template name="motto">
+  <image class="face" src="../../images/face.png" background-size="cover"></image>
+  <text class="user-motto">{{motto}}</text>
+</template>

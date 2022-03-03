@@ -1,0 +1,93 @@
+@mixin ellipsis($behavior: ellipsis) {
+  display: block;
+  text-overflow: $behavior;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@mixin ellipsis-multi($font-size: 14px, $line-height: 1.3, $lines-to-show: 2) {
+  display: block;
+
+  // `flex` doesn't work, fuck!
+  display: -webkit-box;
+  -webkit-line-clamp: $lines-to-show;
+  -webkit-box-orient: vertical;
+  height: ($font-size * $line-height * $lines-to-show) - 2;
+  font-size: $font-size;
+  line-height: $line-height;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin word-break() {
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+@mixin clearfix() {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin center($width, $height) {
+  width: $width;
+  height: $height;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -($width / 2);
+  margin-top: -($height / 2);
+}
+
+@mixin center-transform() {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+@mixin center-flex() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin text-vertical-middle($height) {
+  height: $height;
+  line-height: $height;
+}
+
+@mixin full($position: absolute) {
+  position: $position;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+@mixin full-100() {
+  width: 100%;
+  height: 100%;
+}
+
+@mixin backdrop-filter(
+  $class-name,
+  $saturate: 180%,
+  $blur: 20px,
+  $default-bg-color: rgba(255, 255, 255, 0.5),
+  $fallback-bg-color: rgba(255, 255, 255, 0.9)
+) {
+  .#{$class-name} {
+    background-color: $fallback-bg-color;
+  }
+
+  @supports (backdrop-filter: saturate($saturate) blur($blur)) {
+    .#{$class-name} {
+      background-color: $default-bg-color;
+      backdrop-filter: saturate($saturate) blur($blur);
+    }
+  }
+}
