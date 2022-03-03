@@ -147,8 +147,11 @@ const { NativeWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-web
 
 在 `include languages`,手动标记 `wxml` 的类型为 `html`
 
+> 假如您看不见图，可以访问国内的知乎页面，我的文章 [增强原生小程序开发，构建 tailwind + postcss + scss 最小化工具链](https://zhuanlan.zhihu.com/p/405571972) 中的 `3. IDE智能提示设置` 中有提及这种方式。
+
 ![如图所示](./img/vscode-setting.png)
 
 智能提示就出来了:
 
 ![智能提示](./img/wxml-i.png)
+
