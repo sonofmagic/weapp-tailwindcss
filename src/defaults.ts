@@ -6,7 +6,6 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
   jsMatcher: (file) => /.+\.js$/.test(file),
   mainCssChunkMatcher: (file, appType) => {
-    // uni-app and taro
     switch (appType) {
       case 'uni-app': {
         return /^common\/main/.test(file)

@@ -3,8 +3,6 @@ import type { Compiler } from 'webpack4'
 import { styleHandler, templeteHandler, pluginName, getOptions } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 
-// ReplaceSource,
-
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml

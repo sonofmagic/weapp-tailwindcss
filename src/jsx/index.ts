@@ -30,5 +30,4 @@ export function jsxHandler (rawSource: string, replacer: Replacer) {
 
   const { code } = generate(ast)
   return code
-  // console.log(ast)
 }

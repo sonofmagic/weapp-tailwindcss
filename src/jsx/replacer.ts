@@ -39,10 +39,6 @@ export function createReplacer (framework: string = 'react'): Replacer {
   if (isVue2) {
     return function replacer (path: NodePath<Node>) {
       // react and vue2
-
-      // if (vue3Matcher(path)) {
-      //   console.log(path.node)
-      // }
       if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
@@ -53,8 +49,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
         if (path.node.type === 'StringLiteral') {
           // TODO
-          // 现在这样是不恰当的
-          // 玩意变量中用户使用了 'a/s' 就会产生破坏效果
+          // 现在这样是不恰当的,变量中用户使用了 'a/s' 就会产生破坏效果
           path.node.value = replaceWxml(path.node.value)
         }
       }
@@ -81,9 +76,6 @@ export function createReplacer (framework: string = 'react'): Replacer {
           return end()
         }
         if (path.node.type === 'StringLiteral') {
-          // TODO
-          // 现在这样是不恰当的
-          // 玩意变量中用户使用了 'a/s' 就会产生破坏效果
           path.node.value = replaceWxml(path.node.value)
         }
       }
@@ -91,10 +83,6 @@ export function createReplacer (framework: string = 'react'): Replacer {
   } else if (isReact) {
     return function replacer (path: NodePath<Node>) {
       // react and vue2
-
-      // if (vue3Matcher(path)) {
-      //   console.log(path.node)
-      // }
       if (isSpecNode(path.node) && reactMatcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
@@ -105,8 +93,6 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
         if (path.node.type === 'StringLiteral') {
           // TODO
-          // 现在这样是不恰当的
-          // 玩意变量中用户使用了 'a/s' 就会产生破坏效果
           path.node.value = replaceWxml(path.node.value)
         }
       }

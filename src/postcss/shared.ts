@@ -1,16 +1,17 @@
 // .sm\\:text-3xl
+// css 中，要多加一个 '\' 来转义
 export function cssSelectorReplacer (selector: string) {
   return (
     selector
-      .replace(/\\\[/g, '_l_')
-      .replace(/\\\]/g, '_r_')
-      .replace(/\\\(/g, '_p_')
-      .replace(/\\\)/g, '_q_')
-      .replace(/\\#/g, '_h_')
-      .replace(/\\!/g, '_i_') //! important
-      .replace(/\\\//g, '-div-')
-      .replace(/\\\./g, '-dot-')
+      .replace(/\\\[/g, '_l_') // \[
+      .replace(/\\\]/g, '_r_') // \]
+      .replace(/\\\(/g, '_p_') // \(
+      .replace(/\\\)/g, '_q_') // \)
+      .replace(/\\#/g, '_h_') // \# : hex
+      .replace(/\\!/g, '_i_') // \! : !important
+      .replace(/\\\//g, '-div-') // \/ : w-1/2 -> width:50%
+      .replace(/\\\./g, '-dot-') // \. : w-1.5
       // \\:
-      .replace(/\\:/g, '_c_')
+      .replace(/\\:/g, '_c_') // colon for screen
   )
 }
