@@ -1,8 +1,8 @@
 # 原生小程序的使用方法
 
-先上一个笔者配置好的项目: 我的 `fork` 版本 [sonofmagic/MyMina](https://github.com/sonofmagic/MyMina)
+先上一个笔者配置好的项目: 我的 `fork` 版本 [`sonofmagic/MyMina`](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
-[sonofmagic/MyMina](https://github.com/sonofmagic/MyMina) 和原版的 [`listenzz/MyMina`](https://github.com/listenzz/MyMina) 的不同点
+[`sonofmagic/MyMina`](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template) 和原版的 [`listenzz/MyMina`](https://github.com/listenzz/MyMina) 的不同点
 
 - 摒弃了 `node-sass`，改用了 `dart-sass`
 - 摒弃了 `moment`，改用了 `dayjs`
