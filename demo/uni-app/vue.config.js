@@ -7,7 +7,8 @@ const config = {
   configureWebpack: {
     plugins: [new UniAppWeappTailwindcssWebpackPluginV4({
       cssPreflight: {
-        "box-sizing": false
+        //"box-sizing": false
+
       }
     })]
   }

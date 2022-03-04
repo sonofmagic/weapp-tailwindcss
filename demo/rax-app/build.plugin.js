@@ -6,10 +6,10 @@ module.exports = ({ context, onGetWebpackConfig }) => {
     // console.log(config);
     // compiler.webpack.version 5.65.0
     config.plugin('RaxTailwindcssWebpackPluginV5').use(RaxTailwindcssWebpackPluginV5, [{
-      cssPreflight: {
-        'box-sizing': 'content-box',
-        'background': 'black'
-      }
+      // cssPreflight: {
+      //   'box-sizing': 'content-box',
+      //   'background': 'black'
+      // }
     }]);
   });
 };

@@ -4,10 +4,10 @@ export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | undefine
 
 export type CssPreflightOptions =
   | {
-      'box-sizing': string | false
-      'border-width': string | false
-      'border-style': string | false
-      'border-color': string | false
+      'box-sizing'?: string | false
+      'border-width'?: string | false
+      'border-style'?: string | false
+      'border-color'?: string | false
     }
   | false
 

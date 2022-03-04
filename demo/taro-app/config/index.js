@@ -46,7 +46,10 @@ const config = {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV4,
             args: [{
-              framework: 'react'
+              framework: 'react',
+              // cssPreflight: {
+              //   'box-sizing': false
+              // }
             }]
           }
         }
