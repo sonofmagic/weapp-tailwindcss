@@ -3,10 +3,13 @@ import type { InternalPostcssOptions } from '../types'
 // import { getOptions } from '../defaults'
 import { postcssPlugin, getOptions } from '../shared'
 import { mpRulePreflight, commonChunkPreflight } from './mp'
+import { createInjectPreflight } from './preflight'
+
 export type PostcssWeappTailwindcssRename = PluginCreator<InternalPostcssOptions>
 
 const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions = {}) => {
   const { cssPreflight } = getOptions(options)
+  const cssInjectPreflight = createInjectPreflight(cssPreflight)
   // eslint-disable-next-line no-unused-vars
   // const { mainCssChunkMatcher } = getOptions<InternalPostcssOptions>(options)
   return {
@@ -20,7 +23,7 @@ const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions =
       //   })
       // }
       css.walkRules((rule) => {
-        commonChunkPreflight(rule, cssPreflight)
+        commonChunkPreflight(rule, cssInjectPreflight)
         mpRulePreflight(rule)
       })
     }

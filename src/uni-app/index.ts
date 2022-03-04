@@ -1,6 +1,6 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, templeteHandler, pluginName, getOptions } from '../shared'
+import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
@@ -14,7 +14,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
 
   apply (compiler: Compiler) {
     const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
-
+    const cssInjectPreflight = createInjectPreflight(cssPreflight)
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
@@ -23,7 +23,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, 'uni-app'),
-            cssPreflight
+            cssInjectPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

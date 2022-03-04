@@ -1,7 +1,7 @@
 import type { Rule, AtRule } from 'postcss'
-import { Declaration } from 'postcss'
 import { cssSelectorReplacer } from './shared'
-import type { CssPreflightOptions } from '../types'
+
+import type { InjectPreflight } from './preflight'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
 }
@@ -12,27 +12,7 @@ const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
 // :not([hidden]) ~ :not([hidden])
 const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
 
-export function getViewElementPreflight () {
-  const decl1 = new Declaration({
-    prop: 'box-sizing',
-    value: 'border-box'
-  })
-  const decl2 = new Declaration({
-    prop: 'border-width',
-    value: '0'
-  })
-  const decl3 = new Declaration({
-    prop: 'border-style',
-    value: 'solid'
-  })
-  const decl4 = new Declaration({
-    prop: 'border-color',
-    value: 'currentColor'
-  })
-  return [decl1, decl2, decl3, decl4]
-}
-
-export function commonChunkPreflight (node: Rule, cssPreflight?: CssPreflightOptions) {
+export function commonChunkPreflight (node: Rule, cssInjectPreflight: InjectPreflight) {
   if (regexp1.test(node.selector)) {
     node.selector = node.selector.replace(regexp1, 'view + view')
   }
@@ -66,7 +46,9 @@ export function commonChunkPreflight (node: Rule, cssPreflight?: CssPreflightOpt
     // })
 
     // preset
-    node.append(...getViewElementPreflight())
+    if (typeof cssInjectPreflight === 'function') {
+      node.append(...cssInjectPreflight())
+    }
   }
 }
 

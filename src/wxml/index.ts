@@ -29,6 +29,8 @@ export function replaceWxml (original: string) {
       .replace(/\./g, '-dot-')
       // :
       .replace(/:/g, '_c_')
+      // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
+      .replace(/%/g, '_pct_')
   )
 }
 

@@ -1,7 +1,7 @@
 // webpack 5
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack'
-import { styleHandler, jsxHandler, pluginName, getOptions } from '../shared'
+import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '../shared'
 import { createReplacer } from '../jsx/replacer'
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
@@ -13,6 +13,7 @@ export class RaxTailwindcssWebpackPluginV5 {
 
   apply (compiler: Compiler) {
     const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight } = this.options
+    const cssInjectPreflight = createInjectPreflight(cssPreflight)
     // react
     const replacer = createReplacer()
     const { ConcatSource } = compiler.webpack.sources
@@ -24,7 +25,7 @@ export class RaxTailwindcssWebpackPluginV5 {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, 'rax'),
-            cssPreflight
+            cssInjectPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

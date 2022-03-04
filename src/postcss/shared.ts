@@ -13,5 +13,7 @@ export function cssSelectorReplacer (selector: string) {
       .replace(/\\\./g, '-dot-') // \. : w-1.5
       // \\:
       .replace(/\\:/g, '_c_') // colon for screen
+      // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
+      .replace(/\\%/g, '_pct_')
   )
 }

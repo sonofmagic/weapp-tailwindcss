@@ -1,3 +1,5 @@
+import type { InjectPreflight } from './postcss/preflight'
+
 export type CssPreflightOptions = {
   'box-sizing': string | false
   'border-width': string | false
@@ -37,6 +39,6 @@ export interface TaroUserDefinedOptions extends UserDefinedOptions {
 }
 
 export interface StyleHandlerOptions {
-  isMainChunk?: boolean
-  cssPreflight?: CssPreflightOptions
+  isMainChunk: boolean
+  cssInjectPreflight: InjectPreflight
 }

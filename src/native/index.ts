@@ -1,6 +1,6 @@
 import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack'
-import { styleHandler, templeteHandler, pluginName, getOptions } from '../shared'
+import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '../shared'
 
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6
@@ -14,6 +14,7 @@ export class NativeWeappTailwindcssWebpackPluginV5 {
   apply (compiler: Compiler) {
     const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
     const { ConcatSource } = compiler.webpack.sources
+    const cssInjectPreflight = createInjectPreflight(cssPreflight)
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
@@ -22,7 +23,7 @@ export class NativeWeappTailwindcssWebpackPluginV5 {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, 'native'),
-            cssPreflight
+            cssInjectPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
