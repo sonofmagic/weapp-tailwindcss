@@ -30,7 +30,7 @@ export interface UserDefinedOptions {
   cssPreflight?: CssPreflightOptions
 }
 
-export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher'>
+export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight'>
 
 export interface TaroUserDefinedOptions extends UserDefinedOptions {
   framework: 'react' | 'vue' | 'vue3' | string

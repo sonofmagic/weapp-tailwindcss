@@ -1,10 +1,10 @@
 import { jsxHandler } from '../src/jsx/index'
 import { createReplacer } from '../src/jsx/replacer'
-import { jsxCasePath, createGetCase, createPutCase } from './util'
+import { jsxCasePath, createGetCase } from './util'
 
 const getCase = createGetCase(jsxCasePath)
 
-const putCase = createPutCase(jsxCasePath)
+// const putCase = createPutCase(jsxCasePath)
 
 const reactReplacer = createReplacer('react')
 const vue2Replacer = createReplacer('vue')
@@ -17,6 +17,7 @@ describe('first', () => {
     // await putCase('case1.result.js', result)
     const expected = await getCase('case1.result.js')
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 
   it('case2 ', async () => {
@@ -25,6 +26,7 @@ describe('first', () => {
     // await putCase('case2.result.js', result)
     const expected = await getCase('case2.result.js')
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 
   it('case3 ', async () => {
@@ -33,6 +35,7 @@ describe('first', () => {
     // await putCase('case3.result.js', result)
     const expected = await getCase('case3.result.js')
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 
   it('vue2-case1', async () => {
@@ -41,6 +44,7 @@ describe('first', () => {
     const expected = await getCase('vue2-case1.result.js')
     // await putCase('vue2-case1.result.js', result)
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 
   it('vue3-createStaticVNode.js', async () => {
@@ -50,6 +54,7 @@ describe('first', () => {
     const expected = await getCase('vue3-createStaticVNode.result.js')
     // await putCase('vue3-createStaticVNode.result.js', result)
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 
   it('vue3-render.js', async () => {
@@ -60,5 +65,6 @@ describe('first', () => {
     // await putCase('vue3-render.result.js', result)
     // expect(result).toBe(true)
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 })

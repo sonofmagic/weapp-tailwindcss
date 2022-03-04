@@ -1,6 +1,7 @@
 import type { Rule, AtRule } from 'postcss'
 import { Declaration } from 'postcss'
 import { cssSelectorReplacer } from './shared'
+import type { CssPreflightOptions } from '../types'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
 }
@@ -31,7 +32,7 @@ export function getViewElementPreflight () {
   return [decl1, decl2, decl3, decl4]
 }
 
-export function commonChunkPreflight (node: Rule) {
+export function commonChunkPreflight (node: Rule, cssPreflight?: CssPreflightOptions) {
   if (regexp1.test(node.selector)) {
     node.selector = node.selector.replace(regexp1, 'view + view')
   }
@@ -55,6 +56,7 @@ export function commonChunkPreflight (node: Rule) {
   // 变量注入和 preflight
   if (node.selector.includes('::before') && node.selector.includes('::after')) {
     node.selector = 'view,view::before,view::after'
+
     // node.walkDecls((decl) => {
     //   // remove empty var 来避免压缩css报错
     //   if (/^\s*$/.test(decl.value)) {
@@ -62,6 +64,8 @@ export function commonChunkPreflight (node: Rule) {
     //   }
     //   // console.log(decl.prop, decl.value)
     // })
+
+    // preset
     node.append(...getViewElementPreflight())
   }
 }

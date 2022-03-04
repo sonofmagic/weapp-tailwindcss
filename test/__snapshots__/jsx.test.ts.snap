@@ -1,0 +1,331 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`first case1  1`] = `
+"(wx[\\"webpackJsonp\\"] = wx[\\"webpackJsonp\\"] || []).push([[\\"pages/index/index\\"], {
+  /***/
+  \\"./node_modules/babel-loader/lib/index.js!./src/pages/index/index.tsx\\":
+  /*!*******************************************************************!*\\\\
+    !*** ./node_modules/babel-loader/lib!./src/pages/index/index.tsx ***!
+    \\\\*******************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+    /* harmony import */
+
+    var _tarojs_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! @tarojs/components */
+    \\"./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js\\");
+    /* harmony import */
+
+
+    var _index_module_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ./index.module.scss */
+    \\"./src/pages/index/index.module.scss\\");
+    /* harmony import */
+
+
+    var _index_module_scss__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_index_module_scss__WEBPACK_IMPORTED_MODULE_1__);
+    /* harmony import */
+
+
+    var _index_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./index.scss */
+    \\"./src/pages/index/index.scss\\");
+    /* harmony import */
+
+
+    var _index_scss__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_index_scss__WEBPACK_IMPORTED_MODULE_2__);
+    /* harmony import */
+
+
+    var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! react/jsx-runtime */
+    \\"./node_modules/react/cjs/react-jsx-runtime.production.min.js\\");
+    /* harmony import */
+
+
+    var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__); // import { useCallback } from \\"react\\";
+    // import { useEnv, useNavigationBar, useModal, useToast } from \\"taro-hooks\\";
+
+
+    var Index = function Index() {
+      return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_0__[
+      /* View */
+      \\"a\\"], {
+        className: \\"text-_l_100px_r_ font-bold underline \\".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_1___default.a['xxx']),
+        children: \\"123\\"
+      });
+    };
+    /* harmony default export */
+
+
+    __webpack_exports__[\\"a\\"] = Index;
+    /***/
+  },
+
+  /***/
+  \\"./node_modules/react/cjs/react-jsx-runtime.production.min.js\\":
+  /*!********************************************************************!*\\\\
+    !*** ./node_modules/react/cjs/react-jsx-runtime.production.min.js ***!
+    \\\\********************************************************************/
+
+  /*! no static exports found */
+
+  /*! exports used: jsx */
+
+  /***/
+  function (module, exports, __webpack_require__) {
+    \\"use strict\\";
+    /** @license React v17.0.2
+     * react-jsx-runtime.production.min.js
+     *
+     * Copyright (c) Facebook, Inc. and its affiliates.
+     *
+     * This source code is licensed under the MIT license found in the
+     * LICENSE file in the root directory of this source tree.
+     */
+
+    __webpack_require__(
+    /*! object-assign */
+    \\"./node_modules/object-assign/index.js\\");
+
+    var f = __webpack_require__(
+    /*! react */
+    \\"./node_modules/react/cjs/react.production.min.js\\"),
+        g = 60103;
+
+    exports.Fragment = 60107;
+
+    if (\\"function\\" === typeof Symbol && Symbol.for) {
+      var h = Symbol.for;
+      g = h(\\"react.element\\");
+      exports.Fragment = h(\\"react.fragment\\");
+    }
+
+    var m = f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,
+        n = Object.prototype.hasOwnProperty,
+        p = {
+      key: !0,
+      ref: !0,
+      __self: !0,
+      __source: !0
+    };
+
+    function q(c, a, k) {
+      var b,
+          d = {},
+          e = null,
+          l = null;
+      void 0 !== k && (e = \\"\\" + k);
+      void 0 !== a.key && (e = \\"\\" + a.key);
+      void 0 !== a.ref && (l = a.ref);
+
+      for (b in a) {
+        n.call(a, b) && !p.hasOwnProperty(b) && (d[b] = a[b]);
+      }
+
+      if (c && c.defaultProps) for (b in a = c.defaultProps, a) {
+        void 0 === d[b] && (d[b] = a[b]);
+      }
+      return {
+        $$typeof: g,
+        type: c,
+        key: e,
+        ref: l,
+        props: d,
+        _owner: m.current
+      };
+    }
+
+    exports.jsx = q;
+    exports.jsxs = q;
+    /***/
+  },
+
+  /***/
+  \\"./src/pages/index/index.module.scss\\":
+  /*!*******************************************!*\\\\
+    !*** ./src/pages/index/index.module.scss ***!
+    \\\\*******************************************/
+
+  /*! no static exports found */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, exports, __webpack_require__) {// extracted by mini-css-extract-plugin
+
+    /***/
+  },
+
+  /***/
+  \\"./src/pages/index/index.scss\\":
+  /*!************************************!*\\\\
+    !*** ./src/pages/index/index.scss ***!
+    \\\\************************************/
+
+  /*! no static exports found */
+
+  /***/
+  function (module, exports, __webpack_require__) {// extracted by mini-css-extract-plugin
+
+    /***/
+  },
+
+  /***/
+  \\"./src/pages/index/index.tsx\\":
+  /*!***********************************!*\\\\
+    !*** ./src/pages/index/index.tsx ***!
+    \\\\***********************************/
+
+  /*! no exports provided */
+
+  /*! all exports used */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony import */
+
+
+    var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! @tarojs/runtime */
+    \\"./node_modules/@tarojs/runtime/dist/runtime.esm.js\\");
+    /* harmony import */
+
+
+    var _node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ../../../node_modules/babel-loader/lib!./index.tsx */
+    \\"./node_modules/babel-loader/lib/index.js!./src/pages/index/index.tsx\\");
+
+    var config = {
+      \\"navigationBarTitleText\\": \\"Taro-hooks\\",
+      \\"enableShareAppMessage\\": true
+    };
+    _node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__[
+    /* default */
+    \\"a\\"].enableShareAppMessage = true;
+    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__[\\"createPageConfig\\"])(_node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__[
+    /* default */
+    \\"a\\"], 'pages/index/index', {
+      root: {
+        cn: []
+      }
+    }, config || {}));
+    /***/
+  }
+}, [[\\"./src/pages/index/index.tsx\\", \\"runtime\\", \\"taro\\", \\"vendors\\"]]]); //# sourceMappingURL=index.js.map"
+`;
+
+exports[`first case2  1`] = `
+"var Index = function Index() {
+  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_0__[
+  /* View */
+  \\"a\\"], {
+    className: \\"text-_l_100px_r_ font-bold underline \\".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_1___default.a['xxx']),
+    children: \\"123\\"
+  });
+};"
+`;
+
+exports[`first case3  1`] = `
+"var Index = function Index() {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__[\\"useState\\"])(true),
+      _useState2 = Object(G_github2_f_weapp_tailwindcss_webpack_plugin_demo_taro_app_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_0__[
+  /* default */
+  \\"a\\"])(_useState, 1),
+      flag = _useState2[0];
+
+  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_2__[
+  /* View */
+  \\"a\\"], {
+    className: \\"text-_l_100px_r_ font-bold underline \\".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_3___default.a['xxx'], \\" \\").concat(flag ? \\"bg-_l__h_adfafa_r_\\" : null),
+    children: \\"123\\"
+  });
+};"
+`;
+
+exports[`first vue2-case1 1`] = `
+"var render = function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c(\\"view\\", {
+    staticClass: \\"index\\"
+  }, [_c(\\"view\\", {
+    class: [_vm.flag ? \\"bg-red-900\\" : \\"bg-_l__h_fafa00_r_\\"]
+  }, [_vm._v(\\"bg-[#fafa00]\\")]), _c(\\"view\\", {
+    class: {
+      \\"bg-_l__h_098765_r_\\": _vm.flag === true
+    }
+  }, [_vm._v(\\"bg-[#098765]\\")]), _c(\\"view\\", {
+    staticClass: \\"p-_l_20px_r_ -mt-2 mb-_l_-20px_r_\\"
+  }, [_vm._v(\\"p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]\\")]), _c(\\"view\\", {
+    staticClass: \\"space-y-_l_1-dot-6rem_r_\\"
+  }, [_c(\\"view\\", {
+    staticClass: \\"w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_\\"
+  }, [_vm._v(\\"w-[300rpx] text-black text-opacity-[0.19]\\")]), _c(\\"view\\", {
+    staticClass: \\"min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_\\"
+  }, [_vm._v(\\"min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]\\")]), _c(\\"view\\", {
+    staticClass: \\"max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_\\"
+  }, [_vm._v(\\"max-w-[300rpx] min-h-[100px] text-[#dddddd]\\")]), _c(\\"view\\", {
+    staticClass: \\"flex items-center justify-center h-_l_100px_r_ w-_l_100px_r_ rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0-dot-54_r_ text-_l__h_ffffff_r_\\"
+  }, [_vm._v(\\"Hello\\")]), _c(\\"view\\", {
+    staticClass: \\"border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0-dot-44_r_\\"
+  }, [_vm._v(\\"border-[10px] border-[#098765] border-solid border-opacity-[0.44]\\")]), _c(\\"view\\", {
+    staticClass: \\"grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid\\"
+  }, [_c(\\"view\\", [_vm._v(\\"1\\")]), _c(\\"view\\", [_vm._v(\\"2\\")]), _c(\\"view\\", [_vm._v(\\"3\\")])])]), _c(\\"view\\", {
+    staticClass: \\"test\\"
+  }, [_vm._v(\\"test\\")])]);
+};"
+`;
+
+exports[`first vue3-createStaticVNode.js 1`] = `
+"var _hoisted_1 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+/* createStaticVNode */
+\\"d\\"])(\\"<view class=\\\\\\"p-_l_20px_r_ -mt-2 mb-_l_-20px_r_\\\\\\">p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]</view><view class=\\\\\\"space-y-_l_1-dot-6rem_r_\\\\\\"><view class=\\\\\\"w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_\\\\\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\\\\\"min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_\\\\\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\\\\\"max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_\\\\\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\\\\\"flex items-center justify-center h-_l_100px_r_ w-_l_100px_r_ rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0-dot-54_r_ text-_l__h_ffffff_r_\\\\\\">Hello</view><view class=\\\\\\"border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0-dot-44_r_\\\\\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\\\\\"grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid\\\\\\"><view>1</view><view>2</view><view>3</view></view></view><view class=\\\\\\"test\\\\\\">test</view>\\", 3);"
+`;
+
+exports[`first vue3-render.js 1`] = `
+"function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+  /* openBlock */
+  \\"i\\"])(), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+  /* createElementBlock */
+  \\"b\\"])(\\"view\\", {
+    class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+    /* normalizeClass */
+    \\"g\\"])([\\"index container bg-_l__h_ffffff_r_\\", $setup.flag ? \\"text-_l__h_aaaaaa_r_\\" : \\"text-_l__h_fafafa_r_\\"])
+  }, [Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+  /* createElementVNode */
+  \\"c\\"])(\\"view\\", {
+    class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+    /* normalizeClass */
+    \\"g\\"])([$setup.flag ? 'bg-red-900' : \\"bg-_l__h_fafa00_r_\\"])
+  }, \\"bg-[#fafa00]\\", 2
+  /* CLASS */
+  ), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+  /* createElementVNode */
+  \\"c\\"])(\\"view\\", {
+    class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+    /* normalizeClass */
+    \\"g\\"])({
+      \\"bg-_l__h_098765_r_\\": $setup.flag === true
+    })
+  }, \\"bg-[#098765]\\", 2
+  /* CLASS */
+  ), _hoisted_1], 2
+  /* CLASS */
+  );
+}"
+`;

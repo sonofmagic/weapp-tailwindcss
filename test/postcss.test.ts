@@ -12,6 +12,7 @@ describe('first', () => {
     const expected = await getCase('media1.result.css')
     // await putCase('media1.result.css', result)
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 
   // it('main chunk remove empty var', async () => {
@@ -34,5 +35,6 @@ describe('first', () => {
     // await putCase('taro.build.result.css', result)
     // expect(true).toBe(true)
     expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
   })
 })

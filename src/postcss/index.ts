@@ -3,12 +3,9 @@ import type { StyleHandlerOptions } from '../types'
 import { mpRulePreflight, commonChunkPreflight } from './mp'
 // mpAtRulePreflight
 const isMp = true
-export function styleHandler (
-  rawSource: string,
-  options: StyleHandlerOptions = {}
-) {
+export function styleHandler (rawSource: string, options: StyleHandlerOptions = {}) {
   const root = postcss.parse(rawSource)
-  // console.log(file)
+
   root.walk((node, idx) => {
     if (node.type === 'rule') {
       if (isMp) {
@@ -16,7 +13,7 @@ export function styleHandler (
         // uni-app common-> main.wxss
         // taro app.wxss
         if (options.isMainChunk) {
-          commonChunkPreflight(node)
+          commonChunkPreflight(node, options.cssPreflight)
         }
         mpRulePreflight(node)
       }
