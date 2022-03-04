@@ -59,4 +59,12 @@ describe('wxml', () => {
     )
     expect(result).toMatchSnapshot()
   })
+
+  it('percentage unit', () => {
+    const testCase = '<view class="h-[200%]" />'
+    const result = classStringReplace(testCase, (x) => {
+      return replaceWxml(x)
+    })
+    expect(result).toBe('<view class="h-_l_200_pct__r_" />')
+  })
 })

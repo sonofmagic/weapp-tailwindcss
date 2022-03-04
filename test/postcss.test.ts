@@ -1,4 +1,4 @@
-import { styleHandler } from '../src/postcss/index'
+import { getOptions, styleHandler, createInjectPreflight } from '../src/shared'
 import { cssCasePath, createGetCase, createPutCase } from './util'
 
 const getCase = createGetCase(cssCasePath)
@@ -7,8 +7,13 @@ const getCase = createGetCase(cssCasePath)
 const putCase = createPutCase(cssCasePath)
 describe('first', () => {
   it('css @media case', async () => {
+    const opt = getOptions(null)
+    const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('media1.css')
-    const result = styleHandler(testCase)
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight
+    })
     const expected = await getCase('media1.result.css')
     // await putCase('media1.result.css', result)
     expect(result).toBe(expected)
@@ -27,9 +32,12 @@ describe('first', () => {
   // })
 
   it('main chunk build error', async () => {
+    const opt = getOptions(null)
+    const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('taro.build.css')
     const result = styleHandler(testCase, {
-      isMainChunk: true
+      isMainChunk: true,
+      cssInjectPreflight
     })
     const expected = await getCase('taro.build.result.css')
     // await putCase('taro.build.result.css', result)
