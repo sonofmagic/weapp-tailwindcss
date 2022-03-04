@@ -107,13 +107,54 @@ or `@apply`
 
 ## Options
 
-| 配置项                    | 类型                    | 描述                                                                     |
-| ------------------------- | ----------------------- | ------------------------------------------------------------------------ |
-| `htmlMatcher`             | (string)=>boolean       | 匹配 `wxml`等等模板进行处理的方法                                        |
-| `cssMatcher`              | (string)=>boolean       | 匹配 `wxss`等等样式文件的方法                                            |
-| `jsMatcher`               | (string)=>boolean       | 匹配 `js`文件进行处理的方法，用于 `react`                                |
-| `mainCssChunkMatcher`     | (string)=>boolean       | 匹配 `tailwindcss jit` 生成的 `css chunk` 的方法                         |
-| `framework` (`Taro` 特有) | `react`\|`vue2`\|`vue3` | 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react` |
+| 配置项                    | 类型                              | 描述                                                                                                 |
+| ------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `htmlMatcher`             | (string)=>boolean                 | 匹配 `wxml`等等模板进行处理的方法                                                                    |
+| `cssMatcher`              | (string)=>boolean                 | 匹配 `wxss`等等样式文件的方法                                                                        |
+| `jsMatcher`               | (string)=>boolean                 | 匹配 `js`文件进行处理的方法，用于 `react`                                                            |
+| `mainCssChunkMatcher`     | (string)=>boolean                 | 匹配 `tailwindcss jit` 生成的 `css chunk` 的方法                                                     |
+| `framework` (`Taro` 特有) | `react`\|`vue2`\|`vue3`           | 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`                             |
+| `cssPreflight`            | `Record<string,string>`\| `false` | 在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下: |
+
+```js
+// default 默认:
+cssPreflight: {
+  'box-sizing': 'border-box',
+  'border-width': '0',
+  'border-style': 'solid',
+  'border-color': 'currentColor'
+}
+// result
+// box-sizing: border-box;
+// border-width: 0;
+// border-style: solid;
+// border-color: currentColor
+
+// case 禁用所有
+cssPreflight: false
+// result
+// none
+
+// case 禁用单个属性
+cssPreflight: {
+  'box-sizing': false
+}
+// border-width: 0;
+// border-style: solid;
+// border-color: currentColor
+
+// case 更改和添加单个属性
+cssPreflight: {
+  'box-sizing': 'content-box',
+  'background': 'black'
+}
+// result
+// box-sizing: content-box;
+// border-width: 0;
+// border-style: solid;
+// border-color: currentColor;
+// background: black
+```
 
 ## Bugs & Issues
 
