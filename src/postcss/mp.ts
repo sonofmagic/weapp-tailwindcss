@@ -10,6 +10,7 @@ const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
 // :not([hidden])~:not([hidden])
 // :not([hidden]) ~ :not([hidden])
 const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
+
 export function getViewElementPreflight () {
   const decl1 = new Declaration({
     prop: 'box-sizing',

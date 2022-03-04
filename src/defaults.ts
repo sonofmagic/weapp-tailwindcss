@@ -26,6 +26,12 @@ export const defaultOptions: Required<UserDefinedOptions> = {
         return true
       }
     }
+  },
+  cssPreflight: {
+    'box-sizing': 'border-box',
+    'border-width': '0',
+    'border-style': 'solid',
+    'border-color': 'currentColor'
   }
 }
 

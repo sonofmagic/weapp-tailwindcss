@@ -3,6 +3,8 @@ import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack'
 import { styleHandler, jsxHandler, pluginName, getOptions } from '../shared'
 import { createReplacer } from '../jsx/replacer'
+
+// https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
 export class RaxTailwindcssWebpackPluginV5 {
   options: Required<UserDefinedOptions>
   constructor (options: UserDefinedOptions = {}) {

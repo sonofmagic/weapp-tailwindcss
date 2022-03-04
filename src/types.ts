@@ -16,6 +16,16 @@ export interface UserDefinedOptions {
    * 用于处理原始变量和替换不兼容选择器
    */
   mainCssChunkMatcher?: (name: string, appType?: 'uni-app' | 'taro' | 'remax' | 'rax' | 'native') => boolean
+  /**
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
+   * 用于处理 postcss 的预设
+   */
+  cssPreflight?: {
+    'box-sizing': string | false
+    'border-width': string | false
+    'border-style': string | false
+    'border-color': string | false
+  }
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher'>

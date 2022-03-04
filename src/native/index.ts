@@ -2,6 +2,9 @@ import type { UserDefinedOptions } from '../types'
 import type { Compiler } from 'webpack'
 import { styleHandler, templeteHandler, pluginName, getOptions } from '../shared'
 
+/**
+ * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6
+ */
 export class NativeWeappTailwindcssWebpackPluginV5 {
   options: Required<UserDefinedOptions>
   constructor (options: UserDefinedOptions = {}) {

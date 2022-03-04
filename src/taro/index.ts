@@ -4,6 +4,9 @@ import { styleHandler, jsxHandler, pluginName, getOptions } from '../shared'
 import { ConcatSource, Source } from 'webpack-sources'
 import { createReplacer } from '../jsx/replacer'
 
+/**
+ * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
+ */
 export class TaroWeappTailwindcssWebpackPluginV4 {
   options: Required<TaroUserDefinedOptions>
   constructor (options: TaroUserDefinedOptions = { framework: 'react' }) {
