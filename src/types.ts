@@ -5,7 +5,7 @@ export type CssPreflightOptions = {
   'border-width': string | false
   'border-style': string | false
   'border-color': string | false
-}
+} | false
 
 export interface UserDefinedOptions {
   /**

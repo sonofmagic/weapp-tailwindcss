@@ -5,7 +5,11 @@ const { UniAppWeappTailwindcssWebpackPluginV4 } = require('../..')
  */
 const config = {
   configureWebpack: {
-    plugins: [new UniAppWeappTailwindcssWebpackPluginV4()]
+    plugins: [new UniAppWeappTailwindcssWebpackPluginV4({
+      cssPreflight: {
+        "box-sizing": false
+      }
+    })]
   }
 }
 

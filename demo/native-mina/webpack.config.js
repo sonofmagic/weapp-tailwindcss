@@ -76,7 +76,11 @@ module.exports = {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
       BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
     }),
-    new NativeWeappTailwindcssWebpackPluginV5()
+    new NativeWeappTailwindcssWebpackPluginV5({
+      // cssPreflight: {
+      //   "border-color": false
+      // }
+    })
   ],
   optimization: {
     splitChunks: {

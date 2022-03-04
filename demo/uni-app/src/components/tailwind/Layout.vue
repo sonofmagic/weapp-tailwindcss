@@ -36,7 +36,7 @@
     选择器提前用postcss处理
     https://www.tailwindcss.cn/docs/space -->
 
-    <view class="p-[20px] -mt-2 mb-[-20px] ">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+    <view class="p-[20px] -mt-2 mb-[-20px] h-[200%]">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
     <view class="space-y-[1.6rem]">
       <view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view>
       <view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>

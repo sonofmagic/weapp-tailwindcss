@@ -7,7 +7,7 @@
   <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="powered">
+  <view class="powered h-[200%]">
     <text>{{powered.by}}</text>
   </view>
   <view class="p-[20px] -mt-2 mb-[-20px]">

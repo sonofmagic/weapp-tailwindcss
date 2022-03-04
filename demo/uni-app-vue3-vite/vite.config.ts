@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 // import { ViteWeappTailwindcssPlugin } from '../../'
-import { ViteWeappTailwindcssPlugin as wt, postcssWeappTailwindcssRename } from 'weapp-tailwindcss-webpack-plugin'
+import { ViteWeappTailwindcssPlugin as wt, postcssWeappTailwindcssRename } from '../..'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,7 +16,11 @@ export default defineConfig({
           propList: ['*'],
           transformUnit: 'rpx'
         }),
-        postcssWeappTailwindcssRename()
+        postcssWeappTailwindcssRename({
+          cssPreflight: {
+            'box-sizing': false
+          }
+        })
       ]
     }
   }

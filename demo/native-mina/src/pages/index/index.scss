@@ -14,6 +14,7 @@
   height: $r;
   border-radius: 50%;
   margin-right: 10px;
+  @apply w-[200%];
 }
 
 .powered {
@@ -23,5 +24,5 @@
 }
 
 .test {
-  @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+  @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]  #{!important};
 }
