@@ -1,11 +1,15 @@
 import type { InjectPreflight } from './postcss/preflight'
 
-export type CssPreflightOptions = {
-  'box-sizing': string | false
-  'border-width': string | false
-  'border-style': string | false
-  'border-color': string | false
-} | false
+export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | undefined
+
+export type CssPreflightOptions =
+  | {
+      'box-sizing': string | false
+      'border-width': string | false
+      'border-style': string | false
+      'border-color': string | false
+    }
+  | false
 
 export interface UserDefinedOptions {
   /**
@@ -24,7 +28,7 @@ export interface UserDefinedOptions {
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
-  mainCssChunkMatcher?: (name: string, appType?: 'uni-app' | 'taro' | 'remax' | 'rax' | 'native') => boolean
+  mainCssChunkMatcher?: (name: string, appType: AppType) => boolean
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * 用于处理 postcss 的预设
