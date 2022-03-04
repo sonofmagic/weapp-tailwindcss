@@ -6,7 +6,7 @@ import type { IBaseWebpackPlugin } from '../interface'
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
-export class BaseWebpackPluginV4 implements IBaseWebpackPlugin {
+export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   options: Required<UserDefinedOptions>
   appType: AppType
   constructor (options: UserDefinedOptions = {}, appType: AppType) {

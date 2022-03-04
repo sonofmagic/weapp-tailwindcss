@@ -20,7 +20,7 @@ function vue2Matcher (node: UserMatchNode) {
 
 // path.node.id -> name // Identifier
 // path.node.init -> ObjectExpression
-
+// default react
 export function createReplacer (framework: string = 'react'): Replacer {
   let classObjectNode: Node | null
   let startFlag = false

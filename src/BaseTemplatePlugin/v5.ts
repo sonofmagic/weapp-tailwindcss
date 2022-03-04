@@ -5,7 +5,7 @@ import type { IBaseWebpackPlugin } from '../interface'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6
  */
-export class BaseWebpackPluginV5 implements IBaseWebpackPlugin {
+export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   options: Required<UserDefinedOptions>
   appType: AppType
 
