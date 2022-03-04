@@ -8,7 +8,7 @@ describe('defaults function test group', () => {
     const uniappWxss = 'common/main.wxss'
 
     const taroWxss = 'app.wxss'
-    expect(mainCssChunkMatcher(case1)).toBe(true)
+    expect(mainCssChunkMatcher(case1, undefined)).toBe(true)
 
     expect(mainCssChunkMatcher(case1, 'taro')).toBe(false)
 
