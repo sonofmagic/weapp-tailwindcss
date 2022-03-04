@@ -14,7 +14,7 @@ export class TaroWeappTailwindcssWebpackPluginV4 {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight } = this.options
     const replacer = createReplacer(framework)
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
@@ -23,7 +23,8 @@ export class TaroWeappTailwindcssWebpackPluginV4 {
         if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(file, 'taro')
+            isMainChunk: mainCssChunkMatcher(file, 'taro'),
+            cssPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

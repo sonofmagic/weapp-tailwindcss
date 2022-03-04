@@ -13,7 +13,7 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher } = this.options
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
 
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
@@ -22,7 +22,8 @@ export class UniAppWeappTailwindcssWebpackPluginV4 {
         if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(file, 'uni-app')
+            isMainChunk: mainCssChunkMatcher(file, 'uni-app'),
+            cssPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

@@ -1,3 +1,10 @@
+export type CssPreflightOptions = {
+  'box-sizing': string | false
+  'border-width': string | false
+  'border-style': string | false
+  'border-color': string | false
+}
+
 export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
@@ -20,12 +27,7 @@ export interface UserDefinedOptions {
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * 用于处理 postcss 的预设
    */
-  cssPreflight?: {
-    'box-sizing': string | false
-    'border-width': string | false
-    'border-style': string | false
-    'border-color': string | false
-  }
+  cssPreflight?: CssPreflightOptions
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher'>
@@ -36,4 +38,5 @@ export interface TaroUserDefinedOptions extends UserDefinedOptions {
 
 export interface StyleHandlerOptions {
   isMainChunk?: boolean
+  cssPreflight?: CssPreflightOptions
 }

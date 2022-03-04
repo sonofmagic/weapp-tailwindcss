@@ -12,7 +12,7 @@ export class NativeWeappTailwindcssWebpackPluginV5 {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher } = this.options
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
     const { ConcatSource } = compiler.webpack.sources
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries = Object.entries(compilation.assets)
@@ -21,7 +21,8 @@ export class NativeWeappTailwindcssWebpackPluginV5 {
         if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(file, 'native')
+            isMainChunk: mainCssChunkMatcher(file, 'native'),
+            cssPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

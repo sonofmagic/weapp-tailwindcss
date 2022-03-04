@@ -12,7 +12,7 @@ export class RaxTailwindcssWebpackPluginV5 {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight } = this.options
     // react
     const replacer = createReplacer()
     const { ConcatSource } = compiler.webpack.sources
@@ -23,7 +23,8 @@ export class RaxTailwindcssWebpackPluginV5 {
         if (cssMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(file, 'rax')
+            isMainChunk: mainCssChunkMatcher(file, 'rax'),
+            cssPreflight
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
