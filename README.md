@@ -2,6 +2,10 @@
 
 # weapp-tailwindcss-webpack-plugin
 
+![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
+![dt](https://badgen.net/npm/dt/weapp-tailwindcss-webpack-plugin)
+![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
+
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
 
 - <a href="#uni-app">uni-app 使用方式(vue2/3)</a>
