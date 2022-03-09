@@ -1,5 +1,5 @@
 const { RemaxWeappTailwindcssWebpackPluginV4 } = require('../../')
-
+// const { RemaxWeappTailwindcssWebpackPluginV4 } = require('weapp-tailwindcss-webpack-plugin')
 module.exports = {
   one: true,
   output: 'dist/' + process.env.REMAX_PLATFORM,

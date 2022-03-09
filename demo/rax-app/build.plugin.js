@@ -1,6 +1,6 @@
 // build.plugin.js
 const { RaxTailwindcssWebpackPluginV5 } = require('../../');
-
+// const { RaxTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
     // console.log(config);

@@ -19,10 +19,11 @@
     "remax": "^2.9.1"
   },
   "devDependencies": {
+    "autoprefixer": "9",
     "cross-env": "^7.0.2",
     "postcss": "7",
+    "postcss-rem-to-responsive-pixel": "^5.1.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "autoprefixer": "9",
-    "postcss-rem-to-responsive-pixel": "^5.1.1"
+    "weapp-tailwindcss-webpack-plugin": "^1.2.1"
   }
 }
