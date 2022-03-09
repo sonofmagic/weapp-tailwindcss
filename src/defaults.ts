@@ -1,6 +1,8 @@
 import defu from 'defu'
 import type { UserDefinedOptions } from './types'
 
+const noop = () => {}
+
 export const defaultOptions: Required<UserDefinedOptions> = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
   htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
@@ -35,7 +37,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
     'border-width': '0',
     'border-style': 'solid',
     'border-color': 'currentColor'
-  }
+  },
+  customRuleCallback: noop
 }
 
 export function getOptions<T = UserDefinedOptions> (options: T) {

@@ -14,7 +14,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     // react
     const replacer = createReplacer()
@@ -27,7 +27,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, this.appType),
-            cssInjectPreflight
+            cssInjectPreflight,
+            customRuleCallback
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

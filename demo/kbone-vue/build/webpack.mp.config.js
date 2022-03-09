@@ -223,6 +223,18 @@ module.exports = {
     }),
     new VueLoaderPlugin(),
     new MpPlugin(mpPluginConfig),
-    new KboneWeappTailwindcssWebpackPluginV4()
+    new KboneWeappTailwindcssWebpackPluginV4({
+      customRuleCallback: (node, opt) => {
+        if (opt.isMainChunk) {
+          if (node.selector.includes('page,::after,::before')) {
+            // page,::after,::before
+            node.selector = node.selector
+              .replace(/page/g, 'view')
+              .replace(/::after/g, 'view::after')
+              .replace(/::before/g, 'view::before') // 'view,view::before,view::after'
+          }
+        }
+      }
+    })
   ]
 }

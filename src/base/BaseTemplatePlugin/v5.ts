@@ -15,7 +15,7 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
     const { ConcatSource } = compiler.webpack.sources
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
@@ -26,7 +26,8 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, this.appType),
-            cssInjectPreflight
+            cssInjectPreflight,
+            customRuleCallback
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

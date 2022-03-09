@@ -2,14 +2,24 @@ import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | undefined
 
+export type CssPresetProps = 'box-sizing' | 'border-width' | 'border-style' | 'border-color'
+
 export type CssPreflightOptions =
   | {
-      'box-sizing'?: string | false
-      'border-width'?: string | false
-      'border-style'?: string | false
-      'border-color'?: string | false
+      [key: CssPresetProps | string]: string | false
     }
   | false
+
+type RequiredStyleHandlerOptions = {
+  isMainChunk: boolean
+  cssInjectPreflight: InjectPreflight
+}
+
+export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
+
+export type StyleHandlerOptions = {
+  customRuleCallback?: CustomRuleCallback
+} & RequiredStyleHandlerOptions
 
 export interface UserDefinedOptions {
   /**
@@ -34,16 +44,15 @@ export interface UserDefinedOptions {
    * 用于处理 postcss 的预设
    */
   cssPreflight?: CssPreflightOptions
+
+  /**
+   * 用于自定义处理 css 的回调函数
+   */
+  customRuleCallback?: CustomRuleCallback
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight'>
 
 export interface TaroUserDefinedOptions extends UserDefinedOptions {
   framework: 'react' | 'vue' | 'vue3' | string
-}
-
-export interface StyleHandlerOptions {
-  isMainChunk: boolean
-  cssInjectPreflight: InjectPreflight
-  customRuleCallback?: (node: Rule, options: Readonly<Pick<StyleHandlerOptions, 'isMainChunk' | 'cssInjectPreflight'>>) => void
 }
