@@ -1,5 +1,5 @@
 const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../../')
-
+// const { TaroWeappTailwindcssWebpackPluginV4 } = require('weapp-tailwindcss-webpack-plugin')
 const config = {
   projectName: 'taro-vue3-app',
   date: '2022-2-11',

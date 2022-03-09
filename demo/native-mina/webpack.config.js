@@ -6,7 +6,7 @@ const MinaWebpackPlugin = require('./plugin/MinaWebpackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
 const { NativeWeappTailwindcssWebpackPluginV5 } = require('../../')
-
+// const { NativeWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 const debuggable = process.env.BUILD_TYPE !== 'release'
 
 module.exports = {
