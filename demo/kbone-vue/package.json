@@ -68,7 +68,7 @@
     "vue-loader": "^15.7.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
-    "weapp-tailwindcss-webpack-plugin": "^1.2.0",
+    "weapp-tailwindcss-webpack-plugin": "^1.2.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",

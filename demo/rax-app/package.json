@@ -30,7 +30,7 @@
     "rax-app": "^3.8.7",
     "stylelint": "^13.7.2",
     "tailwindcss": "^3.0.23",
-    "weapp-tailwindcss-webpack-plugin": "^1.1.0"
+    "weapp-tailwindcss-webpack-plugin": "^1.2.1"
   },
   "private": true,
   "originTemplate": "@rax-materials/scaffolds-app-ts"
