@@ -31,3 +31,7 @@ export function createPutCase (casePath: string) {
     return writeFile(resolve(casePath, casename), data)
   }
 }
+
+export function isWebpackPlugin (constructor: new () => {}) {
+  return typeof constructor.prototype.apply === 'function'
+}

@@ -1,4 +1,5 @@
 import { defaultOptions } from '@/defaults'
+import { isWebpackPlugin } from './util'
 const { mainCssChunkMatcher } = defaultOptions
 
 describe('defaults function test group', () => {
@@ -17,5 +18,27 @@ describe('defaults function test group', () => {
     expect(mainCssChunkMatcher(uniappWxss, 'uni-app')).toBe(true)
 
     expect(mainCssChunkMatcher(taroWxss, 'taro')).toBe(true)
+  })
+
+  it('should export', () => {
+    const {
+      KboneWeappTailwindcssWebpackPluginV4,
+      NativeWeappTailwindcssWebpackPluginV5,
+      RaxTailwindcssWebpackPluginV5,
+      RemaxWeappTailwindcssWebpackPluginV4,
+      TaroWeappTailwindcssWebpackPluginV4,
+      UniAppWeappTailwindcssWebpackPluginV4,
+      ViteWeappTailwindcssPlugin,
+      postcssWeappTailwindcssRename
+    } = require('../')
+
+    expect(isWebpackPlugin(KboneWeappTailwindcssWebpackPluginV4)).toBe(true)
+    expect(isWebpackPlugin(NativeWeappTailwindcssWebpackPluginV5)).toBe(true)
+    expect(isWebpackPlugin(RaxTailwindcssWebpackPluginV5)).toBe(true)
+    expect(isWebpackPlugin(RemaxWeappTailwindcssWebpackPluginV4)).toBe(true)
+    expect(isWebpackPlugin(TaroWeappTailwindcssWebpackPluginV4)).toBe(true)
+    expect(isWebpackPlugin(UniAppWeappTailwindcssWebpackPluginV4)).toBe(true)
+    expect(Boolean(ViteWeappTailwindcssPlugin)).toBe(true)
+    expect(Boolean(postcssWeappTailwindcssRename)).toBe(true)
   })
 })
