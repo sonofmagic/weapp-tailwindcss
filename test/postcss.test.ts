@@ -45,4 +45,30 @@ describe('first', () => {
     expect(result).toBe(expected)
     expect(result).toMatchSnapshot()
   })
+
+  it('new option for customRuleCallback kbone', async () => {
+    const opt = getOptions(null)
+    const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
+
+    const testCase = await getCase('kbone1.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight,
+      customRuleCallback: (node, opt) => {
+        // if (opt.isMainChunk) {
+        //   if (node.selector.includes('page,::after,::before')) {
+        //     // page,::after,::before
+        //     node.selector = node.selector
+        //       .replace(/page/, 'view')
+        //       .replace(/::after/, 'view::after')
+        //       .replace(/::before/, 'view::before') // 'view,view::before,view::after'
+        //   }
+        // }
+      }
+    })
+    const expected = await getCase('kbone1.result.css')
+    // await putCase('kbone1.result.css', result)
+    expect(result).toBe(expected)
+    expect(result).toMatchSnapshot()
+  })
 })

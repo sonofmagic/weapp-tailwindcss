@@ -253,3 +253,180 @@ exports[`first main chunk build error 1`] = `
 }
 "
 `;
+
+exports[`first new option for customRuleCallback kbone 1`] = `
+"view,view::before,view::after {
+  --tw-border-opacity: 1;
+  border-color: rgba(229, 231, 235, var(--tw-border-opacity));
+  --tw-ring-inset: var(--tw-empty, );
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 transparent;
+  --tw-ring-shadow: 0 0 transparent;
+  --tw-shadow: 0 0 transparent
+;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor}
+
+.-mt-2 {
+  margin-top: -.5rem
+}
+
+.mb-_l_-20px_r_ {
+  margin-bottom: -20px
+}
+
+.flex {
+  display: flex
+}
+
+.grid {
+  display: grid
+}
+
+.h-_l_200_pct__r_ {
+  height: 200%
+}
+
+.h-_l_100px_r_ {
+  height: 100px
+}
+
+.max-h-_l_100px_r_ {
+  max-height: 100px
+}
+
+.min-h-_l_100px_r_ {
+  min-height: 100px
+}
+
+.w-_l_300rpx_r_ {
+  width: 300rpx
+}
+
+.w-_l_100px_r_ {
+  width: 100px
+}
+
+.w-32 {
+  width: 8rem
+}
+
+.min-w-_l_300rpx_r_ {
+  min-width: 300rpx
+}
+
+.max-w-_l_300rpx_r_ {
+  max-width: 300rpx
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+}
+
+.items-center {
+  align-items: center
+}
+
+.justify-center {
+  justify-content: center
+}
+
+.rounded-_l_40px_r_ {
+  border-radius: 40px
+}
+
+.rounded-md {
+  border-radius: .375rem
+}
+
+.border {
+  border-width: 1px
+}
+
+.border-_l_10px_r_ {
+  border-width: 10px
+}
+
+.border-solid {
+  border-style: solid
+}
+
+.border-_l__h_098765_r_ {
+  --tw-border-opacity: 1;
+  border-color: rgba(9, 135, 101, var(--tw-border-opacity))
+}
+
+.border-opacity-_l_0-dot-44_r_ {
+  --tw-border-opacity: 0.44
+}
+
+.bg-_l__h_123456_r_ {
+  --tw-bg-opacity: 1;
+  background-color: rgba(18, 52, 86, var(--tw-bg-opacity))
+}
+
+.bg-pink-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(236, 72, 153, var(--tw-bg-opacity))
+}
+
+.bg-opacity-_l_0-dot-54_r_ {
+  --tw-bg-opacity: 0.54
+}
+
+.p-_l_20px_r_ {
+  padding: 20px
+}
+
+.py-2 {
+  padding-top: .5rem;
+  padding-bottom: .5rem
+}
+
+.text-_l_20px_r_ {
+  font-size: 20px
+}
+
+.font-semibold {
+  font-weight: 600
+}
+
+.leading-_l_0-dot-9_r_ {
+  line-height: .9
+}
+
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgba(0, 0, 0, var(--tw-text-opacity))
+}
+
+.text-_l__h_dddddd_r_ {
+  --tw-text-opacity: 1;
+  color: rgba(221, 221, 221, var(--tw-text-opacity))
+}
+
+.text-_l__h_ffffff_r_,
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity))
+}
+
+.text-opacity-_l_0-dot-19_r_ {
+  --tw-text-opacity: 0.19
+}
+
+.ring-4 {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent)
+}
+
+.ring-pink-300 {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity))
+}"
+`;
