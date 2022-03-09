@@ -1,5 +1,5 @@
-import { jsxHandler } from '../src/jsx/index'
-import { createReplacer } from '../src/jsx/replacer'
+import { jsxHandler } from '@/jsx'
+import { createReplacer } from '@/jsx/replacer'
 import { jsxCasePath, createGetCase } from './util'
 
 const getCase = createGetCase(jsxCasePath)

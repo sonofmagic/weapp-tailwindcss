@@ -1,5 +1,5 @@
-import { getOptions } from '../src/shared'
-import { defaultOptions } from '../src/defaults'
+import { getOptions } from '@/shared'
+import { defaultOptions } from '@/defaults'
 describe('shared', () => {
   it('defaultOptions', () => {
     const config = getOptions(null)

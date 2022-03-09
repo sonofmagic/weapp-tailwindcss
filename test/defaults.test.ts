@@ -1,4 +1,4 @@
-import { defaultOptions } from '../src/defaults'
+import { defaultOptions } from '@/defaults'
 const { mainCssChunkMatcher } = defaultOptions
 
 describe('defaults function test group', () => {

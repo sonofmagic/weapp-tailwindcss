@@ -1,4 +1,4 @@
-import { getOptions, styleHandler, createInjectPreflight } from '../src/shared'
+import { getOptions, styleHandler, createInjectPreflight } from '@/shared'
 import { cssCasePath, createGetCase, createPutCase } from './util'
 
 const getCase = createGetCase(cssCasePath)

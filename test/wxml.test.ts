@@ -1,5 +1,5 @@
-import { templeteReplacer, replaceWxml } from '../src/wxml/index'
-import { classStringReplace } from '../src/shared'
+import { templeteReplacer, replaceWxml } from '@/wxml/index'
+import { classStringReplace } from '@/shared'
 
 describe('wxml', () => {
   it('isStringLiteral', () => {
