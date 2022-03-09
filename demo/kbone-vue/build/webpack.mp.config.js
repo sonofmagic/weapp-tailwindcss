@@ -2,14 +2,16 @@ const path = require('path')
 const webpack = require('webpack')
 const eslintFriendlyFormatter = require('eslint-friendly-formatter')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const {VueLoaderPlugin} = require('vue-loader')
+const { VueLoaderPlugin } = require('vue-loader')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const MpPlugin = require('mp-webpack-plugin') // 用于构建小程序代码的 webpack 插件
 const stylehacks = require('stylehacks')
 const autoprefixer = require('autoprefixer')
 const mpPluginConfig = require('./miniprogram.config.js') // 插件配置
-
+const tailwindcss = require('tailwindcss')
+const rem2rpx = require('postcss-rem-to-responsive-pixel/postcss7')
+const { KboneWeappTailwindcssWebpackPluginV4 } = require('../../..')
 const isDevelop = process.env.NODE_ENV === 'development'
 const isOptimize = true // 是否压缩业务代码，开发者工具可能无法完美支持业务代码使用到的 es 特性，建议自己做代码压缩
 
@@ -17,21 +19,23 @@ module.exports = {
   mode: 'production',
   entry: {
     // js 入口
+    'miniprogram-app': path.resolve(__dirname, '../src/app.js'),
     home: path.resolve(__dirname, '../src/mp/home/main.mp.js'),
-    other: path.resolve(__dirname, '../src/mp/other/main.mp.js'),
+    other: path.resolve(__dirname, '../src/mp/other/main.mp.js')
   },
   output: {
     path: path.resolve(__dirname, '../dist/mp/common'), // 放到小程序代码目录中的 common 目录下
     filename: '[name].js', // 必需字段，不能修改
     library: 'createApp', // 必需字段，不能修改
     libraryExport: 'default', // 必需字段，不能修改
-    libraryTarget: 'window', // 必需字段，不能修改
+    libraryTarget: 'window' // 必需字段，不能修改
   },
   watch: isDevelop,
   target: 'web', // 必需字段，不能修改
   optimization: {
     runtimeChunk: false, // 必需字段，不能修改
-    splitChunks: { // 代码分割配置，不建议修改
+    splitChunks: {
+      // 代码分割配置，不建议修改
       chunks: 'all',
       minSize: 1000,
       maxSize: 0,
@@ -52,27 +56,32 @@ module.exports = {
         }
       }
     },
-    minimizer: isOptimize ? [
-      // 压缩CSS
-      new OptimizeCSSAssetsPlugin({
-        assetNameRegExp: /\.(css|wxss)$/g,
-        cssProcessor: require('cssnano'),
-        cssProcessorPluginOptions: {
-          preset: ['default', {
-            discardComments: {
-              removeAll: true,
+    minimizer: isOptimize
+      ? [
+          // 压缩CSS
+          new OptimizeCSSAssetsPlugin({
+            assetNameRegExp: /\.(css|wxss)$/g,
+            cssProcessor: require('cssnano'),
+            cssProcessorPluginOptions: {
+              preset: [
+                'default',
+                {
+                  discardComments: {
+                    removeAll: true
+                  },
+                  minifySelectors: false // 因为 wxss 编译器不支持 .some>:first-child 这样格式的代码，所以暂时禁掉这个
+                }
+              ]
             },
-            minifySelectors: false, // 因为 wxss 编译器不支持 .some>:first-child 这样格式的代码，所以暂时禁掉这个
-          }],
-        },
-        canPrint: false
-      }),
-      // 压缩 js
-      new TerserPlugin({
-        test: /\.js(\?.*)?$/i,
-        parallel: true,
-      })
-    ] : [],
+            canPrint: false
+          }),
+          // 压缩 js
+          new TerserPlugin({
+            test: /\.js(\?.*)?$/i,
+            parallel: true
+          })
+        ]
+      : []
   },
   module: {
     rules: [
@@ -88,8 +97,8 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              modules: true,
-            },
+              modules: true
+            }
           },
           {
             loader: 'css-loader'
@@ -102,6 +111,12 @@ module.exports = {
                 return [
                   autoprefixer,
                   stylehacks(), // 剔除 ie hack 代码
+                  tailwindcss()
+                  // rem2rpx({
+                  //   rootValue: 32,
+                  //   propList: ['*'],
+                  //   transformUnit: 'rpx'
+                  // })
                 ]
               }
             }
@@ -109,7 +124,7 @@ module.exports = {
           {
             loader: 'less-loader'
           }
-        ],
+        ]
       },
       // eslint
       {
@@ -119,8 +134,8 @@ module.exports = {
         include: [path.resolve(__dirname, '../src')],
         options: {
           formatter: eslintFriendlyFormatter,
-          emitWarning: true,
-        },
+          emitWarning: true
+        }
       },
       // vue
       {
@@ -135,27 +150,31 @@ module.exports = {
               }
             }
           },
-          'vue-improve-loader',
+          'vue-improve-loader'
         ]
       },
       // ts
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: [{
-          loader: 'thread-loader',
-        }, {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
+        use: [
+          {
+            loader: 'thread-loader'
           },
-        }, {
-          loader: 'ts-loader',
-          options: {
-            appendTsSuffixTo: [/\.vue$/],
-            happyPackMode: true,
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
           },
-        }],
+          {
+            loader: 'ts-loader',
+            options: {
+              appendTsSuffixTo: [/\.vue$/],
+              happyPackMode: true
+            }
+          }
+        ]
       },
       // js
       {
@@ -165,7 +184,7 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              cacheDirectory: true,
+              cacheDirectory: true
             }
           }
         ],
@@ -174,33 +193,36 @@ module.exports = {
       // res
       {
         test: /\.(png|jpg|jpeg|gif|svg|eot|woff|woff2|ttf)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 1024,
-            name: '[name]_[hash:hex:6].[ext]',
-            publicPath: 'https://test.miniprogram.com/res', // 对于资源文件直接使用线上的 cdn 地址
-            emitFile: false,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 1024,
+              name: '[name]_[hash:hex:6].[ext]',
+              publicPath: 'https://test.miniprogram.com/res', // 对于资源文件直接使用线上的 cdn 地址
+              emitFile: false
+            }
           }
-        }],
-      },
+        ]
+      }
     ]
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': path.resolve(__dirname, '../src'),
-    },
+      vue$: 'vue/dist/vue.esm.js',
+      '@': path.resolve(__dirname, '../src')
+    }
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.isMiniprogram': process.env.isMiniprogram, // 注入环境变量，用于业务代码判断
+      'process.env.isMiniprogram': process.env.isMiniprogram // 注入环境变量，用于业务代码判断
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].wxss',
+      filename: '[name].wxss'
     }),
     new VueLoaderPlugin(),
     new MpPlugin(mpPluginConfig),
-  ],
+    new KboneWeappTailwindcssWebpackPluginV4()
+  ]
 }

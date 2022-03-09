@@ -1,5 +1,7 @@
 # vue-kbone
 
+https://wechat-miniprogram.github.io/kbone/docs/guide/advanced.html#%E8%87%AA%E5%AE%9A%E4%B9%89-app-js-%E5%92%8C-app-wxss
+
 webpack 4.46.0 postcss 7
 
 使用 vue 多端开发(小程序和 Web)，基于 [kbone](https://github.com/wechat-miniprogram/kbone) 的 element 和 render。

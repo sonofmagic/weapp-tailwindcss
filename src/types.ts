@@ -1,6 +1,6 @@
 import type { InjectPreflight } from './postcss/preflight'
-
-export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | undefined
+import type { Rule } from 'postcss'
+export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | undefined
 
 export type CssPreflightOptions =
   | {
@@ -45,4 +45,5 @@ export interface TaroUserDefinedOptions extends UserDefinedOptions {
 export interface StyleHandlerOptions {
   isMainChunk: boolean
   cssInjectPreflight: InjectPreflight
+  customRuleCallback?: (node: Rule, options: Readonly<Pick<StyleHandlerOptions, 'isMainChunk' | 'cssInjectPreflight'>>) => void
 }

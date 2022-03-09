@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -8,6 +8,9 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  name: 'App',
+  name: 'App'
 })
 </script>
+
+<style>
+</style>

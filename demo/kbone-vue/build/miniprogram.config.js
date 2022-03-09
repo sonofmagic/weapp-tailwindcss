@@ -14,7 +14,8 @@ module.exports = {
     accessDenied: 'home'
   },
   generate: {
-    autoBuildNpm: 'npm'
+    autoBuildNpm: 'npm',
+    appEntry: 'miniprogram-app'
   },
   app: {
     backgroundTextStyle: 'dark',
@@ -40,6 +41,8 @@ module.exports = {
 
     styleValueReduce: 5000,
     attrValueReduce: 5000
+
+    // wxssUniversalSelector: false
   },
   projectConfig: {
     projectname: 'kbone-vue-app',
