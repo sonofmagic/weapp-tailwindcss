@@ -2,7 +2,7 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDirs": ["src", "test"],
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
