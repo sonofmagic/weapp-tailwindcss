@@ -1,14 +1,14 @@
-import type { AppType, UserDefinedOptions } from '../types'
-import type { Compiler } from 'webpack'
-import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '../shared'
-import type { IBaseWebpackPlugin } from '../interface'
-/**
- * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6
- */
-export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
+import type { UserDefinedOptions, AppType } from '@/types'
+import type { Compiler } from 'webpack4'
+import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
+import { ConcatSource, Source } from 'webpack-sources'
+import type { IBaseWebpackPlugin } from '@/interface'
+// https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
+// https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
+// 3 个方案，由 loader 生成的 wxml
+export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   options: Required<UserDefinedOptions>
   appType: AppType
-
   constructor (options: UserDefinedOptions = {}, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
@@ -16,10 +16,9 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
 
   apply (compiler: Compiler) {
     const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
-    const { ConcatSource } = compiler.webpack.sources
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-      const entries = Object.entries(compilation.assets)
+      const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
         if (cssMatcher(file)) {

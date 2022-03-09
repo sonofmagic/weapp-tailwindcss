@@ -1,13 +1,19 @@
-import { UniAppWeappTailwindcssWebpackPluginV4, TaroWeappTailwindcssWebpackPluginV4, RemaxWeappTailwindcssWebpackPluginV4 } from './v4'
-
-import { RaxTailwindcssWebpackPluginV5, NativeWeappTailwindcssWebpackPluginV5 } from './v5'
-import { ViteWeappTailwindcssPlugin } from './vite'
+import {
+  UniAppWeappTailwindcssWebpackPluginV4,
+  TaroWeappTailwindcssWebpackPluginV4,
+  RemaxWeappTailwindcssWebpackPluginV4,
+  KboneWeappTailwindcssWebpackPluginV4,
+  RaxTailwindcssWebpackPluginV5,
+  NativeWeappTailwindcssWebpackPluginV5,
+  ViteWeappTailwindcssPlugin
+} from './framework'
 
 import postcssWeappTailwindcssRename from './postcss/plugin'
 export {
   UniAppWeappTailwindcssWebpackPluginV4,
   TaroWeappTailwindcssWebpackPluginV4,
   RemaxWeappTailwindcssWebpackPluginV4,
+  KboneWeappTailwindcssWebpackPluginV4,
   RaxTailwindcssWebpackPluginV5,
   ViteWeappTailwindcssPlugin,
   postcssWeappTailwindcssRename,

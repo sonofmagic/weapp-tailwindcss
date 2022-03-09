@@ -1,5 +1,5 @@
-import { BaseJsxWebpackPluginV4 } from '../BaseJsxPlugin'
-import type { UserDefinedOptions } from '../types'
+import { BaseJsxWebpackPluginV4 } from '@/base'
+import type { UserDefinedOptions } from '@/types'
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/4
 export class RemaxWeappTailwindcssWebpackPluginV4 extends BaseJsxWebpackPluginV4 {

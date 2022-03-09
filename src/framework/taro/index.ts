@@ -1,5 +1,5 @@
-import type { TaroUserDefinedOptions } from '../types'
-import { BaseJsxWebpackPluginV4 } from '../BaseJsxPlugin'
+import type { TaroUserDefinedOptions } from '@/types'
+import { BaseJsxWebpackPluginV4 } from '@/base'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */

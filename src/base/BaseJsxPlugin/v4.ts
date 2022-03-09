@@ -1,21 +1,24 @@
-import type { UserDefinedOptions, AppType } from '../types'
+import type { AppType, TaroUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '../shared'
+import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
-import type { IBaseWebpackPlugin } from '../interface'
-// https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
-// https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
-// 3 个方案，由 loader 生成的 wxml
-export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
-  options: Required<UserDefinedOptions>
+import { createReplacer } from '../../jsx/replacer'
+import type { IBaseWebpackPlugin } from '@/interface'
+/**
+ * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
+ */
+export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
+  options: Required<TaroUserDefinedOptions>
   appType: AppType
-  constructor (options: UserDefinedOptions = {}, appType: AppType) {
+  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight } = this.options
+    // default react
+    const replacer = createReplacer(framework)
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
@@ -29,10 +32,10 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
-        } else if (htmlMatcher(file)) {
+        } else if (jsMatcher(file)) {
           const rawSource = originalSource.source().toString()
-          const wxml = templeteHandler(rawSource)
-          const source = new ConcatSource(wxml)
+          const jsSource = jsxHandler(rawSource, replacer)
+          const source = new ConcatSource(jsSource)
           compilation.updateAsset(file, source)
         }
       }
