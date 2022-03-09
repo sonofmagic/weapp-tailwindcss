@@ -25,7 +25,7 @@ export const defaultOptions: Required<UserDefinedOptions> = {
         return /^app/.test(file)
       }
       case 'kbone': {
-        return /^common\/miniprogram-app/.test(file)
+        return /^(?:common\/)?miniprogram-app/.test(file)
       }
       default: {
         return true

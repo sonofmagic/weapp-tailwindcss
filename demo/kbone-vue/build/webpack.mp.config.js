@@ -225,9 +225,12 @@ module.exports = {
     new MpPlugin(mpPluginConfig),
     new KboneWeappTailwindcssWebpackPluginV4({
       customRuleCallback: (node, opt) => {
+        // console.log(node.selector, opt.isMainChunk)
         if (opt.isMainChunk) {
+          //console.log(node.selector)
           if (node.selector.includes('page,::after,::before')) {
             // page,::after,::before
+            //console.log(node.selector)
             node.selector = node.selector
               .replace(/page/g, 'view')
               .replace(/::after/g, 'view::after')
