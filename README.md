@@ -25,45 +25,33 @@
 
 ## Usage
 
-<h3 id="uni-app">uni-app (vue2/3)</h3>
+<h3 id="uni-app"></h3>
 
-[使用方式](./docs/uni-app.md)
+### uni-app (vue2/3) [使用方式](./docs/uni-app.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app)
 
-[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app)
+<h3 id="uni-app-vite"></h3>
 
-<h3 id="uni-app-vite">uni-app for vite (vue3)</h3>
+### uni-app for vite (vue3) [使用方式](./docs/uni-app-vite.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
 
-[使用方式](./docs/uni-app-vite.md)
+<h3 id="taro"></h3>
 
-[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
-
-<h3 id="taro">Taro v3 (React/vue2/3)</h3>
+### Taro v3 (React/vue2/3)
 
 [使用方式(需要声明使用的框架!)](./docs/taro.md)
 
-[React Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app)
+[React Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app) | [vue2 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue2-app) | [vue3 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue3-app)
 
-[vue2 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue2-app)
+<h3 id="remax"></h3>
 
-[vue3 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue3-app)
+### remax (react) [使用方式](./docs/remax.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/remax-app)
 
-<h3 id="remax">remax (react)</h3>
+<h3 id="rax"></h3>
 
-[使用方式](./docs/remax.md)
+### rax (react) [使用方式](./docs/rax.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/rax-app)
 
-[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/remax-app)
+<h3 id="native-mina"></h3>
 
-<h3 id="rax">rax (react)</h3>
-
-[使用方式](./docs/rax.md)
-
-[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/rax-app)
-
-<h3 id="native-mina">原生小程序(webpack5 mina)</h3>
-
-[使用方式](./docs/native-mina.md)
-
-[Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/native-mina)
+### 原生小程序(webpack5 mina) [使用方式](./docs/native-mina.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/native-mina)
 
 #### jit 示例
 
@@ -111,14 +99,15 @@ or `@apply`
 
 ## Options
 
-| 配置项                    | 类型                              | 描述                                                                                                 |
-| ------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `htmlMatcher`             | `(assetPath:string)=>boolean`     | 匹配 `wxml`等等模板进行处理的方法                                                                    |
-| `cssMatcher`              | `(assetPath:string)=>boolean`     | 匹配 `wxss`等等样式文件的方法                                                                        |
-| `jsMatcher`               | `(assetPath:string)=>boolean`     | 匹配 `js`文件进行处理的方法，用于 `react`                                                            |
-| `mainCssChunkMatcher`     | `(assetPath:string)=>boolean`     | 匹配 `tailwindcss jit` 生成的 `css chunk` 的方法                                                     |
-| `framework` (`Taro` 特有) | `react`\|`vue2`\|`vue3`           | 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`                             |
-| `cssPreflight`            | `Record<string,string>`\| `false` | 在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下: |
+| 配置项                    | 类型                                                                           | 描述                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `htmlMatcher`             | `(assetPath:string)=>boolean`                                                  | 匹配 `wxml`等等模板进行处理的方法                                                                    |
+| `cssMatcher`              | `(assetPath:string)=>boolean`                                                  | 匹配 `wxss`等等样式文件的方法                                                                        |
+| `jsMatcher`               | `(assetPath:string)=>boolean`                                                  | 匹配 `js`文件进行处理的方法，用于 `react`                                                            |
+| `mainCssChunkMatcher`     | `(assetPath:string)=>boolean`                                                  | 匹配 `tailwindcss jit` 生成的 `css chunk` 的方法                                                     |
+| `framework` (`Taro` 特有) | `react`\|`vue2`\|`vue3`                                                        | 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`                             |
+| `customRuleCallback`      | `(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void` | 可根据 Postcss walk 自由定制处理方案的 callback 方法                                                 |
+| `cssPreflight`            | `Record<string,string>`\| `false`                                              | 在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下: |
 
 ```js
 // default 默认:

@@ -3,8 +3,6 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "declaration": true,
-    "declarationDir": "types",
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
@@ -13,6 +11,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
+    "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }],
     "types": ["webpack", "node", "jest"]
   },
   "exclude": ["dist", "node_modules", "test/types"],

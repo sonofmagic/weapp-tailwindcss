@@ -24,7 +24,7 @@ const config = {
       preferBuiltins: true
     }),
     commonjs(),
-    typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev }),
+    typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false }),
     isDev
       ? undefined
       : terser({

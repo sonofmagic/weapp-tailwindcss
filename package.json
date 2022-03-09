@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development rollup -cw",
-    "build": "yarn clean && cross-env NODE_ENV=production rollup -c",
+    "dev": "yarn dts && cross-env NODE_ENV=development rollup -cw",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c && yarn dts",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
+    "dts": "ttsc --emitDeclarationOnly -p tsconfig.dts.json",
     "test": "jest",
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
@@ -84,7 +85,9 @@
     "ts-jest": "^27.1.2",
     "ts-node": "^10.6.0",
     "tslib": "^2.3.1",
+    "ttypescript": "^1.5.13",
     "typescript": "^4.6.2",
+    "typescript-transform-paths": "^3.3.1",
     "vite": "^2.8.6",
     "webpack": "^5.70.0",
     "webpack4": "npm:webpack@webpack-4"
