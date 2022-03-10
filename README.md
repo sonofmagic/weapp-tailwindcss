@@ -5,6 +5,7 @@
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
 ![dt](https://badgen.net/npm/dt/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
+<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=bOJrjg5Z65fh841eVyf6rOLNWqvluQbk&jump_from=webapi"><img border="0" src="https://img.shields.io/badge/QQ-%E5%8A%A0%E5%85%A5QQ%E7%BE%A4-brightgreen" alt="weapp-tailwindcss-webpack-plug" title="weapp-tailwindcss-webpack-plug"></a>
 
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
 
@@ -157,8 +158,24 @@ cssPreflight: {
 // background: black
 ```
 
+## Related projects
+
+### 模板 template
+
+[uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
+
+[uni-app-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-vscode-template)
+
+[uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
+
+[weapp-native-mina-tailwindcss-template](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
+
+### 预设 tailwindcss preset
+
+[tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)
+
 ## Bugs & Issues
 
 由于 `uni-app` 和 `taro` 都在快速的开发中，如果遇到 Bugs 或者想提出 Issues
 
-[欢迎提交到此处，笔者会尽快复现并修改](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
+[欢迎提交到此处](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
