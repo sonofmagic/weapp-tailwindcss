@@ -9,12 +9,22 @@
 
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
 
-- <a href="#uni-app">uni-app 使用方式(vue2/3)</a>
-- <a href="#uni-app-vite">uni-app for vite 使用方式(vue3)</a>
-- <a href="#taro">taro 使用方式(react/vue2/3)</a>
-- <a href="#remax">remax 使用方式(react)</a>
-- <a href="#rax">rax 使用方式(react)</a>
-- <a href="#native-mina">原生小程序使用方式(mina)</a>
+- [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
+  - [Usage](#usage)
+    - [uni-app (vue2/3)](#uni-app-vue23)
+    - [uni-app for vite (vue3)](#uni-app-for-vite-vue3)
+    - [Taro v3 (React/vue2/3)](#taro-v3-reactvue23)
+    - [remax (react)](#remax-react)
+    - [rax (react)](#rax-react)
+    - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
+      - [jit 示例](#jit-示例)
+  - [关于其他小程序](#关于其他小程序)
+  - [原理篇](#原理篇)
+  - [Options](#options)
+  - [Related projects](#related-projects)
+    - [模板 template](#模板-template)
+    - [预设 tailwindcss preset](#预设-tailwindcss-preset)
+  - [Bugs & Issues](#bugs--issues)
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
 
@@ -26,37 +36,25 @@
 
 ## Usage
 
-<h3 id="uni-app"></h3>
-
 ### uni-app (vue2/3)
 
 [使用方式](./docs/uni-app.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app)
-
-<h3 id="uni-app-vite"></h3>
 
 ### uni-app for vite (vue3)
 
 [使用方式](./docs/uni-app-vite.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
 
-<h3 id="taro"></h3>
-
 ### Taro v3 (React/vue2/3)
 
 [使用方式](./docs/taro.md) | [React Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app) | [vue2 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue2-app) | [vue3 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue3-app)
-
-<h3 id="remax"></h3>
 
 ### remax (react)
 
 [使用方式](./docs/remax.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/remax-app)
 
-<h3 id="rax"></h3>
-
 ### rax (react)
 
 [使用方式](./docs/rax.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/rax-app)
-
-<h3 id="native-mina"></h3>
 
 ### 原生小程序(webpack5 mina)
 
