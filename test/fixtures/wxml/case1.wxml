@@ -1,0 +1,71 @@
+<view class="bg-gray-200 safe-area-inset-bottom">
+  <view class="bg-white">
+    <u-skeleton vue-id="287468b6-1" loading="{{skeletonShow}}" animation="{{true}}" bgColor="#FFF" bind:__l="__l"></u-skeleton>
+    <block wx:if="{{skeletonShow}}">
+      <view class="u-skeleton px-4 py-1">
+        <view class="u-skeleton-fillet w-full h-56 mb-4"></view>
+        <view class="u-skeleton-fillet w-full h-9 mb-4"></view>
+        <block wx:for="{{10}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this">
+          <view class="u-skeleton-fillet w-full h-4 mb-2"></view>
+        </block>
+      </view>
+    </block>
+    <block wx:if="{{notFound}}">
+      <view>
+        <u-empty vue-id="287468b6-2" bind:__l="__l"></u-empty>
+      </view>
+    </block>
+    <block wx:else>
+      <view hidden="{{!(!skeletonShow)}}" class="relative mb-8">
+        <view class="pointer-events-none fixed z-50" style="left:32rpx;right:32rpx;top:32rpx;bottom:112rpx;">
+          <movable-area class="h-full w-full">
+            <movable-view class="w-10 h-10" direction="all" x="{{moveableBtn.x}}" y="{{moveableBtn.y}}" data-event-opts="{{[['change',[['fabChange',['$event']]]],['touchend',[['touchend',['$event']]]]]}}" bindchange="__e" bindtouchend="__e">
+              <view data-event-opts="{{[['tap',[['viewNextArticle',['$event']]]]]}}" class="
+                  bg-white
+                  rounded-full
+                  w-10
+                  h-10
+                  flex
+                  justify-center
+                  items-center
+                  pointer-events-auto
+                " style="box-shadow:1px 1px 2px #2d2d2d;" catchtap="__e">
+                <block wx:if="{{!nextBtnLoading}}">
+                  <tui-icon vue-id="287468b6-3" name="down" size="32rpx" color="black" bind:__l="__l"></tui-icon>
+                </block>
+                <u-loading vue-id="287468b6-4" show="{{nextBtnLoading}}" size="32rpx" mode="circle" bind:__l="__l"></u-loading>
+              </view>
+            </movable-view>
+          </movable-area>
+        </view>
+        <view class="px-4 py-1">
+          <mp-html class="vue-ref" vue-id="287468b6-5" content="{{article.content}}" markdown="{{true}}" data-ref="mpHtml" data-event-opts="{{[['^load',[['contentLoad']]],['^ready',[['contentReady']]]]}}" bind:load="__e" bind:ready="__e" bind:__l="__l"></mp-html>
+        </view>
+        <view class="mt-1 p-4 border-0 border-t border-solid border-gray-100" id="pagebottom">
+          <view class="text-xs mb-4 flex justify-between text-gray-500">
+            <view>{{"阅读: "+(article.readcount||0)}}</view>
+            <view>{{$root.m0}}</view>
+          </view>
+          <block wx:if="{{showComment}}">
+            <comment-index vue-id="287468b6-6" articleId="{{article.id}}" data-event-opts="{{[['^refresh',[['getCommentInfo']]]]}}" bind:refresh="__e" bind:__l="__l"></comment-index>
+          </block>
+        </view>
+        <view class="sticky-bottom-bar safe-area-inset-bottom">
+          <view class="sticky-bottom-bar-content px-4 py-1">
+            <view>
+              <view data-event-opts="{{[['tap',[['scroll2bottom',['$event']]]]]}}" class="comment-btn" bindtap="__e">
+                <u-icon vue-id="287468b6-7" name="pushpin-fill" bind:__l="__l"></u-icon>
+                <text class="ml-1">
+                  评论
+                  <text style="margin-left:4rpx;">{{commentTotal||''}}</text>
+                </text>
+              </view>
+            </view>
+            <view></view>
+          </view>
+        </view>
+        <view class="last-words">我是有底线的|ू･ω･` )</view>
+      </view>
+    </block>
+  </view>
+</view>
