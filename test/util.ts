@@ -7,6 +7,7 @@ export function resolve (...args: string[]) {
 
 export const jsxCasePath = resolve(__dirname, 'fixtures/jsx')
 export const cssCasePath = resolve(__dirname, 'fixtures/css')
+export const wxmlCasePath = resolve(__dirname, 'fixtures/wxml')
 
 export function readFile (filepath: string) {
   return fs.readFile(filepath, {

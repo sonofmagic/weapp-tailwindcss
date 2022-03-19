@@ -1,0 +1,10 @@
+<view data-event-opts="{{[['tap',[['viewNextArticle',['$event']]]]]}}" class="
+                  bg-white
+                  rounded-full
+                  w-10
+                  h-10
+                  flex
+                  justify-center
+                  items-center
+                  pointer-events-auto
+                " style="box-shadow:1px 1px 2px #2d2d2d;" catchtap="__e"></view>

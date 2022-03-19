@@ -16,21 +16,28 @@ import generate from '@babel/generator'
 
 // tailwindcss v3 /src/lib/expandTailwindAtRules getClassCandidates
 
-export function replaceWxml (original: string) {
+export function replaceWxml (original: string, isJsx: boolean = false) {
+  const res = original
+    .replace(/\[/g, '_l_')
+    .replace(/\]/g, '_r_')
+    .replace(/\(/g, '_p_')
+    .replace(/\)/g, '_q_')
+    .replace(/#/g, '_h_')
+    .replace(/!/g, '_i_') //! important
+    .replace(/\//g, '-div-')
+    .replace(/\./g, '-dot-')
+    // :
+    .replace(/:/g, '_c_')
+    // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
+    .replace(/%/g, '_pct_')
+  if (isJsx) {
+    return res
+  }
   return (
-    original
-      .replace(/\[/g, '_l_')
-      .replace(/\]/g, '_r_')
-      .replace(/\(/g, '_p_')
-      .replace(/\)/g, '_q_')
-      .replace(/#/g, '_h_')
-      .replace(/!/g, '_i_') //! important
-      .replace(/\//g, '-div-')
-      .replace(/\./g, '-dot-')
-      // :
-      .replace(/:/g, '_c_')
-      // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
-      .replace(/%/g, '_pct_')
+    res
+      // 去除无用换行符和空格
+      .replace(/\s+/g, ' ')
+      .trim()
   )
 }
 
@@ -54,6 +61,9 @@ export function templeteReplacer (original: string) {
     })
     return `{{${code}}}`
   }
+  // TODO
+  // case \r\n or \n class str
+  // compile error should trim
 
   return replaceWxml(original)
 }
