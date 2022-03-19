@@ -1,6 +1,10 @@
-import { templeteReplacer, replaceWxml } from '@/wxml/index'
+import { templeteReplacer, replaceWxml, templeteHandler } from '@/wxml/index'
 import { classStringReplace } from '@/shared'
-
+import { wxmlCasePath, createGetCase, createPutCase } from './util'
+const getCase = createGetCase(wxmlCasePath)
+// @ts-ignore
+// eslint-disable-next-line no-unused-vars
+const putCase = createPutCase(wxmlCasePath)
 describe('wxml', () => {
   it('isStringLiteral', () => {
     const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
@@ -66,5 +70,20 @@ describe('wxml', () => {
       return replaceWxml(x)
     })
     expect(result).toBe('<view class="h-_l_200_pct__r_" />')
+  })
+
+  it('\\r\\n replace test', async () => {
+    const testCase = `
+    bg-white
+    rounded-full
+    w-10
+    h-10
+    flex
+    justify-center
+    items-center
+    pointer-events-auto
+  `
+    const result = templeteReplacer(testCase)
+    expect(result).toBe('bg-white rounded-full w-10 h-10 flex justify-center items-center pointer-events-auto')
   })
 })

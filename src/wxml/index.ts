@@ -54,8 +54,11 @@ export function templeteReplacer (original: string) {
     })
     return `{{${code}}}`
   }
+  // TODO
+  // case \r\n or \n class str
+  // compile error should trim
 
-  return replaceWxml(original)
+  return replaceWxml(original.replace(/\s+/g, ' ')).trim()
 }
 
 export function templeteHandler (rawSource: string) {
