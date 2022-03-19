@@ -50,7 +50,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
         if (path.node.type === 'StringLiteral') {
           // TODO
           // 现在这样是不恰当的,变量中用户使用了 'a/s' 就会产生破坏效果
-          path.node.value = replaceWxml(path.node.value)
+          path.node.value = replaceWxml(path.node.value, true)
         }
       }
     }
@@ -63,7 +63,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
         path.node.arguments[1].type === 'NumericLiteral'
       ) {
         path.node.arguments[0].value = classStringReplace(path.node.arguments[0].value, (x) => {
-          return replaceWxml(x)
+          return replaceWxml(x, true)
         })
       }
 
@@ -76,7 +76,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
           return end()
         }
         if (path.node.type === 'StringLiteral') {
-          path.node.value = replaceWxml(path.node.value)
+          path.node.value = replaceWxml(path.node.value, true)
         }
       }
     }
@@ -93,7 +93,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
         if (path.node.type === 'StringLiteral') {
           // TODO
-          path.node.value = replaceWxml(path.node.value)
+          path.node.value = replaceWxml(path.node.value, true)
         }
       }
     }

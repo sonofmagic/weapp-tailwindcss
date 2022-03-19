@@ -86,4 +86,24 @@ describe('wxml', () => {
     const result = templeteReplacer(testCase)
     expect(result).toBe('bg-white rounded-full w-10 h-10 flex justify-center items-center pointer-events-auto')
   })
+
+  it('\\r\\n replace test with var', async () => {
+    const testCase = `{{[
+      'flex',
+      'items-center',
+      'justify-center',
+      'h-_l_100px_r_',
+      'w-_l_100px_r_',
+      'rounded-_l_40px_r_',
+      'bg-_l__h_123456_r_',
+      'bg-opacity-_l_0-dot-54_r_',
+      'text-_l__h_ffffff_r_',
+      'data-v-1badc801',
+      'text-_l__h_123456_r_',
+      b]}}`
+    const result = templeteReplacer(testCase)
+    expect(result).toBe(
+      '{{["flex","items-center","justify-center","h-_l_100px_r_","w-_l_100px_r_","rounded-_l_40px_r_","bg-_l__h_123456_r_","bg-opacity-_l_0-dot-54_r_","text-_l__h_ffffff_r_","data-v-1badc801","text-_l__h_123456_r_",b]}}'
+    )
+  })
 })
