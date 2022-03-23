@@ -41,11 +41,13 @@ export function replaceWxml (original: string, isJsx: boolean = false) {
   )
 }
 
-export const variableRegExp = /{{([^{}]*)}}/g
+// #region internal
+const variableRegExp = /{{([^{}]*)}}/g
 
-export function variableMatch (original: string) {
+function variableMatch (original: string) {
   return variableRegExp.exec(original)
 }
+// #endregion
 
 export function generateCode (match: string) {
   const ast = parseExpression(match)
@@ -106,6 +108,7 @@ export function templeteReplacer (original: string) {
 
       resultArray.push(m.source)
       p = m.end
+      // 匹配最终尾部值
       if (i === sources.length - 1) {
         resultArray.push(original.slice(m.end))
       }

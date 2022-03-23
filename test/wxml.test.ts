@@ -111,9 +111,17 @@ describe('wxml', () => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase)
-    console.log(result)
     expect(result).toBe(
       'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}}   w-[20px] {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}} h-[20px]'
+    )
+  })
+
+  it('variables with multiple literal(2)', () => {
+    // eslint-disable-next-line quotes
+    const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
+    const result = templeteReplacer(testCase)
+    expect(result).toBe(
+      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}} {{b}} {{a==="cc"}} w-[20px] {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}}'
     )
   })
 })
