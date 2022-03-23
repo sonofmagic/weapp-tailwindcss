@@ -39,5 +39,5 @@
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-[20px]'?'p-[20px]':'m-[20px]'}}"></view>
 </view>

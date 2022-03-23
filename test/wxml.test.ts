@@ -112,7 +112,7 @@ describe('wxml', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}}   w-[20px] {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}} h-[20px]'
+      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}}   w-_l_20px_r_ {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}} h-_l_20px_r_'
     )
   })
 
@@ -121,7 +121,7 @@ describe('wxml', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}} {{b}} {{a==="cc"}} w-[20px] {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}}'
+      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}} {{b}} {{a==="cc"}} w-_l_20px_r_ {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}}'
     )
   })
 })

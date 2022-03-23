@@ -96,7 +96,7 @@ export function templeteReplacer (original: string) {
     for (let i = 0; i < sources.length; i++) {
       const m = sources[i]
       // 匹配前值
-      resultArray.push(original.slice(p, m.start))
+      resultArray.push(replaceWxml(original.slice(p, m.start), true))
       p = m.start
       // 匹配后值
       if (m.raw.trim().length) {
@@ -110,7 +110,7 @@ export function templeteReplacer (original: string) {
       p = m.end
       // 匹配最终尾部值
       if (i === sources.length - 1) {
-        resultArray.push(original.slice(m.end))
+        resultArray.push(replaceWxml(original.slice(m.end), true))
       }
     }
 
