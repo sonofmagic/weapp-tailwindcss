@@ -40,4 +40,5 @@
   </view>
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-[20px]'?'p-[20px]':'m-[20px]'}}"></view>
+  <button class="text-white px-4 sm:px-8 py-2 sm:py-3 bg-sky-700 hover:bg-sky-800">...</button>
 </view>

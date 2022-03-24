@@ -14,7 +14,8 @@
     "upload": "run-script-os",
     "upload:darwin": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u $npm_package_version@$INIT_CWD",
     "upload:win32": "C:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat -u $npm_package_version@$INIT_CWD",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier src/**/*.wxml"
   },
   "sideEffects": false,
   "dependencies": {
@@ -45,6 +46,8 @@
     "postcss": "^8.4.7",
     "postcss-loader": "^6.2.1",
     "postcss-rem-to-responsive-pixel": "^5.1.1",
+    "prettier": "^2.6.0",
+    "prettier-plugin-tailwindcss": "^0.1.8",
     "replace-ext": "^2.0.0",
     "required-path": "^1.0.1",
     "run-script-os": "^1.1.6",
