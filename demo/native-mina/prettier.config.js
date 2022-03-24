@@ -1,12 +1,12 @@
 const tailwind = require('prettier-plugin-tailwindcss')
 
-const combinedFormatter = {
-  ...tailwind,
-  parsers: {
-    ...tailwind.parsers,
-    wxml: tailwind.parsers.html,
-  },
-}
+// const combinedFormatter = {
+//   ...tailwind,
+//   parsers: {
+//     ...tailwind.parsers,
+//     wxml: tailwind.parsers.html,
+//   },
+// }
 module.exports = {
   semi: false,
   trailingComma: 'all',
@@ -14,7 +14,7 @@ module.exports = {
   printWidth: 120,
   tabWidth: 2,
   arrowParens: 'avoid',
-  plugins: [combinedFormatter],
+  plugins: [tailwind],
   overrides: [
     {
       files: '*.wxml',
