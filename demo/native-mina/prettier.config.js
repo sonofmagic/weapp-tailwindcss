@@ -1,12 +1,5 @@
 const tailwind = require('prettier-plugin-tailwindcss')
 
-// const combinedFormatter = {
-//   ...tailwind,
-//   parsers: {
-//     ...tailwind.parsers,
-//     wxml: tailwind.parsers.html,
-//   },
-// }
 module.exports = {
   semi: false,
   trailingComma: 'all',

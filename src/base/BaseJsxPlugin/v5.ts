@@ -16,29 +16,39 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   apply (compiler: Compiler) {
     const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
+    const Compilation = compiler.webpack.Compilation
+    const { ConcatSource } = compiler.webpack.sources
     // react
     const replacer = createReplacer()
-    const { ConcatSource } = compiler.webpack.sources
-    compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-      const entries = Object.entries(compilation.assets)
-      for (let i = 0; i < entries.length; i++) {
-        const [file, originalSource] = entries[i]
-        if (cssMatcher(file)) {
-          const rawSource = originalSource.source().toString()
-          const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(file, this.appType),
-            cssInjectPreflight,
-            customRuleCallback
-          })
-          const source = new ConcatSource(css)
-          compilation.updateAsset(file, source)
-        } else if (jsMatcher(file)) {
-          const rawSource = originalSource.source().toString()
-          const jsSource = jsxHandler(rawSource, replacer)
-          const source = new ConcatSource(jsSource)
-          compilation.updateAsset(file, source)
+
+    compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      compilation.hooks.processAssets.tapPromise(
+        {
+          name: pluginName,
+          stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL
+        },
+        async (assets) => {
+          const entries = Object.entries(assets)
+          for (let i = 0; i < entries.length; i++) {
+            const [file, originalSource] = entries[i]
+            if (cssMatcher(file)) {
+              const rawSource = originalSource.source().toString()
+              const css = styleHandler(rawSource, {
+                isMainChunk: mainCssChunkMatcher(file, this.appType),
+                cssInjectPreflight,
+                customRuleCallback
+              })
+              const source = new ConcatSource(css)
+              compilation.updateAsset(file, source)
+            } else if (jsMatcher(file)) {
+              const rawSource = originalSource.source().toString()
+              const jsSource = jsxHandler(rawSource, replacer)
+              const source = new ConcatSource(jsSource)
+              compilation.updateAsset(file, source)
+            }
+          }
         }
-      }
+      )
     })
   }
 }
