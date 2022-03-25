@@ -14,24 +14,25 @@
     "upload": "run-script-os",
     "upload:darwin": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u $npm_package_version@$INIT_CWD",
     "upload:win32": "C:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat -u $npm_package_version@$INIT_CWD",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write src/**/*.wxml"
   },
   "sideEffects": false,
   "dependencies": {
-    "dayjs": "^1.10.8",
+    "dayjs": "^1.11.0",
     "lodash": "^4.17.21",
-    "rxjs": "^7.5.4"
+    "rxjs": "^7.5.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.5",
+    "@babel/core": "^7.17.8",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@gfez/eslint-config-wechat-miniprogram": "^1.0.1",
-    "@types/lodash": "^4.14.179",
+    "@types/lodash": "^4.14.180",
     "autoprefixer": "^10.4.2",
-    "babel-loader": "^8.2.3",
+    "babel-loader": "^8.2.4",
     "babel-plugin-lodash": "^3.3.4",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
@@ -45,15 +46,17 @@
     "postcss": "^8.4.7",
     "postcss-loader": "^6.2.1",
     "postcss-rem-to-responsive-pixel": "^5.1.1",
+    "prettier": "^2.6.1",
+    "prettier-plugin-tailwindcss": "^0.1.8",
     "replace-ext": "^2.0.0",
     "required-path": "^1.0.1",
     "run-script-os": "^1.1.6",
     "sass": "^1.49.9",
     "sass-loader": "^12.6.0",
     "tailwindcss": "^3.0.23",
-    "typescript": "^4.6.2",
-    "weapp-tailwindcss-webpack-plugin": "^1.2.1",
-    "webpack": "^5.69.1",
+    "typescript": "^4.6.3",
+    "weapp-tailwindcss-webpack-plugin": "^1.2.5",
+    "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
     "webpack-sources": "^3.2.3"
   }
