@@ -1,4 +1,4 @@
-import wxml from '@icebreakers/wxml'
+import * as wxml from '@icebreakers/wxml'
 import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'

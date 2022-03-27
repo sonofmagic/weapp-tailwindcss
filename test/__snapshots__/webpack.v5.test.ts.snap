@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`webpack5 plugin common: assets 1`] = `
+Object {
+  "index.css": "view,view::before,view::after {
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}",
+  "index.wxml": "<!-- index.wxml -->
+<import src=\\"../../wxml/motto/motto.wxml\\" />
+<view class=\\"container\\">
+  <view bindtap=\\"bindViewTap\\">
+    <user avatarUrl=\\"{{userInfo.avatarUrl}}\\" nickName=\\"{{userInfo.nickName}}\\"></user>
+  </view>
+  <view class=\\"motto\\">
+    <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
+  </view>
+  <view class=\\"powered h-_l_200_pct__r_\\">
+    <text>{{powered.by}}</text>
+  </view>
+  <view class=\\"-mt-2 mb-_l_-20px_r_ p-_l_20px_r_\\">
+    p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+  </view>
+  <view class=\\"space-y-_l_1-dot-6rem_r_\\">
+    <view class=\\"w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_\\">
+      w-[300rpx] text-black text-opacity-[0.19]
+    </view>
+    <view class=\\"max-h-_l_100px_r_ min-w-_l_300rpx_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_\\">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class=\\"min-h-_l_100px_r_ max-w-_l_300rpx_r_ text-_l__h_dddddd_r_\\">
+      max-w-[300rpx] min-h-[100px] text-[#dddddd]
+    </view>
+    <view class=\\"flex h-_l_100px_r_ w-_l_100px_r_ items-center justify-center rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0-dot-54_r_ text-_l__h_ffffff_r_\\">
+      Hello
+    </view>
+    <view class=\\"border-_l_10px_r_ border-solid border-_l__h_098765_r_ border-opacity-_l_0-dot-44_r_\\">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class=\\"grid grid-cols-3 divide-x-_l_10px_r_ divide-solid divide-_l__h_010101_r_\\">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class=\\"w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300\\">
+      Default
+    </view>
+  </view>
+  <view class=\\"test\\">test</view>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}\\"></view>
+  <button class=\\"bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3\\">...</button>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}\\"></view>
+</view>",
+  "wxml.js?var=87de820fb9efeaeb2cc6": "/*
+ * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses \\"eval()\\" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with \\"devtool: false\\".
+ * If you are looking for production-ready output files, see mode: \\"production\\" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ \\"./test/fixtures/webpack/v5/wxml/pages/index.js\\":
+/*!******************************************************!*\\\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\\\******************************************************/
+/***/ (() => {
+
+eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?\\");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__[\\"./test/fixtures/webpack/v5/wxml/pages/index.js\\"]();
+/******/ 	
+/******/ })()
+;",
+}
+`;
+
+exports[`webpack5 plugin common: errors 1`] = `Array []`;
+
+exports[`webpack5 plugin common: warnings 1`] = `Array []`;
