@@ -1,5 +1,5 @@
 module.exports = {
-  content: ['./**/*.{wxml,js,ts}'],
+  content: ['./**/*.{wxml}'],
   theme: {
     extend: {}
   },
