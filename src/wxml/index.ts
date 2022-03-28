@@ -3,7 +3,7 @@ import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 
-export function replaceWxml (original: string, isTrimed: boolean = false) {
+export function replaceWxml (original: string, keepEOL: boolean = false) {
   const res = original
     .replace(/\[/g, '_l_') // [
     .replace(/\]/g, '_r_') // ]
@@ -17,14 +17,13 @@ export function replaceWxml (original: string, isTrimed: boolean = false) {
     .replace(/:/g, '_c_')
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
     .replace(/%/g, '_pct_')
-  if (isTrimed) {
+  if (keepEOL) {
     return res
   }
   return (
     res
       // 去除无用换行符和空格
-      .replace(/\s+/g, ' ')
-      .trim()
+      .replace(/[\r\n]+/g, '')
   )
 }
 

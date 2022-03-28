@@ -84,7 +84,7 @@ describe('wxml', () => {
     pointer-events-auto
   `
     const result = templeteReplacer(testCase)
-    expect(result).toBe('bg-white rounded-full w-10 h-10 flex justify-center items-center pointer-events-auto')
+    expect(result).toBe('    bg-white    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto  ')
   })
 
   it('\\r\\n replace test with var', async () => {
@@ -124,5 +124,17 @@ describe('wxml', () => {
       'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}} {{b}} {{a==="cc"}} w-_l_20px_r_ {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}}'
     )
   })
+
+  it('for toutiao str add not array', () => {
+    const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
+
+    const result = templeteReplacer(testCase)
+    expect(result).toBe('{{"_i_font-bold"+" "+"_i_text-_l__h_990000_r_"+" "+"data-v-1badc801"+" "+"text-2xl"+" "+b}}')
+  })
 })
 // bg-[rgb(2,132,199)]
+// `<view class="content data-v-1badc801"><view class="flex items-center justify-center w-screen h-screen data-v-1badc801"><view class="{{['font-bold', 'text-blue-500', 'data-v-1badc801', 'text-2xl', b]}}">{{a}}</view></view></view>`
+// `<view class="content data-v-1badc801"><view class="flex items-center justify-center w-screen h-screen data-v-1badc801"><view class="{{['font-bold','text-blue-500','data-v-1badc801','text-2xl',b]}}">{{a}}</view></view></view>`
+// <view class="content data-v-1badc801"><view class="flex items-center justify-center w-screen h-screen data-v-1badc801"><view class="{{['font-bold', 'text-blue-500', 'data-v-1badc801', 'text-2xl', b]}}">{{a}}</view></view></view>
+
+//
