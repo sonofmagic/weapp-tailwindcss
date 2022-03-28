@@ -1,5 +1,8 @@
 <template>
   <view class="content">
+    <view class="flex items-center justify-center w-screen h-screen">
+      <view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>
+    </view>
     <image class="logo" src="/static/logo.png" />
     <view class="text-area">
       <text class="title h-[200%]">{{ title }}</text>
@@ -28,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-const title = ref("Hello");
+const title = ref("测试标题");
 const flag = ref(true);
 </script>
 
