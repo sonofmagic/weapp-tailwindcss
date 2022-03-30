@@ -18,6 +18,7 @@
     - [rax (react)](#rax-react)
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
       - [jit 示例](#jit-示例)
+  - [编译到 h5 注意事项](#编译到-h5-注意事项)
   - [关于其他小程序](#关于其他小程序)
   - [原理篇](#原理篇)
   - [Options](#options)
@@ -92,6 +93,44 @@ or `@apply`
 ```
 
 当然以上只是示例，这样写 class 名称过长，一般我们都会使用 `@apply` 来提取这些样式做成公共类。
+
+## 编译到 h5 注意事项
+
+有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:
+
+```js
+// doc link
+// https://uniapp.dcloud.io/collocation/auto/api?id=%e6%b5%8b%e8%af%95%e5%b9%b3%e5%8f%b0%e5%88%a4%e6%96%ad
+const isH5 = process.env.UNI_PLATFORM === 'h5';
+// 然后在 h5 环境下把 webpack plugin 和 postcss for weapp 给禁用掉
+// 比如 uni-app-vue3-vite 这个 demo
+// vite.config.ts
+import { defineConfig } from 'vite';
+import uni from '@dcloudio/vite-plugin-uni';
+import { ViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin';
+
+export default defineConfig({
+  plugins: [uni(), isH5 ? undefined : vwt()]
+});
+
+// postcss.config.js
+module.exports = {
+  plugins: [
+    require('autoprefixer')(),
+    require('tailwindcss')(),
+    // h5 环境下不需要 rem2rpx 了，h5压根不认识 rpx 这个单位
+    isH5
+      ? undefined
+      : require('postcss-rem-to-responsive-pixel')({
+          rootValue: 32,
+          propList: ['*'],
+          transformUnit: 'rpx'
+        }),
+    // h5 环境下不需要对 tailwindcss 生成的 class 进行重命名
+    isH5 ? undefined : require('weapp-tailwindcss-webpack-plugin/postcss')()
+  ]
+};
+```
 
 ## 关于其他小程序
 
