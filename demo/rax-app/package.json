@@ -20,17 +20,17 @@
     "rax-view": "^2.0.0"
   },
   "devDependencies": {
-    "@iceworks/spec": "^1.0.0",
+    "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.0",
-    "autoprefixer": "^10.4.2",
-    "eslint": "^8.0.0",
-    "postcss": "^8.4.6",
+    "autoprefixer": "^10.4.4",
+    "eslint": "^8.12.0",
+    "postcss": "^8.4.12",
     "postcss-rem-to-responsive-pixel": "^5.1.1",
-    "prettier": "^2.1.2",
+    "prettier": "^2.6.2",
     "rax-app": "^3.8.7",
-    "stylelint": "^13.7.2",
+    "stylelint": "^14.6.1",
     "tailwindcss": "^3.0.23",
-    "weapp-tailwindcss-webpack-plugin": "^1.2.1"
+    "weapp-tailwindcss-webpack-plugin": "^1.2.9"
   },
   "private": true,
   "originTemplate": "@rax-materials/scaffolds-app-ts"
