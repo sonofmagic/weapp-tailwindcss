@@ -2,7 +2,7 @@
 import type { AppType, UserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
 import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
-import { createReplacer } from '../../jsx/replacer'
+import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
 export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
