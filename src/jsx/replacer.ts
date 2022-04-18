@@ -6,37 +6,37 @@ import { classStringReplace } from '../shared'
 export type UserMatchNode = ObjectProperty & { key: Identifier }
 export type Replacer = (path: NodePath<Node>) => void
 
-function isSpecNode(node: Node) {
+function isSpecNode (node: Node) {
   return node.type === 'ObjectProperty' && node.key.type === 'Identifier'
 }
 
-function reactMatcher(node: UserMatchNode) {
+function reactMatcher (node: UserMatchNode) {
   return node.key.name === 'className'
 }
 
-function vue2Matcher(node: UserMatchNode) {
+function vue2Matcher (node: UserMatchNode) {
   return node.key.name === 'class' || node.key.name === 'staticClass'
 }
 // default react
-export function createReplacer(framework: string = 'react'): Replacer {
+export function createReplacer (framework: string = 'react'): Replacer {
   let classObjectNode: Node | null
   let startFlag = false
   const isVue3 = framework === 'vue3'
   const isVue2 = framework === 'vue' || framework === 'vue2'
   const isReact = framework === 'react'
 
-  function start(node: Node) {
+  function start (node: Node) {
     startFlag = true
     classObjectNode = node
   }
 
-  function end() {
+  function end () {
     startFlag = false
     classObjectNode = null
   }
 
   if (isVue2) {
-    return function replacer(path: NodePath<Node>) {
+    return function replacer (path: NodePath<Node>) {
       // vue2
       if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
         return start(path.node)
@@ -54,7 +54,7 @@ export function createReplacer(framework: string = 'react'): Replacer {
       }
     }
   } else if (isVue3) {
-    return function replacer(path: NodePath<Node>) {
+    return function replacer (path: NodePath<Node>) {
       if (
         path.node.type === 'CallExpression' &&
         path.node.arguments.length === 2 &&
@@ -80,7 +80,7 @@ export function createReplacer(framework: string = 'react'): Replacer {
       }
     }
   } else if (isReact) {
-    return function replacer(path: NodePath<Node>) {
+    return function replacer (path: NodePath<Node>) {
       // react
       if (isSpecNode(path.node) && reactMatcher(path.node as UserMatchNode)) {
         return start(path.node)
@@ -96,6 +96,6 @@ export function createReplacer(framework: string = 'react'): Replacer {
       }
     }
   } else {
-    return function replacer(path: NodePath<Node>) {}
+    return function replacer (path: NodePath<Node>) {}
   }
 }
