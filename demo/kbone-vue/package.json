@@ -9,12 +9,12 @@
     "mp"
   ],
   "scripts": {
-    "start": "npm run mp",
+    "start": "npm run dev",
     "web": "cross-env NODE_ENV=development webpack-dev-server --inline --progress --config build/webpack.dev.config.js",
-    "mp": "rimraf dist/mp/common && cross-env NODE_ENV=development webpack --config build/webpack.mp.config.js --progress --hide-modules",
+    "dev": "rimraf dist/mp/common && cross-env NODE_ENV=development webpack --config build/webpack.mp.config.js --progress --hide-modules",
     "lint": "eslint --ext .js,.vue src --fix",
-    "build": "rimraf dist/web && cross-env NODE_ENV=production webpack --config build/webpack.prod.config.js --progress --hide-modules",
-    "build:mp": "rimraf dist/mp/common && cross-env NODE_ENV=production webpack --config build/webpack.mp.config.js --progress --hide-modules"
+    "build:web": "rimraf dist/web && cross-env NODE_ENV=production webpack --config build/webpack.prod.config.js --progress --hide-modules",
+    "build": "rimraf dist/mp/common && cross-env NODE_ENV=production webpack --config build/webpack.mp.config.js --progress --hide-modules"
   },
   "dependencies": {
     "vue": "^2.6.11",

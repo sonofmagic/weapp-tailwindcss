@@ -1,0 +1,13 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "turbo": "^1.2.4"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build"
+  }
+}

@@ -9,11 +9,11 @@
     "mp"
   ],
   "scripts": {
-    "start": "npm run mp",
+    "start": "npm run dev",
     "web": "cross-env NODE_ENV=development webpack-dev-server --progress --config build/webpack.dev.config.js",
-    "mp": "rimraf dist/mp/common && cross-env NODE_ENV=development webpack --config build/webpack.mp.config.js --watch --progress",
-    "build": "rimraf dist/web && cross-env NODE_ENV=production webpack --config build/webpack.prod.config.js --progress",
-    "build:mp": "rimraf dist/mp/common && cross-env NODE_ENV=production webpack --config build/webpack.mp.config.js --progress"
+    "dev": "rimraf dist/mp/common && cross-env NODE_ENV=development webpack --config build/webpack.mp.config.js --watch --progress",
+    "build:web": "rimraf dist/web && cross-env NODE_ENV=production webpack --config build/webpack.prod.config.js --progress",
+    "build": "rimraf dist/mp/common && cross-env NODE_ENV=production webpack --config build/webpack.mp.config.js --progress"
   },
   "dependencies": {
     "react": "^16.9.0",
