@@ -25,13 +25,13 @@ if (!isH5) {
 }
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: vitePlugins
+  plugins: vitePlugins,
   // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
-  // css: {
-  //   postcss: {
-  //     plugins: postcssPlugins
-  //   }
-  // }
+  css: {
+    postcss: {
+      plugins: postcssPlugins
+    }
+  }
   // 假如 postcss.config.js 不起作用，请使用内联 postcss
   // css: {
   //   postcss: {
