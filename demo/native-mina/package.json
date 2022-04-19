@@ -7,6 +7,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
+    "dev":"npm run start",
     "type-check": "tsc --noEmit",
     "start": "webpack --watch --progress",
     "build": "cross-env NODE_ENV=production BUILD_TYPE=release webpack",

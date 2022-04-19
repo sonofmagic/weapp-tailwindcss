@@ -17,9 +17,6 @@ function reactMatcher (node: UserMatchNode) {
 function vue2Matcher (node: UserMatchNode) {
   return node.key.name === 'class' || node.key.name === 'staticClass'
 }
-
-// path.node.id -> name // Identifier
-// path.node.init -> ObjectExpression
 // default react
 export function createReplacer (framework: string = 'react'): Replacer {
   let classObjectNode: Node | null
@@ -27,18 +24,20 @@ export function createReplacer (framework: string = 'react'): Replacer {
   const isVue3 = framework === 'vue3'
   const isVue2 = framework === 'vue' || framework === 'vue2'
   const isReact = framework === 'react'
-  function end () {
-    startFlag = false
-    classObjectNode = null
-  }
 
   function start (node: Node) {
     startFlag = true
     classObjectNode = node
   }
+
+  function end () {
+    startFlag = false
+    classObjectNode = null
+  }
+
   if (isVue2) {
     return function replacer (path: NodePath<Node>) {
-      // react and vue2
+      // vue2
       if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
@@ -49,7 +48,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
         if (path.node.type === 'StringLiteral') {
           // TODO
-          // 现在这样是不恰当的,变量中用户使用了 'a/s' 就会产生破坏效果
+          // 现在这样是有个问题的,变量中用户使用了 'a/s' 就会产生破坏效果
           path.node.value = replaceWxml(path.node.value, true)
         }
       }
@@ -82,7 +81,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
     }
   } else if (isReact) {
     return function replacer (path: NodePath<Node>) {
-      // react and vue2
+      // react
       if (isSpecNode(path.node) && reactMatcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
@@ -92,7 +91,6 @@ export function createReplacer (framework: string = 'react'): Replacer {
           return end()
         }
         if (path.node.type === 'StringLiteral') {
-          // TODO
           path.node.value = replaceWxml(path.node.value, true)
         }
       }

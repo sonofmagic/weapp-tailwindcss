@@ -80,6 +80,8 @@ module.exports = ({ context, onGetWebpackConfig }) => {
 
 ## rax 注意点
 
+### 1. rax 默认移除样式
+
 rax 内置的 postcss 会默认移除
 
 `selector .space-y-\[1\.6rem\] > :not([hidden]) ~ :not([hidden]) is not supported in miniapp css, so it will be deleted`
@@ -87,3 +89,27 @@ rax 内置的 postcss 会默认移除
 `selector .divide-x-\[10px\] > :not([hidden]) ~ :not([hidden]) is not supported in miniapp css, so it will be deleted`
 
 这些节点。
+
+### 2. 无法使用最新的 `postcss8` 和 `tailwindcss3` ?
+
+有时候由于一些项目的历史原因(比如依赖的插件只支持 `postcss7` ) , 我们不得不在项目里使用低版本的 `postcss7` 和 `tailwindcss2` 。
+
+此时需要把 `tailwind.config.js` 更改为 `tailwindcss2` 的配置:
+
+```js
+module.exports = {
+  mode: 'jit',
+  purge: {
+    content: ['./src/**/*.{js,ts,jsx,tsx,wxml}'],
+  },
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+  corePlugins: {
+    preflight: false,
+  },
+};
+```
+
+原因详见 https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/23

@@ -2,7 +2,7 @@ import type { AppType, TaroUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack4'
 import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
-import { createReplacer } from '../../jsx/replacer'
+import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
@@ -10,12 +10,12 @@ import type { IBaseWebpackPlugin } from '@/interface'
 export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   options: Required<TaroUserDefinedOptions>
   appType: AppType
-  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor(options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, customRuleCallback } = this.options
     // default react
     const replacer = createReplacer(framework)
