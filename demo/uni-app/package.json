@@ -66,15 +66,13 @@
     "@dcloudio/uni-stat": "^2.0.1-33920220121003",
     "@vue/shared": "^3.0.0",
     "core-js": "^3.6.5",
-    "regenerator-runtime": "^0.12.1",
+    "regenerator-runtime": "^0.13.9",
     "vue": "^2.6.11",
-    "vue-class-component": "^6.3.2",
-    "vue-property-decorator": "^8.0.0",
     "vuex": "^3.2.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.2.0",
-    "@babel/runtime": "~7.12.0",
+    "@babel/runtime": "~7.17.9",
     "@dcloudio/types": "*",
     "@dcloudio/uni-automator": "^2.0.1-33920220121003",
     "@dcloudio/uni-cli-i18n": "^2.0.1-33920220121003",
@@ -102,7 +100,7 @@
     "sass": "^1.49.0",
     "sass-loader": "10",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "typescript": "^3.0.0",
+    "typescript": "^4.6.3",
     "vue-template-compiler": "^2.6.11",
     "weapp-tailwindcss-webpack-plugin": "^1.2.1"
   },
