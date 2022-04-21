@@ -19,7 +19,11 @@ export function commonChunkPreflight (node: Rule, cssInjectPreflight: InjectPref
 
   // 变量注入和 preflight
   if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
-    // node.selector = 'view,view::before,view::after'
+    const selectorParts = node.selector.split(',')
+    if (!selectorParts.includes('view')) {
+      selectorParts.push('view')
+      node.selector = selectorParts.join(',')
+    }
 
     // node.walkDecls((decl) => {
     //   // remove empty var 来避免压缩css报错
