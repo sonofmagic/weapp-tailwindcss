@@ -1,11 +1,8 @@
 <template>
   <view class="content">
-    <view class="w-2 h-2 bg-[#123456]"></view>
-    <view class="w-2 h-2 bg-blue-500/50"></view>
     <view class="flex items-center justify-center w-screen h-screen">
       <view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>
     </view>
-    <image class="logo" src="/static/logo.png" />
     <view class="text-area">
       <text class="title h-[200%]">{{ title }}</text>
     </view>

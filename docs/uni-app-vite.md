@@ -24,35 +24,48 @@ module.exports = {
 ## 3. 修改 `vite.config.[jt]s` 配置
 
 ```js
-import { defineConfig } from 'vite'
-import uni from '@dcloudio/vite-plugin-uni'
-import { ViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin'
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [uni(), vwt()]
-})
-```
+import { defineConfig } from 'vite';
+import uni from '@dcloudio/vite-plugin-uni';
 
-## 4. 添加 `postcss.config.js`
+import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from 'weapp-tailwindcss-webpack-plugin'
 
-```js
-// postcss.config.js
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-    'postcss-rem-to-responsive-pixel': {
+const isH5 = process.env.UNI_PLATFORM === 'h5';
+// vite 插件配置
+const vitePlugins = [uni()];
+// postcss 插件配置
+const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
+if (!isH5) {
+  vitePlugins.push(vwt());
+
+  postcssPlugins.push(
+    require('postcss-rem-to-responsive-pixel')({
       rootValue: 32,
       propList: ['*'],
-      transformUnit: 'rpx'
-    },
-    // 注意添加 postcss 插件
-    'weapp-tailwindcss-webpack-plugin/postcss': {}
-  }
+      transformUnit: 'rpx',
+    })
+  );
+  postcssPlugins.push(
+    postcssWeappTailwindcssRename({
+      // cssPreflight: {
+      //   'box-sizing': false,
+      // },
+    })
+  );
 }
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: vitePlugins,
+  // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
+  css: {
+    postcss: {
+      plugins: postcssPlugins,
+    },
+  },
+});
+
 ```
 
-## 5. 在 `src/App.vue` 中添加:
+## 4. 在 `src/App.vue` 中添加:
 
 ```vue
 <script setup lang="ts">
@@ -66,3 +79,7 @@ import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 ```
 
 然后就大功告成了!
+
+## 注意点
+
+这里我采用的内联 `postcss` 配置的方式去做，因为有时候 `postcss.config.js` 配置会不起作用
