@@ -1,27 +1,33 @@
-import { defineConfig } from 'vite'
-import uni from '@dcloudio/vite-plugin-uni'
+import { defineConfig } from 'vite';
+import uni from '@dcloudio/vite-plugin-uni';
 
-import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from '../..'
+import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from '../..';
 // console.log(process.env.UNI_PLATFORM);
 
-const isH5 = process.env.UNI_PLATFORM === 'h5'
+const isH5 = process.env.UNI_PLATFORM === 'h5';
 // import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from 'weapp-tailwindcss-webpack-plugin'
 
 // vite 插件配置
-const vitePlugins = [uni()]
+const vitePlugins = [uni()];
 // postcss 插件配置
-const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()]
+const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 if (!isH5) {
-  vitePlugins.push(vwt())
+  vitePlugins.push(vwt());
 
   postcssPlugins.push(
     require('postcss-rem-to-responsive-pixel')({
       rootValue: 32,
       propList: ['*'],
-      transformUnit: 'rpx'
+      transformUnit: 'rpx',
     })
-  )
-  postcssPlugins.push(postcssWeappTailwindcssRename())
+  );
+  postcssPlugins.push(
+    postcssWeappTailwindcssRename({
+      // cssPreflight: {
+      //   'box-sizing': false,
+      // },
+    })
+  );
 }
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,9 +35,9 @@ export default defineConfig({
   // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
   css: {
     postcss: {
-      plugins: postcssPlugins
-    }
-  }
+      plugins: postcssPlugins,
+    },
+  },
   // 假如 postcss.config.js 不起作用，请使用内联 postcss
   // css: {
   //   postcss: {
@@ -47,4 +53,4 @@ export default defineConfig({
   //     ]
   //   }
   // }
-})
+});
