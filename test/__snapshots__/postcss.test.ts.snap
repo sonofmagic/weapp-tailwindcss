@@ -359,7 +359,7 @@ exports[`first new option for customRuleCallback kbone 1`] = `
 .h5-summary,
 page,
 ::after,
-::before {
+::before,view {
   --tw-border-opacity: 1;
   border-color: rgba(229, 231, 235, var(--tw-border-opacity));
   --tw-ring-inset: var(--tw-empty, );
