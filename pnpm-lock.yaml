@@ -34,6 +34,7 @@ specifiers:
   html-parse-stringify: ^3.0.1
   jest: ^27.5.1
   memfs: ^3.4.1
+  parse5: ^7.0.0
   postcss: ^8.4.12
   postcss-load-config: ^3.1.3
   postcss-loader: ^6.2.1
@@ -94,6 +95,7 @@ devDependencies:
   html-parse-stringify: 3.0.1
   jest: 27.5.1_ts-node@10.7.0
   memfs: 3.4.1
+  parse5: 7.0.0
   postcss: 8.4.12
   postcss-load-config: 3.1.4_postcss@8.4.12+ts-node@10.7.0
   postcss-loader: 6.2.1_postcss@8.4.12+webpack@5.72.0
@@ -2547,6 +2549,11 @@ packages:
       tapable: 2.2.1
     dev: true
 
+  /entities/4.3.0:
+    resolution: {integrity: sha512-/iP1rZrSEJ0DTlPiX+jbzlA3eVkY/e8L8SozroF395fIqE3TYF/Nz7YOMAawta+vLmyJ/hkGNNPcSbMADCCXbg==}
+    engines: {node: '>=0.12'}
+    dev: true
+
   /errno/0.1.8:
     resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
     hasBin: true
@@ -4569,7 +4576,7 @@ packages:
     dev: true
 
   /json5/2.2.1:
-    resolution: {integrity: sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==, registry: http://registry.npm.taobao.org/, tarball: http://registry.npm.taobao.org/json5/-/json5-2.2.1.tgz}
+    resolution: {integrity: sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==}
     engines: {node: '>=6'}
     hasBin: true
     dev: true
@@ -5215,7 +5222,13 @@ packages:
     dev: true
 
   /parse5/6.0.1:
-    resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==, registry: http://registry.npm.taobao.org/, tarball: http://registry.npm.taobao.org/parse5/-/parse5-6.0.1.tgz}
+    resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==}
+    dev: true
+
+  /parse5/7.0.0:
+    resolution: {integrity: sha512-y/t8IXSPWTuRZqXc0ajH/UwDj4mnqLEbSttNbThcFhGrZuOyoyvNBO85PBp2jQa55wY9d07PBNjsK8ZP3K5U6g==}
+    dependencies:
+      entities: 4.3.0
     dev: true
 
   /pascalcase/0.1.1:
