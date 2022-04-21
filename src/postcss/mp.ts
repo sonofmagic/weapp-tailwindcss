@@ -5,44 +5,28 @@ import type { InjectPreflight } from './preflight'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
 }
+const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
+const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
-const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
+// const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
 // :not([hidden])~:not([hidden])
 // :not([hidden]) ~ :not([hidden])
-const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
+// const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
 
 export function commonChunkPreflight (node: Rule, cssInjectPreflight: InjectPreflight) {
-  if (regexp1.test(node.selector)) {
-    node.selector = node.selector.replace(regexp1, 'view + view')
-  }
+  node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view').replace(/\*/g, 'view')
 
-  if (regexp2.test(node.selector)) {
-    node.selector = node.selector.replace(regexp2, 'view + view')
-  }
-  //* , ::before, ::after
-  if (node.selector.includes('*')) {
-    // console.log('[hit]:*')
-    node.selector = node.selector.replace('*', 'view')
-  }
-
-  if (node.selector.includes('*::before')) {
-    node.selector = node.selector.replace('*::before', 'view::before')
-  }
-
-  if (node.selector.includes('*::after')) {
-    node.selector = node.selector.replace('*::after', 'view::after')
-  }
   // 变量注入和 preflight
-  if (node.selector.includes('::before') && node.selector.includes('::after')) {
-    node.selector = 'view,view::before,view::after'
+  if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
+    // node.selector = 'view,view::before,view::after'
 
     // node.walkDecls((decl) => {
     //   // remove empty var 来避免压缩css报错
     //   if (/^\s*$/.test(decl.value)) {
     //     decl.remove()
     //   }
-    //   // console.log(decl.prop, decl.value)
+    //   //  console.log(decl.prop, decl.value)
     // })
 
     // preset

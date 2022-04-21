@@ -14,9 +14,9 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight
     })
-    const expected = await getCase('media1.result.css')
+    // const expected = await getCase('media1.result.css')
     // await putCase('media1.result.css', result)
-    expect(result).toBe(expected)
+    // expect(result).toBe(expected)
     expect(result).toMatchSnapshot()
   })
 
@@ -39,10 +39,10 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight
     })
-    const expected = await getCase('taro.build.result.css')
+    // const expected = await getCase('taro.build.result.css')
     // await putCase('taro.build.result.css', result)
     // expect(true).toBe(true)
-    expect(result).toBe(expected)
+    // expect(result).toBe(expected)
     expect(result).toMatchSnapshot()
   })
 
@@ -66,9 +66,9 @@ describe('first', () => {
         // }
       }
     })
-    const expected = await getCase('kbone1.result.css')
+    // const expected = await getCase('kbone1.result.css')
     // await putCase('kbone1.result.css', result)
-    expect(result).toBe(expected)
+    // expect(result).toBe(expected)
     expect(result).toMatchSnapshot()
   })
 })

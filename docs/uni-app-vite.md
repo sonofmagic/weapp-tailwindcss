@@ -82,4 +82,6 @@ import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 
 ## 注意点
 
-这里我采用的内联 `postcss` 配置的方式去做，因为有时候 `postcss.config.js` 配置会不起作用
+1. 上述示例的 `vite.config.[jt]s` 配置中， `vwt()` 一定要放在 `uni()` 的后面，这样才能针对 `@dcloudio/vite-plugin-uni` 的产物进行转义
+
+2. 这里我采用的内联 `postcss` 配置的方式去做，因为有时候 `postcss.config.js` 配置会不起作用
