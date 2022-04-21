@@ -1,18 +1,18 @@
-import { defineConfig } from 'vite';
-import uni from '@dcloudio/vite-plugin-uni';
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+
+import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from '../..'
 // console.log(process.env.UNI_PLATFORM);
 
-const isH5 = process.env.UNI_PLATFORM === 'h5';
-
-import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from '../..';
+const isH5 = process.env.UNI_PLATFORM === 'h5'
 // import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from 'weapp-tailwindcss-webpack-plugin'
 
 // vite 插件配置
-const vitePlugins = [uni()];
+const vitePlugins = [uni()]
 // postcss 插件配置
-const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
+const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()]
 if (!isH5) {
-  vitePlugins.push(vwt());
+  vitePlugins.push(vwt())
 
   postcssPlugins.push(
     require('postcss-rem-to-responsive-pixel')({
@@ -20,8 +20,8 @@ if (!isH5) {
       propList: ['*'],
       transformUnit: 'rpx'
     })
-  );
-  postcssPlugins.push(postcssWeappTailwindcssRename());
+  )
+  postcssPlugins.push(postcssWeappTailwindcssRename())
 }
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -47,4 +47,4 @@ export default defineConfig({
   //     ]
   //   }
   // }
-});
+})

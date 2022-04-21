@@ -1,0 +1,19 @@
+{
+  "workspaces": {
+    "packages": [
+      "packages/**",
+      "kbone-react",
+      "kbone-vue",
+      "native-mina",
+      "rax-app",
+      "remax-app",
+      "taro-app",
+      "taro-vue2-app",
+      "taro-vue3-app",
+      "uni-app",
+      "uni-app-vue3-vite",
+      "web"
+    ],
+    "nohoist": ["**/react", "**/@dcloudio/**", "**/postcss", "**/vue", "**/@vue/**", "**/*-loader", "**/webpack"]
+  }
+}
