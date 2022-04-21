@@ -2,7 +2,7 @@
 
 exports[`webpack5 plugin common: assets 1`] = `
 Object {
-  "index.css": "view,view::before,view::after {
+  "index.css": "view, ::before, ::after {
     --tw-translate-x: 0;
     --tw-translate-y: 0;
     --tw-rotate: 0;

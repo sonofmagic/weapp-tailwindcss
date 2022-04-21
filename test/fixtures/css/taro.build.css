@@ -1,6 +1,6 @@
-view,
-view::before,
-view::after {
+*,
+::before,
+::after {
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate: 0;

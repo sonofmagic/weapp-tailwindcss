@@ -1,7 +1,7 @@
 <template>
   <view class="content">
-    <view class="w-2 h-2 bg-[#123456]"></view>
-    <view class="w-2 h-2 bg-blue-500/50"></view>
+    <!-- <view class="w-2 h-2 bg-[#123456]"></view>
+    <view class="w-2 h-2 bg-blue-500/50"></view> -->
     <view class="flex items-center justify-center w-screen h-screen">
       <view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>
     </view>
@@ -37,8 +37,20 @@ const title = ref("测试标题");
 const flag = ref(true);
 </script>
 
+<style lang="scss">
+page::before {
+  content: '';
+  @apply w-10 h-5 bg-green-500 inline-block;
+}
+</style>
+
 <style lang="scss" scoped>
 .test {
   @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+}
+
+.content::before {
+  content: '';
+  @apply w-5 h-5 bg-red-500/50 inline-block;
 }
 </style>
