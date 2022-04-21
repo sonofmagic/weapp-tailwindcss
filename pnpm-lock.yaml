@@ -31,6 +31,7 @@ specifiers:
   eslint-plugin-node: 11.1.0
   eslint-plugin-promise: 6.0.0
   execa: '5'
+  html-parse-stringify: ^3.0.1
   jest: ^27.5.1
   memfs: ^3.4.1
   postcss: ^8.4.12
@@ -90,6 +91,7 @@ devDependencies:
   eslint-plugin-node: 11.1.0_eslint@8.13.0
   eslint-plugin-promise: 6.0.0_eslint@8.13.0
   execa: 5.1.1
+  html-parse-stringify: 3.0.1
   jest: 27.5.1_ts-node@10.7.0
   memfs: 3.4.1
   postcss: 8.4.12
@@ -3570,6 +3572,12 @@ packages:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==, registry: http://registry.npm.taobao.org/, tarball: http://registry.npm.taobao.org/html-escaper/-/html-escaper-2.0.2.tgz}
     dev: true
 
+  /html-parse-stringify/3.0.1:
+    resolution: {integrity: sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg==}
+    dependencies:
+      void-elements: 3.1.0
+    dev: true
+
   /http-proxy-agent/4.0.1:
     resolution: {integrity: sha512-k0zdNgqWTGA6aeIRVpvfVob4fL52dTfaehylg0Y4UvSySvOq/Y+BOyPrgpUrA7HylqvU8vIZGsRuXmspskV0Tg==, registry: http://registry.npm.taobao.org/, tarball: http://registry.npm.taobao.org/http-proxy-agent/-/http-proxy-agent-4.0.1.tgz}
     engines: {node: '>= 6'}
@@ -5291,7 +5299,7 @@ packages:
     dev: true
 
   /pkg-dir/4.2.0:
-    resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==, registry: http://registry.npm.taobao.org/, tarball: http://registry.npm.taobao.org/pkg-dir/-/pkg-dir-4.2.0.tgz}
+    resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
     dependencies:
       find-up: 4.1.0
@@ -6561,6 +6569,11 @@ packages:
 
   /vm-browserify/1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
+    dev: true
+
+  /void-elements/3.1.0:
+    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
+    engines: {node: '>=0.10.0'}
     dev: true
 
   /w3c-hr-time/1.0.2:
