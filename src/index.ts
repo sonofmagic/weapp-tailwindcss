@@ -10,8 +10,8 @@ import {
 
 import postcssWeappTailwindcssRename from './postcss/plugin'
 
-import { replaceWxml as replaceJs } from './wxml'
-import { cssSelectorReplacer as replaceCss } from './postcss/shared'
+// import { replaceWxml as replaceJs } from './wxml'
+// import { cssSelectorReplacer as replaceCss } from './postcss/shared'
 
 export {
   UniAppWeappTailwindcssWebpackPluginV4,
@@ -21,7 +21,7 @@ export {
   RaxTailwindcssWebpackPluginV5,
   ViteWeappTailwindcssPlugin,
   postcssWeappTailwindcssRename,
-  NativeWeappTailwindcssWebpackPluginV5,
-  replaceJs,
-  replaceCss
+  NativeWeappTailwindcssWebpackPluginV5
+  // replaceJs,
+  // replaceCss
 }

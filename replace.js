@@ -1,6 +1,7 @@
-const { replaceCss, replaceJs } = require('.')
+// const { replaceCss, replaceJs } = require('.')
 
-module.exports = {
-  replaceCss,
-  replaceJs
-}
+// module.exports = {
+//   replaceCss,
+//   replaceJs
+// }
+export { replaceCss, replaceJs } from './dist/replace.js'
