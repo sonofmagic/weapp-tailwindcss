@@ -1,9 +1,27 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.3.2-beta.2",
+  "version": "1.3.2-beta.3",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "node": {
+        "require": "./dist/index.js"
+      },
+      "require": "./dist/index.js"
+    },
+    "./replace": {
+      "types": "./dist/types/replace.d.ts",
+      "import": "./replace.js"
+    },
+    "./postcss": {
+      "types": "./dist/types/postcss/plugin.d.ts",
+      "require": "./postcss.js"
+    }
+  },
   "scripts": {
     "dev": "yarn dts && cross-env NODE_ENV=development rollup -cw",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c && yarn dts",
