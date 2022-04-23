@@ -37,10 +37,10 @@
 import { ref, reactive } from "vue";
 const title = ref("测试标题");
 const flag = ref(true);
-import { replaceJs } from '../../../../..'
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
 const cardsColor = reactive([
   replaceJs('bg-[#4268EA] shadow-indigo-100'),
-  'bg-cyan-500 shadow-blue-100',
+  replaceJs('bg-[#123456] shadow-blue-100') ,
   'bg-green-500 shadow-green-100',
   'bg-cyan-500 shadow-cyan-100',
   'bg-amber-500 shadow-amber-100',
