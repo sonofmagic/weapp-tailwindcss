@@ -21,7 +21,8 @@
   },
   "files": [
     "dist",
-    "postcss.js"
+    "postcss.js",
+    "replace.js"
   ],
   "publishConfig": {
     "access": "public",
