@@ -6,6 +6,18 @@ import pkg from './package.json'
 // const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 
+/** @type {import('rollup').RollupOptions } */
+const sharedConfig = {
+  plugins: [
+    nodeResolve({
+      preferBuiltins: true
+    }),
+    commonjs(),
+    typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
+  ],
+  external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : [])]
+}
+
 /** @type {Array<import('rollup').RollupOptions> } */
 const config = [
   {
@@ -19,22 +31,7 @@ const config = [
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ],
-
-    plugins: [
-      nodeResolve({
-        preferBuiltins: true
-      }),
-      commonjs(),
-      typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
-      // isDev
-      //   ? undefined
-      //   : terser({
-      //     format: {
-      //       comments: false,
-      //     }
-      //   })
-    ],
-    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : [])]
+    ...sharedConfig
   },
   {
     input: 'src/replace.ts',
@@ -47,15 +44,7 @@ const config = [
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ],
-
-    plugins: [
-      nodeResolve({
-        preferBuiltins: true
-      }),
-      commonjs(),
-      typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
-    ],
-    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : [])]
+    ...sharedConfig
   }
 ]
 
