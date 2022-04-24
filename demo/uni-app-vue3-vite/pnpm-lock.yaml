@@ -17,7 +17,7 @@ specifiers:
   '@dcloudio/uni-mp-weixin': ^3.0.0-alpha-3031120220216001
   '@dcloudio/uni-quickapp-webview': ^3.0.0-alpha-3031120220216001
   '@dcloudio/vite-plugin-uni': ^3.0.0-alpha-3031120220216001
-  autoprefixer: ^10.4.2
+  autoprefixer: ^10.4.5
   postcss: ^8.4.7
   postcss-rem-to-responsive-pixel: ^5.1.1
   sass: ^1.49.9
@@ -27,7 +27,7 @@ specifiers:
   vue: ^3.2.30
   vue-i18n: ^9.1.9
   vuex: ^4.0.2
-  weapp-tailwindcss-webpack-plugin: ^1.3.2-beta.3
+  weapp-tailwindcss-webpack-plugin: ^1.3.3
 
 dependencies:
   '@dcloudio/uni-app': 3.0.0-alpha-3040620220419003_postcss@8.4.12+vue@3.2.33
@@ -51,14 +51,14 @@ devDependencies:
   '@dcloudio/uni-automator': 3.0.0-alpha-3040620220419003_postcss@8.4.12+vue@3.2.33
   '@dcloudio/uni-cli-shared': 3.0.0-alpha-3040620220419003_postcss@8.4.12+vue@3.2.33
   '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3040620220419003_5be8aa8e536a8ca0e7f20f29f0760ccd
-  autoprefixer: 10.4.4_postcss@8.4.12
+  autoprefixer: 10.4.5_postcss@8.4.12
   postcss: 8.4.12
   postcss-rem-to-responsive-pixel: 5.1.1
   sass: 1.50.1
   tailwindcss: 3.0.24
   typescript: 4.6.3
   vite: 2.9.5_sass@1.50.1
-  weapp-tailwindcss-webpack-plugin: 1.3.2-beta.3
+  weapp-tailwindcss-webpack-plugin: 1.3.3
 
 packages:
 
@@ -441,7 +441,7 @@ packages:
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       '@vue/shared': 3.2.33
-      autoprefixer: 10.4.4_postcss@8.4.12
+      autoprefixer: 10.4.5_postcss@8.4.12
       base64url: 3.0.1
       chokidar: 3.5.3
       compare-versions: 3.6.0
@@ -1049,8 +1049,8 @@ packages:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
     dev: true
 
-  /autoprefixer/10.4.4_postcss@8.4.12:
-    resolution: {integrity: sha512-Tm8JxsB286VweiZ5F0anmbyGiNI3v3wGv3mz9W+cxEDYB/6jbnj6GM9H9mK3wIL8ftgl+C07Lcwb8PG5PCCPzA==}
+  /autoprefixer/10.4.5_postcss@8.4.12:
+    resolution: {integrity: sha512-Fvd8yCoA7lNX/OUllvS+aS1I7WRBclGXsepbvT8ZaPgrH24rgXpZzF0/6Hh3ZEkwg+0AES/Osd196VZmYoEFtw==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -1100,7 +1100,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001332
-      electron-to-chromium: 1.4.116
+      electron-to-chromium: 1.4.118
       escalade: 3.1.1
       node-releases: 2.0.3
       picocolors: 1.0.0
@@ -1305,8 +1305,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: true
 
-  /electron-to-chromium/1.4.116:
-    resolution: {integrity: sha512-sy2ol5DTH0sy8xvAglyHFxsNFXFsOBfa6rGmrtjiSdQOp53ossspduOzU+5Lx23H7GxEjjvtSF36XqkajV6Z5A==}
+  /electron-to-chromium/1.4.118:
+    resolution: {integrity: sha512-maZIKjnYDvF7Fs35nvVcyr44UcKNwybr93Oba2n3HkKDFAtk0svERkLN/HyczJDS3Fo4wU9th9fUQd09ZLtj1w==}
 
   /encodeurl/1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
@@ -2479,8 +2479,8 @@ packages:
       vue: 3.2.33
     dev: false
 
-  /weapp-tailwindcss-webpack-plugin/1.3.2-beta.3:
-    resolution: {integrity: sha512-uxr7ntCaVuQAWwizUizmKow5F5Up9wLKNvcm/J7fUiDAlS3ShMZchX7zRBw0IFhYEq8PgNmoliPRaW0QlXyZ/w==}
+  /weapp-tailwindcss-webpack-plugin/1.3.3:
+    resolution: {integrity: sha512-JdVM72pKNeZ30gPzcjUySXP5Y5Ti7oER3LawAzQD7ioV3qJdWNv8A7Z7OHowjzkwzXxkmD2KSPEZB5QVJi3BIw==}
     dependencies:
       '@babel/generator': 7.17.9
       '@babel/parser': 7.17.9
