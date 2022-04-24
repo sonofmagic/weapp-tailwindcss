@@ -71,4 +71,13 @@ describe('first', () => {
     // expect(result).toBe(expected)
     expect(result).toMatchSnapshot()
   })
+
+  it('tailwindcss v2 jit should append view selector', () => {
+    const testCase = '::before,::after{}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => []
+    })
+    expect(result).toBe('::before,::after,view{}')
+  })
 })
