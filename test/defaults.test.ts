@@ -1,5 +1,6 @@
 import { defaultOptions } from '@/defaults'
 import { isWebpackPlugin } from './util'
+import esm from 'esm'
 const { mainCssChunkMatcher } = defaultOptions
 
 describe('defaults function test group', () => {
@@ -40,5 +41,15 @@ describe('defaults function test group', () => {
     expect(isWebpackPlugin(UniAppWeappTailwindcssWebpackPluginV4)).toBe(true)
     expect(Boolean(ViteWeappTailwindcssPlugin)).toBe(true)
     expect(Boolean(postcssWeappTailwindcssRename)).toBe(true)
+  })
+
+  it('should replace export', async () => {
+    const r = esm(module)
+    const { replaceCss, replaceJs } = r('../replace') // await import('../replace')
+
+    expect(replaceCss).toBeTruthy()
+    expect(replaceJs).toBeTruthy()
+    expect(typeof replaceCss).toBe('function')
+    expect(typeof replaceJs).toBe('function')
   })
 })

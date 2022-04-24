@@ -12,6 +12,7 @@ specifiers:
   '@rollup/plugin-node-resolve': ^13.2.1
   '@rollup/plugin-typescript': ^8.3.2
   '@tsconfig/recommended': ^1.0.1
+  '@types/esm': ^3.2.0
   '@types/jest': ^27.4.1
   '@types/node': ^17.0.24
   '@types/semver': ^7.3.9
@@ -30,6 +31,7 @@ specifiers:
   eslint-plugin-import: 2.26.0
   eslint-plugin-node: 11.1.0
   eslint-plugin-promise: 6.0.0
+  esm: ^3.2.25
   execa: '5'
   html-parse-stringify: ^3.0.1
   jest: ^27.5.1
@@ -73,6 +75,7 @@ devDependencies:
   '@rollup/plugin-node-resolve': 13.2.1_rollup@2.70.2
   '@rollup/plugin-typescript': 8.3.2_eaab4980cb5a437133211ecd98513266
   '@tsconfig/recommended': 1.0.1
+  '@types/esm': 3.2.0
   '@types/jest': 27.4.1
   '@types/node': 17.0.24
   '@types/semver': 7.3.9
@@ -91,6 +94,7 @@ devDependencies:
   eslint-plugin-import: 2.26.0_eslint@8.13.0
   eslint-plugin-node: 11.1.0_eslint@8.13.0
   eslint-plugin-promise: 6.0.0_eslint@8.13.0
+  esm: 3.2.25
   execa: 5.1.1
   html-parse-stringify: 3.0.1
   jest: 27.5.1_ts-node@10.7.0
@@ -875,6 +879,12 @@ packages:
     dependencies:
       '@types/estree': 0.0.51
       '@types/json-schema': 7.0.11
+    dev: true
+
+  /@types/esm/3.2.0:
+    resolution: {integrity: sha512-aXemgVPnF1s0PQin04Ei8zTWaNwUdc4pmhZDg8LBW6QEl9kBWVItAUOLGUY5H5xduAmbL1pLGH1X/PN0+4R9tg==}
+    dependencies:
+      '@types/node': 17.0.25
     dev: true
 
   /@types/estree/0.0.39:
@@ -3036,6 +3046,11 @@ packages:
       v8-compile-cache: 2.3.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /esm/3.2.25:
+    resolution: {integrity: sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==}
+    engines: {node: '>=6'}
     dev: true
 
   /espree/9.3.1:
