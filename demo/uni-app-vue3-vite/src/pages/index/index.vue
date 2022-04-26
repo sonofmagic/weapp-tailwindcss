@@ -1,5 +1,8 @@
 <template>
   <view class="content">
+    <button class="bg-green-500 text-white" :class="{
+      'opacity-50': disabled
+    }" :disabled="disabled">disable</button>
     <view class="test">test</view>
     <view :key="i" class="h-[20px] w-[20px]" :class="cardsColor[i - 1]" v-for="i in 5"></view>
     <!-- <view class="w-2 h-2 bg-[#123456]"></view>
@@ -33,6 +36,7 @@
   </view>
 </template>
 
+
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 const title = ref("测试标题");
@@ -40,11 +44,12 @@ const flag = ref(true);
 import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
 const cardsColor = reactive([
   replaceJs('bg-[#4268EA] shadow-indigo-100'),
-  replaceJs('bg-[#123456] shadow-blue-100') ,
+  replaceJs('bg-[#123456] shadow-blue-100'),
   'bg-green-500 shadow-green-100',
   'bg-cyan-500 shadow-cyan-100',
   'bg-amber-500 shadow-amber-100',
 ])
+const disabled = ref(true)
 </script>
 
 <style lang="scss">
