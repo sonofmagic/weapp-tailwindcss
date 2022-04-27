@@ -12,7 +12,10 @@ Page({
     flag: 'false',
     b: 'ctx',
     a: 'cc',
+    className:'bg-[#123456]'
   },
+
+
   //事件处理函数
   bindViewTap: function () {
     wx.navigateTo({
