@@ -17,11 +17,12 @@
     - [remax (react)](#remax-react)
     - [rax (react)](#rax-react)
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
-      - [jit 示例](#jit-示例)
-  - [编译到 h5 注意事项](#编译到-h5-注意事项)
-  - [关于其他小程序](#关于其他小程序)
-  - [原理篇](#原理篇)
-  - [Options](#options)
+  - [Options 配置项](#options-配置项)
+  - [使用 arbitrary values](#使用-arbitrary-values)
+  - [Q&A](#qa)
+    - [1. 我在 `js` 里写了 `tailwindcss` 的任意值，为什么没有生效?](#1-我在-js-里写了-tailwindcss-的任意值为什么没有生效)
+    - [2. 一些像 `disabled:opacity-50` 这类的 `tailwindcss` 前缀不生效?](#2-一些像-disabledopacity-50-这类的-tailwindcss-前缀不生效)
+    - [3. 编译到 h5 注意事项](#3-编译到-h5-注意事项)
   - [Related projects](#related-projects)
     - [模板 template](#模板-template)
     - [预设 tailwindcss preset](#预设-tailwindcss-preset)
@@ -61,93 +62,7 @@
 
 [使用方式](./docs/native-mina.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/native-mina)
 
-#### jit 示例
-
-```html
-<view :class="[flag?'bg-red-900':'bg-[#fafa00]']">bg-[#fafa00]</view>
-<view :class="{'bg-[#098765]':flag===true}">bg-[#098765]</view>
-<view class="p-[20px] -mt-2 mb-[-20px] ">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view>
-<view class="space-y-[1.6rem]">
-  <view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view>
-  <view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
-  <view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
-  <view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view>
-  <view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
-  <view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid">
-    <view>1</view>
-    <view>2</view>
-    <view>3</view>
-  </view>
-</view>
-```
-
-or `@apply`
-
-```vue
-<template><view class="hello">world</view></template>
-<style lang="scss">
-.hello {
-  @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
-}
-</style>
-```
-
-当然以上只是示例，这样写 class 名称过长，一般我们都会使用 `@apply` 来提取这些样式做成公共类。
-
-## 编译到 h5 注意事项
-
-有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:
-
-```js
-// doc link
-// https://uniapp.dcloud.io/collocation/auto/api?id=%e6%b5%8b%e8%af%95%e5%b9%b3%e5%8f%b0%e5%88%a4%e6%96%ad
-const isH5 = process.env.UNI_PLATFORM === 'h5';
-// 然后在 h5 环境下把 webpack plugin 和 postcss for weapp 给禁用掉
-// 比如 uni-app-vue3-vite 这个 demo
-// vite.config.ts
-import { defineConfig } from 'vite';
-import uni from '@dcloudio/vite-plugin-uni';
-import { ViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin';
-
-export default defineConfig({
-  plugins: [uni(), isH5 ? undefined : vwt()]
-});
-
-// postcss.config.js
-// 假如不起作用，请使用内联postcss
-const isH5 = process.env.UNI_PLATFORM === 'h5';
-
-const plugins = [require('autoprefixer')(), require('tailwindcss')()];
-
-if (!isH5) {
-  plugins.push(
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
-    })
-  );
-
-  plugins.push(require('weapp-tailwindcss-webpack-plugin/postcss')());
-}
-
-module.exports = {
-  plugins
-};
-```
-
-## 关于其他小程序
-
-处理了其他小程序的:
-
-`/.+\.(?:wx|ac|jx|tt|q|c)ss$/` 样式文件和
-`/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/` 各种 `xxml` 和特殊的 `swan`
-
-## 原理篇
-
-另写一篇文章，大意还是 `css ast`, `[xx]ml ast`, `js ast` 那一套
-
-## Options
+## Options 配置项
 
 | 配置项                    | 类型                                                                           | 描述                                                                                                 |
 | ------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
@@ -198,7 +113,76 @@ cssPreflight: {
 // border-color: currentColor;
 // background: black
 ```
+## 使用 arbitrary values
 
+详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)
+
+
+
+## Q&A
+
+### 1. 我在 `js` 里写了 `tailwindcss` 的任意值，为什么没有生效?
+
+详见 [issue#28](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/28)
+
+A: 因为这个插件，主要是针对, `wxss`,`wxml` 和 `jsx` 进行转义的，`js` 里编写的 `string` 是不转义的。如果你有这样的需求可以这么写:
+
+```js
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+const cardsColor = reactive([
+  replaceJs('bg-[#4268EA] shadow-indigo-100'),
+  replaceJs('bg-[#123456] shadow-blue-100')
+])
+```
+
+> 你不用担心把代码都打进来导致体积过大，我在 'weapp-tailwindcss-webpack-plugin/replace' 中，只暴露了2个方法，代码体积 1k左右，esm格式。
+
+### 2. 一些像 `disabled:opacity-50` 这类的 `tailwindcss` 前缀不生效?
+
+详见 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)，小程序选择器的限制。
+
+### 3. 编译到 h5 注意事项
+
+有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:
+
+```js
+const isH5 = process.env.UNI_PLATFORM === 'h5';
+// 然后在 h5 环境下把 webpack plugin 和 postcss for weapp 给禁用掉
+// 我们以 uni-app-vue3-vite 这个 demo为例
+// vite.config.ts
+import { defineConfig } from 'vite';
+import uni from '@dcloudio/vite-plugin-uni';
+import { ViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin';
+// vite 插件配置
+const vitePlugins = [uni()];
+!isH5 && vitePlugins.push(vwt());
+
+export default defineConfig({
+  plugins: vitePlugins
+});
+
+// postcss 配置
+// 假如不起作用，请使用内联postcss
+const isH5 = process.env.UNI_PLATFORM === 'h5';
+
+const plugins = [require('autoprefixer')(), require('tailwindcss')()];
+
+if (!isH5) {
+  plugins.push(
+    require('postcss-rem-to-responsive-pixel')({
+      rootValue: 32,
+      propList: ['*'],
+      transformUnit: 'rpx'
+    })
+  );
+
+  plugins.push(require('weapp-tailwindcss-webpack-plugin/postcss')());
+}
+
+module.exports = {
+  plugins
+};
+```
 ## Related projects
 
 ### 模板 template
@@ -217,6 +201,15 @@ cssPreflight: {
 
 ## Bugs & Issues
 
-由于 `uni-app` 和 `taro` 都在快速的开发中，如果遇到 Bugs 或者想提出 Issues
+目前这个插件正在快速的开发中，如果遇到 `Bug` 或者想提出 `Issue`
 
 [欢迎提交到此处](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
+
+
+
+<!-- ## 关于其他小程序
+
+处理了其他小程序的:
+
+`/.+\.(?:wx|ac|jx|tt|q|c)ss$/` 样式文件和
+`/.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/` 各种 `xxml` 和特殊的 `swan` -->
