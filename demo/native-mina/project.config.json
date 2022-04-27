@@ -44,7 +44,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.0.9",
   "appid": "wxb3d842a4a7e3440d",
-  "projectname": "native-mina-app",
+  "projectname": "native-mina",
   "debugOptions": {
     "hidedInDevtools": []
   },

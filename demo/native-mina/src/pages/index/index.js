@@ -1,7 +1,7 @@
 //index.js
 //获取应用实例
 const app = getApp()
-
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
 Page({
   data: {
     motto: 'Hello World!',
@@ -12,7 +12,9 @@ Page({
     flag: 'false',
     b: 'ctx',
     a: 'cc',
+    className: replaceJs('bg-[#123456]'),
   },
+
   //事件处理函数
   bindViewTap: function () {
     wx.navigateTo({

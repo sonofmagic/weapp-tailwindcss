@@ -2,8 +2,8 @@
 
 .motto {
   @extend %center-flex;
-
-  margin-top: 200px;
+  @apply mt-[40rpx];
+  
   align-items: center;
 }
 
