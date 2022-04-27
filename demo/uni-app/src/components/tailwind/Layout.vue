@@ -35,6 +35,7 @@
 
     选择器提前用postcss处理
     https://www.tailwindcss.cn/docs/space -->
+    <view :class="classObject">classObject</view>
     <view :class="[
       flag ? 'bg-red-900' : 'bg-[#fafa00]',
     ]">Toggle</view>
@@ -63,6 +64,7 @@
       </view>
     </view>
     <view class="test">test</view>
+
     <!-- <view class="shadow-2xl">shadow</view> -->
     <!-- <div class="grid grid-cols-3 divide-x divide-green-500">
       <div>1</div>
@@ -75,14 +77,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
 export default Vue.extend({
   data() {
     return {
       flag: false,
-      classObject: {
-        'text-[20px]': true,
-        'bg-[#000000]': false
-      },
+
       displayArray: [
         'block',
         'inline-block',
@@ -106,6 +106,11 @@ export default Vue.extend({
         'list-item',
         'hidden'
       ]
+    }
+  },
+  computed: {
+    classObject() {
+      return replaceJs('text-[20px] bg-[#000000]')
     }
   }
 })
