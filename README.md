@@ -22,7 +22,8 @@
   - [Q&A](#qa)
     - [1. 我在 `js` 里写了 `tailwindcss` 的任意值，为什么没有生效?](#1-我在-js-里写了-tailwindcss-的任意值为什么没有生效)
     - [2. 一些像 `disabled:opacity-50` 这类的 `tailwindcss` 前缀不生效?](#2-一些像-disabledopacity-50-这类的-tailwindcss-前缀不生效)
-    - [3. 编译到 h5 注意事项](#3-编译到-h5-注意事项)
+    - [3. 和原生组件一起使用注意事项](#3-和原生组件一起使用注意事项)
+    - [4. 编译到 h5 注意事项](#4-编译到-h5-注意事项)
   - [Related projects](#related-projects)
     - [模板 template](#模板-template)
     - [预设 tailwindcss preset](#预设-tailwindcss-preset)
@@ -141,7 +142,13 @@ const cardsColor = reactive([
 
 详见 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)，小程序选择器的限制。
 
-### 3. 编译到 h5 注意事项
+### 3. 和原生组件一起使用注意事项
+
+假如出现原生组件引入报错的情况，可以参考 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/35) ，忽略指定目录下的文件，跳过插件处理，比如 `uni-app` 中的 `wxcomponents`。
+
+如何更改？在传入的配置项 `cssMatcher`，`htmlMatcher` 这类中过滤指定目录或文件。
+
+### 4. 编译到 h5 注意事项
 
 有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:
 
