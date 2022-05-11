@@ -1,0 +1,51 @@
+<view name="value"></view>
+<view name="value"></view>
+<view name></view>
+<view attr1="value1" attr2="value1"></view>
+<view hidden disabled></view>
+<view name=""></view>
+<view name='\"'></view>
+<view id=">"></view>
+<view name="\'"></view>
+<view name="value"></view>
+<view name="value"></view>
+<view name1="value1" name2="value2"></view>
+<!-- <this is="a comment" -->
+<text>test</text>
+<!-- <this is="a comment" -- -->
+<view class="view-class {{someClass}}">
+  <text>{{a <= b ? c : d}}</text>
+  <include src="../some-template.wxml" />
+</view>
+<navigator>
+  <primary-button>立即体验</primary-button>
+</navigator>
+<view />
+<view></view>
+< view></ view>
+text content
+<!-- <view>
+  <>
+</view> -->
+{a}
+<view class="view-class {{someClass}}">
+  <text>{{a<=b?c:d}}</text>
+  <include src="../some-template.wxml" />
+</view>
+<view class="view-class {{someClass || ' otherClass'}}">
+  <text>{{a<=b?c:d}}</text>
+  <include src="../some-template.wxml" />
+</view>
+<wxs module="status">
+  function get(index, active) {
+    if (index < active) {
+      return 'finish';
+    } else if (index === active) {
+      return 'process';
+    }
+
+    return 'inactive';
+  }
+
+  module.exports = get;
+</wxs>
