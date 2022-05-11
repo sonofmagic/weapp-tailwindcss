@@ -1,6 +1,6 @@
-<view class="value"></view>
-<view class="value"></view>
-<view class></view>
+<view class="value">~!@#$%^&*()-_+=</view>
+<view class="value">>?:"{}</view>
+<view class>[];',./\|</view>
 <view attr1="value1" attr2="value1"></view>
 <view hidden disabled></view>
 <view class=""></view>

@@ -118,12 +118,13 @@
     "typescript-transform-paths": "^3.3.1",
     "vite": "^2.9.6",
     "webpack": "^5.70.0",
-    "webpack4": "npm:webpack@webpack-4"
+    "webpack4": "npm:webpack@webpack-4",
+    "wxml-ast": "^0.0.1"
   },
   "dependencies": {
-    "@babel/generator": "^7.17.7",
-    "@babel/parser": "^7.17.8",
-    "@babel/traverse": "^7.17.3",
+    "@babel/generator": "7.17.9",
+    "@babel/parser": "7.17.9",
+    "@babel/traverse": "7.17.9",
     "regexp-replace": "^1.0.2",
     "webpack-sources": "^3.2.3"
   }

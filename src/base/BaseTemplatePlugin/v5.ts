@@ -9,12 +9,12 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   options: Required<UserDefinedOptions>
   appType: AppType
 
-  constructor (options: UserDefinedOptions = {}, appType: AppType) {
+  constructor(options: UserDefinedOptions = {}, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
     const { ConcatSource } = compiler.webpack.sources
     const Compilation = compiler.webpack.Compilation
@@ -42,7 +42,7 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
               compilation.updateAsset(file, source)
             } else if (htmlMatcher(file)) {
               const rawSource = originalSource.source().toString()
-              const wxml = templeteHandler(rawSource)
+              const wxml = await templeteHandler(rawSource)
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
             }

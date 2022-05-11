@@ -32,7 +32,7 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
           compilation.updateAsset(file, source)
         } else if (htmlMatcher(file)) {
           const rawSource = originalSource.source().toString()
-          const wxml = templeteHandler(rawSource)
+          const wxml = await templeteHandler(rawSource)
           const source = new ConcatSource(wxml)
           compilation.updateAsset(file, source)
         }
