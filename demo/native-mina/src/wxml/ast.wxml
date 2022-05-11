@@ -1,15 +1,15 @@
-<view name="value"></view>
-<view name="value"></view>
-<view name></view>
+<view class="value"></view>
+<view class="value"></view>
+<view class></view>
 <view attr1="value1" attr2="value1"></view>
 <view hidden disabled></view>
-<view name=""></view>
-<view name='\"'></view>
+<view class=""></view>
+<view class='\"'></view>
 <view id=">"></view>
-<view name="\'"></view>
-<view name="value"></view>
-<view name="value"></view>
-<view name1="value1" name2="value2"></view>
+<view class="\'"></view>
+<view class="value"></view>
+<view class="value"></view>
+<view class1="value1" class2="value2"></view>
 <!-- <this is="a comment" -->
 <text>test</text>
 <!-- <this is="a comment" -- -->
