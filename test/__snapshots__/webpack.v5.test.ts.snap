@@ -91,9 +91,9 @@ Object {
     </view>
   </view>
   <view class=\\"test\\">test</view>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active==&quot;home&quot;?&quot;icon-home-selected&quot;:&quot;icon-home&quot;}} {{b}} {{a===&quot;cc&quot;}} w-_l_20px_r_ {{flag==&quot;p-_l_20px_r_&quot;?&quot;p-_l_20px_r_&quot;:&quot;m-_l_20px_r_&quot;}}\\"></view>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}\\"></view>
   <button class=\\"bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3\\">...</button>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active==&quot;home&quot;?&quot;icon-home-selected&quot;:&quot;icon-home&quot;}} {{b}} {{a===&quot;cc&quot;}} w-_l_20px_r_ {{flag==&quot;p-_l_20px_r_&quot;?&quot;p-_l_20px_r_&quot;:&quot;m-_l_20px_r_&quot;}}\\"></view>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}\\"></view>
 </view></import>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
