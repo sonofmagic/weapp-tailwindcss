@@ -1914,6 +1914,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@vant/weapp@^1.10.3":
+  version "1.10.3"
+  resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.10.3.tgz#c2df7437cf5784530835cf764cb7f4923f981e25"
+  integrity sha512-CcG5umI+zlJRN6hQXPeknOenPkVm6WBEgBaB6Y94kOmKLx9NHtHBdURwxuJEA4q4mxhUdOuf6sV7I8tZBnCVxw==
+
 "@vue/babel-helper-vue-jsx-merge-props@^1.2.1":
   version "1.2.1"
   resolved "https://registry.npmmirror.com/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.2.1.tgz#31624a7a505fb14da1d58023725a4c5f270e6a81"
