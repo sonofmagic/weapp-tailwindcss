@@ -1,5 +1,5 @@
 import { templeteReplacer, replaceWxml, templeteHandler } from '@/wxml/index'
-import { classStringReplace } from '@/shared'
+import { classStringReplace } from '@/reg'
 import { wxmlCasePath, createGetCase, createPutCase } from './util'
 
 const getCase = createGetCase(wxmlCasePath)

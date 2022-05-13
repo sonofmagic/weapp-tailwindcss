@@ -1,5 +1,5 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringRegexp } from '@/shared'
+import { classStringReplace, tagStringRegexp } from '@/reg'
 import { replaceWxml } from '@/wxml/index'
 describe('regexp', () => {
   test('tagStringRegexp', async () => {
