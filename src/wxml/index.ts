@@ -1,10 +1,31 @@
+import * as wxml from '@icebreakers/wxml'
 import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
-import { replaceWxml } from './shared'
-import { classStringReplace, tagStringRegexp } from '@/reg'
 
-export { replaceWxml }
+export function replaceWxml (original: string, keepEOL: boolean = false) {
+  const res = original
+    .replace(/\[/g, '_l_') // [
+    .replace(/\]/g, '_r_') // ]
+    .replace(/\(/g, '_p_') // (
+    .replace(/\)/g, '_q_') // )
+    .replace(/#/g, '_h_') // hex
+    .replace(/!/g, '_i_') // css !important
+    .replace(/\//g, '-div-') // /
+    .replace(/\./g, '-dot-') // .
+    // :
+    .replace(/:/g, '_c_')
+    // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
+    .replace(/%/g, '_pct_')
+  if (keepEOL) {
+    return res
+  }
+  return (
+    res
+      // 去除无用换行符和空格
+      .replace(/[\r\n]+/g, '')
+  )
+}
 
 // #region internal
 const variableRegExp = /{{([^{}]*)}}/g
@@ -88,11 +109,16 @@ export function templeteReplacer (original: string) {
   }
 }
 
-export async function templeteHandler (rawSource: string) {
-  return tagStringRegexp(rawSource, (x) => {
-    return classStringReplace(x, (y, arr) => {
-      // console.log(arr)
-      return templeteReplacer(y)
-    })
+export function templeteHandler (rawSource: string) {
+  const parsed = wxml.parse(rawSource)
+  wxml.traverse(parsed, (node, parent) => {
+    if (node.type === wxml.NODE_TYPES.ELEMENT) {
+      // @ts-ignore
+      if (node.attributes.class) {
+        // @ts-ignore
+        node.attributes.class = templeteReplacer(node.attributes.class)
+      }
+    }
   })
+  return wxml.serialize(parsed)
 }

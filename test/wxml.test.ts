@@ -128,24 +128,24 @@ describe('wxml', () => {
     expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_l__h_990000_r_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
   })
 
-  it('wxs should be ignored ', async () => {
-    const testCase = `<wxs module="status">
-    function get(index, active) {
-      if (index < active) {
-        return 'finish';
-      } else if (index === active) {
-        return 'process';
-      }
-    
-      return 'inactive';
-    }
-    
-    module.exports = get;
-    </wxs>`
-    const result = await templeteHandler(testCase)
+  // it('wxs should be ignored ', async () => {
+  //   const testCase = `<wxs module="status">
+  //   function get(index, active) {
+  //     if (index < active) {
+  //       return 'finish';
+  //     } else if (index === active) {
+  //       return 'process';
+  //     }
 
-    expect(result).toBe(testCase)
-  })
+  //     return 'inactive';
+  //   }
+
+  //   module.exports = get;
+  //   </wxs>`
+  //   const result = await templeteHandler(testCase)
+
+  //   expect(result).toBe(testCase)
+  // })
 })
 // /<[a-zA-Z][a-zA-Z-]*[a-zA-Z]?/
 // /[\r\n\s]*<(\/)?([^ =>]+)([^>]*?)(\/)?>/gim

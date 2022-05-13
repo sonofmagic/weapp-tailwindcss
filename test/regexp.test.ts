@@ -34,26 +34,30 @@ describe('regexp', () => {
     )
   })
 
-  test('with var', async () => {
-    const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
+  // test('with var', async () => {
+  //   const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
-    const str = await templeteHandler(testCase)
-    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
-  })
+  //   const str = tagStringRegexp(testCase, (x) => {
+  //     return x
+  //   })
+  //   expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
+  // })
 
-  test('with var 2', async () => {
-    const navbarTestCase = `<view class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
-    <block wx:if="{{isImmersive}}">
-        <view class="tui-status-bar data-v-ec49da2a" style="{{'height:'+(statusBarHeight+'px')+';'}}"></view>
-    </block>
-    <block wx:if="{{title&&!isCustom}}">
-        <view class="tui-navigation_bar-title data-v-ec49da2a" style="{{'opacity:'+(transparent||opacity>=maxOpacity?1:opacity)+';'+('color:'+(color)+';')+('padding-top:'+(top-statusBarHeight+'px')+';')}}">
-            {{''+title+''}}
-        </view>
-    </block>
-    <slot></slot>
-</view>`
-    const str = await templeteHandler(navbarTestCase)
-    expect(str).toBeTruthy()
-  })
+  //   test('with var 2', async () => {
+  //     const navbarTestCase = `<view class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
+  //     <block wx:if="{{isImmersive}}">
+  //         <view class="tui-status-bar data-v-ec49da2a" style="{{'height:'+(statusBarHeight+'px')+';'}}"></view>
+  //     </block>
+  //     <block wx:if="{{title&&!isCustom}}">
+  //         <view class="tui-navigation_bar-title data-v-ec49da2a" style="{{'opacity:'+(transparent||opacity>=maxOpacity?1:opacity)+';'+('color:'+(color)+';')+('padding-top:'+(top-statusBarHeight+'px')+';')}}">
+  //             {{''+title+''}}
+  //         </view>
+  //     </block>
+  //     <slot></slot>
+  // </view>`
+  //     const str = tagStringRegexp(navbarTestCase, (x) => {
+  //       return x
+  //     })
+  //     expect(str).toBeTruthy()
+  //   })
 })
