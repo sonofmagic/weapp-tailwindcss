@@ -7,7 +7,7 @@ import { templeteHandler } from '@/wxml'
 // import postcssrc from 'postcss-load-config'
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
-export function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): Plugin {
+export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin {
   const {
     htmlMatcher // cssMatcher, mainCssChunkMatcher
   } = getOptions(options)
@@ -15,13 +15,13 @@ export function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): P
   return {
     name: 'som:vite-plugin-uni-app-weapp-tailwindcss',
     // config (config) {},
-    generateBundle (opt, bundle, isWrite) {
+    async generateBundle(opt, bundle, isWrite) {
       const entries = Object.entries(bundle)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
         if (htmlMatcher(file)) {
           if (originalSource.type === 'asset') {
-            originalSource.source = templeteHandler(originalSource.source.toString())
+            originalSource.source = await templeteHandler(originalSource.source.toString())
           }
         }
       }

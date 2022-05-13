@@ -56,3 +56,11 @@ export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'ma
 export interface TaroUserDefinedOptions extends UserDefinedOptions {
   framework: 'react' | 'vue' | 'vue3' | string
 }
+
+export interface RawSource {
+  start: number
+  end: number
+  raw: string
+  // '' 直接 remove {{}}
+  source?: string
+}

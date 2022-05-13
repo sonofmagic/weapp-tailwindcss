@@ -1,7 +1,7 @@
 import type { Node, ObjectProperty, Identifier } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
-import { replaceWxml } from '../wxml'
-import { classStringReplace } from '../shared'
+import { replaceWxml } from '@/wxml'
+import { classStringReplace } from '@/reg'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
 export type Replacer = (path: NodePath<Node>) => void
