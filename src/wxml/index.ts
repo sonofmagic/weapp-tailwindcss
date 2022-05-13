@@ -88,7 +88,7 @@ export function templeteReplacer (original: string) {
 export async function templeteHandler (rawSource: string) {
   return tagStringRegexp(rawSource, (x) => {
     return classStringReplace(x, (y) => {
-      return replaceWxml(y)
+      return templeteReplacer(y)
     })
   })
 }

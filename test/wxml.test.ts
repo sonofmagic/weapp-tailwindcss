@@ -1,15 +1,7 @@
 import { templeteReplacer, replaceWxml, templeteHandler } from '@/wxml/index'
 import { classStringReplace } from '@/reg'
-import { wxmlCasePath, createGetCase, createPutCase } from './util'
 
-const getCase = createGetCase(wxmlCasePath)
-// @ts-ignore
-// eslint-disable-next-line no-unused-vars
-const putCase = createPutCase(wxmlCasePath)
 describe('wxml', () => {
-  const wxmlCase =
-    '<view class="content data-v-1badc801"><view class="flex items-center justify-center w-screen h-screen data-v-1badc801"><view class="{{[\'_i_font-bold\',\'_i_text-_l__h_990000_r_\',\'data-v-1badc801\',\'text-2xl\',b]}}">{{a}}</view></view><image class="logo data-v-1badc801" src="/static/logo.png" /><view class="text-area data-v-1badc801"><text class="title h-_l_200_pct__r_ data-v-1badc801">{{c}}</text></view><view class="p-_l_20px_r_ -mt-2 mb-_l_-20px_r_ data-v-1badc801">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view><view class="space-y-_l_1-dot-6rem_r_ data-v-1badc801"><view class="w-_l_300rpx_r_ text-black text-opacity-_l_0-dot-19_r_ data-v-1badc801">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0-dot-9_r_ data-v-1badc801">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_ data-v-1badc801">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="{{[\'flex\',\'items-center\',\'justify-center\',\'h-_l_100px_r_\',\'w-_l_100px_r_\',\'rounded-_l_40px_r_\',\'bg-_l__h_123456_r_\',\'bg-opacity-_l_0-dot-54_r_\',\'text-_l__h_ffffff_r_\',\'data-v-1badc801\',\'text-_l__h_123456_r_\',d]}}">Hello</view><view class="border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0-dot-44_r_ data-v-1badc801">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid data-v-1badc801"><view class="data-v-1badc801">1</view><view class="data-v-1badc801">2</view><view class="data-v-1badc801">3</view></view><view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300 data-v-1badc801"> Default </view></view><view class="test data-v-1badc801">test</view><view wx:for="{{e}}" wx:for-item="i" wx:key="a" class="{{[\'h-_l_20px_r_\',\'w-_l_20px_r_\',\'data-v-1badc801\',i.b]}}"></view></view>'
-
   it('isStringLiteral', () => {
     const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
 
