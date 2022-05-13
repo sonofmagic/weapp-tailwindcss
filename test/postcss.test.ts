@@ -5,6 +5,7 @@ const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
 const putCase = createPutCase(cssCasePath)
+
 describe('first', () => {
   it('css @media case', async () => {
     const opt = getOptions(null)

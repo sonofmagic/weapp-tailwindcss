@@ -2390,24 +2390,12 @@ domain-browser@^1.1.1:
   resolved "https://registry.npmmirror.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
   integrity sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA==
 
-domelementtype@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmmirror.com/domelementtype/-/domelementtype-2.3.0.tgz#5c45e8e869952626331d7aab326d01daf65d589d"
-  integrity sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==
-
 domexception@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmmirror.com/domexception/-/domexception-2.0.1.tgz#fb44aefba793e1574b0af6aed2801d057529f304"
   integrity sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==
   dependencies:
     webidl-conversions "^5.0.0"
-
-domhandler@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.npmmirror.com/domhandler/-/domhandler-5.0.3.tgz#cc385f7f751f1d1fc650c21374804254538c7d31"
-  integrity sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==
-  dependencies:
-    domelementtype "^2.3.0"
 
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.7.1"
@@ -2475,11 +2463,6 @@ enhanced-resolve@^5.9.3:
   dependencies:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
-
-entities@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.npmmirror.com/entities/-/entities-4.3.0.tgz#62915f08d67353bb4eb67e3d62641a4059aec656"
-  integrity sha512-/iP1rZrSEJ0DTlPiX+jbzlA3eVkY/e8L8SozroF395fIqE3TYF/Nz7YOMAawta+vLmyJ/hkGNNPcSbMADCCXbg==
 
 errno@^0.1.3, errno@~0.1.7:
   version "0.1.8"
@@ -6640,22 +6623,6 @@ ws@^7.4.6:
   version "7.5.7"
   resolved "https://registry.npmmirror.com/ws/-/ws-7.5.7.tgz#9e0ac77ee50af70d58326ecff7e85eb3fa375e67"
   integrity sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==
-
-wxml-ast@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.npmmirror.com/wxml-ast/-/wxml-ast-0.1.1.tgz#fdf34a31bd1c76756ec1cb0b2393cf044730b391"
-  integrity sha512-njVjRBbeohWfuFPrqPB/WIYCEcJrFEAfhciYjTP1Qc7VVPnQWP6Bnj21vzatEGI1W22K4j+5iiLI7/ooroq1bA==
-  dependencies:
-    wxml-dom-serializer "^2.0.3"
-
-wxml-dom-serializer@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npmmirror.com/wxml-dom-serializer/-/wxml-dom-serializer-2.0.3.tgz#3b6a2fb70c9db9db94b8d9b02e2e7d3888f997f8"
-  integrity sha512-j3bE9CYubC1Vc70dqb7xFkgU1w+GAMEwlc1WQiyWHU/OQcUeCikgJREemtMuoRAQjSXMPr4bG5N9YhWkhPWPPQ==
-  dependencies:
-    domelementtype "^2.3.0"
-    domhandler "^5.0.3"
-    entities "^4.3.0"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

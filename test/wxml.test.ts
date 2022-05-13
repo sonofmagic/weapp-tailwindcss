@@ -155,6 +155,8 @@ describe('wxml', () => {
     expect(result).toBe(testCase)
   })
 })
+// /<[a-zA-Z][a-zA-Z-]*[a-zA-Z]?/
+// /[\r\n\s]*<(\/)?([^ =>]+)([^>]*?)(\/)?>/gim
 // bg-[rgb(2,132,199)]
 // `<view class="content data-v-1badc801"><view class="flex items-center justify-center w-screen h-screen data-v-1badc801"><view class="{{['font-bold', 'text-blue-500', 'data-v-1badc801', 'text-2xl', b]}}">{{a}}</view></view></view>`
 // `<view class="content data-v-1badc801"><view class="flex items-center justify-center w-screen h-screen data-v-1badc801"><view class="{{['font-bold','text-blue-500','data-v-1badc801','text-2xl',b]}}">{{a}}</view></view></view>`

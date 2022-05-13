@@ -1,24 +1,24 @@
-import { parse, render } from 'wxml-ast'
 import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from './shared'
+import { classStringReplace, tagStringRegexp } from '@/shared'
 
 export { replaceWxml }
 
 // #region internal
 const variableRegExp = /{{([^{}]*)}}/g
 
-function variableMatch(original: string) {
+function variableMatch (original: string) {
   return variableRegExp.exec(original)
 }
 // #endregion
 
-export function generateCode(match: string) {
+export function generateCode (match: string) {
   const ast = parseExpression(match)
 
   traverse(ast, {
-    StringLiteral(path) {
+    StringLiteral (path) {
       path.node.value = replaceWxml(path.node.value)
     },
     noScope: true
@@ -39,7 +39,7 @@ export interface RawSource {
   source?: string
 }
 
-export function templeteReplacer(original: string) {
+export function templeteReplacer (original: string) {
   let match = variableMatch(original)
   const sources: RawSource[] = []
 
@@ -85,23 +85,10 @@ export function templeteReplacer(original: string) {
   }
 }
 
-export async function templeteHandler(rawSource: string) {
-  const parsed = await parse(rawSource, {
-    elementCB: (node) => {
-      if (node.attribs.class) {
-        node.attribs.class = templeteReplacer(node.attribs.class)
-      }
-    }
+export async function templeteHandler (rawSource: string) {
+  return tagStringRegexp(rawSource, (x) => {
+    return classStringReplace(x, (y) => {
+      return replaceWxml(y)
+    })
   })
-  return render(parsed)
-  // wxml.traverse(parsed, (node, parent) => {
-  //   if (node.type === wxml.NODE_TYPES.ELEMENT) {
-  //     // @ts-ignore
-  //     if (node.attributes.class) {
-  //       // @ts-ignore
-  //       node.attributes.class = templeteReplacer(node.attributes.class)
-  //     }
-  //   }
-  // })
-  // return wxml.serialize(parsed)
 }
