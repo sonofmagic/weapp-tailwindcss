@@ -90,7 +90,8 @@ export function templeteReplacer (original: string) {
 
 export async function templeteHandler (rawSource: string) {
   return tagStringRegexp(rawSource, (x) => {
-    return classStringReplace(x, (y) => {
+    return classStringReplace(x, (y, arr) => {
+      // console.log(arr)
       return templeteReplacer(y)
     })
   })

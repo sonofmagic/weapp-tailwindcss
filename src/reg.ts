@@ -6,7 +6,7 @@ export const tagRegexp = /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 
 // export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim
 
-export function classStringReplace (str: string, replacement: (string: string) => string) {
+export function classStringReplace (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, classRegexp, replacement)
 }
 
