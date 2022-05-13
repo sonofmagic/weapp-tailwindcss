@@ -2499,7 +2499,7 @@ vuex@^4.0.2:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-weapp-tailwindcss-webpack-plugin@^1.3.3:
+weapp-tailwindcss-webpack-plugin@^1.3.4:
   version "1.3.4"
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.3.4.tgz#701452c89bf73c971cf6cfb81b134513e301c2e5"
   integrity sha512-oyTJn9Poq2xSrY/nCG85ZEHQ1KDiI/xaYq4fbvT7Bc7mGupBYp/YWQkJTOFyIA/aV/u/WgpxUt4Igh5k3tTocw==
