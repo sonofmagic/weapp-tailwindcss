@@ -22,6 +22,6 @@ describe('regexp', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
     const str = await templeteHandler(testCase)
-    expect(str).toBe('<view class="{{["flex","flex-col","items-center",flag===1?"bg-red-900":"bg-_l__h_fafa00_r_"]}}"></view>')
+    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
   })
 })

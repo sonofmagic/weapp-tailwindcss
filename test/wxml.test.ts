@@ -7,14 +7,14 @@ describe('wxml', () => {
 
     const result = templeteReplacer(testCase)
 
-    expect(result).toBe('{{["som-node__label","data-v-59229c4a","som-org__text-"+(node.align||""),node.active||collapsed?"som-node__label-active":"",d]}}')
+    expect(result).toBe("{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}")
     expect(result).toMatchSnapshot()
   })
 
   it('isConditionalExpression', () => {
     const testCase = "{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}"
     const result = templeteReplacer(testCase)
-    expect(result).toBe('{{["flex","flex-col","items-center",flag===1?"bg-red-900":"bg-_l__h_fafa00_r_"]}}')
+    expect(result).toBe("{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}")
     expect(result).toMatchSnapshot()
   })
 
@@ -24,7 +24,7 @@ describe('wxml', () => {
 
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      '{{[flag?"bg-red-900":"bg-_l__h_fafa00_r_",classObject,[flag===true?"bg-_l__h_fafa00_r_":"",true?"text-sm":""],flag?flag===false?"bg-red-900":"bg-_l__h_000_r_":"bg-_l__h_fafa00_r_"]}}'
+      "{{[flag?'bg-red-900':'bg-_l__h_fafa00_r_',classObject,[flag===true?'bg-_l__h_fafa00_r_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_l__h_000_r_':'bg-_l__h_fafa00_r_']}}"
     )
     expect(result).toMatchSnapshot()
   })
@@ -99,7 +99,7 @@ describe('wxml', () => {
       b]}}`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      '{{["flex","items-center","justify-center","h-_l_100px_r_","w-_l_100px_r_","rounded-_l_40px_r_","bg-_l__h_123456_r_","bg-opacity-_l_0-dot-54_r_","text-_l__h_ffffff_r_","data-v-1badc801","text-_l__h_123456_r_",b]}}'
+      "{{['flex','items-center','justify-center','h-_l_100px_r_','w-_l_100px_r_','rounded-_l_40px_r_','bg-_l__h_123456_r_','bg-opacity-_l_0-dot-54_r_','text-_l__h_ffffff_r_','data-v-1badc801','text-_l__h_123456_r_',b]}}"
     )
   })
 
@@ -108,7 +108,7 @@ describe('wxml', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}}   w-_l_20px_r_ {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}} h-_l_20px_r_'
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}} h-_l_20px_r_"
     )
   })
 
@@ -117,7 +117,7 @@ describe('wxml', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active=="home"?"icon-home-selected":"icon-home"}} {{b}} {{a==="cc"}} w-_l_20px_r_ {{flag=="p-_l_20px_r_"?"p-_l_20px_r_":"m-_l_20px_r_"}}'
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}"
     )
   })
 
@@ -125,7 +125,7 @@ describe('wxml', () => {
     const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
     const result = templeteReplacer(testCase)
-    expect(result).toBe('{{"_i_font-bold"+" "+"_i_text-_l__h_990000_r_"+" "+"data-v-1badc801"+" "+"text-2xl"+" "+b}}')
+    expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_l__h_990000_r_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
   })
 
   it('wxs should be ignored ', async () => {

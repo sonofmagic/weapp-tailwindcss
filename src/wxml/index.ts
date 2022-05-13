@@ -26,7 +26,10 @@ export function generateCode (match: string) {
 
   const { code } = generate(ast, {
     compact: true,
-    minified: true
+    minified: true,
+    jsescOption: {
+      quotes: 'single'
+    }
   })
   return code
 }
