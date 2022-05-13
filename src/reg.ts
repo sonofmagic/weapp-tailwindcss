@@ -13,3 +13,9 @@ export function classStringReplace (str: string, replacement: (string: string, a
 export function tagStringRegexp (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, tagRegexp, replacement)
 }
+
+export const variableRegExp = /{{([^{}]*)}}/g
+
+export function variableMatch (original: string) {
+  return variableRegExp.exec(original)
+}
