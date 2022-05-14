@@ -16,7 +16,7 @@ export function tagStringReplace (str: string, replacement: (string: string, arr
   return replace(str, tagRegexp, replacement)
 }
 
-export const variableRegExp = /{{(.*?)}}/gm
+export const variableRegExp = /{{(.*?)}}/gms
 
 export function variableMatch (original: string) {
   return variableRegExp.exec(original)
