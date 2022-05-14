@@ -150,4 +150,17 @@ describe('regexp', () => {
     } while (res !== null)
     expect(arr.length).toBe(1)
   })
+
+  test('with var 7', () => {
+    const case3 = "{{b('b',{a:{}})}}"
+    const arr = []
+    let res
+    do {
+      res = variableMatch(case3)
+      if (res) {
+        arr.push(res)
+      }
+    } while (res !== null)
+    expect(arr[0][1]).toBe('b(\'b\',{a:{}})')
+  })
 })

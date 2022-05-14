@@ -16,13 +16,13 @@ export function tagStringReplace (str: string, replacement: (string: string, arr
   return replace(str, tagRegexp, replacement)
 }
 
-export const doubleQuoteRegexp = /"(.*?)"/gms
+export const doubleQuoteRegexp = /"([^"]*)"/gms
 
 export function doubleQuoteStringReplace (str: string, replacement: (string: string, arr: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, doubleQuoteRegexp, replacement)
 }
 
-export const variableRegExp = /{{(.*?)}}/gms
+export const variableRegExp = /{{(.*)}}/gms
 
 export function variableMatch (original: string) {
   return variableRegExp.exec(original)
