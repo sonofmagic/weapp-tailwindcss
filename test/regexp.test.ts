@@ -42,14 +42,7 @@ describe('regexp', () => {
   test('with var', async () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
-    const str = tagStringReplace(testCase, (x, arr, index) => {
-      const res = classStringReplace(x, (y) => {
-        return replace(y, /"(.*)"/g, (z) => {
-          return templeteReplacer(z)
-        })
-      })
-      return res
-    })
+    const str = templeteHandler(testCase)
     expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
   })
 
@@ -67,14 +60,7 @@ describe('regexp', () => {
       <slot></slot>
   </view>`
     )
-    const str = tagStringReplace(navbarTestCase, (x, arr) => {
-      const res = classStringReplace(x, (y) => {
-        return replace(y, /"(.*)"/g, (z) => {
-          return templeteReplacer(z)
-        })
-      })
-      return res
-    })
+    const str = templeteHandler(navbarTestCase)
     expect(str).toBe(
       format(
         `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
@@ -90,5 +76,11 @@ describe('regexp', () => {
 </view>`
       )
     )
+  })
+
+  test('with var 3', () => {
+    const testCase = "<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
+    const res = templeteHandler(testCase)
+    expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
   })
 })
