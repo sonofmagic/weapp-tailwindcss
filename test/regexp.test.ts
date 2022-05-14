@@ -1,5 +1,5 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringRegexp } from '@/reg'
+import { classStringReplace, tagStringReplace } from '@/reg'
 import { replaceWxml, templeteHandler, templeteReplacer } from '@/wxml/index'
 // import redent from 'redent'
 import replace from 'regexp-replace'
@@ -7,11 +7,11 @@ import replace from 'regexp-replace'
 import { format } from './helpers/wxml'
 
 describe('regexp', () => {
-  test('tagStringRegexp', async () => {
+  test('tagStringReplace', async () => {
     const wxmlCase =
       '<view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view><view class="space-y-[1.6rem]"><view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view><view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid"><view>1</view><view>2</view><view>3</view></view></view><view class="test">test</view>'
 
-    const str = tagStringRegexp(wxmlCase, (x) => {
+    const str = tagStringReplace(wxmlCase, (x) => {
       const res = classStringReplace(x, (y) => {
         return replaceWxml(y)
       })
@@ -23,11 +23,11 @@ describe('regexp', () => {
     )
   })
 
-  test('tagStringRegexp2', async () => {
+  test('tagStringReplace2', async () => {
     const wxmlCase =
       '<view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view><view class="space-y-[1.6rem]"><view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view><view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</view><view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid"><view>1</view><view>2</view><view>3</view></view></view><view class="test">test</view>'
 
-    const str = tagStringRegexp(wxmlCase, (x) => {
+    const str = tagStringReplace(wxmlCase, (x) => {
       const res = classStringReplace(x, (y) => {
         return replaceWxml(y)
       })
@@ -42,7 +42,7 @@ describe('regexp', () => {
   test('with var', async () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
-    const str = tagStringRegexp(testCase, (x, arr, index) => {
+    const str = tagStringReplace(testCase, (x, arr, index) => {
       const res = classStringReplace(x, (y) => {
         return replace(y, /"(.*)"/g, (z) => {
           return templeteReplacer(z)
@@ -67,7 +67,7 @@ describe('regexp', () => {
       <slot></slot>
   </view>`
     )
-    const str = tagStringRegexp(navbarTestCase, (x, arr) => {
+    const str = tagStringReplace(navbarTestCase, (x, arr) => {
       const res = classStringReplace(x, (y) => {
         return replace(y, /"(.*)"/g, (z) => {
           return templeteReplacer(z)

@@ -12,7 +12,7 @@ export function classStringReplace (str: string, replacement: (string: string, a
   return replace(str, classRegexp, replacement)
 }
 
-export function tagStringRegexp (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
+export function tagStringReplace (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, tagRegexp, replacement)
 }
 
