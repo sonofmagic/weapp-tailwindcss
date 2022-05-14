@@ -43,6 +43,8 @@ describe('templeteHandler', () => {
 
     const result = templeteHandler(testCase)
 
-    expect(result).toBe(testCase)
+    expect(result).toBe(
+      '<button class="    u-reset-button    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto    bg-white    shadow  " open-type="contact"><tui-icon vue-id="{{(\'17a41c02-4\')+\',\'+(\'17a41c02-3\')}}" name="kefu" color="rgb(41, 121, 255)" size="40" unit="rpx" bind:__l="__l"></tui-icon></button>'
+    )
   })
 })

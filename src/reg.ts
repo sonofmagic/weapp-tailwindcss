@@ -8,17 +8,17 @@ export const tagRegexp = /<[a-z][-a-z]*[a-z]* *([a-z][-a-z]*[a-z]*(?: *= *"(.*?)
 
 // export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim
 
-export function classStringReplace (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
+export function classStringReplace (str: string, replacement: (string: string, arr: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, classRegexp, replacement)
 }
 
-export function tagStringReplace (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
+export function tagStringReplace (str: string, replacement: (string: string, arr: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, tagRegexp, replacement)
 }
 
 export const doubleQuoteRegexp = /"(.*?)"/gms
 
-export function doubleQuoteStringReplace (str: string, replacement: (string: string, arr?: RegExpExecArray, index?: number, lastIndex?: number) => string) {
+export function doubleQuoteStringReplace (str: string, replacement: (string: string, arr: RegExpExecArray, index?: number, lastIndex?: number) => string) {
   return replace(str, doubleQuoteRegexp, replacement)
 }
 

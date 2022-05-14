@@ -4,7 +4,6 @@ import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, classStringReplace, tagStringReplace, doubleQuoteStringReplace } from '@/reg'
-import replace from 'regexp-replace'
 import type { RawSource } from '@/types'
 
 export function generateCode (match: string) {
@@ -74,9 +73,9 @@ export function templeteReplacer (original: string) {
 }
 
 export function templeteHandler (rawSource: string) {
-  return tagStringReplace(rawSource, (x, arr, index) => {
+  return tagStringReplace(rawSource, (x) => {
     return classStringReplace(x, (y) => {
-      return doubleQuoteStringReplace(y, (z, arr) => {
+      return doubleQuoteStringReplace(y, (_, arr) => {
         return `"${templeteReplacer(arr[1])}"`
       })
     })
