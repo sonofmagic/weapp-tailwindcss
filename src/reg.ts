@@ -2,7 +2,7 @@ import replace from 'regexp-replace'
 
 export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gim
 
-export const tagRegexp = /<[a-z][-a-z]*[a-z]* *([a-z][-a-z]*[a-z]*(?: *= *"(.*?)")?)* *\/?>/gim
+export const tagRegexp = /<[a-z][-a-z]*[a-z]* *([a-z][-a-z]*[a-z]*(?: *= *"(.*?)")?)* *\/? *>/gim
 
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 

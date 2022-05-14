@@ -3,7 +3,8 @@ import { classStringReplace, tagStringRegexp } from '@/reg'
 import { replaceWxml, templeteHandler, templeteReplacer } from '@/wxml/index'
 // import redent from 'redent'
 import replace from 'regexp-replace'
-import prettier from 'prettier'
+
+import { format } from './helpers/wxml'
 
 describe('regexp', () => {
   test('tagStringRegexp', async () => {
@@ -53,7 +54,7 @@ describe('regexp', () => {
   })
 
   test('with var 2', async () => {
-    const navbarTestCase = prettier.format(
+    const navbarTestCase = format(
       `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
       <block wx:if="{{isImmersive}}">
           <view class="tui-status-bar data-v-ec49da2a" style="{{'height:'+(statusBarHeight+'px')+';'}}"></view>
@@ -64,12 +65,9 @@ describe('regexp', () => {
           </view>
       </block>
       <slot></slot>
-  </view>`,
-      {
-        parser: 'html'
-      }
+  </view>`
     )
-    const str = replace(navbarTestCase, /<[a-z][-a-z]*[a-z]* *([a-z][-a-z]*[a-z]*(?: *= *"(.*?)")?)* *\/?>/g, (x, arr) => {
+    const str = tagStringRegexp(navbarTestCase, (x, arr) => {
       const res = classStringReplace(x, (y) => {
         return replace(y, /"(.*)"/g, (z) => {
           return templeteReplacer(z)
@@ -78,7 +76,7 @@ describe('regexp', () => {
       return res
     })
     expect(str).toBe(
-      prettier.format(
+      format(
         `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
     <block wx:if="{{isImmersive}}">
         <view class="tui-status-bar data-v-ec49da2a" style="{{'height:'+(statusBarHeight+'px')+';'}}"></view>
@@ -89,10 +87,7 @@ describe('regexp', () => {
         </view>
     </block>
     <slot></slot>
-</view>`,
-        {
-          parser: 'html'
-        }
+</view>`
       )
     )
   })
