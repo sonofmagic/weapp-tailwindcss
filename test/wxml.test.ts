@@ -128,6 +128,17 @@ describe('wxml', () => {
     expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_l__h_990000_r_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
   })
 
+  it('utils.bem()', () => {
+    const testCase =
+      "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
+
+    // const case3 = '{{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}'
+    const result = templeteReplacer(testCase)
+    expect(result).toBe(
+      "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
+    )
+  })
+
   // it('wxs should be ignored ', async () => {
   //   const testCase = `<wxs module="status">
   //   function get(index, active) {

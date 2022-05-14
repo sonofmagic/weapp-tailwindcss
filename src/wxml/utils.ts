@@ -76,8 +76,8 @@ export function templeteReplacer (original: string) {
 export function templeteHandler (rawSource: string) {
   return tagStringReplace(rawSource, (x, arr, index) => {
     const res = classStringReplace(x, (y) => {
-      return replace(y, /"(.*?)"/g, (z) => {
-        return templeteReplacer(z)
+      return replace(y, /"(.*?)"/g, (z, arr) => {
+        return `"${templeteReplacer(arr[1])}"`
       })
     })
     return res

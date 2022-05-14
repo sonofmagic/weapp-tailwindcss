@@ -1,5 +1,5 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringReplace } from '@/reg'
+import { classStringReplace, tagStringReplace, variableMatch } from '@/reg'
 import { replaceWxml, templeteHandler, templeteReplacer } from '@/wxml/index'
 // import redent from 'redent'
 import replace from 'regexp-replace'
@@ -82,5 +82,53 @@ describe('regexp', () => {
     const testCase = "<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
     const res = templeteHandler(testCase)
     expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
+  })
+
+  test('with var 4', () => {
+    const testCase = `<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
+    </button>`
+
+    const res = templeteHandler(testCase)
+    expect(res)
+      .toBe(`<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
+    </button>`)
+  })
+
+  test('with var 5', () => {
+    const case3 = "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}"
+    const arr = []
+    let res
+    do {
+      res = variableMatch(case3)
+      if (res) {
+        arr.push(res)
+      }
+    } while (res !== null)
+    expect(arr.length).toBe(1)
+  })
+
+  test('with var 6', () => {
+    const case3 = `{{[
+      'flex',
+      'items-center',
+      'justify-center',
+      'h-_l_100px_r_',
+      'w-_l_100px_r_',
+      'rounded-_l_40px_r_',
+      'bg-_l__h_123456_r_',
+      'bg-opacity-_l_0-dot-54_r_',
+      'text-_l__h_ffffff_r_',
+      'data-v-1badc801',
+      'text-_l__h_123456_r_',
+      b]}}`
+    const arr = []
+    let res
+    do {
+      res = variableMatch(case3)
+      if (res) {
+        arr.push(res)
+      }
+    } while (res !== null)
+    expect(arr.length).toBe(1)
   })
 })
