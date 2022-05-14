@@ -3,7 +3,7 @@ import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from './shared'
-import { variableMatch, variableRegExp, classStringReplace, tagStringReplace } from '@/reg'
+import { variableMatch, variableRegExp, classStringReplace, tagStringReplace, doubleQuoteStringReplace } from '@/reg'
 import replace from 'regexp-replace'
 import type { RawSource } from '@/types'
 
@@ -75,12 +75,11 @@ export function templeteReplacer (original: string) {
 
 export function templeteHandler (rawSource: string) {
   return tagStringReplace(rawSource, (x, arr, index) => {
-    const res = classStringReplace(x, (y) => {
-      return replace(y, /"(.*?)"/g, (z, arr) => {
+    return classStringReplace(x, (y) => {
+      return doubleQuoteStringReplace(y, (z, arr) => {
         return `"${templeteReplacer(arr[1])}"`
       })
     })
-    return res
   })
 
   // const parsed = wxml.parse(rawSource)
