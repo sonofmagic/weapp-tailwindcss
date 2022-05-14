@@ -1,6 +1,7 @@
 // import replace from 'regexp-replace'
 import { classStringReplace, tagStringRegexp } from '@/reg'
-import { replaceWxml, templeteHandler } from '@/wxml/index'
+import { replaceWxml, templeteHandler, templeteReplacer } from '@/wxml/index'
+import replace from 'regexp-replace'
 describe('regexp', () => {
   test('tagStringRegexp', async () => {
     const wxmlCase =
@@ -34,14 +35,19 @@ describe('regexp', () => {
     )
   })
 
-  // test('with var', async () => {
-  //   const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
+  test('with var', async () => {
+    const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
-  //   const str = tagStringRegexp(testCase, (x) => {
-  //     return x
-  //   })
-  //   expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
-  // })
+    const str = tagStringRegexp(testCase, (x, arr, index) => {
+      const res = classStringReplace(x, (y) => {
+        return replace(y, /"(.*?)"/g, (z) => {
+          return templeteReplacer(z)
+        })
+      })
+      return res
+    })
+    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
+  })
 
   //   test('with var 2', async () => {
   //     const navbarTestCase = `<view class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
