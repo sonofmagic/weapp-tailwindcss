@@ -1,9 +1,7 @@
 // import replace from 'regexp-replace'
 import { classStringReplace, tagStringReplace, variableMatch } from '@/reg'
-import { replaceWxml, templeteHandler } from '@/wxml/index'
+import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
-
-import { format } from './helpers/wxml'
 
 describe('regexp', () => {
   it('percentage unit', () => {
@@ -65,54 +63,6 @@ describe('regexp', () => {
     )
   })
 
-  test('with var 2', async () => {
-    const navbarTestCase = format(
-      `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
-      <block wx:if="{{isImmersive}}">
-          <view class="tui-status-bar data-v-ec49da2a" style="{{'height:'+(statusBarHeight+'px')+';'}}"></view>
-      </block>
-      <block wx:if="{{title&&!isCustom}}">
-          <view class="tui-navigation_bar-title data-v-ec49da2a" style="{{'opacity:'+(transparent||opacity>=maxOpacity?1:opacity)+';'+('color:'+(color)+';')+('padding-top:'+(top-statusBarHeight+'px')+';')}}">
-              {{''+title+''}}
-          </view>
-      </block>
-      <slot></slot>
-  </view>`
-    )
-    const str = templeteHandler(navbarTestCase)
-    expect(str).toBe(
-      format(
-        `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
-    <block wx:if="{{isImmersive}}">
-        <view class="tui-status-bar data-v-ec49da2a" style="{{'height:'+(statusBarHeight+'px')+';'}}"></view>
-    </block>
-    <block wx:if="{{title&&!isCustom}}">
-        <view class="tui-navigation_bar-title data-v-ec49da2a" style="{{'opacity:'+(transparent||opacity>=maxOpacity?1:opacity)+';'+('color:'+(color)+';')+('padding-top:'+(top-statusBarHeight+'px')+';')}}">
-            {{''+title+''}}
-        </view>
-    </block>
-    <slot></slot>
-</view>`
-      )
-    )
-  })
-
-  test('with var 3', () => {
-    const testCase = "<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
-    const res = templeteHandler(testCase)
-    expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
-  })
-
-  test('with var 4', () => {
-    const testCase = `<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
-    </button>`
-
-    const res = templeteHandler(testCase)
-    expect(res)
-      .toBe(`<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
-    </button>`)
-  })
-
   test('with var 5', () => {
     const case3 = "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}"
     const arr = []
@@ -151,16 +101,18 @@ describe('regexp', () => {
     expect(arr.length).toBe(1)
   })
 
-  test('with var 7', () => {
-    const case3 = "{{b('b',{a:{}})}}"
-    const arr = []
-    let res
-    do {
-      res = variableMatch(case3)
-      if (res) {
-        arr.push(res)
-      }
-    } while (res !== null)
-    expect(arr[0][1]).toBe('b(\'b\',{a:{}})')
-  })
+  // 已测试，原生wxs的 wxml 不合法，故此测试用例废弃
+  //  <view class="{{utils.bem({})}}">
+  // test('with var 7', () => {
+  //   const case3 = "{{b('b',{a:{c:'d'}})}}"
+  //   const arr = []
+  //   let res
+  //   do {
+  //     res = variableMatch(case3)
+  //     if (res) {
+  //       arr.push(res)
+  //     }
+  //   } while (res !== null)
+  //   expect(arr[0][1]).toBe("b('b',{a:{}})")
+  // })
 })

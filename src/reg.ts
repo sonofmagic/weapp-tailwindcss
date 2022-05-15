@@ -2,7 +2,7 @@ import replace from 'regexp-replace'
 
 export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gims
 
-export const tagRegexp = /<[a-z][-a-z]*[a-z]* *([a-z][-a-z]*[a-z]*(?: *= *"(.*?)")?)* *\/? *>/gims
+export const tagRegexp = /<([a-z][-a-z]*[a-z]*)\s*(([a-z][-a-z]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gims
 
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 
@@ -22,7 +22,7 @@ export function doubleQuoteStringReplace (str: string, replacement: (string: str
   return replace(str, doubleQuoteRegexp, replacement)
 }
 
-export const variableRegExp = /{{(.*)}}/gms
+export const variableRegExp = /{{(.*?)}}/gms
 
 export function variableMatch (original: string) {
   return variableRegExp.exec(original)
