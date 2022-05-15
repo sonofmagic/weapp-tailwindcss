@@ -17,7 +17,7 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   apply (compiler: Compiler) {
     const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
-    compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
+    compiler.hooks.emit.tap(pluginName, (compilation) => {
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
@@ -32,7 +32,7 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
           compilation.updateAsset(file, source)
         } else if (htmlMatcher(file)) {
           const rawSource = originalSource.source().toString()
-          const wxml = await templeteHandler(rawSource)
+          const wxml = templeteHandler(rawSource)
           const source = new ConcatSource(wxml)
           compilation.updateAsset(file, source)
         }
