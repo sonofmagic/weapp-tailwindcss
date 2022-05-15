@@ -3,7 +3,7 @@ import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from './shared'
-import { variableMatch, variableRegExp, classStringReplace, tagStringReplace, doubleQuoteStringReplace } from '@/reg'
+import { variableMatch, variableRegExp, tagWithClassRegexp, classRegexp } from '@/reg'
 import type { RawSource } from '@/types'
 
 export function generateCode (match: string) {
@@ -72,34 +72,32 @@ export function templeteReplacer (original: string) {
   }
 }
 
-const isDebug = Boolean(process.env.DEBUG)
+// const isDebug = Boolean(process.env.DEBUG)
 
-function log (message: any, ...args: any[]) {
-  console.log(message, ...args)
-}
-function now () {
-  return Date.now()
-}
+// function log (message: any, ...args: any[]) {
+//   console.log(message, ...args)
+// }
+// function now () {
+//   return Date.now()
+// }
 
 export function templeteHandler (rawSource: string) {
-  let ts = now()
-  return tagStringReplace(rawSource, (x) => {
-    ts = now()
-    const res = classStringReplace(x, (y) => {
-      ts = now()
-      const res1 = doubleQuoteStringReplace(y, (z, arr) => {
-        ts = now()
-        const res2 = `"${templeteReplacer(arr[1])}"`
-        log(`[templeteReplacer]:${now() - ts}, ${z}`)
-        return res2
-      })
-      log(`[doubleQuoteStringReplace]:${now() - ts}, ${y}`)
-      return res1
-    })
-    log(`[classStringReplace]:${now() - ts}, ${x}`)
-    return res
+  return rawSource.replace(tagWithClassRegexp, (m, tagName, className) => {
+    return m.replace(className, templeteReplacer(className))
   })
-
+  // return tagStringReplace(rawSource, (x) => {
+  //   // ts = now()
+  //   return classStringReplace(x, (y) => {
+  //     // ts = now()
+  //     return doubleQuoteStringReplace(y, (z, p1) => {
+  //       // ts = now()
+  //       return `"${templeteReplacer(p1)}"`
+  //       // log(`[templeteReplacer]:${now() - ts}, ${z}`)
+  //     })
+  //     // log(`[doubleQuoteStringReplace]:${now() - ts}, ${y}`)
+  //   })
+  //   // log(`[classStringReplace]:${now() - ts}, ${x}`)
+  // })
   // const parsed = wxml.parse(rawSource)
   // wxml.traverse(parsed, (node, parent) => {
   //   if (node.type === wxml.NODE_TYPES.ELEMENT) {
