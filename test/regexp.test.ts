@@ -1,8 +1,8 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringReplace, variableMatch, tagWithClassRegexp } from '@/reg'
+import { classStringReplace, tagStringReplace, variableRegExp, tagWithClassRegexp } from '@/reg'
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
-import { wxmlCasePath, createGetCase } from './util'
+import { wxmlCasePath, createGetCase, matchAll, format } from './util'
 
 const getCase = createGetCase(wxmlCasePath)
 
@@ -68,14 +68,8 @@ describe('regexp', () => {
 
   test('with var 5', () => {
     const case3 = "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}"
-    const arr = []
-    let res
-    do {
-      res = variableMatch(case3)
-      if (res) {
-        arr.push(res)
-      }
-    } while (res !== null)
+    const arr = matchAll(variableRegExp, case3)
+
     expect(arr.length).toBe(1)
   })
 
@@ -93,14 +87,7 @@ describe('regexp', () => {
       'data-v-1badc801',
       'text-_l__h_123456_r_',
       b]}}`
-    const arr = []
-    let res
-    do {
-      res = variableMatch(case3)
-      if (res) {
-        arr.push(res)
-      }
-    } while (res !== null)
+    const arr = matchAll(variableRegExp, case3)
     expect(arr.length).toBe(1)
   })
 
@@ -119,16 +106,11 @@ describe('regexp', () => {
   //   expect(arr[0][1]).toBe("b('b',{a:{}})")
   // })
 
-  test('should ', async () => {
+  test('exec pref.wxml ', async () => {
     const testCase = await getCase('pref.wxml')
-    const arr = []
-    let res
-    do {
-      res = tagWithClassRegexp.exec(testCase)
-      if (res) {
-        arr.push(res)
-      }
-    } while (res !== null)
+
+    const arr = matchAll(tagWithClassRegexp, testCase)
+
     expect(arr.length).toBe(10)
     expect(arr[0][2]).toBe('pixel-art-container flex flex-col items-center')
     expect(arr[1][2]).toBe('pixel-art-wrapper')
@@ -140,5 +122,25 @@ describe('regexp', () => {
     expect(arr[7][2]).toBe('flex justify-end my-4')
     expect(arr[8][2]).toBe('mt-6')
     expect(arr[9][2]).toBe('vue-ref')
+  })
+
+  test('exec pref.wxml ', async () => {
+    const testCase = await getCase('case1.wxml')
+
+    const arr = matchAll(tagWithClassRegexp, testCase)
+
+    expect(arr.length).toBe(1)
+    expect(format(arr[0][2])).toBe(
+      format(`
+    bg-white
+    rounded-full
+    w-10
+    h-10
+    flex
+    justify-center
+    items-center
+    pointer-events-auto
+  `)
+    )
   })
 })

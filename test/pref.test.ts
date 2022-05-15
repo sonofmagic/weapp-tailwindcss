@@ -12,8 +12,7 @@ describe('performance', () => {
     const str = templeteHandler(source)
 
     const ts = Date.now() - now
-    console.log(ts)
-    // expect(ts < 100).toBe(true)
+    expect(ts < 500).toBe(true)
     expect(str).toBe(str)
   })
 })

@@ -1,5 +1,5 @@
 import { templeteHandler } from '@/wxml/index'
-import { format } from '../helpers/wxml'
+import { format } from '../util'
 
 describe('templeteHandler', () => {
   test('with var', async () => {
