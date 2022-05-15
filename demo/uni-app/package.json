@@ -100,6 +100,7 @@
     "postcss-rem-to-responsive-pixel": "^5.1.1",
     "sass": "^1.49.0",
     "sass-loader": "10",
+    "speed-measure-webpack-plugin": "^1.5.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typescript": "^4.6.3",
     "vue-template-compiler": "^2.6.11",

@@ -3,7 +3,7 @@ import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from './shared'
-import { variableMatch, variableRegExp, classStringReplace, tagStringReplace, doubleQuoteStringReplace } from '@/reg'
+import { variableMatch, variableRegExp, tagWithClassRegexp } from '@/reg'
 import type { RawSource } from '@/types'
 
 export function generateCode (match: string) {
@@ -73,23 +73,7 @@ export function templeteReplacer (original: string) {
 }
 
 export function templeteHandler (rawSource: string) {
-  return tagStringReplace(rawSource, (x) => {
-    return classStringReplace(x, (y) => {
-      return doubleQuoteStringReplace(y, (_, arr) => {
-        return `"${templeteReplacer(arr[1])}"`
-      })
-    })
+  return rawSource.replace(tagWithClassRegexp, (m, tagName, className) => {
+    return m.replace(className, templeteReplacer(className))
   })
-
-  // const parsed = wxml.parse(rawSource)
-  // wxml.traverse(parsed, (node, parent) => {
-  //   if (node.type === wxml.NODE_TYPES.ELEMENT) {
-  //     // @ts-ignore
-  //     if (node.attributes.class) {
-  //       // @ts-ignore
-  //       node.attributes.class = templeteReplacer(node.attributes.class)
-  //     }
-  //   }
-  // })
-  // return wxml.serialize(parsed)
 }

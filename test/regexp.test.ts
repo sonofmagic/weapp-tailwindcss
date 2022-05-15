@@ -1,7 +1,10 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringReplace, variableMatch } from '@/reg'
+import { classStringReplace, tagStringReplace, variableMatch, tagWithClassRegexp } from '@/reg'
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
+import { wxmlCasePath, createGetCase } from './util'
+
+const getCase = createGetCase(wxmlCasePath)
 
 describe('regexp', () => {
   it('percentage unit', () => {
@@ -115,4 +118,27 @@ describe('regexp', () => {
   //   } while (res !== null)
   //   expect(arr[0][1]).toBe("b('b',{a:{}})")
   // })
+
+  test('should ', async () => {
+    const testCase = await getCase('pref.wxml')
+    const arr = []
+    let res
+    do {
+      res = tagWithClassRegexp.exec(testCase)
+      if (res) {
+        arr.push(res)
+      }
+    } while (res !== null)
+    expect(arr.length).toBe(10)
+    expect(arr[0][2]).toBe('pixel-art-container flex flex-col items-center')
+    expect(arr[1][2]).toBe('pixel-art-wrapper')
+    expect(arr[2][2]).toBe('pixel-art-scroll-view')
+    expect(arr[3][2]).toBe('pixel-art-scroll-view-inner')
+    expect(arr[4][2]).toBe('pixel-art-row flex')
+    expect(arr[5][2]).toBe("{{['pixel-art-item','z-50',rowIdx===activePosition.y&&colIdx===activePosition.x?'active':'']}}")
+    expect(arr[6][2]).toBe('w-full h-full')
+    expect(arr[7][2]).toBe('flex justify-end my-4')
+    expect(arr[8][2]).toBe('mt-6')
+    expect(arr[9][2]).toBe('vue-ref')
+  })
 })

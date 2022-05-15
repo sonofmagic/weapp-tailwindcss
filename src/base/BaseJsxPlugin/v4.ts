@@ -10,17 +10,19 @@ import type { IBaseWebpackPlugin } from '@/interface'
 export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   options: Required<TaroUserDefinedOptions>
   appType: AppType
-  constructor(options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply(compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, customRuleCallback } = this.options
+  apply (compiler: Compiler) {
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, customRuleCallback, onLoad, onUpdate, onEnd, onStart } = this.options
     // default react
     const replacer = createReplacer(framework)
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
-    compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
+    onLoad()
+    compiler.hooks.emit.tap(pluginName, (compilation) => {
+      onStart()
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
@@ -33,13 +35,16 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
+          onUpdate(file)
         } else if (jsMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const jsSource = jsxHandler(rawSource, replacer)
           const source = new ConcatSource(jsSource)
           compilation.updateAsset(file, source)
+          onUpdate(file)
         }
       }
+      onEnd()
     })
   }
 }

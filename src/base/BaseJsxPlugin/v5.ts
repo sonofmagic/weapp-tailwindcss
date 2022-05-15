@@ -18,20 +18,21 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback, onLoad, onUpdate, onEnd, onStart } = this.options
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
     const replacer = createReplacer()
-
+    onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      compilation.hooks.processAssets.tapPromise(
+      compilation.hooks.processAssets.tap(
         {
           name: pluginName,
           stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL
         },
-        async (assets) => {
+        (assets) => {
+          onStart()
           const entries = Object.entries(assets)
           for (let i = 0; i < entries.length; i++) {
             const [file, originalSource] = entries[i]
@@ -44,13 +45,16 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)
+              onUpdate(file)
             } else if (jsMatcher(file)) {
               const rawSource = originalSource.source().toString()
               const jsSource = jsxHandler(rawSource, replacer)
               const source = new ConcatSource(jsSource)
               compilation.updateAsset(file, source)
+              onUpdate(file)
             }
           }
+          onEnd()
         }
       )
     })
