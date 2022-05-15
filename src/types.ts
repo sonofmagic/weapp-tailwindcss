@@ -49,6 +49,23 @@ export interface UserDefinedOptions {
    * 用于自定义处理 css 的回调函数
    */
   customRuleCallback?: CustomRuleCallback
+
+  /**
+   * @description plugin apply 初调用
+   */
+  onLoad?: () => void
+  /**
+   * @description 开始处理时调用
+   */
+  onStart?: () => void
+  /**
+   * @description 匹配成功并修改文件内容后调用
+   */
+  onUpdate?: (filename: string) => void
+  /**
+   * @description 结束处理时调用
+   */
+  onEnd?: () => void
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight'>

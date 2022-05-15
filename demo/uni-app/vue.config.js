@@ -9,10 +9,25 @@ const smp = new SpeedMeasurePlugin({
  */
 const config = {
   configureWebpack: (config) => {
-    smp.wrap(config)
-  },
-  chainWebpack: (config) => {
-    config.plugin('UniAppWeappTailwindcssWebpackPluginV4').use(UniAppWeappTailwindcssWebpackPluginV4).end()
+    let now
+    config.plugins.push(
+      new UniAppWeappTailwindcssWebpackPluginV4({
+        onLoad() {
+          console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
+        },
+        onStart() {
+          now = Date.now()
+          // console.log(`onStart:${Date.now() - now}ms`)
+        },
+        onUpdate(file) {
+          console.log(file)
+        },
+        onEnd() {
+          console.log(`onEnd:${Date.now() - now}ms`)
+        }
+      })
+    )
+    // smp.wrap(config)
   }
 }
 

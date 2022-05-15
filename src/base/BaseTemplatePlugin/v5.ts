@@ -15,11 +15,11 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback, onLoad, onUpdate, onEnd, onStart } = this.options
     const { ConcatSource } = compiler.webpack.sources
     const Compilation = compiler.webpack.Compilation
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
-
+    onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.processAssets.tap(
         {
@@ -28,6 +28,7 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
           // additionalAssets: true
         },
         (assets) => {
+          onStart()
           const entries = Object.entries(assets)
           for (let i = 0; i < entries.length; i++) {
             const [file, originalSource] = entries[i]
@@ -40,13 +41,16 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)
+              onUpdate(file)
             } else if (htmlMatcher(file)) {
               const rawSource = originalSource.source().toString()
               const wxml = templeteHandler(rawSource)
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
+              onUpdate(file)
             }
           }
+          onEnd()
         }
       )
     })

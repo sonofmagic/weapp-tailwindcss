@@ -38,7 +38,11 @@ export const defaultOptions: Required<UserDefinedOptions> = {
     'border-style': 'solid',
     'border-color': 'currentColor'
   },
-  customRuleCallback: noop
+  customRuleCallback: noop,
+  onLoad: noop,
+  onStart: noop,
+  onEnd: noop,
+  onUpdate: noop
 }
 
 export function getOptions<T = UserDefinedOptions> (options: T) {

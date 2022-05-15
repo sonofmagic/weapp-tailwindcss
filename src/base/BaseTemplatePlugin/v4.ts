@@ -15,9 +15,11 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback } = this.options
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, customRuleCallback, onLoad, onUpdate, onEnd, onStart } = this.options
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
+    onLoad()
     compiler.hooks.emit.tap(pluginName, (compilation) => {
+      onStart()
       const entries: [string, Source][] = Object.entries(compilation.assets)
       for (let i = 0; i < entries.length; i++) {
         const [file, originalSource] = entries[i]
@@ -30,13 +32,16 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
+          onUpdate(file)
         } else if (htmlMatcher(file)) {
           const rawSource = originalSource.source().toString()
           const wxml = templeteHandler(rawSource)
           const source = new ConcatSource(wxml)
           compilation.updateAsset(file, source)
+          onUpdate(file)
         }
       }
+      onEnd()
     })
   }
 }
