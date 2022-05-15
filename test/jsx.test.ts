@@ -9,7 +9,7 @@ const getCase = createGetCase(jsxCasePath)
 const reactReplacer = createReplacer('react')
 const vue2Replacer = createReplacer('vue')
 
-describe('first', () => {
+describe('jsxHandler', () => {
   it('case1 ', async () => {
     const item = await getCase('case1.js')
     const result = jsxHandler(item, reactReplacer)
