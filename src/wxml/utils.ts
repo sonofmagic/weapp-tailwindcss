@@ -72,13 +72,32 @@ export function templeteReplacer (original: string) {
   }
 }
 
+const isDebug = Boolean(process.env.DEBUG)
+
+function log (message: any, ...args: any[]) {
+  console.log(message, ...args)
+}
+function now () {
+  return Date.now()
+}
+
 export function templeteHandler (rawSource: string) {
+  let ts = now()
   return tagStringReplace(rawSource, (x) => {
-    return classStringReplace(x, (y) => {
-      return doubleQuoteStringReplace(y, (_, arr) => {
-        return `"${templeteReplacer(arr[1])}"`
+    ts = now()
+    const res = classStringReplace(x, (y) => {
+      ts = now()
+      const res1 = doubleQuoteStringReplace(y, (z, arr) => {
+        ts = now()
+        const res2 = `"${templeteReplacer(arr[1])}"`
+        log(`[templeteReplacer]:${now() - ts}, ${z}`)
+        return res2
       })
+      log(`[doubleQuoteStringReplace]:${now() - ts}, ${y}`)
+      return res1
     })
+    log(`[classStringReplace]:${now() - ts}, ${x}`)
+    return res
   })
 
   // const parsed = wxml.parse(rawSource)

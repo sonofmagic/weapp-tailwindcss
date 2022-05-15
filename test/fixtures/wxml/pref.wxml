@@ -1,0 +1,38 @@
+<view class="pixel-art-container flex flex-col items-center">
+  <view class="pixel-art-wrapper">
+    <scroll-view class="pixel-art-scroll-view" scroll-x="{{true}}" scroll-y="{{true}}">
+      <view data-event-opts="{{[['touchmove',[['onTouchmove',['$event']]]],['touchstart',[['onTouchstart',['$event']]]]]}}" class="pixel-art-scroll-view-inner" style="{{'top:'+(positionX+'px')+';'+('left:'+(positionY+'px')+';')+('transform:'+('scale('+scale+')')+';')}}" bindtouchmove="__e" bindtouchstart="__e">
+        <block wx:for="{{pixelMatrix}}" wx:for-item="row" wx:for-index="rowIdx" wx:key="rowIdx">
+          <view class="pixel-art-row flex">
+            <block wx:for="{{row}}" wx:for-item="item" wx:for-index="colIdx" wx:key="id">
+              <view data-event-opts="{{[['tap',[['select',[rowIdx,colIdx]]]]]}}" class="{{['pixel-art-item','z-50',rowIdx===activePosition.y&&colIdx===activePosition.x?'active':'']}}" catchtap="__e">
+                <block wx:if="{{item.avatarUrl}}">
+                  <image class="w-full h-full" src="{{item.avatarUrl}}"></image>
+                </block>
+              </view>
+            </block>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+  <view class="flex justify-end my-4" style="width:690rpx;">
+    <u-button vue-id="3b53d247-1" shape="circle" type="primary" size="mini" data-event-opts="{{[['^click',[['resetScale']]]]}}" bind:click="__e" bind:__l="__l" vue-slots="{{['default']}}">
+      <u-icon vue-id="{{('3b53d247-2')+','+('3b53d247-1')}}" name="reload" bind:__l="__l"></u-icon>
+    </u-button>
+  </view>
+  <block wx:if="{{currentBlock}}">
+    <view class="mt-6">
+      <block wx:if="{{currentBlock.nickName}}">
+        <view>{{"昵称: "+currentBlock.nickName}}</view>
+      </block>
+      <block wx:if="{{!currentBlock.nickName}}">
+        <u-button vue-id="3b53d247-3" type="primary" data-event-opts="{{[['^click',[['occupyPixelBlock']]]]}}" bind:click="__e" bind:__l="__l" vue-slots="{{['default']}}">
+          占用该像素块
+        </u-button>
+      </block>
+    </view>
+  </block>
+  <tui-footer vue-id="3b53d247-4" copyright="Version 0.0.1 还在继续优化添加新功能中..." bind:__l="__l"></tui-footer>
+  <u-top-tips class="vue-ref" vue-id="3b53d247-5" data-ref="uTips" bind:__l="__l"></u-top-tips>
+</view>
