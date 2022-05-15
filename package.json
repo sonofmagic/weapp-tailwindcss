@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.4.2-beta.1",
+  "version": "1.4.2",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -101,8 +101,6 @@
     "postcss-loader": "^6.2.1",
     "postcss-rem-to-responsive-pixel": "^5.1.1",
     "prettier": "^2.6.2",
-    "redent": "3.0.0",
-    "regexp-replace": "^1.0.2",
     "rollup": "^2.70.2",
     "rollup-plugin-terser": "^7.0.2",
     "simple-functional-loader": "^1.2.1",

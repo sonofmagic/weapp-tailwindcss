@@ -3,7 +3,7 @@ import { parseExpression } from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import { replaceWxml } from './shared'
-import { variableMatch, variableRegExp, tagWithClassRegexp, classRegexp } from '@/reg'
+import { variableMatch, variableRegExp, tagWithClassRegexp } from '@/reg'
 import type { RawSource } from '@/types'
 
 export function generateCode (match: string) {
@@ -72,41 +72,8 @@ export function templeteReplacer (original: string) {
   }
 }
 
-// const isDebug = Boolean(process.env.DEBUG)
-
-// function log (message: any, ...args: any[]) {
-//   console.log(message, ...args)
-// }
-// function now () {
-//   return Date.now()
-// }
-
 export function templeteHandler (rawSource: string) {
   return rawSource.replace(tagWithClassRegexp, (m, tagName, className) => {
     return m.replace(className, templeteReplacer(className))
   })
-  // return tagStringReplace(rawSource, (x) => {
-  //   // ts = now()
-  //   return classStringReplace(x, (y) => {
-  //     // ts = now()
-  //     return doubleQuoteStringReplace(y, (z, p1) => {
-  //       // ts = now()
-  //       return `"${templeteReplacer(p1)}"`
-  //       // log(`[templeteReplacer]:${now() - ts}, ${z}`)
-  //     })
-  //     // log(`[doubleQuoteStringReplace]:${now() - ts}, ${y}`)
-  //   })
-  //   // log(`[classStringReplace]:${now() - ts}, ${x}`)
-  // })
-  // const parsed = wxml.parse(rawSource)
-  // wxml.traverse(parsed, (node, parent) => {
-  //   if (node.type === wxml.NODE_TYPES.ELEMENT) {
-  //     // @ts-ignore
-  //     if (node.attributes.class) {
-  //       // @ts-ignore
-  //       node.attributes.class = templeteReplacer(node.attributes.class)
-  //     }
-  //   }
-  // })
-  // return wxml.serialize(parsed)
 }
