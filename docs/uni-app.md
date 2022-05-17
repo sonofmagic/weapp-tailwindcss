@@ -80,7 +80,7 @@ module.exports = {
 ## 4. 添加 `.env` 设置 `TAILWIND_MODE`
 
 ```plain
-# https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app/.env
+# https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app/.env.development
 # 假如 jit 模式 HMR 失效
 TAILWIND_MODE=watch
 ```
