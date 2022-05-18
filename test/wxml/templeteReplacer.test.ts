@@ -98,10 +98,25 @@ describe('templeteReplacer', () => {
     const testCase =
       "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
 
-    // const case3 = '{{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}'
     const result = templeteReplacer(testCase)
     expect(result).toBe(
       "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
     )
+  })
+
+  // .shadow-\[0px_2px_11px_0px_rgba\(0\2c 0\2c 0\2c 0\.4\)\]
+  it('arbitrary shadow values 0', () => {
+    // 逗号 comma 的原因
+    const testCase = 'shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]'
+
+    const result = templeteReplacer(testCase)
+    expect(result).toBe('shadow-_l_0px_2px_11px_0px_rgba_p_0_d_0_d_0_d_0_dot_4_q__r_')
+  })
+
+  // .shadow-\[0px_2px_11px_0px_\#0000000a\]
+  it('arbitrary shadow values 1', () => {
+    const testCase = 'shadow-[0px_2px_11px_0px_#00000a]'
+    const result = templeteReplacer(testCase)
+    expect(result).toBe('shadow-_l_0px_2px_11px_0px__h_00000a_r_')
   })
 })

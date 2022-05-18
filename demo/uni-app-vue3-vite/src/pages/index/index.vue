@@ -1,5 +1,7 @@
 <template>
   <view class="content">
+    <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]"></view>
+    <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
     <view class="text-[22px]">text-[22px]</view>
     <view class="text-[#bada55]">text-[#bada55]</view>
     <view class="text-[var(--my-var)]">text-[var(--my-var)]</view>
@@ -16,8 +18,8 @@
     </button>
     <view class="test">test</view>
     <view :key="i" class="h-[20px] w-[20px]" :class="cardsColor[i - 1]" v-for="i in 5"></view>
-    <!-- <view class="w-2 h-2 bg-[#123456]"></view>
-    <view class="w-2 h-2 bg-blue-500/50"></view> -->
+    <view class="w-2 h-2 bg-[#123456]"></view>
+    <view class="w-2 h-2 bg-blue-500/50"></view>
     <view class="flex items-center justify-center w-screen h-screen">
       <view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>
     </view>
