@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-
+export { format } from './helpers/wxml'
 export function resolve (...args: string[]) {
   return path.resolve(...args)
 }
@@ -35,4 +35,16 @@ export function createPutCase (casePath: string) {
 
 export function isWebpackPlugin (constructor: new () => {}) {
   return typeof constructor.prototype.apply === 'function'
+}
+
+export const matchAll = (regex: RegExp, str: string) => {
+  const arr = []
+  let res
+  do {
+    res = regex.exec(str)
+    if (res) {
+      arr.push(res)
+    }
+  } while (res !== null)
+  return arr
 }
