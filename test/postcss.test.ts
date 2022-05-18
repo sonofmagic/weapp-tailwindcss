@@ -1,6 +1,6 @@
 import { getOptions, styleHandler, createInjectPreflight } from '@/shared'
 import { cssCasePath, createGetCase, createPutCase } from './util'
-
+import { replaceCss } from '@/replace'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
@@ -80,5 +80,16 @@ describe('first', () => {
       cssInjectPreflight: () => []
     })
     expect(result).toBe('::before,::after,view{}')
+  })
+
+  it('shadow arbitrary values 0', async () => {
+    // eslint-disable-next-line no-octal-escape
+    const testCase = await getCase('shadow-arbitrary-0.css')
+    expect(replaceCss(testCase)).toBe('.shadow-_l_0px_2px_11px_0px_rgba_p_0_d_0_d_0_d_0_dot_4_q__r_{}')
+  })
+
+  it('shadow arbitrary values 1', async () => {
+    const testCase = await getCase('shadow-arbitrary-1.css')
+    expect(replaceCss(testCase)).toBe('.shadow-_l_0px_2px_11px_0px__h_00000a_r_{}')
   })
 })
