@@ -9,8 +9,8 @@ export function cssSelectorReplacer (selector: string) {
       .replace(/\\\)/g, '_q_') // \)
       .replace(/\\#/g, '_h_') // \# : hex
       .replace(/\\!/g, '_i_') // \! : !important
-      .replace(/\\\//g, '-div-') // \/ : w-1/2 -> width:50%
-      .replace(/\\\./g, '-dot-') // \. : w-1.5
+      .replace(/\\\//g, '_div_') // \/ : w-1/2 -> width:50%
+      .replace(/\\\./g, '_dot_') // \. : w-1.5
       // \\:
       .replace(/\\:/g, '_c_') // colon for screen
       // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8

@@ -6,8 +6,8 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     .replace(/\)/g, '_q_') // )
     .replace(/#/g, '_h_') // hex
     .replace(/!/g, '_i_') // css !important
-    .replace(/\//g, '-div-') // /
-    .replace(/\./g, '-dot-') // .
+    .replace(/\//g, '_div_') // /
+    .replace(/\./g, '_dot_') // .
     // :
     .replace(/:/g, '_c_')
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
