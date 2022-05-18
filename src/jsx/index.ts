@@ -3,11 +3,11 @@ import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import type { Replacer } from './replacer'
 
-export function jsxHandler(rawSource: string, replacer: Replacer) {
+export function jsxHandler (rawSource: string, replacer: Replacer) {
   const ast = parse(rawSource)
 
   traverse(ast, {
-    enter(path) {
+    enter (path) {
       replacer(path)
     },
     noScope: true
