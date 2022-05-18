@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolving ambiguities text-[#bada55] 1`] = `"<div class=\\"text-_l__h_bada55_r_\\">...</div>"`;
+
+exports[`resolving ambiguities text-[22px] 1`] = `"<div class=\\"text-_l_22px_r_\\">...</div>"`;
+
+exports[`resolving ambiguities text-[color:var(--my-var)] 1`] = `"<div class=\\"text-_l_color_c_var_p_--my-var_q__r_\\">...</div>"`;
+
+exports[`resolving ambiguities text-[length:var(--my-var)] 1`] = `"<div class=\\"text-_l_length_c_var_p_--my-var_q__r_\\">...</div>"`;
+
+exports[`resolving ambiguities text-[var(--my-var)] 1`] = `"<div class=\\"text-_l_var_p_--my-var_q__r_\\">...</div>"`;
