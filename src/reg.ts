@@ -12,6 +12,9 @@ export const variableRegExp = /{{(.*?)}}/gs
 // 相比来说 '_' 就宽泛多了，这就是选用 '_' 而不是 '-' 进行转义的原因
 export const wxmlAllowClassCharsRegExp = /[a-zA-Z0-9_-]*/g
 
+export function createWxmlAllowClassCharsRegExp () {
+  return new RegExp(wxmlAllowClassCharsRegExp.source, 'g')
+}
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 
 // export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim
