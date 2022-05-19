@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]"></view>
+    <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
     <view class="text-[22px]">text-[22px]</view>
     <view class="text-[#bada55]">text-[#bada55]</view>
