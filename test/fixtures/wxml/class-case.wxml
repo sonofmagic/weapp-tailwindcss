@@ -1,0 +1,12 @@
+<!-- index.wxml -->
+<view class="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM">All words</view>
+<view class=",./;'[]<>?:{}\|">,./;'[]>?:{}\|</view>
+<view class=",./;'[]\`-=/*-+">,./;'[]\`-=/*-+</view>
+<view class="~!@#$%^&*()_+">~!@#$%^&*()_+</view>
+<view class="a-2"></view>
+<view class="-"></view>
+<view class="1-"></view>
+<view class="-a"></view>
+<view class="---"></view>
+<view class="_"></view>
+<view class="_-"></view>

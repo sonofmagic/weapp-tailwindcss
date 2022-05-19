@@ -7,6 +7,11 @@ export const tagWithClassRegexp = /<([a-z][-a-z]*[a-z]*)\s+[^>]*?(?:class="([^"]
 export const doubleQuoteRegexp = /"([^"]*)"/g
 
 export const variableRegExp = /{{(.*?)}}/gs
+
+// '-' 不能单独存在,必须前或者后包含一个字母(不能是 '-'本身)
+// 相比来说 '_' 就宽泛多了，这就是选用 '_' 而不是 '-' 进行转义的原因
+export const wxmlAllowClassCharsRegExp = /[a-zA-Z0-9_-]*/g
+
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 
 // export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim
