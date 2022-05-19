@@ -1,5 +1,5 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringReplace, variableRegExp, tagWithClassRegexp } from '@/reg'
+import { classStringReplace, tagStringReplace, variableRegExp, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '@/reg'
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
@@ -142,5 +142,9 @@ describe('regexp', () => {
     pointer-events-auto
   `)
     )
+  })
+
+  test('wxmlAllowClassCharsRegExp test columns-_l_10rem_r_', () => {
+    expect(wxmlAllowClassCharsRegExp.test('columns-_l_10rem_r_')).toBe(true)
   })
 })

@@ -43,7 +43,16 @@
     json5 "^2.2.1"
     semver "^6.3.0"
 
-"@babel/generator@^7.17.10", "@babel/generator@^7.17.7", "@babel/generator@^7.17.9":
+"@babel/generator@7.17.9":
+  version "7.17.9"
+  resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.17.9.tgz#f4af9fd38fa8de143c29fce3f71852406fc1e2fc"
+  integrity sha512-rAdDousTwxbIxbz5I7GEQ3lUip+xVCXooZNbsydCWs3xA7ZsYOv+CFRdzGxRX78BmQHu9B1Eso59AOZQOJDEdQ==
+  dependencies:
+    "@babel/types" "^7.17.0"
+    jsesc "^2.5.1"
+    source-map "^0.5.0"
+
+"@babel/generator@^7.17.10", "@babel/generator@^7.17.9":
   version "7.17.10"
   resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.17.10.tgz#c281fa35b0c349bbe9d02916f4ae08fc85ed7189"
   integrity sha512-46MJZZo9y3o4kmhBVc7zW7i8dtR1oIK/sdO5NcfcZRhTGYi+KKJRtHNgsU6c4VUcJmUNV/LQdebD/9Dlv4K+Tg==
@@ -197,7 +206,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.16.4", "@babel/parser@^7.16.7", "@babel/parser@^7.17.10", "@babel/parser@^7.17.8", "@babel/parser@^7.17.9":
+"@babel/parser@7.17.9":
+  version "7.17.9"
+  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.17.9.tgz#9c94189a6062f0291418ca021077983058e171ef"
+  integrity sha512-vqUSBLP8dQHFPdPi9bc5GK9vRkYHJ49fsZdtoJ8EQ8ibpwk5rPKfvNIwChB0KVXcIjcepEBBd2VHC5r9Gy8ueg==
+
+"@babel/parser@^7.16.4", "@babel/parser@^7.16.7", "@babel/parser@^7.17.10", "@babel/parser@^7.17.9":
   version "7.17.10"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.17.10.tgz#873b16db82a8909e0fbd7f115772f4b739f6ce78"
   integrity sha512-n2Q6i+fnJqzOaq2VkdXxy2TCPCWQZHiCo0XqmrCvDWcZQKRyZzYi4Z0yxlBuN0w+r2ZHmre+Q087DSrw3pbJDQ==
@@ -245,6 +259,22 @@
     "@babel/code-frame" "^7.16.7"
     "@babel/parser" "^7.16.7"
     "@babel/types" "^7.16.7"
+
+"@babel/traverse@7.17.9":
+  version "7.17.9"
+  resolved "https://registry.npmmirror.com/@babel/traverse/-/traverse-7.17.9.tgz#1f9b207435d9ae4a8ed6998b2b82300d83c37a0d"
+  integrity sha512-PQO8sDIJ8SIwipTPiR71kJQCKQYB5NGImbOviK8K+kg5xkNSYXLBupuX9QhatFowrsvo9Hj8WgArg3W7ijNAQw==
+  dependencies:
+    "@babel/code-frame" "^7.16.7"
+    "@babel/generator" "^7.17.9"
+    "@babel/helper-environment-visitor" "^7.16.7"
+    "@babel/helper-function-name" "^7.17.9"
+    "@babel/helper-hoist-variables" "^7.16.7"
+    "@babel/helper-split-export-declaration" "^7.16.7"
+    "@babel/parser" "^7.17.9"
+    "@babel/types" "^7.17.0"
+    debug "^4.1.0"
+    globals "^11.1.0"
 
 "@babel/traverse@^7.0.0", "@babel/traverse@^7.16.7", "@babel/traverse@^7.17.10", "@babel/traverse@^7.17.3", "@babel/traverse@^7.17.9":
   version "7.17.10"
@@ -2181,11 +2211,6 @@ regenerator-runtime@^0.13.9:
   resolved "https://registry.npmmirror.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
   integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
 
-regexp-replace@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmmirror.com/regexp-replace/-/regexp-replace-1.0.2.tgz#586abc51839171d25b7c7eda6188c3c42c859f85"
-  integrity sha512-lpSDIgSf36pjJfZbs8sjzURZ3DzHmpFbTqCNInj4jjzx4UxUtszyy8crvKSs+aIBrr58Salmh29EaziPVFrdAQ==
-
 resolve@^1.1.7, resolve@^1.22.0:
   version "1.22.0"
   resolved "https://registry.npmmirror.com/resolve/-/resolve-1.22.0.tgz#5e0b8c67c15df57a89bdbabe603a002f21731198"
@@ -2317,6 +2342,11 @@ source-map@0.6.1, source-map@^0.6.1:
   version "0.6.1"
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
+
+source-map@^0.5.0:
+  version "0.5.7"
+  resolved "https://registry.npmmirror.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
+  integrity sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==
 
 sourcemap-codec@^1.4.8:
   version "1.4.8"
@@ -2499,15 +2529,14 @@ vuex@^4.0.2:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-weapp-tailwindcss-webpack-plugin@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.3.4.tgz#701452c89bf73c971cf6cfb81b134513e301c2e5"
-  integrity sha512-oyTJn9Poq2xSrY/nCG85ZEHQ1KDiI/xaYq4fbvT7Bc7mGupBYp/YWQkJTOFyIA/aV/u/WgpxUt4Igh5k3tTocw==
+weapp-tailwindcss-webpack-plugin@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.4.3.tgz#95ecdab795c519a35838250a6f7656834acbde00"
+  integrity sha512-xq0dRu1W5ZAtQkr7Bfh5Abba8Xm26CqEb+v6YlHqokk1m8IlCYTcJ0NaRLk6ApWrVzxTMP4K5q/k2xdDFf6gGA==
   dependencies:
-    "@babel/generator" "^7.17.7"
-    "@babel/parser" "^7.17.8"
-    "@babel/traverse" "^7.17.3"
-    regexp-replace "^1.0.2"
+    "@babel/generator" "7.17.9"
+    "@babel/parser" "7.17.9"
+    "@babel/traverse" "7.17.9"
     webpack-sources "^3.2.3"
 
 webpack-sources@^3.2.3:

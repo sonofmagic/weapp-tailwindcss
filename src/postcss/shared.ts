@@ -17,5 +17,6 @@ export function cssSelectorReplacer (selector: string) {
       .replace(/\\%/g, '_pct_')
       // .replace(/\\,/g, '_d_')
       .replace(/\\2c /g, '_d_')
+      .replace(/\\'/g, '_y_')
   )
 }

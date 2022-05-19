@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`arbitrary values bg-[#bada55] text-[22px] before:content-['Festivus'] 1`] = `
+"<div class=\\"bg-_l__h_bada55_r_ text-_l_22px_r_ before_c_content-_l__y_Festivus_y__r_\\">
+      <!-- ... -->
+    </div>"
+`;
+
+exports[`arbitrary values top-[117px] 1`] = `
+"<div class=\\"top-_l_117px_r_\\">
+    <!-- ... -->
+  </div>"
+`;
+
+exports[`arbitrary values top-[117px] lg:top-[344px] 1`] = `
+"<div class=\\"top-_l_117px_r_ lg_c_top-_l_344px_r_\\">
+      <!-- ... -->
+    </div>"
+`;

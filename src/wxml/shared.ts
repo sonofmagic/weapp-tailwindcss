@@ -13,6 +13,7 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
     .replace(/%/g, '_pct_')
     .replace(/,/g, '_d_')
+    .replace(/'/g, '_y_')
   if (keepEOL) {
     return res
   }

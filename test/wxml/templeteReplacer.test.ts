@@ -119,4 +119,10 @@ describe('templeteReplacer', () => {
     const result = templeteReplacer(testCase)
     expect(result).toBe('shadow-_l_0px_2px_11px_0px__h_00000a_r_')
   })
+
+  it("arbitrary before:content-['hello']", () => {
+    const testCase = "before:content-['hello']"
+    const result = templeteReplacer(testCase)
+    expect(result).toBe('before_c_content-_l__y_hello_y__r_')
+  })
 })

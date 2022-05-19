@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.4 (2022-05-19)
+
+[Feat]: `all arbitrary values usages`, 允许 `before:content-['Festivus']` 这样的写法。
+
 ## 1.4.3 (2022-05-18)
 
 [Fixed]: `shadow arbitrary-values` 问题: 比如使用 `shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]` 会报错等等

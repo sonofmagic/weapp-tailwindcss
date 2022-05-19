@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handling whitespace before:content-['hello_world'] 1`] = `
+"<div class=\\"before_c_content-_l__y_hello_world_y__r_\\">
+      <!-- ... -->
+    </div>"
+`;
+
+exports[`handling whitespace bg-[url('/what_a_rush.png')] 1`] = `
+"<div class=\\"bg-_l_url_p__y__div_what_a_rush_dot_png_y__q__r_\\">
+      <!-- ... -->
+    </div>"
+`;
+
+exports[`handling whitespace grid grid-cols-[1fr_500px_2fr] 1`] = `
+"<div class=\\"grid grid-cols-_l_1fr_500px_2fr_r_\\">
+      <!-- ... -->
+    </div>"
+`;
