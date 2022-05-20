@@ -19,3 +19,5 @@ jobs:
       - run: yarn test
 
       - uses: codecov/codecov-action@v2
+        with:
+          directory: coverage
