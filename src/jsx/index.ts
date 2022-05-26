@@ -3,8 +3,10 @@ import traverse from '@babel/traverse'
 import generate from '@babel/generator'
 import type { Replacer } from './replacer'
 
-export function jsxHandler (rawSource: string, replacer: Replacer) {
-  const ast = parse(rawSource)
+export function jsxHandler (rawSource: string, replacer: Replacer, sourceFileName: string) {
+  const ast = parse(rawSource, {
+    sourceFilename: sourceFileName
+  })
 
   traverse(ast, {
     enter (path) {
@@ -13,6 +15,8 @@ export function jsxHandler (rawSource: string, replacer: Replacer) {
     noScope: true
   })
 
-  const { code } = generate(ast)
-  return code
+  return generate(ast, {
+    sourceMaps: true
+    // sourceFileName
+  })
 }
