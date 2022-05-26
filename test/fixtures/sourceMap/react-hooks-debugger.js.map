@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "file": "pages/debug/index.js",
+  "sources": [
+    "webpack:///._src_pages_debug_index.tsx",
+    "webpack:///./src/pages/debug/index.tsx?b5da"
+  ],
+  "sourcesContent": [
+    "import { useEffect } from 'react'\n\nconst Index = () => {\n  const text = 'debugger'\n\n  useEffect(() => {\n    console.log('text has change or init')\n    debugger\n  }, [text])\n  // 此处写可以准确触发\n  // debugger\n  return text\n}\n\nexport default Index\n",
+    "import { createPageConfig } from '@tarojs/runtime'\nimport component from \"../../../node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./index.tsx\"\nvar config = {\"navigationBarTitleText\":\"Debugger\",\"enableShareAppMessage\":true};\n\ncomponent.enableShareAppMessage = true\nvar inst = Page(createPageConfig(component, 'pages/debug/index', {root:{cn:[]}}, config || {}))\n\n\n"
+  ],
+  "mappings": ";;;;;;;;;;;AAAA;AAAA;AAAA;AACA;AACA;AACA;AAEA;AACA;AACA;AAFA;AAKA;AACA;AAAA;AATA;AACA;AAWA;;;;;;;;;;;;;ACdA;AAAA;AAAA;AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;;;;A",
+  "sourceRoot": ""
+}

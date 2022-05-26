@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "file": "pages/debug/other.js",
+  "sources": [
+    "webpack:///._src_pages_debug_other.tsx",
+    "webpack:///./src/pages/debug/other.tsx?a0ad"
+  ],
+  "sourcesContent": [
+    "import { Component } from 'react'\n\nexport default class Index extends Component {\n  componentDidMount() {\n    debugger\n    console.log('componentDidMount')\n  }\n  componentDidUpdate() {\n    debugger\n    console.log('componentDidUpdate')\n  }\n  render() {\n    const text = 'debugger'\n    // 此处写可以准确触发\n    // debugger\n    return text\n  }\n}\n",
+    "import { createPageConfig } from '@tarojs/runtime'\nimport component from \"../../../node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./other.tsx\"\nvar config = {};\n\n\nvar inst = Page(createPageConfig(component, 'pages/debug/other', {root:{cn:[]}}, config || {}))\n\n\n"
+  ],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;AAAA;AACA;AACA;;;;;;;;;;;;;AACA;AACA;AACA;AACA;;;AACA;AACA;AACA;AACA;;;AACA;AACA;AAEA;AACA;AAAA;AACA;;;;AAdA;AACA;;;;;;;;;;;;;;ACHA;AAAA;AAAA;AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;;;;A",
+  "sourceRoot": ""
+}
