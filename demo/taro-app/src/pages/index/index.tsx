@@ -8,7 +8,7 @@ import './index.scss'
 
 const Index = () => {
   const [flag] = useState(true)
-  const className = replaceJs( 'bg-[#123456]')
+  const className = replaceJs('bg-[#123456]')
   return (
     <>
       <View className={className}>className</View>

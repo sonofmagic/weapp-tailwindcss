@@ -38,9 +38,15 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           onUpdate(file)
         } else if (jsMatcher(file)) {
           const rawSource = originalSource.source().toString()
-          const jsSource = jsxHandler(rawSource, replacer)
-          const source = new ConcatSource(jsSource)
+
+          const { code } = jsxHandler(rawSource, replacer, file)
+          const source = new ConcatSource(code)
           compilation.updateAsset(file, source)
+          // const sourceMapFileName = `${file}.map`
+          // if (compilation.assets[sourceMapFileName]) {
+          //   const sourceMap = new ConcatSource(JSON.stringify(map))
+          //   compilation.updateAsset(sourceMapFileName, sourceMap)
+          // }
           onUpdate(file)
         }
       }
