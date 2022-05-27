@@ -117,6 +117,8 @@ cssPreflight: {
 
 ## 常见问题
 
+> 目前微信开发者工具会默认开启 `代码自动热重载 (compileHotReLoad)` 功能，这个功能在原生开发中表现良好，但在 `uni-app` 和 `taro` 等等的框架中，存在一定的问题，详见[issues#37](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/37)，所以如果你遇到了此类问题，建议关闭 `代码自动热重载` 功能。
+
 [常见问题见 FAQ.md](./docs/faq.md)
 
 
