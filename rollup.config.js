@@ -17,7 +17,7 @@ const sharedConfig = {
     commonjs(),
     typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
   ],
-  external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : [])]
+  external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack']
 }
 
 /** @type {Array<import('rollup').RollupOptions> } */
@@ -28,8 +28,8 @@ const config = [
       {
         file: pkg.main,
         format: 'cjs',
-        sourcemap: isDev
-        // exports: 'auto'
+        sourcemap: isDev,
+        exports: 'auto'
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ],
@@ -54,8 +54,8 @@ const config = [
       {
         file: 'dist/jsx-rename-loader.js',
         format: 'cjs',
-        sourcemap: isDev
-        // exports: 'auto'
+        sourcemap: isDev,
+        exports: 'auto'
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ],

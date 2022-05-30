@@ -4,9 +4,7 @@ import type { Compiler } from 'webpack'
 import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
 import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
-// @ts-ignore
-// import NormalModule from 'webpack/lib/NormalModule'
-// import { getCompilationHooks } from 'webpack/lib/NormalModule'
+import { NormalModule } from 'webpack'
 
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
@@ -29,10 +27,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     const replacer = createReplacer()
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      // @ts-ignore
-      // getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {})
-      // @ts-ignore
-      // NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {})
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {})
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
