@@ -4,6 +4,7 @@ import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight
 import { ConcatSource, Source } from 'webpack-sources'
 import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
+import path from 'path'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
@@ -21,6 +22,19 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
     const replacer = createReplacer(framework)
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     onLoad()
+    // @ts-ignore
+    compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      // @ts-ignore
+      compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
+        if (jsMatcher(module.resource)) {
+          // unshift
+          module.loaders.push({
+            loader: path.resolve(__dirname, 'jsx-rename-loader.js'), // Path to loader
+            options: {}
+          })
+        }
+      })
+    })
     compiler.hooks.emit.tap(pluginName, (compilation) => {
       onStart()
       const entries: [string, Source][] = Object.entries(compilation.assets)
