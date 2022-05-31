@@ -1,6 +1,6 @@
 import type { AppType, TaroUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
+import { styleHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
 import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
@@ -28,7 +28,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
       compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
         if (jsMatcher(module.resource)) {
           // unshift
-          module.loaders.push({
+          module.loaders.unshift({
             loader: path.resolve(__dirname, 'jsx-rename-loader.js'), // Path to loader
             options: {
               replacer
@@ -52,19 +52,20 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
           onUpdate(file)
-        } else if (jsMatcher(file)) {
-          const rawSource = originalSource.source().toString()
-
-          const { code } = jsxHandler(rawSource, replacer, file)
-          const source = new ConcatSource(code)
-          compilation.updateAsset(file, source)
-          // const sourceMapFileName = `${file}.map`
-          // if (compilation.assets[sourceMapFileName]) {
-          //   const sourceMap = new ConcatSource(JSON.stringify(map))
-          //   compilation.updateAsset(sourceMapFileName, sourceMap)
-          // }
-          onUpdate(file)
         }
+        // else if (jsMatcher(file)) {
+        //   const rawSource = originalSource.source().toString()
+
+        //   const { code } = jsxHandler(rawSource, replacer, file)
+        //   const source = new ConcatSource(code)
+        //   compilation.updateAsset(file, source)
+        //   // const sourceMapFileName = `${file}.map`
+        //   // if (compilation.assets[sourceMapFileName]) {
+        //   //   const sourceMap = new ConcatSource(JSON.stringify(map))
+        //   //   compilation.updateAsset(sourceMapFileName, sourceMap)
+        //   // }
+        //   onUpdate(file)
+        // }
       }
       onEnd()
     })
