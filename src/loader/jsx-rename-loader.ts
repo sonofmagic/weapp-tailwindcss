@@ -1,36 +1,29 @@
-import { parse } from '@babel/parser'
-import traverse from '@babel/traverse'
-import generate from '@babel/generator'
-
 import type * as webpack from 'webpack'
 import { getOptions } from 'loader-utils'
 import type { Replacer } from '@/jsx/replacer'
 import { jsxHandler } from '@/jsx/index'
 // "jsx", "flow", "typescript"
-interface LoaderOptions {
+export interface LoaderOptions {
   replacer: Replacer
+  framework?: string
+  isVue?: boolean
 }
-
-// export function esmJsxHandler (rawSource: string, replacer: Replacer) {
-//   const ast = parse(rawSource, {
-//     sourceType: 'unambiguous'
-//   })
-
-//   traverse(ast, {
-//     enter (path) {
-//       replacer(path)
-//     },
-//     noScope: true
-//   })
-
-//   return generate(ast)
-// }
 
 export default function loader (this: webpack.LoaderContext<LoaderOptions>, content: string) {
   this.cacheable && this.cacheable()
-  // @ts-ignore
+
+  // if (/src\\pages/.test(this.resource)) {
+  //   console.log(this.resource)
+  //   debugger
+  // }
+  // ignore node_modules
   // webpack 4 and 5 -> this.version === 2
+  // @ts-ignore
   const config: LoaderOptions = getOptions(this)
+  // if (config.isVue) {
+  //   console.log(this.resource)
+  //   debugger
+  // }
   const { code } = jsxHandler(content, config.replacer)
   return code
 }

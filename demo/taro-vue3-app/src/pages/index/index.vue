@@ -16,7 +16,7 @@
       </view>
       <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300"> Default </view>
     </view>
-    <view class="test">test</view>
+    <view class="test" >test</view>
   </view>
 </template>
 

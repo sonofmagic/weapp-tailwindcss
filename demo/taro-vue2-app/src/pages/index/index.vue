@@ -15,7 +15,7 @@
         <view>3</view>
       </view>
     </view>
-    <view class="test">test</view>
+    <view class="test" @tap="forDebug" @click="forDebug">test</view>
   </view>
 </template>
 
@@ -27,6 +27,11 @@ export default {
     return {
       msg: 'Hello world!',
       flag: true
+    }
+  },
+  methods: {
+    forDebug() {
+      debugger
     }
   }
 }

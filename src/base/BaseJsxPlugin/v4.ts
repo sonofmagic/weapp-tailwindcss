@@ -28,13 +28,25 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
       compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
         if (jsMatcher(module.resource)) {
           // unshift
+          // ignore node_modules ?
           module.loaders.unshift({
             loader: path.resolve(__dirname, 'jsx-rename-loader.js'), // Path to loader
             options: {
+              framework,
               replacer
             }
           })
         }
+        // else if (/\.vue$/.test(module.resource)) {
+        //   module.loaders.unshift({
+        //     loader: path.resolve(__dirname, 'jsx-rename-loader.js'), // Path to loader
+        //     options: {
+        //       framework,
+        //       replacer,
+        //       isVue: true
+        //     }
+        //   })
+        // }
       })
     })
     compiler.hooks.emit.tap(pluginName, (compilation) => {
