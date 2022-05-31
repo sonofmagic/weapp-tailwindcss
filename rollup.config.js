@@ -17,7 +17,7 @@ const sharedConfig = {
     commonjs(),
     typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
   ],
-  external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack']
+  external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
 }
 
 /** @type {Array<import('rollup').RollupOptions> } */

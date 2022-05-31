@@ -30,7 +30,9 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           // unshift
           module.loaders.push({
             loader: path.resolve(__dirname, 'jsx-rename-loader.js'), // Path to loader
-            options: {}
+            options: {
+              replacer
+            }
           })
         }
       })

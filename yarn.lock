@@ -804,6 +804,14 @@
   resolved "https://registry.npmmirror.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
+"@types/loader-utils@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/@types/loader-utils/-/loader-utils-2.0.3.tgz#fbc2337358f8f4a7dc532ac0a3646c74275edf2d"
+  integrity sha512-sDXXzZnTLXgdso54/iOpAFSDgqhVXabCvwGAt77Agadh/Xk0QYgOk520r3tpOouI098gyqGIFywx8Op1voc3vQ==
+  dependencies:
+    "@types/node" "*"
+    "@types/webpack" "^4"
+
 "@types/node@*", "@types/node@^17.0.29":
   version "17.0.32"
   resolved "https://registry.npmmirror.com/@types/node/-/node-17.0.32.tgz#51d59d7a90ef2d0ae961791e0900cad2393a0149"
@@ -862,7 +870,7 @@
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
-"@types/webpack4@npm:@types/webpack@4":
+"@types/webpack4@npm:@types/webpack@4", "@types/webpack@^4":
   version "4.41.32"
   resolved "https://registry.npmmirror.com/@types/webpack/-/webpack-4.41.32.tgz#a7bab03b72904070162b2f169415492209e94212"
   integrity sha512-cb+0ioil/7oz5//7tZUSwbrSAN/NWHrQylz5cW8G0dWTcF/g+/dSdMlKVZspBYuMAN1+WnwHrkxiRrLcwd0Heg==
@@ -4458,7 +4466,7 @@ loader-utils@^1.2.3:
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
-loader-utils@^2.0.0:
+loader-utils@^2.0.0, loader-utils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npmmirror.com/loader-utils/-/loader-utils-2.0.2.tgz#d6e3b4fb81870721ae4e0868ab11dd638368c129"
   integrity sha512-TM57VeHptv569d/GKh6TAYdzKblwDNiumOdkFnejjD0XwTH87K90w3O7AiJRqdQoXygvi1VQTJTLGhJl7WqA7A==
