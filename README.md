@@ -19,6 +19,7 @@
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
   - [Options 配置项](#options-配置项)
   - [使用 arbitrary values](#使用-arbitrary-values)
+  - [变更日志](#变更日志)
   - [常见问题](#常见问题)
   - [Related projects](#related-projects)
     - [模板 template](#模板-template)
@@ -114,6 +115,7 @@ cssPreflight: {
 
 详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)
 
+## [变更日志](./CHANGELOG.md)
 
 ## 常见问题
 

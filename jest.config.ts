@@ -10,7 +10,8 @@ const config: InitialOptionsTsJest = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
-  setupFilesAfterEnv: ['./jest.setup.ts']
+  setupFilesAfterEnv: ['./jest.setup.ts'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo']
 }
 
 export default config
