@@ -1,7 +1,7 @@
 {
   "miniprogramRoot": "dist/",
   "projectname": "taro-vue3-app",
-  "description": "taro-vue3-app",
+  "description": "项目配置文件，详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
   "appid": "wxb3d842a4a7e3440d",
   "setting": {
     "urlCheck": true,
@@ -38,8 +38,31 @@
     "disableUseStrict": false,
     "showES6CompileOption": false,
     "useCompilerPlugins": false,
-    "minifyWXML": true
+    "minifyWXML": true,
+    "useStaticServer": true
   },
   "compileType": "miniprogram",
-  "condition": {}
+  "libVersion": "2.24.4",
+  "srcMiniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "test",
+          "pathName": "pages/index/test",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

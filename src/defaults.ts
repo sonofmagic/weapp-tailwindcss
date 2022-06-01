@@ -6,7 +6,12 @@ const noop = () => {}
 export const defaultOptions: Required<UserDefinedOptions> = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
   htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
-  jsMatcher: (file) => /.+\.js$/.test(file),
+  jsMatcher: (file) => {
+    if (file.includes('node_modules')) {
+      return false
+    }
+    return /.+\.[jt]sx?$/.test(file)
+  },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {
       case 'uni-app': {
