@@ -1,5 +1,7 @@
 export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 
+export const vueTemplateClassRegexp = /(?:class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
+
 export const tagRegexp = /<([a-z][-a-z]*[a-z]*)\s*(([a-z][-a-z]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gs
 
 export const tagWithClassRegexp = /<([a-z][-a-z]*[a-z]*)\s+[^>]*?(?:class="([^"]*)")[^>]*?\/?>/g

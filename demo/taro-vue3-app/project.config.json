@@ -42,7 +42,6 @@
     "useStaticServer": true
   },
   "compileType": "miniprogram",
-  "condition": {},
   "libVersion": "2.24.4",
   "srcMiniprogramRoot": "dist/",
   "packOptions": {
@@ -52,5 +51,18 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "test",
+          "pathName": "pages/index/test",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
   }
 }

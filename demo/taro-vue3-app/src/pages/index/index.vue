@@ -1,5 +1,6 @@
 <template>
   <view class="index container bg-[#ffffff]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
+    <template>1</template>
     <view :class="[flag ? 'bg-red-900' : 'bg-[#fafa00]']">bg-[#fafa00]</view>
     <view :class="{ 'bg-[#098765]': flag === true }">bg-[#098765]</view>
     <view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view>
@@ -16,7 +17,7 @@
       </view>
       <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300"> Default </view>
     </view>
-    <view class="test" >test</view>
+    <view class="test">test</view>
   </view>
 </template>
 
