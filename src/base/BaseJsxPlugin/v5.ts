@@ -28,20 +28,21 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     // react
     const replacer = createReplacer()
     const isReact = true
+    const rule = {
+      loader: path.resolve(__dirname, `${NS}.js`),
+      options: {
+        replacer
+      },
+      ident: null,
+      type: null
+    }
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       if (isReact) {
         NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
           if (jsMatcher(module.resource)) {
             // unshift
-            module.loaders.unshift({
-              loader: path.resolve(__dirname, 'jsx-rename-loader.js'),
-              options: {
-                replacer
-              },
-              ident: null,
-              type: null
-            })
+            module.loaders.unshift(rule)
           }
         })
       }
