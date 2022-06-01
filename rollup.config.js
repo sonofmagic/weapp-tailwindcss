@@ -60,20 +60,20 @@ const config = [
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ],
     ...sharedConfig
-  },
-  {
-    input: 'src/loader/vue-template-rename-loader.ts',
-    output: [
-      {
-        file: 'dist/vue-template-rename-loader.js',
-        format: 'cjs',
-        sourcemap: isDev,
-        exports: 'auto'
-      }
-      // { format: 'esm', file: pkg.module, sourcemap: isDev }
-    ],
-    ...sharedConfig
   }
+  // {
+  //   input: 'src/loader/vue-template-rename-loader.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/vue-template-rename-loader.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //     // { format: 'esm', file: pkg.module, sourcemap: isDev }
+  //   ],
+  //   ...sharedConfig
+  // }
 ]
 
 export default config
