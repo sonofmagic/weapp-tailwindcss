@@ -57,6 +57,7 @@
     "jit",
     "tailwindcss jit",
     "mp",
+    "mini",
     "miniprogram",
     "weapp-tailwindcss"
   ],
