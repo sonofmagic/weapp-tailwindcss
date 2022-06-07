@@ -1,4 +1,33 @@
 <template>
+  <view class="container">
+    <!-- <view bindtap="bindViewTap">
+      <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
+    </view>
+    <view class="motto {{className}}">
+      <template is="motto" data="{{motto:motto}}" />
+    </view>
+    <view class="powered h-[200%]">
+      <text>{{ powered.by }}</text>
+    </view> -->
+    <view class="-mt-2 mb-[-20px] p-[50px]"> p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px] </view>
+    <view class="space-y-[1.6rem]">
+      <view class="w-[300rpx] text-black text-opacity-[0.19]"> w-[300rpx] text-black text-opacity-[0.19] </view>
+      <view class="max-h-[100px] min-w-[300rpx] text-[20px] leading-[0.9]"> min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9] </view>
+      <view class="min-h-[100px] max-w-[300rpx] text-[#dddddd]"> max-w-[300rpx] min-h-[100px] text-[#dddddd] </view>
+      <view class="flex h-[100px] w-[100px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]"> Hello </view>
+      <view class="border-[10px] border-solid border-[#098765] border-opacity-[0.44]"> border-[10px] border-[#098765] border-solid border-opacity-[0.44] </view>
+      <view class="grid grid-cols-3 divide-x-[10px] divide-solid divide-[#010101]">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </view>
+      <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300"> Default </view>
+    </view>
+    <view class="test">test</view>
+    <!-- <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-[20px]'?'p-[20px]':'m-[20px]'}}"></view>
+    <button class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3">...</button> -->
+  </view>
+
   <list></list>
 </template>
 

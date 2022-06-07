@@ -15,9 +15,7 @@ const baseRules = [
   },
   {
     test: /\.(wxs|qs|sjs|qjs|jds|dds|filter\.js)$/,
-    use: [
-      MpxWebpackPlugin.wxsPreLoader()
-    ],
+    use: [MpxWebpackPlugin.wxsPreLoader()],
     enforce: 'pre'
   },
   {
@@ -27,6 +25,10 @@ const baseRules = [
         name: 'img/[name][hash].[ext]'
       })
     ]
+  },
+  {
+    test: /\.scss$/,
+    use: ['css-loader', 'sass-loader']
   }
 ]
 
@@ -43,7 +45,7 @@ const tsRule = {
   ]
 }
 
-module.exports = function getRules (options) {
+module.exports = function getRules(options) {
   const { mode, tsSupport } = options
 
   let rules = baseRules.slice()
@@ -79,18 +81,11 @@ module.exports = function getRules (options) {
       // 如输出web时需要支持其他预编译语言，可以在此添加rule配置
       {
         test: /\.styl(us)?$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'stylus-loader'
-        ]
+        use: ['vue-style-loader', 'css-loader', 'stylus-loader']
       },
       {
         test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ]
+        use: ['vue-style-loader', 'css-loader']
       }
     ])
   } else {
@@ -101,10 +96,7 @@ module.exports = function getRules (options) {
       },
       {
         test: /\.styl(us)?$/,
-        use: [
-          MpxWebpackPlugin.wxssLoader(),
-          'stylus-loader'
-        ]
+        use: [MpxWebpackPlugin.wxssLoader(), 'stylus-loader']
       },
       {
         test: /\.(wxss|acss|css|qss|ttss|jxss|ddss)$/,

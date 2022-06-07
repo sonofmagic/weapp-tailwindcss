@@ -5,7 +5,8 @@ import {
   KboneWeappTailwindcssWebpackPluginV4,
   RaxTailwindcssWebpackPluginV5,
   NativeWeappTailwindcssWebpackPluginV5,
-  ViteWeappTailwindcssPlugin
+  ViteWeappTailwindcssPlugin,
+  MpxWeappTailwindcssWebpackPluginV5
 } from './framework'
 
 import postcssWeappTailwindcssRename from './postcss/plugin'
@@ -21,7 +22,8 @@ export {
   RaxTailwindcssWebpackPluginV5,
   ViteWeappTailwindcssPlugin,
   postcssWeappTailwindcssRename,
-  NativeWeappTailwindcssWebpackPluginV5
+  NativeWeappTailwindcssWebpackPluginV5,
+  MpxWeappTailwindcssWebpackPluginV5
   // replaceJs,
   // replaceCss
 }

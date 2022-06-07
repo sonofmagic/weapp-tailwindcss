@@ -7,8 +7,8 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin
 const webpack = require('webpack')
-
-module.exports = function getPlugins (options) {
+const { MpxWeappTailwindcssWebpackPluginV5 } = require('../../..')
+module.exports = function getPlugins(options) {
   const { mode, srcMode, env, subDir, production, report, functional, cloudFunc, needEslint } = options
   const plugins = []
   const copyIgnoreArr = supportedModes.map((item) => {
@@ -17,10 +17,19 @@ module.exports = function getPlugins (options) {
 
   const currentMpxPluginConf = getConf(mpxPluginConf, options)
 
-  plugins.push(new MpxWebpackPlugin(Object.assign({}, currentMpxPluginConf, {
-    mode,
-    srcMode
-  }, env && { env })))
+  plugins.push(
+    new MpxWebpackPlugin(
+      Object.assign(
+        {},
+        currentMpxPluginConf,
+        {
+          mode,
+          srcMode
+        },
+        env && { env }
+      )
+    )
+  )
 
   const copyList = [
     {
@@ -57,30 +66,38 @@ module.exports = function getPlugins (options) {
   }
 
   if (needEslint) {
-    plugins.push(new ESLintPlugin({
-      context: resolve(),
-      exclude: [resolve('node_modules')],
-      extensions: ['js', 'ts', 'mpx']
-    }))
+    plugins.push(
+      new ESLintPlugin({
+        context: resolve(),
+        exclude: [resolve('node_modules')],
+        extensions: ['js', 'ts', 'mpx']
+      })
+    )
   }
 
-  plugins.push(new CopyWebpackPlugin({
-    patterns: copyList
-  }))
+  plugins.push(
+    new CopyWebpackPlugin({
+      patterns: copyList
+    })
+  )
 
-  plugins.push(new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: production ? '"production"' : '"development"'
-    }
-  }))
+  plugins.push(
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: production ? '"production"' : '"development"'
+      }
+    })
+  )
 
   if (mode === 'web') {
     plugins.push(new VueLoaderPlugin())
-    plugins.push(new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: resolveSrc('index.html', subDir),
-      inject: true
-    }))
+    plugins.push(
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: resolveSrc('index.html', subDir),
+        inject: true
+      })
+    )
   }
 
   plugins.push(new webpack.ProgressPlugin())
@@ -88,6 +105,8 @@ module.exports = function getPlugins (options) {
   if (report) {
     plugins.push(new BundleAnalyzerPlugin())
   }
+
+  plugins.push(new MpxWeappTailwindcssWebpackPluginV5())
 
   return plugins
 }
