@@ -70,3 +70,7 @@ plugins.push(new MpxWeappTailwindcssWebpackPluginV5())
 ```
 
 现在你就可以使用 `jit` 中的很多特性了！
+
+## 附加: 添加 `vscode` 插件智能提示
+
+![IntelliSense](../assets/vscode-tailwindcss.png)
