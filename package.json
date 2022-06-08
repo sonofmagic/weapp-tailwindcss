@@ -23,7 +23,8 @@
     },
     "./vite": {
       "types": "./dist/types/framework/vite/index.d.ts",
-      "require": "./dist/vite.js"
+      "require": "./dist/vite.js",
+      "import": "./dist/vite.js"
     }
   },
   "scripts": {
