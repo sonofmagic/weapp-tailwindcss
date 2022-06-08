@@ -1,5 +1,4 @@
-import { getOptions } from '@/shared'
-import { defaultOptions } from '@/defaults'
+import { defaultOptions, getOptions } from '@/defaults'
 describe('shared', () => {
   it('defaultOptions', () => {
     const config = getOptions(null)

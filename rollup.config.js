@@ -32,8 +32,7 @@ const config = [
         exports: 'auto'
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
-    ],
-    ...sharedConfig
+    ]
   },
   {
     input: 'src/replace.ts',
@@ -45,8 +44,7 @@ const config = [
         // exports: 'auto'
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
-    ],
-    ...sharedConfig
+    ]
   },
   {
     input: 'src/loader/jsx-rename-loader.ts',
@@ -58,22 +56,39 @@ const config = [
         exports: 'auto'
       }
       // { format: 'esm', file: pkg.module, sourcemap: isDev }
-    ],
+    ]
+  },
+  {
+    input: 'src/framework/vite/index.ts',
+    output: [
+      {
+        file: 'dist/vite.js',
+        format: 'cjs',
+        sourcemap: isDev,
+        exports: 'auto'
+      }
+      // { format: 'esm', file: pkg.module, sourcemap: isDev }
+    ]
+  },
+  {
+    input: 'src/postcss/plugin.ts',
+    output: [
+      {
+        file: 'dist/postcss.js',
+        format: 'cjs',
+        sourcemap: isDev,
+        exports: 'auto'
+      }
+      // { format: 'esm', file: pkg.module, sourcemap: isDev }
+    ]
+
+    // postcss-weapp-tailwindcss-rename
+  }
+].map((x) => {
+  return {
+    ...x,
     ...sharedConfig
   }
-  // {
-  //   input: 'src/loader/vue-template-rename-loader.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/vue-template-rename-loader.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //     // { format: 'esm', file: pkg.module, sourcemap: isDev }
-  //   ],
-  //   ...sharedConfig
-  // }
-]
+})
 
 export default config

@@ -1,0 +1,26 @@
+<script src="./app.ts"></script>
+
+<style>
+  /*此处编写全局样式*/
+</style>
+
+<script type="application/json">
+  {
+    "pages": ["./pages/index"]
+  }
+</script>
+
+<style lang="scss">
+  @import 'tailwindcss/base';
+  @import 'tailwindcss/utilities';
+</style>
+<!--也可以通过以下形式用js输出json，便于书写注释和使用条件编译-->
+
+<!--<script name="json">-->
+<!--  // 可以写注释，通过defs注入的常量做一些判断之类的操作-->
+<!--  module.exports = {-->
+<!--    pages: [-->
+<!--      './pages/index'-->
+<!--    ]-->
+<!--  }-->
+<!--</script>-->

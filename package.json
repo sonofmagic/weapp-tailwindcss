@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -15,11 +15,15 @@
     },
     "./replace": {
       "types": "./dist/types/replace.d.ts",
-      "import": "./replace.js"
+      "import": "./dist/replace.js"
     },
     "./postcss": {
       "types": "./dist/types/postcss/plugin.d.ts",
-      "require": "./postcss.js"
+      "require": "./dist/postcss.js"
+    },
+    "./vite": {
+      "types": "./dist/types/framework/vite/index.d.ts",
+      "require": "./dist/vite.js"
     }
   },
   "scripts": {
@@ -40,7 +44,8 @@
   "files": [
     "dist",
     "postcss.*",
-    "replace.*"
+    "replace.*",
+    "vite.*"
   ],
   "publishConfig": {
     "access": "public",
@@ -57,6 +62,7 @@
     "jit",
     "tailwindcss jit",
     "mp",
+    "mini",
     "miniprogram",
     "weapp-tailwindcss"
   ],
@@ -84,9 +90,6 @@
     "@types/webpack4": "npm:@types/webpack@4",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
-    "@vue/compiler-core": "^3.2.36",
-    "@vue/compiler-dom": "^3.2.36",
-    "@vue/compiler-sfc": "^3.2.36",
     "autoprefixer": "^10.4.5",
     "cross-env": "^7.0.3",
     "defu": "^6.0.0",

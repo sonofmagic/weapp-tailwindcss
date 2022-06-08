@@ -1,6 +1,10 @@
 import type { UserDefinedOptions, AppType } from '@/types'
 import type { Compiler } from 'webpack4'
-import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
+import { styleHandler } from '@/postcss'
+import { createInjectPreflight } from '@/postcss/preflight'
+import { templeteHandler } from '@/wxml'
+import { getOptions } from '@/defaults'
+import { pluginName } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
 import type { IBaseWebpackPlugin } from '@/interface'
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js

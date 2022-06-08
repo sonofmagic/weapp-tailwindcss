@@ -1,1 +1,1 @@
-module.exports = require('.').postcssWeappTailwindcssRename
+module.exports = require('./dist/postcss.js')

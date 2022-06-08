@@ -28,9 +28,9 @@ describe('defaults function test group', () => {
       RaxTailwindcssWebpackPluginV5,
       RemaxWeappTailwindcssWebpackPluginV4,
       TaroWeappTailwindcssWebpackPluginV4,
-      UniAppWeappTailwindcssWebpackPluginV4,
-      ViteWeappTailwindcssPlugin,
-      postcssWeappTailwindcssRename
+      UniAppWeappTailwindcssWebpackPluginV4
+      // ViteWeappTailwindcssPlugin,
+      // postcssWeappTailwindcssRename
     } = require('../')
 
     expect(isWebpackPlugin(KboneWeappTailwindcssWebpackPluginV4)).toBe(true)
@@ -39,8 +39,8 @@ describe('defaults function test group', () => {
     expect(isWebpackPlugin(RemaxWeappTailwindcssWebpackPluginV4)).toBe(true)
     expect(isWebpackPlugin(TaroWeappTailwindcssWebpackPluginV4)).toBe(true)
     expect(isWebpackPlugin(UniAppWeappTailwindcssWebpackPluginV4)).toBe(true)
-    expect(Boolean(ViteWeappTailwindcssPlugin)).toBe(true)
-    expect(Boolean(postcssWeappTailwindcssRename)).toBe(true)
+    // expect(Boolean(ViteWeappTailwindcssPlugin)).toBe(true)
+    // expect(Boolean(postcssWeappTailwindcssRename)).toBe(true)
   })
 
   it('should replace export', async () => {

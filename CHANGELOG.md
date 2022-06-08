@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.6.0 (2022-06-08)
+
+### Fixed
+[issues/50](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/50) `vite` 插件依赖 `webpack` 问题
+
+### Breaking change
+`vite` 引入插件的方式，改为:
+```js
+import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
+import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
+```
+详见 [vite.config.ts](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-vue3-vite/vite.config.ts)
+
 ## 1.5.0 (2022-06-01)
 
 ### Fixed

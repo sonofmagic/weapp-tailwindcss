@@ -17,6 +17,9 @@ export const defaultOptions: Required<UserDefinedOptions> = {
       case 'uni-app': {
         return /^common\/main/.test(file)
       }
+      case 'mpx': {
+        return /^app/.test(file)
+      }
       case 'taro': {
         return /^app/.test(file)
       }
