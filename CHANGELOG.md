@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1 (2022-06-08)
+
+## Improvement
+优化 `Tree-shaking` ，减小`npm`包打包体积
+
 ## 1.6.0 (2022-06-08)
 
 ### Fixed
