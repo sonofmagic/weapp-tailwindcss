@@ -4,7 +4,7 @@ import type { InternalPostcssOptions } from '@/types'
 import { getOptions } from '@/defaults'
 import { mpRulePreflight, commonChunkPreflight } from './mp'
 import { createInjectPreflight } from './preflight'
-export const postcssPlugin = 'postcss-weapp-tailwindcss-rename'
+const postcssPlugin = 'postcss-weapp-tailwindcss-rename'
 
 export type PostcssWeappTailwindcssRename = PluginCreator<InternalPostcssOptions>
 

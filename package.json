@@ -44,7 +44,8 @@
   "files": [
     "dist",
     "postcss.*",
-    "replace.*"
+    "replace.*",
+    "vite.*"
   ],
   "publishConfig": {
     "access": "public",

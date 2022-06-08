@@ -1,4 +1,6 @@
-import { getOptions, styleHandler, createInjectPreflight } from '@/shared'
+import { styleHandler } from '@/postcss'
+import { createInjectPreflight } from '@/postcss/preflight'
+import { getOptions } from '@/defaults'
 import { cssCasePath, createGetCase, createPutCase } from './util'
 import { replaceCss } from '@/replace'
 const getCase = createGetCase(cssCasePath)

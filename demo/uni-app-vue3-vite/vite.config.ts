@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
+import vwt from '../../vite';
+import postcssWeappTailwindcssRename from '../../postcss';
 
-import { ViteWeappTailwindcssPlugin as vwt, postcssWeappTailwindcssRename } from '../..';
 // console.log(process.env.UNI_PLATFORM);
 
 const isH5 = process.env.UNI_PLATFORM === 'h5';
