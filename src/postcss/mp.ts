@@ -7,6 +7,7 @@ function isSupportedRule (selector: string) {
 }
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
+
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
 // const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g

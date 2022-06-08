@@ -2,6 +2,11 @@ import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
 
+export interface IPropValue {
+  prop: string
+  value: string
+}
+
 export type CssPresetProps = 'box-sizing' | 'border-width' | 'border-style' | 'border-color'
 
 export type CssPreflightOptions =

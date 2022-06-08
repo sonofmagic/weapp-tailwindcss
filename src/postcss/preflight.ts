@@ -1,22 +1,19 @@
-import { Declaration } from 'postcss'
-import type { CssPreflightOptions } from '../types'
+import type { CssPreflightOptions, IPropValue } from '@/types'
 
-export type InjectPreflight = () => Declaration[]
+export type InjectPreflight = () => IPropValue[]
 
 export const createInjectPreflight = (options: CssPreflightOptions): InjectPreflight => {
-  const result: Declaration[] = []
+  const result: IPropValue[] = []
   // if options false ,do no thing
   if (options && typeof options === 'object') {
     const entries = Object.entries(options)
     for (let i = 0; i < entries.length; i++) {
       const [prop, value] = entries[i]
       if (value !== false) {
-        result.push(
-          new Declaration({
-            prop,
-            value
-          })
-        )
+        result.push({
+          prop,
+          value
+        })
       }
     }
   }
