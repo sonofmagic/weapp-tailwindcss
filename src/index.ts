@@ -5,11 +5,11 @@ import {
   KboneWeappTailwindcssWebpackPluginV4,
   RaxTailwindcssWebpackPluginV5,
   NativeWeappTailwindcssWebpackPluginV5,
-  ViteWeappTailwindcssPlugin,
+  // ViteWeappTailwindcssPlugin,
   MpxWeappTailwindcssWebpackPluginV5
 } from './framework'
 
-import postcssWeappTailwindcssRename from './postcss/plugin'
+// import postcssWeappTailwindcssRename from './postcss/plugin'
 
 // import { replaceWxml as replaceJs } from './wxml'
 // import { cssSelectorReplacer as replaceCss } from './postcss/shared'
@@ -20,8 +20,8 @@ export {
   RemaxWeappTailwindcssWebpackPluginV4,
   KboneWeappTailwindcssWebpackPluginV4,
   RaxTailwindcssWebpackPluginV5,
-  ViteWeappTailwindcssPlugin,
-  postcssWeappTailwindcssRename,
+  // ViteWeappTailwindcssPlugin,
+  // postcssWeappTailwindcssRename,
   NativeWeappTailwindcssWebpackPluginV5,
   MpxWeappTailwindcssWebpackPluginV5
   // replaceJs,

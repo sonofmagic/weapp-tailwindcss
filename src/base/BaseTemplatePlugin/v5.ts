@@ -1,6 +1,10 @@
 import type { AppType, UserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
-import { styleHandler, templeteHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
+import { styleHandler } from '@/postcss'
+import { createInjectPreflight } from '@/postcss/preflight'
+import { templeteHandler } from '@/wxml'
+import { getOptions } from '@/defaults'
+import { pluginName } from '@/shared'
 import type { IBaseWebpackPlugin } from '@/interface'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6

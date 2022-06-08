@@ -1,7 +1,11 @@
 // webpack 5
 import type { AppType, UserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
-import { styleHandler, jsxHandler, pluginName, getOptions, createInjectPreflight } from '@/shared'
+import { styleHandler } from '@/postcss'
+import { createInjectPreflight } from '@/postcss/preflight'
+import { jsxHandler } from '@/jsx'
+import { getOptions } from '@/defaults'
+import { pluginName } from '@/shared'
 import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
 import { NormalModule } from 'webpack'

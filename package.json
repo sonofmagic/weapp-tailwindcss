@@ -15,11 +15,15 @@
     },
     "./replace": {
       "types": "./dist/types/replace.d.ts",
-      "import": "./replace.js"
+      "import": "./dist/replace.js"
     },
     "./postcss": {
       "types": "./dist/types/postcss/plugin.d.ts",
-      "require": "./postcss.js"
+      "require": "./dist/postcss.js"
+    },
+    "./vite": {
+      "types": "./dist/types/framework/vite/index.d.ts",
+      "require": "./dist/vite.js"
     }
   },
   "scripts": {

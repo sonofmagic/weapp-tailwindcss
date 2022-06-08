@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import { UserDefinedOptions } from '@/types'
-import { getOptions } from '@/shared'
+import { getOptions } from '@/defaults'
 import { templeteHandler } from '@/wxml'
 // import renamePostcssPlugin from '../postcss/plugin'
 // import type { Plugin as PostcssPlugin } from 'postcss'
