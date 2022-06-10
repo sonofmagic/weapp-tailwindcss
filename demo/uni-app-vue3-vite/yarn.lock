@@ -2662,10 +2662,10 @@ vuex@^4.0.2:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-weapp-tailwindcss-webpack-plugin@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.1.tgz#75c884bee56521d82bd8b63cc28b600861bae4ab"
-  integrity sha512-gaYpsjr5FM5po6IcP8IwXH7YuAZmbr4PHO27/zLf0BVwZet6g6bov0/cP1ny4nxN70PVIz/496T/gDLYDFLc5Q==
+weapp-tailwindcss-webpack-plugin@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.2.tgz#2235c673dc7cb46918b70c818b19104fbb523a76"
+  integrity sha512-yCawv98mOb9l9+hi6DZyGVu5n25DIegef4cxF7Do/4CjH8P689vbB1L9kxq8KZRgVTU3jSOFwIVmRdCo70bDEA==
   dependencies:
     "@babel/generator" "7.17.9"
     "@babel/parser" "7.17.9"
