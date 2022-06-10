@@ -32,7 +32,7 @@ async function doInstall (pathLike) {
         for (let index = 0; index < lockFileEntries.length; index++) {
           const [pkgM, lockFile] = lockFileEntries[index]
           if (await fileExist(lockFile)) {
-            await execa(`${pkgM} install`).stdout.pipe(process.stdout)
+            execa(`${pkgM} install`).stdout.pipe(process.stdout)
             break
           }
         }
