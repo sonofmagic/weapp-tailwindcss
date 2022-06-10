@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -23,7 +23,8 @@
     },
     "./vite": {
       "types": "./dist/types/framework/vite/index.d.ts",
-      "require": "./dist/vite.js"
+      "require": "./dist/vite.js",
+      "import": "./dist/vite.js"
     }
   },
   "scripts": {
@@ -35,7 +36,10 @@
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
-    "raw": "ts-node scripts/raw"
+    "raw": "ts-node scripts/raw",
+    "demo:install": "node scripts/demo/install.js",
+    "demo:build": "node scripts/demo/build.js",
+    "demo:e2e": "node scripts/demo/e2e.js"
   },
   "repository": {
     "type": "git",
@@ -74,6 +78,7 @@
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
   "devDependencies": {
     "@babel/types": "^7.17.0",
+    "@icebreakers/cli": "^0.0.2",
     "@rollup/plugin-alias": "^3.1.8",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -103,6 +108,7 @@
     "execa": "5",
     "jest": "^27.5.1",
     "memfs": "^3.4.4",
+    "miniprogram-automator": "^0.11.0",
     "postcss": "^8.4.14",
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.0.0",
@@ -114,6 +120,7 @@
     "tailwindcss": "^3.0.24",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.8.0",
+    "tsd": "^0.20.0",
     "tslib": "^2.4.0",
     "ttypescript": "^1.5.13",
     "typescript": "^4.7.2",

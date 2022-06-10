@@ -9,11 +9,13 @@
     "resolveJsonModule": true,
     "moduleResolution": "Node",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "vite": ["node_modules/vite/dist/node/index"],
+      "postcss": ["node_modules/postcss/lib/postcss"]
     },
     "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }],
     "types": ["webpack", "node", "jest"]
   },
-  "exclude": ["dist", "node_modules", "test/types"],
+  "exclude": ["dist", "node_modules", "test/types", "./*.d.ts"],
   "include": ["src/**/*", "types/**/*", "test/**/*"]
 }

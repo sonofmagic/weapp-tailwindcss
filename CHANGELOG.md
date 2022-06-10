@@ -1,9 +1,14 @@
 # Changelog
 
+## 1.6.2 (2022-06-10)
+
+## Improvement
+- 优化被分割的 `vite`,`postcss` 的 `d.ts` 智能提示
+
 ## 1.6.1 (2022-06-08)
 
 ## Improvement
-优化 `Tree-shaking` ，减小`npm`包打包体积
+- 优化 `Tree-shaking` ，减小`npm`包打包体积
 
 ## 1.6.0 (2022-06-08)
 

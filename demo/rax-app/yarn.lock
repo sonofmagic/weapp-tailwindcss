@@ -1294,6 +1294,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@csstools/selector-specificity@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-2.0.0.tgz#65b12f12db55188422070e34687bf3af09870922"
+  integrity sha512-rZ6vufeY/UjAgtyiJ4WvfF6XP6HizIyOfbZOg0RnecIwjrvH8Am3nN1BpKnnPZunYAkUcPPXDhwbxOtGop8cfQ==
+
 "@eslint/eslintrc@^1.3.0":
   version "1.3.0"
   resolved "https://registry.npmmirror.com/@eslint/eslintrc/-/eslintrc-1.3.0.tgz#29f92c30bb3e771e4a2048c95fa6855392dfac4f"
@@ -3708,10 +3713,10 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-css-functions-list@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.npmmirror.com/css-functions-list/-/css-functions-list-3.0.1.tgz#1460df7fb584d1692c30b105151dbb988c8094f9"
-  integrity sha512-PriDuifDt4u4rkDgnqRCLnjfMatufLmWNfQnGCq34xZwpY3oabwhB9SqRBmuvWUgndbemCFlKqg+nO7C2q0SBw==
+css-functions-list@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmmirror.com/css-functions-list/-/css-functions-list-3.1.0.tgz#cf5b09f835ad91a00e5959bcfc627cd498e1321b"
+  integrity sha512-/9lCvYZaUbBGvYUgYGFJ4dcYiyqdhSjG7IPVluoV8A1ILjkF7ilmhp1OGUz8n+nmBcu0RNrQAzgD8B6FJbrt2w==
 
 css-modules-loader-core@^1.1.0:
   version "1.1.0"
@@ -4009,7 +4014,7 @@ detect-port@^1.3.0:
     address "^1.0.1"
     debug "^2.6.0"
 
-detective@^5.2.0:
+detective@^5.2.1:
   version "5.2.1"
   resolved "https://registry.npmmirror.com/detective/-/detective-5.2.1.tgz#6af01eeda11015acb0e73f933242b70f24f91034"
   integrity sha512-v9XE1zRnz1wRtgurGu0Bs8uHKFSTdteYZNbIPFVhUZ39L/S79ppMpdmVOZAnoz1jfEFodc48n6MX483Xo3t1yw==
@@ -4748,10 +4753,10 @@ eslint-webpack-plugin@^3.0.1:
     normalize-path "^3.0.0"
     schema-utils "^3.1.1"
 
-eslint@^8.12.0:
-  version "8.16.0"
-  resolved "https://registry.npmmirror.com/eslint/-/eslint-8.16.0.tgz#6d936e2d524599f2a86c708483b4c372c5d3bbae"
-  integrity sha512-MBndsoXY/PeVTDJeWsYj7kLZ5hQpJOfMYLsF6LicLHQWbRDG19lK5jOix4DPl8yY4SUFcE3txy86OzFLWT+yoA==
+eslint@^8.17.0:
+  version "8.17.0"
+  resolved "https://registry.npmmirror.com/eslint/-/eslint-8.17.0.tgz#1cfc4b6b6912f77d24b874ca1506b0fe09328c21"
+  integrity sha512-gq0m0BTJfci60Fz4nczYxNAlED+sMcihltndR8t9t1evnU/azx53x3t2UHXC/uRjcbvRw/XctpaNygSTcQD+Iw==
   dependencies:
     "@eslint/eslintrc" "^1.3.0"
     "@humanwhocodes/config-array" "^0.9.2"
@@ -6968,7 +6973,7 @@ loader-utils@^1.1.0, loader-utils@^1.2.3, loader-utils@^1.4.0:
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
-loader-utils@^2.0.0:
+loader-utils@^2.0.0, loader-utils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npmmirror.com/loader-utils/-/loader-utils-2.0.2.tgz#d6e3b4fb81870721ae4e0868ab11dd638368c129"
   integrity sha512-TM57VeHptv569d/GKh6TAYdzKblwDNiumOdkFnejjD0XwTH87K90w3O7AiJRqdQoXygvi1VQTJTLGhJl7WqA7A==
@@ -8432,6 +8437,15 @@ postcss-import@^12.0.1:
     read-cache "^1.0.0"
     resolve "^1.1.7"
 
+postcss-import@^14.1.0:
+  version "14.1.0"
+  resolved "https://registry.npmmirror.com/postcss-import/-/postcss-import-14.1.0.tgz#a7333ffe32f0b8795303ee9e40215dac922781f0"
+  integrity sha512-flwI+Vgm4SElObFVPpTIT7SU7R3qk2L7PyduMcokiaVKuWv9d/U+Gm/QAd8NDLuykTWTkcrjOeD2Pp1rMeBTGw==
+  dependencies:
+    postcss-value-parser "^4.0.0"
+    read-cache "^1.0.0"
+    resolve "^1.1.7"
+
 postcss-js@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmmirror.com/postcss-js/-/postcss-js-4.0.0.tgz#31db79889531b80dc7bc9b0ad283e418dce0ac00"
@@ -8516,10 +8530,10 @@ postcss-plugin-rpx2vw@^0.0.3:
   dependencies:
     postcss "^7.0.36"
 
-postcss-rem-to-responsive-pixel@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.1.tgz#a443314f9e2353c127494cbb2f9fc029279edf9f"
-  integrity sha512-X9MKMWFS2PltiYOJ6IhnAOknCVynU++5KD4+YpgIMxAIjeZ513vKLoHpJkfsfvV4zwvgvGDayWKhaCMd41T73g==
+postcss-rem-to-responsive-pixel@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
+  integrity sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==
 
 postcss-resolve-nested-selector@^0.1.1:
   version "0.1.1"
@@ -8544,7 +8558,7 @@ postcss-value-parser@^3.2.3:
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-3.3.1.tgz#9ff822547e2893213cf1c30efa51ac5fd1ba8281"
   integrity sha512-pISE66AbVkp4fDQ7VHBwRNXzAAKJjw4Vw7nWI/+Q3vuly7SNfgYXvm6i5IgFylHGK5sP/xHAbB7N49OS4gWNyQ==
 
-postcss-value-parser@^4.1.0, postcss-value-parser@^4.2.0:
+postcss-value-parser@^4.0.0, postcss-value-parser@^4.1.0, postcss-value-parser@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
@@ -9963,11 +9977,6 @@ spdy@^4.0.2:
     select-hose "^2.0.0"
     spdy-transport "^3.0.0"
 
-specificity@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.npmmirror.com/specificity/-/specificity-0.4.1.tgz#aab5e645012db08ba182e151165738d00887b019"
-  integrity sha512-1klA3Gi5PD1Wv9Q0wUoOQN1IWAuPu0D1U03ThXTr0cJ20+/iq2tHSDnK7Kk/0LXJ1ztUB2/1Os0wKmfyNgUQfg==
-
 split-on-first@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmmirror.com/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"
@@ -10264,15 +10273,16 @@ stylelint-scss@^3.18.0:
     postcss-selector-parser "^6.0.2"
     postcss-value-parser "^4.1.0"
 
-stylelint@^14.6.1:
-  version "14.8.5"
-  resolved "https://registry.npmmirror.com/stylelint/-/stylelint-14.8.5.tgz#0fcbf5b6821283b5a249dde36d70f1158da0a2a3"
-  integrity sha512-e3t4H/hlWlspkcNUrkhf44RU3OpPTA7uBOoREGBzSwdEF+2g/+gbZq7WEpMP7BpopcSe/uLaTvDuL+URL7cdnQ==
+stylelint@^14.9.0:
+  version "14.9.0"
+  resolved "https://registry.npmmirror.com/stylelint/-/stylelint-14.9.0.tgz#6d68fc69916f1df54798a6cc42f1c69e86fbfe1e"
+  integrity sha512-+xsQ4uKS56RQs8AGYx2CXc9nhWyPR7c/G0RqyiKgWZx2LuE3VJnIhGRQXUfnGQXOqBPHxNjMCHiK5NNQRB52sw==
   dependencies:
+    "@csstools/selector-specificity" "^2.0.0"
     balanced-match "^2.0.0"
     colord "^2.9.2"
     cosmiconfig "^7.0.1"
-    css-functions-list "^3.0.1"
+    css-functions-list "^3.1.0"
     debug "^4.3.4"
     execall "^2.0.0"
     fast-glob "^3.2.11"
@@ -10300,7 +10310,6 @@ stylelint@^14.6.1:
     postcss-selector-parser "^6.0.10"
     postcss-value-parser "^4.2.0"
     resolve-from "^5.0.0"
-    specificity "^0.4.1"
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
     style-search "^0.1.0"
@@ -10408,15 +10417,15 @@ table@^6.8.0:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
-tailwindcss@^3.0.23:
-  version "3.0.24"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.0.24.tgz#22e31e801a44a78a1d9a81ecc52e13b69d85704d"
-  integrity sha512-H3uMmZNWzG6aqmg9q07ZIRNIawoiEcNFKDfL+YzOPuPsXuDXxJxB9icqzLgdzKNwjG3SAro2h9SYav8ewXNgig==
+tailwindcss@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.1.1.tgz#58102595ddd5406c5015d831a344370be0995cda"
+  integrity sha512-F5VFj5FiS4QZqdXPE6T6RJFqbsmISQ2KBUp9bOQyws9TleGToHsa54X8kwXwVdHMQhNeXOlxI47lrRICEVuOvg==
   dependencies:
     arg "^5.0.1"
     chokidar "^3.5.3"
     color-name "^1.1.4"
-    detective "^5.2.0"
+    detective "^5.2.1"
     didyoumean "^1.2.2"
     dlv "^1.1.3"
     fast-glob "^3.2.11"
@@ -10426,7 +10435,8 @@ tailwindcss@^3.0.23:
     normalize-path "^3.0.0"
     object-hash "^3.0.0"
     picocolors "^1.0.0"
-    postcss "^8.4.12"
+    postcss "^8.4.14"
+    postcss-import "^14.1.0"
     postcss-js "^4.0.0"
     postcss-load-config "^3.1.4"
     postcss-nested "5.0.6"
@@ -10989,14 +10999,15 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-weapp-tailwindcss-webpack-plugin@^1.2.9:
-  version "1.4.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.4.4.tgz#a0ffc58c9e2332feb766f9e0f51e043886199471"
-  integrity sha512-B5BA7lYTfs6AZzgd3AlM16bUxyTg40Vf9B+FJBGzdCxqGvNYBJzFOXbRhWbCjnrrGBB3GjIkz+frCxQ1TOKClw==
+weapp-tailwindcss-webpack-plugin@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.1.tgz#75c884bee56521d82bd8b63cc28b600861bae4ab"
+  integrity sha512-gaYpsjr5FM5po6IcP8IwXH7YuAZmbr4PHO27/zLf0BVwZet6g6bov0/cP1ny4nxN70PVIz/496T/gDLYDFLc5Q==
   dependencies:
     "@babel/generator" "7.17.9"
     "@babel/parser" "7.17.9"
     "@babel/traverse" "7.17.9"
+    loader-utils "^2.0.2"
     webpack-sources "^3.2.3"
 
 webpack-chain@^6.5.1:

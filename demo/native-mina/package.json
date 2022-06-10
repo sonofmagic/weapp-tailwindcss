@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev":"npm run start",
+    "dev": "npm run start",
     "type-check": "tsc --noEmit",
     "start": "webpack --watch --progress",
     "build": "cross-env NODE_ENV=production BUILD_TYPE=release webpack",
@@ -56,7 +56,7 @@
     "sass-loader": "^12.6.0",
     "tailwindcss": "^3.0.23",
     "typescript": "^4.6.3",
-    "weapp-tailwindcss-webpack-plugin": "^1.2.5",
+    "weapp-tailwindcss-webpack-plugin": "^1.6.1",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
     "webpack-sources": "^3.2.3"
