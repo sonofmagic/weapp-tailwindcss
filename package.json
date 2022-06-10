@@ -36,7 +36,8 @@
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
-    "raw": "ts-node scripts/raw"
+    "raw": "ts-node scripts/raw",
+    "demo:install": "node scripts/demo/install.js"
   },
   "repository": {
     "type": "git",
