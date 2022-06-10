@@ -38,7 +38,8 @@
     "debug:web": "cd demo/web && yarn dev",
     "raw": "ts-node scripts/raw",
     "demo:install": "node scripts/demo/install.js",
-    "demo:build": "node scripts/demo/build.js"
+    "demo:build": "node scripts/demo/build.js",
+    "demo:e2e": "node scripts/demo/e2e.js"
   },
   "repository": {
     "type": "git",
@@ -107,6 +108,7 @@
     "execa": "5",
     "jest": "^27.5.1",
     "memfs": "^3.4.4",
+    "miniprogram-automator": "^0.11.0",
     "postcss": "^8.4.14",
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.0.0",
