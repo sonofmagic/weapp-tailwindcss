@@ -9,7 +9,9 @@
     "resolveJsonModule": true,
     "moduleResolution": "Node",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "vite": ["node_modules/vite/dist/node/index"],
+      "postcss": ["node_modules/postcss/lib/postcss"]
     },
     "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }],
     "types": ["webpack", "node", "jest"]
