@@ -1,12 +1,12 @@
 import { Component } from 'react'
-import { View, Text, Button } from '@tarojs/components'
+import { View } from '@tarojs/components'
 export default class Index extends Component {
   componentDidMount() {
-    // debugger
+    debugger
     console.log('componentDidMount')
   }
   componentDidUpdate() {
-    // debugger
+    debugger
     console.log('componentDidUpdate')
   }
   render() {

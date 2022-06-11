@@ -44,7 +44,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           // loaderContext[NS] = true
           if (jsMatcher(module.resource)) {
             // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-            replacer.end()
+            // replacer.end()
             // unshift
             // ignore node_modules ?
             module.loaders.unshift(rule)
