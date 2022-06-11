@@ -43,6 +43,8 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
         compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
           // loaderContext[NS] = true
           if (jsMatcher(module.resource)) {
+            // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+            replacer.end()
             // unshift
             // ignore node_modules ?
             module.loaders.unshift(rule)
@@ -77,6 +79,8 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           compilation.updateAsset(file, source)
           onUpdate(file)
         } else if (!isReact && jsMatcher(file)) {
+          // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+          replacer.end()
           const rawSource = originalSource.source().toString()
 
           const { code } = jsxHandler(rawSource, replacer)

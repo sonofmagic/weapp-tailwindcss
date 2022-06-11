@@ -57,4 +57,8 @@ describe('jsxHandler', () => {
 
     expect(code).toMatchSnapshot()
   })
+  // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+  // it('multiple file no end issue', () => {
+
+  // })
 })

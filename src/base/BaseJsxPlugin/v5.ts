@@ -45,6 +45,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
       if (isReact) {
         NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
           if (jsMatcher(module.resource)) {
+            // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+            replacer.end()
             // unshift
             module.loaders.unshift(rule)
           }
@@ -72,6 +74,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
               compilation.updateAsset(file, source)
               onUpdate(file)
             } else if (!isReact && jsMatcher(file)) {
+              // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+              replacer.end()
               const rawSource = originalSource.source().toString()
               const { code } = jsxHandler(rawSource, replacer)
               const source = new ConcatSource(code)

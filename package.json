@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -25,7 +25,7 @@
     }
   },
   "scripts": {
-    "dev": "yarn dts && cross-env NODE_ENV=development rollup -cw",
+    "dev": "yarn clean && yarn dts && cross-env NODE_ENV=development rollup -cw",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c && yarn dts",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "dts": "ttsc --emitDeclarationOnly -p tsconfig.dts.json",
