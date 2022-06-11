@@ -46,7 +46,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
         NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
           if (jsMatcher(module.resource)) {
             // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-            replacer.end()
+            // replacer.end()
             // unshift
             module.loaders.unshift(rule)
           }

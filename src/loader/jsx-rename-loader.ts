@@ -24,6 +24,8 @@ export default function loader (this: webpack.LoaderContext<LoaderOptions>, cont
   //   console.log(this.resource)
   //   debugger
   // }
+  // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+  config.replacer.end()
   const { code } = jsxHandler(content, config.replacer)
   return code
 }

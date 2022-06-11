@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.3 (2022-06-11)
+## 1.6.4 (2022-06-11)
 
 ### Fixed
 [issues/53](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53) 在`BaseJsxWebpackPlugin`的新文件开始处理前强制重置`replacer`状态。(Thanks to [sandro-qiang](https://github.com/sandro-qiang))
