@@ -4,7 +4,11 @@ import { replaceWxml } from '@/wxml'
 import { classStringReplace } from '@/reg'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
-export type Replacer = (path: NodePath<Node>) => void
+export type Replacer = {
+  (path: NodePath<Node>): void
+  start: (node: Node) => void
+  end: () => void
+}
 
 function isSpecNode (node: Node) {
   return node.type === 'ObjectProperty' && node.key.type === 'Identifier'
@@ -17,6 +21,9 @@ function reactMatcher (node: UserMatchNode) {
 function vue2Matcher (node: UserMatchNode) {
   return node.key.name === 'class' || node.key.name === 'staticClass'
 }
+
+export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
+
 // default react
 export function createReplacer (framework: string = 'react'): Replacer {
   let classObjectNode: Node | null
@@ -36,7 +43,7 @@ export function createReplacer (framework: string = 'react'): Replacer {
   }
 
   if (isVue2) {
-    return function replacer (path: NodePath<Node>) {
+    const replacer = (path: NodePath<Node>) => {
       // vue2
       if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
         return start(path.node)
@@ -53,8 +60,11 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
       }
     }
+    replacer.start = start
+    replacer.end = end
+    return replacer
   } else if (isVue3) {
-    return function replacer (path: NodePath<Node>) {
+    const replacer = (path: NodePath<Node>) => {
       if (
         path.node.type === 'CallExpression' &&
         path.node.arguments.length === 2 &&
@@ -79,8 +89,11 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
       }
     }
+    replacer.start = start
+    replacer.end = end
+    return replacer
   } else if (isReact) {
-    return function replacer (path: NodePath<Node>) {
+    const replacer = (path: NodePath<Node>) => {
       // react
       if (isSpecNode(path.node) && reactMatcher(path.node as UserMatchNode)) {
         return start(path.node)
@@ -95,7 +108,13 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
       }
     }
+    replacer.start = start
+    replacer.end = end
+    return replacer
   } else {
-    return function replacer (path: NodePath<Node>) {}
+    const replacer = (path: NodePath<Node>) => {}
+    replacer.start = start
+    replacer.end = end
+    return replacer
   }
 }

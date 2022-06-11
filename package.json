@@ -1,34 +1,31 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
-  "types": "dist/types/index.d.ts",
+  "types": "types/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "node": {
-        "require": "./dist/index.js"
-      },
+      "types": "./types/index.d.ts",
       "require": "./dist/index.js"
     },
     "./replace": {
-      "types": "./dist/types/replace.d.ts",
+      "types": "./types/replace.d.ts",
       "import": "./dist/replace.js"
     },
     "./postcss": {
-      "types": "./dist/types/postcss/plugin.d.ts",
+      "types": "./types/postcss/plugin.d.ts",
       "require": "./dist/postcss.js"
     },
     "./vite": {
-      "types": "./dist/types/framework/vite/index.d.ts",
+      "types": "./types/framework/vite/index.d.ts",
       "require": "./dist/vite.js",
       "import": "./dist/vite.js"
     }
   },
   "scripts": {
-    "dev": "yarn dts && cross-env NODE_ENV=development rollup -cw",
+    "dev": "yarn clean && yarn dts && cross-env NODE_ENV=development rollup -cw",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c && yarn dts",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "dts": "ttsc --emitDeclarationOnly -p tsconfig.dts.json",
@@ -46,6 +43,7 @@
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin.git"
   },
   "files": [
+    "types",
     "dist",
     "postcss.*",
     "replace.*",
@@ -62,6 +60,7 @@
     "postcss",
     "taro",
     "uni-app",
+    "vite",
     "tailwindcss",
     "jit",
     "tailwindcss jit",

@@ -21,11 +21,11 @@ async function main () {
     const projectPath = projectPaths[index]
     await automator
       .launch({
-        cliPath: 'D:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
+        // cliPath: 'D:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
         projectPath
       })
       .then(async (miniProgram) => {
-        const page = await miniProgram.reLaunch('/page/index/index')
+        const page = await miniProgram.reLaunch('/pages/index/index')
         await page.waitFor(10_000)
         // const element = await page.$('.kind-list-item-hd')
         // console.log(await element.attribute('class'))
