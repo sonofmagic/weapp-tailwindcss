@@ -41,9 +41,7 @@ const config = [
         file: 'dist/replace.js',
         format: 'esm',
         sourcemap: isDev
-        // exports: 'auto'
       }
-      // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ]
   },
   {
@@ -55,7 +53,6 @@ const config = [
         sourcemap: isDev,
         exports: 'auto'
       }
-      // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ]
   },
   {
@@ -67,7 +64,6 @@ const config = [
         sourcemap: isDev,
         exports: 'auto'
       }
-      // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ]
   },
   {
@@ -79,11 +75,30 @@ const config = [
         sourcemap: isDev,
         exports: 'auto'
       }
-      // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ]
-
-    // postcss-weapp-tailwindcss-rename
   }
+  // {
+  //   input: 'src/v4.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/v4.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // },
+  // {
+  //   input: 'src/v5.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/v5.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // }
 ].map((x) => {
   return {
     ...x,

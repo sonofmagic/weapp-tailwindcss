@@ -23,24 +23,34 @@ describe('defaults function test group', () => {
 
   it('should export', () => {
     const {
+      BaseJsxWebpackPluginV4,
+      BaseTemplateWebpackPluginV4,
       KboneWeappTailwindcssWebpackPluginV4,
-      NativeWeappTailwindcssWebpackPluginV5,
-      RaxTailwindcssWebpackPluginV5,
       RemaxWeappTailwindcssWebpackPluginV4,
       TaroWeappTailwindcssWebpackPluginV4,
-      UniAppWeappTailwindcssWebpackPluginV4
-      // ViteWeappTailwindcssPlugin,
-      // postcssWeappTailwindcssRename
+      UniAppWeappTailwindcssWebpackPluginV4,
+      BaseJsxWebpackPluginV5,
+      BaseTemplateWebpackPluginV5,
+      MpxWeappTailwindcssWebpackPluginV5,
+      NativeWeappTailwindcssWebpackPluginV5,
+      RaxTailwindcssWebpackPluginV5
     } = require('../')
-
-    expect(isWebpackPlugin(KboneWeappTailwindcssWebpackPluginV4)).toBe(true)
-    expect(isWebpackPlugin(NativeWeappTailwindcssWebpackPluginV5)).toBe(true)
-    expect(isWebpackPlugin(RaxTailwindcssWebpackPluginV5)).toBe(true)
-    expect(isWebpackPlugin(RemaxWeappTailwindcssWebpackPluginV4)).toBe(true)
-    expect(isWebpackPlugin(TaroWeappTailwindcssWebpackPluginV4)).toBe(true)
-    expect(isWebpackPlugin(UniAppWeappTailwindcssWebpackPluginV4)).toBe(true)
-    // expect(Boolean(ViteWeappTailwindcssPlugin)).toBe(true)
-    // expect(Boolean(postcssWeappTailwindcssRename)).toBe(true)
+    const plugins = [
+      BaseJsxWebpackPluginV4,
+      BaseTemplateWebpackPluginV4,
+      KboneWeappTailwindcssWebpackPluginV4,
+      RemaxWeappTailwindcssWebpackPluginV4,
+      TaroWeappTailwindcssWebpackPluginV4,
+      UniAppWeappTailwindcssWebpackPluginV4,
+      BaseJsxWebpackPluginV5,
+      BaseTemplateWebpackPluginV5,
+      MpxWeappTailwindcssWebpackPluginV5,
+      NativeWeappTailwindcssWebpackPluginV5,
+      RaxTailwindcssWebpackPluginV5
+    ]
+    plugins.forEach((plugin) => {
+      expect(isWebpackPlugin(plugin)).toBe(true)
+    })
   })
 
   it('should replace export', async () => {
