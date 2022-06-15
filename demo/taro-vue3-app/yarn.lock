@@ -9526,10 +9526,10 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weapp-tailwindcss-webpack-plugin@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.2.tgz#2235c673dc7cb46918b70c818b19104fbb523a76"
-  integrity sha512-yCawv98mOb9l9+hi6DZyGVu5n25DIegef4cxF7Do/4CjH8P689vbB1L9kxq8KZRgVTU3jSOFwIVmRdCo70bDEA==
+weapp-tailwindcss-webpack-plugin@^1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.4.tgz#b6a4b94831e60fab126df0209b957a69d1c58190"
+  integrity sha512-zuy2YPV/kDSpZDiYkQF7ZAkshZMAaweLQNRMvJUhqs1q0PaKAydDywvtn19VPPUzM9EiM77QBmh9lb/dcNAaSQ==
   dependencies:
     "@babel/generator" "7.17.9"
     "@babel/parser" "7.17.9"

@@ -2599,7 +2599,7 @@ vuex@^4.0.2:
 
 weapp-tailwindcss-webpack-plugin@^1.6.4:
   version "1.6.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.4.tgz#b6a4b94831e60fab126df0209b957a69d1c58190"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.4.tgz#b6a4b94831e60fab126df0209b957a69d1c58190"
   integrity sha512-zuy2YPV/kDSpZDiYkQF7ZAkshZMAaweLQNRMvJUhqs1q0PaKAydDywvtn19VPPUzM9EiM77QBmh9lb/dcNAaSQ==
   dependencies:
     "@babel/generator" "7.17.9"
