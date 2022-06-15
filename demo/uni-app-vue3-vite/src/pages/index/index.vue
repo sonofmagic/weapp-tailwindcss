@@ -8,7 +8,7 @@
     <div class="text-[length:var(--my-var)]">...</div>
     <div class="text-[color:var(--my-var)]">...</div>
     <button
-      class="bg-green-500 text-white"
+      class="!bg-green-500 !sr-onlytext-white"
       :class="{
         'opacity-50': disabled,
       }"
@@ -17,7 +17,8 @@
       disable
     </button>
     <view class="test">test</view>
-    <view :key="i" class="h-[20px] w-[20px]" :class="cardsColor[i - 1]" v-for="i in 5"></view>
+    <view :key="v" class="h-[20px] w-[20px]" :class="v" v-for="(v, i) in cardsColor"></view>
+    <!-- <view :key="i" class="h-[20px] w-[20px]" :class="cardsColor[i - 1]" v-for="i in 5"></view> -->
     <view class="w-2 h-2 bg-[#123456]"></view>
     <view class="w-2 h-2 bg-blue-500/50"></view>
     <view class="flex items-center justify-center w-screen h-screen">
@@ -50,11 +51,12 @@
 
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+import { ref } from 'vue';
 const title = ref('测试标题');
 const flag = ref(true);
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
-const cardsColor = reactive([
+
+const cardsColor = ref([
   replaceJs('bg-[#4268EA] shadow-indigo-100'),
   replaceJs('bg-[#123456] shadow-blue-100'),
   'bg-green-500 shadow-green-100',
