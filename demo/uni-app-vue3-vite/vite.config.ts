@@ -16,13 +16,13 @@ const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 if (!isH5) {
   vitePlugins.push(vwt());
 
-  postcssPlugins.push(
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx',
-    })
-  );
+  // postcssPlugins.push(
+  //   require('postcss-rem-to-responsive-pixel')({
+  //     rootValue: 32,
+  //     propList: ['*'],
+  //     transformUnit: 'rpx',
+  //   })
+  // );
   postcssPlugins.push(
     postcssWeappTailwindcssRename({
       // cssPreflight: {
