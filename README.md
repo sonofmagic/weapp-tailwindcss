@@ -19,6 +19,7 @@
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
   - [Options 配置项](#options-配置项)
   - [使用 arbitrary values](#使用-arbitrary-values)
+  - [关于rem转化rpx](#关于rem转化rpx)
   - [变更日志](#变更日志)
   - [常见问题](#常见问题)
   - [Related projects](#related-projects)
@@ -114,6 +115,15 @@ cssPreflight: {
 ## 使用 arbitrary values
 
 详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)
+
+## 关于rem转化rpx
+
+假如你想要把项目里，所有满足条件的 `rem` 都转化成 `rpx`，那么 `postcss plugin`: [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 适合你。
+
+假如你想缩小一下范围，只把 `tailwindcss` 中默认的工具类的单位(非`jit`生成的`class`)，从 `rem` 转变为 `rpx`，那么 `tailwindcss preset`: [tailwindcss-rem2px-preset](https://www.npmjs.com/package/tailwindcss-rem2px-preset) 适合你。
+
+使用方式见 `Demo` 和对应 `npm` 包的文档。
+
 
 ## [变更日志](./CHANGELOG.md)
 
