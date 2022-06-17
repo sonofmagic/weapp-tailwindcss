@@ -1,6 +1,4 @@
-import { parse } from '@babel/parser'
-import traverse from '@babel/traverse'
-import generate from '@babel/generator'
+import { parse, traverse, generate } from '@/babel'
 import type { Replacer } from './replacer'
 
 export function jsxHandler (rawSource: string, replacer: Replacer) {
