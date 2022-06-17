@@ -8720,10 +8720,10 @@ postcss-reduce-transforms@^4.0.2:
     postcss "^7.0.0"
     postcss-value-parser "^3.0.0"
 
-postcss-rem-to-responsive-pixel@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.1.tgz#a443314f9e2353c127494cbb2f9fc029279edf9f"
-  integrity sha512-X9MKMWFS2PltiYOJ6IhnAOknCVynU++5KD4+YpgIMxAIjeZ513vKLoHpJkfsfvV4zwvgvGDayWKhaCMd41T73g==
+postcss-rem-to-responsive-pixel@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
+  integrity sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==
 
 postcss-selector-parser@^3.0.0:
   version "3.1.2"
@@ -10267,6 +10267,11 @@ svgo@^1.0.0:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+tailwindcss-rem2px-preset@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.2.tgz#4068e7796ed71c502f88fccea6311c5156c792ca"
+  integrity sha512-/bzCXwhD461eq/ck9Et48L+9CYrssrAFMZ2gLiUQ1pJx6AvE/eTf5D796sFiybwdeIpeb31RKWujev694Dg/Xw==
 
 "tailwindcss@npm:@tailwindcss/postcss7-compat":
   version "2.2.17"

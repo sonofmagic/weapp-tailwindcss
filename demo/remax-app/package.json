@@ -22,8 +22,9 @@
     "autoprefixer": "9",
     "cross-env": "^7.0.2",
     "postcss": "7",
-    "postcss-rem-to-responsive-pixel": "^5.1.1",
+    "postcss-rem-to-responsive-pixel": "^5.1.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "tailwindcss-rem2px-preset": "^1.0.2",
     "weapp-tailwindcss-webpack-plugin": "^1.6.4"
   }
 }
