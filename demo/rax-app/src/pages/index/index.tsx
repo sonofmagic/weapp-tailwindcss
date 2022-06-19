@@ -22,7 +22,7 @@ export default function Home() {
         <View className="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</View>
         <View className="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</View>
         <View className="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">Hello</View>
-        <View className="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</View>
+        <View className="!border-[10px] !border-[#098765] !border-solid !border-opacity-[0.44]">!border-[10px] !border-[#098765] !border-solid !border-opacity-[0.44]</View>
         <View className="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid">
           <View>1</View>
           <View>2</View>

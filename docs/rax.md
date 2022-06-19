@@ -113,3 +113,37 @@ module.exports = {
 ```
 
 原因详见 https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/23
+
+### 3. rax 默认样式覆盖问题
+
+`rax` 很多元素有默认样式，比如 `rax-view` `rax-text` 
+```css
+.rax-view-v2 {
+   box-sizing: border-box;
+   display: flex;
+   flex-direction: column;
+   flex-shrink: 0;
+   align-content: flex-start;
+   border: 0 solid black;
+   margin: 0;
+   padding: 0;
+   min-width: 0;
+}
+.rax-text-v2 {
+  box-sizing: border-box;
+  display: block;
+  font-size: 32rpx;
+  white-space: pre-wrap;
+}
+/* 还有很多 */
+```
+
+这些样式，默认都会在优先级上覆盖 `tailwindcss` 生成的样式，造成写了`class`样式却没有效果。
+
+这时候可以利用样式的优先级来覆盖默认样式，或者也可以这样写:
+
+```html
+<View className="!border-[10px] !border-[#098765] !border-solid !border-opacity-[0.44]"></View>
+```
+
+在每个 `class` 前加 `!` 代表着对应 `tailwindcss` 生成的样式每一条`css`都会加 `!important`。
