@@ -56,7 +56,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
-          stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL
+          stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE
         },
         (assets) => {
           onStart()
