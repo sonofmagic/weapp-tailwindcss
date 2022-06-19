@@ -24,7 +24,7 @@
     <view class="flex items-center justify-center w-screen h-screen">
       <view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>
     </view>
-    <image class="logo" src="/static/logo.png" />
+    <image class="logo" src="/static/logo.png" @click="go2SubDemo" />
     <view class="text-area">
       <text class="title h-[200%]">{{ title }}</text>
     </view>
@@ -64,6 +64,12 @@ const cardsColor = ref([
   'bg-amber-500 shadow-amber-100',
 ]);
 const disabled = ref(true);
+
+const go2SubDemo = () => {
+  uni.navigateTo({
+    url: '/subs/demo/pages/index',
+  });
+};
 </script>
 
 <style lang="scss">

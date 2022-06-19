@@ -42,6 +42,7 @@ specifiers:
   stylus: ^0.54.8
   stylus-loader: ^3.0.2
   tailwindcss: ^3.0.24
+  tailwindcss-rem2px-preset: ^1.0.2
   ts-jest: ^27.1.2
   ts-loader: ^9.2.6
   typescript: ^4.1.2
@@ -103,6 +104,7 @@ devDependencies:
   stylus: 0.54.8
   stylus-loader: 3.0.2_stylus@0.54.8
   tailwindcss: 3.0.24
+  tailwindcss-rem2px-preset: registry.npmjs.org/tailwindcss-rem2px-preset/1.0.2_tailwindcss@3.0.24
   ts-jest: 27.1.5_d33y4zwdifx3eiw7ssvnhgmzn4
   ts-loader: 9.3.0_jy5w4alwxi2du2dgjfsq7k3iza
   typescript: 4.7.3
@@ -9559,6 +9561,17 @@ packages:
     resolution: {integrity: sha512-n69H31OnxSGSZyZbgBlvYIXlrMhJQ0dQAX1js1QDhpaUH6zmU3QYlj07bCwCNlPOu3oRXIubGPl2gDGnHsiCqg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/string.fromcodepoint/-/string.fromcodepoint-0.2.1.tgz}
     name: string.fromcodepoint
     version: 0.2.1
+    dev: true
+
+  registry.npmjs.org/tailwindcss-rem2px-preset/1.0.2_tailwindcss@3.0.24:
+    resolution: {integrity: sha512-/bzCXwhD461eq/ck9Et48L+9CYrssrAFMZ2gLiUQ1pJx6AvE/eTf5D796sFiybwdeIpeb31RKWujev694Dg/Xw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.2.tgz}
+    id: registry.npmjs.org/tailwindcss-rem2px-preset/1.0.2
+    name: tailwindcss-rem2px-preset
+    version: 1.0.2
+    peerDependencies:
+      tailwindcss: ^2.0.0 | ^3.0.0
+    dependencies:
+      tailwindcss: 3.0.24
     dev: true
 
   registry.npmjs.org/unescape-js/1.1.4:

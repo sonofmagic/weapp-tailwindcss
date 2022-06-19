@@ -27,7 +27,22 @@
         "name": "case55",
         "path": "pages/issue/case55",
         "query": ""
+      },
+      {
+        "name": "subPackages",
+        "path": "subs/demo/pages/index",
+        "query": ""
       }
     ]
-  }
+  },
+  "subPackages": [
+    {
+      "root": "subs/demo",
+      "pages": [
+        {
+          "path": "pages/index"
+        }
+      ]
+    }
+  ]
 }

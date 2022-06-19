@@ -1,7 +1,4 @@
-// import * as wxml from '@icebreakers/wxml'
-import { parseExpression } from '@babel/parser'
-import traverse from '@babel/traverse'
-import generate from '@babel/generator'
+import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, tagWithClassRegexp } from '@/reg'
 import type { RawSource } from '@/types'

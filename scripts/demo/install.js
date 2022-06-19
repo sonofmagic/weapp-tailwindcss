@@ -4,5 +4,5 @@ const { install } = require('@icebreakers/cli')
 ;(async () => {
   const demoPath = path.resolve(__dirname, '../../demo')
   await install(demoPath)
-  await install(demoPath, '-D weapp-tailwindcss-webpack-plugin')
+  await install(demoPath, '-D weapp-tailwindcss-webpack-plugin tailwindcss-rem2px-preset postcss-rem-to-responsive-pixel')
 })()
