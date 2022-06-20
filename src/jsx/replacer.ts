@@ -1,7 +1,8 @@
-import type { Node, ObjectProperty, Identifier } from '@babel/types'
+import type { Node, ObjectProperty, Identifier, StringLiteral } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
-import { replaceWxml } from '@/wxml'
-import { classStringReplace } from '@/reg'
+import { replaceWxml, templeteHandler } from '@/wxml'
+
+// import { classStringReplace } from '@/reg'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
 export type Replacer = {
@@ -34,6 +35,20 @@ function vue2Matcher (node: UserMatchNode): [boolean, UserMatchNode] {
     return [false, node]
   }
   return [node.key.name === 'class' || node.key.name === 'staticClass', node] // || node.key.name === 'hover-class'
+}
+
+function vue3Matcher (node: ObjectProperty & { key: Identifier | StringLiteral }) {
+  if ((node.key as Identifier).name === 'class') {
+    return true
+  }
+  if ((node.key as StringLiteral).value === 'hover-class') {
+    return true
+  }
+  return false
+}
+
+function isVue3SpecNode (node: Node) {
+  return node.type === 'ObjectProperty' && (node.key.type === 'Identifier' || node.key.type === 'StringLiteral')
 }
 
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
@@ -86,27 +101,34 @@ export function createReplacer (framework: string = 'react'): Replacer {
     return replacer
   } else if (isVue3) {
     const replacer = (path: NodePath<Node>) => {
-      if (
-        path.node.type === 'CallExpression' &&
-        path.node.arguments.length === 2 &&
-        path.node.arguments[0].type === 'StringLiteral' &&
-        path.node.arguments[1].type === 'NumericLiteral'
-      ) {
-        path.node.arguments[0].value = classStringReplace(path.node.arguments[0].value, (x) => {
-          return replaceWxml(x, true)
-        })
+      // if (
+      //   path.node.type === 'CallExpression' &&
+      //   path.node.arguments.length === 2 &&
+      //   path.node.arguments[0].type === 'StringLiteral' &&
+      //   path.node.arguments[1].type === 'NumericLiteral'
+      // ) {
+      //   path.node.arguments[0].value = classStringReplace(path.node.arguments[0].value, (x) => {
+      //     return replaceWxml(x, true)
+      //   })
+      // }
+      // TODO
+      if (path.node.type === 'StringLiteral') {
+        path.node.value = templeteHandler(path.node.value)
       }
-
-      if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
+      if (isVue3SpecNode(path.node) && vue3Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
 
       if (startFlag) {
-        if ((path.node.start as number) > ((classObjectNode as Node).end as number)) {
+        const nodeStart = path.node.start as number
+        const refNode = classObjectNode as Node
+        if (nodeStart > (refNode.end as number)) {
           return end()
         }
-        if (path.node.type === 'StringLiteral') {
-          path.node.value = replaceWxml(path.node.value, true)
+        if (nodeStart >= (refNode.start as number)) {
+          if (path.node.type === 'StringLiteral') {
+            path.node.value = replaceWxml(path.node.value, true)
+          }
         }
       }
     }

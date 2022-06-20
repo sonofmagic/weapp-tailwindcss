@@ -1,7 +1,7 @@
 <template>
   <view class="index container bg-[#ffffff]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
-    <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
-    <template>1</template>
+    <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 dark:bg-[#487512]"></view>
+    <!-- <template>1</template> -->
     <view :class="[flag ? 'bg-red-900' : 'bg-[#fafa00]']">bg-[#fafa00]</view>
     <view :class="{ 'bg-[#098765]': flag === true }">bg-[#098765]</view>
     <view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]</view>
@@ -22,15 +22,9 @@
   </view>
 </template>
 
-<script >
+<script lang="ts" setup>
 import './index.scss'
 import { ref } from 'vue'
-export default {
-  setup() {
-    return {
-      msg: ref('Hello world!'),
-      flag: ref(true)
-    }
-  }
-}
+const msg = ref('Hello world!')
+const flag = ref(true)
 </script>

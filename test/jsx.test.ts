@@ -71,6 +71,14 @@ describe('jsxHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
+  it('vue3-hover-class.js', async () => {
+    const item = await getCase('vue3-hover-class.js')
+    const vue3Replacer = createReplacer('vue3')
+    const { code } = jsxHandler(item, vue3Replacer)
+
+    expect(code).toMatchSnapshot()
+  })
+
   // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
   // it('multiple file no end issue', () => {
 

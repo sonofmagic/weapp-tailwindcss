@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.6 (2022-06-21)
+
+### Features
+
+- 添加 `tailwindcss` 的 `dark mode` (media) 支持。
+- 现在 `uni-app` 和 `taro` 都会同时转义 `class` 和 `hover-class` 里的内容了 [uni-app-vite-vue3-tailwind-vscode-template/issues/3](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template/issues/3)。
+
+### Fixed
+
+- 修复 `taro vue3` 版本 `babel` 处理导致打包失败的问题。
+
 ## 1.6.5 (2022-06-19)
 
 ### Improvement
