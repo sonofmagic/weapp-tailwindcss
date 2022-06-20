@@ -1,8 +1,6 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { View } from '@tarojs/components'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
-
-import styles from './index.module.scss'
 import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
 import './index.scss'
 import EndClassCom from './endClassCom'
@@ -11,6 +9,7 @@ const Index = () => {
   const className = replaceJs('bg-[#123456]')
   return (
     <>
+      <View className="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hoverClass="bg-red-500 dark:bg-green-500"></View>
       <EndClassCom></EndClassCom>
       <View className={className}>className</View>
       <View className={flag ? 'p-[20px] -mt-2 mb-[-20px] ' : ''}>p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</View>

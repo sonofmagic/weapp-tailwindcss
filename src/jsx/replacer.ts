@@ -15,11 +15,11 @@ function isSpecNode (node: Node) {
 }
 
 function reactMatcher (node: UserMatchNode) {
-  return node.key.name === 'className'
+  return node.key.name === 'className' || node.key.name === 'hoverClass'
 }
 
 function vue2Matcher (node: UserMatchNode) {
-  return node.key.name === 'class' || node.key.name === 'staticClass'
+  return node.key.name === 'class' || node.key.name === 'staticClass' // || node.key.name === 'hover-class'
 }
 
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
