@@ -35,8 +35,21 @@ describe('jsxHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
+  it('react-hover-class', async () => {
+    const item = await getCase('react-hover-class.js')
+    const { code } = jsxHandler(item, reactReplacer)
+    expect(code).toMatchSnapshot()
+  })
+
   it('vue2-case1', async () => {
     const item = await getCase('vue2-case1.js')
+    const { code } = jsxHandler(item, vue2Replacer)
+
+    expect(code).toMatchSnapshot()
+  })
+
+  test('vue2-hover-class.js', async () => {
+    const item = await getCase('vue2-hover-class.js')
     const { code } = jsxHandler(item, vue2Replacer)
 
     expect(code).toMatchSnapshot()
@@ -57,6 +70,15 @@ describe('jsxHandler', () => {
 
     expect(code).toMatchSnapshot()
   })
+
+  it('vue3-hover-class.js', async () => {
+    const item = await getCase('vue3-hover-class.js')
+    const vue3Replacer = createReplacer('vue3')
+    const { code } = jsxHandler(item, vue3Replacer)
+
+    expect(code).toMatchSnapshot()
+  })
+
   // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
   // it('multiple file no end issue', () => {
 

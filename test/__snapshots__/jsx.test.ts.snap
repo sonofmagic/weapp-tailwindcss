@@ -252,6 +252,28 @@ exports[`jsxHandler case3  1`] = `
 };"
 `;
 
+exports[`jsxHandler react-hover-class 1`] = `
+"var Index = function Index() {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__[\\"useState\\"])(true),
+      _useState2 = Object(E_github_workspace_my_weapp_tailwindcss_webpack_plugin_demo_taro_app_node_modules_babel_preset_taro_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_0__[
+  /* default */
+  \\"a\\"])(_useState, 1),
+      flag = _useState2[0];
+
+  var className = Object(weapp_tailwindcss_webpack_plugin_replace__WEBPACK_IMPORTED_MODULE_3__[
+  /* replaceJs */
+  \\"a\\"])('bg-[#123456]');
+  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"jsx\\"])(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"Fragment\\"], {
+    children: /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_2__[
+    /* View */
+    \\"a\\"], {
+      className: \\"bg-gray-100 dark_c_bg-zinc-800 h-10 w-10\\",
+      hoverClass: \\"bg-red-500 dark_c_bg-green-500\\"
+    })
+  });
+};"
+`;
+
 exports[`jsxHandler vue2-case1 1`] = `
 "var render = function () {
   var _vm = this;
@@ -290,10 +312,545 @@ exports[`jsxHandler vue2-case1 1`] = `
 };"
 `;
 
+exports[`jsxHandler vue2-hover-class.js 1`] = `
+"(wx[\\"webpackJsonp\\"] = wx[\\"webpackJsonp\\"] || []).push([[\\"pages/index/hoverClass\\"], {
+  /***/
+  \\"./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue\\":
+  /*!**************************************************************************************!*\\\\
+    !*** ./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue ***!
+    \\\\**************************************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+    /* harmony import */
+
+    var _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! ./hoverClass.vue?vue&type=template&id=67f21afd& */
+    \\"./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\");
+    /* harmony import */
+
+
+    var _hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ./hoverClass.vue?vue&type=script&lang=js& */
+    \\"./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\");
+    /* harmony import */
+
+
+    var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */
+    \\"./node_modules/vue-loader/lib/runtime/componentNormalizer.js\\");
+
+    function injectStyles(context) {}
+    /* normalize component */
+
+
+    var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__[
+    /* default */
+    \\"a\\"])(_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[
+    /* default */
+    \\"a\\"], _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[
+    /* render */
+    \\"a\\"], _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[
+    /* staticRenderFns */
+    \\"b\\"], false, injectStyles, null, \\"6eef642b\\");
+    component.options.__file = \\"src/pages/index/hoverClass.vue\\";
+    /* harmony default export */
+
+    __webpack_exports__[\\"a\\"] = component.exports;
+    /***/
+  },
+
+  /***/
+  \\"./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\":
+  /*!***************************************************************************************************************************************************!*\\\\
+    !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/pages/index/hoverClass.vue?vue&type=script&lang=js& ***!
+    \\\\***************************************************************************************************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\"; //
+    //
+    //
+    //
+    //
+    //
+
+    /* harmony default export */
+
+    __webpack_exports__[\\"a\\"] = {
+      data: function data() {
+        return {
+          flag: true
+        };
+      }
+    };
+    /***/
+  },
+
+  /***/
+  \\"./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\":
+  /*!*****************************************************************************************************************************************************************************************************!*\\\\
+    !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd& ***!
+    \\\\*****************************************************************************************************************************************************************************************************/
+
+  /*! exports provided: render, staticRenderFns */
+
+  /*! exports used: render, staticRenderFns */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+    /* harmony export (binding) */
+
+    __webpack_require__.d(__webpack_exports__, \\"a\\", function () {
+      return render;
+    });
+    /* harmony export (binding) */
+
+
+    __webpack_require__.d(__webpack_exports__, \\"b\\", function () {
+      return staticRenderFns;
+    });
+
+    var render = function () {
+      var _vm = this;
+
+      var _h = _vm.$createElement;
+
+      var _c = _vm._self._c || _h;
+
+      return _c(\\"view\\", [_c(\\"view\\", {
+        staticClass: \\"bg-_l__h_ffffff_r_ dark_c_bg-_l__h_000000_r_ h-10 w-10\\",
+        class: _vm.flag ? \\"text-_l_50px_r_\\" : \\"text-_l_100rpx_r_\\",
+        attrs: {
+          \\"data-uauaua\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\",
+          \\"hover-class\\": \\"bg-_l__h_eeeeee_r_ dark_c_bg-_l__h_111111_r_\\",
+          \\"data-id\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\"
+        }
+      })]);
+    };
+
+    var staticRenderFns = [];
+    render._withStripped = true;
+    /***/
+  },
+
+  /***/
+  \\"./src/pages/index/hoverClass.vue\\":
+  /*!****************************************!*\\\\
+    !*** ./src/pages/index/hoverClass.vue ***!
+    \\\\****************************************/
+
+  /*! no exports provided */
+
+  /*! all exports used */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony import */
+
+
+    var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! @tarojs/runtime */
+    \\"./node_modules/@tarojs/runtime/dist/runtime.esm.js\\");
+    /* harmony import */
+
+
+    var _node_modules_tarojs_taro_loader_lib_raw_js_hoverClass_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ../../../node_modules/@tarojs/taro-loader/lib/raw.js!./hoverClass.vue */
+    \\"./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue\\");
+
+    var config = {};
+    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__[\\"createPageConfig\\"])(_node_modules_tarojs_taro_loader_lib_raw_js_hoverClass_vue__WEBPACK_IMPORTED_MODULE_1__[
+    /* default */
+    \\"a\\"], 'pages/index/hoverClass', {
+      root: {
+        cn: []
+      }
+    }, config || {}));
+    /***/
+  },
+
+  /***/
+  \\"./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\":
+  /*!*****************************************************************!*\\\\
+    !*** ./src/pages/index/hoverClass.vue?vue&type=script&lang=js& ***!
+    \\\\*****************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+    /* harmony import */
+
+    var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! -!../../../node_modules/babel-loader/lib!../../../node_modules/vue-loader/lib??vue-loader-options!./hoverClass.vue?vue&type=script&lang=js& */
+    \\"./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\");
+    /* harmony default export */
+
+
+    __webpack_exports__[\\"a\\"] = _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[
+    /* default */
+    \\"a\\"];
+    /***/
+  },
+
+  /***/
+  \\"./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\":
+  /*!***********************************************************************!*\\\\
+    !*** ./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd& ***!
+    \\\\***********************************************************************/
+
+  /*! exports provided: render, staticRenderFns */
+
+  /*! exports used: render, staticRenderFns */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    \\"use strict\\";
+    /* harmony import */
+
+    var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./hoverClass.vue?vue&type=template&id=67f21afd& */
+    \\"./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\");
+    /* harmony reexport (safe) */
+
+
+    __webpack_require__.d(__webpack_exports__, \\"a\\", function () {
+      return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[\\"a\\"];
+    });
+    /* harmony reexport (safe) */
+
+
+    __webpack_require__.d(__webpack_exports__, \\"b\\", function () {
+      return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[\\"b\\"];
+    });
+    /***/
+
+  }
+}, [[\\"./src/pages/index/hoverClass.vue\\", \\"runtime\\", \\"taro\\", \\"vendors\\"]]]); //# sourceMappingURL=hoverClass.js.map"
+`;
+
 exports[`jsxHandler vue3-createStaticVNode.js 1`] = `
 "var _hoisted_1 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
 /* createStaticVNode */
 \\"d\\"])(\\"<view class=\\\\\\"p-_l_20px_r_ -mt-2 mb-_l_-20px_r_\\\\\\">p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]</view><view class=\\\\\\"space-y-_l_1_dot_6rem_r_\\\\\\"><view class=\\\\\\"w-_l_300rpx_r_ text-black text-opacity-_l_0_dot_19_r_\\\\\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\\\\\"min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0_dot_9_r_\\\\\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\\\\\"max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_\\\\\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\\\\\"flex items-center justify-center h-_l_100px_r_ w-_l_100px_r_ rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0_dot_54_r_ text-_l__h_ffffff_r_\\\\\\">Hello</view><view class=\\\\\\"border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0_dot_44_r_\\\\\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\\\\\"grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid\\\\\\"><view>1</view><view>2</view><view>3</view></view></view><view class=\\\\\\"test\\\\\\">test</view>\\", 3);"
+`;
+
+exports[`jsxHandler vue3-hover-class.js 1`] = `
+";
+(wx['webpackJsonp'] = wx['webpackJsonp'] || []).push([['pages/index/index'], {
+  /***/
+  './node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/dist/index.js?!./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true':
+  /*!*********************************************************************************************************************************************************************************!*\\\\
+  !*** ./node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib!./node_modules/vue-loader/dist??ref--10-0!./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true ***!
+  \\\\*********************************************************************************************************************************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    'use strict';
+    /* harmony import */
+
+    var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! vue */
+    './node_modules/vue/dist/vue.runtime.esm-bundler.js');
+    /* harmony import */
+
+
+    var _index_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ./index.scss */
+    './src/pages/index/index.scss');
+    /* harmony import */
+
+
+    var _index_scss__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_index_scss__WEBPACK_IMPORTED_MODULE_1__);
+    /* harmony default export */
+
+
+    __webpack_exports__['a'] = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+    /* defineComponent */
+    'f'])({
+      __name: 'index',
+      setup: function setup(__props, _ref) {
+        var expose = _ref.expose;
+        expose();
+        var msg = Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+        /* ref */
+        'm'])('Hello world!');
+        var flag = Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+        /* ref */
+        'm'])(true);
+        var __returned__ = {
+          msg: msg,
+          flag: flag
+        };
+        Object.defineProperty(__returned__, '__isScriptSetup', {
+          enumerable: false,
+          value: true
+        });
+        return __returned__;
+      }
+    });
+    /***/
+  },
+
+  /***/
+  './node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/dist/templateLoader.js?!./node_modules/vue-loader/dist/index.js?!./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true':
+  /*!*********************************************************************************************************************************************************************************************************************************************!*\\\\
+  !*** ./node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib!./node_modules/vue-loader/dist/templateLoader.js??ref--6!./node_modules/vue-loader/dist??ref--10-0!./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true ***!
+  \\\\*********************************************************************************************************************************************************************************************************************************************/
+
+  /*! exports provided: render */
+
+  /*! exports used: render */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    'use strict';
+    /* harmony export (binding) */
+
+    __webpack_require__.d(__webpack_exports__, 'a', function () {
+      return render;
+    });
+    /* harmony import */
+
+
+    var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! vue */
+    './node_modules/vue/dist/vue.runtime.esm-bundler.js');
+
+    var _hoisted_1 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+    /* createElementVNode */
+    'd'])('view', {
+      class: \\"bg-gray-100 dark_c_bg-zinc-800 h-10 w-10\\",
+      'data-id': 'bg-[#654123] dark:bg-[#abcdef]',
+      'hover-class': \\"bg-red-500 dark_c_bg-_l__h_487512_r_\\"
+    }, null, -1
+    /* HOISTED */
+    );
+
+    var _hoisted_2 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+    /* createStaticVNode */
+    'e'])(\\"<view class=\\\\\\"p-_l_20px_r_ -mt-2 mb-_l_-20px_r_\\\\\\">p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]</view><view class=\\\\\\"space-y-_l_1_dot_6rem_r_\\\\\\"><view class=\\\\\\"w-_l_300rpx_r_ text-black text-opacity-_l_0_dot_19_r_\\\\\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\\\\\"min-w-_l_300rpx_r_ max-h-_l_100px_r_ text-_l_20px_r_ leading-_l_0_dot_9_r_\\\\\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\\\\\"max-w-_l_300rpx_r_ min-h-_l_100px_r_ text-_l__h_dddddd_r_\\\\\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\\\\\"flex items-center justify-center h-_l_100px_r_ w-_l_100px_r_ rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0_dot_54_r_ text-_l__h_ffffff_r_\\\\\\">Hello</view><view class=\\\\\\"border-_l_10px_r_ border-_l__h_098765_r_ border-solid border-opacity-_l_0_dot_44_r_\\\\\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\\\\\"grid grid-cols-3 divide-x-_l_10px_r_ divide-_l__h_010101_r_ divide-solid\\\\\\"><view>1</view><view>2</view><view>3</view></view><view class=\\\\\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\\\\\"> Default </view></view><view class=\\\\\\"test\\\\\\">test</view>\\", 3);
+
+    function render(_ctx, _cache, $props, $setup, $data, $options) {
+      return Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+      /* openBlock */
+      'k'])(), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+      /* createElementBlock */
+      'c'])('view', {
+        class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+        /* normalizeClass */
+        'i'])([\\"index container bg-_l__h_ffffff_r_\\", $setup.flag ? \\"text-_l__h_aaaaaa_r_\\" : \\"text-_l__h_fafafa_r_\\"])
+      }, [_hoisted_1, Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+      /* createCommentVNode */
+      'b'])(' <template>1</template> '), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+      /* createElementVNode */
+      'd'])('view', {
+        class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+        /* normalizeClass */
+        'i'])([$setup.flag ? 'bg-red-900' : \\"bg-_l__h_fafa00_r_\\"])
+      }, 'bg-[#fafa00]', 2
+      /* CLASS */
+      ), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+      /* createElementVNode */
+      'd'])('view', {
+        class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+        /* normalizeClass */
+        'i'])({
+          \\"bg-_l__h_098765_r_\\": $setup.flag === true
+        })
+      }, 'bg-[#098765]', 2
+      /* CLASS */
+      ), _hoisted_2], 2
+      /* CLASS */
+      );
+    }
+    /***/
+
+  },
+
+  /***/
+  './node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/index.vue':
+  /*!*********************************************************************************!*\\\\
+  !*** ./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/index.vue ***!
+  \\\\*********************************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    'use strict';
+    /* harmony import */
+
+    var _index_vue_vue_type_template_id_1badc801_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! ./index.vue?vue&type=template&id=1badc801&ts=true */
+    './src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true');
+    /* harmony import */
+
+
+    var _index_vue_vue_type_script_lang_ts_setup_true__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ./index.vue?vue&type=script&lang=ts&setup=true */
+    './src/pages/index/index.vue?vue&type=script&lang=ts&setup=true');
+    /* harmony import */
+
+
+    var G_github2_weapp_tailwindcss_webpack_plugin_demo_taro_vue3_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./node_modules/vue-loader/dist/exportHelper.js */
+    './node_modules/vue-loader/dist/exportHelper.js');
+    /* harmony import */
+
+
+    var G_github2_weapp_tailwindcss_webpack_plugin_demo_taro_vue3_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(G_github2_weapp_tailwindcss_webpack_plugin_demo_taro_vue3_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__);
+
+    const __exports__ = /*#__PURE__*/G_github2_weapp_tailwindcss_webpack_plugin_demo_taro_vue3_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2___default()(_index_vue_vue_type_script_lang_ts_setup_true__WEBPACK_IMPORTED_MODULE_1__[
+    /* default */
+    'a'], [['render', _index_vue_vue_type_template_id_1badc801_ts_true__WEBPACK_IMPORTED_MODULE_0__[
+    /* render */
+    'a']], ['__file', 'src/pages/index/index.vue']]);
+    /* hot reload */
+
+
+    if (false) {}
+    /* harmony default export */
+
+
+    __webpack_exports__['a'] = __exports__;
+    /***/
+  },
+
+  /***/
+  './src/pages/index/index.scss':
+  /*!************************************!*\\\\
+  !*** ./src/pages/index/index.scss ***!
+  \\\\************************************/
+
+  /*! no static exports found */
+
+  /***/
+  function (module, exports, __webpack_require__) {// extracted by mini-css-extract-plugin
+
+    /***/
+  },
+
+  /***/
+  './src/pages/index/index.vue':
+  /*!***********************************!*\\\\
+  !*** ./src/pages/index/index.vue ***!
+  \\\\***********************************/
+
+  /*! no exports provided */
+
+  /*! all exports used */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    'use strict';
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony import */
+
+
+    var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! @tarojs/runtime */
+    './node_modules/@tarojs/runtime/dist/runtime.esm.js');
+    /* harmony import */
+
+
+    var _node_modules_tarojs_taro_loader_lib_raw_js_index_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! ../../../node_modules/@tarojs/taro-loader/lib/raw.js!./index.vue */
+    './node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/index.vue');
+
+    var config = {
+      navigationBarTitleText: '首页'
+    };
+    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__['createPageConfig'])(_node_modules_tarojs_taro_loader_lib_raw_js_index_vue__WEBPACK_IMPORTED_MODULE_1__[
+    /* default */
+    'a'], 'pages/index/index', {
+      root: {
+        cn: []
+      }
+    }, config || {}));
+    /***/
+  },
+
+  /***/
+  './src/pages/index/index.vue?vue&type=script&lang=ts&setup=true':
+  /*!**********************************************************************!*\\\\
+  !*** ./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true ***!
+  \\\\**********************************************************************/
+
+  /*! exports provided: default */
+
+  /*! exports used: default */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    'use strict';
+    /* harmony import */
+
+    var _node_modules_tarojs_mini_runner_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_dist_index_js_ref_10_0_index_vue_vue_type_script_lang_ts_setup_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! -!../../../node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib!../../../node_modules/vue-loader/dist??ref--10-0!./index.vue?vue&type=script&lang=ts&setup=true */
+    './node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/dist/index.js?!./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true');
+    /* harmony reexport (safe) */
+
+
+    __webpack_require__.d(__webpack_exports__, 'a', function () {
+      return _node_modules_tarojs_mini_runner_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_dist_index_js_ref_10_0_index_vue_vue_type_script_lang_ts_setup_true__WEBPACK_IMPORTED_MODULE_0__['a'];
+    });
+    /***/
+
+  },
+
+  /***/
+  './src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true':
+  /*!*************************************************************************!*\\\\
+  !*** ./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true ***!
+  \\\\*************************************************************************/
+
+  /*! exports provided: render */
+
+  /*! exports used: render */
+
+  /***/
+  function (module, __webpack_exports__, __webpack_require__) {
+    'use strict';
+    /* harmony import */
+
+    var _node_modules_tarojs_mini_runner_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_dist_templateLoader_js_ref_6_node_modules_vue_loader_dist_index_js_ref_10_0_index_vue_vue_type_template_id_1badc801_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! -!../../../node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib!../../../node_modules/vue-loader/dist/templateLoader.js??ref--6!../../../node_modules/vue-loader/dist??ref--10-0!./index.vue?vue&type=template&id=1badc801&ts=true */
+    './node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/dist/templateLoader.js?!./node_modules/vue-loader/dist/index.js?!./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true');
+    /* harmony reexport (safe) */
+
+
+    __webpack_require__.d(__webpack_exports__, 'a', function () {
+      return _node_modules_tarojs_mini_runner_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_dist_templateLoader_js_ref_6_node_modules_vue_loader_dist_index_js_ref_10_0_index_vue_vue_type_template_id_1badc801_ts_true__WEBPACK_IMPORTED_MODULE_0__['a'];
+    });
+    /***/
+
+  }
+}, [['./src/pages/index/index.vue', 'runtime', 'taro', 'vendors']]]); //# sourceMappingURL=index.js.map"
 `;
 
 exports[`jsxHandler vue3-render.js 1`] = `

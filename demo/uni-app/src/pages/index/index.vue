@@ -1,7 +1,9 @@
 <template>
   <view>
-    <van-steps :steps="steps" :active="0" />
+    <view class="text-[#999999] dark:text-white" hover-class="text-[#444444]">dark mode</view>
+    <view class="bg-black h-10 w-10" hover-class="h-20 w-20">dark mode</view>
     <Layout />
+    <van-steps :steps="steps" :active="0" />
   </view>
 </template>
 
@@ -15,6 +17,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      flag: false,
       steps: [
         {
           text: '步骤一',

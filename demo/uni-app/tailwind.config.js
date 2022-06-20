@@ -4,7 +4,7 @@ module.exports = {
   purge: {
     content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx,wxml}']
   },
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media', // or 'media' or 'class'
   theme: {
     extend: {}
   },
