@@ -1,6 +1,6 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
-import { variableMatch, variableRegExp, tagWithClassRegexp } from '@/reg'
+import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
 import type { RawSource } from '@/types'
 
 export function generateCode (match: string) {
@@ -70,7 +70,10 @@ export function templeteReplacer (original: string) {
 }
 
 export function templeteHandler (rawSource: string) {
-  return rawSource.replace(tagWithClassRegexp, (m, tagName, className) => {
-    return m.replace(className, templeteReplacer(className))
+  return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0, ...args) => {
+    console.log(args)
+    return m0.replace(vueTemplateClassRegexp, (m1, className) => {
+      return m1.replace(className, templeteReplacer(className))
+    })
   })
 }

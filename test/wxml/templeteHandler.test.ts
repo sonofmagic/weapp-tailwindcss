@@ -9,6 +9,12 @@ describe('templeteHandler', () => {
     expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
   })
 
+  test('dark mode and hover-class', () => {
+    const testCase = '<view class="bg-gray-100 dark:bg-zinc-800" hover-class="bg-red-500 dark:bg-green-500"></view>'
+    const str = templeteHandler(testCase)
+    expect(str).toBe('<view class="bg-gray-100 dark_c_bg-zinc-800" hover-class="bg-red-500 dark_c_bg-green-500"></view>')
+  })
+
   it('wxs should be ignored ', () => {
     const testCase = `<wxs module="status">
     function get(index, active) {
