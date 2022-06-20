@@ -1,8 +1,9 @@
 <template>
   <view class="content">
+    <view>当前系统主题:{{ themeRef }}</view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
-    <view class="text-[22px]">text-[22px]</view>
+    <view class="text-[22px] dark:text-yellow-400">text-[22px]</view>
     <view class="text-[#bada55]">text-[#bada55]</view>
     <view class="text-[var(--my-var)]">text-[var(--my-var)]</view>
     <div class="text-[length:var(--my-var)]">...</div>
@@ -52,7 +53,7 @@
 
 <script setup lang="ts">
 import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
-import { ref } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 const title = ref('测试标题');
 const flag = ref(true);
 
@@ -70,6 +71,15 @@ const go2SubDemo = () => {
     url: '/subs/demo/pages/index',
   });
 };
+const themeRef = ref(uni.getSystemInfoSync().theme);
+
+uni.onThemeChange(({ theme }: { theme: 'dark' | 'light' }) => {
+  themeRef.value = theme;
+});
+
+onBeforeUnmount(() => {
+  uni.offThemeChange(() => {});
+});
 </script>
 
 <style lang="scss">
