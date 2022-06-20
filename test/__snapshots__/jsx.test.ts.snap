@@ -432,7 +432,9 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
         staticClass: \\"bg-_l__h_ffffff_r_ dark_c_bg-_l__h_000000_r_ h-10 w-10\\",
         class: _vm.flag ? \\"text-_l_50px_r_\\" : \\"text-_l_100rpx_r_\\",
         attrs: {
-          \\"hover-class\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\"
+          \\"data-uauaua\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\",
+          \\"hover-class\\": \\"bg-_l__h_eeeeee_r_ dark_c_bg-_l__h_111111_r_\\",
+          \\"data-id\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\"
         }
       })]);
     };

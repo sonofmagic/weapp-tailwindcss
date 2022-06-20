@@ -18,24 +18,22 @@ function reactMatcher (node: UserMatchNode) {
   return node.key.name === 'className' || node.key.name === 'hoverClass'
 }
 
-function vue2Matcher (node: UserMatchNode) {
+function vue2Matcher (node: UserMatchNode): [boolean, UserMatchNode] {
   // 应该获取指定的节点开始匹配而不是整个 attrs 节点
   if (node.key.name === 'attrs' && node.type === 'ObjectProperty') {
     if (node.value.type === 'ObjectExpression' && Array.isArray(node.value.properties)) {
       const idx = node.value.properties.findIndex((x) => {
         return x.type === 'ObjectProperty' && x.key.type === 'StringLiteral' && x.key.value === 'hover-class'
       })
-      return idx > -1
+      if (idx > -1) {
+        return [true, node.value.properties[idx] as UserMatchNode]
+      } else {
+        return [false, node]
+      }
     }
-    return false
-
-    // if (Array.isArray(node.value.properties)) {
-    //   node.value.properties.forEach((prop) => {})
-    //   return true
-    // }
-    // return false
+    return [false, node]
   }
-  return node.key.name === 'class' || node.key.name === 'staticClass' // || node.key.name === 'hover-class'
+  return [node.key.name === 'class' || node.key.name === 'staticClass', node] // || node.key.name === 'hover-class'
 }
 
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
@@ -61,18 +59,25 @@ export function createReplacer (framework: string = 'react'): Replacer {
   if (isVue2) {
     const replacer = (path: NodePath<Node>) => {
       // vue2
-      if (isSpecNode(path.node) && vue2Matcher(path.node as UserMatchNode)) {
-        return start(path.node)
+      if (isSpecNode(path.node)) {
+        const [result, node] = vue2Matcher(path.node as UserMatchNode)
+        if (result) {
+          return start(node)
+        }
       }
 
       if (startFlag) {
-        if ((path.node.start as number) > ((classObjectNode as Node).end as number)) {
+        const nodeStart = path.node.start as number
+        const refNode = classObjectNode as Node
+        if (nodeStart > (refNode.end as number)) {
           return end()
         }
-        if (path.node.type === 'StringLiteral') {
-          // TODO
-          // 现在这样是有个问题的,变量中用户使用了 'a/s' 就会产生破坏效果
-          path.node.value = replaceWxml(path.node.value, true)
+        if (nodeStart >= (refNode.start as number)) {
+          if (path.node.type === 'StringLiteral') {
+            // TODO
+            // 现在这样是有个问题的,变量中用户使用了 'a/s' 就会产生破坏效果
+            path.node.value = replaceWxml(path.node.value, true)
+          }
         }
       }
     }

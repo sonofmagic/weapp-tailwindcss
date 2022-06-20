@@ -82,7 +82,7 @@
       _c("view", {
         staticClass: "bg-[#ffffff] dark:bg-[#000000] h-10 w-10",
         class: _vm.flag ? "text-[50px]" : "text-[100rpx]",
-        attrs: { "hover-class": "bg-[#eeeeee] dark:bg-[#111111]" },
+        attrs: {"data-uauaua":"bg-[#eeeeee] dark:bg-[#111111]", "hover-class": "bg-[#eeeeee] dark:bg-[#111111]","data-id":"bg-[#eeeeee] dark:bg-[#111111]" },
       }),
     ])
   }
