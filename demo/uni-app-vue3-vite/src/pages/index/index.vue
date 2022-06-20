@@ -1,6 +1,7 @@
 <template>
   <view class="content">
     <view>当前系统主题:{{ themeRef }}</view>
+    <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
     <view class="text-[22px] dark:text-yellow-400">text-[22px]</view>

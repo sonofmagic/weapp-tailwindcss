@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
-import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
-// import vwt from '../../vite';
-// import postcssWeappTailwindcssRename from '../../postcss';
+// import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
+// import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
+import vwt from '../../vite';
+import postcssWeappTailwindcssRename from '../../postcss';
 // console.log(process.env.UNI_PLATFORM);
 
 const isH5 = process.env.UNI_PLATFORM === 'h5';

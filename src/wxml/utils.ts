@@ -70,8 +70,7 @@ export function templeteReplacer (original: string) {
 }
 
 export function templeteHandler (rawSource: string) {
-  return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0, ...args) => {
-    console.log(args)
+  return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
     return m0.replace(vueTemplateClassRegexp, (m1, className) => {
       return m1.replace(className, templeteReplacer(className))
     })
