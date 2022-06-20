@@ -112,9 +112,15 @@ export function createReplacer (framework: string = 'react'): Replacer {
       //   })
       // }
       // TODO
+      // 性能很差，为什么要这么写主要原因是 vue3 里面有 createElementVNode 动态的节点和 createStaticVNode 静态的节点
+      // 动态的，按照 ObjectProperty 的方式匹配就可以
+      // 但是静态的，本身就是一大堆的字符串，很难找到规律，下面的做法是通杀的方式，利用正则匹配 tag 标签。
+
+      // createStaticVNode
       if (path.node.type === 'StringLiteral') {
         path.node.value = templeteHandler(path.node.value)
       }
+      // createElementVNode
       if (isVue3SpecNode(path.node) && vue3Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }
