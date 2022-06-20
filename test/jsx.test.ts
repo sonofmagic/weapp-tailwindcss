@@ -48,6 +48,13 @@ describe('jsxHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
+  test('vue2-hover-class.js', async () => {
+    const item = await getCase('vue2-hover-class.js')
+    const { code } = jsxHandler(item, vue2Replacer)
+
+    expect(code).toMatchSnapshot()
+  })
+
   it('vue3-createStaticVNode.js', async () => {
     const item = await getCase('vue3-createStaticVNode.js')
     const vue3Replacer = createReplacer('vue3')

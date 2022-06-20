@@ -19,6 +19,22 @@ function reactMatcher (node: UserMatchNode) {
 }
 
 function vue2Matcher (node: UserMatchNode) {
+  // 应该获取指定的节点开始匹配而不是整个 attrs 节点
+  if (node.key.name === 'attrs' && node.type === 'ObjectProperty') {
+    if (node.value.type === 'ObjectExpression' && Array.isArray(node.value.properties)) {
+      const idx = node.value.properties.findIndex((x) => {
+        return x.type === 'ObjectProperty' && x.key.type === 'StringLiteral' && x.key.value === 'hover-class'
+      })
+      return idx > -1
+    }
+    return false
+
+    // if (Array.isArray(node.value.properties)) {
+    //   node.value.properties.forEach((prop) => {})
+    //   return true
+    // }
+    // return false
+  }
   return node.key.name === 'class' || node.key.name === 'staticClass' // || node.key.name === 'hover-class'
 }
 
