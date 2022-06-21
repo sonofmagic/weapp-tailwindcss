@@ -16,7 +16,9 @@ function isSpecNode (node: Node) {
 }
 
 function reactMatcher (node: UserMatchNode) {
-  return node.key.name === 'className' || node.key.name === 'hoverClass'
+  // rax ->class and className, taro 为 hoverClass remax 为 hoverClassName
+  //  node.key.name === 'class' || node.key.name === 'className' || node.key.name === 'hoverClass' || node.key.name === 'hover-class' || node.key.name === 'hoverClassName'
+  return ['className', 'hoverClass', 'hoverClassName'].includes(node.key.name)
 }
 
 function vue2Matcher (node: UserMatchNode): [boolean, UserMatchNode] {
