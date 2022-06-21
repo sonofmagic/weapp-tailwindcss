@@ -24,7 +24,7 @@
     "postcss": "7",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "tailwindcss-rem2px-preset": "^1.0.2",
-    "weapp-tailwindcss-webpack-plugin": "^1.6.4"
+    "tailwindcss-rem2px-preset": "^1.0.3",
+    "weapp-tailwindcss-webpack-plugin": "^1.6.6"
   }
 }
