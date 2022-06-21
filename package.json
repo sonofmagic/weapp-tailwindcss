@@ -130,9 +130,9 @@
     "webpack4": "npm:webpack@webpack-4"
   },
   "dependencies": {
-    "@babel/generator": "7.17.9",
-    "@babel/parser": "7.17.9",
-    "@babel/traverse": "7.17.9",
+    "@babel/generator": "7.18.2",
+    "@babel/parser": "7.18.5",
+    "@babel/traverse": "7.18.5",
     "loader-utils": "^2.0.2",
     "webpack-sources": "^3.2.3"
   }
