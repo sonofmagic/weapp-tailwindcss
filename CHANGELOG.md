@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.7 (2022-06-22)
+
+### Features
+
+- 不再锁定 `@babel/*` 的具体版本
+
+### Fixed
+
+- 修复 `remax` 版本的 `hoverClassName` 不处理的问题。(`remax`命名比较特殊)
+
 ## 1.6.6 (2022-06-21)
 
 ### Features

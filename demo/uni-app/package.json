@@ -102,10 +102,10 @@
     "sass-loader": "10",
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "tailwindcss-rem2px-preset": "^1.0.2",
+    "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^4.6.3",
     "vue-template-compiler": "^2.6.11",
-    "weapp-tailwindcss-webpack-plugin": "^1.6.4"
+    "weapp-tailwindcss-webpack-plugin": "^1.6.6"
   },
   "browserslist": [
     "Android >= 4.4",

@@ -1,15 +1,15 @@
 const automator = require('miniprogram-automator')
 const path = require('path')
 const demoDir = [
+  'uni-app/dist/build/mp-weixin',
+  'uni-app-vue3-vite/dist/build/mp-weixin',
+  'taro-app',
   'mpx-app/dist/wx',
   'native-mina',
   'rax-app/build/wechat-miniprogram',
   'remax-app',
-  'taro-app/dist',
-  'taro-vue2-app/dist',
-  'taro-vue3-app/dist',
-  'uni-app/dist/build/mp-weixin',
-  'uni-app-vue3-vite/dist/build/mp-weixin'
+  'taro-vue2-app',
+  'taro-vue3-app'
 ]
 
 async function main () {
@@ -21,7 +21,7 @@ async function main () {
     const projectPath = projectPaths[index]
     await automator
       .launch({
-        // cliPath: 'D:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
+        cliPath: 'D:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
         projectPath
       })
       .then(async (miniProgram) => {

@@ -16,7 +16,9 @@ function isSpecNode (node: Node) {
 }
 
 function reactMatcher (node: UserMatchNode) {
-  return node.key.name === 'className' || node.key.name === 'hoverClass'
+  // rax ->class and className, taro 为 hoverClass remax 为 hoverClassName
+  //  node.key.name === 'class' || node.key.name === 'className' || node.key.name === 'hoverClass' || node.key.name === 'hover-class' || node.key.name === 'hoverClassName'
+  return ['className', 'hoverClass', 'hoverClassName'].includes(node.key.name)
 }
 
 function vue2Matcher (node: UserMatchNode): [boolean, UserMatchNode] {
@@ -112,9 +114,15 @@ export function createReplacer (framework: string = 'react'): Replacer {
       //   })
       // }
       // TODO
+      // 性能很差，为什么要这么写主要原因是 vue3 里面有 createElementVNode 动态的节点和 createStaticVNode 静态的节点
+      // 动态的，按照 ObjectProperty 的方式匹配就可以
+      // 但是静态的，本身就是一大堆的字符串，很难找到规律，下面的做法是通杀的方式，利用正则匹配 tag 标签。
+
+      // createStaticVNode
       if (path.node.type === 'StringLiteral') {
         path.node.value = templeteHandler(path.node.value)
       }
+      // createElementVNode
       if (isVue3SpecNode(path.node) && vue3Matcher(path.node as UserMatchNode)) {
         return start(path.node)
       }

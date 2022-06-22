@@ -7324,10 +7324,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmmirror.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tailwindcss-rem2px-preset@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.2.tgz#4068e7796ed71c502f88fccea6311c5156c792ca"
-  integrity sha512-/bzCXwhD461eq/ck9Et48L+9CYrssrAFMZ2gLiUQ1pJx6AvE/eTf5D796sFiybwdeIpeb31RKWujev694Dg/Xw==
+tailwindcss-rem2px-preset@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
+  integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
 "tailwindcss@npm:@tailwindcss/postcss7-compat":
   version "2.2.17"
@@ -7731,10 +7731,10 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-weapp-tailwindcss-webpack-plugin@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.4.tgz#b6a4b94831e60fab126df0209b957a69d1c58190"
-  integrity sha512-zuy2YPV/kDSpZDiYkQF7ZAkshZMAaweLQNRMvJUhqs1q0PaKAydDywvtn19VPPUzM9EiM77QBmh9lb/dcNAaSQ==
+weapp-tailwindcss-webpack-plugin@^1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.6.tgz#2620e229b99a667364799233de5d2e7d45160718"
+  integrity sha512-zyDB+eYREPOthar20sxaPvYqz7ECaRV0RVdqFKuNQ66Ha5gSOyDzNWN7pr6d2QJSnv3xdOYEmIIuJXxMXhrgfA==
   dependencies:
     "@babel/generator" "7.17.9"
     "@babel/parser" "7.17.9"
