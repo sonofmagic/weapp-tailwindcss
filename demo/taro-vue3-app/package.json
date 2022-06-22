@@ -64,6 +64,6 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^4.7.4",
     "vue-loader": "^17.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.6.6"
+    "weapp-tailwindcss-webpack-plugin": "^1.6.7"
   }
 }
