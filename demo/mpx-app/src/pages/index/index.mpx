@@ -1,5 +1,6 @@
 <template>
   <view class="container">
+    <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 dark:bg-[#487512]"></view>
     <!-- <view bindtap="bindViewTap">
       <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
     </view>

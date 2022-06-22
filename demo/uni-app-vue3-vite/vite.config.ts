@@ -40,6 +40,7 @@ export default defineConfig({
       plugins: postcssPlugins,
     },
   },
+
   // 假如 postcss.config.js 不起作用，请使用内联 postcss
   // css: {
   //   postcss: {
