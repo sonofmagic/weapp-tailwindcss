@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
+    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@tarojs/mini-runner": "3.4.1",
     "@tarojs/webpack-runner": "3.4.1",
     "@types/webpack-env": "^1.13.6",

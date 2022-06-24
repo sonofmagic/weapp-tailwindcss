@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
+    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@tarojs/mini-runner": "3.4.10",
     "@tarojs/plugin-framework-react": "^3.4.10",
     "@tarojs/webpack-runner": "3.4.10",
