@@ -1,5 +1,5 @@
 {
-  "name": "weapp-tailwindcss-test-components",
+  "name": "@icebreakers/weapp-tailwindcss-test-components",
   "version": "0.0.1",
   "description": "",
   "scripts": {
@@ -7,5 +7,20 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "files": [
+    "tarojs",
+    "vue2",
+    "vue3"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "license": "ISC",
+  "optionalDependencies": {
+    "@tarojs/components": "^3.4.12",
+    "react": "^17.0.0",
+    "vue": "^2.0.0 || ^3.0.0",
+    "weapp-tailwindcss-webpack-plugin": "latest"
+  }
 }
