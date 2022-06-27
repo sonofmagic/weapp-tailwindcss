@@ -992,10 +992,10 @@
   resolved "https://registry.npmmirror.com/@tsconfig/recommended/-/recommended-1.0.1.tgz#7619bad397e06ead1c5182926c944e0ca6177f52"
   integrity sha512-2xN+iGTbPBEzGSnVp/Hd64vKJCJWxsi9gfs88x4PPMyEjHJoA3o5BY9r5OLPHIZU2pAQxkSAsJFqn6itClP8mQ==
 
-"@tsd/typescript@~4.6.3":
-  version "4.6.4"
-  resolved "https://registry.npmmirror.com/@tsd/typescript/-/typescript-4.6.4.tgz#2d49c111c32d15651c9ebe0e6f19a5df04d53f5f"
-  integrity sha512-+9o716aWbcjKLbV4bCrGlJKJbS0UZNogfVk9U7ffooYSf/9GOJ6wwahTSrRjW7mWQdywQ/sIg9xxbuPLnkmhwg==
+"@tsd/typescript@~4.7.3":
+  version "4.7.4"
+  resolved "https://registry.npmmirror.com/@tsd/typescript/-/typescript-4.7.4.tgz#f1e4e6c3099a174a0cb7aa51cf53f34f6494e528"
+  integrity sha512-jbtC+RgKZ9Kk65zuRZbKLTACf+tvFW4Rfq0JEMXrlmV3P3yme+Hm+pnb5fJRyt61SjIitcrC810wj7+1tgsEmg==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.19"
@@ -7000,12 +7000,12 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tsd@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.npmmirror.com/tsd/-/tsd-0.20.0.tgz#0346321ee3c506545486227e488e753109164248"
-  integrity sha512-iba/JlyT3qtnA9t8VrX2Fipu3L31U48oRIf1PNs+lIwQ7n63GTkt9eQlB5bLtfb7nYfy9t8oZzs+K4QEoEIS8Q==
+tsd@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.npmmirror.com/tsd/-/tsd-0.21.0.tgz#fb1a1aa022cfb4a6d1065bb569687e8ac8f72daf"
+  integrity sha512-6DugCw1Q4H8HYwDT3itzgALjeDxN4RO3iqu7gRdC/YNVSCRSGXRGQRRasftL1uKDuKxlFffYKHv5j5G7YnKGxQ==
   dependencies:
-    "@tsd/typescript" "~4.6.3"
+    "@tsd/typescript" "~4.7.3"
     eslint-formatter-pretty "^4.1.0"
     globby "^11.0.1"
     meow "^9.0.0"
