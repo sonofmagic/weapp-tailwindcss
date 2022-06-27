@@ -2,9 +2,9 @@ import typescript from '@rollup/plugin-typescript'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
-import { terser } from 'rollup-plugin-terser'
+// import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
-const isProd = process.env.NODE_ENV === 'production'
+// const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 
 /** @type {import('rollup').RollupOptions } */
@@ -16,13 +16,13 @@ const sharedConfig = {
     }),
     commonjs(),
     typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
-
   ],
   external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
 }
-if (isProd) {
-  sharedConfig.plugins.push(terser())
-}
+// 没有必要压缩徒增调试成本
+// if (isProd) {
+//   sharedConfig.plugins.push(terser())
+// }
 
 /** @type {Array<import('rollup').RollupOptions> } */
 const config = [
