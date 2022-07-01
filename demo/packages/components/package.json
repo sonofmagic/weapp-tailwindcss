@@ -18,9 +18,9 @@
   },
   "license": "ISC",
   "optionalDependencies": {
-    "@tarojs/components": "^3.4.12",
+    "@tarojs/components": "^3.4.13",
     "react": "^17.0.0",
     "vue": "^2.0.0 || ^3.0.0",
-    "weapp-tailwindcss-webpack-plugin": "latest"
+    "weapp-tailwindcss-webpack-plugin": "1.6.8"
   }
 }

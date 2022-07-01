@@ -6,7 +6,7 @@ import { mpRulePreflight, commonChunkPreflight } from './mp'
 const isMp = true
 export function styleHandler (rawSource: string, options: StyleHandlerOptions) {
   const root = postcss.parse(rawSource)
-  const { cssInjectPreflight, isMainChunk, customRuleCallback } = options
+  const { isMainChunk, customRuleCallback } = options
   const flag = typeof customRuleCallback === 'function'
   root.walk((node, idx) => {
     if (node.type === 'rule') {
@@ -15,15 +15,11 @@ export function styleHandler (rawSource: string, options: StyleHandlerOptions) {
         // uni-app common-> main.wxss
         // taro app.wxss
         if (isMainChunk) {
-          commonChunkPreflight(node, cssInjectPreflight)
+          commonChunkPreflight(node, options)
         }
         mpRulePreflight(node)
 
-        flag &&
-          customRuleCallback(node, {
-            cssInjectPreflight,
-            isMainChunk
-          })
+        flag && customRuleCallback(node, options)
       }
     }
     //  else if (node.type === 'atrule') {

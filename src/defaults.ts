@@ -46,6 +46,7 @@ export const defaultOptions: Required<UserDefinedOptions> = {
     'border-style': 'solid',
     'border-color': 'currentColor'
   },
+  cssPreflightRange: 'view',
   customRuleCallback: noop,
   onLoad: noop,
   onStart: noop,

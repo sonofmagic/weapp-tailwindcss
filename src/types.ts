@@ -18,6 +18,7 @@ export type CssPreflightOptions =
 type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight: InjectPreflight
+  cssPreflightRange: 'view' | 'all'
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
@@ -49,6 +50,12 @@ export interface UserDefinedOptions {
    * 用于处理 postcss 的预设
    */
   cssPreflight?: CssPreflightOptions
+
+  /**
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62
+   * 用于处理 postcss 的预设 global 选择器的返回
+   */
+  cssPreflightRange?: 'view' | 'all'
 
   /**
    * 用于自定义处理 css 的回调函数

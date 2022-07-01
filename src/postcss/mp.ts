@@ -1,6 +1,6 @@
 import type { Rule, AtRule } from 'postcss'
 import { cssSelectorReplacer } from './shared'
-
+import type { StyleHandlerOptions } from '@/types'
 import type { InjectPreflight } from './preflight'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
@@ -15,16 +15,24 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 // :not([hidden]) ~ :not([hidden])
 // const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
 
-export function commonChunkPreflight (node: Rule, cssInjectPreflight: InjectPreflight) {
+export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view').replace(/\*/g, 'view')
 
   // 变量注入和 preflight
   if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
     const selectorParts = node.selector.split(',')
-    if (!selectorParts.includes(':not(not)')) {
-      selectorParts.push(':not(not)')
-      node.selector = selectorParts.join(',')
+    // 没有 view 元素时，添加 view
+    if (!selectorParts.includes('view')) {
+      selectorParts.push('view')
     }
+    if (options.cssPreflightRange === 'all') {
+      // 默认对每个元素都生效
+      if (!selectorParts.includes(':not(not)')) {
+        selectorParts.push(':not(not)')
+      }
+    }
+
+    node.selector = selectorParts.join(',')
 
     // node.walkDecls((decl) => {
     //   // remove empty var 来避免压缩css报错
@@ -35,8 +43,8 @@ export function commonChunkPreflight (node: Rule, cssInjectPreflight: InjectPref
     // })
 
     // preset
-    if (typeof cssInjectPreflight === 'function') {
-      node.append(...cssInjectPreflight())
+    if (typeof options.cssInjectPreflight === 'function') {
+      node.append(...options.cssInjectPreflight())
     }
   }
 }

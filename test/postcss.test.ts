@@ -15,7 +15,9 @@ describe('first', () => {
     const testCase = await getCase('media1.css')
     const result = styleHandler(testCase, {
       isMainChunk: true,
-      cssInjectPreflight
+      cssInjectPreflight,
+      cssPreflightRange: opt.cssPreflightRange,
+      customRuleCallback: opt.customRuleCallback
     })
     // const expected = await getCase('media1.result.css')
     // await putCase('media1.result.css', result)
@@ -40,7 +42,9 @@ describe('first', () => {
     const testCase = await getCase('taro.build.css')
     const result = styleHandler(testCase, {
       isMainChunk: true,
-      cssInjectPreflight
+      cssInjectPreflight,
+      cssPreflightRange: opt.cssPreflightRange,
+      customRuleCallback: opt.customRuleCallback
     })
     // const expected = await getCase('taro.build.result.css')
     // await putCase('taro.build.result.css', result)
@@ -67,7 +71,8 @@ describe('first', () => {
         //       .replace(/::before/, 'view::before') // 'view,view::before,view::after'
         //   }
         // }
-      }
+      },
+      cssPreflightRange: opt.cssPreflightRange
     })
     // const expected = await getCase('kbone1.result.css')
     // await putCase('kbone1.result.css', result)
@@ -79,7 +84,9 @@ describe('first', () => {
     const testCase = '::before,::after{}'
     const result = styleHandler(testCase, {
       isMainChunk: true,
-      cssInjectPreflight: () => []
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {}
     })
     expect(result).toBe('::before,::after,view{}')
   })
@@ -99,5 +106,27 @@ describe('first', () => {
     const testCase = ".before\\:content-\\[\\'hello\\'\\]::before"
     const result = replaceCss(testCase)
     expect(result).toBe('.before_c_content-_l__y_hello_y__r_::before')
+  })
+
+  it('cssPreflightRange option view', () => {
+    const testCase = '::before,::after{}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {}
+    })
+    expect(result).toBe('::before,::after,view{}')
+  })
+
+  it('cssPreflightRange option all', () => {
+    const testCase = '::before,::after{}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'all',
+      customRuleCallback: () => {}
+    })
+    expect(result).toBe('::before,::after,view,:not(not){}')
   })
 })
