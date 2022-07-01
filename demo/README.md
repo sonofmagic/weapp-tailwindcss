@@ -12,3 +12,11 @@ const { UniAppWeappTailwindcssWebpackPluginV4 } = require('weapp-tailwindcss-web
 ```
 
 这样就能够顺利的跑起来了。
+
+---
+
+最近我把 `demo` 文件夹，变成了一个 `monorepo` 来控制所有的子项目。
+
+运行需要在当前目录，执行 `yarn`，这样就会把所有 `sub repo` 的 `npm`包安装好。
+
+如果出现运行报错的问题，你可以把对应的 `demo` 项目 `copy` 出来单独运行，比如这个 [issue#63](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/63)

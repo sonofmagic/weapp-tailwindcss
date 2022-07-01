@@ -36,7 +36,8 @@
     "debug:web": "cd demo/web && yarn dev",
     "raw": "ts-node scripts/raw",
     "demo:install": "cd demo && yarn",
-    "demo:build": "node scripts/demo/build.js",
+    "demo:dev": "cd demo && yarn dev",
+    "demo:build": "cd demo && yarn build",
     "demo:e2e": "node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js"
   },

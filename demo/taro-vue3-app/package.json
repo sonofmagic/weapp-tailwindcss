@@ -45,6 +45,7 @@
     "vue": "^3.2.37"
   },
   "devDependencies": {
+    "@tarojs/cli": "3.4.13",
     "@babel/core": "^7.18.6",
     "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@tarojs/mini-runner": "3.4.13",
