@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.6.8 (2022-07-01)
+
+- 添加 `cssPreflightRange` 配置项 [pull/62](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62)，用来限制全局选择器影响的 `dom` 范围，从而增加或者减少  `cssPreflight` 注入的 `dom`，具体的使用方式见 `README.md`
+
 ## 1.6.7 (2022-06-22)
 
 ### Features
