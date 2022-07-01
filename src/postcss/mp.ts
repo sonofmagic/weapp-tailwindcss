@@ -21,8 +21,8 @@ export function commonChunkPreflight (node: Rule, cssInjectPreflight: InjectPref
   // 变量注入和 preflight
   if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
     const selectorParts = node.selector.split(',')
-    if (!selectorParts.includes('view')) {
-      selectorParts.push('view')
+    if (!selectorParts.includes(':not(not)')) {
+      selectorParts.push(':not(not)')
       node.selector = selectorParts.join(',')
     }
 
