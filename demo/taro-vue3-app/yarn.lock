@@ -73,16 +73,7 @@
     eslint-visitor-keys "^2.1.0"
     semver "^6.3.0"
 
-"@babel/generator@7.17.9":
-  version "7.17.9"
-  resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.17.9.tgz#f4af9fd38fa8de143c29fce3f71852406fc1e2fc"
-  integrity sha512-rAdDousTwxbIxbz5I7GEQ3lUip+xVCXooZNbsydCWs3xA7ZsYOv+CFRdzGxRX78BmQHu9B1Eso59AOZQOJDEdQ==
-  dependencies:
-    "@babel/types" "^7.17.0"
-    jsesc "^2.5.1"
-    source-map "^0.5.0"
-
-"@babel/generator@^7.17.9", "@babel/generator@^7.18.2":
+"@babel/generator@7.18.2", "@babel/generator@^7.18.2":
   version "7.18.2"
   resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.18.2.tgz#33873d6f89b21efe2da63fe554460f3df1c5880d"
   integrity sha512-W1lG5vUwFvfMd8HVXqdfbuG7RuaSrTCCD8cl8fP8wOivdbtbIg2Db3IWUcgvfxKbbn6ZBGYRW/Zk1MIwK49mgw==
@@ -297,20 +288,15 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.17.9":
-  version "7.17.9"
-  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.17.9.tgz#9c94189a6062f0291418ca021077983058e171ef"
-  integrity sha512-vqUSBLP8dQHFPdPi9bc5GK9vRkYHJ49fsZdtoJ8EQ8ibpwk5rPKfvNIwChB0KVXcIjcepEBBd2VHC5r9Gy8ueg==
-
-"@babel/parser@^7.16.4", "@babel/parser@^7.16.7", "@babel/parser@^7.17.9", "@babel/parser@^7.18.0":
-  version "7.18.4"
-  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.18.4.tgz#6774231779dd700e0af29f6ad8d479582d7ce5ef"
-  integrity sha512-FDge0dFazETFcxGw/EXzOkN8uJp0PC7Qbm+Pe9T+av2zlBpOgunFHkQPPn+eRuClU73JF+98D531UgayY89tow==
-
-"@babel/parser@^7.18.5":
+"@babel/parser@7.18.5", "@babel/parser@^7.18.5":
   version "7.18.5"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.18.5.tgz#337062363436a893a2d22faa60be5bb37091c83c"
   integrity sha512-YZWVaglMiplo7v8f1oMQ5ZPQr0vn7HPeZXxXWsxXJRjGVrzUFn9OxFQl1sb5wzfootjA/yChhW84BV+383FSOw==
+
+"@babel/parser@^7.16.4", "@babel/parser@^7.16.7", "@babel/parser@^7.18.0":
+  version "7.18.4"
+  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.18.4.tgz#6774231779dd700e0af29f6ad8d479582d7ce5ef"
+  integrity sha512-FDge0dFazETFcxGw/EXzOkN8uJp0PC7Qbm+Pe9T+av2zlBpOgunFHkQPPn+eRuClU73JF+98D531UgayY89tow==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.17.12":
   version "7.17.12"
@@ -1099,19 +1085,19 @@
     "@babel/parser" "^7.16.7"
     "@babel/types" "^7.16.7"
 
-"@babel/traverse@7.17.9":
-  version "7.17.9"
-  resolved "https://registry.npmmirror.com/@babel/traverse/-/traverse-7.17.9.tgz#1f9b207435d9ae4a8ed6998b2b82300d83c37a0d"
-  integrity sha512-PQO8sDIJ8SIwipTPiR71kJQCKQYB5NGImbOviK8K+kg5xkNSYXLBupuX9QhatFowrsvo9Hj8WgArg3W7ijNAQw==
+"@babel/traverse@7.18.5", "@babel/traverse@^7.18.5":
+  version "7.18.5"
+  resolved "https://registry.npmmirror.com/@babel/traverse/-/traverse-7.18.5.tgz#94a8195ad9642801837988ab77f36e992d9a20cd"
+  integrity sha512-aKXj1KT66sBj0vVzk6rEeAO6Z9aiiQ68wfDgge3nHhA/my6xMM/7HGQUNumKZaoa2qUPQ5whJG9aAifsxUKfLA==
   dependencies:
     "@babel/code-frame" "^7.16.7"
-    "@babel/generator" "^7.17.9"
-    "@babel/helper-environment-visitor" "^7.16.7"
+    "@babel/generator" "^7.18.2"
+    "@babel/helper-environment-visitor" "^7.18.2"
     "@babel/helper-function-name" "^7.17.9"
     "@babel/helper-hoist-variables" "^7.16.7"
     "@babel/helper-split-export-declaration" "^7.16.7"
-    "@babel/parser" "^7.17.9"
-    "@babel/types" "^7.17.0"
+    "@babel/parser" "^7.18.5"
+    "@babel/types" "^7.18.4"
     debug "^4.1.0"
     globals "^11.1.0"
 
@@ -1128,22 +1114,6 @@
     "@babel/helper-split-export-declaration" "^7.16.7"
     "@babel/parser" "^7.18.0"
     "@babel/types" "^7.18.2"
-    debug "^4.1.0"
-    globals "^11.1.0"
-
-"@babel/traverse@^7.18.5":
-  version "7.18.5"
-  resolved "https://registry.npmmirror.com/@babel/traverse/-/traverse-7.18.5.tgz#94a8195ad9642801837988ab77f36e992d9a20cd"
-  integrity sha512-aKXj1KT66sBj0vVzk6rEeAO6Z9aiiQ68wfDgge3nHhA/my6xMM/7HGQUNumKZaoa2qUPQ5whJG9aAifsxUKfLA==
-  dependencies:
-    "@babel/code-frame" "^7.16.7"
-    "@babel/generator" "^7.18.2"
-    "@babel/helper-environment-visitor" "^7.18.2"
-    "@babel/helper-function-name" "^7.17.9"
-    "@babel/helper-hoist-variables" "^7.16.7"
-    "@babel/helper-split-export-declaration" "^7.16.7"
-    "@babel/parser" "^7.18.5"
-    "@babel/types" "^7.18.4"
     debug "^4.1.0"
     globals "^11.1.0"
 
@@ -1205,6 +1175,16 @@
   version "1.2.1"
   resolved "https://registry.npmmirror.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
+
+"@icebreakers/weapp-tailwindcss-test-components@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@icebreakers/weapp-tailwindcss-test-components/-/weapp-tailwindcss-test-components-0.0.1.tgz#1b94bd1140998ae616ff35951605e03823ae267e"
+  integrity sha512-RIQG6j7uyUlVu+AOodYcJR3m04/qNCqKaDfeVogb4A9RuxtgTRJxV7kuQ+wu0eDeJBIOBBbqTbRTZoRHZ2k2mg==
+  optionalDependencies:
+    "@tarojs/components" "^3.4.12"
+    react "^17.0.0"
+    vue "^2.0.0 || ^3.0.0"
+    weapp-tailwindcss-webpack-plugin latest
 
 "@jridgewell/gen-mapping@^0.1.0":
   version "0.1.1"
@@ -1318,7 +1298,7 @@
     "@babel/runtime" "^7.14.5"
     "@tarojs/runtime" "3.4.12"
 
-"@tarojs/components@3.4.12":
+"@tarojs/components@3.4.12", "@tarojs/components@^3.4.12":
   version "3.4.12"
   resolved "https://registry.npmmirror.com/@tarojs/components/-/components-3.4.12.tgz#345a73302d878f4f6d07ccf57dc51fb7c28fbc6f"
   integrity sha512-1VyNoYzCQlWA16hf8oO+RmVe41wBjejrM0FH9lLoXG3YVlOHCJrlHFK76ndJGbFwwuooWGT8nyEdDpSPq2J/+A==
@@ -7576,6 +7556,14 @@ react-refresh@^0.4.0:
   resolved "https://registry.npmmirror.com/react-refresh/-/react-refresh-0.4.3.tgz#966f1750c191672e76e16c2efa569150cc73ab53"
   integrity sha512-Hwln1VNuGl/6bVwnd0Xdn1e84gT/8T9aYNL+HAKDArLCS7LWjwr7StE30IEYbIkx0Vi3vs+coQxe+SQDbGbbpA==
 
+react@^17.0.0:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
 read-cache@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/read-cache/-/read-cache-1.0.0.tgz#e664ef31161166c9751cdbe8dbcf86b5fb58f774"
@@ -8333,7 +8321,7 @@ source-map@0.6.1, source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, sourc
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-source-map@^0.5.0, source-map@^0.5.3, source-map@^0.5.6:
+source-map@^0.5.3, source-map@^0.5.6:
   version "0.5.7"
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==
@@ -9257,7 +9245,7 @@ vue-loader@^17.0.0:
     hash-sum "^2.0.0"
     loader-utils "^2.0.0"
 
-vue@^3.2.37:
+"vue@^2.0.0 || ^3.0.0", vue@^3.2.37:
   version "3.2.37"
   resolved "https://registry.npmmirror.com/vue/-/vue-3.2.37.tgz#da220ccb618d78579d25b06c7c21498ca4e5452e"
   integrity sha512-bOKEZxrm8Eh+fveCqS1/NkG/n6aMidsI6hahas7pa0w/l7jkbssJVsRhVDs07IdDq7h9KHswZOgItnwJAgtVtQ==
@@ -9314,14 +9302,14 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weapp-tailwindcss-webpack-plugin@^1.6.6:
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.6.tgz#2620e229b99a667364799233de5d2e7d45160718"
-  integrity sha512-zyDB+eYREPOthar20sxaPvYqz7ECaRV0RVdqFKuNQ66Ha5gSOyDzNWN7pr6d2QJSnv3xdOYEmIIuJXxMXhrgfA==
+weapp-tailwindcss-webpack-plugin@^1.6.7, weapp-tailwindcss-webpack-plugin@latest:
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.6.7.tgz#7c67444d7498fc292e6369ce0558e4617ba71ec6"
+  integrity sha512-9EJyR01kxWd13KlyaYqmAmqHJ8kdbUcx/+Qh0Tt6v1qWsOtGVETv883OyZt8kdGMU1OkvjG2aUOKLwciovsZRg==
   dependencies:
-    "@babel/generator" "7.17.9"
-    "@babel/parser" "7.17.9"
-    "@babel/traverse" "7.17.9"
+    "@babel/generator" "7.18.2"
+    "@babel/parser" "7.18.5"
+    "@babel/traverse" "7.18.5"
     loader-utils "^2.0.2"
     webpack-sources "^3.2.3"
 

@@ -19,12 +19,13 @@
     "remax": "^2.9.1"
   },
   "devDependencies": {
+    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "autoprefixer": "9",
     "cross-env": "^7.0.2",
     "postcss": "7",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "tailwindcss-rem2px-preset": "^1.0.3",
-    "weapp-tailwindcss-webpack-plugin": "^1.6.6"
+    "weapp-tailwindcss-webpack-plugin": "^1.6.7"
   }
 }

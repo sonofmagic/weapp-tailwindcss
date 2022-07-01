@@ -19,6 +19,10 @@ const sharedConfig = {
   ],
   external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
 }
+// 没有必要压缩徒增调试成本
+// if (isProd) {
+//   sharedConfig.plugins.push(terser())
+// }
 
 /** @type {Array<import('rollup').RollupOptions> } */
 const config = [

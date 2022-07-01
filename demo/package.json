@@ -4,8 +4,34 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "workspaces": {
+    "packages": [
+      "packages/**",
+      "native-mina",
+      "rax-app",
+      "remax-app",
+      "taro-app",
+      "taro-vue2-app",
+      "taro-vue3-app",
+      "uni-app",
+      "uni-app-vue3-vite"
+    ],
+    "nohoist": [
+      "**/react",
+      "**/@dcloudio/**",
+      "**/postcss",
+      "**/vue",
+      "**/@vue/**",
+      "**/*-loader",
+      "**/webpack",
+      "**/tailwindcss",
+      "**/@tarojs/**",
+      "**/typescript",
+      "**/*-webpack-plugin"
+    ]
+  },
   "devDependencies": {
-    "turbo": "^1.2.4"
+    "turbo": "^1.3.1"
   },
   "scripts": {
     "dev": "turbo run dev",

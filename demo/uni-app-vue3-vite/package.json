@@ -55,6 +55,7 @@
     "@dcloudio/uni-automator": "^3.0.0-alpha-3041720220614001",
     "@dcloudio/uni-cli-shared": "^3.0.0-alpha-3041720220614001",
     "@dcloudio/vite-plugin-uni": "^3.0.0-alpha-3041720220614001",
+    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
@@ -63,6 +64,6 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^4.7.3",
     "vite": "^2.9.12",
-    "weapp-tailwindcss-webpack-plugin": "^1.6.6"
+    "weapp-tailwindcss-webpack-plugin": "^1.6.7"
   }
 }
