@@ -22,14 +22,16 @@
       "**/postcss",
       "**/vue",
       "**/@vue/**",
-      "**/*-loader",
+      "*-loader/**",
       "**/webpack",
       "**/tailwindcss",
-      "**/@tarojs/**",
       "**/typescript",
       "**/*-webpack-plugin"
     ]
   },
+  "_nohoist": [
+    "**/@tarojs/**"
+  ],
   "devDependencies": {
     "turbo": "^1.3.1"
   },
