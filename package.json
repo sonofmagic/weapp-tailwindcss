@@ -35,7 +35,7 @@
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
     "raw": "ts-node scripts/raw",
-    "demo:install": "node scripts/demo/install.js",
+    "demo:install": "cd demo && yarn",
     "demo:build": "node scripts/demo/build.js",
     "demo:e2e": "node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js"
