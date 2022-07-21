@@ -1,5 +1,7 @@
 `uni-app` 的 `vue3/vite` 版本，使用了 `rollup base` 的插件，于是我们可以这样使用
 
+> 暂时不要升级到 `vite 3.x` 版本，目前 `uni-app` 并没有兼容这个版本，详见 [Release Notes](https://update.dcloud.net.cn/hbuilderx/changelog/3.5.2.20220719-alpha.html), 安装 `2.x` 版本的最新即可。(`3.x`会报`process is not defined `的错误)
+
 ## 1. 开始安装:
 
 ```bash
