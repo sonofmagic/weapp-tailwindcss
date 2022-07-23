@@ -10,7 +10,8 @@
     "eslint": "eslint --ext .js,.jsx,.tsx,.ts ./",
     "stylelint": "stylelint \"**/*.{css,scss,less}\"",
     "prettier": "prettier **/* --write",
-    "lint": "npm run eslint && npm run stylelint"
+    "lint": "npm run eslint && npm run stylelint",
+    "open": "weapp open -p build/wechat-miniprogram"
   },
   "dependencies": {
     "rax": "^1.1.0",

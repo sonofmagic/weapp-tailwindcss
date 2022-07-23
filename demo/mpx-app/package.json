@@ -15,7 +15,8 @@
     "lint": "eslint --ext .js,.ts,.mpx src/",
     "test:unit": "jest --verbose ./test/unit",
     "build:unit": "npm run build && jest --verbose ./test/unit",
-    "help": "node ./build/build.js --help"
+    "help": "node ./build/build.js --help",
+    "open": "weapp open -p dist/wx"
   },
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "ISC",

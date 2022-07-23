@@ -33,7 +33,8 @@
     "**/@tarojs/**"
   ],
   "devDependencies": {
-    "turbo": "^1.3.3"
+    "turbo": "^1.3.3",
+    "weapp-ide-cli": "^0.0.1"
   },
   "scripts": {
     "dev": "turbo run dev",

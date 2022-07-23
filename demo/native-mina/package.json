@@ -16,7 +16,8 @@
     "upload:darwin": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u $npm_package_version@$INIT_CWD",
     "upload:win32": "C:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat -u $npm_package_version@$INIT_CWD",
     "test": "jest",
-    "format": "prettier --write src/**/*.wxml"
+    "format": "prettier --write src/**/*.wxml",
+    "open": "weapp open -p"
   },
   "sideEffects": false,
   "dependencies": {
