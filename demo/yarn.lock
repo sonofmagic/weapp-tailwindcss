@@ -24399,10 +24399,10 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weapp-ide-cli@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-0.0.1.tgz#55bca4b57b500985dd879e9814730e31af1e98ef"
-  integrity sha512-hVrO5QiqlgijittNFnsPoDfrwcotYuFr7I9U4sxn3T9P0QUFjqlQk8VgzXZILsUluI7u9tZQ1eq+NTXHX8MIQw==
+weapp-ide-cli@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-0.0.2.tgz#a87784b0171a83ddb0f7091cba14f8b1fb10b11c"
+  integrity sha512-c301BJmegwxsXLYMqeAG1RI5qf9MsYKVcKP6BTMaOZsFMbBDgNW0U0uA1f7nNtgL/8abCXs76foizQWCam4aMw==
   dependencies:
     execa "5.1.1"
 

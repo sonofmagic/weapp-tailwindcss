@@ -23,6 +23,7 @@
   - [变更日志](#变更日志)
   - [常见问题](#常见问题)
   - [Related projects](#related-projects)
+    - [CLI 工具](#cli-工具)
     - [模板 template](#模板-template)
     - [预设 tailwindcss preset](#预设-tailwindcss-preset)
   - [Bugs & Issues](#bugs--issues)
@@ -136,6 +137,10 @@ cssPreflight: {
 
 
 ## Related projects
+
+### CLI 工具
+
+[weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
 
 ### 模板 template
 
