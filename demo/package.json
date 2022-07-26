@@ -34,7 +34,7 @@
   ],
   "devDependencies": {
     "turbo": "^1.3.3",
-    "weapp-ide-cli": "^0.0.1"
+    "weapp-ide-cli": "^0.0.2"
   },
   "scripts": {
     "dev": "turbo run dev",
