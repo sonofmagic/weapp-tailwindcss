@@ -17,6 +17,7 @@
     - [remax (react)](#remax-react)
     - [rax (react)](#rax-react)
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
+    - [HBuilderX 创建的项目](#hbuilderx-创建的项目)
   - [Options 配置项](#options-配置项)
   - [使用 arbitrary values](#使用-arbitrary-values)
   - [关于rem转化rpx](#关于rem转化rpx)
@@ -61,6 +62,10 @@
 ### 原生小程序(webpack5 mina)
 
 [使用方式](./docs/native-mina.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/native-mina)
+
+### HBuilderX 创建的项目
+
+[使用方式](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template#readme) | [Demo 项目](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
 
 ## Options 配置项
 
@@ -151,6 +156,8 @@ cssPreflight: {
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
 
 [weapp-native-mina-tailwindcss-template](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
+
+[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
 
 ### 预设 tailwindcss preset
 
