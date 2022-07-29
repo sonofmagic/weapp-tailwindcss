@@ -47,11 +47,13 @@ export const defaultOptions: Required<UserDefinedOptions> = {
     'border-color': 'currentColor'
   },
   cssPreflightRange: 'view',
+  disabled: false,
   customRuleCallback: noop,
   onLoad: noop,
   onStart: noop,
   onEnd: noop,
   onUpdate: noop
+  // onBeforeUpdate: noop
 }
 
 export function getOptions<T = UserDefinedOptions> (options: T) {

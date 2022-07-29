@@ -19,7 +19,10 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, cssPreflightRange, customRuleCallback, onLoad, onUpdate, onEnd, onStart } = this.options
+    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    if (disabled) {
+      return
+    }
     const { ConcatSource } = compiler.webpack.sources
     const Compilation = compiler.webpack.Compilation
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -46,13 +49,13 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)
-              onUpdate(file)
+              onUpdate(file, rawSource, css)
             } else if (htmlMatcher(file)) {
               const rawSource = originalSource.source().toString()
               const wxml = templeteHandler(rawSource)
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
-              onUpdate(file)
+              onUpdate(file, rawSource, wxml)
             }
           }
           onEnd()

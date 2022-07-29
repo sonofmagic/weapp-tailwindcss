@@ -58,6 +58,11 @@ export interface UserDefinedOptions {
   cssPreflightRange?: 'view' | 'all'
 
   /**
+   * @description 是否禁用此插件，一般用于构建到多平台时使用
+   */
+  disabled?: boolean
+
+  /**
    * 用于自定义处理 css 的回调函数
    */
   customRuleCallback?: CustomRuleCallback
@@ -71,9 +76,13 @@ export interface UserDefinedOptions {
    */
   onStart?: () => void
   /**
+   * @description 匹配成功并修改文件内容前调用
+   */
+  // onBeforeUpdate?: (filename: string, oldVal: string, newVal: string) => void
+  /**
    * @description 匹配成功并修改文件内容后调用
    */
-  onUpdate?: (filename: string) => void
+  onUpdate?: (filename: string, oldVal: string, newVal: string) => void
   /**
    * @description 结束处理时调用
    */
