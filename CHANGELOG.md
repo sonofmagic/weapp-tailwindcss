@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.9 (2022-07-29)
+
+### Features
+
+- 添加 `disabled` 配置项，用来表示是否禁用该插件，默认为 `false`，一般用于多平台构建，有些平台比如 `h5` 不需要开启此插件，所以可以根据环境变量进行禁用。  
+- `onUpdate` 这个生命周期 `hook` 增加传入参数，即编译前的 `rawSource` 和 编译后的 `newSource` 作为第二和第三个参数，用于插件调试和文件内容比较。
+
+### Docs & Demos
+
+- 添加 `HBuilderX` 创建的项目的[使用方式](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template#readme) 和 [Demo 项目](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
+
 ## 1.6.8 (2022-07-01)
 
 ### Features
