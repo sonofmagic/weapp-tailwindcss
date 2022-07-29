@@ -8,8 +8,9 @@ import { pluginName } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
 import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
+import { NS } from './common'
 import path from 'path'
-const NS = 'jsx-rename-loader'
+
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
@@ -23,7 +24,10 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, customRuleCallback, cssPreflightRange, onLoad, onUpdate, onEnd, onStart } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, customRuleCallback, cssPreflightRange, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    if (disabled) {
+      return
+    }
     // default react
     const replacer = createReplacer(framework)
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -78,7 +82,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
-          onUpdate(file)
+          onUpdate(file, rawSource, css)
         } else if (!isReact && jsMatcher(file)) {
           // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
           replacer.end()
@@ -92,7 +96,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           //   const sourceMap = new ConcatSource(JSON.stringify(map))
           //   compilation.updateAsset(sourceMapFileName, sourceMap)
           // }
-          onUpdate(file)
+          onUpdate(file, rawSource, code)
         }
       }
       onEnd()

@@ -73,4 +73,19 @@ describe('webpack5 plugin', () => {
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
+
+  it('disabled true', async () => {
+    new NativeWeappTailwindcssWebpackPluginV5({
+      mainCssChunkMatcher (name) {
+        return path.basename(name) === 'index.css'
+      },
+      disabled: true
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
 })
