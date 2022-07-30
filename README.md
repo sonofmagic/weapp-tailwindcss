@@ -65,7 +65,7 @@
 
 ### HBuilderX 创建的项目
 
-[使用方式](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template#readme) | [Demo 项目](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
+[vue2 使用方式](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template#readme) | [vue2 Demo 项目](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template) | [vue3 使用方式](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template#readme) | [vue3 Demo 项目](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
 ## Options 配置项
 
@@ -159,6 +159,8 @@ cssPreflight: {
 [weapp-native-mina-tailwindcss-template](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
 [uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
+
+[uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
 ### 预设 tailwindcss preset
 

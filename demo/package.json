@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "files": [],
   "workspaces": {
     "packages": [
       "packages/**",
@@ -33,8 +34,7 @@
     "**/@tarojs/**"
   ],
   "devDependencies": {
-    "turbo": "^1.3.3",
-    "weapp-ide-cli": "^0.0.2"
+    "turbo": "^1.3.3"
   },
   "scripts": {
     "dev": "turbo run dev",
