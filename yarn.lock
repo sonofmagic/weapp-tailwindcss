@@ -7559,7 +7559,7 @@ webpack@^5:
     watchpack "^2.3.1"
     webpack-sources "^3.2.3"
 
-webpack@^5.74.0:
+webpack@^5.0.0:
   version "5.74.0"
   resolved "https://registry.npmmirror.com/webpack/-/webpack-5.74.0.tgz#02a5dac19a17e0bb47093f2be67c695102a55980"
   integrity sha512-A2InDwnhhGN4LYctJj6M1JEaGL7Luj6LOmyBHjcI8529cm5p6VXiTIW2sn6ffvEAKmveLzvu4jrihwXtPojlAA==
