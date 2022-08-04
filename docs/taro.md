@@ -1,4 +1,6 @@
-taro 3 内置 webpack 为 `4` , postcss 为 `8`, 所以可以使用 `tailwindcss` 的 v3 版本
+`taro 3` 内置 `webpack` 为 `4` , `postcss` 为 `8`, 所以可以使用 `tailwindcss` 的 v3 版本
+
+注意! 从 `taro 3.5` 开始，内置的 `webpack` 为 `5` 了，所以需要使用 `TaroWeappTailwindcssWebpackPluginV5`! 详见 [taro/releases/tag/v3.5.0](https://github.com/NervJS/taro/releases/tag/v3.5.0)
 
 ## 1. 于是我们开始安装:
 

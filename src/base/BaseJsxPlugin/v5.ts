@@ -1,5 +1,5 @@
 // webpack 5
-import type { AppType, UserDefinedOptions } from '@/types'
+import type { AppType, TaroUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -17,16 +17,16 @@ import path from 'path'
  */
 
 export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
-  options: Required<UserDefinedOptions>
+  options: Required<TaroUserDefinedOptions>
   appType: AppType
   static NS = NS
-  constructor (options: UserDefinedOptions = {}, appType: AppType) {
+  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
     if (disabled) {
       return
     }
@@ -34,7 +34,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
-    const replacer = createReplacer()
+    const replacer = createReplacer(framework)
     const isReact = true
     const rule = {
       loader: path.resolve(__dirname, `${NS}.js`),
