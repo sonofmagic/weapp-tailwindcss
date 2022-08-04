@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.7.0 (2022-08-04)
+
+### Features
+
+- 支持 `taro 3.5`，用法如下：
+
+简单修改 Taro 的编译配置即可切换使用 Webpack4 或 Webpack5 进行编译：
+
+```js
+/** config/index.js */
+const config = {
+  // 自定义编译工具，可选 'Webpack4' 或 'Webpack5'
+  compiler: 'webpack5'
+}
+```
+
+其中:
+
+- `Webpack4` 使用 `TaroWeappTailwindcssWebpackPluginV4` 进行注册
+- `Webpack5` 使用 `TaroWeappTailwindcssWebpackPluginV5` 进行注册
+
 ## 1.6.9 (2022-07-29)
 
 ### Features
