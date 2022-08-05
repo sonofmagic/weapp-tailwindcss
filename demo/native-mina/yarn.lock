@@ -6050,7 +6050,7 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.6.9:
+weapp-tailwindcss-webpack-plugin@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.0.tgz#a592b21de59b2b3355917b16eec2044afc934fdd"
   integrity sha512-2QEDuMtNx183otOUuuPvG+Sp5IhJ3Csq1vbaz7B41xpQIgwY76Wr3GR7MDzktO7PDnJ0WnH8xm9Ezvt4Kvwihg==
