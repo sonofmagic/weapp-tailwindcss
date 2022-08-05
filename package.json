@@ -40,7 +40,8 @@
     "demo:build": "cd demo && yarn build",
     "demo:e2e": "node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js",
-    "demo:install-script": "node scripts/demo/install.js"
+    "demo:install-script": "node scripts/demo/install.js",
+    "demo:remove-deps": "node scripts/demo/del.js"
   },
   "repository": {
     "type": "git",
@@ -81,7 +82,7 @@
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
   "devDependencies": {
     "@babel/types": "^7.17.0",
-    "@icebreakers/cli": "^0.0.8",
+    "@icebreakers/cli": "^0.0.9",
     "@rollup/plugin-alias": "^3.1.8",
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-json": "^4.1.0",

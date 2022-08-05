@@ -1,6 +1,6 @@
 `taro 3` 内置 `webpack` 为 `4` , `postcss` 为 `8`, 所以可以使用 `tailwindcss` 的 v3 版本
 
-注意! 从 `taro 3.5` 开始，可以选择 `webpack` 版本了，如果使用 `webpack5` 需要使用 `TaroWeappTailwindcssWebpackPluginV5`! 详见 [taro/releases/tag/v3.5.0](https://github.com/NervJS/taro/releases/tag/v3.5.0)
+注意! 从 `taro 3.5` 开始，可以选择 `webpack` 版本了，更新信息详见 [`taro/releases/tag/v3.5.0`](https://github.com/NervJS/taro/releases/tag/v3.5.0)。
 
 简单修改 Taro 的编译配置即可切换使用 Webpack4 或 Webpack5 进行编译：
 
@@ -11,6 +11,11 @@ const config = {
   compiler: 'webpack4' || 'webpack5'
 }
 ```
+
+其中插件也需要按照 `Webpack` 版本来注册指定的版本：
+
+- `Webpack4` 使用 `TaroWeappTailwindcssWebpackPluginV4` 进行注册
+- `Webpack5` 使用 `TaroWeappTailwindcssWebpackPluginV5` 进行注册
 
 ## 1. 于是我们开始安装:
 

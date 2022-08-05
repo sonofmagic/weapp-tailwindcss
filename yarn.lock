@@ -465,10 +465,10 @@
   resolved "https://registry.npmmirror.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@icebreakers/cli@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.npmmirror.com/@icebreakers/cli/-/cli-0.0.8.tgz#da1a2a41703f025cd330bfdcf5b0f10032331ecb"
-  integrity sha512-4nrENwVW09Rnv4qAraykI9sj8mFldHBLbSvQMy8n/ozSWhLZ3D6A9BPeuOj3DPK+SZbLAXZ9ZeTRpyiBEtJK7w==
+"@icebreakers/cli@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.npmmirror.com/@icebreakers/cli/-/cli-0.0.9.tgz#cdcc43490df61fc4183ea872e9fee17aae10fc7e"
+  integrity sha512-n6GUhA1w7M2roUzJshuktJ0ZyjdfK5EHfP3QxQrrozaJfq19gMOWuvDiAEQMTPTXeaY5nJNK4Nm9csRTsagTzA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
