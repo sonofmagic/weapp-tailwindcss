@@ -68,6 +68,6 @@
     "typescript": "^4.7.4",
     "vue-loader": "^17.0.0",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.6.9"
+    "weapp-tailwindcss-webpack-plugin": "^1.7.0"
   }
 }

@@ -1,4 +1,5 @@
 const { UniAppWeappTailwindcssWebpackPluginV4 } = require('../..')
+const { WeappTailwindcssDisabled } = require('./platform')
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
 const smp = new SpeedMeasurePlugin({
   //outputTarget: './smp.dat',
@@ -12,6 +13,7 @@ const config = {
     let now
     config.plugins.push(
       new UniAppWeappTailwindcssWebpackPluginV4({
+        disabled: WeappTailwindcssDisabled,
         onLoad() {
           console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
         },
@@ -27,7 +29,7 @@ const config = {
         }
       })
     )
-    // smp.wrap(config)
+    smp.wrap(config)
   }
 }
 
