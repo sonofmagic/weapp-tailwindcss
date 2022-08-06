@@ -1,9 +1,10 @@
 const path = require('path')
+const { WeappTailwindcssDisabled } = require('./platform')
 module.exports = {
   parser: require('postcss-comment'),
   plugins: [
     require('postcss-import')({
-      resolve (id, basedir, importOptions) {
+      resolve(id, basedir, importOptions) {
         if (id.startsWith('~@/')) {
           return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
         } else if (id.startsWith('@/')) {
@@ -20,11 +21,13 @@ module.exports = {
     // tailwindcss for postcss7
     require('tailwindcss')({ config: './tailwind.config.js' }),
     // rem 转 rpx
-    require('postcss-rem-to-responsive-pixel/postcss7')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
-    }),
+    WeappTailwindcssDisabled
+      ? undefined
+      : require('postcss-rem-to-responsive-pixel/postcss7')({
+          rootValue: 32,
+          propList: ['*'],
+          transformUnit: 'rpx'
+        }),
     require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
   ]
 }

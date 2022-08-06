@@ -18,6 +18,7 @@
     - [rax (react)](#rax-react)
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
     - [HBuilderX 创建的项目](#hbuilderx-创建的项目)
+    - [uni-app 构建成 `android/ios` app](#uni-app-构建成-androidios-app)
   - [Options 配置项](#options-配置项)
   - [使用 arbitrary values](#使用-arbitrary-values)
   - [关于rem转化rpx](#关于rem转化rpx)
@@ -26,6 +27,9 @@
   - [Related projects](#related-projects)
     - [CLI 工具](#cli-工具)
     - [模板 template](#模板-template)
+      - [如何选择？](#如何选择)
+      - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
+      - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
     - [预设 tailwindcss preset](#预设-tailwindcss-preset)
   - [Bugs & Issues](#bugs--issues)
 
@@ -66,6 +70,10 @@
 ### HBuilderX 创建的项目
 
 [vue2 使用方式](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template#readme) | [vue2 Demo 项目](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template) | [vue3 使用方式](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template#readme) | [vue3 Demo 项目](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
+
+### uni-app 构建成 `android/ios` app
+
+[使用方式](./docs/uni-app-android-and-ios.md)
 
 ## Options 配置项
 
@@ -120,6 +128,7 @@ cssPreflight: {
 // border-color: currentColor;
 // background: black
 ```
+
 ## 使用 arbitrary values
 
 详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)
@@ -132,7 +141,6 @@ cssPreflight: {
 
 使用方式见 `Demo` 和对应 `npm` 包的文档。
 
-
 ## [变更日志](./CHANGELOG.md)
 
 ## 常见问题
@@ -140,7 +148,6 @@ cssPreflight: {
 > 目前微信开发者工具会默认开启 `代码自动热重载 (compileHotReLoad)` 功能，这个功能在原生开发中表现良好，但在 `uni-app` 和 `taro` 等等的框架中，存在一定的问题，详见[issues#37](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/37)，所以如果你遇到了此类问题，建议关闭 `代码自动热重载` 功能。
 
 [常见问题见 FAQ.md](./docs/faq.md)
-
 
 ## Related projects
 
@@ -150,13 +157,23 @@ cssPreflight: {
 
 ### 模板 template
 
+#### 如何选择？
+
+假如你仅仅是开发一个`小程序` + `h5` 的组合，那么使用 `vscode` 模板就足够了
+
+假如你的项目构建的重点平台是 `app` 那么还是推荐使用 `hbuilderx` 模板，因为 `hbuilderx` 自带了一套 `app` 构建和调试的工具链，可以更好的支持你的开发。
+
+#### 使用`uni-app cli`进行构建 `vscode`开发
+
 [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
 
-<!-- [uni-app-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-vscode-template) -->
+[uni-app-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-vscode-template)
 
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
 
 [weapp-native-mina-tailwindcss-template](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
+
+#### 使用`hbuilderx` 进行构建和开发
 
 [uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
 
@@ -171,8 +188,6 @@ cssPreflight: {
 目前这个插件正在快速的开发中，如果遇到 `Bug` 或者想提出 `Issue`
 
 [欢迎提交到此处](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
-
-
 
 <!-- ## 关于其他小程序
 
