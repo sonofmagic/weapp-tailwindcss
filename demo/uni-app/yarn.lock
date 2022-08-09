@@ -58,10 +58,10 @@
     json5 "^2.2.1"
     semver "^6.3.0"
 
-"@babel/generator@7.18.10", "@babel/generator@^7.18.10":
-  version "7.18.10"
-  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.18.10.tgz#794f328bfabdcbaf0ebf9bf91b5b57b61fa77a2a"
-  integrity sha512-0+sW7e3HjQbiHbj1NeU/vN8ornohYlacAfZIaXhdoGweQqgcNy69COVciYYqEXJ/v+9OBA7Frxm4CVAuNqKeNA==
+"@babel/generator@7.18.12":
+  version "7.18.12"
+  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.18.12.tgz#fa58daa303757bd6f5e4bbca91b342040463d9f4"
+  integrity sha512-dfQ8ebCN98SvyL7IxNMCUtZQSq5R7kxgN+r8qYTGDmmSion1hX2C0zq2yo1bsCDhXixokv1SAWTZUMYbO/V5zg==
   dependencies:
     "@babel/types" "^7.18.10"
     "@jridgewell/gen-mapping" "^0.3.2"
@@ -84,6 +84,15 @@
     "@babel/types" "^7.17.0"
     jsesc "^2.5.1"
     source-map "^0.5.0"
+
+"@babel/generator@^7.18.10":
+  version "7.18.10"
+  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.18.10.tgz#794f328bfabdcbaf0ebf9bf91b5b57b61fa77a2a"
+  integrity sha512-0+sW7e3HjQbiHbj1NeU/vN8ornohYlacAfZIaXhdoGweQqgcNy69COVciYYqEXJ/v+9OBA7Frxm4CVAuNqKeNA==
+  dependencies:
+    "@babel/types" "^7.18.10"
+    "@jridgewell/gen-mapping" "^0.3.2"
+    jsesc "^2.5.1"
 
 "@babel/helper-annotate-as-pure@^7.16.7":
   version "7.16.7"
@@ -349,10 +358,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.18.10", "@babel/parser@^7.18.10":
-  version "7.18.10"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.10.tgz#94b5f8522356e69e8277276adf67ed280c90ecc1"
-  integrity sha512-TYk3OA0HKL6qNryUayb5UUEhM/rkOQozIBEA5ITXh5DWrSp0TlUQXMyZmnWxG/DizSWBeeQ0Zbc5z8UGaaqoeg==
+"@babel/parser@7.18.11", "@babel/parser@^7.18.11":
+  version "7.18.11"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.11.tgz#68bb07ab3d380affa9a3f96728df07969645d2d9"
+  integrity sha512-9JKn5vN+hDt0Hdqn1PiJ2guflwP+B6Ga8qbDuoF0PzzVhrzsKIJo8yGqVk6CmMHiMei9w1C1Bp9IMJSIK+HPIQ==
 
 "@babel/parser@7.18.5", "@babel/parser@^7.16.4", "@babel/parser@^7.18.5":
   version "7.18.5"
@@ -363,6 +372,11 @@
   version "7.17.9"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.17.9.tgz#9c94189a6062f0291418ca021077983058e171ef"
   integrity sha512-vqUSBLP8dQHFPdPi9bc5GK9vRkYHJ49fsZdtoJ8EQ8ibpwk5rPKfvNIwChB0KVXcIjcepEBBd2VHC5r9Gy8ueg==
+
+"@babel/parser@^7.18.10":
+  version "7.18.10"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.10.tgz#94b5f8522356e69e8277276adf67ed280c90ecc1"
+  integrity sha512-TYk3OA0HKL6qNryUayb5UUEhM/rkOQozIBEA5ITXh5DWrSp0TlUQXMyZmnWxG/DizSWBeeQ0Zbc5z8UGaaqoeg==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.16.7":
   version "7.16.7"
@@ -1063,10 +1077,10 @@
     "@babel/parser" "^7.18.10"
     "@babel/types" "^7.18.10"
 
-"@babel/traverse@7.18.10":
-  version "7.18.10"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.18.10.tgz#37ad97d1cb00efa869b91dd5d1950f8a6cf0cb08"
-  integrity sha512-J7ycxg0/K9XCtLyHf0cz2DqDihonJeIo+z+HEdRe9YuT8TY4A66i+Ab2/xZCEW7Ro60bPCBBfqqboHSamoV3+g==
+"@babel/traverse@7.18.11":
+  version "7.18.11"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.18.11.tgz#3d51f2afbd83ecf9912bcbb5c4d94e3d2ddaa16f"
+  integrity sha512-TG9PiM2R/cWCAy6BPJKeHzNbu4lPzOSZpeMfeNErskGpTJx6trEvFaVCbDvpcxwy49BKWmEPwiW8mrysNiDvIQ==
   dependencies:
     "@babel/code-frame" "^7.18.6"
     "@babel/generator" "^7.18.10"
@@ -1074,7 +1088,7 @@
     "@babel/helper-function-name" "^7.18.9"
     "@babel/helper-hoist-variables" "^7.18.6"
     "@babel/helper-split-export-declaration" "^7.18.6"
-    "@babel/parser" "^7.18.10"
+    "@babel/parser" "^7.18.11"
     "@babel/types" "^7.18.10"
     debug "^4.1.0"
     globals "^11.1.0"
@@ -9301,6 +9315,11 @@ postcss-rem-to-responsive-pixel@^5.1.3:
   resolved "https://registry.yarnpkg.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
   integrity sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==
 
+postcss-rpx-transform@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
+  integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
+
 postcss-selector-parser@^3.0.0:
   version "3.1.2"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-3.1.2.tgz#b310f5c4c0fdaf76f94902bbaa30db6aa84f5270"
@@ -11673,14 +11692,14 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.0.tgz#a592b21de59b2b3355917b16eec2044afc934fdd"
-  integrity sha512-2QEDuMtNx183otOUuuPvG+Sp5IhJ3Csq1vbaz7B41xpQIgwY76Wr3GR7MDzktO7PDnJ0WnH8xm9Ezvt4Kvwihg==
+weapp-tailwindcss-webpack-plugin@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.1.tgz#4dccf91941f8fa8f3aeec50470ea2becb01ea2ab"
+  integrity sha512-rn01tzA4Aa9TrV9ofLc5Q1DT2iyPo79uNqOiqlJjNOMU12w9bOB3O8qIht8cJAGQsvOKW7AIssUAjvYaIcY60A==
   dependencies:
-    "@babel/generator" "7.18.10"
-    "@babel/parser" "7.18.10"
-    "@babel/traverse" "7.18.10"
+    "@babel/generator" "7.18.12"
+    "@babel/parser" "7.18.11"
+    "@babel/traverse" "7.18.11"
     loader-utils "^2.0.2"
     webpack-sources "^3.2.3"
 

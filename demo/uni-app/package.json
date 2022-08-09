@@ -101,6 +101,7 @@
     "postcss": "7",
     "postcss-comment": "^2.0.0",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
+    "postcss-rpx-transform": "^1.0.1",
     "sass": "^1.54.2",
     "sass-loader": "10",
     "speed-measure-webpack-plugin": "^1.5.0",
@@ -109,7 +110,7 @@
     "typescript": "~4.0.0",
     "vue-template-compiler": "^2.6.11",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.7.0"
+    "weapp-tailwindcss-webpack-plugin": "^1.7.1"
   },
   "browserslist": [
     "Android >= 4.4",
