@@ -140,4 +140,15 @@ describe('first', () => {
     })
     expect(result).toBe('::before,::after,view,:not(not){}')
   })
+
+  it('should pseudo element', () => {
+    const testCase = '.after\\:content-\\[\\"\\*\\"\\]::after{}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {}
+    })
+    expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
+  })
 })

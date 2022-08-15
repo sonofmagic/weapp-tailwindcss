@@ -14,11 +14,11 @@ exports[`first before,after content case 1`] = `
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
-.after_c_content-_bl__dq_\\\\view_dq__br_::after {
+.after_c_content-_bl__dq__a__dq__br_::after {
   --tw-content: \\"*\\";
   content: var(--tw-content);
 }
-.after_c_content-_bl_\\\\view_br_::after {
+.after_c_content-_bl__a__br_::after {
   --tw-content: *;
   content: var(--tw-content);
 }

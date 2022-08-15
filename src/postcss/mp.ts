@@ -16,10 +16,13 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 // const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
 
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
-  node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view').replace(/\*/g, 'view')
+  node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
+
+  // .replace(/\*/g, 'view')
 
   // 变量注入和 preflight
   if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
+    node.selector = node.selector.replace(/\*/g, 'view')
     const selectorParts = node.selector.split(',')
     // 没有 view 元素时，添加 view
     if (!selectorParts.includes('view')) {

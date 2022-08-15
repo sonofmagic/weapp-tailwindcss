@@ -16,9 +16,10 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
     .replace(/%/g, dic['%'])
     .replace(/,/g, dic[','])
+    .replace(/\\/g, dic['\\'])
     .replace(/'/g, dic["'"])
     .replace(/"/g, dic['"'])
-    .replace(/\\/g, dic['\\'])
+    .replace(/\*/g, dic['*'])
   if (keepEOL) {
     return res
   }
