@@ -6,7 +6,7 @@ describe('templeteHandler', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
     const str = templeteHandler(testCase)
-    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
+    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\"></view>")
   })
 
   test('dark mode and hover-class', () => {
@@ -58,7 +58,7 @@ describe('templeteHandler', () => {
   test('with var 3', () => {
     const testCase = "<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
     const res = templeteHandler(testCase)
-    expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_l__h_fafa00_r_']}}\"></view>")
+    expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\"></view>")
   })
 
   test('with var 4', () => {

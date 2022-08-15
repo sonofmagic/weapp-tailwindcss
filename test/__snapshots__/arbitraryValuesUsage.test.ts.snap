@@ -1,409 +1,409 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`all arbitrary values usages Backgrounds Background Color 1`] = `"bg-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Backgrounds Background Color 1`] = `"bg-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Backgrounds Background Image 1`] = `"bg-_l_url_p__y__div_img_div_hero-pattern_dot_svg_y__q__r_"`;
+exports[`all arbitrary values usages Backgrounds Background Image 1`] = `"bg-_bl_url_pl__q__s_img_s_hero-pattern_d_svg_q__qr__br_"`;
 
-exports[`all arbitrary values usages Backgrounds Background Position 1`] = `"bg-_l_center_top_1rem_r_"`;
+exports[`all arbitrary values usages Backgrounds Background Position 1`] = `"bg-_bl_center_top_1rem_br_"`;
 
-exports[`all arbitrary values usages Backgrounds Background Size 1`] = `"bg-_l_length_c_200px_100px_r_"`;
+exports[`all arbitrary values usages Backgrounds Background Size 1`] = `"bg-_bl_length_c_200px_100px_br_"`;
 
-exports[`all arbitrary values usages Backgrounds Gradient Color Stops 1`] = `"from-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages Backgrounds Gradient Color Stops 1`] = `"from-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages Borders Border Color 1`] = `"border-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages Borders Border Color 1`] = `"border-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages Borders Border Radius 1`] = `"rounded-_l_12px_r_"`;
+exports[`all arbitrary values usages Borders Border Radius 1`] = `"rounded-_bl_12px_br_"`;
 
-exports[`all arbitrary values usages Borders Border Width 1`] = `"border-t-_l_3px_r_"`;
+exports[`all arbitrary values usages Borders Border Width 1`] = `"border-t-_bl_3px_br_"`;
 
-exports[`all arbitrary values usages Borders Divide Color 1`] = `"divide-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages Borders Divide Color 1`] = `"divide-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages Borders Divide Width 1`] = `"divide-x-_l_3px_r_"`;
+exports[`all arbitrary values usages Borders Divide Width 1`] = `"divide-x-_bl_3px_br_"`;
 
-exports[`all arbitrary values usages Borders Outline Color 1`] = `"outline-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages Borders Outline Color 1`] = `"outline-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages Borders Outline Offset 1`] = `"outline-offset-_l_3px_r_"`;
+exports[`all arbitrary values usages Borders Outline Offset 1`] = `"outline-offset-_bl_3px_br_"`;
 
-exports[`all arbitrary values usages Borders Outline Width 1`] = `"outline-_l_5px_r_"`;
+exports[`all arbitrary values usages Borders Outline Width 1`] = `"outline-_bl_5px_br_"`;
 
-exports[`all arbitrary values usages Borders Ring Color 1`] = `"ring-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages Borders Ring Color 1`] = `"ring-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages Borders Ring Offset Color 1`] = `"ring-offset-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages Borders Ring Offset Color 1`] = `"ring-offset-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages Borders Ring Offset Width 1`] = `"ring-offset-_l_10px_r_"`;
+exports[`all arbitrary values usages Borders Ring Offset Width 1`] = `"ring-offset-_bl_10px_br_"`;
 
-exports[`all arbitrary values usages Borders Ring Width 1`] = `"ring-_l_10px_r_"`;
+exports[`all arbitrary values usages Borders Ring Width 1`] = `"ring-_bl_10px_br_"`;
 
-exports[`all arbitrary values usages Effects Box Shadow 1`] = `"shadow-_l_inset_0_0_0_0__h_50d71e_r_"`;
+exports[`all arbitrary values usages Effects Box Shadow 1`] = `"shadow-_bl_inset_0_0_0_0__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Effects Box Shadow 2`] = `"shadow-_l_0_35px_60px_-15px_rgba_p_0_d_0_d_0_d_0_dot_3_q__r_"`;
+exports[`all arbitrary values usages Effects Box Shadow 2`] = `"shadow-_bl_0_35px_60px_-15px_rgba_pl_0_co_0_co_0_co_0_d_3_qr__br_"`;
 
-exports[`all arbitrary values usages Effects Box Shadow Color 1`] = `"shadow-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Effects Box Shadow Color 1`] = `"shadow-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Effects Opacity 1`] = `"opacity-_l_0_dot_5_r_"`;
+exports[`all arbitrary values usages Effects Opacity 1`] = `"opacity-_bl_0_d_5_br_"`;
 
-exports[`all arbitrary values usages Effects Opacity 2`] = `"opacity-_l__dot_67_r_"`;
+exports[`all arbitrary values usages Effects Opacity 2`] = `"opacity-_bl__d_67_br_"`;
 
-exports[`all arbitrary values usages Effects Opacity 3`] = `"opacity-_l_1_r_"`;
+exports[`all arbitrary values usages Effects Opacity 3`] = `"opacity-_bl_1_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Blur 1`] = `"backdrop-blur-_l_10px_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Blur 1`] = `"backdrop-blur-_bl_10px_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Brightness 1`] = `"backdrop-brightness-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Backdrop Brightness 1`] = `"backdrop-brightness-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Brightness 2`] = `"backdrop-brightness-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Brightness 2`] = `"backdrop-brightness-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Contrast 1`] = `"backdrop-contrast-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Backdrop Contrast 1`] = `"backdrop-contrast-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Contrast 2`] = `"backdrop-contrast-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Contrast 2`] = `"backdrop-contrast-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Contrast 3`] = `"backdrop-contrast-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Contrast 3`] = `"backdrop-contrast-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Grayscale 1`] = `"backdrop-grayscale-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Backdrop Grayscale 1`] = `"backdrop-grayscale-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Grayscale 2`] = `"backdrop-grayscale-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Grayscale 2`] = `"backdrop-grayscale-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Grayscale 3`] = `"backdrop-grayscale-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Grayscale 3`] = `"backdrop-grayscale-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Hue Rotate 1`] = `"backdrop-hue-rotate-_l_90deg_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Hue Rotate 1`] = `"backdrop-hue-rotate-_bl_90deg_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Hue Rotate 2`] = `"backdrop-hue-rotate-_l_270deg_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Hue Rotate 2`] = `"backdrop-hue-rotate-_bl_270deg_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Invert 1`] = `"backdrop-invert-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Backdrop Invert 1`] = `"backdrop-invert-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Invert 2`] = `"backdrop-invert-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Invert 2`] = `"backdrop-invert-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Invert 3`] = `"backdrop-invert-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Invert 3`] = `"backdrop-invert-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Opacity 1`] = `"backdrop-opacity-_l_0_dot_5_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Opacity 1`] = `"backdrop-opacity-_bl_0_d_5_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Opacity 2`] = `"backdrop-opacity-_l__dot_67_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Opacity 2`] = `"backdrop-opacity-_bl__d_67_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Opacity 3`] = `"backdrop-opacity-_l_1_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Opacity 3`] = `"backdrop-opacity-_bl_1_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Saturate 1`] = `"backdrop-saturate-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Backdrop Saturate 1`] = `"backdrop-saturate-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Saturate 2`] = `"backdrop-saturate-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Saturate 2`] = `"backdrop-saturate-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Saturate 3`] = `"backdrop-saturate-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Saturate 3`] = `"backdrop-saturate-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Sepia 1`] = `"backdrop-sepia-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Backdrop Sepia 1`] = `"backdrop-sepia-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Sepia 2`] = `"backdrop-sepia-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Sepia 2`] = `"backdrop-sepia-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Backdrop Sepia 3`] = `"backdrop-sepia-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Backdrop Sepia 3`] = `"backdrop-sepia-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Blur 1`] = `"blur-_l_10px_r_"`;
+exports[`all arbitrary values usages Filters Blur 1`] = `"blur-_bl_10px_br_"`;
 
-exports[`all arbitrary values usages Filters Brightness 1`] = `"brightness-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Brightness 1`] = `"brightness-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Brightness 2`] = `"brightness-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Brightness 2`] = `"brightness-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Contrast 1`] = `"contrast-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Contrast 1`] = `"contrast-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Contrast 2`] = `"contrast-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Contrast 2`] = `"contrast-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Contrast 3`] = `"contrast-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Contrast 3`] = `"contrast-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Drop Shadow 1`] = `"drop-shadow-_l_0_0_0_0__h_50d71e_r_"`;
+exports[`all arbitrary values usages Filters Drop Shadow 1`] = `"drop-shadow-_bl_0_0_0_0__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Filters Drop Shadow 2`] = `"drop-shadow-_l_0_35px_35px_rgba_p_0_d_0_d_0_d_0_dot_25_q__r_"`;
+exports[`all arbitrary values usages Filters Drop Shadow 2`] = `"drop-shadow-_bl_0_35px_35px_rgba_pl_0_co_0_co_0_co_0_d_25_qr__br_"`;
 
-exports[`all arbitrary values usages Filters Grayscale 1`] = `"grayscale-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Grayscale 1`] = `"grayscale-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Grayscale 2`] = `"grayscale-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Grayscale 2`] = `"grayscale-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Grayscale 3`] = `"grayscale-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Grayscale 3`] = `"grayscale-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Hue Rotate 1`] = `"hue-rotate-_l_90deg_r_"`;
+exports[`all arbitrary values usages Filters Hue Rotate 1`] = `"hue-rotate-_bl_90deg_br_"`;
 
-exports[`all arbitrary values usages Filters Hue Rotate 2`] = `"hue-rotate-_l_270deg_r_"`;
+exports[`all arbitrary values usages Filters Hue Rotate 2`] = `"hue-rotate-_bl_270deg_br_"`;
 
-exports[`all arbitrary values usages Filters Invert 1`] = `"invert-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Invert 1`] = `"invert-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Invert 2`] = `"invert-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Invert 2`] = `"invert-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Invert 3`] = `"invert-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Invert 3`] = `"invert-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Saturate 1`] = `"saturate-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Saturate 1`] = `"saturate-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Saturate 2`] = `"saturate-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Saturate 2`] = `"saturate-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Saturate 3`] = `"saturate-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Saturate 3`] = `"saturate-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Filters Sepia 1`] = `"sepia-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Filters Sepia 1`] = `"sepia-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Filters Sepia 2`] = `"sepia-_l_1_dot_75_r_"`;
+exports[`all arbitrary values usages Filters Sepia 2`] = `"sepia-_bl_1_d_75_br_"`;
 
-exports[`all arbitrary values usages Filters Sepia 3`] = `"sepia-_l__dot_25_r_"`;
+exports[`all arbitrary values usages Filters Sepia 3`] = `"sepia-_bl__d_25_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Flex 1`] = `"flex-_l_2_2_0_pct__r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Flex 1`] = `"flex-_bl_2_2_0_p__br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Flex Basis 1`] = `"basis-_l_14_dot_2857143_pct__r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Flex Basis 1`] = `"basis-_bl_14_d_2857143_p__br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Flex Grow 1`] = `"grow-_l_2_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Flex Grow 1`] = `"grow-_bl_2_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Flex Shrink 1`] = `"shrink-_l_2_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Flex Shrink 1`] = `"shrink-_bl_2_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Gap 1`] = `"gap-_l_2_dot_75rem_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Gap 1`] = `"gap-_bl_2_d_75rem_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Grid Auto Columns 1`] = `"auto-cols-_l_minmax_p_0_d__2fr_q__r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Grid Auto Columns 1`] = `"auto-cols-_bl_minmax_pl_0_co__2fr_qr__br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Grid Auto Rows 1`] = `"auto-rows-_l_minmax_p_0_d__2fr_q__r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Grid Auto Rows 1`] = `"auto-rows-_bl_minmax_pl_0_co__2fr_qr__br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Grid Column Start / End 1`] = `"col-_l_16__div__span_16_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Grid Column Start / End 1`] = `"col-_bl_16__s__span_16_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Grid Row Start / End 1`] = `"row-_l_span_16__div__span_16_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Grid Row Start / End 1`] = `"row-_bl_span_16__s__span_16_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Grid Template Columns 1`] = `"grid-cols-_l_200px_minmax_p_900px_d__1fr_q__100px_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Grid Template Columns 1`] = `"grid-cols-_bl_200px_minmax_pl_900px_co__1fr_qr__100px_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Grid Template Rows 1`] = `"grid-rows-_l_200px_minmax_p_900px_d__1fr_q__100px_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Grid Template Rows 1`] = `"grid-rows-_bl_200px_minmax_pl_900px_co__1fr_qr__100px_br_"`;
 
-exports[`all arbitrary values usages Flexbox & Grid Order 1`] = `"order-_l_13_r_"`;
+exports[`all arbitrary values usages Flexbox & Grid Order 1`] = `"order-_bl_13_br_"`;
 
-exports[`all arbitrary values usages Interactivity Accent Color 1`] = `"accent-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Interactivity Accent Color 1`] = `"accent-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Color 1`] = `"caret-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Color 1`] = `"caret-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 1`] = `"caret-_l_10px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 1`] = `"caret-_bl_10px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 2`] = `"caret-_l_20px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 2`] = `"caret-_bl_20px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 3`] = `"caret-_l_30px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 3`] = `"caret-_bl_30px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 4`] = `"caret-_l_40px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 4`] = `"caret-_bl_40px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 5`] = `"caret-_l_50px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 5`] = `"caret-_bl_50px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 6`] = `"caret-_l_60px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 6`] = `"caret-_bl_60px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 7`] = `"caret-_l_70px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 7`] = `"caret-_bl_70px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 8`] = `"caret-_l_80px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 8`] = `"caret-_bl_80px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 9`] = `"caret-_l_90px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 9`] = `"caret-_bl_90px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Caret Size 10`] = `"caret-_l_100px_r_"`;
+exports[`all arbitrary values usages Interactivity Caret Size 10`] = `"caret-_bl_100px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 1`] = `"cursor-_l_url_p_hand_dot_cur_q__d__pointer_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 1`] = `"cursor-_bl_url_pl_hand_d_cur_qr__co__pointer_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 2`] = `"cursor-_l_pointer_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 2`] = `"cursor-_bl_pointer_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 3`] = `"cursor-_l_zoom-in_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 3`] = `"cursor-_bl_zoom-in_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 4`] = `"cursor-_l_zoom-out_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 4`] = `"cursor-_bl_zoom-out_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 5`] = `"cursor-_l_grab_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 5`] = `"cursor-_bl_grab_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 6`] = `"cursor-_l_grabbing_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 6`] = `"cursor-_bl_grabbing_br_"`;
 
-exports[`all arbitrary values usages Interactivity Cursor 7`] = `"cursor-_l_not-allowed_r_"`;
+exports[`all arbitrary values usages Interactivity Cursor 7`] = `"cursor-_bl_not-allowed_br_"`;
 
-exports[`all arbitrary values usages Interactivity Pointer Events 1`] = `"pointer-events-_l_auto_r_"`;
+exports[`all arbitrary values usages Interactivity Pointer Events 1`] = `"pointer-events-_bl_auto_br_"`;
 
-exports[`all arbitrary values usages Interactivity Pointer Events 2`] = `"pointer-events-_l_none_r_"`;
+exports[`all arbitrary values usages Interactivity Pointer Events 2`] = `"pointer-events-_bl_none_br_"`;
 
-exports[`all arbitrary values usages Interactivity Pointer Events 3`] = `"pointer-events-_l_box-only_r_"`;
+exports[`all arbitrary values usages Interactivity Pointer Events 3`] = `"pointer-events-_bl_box-only_br_"`;
 
-exports[`all arbitrary values usages Interactivity Pointer Events 4`] = `"pointer-events-_l_box-none_r_"`;
+exports[`all arbitrary values usages Interactivity Pointer Events 4`] = `"pointer-events-_bl_box-none_br_"`;
 
-exports[`all arbitrary values usages Interactivity Pointer Events 5`] = `"pointer-events-_l_all_r_"`;
+exports[`all arbitrary values usages Interactivity Pointer Events 5`] = `"pointer-events-_bl_all_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Margin 1`] = `"scroll-m-_l_24rem_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Margin 1`] = `"scroll-m-_bl_24rem_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Margin 2`] = `"scroll-margin-_l_10px_20px_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Margin 2`] = `"scroll-margin-_bl_10px_20px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Margin 3`] = `"scroll-margin-_l_20px_30px_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Margin 3`] = `"scroll-margin-_bl_20px_30px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Margin 4`] = `"scroll-margin-y-_l_17rem_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Margin 4`] = `"scroll-margin-y-_bl_17rem_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Padding 1`] = `"scroll-p-_l_24rem_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Padding 1`] = `"scroll-p-_bl_24rem_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Padding 2`] = `"scroll-padding-_l_10px_20px_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Padding 2`] = `"scroll-padding-_bl_10px_20px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Padding 3`] = `"scroll-padding-_l_20px_30px_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Padding 3`] = `"scroll-padding-_bl_20px_30px_br_"`;
 
-exports[`all arbitrary values usages Interactivity Scroll Padding 4`] = `"scroll-padding-y-_l_17rem_r_"`;
+exports[`all arbitrary values usages Interactivity Scroll Padding 4`] = `"scroll-padding-y-_bl_17rem_br_"`;
 
-exports[`all arbitrary values usages Interactivity Tap Highlight Color 1`] = `"tap-highlight-color-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Interactivity Tap Highlight Color 1`] = `"tap-highlight-color-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Interactivity Tap Highlight Color Opacity 1`] = `"tap-highlight-color-opacity-_l_0_dot_5_r_"`;
+exports[`all arbitrary values usages Interactivity Tap Highlight Color Opacity 1`] = `"tap-highlight-color-opacity-_bl_0_d_5_br_"`;
 
-exports[`all arbitrary values usages Interactivity Tap Highlight Color Opacity 2`] = `"tap-highlight-color-opacity-_l__dot_67_r_"`;
+exports[`all arbitrary values usages Interactivity Tap Highlight Color Opacity 2`] = `"tap-highlight-color-opacity-_bl__d_67_br_"`;
 
-exports[`all arbitrary values usages Interactivity Tap Highlight Color Opacity 3`] = `"tap-highlight-color-opacity-_l_1_r_"`;
+exports[`all arbitrary values usages Interactivity Tap Highlight Color Opacity 3`] = `"tap-highlight-color-opacity-_bl_1_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Action 1`] = `"touch-action-_l_auto_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Action 1`] = `"touch-action-_bl_auto_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Action 2`] = `"touch-action-_l_pan-x_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Action 2`] = `"touch-action-_bl_pan-x_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Action 3`] = `"touch-action-_l_pan-y_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Action 3`] = `"touch-action-_bl_pan-y_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Action 4`] = `"touch-action-_l_pan-x-y_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Action 4`] = `"touch-action-_bl_pan-x-y_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Action 5`] = `"touch-action-_l_none_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Action 5`] = `"touch-action-_bl_none_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Callout 1`] = `"touch-callout-_l_none_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Callout 1`] = `"touch-callout-_bl_none_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Callout 2`] = `"touch-callout-_l_default_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Callout 2`] = `"touch-callout-_bl_default_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Callout 3`] = `"touch-callout-_l_none_default_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Callout 3`] = `"touch-callout-_bl_none_default_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Callout 4`] = `"touch-callout-_l_default_none_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Callout 4`] = `"touch-callout-_bl_default_none_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Callout 5`] = `"touch-callout-_l_none_default_auto_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Callout 5`] = `"touch-callout-_bl_none_default_auto_br_"`;
 
-exports[`all arbitrary values usages Interactivity Touch Callout 6`] = `"touch-callout-_l_auto_none_default_r_"`;
+exports[`all arbitrary values usages Interactivity Touch Callout 6`] = `"touch-callout-_bl_auto_none_default_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Drag 1`] = `"user-drag-_l_auto_r_"`;
+exports[`all arbitrary values usages Interactivity User Drag 1`] = `"user-drag-_bl_auto_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Drag 2`] = `"user-drag-_l_element_r_"`;
+exports[`all arbitrary values usages Interactivity User Drag 2`] = `"user-drag-_bl_element_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Drag 3`] = `"user-drag-_l_element_none_r_"`;
+exports[`all arbitrary values usages Interactivity User Drag 3`] = `"user-drag-_bl_element_none_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Drag 4`] = `"user-drag-_l_none_element_r_"`;
+exports[`all arbitrary values usages Interactivity User Drag 4`] = `"user-drag-_bl_none_element_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Drag 5`] = `"user-drag-_l_element_auto_r_"`;
+exports[`all arbitrary values usages Interactivity User Drag 5`] = `"user-drag-_bl_element_auto_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Drag 6`] = `"user-drag-_l_auto_element_r_"`;
+exports[`all arbitrary values usages Interactivity User Drag 6`] = `"user-drag-_bl_auto_element_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Select 1`] = `"user-select-_l_none_r_"`;
+exports[`all arbitrary values usages Interactivity User Select 1`] = `"user-select-_bl_none_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Select 2`] = `"user-select-_l_text_r_"`;
+exports[`all arbitrary values usages Interactivity User Select 2`] = `"user-select-_bl_text_br_"`;
 
-exports[`all arbitrary values usages Interactivity User Select 3`] = `"user-select-_l_all_r_"`;
+exports[`all arbitrary values usages Interactivity User Select 3`] = `"user-select-_bl_all_br_"`;
 
-exports[`all arbitrary values usages Interactivity Will Change 1`] = `"will-change-_l_top_d_left_r_"`;
+exports[`all arbitrary values usages Interactivity Will Change 1`] = `"will-change-_bl_top_co_left_br_"`;
 
-exports[`all arbitrary values usages Layout Aspect Ratio 1`] = `"aspect-_l_4_div_3_r_"`;
+exports[`all arbitrary values usages Layout Aspect Ratio 1`] = `"aspect-_bl_4_s_3_br_"`;
 
-exports[`all arbitrary values usages Layout Columns 1`] = `"columns-_l_10rem_r_"`;
+exports[`all arbitrary values usages Layout Columns 1`] = `"columns-_bl_10rem_br_"`;
 
-exports[`all arbitrary values usages Layout Object Position 1`] = `"object-_l_center_bottom_r_"`;
+exports[`all arbitrary values usages Layout Object Position 1`] = `"object-_bl_center_bottom_br_"`;
 
-exports[`all arbitrary values usages Layout Top / Right / Bottom / Left 1`] = `"top-_l_3px_r_"`;
+exports[`all arbitrary values usages Layout Top / Right / Bottom / Left 1`] = `"top-_bl_3px_br_"`;
 
-exports[`all arbitrary values usages Layout Z-Index 1`] = `"z-_l_100_r_"`;
+exports[`all arbitrary values usages Layout Z-Index 1`] = `"z-_bl_100_br_"`;
 
-exports[`all arbitrary values usages SVG Fill 1`] = `"fill-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages SVG Fill 1`] = `"fill-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages SVG Stroke 1`] = `"stroke-_l__h_243c5a_r_"`;
+exports[`all arbitrary values usages SVG Stroke 1`] = `"stroke-_bl__h_243c5a_br_"`;
 
-exports[`all arbitrary values usages SVG Stroke Width 1`] = `"stroke-_l_2px_r_"`;
+exports[`all arbitrary values usages SVG Stroke Width 1`] = `"stroke-_bl_2px_br_"`;
 
-exports[`all arbitrary values usages Sizing Height 1`] = `"h-_l_32rem_r_"`;
+exports[`all arbitrary values usages Sizing Height 1`] = `"h-_bl_32rem_br_"`;
 
-exports[`all arbitrary values usages Sizing Max-Height 1`] = `"max-h-_l_32rem_r_"`;
+exports[`all arbitrary values usages Sizing Max-Height 1`] = `"max-h-_bl_32rem_br_"`;
 
-exports[`all arbitrary values usages Sizing Max-Width 1`] = `"max-w-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Sizing Max-Width 1`] = `"max-w-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Sizing Min-Height 1`] = `"min-h-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Sizing Min-Height 1`] = `"min-h-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Sizing Min-Width 1`] = `"min-w-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Sizing Min-Width 1`] = `"min-w-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Sizing Width 1`] = `"w-_l_32rem_r_"`;
+exports[`all arbitrary values usages Sizing Width 1`] = `"w-_bl_32rem_br_"`;
 
-exports[`all arbitrary values usages Spacing Margin 1`] = `"m-_l_5px_r_"`;
+exports[`all arbitrary values usages Spacing Margin 1`] = `"m-_bl_5px_br_"`;
 
-exports[`all arbitrary values usages Spacing Padding 1`] = `"p-_l_5px_r_"`;
+exports[`all arbitrary values usages Spacing Padding 1`] = `"p-_bl_5px_br_"`;
 
-exports[`all arbitrary values usages Spacing Space Between 1`] = `"space-y-_l_5px_r_"`;
+exports[`all arbitrary values usages Spacing Space Between 1`] = `"space-y-_bl_5px_br_"`;
 
-exports[`all arbitrary values usages Transforms Rotate 1`] = `"rotate-_l_90deg_r_"`;
+exports[`all arbitrary values usages Transforms Rotate 1`] = `"rotate-_bl_90deg_br_"`;
 
-exports[`all arbitrary values usages Transforms Rotate 2`] = `"rotate-_l_180deg_r_"`;
+exports[`all arbitrary values usages Transforms Rotate 2`] = `"rotate-_bl_180deg_br_"`;
 
-exports[`all arbitrary values usages Transforms Scale 1`] = `"scale-_l_1_dot_5_r_"`;
+exports[`all arbitrary values usages Transforms Scale 1`] = `"scale-_bl_1_d_5_br_"`;
 
-exports[`all arbitrary values usages Transforms Scale 2`] = `"scale-_l_2_r_"`;
+exports[`all arbitrary values usages Transforms Scale 2`] = `"scale-_bl_2_br_"`;
 
-exports[`all arbitrary values usages Transforms Skew 1`] = `"skew-_l_10deg_r_"`;
+exports[`all arbitrary values usages Transforms Skew 1`] = `"skew-_bl_10deg_br_"`;
 
-exports[`all arbitrary values usages Transforms Skew 2`] = `"skew-_l_20deg_r_"`;
+exports[`all arbitrary values usages Transforms Skew 2`] = `"skew-_bl_20deg_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 1`] = `"origin-_l_center_center_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 1`] = `"origin-_bl_center_center_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 2`] = `"origin-_l_center_top_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 2`] = `"origin-_bl_center_top_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 3`] = `"origin-_l_center_bottom_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 3`] = `"origin-_bl_center_bottom_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 4`] = `"origin-_l_left_center_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 4`] = `"origin-_bl_left_center_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 5`] = `"origin-_l_left_top_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 5`] = `"origin-_bl_left_top_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 6`] = `"origin-_l_left_bottom_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 6`] = `"origin-_bl_left_bottom_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 7`] = `"origin-_l_right_center_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 7`] = `"origin-_bl_right_center_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 8`] = `"origin-_l_right_top_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 8`] = `"origin-_bl_right_top_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 9`] = `"origin-_l_right_bottom_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 9`] = `"origin-_bl_right_bottom_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 10`] = `"origin-_l_top_center_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 10`] = `"origin-_bl_top_center_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 11`] = `"origin-_l_top_left_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 11`] = `"origin-_bl_top_left_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 12`] = `"origin-_l_top_right_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 12`] = `"origin-_bl_top_right_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 13`] = `"origin-_l_bottom_center_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 13`] = `"origin-_bl_bottom_center_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 14`] = `"origin-_l_bottom_left_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 14`] = `"origin-_bl_bottom_left_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 15`] = `"origin-_l_bottom_right_r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 15`] = `"origin-_bl_bottom_right_br_"`;
 
-exports[`all arbitrary values usages Transforms Transform Origin 16`] = `"origin-_l_33_pct__75_pct__r_"`;
+exports[`all arbitrary values usages Transforms Transform Origin 16`] = `"origin-_bl_33_p__75_p__br_"`;
 
-exports[`all arbitrary values usages Transforms Translate 1`] = `"translate-_l_10px_20px_r_"`;
+exports[`all arbitrary values usages Transforms Translate 1`] = `"translate-_bl_10px_20px_br_"`;
 
-exports[`all arbitrary values usages Transforms Translate 2`] = `"translate-_l_20px_30px_r_"`;
+exports[`all arbitrary values usages Transforms Translate 2`] = `"translate-_bl_20px_30px_br_"`;
 
-exports[`all arbitrary values usages Transforms Translate 3`] = `"translate-y-_l_17rem_r_"`;
+exports[`all arbitrary values usages Transforms Translate 3`] = `"translate-y-_bl_17rem_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Animation 1`] = `"animate-_l_wiggle_1s_ease-in-out_infinite_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Animation 1`] = `"animate-_bl_wiggle_1s_ease-in-out_infinite_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Animation 2`] = `"animate-_l_slide_1s_ease-in-out_infinite_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Animation 2`] = `"animate-_bl_slide_1s_ease-in-out_infinite_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Animation 3`] = `"animate-_l_slide_1s_ease-in-out_infinite_backwards_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Animation 3`] = `"animate-_bl_slide_1s_ease-in-out_infinite_backwards_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Delay 1`] = `"delay-_l_2000ms_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Delay 1`] = `"delay-_bl_2000ms_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Delay 2`] = `"delay-_l_1s_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Delay 2`] = `"delay-_bl_1s_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Delay 3`] = `"delay-_l_2s_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Delay 3`] = `"delay-_bl_2s_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Duration 1`] = `"duration-_l_2000ms_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Duration 1`] = `"duration-_bl_2000ms_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Duration 2`] = `"duration-_l_1s_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Duration 2`] = `"duration-_bl_1s_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Duration 3`] = `"duration-_l_2s_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Duration 3`] = `"duration-_bl_2s_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Property 1`] = `"transition-property-_l_all_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Property 1`] = `"transition-property-_bl_all_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Property 2`] = `"transition-property-_l_background-color_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Property 2`] = `"transition-property-_bl_background-color_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Property 3`] = `"transition-_l_height_r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Property 3`] = `"transition-_bl_height_br_"`;
 
-exports[`all arbitrary values usages Transitions & Animation Transition Timing Function 1`] = `"ease-_l_cubic-bezier_p_0_dot_95_d_0_dot_05_d_0_dot_795_d_0_dot_035_q__r_"`;
+exports[`all arbitrary values usages Transitions & Animation Transition Timing Function 1`] = `"ease-_bl_cubic-bezier_pl_0_d_95_co_0_d_05_co_0_d_795_co_0_d_035_qr__br_"`;
 
-exports[`all arbitrary values usages Typography Content 1`] = `"before_c_content-_l__y_Hello_World_y__r_"`;
+exports[`all arbitrary values usages Typography Content 1`] = `"before_c_content-_bl__q_Hello_World_q__br_"`;
 
-exports[`all arbitrary values usages Typography Font Family 1`] = `"font-_l__y_Open_Sans_y__r_"`;
+exports[`all arbitrary values usages Typography Font Family 1`] = `"font-_bl__q_Open_Sans_q__br_"`;
 
-exports[`all arbitrary values usages Typography Font Size 1`] = `"text-_l_14px_r_"`;
+exports[`all arbitrary values usages Typography Font Size 1`] = `"text-_bl_14px_br_"`;
 
-exports[`all arbitrary values usages Typography Font Weight 1`] = `"font-_l_1100_r_"`;
+exports[`all arbitrary values usages Typography Font Weight 1`] = `"font-_bl_1100_br_"`;
 
-exports[`all arbitrary values usages Typography Letter Spacing 1`] = `"tracking-_l__dot_25em_r_"`;
+exports[`all arbitrary values usages Typography Letter Spacing 1`] = `"tracking-_bl__d_25em_br_"`;
 
-exports[`all arbitrary values usages Typography Line Height 1`] = `"leading-_l_3rem_r_"`;
+exports[`all arbitrary values usages Typography Line Height 1`] = `"leading-_bl_3rem_br_"`;
 
-exports[`all arbitrary values usages Typography List Style Type 1`] = `"list-_l_upper-roman_r_"`;
+exports[`all arbitrary values usages Typography List Style Type 1`] = `"list-_bl_upper-roman_br_"`;
 
-exports[`all arbitrary values usages Typography Text Color 1`] = `"text-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Typography Text Color 1`] = `"text-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Typography Text Decoration Color 1`] = `"decoration-_l__h_50d71e_r_"`;
+exports[`all arbitrary values usages Typography Text Decoration Color 1`] = `"decoration-_bl__h_50d71e_br_"`;
 
-exports[`all arbitrary values usages Typography Text Decoration Thickness 1`] = `"decoration-_l_3px_r_"`;
+exports[`all arbitrary values usages Typography Text Decoration Thickness 1`] = `"decoration-_bl_3px_br_"`;
 
-exports[`all arbitrary values usages Typography Text Indent 1`] = `"indent-_l_50_pct__r_"`;
+exports[`all arbitrary values usages Typography Text Indent 1`] = `"indent-_bl_50_p__br_"`;
 
-exports[`all arbitrary values usages Typography Text Underline Offset 1`] = `"underline-offset-_l_3px_r_"`;
+exports[`all arbitrary values usages Typography Text Underline Offset 1`] = `"underline-offset-_bl_3px_br_"`;

@@ -12,7 +12,7 @@ describe('templeteReplacer', () => {
   it('isConditionalExpression', () => {
     const testCase = "{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}"
     const result = templeteReplacer(testCase)
-    expect(result).toBe("{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}")
+    expect(result).toBe("{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}")
     expect(result).toMatchSnapshot()
   })
 
@@ -22,7 +22,7 @@ describe('templeteReplacer', () => {
 
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      "{{[flag?'bg-red-900':'bg-_l__h_fafa00_r_',classObject,[flag===true?'bg-_l__h_fafa00_r_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_l__h_000_r_':'bg-_l__h_fafa00_r_']}}"
+      "{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[flag===true?'bg-_bl__h_fafa00_br_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"
     )
     expect(result).toMatchSnapshot()
   })
@@ -30,7 +30,7 @@ describe('templeteReplacer', () => {
   it('sm:text-3xl dark:text-sky-400', () => {
     const testCase = 'sm:text-3xl dark:text-slate-200 bg-[#ffffaa]'
     const result = templeteReplacer(testCase)
-    expect(result).toBe('sm_c_text-3xl dark_c_text-slate-200 bg-_l__h_ffffaa_r_')
+    expect(result).toBe('sm_c_text-3xl dark_c_text-slate-200 bg-_bl__h_ffffaa_br_')
     expect(result).toMatchSnapshot()
   })
 
@@ -74,7 +74,7 @@ describe('templeteReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}} h-_l_20px_r_"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
     )
   })
 
@@ -83,7 +83,7 @@ describe('templeteReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
     )
   })
 
@@ -91,7 +91,7 @@ describe('templeteReplacer', () => {
     const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
     const result = templeteReplacer(testCase)
-    expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_l__h_990000_r_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
+    expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_bl__h_990000_br_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
   })
 
   it('utils.bem()', () => {
@@ -110,19 +110,19 @@ describe('templeteReplacer', () => {
     const testCase = 'shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]'
 
     const result = templeteReplacer(testCase)
-    expect(result).toBe('shadow-_l_0px_2px_11px_0px_rgba_p_0_d_0_d_0_d_0_dot_4_q__r_')
+    expect(result).toBe('shadow-_bl_0px_2px_11px_0px_rgba_pl_0_co_0_co_0_co_0_d_4_qr__br_')
   })
 
   // .shadow-\[0px_2px_11px_0px_\#0000000a\]
   it('arbitrary shadow values 1', () => {
     const testCase = 'shadow-[0px_2px_11px_0px_#00000a]'
     const result = templeteReplacer(testCase)
-    expect(result).toBe('shadow-_l_0px_2px_11px_0px__h_00000a_r_')
+    expect(result).toBe('shadow-_bl_0px_2px_11px_0px__h_00000a_br_')
   })
 
   it("arbitrary before:content-['hello']", () => {
     const testCase = "before:content-['hello']"
     const result = templeteReplacer(testCase)
-    expect(result).toBe('before_c_content-_l__y_hello_y__r_')
+    expect(result).toBe('before_c_content-_bl__q_hello_q__br_')
   })
 })

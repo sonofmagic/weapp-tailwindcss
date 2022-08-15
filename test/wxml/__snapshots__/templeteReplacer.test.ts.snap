@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`templeteReplacer isConditionalExpression 1`] = `"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_l__h_fafa00_r_']}}"`;
+exports[`templeteReplacer isConditionalExpression 1`] = `"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}"`;
 
 exports[`templeteReplacer isStringLiteral 1`] = `"{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"`;
 
-exports[`templeteReplacer nest  1`] = `"{{[flag?'bg-red-900':'bg-_l__h_fafa00_r_',classObject,[flag===true?'bg-_l__h_fafa00_r_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_l__h_000_r_':'bg-_l__h_fafa00_r_']}}"`;
+exports[`templeteReplacer nest  1`] = `"{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[flag===true?'bg-_bl__h_fafa00_br_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"`;
 
-exports[`templeteReplacer sm:text-3xl dark:text-sky-400 1`] = `"sm_c_text-3xl dark_c_text-slate-200 bg-_l__h_ffffaa_r_"`;
+exports[`templeteReplacer sm:text-3xl dark:text-sky-400 1`] = `"sm_c_text-3xl dark_c_text-slate-200 bg-_bl__h_ffffaa_br_"`;

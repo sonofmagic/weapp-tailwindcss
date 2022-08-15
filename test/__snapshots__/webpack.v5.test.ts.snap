@@ -153,29 +153,29 @@ Object {
   <view class=\\"motto\\">
     <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
   </view>
-  <view class=\\"powered h-_l_200_pct__r_\\">
+  <view class=\\"powered h-_bl_200_p__br_\\">
     <text>{{powered.by}}</text>
   </view>
-  <view class=\\"-mt-2 mb-_l_-20px_r_ p-_l_20px_r_\\">
+  <view class=\\"-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_\\">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class=\\"space-y-_l_1_dot_6rem_r_\\">
-    <view class=\\"w-_l_300rpx_r_ text-black text-opacity-_l_0_dot_19_r_\\">
+  <view class=\\"space-y-_bl_1_d_6rem_br_\\">
+    <view class=\\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class=\\"max-h-_l_100px_r_ min-w-_l_300rpx_r_ text-_l_20px_r_ leading-_l_0_dot_9_r_\\">
+    <view class=\\"max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class=\\"min-h-_l_100px_r_ max-w-_l_300rpx_r_ text-_l__h_dddddd_r_\\">
+    <view class=\\"min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_\\">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class=\\"flex h-_l_100px_r_ w-_l_100px_r_ items-center justify-center rounded-_l_40px_r_ bg-_l__h_123456_r_ bg-opacity-_l_0_dot_54_r_ text-_l__h_ffffff_r_\\">
+    <view class=\\"flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\">
       Hello
     </view>
-    <view class=\\"border-_l_10px_r_ border-solid border-_l__h_098765_r_ border-opacity-_l_0_dot_44_r_\\">
+    <view class=\\"border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_\\">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class=\\"grid grid-cols-3 divide-x-_l_10px_r_ divide-solid divide-_l__h_010101_r_\\">
+    <view class=\\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_\\">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -185,9 +185,9 @@ Object {
     </view>
   </view>
   <view class=\\"test\\">test</view>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}\\"></view>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
   <button class=\\"bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3\\">...</button>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_l_20px_r_ {{flag=='p-_l_20px_r_'?'p-_l_20px_r_':'m-_l_20px_r_'}}\\"></view>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").

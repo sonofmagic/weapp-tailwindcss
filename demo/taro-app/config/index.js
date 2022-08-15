@@ -45,17 +45,17 @@ const config = {
     webpackChain(chain, webpack) {
       chain.merge({
         plugin: {
-          // install: {
-          //   plugin: TaroWeappTailwindcssWebpackPluginV5,
-          //   args: [
-          //     {
-          //       framework: 'react'
-          //       // cssPreflight: {
-          //       //   'box-sizing': false
-          //       // }
-          //     }
-          //   ]
-          // }
+          install: {
+            plugin: TaroWeappTailwindcssWebpackPluginV5,
+            args: [
+              {
+                framework: 'react'
+                // cssPreflight: {
+                //   'box-sizing': false
+                // }
+              }
+            ]
+          }
         }
       })
     }

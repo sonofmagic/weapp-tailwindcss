@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`first before,after content case 1`] = `
-".after_c_ml-0_dot_5::after {
+".after_c_ml-0_d_5::after {
   content: var(--tw-content);
   margin-left: 0.125rem;
 }
@@ -14,11 +14,11 @@ exports[`first before,after content case 1`] = `
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
-.after_c_content-_l__dy_\\\\view_dy__r_::after {
+.after_c_content-_bl__dq_\\\\view_dq__br_::after {
   --tw-content: \\"*\\";
   content: var(--tw-content);
 }
-.after_c_content-_l_\\\\view_r_::after {
+.after_c_content-_bl_\\\\view_br_::after {
   --tw-content: *;
   content: var(--tw-content);
 }

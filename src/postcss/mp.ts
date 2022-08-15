@@ -1,7 +1,7 @@
 import type { Rule, AtRule } from 'postcss'
 import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
-import type { InjectPreflight } from './preflight'
+// import type { InjectPreflight } from './preflight'
 function isSupportedRule (selector: string) {
   return !selector.includes(':hover')
 }
