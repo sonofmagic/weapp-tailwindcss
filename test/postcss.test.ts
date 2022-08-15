@@ -53,6 +53,17 @@ describe('first', () => {
     expect(result).toMatchSnapshot()
   })
 
+  it('before,after content case', async () => {
+    const testCase = await getCase('after-content.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'all',
+      customRuleCallback: () => {}
+    })
+    expect(result).toMatchSnapshot()
+  })
+
   it('new option for customRuleCallback kbone', async () => {
     const opt = getOptions(null)
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
@@ -94,18 +105,18 @@ describe('first', () => {
   it('shadow arbitrary values 0', async () => {
     // eslint-disable-next-line no-octal-escape
     const testCase = await getCase('shadow-arbitrary-0.css')
-    expect(replaceCss(testCase)).toBe('.shadow-_l_0px_2px_11px_0px_rgba_p_0_d_0_d_0_d_0_dot_4_q__r_{}')
+    expect(replaceCss(testCase)).toBe('.shadow-_bl_0px_2px_11px_0px_rgba_pl_0_co_0_co_0_co_0_d_4_qr__br_{}')
   })
 
   it('shadow arbitrary values 1', async () => {
     const testCase = await getCase('shadow-arbitrary-1.css')
-    expect(replaceCss(testCase)).toBe('.shadow-_l_0px_2px_11px_0px__h_00000a_r_{}')
+    expect(replaceCss(testCase)).toBe('.shadow-_bl_0px_2px_11px_0px__h_00000a_br_{}')
   })
 
   it("arbitrary before:content-['hello']", () => {
     const testCase = ".before\\:content-\\[\\'hello\\'\\]::before"
     const result = replaceCss(testCase)
-    expect(result).toBe('.before_c_content-_l__y_hello_y__r_::before')
+    expect(result).toBe('.before_c_content-_bl__q_hello_q__br_::before')
   })
 
   it('cssPreflightRange option view', () => {
@@ -128,5 +139,16 @@ describe('first', () => {
       customRuleCallback: () => {}
     })
     expect(result).toBe('::before,::after,view,:not(not){}')
+  })
+
+  it('should pseudo element', () => {
+    const testCase = '.after\\:content-\\[\\"\\*\\"\\]::after{}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {}
+    })
+    expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
   })
 })

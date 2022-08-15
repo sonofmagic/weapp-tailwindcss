@@ -1,5 +1,7 @@
 import { MappingChars2String as dic } from '@/dic'
 
+// export function arbitraryValuesReplacer (str: string) {}
+
 export function replaceWxml (original: string, keepEOL: boolean = false) {
   const res = original
     .replace(/\[/g, dic['['])
@@ -14,7 +16,10 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
     .replace(/%/g, dic['%'])
     .replace(/,/g, dic[','])
+    .replace(/\\/g, dic['\\'])
     .replace(/'/g, dic["'"])
+    .replace(/"/g, dic['"'])
+    .replace(/\*/g, dic['*'])
   if (keepEOL) {
     return res
   }

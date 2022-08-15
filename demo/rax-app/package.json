@@ -22,7 +22,6 @@
     "rax-view": "^2.0.0"
   },
   "devDependencies": {
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.0",
     "autoprefixer": "^10.4.4",
@@ -36,7 +35,7 @@
     "tailwindcss": "^3.1.6",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.7.1"
+    "weapp-tailwindcss-webpack-plugin": "^1.7.2"
   },
   "private": true,
   "originTemplate": "@rax-materials/scaffolds-app-ts"

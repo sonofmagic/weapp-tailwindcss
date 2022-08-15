@@ -11198,7 +11198,7 @@ postcss-reduce-transforms@^5.1.0:
 
 postcss-rem-to-responsive-pixel@^5.1.3:
   version "5.1.3"
-  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
+  resolved "https://registry.npmjs.org/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
   integrity sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==
 
 postcss-resolve-nested-selector@^0.1.1:
@@ -11208,7 +11208,7 @@ postcss-resolve-nested-selector@^0.1.1:
 
 postcss-rpx-transform@^1.0.1:
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
+  resolved "https://registry.npmjs.org/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
   integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
 
 postcss-safe-parser@^6.0.0:
@@ -13339,7 +13339,7 @@ table@^6.8.0:
 
 tailwindcss-rem2px-preset@^1.0.3:
   version "1.0.3"
-  resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
+  resolved "https://registry.npmjs.org/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
 tailwindcss@^3.1.6:
@@ -14214,15 +14214,15 @@ wcwidth@^1.0.1:
 
 weapp-ide-cli@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-1.0.0.tgz#5e267ca65c37aa821fbf6fa72c6d876401b37859"
+  resolved "https://registry.npmjs.org/weapp-ide-cli/-/weapp-ide-cli-1.0.0.tgz#5e267ca65c37aa821fbf6fa72c6d876401b37859"
   integrity sha512-4UOgl3SHOiIyOAEh/lnSRV8OLZUx9ZSPOBebPxSZyJ49EScNFtW5+V2GlYO3L48yfcXH5KRWBBWBMMY4lu3yQA==
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.7.1:
-  version "1.7.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.1.tgz#4dccf91941f8fa8f3aeec50470ea2becb01ea2ab"
-  integrity sha512-rn01tzA4Aa9TrV9ofLc5Q1DT2iyPo79uNqOiqlJjNOMU12w9bOB3O8qIht8cJAGQsvOKW7AIssUAjvYaIcY60A==
+weapp-tailwindcss-webpack-plugin@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.npmjs.org/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.2.tgz#7e15898599e367ebb6967feef5694aa270ca1c2f"
+  integrity sha512-WlauGU1mGGEVFAH0iSi36oieILvDZVYZZHUG7VXDlZfi3xF++RgDt/wessgIfNnT9TdVTaD3h/q8OhphvlkdBQ==
   dependencies:
     "@babel/generator" "7.18.12"
     "@babel/parser" "7.18.11"

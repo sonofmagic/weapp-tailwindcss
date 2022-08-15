@@ -71,6 +71,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "before",
+          "pathName": "pages/debug/before",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

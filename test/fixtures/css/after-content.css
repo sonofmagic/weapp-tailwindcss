@@ -1,0 +1,31 @@
+.after\:ml-0\.5::after {
+  content: var(--tw-content);
+  margin-left: 0.125rem;
+}
+.after\:ml-0::after {
+  content: var(--tw-content);
+  margin-left: 0;
+}
+.after\:text-red-500::after {
+  content: var(--tw-content);
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+.after\:content-\[\"\*\"\]::after {
+  --tw-content: "*";
+  content: var(--tw-content);
+}
+.after\:content-\[\*\]::after {
+  --tw-content: *;
+  content: var(--tw-content);
+}
+@media (prefers-color-scheme: dark) {
+  .after\:bg-zinc-800 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(39 39 42 / var(--tw-bg-opacity));
+  }
+  .after\:bg-green-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(34 197 94 / var(--tw-bg-opacity));
+  }
+}
