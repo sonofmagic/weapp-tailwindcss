@@ -109,7 +109,7 @@
     "typescript": "~4.0.0",
     "vue-template-compiler": "^2.6.11",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.7.2"
+    "weapp-tailwindcss-webpack-plugin": "^1.7.3-beta.0"
   },
   "browserslist": [
     "Android >= 4.4",
