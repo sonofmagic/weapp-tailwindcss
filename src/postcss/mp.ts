@@ -52,32 +52,14 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
   }
 }
 
-export function mpRulePreflight (node: Rule, options: StyleHandlerOptions) {
-  // console.log(node.selector)
+export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
   if (!isSupportedRule(node.selector)) {
     node.remove()
-    return
   }
-  // TODO
-  node.selector = node.selector.replace(/\*/g, 'view')
+}
+
+export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
   node.selector = cssSelectorReplacer(node.selector)
-
-  // node.walkDecls((decl) => {
-  //   if (decl.prop === 'visibility') {
-  //     switch (decl.value) {
-  //       case 'hidden':
-  //         decl.replaceWith(decl.clone({ value: 'collapse' }))
-  //         return
-  //     }
-  //   }
-
-  //   if (decl.prop === 'vertical-align') {
-  //     switch (decl.value) {
-  //       case 'middle':
-  //         decl.replaceWith(decl.clone({ value: 'center' }))
-  //     }
-  //   }
-  // })
 }
 
 export function mpAtRulePreflight (node: AtRule) {

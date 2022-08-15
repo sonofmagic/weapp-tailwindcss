@@ -151,4 +151,15 @@ describe('first', () => {
     })
     expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
   })
+
+  it('should * be replace as view etc', () => {
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {}
+    })
+    expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
+  })
 })
