@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.3 (2022-08-15)
+
+### Features
+
+- 允许用户使用 `replaceUniversalSelectorWith` 选项来自定义`css`全局选择器`*`的替换值 [issue[#81](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81)]
+
 ## 1.7.2 (2022-08-15)
 
 ### Fixed
