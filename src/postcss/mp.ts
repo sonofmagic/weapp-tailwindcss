@@ -18,11 +18,11 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
-  // .replace(/\*/g, 'view')
+  //
 
   // 变量注入和 preflight
   if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
-    node.selector = node.selector.replace(/\*/g, 'view')
+    // node.selector = node.selector.replace(/\*/g, 'view')
     const selectorParts = node.selector.split(',')
     // 没有 view 元素时，添加 view
     if (!selectorParts.includes('view')) {
@@ -52,13 +52,14 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
   }
 }
 
-export function mpRulePreflight (node: Rule) {
+export function mpRulePreflight (node: Rule, options: StyleHandlerOptions) {
   // console.log(node.selector)
   if (!isSupportedRule(node.selector)) {
     node.remove()
     return
   }
-
+  // TODO
+  node.selector = node.selector.replace(/\*/g, 'view')
   node.selector = cssSelectorReplacer(node.selector)
 
   // node.walkDecls((decl) => {
