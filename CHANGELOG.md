@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.2 (2022-08-15)
+
+### Fixed
+
+- 修复在伪元素中使用`*`自动被替换的问题 [#79](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/79)
+
+### Chore
+
+- 更改转义字典表，添加 `*`，`\\`和 `"` 的默认转义，规范化以前转义生成的`_[code]_`。
+
 ## 1.7.1 (2022-08-06)
 
 ### Chore
