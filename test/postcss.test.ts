@@ -17,7 +17,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
-      customRuleCallback: opt.customRuleCallback
+      customRuleCallback: opt.customRuleCallback,
+      replaceUniversalSelectorWith: opt.replaceUniversalSelectorWith
     })
     // const expected = await getCase('media1.result.css')
     // await putCase('media1.result.css', result)
@@ -44,7 +45,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
-      customRuleCallback: opt.customRuleCallback
+      customRuleCallback: opt.customRuleCallback,
+      replaceUniversalSelectorWith: opt.replaceUniversalSelectorWith
     })
     // const expected = await getCase('taro.build.result.css')
     // await putCase('taro.build.result.css', result)
@@ -59,7 +61,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
-      customRuleCallback: () => {}
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: 'view'
     })
     expect(result).toMatchSnapshot()
   })
@@ -81,9 +84,10 @@ describe('first', () => {
         //       .replace(/::after/, 'view::after')
         //       .replace(/::before/, 'view::before') // 'view,view::before,view::after'
         //   }
-        // }
+        // },
       },
-      cssPreflightRange: opt.cssPreflightRange
+      cssPreflightRange: opt.cssPreflightRange,
+      replaceUniversalSelectorWith: 'view'
     })
     // const expected = await getCase('kbone1.result.css')
     // await putCase('kbone1.result.css', result)
@@ -97,7 +101,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
-      customRuleCallback: () => {}
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: 'view'
     })
     expect(result).toBe('::before,::after,view{}')
   })
@@ -125,7 +130,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
-      customRuleCallback: () => {}
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: 'view'
     })
     expect(result).toBe('::before,::after,view{}')
   })
@@ -136,7 +142,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
-      customRuleCallback: () => {}
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: 'view'
     })
     expect(result).toBe('::before,::after,view,:not(not){}')
   })
@@ -147,7 +154,8 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
-      customRuleCallback: () => {}
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: 'view'
     })
     expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
   })
@@ -158,8 +166,33 @@ describe('first', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
-      customRuleCallback: () => {}
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: 'view'
     })
     expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
+  })
+
+  it('replaceUniversalSelectorWith option should * be replace as any string', () => {
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: '.happy'
+    })
+    expect(result).toBe('.aspect-w-16>.happy,.a>.b{aspect-ratio:1/1;}')
+  })
+
+  it('set replaceUniversalSelectorWith option to be false', () => {
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
 })

@@ -6,13 +6,13 @@ import type { Rule } from 'postcss'
 import type { StyleHandlerOptions } from '@/types'
 
 const createTransform = (options: StyleHandlerOptions) => {
+  const replaceFlag = options.replaceUniversalSelectorWith !== false
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector) => {
       // do something with the selector
-      // console.log(String(selector))
       // node.selector.replace(/\*/g, 'view')
-      if (selector.type === 'universal') {
-        selector.value = 'view'
+      if (selector.type === 'universal' && replaceFlag) {
+        selector.value = options.replaceUniversalSelectorWith as string
       }
     })
     // selectors.walkClasses((node) => {

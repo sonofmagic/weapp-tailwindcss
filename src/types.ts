@@ -18,7 +18,8 @@ export type CssPreflightOptions =
 type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight: InjectPreflight
-  cssPreflightRange: 'view' | 'all'
+  cssPreflightRange: 'view' | 'all',
+  replaceUniversalSelectorWith: string | false
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
@@ -58,6 +59,13 @@ export interface UserDefinedOptions {
   cssPreflightRange?: 'view' | 'all'
 
   /**
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
+   * @default 'view'
+   * @description 将css中的 '*' 选择器 (Universal) 替换为指定的字符串, false 为不转化
+   */
+  replaceUniversalSelectorWith?: string | false
+
+  /**
    * @description 是否禁用此插件，一般用于构建到多平台时使用
    */
   disabled?: boolean
@@ -89,7 +97,7 @@ export interface UserDefinedOptions {
   onEnd?: () => void
 }
 
-export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight'>
+export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith'>
 
 export interface TaroUserDefinedOptions extends UserDefinedOptions {
   framework: 'react' | 'vue' | 'vue3' | string

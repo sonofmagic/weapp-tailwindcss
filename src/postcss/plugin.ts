@@ -10,7 +10,7 @@ const postcssPlugin = 'postcss-weapp-tailwindcss-rename'
 export type PostcssWeappTailwindcssRename = PluginCreator<InternalPostcssOptions>
 
 const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions = {}) => {
-  const { cssPreflight, cssPreflightRange, customRuleCallback } = getOptions(options)
+  const { cssPreflight, cssPreflightRange, customRuleCallback, replaceUniversalSelectorWith } = getOptions(options)
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   // eslint-disable-next-line no-unused-vars
   // const { mainCssChunkMatcher } = getOptions<InternalPostcssOptions>(options)
@@ -32,7 +32,8 @@ const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions =
           cssInjectPreflight,
           cssPreflightRange,
           isMainChunk: true,
-          customRuleCallback
+          customRuleCallback,
+          replaceUniversalSelectorWith
         })
       })
     }
