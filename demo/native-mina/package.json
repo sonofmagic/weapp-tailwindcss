@@ -32,7 +32,6 @@
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.16.7",
     "@gfez/eslint-config-wechat-miniprogram": "^1.0.1",
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@types/lodash": "^4.14.180",
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.4",

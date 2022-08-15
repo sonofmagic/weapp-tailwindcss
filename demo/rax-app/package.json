@@ -22,7 +22,6 @@
     "rax-view": "^2.0.0"
   },
   "devDependencies": {
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.0",
     "autoprefixer": "^10.4.4",

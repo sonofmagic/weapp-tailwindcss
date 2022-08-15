@@ -37,7 +37,6 @@
     "@babel/plugin-transform-typescript": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
     "@babel/runtime-corejs3": "^7.18.9",
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@mpxjs/miniprogram-simulate": "^1.4.17",
     "@mpxjs/mpx-jest": "0.0.22",
     "@mpxjs/webpack-plugin": "^2.7.46",

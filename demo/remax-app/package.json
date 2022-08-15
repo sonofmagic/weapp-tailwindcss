@@ -20,7 +20,6 @@
     "remax": "^2.9.1"
   },
   "devDependencies": {
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "autoprefixer": "9",
     "cross-env": "^7.0.2",
     "postcss": "7",

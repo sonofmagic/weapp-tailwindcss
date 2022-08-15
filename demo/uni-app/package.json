@@ -87,7 +87,6 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "^2.0.1-33920220121003",
     "@dcloudio/webpack-uni-mp-loader": "^2.0.1-33920220121003",
     "@dcloudio/webpack-uni-pages-loader": "^2.0.1-33920220121003",
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "@types/tailwindcss": "^3.1.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "^4.5.17",

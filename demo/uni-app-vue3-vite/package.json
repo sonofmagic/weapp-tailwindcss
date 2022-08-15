@@ -58,7 +58,6 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050320220727002",
     "@dcloudio/uni-stacktracey": "3.0.0-alpha-3050320220727002",
     "@dcloudio/vite-plugin-uni": "3.0.0-alpha-3050320220727002",
-    "@icebreakers/weapp-tailwindcss-test-components": "^0.0.1",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
