@@ -53,6 +53,17 @@ describe('first', () => {
     expect(result).toMatchSnapshot()
   })
 
+  it('before,after content case', async () => {
+    const testCase = await getCase('after-content.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'all',
+      customRuleCallback: () => {}
+    })
+    expect(result).toMatchSnapshot()
+  })
+
   it('new option for customRuleCallback kbone', async () => {
     const opt = getOptions(null)
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)

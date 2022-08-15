@@ -48,5 +48,6 @@ export const MappingChars2String = {
   [SYMBOL_TABLE.COLON]: '_c_',
   [SYMBOL_TABLE.PERCENT]: '_pct_',
   [SYMBOL_TABLE.COMMA]: '_d_',
-  [SYMBOL_TABLE.QUOTE]: '_y_'
+  [SYMBOL_TABLE.QUOTE]: '_y_',
+  [SYMBOL_TABLE.DOUBLEQUOTE]: '_dy_'
 } as const

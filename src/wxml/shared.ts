@@ -1,5 +1,7 @@
 import { MappingChars2String as dic } from '@/dic'
 
+// export function arbitraryValuesReplacer (str: string) {}
+
 export function replaceWxml (original: string, keepEOL: boolean = false) {
   const res = original
     .replace(/\[/g, dic['['])
@@ -15,6 +17,7 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     .replace(/%/g, dic['%'])
     .replace(/,/g, dic[','])
     .replace(/'/g, dic["'"])
+    .replace(/"/g, dic['"'])
   if (keepEOL) {
     return res
   }

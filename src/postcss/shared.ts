@@ -17,5 +17,6 @@ export function cssSelectorReplacer (selector: string) {
       // .replace(/\\,/g, '_d_')
       .replace(/\\2c /g, dic[','])
       .replace(/\\'/g, dic["'"])
+      .replace(/\\"/g, dic['"'])
   )
 }
