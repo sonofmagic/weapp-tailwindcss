@@ -35,13 +35,14 @@
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
     "raw": "ts-node scripts/raw",
-    "demo:dev": "cd demo && yarn dev",
-    "demo:build": "cd demo && yarn build",
+    "demo:dev": "node scripts/demo/dev.js",
+    "demo:build": "node scripts/demo/build.js",
     "demo:e2e": "node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js",
     "demo:install-script": "node scripts/demo/install.js",
+    "demo:install-script:beta": "node scripts/demo/install.js --beta",
     "demo:remove-deps": "node scripts/demo/del.js",
-    "demo:remove-test-coms":"node scripts/demo/remove-test-coms.js"
+    "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js"
   },
   "repository": {
     "type": "git",
