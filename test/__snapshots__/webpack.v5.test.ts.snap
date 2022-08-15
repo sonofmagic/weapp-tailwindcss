@@ -2,7 +2,7 @@
 
 exports[`webpack5 plugin common: assets 1`] = `
 Object {
-  "index.css": "view, ::before, ::after {
+  "index.css": "view,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;

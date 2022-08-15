@@ -18,11 +18,11 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
-  // .replace(/\*/g, 'view')
+  //
 
   // 变量注入和 preflight
   if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
-    node.selector = node.selector.replace(/\*/g, 'view')
+    // node.selector = node.selector.replace(/\*/g, 'view')
     const selectorParts = node.selector.split(',')
     // 没有 view 元素时，添加 view
     if (!selectorParts.includes('view')) {
@@ -52,31 +52,14 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
   }
 }
 
-export function mpRulePreflight (node: Rule) {
-  // console.log(node.selector)
+export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
   if (!isSupportedRule(node.selector)) {
     node.remove()
-    return
   }
+}
 
+export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
   node.selector = cssSelectorReplacer(node.selector)
-
-  // node.walkDecls((decl) => {
-  //   if (decl.prop === 'visibility') {
-  //     switch (decl.value) {
-  //       case 'hidden':
-  //         decl.replaceWith(decl.clone({ value: 'collapse' }))
-  //         return
-  //     }
-  //   }
-
-  //   if (decl.prop === 'vertical-align') {
-  //     switch (decl.value) {
-  //       case 'middle':
-  //         decl.replaceWith(decl.clone({ value: 'center' }))
-  //     }
-  //   }
-  // })
 }
 
 export function mpAtRulePreflight (node: AtRule) {

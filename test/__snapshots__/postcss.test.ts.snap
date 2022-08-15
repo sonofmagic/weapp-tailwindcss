@@ -46,9 +46,7 @@ exports[`first css @media case 1`] = `
 `;
 
 exports[`first main chunk build error 1`] = `
-"view,
-::before,
-::after {
+"view,::before,::after {
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate: 0;
@@ -176,23 +174,23 @@ exports[`first main chunk build error 1`] = `
   justify-content: center;
 }
 
-.space-y-_l_1-dot-6rem_r_ > view + view {
+.space-y-_l_1-dot-6rem_r_>view + view {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
 
-.divide-x-_l_10px_r_ > view + view {
+.divide-x-_l_10px_r_>view + view {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 
-.divide-solid > view + view {
+.divide-solid>view + view {
   border-style: solid;
 }
 
-.divide-_l__h_010101_r_ > view + view {
+.divide-_l__h_010101_r_>view + view {
   --tw-divide-opacity: 1;
   border-color: rgb(1 1 1 / var(--tw-divide-opacity));
 }
@@ -222,8 +220,7 @@ exports[`first main chunk build error 1`] = `
   --tw-border-opacity: 0.44;
 }
 
-.bg-_l__h_123456_r_,
-.bg-pink-500 {
+.bg-_l__h_123456_r_,.bg-pink-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(18 52 86 / var(--tw-bg-opacity));
 }
@@ -257,8 +254,7 @@ exports[`first main chunk build error 1`] = `
   line-height: 0.9;
 }
 
-.text-_l__h_dddddd_r_,
-.text-black {
+.text-_l__h_dddddd_r_,.text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
@@ -267,8 +263,7 @@ exports[`first main chunk build error 1`] = `
   color: rgb(221 221 221 / var(--tw-text-opacity));
 }
 
-.text-_l__h_ffffff_r_,
-.text-white {
+.text-_l__h_ffffff_r_,.text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
@@ -292,109 +287,7 @@ exports[`first main chunk build error 1`] = `
 `;
 
 exports[`first new option for customRuleCallback kbone 1`] = `
-".h5-a,
-.h5-abbr,
-.h5-address,
-.h5-area,
-.h5-article,
-.h5-aside,
-.h5-audio,
-.h5-b,
-.h5-base,
-.h5-bdi,
-.h5-bdo,
-.h5-blockquote,
-.h5-big,
-.h5-body,
-.h5-br,
-.h5-button,
-.h5-canvas,
-.h5-caption,
-.h5-center,
-.h5-cite,
-.h5-code,
-.h5-col,
-.h5-colgroup,
-.h5-data,
-.h5-datalist,
-.h5-dd,
-.h5-del,
-.h5-dfn,
-.h5-dir,
-.h5-div,
-.h5-dl,
-.h5-dt,
-.h5-em,
-.h5-fieldset,
-.h5-figcaption,
-.h5-figure,
-.h5-footer,
-.h5-form,
-.h5-h1,
-.h5-h2,
-.h5-h3,
-.h5-h4,
-.h5-h5,
-.h5-h6,
-.h5-header,
-.h5-hgroup,
-.h5-hr,
-.h5-i,
-.h5-iframe,
-.h5-img,
-.h5-input,
-.h5-ins,
-.h5-kbd,
-.h5-label,
-.h5-legend,
-.h5-li,
-.h5-link,
-.h5-main,
-.h5-map,
-.h5-mark,
-.h5-menu,
-.h5-nav,
-.h5-ol,
-.h5-optgroup,
-.h5-option,
-.h5-output,
-.h5-p,
-.h5-param,
-.h5-pre,
-.h5-progress,
-.h5-q,
-.h5-s,
-.h5-samp,
-.h5-section,
-.h5-select,
-.h5-small,
-.h5-source,
-.h5-span,
-.h5-strong,
-.h5-sub,
-.h5-sup,
-.h5-table,
-.h5-tbody,
-.h5-td,
-.h5-textarea,
-.h5-tfoot,
-.h5-th,
-.h5-thead,
-.h5-time,
-.h5-title,
-.h5-tt,
-.h5-tr,
-.h5-track,
-.h5-u,
-.h5-ul,
-.h5-video,
-.h5-wbr,
-.h5-strike,
-.h5-details,
-.h5-summary,
-page,
-::after,
-::before,view {
+".h5-a,.h5-abbr,.h5-address,.h5-area,.h5-article,.h5-aside,.h5-audio,.h5-b,.h5-base,.h5-bdi,.h5-bdo,.h5-blockquote,.h5-big,.h5-body,.h5-br,.h5-button,.h5-canvas,.h5-caption,.h5-center,.h5-cite,.h5-code,.h5-col,.h5-colgroup,.h5-data,.h5-datalist,.h5-dd,.h5-del,.h5-dfn,.h5-dir,.h5-div,.h5-dl,.h5-dt,.h5-em,.h5-fieldset,.h5-figcaption,.h5-figure,.h5-footer,.h5-form,.h5-h1,.h5-h2,.h5-h3,.h5-h4,.h5-h5,.h5-h6,.h5-header,.h5-hgroup,.h5-hr,.h5-i,.h5-iframe,.h5-img,.h5-input,.h5-ins,.h5-kbd,.h5-label,.h5-legend,.h5-li,.h5-link,.h5-main,.h5-map,.h5-mark,.h5-menu,.h5-nav,.h5-ol,.h5-optgroup,.h5-option,.h5-output,.h5-p,.h5-param,.h5-pre,.h5-progress,.h5-q,.h5-s,.h5-samp,.h5-section,.h5-select,.h5-small,.h5-source,.h5-span,.h5-strong,.h5-sub,.h5-sup,.h5-table,.h5-tbody,.h5-td,.h5-textarea,.h5-tfoot,.h5-th,.h5-thead,.h5-time,.h5-title,.h5-tt,.h5-tr,.h5-track,.h5-u,.h5-ul,.h5-video,.h5-wbr,.h5-strike,.h5-details,.h5-summary,page,::after,::before,view {
   --tw-border-opacity: 1;
   border-color: rgba(229, 231, 235, var(--tw-border-opacity));
   --tw-ring-inset: var(--tw-empty, );
@@ -548,8 +441,7 @@ page,
   color: rgba(221, 221, 221, var(--tw-text-opacity))
 }
 
-.text-_l__h_ffffff_r_,
-.text-white {
+.text-_l__h_ffffff_r_,.text-white {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity))
 }

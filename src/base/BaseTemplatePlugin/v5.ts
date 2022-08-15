@@ -19,7 +19,20 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    const {
+      cssMatcher,
+      htmlMatcher,
+      mainCssChunkMatcher,
+      replaceUniversalSelectorWith,
+      cssPreflight,
+      cssPreflightRange,
+      customRuleCallback,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart
+    } = this.options
     if (disabled) {
       return
     }
@@ -45,7 +58,8 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
                 isMainChunk: mainCssChunkMatcher(file, this.appType),
                 cssInjectPreflight,
                 customRuleCallback,
-                cssPreflightRange
+                cssPreflightRange,
+                replaceUniversalSelectorWith
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)

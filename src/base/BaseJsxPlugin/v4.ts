@@ -24,7 +24,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, framework, cssPreflight, customRuleCallback, cssPreflightRange, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, framework, cssPreflight, customRuleCallback, cssPreflightRange, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
     if (disabled) {
       return
     }
@@ -78,7 +78,8 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
             isMainChunk: mainCssChunkMatcher(file, this.appType),
             cssInjectPreflight,
             customRuleCallback,
-            cssPreflightRange
+            cssPreflightRange,
+            replaceUniversalSelectorWith
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
