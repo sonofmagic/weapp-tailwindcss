@@ -1,4 +1,4 @@
-import type { Rule } from 'postcss'
+import { Rule, Declaration } from 'postcss'
 import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
 // import type { InjectPreflight } from './preflight'
@@ -19,10 +19,8 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
-  //
-
   // 变量注入和 preflight
-  if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
+  if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
     // node.selector = node.selector.replace(/\*/g, 'view')
     const selectorParts = node.selector.split(',')
     // 没有 view 元素时，添加 view
@@ -50,6 +48,18 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
     if (typeof options.cssInjectPreflight === 'function') {
       node.append(...options.cssInjectPreflight())
     }
+
+    const pseudoVarRule = new Rule({
+      // selectors: ['::before', '::after'],
+      selector: '::before,::after'
+    })
+    pseudoVarRule.append(
+      new Declaration({
+        prop: '--tw-content',
+        value: '""'
+      })
+    )
+    node.before(pseudoVarRule)
   }
 }
 

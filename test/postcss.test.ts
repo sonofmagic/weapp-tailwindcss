@@ -104,7 +104,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: 'view'
     })
-    expect(result).toBe('::before,::after,view{}')
+    expect(result).toMatchSnapshot()
   })
 
   it('shadow arbitrary values 0', async () => {
@@ -133,7 +133,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: 'view'
     })
-    expect(result).toBe('::before,::after,view{}')
+    expect(result).toMatchSnapshot()
   })
 
   it('cssPreflightRange option all', () => {
@@ -145,7 +145,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: 'view'
     })
-    expect(result).toBe('::before,::after,view,:not(not){}')
+    expect(result).toMatchSnapshot()
   })
 
   it('should pseudo element', () => {
