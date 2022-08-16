@@ -195,4 +195,28 @@ describe('first', () => {
     })
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
+
+  it(':hover should be remove', () => {
+    const testCase = '.a:hover{color:black;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('')
+  })
+
+  it('mutiple selectors :hover should be remove only', () => {
+    const testCase = '.a:hover,.b{color:black;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('.b{color:black;}')
+  })
 })

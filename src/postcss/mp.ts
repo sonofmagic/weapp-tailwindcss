@@ -52,11 +52,14 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
   }
 }
 
-export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
-  if (!isSupportedRule(node.selector)) {
-    node.remove()
-  }
-}
+/**
+ * @deprecated 已经在selectorParser做过了
+ */
+// export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
+//   if (!isSupportedRule(node.selector)) {
+//     node.remove()
+//   }
+// }
 
 export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
   node.selector = cssSelectorReplacer(node.selector)
