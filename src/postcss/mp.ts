@@ -1,10 +1,11 @@
-import type { Rule, AtRule } from 'postcss'
+import type { Rule } from 'postcss'
 import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
 // import type { InjectPreflight } from './preflight'
-function isSupportedRule (selector: string) {
-  return !selector.includes(':hover')
-}
+// function isSupportedRule (selector: string) {
+//   return !selector.includes(':hover')
+// }
+
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
@@ -52,9 +53,6 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
   }
 }
 
-/**
- * @deprecated 已经在selectorParser做过了
- */
 // export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
 //   if (!isSupportedRule(node.selector)) {
 //     node.remove()
@@ -65,8 +63,8 @@ export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
   node.selector = cssSelectorReplacer(node.selector)
 }
 
-export function mpAtRulePreflight (node: AtRule) {
-  // if (node.name === 'media') {
-  // }
-  // do nothing
-}
+// export function mpAtRulePreflight (node: AtRule) {
+// if (node.name === 'media') {
+// }
+// do nothing
+// }
