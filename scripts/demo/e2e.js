@@ -8,8 +8,8 @@ const demoDir = [
   'native-mina',
   'rax-app/build/wechat-miniprogram',
   'remax-app',
-  'taro-vue2-app',
-  'taro-vue3-app'
+  'taro-vue3-app',
+  'taro-vue2-app'
 ]
 
 async function main () {
