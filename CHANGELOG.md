@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.8.0 (2022-08-17)
+
+### Features
+
+- 添加 `tailwindcss` 默认伪元素的 `--tw-content` 变量初始值
+- 依赖处理方式改变，`postcss` 和 `postcss-selector-parser` 从编译时打入，变为安装时连带
+- 精细化的移除选择器，当发现不支持的伪类选择器时，原先的策略是把 `Rule` 整个移除，现在会遍历这个 `Rule` 的所有选择器，只把不支持的选择器的移除，当且仅当所有的选择器都被移除时，这个 `Rule` 才被整个移除
+
+### Fixed
+
+- 修复 `vite` 版本 `tailwindcss` 默认注入变量选择器 `undefined` 的问题
+
 ## 1.7.3 (2022-08-15)
 
 ### Features
