@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.8.0-beta.1",
+  "version": "1.8.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -39,10 +39,11 @@
     "demo:build": "node scripts/demo/build.js",
     "demo:e2e": "node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js",
-    "demo:install-script": "node scripts/demo/install.js",
-    "demo:install-script:beta": "node scripts/demo/install.js --beta",
+    "demo:install": "node scripts/demo/install.js",
+    "demo:install:beta": "node scripts/demo/install.js --beta",
     "demo:remove-deps": "node scripts/demo/del.js",
-    "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js"
+    "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js",
+    "sync": "open-cli https://npmmirror.com/sync/weapp-tailwindcss-webpack-plugin"
   },
   "repository": {
     "type": "git",
@@ -124,6 +125,7 @@
     "memfs": "^3.4.7",
     "miniprogram-automator": "^0.11.0",
     "object-hash": "^3.0.0",
+    "open-cli": "^7.0.1",
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.0.1",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
