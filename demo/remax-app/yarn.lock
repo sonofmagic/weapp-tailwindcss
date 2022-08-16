@@ -6243,7 +6243,7 @@ postcss-selector-parser@^5.0.0-rc.3, postcss-selector-parser@^5.0.0-rc.4:
     indexes-of "^1.0.1"
     uniq "^1.0.1"
 
-postcss-selector-parser@^6.0.0, postcss-selector-parser@^6.0.2, postcss-selector-parser@^6.0.6:
+postcss-selector-parser@^6.0.0, postcss-selector-parser@^6.0.10, postcss-selector-parser@^6.0.2, postcss-selector-parser@^6.0.6:
   version "6.0.10"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.10.tgz#79b61e2c0d1bfc2602d549e11d0876256f8df88d"
   integrity sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==
@@ -6291,6 +6291,15 @@ postcss@^8.3.5:
   version "8.4.14"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.14.tgz#ee9274d5622b4858c1007a74d76e42e56fd21caf"
   integrity sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
+postcss@^8.4.16:
+  version "8.4.16"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.16.tgz#33a1d675fac39941f5f445db0de4db2b6e01d43c"
+  integrity sha512-ipHE1XBvKzm5xI7hiHCZJCSugxvsdq2mPnsq5+UF+VHCjiBvtDrlxJfMBToWaP9D5XlgNmcFGqoHmUn0EYEaRQ==
   dependencies:
     nanoid "^3.3.4"
     picocolors "^1.0.0"
@@ -7904,15 +7913,17 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.3.tgz#4b3241ec580ba22dea158640012df2f49e770d5e"
-  integrity sha512-cejZHfM15nGbGkCuI3pZ267NvMRp7Ao6cNJfEe2hfabMoHxdTWgG/w5mlmx3AsrWIjEUr5OV+QKPe1+y4caRpQ==
+weapp-tailwindcss-webpack-plugin@^1.8.0-beta.0:
+  version "1.8.0-beta.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.8.0-beta.0.tgz#ced74473c79c488ec75295700a69b56dd1ee7158"
+  integrity sha512-TqneJwaOmmaz/1eITrtYeXHcBdx4DEgq+4FsbeoAHGhSkN2DoWsO+C4ELwOVSiFzYXiSXlomdKQ4gTf7smchjQ==
   dependencies:
     "@babel/generator" "7.18.12"
     "@babel/parser" "7.18.11"
     "@babel/traverse" "7.18.11"
     loader-utils "^2.0.2"
+    postcss "^8.4.16"
+    postcss-selector-parser "^6.0.10"
     webpack-sources "^3.2.3"
 
 webpack-bundle-analyzer@^3.8.0:

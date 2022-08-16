@@ -9066,6 +9066,15 @@ postcss@^8.4.14:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
+postcss@^8.4.16:
+  version "8.4.16"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.16.tgz#33a1d675fac39941f5f445db0de4db2b6e01d43c"
+  integrity sha512-ipHE1XBvKzm5xI7hiHCZJCSugxvsdq2mPnsq5+UF+VHCjiBvtDrlxJfMBToWaP9D5XlgNmcFGqoHmUn0EYEaRQ==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmmirror.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -11263,15 +11272,17 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.7.3.tgz#4b3241ec580ba22dea158640012df2f49e770d5e"
-  integrity sha512-cejZHfM15nGbGkCuI3pZ267NvMRp7Ao6cNJfEe2hfabMoHxdTWgG/w5mlmx3AsrWIjEUr5OV+QKPe1+y4caRpQ==
+weapp-tailwindcss-webpack-plugin@^1.8.0-beta.0:
+  version "1.8.0-beta.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.8.0-beta.0.tgz#ced74473c79c488ec75295700a69b56dd1ee7158"
+  integrity sha512-TqneJwaOmmaz/1eITrtYeXHcBdx4DEgq+4FsbeoAHGhSkN2DoWsO+C4ELwOVSiFzYXiSXlomdKQ4gTf7smchjQ==
   dependencies:
     "@babel/generator" "7.18.12"
     "@babel/parser" "7.18.11"
     "@babel/traverse" "7.18.11"
     loader-utils "^2.0.2"
+    postcss "^8.4.16"
+    postcss-selector-parser "^6.0.10"
     webpack-sources "^3.2.3"
 
 webpack-bundle-analyzer@^3.8.0:

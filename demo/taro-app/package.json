@@ -69,7 +69,7 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^4.7.2",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.7.3"
+    "weapp-tailwindcss-webpack-plugin": "^1.8.0-beta.0"
   },
   "engines": {
     "node": ">=12.0.0"
