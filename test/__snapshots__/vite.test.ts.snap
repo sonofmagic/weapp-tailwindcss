@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vite test vite common build 1`] = `
+Array [
+  Object {
+    "code": "const s=function(){const t=document.createElement(\\"link\\").relList;if(t&&t.supports&&t.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))n(e);new MutationObserver(e=>{for(const r of e)if(r.type===\\"childList\\")for(const o of r.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&n(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerpolicy&&(r.referrerPolicy=e.referrerpolicy),e.crossorigin===\\"use-credentials\\"?r.credentials=\\"include\\":e.crossorigin===\\"anonymous\\"?r.credentials=\\"omit\\":r.credentials=\\"same-origin\\",r}function n(e){if(e.ep)return;e.ep=!0;const r=i(e);fetch(e.href,r)}};s();
+",
+    "dynamicImports": Array [],
+    "exports": Array [],
+    "facadeModuleId": "G:/github2/weapp-tailwindcss-webpack-plugin/test/fixtures/vite/index.html",
+    "fileName": "assets/index.1de03ae5.js",
+    "implicitlyLoadedBefore": Array [],
+    "importedBindings": Object {},
+    "imports": Array [],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "modules": Object {
+      "G:/github2/weapp-tailwindcss-webpack-plugin/test/fixtures/vite/index.css": Object {
+        "code": "var index = '';",
+        "originalLength": 36,
+        "removedExports": Array [],
+        "renderedExports": Array [
+          "default",
+        ],
+        "renderedLength": 15,
+      },
+      "G:/github2/weapp-tailwindcss-webpack-plugin/test/fixtures/vite/index.html": Object {
+        "code": null,
+        "originalLength": 649,
+        "removedExports": Array [],
+        "renderedExports": Array [],
+        "renderedLength": 0,
+      },
+      "vite/modulepreload-polyfill": Object {
+        "code": "const p = function polyfill() {
+    const relList = document.createElement('link').relList;
+    if (relList && relList.supports && relList.supports('modulepreload')) {
+        return;
+    }
+    for (const link of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) {
+        processPreload(link);
+    }
+    new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.type !== 'childList') {
+                continue;
+            }
+            for (const node of mutation.addedNodes) {
+                if (node.tagName === 'LINK' && node.rel === 'modulepreload')
+                    processPreload(node);
+            }
+        }
+    }).observe(document, { childList: true, subtree: true });
+    function getFetchOpts(script) {
+        const fetchOpts = {};
+        if (script.integrity)
+            fetchOpts.integrity = script.integrity;
+        if (script.referrerpolicy)
+            fetchOpts.referrerPolicy = script.referrerpolicy;
+        if (script.crossorigin === 'use-credentials')
+            fetchOpts.credentials = 'include';
+        else if (script.crossorigin === 'anonymous')
+            fetchOpts.credentials = 'omit';
+        else
+            fetchOpts.credentials = 'same-origin';
+        return fetchOpts;
+    }
+    function processPreload(link) {
+        if (link.ep)
+            // ep marker = processed
+            return;
+        link.ep = true;
+        // prepopulate the load record
+        const fetchOpts = getFetchOpts(link);
+        fetch(link.href, fetchOpts);
+    }
+};__VITE_IS_MODERN__&&p();",
+        "originalLength": 1572,
+        "removedExports": Array [],
+        "renderedExports": Array [],
+        "renderedLength": 1572,
+      },
+    },
+    "name": "index",
+    "referencedFiles": Array [],
+    "type": "chunk",
+    "viteMetadata": Object {
+      "importedAssets": Set {},
+      "importedCss": Set {
+        "assets/index.89a4308c.css",
+      },
+    },
+  },
+  Object {
+    "fileName": "assets/index.89a4308c.css",
+    "isAsset": true,
+    "name": "index.css",
+    "source": ":before,:after{--tw-content: \\"\\" }view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}::-webkit-backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }
+",
+    "type": "asset",
+  },
+  Object {
+    "fileName": "index.html",
+    "isAsset": true,
+    "name": undefined,
+    "source": "<!DOCTYPE html>
+<html lang=\\"en\\">
+
+<head>
+  <meta charset=\\"UTF-8\\" />
+  <script>
+    var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
+      CSS.supports('top: constant(a)'))
+    document.write(
+      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+  </script>
+  <title></title>
+  <!--preload-links-->
+  <!--app-context-->
+  <script type=\\"module\\" crossorigin src=\\"/assets/index.1de03ae5.js\\"></script>
+  <link rel=\\"stylesheet\\" href=\\"/assets/index.89a4308c.css\\">
+</head>
+
+<body>
+  <div id=\\"app\\">
+    <!--app-html-->
+  </div>
+  
+</body>
+
+</html>",
+    "type": "asset",
+  },
+]
+`;

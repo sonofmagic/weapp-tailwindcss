@@ -1,7 +1,7 @@
 import postcss from 'postcss'
 
 import type { StyleHandlerOptions } from '@/types'
-import { commonChunkPreflight, removeUnsupportedRule, mpRulePreflight } from './mp'
+import { commonChunkPreflight, mpRulePreflight } from './mp'
 import { transformSync } from './selectorParser'
 // mpAtRulePreflight
 // const isMp = true
@@ -11,7 +11,7 @@ export function styleHandler (rawSource: string, options: StyleHandlerOptions) {
   const flag = typeof customRuleCallback === 'function'
   root.walk((node, idx) => {
     if (node.type === 'rule') {
-      removeUnsupportedRule(node, options)
+      // removeUnsupportedRule(node, options)
       transformSync(node, options)
       // if (isMp) {
       // 先处理工具类

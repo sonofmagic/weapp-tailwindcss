@@ -104,7 +104,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: 'view'
     })
-    expect(result).toBe('::before,::after,view{}')
+    expect(result).toMatchSnapshot()
   })
 
   it('shadow arbitrary values 0', async () => {
@@ -133,7 +133,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: 'view'
     })
-    expect(result).toBe('::before,::after,view{}')
+    expect(result).toMatchSnapshot()
   })
 
   it('cssPreflightRange option all', () => {
@@ -145,7 +145,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: 'view'
     })
-    expect(result).toBe('::before,::after,view,:not(not){}')
+    expect(result).toMatchSnapshot()
   })
 
   it('should pseudo element', () => {
@@ -194,5 +194,29 @@ describe('first', () => {
       replaceUniversalSelectorWith: false
     })
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
+  })
+
+  it(':hover should be remove', () => {
+    const testCase = '.a:hover{color:black;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('')
+  })
+
+  it('mutiple selectors :hover should be remove only', () => {
+    const testCase = '.a:hover,.b{color:black;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('.b{color:black;}')
   })
 })

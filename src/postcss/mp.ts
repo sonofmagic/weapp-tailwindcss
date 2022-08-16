@@ -1,10 +1,11 @@
-import type { Rule, AtRule } from 'postcss'
+import { Rule, Declaration } from 'postcss'
 import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
 // import type { InjectPreflight } from './preflight'
-function isSupportedRule (selector: string) {
-  return !selector.includes(':hover')
-}
+// function isSupportedRule (selector: string) {
+//   return !selector.includes(':hover')
+// }
+
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
@@ -18,10 +19,8 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
-  //
-
   // 变量注入和 preflight
-  if (/::before/.test(node.selector) && /::after/.test(node.selector)) {
+  if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
     // node.selector = node.selector.replace(/\*/g, 'view')
     const selectorParts = node.selector.split(',')
     // 没有 view 元素时，添加 view
@@ -49,21 +48,33 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
     if (typeof options.cssInjectPreflight === 'function') {
       node.append(...options.cssInjectPreflight())
     }
+
+    const pseudoVarRule = new Rule({
+      // selectors: ['::before', '::after'],
+      selector: '::before,::after'
+    })
+    pseudoVarRule.append(
+      new Declaration({
+        prop: '--tw-content',
+        value: '""'
+      })
+    )
+    node.before(pseudoVarRule)
   }
 }
 
-export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
-  if (!isSupportedRule(node.selector)) {
-    node.remove()
-  }
-}
+// export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
+//   if (!isSupportedRule(node.selector)) {
+//     node.remove()
+//   }
+// }
 
 export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
   node.selector = cssSelectorReplacer(node.selector)
 }
 
-export function mpAtRulePreflight (node: AtRule) {
-  // if (node.name === 'media') {
-  // }
-  // do nothing
-}
+// export function mpAtRulePreflight (node: AtRule) {
+// if (node.name === 'media') {
+// }
+// do nothing
+// }

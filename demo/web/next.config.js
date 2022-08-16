@@ -1,15 +1,15 @@
 
-const { WeappTailwindcssWebpackPlugin } = require('../../')
+// const { WeappTailwindcssWebpackPlugin } = require('../../')
 /**
  * @type {import('next').NextConfig} config
  */
 const config = {
   reactStrictMode: true,
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    config.plugins.push(new WeappTailwindcssWebpackPlugin())
+  // webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  //   config.plugins.push(new WeappTailwindcssWebpackPlugin())
     
-    return config
-  },
+  //   return config
+  // },
 }
 
 module.exports = config 
