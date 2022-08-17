@@ -19,7 +19,6 @@ Array [
     "modules": Object {
       "fixtures/vite/index.css": Object {
         "code": "var index = '';",
-        "originalLength": 37,
         "removedExports": Array [],
         "renderedExports": Array [
           "default",
@@ -28,7 +27,6 @@ Array [
       },
       "fixtures/vite/index.html": Object {
         "code": null,
-        "originalLength": 673,
         "removedExports": Array [],
         "renderedExports": Array [],
         "renderedLength": 0,
@@ -77,7 +75,6 @@ Array [
         fetch(link.href, fetchOpts);
     }
 };__VITE_IS_MODERN__&&p();",
-        "originalLength": 1572,
         "removedExports": Array [],
         "renderedExports": Array [],
         "renderedLength": 1572,

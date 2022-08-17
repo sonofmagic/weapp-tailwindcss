@@ -52,6 +52,8 @@ describe('vite test', () => {
     output[0].facadeModuleId = switch2relative(output[0].facadeModuleId)
     Object.keys(output[0].modules).forEach(x => {
       const item = output[0].modules[x]
+      // @ts-ignore
+      delete output[0].modules[x].originalLength
       if (path.isAbsolute(x)) {
         output[0].modules[switch2relative(x)] = item
         delete output[0].modules[x]
