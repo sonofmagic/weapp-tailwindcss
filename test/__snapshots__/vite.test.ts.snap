@@ -7,7 +7,7 @@ Array [
 ",
     "dynamicImports": Array [],
     "exports": Array [],
-    "facadeModuleId": "G:/github2/weapp-tailwindcss-webpack-plugin/test/fixtures/vite/index.html",
+    "facadeModuleId": "fixtures/vite/index.html",
     "fileName": "assets/index.1de03ae5.js",
     "implicitlyLoadedBefore": Array [],
     "importedBindings": Object {},
@@ -17,18 +17,18 @@ Array [
     "isImplicitEntry": false,
     "map": null,
     "modules": Object {
-      "G:/github2/weapp-tailwindcss-webpack-plugin/test/fixtures/vite/index.css": Object {
+      "fixtures/vite/index.css": Object {
         "code": "var index = '';",
-        "originalLength": 36,
+        "originalLength": 37,
         "removedExports": Array [],
         "renderedExports": Array [
           "default",
         ],
         "renderedLength": 15,
       },
-      "G:/github2/weapp-tailwindcss-webpack-plugin/test/fixtures/vite/index.html": Object {
+      "fixtures/vite/index.html": Object {
         "code": null,
-        "originalLength": 649,
+        "originalLength": 673,
         "removedExports": Array [],
         "renderedExports": Array [],
         "renderedLength": 0,
