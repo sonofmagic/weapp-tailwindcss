@@ -51,5 +51,6 @@ export const MappingChars2String = {
   [SYMBOL_TABLE.COMMA]: '_co_',
   [SYMBOL_TABLE.QUOTE]: '_q_',
   [SYMBOL_TABLE.DOUBLEQUOTE]: '_dq_',
-  [SYMBOL_TABLE.ASTERISK]: '_a_'
+  [SYMBOL_TABLE.ASTERISK]: '_a_',
+  [SYMBOL_TABLE.AMPERSAND]: '_am_'
 } as const
