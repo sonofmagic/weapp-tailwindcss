@@ -1,3 +1,3 @@
-import plugin from './dist/types/postcss/plugin'
-export * from './dist/types/postcss/plugin'
+import plugin from './types/postcss/plugin'
+export * from './types/postcss/plugin'
 export default plugin
