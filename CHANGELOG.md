@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.1 (2022-08-22)
+
+### Fixed
+
+- [using-arbitrary-variants](https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants) 自定义选择器类名支持与修复 [[#84](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/84)]
+
 ## 1.8.0 (2022-08-17)
 
 ### Features
