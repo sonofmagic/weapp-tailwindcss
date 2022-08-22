@@ -1,3 +1,3 @@
-import plugin from './dist/types/framework/vite'
-export * from './dist/types/framework/vite'
+import plugin from './types/framework/vite'
+export * from './types/framework/vite'
 export default plugin
