@@ -9,6 +9,23 @@ const getCase = createGetCase(cssCasePath)
 const putCase = createPutCase(cssCasePath)
 
 describe('first', () => {
+  it('shadow arbitrary values 0', async () => {
+    // eslint-disable-next-line no-octal-escape
+    const testCase = await getCase('shadow-arbitrary-0.css')
+    expect(replaceCss(testCase)).toBe('.shadow-_bl_0px_2px_11px_0px_rgba_pl_0_co_0_co_0_co_0_d_4_qr__br_{}')
+  })
+
+  it('shadow arbitrary values 1', async () => {
+    const testCase = await getCase('shadow-arbitrary-1.css')
+    expect(replaceCss(testCase)).toBe('.shadow-_bl_0px_2px_11px_0px__h_00000a_br_{}')
+  })
+
+  it("arbitrary before:content-['hello']", () => {
+    const testCase = ".before\\:content-\\[\\'hello\\'\\]::before"
+    const result = replaceCss(testCase)
+    expect(result).toBe('.before_c_content-_bl__q_hello_q__br_::before')
+  })
+
   it('css @media case', async () => {
     const opt = getOptions(null)
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
@@ -107,23 +124,6 @@ describe('first', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('shadow arbitrary values 0', async () => {
-    // eslint-disable-next-line no-octal-escape
-    const testCase = await getCase('shadow-arbitrary-0.css')
-    expect(replaceCss(testCase)).toBe('.shadow-_bl_0px_2px_11px_0px_rgba_pl_0_co_0_co_0_co_0_d_4_qr__br_{}')
-  })
-
-  it('shadow arbitrary values 1', async () => {
-    const testCase = await getCase('shadow-arbitrary-1.css')
-    expect(replaceCss(testCase)).toBe('.shadow-_bl_0px_2px_11px_0px__h_00000a_br_{}')
-  })
-
-  it("arbitrary before:content-['hello']", () => {
-    const testCase = ".before\\:content-\\[\\'hello\\'\\]::before"
-    const result = replaceCss(testCase)
-    expect(result).toBe('.before_c_content-_bl__q_hello_q__br_::before')
-  })
-
   it('cssPreflightRange option view', () => {
     const testCase = '::before,::after{}'
     const result = styleHandler(testCase, {
@@ -218,5 +218,81 @@ describe('first', () => {
       replaceUniversalSelectorWith: false
     })
     expect(result).toBe('.b{color:black;}')
+  })
+
+  it('arbitrary values case 0', async () => {
+    const testCase = await getCase('arbitrary-variants-0.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe(
+      '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
+    )
+  })
+
+  it('arbitrary values case 1', async () => {
+    const testCase = await getCase('arbitrary-variants-1.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('\n')
+  })
+
+  it('arbitrary values case 2', async () => {
+    const testCase = await getCase('arbitrary-variants-2.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe(
+      '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
+    )
+  })
+
+  it('arbitrary values case 3', async () => {
+    const testCase = await getCase('arbitrary-variants-3.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
+  })
+
+  it('arbitrary values case 4', async () => {
+    const testCase = await getCase('arbitrary-variants-4.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n')
+  })
+
+  it('arbitrary values case 5', async () => {
+    const testCase = await getCase('arbitrary-variants-5.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n')
   })
 })

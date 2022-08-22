@@ -1,0 +1,5 @@
+@media (any-hover: hover) {
+  .\[\@media\(any-hover\:hover\)\{\&\:hover\}\]\:opacity-100:focus {
+    opacity: 1;
+  }
+}

@@ -1,5 +1,14 @@
 <template>
   <view class="content">
+    <view class="[&_.u-count-down\_\_text]:!text-red-400">
+      <view></view>
+      <view></view>
+      <view></view>
+      <view></view>
+      <view>
+        <view class="u-count-down__text">u-count-down__text</view>
+      </view>
+    </view>
     <view>当前系统主题:{{ themeRef }}</view>
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
@@ -9,13 +18,9 @@
     <view class="text-[var(--my-var)]">text-[var(--my-var)]</view>
     <div class="text-[length:var(--my-var)]">...</div>
     <div class="text-[color:var(--my-var)]">...</div>
-    <button
-      class="!bg-green-500 !sr-onlytext-white"
-      :class="{
-        'opacity-50': disabled,
-      }"
-      :disabled="disabled"
-    >
+    <button class="!bg-green-500 !sr-onlytext-white" :class="{
+      'opacity-50': disabled,
+    }" :disabled="disabled">
       disable
     </button>
     <view class="test">test</view>
@@ -33,14 +38,14 @@
     <view class="p-[20px] -mt-2 mb-[-20px]">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
     <view class="space-y-[1.6rem]">
       <view class="w-[300rpx] text-black text-opacity-[0.19]">w-[300rpx] text-black text-opacity-[0.19]</view>
-      <view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+      <view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">min-w-[300rpx] max-h-[100px] text-[20px]
+        leading-[0.9]</view>
       <view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
       <view
         class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]"
-        :class="['text-[#123456]', flag ? 'bg-[#666600]' : 'bg-[#410000]']"
-        >Hello</view
-      >
-      <view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+        :class="['text-[#123456]', flag ? 'bg-[#666600]' : 'bg-[#410000]']">Hello</view>
+      <view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">border-[10px] border-[#098765]
+        border-solid border-opacity-[0.44]</view>
       <view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid">
         <div>1</div>
         <div>2</div>
@@ -79,7 +84,7 @@ uni.onThemeChange(({ theme }: { theme: 'dark' | 'light' }) => {
 });
 
 onBeforeUnmount(() => {
-  uni.offThemeChange(() => {});
+  uni.offThemeChange(() => { });
 });
 </script>
 
@@ -88,6 +93,7 @@ page {
   --primary-color-hex: #4268ea;
   --primary-color-bg: yellow;
 }
+
 page::before {
   content: '';
   @apply w-10 h-5 bg-green-500 inline-block;

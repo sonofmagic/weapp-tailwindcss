@@ -1,0 +1,5 @@
+.\[\&\:nth-child\(3\)\]\:underline:nth-child(3),
+.underline {
+  -webkit-text-decoration-line: underline;
+  text-decoration-line: underline;
+}

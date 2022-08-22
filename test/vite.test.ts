@@ -3,7 +3,16 @@ import type { RollupOutput } from 'rollup'
 import vwt from '@/framework/vite/index'
 import postcssWeappTailwindcssRename from '@/postcss/plugin'
 import path from 'path'
+import { switch2relative } from './util'
+function noop () {}
+function keepSilent () {
+  console.log = noop
+  console.warn = noop
+}
 describe('vite test', () => {
+  beforeEach(() => {
+    keepSilent()
+  })
   it('vite common build', async () => {
     // 注意： 打包成 h5 和 app 都不需要开启插件配置
     const isH5 = process.env.UNI_PLATFORM === 'h5'
@@ -45,6 +54,20 @@ describe('vite test', () => {
         write: false
       }
     })) as RollupOutput
+
+    const output = res.output
+    // @ts-ignore
+    output[0].facadeModuleId = switch2relative(output[0].facadeModuleId)
+    Object.keys(output[0].modules).forEach((x) => {
+      const item = output[0].modules[x]
+      // @ts-ignore
+      delete output[0].modules[x].originalLength
+      if (path.isAbsolute(x)) {
+        output[0].modules[switch2relative(x)] = item
+        delete output[0].modules[x]
+      }
+    })
+
     expect(res.output).toMatchSnapshot()
   })
 })

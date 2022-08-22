@@ -48,3 +48,11 @@ export const matchAll = (regex: RegExp, str: string) => {
   } while (res !== null)
   return arr
 }
+
+export function switch2relative (p:string):string {
+  let str = p
+  if (path.isAbsolute(p)) {
+    str = path.relative(__dirname, p)
+  }
+  return str.replace(/\\/g, '/')
+}
