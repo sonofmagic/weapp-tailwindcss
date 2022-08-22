@@ -1,0 +1,5 @@
+@supports (display: grid) {
+  .\[\@supports\(display\:grid\)\]\:grid {
+    text-decoration-style: underline;
+  }
+}

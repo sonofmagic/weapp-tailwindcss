@@ -21,6 +21,9 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     .replace(/"/g, dic['"'])
     .replace(/\*/g, dic['*'])
     .replace(/&/g, dic['&'])
+    .replace(/@/g, dic['@'])
+    .replace(/{/g, dic['{'])
+    .replace(/}/g, dic['}'])
   if (keepEOL) {
     return res
   }
