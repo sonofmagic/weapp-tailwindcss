@@ -229,7 +229,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false
     })
-    expect(result).toBe(
+    expect(result.replace(/\r\n/g, '\n')).toBe(
       '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
     )
   })
@@ -243,7 +243,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false
     })
-    expect(result).toBe('\n')
+    expect(result.replace(/\r\n/g, '\n')).toBe('\n')
   })
 
   it('arbitrary values case 2', async () => {
@@ -255,7 +255,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false
     })
-    expect(result).toBe(
+    expect(result.replace(/\r\n/g, '\n')).toBe(
       '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
     )
   })
@@ -269,7 +269,7 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false
     })
-    expect(result).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
+    expect(result.replace(/\r\n/g, '\n')).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
   })
 
   it('arbitrary values case 4', async () => {
@@ -281,7 +281,9 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false
     })
-    expect(result).toBe('@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n')
+    expect(result.replace(/\r\n/g, '\n')).toBe(
+      '@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n'
+    )
   })
 
   it('arbitrary values case 5', async () => {
@@ -293,6 +295,8 @@ describe('first', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false
     })
-    expect(result).toBe('@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n')
+    expect(result.replace(/\r\n/g, '\n')).toBe(
+      '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n'
+    )
   })
 })
