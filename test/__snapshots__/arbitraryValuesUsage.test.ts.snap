@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`all arbitrary values usages ArbitraryVariants Selectors 1`] = `"_bl__am__c_nth-child_pl_3_qr__br__c_underline"`;
+
+exports[`all arbitrary values usages ArbitraryVariants Selectors 2`] = `"lg_c__bl__am__c_nth-child_pl_3_qr__br__c_hover_c_underline"`;
+
+exports[`all arbitrary values usages ArbitraryVariants Selectors 3`] = `"_bl__am__p_br__c_mt-4"`;
+
+exports[`all arbitrary values usages ArbitraryVariants Selectors 4`] = `"_bl__at_supports_pl_display_c_grid_qr__br__c_grid"`;
+
+exports[`all arbitrary values usages ArbitraryVariants Selectors 5`] = `"_bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100"`;
+
 exports[`all arbitrary values usages Backgrounds Background Color 1`] = `"bg-_bl__h_50d71e_br_"`;
 
 exports[`all arbitrary values usages Backgrounds Background Image 1`] = `"bg-_bl_url_pl__q__s_img_s_hero-pattern_d_svg_q__qr__br_"`;
