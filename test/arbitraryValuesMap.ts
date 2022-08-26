@@ -1,4 +1,13 @@
 export const arbitraryValuesMap = {
+  ArbitraryVariants: {
+    Selectors: [
+      '[&:nth-child(3)]:underline',
+      'lg:[&:nth-child(3)]:hover:underline',
+      '[&_p]:mt-4',
+      '[@supports(display:grid)]:grid',
+      '[@media(any-hover:hover){&:hover}]:opacity-100'
+    ]
+  },
   Layout: {
     'Aspect Ratio': ['aspect-[4/3]'],
     Columns: ['columns-[10rem]'],
