@@ -109,6 +109,7 @@
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
     "autoprefixer": "^10.4.8",
+    "chalk": "^5.0.1",
     "cross-env": "^7.0.3",
     "defu": "^6.0.0",
     "del": "^6.1.1",
