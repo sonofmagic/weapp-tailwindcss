@@ -1,24 +1,9 @@
 import path from 'path'
-import { getCompiler5, compile } from './helpers'
-import optimizer from '@/mangle/optimize'
-import type { Compiler, Configuration } from 'webpack'
-import type { IMangleOptions } from '@/types'
+import { getCompiler5, compile, readAssets, getErrors, getWarnings } from './helpers'
+import type { Configuration } from 'webpack'
 import ClassGenerator from '@/mangle/classGenerator'
-class ManglePlugin {
-  public opts: IMangleOptions
-  constructor (opts: IMangleOptions = {}) {
-    this.opts = opts
-  }
+import { ManglePlugin } from '@/mangle/plugin'
 
-  apply (compiler: Compiler) {
-    compiler.hooks.compilation.tap('ManglePluginHooks', (compilation) => {
-      const optimize = optimizer(compiler, compilation, this.opts)
-      compilation.hooks.processAssets.tap('WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks', (chunks) => {
-        optimize(chunks)
-      })
-    })
-  }
-}
 const webpackMajorVersion = Number(require('webpack/package.json').version.split('.')[0])
 // if (webpackMajorVersion < 4) {
 //   const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin')
@@ -29,59 +14,39 @@ const OUTPUT_DIR = path.join(__dirname, './dist')
 const testPlugin = async (webpackConfig: Configuration, expectedResults: (string | RegExp)[], expectErrors?: boolean, expectWarnings?: boolean) => {
   if (webpackMajorVersion >= 4) {
     webpackConfig.mode = 'development'
-    // @ts-ignore
-    if (webpackConfig.module && webpackConfig.module.loaders) {
-      // @ts-ignore
-      webpackConfig.module.rules = webpackConfig.module.loaders
-      // @ts-ignore
-      delete webpackConfig.module.loaders
-    }
+    webpackConfig.devtool = false
   }
-  // if (webpackConfig.__commonsChunk) {
-  //   if (webpackMajorVersion < 4) {
-  //     webpackConfig.plugins = webpackConfig.plugins || []
-  //     webpackConfig.plugins.unshift(new CommonsChunkPlugin(webpackConfig.__commonsChunk))
-  //   } else {
-  //     webpackConfig.optimization = transformCommonChunkConfigToOptimization(webpackConfig.__commonsChunk)
-  //   }
-  //   delete webpackConfig.__commonsChunk
-  // }
   const compiler = getCompiler5(webpackConfig)
 
   const stats = await compile(compiler)
-  const compilationErrors = (stats.compilation.errors || []).join('\n')
+  const compilationErrors = getErrors(stats).join('\n')
   if (expectErrors) {
     expect(compilationErrors).not.toBe('')
   } else {
     expect(compilationErrors).toBe('')
   }
-  const compilationWarnings = (stats.compilation.warnings || []).join('\n')
+  const compilationWarnings = getWarnings(stats).join('\n')
   if (expectWarnings) {
     expect(compilationWarnings).not.toBe('')
   } else {
     expect(compilationWarnings).toBe('')
   }
-  // @ts-ignore
-  // const outputFileExists = fs.existsSync(path.join(OUTPUT_DIR, webpackConfig.output.filename))
-  // expect(outputFileExists).toBe(true)
-  // if (!outputFileExists) {
-  //   return
-  // }
-  // @ts-ignore
-  // const content = fs.readFileSync(path.join(OUTPUT_DIR, webpackConfig.output.filename)).toString()
-  // for (let i = 0; i < expectedResults.length; i++) {
-  //   const expectedResult = expectedResults[i]
-  //   if (expectedResult instanceof RegExp) {
-  //     expect(content).toMatch(expectedResult)
-  //   } else {
-  //     expect(content).toContain(expectedResult)
-  //   }
-  // }
+  const assets = readAssets(compiler, stats)
+  const filename = webpackConfig?.output?.filename as string
+  const content = assets[filename].replace(/\\r\\n/g, '\\n')
+  for (let i = 0; i < expectedResults.length; i++) {
+    const expectedResult = expectedResults[i]
+    if (expectedResult instanceof RegExp) {
+      expect(content).toMatch(expectedResult)
+    } else {
+      expect(content).toContain(expectedResult)
+    }
+  }
 }
 
-const defaultCssClassRegExp = '[cl]-[a-z][a-zA-Z0-9_]*'
-
 describe('ManglePlugin', () => {
+  const defaultCssClassRegExp = '[cl]-[a-z][a-zA-Z0-9_]*'
+
   it('replace a css class', async () => {
     await testPlugin(
       {
@@ -97,7 +62,7 @@ describe('ManglePlugin', () => {
           })
         ]
       },
-      ['<p class=\\"a\\">l-a</p>']
+      ['<p class="a">l-a</p>']
     )
   })
 
@@ -130,7 +95,7 @@ describe('ManglePlugin', () => {
           })
         ]
       },
-      [".a {\\\\n  width: '100%';\\\\n}", '<div class=\\\\\\"a\\\\\\">', '<p class=\\"a b a\\"><div /><a class=\\"b\\">l-a</p>']
+      [".a {\\n  width: '100%';\\n}", '<div class=\\"a\\">', '<p class="a b a"><div /><a class="b">l-a</p>']
     )
   })
 
@@ -164,7 +129,7 @@ describe('ManglePlugin', () => {
           })
         ]
       },
-      ['<div class=\\\\\\"a xs:a md:b\\\\\\">\\\\n      <p>l-a</p>\\\\n      <p>md:l-b</p>\\\\n    </div>']
+      ['<div class=\\"a xs:a md:b\\">\\n      <p>l-a</p>\\n      <p>md:l-b</p>\\n    </div>']
     )
   })
 
@@ -250,7 +215,7 @@ describe('ManglePlugin', () => {
           })
         ]
       },
-      ['<p class=\\"c1\\">hoge-a<div class=\\"b c1\\">CASE 4</div></p>']
+      ['<p class="c1">hoge-a<div class="b c1">CASE 4</div></p>']
     )
   })
 })
