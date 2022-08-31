@@ -1,5 +1,15 @@
 @import 'share';
 
+.MANGLE__1234567890{
+  @apply text-red-500;
+}
+.MANGLE__qwertyuiopasdfghjklzxcvbnm{
+  @apply text-green-500;
+}
+.MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM{
+  @apply text-yellow-500;
+}
+
 .motto {
   @extend %center-flex;
   @apply mt-[40rpx];

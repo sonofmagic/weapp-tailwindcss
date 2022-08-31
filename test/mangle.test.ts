@@ -1,8 +1,9 @@
 import path from 'path'
-import { getCompiler5, compile, readAssets, getErrors, getWarnings } from './helpers'
+import { getCompiler5, getCompiler4, compile, readAssets, getErrors, getWarnings } from './helpers'
 import type { Configuration } from 'webpack'
 import ClassGenerator from '@/mangle/classGenerator'
-import { ManglePlugin } from '@/mangle/plugin'
+import { ManglePluginV5 } from '@/mangle/v5/plugin'
+import { ManglePluginV4 } from '@/mangle/v4/plugin'
 
 const webpackMajorVersion = Number(require('webpack/package.json').version.split('.')[0])
 // if (webpackMajorVersion < 4) {
@@ -11,41 +12,53 @@ const webpackMajorVersion = Number(require('webpack/package.json').version.split
 
 const OUTPUT_DIR = path.join(__dirname, './dist')
 
-const testPlugin = async (webpackConfig: Configuration, expectedResults: (string | RegExp)[], expectErrors?: boolean, expectWarnings?: boolean) => {
-  if (webpackMajorVersion >= 4) {
-    webpackConfig.mode = 'development'
-    webpackConfig.devtool = false
-  }
-  const compiler = getCompiler5(webpackConfig)
+// const PluginMap: Record<number, typeof ManglePluginV4 | typeof ManglePluginV5> = {
+//   4: ManglePluginV4,
+//   5: ManglePluginV5
+// }
+describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
+  const ManglePlugin = webpackVersion === 4 ? ManglePluginV4 : ManglePluginV5
+  const defaultCssClassRegExp = '[cl]-[a-z][a-zA-Z0-9_]*'
+  const styleLoader = webpackVersion === 4 ? 'style-loader2' : 'style-loader'
+  const htmlLoader = webpackVersion === 4 ? 'html-loader1' : 'html-loader'
+  const cssLoader = webpackVersion === 4 ? 'css-loader3' : 'css-loader'
+  const getCompiler = webpackVersion === 4 ? getCompiler4 : getCompiler5
 
-  const stats = await compile(compiler)
-  const compilationErrors = getErrors(stats).join('\n')
-  if (expectErrors) {
-    expect(compilationErrors).not.toBe('')
-  } else {
-    expect(compilationErrors).toBe('')
-  }
-  const compilationWarnings = getWarnings(stats).join('\n')
-  if (expectWarnings) {
-    expect(compilationWarnings).not.toBe('')
-  } else {
-    expect(compilationWarnings).toBe('')
-  }
-  const assets = readAssets(compiler, stats)
-  const filename = webpackConfig?.output?.filename as string
-  const content = assets[filename].replace(/\\r\\n/g, '\\n')
-  for (let i = 0; i < expectedResults.length; i++) {
-    const expectedResult = expectedResults[i]
-    if (expectedResult instanceof RegExp) {
-      expect(content).toMatch(expectedResult)
+  const testPlugin = async (webpackConfig: Configuration, expectedResults: (string | RegExp)[], expectErrors?: boolean, expectWarnings?: boolean) => {
+    if (webpackMajorVersion >= 4) {
+      webpackConfig.mode = 'development'
+      webpackConfig.devtool = false
+    }
+
+    // @ts-ignore
+    const compiler = getCompiler(webpackConfig)
+    // @ts-ignore
+    const stats = await compile(compiler)
+    const compilationErrors = getErrors(stats).join('\n')
+    if (expectErrors) {
+      expect(compilationErrors).not.toBe('')
     } else {
-      expect(content).toContain(expectedResult)
+      expect(compilationErrors).toBe('')
+    }
+    const compilationWarnings = getWarnings(stats).join('\n')
+    if (expectWarnings) {
+      expect(compilationWarnings).not.toBe('')
+    } else {
+      expect(compilationWarnings).toBe('')
+    }
+    // @ts-ignore
+    const assets = readAssets(compiler, stats)
+    const filename = webpackConfig?.output?.filename as string
+    const content = assets[filename].replace(/\\r\\n/g, '\\n')
+    for (let i = 0; i < expectedResults.length; i++) {
+      const expectedResult = expectedResults[i]
+      if (expectedResult instanceof RegExp) {
+        expect(content).toMatch(expectedResult)
+      } else {
+        expect(content).toContain(expectedResult)
+      }
     }
   }
-}
-
-describe('ManglePlugin', () => {
-  const defaultCssClassRegExp = '[cl]-[a-z][a-zA-Z0-9_]*'
 
   it('replace a css class', async () => {
     await testPlugin(
@@ -56,6 +69,7 @@ describe('ManglePlugin', () => {
           filename: 'case1.js'
         },
         plugins: [
+          // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
             log: true
@@ -78,17 +92,18 @@ describe('ManglePlugin', () => {
           rules: [
             {
               test: /\.css$/,
-              use: ['style-loader', 'css-loader']
+              use: [styleLoader, cssLoader]
             },
             {
               test: /\.html$/,
               use: {
-                loader: 'html-loader'
+                loader: htmlLoader
               }
             }
           ]
         },
         plugins: [
+          // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
             log: true
@@ -111,17 +126,18 @@ describe('ManglePlugin', () => {
           rules: [
             {
               test: /\.css$/,
-              use: ['style-loader', 'css-loader']
+              use: [styleLoader, cssLoader]
             },
             {
               test: /\.html$/,
               use: {
-                loader: 'html-loader'
+                loader: htmlLoader
               }
             }
           ]
         },
         plugins: [
+          // @ts-ignore
           new ManglePlugin({
             classNameRegExp: '(xs:|md:)?[cl]-[a-z][a-zA-Z0-9_]*',
             ignorePrefix: ['xs:', 'md:'],
@@ -199,6 +215,7 @@ describe('ManglePlugin', () => {
           filename: 'case4.js'
         },
         plugins: [
+          // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
             log: true,

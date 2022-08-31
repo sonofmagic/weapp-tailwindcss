@@ -28,6 +28,28 @@ export type StyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
 } & RequiredStyleHandlerOptions
 
+export interface RawSource {
+  start: number
+  end: number
+  raw: string
+  // '' 直接 remove {{}}
+  source?: string
+}
+
+export interface IMangleContextClass {
+  name: string
+  usedBy: any[]
+}
+
+export interface IMangleOptions {
+  classNameRegExp?: string
+  reserveClassName?: string[]
+  ignorePrefix?: string[]
+  ignorePrefixRegExp?: string
+  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
+  log?: boolean
+}
+
 export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
@@ -95,32 +117,14 @@ export interface UserDefinedOptions {
    * @description 结束处理时调用
    */
   onEnd?: () => void
+  /**
+   * @description 是否混淆class,用于缩短replace后产生的class的长度 MANGLE__
+   */
+  mangle?: IMangleOptions | boolean
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith'>
 
 export interface TaroUserDefinedOptions extends UserDefinedOptions {
   framework: 'react' | 'vue' | 'vue3' | string
-}
-
-export interface RawSource {
-  start: number
-  end: number
-  raw: string
-  // '' 直接 remove {{}}
-  source?: string
-}
-
-export interface IMangleContextClass {
-  name: string
-  usedBy: any[]
-}
-
-export interface IMangleOptions {
-  classNameRegExp?: string
-  reserveClassName?: string[]
-  ignorePrefix?: string[]
-  ignorePrefixRegExp?: string
-  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
-  log?: boolean
 }

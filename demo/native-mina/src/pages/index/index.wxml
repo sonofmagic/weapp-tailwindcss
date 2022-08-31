@@ -1,6 +1,9 @@
 <!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
 <view class="container">
+  <view class="MANGLE__1234567890">MANGLE__1234567890</view>
+  <view class="MANGLE__qwertyuiopasdfghjklzxcvbnm">MANGLE__qwertyuiopasdfghjklzxcvbnm</view>
+  <view class="MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM">MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM</view>
   <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 dark:bg-[#487512]"></view>
   <view bindtap="bindViewTap">
     <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>

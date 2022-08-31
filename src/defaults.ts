@@ -53,7 +53,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   onLoad: noop,
   onStart: noop,
   onEnd: noop,
-  onUpdate: noop
+  onUpdate: noop,
+  mangle: false
   // onBeforeUpdate: noop
 }
 
