@@ -112,7 +112,7 @@
     "chalk": "4.1.2",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "defu": "^6.0.0",
+    "defu": "6.0.0",
     "del": "^6.1.1",
     "eslint": "8.22.0",
     "eslint-config-standard": "^17.0.0",
