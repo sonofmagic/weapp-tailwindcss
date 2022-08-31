@@ -1,14 +1,9 @@
 import chalk from 'chalk'
 import type { IMangleOptions, IMangleContextClass } from '@/types'
+import type { IClassGenerator } from './interfaces'
+import { acceptChars, acceptPrefix, stripEscapeSequence } from './shared'
 
-const acceptPrefix = 'abcdefghijklmnopqrstuvwxyz_'.split('')
-const acceptChars = 'abcdefghijklmnopqrstuvwxyz_-0123456789'.split('')
-
-function stripEscapeSequence (words: string) {
-  return words.replace(/\\/g, '')
-}
-
-class ClassGenerator {
+class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
   public context: Record<string, any>
@@ -63,7 +58,7 @@ class ClassGenerator {
     if (opts.log) {
       console.log(`Minify class name from ${chalk.green(original)} to ${chalk.green(newClassName)}`)
     }
-    const newClass = {
+    const newClass: IMangleContextClass = {
       name: newClassName,
       usedBy: []
     }

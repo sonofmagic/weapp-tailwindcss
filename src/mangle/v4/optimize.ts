@@ -1,23 +1,9 @@
 import chalk from 'chalk'
 import { ReplaceSource } from 'webpack-sources'
-import ClassGenerator from './classGenerator'
+import ClassGenerator from '../classGenerator'
 import type { IMangleOptions } from '@/types'
 import { compilation, Compiler } from 'webpack4'
-
-const validate = (opts: IMangleOptions, classGenerator: ClassGenerator) => {
-  if (!opts.log) return
-  for (const className in classGenerator.newClassMap) {
-    const c = classGenerator.newClassMap[className]
-    if (c.usedBy.length >= 1) {
-      continue
-    }
-    if (c.usedBy[0].match(/.+\.css:*$/)) {
-      console.log(`The class name '${chalk.yellow(className)}' is not used: defined at ${chalk.yellow(c.usedBy[0])}.`)
-    } else {
-      console.log(`The class name '${chalk.yellow(className)}' is not defined: used at ${chalk.yellow(c.usedBy[0])}.`)
-    }
-  }
-}
+import { validate } from '../shared'
 
 const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation, opts: IMangleOptions, classGenerator: ClassGenerator) =>
   chunk.files.forEach((file) => {

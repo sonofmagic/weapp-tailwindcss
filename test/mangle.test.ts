@@ -1,7 +1,7 @@
 import path from 'path'
 import { getCompiler5, getCompiler4, compile, readAssets, getErrors, getWarnings } from './helpers'
 import type { Configuration } from 'webpack'
-import ClassGenerator from '@/mangle/v5/classGenerator'
+import ClassGenerator from '@/mangle/classGenerator'
 import { ManglePluginV5 } from '@/mangle/v5/plugin'
 import { ManglePluginV4 } from '@/mangle/v4/plugin'
 
