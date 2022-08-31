@@ -9,15 +9,7 @@ const Index = () => {
   const className = replaceJs('bg-[#123456]')
   return (
     <>
-      <View className="[&_.u-count-down\_\_text]:!text-red-400">
-        <View></View>
-        <View></View>
-        <View></View>
-        <View></View>
-        <View>
-          <View className="u-count-down__text">u-count-down__text</View>
-        </View>
-      </View>
+      <View className="after:border-none after:content-['Hello_World']">after:border-none</View>
       <View className='after:content-["*"] after:ml-0.5 after:text-red-500'></View>
       <View className="after:content-[*] after:ml-0.5 after:text-red-500 aspect-w-16">
         <View>aspect</View>

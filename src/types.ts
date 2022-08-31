@@ -18,7 +18,7 @@ export type CssPreflightOptions =
 type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight: InjectPreflight
-  cssPreflightRange: 'view' | 'all',
+  cssPreflightRange: 'view' | 'all'
   replaceUniversalSelectorWith: string | false
 }
 
@@ -109,4 +109,18 @@ export interface RawSource {
   raw: string
   // '' 直接 remove {{}}
   source?: string
+}
+
+export interface IMangleContextClass {
+  name: string
+  usedBy: any[]
+}
+
+export interface IMangleOptions {
+  classNameRegExp?: string
+  reserveClassName?: string[]
+  ignorePrefix?: string[]
+  ignorePrefixRegExp?: string
+  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
+  log?: boolean
 }

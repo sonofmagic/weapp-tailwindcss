@@ -78,6 +78,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "arbitraryVariants",
+          "pathName": "pages/debug/arbitraryVariants",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

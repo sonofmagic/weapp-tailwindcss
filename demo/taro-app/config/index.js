@@ -1,6 +1,5 @@
-
-// const { TaroWeappTailwindcssWebpackPluginV5 } = require('../../../dist/index')
-const { TaroWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { TaroWeappTailwindcssWebpackPluginV5 } = require('../../../dist/index')
+// const { TaroWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 const config = {
   compiler: 'webpack5',
   projectName: 'myApp',

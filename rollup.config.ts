@@ -4,11 +4,11 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 // import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
+import type { RollupOptions } from 'rollup'
 // const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 
-/** @type {import('rollup').RollupOptions } */
-const sharedConfig = {
+const sharedConfig: RollupOptions = {
   plugins: [
     json(),
     nodeResolve({
@@ -24,7 +24,6 @@ const sharedConfig = {
 //   sharedConfig.plugins.push(terser())
 // }
 
-/** @type {Array<import('rollup').RollupOptions> } */
 const config = [
   {
     input: 'src/index.ts',
@@ -108,6 +107,6 @@ const config = [
     ...x,
     ...sharedConfig
   }
-})
+}) as RollupOptions[]
 
 export default config

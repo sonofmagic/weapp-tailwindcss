@@ -26,6 +26,11 @@ describe('first', () => {
     expect(result).toBe('.before_c_content-_bl__q_hello_q__br_::before')
   })
 
+  it('arbitrary variants case 1', () => {
+    const result = replaceCss('.\\[\\&_\\.u-count-down\\\\_\\\\_text\\]\\:\\!text-red-400 .u-count-down__text')
+    expect(result).toBe('._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text')
+  })
+
   it('css @media case', async () => {
     const opt = getOptions(null)
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
@@ -297,6 +302,20 @@ describe('first', () => {
     })
     expect(result.replace(/\r\n/g, '\n')).toBe(
       '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n'
+    )
+  })
+
+  it('arbitrary values case 6', async () => {
+    const testCase = await getCase('arbitrary-variants-6.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    })
+    expect(result.replace(/\r\n/g, '\n')).toBe(
+      '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n'
     )
   })
 })
