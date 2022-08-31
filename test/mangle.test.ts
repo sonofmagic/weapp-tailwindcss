@@ -1,8 +1,8 @@
 import path from 'path'
 import { getCompiler5, compile, readAssets, getErrors, getWarnings } from './helpers'
 import type { Configuration } from 'webpack'
-import ClassGenerator from '@/mangle/classGenerator'
-import { ManglePlugin } from '@/mangle/plugin'
+import ClassGenerator from '@/mangle/v5/classGenerator'
+import { ManglePlugin } from '@/mangle/v5/plugin'
 
 const webpackMajorVersion = Number(require('webpack/package.json').version.split('.')[0])
 // if (webpackMajorVersion < 4) {
@@ -44,7 +44,7 @@ const testPlugin = async (webpackConfig: Configuration, expectedResults: (string
   }
 }
 
-describe('ManglePlugin', () => {
+describe('ManglePlugin Webpack5', () => {
   const defaultCssClassRegExp = '[cl]-[a-z][a-zA-Z0-9_]*'
 
   it('replace a css class', async () => {
