@@ -1,5 +1,5 @@
-import chalk from 'chalk'
 import ClassGenerator from '../classGenerator'
+import chalk from 'chalk'
 import type { IMangleOptions } from '@/types'
 import { Compiler, Compilation, sources } from 'webpack'
 import { validate } from '../shared'

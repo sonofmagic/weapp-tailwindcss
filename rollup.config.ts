@@ -79,6 +79,17 @@ const config = [
         exports: 'auto'
       }
     ]
+  },
+  {
+    input: 'src/mangle/index.ts',
+    output: [
+      {
+        file: 'dist/mangle.js',
+        format: 'cjs',
+        sourcemap: isDev,
+        exports: 'auto'
+      }
+    ]
   }
   // {
   //   input: 'src/v4.ts',

@@ -6,12 +6,12 @@ export interface IPropValue {
   prop: string
   value: string
 }
-
-export type CssPresetProps = 'box-sizing' | 'border-width' | 'border-style' | 'border-color'
+// 'box-sizing' | 'border-width' | 'border-style' | 'border-color' |
+export type CssPresetProps = string
 
 export type CssPreflightOptions =
   | {
-      [key: CssPresetProps | string]: string | false
+      [key: CssPresetProps]: string | number | boolean
     }
   | false
 
@@ -121,10 +121,15 @@ export interface UserDefinedOptions {
    * @description 是否混淆class,用于缩短replace后产生的class的长度 MANGLE__
    */
   mangle?: IMangleOptions | boolean
+
+  /**
+   * @description Taro 特有，用来声明使用的框架
+   */
+  framework?: 'react' | 'vue' | 'vue3' | string
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith'>
 
-export interface TaroUserDefinedOptions extends UserDefinedOptions {
-  framework: 'react' | 'vue' | 'vue3' | string
-}
+// export interface TaroUserDefinedOptions extends UserDefinedOptions {
+//   framework: 'react' | 'vue' | 'vue3' | string
+// }

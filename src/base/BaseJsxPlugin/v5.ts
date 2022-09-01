@@ -1,5 +1,5 @@
 // webpack 5
-import type { AppType, TaroUserDefinedOptions } from '@/types'
+import type { AppType, UserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -17,10 +17,10 @@ import path from 'path'
  */
 
 export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
-  options: Required<TaroUserDefinedOptions>
+  options: Required<UserDefinedOptions>
   appType: AppType
   static NS = NS
-  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }

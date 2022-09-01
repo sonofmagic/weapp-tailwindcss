@@ -55,7 +55,7 @@ const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation
         }
       }
       if (originalPrefix) {
-        targetName = originalName.substr(originalPrefix.length)
+        targetName = originalName.slice(originalPrefix.length)
         if (opts.log) {
           console.log(`Skip the prefix ${chalk.red(originalPrefix)} of ${chalk.green(originalName)}`)
         }

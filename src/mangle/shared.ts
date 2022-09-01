@@ -2,19 +2,6 @@ import chalk from 'chalk'
 import type { IMangleOptions } from '@/types'
 import type { IClassGenerator } from './interfaces'
 
-export const mangleClassPrefix = 'MANGLE__'
-
-export const mangleClassSuffix = '__MANGLE'
-
-export const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g
-
-export function markForMangled (str: string) {
-  if (typeof str === 'string' && str) {
-    return `${mangleClassPrefix}${str.trim()}${mangleClassSuffix}`
-  }
-  return str
-}
-
 export const acceptPrefix = 'abcdefghijklmnopqrstuvwxyz_'.split('')
 
 export const acceptChars = 'abcdefghijklmnopqrstuvwxyz_-0123456789'.split('')

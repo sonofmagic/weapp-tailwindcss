@@ -32,7 +32,7 @@ describe('first', () => {
   })
 
   it('css @media case', async () => {
-    const opt = getOptions(null)
+    const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('media1.css')
     const result = styleHandler(testCase, {
@@ -60,7 +60,7 @@ describe('first', () => {
   // })
 
   it('main chunk build error', async () => {
-    const opt = getOptions(null)
+    const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('taro.build.css')
     const result = styleHandler(testCase, {
@@ -90,7 +90,7 @@ describe('first', () => {
   })
 
   it('new option for customRuleCallback kbone', async () => {
-    const opt = getOptions(null)
+    const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
 
     const testCase = await getCase('kbone1.css')

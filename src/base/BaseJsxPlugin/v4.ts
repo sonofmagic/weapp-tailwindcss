@@ -1,4 +1,4 @@
-import type { AppType, TaroUserDefinedOptions } from '@/types'
+import type { AppType, UserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack4'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -15,10 +15,10 @@ import path from 'path'
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
 export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
-  options: Required<TaroUserDefinedOptions>
+  options: Required<UserDefinedOptions>
   appType: AppType
   static NS = NS
-  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
