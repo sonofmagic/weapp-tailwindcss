@@ -75,7 +75,6 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      mangle: options.mangle,
       classGenerator: options.classGenerator
     })
   }

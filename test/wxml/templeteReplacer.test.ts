@@ -10,7 +10,7 @@ const testTable = [
   ]
 ]
 describe('templeteReplacer', () => {
-  let classGenerator:ClassGenerator
+  let classGenerator: ClassGenerator
   beforeEach(() => {
     classGenerator = new ClassGenerator()
   })
@@ -18,8 +18,7 @@ describe('templeteReplacer', () => {
     const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
 
     const result = templeteReplacer(testCase, {
-      mangle,
-      classGenerator
+      classGenerator: mangle ? classGenerator : undefined
     })
 
     expect(result).toBe("{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}")
@@ -54,7 +53,6 @@ describe('templeteReplacer', () => {
   it('[mangle] sm:text-3xl dark:text-sky-400', () => {
     const testCase = 'sm:text-3xl dark:text-slate-200 bg-[#ffffaa]'
     const result = templeteReplacer(testCase, {
-      mangle: true,
       classGenerator
     })
 
@@ -89,7 +87,6 @@ describe('templeteReplacer', () => {
     pointer-events-auto
   `
     const result = templeteReplacer(testCase, {
-      mangle: true,
       classGenerator
     })
     expect(result).toBe('a b c d e f g h')
@@ -131,7 +128,7 @@ describe('templeteReplacer', () => {
       'text-_l__h_123456_r_',
       b]}}`
     const result = templeteReplacer(testCase, {
-      mangle: true,
+
       classGenerator
     })
     expect(result).toBe(
@@ -152,7 +149,7 @@ describe('templeteReplacer', () => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase, {
-      mangle: true,
+
       classGenerator
     })
     expect(result).toBe(
@@ -163,7 +160,7 @@ describe('templeteReplacer', () => {
   it.each(testTable)('variables with multiple literal(2)', ({ mangle }) => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
-    const result = templeteReplacer(testCase, { mangle })
+    const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe(
       "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
     )
@@ -172,7 +169,7 @@ describe('templeteReplacer', () => {
   it.each(testTable)('%label for toutiao str add not array', ({ mangle }) => {
     const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
-    const result = templeteReplacer(testCase, { mangle })
+    const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_bl__h_990000_br_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
   })
 
@@ -180,7 +177,7 @@ describe('templeteReplacer', () => {
     const testCase =
       "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
 
-    const result = templeteReplacer(testCase, { mangle })
+    const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe(
       "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
     )

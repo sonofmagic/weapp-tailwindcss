@@ -56,7 +56,7 @@ function isVue3SpecNode (node: Node) {
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
 
 // default react
-export function createReplacer (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true, mangle: false }): Replacer {
+export function createReplacer (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }): Replacer {
   let classObjectNode: Node | null
   let startFlag = false
   const isVue3 = framework === 'vue3'
@@ -94,8 +94,7 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
             // TODO
             // 现在这样是有个问题的,变量中用户使用了 'a/s' 就会产生破坏效果
             path.node.value = replaceWxml(path.node.value, {
-              keepEOL: true,
-              mangle: options.mangle
+              keepEOL: true
             })
           }
         }
@@ -129,8 +128,7 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
         if (nodeStart >= (refNode.start as number)) {
           if (path.node.type === 'StringLiteral') {
             path.node.value = replaceWxml(path.node.value, {
-              keepEOL: true,
-              mangle: options.mangle
+              keepEOL: true
             })
           }
         }
@@ -152,8 +150,7 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
         }
         if (path.node.type === 'StringLiteral') {
           path.node.value = replaceWxml(path.node.value, {
-            keepEOL: true,
-            mangle: options.mangle
+            keepEOL: true
           })
         }
       }

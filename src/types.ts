@@ -138,9 +138,5 @@ export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'ma
 
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
-  /**
-   * @deprecated
-   */
-  mangle?: boolean
   classGenerator?: ClassGenerator
 }

@@ -7,14 +7,12 @@ import { mangleMark } from '@/mangle/expose'
 export function replaceWxml (
   original: string,
   options: ICommonReplaceOptions | boolean = {
-    keepEOL: false,
-    mangle: false
+    keepEOL: false
   }
 ) {
   if (typeof options === 'boolean') {
     options = {
-      keepEOL: options,
-      mangle: false
+      keepEOL: options
     }
   }
   let res = original
@@ -43,7 +41,7 @@ export function replaceWxml (
       // 去除无用换行符和空格
       .replace(/[\r\n]+/g, '')
   }
-  if (options.mangle) {
+  if (options.classGenerator) {
     res = mangleMark(res, options.classGenerator)
   }
   return res
