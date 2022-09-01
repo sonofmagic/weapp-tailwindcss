@@ -60,7 +60,7 @@ const optimize = (compiler: Compiler, [file, originalSource]: [string, sources.S
       }
     }
 
-    const newClass = classGenerator.generateClassName(targetName, opts)
+    const newClass = classGenerator.generateClassName(targetName)
     if (!source) source = new ReplaceSource(originalSource)
     const startPos = match.index + match[0].indexOf(match[1])
     newClass.usedBy.push(`${file}:${startPos}`)
@@ -75,7 +75,7 @@ const optimize = (compiler: Compiler, [file, originalSource]: [string, sources.S
 
 const optimizer = (compiler: Compiler, compilation: Compilation, opts: IMangleOptions) => (assets: { [index: string]: sources.Source }) => {
   if (!opts.classNameRegExp) throw new Error("'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'")
-  const classGenerator = new ClassGenerator()
+  const classGenerator = new ClassGenerator(opts)
   Object.entries(assets).forEach((asset) => optimize(compiler, asset, compilation, opts, classGenerator))
   validate(opts, classGenerator)
 }

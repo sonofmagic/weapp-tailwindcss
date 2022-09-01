@@ -151,12 +151,12 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
 
   it('do not have dupplicate class name', () => {
     const classes = new Set()
-    const classGenerator = new ClassGenerator()
+    const classGenerator = new ClassGenerator({ log: false })
     const n = 40
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         for (let k = 0; k < n; k++) {
-          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`, { log: false })
+          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`)
           classes.add(className.name)
         }
       }
@@ -173,15 +173,15 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
   it('do not use reserved class names', () => {
     const reservedClassNames = ['b', 'd']
     const classes = new Set()
-    const classGenerator = new ClassGenerator()
+    const classGenerator = new ClassGenerator({
+      reserveClassName: reservedClassNames,
+      log: false
+    })
     const n = 3
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         for (let k = 0; k < n; k++) {
-          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`, {
-            reserveClassName: reservedClassNames,
-            log: false
-          })
+          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`)
           classes.add(className.name)
         }
       }
@@ -196,13 +196,11 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
   })
 
   it('ignore escape char in class name', () => {
-    const classGenerator = new ClassGenerator()
-    const classNameWithEscape = classGenerator.generateClassName('l-\\/a\\/b', {
+    const classGenerator = new ClassGenerator({
       log: false
     })
-    const classNameWithoutEscape = classGenerator.generateClassName('l-/a/b', {
-      log: false
-    })
+    const classNameWithEscape = classGenerator.generateClassName('l-\\/a\\/b')
+    const classNameWithoutEscape = classGenerator.generateClassName('l-/a/b')
     expect(classNameWithEscape.name).toBe(classNameWithoutEscape.name)
   })
 

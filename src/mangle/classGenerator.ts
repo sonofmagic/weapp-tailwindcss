@@ -7,10 +7,12 @@ class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
   public context: Record<string, any>
-  constructor () {
+  public opts :IMangleOptions
+  constructor (opts: IMangleOptions = {}) {
     this.newClassMap = {}
     this.newClassSize = 0
     this.context = {}
+    this.opts = opts
   }
 
   defaultClassGenerator () {
@@ -35,7 +37,8 @@ class ClassGenerator implements IClassGenerator {
     return newClassName
   }
 
-  generateClassName (original: string, opts: IMangleOptions): IMangleContextClass {
+  generateClassName (original: string): IMangleContextClass {
+    const opts = this.opts
     original = stripEscapeSequence(original)
     const cn = this.newClassMap[original]
     if (cn) return cn
@@ -53,7 +56,7 @@ class ClassGenerator implements IClassGenerator {
         console.log(`The class name has been reserved. ${chalk.green(newClassName)}`)
       }
       this.newClassSize++
-      return this.generateClassName(original, opts)
+      return this.generateClassName(original)
     }
     if (opts.log) {
       console.log(`Minify class name from ${chalk.green(original)} to ${chalk.green(newClassName)}`)

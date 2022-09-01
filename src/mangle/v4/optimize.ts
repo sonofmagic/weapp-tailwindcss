@@ -61,7 +61,7 @@ const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation
         }
       }
 
-      newClass = classGenerator.generateClassName(targetName, opts)
+      newClass = classGenerator.generateClassName(targetName)
       if (!source) source = new ReplaceSource(originalSource)
       const startPos = match.index + match[0].indexOf(match[1])
       newClass.usedBy.push(`${file}:${startPos}`)
@@ -76,7 +76,7 @@ const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation
 
 const optimizer = (compiler: Compiler, compilation: compilation.Compilation, opts: IMangleOptions) => (chunks: compilation.Chunk[]) => {
   if (!opts.classNameRegExp) throw new Error("'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'")
-  const classGenerator = new ClassGenerator()
+  const classGenerator = new ClassGenerator(opts)
   chunks.forEach((chunk) => optimize(chunk, compilation, opts, classGenerator))
   validate(opts, classGenerator)
 }

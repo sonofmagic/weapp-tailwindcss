@@ -19,7 +19,7 @@ export function mangleMark (str: string, classGenerator?: ClassGenerator) {
       .filter((x) => x)
       .map((x) => {
         // globalClassGenerator.generateClassName(x, {})
-        return classGenerator?.generateClassName(x, {}).name // format(x)
+        return classGenerator?.generateClassName(x).name // format(x)
       })
       .join(' ')
     // return `${mangleClassPrefix}${str.trim()}${mangleClassSuffix}`
