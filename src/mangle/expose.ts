@@ -1,14 +1,14 @@
 import ClassGenerator from './classGenerator'
 
-export const mangleClassPrefix = 'MANGLE__'
+// export const mangleClassPrefix = 'MANGLE__'
 
-export const mangleClassSuffix = '__MANGLE'
+// export const mangleClassSuffix = '__MANGLE'
 
-export const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g
+// export const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g
 
-export function format (str: string) {
-  return `${mangleClassPrefix}${str}${mangleClassSuffix}`
-}
+// export function format (str: string) {
+//   return `${mangleClassPrefix}${str}${mangleClassSuffix}`
+// }
 
 // export const globalClassGenerator = new ClassGenerator()
 

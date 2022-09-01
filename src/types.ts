@@ -27,7 +27,7 @@ export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHan
 
 export type StyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
-  mangle?: boolean
+  // classGenerator?: ClassGenerator
 } & RequiredStyleHandlerOptions
 
 export interface RawSource {

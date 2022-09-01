@@ -1,6 +1,6 @@
 import defu from 'defu'
 import type { UserDefinedOptions } from './types'
-import { mangleClassRegex } from '@/mangle/expose'
+// import { mangleClassRegex } from '@/mangle/expose'
 const noop = () => {}
 
 export const defaultOptions: Required<UserDefinedOptions> = {
@@ -63,7 +63,7 @@ export const defaultOptions: Required<UserDefinedOptions> = {
 export function getOptions (options: UserDefinedOptions = {}) {
   if (options.mangle === true) {
     options.mangle = {
-      classNameRegExp: mangleClassRegex.source
+      // classNameRegExp: mangleClassRegex.source
     }
   }
   return defu<UserDefinedOptions, UserDefinedOptions>(options, defaultOptions) as Required<UserDefinedOptions>
