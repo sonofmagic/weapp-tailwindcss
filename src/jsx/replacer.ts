@@ -1,7 +1,7 @@
 import type { Node, ObjectProperty, Identifier, StringLiteral } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
 import { replaceWxml, templeteHandler } from '@/wxml'
-
+import { ICommonReplaceOptions } from '@/types'
 // import { classStringReplace } from '@/reg'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
@@ -56,7 +56,7 @@ function isVue3SpecNode (node: Node) {
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
 
 // default react
-export function createReplacer (framework: string = 'react'): Replacer {
+export function createReplacer (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true, mangle: false }): Replacer {
   let classObjectNode: Node | null
   let startFlag = false
   const isVue3 = framework === 'vue3'
@@ -93,7 +93,10 @@ export function createReplacer (framework: string = 'react'): Replacer {
           if (path.node.type === 'StringLiteral') {
             // TODO
             // 现在这样是有个问题的,变量中用户使用了 'a/s' 就会产生破坏效果
-            path.node.value = replaceWxml(path.node.value, true)
+            path.node.value = replaceWxml(path.node.value, {
+              keepEOL: true,
+              mangle: options.mangle
+            })
           }
         }
       }
@@ -103,16 +106,6 @@ export function createReplacer (framework: string = 'react'): Replacer {
     return replacer
   } else if (isVue3) {
     const replacer = (path: NodePath<Node>) => {
-      // if (
-      //   path.node.type === 'CallExpression' &&
-      //   path.node.arguments.length === 2 &&
-      //   path.node.arguments[0].type === 'StringLiteral' &&
-      //   path.node.arguments[1].type === 'NumericLiteral'
-      // ) {
-      //   path.node.arguments[0].value = classStringReplace(path.node.arguments[0].value, (x) => {
-      //     return replaceWxml(x, true)
-      //   })
-      // }
       // TODO
       // 性能很差，为什么要这么写主要原因是 vue3 里面有 createElementVNode 动态的节点和 createStaticVNode 静态的节点
       // 动态的，按照 ObjectProperty 的方式匹配就可以
@@ -135,7 +128,10 @@ export function createReplacer (framework: string = 'react'): Replacer {
         }
         if (nodeStart >= (refNode.start as number)) {
           if (path.node.type === 'StringLiteral') {
-            path.node.value = replaceWxml(path.node.value, true)
+            path.node.value = replaceWxml(path.node.value, {
+              keepEOL: true,
+              mangle: options.mangle
+            })
           }
         }
       }
@@ -155,7 +151,10 @@ export function createReplacer (framework: string = 'react'): Replacer {
           return end()
         }
         if (path.node.type === 'StringLiteral') {
-          path.node.value = replaceWxml(path.node.value, true)
+          path.node.value = replaceWxml(path.node.value, {
+            keepEOL: true,
+            mangle: options.mangle
+          })
         }
       }
     }

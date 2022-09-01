@@ -26,6 +26,7 @@ export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHan
 
 export type StyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
+  mangle?: boolean
 } & RequiredStyleHandlerOptions
 
 export interface RawSource {
@@ -133,3 +134,8 @@ export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'ma
 // export interface TaroUserDefinedOptions extends UserDefinedOptions {
 //   framework: 'react' | 'vue' | 'vue3' | string
 // }
+
+export interface ICommonReplaceOptions {
+  keepEOL?: boolean
+  mangle?: boolean
+}

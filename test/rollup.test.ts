@@ -2,7 +2,7 @@ import configs from '../rollup.config'
 import { rollup } from 'rollup'
 import { omit } from 'lodash'
 // import type { RollupBuild } from 'rollup'
-describe('rollup build', () => {
+describe.skip('rollup build', () => {
   it('lib build', async () => {
     // const result:RollupBuild[] = []
     for (let i = 0; i < configs.length; i++) {

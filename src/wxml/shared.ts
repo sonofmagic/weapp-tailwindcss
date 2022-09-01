@@ -1,9 +1,22 @@
 import { MappingChars2String as dic } from '@/dic'
-
+import { ICommonReplaceOptions } from '@/types'
+import { mangleMark } from '@/mangle/expose'
 // export function arbitraryValuesReplacer (str: string) {}
 
-export function replaceWxml (original: string, keepEOL: boolean = false) {
-  const res = original
+export function replaceWxml (
+  original: string,
+  options: ICommonReplaceOptions | boolean = {
+    keepEOL: false,
+    mangle: false
+  }
+) {
+  if (typeof options === 'boolean') {
+    options = {
+      keepEOL: options,
+      mangle: false
+    }
+  }
+  let res = original
     .replace(/\[/g, dic['['])
     .replace(/\]/g, dic[']'])
     .replace(/\(/g, dic['('])
@@ -24,12 +37,13 @@ export function replaceWxml (original: string, keepEOL: boolean = false) {
     .replace(/@/g, dic['@'])
     .replace(/{/g, dic['{'])
     .replace(/}/g, dic['}'])
-  if (keepEOL) {
-    return res
-  }
-  return (
-    res
+  if (!options.keepEOL) {
+    res = res
       // 去除无用换行符和空格
       .replace(/[\r\n]+/g, '')
-  )
+  }
+  if (options.mangle) {
+    res = mangleMark(res)
+  }
+  return res
 }
