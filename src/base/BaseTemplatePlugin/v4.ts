@@ -7,6 +7,8 @@ import { getOptions } from '@/defaults'
 import { pluginName } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
 import type { IBaseWebpackPlugin } from '@/interface'
+import { getGroupedEntries } from '@/base/shared'
+
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
@@ -19,7 +21,7 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, htmlMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    const { mainCssChunkMatcher, replaceUniversalSelectorWith, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
     if (disabled) {
       return
     }
@@ -28,9 +30,20 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
     compiler.hooks.emit.tap(pluginName, (compilation) => {
       onStart()
       const entries: [string, Source][] = Object.entries(compilation.assets)
-      for (let i = 0; i < entries.length; i++) {
-        const [file, originalSource] = entries[i]
-        if (cssMatcher(file)) {
+      const groupedEntries = getGroupedEntries(entries, this.options)
+      if (Array.isArray(groupedEntries.html)) {
+        for (let i = 0; i < groupedEntries.html.length; i++) {
+          const [file, originalSource] = groupedEntries.html[i]
+          const rawSource = originalSource.source().toString()
+          const wxml = templeteHandler(rawSource)
+          const source = new ConcatSource(wxml)
+          compilation.updateAsset(file, source)
+          onUpdate(file, rawSource, wxml)
+        }
+      }
+      if (Array.isArray(groupedEntries.css)) {
+        for (let i = 0; i < groupedEntries.css.length; i++) {
+          const [file, originalSource] = groupedEntries.css[i]
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, this.appType),
@@ -42,12 +55,6 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
           onUpdate(file, rawSource, css)
-        } else if (htmlMatcher(file)) {
-          const rawSource = originalSource.source().toString()
-          const wxml = templeteHandler(rawSource)
-          const source = new ConcatSource(wxml)
-          compilation.updateAsset(file, source)
-          onUpdate(file, rawSource, wxml)
         }
       }
       onEnd()

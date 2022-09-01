@@ -161,7 +161,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
         }
       }
     }
-    console.log('Generated class size:', classes.size)
+
     expect(classes.size).toBe(Math.pow(n, 3))
     expect(classes).toContain('a')
     expect(classes).toContain('_')
@@ -186,7 +186,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
         }
       }
     }
-    console.log('Generated class size:', classes.size)
+
     expect(classes.size).toBe(Math.pow(n, 3))
     expect(classes).toContain('a')
     expect(classes).not.toContain('b')

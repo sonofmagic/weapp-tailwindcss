@@ -41,7 +41,7 @@ module.exports = {
             },
           },
           {
-            loader: "postcss-loader"
+            loader: 'postcss-loader',
           },
           {
             loader: 'sass-loader',
@@ -77,10 +77,11 @@ module.exports = {
       BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
     }),
     new NativeWeappTailwindcssWebpackPluginV5({
+      mangle: true,
       // cssPreflight: {
       //   "border-color": false
       // }
-    })
+    }),
   ],
   optimization: {
     splitChunks: {

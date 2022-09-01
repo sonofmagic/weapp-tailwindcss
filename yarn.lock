@@ -1244,6 +1244,13 @@
     "@types/node" "*"
     "@types/webpack" "^4"
 
+"@types/lodash.groupby@^4.6.7":
+  version "4.6.7"
+  resolved "https://registry.npmmirror.com/@types/lodash.groupby/-/lodash.groupby-4.6.7.tgz#35fdb9647f100450d1004f65f74cbd964cdb567a"
+  integrity sha512-dFUR1pqdMgjIBbgPJ/8axJX6M1C7zsL+HF4qdYMQeJ7XOp0Qbf37I3zh9gpXr/ks6tgEYPDRqyZRAnFYvewYHQ==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.memoize@^4.1.7":
   version "4.1.7"
   resolved "https://registry.npmmirror.com/@types/lodash.memoize/-/lodash.memoize-4.1.7.tgz#aff94ab32813c557cbc1104e127030e3d60a3b27"
@@ -5517,6 +5524,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash.groupby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.npmmirror.com/lodash.groupby/-/lodash.groupby-4.6.0.tgz#0b08a1dcf68397c397855c3239783832df7403d1"
+  integrity sha512-5dcWxm23+VAoz+awKmBaiBvzox8+RqMgFhi7UvX9DHZr2HdxHXM/Wrf8cfKpsW37RNrvtPn6hSwNqurSILbmJw==
+
 lodash.memoize@4.x, lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.npmmirror.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -6994,6 +7006,11 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+rollup-plugin-analyzer@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmmirror.com/rollup-plugin-analyzer/-/rollup-plugin-analyzer-4.0.0.tgz#96b757ed64a098b59d72f085319e68cdd86d5798"
+  integrity sha512-LL9GEt3bkXp6Wa19SNR5MWcvHNMvuTFYg+eYBZN2OIFhSWN+pEJUQXEKu5BsOeABob3x9PDaLKW7w5iOJnsESQ==
 
 rollup-plugin-terser@^7.0.2:
   version "7.0.2"
