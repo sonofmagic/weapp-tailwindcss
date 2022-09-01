@@ -72,7 +72,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
-            log: true
+            log: false
           })
         ]
       },
@@ -106,7 +106,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
-            log: true
+            log: false
           })
         ]
       },
@@ -141,7 +141,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           new ManglePlugin({
             classNameRegExp: '(xs:|md:)?[cl]-[a-z][a-zA-Z0-9_]*',
             ignorePrefix: ['xs:', 'md:'],
-            log: true
+            log: false
           })
         ]
       },
@@ -180,7 +180,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
         for (let k = 0; k < n; k++) {
           const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`, {
             reserveClassName: reservedClassNames,
-            log: true
+            log: false
           })
           classes.add(className.name)
         }
@@ -198,10 +198,10 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
   it('ignore escape char in class name', () => {
     const classGenerator = new ClassGenerator()
     const classNameWithEscape = classGenerator.generateClassName('l-\\/a\\/b', {
-      log: true
+      log: false
     })
     const classNameWithoutEscape = classGenerator.generateClassName('l-/a/b', {
-      log: true
+      log: false
     })
     expect(classNameWithEscape.name).toBe(classNameWithoutEscape.name)
   })
@@ -218,7 +218,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
-            log: true,
+            log: false,
             classGenerator: (original, opts, context) => {
               if (!context.id) {
                 context.id = 1

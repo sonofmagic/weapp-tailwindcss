@@ -1,6 +1,7 @@
 import { MappingChars2String as dic } from '@/dic'
 import { ICommonReplaceOptions } from '@/types'
 import { mangleMark } from '@/mangle/expose'
+
 // export function arbitraryValuesReplacer (str: string) {}
 
 export function replaceWxml (
@@ -43,7 +44,7 @@ export function replaceWxml (
       .replace(/[\r\n]+/g, '')
   }
   if (options.mangle) {
-    res = mangleMark(res)
+    res = mangleMark(res, options.classGenerator)
   }
   return res
 }

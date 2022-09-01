@@ -48,7 +48,6 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       resultArray.push(
         replaceWxml(original.slice(p, m.start), {
           keepEOL: true
-          // mangle: options.mangle
         })
       )
       p = m.start
@@ -67,7 +66,6 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
         resultArray.push(
           replaceWxml(original.slice(m.end), {
             keepEOL: true
-            // mangle: options.mangle
           })
         )
       }
@@ -77,7 +75,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      mangle: options.mangle
+      mangle: options.mangle,
+      classGenerator: options.classGenerator
     })
   }
 }

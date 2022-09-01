@@ -1,5 +1,6 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
+import type ClassGenerator from '@/mangle/classGenerator'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
 
 export interface IPropValue {
@@ -137,5 +138,9 @@ export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'ma
 
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
+  /**
+   * @deprecated
+   */
   mangle?: boolean
+  classGenerator?: ClassGenerator
 }
