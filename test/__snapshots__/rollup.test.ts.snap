@@ -301,7 +301,8 @@ const defaultOptions = {
     onLoad: noop,
     onStart: noop,
     onEnd: noop,
-    onUpdate: noop
+    onUpdate: noop,
+    mangle: false
 };
 function getOptions(options) {
     return defu(options, defaultOptions);
@@ -1185,7 +1186,8 @@ const defaultOptions = {
     onLoad: noop,
     onStart: noop,
     onEnd: noop,
-    onUpdate: noop
+    onUpdate: noop,
+    mangle: false
 };
 function getOptions(options) {
     return defu(options, defaultOptions);
@@ -1526,7 +1528,8 @@ const defaultOptions = {
     onLoad: noop,
     onStart: noop,
     onEnd: noop,
-    onUpdate: noop
+    onUpdate: noop,
+    mangle: false
 };
 function getOptions(options) {
     return defu(options, defaultOptions);
