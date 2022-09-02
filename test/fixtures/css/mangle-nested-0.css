@@ -1,0 +1,23 @@
+.el-tree-node__content {
+  display: flex;
+  align-items: center;
+}
+
+.el-tree-node__content > .el-tree-node__expand-icon {
+  padding: 6px;
+}
+
+.el-tree-node__content .el-tree-node__expand-icon::after {
+  content: "after";
+}
+
+.el-tree-node__content label {
+  margin-right: 8px;
+}
+/* mangle disabled */
+.el-tree-node__content {
+  color: red;
+}
+.happy {
+  word: "have a nice day";
+}

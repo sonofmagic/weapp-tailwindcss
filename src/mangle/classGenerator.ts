@@ -7,7 +7,7 @@ class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
   public context: Record<string, any>
-  public opts :IMangleOptions
+  public opts: IMangleOptions
   constructor (opts: IMangleOptions = {}) {
     this.newClassMap = {}
     this.newClassSize = 0
@@ -35,6 +35,13 @@ class ClassGenerator implements IClassGenerator {
 
     const newClassName = `${acceptPrefix[prefixIndex]}${chars.join('')}`
     return newClassName
+  }
+
+  transformCssClass (className: string): string {
+    const key = stripEscapeSequence(className)
+    const cn = this.newClassMap[key]
+    if (cn) return cn.name
+    return className
   }
 
   generateClassName (original: string): IMangleContextClass {

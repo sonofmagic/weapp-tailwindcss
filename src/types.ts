@@ -85,7 +85,7 @@ export interface UserDefinedOptions {
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
    * @default 'view'
-   * @description 将css中的 '*' 选择器 (Universal) 替换为指定的字符串, false 为不转化
+   * @description 将css中的 '*' 选择器 (Universal) 替换为指定的字符串, false 表示不转化
    */
   replaceUniversalSelectorWith?: string | false
 

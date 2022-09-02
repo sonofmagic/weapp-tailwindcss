@@ -7,6 +7,8 @@ import type { StyleHandlerOptions } from '@/types'
 
 const createTransform = (rule: Rule, options: StyleHandlerOptions) => {
   const replaceFlag = options.replaceUniversalSelectorWith !== false
+  const classGenerator = options.classGenerator
+
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector) => {
       // do something with the selector
@@ -18,6 +20,19 @@ const createTransform = (rule: Rule, options: StyleHandlerOptions) => {
       if (selector.type === 'selector') {
         const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover')
         node && selector.remove()
+      }
+
+      if (selector.type === 'class') {
+        if (classGenerator && selector.value) {
+          let ignore = false
+          const prev = rule.prev()
+          if (prev?.type === 'comment') {
+            ignore = prev.text.includes('mangle') && (prev.text.includes('disabled') || prev.text.includes('ignore'))
+          }
+          if (!ignore) {
+            selector.value = classGenerator.transformCssClass(selector.value)
+          }
+        }
       }
     })
     if (selectors.length === 0) {
