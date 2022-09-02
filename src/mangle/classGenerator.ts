@@ -6,12 +6,10 @@ import { acceptChars, acceptPrefix, stripEscapeSequence } from './shared'
 class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
-  public context: Record<string, any>
   public opts: IMangleOptions
   constructor (opts: IMangleOptions = {}) {
     this.newClassMap = {}
     this.newClassSize = 0
-    this.context = {}
     this.opts = opts
   }
 
@@ -52,7 +50,7 @@ class ClassGenerator implements IClassGenerator {
 
     let newClassName
     if (opts.classGenerator) {
-      newClassName = opts.classGenerator(original, opts, this.context)
+      newClassName = opts.classGenerator(original, opts)
     }
     if (!newClassName) {
       newClassName = this.defaultClassGenerator()

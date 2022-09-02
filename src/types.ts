@@ -48,7 +48,7 @@ export interface IMangleOptions {
   reserveClassName?: string[]
   ignorePrefix?: string[]
   ignorePrefixRegExp?: string
-  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
+  classGenerator?: (original: string, opts: IMangleOptions) => string | undefined
   log?: boolean
 }
 
