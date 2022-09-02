@@ -17,10 +17,13 @@ export function mangleMark (str: string, classGenerator?: ClassGenerator) {
     return str
       .split(' ')
       .filter((x) => x)
-      .filter((x) => {
-        return !classGenerator?.ignoreClassName(x)
-      })
+      // .filter((x) => {
+      //   return !classGenerator?.ignoreClassName(x)
+      // })
       .map((x) => {
+        if (classGenerator?.ignoreClassName(x)) {
+          return x
+        }
         // globalClassGenerator.generateClassName(x, {})
         return classGenerator?.generateClassName(x).name // format(x)
       })

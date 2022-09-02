@@ -454,6 +454,236 @@ exports[`webpack5 plugin disabled true: errors 1`] = `Array []`;
 
 exports[`webpack5 plugin disabled true: warnings 1`] = `Array []`;
 
+exports[`webpack5 plugin mangle options: assets 1`] = `
+Object {
+  "index.css": "::before,::after {
+    --tw-content: \\"\\"}
+view,::before,::after {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
+::-webkit-backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}
+::backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}",
+  "index.wxml": "<!-- index.wxml -->
+<import src=\\"../../wxml/motto/motto.wxml\\" />
+<view class=\\"a\\">
+  <view bindtap=\\"bindViewTap\\">
+    <user avatarUrl=\\"{{userInfo.avatarUrl}}\\" nickName=\\"{{userInfo.nickName}}\\"></user>
+  </view>
+  <view class=\\"b\\">
+    <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
+  </view>
+  <view class=\\"c d\\">
+    <text>{{powered.by}}</text>
+  </view>
+  <view class=\\"e f g\\">
+    p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+  </view>
+  <view class=\\"h\\">
+    <view class=\\"i text-black text-opacity-_bl_0_d_19_br_\\">
+      w-[300rpx] text-black text-opacity-[0.19]
+    </view>
+    <view class=\\"j k text-_bl_20px_br_ l\\">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class=\\"m n text-_bl__h_dddddd_br_\\">
+      max-w-[300rpx] min-h-[100px] text-[#dddddd]
+    </view>
+    <view class=\\"o p q r s t u v text-_bl__h_ffffff_br_\\">
+      Hello
+    </view>
+    <view class=\\"w x y z\\">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class=\\"_ aa ba ca da\\">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class=\\"ea fa ga ha ia text-white ja ka\\">
+      Default
+    </view>
+  </view>
+  <view class=\\"la\\">test</view>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
+  <button class=\\"ma na ha text-white oa pa qa\\">...</button>
+  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
+</view>",
+  "wxml.js?var=87de820fb9efeaeb2cc6": "/*
+ * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses \\"eval()\\" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with \\"devtool: false\\".
+ * If you are looking for production-ready output files, see mode: \\"production\\" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ \\"./test/fixtures/webpack/v5/wxml/pages/index.js\\":
+/*!******************************************************!*\\\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\\\******************************************************/
+/***/ (() => {
+
+eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?\\");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__[\\"./test/fixtures/webpack/v5/wxml/pages/index.js\\"]();
+/******/ 	
+/******/ })()
+;",
+}
+`;
+
+exports[`webpack5 plugin mangle options: errors 1`] = `Array []`;
+
+exports[`webpack5 plugin mangle options: warnings 1`] = `Array []`;
+
 exports[`webpack5 plugin mangle true: assets 1`] = `
 Object {
   "index.css": "::before,::after {
