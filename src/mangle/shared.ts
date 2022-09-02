@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import type { IMangleOptions } from '@/types'
 import type { IClassGenerator } from './interfaces'
 
@@ -18,9 +18,9 @@ export const validate = (opts: IMangleOptions, classGenerator: IClassGenerator) 
       continue
     }
     if (c.usedBy[0].match(/.+\.css:*$/)) {
-      console.log(`The class name '${chalk.yellow(className)}' is not used: defined at ${chalk.yellow(c.usedBy[0])}.`)
+      console.log(`The class name '${className}' is not used: defined at ${c.usedBy[0]}.`)
     } else {
-      console.log(`The class name '${chalk.yellow(className)}' is not defined: used at ${chalk.yellow(c.usedBy[0])}.`)
+      console.log(`The class name '${className}' is not defined: used at ${c.usedBy[0]}.`)
     }
   }
 }

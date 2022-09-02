@@ -1,10 +1,10 @@
 import optimizer from './optimize'
 import type { Compiler, compilation } from 'webpack4'
-import type { IMangleOptions } from '@/types'
+import type { IManglePluginOptions } from '@/types'
 
 export class ManglePluginV4 {
-  public opts: IMangleOptions
-  constructor (opts: IMangleOptions = {}) {
+  public opts: IManglePluginOptions
+  constructor (opts: IManglePluginOptions = {}) {
     this.opts = opts
   }
 

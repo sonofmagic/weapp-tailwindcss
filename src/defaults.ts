@@ -62,9 +62,7 @@ export const defaultOptions: Required<UserDefinedOptions> = {
 
 export function getOptions (options: UserDefinedOptions = {}) {
   if (options.mangle === true) {
-    options.mangle = {
-      // classNameRegExp: mangleClassRegex.source
-    }
+    options.mangle = {}
   }
   return defu<UserDefinedOptions, UserDefinedOptions>(options, defaultOptions) as Required<UserDefinedOptions>
 }

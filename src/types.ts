@@ -44,8 +44,20 @@ export interface IMangleContextClass {
 }
 
 export interface IMangleOptions {
+  // classNameRegExp?: string
+  reserveClassName?: (string | RegExp)[]
+  // ignorePrefix?: string[]
+  // ignorePrefixRegExp?: string
+  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
+  log?: boolean
+  exclude?: (string | RegExp)[]
+  include?: (string | RegExp)[]
+  ignoreClass?: (string | RegExp)[]
+}
+
+export interface IManglePluginOptions extends IMangleOptions {
   classNameRegExp?: string
-  reserveClassName?: string[]
+  reserveClassName?: (string | RegExp)[]
   ignorePrefix?: string[]
   ignorePrefixRegExp?: string
   classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined

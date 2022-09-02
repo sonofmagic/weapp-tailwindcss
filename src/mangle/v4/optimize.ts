@@ -1,11 +1,11 @@
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import { ReplaceSource } from 'webpack-sources'
 import ClassGenerator from '../classGenerator'
-import type { IMangleOptions } from '@/types'
+import type { IManglePluginOptions } from '@/types'
 import { compilation, Compiler } from 'webpack4'
 import { validate } from '../shared'
 
-const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation, opts: IMangleOptions, classGenerator: ClassGenerator) =>
+const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation, opts: IManglePluginOptions, classGenerator: ClassGenerator) =>
   chunk.files.forEach((file) => {
     let classnameRegex
     if (file.match(/.+\.css.*$/)) {
@@ -57,7 +57,7 @@ const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation
       if (originalPrefix) {
         targetName = originalName.slice(originalPrefix.length)
         if (opts.log) {
-          console.log(`Skip the prefix ${chalk.red(originalPrefix)} of ${chalk.green(originalName)}`)
+          console.log(`Skip the prefix ${originalPrefix} of ${originalName}`)
         }
       }
 
@@ -74,7 +74,7 @@ const optimize = (chunk: compilation.Chunk, compilation: compilation.Compilation
     compilation.assets[file] = source
   })
 
-const optimizer = (compiler: Compiler, compilation: compilation.Compilation, opts: IMangleOptions) => (chunks: compilation.Chunk[]) => {
+const optimizer = (compiler: Compiler, compilation: compilation.Compilation, opts: IManglePluginOptions) => (chunks: compilation.Chunk[]) => {
   if (!opts.classNameRegExp) throw new Error("'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'")
   const classGenerator = new ClassGenerator(opts)
   chunks.forEach((chunk) => optimize(chunk, compilation, opts, classGenerator))

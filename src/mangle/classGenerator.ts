@@ -1,8 +1,8 @@
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import type { IMangleOptions, IMangleContextClass } from '@/types'
 import type { IClassGenerator } from './interfaces'
 import { acceptChars, acceptPrefix, stripEscapeSequence } from './shared'
-
+import { regExpValidate } from '@/shared'
 class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
@@ -46,6 +46,7 @@ class ClassGenerator implements IClassGenerator {
 
   generateClassName (original: string): IMangleContextClass {
     const opts = this.opts
+
     original = stripEscapeSequence(original)
     const cn = this.newClassMap[original]
     if (cn) return cn
@@ -58,15 +59,15 @@ class ClassGenerator implements IClassGenerator {
       newClassName = this.defaultClassGenerator()
     }
 
-    if (opts.reserveClassName && opts.reserveClassName.includes(newClassName)) {
+    if (opts.reserveClassName && regExpValidate(opts.reserveClassName, newClassName)) {
       if (opts.log) {
-        console.log(`The class name has been reserved. ${chalk.green(newClassName)}`)
+        console.log(`The class name has been reserved. ${newClassName}`)
       }
       this.newClassSize++
       return this.generateClassName(original)
     }
     if (opts.log) {
-      console.log(`Minify class name from ${chalk.green(original)} to ${chalk.green(newClassName)}`)
+      console.log(`Minify class name from ${original} to ${newClassName}`)
     }
     const newClass: IMangleContextClass = {
       name: newClassName,
