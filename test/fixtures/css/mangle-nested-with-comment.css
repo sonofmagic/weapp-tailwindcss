@@ -1,0 +1,13 @@
+/* mangle disabled 222 */
+.el-tree-node__content {
+  color: red;
+}
+
+/* mangle ignore 111 */
+.el-tree-node__content {
+  color: yellow;
+}
+
+.el-tree-node__content {
+  color: blue;
+}

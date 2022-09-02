@@ -48,4 +48,31 @@ describe('[postcss] mangle', () => {
     })
     expect(result).toMatchSnapshot()
   })
+
+  it('mangle-nested-with-comment', async () => {
+    // const options = getOptions()
+    const testCase = await getCase('mangle-nested-with-comment.css')
+    const classGenerator = new ClassGenerator()
+    const rawMatrix = [
+      ['el-tree-node__content', 'a'],
+      ['el-tree-node__expand-icon', 'b']
+    ]
+    const newClassMap = rawMatrix.reduce<typeof classGenerator.newClassMap>((acc, [key, name]) => {
+      acc[key] = {
+        name,
+        usedBy: []
+      }
+      return acc
+    }, {})
+    classGenerator.newClassMap = newClassMap
+    classGenerator.newClassSize = rawMatrix.length
+    const result = styleHandler(testCase, {
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      isMainChunk: true,
+      replaceUniversalSelectorWith: 'view',
+      classGenerator
+    })
+    expect(result).toMatchSnapshot()
+  })
 })
