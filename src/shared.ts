@@ -10,7 +10,7 @@ export function isRegexp (value: any) {
   return Object.prototype.toString.call(value) === '[object RegExp]'
 }
 
-export function regExpValidate (arr: (string | RegExp)[] = [], str: string) {
+export function regExpTest (arr: (string | RegExp)[] = [], str: string) {
   if (Array.isArray(arr)) {
     for (let i = 0; i < arr.length; i++) {
       const item = arr[i]

@@ -2,7 +2,7 @@
 import type { IMangleOptions, IMangleContextClass } from '@/types'
 import type { IClassGenerator } from './interfaces'
 import { acceptChars, acceptPrefix, stripEscapeSequence } from './shared'
-import { regExpValidate } from '@/shared'
+import { regExpTest } from '@/shared'
 class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
@@ -37,6 +37,10 @@ class ClassGenerator implements IClassGenerator {
     return newClassName
   }
 
+  ignoreClassName (className: string): boolean {
+    return regExpTest(this.opts.ignoreClass, className)
+  }
+
   transformCssClass (className: string): string {
     const key = stripEscapeSequence(className)
     const cn = this.newClassMap[key]
@@ -59,7 +63,7 @@ class ClassGenerator implements IClassGenerator {
       newClassName = this.defaultClassGenerator()
     }
 
-    if (opts.reserveClassName && regExpValidate(opts.reserveClassName, newClassName)) {
+    if (opts.reserveClassName && regExpTest(opts.reserveClassName, newClassName)) {
       if (opts.log) {
         console.log(`The class name has been reserved. ${newClassName}`)
       }

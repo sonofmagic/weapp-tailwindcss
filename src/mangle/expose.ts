@@ -1,4 +1,4 @@
-import ClassGenerator from './classGenerator'
+import type ClassGenerator from './classGenerator'
 
 // export const mangleClassPrefix = 'MANGLE__'
 
@@ -17,6 +17,9 @@ export function mangleMark (str: string, classGenerator?: ClassGenerator) {
     return str
       .split(' ')
       .filter((x) => x)
+      .filter((x) => {
+        return !classGenerator?.ignoreClassName(x)
+      })
       .map((x) => {
         // globalClassGenerator.generateClassName(x, {})
         return classGenerator?.generateClassName(x).name // format(x)
