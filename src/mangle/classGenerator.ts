@@ -41,6 +41,28 @@ class ClassGenerator implements IClassGenerator {
     return regExpTest(this.opts.ignoreClass, className)
   }
 
+  includeFilePath (filePath: string): boolean {
+    const { include } = this.opts
+    if (Array.isArray(include)) {
+      return regExpTest(include, filePath)
+    } else {
+      return true
+    }
+  }
+
+  excludeFilePath (filePath: string): boolean {
+    const { exclude } = this.opts
+    if (Array.isArray(exclude)) {
+      return regExpTest(exclude, filePath)
+    } else {
+      return false
+    }
+  }
+
+  isFileIncluded (filePath: string) {
+    return this.includeFilePath(filePath) && !this.excludeFilePath(filePath)
+  }
+
   transformCssClass (className: string): string {
     const key = stripEscapeSequence(className)
     const cn = this.newClassMap[key]

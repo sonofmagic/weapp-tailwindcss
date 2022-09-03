@@ -132,7 +132,7 @@ export interface UserDefinedOptions {
    */
   onEnd?: () => void
   /**
-   * @description 是否混淆class,用于缩短replace后产生的class的长度 MANGLE__
+   * @description 是否混淆class,用于缩短replace后产生的class的长度
    */
   mangle?: IMangleOptions | boolean
 

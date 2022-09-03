@@ -8,6 +8,7 @@ import { pluginName } from '@/shared'
 import type { IBaseWebpackPlugin } from '@/interface'
 import { getGroupedEntries } from '@/base/shared'
 import ClassGenerator from '@/mangle/classGenerator'
+
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6
  */
@@ -26,8 +27,8 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    const needMangled = Boolean(mangle)
-    if (needMangled) {
+
+    if (mangle) {
       this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
     }
     const { ConcatSource } = compiler.webpack.sources
@@ -48,10 +49,16 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.html)) {
             for (let i = 0; i < groupedEntries.html.length; i++) {
+              let classGenerator
               const [file, originalSource] = groupedEntries.html[i]
+
               const rawSource = originalSource.source().toString()
+              if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+                classGenerator = this.classGenerator
+              }
+
               const wxml = templeteHandler(rawSource, {
-                classGenerator: this.classGenerator
+                classGenerator
               })
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
@@ -60,15 +67,21 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
           }
           if (Array.isArray(groupedEntries.css)) {
             for (let i = 0; i < groupedEntries.css.length; i++) {
+              let classGenerator
               const [file, originalSource] = groupedEntries.css[i]
               const rawSource = originalSource.source().toString()
+
+              if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+                classGenerator = this.classGenerator
+              }
+
               const css = styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(file, this.appType),
                 cssInjectPreflight,
                 customRuleCallback,
                 cssPreflightRange,
                 replaceUniversalSelectorWith,
-                classGenerator: this.classGenerator
+                classGenerator
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)
@@ -80,27 +93,5 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
         }
       )
     })
-
-    // compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-    //   const entries = Object.entries(compilation.assets)
-    //   for (let i = 0; i < entries.length; i++) {
-    //     const [file, originalSource] = entries[i]
-    //     if (cssMatcher(file)) {
-    //       const rawSource = originalSource.source().toString()
-    //       const css = styleHandler(rawSource, {
-    //         isMainChunk: mainCssChunkMatcher(file, this.appType),
-    //         cssInjectPreflight,
-    //         customRuleCallback
-    //       })
-    //       const source = new ConcatSource(css)
-    //       compilation.updateAsset(file, source)
-    //     } else if (htmlMatcher(file)) {
-    //       const rawSource = originalSource.source().toString()
-    //       const wxml = templeteHandler(rawSource)
-    //       const source = new ConcatSource(wxml)
-    //       compilation.updateAsset(file, source)
-    //     }
-    //   }
-    // })
   }
 }
