@@ -62,7 +62,14 @@ export const defaultOptions: Required<UserDefinedOptions> = {
 
 export function getOptions (options: UserDefinedOptions = {}) {
   if (options.mangle === true) {
-    options.mangle = {}
+    // https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81
+    options.mangle = {
+      exclude: [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
+    }
+  } else if (typeof options.mangle === 'object') {
+    if (!Array.isArray(options.mangle)) {
+      options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
+    }
   }
   return defu<UserDefinedOptions, UserDefinedOptions>(options, defaultOptions) as Required<UserDefinedOptions>
 }

@@ -9,23 +9,28 @@ const smp = new SpeedMeasurePlugin({
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 const config = {
+  transpileDependencies: ['uview-ui'],
   configureWebpack: (config) => {
     let now
     config.plugins.push(
       new UniAppWeappTailwindcssWebpackPluginV4({
         disabled: WeappTailwindcssDisabled,
-        onLoad() {
-          console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
-        },
-        onStart() {
-          now = Date.now()
-          // console.log(`onStart:${Date.now() - now}ms`)
-        },
-        onUpdate(file) {
-          console.log(file)
-        },
-        onEnd() {
-          console.log(`onEnd:${Date.now() - now}ms`)
+        // onLoad() {
+        //   console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
+        // },
+        // onStart() {
+        //   now = Date.now()
+        //   // console.log(`onStart:${Date.now() - now}ms`)
+        // },
+        // onUpdate(file) {
+        //   console.log(file)
+        // },
+        // onEnd() {
+        //   console.log(`onEnd:${Date.now() - now}ms`)
+        // },
+        mangle: {
+          log: true,
+          // ignoreClass: [/^u-/]
         }
       })
     )

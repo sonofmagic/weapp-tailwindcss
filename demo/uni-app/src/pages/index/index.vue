@@ -1,5 +1,6 @@
 <template>
-  <view >
+  <view>
+    <u-button text="月落"></u-button>
     <view class="after:border-none after:content-['Hello_World']">after:border-none</view>
     <view class="text-[#999999] dark:text-white" hover-class="text-[#444444]">dark mode</view>
     <view class="bg-black h-10 w-10" hover-class="h-20 w-20">dark mode</view>

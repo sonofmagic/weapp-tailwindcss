@@ -1,6 +1,7 @@
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
+  // @ts-ignore
   mpType: 'app',
   onLaunch() {
     console.log('App Launch')
@@ -19,4 +20,5 @@ export default Vue.extend({
 // @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 /*每个页面公共css */
+@import "uview-ui/index.scss";
 </style>
