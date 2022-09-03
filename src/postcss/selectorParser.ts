@@ -1,6 +1,7 @@
 import selectorParser from 'postcss-selector-parser'
 // import memoize from 'lodash.memoize'
 // import hash from 'object-hash'
+import { internalCssSelectorReplacer } from './shared'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { Rule } from 'postcss'
 import type { StyleHandlerOptions } from '@/types'
@@ -23,6 +24,7 @@ const createTransform = (rule: Rule, options: StyleHandlerOptions) => {
       }
 
       if (selector.type === 'class') {
+        selector.value = internalCssSelectorReplacer(selector.value)
         if (classGenerator && selector.value) {
           let ignore = false
           const prev = rule.prev()

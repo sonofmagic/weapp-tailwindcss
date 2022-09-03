@@ -69,6 +69,9 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
 //   }
 // }
 
+/**
+ * @deprecated
+ */
 export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
   node.selector = cssSelectorReplacer(node.selector)
 }

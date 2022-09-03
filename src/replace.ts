@@ -1,4 +1,4 @@
 import { replaceWxml as replaceJs } from './wxml/shared'
-import { cssSelectorReplacer as replaceCss } from './postcss/shared'
+import { cssSelectorReplacer as replaceCss, internalCssSelectorReplacer as rawReplaceCss } from './postcss/shared'
 
-export { replaceJs, replaceCss }
+export { replaceJs, replaceCss, rawReplaceCss }
