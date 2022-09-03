@@ -1,7 +1,9 @@
 <!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
 <view class="container">
-  <van-button type="primary">按钮</van-button>
+  <van-button class="w-[200rpx] h-[50rpx]" type="primary">
+    <view class="w-[100rpx] h-[25rpx] bg-[rgba(255,255,255,1)]">按钮</view>
+  </van-button>
   <view class="MANGLE__1234567890">MANGLE__1234567890</view>
   <view class="MANGLE__qwertyuiopasdfghjklzxcvbnm">MANGLE__qwertyuiopasdfghjklzxcvbnm</view>
   <view class="MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM">MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM</view>
