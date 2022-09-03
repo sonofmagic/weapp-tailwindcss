@@ -10,13 +10,14 @@ import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interface'
 import { NS } from './common'
 import path from 'path'
-
+import { getGroupedEntries } from '@/base/shared'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
 export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   options: Required<UserDefinedOptions>
   appType: AppType
+
   static NS = NS
   constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
@@ -24,7 +25,20 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, framework, cssPreflight, customRuleCallback, cssPreflightRange, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    const {
+      jsMatcher,
+      mainCssChunkMatcher,
+      replaceUniversalSelectorWith,
+      framework,
+      cssPreflight,
+      customRuleCallback,
+      cssPreflightRange,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart
+    } = this.options
     if (disabled) {
       return
     }
@@ -48,21 +62,8 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           // loaderContext[NS] = true
           if (jsMatcher(module.resource)) {
             // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-            // replacer.end()
-            // unshift
-            // ignore node_modules ?
             module.loaders.unshift(rule)
           }
-          // else if (/\.vue$/.test(module.resource)) {
-          //   module.loaders.unshift({
-          //     loader: path.resolve(__dirname, 'vue-template-rename-loader.js'), // Path to loader
-          //     options: {
-          //       // framework,
-          //       // replacer,
-          //       // isVue: true
-          //     }
-          //   })
-          // }
         })
       })
     }
@@ -70,9 +71,22 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
     compiler.hooks.emit.tap(pluginName, (compilation) => {
       onStart()
       const entries: [string, Source][] = Object.entries(compilation.assets)
-      for (let i = 0; i < entries.length; i++) {
-        const [file, originalSource] = entries[i]
-        if (cssMatcher(file)) {
+      const groupedEntries = getGroupedEntries(entries, this.options)
+      if (!isReact && Array.isArray(groupedEntries.js)) {
+        for (let i = 0; i < groupedEntries.js.length; i++) {
+          const [file, originalSource] = groupedEntries.js[i]
+          // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
+          replacer.end()
+          const rawSource = originalSource.source().toString()
+          const { code } = jsxHandler(rawSource, replacer)
+          const source = new ConcatSource(code)
+          compilation.updateAsset(file, source)
+          onUpdate(file, rawSource, code)
+        }
+      }
+      if (Array.isArray(groupedEntries.css)) {
+        for (let i = 0; i < groupedEntries.css.length; i++) {
+          const [file, originalSource] = groupedEntries.css[i]
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(file, this.appType),
@@ -84,22 +98,9 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)
           onUpdate(file, rawSource, css)
-        } else if (!isReact && jsMatcher(file)) {
-          // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-          replacer.end()
-          const rawSource = originalSource.source().toString()
-
-          const { code } = jsxHandler(rawSource, replacer)
-          const source = new ConcatSource(code)
-          compilation.updateAsset(file, source)
-          // const sourceMapFileName = `${file}.map`
-          // if (compilation.assets[sourceMapFileName]) {
-          //   const sourceMap = new ConcatSource(JSON.stringify(map))
-          //   compilation.updateAsset(sourceMapFileName, sourceMap)
-          // }
-          onUpdate(file, rawSource, code)
         }
       }
+
       onEnd()
     })
   }
