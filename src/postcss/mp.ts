@@ -1,13 +1,10 @@
 import { Rule, Declaration } from 'postcss'
-import { cssSelectorReplacer } from './shared'
+// import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
 // import type { InjectPreflight } from './preflight'
 // function isSupportedRule (selector: string) {
 //   return !selector.includes(':hover')
 // }
-
-const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
-const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
@@ -15,6 +12,9 @@ const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 // :not([hidden])~:not([hidden])
 // :not([hidden]) ~ :not([hidden])
 // const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
+
+const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
+const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
@@ -72,9 +72,9 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
 /**
  * @deprecated
  */
-export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
-  node.selector = cssSelectorReplacer(node.selector)
-}
+// export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
+//   node.selector = cssSelectorReplacer(node.selector)
+// }
 
 // export function mpAtRulePreflight (node: AtRule) {
 // if (node.name === 'media') {
