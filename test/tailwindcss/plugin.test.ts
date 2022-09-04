@@ -1,4 +1,4 @@
-describe('postcss plugin', () => {
+describe('tailwind plugins', () => {
   it('should ', () => {
     expect(true).toBeTruthy()
   })

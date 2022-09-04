@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`first before,after content case 1`] = `
+exports[`styleHandler before,after content case 1`] = `
 ".after_c_ml-0_d_5::after {
   content: var(--tw-content);
   margin-left: 0.125rem;
@@ -35,7 +35,7 @@ exports[`first before,after content case 1`] = `
 "
 `;
 
-exports[`first css @media case 1`] = `
+exports[`styleHandler css @media case 1`] = `
 "@media (min-width: 640px) {
   .sm_c_text-3xl {
     font-size: 60rpx;
@@ -45,21 +45,21 @@ exports[`first css @media case 1`] = `
 "
 `;
 
-exports[`first cssPreflightRange option all 1`] = `
+exports[`styleHandler cssPreflightRange option all 1`] = `
 "::before,::after{
     --tw-content: \\"\\"
 }
 ::before,::after,view,:not(not){}"
 `;
 
-exports[`first cssPreflightRange option view 1`] = `
+exports[`styleHandler cssPreflightRange option view 1`] = `
 "::before,::after{
     --tw-content: \\"\\"
 }
 ::before,::after,view{}"
 `;
 
-exports[`first main chunk build error 1`] = `
+exports[`styleHandler main chunk build error 1`] = `
 "::before,::after {
   --tw-content: \\"\\";
 }
@@ -304,7 +304,7 @@ view,::before,::after {
 "
 `;
 
-exports[`first new option for customRuleCallback kbone 1`] = `
+exports[`styleHandler new option for customRuleCallback kbone 1`] = `
 "::before,::after {
   --tw-content: \\"\\"}
 
@@ -483,7 +483,7 @@ exports[`first new option for customRuleCallback kbone 1`] = `
 }"
 `;
 
-exports[`first tailwindcss v2 jit should append view selector 1`] = `
+exports[`styleHandler tailwindcss v2 jit should append view selector 1`] = `
 "::before,::after{
     --tw-content: \\"\\"
 }
