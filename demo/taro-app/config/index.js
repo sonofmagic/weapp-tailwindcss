@@ -50,7 +50,10 @@ const config = {
             args: [
               {
                 framework: 'react',
-                mangle: true
+                mangle: {
+                  log: true
+                }
+
                 // cssPreflight: {
                 //   'box-sizing': false
                 // }

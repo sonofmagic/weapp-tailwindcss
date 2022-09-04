@@ -64,3 +64,7 @@ export interface IMangleOptions {
   color: red;
 }
 ```
+
+Bugs:
+
+- 同一个 `class` 又是静态Node里，又是动态绑定的，会直接把动态绑定的class对应的css选择器，给直接干掉

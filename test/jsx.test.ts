@@ -100,6 +100,14 @@ describe('jsxHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
+  it('react-jsx-loader-case-with-vars', async () => {
+    const item = await getCase('react-jsx-loader-case-with-vars.js')
+
+    const { code } = jsxHandler(item, reactReplacer)
+
+    expect(code).toMatchSnapshot()
+  })
+
   // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
   // it('multiple file no end issue', () => {
 
