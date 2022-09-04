@@ -150,7 +150,8 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
         }
         if (path.node.type === 'StringLiteral') {
           path.node.value = replaceWxml(path.node.value, {
-            keepEOL: true
+            keepEOL: true,
+            classGenerator: options.classGenerator
           })
         }
       }
