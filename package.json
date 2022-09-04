@@ -54,7 +54,8 @@
     "dist",
     "postcss.*",
     "replace.*",
-    "vite.*"
+    "vite.*",
+    "mangle.*"
   ],
   "publishConfig": {
     "access": "public",

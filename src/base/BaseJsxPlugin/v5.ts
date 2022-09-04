@@ -50,7 +50,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     const { ConcatSource } = compiler.webpack.sources
     // react
     const replacer = createReplacer(framework)
-    const isReact = true
+    const isReact = framework === 'react'
     const rule = {
       loader: path.resolve(__dirname, `${NS}.js`),
       options: {
