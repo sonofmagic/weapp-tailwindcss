@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.0 (2022-09-05)
+
+### Features
+
+- 添加 `mangle` 配置，用于压缩混淆 `className`，详见 [mangle.md](./docs/mangle.md)
+- 重构 `transformSync`， 废弃 `mpRulePreflight`
+- `weapp-tailwindcss-webpack-plugin/replacer` 额外暴露 `replaceEscapedCss`
+- 暴露 `weapp-tailwindcss-webpack-plugin/mangle` 插件
+
 ## 1.8.1 (2022-08-22)
 
 ### Fixed
@@ -159,11 +168,7 @@ import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/post
 
 ## 1.4.4 (2022-05-19)
 
-[Feat]: `all arbitrary values usages`, 允许 `before:content-['Festivus']` 这样的写法。
-
 ## 1.4.3 (2022-05-18)
-
-[Fixed]: `shadow arbitrary-values` 问题: 比如使用 `shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]` 会报错等等
 
 ## 1.4.0 (2022-05-15)
 
