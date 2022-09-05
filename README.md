@@ -88,7 +88,7 @@
 | `disabled`                     | `boolean`                                                                      | 是否禁用该插件，默认为 `false`，一般用于多平台构建，有些平台比如 `h5` 不需要开启此插件，所以可以根据环境变量进行禁用。                                                                                                        |
 | `cssPreflightRange`            | `'view'` \| `'all'`                                                            | 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。默认值为 `'view'` 即只对所有的 `view` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突 |
 | `replaceUniversalSelectorWith` | `string` \| `false`                                                            | 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错                                                                                           |
-| `mangle`(1.9.0+)               | `boolean` \| `IMangleOptions`                                                  | 是否压缩混淆 `wxml` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [mangle.md](./mangle.md)                                                                                             |
+| `mangle`(1.9.0+)               | `boolean` \| `IMangleOptions`                                                  | 是否压缩混淆 `wxml` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [mangle.md](./docs/mangle.md)                                                                                             |
 | `cssPreflight`                 | `Record<string,string>`\| `false`                                              | 在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:                                                                                                                          |
 
 ```js
