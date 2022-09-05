@@ -12,13 +12,14 @@ import type ClassGenerator from './classGenerator'
 
 // export const globalClassGenerator = new ClassGenerator()
 
-export function mangleMark (str: string, classGenerator: ClassGenerator) {
+export function mangleMark (str: string, oldValue: string, classGenerator: ClassGenerator) {
   if (typeof str === 'string' && str) {
+    const oldStrArr = oldValue.split(' ').filter((x) => x)
     return str
       .split(' ')
       .filter((x) => x)
-      .map((x) => {
-        if (classGenerator.ignoreClassName(x)) {
+      .map((x, idx) => {
+        if (classGenerator.ignoreClassName(x) || classGenerator.ignoreClassName(oldStrArr[idx])) {
           return x
         }
         return classGenerator.generateClassName(x).name // format(x)

@@ -1,8 +1,8 @@
 # mangle 配置
 
-Bugs:
+<!-- Bugs: -->
 
-- 同一个 `class` 又是静态Node里，又是动态绑定的，会直接把动态绑定的class对应的css选择器，给直接干掉
+> - 同一个 `class` 又是静态Node里，又是动态绑定的，会直接把动态绑定的class对应的css选择器，给直接干掉
 
 ```html
 <view class="bg-[#123456]">bg-[#123456]</view>

@@ -1,7 +1,7 @@
 <template>
   <view>
     <u-button text="月落"></u-button>
-    <view class="after:border-none after:content-['Hello_World']">after:border-none</view>
+    <view class="bg-inherit after:border-none after:content-['Hello_World']">after:border-none</view>
     <view class="text-[#999999] dark:text-white" hover-class="text-[#444444]">dark mode</view>
     <view class="bg-[#123456]">bg-[#123456]</view>
     <view :class="className">className</view>
