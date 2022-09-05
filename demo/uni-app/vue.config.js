@@ -31,7 +31,8 @@ const config = {
         mangle: {
           log: true,
           // ignoreClass: ['bg-[#123456]'],
-          ignoreClass: [/^bg-/]
+          ignoreClass: [/^bg-/],
+          reserveClassName: ['a', 'b']
         }
       })
     )

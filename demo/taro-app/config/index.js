@@ -51,7 +51,9 @@ const config = {
               {
                 framework: 'react',
                 mangle: {
-                  log: true
+                  log: true,
+                  ignoreClass: ['bg-[#123456]'],
+                  reserveClassName: ['a', 'b']
                 }
 
                 // cssPreflight: {

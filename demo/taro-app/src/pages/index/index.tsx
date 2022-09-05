@@ -9,8 +9,8 @@ const Index = () => {
   const className = replaceJs('bg-[#123456]')
   return (
     <>
-      <View className="after:border-none after:content-['Hello_World']">after:border-none</View>
-      <View className='after:content-["*"] after:ml-0.5 after:text-red-500'></View>
+      <View className="after:border-none after:content-['Hello_World'] a">after:border-none</View>
+      <View className='after:content-["*"] after:ml-0.5 after:text-red-500 b'>yellow</View>
       <View className="after:content-[*] after:ml-0.5 after:text-red-500 aspect-w-16">
         <View>aspect</View>
         <View>w</View>
