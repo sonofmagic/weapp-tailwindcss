@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('tailwind-children')],
   presets: [
     require('tailwindcss-rem2px-preset').createPreset({
       fontSize: 32,

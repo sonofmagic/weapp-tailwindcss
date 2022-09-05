@@ -141,3 +141,15 @@ exports[`postcss plugin base tw output 1`] = `
 }
 "
 `;
+
+exports[`postcss plugin base utilities output 1`] = `
+".h-10 {
+    height: 2.5rem
+}
+.w-10 {
+    width: 2.5rem
+}
+.bg-\\\\[rgba\\\\(255\\\\2c 254\\\\2c 253\\\\2c \\\\.5\\\\)\\\\] {
+    background-color: rgba(255,254,253,.5)
+}"
+`;

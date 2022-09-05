@@ -1,6 +1,7 @@
 import postcss from 'postcss'
 import path from 'path'
 import fs from 'fs'
+import tailwindcss from 'tailwindcss'
 describe('postcss plugin', () => {
   const baseProcessor = postcss([
     require('autoprefixer')(),
@@ -16,6 +17,23 @@ describe('postcss plugin', () => {
   })
   it('base tw output', async () => {
     const res = await baseProcessor.process(baseCss, {
+      from: 'index.css',
+      to: 'index.css'
+    })
+    expect(res.css.toString()).toMatchSnapshot()
+  })
+
+  it('base utilities output', async () => {
+    const processor = postcss([
+      tailwindcss({
+        content: [
+          {
+            raw: '<view class="h-10 w-10 bg-[rgba(255,254,253,.5)]"></view>'
+          }
+        ]
+      })
+    ])
+    const res = await processor.process('@tailwind utilities;', {
       from: 'index.css',
       to: 'index.css'
     })
