@@ -1,5 +1,18 @@
 # mangle 配置
 
+Bugs:
+
+- 同一个 `class` 又是静态Node里，又是动态绑定的，会直接把动态绑定的class对应的css选择器，给直接干掉
+
+```html
+<view class="bg-[#123456]">bg-[#123456]</view>
+<view :class="className">className</view>
+```
+
+```js
+className: replaceJs('bg-[#123456]')
+```
+
 用于压缩混淆所有的 `className`，类似:
 
 - `flex` -> `a`
@@ -64,7 +77,3 @@ export interface IMangleOptions {
   color: red;
 }
 ```
-
-Bugs:
-
-- 同一个 `class` 又是静态Node里，又是动态绑定的，会直接把动态绑定的class对应的css选择器，给直接干掉
