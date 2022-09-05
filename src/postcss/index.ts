@@ -1,7 +1,7 @@
 import postcss from 'postcss'
 
 import type { StyleHandlerOptions } from '@/types'
-import { commonChunkPreflight, mpRulePreflight } from './mp'
+import { commonChunkPreflight } from './mp'
 import { transformSync } from './selectorParser'
 // mpAtRulePreflight
 // const isMp = true
@@ -15,7 +15,7 @@ export function styleHandler (rawSource: string, options: StyleHandlerOptions) {
       transformSync(node, options)
       // if (isMp) {
       // 先处理工具类
-      mpRulePreflight(node, options)
+      // mpRulePreflight(node, options)
       // 引用传递
       // uni-app common-> main.wxss
       // taro app.wxss

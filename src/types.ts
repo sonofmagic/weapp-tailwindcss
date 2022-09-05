@@ -1,17 +1,18 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
+import type ClassGenerator from '@/mangle/classGenerator'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
 
 export interface IPropValue {
   prop: string
   value: string
 }
-
-export type CssPresetProps = 'box-sizing' | 'border-width' | 'border-style' | 'border-color'
+// 'box-sizing' | 'border-width' | 'border-style' | 'border-color' |
+export type CssPresetProps = string
 
 export type CssPreflightOptions =
   | {
-      [key: CssPresetProps | string]: string | false
+      [key: CssPresetProps]: string | number | boolean
     }
   | false
 
@@ -26,6 +27,7 @@ export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHan
 
 export type StyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
+  classGenerator?: ClassGenerator
 } & RequiredStyleHandlerOptions
 
 export interface RawSource {
@@ -42,8 +44,20 @@ export interface IMangleContextClass {
 }
 
 export interface IMangleOptions {
+  // classNameRegExp?: string
+  reserveClassName?: (string | RegExp)[]
+  // ignorePrefix?: string[]
+  // ignorePrefixRegExp?: string
+  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
+  log?: boolean
+  exclude?: (string | RegExp)[]
+  include?: (string | RegExp)[]
+  ignoreClass?: (string | RegExp)[]
+}
+
+export interface IManglePluginOptions extends IMangleOptions {
   classNameRegExp?: string
-  reserveClassName?: string[]
+  reserveClassName?: (string | RegExp)[]
   ignorePrefix?: string[]
   ignorePrefixRegExp?: string
   classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
@@ -62,7 +76,7 @@ export interface UserDefinedOptions {
   /**
    * 用于处理js
    */
-  jsMatcher?: (name: string) => boolean
+   jsMatcher?: (name: string) => boolean
   /**
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
@@ -83,7 +97,7 @@ export interface UserDefinedOptions {
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
    * @default 'view'
-   * @description 将css中的 '*' 选择器 (Universal) 替换为指定的字符串, false 为不转化
+   * @description 将css中的 '*' 选择器 (Universal) 替换为指定的字符串, false 表示不转化
    */
   replaceUniversalSelectorWith?: string | false
 
@@ -118,13 +132,23 @@ export interface UserDefinedOptions {
    */
   onEnd?: () => void
   /**
-   * @description 是否混淆class,用于缩短replace后产生的class的长度 MANGLE__
+   * @description 是否混淆class,用于缩短replace后产生的class的长度
    */
   mangle?: IMangleOptions | boolean
+
+  /**
+   * @description Taro 特有，用来声明使用的框架
+   */
+  framework?: 'react' | 'vue' | 'vue3' | string
 }
 
 export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith'>
 
-export interface TaroUserDefinedOptions extends UserDefinedOptions {
-  framework: 'react' | 'vue' | 'vue3' | string
+// export interface TaroUserDefinedOptions extends UserDefinedOptions {
+//   framework: 'react' | 'vue' | 'vue3' | string
+// }
+
+export interface ICommonReplaceOptions {
+  keepEOL?: boolean
+  classGenerator?: ClassGenerator
 }

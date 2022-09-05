@@ -12,7 +12,7 @@ export const createInjectPreflight = (options: CssPreflightOptions): InjectPrefl
       if (value !== false) {
         result.push({
           prop,
-          value
+          value: value.toString()
         })
       }
     }

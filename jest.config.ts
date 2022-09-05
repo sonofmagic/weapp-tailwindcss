@@ -8,7 +8,8 @@ const config: InitialOptionsTsJest = {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^#test/(.*)$': '<rootDir>/test/$1'
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo']

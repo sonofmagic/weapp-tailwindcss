@@ -12,6 +12,12 @@
       "style": {
         "navigationBarTitleText": "case55"
       }
+    },
+    {
+      "path": "pages/issue/tailwind-children",
+      "style": {
+        "navigationBarTitleText": "tailwind-children"
+      }
     }
   ],
   "globalStyle": {
@@ -26,6 +32,11 @@
       {
         "name": "case55",
         "path": "pages/issue/case55",
+        "query": ""
+      },
+      {
+        "name": "tailwind-children",
+        "path": "pages/issue/tailwind-children",
         "query": ""
       },
       {

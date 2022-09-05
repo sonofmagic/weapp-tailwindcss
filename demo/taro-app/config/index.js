@@ -1,5 +1,6 @@
-const { TaroWeappTailwindcssWebpackPluginV5 } = require('../../../dist/index')
-// const { TaroWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+// const { TaroWeappTailwindcssWebpackPluginV5 } = require('../../../dist/index')
+const { TaroWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+
 const config = {
   compiler: 'webpack5',
   projectName: 'myApp',
@@ -48,7 +49,13 @@ const config = {
             plugin: TaroWeappTailwindcssWebpackPluginV5,
             args: [
               {
-                framework: 'react'
+                framework: 'react',
+                mangle: {
+                  log: true,
+                  ignoreClass: ['bg-[#123456]'],
+                  reserveClassName: ['a', 'b']
+                }
+
                 // cssPreflight: {
                 //   'box-sizing': false
                 // }

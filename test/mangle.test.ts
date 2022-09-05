@@ -72,7 +72,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
-            log: true
+            log: false
           })
         ]
       },
@@ -106,7 +106,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
-            log: true
+            log: false
           })
         ]
       },
@@ -141,7 +141,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           new ManglePlugin({
             classNameRegExp: '(xs:|md:)?[cl]-[a-z][a-zA-Z0-9_]*',
             ignorePrefix: ['xs:', 'md:'],
-            log: true
+            log: false
           })
         ]
       },
@@ -151,17 +151,17 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
 
   it('do not have dupplicate class name', () => {
     const classes = new Set()
-    const classGenerator = new ClassGenerator()
+    const classGenerator = new ClassGenerator({ log: false })
     const n = 40
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         for (let k = 0; k < n; k++) {
-          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`, { log: false })
+          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`)
           classes.add(className.name)
         }
       }
     }
-    console.log('Generated class size:', classes.size)
+
     expect(classes.size).toBe(Math.pow(n, 3))
     expect(classes).toContain('a')
     expect(classes).toContain('_')
@@ -173,20 +173,20 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
   it('do not use reserved class names', () => {
     const reservedClassNames = ['b', 'd']
     const classes = new Set()
-    const classGenerator = new ClassGenerator()
+    const classGenerator = new ClassGenerator({
+      reserveClassName: reservedClassNames,
+      log: false
+    })
     const n = 3
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         for (let k = 0; k < n; k++) {
-          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`, {
-            reserveClassName: reservedClassNames,
-            log: true
-          })
+          const className = classGenerator.generateClassName(`l-${i}-${j}-${k}`)
           classes.add(className.name)
         }
       }
     }
-    console.log('Generated class size:', classes.size)
+
     expect(classes.size).toBe(Math.pow(n, 3))
     expect(classes).toContain('a')
     expect(classes).not.toContain('b')
@@ -196,13 +196,11 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
   })
 
   it('ignore escape char in class name', () => {
-    const classGenerator = new ClassGenerator()
-    const classNameWithEscape = classGenerator.generateClassName('l-\\/a\\/b', {
-      log: true
+    const classGenerator = new ClassGenerator({
+      log: false
     })
-    const classNameWithoutEscape = classGenerator.generateClassName('l-/a/b', {
-      log: true
-    })
+    const classNameWithEscape = classGenerator.generateClassName('l-\\/a\\/b')
+    const classNameWithoutEscape = classGenerator.generateClassName('l-/a/b')
     expect(classNameWithEscape.name).toBe(classNameWithoutEscape.name)
   })
 
@@ -218,7 +216,7 @@ describe.each([4, 5])('ManglePlugin Webpack%i', (webpackVersion) => {
           // @ts-ignore
           new ManglePlugin({
             classNameRegExp: defaultCssClassRegExp,
-            log: true,
+            log: false,
             classGenerator: (original, opts, context) => {
               if (!context.id) {
                 context.id = 1

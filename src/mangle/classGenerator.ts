@@ -1,16 +1,18 @@
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import type { IMangleOptions, IMangleContextClass } from '@/types'
 import type { IClassGenerator } from './interfaces'
 import { acceptChars, acceptPrefix, stripEscapeSequence } from './shared'
-
+import { regExpTest } from '@/shared'
 class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
   public context: Record<string, any>
-  constructor () {
+  public opts: IMangleOptions
+  constructor (opts: IMangleOptions = {}) {
     this.newClassMap = {}
     this.newClassSize = 0
     this.context = {}
+    this.opts = opts
   }
 
   defaultClassGenerator () {
@@ -35,7 +37,42 @@ class ClassGenerator implements IClassGenerator {
     return newClassName
   }
 
-  generateClassName (original: string, opts: IMangleOptions): IMangleContextClass {
+  ignoreClassName (className: string): boolean {
+    return regExpTest(this.opts.ignoreClass, className)
+  }
+
+  includeFilePath (filePath: string): boolean {
+    const { include } = this.opts
+    if (Array.isArray(include)) {
+      return regExpTest(include, filePath)
+    } else {
+      return true
+    }
+  }
+
+  excludeFilePath (filePath: string): boolean {
+    const { exclude } = this.opts
+    if (Array.isArray(exclude)) {
+      return regExpTest(exclude, filePath)
+    } else {
+      return false
+    }
+  }
+
+  isFileIncluded (filePath: string) {
+    return this.includeFilePath(filePath) && !this.excludeFilePath(filePath)
+  }
+
+  transformCssClass (className: string): string {
+    const key = stripEscapeSequence(className)
+    const cn = this.newClassMap[key]
+    if (cn) return cn.name
+    return className
+  }
+
+  generateClassName (original: string): IMangleContextClass {
+    const opts = this.opts
+
     original = stripEscapeSequence(original)
     const cn = this.newClassMap[original]
     if (cn) return cn
@@ -48,15 +85,15 @@ class ClassGenerator implements IClassGenerator {
       newClassName = this.defaultClassGenerator()
     }
 
-    if (opts.reserveClassName && opts.reserveClassName.includes(newClassName)) {
+    if (opts.reserveClassName && regExpTest(opts.reserveClassName, newClassName)) {
       if (opts.log) {
-        console.log(`The class name has been reserved. ${chalk.green(newClassName)}`)
+        console.log(`The class name has been reserved. ${newClassName}`)
       }
       this.newClassSize++
-      return this.generateClassName(original, opts)
+      return this.generateClassName(original)
     }
     if (opts.log) {
-      console.log(`Minify class name from ${chalk.green(original)} to ${chalk.green(newClassName)}`)
+      console.log(`Minify class name from ${original} to ${newClassName}`)
     }
     const newClass: IMangleContextClass = {
       name: newClassName,

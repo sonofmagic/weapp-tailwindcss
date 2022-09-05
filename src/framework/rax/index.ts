@@ -1,9 +1,9 @@
 // webpack 5
-import type { TaroUserDefinedOptions } from '@/types'
+import type { UserDefinedOptions } from '@/types'
 import { BaseJsxWebpackPluginV5 } from '@/base'
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
 export class RaxTailwindcssWebpackPluginV5 extends BaseJsxWebpackPluginV5 {
-  constructor (options: TaroUserDefinedOptions = { framework: 'react' }) {
+  constructor (options: UserDefinedOptions = { framework: 'react' }) {
     super(options, 'rax')
   }
 }

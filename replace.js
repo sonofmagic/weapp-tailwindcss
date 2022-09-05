@@ -1,1 +1,1 @@
-export { replaceCss, replaceJs } from './dist/replace.js'
+export { replaceCss, replaceJs, replaceEscapedCss } from './dist/replace.js'

@@ -1,13 +1,13 @@
 import { defaultOptions, getOptions } from '@/defaults'
 describe('shared', () => {
   it('defaultOptions', () => {
-    const config = getOptions(null)
+    const config = getOptions()
     expect(config).toStrictEqual(defaultOptions)
   })
 
-  it('cssPreflight null', () => {
+  it('cssPreflight undefined', () => {
     const config = getOptions({
-      cssPreflight: null
+      cssPreflight: undefined
     })
     expect(config).toStrictEqual(defaultOptions)
   })

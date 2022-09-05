@@ -36,7 +36,7 @@ function inflateEntries(entries, dirname, entry) {
   //通过useExtendedLib扩展库的方式引入WeUI组件https://developers.weixin.qq.com/miniprogram/dev/extended/weui/quickstart.html
   //扩展库内置于开发者工具中，此处无需处理
   //WeUI组件路径包含weui-miniprogram，据此进行判断
-  if (entry.includes('weui-miniprogram')) return
+  if (entry.includes('@vant/weapp')) return
 
   entry = path.resolve(dirname, entry)
   if (entry != null && !entries.includes(entry)) {

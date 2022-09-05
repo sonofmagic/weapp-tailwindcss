@@ -3,7 +3,7 @@ import type { InternalPostcssOptions, StyleHandlerOptions } from '@/types'
 import { transformSync } from './selectorParser'
 // import { getOptions } from '../defaults'
 import { getOptions } from '@/defaults'
-import { commonChunkPreflight, mpRulePreflight } from './mp'
+import { commonChunkPreflight } from './mp'
 import { createInjectPreflight } from './preflight'
 const postcssPlugin = 'postcss-weapp-tailwindcss-rename'
 
@@ -35,7 +35,7 @@ const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions =
       // }
       css.walkRules((rule) => {
         transformSync(rule, opts)
-        mpRulePreflight(rule, opts)
+        // mpRulePreflight(rule, opts)
         commonChunkPreflight(rule, opts)
       })
     }

@@ -1,5 +1,5 @@
 // webpack 5
-import type { AppType, TaroUserDefinedOptions } from '@/types'
+import type { AppType, UserDefinedOptions, IMangleOptions } from '@/types'
 import type { Compiler } from 'webpack'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -11,44 +11,70 @@ import type { IBaseWebpackPlugin } from '@/interface'
 import { NormalModule } from 'webpack'
 import { NS } from './common'
 import path from 'path'
-
+import ClassGenerator from '@/mangle/classGenerator'
+import { getGroupedEntries } from '@/base/shared'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
  */
 
 export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
-  options: Required<TaroUserDefinedOptions>
+  options: Required<UserDefinedOptions>
   appType: AppType
+  classGenerator?: ClassGenerator
   static NS = NS
-  constructor (options: TaroUserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
   apply (compiler: Compiler) {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, framework, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options
+    const {
+      jsMatcher,
+      mainCssChunkMatcher,
+      replaceUniversalSelectorWith,
+      framework,
+      cssPreflight,
+      cssPreflightRange,
+      customRuleCallback,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart,
+      mangle
+    } = this.options
     if (disabled) {
       return
+    }
+    if (mangle) {
+      this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
     }
     const cssInjectPreflight = createInjectPreflight(cssPreflight)
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
-    const replacer = createReplacer(framework)
-    const isReact = true
-    const rule = {
-      loader: path.resolve(__dirname, `${NS}.js`),
-      options: {
-        replacer
-      },
-      ident: null,
-      type: null
-    }
+
+    const isReact = framework === 'react'
+    const loader = path.resolve(__dirname, `${NS}.js`)
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       if (isReact) {
         NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
           if (jsMatcher(module.resource)) {
+            let classGenerator
+            if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
+              classGenerator = this.classGenerator
+            }
+            const replacer = createReplacer(framework, { classGenerator })
+            const rule = {
+              loader,
+              options: {
+                framework,
+                replacer
+              },
+              ident: null,
+              type: null
+            }
             // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
             // replacer.end()
             // unshift
@@ -65,33 +91,46 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
         (assets) => {
           onStart()
           const entries = Object.entries(assets)
-          for (let i = 0; i < entries.length; i++) {
-            const [file, originalSource] = entries[i]
-            if (cssMatcher(file)) {
-              const rawSource = originalSource.source().toString()
-              const css = styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(file, this.appType),
-                cssInjectPreflight,
-                customRuleCallback,
-                cssPreflightRange,
-                replaceUniversalSelectorWith
+          const groupedEntries = getGroupedEntries(entries, this.options)
+          if (!isReact && Array.isArray(groupedEntries.js)) {
+            for (let i = 0; i < groupedEntries.js.length; i++) {
+              let classGenerator
+              const [file, originalSource] = groupedEntries.js[i]
+              if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+                classGenerator = this.classGenerator
+              }
+              const replacer = createReplacer(framework, {
+                classGenerator
               })
-              const source = new ConcatSource(css)
-              compilation.updateAsset(file, source)
-              onUpdate(file, rawSource, css)
-            } else if (!isReact && jsMatcher(file)) {
               // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
               replacer.end()
               const rawSource = originalSource.source().toString()
               const { code } = jsxHandler(rawSource, replacer)
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
-              // const sourceMapFileName = `${file}.map`
-              // if (compilation.assets[sourceMapFileName]) {
-              //   const sourceMap = new ConcatSource(JSON.stringify(map))
-              //   compilation.updateAsset(sourceMapFileName, sourceMap)
-              // }
               onUpdate(file, rawSource, code)
+            }
+          }
+
+          if (Array.isArray(groupedEntries.css)) {
+            for (let i = 0; i < groupedEntries.css.length; i++) {
+              let classGenerator
+              const [file, originalSource] = groupedEntries.css[i]
+              if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+                classGenerator = this.classGenerator
+              }
+              const rawSource = originalSource.source().toString()
+              const css = styleHandler(rawSource, {
+                isMainChunk: mainCssChunkMatcher(file, this.appType),
+                cssInjectPreflight,
+                customRuleCallback,
+                cssPreflightRange,
+                replaceUniversalSelectorWith,
+                classGenerator
+              })
+              const source = new ConcatSource(css)
+              compilation.updateAsset(file, source)
+              onUpdate(file, rawSource, css)
             }
           }
           onEnd()

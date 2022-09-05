@@ -10,7 +10,8 @@
     "dev": "npm run start",
     "type-check": "tsc --noEmit",
     "start": "webpack --watch --progress",
-    "build": "cross-env NODE_ENV=production BUILD_TYPE=release webpack",
+    "build": "cross-env NODE_ENV=production BUILD_TYPE=release webpack && yarn build:npm",
+    "build:npm": "weapp build-npm -p",
     "preupload": "run-s build",
     "upload": "run-script-os",
     "upload:darwin": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u $npm_package_version@$INIT_CWD",
@@ -21,6 +22,7 @@
   },
   "sideEffects": false,
   "dependencies": {
+    "@vant/weapp": "^1.10.4",
     "dayjs": "^1.11.4",
     "lodash": "^4.17.21",
     "rxjs": "^7.5.6"
@@ -43,7 +45,7 @@
     "file-loader": "^6.2.0",
     "jest": "^27.5.1",
     "lodash-webpack-plugin": "^0.11.5",
-    "miniprogram-api-typings": "^3.4.5",
+    "miniprogram-api-typings": "^3.5.0",
     "npm-run-all": "^4.1.2",
     "postcss": "^8.4.7",
     "postcss-loader": "^7.0.1",
@@ -60,7 +62,7 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^4.6.3",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.8.2",
+    "weapp-tailwindcss-webpack-plugin": "^1.9.0",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
     "webpack-sources": "^3.2.3"

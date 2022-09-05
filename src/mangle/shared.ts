@@ -1,19 +1,6 @@
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import type { IMangleOptions } from '@/types'
 import type { IClassGenerator } from './interfaces'
-
-export const mangleClassPrefix = 'MANGLE__'
-
-export const mangleClassSuffix = '__MANGLE'
-
-export const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g
-
-export function markForMangled (str: string) {
-  if (typeof str === 'string' && str) {
-    return `${mangleClassPrefix}${str.trim()}${mangleClassSuffix}`
-  }
-  return str
-}
 
 export const acceptPrefix = 'abcdefghijklmnopqrstuvwxyz_'.split('')
 
@@ -31,9 +18,9 @@ export const validate = (opts: IMangleOptions, classGenerator: IClassGenerator) 
       continue
     }
     if (c.usedBy[0].match(/.+\.css:*$/)) {
-      console.log(`The class name '${chalk.yellow(className)}' is not used: defined at ${chalk.yellow(c.usedBy[0])}.`)
+      console.log(`The class name '${className}' is not used: defined at ${c.usedBy[0]}.`)
     } else {
-      console.log(`The class name '${chalk.yellow(className)}' is not defined: used at ${chalk.yellow(c.usedBy[0])}.`)
+      console.log(`The class name '${className}' is not defined: used at ${c.usedBy[0]}.`)
     }
   }
 }

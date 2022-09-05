@@ -1,5 +1,5 @@
-const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../../')
-// const { TaroWeappTailwindcssWebpackPluginV4 } = require('weapp-tailwindcss-webpack-plugin')
+//const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../../')
+const { TaroWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 const config = {
   projectName: 'taro-vue2-app',
   date: '2022-2-11',
@@ -18,6 +18,10 @@ const config = {
     options: {}
   },
   framework: 'vue',
+  compiler: 'webpack5',
+  cache: {
+    enable: false // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
+  },
   mini: {
     postcss: {
       pxtransform: {
@@ -42,10 +46,12 @@ const config = {
       chain.merge({
         plugin: {
           install: {
-            plugin: TaroWeappTailwindcssWebpackPluginV4,
-            args: [{
-              framework: 'vue2'
-            }]
+            plugin: TaroWeappTailwindcssWebpackPluginV5,
+            args: [
+              {
+                framework: 'vue2'
+              }
+            ]
           }
         }
       })

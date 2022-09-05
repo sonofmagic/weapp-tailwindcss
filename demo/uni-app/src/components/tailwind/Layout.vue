@@ -1,6 +1,6 @@
 <template>
   <div class="before:content-['hello'] before:block">
-    <view class="text-[122px]">对酒当歌，人生几何</view>
+    <view class="text-[22px]">对酒当歌，人生几何</view>
     <view class="!h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
     <!-- <view class="container">container</view>

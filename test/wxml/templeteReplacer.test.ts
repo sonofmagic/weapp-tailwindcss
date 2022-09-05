@@ -1,9 +1,25 @@
 import { templeteReplacer } from '@/wxml/index'
+import ClassGenerator from '@/mangle/classGenerator'
+const testTable = [
+  [
+    {},
+    {
+      label: '[mangle]',
+      mangle: true
+    }
+  ]
+]
 describe('templeteReplacer', () => {
-  it('isStringLiteral', () => {
+  let classGenerator: ClassGenerator
+  beforeEach(() => {
+    classGenerator = new ClassGenerator()
+  })
+  it.each(testTable)('$label isStringLiteral', ({ label, mangle }) => {
     const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
 
-    const result = templeteReplacer(testCase)
+    const result = templeteReplacer(testCase, {
+      classGenerator: mangle ? classGenerator : undefined
+    })
 
     expect(result).toBe("{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}")
     expect(result).toMatchSnapshot()
@@ -34,6 +50,16 @@ describe('templeteReplacer', () => {
     expect(result).toMatchSnapshot()
   })
 
+  it('[mangle] sm:text-3xl dark:text-sky-400', () => {
+    const testCase = 'sm:text-3xl dark:text-slate-200 bg-[#ffffaa]'
+    const result = templeteReplacer(testCase, {
+      classGenerator
+    })
+
+    expect(result).toBe('a b c')
+    expect(classGenerator.newClassSize).toBe(result.split(' ').length)
+  })
+
   it('\\r\\n replace test', async () => {
     const testCase = `
     bg-white
@@ -47,6 +73,24 @@ describe('templeteReplacer', () => {
   `
     const result = templeteReplacer(testCase)
     expect(result).toBe('    bg-white    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto  ')
+  })
+
+  it('[mangle] \\r\\n replace test', async () => {
+    const testCase = `
+    bg-white
+    rounded-full
+    w-10
+    h-10
+    flex
+    justify-center
+    items-center
+    pointer-events-auto
+  `
+    const result = templeteReplacer(testCase, {
+      classGenerator
+    })
+    expect(result).toBe('a b c d e f g h')
+    expect(classGenerator.newClassSize).toBe(result.split(' ').length)
   })
 
   it('\\r\\n replace test with var', async () => {
@@ -69,6 +113,29 @@ describe('templeteReplacer', () => {
     )
   })
 
+  it('[mangle] \\r\\n replace test with var', async () => {
+    const testCase = `{{[
+      'flex',
+      'items-center',
+      'justify-center',
+      'h-_l_100px_r_',
+      'w-_l_100px_r_',
+      'rounded-_l_40px_r_',
+      'bg-_l__h_123456_r_',
+      'bg-opacity-_l_0-dot-54_r_',
+      'text-_l__h_ffffff_r_',
+      'data-v-1badc801',
+      'text-_l__h_123456_r_',
+      b]}}`
+    const result = templeteReplacer(testCase, {
+
+      classGenerator
+    })
+    expect(result).toBe(
+      "{{['flex','items-center','justify-center','h-_l_100px_r_','w-_l_100px_r_','rounded-_l_40px_r_','bg-_l__h_123456_r_','bg-opacity-_l_0-dot-54_r_','text-_l__h_ffffff_r_','data-v-1badc801','text-_l__h_123456_r_',b]}}"
+    )
+  })
+
   it('variables with multiple literal', async () => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
@@ -78,27 +145,39 @@ describe('templeteReplacer', () => {
     )
   })
 
-  it('variables with multiple literal(2)', () => {
+  it('[mangle] variables with multiple literal', async () => {
+    // eslint-disable-next-line quotes
+    const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
+    const result = templeteReplacer(testCase, {
+
+      classGenerator
+    })
+    expect(result).toBe(
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
+    )
+  })
+
+  it.each(testTable)('variables with multiple literal(2)', ({ mangle }) => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
-    const result = templeteReplacer(testCase)
+    const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe(
       "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
     )
   })
 
-  it('for toutiao str add not array', () => {
+  it.each(testTable)('%label for toutiao str add not array', ({ mangle }) => {
     const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
-    const result = templeteReplacer(testCase)
+    const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_bl__h_990000_br_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
   })
 
-  it('utils.bem()', () => {
+  it.each(testTable)('%label utils.bem()', ({ mangle }) => {
     const testCase =
       "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
 
-    const result = templeteReplacer(testCase)
+    const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe(
       "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
     )

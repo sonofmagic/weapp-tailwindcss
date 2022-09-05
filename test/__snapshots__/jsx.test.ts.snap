@@ -274,6 +274,126 @@ exports[`jsxHandler react-hover-class 1`] = `
 };"
 `;
 
+exports[`jsxHandler react-jsx-loader-case-with-vars 1`] = `
+"import _slicedToArray from 'G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/slicedToArray.js';
+import { useState } from 'react';
+import { View } from '@tarojs/components'; // import { useEnv, useNavigationBar, useModal, useToast } from \\"taro-hooks\\";
+
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+import './index.scss';
+import { jsx as _jsx } from 'react/jsx-runtime';
+import { jsxs as _jsxs } from 'react/jsx-runtime';
+import { Fragment as _Fragment } from 'react/jsx-runtime';
+
+var Index = function Index() {
+  var _useState = useState(true),
+      _useState2 = _slicedToArray(_useState, 1);
+
+  var className = replaceJs('bg-[#123456]');
+  return /*#__PURE__*/_jsxs(_Fragment, {
+    children: [/*#__PURE__*/_jsx(View, {
+      className: className,
+      children: 'className'
+    })]
+  });
+};
+
+export default Index;"
+`;
+
+exports[`jsxHandler react-jsx-loader-case0 1`] = `
+"import _slicedToArray from 'G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/slicedToArray.js';
+import { useState } from 'react';
+import { View } from '@tarojs/components'; // import { useEnv, useNavigationBar, useModal, useToast } from \\"taro-hooks\\";
+
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+import './index.scss';
+import EndClassCom from './endClassCom';
+import { jsx as _jsx } from 'react/jsx-runtime';
+import { jsxs as _jsxs } from 'react/jsx-runtime';
+import { Fragment as _Fragment } from 'react/jsx-runtime';
+
+var Index = function Index() {
+  var _useState = useState(true),
+      _useState2 = _slicedToArray(_useState, 1),
+      flag = _useState2[0];
+
+  var className = replaceJs('bg-[#123456]');
+  return /*#__PURE__*/_jsxs(_Fragment, {
+    children: [/*#__PURE__*/_jsx(View, {
+      className: \\"after_c_border-none after_c_content-_bl__q_Hello_World_q__br_\\",
+      children: 'after:border-none'
+    }), /*#__PURE__*/_jsx(View, {
+      className: \\"after_c_content-_bl__dq__a__dq__br_ after_c_ml-0_d_5 after_c_text-red-500\\"
+    }), /*#__PURE__*/_jsxs(View, {
+      className: \\"after_c_content-_bl__a__br_ after_c_ml-0_d_5 after_c_text-red-500 aspect-w-16\\",
+      children: [/*#__PURE__*/_jsx(View, {
+        children: 'aspect'
+      }), /*#__PURE__*/_jsx(View, {
+        children: 'w'
+      }), /*#__PURE__*/_jsx(View, {
+        children: '16'
+      })]
+    }), /*#__PURE__*/_jsx(View, {
+      className: \\"bg-gray-100 dark_c_bg-zinc-800 h-10 w-10\\",
+      hoverClass: \\"bg-red-500 dark_c_bg-green-500\\"
+    }), /*#__PURE__*/_jsx(EndClassCom, {}), /*#__PURE__*/_jsx(View, {
+      className: className,
+      children: 'className'
+    }), /*#__PURE__*/_jsx(View, {
+      className: flag ? \\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_ \\" : '',
+      children: 'p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u53EF\\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]'
+    }), /*#__PURE__*/_jsxs(View, {
+      className: \\"space-y-_bl_1_d_6rem_br_ text-_bl_16px_br_ w-_bl_200_p__br_\\",
+      children: [/*#__PURE__*/_jsx(View, {
+        className: \\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\",
+        children: 'w-[300rpx] text-black text-opacity-[0.19]'
+      }), /*#__PURE__*/_jsx(View, {
+        className: \\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\",
+        children: 'min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]'
+      }), /*#__PURE__*/_jsx(View, {
+        className: \\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\",
+        children: 'max-w-[300rpx] min-h-[100px] text-[#dddddd]'
+      }), /*#__PURE__*/_jsx(View, {
+        className: \\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\",
+        children: 'Hello'
+      }), /*#__PURE__*/_jsx(View, {
+        className: \\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\",
+        children: 'border-[10px] border-[#098765] border-solid border-opacity-[0.44]'
+      }), /*#__PURE__*/_jsxs(View, {
+        className: \\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\",
+        children: [/*#__PURE__*/_jsx(View, {
+          children: '1'
+        }), /*#__PURE__*/_jsx(View, {
+          children: '2'
+        }), /*#__PURE__*/_jsx(View, {
+          children: '3'
+        })]
+      }), /*#__PURE__*/_jsx(View, {
+        className: 'w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300',
+        children: 'Default'
+      })]
+    }), /*#__PURE__*/_jsx(View, {
+      className: 'test',
+      children: 'test'
+    })]
+  });
+};
+
+export default Index;"
+`;
+
+exports[`jsxHandler react-jsx-loader-case1 1`] = `
+"import { View } from '@tarojs/components';
+import { jsx as _jsx } from \\"react/jsx-runtime\\";
+export default (function () {
+  return /*#__PURE__*/_jsx(View, {
+    className: \\"bg-_bl__h_654321_br_ w-_bl_100px_br_ h-_bl_20px_br_\\",
+    children: \\"123\\"
+  });
+});"
+`;
+
 exports[`jsxHandler vue2-case1 1`] = `
 "var render = function () {
   var _vm = this;
