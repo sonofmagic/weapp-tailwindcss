@@ -1,7 +1,7 @@
 import { MappingChars2String as dic } from '@/dic'
 import { ICommonReplaceOptions } from '@/types'
 import { mangleMark } from '@/mangle/expose'
-
+import { escape } from '@/base/escape'
 // export function arbitraryValuesReplacer (str: string) {}
 
 export function replaceWxml (
@@ -23,27 +23,7 @@ export function replaceWxml (
       .replace(/[\r\n]+/g, '')
   }
   const oldValue = res
-  res = res
-    .replace(/\[/g, dic['['])
-    .replace(/\]/g, dic[']'])
-    .replace(/\(/g, dic['('])
-    .replace(/\)/g, dic[')'])
-    .replace(/#/g, dic['#']) // hex
-    .replace(/!/g, dic['!']) // css !important
-    .replace(/\//g, dic['/'])
-    .replace(/\./g, dic['.'])
-    .replace(/:/g, dic[':'])
-    // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/8
-    .replace(/%/g, dic['%'])
-    .replace(/,/g, dic[','])
-    .replace(/\\/g, dic['\\'])
-    .replace(/'/g, dic["'"])
-    .replace(/"/g, dic['"'])
-    .replace(/\*/g, dic['*'])
-    .replace(/&/g, dic['&'])
-    .replace(/@/g, dic['@'])
-    .replace(/{/g, dic['{'])
-    .replace(/}/g, dic['}'])
+  res = escape(res)
 
   if (options.classGenerator) {
     res = mangleMark(res, oldValue, options.classGenerator)
