@@ -14,9 +14,6 @@ export function jsxHandler (rawSource: string, replacer: Replacer) {
     },
     noScope: true
   })
-  //, {
-  // sourceMaps: true
-  // sourceFileName
-  // }
+
   return generate(ast)
 }

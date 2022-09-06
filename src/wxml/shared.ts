@@ -1,8 +1,6 @@
-import { MappingChars2String as dic } from '@/dic'
 import { ICommonReplaceOptions } from '@/types'
 import { mangleMark } from '@/mangle/expose'
 import { escape } from '@/base/escape'
-// export function arbitraryValuesReplacer (str: string) {}
 
 export function replaceWxml (
   original: string,

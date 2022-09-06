@@ -1,10 +1,5 @@
 import { Rule, Declaration } from 'postcss'
-// import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
-// import type { InjectPreflight } from './preflight'
-// function isSupportedRule (selector: string) {
-//   return !selector.includes(':hover')
-// }
 
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
@@ -62,22 +57,3 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
     node.before(pseudoVarRule)
   }
 }
-
-// export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
-//   if (!isSupportedRule(node.selector)) {
-//     node.remove()
-//   }
-// }
-
-/**
- * @deprecated
- */
-// export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
-//   node.selector = cssSelectorReplacer(node.selector)
-// }
-
-// export function mpAtRulePreflight (node: AtRule) {
-// if (node.name === 'media') {
-// }
-// do nothing
-// }
