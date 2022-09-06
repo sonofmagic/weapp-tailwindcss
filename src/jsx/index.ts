@@ -1,7 +1,7 @@
 import { parse, traverse, generate } from '@/babel'
-import type { Replacer } from './replacer'
+import type { ASTReplacer } from './replacer'
 
-export function jsxHandler (rawSource: string, replacer: Replacer) {
+export function jsxHandler (rawSource: string, replacer: ASTReplacer) {
   // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
   replacer?.end()
   const ast = parse(rawSource, {
@@ -10,7 +10,7 @@ export function jsxHandler (rawSource: string, replacer: Replacer) {
 
   traverse(ast, {
     enter (path) {
-      replacer(path)
+      replacer.transform(path)
     },
     noScope: true
   })

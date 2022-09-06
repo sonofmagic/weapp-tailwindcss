@@ -2,14 +2,8 @@ import type { Node, ObjectProperty, Identifier, StringLiteral } from '@babel/typ
 import type { NodePath } from '@babel/traverse'
 import { replaceWxml, templeteHandler } from '@/wxml'
 import { ICommonReplaceOptions } from '@/types'
-// import { classStringReplace } from '@/reg'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
-export type Replacer = {
-  (path: NodePath<Node>): void
-  start: (node: Node) => void
-  end: () => void
-}
 
 function isSpecNode (node: Node) {
   return node.type === 'ObjectProperty' && node.key.type === 'Identifier'
@@ -55,31 +49,38 @@ function isVue3SpecNode (node: Node) {
 
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
 
-// default react
-export function createReplacer (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }): Replacer {
-  let classObjectNode: Node | null
-  let startFlag = false
-  const isVue3 = framework === 'vue3'
-  const isVue2 = framework === 'vue' || framework === 'vue2'
-  const isReact = framework === 'react'
-
-  function start (node: Node) {
-    startFlag = true
-    classObjectNode = node
+export class ASTReplacer {
+  public classObjectNode?: Node | null
+  public startFlag: boolean
+  public options: ICommonReplaceOptions
+  public isVue3: boolean
+  public isVue2: boolean
+  public isReact: boolean
+  constructor (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }) {
+    this.isVue3 = framework === 'vue3'
+    this.isVue2 = framework === 'vue' || framework === 'vue2'
+    this.isReact = framework === 'react'
+    this.startFlag = false
+    this.options = options
   }
 
-  function end () {
-    startFlag = false
-    classObjectNode = null
+  start (node: Node) {
+    this.startFlag = true
+    this.classObjectNode = node
   }
 
-  if (isVue2) {
-    const replacer = (path: NodePath<Node>) => {
-      // vue2
+  end () {
+    this.startFlag = false
+    this.classObjectNode = null
+  }
+
+  transform (path: NodePath<Node>) {
+    const { isVue2, isVue3, isReact, startFlag, classObjectNode, options } = this
+    if (isVue2) {
       if (isSpecNode(path.node)) {
         const [result, node] = vue2Matcher(path.node as UserMatchNode)
         if (result) {
-          return start(node)
+          return this.start(node)
         }
       }
 
@@ -87,7 +88,7 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
         const nodeStart = path.node.start as number
         const refNode = classObjectNode as Node
         if (nodeStart > (refNode.end as number)) {
-          return end()
+          return this.end()
         }
         if (nodeStart >= (refNode.start as number)) {
           if (path.node.type === 'StringLiteral') {
@@ -99,12 +100,7 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
           }
         }
       }
-    }
-    replacer.start = start
-    replacer.end = end
-    return replacer
-  } else if (isVue3) {
-    const replacer = (path: NodePath<Node>) => {
+    } else if (isVue3) {
       // TODO
       // 性能很差，为什么要这么写主要原因是 vue3 里面有 createElementVNode 动态的节点和 createStaticVNode 静态的节点
       // 动态的，按照 ObjectProperty 的方式匹配就可以
@@ -116,14 +112,14 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
       }
       // createElementVNode
       if (isVue3SpecNode(path.node) && vue3Matcher(path.node as UserMatchNode)) {
-        return start(path.node)
+        return this.start(path.node)
       }
 
       if (startFlag) {
         const nodeStart = path.node.start as number
         const refNode = classObjectNode as Node
         if (nodeStart > (refNode.end as number)) {
-          return end()
+          return this.end()
         }
         if (nodeStart >= (refNode.start as number)) {
           if (path.node.type === 'StringLiteral') {
@@ -133,20 +129,15 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
           }
         }
       }
-    }
-    replacer.start = start
-    replacer.end = end
-    return replacer
-  } else if (isReact) {
-    const replacer = (path: NodePath<Node>) => {
+    } else if (isReact) {
       // react
       if (isSpecNode(path.node) && reactMatcher(path.node as UserMatchNode)) {
-        return start(path.node)
+        return this.start(path.node)
       }
 
       if (startFlag) {
         if ((path.node.start as number) > ((classObjectNode as Node).end as number)) {
-          return end()
+          return this.end()
         }
         if (path.node.type === 'StringLiteral') {
           path.node.value = replaceWxml(path.node.value, {
@@ -156,13 +147,10 @@ export function createReplacer (framework: string = 'react', options: ICommonRep
         }
       }
     }
-    replacer.start = start
-    replacer.end = end
-    return replacer
-  } else {
-    const replacer = (path: NodePath<Node>) => {}
-    replacer.start = start
-    replacer.end = end
-    return replacer
   }
+}
+
+// default react
+export function createReplacer (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }): ASTReplacer {
+  return new ASTReplacer(framework, options)
 }
