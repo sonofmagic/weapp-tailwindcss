@@ -252,6 +252,14 @@ exports[`jsxHandler case3  1`] = `
 };"
 `;
 
+exports[`jsxHandler multiple file no end issue 1`] = `
+"import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+import './index.scss';
+import { jsx as _jsx } from 'react/jsx-runtime';
+import { jsxs as _jsxs } from 'react/jsx-runtime';
+import { Fragment as _Fragment } from 'react/jsx-runtime';"
+`;
+
 exports[`jsxHandler react-hover-class 1`] = `
 "var Index = function Index() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__[\\"useState\\"])(true),
