@@ -76,7 +76,7 @@ export interface UserDefinedOptions {
   /**
    * 用于处理js
    */
-   jsMatcher?: (name: string) => boolean
+  jsMatcher?: (name: string) => boolean
   /**
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
@@ -142,7 +142,10 @@ export interface UserDefinedOptions {
   framework?: 'react' | 'vue' | 'vue3' | string
 }
 
-export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith'>
+export type InternalPostcssOptions = Pick<
+  UserDefinedOptions,
+  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
+>
 
 // export interface TaroUserDefinedOptions extends UserDefinedOptions {
 //   framework: 'react' | 'vue' | 'vue3' | string

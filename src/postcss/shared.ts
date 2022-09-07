@@ -1,5 +1,7 @@
 import { MappingChars2String as dic } from '@/dic'
 import { escape } from '@/base/escape'
+
+export const postcssPlugin = 'postcss-weapp-tailwindcss-rename-plugin'
 // css 中，要多加一个 '\' 来转义
 export function cssSelectorReplacer (selector: string) {
   return (
