@@ -10,6 +10,7 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<InternalPostcssO
 
 const plugin: PostcssWeappTailwindcssRenamePlugin = (options: InternalPostcssOptions = {}) => {
   const mergedOptions = getOptions(options)
+  const { classGenerator } = options
   const { cssPreflight, cssPreflightRange, customRuleCallback, replaceUniversalSelectorWith } = mergedOptions
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   const opts: StyleHandlerOptions = {
@@ -17,7 +18,8 @@ const plugin: PostcssWeappTailwindcssRenamePlugin = (options: InternalPostcssOpt
     cssPreflightRange,
     isMainChunk: true,
     customRuleCallback,
-    replaceUniversalSelectorWith
+    replaceUniversalSelectorWith,
+    classGenerator
   }
 
   return {

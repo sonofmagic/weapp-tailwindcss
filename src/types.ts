@@ -145,7 +145,7 @@ export interface UserDefinedOptions {
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,
   'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
->
+> & { classGenerator?: ClassGenerator }
 
 // export interface TaroUserDefinedOptions extends UserDefinedOptions {
 //   framework: 'react' | 'vue' | 'vue3' | string

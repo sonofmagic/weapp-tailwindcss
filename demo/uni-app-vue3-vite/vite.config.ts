@@ -15,7 +15,11 @@ const vitePlugins = [uni()];
 const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 if (!WeappTailwindcssDisabled) {
   vitePlugins.push(
-    vwt()
+    vwt({
+      mangle: {
+        ignoreClass: ['bg-[#4268EA]', 'bg-[#123456]'],
+      },
+    })
   );
 
   postcssPlugins.push(
