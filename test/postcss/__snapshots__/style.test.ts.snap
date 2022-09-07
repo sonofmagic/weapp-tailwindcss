@@ -46,17 +46,13 @@ exports[`styleHandler css @media case 1`] = `
 `;
 
 exports[`styleHandler cssPreflightRange option all 1`] = `
-"::before,::after{
-    --tw-content: \\"\\"
-}
-::before,::after,view,:not(not){}"
+"::before,::after{--tw-content: \\"\\";}
+::before,::after,view,:not(not){--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler cssPreflightRange option view 1`] = `
-"::before,::after{
-    --tw-content: \\"\\"
-}
-::before,::after,view{}"
+"::before,::after{--tw-content: \\"\\";}
+::before,::after,view{--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler main chunk build error 1`] = `
@@ -484,8 +480,6 @@ exports[`styleHandler new option for customRuleCallback kbone 1`] = `
 `;
 
 exports[`styleHandler tailwindcss v2 jit should append view selector 1`] = `
-"::before,::after{
-    --tw-content: \\"\\"
-}
-::before,::after,view{}"
+"::before,::after{--tw-content: \\"\\";}
+::before,::after,view{--tw-border-opacity: 1;}"
 `;
