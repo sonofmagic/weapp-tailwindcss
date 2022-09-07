@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 // import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 // import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
-import vwt from '../../vite';
-import postcssWeappTailwindcssRename from '../../postcss';
+import vwt from '../../dist/vite';
+import postcssWeappTailwindcssRename from '../../dist/postcss';
 
 
 // 注意： 打包成 h5 和 app 都不需要开启插件配置

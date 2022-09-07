@@ -13,8 +13,7 @@ export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions 
   } = getOptions(options)
 
   return {
-    name: 'som:vite-plugin-uni-app-weapp-tailwindcss',
-    // config (config) {},
+    name: 'vite-plugin-uni-app-weapp-tailwindcss-adaptor',
     generateBundle (opt, bundle, isWrite) {
       const entries = Object.entries(bundle)
       for (let i = 0; i < entries.length; i++) {

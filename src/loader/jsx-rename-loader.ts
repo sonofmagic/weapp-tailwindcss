@@ -1,10 +1,10 @@
 import type * as webpack from 'webpack'
 import { getOptions } from 'loader-utils'
-import type { Replacer } from '@/jsx/replacer'
+import type { ASTReplacer } from '@/jsx/replacer'
 import { jsxHandler } from '@/jsx/index'
 // "jsx", "flow", "typescript"
 export interface LoaderOptions {
-  replacer: Replacer
+  replacer: ASTReplacer
   framework?: string
   isVue?: boolean
 }
