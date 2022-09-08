@@ -1,5 +1,12 @@
-//const { TaroWeappTailwindcssWebpackPluginV4 } = require('../../../')
-const { TaroWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+let TaroWeappTailwindcssWebpackPluginV5
+if (process.env.LOCAL) {
+  console.log('use local built webpack plugin')
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../../../')
+  TaroWeappTailwindcssWebpackPluginV5 = plugin
+} else {
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
+  TaroWeappTailwindcssWebpackPluginV5 = plugin
+}
 const config = {
   projectName: 'taro-vue2-app',
   date: '2022-2-11',

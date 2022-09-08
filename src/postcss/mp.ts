@@ -1,10 +1,5 @@
 import { Rule, Declaration } from 'postcss'
-// import { cssSelectorReplacer } from './shared'
 import type { StyleHandlerOptions } from '@/types'
-// import type { InjectPreflight } from './preflight'
-// function isSupportedRule (selector: string) {
-//   return !selector.includes(':hover')
-// }
 
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
@@ -16,11 +11,21 @@ import type { StyleHandlerOptions } from '@/types'
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
+function testIfVariablesScope (node: Rule): boolean {
+  if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+    const tryTestDecl = node.nodes[0]
+    if (tryTestDecl && tryTestDecl.type === 'decl') {
+      return tryTestDecl.prop.startsWith('--tw-')
+    }
+  }
+  return false
+}
+
 export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
   // 变量注入和 preflight
-  if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+  if (testIfVariablesScope(node)) {
     // node.selector = node.selector.replace(/\*/g, 'view')
     const selectorParts = node.selector.split(',')
     // 没有 view 元素时，添加 view
@@ -62,22 +67,3 @@ export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) 
     node.before(pseudoVarRule)
   }
 }
-
-// export function removeUnsupportedRule (node: Rule, options?: StyleHandlerOptions) {
-//   if (!isSupportedRule(node.selector)) {
-//     node.remove()
-//   }
-// }
-
-/**
- * @deprecated
- */
-// export function mpRulePreflight (node: Rule, options?: StyleHandlerOptions) {
-//   node.selector = cssSelectorReplacer(node.selector)
-// }
-
-// export function mpAtRulePreflight (node: AtRule) {
-// if (node.name === 'media') {
-// }
-// do nothing
-// }

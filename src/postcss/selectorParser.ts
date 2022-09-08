@@ -1,6 +1,4 @@
 import selectorParser from 'postcss-selector-parser'
-// import memoize from 'lodash.memoize'
-// import hash from 'object-hash'
 import { internalCssSelectorReplacer } from './shared'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { Rule } from 'postcss'
@@ -47,10 +45,6 @@ const createTransform = (rule: Rule, options: StyleHandlerOptions) => {
 const getTransformer = (rule: Rule, options: StyleHandlerOptions) => {
   return selectorParser(createTransform(rule, options))
 }
-
-// const getTransformerFormCache = memoize(getTransformer, (options) => {
-//   return hash(options)
-// })
 
 export const transformSync = (rule: Rule, options: StyleHandlerOptions) => {
   const transformer = getTransformer(rule, options)

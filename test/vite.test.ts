@@ -38,7 +38,7 @@ describe('vite test', () => {
           transformUnit: 'rpx'
         })
       )
-      postcssPlugins.push(postcssWeappTailwindcssRename({}))
+      // postcssPlugins.push(postcssWeappTailwindcssRename({}))
     }
 
     const res = (await vite.build({

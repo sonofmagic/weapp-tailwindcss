@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "npm run dev:weapp",
     "build": "npm run build:weapp",
+    "build:local": "cross-env LOCAL=1 npm run build:weapp",
     "build:weapp": "taro build --type weapp",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
@@ -68,6 +69,7 @@
     "@vue/babel-preset-jsx": "^1.2.4",
     "autoprefixer": "^10.4.2",
     "babel-preset-taro": "3.5.5",
+    "cross-env": "^7.0.3",
     "css-loader": "3.4.2",
     "eslint": "^8.12.0",
     "eslint-config-taro": "3.5.5",
@@ -82,7 +84,7 @@
     "typescript": "^4.1.0",
     "vue-loader": "^15.9.2",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.9.0",
+    "weapp-tailwindcss-webpack-plugin": "^1.9.1",
     "webpack": "5.69.0"
   }
 }

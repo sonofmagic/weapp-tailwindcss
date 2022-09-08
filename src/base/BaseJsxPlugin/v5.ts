@@ -75,9 +75,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
               ident: null,
               type: null
             }
-            // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-            // replacer.end()
-            // unshift
+
             module.loaders.unshift(rule)
           }
         })
@@ -102,8 +100,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
               const replacer = createReplacer(framework, {
                 classGenerator
               })
-              // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-              replacer.end()
+
               const rawSource = originalSource.source().toString()
               const { code } = jsxHandler(rawSource, replacer)
               const source = new ConcatSource(code)

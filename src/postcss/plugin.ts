@@ -1,16 +1,16 @@
-import type { PluginCreator } from 'postcss'
+import type { PluginCreator, Plugin } from 'postcss'
 import type { InternalPostcssOptions, StyleHandlerOptions } from '@/types'
 import { transformSync } from './selectorParser'
-// import { getOptions } from '../defaults'
 import { getOptions } from '@/defaults'
 import { commonChunkPreflight } from './mp'
 import { createInjectPreflight } from './preflight'
-const postcssPlugin = 'postcss-weapp-tailwindcss-rename'
+import { postcssPlugin } from './shared'
 
-export type PostcssWeappTailwindcssRename = PluginCreator<InternalPostcssOptions>
+export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<InternalPostcssOptions>
 
-const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions = {}) => {
+const plugin: PostcssWeappTailwindcssRenamePlugin = (options: InternalPostcssOptions = {}) => {
   const mergedOptions = getOptions(options)
+  const { classGenerator } = options
   const { cssPreflight, cssPreflightRange, customRuleCallback, replaceUniversalSelectorWith } = mergedOptions
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   const opts: StyleHandlerOptions = {
@@ -18,28 +18,19 @@ const plugin: PostcssWeappTailwindcssRename = (options: InternalPostcssOptions =
     cssPreflightRange,
     isMainChunk: true,
     customRuleCallback,
-    replaceUniversalSelectorWith
+    replaceUniversalSelectorWith,
+    classGenerator
   }
 
-  // eslint-disable-next-line no-unused-vars
-  // const { mainCssChunkMatcher } = getOptions<InternalPostcssOptions>(options)
   return {
     postcssPlugin,
     Once (css) {
-      // const source = css.source
-      // const filePath = source!.input.file as string
-      // // if (mainCssChunkMatcher(filePath)) {
-      //   css.walkRules((rule) => {
-      //     commonChunkPreflight(rule)
-      //   })
-      // }
       css.walkRules((rule) => {
         transformSync(rule, opts)
-        // mpRulePreflight(rule, opts)
         commonChunkPreflight(rule, opts)
       })
     }
-  }
+  } as Plugin
 }
 
 plugin.postcss = true

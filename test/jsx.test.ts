@@ -10,6 +10,7 @@ describe('jsxHandler', () => {
   let reactReplacer: ReturnType<typeof createReplacer>
   let vue2Replacer: ReturnType<typeof createReplacer>
   let vue3Replacer: ReturnType<typeof createReplacer>
+
   beforeEach(() => {
     reactReplacer = createReplacer('react')
     vue2Replacer = createReplacer('vue')
@@ -109,7 +110,24 @@ describe('jsxHandler', () => {
   })
 
   // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
-  // it('multiple file no end issue', () => {
+  it('multiple file no end issue', async () => {
+    const standaloneReactReplacer = createReplacer('react')
 
-  // })
+    jsxHandler(
+      `_jsx(View, {
+      className: 'border-[10px] border-[#098765] border-solid border-opacity-[0.44]'
+    })`,
+      standaloneReactReplacer
+    )
+
+    const { code } = jsxHandler(
+      `import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+    import './index.scss'
+    import { jsx as _jsx } from 'react/jsx-runtime'
+    import { jsxs as _jsxs } from 'react/jsx-runtime'
+    import { Fragment as _Fragment } from 'react/jsx-runtime'`,
+      standaloneReactReplacer
+    )
+    expect(code).toMatchSnapshot()
+  })
 })
