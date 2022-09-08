@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby'
+import groupBy from 'lodash/groupby'
 import type { UserDefinedOptions } from '@/types'
 
 export function getGroupedEntries<T> (entries: [string, T][], options: Required<UserDefinedOptions>) {

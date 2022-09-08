@@ -2,35 +2,46 @@ import typescript from '@rollup/plugin-typescript'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
-// import { visualizer } from 'rollup-plugin-visualizer'
+import { visualizer } from 'rollup-plugin-visualizer'
 // import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
 import type { RollupOptions } from 'rollup'
+import { omit } from 'lodash'
+
 // const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 
-const sharedConfig: RollupOptions = {
-  plugins: [
-    json(),
-    nodeResolve({
-      preferBuiltins: true
-    }),
-    commonjs(),
-    typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false })
-    // visualizer({
-    //   emitFile: true,
-    //   file: 'stats.html'
-    // })
-  ],
-  external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
+interface IEntry {
+  name?: string
+  input?: string
+  output?: { file?: string; format?: string; sourcemap?: boolean; exports?: string }[]
+}
+
+const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
+  return {
+    plugins: [
+      json(),
+      nodeResolve({
+        preferBuiltins: true
+      }),
+      commonjs(),
+      typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false }),
+      visualizer({
+        // emitFile: true,
+        filename: `stats/${entry.name}.html`
+      })
+    ],
+    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
+  }
 }
 // 没有必要压缩徒增调试成本
 // if (isProd) {
 //   sharedConfig.plugins.push(terser())
 // }
 
-const config = [
+const entries: IEntry[] = [
   {
+    name: 'index',
     input: 'src/index.ts',
     output: [
       {
@@ -43,6 +54,7 @@ const config = [
     ]
   },
   {
+    name: 'replace',
     input: 'src/replace.ts',
     output: [
       {
@@ -53,6 +65,7 @@ const config = [
     ]
   },
   {
+    name: 'jsx-rename-loader',
     input: 'src/loader/jsx-rename-loader.ts',
     output: [
       {
@@ -64,6 +77,7 @@ const config = [
     ]
   },
   {
+    name: 'vite',
     input: 'src/framework/vite/index.ts',
     output: [
       {
@@ -75,6 +89,7 @@ const config = [
     ]
   },
   {
+    name: 'postcss',
     input: 'src/postcss/plugin.ts',
     output: [
       {
@@ -86,6 +101,7 @@ const config = [
     ]
   },
   {
+    name: 'mangle',
     input: 'src/mangle/index.ts',
     output: [
       {
@@ -118,10 +134,12 @@ const config = [
   //     }
   //   ]
   // }
-].map((x) => {
+]
+
+const config = entries.map((x) => {
   return {
-    ...x,
-    ...sharedConfig
+    ...omit(x, 'name'),
+    ...createSharedConfig(x)
   }
 }) as RollupOptions[]
 

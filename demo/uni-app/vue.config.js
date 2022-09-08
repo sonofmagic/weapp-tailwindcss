@@ -14,7 +14,7 @@ const config = {
     let now
     config.plugins.push(
       new UniAppWeappTailwindcssWebpackPluginV4({
-        disabled: WeappTailwindcssDisabled,
+        disabled: WeappTailwindcssDisabled
         // onLoad() {
         //   console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
         // },
@@ -28,12 +28,12 @@ const config = {
         // onEnd() {
         //   console.log(`onEnd:${Date.now() - now}ms`)
         // },
-        mangle: {
-          log: true,
-          // ignoreClass: ['bg-[#123456]'],
-          ignoreClass: [/^bg-/],
-          reserveClassName: ['a', 'b']
-        }
+        // mangle: {
+        //   log: true,
+        //   // ignoreClass: ['bg-[#123456]'],
+        //   ignoreClass: [/^bg-/],
+        //   reserveClassName: ['a', 'b']
+        // }
       })
     )
     smp.wrap(config)

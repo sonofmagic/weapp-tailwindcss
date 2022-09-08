@@ -77,7 +77,7 @@ module.exports = {
       BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
     }),
     new NativeWeappTailwindcssWebpackPluginV5({
-      mangle: true,
+      // mangle: true,
       // cssPreflight: {
       //   "border-color": false
       // }

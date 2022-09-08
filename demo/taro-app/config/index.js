@@ -49,12 +49,12 @@ const config = {
             plugin: TaroWeappTailwindcssWebpackPluginV5,
             args: [
               {
-                framework: 'react',
-                mangle: {
-                  log: true,
-                  ignoreClass: ['bg-[#123456]'],
-                  reserveClassName: ['a', 'b']
-                }
+                framework: 'react'
+                // mangle: {
+                //   log: true,
+                //   ignoreClass: ['bg-[#123456]'],
+                //   reserveClassName: ['a', 'b']
+                // }
 
                 // cssPreflight: {
                 //   'box-sizing': false
