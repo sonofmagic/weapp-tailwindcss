@@ -1,14 +1,14 @@
 `uni-app` 的 `vue3/vite` 版本，使用了 `rollup base` 的插件，于是我们可以这样使用
 
-> 暂时不要升级到 `vite 3.x` 版本，目前 `uni-app` 并没有兼容这个版本，详见 [Release Notes](https://update.dcloud.net.cn/hbuilderx/changelog/3.5.2.20220719-alpha.html), 安装 `2.x` 版本的最新即可。(`3.x`会报`process is not defined `的错误)
+> 暂时不要升级到 `vite 3.x` 版本，目前 `uni-app` 并没有兼容这个版本，详见 [Release Notes](https://update.dcloud.net.cn/hbuilderx/changelog/3.5.2.20220719-alpha.html), 安装 `2.x` 版本的最新即可。(`3.x`会报`process is not defined`的错误)
 
-## 1. 开始安装:
+## 1. 开始安装
 
 ```bash
 yarn add -D weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel tailwindcss postcss autoprefixer
 ```
 
-## 2. 然后添加 `tailwind.config.js`:
+## 2. 然后添加 `tailwind.config.js`
 
 ```js
 module.exports = {
@@ -30,14 +30,16 @@ import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 
 import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
-import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
 
+// 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === 'h5';
+const isApp = process.env.UNI_PLATFORM === 'app';
+const WeappTailwindcssDisabled = isH5 || isApp;
 // vite 插件配置
 const vitePlugins = [uni()];
 // postcss 插件配置
 const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
-if (!isH5) {
+if (!WeappTailwindcssDisabled) {
   vitePlugins.push(vwt());
 
   postcssPlugins.push(
@@ -45,13 +47,6 @@ if (!isH5) {
       rootValue: 32,
       propList: ['*'],
       transformUnit: 'rpx',
-    })
-  );
-  postcssPlugins.push(
-    postcssWeappTailwindcssRename({
-      // cssPreflight: {
-      //   'box-sizing': false,
-      // },
     })
   );
 }
@@ -68,7 +63,7 @@ export default defineConfig({
 
 ```
 
-## 4. 在 `src/App.vue` 中添加:
+## 4. 在 `src/App.vue` 中添加
 
 ```vue
 <script setup lang="ts">

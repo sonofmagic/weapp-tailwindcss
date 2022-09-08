@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.1 (2022-09-08)
+
+### Features
+
+- `vite` 插件，可以直接注册，不需要再引入 `postcss` 插件
+
+### Chore
+
+- 暂时去除 `mangle` 配置
+- 去除 `lodash.groupby` 引用，减少包的体积
+
 ## 1.9.0 (2022-09-05)
 
 ### Features
