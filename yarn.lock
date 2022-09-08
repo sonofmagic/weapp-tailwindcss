@@ -489,6 +489,11 @@
   resolved "https://registry.npmmirror.com/@icebreakers/cli/-/cli-0.0.9.tgz#cdcc43490df61fc4183ea872e9fee17aae10fc7e"
   integrity sha512-n6GUhA1w7M2roUzJshuktJ0ZyjdfK5EHfP3QxQrrozaJfq19gMOWuvDiAEQMTPTXeaY5nJNK4Nm9csRTsagTzA==
 
+"@icebreakers/readme@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.npmmirror.com/@icebreakers/readme/-/readme-0.0.1.tgz#7e73ce145deb5b46fedb24947550e2f27a9d8107"
+  integrity sha512-BXbK+uQSkMdWTxVAPuxGECOUdZwxtDpkdu0leAU2eHQ/SMfGwzCZZ4jhQQDVguSLxNYMalrk0cArlPif6WSgZg==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.npmmirror.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
