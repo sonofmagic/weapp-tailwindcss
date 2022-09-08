@@ -5479,6 +5479,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cross-env@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.npmmirror.com/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
+  integrity sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
+  dependencies:
+    cross-spawn "^7.0.1"
+
 cross-spawn-async@^2.1.1:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/cross-spawn-async/-/cross-spawn-async-2.2.5.tgz#845ff0c0834a3ded9d160daca6d390906bb288cc"
@@ -5507,7 +5514,7 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.2, cross-spawn@^7.0.3:
+cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
   resolved "https://registry.npmmirror.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
@@ -14702,10 +14709,10 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.9.1-beta.1:
-  version "1.9.1-beta.1"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.9.1-beta.1.tgz#e5e12be0743681c01c2b919c682980bfa5ebaca3"
-  integrity sha512-Z/uuoPd74IDijyTGvPEu4kcVttOq+LyCaoCjMhcfpBM0/jxN12eficd5Z7i5emkZsacvKt3NT+FSE/C+3jThOQ==
+weapp-tailwindcss-webpack-plugin@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.9.1.tgz#5cab7d38b4baf7d4f1297515dcec25d7da7ab42f"
+  integrity sha512-mrPlEeTsbPCBvmPMOkkUhcuBMj9749ZrvWKNOILcnSxGOyXxYLJEUDFFdy2BToiSFkMZpBPg9j1PS5FGNSzN9Q==
   dependencies:
     "@babel/generator" "7.18.12"
     "@babel/parser" "7.18.11"

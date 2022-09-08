@@ -5,8 +5,16 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWebpackPlugin = require('./plugin/MinaWebpackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
-const { NativeWeappTailwindcssWebpackPluginV5 } = require('../../')
-// const { NativeWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+let NativeWeappTailwindcssWebpackPluginV5
+if (process.env.LOCAL) {
+  console.log('use local built webpack plugin')
+  const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('../../')
+  NativeWeappTailwindcssWebpackPluginV5 = plugin
+} else {
+  const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
+  NativeWeappTailwindcssWebpackPluginV5 = plugin
+}
+
 const debuggable = process.env.BUILD_TYPE !== 'release'
 
 module.exports = {

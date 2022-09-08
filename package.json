@@ -37,6 +37,7 @@
     "raw": "ts-node scripts/raw",
     "demo:dev": "node scripts/demo/dev.js",
     "demo:build": "node scripts/demo/build.js",
+    "demo:build:local": "node scripts/demo/build.js --local",
     "demo:e2e": "node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js",
     "demo:install": "node scripts/demo/install.js",

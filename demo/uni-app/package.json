@@ -6,6 +6,7 @@
     "serve": "npm run dev:h5",
     "dev": "npm run dev:mp-weixin",
     "build": "npm run build:mp-weixin",
+    "build:local": "cross-env LOCAL=1 npm run build:mp-weixin",
     "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
     "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",
     "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build",
@@ -110,7 +111,7 @@
     "typescript": "~4.0.0",
     "vue-template-compiler": "^2.6.11",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.9.1-beta.1"
+    "weapp-tailwindcss-webpack-plugin": "^1.9.1"
   },
   "browserslist": [
     "Android >= 4.4",
