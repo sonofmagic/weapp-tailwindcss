@@ -3,13 +3,9 @@ import uni from '@dcloudio/vite-plugin-uni'
 let vwt
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const p = require('../../vite')
-
-  vwt = p
+  vwt = require('../../vite')
 } else {
-  const p = require('weapp-tailwindcss-webpack-plugin/vite')
-  console.log(p)
-  vwt = p
+  vwt = require('weapp-tailwindcss-webpack-plugin/vite')
 }
 // import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 // import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
@@ -24,9 +20,7 @@ const vitePlugins = [uni()]
 // postcss 插件配置
 const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()]
 if (!WeappTailwindcssDisabled) {
-  vitePlugins.push(
-    vwt()
-  )
+  vitePlugins.push(vwt())
 
   postcssPlugins.push(
     require('postcss-rem-to-responsive-pixel')({
