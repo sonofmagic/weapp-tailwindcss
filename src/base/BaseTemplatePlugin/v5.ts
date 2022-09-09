@@ -5,7 +5,7 @@ import { createInjectPreflight } from '@/postcss/preflight'
 import { templeteHandler } from '@/wxml'
 import { getOptions } from '@/defaults'
 import { pluginName } from '@/shared'
-import type { IBaseWebpackPlugin } from '@/interface'
+import type { IBaseWebpackPlugin } from '@/interfaces'
 import { getGroupedEntries } from '@/base/shared'
 import ClassGenerator from '@/mangle/classGenerator'
 

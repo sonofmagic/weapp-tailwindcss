@@ -1,7 +1,7 @@
 import type { Node, ObjectProperty, Identifier, StringLiteral } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
+import type { ICommonReplaceOptions } from '@/types'
 import { replaceWxml, templeteHandler } from '@/wxml'
-import { ICommonReplaceOptions } from '@/types'
 
 export type UserMatchNode = ObjectProperty & { key: Identifier }
 

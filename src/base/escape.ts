@@ -8,11 +8,11 @@ function escapeStringRegexp (str: string) {
   return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d')
 }
 
-export function escape (selectors: string) {
+export function escape (selectors: string, raw?: boolean) {
   let res = selectors
   for (let i = 0; i < entries.length; i++) {
     const [searchValue, replaceValue] = entries[i]
-    res = res.replace(new RegExp(escapeStringRegexp(searchValue), 'g'), replaceValue)
+    res = res.replace(new RegExp((raw ? '\\\\' : '') + escapeStringRegexp(searchValue), 'g'), replaceValue)
   }
   return res
 }
