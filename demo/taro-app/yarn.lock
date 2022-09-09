@@ -14226,10 +14226,10 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
-weapp-tailwindcss-webpack-plugin@^1.9.2-beta.0:
-  version "1.9.2-beta.0"
-  resolved "https://registry.npmjs.org/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.9.2-beta.0.tgz#0016a4c23e98c2f936d63a1e294529dd001eb8a0"
-  integrity sha512-ifbD81OsCWHojaIwI0Evh1VVPuSaCLnNeUyKUb4J1BtVbcvEh7mw+k74Tv9yXUuRUdwN6wjcVvDfP0BoYMM7jg==
+weapp-tailwindcss-webpack-plugin@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.npmjs.org/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.9.2.tgz#c5932770e4bc0728a5ba50d80ea82c4174f67d05"
+  integrity sha512-al+W1fnzAtHOQRCeoat9RlXDSYofDGVdUYod+j9eS3REoAUE07IRz3gT5trEeoBiz3lQb36s4sOcvnDYEbUJXA==
   dependencies:
     "@babel/generator" "7.18.12"
     "@babel/parser" "7.18.11"
