@@ -14,9 +14,9 @@ module.exports = {
     plugin(({ addVariant }) =>
       each((x) => {
         addVariant(...x);
-        addVariant('optional', '&:optional');
-        addVariant('group-optional', ':merge(.group):optional &');
-        addVariant('peer-optional', ':merge(.peer):optional ~ &');
+        // addVariant('optional', '&:optional');
+        // addVariant('group-optional', ':merge(.group):optional &');
+        // addVariant('peer-optional', ':merge(.peer):optional ~ &');
       })
     ),
   ],

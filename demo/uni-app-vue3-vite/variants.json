@@ -79,37 +79,37 @@
     [
       [
         "children-text",
-        "& > view:not(.not-children-text)"
+        "& > text:not(.not-children-text)"
       ],
       [
         "child-text",
-        "& > view:not(.not-child-text)"
+        "& > text:not(.not-child-text)"
       ]
     ],
     [
       [
         "heir-text",
-        "&   view:not(.not-heir-text)"
+        "&   text:not(.not-heir-text)"
       ],
       [
         "descendant-text",
-        "&   view:not(.not-descendant-text)"
+        "&   text:not(.not-descendant-text)"
       ]
     ],
     [
       [
         "sibling-text",
-        "& ~ view:not(.not-sibling-text)"
+        "& ~ text:not(.not-sibling-text)"
       ],
       [
         "twin-text",
-        "& ~ view:not(.not-twin-text)"
+        "& ~ text:not(.not-twin-text)"
       ]
     ],
     [
       [
         "next-text",
-        "& + view:not(.not-next-text)"
+        "& + text:not(.not-next-text)"
       ]
     ]
   ]

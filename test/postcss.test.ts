@@ -39,4 +39,21 @@ describe('postcss plugin', () => {
     })
     expect(res.css.toString()).toMatchSnapshot()
   })
+
+  it("before:content-['+']", async () => {
+    const processor = postcss([
+      tailwindcss({
+        content: [
+          {
+            raw: '<view class="before:content-[\'+\']"></view>'
+          }
+        ]
+      })
+    ])
+    const res = await processor.process('@tailwind utilities;', {
+      from: 'index.css',
+      to: 'index.css'
+    })
+    expect(res.css.toString()).toMatchSnapshot()
+  })
 })

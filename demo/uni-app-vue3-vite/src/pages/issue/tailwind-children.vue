@@ -1,14 +1,52 @@
 <template>
-  <view>
-    <view class="child:text-red-500">
-      <view class="group-optional:bg-slate-700">I have a white ring.</view>
-      <view>I have a white ring.</view>
-      <text>I have a white ring.</text>
+  <view class="text-sm">
+    <view class="p-4">
+      <view>child selector</view>
+      <view class="child:text-red-500 child:inline-block child:mr-2">
+        <view class="not-child">not-child view</view>
+        <view>view</view>
+        <text>text</text>
+        <view>view</view>
+        <view>view</view>
+      </view>
+    </view>
+    <view class="p-4">
+      <view>child-text selector</view>
+      <view class="child-text:text-red-500 child-text:mr-2">
+        <text>text</text>
+        <text>text</text>
+        <text>text</text>
+      </view>
+    </view>
+    <view class="p-4">
+      <view>heir selector</view>
+      <view class="heir:text-red-500 heir-text:text-green-500 heir:mr-2">
+        <view class="not-heir">not-heir view</view>
+        <view>view <view>inner view <text>inner text</text><text class="not-heir-text">not-heir inner text</text></view>
+        </view>
+        <text>text</text>
+        <view>view</view>
+        <view>view</view>
+      </view>
     </view>
 
-
-
-
+    <view class="p-4">
+      <view>Sibling variant</view>
+      <view>
+        <view class="twin:text-green-500 before:content-['*']">twin:ring-white hover:twin:shadow</view>
+        <view>view</view>
+      </view>
+      <!-- <view>
+        <view class="not-heir">not-heir view</view>
+        <view class="twin:text-green-500">view <view>inner view <text>inner text</text><text
+              class="not-heir-text">not-heir inner text</text></view>
+        </view>
+        <view>view</view>
+        <text>text</text>
+        <view class="twin:text-red-500">twin:text-red-500</view>
+        <view>view</view>
+      </view> -->
+    </view>
   </view>
 </template>
 
