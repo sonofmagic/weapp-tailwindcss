@@ -31,29 +31,49 @@ export const SYMBOL_TABLE = {
   GREATER: '>',
   SLASH: '/',
   QUESTION: '?',
-  SPACE: '',
+  SPACE: ' ',
   DOT: '.',
   HASH: '#'
 } as const
 
-export const MappingChars2String = {
-  [SYMBOL_TABLE.BRACKETLEFT]: '_bl_',
-  [SYMBOL_TABLE.BRACKETRIGHT]: '_br_',
-  [SYMBOL_TABLE.PARENLEFT]: '_pl_',
-  [SYMBOL_TABLE.PARENRIGHT]: '_qr_',
-  [SYMBOL_TABLE.HASH]: '_h_',
-  [SYMBOL_TABLE.EXCLAM]: '_i_',
-  [SYMBOL_TABLE.SLASH]: '_s_',
-  [SYMBOL_TABLE.BACKSLASH]: '_bs_',
-  [SYMBOL_TABLE.DOT]: '_d_',
-  [SYMBOL_TABLE.COLON]: '_c_',
-  [SYMBOL_TABLE.PERCENT]: '_p_',
-  [SYMBOL_TABLE.COMMA]: '_co_',
-  [SYMBOL_TABLE.QUOTE]: '_q_',
-  [SYMBOL_TABLE.DOUBLEQUOTE]: '_dq_',
-  [SYMBOL_TABLE.ASTERISK]: '_a_',
-  [SYMBOL_TABLE.AMPERSAND]: '_am_',
-  [SYMBOL_TABLE.AT]: '_at_',
-  [SYMBOL_TABLE.BRACELEFT]: '_bal_',
-  [SYMBOL_TABLE.BRACERIGHT]: '_bar_'
+export type SYMBOL_TABLE_TYPE = typeof SYMBOL_TABLE
+
+export type SYMBOL_TABLE_TYPE_VALUES = SYMBOL_TABLE_TYPE[keyof SYMBOL_TABLE_TYPE]
+
+export const MappingChars2String: Record<Exclude<SYMBOL_TABLE_TYPE_VALUES, '-' | '_' | ' '>, string> = {
+  '[': '_bl_',
+  ']': '_br_',
+  '(': '_pl_',
+  ')': '_qr_',
+  '#': '_h_',
+  '!': '_i_',
+  '/': '_s_',
+  '\\': '_bs_',
+  '.': '_d_',
+  ':': '_c_',
+  '%': '_p_',
+  ',': '_co_',
+  "'": '_q_',
+  '"': '_dq_',
+  '*': '_a_',
+  '&': '_am_',
+  '@': '_at_',
+  '{': '_bal_',
+  '}': '_bar_',
+  // ' ': '_sp_',
+  '+': '_plus_',
+  // '-': '_m_',
+  ';': '_se_',
+  '<': '_l_',
+  '~': '_t_',
+  '=': '_e_',
+  '>': '_g_',
+  '?': '_qu_',
+  '^': '_ca_',
+  '`': '_bq_',
+  '|': '_b_',
+  $: '_do_'
+  // _: '_u_'
 } as const
+
+export const MappingChars2StringEntries = Object.entries(MappingChars2String)

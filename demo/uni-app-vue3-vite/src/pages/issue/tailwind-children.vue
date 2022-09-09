@@ -1,50 +1,52 @@
 <template>
-  <view>
-    <div class="child:ring-white">
-      <p>I have a white ring.</p>
-    </div>
+  <view class="text-sm">
+    <view class="p-4">
+      <view>child selector</view>
+      <view class="child:text-red-500 child:inline-block child:mr-2">
+        <view class="not-child">not-child view</view>
+        <view>view</view>
+        <text>text</text>
+        <view>view</view>
+        <view>view</view>
+      </view>
+    </view>
+    <view class="p-4">
+      <view>child-text selector</view>
+      <view class="child-text:text-red-500 child-text:mr-2">
+        <text>text</text>
+        <text>text</text>
+        <text>text</text>
+      </view>
+    </view>
+    <view class="p-4">
+      <view>heir selector</view>
+      <view class="heir:text-red-500 heir-text:text-green-500 heir:mr-2">
+        <view class="not-heir">not-heir view</view>
+        <view>view <view>inner view <text>inner text</text><text class="not-heir-text">not-heir inner text</text></view>
+        </view>
+        <text>text</text>
+        <view>view</view>
+        <view>view</view>
+      </view>
+    </view>
 
-    <div class="child-p:ring-white hover:child-p:border">
-      <p>I have a white ring, and a border on hover.</p>
-      <b>I am ignored!</b>
-    </div>
-
-    <div class="heir-p:ring-white hover:descendant-p:shadow">
-      <div>
-        <p>I have a white ring...</p>
-      </div>
-      <div>
-        <p>And a shadow on hover!</p>
-        <b>I am not a `p`, so am ignored.</b>
-      </div>
-    </div>
-
-    <div>
-      <p class="twin:ring-white hover:twin:shadow">
-        I have a white ring & shadow on hover
-      </p>
-      <p>I am his twin, so have the same!</p>
-    </div>
-
-    <div class="child:shadow">
-      <p>Shadow</p>
-      <p class="drop-shadow-none">No Shadow</p>
-    </div>
-
-    <div class="child:shadow">
-      <p>Shadow</p>
-      <p class="not-child">No Shadow</p>
-    </div>
-
-    <div class="child-['.child']:shadow">
-      <p class="child">Shadow</p>
-      <p>No Shadow</p>
-    </div>
-
-    <div class="child-p:shadow">
-      <p>Shadow</p>
-      <a>No Shadow</a>
-    </div>
+    <view class="p-4">
+      <view>Sibling variant</view>
+      <view>
+        <view class="twin:text-green-500 before:content-['*']">twin:ring-white hover:twin:shadow</view>
+        <view>view</view>
+      </view>
+      <!-- <view>
+        <view class="not-heir">not-heir view</view>
+        <view class="twin:text-green-500">view <view>inner view <text>inner text</text><text
+              class="not-heir-text">not-heir inner text</text></view>
+        </view>
+        <view>view</view>
+        <text>text</text>
+        <view class="twin:text-red-500">twin:text-red-500</view>
+        <view>view</view>
+      </view> -->
+    </view>
   </view>
 </template>
 
@@ -52,5 +54,21 @@
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+// .child-text-red-500>view {
+//   color: red;
+// }
+// pc 模拟器正常，真机无效
+// :where(.child-text-red-500)>view:where(:not(.not-child)),
+// text:where(:not(.not-child)) {
+//   --tw-text-opacity: 1;
+//   color: rgb(239 68 68 / var(--tw-text-opacity))
+// }
+
+// 去除 :where
+// .child-text-red-500>view:not(.not-child),
+// text:not(.not-child) {
+//   --tw-text-opacity: 1;
+//   color: rgb(239 68 68 / var(--tw-text-opacity))
+// }
 </style>

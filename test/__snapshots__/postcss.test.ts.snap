@@ -153,3 +153,10 @@ exports[`postcss plugin base utilities output 1`] = `
     background-color: rgba(255,254,253,.5)
 }"
 `;
+
+exports[`postcss plugin before:content-['+'] 1`] = `
+".before\\\\:content-\\\\[\\\\'\\\\+\\\\'\\\\]::before {
+    --tw-content: '+';
+    content: var(--tw-content)
+}"
+`;

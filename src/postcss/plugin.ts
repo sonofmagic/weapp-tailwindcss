@@ -4,7 +4,7 @@ import { transformSync } from './selectorParser'
 import { getOptions } from '@/defaults'
 import { commonChunkPreflight } from './mp'
 import { createInjectPreflight } from './preflight'
-import { postcssPlugin } from './shared'
+import { postcssPlugin } from '@/constants'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<InternalPostcssOptions>
 
