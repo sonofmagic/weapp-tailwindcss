@@ -1,0 +1,116 @@
+[
+  [
+    [
+      [
+        "children",
+        "& > view:not(.not-children)"
+      ],
+      [
+        "child",
+        "& > view:not(.not-child)"
+      ]
+    ],
+    [
+      [
+        "heir",
+        "&   view:not(.not-heir)"
+      ],
+      [
+        "descendant",
+        "&   view:not(.not-descendant)"
+      ]
+    ],
+    [
+      [
+        "sibling",
+        "& ~ view:not(.not-sibling)"
+      ],
+      [
+        "twin",
+        "& ~ view:not(.not-twin)"
+      ]
+    ],
+    [
+      [
+        "next",
+        "& + view:not(.not-next)"
+      ]
+    ]
+  ],
+  [
+    [
+      [
+        "children-view",
+        "& > view:not(.not-children-view)"
+      ],
+      [
+        "child-view",
+        "& > view:not(.not-child-view)"
+      ]
+    ],
+    [
+      [
+        "heir-view",
+        "&   view:not(.not-heir-view)"
+      ],
+      [
+        "descendant-view",
+        "&   view:not(.not-descendant-view)"
+      ]
+    ],
+    [
+      [
+        "sibling-view",
+        "& ~ view:not(.not-sibling-view)"
+      ],
+      [
+        "twin-view",
+        "& ~ view:not(.not-twin-view)"
+      ]
+    ],
+    [
+      [
+        "next-view",
+        "& + view:not(.not-next-view)"
+      ]
+    ]
+  ],
+  [
+    [
+      [
+        "children-text",
+        "& > view:not(.not-children-text)"
+      ],
+      [
+        "child-text",
+        "& > view:not(.not-child-text)"
+      ]
+    ],
+    [
+      [
+        "heir-text",
+        "&   view:not(.not-heir-text)"
+      ],
+      [
+        "descendant-text",
+        "&   view:not(.not-descendant-text)"
+      ]
+    ],
+    [
+      [
+        "sibling-text",
+        "& ~ view:not(.not-sibling-text)"
+      ],
+      [
+        "twin-text",
+        "& ~ view:not(.not-twin-text)"
+      ]
+    ],
+    [
+      [
+        "next-text",
+        "& + view:not(.not-next-text)"
+      ]
+    ]
+  ]
+]
