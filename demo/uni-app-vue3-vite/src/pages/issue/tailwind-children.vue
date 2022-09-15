@@ -33,8 +33,31 @@
     <view class="p-4">
       <view>Sibling variant</view>
       <view>
+        <view>view</view>
         <view class="twin:text-green-500 before:content-['*']">twin:ring-white hover:twin:shadow</view>
         <view>view</view>
+        <view>view</view>
+      </view>
+      <!-- <view>
+        <view class="not-heir">not-heir view</view>
+        <view class="twin:text-green-500">view <view>inner view <text>inner text</text><text
+              class="not-heir-text">not-heir inner text</text></view>
+        </view>
+        <view>view</view>
+        <text>text</text>
+        <view class="twin:text-red-500">twin:text-red-500</view>
+        <view>view</view>
+      </view> -->
+    </view>
+
+    <view class="p-4">
+      <view>Next variant</view>
+      <view>
+        <view>view</view>
+        <view class="next:text-green-500 before:content-['*']">twin:ring-white hover:twin:shadow</view>
+        <view class="next-view:text-yellow-500">view</view>
+        <view class="next-text:text-red-500">view</view>
+        <text>text</text>
       </view>
       <!-- <view>
         <view class="not-heir">not-heir view</view>
