@@ -49,6 +49,8 @@
     "@dcloudio/uni-mp-toutiao": "3.0.0-alpha-3060120220907002",
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3060120220907002",
     "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-3060120220907002",
+    "eventemitter3": "^4.0.7",
+    "p-queue": "6.6.2",
     "vue": "^3.2.37",
     "vue-i18n": "^9.1.9",
     "vuex": "^4.0.2"

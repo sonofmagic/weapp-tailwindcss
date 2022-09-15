@@ -25,7 +25,9 @@
   "dependencies": {
     "@vant/weapp": "^1.10.4",
     "dayjs": "^1.11.4",
+    "eventemitter3": "^4.0.7",
     "lodash": "^4.17.21",
+    "p-queue": "6.6.2",
     "rxjs": "^7.5.6"
   },
   "devDependencies": {
