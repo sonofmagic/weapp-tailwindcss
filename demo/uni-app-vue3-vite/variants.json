@@ -3,37 +3,58 @@
     [
       [
         "children",
-        "& > view:not(.not-children)"
+        [
+          "& > view:not(.not-children)",
+          "& > text:not(.not-children)"
+        ]
       ],
       [
         "child",
-        "& > view:not(.not-child)"
+        [
+          "& > view:not(.not-child)",
+          "& > text:not(.not-child)"
+        ]
       ]
     ],
     [
       [
         "heir",
-        "&   view:not(.not-heir)"
+        [
+          "& view:not(.not-heir)",
+          "& text:not(.not-heir)"
+        ]
       ],
       [
         "descendant",
-        "&   view:not(.not-descendant)"
+        [
+          "& view:not(.not-descendant)",
+          "& text:not(.not-descendant)"
+        ]
       ]
     ],
     [
       [
         "sibling",
-        "& ~ view:not(.not-sibling)"
+        [
+          "& ~ view:not(.not-sibling)",
+          "& ~ text:not(.not-sibling)"
+        ]
       ],
       [
         "twin",
-        "& ~ view:not(.not-twin)"
+        [
+          "& ~ view:not(.not-twin)",
+          "& ~ text:not(.not-twin)"
+        ]
       ]
     ],
     [
       [
         "next",
-        "& + view:not(.not-next)"
+        [
+          "& + view:not(.not-next)",
+          "& + text:not(.not-next)"
+        ]
       ]
     ]
   ],
@@ -41,37 +62,51 @@
     [
       [
         "children-view",
-        "& > view:not(.not-children-view)"
+        [
+          "& > view:not(.not-children-view)"
+        ]
       ],
       [
         "child-view",
-        "& > view:not(.not-child-view)"
+        [
+          "& > view:not(.not-child-view)"
+        ]
       ]
     ],
     [
       [
         "heir-view",
-        "&   view:not(.not-heir-view)"
+        [
+          "& view:not(.not-heir-view)"
+        ]
       ],
       [
         "descendant-view",
-        "&   view:not(.not-descendant-view)"
+        [
+          "& view:not(.not-descendant-view)"
+        ]
       ]
     ],
     [
       [
         "sibling-view",
-        "& ~ view:not(.not-sibling-view)"
+        [
+          "& ~ view:not(.not-sibling-view)"
+        ]
       ],
       [
         "twin-view",
-        "& ~ view:not(.not-twin-view)"
+        [
+          "& ~ view:not(.not-twin-view)"
+        ]
       ]
     ],
     [
       [
         "next-view",
-        "& + view:not(.not-next-view)"
+        [
+          "& + view:not(.not-next-view)"
+        ]
       ]
     ]
   ],
@@ -79,37 +114,51 @@
     [
       [
         "children-text",
-        "& > text:not(.not-children-text)"
+        [
+          "& > text:not(.not-children-text)"
+        ]
       ],
       [
         "child-text",
-        "& > text:not(.not-child-text)"
+        [
+          "& > text:not(.not-child-text)"
+        ]
       ]
     ],
     [
       [
         "heir-text",
-        "&   text:not(.not-heir-text)"
+        [
+          "& text:not(.not-heir-text)"
+        ]
       ],
       [
         "descendant-text",
-        "&   text:not(.not-descendant-text)"
+        [
+          "& text:not(.not-descendant-text)"
+        ]
       ]
     ],
     [
       [
         "sibling-text",
-        "& ~ text:not(.not-sibling-text)"
+        [
+          "& ~ text:not(.not-sibling-text)"
+        ]
       ],
       [
         "twin-text",
-        "& ~ text:not(.not-twin-text)"
+        [
+          "& ~ text:not(.not-twin-text)"
+        ]
       ]
     ],
     [
       [
         "next-text",
-        "& + text:not(.not-next-text)"
+        [
+          "& + text:not(.not-next-text)"
+        ]
       ]
     ]
   ]
