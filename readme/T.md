@@ -13,7 +13,7 @@
   - [Usage](#usage)
     - [uni-app (vue2/3)](#uni-app-vue23)
     - [uni-app for vite (vue3)](#uni-app-for-vite-vue3)
-    - [Taro v3 (React/vue2/3)](#taro-v3-reactvue23)
+    - [Taro v3 (react | vue2/3)](#taro-v3-react--vue23)
     - [remax (react)](#remax-react)
     - [rax (react)](#rax-react)
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
@@ -30,7 +30,8 @@
       - [如何选择？](#如何选择)
       - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
       - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
-    - [预设 tailwindcss preset](#预设-tailwindcss-preset)
+    - [tailwindcss plugin](#tailwindcss-plugin)
+    - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs & Issues](#bugs--issues)
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
@@ -51,7 +52,7 @@
 
 [使用方式](./docs/uni-app-vite.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
 
-### Taro v3 (React/vue2/3)
+### Taro v3 (react | vue2/3)
 
 [使用方式(`taro3.5 webpack4/5`前后有所区别)](./docs/taro.md) | [React Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app) | [vue2 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue2-app) | [vue3 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue3-app)
 
@@ -169,7 +170,11 @@ cssPreflight: {
 
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
-### 预设 tailwindcss preset
+### tailwindcss plugin
+
+[weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
+
+### tailwindcss preset
 
 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)
 
