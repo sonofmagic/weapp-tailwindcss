@@ -14709,6 +14709,11 @@ weapp-ide-cli@^1.0.0:
   dependencies:
     execa "5.1.1"
 
+weapp-tailwindcss-children@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
+  integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
+
 weapp-tailwindcss-webpack-plugin@^1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.9.2.tgz#c5932770e4bc0728a5ba50d80ea82c4174f67d05"

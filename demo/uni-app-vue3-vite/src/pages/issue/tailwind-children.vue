@@ -9,6 +9,13 @@
         <view>view</view>
         <view>view</view>
       </view>
+      <view class="child-['.child']:text-red-500 child:inline-block child:mr-2">
+        <view class="not-child">not-child view</view>
+        <view class="child">view</view>
+        <text>text</text>
+        <view>view</view>
+        <view>view</view>
+      </view>
     </view>
     <view class="p-4">
       <view>child-text selector</view>
@@ -59,17 +66,8 @@
         <view class="next-text:text-red-500">view</view>
         <text>text</text>
       </view>
-      <!-- <view>
-        <view class="not-heir">not-heir view</view>
-        <view class="twin:text-green-500">view <view>inner view <text>inner text</text><text
-              class="not-heir-text">not-heir inner text</text></view>
-        </view>
-        <view>view</view>
-        <text>text</text>
-        <view class="twin:text-red-500">twin:text-red-500</view>
-        <view>view</view>
-      </view> -->
     </view>
+
   </view>
 </template>
 
