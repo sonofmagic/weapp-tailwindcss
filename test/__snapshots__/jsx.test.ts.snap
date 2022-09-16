@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`jsxHandler case1  1`] = `
-"(wx[\\"webpackJsonp\\"] = wx[\\"webpackJsonp\\"] || []).push([[\\"pages/index/index\\"], {
+"(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/index/index"], {
   /***/
-  \\"./node_modules/babel-loader/lib/index.js!./src/pages/index/index.tsx\\":
-  /*!*******************************************************************!*\\\\
+  "./node_modules/babel-loader/lib/index.js!./src/pages/index/index.tsx":
+  /*!*******************************************************************!*\\
     !*** ./node_modules/babel-loader/lib!./src/pages/index/index.tsx ***!
-    \\\\*******************************************************************/
+    \\*******************************************************************/
 
   /*! exports provided: default */
 
@@ -14,18 +14,18 @@ exports[`jsxHandler case1  1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
     /* harmony import */
 
     var _tarojs_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
     /*! @tarojs/components */
-    \\"./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js\\");
+    "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
     /* harmony import */
 
 
     var _index_module_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
     /*! ./index.module.scss */
-    \\"./src/pages/index/index.module.scss\\");
+    "./src/pages/index/index.module.scss");
     /* harmony import */
 
 
@@ -35,7 +35,7 @@ exports[`jsxHandler case1  1`] = `
 
     var _index_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
     /*! ./index.scss */
-    \\"./src/pages/index/index.scss\\");
+    "./src/pages/index/index.scss");
     /* harmony import */
 
 
@@ -45,34 +45,34 @@ exports[`jsxHandler case1  1`] = `
 
     var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! react/jsx-runtime */
-    \\"./node_modules/react/cjs/react-jsx-runtime.production.min.js\\");
+    "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
     /* harmony import */
 
 
-    var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__); // import { useCallback } from \\"react\\";
-    // import { useEnv, useNavigationBar, useModal, useToast } from \\"taro-hooks\\";
+    var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__); // import { useCallback } from "react";
+    // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 
 
     var Index = function Index() {
-      return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_0__[
+      return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__["jsx"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_0__[
       /* View */
-      \\"a\\"], {
-        className: \\"text-_bl_100px_br_ font-bold underline \\".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_1___default.a['xxx']),
-        children: \\"123\\"
+      "a"], {
+        className: "text-_bl_100px_br_ font-bold underline ".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_1___default.a['xxx']),
+        children: "123"
       });
     };
     /* harmony default export */
 
 
-    __webpack_exports__[\\"a\\"] = Index;
+    __webpack_exports__["a"] = Index;
     /***/
   },
 
   /***/
-  \\"./node_modules/react/cjs/react-jsx-runtime.production.min.js\\":
-  /*!********************************************************************!*\\\\
+  "./node_modules/react/cjs/react-jsx-runtime.production.min.js":
+  /*!********************************************************************!*\\
     !*** ./node_modules/react/cjs/react-jsx-runtime.production.min.js ***!
-    \\\\********************************************************************/
+    \\********************************************************************/
 
   /*! no static exports found */
 
@@ -80,7 +80,7 @@ exports[`jsxHandler case1  1`] = `
 
   /***/
   function (module, exports, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
     /** @license React v17.0.2
      * react-jsx-runtime.production.min.js
      *
@@ -92,19 +92,19 @@ exports[`jsxHandler case1  1`] = `
 
     __webpack_require__(
     /*! object-assign */
-    \\"./node_modules/object-assign/index.js\\");
+    "./node_modules/object-assign/index.js");
 
     var f = __webpack_require__(
     /*! react */
-    \\"./node_modules/react/cjs/react.production.min.js\\"),
+    "./node_modules/react/cjs/react.production.min.js"),
         g = 60103;
 
     exports.Fragment = 60107;
 
-    if (\\"function\\" === typeof Symbol && Symbol.for) {
+    if ("function" === typeof Symbol && Symbol.for) {
       var h = Symbol.for;
-      g = h(\\"react.element\\");
-      exports.Fragment = h(\\"react.fragment\\");
+      g = h("react.element");
+      exports.Fragment = h("react.fragment");
     }
 
     var m = f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,
@@ -121,8 +121,8 @@ exports[`jsxHandler case1  1`] = `
           d = {},
           e = null,
           l = null;
-      void 0 !== k && (e = \\"\\" + k);
-      void 0 !== a.key && (e = \\"\\" + a.key);
+      void 0 !== k && (e = "" + k);
+      void 0 !== a.key && (e = "" + a.key);
       void 0 !== a.ref && (l = a.ref);
 
       for (b in a) {
@@ -148,10 +148,10 @@ exports[`jsxHandler case1  1`] = `
   },
 
   /***/
-  \\"./src/pages/index/index.module.scss\\":
-  /*!*******************************************!*\\\\
+  "./src/pages/index/index.module.scss":
+  /*!*******************************************!*\\
     !*** ./src/pages/index/index.module.scss ***!
-    \\\\*******************************************/
+    \\*******************************************/
 
   /*! no static exports found */
 
@@ -164,10 +164,10 @@ exports[`jsxHandler case1  1`] = `
   },
 
   /***/
-  \\"./src/pages/index/index.scss\\":
-  /*!************************************!*\\\\
+  "./src/pages/index/index.scss":
+  /*!************************************!*\\
     !*** ./src/pages/index/index.scss ***!
-    \\\\************************************/
+    \\************************************/
 
   /*! no static exports found */
 
@@ -178,10 +178,10 @@ exports[`jsxHandler case1  1`] = `
   },
 
   /***/
-  \\"./src/pages/index/index.tsx\\":
-  /*!***********************************!*\\\\
+  "./src/pages/index/index.tsx":
+  /*!***********************************!*\\
     !*** ./src/pages/index/index.tsx ***!
-    \\\\***********************************/
+    \\***********************************/
 
   /*! no exports provided */
 
@@ -189,7 +189,7 @@ exports[`jsxHandler case1  1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
 
     __webpack_require__.r(__webpack_exports__);
     /* harmony import */
@@ -197,57 +197,57 @@ exports[`jsxHandler case1  1`] = `
 
     var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
     /*! @tarojs/runtime */
-    \\"./node_modules/@tarojs/runtime/dist/runtime.esm.js\\");
+    "./node_modules/@tarojs/runtime/dist/runtime.esm.js");
     /* harmony import */
 
 
     var _node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
     /*! ../../../node_modules/babel-loader/lib!./index.tsx */
-    \\"./node_modules/babel-loader/lib/index.js!./src/pages/index/index.tsx\\");
+    "./node_modules/babel-loader/lib/index.js!./src/pages/index/index.tsx");
 
     var config = {
-      \\"navigationBarTitleText\\": \\"Taro-hooks\\",
-      \\"enableShareAppMessage\\": true
+      "navigationBarTitleText": "Taro-hooks",
+      "enableShareAppMessage": true
     };
     _node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__[
     /* default */
-    \\"a\\"].enableShareAppMessage = true;
-    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__[\\"createPageConfig\\"])(_node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__[
+    "a"].enableShareAppMessage = true;
+    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__["createPageConfig"])(_node_modules_babel_loader_lib_index_js_index_tsx__WEBPACK_IMPORTED_MODULE_1__[
     /* default */
-    \\"a\\"], 'pages/index/index', {
+    "a"], 'pages/index/index', {
       root: {
         cn: []
       }
     }, config || {}));
     /***/
   }
-}, [[\\"./src/pages/index/index.tsx\\", \\"runtime\\", \\"taro\\", \\"vendors\\"]]]); //# sourceMappingURL=index.js.map"
+}, [["./src/pages/index/index.tsx", "runtime", "taro", "vendors"]]]); //# sourceMappingURL=index.js.map"
 `;
 
 exports[`jsxHandler case2  1`] = `
 "var Index = function Index() {
-  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_0__[
+  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__["jsx"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_0__[
   /* View */
-  \\"a\\"], {
-    className: \\"text-_bl_100px_br_ font-bold underline \\".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_1___default.a['xxx']),
-    children: \\"123\\"
+  "a"], {
+    className: "text-_bl_100px_br_ font-bold underline ".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_1___default.a['xxx']),
+    children: "123"
   });
 };"
 `;
 
 exports[`jsxHandler case3  1`] = `
 "var Index = function Index() {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__[\\"useState\\"])(true),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
       _useState2 = Object(G_github2_f_weapp_tailwindcss_webpack_plugin_demo_taro_app_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_0__[
   /* default */
-  \\"a\\"])(_useState, 1),
+  "a"])(_useState, 1),
       flag = _useState2[0];
 
-  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_2__[
+  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__["jsx"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_2__[
   /* View */
-  \\"a\\"], {
-    className: \\"text-_bl_100px_br_ font-bold underline \\".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_3___default.a['xxx'], \\" \\").concat(flag ? \\"bg-_bl__h_adfafa_br_\\" : null),
-    children: \\"123\\"
+  "a"], {
+    className: "text-_bl_100px_br_ font-bold underline ".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_3___default.a['xxx'], " ").concat(flag ? "bg-_bl__h_adfafa_br_" : null),
+    children: "123"
   });
 };"
 `;
@@ -262,21 +262,21 @@ import { Fragment as _Fragment } from 'react/jsx-runtime';"
 
 exports[`jsxHandler react-hover-class 1`] = `
 "var Index = function Index() {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__[\\"useState\\"])(true),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
       _useState2 = Object(E_github_workspace_my_weapp_tailwindcss_webpack_plugin_demo_taro_app_node_modules_babel_preset_taro_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_0__[
   /* default */
-  \\"a\\"])(_useState, 1),
+  "a"])(_useState, 1),
       flag = _useState2[0];
 
   var className = Object(weapp_tailwindcss_webpack_plugin_replace__WEBPACK_IMPORTED_MODULE_3__[
   /* replaceJs */
-  \\"a\\"])('bg-[#123456]');
-  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"jsx\\"])(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"Fragment\\"], {
-    children: /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__[\\"jsx\\"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_2__[
+  "a"])('bg-[#123456]');
+  return /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__["jsx"])(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__["Fragment"], {
+    children: /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__["jsx"])(_tarojs_components__WEBPACK_IMPORTED_MODULE_2__[
     /* View */
-    \\"a\\"], {
-      className: \\"bg-gray-100 dark_c_bg-zinc-800 h-10 w-10\\",
-      hoverClass: \\"bg-red-500 dark_c_bg-green-500\\"
+    "a"], {
+      className: "bg-gray-100 dark_c_bg-zinc-800 h-10 w-10",
+      hoverClass: "bg-red-500 dark_c_bg-green-500"
     })
   });
 };"
@@ -285,7 +285,7 @@ exports[`jsxHandler react-hover-class 1`] = `
 exports[`jsxHandler react-jsx-loader-case-with-vars 1`] = `
 "import _slicedToArray from 'G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/slicedToArray.js';
 import { useState } from 'react';
-import { View } from '@tarojs/components'; // import { useEnv, useNavigationBar, useModal, useToast } from \\"taro-hooks\\";
+import { View } from '@tarojs/components'; // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 
 import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
 import './index.scss';
@@ -312,7 +312,7 @@ export default Index;"
 exports[`jsxHandler react-jsx-loader-case0 1`] = `
 "import _slicedToArray from 'G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/slicedToArray.js';
 import { useState } from 'react';
-import { View } from '@tarojs/components'; // import { useEnv, useNavigationBar, useModal, useToast } from \\"taro-hooks\\";
+import { View } from '@tarojs/components'; // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 
 import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
 import './index.scss';
@@ -329,12 +329,12 @@ var Index = function Index() {
   var className = replaceJs('bg-[#123456]');
   return /*#__PURE__*/_jsxs(_Fragment, {
     children: [/*#__PURE__*/_jsx(View, {
-      className: \\"after_c_border-none after_c_content-_bl__q_Hello_World_q__br_\\",
+      className: "after_c_border-none after_c_content-_bl__q_Hello_World_q__br_",
       children: 'after:border-none'
     }), /*#__PURE__*/_jsx(View, {
-      className: \\"after_c_content-_bl__dq__a__dq__br_ after_c_ml-0_d_5 after_c_text-red-500\\"
+      className: "after_c_content-_bl__dq__a__dq__br_ after_c_ml-0_d_5 after_c_text-red-500"
     }), /*#__PURE__*/_jsxs(View, {
-      className: \\"after_c_content-_bl__a__br_ after_c_ml-0_d_5 after_c_text-red-500 aspect-w-16\\",
+      className: "after_c_content-_bl__a__br_ after_c_ml-0_d_5 after_c_text-red-500 aspect-w-16",
       children: [/*#__PURE__*/_jsx(View, {
         children: 'aspect'
       }), /*#__PURE__*/_jsx(View, {
@@ -343,33 +343,33 @@ var Index = function Index() {
         children: '16'
       })]
     }), /*#__PURE__*/_jsx(View, {
-      className: \\"bg-gray-100 dark_c_bg-zinc-800 h-10 w-10\\",
-      hoverClass: \\"bg-red-500 dark_c_bg-green-500\\"
+      className: "bg-gray-100 dark_c_bg-zinc-800 h-10 w-10",
+      hoverClass: "bg-red-500 dark_c_bg-green-500"
     }), /*#__PURE__*/_jsx(EndClassCom, {}), /*#__PURE__*/_jsx(View, {
       className: className,
       children: 'className'
     }), /*#__PURE__*/_jsx(View, {
-      className: flag ? \\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_ \\" : '',
-      children: 'p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u53EF\\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]'
+      className: flag ? "p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_ " : '',
+      children: 'p-[20px] -mt-2 mb-[-20px] margin\\u7684jit \\u53EF\\u4E0D\\u80FD\\u8FD9\\u4E48\\u5199 -m-[20px]'
     }), /*#__PURE__*/_jsxs(View, {
-      className: \\"space-y-_bl_1_d_6rem_br_ text-_bl_16px_br_ w-_bl_200_p__br_\\",
+      className: "space-y-_bl_1_d_6rem_br_ text-_bl_16px_br_ w-_bl_200_p__br_",
       children: [/*#__PURE__*/_jsx(View, {
-        className: \\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\",
+        className: "w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_",
         children: 'w-[300rpx] text-black text-opacity-[0.19]'
       }), /*#__PURE__*/_jsx(View, {
-        className: \\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\",
+        className: "min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_",
         children: 'min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]'
       }), /*#__PURE__*/_jsx(View, {
-        className: \\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\",
+        className: "max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_",
         children: 'max-w-[300rpx] min-h-[100px] text-[#dddddd]'
       }), /*#__PURE__*/_jsx(View, {
-        className: \\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\",
+        className: "flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_",
         children: 'Hello'
       }), /*#__PURE__*/_jsx(View, {
-        className: \\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\",
+        className: "border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_",
         children: 'border-[10px] border-[#098765] border-solid border-opacity-[0.44]'
       }), /*#__PURE__*/_jsxs(View, {
-        className: \\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\",
+        className: "grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid",
         children: [/*#__PURE__*/_jsx(View, {
           children: '1'
         }), /*#__PURE__*/_jsx(View, {
@@ -393,11 +393,11 @@ export default Index;"
 
 exports[`jsxHandler react-jsx-loader-case1 1`] = `
 "import { View } from '@tarojs/components';
-import { jsx as _jsx } from \\"react/jsx-runtime\\";
+import { jsx as _jsx } from "react/jsx-runtime";
 export default (function () {
   return /*#__PURE__*/_jsx(View, {
-    className: \\"bg-_bl__h_654321_br_ w-_bl_100px_br_ h-_bl_20px_br_\\",
-    children: \\"123\\"
+    className: "bg-_bl__h_654321_br_ w-_bl_100px_br_ h-_bl_20px_br_",
+    children: "123"
   });
 });"
 `;
@@ -410,43 +410,43 @@ exports[`jsxHandler vue2-case1 1`] = `
 
   var _c = _vm._self._c || _h;
 
-  return _c(\\"view\\", {
-    staticClass: \\"index\\"
-  }, [_c(\\"view\\", {
-    class: [_vm.flag ? \\"bg-red-900\\" : \\"bg-_bl__h_fafa00_br_\\"]
-  }, [_vm._v(\\"bg-[#fafa00]\\")]), _c(\\"view\\", {
+  return _c("view", {
+    staticClass: "index"
+  }, [_c("view", {
+    class: [_vm.flag ? "bg-red-900" : "bg-_bl__h_fafa00_br_"]
+  }, [_vm._v("bg-[#fafa00]")]), _c("view", {
     class: {
-      \\"bg-_bl__h_098765_br_\\": _vm.flag === true
+      "bg-_bl__h_098765_br_": _vm.flag === true
     }
-  }, [_vm._v(\\"bg-[#098765]\\")]), _c(\\"view\\", {
-    staticClass: \\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_\\"
-  }, [_vm._v(\\"p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]\\")]), _c(\\"view\\", {
-    staticClass: \\"space-y-_bl_1_d_6rem_br_\\"
-  }, [_c(\\"view\\", {
-    staticClass: \\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\"
-  }, [_vm._v(\\"w-[300rpx] text-black text-opacity-[0.19]\\")]), _c(\\"view\\", {
-    staticClass: \\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\"
-  }, [_vm._v(\\"min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]\\")]), _c(\\"view\\", {
-    staticClass: \\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\"
-  }, [_vm._v(\\"max-w-[300rpx] min-h-[100px] text-[#dddddd]\\")]), _c(\\"view\\", {
-    staticClass: \\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\"
-  }, [_vm._v(\\"Hello\\")]), _c(\\"view\\", {
-    staticClass: \\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\"
-  }, [_vm._v(\\"border-[10px] border-[#098765] border-solid border-opacity-[0.44]\\")]), _c(\\"view\\", {
-    staticClass: \\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\"
-  }, [_c(\\"view\\", [_vm._v(\\"1\\")]), _c(\\"view\\", [_vm._v(\\"2\\")]), _c(\\"view\\", [_vm._v(\\"3\\")])])]), _c(\\"view\\", {
-    staticClass: \\"test\\"
-  }, [_vm._v(\\"test\\")])]);
+  }, [_vm._v("bg-[#098765]")]), _c("view", {
+    staticClass: "p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_"
+  }, [_vm._v("p-[20px] -mt-2 mb-[-20px] margin的jit 不能这么写 -m-[20px]")]), _c("view", {
+    staticClass: "space-y-_bl_1_d_6rem_br_"
+  }, [_c("view", {
+    staticClass: "w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_"
+  }, [_vm._v("w-[300rpx] text-black text-opacity-[0.19]")]), _c("view", {
+    staticClass: "min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_"
+  }, [_vm._v("min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]")]), _c("view", {
+    staticClass: "max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_"
+  }, [_vm._v("max-w-[300rpx] min-h-[100px] text-[#dddddd]")]), _c("view", {
+    staticClass: "flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_"
+  }, [_vm._v("Hello")]), _c("view", {
+    staticClass: "border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_"
+  }, [_vm._v("border-[10px] border-[#098765] border-solid border-opacity-[0.44]")]), _c("view", {
+    staticClass: "grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid"
+  }, [_c("view", [_vm._v("1")]), _c("view", [_vm._v("2")]), _c("view", [_vm._v("3")])])]), _c("view", {
+    staticClass: "test"
+  }, [_vm._v("test")])]);
 };"
 `;
 
 exports[`jsxHandler vue2-hover-class.js 1`] = `
-"(wx[\\"webpackJsonp\\"] = wx[\\"webpackJsonp\\"] || []).push([[\\"pages/index/hoverClass\\"], {
+"(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/index/hoverClass"], {
   /***/
-  \\"./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue\\":
-  /*!**************************************************************************************!*\\\\
+  "./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue":
+  /*!**************************************************************************************!*\\
     !*** ./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue ***!
-    \\\\**************************************************************************************/
+    \\**************************************************************************************/
 
   /*! exports provided: default */
 
@@ -454,24 +454,24 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
     /* harmony import */
 
     var _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
     /*! ./hoverClass.vue?vue&type=template&id=67f21afd& */
-    \\"./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\");
+    "./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&");
     /* harmony import */
 
 
     var _hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
     /*! ./hoverClass.vue?vue&type=script&lang=js& */
-    \\"./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\");
+    "./src/pages/index/hoverClass.vue?vue&type=script&lang=js&");
     /* harmony import */
 
 
     var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
     /*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */
-    \\"./node_modules/vue-loader/lib/runtime/componentNormalizer.js\\");
+    "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
     function injectStyles(context) {}
     /* normalize component */
@@ -479,25 +479,25 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
     var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__[
     /* default */
-    \\"a\\"])(_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[
+    "a"])(_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[
     /* default */
-    \\"a\\"], _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[
+    "a"], _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[
     /* render */
-    \\"a\\"], _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[
+    "a"], _hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[
     /* staticRenderFns */
-    \\"b\\"], false, injectStyles, null, \\"6eef642b\\");
-    component.options.__file = \\"src/pages/index/hoverClass.vue\\";
+    "b"], false, injectStyles, null, "6eef642b");
+    component.options.__file = "src/pages/index/hoverClass.vue";
     /* harmony default export */
 
-    __webpack_exports__[\\"a\\"] = component.exports;
+    __webpack_exports__["a"] = component.exports;
     /***/
   },
 
   /***/
-  \\"./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\":
-  /*!***************************************************************************************************************************************************!*\\\\
+  "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=script&lang=js&":
+  /*!***************************************************************************************************************************************************!*\\
     !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/pages/index/hoverClass.vue?vue&type=script&lang=js& ***!
-    \\\\***************************************************************************************************************************************************/
+    \\***************************************************************************************************************************************************/
 
   /*! exports provided: default */
 
@@ -505,7 +505,7 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\"; //
+    "use strict"; //
     //
     //
     //
@@ -514,7 +514,7 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
     /* harmony default export */
 
-    __webpack_exports__[\\"a\\"] = {
+    __webpack_exports__["a"] = {
       data: function data() {
         return {
           flag: true
@@ -525,10 +525,10 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
   },
 
   /***/
-  \\"./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\":
-  /*!*****************************************************************************************************************************************************************************************************!*\\\\
+  "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&":
+  /*!*****************************************************************************************************************************************************************************************************!*\\
     !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd& ***!
-    \\\\*****************************************************************************************************************************************************************************************************/
+    \\*****************************************************************************************************************************************************************************************************/
 
   /*! exports provided: render, staticRenderFns */
 
@@ -536,16 +536,16 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
     /* harmony export (binding) */
 
-    __webpack_require__.d(__webpack_exports__, \\"a\\", function () {
+    __webpack_require__.d(__webpack_exports__, "a", function () {
       return render;
     });
     /* harmony export (binding) */
 
 
-    __webpack_require__.d(__webpack_exports__, \\"b\\", function () {
+    __webpack_require__.d(__webpack_exports__, "b", function () {
       return staticRenderFns;
     });
 
@@ -556,13 +556,13 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
       var _c = _vm._self._c || _h;
 
-      return _c(\\"view\\", [_c(\\"view\\", {
-        staticClass: \\"bg-_bl__h_ffffff_br_ dark_c_bg-_bl__h_000000_br_ h-10 w-10\\",
-        class: _vm.flag ? \\"text-_bl_50px_br_\\" : \\"text-_bl_100rpx_br_\\",
+      return _c("view", [_c("view", {
+        staticClass: "bg-_bl__h_ffffff_br_ dark_c_bg-_bl__h_000000_br_ h-10 w-10",
+        class: _vm.flag ? "text-_bl_50px_br_" : "text-_bl_100rpx_br_",
         attrs: {
-          \\"data-uauaua\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\",
-          \\"hover-class\\": \\"bg-_bl__h_eeeeee_br_ dark_c_bg-_bl__h_111111_br_\\",
-          \\"data-id\\": \\"bg-[#eeeeee] dark:bg-[#111111]\\"
+          "data-uauaua": "bg-[#eeeeee] dark:bg-[#111111]",
+          "hover-class": "bg-_bl__h_eeeeee_br_ dark_c_bg-_bl__h_111111_br_",
+          "data-id": "bg-[#eeeeee] dark:bg-[#111111]"
         }
       })]);
     };
@@ -573,10 +573,10 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
   },
 
   /***/
-  \\"./src/pages/index/hoverClass.vue\\":
-  /*!****************************************!*\\\\
+  "./src/pages/index/hoverClass.vue":
+  /*!****************************************!*\\
     !*** ./src/pages/index/hoverClass.vue ***!
-    \\\\****************************************/
+    \\****************************************/
 
   /*! no exports provided */
 
@@ -584,7 +584,7 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
 
     __webpack_require__.r(__webpack_exports__);
     /* harmony import */
@@ -592,18 +592,18 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
     var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
     /*! @tarojs/runtime */
-    \\"./node_modules/@tarojs/runtime/dist/runtime.esm.js\\");
+    "./node_modules/@tarojs/runtime/dist/runtime.esm.js");
     /* harmony import */
 
 
     var _node_modules_tarojs_taro_loader_lib_raw_js_hoverClass_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
     /*! ../../../node_modules/@tarojs/taro-loader/lib/raw.js!./hoverClass.vue */
-    \\"./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue\\");
+    "./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/hoverClass.vue");
 
     var config = {};
-    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__[\\"createPageConfig\\"])(_node_modules_tarojs_taro_loader_lib_raw_js_hoverClass_vue__WEBPACK_IMPORTED_MODULE_1__[
+    var inst = Page(Object(_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__["createPageConfig"])(_node_modules_tarojs_taro_loader_lib_raw_js_hoverClass_vue__WEBPACK_IMPORTED_MODULE_1__[
     /* default */
-    \\"a\\"], 'pages/index/hoverClass', {
+    "a"], 'pages/index/hoverClass', {
       root: {
         cn: []
       }
@@ -612,10 +612,10 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
   },
 
   /***/
-  \\"./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\":
-  /*!*****************************************************************!*\\\\
+  "./src/pages/index/hoverClass.vue?vue&type=script&lang=js&":
+  /*!*****************************************************************!*\\
     !*** ./src/pages/index/hoverClass.vue?vue&type=script&lang=js& ***!
-    \\\\*****************************************************************/
+    \\*****************************************************************/
 
   /*! exports provided: default */
 
@@ -623,26 +623,26 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
     /* harmony import */
 
     var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
     /*! -!../../../node_modules/babel-loader/lib!../../../node_modules/vue-loader/lib??vue-loader-options!./hoverClass.vue?vue&type=script&lang=js& */
-    \\"./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=script&lang=js&\\");
+    "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=script&lang=js&");
     /* harmony default export */
 
 
-    __webpack_exports__[\\"a\\"] = _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[
+    __webpack_exports__["a"] = _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[
     /* default */
-    \\"a\\"];
+    "a"];
     /***/
   },
 
   /***/
-  \\"./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\":
-  /*!***********************************************************************!*\\\\
+  "./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&":
+  /*!***********************************************************************!*\\
     !*** ./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd& ***!
-    \\\\***********************************************************************/
+    \\***********************************************************************/
 
   /*! exports provided: render, staticRenderFns */
 
@@ -650,34 +650,34 @@ exports[`jsxHandler vue2-hover-class.js 1`] = `
 
   /***/
   function (module, __webpack_exports__, __webpack_require__) {
-    \\"use strict\\";
+    "use strict";
     /* harmony import */
 
     var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
     /*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./hoverClass.vue?vue&type=template&id=67f21afd& */
-    \\"./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&\\");
+    "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/pages/index/hoverClass.vue?vue&type=template&id=67f21afd&");
     /* harmony reexport (safe) */
 
 
-    __webpack_require__.d(__webpack_exports__, \\"a\\", function () {
-      return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[\\"a\\"];
+    __webpack_require__.d(__webpack_exports__, "a", function () {
+      return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__["a"];
     });
     /* harmony reexport (safe) */
 
 
-    __webpack_require__.d(__webpack_exports__, \\"b\\", function () {
-      return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__[\\"b\\"];
+    __webpack_require__.d(__webpack_exports__, "b", function () {
+      return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hoverClass_vue_vue_type_template_id_67f21afd___WEBPACK_IMPORTED_MODULE_0__["b"];
     });
     /***/
 
   }
-}, [[\\"./src/pages/index/hoverClass.vue\\", \\"runtime\\", \\"taro\\", \\"vendors\\"]]]); //# sourceMappingURL=hoverClass.js.map"
+}, [["./src/pages/index/hoverClass.vue", "runtime", "taro", "vendors"]]]); //# sourceMappingURL=hoverClass.js.map"
 `;
 
 exports[`jsxHandler vue3-createStaticVNode.js 1`] = `
 "var _hoisted_1 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
 /* createStaticVNode */
-\\"d\\"])(\\"<view class=\\\\\\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_\\\\\\">p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]</view><view class=\\\\\\"space-y-_bl_1_d_6rem_br_\\\\\\"><view class=\\\\\\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\\\\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\\\\\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\\\\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\\\\\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\\\\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\\\\\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\\\\\">Hello</view><view class=\\\\\\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\\\\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\\\\\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\\\\\"><view>1</view><view>2</view><view>3</view></view></view><view class=\\\\\\"test\\\\\\">test</view>\\", 3);"
+"d"])("<view class=\\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_\\">p-[20px] -mt-2 mb-[-20px] margin\\u7684jit \\u4E0D\\u80FD\\u8FD9\\u4E48\\u5199 -m-[20px]</view><view class=\\"space-y-_bl_1_d_6rem_br_\\"><view class=\\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\">Hello</view><view class=\\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\"><view>1</view><view>2</view><view>3</view></view></view><view class=\\"test\\">test</view>", 3);"
 `;
 
 exports[`jsxHandler vue3-hover-class.js 1`] = `
@@ -685,9 +685,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 (wx['webpackJsonp'] = wx['webpackJsonp'] || []).push([['pages/index/index'], {
   /***/
   './node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/dist/index.js?!./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true':
-  /*!*********************************************************************************************************************************************************************************!*\\\\
+  /*!*********************************************************************************************************************************************************************************!*\\
   !*** ./node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib!./node_modules/vue-loader/dist??ref--10-0!./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true ***!
-  \\\\*********************************************************************************************************************************************************************************/
+  \\*********************************************************************************************************************************************************************************/
 
   /*! exports provided: default */
 
@@ -743,9 +743,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 
   /***/
   './node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/dist/templateLoader.js?!./node_modules/vue-loader/dist/index.js?!./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true':
-  /*!*********************************************************************************************************************************************************************************************************************************************!*\\\\
+  /*!*********************************************************************************************************************************************************************************************************************************************!*\\
   !*** ./node_modules/@tarojs/mini-runner/node_modules/babel-loader/lib!./node_modules/vue-loader/dist/templateLoader.js??ref--6!./node_modules/vue-loader/dist??ref--10-0!./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true ***!
-  \\\\*********************************************************************************************************************************************************************************************************************************************/
+  \\*********************************************************************************************************************************************************************************************************************************************/
 
   /*! exports provided: render */
 
@@ -769,16 +769,16 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
     var _hoisted_1 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
     /* createElementVNode */
     'd'])('view', {
-      class: \\"bg-gray-100 dark_c_bg-zinc-800 h-10 w-10\\",
+      class: "bg-gray-100 dark_c_bg-zinc-800 h-10 w-10",
       'data-id': 'bg-[#654123] dark:bg-[#abcdef]',
-      'hover-class': \\"bg-red-500 dark_c_bg-_bl__h_487512_br_\\"
+      'hover-class': "bg-red-500 dark_c_bg-_bl__h_487512_br_"
     }, null, -1
     /* HOISTED */
     );
 
     var _hoisted_2 = /*#__PURE__*/Object(vue__WEBPACK_IMPORTED_MODULE_0__[
     /* createStaticVNode */
-    'e'])(\\"<view class=\\\\\\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_\\\\\\">p-[20px] -mt-2 mb-[-20px] margin\\\\u7684jit \\\\u4E0D\\\\u80FD\\\\u8FD9\\\\u4E48\\\\u5199 -m-[20px]</view><view class=\\\\\\"space-y-_bl_1_d_6rem_br_\\\\\\"><view class=\\\\\\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\\\\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\\\\\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\\\\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\\\\\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\\\\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\\\\\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\\\\\">Hello</view><view class=\\\\\\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\\\\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\\\\\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\\\\\"><view>1</view><view>2</view><view>3</view></view><view class=\\\\\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\\\\\"> Default </view></view><view class=\\\\\\"test\\\\\\">test</view>\\", 3);
+    'e'])("<view class=\\"p-_bl_20px_br_ -mt-2 mb-_bl_-20px_br_\\">p-[20px] -mt-2 mb-[-20px] margin\\u7684jit \\u4E0D\\u80FD\\u8FD9\\u4E48\\u5199 -m-[20px]</view><view class=\\"space-y-_bl_1_d_6rem_br_\\"><view class=\\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\"min-w-_bl_300rpx_br_ max-h-_bl_100px_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\"max-w-_bl_300rpx_br_ min-h-_bl_100px_br_ text-_bl__h_dddddd_br_\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\"flex items-center justify-center h-_bl_100px_br_ w-_bl_100px_br_ rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\">Hello</view><view class=\\"border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-_bl__h_010101_br_ divide-solid\\"><view>1</view><view>2</view><view>3</view></view><view class=\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\"> Default </view></view><view class=\\"test\\">test</view>", 3);
 
     function render(_ctx, _cache, $props, $setup, $data, $options) {
       return Object(vue__WEBPACK_IMPORTED_MODULE_0__[
@@ -788,7 +788,7 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
       'c'])('view', {
         class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
         /* normalizeClass */
-        'i'])([\\"index container bg-_bl__h_ffffff_br_\\", $setup.flag ? \\"text-_bl__h_aaaaaa_br_\\" : \\"text-_bl__h_fafafa_br_\\"])
+        'i'])(["index container bg-_bl__h_ffffff_br_", $setup.flag ? "text-_bl__h_aaaaaa_br_" : "text-_bl__h_fafafa_br_"])
       }, [_hoisted_1, Object(vue__WEBPACK_IMPORTED_MODULE_0__[
       /* createCommentVNode */
       'b'])(' <template>1</template> '), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
@@ -796,7 +796,7 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
       'd'])('view', {
         class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
         /* normalizeClass */
-        'i'])([$setup.flag ? 'bg-red-900' : \\"bg-_bl__h_fafa00_br_\\"])
+        'i'])([$setup.flag ? 'bg-red-900' : "bg-_bl__h_fafa00_br_"])
       }, 'bg-[#fafa00]', 2
       /* CLASS */
       ), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
@@ -805,7 +805,7 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
         class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
         /* normalizeClass */
         'i'])({
-          \\"bg-_bl__h_098765_br_\\": $setup.flag === true
+          "bg-_bl__h_098765_br_": $setup.flag === true
         })
       }, 'bg-[#098765]', 2
       /* CLASS */
@@ -819,9 +819,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 
   /***/
   './node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/index.vue':
-  /*!*********************************************************************************!*\\\\
+  /*!*********************************************************************************!*\\
   !*** ./node_modules/@tarojs/taro-loader/lib/raw.js!./src/pages/index/index.vue ***!
-  \\\\*********************************************************************************/
+  \\*********************************************************************************/
 
   /*! exports provided: default */
 
@@ -870,9 +870,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 
   /***/
   './src/pages/index/index.scss':
-  /*!************************************!*\\\\
+  /*!************************************!*\\
   !*** ./src/pages/index/index.scss ***!
-  \\\\************************************/
+  \\************************************/
 
   /*! no static exports found */
 
@@ -884,9 +884,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 
   /***/
   './src/pages/index/index.vue':
-  /*!***********************************!*\\\\
+  /*!***********************************!*\\
   !*** ./src/pages/index/index.vue ***!
-  \\\\***********************************/
+  \\***********************************/
 
   /*! no exports provided */
 
@@ -925,9 +925,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 
   /***/
   './src/pages/index/index.vue?vue&type=script&lang=ts&setup=true':
-  /*!**********************************************************************!*\\\\
+  /*!**********************************************************************!*\\
   !*** ./src/pages/index/index.vue?vue&type=script&lang=ts&setup=true ***!
-  \\\\**********************************************************************/
+  \\**********************************************************************/
 
   /*! exports provided: default */
 
@@ -953,9 +953,9 @@ exports[`jsxHandler vue3-hover-class.js 1`] = `
 
   /***/
   './src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true':
-  /*!*************************************************************************!*\\\\
+  /*!*************************************************************************!*\\
   !*** ./src/pages/index/index.vue?vue&type=template&id=1badc801&ts=true ***!
-  \\\\*************************************************************************/
+  \\*************************************************************************/
 
   /*! exports provided: render */
 
@@ -985,29 +985,29 @@ exports[`jsxHandler vue3-render.js 1`] = `
 "function render(_ctx, _cache, $props, $setup, $data, $options) {
   return Object(vue__WEBPACK_IMPORTED_MODULE_0__[
   /* openBlock */
-  \\"i\\"])(), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
+  "i"])(), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
   /* createElementBlock */
-  \\"b\\"])(\\"view\\", {
+  "b"])("view", {
     class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
     /* normalizeClass */
-    \\"g\\"])([\\"index container bg-_bl__h_ffffff_br_\\", $setup.flag ? \\"text-_bl__h_aaaaaa_br_\\" : \\"text-_bl__h_fafafa_br_\\"])
+    "g"])(["index container bg-_bl__h_ffffff_br_", $setup.flag ? "text-_bl__h_aaaaaa_br_" : "text-_bl__h_fafafa_br_"])
   }, [Object(vue__WEBPACK_IMPORTED_MODULE_0__[
   /* createElementVNode */
-  \\"c\\"])(\\"view\\", {
+  "c"])("view", {
     class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
     /* normalizeClass */
-    \\"g\\"])([$setup.flag ? 'bg-red-900' : \\"bg-_bl__h_fafa00_br_\\"])
-  }, \\"bg-[#fafa00]\\", 2
+    "g"])([$setup.flag ? 'bg-red-900' : "bg-_bl__h_fafa00_br_"])
+  }, "bg-[#fafa00]", 2
   /* CLASS */
   ), Object(vue__WEBPACK_IMPORTED_MODULE_0__[
   /* createElementVNode */
-  \\"c\\"])(\\"view\\", {
+  "c"])("view", {
     class: Object(vue__WEBPACK_IMPORTED_MODULE_0__[
     /* normalizeClass */
-    \\"g\\"])({
-      \\"bg-_bl__h_098765_br_\\": $setup.flag === true
+    "g"])({
+      "bg-_bl__h_098765_br_": $setup.flag === true
     })
-  }, \\"bg-[#098765]\\", 2
+  }, "bg-[#098765]", 2
   /* CLASS */
   ), _hoisted_1], 2
   /* CLASS */

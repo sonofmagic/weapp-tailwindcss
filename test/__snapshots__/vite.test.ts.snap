@@ -1,43 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`vite test vite common build 1`] = `
-Array [
-  Object {
-    "code": "const s=function(){const t=document.createElement(\\"link\\").relList;if(t&&t.supports&&t.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))n(e);new MutationObserver(e=>{for(const r of e)if(r.type===\\"childList\\")for(const o of r.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&n(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerpolicy&&(r.referrerPolicy=e.referrerpolicy),e.crossorigin===\\"use-credentials\\"?r.credentials=\\"include\\":e.crossorigin===\\"anonymous\\"?r.credentials=\\"omit\\":r.credentials=\\"same-origin\\",r}function n(e){if(e.ep)return;e.ep=!0;const r=i(e);fetch(e.href,r)}};s();
+[
+  {
+    "code": "const s=function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))n(e);new MutationObserver(e=>{for(const r of e)if(r.type==="childList")for(const o of r.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&n(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerpolicy&&(r.referrerPolicy=e.referrerpolicy),e.crossorigin==="use-credentials"?r.credentials="include":e.crossorigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function n(e){if(e.ep)return;e.ep=!0;const r=i(e);fetch(e.href,r)}};s();
 ",
-    "dynamicImports": Array [],
-    "exports": Array [],
+    "dynamicImports": [],
+    "exports": [],
     "facadeModuleId": "fixtures/vite/index.html",
     "fileName": "assets/index.1de03ae5.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {},
-    "imports": Array [],
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {},
+    "imports": [],
     "isDynamicEntry": false,
     "isEntry": true,
     "isImplicitEntry": false,
     "map": null,
-    "modules": Object {
-      "fixtures/vite/index.css": Object {
+    "modules": {
+      "fixtures/vite/index.css": {
         "code": "var index = '';",
-        "removedExports": Array [],
-        "renderedExports": Array [
+        "removedExports": [],
+        "renderedExports": [
           "default",
         ],
         "renderedLength": 15,
       },
-      "fixtures/vite/index.html": Object {
+      "fixtures/vite/index.html": {
         "code": null,
-        "removedExports": Array [],
-        "renderedExports": Array [],
+        "removedExports": [],
+        "renderedExports": [],
         "renderedLength": 0,
       },
-      "vite/modulepreload-polyfill": Object {
+      "vite/modulepreload-polyfill": {
         "code": "const p = function polyfill() {
     const relList = document.createElement('link').relList;
     if (relList && relList.supports && relList.supports('modulepreload')) {
         return;
     }
-    for (const link of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) {
+    for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
         processPreload(link);
     }
     new MutationObserver((mutations) => {
@@ -75,54 +75,54 @@ Array [
         fetch(link.href, fetchOpts);
     }
 };__VITE_IS_MODERN__&&p();",
-        "removedExports": Array [],
-        "renderedExports": Array [],
+        "removedExports": [],
+        "renderedExports": [],
         "renderedLength": 1572,
       },
     },
     "name": "index",
-    "referencedFiles": Array [],
+    "referencedFiles": [],
     "type": "chunk",
-    "viteMetadata": Object {
+    "viteMetadata": {
       "importedAssets": Set {},
       "importedCss": Set {
         "assets/index.921729c3.css",
       },
     },
   },
-  Object {
+  {
     "fileName": "assets/index.921729c3.css",
     "isAsset": true,
     "name": "index.css",
-    "source": "::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::-webkit-backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }
+    "source": "::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::-webkit-backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }
 ",
     "type": "asset",
   },
-  Object {
+  {
     "fileName": "index.html",
     "isAsset": true,
     "name": undefined,
     "source": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index.1de03ae5.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index.921729c3.css\\">
+  <script type="module" crossorigin src="/assets/index.1de03ae5.js"></script>
+  <link rel="stylesheet" href="/assets/index.921729c3.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
   

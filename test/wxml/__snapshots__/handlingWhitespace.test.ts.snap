@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`handling whitespace before:content-['hello_world'] 1`] = `
-"<div class=\\"before_c_content-_bl__q_hello_world_q__br_\\">
+"<div class="before_c_content-_bl__q_hello_world_q__br_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`handling whitespace bg-[url('/what_a_rush.png')] 1`] = `
-"<div class=\\"bg-_bl_url_pl__q__s_what_a_rush_d_png_q__qr__br_\\">
+"<div class="bg-_bl_url_pl__q__s_what_a_rush_d_png_q__qr__br_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`handling whitespace grid grid-cols-[1fr_500px_2fr] 1`] = `
-"<div class=\\"grid grid-cols-_bl_1fr_500px_2fr_br_\\">
+"<div class="grid grid-cols-_bl_1fr_500px_2fr_br_">
       <!-- ... -->
     </div>"
 `;

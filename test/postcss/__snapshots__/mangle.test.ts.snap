@@ -11,7 +11,7 @@ exports[`[postcss] mangle mangle case 0 1`] = `
 }
 
 .a .b::after {
-  content: \\"after\\";
+  content: "after";
 }
 
 .a label {
@@ -22,7 +22,7 @@ exports[`[postcss] mangle mangle case 0 1`] = `
   color: red;
 }
 .happy {
-  word: \\"have a nice day\\";
+  word: "have a nice day";
 }
 "
 `;
@@ -38,7 +38,7 @@ exports[`[postcss] mangle mangle case with empty classGenerator 1`] = `
 }
 
 .el-tree-node__content .el-tree-node__expand-icon::after {
-  content: \\"after\\";
+  content: "after";
 }
 
 .el-tree-node__content label {
@@ -49,7 +49,7 @@ exports[`[postcss] mangle mangle case with empty classGenerator 1`] = `
   color: red;
 }
 .happy {
-  word: \\"have a nice day\\";
+  word: "have a nice day";
 }
 "
 `;
