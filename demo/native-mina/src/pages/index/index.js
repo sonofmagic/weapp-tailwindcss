@@ -57,4 +57,7 @@ Page({
       hasUserInfo: true,
     })
   },
+  onLoad() {
+    console.log('Page load!')
+  },
 })

@@ -44,7 +44,10 @@ export default Vue.extend({
     }
   },
 
-  methods: {}
+  methods: {},
+  onLoad(){
+    console.log('Page loaded!')
+  }
 })
 </script>
 

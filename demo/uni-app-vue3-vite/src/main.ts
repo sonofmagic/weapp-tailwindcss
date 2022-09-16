@@ -7,10 +7,10 @@ export function createApp () {
     created () {
       if (this.$scope) {
         // console.log(this.$scope)
-        const orginalOnLoad = this.$scope.onLoad
+        const originalOnLoad = this.$scope.onLoad
         this.$scope.onLoad = async (params:Record<string, any>) => {
           await bus.promise
-          orginalOnLoad.call(this, params)
+          originalOnLoad.call(this, params)
         }
       }
     }
