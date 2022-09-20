@@ -8,6 +8,10 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
 
   traverse(ast, {
     StringLiteral (path) {
+      // if (path.parent.type === 'BinaryExpression') {
+      //   return
+      // }
+      // ConditionalExpression
       path.node.value = replaceWxml(path.node.value, options)
     },
     noScope: true
@@ -20,9 +24,9 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
       quotes: 'single'
     }
   })
-  if (options.classGenerator) {
-    return ` ${code} `
-  }
+  // if (options.classGenerator) {
+  //   return ` ${code} `
+  // }
   return code
 }
 
@@ -58,7 +62,11 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       // 匹配后值
       if (m.raw.trim().length) {
         const code = generateCode(m.raw, options)
-        m.source = `{{${code}}}`
+        let source = `{{${code}}}`
+        if (options.classGenerator) {
+          source = ` ${source} `
+        }
+        m.source = source
       } else {
         m.source = ''
       }
@@ -76,7 +84,7 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       }
     }
 
-    return resultArray.filter((x) => x).join('')
+    return resultArray.filter((x) => x).join('').trim()
   } else {
     return replaceWxml(original, {
       keepEOL: false,
