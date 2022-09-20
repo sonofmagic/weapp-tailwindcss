@@ -3,12 +3,12 @@ import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
 import type { RawSource, ICommonReplaceOptions } from '@/types'
 
-export function generateCode (match: string) {
+export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match)
 
   traverse(ast, {
     StringLiteral (path) {
-      path.node.value = replaceWxml(path.node.value)
+      path.node.value = replaceWxml(path.node.value, options)
     },
     noScope: true
   })
@@ -20,6 +20,9 @@ export function generateCode (match: string) {
       quotes: 'single'
     }
   })
+  if (options.classGenerator) {
+    return ` ${code} `
+  }
   return code
 }
 
@@ -47,13 +50,14 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       // 匹配前值
       resultArray.push(
         replaceWxml(original.slice(p, m.start), {
-          keepEOL: true
+          keepEOL: true,
+          classGenerator: options.classGenerator
         })
       )
       p = m.start
       // 匹配后值
       if (m.raw.trim().length) {
-        const code = generateCode(m.raw)
+        const code = generateCode(m.raw, options)
         m.source = `{{${code}}}`
       } else {
         m.source = ''
@@ -65,7 +69,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       if (i === sources.length - 1) {
         resultArray.push(
           replaceWxml(original.slice(m.end), {
-            keepEOL: true
+            keepEOL: true,
+            classGenerator: options.classGenerator
           })
         )
       }
