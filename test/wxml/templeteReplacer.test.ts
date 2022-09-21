@@ -177,6 +177,18 @@ describe('templeteReplacer', () => {
     )
   })
 
+  // it.each(testTable)('%label class with string var', ({ mangle }) => {
+  //   const testCase = 'btn a{{num}}'
+  //   const str = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
+  //   expect(str).toBe(testCase)
+  // })
+
+  // it('classGenerator class with string var', () => {
+  //   const testCase = 'btn a{{num}}'
+  //   const str = templeteReplacer(testCase, { classGenerator })
+  //   expect(str).toBe(testCase)
+  // })
+
   // .shadow-\[0px_2px_11px_0px_rgba\(0\2c 0\2c 0\2c 0\.4\)\]
   it('arbitrary shadow values 0', () => {
     // 逗号 comma 的原因
@@ -197,5 +209,11 @@ describe('templeteReplacer', () => {
     const testCase = "before:content-['hello']"
     const result = templeteReplacer(testCase)
     expect(result).toBe('before_c_content-_bl__q_hello_q__br_')
+  })
+
+  it('two ConditionalExpression', () => {
+    const testCase = "btn a{{num >='p-[1]'?num==='q-[2]'?'x-[0]':'y-[1]':'z-[2]'}}"
+    const result = templeteReplacer(testCase)
+    expect(result).toBe("btn a{{num>='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
   })
 })

@@ -1,6 +1,8 @@
 <!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
 <view class="container">
+  <button class="btn a{{num}}" bindtap="onTap">{{num}}</button>
+  <button class="btn a{{num >='ppp'?num==='qqq'?'xxx':'yyy':'zzz'}}" bindtap="onTap">{{num}}</button>
   <van-button class="w-[200rpx] h-[50rpx]" type="primary">
     <view class="w-[100rpx] h-[25rpx] bg-[rgba(255,255,255,1)]">按钮</view>
   </van-button>
