@@ -128,12 +128,9 @@ describe('templeteReplacer', () => {
       'text-_l__h_123456_r_',
       b]}}`
     const result = templeteReplacer(testCase, {
-
       classGenerator
     })
-    expect(result).toBe(
-      "{{['flex','items-center','justify-center','h-_l_100px_r_','w-_l_100px_r_','rounded-_l_40px_r_','bg-_l__h_123456_r_','bg-opacity-_l_0-dot-54_r_','text-_l__h_ffffff_r_','data-v-1badc801','text-_l__h_123456_r_',b]}}"
-    )
+    expect(result).toBe("{{['a','b','c','d','e','f','g','h','i','j','k',b]}}")
   })
 
   it('variables with multiple literal', async () => {
@@ -141,7 +138,7 @@ describe('templeteReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
     )
   })
 
@@ -149,12 +146,9 @@ describe('templeteReplacer', () => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase, {
-
       classGenerator
     })
-    expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
-    )
+    expect(result).toBe("a b c d e {{active=='home'?'f':'g'}} h {{flag=='p-[20px]'?'i':'j'}} k")
   })
 
   it.each(testTable)('variables with multiple literal(2)', ({ mangle }) => {
@@ -162,7 +156,7 @@ describe('templeteReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
     )
   })
 

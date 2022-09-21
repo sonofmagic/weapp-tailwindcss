@@ -8,9 +8,13 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
 
   traverse(ast, {
     StringLiteral (path) {
-      // if (path.parent.type === 'BinaryExpression') {
-      //   return
-      // }
+      // parentPath maybe null
+      if (path.parent.type === 'BinaryExpression') {
+        if (path.parentPath?.parent.type === 'ConditionalExpression') {
+          return
+        }
+        // || path.parentPath?.parent.type === 'ExpressionStatement'
+      }
       // ConditionalExpression
       path.node.value = replaceWxml(path.node.value, options)
     },
@@ -84,7 +88,10 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       }
     }
 
-    return resultArray.filter((x) => x).join('').trim()
+    return resultArray
+      .filter((x) => x)
+      .join('')
+      .trim()
   } else {
     return replaceWxml(original, {
       keepEOL: false,

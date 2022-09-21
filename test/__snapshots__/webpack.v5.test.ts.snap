@@ -187,9 +187,9 @@ view,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -641,9 +641,9 @@ view,::before,::after {
     </view>
   </view>
   <view class="la">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="ma na ha text-white oa pa qa">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="ma na oa pa qa {{active=='home'?'ra':'sa'}}  {{b}}  {{a==='ta'}} ua {{flag=='p-[20px]'?'g':'va'}}"></view>
+  <button class="wa xa ha text-white ya za _a">...</button>
+  <view class="ma na oa pa qa {{active=='home'?'ra':'sa'}}  {{b}}  {{a==='ta'}} ua {{flag=='p-[20px]'?'g':'va'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -871,9 +871,9 @@ view,::before,::after {
     </view>
   </view>
   <view class="ra">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="sa ta ma oa ua va wa">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="sa ta ua va wa {{active=='home'?'xa':'ya'}}  {{b}}  {{a==='za'}} _a {{flag=='p-[20px]'?'g':'ab'}}"></view>
+  <button class="bb cb ma oa db eb fb">...</button>
+  <view class="sa ta ua va wa {{active=='home'?'xa':'ya'}}  {{b}}  {{a==='za'}} _a {{flag=='p-[20px]'?'g':'ab'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
