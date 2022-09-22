@@ -9,6 +9,13 @@
         <view>view</view>
         <view>view</view>
       </view>
+      <view class="child-['.child']:text-red-500 child:inline-block child:mr-2">
+        <view class="not-child">not-child view</view>
+        <view class="child">view</view>
+        <text>text</text>
+        <view>view</view>
+        <view>view</view>
+      </view>
     </view>
     <view class="p-4">
       <view>child-text selector</view>
@@ -33,7 +40,9 @@
     <view class="p-4">
       <view>Sibling variant</view>
       <view>
+        <view>view</view>
         <view class="twin:text-green-500 before:content-['*']">twin:ring-white hover:twin:shadow</view>
+        <view>view</view>
         <view>view</view>
       </view>
       <!-- <view>
@@ -47,6 +56,18 @@
         <view>view</view>
       </view> -->
     </view>
+
+    <view class="p-4">
+      <view>Next variant</view>
+      <view>
+        <view>view</view>
+        <view class="next:text-green-500 before:content-['*']">twin:ring-white hover:twin:shadow</view>
+        <view class="next-view:text-yellow-500">view</view>
+        <view class="next-text:text-red-500">view</view>
+        <text>text</text>
+      </view>
+    </view>
+
   </view>
 </template>
 

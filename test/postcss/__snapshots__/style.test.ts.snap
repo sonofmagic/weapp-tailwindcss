@@ -15,7 +15,7 @@ exports[`styleHandler before,after content case 1`] = `
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 .after_c_content-_bl__dq__a__dq__br_::after {
-  --tw-content: \\"*\\";
+  --tw-content: "*";
   content: var(--tw-content);
 }
 .after_c_content-_bl__a__br_::after {
@@ -46,18 +46,18 @@ exports[`styleHandler css @media case 1`] = `
 `;
 
 exports[`styleHandler cssPreflightRange option all 1`] = `
-"::before,::after{--tw-content: \\"\\";}
+"::before,::after{--tw-content: "";}
 ::before,::after,view,:not(not){--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler cssPreflightRange option view 1`] = `
-"::before,::after{--tw-content: \\"\\";}
+"::before,::after{--tw-content: "";}
 ::before,::after,view{--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler main chunk build error 1`] = `
 "::before,::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 
 view,::before,::after {
@@ -302,7 +302,7 @@ view,::before,::after {
 
 exports[`styleHandler new option for customRuleCallback kbone 1`] = `
 "::before,::after {
-  --tw-content: \\"\\"}
+  --tw-content: ""}
 
 .h5-a,.h5-abbr,.h5-address,.h5-area,.h5-article,.h5-aside,.h5-audio,.h5-b,.h5-base,.h5-bdi,.h5-bdo,.h5-blockquote,.h5-big,.h5-body,.h5-br,.h5-button,.h5-canvas,.h5-caption,.h5-center,.h5-cite,.h5-code,.h5-col,.h5-colgroup,.h5-data,.h5-datalist,.h5-dd,.h5-del,.h5-dfn,.h5-dir,.h5-div,.h5-dl,.h5-dt,.h5-em,.h5-fieldset,.h5-figcaption,.h5-figure,.h5-footer,.h5-form,.h5-h1,.h5-h2,.h5-h3,.h5-h4,.h5-h5,.h5-h6,.h5-header,.h5-hgroup,.h5-hr,.h5-i,.h5-iframe,.h5-img,.h5-input,.h5-ins,.h5-kbd,.h5-label,.h5-legend,.h5-li,.h5-link,.h5-main,.h5-map,.h5-mark,.h5-menu,.h5-nav,.h5-ol,.h5-optgroup,.h5-option,.h5-output,.h5-p,.h5-param,.h5-pre,.h5-progress,.h5-q,.h5-s,.h5-samp,.h5-section,.h5-select,.h5-small,.h5-source,.h5-span,.h5-strong,.h5-sub,.h5-sup,.h5-table,.h5-tbody,.h5-td,.h5-textarea,.h5-tfoot,.h5-th,.h5-thead,.h5-time,.h5-title,.h5-tt,.h5-tr,.h5-track,.h5-u,.h5-ul,.h5-video,.h5-wbr,.h5-strike,.h5-details,.h5-summary,page,::after,::before,view {
   --tw-border-opacity: 1;
@@ -480,6 +480,6 @@ exports[`styleHandler new option for customRuleCallback kbone 1`] = `
 `;
 
 exports[`styleHandler tailwindcss v2 jit should append view selector 1`] = `
-"::before,::after{--tw-content: \\"\\";}
+"::before,::after{--tw-content: "";}
 ::before,::after,view{--tw-border-opacity: 1;}"
 `;

@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`webpack5 plugin common: assets 1`] = `
-Object {
+{
   "index.css": "::before,::after {
-    --tw-content: \\"\\"}
+    --tw-content: ""}
 view,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -147,68 +147,68 @@ view,::before,::after {
     --tw-backdrop-sepia:  
 }",
   "index.wxml": "<!-- index.wxml -->
-<import src=\\"../../wxml/motto/motto.wxml\\" />
-<view class=\\"container\\">
-  <view bindtap=\\"bindViewTap\\">
-    <user avatarUrl=\\"{{userInfo.avatarUrl}}\\" nickName=\\"{{userInfo.nickName}}\\"></user>
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
   </view>
-  <view class=\\"motto\\">
-    <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
+  <view class="motto">
+    <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class=\\"powered h-_bl_200_p__br_\\">
+  <view class="powered h-_bl_200_p__br_">
     <text>{{powered.by}}</text>
   </view>
-  <view class=\\"-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_\\">
+  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class=\\"space-y-_bl_1_d_6rem_br_\\">
-    <view class=\\"w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_\\">
+  <view class="space-y-_bl_1_d_6rem_br_">
+    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class=\\"max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_\\">
+    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class=\\"min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_\\">
+    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class=\\"flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_\\">
+    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
       Hello
     </view>
-    <view class=\\"border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_\\">
+    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class=\\"grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_\\">
+    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
     </view>
-    <view class=\\"w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300\\">
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
       Default
     </view>
   </view>
-  <view class=\\"test\\">test</view>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
-  <button class=\\"bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3\\">...</button>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
- * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
  * This devtool is neither made for production nor for readable output files.
- * It uses \\"eval()\\" calls to create a separate source file in the browser devtools.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
  * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with \\"devtool: false\\".
- * If you are looking for production-ready output files, see mode: \\"production\\" (https://webpack.js.org/configuration/mode/).
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ \\"./test/fixtures/webpack/v5/wxml/pages/index.js\\":
-/*!******************************************************!*\\\\
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-  \\\\******************************************************/
+  \\******************************************************/
 /***/ (() => {
 
-eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?\\");
+eval("\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -219,19 +219,19 @@ eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./tes
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__[\\"./test/fixtures/webpack/v5/wxml/pages/index.js\\"]();
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
 /******/ 	
 /******/ })()
 ;",
 }
 `;
 
-exports[`webpack5 plugin common: errors 1`] = `Array []`;
+exports[`webpack5 plugin common: errors 1`] = `[]`;
 
-exports[`webpack5 plugin common: warnings 1`] = `Array []`;
+exports[`webpack5 plugin common: warnings 1`] = `[]`;
 
 exports[`webpack5 plugin disabled true: assets 1`] = `
-Object {
+{
   "index.css": "*, ::before, ::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -371,68 +371,68 @@ Object {
     --tw-backdrop-sepia:  
 }",
   "index.wxml": "<!-- index.wxml -->
-<import src=\\"../../wxml/motto/motto.wxml\\" />
-<view class=\\"container\\">
-  <view bindtap=\\"bindViewTap\\">
-    <user avatarUrl=\\"{{userInfo.avatarUrl}}\\" nickName=\\"{{userInfo.nickName}}\\"></user>
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
   </view>
-  <view class=\\"motto\\">
-    <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
+  <view class="motto">
+    <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class=\\"powered h-[200%]\\">
+  <view class="powered h-[200%]">
     <text>{{powered.by}}</text>
   </view>
-  <view class=\\"-mt-2 mb-[-20px] p-[20px]\\">
+  <view class="-mt-2 mb-[-20px] p-[20px]">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class=\\"space-y-[1.6rem]\\">
-    <view class=\\"w-[300rpx] text-black text-opacity-[0.19]\\">
+  <view class="space-y-[1.6rem]">
+    <view class="w-[300rpx] text-black text-opacity-[0.19]">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class=\\"max-h-[100px] min-w-[300rpx] text-[20px] leading-[0.9]\\">
+    <view class="max-h-[100px] min-w-[300rpx] text-[20px] leading-[0.9]">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class=\\"min-h-[100px] max-w-[300rpx] text-[#dddddd]\\">
+    <view class="min-h-[100px] max-w-[300rpx] text-[#dddddd]">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class=\\"flex h-[100px] w-[100px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]\\">
+    <view class="flex h-[100px] w-[100px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">
       Hello
     </view>
-    <view class=\\"border-[10px] border-solid border-[#098765] border-opacity-[0.44]\\">
+    <view class="border-[10px] border-solid border-[#098765] border-opacity-[0.44]">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class=\\"grid grid-cols-3 divide-x-[10px] divide-solid divide-[#010101]\\">
+    <view class="grid grid-cols-3 divide-x-[10px] divide-solid divide-[#010101]">
       <div>1</div>
       <div>2</div>
       <div>3</div>
     </view>
-    <view class=\\"w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300\\">
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
       Default
     </view>
   </view>
-  <view class=\\"test\\">test</view>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-[20px]'?'p-[20px]':'m-[20px]'}}\\"></view>
-  <button class=\\"bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3\\">...</button>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}\\"></view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-[20px]'?'p-[20px]':'m-[20px]'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
- * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
  * This devtool is neither made for production nor for readable output files.
- * It uses \\"eval()\\" calls to create a separate source file in the browser devtools.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
  * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with \\"devtool: false\\".
- * If you are looking for production-ready output files, see mode: \\"production\\" (https://webpack.js.org/configuration/mode/).
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ \\"./test/fixtures/webpack/v5/wxml/pages/index.js\\":
-/*!******************************************************!*\\\\
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-  \\\\******************************************************/
+  \\******************************************************/
 /***/ (() => {
 
-eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?\\");
+eval("\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -443,21 +443,21 @@ eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./tes
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__[\\"./test/fixtures/webpack/v5/wxml/pages/index.js\\"]();
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
 /******/ 	
 /******/ })()
 ;",
 }
 `;
 
-exports[`webpack5 plugin disabled true: errors 1`] = `Array []`;
+exports[`webpack5 plugin disabled true: errors 1`] = `[]`;
 
-exports[`webpack5 plugin disabled true: warnings 1`] = `Array []`;
+exports[`webpack5 plugin disabled true: warnings 1`] = `[]`;
 
 exports[`webpack5 plugin mangle options: assets 1`] = `
-Object {
+{
   "index.css": "::before,::after {
-    --tw-content: \\"\\"}
+    --tw-content: ""}
 view,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -601,68 +601,68 @@ view,::before,::after {
     --tw-backdrop-sepia:  
 }",
   "index.wxml": "<!-- index.wxml -->
-<import src=\\"../../wxml/motto/motto.wxml\\" />
-<view class=\\"a\\">
-  <view bindtap=\\"bindViewTap\\">
-    <user avatarUrl=\\"{{userInfo.avatarUrl}}\\" nickName=\\"{{userInfo.nickName}}\\"></user>
+<import src="../../wxml/motto/motto.wxml" />
+<view class="a">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
   </view>
-  <view class=\\"b\\">
-    <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
+  <view class="b">
+    <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class=\\"c d\\">
+  <view class="c d">
     <text>{{powered.by}}</text>
   </view>
-  <view class=\\"e f g\\">
+  <view class="e f g">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class=\\"h\\">
-    <view class=\\"i text-black text-opacity-_bl_0_d_19_br_\\">
+  <view class="h">
+    <view class="i text-black text-opacity-_bl_0_d_19_br_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class=\\"j k text-_bl_20px_br_ l\\">
+    <view class="j k text-_bl_20px_br_ l">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class=\\"m n text-_bl__h_dddddd_br_\\">
+    <view class="m n text-_bl__h_dddddd_br_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class=\\"o p q r s t u v text-_bl__h_ffffff_br_\\">
+    <view class="o p q r s t u v text-_bl__h_ffffff_br_">
       Hello
     </view>
-    <view class=\\"w x y z\\">
+    <view class="w x y z">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class=\\"_ aa ba ca da\\">
+    <view class="_ aa ba ca da">
       <div>1</div>
       <div>2</div>
       <div>3</div>
     </view>
-    <view class=\\"ea fa ga ha ia text-white ja ka\\">
+    <view class="ea fa ga ha ia text-white ja ka">
       Default
     </view>
   </view>
-  <view class=\\"la\\">test</view>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
-  <button class=\\"ma na ha text-white oa pa qa\\">...</button>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
+  <view class="la">test</view>
+  <view class="ma na oa pa qa {{active=='home'?'ra':'sa'}}  {{b}}  {{a==='ta'}} ua {{flag=='p-[20px]'?'g':'va'}}"></view>
+  <button class="wa xa ha text-white ya za _a">...</button>
+  <view class="ma na oa pa qa {{active=='home'?'ra':'sa'}}  {{b}}  {{a==='ta'}} ua {{flag=='p-[20px]'?'g':'va'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
- * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
  * This devtool is neither made for production nor for readable output files.
- * It uses \\"eval()\\" calls to create a separate source file in the browser devtools.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
  * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with \\"devtool: false\\".
- * If you are looking for production-ready output files, see mode: \\"production\\" (https://webpack.js.org/configuration/mode/).
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ \\"./test/fixtures/webpack/v5/wxml/pages/index.js\\":
-/*!******************************************************!*\\\\
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-  \\\\******************************************************/
+  \\******************************************************/
 /***/ (() => {
 
-eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?\\");
+eval("\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -673,21 +673,21 @@ eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./tes
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__[\\"./test/fixtures/webpack/v5/wxml/pages/index.js\\"]();
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
 /******/ 	
 /******/ })()
 ;",
 }
 `;
 
-exports[`webpack5 plugin mangle options: errors 1`] = `Array []`;
+exports[`webpack5 plugin mangle options: errors 1`] = `[]`;
 
-exports[`webpack5 plugin mangle options: warnings 1`] = `Array []`;
+exports[`webpack5 plugin mangle options: warnings 1`] = `[]`;
 
 exports[`webpack5 plugin mangle true: assets 1`] = `
-Object {
+{
   "index.css": "::before,::after {
-    --tw-content: \\"\\"}
+    --tw-content: ""}
 view,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -831,68 +831,68 @@ view,::before,::after {
     --tw-backdrop-sepia:  
 }",
   "index.wxml": "<!-- index.wxml -->
-<import src=\\"../../wxml/motto/motto.wxml\\" />
-<view class=\\"a\\">
-  <view bindtap=\\"bindViewTap\\">
-    <user avatarUrl=\\"{{userInfo.avatarUrl}}\\" nickName=\\"{{userInfo.nickName}}\\"></user>
+<import src="../../wxml/motto/motto.wxml" />
+<view class="a">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
   </view>
-  <view class=\\"b\\">
-    <template is=\\"motto\\" data=\\"{{motto:motto}}\\" />
+  <view class="b">
+    <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class=\\"c d\\">
+  <view class="c d">
     <text>{{powered.by}}</text>
   </view>
-  <view class=\\"e f g\\">
+  <view class="e f g">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class=\\"h\\">
-    <view class=\\"i j k\\">
+  <view class="h">
+    <view class="i j k">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class=\\"l m n o\\">
+    <view class="l m n o">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class=\\"p q r\\">
+    <view class="p q r">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class=\\"s t u v w x y z _\\">
+    <view class="s t u v w x y z _">
       Hello
     </view>
-    <view class=\\"aa ba ca da\\">
+    <view class="aa ba ca da">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class=\\"ea fa ga ha ia\\">
+    <view class="ea fa ga ha ia">
       <div>1</div>
       <div>2</div>
       <div>3</div>
     </view>
-    <view class=\\"ja ka la ma na oa pa qa\\">
+    <view class="ja ka la ma na oa pa qa">
       Default
     </view>
   </view>
-  <view class=\\"ra\\">test</view>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
-  <button class=\\"sa ta ma oa ua va wa\\">...</button>
-  <view class=\\"border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}\\"></view>
+  <view class="ra">test</view>
+  <view class="sa ta ua va wa {{active=='home'?'xa':'ya'}}  {{b}}  {{a==='za'}} _a {{flag=='p-[20px]'?'g':'ab'}}"></view>
+  <button class="bb cb ma oa db eb fb">...</button>
+  <view class="sa ta ua va wa {{active=='home'?'xa':'ya'}}  {{b}}  {{a==='za'}} _a {{flag=='p-[20px]'?'g':'ab'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
- * ATTENTION: The \\"eval\\" devtool has been used (maybe by default in mode: \\"development\\").
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
  * This devtool is neither made for production nor for readable output files.
- * It uses \\"eval()\\" calls to create a separate source file in the browser devtools.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
  * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with \\"devtool: false\\".
- * If you are looking for production-ready output files, see mode: \\"production\\" (https://webpack.js.org/configuration/mode/).
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ \\"./test/fixtures/webpack/v5/wxml/pages/index.js\\":
-/*!******************************************************!*\\\\
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-  \\\\******************************************************/
+  \\******************************************************/
 /***/ (() => {
 
-eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?\\");
+eval("\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -903,13 +903,13 @@ eval(\\"\\\\n\\\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./tes
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__[\\"./test/fixtures/webpack/v5/wxml/pages/index.js\\"]();
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
 /******/ 	
 /******/ })()
 ;",
 }
 `;
 
-exports[`webpack5 plugin mangle true: errors 1`] = `Array []`;
+exports[`webpack5 plugin mangle true: errors 1`] = `[]`;
 
-exports[`webpack5 plugin mangle true: warnings 1`] = `Array []`;
+exports[`webpack5 plugin mangle true: warnings 1`] = `[]`;

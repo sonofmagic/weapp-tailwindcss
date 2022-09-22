@@ -3,12 +3,20 @@ import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
 import type { RawSource, ICommonReplaceOptions } from '@/types'
 
-export function generateCode (match: string) {
+export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match)
 
   traverse(ast, {
     StringLiteral (path) {
-      path.node.value = replaceWxml(path.node.value)
+      // parentPath maybe null
+      if (path.parent.type === 'BinaryExpression') {
+        if (path.parentPath?.parent.type === 'ConditionalExpression') {
+          return
+        }
+        // || path.parentPath?.parent.type === 'ExpressionStatement'
+      }
+      // ConditionalExpression
+      path.node.value = replaceWxml(path.node.value, options)
     },
     noScope: true
   })
@@ -20,6 +28,9 @@ export function generateCode (match: string) {
       quotes: 'single'
     }
   })
+  // if (options.classGenerator) {
+  //   return ` ${code} `
+  // }
   return code
 }
 
@@ -47,14 +58,19 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       // 匹配前值
       resultArray.push(
         replaceWxml(original.slice(p, m.start), {
-          keepEOL: true
+          keepEOL: true,
+          classGenerator: options.classGenerator
         })
       )
       p = m.start
       // 匹配后值
       if (m.raw.trim().length) {
-        const code = generateCode(m.raw)
-        m.source = `{{${code}}}`
+        const code = generateCode(m.raw, options)
+        let source = `{{${code}}}`
+        if (options.classGenerator) {
+          source = ` ${source} `
+        }
+        m.source = source
       } else {
         m.source = ''
       }
@@ -65,13 +81,17 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       if (i === sources.length - 1) {
         resultArray.push(
           replaceWxml(original.slice(m.end), {
-            keepEOL: true
+            keepEOL: true,
+            classGenerator: options.classGenerator
           })
         )
       }
     }
 
-    return resultArray.filter((x) => x).join('')
+    return resultArray
+      .filter((x) => x)
+      .join('')
+      .trim()
   } else {
     return replaceWxml(original, {
       keepEOL: false,

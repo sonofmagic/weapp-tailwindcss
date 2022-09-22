@@ -8,29 +8,36 @@ const aliasList = Object.entries({
   // https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_combinator
   '+': ['next']
 })
-const fallbackElementTag = 'view'
+const fallbackElementTags = ['view', 'text']
 // const placeholderElements = ['view'] // , 'text'
 // https://developers.weixin.qq.com/miniprogram/dev/component/cover-image.html
 const elements = [
   // general selector
   '',
-  fallbackElementTag,
-  'text'
+  ...fallbackElementTags
 ]
 // .child_c_text-red-500>view:not(.not-child),text:not(.not-child)
 const variants = elements.map((element) => {
   return aliasList.map(([selector, aliases]) => {
     return aliases.map((alias) => {
       const variant = alias + (element ? `-${element}` : '')
-      const base = ['&']
-      selector && base.push(selector)
-      base.push(`${element || fallbackElementTag}:not(.not-${variant})`)
-      // const added = {
-      //   '~': `&:not(.not-${variant})`,
-      //   ' ': `& ${selector}` + ` ${placeholderElements.map((x) => `${x}:not(.not-${variant}) ${element}`).join(',')}`
-      // }[selector]
+      const multiple = []
+      if (element) {
+        const base = ['&']
+        selector !== ' ' && base.push(selector)
+        base.push(`${element}:not(.not-${variant})`)
+        multiple.push(base.join(' '))
+      } else {
+        for (let i = 0; i < fallbackElementTags.length; i++) {
+          const e = fallbackElementTags[i]
+          const base = ['&']
+          selector !== ' ' && base.push(selector)
+          base.push(`${e}:not(.not-${variant})`)
+          multiple.push(base.join(' '))
+        }
+      }
 
-      return [variant, base.join(' ')] // added ? [base, added] : base]
+      return [variant, multiple]
     })
   })
 })

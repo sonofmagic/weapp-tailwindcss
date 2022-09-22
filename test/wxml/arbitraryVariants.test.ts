@@ -1,6 +1,6 @@
 import { templeteHandler } from '@/wxml/index'
 // import { format } from '../util'
-
+// https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants
 describe('arbitrary variants', () => {
   test('[&:nth-child(3)]:underline', () => {
     const res = templeteHandler('<li class="[&:nth-child(3)]:underline">{item}</li>')

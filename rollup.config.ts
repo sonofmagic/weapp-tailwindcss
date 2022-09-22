@@ -8,7 +8,7 @@ import pkg from './package.json'
 import type { RollupOptions } from 'rollup'
 import { omit } from 'lodash'
 
-// const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 
 interface IEntry {
@@ -26,10 +26,12 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       }),
       commonjs(),
       typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false }),
-      visualizer({
-        // emitFile: true,
-        filename: `stats/${entry.name}.html`
-      })
+      isProd
+        ? visualizer({
+          // emitFile: true,
+          filename: `stats/${entry.name}.html`
+        })
+        : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
   }

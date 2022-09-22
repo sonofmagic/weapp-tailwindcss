@@ -149,13 +149,13 @@ exports[`postcss plugin base utilities output 1`] = `
 .w-10 {
     width: 2.5rem
 }
-.bg-\\\\[rgba\\\\(255\\\\2c 254\\\\2c 253\\\\2c \\\\.5\\\\)\\\\] {
+.bg-\\[rgba\\(255\\2c 254\\2c 253\\2c \\.5\\)\\] {
     background-color: rgba(255,254,253,.5)
 }"
 `;
 
 exports[`postcss plugin before:content-['+'] 1`] = `
-".before\\\\:content-\\\\[\\\\'\\\\+\\\\'\\\\]::before {
+".before\\:content-\\[\\'\\+\\'\\]::before {
     --tw-content: '+';
     content: var(--tw-content)
 }"

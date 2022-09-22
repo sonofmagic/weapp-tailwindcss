@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`arbitrary properties [--scroll-offset:56px] lg:[--scroll-offset:44px] 1`] = `
-"<div class=\\"_bl_--scroll-offset_c_56px_br_ lg_c__bl_--scroll-offset_c_44px_br_\\">
+"<div class="_bl_--scroll-offset_c_56px_br_ lg_c__bl_--scroll-offset_c_44px_br_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`arbitrary properties [mask-type:luminance] 1`] = `
-"<div class=\\"_bl_mask-type_c_luminance_br_\\">
+"<div class="_bl_mask-type_c_luminance_br_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`arbitrary properties [mask-type:luminance] hover:[mask-type:alpha] 1`] = `
-"<div class=\\"_bl_mask-type_c_luminance_br_ hover_c__bl_mask-type_c_alpha_br_\\">
+"<div class="_bl_mask-type_c_luminance_br_ hover_c__bl_mask-type_c_alpha_br_">
       <!-- ... -->
     </div>"
 `;

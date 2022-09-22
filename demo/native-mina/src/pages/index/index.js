@@ -13,8 +13,13 @@ Page({
     b: 'ctx',
     a: 'cc',
     className: replaceJs('bg-[#123456]'),
+    num: 0,
   },
-
+  onTap() {
+    this.setData({
+      num: this.data.num + 1,
+    })
+  },
   //事件处理函数
   bindViewTap: function () {
     wx.navigateTo({
@@ -56,5 +61,8 @@ Page({
       userInfo: e.detail.userInfo,
       hasUserInfo: true,
     })
+  },
+  onLoad() {
+    console.log('Page load!')
   },
 })

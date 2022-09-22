@@ -128,12 +128,9 @@ describe('templeteReplacer', () => {
       'text-_l__h_123456_r_',
       b]}}`
     const result = templeteReplacer(testCase, {
-
       classGenerator
     })
-    expect(result).toBe(
-      "{{['flex','items-center','justify-center','h-_l_100px_r_','w-_l_100px_r_','rounded-_l_40px_r_','bg-_l__h_123456_r_','bg-opacity-_l_0-dot-54_r_','text-_l__h_ffffff_r_','data-v-1badc801','text-_l__h_123456_r_',b]}}"
-    )
+    expect(result).toBe("{{['a','b','c','d','e','f','g','h','i','j','k',b]}}")
   })
 
   it('variables with multiple literal', async () => {
@@ -141,7 +138,7 @@ describe('templeteReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
     )
   })
 
@@ -149,12 +146,9 @@ describe('templeteReplacer', () => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = templeteReplacer(testCase, {
-
       classGenerator
     })
-    expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
-    )
+    expect(result).toBe("a b c d e {{active=='home'?'f':'g'}} h {{flag=='p-[20px]'?'i':'j'}} k")
   })
 
   it.each(testTable)('variables with multiple literal(2)', ({ mangle }) => {
@@ -162,7 +156,7 @@ describe('templeteReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
     )
   })
 
@@ -182,6 +176,18 @@ describe('templeteReplacer', () => {
       "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
     )
   })
+
+  // it.each(testTable)('%label class with string var', ({ mangle }) => {
+  //   const testCase = 'btn a{{num}}'
+  //   const str = templeteReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
+  //   expect(str).toBe(testCase)
+  // })
+
+  // it('classGenerator class with string var', () => {
+  //   const testCase = 'btn a{{num}}'
+  //   const str = templeteReplacer(testCase, { classGenerator })
+  //   expect(str).toBe(testCase)
+  // })
 
   // .shadow-\[0px_2px_11px_0px_rgba\(0\2c 0\2c 0\2c 0\.4\)\]
   it('arbitrary shadow values 0', () => {
@@ -203,5 +209,11 @@ describe('templeteReplacer', () => {
     const testCase = "before:content-['hello']"
     const result = templeteReplacer(testCase)
     expect(result).toBe('before_c_content-_bl__q_hello_q__br_')
+  })
+
+  it('two ConditionalExpression', () => {
+    const testCase = "btn a{{num >='p-[1]'?num==='q-[2]'?'x-[0]':'y-[1]':'z-[2]'}}"
+    const result = templeteReplacer(testCase)
+    expect(result).toBe("btn a{{num>='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
   })
 })

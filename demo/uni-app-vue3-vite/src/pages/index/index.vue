@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
 import { ref, onBeforeUnmount } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 const title = ref('测试标题');
 const flag = ref(true);
 
@@ -86,6 +87,9 @@ uni.onThemeChange(({ theme }: { theme: 'dark' | 'light' }) => {
 onBeforeUnmount(() => {
   uni.offThemeChange(() => { });
 });
+onLoad(() => {
+  console.log('on page loaded!')
+})
 </script>
 
 <style lang="scss">

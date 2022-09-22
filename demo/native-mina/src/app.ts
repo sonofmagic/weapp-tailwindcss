@@ -1,19 +1,33 @@
 //app.js
 
-import { range } from 'rxjs'
-import { map, filter } from 'rxjs/operators'
+// import { range } from 'rxjs'
+// import { map, filter } from 'rxjs/operators'
+import bus from './bus'
 //import { camelCase } from 'lodash'
 //import dayjs from 'dayjs'
 
-range(1, 200)
-  .pipe(
-    filter(x => x % 2 === 1),
-    map(x => x + x),
-  )
-  .subscribe(x => console.log(x))
+// range(1, 200)
+//   .pipe(
+//     filter(x => x % 2 === 1),
+//     map(x => x + x),
+//   )
+//   .subscribe(x => console.log(x))
+// typeof Page
+
+const nativePage = Page
+Page = function (options: Parameters<typeof Page>[0]) {
+  if (options.onLoad && typeof options.onLoad === 'function') {
+    const originalOnLoad = options.onLoad
+    options.onLoad = async function (params: Record<string, any>) {
+      await bus.promise
+      originalOnLoad.call(this, params)
+    }
+  }
+  nativePage(options)
+}
 
 App({
-  onLaunch: function() {
+  onLaunch: function () {
     console.log(`环境：${process.env.NODE_ENV} 构建类型：${process.env.BUILD_TYPE}`)
 
     console.log('-----------------------------------------------')
@@ -52,6 +66,13 @@ App({
           })
         }
       },
+    })
+
+    bus.promise = new Promise(resolve => {
+      setTimeout(() => {
+        console.log('App Launch and get token')
+        resolve(undefined)
+      }, 1000)
     })
   },
   globalData: {

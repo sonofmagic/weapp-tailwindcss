@@ -102,4 +102,10 @@ describe('templeteHandler', () => {
       )
     )
   })
+
+  it('class with string var', () => {
+    const testCase = '<button class="btn a{{num}}" bindtap="onTap">{{num}}</button>'
+    const str = templeteHandler(testCase)
+    expect(str).toBe(testCase)
+  })
 })
