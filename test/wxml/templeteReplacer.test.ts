@@ -183,11 +183,19 @@ describe('templeteReplacer', () => {
   //   expect(str).toBe(testCase)
   // })
 
-  // it('classGenerator class with string var', () => {
-  //   const testCase = 'btn a{{num}}'
-  //   const str = templeteReplacer(testCase, { classGenerator })
-  //   expect(str).toBe(testCase)
-  // })
+  it('classGenerator class with string var', () => {
+    const testCase = 'btn-%1 a[p-1]{{num}}'
+    // classGenerator
+    const str = templeteReplacer(testCase, {})
+    expect(str).toBe('btn-_p_1 a_bl_p-1_br_{{num}}')
+  })
+
+  it('classGenerator class with string var', () => {
+    const testCase = 'btn-%1 abcdefg{{num}}'
+    // classGenerator
+    const str = templeteReplacer(testCase, { classGenerator })
+    expect(str).toBe('a b{{num}}')
+  })
 
   // .shadow-\[0px_2px_11px_0px_rgba\(0\2c 0\2c 0\2c 0\.4\)\]
   it('arbitrary shadow values 0', () => {
