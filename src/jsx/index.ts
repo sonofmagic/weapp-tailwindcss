@@ -17,3 +17,31 @@ export function jsxHandler (rawSource: string, replacer: ASTReplacer) {
 
   return generate(ast)
 }
+
+export function newJsxHandler (rawSource: string) {
+  const ast = parse(rawSource, {
+    sourceType: 'unambiguous'
+  })
+  // TODO
+  let startFlag = false
+  traverse(ast, {
+    ObjectProperty: {
+      enter (path, state) {
+        startFlag = false
+      },
+      exit (path, state) {
+        startFlag = true
+      }
+    },
+    StringLiteral: {
+      enter (path, state) {
+        if (startFlag) {
+          console.log(path.node.value)
+        }
+      }
+    },
+    noScope: true
+  })
+
+  return generate(ast)
+}
