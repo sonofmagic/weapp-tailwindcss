@@ -1,5 +1,6 @@
 import { parse, traverse, generate } from '@/babel'
 import type { ASTReplacer } from './replacer'
+import { replaceWxml } from '@/wxml'
 
 export function jsxHandler (rawSource: string, replacer: ASTReplacer) {
   // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/53
@@ -22,21 +23,28 @@ export function newJsxHandler (rawSource: string) {
   const ast = parse(rawSource, {
     sourceType: 'unambiguous'
   })
+  // https://astexplorer.net/
   // TODO
   let startFlag = false
   traverse(ast, {
     ObjectProperty: {
-      enter (path, state) {
-        startFlag = false
+      enter (path) {
+        if (path.node.key.type === 'Identifier' && ['className', 'hoverClass', 'hoverClassName'].includes(path.node.key.name)) {
+          startFlag = true
+        }
       },
-      exit (path, state) {
-        startFlag = true
+      exit (path) {
+        if (path.node.key.type === 'Identifier' && ['className', 'hoverClass', 'hoverClassName'].includes(path.node.key.name)) {
+          startFlag = false
+        }
       }
     },
     StringLiteral: {
       enter (path, state) {
         if (startFlag) {
-          console.log(path.node.value)
+          path.node.value = replaceWxml(path.node.value, {
+            keepEOL: true
+          })
         }
       }
     },

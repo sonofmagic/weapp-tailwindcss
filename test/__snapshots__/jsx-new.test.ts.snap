@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jsxHandler multiple file no end issue 1`] = `
+"_jsx(View, {
+  className: "border-_bl_10px_br_ border-_bl__h_098765_br_ border-solid border-opacity-_bl_0_d_44_br_"
+});"
+`;
+
+exports[`jsxHandler multiple file no end issue 2`] = `
+"import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+import './index.scss';
+import { jsx as _jsx } from 'react/jsx-runtime';
+import { jsxs as _jsxs } from 'react/jsx-runtime';
+import { Fragment as _Fragment } from 'react/jsx-runtime';"
+`;
