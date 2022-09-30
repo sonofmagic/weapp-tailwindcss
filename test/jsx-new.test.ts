@@ -1,4 +1,4 @@
-import { newJsxHandler } from '@/jsx'
+import { newJsxHandler } from '@/jsx/v2'
 
 // import { jsxCasePath, createGetCase } from './util'
 
