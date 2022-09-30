@@ -1,6 +1,8 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type ClassGenerator from '@/mangle/classGenerator'
+import type { ASTReplacer } from '@/jsx/replacer'
+
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
 
 export interface IPropValue {
@@ -80,6 +82,7 @@ export interface UserDefinedOptions {
    */
   jsMatcher?: (name: string) => boolean
   /**
+   * @deprecated v2 版本中不再需要，会自动判断 CssMainChunk
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
@@ -156,4 +159,16 @@ export type InternalPostcssOptions = Pick<
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
   classGenerator?: ClassGenerator
+}
+
+export interface JsxRenameLoaderOptions {
+  replacer: ASTReplacer
+  framework?: string
+  isVue?: boolean
+  write?:
+    | boolean
+    | {
+        dir?: string
+        filename?: string
+      }
 }

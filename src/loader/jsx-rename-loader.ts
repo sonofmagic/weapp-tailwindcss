@@ -1,19 +1,14 @@
 import type * as webpack from 'webpack'
 import { getOptions } from 'loader-utils'
-import type { ASTReplacer } from '@/jsx/replacer'
+import type { JsxRenameLoaderOptions } from '@/types'
 import { jsxHandler } from '@/jsx/index'
 // "jsx", "flow", "typescript"
-export interface LoaderOptions {
-  replacer: ASTReplacer
-  framework?: string
-  isVue?: boolean
-}
 
-export default function loader (this: webpack.LoaderContext<LoaderOptions>, content: string) {
+export default function loader (this: webpack.LoaderContext<JsxRenameLoaderOptions>, content: string) {
   this.cacheable && this.cacheable()
 
   // @ts-ignore
-  const config: LoaderOptions = getOptions(this)
+  const config: JsxRenameLoaderOptions = getOptions(this)
 
   const { code } = jsxHandler(content, config.replacer)
   return code
