@@ -55,7 +55,10 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   onEnd: noop,
   onUpdate: noop,
   mangle: false,
-  framework: 'react'
+  framework: 'react',
+  loaderOptions: {
+    jsxRename: false
+  }
 
   // onBeforeUpdate: noop
 }

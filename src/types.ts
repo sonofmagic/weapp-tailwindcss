@@ -47,6 +47,18 @@ export interface IMangleContextClass {
   usedBy: any[]
 }
 
+export interface JsxRenameLoaderOptions {
+  replacer: ASTReplacer
+  framework?: string
+  isVue?: boolean
+  write?:
+    | false
+    | {
+        dir?: string
+        filename?: string
+      }
+}
+
 export interface IMangleOptions {
   // classNameRegExp?: string
   reserveClassName?: (string | RegExp)[]
@@ -145,6 +157,10 @@ export interface UserDefinedOptions {
    * @description Taro 特有，用来声明使用的框架
    */
   framework?: 'react' | 'vue' | 'vue3' | string
+
+  loaderOptions?: {
+    jsxRename?: JsxRenameLoaderOptions['write']
+  }
 }
 
 export type InternalPostcssOptions = Pick<
@@ -159,16 +175,4 @@ export type InternalPostcssOptions = Pick<
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
   classGenerator?: ClassGenerator
-}
-
-export interface JsxRenameLoaderOptions {
-  replacer: ASTReplacer
-  framework?: string
-  isVue?: boolean
-  write?:
-    | boolean
-    | {
-        dir?: string
-        filename?: string
-      }
 }

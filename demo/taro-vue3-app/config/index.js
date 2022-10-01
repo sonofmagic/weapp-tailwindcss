@@ -1,5 +1,7 @@
 let TaroWeappTailwindcssWebpackPluginV4
-if (process.env.LOCAL) {
+const path = require('path')
+const isLocal = process.env.LOCAL
+if (isLocal) {
   console.log('use local built webpack plugin')
   const { TaroWeappTailwindcssWebpackPluginV4: plugin } = require('../../../')
   TaroWeappTailwindcssWebpackPluginV4 = plugin
@@ -47,15 +49,21 @@ const config = {
       }
     },
     webpackChain(chain, webpack) {
+      const opt = {
+        framework: 'vue3'
+      }
+      if (isLocal) {
+        opt.loaderOptions = {
+          jsxRename: {
+            dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-vue3-app')
+          }
+        }
+      }
       chain.merge({
         plugin: {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV4,
-            args: [
-              {
-                framework: 'vue3'
-              }
-            ]
+            args: [opt]
           }
         }
       })

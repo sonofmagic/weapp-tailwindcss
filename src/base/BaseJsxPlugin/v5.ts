@@ -41,7 +41,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
       onUpdate,
       onEnd,
       onStart,
-      mangle
+      mangle,
+      loaderOptions
     } = this.options
     if (disabled) {
       return
@@ -58,28 +59,27 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     const loader = path.resolve(__dirname, `${NS}.js`)
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      if (isReact) {
-        NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
-          if (jsMatcher(module.resource)) {
-            let classGenerator
-            if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
-              classGenerator = this.classGenerator
-            }
-            const replacer = createReplacer(framework, { classGenerator })
-            const rule = {
-              loader,
-              options: {
-                framework,
-                replacer
-              },
-              ident: null,
-              type: null
-            }
-
-            module.loaders.unshift(rule)
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+        if (jsMatcher(module.resource)) {
+          let classGenerator
+          if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
+            classGenerator = this.classGenerator
           }
-        })
-      }
+          const replacer = createReplacer(framework, { classGenerator })
+          const rule = {
+            loader,
+            options: {
+              framework,
+              replacer,
+              write: loaderOptions.jsxRename
+            },
+            ident: null,
+            type: null
+          }
+
+          module.loaders.unshift(rule)
+        }
+      })
 
       compilation.hooks.processAssets.tap(
         {

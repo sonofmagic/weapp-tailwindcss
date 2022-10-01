@@ -9,7 +9,8 @@ export function isSpecNode (node: Node) {
 export function reactMatcher (node: UserMatchNode) {
   // rax ->class and className, taro 为 hoverClass remax 为 hoverClassName
   //  node.key.name === 'class' || node.key.name === 'className' || node.key.name === 'hoverClass' || node.key.name === 'hover-class' || node.key.name === 'hoverClassName'
-  return ['className', 'hoverClass', 'hoverClassName'].includes(node.key.name)
+  // react jsx and vue jsx
+  return ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'].includes(node.key.name)
 }
 
 export function vue2Matcher (node: UserMatchNode): [boolean, UserMatchNode] {

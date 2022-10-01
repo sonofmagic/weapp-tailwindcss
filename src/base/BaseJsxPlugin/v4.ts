@@ -39,7 +39,8 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
       onUpdate,
       onEnd,
       onStart,
-      mangle
+      mangle,
+      loaderOptions
     } = this.options
     if (disabled) {
       return
@@ -52,34 +53,34 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
     const isReact = framework === 'react'
     const loader = path.resolve(__dirname, `${NS}.js`)
     onLoad()
-    if (isReact) {
-      // @ts-ignore
-      compiler.hooks.compilation.tap(pluginName, (compilation) => {
-        // @ts-ignore
-        compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
-          // loaderContext[NS] = true
-          if (jsMatcher(module.resource)) {
-            let classGenerator
-            if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
-              classGenerator = this.classGenerator
-            }
-            // default react
-            const replacer = createReplacer(framework, {
-              classGenerator
-            })
-            const rule = {
-              loader, // Path to loader
-              options: {
-                framework,
-                replacer
-              }
-            }
 
-            module.loaders.unshift(rule)
+    // @ts-ignore
+    compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      // @ts-ignore
+      compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
+        // loaderContext[NS] = true
+        if (jsMatcher(module.resource)) {
+          let classGenerator
+          if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
+            classGenerator = this.classGenerator
           }
-        })
+          // default react
+          const replacer = createReplacer(framework, {
+            classGenerator
+          })
+          const rule = {
+            loader, // Path to loader
+            options: {
+              framework,
+              replacer,
+              write: loaderOptions.jsxRename
+            }
+          }
+
+          module.loaders.unshift(rule)
+        }
       })
-    }
+    })
 
     compiler.hooks.emit.tap(pluginName, (compilation) => {
       onStart()

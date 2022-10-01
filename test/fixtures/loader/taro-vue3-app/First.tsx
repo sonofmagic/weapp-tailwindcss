@@ -1,0 +1,27 @@
+import { createVNode as _createVNode, createTextVNode as _createTextVNode } from "vue";
+import { defineComponent } from 'vue';
+import { View, Button } from '@tarojs/components';
+export default defineComponent({
+  components: {
+    View: View,
+    Button: Button
+  },
+  setup: function setup(props, ctx) {
+    return function () {
+      return _createVNode(View, {
+        "class": 'text-amber-300'
+      }, {
+        default: function _default() {
+          return [_createVNode(View, {
+            "class": 'text-center text-[50px] text-[#123456] mt-[22px]',
+            "hover-class": "text-[#654321]"
+          }, {
+            default: function _default() {
+              return [_createTextVNode("components ui")];
+            }
+          })];
+        }
+      });
+    };
+  }
+});
