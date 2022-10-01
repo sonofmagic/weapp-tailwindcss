@@ -25,6 +25,6 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.9.3"
+    "weapp-tailwindcss-webpack-plugin": "^1.9.4-beta.0"
   }
 }
