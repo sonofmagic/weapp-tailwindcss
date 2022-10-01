@@ -1,0 +1,48 @@
+import _classCallCheck from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/classCallCheck.js";
+import _createClass from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/createClass.js";
+import _inherits from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/inherits.js";
+import _createSuper from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/createSuper.js";
+import { Component } from 'react';
+import { View } from '@tarojs/components';
+import { jsx as _jsx } from "react/jsx-runtime";
+
+var Index = /*#__PURE__*/function (_Component) {
+  _inherits(Index, _Component);
+
+  var _super = _createSuper(Index);
+
+  function Index() {
+    _classCallCheck(this, Index);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Index, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      debugger;
+      console.log('componentDidMount');
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      debugger;
+      console.log('componentDidUpdate');
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var text = 'debugger'; // 此处写可以准确触发
+      // debugger
+
+      return /*#__PURE__*/_jsx(View, {
+        className: "text-[#123456]",
+        children: text
+      });
+    }
+  }]);
+
+  return Index;
+}(Component);
+
+export { Index as default };

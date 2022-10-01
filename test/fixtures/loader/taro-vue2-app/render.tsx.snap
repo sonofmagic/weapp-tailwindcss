@@ -1,0 +1,24 @@
+import Vue from 'vue';
+import { View, Button } from '@tarojs/components';
+export default Vue.extend({
+  components: {
+    View: View,
+    Button: Button
+  },
+  render: function render() {
+    var h = arguments[0];
+    return h(View, {
+      "class": 'text-amber-300'
+    }, [h(View, {
+      "class": 'text-center text-[50px] text-[#123456] mt-[22px]',
+      "attrs": {
+        "hover-class": "text-[#654321]"
+      }
+    }, ["aaa"]), h(Button, {
+      "attrs": {
+        "type": 'primary',
+        "block": true
+      }
+    }, ["first"])]);
+  }
+});
