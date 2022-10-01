@@ -35,7 +35,7 @@ export function vue3Matcher (node: ObjectProperty & { key: Identifier | StringLi
   if ((node.key as Identifier).name === 'class') {
     return true
   }
-  if ((node.key as StringLiteral).value === 'hover-class') {
+  if (['class', 'hover-class'].includes((node.key as StringLiteral).value)) {
     return true
   }
   return false

@@ -1,5 +1,7 @@
 let TaroWeappTailwindcssWebpackPluginV5
-if (process.env.LOCAL) {
+const path = require('path')
+const isLocal = process.env.LOCAL
+if (isLocal) {
   console.log('use local built webpack plugin')
   const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../../../')
   TaroWeappTailwindcssWebpackPluginV5 = plugin
@@ -50,15 +52,21 @@ const config = {
       }
     },
     webpackChain(chain, webpack) {
+      const opt = {
+        framework: 'vue2'
+      }
+      if (isLocal) {
+        opt.loaderOptions = {
+          jsxRename: {
+            dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-vue2-app')
+          }
+        }
+      }
       chain.merge({
         plugin: {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV5,
-            args: [
-              {
-                framework: 'vue2'
-              }
-            ]
+            args: [opt]
           }
         }
       })

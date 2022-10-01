@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "npm run dev:weapp",
+    "dev:local": "cross-env LOCAL=1 npm run dev:weapp",
     "build": "npm run build:weapp",
     "build:local": "cross-env LOCAL=1 npm run build:weapp",
     "build:weapp": "taro build --type weapp",
