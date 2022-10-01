@@ -1,6 +1,140 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`jsxHandler multiple file no end issue 1`] = `
+exports[`jsx-loader handler new vue2 jsx normal case 1`] = `
+{
+  "code": "import Vue from 'vue';
+import { View, Button } from '@tarojs/components';
+export default Vue.extend({
+  components: {
+    View: View,
+    Button: Button
+  },
+  render: function render() {
+    var h = arguments[0];
+    return h(View, {
+      "class": 'text-amber-300'
+    }, [h(View, {
+      "class": "text-center text-_bl_50px_br_ text-_bl__h_123456_br_ mt-_bl_22px_br_",
+      "attrs": {
+        "hover-class": "text-_bl__h_654321_br_"
+      }
+    }, ["aaa"]), h(Button, {
+      "attrs": {
+        "type": 'primary',
+        "block": true
+      }
+    }, ["first"])]);
+  }
+});",
+  "decodedMap": undefined,
+  "map": null,
+  "rawMappings": undefined,
+}
+`;
+
+exports[`jsx-loader handler new vue3 jsx normal case 1`] = `
+{
+  "code": "import { createVNode as _createVNode, createTextVNode as _createTextVNode } from "vue";
+import { defineComponent } from 'vue';
+import { View, Button } from '@tarojs/components';
+export default defineComponent({
+  components: {
+    View: View,
+    Button: Button
+  },
+  setup: function setup(props, ctx) {
+    return function () {
+      return _createVNode(View, {
+        "class": 'text-amber-300'
+      }, {
+        default: function _default() {
+          return [_createVNode(View, {
+            "class": "text-center text-_bl_50px_br_ text-_bl__h_123456_br_ mt-_bl_22px_br_",
+            "hover-class": "text-_bl__h_654321_br_"
+          }, {
+            default: function _default() {
+              return [_createTextVNode("components ui")];
+            }
+          })];
+        }
+      });
+    };
+  }
+});",
+  "decodedMap": undefined,
+  "map": null,
+  "rawMappings": undefined,
+}
+`;
+
+exports[`jsx-loader handler vue2 jsx normal case 1`] = `
+{
+  "code": "import Vue from 'vue';
+import { View, Button } from '@tarojs/components';
+export default Vue.extend({
+  components: {
+    View: View,
+    Button: Button
+  },
+  render: function render() {
+    var h = arguments[0];
+    return h(View, {
+      "class": 'text-amber-300'
+    }, [h(View, {
+      "class": 'text-center text-[50px] text-[#123456] mt-[22px]',
+      "attrs": {
+        "hover-class": "text-[#654321]"
+      }
+    }, ["aaa"]), h(Button, {
+      "attrs": {
+        "type": 'primary',
+        "block": true
+      }
+    }, ["first"])]);
+  }
+});",
+  "decodedMap": undefined,
+  "map": null,
+  "rawMappings": undefined,
+}
+`;
+
+exports[`jsx-loader handler vue3 jsx normal case 1`] = `
+{
+  "code": "import { createVNode as _createVNode, createTextVNode as _createTextVNode } from "vue";
+import { defineComponent } from 'vue';
+import { View, Button } from '@tarojs/components';
+export default defineComponent({
+  components: {
+    View: View,
+    Button: Button
+  },
+  setup: function setup(props, ctx) {
+    return function () {
+      return _createVNode(View, {
+        "class": 'text-amber-300'
+      }, {
+        default: function _default() {
+          return [_createVNode(View, {
+            "class": "text-center text-_bl_50px_br_ text-_bl__h_123456_br_ mt-_bl_22px_br_",
+            "hover-class": "text-_bl__h_654321_br_"
+          }, {
+            default: function _default() {
+              return [_createTextVNode("components ui")];
+            }
+          })];
+        }
+      });
+    };
+  }
+});",
+  "decodedMap": undefined,
+  "map": null,
+  "rawMappings": undefined,
+}
+`;
+
+exports[`jsx-loader handler vue3 jsx normal case 2`] = `
 {
   "code": "import { createVNode as _createVNode, createTextVNode as _createTextVNode } from "vue";
 import { defineComponent } from 'vue';
