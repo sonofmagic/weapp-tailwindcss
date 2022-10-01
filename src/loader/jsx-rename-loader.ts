@@ -13,7 +13,7 @@ export default function loader (this: webpack.LoaderContext<JsxRenameLoaderOptio
   const config: JsxRenameLoaderOptions = getOptions(this)
   if (config.write) {
     try {
-      const t = path.resolve(config.write.dir!, '.' + this.resource.replace(this.context, ''))
+      const t = path.resolve(config.write.dir!, '.' + this.resource.replace(this.context, '') + '.snap')
       const dirP = path.dirname(t)
       if (!fs.existsSync(dirP)) {
         fs.mkdirSync(dirP, {
