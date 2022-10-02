@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.10.0 (2022-10-2)
+
+### Features
+
+- 编写了第二版本的 `jsx` 处理方法，替换第一版本。
+- 支持 `vue2/vue3` + `tsx` 开发 [#100](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/100)
+
 ## 1.9.3 (2022-09-22)
 
 ### Features
