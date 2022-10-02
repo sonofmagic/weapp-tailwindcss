@@ -1,0 +1,19 @@
+import { useEffect } from 'react';
+import { View } from '@tarojs/components';
+import { jsx as _jsx } from "react/jsx-runtime";
+
+var Index = function Index() {
+  var text = 'debugger';
+  useEffect(function () {
+    console.log('text has change or init');
+    debugger;
+  }, [text]); // 此处写可以准确触发
+  // debugger
+
+  return /*#__PURE__*/_jsx(View, {
+    className: "text-[#123456]",
+    children: text
+  });
+};
+
+export default Index;

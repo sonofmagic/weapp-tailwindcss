@@ -1,5 +1,8 @@
 let TaroWeappTailwindcssWebpackPluginV5
-if (process.env.LOCAL) {
+const path = require('path')
+const isLocal = process.env.LOCAL
+const isWrite = process.env.WRITE
+if (isLocal) {
   console.log('use local built webpack plugin')
   const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../../../')
   TaroWeappTailwindcssWebpackPluginV5 = plugin
@@ -49,24 +52,21 @@ const config = {
       // autoprefixer: {},
     },
     webpackChain(chain, webpack) {
+      const opt = {
+        framework: 'react'
+      }
+      if (isWrite) {
+        opt.loaderOptions = {
+          jsxRename: {
+            dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-app')
+          }
+        }
+      }
       chain.merge({
         plugin: {
           install: {
             plugin: TaroWeappTailwindcssWebpackPluginV5,
-            args: [
-              {
-                framework: 'react'
-                // mangle: {
-                //   log: true,
-                //   ignoreClass: ['bg-[#123456]'],
-                //   reserveClassName: ['a', 'b']
-                // }
-
-                // cssPreflight: {
-                //   'box-sizing': false
-                // }
-              }
-            ]
+            args: [opt]
           }
         }
       })

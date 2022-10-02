@@ -1,11 +1,14 @@
-let TaroWeappTailwindcssWebpackPluginV4
-if (process.env.LOCAL) {
+let TaroWeappTailwindcssWebpackPluginV5
+const path = require('path')
+const isLocal = process.env.LOCAL
+const isWrite = process.env.WRITE
+if (isLocal) {
   console.log('use local built webpack plugin')
-  const { TaroWeappTailwindcssWebpackPluginV4: plugin } = require('../../../')
-  TaroWeappTailwindcssWebpackPluginV4 = plugin
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../../../')
+  TaroWeappTailwindcssWebpackPluginV5 = plugin
 } else {
-  const { TaroWeappTailwindcssWebpackPluginV4: plugin } = require('weapp-tailwindcss-webpack-plugin')
-  TaroWeappTailwindcssWebpackPluginV4 = plugin
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
+  TaroWeappTailwindcssWebpackPluginV5 = plugin
 }
 
 const config = {
@@ -25,6 +28,7 @@ const config = {
     patterns: [],
     options: {}
   },
+  compiler: 'webpack5',
   framework: 'vue3',
   mini: {
     postcss: {
@@ -47,15 +51,21 @@ const config = {
       }
     },
     webpackChain(chain, webpack) {
+      const opt = {
+        framework: 'vue3'
+      }
+      if (isWrite) {
+        opt.loaderOptions = {
+          jsxRename: {
+            dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-vue3-app')
+          }
+        }
+      }
       chain.merge({
         plugin: {
           install: {
-            plugin: TaroWeappTailwindcssWebpackPluginV4,
-            args: [
-              {
-                framework: 'vue3'
-              }
-            ]
+            plugin: TaroWeappTailwindcssWebpackPluginV5,
+            args: [opt]
           }
         }
       })

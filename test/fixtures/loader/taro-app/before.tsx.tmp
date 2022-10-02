@@ -1,0 +1,12 @@
+import { View } from '@tarojs/components';
+import { jsx as _jsx } from "react/jsx-runtime";
+import { jsxs as _jsxs } from "react/jsx-runtime";
+export default function Index() {
+  return /*#__PURE__*/_jsxs(View, {
+    children: [/*#__PURE__*/_jsx(View, {
+      className: "after:content-[\"*\"] after:ml-0.5 after:text-red-500"
+    }), /*#__PURE__*/_jsx(View, {
+      className: "after:content-[*] after:ml-0.5 after:text-red-500"
+    })]
+  });
+}

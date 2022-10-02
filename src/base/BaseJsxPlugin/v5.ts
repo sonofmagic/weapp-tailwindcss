@@ -6,7 +6,6 @@ import { createInjectPreflight } from '@/postcss/preflight'
 import { jsxHandler } from '@/jsx'
 import { getOptions } from '@/defaults'
 import { pluginName } from '@/shared'
-import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interfaces'
 import { NormalModule } from 'webpack'
 import { NS } from '@/constants'
@@ -41,7 +40,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
       onUpdate,
       onEnd,
       onStart,
-      mangle
+      mangle,
+      loaderOptions
     } = this.options
     if (disabled) {
       return
@@ -58,28 +58,26 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     const loader = path.resolve(__dirname, `${NS}.js`)
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      if (isReact) {
-        NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
-          if (jsMatcher(module.resource)) {
-            let classGenerator
-            if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
-              classGenerator = this.classGenerator
-            }
-            const replacer = createReplacer(framework, { classGenerator })
-            const rule = {
-              loader,
-              options: {
-                framework,
-                replacer
-              },
-              ident: null,
-              type: null
-            }
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+        if (jsMatcher(module.resource)) {
+          // let classGenerator
+          // if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
+          //   classGenerator = this.classGenerator
+          // }
 
-            module.loaders.unshift(rule)
+          const rule = {
+            loader,
+            options: {
+              framework,
+              write: loaderOptions.jsxRename
+            },
+            ident: null,
+            type: null
           }
-        })
-      }
+
+          module.loaders.unshift(rule)
+        }
+      })
 
       compilation.hooks.processAssets.tap(
         {
@@ -92,17 +90,14 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
           const groupedEntries = getGroupedEntries(entries, this.options)
           if (!isReact && Array.isArray(groupedEntries.js)) {
             for (let i = 0; i < groupedEntries.js.length; i++) {
-              let classGenerator
+              // let classGenerator
               const [file, originalSource] = groupedEntries.js[i]
-              if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-                classGenerator = this.classGenerator
-              }
-              const replacer = createReplacer(framework, {
-                classGenerator
-              })
+              // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+              //   classGenerator = this.classGenerator
+              // }
 
               const rawSource = originalSource.source().toString()
-              const { code } = jsxHandler(rawSource, replacer)
+              const { code } = jsxHandler(rawSource, framework)
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)

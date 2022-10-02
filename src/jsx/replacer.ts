@@ -1,52 +1,7 @@
-import type { Node, ObjectProperty, Identifier, StringLiteral } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
-import type { ICommonReplaceOptions } from '@/types'
+import type { ICommonReplaceOptions, Node } from '@/types'
 import { replaceWxml, templeteHandler } from '@/wxml'
-
-export type UserMatchNode = ObjectProperty & { key: Identifier }
-
-function isSpecNode (node: Node) {
-  return node.type === 'ObjectProperty' && node.key.type === 'Identifier'
-}
-
-function reactMatcher (node: UserMatchNode) {
-  // rax ->class and className, taro 为 hoverClass remax 为 hoverClassName
-  //  node.key.name === 'class' || node.key.name === 'className' || node.key.name === 'hoverClass' || node.key.name === 'hover-class' || node.key.name === 'hoverClassName'
-  return ['className', 'hoverClass', 'hoverClassName'].includes(node.key.name)
-}
-
-function vue2Matcher (node: UserMatchNode): [boolean, UserMatchNode] {
-  // 应该获取指定的节点开始匹配而不是整个 attrs 节点
-  if (node.key.name === 'attrs' && node.type === 'ObjectProperty') {
-    if (node.value.type === 'ObjectExpression' && Array.isArray(node.value.properties)) {
-      const idx = node.value.properties.findIndex((x) => {
-        return x.type === 'ObjectProperty' && x.key.type === 'StringLiteral' && x.key.value === 'hover-class'
-      })
-      if (idx > -1) {
-        return [true, node.value.properties[idx] as UserMatchNode]
-      } else {
-        return [false, node]
-      }
-    }
-    return [false, node]
-  }
-  return [node.key.name === 'class' || node.key.name === 'staticClass', node] // || node.key.name === 'hover-class'
-}
-
-function vue3Matcher (node: ObjectProperty & { key: Identifier | StringLiteral }) {
-  if ((node.key as Identifier).name === 'class') {
-    return true
-  }
-  if ((node.key as StringLiteral).value === 'hover-class') {
-    return true
-  }
-  return false
-}
-
-function isVue3SpecNode (node: Node) {
-  return node.type === 'ObjectProperty' && (node.key.type === 'Identifier' || node.key.type === 'StringLiteral')
-}
-
+import { isSpecNode, isVue3SpecNode, reactMatcher, vue2Matcher, vue3Matcher, UserMatchNode } from './matcher'
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
 
 export class ASTReplacer {
@@ -102,11 +57,6 @@ export class ASTReplacer {
       }
     } else if (isVue3) {
       // TODO
-      // 性能很差，为什么要这么写主要原因是 vue3 里面有 createElementVNode 动态的节点和 createStaticVNode 静态的节点
-      // 动态的，按照 ObjectProperty 的方式匹配就可以
-      // 但是静态的，本身就是一大堆的字符串，很难找到规律，下面的做法是通杀的方式，利用正则匹配 tag 标签。
-
-      // createStaticVNode
       if (path.node.type === 'StringLiteral') {
         path.node.value = templeteHandler(path.node.value)
       }

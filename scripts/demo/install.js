@@ -10,7 +10,7 @@ const isBeta = argvs.indexOf('--beta') > -1
     demoPath,
     `-D weapp-tailwindcss-webpack-plugin${
       isBeta ? '@beta' : ''
-    } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children`,
+    } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator`,
     true
   )
 

@@ -1,6 +1,6 @@
-import type { InitialOptionsTsJest } from 'ts-jest/dist/types'
+import type { JestConfigWithTsJest } from 'ts-jest/dist/types'
 
-const config: InitialOptionsTsJest = {
+const config: JestConfigWithTsJest = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   clearMocks: true,

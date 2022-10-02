@@ -1,6 +1,7 @@
-import { jsxHandler } from '@/jsx'
+import { jsxHandler } from '@/jsx/v1'
 import { createReplacer } from '@/jsx/replacer'
 import { jsxCasePath, createGetCase } from './util'
+import { newJsxHandler } from '@/jsx/v2'
 
 const getCase = createGetCase(jsxCasePath)
 
@@ -19,7 +20,7 @@ describe('jsxHandler', () => {
   it('case1 ', async () => {
     const item = await getCase('case1.js')
     const { code } = jsxHandler(item, reactReplacer)
-
+    expect(newJsxHandler(item).code).toEqual(code)
     // await putCase('case1.result.js', result)
 
     expect(code).toMatchSnapshot()
@@ -29,7 +30,7 @@ describe('jsxHandler', () => {
     const item = await getCase('case2.js')
     const { code } = jsxHandler(item, reactReplacer)
     // await putCase('case2.result.js', result)
-
+    expect(newJsxHandler(item).code).toEqual(code)
     expect(code).toMatchSnapshot()
   })
 
@@ -37,19 +38,21 @@ describe('jsxHandler', () => {
     const item = await getCase('case3.js')
     const { code } = jsxHandler(item, reactReplacer)
     // await putCase('case3.result.js', result)
-
+    expect(newJsxHandler(item).code).toEqual(code)
     expect(code).toMatchSnapshot()
   })
 
   it('react-hover-class', async () => {
     const item = await getCase('react-hover-class.js')
     const { code } = jsxHandler(item, reactReplacer)
+    expect(newJsxHandler(item).code).toEqual(code)
     expect(code).toMatchSnapshot()
   })
 
   it('vue2-case1', async () => {
     const item = await getCase('vue2-case1.js')
     const { code } = jsxHandler(item, vue2Replacer)
+    expect(newJsxHandler(item, 'vue2').code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -57,6 +60,7 @@ describe('jsxHandler', () => {
   test('vue2-hover-class.js', async () => {
     const item = await getCase('vue2-hover-class.js')
     const { code } = jsxHandler(item, vue2Replacer)
+    expect(newJsxHandler(item, 'vue2').code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -65,6 +69,7 @@ describe('jsxHandler', () => {
     const item = await getCase('vue3-createStaticVNode.js')
 
     const { code } = jsxHandler(item, vue3Replacer)
+    expect(newJsxHandler(item, 'vue3').code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -73,6 +78,7 @@ describe('jsxHandler', () => {
     const item = await getCase('vue3-render.js')
 
     const { code } = jsxHandler(item, vue3Replacer)
+    expect(newJsxHandler(item, 'vue3').code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -81,6 +87,7 @@ describe('jsxHandler', () => {
     const item = await getCase('vue3-hover-class.js')
 
     const { code } = jsxHandler(item, vue3Replacer)
+    expect(newJsxHandler(item, 'vue3').code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -89,6 +96,7 @@ describe('jsxHandler', () => {
     const item = await getCase('react-jsx-loader-case0.js')
 
     const { code } = jsxHandler(item, reactReplacer)
+    expect(newJsxHandler(item).code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -97,6 +105,7 @@ describe('jsxHandler', () => {
     const item = await getCase('react-jsx-loader-case1.js')
 
     const { code } = jsxHandler(item, reactReplacer)
+    expect(newJsxHandler(item).code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })
@@ -105,6 +114,7 @@ describe('jsxHandler', () => {
     const item = await getCase('react-jsx-loader-case-with-vars.js')
 
     const { code } = jsxHandler(item, reactReplacer)
+    expect(newJsxHandler(item).code).toEqual(code)
 
     expect(code).toMatchSnapshot()
   })

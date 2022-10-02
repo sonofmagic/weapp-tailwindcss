@@ -1,6 +1,9 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type ClassGenerator from '@/mangle/classGenerator'
+import type { ASTReplacer } from '@/jsx/replacer'
+export type { TraverseOptions } from '@babel/traverse'
+export type { Node } from '@babel/types'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
 
 export interface IPropValue {
@@ -36,11 +39,25 @@ export interface RawSource {
   raw: string
   // '' 直接 remove {{}}
   source?: string
+  prevConcatenated: boolean
+  nextConcatenated: boolean
 }
 
 export interface IMangleContextClass {
   name: string
   usedBy: any[]
+}
+
+export interface JsxRenameLoaderOptions {
+  replacer: ASTReplacer
+  framework?: string
+  isVue?: boolean
+  write?:
+    | false
+    | {
+        dir?: string
+        filename?: string
+      }
 }
 
 export interface IMangleOptions {
@@ -78,6 +95,7 @@ export interface UserDefinedOptions {
    */
   jsMatcher?: (name: string) => boolean
   /**
+   * @deprecated v2 版本中不再需要，会自动判断 CssMainChunk
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
@@ -140,6 +158,10 @@ export interface UserDefinedOptions {
    * @description Taro 特有，用来声明使用的框架
    */
   framework?: 'react' | 'vue' | 'vue3' | string
+
+  loaderOptions?: {
+    jsxRename?: JsxRenameLoaderOptions['write']
+  }
 }
 
 export type InternalPostcssOptions = Pick<

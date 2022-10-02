@@ -8,6 +8,7 @@ export function resolve (...args: string[]) {
 export const jsxCasePath = resolve(__dirname, 'fixtures/jsx')
 export const cssCasePath = resolve(__dirname, 'fixtures/css')
 export const wxmlCasePath = resolve(__dirname, 'fixtures/wxml')
+export const loaderCasePath = resolve(__dirname, 'fixtures/loader')
 
 export function readFile (filepath: string) {
   return fs.readFile(filepath, {
@@ -49,7 +50,7 @@ export const matchAll = (regex: RegExp, str: string) => {
   return arr
 }
 
-export function switch2relative (p:string):string {
+export function switch2relative (p: string): string {
   let str = p
   if (path.isAbsolute(p)) {
     str = path.relative(__dirname, p)

@@ -1,10 +1,10 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
-import type { RawSource, ICommonReplaceOptions } from '@/types'
+import type { RawSource, ICommonReplaceOptions, Node } from '@/types'
 
 export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
-  const ast = parseExpression(match)
+  const ast = parseExpression(match) as Node
 
   traverse(ast, {
     StringLiteral (path) {
@@ -34,30 +34,42 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
   return code
 }
 
-export function templeteReplacer (original: string, options: ICommonReplaceOptions = {}) {
+export function extractSource (original: string) {
   let match = variableMatch(original)
   const sources: RawSource[] = []
 
   while (match !== null) {
     // 过滤空字符串
     // if (match[1].trim().length) {
+    const start = match.index
+    const end = variableRegExp.lastIndex
     sources.push({
-      start: match.index,
-      end: variableRegExp.lastIndex,
-      raw: match[1]
+      start,
+      end,
+      raw: match[1],
+      prevConcatenated: !/\s/.test(original[start - 1]),
+      nextConcatenated: !/\s/.test(original[end])
     })
 
     match = variableMatch(original)
   }
+  return sources
+}
+
+export function templeteReplacer (original: string, options: ICommonReplaceOptions = {}) {
+  const sources = extractSource(original)
 
   if (sources.length) {
     const resultArray: string[] = []
     let p = 0
     for (let i = 0; i < sources.length; i++) {
       const m = sources[i]
+      const before = original.slice(p, m.start)
+      // const isPrevVarConcated = !/\s/.test(before[before.length - 1])
+      // const isNextVarConcated = !/\s/.test(before[0])
       // 匹配前值
       resultArray.push(
-        replaceWxml(original.slice(p, m.start), {
+        replaceWxml(before, {
           keepEOL: true,
           classGenerator: options.classGenerator
         })
@@ -68,7 +80,7 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
         const code = generateCode(m.raw, options)
         let source = `{{${code}}}`
         if (options.classGenerator) {
-          source = ` ${source} `
+          source = `${m.prevConcatenated ? '' : ' '}${source}${m.nextConcatenated ? '' : ' '}`
         }
         m.source = source
       } else {
@@ -79,8 +91,9 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       p = m.end
       // 匹配最终尾部值
       if (i === sources.length - 1) {
+        const after = original.slice(m.end)
         resultArray.push(
-          replaceWxml(original.slice(m.end), {
+          replaceWxml(after, {
             keepEOL: true,
             classGenerator: options.classGenerator
           })
