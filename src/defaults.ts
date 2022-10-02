@@ -74,5 +74,8 @@ export function getOptions (options: UserDefinedOptions = {}): Required<UserDefi
       options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
     }
   }
+  if (options.framework && options.framework === 'vue') {
+    options.framework = 'vue2'
+  }
   return defu(options, defaultOptions)
 }

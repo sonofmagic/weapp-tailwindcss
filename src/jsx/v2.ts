@@ -4,7 +4,7 @@ import type { Node, TraverseOptions } from '@/types'
 import { getKey } from './matcher'
 import { templeteHandler } from '@/wxml/utils'
 
-const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3', string[]> = {
+const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
   vue2: ['class', 'staticClass'], // 'hover-class' 在 'attrs' 里
   vue3: ['class', 'hover-class']
@@ -14,15 +14,14 @@ function isObjectKey (type: string) {
   return ['Identifier', 'StringLiteral'].includes(type)
 }
 
-export function newJsxHandler (rawSource: string, framework: keyof typeof StartMatchKeyMap = 'react') {
+export function newJsxHandler (rawSource: string, framework: string = 'react') {
   const ast = parse(rawSource, {
     sourceType: 'unambiguous'
   }) as Node
-  const matchKeys = StartMatchKeyMap[framework]
+  const matchKeys = StartMatchKeyMap[framework] ?? StartMatchKeyMap.react
   const isVue2 = framework === 'vue2'
   const isVue3 = framework === 'vue3'
   // https://astexplorer.net/
-  // TODO
   let startFlag = false
 
   const options: TraverseOptions<Node> = {
@@ -61,11 +60,6 @@ export function newJsxHandler (rawSource: string, framework: keyof typeof StartM
             keepEOL: true
           })
         }
-        // if (isVue3 && vue3StaticVNodeStartFlag) {
-        //   path.node.value = templeteHandler(path.node.value, {
-        //     keepEOL: true
-        //   })
-        // }
       }
     },
     noScope: true

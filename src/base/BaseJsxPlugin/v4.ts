@@ -6,7 +6,6 @@ import { jsxHandler } from '@/jsx'
 import { getOptions } from '@/defaults'
 import { pluginName } from '@/shared'
 import { ConcatSource, Source } from 'webpack-sources'
-import { createReplacer } from '@/jsx/replacer'
 import type { IBaseWebpackPlugin } from '@/interfaces'
 import { NS } from '@/constants'
 import path from 'path'
@@ -60,19 +59,17 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
       compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
         // loaderContext[NS] = true
         if (jsMatcher(module.resource)) {
-          let classGenerator
-          if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
-            classGenerator = this.classGenerator
-          }
+          // let classGenerator
+          // if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
+          //   classGenerator = this.classGenerator
+          // }
           // default react
-          const replacer = createReplacer(framework, {
-            classGenerator
-          })
+
           const rule = {
             loader, // Path to loader
             options: {
               framework,
-              replacer,
+              // classGenerator,
               write: loaderOptions.jsxRename
             }
           }
@@ -88,18 +85,15 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
       const groupedEntries = getGroupedEntries(entries, this.options)
       if (!isReact && Array.isArray(groupedEntries.js)) {
         for (let i = 0; i < groupedEntries.js.length; i++) {
-          let classGenerator
+          // let classGenerator
 
           const [file, originalSource] = groupedEntries.js[i]
-          if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-            classGenerator = this.classGenerator
-          }
-          const replacer = createReplacer(framework, {
-            classGenerator
-          })
+          // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+          //   classGenerator = this.classGenerator
+          // }
 
           const rawSource = originalSource.source().toString()
-          const { code } = jsxHandler(rawSource, replacer)
+          const { code } = jsxHandler(rawSource, framework)
           const source = new ConcatSource(code)
           compilation.updateAsset(file, source)
           onUpdate(file, rawSource, code)

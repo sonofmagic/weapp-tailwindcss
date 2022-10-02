@@ -1,4 +1,4 @@
-import { jsxHandler } from '@/jsx'
+import { jsxHandler } from '@/jsx/v1'
 import { newJsxHandler } from '@/jsx/v2'
 import { loaderCasePath, createGetCase } from './util'
 import { createReplacer } from '@/jsx/replacer'

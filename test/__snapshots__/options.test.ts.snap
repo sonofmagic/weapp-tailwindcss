@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`get options default options 1`] = `
+{
+  "cssMatcher": [Function],
+  "cssPreflight": {
+    "border-color": "currentColor",
+    "border-style": "solid",
+    "border-width": "0",
+    "box-sizing": "border-box",
+  },
+  "cssPreflightRange": "view",
+  "customRuleCallback": [Function],
+  "disabled": false,
+  "framework": "react",
+  "htmlMatcher": [Function],
+  "jsMatcher": [Function],
+  "loaderOptions": {
+    "jsxRename": false,
+  },
+  "mainCssChunkMatcher": [Function],
+  "mangle": false,
+  "onEnd": [Function],
+  "onLoad": [Function],
+  "onStart": [Function],
+  "onUpdate": [Function],
+  "replaceUniversalSelectorWith": "view",
+}
+`;
+
+exports[`get options vue framework 1`] = `
+{
+  "cssMatcher": [Function],
+  "cssPreflight": {
+    "border-color": "currentColor",
+    "border-style": "solid",
+    "border-width": "0",
+    "box-sizing": "border-box",
+  },
+  "cssPreflightRange": "view",
+  "customRuleCallback": [Function],
+  "disabled": false,
+  "framework": "vue2",
+  "htmlMatcher": [Function],
+  "jsMatcher": [Function],
+  "loaderOptions": {
+    "jsxRename": false,
+  },
+  "mainCssChunkMatcher": [Function],
+  "mangle": false,
+  "onEnd": [Function],
+  "onLoad": [Function],
+  "onStart": [Function],
+  "onUpdate": [Function],
+  "replaceUniversalSelectorWith": "view",
+}
+`;
