@@ -9,7 +9,7 @@ export default defineComponent({
     return () => {
       return (
         <View class={'text-amber-300'}>
-          <View class={'text-center text-[50px] text-[#123456] mt-[22px]'} hover-class="text-[#654321]">
+          <View class={'text-center text-[50px] text-[#123456] mt-[22px]'} hover-class="bg-[#654321]">
             components ui
           </View>
         </View>

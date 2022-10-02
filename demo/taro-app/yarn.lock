@@ -13727,7 +13727,7 @@ typescript@^3.2.2:
   resolved "https://registry.npmmirror.com/typescript/-/typescript-3.9.10.tgz#70f3910ac7a51ed6bef79da7800690b19bf778b8"
   integrity sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==
 
-typescript@^4.8.4:
+typescript@^4.7.0:
   version "4.8.4"
   resolved "https://registry.npmmirror.com/typescript/-/typescript-4.8.4.tgz#c464abca159669597be5f96b8943500b238e60e6"
   integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
@@ -14153,10 +14153,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmjs.org/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^1.9.4-beta.2:
-  version "1.9.4-beta.2"
-  resolved "https://registry.npmjs.org/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.9.4-beta.2.tgz#934aafe10a57b9fe157fc7714e698eac268a2a87"
-  integrity sha512-2+vJuIIxN7CEqoXER5t01SDd7oEpCGot24cROZWSFmxUNIUBIYOmXQN/Q4LMc5zS3POsPH/5ofO69t926agTrQ==
+weapp-tailwindcss-webpack-plugin@^1.10.0-beta.0:
+  version "1.10.0-beta.0"
+  resolved "https://registry.npmjs.org/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.10.0-beta.0.tgz#1920a02e4fedcc41d741dd2d6724ae6ae1eb178d"
+  integrity sha512-pBkHQgIEC0tOt1UYwToU8sKRZk0rbBxPiCijmLwG6WcztRDe5N8O4b3d5Y54fhlDv0j7OfLOSc+bS/3leNR+gA==
   dependencies:
     "@babel/generator" "7.19.3"
     "@babel/parser" "7.19.3"
