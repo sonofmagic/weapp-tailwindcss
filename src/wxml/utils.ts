@@ -1,10 +1,10 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
-import type { RawSource, ICommonReplaceOptions } from '@/types'
+import type { RawSource, ICommonReplaceOptions, Node } from '@/types'
 
 export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
-  const ast = parseExpression(match)
+  const ast = parseExpression(match) as Node
 
   traverse(ast, {
     StringLiteral (path) {

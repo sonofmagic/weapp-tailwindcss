@@ -2,7 +2,8 @@ import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type ClassGenerator from '@/mangle/classGenerator'
 import type { ASTReplacer } from '@/jsx/replacer'
-
+export type { TraverseOptions } from '@babel/traverse'
+export type { Node } from '@babel/types'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
 
 export interface IPropValue {

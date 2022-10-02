@@ -1,7 +1,8 @@
 import { replaceWxml } from '@/wxml'
 import { parse, traverse, generate } from '@/babel'
-import type { Node } from '@babel/types'
+import type { Node, TraverseOptions } from '@/types'
 import { getKey } from './matcher'
+import { templeteHandler } from '@/wxml/utils'
 
 const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3', string[]> = {
   react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
@@ -19,11 +20,12 @@ export function newJsxHandler (rawSource: string, framework: keyof typeof StartM
   }) as Node
   const matchKeys = StartMatchKeyMap[framework]
   const isVue2 = framework === 'vue2'
+  const isVue3 = framework === 'vue3'
   // https://astexplorer.net/
   // TODO
   let startFlag = false
 
-  traverse(ast, {
+  const options: TraverseOptions<Node> = {
     ObjectProperty: {
       enter (path) {
         if (isObjectKey(path.node.key.type)) {
@@ -59,10 +61,29 @@ export function newJsxHandler (rawSource: string, framework: keyof typeof StartM
             keepEOL: true
           })
         }
+        // if (isVue3 && vue3StaticVNodeStartFlag) {
+        //   path.node.value = templeteHandler(path.node.value, {
+        //     keepEOL: true
+        //   })
+        // }
       }
     },
     noScope: true
-  })
+  }
+  if (isVue3) {
+    options.CallExpression = {
+      enter (path) {
+        const hit = path.node.arguments[0]
+        if (hit && hit.type === 'StringLiteral') {
+          hit.value = templeteHandler(hit.value, {
+            keepEOL: true
+          })
+        }
+      }
+    }
+  }
+  // const vue3StaticVNodeStartFlag = false
+  traverse(ast, options)
 
   return generate(ast)
 }

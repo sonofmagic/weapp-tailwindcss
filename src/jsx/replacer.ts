@@ -1,6 +1,5 @@
-import type { Node } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
-import type { ICommonReplaceOptions } from '@/types'
+import type { ICommonReplaceOptions, Node } from '@/types'
 import { replaceWxml, templeteHandler } from '@/wxml'
 import { isSpecNode, isVue3SpecNode, reactMatcher, vue2Matcher, vue3Matcher, UserMatchNode } from './matcher'
 export type JsxFrameworkEnum = 'react' | 'vue' | 'vue2' | 'vue3'
