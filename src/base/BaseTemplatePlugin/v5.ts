@@ -1,4 +1,4 @@
-import type { AppType, UserDefinedOptions, IMangleOptions } from '@/types'
+import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -13,7 +13,7 @@ import ClassGenerator from '@/mangle/classGenerator'
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/6
  */
 export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
-  options: Required<UserDefinedOptions>
+  options: InternalUserDefinedOptions
   appType: AppType
   classGenerator?: ClassGenerator
   constructor (options: UserDefinedOptions = {}, appType: AppType) {

@@ -1,4 +1,4 @@
-import type { UserDefinedOptions, AppType, IMangleOptions } from '@/types'
+import type { UserDefinedOptions, AppType, IMangleOptions, InternalUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack4'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -13,7 +13,7 @@ import ClassGenerator from '@/mangle/classGenerator'
 // https://github.com/dcloudio/uni-app/blob/master/packages/uni-template-compiler/lib/index.js
 // 3 个方案，由 loader 生成的 wxml
 export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
-  options: Required<UserDefinedOptions>
+  options: InternalUserDefinedOptions
   appType: AppType
   classGenerator?: ClassGenerator
   constructor (options: UserDefinedOptions = {}, appType: AppType) {

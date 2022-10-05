@@ -85,21 +85,21 @@ export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
    */
-  htmlMatcher?: (name: string) => boolean
+  htmlMatcher?: ((name: string) => boolean) | string | string[]
   /**
    * wxss/jxss/ttss 这类的 ss 的匹配方法
    */
-  cssMatcher?: (name: string) => boolean
+  cssMatcher?: ((name: string) => boolean) | string | string[]
   /**
    * 用于处理js
    */
-  jsMatcher?: (name: string) => boolean
+  jsMatcher?: ((name: string) => boolean) | string | string[]
   /**
    * @deprecated v2 版本中不再需要，会自动判断 CssMainChunk
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
-  mainCssChunkMatcher?: (name: string, appType: AppType) => boolean
+  mainCssChunkMatcher?: ((name: string, appType: AppType) => boolean) | string | string[]
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * 用于处理 postcss 的预设
@@ -163,6 +163,14 @@ export interface UserDefinedOptions {
     jsxRename?: JsxRenameLoaderOptions['write']
   }
 }
+
+export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
+
+export type InternalUserDefinedOptions = Required<
+  Omit<UserDefinedOptions, GlobOrFunctionMatchers> & {
+    [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
+  }
+>
 
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,

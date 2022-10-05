@@ -1,4 +1,4 @@
-import type { UserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions } from '@/types'
 
 function groupBy<T> (arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   if (!Array.isArray(arr)) {
@@ -25,7 +25,7 @@ function groupBy<T> (arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   return result
 }
 
-export function getGroupedEntries<T> (entries: [string, T][], options: Required<UserDefinedOptions>) {
+export function getGroupedEntries<T> (entries: [string, T][], options: InternalUserDefinedOptions) {
   const { cssMatcher, htmlMatcher, jsMatcher } = options
   const groupedEntries = groupBy(entries, ([file]) => {
     if (cssMatcher(file)) {

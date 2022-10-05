@@ -1,5 +1,5 @@
 // webpack 5
-import type { AppType, UserDefinedOptions, IMangleOptions } from '@/types'
+import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions } from '@/types'
 import type { Compiler } from 'webpack'
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -17,7 +17,7 @@ import { getGroupedEntries } from '@/base/shared'
  */
 
 export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
-  options: Required<UserDefinedOptions>
+  options: InternalUserDefinedOptions
   appType: AppType
   classGenerator?: ClassGenerator
   static NS = NS
