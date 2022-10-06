@@ -1,19 +1,18 @@
-import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
+import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack4'
-import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/defaults'
 import { pluginName, NS } from '@/constants'
 import { ConcatSource, Source } from 'webpack-sources'
 import path from 'path'
 import { getGroupedEntries } from '@/base/shared'
-import ClassGenerator from '@/mangle/classGenerator'
+// import ClassGenerator from '@/mangle/classGenerator'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
 export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType: AppType
-  classGenerator?: ClassGenerator
+  // classGenerator?: ClassGenerator
   static NS = NS
   constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
@@ -21,32 +20,14 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const {
-      jsMatcher,
-      mainCssChunkMatcher,
-      replaceUniversalSelectorWith,
-      framework,
-      cssPreflight,
-      customRuleCallback,
-      cssPreflightRange,
-      disabled,
-      onLoad,
-      onUpdate,
-      onEnd,
-      onStart,
-      mangle,
-      loaderOptions,
-      styleHandler,
-      jsxHandler
-    } = this.options
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
     if (disabled) {
       return
     }
-    if (mangle) {
-      this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
-    }
+    // if (mangle) {
+    //   this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
+    // }
 
-    const cssInjectPreflight = createInjectPreflight(cssPreflight)
     const isReact = framework === 'react'
     const loader = path.resolve(__dirname, `${NS}.js`)
     onLoad()
@@ -99,19 +80,15 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
       }
       if (Array.isArray(groupedEntries.css)) {
         for (let i = 0; i < groupedEntries.css.length; i++) {
-          let classGenerator
+          // let classGenerator
           const [file, originalSource] = groupedEntries.css[i]
-          if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-            classGenerator = this.classGenerator
-          }
+          // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+          //   classGenerator = this.classGenerator
+          // }
           const rawSource = originalSource.source().toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(file, this.appType),
-            cssInjectPreflight,
-            customRuleCallback,
-            cssPreflightRange,
-            replaceUniversalSelectorWith,
-            classGenerator
+            isMainChunk: mainCssChunkMatcher(file, this.appType)
+            // classGenerator
           })
           const source = new ConcatSource(css)
           compilation.updateAsset(file, source)

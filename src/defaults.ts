@@ -1,11 +1,11 @@
-import defu from 'defu'
+import { defu, noop } from '@/shared'
 import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers } from './types'
 import { isMatch } from 'micromatch'
-import { templeteHandler } from '@/wxml/utils'
-import { styleHandler } from '@/postcss'
+import { templeteHandler, createTempleteHandler } from '@/wxml/utils'
+import { styleHandler, createStyleHandler } from '@/postcss'
 import { jsxHandler } from '@/jsx'
+import { createInjectPreflight } from '@/postcss/preflight'
 // import { mangleClassRegex } from '@/mangle/expose'
-const noop = () => {}
 
 export const defaultOptions: InternalUserDefinedOptions = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
@@ -100,6 +100,16 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   normalizeMatcher(options, 'htmlMatcher')
   normalizeMatcher(options, 'jsMatcher')
   normalizeMatcher(options, 'mainCssChunkMatcher')
-  const result = defu(options, defaultOptions) as InternalUserDefinedOptions
+
+  const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions)
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith } = result
+  const cssInjectPreflight = createInjectPreflight(cssPreflight)
+  result.templeteHandler = createTempleteHandler()
+  result.styleHandler = createStyleHandler({
+    cssInjectPreflight,
+    customRuleCallback,
+    cssPreflightRange,
+    replaceUniversalSelectorWith
+  })
   return result
 }

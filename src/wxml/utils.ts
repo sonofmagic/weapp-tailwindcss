@@ -1,6 +1,7 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
+import { defu } from '@/shared'
 import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
 
 export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
@@ -124,4 +125,10 @@ export function customTempleteHandler (rawSource: string, options: ITempleteHand
       return m1.replace(className, templeteReplacer(className, options))
     })
   })
+}
+
+export function createTempleteHandler (options: ICommonReplaceOptions = {}) {
+  return (rawSource: string, opt: ICommonReplaceOptions = {}) => {
+    return templeteHandler(rawSource, defu(opt, options))
+  }
 }

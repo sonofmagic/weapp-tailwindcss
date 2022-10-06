@@ -34,4 +34,28 @@ describe('get options', () => {
     expect(htmlMatcher('a.wxmm')).toBe(true)
     expect(htmlMatcher('a.plmm')).toBe(true)
   })
+
+  it('cssPreflight false', () => {
+    const config = getOptions({
+      cssPreflight: false
+    })
+    expect(config.cssPreflight).toBe(false)
+  })
+
+  it('cssPreflight partial', () => {
+    const cssPreflight = {
+      'border-color': false,
+      'box-sizing': 'content-box',
+      'border-style': 0
+    }
+    const config = getOptions({
+      cssPreflight
+    })
+    expect(config.cssPreflight).toStrictEqual({
+      'border-color': false,
+      'border-style': 0,
+      'border-width': '0',
+      'box-sizing': 'content-box'
+    })
+  })
 })

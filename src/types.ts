@@ -27,9 +27,9 @@ export type CssPreflightOptions =
 
 type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
-  cssInjectPreflight: InjectPreflight
-  cssPreflightRange: 'view' | 'all'
-  replaceUniversalSelectorWith: string | false
+  cssInjectPreflight?: InjectPreflight
+  cssPreflightRange?: 'view' | 'all'
+  replaceUniversalSelectorWith?: string | false
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void

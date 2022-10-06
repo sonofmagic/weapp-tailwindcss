@@ -1,4 +1,7 @@
 import path from 'path'
+import defu from 'defu'
+
+export const noop = () => {}
 
 export function getFileName (file: string) {
   return path.basename(file, path.extname(file))
@@ -27,3 +30,5 @@ export function regExpTest (arr: (string | RegExp)[] = [], str: string) {
   }
   throw new TypeError("paramater 'arr' should be a Array of Regexp | String !")
 }
+
+export { defu }
