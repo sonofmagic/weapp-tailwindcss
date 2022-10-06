@@ -1,14 +1,10 @@
 // webpack 5
-import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions } from '@/types'
+import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack'
-import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { jsxHandler } from '@/jsx'
 import { getOptions } from '@/defaults'
-import { pluginName } from '@/shared'
-import type { IBaseWebpackPlugin } from '@/interfaces'
+import { pluginName, NS } from '@/constants'
 import { NormalModule } from 'webpack'
-import { NS } from '@/constants'
 import path from 'path'
 import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
@@ -41,7 +37,9 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
       onEnd,
       onStart,
       mangle,
-      loaderOptions
+      loaderOptions,
+      styleHandler,
+      jsxHandler
     } = this.options
     if (disabled) {
       return

@@ -1,4 +1,4 @@
-import { replaceWxml } from '@/wxml'
+import { replaceWxml } from '@/wxml/shared'
 import { parse, traverse, generate } from '@/babel'
 import type { Node, TraverseOptions } from '@/types'
 import { getKey } from './matcher'

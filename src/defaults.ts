@@ -1,6 +1,9 @@
 import defu from 'defu'
 import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers } from './types'
 import { isMatch } from 'micromatch'
+import { templeteHandler } from '@/wxml/utils'
+import { styleHandler } from '@/postcss'
+import { jsxHandler } from '@/jsx'
 // import { mangleClassRegex } from '@/mangle/expose'
 const noop = () => {}
 
@@ -59,9 +62,11 @@ export const defaultOptions: InternalUserDefinedOptions = {
   framework: 'react',
   loaderOptions: {
     jsxRename: false
-  }
-
-  // onBeforeUpdate: noop
+  },
+  customAttributes: {},
+  templeteHandler,
+  styleHandler,
+  jsxHandler
 }
 
 function createGlobMatcher (pattern: string | string[]) {
@@ -95,6 +100,6 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   normalizeMatcher(options, 'htmlMatcher')
   normalizeMatcher(options, 'jsMatcher')
   normalizeMatcher(options, 'mainCssChunkMatcher')
-
-  return defu(options, defaultOptions) as InternalUserDefinedOptions
+  const result = defu(options, defaultOptions) as InternalUserDefinedOptions
+  return result
 }

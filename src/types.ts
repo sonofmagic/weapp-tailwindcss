@@ -2,6 +2,12 @@ import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type ClassGenerator from '@/mangle/classGenerator'
 import type { ASTReplacer } from '@/jsx/replacer'
+import type { GeneratorResult } from '@babel/generator'
+
+// export interface TaroUserDefinedOptions extends UserDefinedOptions {
+//   framework: 'react' | 'vue' | 'vue3' | string
+// }
+
 export type { TraverseOptions } from '@babel/traverse'
 export type { Node } from '@babel/types'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
@@ -162,6 +168,22 @@ export interface UserDefinedOptions {
   loaderOptions?: {
     jsxRename?: JsxRenameLoaderOptions['write']
   }
+
+  customAttributes?: Record<string, string | string[]>
+}
+
+export interface ICommonReplaceOptions {
+  keepEOL?: boolean
+  classGenerator?: ClassGenerator
+  // customAttributes?: Record<string, string | string[]>
+}
+
+export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
+  custom?: boolean
+  regex?: {
+    tagRegexp?: RegExp
+    attrRegexp?: RegExp
+  }
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
@@ -169,6 +191,10 @@ export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' 
 export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, GlobOrFunctionMatchers> & {
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
+  } & {
+    templeteHandler: (rawSource: string, options: ITempleteHandlerOptions) => string
+    styleHandler: (rawSource: string, options: StyleHandlerOptions) => string
+    jsxHandler: (rawSource: string, framework?: string) => GeneratorResult
   }
 >
 
@@ -177,11 +203,12 @@ export type InternalPostcssOptions = Pick<
   'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
 > & { classGenerator?: ClassGenerator }
 
-// export interface TaroUserDefinedOptions extends UserDefinedOptions {
-//   framework: 'react' | 'vue' | 'vue3' | string
-// }
-
-export interface ICommonReplaceOptions {
-  keepEOL?: boolean
+export interface IBaseWebpackPlugin {
+  // new (options: UserDefinedOptions, appType: AppType): any
+  // constructor(options: UserDefinedOptions, appType: AppType): void
+  options: InternalUserDefinedOptions
+  appType: AppType
   classGenerator?: ClassGenerator
+
+  apply: (compiler: any) => void
 }

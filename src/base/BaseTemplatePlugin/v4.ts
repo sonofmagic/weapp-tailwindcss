@@ -1,12 +1,9 @@
-import type { UserDefinedOptions, AppType, IMangleOptions, InternalUserDefinedOptions } from '@/types'
+import type { UserDefinedOptions, AppType, IMangleOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack4'
-import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { templeteHandler } from '@/wxml'
 import { getOptions } from '@/defaults'
-import { pluginName } from '@/shared'
+import { pluginName } from '@/constants'
 import { ConcatSource, Source } from 'webpack-sources'
-import type { IBaseWebpackPlugin } from '@/interfaces'
 import { getGroupedEntries } from '@/base/shared'
 import ClassGenerator from '@/mangle/classGenerator'
 // https://github.com/dcloudio/uni-app/blob/231df55edc5582dff5aa802ebbb8d337c58821ae/packages/uni-template-compiler/lib/index.js
@@ -22,8 +19,21 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { mainCssChunkMatcher, replaceUniversalSelectorWith, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart, mangle } =
-      this.options
+    const {
+      mainCssChunkMatcher,
+      replaceUniversalSelectorWith,
+      cssPreflight,
+      cssPreflightRange,
+      customRuleCallback,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart,
+      mangle,
+      templeteHandler,
+      styleHandler
+    } = this.options
     if (disabled) {
       return
     }

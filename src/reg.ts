@@ -1,3 +1,11 @@
+// https://github.com/sindresorhus/escape-string-regexp
+export function escapeStringRegexp (str: string) {
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string')
+  }
+  return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d')
+}
+
 export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 
 export const vueTemplateClassRegexp = /(?:(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
@@ -8,6 +16,19 @@ export const tagRegexp = /<([a-z][-a-z]*[a-z]*)\s*(([a-z][-a-z]*[a-z]*)(?:\s*=\s
 export const tagWithClassRegexp = /<([a-z][-a-z]*[a-z]*)\s+[^>]*?(?:class="([^"]*)")[^>]*?\/?>/g
 
 export const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\/?>/g
+
+// try match tag
+export function createTempleteHandlerMatchRegexp (tag: string, attrs: string | string[]) {
+  const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
+  const source = `<(${tag})\\s+[^>]*?(?:(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
+  return new RegExp(source, 'g')
+}
+
+export function createTemplateClassRegexp (attrs: string | string[]) {
+  const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
+  const source = `(?:${pattern})=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]`
+  return new RegExp(source, 'gs')
+}
 
 export const doubleQuoteRegexp = /"([^"]*)"/g
 

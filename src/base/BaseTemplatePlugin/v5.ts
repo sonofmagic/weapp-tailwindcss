@@ -1,11 +1,8 @@
-import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions } from '@/types'
+import type { AppType, UserDefinedOptions, IMangleOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack'
-import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { templeteHandler } from '@/wxml'
 import { getOptions } from '@/defaults'
-import { pluginName } from '@/shared'
-import type { IBaseWebpackPlugin } from '@/interfaces'
+import { pluginName } from '@/constants'
 import { getGroupedEntries } from '@/base/shared'
 import ClassGenerator from '@/mangle/classGenerator'
 
@@ -22,8 +19,21 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { mainCssChunkMatcher, replaceUniversalSelectorWith, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart, mangle } =
-      this.options
+    const {
+      mainCssChunkMatcher,
+      replaceUniversalSelectorWith,
+      cssPreflight,
+      cssPreflightRange,
+      customRuleCallback,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart,
+      mangle,
+      templeteHandler,
+      styleHandler
+    } = this.options
     if (disabled) {
       return
     }

@@ -1,4 +1,4 @@
-import { pluginName } from '@/shared'
+import { pluginName } from '@/constants'
 import pkg from '../package.json'
 
 describe('[Default]', () => {

@@ -1,5 +1,13 @@
 // import replace from 'regexp-replace'
-import { classStringReplace, tagStringReplace, variableRegExp, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '@/reg'
+import {
+  classStringReplace,
+  tagStringReplace,
+  variableRegExp,
+  tagWithClassRegexp,
+  wxmlAllowClassCharsRegExp,
+  createTempleteHandlerMatchRegexp,
+  createTemplateClassRegexp
+} from '@/reg'
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
@@ -139,5 +147,20 @@ describe('regexp', () => {
 
   test('wxmlAllowClassCharsRegExp test columns-_l_10rem_r_', () => {
     expect(wxmlAllowClassCharsRegExp.test('columns-_l_10rem_r_')).toBe(true)
+  })
+
+  test('customAttributes case 0', () => {
+    const attrs = ['image-class', 'loading-class', 'error-class', 'custom-class']
+    const regexp = createTempleteHandlerMatchRegexp('van-image', attrs)
+    const testCase = '<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>'
+    const matches = Array.from(testCase.matchAll(regexp))
+    expect(matches.length > 0).toBe(true)
+    const regexp0 = createTemplateClassRegexp(attrs)
+    const matches0 = Array.from(testCase.matchAll(regexp0))
+    expect(matches0.length === 2).toBe(true)
+    for (let i = 0; i < matches0.length; i++) {
+      const match = matches0[i]
+      expect(match[1]).toBe('w-[0.5px]')
+    }
   })
 })

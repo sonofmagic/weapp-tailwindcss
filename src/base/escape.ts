@@ -1,13 +1,11 @@
 import { MappingChars2StringEntries as entries } from '@/dic'
-
-// https://github.com/sindresorhus/escape-string-regexp
-function escapeStringRegexp (str: string) {
-  if (typeof str !== 'string') {
-    throw new TypeError('Expected a string')
-  }
-  return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d')
-}
-
+import { escapeStringRegexp } from '@/reg'
+/**
+ * @description 转义正则
+ * @param selectors
+ * @param raw
+ * @returns
+ */
 export function escape (selectors: string, raw?: boolean) {
   let res = selectors
   for (let i = 0; i < entries.length; i++) {

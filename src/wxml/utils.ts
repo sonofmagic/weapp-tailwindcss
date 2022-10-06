@@ -1,7 +1,7 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
-import type { RawSource, ICommonReplaceOptions, Node } from '@/types'
+import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
 
 export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match) as Node
@@ -13,9 +13,8 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
         if (path.parentPath?.parent.type === 'ConditionalExpression') {
           return
         }
-        // || path.parentPath?.parent.type === 'ExpressionStatement'
       }
-      // ConditionalExpression
+
       path.node.value = replaceWxml(path.node.value, options)
     },
     noScope: true
@@ -28,9 +27,7 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
       quotes: 'single'
     }
   })
-  // if (options.classGenerator) {
-  //   return ` ${code} `
-  // }
+
   return code
 }
 
@@ -65,8 +62,7 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
     for (let i = 0; i < sources.length; i++) {
       const m = sources[i]
       const before = original.slice(p, m.start)
-      // const isPrevVarConcated = !/\s/.test(before[before.length - 1])
-      // const isNextVarConcated = !/\s/.test(before[0])
+
       // 匹配前值
       resultArray.push(
         replaceWxml(before, {
@@ -116,6 +112,15 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
 export function templeteHandler (rawSource: string, options: ICommonReplaceOptions = {}) {
   return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
     return m0.replace(vueTemplateClassRegexp, (m1, className) => {
+      return m1.replace(className, templeteReplacer(className, options))
+    })
+  })
+}
+
+export function customTempleteHandler (rawSource: string, options: ITempleteHandlerOptions = {}) {
+  const stepSource = templeteHandler(rawSource, options)
+  return stepSource.replace(options.regex?.tagRegexp ?? tagWithEitherClassAndHoverClassRegexp, (m0) => {
+    return m0.replace(options.regex?.attrRegexp ?? vueTemplateClassRegexp, (m1, className) => {
       return m1.replace(className, templeteReplacer(className, options))
     })
   })
