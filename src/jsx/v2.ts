@@ -81,3 +81,9 @@ export function newJsxHandler (rawSource: string, framework: string = 'react') {
 
   return generate(ast)
 }
+
+export function createJsxHandler () {
+  return (rawSource: string, framework: string = 'react') => {
+    return newJsxHandler(rawSource, framework)
+  }
+}

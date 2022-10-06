@@ -1,13 +1,13 @@
 import { defu, noop } from '@/shared'
 import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers } from './types'
 import { isMatch } from 'micromatch'
-import { templeteHandler, createTempleteHandler } from '@/wxml/utils'
-import { styleHandler, createStyleHandler } from '@/postcss'
-import { jsxHandler } from '@/jsx'
+import { createTempleteHandler } from '@/wxml/utils'
+import { createStyleHandler } from '@/postcss'
+import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
 // import { mangleClassRegex } from '@/mangle/expose'
 
-export const defaultOptions: InternalUserDefinedOptions = {
+export const defaultOptions: Required<UserDefinedOptions> = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
   htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
   jsMatcher: (file) => {
@@ -63,11 +63,11 @@ export const defaultOptions: InternalUserDefinedOptions = {
   loaderOptions: {
     jsxRename: false
   },
-  customAttributes: {},
-  templeteHandler,
-  styleHandler,
-  jsxHandler
-}
+  customAttributes: {}
+  // templeteHandler,
+  // styleHandler,
+  // jsxHandler
+} as const
 
 function createGlobMatcher (pattern: string | string[]) {
   return function (file: string) {
@@ -101,7 +101,7 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   normalizeMatcher(options, 'jsMatcher')
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
-  const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions)
+  const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
   const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith } = result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   result.templeteHandler = createTempleteHandler()
@@ -111,5 +111,6 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
     cssPreflightRange,
     replaceUniversalSelectorWith
   })
+  result.jsxHandler = createJsxHandler()
   return result
 }
