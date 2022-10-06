@@ -1,1 +1,1 @@
-export { newJsxHandler as jsxHandler } from './v2'
+export { newJsxHandler as jsxHandler, createJsxHandler } from './v2'

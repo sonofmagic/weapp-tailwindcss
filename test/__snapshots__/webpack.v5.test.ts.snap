@@ -464,48 +464,48 @@ view,::before,::after {
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
-<view class="a">
+<view class="container">
   <view bindtap="bindViewTap">
     <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
   </view>
-  <view class="b">
+  <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="c d">
+  <view class="powered h-_bl_200_p__br_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="e f g">
+  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="h">
-    <view class="i text-black text-opacity-_bl_0_d_19_br_">
+  <view class="space-y-_bl_1_d_6rem_br_">
+    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="j k text-_bl_20px_br_ l">
+    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="m n text-_bl__h_dddddd_br_">
+    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="o p q r s t u v text-_bl__h_ffffff_br_">
+    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
       Hello
     </view>
-    <view class="w x y z">
+    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="_ aa ba ca da">
+    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
     </view>
-    <view class="ea fa ga ha ia text-white ja ka">
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
       Default
     </view>
   </view>
-  <view class="la">test</view>
-  <view class="ma na oa pa qa {{active=='home'?'ra':'sa'}}  {{b}}  {{a==='ta'}} ua {{flag=='p-[20px]'?'g':'va'}}"></view>
-  <button class="wa xa ha text-white ya za _a">...</button>
-  <view class="ma na oa pa qa {{active=='home'?'ra':'sa'}}  {{b}}  {{a==='ta'}} ua {{flag=='p-[20px]'?'g':'va'}}"></view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -648,48 +648,48 @@ view,::before,::after {
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
-<view class="a">
+<view class="container">
   <view bindtap="bindViewTap">
     <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
   </view>
-  <view class="b">
+  <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="c d">
+  <view class="powered h-_bl_200_p__br_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="e f g">
+  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="h">
-    <view class="i j k">
+  <view class="space-y-_bl_1_d_6rem_br_">
+    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="l m n o">
+    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="p q r">
+    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="s t u v w x y z _">
+    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
       Hello
     </view>
-    <view class="aa ba ca da">
+    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="ea fa ga ha ia">
+    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
     </view>
-    <view class="ja ka la ma na oa pa qa">
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
       Default
     </view>
   </view>
-  <view class="ra">test</view>
-  <view class="sa ta ua va wa {{active=='home'?'xa':'ya'}}  {{b}}  {{a==='za'}} _a {{flag=='p-[20px]'?'g':'ab'}}"></view>
-  <button class="bb cb ma oa db eb fb">...</button>
-  <view class="sa ta ua va wa {{active=='home'?'xa':'ya'}}  {{b}}  {{a==='za'}} _a {{flag=='p-[20px]'?'g':'ab'}}"></view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js?var=87de820fb9efeaeb2cc6": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").

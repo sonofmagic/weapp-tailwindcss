@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.0 (2022-10-6)
+
+### Features
+
+- 增加 `customAttributes` 配置，用于自定义wxml标签上的转化属性，默认转化所有的 `class` 和 `hover-class`。
+- 增加 `customReplaceDictionary` 配置，自定义转化 `class`名称字典，你可以使用这个选项来简化生成的 `class`
+
 ## 1.10.0 (2022-10-2)
 
 ### Features

@@ -1,7 +1,8 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, vueTemplateClassRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
-import type { RawSource, ICommonReplaceOptions, Node } from '@/types'
+import { defu } from '@/shared'
+import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
 
 export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match) as Node
@@ -13,9 +14,8 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
         if (path.parentPath?.parent.type === 'ConditionalExpression') {
           return
         }
-        // || path.parentPath?.parent.type === 'ExpressionStatement'
       }
-      // ConditionalExpression
+
       path.node.value = replaceWxml(path.node.value, options)
     },
     noScope: true
@@ -28,9 +28,7 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
       quotes: 'single'
     }
   })
-  // if (options.classGenerator) {
-  //   return ` ${code} `
-  // }
+
   return code
 }
 
@@ -65,13 +63,13 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
     for (let i = 0; i < sources.length; i++) {
       const m = sources[i]
       const before = original.slice(p, m.start)
-      // const isPrevVarConcated = !/\s/.test(before[before.length - 1])
-      // const isNextVarConcated = !/\s/.test(before[0])
+
       // 匹配前值
       resultArray.push(
         replaceWxml(before, {
           keepEOL: true,
-          classGenerator: options.classGenerator
+          classGenerator: options.classGenerator,
+          escapeEntries: options.escapeEntries
         })
       )
       p = m.start
@@ -95,7 +93,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
         resultArray.push(
           replaceWxml(after, {
             keepEOL: true,
-            classGenerator: options.classGenerator
+            classGenerator: options.classGenerator,
+            escapeEntries: options.escapeEntries
           })
         )
       }
@@ -108,7 +107,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      classGenerator: options.classGenerator
+      classGenerator: options.classGenerator,
+      escapeEntries: options.escapeEntries
     })
   }
 }
@@ -119,4 +119,30 @@ export function templeteHandler (rawSource: string, options: ICommonReplaceOptio
       return m1.replace(className, templeteReplacer(className, options))
     })
   })
+}
+
+export function customTempleteHandler (rawSource: string, options: ITempleteHandlerOptions = {}) {
+  let source = templeteHandler(rawSource, options)
+  if (options.custom) {
+    if (Array.isArray(options.regexps)) {
+      for (let i = 0; i < options.regexps.length; i++) {
+        const regexp = options.regexps[i]
+        source = source.replace(regexp.tagRegexp, (m0) => {
+          return m0.replace(regexp.attrRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options))
+          })
+        })
+      }
+    }
+
+    return source
+  } else {
+    return source
+  }
+}
+
+export function createTempleteHandler (options: ITempleteHandlerOptions = {}) {
+  return (rawSource: string, opt: ITempleteHandlerOptions = {}) => {
+    return customTempleteHandler(rawSource, defu(opt, options))
+  }
 }

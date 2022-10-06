@@ -1,25 +1,20 @@
 // webpack 5
-import type { AppType, UserDefinedOptions, IMangleOptions } from '@/types'
+import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack'
-import { styleHandler } from '@/postcss'
-import { createInjectPreflight } from '@/postcss/preflight'
-import { jsxHandler } from '@/jsx'
 import { getOptions } from '@/defaults'
-import { pluginName } from '@/shared'
-import type { IBaseWebpackPlugin } from '@/interfaces'
+import { pluginName, NS } from '@/constants'
 import { NormalModule } from 'webpack'
-import { NS } from '@/constants'
 import path from 'path'
-import ClassGenerator from '@/mangle/classGenerator'
+// import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
  */
 
 export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
-  options: Required<UserDefinedOptions>
+  options: InternalUserDefinedOptions
   appType: AppType
-  classGenerator?: ClassGenerator
+  // classGenerator?: ClassGenerator
   static NS = NS
   constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
@@ -27,29 +22,14 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const {
-      jsMatcher,
-      mainCssChunkMatcher,
-      replaceUniversalSelectorWith,
-      framework,
-      cssPreflight,
-      cssPreflightRange,
-      customRuleCallback,
-      disabled,
-      onLoad,
-      onUpdate,
-      onEnd,
-      onStart,
-      mangle,
-      loaderOptions
-    } = this.options
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
     if (disabled) {
       return
     }
-    if (mangle) {
-      this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
-    }
-    const cssInjectPreflight = createInjectPreflight(cssPreflight)
+    // if (mangle) {
+    //   this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
+    // }
+
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
@@ -68,7 +48,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
           const rule = {
             loader,
             options: {
-              framework,
+              jsxHandler,
               write: loaderOptions.jsxRename
             },
             ident: null,
@@ -97,7 +77,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
               // }
 
               const rawSource = originalSource.source().toString()
-              const { code } = jsxHandler(rawSource, framework)
+              const { code } = jsxHandler(rawSource)
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)
@@ -106,19 +86,15 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.css)) {
             for (let i = 0; i < groupedEntries.css.length; i++) {
-              let classGenerator
+              // let classGenerator
               const [file, originalSource] = groupedEntries.css[i]
-              if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-                classGenerator = this.classGenerator
-              }
+              // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
+              //   classGenerator = this.classGenerator
+              // }
               const rawSource = originalSource.source().toString()
               const css = styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(file, this.appType),
-                cssInjectPreflight,
-                customRuleCallback,
-                cssPreflightRange,
-                replaceUniversalSelectorWith,
-                classGenerator
+                isMainChunk: mainCssChunkMatcher(file, this.appType)
+                // classGenerator
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)

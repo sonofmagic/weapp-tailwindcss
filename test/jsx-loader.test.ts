@@ -17,7 +17,9 @@ describe('jsx-loader handler', () => {
 
   it('new vue3 jsx normal case', async () => {
     const code = await getVue3Case('First.tsx.tmp')
-    const result = newJsxHandler(code, 'vue3')
+    const result = newJsxHandler(code, {
+      framework: 'vue3'
+    })
     const result2 = jsxHandler(code, createReplacer('vue3'))
     expect(result).toStrictEqual(result2)
     expect(result).toMatchSnapshot()
@@ -25,7 +27,9 @@ describe('jsx-loader handler', () => {
 
   it('new vue2 jsx normal case', async () => {
     const code = await getVue2Case('render.tsx.tmp')
-    const result = newJsxHandler(code, 'vue2')
+    const result = newJsxHandler(code, {
+      framework: 'vue2'
+    })
     expect(result).toMatchSnapshot()
   })
 })

@@ -2,6 +2,12 @@ import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type ClassGenerator from '@/mangle/classGenerator'
 import type { ASTReplacer } from '@/jsx/replacer'
+import type { GeneratorResult } from '@babel/generator'
+
+// export interface TaroUserDefinedOptions extends UserDefinedOptions {
+//   framework: 'react' | 'vue' | 'vue3' | string
+// }
+
 export type { TraverseOptions } from '@babel/traverse'
 export type { Node } from '@babel/types'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
@@ -21,18 +27,20 @@ export type CssPreflightOptions =
 
 type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
-  cssInjectPreflight: InjectPreflight
-  cssPreflightRange: 'view' | 'all'
-  replaceUniversalSelectorWith: string | false
+  cssInjectPreflight?: InjectPreflight
+  cssPreflightRange?: 'view' | 'all'
+  replaceUniversalSelectorWith?: string | false
+  escapeEntries?: [string, string][]
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
-export type StyleHandlerOptions = {
+export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
   classGenerator?: ClassGenerator
 } & RequiredStyleHandlerOptions
 
+export type IJsxHandlerOptions = { escapeEntries?: [string, string][]; framework?: string }
 export interface RawSource {
   start: number
   end: number
@@ -58,6 +66,8 @@ export interface JsxRenameLoaderOptions {
         dir?: string
         filename?: string
       }
+  escapeEntries?: [string, string][]
+  jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
 }
 
 export interface IMangleOptions {
@@ -85,21 +95,21 @@ export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
    */
-  htmlMatcher?: (name: string) => boolean
+  htmlMatcher?: ((name: string) => boolean) | string | string[]
   /**
    * wxss/jxss/ttss 这类的 ss 的匹配方法
    */
-  cssMatcher?: (name: string) => boolean
+  cssMatcher?: ((name: string) => boolean) | string | string[]
   /**
    * 用于处理js
    */
-  jsMatcher?: (name: string) => boolean
+  jsMatcher?: ((name: string) => boolean) | string | string[]
   /**
    * @deprecated v2 版本中不再需要，会自动判断 CssMainChunk
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
-  mainCssChunkMatcher?: (name: string, appType: AppType) => boolean
+  mainCssChunkMatcher?: ((name: string, appType: AppType) => boolean) | string | string[]
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * 用于处理 postcss 的预设
@@ -162,18 +172,59 @@ export interface UserDefinedOptions {
   loaderOptions?: {
     jsxRename?: JsxRenameLoaderOptions['write']
   }
+  /**
+   * @description 自定义attr转化属性，默认转化所有的 class
+   */
+  customAttributes?: Record<string, string | string[]>
+  /**
+   * @description 自定义转化class名称字典
+   */
+  customReplaceDictionary?: Record<string, string>
 }
+
+export interface ICommonReplaceOptions {
+  keepEOL?: boolean
+  classGenerator?: ClassGenerator
+  escapeEntries?: [string, string][]
+  // customAttributes?: Record<string, string | string[]>
+}
+
+export type ICustomRegexp = {
+  tagRegexp: RegExp
+  attrRegexp: RegExp
+  tag: string
+  attrs: string | string[]
+}
+export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
+  custom?: boolean
+  regexps?: ICustomRegexp[]
+  escapeEntries?: [string, string][]
+}
+
+export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
+
+export type InternalUserDefinedOptions = Required<
+  Omit<UserDefinedOptions, GlobOrFunctionMatchers> & {
+    [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
+  } & {
+    templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
+    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
+    jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
+    escapeEntries: [string, string][]
+  }
+>
 
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,
   'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
 > & { classGenerator?: ClassGenerator }
 
-// export interface TaroUserDefinedOptions extends UserDefinedOptions {
-//   framework: 'react' | 'vue' | 'vue3' | string
-// }
-
-export interface ICommonReplaceOptions {
-  keepEOL?: boolean
+export interface IBaseWebpackPlugin {
+  // new (options: UserDefinedOptions, appType: AppType): any
+  // constructor(options: UserDefinedOptions, appType: AppType): void
+  options: InternalUserDefinedOptions
+  appType: AppType
   classGenerator?: ClassGenerator
+
+  apply: (compiler: any) => void
 }

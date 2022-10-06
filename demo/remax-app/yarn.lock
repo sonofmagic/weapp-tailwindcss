@@ -5118,7 +5118,7 @@ micromatch@^3.1.10, micromatch@^3.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.2"
 
-micromatch@^4.0.4:
+micromatch@^4.0.4, micromatch@^4.0.5:
   version "4.0.5"
   resolved "https://registry.npmmirror.com/micromatch/-/micromatch-4.0.5.tgz#bc8999a7cbbf77cdc89f132f6e467051b49090c6"
   integrity sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==
@@ -7939,15 +7939,16 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.yarnpkg.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^1.10.0:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.10.0.tgz#1bd43b2006fd953ffdf9aa9e4c93264848c7873c"
-  integrity sha512-WmmE8xvm60MsUZCWVyBoz12gq5MXCEuguRDszusw0MoLPa3iIY7Bv4DrPSDuAS1Utj00oSXxJf5+JrVr6Xqk/Q==
+weapp-tailwindcss-webpack-plugin@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.11.1.tgz#15deea09c83138a082ca3d8c7d023b9dfea6f0a9"
+  integrity sha512-eVpMq/6+tdi10qkdQAzDRKLEkGY22KRVd2Zz+Y52r7hEPhqxOSWPyLROlmmdr/VwRawd2PGqJ3O8p8urC31t7A==
   dependencies:
     "@babel/generator" "7.19.3"
     "@babel/parser" "7.19.3"
     "@babel/traverse" "7.19.3"
     loader-utils "^2.0.2"
+    micromatch "^4.0.5"
     postcss "^8.4.16"
     postcss-selector-parser "^6.0.10"
     webpack-sources "^3.2.3"

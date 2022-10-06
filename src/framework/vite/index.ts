@@ -1,12 +1,10 @@
 import type { Plugin } from 'vite'
 import { UserDefinedOptions, IMangleOptions } from '@/types'
 import { getOptions } from '@/defaults'
-import { templeteHandler } from '@/wxml'
 import type { OutputAsset } from 'rollup'
 // import WeappTailwindcssRenamePlugin from '@/postcss/plugin'
 // import { postcssPlugin } from '@/postcss/shared'
 import type { Plugin as PostcssPlugin } from 'postcss'
-import { styleHandler } from '@/postcss'
 import { getGroupedEntries } from '@/base/shared'
 import { createInjectPreflight } from '@/postcss/preflight'
 import ClassGenerator from '@/mangle/classGenerator'
@@ -16,22 +14,8 @@ import ClassGenerator from '@/mangle/classGenerator'
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
 export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options)
-  const {
-    // htmlMatcher,
-    // cssMatcher,
-    // mainCssChunkMatcher,
-    disabled,
-    cssPreflight,
-    replaceUniversalSelectorWith,
-    cssPreflightRange,
-    customRuleCallback,
-    onEnd,
-    onLoad,
-    onStart,
-    onUpdate,
-
-    mangle
-  } = opts
+  const { disabled, cssPreflight, replaceUniversalSelectorWith, cssPreflightRange, customRuleCallback, onEnd, onLoad, onStart, onUpdate, mangle, templeteHandler, styleHandler } =
+    opts
   if (disabled) {
     return
   }

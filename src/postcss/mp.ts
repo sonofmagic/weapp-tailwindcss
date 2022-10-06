@@ -1,5 +1,5 @@
 import { Rule, Declaration } from 'postcss'
-import type { StyleHandlerOptions } from '@/types'
+import type { IStyleHandlerOptions } from '@/types'
 
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
@@ -21,7 +21,7 @@ function testIfVariablesScope (node: Rule): boolean {
   return false
 }
 
-export function commonChunkPreflight (node: Rule, options: StyleHandlerOptions) {
+export function commonChunkPreflight (node: Rule, options: IStyleHandlerOptions) {
   node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
   // 变量注入和 preflight

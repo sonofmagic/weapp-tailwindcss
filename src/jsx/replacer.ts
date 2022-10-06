@@ -49,9 +49,7 @@ export class ASTReplacer {
           if (path.node.type === 'StringLiteral') {
             // TODO
             // 现在这样是有个问题的,变量中用户使用了 'a/s' 就会产生破坏效果
-            path.node.value = replaceWxml(path.node.value, {
-              keepEOL: true
-            })
+            path.node.value = replaceWxml(path.node.value, options)
           }
         }
       }
@@ -73,9 +71,7 @@ export class ASTReplacer {
         }
         if (nodeStart >= (refNode.start as number)) {
           if (path.node.type === 'StringLiteral') {
-            path.node.value = replaceWxml(path.node.value, {
-              keepEOL: true
-            })
+            path.node.value = replaceWxml(path.node.value, options)
           }
         }
       }
@@ -90,10 +86,7 @@ export class ASTReplacer {
           return this.end()
         }
         if (path.node.type === 'StringLiteral') {
-          path.node.value = replaceWxml(path.node.value, {
-            keepEOL: true,
-            classGenerator: options.classGenerator
-          })
+          path.node.value = replaceWxml(path.node.value, options)
         }
       }
     }

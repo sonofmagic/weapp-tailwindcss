@@ -1,7 +1,13 @@
-import defu from 'defu'
-import type { UserDefinedOptions } from './types'
+import { defu, noop } from '@/shared'
+import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers } from './types'
+import { isMatch } from 'micromatch'
+import { createTempleteHandler } from '@/wxml/utils'
+import { createStyleHandler } from '@/postcss'
+import { createJsxHandler } from '@/jsx'
+import { createInjectPreflight } from '@/postcss/preflight'
+import { makeCustomAttributes } from '@/reg'
+import { MappingChars2String } from '@/dic'
 // import { mangleClassRegex } from '@/mangle/expose'
-const noop = () => {}
 
 export const defaultOptions: Required<UserDefinedOptions> = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
@@ -58,12 +64,27 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   framework: 'react',
   loaderOptions: {
     jsxRename: false
-  }
+  },
+  customAttributes: {},
+  customReplaceDictionary: MappingChars2String
+  // templeteHandler,
+  // styleHandler,
+  // jsxHandler
+} as const
 
-  // onBeforeUpdate: noop
+function createGlobMatcher (pattern: string | string[]) {
+  return function (file: string) {
+    return isMatch(file, pattern)
+  }
 }
 
-export function getOptions (options: UserDefinedOptions = {}): Required<UserDefinedOptions> {
+function normalizeMatcher (options: UserDefinedOptions, key: GlobOrFunctionMatchers) {
+  if (typeof options[key] === 'string' || Array.isArray(options[key])) {
+    options[key] = createGlobMatcher(options[key] as string | string[])
+  }
+}
+
+export function getOptions (options: UserDefinedOptions = {}): InternalUserDefinedOptions {
   if (options.mangle === true) {
     // https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81
     options.mangle = {
@@ -74,8 +95,36 @@ export function getOptions (options: UserDefinedOptions = {}): Required<UserDefi
       options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
     }
   }
+
   if (options.framework && options.framework === 'vue') {
     options.framework = 'vue2'
   }
-  return defu(options, defaultOptions)
+  normalizeMatcher(options, 'cssMatcher')
+  normalizeMatcher(options, 'htmlMatcher')
+  normalizeMatcher(options, 'jsMatcher')
+  normalizeMatcher(options, 'mainCssChunkMatcher')
+
+  const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
+  const cssInjectPreflight = createInjectPreflight(cssPreflight)
+  const custom = Object.keys(customAttributes).length > 0
+  const escapeEntries = Object.entries(customReplaceDictionary)
+  result.escapeEntries = escapeEntries
+  result.templeteHandler = createTempleteHandler({
+    custom,
+    regexps: makeCustomAttributes(customAttributes),
+    escapeEntries
+  })
+  result.styleHandler = createStyleHandler({
+    cssInjectPreflight,
+    customRuleCallback,
+    cssPreflightRange,
+    replaceUniversalSelectorWith,
+    escapeEntries
+  })
+  result.jsxHandler = createJsxHandler({
+    escapeEntries,
+    framework
+  })
+  return result
 }
