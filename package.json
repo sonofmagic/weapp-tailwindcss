@@ -45,7 +45,7 @@
     "demo:remove-deps": "node scripts/demo/del.js",
     "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js",
     "sync": "open-cli https://npmmirror.com/sync/weapp-tailwindcss-webpack-plugin",
-    "generate:readme": "ts-node readme/write.ts"
+    "generate:readme": "ts-node scripts/readme/write.ts"
   },
   "repository": {
     "type": "git",
