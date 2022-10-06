@@ -39,7 +39,7 @@ renderer.write([
     /{{options-table}}/,
     tableData
       .map(([o, t, d], idx) => {
-        return ['### ' + o, '类型: ' + `**${t}**`, '描述: ' + d].join('\n')
+        return ['### ' + o, `**${t}**\n`, d].join('\n')
       })
       .join('\n')
     // markdownTable(tableData, {
