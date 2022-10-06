@@ -1,3 +1,5 @@
+import type { ICustomRegexp } from '@/types'
+
 // https://github.com/sindresorhus/escape-string-regexp
 export function escapeStringRegexp (str: string) {
   if (typeof str !== 'string') {
@@ -28,6 +30,18 @@ export function createTemplateClassRegexp (attrs: string | string[]) {
   const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
   const source = `(?:${pattern})=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]`
   return new RegExp(source, 'gs')
+}
+
+export function makeCustomAttributes (customAttributes: Record<string, string | string[]>): ICustomRegexp[] {
+  const entries = Object.entries(customAttributes)
+  return entries.map(([k, v]) => {
+    return {
+      tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+      attrRegexp: createTemplateClassRegexp(v),
+      tag: k,
+      attrs: v
+    }
+  })
 }
 
 export const doubleQuoteRegexp = /"([^"]*)"/g

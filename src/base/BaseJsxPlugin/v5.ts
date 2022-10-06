@@ -22,7 +22,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, escapeEntries } = this.options
     if (disabled) {
       return
     }
@@ -49,7 +49,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
             loader,
             options: {
               framework,
-              write: loaderOptions.jsxRename
+              write: loaderOptions.jsxRename,
+              escapeEntries
             },
             ident: null,
             type: null
@@ -77,7 +78,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
               // }
 
               const rawSource = originalSource.source().toString()
-              const { code } = jsxHandler(rawSource, framework)
+              const { code } = jsxHandler(rawSource)
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)

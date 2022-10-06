@@ -68,7 +68,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
       resultArray.push(
         replaceWxml(before, {
           keepEOL: true,
-          classGenerator: options.classGenerator
+          classGenerator: options.classGenerator,
+          escapeEntries: options.escapeEntries
         })
       )
       p = m.start
@@ -92,7 +93,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
         resultArray.push(
           replaceWxml(after, {
             keepEOL: true,
-            classGenerator: options.classGenerator
+            classGenerator: options.classGenerator,
+            escapeEntries: options.escapeEntries
           })
         )
       }
@@ -105,7 +107,8 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      classGenerator: options.classGenerator
+      classGenerator: options.classGenerator,
+      escapeEntries: options.escapeEntries
     })
   }
 }
@@ -119,16 +122,27 @@ export function templeteHandler (rawSource: string, options: ICommonReplaceOptio
 }
 
 export function customTempleteHandler (rawSource: string, options: ITempleteHandlerOptions = {}) {
-  const stepSource = templeteHandler(rawSource, options)
-  return stepSource.replace(options.regex?.tagRegexp ?? tagWithEitherClassAndHoverClassRegexp, (m0) => {
-    return m0.replace(options.regex?.attrRegexp ?? vueTemplateClassRegexp, (m1, className) => {
-      return m1.replace(className, templeteReplacer(className, options))
-    })
-  })
+  let source = templeteHandler(rawSource, options)
+  if (options.custom) {
+    if (Array.isArray(options.regexps)) {
+      for (let i = 0; i < options.regexps.length; i++) {
+        const regexp = options.regexps[i]
+        source = source.replace(regexp.tagRegexp, (m0) => {
+          return m0.replace(regexp.attrRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options))
+          })
+        })
+      }
+    }
+
+    return source
+  } else {
+    return source
+  }
 }
 
-export function createTempleteHandler (options: ICommonReplaceOptions = {}) {
-  return (rawSource: string, opt: ICommonReplaceOptions = {}) => {
-    return templeteHandler(rawSource, defu(opt, options))
+export function createTempleteHandler (options: ITempleteHandlerOptions = {}) {
+  return (rawSource: string, opt: ITempleteHandlerOptions = {}) => {
+    return customTempleteHandler(rawSource, defu(opt, options))
   }
 }

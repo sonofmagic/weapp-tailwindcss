@@ -5,6 +5,8 @@ import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
 import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
+import { makeCustomAttributes } from '@/reg'
+import { MappingChars2String } from '@/dic'
 // import { mangleClassRegex } from '@/mangle/expose'
 
 export const defaultOptions: Required<UserDefinedOptions> = {
@@ -63,7 +65,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   loaderOptions: {
     jsxRename: false
   },
-  customAttributes: {}
+  customAttributes: {},
+  customReplaceDictionary: MappingChars2String
   // templeteHandler,
   // styleHandler,
   // jsxHandler
@@ -102,15 +105,26 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
   const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
-  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith } = result
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
-  result.templeteHandler = createTempleteHandler()
+  const custom = Object.keys(customAttributes).length > 0
+  const escapeEntries = Object.entries(customReplaceDictionary)
+  result.escapeEntries = escapeEntries
+  result.templeteHandler = createTempleteHandler({
+    custom,
+    regexps: makeCustomAttributes(customAttributes),
+    escapeEntries
+  })
   result.styleHandler = createStyleHandler({
     cssInjectPreflight,
     customRuleCallback,
     cssPreflightRange,
-    replaceUniversalSelectorWith
+    replaceUniversalSelectorWith,
+    escapeEntries
   })
-  result.jsxHandler = createJsxHandler()
+  result.jsxHandler = createJsxHandler({
+    escapeEntries,
+    framework
+  })
   return result
 }

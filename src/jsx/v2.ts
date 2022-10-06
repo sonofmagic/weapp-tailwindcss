@@ -1,9 +1,9 @@
 import { replaceWxml } from '@/wxml/shared'
 import { parse, traverse, generate } from '@/babel'
-import type { Node, TraverseOptions } from '@/types'
+import type { Node, TraverseOptions, IJsxHandlerOptions } from '@/types'
 import { getKey } from './matcher'
 import { templeteHandler } from '@/wxml/utils'
-
+import { defu } from '@/shared'
 const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
   vue2: ['class', 'staticClass'], // 'hover-class' 在 'attrs' 里
@@ -14,11 +14,17 @@ function isObjectKey (type: string) {
   return ['Identifier', 'StringLiteral'].includes(type)
 }
 
-export function newJsxHandler (rawSource: string, framework: string = 'react') {
+export function newJsxHandler (
+  rawSource: string,
+  opt: IJsxHandlerOptions = {
+    framework: 'react'
+  }
+) {
+  const { framework, escapeEntries } = opt
   const ast = parse(rawSource, {
     sourceType: 'unambiguous'
   }) as Node
-  const matchKeys = StartMatchKeyMap[framework] ?? StartMatchKeyMap.react
+  const matchKeys = StartMatchKeyMap[framework as string] ?? StartMatchKeyMap.react
   const isVue2 = framework === 'vue2'
   const isVue3 = framework === 'vue3'
   // https://astexplorer.net/
@@ -40,7 +46,8 @@ export function newJsxHandler (rawSource: string, framework: string = 'react') {
             if (idx > -1 && hoverClassNode.type === 'ObjectProperty') {
               if (hoverClassNode.value.type === 'StringLiteral') {
                 hoverClassNode.value.value = replaceWxml(hoverClassNode.value.value, {
-                  keepEOL: true
+                  keepEOL: true,
+                  escapeEntries
                 })
               }
             }
@@ -57,7 +64,8 @@ export function newJsxHandler (rawSource: string, framework: string = 'react') {
       enter (path) {
         if (startFlag) {
           path.node.value = replaceWxml(path.node.value, {
-            keepEOL: true
+            keepEOL: true,
+            escapeEntries
           })
         }
       }
@@ -82,8 +90,13 @@ export function newJsxHandler (rawSource: string, framework: string = 'react') {
   return generate(ast)
 }
 
-export function createJsxHandler () {
-  return (rawSource: string, framework: string = 'react') => {
-    return newJsxHandler(rawSource, framework)
+export function createJsxHandler (options: IJsxHandlerOptions) {
+  return (
+    rawSource: string,
+    opt: IJsxHandlerOptions = {
+      framework: 'react'
+    }
+  ) => {
+    return newJsxHandler(rawSource, defu(opt, options))
   }
 }

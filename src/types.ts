@@ -30,15 +30,17 @@ type RequiredStyleHandlerOptions = {
   cssInjectPreflight?: InjectPreflight
   cssPreflightRange?: 'view' | 'all'
   replaceUniversalSelectorWith?: string | false
+  escapeEntries?: [string, string][]
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
-export type StyleHandlerOptions = {
+export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
   classGenerator?: ClassGenerator
 } & RequiredStyleHandlerOptions
 
+export type IJsxHandlerOptions = { escapeEntries?: [string, string][]; framework?: string }
 export interface RawSource {
   start: number
   end: number
@@ -64,6 +66,7 @@ export interface JsxRenameLoaderOptions {
         dir?: string
         filename?: string
       }
+  escapeEntries?: [string, string][]
 }
 
 export interface IMangleOptions {
@@ -168,22 +171,33 @@ export interface UserDefinedOptions {
   loaderOptions?: {
     jsxRename?: JsxRenameLoaderOptions['write']
   }
-
+  /**
+   * @description 自定义attr转化属性，默认转化所有的 class
+   */
   customAttributes?: Record<string, string | string[]>
+  /**
+   * @description 自定义转化class名称字典
+   */
+  customReplaceDictionary?: Record<string, string>
 }
 
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
   classGenerator?: ClassGenerator
+  escapeEntries?: [string, string][]
   // customAttributes?: Record<string, string | string[]>
 }
 
+export type ICustomRegexp = {
+  tagRegexp: RegExp
+  attrRegexp: RegExp
+  tag: string
+  attrs: string | string[]
+}
 export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   custom?: boolean
-  regex?: {
-    tagRegexp?: RegExp
-    attrRegexp?: RegExp
-  }
+  regexps?: ICustomRegexp[]
+  escapeEntries?: [string, string][]
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
@@ -192,9 +206,10 @@ export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, GlobOrFunctionMatchers> & {
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
   } & {
-    templeteHandler: (rawSource: string, options: ITempleteHandlerOptions) => string
-    styleHandler: (rawSource: string, options: StyleHandlerOptions) => string
-    jsxHandler: (rawSource: string, framework?: string) => GeneratorResult
+    templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
+    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
+    jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
+    escapeEntries: [string, string][]
   }
 >
 

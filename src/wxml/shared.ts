@@ -1,11 +1,12 @@
 import { ICommonReplaceOptions } from '@/types'
 import { mangleMark } from '@/mangle/expose'
 import { escape } from '@/base/escape'
-
+import { MappingChars2StringEntries } from '@/dic'
 export function replaceWxml (
   original: string,
   options: ICommonReplaceOptions | boolean = {
-    keepEOL: false
+    keepEOL: false,
+    escapeEntries: MappingChars2StringEntries
   }
 ) {
   if (typeof options === 'boolean') {
@@ -21,7 +22,7 @@ export function replaceWxml (
       .replace(/[\r\n]+/g, '')
   }
   const oldValue = res
-  res = escape(res)
+  res = escape(res, false, options.escapeEntries)
 
   if (options.classGenerator) {
     res = mangleMark(res, oldValue, options.classGenerator)

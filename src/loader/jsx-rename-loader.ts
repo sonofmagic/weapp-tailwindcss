@@ -15,6 +15,9 @@ export default function loader (this: webpack.LoaderContext<JsxRenameLoaderOptio
     const t = path.resolve(config.write.dir!, '.' + this.resource.replace(this.context, '') + '.tmp')
     mkfileSync(t, content)
   }
-  const { code } = jsxHandler(content, config.framework)
+  const { code } = jsxHandler(content, {
+    framework: config.framework,
+    escapeEntries: config.escapeEntries
+  })
   return code
 }
