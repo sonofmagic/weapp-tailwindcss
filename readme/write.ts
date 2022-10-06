@@ -10,9 +10,9 @@ renderer.write([
     markdownTable(
       [
         ['配置项', '类型', '描述'],
-        ['`htmlMatcher`', '`(assetPath:string)=>boolean`', '匹配 `wxml`等等模板进行处理的方法'],
-        ['`cssMatcher`', '`(assetPath:string)=>boolean`', '匹配 `wxss`等等样式文件的方法'],
-        ['`jsMatcher`', '`(assetPath:string)=>boolean`', '匹配 `js`文件进行处理的方法，用于 `react`'],
+        ['`htmlMatcher`', '`(assetPath:string)=>boolean`\\|`string`\\|`string[]`', '匹配 `wxml`等等模板进行处理的方法'],
+        ['`cssMatcher`', '`(assetPath:string)=>boolean`\\|`string`\\|`string[]`', '匹配 `wxss`等等样式文件的方法'],
+        ['`jsMatcher`', '`(assetPath:string)=>boolean`\\|`string`\\|`string[]`', '匹配 `js`文件进行处理的方法，用于`jsx`相关模板'],
 
         ['`mainCssChunkMatcher`', '`(assetPath:string)=>boolean`', '匹配 `tailwindcss jit` 生成的核心 `css chunk` 的方法'],
         ['`framework` (`Taro` 特有)', '`react`\\|`vue2`\\|`vue3`', '由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`'],
@@ -28,6 +28,8 @@ renderer.write([
           '`string` \\| `false`',
           "把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错"
         ],
+        ['`customAttributes`', '`Record<string, string | string[]>`', '自定义wxml标签上的attr转化属性，默认转化所有的 `class` 和 `hover-class`'],
+        ['`customReplaceDictionary`', '`Record<string, string>`', '自定义转化class名称字典,你可以使用这个选项来简化生成的 `class`'],
         // [
         //   '`mangle`(1.9.0+)',
         //   '`boolean` \\| `IMangleOptions`',

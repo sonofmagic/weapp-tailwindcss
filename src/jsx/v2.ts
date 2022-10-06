@@ -91,12 +91,7 @@ export function newJsxHandler (
 }
 
 export function createJsxHandler (options: IJsxHandlerOptions) {
-  return (
-    rawSource: string,
-    opt: IJsxHandlerOptions = {
-      framework: 'react'
-    }
-  ) => {
+  return (rawSource: string, opt?: IJsxHandlerOptions) => {
     return newJsxHandler(rawSource, defu(opt, options))
   }
 }
