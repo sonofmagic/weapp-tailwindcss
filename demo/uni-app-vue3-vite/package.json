@@ -73,6 +73,6 @@
     "vite": "^2.9.14",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.10.0"
+    "weapp-tailwindcss-webpack-plugin": "^1.11.0-beta.1"
   }
 }

@@ -67,6 +67,7 @@ export interface JsxRenameLoaderOptions {
         filename?: string
       }
   escapeEntries?: [string, string][]
+  jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
 }
 
 export interface IMangleOptions {

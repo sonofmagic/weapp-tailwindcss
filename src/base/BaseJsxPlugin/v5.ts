@@ -22,7 +22,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply (compiler: Compiler) {
-    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, escapeEntries } = this.options
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
     if (disabled) {
       return
     }
@@ -48,9 +48,8 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
           const rule = {
             loader,
             options: {
-              framework,
-              write: loaderOptions.jsxRename,
-              escapeEntries
+              jsxHandler,
+              write: loaderOptions.jsxRename
             },
             ident: null,
             type: null
