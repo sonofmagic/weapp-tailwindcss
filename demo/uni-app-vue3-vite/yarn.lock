@@ -2919,6 +2919,11 @@ vite@^2.9.14:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vk-uview-ui@^1.3.9:
+  version "1.3.9"
+  resolved "https://registry.npmmirror.com/vk-uview-ui/-/vk-uview-ui-1.3.9.tgz#a936429b894eeef0b191049d4d9fb9b2a8a8f2cd"
+  integrity sha512-7g5pD/a1X0kKiBqIyGmTJOSBYhzTCxb/wjC204RM8pnT1hMFPz7t6U1qeYSk7jBEuqA3d5aV16TqTbVkiNEz6Q==
+
 vue-i18n@^9.1.9:
   version "9.2.2"
   resolved "https://registry.npmmirror.com/vue-i18n/-/vue-i18n-9.2.2.tgz#aeb49d9424923c77e0d6441e3f21dafcecd0e666"

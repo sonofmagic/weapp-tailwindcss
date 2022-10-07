@@ -9,15 +9,17 @@
         <view class="u-count-down__text">u-count-down__text</view>
       </view>
     </view>
+    <u-button type="primary">主要按钮</u-button>
+    <u-input />
     <view class="after:border-none">当前系统主题:{{ themeRef }}</view>
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
     <view class="text-[22px] dark:text-yellow-400">text-[22px]</view>
     <view class="text-[#bada55]">text-[#bada55]</view>
-    <view class="text-[var(--my-var)]">text-[var(--my-var)]</view>
-    <div class="text-[length:var(--my-var)]">...</div>
-    <div class="text-[color:var(--my-var)]">...</div>
+    <!-- <view class="text-[var(--my-var)]">text-[var(--my-var)]</view> -->
+    <div class="text-[length:var(--my-var-length)]">text-[length:var(--my-var-length)]</div>
+    <div class="text-[color:var(--my-var)]">text-[color:var(--my-var)]</div>
     <button class="!bg-green-500 !sr-onlytext-white" :class="{
       'opacity-50': disabled,
     }" :disabled="disabled">
@@ -96,6 +98,8 @@ onLoad(() => {
 page {
   --primary-color-hex: #4268ea;
   --primary-color-bg: yellow;
+  --my-var: green;
+  --my-var-length: 24px;
 }
 
 page::before {
