@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.(1-2) (2022-10-7)
+
+### Chore
+
+- 更改 `readme` `options` 的排版, 去除原先的 `md table`，让阅读体验好一些。
+- 去除 `vite plugin` 的重复性创建 `function` 方法
+
 ## 1.11.0 (2022-10-6)
 
 ### Features
