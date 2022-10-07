@@ -2919,6 +2919,11 @@ vite@^2.9.14:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vk-uview-ui@^1.3.9:
+  version "1.3.9"
+  resolved "https://registry.npmmirror.com/vk-uview-ui/-/vk-uview-ui-1.3.9.tgz#a936429b894eeef0b191049d4d9fb9b2a8a8f2cd"
+  integrity sha512-7g5pD/a1X0kKiBqIyGmTJOSBYhzTCxb/wjC204RM8pnT1hMFPz7t6U1qeYSk7jBEuqA3d5aV16TqTbVkiNEz6Q==
+
 vue-i18n@^9.1.9:
   version "9.2.2"
   resolved "https://registry.npmmirror.com/vue-i18n/-/vue-i18n-9.2.2.tgz#aeb49d9424923c77e0d6441e3f21dafcecd0e666"
@@ -2966,10 +2971,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.yarnpkg.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^1.11.1:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.11.1.tgz#15deea09c83138a082ca3d8c7d023b9dfea6f0a9"
-  integrity sha512-eVpMq/6+tdi10qkdQAzDRKLEkGY22KRVd2Zz+Y52r7hEPhqxOSWPyLROlmmdr/VwRawd2PGqJ3O8p8urC31t7A==
+weapp-tailwindcss-webpack-plugin@^1.11.2:
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.11.2.tgz#10e16fcde153185bd9cf2ca73db7cf9140ca2c6b"
+  integrity sha512-o3919WTwGcXljZnizuczX+2Bj7m+/ovkxf038urSMa3Krej08hPbyIuQlb6DQYn/Z1Vd1578Awv7w1PDJV8bog==
   dependencies:
     "@babel/generator" "7.19.3"
     "@babel/parser" "7.19.3"

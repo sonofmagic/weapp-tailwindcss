@@ -1,7 +1,7 @@
 import { ReadmeRender } from '@icebreakers/readme'
 
 const renderer = new ReadmeRender({
-  templatePath: './readme/T.md'
+  templatePath: 'scripts/readme/T.md'
 })
 
 const tableData = [

@@ -20,7 +20,16 @@ const vitePlugins = [uni()]
 // postcss 插件配置
 const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()]
 if (!WeappTailwindcssDisabled) {
-  vitePlugins.push(vwt())
+  vitePlugins.push(
+    vwt({
+      customReplaceDictionary: {
+        '[': '_',
+        ']': '_',
+        '(': '_',
+        ')': '-'
+      }
+    })
+  )
 
   postcssPlugins.push(
     require('postcss-rem-to-responsive-pixel')({

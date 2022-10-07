@@ -1,33 +1,31 @@
 import type { Plugin } from 'vite'
-import { UserDefinedOptions, IMangleOptions } from '@/types'
+import { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/defaults'
 import type { OutputAsset } from 'rollup'
-// import WeappTailwindcssRenamePlugin from '@/postcss/plugin'
-// import { postcssPlugin } from '@/postcss/shared'
+import { vitePluginName } from '@/constants'
 import type { Plugin as PostcssPlugin } from 'postcss'
 import { getGroupedEntries } from '@/base/shared'
-import { createInjectPreflight } from '@/postcss/preflight'
-import ClassGenerator from '@/mangle/classGenerator'
+
+// import ClassGenerator from '@/mangle/classGenerator'
 
 // issue 一个节点静态，一个节点动态，动态节点中的静态属性不会被 mangle 导致存在问题
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
 export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options)
-  const { disabled, cssPreflight, replaceUniversalSelectorWith, cssPreflightRange, customRuleCallback, onEnd, onLoad, onStart, onUpdate, mangle, templeteHandler, styleHandler } =
-    opts
+  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler } = opts
   if (disabled) {
     return
   }
-  let globalClassGenerator: ClassGenerator | undefined
-  if (mangle) {
-    globalClassGenerator = new ClassGenerator(mangle as IMangleOptions)
-  }
-  const cssInjectPreflight = createInjectPreflight(cssPreflight)
+  // let globalClassGenerator: ClassGenerator | undefined
+  // if (mangle) {
+  //   globalClassGenerator = new ClassGenerator(mangle as IMangleOptions)
+  // }
+  // const cssInjectPreflight = createInjectPreflight(cssPreflight)
   onLoad()
   // 要在 vite:css 处理之前运行
   return {
-    name: 'vite-plugin-uni-app-weapp-tailwindcss-adaptor',
+    name: vitePluginName,
     enforce: 'post',
     buildStart () {
       onStart()
@@ -69,31 +67,27 @@ export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions 
       const groupedEntries = getGroupedEntries(entries, opts)
       if (Array.isArray(groupedEntries.html)) {
         for (let i = 0; i < groupedEntries.html.length; i++) {
-          let classGenerator
+          // let classGenerator
           const [file, originalSource] = groupedEntries.html[i]
-          if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
-            classGenerator = globalClassGenerator
-          }
+          // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
+          //   classGenerator = globalClassGenerator
+          // }
           const oldVal = originalSource.source.toString()
-          originalSource.source = templeteHandler(oldVal, { classGenerator })
+          originalSource.source = templeteHandler(oldVal)
           onUpdate(file, oldVal, originalSource.source)
         }
       }
       if (Array.isArray(groupedEntries.css)) {
         for (let i = 0; i < groupedEntries.css.length; i++) {
-          let classGenerator
+          // let classGenerator
           const [file, originalSource] = groupedEntries.css[i]
-          if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
-            classGenerator = globalClassGenerator
-          }
+          // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
+          //   classGenerator = globalClassGenerator
+          // }
           const rawSource = originalSource.source.toString()
           const css = styleHandler(rawSource, {
-            isMainChunk: true,
-            cssInjectPreflight,
-            customRuleCallback,
-            cssPreflightRange,
-            replaceUniversalSelectorWith,
-            classGenerator
+            isMainChunk: true
+            // classGenerator
           })
           originalSource.source = css
           onUpdate(file, rawSource, css)

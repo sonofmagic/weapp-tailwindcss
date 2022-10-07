@@ -55,5 +55,11 @@
         }
       ]
     }
-  ]
+  ],
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u-(.*)": "vk-uview-ui/components/u-$1/u-$1.vue"
+    }
+  }
 }

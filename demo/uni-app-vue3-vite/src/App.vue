@@ -20,4 +20,5 @@ onHide(() => {
 <style lang="scss">
 @import 'tailwindcss/base';
 @import 'tailwindcss/utilities';
+@import "vk-uview-ui/index.scss";
 </style>

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "uni -p mp-weixin",
+    "dev:local": "cross-env LOCAL=1 uni -p mp-weixin",
     "build": "uni build -p mp-weixin",
     "build:local": "cross-env LOCAL=1 uni build -p mp-weixin",
     "dev:app": "uni -p app",
@@ -51,6 +52,7 @@
     "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-3060320220919001",
     "eventemitter3": "^4.0.7",
     "p-queue": "6.6.2",
+    "vk-uview-ui": "^1.3.9",
     "vue": "^3.2.39",
     "vue-i18n": "^9.1.9",
     "vuex": "^4.0.2"
@@ -73,6 +75,6 @@
     "vite": "^2.9.14",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.11.1"
+    "weapp-tailwindcss-webpack-plugin": "^1.11.2"
   }
 }
