@@ -1,4 +1,5 @@
 import { ReadmeRender } from '@icebreakers/readme'
+import { trim } from 'lodash'
 
 const renderer = new ReadmeRender({
   templatePath: 'scripts/readme/T.md'
@@ -6,12 +7,12 @@ const renderer = new ReadmeRender({
 
 const tableData = [
   // ['配置项', '类型', '描述'],
-  ['`htmlMatcher`', '`(assetPath:string)=>boolean`\\|`string`\\|`string[]`', '匹配 `wxml`等等模板进行处理的方法'],
-  ['`cssMatcher`', '`(assetPath:string)=>boolean`\\|`string`\\|`string[]`', '匹配 `wxss`等等样式文件的方法'],
-  ['`jsMatcher`', '`(assetPath:string)=>boolean`\\|`string`\\|`string[]`', '匹配 `js`文件进行处理的方法，用于`jsx`相关模板'],
+  ['`htmlMatcher`', '`((assetPath:string)=>boolean)`\\|`string`\\|`string[]`', '匹配 `wxml`等等模板进行处理的方法'],
+  ['`cssMatcher`', '`((assetPath:string)=>boolean)`\\|`string`\\|`string[]`', '匹配 `wxss`等等样式文件的方法'],
+  ['`jsMatcher`', '`((assetPath:string)=>boolean)`\\|`string`\\|`string[]`', '匹配 `js`文件进行处理的方法，用于`jsx`相关模板'],
 
   ['`mainCssChunkMatcher`', '`(assetPath:string)=>boolean`', '匹配 `tailwindcss jit` 生成的核心 `css chunk` 的方法'],
-  ['`framework` (`Taro` 特有)', '`react`\\|`vue2`\\|`vue3`', '由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`'],
+  ['framework (`Taro` 特有)', '`react`\\|`vue2`\\|`vue3`', '由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`'],
   ['`customRuleCallback`', '`(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void`', '可根据 Postcss walk 自由定制处理方案的 callback 方法 '],
   ['`disabled`', '`boolean`', '是否禁用该插件，默认为 `false`，一般用于多平台构建，有些平台比如 `h5` 不需要开启此插件，所以可以根据环境变量进行禁用。'],
   [
@@ -39,9 +40,9 @@ renderer.write([
     /{{options-table}}/,
     tableData
       .map(([o, t, d], idx) => {
-        return ['### ' + o, `类型: ${t}  `, '描述: ' + d].join('\n')
+        return ['### ' + trim(o, '`') + '\n', `类型: ${t}  `, '描述: ' + d].join('\n')
       })
-      .join('\n')
+      .join('\n\n')
     // markdownTable(tableData, {
     //   alignDelimiters: false
     // })
