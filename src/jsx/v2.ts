@@ -1,13 +1,24 @@
 import { replaceWxml } from '@/wxml/shared'
 import { parse, traverse, generate } from '@/babel'
-import type { Node, TraverseOptions, IJsxHandlerOptions } from '@/types'
-import { getKey } from './matcher'
+import type { TraverseOptions, IJsxHandlerOptions } from '@/types'
+import type { Node, Identifier, StringLiteral, Expression } from '@babel/types'
+
 import { templeteHandler } from '@/wxml/utils'
 import { defu } from '@/shared'
 const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
   vue2: ['class', 'staticClass'], // 'hover-class' 在 'attrs' 里
   vue3: ['class', 'hover-class']
+}
+
+export function getKey (node: Identifier | StringLiteral | Expression): string {
+  if (node.type === 'Identifier') {
+    return node.name
+  }
+  if (node.type === 'StringLiteral') {
+    return node.value
+  }
+  return ''
 }
 
 function isObjectKey (type: string) {

@@ -1,7 +1,7 @@
-import { jsxHandler } from '@/jsx/v1'
+import { jsxHandler } from '#test/archived/jsx/v1'
 import { newJsxHandler } from '@/jsx/v2'
 import { loaderCasePath, createGetCase } from './util'
-import { createReplacer } from '@/jsx/replacer'
+import { createReplacer } from '#test/archived/jsx/replacer'
 
 const getVue3Case = createGetCase(loaderCasePath + '/taro-vue3-app')
 const getVue2Case = createGetCase(loaderCasePath + '/taro-vue2-app')
