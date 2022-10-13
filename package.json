@@ -129,7 +129,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jest": "^27.1.1",
     "eslint-plugin-n": "^15.3.0",
-    "eslint-plugin-promise": "6.0.1",
+    "eslint-plugin-promise": "6.1.0",
     "esm": "^3.2.25",
     "execa": "5",
     "fast-glob": "^3.2.12",
