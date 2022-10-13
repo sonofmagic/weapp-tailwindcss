@@ -25,7 +25,7 @@ function isObjectKey (type: string) {
   return ['Identifier', 'StringLiteral'].includes(type)
 }
 
-export function newJsxHandler (
+export function jsxHandler (
   rawSource: string,
   opt: IJsxHandlerOptions = {
     framework: 'react'
@@ -103,6 +103,6 @@ export function newJsxHandler (
 
 export function createJsxHandler (options: IJsxHandlerOptions) {
   return (rawSource: string, opt?: IJsxHandlerOptions) => {
-    return newJsxHandler(rawSource, defu(opt, options))
+    return jsxHandler(rawSource, defu(opt, options))
   }
 }

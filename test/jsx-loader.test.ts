@@ -1,5 +1,5 @@
 import { jsxHandler } from '#test/archived/jsx/v1'
-import { newJsxHandler } from '@/jsx/v2'
+import { jsxHandler as newJsxHandler } from '@/jsx/v2'
 import { loaderCasePath, createGetCase } from './util'
 import { createReplacer } from '#test/archived/jsx/replacer'
 
