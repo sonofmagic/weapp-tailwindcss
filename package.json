@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.11.2",
+  "version": "1.11.3-beta.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -166,9 +166,9 @@
     "webpack4": "npm:webpack@webpack-4"
   },
   "dependencies": {
-    "@babel/traverse": "7.19.3",
     "@babel/generator": "7.19.3",
     "@babel/parser": "7.19.3",
+    "@babel/traverse": "7.19.3",
     "loader-utils": "^2.0.2",
     "micromatch": "^4.0.5",
     "postcss": "8.4.16",
