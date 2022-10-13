@@ -1,7 +1,7 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type ClassGenerator from '@/mangle/classGenerator'
-import type { ASTReplacer } from '@/jsx/replacer'
+
 import type { GeneratorResult } from '@babel/generator'
 
 // export interface TaroUserDefinedOptions extends UserDefinedOptions {
@@ -57,16 +57,15 @@ export interface IMangleContextClass {
 }
 
 export interface JsxRenameLoaderOptions {
-  replacer: ASTReplacer
-  framework?: string
-  isVue?: boolean
+  // framework?: string
+  // isVue?: boolean
   write?:
     | false
     | {
         dir?: string
         filename?: string
       }
-  escapeEntries?: [string, string][]
+  // escapeEntries?: [string, string][]
   jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
 }
 

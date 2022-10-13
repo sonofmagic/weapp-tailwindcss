@@ -14,12 +14,12 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   appType: AppType
   // classGenerator?: ClassGenerator
   static NS = NS
-  constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor(options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
     if (disabled) {
       return
@@ -32,11 +32,10 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
     const loader = path.resolve(__dirname, `${NS}.js`)
     onLoad()
 
-    // @ts-ignore
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      // @ts-ignore
       compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
         // loaderContext[NS] = true
+        // @ts-ignore
         if (jsMatcher(module.resource)) {
           // let classGenerator
           // if (this.classGenerator && this.classGenerator.isFileIncluded(module.resource)) {
@@ -52,7 +51,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
               write: loaderOptions.jsxRename
             }
           }
-
+          // @ts-ignore
           module.loaders.unshift(rule)
         }
       })

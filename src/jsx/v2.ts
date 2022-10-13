@@ -1,7 +1,7 @@
 import { replaceWxml } from '@/wxml/shared'
 import { parse, traverse, generate } from '@/babel'
 import type { TraverseOptions, IJsxHandlerOptions } from '@/types'
-import type { Node, Identifier, StringLiteral, Expression } from '@babel/types'
+import type { Node, Identifier, StringLiteral, Expression, PrivateName } from '@babel/types'
 
 import { templeteHandler } from '@/wxml/utils'
 import { defu } from '@/shared'
@@ -11,7 +11,7 @@ const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   vue3: ['class', 'hover-class']
 }
 
-export function getKey (node: Identifier | StringLiteral | Expression): string {
+export function getKey (node: Identifier | StringLiteral | Expression | PrivateName): string {
   if (node.type === 'Identifier') {
     return node.name
   }
@@ -97,7 +97,7 @@ export function jsxHandler (
   }
   // const vue3StaticVNodeStartFlag = false
   traverse(ast, options)
-
+  // @ts-ignore
   return generate(ast)
 }
 
