@@ -17,6 +17,6 @@
     "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }],
     "types": ["webpack", "node", "jest"]
   },
-  "exclude": ["dist", "node_modules", "test/types", "./*.d.ts"],
+  "exclude": ["dist", "node_modules", "test/types", "./*.d.ts", "demo/**/*"],
   "include": ["src/**/*", "types/**/*", "test/**/*"]
 }
