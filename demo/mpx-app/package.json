@@ -82,7 +82,7 @@
     "vue-template-compiler": "^2.7.8",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.11.2",
+    "weapp-tailwindcss-webpack-plugin": "^1.11.3",
     "webpack": "^5.74.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-dev-server": "^4.9.3",

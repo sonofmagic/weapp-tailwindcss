@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.11.2",
+  "version": "1.11.3",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -31,6 +31,7 @@
     "dts": "ttsc --emitDeclarationOnly -p tsconfig.dts.json",
     "fix-dts": "ts-node scripts/fix-dts.ts",
     "test": "jest",
+    "test:all": "cross-env JEST_INVALID_SKIP_CASES=1 jest",
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
@@ -100,6 +101,8 @@
     "@rollup/plugin-node-resolve": "^14.1.0",
     "@rollup/plugin-typescript": "^8.5.0",
     "@tsconfig/recommended": "^1.0.1",
+    "@types/babel__generator": "^7.6.4",
+    "@types/babel__traverse": "^7.18.2",
     "@types/esm": "^3.2.0",
     "@types/jest": "^29.1.2",
     "@types/loader-utils": "^2.0.3",
@@ -126,7 +129,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jest": "^27.1.1",
     "eslint-plugin-n": "^15.3.0",
-    "eslint-plugin-promise": "6.0.1",
+    "eslint-plugin-promise": "6.1.0",
     "esm": "^3.2.25",
     "execa": "5",
     "fast-glob": "^3.2.12",
@@ -169,7 +172,7 @@
     "@babel/traverse": "7.19.3",
     "loader-utils": "^2.0.2",
     "micromatch": "^4.0.5",
-    "postcss": "^8.4.16",
+    "postcss": "8.4.16",
     "postcss-selector-parser": "^6.0.10",
     "webpack-sources": "^3.2.3"
   }

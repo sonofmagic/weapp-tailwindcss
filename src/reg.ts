@@ -1,5 +1,5 @@
-import type { ICustomRegexp } from '@/types'
-
+import type { ICustomRegexp, ItemOrItemArray } from '@/types'
+import { isRegexp } from '@/utils'
 // https://github.com/sindresorhus/escape-string-regexp
 export function escapeStringRegexp (str: string) {
   if (typeof str !== 'string') {
@@ -12,6 +12,7 @@ export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"
 
 export const vueTemplateClassRegexp = /(?:(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 
+export const templateClassExactRegexp = /(?:(?<=^|\s)(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 // TODO: poor perf
 export const tagRegexp = /<([a-z][-a-z]*[a-z]*)\s*(([a-z][-a-z]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gs
 
@@ -19,26 +20,70 @@ export const tagWithClassRegexp = /<([a-z][-a-z]*[a-z]*)\s+[^>]*?(?:class="([^"]
 
 export const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\/?>/g
 
+interface ICreateRegexpOptions {
+  exact?: boolean
+}
+
+export function handleRegexp (reg: RegExp): string {
+  return `(?:${reg.source})`
+}
+
+export function getSourceString (input: string | RegExp) {
+  let result
+  if (typeof input === 'string') {
+    result = input
+  } else if (isRegexp(input)) {
+    result = input.source
+  } else {
+    result = input.toString()
+  }
+  return result
+}
+
+export function makePattern (arr: ItemOrItemArray<string | RegExp>): string {
+  let pattern: string = ''
+  if (Array.isArray(arr)) {
+    pattern = arr
+      .reduce<string[]>((acc, cur) => {
+        if (typeof cur === 'string') {
+          acc.push(cur)
+        } else if (isRegexp(cur)) {
+          acc.push(handleRegexp(cur))
+        }
+        return acc
+      }, [])
+      .join('|')
+  } else if (typeof arr === 'string') {
+    pattern = arr
+  } else if (isRegexp(arr)) {
+    pattern = handleRegexp(arr)
+  }
+
+  return pattern
+}
 // try match tag
-export function createTempleteHandlerMatchRegexp (tag: string, attrs: string | string[]) {
-  const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
-  const source = `<(${tag})\\s+[^>]*?(?:(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
+export function createTempleteHandlerMatchRegexp (tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
+  const { exact = true } = options
+  const prefix = exact ? '(?<=^|\\s)' : ''
+  const pattern = makePattern(attrs)
+  const source = `<(${tag})\\s+[^>]*?(?:${prefix}(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
   return new RegExp(source, 'g')
 }
 
-export function createTemplateClassRegexp (attrs: string | string[]) {
-  const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
-  const source = `(?:${pattern})=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]`
+export function createTemplateClassRegexp (attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
+  const { exact = true } = options
+  const prefix = exact ? '(?<=^|\\s)' : ''
+  const pattern = makePattern(attrs)
+  const source = `(?:${prefix}${pattern})=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]`
   return new RegExp(source, 'gs')
 }
 
-export function makeCustomAttributes (customAttributes: Record<string, string | string[]>): ICustomRegexp[] {
-  const entries = Object.entries(customAttributes)
+export function makeCustomAttributes (entries: [string | RegExp, ItemOrItemArray<string | RegExp>][]): ICustomRegexp[] {
   return entries.map(([k, v]) => {
     return {
       tagRegexp: createTempleteHandlerMatchRegexp(k, v),
       attrRegexp: createTemplateClassRegexp(v),
-      tag: k,
+      tag: getSourceString(k),
       attrs: v
     }
   })

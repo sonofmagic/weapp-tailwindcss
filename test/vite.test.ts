@@ -1,7 +1,6 @@
 import * as vite from 'vite'
 import type { RollupOutput } from 'rollup'
 import vwt from '@/framework/vite/index'
-import postcssWeappTailwindcssRename from '@/postcss/plugin'
 import path from 'path'
 import { switch2relative } from './util'
 function noop () {}
@@ -9,7 +8,7 @@ function keepSilent () {
   console.log = noop
   console.warn = noop
 }
-describe('vite test', () => {
+describe.skip('vite test', () => {
   beforeEach(() => {
     keepSilent()
   })

@@ -8782,6 +8782,15 @@ postcss@6.0.1:
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
+postcss@8.4.16, postcss@^8.4.16:
+  version "8.4.16"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.16.tgz#33a1d675fac39941f5f445db0de4db2b6e01d43c"
+  integrity sha512-ipHE1XBvKzm5xI7hiHCZJCSugxvsdq2mPnsq5+UF+VHCjiBvtDrlxJfMBToWaP9D5XlgNmcFGqoHmUn0EYEaRQ==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
 postcss@^6.0.1:
   version "6.0.23"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-6.0.23.tgz#61c82cc328ac60e677645f979054eb98bc0e3324"
@@ -8803,15 +8812,6 @@ postcss@^8.0.0, postcss@^8.4.12, postcss@^8.4.13, postcss@^8.4.14:
   version "8.4.14"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.14.tgz#ee9274d5622b4858c1007a74d76e42e56fd21caf"
   integrity sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==
-  dependencies:
-    nanoid "^3.3.4"
-    picocolors "^1.0.0"
-    source-map-js "^1.0.2"
-
-postcss@^8.4.16:
-  version "8.4.16"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.16.tgz#33a1d675fac39941f5f445db0de4db2b6e01d43c"
-  integrity sha512-ipHE1XBvKzm5xI7hiHCZJCSugxvsdq2mPnsq5+UF+VHCjiBvtDrlxJfMBToWaP9D5XlgNmcFGqoHmUn0EYEaRQ==
   dependencies:
     nanoid "^3.3.4"
     picocolors "^1.0.0"
@@ -11271,17 +11271,17 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.yarnpkg.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^1.11.2:
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.11.2.tgz#10e16fcde153185bd9cf2ca73db7cf9140ca2c6b"
-  integrity sha512-o3919WTwGcXljZnizuczX+2Bj7m+/ovkxf038urSMa3Krej08hPbyIuQlb6DQYn/Z1Vd1578Awv7w1PDJV8bog==
+weapp-tailwindcss-webpack-plugin@^1.11.3:
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.11.3.tgz#6e332bbeeef2e886c1dc7a16db4d16df09375377"
+  integrity sha512-HZQcjbLKLnZNOOao4P13bXZXHG4e2naxZA6gWs/dMQJhw7TD3abGXNVHkdv60xyUrdGIIKLeUzcOhlJ9k2nJrQ==
   dependencies:
     "@babel/generator" "7.19.3"
     "@babel/parser" "7.19.3"
     "@babel/traverse" "7.19.3"
     loader-utils "^2.0.2"
     micromatch "^4.0.5"
-    postcss "^8.4.16"
+    postcss "8.4.16"
     postcss-selector-parser "^6.0.10"
     webpack-sources "^3.2.3"
 

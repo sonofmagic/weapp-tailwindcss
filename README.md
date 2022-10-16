@@ -137,7 +137,7 @@
 
 ### customAttributes
 
-类型: `Record<string, string | string[]>`  
+类型: `Record<string, string | Regexp | (string | Regexp)[]>`  
 描述: 自定义`wxml`标签上的`attr`转化属性，默认转化所有的`class`和`hover-class`
 
 ### customReplaceDictionary

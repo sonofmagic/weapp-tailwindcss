@@ -1,20 +1,31 @@
 import { replaceWxml } from '@/wxml/shared'
 import { parse, traverse, generate } from '@/babel'
-import type { Node, TraverseOptions, IJsxHandlerOptions } from '@/types'
-import { getKey } from './matcher'
+import type { TraverseOptions, IJsxHandlerOptions } from '@/types'
+import type { Node, Identifier, StringLiteral, Expression, PrivateName } from '@babel/types'
+
 import { templeteHandler } from '@/wxml/utils'
-import { defu } from '@/shared'
+import { defu } from '@/utils'
 const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
   vue2: ['class', 'staticClass'], // 'hover-class' 在 'attrs' 里
   vue3: ['class', 'hover-class']
 }
 
+export function getKey (node: Identifier | StringLiteral | Expression | PrivateName): string {
+  if (node.type === 'Identifier') {
+    return node.name
+  }
+  if (node.type === 'StringLiteral') {
+    return node.value
+  }
+  return ''
+}
+
 function isObjectKey (type: string) {
   return ['Identifier', 'StringLiteral'].includes(type)
 }
 
-export function newJsxHandler (
+export function jsxHandler (
   rawSource: string,
   opt: IJsxHandlerOptions = {
     framework: 'react'
@@ -86,12 +97,12 @@ export function newJsxHandler (
   }
   // const vue3StaticVNodeStartFlag = false
   traverse(ast, options)
-
+  // @ts-ignore
   return generate(ast)
 }
 
 export function createJsxHandler (options: IJsxHandlerOptions) {
   return (rawSource: string, opt?: IJsxHandlerOptions) => {
-    return newJsxHandler(rawSource, defu(opt, options))
+    return jsxHandler(rawSource, defu(opt, options))
   }
 }

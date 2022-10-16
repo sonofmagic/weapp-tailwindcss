@@ -1,116 +1,365 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`rollup build lib build 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var postcss = require('postcss');
-var selectorParser = require('postcss-selector-parser');
+var micromatch = require('micromatch');
 var generate = require('@babel/generator');
 var parser = require('@babel/parser');
 var traverse = require('@babel/traverse');
-var path = require('path');
+var postcss = require('postcss');
+var selectorParser = require('postcss-selector-parser');
 var webpackSources = require('webpack-sources');
+var path = require('path');
 var webpack = require('webpack');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
-var selectorParser__default = /*#__PURE__*/_interopDefaultLegacy(selectorParser);
 var generate__default = /*#__PURE__*/_interopDefaultLegacy(generate);
 var traverse__default = /*#__PURE__*/_interopDefaultLegacy(traverse);
+var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
+var selectorParser__default = /*#__PURE__*/_interopDefaultLegacy(selectorParser);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-const SYMBOL_TABLE = {
-    BACKQUOTE: '\`',
-    TILDE: '~',
-    EXCLAM: '!',
-    AT: '@',
-    NUMBERSIGN: '#',
-    DOLLAR: '$',
-    PERCENT: '%',
-    CARET: '^',
-    AMPERSAND: '&',
-    ASTERISK: '*',
-    PARENLEFT: '(',
-    PARENRIGHT: ')',
-    MINUS: '-',
-    UNDERSCORE: '_',
-    EQUAL: '=',
-    PLUS: '+',
-    BRACKETLEFT: '[',
-    BRACELEFT: '{',
-    BRACKETRIGHT: ']',
-    BRACERIGHT: '}',
-    SEMICOLON: ';',
-    COLON: ':',
-    QUOTE: \\"'\\",
-    DOUBLEQUOTE: '\\"',
-    BACKSLASH: '\\\\\\\\',
-    BAR: '|',
-    COMMA: ',',
-    LESS: '<',
-    PERIOD: '.',
-    GREATER: '>',
-    SLASH: '/',
-    QUESTION: '?',
-    SPACE: '',
-    DOT: '.',
-    HASH: '#'
-};
-const MappingChars2String = {
-    [SYMBOL_TABLE.BRACKETLEFT]: '_bl_',
-    [SYMBOL_TABLE.BRACKETRIGHT]: '_br_',
-    [SYMBOL_TABLE.PARENLEFT]: '_pl_',
-    [SYMBOL_TABLE.PARENRIGHT]: '_qr_',
-    [SYMBOL_TABLE.HASH]: '_h_',
-    [SYMBOL_TABLE.EXCLAM]: '_i_',
-    [SYMBOL_TABLE.SLASH]: '_s_',
-    [SYMBOL_TABLE.BACKSLASH]: '_bs_',
-    [SYMBOL_TABLE.DOT]: '_d_',
-    [SYMBOL_TABLE.COLON]: '_c_',
-    [SYMBOL_TABLE.PERCENT]: '_p_',
-    [SYMBOL_TABLE.COMMA]: '_co_',
-    [SYMBOL_TABLE.QUOTE]: '_q_',
-    [SYMBOL_TABLE.DOUBLEQUOTE]: '_dq_',
-    [SYMBOL_TABLE.ASTERISK]: '_a_',
-    [SYMBOL_TABLE.AMPERSAND]: '_am_',
-    [SYMBOL_TABLE.AT]: '_at_',
-    [SYMBOL_TABLE.BRACELEFT]: '_bal_',
-    [SYMBOL_TABLE.BRACERIGHT]: '_bar_'
-};
+function isObject(val) {
+  return val !== null && typeof val === "object";
+}
+function _defu(baseObj, defaults, namespace = ".", merger) {
+  if (!isObject(defaults)) {
+    return _defu(baseObj, {}, namespace, merger);
+  }
+  const obj = Object.assign({}, defaults);
+  for (const key in baseObj) {
+    if (key === "__proto__" || key === "constructor") {
+      continue;
+    }
+    const val = baseObj[key];
+    if (val === null || val === void 0) {
+      continue;
+    }
+    if (merger && merger(obj, key, val, namespace)) {
+      continue;
+    }
+    if (Array.isArray(val) && Array.isArray(obj[key])) {
+      obj[key] = val.concat(obj[key]);
+    } else if (isObject(val) && isObject(obj[key])) {
+      obj[key] = _defu(val, obj[key], (namespace ? \`\${namespace}.\` : "") + key.toString(), merger);
+    } else {
+      obj[key] = val;
+    }
+  }
+  return obj;
+}
+function createDefu(merger) {
+  return (...args) => args.reduce((p, c) => _defu(p, c, "", merger), {});
+}
+const defu = createDefu();
 
-function cssSelectorReplacer(selector) {
-    return (selector
-        .replace(/\\\\\\\\\\\\[/g, MappingChars2String['['])
-        .replace(/\\\\\\\\\\\\]/g, MappingChars2String[']'])
-        .replace(/\\\\\\\\\\\\(/g, MappingChars2String['('])
-        .replace(/\\\\\\\\\\\\)/g, MappingChars2String[')'])
-        .replace(/\\\\\\\\#/g, MappingChars2String['#'])
-        .replace(/\\\\\\\\!/g, MappingChars2String['!'])
-        .replace(/\\\\\\\\\\\\//g, MappingChars2String['/'])
-        .replace(/\\\\\\\\\\\\./g, MappingChars2String['.'])
-        .replace(/\\\\\\\\:/g, MappingChars2String[':'])
-        .replace(/\\\\\\\\%/g, MappingChars2String['%'])
-        .replace(/\\\\\\\\2c /g, MappingChars2String[','])
-        .replace(/\\\\\\\\\\\\\\\\/g, MappingChars2String['\\\\\\\\'])
-        .replace(/\\\\\\\\'/g, MappingChars2String[\\"'\\"])
-        .replace(/\\\\\\\\\\"/g, MappingChars2String['\\"'])
-        .replace(/\\\\\\\\\\\\*/g, MappingChars2String['*'])
-        .replace(/\\\\\\\\&/g, MappingChars2String['&'])
-        .replace(/\\\\\\\\@/g, MappingChars2String['@'])
-        .replace(/\\\\\\\\{/g, MappingChars2String['{'])
-        .replace(/\\\\\\\\}/g, MappingChars2String['}']));
+function isRegexp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]';
+}
+function isMap(value) {
+    return Object.prototype.toString.call(value) === '[object Map]';
+}
+const noop = () => { };
+
+function mangleMark(str, oldValue, classGenerator) {
+    if (typeof str === 'string' && str) {
+        const oldStrArr = oldValue.split(' ').filter((x) => x);
+        return str
+            .split(' ')
+            .filter((x) => x)
+            .map((x, idx) => {
+            if (classGenerator.ignoreClassName(x) || classGenerator.ignoreClassName(oldStrArr[idx])) {
+                return x;
+            }
+            return classGenerator.generateClassName(x).name;
+        })
+            .join(' ');
+    }
+    return str;
 }
 
-const PATTERNS = [/:not\\\\(template\\\\)\\\\s*~\\\\s*:not\\\\(template\\\\)/.source, /:not\\\\(\\\\[hidden\\\\]\\\\)\\\\s*~\\\\s*:not\\\\(\\\\[hidden\\\\]\\\\)/.source].join('|');
+const MappingChars2String = {
+    '[': '_bl_',
+    ']': '_br_',
+    '(': '_pl_',
+    ')': '_qr_',
+    '#': '_h_',
+    '!': '_i_',
+    '/': '_s_',
+    '\\\\': '_bs_',
+    '.': '_d_',
+    ':': '_c_',
+    '%': '_p_',
+    ',': '_co_',
+    "'": '_q_',
+    '"': '_dq_',
+    '*': '_a_',
+    '&': '_am_',
+    '@': '_at_',
+    '{': '_bal_',
+    '}': '_bar_',
+    '+': '_plus_',
+    ';': '_se_',
+    '<': '_l_',
+    '~': '_t_',
+    '=': '_e_',
+    '>': '_g_',
+    '?': '_qu_',
+    '^': '_ca_',
+    '\`': '_bq_',
+    '|': '_b_',
+    $: '_do_'
+};
+const MappingChars2StringEntries = Object.entries(MappingChars2String);
+
+function escapeStringRegexp(str) {
+    if (typeof str !== 'string') {
+        throw new TypeError('Expected a string');
+    }
+    return str.replace(/[|\\\\{}()[\\]^$+*?.]/g, '\\\\$&').replace(/-/g, '\\\\x2d');
+}
+const templateClassExactRegexp = /(?:(?<=^|\\s)(?:hover-)?class)=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]/gs;
+const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\\/?>/g;
+function handleRegexp(reg) {
+    return \`(?:\${reg.source})\`;
+}
+function getSourceString(input) {
+    let result;
+    if (typeof input === 'string') {
+        result = input;
+    }
+    else if (isRegexp(input)) {
+        result = input.source;
+    }
+    else {
+        result = input.toString();
+    }
+    return result;
+}
+function makePattern(arr) {
+    let pattern = '';
+    if (Array.isArray(arr)) {
+        pattern = arr
+            .reduce((acc, cur) => {
+            if (typeof cur === 'string') {
+                acc.push(cur);
+            }
+            else if (isRegexp(cur)) {
+                acc.push(handleRegexp(cur));
+            }
+            return acc;
+        }, [])
+            .join('|');
+    }
+    else if (typeof arr === 'string') {
+        pattern = arr;
+    }
+    else if (isRegexp(arr)) {
+        pattern = handleRegexp(arr);
+    }
+    return pattern;
+}
+function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    return new RegExp(source, 'g');
+}
+function createTemplateClassRegexp(attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`(?:\${prefix}\${pattern})=(?:["']\\\\W+\\\\s*(?:\\\\w+)\\\\()?["']([^"]+)['"]\`;
+    return new RegExp(source, 'gs');
+}
+function makeCustomAttributes(entries) {
+    return entries.map(([k, v]) => {
+        return {
+            tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+            attrRegexp: createTemplateClassRegexp(v),
+            tag: getSourceString(k),
+            attrs: v
+        };
+    });
+}
+const variableRegExp = /{{(.*?)}}/gs;
+function variableMatch(original) {
+    return variableRegExp.exec(original);
+}
+
+function escape(selectors, raw = false, entries = MappingChars2StringEntries) {
+    let res = selectors;
+    for (let i = 0; i < entries.length; i++) {
+        const [searchValue, replaceValue] = entries[i];
+        res = res.replace(new RegExp((raw ? '\\\\\\\\' : '') + escapeStringRegexp(searchValue), 'g'), replaceValue);
+    }
+    return res;
+}
+
+function replaceWxml(original, options = {
+    keepEOL: false,
+    escapeEntries: MappingChars2StringEntries
+}) {
+    if (typeof options === 'boolean') {
+        options = {
+            keepEOL: options
+        };
+    }
+    let res = original;
+    if (!options.keepEOL) {
+        res = res
+            .replace(/[\\r\\n]+/g, '');
+    }
+    const oldValue = res;
+    res = escape(res, false, options.escapeEntries);
+    if (options.classGenerator) {
+        res = mangleMark(res, oldValue, options.classGenerator);
+    }
+    return res;
+}
+
+function generateCode(match, options = {}) {
+    const ast = parser.parseExpression(match);
+    traverse__default["default"](ast, {
+        StringLiteral(path) {
+            var _a;
+            if (path.parent.type === 'BinaryExpression') {
+                if (((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent.type) === 'ConditionalExpression') {
+                    return;
+                }
+            }
+            path.node.value = replaceWxml(path.node.value, options);
+        },
+        noScope: true
+    });
+    const { code } = generate__default["default"](ast, {
+        compact: true,
+        minified: true,
+        jsescOption: {
+            quotes: 'single'
+        }
+    });
+    return code;
+}
+function extractSource(original) {
+    let match = variableMatch(original);
+    const sources = [];
+    while (match !== null) {
+        const start = match.index;
+        const end = variableRegExp.lastIndex;
+        sources.push({
+            start,
+            end,
+            raw: match[1],
+            prevConcatenated: !/\\s/.test(original[start - 1]),
+            nextConcatenated: !/\\s/.test(original[end])
+        });
+        match = variableMatch(original);
+    }
+    return sources;
+}
+function templeteReplacer(original, options = {}) {
+    const sources = extractSource(original);
+    if (sources.length) {
+        const resultArray = [];
+        let p = 0;
+        for (let i = 0; i < sources.length; i++) {
+            const m = sources[i];
+            const before = original.slice(p, m.start);
+            resultArray.push(replaceWxml(before, {
+                keepEOL: true,
+                classGenerator: options.classGenerator,
+                escapeEntries: options.escapeEntries
+            }));
+            p = m.start;
+            if (m.raw.trim().length) {
+                const code = generateCode(m.raw, options);
+                let source = \`{{\${code}}}\`;
+                if (options.classGenerator) {
+                    source = \`\${m.prevConcatenated ? '' : ' '}\${source}\${m.nextConcatenated ? '' : ' '}\`;
+                }
+                m.source = source;
+            }
+            else {
+                m.source = '';
+            }
+            resultArray.push(m.source);
+            p = m.end;
+            if (i === sources.length - 1) {
+                const after = original.slice(m.end);
+                resultArray.push(replaceWxml(after, {
+                    keepEOL: true,
+                    classGenerator: options.classGenerator,
+                    escapeEntries: options.escapeEntries
+                }));
+            }
+        }
+        return resultArray
+            .filter((x) => x)
+            .join('')
+            .trim();
+    }
+    else {
+        return replaceWxml(original, {
+            keepEOL: false,
+            classGenerator: options.classGenerator,
+            escapeEntries: options.escapeEntries
+        });
+    }
+}
+function templeteHandler(rawSource, options = {}) {
+    return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
+        return m0.replace(templateClassExactRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options));
+        });
+    });
+}
+function customTempleteHandler(rawSource, options = {}) {
+    let source = templeteHandler(rawSource, options);
+    if (options.custom) {
+        if (Array.isArray(options.regexps)) {
+            for (let i = 0; i < options.regexps.length; i++) {
+                const regexp = options.regexps[i];
+                source = source.replace(regexp.tagRegexp, (m0) => {
+                    return m0.replace(regexp.attrRegexp, (m1, className) => {
+                        return m1.replace(className, templeteReplacer(className, options));
+                    });
+                });
+            }
+        }
+        return source;
+    }
+    else {
+        return source;
+    }
+}
+function createTempleteHandler(options = {}) {
+    return (rawSource, opt = {}) => {
+        return customTempleteHandler(rawSource, defu(opt, options));
+    };
+}
+
+const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
+function testIfVariablesScope(node) {
+    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+        const tryTestDecl = node.nodes[0];
+        if (tryTestDecl && tryTestDecl.type === 'decl') {
+            return tryTestDecl.prop.startsWith('--tw-');
+        }
+    }
+    return false;
+}
 function commonChunkPreflight(node, options) {
     node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
-    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+    if (testIfVariablesScope(node)) {
         const selectorParts = node.selector.split(',');
         if (!selectorParts.includes('view')) {
             selectorParts.push('view');
@@ -129,17 +378,19 @@ function commonChunkPreflight(node, options) {
         });
         pseudoVarRule.append(new postcss.Declaration({
             prop: '--tw-content',
-            value: '\\"\\"'
+            value: '""'
         }));
         node.before(pseudoVarRule);
     }
 }
-function mpRulePreflight(node, options) {
-    node.selector = cssSelectorReplacer(node.selector);
+
+function internalCssSelectorReplacer(selectors, escapeEntries = MappingChars2StringEntries) {
+    return escape(selectors, false, escapeEntries);
 }
 
 const createTransform = (rule, options) => {
     const replaceFlag = options.replaceUniversalSelectorWith !== false;
+    const classGenerator = options.classGenerator;
     const transform = (selectors) => {
         selectors.walk((selector) => {
             if (selector.type === 'universal' && replaceFlag) {
@@ -149,6 +400,19 @@ const createTransform = (rule, options) => {
                 const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
                 node && selector.remove();
             }
+            if (selector.type === 'class') {
+                selector.value = internalCssSelectorReplacer(selector.value, options.escapeEntries);
+                if (classGenerator && selector.value) {
+                    let ignore = false;
+                    const prev = rule.prev();
+                    if ((prev === null || prev === void 0 ? void 0 : prev.type) === 'comment') {
+                        ignore = prev.text.includes('mangle') && (prev.text.includes('disabled') || prev.text.includes('ignore'));
+                    }
+                    if (!ignore) {
+                        selector.value = classGenerator.transformCssClass(selector.value);
+                    }
+                }
+            }
         });
         if (selectors.length === 0) {
             rule.remove();
@@ -157,7 +421,7 @@ const createTransform = (rule, options) => {
     return transform;
 };
 const getTransformer = (rule, options) => {
-    return selectorParser__default[\\"default\\"](createTransform(rule, options));
+    return selectorParser__default["default"](createTransform(rule, options));
 };
 const transformSync = (rule, options) => {
     const transformer = getTransformer(rule, options);
@@ -168,13 +432,12 @@ const transformSync = (rule, options) => {
 };
 
 function styleHandler(rawSource, options) {
-    const root = postcss__default[\\"default\\"].parse(rawSource);
+    const root = postcss__default["default"].parse(rawSource);
     const { isMainChunk, customRuleCallback } = options;
     const flag = typeof customRuleCallback === 'function';
-    root.walk((node, idx) => {
+    root.walk((node) => {
         if (node.type === 'rule') {
             transformSync(node, options);
-            mpRulePreflight(node);
             if (isMainChunk) {
                 commonChunkPreflight(node, options);
             }
@@ -182,6 +445,103 @@ function styleHandler(rawSource, options) {
         }
     });
     return root.toString();
+}
+function createStyleHandler(options) {
+    return (rawSource, opt) => {
+        return styleHandler(rawSource, defu(opt, options));
+    };
+}
+
+const StartMatchKeyMap = {
+    react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
+    vue2: ['class', 'staticClass'],
+    vue3: ['class', 'hover-class']
+};
+function getKey(node) {
+    if (node.type === 'Identifier') {
+        return node.name;
+    }
+    if (node.type === 'StringLiteral') {
+        return node.value;
+    }
+    return '';
+}
+function isObjectKey(type) {
+    return ['Identifier', 'StringLiteral'].includes(type);
+}
+function jsxHandler(rawSource, opt = {
+    framework: 'react'
+}) {
+    var _a;
+    const { framework, escapeEntries } = opt;
+    const ast = parser.parse(rawSource, {
+        sourceType: 'unambiguous'
+    });
+    const matchKeys = (_a = StartMatchKeyMap[framework]) !== null && _a !== void 0 ? _a : StartMatchKeyMap.react;
+    const isVue2 = framework === 'vue2';
+    const isVue3 = framework === 'vue3';
+    let startFlag = false;
+    const options = {
+        ObjectProperty: {
+            enter(path) {
+                if (isObjectKey(path.node.key.type)) {
+                    const keyStr = getKey(path.node.key);
+                    if (matchKeys.includes(keyStr)) {
+                        startFlag = true;
+                    }
+                    if (isVue2 && keyStr === 'attrs' && path.node.value.type === 'ObjectExpression') {
+                        const idx = path.node.value.properties.findIndex((x) => {
+                            return x.type === 'ObjectProperty' && isObjectKey(x.key.type) && getKey(x.key) === 'hover-class';
+                        });
+                        const hoverClassNode = path.node.value.properties[idx];
+                        if (idx > -1 && hoverClassNode.type === 'ObjectProperty') {
+                            if (hoverClassNode.value.type === 'StringLiteral') {
+                                hoverClassNode.value.value = replaceWxml(hoverClassNode.value.value, {
+                                    keepEOL: true,
+                                    escapeEntries
+                                });
+                            }
+                        }
+                    }
+                }
+            },
+            exit(path) {
+                if (['Identifier', 'StringLiteral'].includes(path.node.key.type) && matchKeys.includes(getKey(path.node.key))) {
+                    startFlag = false;
+                }
+            }
+        },
+        StringLiteral: {
+            enter(path) {
+                if (startFlag) {
+                    path.node.value = replaceWxml(path.node.value, {
+                        keepEOL: true,
+                        escapeEntries
+                    });
+                }
+            }
+        },
+        noScope: true
+    };
+    if (isVue3) {
+        options.CallExpression = {
+            enter(path) {
+                const hit = path.node.arguments[0];
+                if (hit && hit.type === 'StringLiteral') {
+                    hit.value = templeteHandler(hit.value, {
+                        keepEOL: true
+                    });
+                }
+            }
+        };
+    }
+    traverse__default["default"](ast, options);
+    return generate__default["default"](ast);
+}
+function createJsxHandler(options) {
+    return (rawSource, opt) => {
+        return jsxHandler(rawSource, defu(opt, options));
+    };
 }
 
 const createInjectPreflight = (options) => {
@@ -203,69 +563,19 @@ const createInjectPreflight = (options) => {
     };
 };
 
-function jsxHandler(rawSource, replacer) {
-    const ast = parser.parse(rawSource, {
-        sourceType: 'unambiguous'
-    });
-    traverse__default[\\"default\\"](ast, {
-        enter(path) {
-            replacer(path);
-        },
-        noScope: true
-    });
-    return generate__default[\\"default\\"](ast);
-}
-
-function isObject(val) {
-  return val !== null && typeof val === \\"object\\";
-}
-function _defu(baseObj, defaults, namespace = \\".\\", merger) {
-  if (!isObject(defaults)) {
-    return _defu(baseObj, {}, namespace, merger);
-  }
-  const obj = Object.assign({}, defaults);
-  for (const key in baseObj) {
-    if (key === \\"__proto__\\" || key === \\"constructor\\") {
-      continue;
-    }
-    const val = baseObj[key];
-    if (val === null || val === void 0) {
-      continue;
-    }
-    if (merger && merger(obj, key, val, namespace)) {
-      continue;
-    }
-    if (Array.isArray(val) && Array.isArray(obj[key])) {
-      obj[key] = val.concat(obj[key]);
-    } else if (isObject(val) && isObject(obj[key])) {
-      obj[key] = _defu(val, obj[key], (namespace ? \`\${namespace}.\` : \\"\\") + key.toString(), merger);
-    } else {
-      obj[key] = val;
-    }
-  }
-  return obj;
-}
-function createDefu(merger) {
-  return (...args) => args.reduce((p, c) => _defu(p, c, \\"\\", merger), {});
-}
-const defu = createDefu();
-
-const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g;
-
-const noop = () => { };
 const defaultOptions = {
-    cssMatcher: (file) => /.+\\\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
-    htmlMatcher: (file) => /.+\\\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
+    cssMatcher: (file) => /.+\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
+    htmlMatcher: (file) => /.+\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
     jsMatcher: (file) => {
         if (file.includes('node_modules')) {
             return false;
         }
-        return /.+\\\\.[jt]sx?$/.test(file);
+        return /.+\\.[jt]sx?$/.test(file);
     },
     mainCssChunkMatcher: (file, appType) => {
         switch (appType) {
             case 'uni-app': {
-                return /^common\\\\/main/.test(file);
+                return /^common\\/main/.test(file);
             }
             case 'mpx': {
                 return /^app/.test(file);
@@ -283,7 +593,7 @@ const defaultOptions = {
                 return /^app/.test(file);
             }
             case 'kbone': {
-                return /^(?:common\\\\/)?miniprogram-app/.test(file);
+                return /^(?:common\\/)?miniprogram-app/.test(file);
             }
             default: {
                 return true;
@@ -305,242 +615,115 @@ const defaultOptions = {
     onEnd: noop,
     onUpdate: noop,
     mangle: false,
-    framework: 'react'
+    framework: 'react',
+    loaderOptions: {
+        jsxRename: false
+    },
+    customAttributes: {},
+    customReplaceDictionary: MappingChars2String
 };
+function createGlobMatcher(pattern) {
+    return function (file) {
+        return micromatch.isMatch(file, pattern);
+    };
+}
+function normalizeMatcher(options, key) {
+    if (typeof options[key] === 'string' || Array.isArray(options[key])) {
+        options[key] = createGlobMatcher(options[key]);
+    }
+}
 function getOptions(options = {}) {
     if (options.mangle === true) {
         options.mangle = {
-            classNameRegExp: mangleClassRegex.source
+            exclude: [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
         };
     }
-    return defu(options, defaultOptions);
-}
-
-const pluginName = 'weapp-tailwindcss-webpack-plugin';
-
-function replaceWxml(original, keepEOL = false) {
-    const res = original
-        .replace(/\\\\[/g, MappingChars2String['['])
-        .replace(/\\\\]/g, MappingChars2String[']'])
-        .replace(/\\\\(/g, MappingChars2String['('])
-        .replace(/\\\\)/g, MappingChars2String[')'])
-        .replace(/#/g, MappingChars2String['#'])
-        .replace(/!/g, MappingChars2String['!'])
-        .replace(/\\\\//g, MappingChars2String['/'])
-        .replace(/\\\\./g, MappingChars2String['.'])
-        .replace(/:/g, MappingChars2String[':'])
-        .replace(/%/g, MappingChars2String['%'])
-        .replace(/,/g, MappingChars2String[','])
-        .replace(/\\\\\\\\/g, MappingChars2String['\\\\\\\\'])
-        .replace(/'/g, MappingChars2String[\\"'\\"])
-        .replace(/\\"/g, MappingChars2String['\\"'])
-        .replace(/\\\\*/g, MappingChars2String['*'])
-        .replace(/&/g, MappingChars2String['&'])
-        .replace(/@/g, MappingChars2String['@'])
-        .replace(/{/g, MappingChars2String['{'])
-        .replace(/}/g, MappingChars2String['}']);
-    if (keepEOL) {
-        return res;
-    }
-    return (res
-        .replace(/[\\\\r\\\\n]+/g, ''));
-}
-
-const vueTemplateClassRegexp = /(?:(?:hover-)?class)=(?:[\\"']\\\\W+\\\\s*(?:\\\\w+)\\\\()?[\\"']([^\\"]+)['\\"]/gs;
-const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\\\s+[^>]*?(?:(?:hover-)?class=\\"(?:[^\\"]*)\\")[^>]*?\\\\/?>/g;
-const variableRegExp = /{{(.*?)}}/gs;
-function variableMatch(original) {
-    return variableRegExp.exec(original);
-}
-
-function generateCode(match) {
-    const ast = parser.parseExpression(match);
-    traverse__default[\\"default\\"](ast, {
-        StringLiteral(path) {
-            path.node.value = replaceWxml(path.node.value);
-        },
-        noScope: true
-    });
-    const { code } = generate__default[\\"default\\"](ast, {
-        compact: true,
-        minified: true,
-        jsescOption: {
-            quotes: 'single'
+    else if (typeof options.mangle === 'object') {
+        if (!Array.isArray(options.mangle)) {
+            options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/];
         }
-    });
-    return code;
-}
-function templeteReplacer(original) {
-    let match = variableMatch(original);
-    const sources = [];
-    while (match !== null) {
-        sources.push({
-            start: match.index,
-            end: variableRegExp.lastIndex,
-            raw: match[1]
-        });
-        match = variableMatch(original);
     }
-    if (sources.length) {
-        const resultArray = [];
-        let p = 0;
-        for (let i = 0; i < sources.length; i++) {
-            const m = sources[i];
-            resultArray.push(replaceWxml(original.slice(p, m.start), true));
-            p = m.start;
-            if (m.raw.trim().length) {
-                const code = generateCode(m.raw);
-                m.source = \`{{\${code}}}\`;
-            }
-            else {
-                m.source = '';
-            }
-            resultArray.push(m.source);
-            p = m.end;
-            if (i === sources.length - 1) {
-                resultArray.push(replaceWxml(original.slice(m.end), true));
-            }
-        }
-        return resultArray.filter((x) => x).join('');
+    if (options.framework && options.framework === 'vue') {
+        options.framework = 'vue2';
+    }
+    normalizeMatcher(options, 'cssMatcher');
+    normalizeMatcher(options, 'htmlMatcher');
+    normalizeMatcher(options, 'jsMatcher');
+    normalizeMatcher(options, 'mainCssChunkMatcher');
+    const result = defu(options, defaultOptions);
+    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
+    const cssInjectPreflight = createInjectPreflight(cssPreflight);
+    let customAttributesEntities;
+    if (isMap(customAttributes)) {
+        customAttributesEntities = Array.from(customAttributes.entries());
     }
     else {
-        return replaceWxml(original);
+        customAttributesEntities = Object.entries(customAttributes);
     }
-}
-function templeteHandler(rawSource) {
-    return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
-        return m0.replace(vueTemplateClassRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className));
-        });
+    const custom = customAttributesEntities.length > 0;
+    const escapeEntries = Object.entries(customReplaceDictionary);
+    result.escapeEntries = escapeEntries;
+    result.templeteHandler = createTempleteHandler({
+        custom,
+        regexps: makeCustomAttributes(customAttributesEntities),
+        escapeEntries
     });
-}
-
-function isSpecNode(node) {
-    return node.type === 'ObjectProperty' && node.key.type === 'Identifier';
-}
-function reactMatcher(node) {
-    return ['className', 'hoverClass', 'hoverClassName'].includes(node.key.name);
-}
-function vue2Matcher(node) {
-    if (node.key.name === 'attrs' && node.type === 'ObjectProperty') {
-        if (node.value.type === 'ObjectExpression' && Array.isArray(node.value.properties)) {
-            const idx = node.value.properties.findIndex((x) => {
-                return x.type === 'ObjectProperty' && x.key.type === 'StringLiteral' && x.key.value === 'hover-class';
-            });
-            if (idx > -1) {
-                return [true, node.value.properties[idx]];
-            }
-            else {
-                return [false, node];
-            }
-        }
-        return [false, node];
-    }
-    return [node.key.name === 'class' || node.key.name === 'staticClass', node];
-}
-function vue3Matcher(node) {
-    if (node.key.name === 'class') {
-        return true;
-    }
-    if (node.key.value === 'hover-class') {
-        return true;
-    }
-    return false;
-}
-function isVue3SpecNode(node) {
-    return node.type === 'ObjectProperty' && (node.key.type === 'Identifier' || node.key.type === 'StringLiteral');
-}
-function createReplacer(framework = 'react') {
-    let classObjectNode;
-    let startFlag = false;
-    const isVue3 = framework === 'vue3';
-    const isVue2 = framework === 'vue' || framework === 'vue2';
-    const isReact = framework === 'react';
-    function start(node) {
-        startFlag = true;
-        classObjectNode = node;
-    }
-    function end() {
-        startFlag = false;
-        classObjectNode = null;
-    }
-    if (isVue2) {
-        const replacer = (path) => {
-            if (isSpecNode(path.node)) {
-                const [result, node] = vue2Matcher(path.node);
-                if (result) {
-                    return start(node);
-                }
-            }
-            if (startFlag) {
-                const nodeStart = path.node.start;
-                const refNode = classObjectNode;
-                if (nodeStart > refNode.end) {
-                    return end();
-                }
-                if (nodeStart >= refNode.start) {
-                    if (path.node.type === 'StringLiteral') {
-                        path.node.value = replaceWxml(path.node.value, true);
-                    }
-                }
-            }
-        };
-        replacer.start = start;
-        replacer.end = end;
-        return replacer;
-    }
-    else if (isVue3) {
-        const replacer = (path) => {
-            if (path.node.type === 'StringLiteral') {
-                path.node.value = templeteHandler(path.node.value);
-            }
-            if (isVue3SpecNode(path.node) && vue3Matcher(path.node)) {
-                return start(path.node);
-            }
-            if (startFlag) {
-                const nodeStart = path.node.start;
-                const refNode = classObjectNode;
-                if (nodeStart > refNode.end) {
-                    return end();
-                }
-                if (nodeStart >= refNode.start) {
-                    if (path.node.type === 'StringLiteral') {
-                        path.node.value = replaceWxml(path.node.value, true);
-                    }
-                }
-            }
-        };
-        replacer.start = start;
-        replacer.end = end;
-        return replacer;
-    }
-    else if (isReact) {
-        const replacer = (path) => {
-            if (isSpecNode(path.node) && reactMatcher(path.node)) {
-                return start(path.node);
-            }
-            if (startFlag) {
-                if (path.node.start > classObjectNode.end) {
-                    return end();
-                }
-                if (path.node.type === 'StringLiteral') {
-                    path.node.value = replaceWxml(path.node.value, true);
-                }
-            }
-        };
-        replacer.start = start;
-        replacer.end = end;
-        return replacer;
-    }
-    else {
-        const replacer = (path) => { };
-        replacer.start = start;
-        replacer.end = end;
-        return replacer;
-    }
+    result.styleHandler = createStyleHandler({
+        cssInjectPreflight,
+        customRuleCallback,
+        cssPreflightRange,
+        replaceUniversalSelectorWith,
+        escapeEntries
+    });
+    result.jsxHandler = createJsxHandler({
+        escapeEntries,
+        framework
+    });
+    return result;
 }
 
 const NS = 'jsx-rename-loader';
+const pluginName = 'weapp-tailwindcss-webpack-plugin';
+
+function groupBy(arr, cb) {
+    if (!Array.isArray(arr)) {
+        throw new Error('expected an array for first argument');
+    }
+    if (typeof cb !== 'function') {
+        throw new Error('expected a function for second argument');
+    }
+    const result = {};
+    for (let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        const bucketCategory = cb(item);
+        const bucket = result[bucketCategory];
+        if (!Array.isArray(bucket)) {
+            result[bucketCategory] = [item];
+        }
+        else {
+            result[bucketCategory].push(item);
+        }
+    }
+    return result;
+}
+function getGroupedEntries(entries, options) {
+    const { cssMatcher, htmlMatcher, jsMatcher } = options;
+    const groupedEntries = groupBy(entries, ([file]) => {
+        if (cssMatcher(file)) {
+            return 'css';
+        }
+        else if (htmlMatcher(file)) {
+            return 'html';
+        }
+        else if (jsMatcher(file)) {
+            return 'js';
+        }
+        else {
+            return 'other';
+        }
+    });
+    return groupedEntries;
+}
 
 class BaseJsxWebpackPluginV4 {
     constructor(options = { framework: 'react' }, appType) {
@@ -548,55 +731,51 @@ class BaseJsxWebpackPluginV4 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { cssMatcher, jsMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, framework, cssPreflight, customRuleCallback, cssPreflightRange, disabled, onLoad, onUpdate, onEnd, onStart } = this.options;
+        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options;
         if (disabled) {
             return;
         }
-        const replacer = createReplacer(framework);
-        const cssInjectPreflight = createInjectPreflight(cssPreflight);
         const isReact = framework === 'react';
-        const rule = {
-            loader: path__default[\\"default\\"].resolve(__dirname, \`\${NS}.js\`),
-            options: {
-                framework,
-                replacer
-            }
-        };
+        const loader = path__default["default"].resolve(__dirname, \`\${NS}.js\`);
         onLoad();
-        if (isReact) {
-            compiler.hooks.compilation.tap(pluginName, (compilation) => {
-                compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
-                    if (jsMatcher(module.resource)) {
-                        module.loaders.unshift(rule);
-                    }
-                });
+        compiler.hooks.compilation.tap(pluginName, (compilation) => {
+            compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
+                if (jsMatcher(module.resource)) {
+                    const rule = {
+                        loader,
+                        options: {
+                            jsxHandler,
+                            write: loaderOptions.jsxRename
+                        }
+                    };
+                    module.loaders.unshift(rule);
+                }
             });
-        }
+        });
         compiler.hooks.emit.tap(pluginName, (compilation) => {
             onStart();
             const entries = Object.entries(compilation.assets);
-            for (let i = 0; i < entries.length; i++) {
-                const [file, originalSource] = entries[i];
-                if (cssMatcher(file)) {
+            const groupedEntries = getGroupedEntries(entries, this.options);
+            if (!isReact && Array.isArray(groupedEntries.js)) {
+                for (let i = 0; i < groupedEntries.js.length; i++) {
+                    const [file, originalSource] = groupedEntries.js[i];
+                    const rawSource = originalSource.source().toString();
+                    const { code } = jsxHandler(rawSource);
+                    const source = new webpackSources.ConcatSource(code);
+                    compilation.updateAsset(file, source);
+                    onUpdate(file, rawSource, code);
+                }
+            }
+            if (Array.isArray(groupedEntries.css)) {
+                for (let i = 0; i < groupedEntries.css.length; i++) {
+                    const [file, originalSource] = groupedEntries.css[i];
                     const rawSource = originalSource.source().toString();
                     const css = styleHandler(rawSource, {
-                        isMainChunk: mainCssChunkMatcher(file, this.appType),
-                        cssInjectPreflight,
-                        customRuleCallback,
-                        cssPreflightRange,
-                        replaceUniversalSelectorWith
+                        isMainChunk: mainCssChunkMatcher(file, this.appType)
                     });
                     const source = new webpackSources.ConcatSource(css);
                     compilation.updateAsset(file, source);
                     onUpdate(file, rawSource, css);
-                }
-                else if (!isReact && jsMatcher(file)) {
-                    replacer.end();
-                    const rawSource = originalSource.source().toString();
-                    const { code } = jsxHandler(rawSource, replacer);
-                    const source = new webpackSources.ConcatSource(code);
-                    compilation.updateAsset(file, source);
-                    onUpdate(file, rawSource, code);
                 }
             }
             onEnd();
@@ -611,36 +790,35 @@ class BaseTemplateWebpackPluginV4 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { cssMatcher, htmlMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options;
+        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, templeteHandler, styleHandler } = this.options;
         if (disabled) {
             return;
         }
-        const cssInjectPreflight = createInjectPreflight(cssPreflight);
         onLoad();
         compiler.hooks.emit.tap(pluginName, (compilation) => {
             onStart();
             const entries = Object.entries(compilation.assets);
-            for (let i = 0; i < entries.length; i++) {
-                const [file, originalSource] = entries[i];
-                if (cssMatcher(file)) {
+            const groupedEntries = getGroupedEntries(entries, this.options);
+            if (Array.isArray(groupedEntries.html)) {
+                for (let i = 0; i < groupedEntries.html.length; i++) {
+                    const [file, originalSource] = groupedEntries.html[i];
+                    const rawSource = originalSource.source().toString();
+                    const wxml = templeteHandler(rawSource, {});
+                    const source = new webpackSources.ConcatSource(wxml);
+                    compilation.updateAsset(file, source);
+                    onUpdate(file, rawSource, wxml);
+                }
+            }
+            if (Array.isArray(groupedEntries.css)) {
+                for (let i = 0; i < groupedEntries.css.length; i++) {
+                    const [file, originalSource] = groupedEntries.css[i];
                     const rawSource = originalSource.source().toString();
                     const css = styleHandler(rawSource, {
-                        isMainChunk: mainCssChunkMatcher(file, this.appType),
-                        cssInjectPreflight,
-                        customRuleCallback,
-                        cssPreflightRange,
-                        replaceUniversalSelectorWith
+                        isMainChunk: mainCssChunkMatcher(file, this.appType)
                     });
                     const source = new webpackSources.ConcatSource(css);
                     compilation.updateAsset(file, source);
                     onUpdate(file, rawSource, css);
-                }
-                else if (htmlMatcher(file)) {
-                    const rawSource = originalSource.source().toString();
-                    const wxml = templeteHandler(rawSource);
-                    const source = new webpackSources.ConcatSource(wxml);
-                    compilation.updateAsset(file, source);
-                    onUpdate(file, rawSource, wxml);
                 }
             }
             onEnd();
@@ -654,47 +832,53 @@ class BaseJsxWebpackPluginV5 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { cssMatcher, jsMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, framework, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options;
+        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options;
         if (disabled) {
             return;
         }
-        const cssInjectPreflight = createInjectPreflight(cssPreflight);
         const Compilation = compiler.webpack.Compilation;
         const { ConcatSource } = compiler.webpack.sources;
-        const replacer = createReplacer(framework);
-        const rule = {
-            loader: path__default[\\"default\\"].resolve(__dirname, \`\${NS}.js\`),
-            options: {
-                replacer
-            },
-            ident: null,
-            type: null
-        };
+        const isReact = framework === 'react';
+        const loader = path__default["default"].resolve(__dirname, \`\${NS}.js\`);
         onLoad();
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
-            {
-                webpack.NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
-                    if (jsMatcher(module.resource)) {
-                        module.loaders.unshift(rule);
-                    }
-                });
-            }
+            webpack.NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+                if (jsMatcher(module.resource)) {
+                    const rule = {
+                        loader,
+                        options: {
+                            jsxHandler,
+                            write: loaderOptions.jsxRename
+                        },
+                        ident: null,
+                        type: null
+                    };
+                    module.loaders.unshift(rule);
+                }
+            });
             compilation.hooks.processAssets.tap({
                 name: pluginName,
                 stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE
             }, (assets) => {
                 onStart();
                 const entries = Object.entries(assets);
-                for (let i = 0; i < entries.length; i++) {
-                    const [file, originalSource] = entries[i];
-                    if (cssMatcher(file)) {
+                const groupedEntries = getGroupedEntries(entries, this.options);
+                if (!isReact && Array.isArray(groupedEntries.js)) {
+                    for (let i = 0; i < groupedEntries.js.length; i++) {
+                        const [file, originalSource] = groupedEntries.js[i];
+                        const rawSource = originalSource.source().toString();
+                        const { code } = jsxHandler(rawSource);
+                        const source = new ConcatSource(code);
+                        compilation.updateAsset(file, source);
+                        onUpdate(file, rawSource, code);
+                    }
+                }
+                if (Array.isArray(groupedEntries.css)) {
+                    for (let i = 0; i < groupedEntries.css.length; i++) {
+                        const [file, originalSource] = groupedEntries.css[i];
                         const rawSource = originalSource.source().toString();
                         const css = styleHandler(rawSource, {
-                            isMainChunk: mainCssChunkMatcher(file, this.appType),
-                            cssInjectPreflight,
-                            customRuleCallback,
-                            cssPreflightRange,
-                            replaceUniversalSelectorWith
+                            isMainChunk: mainCssChunkMatcher(file, this.appType)
                         });
                         const source = new ConcatSource(css);
                         compilation.updateAsset(file, source);
@@ -714,13 +898,12 @@ class BaseTemplateWebpackPluginV5 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { cssMatcher, htmlMatcher, mainCssChunkMatcher, replaceUniversalSelectorWith, cssPreflight, cssPreflightRange, customRuleCallback, disabled, onLoad, onUpdate, onEnd, onStart } = this.options;
+        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, templeteHandler, styleHandler } = this.options;
         if (disabled) {
             return;
         }
         const { ConcatSource } = compiler.webpack.sources;
         const Compilation = compiler.webpack.Compilation;
-        const cssInjectPreflight = createInjectPreflight(cssPreflight);
         onLoad();
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             compilation.hooks.processAssets.tap({
@@ -729,27 +912,27 @@ class BaseTemplateWebpackPluginV5 {
             }, (assets) => {
                 onStart();
                 const entries = Object.entries(assets);
-                for (let i = 0; i < entries.length; i++) {
-                    const [file, originalSource] = entries[i];
-                    if (cssMatcher(file)) {
+                const groupedEntries = getGroupedEntries(entries, this.options);
+                if (Array.isArray(groupedEntries.html)) {
+                    for (let i = 0; i < groupedEntries.html.length; i++) {
+                        const [file, originalSource] = groupedEntries.html[i];
+                        const rawSource = originalSource.source().toString();
+                        const wxml = templeteHandler(rawSource, {});
+                        const source = new ConcatSource(wxml);
+                        compilation.updateAsset(file, source);
+                        onUpdate(file, rawSource, wxml);
+                    }
+                }
+                if (Array.isArray(groupedEntries.css)) {
+                    for (let i = 0; i < groupedEntries.css.length; i++) {
+                        const [file, originalSource] = groupedEntries.css[i];
                         const rawSource = originalSource.source().toString();
                         const css = styleHandler(rawSource, {
-                            isMainChunk: mainCssChunkMatcher(file, this.appType),
-                            cssInjectPreflight,
-                            customRuleCallback,
-                            cssPreflightRange,
-                            replaceUniversalSelectorWith
+                            isMainChunk: mainCssChunkMatcher(file, this.appType)
                         });
                         const source = new ConcatSource(css);
                         compilation.updateAsset(file, source);
                         onUpdate(file, rawSource, css);
-                    }
-                    else if (htmlMatcher(file)) {
-                        const rawSource = originalSource.source().toString();
-                        const wxml = templeteHandler(rawSource);
-                        const source = new ConcatSource(wxml);
-                        compilation.updateAsset(file, source);
-                        onUpdate(file, rawSource, wxml);
                     }
                 }
                 onEnd();
@@ -818,8 +1001,8 @@ exports.TaroWeappTailwindcssWebpackPluginV4 = TaroWeappTailwindcssWebpackPluginV
 exports.TaroWeappTailwindcssWebpackPluginV5 = TaroWeappTailwindcssWebpackPluginV5;
 exports.UniAppWeappTailwindcssWebpackPluginV4 = UniAppWeappTailwindcssWebpackPluginV4;
 ",
-    "dynamicImports": Array [],
-    "exports": Array [
+    "dynamicImports": [],
+    "exports": [
       "BaseJsxWebpackPluginV4",
       "BaseJsxWebpackPluginV5",
       "BaseTemplateWebpackPluginV4",
@@ -834,44 +1017,48 @@ exports.UniAppWeappTailwindcssWebpackPluginV4 = UniAppWeappTailwindcssWebpackPlu
       "UniAppWeappTailwindcssWebpackPluginV4",
     ],
     "fileName": "index.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {
-      "@babel/generator": Array [
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [
         "default",
       ],
-      "@babel/parser": Array [
-        "parse",
+      "@babel/parser": [
         "parseExpression",
+        "parse",
       ],
-      "@babel/traverse": Array [
+      "@babel/traverse": [
         "default",
       ],
-      "path": Array [
+      "micromatch": [
+        "isMatch",
+      ],
+      "path": [
         "default",
       ],
-      "postcss": Array [
+      "postcss": [
         "Rule",
         "Declaration",
         "default",
       ],
-      "postcss-selector-parser": Array [
+      "postcss-selector-parser": [
         "default",
       ],
-      "webpack": Array [
+      "webpack": [
         "NormalModule",
       ],
-      "webpack-sources": Array [
+      "webpack-sources": [
         "ConcatSource",
       ],
     },
-    "imports": Array [
-      "postcss",
-      "postcss-selector-parser",
+    "imports": [
+      "micromatch",
       "@babel/generator",
       "@babel/parser",
       "@babel/traverse",
-      "path",
+      "postcss",
+      "postcss-selector-parser",
       "webpack-sources",
+      "path",
       "webpack",
     ],
     "isDynamicEntry": false,
@@ -879,246 +1066,238 @@ exports.UniAppWeappTailwindcssWebpackPluginV4 = UniAppWeappTailwindcssWebpackPlu
     "isImplicitEntry": false,
     "map": null,
     "name": "index",
-    "referencedFiles": Array [],
+    "referencedFiles": [],
     "type": "chunk",
   },
 ]
 `;
 
 exports[`rollup build lib build 2`] = `
-Array [
-  Object {
-    "code": "const SYMBOL_TABLE = {
-    BACKQUOTE: '\`',
-    TILDE: '~',
-    EXCLAM: '!',
-    AT: '@',
-    NUMBERSIGN: '#',
-    DOLLAR: '$',
-    PERCENT: '%',
-    CARET: '^',
-    AMPERSAND: '&',
-    ASTERISK: '*',
-    PARENLEFT: '(',
-    PARENRIGHT: ')',
-    MINUS: '-',
-    UNDERSCORE: '_',
-    EQUAL: '=',
-    PLUS: '+',
-    BRACKETLEFT: '[',
-    BRACELEFT: '{',
-    BRACKETRIGHT: ']',
-    BRACERIGHT: '}',
-    SEMICOLON: ';',
-    COLON: ':',
-    QUOTE: \\"'\\",
-    DOUBLEQUOTE: '\\"',
-    BACKSLASH: '\\\\\\\\',
-    BAR: '|',
-    COMMA: ',',
-    LESS: '<',
-    PERIOD: '.',
-    GREATER: '>',
-    SLASH: '/',
-    QUESTION: '?',
-    SPACE: '',
-    DOT: '.',
-    HASH: '#'
-};
-const MappingChars2String = {
-    [SYMBOL_TABLE.BRACKETLEFT]: '_bl_',
-    [SYMBOL_TABLE.BRACKETRIGHT]: '_br_',
-    [SYMBOL_TABLE.PARENLEFT]: '_pl_',
-    [SYMBOL_TABLE.PARENRIGHT]: '_qr_',
-    [SYMBOL_TABLE.HASH]: '_h_',
-    [SYMBOL_TABLE.EXCLAM]: '_i_',
-    [SYMBOL_TABLE.SLASH]: '_s_',
-    [SYMBOL_TABLE.BACKSLASH]: '_bs_',
-    [SYMBOL_TABLE.DOT]: '_d_',
-    [SYMBOL_TABLE.COLON]: '_c_',
-    [SYMBOL_TABLE.PERCENT]: '_p_',
-    [SYMBOL_TABLE.COMMA]: '_co_',
-    [SYMBOL_TABLE.QUOTE]: '_q_',
-    [SYMBOL_TABLE.DOUBLEQUOTE]: '_dq_',
-    [SYMBOL_TABLE.ASTERISK]: '_a_',
-    [SYMBOL_TABLE.AMPERSAND]: '_am_',
-    [SYMBOL_TABLE.AT]: '_at_',
-    [SYMBOL_TABLE.BRACELEFT]: '_bal_',
-    [SYMBOL_TABLE.BRACERIGHT]: '_bar_'
-};
-
-function replaceWxml(original, keepEOL = false) {
-    const res = original
-        .replace(/\\\\[/g, MappingChars2String['['])
-        .replace(/\\\\]/g, MappingChars2String[']'])
-        .replace(/\\\\(/g, MappingChars2String['('])
-        .replace(/\\\\)/g, MappingChars2String[')'])
-        .replace(/#/g, MappingChars2String['#'])
-        .replace(/!/g, MappingChars2String['!'])
-        .replace(/\\\\//g, MappingChars2String['/'])
-        .replace(/\\\\./g, MappingChars2String['.'])
-        .replace(/:/g, MappingChars2String[':'])
-        .replace(/%/g, MappingChars2String['%'])
-        .replace(/,/g, MappingChars2String[','])
-        .replace(/\\\\\\\\/g, MappingChars2String['\\\\\\\\'])
-        .replace(/'/g, MappingChars2String[\\"'\\"])
-        .replace(/\\"/g, MappingChars2String['\\"'])
-        .replace(/\\\\*/g, MappingChars2String['*'])
-        .replace(/&/g, MappingChars2String['&'])
-        .replace(/@/g, MappingChars2String['@'])
-        .replace(/{/g, MappingChars2String['{'])
-        .replace(/}/g, MappingChars2String['}']);
-    if (keepEOL) {
-        return res;
+[
+  {
+    "code": "function mangleMark(str, oldValue, classGenerator) {
+    if (typeof str === 'string' && str) {
+        const oldStrArr = oldValue.split(' ').filter((x) => x);
+        return str
+            .split(' ')
+            .filter((x) => x)
+            .map((x, idx) => {
+            if (classGenerator.ignoreClassName(x) || classGenerator.ignoreClassName(oldStrArr[idx])) {
+                return x;
+            }
+            return classGenerator.generateClassName(x).name;
+        })
+            .join(' ');
     }
-    return (res
-        .replace(/[\\\\r\\\\n]+/g, ''));
+    return str;
 }
 
-function cssSelectorReplacer(selector) {
-    return (selector
-        .replace(/\\\\\\\\\\\\[/g, MappingChars2String['['])
-        .replace(/\\\\\\\\\\\\]/g, MappingChars2String[']'])
-        .replace(/\\\\\\\\\\\\(/g, MappingChars2String['('])
-        .replace(/\\\\\\\\\\\\)/g, MappingChars2String[')'])
-        .replace(/\\\\\\\\#/g, MappingChars2String['#'])
-        .replace(/\\\\\\\\!/g, MappingChars2String['!'])
-        .replace(/\\\\\\\\\\\\//g, MappingChars2String['/'])
-        .replace(/\\\\\\\\\\\\./g, MappingChars2String['.'])
-        .replace(/\\\\\\\\:/g, MappingChars2String[':'])
-        .replace(/\\\\\\\\%/g, MappingChars2String['%'])
-        .replace(/\\\\\\\\2c /g, MappingChars2String[','])
-        .replace(/\\\\\\\\\\\\\\\\/g, MappingChars2String['\\\\\\\\'])
-        .replace(/\\\\\\\\'/g, MappingChars2String[\\"'\\"])
-        .replace(/\\\\\\\\\\"/g, MappingChars2String['\\"'])
-        .replace(/\\\\\\\\\\\\*/g, MappingChars2String['*'])
-        .replace(/\\\\\\\\&/g, MappingChars2String['&'])
-        .replace(/\\\\\\\\@/g, MappingChars2String['@'])
-        .replace(/\\\\\\\\{/g, MappingChars2String['{'])
-        .replace(/\\\\\\\\}/g, MappingChars2String['}']));
+const MappingChars2String = {
+    '[': '_bl_',
+    ']': '_br_',
+    '(': '_pl_',
+    ')': '_qr_',
+    '#': '_h_',
+    '!': '_i_',
+    '/': '_s_',
+    '\\\\': '_bs_',
+    '.': '_d_',
+    ':': '_c_',
+    '%': '_p_',
+    ',': '_co_',
+    "'": '_q_',
+    '"': '_dq_',
+    '*': '_a_',
+    '&': '_am_',
+    '@': '_at_',
+    '{': '_bal_',
+    '}': '_bar_',
+    '+': '_plus_',
+    ';': '_se_',
+    '<': '_l_',
+    '~': '_t_',
+    '=': '_e_',
+    '>': '_g_',
+    '?': '_qu_',
+    '^': '_ca_',
+    '\`': '_bq_',
+    '|': '_b_',
+    $: '_do_'
+};
+const MappingChars2StringEntries = Object.entries(MappingChars2String);
+
+function escapeStringRegexp(str) {
+    if (typeof str !== 'string') {
+        throw new TypeError('Expected a string');
+    }
+    return str.replace(/[|\\\\{}()[\\]^$+*?.]/g, '\\\\$&').replace(/-/g, '\\\\x2d');
 }
 
-export { cssSelectorReplacer as replaceCss, replaceWxml as replaceJs };
+function escape(selectors, raw = false, entries = MappingChars2StringEntries) {
+    let res = selectors;
+    for (let i = 0; i < entries.length; i++) {
+        const [searchValue, replaceValue] = entries[i];
+        res = res.replace(new RegExp((raw ? '\\\\\\\\' : '') + escapeStringRegexp(searchValue), 'g'), replaceValue);
+    }
+    return res;
+}
+
+function replaceWxml(original, options = {
+    keepEOL: false,
+    escapeEntries: MappingChars2StringEntries
+}) {
+    if (typeof options === 'boolean') {
+        options = {
+            keepEOL: options
+        };
+    }
+    let res = original;
+    if (!options.keepEOL) {
+        res = res
+            .replace(/[\\r\\n]+/g, '');
+    }
+    const oldValue = res;
+    res = escape(res, false, options.escapeEntries);
+    if (options.classGenerator) {
+        res = mangleMark(res, oldValue, options.classGenerator);
+    }
+    return res;
+}
+
+function cssSelectorReplacer(selector, escapeEntries = MappingChars2StringEntries) {
+    return escape(selector, true, escapeEntries).replace(/\\\\2c /g, MappingChars2String[',']);
+}
+function internalCssSelectorReplacer(selectors, escapeEntries = MappingChars2StringEntries) {
+    return escape(selectors, false, escapeEntries);
+}
+
+export { cssSelectorReplacer as replaceCss, internalCssSelectorReplacer as replaceEscapedCss, replaceWxml as replaceJs };
 ",
-    "dynamicImports": Array [],
-    "exports": Array [
+    "dynamicImports": [],
+    "exports": [
       "replaceCss",
+      "replaceEscapedCss",
       "replaceJs",
     ],
     "fileName": "replace.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {},
-    "imports": Array [],
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {},
+    "imports": [],
     "isDynamicEntry": false,
     "isEntry": true,
     "isImplicitEntry": false,
     "map": null,
     "name": "replace",
-    "referencedFiles": Array [],
+    "referencedFiles": [],
     "type": "chunk",
   },
 ]
 `;
 
 exports[`rollup build lib build 3`] = `
-Array [
-  Object {
+[
+  {
     "code": "'use strict';
 
 var loaderUtils = require('loader-utils');
-var generate = require('@babel/generator');
-var parser = require('@babel/parser');
-var traverse = require('@babel/traverse');
+var fs = require('fs');
+var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var generate__default = /*#__PURE__*/_interopDefaultLegacy(generate);
-var traverse__default = /*#__PURE__*/_interopDefaultLegacy(traverse);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-function jsxHandler(rawSource, replacer) {
-    const ast = parser.parse(rawSource, {
-        sourceType: 'unambiguous'
-    });
-    traverse__default[\\"default\\"](ast, {
-        enter(path) {
-            replacer(path);
-        },
-        noScope: true
-    });
-    return generate__default[\\"default\\"](ast);
+function mkfileSync(filename, content) {
+    try {
+        const dirname = path__default["default"].dirname(filename);
+        if (!fs__default["default"].existsSync(dirname)) {
+            fs__default["default"].mkdirSync(dirname, {
+                recursive: true
+            });
+        }
+        fs__default["default"].writeFileSync(filename, content, 'utf-8');
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 function loader(content) {
     this.cacheable && this.cacheable();
-    const config = loaderUtils.getOptions(this);
-    config.replacer.end();
-    const { code } = jsxHandler(content, config.replacer);
+    const { jsxHandler, write } = loaderUtils.getOptions(this);
+    if (write) {
+        const t = path__default["default"].resolve(write.dir, '.' + this.resource.replace(this.context, '') + '.tmp');
+        mkfileSync(t, content);
+    }
+    const { code } = jsxHandler(content);
     return code;
 }
 
 module.exports = loader;
 ",
-    "dynamicImports": Array [],
-    "exports": Array [
+    "dynamicImports": [],
+    "exports": [
       "default",
     ],
     "fileName": "jsx-rename-loader.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {
-      "@babel/generator": Array [
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "fs": [
         "default",
       ],
-      "@babel/parser": Array [
-        "parse",
-      ],
-      "@babel/traverse": Array [
-        "default",
-      ],
-      "loader-utils": Array [
+      "loader-utils": [
         "getOptions",
       ],
+      "path": [
+        "default",
+      ],
     },
-    "imports": Array [
+    "imports": [
       "loader-utils",
-      "@babel/generator",
-      "@babel/parser",
-      "@babel/traverse",
+      "fs",
+      "path",
     ],
     "isDynamicEntry": false,
     "isEntry": true,
     "isImplicitEntry": false,
     "map": null,
     "name": "jsx-rename-loader",
-    "referencedFiles": Array [],
+    "referencedFiles": [],
     "type": "chunk",
   },
 ]
 `;
 
 exports[`rollup build lib build 4`] = `
-Array [
-  Object {
+[
+  {
     "code": "'use strict';
 
+var micromatch = require('micromatch');
 var generate = require('@babel/generator');
 var parser = require('@babel/parser');
 var traverse = require('@babel/traverse');
+var postcss = require('postcss');
+var selectorParser = require('postcss-selector-parser');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var generate__default = /*#__PURE__*/_interopDefaultLegacy(generate);
 var traverse__default = /*#__PURE__*/_interopDefaultLegacy(traverse);
+var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
+var selectorParser__default = /*#__PURE__*/_interopDefaultLegacy(selectorParser);
 
 function isObject(val) {
-  return val !== null && typeof val === \\"object\\";
+  return val !== null && typeof val === "object";
 }
-function _defu(baseObj, defaults, namespace = \\".\\", merger) {
+function _defu(baseObj, defaults, namespace = ".", merger) {
   if (!isObject(defaults)) {
     return _defu(baseObj, {}, namespace, merger);
   }
   const obj = Object.assign({}, defaults);
   for (const key in baseObj) {
-    if (key === \\"__proto__\\" || key === \\"constructor\\") {
+    if (key === "__proto__" || key === "constructor") {
       continue;
     }
     const val = baseObj[key];
@@ -1131,7 +1310,7 @@ function _defu(baseObj, defaults, namespace = \\".\\", merger) {
     if (Array.isArray(val) && Array.isArray(obj[key])) {
       obj[key] = val.concat(obj[key]);
     } else if (isObject(val) && isObject(obj[key])) {
-      obj[key] = _defu(val, obj[key], (namespace ? \`\${namespace}.\` : \\"\\") + key.toString(), merger);
+      obj[key] = _defu(val, obj[key], (namespace ? \`\${namespace}.\` : "") + key.toString(), merger);
     } else {
       obj[key] = val;
     }
@@ -1139,179 +1318,191 @@ function _defu(baseObj, defaults, namespace = \\".\\", merger) {
   return obj;
 }
 function createDefu(merger) {
-  return (...args) => args.reduce((p, c) => _defu(p, c, \\"\\", merger), {});
+  return (...args) => args.reduce((p, c) => _defu(p, c, "", merger), {});
 }
 const defu = createDefu();
 
-const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g;
-
+function isRegexp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]';
+}
+function isMap(value) {
+    return Object.prototype.toString.call(value) === '[object Map]';
+}
 const noop = () => { };
-const defaultOptions = {
-    cssMatcher: (file) => /.+\\\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
-    htmlMatcher: (file) => /.+\\\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
-    jsMatcher: (file) => {
-        if (file.includes('node_modules')) {
-            return false;
-        }
-        return /.+\\\\.[jt]sx?$/.test(file);
-    },
-    mainCssChunkMatcher: (file, appType) => {
-        switch (appType) {
-            case 'uni-app': {
-                return /^common\\\\/main/.test(file);
+
+function mangleMark(str, oldValue, classGenerator) {
+    if (typeof str === 'string' && str) {
+        const oldStrArr = oldValue.split(' ').filter((x) => x);
+        return str
+            .split(' ')
+            .filter((x) => x)
+            .map((x, idx) => {
+            if (classGenerator.ignoreClassName(x) || classGenerator.ignoreClassName(oldStrArr[idx])) {
+                return x;
             }
-            case 'mpx': {
-                return /^app/.test(file);
-            }
-            case 'taro': {
-                return /^app/.test(file);
-            }
-            case 'remax': {
-                return /^app/.test(file);
-            }
-            case 'rax': {
-                return /^bundle/.test(file);
-            }
-            case 'native': {
-                return /^app/.test(file);
-            }
-            case 'kbone': {
-                return /^(?:common\\\\/)?miniprogram-app/.test(file);
-            }
-            default: {
-                return true;
-            }
-        }
-    },
-    cssPreflight: {
-        'box-sizing': 'border-box',
-        'border-width': '0',
-        'border-style': 'solid',
-        'border-color': 'currentColor'
-    },
-    cssPreflightRange: 'view',
-    replaceUniversalSelectorWith: 'view',
-    disabled: false,
-    customRuleCallback: noop,
-    onLoad: noop,
-    onStart: noop,
-    onEnd: noop,
-    onUpdate: noop,
-    mangle: false,
-    framework: 'react'
-};
-function getOptions(options = {}) {
-    if (options.mangle === true) {
-        options.mangle = {
-            classNameRegExp: mangleClassRegex.source
-        };
+            return classGenerator.generateClassName(x).name;
+        })
+            .join(' ');
     }
-    return defu(options, defaultOptions);
+    return str;
 }
 
-const SYMBOL_TABLE = {
-    BACKQUOTE: '\`',
-    TILDE: '~',
-    EXCLAM: '!',
-    AT: '@',
-    NUMBERSIGN: '#',
-    DOLLAR: '$',
-    PERCENT: '%',
-    CARET: '^',
-    AMPERSAND: '&',
-    ASTERISK: '*',
-    PARENLEFT: '(',
-    PARENRIGHT: ')',
-    MINUS: '-',
-    UNDERSCORE: '_',
-    EQUAL: '=',
-    PLUS: '+',
-    BRACKETLEFT: '[',
-    BRACELEFT: '{',
-    BRACKETRIGHT: ']',
-    BRACERIGHT: '}',
-    SEMICOLON: ';',
-    COLON: ':',
-    QUOTE: \\"'\\",
-    DOUBLEQUOTE: '\\"',
-    BACKSLASH: '\\\\\\\\',
-    BAR: '|',
-    COMMA: ',',
-    LESS: '<',
-    PERIOD: '.',
-    GREATER: '>',
-    SLASH: '/',
-    QUESTION: '?',
-    SPACE: '',
-    DOT: '.',
-    HASH: '#'
-};
 const MappingChars2String = {
-    [SYMBOL_TABLE.BRACKETLEFT]: '_bl_',
-    [SYMBOL_TABLE.BRACKETRIGHT]: '_br_',
-    [SYMBOL_TABLE.PARENLEFT]: '_pl_',
-    [SYMBOL_TABLE.PARENRIGHT]: '_qr_',
-    [SYMBOL_TABLE.HASH]: '_h_',
-    [SYMBOL_TABLE.EXCLAM]: '_i_',
-    [SYMBOL_TABLE.SLASH]: '_s_',
-    [SYMBOL_TABLE.BACKSLASH]: '_bs_',
-    [SYMBOL_TABLE.DOT]: '_d_',
-    [SYMBOL_TABLE.COLON]: '_c_',
-    [SYMBOL_TABLE.PERCENT]: '_p_',
-    [SYMBOL_TABLE.COMMA]: '_co_',
-    [SYMBOL_TABLE.QUOTE]: '_q_',
-    [SYMBOL_TABLE.DOUBLEQUOTE]: '_dq_',
-    [SYMBOL_TABLE.ASTERISK]: '_a_',
-    [SYMBOL_TABLE.AMPERSAND]: '_am_',
-    [SYMBOL_TABLE.AT]: '_at_',
-    [SYMBOL_TABLE.BRACELEFT]: '_bal_',
-    [SYMBOL_TABLE.BRACERIGHT]: '_bar_'
+    '[': '_bl_',
+    ']': '_br_',
+    '(': '_pl_',
+    ')': '_qr_',
+    '#': '_h_',
+    '!': '_i_',
+    '/': '_s_',
+    '\\\\': '_bs_',
+    '.': '_d_',
+    ':': '_c_',
+    '%': '_p_',
+    ',': '_co_',
+    "'": '_q_',
+    '"': '_dq_',
+    '*': '_a_',
+    '&': '_am_',
+    '@': '_at_',
+    '{': '_bal_',
+    '}': '_bar_',
+    '+': '_plus_',
+    ';': '_se_',
+    '<': '_l_',
+    '~': '_t_',
+    '=': '_e_',
+    '>': '_g_',
+    '?': '_qu_',
+    '^': '_ca_',
+    '\`': '_bq_',
+    '|': '_b_',
+    $: '_do_'
 };
+const MappingChars2StringEntries = Object.entries(MappingChars2String);
 
-function replaceWxml(original, keepEOL = false) {
-    const res = original
-        .replace(/\\\\[/g, MappingChars2String['['])
-        .replace(/\\\\]/g, MappingChars2String[']'])
-        .replace(/\\\\(/g, MappingChars2String['('])
-        .replace(/\\\\)/g, MappingChars2String[')'])
-        .replace(/#/g, MappingChars2String['#'])
-        .replace(/!/g, MappingChars2String['!'])
-        .replace(/\\\\//g, MappingChars2String['/'])
-        .replace(/\\\\./g, MappingChars2String['.'])
-        .replace(/:/g, MappingChars2String[':'])
-        .replace(/%/g, MappingChars2String['%'])
-        .replace(/,/g, MappingChars2String[','])
-        .replace(/\\\\\\\\/g, MappingChars2String['\\\\\\\\'])
-        .replace(/'/g, MappingChars2String[\\"'\\"])
-        .replace(/\\"/g, MappingChars2String['\\"'])
-        .replace(/\\\\*/g, MappingChars2String['*'])
-        .replace(/&/g, MappingChars2String['&'])
-        .replace(/@/g, MappingChars2String['@'])
-        .replace(/{/g, MappingChars2String['{'])
-        .replace(/}/g, MappingChars2String['}']);
-    if (keepEOL) {
-        return res;
+function escapeStringRegexp(str) {
+    if (typeof str !== 'string') {
+        throw new TypeError('Expected a string');
     }
-    return (res
-        .replace(/[\\\\r\\\\n]+/g, ''));
+    return str.replace(/[|\\\\{}()[\\]^$+*?.]/g, '\\\\$&').replace(/-/g, '\\\\x2d');
 }
-
-const vueTemplateClassRegexp = /(?:(?:hover-)?class)=(?:[\\"']\\\\W+\\\\s*(?:\\\\w+)\\\\()?[\\"']([^\\"]+)['\\"]/gs;
-const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\\\s+[^>]*?(?:(?:hover-)?class=\\"(?:[^\\"]*)\\")[^>]*?\\\\/?>/g;
+const templateClassExactRegexp = /(?:(?<=^|\\s)(?:hover-)?class)=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]/gs;
+const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\\/?>/g;
+function handleRegexp(reg) {
+    return \`(?:\${reg.source})\`;
+}
+function getSourceString(input) {
+    let result;
+    if (typeof input === 'string') {
+        result = input;
+    }
+    else if (isRegexp(input)) {
+        result = input.source;
+    }
+    else {
+        result = input.toString();
+    }
+    return result;
+}
+function makePattern(arr) {
+    let pattern = '';
+    if (Array.isArray(arr)) {
+        pattern = arr
+            .reduce((acc, cur) => {
+            if (typeof cur === 'string') {
+                acc.push(cur);
+            }
+            else if (isRegexp(cur)) {
+                acc.push(handleRegexp(cur));
+            }
+            return acc;
+        }, [])
+            .join('|');
+    }
+    else if (typeof arr === 'string') {
+        pattern = arr;
+    }
+    else if (isRegexp(arr)) {
+        pattern = handleRegexp(arr);
+    }
+    return pattern;
+}
+function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    return new RegExp(source, 'g');
+}
+function createTemplateClassRegexp(attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`(?:\${prefix}\${pattern})=(?:["']\\\\W+\\\\s*(?:\\\\w+)\\\\()?["']([^"]+)['"]\`;
+    return new RegExp(source, 'gs');
+}
+function makeCustomAttributes(entries) {
+    return entries.map(([k, v]) => {
+        return {
+            tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+            attrRegexp: createTemplateClassRegexp(v),
+            tag: getSourceString(k),
+            attrs: v
+        };
+    });
+}
 const variableRegExp = /{{(.*?)}}/gs;
 function variableMatch(original) {
     return variableRegExp.exec(original);
 }
 
-function generateCode(match) {
+function escape(selectors, raw = false, entries = MappingChars2StringEntries) {
+    let res = selectors;
+    for (let i = 0; i < entries.length; i++) {
+        const [searchValue, replaceValue] = entries[i];
+        res = res.replace(new RegExp((raw ? '\\\\\\\\' : '') + escapeStringRegexp(searchValue), 'g'), replaceValue);
+    }
+    return res;
+}
+
+function replaceWxml(original, options = {
+    keepEOL: false,
+    escapeEntries: MappingChars2StringEntries
+}) {
+    if (typeof options === 'boolean') {
+        options = {
+            keepEOL: options
+        };
+    }
+    let res = original;
+    if (!options.keepEOL) {
+        res = res
+            .replace(/[\\r\\n]+/g, '');
+    }
+    const oldValue = res;
+    res = escape(res, false, options.escapeEntries);
+    if (options.classGenerator) {
+        res = mangleMark(res, oldValue, options.classGenerator);
+    }
+    return res;
+}
+
+function generateCode(match, options = {}) {
     const ast = parser.parseExpression(match);
-    traverse__default[\\"default\\"](ast, {
+    traverse__default["default"](ast, {
         StringLiteral(path) {
-            path.node.value = replaceWxml(path.node.value);
+            var _a;
+            if (path.parent.type === 'BinaryExpression') {
+                if (((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent.type) === 'ConditionalExpression') {
+                    return;
+                }
+            }
+            path.node.value = replaceWxml(path.node.value, options);
         },
         noScope: true
     });
-    const { code } = generate__default[\\"default\\"](ast, {
+    const { code } = generate__default["default"](ast, {
         compact: true,
         minified: true,
         jsescOption: {
@@ -1320,27 +1511,44 @@ function generateCode(match) {
     });
     return code;
 }
-function templeteReplacer(original) {
+function extractSource(original) {
     let match = variableMatch(original);
     const sources = [];
     while (match !== null) {
+        const start = match.index;
+        const end = variableRegExp.lastIndex;
         sources.push({
-            start: match.index,
-            end: variableRegExp.lastIndex,
-            raw: match[1]
+            start,
+            end,
+            raw: match[1],
+            prevConcatenated: !/\\s/.test(original[start - 1]),
+            nextConcatenated: !/\\s/.test(original[end])
         });
         match = variableMatch(original);
     }
+    return sources;
+}
+function templeteReplacer(original, options = {}) {
+    const sources = extractSource(original);
     if (sources.length) {
         const resultArray = [];
         let p = 0;
         for (let i = 0; i < sources.length; i++) {
             const m = sources[i];
-            resultArray.push(replaceWxml(original.slice(p, m.start), true));
+            const before = original.slice(p, m.start);
+            resultArray.push(replaceWxml(before, {
+                keepEOL: true,
+                classGenerator: options.classGenerator,
+                escapeEntries: options.escapeEntries
+            }));
             p = m.start;
             if (m.raw.trim().length) {
-                const code = generateCode(m.raw);
-                m.source = \`{{\${code}}}\`;
+                const code = generateCode(m.raw, options);
+                let source = \`{{\${code}}}\`;
+                if (options.classGenerator) {
+                    source = \`\${m.prevConcatenated ? '' : ' '}\${source}\${m.nextConcatenated ? '' : ' '}\`;
+                }
+                m.source = source;
             }
             else {
                 m.source = '';
@@ -1348,304 +1556,73 @@ function templeteReplacer(original) {
             resultArray.push(m.source);
             p = m.end;
             if (i === sources.length - 1) {
-                resultArray.push(replaceWxml(original.slice(m.end), true));
+                const after = original.slice(m.end);
+                resultArray.push(replaceWxml(after, {
+                    keepEOL: true,
+                    classGenerator: options.classGenerator,
+                    escapeEntries: options.escapeEntries
+                }));
             }
         }
-        return resultArray.filter((x) => x).join('');
+        return resultArray
+            .filter((x) => x)
+            .join('')
+            .trim();
     }
     else {
-        return replaceWxml(original);
+        return replaceWxml(original, {
+            keepEOL: false,
+            classGenerator: options.classGenerator,
+            escapeEntries: options.escapeEntries
+        });
     }
 }
-function templeteHandler(rawSource) {
+function templeteHandler(rawSource, options = {}) {
     return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
-        return m0.replace(vueTemplateClassRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className));
+        return m0.replace(templateClassExactRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options));
         });
     });
 }
-
-function ViteWeappTailwindcssPlugin(options = {}) {
-    const { htmlMatcher } = getOptions(options);
-    return {
-        name: 'som:vite-plugin-uni-app-weapp-tailwindcss',
-        generateBundle(opt, bundle, isWrite) {
-            const entries = Object.entries(bundle);
-            for (let i = 0; i < entries.length; i++) {
-                const [file, originalSource] = entries[i];
-                if (htmlMatcher(file)) {
-                    if (originalSource.type === 'asset') {
-                        originalSource.source = templeteHandler(originalSource.source.toString());
-                    }
-                }
+function customTempleteHandler(rawSource, options = {}) {
+    let source = templeteHandler(rawSource, options);
+    if (options.custom) {
+        if (Array.isArray(options.regexps)) {
+            for (let i = 0; i < options.regexps.length; i++) {
+                const regexp = options.regexps[i];
+                source = source.replace(regexp.tagRegexp, (m0) => {
+                    return m0.replace(regexp.attrRegexp, (m1, className) => {
+                        return m1.replace(className, templeteReplacer(className, options));
+                    });
+                });
             }
         }
+        return source;
+    }
+    else {
+        return source;
+    }
+}
+function createTempleteHandler(options = {}) {
+    return (rawSource, opt = {}) => {
+        return customTempleteHandler(rawSource, defu(opt, options));
     };
 }
 
-module.exports = ViteWeappTailwindcssPlugin;
-",
-    "dynamicImports": Array [],
-    "exports": Array [
-      "default",
-    ],
-    "fileName": "vite.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {
-      "@babel/generator": Array [
-        "default",
-      ],
-      "@babel/parser": Array [
-        "parseExpression",
-      ],
-      "@babel/traverse": Array [
-        "default",
-      ],
-    },
-    "imports": Array [
-      "@babel/generator",
-      "@babel/parser",
-      "@babel/traverse",
-    ],
-    "isDynamicEntry": false,
-    "isEntry": true,
-    "isImplicitEntry": false,
-    "map": null,
-    "name": "index",
-    "referencedFiles": Array [],
-    "type": "chunk",
-  },
-]
-`;
-
-exports[`rollup build lib build 5`] = `
-Array [
-  Object {
-    "code": "'use strict';
-
-var selectorParser = require('postcss-selector-parser');
-var postcss = require('postcss');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var selectorParser__default = /*#__PURE__*/_interopDefaultLegacy(selectorParser);
-
-const createTransform = (rule, options) => {
-    const replaceFlag = options.replaceUniversalSelectorWith !== false;
-    const transform = (selectors) => {
-        selectors.walk((selector) => {
-            if (selector.type === 'universal' && replaceFlag) {
-                selector.value = options.replaceUniversalSelectorWith;
-            }
-            if (selector.type === 'selector') {
-                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
-                node && selector.remove();
-            }
-        });
-        if (selectors.length === 0) {
-            rule.remove();
-        }
-    };
-    return transform;
-};
-const getTransformer = (rule, options) => {
-    return selectorParser__default[\\"default\\"](createTransform(rule, options));
-};
-const transformSync = (rule, options) => {
-    const transformer = getTransformer(rule, options);
-    return transformer.transformSync(rule, {
-        lossless: false,
-        updateSelector: true
-    });
-};
-
-function isObject(val) {
-  return val !== null && typeof val === \\"object\\";
-}
-function _defu(baseObj, defaults, namespace = \\".\\", merger) {
-  if (!isObject(defaults)) {
-    return _defu(baseObj, {}, namespace, merger);
-  }
-  const obj = Object.assign({}, defaults);
-  for (const key in baseObj) {
-    if (key === \\"__proto__\\" || key === \\"constructor\\") {
-      continue;
-    }
-    const val = baseObj[key];
-    if (val === null || val === void 0) {
-      continue;
-    }
-    if (merger && merger(obj, key, val, namespace)) {
-      continue;
-    }
-    if (Array.isArray(val) && Array.isArray(obj[key])) {
-      obj[key] = val.concat(obj[key]);
-    } else if (isObject(val) && isObject(obj[key])) {
-      obj[key] = _defu(val, obj[key], (namespace ? \`\${namespace}.\` : \\"\\") + key.toString(), merger);
-    } else {
-      obj[key] = val;
-    }
-  }
-  return obj;
-}
-function createDefu(merger) {
-  return (...args) => args.reduce((p, c) => _defu(p, c, \\"\\", merger), {});
-}
-const defu = createDefu();
-
-const mangleClassRegex = /MANGLE__[a-zA-Z0-9_-]+__MANGLE/g;
-
-const noop = () => { };
-const defaultOptions = {
-    cssMatcher: (file) => /.+\\\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
-    htmlMatcher: (file) => /.+\\\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
-    jsMatcher: (file) => {
-        if (file.includes('node_modules')) {
-            return false;
-        }
-        return /.+\\\\.[jt]sx?$/.test(file);
-    },
-    mainCssChunkMatcher: (file, appType) => {
-        switch (appType) {
-            case 'uni-app': {
-                return /^common\\\\/main/.test(file);
-            }
-            case 'mpx': {
-                return /^app/.test(file);
-            }
-            case 'taro': {
-                return /^app/.test(file);
-            }
-            case 'remax': {
-                return /^app/.test(file);
-            }
-            case 'rax': {
-                return /^bundle/.test(file);
-            }
-            case 'native': {
-                return /^app/.test(file);
-            }
-            case 'kbone': {
-                return /^(?:common\\\\/)?miniprogram-app/.test(file);
-            }
-            default: {
-                return true;
-            }
-        }
-    },
-    cssPreflight: {
-        'box-sizing': 'border-box',
-        'border-width': '0',
-        'border-style': 'solid',
-        'border-color': 'currentColor'
-    },
-    cssPreflightRange: 'view',
-    replaceUniversalSelectorWith: 'view',
-    disabled: false,
-    customRuleCallback: noop,
-    onLoad: noop,
-    onStart: noop,
-    onEnd: noop,
-    onUpdate: noop,
-    mangle: false,
-    framework: 'react'
-};
-function getOptions(options = {}) {
-    if (options.mangle === true) {
-        options.mangle = {
-            classNameRegExp: mangleClassRegex.source
-        };
-    }
-    return defu(options, defaultOptions);
-}
-
-const SYMBOL_TABLE = {
-    BACKQUOTE: '\`',
-    TILDE: '~',
-    EXCLAM: '!',
-    AT: '@',
-    NUMBERSIGN: '#',
-    DOLLAR: '$',
-    PERCENT: '%',
-    CARET: '^',
-    AMPERSAND: '&',
-    ASTERISK: '*',
-    PARENLEFT: '(',
-    PARENRIGHT: ')',
-    MINUS: '-',
-    UNDERSCORE: '_',
-    EQUAL: '=',
-    PLUS: '+',
-    BRACKETLEFT: '[',
-    BRACELEFT: '{',
-    BRACKETRIGHT: ']',
-    BRACERIGHT: '}',
-    SEMICOLON: ';',
-    COLON: ':',
-    QUOTE: \\"'\\",
-    DOUBLEQUOTE: '\\"',
-    BACKSLASH: '\\\\\\\\',
-    BAR: '|',
-    COMMA: ',',
-    LESS: '<',
-    PERIOD: '.',
-    GREATER: '>',
-    SLASH: '/',
-    QUESTION: '?',
-    SPACE: '',
-    DOT: '.',
-    HASH: '#'
-};
-const MappingChars2String = {
-    [SYMBOL_TABLE.BRACKETLEFT]: '_bl_',
-    [SYMBOL_TABLE.BRACKETRIGHT]: '_br_',
-    [SYMBOL_TABLE.PARENLEFT]: '_pl_',
-    [SYMBOL_TABLE.PARENRIGHT]: '_qr_',
-    [SYMBOL_TABLE.HASH]: '_h_',
-    [SYMBOL_TABLE.EXCLAM]: '_i_',
-    [SYMBOL_TABLE.SLASH]: '_s_',
-    [SYMBOL_TABLE.BACKSLASH]: '_bs_',
-    [SYMBOL_TABLE.DOT]: '_d_',
-    [SYMBOL_TABLE.COLON]: '_c_',
-    [SYMBOL_TABLE.PERCENT]: '_p_',
-    [SYMBOL_TABLE.COMMA]: '_co_',
-    [SYMBOL_TABLE.QUOTE]: '_q_',
-    [SYMBOL_TABLE.DOUBLEQUOTE]: '_dq_',
-    [SYMBOL_TABLE.ASTERISK]: '_a_',
-    [SYMBOL_TABLE.AMPERSAND]: '_am_',
-    [SYMBOL_TABLE.AT]: '_at_',
-    [SYMBOL_TABLE.BRACELEFT]: '_bal_',
-    [SYMBOL_TABLE.BRACERIGHT]: '_bar_'
-};
-
-function cssSelectorReplacer(selector) {
-    return (selector
-        .replace(/\\\\\\\\\\\\[/g, MappingChars2String['['])
-        .replace(/\\\\\\\\\\\\]/g, MappingChars2String[']'])
-        .replace(/\\\\\\\\\\\\(/g, MappingChars2String['('])
-        .replace(/\\\\\\\\\\\\)/g, MappingChars2String[')'])
-        .replace(/\\\\\\\\#/g, MappingChars2String['#'])
-        .replace(/\\\\\\\\!/g, MappingChars2String['!'])
-        .replace(/\\\\\\\\\\\\//g, MappingChars2String['/'])
-        .replace(/\\\\\\\\\\\\./g, MappingChars2String['.'])
-        .replace(/\\\\\\\\:/g, MappingChars2String[':'])
-        .replace(/\\\\\\\\%/g, MappingChars2String['%'])
-        .replace(/\\\\\\\\2c /g, MappingChars2String[','])
-        .replace(/\\\\\\\\\\\\\\\\/g, MappingChars2String['\\\\\\\\'])
-        .replace(/\\\\\\\\'/g, MappingChars2String[\\"'\\"])
-        .replace(/\\\\\\\\\\"/g, MappingChars2String['\\"'])
-        .replace(/\\\\\\\\\\\\*/g, MappingChars2String['*'])
-        .replace(/\\\\\\\\&/g, MappingChars2String['&'])
-        .replace(/\\\\\\\\@/g, MappingChars2String['@'])
-        .replace(/\\\\\\\\{/g, MappingChars2String['{'])
-        .replace(/\\\\\\\\}/g, MappingChars2String['}']));
-}
-
-const PATTERNS = [/:not\\\\(template\\\\)\\\\s*~\\\\s*:not\\\\(template\\\\)/.source, /:not\\\\(\\\\[hidden\\\\]\\\\)\\\\s*~\\\\s*:not\\\\(\\\\[hidden\\\\]\\\\)/.source].join('|');
+const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
+function testIfVariablesScope(node) {
+    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+        const tryTestDecl = node.nodes[0];
+        if (tryTestDecl && tryTestDecl.type === 'decl') {
+            return tryTestDecl.prop.startsWith('--tw-');
+        }
+    }
+    return false;
+}
 function commonChunkPreflight(node, options) {
     node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
-    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+    if (testIfVariablesScope(node)) {
         const selectorParts = node.selector.split(',');
         if (!selectorParts.includes('view')) {
             selectorParts.push('view');
@@ -1664,13 +1641,170 @@ function commonChunkPreflight(node, options) {
         });
         pseudoVarRule.append(new postcss.Declaration({
             prop: '--tw-content',
-            value: '\\"\\"'
+            value: '""'
         }));
         node.before(pseudoVarRule);
     }
 }
-function mpRulePreflight(node, options) {
-    node.selector = cssSelectorReplacer(node.selector);
+
+function internalCssSelectorReplacer(selectors, escapeEntries = MappingChars2StringEntries) {
+    return escape(selectors, false, escapeEntries);
+}
+
+const createTransform = (rule, options) => {
+    const replaceFlag = options.replaceUniversalSelectorWith !== false;
+    const classGenerator = options.classGenerator;
+    const transform = (selectors) => {
+        selectors.walk((selector) => {
+            if (selector.type === 'universal' && replaceFlag) {
+                selector.value = options.replaceUniversalSelectorWith;
+            }
+            if (selector.type === 'selector') {
+                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
+                node && selector.remove();
+            }
+            if (selector.type === 'class') {
+                selector.value = internalCssSelectorReplacer(selector.value, options.escapeEntries);
+                if (classGenerator && selector.value) {
+                    let ignore = false;
+                    const prev = rule.prev();
+                    if ((prev === null || prev === void 0 ? void 0 : prev.type) === 'comment') {
+                        ignore = prev.text.includes('mangle') && (prev.text.includes('disabled') || prev.text.includes('ignore'));
+                    }
+                    if (!ignore) {
+                        selector.value = classGenerator.transformCssClass(selector.value);
+                    }
+                }
+            }
+        });
+        if (selectors.length === 0) {
+            rule.remove();
+        }
+    };
+    return transform;
+};
+const getTransformer = (rule, options) => {
+    return selectorParser__default["default"](createTransform(rule, options));
+};
+const transformSync = (rule, options) => {
+    const transformer = getTransformer(rule, options);
+    return transformer.transformSync(rule, {
+        lossless: false,
+        updateSelector: true
+    });
+};
+
+function styleHandler(rawSource, options) {
+    const root = postcss__default["default"].parse(rawSource);
+    const { isMainChunk, customRuleCallback } = options;
+    const flag = typeof customRuleCallback === 'function';
+    root.walk((node) => {
+        if (node.type === 'rule') {
+            transformSync(node, options);
+            if (isMainChunk) {
+                commonChunkPreflight(node, options);
+            }
+            flag && customRuleCallback(node, options);
+        }
+    });
+    return root.toString();
+}
+function createStyleHandler(options) {
+    return (rawSource, opt) => {
+        return styleHandler(rawSource, defu(opt, options));
+    };
+}
+
+const StartMatchKeyMap = {
+    react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
+    vue2: ['class', 'staticClass'],
+    vue3: ['class', 'hover-class']
+};
+function getKey(node) {
+    if (node.type === 'Identifier') {
+        return node.name;
+    }
+    if (node.type === 'StringLiteral') {
+        return node.value;
+    }
+    return '';
+}
+function isObjectKey(type) {
+    return ['Identifier', 'StringLiteral'].includes(type);
+}
+function jsxHandler(rawSource, opt = {
+    framework: 'react'
+}) {
+    var _a;
+    const { framework, escapeEntries } = opt;
+    const ast = parser.parse(rawSource, {
+        sourceType: 'unambiguous'
+    });
+    const matchKeys = (_a = StartMatchKeyMap[framework]) !== null && _a !== void 0 ? _a : StartMatchKeyMap.react;
+    const isVue2 = framework === 'vue2';
+    const isVue3 = framework === 'vue3';
+    let startFlag = false;
+    const options = {
+        ObjectProperty: {
+            enter(path) {
+                if (isObjectKey(path.node.key.type)) {
+                    const keyStr = getKey(path.node.key);
+                    if (matchKeys.includes(keyStr)) {
+                        startFlag = true;
+                    }
+                    if (isVue2 && keyStr === 'attrs' && path.node.value.type === 'ObjectExpression') {
+                        const idx = path.node.value.properties.findIndex((x) => {
+                            return x.type === 'ObjectProperty' && isObjectKey(x.key.type) && getKey(x.key) === 'hover-class';
+                        });
+                        const hoverClassNode = path.node.value.properties[idx];
+                        if (idx > -1 && hoverClassNode.type === 'ObjectProperty') {
+                            if (hoverClassNode.value.type === 'StringLiteral') {
+                                hoverClassNode.value.value = replaceWxml(hoverClassNode.value.value, {
+                                    keepEOL: true,
+                                    escapeEntries
+                                });
+                            }
+                        }
+                    }
+                }
+            },
+            exit(path) {
+                if (['Identifier', 'StringLiteral'].includes(path.node.key.type) && matchKeys.includes(getKey(path.node.key))) {
+                    startFlag = false;
+                }
+            }
+        },
+        StringLiteral: {
+            enter(path) {
+                if (startFlag) {
+                    path.node.value = replaceWxml(path.node.value, {
+                        keepEOL: true,
+                        escapeEntries
+                    });
+                }
+            }
+        },
+        noScope: true
+    };
+    if (isVue3) {
+        options.CallExpression = {
+            enter(path) {
+                const hit = path.node.arguments[0];
+                if (hit && hit.type === 'StringLiteral') {
+                    hit.value = templeteHandler(hit.value, {
+                        keepEOL: true
+                    });
+                }
+            }
+        };
+    }
+    traverse__default["default"](ast, options);
+    return generate__default["default"](ast);
+}
+function createJsxHandler(options) {
+    return (rawSource, opt) => {
+        return jsxHandler(rawSource, defu(opt, options));
+    };
 }
 
 const createInjectPreflight = (options) => {
@@ -1692,9 +1826,948 @@ const createInjectPreflight = (options) => {
     };
 };
 
-const postcssPlugin = 'postcss-weapp-tailwindcss-rename';
+const defaultOptions = {
+    cssMatcher: (file) => /.+\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
+    htmlMatcher: (file) => /.+\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
+    jsMatcher: (file) => {
+        if (file.includes('node_modules')) {
+            return false;
+        }
+        return /.+\\.[jt]sx?$/.test(file);
+    },
+    mainCssChunkMatcher: (file, appType) => {
+        switch (appType) {
+            case 'uni-app': {
+                return /^common\\/main/.test(file);
+            }
+            case 'mpx': {
+                return /^app/.test(file);
+            }
+            case 'taro': {
+                return /^app/.test(file);
+            }
+            case 'remax': {
+                return /^app/.test(file);
+            }
+            case 'rax': {
+                return /^bundle/.test(file);
+            }
+            case 'native': {
+                return /^app/.test(file);
+            }
+            case 'kbone': {
+                return /^(?:common\\/)?miniprogram-app/.test(file);
+            }
+            default: {
+                return true;
+            }
+        }
+    },
+    cssPreflight: {
+        'box-sizing': 'border-box',
+        'border-width': '0',
+        'border-style': 'solid',
+        'border-color': 'currentColor'
+    },
+    cssPreflightRange: 'view',
+    replaceUniversalSelectorWith: 'view',
+    disabled: false,
+    customRuleCallback: noop,
+    onLoad: noop,
+    onStart: noop,
+    onEnd: noop,
+    onUpdate: noop,
+    mangle: false,
+    framework: 'react',
+    loaderOptions: {
+        jsxRename: false
+    },
+    customAttributes: {},
+    customReplaceDictionary: MappingChars2String
+};
+function createGlobMatcher(pattern) {
+    return function (file) {
+        return micromatch.isMatch(file, pattern);
+    };
+}
+function normalizeMatcher(options, key) {
+    if (typeof options[key] === 'string' || Array.isArray(options[key])) {
+        options[key] = createGlobMatcher(options[key]);
+    }
+}
+function getOptions(options = {}) {
+    if (options.mangle === true) {
+        options.mangle = {
+            exclude: [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
+        };
+    }
+    else if (typeof options.mangle === 'object') {
+        if (!Array.isArray(options.mangle)) {
+            options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/];
+        }
+    }
+    if (options.framework && options.framework === 'vue') {
+        options.framework = 'vue2';
+    }
+    normalizeMatcher(options, 'cssMatcher');
+    normalizeMatcher(options, 'htmlMatcher');
+    normalizeMatcher(options, 'jsMatcher');
+    normalizeMatcher(options, 'mainCssChunkMatcher');
+    const result = defu(options, defaultOptions);
+    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
+    const cssInjectPreflight = createInjectPreflight(cssPreflight);
+    let customAttributesEntities;
+    if (isMap(customAttributes)) {
+        customAttributesEntities = Array.from(customAttributes.entries());
+    }
+    else {
+        customAttributesEntities = Object.entries(customAttributes);
+    }
+    const custom = customAttributesEntities.length > 0;
+    const escapeEntries = Object.entries(customReplaceDictionary);
+    result.escapeEntries = escapeEntries;
+    result.templeteHandler = createTempleteHandler({
+        custom,
+        regexps: makeCustomAttributes(customAttributesEntities),
+        escapeEntries
+    });
+    result.styleHandler = createStyleHandler({
+        cssInjectPreflight,
+        customRuleCallback,
+        cssPreflightRange,
+        replaceUniversalSelectorWith,
+        escapeEntries
+    });
+    result.jsxHandler = createJsxHandler({
+        escapeEntries,
+        framework
+    });
+    return result;
+}
+
+const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor';
+
+function groupBy(arr, cb) {
+    if (!Array.isArray(arr)) {
+        throw new Error('expected an array for first argument');
+    }
+    if (typeof cb !== 'function') {
+        throw new Error('expected a function for second argument');
+    }
+    const result = {};
+    for (let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        const bucketCategory = cb(item);
+        const bucket = result[bucketCategory];
+        if (!Array.isArray(bucket)) {
+            result[bucketCategory] = [item];
+        }
+        else {
+            result[bucketCategory].push(item);
+        }
+    }
+    return result;
+}
+function getGroupedEntries(entries, options) {
+    const { cssMatcher, htmlMatcher, jsMatcher } = options;
+    const groupedEntries = groupBy(entries, ([file]) => {
+        if (cssMatcher(file)) {
+            return 'css';
+        }
+        else if (htmlMatcher(file)) {
+            return 'html';
+        }
+        else if (jsMatcher(file)) {
+            return 'js';
+        }
+        else {
+            return 'other';
+        }
+    });
+    return groupedEntries;
+}
+
+function ViteWeappTailwindcssPlugin(options = {}) {
+    const opts = getOptions(options);
+    const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler } = opts;
+    if (disabled) {
+        return;
+    }
+    onLoad();
+    return {
+        name: vitePluginName,
+        enforce: 'post',
+        buildStart() {
+            onStart();
+        },
+        configResolved(config) {
+            var _a;
+            const postcssConfig = (_a = config.css) === null || _a === void 0 ? void 0 : _a.postcss;
+            const tailwindcssIdx = postcssConfig.plugins.findIndex((x) => x.postcssPlugin === 'tailwindcss');
+            if (tailwindcssIdx === -1) {
+                console.warn('请先安装 tailwindcss! \`npm i -D tailwindcss / yarn add -D tailwindcss \`');
+            }
+        },
+        generateBundle(opt, bundle, isWrite) {
+            const entries = Object.entries(bundle).filter(([, s]) => s.type === 'asset');
+            const groupedEntries = getGroupedEntries(entries, opts);
+            if (Array.isArray(groupedEntries.html)) {
+                for (let i = 0; i < groupedEntries.html.length; i++) {
+                    const [file, originalSource] = groupedEntries.html[i];
+                    const oldVal = originalSource.source.toString();
+                    originalSource.source = templeteHandler(oldVal);
+                    onUpdate(file, oldVal, originalSource.source);
+                }
+            }
+            if (Array.isArray(groupedEntries.css)) {
+                for (let i = 0; i < groupedEntries.css.length; i++) {
+                    const [file, originalSource] = groupedEntries.css[i];
+                    const rawSource = originalSource.source.toString();
+                    const css = styleHandler(rawSource, {
+                        isMainChunk: true
+                    });
+                    originalSource.source = css;
+                    onUpdate(file, rawSource, css);
+                }
+            }
+        },
+        buildEnd() {
+            onEnd();
+        }
+    };
+}
+
+module.exports = ViteWeappTailwindcssPlugin;
+",
+    "dynamicImports": [],
+    "exports": [
+      "default",
+    ],
+    "fileName": "vite.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [
+        "default",
+      ],
+      "@babel/parser": [
+        "parseExpression",
+        "parse",
+      ],
+      "@babel/traverse": [
+        "default",
+      ],
+      "micromatch": [
+        "isMatch",
+      ],
+      "postcss": [
+        "Rule",
+        "Declaration",
+        "default",
+      ],
+      "postcss-selector-parser": [
+        "default",
+      ],
+    },
+    "imports": [
+      "micromatch",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "postcss",
+      "postcss-selector-parser",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "index",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+]
+`;
+
+exports[`rollup build lib build 5`] = `
+[
+  {
+    "code": "'use strict';
+
+var selectorParser = require('postcss-selector-parser');
+var micromatch = require('micromatch');
+var generate = require('@babel/generator');
+var parser = require('@babel/parser');
+var traverse = require('@babel/traverse');
+var postcss = require('postcss');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var selectorParser__default = /*#__PURE__*/_interopDefaultLegacy(selectorParser);
+var generate__default = /*#__PURE__*/_interopDefaultLegacy(generate);
+var traverse__default = /*#__PURE__*/_interopDefaultLegacy(traverse);
+var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
+
+const MappingChars2String = {
+    '[': '_bl_',
+    ']': '_br_',
+    '(': '_pl_',
+    ')': '_qr_',
+    '#': '_h_',
+    '!': '_i_',
+    '/': '_s_',
+    '\\\\': '_bs_',
+    '.': '_d_',
+    ':': '_c_',
+    '%': '_p_',
+    ',': '_co_',
+    "'": '_q_',
+    '"': '_dq_',
+    '*': '_a_',
+    '&': '_am_',
+    '@': '_at_',
+    '{': '_bal_',
+    '}': '_bar_',
+    '+': '_plus_',
+    ';': '_se_',
+    '<': '_l_',
+    '~': '_t_',
+    '=': '_e_',
+    '>': '_g_',
+    '?': '_qu_',
+    '^': '_ca_',
+    '\`': '_bq_',
+    '|': '_b_',
+    $: '_do_'
+};
+const MappingChars2StringEntries = Object.entries(MappingChars2String);
+
+function isObject(val) {
+  return val !== null && typeof val === "object";
+}
+function _defu(baseObj, defaults, namespace = ".", merger) {
+  if (!isObject(defaults)) {
+    return _defu(baseObj, {}, namespace, merger);
+  }
+  const obj = Object.assign({}, defaults);
+  for (const key in baseObj) {
+    if (key === "__proto__" || key === "constructor") {
+      continue;
+    }
+    const val = baseObj[key];
+    if (val === null || val === void 0) {
+      continue;
+    }
+    if (merger && merger(obj, key, val, namespace)) {
+      continue;
+    }
+    if (Array.isArray(val) && Array.isArray(obj[key])) {
+      obj[key] = val.concat(obj[key]);
+    } else if (isObject(val) && isObject(obj[key])) {
+      obj[key] = _defu(val, obj[key], (namespace ? \`\${namespace}.\` : "") + key.toString(), merger);
+    } else {
+      obj[key] = val;
+    }
+  }
+  return obj;
+}
+function createDefu(merger) {
+  return (...args) => args.reduce((p, c) => _defu(p, c, "", merger), {});
+}
+const defu = createDefu();
+
+function isRegexp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]';
+}
+function isMap(value) {
+    return Object.prototype.toString.call(value) === '[object Map]';
+}
+const noop = () => { };
+
+function escapeStringRegexp(str) {
+    if (typeof str !== 'string') {
+        throw new TypeError('Expected a string');
+    }
+    return str.replace(/[|\\\\{}()[\\]^$+*?.]/g, '\\\\$&').replace(/-/g, '\\\\x2d');
+}
+const templateClassExactRegexp = /(?:(?<=^|\\s)(?:hover-)?class)=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]/gs;
+const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\\/?>/g;
+function handleRegexp(reg) {
+    return \`(?:\${reg.source})\`;
+}
+function getSourceString(input) {
+    let result;
+    if (typeof input === 'string') {
+        result = input;
+    }
+    else if (isRegexp(input)) {
+        result = input.source;
+    }
+    else {
+        result = input.toString();
+    }
+    return result;
+}
+function makePattern(arr) {
+    let pattern = '';
+    if (Array.isArray(arr)) {
+        pattern = arr
+            .reduce((acc, cur) => {
+            if (typeof cur === 'string') {
+                acc.push(cur);
+            }
+            else if (isRegexp(cur)) {
+                acc.push(handleRegexp(cur));
+            }
+            return acc;
+        }, [])
+            .join('|');
+    }
+    else if (typeof arr === 'string') {
+        pattern = arr;
+    }
+    else if (isRegexp(arr)) {
+        pattern = handleRegexp(arr);
+    }
+    return pattern;
+}
+function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    return new RegExp(source, 'g');
+}
+function createTemplateClassRegexp(attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`(?:\${prefix}\${pattern})=(?:["']\\\\W+\\\\s*(?:\\\\w+)\\\\()?["']([^"]+)['"]\`;
+    return new RegExp(source, 'gs');
+}
+function makeCustomAttributes(entries) {
+    return entries.map(([k, v]) => {
+        return {
+            tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+            attrRegexp: createTemplateClassRegexp(v),
+            tag: getSourceString(k),
+            attrs: v
+        };
+    });
+}
+const variableRegExp = /{{(.*?)}}/gs;
+function variableMatch(original) {
+    return variableRegExp.exec(original);
+}
+
+function escape(selectors, raw = false, entries = MappingChars2StringEntries) {
+    let res = selectors;
+    for (let i = 0; i < entries.length; i++) {
+        const [searchValue, replaceValue] = entries[i];
+        res = res.replace(new RegExp((raw ? '\\\\\\\\' : '') + escapeStringRegexp(searchValue), 'g'), replaceValue);
+    }
+    return res;
+}
+
+function internalCssSelectorReplacer(selectors, escapeEntries = MappingChars2StringEntries) {
+    return escape(selectors, false, escapeEntries);
+}
+
+const createTransform = (rule, options) => {
+    const replaceFlag = options.replaceUniversalSelectorWith !== false;
+    const classGenerator = options.classGenerator;
+    const transform = (selectors) => {
+        selectors.walk((selector) => {
+            if (selector.type === 'universal' && replaceFlag) {
+                selector.value = options.replaceUniversalSelectorWith;
+            }
+            if (selector.type === 'selector') {
+                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
+                node && selector.remove();
+            }
+            if (selector.type === 'class') {
+                selector.value = internalCssSelectorReplacer(selector.value, options.escapeEntries);
+                if (classGenerator && selector.value) {
+                    let ignore = false;
+                    const prev = rule.prev();
+                    if ((prev === null || prev === void 0 ? void 0 : prev.type) === 'comment') {
+                        ignore = prev.text.includes('mangle') && (prev.text.includes('disabled') || prev.text.includes('ignore'));
+                    }
+                    if (!ignore) {
+                        selector.value = classGenerator.transformCssClass(selector.value);
+                    }
+                }
+            }
+        });
+        if (selectors.length === 0) {
+            rule.remove();
+        }
+    };
+    return transform;
+};
+const getTransformer = (rule, options) => {
+    return selectorParser__default["default"](createTransform(rule, options));
+};
+const transformSync = (rule, options) => {
+    const transformer = getTransformer(rule, options);
+    return transformer.transformSync(rule, {
+        lossless: false,
+        updateSelector: true
+    });
+};
+
+function mangleMark(str, oldValue, classGenerator) {
+    if (typeof str === 'string' && str) {
+        const oldStrArr = oldValue.split(' ').filter((x) => x);
+        return str
+            .split(' ')
+            .filter((x) => x)
+            .map((x, idx) => {
+            if (classGenerator.ignoreClassName(x) || classGenerator.ignoreClassName(oldStrArr[idx])) {
+                return x;
+            }
+            return classGenerator.generateClassName(x).name;
+        })
+            .join(' ');
+    }
+    return str;
+}
+
+function replaceWxml(original, options = {
+    keepEOL: false,
+    escapeEntries: MappingChars2StringEntries
+}) {
+    if (typeof options === 'boolean') {
+        options = {
+            keepEOL: options
+        };
+    }
+    let res = original;
+    if (!options.keepEOL) {
+        res = res
+            .replace(/[\\r\\n]+/g, '');
+    }
+    const oldValue = res;
+    res = escape(res, false, options.escapeEntries);
+    if (options.classGenerator) {
+        res = mangleMark(res, oldValue, options.classGenerator);
+    }
+    return res;
+}
+
+function generateCode(match, options = {}) {
+    const ast = parser.parseExpression(match);
+    traverse__default["default"](ast, {
+        StringLiteral(path) {
+            var _a;
+            if (path.parent.type === 'BinaryExpression') {
+                if (((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent.type) === 'ConditionalExpression') {
+                    return;
+                }
+            }
+            path.node.value = replaceWxml(path.node.value, options);
+        },
+        noScope: true
+    });
+    const { code } = generate__default["default"](ast, {
+        compact: true,
+        minified: true,
+        jsescOption: {
+            quotes: 'single'
+        }
+    });
+    return code;
+}
+function extractSource(original) {
+    let match = variableMatch(original);
+    const sources = [];
+    while (match !== null) {
+        const start = match.index;
+        const end = variableRegExp.lastIndex;
+        sources.push({
+            start,
+            end,
+            raw: match[1],
+            prevConcatenated: !/\\s/.test(original[start - 1]),
+            nextConcatenated: !/\\s/.test(original[end])
+        });
+        match = variableMatch(original);
+    }
+    return sources;
+}
+function templeteReplacer(original, options = {}) {
+    const sources = extractSource(original);
+    if (sources.length) {
+        const resultArray = [];
+        let p = 0;
+        for (let i = 0; i < sources.length; i++) {
+            const m = sources[i];
+            const before = original.slice(p, m.start);
+            resultArray.push(replaceWxml(before, {
+                keepEOL: true,
+                classGenerator: options.classGenerator,
+                escapeEntries: options.escapeEntries
+            }));
+            p = m.start;
+            if (m.raw.trim().length) {
+                const code = generateCode(m.raw, options);
+                let source = \`{{\${code}}}\`;
+                if (options.classGenerator) {
+                    source = \`\${m.prevConcatenated ? '' : ' '}\${source}\${m.nextConcatenated ? '' : ' '}\`;
+                }
+                m.source = source;
+            }
+            else {
+                m.source = '';
+            }
+            resultArray.push(m.source);
+            p = m.end;
+            if (i === sources.length - 1) {
+                const after = original.slice(m.end);
+                resultArray.push(replaceWxml(after, {
+                    keepEOL: true,
+                    classGenerator: options.classGenerator,
+                    escapeEntries: options.escapeEntries
+                }));
+            }
+        }
+        return resultArray
+            .filter((x) => x)
+            .join('')
+            .trim();
+    }
+    else {
+        return replaceWxml(original, {
+            keepEOL: false,
+            classGenerator: options.classGenerator,
+            escapeEntries: options.escapeEntries
+        });
+    }
+}
+function templeteHandler(rawSource, options = {}) {
+    return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
+        return m0.replace(templateClassExactRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options));
+        });
+    });
+}
+function customTempleteHandler(rawSource, options = {}) {
+    let source = templeteHandler(rawSource, options);
+    if (options.custom) {
+        if (Array.isArray(options.regexps)) {
+            for (let i = 0; i < options.regexps.length; i++) {
+                const regexp = options.regexps[i];
+                source = source.replace(regexp.tagRegexp, (m0) => {
+                    return m0.replace(regexp.attrRegexp, (m1, className) => {
+                        return m1.replace(className, templeteReplacer(className, options));
+                    });
+                });
+            }
+        }
+        return source;
+    }
+    else {
+        return source;
+    }
+}
+function createTempleteHandler(options = {}) {
+    return (rawSource, opt = {}) => {
+        return customTempleteHandler(rawSource, defu(opt, options));
+    };
+}
+
+const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
+const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
+function testIfVariablesScope(node) {
+    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+        const tryTestDecl = node.nodes[0];
+        if (tryTestDecl && tryTestDecl.type === 'decl') {
+            return tryTestDecl.prop.startsWith('--tw-');
+        }
+    }
+    return false;
+}
+function commonChunkPreflight(node, options) {
+    node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
+    if (testIfVariablesScope(node)) {
+        const selectorParts = node.selector.split(',');
+        if (!selectorParts.includes('view')) {
+            selectorParts.push('view');
+        }
+        if (options.cssPreflightRange === 'all') {
+            if (!selectorParts.includes(':not(not)')) {
+                selectorParts.push(':not(not)');
+            }
+        }
+        node.selector = selectorParts.join(',');
+        if (typeof options.cssInjectPreflight === 'function') {
+            node.append(...options.cssInjectPreflight());
+        }
+        const pseudoVarRule = new postcss.Rule({
+            selector: '::before,::after'
+        });
+        pseudoVarRule.append(new postcss.Declaration({
+            prop: '--tw-content',
+            value: '""'
+        }));
+        node.before(pseudoVarRule);
+    }
+}
+
+function styleHandler(rawSource, options) {
+    const root = postcss__default["default"].parse(rawSource);
+    const { isMainChunk, customRuleCallback } = options;
+    const flag = typeof customRuleCallback === 'function';
+    root.walk((node) => {
+        if (node.type === 'rule') {
+            transformSync(node, options);
+            if (isMainChunk) {
+                commonChunkPreflight(node, options);
+            }
+            flag && customRuleCallback(node, options);
+        }
+    });
+    return root.toString();
+}
+function createStyleHandler(options) {
+    return (rawSource, opt) => {
+        return styleHandler(rawSource, defu(opt, options));
+    };
+}
+
+const StartMatchKeyMap = {
+    react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
+    vue2: ['class', 'staticClass'],
+    vue3: ['class', 'hover-class']
+};
+function getKey(node) {
+    if (node.type === 'Identifier') {
+        return node.name;
+    }
+    if (node.type === 'StringLiteral') {
+        return node.value;
+    }
+    return '';
+}
+function isObjectKey(type) {
+    return ['Identifier', 'StringLiteral'].includes(type);
+}
+function jsxHandler(rawSource, opt = {
+    framework: 'react'
+}) {
+    var _a;
+    const { framework, escapeEntries } = opt;
+    const ast = parser.parse(rawSource, {
+        sourceType: 'unambiguous'
+    });
+    const matchKeys = (_a = StartMatchKeyMap[framework]) !== null && _a !== void 0 ? _a : StartMatchKeyMap.react;
+    const isVue2 = framework === 'vue2';
+    const isVue3 = framework === 'vue3';
+    let startFlag = false;
+    const options = {
+        ObjectProperty: {
+            enter(path) {
+                if (isObjectKey(path.node.key.type)) {
+                    const keyStr = getKey(path.node.key);
+                    if (matchKeys.includes(keyStr)) {
+                        startFlag = true;
+                    }
+                    if (isVue2 && keyStr === 'attrs' && path.node.value.type === 'ObjectExpression') {
+                        const idx = path.node.value.properties.findIndex((x) => {
+                            return x.type === 'ObjectProperty' && isObjectKey(x.key.type) && getKey(x.key) === 'hover-class';
+                        });
+                        const hoverClassNode = path.node.value.properties[idx];
+                        if (idx > -1 && hoverClassNode.type === 'ObjectProperty') {
+                            if (hoverClassNode.value.type === 'StringLiteral') {
+                                hoverClassNode.value.value = replaceWxml(hoverClassNode.value.value, {
+                                    keepEOL: true,
+                                    escapeEntries
+                                });
+                            }
+                        }
+                    }
+                }
+            },
+            exit(path) {
+                if (['Identifier', 'StringLiteral'].includes(path.node.key.type) && matchKeys.includes(getKey(path.node.key))) {
+                    startFlag = false;
+                }
+            }
+        },
+        StringLiteral: {
+            enter(path) {
+                if (startFlag) {
+                    path.node.value = replaceWxml(path.node.value, {
+                        keepEOL: true,
+                        escapeEntries
+                    });
+                }
+            }
+        },
+        noScope: true
+    };
+    if (isVue3) {
+        options.CallExpression = {
+            enter(path) {
+                const hit = path.node.arguments[0];
+                if (hit && hit.type === 'StringLiteral') {
+                    hit.value = templeteHandler(hit.value, {
+                        keepEOL: true
+                    });
+                }
+            }
+        };
+    }
+    traverse__default["default"](ast, options);
+    return generate__default["default"](ast);
+}
+function createJsxHandler(options) {
+    return (rawSource, opt) => {
+        return jsxHandler(rawSource, defu(opt, options));
+    };
+}
+
+const createInjectPreflight = (options) => {
+    const result = [];
+    if (options && typeof options === 'object') {
+        const entries = Object.entries(options);
+        for (let i = 0; i < entries.length; i++) {
+            const [prop, value] = entries[i];
+            if (value !== false) {
+                result.push({
+                    prop,
+                    value: value.toString()
+                });
+            }
+        }
+    }
+    return () => {
+        return result;
+    };
+};
+
+const defaultOptions = {
+    cssMatcher: (file) => /.+\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
+    htmlMatcher: (file) => /.+\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
+    jsMatcher: (file) => {
+        if (file.includes('node_modules')) {
+            return false;
+        }
+        return /.+\\.[jt]sx?$/.test(file);
+    },
+    mainCssChunkMatcher: (file, appType) => {
+        switch (appType) {
+            case 'uni-app': {
+                return /^common\\/main/.test(file);
+            }
+            case 'mpx': {
+                return /^app/.test(file);
+            }
+            case 'taro': {
+                return /^app/.test(file);
+            }
+            case 'remax': {
+                return /^app/.test(file);
+            }
+            case 'rax': {
+                return /^bundle/.test(file);
+            }
+            case 'native': {
+                return /^app/.test(file);
+            }
+            case 'kbone': {
+                return /^(?:common\\/)?miniprogram-app/.test(file);
+            }
+            default: {
+                return true;
+            }
+        }
+    },
+    cssPreflight: {
+        'box-sizing': 'border-box',
+        'border-width': '0',
+        'border-style': 'solid',
+        'border-color': 'currentColor'
+    },
+    cssPreflightRange: 'view',
+    replaceUniversalSelectorWith: 'view',
+    disabled: false,
+    customRuleCallback: noop,
+    onLoad: noop,
+    onStart: noop,
+    onEnd: noop,
+    onUpdate: noop,
+    mangle: false,
+    framework: 'react',
+    loaderOptions: {
+        jsxRename: false
+    },
+    customAttributes: {},
+    customReplaceDictionary: MappingChars2String
+};
+function createGlobMatcher(pattern) {
+    return function (file) {
+        return micromatch.isMatch(file, pattern);
+    };
+}
+function normalizeMatcher(options, key) {
+    if (typeof options[key] === 'string' || Array.isArray(options[key])) {
+        options[key] = createGlobMatcher(options[key]);
+    }
+}
+function getOptions(options = {}) {
+    if (options.mangle === true) {
+        options.mangle = {
+            exclude: [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
+        };
+    }
+    else if (typeof options.mangle === 'object') {
+        if (!Array.isArray(options.mangle)) {
+            options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/];
+        }
+    }
+    if (options.framework && options.framework === 'vue') {
+        options.framework = 'vue2';
+    }
+    normalizeMatcher(options, 'cssMatcher');
+    normalizeMatcher(options, 'htmlMatcher');
+    normalizeMatcher(options, 'jsMatcher');
+    normalizeMatcher(options, 'mainCssChunkMatcher');
+    const result = defu(options, defaultOptions);
+    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
+    const cssInjectPreflight = createInjectPreflight(cssPreflight);
+    let customAttributesEntities;
+    if (isMap(customAttributes)) {
+        customAttributesEntities = Array.from(customAttributes.entries());
+    }
+    else {
+        customAttributesEntities = Object.entries(customAttributes);
+    }
+    const custom = customAttributesEntities.length > 0;
+    const escapeEntries = Object.entries(customReplaceDictionary);
+    result.escapeEntries = escapeEntries;
+    result.templeteHandler = createTempleteHandler({
+        custom,
+        regexps: makeCustomAttributes(customAttributesEntities),
+        escapeEntries
+    });
+    result.styleHandler = createStyleHandler({
+        cssInjectPreflight,
+        customRuleCallback,
+        cssPreflightRange,
+        replaceUniversalSelectorWith,
+        escapeEntries
+    });
+    result.jsxHandler = createJsxHandler({
+        escapeEntries,
+        framework
+    });
+    return result;
+}
+
+const postcssPlugin = 'postcss-weapp-tailwindcss-rename-plugin';
+
 const plugin = (options = {}) => {
     const mergedOptions = getOptions(options);
+    const { classGenerator } = options;
     const { cssPreflight, cssPreflightRange, customRuleCallback, replaceUniversalSelectorWith } = mergedOptions;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     const opts = {
@@ -1702,14 +2775,14 @@ const plugin = (options = {}) => {
         cssPreflightRange,
         isMainChunk: true,
         customRuleCallback,
-        replaceUniversalSelectorWith
+        replaceUniversalSelectorWith,
+        classGenerator
     };
     return {
         postcssPlugin,
         Once(css) {
             css.walkRules((rule) => {
                 transformSync(rule, opts);
-                mpRulePreflight(rule);
                 commonChunkPreflight(rule, opts);
             });
         }
@@ -1719,23 +2792,41 @@ plugin.postcss = true;
 
 module.exports = plugin;
 ",
-    "dynamicImports": Array [],
-    "exports": Array [
+    "dynamicImports": [],
+    "exports": [
       "default",
     ],
     "fileName": "postcss.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {
-      "postcss": Array [
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [
+        "default",
+      ],
+      "@babel/parser": [
+        "parseExpression",
+        "parse",
+      ],
+      "@babel/traverse": [
+        "default",
+      ],
+      "micromatch": [
+        "isMatch",
+      ],
+      "postcss": [
         "Rule",
         "Declaration",
+        "default",
       ],
-      "postcss-selector-parser": Array [
+      "postcss-selector-parser": [
         "default",
       ],
     },
-    "imports": Array [
+    "imports": [
       "postcss-selector-parser",
+      "micromatch",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
       "postcss",
     ],
     "isDynamicEntry": false,
@@ -1743,30 +2834,25 @@ module.exports = plugin;
     "isImplicitEntry": false,
     "map": null,
     "name": "plugin",
-    "referencedFiles": Array [],
+    "referencedFiles": [],
     "type": "chunk",
   },
 ]
 `;
 
 exports[`rollup build lib build 6`] = `
-Array [
-  Object {
+[
+  {
     "code": "'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var chalk = require('chalk');
 var webpackSources = require('webpack-sources');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var chalk__default = /*#__PURE__*/_interopDefaultLegacy(chalk);
 
 const acceptPrefix = 'abcdefghijklmnopqrstuvwxyz_'.split('');
 const acceptChars = 'abcdefghijklmnopqrstuvwxyz_-0123456789'.split('');
 function stripEscapeSequence(words) {
-    return words.replace(/\\\\\\\\/g, '');
+    return words.replace(/\\\\/g, '');
 }
 const validate = (opts, classGenerator) => {
     if (!opts.log)
@@ -1776,20 +2862,45 @@ const validate = (opts, classGenerator) => {
         if (c.usedBy.length >= 1) {
             continue;
         }
-        if (c.usedBy[0].match(/.+\\\\.css:*$/)) {
-            console.log(\`The class name '\${chalk__default[\\"default\\"].yellow(className)}' is not used: defined at \${chalk__default[\\"default\\"].yellow(c.usedBy[0])}.\`);
+        if (c.usedBy[0].match(/.+\\.css:*$/)) {
+            console.log(\`The class name '\${className}' is not used: defined at \${c.usedBy[0]}.\`);
         }
         else {
-            console.log(\`The class name '\${chalk__default[\\"default\\"].yellow(className)}' is not defined: used at \${chalk__default[\\"default\\"].yellow(c.usedBy[0])}.\`);
+            console.log(\`The class name '\${className}' is not defined: used at \${c.usedBy[0]}.\`);
         }
     }
 };
 
+function isRegexp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]';
+}
+function regExpTest(arr = [], str) {
+    if (Array.isArray(arr)) {
+        for (let i = 0; i < arr.length; i++) {
+            const item = arr[i];
+            if (typeof item === 'string') {
+                if (item === str) {
+                    return true;
+                }
+            }
+            else if (isRegexp(item)) {
+                item.lastIndex = 0;
+                if (item.test(str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    throw new TypeError("paramater 'arr' should be a Array of Regexp | String !");
+}
+
 class ClassGenerator {
-    constructor() {
+    constructor(opts = {}) {
         this.newClassMap = {};
         this.newClassSize = 0;
         this.context = {};
+        this.opts = opts;
     }
     defaultClassGenerator() {
         const chars = [];
@@ -1811,7 +2922,39 @@ class ClassGenerator {
         const newClassName = \`\${acceptPrefix[prefixIndex]}\${chars.join('')}\`;
         return newClassName;
     }
-    generateClassName(original, opts) {
+    ignoreClassName(className) {
+        return regExpTest(this.opts.ignoreClass, className);
+    }
+    includeFilePath(filePath) {
+        const { include } = this.opts;
+        if (Array.isArray(include)) {
+            return regExpTest(include, filePath);
+        }
+        else {
+            return true;
+        }
+    }
+    excludeFilePath(filePath) {
+        const { exclude } = this.opts;
+        if (Array.isArray(exclude)) {
+            return regExpTest(exclude, filePath);
+        }
+        else {
+            return false;
+        }
+    }
+    isFileIncluded(filePath) {
+        return this.includeFilePath(filePath) && !this.excludeFilePath(filePath);
+    }
+    transformCssClass(className) {
+        const key = stripEscapeSequence(className);
+        const cn = this.newClassMap[key];
+        if (cn)
+            return cn.name;
+        return className;
+    }
+    generateClassName(original) {
+        const opts = this.opts;
         original = stripEscapeSequence(original);
         const cn = this.newClassMap[original];
         if (cn)
@@ -1823,15 +2966,15 @@ class ClassGenerator {
         if (!newClassName) {
             newClassName = this.defaultClassGenerator();
         }
-        if (opts.reserveClassName && opts.reserveClassName.includes(newClassName)) {
+        if (opts.reserveClassName && regExpTest(opts.reserveClassName, newClassName)) {
             if (opts.log) {
-                console.log(\`The class name has been reserved. \${chalk__default[\\"default\\"].green(newClassName)}\`);
+                console.log(\`The class name has been reserved. \${newClassName}\`);
             }
             this.newClassSize++;
-            return this.generateClassName(original, opts);
+            return this.generateClassName(original);
         }
         if (opts.log) {
-            console.log(\`Minify class name from \${chalk__default[\\"default\\"].green(original)} to \${chalk__default[\\"default\\"].green(newClassName)}\`);
+            console.log(\`Minify class name from \${original} to \${newClassName}\`);
         }
         const newClass = {
             name: newClassName,
@@ -1845,17 +2988,17 @@ class ClassGenerator {
 
 const optimize$1 = (chunk, compilation, opts, classGenerator) => chunk.files.forEach((file) => {
     let classnameRegex;
-    if (file.match(/.+\\\\.css.*$/)) {
-        classnameRegex = new RegExp(\`\\\\\\\\\\\\.(\${opts.classNameRegExp})\`, 'g');
+    if (file.match(/.+\\.css.*$/)) {
+        classnameRegex = new RegExp(\`\\\\\\.(\${opts.classNameRegExp})\`, 'g');
     }
-    else if (file.match(/.+\\\\.js.*$/) || file.match(/.+\\\\.html.*$/)) {
-        classnameRegex = new RegExp(\`[\\"'.\\\\\\\\\\\\s](\${opts.classNameRegExp})\`, 'g');
+    else if (file.match(/.+\\.js.*$/) || file.match(/.+\\.html.*$/)) {
+        classnameRegex = new RegExp(\`["'.\\\\\\s](\${opts.classNameRegExp})\`, 'g');
     }
     if (!classnameRegex) {
         return;
     }
     if (opts.ignorePrefix && opts.ignorePrefixRegExp) {
-        throw new Error('Use only either \\"ignorePrefix\\" or \\"ignorePrefixRegExp\\".');
+        throw new Error('Use only either "ignorePrefix" or "ignorePrefixRegExp".');
     }
     let ignorePrefixRegExp;
     let match;
@@ -1891,10 +3034,10 @@ const optimize$1 = (chunk, compilation, opts, classGenerator) => chunk.files.for
         if (originalPrefix) {
             targetName = originalName.slice(originalPrefix.length);
             if (opts.log) {
-                console.log(\`Skip the prefix \${chalk__default[\\"default\\"].red(originalPrefix)} of \${chalk__default[\\"default\\"].green(originalName)}\`);
+                console.log(\`Skip the prefix \${originalPrefix} of \${originalName}\`);
             }
         }
-        newClass = classGenerator.generateClassName(targetName, opts);
+        newClass = classGenerator.generateClassName(targetName);
         if (!source)
             source = new webpackSources.ReplaceSource(originalSource);
         const startPos = match.index + match[0].indexOf(match[1]);
@@ -1909,20 +3052,23 @@ const optimize$1 = (chunk, compilation, opts, classGenerator) => chunk.files.for
 });
 const optimizer$1 = (compiler, compilation, opts) => (chunks) => {
     if (!opts.classNameRegExp)
-        throw new Error(\\"'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'\\");
-    const classGenerator = new ClassGenerator();
+        throw new Error("'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'");
+    const classGenerator = new ClassGenerator(opts);
     chunks.forEach((chunk) => optimize$1(chunk, compilation, opts, classGenerator));
     validate(opts, classGenerator);
 };
+
+const ManglePluginHooks = 'ManglePluginHooks';
+const WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks = 'WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks';
 
 class ManglePluginV4 {
     constructor(opts = {}) {
         this.opts = opts;
     }
     apply(compiler) {
-        compiler.hooks.compilation.tap('ManglePluginHooks', (compilation) => {
+        compiler.hooks.compilation.tap(ManglePluginHooks, (compilation) => {
             const optimize = optimizer$1(compiler, compilation, this.opts);
-            compilation.hooks.optimizeChunkAssets.tap('WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks', (chunks) => {
+            compilation.hooks.optimizeChunkAssets.tap(WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks, (chunks) => {
                 optimize(chunks);
             });
         });
@@ -1931,17 +3077,17 @@ class ManglePluginV4 {
 
 const optimize = (compiler, [file, originalSource], compilation, opts, classGenerator) => {
     let classnameRegex;
-    if (file.match(/.+\\\\.css.*$/)) {
-        classnameRegex = new RegExp(\`\\\\\\\\\\\\.(\${opts.classNameRegExp})\`, 'g');
+    if (file.match(/.+\\.css.*$/)) {
+        classnameRegex = new RegExp(\`\\\\\\.(\${opts.classNameRegExp})\`, 'g');
     }
-    else if (file.match(/.+\\\\.js.*$/) || file.match(/.+\\\\.html.*$/)) {
-        classnameRegex = new RegExp(\`[\\"'\\\\\`.\\\\\\\\\\\\s](\${opts.classNameRegExp})\`, 'g');
+    else if (file.match(/.+\\.js.*$/) || file.match(/.+\\.html.*$/)) {
+        classnameRegex = new RegExp(\`["'\\\`.\\\\\\s](\${opts.classNameRegExp})\`, 'g');
     }
     if (!classnameRegex) {
         return;
     }
     if (opts.ignorePrefix && opts.ignorePrefixRegExp) {
-        throw new Error('Use only either \\"ignorePrefix\\" or \\"ignorePrefixRegExp\\".');
+        throw new Error('Use only either "ignorePrefix" or "ignorePrefixRegExp".');
     }
     let ignorePrefixRegExp;
     let source;
@@ -1976,10 +3122,10 @@ const optimize = (compiler, [file, originalSource], compilation, opts, classGene
         if (originalPrefix) {
             targetName = originalName.slice(originalPrefix.length);
             if (opts.log) {
-                console.log(\`Skip the prefix \${chalk__default[\\"default\\"].red(originalPrefix)} of \${chalk__default[\\"default\\"].green(originalName)}\`);
+                console.log(\`Skip the prefix \${originalPrefix} of \${originalName}\`);
             }
         }
-        const newClass = classGenerator.generateClassName(targetName, opts);
+        const newClass = classGenerator.generateClassName(targetName);
         if (!source)
             source = new ReplaceSource(originalSource);
         const startPos = match.index + match[0].indexOf(match[1]);
@@ -1994,8 +3140,8 @@ const optimize = (compiler, [file, originalSource], compilation, opts, classGene
 };
 const optimizer = (compiler, compilation, opts) => (assets) => {
     if (!opts.classNameRegExp)
-        throw new Error(\\"'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'\\");
-    const classGenerator = new ClassGenerator();
+        throw new Error("'classNameRegExp' option is required. e.g. '[c]-[a-z][a-zA-Z0-9_]*'");
+    const classGenerator = new ClassGenerator(opts);
     Object.entries(assets).forEach((asset) => optimize(compiler, asset, compilation, opts, classGenerator));
     validate(opts, classGenerator);
 };
@@ -2005,9 +3151,9 @@ class ManglePluginV5 {
         this.opts = opts;
     }
     apply(compiler) {
-        compiler.hooks.compilation.tap('ManglePluginHooks', (compilation) => {
+        compiler.hooks.compilation.tap(ManglePluginHooks, (compilation) => {
             const optimize = optimizer(compiler, compilation, this.opts);
-            compilation.hooks.processAssets.tap('WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks', (chunks) => {
+            compilation.hooks.processAssets.tap(WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks, (chunks) => {
                 optimize(chunks);
             });
         });
@@ -2018,24 +3164,20 @@ exports.ClassGenerator = ClassGenerator;
 exports.ManglePluginV4 = ManglePluginV4;
 exports.ManglePluginV5 = ManglePluginV5;
 ",
-    "dynamicImports": Array [],
-    "exports": Array [
+    "dynamicImports": [],
+    "exports": [
       "ClassGenerator",
       "ManglePluginV4",
       "ManglePluginV5",
     ],
     "fileName": "mangle.js",
-    "implicitlyLoadedBefore": Array [],
-    "importedBindings": Object {
-      "chalk": Array [
-        "default",
-      ],
-      "webpack-sources": Array [
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "webpack-sources": [
         "ReplaceSource",
       ],
     },
-    "imports": Array [
-      "chalk",
+    "imports": [
       "webpack-sources",
     ],
     "isDynamicEntry": false,
@@ -2043,7 +3185,7 @@ exports.ManglePluginV5 = ManglePluginV5;
     "isImplicitEntry": false,
     "map": null,
     "name": "index",
-    "referencedFiles": Array [],
+    "referencedFiles": [],
     "type": "chunk",
   },
 ]
