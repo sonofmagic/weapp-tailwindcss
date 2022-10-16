@@ -2,7 +2,7 @@ import postcss from 'postcss'
 import type { IStyleHandlerOptions } from '@/types'
 import { commonChunkPreflight } from './mp'
 import { transformSync } from './selectorParser'
-import { defu } from '@/shared'
+import { defu } from '@/utils'
 
 export function styleHandler (rawSource: string, options: IStyleHandlerOptions) {
   const root = postcss.parse(rawSource)

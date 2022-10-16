@@ -1,5 +1,5 @@
 import type { ICustomRegexp, ItemOrItemArray } from '@/types'
-import { isRegexp } from '@/shared'
+import { isRegexp } from '@/utils'
 // https://github.com/sindresorhus/escape-string-regexp
 export function escapeStringRegexp (str: string) {
   if (typeof str !== 'string') {

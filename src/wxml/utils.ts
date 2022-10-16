@@ -1,7 +1,7 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
-import { defu } from '@/shared'
+import { defu } from '@/utils'
 import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
 
 export function generateCode (match: string, options: ICommonReplaceOptions = {}) {

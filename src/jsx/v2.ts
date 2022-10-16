@@ -4,7 +4,7 @@ import type { TraverseOptions, IJsxHandlerOptions } from '@/types'
 import type { Node, Identifier, StringLiteral, Expression, PrivateName } from '@babel/types'
 
 import { templeteHandler } from '@/wxml/utils'
-import { defu } from '@/shared'
+import { defu } from '@/utils'
 const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
   vue2: ['class', 'staticClass'], // 'hover-class' 在 'attrs' 里

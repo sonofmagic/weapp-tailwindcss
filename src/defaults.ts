@@ -1,4 +1,4 @@
-import { defu, noop, isMap } from '@/shared'
+import { defu, noop, isMap } from '@/utils'
 import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ItemOrItemArray } from './types'
 import { isMatch } from 'micromatch'
 import { createTempleteHandler } from '@/wxml/utils'

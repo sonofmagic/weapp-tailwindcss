@@ -7,7 +7,6 @@ exports[`rollup build lib build 1`] = `
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var path = require('path');
 var micromatch = require('micromatch');
 var generate = require('@babel/generator');
 var parser = require('@babel/parser');
@@ -15,15 +14,16 @@ var traverse = require('@babel/traverse');
 var postcss = require('postcss');
 var selectorParser = require('postcss-selector-parser');
 var webpackSources = require('webpack-sources');
+var path = require('path');
 var webpack = require('webpack');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 var generate__default = /*#__PURE__*/_interopDefaultLegacy(generate);
 var traverse__default = /*#__PURE__*/_interopDefaultLegacy(traverse);
 var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
 var selectorParser__default = /*#__PURE__*/_interopDefaultLegacy(selectorParser);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 function isObject(val) {
   return val !== null && typeof val === "object";
@@ -59,13 +59,13 @@ function createDefu(merger) {
 }
 const defu = createDefu();
 
-const noop = () => { };
 function isRegexp(value) {
     return Object.prototype.toString.call(value) === '[object RegExp]';
 }
 function isMap(value) {
     return Object.prototype.toString.call(value) === '[object Map]';
 }
+const noop = () => { };
 
 function mangleMark(str, oldValue, classGenerator) {
     if (typeof str === 'string' && str) {
@@ -1051,7 +1051,6 @@ exports.UniAppWeappTailwindcssWebpackPluginV4 = UniAppWeappTailwindcssWebpackPlu
       ],
     },
     "imports": [
-      "path",
       "micromatch",
       "@babel/generator",
       "@babel/parser",
@@ -1059,6 +1058,7 @@ exports.UniAppWeappTailwindcssWebpackPluginV4 = UniAppWeappTailwindcssWebpackPlu
       "postcss",
       "postcss-selector-parser",
       "webpack-sources",
+      "path",
       "webpack",
     ],
     "isDynamicEntry": false,
@@ -1075,9 +1075,7 @@ exports.UniAppWeappTailwindcssWebpackPluginV4 = UniAppWeappTailwindcssWebpackPlu
 exports[`rollup build lib build 2`] = `
 [
   {
-    "code": "import 'path';
-
-function mangleMark(str, oldValue, classGenerator) {
+    "code": "function mangleMark(str, oldValue, classGenerator) {
     if (typeof str === 'string' && str) {
         const oldStrArr = oldValue.split(' ').filter((x) => x);
         return str
@@ -1183,12 +1181,8 @@ export { cssSelectorReplacer as replaceCss, internalCssSelectorReplacer as repla
     ],
     "fileName": "replace.js",
     "implicitlyLoadedBefore": [],
-    "importedBindings": {
-      "path": [],
-    },
-    "imports": [
-      "path",
-    ],
+    "importedBindings": {},
+    "imports": [],
     "isDynamicEntry": false,
     "isEntry": true,
     "isImplicitEntry": false,
@@ -1280,7 +1274,6 @@ exports[`rollup build lib build 4`] = `
   {
     "code": "'use strict';
 
-require('path');
 var micromatch = require('micromatch');
 var generate = require('@babel/generator');
 var parser = require('@babel/parser');
@@ -1329,13 +1322,13 @@ function createDefu(merger) {
 }
 const defu = createDefu();
 
-const noop = () => { };
 function isRegexp(value) {
     return Object.prototype.toString.call(value) === '[object RegExp]';
 }
 function isMap(value) {
     return Object.prototype.toString.call(value) === '[object Map]';
 }
+const noop = () => { };
 
 function mangleMark(str, oldValue, classGenerator) {
     if (typeof str === 'string' && str) {
@@ -2066,7 +2059,6 @@ module.exports = ViteWeappTailwindcssPlugin;
       "micromatch": [
         "isMatch",
       ],
-      "path": [],
       "postcss": [
         "Rule",
         "Declaration",
@@ -2077,7 +2069,6 @@ module.exports = ViteWeappTailwindcssPlugin;
       ],
     },
     "imports": [
-      "path",
       "micromatch",
       "@babel/generator",
       "@babel/parser",
@@ -2102,7 +2093,6 @@ exports[`rollup build lib build 5`] = `
     "code": "'use strict';
 
 var selectorParser = require('postcss-selector-parser');
-require('path');
 var micromatch = require('micromatch');
 var generate = require('@babel/generator');
 var parser = require('@babel/parser');
@@ -2184,13 +2174,13 @@ function createDefu(merger) {
 }
 const defu = createDefu();
 
-const noop = () => { };
 function isRegexp(value) {
     return Object.prototype.toString.call(value) === '[object RegExp]';
 }
 function isMap(value) {
     return Object.prototype.toString.call(value) === '[object Map]';
 }
+const noop = () => { };
 
 function escapeStringRegexp(str) {
     if (typeof str !== 'string') {
@@ -2822,7 +2812,6 @@ module.exports = plugin;
       "micromatch": [
         "isMatch",
       ],
-      "path": [],
       "postcss": [
         "Rule",
         "Declaration",
@@ -2834,7 +2823,6 @@ module.exports = plugin;
     },
     "imports": [
       "postcss-selector-parser",
-      "path",
       "micromatch",
       "@babel/generator",
       "@babel/parser",
@@ -2859,7 +2847,6 @@ exports[`rollup build lib build 6`] = `
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('path');
 var webpackSources = require('webpack-sources');
 
 const acceptPrefix = 'abcdefghijklmnopqrstuvwxyz_'.split('');
@@ -3186,13 +3173,11 @@ exports.ManglePluginV5 = ManglePluginV5;
     "fileName": "mangle.js",
     "implicitlyLoadedBefore": [],
     "importedBindings": {
-      "path": [],
       "webpack-sources": [
         "ReplaceSource",
       ],
     },
     "imports": [
-      "path",
       "webpack-sources",
     ],
     "isDynamicEntry": false,

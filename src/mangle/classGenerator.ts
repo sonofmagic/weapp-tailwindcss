@@ -2,7 +2,7 @@
 import type { IMangleOptions, IMangleContextClass } from '@/types'
 import type { IClassGenerator } from './interfaces'
 import { acceptChars, acceptPrefix, stripEscapeSequence } from './shared'
-import { regExpTest } from '@/shared'
+import { regExpTest } from '@/utils'
 class ClassGenerator implements IClassGenerator {
   public newClassMap: Record<string, IMangleContextClass>
   public newClassSize: number
