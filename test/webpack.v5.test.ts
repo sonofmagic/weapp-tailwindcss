@@ -5,18 +5,18 @@ import path from 'path'
 import postcss from 'postcss'
 import fs from 'fs/promises'
 
-const processor = postcss([
-  require('autoprefixer')(),
-  require('tailwindcss')({ config: path.resolve(__dirname, './config/tailwind.config.js') }),
-  require('postcss-rem-to-responsive-pixel')({
-    rootValue: 32,
-    propList: ['*'],
-    transformUnit: 'rpx'
-  })
-])
-describe('webpack5 plugin', () => {
+describe.skip('webpack5 plugin', () => {
   let compiler: Compiler
   beforeEach(() => {
+    const processor = postcss([
+      require('autoprefixer')(),
+      require('tailwindcss')({ config: path.resolve(__dirname, './config/tailwind.config.js') }),
+      require('postcss-rem-to-responsive-pixel')({
+        rootValue: 32,
+        propList: ['*'],
+        transformUnit: 'rpx'
+      })
+    ])
     compiler = getCompiler5({
       mode: 'development',
       entry: {

@@ -1,20 +1,26 @@
-import postcss from 'postcss'
+import postcss, { Processor } from 'postcss'
 import path from 'path'
 import fs from 'fs'
 import tailwindcss from 'tailwindcss'
+
 describe('postcss plugin', () => {
-  const baseProcessor = postcss([
-    require('autoprefixer')(),
-    require('tailwindcss')({ config: path.resolve(__dirname, './config/tailwind.config.js') }),
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
+  let baseProcessor: Processor
+  let baseCss: string
+  beforeAll(() => {
+    baseProcessor = postcss([
+      require('autoprefixer')(),
+      require('tailwindcss')({ config: path.resolve(__dirname, './config/tailwind.config.js') }),
+      require('postcss-rem-to-responsive-pixel')({
+        rootValue: 32,
+        propList: ['*'],
+        transformUnit: 'rpx'
+      })
+    ])
+    baseCss = fs.readFileSync(path.resolve(__dirname, './config/base.css'), {
+      encoding: 'utf8'
     })
-  ])
-  const baseCss = fs.readFileSync(path.resolve(__dirname, './config/base.css'), {
-    encoding: 'utf8'
   })
+
   it('base tw output', async () => {
     const res = await baseProcessor.process(baseCss, {
       from: 'index.css',

@@ -12,6 +12,7 @@ export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"
 
 export const vueTemplateClassRegexp = /(?:(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 
+export const templateClassExactRegexp = /(?:(?<=^|\s)(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 // TODO: poor perf
 export const tagRegexp = /<([a-z][-a-z]*[a-z]*)\s*(([a-z][-a-z]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gs
 
@@ -19,16 +20,23 @@ export const tagWithClassRegexp = /<([a-z][-a-z]*[a-z]*)\s+[^>]*?(?:class="([^"]
 
 export const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\/?>/g
 
+interface ICreateRegexpOptions {
+  exact?: boolean
+}
 // try match tag
-export function createTempleteHandlerMatchRegexp (tag: string, attrs: string | string[]) {
+export function createTempleteHandlerMatchRegexp (tag: string, attrs: string | string[], options: ICreateRegexpOptions = {}) {
+  const { exact = true } = options
+  const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
-  const source = `<(${tag})\\s+[^>]*?(?:(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
+  const source = `<(${tag})\\s+[^>]*?(?:${prefix}(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
   return new RegExp(source, 'g')
 }
 
-export function createTemplateClassRegexp (attrs: string | string[]) {
+export function createTemplateClassRegexp (attrs: string | string[], options: ICreateRegexpOptions = {}) {
+  const { exact = true } = options
+  const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = typeof attrs === 'string' ? attrs : attrs.join('|')
-  const source = `(?:${pattern})=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]`
+  const source = `(?:${prefix}${pattern})=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]`
   return new RegExp(source, 'gs')
 }
 
