@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.3 (2022-10-17)
+
+### Features
+
+- 现在针对 `wxml` 的匹配默认会更加精准，同时也影响 `customAttributes` 配置,详见 [test/regexp-maker.test.ts](test/regexp-maker.test.ts)
+- `customAttributes` 现在允许正则类型了。
+
 ## 1.11.(1-2) (2022-10-7)
 
 ### Chore
