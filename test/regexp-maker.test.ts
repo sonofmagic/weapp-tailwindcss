@@ -1,6 +1,26 @@
-import { createTemplateClassRegexp, createTempleteHandlerMatchRegexp } from '@/reg'
+import { createTemplateClassRegexp, createTempleteHandlerMatchRegexp, makePattern, handleRegexp } from '@/reg'
 import { matchAll } from './util'
 describe('regexp-maker', () => {
+  it('makePattern case signle option', () => {
+    const case0 = '<el-shitter>'
+    expect(makePattern(case0)).toBe(case0)
+    const case1 = /yyyy/g
+    expect(makePattern(case1)).toBe(handleRegexp(case1))
+  })
+
+  it('makePattern case multiple options', () => {
+    const case0 = '<el-shitter>'
+    const case1 = /yyyy/g
+    expect(makePattern([case0, case1])).toBe([case0, handleRegexp(case1)].join('|'))
+  })
+
+  it('makePattern case multiple options test case', () => {
+    const case0 = 'view'
+    const case1 = /(?:van|el|ant)-(?:\w+)/g
+    const pattern = makePattern([case0, case1])
+    expect(pattern).toBe([case0, handleRegexp(case1)].join('|'))
+    expect(matchAll(new RegExp(pattern, 'g'), ['van-bug', 'el-bug', 'ant-bug'].join('\n')).length).toBe(3)
+  })
   it('TempleteHandlerMatchRegexp single attr', () => {
     const reg = createTempleteHandlerMatchRegexp('l-o-v-e-r', 'i-love-you')
     const match0 = matchAll(reg, '<l-o-v-e-r i-love-you="">l-o-v-e-r</l-o-v-e-r>')

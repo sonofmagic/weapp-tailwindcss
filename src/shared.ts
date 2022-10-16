@@ -7,8 +7,12 @@ export function getFileName (file: string) {
   return path.basename(file, path.extname(file))
 }
 
-export function isRegexp (value: any) {
+export function isRegexp (value: unknown) {
   return Object.prototype.toString.call(value) === '[object RegExp]'
+}
+
+export function isMap (value: unknown) {
+  return Object.prototype.toString.call(value) === '[object Map]'
 }
 
 export function regExpTest (arr: (string | RegExp)[] = [], str: string) {

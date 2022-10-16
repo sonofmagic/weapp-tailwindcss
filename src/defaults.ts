@@ -1,5 +1,5 @@
-import { defu, noop } from '@/shared'
-import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers } from './types'
+import { defu, noop, isMap } from '@/shared'
+import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ItemOrItemArray } from './types'
 import { isMatch } from 'micromatch'
 import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
@@ -107,12 +107,19 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
   const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
-  const custom = Object.keys(customAttributes).length > 0
+  let customAttributesEntities
+  if (isMap(customAttributes)) {
+    customAttributesEntities = Array.from((customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
+  } else {
+    customAttributesEntities = Object.entries(customAttributes)
+  }
+
+  const custom = customAttributesEntities.length > 0
   const escapeEntries = Object.entries(customReplaceDictionary)
   result.escapeEntries = escapeEntries
   result.templeteHandler = createTempleteHandler({
     custom,
-    regexps: makeCustomAttributes(customAttributes),
+    regexps: makeCustomAttributes(customAttributesEntities),
     escapeEntries
   })
   result.styleHandler = createStyleHandler({

@@ -7,7 +7,7 @@ import type { GeneratorResult } from '@babel/generator'
 // export interface TaroUserDefinedOptions extends UserDefinedOptions {
 //   framework: 'react' | 'vue' | 'vue3' | string
 // }
-
+export type ItemOrItemArray<T> = T | T[]
 export type { TraverseOptions } from '@babel/traverse'
 export type { Node } from '@babel/types'
 export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
@@ -89,6 +89,8 @@ export interface IManglePluginOptions extends IMangleOptions {
   classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
   log?: boolean
 }
+
+export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
 export interface UserDefinedOptions {
   /**
@@ -174,7 +176,7 @@ export interface UserDefinedOptions {
   /**
    * @description 自定义attr转化属性，默认转化所有的 class
    */
-  customAttributes?: Record<string, string | string[]>
+  customAttributes?: ICustomAttributes
   /**
    * @description 自定义转化class名称字典
    */
@@ -192,7 +194,7 @@ export type ICustomRegexp = {
   tagRegexp: RegExp
   attrRegexp: RegExp
   tag: string
-  attrs: string | string[]
+  attrs: ItemOrItemArray<string | RegExp>
 }
 export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   custom?: boolean
