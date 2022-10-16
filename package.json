@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.11.3-beta.0",
+  "version": "1.11.3-beta.1",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -31,6 +31,7 @@
     "dts": "ttsc --emitDeclarationOnly -p tsconfig.dts.json",
     "fix-dts": "ts-node scripts/fix-dts.ts",
     "test": "jest",
+    "test:all": "cross-env JEST_INVALID_SKIP_CASES=1 jest",
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
