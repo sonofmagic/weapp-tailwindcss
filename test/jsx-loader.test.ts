@@ -2,7 +2,7 @@ import { jsxHandler } from '#test/archived/jsx/v1'
 import { jsxHandler as newJsxHandler } from '@/jsx/v2'
 import { loaderCasePath, createGetCase } from './util'
 import { createReplacer } from '#test/archived/jsx/replacer'
-
+const getReactCase = createGetCase(loaderCasePath + '/taro-app')
 const getVue3Case = createGetCase(loaderCasePath + '/taro-vue3-app')
 const getVue2Case = createGetCase(loaderCasePath + '/taro-vue2-app')
 // const putCase = createPutCase(jsxCasePath)
@@ -30,6 +30,24 @@ describe('jsx-loader handler', () => {
     const result = newJsxHandler(code, {
       framework: 'vue2'
     })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('new react jsx normal case 0', async () => {
+    const code = await getReactCase('arbitraryVariants.tsx.tmp')
+    const result = newJsxHandler(code)
+    expect(result).toMatchSnapshot()
+  })
+
+  it('new react jsx normal case 1', async () => {
+    const code = await getReactCase('before.tsx.tmp')
+    const result = newJsxHandler(code)
+    expect(result).toMatchSnapshot()
+  })
+
+  it('new react jsx normal case 2', async () => {
+    const code = await getReactCase('endClassCom.tsx.tmp')
+    const result = newJsxHandler(code)
     expect(result).toMatchSnapshot()
   })
 })
