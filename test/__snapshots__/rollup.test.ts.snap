@@ -169,7 +169,8 @@ function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
-    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    const tagPattern = getSourceString(tag);
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
     return new RegExp(source, 'g');
 }
 function createTemplateClassRegexp(attrs, options = {}) {
@@ -654,8 +655,8 @@ function getOptions(options = {}) {
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     let customAttributesEntities;
-    if (isMap(customAttributes)) {
-        customAttributesEntities = Array.from(customAttributes.entries());
+    if (isMap(options.customAttributes)) {
+        customAttributesEntities = Array.from(options.customAttributes.entries());
     }
     else {
         customAttributesEntities = Object.entries(customAttributes);
@@ -1432,7 +1433,8 @@ function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
-    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    const tagPattern = getSourceString(tag);
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
     return new RegExp(source, 'g');
 }
 function createTemplateClassRegexp(attrs, options = {}) {
@@ -1917,8 +1919,8 @@ function getOptions(options = {}) {
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     let customAttributesEntities;
-    if (isMap(customAttributes)) {
-        customAttributesEntities = Array.from(customAttributes.entries());
+    if (isMap(options.customAttributes)) {
+        customAttributesEntities = Array.from(options.customAttributes.entries());
     }
     else {
         customAttributesEntities = Object.entries(customAttributes);
@@ -2233,7 +2235,8 @@ function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
-    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    const tagPattern = getSourceString(tag);
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
     return new RegExp(source, 'g');
 }
 function createTemplateClassRegexp(attrs, options = {}) {
@@ -2735,8 +2738,8 @@ function getOptions(options = {}) {
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     let customAttributesEntities;
-    if (isMap(customAttributes)) {
-        customAttributesEntities = Array.from(customAttributes.entries());
+    if (isMap(options.customAttributes)) {
+        customAttributesEntities = Array.from(options.customAttributes.entries());
     }
     else {
         customAttributesEntities = Object.entries(customAttributes);

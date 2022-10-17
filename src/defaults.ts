@@ -108,8 +108,8 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   let customAttributesEntities
-  if (isMap(customAttributes)) {
-    customAttributesEntities = Array.from((customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
+  if (isMap(options.customAttributes)) {
+    customAttributesEntities = Array.from((options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
   } else {
     customAttributesEntities = Object.entries(customAttributes)
   }

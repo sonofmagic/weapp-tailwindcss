@@ -66,7 +66,8 @@ export function createTempleteHandlerMatchRegexp (tag: string | RegExp, attrs: I
   const { exact = true } = options
   const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = makePattern(attrs)
-  const source = `<(${tag})\\s+[^>]*?(?:${prefix}(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
+  const tagPattern = getSourceString(tag)
+  const source = `<(${tagPattern})\\s+[^>]*?(?:${prefix}(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
   return new RegExp(source, 'g')
 }
 
