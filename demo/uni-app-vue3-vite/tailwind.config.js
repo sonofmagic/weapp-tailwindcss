@@ -1,7 +1,8 @@
 const plugin = require('tailwindcss/plugin')
 const { each, variants } = require('./variants.js')
 const fs = require('fs')
-fs.writeFileSync('./variants.json', JSON.stringify(variants, null, 2), {
+const path = require('path')
+fs.writeFileSync(path.resolve(__dirname, './variants.json'), JSON.stringify(variants, null, 2), {
   encoding: 'utf-8'
 })
 const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-children')
