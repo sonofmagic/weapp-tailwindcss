@@ -1,16 +1,16 @@
 import type { Compiler } from 'webpack'
 import { BaseJsxWebpackPluginV5 } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
-import { webpack5CasePath, rootPath } from '#test/util'
+import { webpack5CasePath, rootPath, configPath } from '#test/util'
 import path from 'path'
-// import postcss from 'postcss'
+import postcss from 'postcss'
 // import fs from 'fs/promises'
 const loaderPath = path.resolve(rootPath, 'dist/jsx-rename-loader.js')
-describe('webpack5 jsx plugin', () => {
+describe.skip('webpack5 jsx plugin', () => {
   let compiler: Compiler
   const postcssPlugins = [
     require('autoprefixer')(),
-    require('tailwindcss')({ config: path.resolve(__dirname, './config/tailwind.config.js') }),
+    require('tailwindcss')({ config: path.resolve(configPath, 'tailwind.config.js') }),
     require('postcss-rem-to-responsive-pixel')({
       rootValue: 32,
       propList: ['*'],
@@ -18,17 +18,18 @@ describe('webpack5 jsx plugin', () => {
     })
   ]
   beforeEach(() => {
-    // const processor = postcss(postcssPlugins)
-
+    const processor = postcss(postcssPlugins)
+    
     compiler = getCompiler5({
       mode: 'development',
+      context: path.resolve(webpack5CasePath, 'jsx'),
       entry: {
-        entry: path.resolve(webpack5CasePath, 'jsx/pages/index.jsx')
+        entry: './pages/index.jsx'
       },
       output: {
         path: path.resolve(__dirname, './dist'),
-        filename: '[name].js?var=[fullhash]',
-        chunkFilename: '[id].[name].js?ver=[fullhash]'
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js'
       },
       module: {
         rules: [
@@ -50,7 +51,6 @@ describe('webpack5 jsx plugin', () => {
           {
             test: /\.css$/i,
             use: [
-              'style-loader',
               'css-loader',
               {
                 loader: 'postcss-loader',
@@ -63,7 +63,8 @@ describe('webpack5 jsx plugin', () => {
             ]
           }
         ]
-      }
+      },
+      externals: ['react', 'react-dom']
     })
   })
   it('common', async () => {
@@ -79,7 +80,8 @@ describe('webpack5 jsx plugin', () => {
 
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)
-    expect(assets).toMatchSnapshot('assets')
+
+    expect(assets['entry.js']).toMatchSnapshot('entry.js')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })

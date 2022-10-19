@@ -6,7 +6,7 @@ export function resolve(...args: string[]) {
 }
 
 export const rootPath = resolve(__dirname, '..')
-
+export const configPath = resolve(__dirname, 'config')
 export const jsxCasePath = resolve(__dirname, 'fixtures/jsx')
 export const cssCasePath = resolve(__dirname, 'fixtures/css')
 export const wxmlCasePath = resolve(__dirname, 'fixtures/wxml')
