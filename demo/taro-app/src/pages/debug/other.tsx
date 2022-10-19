@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { View } from '@tarojs/components'
+
 export default class Index extends Component {
   componentDidMount() {
     debugger
@@ -13,6 +14,6 @@ export default class Index extends Component {
     const text = 'debugger'
     // 此处写可以准确触发
     // debugger
-    return <View className="text-[#123456]">{text}</View>
+    return <View className='text-[#123456]'>{text}</View>
   }
 }

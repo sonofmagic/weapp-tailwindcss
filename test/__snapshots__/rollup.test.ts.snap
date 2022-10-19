@@ -621,7 +621,8 @@ const defaultOptions = {
         jsxRename: false
     },
     customAttributes: {},
-    customReplaceDictionary: MappingChars2String
+    customReplaceDictionary: MappingChars2String,
+    jsxRenameLoaderPath: ''
 };
 function createGlobMatcher(pattern) {
     return function (file) {
@@ -732,12 +733,12 @@ class BaseJsxWebpackPluginV4 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options;
+        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options;
         if (disabled) {
             return;
         }
         const isReact = framework === 'react';
-        const loader = path__default["default"].resolve(__dirname, \`\${NS}.js\`);
+        const loader = jsxRenameLoaderPath || path__default["default"].resolve(__dirname, \`\${NS}.js\`);
         onLoad();
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
@@ -833,14 +834,14 @@ class BaseJsxWebpackPluginV5 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options;
+        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options;
         if (disabled) {
             return;
         }
         const Compilation = compiler.webpack.Compilation;
         const { ConcatSource } = compiler.webpack.sources;
         const isReact = framework === 'react';
-        const loader = path__default["default"].resolve(__dirname, \`\${NS}.js\`);
+        const loader = jsxRenameLoaderPath || path__default["default"].resolve(__dirname, \`\${NS}.js\`);
         onLoad();
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             webpack.NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
@@ -1885,7 +1886,8 @@ const defaultOptions = {
         jsxRename: false
     },
     customAttributes: {},
-    customReplaceDictionary: MappingChars2String
+    customReplaceDictionary: MappingChars2String,
+    jsxRenameLoaderPath: ''
 };
 function createGlobMatcher(pattern) {
     return function (file) {
@@ -2704,7 +2706,8 @@ const defaultOptions = {
         jsxRename: false
     },
     customAttributes: {},
-    customReplaceDictionary: MappingChars2String
+    customReplaceDictionary: MappingChars2String,
+    jsxRenameLoaderPath: ''
 };
 function createGlobMatcher(pattern) {
     return function (file) {

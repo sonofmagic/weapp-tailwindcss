@@ -171,6 +171,7 @@ exports[`get options default options 1`] = `
   "htmlMatcher": [Function],
   "jsMatcher": [Function],
   "jsxHandler": [Function],
+  "jsxRenameLoaderPath": "",
   "loaderOptions": {
     "jsxRename": false,
   },
@@ -357,6 +358,7 @@ exports[`get options vue framework 1`] = `
   "htmlMatcher": [Function],
   "jsMatcher": [Function],
   "jsxHandler": [Function],
+  "jsxRenameLoaderPath": "",
   "loaderOptions": {
     "jsxRename": false,
   },

@@ -5,10 +5,14 @@ export function resolve(...args: string[]) {
   return path.resolve(...args)
 }
 
+export const rootPath = resolve(__dirname, '..')
+
 export const jsxCasePath = resolve(__dirname, 'fixtures/jsx')
 export const cssCasePath = resolve(__dirname, 'fixtures/css')
 export const wxmlCasePath = resolve(__dirname, 'fixtures/wxml')
 export const loaderCasePath = resolve(__dirname, 'fixtures/loader')
+
+export const webpack5CasePath = resolve(__dirname, 'fixtures/webpack/v5')
 
 export function readFile(filepath: string) {
   return fs.readFile(filepath, {

@@ -66,7 +66,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
     jsxRename: false
   },
   customAttributes: {},
-  customReplaceDictionary: MappingChars2String
+  customReplaceDictionary: MappingChars2String,
+  jsxRenameLoaderPath: ''
   // templeteHandler,
   // styleHandler,
   // jsxHandler

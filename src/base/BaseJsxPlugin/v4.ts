@@ -20,7 +20,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options
     if (disabled) {
       return
     }
@@ -29,7 +29,7 @@ export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {
     // }
 
     const isReact = framework === 'react'
-    const loader = path.resolve(__dirname, `${NS}.js`)
+    const loader = jsxRenameLoaderPath || path.resolve(__dirname, `${NS}.js`)
     onLoad()
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
