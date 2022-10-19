@@ -46,7 +46,9 @@
     "demo:remove-deps": "node scripts/demo/del.js",
     "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js",
     "sync": "open-cli https://npmmirror.com/sync/weapp-tailwindcss-webpack-plugin",
-    "generate:readme": "ts-node scripts/readme/write.ts"
+    "generate:readme": "ts-node scripts/readme/write.ts",
+    "format": "yarn prettier --check \"src/**/*.{ts,js}\" -w",
+    "format:test": "yarn prettier --check \"test/**/*.test.{ts,js}\" -w"
   },
   "repository": {
     "type": "git",
@@ -125,10 +127,12 @@
     "defu": "6.1.0",
     "del": "^6.1.1",
     "eslint": "8.25.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jest": "^27.1.3",
     "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "6.1.0",
     "esm": "^3.2.25",
     "execa": "5",

@@ -4,11 +4,11 @@ import type { IManglePluginOptions } from '@/types'
 import { ManglePluginHooks, WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks } from '@/constants'
 export class ManglePluginV4 {
   public opts: IManglePluginOptions
-  constructor (opts: IManglePluginOptions = {}) {
+  constructor(opts: IManglePluginOptions = {}) {
     this.opts = opts
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     // @ts-ignore
     compiler.hooks.compilation.tap(ManglePluginHooks, (compilation) => {
       const optimize = optimizer(compiler, compilation, this.opts)

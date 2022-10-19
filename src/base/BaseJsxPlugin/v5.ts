@@ -16,12 +16,12 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   appType: AppType
   // classGenerator?: ClassGenerator
   static NS = NS
-  constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor(options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
     if (disabled) {
       return

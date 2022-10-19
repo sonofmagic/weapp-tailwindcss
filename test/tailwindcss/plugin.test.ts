@@ -4,7 +4,7 @@ import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
 
 describe('tailwind plugins', () => {
-  async function getCss (content: string[]) {
+  async function getCss(content: string[]) {
     const processor = postcss([
       tailwindcss({
         content: content.map((x) => {

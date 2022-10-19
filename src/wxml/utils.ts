@@ -4,11 +4,11 @@ import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherC
 import { defu } from '@/utils'
 import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
 
-export function generateCode (match: string, options: ICommonReplaceOptions = {}) {
+export function generateCode(match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match) as Node
 
   traverse(ast, {
-    StringLiteral (path) {
+    StringLiteral(path) {
       // parentPath maybe null
       if (path.parent.type === 'BinaryExpression') {
         if (path.parentPath?.parent.type === 'ConditionalExpression') {
@@ -32,7 +32,7 @@ export function generateCode (match: string, options: ICommonReplaceOptions = {}
   return code
 }
 
-export function extractSource (original: string) {
+export function extractSource(original: string) {
   let match = variableMatch(original)
   const sources: RawSource[] = []
 
@@ -54,7 +54,7 @@ export function extractSource (original: string) {
   return sources
 }
 
-export function templeteReplacer (original: string, options: ICommonReplaceOptions = {}) {
+export function templeteReplacer(original: string, options: ICommonReplaceOptions = {}) {
   const sources = extractSource(original)
 
   if (sources.length) {
@@ -113,7 +113,7 @@ export function templeteReplacer (original: string, options: ICommonReplaceOptio
   }
 }
 
-export function templeteHandler (rawSource: string, options: ICommonReplaceOptions = {}) {
+export function templeteHandler(rawSource: string, options: ICommonReplaceOptions = {}) {
   return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
     return m0.replace(templateClassExactRegexp, (m1, className) => {
       return m1.replace(className, templeteReplacer(className, options))
@@ -121,7 +121,7 @@ export function templeteHandler (rawSource: string, options: ICommonReplaceOptio
   })
 }
 
-export function customTempleteHandler (rawSource: string, options: ITempleteHandlerOptions = {}) {
+export function customTempleteHandler(rawSource: string, options: ITempleteHandlerOptions = {}) {
   let source = templeteHandler(rawSource, options)
   if (options.custom) {
     if (Array.isArray(options.regexps)) {
@@ -141,7 +141,7 @@ export function customTempleteHandler (rawSource: string, options: ITempleteHand
   }
 }
 
-export function createTempleteHandler (options: ITempleteHandlerOptions = {}) {
+export function createTempleteHandler(options: ITempleteHandlerOptions = {}) {
   return (rawSource: string, opt: ITempleteHandlerOptions = {}) => {
     return customTempleteHandler(rawSource, defu(opt, options))
   }

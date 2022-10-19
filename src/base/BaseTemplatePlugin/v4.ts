@@ -12,12 +12,12 @@ export class BaseTemplateWebpackPluginV4 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType: AppType
   // classGenerator?: ClassGenerator
-  constructor (options: UserDefinedOptions = {}, appType: AppType) {
+  constructor(options: UserDefinedOptions = {}, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, templeteHandler, styleHandler } = this.options
     if (disabled) {
       return

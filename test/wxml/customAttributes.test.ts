@@ -32,7 +32,7 @@ describe('customAttributes', () => {
   })
 
   it('map case', () => {
-    const map = new Map<string | RegExp, string | RegExp |(string | RegExp)[]>()
+    const map = new Map<string | RegExp, string | RegExp | (string | RegExp)[]>()
     map.set(/(?:van|el|ant)-(?:\w+)/g, ['custom-attrs', /shit/g])
     const { templeteHandler } = getOptions({
       customAttributes: map

@@ -24,7 +24,7 @@ const plugin: PostcssWeappTailwindcssRenamePlugin = (options: InternalPostcssOpt
 
   return {
     postcssPlugin,
-    Once (css) {
+    Once(css) {
       css.walkRules((rule) => {
         transformSync(rule, opts)
         commonChunkPreflight(rule, opts)

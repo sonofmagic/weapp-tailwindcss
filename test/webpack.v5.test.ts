@@ -62,7 +62,7 @@ describe.skip('webpack5 plugin', () => {
   })
   it('common', async () => {
     new NativeWeappTailwindcssWebpackPluginV5({
-      mainCssChunkMatcher (name) {
+      mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       }
     }).apply(compiler)
@@ -76,7 +76,7 @@ describe.skip('webpack5 plugin', () => {
 
   it('disabled true', async () => {
     new NativeWeappTailwindcssWebpackPluginV5({
-      mainCssChunkMatcher (name) {
+      mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
       disabled: true
@@ -91,7 +91,7 @@ describe.skip('webpack5 plugin', () => {
 
   it('mangle true', async () => {
     new NativeWeappTailwindcssWebpackPluginV5({
-      mainCssChunkMatcher (name) {
+      mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
       mangle: true
@@ -106,7 +106,7 @@ describe.skip('webpack5 plugin', () => {
 
   it('mangle options', async () => {
     new NativeWeappTailwindcssWebpackPluginV5({
-      mainCssChunkMatcher (name) {
+      mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
       mangle: {

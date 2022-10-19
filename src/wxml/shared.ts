@@ -2,7 +2,7 @@ import { ICommonReplaceOptions } from '@/types'
 import { mangleMark } from '@/mangle/expose'
 import { escape } from '@/base/escape'
 import { MappingChars2StringEntries } from '@/dic'
-export function replaceWxml (
+export function replaceWxml(
   original: string,
   options: ICommonReplaceOptions | boolean = {
     keepEOL: false,

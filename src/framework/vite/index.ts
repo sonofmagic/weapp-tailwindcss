@@ -11,7 +11,7 @@ import { getGroupedEntries } from '@/base/shared'
 // issue 一个节点静态，一个节点动态，动态节点中的静态属性不会被 mangle 导致存在问题
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
-export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions = {}): Plugin | undefined {
+export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options)
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler } = opts
   if (disabled) {
@@ -27,10 +27,10 @@ export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions 
   return {
     name: vitePluginName,
     enforce: 'post',
-    buildStart () {
+    buildStart() {
       onStart()
     },
-    configResolved (config) {
+    configResolved(config) {
       const postcssConfig = config.css?.postcss as {
         plugins: PostcssPlugin[]
       }
@@ -61,7 +61,7 @@ export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions 
     // transform (code, id, options) {
     //   return code
     // },
-    generateBundle (opt, bundle, isWrite) {
+    generateBundle(opt, bundle, isWrite) {
       // 也许应该都在这里处理
       const entries = Object.entries(bundle).filter(([, s]) => s.type === 'asset') as [string, OutputAsset][]
       const groupedEntries = getGroupedEntries(entries, opts)
@@ -94,7 +94,7 @@ export default function ViteWeappTailwindcssPlugin (options: UserDefinedOptions 
         }
       }
     },
-    buildEnd () {
+    buildEnd() {
       onEnd()
     }
   }
