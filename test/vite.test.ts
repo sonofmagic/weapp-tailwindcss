@@ -8,7 +8,7 @@ function keepSilent() {
   console.log = noop
   console.warn = noop
 }
-describe.skip('vite test', () => {
+describe('vite test', () => {
   beforeEach(() => {
     keepSilent()
   })

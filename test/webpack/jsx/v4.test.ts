@@ -1,12 +1,12 @@
-import type { Compiler } from 'webpack'
-import { BaseJsxWebpackPluginV5 } from '@/index'
-import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
+import type { Compiler } from 'webpack4'
+import { BaseJsxWebpackPluginV4 } from '@/index'
+import { getCompiler4, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath, rootPath } from '#test/util'
 import path from 'path'
 // import postcss from 'postcss'
 // import fs from 'fs/promises'
 const loaderPath = path.resolve(rootPath, 'dist/jsx-rename-loader.js')
-describe('webpack5 jsx plugin', () => {
+describe('webpack4 jsx plugin', () => {
   let compiler: Compiler
   const postcssPlugins = [
     require('autoprefixer')(),
@@ -29,7 +29,7 @@ describe('webpack5 jsx plugin', () => {
   beforeEach(() => {
     // const processor = postcss(postcssPlugins)
 
-    compiler = getCompiler5({
+    compiler = getCompiler4({
       mode: 'development',
       context: path.resolve(webpack5CasePath, 'jsx'),
       entry: {
@@ -81,7 +81,7 @@ describe('webpack5 jsx plugin', () => {
     })
   })
   it('common', async () => {
-    new BaseJsxWebpackPluginV5(
+    new BaseJsxWebpackPluginV4(
       {
         mainCssChunkMatcher(name, appType) {
           return path.basename(name) === 'index.css'
@@ -100,7 +100,7 @@ describe('webpack5 jsx plugin', () => {
   })
 
   it('disabled true', async () => {
-    new BaseJsxWebpackPluginV5(
+    new BaseJsxWebpackPluginV4(
       {
         mainCssChunkMatcher(name) {
           return path.basename(name) === 'index.css'

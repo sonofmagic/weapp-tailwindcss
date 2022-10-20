@@ -1,5 +1,6 @@
 import readAsset from './readAsset'
-import type { Compiler, Stats } from 'webpack'
+
+import type { Compiler, Stats } from './types'
 export default function readAssets(compiler: Compiler, stats: Stats) {
   const assets: Record<string, string> = {}
 

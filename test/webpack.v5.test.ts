@@ -5,7 +5,7 @@ import path from 'path'
 import postcss from 'postcss'
 import fs from 'fs/promises'
 
-describe.skip('webpack5 plugin', () => {
+describe('webpack5 plugin', () => {
   let compiler: Compiler
   beforeEach(() => {
     const processor = postcss([
