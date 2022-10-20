@@ -2,7 +2,7 @@
 // import Image from 'next/image'
 // import styles from '../styles/Home.module.css'
 
-export default function Home () {
+export default function Home() {
   const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   return (
     <>
