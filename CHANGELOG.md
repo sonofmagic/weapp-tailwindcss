@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.11.3 (2022-10-20)
+
+### Features
+
+- `customAttributes` 现在允许使用 `Map` 类型了，可以自定义匹配标签正则。
+
+### Chore
+
+- `webpack jsx test case` 完善
+
 ## 1.11.3 (2022-10-17)
 
 ### Features
