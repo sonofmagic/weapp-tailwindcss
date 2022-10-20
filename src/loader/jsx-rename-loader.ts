@@ -5,7 +5,7 @@ import { mkfileSync } from './util'
 import path from 'path'
 // "jsx", "flow", "typescript"
 
-export default function loader (this: webpack.LoaderContext<JsxRenameLoaderOptions>, content: string) {
+export default function loader(this: webpack.LoaderContext<JsxRenameLoaderOptions>, content: string) {
   this.cacheable && this.cacheable()
 
   // @ts-ignore

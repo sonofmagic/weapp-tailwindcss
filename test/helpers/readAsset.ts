@@ -1,5 +1,5 @@
 import path from 'path'
-import type { Compiler, Stats } from 'webpack'
+import type { Compiler, Stats } from './types'
 export default (asset: string, compiler: Compiler, stats: Stats) => {
   const usedFs = compiler.outputFileSystem
   const outputPath = stats.compilation.outputOptions.path

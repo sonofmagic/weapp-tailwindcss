@@ -12,7 +12,7 @@ import type ClassGenerator from './classGenerator'
 
 // export const globalClassGenerator = new ClassGenerator()
 
-export function mangleMark (str: string, oldValue: string, classGenerator: ClassGenerator) {
+export function mangleMark(str: string, oldValue: string, classGenerator: ClassGenerator) {
   if (typeof str === 'string' && str) {
     const oldStrArr = oldValue.split(' ').filter((x) => x)
     return str

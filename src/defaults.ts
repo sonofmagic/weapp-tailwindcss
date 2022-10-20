@@ -66,25 +66,26 @@ export const defaultOptions: Required<UserDefinedOptions> = {
     jsxRename: false
   },
   customAttributes: {},
-  customReplaceDictionary: MappingChars2String
+  customReplaceDictionary: MappingChars2String,
+  jsxRenameLoaderPath: ''
   // templeteHandler,
   // styleHandler,
   // jsxHandler
 } as const
 
-function createGlobMatcher (pattern: string | string[]) {
+function createGlobMatcher(pattern: string | string[]) {
   return function (file: string) {
     return isMatch(file, pattern)
   }
 }
 
-function normalizeMatcher (options: UserDefinedOptions, key: GlobOrFunctionMatchers) {
+function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatchers) {
   if (typeof options[key] === 'string' || Array.isArray(options[key])) {
     options[key] = createGlobMatcher(options[key] as string | string[])
   }
 }
 
-export function getOptions (options: UserDefinedOptions = {}): InternalUserDefinedOptions {
+export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
   if (options.mangle === true) {
     // https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81
     options.mangle = {
@@ -108,8 +109,8 @@ export function getOptions (options: UserDefinedOptions = {}): InternalUserDefin
   const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   let customAttributesEntities
-  if (isMap(customAttributes)) {
-    customAttributesEntities = Array.from((customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
+  if (isMap(options.customAttributes)) {
+    customAttributesEntities = Array.from((options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
   } else {
     customAttributesEntities = Object.entries(customAttributes)
   }

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-export function mkfileSync (filename: string, content: string) {
+export function mkfileSync(filename: string, content: string) {
   try {
     const dirname = path.dirname(filename)
     if (!fs.existsSync(dirname)) {

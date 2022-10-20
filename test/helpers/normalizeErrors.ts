@@ -1,4 +1,4 @@
-function removeCWD (str: string) {
+function removeCWD(str: string) {
   const isWin = process.platform === 'win32'
   let cwd = process.cwd()
 

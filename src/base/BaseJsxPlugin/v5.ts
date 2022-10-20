@@ -16,13 +16,13 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   appType: AppType
   // classGenerator?: ClassGenerator
   static NS = NS
-  constructor (options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
+  constructor(options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
     this.options = getOptions(options)
     this.appType = appType
   }
 
-  apply (compiler: Compiler) {
-    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options
+  apply(compiler: Compiler) {
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options
     if (disabled) {
       return
     }
@@ -35,7 +35,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
     // react
 
     const isReact = framework === 'react'
-    const loader = path.resolve(__dirname, `${NS}.js`)
+    const loader = jsxRenameLoaderPath || path.resolve(__dirname, `${NS}.js`)
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {

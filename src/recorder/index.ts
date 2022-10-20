@@ -5,19 +5,19 @@ export interface IChange {
 
 export class Recorder {
   public changes: IChange[]
-  constructor () {
+  constructor() {
     this.changes = []
   }
 
-  push (record: IChange) {
+  push(record: IChange) {
     this.changes.push(record)
   }
 
-  clear () {
+  clear() {
     this.changes.length = 0
   }
 
-  forEach (callbackfn: (value: IChange, index: number, array: IChange[]) => void, thisArg?: any) {
+  forEach(callbackfn: (value: IChange, index: number, array: IChange[]) => void, thisArg?: any) {
     this.changes.forEach(callbackfn, thisArg)
   }
 }

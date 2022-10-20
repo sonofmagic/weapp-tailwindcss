@@ -4,7 +4,7 @@ import { commonChunkPreflight } from './mp'
 import { transformSync } from './selectorParser'
 import { defu } from '@/utils'
 
-export function styleHandler (rawSource: string, options: IStyleHandlerOptions) {
+export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   const root = postcss.parse(rawSource)
   const { isMainChunk, customRuleCallback } = options
   const flag = typeof customRuleCallback === 'function'
@@ -22,7 +22,7 @@ export function styleHandler (rawSource: string, options: IStyleHandlerOptions) 
   return root.toString()
 }
 
-export function createStyleHandler (options: Partial<IStyleHandlerOptions>) {
+export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
   return (rawSource: string, opt: IStyleHandlerOptions) => {
     return styleHandler(rawSource, defu<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt, options))
   }

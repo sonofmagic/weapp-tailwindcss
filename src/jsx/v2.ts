@@ -11,7 +11,7 @@ const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
   vue3: ['class', 'hover-class']
 }
 
-export function getKey (node: Identifier | StringLiteral | Expression | PrivateName): string {
+export function getKey(node: Identifier | StringLiteral | Expression | PrivateName): string {
   if (node.type === 'Identifier') {
     return node.name
   }
@@ -21,11 +21,11 @@ export function getKey (node: Identifier | StringLiteral | Expression | PrivateN
   return ''
 }
 
-function isObjectKey (type: string) {
+function isObjectKey(type: string) {
   return ['Identifier', 'StringLiteral'].includes(type)
 }
 
-export function jsxHandler (
+export function jsxHandler(
   rawSource: string,
   opt: IJsxHandlerOptions = {
     framework: 'react'
@@ -43,7 +43,7 @@ export function jsxHandler (
 
   const options: TraverseOptions<Node> = {
     ObjectProperty: {
-      enter (path) {
+      enter(path) {
         if (isObjectKey(path.node.key.type)) {
           const keyStr = getKey(path.node.key)
           if (matchKeys.includes(keyStr)) {
@@ -65,14 +65,14 @@ export function jsxHandler (
           }
         }
       },
-      exit (path) {
+      exit(path) {
         if (['Identifier', 'StringLiteral'].includes(path.node.key.type) && matchKeys.includes(getKey(path.node.key))) {
           startFlag = false
         }
       }
     },
     StringLiteral: {
-      enter (path) {
+      enter(path) {
         if (startFlag) {
           path.node.value = replaceWxml(path.node.value, {
             keepEOL: true,
@@ -85,7 +85,7 @@ export function jsxHandler (
   }
   if (isVue3) {
     options.CallExpression = {
-      enter (path) {
+      enter(path) {
         const hit = path.node.arguments[0]
         if (hit && hit.type === 'StringLiteral') {
           hit.value = templeteHandler(hit.value, {
@@ -101,7 +101,7 @@ export function jsxHandler (
   return generate(ast)
 }
 
-export function createJsxHandler (options: IJsxHandlerOptions) {
+export function createJsxHandler(options: IJsxHandlerOptions) {
   return (rawSource: string, opt?: IJsxHandlerOptions) => {
     return jsxHandler(rawSource, defu(opt, options))
   }

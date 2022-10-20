@@ -1,7 +1,7 @@
 import type { ICustomRegexp, ItemOrItemArray } from '@/types'
 import { isRegexp } from '@/utils'
 // https://github.com/sindresorhus/escape-string-regexp
-export function escapeStringRegexp (str: string) {
+export function escapeStringRegexp(str: string) {
   if (typeof str !== 'string') {
     throw new TypeError('Expected a string')
   }
@@ -24,11 +24,11 @@ interface ICreateRegexpOptions {
   exact?: boolean
 }
 
-export function handleRegexp (reg: RegExp): string {
+export function handleRegexp(reg: RegExp): string {
   return `(?:${reg.source})`
 }
 
-export function getSourceString (input: string | RegExp) {
+export function getSourceString(input: string | RegExp) {
   let result
   if (typeof input === 'string') {
     result = input
@@ -40,7 +40,7 @@ export function getSourceString (input: string | RegExp) {
   return result
 }
 
-export function makePattern (arr: ItemOrItemArray<string | RegExp>): string {
+export function makePattern(arr: ItemOrItemArray<string | RegExp>): string {
   let pattern: string = ''
   if (Array.isArray(arr)) {
     pattern = arr
@@ -62,15 +62,16 @@ export function makePattern (arr: ItemOrItemArray<string | RegExp>): string {
   return pattern
 }
 // try match tag
-export function createTempleteHandlerMatchRegexp (tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
+export function createTempleteHandlerMatchRegexp(tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
   const { exact = true } = options
   const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = makePattern(attrs)
-  const source = `<(${tag})\\s+[^>]*?(?:${prefix}(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
+  const tagPattern = getSourceString(tag)
+  const source = `<(${tagPattern})\\s+[^>]*?(?:${prefix}(${pattern})="(?:[^"]*)")[^>]*?\\/?>`
   return new RegExp(source, 'g')
 }
 
-export function createTemplateClassRegexp (attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
+export function createTemplateClassRegexp(attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
   const { exact = true } = options
   const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = makePattern(attrs)
@@ -78,7 +79,7 @@ export function createTemplateClassRegexp (attrs: ItemOrItemArray<string | RegEx
   return new RegExp(source, 'gs')
 }
 
-export function makeCustomAttributes (entries: [string | RegExp, ItemOrItemArray<string | RegExp>][]): ICustomRegexp[] {
+export function makeCustomAttributes(entries: [string | RegExp, ItemOrItemArray<string | RegExp>][]): ICustomRegexp[] {
   return entries.map(([k, v]) => {
     return {
       tagRegexp: createTempleteHandlerMatchRegexp(k, v),
@@ -97,25 +98,25 @@ export const variableRegExp = /{{(.*?)}}/gs
 // 相比来说 '_' 就宽泛多了，这就是选用 '_' 而不是 '-' 进行转义的原因
 export const wxmlAllowClassCharsRegExp = /[a-zA-Z0-9_-]*/g
 
-export function createWxmlAllowClassCharsRegExp () {
+export function createWxmlAllowClassCharsRegExp() {
   return new RegExp(wxmlAllowClassCharsRegExp.source, 'g')
 }
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 
 // export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim
 
-export function classStringReplace (str: string, replacement: (substring: string, ...args: any[]) => string) {
+export function classStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
   return str.replace(classRegexp, replacement)
 }
 
-export function tagStringReplace (str: string, replacement: (substring: string, ...args: any[]) => string) {
+export function tagStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
   return str.replace(tagRegexp, replacement)
 }
 
-export function doubleQuoteStringReplace (str: string, replacement: (substring: string, ...args: any[]) => string) {
+export function doubleQuoteStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
   return str.replace(doubleQuoteRegexp, replacement)
 }
 
-export function variableMatch (original: string) {
+export function variableMatch(original: string) {
   return variableRegExp.exec(original)
 }

@@ -1,6 +1,6 @@
 import type { InternalUserDefinedOptions } from '@/types'
 
-function groupBy<T> (arr: T[], cb: (arg: T) => string): Record<string, T[]> {
+function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   if (!Array.isArray(arr)) {
     throw new Error('expected an array for first argument')
   }
@@ -25,7 +25,7 @@ function groupBy<T> (arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   return result
 }
 
-export function getGroupedEntries<T> (entries: [string, T][], options: InternalUserDefinedOptions) {
+export function getGroupedEntries<T>(entries: [string, T][], options: InternalUserDefinedOptions) {
   const { cssMatcher, htmlMatcher, jsMatcher } = options
   const groupedEntries = groupBy(entries, ([file]) => {
     if (cssMatcher(file)) {

@@ -6,7 +6,7 @@ export const acceptPrefix = 'abcdefghijklmnopqrstuvwxyz_'.split('')
 
 export const acceptChars = 'abcdefghijklmnopqrstuvwxyz_-0123456789'.split('')
 
-export function stripEscapeSequence (words: string) {
+export function stripEscapeSequence(words: string) {
   return words.replace(/\\/g, '')
 }
 

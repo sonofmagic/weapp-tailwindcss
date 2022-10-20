@@ -8,14 +8,14 @@ class ClassGenerator implements IClassGenerator {
   public newClassSize: number
   public context: Record<string, any>
   public opts: IMangleOptions
-  constructor (opts: IMangleOptions = {}) {
+  constructor(opts: IMangleOptions = {}) {
     this.newClassMap = {}
     this.newClassSize = 0
     this.context = {}
     this.opts = opts
   }
 
-  defaultClassGenerator () {
+  defaultClassGenerator() {
     const chars = []
     let rest = (this.newClassSize - (this.newClassSize % acceptPrefix.length)) / acceptPrefix.length
     if (rest > 0) {
@@ -37,11 +37,11 @@ class ClassGenerator implements IClassGenerator {
     return newClassName
   }
 
-  ignoreClassName (className: string): boolean {
+  ignoreClassName(className: string): boolean {
     return regExpTest(this.opts.ignoreClass, className)
   }
 
-  includeFilePath (filePath: string): boolean {
+  includeFilePath(filePath: string): boolean {
     const { include } = this.opts
     if (Array.isArray(include)) {
       return regExpTest(include, filePath)
@@ -50,7 +50,7 @@ class ClassGenerator implements IClassGenerator {
     }
   }
 
-  excludeFilePath (filePath: string): boolean {
+  excludeFilePath(filePath: string): boolean {
     const { exclude } = this.opts
     if (Array.isArray(exclude)) {
       return regExpTest(exclude, filePath)
@@ -59,18 +59,18 @@ class ClassGenerator implements IClassGenerator {
     }
   }
 
-  isFileIncluded (filePath: string) {
+  isFileIncluded(filePath: string) {
     return this.includeFilePath(filePath) && !this.excludeFilePath(filePath)
   }
 
-  transformCssClass (className: string): string {
+  transformCssClass(className: string): string {
     const key = stripEscapeSequence(className)
     const cn = this.newClassMap[key]
     if (cn) return cn.name
     return className
   }
 
-  generateClassName (original: string): IMangleContextClass {
+  generateClassName(original: string): IMangleContextClass {
     const opts = this.opts
 
     original = stripEscapeSequence(original)

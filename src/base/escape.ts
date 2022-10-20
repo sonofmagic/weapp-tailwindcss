@@ -6,7 +6,7 @@ import { escapeStringRegexp } from '@/reg'
  * @param raw
  * @returns
  */
-export function escape (selectors: string, raw: boolean = false, entries: [string, string][] = defaultEntries) {
+export function escape(selectors: string, raw: boolean = false, entries: [string, string][] = defaultEntries) {
   let res = selectors
   for (let i = 0; i < entries.length; i++) {
     const [searchValue, replaceValue] = entries[i]

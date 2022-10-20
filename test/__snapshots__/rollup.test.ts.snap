@@ -169,7 +169,8 @@ function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
-    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    const tagPattern = getSourceString(tag);
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
     return new RegExp(source, 'g');
 }
 function createTemplateClassRegexp(attrs, options = {}) {
@@ -620,7 +621,8 @@ const defaultOptions = {
         jsxRename: false
     },
     customAttributes: {},
-    customReplaceDictionary: MappingChars2String
+    customReplaceDictionary: MappingChars2String,
+    jsxRenameLoaderPath: ''
 };
 function createGlobMatcher(pattern) {
     return function (file) {
@@ -654,8 +656,8 @@ function getOptions(options = {}) {
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     let customAttributesEntities;
-    if (isMap(customAttributes)) {
-        customAttributesEntities = Array.from(customAttributes.entries());
+    if (isMap(options.customAttributes)) {
+        customAttributesEntities = Array.from(options.customAttributes.entries());
     }
     else {
         customAttributesEntities = Object.entries(customAttributes);
@@ -731,12 +733,12 @@ class BaseJsxWebpackPluginV4 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options;
+        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options;
         if (disabled) {
             return;
         }
         const isReact = framework === 'react';
-        const loader = path__default["default"].resolve(__dirname, \`\${NS}.js\`);
+        const loader = jsxRenameLoaderPath || path__default["default"].resolve(__dirname, \`\${NS}.js\`);
         onLoad();
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
@@ -832,14 +834,14 @@ class BaseJsxWebpackPluginV5 {
         this.appType = appType;
     }
     apply(compiler) {
-        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler } = this.options;
+        const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options;
         if (disabled) {
             return;
         }
         const Compilation = compiler.webpack.Compilation;
         const { ConcatSource } = compiler.webpack.sources;
         const isReact = framework === 'react';
-        const loader = path__default["default"].resolve(__dirname, \`\${NS}.js\`);
+        const loader = jsxRenameLoaderPath || path__default["default"].resolve(__dirname, \`\${NS}.js\`);
         onLoad();
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             webpack.NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
@@ -1432,7 +1434,8 @@ function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
-    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    const tagPattern = getSourceString(tag);
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
     return new RegExp(source, 'g');
 }
 function createTemplateClassRegexp(attrs, options = {}) {
@@ -1883,7 +1886,8 @@ const defaultOptions = {
         jsxRename: false
     },
     customAttributes: {},
-    customReplaceDictionary: MappingChars2String
+    customReplaceDictionary: MappingChars2String,
+    jsxRenameLoaderPath: ''
 };
 function createGlobMatcher(pattern) {
     return function (file) {
@@ -1917,8 +1921,8 @@ function getOptions(options = {}) {
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     let customAttributesEntities;
-    if (isMap(customAttributes)) {
-        customAttributesEntities = Array.from(customAttributes.entries());
+    if (isMap(options.customAttributes)) {
+        customAttributesEntities = Array.from(options.customAttributes.entries());
     }
     else {
         customAttributesEntities = Object.entries(customAttributes);
@@ -2233,7 +2237,8 @@ function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
-    const source = \`<(\${tag})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    const tagPattern = getSourceString(tag);
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
     return new RegExp(source, 'g');
 }
 function createTemplateClassRegexp(attrs, options = {}) {
@@ -2701,7 +2706,8 @@ const defaultOptions = {
         jsxRename: false
     },
     customAttributes: {},
-    customReplaceDictionary: MappingChars2String
+    customReplaceDictionary: MappingChars2String,
+    jsxRenameLoaderPath: ''
 };
 function createGlobMatcher(pattern) {
     return function (file) {
@@ -2735,8 +2741,8 @@ function getOptions(options = {}) {
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     let customAttributesEntities;
-    if (isMap(customAttributes)) {
-        customAttributesEntities = Array.from(customAttributes.entries());
+    if (isMap(options.customAttributes)) {
+        customAttributesEntities = Array.from(options.customAttributes.entries());
     }
     else {
         customAttributesEntities = Object.entries(customAttributes);

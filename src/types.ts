@@ -10,7 +10,7 @@ import type { GeneratorResult } from '@babel/generator'
 export type ItemOrItemArray<T> = T | T[]
 export type { TraverseOptions } from '@babel/traverse'
 export type { Node } from '@babel/types'
-export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | undefined
+export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
 
 export interface IPropValue {
   prop: string
@@ -110,7 +110,7 @@ export interface UserDefinedOptions {
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
-  mainCssChunkMatcher?: ((name: string, appType: AppType) => boolean) | string | string[]
+  mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | string | string[]
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * 用于处理 postcss 的预设
@@ -181,6 +181,10 @@ export interface UserDefinedOptions {
    * @description 自定义转化class名称字典
    */
   customReplaceDictionary?: Record<string, string>
+  /**
+   * @description 自定义 jsxRenameLoader 的路径
+   */
+  jsxRenameLoaderPath?: string
 }
 
 export interface ICommonReplaceOptions {

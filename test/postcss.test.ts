@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import tailwindcss from 'tailwindcss'
 
-describe.skip('postcss plugin', () => {
+describe('postcss plugin', () => {
   let baseProcessor: Processor
   let baseCss: string
   beforeAll(() => {

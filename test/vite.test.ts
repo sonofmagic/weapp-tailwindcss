@@ -3,12 +3,12 @@ import type { RollupOutput } from 'rollup'
 import vwt from '@/framework/vite/index'
 import path from 'path'
 import { switch2relative } from './util'
-function noop () {}
-function keepSilent () {
+function noop() {}
+function keepSilent() {
   console.log = noop
   console.warn = noop
 }
-describe.skip('vite test', () => {
+describe('vite test', () => {
   beforeEach(() => {
     keepSilent()
   })

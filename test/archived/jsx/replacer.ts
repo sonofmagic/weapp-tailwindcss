@@ -11,7 +11,7 @@ export class ASTReplacer {
   public isVue3: boolean
   public isVue2: boolean
   public isReact: boolean
-  constructor (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }) {
+  constructor(framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }) {
     this.isVue3 = framework === 'vue3'
     this.isVue2 = framework === 'vue' || framework === 'vue2'
     this.isReact = framework === 'react'
@@ -19,17 +19,17 @@ export class ASTReplacer {
     this.options = options
   }
 
-  start (node: Node) {
+  start(node: Node) {
     this.startFlag = true
     this.classObjectNode = node
   }
 
-  end () {
+  end() {
     this.startFlag = false
     this.classObjectNode = null
   }
 
-  transform (path: NodePath<Node>) {
+  transform(path: NodePath<Node>) {
     const { isVue2, isVue3, isReact, startFlag, classObjectNode, options } = this
     if (isVue2) {
       if (isSpecNode(path.node)) {
@@ -94,6 +94,6 @@ export class ASTReplacer {
 }
 
 // default react
-export function createReplacer (framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }): ASTReplacer {
+export function createReplacer(framework: string = 'react', options: ICommonReplaceOptions = { keepEOL: true }): ASTReplacer {
   return new ASTReplacer(framework, options)
 }

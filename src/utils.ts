@@ -1,13 +1,13 @@
 import defu from 'defu'
 
-export function isRegexp (value: unknown) {
+export function isRegexp(value: unknown) {
   return Object.prototype.toString.call(value) === '[object RegExp]'
 }
 
-export function isMap (value: unknown) {
+export function isMap(value: unknown) {
   return Object.prototype.toString.call(value) === '[object Map]'
 }
-export function regExpTest (arr: (string | RegExp)[] = [], str: string) {
+export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
   if (Array.isArray(arr)) {
     for (let i = 0; i < arr.length; i++) {
       const item = arr[i]
