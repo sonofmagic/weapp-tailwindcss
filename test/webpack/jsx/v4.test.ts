@@ -68,9 +68,9 @@ describe('webpack4 jsx plugin', () => {
               createLoader(function (source) {
                 return source
               }),
-              'css-loader',
+              'css-loader3',
               {
-                loader: 'postcss-loader',
+                loader: 'postcss-loader4',
                 options: {
                   postcssOptions: {
                     plugins: postcssPlugins
