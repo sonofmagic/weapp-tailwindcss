@@ -46,7 +46,7 @@ specifiers:
   eslint-plugin-jest: ^27.1.3
   eslint-plugin-n: ^15.3.0
   eslint-plugin-prettier: ^4.2.1
-  eslint-plugin-promise: 6.1.0
+  eslint-plugin-promise: 6.1.1
   esm: ^3.2.25
   execa: '5'
   fast-glob: ^3.2.12
@@ -79,7 +79,7 @@ specifiers:
   style-loader: ^3.3.1
   style-loader2: npm:style-loader@2.0.0
   tailwind-children: ^0.5.0
-  tailwindcss: ^3.1.8
+  tailwindcss: ^3.2.0
   ts-jest: ^29.0.3
   ts-node: ^10.9.1
   tsd: ^0.24.1
@@ -141,12 +141,12 @@ devDependencies:
   del: 6.1.1
   eslint: 8.25.0
   eslint-config-prettier: 8.5.0_eslint@8.25.0
-  eslint-config-standard: 17.0.0_qjhcey4ofknbrbveepk4bditci
+  eslint-config-standard: 17.0.0_5nopwtgzzs3ljnomyk5gkjuskq
   eslint-plugin-import: 2.26.0_vcunoyu347gmi72pwsm7mdvjca
   eslint-plugin-jest: 27.1.3_ktuq5bhtjfperqqn2aknj5bg6m
   eslint-plugin-n: 15.3.0_eslint@8.25.0
   eslint-plugin-prettier: 4.2.1_hvbqyfstm4urdpm6ffpwfka4e4
-  eslint-plugin-promise: 6.1.0_eslint@8.25.0
+  eslint-plugin-promise: 6.1.1_eslint@8.25.0
   esm: 3.2.25
   execa: 5.1.1
   fast-glob: 3.2.12
@@ -175,7 +175,7 @@ devDependencies:
   style-loader: 3.3.1_webpack@5.74.0
   style-loader2: /style-loader/2.0.0_webpack@5.74.0
   tailwind-children: 0.5.0_57znarxsqwmnneadci5z5fd5gu
-  tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
+  tailwindcss: 3.2.0_57znarxsqwmnneadci5z5fd5gu
   ts-jest: 29.0.3_glf2bimzsqkn7a7xd62cgjrage
   ts-node: 10.9.1_id5sxmpllzol2kp2zgqrnepaum
   tsd: 0.24.1
@@ -184,7 +184,7 @@ devDependencies:
   typescript: 4.8.4
   typescript-transform-paths: 3.3.1_typescript@4.8.4
   vite: 2.9.15
-  weapp-tailwindcss-children: 0.1.0_tailwindcss@3.1.8
+  weapp-tailwindcss-children: 0.1.0_tailwindcss@3.2.0
   webpack: 5.74.0
   webpack4: /webpack/4.46.0
 
@@ -1601,7 +1601,7 @@ packages:
     resolution: {integrity: sha512-JxPzrm609hzvF4nmOI3StLjbBEP3WWQxDDJESqR1nh94h7gyyy3XSl0hn5RBMJ9mPudlLjtaXs5YEBtLw7CnPA==}
     deprecated: This is a stub types definition. tailwindcss provides its own type definitions, so you do not need this installed.
     dependencies:
-      tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
+      tailwindcss: 3.2.0_57znarxsqwmnneadci5z5fd5gu
     transitivePeerDependencies:
       - postcss
       - ts-node
@@ -3195,8 +3195,8 @@ packages:
       isobject: 3.0.1
     dev: true
 
-  /defined/1.0.0:
-    resolution: {integrity: sha512-Y2caI5+ZwS5c3RiNDJ6u53VhQHv+hHKwhkI1iHvceKUHw9Df6EK2zRLfjejRgMuCuxK7PfSWIMwWecceVvThjQ==}
+  /defined/1.0.1:
+    resolution: {integrity: sha512-hsBd2qSVCRE+5PmNdHt1uzyrFu5d3RwmFDKzyNZMFq/EwDNJF7Ee5+D5oEKF0hU6LhtoUF1macFvOe4AskQC1Q==}
     dev: true
 
   /defu/6.1.0:
@@ -3235,7 +3235,7 @@ packages:
     hasBin: true
     dependencies:
       acorn-node: 1.8.2
-      defined: 1.0.0
+      defined: 1.0.1
       minimist: 1.2.7
     dev: true
 
@@ -3705,7 +3705,7 @@ packages:
       eslint: 8.25.0
     dev: true
 
-  /eslint-config-standard/17.0.0_qjhcey4ofknbrbveepk4bditci:
+  /eslint-config-standard/17.0.0_5nopwtgzzs3ljnomyk5gkjuskq:
     resolution: {integrity: sha512-/2ks1GKyqSOkH7JFvXJicu0iMpoojkwB+f5Du/1SC0PtBL+s8v30k9njRZ21pm2drKYm2342jFnGWzttxPmZVg==}
     peerDependencies:
       eslint: ^8.0.1
@@ -3716,7 +3716,7 @@ packages:
       eslint: 8.25.0
       eslint-plugin-import: 2.26.0_vcunoyu347gmi72pwsm7mdvjca
       eslint-plugin-n: 15.3.0_eslint@8.25.0
-      eslint-plugin-promise: 6.1.0_eslint@8.25.0
+      eslint-plugin-promise: 6.1.1_eslint@8.25.0
     dev: true
 
   /eslint-formatter-pretty/4.1.0:
@@ -3869,8 +3869,8 @@ packages:
       prettier-linter-helpers: 1.0.0
     dev: true
 
-  /eslint-plugin-promise/6.1.0_eslint@8.25.0:
-    resolution: {integrity: sha512-NYCfDZF/KHt27p06nFAttgWuFyIDSUMnNaJBIY1FY9GpBFhdT2vMG64HlFguSgcJeyM5by6Yr5csSOuJm60eXQ==}
+  /eslint-plugin-promise/6.1.1_eslint@8.25.0:
+    resolution: {integrity: sha512-tjqWDwVZQo7UIPMeDReOpUgHCmCiH+ePnVT+5zVapL0uuHnegBUs2smM13CzOs2Xb5+MHMRFTs9v24yjba4Oig==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
@@ -4830,6 +4830,12 @@ packages:
 
   /is-core-module/2.10.0:
     resolution: {integrity: sha512-Erxj2n/LDAZ7H8WNJXd9tw38GYM3dv8rk8Zcs+jJuxYTW7sozH+SS8NtrSjVL1/vpLvWi1hxy96IzjJ3EHTJJg==}
+    dependencies:
+      has: 1.0.3
+    dev: true
+
+  /is-core-module/2.11.0:
+    resolution: {integrity: sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==}
     dependencies:
       has: 1.0.3
     dev: true
@@ -6219,7 +6225,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.10.0
+      is-core-module: 2.11.0
       semver: 7.3.8
       validate-npm-package-license: 3.0.4
     dev: true
@@ -6777,8 +6783,8 @@ packages:
       postcss: 8.4.18
     dev: true
 
-  /postcss-nested/5.0.6_postcss@8.4.16:
-    resolution: {integrity: sha512-rKqm2Fk0KbA8Vt3AdGN0FB9OBOMDVajMG6ZCf/GoHgdxUJ4sBFp0A/uMIRm+MJUdo33YXEtjqIz8u7DAp8B7DA==}
+  /postcss-nested/6.0.0_postcss@8.4.16:
+    resolution: {integrity: sha512-0DkamqrPcmkBDsLn+vQDIrtkSbNkv5AD/M322ySo9kqFkCIYklym2xEmWkwo+Y3/qZo34tzEPNUw4y7yMCdv5w==}
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.2.14
@@ -7200,7 +7206,7 @@ packages:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
     dependencies:
-      is-core-module: 2.10.0
+      is-core-module: 2.11.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
@@ -7778,14 +7784,14 @@ packages:
     resolution: {integrity: sha512-erFCoS3v7beWuuJ9WdTeG+ZVL0SQrQ8gVxvx0zByYqhfXyPMYSCUNjA/RzYan0HGT/ejPayaCOH4zdXGN9A5IQ==}
     dependencies:
       require-esm-in-cjs: 0.1.0
-      tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
+      tailwindcss: 3.2.0_57znarxsqwmnneadci5z5fd5gu
     transitivePeerDependencies:
       - postcss
       - ts-node
     dev: true
 
-  /tailwindcss/3.1.8_57znarxsqwmnneadci5z5fd5gu:
-    resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
+  /tailwindcss/3.2.0_57znarxsqwmnneadci5z5fd5gu:
+    resolution: {integrity: sha512-ARh/W0uH5UlWIC2nn02V0+5fyF0k6qZliyt4QYic2upOhPUE/Spu1EURNc9txJ3+4j8OEmdigqfDpw4d2tA4vA==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     peerDependencies:
@@ -7808,7 +7814,7 @@ packages:
       postcss-import: 14.1.0_postcss@8.4.16
       postcss-js: 4.0.0_postcss@8.4.16
       postcss-load-config: 3.1.4_57znarxsqwmnneadci5z5fd5gu
-      postcss-nested: 5.0.6_postcss@8.4.16
+      postcss-nested: 6.0.0_postcss@8.4.16
       postcss-selector-parser: 6.0.10
       postcss-value-parser: 4.2.0
       quick-lru: 5.1.1
@@ -8380,12 +8386,12 @@ packages:
       graceful-fs: 4.2.10
     dev: true
 
-  /weapp-tailwindcss-children/0.1.0_tailwindcss@3.1.8:
+  /weapp-tailwindcss-children/0.1.0_tailwindcss@3.2.0:
     resolution: {integrity: sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==}
     peerDependencies:
       tailwindcss: ^3.0.0
     dependencies:
-      tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
+      tailwindcss: 3.2.0_57znarxsqwmnneadci5z5fd5gu
     dev: true
 
   /webpack-sources/1.4.3:
