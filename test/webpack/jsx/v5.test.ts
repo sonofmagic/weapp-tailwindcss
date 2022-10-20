@@ -3,6 +3,7 @@ import { BaseJsxWebpackPluginV5 } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath, rootPath } from '#test/util'
 import path from 'path'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 // import postcss from 'postcss'
 // import fs from 'fs/promises'
 const loaderPath = path.resolve(rootPath, 'dist/jsx-rename-loader.js')
@@ -40,6 +41,7 @@ describe('webpack5 jsx plugin', () => {
         filename: '[name].js',
         chunkFilename: '[id].[name].js'
       },
+      plugins: [new MiniCssExtractPlugin()],
       module: {
         rules: [
           {
@@ -61,9 +63,7 @@ describe('webpack5 jsx plugin', () => {
           {
             test: /\.css$/i,
             use: [
-              createLoader(function (source) {
-                return source
-              }),
+              MiniCssExtractPlugin.loader,
               'css-loader',
               {
                 loader: 'postcss-loader',
@@ -94,7 +94,7 @@ describe('webpack5 jsx plugin', () => {
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)
 
-    expect(assets['entry.js']).toMatchSnapshot('entry.js')
+    expect(assets).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
@@ -113,7 +113,7 @@ describe('webpack5 jsx plugin', () => {
 
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)
-    expect(assets['entry.js']).toMatchSnapshot('entry.js')
+    expect(assets).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })

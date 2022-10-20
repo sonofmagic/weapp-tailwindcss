@@ -3,6 +3,8 @@ import { BaseJsxWebpackPluginV4 } from '@/index'
 import { getCompiler4, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath, rootPath } from '#test/util'
 import path from 'path'
+// @ts-ignore
+// import MiniCssExtractPlugin from 'mini-css-extract-plugin1'
 // import postcss from 'postcss'
 // import fs from 'fs/promises'
 const loaderPath = path.resolve(rootPath, 'dist/jsx-rename-loader.js')
@@ -40,6 +42,7 @@ describe('webpack4 jsx plugin', () => {
         filename: '[name].js',
         chunkFilename: '[id].[name].js'
       },
+      // plugins: [new MiniCssExtractPlugin()],
       module: {
         rules: [
           {
@@ -61,6 +64,7 @@ describe('webpack4 jsx plugin', () => {
           {
             test: /\.css$/i,
             use: [
+              // MiniCssExtractPlugin.loader,
               createLoader(function (source) {
                 return source
               }),
