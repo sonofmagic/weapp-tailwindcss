@@ -66,9 +66,10 @@ describe('webpack4 jsx plugin', () => {
             use: [
               // MiniCssExtractPlugin.loader,
               createLoader(function (source) {
-                return source
+                this.emitFile('entry.css', source)
+                return 'module.exports = {}'
               }),
-              'css-loader3',
+              // 'css-loader3',
               {
                 loader: 'postcss-loader4',
                 options: {
@@ -98,7 +99,7 @@ describe('webpack4 jsx plugin', () => {
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)
 
-    expect(assets['entry.js']).toMatchSnapshot('entry.js')
+    expect(assets).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
@@ -117,7 +118,7 @@ describe('webpack4 jsx plugin', () => {
 
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)
-    expect(assets['entry.js']).toMatchSnapshot('entry.js')
+    expect(assets).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
