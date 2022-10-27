@@ -37,3 +37,35 @@ postcss.config.js 不能正常加载？
 `config.css.postcss#String`
 
 `debug` `uni-app-vite/src/plugin/index#uniAppPlugin`
+
+### vite 3
+
+uni-cli-shared/json/manifest.js 中的 parseRpx2UnitOnce
+
+通过 platform 获取转义配置项
+
+platform === 'h5' || platform === 'app' 为
+
+```js
+const defaultRpx2Unit = {
+    unit: 'rem',
+    unitRatio: 10 / 320,
+    unitPrecision: 5,
+};
+```
+
+其他为
+
+```js
+const defaultMiniProgramRpx2Unit = {
+    unit: 'rpx',
+    unitRatio: 1,
+    unitPrecision: 1,
+};
+```
+
+回到 uni-cli-shared/postcss
+
+顺着代码找到 `plugins/uniapp`
+
+walkDecls 可以看到 rpx 被转换成了 rem
