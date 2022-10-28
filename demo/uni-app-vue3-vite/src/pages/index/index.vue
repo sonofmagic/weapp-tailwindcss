@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <view class="border-b-[4rpx] border-t-[4px] border w-screen h-3 border-[red]"></view>
     <view class="[&_.u-count-down\_\_text]:!text-red-400">
       <view></view>
       <view></view>
