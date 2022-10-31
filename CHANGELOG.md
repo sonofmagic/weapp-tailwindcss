@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.5 (2022-10-31)
+
+### Chore
+
+- 去除 `vite` 插件使用 `windicss` 和 `unocss` 的命令行警告
+- 添加 `unocss` 的使用文档和案例
+
 ## 1.11.3 (2022-10-20)
 
 ### Features
