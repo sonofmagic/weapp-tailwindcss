@@ -22,12 +22,12 @@ const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 if (!WeappTailwindcssDisabled) {
   vitePlugins.push(
     vwt({
-      customReplaceDictionary: {
-        '[': '_',
-        ']': '_',
-        '(': '_',
-        ')': '-',
-      },
+      // customReplaceDictionary: {
+      //   '[': '_',
+      //   ']': '_',
+      //   '(': '_',
+      //   ')': '-',
+      // },
     })
   );
 
