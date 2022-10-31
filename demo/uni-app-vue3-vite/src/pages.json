@@ -18,6 +18,12 @@
       "style": {
         "navigationBarTitleText": "tailwind-children"
       }
+    },
+    {
+      "path": "pages/issue/case-dynamic-class",
+      "style": {
+        "navigationBarTitleText": "case-dynamic-class"
+      }
     }
   ],
   "globalStyle": {
@@ -32,6 +38,11 @@
       {
         "name": "case55",
         "path": "pages/issue/case55",
+        "query": ""
+      },
+      {
+        "name": "case-dynamic-class",
+        "path": "pages/issue/case-dynamic-class",
         "query": ""
       },
       {
