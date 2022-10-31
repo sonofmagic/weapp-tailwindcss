@@ -17,8 +17,11 @@ onHide(() => {
   console.log('App Hide')
 })
 </script>
+<!-- <style>
+@windicss;
+</style> -->
 <style lang="scss">
-@import 'tailwindcss/base';
-@import 'tailwindcss/utilities';
+// @import './tailwind.scss';
+// @import './windi.scss';
 @import "vk-uview-ui/index.scss";
 </style>

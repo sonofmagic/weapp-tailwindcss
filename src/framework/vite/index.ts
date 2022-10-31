@@ -3,11 +3,14 @@ import { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/defaults'
 import type { OutputAsset } from 'rollup'
 import { vitePluginName } from '@/constants'
-import type { Plugin as PostcssPlugin } from 'postcss'
+// import type { Plugin as PostcssPlugin } from 'postcss'
 import { getGroupedEntries } from '@/base/shared'
 
 // import ClassGenerator from '@/mangle/classGenerator'
 
+// function isRegisterPostcssPlugin(name: string) {
+//   return ['postcss-windicss', 'tailwindcss'].includes(name)
+// }
 // issue 一个节点静态，一个节点动态，动态节点中的静态属性不会被 mangle 导致存在问题
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
@@ -30,31 +33,31 @@ export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions =
     buildStart() {
       onStart()
     },
-    configResolved(config) {
-      const postcssConfig = config.css?.postcss as {
-        plugins: PostcssPlugin[]
-      }
-      const tailwindcssIdx = postcssConfig.plugins.findIndex((x) => x.postcssPlugin === 'tailwindcss')
-      if (tailwindcssIdx === -1) {
-        console.warn('请先安装 tailwindcss! `npm i -D tailwindcss / yarn add -D tailwindcss `')
-      }
-      // const postcssIdx = postcssConfig.plugins.findIndex((x) => x.postcssPlugin === postcssPlugin)
-      // if (postcssIdx === -1) {
-      //   postcssConfig.plugins.splice(
-      //     tailwindcssIdx + 1,
-      //     0,
-      //     WeappTailwindcssRenamePlugin({
-      //       cssMatcher,
-      //       cssPreflight,
-      //       mainCssChunkMatcher,
-      //       replaceUniversalSelectorWith,
-      //       cssPreflightRange,
-      //       customRuleCallback
-      //       // classGenerator
-      //     }) as PostcssPlugin
-      //   )
-      // }
-    },
+    // configResolved(config) {
+    //   // const postcssConfig = config.css?.postcss as {
+    //   //   plugins: PostcssPlugin[]
+    //   // }
+    //   // const tailwindcssIdx = postcssConfig.plugins.findIndex((x) => isRegisterPostcssPlugin(x.postcssPlugin))
+    //   // if (tailwindcssIdx === -1) {
+    //   //   console.warn('请先安装 tailwindcss! `npm i -D tailwindcss / yarn add -D tailwindcss `')
+    //   // }
+    //   // const postcssIdx = postcssConfig.plugins.findIndex((x) => x.postcssPlugin === postcssPlugin)
+    //   // if (postcssIdx === -1) {
+    //   //   postcssConfig.plugins.splice(
+    //   //     tailwindcssIdx + 1,
+    //   //     0,
+    //   //     WeappTailwindcssRenamePlugin({
+    //   //       cssMatcher,
+    //   //       cssPreflight,
+    //   //       mainCssChunkMatcher,
+    //   //       replaceUniversalSelectorWith,
+    //   //       cssPreflightRange,
+    //   //       customRuleCallback
+    //   //       // classGenerator
+    //   //     }) as PostcssPlugin
+    //   //   )
+    //   // }
+    // },
     // renderChunk (code, chunk, options) {
     //   return code
     // },

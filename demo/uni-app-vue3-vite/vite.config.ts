@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
+import Unocss from 'unocss/vite';
+
+// import WindiCSS from 'vite-plugin-windicss';
 let vwt;
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin');
@@ -14,11 +17,14 @@ if (process.env.LOCAL) {
 const isH5 = process.env.UNI_PLATFORM === 'h5';
 const isApp = process.env.UNI_PLATFORM === 'app';
 const WeappTailwindcssDisabled = isH5 || isApp;
-
 // vite 插件配置
-const vitePlugins = [uni()];
+const vitePlugins = [uni(), Unocss()];
 // postcss 插件配置
-const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
+// const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
+
+// const postcssPlugins = [require('postcss-windicss')()];
+
+const postcssPlugins = [];
 if (!WeappTailwindcssDisabled) {
   vitePlugins.push(
     vwt({
