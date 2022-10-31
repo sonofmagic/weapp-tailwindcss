@@ -19,19 +19,8 @@
     - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
     - [HBuilderX 创建的项目](#hbuilderx-创建的项目)
     - [uni-app 构建成 `android/ios` app](#uni-app-构建成-androidios-app)
+    - [unocss 集成](#unocss-集成)
   - [Options 配置项](#options-配置项)
-    - [htmlMatcher](#htmlmatcher)
-    - [cssMatcher](#cssmatcher)
-    - [jsMatcher](#jsmatcher)
-    - [mainCssChunkMatcher](#maincsschunkmatcher)
-    - [framework (`Taro` 特有)](#framework-taro-特有)
-    - [customRuleCallback](#customrulecallback)
-    - [disabled](#disabled)
-    - [cssPreflightRange](#csspreflightrange)
-    - [replaceUniversalSelectorWith](#replaceuniversalselectorwith)
-    - [customAttributes](#customattributes)
-    - [customReplaceDictionary](#customreplacedictionary)
-    - [cssPreflight](#csspreflight)
   - [使用 arbitrary values](#使用-arbitrary-values)
   - [关于rem转化rpx](#关于rem转化rpx)
   - [变更日志](#变更日志)
@@ -88,6 +77,12 @@
 
 [使用方式](./docs/uni-app-android-and-ios.md)
 
+### unocss 集成
+
+你可以不使用 `tailwindcss`，只需正常安装 `unocss` `@unocss/preset-wind` 和 `@unocss/transformer-directives` 即可
+
+按 `unocss` 文档方式注册后，安装使用此插件，即可正常使用。
+
 ## Options 配置项
 
 ### htmlMatcher
@@ -118,7 +113,7 @@
 ### customRuleCallback
 
 类型: `(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void`  
-描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法
+描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法 
 
 ### disabled
 
