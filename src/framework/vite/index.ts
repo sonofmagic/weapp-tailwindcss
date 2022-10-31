@@ -33,31 +33,31 @@ export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions =
     buildStart() {
       onStart()
     },
-    configResolved(config) {
-      // const postcssConfig = config.css?.postcss as {
-      //   plugins: PostcssPlugin[]
-      // }
-      // const tailwindcssIdx = postcssConfig.plugins.findIndex((x) => isRegisterPostcssPlugin(x.postcssPlugin))
-      // if (tailwindcssIdx === -1) {
-      //   console.warn('请先安装 tailwindcss! `npm i -D tailwindcss / yarn add -D tailwindcss `')
-      // }
-      // const postcssIdx = postcssConfig.plugins.findIndex((x) => x.postcssPlugin === postcssPlugin)
-      // if (postcssIdx === -1) {
-      //   postcssConfig.plugins.splice(
-      //     tailwindcssIdx + 1,
-      //     0,
-      //     WeappTailwindcssRenamePlugin({
-      //       cssMatcher,
-      //       cssPreflight,
-      //       mainCssChunkMatcher,
-      //       replaceUniversalSelectorWith,
-      //       cssPreflightRange,
-      //       customRuleCallback
-      //       // classGenerator
-      //     }) as PostcssPlugin
-      //   )
-      // }
-    },
+    // configResolved(config) {
+    //   // const postcssConfig = config.css?.postcss as {
+    //   //   plugins: PostcssPlugin[]
+    //   // }
+    //   // const tailwindcssIdx = postcssConfig.plugins.findIndex((x) => isRegisterPostcssPlugin(x.postcssPlugin))
+    //   // if (tailwindcssIdx === -1) {
+    //   //   console.warn('请先安装 tailwindcss! `npm i -D tailwindcss / yarn add -D tailwindcss `')
+    //   // }
+    //   // const postcssIdx = postcssConfig.plugins.findIndex((x) => x.postcssPlugin === postcssPlugin)
+    //   // if (postcssIdx === -1) {
+    //   //   postcssConfig.plugins.splice(
+    //   //     tailwindcssIdx + 1,
+    //   //     0,
+    //   //     WeappTailwindcssRenamePlugin({
+    //   //       cssMatcher,
+    //   //       cssPreflight,
+    //   //       mainCssChunkMatcher,
+    //   //       replaceUniversalSelectorWith,
+    //   //       cssPreflightRange,
+    //   //       customRuleCallback
+    //   //       // classGenerator
+    //   //     }) as PostcssPlugin
+    //   //   )
+    //   // }
+    // },
     // renderChunk (code, chunk, options) {
     //   return code
     // },
