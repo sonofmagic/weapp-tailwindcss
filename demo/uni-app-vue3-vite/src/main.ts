@@ -1,6 +1,6 @@
 // @ts-ignore
 import uView from 'vk-uview-ui';
-import 'uno.css';
+// import 'uno.css';
 // import 'virtual:windi.css';
 import { createSSRApp } from 'vue';
 import App from './App.vue';

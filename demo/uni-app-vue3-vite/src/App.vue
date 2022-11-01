@@ -21,7 +21,7 @@ onHide(() => {
 @windicss;
 </style> -->
 <style lang="scss">
-// @import './tailwind.scss';
+@import './tailwind.scss';
 // @import './windi.scss';
 @import "vk-uview-ui/index.scss";
 </style>

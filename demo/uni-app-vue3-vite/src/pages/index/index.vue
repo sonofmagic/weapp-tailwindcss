@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <view class="!text-primary !border-primary text-[32px]">1111</view>
     <view class="border-b-[4rpx] border-t-[4px] border w-screen h-3 border-[red]"></view>
     <view class="[&_.u-count-down\_\_text]:!text-red-400">
       <view></view>
@@ -82,11 +83,11 @@ const go2SubDemo = () => {
   });
 };
 const themeRef = ref(uni.getSystemInfoSync().theme);
-
+// #if mp-weixin
 uni.onThemeChange(({ theme }: { theme: 'dark' | 'light' }) => {
   themeRef.value = theme;
 });
-
+// #end if
 onBeforeUnmount(() => {
   uni.offThemeChange(() => { });
 });
