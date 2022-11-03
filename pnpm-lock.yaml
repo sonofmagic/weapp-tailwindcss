@@ -8,6 +8,7 @@ specifiers:
   '@babel/traverse': 7.19.3
   '@babel/types': ^7.17.0
   '@icebreakers/cli': ^0.0.9
+  '@icebreakers/eslint-config-ts': ^1.0.1
   '@icebreakers/readme': ^0.0.1
   '@rollup/plugin-alias': ^3.1.8
   '@rollup/plugin-commonjs': ^22.0.2
@@ -40,13 +41,6 @@ specifiers:
   defu: 6.1.0
   del: ^6.1.1
   eslint: 8.26.0
-  eslint-config-prettier: ^8.5.0
-  eslint-config-standard: ^17.0.0
-  eslint-plugin-import: 2.26.0
-  eslint-plugin-jest: ^27.1.3
-  eslint-plugin-n: ^15.3.0
-  eslint-plugin-prettier: ^4.2.1
-  eslint-plugin-promise: 6.1.1
   esm: ^3.2.25
   execa: '5'
   fast-glob: ^3.2.12
@@ -109,6 +103,7 @@ devDependencies:
   '@babel/preset-react': 7.18.6_@babel+core@7.19.3
   '@babel/types': 7.19.4
   '@icebreakers/cli': 0.0.9
+  '@icebreakers/eslint-config-ts': 1.0.1_2ehoju6skj43f7utp6ul2lb53a
   '@icebreakers/readme': 0.0.1
   '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
   '@rollup/plugin-commonjs': 22.0.2_rollup@2.79.1
@@ -141,13 +136,6 @@ devDependencies:
   defu: 6.1.0
   del: 6.1.1
   eslint: 8.26.0
-  eslint-config-prettier: 8.5.0_eslint@8.26.0
-  eslint-config-standard: 17.0.0_43wwz2xsig5yhgcv2rleettsby
-  eslint-plugin-import: 2.26.0_c2flhriocdzler6lrwbyxxyoca
-  eslint-plugin-jest: 27.1.3_6amp5fdmvwluzjywjm3ep2edui
-  eslint-plugin-n: 15.3.0_eslint@8.26.0
-  eslint-plugin-prettier: 4.2.1_aniwkeyvlpmwkidetuytnokvcm
-  eslint-plugin-promise: 6.1.1_eslint@8.26.0
   esm: 3.2.25
   execa: 5.1.1
   fast-glob: 3.2.12
@@ -774,6 +762,44 @@ packages:
 
   /@icebreakers/cli/0.0.9:
     resolution: {integrity: sha512-n6GUhA1w7M2roUzJshuktJ0ZyjdfK5EHfP3QxQrrozaJfq19gMOWuvDiAEQMTPTXeaY5nJNK4Nm9csRTsagTzA==}
+    dev: true
+
+  /@icebreakers/eslint-config-basic/1.0.1_sgnottnk3b2zzn4spuyxdqhspy:
+    resolution: {integrity: sha512-pDUV+94MKS4SELuusSyWhHoAncF/8BKxwTE6VzxRZI7IPV7mlCjINGBE9tZX8LvPsQ7GpoUL6fPzumboIAWR5A==}
+    dependencies:
+      eslint-config-prettier: 8.5.0_eslint@8.26.0
+      eslint-config-standard: 17.0.0_43wwz2xsig5yhgcv2rleettsby
+      eslint-plugin-import: 2.26.0_c2flhriocdzler6lrwbyxxyoca
+      eslint-plugin-jest: 27.1.3_6amp5fdmvwluzjywjm3ep2edui
+      eslint-plugin-n: 15.3.0_eslint@8.26.0
+      eslint-plugin-prettier: 4.2.1_aniwkeyvlpmwkidetuytnokvcm
+      eslint-plugin-promise: 6.1.1_eslint@8.26.0
+    transitivePeerDependencies:
+      - '@typescript-eslint/eslint-plugin'
+      - '@typescript-eslint/parser'
+      - eslint
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - jest
+      - prettier
+      - supports-color
+      - typescript
+    dev: true
+
+  /@icebreakers/eslint-config-ts/1.0.1_2ehoju6skj43f7utp6ul2lb53a:
+    resolution: {integrity: sha512-+bn4TLoyDAGtl5Mh8/As1dSqIg2Xg5EV1kySKLPTnimJf6jOEtTnBzr13mL/Ofse+hOhDF1oGUOA0Q/8TlJ+bg==}
+    dependencies:
+      '@icebreakers/eslint-config-basic': 1.0.1_sgnottnk3b2zzn4spuyxdqhspy
+      '@typescript-eslint/eslint-plugin': 5.41.0_huremdigmcnkianavgfk3x6iou
+      '@typescript-eslint/parser': 5.41.0_wyqvi574yv7oiwfeinomdzmc3m
+    transitivePeerDependencies:
+      - eslint
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - jest
+      - prettier
+      - supports-color
+      - typescript
     dev: true
 
   /@icebreakers/readme/0.0.1:
