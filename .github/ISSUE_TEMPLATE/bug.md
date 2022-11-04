@@ -1,6 +1,6 @@
 ---
 name: 汇报Bug并提供测试用例
-about: Create a report to help us improve
+about: 
 title: ''
 labels: bug
 assignees: sonofmagic
@@ -17,6 +17,7 @@ A clear and concise description of what the bug is.
 
 **如何重现**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -29,9 +30,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **运行环境**
- - OS: [e.g. iOS]
- - Nodejs: 16x
- - Framework: uni-app/taro/remax/rax
+
+- OS: [e.g. iOS]
+- Nodejs: 16x
+- Framework: uni-app/taro/remax/rax
 
 **Additional context**
 Add any other context about the problem here.
