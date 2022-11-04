@@ -1,6 +1,6 @@
 ---
 name: 汇报Bug并提供测试用例
-about: 
+about: 汇报Bug并提供测试用例
 title: ''
 labels: bug
 assignees: sonofmagic
