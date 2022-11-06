@@ -25,7 +25,8 @@ export function generateCode(match: string, options: ICommonReplaceOptions = {})
     compact: true,
     minified: true,
     jsescOption: {
-      quotes: 'single'
+      quotes: 'single',
+      minimal: true
     }
   })
 

@@ -108,4 +108,16 @@ describe('templeteHandler', () => {
     const str = templeteHandler(testCase)
     expect(str).toBe(testCase)
   })
+
+  it('utf8 test case 0', () => {
+    const testCase = `<view class="{{['td',[(g.type==='你好啊')?'highlight':'']]}}">{{g.type}}</view>`
+    const str = templeteHandler(testCase)
+    expect(str).toBe(`<view class="{{['td',[g.type==='你好啊'?'highlight':'']]}}">{{g.type}}</view>`)
+  })
+
+  it('utf8 test case 1', () => {
+    const testCase = `<view class="{{[[g['人生']==='你好啊'?'highlight':'']]}}">{{g.type}}</view>`
+    const str = templeteHandler(testCase)
+    expect(str).toBe(testCase)
+  })
 })
