@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-
+    <view :class="['td', { 'highlight': g.type === '你好' }]" v-for="g in goods">{{ g.type }}</view>
     <view class="text-[32rpx] border-[10rpx]">rpx</view>
     <view class="text-[32px] border-[10px]">px</view>
 
@@ -72,6 +72,18 @@ import { ref, onBeforeUnmount } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 const title = ref('测试标题');
 const flag = ref(true);
+const goods = ref([
+  {
+    type: '你好'
+  },
+  {
+    type: '1'
+  },
+  {
+    type: '2'
+  },
+
+])
 
 const cardsColor = ref([
   replaceJs('bg-[#4268EA] shadow-indigo-100'),
