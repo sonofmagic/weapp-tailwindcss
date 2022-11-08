@@ -1,4 +1,3 @@
 <view class="container">
-  <image class="avatar" src="{{avatarUrl}}" background-size="cover"></image>
-  <text class="nickname">{{nickName}}</text>
+  <text class="rounded-full bg-gray-700 w-24 h-24 text-white flex items-center justify-center">{{nickName}}</text>
 </view>
