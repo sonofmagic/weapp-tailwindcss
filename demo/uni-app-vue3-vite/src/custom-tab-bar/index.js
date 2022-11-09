@@ -4,7 +4,7 @@ const appInstance = getApp();
 Component({
   behaviors: [],
   data: {
-    selected: 0,
+    selected: appInstance.globalData.selected,
     color: '#7A7E83',
     selectedColor: '#3cc51f',
     list: appInstance.globalData.list,
@@ -22,6 +22,9 @@ Component({
           visible: v.tabbarVisible,
         });
       });
+      this.setData({
+        selected: getApp().globalData.selected,
+      });
     },
     created() {},
   },
@@ -32,24 +35,18 @@ Component({
   //   },
   // },
   methods: {
-    switchTab(e) {
+    async switchTab(e) {
       const data = e.currentTarget.dataset;
       const url = data.path;
-      wx.switchTab({ url });
+
+      await wx.switchTab({ url });
       // this.setData({
       //   selected: data.index,
       // });
-
-      // const tabBar = this.getTabBar();
-      // [this, tabBar].forEach((x) => {
-      //   x.setData({
-      //     selected: data.index,
-      //   });
-      // });
-      // appInstance.globalData.selected = data.index;
-      // tabBar.setData({
+      // this.getTabBar().setData({
       //   selected: data.index,
       // });
+      getApp().globalData.selected = data.index;
     },
   },
 });
