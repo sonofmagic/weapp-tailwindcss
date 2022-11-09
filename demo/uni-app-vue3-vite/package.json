@@ -51,6 +51,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3060820221027002",
     "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-3060820221027002",
     "eventemitter3": "^4.0.7",
+    "miniprogram-computed": "^4.4.0",
     "p-queue": "6.6.2",
     "vk-uview-ui": "^1.4.0",
     "vue": "^3.2.41",
