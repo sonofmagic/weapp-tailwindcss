@@ -3,8 +3,8 @@
     <view :class="['td', { 'highlight': g.type === '你好' }]" v-for="g in goods">{{ g.type }}</view>
     <view class="text-[32rpx] border-[10rpx]">rpx</view>
     <view class="text-[32px] border-[10px]">px</view>
-
-
+    <button @click="toggleBarVisible(true)">显示Tabbar</button>
+    <button @click="toggleBarVisible(false)">隐藏Tabbar</button>
     <view class="!text-primary !border-primary text-[32px]">1111</view>
     <view class="border-b-[4rpx] border-t-[4px] border w-screen h-3 border-[red]"></view>
     <view class="[&_.u-count-down\_\_text]:!text-red-400">
@@ -111,6 +111,12 @@ onBeforeUnmount(() => {
 onLoad(() => {
   console.log('on page loaded!')
 })
+
+function toggleBarVisible(visible:boolean){
+  const app = getApp()
+  app.globalData!.tabbarVisible = visible
+  console.log(app.globalData)
+}
 </script>
 
 <style lang="scss">

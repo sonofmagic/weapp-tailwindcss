@@ -8,8 +8,24 @@ Component({
     color: '#7A7E83',
     selectedColor: '#3cc51f',
     list: appInstance.globalData.list,
+    visible: appInstance.globalData.tabbarVisible,
   },
-  attached() {},
+  // observers: {
+  //   'globalData.**': function (val) {
+  //     console.log(val);
+  //   },
+  // },
+  lifetimes: {
+    attached() {
+      this.watcher = getApp().globalData.watch((v) => {
+        this.setData({
+          visible: v.tabbarVisible,
+        });
+      });
+    },
+    created() {},
+  },
+
   // computed: {
   //   list() {
   //     return appInstance.globalData.list;
@@ -20,9 +36,9 @@ Component({
       const data = e.currentTarget.dataset;
       const url = data.path;
       wx.switchTab({ url });
-      this.setData({
-        selected: data.index,
-      });
+      // this.setData({
+      //   selected: data.index,
+      // });
 
       // const tabBar = this.getTabBar();
       // [this, tabBar].forEach((x) => {

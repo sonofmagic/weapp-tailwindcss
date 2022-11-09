@@ -2,10 +2,10 @@
 import bus from './bus'
 import { defineComponent } from 'vue'
 import { onLaunch, onShow, onHide, } from '@dcloudio/uni-app'
-
-export default defineComponent({
-  globalData: {
+import { ProxyUtils } from './utils'
+const globalData = ProxyUtils({
     selected: 0,
+    tabbarVisible: false,
     list: [
       {
         pagePath: '/pages/index/index',
@@ -16,7 +16,9 @@ export default defineComponent({
         text: 'case55',
       },
     ],
-  },
+  })
+export default defineComponent({
+  globalData,
   setup() {
     onLaunch(() => {
       console.log('App Launch')
