@@ -72,5 +72,22 @@
     "custom": {
       "^u-(.*)": "vk-uview-ui/components/u-$1/u-$1.vue"
     }
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/issue/case55",
+        "text": "case55"
+      }
+    ]
   }
 }
