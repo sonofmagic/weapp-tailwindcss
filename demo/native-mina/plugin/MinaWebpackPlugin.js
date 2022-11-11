@@ -2,7 +2,7 @@ const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const path = require('path')
 const fs = require('fs')
 const replaceExt = require('replace-ext')
-
+// const { entries: aliasEntries } = require('../alias')
 const assetsChunkName = '__assets_chunk_name__'
 
 function _inflateEntries(entries = [], dirname, entry) {
@@ -38,6 +38,12 @@ function inflateEntries(entries, dirname, entry) {
   //WeUI组件路径包含weui-miniprogram，据此进行判断
   if (entry.includes('@vant/weapp')) return
 
+  // for (let i = 0; i < aliasEntries.length; i++) {
+  //   const alias = aliasEntries[i];
+  //   if (entry.startsWith(alias.find)) {
+  //     entry = entry.replace(alias.find, alias.replacement)
+  //   }
+  // }
   entry = path.resolve(dirname, entry)
   if (entry != null && !entries.includes(entry)) {
     entries.push(entry)

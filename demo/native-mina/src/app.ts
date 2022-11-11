@@ -14,6 +14,25 @@ import bus from './bus'
 //   .subscribe(x => console.log(x))
 // typeof Page
 
+
+
+const nativeNavigateTo = wx.navigateTo
+
+function checkToken() {
+  return Boolean(wx.getStorageSync('token'))
+}
+// readonly field hijack
+wx = {
+  ...wx,
+  navigateTo: function (options: Parameters<typeof wx.navigateTo>[0]) {
+    if (checkToken()) {
+      return nativeNavigateTo(options) as ReturnType<typeof wx.navigateTo>
+    } else {
+      throw new Error('auth error')
+    }
+  }
+}
+// common field hijack
 const nativePage = Page
 Page = function (options: Parameters<typeof Page>[0]) {
   if (options.onLoad && typeof options.onLoad === 'function') {
@@ -25,6 +44,8 @@ Page = function (options: Parameters<typeof Page>[0]) {
   }
   nativePage(options)
 }
+
+
 
 App({
   onLaunch: function () {

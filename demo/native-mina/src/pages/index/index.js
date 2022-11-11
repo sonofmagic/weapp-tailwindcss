@@ -20,6 +20,11 @@ Page({
       num: this.data.num + 1,
     })
   },
+  onNaDemo() {
+    wx.navigateTo({
+      url: "/pages/demo/index",
+    })
+  },
   //事件处理函数
   bindViewTap: function () {
     wx.navigateTo({
