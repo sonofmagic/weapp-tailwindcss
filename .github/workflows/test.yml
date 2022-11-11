@@ -12,12 +12,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: 'yarn'
+          cache: 'pnpm'
 
-      - run: yarn
-      - run: yarn build
-      - run: yarn test
+      - run: pnpm i
+      - run: pnpm build
+      - run: pnpm test
 
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         with:
           directory: coverage
