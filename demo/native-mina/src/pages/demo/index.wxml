@@ -1,0 +1,3 @@
+<view class="container">
+  <button bindtap="onTap">go2index</button>
+</view>
