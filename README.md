@@ -5,6 +5,7 @@
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
 ![dt](https://badgen.net/npm/dt/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
+[![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin/branch/master/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin)
 <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=bOJrjg5Z65fh841eVyf6rOLNWqvluQbk&jump_from=webapi"><img border="0" src="https://img.shields.io/badge/QQ-%E5%8A%A0%E5%85%A5QQ%E7%BE%A4-brightgreen" alt="weapp-tailwindcss-webpack-plug" title="weapp-tailwindcss-webpack-plug"></a>
 
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
@@ -21,6 +22,18 @@
     - [uni-app 构建成 `android/ios` app](#uni-app-构建成-androidios-app)
     - [unocss 集成](#unocss-集成)
   - [Options 配置项](#options-配置项)
+    - [htmlMatcher](#htmlmatcher)
+    - [cssMatcher](#cssmatcher)
+    - [jsMatcher](#jsmatcher)
+    - [mainCssChunkMatcher](#maincsschunkmatcher)
+    - [framework (`Taro` 特有)](#framework-taro-特有)
+    - [customRuleCallback](#customrulecallback)
+    - [disabled](#disabled)
+    - [cssPreflightRange](#csspreflightrange)
+    - [replaceUniversalSelectorWith](#replaceuniversalselectorwith)
+    - [customAttributes](#customattributes)
+    - [customReplaceDictionary](#customreplacedictionary)
+    - [cssPreflight](#csspreflight)
   - [使用 arbitrary values](#使用-arbitrary-values)
   - [关于rem转化rpx](#关于rem转化rpx)
   - [变更日志](#变更日志)
@@ -113,7 +126,7 @@
 ### customRuleCallback
 
 类型: `(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void`  
-描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法 
+描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法
 
 ### disabled
 
