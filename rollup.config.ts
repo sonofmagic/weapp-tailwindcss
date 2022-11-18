@@ -4,9 +4,11 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import { visualizer } from 'rollup-plugin-visualizer'
 // import { terser } from 'rollup-plugin-terser'
-import pkg from './package.json'
+import { createRequire } from 'node:module'
 import type { RollupOptions } from 'rollup'
 import { omit } from 'lodash'
+const require = createRequire(import.meta.url)
+const pkg = require('./package.json')
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
@@ -28,9 +30,9 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false }),
       isProd
         ? visualizer({
-          // emitFile: true,
-          filename: `stats/${entry.name}.html`
-        })
+            // emitFile: true,
+            filename: `stats/${entry.name}.html`
+          })
         : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
