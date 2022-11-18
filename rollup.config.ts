@@ -3,12 +3,16 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import { visualizer } from 'rollup-plugin-visualizer'
+import type { PackageJson } from 'pkg-types'
 // import { terser } from 'rollup-plugin-terser'
-import { createRequire } from 'node:module'
+import { readFileSync } from 'node:fs'
 import type { RollupOptions } from 'rollup'
 import { omit } from 'lodash'
-const require = createRequire(import.meta.url)
-const pkg = require('./package.json')
+const pkg = JSON.parse(
+  readFileSync('./package.json', {
+    encoding: 'utf8'
+  })
+) as PackageJson
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'

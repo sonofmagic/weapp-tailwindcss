@@ -54,6 +54,7 @@ specifiers:
   miniprogram-automator: ^0.11.0
   object-hash: ^3.0.0
   open-cli: ^7.1.0
+  pkg-types: ^1.0.1
   postcss: 8.4.19
   postcss-load-config: ^4.0.1
   postcss-loader: ^7.0.1
@@ -144,6 +145,7 @@ devDependencies:
   miniprogram-automator: 0.11.0
   object-hash: 3.0.0
   open-cli: 7.1.0
+  pkg-types: 1.0.1
   postcss-load-config: 4.0.1_v776zzvn44o7tpgzieipaairwm
   postcss-loader: 7.0.1_fzmr2tnwmxef4blqoxm3aqno34
   postcss-loader4: /postcss-loader/4.3.0_fzmr2tnwmxef4blqoxm3aqno34
@@ -5657,6 +5659,10 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  /jsonc-parser/3.2.0:
+    resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
+    dev: true
+
   /kind-of/3.2.2:
     resolution: {integrity: sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ==}
     engines: {node: '>=0.10.0'}
@@ -6147,6 +6153,15 @@ packages:
       minimist: 1.2.7
     dev: true
 
+  /mlly/1.0.0:
+    resolution: {integrity: sha512-QL108Hwt+u9bXdWgOI0dhzZfACovn5Aen4Xvc8Jasd9ouRH4NjnrXEiyP3nVvJo91zPlYjVRckta0Nt2zfoR6g==}
+    dependencies:
+      acorn: 8.8.1
+      pathe: 1.0.0
+      pkg-types: 1.0.1
+      ufo: 1.0.0
+    dev: true
+
   /move-concurrently/1.0.1:
     resolution: {integrity: sha512-hdrFxZOycD/g6A6SoI2bB5NA/5NEqD0569+S47WZhPvm46sD50ZHdYaFmnua5lndde9rCHGjmfK7Z8BuCt/PcQ==}
     dependencies:
@@ -6585,6 +6600,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /pathe/1.0.0:
+    resolution: {integrity: sha512-nPdMG0Pd09HuSsr7QOKUXO2Jr9eqaDiZvDwdyIhNG5SHYujkQHYKDfGQkulBxvbDHz8oHLsTgKN86LSwYzSHAg==}
+    dev: true
+
   /pbkdf2/3.1.2:
     resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
     engines: {node: '>=0.12'}
@@ -6650,6 +6669,14 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       find-up: 4.1.0
+    dev: true
+
+  /pkg-types/1.0.1:
+    resolution: {integrity: sha512-jHv9HB+Ho7dj6ItwppRDDl0iZRYBD0jsakHXtFgoLr+cHSF6xC+QL54sJmWxyGxOLYSHm0afhXhXcQDQqH9z8g==}
+    dependencies:
+      jsonc-parser: 3.2.0
+      mlly: 1.0.0
+      pathe: 1.0.0
     dev: true
 
   /plur/4.0.0:
@@ -8280,6 +8307,10 @@ packages:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: true
+
+  /ufo/1.0.0:
+    resolution: {integrity: sha512-DRty0ZBNlJ2R59y4mEupJRKLbkLQsc4qtxjpQv78AwEDuBkaUogMc2LkeqW3HddFlw6NwnXYfdThEZOiNgkmmQ==}
     dev: true
 
   /unbox-primitive/1.0.2:

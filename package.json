@@ -48,7 +48,8 @@
     "sync": "open-cli https://npmmirror.com/sync/weapp-tailwindcss-webpack-plugin",
     "generate:readme": "ts-node scripts/readme/write.ts",
     "format": "yarn prettier --check \"src/**/*.{ts,js}\" -w",
-    "format:test": "yarn prettier --check \"test/**/*.test.{ts,js}\" -w"
+    "format:test": "yarn prettier --check \"test/**/*.test.{ts,js}\" -w",
+    "ls:pack": "npm pack --dry-run"
   },
   "repository": {
     "type": "git",
@@ -142,6 +143,7 @@
     "miniprogram-automator": "^0.11.0",
     "object-hash": "^3.0.0",
     "open-cli": "^7.1.0",
+    "pkg-types": "^1.0.1",
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.0.1",
     "postcss-loader4": "npm:postcss-loader@^4.3.0",
