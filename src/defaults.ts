@@ -67,11 +67,15 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   },
   customAttributes: {},
   customReplaceDictionary: MappingChars2String,
-  jsxRenameLoaderPath: ''
+  jsxRenameLoaderPath: '',
+  supportCustomLengthUnitsPatch: {
+    paths: [process.cwd()],
+    units: ['rpx']
+  }
   // templeteHandler,
   // styleHandler,
   // jsxHandler
-} as const
+}
 
 function createGlobMatcher(pattern: string | string[]) {
   return function (file: string) {

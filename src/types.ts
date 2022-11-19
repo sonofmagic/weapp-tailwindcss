@@ -92,6 +92,11 @@ export interface IManglePluginOptions extends IMangleOptions {
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
+export interface ILengthUnitsPatchOptions {
+  units: string[]
+  paths: string[]
+}
+
 export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
@@ -185,6 +190,12 @@ export interface UserDefinedOptions {
    * @description 自定义 jsxRenameLoader 的路径
    */
   jsxRenameLoaderPath?: string
+
+  /**
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
+   * @description tailwindcss 3.2 对长度单位添加了校验，不打patch，rpx 这个单位会被识别成颜色
+   */
+  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions
 }
 
 export interface ICommonReplaceOptions {
