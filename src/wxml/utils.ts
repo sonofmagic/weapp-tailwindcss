@@ -20,7 +20,7 @@ export function generateCode(match: string, options: ICommonReplaceOptions = {})
     },
     noScope: true
   })
-
+  // @ts-ignore
   const { code } = generate(ast, {
     compact: true,
     minified: true,

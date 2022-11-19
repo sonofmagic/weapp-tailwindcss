@@ -22,10 +22,12 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath } = this.options
+    const { jsMatcher, mainCssChunkMatcher, framework, disabled, onLoad, onUpdate, onEnd, onStart, loaderOptions, styleHandler, jsxHandler, jsxRenameLoaderPath, patch } =
+      this.options
     if (disabled) {
       return
     }
+    patch?.()
     // if (mangle) {
     //   this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
     // }

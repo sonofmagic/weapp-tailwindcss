@@ -7,6 +7,7 @@ import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { makeCustomAttributes } from '@/reg'
 import { MappingChars2String } from '@/dic'
+import { createPatch } from '@/tailwindcss/patcher'
 // import { mangleClassRegex } from '@/mangle/expose'
 
 export const defaultOptions: Required<UserDefinedOptions> = {
@@ -119,7 +120,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
   const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
-  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework, supportCustomLengthUnitsPatch } =
+    result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   let customAttributesEntities
   if (isMap(options.customAttributes)) {
@@ -147,5 +149,6 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     escapeEntries,
     framework
   })
+  result.patch = createPatch(supportCustomLengthUnitsPatch)
   return result
 }

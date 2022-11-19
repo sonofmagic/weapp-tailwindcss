@@ -228,13 +228,15 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
 
 export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, GlobOrFunctionMatchers> & {
+  Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch'> & {
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
   } & {
+    supportCustomLengthUnitsPatch: false | ILengthUnitsPatchOptions
     templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
     jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
     escapeEntries: [string, string][]
+    patch: () => void
   }
 >
 

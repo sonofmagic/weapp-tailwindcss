@@ -5,7 +5,8 @@ import { parse, traverse, generate } from '@/babel'
 import type { ArrayExpression, StringLiteral } from '@babel/types'
 import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions } from '@/types'
 import { PackageJson } from 'pkg-types'
-export function patch(options: ILengthUnitsPatchOptions) {
+import { noop } from '@/utils'
+export function internalPatch(options: ILengthUnitsPatchOptions) {
   const { units, paths, dangerousOptions } = options
   const DOptions = dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   let pkgJsonPath: string | undefined
@@ -34,6 +35,7 @@ export function patch(options: ILengthUnitsPatchOptions) {
     const ast = parse(dataTypesFileContent)
 
     let arrayRef: ArrayExpression | undefined
+    let fileNeedToRegen = false
     traverse(ast, {
       Identifier(path) {
         if (path.node.name === DOptions.variableName) {
@@ -48,6 +50,7 @@ export function patch(options: ILengthUnitsPatchOptions) {
                     type: 'StringLiteral',
                     value: unit
                   })
+                  fileNeedToRegen = true
                 }
               }
             }
@@ -55,7 +58,7 @@ export function patch(options: ILengthUnitsPatchOptions) {
         }
       }
     })
-    if (arrayRef) {
+    if (arrayRef && fileNeedToRegen) {
       // @ts-ignore
       const { code } = generate(arrayRef)
       if (arrayRef.start && arrayRef.end) {
@@ -66,6 +69,19 @@ export function patch(options: ILengthUnitsPatchOptions) {
           encoding: 'utf-8'
         })
       }
+    }
+  }
+}
+
+export function createPatch(options: false | ILengthUnitsPatchOptions) {
+  if (options === false) {
+    return noop
+  }
+  return () => {
+    try {
+      return internalPatch(options)
+    } catch (error) {
+      console.warn(`patch tailwindcss failed:` + (<Error>error).message)
     }
   }
 }

@@ -18,11 +18,11 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, templeteHandler, styleHandler } = this.options
+    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, templeteHandler, styleHandler, patch } = this.options
     if (disabled) {
       return
     }
-
+    patch?.()
     // if (mangle) {
     //   this.classGenerator = new ClassGenerator(mangle as IMangleOptions)
     // }
