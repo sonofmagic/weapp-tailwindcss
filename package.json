@@ -118,6 +118,7 @@
     "@types/micromatch": "^4.0.2",
     "@types/node": "^18.11.9",
     "@types/object-hash": "^2.2.1",
+    "@types/semver": "^7.3.13",
     "@types/webpack": "^5.28.0",
     "@types/webpack-sources": "^3.2.0",
     "@types/webpack4": "npm:@types/webpack@4",
@@ -181,6 +182,7 @@
     "micromatch": "^4.0.5",
     "postcss": "8.4.19",
     "postcss-selector-parser": "^6.0.10",
+    "semver": "^7.3.8",
     "webpack-sources": "^3.2.3"
   }
 }

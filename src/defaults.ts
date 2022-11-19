@@ -69,8 +69,13 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   customReplaceDictionary: MappingChars2String,
   jsxRenameLoaderPath: '',
   supportCustomLengthUnitsPatch: {
-    paths: [process.cwd()],
-    units: ['rpx']
+    units: ['rpx'],
+    dangerousOptions: {
+      gteVersion: '3.2.0',
+      lengthUnitsFilePath: 'lib/util/dataTypes.js',
+      packageName: 'tailwindcss',
+      variableName: 'lengthUnits'
+    }
   }
   // templeteHandler,
   // styleHandler,
@@ -99,6 +104,10 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     if (!Array.isArray(options.mangle)) {
       options.mangle.exclude = [/node[-_]modules/, /(wx|my|swan|tt|ks|jd)components/]
     }
+  }
+
+  if (options.supportCustomLengthUnitsPatch === true) {
+    options.supportCustomLengthUnitsPatch = undefined
   }
 
   if (options.framework && options.framework === 'vue') {

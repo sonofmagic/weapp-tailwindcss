@@ -7,9 +7,7 @@ import type { ArrayExpression, StringLiteral } from '@babel/types'
 // lengthUnits
 // 2526 2360
 function main() {
-  const mainEntry = require.resolve('tailwindcss', {
-    paths: [process.cwd()]
-  })
+  const mainEntry = require.resolve('tailwindcss')
   const libDir = path.dirname(mainEntry)
   const dataTypesFilePath = path.resolve(libDir, 'util/dataTypes.js')
   const dataTypesFileContent = fs.readFileSync(dataTypesFilePath, {

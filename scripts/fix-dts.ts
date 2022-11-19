@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-function createReplacer (searchValue: RegExp | string, replaceValue: string) {
+function createReplacer(searchValue: RegExp | string, replaceValue: string) {
   return (filePath: string) => {
     const content = fs.readFileSync(filePath, {
       encoding: 'utf8'

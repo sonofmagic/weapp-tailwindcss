@@ -1,4 +1,4 @@
-import { getOptions } from '@/defaults'
+import { getOptions, defaultOptions } from '@/defaults'
 describe('get options', () => {
   it('default options', () => {
     const options = getOptions()
@@ -56,6 +56,30 @@ describe('get options', () => {
       'border-style': 0,
       'border-width': '0',
       'box-sizing': 'content-box'
+    })
+  })
+
+  it('supportCustomLengthUnitsPatch boolean', () => {
+    const o0 = getOptions()
+    expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+    const o1 = getOptions({
+      supportCustomLengthUnitsPatch: true
+    })
+    expect(o1.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+    const o2 = getOptions({
+      supportCustomLengthUnitsPatch: false
+    })
+    expect(o2.supportCustomLengthUnitsPatch).toEqual(false)
+    const o0o = getOptions({
+      supportCustomLengthUnitsPatch: {
+        units: ['upx', 'xxem']
+      }
+    })
+    expect(typeof o0o.supportCustomLengthUnitsPatch === 'object').toBe(true)
+    expect(o0o.supportCustomLengthUnitsPatch).toEqual({
+      units: ['upx', 'xxem', 'rpx'],
+      // @ts-ignore
+      dangerousOptions: defaultOptions.supportCustomLengthUnitsPatch.dangerousOptions
     })
   })
 })

@@ -92,9 +92,17 @@ export interface IManglePluginOptions extends IMangleOptions {
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
+export interface ILengthUnitsPatchDangerousOptions {
+  packageName?: string
+  gteVersion?: string
+  lengthUnitsFilePath?: string
+  variableName?: string
+}
+
 export interface ILengthUnitsPatchOptions {
   units: string[]
-  paths: string[]
+  paths?: string[]
+  dangerousOptions?: ILengthUnitsPatchDangerousOptions
 }
 
 export interface UserDefinedOptions {
@@ -195,7 +203,7 @@ export interface UserDefinedOptions {
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
    * @description tailwindcss 3.2 对长度单位添加了校验，不打patch，rpx 这个单位会被识别成颜色
    */
-  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions
+  supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
 }
 
 export interface ICommonReplaceOptions {
