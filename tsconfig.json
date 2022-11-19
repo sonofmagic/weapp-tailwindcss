@@ -2,21 +2,57 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDirs": ["src", "test"],
+    "rootDirs": [
+      "src",
+      "test"
+    ],
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
     "moduleResolution": "Node",
+    "module": "ESNext",
     "paths": {
-      "@/*": ["src/*"],
-      "#test/*": ["test/*"],
-      "vite": ["node_modules/vite/dist/node/index"],
-      "postcss": ["node_modules/postcss/lib/postcss"]
+      "@/*": [
+        "src/*"
+      ],
+      "#test/*": [
+        "test/*"
+      ],
+      "vite": [
+        "node_modules/vite/dist/node/index"
+      ],
+      "postcss": [
+        "node_modules/postcss/lib/postcss"
+      ]
     },
-    "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }],
-    "types": ["webpack", "node", "jest"]
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ],
+    "types": [
+      "webpack",
+      "node",
+      "jest"
+    ]
   },
-  "exclude": ["dist", "node_modules", "test/types", "./*.d.ts", "demo/**/*"],
-  "include": ["src/**/*", "types/**/*", "test/**/*"]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test/types",
+    "./*.d.ts",
+    "demo/**/*"
+  ],
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "test/**/*"
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }

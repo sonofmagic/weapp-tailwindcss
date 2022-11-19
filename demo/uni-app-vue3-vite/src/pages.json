@@ -24,6 +24,12 @@
       "style": {
         "navigationBarTitleText": "case-dynamic-class"
       }
+    },
+    {
+      "path": "pages/issue/case-support-rpx",
+      "style": {
+        "navigationBarTitleText": "case-support-rpx"
+      }
     }
   ],
   "globalStyle": {
@@ -48,6 +54,11 @@
       {
         "name": "tailwind-children",
         "path": "pages/issue/tailwind-children",
+        "query": ""
+      },
+      {
+        "name": "case-support-rpx",
+        "path": "pages/issue/case-support-rpx",
         "query": ""
       },
       {

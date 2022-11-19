@@ -32,7 +32,12 @@ const tableData = [
   //   '`boolean` \\| `IMangleOptions`',
   //   '是否压缩混淆 `wxml` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [mangle.md](./docs/mangle.md)'
   // ],
-  ['`cssPreflight`', '`Record<string,string>`\\| `false`', '在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:']
+  ['`cssPreflight`', '`Record<string,string>`\\| `false`', '在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:'],
+  [
+    '`supportCustomLengthUnitsPatch`',
+    '`ILengthUnitsPatchOptions` \\| `boolean`',
+    '自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。'
+  ]
 ]
 
 renderer.write([

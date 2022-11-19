@@ -181,8 +181,21 @@ exports[`get options default options 1`] = `
   "onLoad": [Function],
   "onStart": [Function],
   "onUpdate": [Function],
+  "patch": [Function],
   "replaceUniversalSelectorWith": "view",
   "styleHandler": [Function],
+  "supportCustomLengthUnitsPatch": {
+    "dangerousOptions": {
+      "gteVersion": "3.2.0",
+      "lengthUnitsFilePath": "lib/util/dataTypes.js",
+      "overwrite": true,
+      "packageName": "tailwindcss",
+      "variableName": "lengthUnits",
+    },
+    "units": [
+      "rpx",
+    ],
+  },
   "templeteHandler": [Function],
 }
 `;
@@ -368,8 +381,21 @@ exports[`get options vue framework 1`] = `
   "onLoad": [Function],
   "onStart": [Function],
   "onUpdate": [Function],
+  "patch": [Function],
   "replaceUniversalSelectorWith": "view",
   "styleHandler": [Function],
+  "supportCustomLengthUnitsPatch": {
+    "dangerousOptions": {
+      "gteVersion": "3.2.0",
+      "lengthUnitsFilePath": "lib/util/dataTypes.js",
+      "overwrite": true,
+      "packageName": "tailwindcss",
+      "variableName": "lengthUnits",
+    },
+    "units": [
+      "rpx",
+    ],
+  },
   "templeteHandler": [Function],
 }
 `;

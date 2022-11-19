@@ -7,6 +7,7 @@ import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { makeCustomAttributes } from '@/reg'
 import { MappingChars2String } from '@/dic'
+import { createPatch } from '@/tailwindcss/patcher'
 // import { mangleClassRegex } from '@/mangle/expose'
 
 export const defaultOptions: Required<UserDefinedOptions> = {
@@ -67,11 +68,21 @@ export const defaultOptions: Required<UserDefinedOptions> = {
   },
   customAttributes: {},
   customReplaceDictionary: MappingChars2String,
-  jsxRenameLoaderPath: ''
+  jsxRenameLoaderPath: '',
+  supportCustomLengthUnitsPatch: {
+    units: ['rpx'],
+    dangerousOptions: {
+      gteVersion: '3.2.0',
+      lengthUnitsFilePath: 'lib/util/dataTypes.js',
+      packageName: 'tailwindcss',
+      variableName: 'lengthUnits',
+      overwrite: true
+    }
+  }
   // templeteHandler,
   // styleHandler,
   // jsxHandler
-} as const
+}
 
 function createGlobMatcher(pattern: string | string[]) {
   return function (file: string) {
@@ -97,6 +108,10 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     }
   }
 
+  if (options.supportCustomLengthUnitsPatch === true) {
+    options.supportCustomLengthUnitsPatch = undefined
+  }
+
   if (options.framework && options.framework === 'vue') {
     options.framework = 'vue2'
   }
@@ -106,7 +121,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
   const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
-  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework } = result
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework, supportCustomLengthUnitsPatch } =
+    result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   let customAttributesEntities
   if (isMap(options.customAttributes)) {
@@ -134,5 +150,6 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     escapeEntries,
     framework
   })
+  result.patch = createPatch(supportCustomLengthUnitsPatch)
   return result
 }

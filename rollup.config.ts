@@ -3,10 +3,16 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import { visualizer } from 'rollup-plugin-visualizer'
+import type { PackageJson } from 'pkg-types'
 // import { terser } from 'rollup-plugin-terser'
-import pkg from './package.json'
+import { readFileSync } from 'node:fs'
 import type { RollupOptions } from 'rollup'
 import { omit } from 'lodash'
+const pkg = JSON.parse(
+  readFileSync('./package.json', {
+    encoding: 'utf8'
+  })
+) as PackageJson
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
@@ -28,9 +34,9 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false }),
       isProd
         ? visualizer({
-          // emitFile: true,
-          filename: `stats/${entry.name}.html`
-        })
+            // emitFile: true,
+            filename: `stats/${entry.name}.html`
+          })
         : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']

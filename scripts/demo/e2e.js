@@ -12,7 +12,7 @@ const demoDir = [
   'taro-vue2-app'
 ]
 
-async function main () {
+async function main() {
   const cwd = process.cwd()
   const projectPaths = demoDir.map((x) => {
     return path.resolve(cwd, 'demo', x)

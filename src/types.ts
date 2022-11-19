@@ -92,6 +92,21 @@ export interface IManglePluginOptions extends IMangleOptions {
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
+export interface ILengthUnitsPatchDangerousOptions {
+  packageName?: string
+  gteVersion?: string
+  lengthUnitsFilePath?: string
+  variableName?: string
+  overwrite?: boolean
+  destPath?: string
+}
+
+export interface ILengthUnitsPatchOptions {
+  units: string[]
+  paths?: string[]
+  dangerousOptions?: ILengthUnitsPatchDangerousOptions
+}
+
 export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
@@ -185,6 +200,12 @@ export interface UserDefinedOptions {
    * @description 自定义 jsxRenameLoader 的路径
    */
   jsxRenameLoaderPath?: string
+
+  /**
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
+   * @description tailwindcss 3.2 对长度单位添加了校验，不打patch，rpx 这个单位会被识别成颜色
+   */
+  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
 }
 
 export interface ICommonReplaceOptions {
@@ -209,13 +230,15 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
 
 export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, GlobOrFunctionMatchers> & {
+  Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch'> & {
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
   } & {
+    supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
     jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
     escapeEntries: [string, string][]
+    patch: () => void
   }
 >
 

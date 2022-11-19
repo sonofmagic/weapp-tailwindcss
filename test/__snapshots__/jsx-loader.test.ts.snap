@@ -5,7 +5,6 @@ exports[`jsx-loader handler new react jsx normal case 0 1`] = `
   "code": "import { View } from '@tarojs/components';
 import { jsx as _jsx } from "react/jsx-runtime";
 import { jsxs as _jsxs } from "react/jsx-runtime";
-
 var Index = function Index() {
   return /*#__PURE__*/_jsxs(View, {
     className: "_bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400",
@@ -17,7 +16,6 @@ var Index = function Index() {
     })]
   });
 };
-
 export default Index;",
   "decodedMap": undefined,
   "map": null,
