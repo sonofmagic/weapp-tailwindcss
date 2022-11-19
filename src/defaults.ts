@@ -75,7 +75,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
       gteVersion: '3.2.0',
       lengthUnitsFilePath: 'lib/util/dataTypes.js',
       packageName: 'tailwindcss',
-      variableName: 'lengthUnits'
+      variableName: 'lengthUnits',
+      overwrite: true
     }
   }
   // templeteHandler,

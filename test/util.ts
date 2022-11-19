@@ -11,7 +11,7 @@ export const jsxCasePath = resolve(__dirname, 'fixtures/jsx')
 export const cssCasePath = resolve(__dirname, 'fixtures/css')
 export const wxmlCasePath = resolve(__dirname, 'fixtures/wxml')
 export const loaderCasePath = resolve(__dirname, 'fixtures/loader')
-
+export const tailwindcssCasePath = resolve(__dirname, 'fixtures/tailwindcss')
 export const webpack5CasePath = resolve(__dirname, 'fixtures/webpack/v5')
 
 export function readFile(filepath: string) {

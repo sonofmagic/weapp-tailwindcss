@@ -64,7 +64,8 @@ describe('postcss plugin', () => {
   })
 })
 
-describe('tailwindcss3.1.8 and tailwindcss3.2.1 get different result when use border arbitrary values', () => {
+// 1.20.0 patch 策略修复了这个问题
+describe.skip('tailwindcss3.1.8 and tailwindcss3.2.1 get different result when use border arbitrary values', () => {
   it('tailwindcss3.2.1 case', async () => {
     const processor = postcss([
       tailwindcss({

@@ -97,6 +97,8 @@ export interface ILengthUnitsPatchDangerousOptions {
   gteVersion?: string
   lengthUnitsFilePath?: string
   variableName?: string
+  overwrite?: boolean
+  destPath?: string
 }
 
 export interface ILengthUnitsPatchOptions {
@@ -203,7 +205,7 @@ export interface UserDefinedOptions {
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
    * @description tailwindcss 3.2 对长度单位添加了校验，不打patch，rpx 这个单位会被识别成颜色
    */
-  supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
+  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
 }
 
 export interface ICommonReplaceOptions {
@@ -231,7 +233,7 @@ export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch'> & {
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
   } & {
-    supportCustomLengthUnitsPatch: false | ILengthUnitsPatchOptions
+    supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
     jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
