@@ -22,18 +22,6 @@
     - [uni-app 构建成 `android/ios` app](#uni-app-构建成-androidios-app)
     - [unocss 集成](#unocss-集成)
   - [Options 配置项](#options-配置项)
-    - [htmlMatcher](#htmlmatcher)
-    - [cssMatcher](#cssmatcher)
-    - [jsMatcher](#jsmatcher)
-    - [mainCssChunkMatcher](#maincsschunkmatcher)
-    - [framework (`Taro` 特有)](#framework-taro-特有)
-    - [customRuleCallback](#customrulecallback)
-    - [disabled](#disabled)
-    - [cssPreflightRange](#csspreflightrange)
-    - [replaceUniversalSelectorWith](#replaceuniversalselectorwith)
-    - [customAttributes](#customattributes)
-    - [customReplaceDictionary](#customreplacedictionary)
-    - [cssPreflight](#csspreflight)
   - [使用 arbitrary values](#使用-arbitrary-values)
   - [关于rem转化rpx](#关于rem转化rpx)
   - [变更日志](#变更日志)
@@ -126,7 +114,7 @@
 ### customRuleCallback
 
 类型: `(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void`  
-描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法
+描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法 
 
 ### disabled
 
@@ -157,6 +145,11 @@
 
 类型: `Record<string,string>`\| `false`  
 描述: 在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:
+
+### supportCustomLengthUnitsPatch
+
+类型: `ILengthUnitsPatchOptions` \| `boolean`  
+描述: 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 
 ```js
 // default 默认:

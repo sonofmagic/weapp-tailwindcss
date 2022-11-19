@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.20.0 (2022-11-20)
+
+### Features
+
+添加 `supportCustomLengthUnitsPatch` 配置项，默认开启。
+
+自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。
+
+所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
+
+比较和处理的策略详见 [patcher.ts](./src/tailwindcss/patcher.ts)
+  
 ## 1.11.6 (2022-11-06)
 
 ### Fixed
