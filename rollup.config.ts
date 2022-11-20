@@ -7,7 +7,7 @@ import type { PackageJson } from 'pkg-types'
 // import { terser } from 'rollup-plugin-terser'
 import { readFileSync } from 'node:fs'
 import type { RollupOptions } from 'rollup'
-import { omit } from 'lodash'
+import { omit } from 'lodash-es'
 const pkg = JSON.parse(
   readFileSync('./package.json', {
     encoding: 'utf8'
