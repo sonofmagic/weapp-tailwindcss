@@ -19,8 +19,8 @@ const isDev = process.env.NODE_ENV === 'development'
 
 interface IEntry {
   name?: string
-  input?: string
-  output?: { file?: string; format?: string; sourcemap?: boolean; exports?: string }[]
+  input?: string | string[] | { [entryName: string]: string }
+  output?: { dir?: string; file?: string; format?: string; sourcemap?: boolean; exports?: string }[]
 }
 
 const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
@@ -49,18 +49,39 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
 
 const entries: IEntry[] = [
   {
-    name: 'index',
-    input: 'src/index.ts',
+    name: 'bundle',
+    input: {
+      index: 'src/index.ts',
+      'jsx-rename-loader': 'src/loader/jsx-rename-loader.ts',
+      vite: 'src/framework/vite/index.ts',
+      postcss: 'src/postcss/plugin.ts',
+      mangle: 'src/mangle/index.ts',
+      cli: 'src/cli.ts',
+      v4: 'src/v4.ts',
+      v5: 'src/v5.ts'
+    },
     output: [
       {
-        file: pkg.main,
+        dir: 'dist',
         format: 'cjs',
         sourcemap: isDev,
         exports: 'auto'
       }
-      // { format: 'esm', file: pkg.module, sourcemap: isDev }
     ]
   },
+  // {
+  //   name: 'index',
+  //   input: 'src/index.ts',
+  //   output: [
+  //     {
+  //       file: pkg.main,
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //     // { format: 'esm', file: pkg.module, sourcemap: isDev }
+  //   ]
+  // },
   {
     name: 'replace',
     input: 'src/replace.ts',
@@ -71,55 +92,67 @@ const entries: IEntry[] = [
         sourcemap: isDev
       }
     ]
-  },
-  {
-    name: 'jsx-rename-loader',
-    input: 'src/loader/jsx-rename-loader.ts',
-    output: [
-      {
-        file: 'dist/jsx-rename-loader.js',
-        format: 'cjs',
-        sourcemap: isDev,
-        exports: 'auto'
-      }
-    ]
-  },
-  {
-    name: 'vite',
-    input: 'src/framework/vite/index.ts',
-    output: [
-      {
-        file: 'dist/vite.js',
-        format: 'cjs',
-        sourcemap: isDev,
-        exports: 'auto'
-      }
-    ]
-  },
-  {
-    name: 'postcss',
-    input: 'src/postcss/plugin.ts',
-    output: [
-      {
-        file: 'dist/postcss.js',
-        format: 'cjs',
-        sourcemap: isDev,
-        exports: 'auto'
-      }
-    ]
-  },
-  {
-    name: 'mangle',
-    input: 'src/mangle/index.ts',
-    output: [
-      {
-        file: 'dist/mangle.js',
-        format: 'cjs',
-        sourcemap: isDev,
-        exports: 'auto'
-      }
-    ]
   }
+  // {
+  //   name: 'jsx-rename-loader',
+  //   input: 'src/loader/jsx-rename-loader.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/jsx-rename-loader.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // },
+  // {
+  //   name: 'vite',
+  //   input: 'src/framework/vite/index.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/vite.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // },
+  // {
+  //   name: 'postcss',
+  //   input: 'src/postcss/plugin.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/postcss.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // },
+  // {
+  //   name: 'mangle',
+  //   input: 'src/mangle/index.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/mangle.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // },
+  // {
+  //   name: 'cli',
+  //   input: 'src/cli.ts',
+  //   output: [
+  //     {
+  //       file: 'dist/cli.js',
+  //       format: 'cjs',
+  //       sourcemap: isDev,
+  //       exports: 'auto'
+  //     }
+  //   ]
+  // }
   // {
   //   input: 'src/v4.ts',
   //   output: [

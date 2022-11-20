@@ -23,6 +23,16 @@ describe('tailwindcss source code patch', () => {
     expect(changed).toBe(true)
   })
 
+  it('findAstNode case 1', async () => {
+    const options = getOptions()
+    // @ts-ignore
+    const content = await getCase('dataTypes.js')
+    // @ts-ignore
+    const { arrayRef, changed } = findAstNode(content, options.supportCustomLengthUnitsPatch)
+    expect(arrayRef).toBeTruthy()
+    expect(changed).toBe(false)
+  })
+
   it('internalPatch case 0', () => {
     const options = getOptions()
 
