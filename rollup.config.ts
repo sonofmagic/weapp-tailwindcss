@@ -7,7 +7,7 @@ import type { PackageJson } from 'pkg-types'
 // import { terser } from 'rollup-plugin-terser'
 import { readFileSync } from 'node:fs'
 import type { RollupOptions } from 'rollup'
-import { omit } from 'lodash'
+import { omit } from 'lodash-es'
 const pkg = JSON.parse(
   readFileSync('./package.json', {
     encoding: 'utf8'
@@ -19,12 +19,14 @@ const isDev = process.env.NODE_ENV === 'development'
 
 interface IEntry {
   name?: string
-  input?: string | string[] | { [entryName: string]: string }
-  output?: { dir?: string; file?: string; format?: string; sourcemap?: boolean; exports?: string }[]
+  input?: RollupOptions['input']
+  output?: RollupOptions['output'][]
 }
 
 const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
   return {
+    makeAbsoluteExternalsRelative: true,
+    preserveEntrySignatures: 'strict',
     plugins: [
       json(),
       nodeResolve({
@@ -65,7 +67,13 @@ const entries: IEntry[] = [
         dir: 'dist',
         format: 'cjs',
         sourcemap: isDev,
-        exports: 'auto'
+        exports: 'auto',
+        esModule: true,
+        generatedCode: {
+          reservedNamesAsProps: false
+        },
+        interop: 'compat',
+        systemNullSetters: false
       }
     ]
   },
@@ -89,7 +97,13 @@ const entries: IEntry[] = [
       {
         file: 'dist/replace.js',
         format: 'esm',
-        sourcemap: isDev
+        sourcemap: isDev,
+        esModule: true,
+        generatedCode: {
+          reservedNamesAsProps: false
+        },
+        interop: 'compat',
+        systemNullSetters: false
       }
     ]
   }
