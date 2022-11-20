@@ -50,13 +50,16 @@
     "format": "yarn prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "yarn prettier --check \"test/**/*.test.{ts,js}\" -w",
     "ls:pack": "npm pack --dry-run",
-    "tw:patch": "ts-node scripts/patcher.ts"
+    "tw:patch": "ts-node scripts/patcher.ts",
+    "cli:patch": "node bin/weapp-tailwindcss.js patch",
+    "postinstall": "node bin/weapp-tailwindcss.js patch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin.git"
   },
   "files": [
+    "bin",
     "types",
     "dist",
     "postcss.*",
@@ -64,6 +67,11 @@
     "vite.*",
     "mangle.*"
   ],
+  "bin": {
+    "weapp-tailwindcss": "bin/weapp-tailwindcss",
+    "weapp-tw": "bin/weapp-tailwindcss",
+    "wtw": "bin/weapp-tailwindcss"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"

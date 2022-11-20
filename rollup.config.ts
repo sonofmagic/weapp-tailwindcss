@@ -119,6 +119,18 @@ const entries: IEntry[] = [
         exports: 'auto'
       }
     ]
+  },
+  {
+    name: 'cli',
+    input: 'src/cli.ts',
+    output: [
+      {
+        file: 'dist/cli.js',
+        format: 'cjs',
+        sourcemap: isDev,
+        exports: 'auto'
+      }
+    ]
   }
   // {
   //   input: 'src/v4.ts',
