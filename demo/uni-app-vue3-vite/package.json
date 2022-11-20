@@ -80,7 +80,7 @@
     "vite-plugin-windicss": "^1.8.8",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.12.2",
+    "weapp-tailwindcss-webpack-plugin": "^1.12.3-beta.1",
     "windicss": "^3.5.6"
   }
 }
