@@ -7,12 +7,12 @@ if (process.env.LOCAL) {
   const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
   UniAppWeappTailwindcssWebpackPluginV5 = plugin
 }
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { WeappTailwindcssDisabled } = require('./platform')
-const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
-const smp = new SpeedMeasurePlugin({
-  // outputTarget: './smp.dat',
-})
+// const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+// const smp = new SpeedMeasurePlugin({
+//   // outputTarget: './smp.dat',
+// })
 // const { UniAppWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
@@ -25,8 +25,8 @@ const config = {
         disabled: WeappTailwindcssDisabled
       })
     )
-    config.plugins.push(new MiniCssExtractPlugin())
-    smp.wrap(config)
+    // config.plugins.push(new MiniCssExtractPlugin())
+    // smp.wrap(config)
   }
 }
 
