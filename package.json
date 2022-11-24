@@ -120,7 +120,7 @@
     "@types/esm": "^3.2.0",
     "@types/jest": "^29.2.3",
     "@types/loader-utils": "^2.0.3",
-    "@types/lodash": "^4.14.189",
+    "@types/lodash": "^4.14.190",
     "@types/lodash-es": "^4.17.6",
     "@types/memory-fs": "^0.3.3",
     "@types/micromatch": "^4.0.2",
@@ -190,7 +190,7 @@
     "loader-utils": "^2.0.2",
     "micromatch": "^4.0.5",
     "postcss": "8.4.19",
-    "postcss-selector-parser": "^6.0.10",
+    "postcss-selector-parser": "^6.0.11",
     "semver": "^7.3.8",
     "webpack-sources": "^3.2.3"
   }

@@ -21,7 +21,7 @@ specifiers:
   '@types/esm': ^3.2.0
   '@types/jest': ^29.2.3
   '@types/loader-utils': ^2.0.3
-  '@types/lodash': ^4.14.189
+  '@types/lodash': ^4.14.190
   '@types/lodash-es': ^4.17.6
   '@types/memory-fs': ^0.3.3
   '@types/micromatch': ^4.0.2
@@ -63,7 +63,7 @@ specifiers:
   postcss-loader: ^7.0.1
   postcss-loader4: npm:postcss-loader@^4.3.0
   postcss-rem-to-responsive-pixel: ^5.1.3
-  postcss-selector-parser: ^6.0.10
+  postcss-selector-parser: ^6.0.11
   prettier: ^2.7.1
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -97,7 +97,7 @@ dependencies:
   loader-utils: 2.0.2
   micromatch: 4.0.5
   postcss: 8.4.19
-  postcss-selector-parser: 6.0.10
+  postcss-selector-parser: 6.0.11
   semver: 7.3.8
   webpack-sources: 3.2.3
 
@@ -119,7 +119,7 @@ devDependencies:
   '@types/esm': 3.2.0
   '@types/jest': 29.2.3
   '@types/loader-utils': 2.0.3
-  '@types/lodash': 4.14.189
+  '@types/lodash': 4.14.190
   '@types/lodash-es': 4.17.6
   '@types/memory-fs': 0.3.3
   '@types/micromatch': 4.0.2
@@ -1555,11 +1555,11 @@ packages:
   /@types/lodash-es/4.17.6:
     resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
     dependencies:
-      '@types/lodash': 4.14.189
+      '@types/lodash': 4.14.190
     dev: true
 
-  /@types/lodash/4.14.189:
-    resolution: {integrity: sha512-kb9/98N6X8gyME9Cf7YaqIMvYGnBSWqEci6tiettE6iJWH1XdJz/PO8LB0GtLCG7x8dU3KWhZT+lA1a35127tA==}
+  /@types/lodash/4.14.190:
+    resolution: {integrity: sha512-5iJ3FBJBvQHQ8sFhEhJfjUP+G+LalhavTkYyrAYqz5MEJG+erSv0k9KJLb6q7++17Lafk1scaTIFXcMJlwK8Mw==}
     dev: true
 
   /@types/memory-fs/0.3.3:
@@ -1639,7 +1639,7 @@ packages:
       '@types/tapable': 1.0.8
       '@types/uglify-js': 3.17.1
       '@types/webpack-sources': 3.2.0
-      anymatch: 3.1.2
+      anymatch: 3.1.3
       source-map: 0.6.1
     dev: true
 
@@ -1650,7 +1650,7 @@ packages:
       '@types/tapable': 1.0.8
       '@types/uglify-js': 3.17.1
       '@types/webpack-sources': 3.2.0
-      anymatch: 3.1.2
+      anymatch: 3.1.3
       source-map: 0.6.1
     dev: true
 
@@ -2209,8 +2209,8 @@ packages:
     dev: true
     optional: true
 
-  /anymatch/3.1.2:
-    resolution: {integrity: sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==}
+  /anymatch/3.1.3:
+    resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
     dependencies:
       normalize-path: 3.0.0
@@ -2788,7 +2788,7 @@ packages:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
     engines: {node: '>= 8.10.0'}
     dependencies:
-      anymatch: 3.1.2
+      anymatch: 3.1.3
       braces: 3.0.2
       glob-parent: 5.1.2
       is-binary-path: 2.1.0
@@ -5315,7 +5315,7 @@ packages:
       '@jest/types': 29.3.1
       '@types/graceful-fs': 4.1.5
       '@types/node': 18.11.9
-      anymatch: 3.1.2
+      anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.10
       jest-regex-util: 29.2.0
@@ -6823,7 +6823,7 @@ packages:
     dependencies:
       icss-utils: 4.1.1
       postcss: 7.0.39
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
       postcss-value-parser: 4.2.0
     dev: true
 
@@ -6835,7 +6835,7 @@ packages:
     dependencies:
       icss-utils: 5.1.0_postcss@8.4.19
       postcss: 8.4.19
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
       postcss-value-parser: 4.2.0
     dev: true
 
@@ -6844,7 +6844,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       postcss: 7.0.39
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
     dev: true
 
   /postcss-modules-scope/3.0.0_postcss@8.4.19:
@@ -6854,7 +6854,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       postcss: 8.4.19
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
     dev: true
 
   /postcss-modules-values/3.0.0:
@@ -6881,7 +6881,7 @@ packages:
       postcss: ^8.2.14
     dependencies:
       postcss: 8.4.19
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
     dev: true
 
   /postcss-nested/6.0.0_postcss@8.4.19:
@@ -6891,15 +6891,15 @@ packages:
       postcss: ^8.2.14
     dependencies:
       postcss: 8.4.19
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
     dev: true
 
   /postcss-rem-to-responsive-pixel/5.1.3:
     resolution: {integrity: sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==}
     dev: true
 
-  /postcss-selector-parser/6.0.10:
-    resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
+  /postcss-selector-parser/6.0.11:
+    resolution: {integrity: sha512-zbARubNdogI9j7WY4nQJBiNqQf3sLS3wCP4WfOidu+p28LofJqDH1tcXypGrcmMHhDk2t9wGhCsYe/+szLTy1g==}
     engines: {node: '>=4'}
     dependencies:
       cssesc: 3.0.0
@@ -7911,7 +7911,7 @@ packages:
       postcss-js: 4.0.0_postcss@8.4.19
       postcss-load-config: 3.1.4_v776zzvn44o7tpgzieipaairwm
       postcss-nested: 5.0.6_postcss@8.4.19
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
       postcss-value-parser: 4.2.0
       quick-lru: 5.1.1
       resolve: 1.22.1
@@ -7945,7 +7945,7 @@ packages:
       postcss-js: 4.0.0_postcss@8.4.19
       postcss-load-config: 3.1.4_v776zzvn44o7tpgzieipaairwm
       postcss-nested: 6.0.0_postcss@8.4.19
-      postcss-selector-parser: 6.0.10
+      postcss-selector-parser: 6.0.11
       postcss-value-parser: 4.2.0
       quick-lru: 5.1.1
       resolve: 1.22.1
