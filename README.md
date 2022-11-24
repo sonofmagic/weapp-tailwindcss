@@ -34,7 +34,7 @@
       - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
     - [tailwindcss plugin](#tailwindcss-plugin)
     - [tailwindcss preset](#tailwindcss-preset)
-  - [Bugs & Issues](#bugs--issues)
+  - [Bugs \& Issues](#bugs--issues)
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
 
@@ -42,7 +42,7 @@
 
 此方案可兼容 `tailwindcss v2/v3`，`webpack v4/v5`，`postcss v7/v8`。
 
-> 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`
+> 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`，相关进度见 [uni-app/issues/3723](https://github.com/dcloudio/uni-app/issues/3723)
 
 ## Usage
 
