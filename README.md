@@ -48,7 +48,7 @@
 
 ### uni-app (vue2/3)
 
-[使用方式](./docs/uni-app.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app)
+[使用方式](./docs/uni-app.md) | [@vue/cli4 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app) | [@vue/cli5 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-webpack5)
 
 ### uni-app for vite (vue3)
 
