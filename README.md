@@ -3,8 +3,9 @@
 # weapp-tailwindcss-webpack-plugin
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
-![dt](https://badgen.net/npm/dt/weapp-tailwindcss-webpack-plugin)
+![dm](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
+[![test](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin)
 <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=bOJrjg5Z65fh841eVyf6rOLNWqvluQbk&jump_from=webapi"><img border="0" src="https://img.shields.io/badge/QQ-%E5%8A%A0%E5%85%A5QQ%E7%BE%A4-brightgreen" alt="weapp-tailwindcss-webpack-plug" title="weapp-tailwindcss-webpack-plug"></a>
 
@@ -34,7 +35,7 @@
       - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
     - [tailwindcss plugin](#tailwindcss-plugin)
     - [tailwindcss preset](#tailwindcss-preset)
-  - [Bugs & Issues](#bugs--issues)
+  - [Bugs \& Issues](#bugs--issues)
 
 笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
 
@@ -42,13 +43,13 @@
 
 此方案可兼容 `tailwindcss v2/v3`，`webpack v4/v5`，`postcss v7/v8`。
 
-> 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`
+> 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`，相关进度见 [uni-app/issues/3723](https://github.com/dcloudio/uni-app/issues/3723)
 
 ## Usage
 
 ### uni-app (vue2/3)
 
-[使用方式](./docs/uni-app.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app)
+[使用方式](./docs/uni-app.md) | [@vue/cli4 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app) | [@vue/cli5 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-webpack5)
 
 ### uni-app for vite (vue3)
 

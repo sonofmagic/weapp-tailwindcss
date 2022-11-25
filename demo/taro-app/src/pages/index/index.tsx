@@ -13,9 +13,9 @@ const Index = () => {
       <View className="after:border-none after:content-['Hello_World'] a">after:border-none</View>
       <View className='after:content-["*"] after:ml-0.5 after:text-red-500 b'>yellow</View>
       <View className='after:content-[*] after:ml-0.5 after:text-red-500 aspect-w-16'>
-        <View>aspect</View>
-        <View>w</View>
-        <View>16</View>
+        <View class='!text-[#555]'>aspect</View>
+        <View class='bg-[#faf]'>w</View>
+        <View class='bg-[#123]'>16</View>
       </View>
       <View className='bg-gray-100 dark:bg-zinc-800 h-10 w-10' hoverClass='bg-red-500 dark:bg-green-500'></View>
       <EndClassCom></EndClassCom>

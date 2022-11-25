@@ -1,6 +1,17 @@
 # Changelog
 
-## 1.20.(0-3) (2022-11-20)
+## 1.12.4 (2022-11-25)
+
+### Features
+
+- 额外导出 `UniAppWeappTailwindcssWebpackPluginV5` 用于 `uni-app` 的 `vue/cli 5` 版本
+
+### Chore
+
+- 添加 `uni-app-webpack5` Demo 用于 `vue/cli 5` 版本
+- uni-app Readme 完善
+
+## 1.12.(0-3) (2022-11-20)
 
 ### Features
 

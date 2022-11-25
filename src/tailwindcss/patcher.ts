@@ -6,6 +6,7 @@ import type { ArrayExpression, StringLiteral } from '@babel/types'
 import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions } from '@/types'
 import { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
+import { pluginName } from '@/constants'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
@@ -102,4 +103,16 @@ export function createPatch(options: false | ILengthUnitsPatchOptions) {
       console.warn(`patch tailwindcss failed:` + (<Error>error).message)
     }
   }
+}
+
+export function mkCacheDirectory(cwd = process.cwd()) {
+  const cacheDirectory = path.resolve(cwd, 'node_modules', '.cache', pluginName)
+
+  const exists = fs.existsSync(cacheDirectory)
+  if (!exists) {
+    fs.mkdirSync(cacheDirectory, {
+      recursive: true
+    })
+  }
+  return cacheDirectory
 }

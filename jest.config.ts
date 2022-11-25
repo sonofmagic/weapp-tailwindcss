@@ -12,7 +12,7 @@ const config: JestConfigWithTsJest = {
     '^#test/(.*)$': '<rootDir>/test/$1'
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo', '/test/rollup.test.ts']
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo']
 }
 
 export default config

@@ -1,1 +1,1 @@
-<view class="inner"> {{innerText}} </view>
+<view class="inner w-[20rpx]" > {{innerText}} </view>

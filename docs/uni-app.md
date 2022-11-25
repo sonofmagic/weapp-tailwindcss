@@ -1,6 +1,8 @@
 由于 `uni-app` 内置的 `webpack` 版本为 `4` , `postcss` 版本为 `7`, 所以还是只能使用 `@tailwindcss/postcss7-compat` 版本。
 
-## 1. 于是我们开始安装:
+> `vue/cli 5`目前已在 `2.x alpha` 版本支持，具体见 [uni-app/issues/3723](https://github.com/dcloudio/uni-app/issues/3723)，如果你使用 `vue/cli 5` 这个版本的 `uni-app`，你就能享受到 `webpack5` 和 `postcss8` 这2个带来的好处，这意味着你可以直接使用最新版本的 `tailwindcss` ，无需使用 `postcss7-compat` 兼容版本。
+
+## 1. 于是我们开始安装
 
 ```bash
 yarn add -D weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel tailwindcss@npm:@tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9
@@ -17,7 +19,7 @@ require('postcss-rem-to-responsive-pixel')
 require('postcss-rem-to-responsive-pixel/postcss7')
 ```
 
-## 2. 然后添加 `tailwind.config.js`:
+## 2. 然后添加 `tailwind.config.js`
 
 ```js
 // 基础配置，无需任何preset
@@ -87,7 +89,7 @@ TAILWIND_MODE=watch
 
 这是为了兼容 postcss7 的 HMR 方案，如果你是用的是 postcss8 就不需要了。
 
-## 5. 在 `src/App.vue` 中添加:
+## 5. 在 `src/App.vue` 中添加
 
 ```vue
 <script lang="ts">
