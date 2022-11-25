@@ -2,7 +2,7 @@ import postcss, { Processor } from 'postcss'
 import path from 'path'
 import fs from 'fs'
 import tailwindcss from 'tailwindcss'
-import tailwindcss318 from 'tailwindcss318'
+// import tailwindcss318 from 'tailwindcss318'
 describe('postcss plugin', () => {
   let baseProcessor: Processor
   let baseCss: string
