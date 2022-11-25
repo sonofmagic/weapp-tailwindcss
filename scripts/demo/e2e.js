@@ -3,6 +3,7 @@ const path = require('path')
 const demoDir = [
   'uni-app/dist/build/mp-weixin',
   'uni-app-vue3-vite/dist/build/mp-weixin',
+  'uni-app-webpack5/dist/build/mp-weixin',
   'taro-app',
   'mpx-app/dist/wx',
   'native-mina',
