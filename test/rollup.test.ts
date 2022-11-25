@@ -1,8 +1,14 @@
 import configs from '../rollup.config'
 import { rollup } from 'rollup'
-import { omit } from 'lodash'
+import { excludeKeys } from '../filter-obj'
+import type { OutputChunk, OutputAsset } from 'rollup'
+function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]]) {
+  return outputs.map((x) => {
+    return excludeKeys(x, ['modules', 'facadeModuleId', 'moduleIds'])
+  })
+}
 // import type { RollupBuild } from 'rollup'
-describe.skip('rollup build', () => {
+describe('rollup build', () => {
   it('lib build', async () => {
     // const result:RollupBuild[] = []
     for (let i = 0; i < configs.length; i++) {
@@ -16,19 +22,11 @@ describe.skip('rollup build', () => {
       if (Array.isArray(config.output)) {
         for (let j = 0; j < config.output.length; j++) {
           const { output } = await bundle.generate(config.output[j])
-          expect(
-            output.map((x) => {
-              return omit(x, ['modules', 'facadeModuleId'])
-            })
-          ).toMatchSnapshot()
+          expect(normalizeOutput(output)).toMatchSnapshot()
         }
       } else if (config.output) {
         const { output } = await bundle.generate(config.output)
-        expect(
-          output.map((x) => {
-            return omit(x, ['modules', 'facadeModuleId'])
-          })
-        ).toMatchSnapshot()
+        expect(normalizeOutput(output)).toMatchSnapshot()
       }
     }
   })
