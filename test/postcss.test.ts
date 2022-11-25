@@ -64,41 +64,41 @@ describe('postcss plugin', () => {
   })
 })
 
-// 1.20.0 patch 策略修复了这个问题
-describe.skip('tailwindcss3.1.8 and tailwindcss3.2.1 get different result when use border arbitrary values', () => {
-  it('tailwindcss3.2.1 case', async () => {
-    const processor = postcss([
-      tailwindcss({
-        content: [
-          {
-            raw: '<div class="border-t-[4rpx] border-b-[4px]"></div>'
-          }
-        ]
-      })
-    ])
-    const { css } = await processor.process('@tailwind utilities;', {
-      from: 'index.css',
-      to: 'index.css',
-      map: false
-    })
-    expect(css).toBe('.border-b-\\[4px\\] {\n    border-bottom-width: 4px\n}\n.border-t-\\[4rpx\\] {\n    border-top-color: 4rpx\n}')
-  })
+// 1.20.0 通过 patch 策略修复了这个问题
+// describe.skip('tailwindcss3.1.8 and tailwindcss3.2.1 get different result when use border arbitrary values', () => {
+//   it('tailwindcss3.2.1 case', async () => {
+//     const processor = postcss([
+//       tailwindcss({
+//         content: [
+//           {
+//             raw: '<div class="border-t-[4rpx] border-b-[4px]"></div>'
+//           }
+//         ]
+//       })
+//     ])
+//     const { css } = await processor.process('@tailwind utilities;', {
+//       from: 'index.css',
+//       to: 'index.css',
+//       map: false
+//     })
+//     expect(css).toBe('.border-b-\\[4px\\] {\n    border-bottom-width: 4px\n}\n.border-t-\\[4rpx\\] {\n    border-top-color: 4rpx\n}')
+//   })
 
-  it('tailwindcss3.1.8 case', async () => {
-    const processor = postcss([
-      tailwindcss318({
-        content: [
-          {
-            raw: '<div class="border-t-[4rpx] border-b-[4px]"></div>'
-          }
-        ]
-      })
-    ])
-    const { css } = await processor.process('@tailwind utilities;', {
-      from: 'index.css',
-      to: 'index.css',
-      map: false
-    })
-    expect(css).toBe('.border-t-\\[4rpx\\] {\n    border-top-width: 4rpx\n}\n.border-b-\\[4px\\] {\n    border-bottom-width: 4px\n}')
-  })
-})
+//   it('tailwindcss3.1.8 case', async () => {
+//     const processor = postcss([
+//       tailwindcss318({
+//         content: [
+//           {
+//             raw: '<div class="border-t-[4rpx] border-b-[4px]"></div>'
+//           }
+//         ]
+//       })
+//     ])
+//     const { css } = await processor.process('@tailwind utilities;', {
+//       from: 'index.css',
+//       to: 'index.css',
+//       map: false
+//     })
+//     expect(css).toBe('.border-t-\\[4rpx\\] {\n    border-top-width: 4rpx\n}\n.border-b-\\[4px\\] {\n    border-bottom-width: 4px\n}')
+//   })
+// })
