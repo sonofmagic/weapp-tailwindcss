@@ -1,16 +1,23 @@
 {
-  "name": "@icebreakers/weapp-tailwindcss-test-components",
+  "name": "weapp-tailwindcss-e2e-components",
   "version": "0.0.1",
-  "description": "",
+  "description": "weapp-tailwindcss-webpack-plugin e2e test components",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "ls:pack": "npm pack --dry-run"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "weapp",
+    "tailwindcss",
+    "e2e",
+    "components",
+    "test"
+  ],
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
   "files": [
     "tarojs",
-    "vue2",
-    "vue3"
+    "uni-app",
+    "index.js"
   ],
   "publishConfig": {
     "access": "public",
@@ -18,9 +25,19 @@
   },
   "license": "ISC",
   "optionalDependencies": {
-    "@tarojs/components": "^3.4.13",
-    "react": "^17.0.0",
+    "@tarojs/components": "^3.5.7",
+    "react": "^17.0.0 || ^18.0.0",
     "vue": "^2.0.0 || ^3.0.0",
-    "weapp-tailwindcss-webpack-plugin": "1.6.8"
-  }
+    "weapp-tailwindcss-webpack-plugin": "^1.12.4"
+  },
+  "peerDependencies": {
+    "miniprogram-automator": "latest"
+  },
+  "devDependencies": {
+    "miniprogram-automator": "latest"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme"
 }
