@@ -89,46 +89,6 @@
 
 {{options-table}}
 
-```js
-// default 默认:
-cssPreflight: {
-  'box-sizing': 'border-box',
-  'border-width': '0',
-  'border-style': 'solid',
-  'border-color': 'currentColor'
-}
-// result
-// box-sizing: border-box;
-// border-width: 0;
-// border-style: solid;
-// border-color: currentColor
-
-// case 禁用所有
-cssPreflight: false
-// result
-// none
-
-// case 禁用单个属性
-cssPreflight: {
-  'box-sizing': false
-}
-// border-width: 0;
-// border-style: solid;
-// border-color: currentColor
-
-// case 更改和添加单个属性
-cssPreflight: {
-  'box-sizing': 'content-box',
-  'background': 'black'
-}
-// result
-// box-sizing: content-box;
-// border-width: 0;
-// border-style: solid;
-// border-color: currentColor;
-// background: black
-```
-
 ## 使用 arbitrary values
 
 详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)

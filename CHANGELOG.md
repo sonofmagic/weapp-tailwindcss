@@ -25,7 +25,15 @@
 
 - 升级 `rollup` 主版本和相关包到 `3`, 优化 `rollup` 打包生成的 `chunk`
 - 添加 `cli`, 目前添加了 `patch` 指令，可手动给 `tailwindcss` 打上 `patch`。具体执行 `npx weapp-tailwindcss patch` or `npx weapp-tw patch`
-- 在安装这个包后，会自动检索 `tailwindcss` 运行时源码，打上支持 `rpx` 的 `patch`。
+- 在安装这个包后，会自动检索 `tailwindcss` 运行时源码，打上支持 `rpx` 的 `patch`。不过这种自动检索存在一定的缺陷，比如在第一次运行的时候会不生效，第二次运行的时候才生效了。这是因为 nodejs 运行时先加载好了 `tailwindcss` ，然后再来运行插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，ctrl+c 关闭之后，再次运行才生效。这种情况可以使用:
+
+```
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+```
+
+这样的 `npm hook` 来自动打 `patch`
 
 ## 1.11.6 (2022-11-06)
 

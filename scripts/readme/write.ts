@@ -32,11 +32,63 @@ const tableData = [
   //   '`boolean` \\| `IMangleOptions`',
   //   '是否压缩混淆 `wxml` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [mangle.md](./docs/mangle.md)'
   // ],
-  ['`cssPreflight`', '`Record<string,string>`\\| `false`', '在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:'],
+  [
+    '`cssPreflight`',
+    '`Record<string,string>`\\| `false`',
+    '在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:\n' +
+      `\`\`\`js
+// default 默认:
+cssPreflight: {
+  'box-sizing': 'border-box',
+  'border-width': '0',
+  'border-style': 'solid',
+  'border-color': 'currentColor'
+}
+// result
+// box-sizing: border-box;
+// border-width: 0;
+// border-style: solid;
+// border-color: currentColor
+
+// case 禁用所有
+cssPreflight: false
+// result
+// none
+
+// case 禁用单个属性
+cssPreflight: {
+  'box-sizing': false
+}
+// border-width: 0;
+// border-style: solid;
+// border-color: currentColor
+
+// case 更改和添加单个属性
+cssPreflight: {
+  'box-sizing': 'content-box',
+  'background': 'black'
+}
+// result
+// box-sizing: content-box;
+// border-width: 0;
+// border-style: solid;
+// border-color: currentColor;
+// background: black
+\`\`\`
+`
+  ],
   [
     '`supportCustomLengthUnitsPatch`',
     '`ILengthUnitsPatchOptions` \\| `boolean`',
-    '自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。'
+    '自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。' +
+      '\n> 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:\n' +
+      `\`\`\`json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+\`\`\`
+` +
+      '\n使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`'
   ]
 ]
 

@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "1.12.4",
+  "version": "1.12.5",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -39,7 +39,7 @@
     "demo:dev": "node scripts/demo/dev.js",
     "demo:build": "node scripts/demo/build.js",
     "demo:build:local": "node scripts/demo/build.js --local",
-    "demo:e2e": "node scripts/demo/e2e.js",
+    "demo:e2e": "ts-node scripts/demo/e2e.js",
     "demo:link": "node scripts/demo/link.js",
     "demo:install": "node scripts/demo/install.js",
     "demo:install:beta": "node scripts/demo/install.js --beta",
@@ -68,6 +68,7 @@
     "mangle.*"
   ],
   "bin": {
+    "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
     "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
     "weapp-tw": "bin/weapp-tailwindcss.js"
   },

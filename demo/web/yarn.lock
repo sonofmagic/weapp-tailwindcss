@@ -1867,6 +1867,14 @@ postcss-selector-parser@^6.0.10, postcss-selector-parser@^6.0.6:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
+postcss-selector-parser@^6.0.11:
+  version "6.0.11"
+  resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.11.tgz#2e41dc39b7ad74046e1615185185cd0b17d0c8dc"
+  integrity sha512-zbARubNdogI9j7WY4nQJBiNqQf3sLS3wCP4WfOidu+p28LofJqDH1tcXypGrcmMHhDk2t9wGhCsYe/+szLTy1g==
+  dependencies:
+    cssesc "^3.0.0"
+    util-deprecate "^1.0.2"
+
 postcss-value-parser@^4.0.0, postcss-value-parser@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
@@ -2311,10 +2319,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^1.12.3:
-  version "1.12.3"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.12.3.tgz#ec3d0ac3a9aad417aeda7f3a699f14cccdc8b06e"
-  integrity sha512-X+k78Xj9NqaqsPn0WBW/6gJkirMKpzl87VV6qoDjF3nT/93Vn3FMpELXtI5KFrFbTGAVEMuPXUGyTiteAc1BJw==
+weapp-tailwindcss-webpack-plugin@^1.12.4:
+  version "1.12.4"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.12.4.tgz#d3c2d66381a099bdb17cc4fb4e7646c2ef24b582"
+  integrity sha512-HaY4Foo45OVZlyV0omtv/Lce7mZnx7mufKGWxxxzWXA1WdkiV2fIqgO8Qg7OzLTVQtZd7C0McXE+yo5NHaL1/g==
   dependencies:
     "@babel/generator" "7.20.4"
     "@babel/parser" "7.20.3"
@@ -2322,7 +2330,7 @@ weapp-tailwindcss-webpack-plugin@^1.12.3:
     loader-utils "^2.0.2"
     micromatch "^4.0.5"
     postcss "8.4.19"
-    postcss-selector-parser "^6.0.10"
+    postcss-selector-parser "^6.0.11"
     semver "^7.3.8"
     webpack-sources "^3.2.3"
 
