@@ -45,19 +45,6 @@ const TestProjectsMap = {
   }
 }
 
-// const demoDir = [
-//   'uni-app/dist/build/mp-weixin',
-//   'uni-app-vue3-vite/dist/build/mp-weixin',
-//   'uni-app-webpack5/dist/build/mp-weixin',
-//   'taro-app',
-//   'mpx-app/dist/wx',
-//   'native-mina',
-//   'rax-app/build/wechat-miniprogram',
-//   'remax-app',
-//   'taro-vue3-app',
-//   'taro-vue2-app'
-// ]
-
 export async function runE2E() {
   const cwd = process.cwd()
   const TestProjectsEntries = Object.entries(TestProjectsMap)
@@ -68,24 +55,21 @@ export async function runE2E() {
     const projectPath = projectPaths[index]
     const projectName = TestProjectsEntries[index][0]
     const testMethod = TestProjectsEntries[index][1].testMethod
-    await automator
-      .launch({
-        // cliPath: 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
-        projectPath
-      })
-      .then(async (miniProgram) => {
-        const page = await miniProgram.reLaunch('/pages/index/index')
-        if (page) {
-          await testMethod()
-          console.log(projectName)
-          await page.waitFor(10_000)
+    const miniProgram = await automator.launch({
+      // cliPath: 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
+      projectPath
+    })
+    const page = await miniProgram.reLaunch('/pages/index/index')
+    if (page) {
+      await testMethod()
+      console.log(projectName)
+      await page.waitFor(10_000)
 
-          // const element = await page.$('.kind-list-item-hd')
-          // console.log(await element.attribute('class'))
-          // await element.tap()
-        }
+      // const element = await page.$('.kind-list-item-hd')
+      // console.log(await element.attribute('class'))
+      // await element.tap()
+    }
 
-        await miniProgram.close()
-      })
+    await miniProgram.close()
   }
 }
