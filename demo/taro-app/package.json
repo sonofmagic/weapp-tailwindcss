@@ -75,7 +75,7 @@
     "typescript": "~4.9.3",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.12.4",
+    "weapp-tailwindcss-webpack-plugin": "^1.12.5",
     "webpack": "^5.75.0"
   },
   "engines": {

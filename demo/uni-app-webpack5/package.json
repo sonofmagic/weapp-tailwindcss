@@ -116,7 +116,7 @@
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^1.0.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.12.4"
+    "weapp-tailwindcss-webpack-plugin": "^1.12.5"
   },
   "browserslist": [
     "Android >= 4.4",

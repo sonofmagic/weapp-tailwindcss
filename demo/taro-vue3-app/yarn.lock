@@ -14116,10 +14116,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^1.12.4:
-  version "1.12.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.12.4.tgz#d3c2d66381a099bdb17cc4fb4e7646c2ef24b582"
-  integrity sha512-HaY4Foo45OVZlyV0omtv/Lce7mZnx7mufKGWxxxzWXA1WdkiV2fIqgO8Qg7OzLTVQtZd7C0McXE+yo5NHaL1/g==
+weapp-tailwindcss-webpack-plugin@^1.12.5:
+  version "1.12.5"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-1.12.5.tgz#867af5e166923746b1b16dfda8953141d5a55dce"
+  integrity sha512-Kk7pad0azIO5+VOnNx2a/Kz59j4CLnyEEPTT2Qnvg1X+R9nmw4XpNa124b03bSmH43UsWSMvbTnUc9hVstvayA==
   dependencies:
     "@babel/generator" "7.20.4"
     "@babel/parser" "7.20.3"
