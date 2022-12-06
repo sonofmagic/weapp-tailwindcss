@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.6 (2022-12-06)
+
+### Features
+
+- 实现 `customAttributes` `*`全匹配的逻辑
+
 ## 1.12.4 (2022-11-25)
 
 ### Features
