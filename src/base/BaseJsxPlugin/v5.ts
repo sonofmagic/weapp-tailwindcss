@@ -17,7 +17,7 @@ export class BaseJsxWebpackPluginV5 implements IBaseWebpackPlugin {
   // classGenerator?: ClassGenerator
   static NS = NS
   constructor(options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
-    this.options = getOptions(options, ['jsx', 'style'])
+    this.options = getOptions(options, ['jsx', 'style', 'patch'])
     this.appType = appType
   }
 

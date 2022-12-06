@@ -13,7 +13,7 @@ export class BaseTemplateWebpackPluginV5 implements IBaseWebpackPlugin {
   appType: AppType
   // classGenerator?: ClassGenerator
   constructor(options: UserDefinedOptions = {}, appType: AppType) {
-    this.options = getOptions(options, ['templete', 'style'])
+    this.options = getOptions(options, ['templete', 'style', 'patch'])
     this.appType = appType
   }
 

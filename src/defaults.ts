@@ -96,12 +96,10 @@ function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatche
   }
 }
 
-export function getOptions(options: UserDefinedOptions = {}, modules: ('jsx' | 'style' | 'templete')[] = ['jsx', 'style', 'templete']): InternalUserDefinedOptions {
-  const registerModules = modules.reduce<{
-    templete: boolean
-    jsx: boolean
-    style: boolean
-  }>(
+type IModules = readonly ('jsx' | 'style' | 'templete' | 'patch')[]
+
+export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['jsx', 'style', 'templete', 'patch']): InternalUserDefinedOptions {
+  const registerModules = modules.reduce<Record<IModules[number], boolean>>(
     (acc, cur) => {
       if (acc[cur] !== undefined) {
         acc[cur] = true
@@ -111,7 +109,8 @@ export function getOptions(options: UserDefinedOptions = {}, modules: ('jsx' | '
     {
       templete: false,
       jsx: false,
-      style: false
+      style: false,
+      patch: false
     }
   )
   if (options.mangle === true) {
@@ -174,7 +173,9 @@ export function getOptions(options: UserDefinedOptions = {}, modules: ('jsx' | '
       customAttributesEntities
     })
   }
+  if (registerModules.patch) {
+    result.patch = createPatch(supportCustomLengthUnitsPatch)
+  }
 
-  result.patch = createPatch(supportCustomLengthUnitsPatch)
   return result
 }
