@@ -4,11 +4,24 @@ import type { TraverseOptions, IJsxHandlerOptions } from '@/types'
 import type { Node, Identifier, StringLiteral, Expression, PrivateName } from '@babel/types'
 
 import { templeteHandler } from '@/wxml/utils'
-import { defu } from '@/utils'
-const StartMatchKeyMap: Record<'react' | 'vue2' | 'vue3' | string, string[]> = {
-  react: ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class'],
-  vue2: ['class', 'staticClass'], // 'hover-class' 在 'attrs' 里
-  vue3: ['class', 'hover-class']
+import { defu, regExpTest } from '@/utils'
+
+type StringOrRegExpArray = (string | RegExp)[]
+
+function createStartMatchKeyMap(matches?: StringOrRegExpArray): Record<'react' | 'vue2' | 'vue3' | string, (string | RegExp)[]> {
+  let react: StringOrRegExpArray = ['className', 'hoverClass', 'hoverClassName', 'class', 'hover-class']
+  let vue2: StringOrRegExpArray = ['class', 'staticClass'] // 'hover-class' 在 'attrs' 里
+  let vue3: StringOrRegExpArray = ['class', 'hover-class']
+  if (matches) {
+    react = react.concat(matches)
+    vue2 = vue2.concat(matches)
+    vue3 = vue3.concat(matches)
+  }
+  return {
+    react,
+    vue2,
+    vue3
+  }
 }
 
 export function getKey(node: Identifier | StringLiteral | Expression | PrivateName): string {
@@ -31,10 +44,12 @@ export function jsxHandler(
     framework: 'react'
   }
 ) {
-  const { framework, escapeEntries } = opt
+  const { framework, escapeEntries, allMatchedAttributes } = opt
   const ast = parse(rawSource, {
     sourceType: 'unambiguous'
   }) as Node
+
+  const StartMatchKeyMap = createStartMatchKeyMap(allMatchedAttributes)
   const matchKeys = StartMatchKeyMap[framework as string] ?? StartMatchKeyMap.react
   const isVue2 = framework === 'vue2'
   const isVue3 = framework === 'vue3'
@@ -46,7 +61,7 @@ export function jsxHandler(
       enter(path) {
         if (isObjectKey(path.node.key.type)) {
           const keyStr = getKey(path.node.key)
-          if (matchKeys.includes(keyStr)) {
+          if (regExpTest(matchKeys, keyStr)) {
             startFlag = true
           }
           if (isVue2 && keyStr === 'attrs' && path.node.value.type === 'ObjectExpression') {
@@ -66,7 +81,7 @@ export function jsxHandler(
         }
       },
       exit(path) {
-        if (['Identifier', 'StringLiteral'].includes(path.node.key.type) && matchKeys.includes(getKey(path.node.key))) {
+        if (['Identifier', 'StringLiteral'].includes(path.node.key.type) && regExpTest(matchKeys, getKey(path.node.key))) {
           startFlag = false
         }
       }
@@ -102,6 +117,17 @@ export function jsxHandler(
 }
 
 export function createJsxHandler(options: IJsxHandlerOptions) {
+  if (options.customAttributesEntities) {
+    const entry = options.customAttributesEntities.find((x) => x[0] === '*')
+    if (entry) {
+      const t = entry[1]
+      if (Array.isArray(t)) {
+        options.allMatchedAttributes = t
+      } else {
+        options.allMatchedAttributes = [t]
+      }
+    }
+  }
   return (rawSource: string, opt?: IJsxHandlerOptions) => {
     return jsxHandler(rawSource, defu(opt, options))
   }
