@@ -40,7 +40,16 @@ export type IStyleHandlerOptions = {
   classGenerator?: ClassGenerator
 } & RequiredStyleHandlerOptions
 
-export type IJsxHandlerOptions = { escapeEntries?: [string, string][]; framework?: string }
+export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
+
+export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
+
+export type IJsxHandlerOptions = {
+  escapeEntries?: [string, string][]
+  framework?: string
+  customAttributesEntities?: ICustomAttributesEntities
+  allMatchedAttributes?: (string | RegExp)[] // ICustomAttributesEntities[1][1]
+}
 export interface RawSource {
   start: number
   end: number
@@ -89,8 +98,6 @@ export interface IManglePluginOptions extends IMangleOptions {
   classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
   log?: boolean
 }
-
-export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
 export interface ILengthUnitsPatchDangerousOptions {
   packageName?: string
@@ -222,8 +229,10 @@ export type ICustomRegexp = {
   attrs: ItemOrItemArray<string | RegExp>
 }
 export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
-  custom?: boolean
-  regexps?: ICustomRegexp[]
+  customAttributesEntities?: ICustomAttributesEntities
+  // allMatchedAttributes?: (string | RegExp)[]
+  // custom?: boolean
+  // regexps?: ICustomRegexp[]
   escapeEntries?: [string, string][]
 }
 

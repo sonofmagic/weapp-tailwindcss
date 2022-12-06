@@ -1,6 +1,7 @@
 <template>
   <view class="content">
-    <view :class="['td', { 'highlight': g.type === '你好' }]" v-for="g in goods">{{ g.type }}</view>
+    <view class="rotate-[10deg]">rotate1111111</view>
+    <view :key="g.type" :class="['td', { 'highlight': g.type === '你好' }]" v-for="g in goods">{{ g.type }}</view>
     <view class="text-[32rpx] border-[10rpx]">rpx</view>
     <view class="text-[32px] border-[10px]">px</view>
     <button @click="toggleBarVisible(true)">显示Tabbar</button>

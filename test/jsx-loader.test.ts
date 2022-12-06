@@ -2,9 +2,11 @@ import { jsxHandler } from '#test/archived/jsx/v1'
 import { jsxHandler as newJsxHandler } from '@/jsx/v2'
 import { loaderCasePath, createGetCase } from './util'
 import { createReplacer } from '#test/archived/jsx/replacer'
+import { getOptions } from '@/defaults'
 const getReactCase = createGetCase(loaderCasePath + '/taro-app')
 const getVue3Case = createGetCase(loaderCasePath + '/taro-vue3-app')
 const getVue2Case = createGetCase(loaderCasePath + '/taro-vue2-app')
+const getReactCustomAttrsCase = createGetCase(loaderCasePath + '/taro-custom-attrs')
 // const putCase = createPutCase(jsxCasePath)
 
 describe('jsx-loader handler', () => {
@@ -48,6 +50,20 @@ describe('jsx-loader handler', () => {
   it('new react jsx normal case 2', async () => {
     const code = await getReactCase('endClassCom.tsx.tmp')
     const result = newJsxHandler(code)
+    expect(result).toMatchSnapshot()
+  })
+
+  it('custom attrs emptyImageClass transform case 0', async () => {
+    const { jsxHandler } = getOptions(
+      {
+        customAttributes: {
+          '*': ['emptyImageClass']
+        }
+      },
+      ['jsx']
+    )
+    const code = await getReactCustomAttrsCase('index.tsx.tmp')
+    const result = jsxHandler(code)
     expect(result).toMatchSnapshot()
   })
 })

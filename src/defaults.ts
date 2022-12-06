@@ -1,11 +1,10 @@
 import { defu, noop, isMap } from '@/utils'
-import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ItemOrItemArray } from './types'
+import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
 import { isMatch } from 'micromatch'
 import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
 import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { makeCustomAttributes } from '@/reg'
 import { MappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
 // import { mangleClassRegex } from '@/mangle/expose'
@@ -96,7 +95,23 @@ function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatche
   }
 }
 
-export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
+type IModules = readonly ('jsx' | 'style' | 'templete' | 'patch')[]
+
+export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['jsx', 'style', 'templete', 'patch']): InternalUserDefinedOptions {
+  const registerModules = modules.reduce<Record<IModules[number], boolean>>(
+    (acc, cur) => {
+      if (acc[cur] !== undefined) {
+        acc[cur] = true
+      }
+      return acc
+    },
+    {
+      templete: false,
+      jsx: false,
+      style: false,
+      patch: false
+    }
+  )
   if (options.mangle === true) {
     // https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81
     options.mangle = {
@@ -124,32 +139,41 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework, supportCustomLengthUnitsPatch } =
     result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
-  let customAttributesEntities
+  let customAttributesEntities: ICustomAttributesEntities
   if (isMap(options.customAttributes)) {
     customAttributesEntities = Array.from((options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
   } else {
     customAttributesEntities = Object.entries(customAttributes)
   }
 
-  const custom = customAttributesEntities.length > 0
+  // const custom = customAttributesEntities.length > 0
   const escapeEntries = Object.entries(customReplaceDictionary)
   result.escapeEntries = escapeEntries
-  result.templeteHandler = createTempleteHandler({
-    custom,
-    regexps: makeCustomAttributes(customAttributesEntities),
-    escapeEntries
-  })
-  result.styleHandler = createStyleHandler({
-    cssInjectPreflight,
-    customRuleCallback,
-    cssPreflightRange,
-    replaceUniversalSelectorWith,
-    escapeEntries
-  })
-  result.jsxHandler = createJsxHandler({
-    escapeEntries,
-    framework
-  })
-  result.patch = createPatch(supportCustomLengthUnitsPatch)
+  if (registerModules.templete) {
+    result.templeteHandler = createTempleteHandler({
+      customAttributesEntities,
+      escapeEntries
+    })
+  }
+  if (registerModules.style) {
+    result.styleHandler = createStyleHandler({
+      cssInjectPreflight,
+      customRuleCallback,
+      cssPreflightRange,
+      replaceUniversalSelectorWith,
+      escapeEntries
+    })
+  }
+  if (registerModules.jsx) {
+    result.jsxHandler = createJsxHandler({
+      escapeEntries,
+      framework,
+      customAttributesEntities
+    })
+  }
+  if (registerModules.patch) {
+    result.patch = createPatch(supportCustomLengthUnitsPatch)
+  }
+
   return result
 }

@@ -148,7 +148,7 @@
 ### customAttributes
 
 类型: `Record<string, string | Regexp | (string | Regexp)[]>`  
-描述: 自定义`wxml`标签上的`attr`转化属性，默认转化所有的`class`和`hover-class`
+描述: 自定义`wxml`标签上的`attr`转化属性，默认转化所有的`class`和`hover-class`，key为匹配标签，value为属性字符串或者匹配正则数组，想要增加转化的属性，你可以添加 `*`: (string | Regexp)[] 这样的键值对，使其中属性的转化，在所有标签上生效，更复杂的情况，可以传一个Map实例
 
 ### customReplaceDictionary
 

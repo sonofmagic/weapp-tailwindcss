@@ -15,7 +15,7 @@ import { getGroupedEntries } from '@/base/shared'
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
 export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
-  const opts = getOptions(options)
+  const opts = getOptions(options, ['patch', 'style', 'templete'])
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch } = opts
   if (disabled) {
     return

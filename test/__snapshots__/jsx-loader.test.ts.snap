@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`jsx-loader handler custom attrs emptyImageClass transform case 0 1`] = `
+{
+  "code": "import { View } from "@tarojs/components";
+import "./index.scss";
+import { jsx as _jsx } from "react/jsx-runtime";
+import { Fragment as _Fragment } from "react/jsx-runtime";
+var Index = function Index() {
+  return /*#__PURE__*/_jsx(_Fragment, {
+    children: /*#__PURE__*/_jsx(View, {
+      emptyImageClass: "w-_bl_404px_br_ h-_bl_337px_br_ bg-_bl__h_fff_br_"
+    })
+  });
+};
+export default Index;",
+  "decodedMap": undefined,
+  "map": null,
+  "rawMappings": undefined,
+}
+`;
+
 exports[`jsx-loader handler new react jsx normal case 0 1`] = `
 {
   "code": "import { View } from '@tarojs/components';

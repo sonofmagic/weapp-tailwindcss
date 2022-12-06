@@ -25,7 +25,11 @@ const tableData = [
     '`string` \\| `false`',
     "把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错"
   ],
-  ['`customAttributes`', '`Record<string, string | Regexp | (string | Regexp)[]>`', '自定义`wxml`标签上的`attr`转化属性，默认转化所有的`class`和`hover-class`'],
+  [
+    '`customAttributes`',
+    '`Record<string, string | Regexp | (string | Regexp)[]>`',
+    '自定义`wxml`标签上的`attr`转化属性，默认转化所有的`class`和`hover-class`，key为匹配标签，value为属性字符串或者匹配正则数组，想要增加转化的属性，你可以添加 `*`: (string | Regexp)[] 这样的键值对，使其中属性的转化，在所有标签上生效，更复杂的情况，可以传一个Map实例'
+  ],
   ['`customReplaceDictionary`', '`Record<string, string>`', '自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`'],
   // [
   //   '`mangle`(1.9.0+)',

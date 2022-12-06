@@ -1,9 +1,8 @@
 import { parseExpression, traverse, generate } from '@/babel'
 import { replaceWxml } from './shared'
-import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
+import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
 import { defu } from '@/utils'
 import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
-
 export function generateCode(match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match) as Node
 
@@ -124,10 +123,11 @@ export function templeteHandler(rawSource: string, options: ICommonReplaceOption
 
 export function customTempleteHandler(rawSource: string, options: ITempleteHandlerOptions = {}) {
   let source = templeteHandler(rawSource, options)
-  if (options.custom) {
-    if (Array.isArray(options.regexps)) {
-      for (let i = 0; i < options.regexps.length; i++) {
-        const regexp = options.regexps[i]
+  const regexps = makeCustomAttributes(options.customAttributesEntities)
+  if (regexps) {
+    if (Array.isArray(regexps)) {
+      for (let i = 0; i < regexps.length; i++) {
+        const regexp = regexps[i]
         source = source.replace(regexp.tagRegexp, (m0) => {
           return m0.replace(regexp.attrRegexp, (m1, className) => {
             return m1.replace(className, templeteReplacer(className, options))
@@ -143,6 +143,21 @@ export function customTempleteHandler(rawSource: string, options: ITempleteHandl
 }
 
 export function createTempleteHandler(options: ITempleteHandlerOptions = {}) {
+  // const customAttributesEntities = options.customAttributesEntities
+  // if (customAttributesEntities && Array.isArray(customAttributesEntities)) {
+  //   const idx = customAttributesEntities.findIndex((x) => x[0] === '*')
+  //   if (idx > -1) {
+  //     const target = customAttributesEntities[idx]
+  //     options.customAttributesEntities?.splice(idx, 1)
+  //     const t = target[1]
+  //     if (Array.isArray(t)) {
+  //       options.allMatchedAttributes = t
+  //     } else {
+  //       options.allMatchedAttributes = [t]
+  //     }
+  //   }
+  // }
+
   return (rawSource: string, opt: ITempleteHandlerOptions = {}) => {
     return customTempleteHandler(rawSource, defu(opt, options))
   }
