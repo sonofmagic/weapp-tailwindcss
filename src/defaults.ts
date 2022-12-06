@@ -5,7 +5,6 @@ import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
 import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { makeCustomAttributes } from '@/reg'
 import { MappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
 // import { mangleClassRegex } from '@/mangle/expose'
@@ -147,13 +146,12 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
     customAttributesEntities = Object.entries(customAttributes)
   }
 
-  const custom = customAttributesEntities.length > 0
+  // const custom = customAttributesEntities.length > 0
   const escapeEntries = Object.entries(customReplaceDictionary)
   result.escapeEntries = escapeEntries
   if (registerModules.templete) {
     result.templeteHandler = createTempleteHandler({
-      custom,
-      regexps: makeCustomAttributes(customAttributesEntities),
+      customAttributesEntities,
       escapeEntries
     })
   }

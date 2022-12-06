@@ -229,8 +229,10 @@ export type ICustomRegexp = {
   attrs: ItemOrItemArray<string | RegExp>
 }
 export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
-  custom?: boolean
-  regexps?: ICustomRegexp[]
+  customAttributesEntities?: ICustomAttributesEntities
+  // allMatchedAttributes?: (string | RegExp)[]
+  // custom?: boolean
+  // regexps?: ICustomRegexp[]
   escapeEntries?: [string, string][]
 }
 

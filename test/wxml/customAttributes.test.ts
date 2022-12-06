@@ -31,6 +31,16 @@ describe('customAttributes', () => {
     expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
   })
 
+  it('wild card case', () => {
+    const { templeteHandler } = getOptions({
+      customAttributes: {
+        '*': ['aa', 'bb']
+      }
+    })
+    const res = templeteHandler('<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" cc=="w-[0.5px]"></view>')
+    expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
+  })
+
   it('map case', () => {
     const map = new Map<string | RegExp, string | RegExp | (string | RegExp)[]>()
     map.set(/(?:van|el|ant)-(?:\w+)/g, ['custom-attrs', /shit/g])
