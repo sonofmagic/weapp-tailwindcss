@@ -53,7 +53,10 @@ const config = {
     },
     webpackChain(chain, webpack) {
       const opt = {
-        framework: 'react'
+        framework: 'react',
+        customAttributes: {
+          '*': ['emptyImageClass']
+        }
       }
       if (isWrite) {
         opt.loaderOptions = {

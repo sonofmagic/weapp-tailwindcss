@@ -107,7 +107,7 @@
     "@babel/core": "^7.20.5",
     "@babel/preset-react": "^7.18.6",
     "@babel/types": "^7.20.5",
-    "@icebreakers/cli": "^0.0.9",
+    "@icebreakers/cli": "0.1.0",
     "@icebreakers/eslint-config-ts": "^1.0.2",
     "@icebreakers/readme": "^0.0.1",
     "@rollup/plugin-alias": "^4.0.2",

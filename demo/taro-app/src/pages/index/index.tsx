@@ -20,7 +20,7 @@ const Index = () => {
         <View class='bg-[#123]'>16</View>
       </View>
       <View className='bg-gray-100 dark:bg-zinc-800 h-10 w-10' hoverClass='bg-red-500 dark:bg-green-500'></View>
-      <EndClassCom></EndClassCom>
+      <EndClassCom emptyImageClass='text-[#564564]'></EndClassCom>
       <View className={className}>className</View>
       <View className={flag ? 'p-[20px] -mt-2 mb-[-20px] ' : ''}>p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</View>
       <View className='space-y-[1.6rem] text-[16px] w-[200%]'>
