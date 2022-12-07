@@ -55,7 +55,8 @@ const config = {
       const opt = {
         framework: 'react',
         customAttributes: {
-          '*': ['emptyImageClass']
+          // '*': ['emptyImageClass','btnClassName'],
+          '*': [/Class/]
         }
       }
       if (isWrite) {
