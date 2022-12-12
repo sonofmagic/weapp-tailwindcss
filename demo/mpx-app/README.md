@@ -1,22 +1,15 @@
 # mpx-app
 
-> A mpx project
+## Project setup
 
-## Dev
+```javascript
+// development
+npm run serve // 小程序本地开发构建
 
-```bash
-# install dep
-npm i
+npm run serve:web // 小程序跨web
 
-# for dev
-npm run watch
+// production
+npm run build // 小程序生产环境构建
 
-# for online
-npm run build
+npm run build:web // 小程序跨web
 ```
-
-npm script规范 [build|watch]:[dev|prod]:[cross|web|none]
-
-build默认prod，watch默认dev。另单独提供了build:dev和watch:prod，用于单次构建分析看未压缩代码分析问题和持续压缩代码便于大体积项目真机调试。
-
-建议自行调整cross的目标。npm-run-all是为了兼容windows下无法同时执行两个npm script，若不需要转web平台，可考虑去掉。

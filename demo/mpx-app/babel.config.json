@@ -1,7 +1,7 @@
 {
   "presets": [
     [
-      "@babel/env",
+      "@babel/preset-env",
       {
         "modules": false,
         "shippedProposals": true
@@ -15,7 +15,8 @@
         "corejs": 3,
         "version": "^7.10.4"
       }
-    ]
+    ],
+    "@mpxjs/babel-plugin-inject-page-events"
   ],
   "sourceType": "unambiguous",
   "env": {

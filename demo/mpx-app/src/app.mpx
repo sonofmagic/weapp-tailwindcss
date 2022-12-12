@@ -1,19 +1,23 @@
-<script src="./app.ts"></script>
+<script lang="ts">
+import mpx, { createApp } from '@mpxjs/core'
+import apiProxy from '@mpxjs/api-proxy'
+
+mpx.use(apiProxy, { usePromise: true })
+createApp({})
+</script>
 
 <style>
-  /*此处编写全局样式*/
+
 </style>
 
 <script type="application/json">
   {
-    "pages": ["./pages/index/index"]
+    "pages": [
+      "./pages/index"
+    ]
   }
 </script>
 
-<style lang="scss">
-  @import 'tailwindcss/base';
-  @import 'tailwindcss/utilities';
-</style>
 <!--也可以通过以下形式用js输出json，便于书写注释和使用条件编译-->
 
 <!--<script name="json">-->

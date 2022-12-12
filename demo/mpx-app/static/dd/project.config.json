@@ -3,7 +3,7 @@
     "newFeature": true,
     "urlCheck": true,
     "es6": false,
-    "postcss": true,
+    "postcss": false,
     "minified": false,
     "checkSiteMap": false,
     "autoAudits": false
