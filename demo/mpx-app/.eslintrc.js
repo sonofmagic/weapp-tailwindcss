@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   extends: ['@mpxjs/eslint-config-ts'],
   rules: {
     // .mpx文件规则 https://mpx-ecology.github.io/eslint-plugin-mpx/rules/
