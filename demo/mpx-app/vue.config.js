@@ -1,11 +1,19 @@
 const { defineConfig } = require('@vue/cli-service')
+// const { MpxWeappTailwindcssWebpackPluginV5 } = require('../..')
+
 const { MpxWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 module.exports = defineConfig({
   pluginOptions: {
     mpx: {
       srcMode: 'wx',
       plugin: {
-        writeMode: 'full'
+        // writeMode: 'full',
+        // postcssInlineConfig: {
+        //   plugins: [
+        //     require('tailwindcss')(),
+        //     require('autoprefixer')({ remove: false })
+        //   ]
+        // }
       },
       loader: {}
     }
