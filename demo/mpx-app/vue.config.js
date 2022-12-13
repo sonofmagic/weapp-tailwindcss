@@ -4,11 +4,14 @@ module.exports = defineConfig({
   pluginOptions: {
     mpx: {
       srcMode: 'wx',
-      plugin: {},
+      plugin: {
+        writeMode: 'full'
+      },
       loader: {}
     }
   },
   configureWebpack(config) {
+    // console.log(config.module.rules)
     config.plugins.push(new MpxWeappTailwindcssWebpackPluginV5())
   }
 })

@@ -1,6 +1,6 @@
 <template>
   <view class="flex flex-col">
-    <view class="text-[33rpx] a" wx:for="{{listData}}" wx:key="index">{{ item }}</view>
+    <view class="text-[#e67240] a" wx:for="{{listData}}" wx:key="index">{{ item }}</view>
   </view>
 </template>
 
@@ -18,9 +18,7 @@
 </script>
 
 <style lang="scss">
-  .a {
-    color: red;
-  }
+
 </style>
 
 <script type="application/json">
