@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
+const { MpxWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 module.exports = defineConfig({
   pluginOptions: {
     mpx: {
@@ -6,5 +7,8 @@ module.exports = defineConfig({
       plugin: {},
       loader: {}
     }
+  },
+  configureWebpack(config) {
+    config.plugins.push(new MpxWeappTailwindcssWebpackPluginV5())
   }
 })
