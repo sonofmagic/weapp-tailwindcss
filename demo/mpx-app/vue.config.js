@@ -13,5 +13,11 @@ module.exports = defineConfig({
   configureWebpack(config) {
     // console.log(config.module.rules)
     config.plugins.push(new MpxWeappTailwindcssWebpackPluginV5())
+
+    // config.plugins.push(function (compiler) {
+    //   compiler.hooks.compilation.tap('xxxxxx', (compilation, params) => {
+    //     console.log(compilation, params)
+    //   })
+    // })
   }
 })
