@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.12.7 (2012-12-14)
+
+### Fixed
+
+- typescript dts fixed
+
+### Chore
+
+文档更新，添加 `customAttributes` 案例
+
 ## 1.12.6 (2022-12-06)
 
 ### Features
