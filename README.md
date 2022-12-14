@@ -148,7 +148,11 @@
 ### customAttributes
 
 类型: `Record<string, string | Regexp | (string | Regexp)[]>`  
-描述: 自定义`wxml`标签上的`attr`转化属性，默认转化所有的`class`和`hover-class`，key为匹配标签，value为属性字符串或者匹配正则数组，想要增加转化的属性，你可以添加 `*`: (string | Regexp)[] 这样的键值对，使其中属性的转化，在所有标签上生效，更复杂的情况，可以传一个Map实例
+描述: **这是一个重要的配置!**
+
+它可以自定义`wxml`标签上的`attr`转化属性。默认转化所有的`class`和`hover-class`，这个`Map`的 `key`为匹配标签，`value`为属性字符串或者匹配正则数组。如果你想要增加转化的属性，你可以添加 `*`: `(string | Regexp)[]` 这样的键值对，使其中属性的转化，在所有标签上生效，更复杂的情况，可以传一个Map实例。
+
+假如你要把 `className` 通过组件的prop传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#134](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134) [issue#129](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/129)
 
 ### customReplaceDictionary
 
