@@ -1,17 +1,24 @@
-import { MappingChars2StringEntries } from '@/dic'
+import { MappingChars2StringEntries, SimpleMappingChars2StringEntries } from '@/dic'
 describe('dic test', () => {
-  it('check duplicate', () => {
+  function check(e: [string, string][], allowUnderline = false) {
     const set = new Set()
-    let invalid = false
-    for (const [, value] of MappingChars2StringEntries) {
+    let valid = true
+    for (const [, value] of e) {
+      if (allowUnderline && value === '_') {
+        continue
+      }
       if (set.has(value)) {
-        invalid = true
-        console.log(`duplicate value: ${value} !`)
+        valid = false
+        console.log(`duplicate value: '${value}' `)
         break
       } else {
         set.add(value)
       }
     }
-    expect(invalid).toBe(false)
+    return valid
+  }
+  it('check duplicate', () => {
+    expect(check(MappingChars2StringEntries)).toBe(true)
+    expect(check(SimpleMappingChars2StringEntries, true)).toBe(true)
   })
 })

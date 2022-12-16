@@ -40,7 +40,9 @@ export type SYMBOL_TABLE_TYPE = typeof SYMBOL_TABLE
 
 export type SYMBOL_TABLE_TYPE_VALUES = SYMBOL_TABLE_TYPE[keyof SYMBOL_TABLE_TYPE]
 
-export const MappingChars2String: Record<Exclude<SYMBOL_TABLE_TYPE_VALUES, '-' | '_' | ' '>, string> = {
+export type MappingStringDictionary = Record<Exclude<SYMBOL_TABLE_TYPE_VALUES, '-' | '_' | ' '>, string>
+
+export const MappingChars2String: MappingStringDictionary = {
   '[': '_bl_',
   ']': '_br_',
   '(': '_pl_',
@@ -77,3 +79,38 @@ export const MappingChars2String: Record<Exclude<SYMBOL_TABLE_TYPE_VALUES, '-' |
 } as const
 
 export const MappingChars2StringEntries = Object.entries(MappingChars2String)
+
+export const SimpleMappingChars2String: MappingStringDictionary = {
+  '[': '_',
+  ']': '_',
+  '(': '_',
+  ')': '_',
+  '{': '_',
+  '}': '_',
+  '+': 'a',
+  ',': 'b',
+  ':': 'c',
+  '.': 'd',
+  '=': 'e',
+  ';': 'f',
+  '>': 'g',
+  '#': 'h',
+  '!': 'i',
+  '@': 'j',
+  '^': 'k',
+  '<': 'l',
+  '*': 'm',
+  '&': 'n',
+  '?': 'o',
+  '%': 'p',
+  "'": 'q',
+  $: 'r',
+  '/': 's',
+  '~': 't',
+  '|': 'u',
+  '`': 'v',
+  '\\': 'w',
+  '"': 'x'
+}
+
+export const SimpleMappingChars2StringEntries = Object.entries(SimpleMappingChars2String)

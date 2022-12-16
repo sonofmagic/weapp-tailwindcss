@@ -5,8 +5,9 @@ import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
 import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { MappingChars2String } from '@/dic'
+import { MappingChars2String, SimpleMappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
+
 // import { mangleClassRegex } from '@/mangle/expose'
 
 export const defaultOptions: Required<UserDefinedOptions> = {
@@ -130,6 +131,13 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   if (options.framework && options.framework === 'vue') {
     options.framework = 'vue2'
   }
+
+  if (options.customReplaceDictionary === 'simple') {
+    options.customReplaceDictionary = SimpleMappingChars2String
+  } else if (options.customReplaceDictionary === 'complex') {
+    options.customReplaceDictionary = undefined
+  }
+
   normalizeMatcher(options, 'cssMatcher')
   normalizeMatcher(options, 'htmlMatcher')
   normalizeMatcher(options, 'jsMatcher')
