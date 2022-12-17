@@ -34,7 +34,21 @@ const tableData = [
       '假如你要把 `className` 通过组件的prop传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#134](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134) [issue#129](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/129)'
     ].join('\n\n')
   ],
-  ['`customReplaceDictionary`', '`Record<string, string>`', '自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`'],
+  [
+    '`customReplaceDictionary`',
+    "`'simple' | 'complex' | Record<string, string>`",
+    [
+      [
+        "默认为 `'complex'` 模式，这个配置项，用来自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`",
+        [
+          "插件中内置了`'simple'`模式和`'complex'`模式:",
+          "- `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`",
+          "- `'complex'`模式: 把小程序中不允许的字符串，转义为**更长**的代替字符串，这种情况转化前后的字符串是等价的，可以从结果进行反推，缺点就是会生成更长的 `class` 导致 `wxml`和`wxss`这类的体积增大"
+        ].join('\n'),
+        '当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/src/dic.ts)'
+      ].join('\n\n')
+    ].join()
+  ],
   // [
   //   '`mangle`(1.9.0+)',
   //   '`boolean` \\| `IMangleOptions`',

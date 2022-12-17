@@ -202,7 +202,7 @@ export interface UserDefinedOptions {
   /**
    * @description 自定义转化class名称字典
    */
-  customReplaceDictionary?: Record<string, string>
+  customReplaceDictionary?: 'simple' | 'complex' | Record<string, string>
   /**
    * @description 自定义 jsxRenameLoader 的路径
    */
@@ -239,7 +239,7 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
 
 export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch'> & {
+  Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
   } & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
@@ -248,6 +248,7 @@ export type InternalUserDefinedOptions = Required<
     jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
     escapeEntries: [string, string][]
     patch: () => void
+    customReplaceDictionary: Record<string, string>
   }
 >
 
