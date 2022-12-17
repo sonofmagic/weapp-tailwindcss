@@ -2,7 +2,7 @@ import { expectType } from 'tsd'
 import vitePlugin from '../vite'
 import postcssPlugin from '../postcss'
 import type { InternalPostcssOptions } from '@/types'
-import { replaceCss, replaceJs } from 'replace'
+import { replaceCss, replaceJs } from '@/replace'
 import type { Plugin as VitePlugin } from 'vite'
 import type { PluginCreator } from 'postcss'
 expectType<VitePlugin | undefined>(vitePlugin())

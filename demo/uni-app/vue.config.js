@@ -27,7 +27,8 @@ const config = {
         customAttributes: {
           // '*': [/className/],
           '*': ['className']
-        }
+        },
+        customReplaceDictionary: 'simple'
         // onLoad() {
         //   console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
         // },

@@ -1,1 +1,1 @@
-export { replaceCss, replaceJs } from './types/replace'
+export * from './types/replace'
