@@ -1,14 +1,24 @@
 <template>
-  <view class="list">
-    <view wx:for="{{listData}}" wx:key="index">{{item}}</view>
+  <view class="flex flex-col">
+    <view class="text-[#e67240] a" wx:for="{{listData}}" wx:key="index">{{ item }}</view>
   </view>
 </template>
 
-<script src="./list.ts"></script>
+<script lang="ts">
+  import { createComponent } from '@mpxjs/core'
 
-<style lang="stylus">
-  .list
-    background-color red
+  createComponent({
+    data: {
+      listData: ['手机', '电视', '电脑']
+    },
+    options: {
+      addGlobalClass: true
+    }
+  })
+</script>
+
+<style lang="scss">
+
 </style>
 
 <script type="application/json">
