@@ -23,7 +23,12 @@ const config = {
     let now
     config.plugins.push(
       new UniAppWeappTailwindcssWebpackPluginV4({
-        disabled: WeappTailwindcssDisabled
+        disabled: WeappTailwindcssDisabled,
+        customAttributes: {
+          // '*': [/className/],
+          '*': ['className']
+        },
+        customReplaceDictionary: 'simple'
         // onLoad() {
         //   console.log(`UniAppWeappTailwindcssWebpackPluginV4 onLoad`)
         // },

@@ -16,7 +16,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import Layout from '@/components/tailwind/Layout.vue'
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+import { r } from '@/util'
+
 export default Vue.extend({
   components: {
     Layout
@@ -24,7 +25,7 @@ export default Vue.extend({
   data() {
     return {
       flag: false,
-      className: replaceJs('bg-[#123456]'),
+      className: r('bg-[#123456]'),
       steps: [
         {
           text: '步骤一',

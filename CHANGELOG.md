@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.12.8 (2022-12-17)
+
+### Features
+
+- 增加 `customReplaceDictionary` 的 `simple`/`complex`模式，`simple`为更简短的`className`
+- `replace` 导出所有，用于自定义运行时对 `replace` 行为进行二次封装。
+
+## 1.12.7 (2022-12-14)
+
+### Fixed
+
+- typescript dts fixed
+
+### Chore
+
+文档更新，添加 `customAttributes` 案例
+
 ## 1.12.6 (2022-12-06)
 
 ### Features
