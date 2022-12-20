@@ -1,0 +1,26 @@
+<template>
+  <view>
+    <view class="text-[#123456]">对酒当歌，人生几何</view>
+  </view>
+</template>
+
+<script lang="ts">
+  import { createPage } from '@mpxjs/core'
+
+  createPage({
+    options: {
+      addGlobalClass: true
+    },
+    onLoad() {
+      //
+    }
+  })
+</script>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+      "list": "../components/list"
+    }
+  }
+</script>
