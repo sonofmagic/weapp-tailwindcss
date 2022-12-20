@@ -1,6 +1,7 @@
 <template>
   <view>
     <view class="text-[#123456]">对酒当歌，人生几何</view>
+    <list />
   </view>
 </template>
 
