@@ -1,13 +1,14 @@
 // @ts-ignore
-import uView from 'vk-uview-ui';
+// import uView from 'vk-uview-ui';
 // import 'uno.css';
 // import 'virtual:windi.css';
+import uviewPlus from 'uview-plus';
 import { createSSRApp } from 'vue';
 import App from './App.vue';
 import bus from './bus';
 export function createApp() {
   const app = createSSRApp(App);
-  app.use(uView);
+  app.use(uviewPlus);
   app.mixin({
     created() {
       if (this.$scope) {
