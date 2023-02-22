@@ -4,7 +4,7 @@ import { gte as semverGte } from 'semver'
 import { parse, traverse, generate } from '@/babel'
 import type { ArrayExpression, StringLiteral } from '@babel/types'
 import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions } from '@/types'
-import { PackageJson } from 'pkg-types'
+import type { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 
