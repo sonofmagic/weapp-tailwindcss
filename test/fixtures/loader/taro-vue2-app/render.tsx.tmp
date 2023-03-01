@@ -12,7 +12,7 @@ export default Vue.extend({
     }, [h(View, {
       "class": 'text-center text-[50px] text-[#123456] mt-[22px]',
       "attrs": {
-        "hover-class": "text-[#654321]"
+        "hover-class": "bg-[#654321]"
       }
     }, ["aaa"]), h(Button, {
       "attrs": {

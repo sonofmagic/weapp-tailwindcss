@@ -14,7 +14,7 @@ export default defineComponent({
         default: function _default() {
           return [_createVNode(View, {
             "class": 'text-center text-[50px] text-[#123456] mt-[22px]',
-            "hover-class": "text-[#654321]"
+            "hover-class": "bg-[#654321]"
           }, {
             default: function _default() {
               return [_createTextVNode("components ui")];

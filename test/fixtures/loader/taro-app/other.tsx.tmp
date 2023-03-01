@@ -1,7 +1,7 @@
-import _classCallCheck from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/classCallCheck.js";
-import _createClass from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/createClass.js";
-import _inherits from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/inherits.js";
-import _createSuper from "G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/createSuper.js";
+import _classCallCheck from "C:/Users/13243/Documents/GitHub/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/babel-preset-taro/node_modules/@babel/runtime/helpers/esm/classCallCheck.js";
+import _createClass from "C:/Users/13243/Documents/GitHub/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/babel-preset-taro/node_modules/@babel/runtime/helpers/esm/createClass.js";
+import _inherits from "C:/Users/13243/Documents/GitHub/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/babel-preset-taro/node_modules/@babel/runtime/helpers/esm/inherits.js";
+import _createSuper from "C:/Users/13243/Documents/GitHub/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/babel-preset-taro/node_modules/@babel/runtime/helpers/esm/createSuper.js";
 import { Component } from 'react';
 import { View } from '@tarojs/components';
 import { jsx as _jsx } from "react/jsx-runtime";

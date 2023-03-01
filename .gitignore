@@ -106,3 +106,5 @@ dist
 types
 
 stats/*.html
+
+.swc

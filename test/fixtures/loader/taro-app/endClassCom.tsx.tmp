@@ -1,8 +1,20 @@
 import { View } from '@tarojs/components';
 import { jsx as _jsx } from "react/jsx-runtime";
-export default (function () {
-  return /*#__PURE__*/_jsx(View, {
-    className: "bg-[#654321] w-[100px] h-[20px]",
-    children: "123"
+import { Fragment as _Fragment } from "react/jsx-runtime";
+import { jsxs as _jsxs } from "react/jsx-runtime";
+export default (function (_ref) {
+  var emptyImageClass = _ref.emptyImageClass,
+      btnClassName = _ref.btnClassName;
+  return /*#__PURE__*/_jsxs(_Fragment, {
+    children: [/*#__PURE__*/_jsx(View, {
+      className: "bg-[#654321] w-[100px] h-[20px]",
+      children: "123"
+    }), /*#__PURE__*/_jsx(View, {
+      className: emptyImageClass,
+      children: "emptyImageClass"
+    }), /*#__PURE__*/_jsx(View, {
+      className: btnClassName,
+      children: "btnClassName"
+    })]
   });
 });
