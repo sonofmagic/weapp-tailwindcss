@@ -26,7 +26,7 @@
   },
   "scripts": {
     "dev": "yarn clean && yarn dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
-    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && yarn dts && yarn fix-dts",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && yarn dts",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
     "fix-dts": "ts-node scripts/fix-dts.ts",

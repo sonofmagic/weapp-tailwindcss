@@ -5,7 +5,7 @@ import { pluginName, NS } from '@/constants'
 import { getGroupedEntries } from '@/base/shared'
 import path from 'path'
 import WebpackSources from 'webpack-sources'
-import { NormalModule } from 'webpack'
+// import { NormalModule } from 'webpack'
 export default function WebpackPlugin(options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
   return createUnplugin(() => {
     const ctx: InternalUserDefinedOptions = getOptions(options, ['jsx', 'style', 'patch'])

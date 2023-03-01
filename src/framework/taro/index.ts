@@ -1,20 +1,8 @@
 import type { UserDefinedOptions } from '@/types'
-import { BaseJsxUnplugin, BaseJsxWebpackPluginV4, BaseJsxWebpackPluginV5 } from '@/base'
+import { BaseJsxUnplugin } from '@/base'
 /**
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
-export class TaroWeappTailwindcssWebpackPluginV4 extends BaseJsxWebpackPluginV4 {
-  constructor(options: UserDefinedOptions = { framework: 'react' }) {
-    super(options, 'taro')
-  }
-}
-
-export class TaroWeappTailwindcssWebpackPluginV5 extends BaseJsxWebpackPluginV5 {
-  constructor(options: UserDefinedOptions = { framework: 'react' }) {
-    super(options, 'taro')
-  }
-}
-
 export function TaroUnpluginWebpack(options: UserDefinedOptions = { framework: 'react' }) {
   return BaseJsxUnplugin(options, 'taro')
 }

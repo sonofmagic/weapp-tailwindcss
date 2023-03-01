@@ -1,5 +1,6 @@
 import type { Compiler } from 'webpack'
-import { NativeWeappTailwindcssWebpackPluginV5, NativeUnpluginWebpack } from '@/index'
+import { NativeUnpluginWebpack } from '@/index'
+import { NativeWeappTailwindcssWebpackPluginV5 } from '#test/archived/base/v5'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import path from 'path'
 import postcss from 'postcss'

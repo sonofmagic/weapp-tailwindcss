@@ -1,7 +1,7 @@
 import { ICommonReplaceOptions } from '@/types'
 import { mangleMark } from '@/mangle/expose'
 import { escape } from '@/base/escape'
-import { SimpleMappingChars2StringEntries, MappingChars2StringEntries } from '@/dic'
+import { MappingChars2StringEntries } from '@/dic'
 export function replaceWxml(
   original: string,
   options: ICommonReplaceOptions | boolean = {

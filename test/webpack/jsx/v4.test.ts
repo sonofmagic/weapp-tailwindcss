@@ -1,5 +1,6 @@
 import type { Compiler } from 'webpack4'
-import { BaseJsxWebpackPluginV4, BaseJsxUnplugin } from '@/index'
+import { BaseJsxUnplugin } from '@/index'
+import { BaseJsxWebpackPluginV4 } from '#test/archived/base/BaseJsxPlugin/v4'
 import { getCompiler4, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath, rootPath } from '#test/util'
 import path from 'path'
