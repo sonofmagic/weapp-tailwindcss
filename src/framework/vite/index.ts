@@ -14,7 +14,7 @@ import { createUnplugin } from 'unplugin'
 // issue 一个节点静态，一个节点动态，动态节点中的静态属性不会被 mangle 导致存在问题
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
-export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
+export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options, ['patch', 'style', 'templete'])
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch } = opts
   if (disabled) {

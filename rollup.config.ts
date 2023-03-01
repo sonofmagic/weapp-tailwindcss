@@ -58,9 +58,9 @@ const entries: IEntry[] = [
       vite: 'src/framework/vite/index.ts',
       postcss: 'src/postcss/plugin.ts',
       mangle: 'src/mangle/index.ts',
-      cli: 'src/cli.ts',
-      v4: 'src/v4.ts',
-      v5: 'src/v5.ts'
+      cli: 'src/cli.ts'
+      // v4: 'src/v4.ts',
+      // v5: 'src/v5.ts'
     },
     output: [
       {
