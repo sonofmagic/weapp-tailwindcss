@@ -5,6 +5,7 @@ import { pluginName, NS } from '@/constants'
 import { getGroupedEntries } from '@/base/shared'
 import path from 'path'
 import WebpackSources from 'webpack-sources'
+import { NormalModule } from 'webpack'
 export default function WebpackPlugin(options: UserDefinedOptions = { framework: 'react' }, appType: AppType) {
   return createUnplugin(() => {
     const ctx: InternalUserDefinedOptions = getOptions(options, ['jsx', 'style', 'patch'])
@@ -26,6 +27,7 @@ export default function WebpackPlugin(options: UserDefinedOptions = { framework:
         onLoad()
 
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
+          // NormalModule.getCompilationHooks(compilation).loader.tap
           compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
             // loaderContext[NS] = true
             // @ts-ignore

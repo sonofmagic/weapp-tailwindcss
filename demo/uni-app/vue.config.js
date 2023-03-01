@@ -1,7 +1,7 @@
 let UniAppWeappTailwindcssWebpackPluginV4
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { UniAppWeappTailwindcssWebpackPluginV4: plugin } = require('../..')
+  const { BaseTemplateUnplugin: plugin } = require('../..')
   UniAppWeappTailwindcssWebpackPluginV4 = plugin
 } else {
   const { UniAppWeappTailwindcssWebpackPluginV4: plugin } = require('weapp-tailwindcss-webpack-plugin')
@@ -22,7 +22,7 @@ const config = {
   configureWebpack: (config) => {
     let now
     config.plugins.push(
-      new UniAppWeappTailwindcssWebpackPluginV4({
+      UniAppWeappTailwindcssWebpackPluginV4({
         disabled: WeappTailwindcssDisabled,
         customAttributes: {
           // '*': [/className/],

@@ -55,7 +55,7 @@ const entries: IEntry[] = [
     input: {
       index: 'src/index.ts',
       'jsx-rename-loader': 'src/loader/jsx-rename-loader.ts',
-      vite: 'src/framework/vite/index.ts',
+
       postcss: 'src/postcss/plugin.ts',
       mangle: 'src/mangle/index.ts',
       cli: 'src/cli.ts'
@@ -106,7 +106,7 @@ const entries: IEntry[] = [
         systemNullSetters: false
       }
     ]
-  }
+  },
   // {
   //   name: 'jsx-rename-loader',
   //   input: 'src/loader/jsx-rename-loader.ts',
@@ -119,18 +119,21 @@ const entries: IEntry[] = [
   //     }
   //   ]
   // },
-  // {
-  //   name: 'vite',
-  //   input: 'src/framework/vite/index.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/vite.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // },
+  {
+    name: 'vite',
+    input: 'src/framework/vite/index.ts',
+    output: [
+      {
+        file: 'dist/vite.js',
+        format: 'cjs',
+        sourcemap: isDev,
+        exports: 'auto',
+        // for babel util , otherwise babelFN -> babelFN.default
+        interop: 'auto'
+        // esModule: 'if-default-prop'
+      }
+    ]
+  }
   // {
   //   name: 'postcss',
   //   input: 'src/postcss/plugin.ts',

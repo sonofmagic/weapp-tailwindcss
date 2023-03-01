@@ -95,6 +95,7 @@ dependencies:
   '@babel/generator': 7.21.1
   '@babel/parser': 7.21.2
   '@babel/traverse': 7.21.2
+  '@babel/types': 7.21.2
   loader-utils: 2.0.2
   micromatch: 4.0.5
   postcss: 8.4.21
@@ -106,7 +107,6 @@ dependencies:
 devDependencies:
   '@babel/core': 7.21.0
   '@babel/preset-react': 7.18.6_@babel+core@7.21.0
-  '@babel/types': 7.21.2
   '@icebreakers/cli': 0.1.0
   '@icebreakers/eslint-config-ts': 1.0.2_hy2lrmjx3zxceb3ttshclksm6u
   '@icebreakers/readme': 0.0.1

@@ -135,7 +135,7 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   if (options.customReplaceDictionary === 'simple') {
     options.customReplaceDictionary = SimpleMappingChars2String
   } else if (options.customReplaceDictionary === 'complex') {
-    options.customReplaceDictionary = undefined
+    options.customReplaceDictionary = MappingChars2String
   }
 
   normalizeMatcher(options, 'cssMatcher')

@@ -1,7 +1,7 @@
 let UniAppWeappTailwindcssWebpackPluginV5
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('../..')
+  const { BaseTemplateUnplugin: plugin } = require('../..')
   UniAppWeappTailwindcssWebpackPluginV5 = plugin
 } else {
   const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
@@ -21,7 +21,7 @@ const config = {
   transpileDependencies: ['uview-ui'],
   configureWebpack: (config) => {
     config.plugins.push(
-      new UniAppWeappTailwindcssWebpackPluginV5({
+      UniAppWeappTailwindcssWebpackPluginV5({
         disabled: WeappTailwindcssDisabled
       })
     )
