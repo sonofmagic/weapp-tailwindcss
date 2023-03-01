@@ -1,5 +1,5 @@
 import type { UserDefinedOptions } from '@/types'
-import { BaseTemplateWebpackPluginV4, BaseTemplateWebpackPluginV5 } from '@/base'
+import { BaseTemplateWebpackPluginV4, BaseTemplateWebpackPluginV5, BaseTemplateUnplugin } from '@/base'
 
 export class UniAppWeappTailwindcssWebpackPluginV4 extends BaseTemplateWebpackPluginV4 {
   constructor(options: UserDefinedOptions = {}) {
@@ -11,4 +11,8 @@ export class UniAppWeappTailwindcssWebpackPluginV5 extends BaseTemplateWebpackPl
   constructor(options: UserDefinedOptions = {}) {
     super(options, 'uni-app')
   }
+}
+
+export function UniAppUnpluginWebpack(options: UserDefinedOptions = {}) {
+  return BaseTemplateUnplugin(options, 'uni-app')
 }

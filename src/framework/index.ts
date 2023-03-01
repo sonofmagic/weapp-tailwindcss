@@ -1,3 +1,11 @@
-export * from './v4'
-export * from './v5'
+// export * from './v4'
+// export * from './v5'
 // export * from './vite'
+
+export { UniAppWeappTailwindcssWebpackPluginV4, UniAppUnpluginWebpack, UniAppWeappTailwindcssWebpackPluginV5 } from './uni-app'
+export { TaroWeappTailwindcssWebpackPluginV4, TaroUnpluginWebpack, TaroWeappTailwindcssWebpackPluginV5 } from './taro'
+export * from './remax'
+export * from './kbone'
+export * from './rax'
+export * from './native'
+export * from './mpx'
