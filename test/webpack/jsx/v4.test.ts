@@ -1,5 +1,5 @@
 import type { Compiler } from 'webpack4'
-import { BaseJsxWebpackPluginV4 } from '@/index'
+import { BaseJsxWebpackPluginV4, BaseJsxUnplugin } from '@/index'
 import { getCompiler4, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath, rootPath } from '#test/util'
 import path from 'path'
@@ -104,6 +104,25 @@ describe('webpack4 jsx plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  it('[BaseJsxUnplugin] common', async () => {
+    BaseJsxUnplugin(
+      {
+        mainCssChunkMatcher(name, appType) {
+          return path.basename(name) === 'index.css'
+        },
+        jsxRenameLoaderPath: loaderPath
+      },
+      'taro'
+    ).apply(compiler as any)
+
+    const stats = await compile(compiler)
+    const assets = readAssets(compiler, stats)
+
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
   it('disabled true', async () => {
     new BaseJsxWebpackPluginV4(
       {
@@ -115,6 +134,25 @@ describe('webpack4 jsx plugin', () => {
       },
       'taro'
     ).apply(compiler)
+
+    const stats = await compile(compiler)
+    const assets = readAssets(compiler, stats)
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('[BaseJsxUnplugin] disabled true', async () => {
+    BaseJsxUnplugin(
+      {
+        mainCssChunkMatcher(name) {
+          return path.basename(name) === 'index.css'
+        },
+        disabled: true,
+        jsxRenameLoaderPath: loaderPath
+      },
+      'taro'
+    ).apply(compiler as any)
 
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)

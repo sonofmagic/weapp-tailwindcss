@@ -1,5 +1,5 @@
 import type { Compiler } from 'webpack'
-import { BaseJsxWebpackPluginV5 } from '@/index'
+import { BaseJsxWebpackPluginV5, BaseJsxUnplugin } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath, rootPath } from '#test/util'
 import path from 'path'
@@ -99,8 +99,46 @@ describe('webpack5 jsx plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  it('[Unplugin] common', async () => {
+    BaseJsxUnplugin(
+      {
+        mainCssChunkMatcher(name, appType) {
+          return path.basename(name) === 'index.css'
+        },
+        jsxRenameLoaderPath: loaderPath
+      },
+      'taro'
+    ).apply(compiler)
+
+    const stats = await compile(compiler)
+    const assets = readAssets(compiler, stats)
+
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
   it('disabled true', async () => {
     new BaseJsxWebpackPluginV5(
+      {
+        mainCssChunkMatcher(name) {
+          return path.basename(name) === 'index.css'
+        },
+        disabled: true,
+        jsxRenameLoaderPath: loaderPath
+      },
+      'taro'
+    ).apply(compiler)
+
+    const stats = await compile(compiler)
+    const assets = readAssets(compiler, stats)
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('[Unplugin] disabled true', async () => {
+    BaseJsxUnplugin(
       {
         mainCssChunkMatcher(name) {
           return path.basename(name) === 'index.css'

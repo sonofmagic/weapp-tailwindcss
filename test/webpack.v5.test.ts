@@ -1,5 +1,5 @@
 import type { Compiler } from 'webpack'
-import { NativeWeappTailwindcssWebpackPluginV5 } from '@/index'
+import { NativeWeappTailwindcssWebpackPluginV5, NativeUnpluginWebpack } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import path from 'path'
 import postcss from 'postcss'
@@ -68,14 +68,63 @@ describe('webpack5 plugin', () => {
     }).apply(compiler)
 
     const stats = await compile(compiler)
+    const assets = readAssets(compiler, stats)
+    const errors = getErrors(stats)
+    const warnings = getWarnings(stats)
+
+    // NativeUnpluginWebpack({
+    //   mainCssChunkMatcher(name) {
+    //     return path.basename(name) === 'index.css'
+    //   }
+    // }).apply(compiler)
+    // const unistats = await compile(compiler)
+    // const uniassets = readAssets(compiler, unistats)
+    // const unierrors = getErrors(unistats)
+    // const uniwarnings = getWarnings(unistats)
+    // expect(stats).toEqual(unistats)
+    // expect(assets).toEqual(uniassets)
+    // expect(errors).toEqual(unierrors)
+    // expect(warnings).toEqual(uniwarnings)
+    expect(assets).toMatchSnapshot('assets')
+    expect(errors).toMatchSnapshot('errors')
+    expect(warnings).toMatchSnapshot('warnings')
+    // expect(uniassets).toMatchSnapshot('assets')
+    // expect(unierrors).toMatchSnapshot('errors')
+    // expect(uniwarnings).toMatchSnapshot('warnings')
+  })
+
+  it('[Unplugin] common', async () => {
+    NativeUnpluginWebpack({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      }
+    }).apply(compiler)
+    const unistats = await compile(compiler)
+    const uniassets = readAssets(compiler, unistats)
+    const unierrors = getErrors(unistats)
+    const uniwarnings = getWarnings(unistats)
+    expect(uniassets).toMatchSnapshot('assets')
+    expect(unierrors).toMatchSnapshot('errors')
+    expect(uniwarnings).toMatchSnapshot('warnings')
+  })
+
+  it('disabled true', async () => {
+    new NativeWeappTailwindcssWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      disabled: true
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
-  it('disabled true', async () => {
-    new NativeWeappTailwindcssWebpackPluginV5({
+  it('[Unplugin] disabled true', async () => {
+    NativeUnpluginWebpack({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },

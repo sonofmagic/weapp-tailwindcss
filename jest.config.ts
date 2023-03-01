@@ -13,6 +13,14 @@ const config: JestConfigWithTsJest = {
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo']
+  // transform: {
+  //   '^.+\\.tsx?$': [
+  //     'ts-jest',
+  //     {
+  //       useESM: true
+  //     }
+  //   ]
+  // }
 }
 
 export default config

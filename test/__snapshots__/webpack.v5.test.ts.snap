@@ -1,5 +1,367 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`webpack5 plugin [Unplugin] common: assets 1`] = `
+{
+  "index.css": "::before,::after {
+    --tw-content: ""}
+view,::before,::after {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
+::backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}",
+  "index.wxml": "<!-- index.wxml -->
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
+  </view>
+  <view class="motto">
+    <template is="motto" data="{{motto:motto}}" />
+  </view>
+  <view class="powered h-_bl_200_p__br_">
+    <text>{{powered.by}}</text>
+  </view>
+  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+    p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+  </view>
+  <view class="space-y-_bl_1_d_6rem_br_">
+    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+      w-[300rpx] text-black text-opacity-[0.19]
+    </view>
+    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+      max-w-[300rpx] min-h-[100px] text-[#dddddd]
+    </view>
+    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+      Hello
+    </view>
+    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
+      Default
+    </view>
+  </view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+</view>",
+  "wxml.js?var=87de820fb9efeaeb2cc6": "/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
+
+eval("\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
+}
+`;
+
+exports[`webpack5 plugin [Unplugin] common: errors 1`] = `[]`;
+
+exports[`webpack5 plugin [Unplugin] common: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin [Unplugin] disabled true: assets 1`] = `
+{
+  "index.css": "*, ::before, ::after {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}
+::backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}",
+  "index.wxml": "<!-- index.wxml -->
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
+  </view>
+  <view class="motto">
+    <template is="motto" data="{{motto:motto}}" />
+  </view>
+  <view class="powered h-[200%]">
+    <text>{{powered.by}}</text>
+  </view>
+  <view class="-mt-2 mb-[-20px] p-[20px]">
+    p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+  </view>
+  <view class="space-y-[1.6rem]">
+    <view class="w-[300rpx] text-black text-opacity-[0.19]">
+      w-[300rpx] text-black text-opacity-[0.19]
+    </view>
+    <view class="max-h-[100px] min-w-[300rpx] text-[20px] leading-[0.9]">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class="min-h-[100px] max-w-[300rpx] text-[#dddddd]">
+      max-w-[300rpx] min-h-[100px] text-[#dddddd]
+    </view>
+    <view class="flex h-[100px] w-[100px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">
+      Hello
+    </view>
+    <view class="border-[10px] border-solid border-[#098765] border-opacity-[0.44]">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class="grid grid-cols-3 divide-x-[10px] divide-solid divide-[#010101]">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
+      Default
+    </view>
+  </view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-[20px] {{flag=='p-[20px]'?'p-[20px]':'m-[20px]'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}"></view>
+</view>",
+  "wxml.js?var=87de820fb9efeaeb2cc6": "/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
+
+eval("\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
+}
+`;
+
+exports[`webpack5 plugin [Unplugin] disabled true: errors 1`] = `[]`;
+
+exports[`webpack5 plugin [Unplugin] disabled true: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin common: assets 1`] = `
 {
   "index.css": "::before,::after {
