@@ -10,7 +10,7 @@ const Index = () => {
   const className = replaceJs('bg-[#123456]')
   return (
     <>
-      <View className='form-box py-[62px] px-[95px]'>py-[62px] px-[95px]</View>
+      <View className='form-box py-[62px] px-[95px] bg-sky-500/80'>py-[62px] px-[95px]</View>
       {/* @ts-ignore */}
       <View emptyImageClass='w-[404px] h-[337px] bg-[#fff]' btnClassName='text-[#66ffff]'></View>
       <EndClassCom emptyImageClass='text-[#564564]' btnClassName='text-[#66ffff]'></EndClassCom>
