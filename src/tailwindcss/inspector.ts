@@ -8,7 +8,7 @@ import { parse, traverse, generate } from '@/babel'
 
 export function inspectProcessTailwindFeaturesReturnContext(content: string) {
   const ast = parse(content)
-
+  let hasPatched = false
   traverse(ast, {
     FunctionDeclaration(p) {
       const n = p.node
@@ -18,7 +18,7 @@ export function inspectProcessTailwindFeaturesReturnContext(content: string) {
           if (rts.argument?.type === 'FunctionExpression') {
             const body = rts.argument.body.body
             const lastStatement = body[body.length - 1]
-            const hasPatched = lastStatement.type === 'ReturnStatement' && lastStatement.argument?.type === 'Identifier' && lastStatement.argument.name === 'context'
+            hasPatched = lastStatement.type === 'ReturnStatement' && lastStatement.argument?.type === 'Identifier' && lastStatement.argument.name === 'context'
             if (!hasPatched) {
               const rts = t.returnStatement(t.identifier('context'))
               body.push(rts)
@@ -28,7 +28,11 @@ export function inspectProcessTailwindFeaturesReturnContext(content: string) {
       }
     }
   })
-  return generate(ast)
+
+  return {
+    code: hasPatched ? content : generate(ast).code,
+    hasPatched
+  }
 }
 
 export function inspectPostcssPlugin(content: string) {
@@ -110,7 +114,15 @@ export function inspectPostcssPlugin(content: string) {
                   const lastStatement = targetBlockStatement.body[targetBlockStatement.body.length - 1]
                   if (lastStatement.type === 'ExpressionStatement') {
                     const newExpressionStatement = t.expressionStatement(
-                      t.callExpression(t.memberExpression(t.identifier(variableName), t.identifier('push')), [lastStatement.expression])
+                      t.callExpression(
+                        t.memberExpression(
+                          t.memberExpression(t.identifier(variableName), t.identifier('value')),
+
+                          t.identifier('push')
+                        ),
+
+                        [lastStatement.expression]
+                      )
                     )
                     targetBlockStatement.body[targetBlockStatement.body.length - 1] = newExpressionStatement
                   }
@@ -124,8 +136,9 @@ export function inspectPostcssPlugin(content: string) {
                         const if2: t.IfStatement = forOf.body.body[0]
                         if (if2.consequent.type === 'BlockStatement' && if2.consequent.body.length === 1 && if2.consequent.body[0].type === 'ExpressionStatement') {
                           const target = if2.consequent.body[0]
+
                           const newExpressionStatement = t.expressionStatement(
-                            t.callExpression(t.memberExpression(t.identifier(variableName), t.identifier('push')), [target.expression])
+                            t.callExpression(t.memberExpression(t.memberExpression(t.identifier(variableName), t.identifier('value')), t.identifier('push')), [target.expression])
                           )
                           if2.consequent.body[0] = newExpressionStatement
                         }
@@ -151,5 +164,8 @@ export function inspectPostcssPlugin(content: string) {
     //   }
     // }
   })
-  return generate(ast)
+  return {
+    code: hasPatched ? content : generate(ast).code,
+    hasPatched
+  }
 }

@@ -33,12 +33,12 @@ module.exports = function tailwindcss(configOrPath) {
         let roots = root.nodes.filter(node => node.type === "root");
         for (const root1 of roots) {
           if (root1.type === "root") {
-            contextRef.push((0, _processTailwindFeatures.default)(context)(root1, result));
+            contextRef.value.push((0, _processTailwindFeatures.default)(context)(root1, result));
           }
         }
         return;
       }
-      contextRef.push((0, _processTailwindFeatures.default)(context)(root, result));
+      contextRef.value.push((0, _processTailwindFeatures.default)(context)(root, result));
     }, _sharedState.env.OXIDE && function lightningCssPlugin(_root, result) {
       let postcss = require("postcss");
       let lightningcss = require("lightningcss");

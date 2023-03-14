@@ -2,8 +2,9 @@ import path from 'path'
 import fs from 'fs'
 
 export function getContexts() {
-  const cwd = process.cwd()
-  const distPath = path.join(cwd, 'node_modules', 'tailwindcss/lib')
+  // const cwd = process.cwd()
+  // path.join(cwd, 'node_modules', 'tailwindcss/lib')
+  const distPath = 'tailwindcss/lib'
   // index.js
   // plugin.js
   let injectFilePath = path.join(distPath, 'plugin.js')

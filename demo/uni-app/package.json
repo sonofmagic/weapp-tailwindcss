@@ -47,7 +47,8 @@
     "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i",
     "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i",
     "open:dev": "weapp open -p dist/dev/mp-weixin",
-    "open:build": "weapp open -p dist/build/mp-weixin"
+    "open:build": "weapp open -p dist/build/mp-weixin",
+    "debug:patch": "weapp-tw patch"
   },
   "dependencies": {
     "@dcloudio/uni-app": "2.0.2-3070320230222001",
