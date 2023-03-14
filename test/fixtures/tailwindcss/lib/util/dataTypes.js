@@ -79,7 +79,39 @@ function percentage(value) {
 // Please refer to MDN when updating this list:
 // https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units
 // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries#container_query_length_units
-let lengthUnits = ["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "rlh", "vw", "vh", "vmin", "vmax", "vb", "vi", "svw", "svh", "lvw", "lvh", "dvw", "dvh", "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", "rpx"];
+let lengthUnits = [
+    "cm",
+    "mm",
+    "Q",
+    "in",
+    "pc",
+    "pt",
+    "px",
+    "em",
+    "ex",
+    "ch",
+    "rem",
+    "lh",
+    "rlh",
+    "vw",
+    "vh",
+    "vmin",
+    "vmax",
+    "vb",
+    "vi",
+    "svw",
+    "svh",
+    "lvw",
+    "lvh",
+    "dvw",
+    "dvh",
+    "cqw",
+    "cqh",
+    "cqi",
+    "cqb",
+    "cqmin",
+    "cqmax"
+];
 let lengthUnitsPattern = `(?:${lengthUnits.join("|")})`;
 function length(value) {
     return value === "0" || new RegExp(`^[+-]?[0-9]*\.?[0-9]+(?:[eE][+-]?[0-9]+)?${lengthUnitsPattern}$`).test(value) || isCSSFunction(value);

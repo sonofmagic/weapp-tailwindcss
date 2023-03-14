@@ -1,4 +1,5 @@
-import { findAstNode, getInstalledPkgJsonPath, internalPatch } from '@/tailwindcss/patcher'
+import { getInstalledPkgJsonPath } from '@/tailwindcss/patcher'
+import { internalPatch, findAstNode } from '@/tailwindcss/supportCustomUnit'
 import { tailwindcssCasePath, createGetCase } from '#test/util'
 import { getOptions } from '@/defaults'
 import path from 'path'
