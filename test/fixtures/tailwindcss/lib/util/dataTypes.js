@@ -38,6 +38,8 @@ let cssFunctions = [
 function isCSSFunction(value) {
     return cssFunctions.some((fn)=>new RegExp(`^${fn}\\(.*\\)`).test(value));
 }
+const placeholder = "--tw-placeholder";
+const placeholderRe = new RegExp(placeholder, "g");
 function normalize(value, isRoot = true) {
     // Keep raw strings if it starts with `url(`
     if (value.includes("url(")) {
@@ -57,7 +59,11 @@ function normalize(value, isRoot = true) {
     // Add spaces around operators inside math functions like calc() that do not follow an operator
     // or '('.
     value = value.replace(/(calc|min|max|clamp)\(.+\)/g, (match)=>{
-        return match.replace(/(-?\d*\.?\d(?!\b-.+[,)](?![^+\-/*])\D)(?:%|[a-z]+)?|\))([+\-/*])/g, "$1 $2 ");
+        let vars = [];
+        return match.replace(/var\((--.+?)[,)]/g, (match, g1)=>{
+            vars.push(g1);
+            return match.replace(g1, placeholder);
+        }).replace(/(-?\d*\.?\d(?!\b-\d.+[,)](?![^+\-/*])\D)(?:%|[a-z]+)?|\))([+\-/*])/g, "$1 $2 ").replace(placeholderRe, ()=>vars.shift());
     });
     return value;
 }
@@ -70,24 +76,10 @@ function number(value) {
 function percentage(value) {
     return value.endsWith("%") && number(value.slice(0, -1)) || isCSSFunction(value);
 }
-let lengthUnits = [
-    "cm",
-    "mm",
-    "Q",
-    "in",
-    "pc",
-    "pt",
-    "px",
-    "em",
-    "ex",
-    "ch",
-    "rem",
-    "lh",
-    "vw",
-    "vh",
-    "vmin",
-    "vmax"
-];
+// Please refer to MDN when updating this list:
+// https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries#container_query_length_units
+let lengthUnits = ["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "rlh", "vw", "vh", "vmin", "vmax", "vb", "vi", "svw", "svh", "lvw", "lvh", "dvw", "dvh", "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", "rpx"];
 let lengthUnitsPattern = `(?:${lengthUnits.join("|")})`;
 function length(value) {
     return value === "0" || new RegExp(`^[+-]?[0-9]*\.?[0-9]+(?:[eE][+-]?[0-9]+)?${lengthUnitsPattern}$`).test(value) || isCSSFunction(value);
