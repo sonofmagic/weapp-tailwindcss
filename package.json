@@ -107,7 +107,6 @@
   "devDependencies": {
     "@babel/core": "^7.21.0",
     "@babel/preset-react": "^7.18.6",
-    "@babel/types": "^7.21.2",
     "@icebreakers/cli": "0.1.0",
     "@icebreakers/eslint-config-ts": "^1.0.4",
     "@icebreakers/readme": "^0.0.1",
@@ -186,6 +185,7 @@
     "webpack4": "npm:webpack@webpack-4"
   },
   "dependencies": {
+    "@babel/types": "^7.21.2",
     "@babel/generator": "7.21.1",
     "@babel/parser": "7.21.2",
     "@babel/traverse": "7.21.2",
