@@ -1,11 +1,13 @@
 let TaroWeappTailwindcssWebpackPluginV5
+let UnifiedWebpackPluginV5
 const path = require('path')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 if (isLocal) {
   console.log('use local built webpack plugin')
-  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../weapp-tw-dist')
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin, BaseUnifiedWebpackPluginV5: unplugin } = require('../weapp-tw-dist')
   TaroWeappTailwindcssWebpackPluginV5 = plugin
+  UnifiedWebpackPluginV5 = unplugin
 } else {
   const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
   TaroWeappTailwindcssWebpackPluginV5 = plugin
@@ -54,11 +56,35 @@ const config = {
     webpackChain(chain, webpack) {
       const opt = {
         framework: 'react',
-        customAttributes: {
-          // '*': ['emptyImageClass','btnClassName'],
-          '*': [/Class/]
-        }
+        // customAttributes: {
+        //   // '*': ['emptyImageClass','btnClassName'],
+        //   '*': [/Class/]
+        // }
       }
+      // chain.merge({
+      //   plugin: {
+      //     install: {
+      //       plugin: TaroWeappTailwindcssWebpackPluginV5,
+      //       args: [opt]
+      //     }
+      //   }
+      // })
+      chain.merge({
+        plugin: {
+          install: {
+            plugin: UnifiedWebpackPluginV5,
+            args: [opt]
+          }
+        }
+      })
+
+      // chain
+      //   .plugin('UnifiedWebpackPlugin')
+      //   .use(UnifiedWebpackPlugin, [opt])
+      // chain
+      //   .plugin('UnifiedWebpackPluginV5')
+      //   .use(UnifiedWebpackPluginV5(opt))
+
       // if (isWrite) {
       //   opt.loaderOptions = {
       //     jsxRename: {
@@ -66,14 +92,8 @@ const config = {
       //     }
       //   }
       // }
-      chain.merge({
-        plugin: {
-          install: {
-            plugin: TaroWeappTailwindcssWebpackPluginV5,
-            args: [opt]
-          }
-        }
-      })
+
+
     }
   },
   h5: {

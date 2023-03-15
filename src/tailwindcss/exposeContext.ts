@@ -5,15 +5,15 @@ import type { Rule } from 'postcss'
 export function getContexts() {
   // const cwd = process.cwd()
   //
-  const distPath = require.resolve('tailwindcss/lib') //  path.join(cwd, 'node_modules', 'tailwindcss/lib')
+  const distPath = path.dirname(require.resolve('tailwindcss/lib')) //  path.join(cwd, 'node_modules', 'tailwindcss/lib')
   // index.js
   // plugin.js
   let injectFilePath = path.join(distPath, 'plugin.js')
   if (!fs.existsSync(injectFilePath)) {
     injectFilePath = path.join(distPath, 'index.js')
   }
-  const p = require.resolve(injectFilePath)
-  const mo = require(p)
+
+  const mo = require(injectFilePath)
   if (mo.contextRef) {
     return mo.contextRef.value as any[]
   }

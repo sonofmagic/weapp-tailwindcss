@@ -50,6 +50,11 @@ export type IJsxHandlerOptions = {
   customAttributesEntities?: ICustomAttributesEntities
   allMatchedAttributes?: (string | RegExp)[] // ICustomAttributesEntities[1][1]
 }
+
+export type IJsHandlerOptions = {
+  escapeEntries?: [string, string][]
+  classNameSet: Set<string>
+}
 export interface RawSource {
   start: number
   end: number
@@ -246,6 +251,7 @@ export type InternalUserDefinedOptions = Required<
     templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
     jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
+    jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
     escapeEntries: [string, string][]
     patch: () => void
     customReplaceDictionary: Record<string, string>
