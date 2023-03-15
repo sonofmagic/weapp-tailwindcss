@@ -3,9 +3,9 @@ import fs from 'fs'
 import type { Rule } from 'postcss'
 
 export function getContexts() {
-  const cwd = process.cwd()
+  // const cwd = process.cwd()
   //
-  const distPath = path.join(cwd, 'node_modules', 'tailwindcss/lib')
+  const distPath = require.resolve('tailwindcss/lib') //  path.join(cwd, 'node_modules', 'tailwindcss/lib')
   // index.js
   // plugin.js
   let injectFilePath = path.join(distPath, 'plugin.js')

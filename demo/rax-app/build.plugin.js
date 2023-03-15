@@ -2,7 +2,7 @@
 let RaxTailwindcssWebpackPluginV5;
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin');
-  const { RaxTailwindcssWebpackPluginV5: plugin } = require('../../');
+  const { RaxTailwindcssWebpackPluginV5: plugin } = require('./weapp-tw-dist');
   RaxTailwindcssWebpackPluginV5 = plugin;
 } else {
   const { RaxTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin');

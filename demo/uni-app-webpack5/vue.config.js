@@ -1,7 +1,7 @@
 let UniAppWeappTailwindcssWebpackPluginV5
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('../..')
+  const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('./weapp-tw-dist')
   UniAppWeappTailwindcssWebpackPluginV5 = plugin
 } else {
   const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')

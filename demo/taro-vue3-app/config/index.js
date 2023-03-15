@@ -4,7 +4,7 @@ const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 if (isLocal) {
   console.log('use local built webpack plugin')
-  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../../../')
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../weapp-tw-dist')
   TaroWeappTailwindcssWebpackPluginV5 = plugin
 } else {
   const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')

@@ -8,7 +8,7 @@ const LodashWebpackPlugin = require('lodash-webpack-plugin')
 let NativeWeappTailwindcssWebpackPluginV5
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('../../')
+  const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('./weapp-tw-dist')
   NativeWeappTailwindcssWebpackPluginV5 = plugin
 } else {
   const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')

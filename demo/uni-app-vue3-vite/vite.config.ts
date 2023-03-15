@@ -5,7 +5,7 @@ import uni from '@dcloudio/vite-plugin-uni';
 let vwt;
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin');
-  vwt = require('../../vite');
+  vwt = require('./weapp-tw-dist/vite');
 } else {
   vwt = require('weapp-tailwindcss-webpack-plugin/vite');
 }

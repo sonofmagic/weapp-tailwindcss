@@ -12,11 +12,11 @@ import { generate } from '@/babel'
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   try {
-    const cwd = process.cwd()
-    const tmpJsonPath = `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
-    // require.resolve(`${dangerousOptions.packageName}/package.json`, {
-    //   paths: options.paths
-    // })
+    // const cwd = process.cwd()
+    const tmpJsonPath = require.resolve(`${dangerousOptions.packageName}/package.json`, {
+      paths: options.paths
+    })
+    // `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
     const pkgJson = require(tmpJsonPath) as PackageJson
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
     // https://github.com/tailwindlabs/tailwindcss/discussions/9675

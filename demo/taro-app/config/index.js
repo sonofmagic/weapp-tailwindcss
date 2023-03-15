@@ -4,7 +4,7 @@ const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 if (isLocal) {
   console.log('use local built webpack plugin')
-  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../../../')
+  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../weapp-tw-dist')
   TaroWeappTailwindcssWebpackPluginV5 = plugin
 } else {
   const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
@@ -59,13 +59,13 @@ const config = {
           '*': [/Class/]
         }
       }
-      if (isWrite) {
-        opt.loaderOptions = {
-          jsxRename: {
-            dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-app')
-          }
-        }
-      }
+      // if (isWrite) {
+      //   opt.loaderOptions = {
+      //     jsxRename: {
+      //       dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-app')
+      //     }
+      //   }
+      // }
       chain.merge({
         plugin: {
           install: {

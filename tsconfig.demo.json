@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "sourceMap": true,
+    "outDir": "demo/web/weapp-tw-dist"
+  },
+  "include": [
+    "src/**/*",
+    "types/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test/types",
+    "./*.d.ts"
+  ]
+}
