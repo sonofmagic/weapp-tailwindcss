@@ -23,7 +23,8 @@ module.exports = function tailwindcss(configOrPath) {
       console.time("JIT TOTAL");
       return root;
     }, function (root, result) {
-      contextRef.value = [];
+      // contextRef.value = [];
+      contextRef.value.length = 0;
       var _findAtConfigPath1;
       // Use the path for the \`@config\` directive if it exists, otherwise use the
       // path for the file being processed

@@ -1,10 +1,6 @@
 import * as t from '@babel/types'
 import { parse, traverse, generate } from '@/babel'
-
-/**
- * crash code 垃圾代码
- * @returns
- */
+// crash code 垃圾代码
 
 export function inspectProcessTailwindFeaturesReturnContext(content: string) {
   const ast = parse(content)
@@ -20,6 +16,7 @@ export function inspectProcessTailwindFeaturesReturnContext(content: string) {
             const lastStatement = body[body.length - 1]
             hasPatched = lastStatement.type === 'ReturnStatement' && lastStatement.argument?.type === 'Identifier' && lastStatement.argument.name === 'context'
             if (!hasPatched) {
+              // return context;
               const rts = t.returnStatement(t.identifier('context'))
               body.push(rts)
             }
@@ -70,11 +67,14 @@ export function inspectPostcssPlugin(content: string) {
 
         hasPatched = hasPatchedCondition0 || hasPatchedCondition1
         if (!hasPatched) {
+          // const contextRef = {
+          //   value: []
+          // };
           const statement = t.variableDeclaration('const', [
             t.variableDeclarator(t.identifier(variableName), t.objectExpression([t.objectProperty(t.identifier(valueKey), t.arrayExpression())]))
           ])
           n.body.splice(idx, 0, statement)
-
+          // module.exports.contextRef = contextRef;
           n.body.push(
             t.expressionStatement(
               t.assignmentExpression(
@@ -113,6 +113,7 @@ export function inspectPostcssPlugin(content: string) {
 
                   const lastStatement = targetBlockStatement.body[targetBlockStatement.body.length - 1]
                   if (lastStatement.type === 'ExpressionStatement') {
+                    // contextRef.value.push((0, _processTailwindFeatures.default)(context)(root, result));
                     const newExpressionStatement = t.expressionStatement(
                       t.callExpression(
                         t.memberExpression(
@@ -136,7 +137,7 @@ export function inspectPostcssPlugin(content: string) {
                         const if2: t.IfStatement = forOf.body.body[0]
                         if (if2.consequent.type === 'BlockStatement' && if2.consequent.body.length === 1 && if2.consequent.body[0].type === 'ExpressionStatement') {
                           const target = if2.consequent.body[0]
-
+                          // contextRef.value.push((0, _processTailwindFeatures.default)(context)(root1, result));
                           const newExpressionStatement = t.expressionStatement(
                             t.callExpression(t.memberExpression(t.memberExpression(t.identifier(variableName), t.identifier('value')), t.identifier('push')), [target.expression])
                           )
@@ -145,9 +146,19 @@ export function inspectPostcssPlugin(content: string) {
                       }
                     }
                   }
-
+                  // clear contextRef.value
                   targetBlockStatement.body.unshift(
-                    t.expressionStatement(t.assignmentExpression('=', t.memberExpression(t.identifier(variableName), t.identifier(valueKey)), t.arrayExpression()))
+                    // contentRef.value = []
+                    // t.expressionStatement(t.assignmentExpression('=', t.memberExpression(t.identifier(variableName), t.identifier(valueKey)), t.arrayExpression()))
+
+                    // contentRef.value.length = 0
+                    t.expressionStatement(
+                      t.assignmentExpression(
+                        '=',
+                        t.memberExpression(t.memberExpression(t.identifier(variableName), t.identifier(valueKey)), t.identifier('length')),
+                        t.numericLiteral(0)
+                      )
+                    )
                   )
                 }
               }
