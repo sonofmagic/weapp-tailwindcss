@@ -97,7 +97,7 @@ const entries: IEntry[] = [
     input: {
       index: 'src/index.ts',
       'jsx-rename-loader': 'src/loader/jsx-rename-loader.ts',
-      vite: 'src/framework/vite/index.ts',
+      // vite: 'src/framework/vite/index.ts',
       postcss: 'src/postcss/plugin.ts',
       mangle: 'src/mangle/index.ts',
       cli: 'src/cli.ts',
@@ -118,6 +118,19 @@ const entries: IEntry[] = [
       {
         file: isDemo ? 'demo/web/weapp-tw-dist/replace.js' : 'dist/replace.js',
         ...replaceOutputOptions
+      }
+    ]
+  },
+  {
+    name: 'vite',
+    input: 'src/framework/vite/index.ts',
+    output: [
+      {
+        file: isDemo ? 'demo/web/weapp-tw-dist/vite.js' : 'dist/vite.js',
+        format: 'cjs',
+        sourcemap: isDev || isDemo,
+        exports: 'auto',
+        interop: 'auto'
       }
     ]
   }
