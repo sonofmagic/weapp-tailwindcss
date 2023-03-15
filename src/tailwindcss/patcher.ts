@@ -7,6 +7,7 @@ import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { findAstNode } from './supportCustomUnit'
 import { inspectPostcssPlugin, inspectProcessTailwindFeaturesReturnContext } from './inspector'
+import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
@@ -51,22 +52,28 @@ function ensureFileContent(filepaths: string | string[]) {
       content = fs.readFileSync(filepath, {
         encoding: 'utf-8'
       })
+      break
     }
   }
   return content
 }
-export function monkeyPatchForExposingContext(rootDir: string) {
+export function monkeyPatchForExposingContext(rootDir: string, overwrite: boolean) {
   const processTailwindFeaturesFilePath = path.resolve(rootDir, 'lib/processTailwindFeatures.js')
 
   const processTailwindFeaturesContent = ensureFileContent(processTailwindFeaturesFilePath)
+  const result: Record<string, string | null> = {
+    processTailwindFeatures: null,
+    plugin: null
+  }
   if (processTailwindFeaturesContent) {
     const { code, hasPatched } = inspectProcessTailwindFeaturesReturnContext(processTailwindFeaturesContent)
-    if (!hasPatched) {
+    if (!hasPatched && overwrite) {
       fs.writeFileSync(processTailwindFeaturesFilePath, code, {
         encoding: 'utf-8'
       })
       console.log('patch tailwindcss processTailwindFeatures for return content successfully!')
     }
+    result.processTailwindFeatures = code
   }
 
   const pluginFilePath = path.resolve(rootDir, 'lib/plugin.js')
@@ -74,13 +81,15 @@ export function monkeyPatchForExposingContext(rootDir: string) {
   const pluginContent = ensureFileContent([pluginFilePath, indexFilePath])
   if (pluginContent) {
     const { code: code0, hasPatched: hasPatched0 } = inspectPostcssPlugin(pluginContent)
-    if (!hasPatched0) {
+    if (!hasPatched0 && overwrite) {
       fs.writeFileSync(pluginFilePath, code0, {
         encoding: 'utf-8'
       })
       console.log('patch tailwindcss for expose runtime content successfully!')
     }
+    result.plugin = code0
   }
+  return result
 }
 
 export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILengthUnitsPatchOptions) {
@@ -105,14 +114,19 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
         console.log('patch tailwindcss for custom length unit successfully!')
       }
     }
+    return code
   }
 }
 
-export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions) {
+export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite: boolean = true) {
   if (pkgJsonPath) {
     const rootDir = path.dirname(pkgJsonPath)
-    monkeyPatchForSupportingCustomUnit(rootDir, options)
-    monkeyPatchForExposingContext(rootDir)
+    const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
+    const result = monkeyPatchForExposingContext(rootDir, overwrite)
+    return {
+      ...result,
+      dataTypes
+    }
   }
 }
 

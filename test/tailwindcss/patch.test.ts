@@ -42,4 +42,13 @@ describe('tailwindcss source code patch', () => {
     const code = internalPatch(path.resolve(tailwindcssCasePath, 'package.json'), opt)
     expect(code).toMatchSnapshot()
   })
+
+  it('patch 3.2.7', () => {
+    const options = getOptions()
+
+    const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
+    opt.dangerousOptions.overwrite = false
+    const res = internalPatch(path.resolve(tailwindcssCasePath, 'versions/3.2.7/package.json'), opt, false)
+    expect(res).toMatchSnapshot()
+  })
 })
