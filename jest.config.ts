@@ -11,6 +11,7 @@ const config: JestConfigWithTsJest = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^#test/(.*)$': '<rootDir>/test/$1'
   },
+  modulePathIgnorePatterns: ['test/fixtures/*'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo']
 }
