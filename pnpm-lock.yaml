@@ -7,7 +7,7 @@ specifiers:
   '@babel/preset-react': ^7.18.6
   '@babel/traverse': 7.21.3
   '@babel/types': 7.21.3
-  '@icebreakers/cli': 0.1.0
+  '@icebreakers/cli': 0.1.1
   '@icebreakers/eslint-config-ts': ^1.0.4
   '@icebreakers/readme': ^0.0.1
   '@rollup/plugin-alias': ^4.0.3
@@ -107,7 +107,7 @@ dependencies:
 devDependencies:
   '@babel/core': 7.21.3
   '@babel/preset-react': 7.18.6_@babel+core@7.21.3
-  '@icebreakers/cli': 0.1.0
+  '@icebreakers/cli': 0.1.1
   '@icebreakers/eslint-config-ts': 1.0.4_cs5myhmd446kc3y4vbpny7udjy
   '@icebreakers/readme': 0.0.1
   '@rollup/plugin-alias': 4.0.3_rollup@3.19.1
@@ -855,8 +855,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@icebreakers/cli/0.1.0:
-    resolution: {integrity: sha512-XyUYMQU2rHbjt5XOAkvYAVvVLTv4M/Ht2PULX+xMYmncPY7w1J0ahfqN52cs4sd8h+nZCnIg6g+ayQS40DBVSQ==}
+  /@icebreakers/cli/0.1.1:
+    resolution: {integrity: sha512-6kGKdpcO8ubsSTdd7WzpkFCIa4IOuT1LhESQTjv5HfWSeY65XMIvQMZEszSytF9P9kVQiUvApMpfKJGd8byllQ==}
     dev: true
 
   /@icebreakers/eslint-config-basic/1.0.3_pdiqavmaskzjcksjdzryfoby2m:
