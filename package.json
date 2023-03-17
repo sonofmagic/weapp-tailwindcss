@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0-beta.5",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -107,7 +107,7 @@
   },
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
   "devDependencies": {
-    "@babel/core": "^7.21.3",
+    "@babel/core": "^7.20.5",
     "@babel/preset-react": "^7.18.6",
     "@icebreakers/cli": "^0.1.1",
     "@icebreakers/eslint-config-ts": "^1.0.4",
@@ -189,10 +189,10 @@
     "webpack4": "npm:webpack@webpack-4"
   },
   "dependencies": {
-    "@babel/generator": "7.21.3",
-    "@babel/parser": "7.21.3",
-    "@babel/traverse": "7.21.3",
-    "@babel/types": "7.21.3",
+    "@babel/generator": "^7.20.5",
+    "@babel/parser": "^7.20.5",
+    "@babel/traverse": "^7.20.5",
+    "@babel/types": "^7.20.5",
     "loader-utils": "^2.0.2",
     "micromatch": "^4.0.5",
     "postcss": "8.4.21",

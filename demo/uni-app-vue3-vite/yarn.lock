@@ -1135,6 +1135,15 @@
     debug "^4.1.0"
     globals "^11.1.0"
 
+"@babel/types@7.21.3", "@babel/types@^7.21.3":
+  version "7.21.3"
+  resolved "https://registry.npmmirror.com/@babel/types/-/types-7.21.3.tgz#4865a5357ce40f64e3400b0f3b737dc6d4f64d05"
+  integrity sha512-sBGdETxC+/M4o/zKC0sl6sjWv62WFR/uzxrJ6uYyMLZOUlPnwzw0tKgVHOXxaAd5l2g8pEDM5RZ495GPQI77kg==
+  dependencies:
+    "@babel/helper-string-parser" "^7.19.4"
+    "@babel/helper-validator-identifier" "^7.19.1"
+    to-fast-properties "^2.0.0"
+
 "@babel/types@^7.0.0", "@babel/types@^7.16.7", "@babel/types@^7.17.0", "@babel/types@^7.18.2":
   version "7.18.4"
   resolved "https://registry.npmmirror.com/@babel/types/-/types-7.18.4.tgz#27eae9b9fd18e9dccc3f9d6ad051336f307be354"
@@ -1192,15 +1201,6 @@
   version "7.20.5"
   resolved "https://registry.npmmirror.com/@babel/types/-/types-7.20.5.tgz#e206ae370b5393d94dfd1d04cd687cace53efa84"
   integrity sha512-c9fst/h2/dcF7H+MJKZ2T0KjEQ8hY/BNnDk/H3XY8C4Aw/eWQXWn/lWntHF9ooUBnGmEvbfGrTgLWc+um0YDUg==
-  dependencies:
-    "@babel/helper-string-parser" "^7.19.4"
-    "@babel/helper-validator-identifier" "^7.19.1"
-    to-fast-properties "^2.0.0"
-
-"@babel/types@^7.21.3":
-  version "7.21.3"
-  resolved "https://registry.npmmirror.com/@babel/types/-/types-7.21.3.tgz#4865a5357ce40f64e3400b0f3b737dc6d4f64d05"
-  integrity sha512-sBGdETxC+/M4o/zKC0sl6sjWv62WFR/uzxrJ6uYyMLZOUlPnwzw0tKgVHOXxaAd5l2g8pEDM5RZ495GPQI77kg==
   dependencies:
     "@babel/helper-string-parser" "^7.19.4"
     "@babel/helper-validator-identifier" "^7.19.1"
@@ -5071,15 +5071,15 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.0.0-beta.3:
-  version "2.0.0-beta.3"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.0.0-beta.3.tgz#ea6e366d366fbef4e0d4a2ebb15be24dc6c615ee"
-  integrity sha512-alwIF7FtINNovw2A+U3ymsEG2ychPTjaFqvqMSNGFJfFi2JOZGmceb0POEvMjN9HZ3qAUd1Er6FtcEaTMvtzHw==
+weapp-tailwindcss-webpack-plugin@^2.0.0-beta.4:
+  version "2.0.0-beta.4"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.0.0-beta.4.tgz#b71f8e48a45c5cc595d970c062bdc17445f889a4"
+  integrity sha512-631zrXbZEigCsIYRBhPVdm3k8LPa5R6baj5kmpwHq4MbCJS2+mT5KPT5or0kjZTXMdQtl7uLhdmh9jKcWDx1Dw==
   dependencies:
     "@babel/generator" "7.21.3"
     "@babel/parser" "7.21.3"
     "@babel/traverse" "7.21.3"
-    "@babel/types" "^7.21.3"
+    "@babel/types" "7.21.3"
     loader-utils "^2.0.2"
     micromatch "^4.0.5"
     postcss "8.4.21"

@@ -1,13 +1,13 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@babel/core': ^7.21.3
-  '@babel/generator': 7.21.3
-  '@babel/parser': 7.21.3
+  '@babel/core': ^7.20.5
+  '@babel/generator': ^7.20.5
+  '@babel/parser': ^7.20.5
   '@babel/preset-react': ^7.18.6
-  '@babel/traverse': 7.21.3
-  '@babel/types': 7.21.3
-  '@icebreakers/cli': 0.1.1
+  '@babel/traverse': ^7.20.5
+  '@babel/types': ^7.20.5
+  '@icebreakers/cli': ^0.1.1
   '@icebreakers/eslint-config-ts': ^1.0.4
   '@icebreakers/readme': ^0.0.1
   '@rollup/plugin-alias': ^4.0.3

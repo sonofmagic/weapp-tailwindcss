@@ -8,7 +8,8 @@ if (process.env.LOCAL) {
   const { UnifiedViteWeappTailwindcssPlugin } = require('./weapp-tw-dist/vite');
   vwt = UnifiedViteWeappTailwindcssPlugin;
 } else {
-  vwt = require('weapp-tailwindcss-webpack-plugin/vite');
+  const { UnifiedViteWeappTailwindcssPlugin } = require('weapp-tailwindcss-webpack-plugin/vite');
+  vwt = UnifiedViteWeappTailwindcssPlugin;
 }
 // import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 // import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
