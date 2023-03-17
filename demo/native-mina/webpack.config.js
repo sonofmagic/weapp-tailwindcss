@@ -5,14 +5,14 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWebpackPlugin = require('./plugin/MinaWebpackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
-let NativeWeappTailwindcssWebpackPluginV5
+let UnifiedWebpackPluginV5
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('./weapp-tw-dist')
-  NativeWeappTailwindcssWebpackPluginV5 = plugin
+  const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist')
+  UnifiedWebpackPluginV5 = plugin
 } else {
-  const { NativeWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
-  NativeWeappTailwindcssWebpackPluginV5 = plugin
+  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
+  UnifiedWebpackPluginV5 = plugin
 }
 
 const debuggable = process.env.BUILD_TYPE !== 'release'
@@ -89,12 +89,12 @@ module.exports = {
       NODE_ENV: 'development',
       BUILD_TYPE: 'debug',
     }),
-    new NativeWeappTailwindcssWebpackPluginV5({
+    new UnifiedWebpackPluginV5({
       // mangle: true,
       // cssPreflight: {
       //   "border-color": false
       // }
-    }),
+    },'native'),
   ],
   optimization: {
     splitChunks: {

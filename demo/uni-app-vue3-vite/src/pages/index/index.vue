@@ -70,7 +70,7 @@
 
 
 <script setup lang="ts">
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+
 import { ref, onBeforeUnmount } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 const title = ref('测试标题');
@@ -89,8 +89,8 @@ const goods = ref([
 ])
 
 const cardsColor = ref([
-  replaceJs('bg-[#4268EA] shadow-indigo-100'),
-  replaceJs('bg-[#123456] shadow-blue-100'),
+  'bg-[#4268EA] shadow-indigo-100',
+  'bg-[#123456] shadow-blue-100',
   'bg-green-500 shadow-green-100',
   'bg-cyan-500 shadow-cyan-100',
   'bg-amber-500 shadow-amber-100',

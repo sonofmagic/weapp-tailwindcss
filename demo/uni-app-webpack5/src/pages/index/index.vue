@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+
 export default Vue.extend({
   data() {
     // uni-app vue2 小程序端不支持 classObject 和 styleObject 语法。
@@ -125,7 +125,7 @@ export default Vue.extend({
   },
   computed: {
     classObject() {
-      return replaceJs('text-[20px] bg-[#000000]')
+      return 'text-[20px] bg-[#000000]'
     }
   }
 })

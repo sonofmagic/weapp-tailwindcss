@@ -2,6 +2,7 @@
 <import src="../../wxml/motto/motto.wxml" />
 <view class="container">
   <ice-avatar></ice-avatar>
+  <view class="{{icebreaker}}">icebreaker</view>
   <user nickName="{{'icebreaker'}}"></user>
   <button bindtap="onNaDemo">go2Demo</button>
   <button class="btn a{{num}}" bindtap="onTap">{{num}}</button>

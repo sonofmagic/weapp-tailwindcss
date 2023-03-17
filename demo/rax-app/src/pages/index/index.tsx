@@ -1,20 +1,40 @@
 import { createElement, useState } from 'rax';
 import View from 'rax-view';
 import Text from 'rax-text';
-
+import { clsx } from 'clsx';
 import styles from './index.module.css';
 import Logo from '../../components/Logo';
 import './index.css';
 
 export default function Home() {
-  const [flag] = useState(true);
+  const [flag, setState] = useState(true);
+  const dClassNames = clsx(
+    {
+      'bg-[#123456]': true,
+    },
+    'text-[#fff]',
+    [
+      flag ? 'text-[50px]' : 'text-[30px]',
+      {
+        'h-[100px]': true,
+      },
+    ],
+  );
   return (
     <>
+      <View
+        className={dClassNames}
+        onClick={() => {
+          setState(!flag);
+        }}
+      >
+        clsx
+      </View>
       <View
         className="bg-[#654321] dark:bg-[#666555] h-10 w-10"
         data-id="bg-[#654123] dark:bg-[#abcdef]"
         hoverClassName="bg-red-500 dark:bg-[#487512]"
-      ></View>
+      />
       <View className={styles.homeContainer}>
         <Logo uri="//gw.alicdn.com/tfs/TB1MRC_cvb2gK0jSZK9XXaEgFXa-1701-1535.png" />
         <Text className={styles.homeTitle}>Welcome to Your Rax App</Text>

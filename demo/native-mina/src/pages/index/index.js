@@ -1,7 +1,7 @@
 //index.js
 //获取应用实例
 const app = getApp()
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+
 Page({
   data: {
     motto: 'Hello World!',
@@ -12,8 +12,9 @@ Page({
     flag: 'false',
     b: 'ctx',
     a: 'cc',
-    className: replaceJs('bg-[#123456]'),
+    className: 'bg-[#123456]',//  replaceJs('bg-[#123456]'),
     num: 0,
+    icebreaker:"bg-[#123456] text-[50px] text-[#654321]"
   },
   onTap() {
     this.setData({
