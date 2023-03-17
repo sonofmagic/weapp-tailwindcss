@@ -38,7 +38,6 @@
     "open:build": "weapp open -p dist/build/mp-weixin"
   },
   "dependencies": {
-    "@babel/types": "^7.21.3",
     "@dcloudio/uni-app": "3.0.0-3070320230222002",
     "@dcloudio/uni-app-plus": "3.0.0-3070320230222002",
     "@dcloudio/uni-components": "3.0.0-3070320230222002",
@@ -84,7 +83,7 @@
     "vite-plugin-windicss": "^1.8.10",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.0.0-beta.4",
+    "weapp-tailwindcss-webpack-plugin": "^2.0.0-beta.5",
     "windicss": "^3.5.6"
   }
 }
