@@ -1,6 +1,6 @@
 <template>
   <view class="flex flex-col">
-    <view class="text-[#e67240] a" wx:for="{{listData}}" wx:key="index">{{ item }}</view>
+    <view class="text-[#e67240] a" wx:for="{{listData}}" wx:key="id">{{ item }}</view>
   </view>
 </template>
 
@@ -9,7 +9,20 @@
 
   createComponent({
     data: {
-      listData: ['手机', '电视', '电脑']
+      listData: [
+        {
+          id: 1,
+          label: '手机'
+        },
+        {
+          id: 2,
+          label: '电视'
+        },
+        {
+          id: 3,
+          label: '电脑'
+        }
+      ]
     },
     options: {
       addGlobalClass: true
@@ -18,7 +31,6 @@
 </script>
 
 <style lang="scss">
-
 </style>
 
 <script type="application/json">
