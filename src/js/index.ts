@@ -17,12 +17,19 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
         for (let i = 0; i < arr.length; i++) {
           const v = arr[i]
           if (set.has(v)) {
-            rawStr = rawStr.replace(
-              new RegExp(escapeStringRegexp(v), 'g'),
-              replaceWxml(v, {
-                escapeEntries: options.escapeEntries
-              })
-            )
+            let ignoreFlag = false
+            if (Array.isArray(n.leadingComments)) {
+              ignoreFlag = n.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
+            }
+
+            if (!ignoreFlag) {
+              rawStr = rawStr.replace(
+                new RegExp(escapeStringRegexp(v), 'g'),
+                replaceWxml(v, {
+                  escapeEntries: options.escapeEntries
+                })
+              )
+            }
           }
         }
         n.value = rawStr

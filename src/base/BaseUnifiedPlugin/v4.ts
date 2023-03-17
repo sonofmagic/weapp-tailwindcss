@@ -11,12 +11,15 @@ import { getGroupedEntries } from '@/base/shared'
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
  */
 
-export class BaseUnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
+export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType: AppType
   // classGenerator?: ClassGenerator
   static NS = NS
   constructor(options: UserDefinedOptions, appType: AppType) {
+    if (typeof options.customReplaceDictionary === 'undefined') {
+      options.customReplaceDictionary = 'simple'
+    }
     this.options = getOptions(options, ['style', 'patch', 'templete', 'js'])
     this.appType = appType
   }

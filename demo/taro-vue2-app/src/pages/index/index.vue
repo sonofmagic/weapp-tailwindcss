@@ -1,6 +1,8 @@
 <template>
   <view class="index">
     <Render></Render>
+    <view :class="classArray">classArray11</view>
+
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
     <view :class="[flag ? 'bg-red-900' : 'bg-[#fafa00]']">bg-[#fafa00]</view>
     <view :class="{ 'bg-[#098765]': flag === true }">bg-[#098765]</view>
@@ -35,7 +37,8 @@ export default {
   data() {
     return {
       msg: 'Hello world!',
-      flag: true
+      flag: true,
+      classArray: ['bg-[#543254]', 'h-[100px]', 'w-[320px]']
     }
   },
   methods: {

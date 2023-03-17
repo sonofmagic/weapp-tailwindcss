@@ -12,6 +12,7 @@
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
+  - [2.x 版本新增](#2x-版本新增)
   - [Usage](#usage)
     - [uni-app (vue2/3)](#uni-app-vue23)
     - [uni-app for vite (vue3)](#uni-app-for-vite-vue3)
@@ -45,6 +46,65 @@
 此方案可兼容 `tailwindcss v2/v3`，`webpack v4/v5`，`postcss v7/v8`。
 
 > 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`，相关进度见 [uni-app/issues/3723](https://github.com/dcloudio/uni-app/issues/3723)
+
+## 2.x 版本新增
+
+`2.x` 版本发布了，在内部新增了 `UnifiedWebpackPluginV5`
+和 `vite` 插件 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件，能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里动态的 `class`。所以你再也不需要手动 `replaceJs(xxx)`了！
+
+```js
+// 进入历史的垃圾堆
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+```
+
+同时 `UnifiedWebpackPluginV5` 是一个核心插件，你在使用的时候应该传入你使用的框架类型让它根据类型对 `tailwindcss` 生成的基类进行寻找，比如 `new UnifiedWebpackPluginV5(options,'uni-app')`,
+
+`taro`/`rax`/`remax`/`mpx` 等等，`options` 如果不传可以使用 `{}`/`undefined` 都是可以的。
+
+目前，这个方案只支持 `tailwindcss v3.2.0` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+```
+
+加入你的 `package.json` ，当然在安装或者更新 `tailwindcss` 后，手动执行  `npx weapp-tw patch` 也是可以的，看到 `patch .... successfully` 表示成功。
+
+另外 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，但 `vite` 会有一些区别:
+
+`1.x`:
+
+```js
+import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
+```
+
+`2.x`:
+
+```js
+// ViteWeappTailwindcssPlugin 就是原先上面 1.x 的 vwt 
+// UnifiedViteWeappTailwindcssPlugin 就是新的插件
+// 使用方式和 ViteWeappTailwindcssPlugin 一致
+import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
+```
+
+所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。
+
+默认对所有 `js`,`wxml`,`wxss`中出现的`tailwindcss`运行时工具类进行转化，如果不需要转化可以使用 `/*weapp-tw ignore*/` 前置注释。
+
+例如:
+
+```js
+<view :class="classArray">classArray</view>
+const classArray = [
+  'text-[30rpx]',
+  /*weapp-tw ignore*/ 'bg-[#00ff00]'
+]
+```
+
+此时只有 `'text-[30rpx]'` 会被转化，`'bg-[#00ff00]'`被忽视
+
+另外有可能出现的问题，我也写进了 [常见问题](#常见问题) 中，可以进行参考。
 
 ## Usage
 

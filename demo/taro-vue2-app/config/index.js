@@ -1,14 +1,14 @@
-let TaroWeappTailwindcssWebpackPluginV5
+let UnifiedWebpackPluginV5
 const path = require('path')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 if (isLocal) {
   console.log('use local built webpack plugin')
-  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('../weapp-tw-dist')
-  TaroWeappTailwindcssWebpackPluginV5 = plugin
+  const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
+  UnifiedWebpackPluginV5 = plugin
 } else {
-  const { TaroWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
-  TaroWeappTailwindcssWebpackPluginV5 = plugin
+  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
+  UnifiedWebpackPluginV5 = plugin
 }
 const config = {
   projectName: 'taro-vue2-app',
@@ -56,18 +56,18 @@ const config = {
       const opt = {
         framework: 'vue2'
       }
-      if (isWrite) {
-        opt.loaderOptions = {
-          jsxRename: {
-            dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-vue2-app')
-          }
-        }
-      }
+      // if (isWrite) {
+      //   opt.loaderOptions = {
+      //     jsxRename: {
+      //       dir: path.resolve(__dirname, '../../../test/fixtures/loader/taro-vue2-app')
+      //     }
+      //   }
+      // }
       chain.merge({
         plugin: {
           install: {
-            plugin: TaroWeappTailwindcssWebpackPluginV5,
-            args: [opt]
+            plugin: UnifiedWebpackPluginV5,
+            args: [opt, 'taro']
           }
         }
       })

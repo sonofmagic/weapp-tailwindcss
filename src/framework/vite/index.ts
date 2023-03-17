@@ -105,6 +105,9 @@ export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Pl
 }
 
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
+  if (typeof options.customReplaceDictionary === 'undefined') {
+    options.customReplaceDictionary = 'simple'
+  }
   const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler } = opts
   if (disabled) {

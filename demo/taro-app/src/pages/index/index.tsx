@@ -1,15 +1,24 @@
 import { useState } from 'react'
 import { View } from '@tarojs/components'
+import classNames from 'classnames'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+
 import './index.scss'
 import EndClassCom from './endClassCom'
 
 const Index = () => {
   const [flag] = useState(true)
-  const className = replaceJs('bg-[#123456]')
+  const className = 'bg-[#123456]'
+  const aaa = classNames(
+    {
+      'text-[50px]': true
+    },
+    'bg-[#3232ff]',
+    ['h-[10px]', 'w-[20px]']
+  )
   return (
     <>
+      <View className={aaa}></View>
       <View className='form-box py-[62px] px-[95px] bg-sky-500/80'>py-[62px] px-[95px]</View>
       {/* @ts-ignore */}
       <View emptyImageClass='w-[404px] h-[337px] bg-[#fff]' btnClassName='text-[#66ffff]'></View>

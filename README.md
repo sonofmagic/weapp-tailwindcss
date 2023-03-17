@@ -12,6 +12,7 @@
 > 把 `tailwindcss JIT` 思想带入小程序开发吧！
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
+  - [2.x 版本新增](#2x-版本新增)
   - [Usage](#usage)
     - [uni-app (vue2/3)](#uni-app-vue23)
     - [uni-app for vite (vue3)](#uni-app-for-vite-vue3)
@@ -24,19 +25,6 @@
     - [uni-app 构建成 `android/ios` app](#uni-app-构建成-androidios-app)
     - [unocss 集成](#unocss-集成)
   - [Options 配置项](#options-配置项)
-    - [htmlMatcher](#htmlmatcher)
-    - [cssMatcher](#cssmatcher)
-    - [jsMatcher](#jsmatcher)
-    - [mainCssChunkMatcher](#maincsschunkmatcher)
-    - [framework (`Taro` 特有)](#framework-taro-特有)
-    - [customRuleCallback](#customrulecallback)
-    - [disabled](#disabled)
-    - [cssPreflightRange](#csspreflightrange)
-    - [replaceUniversalSelectorWith](#replaceuniversalselectorwith)
-    - [customAttributes](#customattributes)
-    - [customReplaceDictionary](#customreplacedictionary)
-    - [cssPreflight](#csspreflight)
-    - [supportCustomLengthUnitsPatch](#supportcustomlengthunitspatch)
   - [使用 arbitrary values](#使用-arbitrary-values)
   - [关于rem转化rpx](#关于rem转化rpx)
   - [变更日志](#变更日志)
@@ -58,6 +46,65 @@
 此方案可兼容 `tailwindcss v2/v3`，`webpack v4/v5`，`postcss v7/v8`。
 
 > 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`，相关进度见 [uni-app/issues/3723](https://github.com/dcloudio/uni-app/issues/3723)
+
+## 2.x 版本新增
+
+`2.x` 版本发布了，在内部新增了 `UnifiedWebpackPluginV5`
+和 `vite` 插件 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件，能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里动态的 `class`。所以你再也不需要手动 `replaceJs(xxx)`了！
+
+```js
+// 进入历史的垃圾堆
+import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+```
+
+同时 `UnifiedWebpackPluginV5` 是一个核心插件，你在使用的时候应该传入你使用的框架类型让它根据类型对 `tailwindcss` 生成的基类进行寻找，比如 `new UnifiedWebpackPluginV5(options,'uni-app')`,
+
+`taro`/`rax`/`remax`/`mpx` 等等，`options` 如果不传可以使用 `{}`/`undefined` 都是可以的。
+
+目前，这个方案只支持 `tailwindcss v3.2.0` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+```
+
+加入你的 `package.json` ，当然在安装或者更新 `tailwindcss` 后，手动执行  `npx weapp-tw patch` 也是可以的，看到 `patch .... successfully` 表示成功。
+
+另外 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，但 `vite` 会有一些区别:
+
+`1.x`:
+
+```js
+import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
+```
+
+`2.x`:
+
+```js
+// ViteWeappTailwindcssPlugin 就是原先上面 1.x 的 vwt 
+// UnifiedViteWeappTailwindcssPlugin 就是新的插件
+// 使用方式和 ViteWeappTailwindcssPlugin 一致
+import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
+```
+
+所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。
+
+默认对所有 `js`,`wxml`,`wxss`中出现的`tailwindcss`运行时工具类进行转化，如果不需要转化可以使用 `/*weapp-tw ignore*/` 前置注释。
+
+例如:
+
+```js
+<view :class="classArray">classArray</view>
+const classArray = [
+  'text-[30rpx]',
+  /*weapp-tw ignore*/ 'bg-[#00ff00]'
+]
+```
+
+此时只有 `'text-[30rpx]'` 会被转化，`'bg-[#00ff00]'`被忽视
+
+另外有可能出现的问题，我也写进了 [常见问题](#常见问题) 中，可以进行参考。
 
 ## Usage
 
@@ -133,7 +180,7 @@
 ### customRuleCallback
 
 类型: `(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void`  
-描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法
+描述: 可根据 Postcss walk 自由定制处理方案的 callback 方法 
 
 ### disabled
 
@@ -165,7 +212,6 @@
 描述: 默认为 `'complex'` 模式，这个配置项，用来自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`
 
 插件中内置了`'simple'`模式和`'complex'`模式:
-
 - `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
 - `'complex'`模式: 把小程序中不允许的字符串，转义为**更长**的代替字符串，这种情况转化前后的字符串是等价的，可以从结果进行反推，缺点就是会生成更长的 `class` 导致 `wxml`和`wxss`这类的体积增大
 
@@ -175,7 +221,6 @@
 
 类型: `Record<string,string>`\| `false`  
 描述: 在所有 `view`节点添加的 `css` 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:
-
 ```js
 // default 默认:
 cssPreflight: {
@@ -216,12 +261,12 @@ cssPreflight: {
 // background: black
 ```
 
+
 ### supportCustomLengthUnitsPatch
 
 类型: `ILengthUnitsPatchOptions` \| `boolean`  
 描述: 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
-
 ```json
  "scripts": {
 +  "postinstall": "weapp-tw patch"
