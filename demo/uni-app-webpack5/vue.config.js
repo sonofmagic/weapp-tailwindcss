@@ -21,12 +21,10 @@ const config = {
   transpileDependencies: ['uview-ui'],
   configureWebpack: (config) => {
     config.plugins.push(
-      new UnifiedWebpackPluginV5(
-        {
-          disabled: WeappTailwindcssDisabled
-        },
-        'uni-app'
-      )
+      new UnifiedWebpackPluginV5({
+        disabled: WeappTailwindcssDisabled,
+        appType: 'uni-app'
+      })
     )
     // config.plugins.push(new MiniCssExtractPlugin())
     // smp.wrap(config)

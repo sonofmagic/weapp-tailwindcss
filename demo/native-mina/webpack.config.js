@@ -90,11 +90,12 @@ module.exports = {
       BUILD_TYPE: 'debug',
     }),
     new UnifiedWebpackPluginV5({
+      appType: 'native',
       // mangle: true,
       // cssPreflight: {
       //   "border-color": false
       // }
-    },'native'),
+    }),
   ],
   optimization: {
     splitChunks: {

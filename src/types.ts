@@ -133,7 +133,6 @@ export interface UserDefinedOptions {
    */
   jsMatcher?: ((name: string) => boolean) | string | string[]
   /**
-   * @deprecated v2 版本中不再需要，会自动判断 CssMainChunk
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */
@@ -193,10 +192,15 @@ export interface UserDefinedOptions {
   mangle?: IMangleOptions | boolean
 
   /**
+   * @deprecated 2.x 版本中，由于使用了统一处理，即将废弃
    * @description Taro 特有，用来声明使用的框架
    */
   framework?: 'react' | 'vue' | 'vue3' | string
 
+  /**
+   * @deprecated 2.x 版本中，由于使用了统一处理，即将废弃
+   * @description 在 1.x 版本中，使用对jsx处理，使用了自定义 loader aop插入 loader序列，这个配置项就是做这个用途的
+   */
   loaderOptions?: {
     jsxRename?: JsxRenameLoaderOptions['write']
   }
@@ -218,6 +222,11 @@ export interface UserDefinedOptions {
    * @description tailwindcss 3.2 对长度单位添加了校验，不打patch，rpx 这个单位会被识别成颜色
    */
   supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
+
+  /**
+   * @description 使用的框架类型(uni-app,taro...)，用于找到主要的 css bundle 进行转化
+   */
+  appType?: AppType
 }
 
 export interface ICommonReplaceOptions {
@@ -245,7 +254,7 @@ export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' 
 
 export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
-    [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType: AppType) => boolean : (name: string) => boolean
+    [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType?: AppType) => boolean : (name: string) => boolean
   } & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
@@ -267,7 +276,7 @@ export interface IBaseWebpackPlugin {
   // new (options: UserDefinedOptions, appType: AppType): any
   // constructor(options: UserDefinedOptions, appType: AppType): void
   options: InternalUserDefinedOptions
-  appType: AppType
+  appType?: AppType
   classGenerator?: ClassGenerator
 
   apply: (compiler: any) => void

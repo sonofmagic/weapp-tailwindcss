@@ -7,10 +7,8 @@ import { getClassCacheSet } from '@/tailwindcss/exposeContext'
 // import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
 
-/**
- * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
- */
-
+// 这个还是不放出来了，统一使用 webpack5 postcss8 的组合
+// 哪有 webpack4 + postcss8 这样奇怪的组合
 export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType: AppType

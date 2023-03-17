@@ -54,7 +54,7 @@ const config = {
     },
     webpackChain(chain, webpack) {
       const opt = {
-        framework: 'vue2'
+        appType: 'taro'
       }
       // if (isWrite) {
       //   opt.loaderOptions = {

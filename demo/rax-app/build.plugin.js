@@ -16,12 +16,12 @@ module.exports = ({ context, onGetWebpackConfig }) => {
     // compiler.webpack.version 5.65.0
     config.plugin('RaxTailwindcssWebpackPluginV5').use(UnifiedWebpackPluginV5, [
       {
+        appType: 'rax',
         // cssPreflight: {
         //   'box-sizing': 'content-box',
         //   'background': 'black'
         // }
       },
-      'rax',
     ]);
   });
 };

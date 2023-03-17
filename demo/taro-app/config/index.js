@@ -54,7 +54,7 @@ const config = {
     },
     webpackChain(chain, webpack) {
       const opt = {
-        framework: 'react',
+        appType: 'taro'
         // customAttributes: {
         //   // '*': ['emptyImageClass','btnClassName'],
         //   '*': [/Class/]

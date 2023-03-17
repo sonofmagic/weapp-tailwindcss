@@ -11,7 +11,7 @@ import { createjsHandler } from './js'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
-export const defaultOptions: Required<UserDefinedOptions> = {
+export const defaultOptions: UserDefinedOptions = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
   htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
   jsMatcher: (file) => {
@@ -79,7 +79,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
       variableName: 'lengthUnits',
       overwrite: true
     }
-  }
+  },
+  appType: undefined
   // templeteHandler,
   // styleHandler,
   // jsxHandler

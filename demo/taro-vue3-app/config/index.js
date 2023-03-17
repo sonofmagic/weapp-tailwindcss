@@ -52,7 +52,7 @@ const config = {
     },
     webpackChain(chain, webpack) {
       const opt = {
-        framework: 'vue3'
+        appType: 'taro'
       }
       // if (isWrite) {
       //   opt.loaderOptions = {
@@ -65,7 +65,7 @@ const config = {
         plugin: {
           install: {
             plugin: UnifiedWebpackPluginV5,
-            args: [opt, 'taro']
+            args: [opt]
           }
         }
       })

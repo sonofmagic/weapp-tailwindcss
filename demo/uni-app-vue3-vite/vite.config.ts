@@ -29,6 +29,7 @@ const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 if (!WeappTailwindcssDisabled) {
   vitePlugins.push(
     vwt({
+      // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',
       //   ']': '_',

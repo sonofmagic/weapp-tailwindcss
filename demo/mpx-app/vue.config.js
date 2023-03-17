@@ -20,7 +20,9 @@ module.exports = defineConfig({
   },
   configureWebpack(config) {
     // console.log(config.module.rules)
-    config.plugins.push(new UnifiedWebpackPluginV5({}, 'mpx'))
+    config.plugins.push(new UnifiedWebpackPluginV5({
+      appType: 'mpx'
+    }))
 
     // config.plugins.push(function (compiler) {
     //   compiler.hooks.compilation.tap('xxxxxx', (compilation, params) => {

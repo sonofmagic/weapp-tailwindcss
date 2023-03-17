@@ -13,15 +13,15 @@ import { getGroupedEntries } from '@/base/shared'
 
 export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
-  appType: AppType
+  appType?: AppType
   // classGenerator?: ClassGenerator
   static NS = NS
-  constructor(options: UserDefinedOptions, appType: AppType) {
+  constructor(options: UserDefinedOptions) {
     if (typeof options.customReplaceDictionary === 'undefined') {
       options.customReplaceDictionary = 'simple'
     }
     this.options = getOptions(options, ['style', 'patch', 'templete', 'js'])
-    this.appType = appType
+    this.appType = this.options.appType
   }
 
   apply(compiler: Compiler) {
@@ -64,11 +64,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
             const set = getClassCacheSet()
 
             for (let i = 0; i < groupedEntries.js.length; i++) {
-              // let classGenerator
               const [file, originalSource] = groupedEntries.js[i]
-              // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-              //   classGenerator = this.classGenerator
-              // }
 
               const rawSource = originalSource.source().toString()
               const { code } = jsHandler(rawSource, set)
@@ -80,15 +76,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.css)) {
             for (let i = 0; i < groupedEntries.css.length; i++) {
-              // let classGenerator
               const [file, originalSource] = groupedEntries.css[i]
-              // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-              //   classGenerator = this.classGenerator
-              // }
+
               const rawSource = originalSource.source().toString()
               const css = styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(file, this.appType)
-                // classGenerator
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)
