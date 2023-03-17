@@ -1,5 +1,7 @@
 <template>
   <view class="content">
+    <view :class="classArray">classArray</view>
+    <view :class="['text-sm', classObj]">:class="['text-sm', classObj]</view>
     <view class="rotate-[10deg]">rotate1111111</view>
     <view :key="g.type" :class="['td', { 'highlight': g.type === '你好' }]" v-for="g in goods">{{ g.type }}</view>
     <view class="text-[32rpx] border-[10rpx]">rpx</view>
@@ -113,11 +115,19 @@ onLoad(() => {
   console.log('on page loaded!')
 })
 
-function toggleBarVisible(visible:boolean){
+function toggleBarVisible(visible: boolean) {
   const app = getApp()
   app.globalData!.tabbarVisible = visible
   console.log(app.globalData)
 }
+const classObj = {
+  'text-[#fafafa]': true
+}
+const classArray = [
+  'text-[30rpx]',
+  classObj,
+  true ? 'font-bold' : ''
+]
 </script>
 
 <style lang="scss">

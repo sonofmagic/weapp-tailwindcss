@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/defaults'
-import type { OutputAsset } from 'rollup'
+import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 // import type { Plugin as PostcssPlugin } from 'postcss'
 import { getGroupedEntries } from '@/base/shared'
@@ -122,12 +122,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     },
     generateBundle(opt, bundle, isWrite) {
       // 也许应该都在这里处理
-      const entries = Object.entries(bundle).filter(([, s]) => s.type === 'asset') as [string, OutputAsset][]
+      // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
+      const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
       if (Array.isArray(groupedEntries.html)) {
         for (let i = 0; i < groupedEntries.html.length; i++) {
           // let classGenerator
-          const [file, originalSource] = groupedEntries.html[i]
+          const [file, originalSource] = groupedEntries.html[i] as [string, OutputAsset]
           // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
           //   classGenerator = globalClassGenerator
           // }
@@ -139,7 +140,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       if (Array.isArray(groupedEntries.css)) {
         for (let i = 0; i < groupedEntries.css.length; i++) {
           // let classGenerator
-          const [file, originalSource] = groupedEntries.css[i]
+          const [file, originalSource] = groupedEntries.css[i] as [string, OutputAsset]
           // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
           //   classGenerator = globalClassGenerator
           // }
@@ -156,10 +157,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         const set = getClassCacheSet()
 
         for (let i = 0; i < groupedEntries.js.length; i++) {
-          const [file, originalSource] = groupedEntries.js[i]
-          const rawSource = originalSource.source.toString()
+          const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
+          const rawSource = originalSource.code
           const { code } = jsHandler(rawSource, set)
-          originalSource.source = code
+          originalSource.code = code
           onUpdate(file, rawSource, code)
         }
       }
