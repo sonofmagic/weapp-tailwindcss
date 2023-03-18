@@ -37,10 +37,12 @@
 
 ## 2.x 版本完善了什么？
 
-`2.x` 版本发布了，在内部新增了 `UnifiedWebpackPluginV5`
-和 `vite` 插件 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件。它能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里静态和动态的 `class`。所以你再也不需要手动 `replaceJs(xxx)`了！使用新版插件，把`weapp-tailwindcss-webpack-plugin/replace` 扔进历史的垃圾堆。由于 `2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板相关框架的开发体验。
+这个版本新增了 `UnifiedWebpackPluginV5`
+和 `UnifiedViteWeappTailwindcssPlugin` 这种以 `Unified` 开头的插件。
 
-`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公用样式文件的位置进行转化(有可能不准确)。
+它们能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里静态和动态的 `class`(v1版本只有处理`wxss`,`wxml`静态`class`的能力)。所以你再也不需要在 `js` 里引入并调用 `replaceJs`方法了！由于 `2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板框架的开发体验。
+
+`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公共的样式文件位置，并进行转化(有可能不准确)。
 
 目前，这个方案只支持 `tailwindcss v3.2.0` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
 
