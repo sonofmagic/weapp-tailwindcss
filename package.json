@@ -55,7 +55,9 @@
     "ls:pack": "npm pack --dry-run",
     "tw:patch": "ts-node scripts/patcher.ts",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
-    "prepare": "ts-patch install -s"
+    "prepare": "ts-patch install -s",
+    "-------":"-----------",
+    "postinstall": "node bin/weapp-tailwindcss.js patch"
   },
   "repository": {
     "type": "git",
