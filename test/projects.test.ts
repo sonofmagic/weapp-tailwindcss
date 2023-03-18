@@ -1,4 +1,4 @@
-import { findAstNode } from '@/tailwindcss/patcher'
+import { findAstNode } from '@/tailwindcss/supportCustomUnit'
 import { defaultOptions } from '@/defaults'
 import fs from 'fs'
 import path from 'path'

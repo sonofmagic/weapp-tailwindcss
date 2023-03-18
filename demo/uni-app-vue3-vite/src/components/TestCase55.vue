@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+
 import { ref, watch } from 'vue';
 
 interface Props {
@@ -24,7 +24,7 @@ const classname = ref<string>('');
 watch(
   () => props.className,
   (nv, ov) => {
-    classname.value = replaceJs(props.className);
+    classname.value = props.className;
   },
   {
     immediate: true,

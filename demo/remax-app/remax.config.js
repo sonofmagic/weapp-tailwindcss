@@ -1,7 +1,7 @@
 let RemaxWeappTailwindcssWebpackPluginV4
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { RemaxWeappTailwindcssWebpackPluginV4: plugin } = require('../../')
+  const { RemaxWeappTailwindcssWebpackPluginV4: plugin } = require('./weapp-tw-dist')
   RemaxWeappTailwindcssWebpackPluginV4 = plugin
 } else {
   const { RemaxWeappTailwindcssWebpackPluginV4: plugin } = require('weapp-tailwindcss-webpack-plugin')

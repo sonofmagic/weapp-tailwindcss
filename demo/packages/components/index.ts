@@ -2,7 +2,14 @@ import automator from 'miniprogram-automator'
 // import { expect } from '@jest/globals'
 import path from 'path'
 
-const TestProjectsMap = {
+const TestProjectsMap: Record<
+  string,
+  {
+    projectPath: string
+    testMethod: Function
+    url?: string
+  }
+> = {
   'uni-app-vue2-cli4': {
     projectPath: 'uni-app/dist/build/mp-weixin',
     testMethod: () => {}
@@ -29,7 +36,8 @@ const TestProjectsMap = {
   },
   'mpx-app': {
     projectPath: 'mpx-app/dist/wx',
-    testMethod: () => {}
+    testMethod: () => {},
+    url: '/pages/index'
   },
   'native-mina': {
     projectPath: 'native-mina',
@@ -54,12 +62,13 @@ export async function runE2E() {
   for (let index = 0; index < projectPaths.length; index++) {
     const projectPath = projectPaths[index]
     const projectName = TestProjectsEntries[index][0]
-    const testMethod = TestProjectsEntries[index][1].testMethod
+    const config = TestProjectsEntries[index][1]
+    const testMethod = config.testMethod
     const miniProgram = await automator.launch({
       // cliPath: 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
       projectPath
     })
-    const page = await miniProgram.reLaunch('/pages/index/index')
+    const page = await miniProgram.reLaunch(config.url ?? '/pages/index/index')
     if (page) {
       await testMethod()
       console.log(projectName)

@@ -6,8 +6,10 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import type { PackageJson } from 'pkg-types'
 // import terser from '@rollup/plugin-terser'
 import { readFileSync } from 'node:fs'
+// import { resolve } from 'path'
 import type { RollupOptions } from 'rollup'
 import { excludeKeys } from './filter-obj'
+import * as path from 'path'
 const pkg = JSON.parse(
   readFileSync('./package.json', {
     encoding: 'utf8'
@@ -16,6 +18,7 @@ const pkg = JSON.parse(
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
+const isDemo = process.env.NODE_ENV === 'demo'
 
 interface IEntry {
   name?: string
@@ -33,7 +36,11 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
         preferBuiltins: true
       }),
       commonjs(),
-      typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev, declaration: false }),
+      typescript({
+        tsconfig: isDemo ? './tsconfig.demo.json' : './tsconfig.build.json',
+        sourceMap: isDev || isDemo,
+        declaration: false
+      }),
       isProd
         ? visualizer({
             // emitFile: true,
@@ -49,13 +56,48 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
 //   sharedConfig.plugins.push(terser())
 // }
 
+const mainOutputOptions: Partial<RollupOptions['output']> = {
+  format: 'cjs',
+  sourcemap: isDev || isDemo,
+  exports: 'auto',
+  esModule: true,
+  generatedCode: {
+    reservedNamesAsProps: false
+  },
+  interop: 'compat',
+  systemNullSetters: false,
+  sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+    if (isDemo) {
+      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replace(/\.\.[\\/]/g, ''))
+    }
+    return relativeSourcePath
+  }
+}
+
+const replaceOutputOptions: Partial<RollupOptions['output']> = {
+  format: 'esm',
+  sourcemap: isDev || isDemo,
+  esModule: true,
+  generatedCode: {
+    reservedNamesAsProps: false
+  },
+  interop: 'compat',
+  systemNullSetters: false,
+  sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+    if (isDemo) {
+      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replace(/\.\.[\\/]/g, ''))
+    }
+    return relativeSourcePath
+  }
+}
+
 const entries: IEntry[] = [
   {
     name: 'bundle',
     input: {
       index: 'src/index.ts',
       'jsx-rename-loader': 'src/loader/jsx-rename-loader.ts',
-      vite: 'src/framework/vite/index.ts',
+      // vite: 'src/framework/vite/index.ts',
       postcss: 'src/postcss/plugin.ts',
       mangle: 'src/mangle/index.ts',
       cli: 'src/cli.ts',
@@ -64,131 +106,34 @@ const entries: IEntry[] = [
     },
     output: [
       {
-        dir: 'dist',
-        format: 'cjs',
-        sourcemap: isDev,
-        exports: 'auto',
-        esModule: true,
-        generatedCode: {
-          reservedNamesAsProps: false
-        },
-        interop: 'compat',
-        systemNullSetters: false
+        dir: isDemo ? 'demo/web/weapp-tw-dist' : 'dist',
+        ...mainOutputOptions
       }
     ]
   },
-  // {
-  //   name: 'index',
-  //   input: 'src/index.ts',
-  //   output: [
-  //     {
-  //       file: pkg.main,
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //     // { format: 'esm', file: pkg.module, sourcemap: isDev }
-  //   ]
-  // },
   {
     name: 'replace',
     input: 'src/replace.ts',
     output: [
       {
-        file: 'dist/replace.js',
-        format: 'esm',
-        sourcemap: isDev,
-        esModule: true,
-        generatedCode: {
-          reservedNamesAsProps: false
-        },
-        interop: 'compat',
-        systemNullSetters: false
+        file: isDemo ? 'demo/web/weapp-tw-dist/replace.js' : 'dist/replace.js',
+        ...replaceOutputOptions
+      }
+    ]
+  },
+  {
+    name: 'vite',
+    input: 'src/framework/vite/index.ts',
+    output: [
+      {
+        file: isDemo ? 'demo/web/weapp-tw-dist/vite.js' : 'dist/vite.js',
+        format: 'cjs',
+        sourcemap: isDev || isDemo,
+        exports: 'auto',
+        interop: 'auto'
       }
     ]
   }
-  // {
-  //   name: 'jsx-rename-loader',
-  //   input: 'src/loader/jsx-rename-loader.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/jsx-rename-loader.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // },
-  // {
-  //   name: 'vite',
-  //   input: 'src/framework/vite/index.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/vite.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // },
-  // {
-  //   name: 'postcss',
-  //   input: 'src/postcss/plugin.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/postcss.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // },
-  // {
-  //   name: 'mangle',
-  //   input: 'src/mangle/index.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/mangle.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // },
-  // {
-  //   name: 'cli',
-  //   input: 'src/cli.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/cli.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // }
-  // {
-  //   input: 'src/v4.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/v4.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // },
-  // {
-  //   input: 'src/v5.ts',
-  //   output: [
-  //     {
-  //       file: 'dist/v5.js',
-  //       format: 'cjs',
-  //       sourcemap: isDev,
-  //       exports: 'auto'
-  //     }
-  //   ]
-  // }
 ]
 
 const config = entries.map((x) => {

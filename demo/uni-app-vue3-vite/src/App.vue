@@ -4,19 +4,19 @@ import { defineComponent } from 'vue'
 import { onLaunch, onShow, onHide, } from '@dcloudio/uni-app'
 import { ProxyUtils } from './utils'
 const globalData = ProxyUtils({
-    selected: 0,
-    tabbarVisible: false,
-    list: [
-      {
-        pagePath: '/pages/index/index',
-        text: '首页',
-      },
-      {
-        pagePath: '/pages/issue/case55',
-        text: 'case55',
-      },
-    ],
-  })
+  selected: 0,
+  tabbarVisible: false,
+  list: [
+    {
+      pagePath: '/pages/index/index',
+      text: '首页',
+    },
+    {
+      pagePath: '/pages/issue/case55',
+      text: 'case55',
+    },
+  ],
+})
 export default defineComponent({
   globalData,
   setup() {
@@ -47,5 +47,6 @@ export default defineComponent({
 <style lang="scss">
 @import './tailwind.scss';
 // @import './windi.scss';
-@import "vk-uview-ui/index.scss";
+// @import "vk-uview-ui/index.scss";
+@import "uview-plus/index.scss";
 </style>

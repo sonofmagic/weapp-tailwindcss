@@ -362,4 +362,16 @@ describe('styleHandler', () => {
     }).replace(/\r\n/g, '\n')
     expect(result).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
   })
+
+  it('@apply space-y/x css selector', async () => {
+    const testCase = '.test > :not([hidden]) ~ :not([hidden]){}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    }).replace(/\r\n/g, '\n')
+    expect(result).toBe('.test>view + view{}')
+  })
 })

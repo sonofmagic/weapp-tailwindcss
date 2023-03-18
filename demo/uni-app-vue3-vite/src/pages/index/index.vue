@@ -1,5 +1,7 @@
 <template>
   <view class="content">
+    <view :class="classArray">classArray</view>
+    <view :class="['text-sm', classObj]">:class="['text-sm', classObj]</view>
     <view class="rotate-[10deg]">rotate1111111</view>
     <view :key="g.type" :class="['td', { 'highlight': g.type === '你好' }]" v-for="g in goods">{{ g.type }}</view>
     <view class="text-[32rpx] border-[10rpx]">rpx</view>
@@ -68,7 +70,7 @@
 
 
 <script setup lang="ts">
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace';
+
 import { ref, onBeforeUnmount } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 const title = ref('测试标题');
@@ -87,8 +89,8 @@ const goods = ref([
 ])
 
 const cardsColor = ref([
-  replaceJs('bg-[#4268EA] shadow-indigo-100'),
-  replaceJs('bg-[#123456] shadow-blue-100'),
+  'bg-[#4268EA] shadow-indigo-100',
+  'bg-[#123456] shadow-blue-100',
   'bg-green-500 shadow-green-100',
   'bg-cyan-500 shadow-cyan-100',
   'bg-amber-500 shadow-amber-100',
@@ -113,11 +115,19 @@ onLoad(() => {
   console.log('on page loaded!')
 })
 
-function toggleBarVisible(visible:boolean){
+function toggleBarVisible(visible: boolean) {
   const app = getApp()
   app.globalData!.tabbarVisible = visible
   console.log(app.globalData)
 }
+const classObj = {
+  'text-[#fafafa]': true
+}
+const classArray = [
+  'text-[30rpx]',
+  classObj,
+  true ? 'font-bold' : ''
+]
 </script>
 
 <style lang="scss">

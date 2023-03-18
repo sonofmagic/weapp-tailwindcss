@@ -1,5 +1,9 @@
 <template>
   <div class="before:content-['hello'] before:block">
+    <view :class="bbb">bbb</view>
+    <view :class="classArray">classArray</view>
+    <view :class="['text-[20px]', true ? 'text-[#898989]' : 'text-[#132323]', aaa]">:class="['text-sm', classObj]
+    </view>
     <view class="text-[22px]">对酒当歌，人生几何</view>
     <view class="!h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
@@ -75,10 +79,23 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+
 export default Vue.extend({
   data() {
+    // uni-app vue2 小程序端不支持 classObject 和 styleObject 语法。
+    // https://uniapp.dcloud.net.cn/tutorial/vue-basics.html#%E6%95%B0%E7%BB%84%E8%AF%AD%E6%B3%95
+    const classObj = {
+      'text-[#fafafa]': true
+    }
+    const classArray = [
+      'text-[30rpx]',
+      /*weapp-tw ignore*/ 'bg-[#00ff00]'
+    ]
     return {
+      classObj,
+      classArray,
+      aaa: 'bg-[#ff0000]',
+      bbb: /*weapp-tw ignore*/ 'bg-[#00ff00]',
       flag: false,
 
       displayArray: [
@@ -103,12 +120,12 @@ export default Vue.extend({
         'contents',
         'list-item',
         'hidden'
-      ]
+      ],
     }
   },
   computed: {
     classObject() {
-      return replaceJs('text-[20px] bg-[#000000]')
+      return 'text-[20px] bg-[#000000]'
     }
   }
 })

@@ -3,7 +3,7 @@
 exports[`webpack5 jsx plugin common: assets 1`] = `
 {
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
-  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.75.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.0.2_qxxfhhrl3yknjjmta266mo3u64/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
+  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.76.1/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.0.2_mquw4qchulb5tpkmg3p2j6qala/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
 view,::before,::after {
     --tw-border-spacing-x: 0;
@@ -127,17 +127,17 @@ view,::before,::after {
 .w-10 {
     width: 80rpx
 }
+.w-32 {
+    width: 256rpx
+}
+.w-_bl_100px_br_ {
+    width: 100px
+}
 .w-_bl_200_p__br_ {
     width: 200%
 }
 .w-_bl_300rpx_br_ {
     width: 300rpx
-}
-.w-_bl_100px_br_ {
-    width: 100px
-}
-.w-32 {
-    width: 256rpx
 }
 .min-w-_bl_300rpx_br_ {
     min-width: 300rpx
@@ -190,21 +190,21 @@ view,::before,::after {
 .border-opacity-_bl_0_d_44_br_ {
     --tw-border-opacity: 0.44
 }
-.bg-gray-100 {
-    --tw-bg-opacity: 1;
-    background-color: rgb(243 244 246 / var(--tw-bg-opacity))
-}
-.bg-red-500 {
-    --tw-bg-opacity: 1;
-    background-color: rgb(239 68 68 / var(--tw-bg-opacity))
-}
 .bg-_bl__h_123456_br_ {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity))
 }
+.bg-gray-100 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(243 244 246 / var(--tw-bg-opacity))
+}
 .bg-pink-500 {
     --tw-bg-opacity: 1;
     background-color: rgb(236 72 153 / var(--tw-bg-opacity))
+}
+.bg-red-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(239 68 68 / var(--tw-bg-opacity))
 }
 .bg-opacity-_bl_0_d_54_br_ {
     --tw-bg-opacity: 0.54
@@ -228,10 +228,6 @@ view,::before,::after {
 .leading-_bl_0_d_9_br_ {
     line-height: 0.9
 }
-.text-black {
-    --tw-text-opacity: 1;
-    color: rgb(0 0 0 / var(--tw-text-opacity))
-}
 .text-_bl__h_dddddd_br_ {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity))
@@ -239,6 +235,10 @@ view,::before,::after {
 .text-_bl__h_ffffff_br_ {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+.text-black {
+    --tw-text-opacity: 1;
+    color: rgb(0 0 0 / var(--tw-text-opacity))
 }
 .text-white {
     --tw-text-opacity: 1;
@@ -256,13 +256,13 @@ view,::before,::after {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity))
 }
-.after_c_ml-0_d_5::after {
-    content: var(--tw-content);
-    margin-left: 4rpx
-}
 .after_c_ml-0::after {
     content: var(--tw-content);
     margin-left: 0px
+}
+.after_c_ml-0_d_5::after {
+    content: var(--tw-content);
+    margin-left: 4rpx
 }
 .after_c_border-none::after {
     content: var(--tw-content);
@@ -273,12 +273,12 @@ view,::before,::after {
     --tw-text-opacity: 1;
     color: rgb(239 68 68 / var(--tw-text-opacity))
 }
-.after_c_content-_bl__q_Hello_World_q__br_::after {
-    --tw-content: 'Hello World';
-    content: var(--tw-content)
-}
 .after_c_content-_bl__dq__a__dq__br_::after {
     --tw-content: "*";
+    content: var(--tw-content)
+}
+.after_c_content-_bl__q_Hello_World_q__br_::after {
+    --tw-content: 'Hello World';
     content: var(--tw-content)
 }
 .after_c_content-_bl__a__br_::after {
@@ -286,13 +286,13 @@ view,::before,::after {
     content: var(--tw-content)
 }
 @media (prefers-color-scheme: dark) {
-    .dark_c_bg-zinc-800 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(39 39 42 / var(--tw-bg-opacity))
-    }
     .dark_c_bg-green-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(34 197 94 / var(--tw-bg-opacity))
+    }
+    .dark_c_bg-zinc-800 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(39 39 42 / var(--tw-bg-opacity))
     }
 }
 ",
@@ -424,7 +424,7 @@ exports[`webpack5 jsx plugin common: warnings 1`] = `[]`;
 exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 {
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
-  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.75.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.0.2_qxxfhhrl3yknjjmta266mo3u64/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
+  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.76.1/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.0.2_mquw4qchulb5tpkmg3p2j6qala/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
 *, ::before, ::after {
     --tw-border-spacing-x: 0;
@@ -548,17 +548,17 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 .w-10 {
     width: 80rpx
 }
+.w-32 {
+    width: 256rpx
+}
+.w-\\[100px\\] {
+    width: 100px
+}
 .w-\\[200\\%\\] {
     width: 200%
 }
 .w-\\[300rpx\\] {
     width: 300rpx
-}
-.w-\\[100px\\] {
-    width: 100px
-}
-.w-32 {
-    width: 256rpx
 }
 .min-w-\\[300rpx\\] {
     min-width: 300rpx
@@ -611,21 +611,21 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 .border-opacity-\\[0\\.44\\] {
     --tw-border-opacity: 0.44
 }
-.bg-gray-100 {
-    --tw-bg-opacity: 1;
-    background-color: rgb(243 244 246 / var(--tw-bg-opacity))
-}
-.bg-red-500 {
-    --tw-bg-opacity: 1;
-    background-color: rgb(239 68 68 / var(--tw-bg-opacity))
-}
 .bg-\\[\\#123456\\] {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity))
 }
+.bg-gray-100 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(243 244 246 / var(--tw-bg-opacity))
+}
 .bg-pink-500 {
     --tw-bg-opacity: 1;
     background-color: rgb(236 72 153 / var(--tw-bg-opacity))
+}
+.bg-red-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(239 68 68 / var(--tw-bg-opacity))
 }
 .bg-opacity-\\[0\\.54\\] {
     --tw-bg-opacity: 0.54
@@ -649,10 +649,6 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 .leading-\\[0\\.9\\] {
     line-height: 0.9
 }
-.text-black {
-    --tw-text-opacity: 1;
-    color: rgb(0 0 0 / var(--tw-text-opacity))
-}
 .text-\\[\\#dddddd\\] {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity))
@@ -660,6 +656,10 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 .text-\\[\\#ffffff\\] {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+.text-black {
+    --tw-text-opacity: 1;
+    color: rgb(0 0 0 / var(--tw-text-opacity))
 }
 .text-white {
     --tw-text-opacity: 1;
@@ -677,13 +677,13 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
     --tw-ring-opacity: 1;
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity))
 }
-.after\\:ml-0\\.5::after {
-    content: var(--tw-content);
-    margin-left: 4rpx
-}
 .after\\:ml-0::after {
     content: var(--tw-content);
     margin-left: 0px
+}
+.after\\:ml-0\\.5::after {
+    content: var(--tw-content);
+    margin-left: 4rpx
 }
 .after\\:border-none::after {
     content: var(--tw-content);
@@ -694,12 +694,12 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
     --tw-text-opacity: 1;
     color: rgb(239 68 68 / var(--tw-text-opacity))
 }
-.after\\:content-\\[\\'Hello_World\\'\\]::after {
-    --tw-content: 'Hello World';
-    content: var(--tw-content)
-}
 .after\\:content-\\[\\"\\*\\"\\]::after {
     --tw-content: "*";
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'Hello_World\\'\\]::after {
+    --tw-content: 'Hello World';
     content: var(--tw-content)
 }
 .after\\:content-\\[\\*\\]::after {
@@ -707,13 +707,13 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
     content: var(--tw-content)
 }
 @media (prefers-color-scheme: dark) {
-    .dark\\:bg-zinc-800 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(39 39 42 / var(--tw-bg-opacity))
-    }
     .dark\\:bg-green-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(34 197 94 / var(--tw-bg-opacity))
+    }
+    .dark\\:bg-zinc-800 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(39 39 42 / var(--tw-bg-opacity))
     }
 }
 ",

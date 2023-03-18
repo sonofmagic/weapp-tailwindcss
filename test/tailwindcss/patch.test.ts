@@ -1,4 +1,5 @@
-import { findAstNode, getInstalledPkgJsonPath, internalPatch } from '@/tailwindcss/patcher'
+import { getInstalledPkgJsonPath, internalPatch } from '@/tailwindcss/patcher'
+import { findAstNode } from '@/tailwindcss/supportCustomUnit'
 import { tailwindcssCasePath, createGetCase } from '#test/util'
 import { getOptions } from '@/defaults'
 import path from 'path'
@@ -33,12 +34,21 @@ describe('tailwindcss source code patch', () => {
     expect(changed).toBe(false)
   })
 
-  it('internalPatch case 0', () => {
+  it.skip('internalPatch case 0', () => {
     const options = getOptions()
 
     const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
     opt.dangerousOptions.overwrite = false
     const code = internalPatch(path.resolve(tailwindcssCasePath, 'package.json'), opt)
     expect(code).toMatchSnapshot()
+  })
+
+  it('patch 3.2.7', () => {
+    const options = getOptions()
+
+    const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
+    opt.dangerousOptions.overwrite = false
+    const res = internalPatch(path.resolve(tailwindcssCasePath, 'versions/3.2.7/package.json'), opt, false)
+    expect(res).toMatchSnapshot()
   })
 })

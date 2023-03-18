@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view class="text-[#123456]">对酒当歌，人生几何</view>
+    <view wx:class="{{classNames}}">对酒当歌，人生几何</view>
     <list />
   </view>
 </template>
@@ -9,6 +9,9 @@
   import { createPage } from '@mpxjs/core'
 
   createPage({
+    data: {
+      classNames: 'text-[#123456] text-[50px] bg-[#fff]'
+    },
     options: {
       addGlobalClass: true
     },

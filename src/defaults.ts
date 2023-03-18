@@ -7,10 +7,11 @@ import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { MappingChars2String, SimpleMappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
+import { createjsHandler } from './js'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
-export const defaultOptions: Required<UserDefinedOptions> = {
+export const defaultOptions: UserDefinedOptions = {
   cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
   htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
   jsMatcher: (file) => {
@@ -78,7 +79,8 @@ export const defaultOptions: Required<UserDefinedOptions> = {
       variableName: 'lengthUnits',
       overwrite: true
     }
-  }
+  },
+  appType: undefined
   // templeteHandler,
   // styleHandler,
   // jsxHandler
@@ -96,9 +98,9 @@ function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatche
   }
 }
 
-type IModules = readonly ('jsx' | 'style' | 'templete' | 'patch')[]
+type IModules = readonly ('jsx' | 'js' | 'style' | 'templete' | 'patch')[]
 
-export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['jsx', 'style', 'templete', 'patch']): InternalUserDefinedOptions {
+export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['jsx', 'style', 'templete', 'patch', 'js']): InternalUserDefinedOptions {
   const registerModules = modules.reduce<Record<IModules[number], boolean>>(
     (acc, cur) => {
       if (acc[cur] !== undefined) {
@@ -110,7 +112,8 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
       templete: false,
       jsx: false,
       style: false,
-      patch: false
+      patch: false,
+      js: false
     }
   )
   if (options.mangle === true) {
@@ -177,6 +180,11 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
       escapeEntries,
       framework,
       customAttributesEntities
+    })
+  }
+  if (registerModules.js) {
+    result.jsHandler = createjsHandler({
+      escapeEntries
     })
   }
   if (registerModules.patch) {

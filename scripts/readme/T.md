@@ -7,25 +7,22 @@
 ![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
 [![test](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin)
-<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=bOJrjg5Z65fh841eVyf6rOLNWqvluQbk&jump_from=webapi"><img border="0" src="https://img.shields.io/badge/QQ-%E5%8A%A0%E5%85%A5QQ%E7%BE%A4-brightgreen" alt="weapp-tailwindcss-webpack-plug" title="weapp-tailwindcss-webpack-plug"></a>
 
-> 把 `tailwindcss JIT` 思想带入小程序开发吧！
+> 把 `tailwindcss` 带入小程序开发吧！
+
+[[1.x文档]('./v1.md')]
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
+  - [2.x 版本完善了什么？](#2x-版本完善了什么)
   - [Usage](#usage)
-    - [uni-app (vue2/3)](#uni-app-vue23)
-    - [uni-app for vite (vue3)](#uni-app-for-vite-vue3)
-    - [Taro v3 (react | vue2/3)](#taro-v3-react--vue23)
-    - [mpx (原生增强)](#mpx-原生增强)
-    - [remax (react)](#remax-react)
-    - [rax (react)](#rax-react)
-    - [原生小程序(webpack5 mina)](#原生小程序webpack5-mina)
-    - [HBuilderX 创建的项目](#hbuilderx-创建的项目)
-    - [uni-app 构建成 `android/ios` app](#uni-app-构建成-androidios-app)
-    - [unocss 集成](#unocss-集成)
+    - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
+    - [2. rem转化rpx](#2-rem转化rpx)
+    - [3. 安装这个插件](#3-安装这个插件)
+      - [各个框架注册的方式](#各个框架注册的方式)
+  - [从 v1 迁移](#从-v1-迁移)
+  - [精确转化与忽略](#精确转化与忽略)
   - [Options 配置项](#options-配置项)
   - [使用 arbitrary values](#使用-arbitrary-values)
-  - [关于rem转化rpx](#关于rem转化rpx)
   - [变更日志](#变更日志)
   - [常见问题](#常见问题)
   - [Related projects](#related-projects)
@@ -38,57 +35,93 @@
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
-笔者之前写了一个 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)，可是那个方案不能兼容最广泛的 `Just in time` 引擎，在写法上也有些变体。
+## 2.x 版本完善了什么？
 
-于是笔者又写了一个 `weapp-tailwindcss-webpack-plugin`，这是一个 `plugin` 合集，包含 `webpack/vite plugin`，它会同时处理类 `wxml` 和 `wxss` 文件，从而我们开发者，不需要更改任何代码，就能让 `jit` 引擎兼容微信小程序。
+`2.x` 版本发布了，在内部新增了 `UnifiedWebpackPluginV5`
+和 `vite` 插件 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件。它能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里静态和动态的 `class`。所以你再也不需要手动 `replaceJs(xxx)`了！使用新版插件，把`weapp-tailwindcss-webpack-plugin/replace` 扔进历史的垃圾堆。由于 `2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板相关框架的开发体验。
 
-此方案可兼容 `tailwindcss v2/v3`，`webpack v4/v5`，`postcss v7/v8`。
+`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公用样式文件的位置进行转化(有可能不准确)。
 
-> 随着 [`@vue/cli-service`](https://www.npmjs.com/package/@vue/cli-service) v5 版本的发布，uni-app 到时候也会转为 `webpack5` + `postcss8` 的组合，到时候，我会升级一下 `uni-app` 的示例，让它从 `tailwindcss v2 jit` 升级到 `tailwindcss v3 jit`，相关进度见 [uni-app/issues/3723](https://github.com/dcloudio/uni-app/issues/3723)
+目前，这个方案只支持 `tailwindcss v3.2.0` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+```
+
+加入你的 `package.json`，当然在安装或者更新 `tailwindcss` 后，手动执行  `npx weapp-tw patch` 也是可以的，看到 `patch .... successfully` 表示成功。
 
 ## Usage
 
-### uni-app (vue2/3)
+### 1. 安装配置 tailwindcss
 
-[使用方式](./docs/uni-app.md) | [@vue/cli4 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app) | [@vue/cli5 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-webpack5)
+{{install-tailwindcss}}
 
-### uni-app for vite (vue3)
+### 2. rem转化rpx
 
-[使用方式](./docs/uni-app-vite.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/uni-app-vue3-vite)
+{{rem2rpx}}
 
-### Taro v3 (react | vue2/3)
+### 3. 安装这个插件
 
-[使用方式(`webpack4/5`)](./docs/taro.md) | [React Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-app) | [vue2 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue2-app) | [vue3 Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/taro-vue3-app)
+```sh
+# npm / yarn /pnpm
+npm i -D weapp-tailwindcss-webpack-plugin
+# 可以执行一下 patch 方法
+npx weapp-tw patch
+```
 
-### mpx (原生增强)
+#### 各个框架注册的方式
 
-[使用方式](./docs/mpx.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/mpx-app)
+{{frameworks}}
 
-### remax (react)
+## 从 v1 迁移
 
-[使用方式](./docs/remax.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/remax-app)
+在 `2.x` 版本中，所有原先的 `v1` 的插件还是像之前一样导出，使用方式也一样，不过 `vite` 插件有一些小变化:
 
-### rax (react)
+`1.x`:
 
-[使用方式](./docs/rax.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/rax-app)
+```js
+import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
+```
 
-### 原生小程序(webpack5 mina)
+`2.x`:
 
-[使用方式](./docs/native-mina.md) | [Demo 项目](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/native-mina)
+```js
+// ViteWeappTailwindcssPlugin 就是原先上面 1.x 的 vwt 
+// UnifiedViteWeappTailwindcssPlugin 就是新的插件
+// 使用方式和 ViteWeappTailwindcssPlugin 一致
+import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
+```
 
-### HBuilderX 创建的项目
+另外新的 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要用它直接替换原先插件即可。
 
-[vue2 使用方式](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template#readme) | [vue2 Demo 项目](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template) | [vue3 使用方式](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template#readme) | [vue3 Demo 项目](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
+<!-- 所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。 -->
+
+## 精确转化与忽略
+
+默认对所有 `jsx`,`js`,`wxml`,`wxss`中出现的`tailwindcss`运行时工具类进行转化，如果不需要转化可以使用 `/*weapp-tw ignore*/` 前置注释。
+
+例如:
+
+```js
+<view :class="classArray">classArray</view>
+const classArray = [
+  'text-[30rpx]',
+  /*weapp-tw ignore*/ 'bg-[#00ff00]'
+]
+```
+
+此时只有 `'text-[30rpx]'` 会被转化，`'bg-[#00ff00]'`被忽视
+
+另外有可能出现的问题，我也写进了 [常见问题](#常见问题) 中，可以进行参考。
+<!-- ### HBuilderX 创建的项目
+
+需要创建 `vite` 版本或者 `HBuilderX`最新`alpha`版，方式同上
 
 ### uni-app 构建成 `android/ios` app
 
-[使用方式](./docs/uni-app-android-and-ios.md)
-
-### unocss 集成
-
-你可以不使用 `tailwindcss`，只需正常安装 `unocss` `@unocss/preset-wind` 和 `@unocss/transformer-directives` 即可
-
-按 `unocss` 文档方式注册后，安装使用此插件，即可正常使用。
+[建议配置方式](./docs/uni-app-android-and-ios.md) -->
 
 ## Options 配置项
 
@@ -97,14 +130,6 @@
 ## 使用 arbitrary values
 
 详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)
-
-## 关于rem转化rpx
-
-假如你想要把项目里，所有满足条件的 `rem` 都转化成 `rpx`，那么 `postcss plugin`: [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 适合你。
-
-假如你想缩小一下范围，只把 `tailwindcss` 中默认的工具类的单位(非`jit`生成的`class`)，从 `rem` 转变为 `rpx`，那么 `tailwindcss preset`: [tailwindcss-rem2px-preset](https://www.npmjs.com/package/tailwindcss-rem2px-preset) 适合你。
-
-使用方式见 `Demo` 和对应 `npm` 包的文档。
 
 ## [变更日志](./CHANGELOG.md)
 
@@ -121,6 +146,8 @@
 [weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
 
 ### 模板 template
+
+> 目前模板大多还是 `1.x` 的版本，后续我会对模板进行一系列的升级
 
 #### 如何选择？
 

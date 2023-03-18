@@ -1,11 +1,11 @@
-let UniAppWeappTailwindcssWebpackPluginV5
+let UnifiedWebpackPluginV5
 if (process.env.LOCAL) {
   console.log('use local built webpack plugin')
-  const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('../..')
-  UniAppWeappTailwindcssWebpackPluginV5 = plugin
+  const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist')
+  UnifiedWebpackPluginV5 = plugin
 } else {
-  const { UniAppWeappTailwindcssWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
-  UniAppWeappTailwindcssWebpackPluginV5 = plugin
+  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin')
+  UnifiedWebpackPluginV5 = plugin
 }
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { WeappTailwindcssDisabled } = require('./platform')
@@ -21,8 +21,9 @@ const config = {
   transpileDependencies: ['uview-ui'],
   configureWebpack: (config) => {
     config.plugins.push(
-      new UniAppWeappTailwindcssWebpackPluginV5({
-        disabled: WeappTailwindcssDisabled
+      new UnifiedWebpackPluginV5({
+        disabled: WeappTailwindcssDisabled,
+        appType: 'uni-app'
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())

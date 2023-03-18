@@ -1,11 +1,11 @@
 import type { Plugin } from 'vite'
 import { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/defaults'
-import type { OutputAsset } from 'rollup'
+import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 // import type { Plugin as PostcssPlugin } from 'postcss'
 import { getGroupedEntries } from '@/base/shared'
-
+import { getClassCacheSet } from '@/tailwindcss/exposeContext'
 // import ClassGenerator from '@/mangle/classGenerator'
 
 // function isRegisterPostcssPlugin(name: string) {
@@ -14,7 +14,7 @@ import { getGroupedEntries } from '@/base/shared'
 // issue 一个节点静态，一个节点动态，动态节点中的静态属性不会被 mangle 导致存在问题
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
-export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
+export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options, ['patch', 'style', 'templete'])
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch } = opts
   if (disabled) {
@@ -95,6 +95,77 @@ export default function ViteWeappTailwindcssPlugin(options: UserDefinedOptions =
           })
           originalSource.source = css
           onUpdate(file, rawSource, css)
+        }
+      }
+    },
+    buildEnd() {
+      onEnd()
+    }
+  }
+}
+
+export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
+  if (typeof options.customReplaceDictionary === 'undefined') {
+    options.customReplaceDictionary = 'simple'
+  }
+  const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])
+  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType } = opts
+  if (disabled) {
+    return
+  }
+
+  patch?.()
+
+  onLoad()
+  // 要在 vite:css 处理之前运行
+  return {
+    name: vitePluginName,
+    enforce: 'post',
+    buildStart() {
+      onStart()
+    },
+    generateBundle(opt, bundle, isWrite) {
+      // 也许应该都在这里处理
+      // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
+      const entries = Object.entries(bundle)
+      const groupedEntries = getGroupedEntries(entries, opts)
+      if (Array.isArray(groupedEntries.html)) {
+        for (let i = 0; i < groupedEntries.html.length; i++) {
+          // let classGenerator
+          const [file, originalSource] = groupedEntries.html[i] as [string, OutputAsset]
+          // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
+          //   classGenerator = globalClassGenerator
+          // }
+          const oldVal = originalSource.source.toString()
+          originalSource.source = templeteHandler(oldVal)
+          onUpdate(file, oldVal, originalSource.source)
+        }
+      }
+      if (Array.isArray(groupedEntries.css)) {
+        for (let i = 0; i < groupedEntries.css.length; i++) {
+          // let classGenerator
+          const [file, originalSource] = groupedEntries.css[i] as [string, OutputAsset]
+          // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
+          //   classGenerator = globalClassGenerator
+          // }
+          const rawSource = originalSource.source.toString()
+          const css = styleHandler(rawSource, {
+            isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
+            // classGenerator
+          })
+          originalSource.source = css
+          onUpdate(file, rawSource, css)
+        }
+      }
+      if (Array.isArray(groupedEntries.js)) {
+        const set = getClassCacheSet()
+
+        for (let i = 0; i < groupedEntries.js.length; i++) {
+          const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
+          const rawSource = originalSource.code
+          const { code } = jsHandler(rawSource, set)
+          originalSource.code = code
+          onUpdate(file, rawSource, code)
         }
       }
     },

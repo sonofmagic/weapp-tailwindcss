@@ -2,6 +2,7 @@
 
 exports[`get options default options 1`] = `
 {
+  "appType": undefined,
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",
@@ -169,6 +170,7 @@ exports[`get options default options 1`] = `
   ],
   "framework": "react",
   "htmlMatcher": [Function],
+  "jsHandler": [Function],
   "jsMatcher": [Function],
   "jsxHandler": [Function],
   "jsxRenameLoaderPath": "",
@@ -202,6 +204,7 @@ exports[`get options default options 1`] = `
 
 exports[`get options vue framework 1`] = `
 {
+  "appType": undefined,
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",
@@ -369,6 +372,7 @@ exports[`get options vue framework 1`] = `
   ],
   "framework": "vue2",
   "htmlMatcher": [Function],
+  "jsHandler": [Function],
   "jsMatcher": [Function],
   "jsxHandler": [Function],
   "jsxRenameLoaderPath": "",

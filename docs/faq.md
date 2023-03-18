@@ -1,6 +1,12 @@
 # 常见问题
 
 <!-- Frequently Asked Questions -->
+- [常见问题](#常见问题)
+  - [1. 我在 `js` 里写了 `tailwindcss` 的任意值，为什么没有生效?](#1-我在-js-里写了-tailwindcss-的任意值为什么没有生效)
+  - [2. 一些像 `disabled:opacity-50` 这类的 `tailwindcss` 前缀不生效?](#2-一些像-disabledopacity-50-这类的-tailwindcss-前缀不生效)
+  - [3. 和原生组件一起使用注意事项](#3-和原生组件一起使用注意事项)
+  - [4. 编译到 h5 注意事项](#4-编译到-h5-注意事项)
+  - [5. TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined](#5-typeerror-cannot-use-in-operator-to-search-for-callexpression-in-undefined)
 
 ### 1. 我在 `js` 里写了 `tailwindcss` 的任意值，为什么没有生效?
 
@@ -100,3 +106,7 @@ const cardsColor = reactive([
 ```
 
 这样就能在多端都生效了。
+
+### 5. TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined
+
+遇到这个问题是由于 `babel` 相关的包之间的版本产生了冲突导致的，这种时候可以删除掉 `lock`文件 (`yarn.lock`,`pnpm-lock.yaml`,`package-lock.json`)，然后重新安装即可。

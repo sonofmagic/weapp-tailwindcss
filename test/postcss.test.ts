@@ -62,6 +62,23 @@ describe('postcss plugin', () => {
     })
     expect(res.css.toString()).toMatchSnapshot()
   })
+
+  it('@apply space-y/x case', async () => {
+    const processor = postcss([
+      tailwindcss({
+        content: [
+          {
+            raw: '<view class="test"></view>'
+          }
+        ]
+      })
+    ])
+    const res = await processor.process('@tailwind utilities;.test{\n@apply space-x-1 space-y-2 text-[#123456];\n font-size:20px}', {
+      from: 'index.css',
+      to: 'index.css'
+    })
+    expect(res.css.toString()).toMatchSnapshot()
+  })
 })
 
 // 1.20.0 通过 patch 策略修复了这个问题
