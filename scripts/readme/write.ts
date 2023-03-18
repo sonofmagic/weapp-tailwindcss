@@ -1,6 +1,11 @@
 import { ReadmeRender } from '@icebreakers/readme'
+import { collapse } from './collapse'
 import { trim } from 'lodash'
-
+import fs from 'fs'
+import path from 'path'
+function load(filename: string) {
+  return fs.readFileSync(path.resolve(__dirname, './fragment', filename + '.md'), 'utf-8')
+}
 const renderer = new ReadmeRender({
   templatePath: 'scripts/readme/T.md'
 })
@@ -125,5 +130,48 @@ renderer.write([
     // markdownTable(tableData, {
     //   alignDelimiters: false
     // })
+  ],
+  [
+    /{{install-tailwindcss}}/,
+    collapse({
+      summary: '安装 tailwindcss',
+      body: load('install-tailwindcss')
+    })
+  ],
+  [
+    /{{rem2rpx}}/,
+    collapse({
+      summary: '配置tailwindcss单位转化',
+      body: load('rem2rpx')
+    })
+  ],
+  [
+    /{{frameworks}}/,
+    [
+      collapse({
+        summary: 'uni-app (vue2/3)',
+        body: load('uni-app')
+      }),
+      collapse({
+        summary: 'uni-app vite(vue3)',
+        body: load('uni-app-vite')
+      }),
+      collapse({
+        summary: 'Taro v3 (all frameworks)',
+        body: load('taro')
+      }),
+      collapse({
+        summary: 'mpx (原生增强)',
+        body: load('mpx')
+      }),
+      collapse({
+        summary: 'rax (react)',
+        body: load('rax')
+      }),
+      collapse({
+        summary: '原生小程序(webpack5)',
+        body: load('native')
+      })
+    ].join('\n\n')
   ]
 ])

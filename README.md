@@ -15,9 +15,10 @@
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
   - [2.x 版本完善了什么？](#2x-版本完善了什么)
   - [Usage](#usage)
-    - [Install tailwindcss](#install-tailwindcss)
-    - [关于rem转化rpx](#关于rem转化rpx)
-    - [Install this Plugin](#install-this-plugin)
+    - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
+    - [2. rem转化rpx](#2-rem转化rpx)
+    - [3. 安装这个插件](#3-安装这个插件)
+      - [各个框架注册的方式](#各个框架注册的方式)
   - [从 v1 迁移](#从-v1-迁移)
   - [精确转化与忽略](#精确转化与忽略)
   - [Options 配置项](#options-配置项)
@@ -53,10 +54,10 @@
 
 ## Usage
 
-### Install tailwindcss
+### 1. 安装配置 tailwindcss
 
 <details><summary>安装 tailwindcss</summary><br/>
-
+    
 1. 安装 `tailwindcss`
 
 ```sh
@@ -120,15 +121,70 @@ Taro 的 `app.scss`
 然后在 `app.ts` 里引入
 > 没有使用 `tailwindcss/components` 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序没有用处。如果你有 @layer components 相关的工具类需要使用，可以再引入。
 
-<br/></details>
+  <br/></details>
 
-### 关于rem转化rpx
+### 2. rem转化rpx
+
+<details><summary>配置tailwindcss单位转化</summary><br/>
+    1. 选择(二者其一即可)
 
 假如你想要把项目里，所有满足条件的 `rem` 都转化成 `rpx`，那么 `postcss plugin`: [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 适合你。
 
 假如你想缩小一下范围，只把 `tailwindcss` 中默认的工具类的单位(非`jit`生成的`class`)，从 `rem` 转变为 `rpx`，那么 `tailwindcss preset`: [tailwindcss-rem2px-preset](https://www.npmjs.com/package/tailwindcss-rem2px-preset) 适合你。
 
-### Install this Plugin
+2. `postcss-rem-to-responsive-pixel`
+
+```sh
+npm i -D postcss-rem-to-responsive-pixel
+```
+
+安装好之后，把它注册进你的 `postcss.config.js` 即可:
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+    'postcss-rem-to-responsive-pixel': {
+      // 32 意味着 1rem = 32rpx
+      rootValue: 32,
+      // 默认所有属性都转化
+      propList: ['*'],
+      // 转化的单位,可以变成 px / rpx
+      transformUnit: 'rpx',
+    },
+  },
+};
+```
+
+3. `tailwindcss-rem2px-preset`
+
+```sh
+npm i -D postcss-rem-to-responsive-pixel
+```
+
+然后在 `tailwind.config.js` 中，添加:
+
+```js
+// tailwind.config.js
+
+module.exports = {
+  presets: [
+    require('tailwindcss-rem2px-preset').createPreset({
+      fontSize: 32,
+      unit: 'rpx'
+    })
+  ],
+  // ...
+}
+```
+
+这样即可完成 `tailwindcss` 默认 `rem` 单位，转化 `rpx`。
+
+  <br/></details>
+
+### 3. 安装这个插件
 
 ```sh
 # npm / yarn /pnpm
@@ -137,10 +193,10 @@ npm i -D weapp-tailwindcss-webpack-plugin
 npx weapp-tw patch
 ```
 
-<details>
+#### 各个框架注册的方式
 
-<summary>uni-app (vue2/3)</summary><br/>
-
+<details><summary>uni-app (vue2/3)</summary><br/>
+    
 **在创建uni-app项目时，请选择uni-app alpha版本**
 
 ```sh
@@ -170,11 +226,10 @@ const config = {
 module.exports = config
 ```
 
-<br/>
-</details>
+  <br/></details>
 
-<details><summary>uni-app vue3/vite</summary><br/>
-
+<details><summary>uni-app vite(vue3)</summary><br/>
+    
 ```js
 // vite.config.[jt]s
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss-webpack-plugin/vite'
@@ -193,11 +248,10 @@ export default defineConfig({
 
 ```
 
-<br/></details>
+  <br/></details>
 
-<details><summary>Taro v3 (react | vue2/3)</summary><br/>
-
-**在使用Taro时，检查一下把 config/index 的配置项 compiler 设置为 'webpack5'**
+<details><summary>Taro v3 (all frameworks)</summary><br/>
+    **在使用Taro时，检查一下把 config/index 的配置项 compiler 设置为 'webpack5'**
 
 ```js
 // config/index
@@ -221,9 +275,10 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 }
 ```
 
-<br/></details>
+  <br/></details>
 
 <details><summary>mpx (原生增强)</summary><br/>
+    在 `vue.config.js` 中注册：
 
 ```js
 // vue.config.js
@@ -241,10 +296,10 @@ module.exports = defineConfig({
 
 ```
 
-<br/></details>
+  <br/></details>
 
 <details><summary>rax (react)</summary><br/>
-
+    
 在根目录下创建一个 `build.plugin.js` 文件，然后在 `build.json` 中注册：
 
 ```json
@@ -272,9 +327,10 @@ module.exports = ({ context, onGetWebpackConfig }) => {
 
 ```
 
-<br/></details>
+  <br/></details>
 
 <details><summary>原生小程序(webpack5)</summary><br/>
+    <details><summary>原生小程序(webpack5)</summary><br/>
 
 直接在 `webpack.config.js` 注册即可
 
@@ -288,16 +344,11 @@ module.exports = ({ context, onGetWebpackConfig }) => {
 ```
 
 <br/></details>
-
-<details><summary>remax (react)</summary><br/>
-由于使用的还是`webpack4` 和 `postcss7`，建议使用此插件的 `1.x` 版本
-<br/></details>
+  <br/></details>
 
 ## 从 v1 迁移
 
-在 `2.x` 版本中，所有原先的 `v1` 的插件还是想之前一样导出，`vite` 插件有一些小变化:
-
-另外 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，但 `vite` 会有一些区别:
+在 `2.x` 版本中，所有原先的 `v1` 的插件还是像之前一样导出，使用方式也一样，不过 `vite` 插件有一些小变化:
 
 `1.x`:
 
@@ -314,7 +365,7 @@ import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
 ```
 
-同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要替换插件即可。
+另外新的 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要用它直接替换原先插件即可。
 
 <!-- 所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。 -->
 
@@ -487,6 +538,8 @@ cssPreflight: {
 [weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
 
 ### 模板 template
+
+> 目前模板大多还是 `1.x` 的版本，后续我会对模板进行一系列的升级
 
 #### 如何选择？
 
