@@ -1,0 +1,26 @@
+{
+  "name": "tailwindcss-versions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "get": "node ./install",
+    "sample": "pnpm add tailwindcss3.2.6@npm:tailwindcss@3.2.6",
+    "-": "----------------------------------------------------------",
+    "usage": "npm run get {version}"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.2.7",
+    "tailwindcss3.0.0": "npm:tailwindcss@3.0.0",
+    "tailwindcss3.2.4": "npm:tailwindcss@3.2.4",
+    "tailwindcss3.2.6": "npm:tailwindcss@3.2.6",
+    "tailwindcss3.2.7": "npm:tailwindcss@3.2.7"
+  },
+  "devDependencies": {
+    "execa": "^7.1.1"
+  }
+}
