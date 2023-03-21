@@ -16,7 +16,7 @@
   - [2.x 版本完善了什么？](#2x-版本完善了什么)
   - [Usage](#usage)
     - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
-    - [2. rem转化rpx](#2-rem转化rpx)
+    - [2. `rem` 转 `px` 或 `rpx`](#2-rem-转-px-或-rpx)
     - [3. 安装这个插件](#3-安装这个插件)
       - [各个框架注册的方式](#各个框架注册的方式)
   - [从 v1 迁移](#从-v1-迁移)
@@ -60,7 +60,7 @@
 
 {{install-tailwindcss}}
 
-### 2. rem转化rpx
+### 2. `rem` 转 `px` 或 `rpx`
 
 {{rem2rpx}}
 
@@ -71,6 +71,14 @@
 npm i -D weapp-tailwindcss-webpack-plugin
 # 可以执行一下 patch 方法
 npx weapp-tw patch
+```
+
+然后把下列脚本，添加进你的 `package.json` 里:
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
 ```
 
 #### 各个框架注册的方式
@@ -97,6 +105,16 @@ import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'w
 ```
 
 另外新的 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要用它直接替换原先插件即可。
+
+另外不要忘记把:
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+```
+
+添加进你的 `package.json` 里。
 
 <!-- 所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。 -->
 
