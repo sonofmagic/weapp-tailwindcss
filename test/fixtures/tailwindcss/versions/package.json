@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "get": "node ./install",
+    "get": "node ./install.js",
     "sample": "pnpm add tailwindcss3.2.6@npm:tailwindcss@3.2.6",
+    "copy": "node ./copy.js",
     "-": "----------------------------------------------------------",
     "usage": "npm run get {version}"
   },
@@ -16,6 +17,7 @@
   "dependencies": {
     "tailwindcss": "^3.2.7",
     "tailwindcss3.0.0": "npm:tailwindcss@3.0.0",
+    "tailwindcss3.2.3": "npm:tailwindcss@3.2.3",
     "tailwindcss3.2.4": "npm:tailwindcss@3.2.4",
     "tailwindcss3.2.6": "npm:tailwindcss@3.2.6",
     "tailwindcss3.2.7": "npm:tailwindcss@3.2.7"

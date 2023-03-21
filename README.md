@@ -59,7 +59,7 @@
 ### 1. 安装配置 tailwindcss
 
 <details><summary>安装 tailwindcss</summary><br/>
-    
+
 #### 1. 安装 `tailwindcss`
 
 ```sh
@@ -124,12 +124,13 @@ module.exports = {
 
 > Q&A: 为什么没有引入 `tailwindcss/components`? 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序环境来说没有用处。如果你有 @layer components 相关的工具类需要使用，可以引入。
 
-  <br/></details>
+<br/></details>
 
 ### 2. `rem` 转 `px` 或 `rpx`
 
 <details><summary>配置tailwindcss单位转化</summary><br/>
-    #### 1. 两种转化方式(二者选其一即可)
+
+#### 1. 两种转化方式(二者选其一即可)
 
 假如你想要把项目里，所有满足条件的 `rem` 都转化成 `rpx`，那么 `postcss plugin`: [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 适合你。
 
@@ -187,7 +188,7 @@ module.exports = {
 
 这样即可完成 `tailwindcss` 默认 `rem` 单位，转化 `rpx` 的配置了。
 
-  <br/></details>
+<br/></details>
 
 ### 3. 安装这个插件
 
@@ -209,7 +210,7 @@ npx weapp-tw patch
 #### 各个框架注册的方式
 
 <details><summary>uni-app (vue2/3)</summary><br/>
-    
+
 **在创建uni-app项目时，请选择uni-app alpha版本**
 
 ```sh
@@ -239,10 +240,10 @@ const config = {
 module.exports = config
 ```
 
-  <br/></details>
+<br/></details>
 
 <details><summary>uni-app vite(vue3)</summary><br/>
-    
+
 ```js
 // vite.config.[jt]s
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss-webpack-plugin/vite'
@@ -261,10 +262,10 @@ export default defineConfig({
 
 ```
 
-  <br/></details>
+<br/></details>
 
 <details><summary>Taro v3 (all frameworks)</summary><br/>
-    **在使用Taro时，检查一下把 config/index 的配置项 compiler 设置为 'webpack5'**
+**在使用Taro时，检查一下把 config/index 的配置项 compiler 设置为 'webpack5'**
 
 ```js
 // config/index
@@ -288,10 +289,10 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 }
 ```
 
-  <br/></details>
+<br/></details>
 
 <details><summary>mpx (原生增强)</summary><br/>
-    在 `vue.config.js` 中注册：
+在 `vue.config.js` 中注册：
 
 ```js
 // vue.config.js
@@ -309,10 +310,10 @@ module.exports = defineConfig({
 
 ```
 
-  <br/></details>
+<br/></details>
 
 <details><summary>rax (react)</summary><br/>
-    
+
 在根目录下创建一个 `build.plugin.js` 文件，然后在 `build.json` 中注册：
 
 ```json
@@ -340,10 +341,10 @@ module.exports = ({ context, onGetWebpackConfig }) => {
 
 ```
 
-  <br/></details>
+<br/></details>
 
 <details><summary>原生小程序(webpack5)</summary><br/>
-    
+
 直接在 `webpack.config.js` 注册即可
 
 ```js
@@ -356,7 +357,7 @@ module.exports = ({ context, onGetWebpackConfig }) => {
 ```
 
 
-  <br/></details>
+<br/></details>
 
 ## 从 v1 迁移
 
