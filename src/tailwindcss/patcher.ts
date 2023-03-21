@@ -105,6 +105,11 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
   if (arrayRef && changed) {
     // @ts-ignore
     const { code } = generate(arrayRef)
+    // , {
+    //   jsescOption: {
+    //     quotes: 'double'
+    //   }
+    // }
     if (arrayRef.start && arrayRef.end) {
       const prev = dataTypesFileContent.slice(0, arrayRef.start)
       const next = dataTypesFileContent.slice(arrayRef.end as number)

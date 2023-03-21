@@ -1,5 +1,7 @@
 <template>
   <view class="content">
+    <view v-if="flag" :class="[flag ? 'bg-[#3482f2]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
+    <view v-else :class="[flag ? 'bg-[#434354]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view :class="classArray">classArray</view>
     <view :class="['text-sm', classObj]">:class="['text-sm', classObj]</view>
     <view class="rotate-[10deg]">rotate1111111</view>
