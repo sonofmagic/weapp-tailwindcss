@@ -237,7 +237,7 @@ function relativeSize(value) {
 
 exports[`tailwindcss source code patch patch 3.0.0 1`] = `
 {
-  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'vw', 'vh', 'vmin', 'vmax', "rpx"]",
+  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'vw', 'vh', 'vmin', 'vmax', 'rpx']",
   "plugin": ""use strict";
 
 var _setupTrackingContext = _interopRequireDefault(require("./lib/setupTrackingContext"));
@@ -330,7 +330,7 @@ function processTailwindFeatures(setupContext) {
 
 exports[`tailwindcss source code patch patch 3.2.3 1`] = `
 {
-  "dataTypes": "["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "vw", "vh", "vmin", "vmax", "rpx"]",
+  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'vw', 'vh', 'vmin', 'vmax', 'rpx']",
   "plugin": ""use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -453,7 +453,7 @@ function processTailwindFeatures(setupContext) {
 
 exports[`tailwindcss source code patch patch 3.2.4 1`] = `
 {
-  "dataTypes": "["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "vw", "vh", "vmin", "vmax", "rpx"]",
+  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'vw', 'vh', 'vmin', 'vmax', 'rpx']",
   "plugin": ""use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -576,7 +576,7 @@ function processTailwindFeatures(setupContext) {
 
 exports[`tailwindcss source code patch patch 3.2.6 1`] = `
 {
-  "dataTypes": "["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "rlh", "vw", "vh", "vmin", "vmax", "vb", "vi", "svw", "svh", "lvw", "lvh", "dvw", "dvh", "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", "rpx"]",
+  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'rlh', 'vw', 'vh', 'vmin', 'vmax', 'vb', 'vi', 'svw', 'svh', 'lvw', 'lvh', 'dvw', 'dvh', 'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax', 'rpx']",
   "plugin": ""use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -738,7 +738,7 @@ function processTailwindFeatures(setupContext) {
 
 exports[`tailwindcss source code patch patch 3.2.7 1`] = `
 {
-  "dataTypes": "["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "rlh", "vw", "vh", "vmin", "vmax", "vb", "vi", "svw", "svh", "lvw", "lvh", "dvw", "dvh", "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", "rpx"]",
+  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'rlh', 'vw', 'vh', 'vmin', 'vmax', 'vb', 'vi', 'svw', 'svh', 'lvw', 'lvh', 'dvw', 'dvh', 'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax', 'rpx']",
   "plugin": ""use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -900,7 +900,7 @@ function processTailwindFeatures(setupContext) {
 
 exports[`tailwindcss source code patch patch lts 1`] = `
 {
-  "dataTypes": "["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "rlh", "vw", "vh", "vmin", "vmax", "vb", "vi", "svw", "svh", "lvw", "lvh", "dvw", "dvh", "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", "rpx"]",
+  "dataTypes": "['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'ex', 'ch', 'rem', 'lh', 'rlh', 'vw', 'vh', 'vmin', 'vmax', 'vb', 'vi', 'svw', 'svh', 'lvw', 'lvh', 'dvw', 'dvh', 'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax', 'rpx']",
   "plugin": ""use strict";
 
 Object.defineProperty(exports, "__esModule", {

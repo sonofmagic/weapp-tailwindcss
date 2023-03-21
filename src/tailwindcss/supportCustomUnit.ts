@@ -18,6 +18,15 @@ export function findAstNode(content: string, options: ILengthUnitsPatchOptions) 
             for (let i = 0; i < options.units.length; i++) {
               const unit = options.units[i]
               if (!set.has(unit)) {
+                path.parent.init.elements = path.parent.init.elements.map((x) => {
+                  if (x?.type === 'StringLiteral') {
+                    return {
+                      type: x?.type,
+                      value: x?.value
+                    }
+                  }
+                  return x
+                })
                 path.parent.init.elements.push({
                   type: 'StringLiteral',
                   value: unit
