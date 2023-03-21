@@ -10,10 +10,11 @@
 
 > 把 `tailwindcss` 带入小程序开发吧！
 
-[[1.x文档]('./v1.md')]
+\[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
-  - [2.x 版本完善了什么？](#2x-版本完善了什么)
+  - [2.x 版本新特性](#2x-版本新特性)
+    - [新插件介绍](#新插件介绍)
   - [Usage](#usage)
     - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
     - [2. `rem` 转 `px` 或 `rpx`](#2-rem-转-px-或-rpx)
@@ -35,16 +36,20 @@
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
-## 2.x 版本完善了什么？
+## 2.x 版本新特性
 
 这个版本新增了 `UnifiedWebpackPluginV5`
-和 `UnifiedViteWeappTailwindcssPlugin` 这种以 `Unified` 开头的插件。
+和 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件。
 
-它们能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里静态和动态的 `class`(v1版本只有处理`wxss`,`wxml`静态`class`的能力)。所以你再也不需要在 `js` 里引入并调用 `replaceJs`方法了！由于 `2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板框架的开发体验。
+它们能够自动识别并精确处理所有 `tailwindcss` 的工具类。这意味着它可以同时处理所有文件中的静态或动态的 `class`。
+
+相比`v1`版本只有处理`wxss`,`wxml`静态`class`的能力，使用`v2`版本新的插件，你再也不需要在 `js` 里引入并调用标记方法 `replaceJs`了！`2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板框架的开发体验。
+
+### 新插件介绍
 
 `UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公共的样式文件位置，并进行转化(有可能不准确)。
 
-目前，这个方案只支持 `tailwindcss v3.2.0` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
+目前，这个方案只支持 `tailwindcss v3.2.2` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
 
 ```json
  "scripts": {
@@ -52,7 +57,9 @@
  }
 ```
 
-加入你的 `package.json`，当然在安装或者更新 `tailwindcss` 后，手动执行  `npx weapp-tw patch` 也是可以的，看到 `patch .... successfully` 表示成功。
+加入你的 `package.json`。当然在安装或者更新 `tailwindcss` 后，手动执行  `npx weapp-tw patch` 效果也是一样的，看到 `patch .... successfully` 表示成功。
+
+`UnifiedViteWeappTailwindcssPlugin` 为 `vite` 专用插件，配置项和使用方式也是和上面一致的。
 
 ## Usage
 
@@ -73,7 +80,7 @@ npm i -D weapp-tailwindcss-webpack-plugin
 npx weapp-tw patch
 ```
 
-然后把下列脚本，添加进你的 `package.json` 里:
+然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
 
 ```json
  "scripts": {
@@ -100,7 +107,6 @@ import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 ```js
 // ViteWeappTailwindcssPlugin 就是原先上面 1.x 的 vwt 
 // UnifiedViteWeappTailwindcssPlugin 就是新的插件
-// 使用方式和 ViteWeappTailwindcssPlugin 一致
 import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
 ```
 
@@ -114,7 +120,7 @@ import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'w
  }
 ```
 
-添加进你的 `package.json` 里。
+添加进你的 `package.json` 里，然后清除原先的打包缓存之后重新打包运行。
 
 <!-- 所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。 -->
 
