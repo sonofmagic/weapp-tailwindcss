@@ -16,7 +16,7 @@
   - [2.x 版本完善了什么？](#2x-版本完善了什么)
   - [Usage](#usage)
     - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
-    - [2. rem转化rpx](#2-rem转化rpx)
+    - [2. `rem` 转 `px` 或 `rpx`](#2-rem-转-px-或-rpx)
     - [3. 安装这个插件](#3-安装这个插件)
       - [各个框架注册的方式](#各个框架注册的方式)
   - [从 v1 迁移](#从-v1-迁移)
@@ -60,7 +60,7 @@
 
 <details><summary>安装 tailwindcss</summary><br/>
     
-1. 安装 `tailwindcss`
+#### 1. 安装 `tailwindcss`
 
 ```sh
 # npm / yarn / pnpm 
@@ -68,7 +68,7 @@ npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init
 ```
 
-2. 把 `tailwindcss` 注册进 `postcss.config.js`
+#### 2. 把 `tailwindcss` 注册进 `postcss.config.js`
 
 ```js
 // postcss.config.js
@@ -81,7 +81,7 @@ module.exports = {
 }
 ```
 
-3. 配置 `tailwind.config.js`
+#### 3. 配置 `tailwind.config.js`
 
 ```js
 /** @type {import('tailwindcss').Config} */
@@ -97,7 +97,7 @@ module.exports = {
 }
 ```
 
-4. 引入 `tailwindcss`
+#### 4. 引入 `tailwindcss`
 
 在你的项目入口引入 `tailwindcss`
 
@@ -113,7 +113,7 @@ module.exports = {
 </style>
 ```
 
-Taro 的 `app.scss`
+又或者 `Taro` 的 `app.scss`
 
 ```scss
 @import 'tailwindcss/base';
@@ -121,20 +121,21 @@ Taro 的 `app.scss`
 ```
 
 然后在 `app.ts` 里引入
-> 没有使用 `tailwindcss/components` 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序没有用处。如果你有 @layer components 相关的工具类需要使用，可以再引入。
+
+> Q&A: 为什么没有引入 `tailwindcss/components`? 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序环境来说没有用处。如果你有 @layer components 相关的工具类需要使用，可以引入。
 
   <br/></details>
 
-### 2. rem转化rpx
+### 2. `rem` 转 `px` 或 `rpx`
 
 <details><summary>配置tailwindcss单位转化</summary><br/>
-    1. 选择(二者其一即可)
+    #### 1. 两种转化方式(二者选其一即可)
 
 假如你想要把项目里，所有满足条件的 `rem` 都转化成 `rpx`，那么 `postcss plugin`: [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 适合你。
 
 假如你想缩小一下范围，只把 `tailwindcss` 中默认的工具类的单位(非`jit`生成的`class`)，从 `rem` 转变为 `rpx`，那么 `tailwindcss preset`: [tailwindcss-rem2px-preset](https://www.npmjs.com/package/tailwindcss-rem2px-preset) 适合你。
 
-2. `postcss-rem-to-responsive-pixel`
+#### 2. `postcss-rem-to-responsive-pixel`
 
 ```sh
 npm i -D postcss-rem-to-responsive-pixel
@@ -160,10 +161,10 @@ module.exports = {
 };
 ```
 
-3. `tailwindcss-rem2px-preset`
+#### 3. `tailwindcss-rem2px-preset`
 
 ```sh
-npm i -D postcss-rem-to-responsive-pixel
+npm i -D tailwindcss-rem2px-preset
 ```
 
 然后在 `tailwind.config.js` 中，添加:
@@ -174,7 +175,9 @@ npm i -D postcss-rem-to-responsive-pixel
 module.exports = {
   presets: [
     require('tailwindcss-rem2px-preset').createPreset({
+      // 32 意味着 1rem = 32rpx
       fontSize: 32,
+      // 转化的单位,可以变成 px / rpx
       unit: 'rpx'
     })
   ],
@@ -182,7 +185,7 @@ module.exports = {
 }
 ```
 
-这样即可完成 `tailwindcss` 默认 `rem` 单位，转化 `rpx`。
+这样即可完成 `tailwindcss` 默认 `rem` 单位，转化 `rpx` 的配置了。
 
   <br/></details>
 
@@ -193,6 +196,14 @@ module.exports = {
 npm i -D weapp-tailwindcss-webpack-plugin
 # 可以执行一下 patch 方法
 npx weapp-tw patch
+```
+
+然后把下列脚本，添加进你的 `package.json` 里:
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
 ```
 
 #### 各个框架注册的方式
@@ -367,6 +378,16 @@ import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'w
 ```
 
 另外新的 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要用它直接替换原先插件即可。
+
+另外不要忘记把:
+
+```json
+ "scripts": {
++  "postinstall": "weapp-tw patch"
+ }
+```
+
+添加进你的 `package.json` 里。
 
 <!-- 所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。 -->
 

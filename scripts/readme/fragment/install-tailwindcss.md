@@ -1,5 +1,5 @@
 
-1. 安装 `tailwindcss`
+#### 1. 安装 `tailwindcss`
 
 ```sh
 # npm / yarn / pnpm 
@@ -7,7 +7,7 @@ npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init
 ```
 
-2. 把 `tailwindcss` 注册进 `postcss.config.js`
+#### 2. 把 `tailwindcss` 注册进 `postcss.config.js`
 
 ```js
 // postcss.config.js
@@ -20,7 +20,7 @@ module.exports = {
 }
 ```
 
-3. 配置 `tailwind.config.js`
+#### 3. 配置 `tailwind.config.js`
 
 ```js
 /** @type {import('tailwindcss').Config} */
@@ -36,7 +36,7 @@ module.exports = {
 }
 ```
 
-4. 引入 `tailwindcss`
+#### 4. 引入 `tailwindcss`
 
 在你的项目入口引入 `tailwindcss`
 
@@ -52,7 +52,7 @@ module.exports = {
 </style>
 ```
 
-Taro 的 `app.scss`
+又或者 `Taro` 的 `app.scss`
 
 ```scss
 @import 'tailwindcss/base';
@@ -60,4 +60,5 @@ Taro 的 `app.scss`
 ```
 
 然后在 `app.ts` 里引入
-> 没有使用 `tailwindcss/components` 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序没有用处。如果你有 @layer components 相关的工具类需要使用，可以再引入。
+
+> Q&A: 为什么没有引入 `tailwindcss/components`? 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序环境来说没有用处。如果你有 @layer components 相关的工具类需要使用，可以引入。
