@@ -65,14 +65,14 @@ const config = {
         title: 'weapp-tw',
         logo: {
           alt: 'weapp tailwindcss Logo',
-          src: 'img/logo.svg'
+          src: 'img/android-chrome-256x256.png'
         },
         items: [
           {
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: '教程'
+            label: '指南'
           },
           // {
           //   type: 'doc',
@@ -95,7 +95,7 @@ const config = {
             title: '文档',
             items: [
               {
-                label: '教程',
+                label: '指南',
                 to: '/docs/intro'
               }
             ]
