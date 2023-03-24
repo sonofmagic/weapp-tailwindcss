@@ -75,6 +75,17 @@ const config = {
             label: '指南'
           },
           {
+            type: 'doc',
+            docId: 'options/index',
+            position: 'left',
+            label: '配置项'
+          },
+          {
+            type: 'doc',
+            label: '常见问题',
+            docId: 'issues/index'
+          },
+          {
             href: 'https://icebreaker.top/',
             position: 'left',
             label: '博客'
@@ -130,7 +141,7 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} icebreaker, Inc. Built with Docusaurus.`
+        copyright: `Copyright © ${new Date().getFullYear()} icebreaker`
       },
       prism: {
         theme: lightCodeTheme,
