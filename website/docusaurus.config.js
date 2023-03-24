@@ -51,6 +51,15 @@ const config = {
         // },
         theme: {
           customCss: require.resolve('./src/css/custom.scss')
+        },
+        gtag: {
+          trackingID: 'G-S81Q4GRTPM'
+        },
+        sitemap: {
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+          filename: 'sitemap.xml'
         }
       })
     ]
@@ -59,6 +68,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      // algolia: {},
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
@@ -107,6 +117,14 @@ const config = {
               {
                 label: '指南',
                 to: '/docs/intro'
+              },
+              {
+                label: '配置项',
+                to: '/docs/options/'
+              },
+              {
+                label: '常见问题',
+                to: '/docs/issues/'
               }
             ]
           },
@@ -132,7 +150,7 @@ const config = {
             items: [
               {
                 label: '博客',
-                to: 'https://icebreaker.top'
+                href: 'https://icebreaker.top'
               },
               {
                 label: 'GitHub',
