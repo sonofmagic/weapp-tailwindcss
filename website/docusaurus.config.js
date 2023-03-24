@@ -74,15 +74,14 @@ const config = {
             position: 'left',
             label: '指南'
           },
-          // {
-          //   type: 'doc',
-          //   docId: 'principle/index',
-          //   position: 'left',
-          //   label: '原理'
-          // },
+          {
+            href: 'https://icebreaker.top/',
+            position: 'left',
+            label: '博客'
+          },
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin',
             label: 'GitHub',
             position: 'right'
           }
