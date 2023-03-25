@@ -10,7 +10,7 @@
 
 > 把 `tailwindcss` 带入小程序开发吧！
 
-\[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
   - [2.x 版本新特性](#2x-版本新特性)

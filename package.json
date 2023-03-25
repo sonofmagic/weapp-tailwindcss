@@ -107,7 +107,7 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
+  "homepage": "https://weapp-tw.icebreaker.top",
   "devDependencies": {
     "@babel/core": "^7.20.5",
     "@babel/preset-react": "^7.18.6",
