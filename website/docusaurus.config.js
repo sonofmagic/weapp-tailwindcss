@@ -31,7 +31,15 @@ const config = {
     defaultLocale: 'en',
     locales: ['en']
   },
-
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://hm.baidu.com'
+      }
+    }
+  ],
   scripts: [{ src: 'https://hm.baidu.com/hm.js?61f3de7065e36044e6d5f201632bc368', async: true }],
 
   presets: [
