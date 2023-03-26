@@ -1,7 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`tailwindcss source code patch internalPatch case 0 1`] = `
-""use strict";
+"use strict";
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -39,34 +36,28 @@ let cssFunctions = [
 ];
 // Ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Types
 function isCSSFunction(value) {
-    return cssFunctions.some((fn)=>new RegExp(\`^\${fn}\\\\(.*\\\\)\`).test(value));
+    return cssFunctions.some((fn)=>new RegExp(`^${fn}\\(.*\\)`).test(value));
 }
-const placeholder = "--tw-placeholder";
-const placeholderRe = new RegExp(placeholder, "g");
 function normalize(value, isRoot = true) {
-    // Keep raw strings if it starts with \`url(\`
+    // Keep raw strings if it starts with `url(`
     if (value.includes("url(")) {
-        return value.split(/(url\\(.*?\\))/g).filter(Boolean).map((part)=>{
-            if (/^url\\(.*?\\)$/.test(part)) {
+        return value.split(/(url\(.*?\))/g).filter(Boolean).map((part)=>{
+            if (/^url\(.*?\)$/.test(part)) {
                 return part;
             }
             return normalize(part, false);
         }).join("");
     }
-    // Convert \`_\` to \` \`, except for escaped underscores \`\\_\`
-    value = value.replace(/([^\\\\])_+/g, (fullMatch, characterBefore)=>characterBefore + " ".repeat(fullMatch.length - 1)).replace(/^_/g, " ").replace(/\\\\_/g, "_");
+    // Convert `_` to ` `, except for escaped underscores `\_`
+    value = value.replace(/([^\\])_+/g, (fullMatch, characterBefore)=>characterBefore + " ".repeat(fullMatch.length - 1)).replace(/^_/g, " ").replace(/\\_/g, "_");
     // Remove leftover whitespace
     if (isRoot) {
         value = value.trim();
     }
     // Add spaces around operators inside math functions like calc() that do not follow an operator
     // or '('.
-    value = value.replace(/(calc|min|max|clamp)\\(.+\\)/g, (match)=>{
-        let vars = [];
-        return match.replace(/var\\((--.+?)[,)]/g, (match, g1)=>{
-            vars.push(g1);
-            return match.replace(g1, placeholder);
-        }).replace(/(-?\\d*\\.?\\d(?!\\b-\\d.+[,)](?![^+\\-/*])\\D)(?:%|[a-z]+)?|\\))([+\\-/*])/g, "$1 $2 ").replace(placeholderRe, ()=>vars.shift());
+    value = value.replace(/(calc|min|max|clamp)\(.+\)/g, (match)=>{
+        return match.replace(/(-?\d*\.?\d(?!\b-.+[,)](?![^+\-/*])\D)(?:%|[a-z]+)?|\))([+\-/*])/g, "$1 $2 ");
     });
     return value;
 }
@@ -79,13 +70,27 @@ function number(value) {
 function percentage(value) {
     return value.endsWith("%") && number(value.slice(0, -1)) || isCSSFunction(value);
 }
-// Please refer to MDN when updating this list:
-// https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units
-// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries#container_query_length_units
-let lengthUnits = ["cm", "mm", "Q", "in", "pc", "pt", "px", "em", "ex", "ch", "rem", "lh", "rlh", "vw", "vh", "vmin", "vmax", "vb", "vi", "svw", "svh", "lvw", "lvh", "dvw", "dvh", "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", "rpx"];
-let lengthUnitsPattern = \`(?:\${lengthUnits.join("|")})\`;
+let lengthUnits = [
+    "cm",
+    "mm",
+    "Q",
+    "in",
+    "pc",
+    "pt",
+    "px",
+    "em",
+    "ex",
+    "ch",
+    "rem",
+    "lh",
+    "vw",
+    "vh",
+    "vmin",
+    "vmax"
+];
+let lengthUnitsPattern = `(?:${lengthUnits.join("|")})`;
 function length(value) {
-    return value === "0" || new RegExp(\`^[+-]?[0-9]*\\.?[0-9]+(?:[eE][+-]?[0-9]+)?\${lengthUnitsPattern}$\`).test(value) || isCSSFunction(value);
+    return value === "0" || new RegExp(`^[+-]?[0-9]*\.?[0-9]+(?:[eE][+-]?[0-9]+)?${lengthUnitsPattern}$`).test(value) || isCSSFunction(value);
 }
 let lineWidths = new Set([
     "thin",
@@ -146,7 +151,7 @@ let gradientTypes = new Set([
 function gradient(value) {
     value = normalize(value);
     for (let type of gradientTypes){
-        if (value.startsWith(\`\${type}(\`)) {
+        if (value.startsWith(`${type}(`)) {
             return true;
         }
     }
@@ -180,12 +185,12 @@ function familyName(value) {
         if (part.startsWith("var(")) return true;
         // If it contains spaces, then it should be quoted
         if (part.includes(" ")) {
-            if (!/(['"])([^"']+)\\1/g.test(part)) {
+            if (!/(['"])([^"']+)\1/g.test(part)) {
                 return false;
             }
         }
         // If it starts with a number, it's invalid
-        if (/^\\d/g.test(part)) {
+        if (/^\d/g.test(part)) {
             return false;
         }
         fonts++;
@@ -232,5 +237,3 @@ let relativeSizes = new Set([
 function relativeSize(value) {
     return relativeSizes.has(value);
 }
-"
-`;
