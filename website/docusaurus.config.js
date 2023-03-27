@@ -92,7 +92,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       algolia: {
-        apiKey: '9a95da8080f8911a944f074e38fa66e1',
+        apiKey: '614e6b4532a0b92d440e4676381cc600',
         appId: '9Y7BJULSEW',
         indexName: 'weapp-tw-icebreaker'
       },
