@@ -9,7 +9,7 @@ specifiers:
   '@babel/types': ^7.20.5
   '@icebreakers/cli': ^0.1.1
   '@icebreakers/eslint-config-ts': ^1.0.4
-  '@icebreakers/readme': 0.0.1
+  '@icebreakers/readme': 0.1.0
   '@rollup/plugin-alias': ^4.0.3
   '@rollup/plugin-commonjs': ^24.0.1
   '@rollup/plugin-json': ^6.0.0
@@ -109,7 +109,7 @@ devDependencies:
   '@babel/preset-react': 7.18.6_@babel+core@7.21.3
   '@icebreakers/cli': 0.1.1
   '@icebreakers/eslint-config-ts': 1.0.4_dzq4sglfl3yv4kxodieycp32vy
-  '@icebreakers/readme': 0.0.1
+  '@icebreakers/readme': 0.1.0
   '@rollup/plugin-alias': 4.0.3_rollup@3.20.2
   '@rollup/plugin-commonjs': 24.0.1_rollup@3.20.2
   '@rollup/plugin-json': 6.0.0_rollup@3.20.2
@@ -898,8 +898,8 @@ packages:
       - typescript
     dev: true
 
-  /@icebreakers/readme/0.0.1:
-    resolution: {integrity: sha512-BXbK+uQSkMdWTxVAPuxGECOUdZwxtDpkdu0leAU2eHQ/SMfGwzCZZ4jhQQDVguSLxNYMalrk0cArlPif6WSgZg==}
+  /@icebreakers/readme/0.1.0:
+    resolution: {integrity: sha512-E1EOapocLQnCODY9bpWLfD9et3r0qGQfkvxeciv68Dzlf1nhhVtJGuxTxGMr8VRwjyYJZabWTSYyrxwQQe5SUA==}
     dev: true
 
   /@istanbuljs/load-nyc-config/1.1.0:
@@ -4941,7 +4941,7 @@ packages:
       entities: 4.4.0
       param-case: 3.0.4
       relateurl: 0.2.7
-      terser: 5.16.6
+      terser: 5.16.8
     dev: true
 
   /htmlparser2/4.1.0:
@@ -5648,7 +5648,7 @@ packages:
       '@jest/types': 29.5.0
       '@types/stack-utils': 2.0.1
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       micromatch: 4.0.5
       pretty-format: 29.5.0
       slash: 3.0.0
@@ -5804,7 +5804,7 @@ packages:
       '@types/node': 18.15.10
       chalk: 4.1.2
       ci-info: 3.7.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       picomatch: 2.3.1
     dev: true
 
@@ -5816,7 +5816,7 @@ packages:
       '@types/node': 18.15.10
       chalk: 4.1.2
       ci-info: 3.8.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       picomatch: 2.3.1
     dev: true
 
@@ -8390,17 +8390,6 @@ packages:
 
   /terser/5.16.1:
     resolution: {integrity: sha512-xvQfyfA1ayT0qdK47zskQgRZeWLoOQ8JQ6mIgRGVNwZKdQMU+5FkCBjmv4QjcrTzyZquRw2FVtlJSRUmMKQslw==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      '@jridgewell/source-map': 0.3.2
-      acorn: 8.8.2
-      commander: 2.20.3
-      source-map-support: 0.5.21
-    dev: true
-
-  /terser/5.16.6:
-    resolution: {integrity: sha512-IBZ+ZQIA9sMaXmRZCUMDjNH0D5AQQfdn4WUjHL0+1lF4TP1IHRJbrhb6fNaXWikrYQTSkb7SLxkeXAiy1p7mbg==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
