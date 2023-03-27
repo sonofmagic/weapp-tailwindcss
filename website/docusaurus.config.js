@@ -94,7 +94,8 @@ const config = {
       algolia: {
         apiKey: '614e6b4532a0b92d440e4676381cc600',
         appId: '9Y7BJULSEW',
-        indexName: 'weapp-tw-icebreaker'
+        indexName: 'weapp-tw-icebreaker',
+        contextualSearch: true
       },
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
