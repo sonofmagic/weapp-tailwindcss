@@ -91,7 +91,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // algolia: {},
+      algolia: {
+        apiKey: '9a95da8080f8911a944f074e38fa66e1',
+        appId: '9Y7BJULSEW',
+        indexName: 'weapp-tw-icebreaker'
+      },
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
