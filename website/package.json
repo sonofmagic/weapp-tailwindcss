@@ -13,7 +13,7 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
-    "deploy:cos": "node scripts/deployCos.js"
+    "deploy:cos": "yarn build && node scripts/deployCos.js"
   },
   "dependencies": {
     "@docusaurus/core": "2.4.0",
