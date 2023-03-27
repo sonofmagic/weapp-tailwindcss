@@ -10,7 +10,9 @@ const version = args[0]
 if (version) {
   try {
     const cwd = process.cwd()
-    const { stdout } = await execa('pnpm', ['add', `tailwindcss${version}@npm:tailwindcss@${version}`], {
+    // pnpm EPERM: operation not permitted,
+    // try yarn 
+    const { stdout } = await execa('yarn', ['add', `tailwindcss${version}@npm:tailwindcss@${version}`], {
       cwd
     }).pipeStdout(process.stdout)
     // const filename = getCurrentFilename(import.meta.url)

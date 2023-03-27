@@ -14,11 +14,12 @@ const Index = () => {
       'text-[50px]': true
     },
     'bg-[#3232ff]',
-    ['h-[10px]', 'w-[20px]']
+    ['h-[10px]', 'w-[20px]'],
+    'text-[#fa00aa]'
   )
   return (
     <>
-      <View className={aaa}></View>
+      <View className={aaa}>11</View>
       <View className='form-box py-[62px] px-[95px] bg-sky-500/80'>py-[62px] px-[95px]</View>
       {/* @ts-ignore */}
       <View emptyImageClass='w-[404px] h-[337px] bg-[#fff]' btnClassName='text-[#66ffff]'></View>

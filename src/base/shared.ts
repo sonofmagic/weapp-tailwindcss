@@ -38,5 +38,5 @@ export function getGroupedEntries<T>(entries: [string, T][], options: InternalUs
       return 'other'
     }
   })
-  return groupedEntries
+  return groupedEntries as Record<'css' | 'html' | 'js' | 'other', [string, T][]>
 }

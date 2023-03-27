@@ -27,7 +27,8 @@
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
     "dev:quickapp": "npm run build:quickapp -- --watch",
-    "open": "weapp open -p"
+    "open": "weapp open -p",
+    "postinstall": "weapp-tw patch"
   },
   "browserslist": [
     "last 3 versions",
@@ -73,10 +74,11 @@
     "tailwind-css-variables-theme-generator": "^0.3.8",
     "tailwindcss": "^3.2.7",
     "tailwindcss-rem2px-preset": "^1.0.3",
+    "terser-webpack-plugin": "^5.3.7",
     "typescript": "~4.9.5",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.0.1",
+    "weapp-tailwindcss-webpack-plugin": "^2.0.2",
     "webpack": "^5.76.1"
   },
   "engines": {
