@@ -62,6 +62,11 @@ const sidebars = {
     {
       type: 'doc',
       id: 'issues/index'
+    },
+    {
+      type: 'doc',
+      id: 'issues/v1',
+      label: 'v1版本常见问题'
     }
   ]
 

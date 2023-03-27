@@ -1,12 +1,14 @@
 # 常见问题
 
 ## 为什么我更改了 class 保存重新打包的时候热更新失效？
->
+
+[[#93](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/93)]
+
 > 目前微信开发者工具会默认开启 `代码自动热重载 (compileHotReLoad)` 功能，这个功能在原生开发中表现良好，但在 `uni-app` 和 `taro` 等等的框架中，存在一定的问题，详见[issues#37](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/37)，所以如果你遇到了此类问题，建议关闭 `代码自动热重载` 功能。
 
-## `disabled:opacity-50` 这类的 `tailwindcss` 前缀不生效?
+## `disabled:opacity-50` 这类的 `tailwindcss` 工具类不生效?
 
-微信小程序 `wxss` 选择器的原生限制，无法突破。详见 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)。
+这是由于微信小程序 `wxss` 选择器的原生限制，无法突破。详见 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)。
 
 ## 和原生组件一起使用注意事项
 
@@ -62,52 +64,26 @@ module.exports = {
 
 遇到这个问题是由于 `babel` 相关的包之间的版本产生了冲突导致的，这种时候可以删除掉 `lock`文件 (`yarn.lock`,`pnpm-lock.yaml`,`package-lock.json`)，然后重新安装即可。
 
-## v1 版本插件的常见问题，使用最新版本插件无须参考
+## taro3.6.2 webpack5 环境下，这个插件和 terser-webpack-plugin一起使用，会导致插件转义功能失效
 
-### 我在 `js` 里写了 `tailwindcss` 的任意值，为什么没有生效?
+[[#142](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/142)]
 
-详见 [issue#28](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/28)
+压缩代码，不要使用 <https://docs.taro.zone/docs/config-detail/#terserenable> 链接中的方法，太老旧了
 
-A: 因为这个插件，主要是针对, `wxss`,`wxml` 和 `jsx` 进行转义的，`js` 里编写的 `string` 是不转义的。如果你有这样的需求可以这么写:
+`taro` 配置项里，已经有对应的 `terser` 配置项了，详见 <https://taro-docs.jd.com/docs/compile-optimized>
 
-```js
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
-const cardsColor = reactive([
-  replaceJs('bg-[#4268EA] shadow-indigo-100'),
-  replaceJs('bg-[#123456] shadow-blue-100')
-])
-```
+另外也可以不利用 `webpack` 插件压缩代码，去使用微信开发者工具内部的压缩代码选项。
 
-> 你不用担心把代码都打进来导致体积过大，我在 'weapp-tailwindcss-webpack-plugin/replace' 中，只暴露了2个方法，代码体积 1k左右，esm格式。
+## 为什么 space-y-1 这类写法不起作用?
 
-### replaceJs 跨端注意点
+[[#108](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/108)]
 
-就是在常见问题中的 `replaceJs` 这个方法原先是为小程序平台设计的，假如你一份代码，需要同时编译到小程序和 `h5` 平台，可以参考如下的封装：
+考虑到小程序的组件(shadow root)实现方式，默认情况下 `space` 这一类带有子选择器的，只对 `view` 元素生效。
 
-```js
-// util.js
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
-// uni-app 的条件编译写法
-export function replaceClass(str) {
-  // #ifdef H5
-  return str
-  // #endif
-  return replaceJs(str)
-}
-// or 环境变量判断
-export function replaceClass(str) {
-  // 需要根据自己目标平台自定义，这里仅仅给一些思路
-  if(process.env.UNI_PLATFORM === 'h5'){
-    return str
-  }
-  return replaceJs(str)
-}
+即选择器变成了 `.space-y-1 > view + view`
 
-// then other.js
-const cardsColor = reactive([
-  replaceClass('bg-[#4268EA] shadow-indigo-100'),
-  replaceClass('bg-[#123456] shadow-blue-100')
-])
-```
+这时候解决方案有 `2` 种：
 
-这样就能在多端都生效了。
+- 组件外层套view标签
+- `virtualHost` 解决方案，在自定义组件中添加
+ options: { virtualHost: true, } 即可解决此问题.
