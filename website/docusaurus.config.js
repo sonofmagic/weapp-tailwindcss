@@ -26,7 +26,8 @@ function createLink(params = {}) {
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'weapp-tw 把tailwindcss带给小程序开发者们',
-  tagline: '一起用tailwindcss来开发小程序吧！',
+  tagline:
+    '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -114,12 +115,12 @@ const config = {
         {
           name: 'keywords',
           content: 'weapp, 小程序, tailwindcss, 原子类, uni-app, taro, rax, mpx, native, remax, 原生, webpack plugin,vite, wxss, wxml'
-        },
-        {
-          name: 'description',
-          content:
-            '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站'
         }
+        // {
+        //   name: 'description',
+        //   content:
+        //     '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站'
+        // }
       ],
       algolia: {
         apiKey: '614e6b4532a0b92d440e4676381cc600',
