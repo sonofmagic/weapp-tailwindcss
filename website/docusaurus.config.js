@@ -4,6 +4,22 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
+/**
+ *
+ * @param {{
+ * target?:string
+ * rel?:string
+ * href?:string
+ * innerText?:string
+ * }} params
+ * @returns
+ */
+function createLink(params = {}) {
+  const { target = '_blank', rel = 'nofollow', href, innerText = '' } = params
+
+  return `<a ${target ? `target="${target}"` : ''} ${rel ? `rel="${rel}"` : ''} ${href ? `href="${href}"` : ''}">${innerText}</a>`
+}
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'weapp-tailwindcss-webpack-plugin',
@@ -187,7 +203,11 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} icebreaker`
+        // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
+        copyright: `Copyright © ${new Date().getFullYear()} icebreaker ${createLink({
+          href: 'http://beian.miit.gov.cn',
+          innerText: '苏ICP备19002675号-2'
+        })}`
       },
       prism: {
         theme: lightCodeTheme,
