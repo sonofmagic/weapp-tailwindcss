@@ -23,7 +23,8 @@
     "tailwindcss3.2.3": "npm:tailwindcss@3.2.3",
     "tailwindcss3.2.4": "npm:tailwindcss@3.2.4",
     "tailwindcss3.2.6": "npm:tailwindcss@3.2.6",
-    "tailwindcss3.2.7": "npm:tailwindcss@3.2.7"
+    "tailwindcss3.2.7": "npm:tailwindcss@3.2.7",
+    "tailwindcss3.3.0": "npm:tailwindcss@3.3.0"
   },
   "devDependencies": {
     "execa": "^7.1.1"
