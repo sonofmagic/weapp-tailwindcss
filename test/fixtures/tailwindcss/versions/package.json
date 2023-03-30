@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tailwindcss": "^3.2.7",
+    "tailwindcss": "^3.3.0",
     "tailwindcss3.0.0": "npm:tailwindcss@3.0.0",
     "tailwindcss3.2.1": "npm:tailwindcss@3.2.1",
     "tailwindcss3.2.2": "npm:tailwindcss@3.2.2",
