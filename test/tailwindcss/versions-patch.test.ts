@@ -31,4 +31,31 @@ describe('versions-patch', () => {
     const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${v}/package.json`), opt, false)
     expect(res).toMatchSnapshot()
   })
+  let oldCacheResult:
+    | {
+        dataTypes: string | undefined
+      }
+    | undefined
+  it.each(['3.2.1', '3.2.2', '3.2.3', '3.2.4'])('if patch eq %s', (version) => {
+    const options = getOptions()
+    const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
+    opt.dangerousOptions.overwrite = false
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt, false)
+    expect(res).toEqual(oldCacheResult ?? res)
+    oldCacheResult = res
+  })
+
+  let cacheResult:
+    | {
+        dataTypes: string | undefined
+      }
+    | undefined
+  it.each(['3.2.6', '3.2.7', 'lts'])('if patch eq %s', (version) => {
+    const options = getOptions()
+    const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
+    opt.dangerousOptions.overwrite = false
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt, false)
+    expect(res).toEqual(cacheResult ?? res)
+    cacheResult = res
+  })
 })
