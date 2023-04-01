@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { gte as semverGte } from 'semver'
-import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions } from '@/types'
+import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions, InternalPatchResult } from '@/types'
 import type { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
@@ -63,10 +63,7 @@ export function monkeyPatchForExposingContext(rootDir: string, overwrite: boolea
   const processTailwindFeaturesFilePath = path.resolve(rootDir, 'lib/processTailwindFeatures.js')
 
   const processTailwindFeaturesContent = ensureFileContent(processTailwindFeaturesFilePath)
-  const result: Record<string, string | null> = {
-    processTailwindFeatures: null,
-    plugin: null
-  }
+  const result: Pick<InternalPatchResult, 'plugin' | 'processTailwindFeatures'> = {}
   if (processTailwindFeaturesContent) {
     const { code, hasPatched } = inspectProcessTailwindFeaturesReturnContext(processTailwindFeaturesContent)
     if (!hasPatched && overwrite) {
@@ -125,7 +122,7 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
   }
 }
 
-export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite: boolean = true) {
+export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite: boolean = true): InternalPatchResult | undefined {
   if (pkgJsonPath) {
     const rootDir = path.dirname(pkgJsonPath)
     const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)

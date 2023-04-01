@@ -281,3 +281,12 @@ export interface IBaseWebpackPlugin {
 
   apply: (compiler: any) => void
 }
+
+/**
+ * @description InternalPatchResult
+ */
+export interface InternalPatchResult {
+  dataTypes?: string
+  processTailwindFeatures?: string
+  plugin?: string
+}
