@@ -13,8 +13,9 @@ function HomepageHeader() {
           <HomeLogo></HomeLogo>
         </div>
         <div className="flex flex-col items-center">
-          <h1>{siteConfig.title}</h1>
-          <p>{siteConfig.tagline}</p>
+          <h1>{siteConfig.projectName}</h1>
+          <p>{siteConfig.title}</p>
+          {/* <p>{siteConfig.tagline}</p> */}
           <div>
             <Link className="button button--secondary button--lg " to="/docs/intro">
               立刻开始使用!

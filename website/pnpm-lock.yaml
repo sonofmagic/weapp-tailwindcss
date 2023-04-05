@@ -10,6 +10,7 @@ specifiers:
   '@tsconfig/docusaurus': ^1.0.5
   autoprefixer: ^10.4.14
   clsx: ^1.2.1
+  cross-env: ^7.0.3
   docusaurus-plugin-sass: ^0.2.3
   dotenv: ^16.0.3
   prism-react-renderer: ^1.3.5
@@ -35,6 +36,7 @@ devDependencies:
   '@icebreakers/deploy': 0.1.1
   '@tsconfig/docusaurus': 1.0.7
   autoprefixer: 10.4.14
+  cross-env: 7.0.3
   docusaurus-plugin-sass: 0.2.3_bfghvppn5fypavkwrwow4kjsz4
   dotenv: 16.0.3
   sass: 1.60.0
@@ -3637,6 +3639,14 @@ packages:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
+
+  /cross-env/7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+    dev: true
 
   /cross-fetch/3.1.5:
     resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}

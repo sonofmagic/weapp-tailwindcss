@@ -3,18 +3,38 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const hostingProvider = process.env.PROVIDER
+const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
+console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
+
+/**
+ *
+ * @param {{
+ * target?:string
+ * rel?:string
+ * href?:string
+ * innerText?:string
+ * }} params
+ * @returns
+ */
+function createLink(params = {}) {
+  const { target = '_blank', rel = 'nofollow', href, innerText = '' } = params
+
+  return `<a ${target ? `target="${target}"` : ''} ${rel ? `rel="${rel}"` : ''} ${href ? `href="${href}"` : ''}">${innerText}</a>`
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'weapp-tailwindcss-webpack-plugin',
-  tagline: '把tailwindcss，带给小程序开发者们',
+  title: 'weapp-tw 把tailwindcss带给小程序开发者们',
+  tagline:
+    '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
   url: 'https://weapp-tw.icebreaker.top',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: isGithub ? '/weapp-tailwindcss-webpack-plugin/' : '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -91,7 +111,23 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // algolia: {},
+      metadata: [
+        {
+          name: 'keywords',
+          content: 'weapp, 小程序, tailwindcss, 原子类, uni-app, taro, rax, mpx, native, remax, 原生, webpack plugin,vite, wxss, wxml'
+        }
+        // {
+        //   name: 'description',
+        //   content:
+        //     '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站'
+        // }
+      ],
+      algolia: {
+        apiKey: '614e6b4532a0b92d440e4676381cc600',
+        appId: '9Y7BJULSEW',
+        indexName: 'weapp-tw-icebreaker',
+        contextualSearch: true
+      },
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
@@ -182,7 +218,11 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} icebreaker`
+        // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
+        copyright: `Copyright © ${new Date().getFullYear()} icebreaker ${createLink({
+          href: 'http://beian.miit.gov.cn',
+          innerText: '苏ICP备19002675号-2'
+        })}`
       },
       prism: {
         theme: lightCodeTheme,

@@ -2,7 +2,7 @@ import { internalPatch } from '@/tailwindcss/patcher'
 import { tailwindcssCasePath } from '#test/util'
 import { getOptions } from '@/defaults'
 import path from 'path'
-import type { ILengthUnitsPatchOptions } from '@/types'
+import type { ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 
 const versionsPkgDir = path.resolve(tailwindcssCasePath, 'versions/package.json')
 
@@ -30,5 +30,25 @@ describe('versions-patch', () => {
     opt.dangerousOptions.overwrite = false
     const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${v}/package.json`), opt, false)
     expect(res).toMatchSnapshot()
+  })
+  // eslint-disable-next-line prettier/prettier
+  let oldCacheResult: InternalPatchResult | undefined;
+  it.each(['3.2.1', '3.2.2', '3.2.3', '3.2.4'])('if patch eq %s', (version) => {
+    const options = getOptions()
+    const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
+    opt.dangerousOptions.overwrite = false
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt, false)
+    expect(res).toEqual(oldCacheResult ?? res)
+    oldCacheResult = res
+  })
+  // eslint-disable-next-line prettier/prettier
+  let cacheResult: InternalPatchResult | undefined;
+  it.each(['3.2.6', '3.2.7', '3.3.0', '3.3.1', 'lts'])('if patch eq %s', (version) => {
+    const options = getOptions()
+    const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
+    opt.dangerousOptions.overwrite = false
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt, false)
+    expect(res).toEqual(cacheResult ?? res)
+    cacheResult = res
   })
 })

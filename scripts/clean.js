@@ -1,6 +1,7 @@
 const del = require('del')
-
+const chalk = require('chalk')
 ;(async () => {
   const deletedDirectoryPaths = await del(['dist', 'types'])
-  console.log('Deleted directories:\n', deletedDirectoryPaths.join('\n'))
+  console.log(chalk.green.bold('Deleted directories:'))
+  console.log(deletedDirectoryPaths.join('\n'))
 })()
