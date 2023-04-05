@@ -16,7 +16,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   appType?: AppType
   // classGenerator?: ClassGenerator
   static NS = NS
-  constructor(options: UserDefinedOptions) {
+  constructor(options: UserDefinedOptions = {}) {
     if (typeof options.customReplaceDictionary === 'undefined') {
       options.customReplaceDictionary = 'simple'
     }
