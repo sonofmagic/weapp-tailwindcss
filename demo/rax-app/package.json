@@ -12,7 +12,8 @@
     "stylelint": "stylelint \"**/*.{css,scss,less}\"",
     "prettier": "prettier **/* --write",
     "lint": "npm run eslint && npm run stylelint",
-    "open": "weapp open -p build/wechat-miniprogram"
+    "open": "weapp open -p build/wechat-miniprogram",
+    "postinstall": "weapp-tw patch"
   },
   "dependencies": {
     "clsx": "^1.2.1",
@@ -36,11 +37,11 @@
     "rax-app": "3.8.22",
     "stylelint": "^15.2.0",
     "tailwind-css-variables-theme-generator": "^0.3.8",
-    "tailwindcss": "^3.2.7",
+    "tailwindcss": "^3.3.1",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.0.2"
+    "weapp-tailwindcss-webpack-plugin": "^2.0.3"
   },
   "private": true,
   "originTemplate": "@rax-materials/scaffolds-app-ts"

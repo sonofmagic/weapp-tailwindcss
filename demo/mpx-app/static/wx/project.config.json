@@ -11,7 +11,8 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "condition": false
   },
   "appid": "touristappid",
   "projectname": "mpx-app",

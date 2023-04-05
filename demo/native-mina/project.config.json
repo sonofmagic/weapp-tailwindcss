@@ -46,7 +46,8 @@
         "packageJsonPath": "./package.json",
         "miniprogramNpmDistDir": "./dist"
       }
-    ]
+    ],
+    "condition": false
   },
   "miniprogramRoot": "dist/",
   "compileType": "miniprogram",
