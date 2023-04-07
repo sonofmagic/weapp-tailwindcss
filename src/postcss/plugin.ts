@@ -1,38 +1,32 @@
 import type { PluginCreator, Plugin } from 'postcss'
-import type { InternalPostcssOptions, IStyleHandlerOptions } from '@/types'
+import type { IStyleHandlerOptions } from '@/types'
 import { transformSync } from './selectorParser'
-import { getOptions } from '@/defaults'
 import { commonChunkPreflight } from './mp'
-import { createInjectPreflight } from './preflight'
 import { postcssPlugin } from '@/constants'
+import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 
-export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<InternalPostcssOptions>
+export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
-const plugin: PostcssWeappTailwindcssRenamePlugin = (options: InternalPostcssOptions = {}) => {
-  const mergedOptions = getOptions(options)
-  const { classGenerator } = options
-  const { cssPreflight, cssPreflightRange, customRuleCallback, replaceUniversalSelectorWith } = mergedOptions
-  const cssInjectPreflight = createInjectPreflight(cssPreflight)
-  const opts: IStyleHandlerOptions = {
-    cssInjectPreflight,
-    cssPreflightRange,
-    isMainChunk: true,
-    customRuleCallback,
-    replaceUniversalSelectorWith,
-    classGenerator
+const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
+  options: IStyleHandlerOptions = {
+    isMainChunk: true
   }
+) => {
+  const { customRuleCallback } = options
 
+  const flag = typeof customRuleCallback === 'function'
   return {
     postcssPlugin,
     Once(css) {
       css.walkRules((rule) => {
-        transformSync(rule, opts)
-        commonChunkPreflight(rule, opts)
+        transformSync(rule, options)
+        commonChunkPreflight(rule, options)
+        flag && customRuleCallback(rule, options)
       })
     }
   } as Plugin
 }
 
-plugin.postcss = true
+postcssWeappTailwindcss.postcss = true
 
-export default plugin // as Plugin
+export { postcssWeappTailwindcss, postcssIsPseudoClass }

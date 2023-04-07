@@ -1,7 +1,7 @@
 import { styleHandler } from '@/postcss'
 import ClassGenerator from '@/mangle/classGenerator'
 import { cssCasePath, createGetCase, createPutCase } from '../util'
-// import { getOptions } from '@/defaults'
+// import { getOptions } from '@/options'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars

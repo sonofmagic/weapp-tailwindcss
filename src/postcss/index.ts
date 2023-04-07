@@ -1,25 +1,10 @@
 import postcss from 'postcss'
 import type { IStyleHandlerOptions } from '@/types'
-import { commonChunkPreflight } from './mp'
-import { transformSync } from './selectorParser'
 import { defu } from '@/utils'
+import { postcssIsPseudoClass, postcssWeappTailwindcss } from './plugin'
 
 export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
-  const root = postcss.parse(rawSource)
-  const { isMainChunk, customRuleCallback } = options
-  const flag = typeof customRuleCallback === 'function'
-  root.walk((node) => {
-    if (node.type === 'rule') {
-      transformSync(node, options)
-
-      if (isMainChunk) {
-        commonChunkPreflight(node, options)
-      }
-
-      flag && customRuleCallback(node, options)
-    }
-  })
-  return root.toString()
+  return postcss([postcssWeappTailwindcss(options), postcssIsPseudoClass()]).process(rawSource).css
 }
 
 export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {

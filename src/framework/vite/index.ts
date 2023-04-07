@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import { UserDefinedOptions } from '@/types'
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 // import type { Plugin as PostcssPlugin } from 'postcss'

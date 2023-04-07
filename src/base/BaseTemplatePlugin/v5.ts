@@ -1,6 +1,6 @@
 import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack'
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
 import { getGroupedEntries } from '@/base/shared'
 // import ClassGenerator from '@/mangle/classGenerator'

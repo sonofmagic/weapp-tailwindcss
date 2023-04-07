@@ -26,6 +26,7 @@ export type CssPreflightOptions =
   | false
 
 type RequiredStyleHandlerOptions = {
+  /** @deprecated */
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   cssPreflightRange?: 'view' | 'all'
@@ -133,6 +134,7 @@ export interface UserDefinedOptions {
    */
   jsMatcher?: ((name: string) => boolean) | string | string[]
   /**
+   * @deprecated
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */

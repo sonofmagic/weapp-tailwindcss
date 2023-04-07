@@ -8,7 +8,13 @@ async function main() {
 
   for (let i = 0; i < demoPaths.length; i++) {
     const demoPath = demoPaths[i]
-    await fs.copy(sourcePath, path.resolve(root, `demo/${demoPath}/weapp-tw-dist`))
+    const dest = path.resolve(root, `demo/${demoPath}/weapp-tw-dist`)
+    try {
+      await fs.ensureDir(dest)
+      await fs.copy(sourcePath, dest)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 main()
