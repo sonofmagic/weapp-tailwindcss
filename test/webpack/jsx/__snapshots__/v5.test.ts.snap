@@ -3,7 +3,7 @@
 exports[`webpack5 jsx plugin common: assets 1`] = `
 {
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
-  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.77.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_aktslgcnaxlmf3ayb6lwkgnhqe/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
+  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.78.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_ijp4qkbu5v6trqezpmptmrsogu/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
 ::before,::after {
     --tw-content: ""}
@@ -430,7 +430,7 @@ exports[`webpack5 jsx plugin common: warnings 1`] = `[]`;
 exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 {
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
-  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.77.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_aktslgcnaxlmf3ayb6lwkgnhqe/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
+  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.78.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_ijp4qkbu5v6trqezpmptmrsogu/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
 *, ::before, ::after {
     --tw-border-spacing-x: 0;
