@@ -323,6 +323,20 @@ describe('styleHandler', () => {
     expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}')
   })
 
+  it('global variables scope matched and inject with isMainChunk false', async () => {
+    const opt = getOptions()
+    const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
+    const testCase = ":before,:after{--tw-:'test'}"
+    const result = styleHandler(testCase, {
+      isMainChunk: false,
+      cssInjectPreflight,
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    }).replace(/\r\n/g, '\n')
+    expect(result).toBe(testCase)
+  })
+
   it('global variables scope matched and inject and modify preflight range', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
@@ -337,6 +351,20 @@ describe('styleHandler', () => {
     expect(result).toBe(
       '::before,::after{--tw-content:""}\n:before,:after,view,:not(not){--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}'
     )
+  })
+
+  it('global variables scope matched and inject and modify preflight range with isMainChunk false', async () => {
+    const opt = getOptions()
+    const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
+    const testCase = ":before,:after{--tw-:'test'}"
+    const result = styleHandler(testCase, {
+      isMainChunk: false,
+      cssInjectPreflight,
+      cssPreflightRange: 'all',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    }).replace(/\r\n/g, '\n')
+    expect(result).toBe(testCase)
   })
 
   it('global variables scope not matched', async () => {

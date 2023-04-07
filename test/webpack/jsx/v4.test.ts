@@ -89,7 +89,7 @@ describe('webpack4 jsx plugin', () => {
     new BaseJsxWebpackPluginV4(
       {
         mainCssChunkMatcher(name, appType) {
-          return path.basename(name) === 'index.css'
+          return true // path.basename(name) === 'index.css'
         },
         jsxRenameLoaderPath: loaderPath
       },

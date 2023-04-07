@@ -20,7 +20,7 @@ const Index = () => {
   return (
     <>
       <View className={aaa}>11</View>
-      <View className='form-box py-[62px] px-[95px] bg-sky-500/80'>py-[62px] px-[95px]</View>
+      <View className='form-box py-[62px] px-[95px] bg-sky-500/80 dark:bg-[#123456]'>py-[62px] px-[95px]</View>
       {/* @ts-ignore */}
       <View emptyImageClass='w-[404px] h-[337px] bg-[#fff]' btnClassName='text-[#66ffff]'></View>
       <EndClassCom emptyImageClass='text-[#564564]' btnClassName='text-[#66ffff]'></EndClassCom>

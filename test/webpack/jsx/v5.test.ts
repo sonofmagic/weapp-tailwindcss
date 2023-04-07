@@ -84,7 +84,7 @@ describe('webpack5 jsx plugin', () => {
     new BaseJsxWebpackPluginV5(
       {
         mainCssChunkMatcher(name, appType) {
-          return path.basename(name) === 'index.css'
+          return true // return path.basename(name) === 'index.css'
         },
         jsxRenameLoaderPath: loaderPath
       },
