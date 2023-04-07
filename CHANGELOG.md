@@ -1,6 +1,17 @@
 # Changelog
 
-## 2.0.1 (2022-03-21)
+## 2.0.2 - 2.0.4 (2023-04-07)
+
+### Docs
+
+- <https://weapp-tw.icebreaker.top/>
+
+### Fixed
+
+- 修复因 `typescript` 升级 `5.x` 导致的 `dts` 路径错误问题
+- 展开 `:is()` [#153](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/153)
+
+## 2.0.1 (2023-03-21)
 
 ### Fixed
 
