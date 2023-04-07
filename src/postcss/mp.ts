@@ -11,12 +11,17 @@ import type { IStyleHandlerOptions } from '@/types'
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
-function testIfVariablesScope(node: Rule): boolean {
+export function testIfVariablesScope(node: Rule, count = 1): boolean {
   if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
-    const tryTestDecl = node.nodes[0]
-    if (tryTestDecl && tryTestDecl.type === 'decl') {
-      return tryTestDecl.prop.startsWith('--tw-')
+    for (let i = 0; i < count; i++) {
+      const tryTestDecl = node.nodes[i]
+      if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
+        continue
+      } else {
+        return false
+      }
     }
+    return true
   }
   return false
 }
