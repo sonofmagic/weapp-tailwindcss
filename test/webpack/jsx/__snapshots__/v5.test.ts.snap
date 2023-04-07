@@ -5,6 +5,8 @@ exports[`webpack5 jsx plugin common: assets 1`] = `
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
   !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.77.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_aktslgcnaxlmf3ayb6lwkgnhqe/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
+::before,::after {
+    --tw-content: ""}
 view,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -50,7 +52,11 @@ view,::before,::after {
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  
-}
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -154,20 +160,20 @@ view,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_bl_1_d_6rem_br_>:not([hidden])~:not([hidden]) {
+.space-y-_bl_1_d_6rem_br_>view + view {
     --tw-space-y-reverse: 0;
     margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse))
 }
-.divide-x-_bl_10px_br_>:not([hidden])~:not([hidden]) {
+.divide-x-_bl_10px_br_>view + view {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
 }
-.divide-solid>:not([hidden])~:not([hidden]) {
+.divide-solid>view + view {
     border-style: solid
 }
-.divide-_bl__h_010101_br_>:not([hidden])~:not([hidden]) {
+.divide-_bl__h_010101_br_>view + view {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity))
 }

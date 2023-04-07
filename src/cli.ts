@@ -1,5 +1,5 @@
 import { createPatch } from '@/tailwindcss/patcher'
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 const args = process.argv.slice(2)
 
 if (args[0] === 'patch') {

@@ -1,4 +1,4 @@
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 
 describe('customReplaceDictionary', () => {
   it('templeteHandler custom map', () => {

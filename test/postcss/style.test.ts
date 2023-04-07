@@ -1,6 +1,6 @@
 import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 import { cssCasePath, createGetCase, createPutCase } from '../util'
 
 const getCase = createGetCase(cssCasePath)
@@ -373,5 +373,17 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false
     }).replace(/\r\n/g, '\n')
     expect(result).toBe('.test>view + view{}')
+  })
+
+  it('Is Pseudo Class', async () => {
+    const testCase = ':is(.dark .dark:bg-zinc-800) {}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    }).replace(/\r\n/g, '\n')
+    expect(result).toBe('.dark .dark:bg-zinc-800 {}')
   })
 })

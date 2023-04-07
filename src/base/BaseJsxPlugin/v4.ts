@@ -1,6 +1,7 @@
 import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack4'
-import { getOptions } from '@/defaults'
+
+import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
 import { ConcatSource, Source } from 'webpack-sources'
 import path from 'path'

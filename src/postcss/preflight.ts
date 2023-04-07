@@ -2,7 +2,7 @@ import type { CssPreflightOptions, IPropValue } from '@/types'
 
 export type InjectPreflight = () => IPropValue[]
 
-export const createInjectPreflight = (options: CssPreflightOptions): InjectPreflight => {
+export const createInjectPreflight = (options?: CssPreflightOptions): InjectPreflight => {
   const result: IPropValue[] = []
   // if options false ,do no thing
   if (options && typeof options === 'object') {

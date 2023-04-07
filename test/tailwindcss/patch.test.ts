@@ -1,7 +1,7 @@
 import { getInstalledPkgJsonPath, internalPatch } from '@/tailwindcss/patcher'
 import { findAstNode } from '@/tailwindcss/supportCustomUnit'
 import { tailwindcssCasePath, createGetCase } from '#test/util'
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 import path from 'path'
 import type { ILengthUnitsPatchOptions } from '@/types'
 const getCase = createGetCase(tailwindcssCasePath)

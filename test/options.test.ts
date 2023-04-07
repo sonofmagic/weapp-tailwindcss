@@ -1,4 +1,6 @@
-import { getOptions, defaultOptions } from '@/defaults'
+import { defaultOptions } from '@/defaults'
+import { getOptions } from '@/options'
+
 describe('get options', () => {
   it('default options', () => {
     const options = getOptions()

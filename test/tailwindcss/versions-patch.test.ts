@@ -1,6 +1,6 @@
 import { internalPatch } from '@/tailwindcss/patcher'
 import { tailwindcssCasePath } from '#test/util'
-import { getOptions } from '@/defaults'
+import { getOptions } from '@/options'
 import path from 'path'
 import type { ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 
