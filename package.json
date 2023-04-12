@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.0.4",
+  "version": "2.1.0-beta.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -204,7 +204,7 @@
     "postcss": "8.4.21",
     "postcss-selector-parser": "^6.0.11",
     "semver": "^7.4.0",
-    "tailwindcss-patch": "^0.0.1",
+    "tailwindcss-patch": "^1.0.0",
     "webpack-sources": "^3.2.3"
   }
 }

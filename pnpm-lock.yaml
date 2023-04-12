@@ -79,7 +79,7 @@ specifiers:
   style-loader2: npm:style-loader@2.0.0
   tailwind-children: ^0.5.0
   tailwindcss: ^3.3.1
-  tailwindcss-patch: ^0.0.1
+  tailwindcss-patch: ^1.0.0
   ts-jest: ^29.1.0
   ts-node: ^10.9.1
   ts-patch: ^2.1.0
@@ -105,7 +105,7 @@ dependencies:
   postcss: 8.4.21
   postcss-selector-parser: 6.0.11
   semver: 7.4.0
-  tailwindcss-patch: 0.0.1
+  tailwindcss-patch: 1.0.0
   webpack-sources: 3.2.3
 
 devDependencies:
@@ -8330,8 +8330,8 @@ packages:
       - ts-node
     dev: true
 
-  /tailwindcss-patch/0.0.1:
-    resolution: {integrity: sha512-kmY8PzFLGDCxYi4/8pgt3yJnJTthxpif4Fk6zQkxmOhWdYXQMtg/aEPmGyuuFkFF5ioSfKjy8Xsf+wgKpcfMpQ==}
+  /tailwindcss-patch/1.0.0:
+    resolution: {integrity: sha512-Rtk5yxCXzEYFmnx05sorwVShGhB1jY/qZ4KbGR75wTkEeOkdYOSHec3X60yNn8Y5ek6xg3i02/XzwXp/x4ia0Q==}
     hasBin: true
     requiresBuild: true
     dependencies:
