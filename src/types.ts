@@ -10,7 +10,7 @@ import type { GeneratorResult } from '@babel/generator'
 export type ItemOrItemArray<T> = T | T[]
 export type { TraverseOptions } from '@babel/traverse'
 export type { Node } from '@babel/types'
-export type AppType = 'uni-app' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
+export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
 
 export interface IPropValue {
   prop: string
@@ -26,7 +26,9 @@ export type CssPreflightOptions =
   | false
 
 type RequiredStyleHandlerOptions = {
-  /** @deprecated */
+  /**
+   * @description 默认为 true，此时会对样式主文件，进行猜测
+   */
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   cssPreflightRange?: 'view' | 'all'
@@ -134,7 +136,7 @@ export interface UserDefinedOptions {
    */
   jsMatcher?: ((name: string) => boolean) | string | string[]
   /**
-   * @deprecated
+   * @description 可以不传，但是遇到某些 ::before/::after 选择器注入冲突时，建议传手动指定 css bundle 文件位置
    * tailwind jit main chunk 的匹配方法
    * 用于处理原始变量和替换不兼容选择器
    */

@@ -6,7 +6,7 @@ import type { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { findAstNode } from './supportCustomUnit'
-import { inspectPostcssPlugin, inspectProcessTailwindFeaturesReturnContext } from './inspector'
+import { monkeyPatchForExposingContext } from './inspector'
 import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
@@ -41,54 +41,6 @@ export function createPatch(options: false | ILengthUnitsPatchOptions) {
       console.warn(`patch tailwindcss failed:` + (<Error>error).message)
     }
   }
-}
-
-function ensureFileContent(filepaths: string | string[]) {
-  if (typeof filepaths === 'string') {
-    filepaths = [filepaths]
-  }
-  let content
-  for (let i = 0; i < filepaths.length; i++) {
-    const filepath = filepaths[i]
-    if (fs.existsSync(filepath)) {
-      content = fs.readFileSync(filepath, {
-        encoding: 'utf-8'
-      })
-      break
-    }
-  }
-  return content
-}
-export function monkeyPatchForExposingContext(rootDir: string, overwrite: boolean) {
-  const processTailwindFeaturesFilePath = path.resolve(rootDir, 'lib/processTailwindFeatures.js')
-
-  const processTailwindFeaturesContent = ensureFileContent(processTailwindFeaturesFilePath)
-  const result: Pick<InternalPatchResult, 'plugin' | 'processTailwindFeatures'> = {}
-  if (processTailwindFeaturesContent) {
-    const { code, hasPatched } = inspectProcessTailwindFeaturesReturnContext(processTailwindFeaturesContent)
-    if (!hasPatched && overwrite) {
-      fs.writeFileSync(processTailwindFeaturesFilePath, code, {
-        encoding: 'utf-8'
-      })
-      console.log('patch tailwindcss processTailwindFeatures for return content successfully!')
-    }
-    result.processTailwindFeatures = code
-  }
-
-  const pluginFilePath = path.resolve(rootDir, 'lib/plugin.js')
-  const indexFilePath = path.resolve(rootDir, 'lib/index.js')
-  const pluginContent = ensureFileContent([pluginFilePath, indexFilePath])
-  if (pluginContent) {
-    const { code: code0, hasPatched: hasPatched0 } = inspectPostcssPlugin(pluginContent)
-    if (!hasPatched0 && overwrite) {
-      fs.writeFileSync(pluginFilePath, code0, {
-        encoding: 'utf-8'
-      })
-      console.log('patch tailwindcss for expose runtime content successfully!')
-    }
-    result.plugin = code0
-  }
-  return result
 }
 
 export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILengthUnitsPatchOptions) {
@@ -126,7 +78,9 @@ export function internalPatch(pkgJsonPath: string | undefined, options: ILengthU
   if (pkgJsonPath) {
     const rootDir = path.dirname(pkgJsonPath)
     const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
-    const result = monkeyPatchForExposingContext(rootDir, overwrite)
+    const result = monkeyPatchForExposingContext(rootDir, {
+      overwrite
+    })
     return {
       ...result,
       dataTypes

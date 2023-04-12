@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "mpx-cli-service serve:mp",
     "build": "mpx-cli-service build:mp",
+    "build:local": "cross-env LOCAL=1 mpx-cli-service build:mp",
     "lint": "eslint --ext .js,.ts,.mpx src/",
     "build:web": "mpx-cli-service build:web",
     "serve:web": "mpx-cli-service serve:web",
@@ -42,6 +43,7 @@
     "@mpxjs/webpack-plugin": "^2.8.23",
     "@vue/cli-service": "~5.0.0",
     "autoprefixer": "^10.4.14",
+    "cross-env": "^7.0.3",
     "eslint": "^8.36.0",
     "postcss": "^8.4.21",
     "postcss-loader": "^7.0.2",
@@ -56,7 +58,7 @@
     "vue-template-compiler": "^2.6.14",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.0.4",
+    "weapp-tailwindcss-webpack-plugin": "^2.1.0",
     "webpack": "^5.76.1"
   },
   "browserslist": "ios >= 8, chrome >= 47"

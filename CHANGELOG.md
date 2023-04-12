@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0 (2023-04-12)
+
+### Features
+
+- jsHandler 增强，添加了针对模板字符串的处理
+- [tailwindcss-patch](https://www.npmjs.com/package/tailwindcss-patch) 如今作为一个独立的 `npm` 包来依赖了
+- 增强了所有字面量分割的方式，增强了针对 `vue3` 静态模板字符串的处理方式。
+
 ## 2.0.2 - 2.0.4 (2023-04-07)
 
 ### Docs

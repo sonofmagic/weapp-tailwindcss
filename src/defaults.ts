@@ -18,6 +18,10 @@ export const defaultOptions: UserDefinedOptions = {
       case 'uni-app': {
         return /^common\/main/.test(file)
       }
+      case 'uni-app-vite': {
+        // vite 旧版本和新版本对应的样式文件
+        return /^app/.test(file) || /^common\/main/.test(file)
+      }
       case 'mpx': {
         return /^app/.test(file)
       }
