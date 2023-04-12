@@ -58,7 +58,7 @@
     "vue-template-compiler": "^2.6.14",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.1.0-beta.1",
+    "weapp-tailwindcss-webpack-plugin": "^2.1.0",
     "webpack": "^5.76.1"
   },
   "browserslist": "ios >= 8, chrome >= 47"
