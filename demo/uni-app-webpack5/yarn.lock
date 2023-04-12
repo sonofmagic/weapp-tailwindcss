@@ -1181,10 +1181,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@csstools/postcss-is-pseudo-class@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-3.1.1.tgz#81b0f3ba388bf3c8966e1a4413e1839beef7960e"
-  integrity sha512-hhiacuby4YdUnnxfCYCRMBIobyJImozf0u+gHSbQ/tNOdwvmrZtVROvgW7zmfYuRkHVDNZJWZslq2v5jOU+j/A==
+"@csstools/postcss-is-pseudo-class@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.npmmirror.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-3.2.0.tgz#1277cc187bdb075013341dab42b4140d1cafae27"
+  integrity sha512-uooelBL99jMg8ZD6xy0Pj1hSalchWmplcin00eI+JHpv1jW2iwbi1cn2UnVsToM4JLwJSZFzTSWCgSpmlyhe3A==
   dependencies:
     "@csstools/selector-specificity" "^2.0.0"
     postcss-selector-parser "^6.0.10"
@@ -9341,6 +9341,13 @@ semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.8:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.npmmirror.com/semver/-/semver-7.4.0.tgz#8481c92feffc531ab1e012a8ffc15bdd3a0f4318"
+  integrity sha512-RgOxM8Mw+7Zus0+zcLEUn8+JfoLpj/huFTItQy2hsM4khuC1HYRDp0cU482Ewn/Fcy6bCjufD8vAj7voC66KQw==
+  dependencies:
+    lru-cache "^6.0.0"
+
 send@0.18.0:
   version "0.18.0"
   resolved "https://registry.npmmirror.com/send/-/send-0.18.0.tgz#670167cc654b05f5aa4a767f9113bb371bc706be"
@@ -10012,6 +10019,17 @@ tailwind-css-variables-theme-generator@^0.3.8:
   integrity sha512-1IIF39wQpOnFQk7AxHkCg/QWZQ72oXOaYal4Zc4yuS00AIhCwRGkNWFD31FvIJs5XbD6QBKlGWDS3cR9PhzNog==
   dependencies:
     consola "^2.15.3"
+
+tailwindcss-patch@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.0.0.tgz#fea3ab24d1b60884959b882d6088949e2e4fda40"
+  integrity sha512-Rtk5yxCXzEYFmnx05sorwVShGhB1jY/qZ4KbGR75wTkEeOkdYOSHec3X60yNn8Y5ek6xg3i02/XzwXp/x4ia0Q==
+  dependencies:
+    "@babel/generator" "^7.21.4"
+    "@babel/parser" "^7.21.4"
+    "@babel/traverse" "^7.21.4"
+    "@babel/types" "^7.21.4"
+    semver "^7.4.0"
 
 tailwindcss-rem2px-preset@^1.0.3:
   version "1.0.3"
@@ -10710,21 +10728,22 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.0.4.tgz#ae9b3ca6d29722078fb72e4a5662a8fc5d039f51"
-  integrity sha512-pG1Hnl9muRyCpVSXqZQjYcoKYnPvlalP9F8qifL/a1MnqXRO0czPmWIyuBokk9WzDLLHiSUehXKfZDskWV8aKA==
+weapp-tailwindcss-webpack-plugin@^2.1.0-beta.0:
+  version "2.1.0-beta.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.1.0-beta.0.tgz#7b7af8288bb61fd3a8e33e6dff2b2146ee230a94"
+  integrity sha512-8VWyNhJbjnQJK16NEWOuIWKhAAcFMlFzv6gbc3T0Xp867tEnvwu/uaZLESXPivEY3kGIno4nri/yYS8axnpdEw==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
     "@babel/traverse" "^7.21.4"
     "@babel/types" "^7.21.4"
-    "@csstools/postcss-is-pseudo-class" "^3.1.1"
+    "@csstools/postcss-is-pseudo-class" "^3.2.0"
     loader-utils "^2.0.2"
     micromatch "^4.0.5"
     postcss "8.4.21"
     postcss-selector-parser "^6.0.11"
-    semver "^7.3.8"
+    semver "^7.4.0"
+    tailwindcss-patch "^1.0.0"
     webpack-sources "^3.2.3"
 
 webidl-conversions@^3.0.0:

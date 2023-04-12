@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jsHandler mpx jit classNames 1`] = `
+"data: {
+  classNames: "text-_h123456_ text-_50px_ bg-_hfff_";
+}"
+`;

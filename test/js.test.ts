@@ -49,4 +49,19 @@ describe('jsHandler', () => {
     const code = h("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
     expect(code).toBe('const p = "text-_12px_";\nconst n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
   })
+
+  it('mpx jit classNames', () => {
+    const testCase = `data: {
+      classNames: "text-[#123456] text-[50px] bg-[#fff]"
+    }`
+    const h = createjsHandler({
+      escapeEntries: SimpleMappingChars2StringEntries
+    })
+    const set: Set<string> = new Set()
+    set.add('text-[#123456]')
+    set.add('bg-[#fff]')
+    set.add('text-[50px]')
+    const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
 })
