@@ -27,10 +27,12 @@
       <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300"> Default </view>
     </view>
     <view class="test">test</view>
+    <Plain></Plain>
   </view>
 </template>
 
 <script lang="ts" setup>
+import Plain from '../../components/Plain.vue'
 import jsxRender from './render'
 import First from '../../components/ui/First'
 import './index.scss'
