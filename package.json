@@ -55,7 +55,7 @@
     "ls:pack": "npm pack --dry-run",
     "tw:patch": "ts-node scripts/patcher.ts",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
-    "prepare": "ts-patch install -s",
+    "prepare": "ts-patch install -s & tw-patch",
     "-------": "-----------",
     "postinstall": "node bin/weapp-tailwindcss.js patch"
   },
@@ -204,6 +204,7 @@
     "postcss": "8.4.21",
     "postcss-selector-parser": "^6.0.11",
     "semver": "^7.4.0",
+    "tailwindcss-patch": "^0.0.1",
     "webpack-sources": "^3.2.3"
   }
 }
