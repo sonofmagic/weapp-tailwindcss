@@ -53,6 +53,14 @@ const TestProjectsMap: Record<
   }
 }
 
+function wait(ts = 1000) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(undefined)
+    }, ts)
+  })
+}
+
 export async function runE2E() {
   const cwd = process.cwd()
   const TestProjectsEntries = Object.entries(TestProjectsMap)
@@ -80,5 +88,6 @@ export async function runE2E() {
     }
 
     await miniProgram.close()
+    await wait()
   }
 }
