@@ -173,8 +173,6 @@ const classArray = [
 
 ### 模板 template
 
-> 目前模板大多还是 `1.x` 的版本，后续我会对模板进行一系列的升级
-
 #### 如何选择？
 
 假如你仅仅是开发一个`小程序` + `h5` 的组合，那么使用 `vscode` 模板就足够了
@@ -185,7 +183,7 @@ const classArray = [
 
 [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
 
-[uni-app-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-vscode-template)
+~~[uni-app-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-vscode-template)(不推荐,此版本为webpack5打包vue3,建议使用上面的vite打包vue3的模板)~~
 
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
 
@@ -193,7 +191,7 @@ const classArray = [
 
 #### 使用`hbuilderx` 进行构建和开发
 
-[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
+~~[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)(不推荐,此版本收到hbuilderx的限制，无法升级到最新的tailwindcss)~~
 
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
