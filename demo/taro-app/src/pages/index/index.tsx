@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 import { useState } from 'react'
 import { View } from '@tarojs/components'
 import classNames from 'classnames'
@@ -19,6 +20,7 @@ const Index = () => {
   )
   return (
     <>
+      <View className={`w-full bg-indigo-400 bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')] bg-bottom bg-contain bg-no-repeat`}>{"bg-[url]"}</View>
       <View className={aaa}>11</View>
       <View className='form-box py-[62px] rotate-45 px-[95px] bg-sky-500/80 dark:bg-[#123456]'>py-[62px] px-[95px]</View>
       {/* @ts-ignore */}
@@ -32,7 +34,6 @@ const Index = () => {
         <View class='bg-[#123]'>16</View>
       </View>
       <View className='bg-gray-100 dark:bg-zinc-800 h-10 w-10' hoverClass='bg-red-500 dark:bg-green-500'></View>
-
       <View className={className}>className</View>
       <View className={flag ? 'p-[20px] -mt-2 mb-[-20px] ' : ''}>p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</View>
       <View className='space-y-[1.6rem] text-[16px] w-[200%]'>

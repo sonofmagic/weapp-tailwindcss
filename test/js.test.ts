@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import { SimpleMappingChars2StringEntries } from '@/dic'
 import { createjsHandler } from '@/js/index'
+
 describe('jsHandler', () => {
   it('common case', () => {
     const h = createjsHandler({
@@ -61,6 +62,19 @@ describe('jsHandler', () => {
     set.add('text-[#123456]')
     set.add('bg-[#fff]')
     set.add('text-[50px]')
+    const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
+
+  it('img url case', () => {
+    const testCase = `data: {
+      classNames: "bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]"
+    }`
+    const h = createjsHandler({
+      escapeEntries: SimpleMappingChars2StringEntries
+    })
+    const set: Set<string> = new Set()
+    set.add("bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]")
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
   })
