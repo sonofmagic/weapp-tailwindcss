@@ -13,6 +13,7 @@ export default function Home() {
       'bg-[#123456]': true,
     },
     'text-[#fff]',
+    "bg-[url('https://xxx.com/xx.webp')]",
     [
       flag ? 'text-[50px]' : 'text-[30px]',
       {

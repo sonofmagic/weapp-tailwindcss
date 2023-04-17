@@ -128,7 +128,8 @@ const classObj = {
 const classArray = [
   'text-[30rpx]',
   classObj,
-  true ? 'font-bold' : ''
+  true ? 'font-bold' : '',
+  "bg-[url('https://xxx.com/xx.webp')]"
 ]
 </script>
 

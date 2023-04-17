@@ -7,6 +7,7 @@ export default () => {
   const [flag] = useState(true)
   return (
     <>
+      <View className={"bg-[url('https://xxx.com/xx.webp')]"}>bgUrl</View>
       <View className="bg-[#654321] dark:bg-[#666555] h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hoverClassName="bg-red-500 dark:bg-[#487512]"></View>
       <View className={flag ? 'p-[20px] -mt-2 mb-[-20px] ' : ''}>p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</View>
       <View className="space-y-[1.6rem] h-[200%]">

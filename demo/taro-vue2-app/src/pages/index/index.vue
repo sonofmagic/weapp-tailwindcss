@@ -38,7 +38,7 @@ export default {
     return {
       msg: 'Hello world!',
       flag: true,
-      classArray: ['bg-[#543254]', 'h-[100px]', 'w-[320px]']
+      classArray: ['bg-[#543254]', 'h-[100px]', 'w-[320px]', "bg-[url('https://xxx.com/xx.webp')]"]
     }
   },
   methods: {

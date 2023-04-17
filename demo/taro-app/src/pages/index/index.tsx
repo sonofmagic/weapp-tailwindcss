@@ -20,7 +20,7 @@ const Index = () => {
   )
   return (
     <>
-      <View className={`w-full bg-indigo-400 bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')] bg-bottom bg-contain bg-no-repeat`}>{"bg-[url]"}</View>
+      <View className={`w-full bg-indigo-400 bg-[url('https://xxx.com/xx.webp')] bg-bottom bg-contain bg-no-repeat`}>{"bg-[url]"}</View>
       <View className={aaa}>11</View>
       <View className='form-box py-[62px] rotate-45 px-[95px] bg-sky-500/80 dark:bg-[#123456]'>py-[62px] px-[95px]</View>
       {/* @ts-ignore */}
