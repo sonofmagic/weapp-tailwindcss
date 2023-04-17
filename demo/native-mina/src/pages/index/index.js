@@ -14,7 +14,8 @@ Page({
     a: 'cc',
     className: 'bg-[#123456]',//  replaceJs('bg-[#123456]'),
     num: 0,
-    icebreaker:"bg-[#123456] text-[50px] text-[#654321]"
+    icebreaker:"bg-[#123456] text-[50px] text-[#654321]",
+    bgUrl: "bg-[url('https://xxx.com/xx.webp')]"
   },
   onTap() {
     this.setData({

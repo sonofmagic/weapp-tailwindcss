@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -130,7 +130,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/jest": "^29.5.0",
     "@types/loader-utils": "^2.0.3",
-    "@types/lodash": "^4.14.192",
+    "@types/lodash": "^4.14.194",
     "@types/lodash-es": "^4.17.7",
     "@types/memory-fs": "^0.3.3",
     "@types/micromatch": "^4.0.2",
@@ -173,7 +173,7 @@
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup": "^3.20.2",
+    "rollup": "^3.20.3",
     "rollup-plugin-visualizer": "^5.9.0",
     "simple-functional-loader": "^1.2.1",
     "style-loader": "^3.3.2",
@@ -190,7 +190,7 @@
     "typescript-transform-paths": "^3.4.6",
     "vite": "^4.2.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "webpack": "^5.78.0",
+    "webpack": "^5.79.0",
     "webpack4": "npm:webpack@webpack-4"
   },
   "dependencies": {
@@ -201,7 +201,7 @@
     "@csstools/postcss-is-pseudo-class": "^3.2.0",
     "loader-utils": "^2.0.2",
     "micromatch": "^4.0.5",
-    "postcss": "8.4.21",
+    "postcss": "8.4.22",
     "postcss-selector-parser": "^6.0.11",
     "semver": "^7.4.0",
     "tailwindcss-patch": "^1.0.0",

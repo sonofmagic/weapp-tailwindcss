@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1
+
+### Fixed
+
+修复 `bg-[url('img_src')]` 写法失效的问题 [#158](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/158)
+
 ## 2.1.0 (2023-04-12)
 
 ### Features

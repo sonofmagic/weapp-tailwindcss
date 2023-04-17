@@ -89,6 +89,7 @@ export default Vue.extend({
     }
     const classArray = [
       'text-[30rpx]',
+      "bg-[url('https://xxx.com/xx.webp')]",
       /*weapp-tw ignore*/ 'bg-[#00ff00]'
     ]
     return {

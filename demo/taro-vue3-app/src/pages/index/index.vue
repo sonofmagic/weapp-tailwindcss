@@ -39,5 +39,5 @@ import './index.scss'
 import { ref } from 'vue'
 const msg = ref('Hello world!')
 const flag = ref(true)
-const classArray = ['bg-[#543254]', 'h-[100px]', 'w-[300px]']
+const classArray = ['bg-[#543254]', 'h-[100px]', 'w-[300px]', "bg-[url('https://xxx.com/xx.webp')]"]
 </script>

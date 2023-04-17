@@ -1,6 +1,7 @@
 <template>
   <view>
     <view wx:class="{{classNames}}">对酒当歌，人生几何</view>
+    <view wx:class="{{bgUrl}}">bgUrl</view>
     <list />
   </view>
 </template>
@@ -10,7 +11,8 @@
 
   createPage({
     data: {
-      classNames: 'text-[#123456] text-[50px] bg-[#fff]'
+      classNames: 'text-[#123456] text-[50px] bg-[#fff]',
+      bgUrl: "bg-[url('https://xxx.com/xx.webp')]"
     },
     options: {
       addGlobalClass: true
