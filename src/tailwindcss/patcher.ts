@@ -6,7 +6,7 @@ import type { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { findAstNode } from './supportCustomUnit'
-import { monkeyPatchForExposingContext } from './inspector'
+import { monkeyPatchForExposingContext } from 'tailwindcss-patch'
 import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
