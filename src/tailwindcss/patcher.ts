@@ -6,15 +6,16 @@ import type { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { findAstNode } from './supportCustomUnit'
-import { monkeyPatchForExposingContext } from 'tailwindcss-patch'
+import { monkeyPatchForExposingContext, requireResolve } from 'tailwindcss-patch'
 import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   try {
     // const cwd = process.cwd()
-    const tmpJsonPath = require.resolve(`${dangerousOptions.packageName}/package.json`, {
-      paths: options.paths
+    const tmpJsonPath = requireResolve(`${dangerousOptions.packageName}/package.json`, {
+      paths: options.paths,
+      basedir: options.basedir
     })
     // `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
     const pkgJson = require(tmpJsonPath) as PackageJson

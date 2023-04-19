@@ -116,10 +116,14 @@ export interface ILengthUnitsPatchDangerousOptions {
   destPath?: string
 }
 
+/**
+ * @deprecated
+ */
 export interface ILengthUnitsPatchOptions {
   units: string[]
   paths?: string[]
   dangerousOptions?: ILengthUnitsPatchDangerousOptions
+  basedir?: string
 }
 
 export interface UserDefinedOptions {
@@ -222,6 +226,7 @@ export interface UserDefinedOptions {
   jsxRenameLoaderPath?: string
 
   /**
+   * @deprecated
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
    * @description tailwindcss 3.2 对长度单位添加了校验，不打patch，rpx 这个单位会被识别成颜色
    */
