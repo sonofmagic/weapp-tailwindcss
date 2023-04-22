@@ -1,6 +1,12 @@
 # Changelog
 
-## 2.1.1
+## 2.1.2 (2023-04-22)
+
+### Features
+
+- 支持作为 `gulp` 插件使用 [#161](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/161)
+
+## 2.1.1 (2023-04-17)
 
 ### Fixed
 

@@ -169,7 +169,7 @@ renderer.write([
         body: load('rax')
       }),
       collapse({
-        summary: '原生小程序(webpack5)',
+        summary: '原生开发 (webpack5/gulp)',
         body: load('native')
       })
     ].join('\n\n')

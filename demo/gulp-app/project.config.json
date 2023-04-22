@@ -1,0 +1,32 @@
+{
+  "miniprogramRoot": "dist/",
+  "svr": "./server",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "condition": false
+  },
+  "appid": "wx6ffee4673b257014",
+  "projectname": "weapp-wf",
+  "condition": {},
+  "compileType": "miniprogram",
+  "libVersion": "2.31.0",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "srcMiniprogramRoot": "dist/",
+  "qcloudRoot": "server/"
+}

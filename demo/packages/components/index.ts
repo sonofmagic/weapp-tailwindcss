@@ -34,6 +34,10 @@ const TestProjectsMap: Record<
     projectPath: 'taro-vue2-app',
     testMethod: () => {}
   },
+  'gulp-app': {
+    projectPath: 'gulp-app',
+    testMethod: () => {}
+  },
   'mpx-app': {
     projectPath: 'mpx-app/dist/wx',
     testMethod: () => {},

@@ -98,6 +98,7 @@ const entries: IEntry[] = [
       index: 'src/index.ts',
       'jsx-rename-loader': 'src/loader/jsx-rename-loader.ts',
       // vite: 'src/framework/vite/index.ts',
+      gulp: 'src/framework/gulp/index.ts',
       postcss: 'src/postcss/plugin.ts',
       mangle: 'src/mangle/index.ts',
       cli: 'src/cli.ts',

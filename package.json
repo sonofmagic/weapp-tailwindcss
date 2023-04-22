@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -22,6 +22,11 @@
       "types": "./types/framework/vite/index.d.ts",
       "require": "./dist/vite.js",
       "import": "./dist/vite.js"
+    },
+    "./gulp": {
+      "types": "./types/framework/gulp/index.d.ts",
+      "require": "./dist/gulp.js",
+      "import": "./dist/gulp.js"
     }
   },
   "scripts": {
@@ -70,7 +75,8 @@
     "postcss.*",
     "replace.*",
     "vite.*",
-    "mangle.*"
+    "mangle.*",
+    "gulp.*"
   ],
   "bin": {
     "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
@@ -103,7 +109,9 @@
     "vite",
     "postcss",
     "webpack",
-    "webpack-plugin"
+    "webpack-plugin",
+    "gulp",
+    "gulp-plugin"
   ],
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
@@ -137,6 +145,7 @@
     "@types/node": "^18.15.11",
     "@types/object-hash": "^3.0.2",
     "@types/semver": "^7.3.13",
+    "@types/vinyl": "^2.0.7",
     "@types/webpack": "^5.28.1",
     "@types/webpack-sources": "^3.2.0",
     "@types/webpack4": "npm:@types/webpack@4",
@@ -173,7 +182,7 @@
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup": "^3.20.3",
+    "rollup": "^3.20.6",
     "rollup-plugin-visualizer": "^5.9.0",
     "simple-functional-loader": "^1.2.1",
     "style-loader": "^3.3.2",
@@ -188,7 +197,8 @@
     "ttypescript": "^1.5.15",
     "typescript": "^4.9.5",
     "typescript-transform-paths": "^3.4.6",
-    "vite": "^4.2.1",
+    "vinyl": "^3.0.0",
+    "vite": "^4.2.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.79.0",
     "webpack4": "npm:webpack@webpack-4"
@@ -203,8 +213,8 @@
     "micromatch": "^4.0.5",
     "postcss": "8.4.22",
     "postcss-selector-parser": "^6.0.11",
-    "semver": "^7.4.0",
-    "tailwindcss-patch": "^1.0.0",
+    "semver": "^7.5.0",
+    "tailwindcss-patch": "^1.0.2",
     "webpack-sources": "^3.2.3"
   }
 }
