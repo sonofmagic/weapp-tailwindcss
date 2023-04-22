@@ -1,21 +1,5 @@
 <view class="app more">
 	<view class="app__inner">
-		<view class="u-mt-large app__title">Font Icon 演示</view>
-		<view class="u-flex">
-			<view class="u-flex-item">
-				<view class="u-d-ib icon icon-info"></view>
-			</view>
-			<view class="u-flex-item">
-				<view class="u-d-ib icon icon-date"></view>
-
-			</view>
-
-			<view class="u-flex-item">
-				<view class="u-d-ib icon icon-view"></view>
-			</view>
-		</view>
-
-
 		<view class="u-mt-large app__title">图片CDN</view>
 		<view class="app__desc">
 			在src 目录下SCSS 或WXML 文件通过 %ASSETS_IMG% 自定义变量的方式写路径。

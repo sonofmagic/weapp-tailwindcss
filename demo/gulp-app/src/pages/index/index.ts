@@ -1,14 +1,14 @@
 // index.js
 // 获取应用实例
-const app = getApp()
+// const app = getApp()
 Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    contentStyle: 'mt-[44px]'
+    contentStyle: 'mt-[24px]'
   },
   onLoad: function () {},
-  copyText: function (e) {
+  copyText: function (e: any) {
     const txt = e.currentTarget.dataset.text
     wx.setClipboardData({
       data: txt,
