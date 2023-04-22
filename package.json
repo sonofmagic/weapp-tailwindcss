@@ -22,6 +22,11 @@
       "types": "./types/framework/vite/index.d.ts",
       "require": "./dist/vite.js",
       "import": "./dist/vite.js"
+    },
+    "./gulp": {
+      "types": "./types/framework/gulp/index.d.ts",
+      "require": "./dist/gulp.js",
+      "import": "./dist/gulp.js"
     }
   },
   "scripts": {
@@ -70,7 +75,8 @@
     "postcss.*",
     "replace.*",
     "vite.*",
-    "mangle.*"
+    "mangle.*",
+    "gulp.*"
   ],
   "bin": {
     "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
@@ -103,7 +109,9 @@
     "vite",
     "postcss",
     "webpack",
-    "webpack-plugin"
+    "webpack-plugin",
+    "gulp",
+    "gulp-plugin"
   ],
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
@@ -137,6 +145,7 @@
     "@types/node": "^18.15.11",
     "@types/object-hash": "^3.0.2",
     "@types/semver": "^7.3.13",
+    "@types/vinyl": "^2.0.7",
     "@types/webpack": "^5.28.1",
     "@types/webpack-sources": "^3.2.0",
     "@types/webpack4": "npm:@types/webpack@4",
@@ -188,6 +197,7 @@
     "ttypescript": "^1.5.15",
     "typescript": "^4.9.5",
     "typescript-transform-paths": "^3.4.6",
+    "vinyl": "^3.0.0",
     "vite": "^4.2.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.79.0",
@@ -203,8 +213,8 @@
     "micromatch": "^4.0.5",
     "postcss": "8.4.22",
     "postcss-selector-parser": "^6.0.11",
+    "semver": "^7.5.0",
     "tailwindcss-patch": "^1.0.2",
-    "webpack-sources": "^3.2.3",
-    "semver": "^7.5.0"
+    "webpack-sources": "^3.2.3"
   }
 }

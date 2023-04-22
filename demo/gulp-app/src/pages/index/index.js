@@ -4,7 +4,8 @@ const app = getApp()
 Page({
   data: {
     motto: 'Hello World',
-    userInfo: {}
+    userInfo: {},
+    contentStyle: 'mt-[44px]'
   },
   onLoad: function () {},
   copyText: function (e) {

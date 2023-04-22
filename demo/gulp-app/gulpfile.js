@@ -11,16 +11,23 @@ const postcss = require('gulp-postcss')
 const qcloudUpload = require('gulp-qcloud-upload')
 const gulpif = require('gulp-if')
 const gutil = require('gulp-util')
-const newer = require('gulp-newer')
+// const newer = require('gulp-newer')
 const cache = require('gulp-cached')
 const debug = require('gulp-debug')
 
+const { createPlugins } = require('./weapp-tw-dist/gulp')
+const { transformJs, transformWxml, transformWxss } = createPlugins()
 // const pxtorpx = require('postcss-px2rpx')
 // const base64 = require('postcss-font-base64')
 // var lazysprite = require('postcss-lazysprite');
 const argv = require('yargs').argv
 let config = null
 
+function promisify(task) {
+  return new Promise((resolve, reject) => {
+    task.on('finish', resolve).on('error', reject)
+  })
+}
 // 获取用户配置
 try {
   config = require('./config.custom.js')
@@ -41,7 +48,7 @@ const paths = {
     scssDir: 'src/assets/scss',
     imgFiles: 'src/image/**/*',
     scssFiles: 'src/**/*.scss',
-    baseFiles: ['src/**/*.{png,js,json}'], // , '!src/assets/**/*', '!src/image/**/*'
+    baseFiles: ['src/**/*.{png,json}'], // , '!src/assets/**/*', '!src/image/**/*'
     assetsDir: 'src/assets',
     assetsImgFiles: 'src/assets/images/**/*.{png,jpg,jpeg,svg,gif}',
     wxmlFiles: 'src/**/*.wxml',
@@ -90,18 +97,18 @@ function log() {
 // }
 
 // assets 文件夹下的图片处理
-function assetsImgMin() {
-  return (
-    gulp
-      .src(paths.src.assetsImgFiles)
-      .pipe(newer(paths.tmp.imgDir))
-      // .pipe(imagemin({
-      // 	progressive: true,
-      // 	svgoPlugins: [{removeViewBox: false}]
-      // }))
-      .pipe(gulp.dest(paths.tmp.imgDir))
-  )
-}
+// function assetsImgMin() {
+//   return (
+//     gulp
+//       .src(paths.src.assetsImgFiles)
+//       .pipe(newer(paths.tmp.imgDir))
+//       // .pipe(imagemin({
+//       // 	progressive: true,
+//       // 	svgoPlugins: [{removeViewBox: false}]
+//       // }))
+//       .pipe(gulp.dest(paths.tmp.imgDir))
+//   )
+// }
 
 // Sass 编译
 function sassCompile() {
@@ -112,6 +119,7 @@ function sassCompile() {
     .pipe(sass({ errLogToConsole: true, outputStyle: 'expanded' }).on('error', sass.logError))
     .pipe(gulpif(Boolean(argv.debug), debug({ title: '`sassCompile` Debug:' })))
     .pipe(postcss())
+    .pipe(transformWxss())
     .pipe(
       rename({
         extname: '.wxss'
@@ -128,17 +136,21 @@ function copyBasicFiles() {
   return gulp.src(paths.src.baseFiles, {}).pipe(gulp.dest(paths.dist.baseDir))
 }
 
+function copyJsFiles() {
+  return gulp.src(paths.src.jsFiles, {}).pipe(transformJs()).pipe(gulp.dest(paths.dist.baseDir))
+}
+
 // 复制 WXML
 function copyWXML() {
-  return gulp.src(paths.src.wxmlFiles, {}).pipe(gulp.dest(paths.dist.baseDir))
+  return gulp.src(paths.src.wxmlFiles, {}).pipe(transformWxml()).pipe(gulp.dest(paths.dist.baseDir))
 }
 
 // 重写WXML 中 image 标签中的图片路径
-function wxmlImgRewrite() {
-  const res = config.assetsCDN + config.qcloud.prefix + '/'
-  // console.log(res);
-  return gulp.src(paths.src.wxmlFiles).pipe(replace('%ASSETS_IMG%/', res)).pipe(gulp.dest(paths.dist.baseDir))
-}
+// function wxmlImgRewrite() {
+//   const res = config.assetsCDN + config.qcloud.prefix + '/'
+//   // console.log(res);
+//   return gulp.src(paths.src.wxmlFiles).pipe(replace('%ASSETS_IMG%/', res)).pipe(gulp.dest(paths.dist.baseDir))
+// }
 
 // clean 任务, dist 目录
 function cleanDist() {
@@ -173,7 +185,7 @@ function qcloudCDN(cb) {
   cb && cb()
 }
 
-const watchHandler = function (type, file) {
+const watchHandler = async function (type, file) {
   const extname = path.extname(file)
   // SCSS 文件
   if (extname === '.scss') {
@@ -193,10 +205,11 @@ const watchHandler = function (type, file) {
         del([file.replace('src/', 'dist/')])
       }
     } else {
+      // assetsImgMin()
+      await promisify(qcloudCDN())
+      // await promisify(wxmlImgRewrite())
+
       // imageMin();
-      assetsImgMin()
-      qcloudCDN()
-      wxmlImgRewrite()
     }
   }
 
@@ -206,8 +219,17 @@ const watchHandler = function (type, file) {
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
     } else {
-      copyWXML()
-      wxmlImgRewrite()
+      await promisify(sassCompile())
+      await promisify(copyWXML())
+      // await promisify(wxmlImgRewrite())
+    }
+  } else if (extname === '.js') {
+    if (type === 'removed') {
+      const tmp = file.replace('src/', 'dist/')
+      del([tmp])
+    } else {
+      await promisify(sassCompile())
+      await promisify(copyJsFiles())
     }
   }
 
@@ -250,14 +272,17 @@ gulp.task(
   gulp.series(
     cleanTmp,
     copyBasicFiles,
-    gulp.parallel(
-      sassCompile,
-      // imageMin,
-      copyWXML
-    ),
-    wxmlImgRewrite,
-    assetsImgMin,
-    qcloudCDN,
+    // gulp.parallel(
+    //   sassCompile,
+    //   // imageMin,
+
+    // ),
+    sassCompile,
+    copyWXML,
+    copyJsFiles,
+    // wxmlImgRewrite
+    // assetsImgMin,
+    // qcloudCDN,
     watch
   )
 )
@@ -273,7 +298,7 @@ gulp.task(
       // imageMin,
       copyWXML
     ),
-    wxmlImgRewrite,
+    // wxmlImgRewrite,
     // assetsImgMin,
     qcloudCDN
   )
