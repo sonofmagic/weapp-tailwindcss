@@ -21,7 +21,7 @@
 
 const { createPlugins } = require('weapp-tailwindcss-webpack-plugin/gulp')
 // 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss 运行，转化 transformWxss，然后再 transformJs, transformWxml
-// createPlugins 的 options 就是本插件的配置
+// createPlugins 参数 options 就是本插件的配置项
 const { transformJs, transformWxml, transformWxss } = createPlugins()
 
 // 参考顺序
