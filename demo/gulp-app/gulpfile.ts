@@ -22,6 +22,7 @@ const tsProject = ts.createProject('tsconfig.json')
 
 let createPlugins
 // pnpm build:demo
+// isLocal 的逻辑可以删除，这段是给本地调试使用的
 if (isLocal) {
   console.log('use local built gulp plugin')
   const twGulp = require('./weapp-tw-dist/gulp')
