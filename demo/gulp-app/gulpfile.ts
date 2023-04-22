@@ -10,18 +10,29 @@ import postcss from 'gulp-postcss'
 import gulpif from 'gulp-if'
 import gutil from 'gulp-util'
 import debug from 'gulp-debug'
-import yargs from 'yargs'
 import ts from 'gulp-typescript'
 import plumber from 'gulp-plumber'
 
+const isDebug = Boolean(process.env.DEBUG)
+const isWatch = Boolean(process.env.WATCH)
+const isLocal = Boolean(process.env.LOCAL)
+
 const sass = gulpSass(dartSass)
 const tsProject = ts.createProject('tsconfig.json')
+
+let createPlugins
 // pnpm build:demo
-const { createPlugins } = require('./weapp-tw-dist/gulp')
+if (isLocal) {
+  console.log('use local built gulp plugin')
+  const twGulp = require('./weapp-tw-dist/gulp')
+  createPlugins = twGulp.createPlugins
+} else {
+  const twGulp = require('weapp-tailwindcss-webpack-plugin/gulp')
+  createPlugins = twGulp.createPlugins
+}
+
 // 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss ，然后转化 transformWxss， 然后 transformJs, transformWxml
 const { transformJs, transformWxml, transformWxss } = createPlugins()
-
-const argv = yargs.argv as Record<string, unknown>
 
 function promisify(task: NodeJS.ReadWriteStream) {
   return new Promise((resolve, reject) => {
@@ -66,7 +77,7 @@ function sassCompile() {
   return gulp
     .src(paths.src.scssFiles)
     .pipe(sass({ errLogToConsole: true, outputStyle: 'expanded' }).on('error', sass.logError))
-    .pipe(gulpif(Boolean(argv.debug), debug({ title: '`sassCompile` Debug:' })))
+    .pipe(gulpif(isDebug, debug({ title: '`sassCompile` Debug:' })))
     .pipe(postcss())
     .pipe(transformWxss())
     .pipe(
@@ -157,7 +168,7 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
 }
 
 // 监听文件
-function watch(cb: Function) {
+function watch() {
   const watcher = gulp.watch([paths.src.baseDir, paths.tmp.imgDir], { ignored: /[\/\\]\./ })
   watcher
     .on('change', function (file) {
@@ -172,15 +183,14 @@ function watch(cb: Function) {
       log(gutil.colors.yellow(file) + ' is deleted')
       watchHandler('removed', file)
     })
-
-  cb()
 }
 
+const buildTasks = [cleanTmp, copyBasicFiles, sassCompile, copyWXML, compileTsFiles]
+if (isWatch) {
+  buildTasks.push(watch)
+}
 // 注册默认任务
-gulp.task('default', gulp.series(cleanTmp, copyBasicFiles, sassCompile, copyWXML, compileTsFiles, watch))
-
-// 注册测试任务
-gulp.task('test', gulp.series(cleanTmp, copyBasicFiles, gulp.parallel(sassCompile, copyWXML)))
+gulp.task('default', gulp.series(buildTasks))
 
 // 删除任务
 gulp.task('clean', gulp.parallel(cleanTmp, cleanDist))

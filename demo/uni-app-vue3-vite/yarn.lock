@@ -3322,6 +3322,13 @@ is-binary-path@~2.1.0:
   dependencies:
     binary-extensions "^2.0.0"
 
+is-core-module@^2.11.0:
+  version "2.12.0"
+  resolved "https://registry.npmmirror.com/is-core-module/-/is-core-module-2.12.0.tgz#36ad62f6f73c8253fd6472517a12483cf03e7ec4"
+  integrity sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ==
+  dependencies:
+    has "^1.0.3"
+
 is-core-module@^2.9.0:
   version "2.11.0"
   resolved "https://registry.npmmirror.com/is-core-module/-/is-core-module-2.11.0.tgz#ad4cb3e3863e814523c96f3f58d26cc570ff0144"
@@ -4174,6 +4181,15 @@ resolve@^1.1.7, resolve@^1.14.2, resolve@^1.22.1:
     path-parse "^1.0.7"
     supports-preserve-symlinks-flag "^1.0.0"
 
+resolve@^1.22.2:
+  version "1.22.2"
+  resolved "https://registry.npmmirror.com/resolve/-/resolve-1.22.2.tgz#0ed0943d4e301867955766c9f3e1ae6d01c6845f"
+  integrity sha512-Sb+mjNHOULsBv818T40qSPeRiuWLyaGMa5ewydRLFimneixmVy2zdivRl+AF6jaYPC8ERxGDmFSiqui6SfPd+g==
+  dependencies:
+    is-core-module "^2.11.0"
+    path-parse "^1.0.7"
+    supports-preserve-symlinks-flag "^1.0.0"
+
 reusify@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmmirror.com/reusify/-/reusify-1.0.4.tgz#90da382b1e126efc02146e90845a88db12925d76"
@@ -4241,6 +4257,13 @@ semver@^7.4.0:
   version "7.4.0"
   resolved "https://registry.npmmirror.com/semver/-/semver-7.4.0.tgz#8481c92feffc531ab1e012a8ffc15bdd3a0f4318"
   integrity sha512-RgOxM8Mw+7Zus0+zcLEUn8+JfoLpj/huFTItQy2hsM4khuC1HYRDp0cU482Ewn/Fcy6bCjufD8vAj7voC66KQw==
+  dependencies:
+    lru-cache "^6.0.0"
+
+semver@^7.5.0:
+  version "7.5.0"
+  resolved "https://registry.npmmirror.com/semver/-/semver-7.5.0.tgz#ed8c5dc8efb6c629c88b23d41dc9bf40c1d96cd0"
+  integrity sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==
   dependencies:
     lru-cache "^6.0.0"
 
@@ -4392,15 +4415,16 @@ tailwind-css-variables-theme-generator@^0.3.8:
   dependencies:
     consola "^2.15.3"
 
-tailwindcss-patch@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.0.0.tgz#fea3ab24d1b60884959b882d6088949e2e4fda40"
-  integrity sha512-Rtk5yxCXzEYFmnx05sorwVShGhB1jY/qZ4KbGR75wTkEeOkdYOSHec3X60yNn8Y5ek6xg3i02/XzwXp/x4ia0Q==
+tailwindcss-patch@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.0.2.tgz#cd3db4709485650cf2d419ef548d6b202ddef024"
+  integrity sha512-7ANNJ870lI1oiTwBRXVhvFW2RXJ5R/DUMHoFRc83+X8JBCacdzihShEjGnCuxBg1Lt4YzO3YsYtCBNN0Vr/BMQ==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
     "@babel/traverse" "^7.21.4"
     "@babel/types" "^7.21.4"
+    resolve "^1.22.2"
     semver "^7.4.0"
 
 tailwindcss-rem2px-preset@^1.0.3:
@@ -4710,10 +4734,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.1.1.tgz#41bfb87e0bb2cc486a971153cf5e813a36e294fb"
-  integrity sha512-5GUuBkcoKiW32dSaNNPnkX9KuqHiz61xnzORFcuIMKLydCgGDSBox7tQCdb9AuMfjB3/payf8A8aJ5zvF59ABw==
+weapp-tailwindcss-webpack-plugin@^2.1.2-beta.0:
+  version "2.1.2-beta.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.1.2-beta.0.tgz#31842adb738cdec09c2d6f998fdf4a34dd00c1c0"
+  integrity sha512-DXsSf7eo0Etxcjk/8OTgtv2GWhEv7QKIX0j+A5uSwXS5svrInG0KnFa6TqBaW/rxUPuW9Y/aDHFPDWPUzhPq4w==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
@@ -4724,8 +4748,8 @@ weapp-tailwindcss-webpack-plugin@^2.1.1:
     micromatch "^4.0.5"
     postcss "8.4.22"
     postcss-selector-parser "^6.0.11"
-    semver "^7.4.0"
-    tailwindcss-patch "^1.0.0"
+    semver "^7.5.0"
+    tailwindcss-patch "^1.0.2"
     webpack-sources "^3.2.3"
 
 webpack-sources@^3.2.3:
