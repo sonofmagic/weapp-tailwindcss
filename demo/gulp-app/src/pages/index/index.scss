@@ -1,0 +1,47 @@
+// 支持文件
+@import "../../assets/scss/support";
+
+.index {
+
+}
+
+.index__banner-img {
+	width: 100%;
+	height: auto;
+}
+
+.index__header {
+}
+
+.index__header-title {
+	font-size: 26px;
+	margin-top: 20px;
+	font-weight: 500;
+}
+
+.index__header-desc {
+	font-size: 14px;
+	margin-top: 20px;
+}
+
+.index__header-link {
+	color: #5ba4e5;
+}
+
+.index__content {
+	margin-top: 40px;
+}
+
+.index__content-icons {
+	align-items: center;
+}
+
+.index__content-icons-item {
+	font-size: 0;
+	line-height: 0;
+}
+
+.index_qrcode {
+	width: 150px;
+	height: 150px;
+}

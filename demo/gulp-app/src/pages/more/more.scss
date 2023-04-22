@@ -1,0 +1,17 @@
+@import "../../assets/scss/support";
+
+
+.more {
+}
+
+.more__pre {
+	white-space: pre;
+	text-align: left;
+	overflow: auto;
+	border: 1px solid #ebebeb;
+	background-color: #f9f9f9;
+	padding-left: 5px;
+	text {
+		font-size: $fontSizeSmaller;
+	}
+}

@@ -1,0 +1,85 @@
+/**
+ * ------------------------------------------------------------------
+ * Sass Minxins
+ *
+ * 参考收集：
+ * https://github.com/twbs/bootstrap-sass/tree/master/assets/stylesheets/bootstrap/mixins
+ * ------------------------------------------------------------------
+ *
+ * @author  JeffMa
+ * @link    https://devework.com/
+ * @data    2017-06-11
+ */
+
+// 文字截取
+@mixin text-overflow() {
+	overflow: hidden;
+	white-space: normal;
+	text-overflow: ellipsis;
+	word-break: break-all;
+	word-wrap: normal;
+}
+
+@mixin word-break() {
+	word-break: break-all;
+	word-wrap: break-word;
+	white-space: normal;
+}
+
+// No wrap
+@mixin no-wrap() {
+	word-break: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+}
+
+// 清除浮动
+@mixin clearfix() {
+	&:before,
+	&:after {
+		content: " "; // 1
+		display: table; // 2
+	}
+	&:after {
+		clear: both;
+	}
+}
+
+// Single side border-radius
+@mixin border-top-radius($radius) {
+	border-top-right-radius: $radius;
+	border-top-left-radius: $radius;
+}
+
+@mixin border-right-radius($radius) {
+	border-bottom-right-radius: $radius;
+	border-top-right-radius: $radius;
+}
+
+@mixin border-bottom-radius($radius) {
+	border-bottom-right-radius: $radius;
+	border-bottom-left-radius: $radius;
+}
+
+@mixin border-left-radius($radius) {
+	border-bottom-left-radius: $radius;
+	border-top-left-radius: $radius;
+}
+
+// Center-align a block level element
+@mixin center-block() {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+// CSS image replacement
+// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
+@mixin hide-text() {
+	font-size: 0;
+	line-height: 0;
+	color: transparent;
+	text-shadow: none;
+	background-color: transparent;
+	border: 0;
+}

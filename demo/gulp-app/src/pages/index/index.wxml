@@ -1,0 +1,44 @@
+<!--index.wxml-->
+<view class="app index">
+
+	<view class="app__inner">
+		<view class="index__banner">
+			<image src="https://res.jianhui.org/weapp-workflow/weapp-worfkflow@2x.jpg" mode="widthFix"
+				   class="index__banner-img"></image>
+		</view>
+
+
+		<view class="index__header">
+			<view class="index__header-title">WeApp-Workflow</view>
+			<view class="index__header-desc">基于Gulp 的微信小程序前端开发工作流</view>
+			<view class="index__header-desc index__header-link" bindtap="copyText" data-text="https:\/\/github.com/Jeff2Ma/WeApp-Workflow">https://github.com/Jeff2Ma/WeApp-Workflow</view>
+		</view>
+
+		<view class="index__content">
+			<view class="app__title">功能介绍</view>
+			<text class="u-ul">
+				<text class="u-d-b u-li">SCSS 实时编译为 WXSS</text>
+				<text class="u-d-b u-li">WXSS(CSS) 中px 单位转小程序单位rpx</text>
+				<text class="u-d-b u-li">图片压缩</text>
+				<text class="u-d-b u-li">自动上传图片到CDN 并更新路径为https 绝对路径</text>
+				<text class="u-d-b u-li">Font 文件转为base64 编码</text>
+				<text class="u-d-b u-li">全自动构建雪碧图及生成相应CSS</text>
+			</text>
+
+
+			<view class="u-mt-large app__title">案例介绍</view>
+			<view class="app__desc">这些小程序采用WeApp-Workflow 开发</view>
+			<image src="https://res.jianhui.org/weapp-workflow/qr-r@2x.jpg" background-size="cover" class="index_qrcode"></image>
+
+			<view class="u-mt-large app__title">更多</view>
+
+			<view>
+				<view class="index__header-desc index__header-link" bindtap="copyText" data-text="https:\/\/github.com/Jeff2Ma/WeApp-Workflow">复制链接进入Github 主页</view>
+			</view>
+
+			<!--<image src="%ASSETS_IMG%/qr-r@2x.png"></image>-->
+
+
+		</view>
+	</view>
+</view>

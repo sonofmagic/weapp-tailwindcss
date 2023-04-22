@@ -1,0 +1,207 @@
+/**
+ * ------------------------------------------------------------------
+ * 原子类
+ *
+ * ------------------------------------------------------------------
+ *
+ * @author  JeffMa
+ * @link    https://devework.com/
+ * @data    2017-06-11
+ */
+@import "support";
+
+// Margin
+.u-mt-smaller {
+	margin-top: $marginTopSmaller;
+}
+
+.u-mt-small {
+	margin-top: $marginTopSmall;
+}
+
+.u-mt-medium {
+	margin-top: $marginTopMedium;
+}
+
+.u-mt-large {
+	margin-top: $marginTopLarge;
+}
+
+.u-mt-larger {
+	margin-top: $marginTopLarger;
+}
+
+.u-mb-smaller {
+	margin-bottom: $marginTopSmaller;
+}
+
+.u-mb-small {
+	margin-bottom: $marginTopSmall;
+}
+
+.u-mb-medium {
+	margin-bottom: $marginTopMedium;
+}
+
+.u-mb-large {
+	margin-bottom: $marginTopLarge;
+}
+
+.u-mb-larger {
+	margin-bottom: $marginTopLarger;
+}
+
+// Padding
+.u-pt-smaller {
+	padding-top: $paddingTopSmaller;
+}
+
+.u-pt-small {
+	padding-top: $paddingTopSmall;
+}
+
+.u-pt-medium {
+	padding-top: $paddingTopMedium;
+}
+
+.u-pt-large {
+	padding-top: $paddingTopLarge;
+}
+
+.u-pt-larger {
+	padding-top: $paddingTopLarger;
+}
+
+.u-pb-smaller {
+	padding-bottom: $paddingTopSmaller;
+}
+
+.u-pb-small {
+	padding-bottom: $paddingTopSmall;
+}
+
+.u-pb-medium {
+	padding-bottom: $paddingTopMedium;
+}
+
+.u-pb-large {
+	padding-bottom: $paddingTopLarge;
+}
+
+.u-pb-larger {
+	padding-bottom: $paddingTopLarger;
+}
+
+// 布局方位
+.u-ta-c {
+	text-align: center !important;
+}
+
+.u-ta-l {
+	text-align: left !important;
+}
+
+.u-ta-r {
+	text-align: right !important;
+}
+
+.u-fl-l {
+	float: left;
+}
+
+.u-fl-n {
+	float: none;
+}
+
+.u-fl-r {
+	float: right;
+}
+
+.u-d-b {
+	display: block;
+}
+
+.u-d-i {
+	display: inline !important;
+}
+
+.u-d-ib {
+	display: inline-block !important;
+}
+
+.u-d-n {
+	display: none !important;
+}
+
+.u-d-t {
+	display: table;
+	table-layout: fixed;
+}
+
+.u-d-tc {
+	display: table-cell;
+}
+
+.u-va-b {
+	vertical-align: bottom;
+}
+
+.u-va-m {
+	vertical-align: middle;
+}
+
+.u-va-t {
+	vertical-align: top;
+}
+
+// clearfix
+.u-clearfix {
+	@include clearfix;
+}
+
+// 虚拟格式
+.u-cur-d {
+	cursor: default;
+}
+
+.u-cur-p {
+	cursor: pointer;
+}
+
+// flex
+.u-flex {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+}
+
+.u-flex-item {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	flex: 1;
+}
+
+// 小程序中模拟ul、li
+.u-ul {
+	padding-left: 15px;
+	text-align: left;
+	display: block;
+}
+
+.u-li {
+	position: relative;
+	font-size: $fontSizeSmall;
+	line-height: $fontSizeSmall + 2px;
+	margin-bottom: $marginTopSmall;
+	&:before {
+		position: absolute;
+		content: " ";
+		top: 7px;
+		left: -10px;
+		width: 4px;
+		height: 4px;
+		border-radius: 4px;
+		background-color: $colorBlack;
+	}
+}
+
