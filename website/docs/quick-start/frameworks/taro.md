@@ -60,7 +60,10 @@ config = {
         enable: true,
         // 设置成 false 表示 不去除 * 相关的选择器区块
         // 假如开启这个配置，它会把 tailwindcss 整个 css var 的区域块直接去除掉
-        removeCursorStyle: false,
+        // 需要用 config 套一层，官方文档上是错的
+        config: {
+          removeCursorStyle: false,
+        }
       },
     },
   },

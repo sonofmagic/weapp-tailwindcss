@@ -56,6 +56,15 @@ module.exports = {
 };
 ```
 
+:::tip
+
+一些用户在使用 `tarojs` 开发的时候，错误的把 `tailwindcss` 配置在了 `config/index.js` 的 `postcss` 里，导致不生效。
+
+原因实际上是因为 `config/index.js` 的 `postcss`这个配置，只是用来配置 `tarojs` **内置** `postcss` 插件的参数。
+
+要使用 `tailwindcss`，你需要在项目根目录，新建一个 `postcss.config.js`，然后把上面的 `code` 写入进去。
+:::
+
 ### 2. `tailwindcss-rem2px-preset`
 
 同样我们安装它：
