@@ -18,12 +18,12 @@ export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
       basedir: options.basedir
     })
     // `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
-    const pkgJson = require(tmpJsonPath) as PackageJson
+    // const pkgJson = require(tmpJsonPath) as PackageJson
     // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
     // https://github.com/tailwindlabs/tailwindcss/discussions/9675
-    if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
-      return tmpJsonPath
-    }
+    // if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
+    return tmpJsonPath
+    // }
   } catch (error) {
     if ((<Error & { code: string }>error).code === 'MODULE_NOT_FOUND') {
       console.warn('没有找到`tailwindcss`包，请确认是否安装。想要禁用打上rpx支持patch或者非`tailwindcss`框架，你可以设置 `supportCustomLengthUnitsPatch` 为 false')
@@ -77,14 +77,18 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
 
 export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite: boolean = true): InternalPatchResult | undefined {
   if (pkgJsonPath) {
-    const rootDir = path.dirname(pkgJsonPath)
-    const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
-    const result = monkeyPatchForExposingContext(rootDir, {
-      overwrite
-    })
-    return {
-      ...result,
-      dataTypes
+    const pkgJson = require(pkgJsonPath) as PackageJson
+    const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
+    if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
+      const rootDir = path.dirname(pkgJsonPath)
+      const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
+      const result = monkeyPatchForExposingContext(rootDir, {
+        overwrite
+      })
+      return {
+        ...result,
+        dataTypes
+      }
     }
   }
 }
