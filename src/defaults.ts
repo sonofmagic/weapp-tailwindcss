@@ -11,7 +11,7 @@ export const defaultOptions: UserDefinedOptions = {
     if (file.includes('node_modules')) {
       return false
     }
-    return /.+\.[jt]sx?$/.test(file)
+    return /.+\.[cm]?[jt]sx?$/.test(file)
   },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {
