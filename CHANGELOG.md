@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.3 (2023-04-28)
+
+### Chores
+
+- 升级 `tailwindcss-patch` 的最小版本，修复 `nodejs14` `npm preinstall hook` 报错的问题
+- 把 `tailwindcss` 打补丁最低版本降到 `3.0.0`
+- 默认 `jsMatcher` 现在会包括 `.cjs`/`.mjs` 这种文件后缀名了
+
 ## 2.1.2 (2023-04-22)
 
 ### Features
