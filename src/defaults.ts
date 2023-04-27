@@ -11,7 +11,7 @@ export const defaultOptions: UserDefinedOptions = {
     if (file.includes('node_modules')) {
       return false
     }
-    return /.+\.[jt]sx?$/.test(file)
+    return /.+\.[cm]?[jt]sx?$/.test(file)
   },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {
@@ -70,7 +70,7 @@ export const defaultOptions: UserDefinedOptions = {
   supportCustomLengthUnitsPatch: {
     units: ['rpx'],
     dangerousOptions: {
-      gteVersion: '3.2.0',
+      gteVersion: '3.0.0',
       lengthUnitsFilePath: 'lib/util/dataTypes.js',
       packageName: 'tailwindcss',
       variableName: 'lengthUnits',

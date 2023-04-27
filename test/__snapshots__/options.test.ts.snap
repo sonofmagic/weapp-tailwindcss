@@ -188,7 +188,7 @@ exports[`get options default options 1`] = `
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {
     "dangerousOptions": {
-      "gteVersion": "3.2.0",
+      "gteVersion": "3.0.0",
       "lengthUnitsFilePath": "lib/util/dataTypes.js",
       "overwrite": true,
       "packageName": "tailwindcss",
@@ -390,7 +390,7 @@ exports[`get options vue framework 1`] = `
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {
     "dangerousOptions": {
-      "gteVersion": "3.2.0",
+      "gteVersion": "3.0.0",
       "lengthUnitsFilePath": "lib/util/dataTypes.js",
       "overwrite": true,
       "packageName": "tailwindcss",

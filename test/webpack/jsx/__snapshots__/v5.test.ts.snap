@@ -3,7 +3,7 @@
 exports[`webpack5 jsx plugin common: assets 1`] = `
 {
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
-  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.79.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_dp4karyqx7yylmm4jm2k3xyt5q/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
+  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.81.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_nm2jhan7kkykejwe7pa3fmxefm/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
 ::before,::after {
     --tw-content: ""}
@@ -21,6 +21,9 @@ view,::before,::after {
     --tw-pan-y:  ;
     --tw-pinch-zoom:  ;
     --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
     --tw-ordinal:  ;
     --tw-slashed-zero:  ;
     --tw-numeric-figure:  ;
@@ -71,6 +74,9 @@ view,::before,::after {
     --tw-pan-y:  ;
     --tw-pinch-zoom:  ;
     --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
     --tw-ordinal:  ;
     --tw-slashed-zero:  ;
     --tw-numeric-figure:  ;
@@ -430,7 +436,7 @@ exports[`webpack5 jsx plugin common: warnings 1`] = `[]`;
 exports[`webpack5 jsx plugin disabled true: assets 1`] = `
 {
   "entry.css": "/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\\
-  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.79.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_dp4karyqx7yylmm4jm2k3xyt5q/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
+  !*** css ../../../../../node_modules/.pnpm/css-loader@6.7.3_webpack@5.81.0/node_modules/css-loader/dist/cjs.js!../../../../../node_modules/.pnpm/postcss-loader@7.2.4_nm2jhan7kkykejwe7pa3fmxefm/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./pages/index.css ***!
   \\*****************************************************************************************************************************************************************************************************************************************************************************************/
 *, ::before, ::after {
     --tw-border-spacing-x: 0;
@@ -446,6 +452,9 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
     --tw-pan-y:  ;
     --tw-pinch-zoom:  ;
     --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
     --tw-ordinal:  ;
     --tw-slashed-zero:  ;
     --tw-numeric-figure:  ;
@@ -492,6 +501,9 @@ exports[`webpack5 jsx plugin disabled true: assets 1`] = `
     --tw-pan-y:  ;
     --tw-pinch-zoom:  ;
     --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
     --tw-ordinal:  ;
     --tw-slashed-zero:  ;
     --tw-numeric-figure:  ;

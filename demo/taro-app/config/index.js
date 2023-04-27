@@ -71,14 +71,17 @@ const config = {
       //     }
       //   }
       // })
-      chain.merge({
-        plugin: {
-          install: {
-            plugin: UnifiedWebpackPluginV5,
-            args: [opt, 'taro']
+      if (process.env.TARO_ENV === 'weapp') {
+        chain.merge({
+          plugin: {
+            install: {
+              plugin: UnifiedWebpackPluginV5,
+              args: [opt, 'taro']
+            }
           }
-        }
-      })
+        })
+      }
+
 
       // chain
       //   .plugin('UnifiedWebpackPlugin')
