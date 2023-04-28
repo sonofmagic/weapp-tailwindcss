@@ -1,12 +1,18 @@
 /* eslint-disable no-template-curly-in-string */
 import { SimpleMappingChars2StringEntries } from '@/dic'
 import { createjsHandler } from '@/js/index'
-
+import { createGetCase, jsCasePath } from './util'
+// import { getCss } from '#test/helpers/getTwCss'
+// import { getClassCacheSet, getContexts } from 'tailwindcss-patch'
+const getCase = createGetCase(jsCasePath)
 describe('jsHandler', () => {
-  it('common case', () => {
-    const h = createjsHandler({
+  let h: ReturnType<typeof createjsHandler>
+  beforeEach(() => {
+    h = createjsHandler({
       escapeEntries: SimpleMappingChars2StringEntries
     })
+  })
+  it('common case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -16,9 +22,6 @@ describe('jsHandler', () => {
   })
 
   it('preserve space', () => {
-    const h = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries
-    })
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -29,9 +32,6 @@ describe('jsHandler', () => {
   })
 
   it('preserve space case2', () => {
-    const h = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries
-    })
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -40,9 +40,6 @@ describe('jsHandler', () => {
   })
 
   it('babel TemplateElement case', () => {
-    const h = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries
-    })
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -55,9 +52,7 @@ describe('jsHandler', () => {
     const testCase = `data: {
       classNames: "text-[#123456] text-[50px] bg-[#fff]"
     }`
-    const h = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries
-    })
+
     const set: Set<string> = new Set()
     set.add('text-[#123456]')
     set.add('bg-[#fff]')
@@ -70,12 +65,23 @@ describe('jsHandler', () => {
     const testCase = `data: {
       classNames: "bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]"
     }`
-    const h = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries
-    })
+
     const set: Set<string> = new Set()
     set.add("bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]")
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
+  })
+
+  it('break taro-terser-minify case', async () => {
+    const testCase = await getCase('taro-terser-minify.js')
+    const set: Set<string> = new Set()
+    process.env.NODE_ENV = 'production'
+    const code = h(testCase, set).code
+
+    expect(code).toMatchSnapshot()
+    // const css = getCss([testCase])
+    // const context = getContexts()
+    // const set = getClassCacheSet()
+    // expect(set.size).toBeGreaterThan(0)
   })
 })
