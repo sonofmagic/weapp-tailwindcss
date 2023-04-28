@@ -214,7 +214,7 @@
     "postcss": "8.4.23",
     "postcss-selector-parser": "^6.0.11",
     "semver": "^7.5.0",
-    "tailwindcss-patch": "^1.0.4",
+    "tailwindcss-patch": "1.1.0-rc.0",
     "webpack-sources": "^3.2.3"
   }
 }

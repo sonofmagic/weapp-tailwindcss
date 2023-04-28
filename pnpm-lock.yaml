@@ -80,7 +80,7 @@ specifiers:
   style-loader2: npm:style-loader@2.0.0
   tailwind-children: ^0.5.0
   tailwindcss: ^3.3.2
-  tailwindcss-patch: ^1.0.4
+  tailwindcss-patch: 1.1.0-rc.0
   ts-jest: ^29.1.0
   ts-node: ^10.9.1
   ts-patch: ^2.1.0
@@ -107,7 +107,7 @@ dependencies:
   postcss: 8.4.23
   postcss-selector-parser: 6.0.11
   semver: 7.5.0
-  tailwindcss-patch: 1.0.4
+  tailwindcss-patch: 1.1.0-rc.0
   webpack-sources: 3.2.3
 
 devDependencies:
@@ -7630,7 +7630,7 @@ packages:
     resolution: {integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==}
     engines: {node: '>= 0.10'}
     dependencies:
-      resolve: 1.22.1
+      resolve: 1.22.2
     dev: true
 
   /redent/3.0.0:
@@ -8364,8 +8364,8 @@ packages:
       - ts-node
     dev: true
 
-  /tailwindcss-patch/1.0.4:
-    resolution: {integrity: sha512-A/UFQs7GfXs/NkWL145EBT38fCDJw7INUcb0PyLHOs/so8GTXxSM60DNshZFgGdCbmwlP3WqL+YM3M4c+qG7IA==}
+  /tailwindcss-patch/1.1.0-rc.0:
+    resolution: {integrity: sha512-5wXeqPrOuhdiTdsuTkT5+yvRlRMO6MAFvw+++GaJPPsI3p4Ar55I2GrbwNl0yqP5jPrRI0ApqeOueznCQ1F5Iw==}
     hasBin: true
     dependencies:
       '@babel/generator': 7.21.4

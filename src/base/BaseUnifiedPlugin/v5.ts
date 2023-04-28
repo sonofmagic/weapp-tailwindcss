@@ -3,7 +3,7 @@ import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebp
 import type { Compiler } from 'webpack'
 import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
-import { getClassCacheSet } from '@/tailwindcss/exposeContext'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 // import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
 
@@ -34,7 +34,19 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
-
+    const twPatcher = new TailwindcssPatcher({
+      cache: {}
+    })
+    function getClassSet() {
+      let set = twPatcher.getClassSet()
+      if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
+        const cacheSet = twPatcher.getCache()
+        if (!set.size && cacheSet && cacheSet.size) {
+          set = cacheSet
+        }
+      }
+      return set
+    }
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.processAssets.tap(
@@ -63,10 +75,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           if (Array.isArray(groupedEntries.js)) {
             // 再次 build 不转化的原因是此时 set.size 为0
             // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-            const set = getClassCacheSet()
-            // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
-            // }
-
+            const set = getClassSet()
             for (let i = 0; i < groupedEntries.js.length; i++) {
               const [file, originalSource] = groupedEntries.js[i]
 
