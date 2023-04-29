@@ -80,7 +80,7 @@ specifiers:
   style-loader2: npm:style-loader@2.0.0
   tailwind-children: ^0.5.0
   tailwindcss: ^3.3.2
-  tailwindcss-patch: 1.1.0
+  tailwindcss-patch: ^1.1.0
   ts-jest: ^29.1.0
   ts-node: ^10.9.1
   ts-patch: ^2.1.0
@@ -7604,7 +7604,7 @@ packages:
     resolution: {integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==}
     engines: {node: '>= 0.10'}
     dependencies:
-      resolve: 1.22.1
+      resolve: 1.22.2
     dev: true
 
   /redent/3.0.0:
