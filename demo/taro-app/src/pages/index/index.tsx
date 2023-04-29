@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { View } from '@tarojs/components'
 import classNames from 'classnames'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
-import { Button } from 'antd-mobile'
+// import { Button } from 'antd-mobile'
 import './index.scss'
 import EndClassCom from './endClassCom'
 
@@ -16,11 +16,14 @@ const Index = () => {
     },
     'bg-[#3232ff]',
     ['h-[10px]', 'w-[20px]'],
-    'text-[#fa00aa]'
+    'text-[#fa00aa]',
+    'text-[#fa0000]',
+    "bg-[url('https://xxx.com/xx.webp')]",
+    "bg-[url('https://yyy.com/xx.webp')]"
   )
   return (
     <>
-      <Button>Button</Button>
+      {/* <Button>Button</Button> */}
       <View className={`w-full bg-indigo-400 bg-[url('https://xxx.com/xx.webp')] bg-bottom bg-contain bg-no-repeat`}>{'bg-[url]'}</View>
       <View className={aaa}>11</View>
       <View className='form-box py-[62px] rotate-45 px-[95px] bg-sky-500/80 dark:bg-[#123456]'>py-[62px] px-[95px]</View>

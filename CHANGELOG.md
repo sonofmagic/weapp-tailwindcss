@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.4 (2023-04-30)
+
+### Fixed
+
+- 默认按照环境变量来决定是否压缩js代码，同时添加`minifiedJs`配置项手动进行指定 [[#164](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/164)]
+- 修复 `webpack filesystem` 缓存，导致的二次编译结果错误问题。这是由于启用文件缓存后，`webpack`二次打包时候直接使用缓存，而不去触发`postcss`相关插件导致的。
+
 ## 2.1.3 (2023-04-28)
 
 ### Chores

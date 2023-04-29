@@ -4,6 +4,7 @@ import type { Node, StringLiteral, TemplateElement } from '@babel/types'
 import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
+import { isProd } from '@/env'
 
 export function handleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
@@ -53,14 +54,17 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
 
   traverse(ast, topt)
 
-  return generate(ast)
+  return generate(ast, {
+    minified: options.minifiedJs ?? isProd()
+  })
 }
 
 export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>) {
   return (rawSource: string, set: Set<string>) => {
     return jsHandler(rawSource, {
       classNameSet: set,
-      escapeEntries: options.escapeEntries
+      escapeEntries: options.escapeEntries,
+      minifiedJs: options.minifiedJs
     })
   }
 }

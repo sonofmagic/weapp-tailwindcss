@@ -1,7 +1,7 @@
 import { getOptions } from '@/options'
 import { UserDefinedOptions } from '@/types'
 import stream from 'stream'
-import { getClassCacheSet } from '@/tailwindcss/exposeContext'
+import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import type File from 'vinyl'
 const Transform = stream.Transform
 
@@ -14,12 +14,12 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   let set = new Set<string>()
   patch?.()
-
+  const twPatcher = createTailwindcssPatcher()
   function transformWxss() {
     const transformStream = new Transform({ objectMode: true })
 
     transformStream._transform = function (file: File, encoding, callback) {
-      set = getClassCacheSet()
+      set = twPatcher.getClassSet()
       const error = null
 
       if (file.contents) {

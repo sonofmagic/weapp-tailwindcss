@@ -1,26 +1,9 @@
-import postcss from 'postcss'
-// import path from 'path'
-// import fs from 'fs'
-import tailwindcss from 'tailwindcss'
+import { getCss as _getCss } from '#test/helpers/getTwCss'
 
+function getCss(content: string[]) {
+  return _getCss(content, [require('tailwind-children')])
+}
 describe('tailwind plugins', () => {
-  async function getCss(content: string[]) {
-    const processor = postcss([
-      tailwindcss({
-        content: content.map((x) => {
-          return {
-            raw: x
-          }
-        }),
-        plugins: [require('tailwind-children')]
-      })
-    ])
-    return await processor.process('@tailwind utilities;', {
-      from: 'index.css',
-      to: 'index.css'
-    })
-  }
-
   it('tailwind-children case0', async () => {
     const res = await getCss([
       `<div class="child:ring-white">

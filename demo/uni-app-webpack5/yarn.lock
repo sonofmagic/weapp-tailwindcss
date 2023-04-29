@@ -10050,10 +10050,10 @@ tailwind-css-variables-theme-generator@^0.3.8:
   dependencies:
     consola "^2.15.3"
 
-tailwindcss-patch@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.0.4.tgz#9136c4179e95991609820f4a759d09d2cb57abe0"
-  integrity sha512-A/UFQs7GfXs/NkWL145EBT38fCDJw7INUcb0PyLHOs/so8GTXxSM60DNshZFgGdCbmwlP3WqL+YM3M4c+qG7IA==
+tailwindcss-patch@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.1.0.tgz#d0ae15cca5e22afe44d8c64384e267d71e560578"
+  integrity sha512-nbWm9mBobQOMLyYLiAhQs0/UtMZEsJZCTjLgpiHD3+G2lIWFKfc/ESRcvMDHc+b5Uq8aXcLQX3VWO0plc+3nlg==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
@@ -10759,10 +10759,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.1.3.tgz#7098d55e5e969cb245d719addd07c2af7baf2147"
-  integrity sha512-6RPzatbERpK9G08aNBA+8aN66QSYds3D39/WvI/YqVaBX785RcphVBxpqBYaKFl3xm1UY4XXYKA1377OzkTIOw==
+weapp-tailwindcss-webpack-plugin@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.1.4.tgz#958525480e12beaae41ebbc0c08c12b3e24d9032"
+  integrity sha512-qg753zBFZDmmOn+DwvuTvqnq7dcWI1PvYdU9UQeftkSsDI8fdeHqviIdEG/g++p+sFqGIq7imCCl6N/1UGavvg==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
@@ -10774,7 +10774,7 @@ weapp-tailwindcss-webpack-plugin@^2.1.3:
     postcss "8.4.23"
     postcss-selector-parser "^6.0.11"
     semver "^7.5.0"
-    tailwindcss-patch "^1.0.4"
+    tailwindcss-patch "^1.1.0"
     webpack-sources "^3.2.3"
 
 webidl-conversions@^3.0.0:

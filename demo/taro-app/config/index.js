@@ -21,9 +21,9 @@ const config = {
     750: 1,
     828: 1.81 / 2
   },
-  // cache: {
-  //   enable: true
-  // },
+  cache: {
+    enable: true
+  },
   sourceRoot: 'src',
   outputRoot: 'dist',
   plugins: [],
@@ -57,7 +57,8 @@ const config = {
     },
     webpackChain(chain, webpack) {
       const opt = {
-        appType: 'taro'
+        appType: 'taro',
+        minifiedJs:true
         // customAttributes: {
         //   // '*': ['emptyImageClass','btnClassName'],
         //   '*': [/Class/]

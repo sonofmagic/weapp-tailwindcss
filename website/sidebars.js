@@ -44,6 +44,11 @@ const sidebars = {
     },
     {
       type: 'doc',
+      label: '旧有uni-app项目升级webpack5',
+      id: 'upgrade/uni-app'
+    },
+    {
+      type: 'doc',
       label: '深入核心原理',
       id: 'principle/index'
     }

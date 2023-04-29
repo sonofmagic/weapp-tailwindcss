@@ -3,7 +3,7 @@ import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebp
 import type { Compiler } from 'webpack'
 import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
-import { getClassCacheSet } from '@/tailwindcss/exposeContext'
+import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 // import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
 
@@ -28,7 +28,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       return
     }
     patch?.()
-
+    const twPatcher = createTailwindcssPatcher()
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
@@ -59,7 +59,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           }
 
           if (Array.isArray(groupedEntries.js)) {
-            const set = getClassCacheSet()
+            const set = twPatcher.getClassSet()
 
             for (let i = 0; i < groupedEntries.js.length; i++) {
               // let classGenerator
