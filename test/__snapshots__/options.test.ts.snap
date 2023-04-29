@@ -2,7 +2,6 @@
 
 exports[`get options default options 1`] = `
 {
-  "appType": undefined,
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",
@@ -179,6 +178,7 @@ exports[`get options default options 1`] = `
   },
   "mainCssChunkMatcher": [Function],
   "mangle": false,
+  "minifiedJs": false,
   "onEnd": [Function],
   "onLoad": [Function],
   "onStart": [Function],
@@ -204,7 +204,6 @@ exports[`get options default options 1`] = `
 
 exports[`get options vue framework 1`] = `
 {
-  "appType": undefined,
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",
@@ -381,6 +380,7 @@ exports[`get options vue framework 1`] = `
   },
   "mainCssChunkMatcher": [Function],
   "mangle": false,
+  "minifiedJs": false,
   "onEnd": [Function],
   "onLoad": [Function],
   "onStart": [Function],

@@ -57,6 +57,7 @@ export type IJsxHandlerOptions = {
 export type IJsHandlerOptions = {
   escapeEntries?: [string, string][]
   classNameSet: Set<string>
+  minifiedJs?: boolean
 }
 export interface RawSource {
   start: number
@@ -236,6 +237,12 @@ export interface UserDefinedOptions {
    * @description 使用的框架类型(uni-app,taro...)，用于找到主要的 css bundle 进行转化
    */
   appType?: AppType
+
+  /**
+   * @description 是否压缩 js (NODE_ENV 为 production时默认开启)
+   * @default process.env.NODE_ENV === 'production'
+   */
+  minifiedJs?: boolean
 }
 
 export interface ICommonReplaceOptions {

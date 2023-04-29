@@ -9,6 +9,7 @@ import { SimpleMappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
 import { createjsHandler } from './js'
 import { defaultOptions } from './defaults'
+import { isProd } from '@/env'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
@@ -72,7 +73,9 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   normalizeMatcher(options, 'jsMatcher')
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
-  const result = defu<InternalUserDefinedOptions, InternalUserDefinedOptions[]>(options, defaultOptions as InternalUserDefinedOptions)
+  const result = defu<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(options, defaultOptions as InternalUserDefinedOptions, {
+    minifiedJs: isProd()
+  })
   const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework, supportCustomLengthUnitsPatch } =
     result
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -110,7 +113,8 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   }
   if (registerModules.js) {
     result.jsHandler = createjsHandler({
-      escapeEntries
+      escapeEntries,
+      minifiedJs: result.minifiedJs
     })
   }
   if (registerModules.patch) {

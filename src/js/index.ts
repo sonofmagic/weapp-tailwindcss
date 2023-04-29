@@ -55,7 +55,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
   traverse(ast, topt)
 
   return generate(ast, {
-    minified: isProd()
+    minified: options.minifiedJs ?? isProd()
   })
 }
 
@@ -63,7 +63,8 @@ export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>
   return (rawSource: string, set: Set<string>) => {
     return jsHandler(rawSource, {
       classNameSet: set,
-      escapeEntries: options.escapeEntries
+      escapeEntries: options.escapeEntries,
+      minifiedJs: options.minifiedJs
     })
   }
 }
