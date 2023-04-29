@@ -57,7 +57,8 @@ const config = {
     },
     webpackChain(chain, webpack) {
       const opt = {
-        appType: 'taro'
+        appType: 'taro',
+        minifiedJs:true
         // customAttributes: {
         //   // '*': ['emptyImageClass','btnClassName'],
         //   '*': [/Class/]
