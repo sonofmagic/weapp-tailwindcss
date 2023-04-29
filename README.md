@@ -538,6 +538,11 @@ const classArray = [
 
 当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/src/dic.ts)
 
+### minifiedJs
+
+类型: `boolean`  
+描述: 是否压缩生成的js文件内容，默认使用环境变量判断: `process.env.NODE_ENV === 'production'`
+
 ### cssPreflight
 
 类型: `Record<string,string>`\| `false`  

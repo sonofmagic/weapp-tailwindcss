@@ -54,6 +54,7 @@ const tableData = [
       ].join('\n\n')
     ].join()
   ],
+  ['`minifiedJs`', '`boolean`', "是否压缩生成的js文件内容，默认使用环境变量判断: `process.env.NODE_ENV === 'production'`"],
   // [
   //   '`mangle`(1.9.0+)',
   //   '`boolean` \\| `IMangleOptions`',
