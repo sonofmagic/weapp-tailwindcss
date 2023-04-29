@@ -65,7 +65,7 @@ specifiers:
   pkg-types: ^1.0.2
   postcss: 8.4.23
   postcss-load-config: ^4.0.1
-  postcss-loader: ^7.2.4
+  postcss-loader: ^7.3.0
   postcss-loader4: npm:postcss-loader@^4.3.0
   postcss-rem-to-responsive-pixel: ^5.1.3
   postcss-selector-parser: ^6.0.11
@@ -80,7 +80,7 @@ specifiers:
   style-loader2: npm:style-loader@2.0.0
   tailwind-children: ^0.5.0
   tailwindcss: ^3.3.2
-  tailwindcss-patch: 1.1.0-rc.2
+  tailwindcss-patch: 1.1.0
   ts-jest: ^29.1.0
   ts-node: ^10.9.1
   ts-patch: ^2.1.0
@@ -107,7 +107,7 @@ dependencies:
   postcss: 8.4.23
   postcss-selector-parser: 6.0.11
   semver: 7.5.0
-  tailwindcss-patch: 1.1.0-rc.2
+  tailwindcss-patch: 1.1.0
   webpack-sources: 3.2.3
 
 devDependencies:
@@ -167,7 +167,7 @@ devDependencies:
   open-cli: 7.2.0
   pkg-types: 1.0.2
   postcss-load-config: 4.0.1_3fojqsmttcn75cbnzsztj3o6qa
-  postcss-loader: 7.2.4_2xw5x5sxygcpg24hx7vmjotvlu
+  postcss-loader: 7.3.0_xtpl6ldffeedc5wjksnjgetfau
   postcss-loader4: /postcss-loader/4.3.0_xtpl6ldffeedc5wjksnjgetfau
   postcss-rem-to-responsive-pixel: 5.1.3
   prettier: 2.8.8
@@ -3315,21 +3315,6 @@ packages:
 
   /core-util-is/1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
-    dev: true
-
-  /cosmiconfig-typescript-loader/4.3.0_2povxxbzg6umlohvbew5koo6fm:
-    resolution: {integrity: sha512-NTxV1MFfZDLPiBMjxbHRwSh5LaLcPMwNdCutmnHJCKoVnlvldPWlllonKwrsRJ5pYZBIBGRWWU2tfvzxgeSW5Q==}
-    engines: {node: '>=12', npm: '>=6'}
-    peerDependencies:
-      '@types/node': '*'
-      cosmiconfig: '>=7'
-      ts-node: '>=10'
-      typescript: '>=3'
-    dependencies:
-      '@types/node': 18.16.3
-      cosmiconfig: 8.1.3
-      ts-node: 10.9.1_hl62ipmltjfz74pvls4whx33xm
-      typescript: 4.9.5
     dev: true
 
   /cosmiconfig/7.1.0:
@@ -7202,30 +7187,19 @@ packages:
       webpack: 5.81.0
     dev: true
 
-  /postcss-loader/7.2.4_2xw5x5sxygcpg24hx7vmjotvlu:
-    resolution: {integrity: sha512-F88rpxxNspo5hatIc+orYwZDtHFaVFOSIVAx+fBfJC1GmhWbVmPWtmg2gXKE1OxJbneOSGn8PWdIwsZFcruS+w==}
+  /postcss-loader/7.3.0_xtpl6ldffeedc5wjksnjgetfau:
+    resolution: {integrity: sha512-qLAFjvR2BFNz1H930P7mj1iuWJFjGey/nVhimfOAAQ1ZyPpcClAxP8+A55Sl8mBvM+K2a9Pjgdj10KpANWrNfw==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       postcss: ^7.0.0 || ^8.0.1
-      ts-node: '>=10'
-      typescript: '>=4'
       webpack: ^5.0.0
-    peerDependenciesMeta:
-      ts-node:
-        optional: true
-      typescript:
-        optional: true
     dependencies:
       cosmiconfig: 8.1.3
-      cosmiconfig-typescript-loader: 4.3.0_2povxxbzg6umlohvbew5koo6fm
+      jiti: 1.18.2
       klona: 2.0.6
       postcss: 8.4.23
       semver: 7.5.0
-      ts-node: 10.9.1_hl62ipmltjfz74pvls4whx33xm
-      typescript: 4.9.5
       webpack: 5.81.0
-    transitivePeerDependencies:
-      - '@types/node'
     dev: true
 
   /postcss-modules-extract-imports/2.0.0:
@@ -7630,7 +7604,7 @@ packages:
     resolution: {integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==}
     engines: {node: '>= 0.10'}
     dependencies:
-      resolve: 1.22.2
+      resolve: 1.22.1
     dev: true
 
   /redent/3.0.0:
@@ -8364,8 +8338,8 @@ packages:
       - ts-node
     dev: true
 
-  /tailwindcss-patch/1.1.0-rc.2:
-    resolution: {integrity: sha512-RTroM2s3fVeV+u4XWf4WBJaCNPtRSGWboR42U1dendVrXb2xcXFB8NviNeicPR44Ho+Bwl4xsZ8Dg6avtfRZeA==}
+  /tailwindcss-patch/1.1.0:
+    resolution: {integrity: sha512-nbWm9mBobQOMLyYLiAhQs0/UtMZEsJZCTjLgpiHD3+G2lIWFKfc/ESRcvMDHc+b5Uq8aXcLQX3VWO0plc+3nlg==}
     hasBin: true
     dependencies:
       '@babel/generator': 7.21.4
