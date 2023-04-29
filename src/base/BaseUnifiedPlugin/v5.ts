@@ -3,7 +3,7 @@ import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebp
 import type { Compiler } from 'webpack'
 import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
-import { TailwindcssPatcher } from 'tailwindcss-patch'
+import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 // import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
 
@@ -34,9 +34,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
-    const twPatcher = new TailwindcssPatcher({
-      cache: true
-    })
+    const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
       let set = twPatcher.getClassSet()
       if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {

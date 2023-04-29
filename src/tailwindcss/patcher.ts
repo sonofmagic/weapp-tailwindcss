@@ -6,7 +6,7 @@ import type { PackageJson } from 'pkg-types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { findAstNode } from './supportCustomUnit'
-import { monkeyPatchForExposingContext, requireResolve } from 'tailwindcss-patch'
+import { monkeyPatchForExposingContext, requireResolve, TailwindcssPatcher } from 'tailwindcss-patch'
 import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
@@ -103,4 +103,10 @@ export function mkCacheDirectory(cwd = process.cwd()) {
     })
   }
   return cacheDirectory
+}
+
+export function createTailwindcssPatcher() {
+  return new TailwindcssPatcher({
+    cache: true
+  })
 }

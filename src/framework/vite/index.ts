@@ -5,13 +5,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 // import type { Plugin as PostcssPlugin } from 'postcss'
 import { getGroupedEntries } from '@/base/shared'
-import { TailwindcssPatcher } from '@/tailwindcss/exposeContext'
-// import ClassGenerator from '@/mangle/classGenerator'
-
-// function isRegisterPostcssPlugin(name: string) {
-//   return ['postcss-windicss', 'tailwindcss'].includes(name)
-// }
-// issue 一个节点静态，一个节点动态，动态节点中的静态属性不会被 mangle 导致存在问题
+import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
 export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
@@ -115,9 +109,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
 
   patch?.()
-  const twPatcher = new TailwindcssPatcher({
-    cache: true
-  })
+  const twPatcher = createTailwindcssPatcher()
   onLoad()
   // 要在 vite:css 处理之前运行
   return {
