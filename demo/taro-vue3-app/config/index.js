@@ -24,6 +24,9 @@ const config = {
   outputRoot: 'dist',
   plugins: [],
   defineConstants: {},
+  cache: {
+    enable: true
+  },
   copy: {
     patterns: [],
     options: {}
