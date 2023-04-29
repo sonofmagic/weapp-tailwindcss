@@ -16,7 +16,10 @@ const Index = () => {
     },
     'bg-[#3232ff]',
     ['h-[10px]', 'w-[20px]'],
-    'text-[#fa00aa]'
+    'text-[#fa00aa]',
+    'text-[#fa0000]',
+    "bg-[url('https://xxx.com/xx.webp')]",
+    "bg-[url('https://yyy.com/xx.webp')]"
   )
   return (
     <>
