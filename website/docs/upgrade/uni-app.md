@@ -1,0 +1,52 @@
+# 旧有uni-app项目升级webpack5指南
+
+> 使用 uni-app vite vue3 的开发者可以忽略此指南
+
+由于目前 `uni-app` `hbuilderx`和`cli`默认创建的 `vue2` 项目，还是使用的 `@vue/cli-service@4`
+
+为了使用更先进更有生产力的 `webpack5` 和 `postcss8` 我们必须要升级到 `@vue/cli-service@5`
+
+那么旧有的老项目应该如何升级呢？
+
+### 1. 升级 `@dcloudio/*` 相关的包
+
+在项目根目录，执行:
+
+```bash
+npx @dcloudio/uvm alpha
+```
+
+然后选择 `y` 后，出现提示，选择你项目使用的包管理器，运行即可。
+
+此时你所有的 `@dcloudio/*` 相关的包，被升级到了 `2.0.2-alpha-xxxxxxxxxxxx` 的版本。
+
+### 2. 升级 `@vue/cli-*` 相关的包
+
+使用你的包管理器，升级 `@vue/*`,`@vue/cli-*` 相关的包到 `5.x` 版本。
+
+```json
+{
+  "@vue/babel-preset-app": "^5.0.8",
+  "@vue/cli-plugin-babel": "~5.0.8",
+  "@vue/cli-plugin-typescript": "5.0.8",
+  "@vue/cli-service": "~5.0.8",
+}
+```
+
+### 3. 升级你所有的 `webpack` `plugin` 和 `loader`
+
+由于你使用了最新版本的 `webpack` 你可以把那些相关的包，升级到最新的版本，
+
+比如 `sass-loader`, `copy-webpack-plugin` 等等
+
+而且由于你使用了 `5.x` 版本的 `@vue/cli`，里面默认依赖了 `postcss8`
+
+所以你也按需应该升级一下你所依赖的 `postcss` 插件版本。
+
+### 4. 运行排错
+
+接下来就是，删掉你的 `lock` 文件，重新安装所有包，并运行你的项目！
+
+当然运行时，很有可能报各种各样的错误: 比如 `babel-xxx` 插件找不到，这种安装即可。
+
+或者什么 `webpack` 插件报错，这种可以暂时去除看看能不能打包成功。
