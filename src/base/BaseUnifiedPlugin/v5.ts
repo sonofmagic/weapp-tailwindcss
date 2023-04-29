@@ -35,7 +35,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const { ConcatSource } = compiler.webpack.sources
     // react
     const twPatcher = new TailwindcssPatcher({
-      cache: {}
+      cache: true
     })
     function getClassSet() {
       let set = twPatcher.getClassSet()

@@ -5,7 +5,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 // import type { Plugin as PostcssPlugin } from 'postcss'
 import { getGroupedEntries } from '@/base/shared'
-import { getClassCacheSet } from '@/tailwindcss/exposeContext'
+import { TailwindcssPatcher } from '@/tailwindcss/exposeContext'
 // import ClassGenerator from '@/mangle/classGenerator'
 
 // function isRegisterPostcssPlugin(name: string) {
@@ -115,7 +115,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
 
   patch?.()
-
+  const twPatcher = new TailwindcssPatcher({
+    cache: true
+  })
   onLoad()
   // 要在 vite:css 处理之前运行
   return {
@@ -158,7 +160,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
       }
       if (Array.isArray(groupedEntries.js)) {
-        const set = getClassCacheSet()
+        const set = twPatcher.getClassSet()
 
         for (let i = 0; i < groupedEntries.js.length; i++) {
           const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]

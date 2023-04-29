@@ -76,7 +76,7 @@
     "stylelint": "15.6.0",
     "tailwind-css-variables-theme-generator": "^0.3.8",
     "tailwindcss": "^3.3.2",
-    "tailwindcss-patch": "^1.1.0-rc.0",
+    "tailwindcss-patch": "^1.1.0-rc.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "terser-webpack-plugin": "^5.3.7",
     "typescript": "~5.0.4",

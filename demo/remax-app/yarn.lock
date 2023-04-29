@@ -7644,10 +7644,10 @@ tailwindcss-patch@^1.0.4:
     resolve "^1.22.2"
     semver "^7.5.0"
 
-tailwindcss-patch@^1.1.0-rc.0:
-  version "1.1.0-rc.0"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.1.0-rc.0.tgz#b64c365b5c256a853278c47293f59aca09f89b32"
-  integrity sha512-5wXeqPrOuhdiTdsuTkT5+yvRlRMO6MAFvw+++GaJPPsI3p4Ar55I2GrbwNl0yqP5jPrRI0ApqeOueznCQ1F5Iw==
+tailwindcss-patch@^1.1.0-rc.2:
+  version "1.1.0-rc.2"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.1.0-rc.2.tgz#5e6700e7efabf443dacc63f181f3f4699b647cd0"
+  integrity sha512-RTroM2s3fVeV+u4XWf4WBJaCNPtRSGWboR42U1dendVrXb2xcXFB8NviNeicPR44Ho+Bwl4xsZ8Dg6avtfRZeA==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"

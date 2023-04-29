@@ -113,7 +113,7 @@
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwind-css-variables-theme-generator": "^0.3.8",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "tailwindcss-patch": "^1.1.0-rc.0",
+    "tailwindcss-patch": "^1.1.0-rc.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~4.6.0",
     "vue-template-compiler": "^2.6.11",
