@@ -182,7 +182,7 @@
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup": "^3.21.1",
+    "rollup": "^3.21.3",
     "rollup-plugin-visualizer": "^5.9.0",
     "simple-functional-loader": "^1.2.1",
     "style-loader": "^3.3.2",
@@ -214,7 +214,7 @@
     "postcss": "8.4.23",
     "postcss-selector-parser": "^6.0.11",
     "semver": "^7.5.0",
-    "tailwindcss-patch": "^1.1.0",
+    "tailwindcss-patch": "^1.1.1",
     "webpack-sources": "^3.2.3"
   }
 }
