@@ -49,6 +49,11 @@ const sidebars = {
     },
     {
       type: 'doc',
+      label: '跨端应用注意事项',
+      id: 'multi-platform'
+    },
+    {
+      type: 'doc',
       label: '深入核心原理',
       id: 'principle/index'
     }
