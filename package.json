@@ -73,7 +73,6 @@
     "postcss.*",
     "replace.*",
     "vite.*",
-    "mangle.*",
     "gulp.*"
   ],
   "bin": {
