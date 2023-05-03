@@ -23,7 +23,7 @@ const sidebars = {
       collapsed: false
     },
     {
-      items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native'].map((x) => 'quick-start/frameworks/' + x),
+      items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native', 'hbuilderx'].map((x) => 'quick-start/frameworks/' + x),
       label: '各个框架的注册方式',
       type: 'category',
       collapsed: false

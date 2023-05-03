@@ -83,3 +83,25 @@ gulp.task('default', gulp.series(buildTasks))
 ```
 
 具体可以参考 [weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/gulp-app) 模板项目的配置。
+
+## vscode tailwindcss 智能提示设置
+
+我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。
+
+假如你遇到了，在 `vscode` 的 `wxml` 文件中，编写 `class` 没有出智能提示的情况，可以参考以下步骤。
+
+这里我们以 `vscode` 为例:
+
+1. 安装 [`WXML - Language Services 插件`](https://marketplace.visualstudio.com/items?itemName=qiu8310.minapp-vscode)(一搜 wxml 下载量最多的就是了)
+
+2. 安装 [`Tailwind CSS IntelliSense 插件`](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+
+接着找到 `Tailwind CSS IntelliSense` 的 `扩展设置`
+
+在 `include languages`,手动标记 `wxml` 的类型为 `html`
+
+![如图所示](./img/vscode-setting.png)
+
+智能提示就出来了:
+
+![智能提示](./img/wxml-i.png)
