@@ -33,7 +33,9 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
 }
 
 export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
-  const ast = parse(rawSource)
+  const ast = parse(rawSource, {
+    sourceType: 'unambiguous'
+  })
   // 这样搞会把原先所有的 children 含有相关的 也都转义了
   const topt: TraverseOptions<Node> = {
     StringLiteral: {
