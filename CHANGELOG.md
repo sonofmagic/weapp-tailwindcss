@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.5 (2023-05-04)
+
+### Features
+
+- `js` 文件进行转义时，自动判断格式是 `cjs` 还是 `esm`
+- 现在能针对 `eval` 包裹的 `js`脚本进行转义了
+- 去除所有 `mangle` 相关代码，相关功能现在到 [tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle)
+
+### Chores
+
+- 给之前的  `v1` 版本的插件打上 `deprecated` 标记，添加对应的 `jsdoc`
+- 整理目录去除 `v1` 版本的 `markdown` 文件目录，相关转移到了 `website` 中
+
 ## 2.1.4 (2023-04-30)
 
 ### Fixed
