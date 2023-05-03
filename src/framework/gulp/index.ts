@@ -5,6 +5,11 @@ import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import type File from 'vinyl'
 const Transform = stream.Transform
 
+/**
+ * @name weapp-tw-gulp
+ * @description gulp版本weapp-tw插件
+ * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/native
+ */
 export function createPlugins(options: UserDefinedOptions = {}) {
   if (typeof options.customReplaceDictionary === 'undefined') {
     options.customReplaceDictionary = 'simple'

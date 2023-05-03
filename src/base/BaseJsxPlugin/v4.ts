@@ -8,6 +8,7 @@ import path from 'path'
 import { getGroupedEntries } from '@/base/shared'
 // import ClassGenerator from '@/mangle/classGenerator'
 /**
+ * @deprecated
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
 export class BaseJsxWebpackPluginV4 implements IBaseWebpackPlugin {

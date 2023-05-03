@@ -8,6 +8,11 @@ import { getGroupedEntries } from '@/base/shared'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/3
+/**
+ * @deprecated
+ * @param options
+ * @returns
+ */
 export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options, ['patch', 'style', 'templete'])
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch } = opts
@@ -98,6 +103,11 @@ export function ViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Pl
   }
 }
 
+/**
+ * @name UnifiedViteWeappTailwindcssPlugin
+ * @description uni-app vite vue3 版本插件
+ * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
+ */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
   if (typeof options.customReplaceDictionary === 'undefined') {
     options.customReplaceDictionary = 'simple'

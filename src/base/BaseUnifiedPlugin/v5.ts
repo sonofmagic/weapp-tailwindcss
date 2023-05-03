@@ -8,7 +8,9 @@ import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/base/shared'
 
 /**
- * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
+ * @name UnifiedWebpackPluginV5
+ * @description webpack5 核心转义插件
+ * @link https://weapp-tw.icebreaker.top/docs/intro
  */
 
 export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
