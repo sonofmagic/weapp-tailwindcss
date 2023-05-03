@@ -1,6 +1,5 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
-import type ClassGenerator from '@/mangle/classGenerator'
 
 import type { GeneratorResult } from '@babel/generator'
 
@@ -40,7 +39,6 @@ export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHan
 
 export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
-  classGenerator?: ClassGenerator
 } & RequiredStyleHandlerOptions
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
@@ -247,7 +245,6 @@ export interface UserDefinedOptions {
 
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
-  classGenerator?: ClassGenerator
   escapeEntries?: [string, string][]
   // customAttributes?: Record<string, string | string[]>
 }
@@ -286,14 +283,13 @@ export type InternalUserDefinedOptions = Required<
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,
   'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
-> & { classGenerator?: ClassGenerator }
+>
 
 export interface IBaseWebpackPlugin {
   // new (options: UserDefinedOptions, appType: AppType): any
   // constructor(options: UserDefinedOptions, appType: AppType): void
   options: InternalUserDefinedOptions
   appType?: AppType
-  classGenerator?: ClassGenerator
 
   apply: (compiler: any) => void
 }
