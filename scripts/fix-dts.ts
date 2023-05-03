@@ -19,7 +19,7 @@ const webpack4Replacer = createReplacer(/["']webpack4["']/g, "'webpack'")
 const viteReplacer = createReplacer(/["']..\/..\/..\/node_modules\/vite["']/g, "'vite'")
 const postcssReplacer = createReplacer(/["']..\/..\/node_modules\/postcss["']/g, "'postcss'")
 
-;['./base/BaseJsxPlugin/v4.d.ts', './base/BaseTemplatePlugin/v4.d.ts', './mangle/v4/optimize.d.ts', './mangle/v4/plugin.d.ts']
+;['./base/BaseJsxPlugin/v4.d.ts', './base/BaseTemplatePlugin/v4.d.ts']
   .map((x) => {
     return path.resolve(typeOutputPath, x)
   })

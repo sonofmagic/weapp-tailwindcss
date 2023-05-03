@@ -1,5 +1,5 @@
 import { ICommonReplaceOptions } from '@/types'
-import { mangleMark } from '@/mangle/expose'
+
 import { escape } from '@/base/escape'
 import { MappingChars2StringEntries } from '@/dic'
 export function replaceWxml(
@@ -21,11 +21,8 @@ export function replaceWxml(
       // 不能全去掉，头条小程序变量绑定，实现方式依赖空格，你说坑不坑？
       .replace(/[\r\n]+/g, '')
   }
-  const oldValue = res
+
   res = escape(res, false, options.escapeEntries)
 
-  if (options.classGenerator) {
-    res = mangleMark(res, oldValue, options.classGenerator)
-  }
   return res
 }

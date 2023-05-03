@@ -87,3 +87,19 @@ module.exports = {
 - 组件外层套view标签
 - `virtualHost` 解决方案，在自定义组件中添加
  options: { virtualHost: true, } 即可解决此问题.
+
+## 使用 uni-app vite vue 注册插件时，发行到 h5 环境出现: [plugin:vite-plugin-uni-app-weapp-tailwindcss-adaptor] 'import' and 'export' may appear only with 'sourceType: "module"' (1:0) 错误
+
+解决方案：
+
+```js
+// 注意： 打包成 h5 和 app 都不需要开启插件配置
+const isH5 = process.env.UNI_PLATFORM === "h5";
+const isApp = process.env.UNI_PLATFORM === "app";
+const WeappTailwindcssDisabled = isH5 || isApp;
+const vitePlugins = [uni(), uvwt({
+  disabled: WeappTailwindcssDisabled
+})];
+```
+
+即 h5 环境和 app 环境都不开启我这个插件，因为本来这2个环境就是tailwindcss支持的环境，没必要开启插件转义。

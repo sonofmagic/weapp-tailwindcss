@@ -71,7 +71,6 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
       resultArray.push(
         replaceWxml(before, {
           keepEOL: true,
-          classGenerator: options.classGenerator,
           escapeEntries: options.escapeEntries
         })
       )
@@ -79,10 +78,7 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
       // 匹配后值
       if (m.raw.trim().length) {
         const code = generateCode(m.raw, options)
-        let source = `{{${code}}}`
-        if (options.classGenerator) {
-          source = `${m.prevConcatenated ? '' : ' '}${source}${m.nextConcatenated ? '' : ' '}`
-        }
+        const source = `{{${code}}}`
         m.source = source
       } else {
         m.source = ''
@@ -96,7 +92,6 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
         resultArray.push(
           replaceWxml(after, {
             keepEOL: true,
-            classGenerator: options.classGenerator,
             escapeEntries: options.escapeEntries
           })
         )
@@ -110,7 +105,6 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      classGenerator: options.classGenerator,
       escapeEntries: options.escapeEntries
     })
   }

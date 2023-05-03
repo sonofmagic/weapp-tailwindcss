@@ -9,6 +9,7 @@ import path from 'path'
 // import ClassGenerator from '@/mangle/classGenerator'
 import { getGroupedEntries } from '@/base/shared'
 /**
+ * @deprecated
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/2
  */
 

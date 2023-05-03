@@ -1,6 +1,7 @@
 import type { UserDefinedOptions } from '@/types'
 import { BaseJsxWebpackPluginV4, BaseJsxWebpackPluginV5 } from '@/base'
 /**
+ * @deprecated
  * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/5
  */
 export class TaroWeappTailwindcssWebpackPluginV4 extends BaseJsxWebpackPluginV4 {
@@ -9,6 +10,9 @@ export class TaroWeappTailwindcssWebpackPluginV4 extends BaseJsxWebpackPluginV4 
   }
 }
 
+/**
+ * @deprecated
+ */
 export class TaroWeappTailwindcssWebpackPluginV5 extends BaseJsxWebpackPluginV5 {
   constructor(options: UserDefinedOptions = { framework: 'react' }) {
     super(options, 'taro')

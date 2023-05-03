@@ -21,6 +21,7 @@
         <view class="text-xs">px 和 rem 单位转小程序单位rpx</view>
         <view class="text-xs">支持 typescript</view>
       </view>
+      <view class="{{classNames}}"></view>
     </view>
   </view>
 </view>

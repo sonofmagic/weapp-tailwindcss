@@ -1,3 +1,5 @@
+// refers link: https://github.com/tailwindlabs/tailwindcss/blob/master/src/lib/regex.js
+
 export const validateFilterRE = /[\w\u00A0-\uFFFF-_:%-?]/
 
 export function isValidSelector(selector = ''): selector is string {

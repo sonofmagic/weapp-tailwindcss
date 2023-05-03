@@ -1,7 +1,9 @@
 import { BaseJsxWebpackPluginV4 } from '@/base'
 import type { UserDefinedOptions } from '@/types'
 
-// https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/4
+/**
+ * @deprecated
+ */
 export class RemaxWeappTailwindcssWebpackPluginV4 extends BaseJsxWebpackPluginV4 {
   constructor(options: UserDefinedOptions) {
     super(

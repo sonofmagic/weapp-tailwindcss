@@ -23,7 +23,7 @@
   - [从 v1 迁移](#从-v1-迁移)
   - [精确转化与忽略](#精确转化与忽略)
   - [Options 配置项](#options-配置项)
-  - [使用 arbitrary values](#使用-arbitrary-values)
+  - [使用任意值(arbitrary values)](#使用任意值arbitrary-values)
   - [变更日志](#变更日志)
   - [常见问题](#常见问题)
   - [Related projects](#related-projects)
@@ -601,9 +601,9 @@ cssPreflight: {
 
 使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
 
-## 使用 arbitrary values
+## 使用任意值(arbitrary values)
 
-详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values) | [Sample](./docs/arbitrary-values.md)
+详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
 
 ## [变更日志](./CHANGELOG.md)
 

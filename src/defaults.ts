@@ -11,7 +11,13 @@ export const defaultOptions: UserDefinedOptions = {
     if (file.includes('node_modules')) {
       return false
     }
+    // const idx = file.indexOf('?')
+    // if (idx > -1) {
+    //   const [resource] = file.split('?')
+    //   return /.+\.[cm]?[jt]sx?$/.test(resource)
+    // } else {
     return /.+\.[cm]?[jt]sx?$/.test(file)
+    // }
   },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {

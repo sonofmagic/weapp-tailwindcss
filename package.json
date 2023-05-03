@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.1.4-beta.2",
+  "version": "2.1.5",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -20,13 +20,11 @@
     },
     "./vite": {
       "types": "./types/framework/vite/index.d.ts",
-      "require": "./dist/vite.js",
-      "import": "./dist/vite.js"
+      "require": "./dist/vite.js"
     },
     "./gulp": {
       "types": "./types/framework/gulp/index.d.ts",
-      "require": "./dist/gulp.js",
-      "import": "./dist/gulp.js"
+      "require": "./dist/gulp.js"
     }
   },
   "scripts": {
@@ -53,7 +51,7 @@
     "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js",
     "demo:sync-dist": "node scripts/demo/copy-dist.js",
     "demo:del-dist": "node scripts/demo/del-dist.js",
-    "sync": "open-cli https://npmmirror.com/sync/weapp-tailwindcss-webpack-plugin",
+    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin",
     "generate:readme": "ts-node scripts/readme/write.ts",
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
@@ -75,7 +73,6 @@
     "postcss.*",
     "replace.*",
     "vite.*",
-    "mangle.*",
     "gulp.*"
   ],
   "bin": {
@@ -174,7 +171,7 @@
     "miniprogram-automator": "^0.12.0",
     "object-hash": "^3.0.0",
     "open-cli": "^7.2.0",
-    "pkg-types": "^1.0.2",
+    "pkg-types": "^1.0.3",
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.3.0",
     "postcss-loader4": "npm:postcss-loader@^4.3.0",
@@ -182,7 +179,7 @@
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup": "^3.21.1",
+    "rollup": "^3.21.3",
     "rollup-plugin-visualizer": "^5.9.0",
     "simple-functional-loader": "^1.2.1",
     "style-loader": "^3.3.2",
@@ -198,7 +195,7 @@
     "typescript": "^4.9.5",
     "typescript-transform-paths": "^3.4.6",
     "vinyl": "^3.0.0",
-    "vite": "^4.3.3",
+    "vite": "^4.3.4",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.81.0",
     "webpack4": "npm:webpack@webpack-4"
@@ -212,9 +209,9 @@
     "loader-utils": "^2.0.2",
     "micromatch": "^4.0.5",
     "postcss": "8.4.23",
-    "postcss-selector-parser": "^6.0.11",
+    "postcss-selector-parser": "^6.0.12",
     "semver": "^7.5.0",
-    "tailwindcss-patch": "^1.1.0",
+    "tailwindcss-patch": "^1.1.1",
     "webpack-sources": "^3.2.3"
   }
 }
