@@ -3,7 +3,7 @@ import { getOptions } from '@/options'
 
 describe('get options', () => {
   it('default options', () => {
-    const options = getOptions()
+    const options = getOptions({})
     expect(options).toMatchSnapshot()
   })
   it('vue framework', () => {

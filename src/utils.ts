@@ -29,4 +29,13 @@ export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
 
 export const noop = () => {}
 
+const MAX_ASCII_CHAR_CODE = 127
+
+export function isAscii(str: string) {
+  for (let i = 0, strLen = str.length; i < strLen; ++i) {
+    if (str.charCodeAt(i) > MAX_ASCII_CHAR_CODE) return false
+  }
+  return true
+}
+
 export { defu }

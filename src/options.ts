@@ -5,7 +5,7 @@ import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
 import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { SimpleMappingChars2String } from '@/dic'
+import { SimpleMappingChars2String, MappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
 import { createjsHandler } from './js'
 import { defaultOptions } from './defaults'
@@ -65,7 +65,7 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   if (options.customReplaceDictionary === 'simple') {
     options.customReplaceDictionary = SimpleMappingChars2String
   } else if (options.customReplaceDictionary === 'complex') {
-    options.customReplaceDictionary = undefined
+    options.customReplaceDictionary = MappingChars2String
   }
 
   normalizeMatcher(options, 'cssMatcher')

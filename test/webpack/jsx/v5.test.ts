@@ -86,7 +86,8 @@ describe('webpack5 jsx plugin', () => {
         mainCssChunkMatcher(name, appType) {
           return true // return path.basename(name) === 'index.css'
         },
-        jsxRenameLoaderPath: loaderPath
+        jsxRenameLoaderPath: loaderPath,
+        customReplaceDictionary: 'complex'
       },
       'taro'
     ).apply(compiler)

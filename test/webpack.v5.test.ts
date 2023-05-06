@@ -132,7 +132,8 @@ describe('webpack5 plugin', () => {
     new NativeWeappTailwindcssWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
-      }
+      },
+      customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -190,7 +191,8 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      mangle: true
+      mangle: true,
+      customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -207,7 +209,8 @@ describe('webpack5 plugin', () => {
       },
       mangle: {
         ignoreClass: [/^text-/]
-      }
+      },
+      customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)

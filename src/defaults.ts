@@ -1,6 +1,6 @@
 import { noop } from '@/utils'
 import type { UserDefinedOptions } from './types'
-import { MappingChars2String } from '@/dic'
+import { SimpleMappingChars2String } from '@/dic'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
@@ -71,7 +71,7 @@ export const defaultOptions: UserDefinedOptions = {
     jsxRename: false
   },
   customAttributes: {},
-  customReplaceDictionary: MappingChars2String,
+  customReplaceDictionary: SimpleMappingChars2String,
   jsxRenameLoaderPath: '',
   supportCustomLengthUnitsPatch: {
     units: ['rpx'],

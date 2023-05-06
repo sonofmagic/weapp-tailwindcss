@@ -1,15 +1,19 @@
 import { getOptions } from '@/options'
-
+import { MappingChars2String } from '@/dic'
+import defu from 'defu'
 describe('customReplaceDictionary', () => {
   it('templeteHandler custom map', () => {
     const { templeteHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
-      customReplaceDictionary: {
-        '[': '-',
-        ']': '-'
-      }
+      customReplaceDictionary: defu(
+        {
+          '[': '-',
+          ']': '-'
+        },
+        MappingChars2String
+      )
     })
     const res = templeteHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w--0_d_5px-" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w--0_d_5px-"></van-image>')
@@ -30,7 +34,8 @@ describe('customReplaceDictionary', () => {
     const { templeteHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
-      }
+      },
+      customReplaceDictionary: 'complex'
     })
     const res = templeteHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
@@ -49,10 +54,13 @@ describe('customReplaceDictionary', () => {
 
   it('styleHandler custom map', () => {
     const { styleHandler } = getOptions({
-      customReplaceDictionary: {
-        '[': '-',
-        ']': '-'
-      }
+      customReplaceDictionary: defu(
+        {
+          '[': '-',
+          ']': '-'
+        },
+        MappingChars2String
+      )
     })
     const res = styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
@@ -71,7 +79,9 @@ describe('customReplaceDictionary', () => {
   })
 
   it('styleHandler default(complex) mode', () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getOptions({
+      customReplaceDictionary: 'complex'
+    })
     const res = styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
     })
@@ -90,10 +100,13 @@ describe('customReplaceDictionary', () => {
 
   it('jsxHandler custom map', () => {
     const { jsxHandler } = getOptions({
-      customReplaceDictionary: {
-        '[': '-',
-        ']': '-'
-      }
+      customReplaceDictionary: defu(
+        {
+          '[': '-',
+          ']': '-'
+        },
+        MappingChars2String
+      )
     })
     const { code } = jsxHandler(
       `_jsx(View, {
@@ -118,7 +131,9 @@ describe('customReplaceDictionary', () => {
   })
 
   it('jsxHandler default(complex) mode', () => {
-    const { jsxHandler } = getOptions()
+    const { jsxHandler } = getOptions({
+      customReplaceDictionary: 'complex'
+    })
     const { code } = jsxHandler(
       `_jsx(View, {
       className: 'border-[10px] border-[#098765] border-solid border-opacity-[0.44]'

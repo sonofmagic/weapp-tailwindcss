@@ -58,7 +58,8 @@ describe('jsx-loader handler', () => {
       {
         customAttributes: {
           '*': ['emptyImageClass']
-        }
+        },
+        customReplaceDictionary: 'complex'
       },
       ['jsx']
     )
