@@ -194,9 +194,10 @@ export interface UserDefinedOptions {
    */
   onEnd?: () => void
   /**
+   * @deprecated 写了一个新库 tailwindcss-mangle
    * @description 是否混淆class,用于缩短replace后产生的class的长度
    */
-  mangle?: IMangleOptions | boolean
+  // mangle?: IMangleOptions | boolean
 
   /**
    * @deprecated 2.x 版本中，由于使用了统一处理，即将废弃
@@ -275,6 +276,7 @@ export type InternalUserDefinedOptions = Required<
     jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
     jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
     escapeEntries: [string, string][]
+    escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
   }

@@ -65,7 +65,6 @@ export const defaultOptions: UserDefinedOptions = {
   onStart: noop,
   onEnd: noop,
   onUpdate: noop,
-  mangle: false,
   framework: 'react',
   loaderOptions: {
     jsxRename: false
