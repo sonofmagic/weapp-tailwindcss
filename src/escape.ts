@@ -1,7 +1,7 @@
 import { SimpleMappingChars2String } from '@/dic'
-// import { escapeStringRegexp } from '@/reg'
+
 /**
- * @description 转义正则
+ * @description 转义
  * @param selectors
  * @param raw
  * @returns
@@ -9,12 +9,8 @@ import { SimpleMappingChars2String } from '@/dic'
 export function escape(
   selectors: string,
   options: {
-    // raw: boolean
-    // entries: [string, string][]
     map?: Record<string, string>
   } = {
-    // raw: false,
-    // entries: SimpleMappingChars2StringEntries,
     map: SimpleMappingChars2String
   }
 ) {

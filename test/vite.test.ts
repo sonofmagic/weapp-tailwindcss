@@ -1,6 +1,6 @@
 import * as vite from 'vite'
 import type { RollupOutput } from 'rollup'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/framework/vite/index'
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 import path from 'path'
 import { switch2relative } from './util'
 function noop() {}

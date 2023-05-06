@@ -1,6 +1,6 @@
 import { ICommonReplaceOptions } from '@/types'
 
-import { escape } from '@/base/escape'
+import { escape } from '@/escape'
 import { SimpleMappingChars2String } from '@/dic'
 export function replaceWxml(
   original: string,

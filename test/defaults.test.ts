@@ -26,32 +26,8 @@ describe('defaults function test group', () => {
   })
 
   it('should export', () => {
-    const {
-      BaseJsxWebpackPluginV4,
-      BaseTemplateWebpackPluginV4,
-      KboneWeappTailwindcssWebpackPluginV4,
-      RemaxWeappTailwindcssWebpackPluginV4,
-      TaroWeappTailwindcssWebpackPluginV4,
-      UniAppWeappTailwindcssWebpackPluginV4,
-      BaseJsxWebpackPluginV5,
-      BaseTemplateWebpackPluginV5,
-      MpxWeappTailwindcssWebpackPluginV5,
-      NativeWeappTailwindcssWebpackPluginV5,
-      RaxTailwindcssWebpackPluginV5
-    } = require('../')
-    const plugins = [
-      BaseJsxWebpackPluginV4,
-      BaseTemplateWebpackPluginV4,
-      KboneWeappTailwindcssWebpackPluginV4,
-      RemaxWeappTailwindcssWebpackPluginV4,
-      TaroWeappTailwindcssWebpackPluginV4,
-      UniAppWeappTailwindcssWebpackPluginV4,
-      BaseJsxWebpackPluginV5,
-      BaseTemplateWebpackPluginV5,
-      MpxWeappTailwindcssWebpackPluginV5,
-      NativeWeappTailwindcssWebpackPluginV5,
-      RaxTailwindcssWebpackPluginV5
-    ]
+    const { UnifiedWebpackPluginV5 } = require('../')
+    const plugins = [UnifiedWebpackPluginV5]
     plugins.forEach((plugin) => {
       expect(isWebpackPlugin(plugin)).toBe(true)
     })

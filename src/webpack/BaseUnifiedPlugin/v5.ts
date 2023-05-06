@@ -4,22 +4,25 @@ import type { Compiler } from 'webpack'
 import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
-// import ClassGenerator from '@/mangle/classGenerator'
-import { getGroupedEntries } from '@/base/shared'
+import { getGroupedEntries } from '@/utils'
 
-// 这个还是不放出来了，统一使用 webpack5 postcss8 的组合
-// 哪有 webpack4 + postcss8 这样奇怪的组合
-export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
+/**
+ * @name UnifiedWebpackPluginV5
+ * @description webpack5 核心转义插件
+ * @link https://weapp-tw.icebreaker.top/docs/intro
+ */
+
+export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
-  appType: AppType
-  // classGenerator?: ClassGenerator
+  appType?: AppType
+
   static NS = NS
-  constructor(options: UserDefinedOptions, appType: AppType) {
+  constructor(options: UserDefinedOptions = {}) {
     if (typeof options.customReplaceDictionary === 'undefined') {
       options.customReplaceDictionary = 'simple'
     }
     this.options = getOptions(options, ['style', 'patch', 'templete', 'js'])
-    this.appType = appType
+    this.appType = this.options.appType
   }
 
   apply(compiler: Compiler) {
@@ -28,11 +31,24 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       return
     }
     patch?.()
-    const twPatcher = createTailwindcssPatcher()
+
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
-
+    const twPatcher = createTailwindcssPatcher()
+    function getClassSet() {
+      let set = twPatcher.getClassSet()
+      // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
+      // tarojs save scss hmr trigger error
+      if (!set.size) {
+        const cacheSet = twPatcher.getCache()
+        if (cacheSet && cacheSet.size) {
+          set = cacheSet
+        }
+      }
+      // }
+      return set
+    }
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.processAssets.tap(
@@ -59,14 +75,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           }
 
           if (Array.isArray(groupedEntries.js)) {
-            const set = twPatcher.getClassSet()
-
+            // 再次 build 不转化的原因是此时 set.size 为0
+            // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
+            const set = getClassSet()
             for (let i = 0; i < groupedEntries.js.length; i++) {
-              // let classGenerator
               const [file, originalSource] = groupedEntries.js[i]
-              // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-              //   classGenerator = this.classGenerator
-              // }
 
               const rawSource = originalSource.source().toString()
               const { code } = jsHandler(rawSource, set)
@@ -78,15 +91,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.css)) {
             for (let i = 0; i < groupedEntries.css.length; i++) {
-              // let classGenerator
               const [file, originalSource] = groupedEntries.css[i]
-              // if (this.classGenerator && this.classGenerator.isFileIncluded(file)) {
-              //   classGenerator = this.classGenerator
-              // }
+
               const rawSource = originalSource.source().toString()
               const css = styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(file, this.appType)
-                // classGenerator
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)

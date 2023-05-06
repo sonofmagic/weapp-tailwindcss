@@ -1,4 +1,4 @@
-import { escape } from '@/base/escape'
+import { escape } from '@/escape'
 import { SimpleMappingChars2String } from '@/dic'
 // css 中，要多加一个 '\' 来转义
 // for raw css selector

@@ -96,7 +96,7 @@ const entries: IEntry[] = [
     name: 'bundle',
     input: {
       index: 'src/index.ts',
-      gulp: 'src/framework/gulp/index.ts',
+      gulp: 'src/gulp/index.ts',
       postcss: 'src/postcss/plugin.ts',
       cli: 'src/cli.ts'
     },
@@ -119,7 +119,7 @@ const entries: IEntry[] = [
   },
   {
     name: 'vite',
-    input: 'src/framework/vite/index.ts',
+    input: 'src/vite/index.ts',
     output: [
       {
         file: isDemo ? 'demo/web/weapp-tw-dist/vite.js' : 'dist/vite.js',
