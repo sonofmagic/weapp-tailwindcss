@@ -56,7 +56,6 @@
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
     "ls:pack": "npm pack --dry-run",
-    "tw:patch": "ts-node scripts/patcher.ts",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
     "prepare": "ts-patch install -s & tw-patch",
     "-------": "-----------",

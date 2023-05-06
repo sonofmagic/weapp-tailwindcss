@@ -1,3 +1,3 @@
-import plugin from './types/framework/gulp'
-export * from './types/framework/gulp'
+import plugin from './types/gulp'
+export * from './types/gulp'
 export default plugin
