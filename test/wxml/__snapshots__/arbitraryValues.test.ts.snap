@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`arbitrary values bg-[#bada55] text-[22px] before:content-['Festivus'] 1`] = `
-"<div class="bg-_bl__h_bada55_br_ text-_bl_22px_br_ before_c_content-_bl__q_Festivus_q__br_">
+"<div class="bg-_hbada55_ text-_22px_ beforeccontent-_qFestivusq_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`arbitrary values top-[117px] 1`] = `
-"<div class="top-_bl_117px_br_">
+"<div class="top-_117px_">
     <!-- ... -->
   </div>"
 `;
 
 exports[`arbitrary values top-[117px] lg:top-[344px] 1`] = `
-"<div class="top-_bl_117px_br_ lg_c_top-_bl_344px_br_">
+"<div class="top-_117px_ lgctop-_344px_">
       <!-- ... -->
     </div>"
 `;

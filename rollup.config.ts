@@ -96,13 +96,9 @@ const entries: IEntry[] = [
     name: 'bundle',
     input: {
       index: 'src/index.ts',
-      'jsx-rename-loader': 'src/loader/jsx-rename-loader.ts',
-      // vite: 'src/framework/vite/index.ts',
       gulp: 'src/framework/gulp/index.ts',
       postcss: 'src/postcss/plugin.ts',
-      cli: 'src/cli.ts',
-      v4: 'src/v4.ts',
-      v5: 'src/v5.ts'
+      cli: 'src/cli.ts'
     },
     output: [
       {

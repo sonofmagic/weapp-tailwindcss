@@ -21,7 +21,7 @@ const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {
       }
 
       if (selector.type === 'class') {
-        selector.value = internalCssSelectorReplacer(selector.value, options.escapeEntries)
+        selector.value = internalCssSelectorReplacer(selector.value, options.escapeMap)
       }
     })
     if (selectors.length === 0) {

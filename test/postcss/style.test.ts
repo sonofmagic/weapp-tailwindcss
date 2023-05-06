@@ -2,7 +2,7 @@ import { styleHandler } from '@/postcss'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
 import { cssCasePath, createGetCase, createPutCase } from '../util'
-
+import { MappingChars2String } from '@/dic'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
@@ -10,7 +10,9 @@ const putCase = createPutCase(cssCasePath)
 
 describe('styleHandler', () => {
   it('css @media case', async () => {
-    const opt = getOptions()
+    const opt = getOptions({
+      customReplaceDictionary: 'complex'
+    })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('media1.css')
     const result = styleHandler(testCase, {
@@ -38,7 +40,7 @@ describe('styleHandler', () => {
   // })
 
   it('main chunk build error', async () => {
-    const opt = getOptions()
+    const opt = getOptions({ customReplaceDictionary: 'complex' })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('taro.build.css')
     const result = styleHandler(testCase, {
@@ -62,13 +64,16 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     expect(result).toMatchSnapshot()
   })
 
   it('new option for customRuleCallback kbone', async () => {
-    const opt = getOptions()
+    const opt = getOptions({
+      customReplaceDictionary: 'complex'
+    })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
 
     const testCase = await getCase('kbone1.css')
@@ -87,7 +92,8 @@ describe('styleHandler', () => {
         // },
       },
       cssPreflightRange: opt.cssPreflightRange,
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     // const expected = await getCase('kbone1.result.css')
     // await putCase('kbone1.result.css', result)
@@ -102,7 +108,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     expect(result).toMatchSnapshot()
   })
@@ -114,7 +121,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     expect(result).toMatchSnapshot()
   })
@@ -126,7 +134,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     expect(result).toMatchSnapshot()
   })
@@ -138,7 +147,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
   })
@@ -150,7 +160,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: 'view'
+      replaceUniversalSelectorWith: 'view',
+      escapeMap: MappingChars2String
     })
     expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
   })
@@ -162,7 +173,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: '.happy'
+      replaceUniversalSelectorWith: '.happy',
+      escapeMap: MappingChars2String
     })
     expect(result).toBe('.aspect-w-16>.happy,.a>.b{aspect-ratio:1/1;}')
   })
@@ -174,7 +186,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
@@ -186,7 +199,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result).toBe('')
   })
@@ -198,7 +212,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result).toBe('.b{color:black;}')
   })
@@ -210,7 +225,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe(
       '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
@@ -224,7 +240,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe('\n')
   })
@@ -236,7 +253,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe(
       '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
@@ -250,7 +268,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
   })
@@ -262,7 +281,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe(
       '@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n'
@@ -276,7 +296,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe(
       '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n'
@@ -290,7 +311,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     })
     expect(result.replace(/\r\n/g, '\n')).toBe(
       '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n'
@@ -304,7 +326,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\'}')
   })
@@ -318,7 +341,8 @@ describe('styleHandler', () => {
       cssInjectPreflight,
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}')
   })
@@ -332,7 +356,8 @@ describe('styleHandler', () => {
       cssInjectPreflight,
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe(testCase)
   })
@@ -346,7 +371,8 @@ describe('styleHandler', () => {
       cssInjectPreflight,
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe(
       '::before,::after{--tw-content:""}\n:before,:after,view,:not(not){--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}'
@@ -362,7 +388,8 @@ describe('styleHandler', () => {
       cssInjectPreflight,
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe(testCase)
   })
@@ -374,7 +401,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe(testCase)
   })
@@ -386,7 +414,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
   })
@@ -398,7 +427,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe('.test>view + view{}')
   })
@@ -410,7 +440,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toBe('.dark .dark:bg-zinc-800 {}')
   })
@@ -422,7 +453,8 @@ describe('styleHandler', () => {
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
       customRuleCallback: () => {},
-      replaceUniversalSelectorWith: false
+      replaceUniversalSelectorWith: false,
+      escapeMap: MappingChars2String
     }).replace(/\r\n/g, '\n')
     expect(result).toMatchSnapshot()
   })

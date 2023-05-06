@@ -1,12 +1,12 @@
 import { ICommonReplaceOptions } from '@/types'
 
 import { escape } from '@/base/escape'
-import { MappingChars2StringEntries } from '@/dic'
+import { SimpleMappingChars2String } from '@/dic'
 export function replaceWxml(
   original: string,
   options: ICommonReplaceOptions | boolean = {
     keepEOL: false,
-    escapeEntries: MappingChars2StringEntries
+    escapeMap: SimpleMappingChars2String
   }
 ) {
   if (typeof options === 'boolean') {
@@ -22,7 +22,9 @@ export function replaceWxml(
       .replace(/[\r\n]+/g, '')
   }
 
-  res = escape(res, false, options.escapeEntries)
+  res = escape(res, {
+    map: options.escapeMap
+  })
 
   return res
 }

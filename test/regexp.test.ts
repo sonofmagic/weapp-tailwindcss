@@ -11,14 +11,14 @@ import {
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
-
+import { MappingChars2String } from '@/dic'
 const getCase = createGetCase(wxmlCasePath)
 
 describe('regexp', () => {
   it('percentage unit', () => {
     const testCase = '<view class="h-[200%]" />'
     const result = classStringReplace(testCase, (y, g1) => {
-      return y.replace(g1, replaceWxml(g1))
+      return y.replace(g1, replaceWxml(g1, { escapeMap: MappingChars2String }))
     })
     expect(result).toBe('<view class="h-_bl_200_p__br_" />')
   })

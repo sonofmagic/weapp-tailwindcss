@@ -3,9 +3,6 @@ import type { Rule } from 'postcss'
 
 import type { GeneratorResult } from '@babel/generator'
 
-// export interface TaroUserDefinedOptions extends UserDefinedOptions {
-//   framework: 'react' | 'vue' | 'vue3' | string
-// }
 export type ItemOrItemArray<T> = T | T[]
 export type { TraverseOptions } from '@babel/traverse'
 export type { Node } from '@babel/types'
@@ -32,7 +29,7 @@ type RequiredStyleHandlerOptions = {
   cssInjectPreflight?: InjectPreflight
   cssPreflightRange?: 'view' | 'all'
   replaceUniversalSelectorWith?: string | false
-  escapeEntries?: [string, string][]
+  escapeMap?: Record<string, string>
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
@@ -45,15 +42,8 @@ export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>>
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
 
-export type IJsxHandlerOptions = {
-  escapeEntries?: [string, string][]
-  framework?: string
-  customAttributesEntities?: ICustomAttributesEntities
-  allMatchedAttributes?: (string | RegExp)[] // ICustomAttributesEntities[1][1]
-}
-
 export type IJsHandlerOptions = {
-  escapeEntries?: [string, string][]
+  escapeMap?: Record<string, string>
   classNameSet: Set<string>
   minifiedJs?: boolean
 }
@@ -65,45 +55,6 @@ export interface RawSource {
   source?: string
   prevConcatenated: boolean
   nextConcatenated: boolean
-}
-
-export interface IMangleContextClass {
-  name: string
-  usedBy: any[]
-}
-
-export interface JsxRenameLoaderOptions {
-  // framework?: string
-  // isVue?: boolean
-  write?:
-    | false
-    | {
-        dir?: string
-        filename?: string
-      }
-  // escapeEntries?: [string, string][]
-  jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
-}
-
-export interface IMangleOptions {
-  // classNameRegExp?: string
-  reserveClassName?: (string | RegExp)[]
-  // ignorePrefix?: string[]
-  // ignorePrefixRegExp?: string
-  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
-  log?: boolean
-  exclude?: (string | RegExp)[]
-  include?: (string | RegExp)[]
-  ignoreClass?: (string | RegExp)[]
-}
-
-export interface IManglePluginOptions extends IMangleOptions {
-  classNameRegExp?: string
-  reserveClassName?: (string | RegExp)[]
-  ignorePrefix?: string[]
-  ignorePrefixRegExp?: string
-  classGenerator?: (original: string, opts: IMangleOptions, context: Record<string, any>) => string | undefined
-  log?: boolean
 }
 
 export interface ILengthUnitsPatchDangerousOptions {
@@ -193,25 +144,7 @@ export interface UserDefinedOptions {
    * @description 结束处理时调用
    */
   onEnd?: () => void
-  /**
-   * @deprecated 写了一个新库 tailwindcss-mangle
-   * @description 是否混淆class,用于缩短replace后产生的class的长度
-   */
-  // mangle?: IMangleOptions | boolean
 
-  /**
-   * @deprecated 2.x 版本中，由于使用了统一处理，即将废弃
-   * @description Taro 特有，用来声明使用的框架
-   */
-  framework?: 'react' | 'vue' | 'vue3' | string
-
-  /**
-   * @deprecated 2.x 版本中，由于使用了统一处理，即将废弃
-   * @description 在 1.x 版本中，使用对jsx处理，使用了自定义 loader aop插入 loader序列，这个配置项就是做这个用途的
-   */
-  loaderOptions?: {
-    jsxRename?: JsxRenameLoaderOptions['write']
-  }
   /**
    * @description 自定义attr转化属性，默认转化所有的 class
    */
@@ -220,10 +153,6 @@ export interface UserDefinedOptions {
    * @description 自定义转化class名称字典
    */
   customReplaceDictionary?: 'simple' | 'complex' | Record<string, string>
-  /**
-   * @description 自定义 jsxRenameLoader 的路径
-   */
-  jsxRenameLoaderPath?: string
 
   /**
    * @deprecated
@@ -246,7 +175,7 @@ export interface UserDefinedOptions {
 
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
-  escapeEntries?: [string, string][]
+  escapeMap?: Record<string, string>
   // customAttributes?: Record<string, string | string[]>
 }
 
@@ -261,7 +190,7 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   // allMatchedAttributes?: (string | RegExp)[]
   // custom?: boolean
   // regexps?: ICustomRegexp[]
-  escapeEntries?: [string, string][]
+  escapeMap?: Record<string, string>
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
@@ -273,9 +202,7 @@ export type InternalUserDefinedOptions = Required<
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
-    jsxHandler: (rawSource: string, options?: IJsxHandlerOptions) => GeneratorResult
     jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
-    escapeEntries: [string, string][]
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>

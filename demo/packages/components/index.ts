@@ -50,11 +50,11 @@ const TestProjectsMap: Record<
   'rax-app': {
     projectPath: 'rax-app/build/wechat-miniprogram',
     testMethod: () => {}
-  },
-  'remax-app': {
-    projectPath: 'remax-app',
-    testMethod: () => {}
   }
+  // 'remax-app': {
+  //   projectPath: 'remax-app',
+  //   testMethod: () => {}
+  // }
 }
 
 function wait(ts = 1000) {

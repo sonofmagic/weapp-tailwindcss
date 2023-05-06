@@ -3,7 +3,6 @@ import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatc
 import { isMatch } from 'micromatch'
 import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss'
-import { createJsxHandler } from '@/jsx'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { SimpleMappingChars2String, MappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
@@ -25,9 +24,9 @@ function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatche
   }
 }
 
-type IModules = readonly ('jsx' | 'js' | 'style' | 'templete' | 'patch')[]
+type IModules = readonly ('js' | 'style' | 'templete' | 'patch')[]
 
-export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['jsx', 'style', 'templete', 'patch', 'js']): InternalUserDefinedOptions {
+export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['style', 'templete', 'patch', 'js']): InternalUserDefinedOptions {
   const registerModules = modules.reduce<Record<IModules[number], boolean>>(
     (acc, cur) => {
       if (acc[cur] !== undefined) {
@@ -37,7 +36,6 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
     },
     {
       templete: false,
-      jsx: false,
       style: false,
       patch: false,
       js: false
@@ -46,10 +44,6 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
 
   if (options.supportCustomLengthUnitsPatch === true) {
     options.supportCustomLengthUnitsPatch = undefined
-  }
-
-  if (options.framework && options.framework === 'vue') {
-    options.framework = 'vue2'
   }
 
   if (options.customReplaceDictionary === 'simple') {
@@ -67,8 +61,7 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
     minifiedJs: isProd()
   })
 
-  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, framework, supportCustomLengthUnitsPatch } =
-    result
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result
 
   result.escapeMap = customReplaceDictionary
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -80,12 +73,11 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   }
 
   // const custom = customAttributesEntities.length > 0
-  const escapeEntries = Object.entries(customReplaceDictionary)
-  result.escapeEntries = escapeEntries
+
   if (registerModules.templete) {
     result.templeteHandler = createTempleteHandler({
       customAttributesEntities,
-      escapeEntries
+      escapeMap: result.escapeMap
     })
   }
   if (registerModules.style) {
@@ -94,20 +86,14 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
       customRuleCallback,
       cssPreflightRange,
       replaceUniversalSelectorWith,
-      escapeEntries
+      escapeMap: result.escapeMap
     })
   }
-  if (registerModules.jsx) {
-    result.jsxHandler = createJsxHandler({
-      escapeEntries,
-      framework,
-      customAttributesEntities
-    })
-  }
+
   if (registerModules.js) {
     result.jsHandler = createjsHandler({
-      escapeEntries,
-      minifiedJs: result.minifiedJs
+      minifiedJs: result.minifiedJs,
+      escapeMap: result.escapeMap
     })
   }
   if (registerModules.patch) {

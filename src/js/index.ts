@@ -9,7 +9,7 @@ import { isProd } from '@/env'
 
 export function handleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
-  const escapeEntries = options.escapeEntries
+  const escapeMap = options.escapeMap
   const arr = splitCode(str) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
   let rawStr = str
   for (let i = 0; i < arr.length; i++) {
@@ -24,7 +24,7 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
         rawStr = rawStr.replace(
           new RegExp(escapeStringRegexp(v), 'g'),
           replaceWxml(v, {
-            escapeEntries
+            escapeMap
           })
         )
       }
@@ -80,8 +80,8 @@ export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>
   return (rawSource: string, set: Set<string>) => {
     return jsHandler(rawSource, {
       classNameSet: set,
-      escapeEntries: options.escapeEntries,
-      minifiedJs: options.minifiedJs
+      minifiedJs: options.minifiedJs,
+      escapeMap: options.escapeMap
     })
   }
 }

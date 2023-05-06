@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import { SimpleMappingChars2StringEntries } from '@/dic'
+import { SimpleMappingChars2String } from '@/dic'
 import { createjsHandler } from '@/js/index'
 import { createGetCase, jsCasePath } from './util'
 // import { getCss } from '#test/helpers/getTwCss'
@@ -10,10 +10,10 @@ describe('jsHandler', () => {
   let mh: ReturnType<typeof createjsHandler>
   beforeEach(() => {
     h = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries
+      escapeMap: SimpleMappingChars2String
     })
     mh = createjsHandler({
-      escapeEntries: SimpleMappingChars2StringEntries,
+      escapeMap: SimpleMappingChars2String,
       minifiedJs: true
     })
   })

@@ -11,13 +11,8 @@ export const defaultOptions: UserDefinedOptions = {
     if (file.includes('node_modules')) {
       return false
     }
-    // const idx = file.indexOf('?')
-    // if (idx > -1) {
-    //   const [resource] = file.split('?')
-    //   return /.+\.[cm]?[jt]sx?$/.test(resource)
-    // } else {
+
     return /.+\.[cm]?[jt]sx?$/.test(file)
-    // }
   },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {
@@ -65,13 +60,10 @@ export const defaultOptions: UserDefinedOptions = {
   onStart: noop,
   onEnd: noop,
   onUpdate: noop,
-  framework: 'react',
-  loaderOptions: {
-    jsxRename: false
-  },
+
   customAttributes: {},
   customReplaceDictionary: SimpleMappingChars2String,
-  jsxRenameLoaderPath: '',
+
   supportCustomLengthUnitsPatch: {
     units: ['rpx'],
     dangerousOptions: {
@@ -83,7 +75,4 @@ export const defaultOptions: UserDefinedOptions = {
     }
   },
   appType: undefined
-  // templeteHandler,
-  // styleHandler,
-  // jsxHandler
 }
