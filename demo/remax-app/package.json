@@ -11,6 +11,7 @@
     "dev": "remax build -w -t wechat",
     "dev:ali": "remax build -w -t ali",
     "dev:toutiao": "remax build -w -t toutiao",
+    "build": "echo remax-app skip",
     "_build": "cross-env NODE_ENV=production remax build -t wechat",
     "build:local": "cross-env LOCAL=1 NODE_ENV=production remax build -t wechat",
     "open": "weapp open -p dist/wechat"
@@ -32,6 +33,6 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.1.5"
+    "weapp-tailwindcss-webpack-plugin": "^2.2.0-beta.0"
   }
 }

@@ -39,6 +39,8 @@
 
 ## 2.x 版本新特性
 
+> `2.2.0` 版本后，所以 v1 版本的插件被去除，如果你还是想用 v1 插件，请锁定你的版本在 `2.1.5`
+
 这个版本新增了 `UnifiedWebpackPluginV5`
 和 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件。
 
