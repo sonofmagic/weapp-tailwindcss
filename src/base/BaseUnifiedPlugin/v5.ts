@@ -39,12 +39,15 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
       let set = twPatcher.getClassSet()
-      if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
+      // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
+      // tarojs save scss hmr trigger error
+      if (!set.size) {
         const cacheSet = twPatcher.getCache()
-        if (!set.size && cacheSet && cacheSet.size) {
+        if (cacheSet && cacheSet.size) {
           set = cacheSet
         }
       }
+      // }
       return set
     }
     onLoad()
