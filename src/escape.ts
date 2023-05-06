@@ -24,7 +24,7 @@ export function escape(
     // MAX_ASCII_CHAR_CODE
     if (code > 127) {
       // 'u' means 'unicode'
-      sb[i] = 'U' + Number(code).toString(16)
+      sb[i] = 'u' + Number(code).toString(16)
     } else {
       const hit = map[char]
       if (hit) {

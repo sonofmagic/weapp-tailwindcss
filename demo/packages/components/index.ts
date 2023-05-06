@@ -10,10 +10,10 @@ const TestProjectsMap: Record<
     url?: string
   }
 > = {
-  'uni-app-vue2-cli4': {
-    projectPath: 'uni-app/dist/build/mp-weixin',
-    testMethod: () => {}
-  },
+  // 'uni-app-vue2-cli4': {
+  //   projectPath: 'uni-app/dist/build/mp-weixin',
+  //   testMethod: () => {}
+  // },
   'uni-app-vue2-cli5': {
     projectPath: 'uni-app-webpack5/dist/build/mp-weixin',
     testMethod: () => {}

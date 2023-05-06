@@ -485,7 +485,7 @@ exports[`styleHandler tailwindcss v2 jit should append view selector 1`] = `
 `;
 
 exports[`styleHandler utf8 charset 1`] = `
-".after_c_content-_bl__q_U6211U662fU4f2aU5143U7d20_q__br_::after {
+".after_c_content-_bl__q_u6211u662fu4f2au5143u7d20_q__br_::after {
     --tw-content: '我是伪元素';
     content: var(--tw-content)
 }"
