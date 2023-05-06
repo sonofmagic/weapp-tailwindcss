@@ -1,7 +1,11 @@
 import { getCss as _getCss } from '#test/helpers/getTwCss'
 
 function getCss(content: string[]) {
-  return _getCss(content, [require('tailwind-children')])
+  return _getCss(content, {
+    twConfig: {
+      plugins: [require('tailwind-children')]
+    }
+  })
 }
 describe('tailwind plugins', () => {
   it('tailwind-children case0', async () => {

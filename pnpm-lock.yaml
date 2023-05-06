@@ -20,6 +20,7 @@ specifiers:
   '@tsconfig/recommended': ^1.0.2
   '@types/babel__generator': ^7.6.4
   '@types/babel__traverse': ^7.18.5
+  '@types/cssesc': ^3.0.0
   '@types/esm': ^3.2.0
   '@types/fs-extra': ^11.0.1
   '@types/jest': ^29.5.1
@@ -41,6 +42,7 @@ specifiers:
   cross-env: ^7.0.3
   css-loader: ^6.7.3
   css-loader3: npm:css-loader@3.6.0
+  cssesc: ^3.0.0
   defu: 6.1.2
   del: ^6.1.1
   eslint: 8.39.0
@@ -125,6 +127,7 @@ devDependencies:
   '@tsconfig/recommended': 1.0.2
   '@types/babel__generator': 7.6.4
   '@types/babel__traverse': 7.18.5
+  '@types/cssesc': 3.0.0
   '@types/esm': 3.2.0
   '@types/fs-extra': 11.0.1
   '@types/jest': 29.5.1
@@ -146,6 +149,7 @@ devDependencies:
   cross-env: 7.0.3
   css-loader: 6.7.3_webpack@5.81.0
   css-loader3: /css-loader/3.6.0_webpack@5.81.0
+  cssesc: 3.0.0
   defu: 6.1.2
   del: 6.1.1
   eslint: 8.39.0
@@ -1823,6 +1827,10 @@ packages:
 
   /@types/braces/3.0.1:
     resolution: {integrity: sha512-+euflG6ygo4bn0JHtn4pYqcXwRtLvElQ7/nnjDu7iYG56H0+OhCd7d6Ug0IE3WcFpZozBKW2+80FUbv5QGk5AQ==}
+    dev: true
+
+  /@types/cssesc/3.0.0:
+    resolution: {integrity: sha512-4mBnOrTpVKn+tYzlnMO7cwDkDa6wlQ2bBXW+79/6ahMd36GF216kxWYxgz+S4d5Ev1ByFbnQbPGxV4P5BSL8MA==}
     dev: true
 
   /@types/eslint-scope/3.7.4:

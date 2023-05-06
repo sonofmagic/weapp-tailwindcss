@@ -414,4 +414,16 @@ describe('styleHandler', () => {
     }).replace(/\r\n/g, '\n')
     expect(result).toBe('.dark .dark:bg-zinc-800 {}')
   })
+
+  it('utf8 charset', async () => {
+    const testCase = await getCase('utf8.css')
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssPreflightRange: 'view',
+      customRuleCallback: () => {},
+      replaceUniversalSelectorWith: false
+    }).replace(/\r\n/g, '\n')
+    expect(result).toMatchSnapshot()
+  })
 })

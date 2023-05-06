@@ -1,81 +1,45 @@
-import postcss, { Processor } from 'postcss'
-import path from 'path'
-import fs from 'fs'
-import tailwindcss from 'tailwindcss'
+import { getCss } from './helpers/getTwCss'
 // import tailwindcss318 from 'tailwindcss318'
+import fs from 'fs'
 describe('postcss plugin', () => {
-  let baseProcessor: Processor
-  let baseCss: string
-  beforeAll(() => {
-    baseProcessor = postcss([
-      require('autoprefixer')(),
-      require('tailwindcss')({ config: path.resolve(__dirname, './config/tailwind.config.js') }),
-      require('postcss-rem-to-responsive-pixel')({
-        rootValue: 32,
-        propList: ['*'],
-        transformUnit: 'rpx'
-      })
-    ])
-    baseCss = fs.readFileSync(path.resolve(__dirname, './config/base.css'), {
-      encoding: 'utf8'
+  it('base tw output', async () => {
+    const res = await getCss('', {
+      css: '@tailwind base;@tailwind utilities;'
     })
+    expect(res.css.toString()).toMatchSnapshot()
   })
 
-  it('base tw output', async () => {
-    const res = await baseProcessor.process(baseCss, {
-      from: 'index.css',
-      to: 'index.css'
+  it('base tw output without prefilight', async () => {
+    const res = await getCss('', {
+      css: '@tailwind base;@tailwind utilities;',
+      twConfig: {
+        corePlugins: {
+          preflight: false
+        }
+      }
     })
     expect(res.css.toString()).toMatchSnapshot()
   })
 
   it('base utilities output', async () => {
-    const processor = postcss([
-      tailwindcss({
-        content: [
-          {
-            raw: '<view class="h-10 w-10 bg-[rgba(255,254,253,.5)]"></view>'
-          }
-        ]
-      })
-    ])
-    const res = await processor.process('@tailwind utilities;', {
-      from: 'index.css',
-      to: 'index.css'
-    })
+    const res = await getCss('<view class="h-10 w-10 bg-[rgba(255,254,253,.5)]"></view>')
     expect(res.css.toString()).toMatchSnapshot()
   })
 
   it("before:content-['+']", async () => {
-    const processor = postcss([
-      tailwindcss({
-        content: [
-          {
-            raw: '<view class="before:content-[\'+\']"></view>'
-          }
-        ]
-      })
-    ])
-    const res = await processor.process('@tailwind utilities;', {
-      from: 'index.css',
-      to: 'index.css'
-    })
+    const res = await getCss('<view class="before:content-[\'+\']"></view>')
     expect(res.css.toString()).toMatchSnapshot()
   })
 
+  it("utf-8 compat after:content-['我是伪元素']", async () => {
+    const res = await getCss("<view class=\"after:content-['我是伪元素']")
+    expect(res.css.toString()).toMatchSnapshot()
+    // fs.writeFileSync('./utf8.css', res.css.toString(), 'utf-8')
+  })
+
   it('@apply space-y/x case', async () => {
-    const processor = postcss([
-      tailwindcss({
-        content: [
-          {
-            raw: '<view class="test"></view>'
-          }
-        ]
-      })
-    ])
-    const res = await processor.process('@tailwind utilities;.test{\n@apply space-x-1 space-y-2 text-[#123456];\n font-size:20px}', {
-      from: 'index.css',
-      to: 'index.css'
+    const res = await getCss('<view class="test"></view>', {
+      css: '@tailwind utilities;.test{\n@apply space-x-1 space-y-2 text-[#123456];\n font-size:20px}'
     })
     expect(res.css.toString()).toMatchSnapshot()
   })

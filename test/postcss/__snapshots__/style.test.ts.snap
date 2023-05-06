@@ -483,3 +483,10 @@ exports[`styleHandler tailwindcss v2 jit should append view selector 1`] = `
 "::before,::after{--tw-content: "";}
 ::before,::after,view{--tw-border-opacity: 1;}"
 `;
+
+exports[`styleHandler utf8 charset 1`] = `
+".after_c_content-_bl__q_\\6211\\662F\\4F2A\\5143\\7D20_q__br_::after {
+    --tw-content: '我是伪元素';
+    content: var(--tw-content)
+}"
+`;
