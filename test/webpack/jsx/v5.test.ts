@@ -1,12 +1,12 @@
 import type { Compiler } from 'webpack'
-import { BaseJsxWebpackPluginV5 } from '@/index'
+import { UnifiedWebpackPluginV5 } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
-import { webpack5CasePath, rootPath } from '#test/util'
+import { webpack5CasePath } from '#test/util'
 import path from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 // import postcss from 'postcss'
 // import fs from 'fs/promises'
-const loaderPath = path.resolve(rootPath, 'dist/jsx-rename-loader.js')
+
 describe('webpack5 jsx plugin', () => {
   let compiler: Compiler
   const postcssPlugins = [
@@ -81,15 +81,13 @@ describe('webpack5 jsx plugin', () => {
     })
   })
   it('common', async () => {
-    new BaseJsxWebpackPluginV5(
-      {
-        mainCssChunkMatcher(name, appType) {
-          return true // return path.basename(name) === 'index.css'
-        },
-        jsxRenameLoaderPath: loaderPath
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name, appType) {
+        return true // return path.basename(name) === 'index.css'
       },
-      'taro'
-    ).apply(compiler)
+
+      customReplaceDictionary: 'complex'
+    }).apply(compiler)
 
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)
@@ -100,16 +98,12 @@ describe('webpack5 jsx plugin', () => {
   })
 
   it('disabled true', async () => {
-    new BaseJsxWebpackPluginV5(
-      {
-        mainCssChunkMatcher(name) {
-          return path.basename(name) === 'index.css'
-        },
-        disabled: true,
-        jsxRenameLoaderPath: loaderPath
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
       },
-      'taro'
-    ).apply(compiler)
+      disabled: true
+    }).apply(compiler)
 
     const stats = await compile(compiler)
     const assets = readAssets(compiler, stats)

@@ -32,12 +32,15 @@
       - [如何选择？](#如何选择)
       - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
       - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
+      - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
       - [原生小程序开发模板](#原生小程序开发模板)
     - [tailwindcss plugin](#tailwindcss-plugin)
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
 ## 2.x 版本新特性
+
+> `2.2.0` 版本后，所以 v1 版本的插件被去除，如果你还是想用 v1 插件，请锁定你的版本在 `2.1.5`
 
 这个版本新增了 `UnifiedWebpackPluginV5`
 和 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件。
@@ -50,7 +53,7 @@
 
 `UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公共的样式文件位置，并进行转化(有可能不准确)。
 
-目前，这个方案只支持 `tailwindcss v3.2.2` 以上版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
+目前，这个方案只支持 `tailwindcss v3.x.x` 版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
 
 ```json
  "scripts": {
@@ -95,7 +98,7 @@ npx weapp-tw patch
 
 ## 从 v1 迁移
 
-在 `2.x` 版本中，所有原先的 `v1` 的插件还是像之前一样导出，使用方式也一样，不过 `vite` 插件有一些小变化:
+在 `2.x` 版本中，可以把之前使用的 `webpack` 插件，全部更换为 `UnifiedWebpackPluginV5` 插件，不过 `vite` 插件的导出有一些小变化:
 
 `1.x`:
 
@@ -106,9 +109,8 @@ import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 `2.x`:
 
 ```js
-// ViteWeappTailwindcssPlugin 就是原先上面 1.x 的 vwt 
 // UnifiedViteWeappTailwindcssPlugin 就是新的插件
-import { UnifiedViteWeappTailwindcssPlugin, ViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
 ```
 
 另外新的 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要用它直接替换原先插件即可。
@@ -193,6 +195,10 @@ const classArray = [
 ~~[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)(不推荐,此版本收到hbuilderx的限制，无法升级到最新的tailwindcss)~~
 
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
+
+#### 使用`tarojs`进行构建 `vscode`开发
+
+[taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
 #### 原生小程序开发模板
 

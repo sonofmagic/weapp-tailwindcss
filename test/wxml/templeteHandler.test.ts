@@ -1,17 +1,22 @@
 import { templeteHandler } from '@/wxml/index'
 import { format } from '../util'
-
+import { MappingChars2String } from '@/dic'
 describe('templeteHandler', () => {
+  function complexHandler(str: string) {
+    return templeteHandler(str, {
+      escapeMap: MappingChars2String
+    })
+  }
   test('with var', async () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
-    const str = templeteHandler(testCase)
+    const str = complexHandler(testCase)
     expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\"></view>")
   })
 
   test('dark mode and hover-class', () => {
     const testCase = '<view class="bg-gray-100 dark:bg-zinc-800" hover-class="bg-red-500 dark:bg-green-500"></view>'
-    const str = templeteHandler(testCase)
+    const str = complexHandler(testCase)
     expect(str).toBe('<view class="bg-gray-100 dark_c_bg-zinc-800" hover-class="bg-red-500 dark_c_bg-green-500"></view>')
   })
 
@@ -29,7 +34,7 @@ describe('templeteHandler', () => {
 
     module.exports = get;
     </wxs>`
-    const result = templeteHandler(testCase)
+    const result = complexHandler(testCase)
 
     expect(result).toBe(testCase)
   })
@@ -48,7 +53,7 @@ describe('templeteHandler', () => {
     shadow
   " open-type="contact"><tui-icon vue-id="{{('17a41c02-4')+','+('17a41c02-3')}}" name="kefu" color="rgb(41, 121, 255)" size="40" unit="rpx" bind:__l="__l"></tui-icon></button>`
 
-    const result = templeteHandler(testCase)
+    const result = complexHandler(testCase)
 
     expect(result).toBe(
       '<button class="    u-reset-button    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto    bg-white    shadow  " open-type="contact"><tui-icon vue-id="{{(\'17a41c02-4\')+\',\'+(\'17a41c02-3\')}}" name="kefu" color="rgb(41, 121, 255)" size="40" unit="rpx" bind:__l="__l"></tui-icon></button>'
@@ -57,7 +62,7 @@ describe('templeteHandler', () => {
 
   test('with var 3', () => {
     const testCase = "<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
-    const res = templeteHandler(testCase)
+    const res = complexHandler(testCase)
     expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\"></view>")
   })
 
@@ -65,7 +70,7 @@ describe('templeteHandler', () => {
     const testCase = `<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
     </button>`
 
-    const res = templeteHandler(testCase)
+    const res = complexHandler(testCase)
     expect(res)
       .toBe(`<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
     </button>`)
@@ -85,7 +90,7 @@ describe('templeteHandler', () => {
       <slot></slot>
   </view>`
     )
-    const str = templeteHandler(navbarTestCase)
+    const str = complexHandler(navbarTestCase)
     expect(str).toBe(
       format(
         `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',opacity>0.85&&splitLine?'tui-bar-line':'',isFixed?'tui-navbar-fixed':'',backdropFilter&&dropDownOpacity>0?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
@@ -105,19 +110,19 @@ describe('templeteHandler', () => {
 
   it('class with string var', () => {
     const testCase = '<button class="btn a{{num}}" bindtap="onTap">{{num}}</button>'
-    const str = templeteHandler(testCase)
+    const str = complexHandler(testCase)
     expect(str).toBe(testCase)
   })
 
   it('utf8 test case 0', () => {
     const testCase = `<view class="{{['td',[(g.type==='你好啊')?'highlight':'']]}}">{{g.type}}</view>`
-    const str = templeteHandler(testCase)
+    const str = complexHandler(testCase)
     expect(str).toBe(`<view class="{{['td',[g.type==='你好啊'?'highlight':'']]}}">{{g.type}}</view>`)
   })
 
   it('utf8 test case 1', () => {
     const testCase = `<view class="{{[[g['人生']==='你好啊'?'highlight':'']]}}">{{g.type}}</view>`
-    const str = templeteHandler(testCase)
+    const str = complexHandler(testCase)
     expect(str).toBe(testCase)
   })
 })

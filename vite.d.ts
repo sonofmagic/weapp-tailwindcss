@@ -1,3 +1,3 @@
-import plugin from './types/framework/vite'
-export * from './types/framework/vite'
+import plugin from './types/vite'
+export * from './types/vite'
 export default plugin

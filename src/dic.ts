@@ -42,6 +42,9 @@ export type SYMBOL_TABLE_TYPE_VALUES = SYMBOL_TABLE_TYPE[keyof SYMBOL_TABLE_TYPE
 
 export type MappingStringDictionary = Record<Exclude<SYMBOL_TABLE_TYPE_VALUES, '-' | '_' | ' '>, string>
 
+/**
+ * @deprecated
+ */
 export const MappingChars2String: MappingStringDictionary = {
   '[': '_bl_',
   ']': '_br_',
@@ -77,7 +80,9 @@ export const MappingChars2String: MappingStringDictionary = {
   $: '_do_'
   // _: '_u_'
 } as const
-
+/**
+ * @deprecated
+ */
 export const MappingChars2StringEntries = Object.entries(MappingChars2String)
 
 export const SimpleMappingChars2String: MappingStringDictionary = {

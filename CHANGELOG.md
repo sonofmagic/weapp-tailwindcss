@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+## 2.2.0 (2023-05-07)
+
+### Features
+
+- class选择器支持 unicode
+- 重写了转义核心方法，优化性能
+
+### Fixed
+
+- tarojs 在热更新时，保存非 `[jt]sx` 文件，比如 `tailwind.config.js` / `xx.scss` 文件，导致样式丢失的问题
+
+### Breaking Changes
+
+- 去除所有的 v1 版本的插件，重构代码和更改目录,如果你还是想用 v1 插件，请锁定你的版本在 `2.1.5` 以下。
+- 去除了无用的配置项
+
 ## 2.1.5 (2023-05-04)
 
 ### Features

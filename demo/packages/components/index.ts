@@ -1,61 +1,61 @@
 import automator from 'miniprogram-automator'
 // import { expect } from '@jest/globals'
+import fs from 'fs'
 import path from 'path'
 
-const TestProjectsMap: Record<
-  string,
+const TestProjectsEntries: {
+  name: string
+  projectPath: string
+  testMethod: Function
+  url?: string
+}[] = [
   {
-    projectPath: string
-    testMethod: Function
-    url?: string
-  }
-> = {
-  'uni-app-vue2-cli4': {
-    projectPath: 'uni-app/dist/build/mp-weixin',
-    testMethod: () => {}
-  },
-  'uni-app-vue2-cli5': {
+    name: 'uni-app-vue2-cli5',
     projectPath: 'uni-app-webpack5/dist/build/mp-weixin',
     testMethod: () => {}
   },
-  'uni-app-vue3-vite': {
+  {
+    name: 'uni-app-vue3-vite',
     projectPath: 'uni-app-vue3-vite/dist/build/mp-weixin',
     testMethod: () => {}
   },
-  'taro-react': {
+  {
+    name: 'taro-react',
     projectPath: 'taro-app',
     testMethod: () => {}
   },
-  'taro-vue3': {
+  {
+    name: 'taro-vue3',
     projectPath: 'taro-vue3-app',
     testMethod: () => {}
   },
-  'taro-vue2': {
+  {
+    name: 'taro-vue2',
     projectPath: 'taro-vue2-app',
     testMethod: () => {}
   },
-  'gulp-app': {
+  {
+    name: 'gulp-app',
     projectPath: 'gulp-app',
     testMethod: () => {}
   },
-  'mpx-app': {
+  {
+    name: 'mpx-app',
     projectPath: 'mpx-app/dist/wx',
     testMethod: () => {},
     url: '/pages/index'
   },
-  'native-mina': {
+  {
+    name: 'native-mina',
     projectPath: 'native-mina',
     testMethod: () => {}
   },
-  'rax-app': {
+  {
+    name: 'rax-app',
     projectPath: 'rax-app/build/wechat-miniprogram',
     testMethod: () => {}
-  },
-  'remax-app': {
-    projectPath: 'remax-app',
-    testMethod: () => {}
   }
-}
+]
 
 function wait(ts = 1000) {
   return new Promise((resolve) => {
@@ -65,16 +65,28 @@ function wait(ts = 1000) {
   })
 }
 
+function mkcache(projectName: string, cb: (json: any) => void) {
+  const p = path.resolve(__dirname, './.task.json')
+  if (fs.existsSync(p)) {
+    const content = fs.readFileSync(p, 'utf-8')
+    const taskMap = JSON.parse(content)
+    cb(taskMap)
+    taskMap[projectName] = 1
+    fs.writeFileSync(p, JSON.stringify(taskMap, null, 2), 'utf-8')
+  } else {
+    fs.writeFileSync(p, JSON.stringify({ [projectName]: 1 }, null, 2), 'utf-8')
+  }
+}
+
 export async function runE2E() {
   const cwd = process.cwd()
-  const TestProjectsEntries = Object.entries(TestProjectsMap)
-  const projectPaths = TestProjectsEntries.map(([k, v]) => {
-    return path.resolve(cwd, 'demo', v.projectPath)
+  const projectPaths = TestProjectsEntries.map((item) => {
+    return path.resolve(cwd, 'demo', item.projectPath)
   })
   for (let index = 0; index < projectPaths.length; index++) {
     const projectPath = projectPaths[index]
-    const projectName = TestProjectsEntries[index][0]
-    const config = TestProjectsEntries[index][1]
+    const config = TestProjectsEntries[index]
+    const projectName = config.name
     const testMethod = config.testMethod
     const miniProgram = await automator.launch({
       // cliPath: 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',

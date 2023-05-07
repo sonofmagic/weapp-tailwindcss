@@ -37,7 +37,7 @@ exports[`styleHandler before,after content case 1`] = `
 
 exports[`styleHandler css @media case 1`] = `
 "@media (min-width: 640px) {
-  .sm_c_text-3xl {
+  .smctext-3xl {
     font-size: 60rpx;
     line-height: 72rpx;
   }
@@ -482,4 +482,11 @@ exports[`styleHandler new option for customRuleCallback kbone 1`] = `
 exports[`styleHandler tailwindcss v2 jit should append view selector 1`] = `
 "::before,::after{--tw-content: "";}
 ::before,::after,view{--tw-border-opacity: 1;}"
+`;
+
+exports[`styleHandler utf8 charset 1`] = `
+".after_c_content-_bl__q_u6211u662fu4f2au5143u7d20_q__br_::after {
+    --tw-content: '我是伪元素';
+    content: var(--tw-content)
+}"
 `;

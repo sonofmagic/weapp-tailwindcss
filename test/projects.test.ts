@@ -7,7 +7,8 @@ import { ILengthUnitsPatchOptions } from '@/types'
 import type { PackageJson } from 'pkg-types'
 import semver from 'semver'
 describe.skip('demo projects', () => {
-  const demoDir = ['uni-app', 'uni-app-vue3-vite', 'taro-app', 'mpx-app', 'native-mina', 'rax-app', 'remax-app', 'taro-vue3-app', 'taro-vue2-app']
+  // 'remax-app',
+  const demoDir = ['uni-app', 'uni-app-vue3-vite', 'taro-app', 'mpx-app', 'native-mina', 'rax-app', 'taro-vue3-app', 'taro-vue2-app']
   it('is demo projects node_modules tailwindcss is patched correctly', () => {
     const demos = []
     for (let i = 0; i < demoDir.length; i++) {

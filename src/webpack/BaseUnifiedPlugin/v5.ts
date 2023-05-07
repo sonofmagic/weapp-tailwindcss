@@ -4,8 +4,7 @@ import type { Compiler } from 'webpack'
 import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
-// import ClassGenerator from '@/mangle/classGenerator'
-import { getGroupedEntries } from '@/base/shared'
+import { getGroupedEntries } from '@/utils'
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -16,7 +15,7 @@ import { getGroupedEntries } from '@/base/shared'
 export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
-  // classGenerator?: ClassGenerator
+
   static NS = NS
   constructor(options: UserDefinedOptions = {}) {
     if (typeof options.customReplaceDictionary === 'undefined') {
@@ -39,12 +38,15 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
       let set = twPatcher.getClassSet()
-      if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
+      // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
+      // tarojs save scss hmr trigger error
+      if (!set.size) {
         const cacheSet = twPatcher.getCache()
-        if (!set.size && cacheSet && cacheSet.size) {
+        if (cacheSet && cacheSet.size) {
           set = cacheSet
         }
       }
+      // }
       return set
     }
     onLoad()

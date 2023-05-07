@@ -10,6 +10,10 @@ export function generateCode(match: string, options: ICommonReplaceOptions = {})
 
   traverse(ast, {
     StringLiteral(path) {
+      // [g['人生']==='你好啊'?'highlight':'']
+      if (t.isMemberExpression(path.parent)) {
+        return
+      }
       // parentPath maybe null
       // ['td',[(g.type==='你好啊')?'highlight':'']]
       if (t.isBinaryExpression(path.parent)) {
@@ -71,7 +75,7 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
       resultArray.push(
         replaceWxml(before, {
           keepEOL: true,
-          escapeEntries: options.escapeEntries
+          escapeMap: options.escapeMap
         })
       )
       p = m.start
@@ -92,7 +96,7 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
         resultArray.push(
           replaceWxml(after, {
             keepEOL: true,
-            escapeEntries: options.escapeEntries
+            escapeMap: options.escapeMap
           })
         )
       }
@@ -105,7 +109,7 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      escapeEntries: options.escapeEntries
+      escapeMap: options.escapeMap
     })
   }
 }
@@ -140,21 +144,6 @@ export function customTempleteHandler(rawSource: string, options: ITempleteHandl
 }
 
 export function createTempleteHandler(options: ITempleteHandlerOptions = {}) {
-  // const customAttributesEntities = options.customAttributesEntities
-  // if (customAttributesEntities && Array.isArray(customAttributesEntities)) {
-  //   const idx = customAttributesEntities.findIndex((x) => x[0] === '*')
-  //   if (idx > -1) {
-  //     const target = customAttributesEntities[idx]
-  //     options.customAttributesEntities?.splice(idx, 1)
-  //     const t = target[1]
-  //     if (Array.isArray(t)) {
-  //       options.allMatchedAttributes = t
-  //     } else {
-  //       options.allMatchedAttributes = [t]
-  //     }
-  //   }
-  // }
-
   return (rawSource: string, opt: ITempleteHandlerOptions = {}) => {
     return customTempleteHandler(rawSource, defu(opt, options))
   }

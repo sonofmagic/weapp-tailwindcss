@@ -1,6 +1,6 @@
 import * as vite from 'vite'
 import type { RollupOutput } from 'rollup'
-import { ViteWeappTailwindcssPlugin as vwt } from '@/framework/vite/index'
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 import path from 'path'
 import { switch2relative } from './util'
 function noop() {}
@@ -28,7 +28,7 @@ describe.skip('vite test', () => {
       })
     ]
     if (!WeappTailwindcssDisabled) {
-      vitePlugins.push(vwt())
+      vitePlugins.push(uvwt())
 
       postcssPlugins.push(
         require('postcss-rem-to-responsive-pixel')({

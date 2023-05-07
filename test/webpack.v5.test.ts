@@ -1,5 +1,5 @@
 import type { Compiler } from 'webpack'
-import { NativeWeappTailwindcssWebpackPluginV5, UnifiedWebpackPluginV5 } from '@/index'
+import { UnifiedWebpackPluginV5 } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import path from 'path'
 import postcss from 'postcss'
@@ -129,10 +129,11 @@ describe('webpack5 plugin', () => {
     })
   })
   it('common', async () => {
-    new NativeWeappTailwindcssWebpackPluginV5({
+    new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
-      }
+      },
+      customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -171,7 +172,7 @@ describe('webpack5 plugin', () => {
   })
 
   it('disabled true', async () => {
-    new NativeWeappTailwindcssWebpackPluginV5({
+    new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -186,11 +187,12 @@ describe('webpack5 plugin', () => {
   })
 
   it('mangle true', async () => {
-    new NativeWeappTailwindcssWebpackPluginV5({
+    new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      mangle: true
+
+      customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -201,13 +203,12 @@ describe('webpack5 plugin', () => {
   })
 
   it('mangle options', async () => {
-    new NativeWeappTailwindcssWebpackPluginV5({
+    new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      mangle: {
-        ignoreClass: [/^text-/]
-      }
+
+      customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)

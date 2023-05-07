@@ -3,14 +3,7 @@ import { getOptions } from '@/options'
 
 describe('get options', () => {
   it('default options', () => {
-    const options = getOptions()
-    expect(options).toMatchSnapshot()
-  })
-  it('vue framework', () => {
-    const options = getOptions({
-      framework: 'vue'
-    })
-    expect(options.framework).toBe('vue2')
+    const options = getOptions({})
     expect(options).toMatchSnapshot()
   })
 
