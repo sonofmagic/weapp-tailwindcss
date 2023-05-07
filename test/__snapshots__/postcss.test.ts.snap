@@ -466,6 +466,20 @@ exports[`postcss plugin before:content-['+'] 1`] = `
 }"
 `;
 
+exports[`postcss plugin double quote after class 1`] = `
+".after\\:content-\\[\\"\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\"\\]::after {
+    --tw-content: "对酒当歌，人生几何";
+    content: var(--tw-content)
+}"
+`;
+
+exports[`postcss plugin single quote after class 1`] = `
+".after\\:content-\\[\\'\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\'\\]::after {
+    --tw-content: '对酒当歌，人生几何';
+    content: var(--tw-content)
+}"
+`;
+
 exports[`postcss plugin utf-8 compat after:content-['我是伪元素'] 1`] = `
 ".after\\:content-\\[\\'\\6211\\662F\\4F2A\\5143\\7D20\\'\\]::after {
     --tw-content: '我是伪元素';

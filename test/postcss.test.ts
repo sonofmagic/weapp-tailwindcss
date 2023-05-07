@@ -1,6 +1,7 @@
 import { getCss } from './helpers/getTwCss'
+import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
-import fs from 'fs'
+// import fs from 'fs'
 describe('postcss plugin', () => {
   it('base tw output', async () => {
     const res = await getCss('', {
@@ -41,6 +42,22 @@ describe('postcss plugin', () => {
     const res = await getCss('<view class="test"></view>', {
       css: '@tailwind utilities;.test{\n@apply space-x-1 space-y-2 text-[#123456];\n font-size:20px}'
     })
+    expect(res.css.toString()).toMatchSnapshot()
+  })
+
+  it('double quote after class', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('<view class="after:content-["对酒当歌，人生几何"]"></view>')
+    // const set = getClassCacheSet()
+    // const y = 'after:content-["对酒当歌，人生几何"]'
+    expect(res.css.toString()).toMatchSnapshot()
+  })
+
+  it('single quote after class', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('<view class="after:content-[\'对酒当歌，人生几何\']"></view>')
+    // const set = getClassCacheSet()
+    // const y = 'after:content-["对酒当歌，人生几何"]'
     expect(res.css.toString()).toMatchSnapshot()
   })
 })

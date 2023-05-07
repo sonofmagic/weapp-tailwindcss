@@ -8,4 +8,8 @@ export function isValidSelector(selector = ''): selector is string {
 
 // export const splitCode = (code: string) => [...new Set(code.split(/\\?[\s'"`;={}]+/g))].filter(isValidSelector)
 
-export const splitCode = (code: string) => code.split(/[\s"]+/).filter(isValidSelector)
+export const splitCode = (code: string) => {
+  // , onlyWhiteSpace?: boolean
+  // const regex = onlyWhiteSpace ? /[\s]+/ : /"|[\s]+/
+  return code.split(/[\s]+/).filter(isValidSelector)
+}

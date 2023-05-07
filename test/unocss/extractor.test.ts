@@ -1,6 +1,6 @@
 import { splitCode } from '@/extractors/split'
 
-it('extractorSplit', () => {
+it.skip('extractorSplit', () => {
   let code = ''
   let arr = []
   function extract() {

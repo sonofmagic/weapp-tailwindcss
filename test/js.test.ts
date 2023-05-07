@@ -2,8 +2,8 @@
 import { SimpleMappingChars2String } from '@/dic'
 import { createjsHandler } from '@/js/index'
 import { createGetCase, jsCasePath } from './util'
-// import { getCss } from '#test/helpers/getTwCss'
-// import { getClassCacheSet, getContexts } from 'tailwindcss-patch'
+import { getCss } from '#test/helpers/getTwCss'
+import { getClassCacheSet } from 'tailwindcss-patch'
 const getCase = createGetCase(jsCasePath)
 describe('jsHandler', () => {
   let h: ReturnType<typeof createjsHandler>
@@ -114,6 +114,22 @@ describe('jsHandler', () => {
 
     const set: Set<string> = new Set()
     set.add("bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]")
+    const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
+
+  it('"after:content-["对酒当歌，人生几何"]"', async () => {
+    const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
+    await getCss(testCase)
+    const set = getClassCacheSet()
+    const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
+
+  it('"after:content-[\'对酒当歌，人生几何\']"', async () => {
+    const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'
+    await getCss(testCase)
+    const set = getClassCacheSet()
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
   })

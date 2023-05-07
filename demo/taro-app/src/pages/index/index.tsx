@@ -32,10 +32,12 @@ const Index = () => {
       <EndClassCom emptyImageClass='text-[#564564]' btnClassName='text-[#66ffff]'></EndClassCom>
       <View className="after:border-none after:content-['Hello_World'] a">after:border-none</View>
       <View className='after:content-["*"] after:ml-0.5 after:text-red-500 b'>yellow</View>
+      <View className='after:content-["的撒的撒"] after:ml-0.5 after:text-red-500'>事实上</View>
+      <View className="after:content-['的撒的撒'] after:ml-0.5 after:text-red-500">事实上</View>
       <View className='after:content-[*] after:ml-0.5 after:text-red-500 aspect-w-16'>
-        <View class='!text-[#555]'>aspect</View>
-        <View class='bg-[#faf]'>w</View>
-        <View class='bg-[#123]'>16</View>
+        <View className='!text-[#555]'>aspect</View>
+        <View className='bg-[#faf]'>w</View>
+        <View className='bg-[#123]'>16</View>
       </View>
       <View className='bg-gray-100 dark:bg-zinc-800 h-10 w-10' hoverClass='bg-red-500 dark:bg-green-500'></View>
       <View className={className}>className</View>
