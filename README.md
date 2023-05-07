@@ -495,11 +495,6 @@ const classArray = [
 类型: `(assetPath:string)=>boolean`  
 描述: 匹配 `tailwindcss jit` 生成的核心 `css chunk` 的方法
 
-### framework (`Taro` 特有)
-
-类型: `react`\|`vue2`\|`vue3`  
-描述: 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`
-
 ### customRuleCallback
 
 类型: `(node: Postcss.Rule, options: Readonly<RequiredStyleHandlerOptions>) => void`  
