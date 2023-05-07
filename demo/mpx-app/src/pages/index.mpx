@@ -2,6 +2,8 @@
   <view>
     <view wx:class="{{classNames}}">对酒当歌，人生几何</view>
     <view wx:class="{{bgUrl}}">bgUrl</view>
+    <view wx:class="{{custom}}"></view>
+    <view wx:class="{{custom2}}"></view>
     <list />
   </view>
 </template>
@@ -12,7 +14,9 @@
   createPage({
     data: {
       classNames: 'text-[#123456] text-[50px] bg-[#fff]',
-      bgUrl: "bg-[url('https://xxx.com/xx.webp')]"
+      bgUrl: "bg-[url('https://xxx.com/xx.webp')]",
+      custom: 'after:content-["你好啊，我很无聊"] after:ml-0.5 after:text-red-500',
+      custom2: "after:content-['你好啊，我这是中文字符串'] after:ml-0.5 after:text-red-500"
     },
     options: {
       addGlobalClass: true

@@ -32,6 +32,7 @@
       - [如何选择？](#如何选择)
       - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
       - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
+      - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
       - [原生小程序开发模板](#原生小程序开发模板)
     - [tailwindcss plugin](#tailwindcss-plugin)
     - [tailwindcss preset](#tailwindcss-preset)
@@ -641,6 +642,10 @@ cssPreflight: {
 ~~[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)(不推荐,此版本收到hbuilderx的限制，无法升级到最新的tailwindcss)~~
 
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
+
+#### 使用`tarojs`进行构建 `vscode`开发
+
+[taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
 #### 原生小程序开发模板
 

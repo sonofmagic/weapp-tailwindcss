@@ -1,6 +1,6 @@
 <template>
   <view class="flex flex-col">
-    <view class="text-[#e67240] a" wx:for="{{listData}}" wx:key="id">{{ item }}</view>
+    <view wx:class="{{idx ===1? classObj:classObj2}}" wx:for-index="idx" wx:for="{{listData}}" wx:key="id">{{ item.label }}</view>
   </view>
 </template>
 
@@ -9,6 +9,12 @@
 
   createComponent({
     data: {
+      classObj: {
+        'text-[#e67240]': true
+      },
+      classObj2: {
+        'text-[blue]': true
+      },
       listData: [
         {
           id: 1,

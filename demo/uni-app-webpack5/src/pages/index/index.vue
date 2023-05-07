@@ -1,7 +1,7 @@
 <template>
   <div class="before:content-['hello'] before:block">
     <view :class="bbb">bbb</view>
-    <view :class="classArray">classArray</view>
+    <view :class="classArray" class="after:content-['这是classArray,用于测试动态js绑定class']">classArray</view>
     <view :class="['text-[20px]', true ? 'text-[#898989]' : 'text-[#132323]', aaa]">:class="['text-sm', classObj]
     </view>
     <view class="text-[22px]">对酒当歌，人生几何</view>
@@ -90,7 +90,8 @@ export default Vue.extend({
     const classArray = [
       'text-[30rpx]',
       "bg-[url('https://xxx.com/xx.webp')]",
-      /*weapp-tw ignore*/ 'bg-[#00ff00]'
+      /*weapp-tw ignore*/ 'bg-[#00ff00]',
+
     ]
     return {
       classObj,
