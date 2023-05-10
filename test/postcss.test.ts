@@ -1,5 +1,5 @@
 import { getCss } from './helpers/getTwCss'
-import { getClassCacheSet } from 'tailwindcss-patch'
+// import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
 // import fs from 'fs'
 describe('postcss plugin', () => {
