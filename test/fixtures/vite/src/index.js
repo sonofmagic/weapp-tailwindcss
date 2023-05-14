@@ -1,4 +1,4 @@
-
+import './index.css'
 
 const className = 'w-[100px] h-[100px] ' + "bg-[url('https://xxx.com/xx.webp')]"
 

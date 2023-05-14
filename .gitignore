@@ -108,3 +108,4 @@ types
 stats/*.html
 
 .DS_Store
+coverage-vitest

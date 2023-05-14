@@ -1,4 +1,4 @@
-// @ts-ignore
+import { describe, it, expect } from 'vitest'
 import { build } from 'vite'
 import type { RollupOutput } from 'rollup'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
@@ -9,7 +9,7 @@ import { switch2relative } from './util'
 //   console.log = noop
 //   console.warn = noop
 // }
-describe.skip('vite test', () => {
+describe('vite test', () => {
   // beforeEach(() => {
   //   keepSilent()
   // })
@@ -25,7 +25,7 @@ describe.skip('vite test', () => {
     const postcssPlugins = [
       // require('autoprefixer')(),
       require('tailwindcss')({
-        config: path.resolve(__dirname, './config/tailwind.config.js')
+        config: path.resolve(__dirname, './fixtures/vite/tailwind.config.js')
       })
     ]
     if (!WeappTailwindcssDisabled) {
@@ -42,7 +42,7 @@ describe.skip('vite test', () => {
     }
 
     const res = (await build({
-      root: path.resolve(__dirname, './fixtures/vite'),
+      root: path.resolve(__dirname, './fixtures/vite/src'),
       plugins: vitePlugins,
       logLevel: 'silent',
       css: {
