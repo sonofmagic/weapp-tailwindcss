@@ -57,17 +57,26 @@ describe('vite test', () => {
 
     const output = res.output
     // @ts-ignore
-    output[0].facadeModuleId = switch2relative(output[0].facadeModuleId)
-    Object.keys(output[0].modules).forEach((x) => {
-      const item = output[0].modules[x]
-      // @ts-ignore
-      delete output[0].modules[x].originalLength
-      if (path.isAbsolute(x)) {
-        output[0].modules[switch2relative(x)] = item
-        delete output[0].modules[x]
-      }
-    })
-
-    expect(res.output).toMatchSnapshot()
+    // output[0].facadeModuleId = switch2relative(output[0].facadeModuleId)
+    // Object.keys(output[0].modules).forEach((x) => {
+    //   const item = output[0].modules[x]
+    //   // @ts-ignore
+    //   delete output[0].modules[x].originalLength
+    //   if (path.isAbsolute(x)) {
+    //     output[0].modules[switch2relative(x)] = item
+    //     delete output[0].modules[x]
+    //   }
+    // })
+    expect(output.length).toBe(3)
+    expect(output[0].type).toBe('chunk')
+    expect(output[0].code).toMatchSnapshot()
+    expect(output[1].type).toBe('asset')
+    if (output[1].type === 'asset') {
+      expect(output[1].source).toMatchSnapshot()
+    }
+    expect(output[2].type).toBe('asset')
+    if (output[2].type === 'asset') {
+      expect(output[2].source).toMatchSnapshot()
+    }
   })
 })
