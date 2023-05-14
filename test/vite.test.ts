@@ -1,17 +1,18 @@
-import * as vite from 'vite'
+// @ts-ignore
+import { build } from 'vite'
 import type { RollupOutput } from 'rollup'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 import path from 'path'
 import { switch2relative } from './util'
-function noop() {}
-function keepSilent() {
-  console.log = noop
-  console.warn = noop
-}
+// function noop() {}
+// function keepSilent() {
+//   console.log = noop
+//   console.warn = noop
+// }
 describe.skip('vite test', () => {
-  beforeEach(() => {
-    keepSilent()
-  })
+  // beforeEach(() => {
+  //   keepSilent()
+  // })
   it('vite common build', async () => {
     // 注意： 打包成 h5 和 app 都不需要开启插件配置
     const isH5 = process.env.UNI_PLATFORM === 'h5'
@@ -22,7 +23,7 @@ describe.skip('vite test', () => {
     const vitePlugins = []
     // postcss 插件配置
     const postcssPlugins = [
-      require('autoprefixer')(),
+      // require('autoprefixer')(),
       require('tailwindcss')({
         config: path.resolve(__dirname, './config/tailwind.config.js')
       })
@@ -30,20 +31,20 @@ describe.skip('vite test', () => {
     if (!WeappTailwindcssDisabled) {
       vitePlugins.push(uvwt())
 
-      postcssPlugins.push(
-        require('postcss-rem-to-responsive-pixel')({
-          rootValue: 32,
-          propList: ['*'],
-          transformUnit: 'rpx'
-        })
-      )
+      // postcssPlugins.push(
+      //   require('postcss-rem-to-responsive-pixel')({
+      //     rootValue: 32,
+      //     propList: ['*'],
+      //     transformUnit: 'rpx'
+      //   })
+      // )
       // postcssPlugins.push(postcssWeappTailwindcssRename({}))
     }
 
-    const res = (await vite.build({
+    const res = (await build({
       root: path.resolve(__dirname, './fixtures/vite'),
       plugins: vitePlugins,
-
+      logLevel: 'silent',
       css: {
         postcss: {
           plugins: postcssPlugins
