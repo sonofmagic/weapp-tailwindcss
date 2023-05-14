@@ -13,8 +13,8 @@
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
-  - [2.x 版本新特性](#2x-版本新特性)
-    - [新插件介绍](#新插件介绍)
+  - [2.x 版本特性](#2x-版本特性)
+    - [插件介绍](#插件介绍)
   - [Usage](#usage)
     - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
     - [2. `rem` 转 `px` 或 `rpx`](#2-rem-转-px-或-rpx)
@@ -38,7 +38,7 @@
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
-## 2.x 版本新特性
+## 2.x 版本特性
 
 > `2.2.0` 版本后，所以 v1 版本的插件被去除，如果你还是想用 v1 插件，请锁定你的版本在 `2.1.5`
 
@@ -49,7 +49,7 @@
 
 相比`v1`版本只有处理`wxss`,`wxml`静态`class`的能力，使用`v2`版本新的插件，你再也不需要在 `js` 里引入并调用标记方法 `replaceJs`了！`2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板框架的开发体验。
 
-### 新插件介绍
+### 插件介绍
 
 `UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公共的样式文件位置，并进行转化(有可能不准确)。
 
@@ -276,6 +276,7 @@ export default defineConfig({
 <br/></details>
 
 <details><summary>Taro v3 (all frameworks)</summary><br/>
+
 **在使用Taro时，检查一下把 config/index 的配置项 compiler 设置为 'webpack5'**
 
 ```js
@@ -303,6 +304,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 <br/></details>
 
 <details><summary>mpx (原生增强)</summary><br/>
+
 在 `vue.config.js` 中注册：
 
 ```js

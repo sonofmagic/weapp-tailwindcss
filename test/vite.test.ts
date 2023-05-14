@@ -3,16 +3,8 @@ import { build } from 'vite'
 import type { RollupOutput } from 'rollup'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 import path from 'path'
-import { switch2relative } from './util'
-// function noop() {}
-// function keepSilent() {
-//   console.log = noop
-//   console.warn = noop
-// }
+
 describe('vite test', () => {
-  // beforeEach(() => {
-  //   keepSilent()
-  // })
   it('vite common build', async () => {
     // 注意： 打包成 h5 和 app 都不需要开启插件配置
     const isH5 = process.env.UNI_PLATFORM === 'h5'
