@@ -12,7 +12,7 @@ export default defineConfig({
     include: ['test/vite.test.ts'],
     coverage: {
       enabled: true,
-      reportsDirectory: 'coverage-vitest'
+      reportsDirectory: 'coverage/vitest'
     }
     // ...
   }
