@@ -4,6 +4,7 @@ import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings
 import path from 'path'
 import postcss from 'postcss'
 import fs from 'fs/promises'
+import { useStore } from '@/mangle/store'
 
 describe('webpack5 plugin', () => {
   let compiler: Compiler
@@ -192,11 +193,17 @@ describe('webpack5 plugin', () => {
         return path.basename(name) === 'index.css'
       },
 
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: 'complex',
+      mangle: true
     }).apply(compiler)
 
     const stats = await compile(compiler)
-
+    const { runtimeSet, classGenerator, recorder } = useStore()
+    expect(runtimeSet.size).toBeGreaterThan(0)
+    expect(recorder.js.length).toBeGreaterThan(0)
+    expect(recorder.css.length).toBeGreaterThan(0)
+    expect(recorder.wxml.length).toBeGreaterThan(0)
+    expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
@@ -207,12 +214,21 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-
+      mangle: {
+        classGenerator: {
+          classPrefix: ''
+        }
+      },
       customReplaceDictionary: 'complex'
     }).apply(compiler)
 
     const stats = await compile(compiler)
-
+    const { runtimeSet, classGenerator, recorder } = useStore()
+    expect(runtimeSet.size).toBeGreaterThan(0)
+    expect(recorder.js.length).toBeGreaterThan(0)
+    expect(recorder.css.length).toBeGreaterThan(0)
+    expect(recorder.wxml.length).toBeGreaterThan(0)
+    expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')

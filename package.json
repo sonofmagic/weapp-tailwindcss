@@ -35,6 +35,7 @@
     "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
     "fix-dts": "ts-node scripts/fix-dts.ts",
     "test": "jest && vitest run",
+    "jest-u": "jest -u",
     "vitest:test": "vitest",
     "vitest:coverage": "vitest run --coverage",
     "test:all": "cross-env JEST_INVALID_SKIP_CASES=1 jest",
