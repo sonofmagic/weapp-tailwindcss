@@ -1,6 +1,6 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
-
+import type { ClassGenerator } from 'tailwindcss-mangle-core'
 import type { GeneratorResult } from '@babel/generator'
 
 export type ItemOrItemArray<T> = T | T[]
@@ -171,6 +171,15 @@ export interface UserDefinedOptions {
    * @default process.env.NODE_ENV === 'production'
    */
   minifiedJs?: boolean
+
+  /**
+   * @description tailwindcss-mangle-core 带来的能力
+   */
+  mangle?:
+    | boolean
+    | {
+        classGenerator: ConstructorParameters<typeof ClassGenerator>[0]
+      }
 }
 
 export interface ICommonReplaceOptions {
