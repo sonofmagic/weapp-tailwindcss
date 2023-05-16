@@ -5,6 +5,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 import { getGroupedEntries } from '@/utils'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import { initStore, setRuntimeSet } from '@/mangle/store'
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
@@ -16,12 +17,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])
-  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType } = opts
+  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts
   if (disabled) {
     return
   }
 
   patch?.()
+  initStore(mangle)
   const twPatcher = createTailwindcssPatcher()
   onLoad()
   // 要在 vite:css 处理之前运行
@@ -36,6 +38,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
+      const set = twPatcher.getClassSet()
+      setRuntimeSet(set)
       if (Array.isArray(groupedEntries.html)) {
         for (let i = 0; i < groupedEntries.html.length; i++) {
           // let classGenerator
@@ -65,8 +69,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
       }
       if (Array.isArray(groupedEntries.js)) {
-        const set = twPatcher.getClassSet()
-
         for (let i = 0; i < groupedEntries.js.length; i++) {
           const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
           const rawSource = originalSource.code
