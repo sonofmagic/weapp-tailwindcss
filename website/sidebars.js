@@ -34,6 +34,10 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'mangle/index'
+    },
+    {
+      type: 'doc',
       label: "What's new in v2",
       id: 'releases/v2'
     },
