@@ -11,6 +11,7 @@ const defaultScope = {
   rawOptions: false,
   runtimeSet: new Set<string>(),
   classGenerator: new ClassGenerator(),
+  filter: defaultMangleClassFilter,
   cssHandler: getSelf,
   jsHandler: getSelf,
   wxmlHandler: getSelf,
@@ -27,6 +28,7 @@ const scope: {
   rawOptions: UserDefinedOptions['mangle']
   runtimeSet: Set<string>
   classGenerator: ClassGenerator
+  filter: (className: string) => boolean
   cssHandler: (rawSource: string) => string //  typeof cssHandler
   jsHandler: (rawSource: string) => string // typeof jsHandler
   wxmlHandler: (rawSource: string) => string
@@ -62,10 +64,12 @@ export function initStore(options: UserDefinedOptions['mangle']) {
   if (options) {
     if (options === true) {
       options = {
-        classGenerator: {}
+        classGenerator: {},
+        mangleClassFilter: defaultMangleClassFilter
       }
     }
     scope.classGenerator = new ClassGenerator(options.classGenerator)
+    scope.filter = options.mangleClassFilter ?? defaultMangleClassFilter
     scope.jsHandler = (rawSource: string) => {
       scope.recorder.js.push(rawSource)
       return handleValue(rawSource)
@@ -87,7 +91,7 @@ export function initStore(options: UserDefinedOptions['mangle']) {
 export function setRuntimeSet(runtimeSet: Set<string>) {
   const newSet = new Set<string>()
   runtimeSet.forEach((c) => {
-    if (defaultMangleClassFilter(c)) {
+    if (scope.filter(c)) {
       newSet.add(c)
     }
   })

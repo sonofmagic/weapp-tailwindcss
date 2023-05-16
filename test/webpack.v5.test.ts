@@ -233,4 +233,53 @@ describe('webpack5 plugin', () => {
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
+
+  it('mangle options with default mangleClassFilter', async () => {
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      mangle: {
+        classGenerator: {
+          classPrefix: 'ice-'
+        }
+      }
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+    const { runtimeSet, classGenerator, recorder } = useStore()
+    expect(runtimeSet.size).toBeGreaterThan(0)
+    expect(recorder.js.length).toBeGreaterThan(0)
+    expect(recorder.css.length).toBeGreaterThan(0)
+    expect(recorder.wxml.length).toBeGreaterThan(0)
+    expect(classGenerator.newClassSize).toBeGreaterThan(0)
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('mangle options mangleClassFilter all true', async () => {
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      mangle: {
+        classGenerator: {
+          classPrefix: 'som-'
+        },
+        mangleClassFilter: () => true
+      }
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+    const { runtimeSet, classGenerator, recorder } = useStore()
+    expect(runtimeSet.size).toBeGreaterThan(0)
+    expect(recorder.js.length).toBeGreaterThan(0)
+    expect(recorder.css.length).toBeGreaterThan(0)
+    expect(recorder.wxml.length).toBeGreaterThan(0)
+    expect(classGenerator.newClassSize).toBeGreaterThan(0)
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
 })
