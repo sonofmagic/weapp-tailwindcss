@@ -1,0 +1,25 @@
+<!-- index.wxml -->
+<view class="h-full text-center">
+  <view class="m-[20px]">
+    <view class="bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)] bg-[length:100%_100%] bg-no-repeat w-screen h-[41.54vw]"></view>
+    <view class="space-y-4">
+      <view class="text-[14px]">基于Gulp 的微信小程序前端开发工作流</view>
+      <view class="text-[14px] text-[#5ba4e5]" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin">
+        https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
+      </view>
+      <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
+    </view>
+    <view class="{{contentStyle}}">
+      <view class="text-base font-bold pb-[10px] mb-[20px] text-left border-b border-[#EEEEEE]">
+        功能介绍
+      </view>
+      <view class="pl-[15px] text-left block">
+        <view class="text-xs">支持 tailwindcss</view>
+        <view class="text-xs">SCSS 实时编译为 WXSS</view>
+        <view class="text-xs">px 和 rem 单位转小程序单位rpx</view>
+        <view class="text-xs">支持 typescript</view>
+      </view>
+      <view class="{{classNames}}"></view>
+    </view>
+  </view>
+</view>
