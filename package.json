@@ -4,6 +4,13 @@
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*"
+      ]
+    }
+  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -29,11 +36,10 @@
   },
   "scripts": {
     "dev": "yarn clean && yarn dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
-    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && yarn dts && yarn fix-dts",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && yarn dts",
     "build:demo": "yarn demo:del-dist && cross-env NODE_ENV=demo rollup -c rollup.config.ts --configPlugin typescript && yarn demo:sync-dist",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
-    "fix-dts": "ts-node scripts/fix-dts.ts",
     "test": "jest && vitest run",
     "jest-u": "jest -u",
     "vitest:test": "vitest",
