@@ -76,6 +76,11 @@ export interface ILengthUnitsPatchOptions {
   basedir?: string
 }
 
+export interface IMangleOptions {
+  classGenerator?: IClassGeneratorOptions
+  mangleClassFilter?: (className: string) => boolean
+}
+
 export interface UserDefinedOptions {
   /**
    * wxml/ttml 这类的 ml 的匹配方法
@@ -173,14 +178,10 @@ export interface UserDefinedOptions {
   minifiedJs?: boolean
 
   /**
-   * @description tailwindcss-mangle-core 带来的能力
+   * @description tailwindcss-mangle 带来的能力
+   * @url https://github.com/sonofmagic/tailwindcss-mangle
    */
-  mangle?:
-    | boolean
-    | {
-        classGenerator?: IClassGeneratorOptions
-        mangleClassFilter?: (className: string) => boolean
-      }
+  mangle?: boolean | IMangleOptions
 }
 
 export interface ICommonReplaceOptions {
