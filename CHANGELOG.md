@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 2.3.0 (2023-05-16)
+
+### Features
+
+- 添加 `mangle` 配置项，可以对 `tailwindcss` 生成的类名进行缩短以及混淆
+- 添加 `esm` 支持
+
+### Chores
+
+- 使用 `exports` 导出项目，去除根目录下的 `.d.ts`
+- 升级 `pnpm` from v7 to v8
+- 去除所有 `webpack4` 相关的依赖
+- 使用 `jest` 测试 `cjs` , `vitest` 测试 `vite` 相关 `case`
+- 采用 `Github Action` 进行正式发布以及自动生成 `github changelog`
+
 ## 2.2.0 (2023-05-07)
 
 ### Features
