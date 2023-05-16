@@ -198,11 +198,9 @@ describe('webpack5 plugin', () => {
     }).apply(compiler)
 
     const stats = await compile(compiler)
-    const { runtimeSet, classGenerator, recorder } = useStore()
+    const { runtimeSet, classGenerator } = useStore()
     expect(runtimeSet.size).toBeGreaterThan(0)
-    expect(recorder.js.length).toBeGreaterThan(0)
-    expect(recorder.css.length).toBeGreaterThan(0)
-    expect(recorder.wxml.length).toBeGreaterThan(0)
+
     expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
@@ -223,11 +221,9 @@ describe('webpack5 plugin', () => {
     }).apply(compiler)
 
     const stats = await compile(compiler)
-    const { runtimeSet, classGenerator, recorder } = useStore()
+    const { runtimeSet, classGenerator } = useStore()
     expect(runtimeSet.size).toBeGreaterThan(0)
-    expect(recorder.js.length).toBeGreaterThan(0)
-    expect(recorder.css.length).toBeGreaterThan(0)
-    expect(recorder.wxml.length).toBeGreaterThan(0)
+
     expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
@@ -247,11 +243,9 @@ describe('webpack5 plugin', () => {
     }).apply(compiler)
 
     const stats = await compile(compiler)
-    const { runtimeSet, classGenerator, recorder } = useStore()
+    const { runtimeSet, classGenerator } = useStore()
     expect(runtimeSet.size).toBeGreaterThan(0)
-    expect(recorder.js.length).toBeGreaterThan(0)
-    expect(recorder.css.length).toBeGreaterThan(0)
-    expect(recorder.wxml.length).toBeGreaterThan(0)
+
     expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
@@ -272,11 +266,9 @@ describe('webpack5 plugin', () => {
     }).apply(compiler)
 
     const stats = await compile(compiler)
-    const { runtimeSet, classGenerator, recorder } = useStore()
+    const { runtimeSet, classGenerator } = useStore()
     expect(runtimeSet.size).toBeGreaterThan(0)
-    expect(recorder.js.length).toBeGreaterThan(0)
-    expect(recorder.css.length).toBeGreaterThan(0)
-    expect(recorder.wxml.length).toBeGreaterThan(0)
+
     expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')

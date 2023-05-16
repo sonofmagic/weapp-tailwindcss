@@ -12,6 +12,7 @@ import gutil from 'gulp-util'
 import debug from 'gulp-debug'
 import ts from 'gulp-typescript'
 import plumber from 'gulp-plumber'
+import internal from 'stream'
 
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
@@ -38,8 +39,12 @@ const { transformJs, transformWxml, transformWxss } = createPlugins()
 //   mangle: true
 // }
 
-function promisify(task: NodeJS.ReadWriteStream) {
+function promisify(task: internal.Transform) {
   return new Promise((resolve, reject) => {
+    if (task.destroyed) {
+      resolve(undefined)
+      return
+    }
     task.on('finish', resolve).on('error', reject)
   })
 }

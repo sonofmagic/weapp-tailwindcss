@@ -6,6 +6,9 @@ import type File from 'vinyl'
 import { initStore, setRuntimeSet } from '@/mangle/store'
 const Transform = stream.Transform
 
+export interface IBaseTransformOptions {
+  encoding?: BufferEncoding
+}
 /**
  * @name weapp-tw-gulp
  * @description gulp版本weapp-tw插件
