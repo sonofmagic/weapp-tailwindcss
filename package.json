@@ -213,5 +213,6 @@
     "semver": "^7.5.1",
     "tailwindcss-mangle-shared": "^1.2.1",
     "tailwindcss-patch": "^1.2.1"
-  }
+  },
+  "packageManager": "pnpm@8.5.1"
 }
