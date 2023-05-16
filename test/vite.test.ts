@@ -1,37 +1,24 @@
 import { describe, it, expect } from 'vitest'
-import { build } from 'vite'
+import { PluginOption, build } from 'vite'
 import type { RollupOutput } from 'rollup'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 import path from 'path'
-
+// 注意： 打包成 h5 和 app 都不需要开启插件配置
+// const isH5 = process.env.UNI_PLATFORM === 'h5'
+// const isApp = process.env.UNI_PLATFORM === 'app'
+// const WeappTailwindcssDisabled = isH5 || isApp
+// postcss 插件配置
+const postcssPlugins = [
+  // require('autoprefixer')(),
+  require('tailwindcss')({
+    config: path.resolve(__dirname, './fixtures/vite/tailwind.config.js')
+  })
+]
 describe('vite test', () => {
-  it('vite common build', async () => {
-    // 注意： 打包成 h5 和 app 都不需要开启插件配置
-    const isH5 = process.env.UNI_PLATFORM === 'h5'
-    const isApp = process.env.UNI_PLATFORM === 'app'
-    const WeappTailwindcssDisabled = isH5 || isApp
+  async function assertSnap(plugin: PluginOption) {
+    const vitePlugins: PluginOption[] = []
 
-    // vite 插件配置
-    const vitePlugins = []
-    // postcss 插件配置
-    const postcssPlugins = [
-      // require('autoprefixer')(),
-      require('tailwindcss')({
-        config: path.resolve(__dirname, './fixtures/vite/tailwind.config.js')
-      })
-    ]
-    if (!WeappTailwindcssDisabled) {
-      vitePlugins.push(uvwt())
-
-      // postcssPlugins.push(
-      //   require('postcss-rem-to-responsive-pixel')({
-      //     rootValue: 32,
-      //     propList: ['*'],
-      //     transformUnit: 'rpx'
-      //   })
-      // )
-      // postcssPlugins.push(postcssWeappTailwindcssRename({}))
-    }
+    vitePlugins.push(plugin)
 
     const res = (await build({
       root: path.resolve(__dirname, './fixtures/vite/src'),
@@ -48,17 +35,6 @@ describe('vite test', () => {
     })) as RollupOutput
 
     const output = res.output
-    // @ts-ignore
-    // output[0].facadeModuleId = switch2relative(output[0].facadeModuleId)
-    // Object.keys(output[0].modules).forEach((x) => {
-    //   const item = output[0].modules[x]
-    //   // @ts-ignore
-    //   delete output[0].modules[x].originalLength
-    //   if (path.isAbsolute(x)) {
-    //     output[0].modules[switch2relative(x)] = item
-    //     delete output[0].modules[x]
-    //   }
-    // })
     expect(output.length).toBe(3)
     expect(output[0].type).toBe('chunk')
     expect(output[0].code).toMatchSnapshot()
@@ -70,5 +46,60 @@ describe('vite test', () => {
     if (output[2].type === 'asset') {
       expect(output[2].source).toMatchSnapshot()
     }
+  }
+  it('vite common build', async () => {
+    await assertSnap(uvwt())
+  })
+
+  it('vite common build with mangle true', async () => {
+    await assertSnap(
+      uvwt({
+        mangle: true
+      })
+    )
+  })
+
+  it('vite common build with mangle options', async () => {
+    await assertSnap(
+      uvwt({
+        mangle: {}
+      })
+    )
+  })
+
+  it('vite common build with mangle options 0', async () => {
+    await assertSnap(
+      uvwt({
+        mangle: {
+          classGenerator: {
+            classPrefix: ''
+          }
+        }
+      })
+    )
+  })
+
+  it('vite common build with mangle options mangleClassFilter all true', async () => {
+    await assertSnap(
+      uvwt({
+        mangle: {
+          mangleClassFilter(className) {
+            return true
+          }
+        }
+      })
+    )
+  })
+
+  it('vite common build with mangle options mangleClassFilter variables', async () => {
+    await assertSnap(
+      uvwt({
+        mangle: {
+          mangleClassFilter(className) {
+            return /[[\]]/.test(className)
+          }
+        }
+      })
+    )
   })
 })

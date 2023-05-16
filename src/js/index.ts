@@ -6,6 +6,7 @@ import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
 import { isProd } from '@/env'
+import { useStore } from '@/mangle/store'
 
 export function handleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
@@ -21,6 +22,8 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
       }
 
       if (!ignoreFlag) {
+        const { jsHandler } = useStore()
+        rawStr = jsHandler(rawStr)
         rawStr = rawStr.replace(
           new RegExp(escapeStringRegexp(v), 'g'),
           replaceWxml(v, {
