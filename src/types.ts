@@ -1,6 +1,6 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
-import type { ClassGenerator } from 'tailwindcss-mangle-core'
+import type { ClassGenerator } from 'tailwindcss-mangle-shared'
 import type { GeneratorResult } from '@babel/generator'
 
 export type ItemOrItemArray<T> = T | T[]

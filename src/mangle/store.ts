@@ -1,4 +1,4 @@
-import { ClassGenerator } from 'tailwindcss-mangle-core'
+import { ClassGenerator, defaultMangleClassFilter } from 'tailwindcss-mangle-shared'
 import { UserDefinedOptions } from '@/types'
 import { splitCode } from '@/extractors/split'
 import { escapeStringRegexp } from '@/reg'
@@ -47,6 +47,18 @@ export function resetStore() {
 
 export function initStore(options: UserDefinedOptions['mangle']) {
   scope.rawOptions = options
+
+  function handleValue(rawSource: string) {
+    const arr = splitCode(rawSource)
+    for (let i = 0; i < arr.length; i++) {
+      const x = arr[i]
+      if (scope.runtimeSet.has(x)) {
+        rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x), 'g'), scope.classGenerator.generateClassName(x).name)
+      }
+    }
+    return rawSource
+  }
+
   if (options) {
     if (options === true) {
       options = {
@@ -56,64 +68,26 @@ export function initStore(options: UserDefinedOptions['mangle']) {
     scope.classGenerator = new ClassGenerator(options.classGenerator)
     scope.jsHandler = (rawSource: string) => {
       scope.recorder.js.push(rawSource)
-      const arr = splitCode(rawSource)
-      for (let i = 0; i < arr.length; i++) {
-        const x = arr[i]
-        if (scope.runtimeSet.has(x)) {
-          rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x), 'g'), scope.classGenerator.generateClassName(x).name)
-        }
-      }
-      return rawSource
-      // return jsHandler(rawSource, {
-      //   classGenerator: scope.classGenerator,
-      //   runtimeSet: scope.runtimeSet!,
-      //   splitQuote: false
-      // }).code!
+      return handleValue(rawSource)
     }
     scope.cssHandler = (rawSource: string) => {
       // process 最后处理, loader 无所谓顺序
       scope.recorder.css.push(rawSource)
-      const arr = splitCode(rawSource)
-      for (let i = 0; i < arr.length; i++) {
-        const x = arr[i]
-        if (scope.runtimeSet.has(x)) {
-          rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x), 'g'), scope.classGenerator.generateClassName(x).name)
-        }
-      }
-      return rawSource
-      // return cssHandler(rawSource, {
-      //   classGenerator: scope.classGenerator,
-      //   runtimeSet: scope.runtimeSet!,
-      //   scene: 'process'
-      // })
+      return handleValue(rawSource)
     }
 
     scope.wxmlHandler = (rawSource: string) => {
       //  splitCode(rawSource)
       scope.recorder.wxml.push(rawSource)
-      const arr = splitCode(rawSource)
-      for (let i = 0; i < arr.length; i++) {
-        const x = arr[i]
-        if (scope.runtimeSet.has(x)) {
-          rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x), 'g'), scope.classGenerator.generateClassName(x).name)
-        }
-      }
-      return rawSource
+      return handleValue(rawSource)
     }
   }
-}
-
-export const isMangleClass = (className: string) => {
-  // ignore className like 'filter','container'
-  // it may be dangerous to mangle/rename all StringLiteral , so use /-/ test for only those with /-/ like:
-  // bg-[#123456] w-1 etc...
-  return /[-:]/.test(className)
 }
 
 export function setRuntimeSet(runtimeSet: Set<string>) {
   const newSet = new Set<string>()
   runtimeSet.forEach((c) => {
-    if (isMangleClass(c)) {
+    if (defaultMangleClassFilter(c)) {
       newSet.add(c)
     }
   })
