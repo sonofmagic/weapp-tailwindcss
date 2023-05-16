@@ -1,6 +1,6 @@
 import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
-
+import type { IClassGeneratorOptions } from 'tailwindcss-mangle-shared'
 import type { GeneratorResult } from '@babel/generator'
 
 export type ItemOrItemArray<T> = T | T[]
@@ -74,6 +74,11 @@ export interface ILengthUnitsPatchOptions {
   paths?: string[]
   dangerousOptions?: ILengthUnitsPatchDangerousOptions
   basedir?: string
+}
+
+export interface IMangleOptions {
+  classGenerator?: IClassGeneratorOptions
+  mangleClassFilter?: (className: string) => boolean
 }
 
 export interface UserDefinedOptions {
@@ -171,6 +176,12 @@ export interface UserDefinedOptions {
    * @default process.env.NODE_ENV === 'production'
    */
   minifiedJs?: boolean
+
+  /**
+   * @description tailwindcss-mangle 带来的能力
+   * @url https://github.com/sonofmagic/tailwindcss-mangle
+   */
+  mangle?: boolean | IMangleOptions
 }
 
 export interface ICommonReplaceOptions {

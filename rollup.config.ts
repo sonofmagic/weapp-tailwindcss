@@ -57,7 +57,6 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
 // }
 
 const mainOutputOptions: Partial<RollupOptions['output']> = {
-  format: 'cjs',
   sourcemap: isDev || isDemo,
   exports: 'auto',
   esModule: true,
@@ -75,7 +74,6 @@ const mainOutputOptions: Partial<RollupOptions['output']> = {
 }
 
 const replaceOutputOptions: Partial<RollupOptions['output']> = {
-  format: 'esm',
   sourcemap: isDev || isDemo,
   esModule: true,
   generatedCode: {
@@ -103,7 +101,15 @@ const entries: IEntry[] = [
     output: [
       {
         dir: isDemo ? 'demo/web/weapp-tw-dist' : 'dist',
+        format: 'cjs',
         ...mainOutputOptions
+      },
+      {
+        dir: isDemo ? 'demo/web/weapp-tw-dist' : 'dist',
+        format: 'esm',
+        ...mainOutputOptions,
+        entryFileNames: '[name].mjs',
+        chunkFileNames: '[name]-[hash].mjs'
       }
     ]
   },
@@ -113,6 +119,12 @@ const entries: IEntry[] = [
     output: [
       {
         file: isDemo ? 'demo/web/weapp-tw-dist/replace.js' : 'dist/replace.js',
+        format: 'cjs',
+        ...replaceOutputOptions
+      },
+      {
+        file: isDemo ? 'demo/web/weapp-tw-dist/replace.mjs' : 'dist/replace.mjs',
+        format: 'esm',
         ...replaceOutputOptions
       }
     ]
@@ -124,6 +136,13 @@ const entries: IEntry[] = [
       {
         file: isDemo ? 'demo/web/weapp-tw-dist/vite.js' : 'dist/vite.js',
         format: 'cjs',
+        sourcemap: isDev || isDemo,
+        exports: 'auto',
+        interop: 'auto'
+      },
+      {
+        file: isDemo ? 'demo/web/weapp-tw-dist/vite.mjs' : 'dist/vite.mjs',
+        format: 'esm',
         sourcemap: isDev || isDemo,
         exports: 'auto',
         interop: 'auto'

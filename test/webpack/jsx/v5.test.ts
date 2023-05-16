@@ -31,7 +31,7 @@ describe('webpack5 jsx plugin', () => {
     // const processor = postcss(postcssPlugins)
 
     compiler = getCompiler5({
-      mode: 'development',
+      mode: 'production',
       context: path.resolve(webpack5CasePath, 'jsx'),
       entry: {
         entry: './pages/index.jsx'

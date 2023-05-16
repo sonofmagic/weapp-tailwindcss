@@ -55,11 +55,11 @@ const tableData = [
     ].join()
   ],
   ['`minifiedJs`', '`boolean`', "是否压缩生成的js文件内容，默认使用环境变量判断: `process.env.NODE_ENV === 'production'`"],
-  // [
-  //   '`mangle`(1.9.0+)',
-  //   '`boolean` \\| `IMangleOptions`',
-  //   '是否压缩混淆 `wxml` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [mangle.md](./docs/mangle.md)'
-  // ],
+  [
+    'mangle (2.3.0+)',
+    '`boolean` \\| `IMangleOptions`',
+    '是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)'
+  ],
   [
     '`cssPreflight`',
     '`Record<string,string>`\\| `false`',
