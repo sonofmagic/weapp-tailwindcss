@@ -73,31 +73,17 @@ const mainOutputOptions: Partial<RollupOptions['output']> = {
   }
 }
 
-const replaceOutputOptions: Partial<RollupOptions['output']> = {
-  sourcemap: isDev || isDemo,
-  esModule: true,
-  generatedCode: {
-    reservedNamesAsProps: false
-  },
-  interop: 'compat',
-  systemNullSetters: false,
-  sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
-    if (isDemo) {
-      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replace(/\.\.[\\/]/g, ''))
-    }
-    return relativeSourcePath
-  }
-}
-
 const entries: IEntry[] = [
   {
     name: 'bundle',
     input: {
       index: 'src/index.ts',
-      webpack: 'src/webpack/index.ts',
-      gulp: 'src/gulp/index.ts',
-      postcss: 'src/postcss/plugin.ts',
-      cli: 'src/cli.ts'
+      webpack: 'src/webpack.ts',
+      gulp: 'src/gulp.ts',
+      postcss: 'src/postcss.ts',
+      cli: 'src/cli.ts',
+      replace: 'src/replace.ts',
+      vite: 'src/vite.ts'
     },
     output: [
       {
@@ -111,42 +97,6 @@ const entries: IEntry[] = [
         ...mainOutputOptions,
         entryFileNames: '[name].mjs',
         chunkFileNames: '[name]-[hash].mjs'
-      }
-    ]
-  },
-  {
-    name: 'replace',
-    input: 'src/replace.ts',
-    output: [
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/replace.js' : 'dist/replace.js',
-        format: 'cjs',
-        ...replaceOutputOptions
-      },
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/replace.mjs' : 'dist/replace.mjs',
-        format: 'esm',
-        ...replaceOutputOptions
-      }
-    ]
-  },
-  {
-    name: 'vite',
-    input: 'src/vite/index.ts',
-    output: [
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/vite.js' : 'dist/vite.js',
-        format: 'cjs',
-        sourcemap: isDev || isDemo,
-        exports: 'auto',
-        interop: 'auto'
-      },
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/vite.mjs' : 'dist/vite.mjs',
-        format: 'esm',
-        sourcemap: isDev || isDemo,
-        exports: 'auto',
-        interop: 'auto'
       }
     ]
   }

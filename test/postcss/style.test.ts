@@ -1,4 +1,4 @@
-import { styleHandler } from '@/postcss'
+import { styleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
 import { cssCasePath, createGetCase, createPutCase } from '../util'
