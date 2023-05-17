@@ -13,7 +13,7 @@
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
-  - [2.x 版本特性](#2x-版本特性)
+  - [特性](#特性)
     - [插件介绍](#插件介绍)
   - [Usage](#usage)
     - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
@@ -38,7 +38,11 @@
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
-## 2.x 版本特性
+## 特性
+
+| 不仅仅是`webpack`                                   | 主流框架与原生开发支持                          |
+| --------------------------------------------------- | ----------------------------------------------- |
+| ![wepback+vite+gulp](./assets/weapp-tw-plugins.png) | ![frameworks](./assets/weapp-tw-frameworks.png) |
 
 > `2.2.0` 版本后，所以 v1 版本的插件被去除，如果你还是想用 v1 插件，请锁定你的版本在 `2.1.5`
 
