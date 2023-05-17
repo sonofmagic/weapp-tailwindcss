@@ -21,6 +21,7 @@
     "@docusaurus/preset-classic": "2.4.1",
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.2.1",
+    "fabric": "^5.3.0",
     "prism-react-renderer": "^2.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -30,6 +31,7 @@
     "@docusaurus/types": "^2.4.1",
     "@icebreakers/deploy": "^0.1.4",
     "@tsconfig/docusaurus": "^1.0.5",
+    "@types/fabric": "^5.3.2",
     "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
     "docusaurus-plugin-sass": "^0.2.3",
