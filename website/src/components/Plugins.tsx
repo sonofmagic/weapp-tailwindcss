@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
+import { fabric } from './fabric'
 import type { PropsWithChildren } from 'react'
-import { fabric } from 'fabric'
 import gulpLogo from '@site/src/assets/gulp.png'
 import webpackLogo from '@site/src/assets/webpack.png'
 import viteLogo from '@site/src/assets/vite.png'
@@ -11,6 +11,9 @@ export default function Plugins(props: PropsWithChildren<{}>) {
   const canvasRef = useRef<fabric.Canvas>()
   const canvasElRef = useRef<HTMLCanvasElement>()
   useEffect(() => {
+    if (!fabric) {
+      return
+    }
     canvasRef.current = new fabric.Canvas(canvasElRef.current)
     const canvas = canvasRef.current
     fabric.Image.fromURL(webpackLogo, function (oImg) {

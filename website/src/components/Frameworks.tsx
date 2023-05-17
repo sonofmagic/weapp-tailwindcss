@@ -1,17 +1,21 @@
 import React, { useEffect, useRef } from 'react'
-import { fabric } from 'fabric'
+import { fabric } from './fabric'
 import weappLogo from '@site/src/assets/weapp.png'
 import mpxLogo from '@site/src/assets/mpx.png'
 import taroLogo from '@site/src/assets/taro.png'
 import uniAppLogo from '@site/src/assets/uni-app.png'
 import raxLogo from '@site/src/assets/rax.png'
 import saveAs from 'file-saver'
+
 export default function Frameworks() {
   const height = 250
   const width = 300
   const canvasRef = useRef<fabric.Canvas>()
   const canvasElRef = useRef<HTMLCanvasElement>()
   useEffect(() => {
+    if (!fabric) {
+      return
+    }
     canvasRef.current = new fabric.Canvas(canvasElRef.current)
     // const ctx = canvasElRef.current.getContext('2d')
 

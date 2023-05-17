@@ -3,8 +3,10 @@ import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import HomeLogo from '@site/src/components/HomeLogo'
-import Plugins from '@site/src/components/Plugins'
-import Frameworks from '@site/src/components/Frameworks'
+import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'
+import PluginsImg from '@site/../assets/weapp-tw-plugins.png'
+// import Plugins from '@site/src/components/Plugins'
+// import Frameworks from '@site/src/components/Frameworks'
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext()
   return (
@@ -25,11 +27,15 @@ function HomepageHeader() {
         </div>
 
         <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 justify-around mt-8">
-          <div>
-            <Plugins></Plugins>
+          <div className="text-center">
+            <h3>不仅仅是 webpack</h3>
+            <img src={PluginsImg}></img>
+            {/* <Plugins></Plugins> */}
           </div>
-          <div>
-            <Frameworks></Frameworks>
+          <div className="text-center">
+            <h3>主流框架与原生开发支持</h3>
+            <img src={FrameworksImg}></img>
+            {/* <Frameworks></Frameworks> */}
           </div>
         </div>
       </div>
