@@ -94,6 +94,7 @@ const entries: IEntry[] = [
     name: 'bundle',
     input: {
       index: 'src/index.ts',
+      webpack: 'src/webpack/index.ts',
       gulp: 'src/gulp/index.ts',
       postcss: 'src/postcss/plugin.ts',
       cli: 'src/cli.ts'
