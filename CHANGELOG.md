@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 2.3.1 (2023-05-18)
+
+### Chore
+
+- 增加 `./webpack` 路径下的导出和类型，现在都可以使用 `xxx/webpack`,`xxx/vite`,`xxx/gulp`,`xxx/postcss`,`xxx/replace` 这类的方式来处理了
+- 更完善的 readme.md
+
+### Fixed
+
+- 修复ts直接引入 `./` 下的 `type`智能提示问题
+
 ## 2.3.0 (2023-05-16)
 
 ### Features
