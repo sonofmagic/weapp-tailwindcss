@@ -73,33 +73,17 @@ const mainOutputOptions: Partial<RollupOptions['output']> = {
   }
 }
 
-const replaceOutputOptions: Partial<RollupOptions['output']> = {
-  sourcemap: isDev || isDemo,
-  esModule: true,
-  generatedCode: {
-    reservedNamesAsProps: false
-  },
-  interop: 'compat',
-  systemNullSetters: false,
-  sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
-    if (isDemo) {
-      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replace(/\.\.[\\/]/g, ''))
-    }
-    return relativeSourcePath
-  }
-}
-
 const entries: IEntry[] = [
   {
     name: 'bundle',
     input: {
       index: 'src/index.ts',
-      webpack: 'src/webpack/index.ts',
-      gulp: 'src/gulp/index.ts',
-      postcss: 'src/postcss/plugin.ts',
+      webpack: 'src/webpack.ts',
+      gulp: 'src/gulp.ts',
+      postcss: 'src/postcss.ts',
       cli: 'src/cli.ts',
       replace: 'src/replace.ts',
-      vite: 'src/vite/index.ts'
+      vite: 'src/vite.ts'
     },
     output: [
       {
