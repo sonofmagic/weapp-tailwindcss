@@ -5553,6 +5553,11 @@ file-loader@^4.2.0:
     loader-utils "^1.2.3"
     schema-utils "^2.5.0"
 
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.npmmirror.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
+
 file-uri-to-path@1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
@@ -11898,16 +11903,17 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.3.0.tgz#6c484dc3663e426a445493e7ee5f6cc3b5099a71"
-  integrity sha512-r46LtWBUzJ4NpUJzLX59iW4d7haGAptg9D4ZU46iy8JeYgaysU92MpzvqI9vOqZccu1UhZW3fdkO0TK25olgCg==
+weapp-tailwindcss-webpack-plugin@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.3.1.tgz#d4e7308670609f4a4015fe86ae2e3c820d7b2de6"
+  integrity sha512-E0UKyU4RIqoFHNespgJWBsJZyWWja33TQ9SvhIz79kgO+LDydBKJ0U0cYk/Z9L925XYM5kzwmbG3Pza024U8JQ==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
     "@babel/traverse" "^7.21.4"
     "@babel/types" "^7.21.4"
     "@csstools/postcss-is-pseudo-class" "^3.2.0"
+    file-saver "^2.0.5"
     micromatch "^4.0.5"
     postcss "8.4.23"
     postcss-selector-parser "^6.0.13"
