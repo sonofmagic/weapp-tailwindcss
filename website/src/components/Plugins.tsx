@@ -4,6 +4,7 @@ import { fabric } from 'fabric'
 import gulpLogo from '@site/src/assets/gulp.png'
 import webpackLogo from '@site/src/assets/webpack.png'
 import viteLogo from '@site/src/assets/vite.png'
+import { saveAs } from 'file-saver'
 export default function Plugins(props: PropsWithChildren<{}>) {
   const height = 250
   const width = 250
@@ -41,7 +42,7 @@ export default function Plugins(props: PropsWithChildren<{}>) {
     })
 
     return () => {
-      canvasRef.current.dispose()
+      // canvasRef.current.dispose()
     }
   })
   return (
@@ -50,6 +51,16 @@ export default function Plugins(props: PropsWithChildren<{}>) {
       <div>
         <canvas className="border border-sky-500 border-dashed rounded" ref={canvasElRef} width={width} height={height}></canvas>
       </div>
+      <button
+        className="mt-2"
+        onClick={() => {
+          canvasElRef.current.toBlob((blob) => {
+            saveAs(blob, 'weapp-tw-plugins.png')
+          })
+        }}
+      >
+        download
+      </button>
       {/* <div>Plugins</div> */}
     </div>
   )

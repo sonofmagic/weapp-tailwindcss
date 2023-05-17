@@ -5,6 +5,7 @@ import mpxLogo from '@site/src/assets/mpx.png'
 import taroLogo from '@site/src/assets/taro.png'
 import uniAppLogo from '@site/src/assets/uni-app.png'
 import raxLogo from '@site/src/assets/rax.png'
+import saveAs from 'file-saver'
 export default function Frameworks() {
   const height = 250
   const width = 300
@@ -62,7 +63,7 @@ export default function Frameworks() {
     })
 
     return () => {
-      canvasRef.current.dispose()
+      // canvasRef.current.dispose()
     }
   })
   return (
@@ -71,6 +72,16 @@ export default function Frameworks() {
       <div>
         <canvas className="border border-sky-500 border-dashed rounded" ref={canvasElRef} width={width} height={height}></canvas>
       </div>
+      <button
+        className="mt-2"
+        onClick={() => {
+          canvasElRef.current.toBlob((blob) => {
+            saveAs(blob, 'weapp-tw-frameworks.png')
+          })
+        }}
+      >
+        download
+      </button>
     </div>
   )
 }
