@@ -1,4 +1,4 @@
-# 配置项参考
+# Options 配置项
 
 ### htmlMatcher
 
@@ -19,11 +19,6 @@
 
 类型: `(assetPath:string)=>boolean`  
 描述: 匹配 `tailwindcss jit` 生成的核心 `css chunk` 的方法
-
-### framework (`Taro` 特有)
-
-类型: `react`\|`vue2`\|`vue3`  
-描述: 由于 `Taro` 不同框架的编译结果有所不同，需要显式声明框架类型 默认`react`
 
 ### customRuleCallback
 
@@ -70,6 +65,11 @@
 
 类型: `boolean`  
 描述: 是否压缩生成的js文件内容，默认使用环境变量判断: `process.env.NODE_ENV === 'production'`
+
+### mangle (2.3.0+)
+
+类型: `boolean` \| `IMangleOptions`  
+描述: 是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
 
 ### cssPreflight
 
