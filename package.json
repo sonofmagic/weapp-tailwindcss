@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.3.1",
+  "version": "2.3.2-beta.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,16 +36,12 @@
       "require": "./dist/gulp.js",
       "import": "./dist/gulp.mjs"
     },
-    "./*": [
-      "./*",
-      "./*.d.ts"
-    ]
+    "./*": "./*"
   },
   "typesVersions": {
-    "<=4.9": {
+    "*": {
       "*": [
-        "./dist/*",
-        "./*"
+        "./dist/*"
       ]
     }
   },

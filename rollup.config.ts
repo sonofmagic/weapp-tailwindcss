@@ -97,7 +97,9 @@ const entries: IEntry[] = [
       webpack: 'src/webpack/index.ts',
       gulp: 'src/gulp/index.ts',
       postcss: 'src/postcss/plugin.ts',
-      cli: 'src/cli.ts'
+      cli: 'src/cli.ts',
+      replace: 'src/replace.ts',
+      vite: 'src/vite/index.ts'
     },
     output: [
       {
@@ -111,42 +113,6 @@ const entries: IEntry[] = [
         ...mainOutputOptions,
         entryFileNames: '[name].mjs',
         chunkFileNames: '[name]-[hash].mjs'
-      }
-    ]
-  },
-  {
-    name: 'replace',
-    input: 'src/replace.ts',
-    output: [
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/replace.js' : 'dist/replace.js',
-        format: 'cjs',
-        ...replaceOutputOptions
-      },
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/replace.mjs' : 'dist/replace.mjs',
-        format: 'esm',
-        ...replaceOutputOptions
-      }
-    ]
-  },
-  {
-    name: 'vite',
-    input: 'src/vite/index.ts',
-    output: [
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/vite.js' : 'dist/vite.js',
-        format: 'cjs',
-        sourcemap: isDev || isDemo,
-        exports: 'auto',
-        interop: 'auto'
-      },
-      {
-        file: isDemo ? 'demo/web/weapp-tw-dist/vite.mjs' : 'dist/vite.mjs',
-        format: 'esm',
-        sourcemap: isDev || isDemo,
-        exports: 'auto',
-        interop: 'auto'
       }
     ]
   }
