@@ -38,7 +38,7 @@
   },
   "scripts": {
     "upup": "pnpm -r up -Li",
-    "build": "pnpm -r run build",
+    "build": "pnpm -r --filter=./* --filter=!./taro-vue2-app run build ",
     "dev": "pnpm -r run dev"
   }
 }
