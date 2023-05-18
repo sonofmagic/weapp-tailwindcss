@@ -5,17 +5,19 @@
   "main": "index.js",
   "license": "MIT",
   "files": [],
-  "_workspaces": {
+  "workspaces": {
     "packages": [
-      "packages/**",
-      "native-mina",
-      "rax-app",
-      "remax-app",
-      "taro-app",
-      "taro-vue2-app",
-      "taro-vue3-app",
-      "uni-app",
-      "uni-app-vue3-vite"
+      "./taro-app",
+      "./taro-vue2-app",
+      "./taro-vue3-app",
+      "./rax-app",
+      "./gulp-app",
+      "./mpx-app",
+      "./native-mina",
+      "./packages",
+      "./uni-app",
+      "./uni-app-vue3-vite",
+      "./uni-app-webpack5"
     ],
     "nohoist": [
       "**/react",
@@ -23,15 +25,17 @@
       "**/postcss",
       "**/vue",
       "**/@vue/**",
-      "*-loader/**",
-      "**/webpack",
-      "**/tailwindcss",
-      "**/typescript",
-      "**/*-webpack-plugin"
+      "**/uview-plus",
+      "**/babel-preset-taro",
+      "**/*loader"
     ]
   },
   "_nohoist": [
-    "**/@tarojs/**"
+    "**/@tarojs/**",
+    "**/webpack",
+    "**/tailwindcss",
+    "**/typescript",
+    "**/*-webpack-plugin"
   ],
   "_devDependencies": {
     "turbo": "^1.3.3"
@@ -39,6 +43,10 @@
   "scripts": {
     "upup": "pnpm -r up -Li",
     "build": "pnpm -r --filter=./* --filter=!./taro-vue2-app run build ",
-    "dev": "pnpm -r run dev"
+    "dev": "pnpm -r run dev",
+    "clean": "rm -r node_modules */node_modules"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.1"
   }
 }
