@@ -7,3 +7,6 @@ packages:
   - "./mpx-app"
   - "./native-mina"
   - "./packages"
+  - "./uni-app"
+  - "./uni-app-vue3-vite"
+  - "./uni-app-webpack5"
