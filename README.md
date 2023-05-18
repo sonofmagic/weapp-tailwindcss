@@ -236,7 +236,7 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 
 ```js
 // 在 vue.config.js 里注册
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
@@ -285,7 +285,7 @@ export default defineConfig({
 
 ```js
 // config/index
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 {
   mini: {
@@ -314,7 +314,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 ```js
 // vue.config.js
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 module.exports = defineConfig({
   // other options
@@ -345,7 +345,7 @@ module.exports = defineConfig({
 
 ```js
 // build.plugin.js
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
     config.plugin('UnifiedWebpackPluginV5').use(UnifiedWebpackPluginV5, [

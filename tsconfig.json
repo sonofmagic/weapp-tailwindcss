@@ -19,12 +19,6 @@
       "#test/*": [
         "test/*"
       ],
-      "vite": [
-        "node_modules/vite/dist/node/index"
-      ],
-      "postcss": [
-        "node_modules/postcss/lib/postcss"
-      ]
     },
     "plugins": [
       {

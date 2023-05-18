@@ -15,7 +15,7 @@
 
 ```js
 // build.plugin.js
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
     config.plugin('UnifiedWebpackPluginV5').use(UnifiedWebpackPluginV5, [

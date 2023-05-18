@@ -4,7 +4,7 @@
 ```js
 // vue.config.js
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 module.exports = defineConfig({
   // other options

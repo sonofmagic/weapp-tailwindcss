@@ -16,7 +16,7 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 
 ```js
 // 在 vue.config.js 里注册
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
