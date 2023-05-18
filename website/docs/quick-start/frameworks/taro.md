@@ -26,7 +26,7 @@ cache: {
 
 ```js
 // config/index
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 {
   mini: {
