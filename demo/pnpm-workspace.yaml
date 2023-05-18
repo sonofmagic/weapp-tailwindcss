@@ -1,0 +1,9 @@
+packages:
+  - "./taro-app"
+  - "./taro-vue2-app"
+  - "./taro-vue3-app"
+  - "./rax-app"
+  - "./gulp-app"
+  - "./mpx-app"
+  - "./native-mina"
+  - "./packages"

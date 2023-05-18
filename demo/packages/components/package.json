@@ -26,18 +26,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "license": "ISC",
-  "optionalDependencies": {
-    "@tarojs/components": "^3.5.7",
-    "react": "^17.0.0 || ^18.0.0",
-    "vue": "^2.0.0 || ^3.0.0",
-    "weapp-tailwindcss-webpack-plugin": "^1.12.4"
-  },
+  "optionalDependencies": {},
   "peerDependencies": {
     "miniprogram-automator": "latest"
   },
   "devDependencies": {
-    "@jest/globals": "^29.3.1",
-    "jest": "^29.3.1",
     "miniprogram-automator": "latest"
   },
   "bugs": {

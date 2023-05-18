@@ -36,8 +36,5 @@
   "_devDependencies": {
     "turbo": "^1.3.3"
   },
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build"
-  }
+  "scripts": {}
 }
