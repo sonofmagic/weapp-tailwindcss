@@ -202,7 +202,7 @@
     "typescript": "^4.9.5",
     "typescript-transform-paths": "^3.4.6",
     "vinyl": "^3.0.0",
-    "vite": "^4.3.7",
+    "vite": "^4.3.8",
     "vitest": "^0.31.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.83.1"
