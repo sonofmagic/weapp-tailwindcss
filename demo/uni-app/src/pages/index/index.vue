@@ -16,7 +16,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Layout from '@/components/tailwind/Layout.vue'
-import { r } from '@/util'
+
 
 export default Vue.extend({
   components: {

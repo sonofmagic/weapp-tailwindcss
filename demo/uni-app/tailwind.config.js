@@ -1,9 +1,6 @@
-/** @type {import('@types/tailwindcss/tailwind-config').TailwindConfig} */
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  mode: 'jit',
-  purge: {
-    content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx,wxml}']
-  },
+  content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx,wxml}'],
   darkMode: 'media', // or 'media' or 'class'
   theme: {
     extend: {}
