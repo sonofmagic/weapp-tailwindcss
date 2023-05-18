@@ -5,7 +5,7 @@ if (process.env.LOCAL) {
   const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist');
   UnifiedWebpackPluginV5 = plugin;
 } else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin');
+  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack');
   UnifiedWebpackPluginV5 = plugin;
 }
 
