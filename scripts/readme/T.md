@@ -13,15 +13,15 @@
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss](#weapp-tailwindcss)
+  - [Tips](#tips)
   - [特性](#特性)
     - [插件介绍](#插件介绍)
   - [使用方式](#使用方式)
   - [从 v1 迁移到 v2](#从-v1-迁移到-v2)
-  - [js文件内容中taiwlindcss类名的精确转化与忽略策略](#js文件内容中taiwlindcss类名的精确转化与忽略策略)
-  - [Options 配置项](#options-配置项)
-  - [使用任意值(arbitrary values)](#使用任意值arbitrary-values)
-  - [变更日志](#变更日志)
+  - [配置项参考](#配置项参考)
+  - [使用tailwindcss任意值(arbitrary values)](#使用tailwindcss任意值arbitrary-values)
   - [常见问题](#常见问题)
+  - [变更日志](#变更日志)
   - [Related projects](#related-projects)
     - [CLI 工具](#cli-工具)
     - [模板 template](#模板-template)
@@ -34,8 +34,10 @@
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
-> 自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装那个包(当然安装现在这个包也行)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合目前这种多插件并存的状态了。
->
+## Tips
+
+自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装那个包(当然安装现在这个包也行)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合现在这种，多插件并存的状态了，为了以后的发展还是改个名字。
+
 ## 特性
 
 | 不仅仅是`webpack`                                   | 主流框架与原生开发支持                          |
@@ -62,15 +64,15 @@
 
 ## [从 v1 迁移到 v2](https://weapp-tw.icebreaker.top/docs/migrations/v1)
 
-## [js文件内容中taiwlindcss类名的精确转化与忽略策略](https://weapp-tw.icebreaker.top/docs/options/comments)
+<!-- ## [js文件内容中taiwlindcss类名的精确转化与忽略策略](https://weapp-tw.icebreaker.top/docs/options/comments) -->
 
-## [Options 配置项](https://weapp-tw.icebreaker.top/docs/options/)
+## [配置项参考](https://weapp-tw.icebreaker.top/docs/options/)
 
-## [使用任意值(arbitrary values)](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
-
-## [变更日志](./CHANGELOG.md)
+## [使用tailwindcss任意值(arbitrary values)](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
 
 ## [常见问题](https://weapp-tw.icebreaker.top/docs/issues/)
+
+## [变更日志](./CHANGELOG.md)
 
 ## Related projects
 
