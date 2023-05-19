@@ -1,11 +1,14 @@
 
 <p align="center">
 
-![logo](./assets/logo.png)
+<a href="https://weapp-tw.icebreaker.top">
+
+<img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
+</a>
 
 <br>
 
-# weapp-tailwindcss
+<h1>weapp-tailwindcss</h1>
 
 </p>
 <!-- <p align="center">
@@ -28,27 +31,26 @@
 
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/)\] \| \[[1.x文档]('./v1.md')\]
 
-- [weapp-tailwindcss](#weapp-tailwindcss)
-  - [Tips](#tips)
-  - [特性](#特性)
-    - [插件介绍](#插件介绍)
-  - [使用方式](#使用方式)
-  - [从 v1 迁移到 v2](#从-v1-迁移到-v2)
-  - [配置项参考](#配置项参考)
-  - [使用tailwindcss任意值(arbitrary values)](#使用tailwindcss任意值arbitrary-values)
-  - [常见问题](#常见问题)
-  - [变更日志](#变更日志)
-  - [Related projects](#related-projects)
-    - [CLI 工具](#cli-工具)
-    - [模板 template](#模板-template)
-      - [如何选择？](#如何选择)
-      - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
-      - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
-      - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
-      - [原生小程序开发模板](#原生小程序开发模板)
-    - [tailwindcss plugin](#tailwindcss-plugin)
-    - [tailwindcss preset](#tailwindcss-preset)
-  - [Bugs \& Issues](#bugs--issues)
+- [Tips](#tips)
+- [特性](#特性)
+  - [插件介绍](#插件介绍)
+- [使用方式](#使用方式)
+- [从 v1 迁移到 v2](#从-v1-迁移到-v2)
+- [配置项参考](#配置项参考)
+- [使用tailwindcss任意值(arbitrary values)](#使用tailwindcss任意值arbitrary-values)
+- [常见问题](#常见问题)
+- [变更日志](#变更日志)
+- [Related projects](#related-projects)
+  - [CLI 工具](#cli-工具)
+  - [模板 template](#模板-template)
+    - [如何选择？](#如何选择)
+    - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
+    - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
+    - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
+    - [原生小程序开发模板](#原生小程序开发模板)
+  - [tailwindcss plugin](#tailwindcss-plugin)
+  - [tailwindcss preset](#tailwindcss-preset)
+- [Bugs \& Issues](#bugs--issues)
 
 ## Tips
 
