@@ -8,7 +8,7 @@
 
 <br>
 
-<h1>weapp-tailwindcss</h1>
+<h1 align="center">weapp-tailwindcss</h1>
 
 </p>
 <!-- <p align="center">
