@@ -1,7 +1,7 @@
 
 #### 1. 安装 `tailwindcss`
 
-```sh
+```bash
 # npm / yarn / pnpm 
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init

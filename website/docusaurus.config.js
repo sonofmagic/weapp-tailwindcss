@@ -3,7 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
-const nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals')
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
@@ -40,7 +40,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'sonofmagic', // Usually your GitHub org/user name.
-  projectName: 'weapp-tailwindcss-webpack-plugin', // Usually your repo name.
+  projectName: 'weapp-tailwindcss', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -117,7 +117,7 @@ const config = {
           return postcssOptions
         }
       }
-    },
+    }
     // function nodeLoader(context, options) {
     //   return {
     //     name: 'canvas-node-loader-plugin',

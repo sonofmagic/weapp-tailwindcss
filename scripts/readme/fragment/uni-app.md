@@ -1,7 +1,7 @@
 
 **在创建uni-app项目时，请选择uni-app alpha版本**
 
-```sh
+```bash
 vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 ```
 

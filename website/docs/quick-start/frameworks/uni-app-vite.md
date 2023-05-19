@@ -6,13 +6,13 @@
 
 - 创建以 javascript 开发的工程（如命令行创建失败，请直接访问 gitee 下载模板）
 
-```sh
+```bash
 npx degit dcloudio/uni-preset-vue#vite my-vue3-project
 ```
 
 - 创建以 typescript 开发的工程（如命令行创建失败，请直接访问 gitee 下载模板）
 
-```sh
+```bash
 npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project
 ```
 
@@ -24,7 +24,7 @@ npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project
 // vite.config.[jt]s
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss-webpack-plugin/vite';
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite';
 // uni 是 uni-app 官方插件， uvtw 一定要放在 uni 后，对生成文件进行处理
 const vitePlugins = [uni(),uvwt()]
 
@@ -40,4 +40,4 @@ export default defineConfig({
 
 ```
 
-参考配置项文件链接: <https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template>
+这里只列举了插件的注册，包括`postcss`配置完整的注册方式，参考配置项文件链接: <https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template>
