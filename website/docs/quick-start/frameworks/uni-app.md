@@ -8,15 +8,17 @@
 如果你使用 `@vue/cli 4.x` 版本，你可以使用非 `Unified` 开头的`v1`版本的插件，不过它们的开发体验要比 `Unified` 开头的插件差一些。
 
 通过 `@vue/cli` 创建的方式为：
-```sh
+
+```bash
 vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 ```
-:::
 
+另外如果你有旧有的 `uni-app webpack4` 项目需要迁移到 `webpack5`，可以看这篇 [旧有uni-app项目升级webpack5指南](/docs/upgrade/uni-app)
+:::
 
 ```js
 // 在 vue.config.js 里注册
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */

@@ -1,8 +1,12 @@
 # 安装这个插件
 
-```sh
+:::tip
+自从 `2.3.3` 版本开始，我发布了一个额外的包叫 [`weapp-tailwindcss`](https://www.npmjs.com/package/weapp-tailwindcss),它和 [`weapp-tailwindcss-webpack-plugin`](https://www.npmjs.com/package/weapp-tailwindcss-webpack-plugin) 代码版本完全一致，且保持发布版本的同步。以后可以都去安装那个包(当然安装现在这个包也行)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合现在这种，多插件并存的状态了，为了以后的发展改个名字。
+:::
+
+```bash
 # npm / yarn /pnpm
-npm i -D weapp-tailwindcss-webpack-plugin
+npm i -D weapp-tailwindcss
 # 可以执行一下 patch 方法
 npx weapp-tw patch
 ```

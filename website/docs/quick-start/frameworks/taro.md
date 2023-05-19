@@ -18,7 +18,7 @@ cache: {
 
 开启它会导致二次编译时，直接跳过插件的转义。另外还有一个 -->
 
-`taro` 开发时热更新的问题，开发中保存 `tailwind.config.js` 文件，触发热更新会导致所有样式挂掉，此时重新保存任意 `jsx/tsx` 文件恢复正常。
+<!-- `taro` 开发时热更新的问题，开发中保存 `tailwind.config.js` 文件，触发热更新会导致所有样式挂掉，此时重新保存任意 `jsx/tsx` 文件恢复正常。 -->
 
 :::
 
@@ -26,7 +26,7 @@ cache: {
 
 ```js
 // config/index
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 
 {
   mini: {
@@ -46,10 +46,10 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/web
 }
 ```
 
-运行项目即可
+然后正常运行项目即可
 
 :::tip
-另外在和 `@tarojs/plugin-html` 一起使用时，需要配置 `postcss-html-transform` 这个插件，不然默认配置下它会移除整个 `tailwindcss css var` 区域块，这会造成 `tw-*` 相关变量找不到问题。
+另外在和 `@tarojs/plugin-html` 一起使用时，需要去配置一下 `postcss-html-transform` 这个插件，不然默认配置下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。
 
 ```js
 // config/index.js

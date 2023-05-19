@@ -43,7 +43,15 @@ npx @dcloudio/uvm alpha
 
 所以你也按需应该升级一下你所依赖的 `postcss` 插件版本。
 
-### 4. 运行排错
+### 4. 配置文件升级
+
+比如 `babel.config.js` 这个就需要修改，[参考代码](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-webpack5/babel.config.js)
+
+比如 `postcss.config.js` 这个，也需要更新一下，[参考代码](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-webpack5/postcss.config.js)
+
+诸如这种类似的，都可以新创建一个的 `uni-app alpha` 的项目，然后把里面的配置直接复制过来，再改改 `postcss.config.js` 把 `tailwindcss` 注册进去即可。
+
+### 5. 运行排错
 
 接下来就是，删掉你的 `lock` 文件，重新安装所有包，并运行你的项目！
 

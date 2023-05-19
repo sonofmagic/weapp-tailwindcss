@@ -6,7 +6,7 @@
 
 ## 1. 使用包管理器安装 `tailwindcss`
 
-```sh
+```bash
 # 使用你喜欢的任意 npm / yarn / pnpm 
 npm install -D tailwindcss postcss autoprefixer
 # 初始化 tailwind.config.js 文件

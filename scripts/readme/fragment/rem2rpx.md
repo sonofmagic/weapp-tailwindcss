@@ -7,7 +7,7 @@
 
 #### 2. `postcss-rem-to-responsive-pixel`
 
-```sh
+```bash
 npm i -D postcss-rem-to-responsive-pixel
 ```
 
@@ -33,7 +33,7 @@ module.exports = {
 
 #### 3. `tailwindcss-rem2px-preset`
 
-```sh
+```bash
 npm i -D tailwindcss-rem2px-preset
 ```
 

@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { r } from '@/util'
+
 export default Vue.extend({
   data() {
     return {
@@ -108,7 +108,7 @@ export default Vue.extend({
   },
   computed: {
     classObject() {
-      return r('text-[20px] bg-[#000000]')
+      return 'text-[20px] bg-[#000000]'
     }
   }
 })

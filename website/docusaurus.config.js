@@ -3,7 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
-const nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals')
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
@@ -117,7 +117,7 @@ const config = {
           return postcssOptions
         }
       }
-    },
+    }
     // function nodeLoader(context, options) {
     //   return {
     //     name: 'canvas-node-loader-plugin',

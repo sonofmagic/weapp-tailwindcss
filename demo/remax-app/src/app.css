@@ -1,8 +1,0 @@
-/* page {
-  background: #282c34;
-} */
-
-/* @import 'tailwindcss/base';
-@import 'tailwindcss/utilities'; */
-@tailwind base;
-@tailwind utilities;

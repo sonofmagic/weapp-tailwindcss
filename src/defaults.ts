@@ -11,8 +11,8 @@ export const defaultOptions: UserDefinedOptions = {
     if (file.includes('node_modules')) {
       return false
     }
-
-    return /.+\.[cm]?[jt]sx?$/.test(file)
+    // remove jsx tsx ts case
+    return /.+\.[cm]?[j]s?$/.test(file)
   },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {

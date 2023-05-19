@@ -1,6 +1,6 @@
 ![logo](./assets/logo.jpg)
 
-# weapp-tailwindcss-webpack-plugin
+# weapp-tailwindcss
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
 ![dm](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
@@ -8,24 +8,20 @@
 [![test](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin)
 
-> 把 `tailwindcss` 带入小程序开发吧！
+> `小程序` + `tailwindcss` 全方面解决方案
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/)\] \| \[[1.x文档]('./v1.md')\]
 
-- [weapp-tailwindcss-webpack-plugin](#weapp-tailwindcss-webpack-plugin)
+- [weapp-tailwindcss](#weapp-tailwindcss)
+  - [Tips](#tips)
   - [特性](#特性)
     - [插件介绍](#插件介绍)
-  - [Usage](#usage)
-    - [1. 安装配置 tailwindcss](#1-安装配置-tailwindcss)
-    - [2. `rem` 转 `px` 或 `rpx`](#2-rem-转-px-或-rpx)
-    - [3. 安装这个插件](#3-安装这个插件)
-      - [各个框架注册的方式](#各个框架注册的方式)
-  - [从 v1 迁移](#从-v1-迁移)
-  - [精确转化与忽略](#精确转化与忽略)
-  - [Options 配置项](#options-配置项)
-  - [使用任意值(arbitrary values)](#使用任意值arbitrary-values)
-  - [变更日志](#变更日志)
+  - [使用方式](#使用方式)
+  - [从 v1 迁移到 v2](#从-v1-迁移到-v2)
+  - [配置项参考](#配置项参考)
+  - [使用tailwindcss任意值(arbitrary values)](#使用tailwindcss任意值arbitrary-values)
   - [常见问题](#常见问题)
+  - [变更日志](#变更日志)
   - [Related projects](#related-projects)
     - [CLI 工具](#cli-工具)
     - [模板 template](#模板-template)
@@ -38,139 +34,45 @@
     - [tailwindcss preset](#tailwindcss-preset)
   - [Bugs \& Issues](#bugs--issues)
 
+## Tips
+
+自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装 `weapp-tailwindcss` 这个包(当然现在 `webpack-plugin` 这个包也不会废弃，也会时刻保持版本的同步)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合描述现在这种，多插件并存的状态了，为了以后的发展改个名字哈哈。
+
 ## 特性
 
 | 不仅仅是`webpack`                                   | 主流框架与原生开发支持                          |
 | --------------------------------------------------- | ----------------------------------------------- |
 | ![wepback+vite+gulp](./assets/weapp-tw-plugins.png) | ![frameworks](./assets/weapp-tw-frameworks.png) |
 
-> `2.2.0` 版本后，所以 v1 版本的插件被去除，如果你还是想用 v1 插件，请锁定你的版本在 `2.1.5`
+核心插件支持 `webpack`/`vite`/`gulp`进行打包，涵盖了市面上几乎所有的主流开发小程序的框架。
 
-这个版本新增了 `UnifiedWebpackPluginV5`
-和 `UnifiedViteWeappTailwindcssPlugin` 这种 `Unified` 开头的插件。
-
-它们能够自动识别并精确处理所有 `tailwindcss` 的工具类。这意味着它可以同时处理所有文件中的静态或动态的 `class`。
-
-相比`v1`版本只有处理`wxss`,`wxml`静态`class`的能力，使用`v2`版本新的插件，你再也不需要在 `js` 里引入并调用标记方法 `replaceJs`了！`2.x` 插件有精准转化 `js`/`jsx` 的能力，大大提升了 `taro` 这种动态模板框架的开发体验。
+这些插件能够自动识别并精确处理所有 `tailwindcss` 的工具类来适配小程序环境。同时这些插件还有对`tailwindcss`生成的工具类名，进行压缩和混淆的能力。这个能力可以缩短`css`选择器的长度，减小生成样式的体积，同时让生产环境中的类名变得不可阅读。
 
 ### 插件介绍
 
-`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它，只需要传入 `appType` 配置项: `uni-app`/`taro`/`rax`/`remax`/`mpx` 等等，如果不传的话，插件会去猜测公共的样式文件位置，并进行转化(有可能不准确)。
+从 `weapp-tailwindcss/webpack` 导出的`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它。
 
-目前，这个方案只支持 `tailwindcss v3.x.x` 版本和 `webpack5`。同时这个方案依赖 `monkey patch`，所以你应该把
+从 `weapp-tailwindcss/vite` 导出的`UnifiedViteWeappTailwindcssPlugin` 为 `vite` 专用插件，配置项和使用方式和 `webpack` 插件是一致的。
 
-```json
- "scripts": {
-+  "postinstall": "weapp-tw patch"
- }
-```
+而我们的 `gulp` 插件方法，可以从 `weapp-tailwindcss/gulp` 导出。
 
-加入你的 `package.json`。当然在安装或者更新 `tailwindcss` 后，手动执行  `npx weapp-tw patch` 效果也是一样的，看到 `patch .... successfully` 表示成功。
+目前，这些插件支持最新版本的 `tailwindcss v3.x.x` 版本和 `webpack5`，`vite` 和 `gulp`。
 
-`UnifiedViteWeappTailwindcssPlugin` 为 `vite` 专用插件，配置项和使用方式也是和上面一致的。
+> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用本插件的 `1.x` 版本
 
-## Usage
+## [使用方式](https://weapp-tw.icebreaker.top/docs/quick-start/install)
 
-### 1. 安装配置 tailwindcss
+## [从 v1 迁移到 v2](https://weapp-tw.icebreaker.top/docs/migrations/v1)
 
-{{install-tailwindcss}}
+<!-- ## [js文件内容中taiwlindcss类名的精确转化与忽略策略](https://weapp-tw.icebreaker.top/docs/options/comments) -->
 
-### 2. `rem` 转 `px` 或 `rpx`
+## [配置项参考](https://weapp-tw.icebreaker.top/docs/options/)
 
-{{rem2rpx}}
+## [使用tailwindcss任意值(arbitrary values)](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
 
-### 3. 安装这个插件
-
-```sh
-# npm / yarn /pnpm
-npm i -D weapp-tailwindcss-webpack-plugin
-# 可以执行一下 patch 方法
-npx weapp-tw patch
-```
-
-然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
-
-```json
- "scripts": {
-+  "postinstall": "weapp-tw patch"
- }
-```
-
-#### 各个框架注册的方式
-
-{{frameworks}}
-
-## 从 v1 迁移
-
-在 `2.x` 版本中，可以把之前使用的 `webpack` 插件，全部更换为 `UnifiedWebpackPluginV5` 插件，不过 `vite` 插件的导出有一些小变化:
-
-`1.x`:
-
-```js
-import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
-```
-
-`2.x`:
-
-```js
-// UnifiedViteWeappTailwindcssPlugin 就是新的插件
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss-webpack-plugin/vite';
-```
-
-另外新的 `UnifiedWebpackPluginV5` 可以直接从 `weapp-tailwindcss-webpack-plugin` 引入，同时在新的 `UnifiedWebpackPluginV5` 中，之前所有的配置项都被继承了过来，只需要用它直接替换原先插件即可。
-
-另外不要忘记把:
-
-```json
- "scripts": {
-+  "postinstall": "weapp-tw patch"
- }
-```
-
-添加进你的 `package.json` 里，然后清除原先的打包缓存之后重新打包运行。
-
-<!-- 所以用 `uni-app` 的，建议你使用 `@vue/cli5`版本，`taro` 则切换到 `webpack5`。 -->
-
-## 精确转化与忽略
-
-默认对所有 `jsx`,`js`,`wxml`,`wxss`中出现的`tailwindcss`运行时工具类进行转化，如果不需要转化可以使用 `/*weapp-tw ignore*/` 前置注释。
-
-例如:
-
-```js
-<view :class="classArray">classArray</view>
-const classArray = [
-  'text-[30rpx]',
-  /*weapp-tw ignore*/ 'bg-[#00ff00]'
-]
-```
-
-此时只有 `'text-[30rpx]'` 会被转化，`'bg-[#00ff00]'`被忽视
-
-另外有可能出现的问题，我也写进了 [常见问题](#常见问题) 中，可以进行参考。
-<!-- ### HBuilderX 创建的项目
-
-需要创建 `vite` 版本或者 `HBuilderX`最新`alpha`版，方式同上
-
-### uni-app 构建成 `android/ios` app
-
-[建议配置方式](./docs/uni-app-android-and-ios.md) -->
-
-## Options 配置项
-
-{{options-table}}
-
-## 使用任意值(arbitrary values)
-
-详见 [tailwindcss/using-arbitrary-values 章节](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
+## [常见问题](https://weapp-tw.icebreaker.top/docs/issues/)
 
 ## [变更日志](./CHANGELOG.md)
-
-## 常见问题
-
-> 目前微信开发者工具会默认开启 `代码自动热重载 (compileHotReLoad)` 功能，这个功能在原生开发中表现良好，但在 `uni-app` 和 `taro` 等等的框架中，存在一定的问题，详见[issues#37](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/37)，所以如果你遇到了此类问题，建议关闭 `代码自动热重载` 功能。
-
-[常见问题见 FAQ.md](./docs/faq.md)
 
 ## Related projects
 
@@ -190,13 +92,9 @@ const classArray = [
 
 [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
 
-~~[uni-app-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-vscode-template)(不推荐,此版本为webpack5打包vue3,建议使用上面的vite打包vue3的模板)~~
-
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
 
 #### 使用`hbuilderx` 进行构建和开发
-
-~~[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)(不推荐,此版本收到hbuilderx的限制，无法升级到最新的tailwindcss)~~
 
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
