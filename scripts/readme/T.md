@@ -1,4 +1,13 @@
-![logo](./assets/logo.jpg)
+![logo](./assets/logo.png)
+
+<!-- <p align="center">
+<a href="https://weapp-tw.icebreaker.top#gh-light-mode-only">
+  <img src="./assets/logo-text-light.png#gh-light-mode-only" alt="weapp-tailwindcss-logo" width="300">
+</a>
+<a href="https://weapp-tw.icebreaker.top#gh-dark-mode-only">
+  <img src="./assets/logo-text-dark.png#gh-dark-mode-only" alt="weapp-tailwindcss-logo" width="300">
+</a>
+<br> -->
 
 # weapp-tailwindcss
 
