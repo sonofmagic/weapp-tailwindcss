@@ -1,9 +1,28 @@
-![logo](./assets/logo.jpg)
 
-# weapp-tailwindcss
+<p align="center">
+
+<a href="https://weapp-tw.icebreaker.top">
+
+<img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
+</a>
+
+<br>
+
+<h1 align="center">weapp-tailwindcss</h1>
+
+</p>
+<!-- <p align="center">
+<a href="https://weapp-tw.icebreaker.top#gh-light-mode-only">
+  <img src="./assets/logo-text-light.png#gh-light-mode-only" alt="weapp-tailwindcss-logo" width="300">
+</a>
+<a href="https://weapp-tw.icebreaker.top#gh-dark-mode-only">
+  <img src="./assets/logo-text-dark.png#gh-dark-mode-only" alt="weapp-tailwindcss-logo" width="300">
+</a>
+<br> -->
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
-![dm](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
+![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
+![dm1](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
 [![test](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin)
@@ -12,27 +31,26 @@
 
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/)\] \| \[[1.x文档]('./v1.md')\]
 
-- [weapp-tailwindcss](#weapp-tailwindcss)
-  - [Tips](#tips)
-  - [特性](#特性)
-    - [插件介绍](#插件介绍)
-  - [使用方式](#使用方式)
-  - [从 v1 迁移到 v2](#从-v1-迁移到-v2)
-  - [配置项参考](#配置项参考)
-  - [使用tailwindcss任意值(arbitrary values)](#使用tailwindcss任意值arbitrary-values)
-  - [常见问题](#常见问题)
-  - [变更日志](#变更日志)
-  - [Related projects](#related-projects)
-    - [CLI 工具](#cli-工具)
-    - [模板 template](#模板-template)
-      - [如何选择？](#如何选择)
-      - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
-      - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
-      - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
-      - [原生小程序开发模板](#原生小程序开发模板)
-    - [tailwindcss plugin](#tailwindcss-plugin)
-    - [tailwindcss preset](#tailwindcss-preset)
-  - [Bugs \& Issues](#bugs--issues)
+- [Tips](#tips)
+- [特性](#特性)
+  - [插件介绍](#插件介绍)
+- [使用方式](#使用方式)
+- [从 v1 迁移到 v2](#从-v1-迁移到-v2)
+- [配置项参考](#配置项参考)
+- [使用tailwindcss任意值(arbitrary values)](#使用tailwindcss任意值arbitrary-values)
+- [常见问题](#常见问题)
+- [变更日志](#变更日志)
+- [Related projects](#related-projects)
+  - [CLI 工具](#cli-工具)
+  - [模板 template](#模板-template)
+    - [如何选择？](#如何选择)
+    - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
+    - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
+    - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
+    - [原生小程序开发模板](#原生小程序开发模板)
+  - [tailwindcss plugin](#tailwindcss-plugin)
+  - [tailwindcss preset](#tailwindcss-preset)
+- [Bugs \& Issues](#bugs--issues)
 
 ## Tips
 

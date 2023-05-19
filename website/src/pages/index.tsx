@@ -8,7 +8,7 @@ import PluginsImg from '@site/../assets/weapp-tw-plugins.png'
 // import Plugins from '@site/src/components/Plugins'
 // import Frameworks from '@site/src/components/Frameworks'
 function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext()
+  // const { siteConfig } = useDocusaurusContext()
   return (
     <header>
       <div className="container py-12">
@@ -16,9 +16,15 @@ function HomepageHeader() {
           <HomeLogo></HomeLogo>
         </div>
         <div className="flex flex-col items-center">
-          <h1>weapp-tailwindcss</h1>
-          <h3 className="text-sky-500">小程序 + tailwindcss 全方面解决方案</h3>
-          <p>{siteConfig.title}</p>
+          <h1>
+            <span className="text-[#07c160]">weapp</span>
+            <span>-</span>
+            <span className="text-sky-500">tailwindcss</span>
+          </h1>
+          <h3>
+            <span className="text-[#07c160]">小程序</span> 使用 <span className="text-sky-500">tailwindcss</span> 全方面解决方案
+          </h3>
+          {/* <p>{siteConfig.title}</p> */}
           <div>
             <Link className="button button--secondary button--lg " to="/docs/intro">
               立刻开始使用!

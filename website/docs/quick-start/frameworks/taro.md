@@ -46,7 +46,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 }
 ```
 
-然后正常运行项目即可
+然后正常运行项目即可，相关的配置可以参考模板 [taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
 :::tip
 另外在和 `@tarojs/plugin-html` 一起使用时，需要去配置一下 `postcss-html-transform` 这个插件，不然默认配置下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。

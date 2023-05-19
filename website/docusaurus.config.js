@@ -3,7 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
-const nodeExternals = require('webpack-node-externals')
+// const nodeExternals = require('webpack-node-externals')
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
@@ -151,6 +151,9 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        defaultMode: 'dark'
+      },
       metadata: [
         {
           name: 'keywords',
@@ -169,12 +172,12 @@ const config = {
         contextualSearch: true
       },
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/logo.png',
       navbar: {
         title: 'weapp-tw',
         logo: {
           alt: 'weapp tailwindcss Logo',
-          src: 'img/android-chrome-256x256.png'
+          src: 'img/logo.png'
         },
         items: [
           {
