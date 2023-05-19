@@ -16,7 +16,7 @@ function HomepageHeader() {
           <HomeLogo></HomeLogo>
         </div>
         <div className="flex flex-col items-center">
-          <h1>{siteConfig.projectName}</h1>
+          <h1>weapp-tailwindcss</h1>
           <h3 className="text-sky-500">小程序 + tailwindcss 全方面解决方案</h3>
           <p>{siteConfig.title}</p>
           <div>
