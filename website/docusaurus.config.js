@@ -169,12 +169,12 @@ const config = {
         contextualSearch: true
       },
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/logo.png',
       navbar: {
         title: 'weapp-tw',
         logo: {
           alt: 'weapp tailwindcss Logo',
-          src: 'img/android-chrome-256x256.png'
+          src: 'img/logo.png'
         },
         items: [
           {
