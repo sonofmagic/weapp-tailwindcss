@@ -10,7 +10,7 @@
 
 > `小程序` + `tailwindcss` 全方面解决方案
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| [备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/) \| \[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss](#weapp-tailwindcss)
   - [Tips](#tips)
@@ -36,7 +36,7 @@
 
 ## Tips
 
-自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装那个包(当然安装现在这个包也行)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合现在这种，多插件并存的状态了，为了以后的发展还是改个名字。
+自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装 `weapp-tailwindcss` 这个包(当然现在 `webpack-plugin` 这个包也不会废弃，也会时刻保持版本的同步)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合描述现在这种，多插件并存的状态了，为了以后的发展改个名字哈哈。
 
 ## 特性
 
