@@ -10,7 +10,7 @@
 
 > `小程序` + `tailwindcss` 全方面解决方案
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| [备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/) \| \[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/)\] \| \[[1.x文档]('./v1.md')\]
 
 - [weapp-tailwindcss](#weapp-tailwindcss)
   - [Tips](#tips)
