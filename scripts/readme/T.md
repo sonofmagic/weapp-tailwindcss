@@ -1,5 +1,13 @@
+
+<p align="center">
+
 ![logo](./assets/logo.png)
 
+<br>
+
+# weapp-tailwindcss
+
+</p>
 <!-- <p align="center">
 <a href="https://weapp-tw.icebreaker.top#gh-light-mode-only">
   <img src="./assets/logo-text-light.png#gh-light-mode-only" alt="weapp-tailwindcss-logo" width="300">
@@ -8,8 +16,6 @@
   <img src="./assets/logo-text-dark.png#gh-dark-mode-only" alt="weapp-tailwindcss-logo" width="300">
 </a>
 <br> -->
-
-# weapp-tailwindcss
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
