@@ -7,7 +7,8 @@ export const createInjectPreflight = (options?: CssPreflightOptions): InjectPref
   // if options false ,do no thing
   if (options && typeof options === 'object') {
     const entries = Object.entries(options)
-    for (const [prop, value] of entries) {
+    for (let i = 0; i < entries.length; i++) {
+      const [prop, value] = entries[i]
       if (value !== false) {
         result.push({
           prop,

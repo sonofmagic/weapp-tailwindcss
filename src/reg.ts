@@ -5,12 +5,12 @@ export function escapeStringRegexp(str: string) {
   if (typeof str !== 'string') {
     throw new TypeError('Expected a string')
   }
-  return str.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&').replaceAll('-', '\\x2d')
+  return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d')
 }
 
-export const templateClassExactRegexp = /(?<=^|\s)(?:hover-)?class=(?:["']\W+\s*\w+\()?["']([^"]+)["']/gs
+export const templateClassExactRegexp = /(?:(?<=^|\s)(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 
-export const tagWithEitherClassAndHoverClassRegexp = /<[a-z][a-z-]*[a-z]*\s+[^>]*?(?:hover-)?clas{2}="[^"]*"[^>]*?\/?>/g
+export const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\/?>/g
 
 interface ICreateRegexpOptions {
   exact?: boolean
@@ -33,7 +33,7 @@ export function getSourceString(input: string | RegExp) {
 }
 
 export function makePattern(arr: ItemOrItemArray<string | RegExp>): string {
-  let pattern = ''
+  let pattern: string = ''
   if (Array.isArray(arr)) {
     pattern = arr
       .reduce<string[]>((acc, cur) => {
@@ -96,22 +96,22 @@ export function variableMatch(original: string) {
 
 // #region  deprecated
 /** @deprecated */
-export const classRegexp = /(?:class|className)=(?:["']\W+\s*\w+\()?["']([^"]+)["']/gs
+export const classRegexp = /(?:class|className)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 /** @deprecated */
-export const vueTemplateClassRegexp = /(?:hover-)?class=(?:["']\W+\s*\w+\()?["']([^"]+)["']/gs
+export const vueTemplateClassRegexp = /(?:(?:hover-)?class)=(?:["']\W+\s*(?:\w+)\()?["']([^"]+)['"]/gs
 // TODO: poor perf
 /** @deprecated */
-export const tagRegexp = /<([a-z][a-z-]*[a-z]*)\s*(([a-z][a-z-]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gs
+export const tagRegexp = /<([a-z][-a-z]*[a-z]*)\s*(([a-z][-a-z]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gs
 /** @deprecated */
-export const tagWithClassRegexp = /<([a-z][a-z-]*[a-z]*)\s+[^>]*?class="([^"]*)"[^>]*?\/?>/g
+export const tagWithClassRegexp = /<([a-z][-a-z]*[a-z]*)\s+[^>]*?(?:class="([^"]*)")[^>]*?\/?>/g
 
 /** @deprecated */
 export function classStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
-  return str.replaceAll(classRegexp, replacement)
+  return str.replace(classRegexp, replacement)
 }
 /** @deprecated */
 export function tagStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
-  return str.replaceAll(tagRegexp, replacement)
+  return str.replace(tagRegexp, replacement)
 }
 
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
@@ -122,7 +122,7 @@ export function tagStringReplace(str: string, replacement: (substring: string, .
 // #region  test
 // '-' 不能单独存在,必须前或者后包含一个字母(不能是 '-'本身)
 // 相比来说 '_' 就宽泛多了，这就是选用 '_' 而不是 '-' 进行转义的原因
-export const wxmlAllowClassCharsRegExp = /[\w-]*/g
+export const wxmlAllowClassCharsRegExp = /[a-zA-Z0-9_-]*/g
 
 export function createWxmlAllowClassCharsRegExp() {
   return new RegExp(wxmlAllowClassCharsRegExp.source, 'g')
@@ -131,6 +131,6 @@ export function createWxmlAllowClassCharsRegExp() {
 export const doubleQuoteRegexp = /"([^"]*)"/g
 
 export function doubleQuoteStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
-  return str.replaceAll(doubleQuoteRegexp, replacement)
+  return str.replace(doubleQuoteRegexp, replacement)
 }
 // #endregion

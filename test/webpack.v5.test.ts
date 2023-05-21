@@ -1,9 +1,9 @@
-import path from 'node:path'
-import fs from 'node:fs/promises'
 import type { Compiler } from 'webpack'
-import postcss from 'postcss'
-import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
+import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
+import path from 'path'
+import postcss from 'postcss'
+import fs from 'fs/promises'
 import { useStore } from '@/mangle/store'
 
 describe('webpack5 plugin', () => {

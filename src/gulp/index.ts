@@ -1,8 +1,8 @@
-import stream from 'node:stream'
-import type File from 'vinyl'
 import { getOptions } from '@/options'
 import { UserDefinedOptions } from '@/types'
+import stream from 'stream'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import type File from 'vinyl'
 import { initStore, setRuntimeSet } from '@/mangle/store'
 const Transform = stream.Transform
 
@@ -15,7 +15,7 @@ const Transform = stream.Transform
  * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/native
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
-  if (options.customReplaceDictionary === undefined) {
+  if (typeof options.customReplaceDictionary === 'undefined') {
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])

@@ -1,9 +1,9 @@
-import * as t from '@babel/types'
-import { replaceWxml } from './shared'
 import { parseExpression, traverse, generate } from '@/babel'
+import { replaceWxml } from './shared'
 import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
 import { defu } from '@/utils'
 import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
+import * as t from '@babel/types'
 
 export function generateCode(match: string, options: ICommonReplaceOptions = {}) {
   const ast = parseExpression(match) as Node
@@ -16,9 +16,11 @@ export function generateCode(match: string, options: ICommonReplaceOptions = {})
       }
       // parentPath maybe null
       // ['td',[(g.type==='你好啊')?'highlight':'']]
-      if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
+      if (t.isBinaryExpression(path.parent)) {
+        if (t.isConditionalExpression(path.parentPath?.parent)) {
           return
         }
+      }
 
       path.node.value = replaceWxml(path.node.value, options)
     },
@@ -62,7 +64,7 @@ export function extractSource(original: string) {
 export function templeteReplacer(original: string, options: ICommonReplaceOptions = {}) {
   const sources = extractSource(original)
 
-  if (sources.length > 0) {
+  if (sources.length) {
     const resultArray: string[] = []
     let p = 0
     for (let i = 0; i < sources.length; i++) {
@@ -78,7 +80,7 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
       )
       p = m.start
       // 匹配后值
-      if (m.raw.trim().length > 0) {
+      if (m.raw.trim().length) {
         const code = generateCode(m.raw, options)
         const source = `{{${code}}}`
         m.source = source
@@ -101,7 +103,7 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
     }
 
     return resultArray
-      .filter(Boolean)
+      .filter((x) => x)
       .join('')
       .trim()
   } else {
@@ -125,7 +127,8 @@ export function customTempleteHandler(rawSource: string, options: ITempleteHandl
   const regexps = makeCustomAttributes(options.customAttributesEntities)
   if (regexps) {
     if (Array.isArray(regexps)) {
-      for (const regexp of regexps) {
+      for (let i = 0; i < regexps.length; i++) {
+        const regexp = regexps[i]
         source = source.replace(regexp.tagRegexp, (m0) => {
           return m0.replace(regexp.attrRegexp, (m1, className) => {
             return m1.replace(className, templeteReplacer(className, options))

@@ -41,9 +41,10 @@ export function resetStore() {
 
 function handleValue(rawSource: string) {
   const arr = splitCode(rawSource)
-  for (const x of arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const x = arr[i]
     if (store.runtimeSet.has(x)) {
-      rawSource = rawSource.replaceAll(new RegExp(escapeStringRegexp(x), 'g'), store.classGenerator.generateClassName(x).name)
+      rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x), 'g'), store.classGenerator.generateClassName(x).name)
     }
   }
   return rawSource
@@ -78,10 +79,10 @@ export function initStore(options: UserDefinedOptions['mangle']) {
 
 export function setRuntimeSet(runtimeSet: Set<string>) {
   const newSet = new Set<string>()
-  for (const c of runtimeSet) {
+  runtimeSet.forEach((c) => {
     if (store.filter(c)) {
       newSet.add(c)
     }
-  }
+  })
   store.runtimeSet = newSet
 }

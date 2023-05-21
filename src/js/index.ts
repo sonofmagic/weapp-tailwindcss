@@ -1,7 +1,7 @@
-import type { Node, StringLiteral, TemplateElement } from '@babel/types'
-import * as t from '@babel/types'
 import { parse, traverse, generate } from '@/babel'
 import type { TraverseOptions, IJsHandlerOptions } from '@/types'
+import type { Node, StringLiteral, TemplateElement } from '@babel/types'
+import * as t from '@babel/types'
 import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
@@ -13,7 +13,8 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
   const escapeMap = options.escapeMap
   const arr = splitCode(str) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
   let rawStr = str
-  for (const v of arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const v = arr[i]
     if (set.has(v)) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
@@ -23,7 +24,7 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
       if (!ignoreFlag) {
         const { jsHandler } = useStore()
         rawStr = jsHandler(rawStr)
-        rawStr = rawStr.replaceAll(
+        rawStr = rawStr.replace(
           new RegExp(escapeStringRegexp(v), 'g'),
           replaceWxml(v, {
             escapeMap
@@ -58,12 +59,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
       enter(p) {
         const n = p.node
         // eval()
-        if (t.isIdentifier(n.callee) && n.callee.name === 'eval' && t.isStringLiteral(n.arguments[0])) {
+        if (t.isIdentifier(n.callee) && n.callee.name === 'eval') {
+          if (t.isStringLiteral(n.arguments[0])) {
             const res = jsHandler(n.arguments[0].value, options)
             if (res.code) {
               n.arguments[0].value = res.code
             }
           }
+        }
       }
     },
     noScope: true

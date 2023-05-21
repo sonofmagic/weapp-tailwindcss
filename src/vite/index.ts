@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
-import type { OutputAsset, OutputChunk } from 'rollup'
 import { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/options'
+import type { OutputAsset, OutputChunk } from 'rollup'
 import { vitePluginName } from '@/constants'
 import { getGroupedEntries } from '@/utils'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
@@ -13,7 +13,7 @@ import { initStore, setRuntimeSet } from '@/mangle/store'
  * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
-  if (options.customReplaceDictionary === undefined) {
+  if (typeof options.customReplaceDictionary === 'undefined') {
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])

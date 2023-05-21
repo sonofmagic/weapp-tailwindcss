@@ -171,7 +171,6 @@
     "defu": "6.1.2",
     "del": "^6.1.1",
     "eslint": "8.40.0",
-    "eslint-config-icebreaker": "^1.1.0",
     "execa": "5",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.1",

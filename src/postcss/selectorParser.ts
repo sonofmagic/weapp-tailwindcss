@@ -1,7 +1,7 @@
 import selectorParser from 'postcss-selector-parser'
+import { internalCssSelectorReplacer } from './shared'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { Rule } from 'postcss'
-import { internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
 const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {

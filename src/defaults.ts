@@ -1,5 +1,5 @@
-import type { UserDefinedOptions } from './types'
 import { noop } from '@/utils'
+import type { UserDefinedOptions } from './types'
 import { SimpleMappingChars2String } from '@/dic'
 
 // import { mangleClassRegex } from '@/mangle/expose'
@@ -12,7 +12,7 @@ export const defaultOptions: UserDefinedOptions = {
       return false
     }
     // remove jsx tsx ts case
-    return /.+\.[cm]?js?$/.test(file)
+    return /.+\.[cm]?[j]s?$/.test(file)
   },
   mainCssChunkMatcher: (file, appType) => {
     switch (appType) {
@@ -21,22 +21,22 @@ export const defaultOptions: UserDefinedOptions = {
       }
       case 'uni-app-vite': {
         // vite 旧版本和新版本对应的样式文件
-        return file.startsWith('app') || /^common\/main/.test(file)
+        return /^app/.test(file) || /^common\/main/.test(file)
       }
       case 'mpx': {
-        return file.startsWith('app')
+        return /^app/.test(file)
       }
       case 'taro': {
-        return file.startsWith('app')
+        return /^app/.test(file)
       }
       case 'remax': {
-        return file.startsWith('app')
+        return /^app/.test(file)
       }
       case 'rax': {
-        return file.startsWith('bundle')
+        return /^bundle/.test(file)
       }
       case 'native': {
-        return file.startsWith('app')
+        return /^app/.test(file)
       }
       case 'kbone': {
         return /^(?:common\/)?miniprogram-app/.test(file)

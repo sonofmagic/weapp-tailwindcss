@@ -1,6 +1,6 @@
 // refers link: https://github.com/tailwindlabs/tailwindcss/blob/master/src/lib/regex.js
 
-export const validateFilterRE = /[\w%-?\u00A0-\uFFFF-]/
+export const validateFilterRE = /[\w\u00A0-\uFFFF-_:%-?]/
 
 export function isValidSelector(selector = ''): selector is string {
   return validateFilterRE.test(selector)
@@ -11,5 +11,5 @@ export function isValidSelector(selector = ''): selector is string {
 export const splitCode = (code: string) => {
   // , onlyWhiteSpace?: boolean
   // const regex = onlyWhiteSpace ? /[\s]+/ : /"|[\s]+/
-  return code.split(/\s+/).filter((element) => isValidSelector(element))
+  return code.split(/[\s]+/).filter(isValidSelector)
 }

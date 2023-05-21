@@ -1,5 +1,5 @@
-
 import type { InternalUserDefinedOptions } from '@/types'
+import defu from 'defu'
 
 export function isRegexp(value: unknown) {
   return Object.prototype.toString.call(value) === '[object RegExp]'
@@ -10,7 +10,8 @@ export function isMap(value: unknown) {
 }
 export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
   if (Array.isArray(arr)) {
-    for (const item of arr) {
+    for (let i = 0; i < arr.length; i++) {
+      const item = arr[i]
       if (typeof item === 'string') {
         if (item === str) {
           return true
@@ -33,32 +34,32 @@ const MAX_ASCII_CHAR_CODE = 127
 
 export function isAscii(str: string) {
   for (let i = 0, strLen = str.length; i < strLen; ++i) {
-    // eslint-disable-next-line unicorn/prefer-code-point
-    if (str.charCodeAt(i) > MAX_ASCII_CHAR_CODE) { return false }
+    if (str.charCodeAt(i) > MAX_ASCII_CHAR_CODE) return false
   }
   return true
 }
 
-
+export { defu }
 
 function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   if (!Array.isArray(arr)) {
-    throw new TypeError('expected an array for first argument')
+    throw new Error('expected an array for first argument')
   }
 
   if (typeof cb !== 'function') {
-    throw new TypeError('expected a function for second argument')
+    throw new Error('expected a function for second argument')
   }
 
   const result: Record<string, T[]> = {}
-  for (const item of arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i]
     const bucketCategory = cb(item)
     const bucket = result[bucketCategory]
 
-    if (Array.isArray(bucket)) {
-      result[bucketCategory].push(item)
-    } else {
+    if (!Array.isArray(bucket)) {
       result[bucketCategory] = [item]
+    } else {
+      result[bucketCategory].push(item)
     }
   }
 
@@ -80,5 +81,3 @@ export function getGroupedEntries<T>(entries: [string, T][], options: InternalUs
   })
   return groupedEntries as Record<'css' | 'html' | 'js' | 'other', [string, T][]>
 }
-
-export { default as defu } from 'defu'

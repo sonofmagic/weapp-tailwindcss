@@ -1,9 +1,9 @@
 import type { PluginCreator, Plugin } from 'postcss'
+import type { IStyleHandlerOptions } from '@/types'
 import { transformSync } from './selectorParser'
 import { commonChunkPreflight } from './mp'
-import type { IStyleHandlerOptions } from '@/types'
 import { postcssPlugin } from '@/constants'
-
+import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
@@ -29,6 +29,4 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
 
 postcssWeappTailwindcss.postcss = true
 
-export { postcssWeappTailwindcss,  }
-
-export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class'
+export { postcssWeappTailwindcss, postcssIsPseudoClass }
