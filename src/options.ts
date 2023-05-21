@@ -1,13 +1,13 @@
-import { defu, isMap } from '@/utils'
-import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
 import { isMatch } from 'micromatch'
+import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
+import { createjsHandler } from './js'
+import { defaultOptions } from './defaults'
+import { defu, isMap } from '@/utils'
 import { createTempleteHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { SimpleMappingChars2String, MappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
-import { createjsHandler } from './js'
-import { defaultOptions } from './defaults'
 import { isProd } from '@/env'
 
 // import { mangleClassRegex } from '@/mangle/expose'
@@ -66,11 +66,7 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
   result.escapeMap = customReplaceDictionary
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
   let customAttributesEntities: ICustomAttributesEntities
-  if (isMap(options.customAttributes)) {
-    customAttributesEntities = Array.from((options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries())
-  } else {
-    customAttributesEntities = Object.entries(customAttributes)
-  }
+  customAttributesEntities = isMap(options.customAttributes) ? [...(options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()] : Object.entries(customAttributes);
 
   // const custom = customAttributesEntities.length > 0
 

@@ -1,7 +1,7 @@
 import postcss from 'postcss'
+import { postcssIsPseudoClass, postcssWeappTailwindcss } from './plugin'
 import type { IStyleHandlerOptions } from '@/types'
 import { defu } from '@/utils'
-import { postcssIsPseudoClass, postcssWeappTailwindcss } from './plugin'
 
 export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   return postcss([postcssWeappTailwindcss(options), postcssIsPseudoClass()]).process(rawSource).css

@@ -11,6 +11,7 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "moduleResolution": "Node",
+    "target": "ESNext",
     "module": "ESNext",
     "paths": {
       "@/*": [
