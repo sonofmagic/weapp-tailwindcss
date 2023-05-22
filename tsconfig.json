@@ -6,6 +6,9 @@
       "src",
       "test"
     ],
+    "lib": [
+      "ES2021"
+    ],
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
