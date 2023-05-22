@@ -1,6 +1,6 @@
+import defu from 'defu'
 import { getOptions } from '@/options'
 import { MappingChars2String } from '@/dic'
-import defu from 'defu'
 describe('customReplaceDictionary', () => {
   it('templeteHandler custom map', () => {
     const { templeteHandler } = getOptions({

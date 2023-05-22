@@ -1,5 +1,5 @@
-import { createTemplateClassRegexp, createTempleteHandlerMatchRegexp, makePattern, handleRegexp } from '@/reg'
 import { matchAll } from './util'
+import { createTemplateClassRegexp, createTempleteHandlerMatchRegexp, makePattern, handleRegexp } from '@/reg'
 describe('regexp-maker', () => {
   it('makePattern case signle option', () => {
     const case0 = '<el-shitter>'
@@ -16,7 +16,7 @@ describe('regexp-maker', () => {
 
   it('makePattern case multiple options test case', () => {
     const case0 = 'view'
-    const case1 = /(?:van|el|ant)-(?:\w+)/g
+    const case1 = /(?:van|el|ant)-\w+/g
     const pattern = makePattern([case0, case1])
     expect(pattern).toBe([case0, handleRegexp(case1)].join('|'))
     expect(matchAll(new RegExp(pattern, 'g'), ['van-bug', 'el-bug', 'ant-bug'].join('\n')).length).toBe(3)

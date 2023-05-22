@@ -1,9 +1,9 @@
+import path from 'node:path'
+import internal from 'node:stream'
 import gulp from 'gulp'
 import postcss from 'gulp-postcss'
 import { createPlugins } from '@/gulp'
-import path from 'path'
 import { gulpCasePath } from '#test/util'
-import internal from 'stream'
 
 function promisify(task: internal.Transform) {
   return new Promise((resolve, reject) => {
@@ -60,10 +60,10 @@ async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
     .pipe(transformWxml())
 
   const ptasks = [jsTask, wxmlTask]
-  const [jsRes, wxmlRes] = await Promise.all(ptasks.map(readContent))
+  const [jsRes, wxmlRes] = await Promise.all(ptasks.map((element) => readContent(element)))
   expect(jsRes).toMatchSnapshot('js')
   expect(wxmlRes).toMatchSnapshot('wxml')
-  await Promise.all(ptasks.map(promisify))
+  await Promise.all(ptasks.map((element) => promisify(element)))
 }
 describe('gulp', () => {
   it('common build', async () => {

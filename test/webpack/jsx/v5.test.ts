@@ -1,9 +1,9 @@
+import path from 'node:path'
 import type { Compiler } from 'webpack'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { UnifiedWebpackPluginV5 } from '@/index'
 import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from '#test/helpers'
 import { webpack5CasePath } from '#test/util'
-import path from 'path'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 // import postcss from 'postcss'
 // import fs from 'fs/promises'
 

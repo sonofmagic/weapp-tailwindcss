@@ -4,9 +4,9 @@ import type { Compiler, Stats } from './types'
 export default function readAssets(compiler: Compiler, stats: Stats) {
   const assets: Record<string, string> = {}
 
-  Object.keys(stats.compilation.assets).forEach((asset) => {
+  for (const asset of Object.keys(stats.compilation.assets)) {
     assets[asset] = readAsset(asset, compiler, stats)
-  })
+  }
 
   return assets
 }

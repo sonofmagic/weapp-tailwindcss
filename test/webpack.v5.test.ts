@@ -1,9 +1,9 @@
+import path from 'node:path'
+import fs from 'node:fs/promises'
 import type { Compiler } from 'webpack'
-import { UnifiedWebpackPluginV5 } from '@/index'
-import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
-import path from 'path'
 import postcss from 'postcss'
-import fs from 'fs/promises'
+import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
+import { UnifiedWebpackPluginV5 } from '@/index'
 import { useStore } from '@/mangle/store'
 
 describe('webpack5 plugin', () => {
@@ -38,14 +38,14 @@ describe('webpack5 plugin', () => {
               const basename = path.basename(this.resourcePath, path.extname(this.resourcePath))
               const filename = basename + '.wxml'
               const content = await fs.readFile(path.resolve(this.context, filename), {
-                encoding: 'utf-8'
+                encoding: 'utf8'
               })
               this.emitFile(filename, content)
 
               const cssFilename = basename + '.css'
 
               const cssContent = await fs.readFile(path.resolve(this.context, cssFilename), {
-                encoding: 'utf-8'
+                encoding: 'utf8'
               })
 
               const res = await processor.process(cssContent, {
@@ -107,14 +107,14 @@ describe('webpack5 plugin', () => {
               const basename = path.basename(this.resourcePath, path.extname(this.resourcePath))
               const filename = basename + '.wxml'
               const content = await fs.readFile(path.resolve(this.context, filename), {
-                encoding: 'utf-8'
+                encoding: 'utf8'
               })
               this.emitFile(filename, content)
 
               const cssFilename = basename + '.css'
 
               const cssContent = await fs.readFile(path.resolve(this.context, cssFilename), {
-                encoding: 'utf-8'
+                encoding: 'utf8'
               })
 
               const res = await processor.process(cssContent, {

@@ -1,5 +1,5 @@
-import { pluginName } from '@/constants'
 import pkg from '../package.json'
+import { pluginName } from '@/constants'
 
 describe('[Default]', () => {
   it('pluginName should be pkg name', () => {

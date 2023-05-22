@@ -8,7 +8,7 @@ describe('all arbitrary values usages', () => {
     //   wxmlAllowClassCharsRegExp.lastIndex = 0
     // })
     test.each(Object.entries(subTitleObj))('%s', (subTitle, testCases) => {
-      testCases.forEach((testCase) => {
+      for (const testCase of testCases) {
         wxmlAllowClassCharsRegExp.lastIndex = 0
         const res = replaceWxml(testCase)
         const valid = wxmlAllowClassCharsRegExp.test(res)
@@ -17,7 +17,7 @@ describe('all arbitrary values usages', () => {
         // }
         expect(valid).toBe(true)
         expect(res).toMatchSnapshot()
-      })
+      }
     })
   })
 })
