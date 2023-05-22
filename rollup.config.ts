@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import * as path from 'node:path'
 import typescript from '@rollup/plugin-typescript'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -5,11 +7,9 @@ import json from '@rollup/plugin-json'
 import { visualizer } from 'rollup-plugin-visualizer'
 import type { PackageJson } from 'pkg-types'
 // import terser from '@rollup/plugin-terser'
-import { readFileSync } from 'node:fs'
 // import { resolve } from 'path'
 import type { RollupOptions } from 'rollup'
 import { excludeKeys } from './filter-obj'
-import * as path from 'path'
 const pkg = JSON.parse(
   readFileSync('./package.json', {
     encoding: 'utf8'
@@ -67,7 +67,7 @@ const mainOutputOptions: Partial<RollupOptions['output']> = {
   systemNullSetters: false,
   sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
     if (isDemo) {
-      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replace(/\.\.[\\/]/g, ''))
+      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replaceAll(/\.\.[/\\]/g, ''))
     }
     return relativeSourcePath
   }

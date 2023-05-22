@@ -41,10 +41,9 @@ export function resetStore() {
 
 function handleValue(rawSource: string) {
   const arr = splitCode(rawSource)
-  for (let i = 0; i < arr.length; i++) {
-    const x = arr[i]
+  for (const x of arr) {
     if (store.runtimeSet.has(x)) {
-      rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x), 'g'), store.classGenerator.generateClassName(x).name)
+      rawSource = rawSource.replaceAll(new RegExp(escapeStringRegexp(x), 'g'), store.classGenerator.generateClassName(x).name)
     }
   }
   return rawSource
@@ -79,10 +78,11 @@ export function initStore(options: UserDefinedOptions['mangle']) {
 
 export function setRuntimeSet(runtimeSet: Set<string>) {
   const newSet = new Set<string>()
-  runtimeSet.forEach((c) => {
+  for (const c of runtimeSet) {
+    // eslint-disable-next-line unicorn/no-array-callback-reference
     if (store.filter(c)) {
       newSet.add(c)
     }
-  })
+  }
   store.runtimeSet = newSet
 }

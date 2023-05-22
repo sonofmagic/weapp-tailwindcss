@@ -1,7 +1,7 @@
+import { cssCasePath, createGetCase, createPutCase } from '../util'
 import { styleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
-import { cssCasePath, createGetCase, createPutCase } from '../util'
 import { MappingChars2String } from '@/dic'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
@@ -228,7 +228,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe(
+    expect(result.replaceAll('\r\n', '\n')).toBe(
       '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
     )
   })
@@ -243,7 +243,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe('\n')
+    expect(result.replaceAll('\r\n', '\n')).toBe('\n')
   })
 
   it('arbitrary values case 2', async () => {
@@ -256,7 +256,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe(
+    expect(result.replaceAll('\r\n', '\n')).toBe(
       '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
     )
   })
@@ -271,7 +271,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
+    expect(result.replaceAll('\r\n', '\n')).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
   })
 
   it('arbitrary values case 4', async () => {
@@ -284,7 +284,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe(
+    expect(result.replaceAll('\r\n', '\n')).toBe(
       '@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n'
     )
   })
@@ -299,7 +299,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe(
+    expect(result.replaceAll('\r\n', '\n')).toBe(
       '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n'
     )
   })
@@ -314,12 +314,12 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replace(/\r\n/g, '\n')).toBe(
+    expect(result.replaceAll('\r\n', '\n')).toBe(
       '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n'
     )
   })
 
-  it('global variables scope matched case', async () => {
+  it('global variables scope matched case', () => {
     const testCase = ":before,:after{--tw-:'test'}"
     const result = styleHandler(testCase, {
       isMainChunk: true,
@@ -328,11 +328,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\'}')
   })
 
-  it('global variables scope matched and inject', async () => {
+  it('global variables scope matched and inject', () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
@@ -343,11 +343,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}')
   })
 
-  it('global variables scope matched and inject with isMainChunk false', async () => {
+  it('global variables scope matched and inject with isMainChunk false', () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
@@ -358,11 +358,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe(testCase)
   })
 
-  it('global variables scope matched and inject and modify preflight range', async () => {
+  it('global variables scope matched and inject and modify preflight range', () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
@@ -373,13 +373,13 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe(
       '::before,::after{--tw-content:""}\n:before,:after,view,:not(not){--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}'
     )
   })
 
-  it('global variables scope matched and inject and modify preflight range with isMainChunk false', async () => {
+  it('global variables scope matched and inject and modify preflight range with isMainChunk false', () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
@@ -390,11 +390,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe(testCase)
   })
 
-  it('global variables scope not matched', async () => {
+  it('global variables scope not matched', () => {
     const testCase = ':before,:after{color:red}'
     const result = styleHandler(testCase, {
       isMainChunk: true,
@@ -403,11 +403,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe(testCase)
   })
 
-  it("before:content-['+']", async () => {
+  it("before:content-['+']", () => {
     const testCase = ".before\\:content-\\[\\'\\+\\'\\]::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}"
     const result = styleHandler(testCase, {
       isMainChunk: true,
@@ -416,11 +416,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
   })
 
-  it('@apply space-y/x css selector', async () => {
+  it('@apply space-y/x css selector', () => {
     const testCase = '.test > :not([hidden]) ~ :not([hidden]){}'
     const result = styleHandler(testCase, {
       isMainChunk: true,
@@ -429,11 +429,11 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe('.test>view + view{}')
   })
 
-  it('Is Pseudo Class', async () => {
+  it('Is Pseudo Class', () => {
     const testCase = ':is(.dark .dark:bg-zinc-800) {}'
     const result = styleHandler(testCase, {
       isMainChunk: true,
@@ -442,7 +442,7 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toBe('.dark .dark:bg-zinc-800 {}')
   })
 
@@ -455,7 +455,7 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replace(/\r\n/g, '\n')
+    }).replaceAll('\r\n', '\n')
     expect(result).toMatchSnapshot()
   })
 })

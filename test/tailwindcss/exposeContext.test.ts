@@ -1,5 +1,5 @@
-import { tailwindcssCasePath, createGetCase } from '#test/util'
 import { inspectProcessTailwindFeaturesReturnContext, inspectPostcssPlugin } from 'tailwindcss-patch'
+import { tailwindcssCasePath, createGetCase } from '#test/util'
 
 const getCase = createGetCase(tailwindcssCasePath)
 describe('exposeContext', () => {

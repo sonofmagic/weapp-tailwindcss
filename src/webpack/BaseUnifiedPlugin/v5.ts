@@ -1,6 +1,6 @@
 // webpack 5
-import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import type { Compiler } from 'webpack'
+import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
@@ -19,7 +19,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
   static NS = NS
   constructor(options: UserDefinedOptions = {}) {
-    if (typeof options.customReplaceDictionary === 'undefined') {
+    if (options.customReplaceDictionary === undefined) {
       options.customReplaceDictionary = 'simple'
     }
     this.options = getOptions(options, ['style', 'patch', 'templete', 'js'])
@@ -41,9 +41,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       let set = twPatcher.getClassSet()
       // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
       // tarojs save scss hmr trigger error
-      if (!set.size) {
+      if (set.size === 0) {
         const cacheSet = twPatcher.getCache()
-        if (cacheSet && cacheSet.size) {
+        if (cacheSet && cacheSet.size > 0) {
           set = cacheSet
         }
       }

@@ -8,6 +8,7 @@ import type { IStyleHandlerOptions } from '@/types'
 // :not([hidden]) ~ :not([hidden])
 // const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
 
+// eslint-disable-next-line unicorn/better-regex
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
@@ -27,7 +28,7 @@ export function testIfVariablesScope(node: Rule, count = 1): boolean {
 }
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
-  node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
+  node.selector = node.selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
@@ -37,12 +38,10 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
     if (!selectorParts.includes('view')) {
       selectorParts.push('view')
     }
-    if (options.cssPreflightRange === 'all') {
-      // 默认对每个元素都生效
-      if (!selectorParts.includes(':not(not)')) {
+    if (options.cssPreflightRange === 'all' && // 默认对每个元素都生效
+      !selectorParts.includes(':not(not)')) {
         selectorParts.push(':not(not)')
       }
-    }
 
     node.selector = selectorParts.join(',')
 

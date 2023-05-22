@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import type { Compiler, Stats } from './types'
 export default (asset: string, compiler: Compiler, stats: Stats) => {
   const usedFs = compiler.outputFileSystem

@@ -1,13 +1,15 @@
-import { templeteHandler } from '@/wxml/index'
 import { format } from '../util'
+import { templeteHandler } from '@/wxml/index'
 import { MappingChars2String } from '@/dic'
+
+function complexHandler(str: string) {
+  return templeteHandler(str, {
+    escapeMap: MappingChars2String
+  })
+}
+
 describe('templeteHandler', () => {
-  function complexHandler(str: string) {
-    return templeteHandler(str, {
-      escapeMap: MappingChars2String
-    })
-  }
-  test('with var', async () => {
+  test('with var', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 
     const str = complexHandler(testCase)
@@ -76,7 +78,7 @@ describe('templeteHandler', () => {
     </button>`)
   })
 
-  test('with var 2', async () => {
+  test('with var 2', () => {
     const navbarTestCase = format(
       `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
       <block wx:if="{{isImmersive}}">

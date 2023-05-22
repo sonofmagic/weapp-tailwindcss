@@ -1,5 +1,5 @@
-import Module from 'module'
-import path from 'path'
+import Module from 'node:module'
+import path from 'node:path'
 
 const parentModule = module
 

@@ -1,9 +1,9 @@
 /* eslint-disable no-template-curly-in-string */
+import { getClassCacheSet } from 'tailwindcss-patch'
+import { createGetCase, jsCasePath } from './util'
 import { SimpleMappingChars2String } from '@/dic'
 import { createjsHandler } from '@/js/index'
-import { createGetCase, jsCasePath } from './util'
 import { getCss } from '#test/helpers/getTwCss'
-import { getClassCacheSet } from 'tailwindcss-patch'
 const getCase = createGetCase(jsCasePath)
 describe('jsHandler', () => {
   let h: ReturnType<typeof createjsHandler>

@@ -1,5 +1,5 @@
-import fs from 'fs/promises'
-import path from 'path'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 export { format } from './helpers/wxml'
 export function resolve(...args: string[]) {
   return path.resolve(...args)
@@ -19,13 +19,13 @@ export const gulpCasePath = resolve(__dirname, 'fixtures/gulp')
 
 export function readFile(filepath: string) {
   return fs.readFile(filepath, {
-    encoding: 'utf-8'
+    encoding: 'utf8'
   })
 }
 
 export function writeFile(filepath: string, data: string) {
   return fs.writeFile(filepath, data, {
-    encoding: 'utf-8'
+    encoding: 'utf8'
   })
 }
 
@@ -41,7 +41,7 @@ export function createPutCase(casePath: string) {
   }
 }
 
-export function isWebpackPlugin(constructor: new () => {}) {
+export function isWebpackPlugin(constructor: new () => object) {
   return typeof constructor.prototype.apply === 'function'
 }
 
@@ -62,5 +62,5 @@ export function switch2relative(p: string): string {
   if (path.isAbsolute(p)) {
     str = path.relative(__dirname, p)
   }
-  return str.replace(/\\/g, '/')
+  return str.replaceAll('\\', '/')
 }

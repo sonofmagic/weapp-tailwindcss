@@ -1,5 +1,5 @@
-import { replaceCss } from '@/replace'
 import { cssCasePath, createGetCase, createPutCase } from '../util'
+import { replaceCss } from '@/replace'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars

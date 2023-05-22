@@ -1,12 +1,12 @@
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import { gte as semverGte } from 'semver'
-import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions, InternalPatchResult } from '@/types'
 import type { PackageJson } from 'pkg-types'
+import { monkeyPatchForExposingContext, requireResolve, TailwindcssPatcher } from 'tailwindcss-patch'
+import { findAstNode } from './supportCustomUnit'
+import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions, InternalPatchResult } from '@/types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
-import { findAstNode } from './supportCustomUnit'
-import { monkeyPatchForExposingContext, requireResolve, TailwindcssPatcher } from 'tailwindcss-patch'
 import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
@@ -49,7 +49,7 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
   const DOPTS = dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   const dataTypesFilePath = path.resolve(rootDir, DOPTS.lengthUnitsFilePath)
   const dataTypesFileContent = fs.readFileSync(dataTypesFilePath, {
-    encoding: 'utf-8'
+    encoding: 'utf8'
   })
   const { arrayRef, changed } = findAstNode(dataTypesFileContent, options)
   if (arrayRef && changed) {
@@ -66,7 +66,7 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
       const newCode = prev + code + next
       if (DOPTS.overwrite) {
         fs.writeFileSync(DOPTS.destPath ?? dataTypesFilePath, newCode, {
-          encoding: 'utf-8'
+          encoding: 'utf8'
         })
         console.log('patch tailwindcss for custom length unit successfully!')
       }
@@ -75,8 +75,9 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
   }
 }
 
-export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite: boolean = true): InternalPatchResult | undefined {
+export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite = true): InternalPatchResult | undefined {
   if (pkgJsonPath) {
+    // eslint-disable-next-line unicorn/prefer-module
     const pkgJson = require(pkgJsonPath) as PackageJson
     const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
     if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
