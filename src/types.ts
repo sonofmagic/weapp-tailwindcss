@@ -1,7 +1,7 @@
-import type { InjectPreflight } from './postcss/preflight'
 import type { Rule } from 'postcss'
 import type { IClassGeneratorOptions } from 'tailwindcss-mangle-shared'
 import type { GeneratorResult } from '@babel/generator'
+import type { InjectPreflight } from './postcss/preflight'
 
 export type ItemOrItemArray<T> = T | T[]
 export type { TraverseOptions } from '@babel/traverse'

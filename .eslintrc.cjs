@@ -1,4 +1,11 @@
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
-  extends: ['icebreaker']
+  extends: ['icebreaker'],
+  rules: {
+    'unicorn/no-array-reduce': 0,
+    'unicorn/no-object-as-default-parameter': 0,
+    'unicorn/filename-case': 0,
+    'unicorn/no-null': 0
+  }
 }
