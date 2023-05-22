@@ -45,6 +45,7 @@
       ]
     }
   },
+  "sideEffects": false,
   "scripts": {
     "dev": "yarn clean && yarn dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && yarn dts",
