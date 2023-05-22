@@ -1,8 +1,8 @@
-const path = require('path')
+const path = require('node:path')
 const { install, raw } = require('@icebreakers/cli')
-const argvs = process.argv.slice(2)
-const isBeta = argvs.indexOf('--beta') > -1
-const isRc = argvs.indexOf('--rc') > -1
+const argvs = new Set(process.argv.slice(2))
+const isBeta = argvs.has('--beta')
+const isRc = argvs.has('--rc')
 ;(async () => {
   const demoPath = path.resolve(__dirname, '../../demo')
   await raw(demoPath, '--ignore-engines', true)

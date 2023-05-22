@@ -1,8 +1,8 @@
-function getSymbol () {
-  const contentDom = document.getElementById('content')
+function getSymbol() {
+  const contentDom = document.querySelector('#content')
   let v
-  const p = Array.from(contentDom.querySelectorAll('td')).reduce((acc, cur, idx) => {
-    const text = cur.innerText
+  const p = [...contentDom.querySelectorAll('td')].reduce((acc, cur, idx) => {
+    const text = cur.textContent
     if (idx % 2 === 0) {
       v = text
     } else {
