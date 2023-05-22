@@ -103,3 +103,13 @@ const vitePlugins = [uni(), uvwt({
 ```
 
 即 h5 环境和 app 环境都不开启我这个插件，因为本来这2个环境就是tailwindcss支持的环境，没必要开启插件转义。
+
+## 使用 pnpm@8 插件注册失败问题
+
+pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值变成了 `lowest-direct`
+
+这会导致所有的依赖，会被安装成你在 `package.json` 里注册的最低版本，这可能会造成一些问题。如何解决？
+
+目录下创建一个 `.npmrc`，设置 `resolution-mode` 为 `highest`，然后重新安装，
+
+或者，使用 `pnpm up -Li` 升级一下你 `package.json` 里的依赖包版本到最新即可。
