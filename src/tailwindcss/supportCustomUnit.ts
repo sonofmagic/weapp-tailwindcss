@@ -1,6 +1,6 @@
-import { parse, traverse } from '@/babel'
 import * as t from '@babel/types'
 import type { ArrayExpression, StringLiteral } from '@babel/types'
+import { parse, traverse } from '@/babel'
 import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions } from '@/types'
 
 export function findAstNode(content: string, options: ILengthUnitsPatchOptions) {
@@ -11,9 +11,7 @@ export function findAstNode(content: string, options: ILengthUnitsPatchOptions) 
   let changed = false
   traverse(ast, {
     Identifier(path) {
-      if (path.node.name === DOPTS.variableName) {
-        if (t.isVariableDeclarator(path.parent)) {
-          if (t.isArrayExpression(path.parent.init)) {
+      if (path.node.name === DOPTS.variableName && t.isVariableDeclarator(path.parent) && t.isArrayExpression(path.parent.init)) {
             arrayRef = path.parent.init
             const set = new Set(path.parent.init.elements.map((x) => (<StringLiteral>x).value))
             for (let i = 0; i < options.units.length; i++) {
@@ -36,8 +34,6 @@ export function findAstNode(content: string, options: ILengthUnitsPatchOptions) 
               }
             }
           }
-        }
-      }
     }
   })
   return {

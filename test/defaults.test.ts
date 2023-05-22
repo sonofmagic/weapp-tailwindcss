@@ -1,9 +1,9 @@
-import { defaultOptions } from '@/defaults'
 import { isWebpackPlugin } from './util'
+import { defaultOptions } from '@/defaults'
 const { mainCssChunkMatcher } = defaultOptions
 
 describe('defaults function test group', () => {
-  test('mainCssChunkMatcher', async () => {
+  test('mainCssChunkMatcher', () => {
     const case1 = 'dsd/sdsd.wxss'
 
     const uniappWxss = 'common/main.wxss'
@@ -27,12 +27,12 @@ describe('defaults function test group', () => {
   it('should export', () => {
     const { UnifiedWebpackPluginV5 } = require('../')
     const plugins = [UnifiedWebpackPluginV5]
-    plugins.forEach((plugin) => {
+    for (const plugin of plugins) {
       expect(isWebpackPlugin(plugin)).toBe(true)
-    })
+    }
   })
 
-  it('should replace export', async () => {
+  it('should replace export', () => {
     const { replaceCss, replaceJs } = require('../dist/replace') // await import('../replace')
 
     expect(replaceCss).toBeTruthy()

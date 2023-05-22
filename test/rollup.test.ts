@@ -1,7 +1,7 @@
-import configs from '../rollup.config'
 import { rollup } from 'rollup'
-import { excludeKeys } from '../filter-obj'
 import type { OutputChunk, OutputAsset } from 'rollup'
+import configs from '../rollup.config'
+import { excludeKeys } from '../filter-obj'
 function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]]) {
   return outputs.map((x) => {
     return excludeKeys(x, ['modules', 'facadeModuleId', 'moduleIds'])
@@ -11,8 +11,7 @@ function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]
 describe.skip('rollup build', () => {
   it('lib build', async () => {
     // const result:RollupBuild[] = []
-    for (let i = 0; i < configs.length; i++) {
-      const config = configs[i]
+    for (const config of configs) {
       const bundle = await rollup({
         input: config.input,
         external: config.external,

@@ -1,5 +1,5 @@
-import { templeteHandler } from '@/wxml'
 import { wxmlCasePath, createGetCase } from './util'
+import { templeteHandler } from '@/wxml'
 
 const getCase = createGetCase(wxmlCasePath)
 describe('performance', () => {

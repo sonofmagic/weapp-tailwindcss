@@ -1,5 +1,5 @@
+import fs from 'node:fs'
 import { mkCacheDirectory } from '@/tailwindcss/patcher'
-import fs from 'fs'
 
 describe('patcher unit test', () => {
   it('if will create cache directory', () => {

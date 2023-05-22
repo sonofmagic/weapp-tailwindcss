@@ -2,18 +2,19 @@ import { templeteHandler } from '@/wxml/index'
 import { MappingChars2String, SimpleMappingChars2String } from '@/dic'
 // import { format } from '../util'
 // https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants
+function complexHandler(str: string) {
+  return templeteHandler(str, {
+    escapeMap: MappingChars2String
+  })
+}
+// eslint-disable-next-line no-unused-vars
+function simpleHandler(str: string) {
+  return templeteHandler(str, {
+    escapeMap: SimpleMappingChars2String
+  })
+}
+
 describe('arbitrary variants', () => {
-  function complexHandler(str: string) {
-    return templeteHandler(str, {
-      escapeMap: MappingChars2String
-    })
-  }
-  // eslint-disable-next-line no-unused-vars
-  function simpleHandler(str: string) {
-    return templeteHandler(str, {
-      escapeMap: SimpleMappingChars2String
-    })
-  }
   test('[&:nth-child(3)]:underline', () => {
     const res = complexHandler('<li class="[&:nth-child(3)]:underline">{item}</li>')
     expect(res).toBe('<li class="_bl__am__c_nth-child_pl_3_qr__br__c_underline">{item}</li>')

@@ -1,5 +1,7 @@
 # 安装与配置 tailwindcss
 
+> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用本插件的 `1.x` 版本。另外请确保你的 `nodejs` 版本 `>=16`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS`版本，详见 [nodejs/release](https://github.com/nodejs/release)
+
 首先安装插件之前，自然是需要把 `tailwindcss` 对应的环境安装好咯。
 
 这里我们参考 `tailwindcss` 官网中，`postcss` 的使用方式进行安装 ([参考链接](https://tailwindcss.com/docs/installation/using-postcss))：

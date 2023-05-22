@@ -1,12 +1,14 @@
 import { templeteReplacer } from '@/wxml/index'
 import { MappingChars2String } from '@/dic'
 const testTable = [[{}]]
+
+function complexReplacer(str: string) {
+  return templeteReplacer(str, {
+    escapeMap: MappingChars2String
+  })
+}
+
 describe('templeteReplacer', () => {
-  function complexReplacer(str: string) {
-    return templeteReplacer(str, {
-      escapeMap: MappingChars2String
-    })
-  }
   it.each(testTable)('$label isStringLiteral', () => {
     const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
 
@@ -41,7 +43,7 @@ describe('templeteReplacer', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('\\r\\n replace test', async () => {
+  it('\\r\\n replace test', () => {
     const testCase = `
     bg-white
     rounded-full
@@ -56,7 +58,7 @@ describe('templeteReplacer', () => {
     expect(result).toBe('    bg-white    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto  ')
   })
 
-  it('\\r\\n replace test with var', async () => {
+  it('\\r\\n replace test with var', () => {
     const testCase = `{{[
       'flex',
       'items-center',
@@ -76,7 +78,7 @@ describe('templeteReplacer', () => {
     )
   })
 
-  it('variables with multiple literal', async () => {
+  it('variables with multiple literal', () => {
     // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = complexReplacer(testCase)

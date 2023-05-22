@@ -1,7 +1,7 @@
-const fs = require('fs')
+const fs = require('node:fs')
 const fsp = fs.promises
+const path = require('node:path')
 const pkg = require('../../package.json')
-const path = require('path')
 
 /**
  * 临时解决方案
@@ -13,25 +13,25 @@ function doReplace (ref, name) {
   const len = paths.length
   switch (len) {
     case 1: {
-      pkg[paths[0]] = pkg[paths[0]].replace(/npm-lib-template/g, name)
+      pkg[paths[0]] = pkg[paths[0]].replaceAll('npm-lib-template', name)
       break
     }
     case 2: {
-      pkg[paths[0]][paths[1]] = pkg[paths[0]][paths[1]].replace(/npm-lib-template/g, name)
+      pkg[paths[0]][paths[1]] = pkg[paths[0]][paths[1]].replaceAll('npm-lib-template', name)
       break
     }
   }
 }
 
 function replacePkg (name) {
-  ['name', 'description', 'bugs.url', 'repository.url', 'homepage'].forEach(p => {
+  for (const p of ['name', 'description', 'bugs.url', 'repository.url', 'homepage']) {
     doReplace(p, name)
     console.log(`[${p}] replace over`)
-  })
+  }
   return pkg
 }
 
-; (async () => {
+ (async () => {
   const cwd = process.cwd()
   const dirname = path.basename(cwd)
   const pkg = replacePkg(dirname)

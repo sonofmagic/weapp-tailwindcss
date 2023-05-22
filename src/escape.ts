@@ -1,5 +1,5 @@
 import { SimpleMappingChars2String } from '@/dic'
-
+const MAX_ASCII_CHAR_CODE = 127
 /**
  * @description 转义
  * @param selectors
@@ -11,18 +11,18 @@ export function escape(
   options: {
     map?: Record<string, string>
   } = {
-    map: SimpleMappingChars2String
-  }
+      map: SimpleMappingChars2String
+    }
 ) {
   const { map = <Record<string, string>>SimpleMappingChars2String } = options
 
   // unicode replace
-  const sb = selectors.split('')
+  const sb = [...selectors]
   for (let i = 0; i < sb.length; i++) {
     const char = sb[i]
-    const code = char.charCodeAt(0)
+    const code = char.codePointAt(0)
     // MAX_ASCII_CHAR_CODE
-    if (code > 127) {
+    if (code !== undefined && code > MAX_ASCII_CHAR_CODE) {
       // 'u' means 'unicode'
       sb[i] = 'u' + Number(code).toString(16)
     } else {
