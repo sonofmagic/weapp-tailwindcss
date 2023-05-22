@@ -9,27 +9,27 @@ import { webpack5CasePath } from '#test/util'
 
 describe('webpack5 jsx plugin', () => {
   let compiler: Compiler
-  const postcssPlugins = [
-    require('autoprefixer')(),
-    require('tailwindcss')({
-      theme: {
-        extend: {}
-      },
-      plugins: [],
-      corePlugins: {
-        preflight: false
-      },
-      content: [path.resolve(webpack5CasePath, 'jsx/**/*.jsx')]
-    }),
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
-    })
-  ]
+  let postcssPlugins
   beforeEach(() => {
     // const processor = postcss(postcssPlugins)
-
+    postcssPlugins = [
+      require('autoprefixer')(),
+      require('tailwindcss')({
+        theme: {
+          extend: {}
+        },
+        plugins: [],
+        corePlugins: {
+          preflight: false
+        },
+        content: [path.resolve(webpack5CasePath, 'jsx/**/*.jsx')]
+      }),
+      require('postcss-rem-to-responsive-pixel')({
+        rootValue: 32,
+        propList: ['*'],
+        transformUnit: 'rpx'
+      })
+    ]
     compiler = getCompiler5({
       mode: 'production',
       context: path.resolve(webpack5CasePath, 'jsx'),
