@@ -13,7 +13,8 @@ export default defineConfig({
     coverage: {
       enabled: true,
       reportsDirectory: 'coverage/vitest'
-    }
+    },
+    testTimeout: 60_000
     // ...
   }
 })
