@@ -14,14 +14,14 @@ console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
  * target?:string
  * rel?:string
  * href?:string
- * innerText?:string
+ * textContent?:string
  * }} params
  * @returns
  */
 function createLink(params = {}) {
-  const { target = '_blank', rel = 'nofollow', href, innerText = '' } = params
+  const { target = '_blank', rel = 'nofollow', href, textContent = '' } = params
 
-  return `<a ${target ? `target="${target}"` : ''} ${rel ? `rel="${rel}"` : ''} ${href ? `href="${href}"` : ''}">${innerText}</a>`
+  return `<a ${target ? `target="${target}"` : ''} ${rel ? `rel="${rel}"` : ''} ${href ? `href="${href}"` : ''}">${textContent}</a>`
 }
 
 /** @type {import('@docusaurus/types').Config} */
@@ -117,7 +117,20 @@ const config = {
           return postcssOptions
         }
       }
-    }
+    },
+    // [
+    //   'docusaurus-plugin-typedoc',
+
+    //   // Plugin / TypeDoc options
+    //   {
+    //     entryPoints: ['../src/index.ts'],
+    //     tsconfig: '../tsconfig.json',
+    //     // exclude: [
+    //     //   '*.md'
+    //     // ],
+    //     readme: './API.md'
+    //   },
+    // ],
     // function nodeLoader(context, options) {
     //   return {
     //     name: 'canvas-node-loader-plugin',
@@ -192,6 +205,12 @@ const config = {
             position: 'left',
             label: '配置项'
           },
+          // {
+          //   to: 'docs/api/modules',  // 'api' is the 'out' directory
+          //   activeBasePath: 'docs',
+          //   label: 'API',
+          //   position: 'left',
+          // },
           {
             type: 'doc',
             label: '常见问题',
@@ -264,7 +283,7 @@ const config = {
         // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
         copyright: `Copyright © ${new Date().getFullYear()} icebreaker ${createLink({
           href: 'http://beian.miit.gov.cn',
-          innerText: '苏ICP备19002675号-2'
+          textContent: '苏ICP备19002675号-2'
         })}`
       },
       prism: {
