@@ -9,11 +9,8 @@ export default defineConfig({
         replacement: path.resolve(__dirname, './src')
       }
     ],
-    include: ['test/vite.test.ts'],
-    coverage: {
-      enabled: true,
-      reportsDirectory: 'coverage/vitest'
-    }
+    include: ['e2e/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    testTimeout: 36_000_000
     // ...
   }
 })

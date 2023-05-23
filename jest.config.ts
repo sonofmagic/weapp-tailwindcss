@@ -14,7 +14,7 @@ const config: JestConfigWithTsJest = {
   },
   modulePathIgnorePatterns: ['test/fixtures/*'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo', '/test/vite.test.ts']
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo', '/test/vite.test.ts', '/e2e']
 }
 
 export default config
