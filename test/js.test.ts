@@ -117,14 +117,14 @@ describe('jsHandler', () => {
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
   })
-
-  it('"after:content-["对酒当歌，人生几何"]"', async () => {
-    const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
-    await getCss(testCase)
-    const set = getClassCacheSet()
-    const code = h(testCase, set).code
-    expect(code).toMatchSnapshot()
-  })
+  // 双引号禁止
+  // it('"after:content-["对酒当歌，人生几何"]"', async () => {
+  //   const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
+  //   await getCss(testCase)
+  //   const set = getClassCacheSet()
+  //   const code = h(testCase, set).code
+  //   expect(code).toMatchSnapshot()
+  // })
 
   it('"after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'
@@ -147,4 +147,20 @@ describe('jsHandler', () => {
     // const set = getClassCacheSet()
     // expect(set.size).toBeGreaterThan(0)
   })
+
+  it('vue3SaticNodeStr case', async () => {
+    const testCase = await getCase('taro-vue-static-node.js')
+    await getCss(testCase)
+    const set = getClassCacheSet()
+    const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  });
+
+  it('vue3SaticNodeStr short case', async () => {
+    const testCase = await getCase('taro-vue-static-node-short.js')
+    await getCss(testCase)
+    const set = getClassCacheSet()
+    const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  });
 })

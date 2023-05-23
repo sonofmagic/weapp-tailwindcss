@@ -3038,7 +3038,7 @@ view,::before,::after {
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
 </view>",
   "wxml.js": "(() => {
-  document.body.append("<div class=\\"w-[100px] h-_100px_ bg-[url('https://xxx.com/xx.webp')]\\">className</div>");
+  document.body.append("<div class=\\"w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">className</div>");
   const d = document.createElement();
   d.classList.add("w-_99px_", "h-_99px_", "bg-_url_qhttpscssyyydcomsxxdwebpq__"), document.body.appendChild(d);
 })();",
