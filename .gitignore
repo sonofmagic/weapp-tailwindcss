@@ -109,3 +109,4 @@ stats/*.html
 
 .DS_Store
 coverage-vitest
+docs
