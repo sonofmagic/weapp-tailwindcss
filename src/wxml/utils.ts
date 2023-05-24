@@ -3,10 +3,10 @@ import { replaceWxml } from './shared'
 import { parseExpression, traverse, generate } from '@/babel'
 import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
 import { defu } from '@/utils'
-import type { RawSource, ICommonReplaceOptions, Node, ITempleteHandlerOptions } from '@/types'
+import type { RawSource, ICommonReplaceOptions, ITempleteHandlerOptions } from '@/types'
 
 export function generateCode(match: string, options: ICommonReplaceOptions = {}) {
-  const ast = parseExpression(match) as Node
+  const ast = parseExpression(match)
 
   traverse(ast, {
     StringLiteral(path) {
@@ -17,8 +17,8 @@ export function generateCode(match: string, options: ICommonReplaceOptions = {})
       // parentPath maybe null
       // ['td',[(g.type==='你好啊')?'highlight':'']]
       if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
-          return
-        }
+        return
+      }
 
       path.node.value = replaceWxml(path.node.value, options)
     },
