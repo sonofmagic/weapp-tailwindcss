@@ -4,7 +4,6 @@ import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
 
 export type ItemOrItemArray<T> = T | T[]
-export type { TraverseOptions } from '@babel/traverse'
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
 
