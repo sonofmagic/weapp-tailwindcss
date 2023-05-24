@@ -118,19 +118,17 @@ const config = {
         }
       }
     },
-    // [
-    //   'docusaurus-plugin-typedoc',
-
-    //   // Plugin / TypeDoc options
-    //   {
-    //     entryPoints: ['../src/index.ts'],
-    //     tsconfig: '../tsconfig.json',
-    //     // exclude: [
-    //     //   '*.md'
-    //     // ],
-    //     readme: './API.md'
-    //   },
-    // ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        // '../src/webpack.ts', '../src/vite.ts', '../src/gulp.ts'
+        // '../src/types.ts',
+        entryPoints: ['../src/index.ts'],
+        tsconfig: '../tsconfig.json',
+        readme: 'none',
+        watch: process.env.TYPEDOC_WATCH
+      },
+    ],
     // function nodeLoader(context, options) {
     //   return {
     //     name: 'canvas-node-loader-plugin',
@@ -205,12 +203,11 @@ const config = {
             position: 'left',
             label: '配置项'
           },
-          // {
-          //   to: 'docs/api/modules',  // 'api' is the 'out' directory
-          //   activeBasePath: 'docs',
-          //   label: 'API',
-          //   position: 'left',
-          // },
+          {
+            to: 'docs/api/',  // 'api' is the 'out' directory
+            label: 'API',
+            position: 'left',
+          },
           {
             type: 'doc',
             label: '常见问题',
