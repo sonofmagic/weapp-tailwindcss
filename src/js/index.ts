@@ -12,7 +12,8 @@ import { useStore } from '@/mangle/store'
 export function handleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
   const escapeMap = options.escapeMap
-  const arr = splitCode(str) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
+  const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
+  const arr = splitCode(str, allowDoubleQuotes) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
   let rawStr = str
   for (const v of arr) {
     if (set.has(v)) {
@@ -82,7 +83,8 @@ export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>
     return jsHandler(rawSource, {
       classNameSet: set,
       minifiedJs: options.minifiedJs,
-      escapeMap: options.escapeMap
+      escapeMap: options.escapeMap,
+      arbitraryValues: options.arbitraryValues
     })
   }
 }

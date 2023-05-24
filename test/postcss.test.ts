@@ -1,3 +1,4 @@
+import { getClassCacheSet } from 'tailwindcss-patch'
 import { getCss } from './helpers/getTwCss'
 // import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
@@ -48,16 +49,18 @@ describe('postcss plugin', () => {
   it('double quote after class', async () => {
     // after:content-[\"*\"]
     const res = await getCss('<view class="after:content-["对酒当歌，人生几何"]"></view>')
-    // const set = getClassCacheSet()
-    // const y = 'after:content-["对酒当歌，人生几何"]'
+    const set = getClassCacheSet()
+    expect(set.has('after:content-["对酒当歌，人生几何"]')).toBe(true)
+    // const y = 
     expect(res.css.toString()).toMatchSnapshot()
   })
 
   it('single quote after class', async () => {
     // after:content-[\"*\"]
     const res = await getCss('<view class="after:content-[\'对酒当歌，人生几何\']"></view>')
-    // const set = getClassCacheSet()
-    // const y = 'after:content-["对酒当歌，人生几何"]'
+    const set = getClassCacheSet()
+    expect(set.has('after:content-[\'对酒当歌，人生几何\']')).toBe(true)
+
     expect(res.css.toString()).toMatchSnapshot()
   })
 })

@@ -74,5 +74,8 @@ export const defaultOptions: UserDefinedOptions = {
       overwrite: true
     }
   },
-  appType: undefined
+  appType: undefined,
+  arbitraryValues: {
+    allowDoubleQuotes: false
+  }
 }

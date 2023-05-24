@@ -2,6 +2,9 @@
 
 exports[`get options default options 1`] = `
 {
+  "arbitraryValues": {
+    "allowDoubleQuotes": false,
+  },
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",

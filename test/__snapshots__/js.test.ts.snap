@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`jsHandler "after:content-["对酒当歌，人生几何"]" 1`] = `"const a="afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_";"`;
+
 exports[`jsHandler "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_";"`;
 
 exports[`jsHandler [minified] mpx jit classNames 1`] = `"data:{classNames:"text-_h123456_ text-_50px_ bg-_hfff_"}"`;

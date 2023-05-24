@@ -8,6 +8,7 @@ const getCase = createGetCase(jsCasePath)
 describe('jsHandler', () => {
   let h: ReturnType<typeof createjsHandler>
   let mh: ReturnType<typeof createjsHandler>
+  let dh: ReturnType<typeof createjsHandler>
   beforeEach(() => {
     h = createjsHandler({
       escapeMap: SimpleMappingChars2String
@@ -15,6 +16,14 @@ describe('jsHandler', () => {
     mh = createjsHandler({
       escapeMap: SimpleMappingChars2String,
       minifiedJs: true
+    })
+
+    dh = createjsHandler({
+      escapeMap: SimpleMappingChars2String,
+      minifiedJs: true,
+      arbitraryValues: {
+        allowDoubleQuotes: true
+      }
     })
   })
   it('common case', () => {
@@ -117,14 +126,14 @@ describe('jsHandler', () => {
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
   })
-  // 双引号禁止
-  // it('"after:content-["对酒当歌，人生几何"]"', async () => {
-  //   const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
-  //   await getCss(testCase)
-  //   const set = getClassCacheSet()
-  //   const code = h(testCase, set).code
-  //   expect(code).toMatchSnapshot()
-  // })
+
+  it('"after:content-["对酒当歌，人生几何"]"', async () => {
+    const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
+    await getCss(testCase)
+    const set = getClassCacheSet()
+    const code = dh(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
 
   it('"after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'

@@ -4,8 +4,8 @@ describe('extractorSplit', () => {
   it('common case ', () => {
     let code = ''
     // const arr = []
-    function extract() {
-      return [...(splitCode(code) || [])]
+    function extract(allowDoubleQuotes = false) {
+      return [...(splitCode(code, allowDoubleQuotes) || [])]
     }
 
     code = 'webpackJsonp'
@@ -23,11 +23,11 @@ describe('extractorSplit', () => {
     code = "after:border-none after:content-['Hello_World'] a"
     expect(extract().length).toBe(3)
     // 不允许在自定义里面使用双引号
-    // code = 'after:content-["*"] after:ml-0.5 after:text-red-500 b'
-    // expect(extract().length).toBe(4)
+    code = 'after:content-["*"] after:ml-0.5 after:text-red-500 b'
+    expect(extract(true).length).toBe(4)
 
-    // code = 'after:content-["的撒的撒"] after:ml-0.5 after:text-red-500'
-    // expect(extract().length).toBe(3)
+    code = 'after:content-["的撒的撒"] after:ml-0.5 after:text-red-500'
+    expect(extract(true).length).toBe(3)
 
     code = "after:content-['的撒的撒'] after:ml-0.5 after:text-red-500"
     expect(extract().length).toBe(3)
