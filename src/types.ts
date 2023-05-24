@@ -95,7 +95,7 @@ export interface UserDefinedOptions {
    */
   jsMatcher?: ((name: string) => boolean) | string | string[]
   /**
-   * @description tailwind jit main chunk 的匹配方法,用于处理原始变量和替换不兼容选择器。可以不传，但是遇到某些 ::before/::after 选择器注入冲突时，建议传入参数手动指定 css bundle 文件位置
+   * @description `tailwindcss css var inject scope` 的匹配方法,用于处理原始变量和替换不兼容选择器。可以不传，但是遇到某些 `::before/::after` 选择器注入冲突时，建议传入参数手动指定 css bundle 文件位置
    * 
    */
   mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | string | string[]
@@ -231,7 +231,7 @@ cssPreflight: {
   appType?: AppType
 
   /**
-   * @description 是否压缩 js (NODE_ENV 为 production时默认开启)
+   * @description 是否压缩 js (`process.env.NODE_ENV` 为 `production` 时默认开启)
    * @default process.env.NODE_ENV === 'production'
    */
   minifiedJs?: boolean

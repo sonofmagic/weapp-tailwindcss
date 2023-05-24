@@ -1,5 +1,13 @@
 # Options 配置项
 
+:::info
+目前所有的配置项文档已经通过 `typedoc` 来自动生成.
+
+[点击跳转到用户配置项: `UserDefinedOptions`](/docs/api/interfaces/UserDefinedOptions)
+:::
+
+
+<!-- 
 ### htmlMatcher
 
 类型: `((assetPath:string)=>boolean)`\|`string`\|`string[]`  
@@ -128,4 +136,4 @@ cssPreflight: {
  }
 ```
 
-使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
+使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch` -->
