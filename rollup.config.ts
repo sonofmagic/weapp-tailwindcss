@@ -9,7 +9,8 @@ import type { PackageJson } from 'pkg-types'
 // import terser from '@rollup/plugin-terser'
 // import { resolve } from 'path'
 import type { RollupOptions } from 'rollup'
-import omit from 'lodash/omit'
+import lodash from 'lodash'
+const { omit } = lodash
 const pkg = JSON.parse(
   readFileSync('./package.json', {
     encoding: 'utf8'
@@ -43,9 +44,9 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       }),
       isProd
         ? visualizer({
-            // emitFile: true,
-            filename: `stats/${entry.name}.html`
-          })
+          // emitFile: true,
+          filename: `stats/${entry.name}.html`
+        })
         : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']

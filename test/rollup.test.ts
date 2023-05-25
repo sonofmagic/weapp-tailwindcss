@@ -1,6 +1,6 @@
 import { rollup } from 'rollup'
 import type { OutputChunk, OutputAsset } from 'rollup'
-import omit from 'lodash/omit'
+import { omit } from 'lodash'
 import configs from '../rollup.config'
 function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]]) {
   return outputs.map((x) => {
