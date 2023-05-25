@@ -12,7 +12,7 @@ export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
   if (Array.isArray(arr)) {
     for (const item of arr) {
       if (typeof item === 'string') {
-        if (item === str) {
+        if (str.includes(item)) {
           return true
         }
       } else if (isRegexp(item)) {
@@ -40,7 +40,7 @@ export const noop = () => {}
 
 
 
-function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]> {
+export function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   if (!Array.isArray(arr)) {
     throw new TypeError('expected an array for first argument')
   }
