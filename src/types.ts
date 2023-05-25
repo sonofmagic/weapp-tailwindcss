@@ -1,5 +1,5 @@
 import type { Rule } from 'postcss'
-import type { IClassGeneratorOptions , ClassGenerator } from 'tailwindcss-mangle-shared'
+import type { IClassGeneratorOptions, ClassGenerator } from 'tailwindcss-mangle-shared'
 import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
 export type ItemOrItemArray<T> = T | T[]
@@ -34,6 +34,7 @@ export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHan
 
 export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
+  mangleContext?: IMangleScopeContext
 } & RequiredStyleHandlerOptions
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
@@ -45,6 +46,7 @@ export type IJsHandlerOptions = {
   classNameSet: Set<string>
   minifiedJs?: boolean,
   arbitraryValues?: IArbitraryValues
+  mangleContext?: IMangleScopeContext
 }
 export interface RawSource {
   start: number
@@ -293,6 +295,7 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   // custom?: boolean
   // regexps?: ICustomRegexp[]
   escapeMap?: Record<string, string>
+  mangleContext?: IMangleScopeContext
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
@@ -308,7 +311,7 @@ export type InternalUserDefinedOptions = Required<
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
-    initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
+    // initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
     setMangleRuntimeSet: (runtimeSet: Set<string>) => void
   }
 >

@@ -5,14 +5,14 @@ import { internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
 const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {
-  const replaceFlag = options.replaceUniversalSelectorWith !== false
-
+  const { replaceUniversalSelectorWith, escapeMap, mangleContext } = options
+  const replaceFlag = replaceUniversalSelectorWith !== false
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector) => {
       // do something with the selector
       // node.selector.replace(/\*/g, 'view')
       if (selector.type === 'universal' && replaceFlag) {
-        selector.value = options.replaceUniversalSelectorWith as string
+        selector.value = replaceUniversalSelectorWith as string
       }
 
       if (selector.type === 'selector') {
@@ -21,7 +21,10 @@ const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {
       }
 
       if (selector.type === 'class') {
-        selector.value = internalCssSelectorReplacer(selector.value, options.escapeMap)
+        selector.value = internalCssSelectorReplacer(selector.value, {
+          escapeMap,
+          mangleContext
+        })
       }
     })
     if (selectors.length === 0) {

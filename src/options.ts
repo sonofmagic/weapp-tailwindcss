@@ -46,7 +46,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     minifiedJs: isProd()
   })
 
-  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result
+  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch, arbitraryValues } = result
 
   result.escapeMap = customReplaceDictionary
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -56,10 +56,11 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   // const custom = customAttributesEntities.length > 0
   const { escapeMap, minifiedJs } = result
   const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
+  initMangle(options.mangle)
   result.templeteHandler = createTempleteHandler({
     customAttributesEntities,
     escapeMap,
-    mangleContext
+    mangleContext,
   })
   result.styleHandler = createStyleHandler({
     cssInjectPreflight,
@@ -67,16 +68,17 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cssPreflightRange,
     replaceUniversalSelectorWith,
     escapeMap,
-    mangleContext
+    mangleContext,
   })
 
   result.jsHandler = createjsHandler({
     minifiedJs,
     escapeMap,
-    mangleContext
+    mangleContext,
+    arbitraryValues
   })
   result.patch = createPatch(supportCustomLengthUnitsPatch)
-  result.initMangle = initMangle
+  // result.initMangle = initMangle
   result.setMangleRuntimeSet = setMangleRuntimeSet
   return result
 }

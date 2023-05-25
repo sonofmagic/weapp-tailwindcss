@@ -9,7 +9,7 @@ function getSelf(x: string) {
 
 
 
-const defaultScopedStore: IMangleScopeContext = {
+export const defaultMangleContext: IMangleScopeContext = {
   rawOptions: false,
   runtimeSet: new Set<string>(),
   classGenerator: new ClassGenerator(),
@@ -20,10 +20,10 @@ const defaultScopedStore: IMangleScopeContext = {
 } // as default
 
 export function useMangleStore() {
-  const ctx = Object.assign({}, defaultScopedStore)
+  const ctx = Object.assign({}, defaultMangleContext)
 
   function resetMangle() {
-    return Object.assign(ctx, defaultScopedStore)
+    return Object.assign(ctx, defaultMangleContext)
   }
 
   function handleValue(rawSource: string) {

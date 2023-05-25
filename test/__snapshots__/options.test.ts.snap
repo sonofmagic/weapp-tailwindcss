@@ -91,6 +91,7 @@ exports[`get options default options 1`] = `
   "onUpdate": [Function],
   "patch": [Function],
   "replaceUniversalSelectorWith": "view",
+  "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {
     "dangerousOptions": {

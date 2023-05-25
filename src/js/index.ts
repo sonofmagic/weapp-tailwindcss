@@ -7,12 +7,12 @@ import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
 import { isProd } from '@/env'
-import { useStore } from '@/mangle/store'
 
 export function handleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
   const escapeMap = options.escapeMap
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
+  const ctx = options.mangleContext
   const arr = splitCode(str, allowDoubleQuotes) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
   let rawStr = str
   for (const v of arr) {
@@ -23,8 +23,10 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
       }
 
       if (!ignoreFlag) {
-        const { jsHandler } = useStore()
-        rawStr = jsHandler(rawStr)
+        if (ctx) {
+          rawStr = ctx.jsHandler(rawStr)
+        }
+
         rawStr = rawStr.replaceAll(
           new RegExp(escapeStringRegexp(v), 'g'),
           replaceWxml(v, {
@@ -79,12 +81,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
 }
 
 export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>) {
+  const { mangleContext, arbitraryValues, minifiedJs, escapeMap } = options
   return (rawSource: string, set: Set<string>) => {
     return jsHandler(rawSource, {
       classNameSet: set,
-      minifiedJs: options.minifiedJs,
-      escapeMap: options.escapeMap,
-      arbitraryValues: options.arbitraryValues
+      minifiedJs,
+      escapeMap,
+      arbitraryValues,
+      mangleContext
     })
   }
 }

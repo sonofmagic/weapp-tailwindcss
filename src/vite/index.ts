@@ -5,7 +5,6 @@ import { getOptions } from '@/options'
 import { vitePluginName } from '@/constants'
 import { getGroupedEntries } from '@/utils'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
-import { initStore, setRuntimeSet } from '@/mangle/store'
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
@@ -17,13 +16,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options)
-  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts
+  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet } = opts
   if (disabled) {
     return
   }
 
   patch?.()
-  initStore(mangle)
+
   const twPatcher = createTailwindcssPatcher()
   onLoad()
   // 要在 vite:css 处理之前运行
@@ -39,7 +38,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
       const set = twPatcher.getClassSet()
-      setRuntimeSet(set)
+      setMangleRuntimeSet(set)
       if (Array.isArray(groupedEntries.html)) {
         for (let i = 0; i < groupedEntries.html.length; i++) {
           // let classGenerator
