@@ -1,8 +1,7 @@
 import type { Rule } from 'postcss'
-import type { IClassGeneratorOptions } from 'tailwindcss-mangle-shared'
+import type { IClassGeneratorOptions , ClassGenerator } from 'tailwindcss-mangle-shared'
 import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
-
 export type ItemOrItemArray<T> = T | T[]
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
@@ -266,6 +265,16 @@ cssPreflight: {
   arbitraryValues?: IArbitraryValues
 }
 
+export interface IMangleScopeContext {
+  rawOptions: UserDefinedOptions['mangle']
+  runtimeSet: Set<string>
+  classGenerator: ClassGenerator
+  filter: (className: string) => boolean
+  cssHandler: (rawSource: string) => string
+  jsHandler: (rawSource: string) => string
+  wxmlHandler: (rawSource: string) => string
+}
+
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
   escapeMap?: Record<string, string>
@@ -299,6 +308,8 @@ export type InternalUserDefinedOptions = Required<
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
+    initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
+    setMangleRuntimeSet: (runtimeSet: Set<string>) => void
   }
 >
 

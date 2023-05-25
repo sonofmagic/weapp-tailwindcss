@@ -9,6 +9,7 @@ import { createInjectPreflight } from '@/postcss/preflight'
 import { SimpleMappingChars2String, MappingChars2String } from '@/dic'
 import { createPatch } from '@/tailwindcss/patcher'
 import { isProd } from '@/env'
+import { useMangleStore } from '@/mangle'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
@@ -54,23 +55,28 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
 
   // const custom = customAttributesEntities.length > 0
   const { escapeMap, minifiedJs } = result
+  const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
   result.templeteHandler = createTempleteHandler({
     customAttributesEntities,
-    escapeMap
+    escapeMap,
+    mangleContext
   })
   result.styleHandler = createStyleHandler({
     cssInjectPreflight,
     customRuleCallback,
     cssPreflightRange,
     replaceUniversalSelectorWith,
-    escapeMap
+    escapeMap,
+    mangleContext
   })
 
   result.jsHandler = createjsHandler({
     minifiedJs,
-    escapeMap
+    escapeMap,
+    mangleContext
   })
   result.patch = createPatch(supportCustomLengthUnitsPatch)
-
+  result.initMangle = initMangle
+  result.setMangleRuntimeSet = setMangleRuntimeSet
   return result
 }

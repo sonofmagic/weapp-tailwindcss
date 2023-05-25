@@ -7,7 +7,7 @@ function getSelf(x: string) {
   return x
 }
 
-export interface IMangleScopeStore {
+export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']
   runtimeSet: Set<string>
   classGenerator: ClassGenerator
@@ -17,7 +17,7 @@ export interface IMangleScopeStore {
   wxmlHandler: (rawSource: string) => string
 }
 
-const defaultScopedStore: IMangleScopeStore = {
+const defaultScopedStore: IMangleScopeContext = {
   rawOptions: false,
   runtimeSet: new Set<string>(),
   classGenerator: new ClassGenerator(),
