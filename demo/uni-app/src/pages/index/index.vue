@@ -25,7 +25,7 @@ export default Vue.extend({
   data() {
     return {
       flag: false,
-      className: r('bg-[#123456]'),
+      className: 'bg-[#123456]',
       steps: [
         {
           text: '步骤一',

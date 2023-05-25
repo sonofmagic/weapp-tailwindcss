@@ -57,6 +57,8 @@
     "vitest:test": "vitest",
     "vitest:coverage": "vitest run --coverage",
     "e2e": "vitest run -c ./vitest.e2e.config.ts",
+    "e2e:dev": "vitest -c ./vitest.e2e.config.ts",
+    "e2e:u": "vitest run -u -c ./vitest.e2e.config.ts",
     "test:all": "cross-env JEST_INVALID_SKIP_CASES=1 jest",
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",

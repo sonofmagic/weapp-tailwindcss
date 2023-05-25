@@ -11,6 +11,11 @@ const TestProjectsEntries: {
   url?: string
 }[] = [
     {
+      name: 'uni-app',
+      projectPath: 'uni-app/dist/build/mp-weixin',
+      testMethod: () => {}
+    },
+    {
       name: 'uni-app-vue2-cli5',
       projectPath: 'uni-app-webpack5/dist/build/mp-weixin',
       testMethod: () => {}
@@ -80,7 +85,7 @@ describe('e2e', () => {
       const pageEl = await page.$('page')
       const wxml = await pageEl?.wxml()
       expect(wxml).toMatchSnapshot()
-      await page.waitFor(10_000)
+      await page.waitFor(3000)
     }
 
     await miniProgram.close()
