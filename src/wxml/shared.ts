@@ -1,5 +1,4 @@
 import { ITempleteHandlerOptions } from '@/types'
-import { defaultMangleContext } from '@/mangle'
 import { escape } from '@/escape'
 import { SimpleMappingChars2String } from '@/dic'
 
@@ -8,7 +7,6 @@ export function replaceWxml(
   options: ITempleteHandlerOptions = {
     keepEOL: false,
     escapeMap: SimpleMappingChars2String,
-    mangleContext: defaultMangleContext
   }
 ) {
   const { keepEOL, escapeMap, mangleContext } = options

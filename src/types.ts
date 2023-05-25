@@ -32,6 +32,11 @@ export type RequiredStyleHandlerOptions = {
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
+export interface InternalCssSelectorReplacerOptions {
+  mangleContext?: IMangleScopeContext
+  escapeMap?: Record<string, string>
+}
+
 export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
   mangleContext?: IMangleScopeContext
