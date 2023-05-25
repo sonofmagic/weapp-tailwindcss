@@ -18,7 +18,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   if (options.customReplaceDictionary === undefined) {
     options.customReplaceDictionary = 'simple'
   }
-  const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])
+  const opts = getOptions(options)
   const { templeteHandler, styleHandler, patch, jsHandler, mangle } = opts
 
   let set = new Set<string>()

@@ -24,24 +24,8 @@ function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatche
   }
 }
 
-type IModules = readonly ('js' | 'style' | 'templete' | 'patch')[]
 
-export function getOptions(options: UserDefinedOptions = {}, modules: IModules = ['style', 'templete', 'patch', 'js']): InternalUserDefinedOptions {
-  const registerModules = modules.reduce<Record<IModules[number], boolean>>(
-    (acc, cur) => {
-      if (acc[cur] !== undefined) {
-        acc[cur] = true
-      }
-      return acc
-    },
-    {
-      templete: false,
-      style: false,
-      patch: false,
-      js: false
-    }
-  )
-
+export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
   if (options.supportCustomLengthUnitsPatch === true) {
     options.supportCustomLengthUnitsPatch = undefined
   }
@@ -70,31 +54,23 @@ export function getOptions(options: UserDefinedOptions = {}, modules: IModules =
 
   // const custom = customAttributesEntities.length > 0
   const { escapeMap, minifiedJs } = result
-  if (registerModules.templete) {
-    result.templeteHandler = createTempleteHandler({
-      customAttributesEntities,
-      escapeMap
-    })
-  }
-  if (registerModules.style) {
-    result.styleHandler = createStyleHandler({
-      cssInjectPreflight,
-      customRuleCallback,
-      cssPreflightRange,
-      replaceUniversalSelectorWith,
-      escapeMap
-    })
-  }
+  result.templeteHandler = createTempleteHandler({
+    customAttributesEntities,
+    escapeMap
+  })
+  result.styleHandler = createStyleHandler({
+    cssInjectPreflight,
+    customRuleCallback,
+    cssPreflightRange,
+    replaceUniversalSelectorWith,
+    escapeMap
+  })
 
-  if (registerModules.js) {
-    result.jsHandler = createjsHandler({
-      minifiedJs,
-      escapeMap
-    })
-  }
-  if (registerModules.patch) {
-    result.patch = createPatch(supportCustomLengthUnitsPatch)
-  }
+  result.jsHandler = createjsHandler({
+    minifiedJs,
+    escapeMap
+  })
+  result.patch = createPatch(supportCustomLengthUnitsPatch)
 
   return result
 }

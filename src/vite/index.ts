@@ -16,7 +16,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   if (options.customReplaceDictionary === undefined) {
     options.customReplaceDictionary = 'simple'
   }
-  const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])
+  const opts = getOptions(options)
   const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts
   if (disabled) {
     return

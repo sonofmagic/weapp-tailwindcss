@@ -22,7 +22,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (options.customReplaceDictionary === undefined) {
       options.customReplaceDictionary = 'simple'
     }
-    this.options = getOptions(options, ['style', 'patch', 'templete', 'js'])
+    this.options = getOptions(options)
     this.appType = this.options.appType
   }
 

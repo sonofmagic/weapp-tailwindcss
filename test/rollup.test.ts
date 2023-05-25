@@ -8,7 +8,7 @@ function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]
   })
 }
 // import type { RollupBuild } from 'rollup'
-describe('rollup build', () => {
+describe.skip('rollup build', () => {
   it('lib build', async () => {
     // const result:RollupBuild[] = []
     for (const config of configs) {

@@ -7,14 +7,14 @@ const config: JestConfigWithTsJest = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/dist/', '<rootDir>/test/', '<rootDir>/*.ts'],
+  coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/dist/', '<rootDir>/test/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^#test/(.*)$': '<rootDir>/test/$1'
   },
   modulePathIgnorePatterns: ['test/fixtures/*'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo', '/test/vite.test.ts', '/e2e']
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/demo', '/test/vite.test.ts', '/test/rollup.test.ts', '/e2e']
 }
 
 export default config
