@@ -77,4 +77,25 @@ describe('get options', () => {
       dangerousOptions: defaultOptions.supportCustomLengthUnitsPatch.dangerousOptions
     })
   })
+
+  it('arbitraryValues options', () => {
+    let arbitraryValues: ReturnType<typeof getOptions>['arbitraryValues'] = getOptions().arbitraryValues
+    expect(typeof arbitraryValues === 'object').toBe(true)
+    expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
+    expect(arbitraryValues.allowDoubleQuotes).toBe(false)
+    arbitraryValues = getOptions({
+      arbitraryValues: {}
+    }).arbitraryValues
+    expect(typeof arbitraryValues === 'object').toBe(true)
+    expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
+    expect(arbitraryValues.allowDoubleQuotes).toBe(false)
+    arbitraryValues = getOptions({
+      arbitraryValues: {
+        allowDoubleQuotes: true
+      }
+    }).arbitraryValues
+    expect(typeof arbitraryValues === 'object').toBe(true)
+    expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
+    expect(arbitraryValues.allowDoubleQuotes).toBe(true)
+  });
 })

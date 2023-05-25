@@ -7,7 +7,9 @@ import {
   tagWithClassRegexp,
   wxmlAllowClassCharsRegExp,
   createTempleteHandlerMatchRegexp,
-  createTemplateClassRegexp
+  createTemplateClassRegexp,
+  escapeStringRegexp,
+  getSourceString
 } from '@/reg'
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
@@ -162,4 +164,20 @@ describe('regexp', () => {
       expect(match[1]).toBe('w-[0.5px]')
     }
   })
+
+  it('escapeStringRegexp throw error', () => {
+    expect(() => {
+      // @ts-ignore
+      escapeStringRegexp({})
+    }).toThrow()
+  });
+
+  it('getSourceString case0', () => {
+    let input:any = 'a'
+    expect(getSourceString(input)).toBe(input) 
+    input = /\s\w\b$/
+    expect(getSourceString(input)).toBe(input.source) 
+    input = {}
+    expect(getSourceString(input)).toBe(Object.prototype.toString.call(input)) 
+  });
 })

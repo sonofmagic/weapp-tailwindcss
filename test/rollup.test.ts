@@ -1,10 +1,10 @@
 import { rollup } from 'rollup'
 import type { OutputChunk, OutputAsset } from 'rollup'
+import { omit } from 'lodash'
 import configs from '../rollup.config'
-import { excludeKeys } from '../filter-obj'
 function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]]) {
   return outputs.map((x) => {
-    return excludeKeys(x, ['modules', 'facadeModuleId', 'moduleIds'])
+    return omit(x, ['modules', 'facadeModuleId', 'moduleIds'])
   })
 }
 // import type { RollupBuild } from 'rollup'

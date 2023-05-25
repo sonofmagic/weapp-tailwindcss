@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { build } from 'vite'
 import type { Plugin } from 'vite'
 import type { RollupOutput } from 'rollup'
+
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
@@ -17,10 +18,29 @@ const postcssPlugins = [
 ]
 
 async function assertSnap(plugin: Plugin | undefined) {
-  if (plugin === undefined) {
-    return
-  }
-  const vitePlugins: Plugin[] = []
+  // if (plugin === undefined) {
+  //   return
+  // }
+  const vitePlugins: (Plugin | undefined)[] = [
+
+  ]
+  // {
+  //   name: 'emit-wxml',
+  //   transform(code, id) {
+  //     console.log(code, id)
+  //   }
+  //   // load(id,){}
+  //   // resolveId: {
+  //   //   order: 'pre',
+  //   //   handler(source) {
+  //   //     if (source.endsWith('wxml')) {
+  //   //       return {
+  //   //         id: source,
+  //   //       }
+  //   //     }
+  //   //   }
+  //   // }
+  // }
 
   vitePlugins.push(plugin)
 
@@ -54,13 +74,16 @@ async function assertSnap(plugin: Plugin | undefined) {
 
 describe('vite test', () => {
   it('vite common build', async () => {
-    await assertSnap(uvwt())
+    await assertSnap(uvwt({
+      htmlMatcher: ['**/*.html']
+    }))
   })
 
   it('vite common build with mangle true', async () => {
     await assertSnap(
       uvwt({
-        mangle: true
+        mangle: true,
+        htmlMatcher: ['**/*.html']
       })
     )
   })
@@ -68,7 +91,8 @@ describe('vite test', () => {
   it('vite common build with mangle options', async () => {
     await assertSnap(
       uvwt({
-        mangle: {}
+        mangle: {},
+        htmlMatcher: ['**/*.html']
       })
     )
   })
@@ -80,7 +104,8 @@ describe('vite test', () => {
           classGenerator: {
             classPrefix: ''
           }
-        }
+        },
+        htmlMatcher: ['**/*.html']
       })
     )
   })
@@ -104,8 +129,16 @@ describe('vite test', () => {
           mangleClassFilter(className) {
             return /[[\]]/.test(className)
           }
-        }
+        },
+        htmlMatcher: ['**/*.html']
       })
     )
   })
+
+  it('vite disabled build', async () => {
+    await assertSnap(uvwt({
+      disabled: true,
+      htmlMatcher: ['**/*.html']
+    }))
+  });
 })

@@ -8,6 +8,7 @@ const getCase = createGetCase(jsCasePath)
 describe('jsHandler', () => {
   let h: ReturnType<typeof createjsHandler>
   let mh: ReturnType<typeof createjsHandler>
+  let dh: ReturnType<typeof createjsHandler>
   beforeEach(() => {
     h = createjsHandler({
       escapeMap: SimpleMappingChars2String
@@ -15,6 +16,14 @@ describe('jsHandler', () => {
     mh = createjsHandler({
       escapeMap: SimpleMappingChars2String,
       minifiedJs: true
+    })
+
+    dh = createjsHandler({
+      escapeMap: SimpleMappingChars2String,
+      minifiedJs: true,
+      arbitraryValues: {
+        allowDoubleQuotes: true
+      }
     })
   })
   it('common case', () => {
@@ -24,6 +33,15 @@ describe('jsHandler', () => {
     set.add('w-2.5')
     const code = h(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set).code
     expect(code).toBe('const n = "text-_12px_ flex bg-[red] w-2d5";')
+  })
+
+  it('common case with ignore comment', () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    const code = h(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
+    expect(code).toBe("const n = /*weapp-tw ignore*/'text-[12px] flex bg-[red] w-2.5';")
   })
 
   it('[minified] common case', () => {
@@ -117,14 +135,14 @@ describe('jsHandler', () => {
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
   })
-  // 双引号禁止
-  // it('"after:content-["对酒当歌，人生几何"]"', async () => {
-  //   const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
-  //   await getCss(testCase)
-  //   const set = getClassCacheSet()
-  //   const code = h(testCase, set).code
-  //   expect(code).toMatchSnapshot()
-  // })
+
+  it('"after:content-["对酒当歌，人生几何"]"', async () => {
+    const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
+    await getCss(testCase)
+    const set = getClassCacheSet()
+    const code = dh(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
 
   it('"after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'

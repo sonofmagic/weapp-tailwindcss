@@ -3,9 +3,9 @@ import { replaceWxml } from './shared'
 import { parseExpression, traverse, generate } from '@/babel'
 import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
 import { defu } from '@/utils'
-import type { RawSource, ICommonReplaceOptions, ITempleteHandlerOptions } from '@/types'
+import type { RawSource, ITempleteHandlerOptions } from '@/types'
 
-export function generateCode(match: string, options: ICommonReplaceOptions = {}) {
+export function generateCode(match: string, options: ITempleteHandlerOptions = {}) {
   const ast = parseExpression(match)
 
   traverse(ast, {
@@ -59,7 +59,7 @@ export function extractSource(original: string) {
   return sources
 }
 
-export function templeteReplacer(original: string, options: ICommonReplaceOptions = {}) {
+export function templeteReplacer(original: string, options: ITempleteHandlerOptions = {}) {
   const sources = extractSource(original)
 
   if (sources.length > 0) {
@@ -73,7 +73,8 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
       resultArray.push(
         replaceWxml(before, {
           keepEOL: true,
-          escapeMap: options.escapeMap
+          escapeMap: options.escapeMap,
+          mangleContext: options.mangleContext
         })
       )
       p = m.start
@@ -94,7 +95,8 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
         resultArray.push(
           replaceWxml(after, {
             keepEOL: true,
-            escapeMap: options.escapeMap
+            escapeMap: options.escapeMap,
+            mangleContext: options.mangleContext
           })
         )
       }
@@ -107,12 +109,13 @@ export function templeteReplacer(original: string, options: ICommonReplaceOption
   } else {
     return replaceWxml(original, {
       keepEOL: false,
-      escapeMap: options.escapeMap
+      escapeMap: options.escapeMap,
+      mangleContext: options.mangleContext
     })
   }
 }
 
-export function templeteHandler(rawSource: string, options: ICommonReplaceOptions = {}) {
+export function templeteHandler(rawSource: string, options: ITempleteHandlerOptions = {}) {
   return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
     return m0.replace(templateClassExactRegexp, (m1, className) => {
       return m1.replace(className, templeteReplacer(className, options))

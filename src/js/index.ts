@@ -1,17 +1,19 @@
 import type { Node, StringLiteral, TemplateElement } from '@babel/types'
 import * as t from '@babel/types'
+import type { TraverseOptions } from '@babel/traverse'
 import { parse, traverse, generate } from '@/babel'
-import type { TraverseOptions, IJsHandlerOptions } from '@/types'
+import type { IJsHandlerOptions } from '@/types'
 import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
 import { isProd } from '@/env'
-import { useStore } from '@/mangle/store'
 
 export function handleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
   const escapeMap = options.escapeMap
-  const arr = splitCode(str) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
+  const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
+  const ctx = options.mangleContext
+  const arr = splitCode(str, allowDoubleQuotes) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
   let rawStr = str
   for (const v of arr) {
     if (set.has(v)) {
@@ -21,8 +23,10 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
       }
 
       if (!ignoreFlag) {
-        const { jsHandler } = useStore()
-        rawStr = jsHandler(rawStr)
+        if (ctx) {
+          rawStr = ctx.jsHandler(rawStr)
+        }
+
         rawStr = rawStr.replaceAll(
           new RegExp(escapeStringRegexp(v), 'g'),
           replaceWxml(v, {
@@ -59,11 +63,11 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
         const n = p.node
         // eval()
         if (t.isIdentifier(n.callee) && n.callee.name === 'eval' && t.isStringLiteral(n.arguments[0])) {
-            const res = jsHandler(n.arguments[0].value, options)
-            if (res.code) {
-              n.arguments[0].value = res.code
-            }
+          const res = jsHandler(n.arguments[0].value, options)
+          if (res.code) {
+            n.arguments[0].value = res.code
           }
+        }
       }
     },
     noScope: true
@@ -77,11 +81,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
 }
 
 export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>) {
+  const { mangleContext, arbitraryValues, minifiedJs, escapeMap } = options
   return (rawSource: string, set: Set<string>) => {
     return jsHandler(rawSource, {
       classNameSet: set,
-      minifiedJs: options.minifiedJs,
-      escapeMap: options.escapeMap
+      minifiedJs,
+      escapeMap,
+      arbitraryValues,
+      mangleContext
     })
   }
 }

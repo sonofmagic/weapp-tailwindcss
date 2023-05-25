@@ -5,7 +5,6 @@ import { getOptions } from '@/options'
 import { pluginName, NS } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/utils'
-import { initStore, setRuntimeSet } from '@/mangle/store'
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -22,17 +21,17 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (options.customReplaceDictionary === undefined) {
       options.customReplaceDictionary = 'simple'
     }
-    this.options = getOptions(options, ['style', 'patch', 'templete', 'js'])
+    this.options = getOptions(options)
     this.appType = this.options.appType
   }
 
   apply(compiler: Compiler) {
-    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, mangle } = this.options
+    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, setMangleRuntimeSet } = this.options
     if (disabled) {
       return
     }
     patch?.()
-    initStore(mangle)
+
     const Compilation = compiler.webpack.Compilation
     const { ConcatSource } = compiler.webpack.sources
     // react
@@ -64,7 +63,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
           const set = getClassSet()
-          setRuntimeSet(set)
+          setMangleRuntimeSet(set)
           if (Array.isArray(groupedEntries.html)) {
             for (let i = 0; i < groupedEntries.html.length; i++) {
               const [file, originalSource] = groupedEntries.html[i]

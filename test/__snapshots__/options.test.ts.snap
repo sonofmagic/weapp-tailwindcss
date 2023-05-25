@@ -2,6 +2,9 @@
 
 exports[`get options default options 1`] = `
 {
+  "arbitraryValues": {
+    "allowDoubleQuotes": false,
+  },
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",
@@ -88,6 +91,7 @@ exports[`get options default options 1`] = `
   "onUpdate": [Function],
   "patch": [Function],
   "replaceUniversalSelectorWith": "view",
+  "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {
     "dangerousOptions": {

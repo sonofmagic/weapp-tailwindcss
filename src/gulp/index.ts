@@ -3,7 +3,7 @@ import type File from 'vinyl'
 import { getOptions } from '@/options'
 import { UserDefinedOptions } from '@/types'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
-import { initStore, setRuntimeSet } from '@/mangle/store'
+
 const Transform = stream.Transform
 
 // export interface IBaseTransformOptions {
@@ -18,13 +18,12 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   if (options.customReplaceDictionary === undefined) {
     options.customReplaceDictionary = 'simple'
   }
-  const opts = getOptions(options, ['patch', 'style', 'templete', 'js'])
-  const { templeteHandler, styleHandler, patch, jsHandler, mangle } = opts
+  const opts = getOptions(options)
+  const { templeteHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet } = opts
 
   let set = new Set<string>()
   patch?.()
 
-  initStore(mangle)
   const twPatcher = createTailwindcssPatcher()
 
   function transformWxss() {
@@ -32,7 +31,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
     transformStream._transform = function (file: File, encoding, callback) {
       set = twPatcher.getClassSet()
-      setRuntimeSet(set)
+      setMangleRuntimeSet(set)
       const error = null
 
       if (file.contents) {

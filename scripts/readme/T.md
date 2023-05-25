@@ -84,7 +84,7 @@
 
 <!-- ## [js文件内容中taiwlindcss类名的精确转化与忽略策略](https://weapp-tw.icebreaker.top/docs/options/comments) -->
 
-## [配置项参考](https://weapp-tw.icebreaker.top/docs/options/)
+## [配置项参考](https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
 ## [使用tailwindcss任意值(arbitrary values)](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
 

@@ -1,10 +1,8 @@
 import type { Rule } from 'postcss'
-import type { IClassGeneratorOptions } from 'tailwindcss-mangle-shared'
+import type { IClassGeneratorOptions, ClassGenerator } from 'tailwindcss-mangle-shared'
 import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
-
 export type ItemOrItemArray<T> = T | T[]
-export type { TraverseOptions } from '@babel/traverse'
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
 
@@ -34,8 +32,14 @@ export type RequiredStyleHandlerOptions = {
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
+export interface InternalCssSelectorReplacerOptions {
+  mangleContext?: IMangleScopeContext
+  escapeMap?: Record<string, string>
+}
+
 export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
+  mangleContext?: IMangleScopeContext
 } & RequiredStyleHandlerOptions
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
@@ -45,7 +49,9 @@ export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string
 export type IJsHandlerOptions = {
   escapeMap?: Record<string, string>
   classNameSet: Set<string>
-  minifiedJs?: boolean
+  minifiedJs?: boolean,
+  arbitraryValues?: IArbitraryValues
+  mangleContext?: IMangleScopeContext
 }
 export interface RawSource {
   start: number
@@ -79,6 +85,24 @@ export interface ILengthUnitsPatchOptions {
 export interface IMangleOptions {
   classGenerator?: IClassGeneratorOptions
   mangleClassFilter?: (className: string) => boolean
+}
+
+export interface IArbitraryValues {
+  /**
+  * 是否允许在类名里，使用双引号。
+  * 建议不要开启，因为有些框架，比如 `vue3` 它针对有些静态模板会直接编译成 `html` 字符串，此时开启这个配置很有可能导致转义出错 
+  * 
+  * @example
+  * ```html
+  * <!-- 开启前默认只允许单引号 -->
+  * <view class="after:content-['对酒当歌，人生几何']"></view>
+  * <!-- 开启后 -->
+  * <view class="after:content-[\"对酒当歌，人生几何\"]"></view>
+  * ```
+  * 
+  * @default `false`
+  */
+  allowDoubleQuotes?: boolean
 }
 
 export interface UserDefinedOptions {
@@ -241,6 +265,21 @@ cssPreflight: {
    * @url https://github.com/sonofmagic/tailwindcss-mangle
    */
   mangle?: boolean | IMangleOptions
+
+  /**
+   * @description 针对 tailwindcss arbitrary values 的一些配置
+   */
+  arbitraryValues?: IArbitraryValues
+}
+
+export interface IMangleScopeContext {
+  rawOptions: UserDefinedOptions['mangle']
+  runtimeSet: Set<string>
+  classGenerator: ClassGenerator
+  filter: (className: string) => boolean
+  cssHandler: (rawSource: string) => string
+  jsHandler: (rawSource: string) => string
+  wxmlHandler: (rawSource: string) => string
 }
 
 export interface ICommonReplaceOptions {
@@ -261,6 +300,7 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   // custom?: boolean
   // regexps?: ICustomRegexp[]
   escapeMap?: Record<string, string>
+  mangleContext?: IMangleScopeContext
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
@@ -276,6 +316,8 @@ export type InternalUserDefinedOptions = Required<
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
+    // initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
+    setMangleRuntimeSet: (runtimeSet: Set<string>) => void
   }
 >
 
