@@ -35,6 +35,15 @@ describe('jsHandler', () => {
     expect(code).toBe('const n = "text-_12px_ flex bg-[red] w-2d5";')
   })
 
+  it('common case with ignore comment', () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    const code = h(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
+    expect(code).toBe("const n = /*weapp-tw ignore*/'text-[12px] flex bg-[red] w-2.5';")
+  })
+
   it('[minified] common case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')

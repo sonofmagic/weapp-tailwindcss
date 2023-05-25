@@ -18,6 +18,16 @@ describe('defaults function test group', () => {
 
       expect(mainCssChunkMatcher(uniappWxss, 'uni-app')).toBe(true)
 
+      expect(mainCssChunkMatcher(uniappWxss, 'uni-app-vite')).toBe(true)
+
+      expect(mainCssChunkMatcher('app.wxss', 'mpx')).toBe(true)
+
+      expect(mainCssChunkMatcher('app.wxss', 'remax')).toBe(true)
+
+      expect(mainCssChunkMatcher('bundle.wxss', 'rax')).toBe(true)
+
+      expect(mainCssChunkMatcher('miniprogram-app.wxss', 'kbone')).toBe(true)
+
       expect(mainCssChunkMatcher(taroWxss, 'taro')).toBe(true)
     } else {
       expect(true).toBe(false)
