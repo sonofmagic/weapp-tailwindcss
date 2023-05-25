@@ -9,7 +9,7 @@ import type { PackageJson } from 'pkg-types'
 // import terser from '@rollup/plugin-terser'
 // import { resolve } from 'path'
 import type { RollupOptions } from 'rollup'
-import { excludeKeys } from './filter-obj'
+import omit from 'lodash/omit'
 const pkg = JSON.parse(
   readFileSync('./package.json', {
     encoding: 'utf8'
@@ -104,7 +104,7 @@ const entries: IEntry[] = [
 
 const config = entries.map((x) => {
   return {
-    ...excludeKeys(x, ['name']),
+    ...omit(x, ['name']),
     ...createSharedConfig(x)
   }
 }) as RollupOptions[]

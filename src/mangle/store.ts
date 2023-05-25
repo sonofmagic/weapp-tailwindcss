@@ -29,6 +29,9 @@ const defaultScopedStore: IMangleScopeStore = {
 // import type { BabelFileResult } from '@babel/core'
 // 为什么要用这种方式，因为一层一层往下传递参数，太烦了
 // 所以说还是搞个 IOC 容器比较爽，要什么注入什么
+// 这样写其实是很有问题的
+// 比如当插件被 new 了 2次，传入了不同的 store 然后就挂了
+// TODO
 const store = Object.assign({}, defaultScopedStore)
 
 export function useStore() {

@@ -7,43 +7,229 @@ exports[`rollup build lib build 1`] = `
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var options = require('./options-9d17b73a.js');
-var postcss = require('./plugin-27708d63.js');
+var webpack = require('./webpack.js');
+var vite = require('./vite.js');
+var gulp = require('./gulp.js');
+require('./options-0f44e56e.js');
 require('micromatch');
+require('@babel/types');
 require('@babel/generator');
 require('@babel/parser');
 require('@babel/traverse');
+require('./replace.js');
+require('./shared-d993bf4d.js');
+require('tailwindcss-mangle-shared');
+require('postcss');
+require('./postcss-c76ab184.js');
+require('postcss-selector-parser');
+require('@csstools/postcss-is-pseudo-class');
+require('node:path');
+require('node:fs');
+require('semver');
+require('tailwindcss-patch');
+require('node:stream');
+
+
+
+exports.UnifiedWebpackPluginV5 = webpack.UnifiedWebpackPluginV5;
+exports.UnifiedViteWeappTailwindcssPlugin = vite.UnifiedViteWeappTailwindcssPlugin;
+exports.createPlugins = gulp.createPlugins;
+",
+    "dynamicImports": [],
+    "exports": [
+      "UnifiedViteWeappTailwindcssPlugin",
+      "UnifiedWebpackPluginV5",
+      "createPlugins",
+    ],
+    "fileName": "index.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "gulp.js": [
+        "createPlugins",
+      ],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "node:stream": [],
+      "options-0f44e56e.js": [],
+      "postcss": [],
+      "postcss-c76ab184.js": [],
+      "postcss-selector-parser": [],
+      "replace.js": [],
+      "semver": [],
+      "shared-d993bf4d.js": [],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+      "vite.js": [
+        "UnifiedViteWeappTailwindcssPlugin",
+      ],
+      "webpack.js": [
+        "UnifiedWebpackPluginV5",
+      ],
+    },
+    "imports": [
+      "webpack.js",
+      "vite.js",
+      "gulp.js",
+      "options-0f44e56e.js",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.js",
+      "shared-d993bf4d.js",
+      "tailwindcss-mangle-shared",
+      "postcss",
+      "postcss-c76ab184.js",
+      "postcss-selector-parser",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+      "node:stream",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "index",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "'use strict';
+
+var options = require('./options-0f44e56e.js');
+require('micromatch');
 require('@babel/types');
+require('@babel/generator');
+require('@babel/parser');
+require('@babel/traverse');
+require('./replace.js');
+require('./shared-d993bf4d.js');
+require('tailwindcss-mangle-shared');
+require('postcss');
+require('./postcss-c76ab184.js');
+require('postcss-selector-parser');
+require('@csstools/postcss-is-pseudo-class');
+require('node:path');
+require('node:fs');
+require('semver');
+require('tailwindcss-patch');
+
+const args = process.argv.slice(2);
+if (args[0] === 'patch') {
+    const options$1 = options.getOptions();
+    const patch = options.createPatch(options$1.supportCustomLengthUnitsPatch);
+    patch();
+}
+",
+    "dynamicImports": [],
+    "exports": [],
+    "fileName": "cli.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "options-0f44e56e.js": [
+        "getOptions",
+        "createPatch",
+      ],
+      "postcss": [],
+      "postcss-c76ab184.js": [],
+      "postcss-selector-parser": [],
+      "replace.js": [],
+      "semver": [],
+      "shared-d993bf4d.js": [],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+    },
+    "imports": [
+      "options-0f44e56e.js",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.js",
+      "shared-d993bf4d.js",
+      "tailwindcss-mangle-shared",
+      "postcss",
+      "postcss-c76ab184.js",
+      "postcss-selector-parser",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "cli",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var options = require('./options-0f44e56e.js');
+var postcss = require('./postcss-c76ab184.js');
+var shared = require('./shared-d993bf4d.js');
+require('micromatch');
+require('@babel/types');
+require('@babel/generator');
+require('@babel/parser');
+require('@babel/traverse');
+require('./replace.js');
 require('postcss');
 require('@csstools/postcss-is-pseudo-class');
-require('path');
-require('fs');
+require('node:path');
+require('node:fs');
 require('semver');
 require('tailwindcss-patch');
 require('postcss-selector-parser');
+require('tailwindcss-mangle-shared');
 
 class UnifiedWebpackPluginV5 {
     constructor(options$1 = {}) {
-        if (typeof options$1.customReplaceDictionary === 'undefined') {
+        if (options$1.customReplaceDictionary === undefined) {
             options$1.customReplaceDictionary = 'simple';
         }
         this.options = options.getOptions(options$1, ['style', 'patch', 'templete', 'js']);
         this.appType = this.options.appType;
     }
     apply(compiler) {
-        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler } = this.options;
+        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, mangle } = this.options;
         if (disabled) {
             return;
         }
         patch === null || patch === void 0 ? void 0 : patch();
+        shared.initStore(mangle);
         const Compilation = compiler.webpack.Compilation;
         const { ConcatSource } = compiler.webpack.sources;
         const twPatcher = options.createTailwindcssPatcher();
         function getClassSet() {
             let set = twPatcher.getClassSet();
-            if (!set.size) {
+            if (set.size === 0) {
                 const cacheSet = twPatcher.getCache();
-                if (cacheSet && cacheSet.size) {
+                if (cacheSet && cacheSet.size > 0) {
                     set = cacheSet;
                 }
             }
@@ -57,7 +243,9 @@ class UnifiedWebpackPluginV5 {
             }, (assets) => {
                 onStart();
                 const entries = Object.entries(assets);
-                const groupedEntries = options.getGroupedEntries(entries, this.options);
+                const groupedEntries = shared.getGroupedEntries(entries, this.options);
+                const set = getClassSet();
+                shared.setRuntimeSet(set);
                 if (Array.isArray(groupedEntries.html)) {
                     for (let i = 0; i < groupedEntries.html.length; i++) {
                         const [file, originalSource] = groupedEntries.html[i];
@@ -69,7 +257,6 @@ class UnifiedWebpackPluginV5 {
                     }
                 }
                 if (Array.isArray(groupedEntries.js)) {
-                    const set = getClassSet();
                     for (let i = 0; i < groupedEntries.js.length; i++) {
                         const [file, originalSource] = groupedEntries.js[i];
                         const rawSource = originalSource.source().toString();
@@ -104,7 +291,7 @@ exports.UnifiedWebpackPluginV5 = UnifiedWebpackPluginV5;
     "exports": [
       "UnifiedWebpackPluginV5",
     ],
-    "fileName": "index.js",
+    "fileName": "webpack.js",
     "implicitlyLoadedBefore": [],
     "importedBindings": {
       "@babel/generator": [],
@@ -112,44 +299,53 @@ exports.UnifiedWebpackPluginV5 = UnifiedWebpackPluginV5;
       "@babel/traverse": [],
       "@babel/types": [],
       "@csstools/postcss-is-pseudo-class": [],
-      "fs": [],
       "micromatch": [],
-      "options-9d17b73a.js": [
+      "node:fs": [],
+      "node:path": [],
+      "options-0f44e56e.js": [
         "getOptions",
         "createTailwindcssPatcher",
-        "getGroupedEntries",
       ],
-      "path": [],
-      "plugin-27708d63.js": [
+      "postcss": [],
+      "postcss-c76ab184.js": [
         "pluginName",
         "NS",
       ],
-      "postcss": [],
       "postcss-selector-parser": [],
+      "replace.js": [],
       "semver": [],
+      "shared-d993bf4d.js": [
+        "initStore",
+        "getGroupedEntries",
+        "setRuntimeSet",
+      ],
+      "tailwindcss-mangle-shared": [],
       "tailwindcss-patch": [],
     },
     "imports": [
-      "options-9d17b73a.js",
-      "plugin-27708d63.js",
+      "options-0f44e56e.js",
+      "postcss-c76ab184.js",
+      "shared-d993bf4d.js",
       "micromatch",
+      "@babel/types",
       "@babel/generator",
       "@babel/parser",
       "@babel/traverse",
-      "@babel/types",
+      "replace.js",
       "postcss",
       "@csstools/postcss-is-pseudo-class",
-      "path",
-      "fs",
+      "node:path",
+      "node:fs",
       "semver",
       "tailwindcss-patch",
       "postcss-selector-parser",
+      "tailwindcss-mangle-shared",
     ],
     "isDynamicEntry": false,
     "isEntry": true,
     "isImplicitEntry": false,
     "map": null,
-    "name": "index",
+    "name": "webpack",
     "referencedFiles": [],
     "type": "chunk",
   },
@@ -158,21 +354,24 @@ exports.UnifiedWebpackPluginV5 = UnifiedWebpackPluginV5;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var options = require('./options-9d17b73a.js');
-var stream = require('stream');
+var stream = require('node:stream');
+var options = require('./options-0f44e56e.js');
+var shared = require('./shared-d993bf4d.js');
 require('micromatch');
+require('@babel/types');
 require('@babel/generator');
 require('@babel/parser');
 require('@babel/traverse');
-require('./plugin-27708d63.js');
-require('postcss-selector-parser');
+require('./replace.js');
 require('postcss');
+require('./postcss-c76ab184.js');
+require('postcss-selector-parser');
 require('@csstools/postcss-is-pseudo-class');
-require('@babel/types');
-require('path');
-require('fs');
+require('node:path');
+require('node:fs');
 require('semver');
 require('tailwindcss-patch');
+require('tailwindcss-mangle-shared');
 
 function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -180,18 +379,20 @@ var stream__default = /*#__PURE__*/_interopDefaultCompat(stream);
 
 const Transform = stream__default["default"].Transform;
 function createPlugins(options$1 = {}) {
-    if (typeof options$1.customReplaceDictionary === 'undefined') {
+    if (options$1.customReplaceDictionary === undefined) {
         options$1.customReplaceDictionary = 'simple';
     }
     const opts = options.getOptions(options$1, ['patch', 'style', 'templete', 'js']);
-    const { templeteHandler, styleHandler, patch, jsHandler } = opts;
+    const { templeteHandler, styleHandler, patch, jsHandler, mangle } = opts;
     let set = new Set();
     patch === null || patch === void 0 ? void 0 : patch();
+    shared.initStore(mangle);
     const twPatcher = options.createTailwindcssPatcher();
     function transformWxss() {
         const transformStream = new Transform({ objectMode: true });
         transformStream._transform = function (file, encoding, callback) {
             set = twPatcher.getClassSet();
+            shared.setRuntimeSet(set);
             const error = null;
             if (file.contents) {
                 const code = styleHandler(file.contents.toString(), {
@@ -248,38 +449,47 @@ exports.createPlugins = createPlugins;
       "@babel/traverse": [],
       "@babel/types": [],
       "@csstools/postcss-is-pseudo-class": [],
-      "fs": [],
       "micromatch": [],
-      "options-9d17b73a.js": [
+      "node:fs": [],
+      "node:path": [],
+      "node:stream": [
+        "default",
+      ],
+      "options-0f44e56e.js": [
         "getOptions",
         "createTailwindcssPatcher",
       ],
-      "path": [],
-      "plugin-27708d63.js": [],
       "postcss": [],
+      "postcss-c76ab184.js": [],
       "postcss-selector-parser": [],
+      "replace.js": [],
       "semver": [],
-      "stream": [
-        "default",
+      "shared-d993bf4d.js": [
+        "initStore",
+        "setRuntimeSet",
       ],
+      "tailwindcss-mangle-shared": [],
       "tailwindcss-patch": [],
     },
     "imports": [
-      "options-9d17b73a.js",
-      "stream",
+      "node:stream",
+      "options-0f44e56e.js",
+      "shared-d993bf4d.js",
       "micromatch",
+      "@babel/types",
       "@babel/generator",
       "@babel/parser",
       "@babel/traverse",
-      "plugin-27708d63.js",
-      "postcss-selector-parser",
+      "replace.js",
       "postcss",
+      "postcss-c76ab184.js",
+      "postcss-selector-parser",
       "@csstools/postcss-is-pseudo-class",
-      "@babel/types",
-      "path",
-      "fs",
+      "node:path",
+      "node:fs",
       "semver",
       "tailwindcss-patch",
+      "tailwindcss-mangle-shared",
     ],
     "isDynamicEntry": false,
     "isEntry": true,
@@ -292,72 +502,75 @@ exports.createPlugins = createPlugins;
   {
     "code": "'use strict';
 
-var options = require('./options-9d17b73a.js');
-require('micromatch');
-require('@babel/generator');
-require('@babel/parser');
-require('@babel/traverse');
-require('./plugin-27708d63.js');
-require('postcss-selector-parser');
-require('postcss');
-require('@csstools/postcss-is-pseudo-class');
-require('@babel/types');
-require('path');
-require('fs');
-require('semver');
-require('tailwindcss-patch');
+Object.defineProperty(exports, '__esModule', { value: true });
 
-const args = process.argv.slice(2);
-if (args[0] === 'patch') {
-    const options$1 = options.getOptions();
-    const patch = options.createPatch(options$1.supportCustomLengthUnitsPatch);
-    patch();
+var shared = require('./shared-d993bf4d.js');
+require('tailwindcss-mangle-shared');
+
+function replaceWxml(original, options = {
+    keepEOL: false,
+    escapeMap: shared.SimpleMappingChars2String
+}) {
+    if (typeof options === 'boolean') {
+        options = {
+            keepEOL: options
+        };
+    }
+    let res = original;
+    if (!options.keepEOL) {
+        res = res
+            .replaceAll(/[\\n\\r]+/g, '');
+    }
+    const { wxmlHandler } = shared.useStore();
+    res = wxmlHandler(res);
+    res = shared.escape(res, {
+        map: options.escapeMap
+    });
+    return res;
 }
+
+exports.MappingChars2String = shared.MappingChars2String;
+exports.MappingChars2StringEntries = shared.MappingChars2StringEntries;
+exports.SYMBOL_TABLE = shared.SYMBOL_TABLE;
+exports.SimpleMappingChars2String = shared.SimpleMappingChars2String;
+exports.SimpleMappingChars2StringEntries = shared.SimpleMappingChars2StringEntries;
+exports.replaceCss = shared.internalCssSelectorReplacer;
+exports.replaceJs = replaceWxml;
 ",
     "dynamicImports": [],
-    "exports": [],
-    "fileName": "cli.js",
+    "exports": [
+      "MappingChars2String",
+      "MappingChars2StringEntries",
+      "SYMBOL_TABLE",
+      "SimpleMappingChars2String",
+      "SimpleMappingChars2StringEntries",
+      "replaceCss",
+      "replaceJs",
+    ],
+    "fileName": "replace.js",
     "implicitlyLoadedBefore": [],
     "importedBindings": {
-      "@babel/generator": [],
-      "@babel/parser": [],
-      "@babel/traverse": [],
-      "@babel/types": [],
-      "@csstools/postcss-is-pseudo-class": [],
-      "fs": [],
-      "micromatch": [],
-      "options-9d17b73a.js": [
-        "getOptions",
-        "createPatch",
+      "shared-d993bf4d.js": [
+        "escape",
+        "SimpleMappingChars2String",
+        "useStore",
+        "MappingChars2String",
+        "MappingChars2StringEntries",
+        "SYMBOL_TABLE",
+        "SimpleMappingChars2StringEntries",
+        "internalCssSelectorReplacer",
       ],
-      "path": [],
-      "plugin-27708d63.js": [],
-      "postcss": [],
-      "postcss-selector-parser": [],
-      "semver": [],
-      "tailwindcss-patch": [],
+      "tailwindcss-mangle-shared": [],
     },
     "imports": [
-      "options-9d17b73a.js",
-      "micromatch",
-      "@babel/generator",
-      "@babel/parser",
-      "@babel/traverse",
-      "plugin-27708d63.js",
-      "postcss-selector-parser",
-      "postcss",
-      "@csstools/postcss-is-pseudo-class",
-      "@babel/types",
-      "path",
-      "fs",
-      "semver",
-      "tailwindcss-patch",
+      "shared-d993bf4d.js",
+      "tailwindcss-mangle-shared",
     ],
     "isDynamicEntry": false,
     "isEntry": true,
     "isImplicitEntry": false,
     "map": null,
-    "name": "cli",
+    "name": "replace",
     "referencedFiles": [],
     "type": "chunk",
   },
@@ -366,9 +579,156 @@ if (args[0] === 'patch') {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var postcss = require('./plugin-27708d63.js');
+var options = require('./options-0f44e56e.js');
+var postcss = require('./postcss-c76ab184.js');
+var shared = require('./shared-d993bf4d.js');
+require('micromatch');
+require('@babel/types');
+require('@babel/generator');
+require('@babel/parser');
+require('@babel/traverse');
+require('./replace.js');
+require('tailwindcss-mangle-shared');
+require('postcss');
+require('@csstools/postcss-is-pseudo-class');
+require('node:path');
+require('node:fs');
+require('semver');
+require('tailwindcss-patch');
+require('postcss-selector-parser');
+
+function UnifiedViteWeappTailwindcssPlugin(options$1 = {}) {
+    if (options$1.customReplaceDictionary === undefined) {
+        options$1.customReplaceDictionary = 'simple';
+    }
+    const opts = options.getOptions(options$1, ['patch', 'style', 'templete', 'js']);
+    const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts;
+    if (disabled) {
+        return;
+    }
+    patch === null || patch === void 0 ? void 0 : patch();
+    shared.initStore(mangle);
+    const twPatcher = options.createTailwindcssPatcher();
+    onLoad();
+    return {
+        name: postcss.vitePluginName,
+        enforce: 'post',
+        buildStart() {
+            onStart();
+        },
+        generateBundle(opt, bundle, isWrite) {
+            const entries = Object.entries(bundle);
+            const groupedEntries = shared.getGroupedEntries(entries, opts);
+            const set = twPatcher.getClassSet();
+            shared.setRuntimeSet(set);
+            if (Array.isArray(groupedEntries.html)) {
+                for (let i = 0; i < groupedEntries.html.length; i++) {
+                    const [file, originalSource] = groupedEntries.html[i];
+                    const oldVal = originalSource.source.toString();
+                    originalSource.source = templeteHandler(oldVal);
+                    onUpdate(file, oldVal, originalSource.source);
+                }
+            }
+            if (Array.isArray(groupedEntries.css)) {
+                for (let i = 0; i < groupedEntries.css.length; i++) {
+                    const [file, originalSource] = groupedEntries.css[i];
+                    const rawSource = originalSource.source.toString();
+                    const css = styleHandler(rawSource, {
+                        isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
+                    });
+                    originalSource.source = css;
+                    onUpdate(file, rawSource, css);
+                }
+            }
+            if (Array.isArray(groupedEntries.js)) {
+                for (let i = 0; i < groupedEntries.js.length; i++) {
+                    const [file, originalSource] = groupedEntries.js[i];
+                    const rawSource = originalSource.code;
+                    const { code } = jsHandler(rawSource, set);
+                    originalSource.code = code;
+                    onUpdate(file, rawSource, code);
+                }
+            }
+        },
+        buildEnd() {
+            onEnd();
+        }
+    };
+}
+
+exports.UnifiedViteWeappTailwindcssPlugin = UnifiedViteWeappTailwindcssPlugin;
+",
+    "dynamicImports": [],
+    "exports": [
+      "UnifiedViteWeappTailwindcssPlugin",
+    ],
+    "fileName": "vite.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "options-0f44e56e.js": [
+        "getOptions",
+        "createTailwindcssPatcher",
+      ],
+      "postcss": [],
+      "postcss-c76ab184.js": [
+        "vitePluginName",
+      ],
+      "postcss-selector-parser": [],
+      "replace.js": [],
+      "semver": [],
+      "shared-d993bf4d.js": [
+        "initStore",
+        "getGroupedEntries",
+        "setRuntimeSet",
+      ],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+    },
+    "imports": [
+      "options-0f44e56e.js",
+      "postcss-c76ab184.js",
+      "shared-d993bf4d.js",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.js",
+      "tailwindcss-mangle-shared",
+      "postcss",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+      "postcss-selector-parser",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "vite",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var postcss = require('./postcss-c76ab184.js');
 var postcssIsPseudoClass = require('@csstools/postcss-is-pseudo-class');
 require('postcss-selector-parser');
+require('./shared-d993bf4d.js');
+require('tailwindcss-mangle-shared');
 require('postcss');
 
 function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -394,16 +754,20 @@ Object.defineProperty(exports, 'postcssIsPseudoClass', {
       "@csstools/postcss-is-pseudo-class": [
         "default",
       ],
-      "plugin-27708d63.js": [
+      "postcss": [],
+      "postcss-c76ab184.js": [
         "postcssWeappTailwindcss",
       ],
-      "postcss": [],
       "postcss-selector-parser": [],
+      "shared-d993bf4d.js": [],
+      "tailwindcss-mangle-shared": [],
     },
     "imports": [
-      "plugin-27708d63.js",
+      "postcss-c76ab184.js",
       "@csstools/postcss-is-pseudo-class",
       "postcss-selector-parser",
+      "shared-d993bf4d.js",
+      "tailwindcss-mangle-shared",
       "postcss",
     ],
     "isDynamicEntry": false,
@@ -417,1058 +781,9 @@ Object.defineProperty(exports, 'postcssIsPseudoClass', {
   {
     "code": "'use strict';
 
-var micromatch = require('micromatch');
-var generate = require('@babel/generator');
-var parser = require('@babel/parser');
-var traverse = require('@babel/traverse');
-var postcss = require('./plugin-27708d63.js');
-var t = require('@babel/types');
-var postcss$1 = require('postcss');
-var postcssIsPseudoClass = require('@csstools/postcss-is-pseudo-class');
-var path = require('path');
-var fs = require('fs');
-var semver = require('semver');
-var tailwindcssPatch = require('tailwindcss-patch');
+var tailwindcssMangleShared = require('tailwindcss-mangle-shared');
 
-function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-function _interopNamespaceCompat(e) {
-  if (e && typeof e === 'object' && 'default' in e) return e;
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
-      }
-    });
-  }
-  n["default"] = e;
-  return Object.freeze(n);
-}
-
-var generate__default = /*#__PURE__*/_interopDefaultCompat(generate);
-var traverse__default = /*#__PURE__*/_interopDefaultCompat(traverse);
-var t__namespace = /*#__PURE__*/_interopNamespaceCompat(t);
-var postcss__default = /*#__PURE__*/_interopDefaultCompat(postcss$1);
-var postcssIsPseudoClass__default = /*#__PURE__*/_interopDefaultCompat(postcssIsPseudoClass);
-var path__default = /*#__PURE__*/_interopDefaultCompat(path);
-var fs__default = /*#__PURE__*/_interopDefaultCompat(fs);
-
-function isObject(value) {
-  return value !== null && typeof value === "object";
-}
-function _defu(baseObject, defaults, namespace = ".", merger) {
-  if (!isObject(defaults)) {
-    return _defu(baseObject, {}, namespace, merger);
-  }
-  const object = Object.assign({}, defaults);
-  for (const key in baseObject) {
-    if (key === "__proto__" || key === "constructor") {
-      continue;
-    }
-    const value = baseObject[key];
-    if (value === null || value === void 0) {
-      continue;
-    }
-    if (merger && merger(object, key, value, namespace)) {
-      continue;
-    }
-    if (Array.isArray(value) && Array.isArray(object[key])) {
-      object[key] = [...value, ...object[key]];
-    } else if (isObject(value) && isObject(object[key])) {
-      object[key] = _defu(
-        value,
-        object[key],
-        (namespace ? \`\${namespace}.\` : "") + key.toString(),
-        merger
-      );
-    } else {
-      object[key] = value;
-    }
-  }
-  return object;
-}
-function createDefu(merger) {
-  return (...arguments_) => (
-    // eslint-disable-next-line unicorn/no-array-reduce
-    arguments_.reduce((p, c) => _defu(p, c, "", merger), {})
-  );
-}
-const defu = createDefu();
-
-function isRegexp(value) {
-    return Object.prototype.toString.call(value) === '[object RegExp]';
-}
-function isMap(value) {
-    return Object.prototype.toString.call(value) === '[object Map]';
-}
-const noop = () => { };
-function groupBy(arr, cb) {
-    if (!Array.isArray(arr)) {
-        throw new Error('expected an array for first argument');
-    }
-    if (typeof cb !== 'function') {
-        throw new Error('expected a function for second argument');
-    }
-    const result = {};
-    for (let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        const bucketCategory = cb(item);
-        const bucket = result[bucketCategory];
-        if (!Array.isArray(bucket)) {
-            result[bucketCategory] = [item];
-        }
-        else {
-            result[bucketCategory].push(item);
-        }
-    }
-    return result;
-}
-function getGroupedEntries(entries, options) {
-    const { cssMatcher, htmlMatcher, jsMatcher } = options;
-    const groupedEntries = groupBy(entries, ([file]) => {
-        if (cssMatcher(file)) {
-            return 'css';
-        }
-        else if (htmlMatcher(file)) {
-            return 'html';
-        }
-        else if (jsMatcher(file)) {
-            return 'js';
-        }
-        else {
-            return 'other';
-        }
-    });
-    return groupedEntries;
-}
-
-function replaceWxml(original, options = {
-    keepEOL: false,
-    escapeMap: postcss.SimpleMappingChars2String
-}) {
-    if (typeof options === 'boolean') {
-        options = {
-            keepEOL: options
-        };
-    }
-    let res = original;
-    if (!options.keepEOL) {
-        res = res
-            .replace(/[\\r\\n]+/g, '');
-    }
-    res = postcss.escape(res, {
-        map: options.escapeMap
-    });
-    return res;
-}
-
-function escapeStringRegexp(str) {
-    if (typeof str !== 'string') {
-        throw new TypeError('Expected a string');
-    }
-    return str.replace(/[|\\\\{}()[\\]^$+*?.]/g, '\\\\$&').replace(/-/g, '\\\\x2d');
-}
-const templateClassExactRegexp = /(?:(?<=^|\\s)(?:hover-)?class)=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]/gs;
-const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\\/?>/g;
-function handleRegexp(reg) {
-    return \`(?:\${reg.source})\`;
-}
-function getSourceString(input) {
-    let result;
-    if (typeof input === 'string') {
-        result = input;
-    }
-    else if (isRegexp(input)) {
-        result = input.source;
-    }
-    else {
-        result = input.toString();
-    }
-    return result;
-}
-function makePattern(arr) {
-    let pattern = '';
-    if (Array.isArray(arr)) {
-        pattern = arr
-            .reduce((acc, cur) => {
-            if (typeof cur === 'string') {
-                acc.push(cur);
-            }
-            else if (isRegexp(cur)) {
-                acc.push(handleRegexp(cur));
-            }
-            return acc;
-        }, [])
-            .join('|');
-    }
-    else if (typeof arr === 'string') {
-        pattern = arr;
-    }
-    else if (isRegexp(arr)) {
-        pattern = handleRegexp(arr);
-    }
-    return pattern;
-}
-function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
-    const { exact = true } = options;
-    const prefix = exact ? '(?<=^|\\\\s)' : '';
-    const pattern = makePattern(attrs);
-    let tagPattern = getSourceString(tag);
-    if (tagPattern === '*') {
-        tagPattern = '[a-z][-a-z]*[a-z]*';
-    }
-    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
-    return new RegExp(source, 'g');
-}
-function createTemplateClassRegexp(attrs, options = {}) {
-    const { exact = true } = options;
-    const prefix = exact ? '(?<=^|\\\\s)' : '';
-    const pattern = makePattern(attrs);
-    const source = \`(?:\${prefix}\${pattern})=(?:["']\\\\W+\\\\s*(?:\\\\w+)\\\\()?["']([^"]+)['"]\`;
-    return new RegExp(source, 'gs');
-}
-function makeCustomAttributes(entries) {
-    if (Array.isArray(entries)) {
-        return entries.map(([k, v]) => {
-            return {
-                tagRegexp: createTempleteHandlerMatchRegexp(k, v),
-                attrRegexp: createTemplateClassRegexp(v),
-                tag: getSourceString(k),
-                attrs: v
-            };
-        });
-    }
-}
-const variableRegExp = /{{(.*?)}}/gs;
-function variableMatch(original) {
-    return variableRegExp.exec(original);
-}
-
-function generateCode(match, options = {}) {
-    const ast = parser.parseExpression(match);
-    traverse__default["default"](ast, {
-        StringLiteral(path) {
-            var _a;
-            if (t__namespace.isMemberExpression(path.parent)) {
-                return;
-            }
-            if (t__namespace.isBinaryExpression(path.parent)) {
-                if (t__namespace.isConditionalExpression((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent)) {
-                    return;
-                }
-            }
-            path.node.value = replaceWxml(path.node.value, options);
-        },
-        noScope: true
-    });
-    const { code } = generate__default["default"](ast, {
-        compact: true,
-        minified: true,
-        jsescOption: {
-            quotes: 'single',
-            minimal: true
-        }
-    });
-    return code;
-}
-function extractSource(original) {
-    let match = variableMatch(original);
-    const sources = [];
-    while (match !== null) {
-        const start = match.index;
-        const end = variableRegExp.lastIndex;
-        sources.push({
-            start,
-            end,
-            raw: match[1],
-            prevConcatenated: !/\\s/.test(original[start - 1]),
-            nextConcatenated: !/\\s/.test(original[end])
-        });
-        match = variableMatch(original);
-    }
-    return sources;
-}
-function templeteReplacer(original, options = {}) {
-    const sources = extractSource(original);
-    if (sources.length) {
-        const resultArray = [];
-        let p = 0;
-        for (let i = 0; i < sources.length; i++) {
-            const m = sources[i];
-            const before = original.slice(p, m.start);
-            resultArray.push(replaceWxml(before, {
-                keepEOL: true,
-                escapeMap: options.escapeMap
-            }));
-            p = m.start;
-            if (m.raw.trim().length) {
-                const code = generateCode(m.raw, options);
-                const source = \`{{\${code}}}\`;
-                m.source = source;
-            }
-            else {
-                m.source = '';
-            }
-            resultArray.push(m.source);
-            p = m.end;
-            if (i === sources.length - 1) {
-                const after = original.slice(m.end);
-                resultArray.push(replaceWxml(after, {
-                    keepEOL: true,
-                    escapeMap: options.escapeMap
-                }));
-            }
-        }
-        return resultArray
-            .filter((x) => x)
-            .join('')
-            .trim();
-    }
-    else {
-        return replaceWxml(original, {
-            keepEOL: false,
-            escapeMap: options.escapeMap
-        });
-    }
-}
-function templeteHandler(rawSource, options = {}) {
-    return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
-        return m0.replace(templateClassExactRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className, options));
-        });
-    });
-}
-function customTempleteHandler(rawSource, options = {}) {
-    let source = templeteHandler(rawSource, options);
-    const regexps = makeCustomAttributes(options.customAttributesEntities);
-    if (regexps) {
-        if (Array.isArray(regexps)) {
-            for (let i = 0; i < regexps.length; i++) {
-                const regexp = regexps[i];
-                source = source.replace(regexp.tagRegexp, (m0) => {
-                    return m0.replace(regexp.attrRegexp, (m1, className) => {
-                        return m1.replace(className, templeteReplacer(className, options));
-                    });
-                });
-            }
-        }
-        return source;
-    }
-    else {
-        return source;
-    }
-}
-function createTempleteHandler(options = {}) {
-    return (rawSource, opt = {}) => {
-        return customTempleteHandler(rawSource, defu(opt, options));
-    };
-}
-
-function styleHandler(rawSource, options) {
-    return postcss__default["default"]([postcss.postcssWeappTailwindcss(options), postcssIsPseudoClass__default["default"]()]).process(rawSource).css;
-}
-function createStyleHandler(options) {
-    return (rawSource, opt) => {
-        return styleHandler(rawSource, defu(opt, options));
-    };
-}
-
-const createInjectPreflight = (options) => {
-    const result = [];
-    if (options && typeof options === 'object') {
-        const entries = Object.entries(options);
-        for (let i = 0; i < entries.length; i++) {
-            const [prop, value] = entries[i];
-            if (value !== false) {
-                result.push({
-                    prop,
-                    value: value.toString()
-                });
-            }
-        }
-    }
-    return () => {
-        return result;
-    };
-};
-
-function findAstNode(content, options) {
-    const DOPTS = options.dangerousOptions;
-    const ast = parser.parse(content);
-    let arrayRef;
-    let changed = false;
-    traverse__default["default"](ast, {
-        Identifier(path) {
-            if (path.node.name === DOPTS.variableName) {
-                if (t__namespace.isVariableDeclarator(path.parent)) {
-                    if (t__namespace.isArrayExpression(path.parent.init)) {
-                        arrayRef = path.parent.init;
-                        const set = new Set(path.parent.init.elements.map((x) => x.value));
-                        for (let i = 0; i < options.units.length; i++) {
-                            const unit = options.units[i];
-                            if (!set.has(unit)) {
-                                path.parent.init.elements = path.parent.init.elements.map((x) => {
-                                    if (t__namespace.isStringLiteral(x)) {
-                                        return {
-                                            type: x === null || x === void 0 ? void 0 : x.type,
-                                            value: x === null || x === void 0 ? void 0 : x.value
-                                        };
-                                    }
-                                    return x;
-                                });
-                                path.parent.init.elements.push({
-                                    type: 'StringLiteral',
-                                    value: unit
-                                });
-                                changed = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-    return {
-        arrayRef,
-        changed
-    };
-}
-
-function getInstalledPkgJsonPath(options) {
-    const dangerousOptions = options.dangerousOptions;
-    try {
-        const tmpJsonPath = tailwindcssPatch.requireResolve(\`\${dangerousOptions.packageName}/package.json\`, {
-            paths: options.paths,
-            basedir: options.basedir
-        });
-        return tmpJsonPath;
-    }
-    catch (error) {
-        if (error.code === 'MODULE_NOT_FOUND') {
-            console.warn('没有找到\`tailwindcss\`包，请确认是否安装。想要禁用打上rpx支持patch或者非\`tailwindcss\`框架，你可以设置 \`supportCustomLengthUnitsPatch\` 为 false');
-        }
-    }
-}
-function createPatch(options) {
-    if (options === false) {
-        return noop;
-    }
-    return () => {
-        try {
-            return internalPatch(getInstalledPkgJsonPath(options), options);
-        }
-        catch (error) {
-            console.warn(\`patch tailwindcss failed:\` + error.message);
-        }
-    };
-}
-function monkeyPatchForSupportingCustomUnit(rootDir, options) {
-    var _a;
-    const { dangerousOptions } = options;
-    const DOPTS = dangerousOptions;
-    const dataTypesFilePath = path__default["default"].resolve(rootDir, DOPTS.lengthUnitsFilePath);
-    const dataTypesFileContent = fs__default["default"].readFileSync(dataTypesFilePath, {
-        encoding: 'utf-8'
-    });
-    const { arrayRef, changed } = findAstNode(dataTypesFileContent, options);
-    if (arrayRef && changed) {
-        const { code } = generate__default["default"](arrayRef, {
-            jsescOption: {
-                quotes: 'single'
-            }
-        });
-        if (arrayRef.start && arrayRef.end) {
-            const prev = dataTypesFileContent.slice(0, arrayRef.start);
-            const next = dataTypesFileContent.slice(arrayRef.end);
-            const newCode = prev + code + next;
-            if (DOPTS.overwrite) {
-                fs__default["default"].writeFileSync((_a = DOPTS.destPath) !== null && _a !== void 0 ? _a : dataTypesFilePath, newCode, {
-                    encoding: 'utf-8'
-                });
-                console.log('patch tailwindcss for custom length unit successfully!');
-            }
-        }
-        return code;
-    }
-}
-function internalPatch(pkgJsonPath, options, overwrite = true) {
-    if (pkgJsonPath) {
-        const pkgJson = require(pkgJsonPath);
-        const dangerousOptions = options.dangerousOptions;
-        if (semver.gte(pkgJson.version, dangerousOptions.gteVersion)) {
-            const rootDir = path__default["default"].dirname(pkgJsonPath);
-            const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options);
-            const result = tailwindcssPatch.monkeyPatchForExposingContext(rootDir, {
-                overwrite
-            });
-            return Object.assign(Object.assign({}, result), { dataTypes });
-        }
-    }
-}
-function createTailwindcssPatcher() {
-    return new tailwindcssPatch.TailwindcssPatcher({
-        cache: true
-    });
-}
-
-const validateFilterRE = /[\\w\\u00A0-\\uFFFF-_:%-?]/;
-function isValidSelector(selector = '') {
-    return validateFilterRE.test(selector);
-}
-const splitCode = (code) => {
-    return code.split(/[\\s]+/).filter(isValidSelector);
-};
-
-const isProd = () => process.env.NODE_ENV === 'production';
-
-function handleValue(str, node, options) {
-    const set = options.classNameSet;
-    const escapeMap = options.escapeMap;
-    const arr = splitCode(str);
-    let rawStr = str;
-    for (let i = 0; i < arr.length; i++) {
-        const v = arr[i];
-        if (set.has(v)) {
-            let ignoreFlag = false;
-            if (Array.isArray(node.leadingComments)) {
-                ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1;
-            }
-            if (!ignoreFlag) {
-                rawStr = rawStr.replace(new RegExp(escapeStringRegexp(v), 'g'), replaceWxml(v, {
-                    escapeMap
-                }));
-            }
-        }
-    }
-    return rawStr;
-}
-function jsHandler(rawSource, options) {
-    var _a;
-    const ast = parser.parse(rawSource, {
-        sourceType: 'unambiguous'
-    });
-    const topt = {
-        StringLiteral: {
-            enter(p) {
-                const n = p.node;
-                n.value = handleValue(n.value, n, options);
-            }
-        },
-        TemplateElement: {
-            enter(p) {
-                const n = p.node;
-                n.value.raw = handleValue(n.value.raw, n, options);
-            }
-        },
-        CallExpression: {
-            enter(p) {
-                const n = p.node;
-                if (t__namespace.isIdentifier(n.callee) && n.callee.name === 'eval') {
-                    if (t__namespace.isStringLiteral(n.arguments[0])) {
-                        const res = jsHandler(n.arguments[0].value, options);
-                        if (res.code) {
-                            n.arguments[0].value = res.code;
-                        }
-                    }
-                }
-            }
-        },
-        noScope: true
-    };
-    traverse__default["default"](ast, topt);
-    return generate__default["default"](ast, {
-        minified: (_a = options.minifiedJs) !== null && _a !== void 0 ? _a : isProd()
-    });
-}
-function createjsHandler(options) {
-    return (rawSource, set) => {
-        return jsHandler(rawSource, {
-            classNameSet: set,
-            minifiedJs: options.minifiedJs,
-            escapeMap: options.escapeMap
-        });
-    };
-}
-
-const defaultOptions = {
-    cssMatcher: (file) => /.+\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
-    htmlMatcher: (file) => /.+\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
-    jsMatcher: (file) => {
-        if (file.includes('node_modules')) {
-            return false;
-        }
-        return /.+\\.[cm]?[jt]sx?$/.test(file);
-    },
-    mainCssChunkMatcher: (file, appType) => {
-        switch (appType) {
-            case 'uni-app': {
-                return /^common\\/main/.test(file);
-            }
-            case 'uni-app-vite': {
-                return /^app/.test(file) || /^common\\/main/.test(file);
-            }
-            case 'mpx': {
-                return /^app/.test(file);
-            }
-            case 'taro': {
-                return /^app/.test(file);
-            }
-            case 'remax': {
-                return /^app/.test(file);
-            }
-            case 'rax': {
-                return /^bundle/.test(file);
-            }
-            case 'native': {
-                return /^app/.test(file);
-            }
-            case 'kbone': {
-                return /^(?:common\\/)?miniprogram-app/.test(file);
-            }
-            default: {
-                return true;
-            }
-        }
-    },
-    cssPreflight: {
-        'box-sizing': 'border-box',
-        'border-width': '0',
-        'border-style': 'solid',
-        'border-color': 'currentColor'
-    },
-    cssPreflightRange: 'view',
-    replaceUniversalSelectorWith: 'view',
-    disabled: false,
-    customRuleCallback: noop,
-    onLoad: noop,
-    onStart: noop,
-    onEnd: noop,
-    onUpdate: noop,
-    customAttributes: {},
-    customReplaceDictionary: postcss.SimpleMappingChars2String,
-    supportCustomLengthUnitsPatch: {
-        units: ['rpx'],
-        dangerousOptions: {
-            gteVersion: '3.0.0',
-            lengthUnitsFilePath: 'lib/util/dataTypes.js',
-            packageName: 'tailwindcss',
-            variableName: 'lengthUnits',
-            overwrite: true
-        }
-    },
-    appType: undefined
-};
-
-function createGlobMatcher(pattern) {
-    return function (file) {
-        return micromatch.isMatch(file, pattern);
-    };
-}
-function normalizeMatcher(options, key) {
-    if (typeof options[key] === 'string' || Array.isArray(options[key])) {
-        options[key] = createGlobMatcher(options[key]);
-    }
-}
-function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']) {
-    const registerModules = modules.reduce((acc, cur) => {
-        if (acc[cur] !== undefined) {
-            acc[cur] = true;
-        }
-        return acc;
-    }, {
-        templete: false,
-        style: false,
-        patch: false,
-        js: false
-    });
-    if (options.supportCustomLengthUnitsPatch === true) {
-        options.supportCustomLengthUnitsPatch = undefined;
-    }
-    if (options.customReplaceDictionary === 'simple') {
-        options.customReplaceDictionary = postcss.SimpleMappingChars2String;
-    }
-    else if (options.customReplaceDictionary === 'complex') {
-        options.customReplaceDictionary = postcss.MappingChars2String;
-    }
-    normalizeMatcher(options, 'cssMatcher');
-    normalizeMatcher(options, 'htmlMatcher');
-    normalizeMatcher(options, 'jsMatcher');
-    normalizeMatcher(options, 'mainCssChunkMatcher');
-    const result = defu(options, defaultOptions, {
-        minifiedJs: isProd()
-    });
-    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
-    result.escapeMap = customReplaceDictionary;
-    const cssInjectPreflight = createInjectPreflight(cssPreflight);
-    let customAttributesEntities;
-    if (isMap(options.customAttributes)) {
-        customAttributesEntities = Array.from(options.customAttributes.entries());
-    }
-    else {
-        customAttributesEntities = Object.entries(customAttributes);
-    }
-    if (registerModules.templete) {
-        result.templeteHandler = createTempleteHandler({
-            customAttributesEntities,
-            escapeMap: result.escapeMap
-        });
-    }
-    if (registerModules.style) {
-        result.styleHandler = createStyleHandler({
-            cssInjectPreflight,
-            customRuleCallback,
-            cssPreflightRange,
-            replaceUniversalSelectorWith,
-            escapeMap: result.escapeMap
-        });
-    }
-    if (registerModules.js) {
-        result.jsHandler = createjsHandler({
-            minifiedJs: result.minifiedJs,
-            escapeMap: result.escapeMap
-        });
-    }
-    if (registerModules.patch) {
-        result.patch = createPatch(supportCustomLengthUnitsPatch);
-    }
-    return result;
-}
-
-exports.createPatch = createPatch;
-exports.createTailwindcssPatcher = createTailwindcssPatcher;
-exports.getGroupedEntries = getGroupedEntries;
-exports.getOptions = getOptions;
-",
-    "dynamicImports": [],
-    "exports": [
-      "createPatch",
-      "createTailwindcssPatcher",
-      "getGroupedEntries",
-      "getOptions",
-    ],
-    "fileName": "options-9d17b73a.js",
-    "implicitlyLoadedBefore": [],
-    "importedBindings": {
-      "@babel/generator": [
-        "default",
-      ],
-      "@babel/parser": [
-        "parseExpression",
-        "parse",
-      ],
-      "@babel/traverse": [
-        "default",
-      ],
-      "@babel/types": [
-        "*",
-      ],
-      "@csstools/postcss-is-pseudo-class": [
-        "default",
-      ],
-      "fs": [
-        "default",
-      ],
-      "micromatch": [
-        "isMatch",
-      ],
-      "path": [
-        "default",
-      ],
-      "plugin-27708d63.js": [
-        "escape",
-        "SimpleMappingChars2String",
-        "postcssWeappTailwindcss",
-        "MappingChars2String",
-      ],
-      "postcss": [
-        "default",
-      ],
-      "semver": [
-        "gte",
-      ],
-      "tailwindcss-patch": [
-        "monkeyPatchForExposingContext",
-        "requireResolve",
-        "TailwindcssPatcher",
-      ],
-    },
-    "imports": [
-      "micromatch",
-      "@babel/generator",
-      "@babel/parser",
-      "@babel/traverse",
-      "plugin-27708d63.js",
-      "@babel/types",
-      "postcss",
-      "@csstools/postcss-is-pseudo-class",
-      "path",
-      "fs",
-      "semver",
-      "tailwindcss-patch",
-    ],
-    "isDynamicEntry": false,
-    "isEntry": false,
-    "isImplicitEntry": false,
-    "map": null,
-    "name": "options",
-    "referencedFiles": [],
-    "type": "chunk",
-  },
-  {
-    "code": "'use strict';
-
-var selectorParser = require('postcss-selector-parser');
-var postcss = require('postcss');
-require('@csstools/postcss-is-pseudo-class');
-
-function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var selectorParser__default = /*#__PURE__*/_interopDefaultCompat(selectorParser);
-
-const MappingChars2String = {
-    '[': '_bl_',
-    ']': '_br_',
-    '(': '_pl_',
-    ')': '_qr_',
-    '#': '_h_',
-    '!': '_i_',
-    '/': '_s_',
-    '\\\\': '_bs_',
-    '.': '_d_',
-    ':': '_c_',
-    '%': '_p_',
-    ',': '_co_',
-    "'": '_q_',
-    '"': '_dq_',
-    '*': '_a_',
-    '&': '_am_',
-    '@': '_at_',
-    '{': '_bal_',
-    '}': '_bar_',
-    '+': '_plus_',
-    ';': '_se_',
-    '<': '_l_',
-    '~': '_t_',
-    '=': '_e_',
-    '>': '_g_',
-    '?': '_qu_',
-    '^': '_ca_',
-    '\`': '_bq_',
-    '|': '_b_',
-    $: '_do_'
-};
-const SimpleMappingChars2String = {
-    '[': '_',
-    ']': '_',
-    '(': '_',
-    ')': '_',
-    '{': '_',
-    '}': '_',
-    '+': 'a',
-    ',': 'b',
-    ':': 'c',
-    '.': 'd',
-    '=': 'e',
-    ';': 'f',
-    '>': 'g',
-    '#': 'h',
-    '!': 'i',
-    '@': 'j',
-    '^': 'k',
-    '<': 'l',
-    '*': 'm',
-    '&': 'n',
-    '?': 'o',
-    '%': 'p',
-    "'": 'q',
-    $: 'r',
-    '/': 's',
-    '~': 't',
-    '|': 'u',
-    '\`': 'v',
-    '\\\\': 'w',
-    '"': 'x'
-};
-
-function escape(selectors, options = {
-    map: SimpleMappingChars2String
-}) {
-    const { map = SimpleMappingChars2String } = options;
-    const sb = selectors.split('');
-    for (let i = 0; i < sb.length; i++) {
-        const char = sb[i];
-        const code = char.charCodeAt(0);
-        if (code > 127) {
-            sb[i] = 'u' + Number(code).toString(16);
-        }
-        else {
-            const hit = map[char];
-            if (hit) {
-                sb[i] = hit;
-            }
-        }
-    }
-    const res = sb.join('');
-    return res;
-}
-
-function internalCssSelectorReplacer(selectors, map = SimpleMappingChars2String) {
-    return escape(selectors, {
-        map
-    });
-}
-
-const createTransform = (rule, options) => {
-    const replaceFlag = options.replaceUniversalSelectorWith !== false;
-    const transform = (selectors) => {
-        selectors.walk((selector) => {
-            if (selector.type === 'universal' && replaceFlag) {
-                selector.value = options.replaceUniversalSelectorWith;
-            }
-            if (selector.type === 'selector') {
-                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
-                node && selector.remove();
-            }
-            if (selector.type === 'class') {
-                selector.value = internalCssSelectorReplacer(selector.value, options.escapeMap);
-            }
-        });
-        if (selectors.length === 0) {
-            rule.remove();
-        }
-    };
-    return transform;
-};
-const getTransformer = (rule, options) => {
-    return selectorParser__default["default"](createTransform(rule, options));
-};
-const transformSync = (rule, options) => {
-    const transformer = getTransformer(rule, options);
-    return transformer.transformSync(rule, {
-        lossless: false,
-        updateSelector: true
-    });
-};
-
-const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
-const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
-function testIfVariablesScope(node, count = 1) {
-    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
-        for (let i = 0; i < count; i++) {
-            const tryTestDecl = node.nodes[i];
-            if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
-                continue;
-            }
-            else {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
-}
-function commonChunkPreflight(node, options) {
-    node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
-    if (testIfVariablesScope(node)) {
-        const selectorParts = node.selector.split(',');
-        if (!selectorParts.includes('view')) {
-            selectorParts.push('view');
-        }
-        if (options.cssPreflightRange === 'all') {
-            if (!selectorParts.includes(':not(not)')) {
-                selectorParts.push(':not(not)');
-            }
-        }
-        node.selector = selectorParts.join(',');
-        if (typeof options.cssInjectPreflight === 'function') {
-            node.append(...options.cssInjectPreflight());
-        }
-        const pseudoVarRule = new postcss.Rule({
-            selector: '::before,::after'
-        });
-        pseudoVarRule.append(new postcss.Declaration({
-            prop: '--tw-content',
-            value: '""'
-        }));
-        node.before(pseudoVarRule);
-    }
-}
-
-const NS = 'jsx-rename-loader';
-const postcssPlugin = 'postcss-weapp-tailwindcss-rename-plugin';
-const pluginName = 'weapp-tailwindcss-webpack-plugin';
-
-const postcssWeappTailwindcss = (options = {
-    isMainChunk: true
-}) => {
-    const { customRuleCallback, isMainChunk } = options;
-    const flag = typeof customRuleCallback === 'function';
-    return {
-        postcssPlugin,
-        Once(css) {
-            css.walkRules((rule) => {
-                transformSync(rule, options);
-                isMainChunk && commonChunkPreflight(rule, options);
-                flag && customRuleCallback(rule, options);
-            });
-        }
-    };
-};
-postcssWeappTailwindcss.postcss = true;
-
-exports.MappingChars2String = MappingChars2String;
-exports.NS = NS;
-exports.SimpleMappingChars2String = SimpleMappingChars2String;
-exports.escape = escape;
-exports.pluginName = pluginName;
-exports.postcssWeappTailwindcss = postcssWeappTailwindcss;
-",
-    "dynamicImports": [],
-    "exports": [
-      "MappingChars2String",
-      "NS",
-      "SimpleMappingChars2String",
-      "escape",
-      "pluginName",
-      "postcssWeappTailwindcss",
-    ],
-    "fileName": "plugin-27708d63.js",
-    "implicitlyLoadedBefore": [],
-    "importedBindings": {
-      "@csstools/postcss-is-pseudo-class": [],
-      "postcss": [
-        "Rule",
-        "Declaration",
-      ],
-      "postcss-selector-parser": [
-        "default",
-      ],
-    },
-    "imports": [
-      "postcss-selector-parser",
-      "postcss",
-      "@csstools/postcss-is-pseudo-class",
-    ],
-    "isDynamicEntry": false,
-    "isEntry": false,
-    "isImplicitEntry": false,
-    "map": null,
-    "name": "plugin",
-    "referencedFiles": [],
-    "type": "chunk",
-  },
-]
-`;
-
-exports[`rollup build lib build 2`] = `
-[
-  {
-    "code": "const SYMBOL_TABLE = {
+const SYMBOL_TABLE = {
     BACKQUOTE: '\`',
     TILDE: '~',
     EXCLAM: '!',
@@ -1572,15 +887,16 @@ const SimpleMappingChars2String = {
 };
 const SimpleMappingChars2StringEntries = Object.entries(SimpleMappingChars2String);
 
+const MAX_ASCII_CHAR_CODE = 127;
 function escape(selectors, options = {
     map: SimpleMappingChars2String
 }) {
     const { map = SimpleMappingChars2String } = options;
-    const sb = selectors.split('');
+    const sb = [...selectors];
     for (let i = 0; i < sb.length; i++) {
         const char = sb[i];
-        const code = char.charCodeAt(0);
-        if (code > 127) {
+        const code = char.codePointAt(0);
+        if (code !== undefined && code > MAX_ASCII_CHAR_CODE) {
             sb[i] = 'u' + Number(code).toString(16);
         }
         else {
@@ -1594,147 +910,14 @@ function escape(selectors, options = {
     return res;
 }
 
-function replaceWxml(original, options = {
-    keepEOL: false,
-    escapeMap: SimpleMappingChars2String
-}) {
-    if (typeof options === 'boolean') {
-        options = {
-            keepEOL: options
-        };
-    }
-    let res = original;
-    if (!options.keepEOL) {
-        res = res
-            .replace(/[\\r\\n]+/g, '');
-    }
-    res = escape(res, {
-        map: options.escapeMap
-    });
-    return res;
+const validateFilterRE = /[\\w%-?\\u00A0-\\uFFFF-]/;
+function isValidSelector(selector = '') {
+    return validateFilterRE.test(selector);
 }
-
-function internalCssSelectorReplacer(selectors, map = SimpleMappingChars2String) {
-    return escape(selectors, {
-        map
-    });
-}
-
-export { MappingChars2String, MappingChars2StringEntries, SYMBOL_TABLE, SimpleMappingChars2String, SimpleMappingChars2StringEntries, internalCssSelectorReplacer as replaceCss, replaceWxml as replaceJs };
-",
-    "dynamicImports": [],
-    "exports": [
-      "MappingChars2String",
-      "MappingChars2StringEntries",
-      "SYMBOL_TABLE",
-      "SimpleMappingChars2String",
-      "SimpleMappingChars2StringEntries",
-      "replaceCss",
-      "replaceJs",
-    ],
-    "fileName": "replace.js",
-    "implicitlyLoadedBefore": [],
-    "importedBindings": {},
-    "imports": [],
-    "isDynamicEntry": false,
-    "isEntry": true,
-    "isImplicitEntry": false,
-    "map": null,
-    "name": "replace",
-    "referencedFiles": [],
-    "type": "chunk",
-  },
-]
-`;
-
-exports[`rollup build lib build 3`] = `
-[
-  {
-    "code": "'use strict';
-
-var micromatch = require('micromatch');
-var generate = require('@babel/generator');
-var parser = require('@babel/parser');
-var traverse = require('@babel/traverse');
-var t = require('@babel/types');
-var postcss = require('postcss');
-var selectorParser = require('postcss-selector-parser');
-var postcssIsPseudoClass = require('@csstools/postcss-is-pseudo-class');
-var path = require('path');
-var fs = require('fs');
-var semver = require('semver');
-var tailwindcssPatch = require('tailwindcss-patch');
-
-function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
-
-function _interopNamespace(e) {
-  if (e && e.__esModule) return e;
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
-      }
-    });
-  }
-  n.default = e;
-  return Object.freeze(n);
-}
-
-var generate__default = /*#__PURE__*/_interopDefault(generate);
-var traverse__default = /*#__PURE__*/_interopDefault(traverse);
-var t__namespace = /*#__PURE__*/_interopNamespace(t);
-var postcss__default = /*#__PURE__*/_interopDefault(postcss);
-var selectorParser__default = /*#__PURE__*/_interopDefault(selectorParser);
-var postcssIsPseudoClass__default = /*#__PURE__*/_interopDefault(postcssIsPseudoClass);
-var path__default = /*#__PURE__*/_interopDefault(path);
-var fs__default = /*#__PURE__*/_interopDefault(fs);
-
-function isObject(value) {
-  return value !== null && typeof value === "object";
-}
-function _defu(baseObject, defaults, namespace = ".", merger) {
-  if (!isObject(defaults)) {
-    return _defu(baseObject, {}, namespace, merger);
-  }
-  const object = Object.assign({}, defaults);
-  for (const key in baseObject) {
-    if (key === "__proto__" || key === "constructor") {
-      continue;
-    }
-    const value = baseObject[key];
-    if (value === null || value === void 0) {
-      continue;
-    }
-    if (merger && merger(object, key, value, namespace)) {
-      continue;
-    }
-    if (Array.isArray(value) && Array.isArray(object[key])) {
-      object[key] = [...value, ...object[key]];
-    } else if (isObject(value) && isObject(object[key])) {
-      object[key] = _defu(
-        value,
-        object[key],
-        (namespace ? \`\${namespace}.\` : "") + key.toString(),
-        merger
-      );
-    } else {
-      object[key] = value;
-    }
-  }
-  return object;
-}
-function createDefu(merger) {
-  return (...arguments_) => (
-    // eslint-disable-next-line unicorn/no-array-reduce
-    arguments_.reduce((p, c) => _defu(p, c, "", merger), {})
-  );
-}
-const defu = createDefu();
+const splitCode = (code, allowDoubleQuotes = false) => {
+    const splitter = allowDoubleQuotes ? /\\s+/ : /\\s+|"/;
+    return code.split(splitter).filter((element) => isValidSelector(element));
+};
 
 function isRegexp(value) {
     return Object.prototype.toString.call(value) === '[object RegExp]';
@@ -1745,21 +928,20 @@ function isMap(value) {
 const noop = () => { };
 function groupBy(arr, cb) {
     if (!Array.isArray(arr)) {
-        throw new Error('expected an array for first argument');
+        throw new TypeError('expected an array for first argument');
     }
     if (typeof cb !== 'function') {
-        throw new Error('expected a function for second argument');
+        throw new TypeError('expected a function for second argument');
     }
     const result = {};
-    for (let i = 0; i < arr.length; i++) {
-        const item = arr[i];
+    for (const item of arr) {
         const bucketCategory = cb(item);
         const bucket = result[bucketCategory];
-        if (!Array.isArray(bucket)) {
-            result[bucketCategory] = [item];
+        if (Array.isArray(bucket)) {
+            result[bucketCategory].push(item);
         }
         else {
-            result[bucketCategory].push(item);
+            result[bucketCategory] = [item];
         }
     }
     return result;
@@ -1783,121 +965,14 @@ function getGroupedEntries(entries, options) {
     return groupedEntries;
 }
 
-const MappingChars2String = {
-    '[': '_bl_',
-    ']': '_br_',
-    '(': '_pl_',
-    ')': '_qr_',
-    '#': '_h_',
-    '!': '_i_',
-    '/': '_s_',
-    '\\\\': '_bs_',
-    '.': '_d_',
-    ':': '_c_',
-    '%': '_p_',
-    ',': '_co_',
-    "'": '_q_',
-    '"': '_dq_',
-    '*': '_a_',
-    '&': '_am_',
-    '@': '_at_',
-    '{': '_bal_',
-    '}': '_bar_',
-    '+': '_plus_',
-    ';': '_se_',
-    '<': '_l_',
-    '~': '_t_',
-    '=': '_e_',
-    '>': '_g_',
-    '?': '_qu_',
-    '^': '_ca_',
-    '\`': '_bq_',
-    '|': '_b_',
-    $: '_do_'
-};
-const SimpleMappingChars2String = {
-    '[': '_',
-    ']': '_',
-    '(': '_',
-    ')': '_',
-    '{': '_',
-    '}': '_',
-    '+': 'a',
-    ',': 'b',
-    ':': 'c',
-    '.': 'd',
-    '=': 'e',
-    ';': 'f',
-    '>': 'g',
-    '#': 'h',
-    '!': 'i',
-    '@': 'j',
-    '^': 'k',
-    '<': 'l',
-    '*': 'm',
-    '&': 'n',
-    '?': 'o',
-    '%': 'p',
-    "'": 'q',
-    $: 'r',
-    '/': 's',
-    '~': 't',
-    '|': 'u',
-    '\`': 'v',
-    '\\\\': 'w',
-    '"': 'x'
-};
-
-function escape(selectors, options = {
-    map: SimpleMappingChars2String
-}) {
-    const { map = SimpleMappingChars2String } = options;
-    const sb = selectors.split('');
-    for (let i = 0; i < sb.length; i++) {
-        const char = sb[i];
-        const code = char.charCodeAt(0);
-        if (code > 127) {
-            sb[i] = 'u' + Number(code).toString(16);
-        }
-        else {
-            const hit = map[char];
-            if (hit) {
-                sb[i] = hit;
-            }
-        }
-    }
-    const res = sb.join('');
-    return res;
-}
-
-function replaceWxml(original, options = {
-    keepEOL: false,
-    escapeMap: SimpleMappingChars2String
-}) {
-    if (typeof options === 'boolean') {
-        options = {
-            keepEOL: options
-        };
-    }
-    let res = original;
-    if (!options.keepEOL) {
-        res = res
-            .replace(/[\\r\\n]+/g, '');
-    }
-    res = escape(res, {
-        map: options.escapeMap
-    });
-    return res;
-}
-
 function escapeStringRegexp(str) {
     if (typeof str !== 'string') {
         throw new TypeError('Expected a string');
     }
-    return str.replace(/[|\\\\{}()[\\]^$+*?.]/g, '\\\\$&').replace(/-/g, '\\\\x2d');
+    return str.replaceAll(/[$()*+.?[\\\\\\]^{|}]/g, '\\\\$&').replaceAll('-', '\\\\x2d');
 }
-const templateClassExactRegexp = /(?:(?<=^|\\s)(?:hover-)?class)=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^"]+)['"]/gs;
-const tagWithEitherClassAndHoverClassRegexp = /<(?:[a-z][-a-z]*[a-z]*)\\s+[^>]*?(?:(?:hover-)?class="(?:[^"]*)")[^>]*?\\/?>/g;
+const templateClassExactRegexp = /(?<=^|\\s)(?:hover-)?class=(?:["']\\W+\\s*\\w+\\()?["']([^"]+)["']/gs;
+const tagWithEitherClassAndHoverClassRegexp = /<[a-z][a-z-]*[a-z]*\\s+[^>]*?(?:hover-)?clas{2}="[^"]*"[^>]*?\\/?>/g;
 function handleRegexp(reg) {
     return \`(?:\${reg.source})\`;
 }
@@ -1972,400 +1047,242 @@ function variableMatch(original) {
     return variableRegExp.exec(original);
 }
 
-function generateCode(match, options = {}) {
-    const ast = parser.parseExpression(match);
-    traverse__default.default(ast, {
-        StringLiteral(path) {
-            var _a;
-            if (t__namespace.isMemberExpression(path.parent)) {
-                return;
-            }
-            if (t__namespace.isBinaryExpression(path.parent)) {
-                if (t__namespace.isConditionalExpression((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent)) {
-                    return;
-                }
-            }
-            path.node.value = replaceWxml(path.node.value, options);
-        },
-        noScope: true
-    });
-    const { code } = generate__default.default(ast, {
-        compact: true,
-        minified: true,
-        jsescOption: {
-            quotes: 'single',
-            minimal: true
+function getSelf(x) {
+    return x;
+}
+const defaultScopedStore = {
+    rawOptions: false,
+    runtimeSet: new Set(),
+    classGenerator: new tailwindcssMangleShared.ClassGenerator(),
+    filter: tailwindcssMangleShared.defaultMangleClassFilter,
+    cssHandler: getSelf,
+    jsHandler: getSelf,
+    wxmlHandler: getSelf
+};
+const store = Object.assign({}, defaultScopedStore);
+function useStore() {
+    return store;
+}
+function handleValue(rawSource) {
+    const arr = splitCode(rawSource);
+    for (const x of arr) {
+        if (store.runtimeSet.has(x)) {
+            rawSource = rawSource.replaceAll(new RegExp(escapeStringRegexp(x), 'g'), store.classGenerator.generateClassName(x).name);
         }
-    });
-    return code;
-}
-function extractSource(original) {
-    let match = variableMatch(original);
-    const sources = [];
-    while (match !== null) {
-        const start = match.index;
-        const end = variableRegExp.lastIndex;
-        sources.push({
-            start,
-            end,
-            raw: match[1],
-            prevConcatenated: !/\\s/.test(original[start - 1]),
-            nextConcatenated: !/\\s/.test(original[end])
-        });
-        match = variableMatch(original);
     }
-    return sources;
+    return rawSource;
 }
-function templeteReplacer(original, options = {}) {
-    const sources = extractSource(original);
-    if (sources.length) {
-        const resultArray = [];
-        let p = 0;
-        for (let i = 0; i < sources.length; i++) {
-            const m = sources[i];
-            const before = original.slice(p, m.start);
-            resultArray.push(replaceWxml(before, {
-                keepEOL: true,
-                escapeMap: options.escapeMap
-            }));
-            p = m.start;
-            if (m.raw.trim().length) {
-                const code = generateCode(m.raw, options);
-                const source = \`{{\${code}}}\`;
-                m.source = source;
-            }
-            else {
-                m.source = '';
-            }
-            resultArray.push(m.source);
-            p = m.end;
-            if (i === sources.length - 1) {
-                const after = original.slice(m.end);
-                resultArray.push(replaceWxml(after, {
-                    keepEOL: true,
-                    escapeMap: options.escapeMap
-                }));
-            }
+function initStore(options) {
+    var _a;
+    store.rawOptions = options;
+    if (options) {
+        if (options === true) {
+            options = {
+                classGenerator: {},
+                mangleClassFilter: tailwindcssMangleShared.defaultMangleClassFilter
+            };
         }
-        return resultArray
-            .filter((x) => x)
-            .join('')
-            .trim();
-    }
-    else {
-        return replaceWxml(original, {
-            keepEOL: false,
-            escapeMap: options.escapeMap
-        });
+        store.classGenerator = new tailwindcssMangleShared.ClassGenerator(options.classGenerator);
+        store.filter = (_a = options.mangleClassFilter) !== null && _a !== void 0 ? _a : tailwindcssMangleShared.defaultMangleClassFilter;
+        store.jsHandler = (rawSource) => {
+            return handleValue(rawSource);
+        };
+        store.cssHandler = (rawSource) => {
+            return handleValue(rawSource);
+        };
+        store.wxmlHandler = (rawSource) => {
+            return handleValue(rawSource);
+        };
     }
 }
-function templeteHandler(rawSource, options = {}) {
-    return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
-        return m0.replace(templateClassExactRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className, options));
-        });
-    });
-}
-function customTempleteHandler(rawSource, options = {}) {
-    let source = templeteHandler(rawSource, options);
-    const regexps = makeCustomAttributes(options.customAttributesEntities);
-    if (regexps) {
-        if (Array.isArray(regexps)) {
-            for (let i = 0; i < regexps.length; i++) {
-                const regexp = regexps[i];
-                source = source.replace(regexp.tagRegexp, (m0) => {
-                    return m0.replace(regexp.attrRegexp, (m1, className) => {
-                        return m1.replace(className, templeteReplacer(className, options));
-                    });
-                });
-            }
+function setRuntimeSet(runtimeSet) {
+    const newSet = new Set();
+    for (const c of runtimeSet) {
+        if (store.filter(c)) {
+            newSet.add(c);
         }
-        return source;
     }
-    else {
-        return source;
-    }
-}
-function createTempleteHandler(options = {}) {
-    return (rawSource, opt = {}) => {
-        return customTempleteHandler(rawSource, defu(opt, options));
-    };
+    store.runtimeSet = newSet;
 }
 
 function internalCssSelectorReplacer(selectors, map = SimpleMappingChars2String) {
+    const { cssHandler } = useStore();
+    selectors = cssHandler(selectors);
     return escape(selectors, {
         map
     });
 }
 
-const createTransform = (rule, options) => {
-    const replaceFlag = options.replaceUniversalSelectorWith !== false;
-    const transform = (selectors) => {
-        selectors.walk((selector) => {
-            if (selector.type === 'universal' && replaceFlag) {
-                selector.value = options.replaceUniversalSelectorWith;
-            }
-            if (selector.type === 'selector') {
-                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
-                node && selector.remove();
-            }
-            if (selector.type === 'class') {
-                selector.value = internalCssSelectorReplacer(selector.value, options.escapeMap);
-            }
+exports.MappingChars2String = MappingChars2String;
+exports.MappingChars2StringEntries = MappingChars2StringEntries;
+exports.SYMBOL_TABLE = SYMBOL_TABLE;
+exports.SimpleMappingChars2String = SimpleMappingChars2String;
+exports.SimpleMappingChars2StringEntries = SimpleMappingChars2StringEntries;
+exports.escape = escape;
+exports.escapeStringRegexp = escapeStringRegexp;
+exports.getGroupedEntries = getGroupedEntries;
+exports.initStore = initStore;
+exports.internalCssSelectorReplacer = internalCssSelectorReplacer;
+exports.isMap = isMap;
+exports.makeCustomAttributes = makeCustomAttributes;
+exports.noop = noop;
+exports.setRuntimeSet = setRuntimeSet;
+exports.splitCode = splitCode;
+exports.tagWithEitherClassAndHoverClassRegexp = tagWithEitherClassAndHoverClassRegexp;
+exports.templateClassExactRegexp = templateClassExactRegexp;
+exports.useStore = useStore;
+exports.variableMatch = variableMatch;
+exports.variableRegExp = variableRegExp;
+",
+    "dynamicImports": [],
+    "exports": [
+      "MappingChars2String",
+      "MappingChars2StringEntries",
+      "SYMBOL_TABLE",
+      "SimpleMappingChars2String",
+      "SimpleMappingChars2StringEntries",
+      "escape",
+      "escapeStringRegexp",
+      "getGroupedEntries",
+      "initStore",
+      "internalCssSelectorReplacer",
+      "isMap",
+      "makeCustomAttributes",
+      "noop",
+      "setRuntimeSet",
+      "splitCode",
+      "tagWithEitherClassAndHoverClassRegexp",
+      "templateClassExactRegexp",
+      "useStore",
+      "variableMatch",
+      "variableRegExp",
+    ],
+    "fileName": "shared-d993bf4d.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "tailwindcss-mangle-shared": [
+        "ClassGenerator",
+        "defaultMangleClassFilter",
+      ],
+    },
+    "imports": [
+      "tailwindcss-mangle-shared",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": false,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "shared",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "'use strict';
+
+var micromatch = require('micromatch');
+var t = require('@babel/types');
+var generate = require('@babel/generator');
+var parser = require('@babel/parser');
+var traverse = require('@babel/traverse');
+var replace = require('./replace.js');
+var shared = require('./shared-d993bf4d.js');
+var postcss = require('postcss');
+var postcss$1 = require('./postcss-c76ab184.js');
+var postcssIsPseudoClass = require('@csstools/postcss-is-pseudo-class');
+var path = require('node:path');
+var fs = require('node:fs');
+var semver = require('semver');
+var tailwindcssPatch = require('tailwindcss-patch');
+
+function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+function _interopNamespaceCompat(e) {
+  if (e && typeof e === 'object' && 'default' in e) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () { return e[k]; }
         });
-        if (selectors.length === 0) {
-            rule.remove();
-        }
-    };
-    return transform;
-};
-const getTransformer = (rule, options) => {
-    return selectorParser__default.default(createTransform(rule, options));
-};
-const transformSync = (rule, options) => {
-    const transformer = getTransformer(rule, options);
-    return transformer.transformSync(rule, {
-        lossless: false,
-        updateSelector: true
+      }
     });
-};
-
-const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
-const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
-function testIfVariablesScope(node, count = 1) {
-    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
-        for (let i = 0; i < count; i++) {
-            const tryTestDecl = node.nodes[i];
-            if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
-                continue;
-            }
-            else {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
-}
-function commonChunkPreflight(node, options) {
-    node.selector = node.selector.replace(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
-    if (testIfVariablesScope(node)) {
-        const selectorParts = node.selector.split(',');
-        if (!selectorParts.includes('view')) {
-            selectorParts.push('view');
-        }
-        if (options.cssPreflightRange === 'all') {
-            if (!selectorParts.includes(':not(not)')) {
-                selectorParts.push(':not(not)');
-            }
-        }
-        node.selector = selectorParts.join(',');
-        if (typeof options.cssInjectPreflight === 'function') {
-            node.append(...options.cssInjectPreflight());
-        }
-        const pseudoVarRule = new postcss.Rule({
-            selector: '::before,::after'
-        });
-        pseudoVarRule.append(new postcss.Declaration({
-            prop: '--tw-content',
-            value: '""'
-        }));
-        node.before(pseudoVarRule);
-    }
+  }
+  n["default"] = e;
+  return Object.freeze(n);
 }
 
-const postcssPlugin = 'postcss-weapp-tailwindcss-rename-plugin';
-const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor';
+var t__namespace = /*#__PURE__*/_interopNamespaceCompat(t);
+var generate__default = /*#__PURE__*/_interopDefaultCompat(generate);
+var traverse__default = /*#__PURE__*/_interopDefaultCompat(traverse);
+var postcss__default = /*#__PURE__*/_interopDefaultCompat(postcss);
+var postcssIsPseudoClass__default = /*#__PURE__*/_interopDefaultCompat(postcssIsPseudoClass);
+var path__default = /*#__PURE__*/_interopDefaultCompat(path);
+var fs__default = /*#__PURE__*/_interopDefaultCompat(fs);
 
-const postcssWeappTailwindcss = (options = {
-    isMainChunk: true
-}) => {
-    const { customRuleCallback, isMainChunk } = options;
-    const flag = typeof customRuleCallback === 'function';
-    return {
-        postcssPlugin,
-        Once(css) {
-            css.walkRules((rule) => {
-                transformSync(rule, options);
-                isMainChunk && commonChunkPreflight(rule, options);
-                flag && customRuleCallback(rule, options);
-            });
-        }
-    };
-};
-postcssWeappTailwindcss.postcss = true;
-
-function styleHandler(rawSource, options) {
-    return postcss__default.default([postcssWeappTailwindcss(options), postcssIsPseudoClass__default.default()]).process(rawSource).css;
+function isObject(value) {
+  return value !== null && typeof value === "object";
 }
-function createStyleHandler(options) {
-    return (rawSource, opt) => {
-        return styleHandler(rawSource, defu(opt, options));
-    };
-}
-
-const createInjectPreflight = (options) => {
-    const result = [];
-    if (options && typeof options === 'object') {
-        const entries = Object.entries(options);
-        for (let i = 0; i < entries.length; i++) {
-            const [prop, value] = entries[i];
-            if (value !== false) {
-                result.push({
-                    prop,
-                    value: value.toString()
-                });
-            }
-        }
+function _defu(baseObject, defaults, namespace = ".", merger) {
+  if (!isObject(defaults)) {
+    return _defu(baseObject, {}, namespace, merger);
+  }
+  const object = Object.assign({}, defaults);
+  for (const key in baseObject) {
+    if (key === "__proto__" || key === "constructor") {
+      continue;
     }
-    return () => {
-        return result;
-    };
-};
-
-function findAstNode(content, options) {
-    const DOPTS = options.dangerousOptions;
-    const ast = parser.parse(content);
-    let arrayRef;
-    let changed = false;
-    traverse__default.default(ast, {
-        Identifier(path) {
-            if (path.node.name === DOPTS.variableName) {
-                if (t__namespace.isVariableDeclarator(path.parent)) {
-                    if (t__namespace.isArrayExpression(path.parent.init)) {
-                        arrayRef = path.parent.init;
-                        const set = new Set(path.parent.init.elements.map((x) => x.value));
-                        for (let i = 0; i < options.units.length; i++) {
-                            const unit = options.units[i];
-                            if (!set.has(unit)) {
-                                path.parent.init.elements = path.parent.init.elements.map((x) => {
-                                    if (t__namespace.isStringLiteral(x)) {
-                                        return {
-                                            type: x === null || x === void 0 ? void 0 : x.type,
-                                            value: x === null || x === void 0 ? void 0 : x.value
-                                        };
-                                    }
-                                    return x;
-                                });
-                                path.parent.init.elements.push({
-                                    type: 'StringLiteral',
-                                    value: unit
-                                });
-                                changed = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-    return {
-        arrayRef,
-        changed
-    };
-}
-
-function getInstalledPkgJsonPath(options) {
-    const dangerousOptions = options.dangerousOptions;
-    try {
-        const tmpJsonPath = tailwindcssPatch.requireResolve(\`\${dangerousOptions.packageName}/package.json\`, {
-            paths: options.paths,
-            basedir: options.basedir
-        });
-        return tmpJsonPath;
+    const value = baseObject[key];
+    if (value === null || value === void 0) {
+      continue;
     }
-    catch (error) {
-        if (error.code === 'MODULE_NOT_FOUND') {
-            console.warn('没有找到\`tailwindcss\`包，请确认是否安装。想要禁用打上rpx支持patch或者非\`tailwindcss\`框架，你可以设置 \`supportCustomLengthUnitsPatch\` 为 false');
-        }
+    if (merger && merger(object, key, value, namespace)) {
+      continue;
     }
-}
-function createPatch(options) {
-    if (options === false) {
-        return noop;
+    if (Array.isArray(value) && Array.isArray(object[key])) {
+      object[key] = [...value, ...object[key]];
+    } else if (isObject(value) && isObject(object[key])) {
+      object[key] = _defu(
+        value,
+        object[key],
+        (namespace ? \`\${namespace}.\` : "") + key.toString(),
+        merger
+      );
+    } else {
+      object[key] = value;
     }
-    return () => {
-        try {
-            return internalPatch(getInstalledPkgJsonPath(options), options);
-        }
-        catch (error) {
-            console.warn(\`patch tailwindcss failed:\` + error.message);
-        }
-    };
+  }
+  return object;
 }
-function monkeyPatchForSupportingCustomUnit(rootDir, options) {
-    var _a;
-    const { dangerousOptions } = options;
-    const DOPTS = dangerousOptions;
-    const dataTypesFilePath = path__default.default.resolve(rootDir, DOPTS.lengthUnitsFilePath);
-    const dataTypesFileContent = fs__default.default.readFileSync(dataTypesFilePath, {
-        encoding: 'utf-8'
-    });
-    const { arrayRef, changed } = findAstNode(dataTypesFileContent, options);
-    if (arrayRef && changed) {
-        const { code } = generate__default.default(arrayRef, {
-            jsescOption: {
-                quotes: 'single'
-            }
-        });
-        if (arrayRef.start && arrayRef.end) {
-            const prev = dataTypesFileContent.slice(0, arrayRef.start);
-            const next = dataTypesFileContent.slice(arrayRef.end);
-            const newCode = prev + code + next;
-            if (DOPTS.overwrite) {
-                fs__default.default.writeFileSync((_a = DOPTS.destPath) !== null && _a !== void 0 ? _a : dataTypesFilePath, newCode, {
-                    encoding: 'utf-8'
-                });
-                console.log('patch tailwindcss for custom length unit successfully!');
-            }
-        }
-        return code;
-    }
+function createDefu(merger) {
+  return (...arguments_) => (
+    // eslint-disable-next-line unicorn/no-array-reduce
+    arguments_.reduce((p, c) => _defu(p, c, "", merger), {})
+  );
 }
-function internalPatch(pkgJsonPath, options, overwrite = true) {
-    if (pkgJsonPath) {
-        const pkgJson = require(pkgJsonPath);
-        const dangerousOptions = options.dangerousOptions;
-        if (semver.gte(pkgJson.version, dangerousOptions.gteVersion)) {
-            const rootDir = path__default.default.dirname(pkgJsonPath);
-            const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options);
-            const result = tailwindcssPatch.monkeyPatchForExposingContext(rootDir, {
-                overwrite
-            });
-            return Object.assign(Object.assign({}, result), { dataTypes });
-        }
-    }
-}
-function createTailwindcssPatcher() {
-    return new tailwindcssPatch.TailwindcssPatcher({
-        cache: true
-    });
-}
-
-const validateFilterRE = /[\\w\\u00A0-\\uFFFF-_:%-?]/;
-function isValidSelector(selector = '') {
-    return validateFilterRE.test(selector);
-}
-const splitCode = (code) => {
-    return code.split(/[\\s]+/).filter(isValidSelector);
-};
+const defu = createDefu();
 
 const isProd = () => process.env.NODE_ENV === 'production';
 
 function handleValue(str, node, options) {
+    var _a;
     const set = options.classNameSet;
     const escapeMap = options.escapeMap;
-    const arr = splitCode(str);
+    const allowDoubleQuotes = (_a = options.arbitraryValues) === null || _a === void 0 ? void 0 : _a.allowDoubleQuotes;
+    const arr = shared.splitCode(str, allowDoubleQuotes);
     let rawStr = str;
-    for (let i = 0; i < arr.length; i++) {
-        const v = arr[i];
+    for (const v of arr) {
         if (set.has(v)) {
             let ignoreFlag = false;
             if (Array.isArray(node.leadingComments)) {
                 ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1;
             }
             if (!ignoreFlag) {
-                rawStr = rawStr.replace(new RegExp(escapeStringRegexp(v), 'g'), replaceWxml(v, {
+                const { jsHandler } = shared.useStore();
+                rawStr = jsHandler(rawStr);
+                rawStr = rawStr.replaceAll(new RegExp(shared.escapeStringRegexp(v), 'g'), replace.replaceJs(v, {
                     escapeMap
                 }));
             }
@@ -2394,20 +1311,18 @@ function jsHandler(rawSource, options) {
         CallExpression: {
             enter(p) {
                 const n = p.node;
-                if (t__namespace.isIdentifier(n.callee) && n.callee.name === 'eval') {
-                    if (t__namespace.isStringLiteral(n.arguments[0])) {
-                        const res = jsHandler(n.arguments[0].value, options);
-                        if (res.code) {
-                            n.arguments[0].value = res.code;
-                        }
+                if (t__namespace.isIdentifier(n.callee) && n.callee.name === 'eval' && t__namespace.isStringLiteral(n.arguments[0])) {
+                    const res = jsHandler(n.arguments[0].value, options);
+                    if (res.code) {
+                        n.arguments[0].value = res.code;
                     }
                 }
             }
         },
         noScope: true
     };
-    traverse__default.default(ast, topt);
-    return generate__default.default(ast, {
+    traverse__default["default"](ast, topt);
+    return generate__default["default"](ast, {
         minified: (_a = options.minifiedJs) !== null && _a !== void 0 ? _a : isProd()
     });
 }
@@ -2416,7 +1331,8 @@ function createjsHandler(options) {
         return jsHandler(rawSource, {
             classNameSet: set,
             minifiedJs: options.minifiedJs,
-            escapeMap: options.escapeMap
+            escapeMap: options.escapeMap,
+            arbitraryValues: options.arbitraryValues
         });
     };
 }
@@ -2428,7 +1344,7 @@ const defaultOptions = {
         if (file.includes('node_modules')) {
             return false;
         }
-        return /.+\\.[cm]?[jt]sx?$/.test(file);
+        return /.+\\.[cm]?js?$/.test(file);
     },
     mainCssChunkMatcher: (file, appType) => {
         switch (appType) {
@@ -2436,22 +1352,1904 @@ const defaultOptions = {
                 return /^common\\/main/.test(file);
             }
             case 'uni-app-vite': {
-                return /^app/.test(file) || /^common\\/main/.test(file);
+                return file.startsWith('app') || /^common\\/main/.test(file);
             }
             case 'mpx': {
-                return /^app/.test(file);
+                return file.startsWith('app');
             }
             case 'taro': {
-                return /^app/.test(file);
+                return file.startsWith('app');
             }
             case 'remax': {
-                return /^app/.test(file);
+                return file.startsWith('app');
             }
             case 'rax': {
-                return /^bundle/.test(file);
+                return file.startsWith('bundle');
             }
             case 'native': {
-                return /^app/.test(file);
+                return file.startsWith('app');
+            }
+            case 'kbone': {
+                return /^(?:common\\/)?miniprogram-app/.test(file);
+            }
+            default: {
+                return true;
+            }
+        }
+    },
+    cssPreflight: {
+        'box-sizing': 'border-box',
+        'border-width': '0',
+        'border-style': 'solid',
+        'border-color': 'currentColor'
+    },
+    cssPreflightRange: 'view',
+    replaceUniversalSelectorWith: 'view',
+    disabled: false,
+    customRuleCallback: shared.noop,
+    onLoad: shared.noop,
+    onStart: shared.noop,
+    onEnd: shared.noop,
+    onUpdate: shared.noop,
+    customAttributes: {},
+    customReplaceDictionary: shared.SimpleMappingChars2String,
+    supportCustomLengthUnitsPatch: {
+        units: ['rpx'],
+        dangerousOptions: {
+            gteVersion: '3.0.0',
+            lengthUnitsFilePath: 'lib/util/dataTypes.js',
+            packageName: 'tailwindcss',
+            variableName: 'lengthUnits',
+            overwrite: true
+        }
+    },
+    appType: undefined,
+    arbitraryValues: {
+        allowDoubleQuotes: false
+    }
+};
+
+function generateCode(match, options = {}) {
+    const ast = parser.parseExpression(match);
+    traverse__default["default"](ast, {
+        StringLiteral(path) {
+            var _a;
+            if (t__namespace.isMemberExpression(path.parent)) {
+                return;
+            }
+            if (t__namespace.isBinaryExpression(path.parent) && t__namespace.isConditionalExpression((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent)) {
+                return;
+            }
+            path.node.value = replace.replaceJs(path.node.value, options);
+        },
+        noScope: true
+    });
+    const { code } = generate__default["default"](ast, {
+        compact: true,
+        minified: true,
+        jsescOption: {
+            quotes: 'single',
+            minimal: true
+        }
+    });
+    return code;
+}
+function extractSource(original) {
+    let match = shared.variableMatch(original);
+    const sources = [];
+    while (match !== null) {
+        const start = match.index;
+        const end = shared.variableRegExp.lastIndex;
+        sources.push({
+            start,
+            end,
+            raw: match[1],
+            prevConcatenated: !/\\s/.test(original[start - 1]),
+            nextConcatenated: !/\\s/.test(original[end])
+        });
+        match = shared.variableMatch(original);
+    }
+    return sources;
+}
+function templeteReplacer(original, options = {}) {
+    const sources = extractSource(original);
+    if (sources.length > 0) {
+        const resultArray = [];
+        let p = 0;
+        for (let i = 0; i < sources.length; i++) {
+            const m = sources[i];
+            const before = original.slice(p, m.start);
+            resultArray.push(replace.replaceJs(before, {
+                keepEOL: true,
+                escapeMap: options.escapeMap
+            }));
+            p = m.start;
+            if (m.raw.trim().length > 0) {
+                const code = generateCode(m.raw, options);
+                const source = \`{{\${code}}}\`;
+                m.source = source;
+            }
+            else {
+                m.source = '';
+            }
+            resultArray.push(m.source);
+            p = m.end;
+            if (i === sources.length - 1) {
+                const after = original.slice(m.end);
+                resultArray.push(replace.replaceJs(after, {
+                    keepEOL: true,
+                    escapeMap: options.escapeMap
+                }));
+            }
+        }
+        return resultArray
+            .filter(Boolean)
+            .join('')
+            .trim();
+    }
+    else {
+        return replace.replaceJs(original, {
+            keepEOL: false,
+            escapeMap: options.escapeMap
+        });
+    }
+}
+function templeteHandler(rawSource, options = {}) {
+    return rawSource.replace(shared.tagWithEitherClassAndHoverClassRegexp, (m0) => {
+        return m0.replace(shared.templateClassExactRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options));
+        });
+    });
+}
+function customTempleteHandler(rawSource, options = {}) {
+    let source = templeteHandler(rawSource, options);
+    const regexps = shared.makeCustomAttributes(options.customAttributesEntities);
+    if (regexps) {
+        if (Array.isArray(regexps)) {
+            for (const regexp of regexps) {
+                source = source.replace(regexp.tagRegexp, (m0) => {
+                    return m0.replace(regexp.attrRegexp, (m1, className) => {
+                        return m1.replace(className, templeteReplacer(className, options));
+                    });
+                });
+            }
+        }
+        return source;
+    }
+    else {
+        return source;
+    }
+}
+function createTempleteHandler(options = {}) {
+    return (rawSource, opt = {}) => {
+        return customTempleteHandler(rawSource, defu(opt, options));
+    };
+}
+
+function styleHandler(rawSource, options) {
+    return postcss__default["default"]([postcss$1.postcssWeappTailwindcss(options), postcssIsPseudoClass__default["default"]()]).process(rawSource).css;
+}
+function createStyleHandler(options) {
+    return (rawSource, opt) => {
+        return styleHandler(rawSource, defu(opt, options));
+    };
+}
+
+const createInjectPreflight = (options) => {
+    const result = [];
+    if (options && typeof options === 'object') {
+        const entries = Object.entries(options);
+        for (const [prop, value] of entries) {
+            if (value !== false) {
+                result.push({
+                    prop,
+                    value: value.toString()
+                });
+            }
+        }
+    }
+    return () => {
+        return result;
+    };
+};
+
+function findAstNode(content, options) {
+    const DOPTS = options.dangerousOptions;
+    const ast = parser.parse(content);
+    let arrayRef;
+    let changed = false;
+    traverse__default["default"](ast, {
+        Identifier(path) {
+            if (path.node.name === DOPTS.variableName && t__namespace.isVariableDeclarator(path.parent) && t__namespace.isArrayExpression(path.parent.init)) {
+                arrayRef = path.parent.init;
+                const set = new Set(path.parent.init.elements.map((x) => x.value));
+                for (let i = 0; i < options.units.length; i++) {
+                    const unit = options.units[i];
+                    if (!set.has(unit)) {
+                        path.parent.init.elements = path.parent.init.elements.map((x) => {
+                            if (t__namespace.isStringLiteral(x)) {
+                                return {
+                                    type: x === null || x === void 0 ? void 0 : x.type,
+                                    value: x === null || x === void 0 ? void 0 : x.value
+                                };
+                            }
+                            return x;
+                        });
+                        path.parent.init.elements.push({
+                            type: 'StringLiteral',
+                            value: unit
+                        });
+                        changed = true;
+                    }
+                }
+            }
+        }
+    });
+    return {
+        arrayRef,
+        changed
+    };
+}
+
+function getInstalledPkgJsonPath(options) {
+    const dangerousOptions = options.dangerousOptions;
+    try {
+        const tmpJsonPath = tailwindcssPatch.requireResolve(\`\${dangerousOptions.packageName}/package.json\`, {
+            paths: options.paths,
+            basedir: options.basedir
+        });
+        return tmpJsonPath;
+    }
+    catch (error) {
+        if (error.code === 'MODULE_NOT_FOUND') {
+            console.warn('没有找到\`tailwindcss\`包，请确认是否安装。想要禁用打上rpx支持patch或者非\`tailwindcss\`框架，你可以设置 \`supportCustomLengthUnitsPatch\` 为 false');
+        }
+    }
+}
+function createPatch(options) {
+    if (options === false) {
+        return shared.noop;
+    }
+    return () => {
+        try {
+            return internalPatch(getInstalledPkgJsonPath(options), options);
+        }
+        catch (error) {
+            console.warn(\`patch tailwindcss failed:\` + error.message);
+        }
+    };
+}
+function monkeyPatchForSupportingCustomUnit(rootDir, options) {
+    var _a;
+    const { dangerousOptions } = options;
+    const DOPTS = dangerousOptions;
+    const dataTypesFilePath = path__default["default"].resolve(rootDir, DOPTS.lengthUnitsFilePath);
+    const dataTypesFileContent = fs__default["default"].readFileSync(dataTypesFilePath, {
+        encoding: 'utf8'
+    });
+    const { arrayRef, changed } = findAstNode(dataTypesFileContent, options);
+    if (arrayRef && changed) {
+        const { code } = generate__default["default"](arrayRef, {
+            jsescOption: {
+                quotes: 'single'
+            }
+        });
+        if (arrayRef.start && arrayRef.end) {
+            const prev = dataTypesFileContent.slice(0, arrayRef.start);
+            const next = dataTypesFileContent.slice(arrayRef.end);
+            const newCode = prev + code + next;
+            if (DOPTS.overwrite) {
+                fs__default["default"].writeFileSync((_a = DOPTS.destPath) !== null && _a !== void 0 ? _a : dataTypesFilePath, newCode, {
+                    encoding: 'utf8'
+                });
+                console.log('patch tailwindcss for custom length unit successfully!');
+            }
+        }
+        return code;
+    }
+}
+function internalPatch(pkgJsonPath, options, overwrite = true) {
+    if (pkgJsonPath) {
+        const pkgJson = require(pkgJsonPath);
+        const dangerousOptions = options.dangerousOptions;
+        if (semver.gte(pkgJson.version, dangerousOptions.gteVersion)) {
+            const rootDir = path__default["default"].dirname(pkgJsonPath);
+            const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options);
+            const result = tailwindcssPatch.monkeyPatchForExposingContext(rootDir, {
+                overwrite
+            });
+            return Object.assign(Object.assign({}, result), { dataTypes });
+        }
+    }
+}
+function createTailwindcssPatcher() {
+    return new tailwindcssPatch.TailwindcssPatcher({
+        cache: true
+    });
+}
+
+function createGlobMatcher(pattern) {
+    return function (file) {
+        return micromatch.isMatch(file, pattern);
+    };
+}
+function normalizeMatcher(options, key) {
+    if (typeof options[key] === 'string' || Array.isArray(options[key])) {
+        options[key] = createGlobMatcher(options[key]);
+    }
+}
+function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']) {
+    const registerModules = modules.reduce((acc, cur) => {
+        if (acc[cur] !== undefined) {
+            acc[cur] = true;
+        }
+        return acc;
+    }, {
+        templete: false,
+        style: false,
+        patch: false,
+        js: false
+    });
+    if (options.supportCustomLengthUnitsPatch === true) {
+        options.supportCustomLengthUnitsPatch = undefined;
+    }
+    if (options.customReplaceDictionary === 'simple') {
+        options.customReplaceDictionary = shared.SimpleMappingChars2String;
+    }
+    else if (options.customReplaceDictionary === 'complex') {
+        options.customReplaceDictionary = shared.MappingChars2String;
+    }
+    normalizeMatcher(options, 'cssMatcher');
+    normalizeMatcher(options, 'htmlMatcher');
+    normalizeMatcher(options, 'jsMatcher');
+    normalizeMatcher(options, 'mainCssChunkMatcher');
+    const result = defu(options, defaultOptions, {
+        minifiedJs: isProd()
+    });
+    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
+    result.escapeMap = customReplaceDictionary;
+    const cssInjectPreflight = createInjectPreflight(cssPreflight);
+    const customAttributesEntities = shared.isMap(options.customAttributes) ? [...options.customAttributes.entries()] : Object.entries(customAttributes);
+    const { escapeMap, minifiedJs } = result;
+    if (registerModules.templete) {
+        result.templeteHandler = createTempleteHandler({
+            customAttributesEntities,
+            escapeMap
+        });
+    }
+    if (registerModules.style) {
+        result.styleHandler = createStyleHandler({
+            cssInjectPreflight,
+            customRuleCallback,
+            cssPreflightRange,
+            replaceUniversalSelectorWith,
+            escapeMap
+        });
+    }
+    if (registerModules.js) {
+        result.jsHandler = createjsHandler({
+            minifiedJs,
+            escapeMap
+        });
+    }
+    if (registerModules.patch) {
+        result.patch = createPatch(supportCustomLengthUnitsPatch);
+    }
+    return result;
+}
+
+exports.createPatch = createPatch;
+exports.createTailwindcssPatcher = createTailwindcssPatcher;
+exports.getOptions = getOptions;
+",
+    "dynamicImports": [],
+    "exports": [
+      "createPatch",
+      "createTailwindcssPatcher",
+      "getOptions",
+    ],
+    "fileName": "options-0f44e56e.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [
+        "default",
+      ],
+      "@babel/parser": [
+        "parse",
+        "parseExpression",
+      ],
+      "@babel/traverse": [
+        "default",
+      ],
+      "@babel/types": [
+        "*",
+      ],
+      "@csstools/postcss-is-pseudo-class": [
+        "default",
+      ],
+      "micromatch": [
+        "isMatch",
+      ],
+      "node:fs": [
+        "default",
+      ],
+      "node:path": [
+        "default",
+      ],
+      "postcss": [
+        "default",
+      ],
+      "postcss-c76ab184.js": [
+        "postcssWeappTailwindcss",
+      ],
+      "replace.js": [
+        "replaceJs",
+      ],
+      "semver": [
+        "gte",
+      ],
+      "shared-d993bf4d.js": [
+        "splitCode",
+        "escapeStringRegexp",
+        "useStore",
+        "noop",
+        "SimpleMappingChars2String",
+        "makeCustomAttributes",
+        "tagWithEitherClassAndHoverClassRegexp",
+        "templateClassExactRegexp",
+        "variableMatch",
+        "variableRegExp",
+        "MappingChars2String",
+        "isMap",
+      ],
+      "tailwindcss-patch": [
+        "monkeyPatchForExposingContext",
+        "requireResolve",
+        "TailwindcssPatcher",
+      ],
+    },
+    "imports": [
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.js",
+      "shared-d993bf4d.js",
+      "postcss",
+      "postcss-c76ab184.js",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": false,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "options",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "'use strict';
+
+var selectorParser = require('postcss-selector-parser');
+var shared = require('./shared-d993bf4d.js');
+var postcss = require('postcss');
+require('@csstools/postcss-is-pseudo-class');
+
+function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var selectorParser__default = /*#__PURE__*/_interopDefaultCompat(selectorParser);
+
+const createTransform = (rule, options) => {
+    const replaceFlag = options.replaceUniversalSelectorWith !== false;
+    const transform = (selectors) => {
+        selectors.walk((selector) => {
+            if (selector.type === 'universal' && replaceFlag) {
+                selector.value = options.replaceUniversalSelectorWith;
+            }
+            if (selector.type === 'selector') {
+                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
+                node && selector.remove();
+            }
+            if (selector.type === 'class') {
+                selector.value = shared.internalCssSelectorReplacer(selector.value, options.escapeMap);
+            }
+        });
+        if (selectors.length === 0) {
+            rule.remove();
+        }
+    };
+    return transform;
+};
+const getTransformer = (rule, options) => {
+    return selectorParser__default["default"](createTransform(rule, options));
+};
+const transformSync = (rule, options) => {
+    const transformer = getTransformer(rule, options);
+    return transformer.transformSync(rule, {
+        lossless: false,
+        updateSelector: true
+    });
+};
+
+const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
+const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
+function testIfVariablesScope(node, count = 1) {
+    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+        for (let i = 0; i < count; i++) {
+            const tryTestDecl = node.nodes[i];
+            if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+function commonChunkPreflight(node, options) {
+    node.selector = node.selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
+    if (testIfVariablesScope(node)) {
+        const selectorParts = node.selector.split(',');
+        if (!selectorParts.includes('view')) {
+            selectorParts.push('view');
+        }
+        if (options.cssPreflightRange === 'all' &&
+            !selectorParts.includes(':not(not)')) {
+            selectorParts.push(':not(not)');
+        }
+        node.selector = selectorParts.join(',');
+        if (typeof options.cssInjectPreflight === 'function') {
+            node.append(...options.cssInjectPreflight());
+        }
+        const pseudoVarRule = new postcss.Rule({
+            selector: '::before,::after'
+        });
+        pseudoVarRule.append(new postcss.Declaration({
+            prop: '--tw-content',
+            value: '""'
+        }));
+        node.before(pseudoVarRule);
+    }
+}
+
+const NS = 'jsx-rename-loader';
+const postcssPlugin = 'postcss-weapp-tailwindcss-rename-plugin';
+const pluginName = 'weapp-tailwindcss-webpack-plugin';
+const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor';
+
+const postcssWeappTailwindcss = (options = {
+    isMainChunk: true
+}) => {
+    const { customRuleCallback, isMainChunk } = options;
+    const flag = typeof customRuleCallback === 'function';
+    return {
+        postcssPlugin,
+        Once(css) {
+            css.walkRules((rule) => {
+                transformSync(rule, options);
+                isMainChunk && commonChunkPreflight(rule, options);
+                flag && customRuleCallback(rule, options);
+            });
+        }
+    };
+};
+postcssWeappTailwindcss.postcss = true;
+
+exports.NS = NS;
+exports.pluginName = pluginName;
+exports.postcssWeappTailwindcss = postcssWeappTailwindcss;
+exports.vitePluginName = vitePluginName;
+",
+    "dynamicImports": [],
+    "exports": [
+      "NS",
+      "pluginName",
+      "postcssWeappTailwindcss",
+      "vitePluginName",
+    ],
+    "fileName": "postcss-c76ab184.js",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@csstools/postcss-is-pseudo-class": [],
+      "postcss": [
+        "Rule",
+        "Declaration",
+      ],
+      "postcss-selector-parser": [
+        "default",
+      ],
+      "shared-d993bf4d.js": [
+        "internalCssSelectorReplacer",
+      ],
+    },
+    "imports": [
+      "postcss-selector-parser",
+      "shared-d993bf4d.js",
+      "postcss",
+      "@csstools/postcss-is-pseudo-class",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": false,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "postcss",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+]
+`;
+
+exports[`rollup build lib build 2`] = `
+[
+  {
+    "code": "export { UnifiedWebpackPluginV5 } from './webpack.mjs';
+export { UnifiedViteWeappTailwindcssPlugin } from './vite.mjs';
+export { createPlugins } from './gulp.mjs';
+import './options-69161845.mjs';
+import 'micromatch';
+import '@babel/types';
+import '@babel/generator';
+import '@babel/parser';
+import '@babel/traverse';
+import './replace.mjs';
+import './shared-258ec756.mjs';
+import 'tailwindcss-mangle-shared';
+import 'postcss';
+import './postcss-6dc6dc19.mjs';
+import 'postcss-selector-parser';
+import '@csstools/postcss-is-pseudo-class';
+import 'node:path';
+import 'node:fs';
+import 'semver';
+import 'tailwindcss-patch';
+import 'node:stream';
+",
+    "dynamicImports": [],
+    "exports": [
+      "UnifiedViteWeappTailwindcssPlugin",
+      "UnifiedWebpackPluginV5",
+      "createPlugins",
+    ],
+    "fileName": "index.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "gulp.mjs": [
+        "createPlugins",
+      ],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "node:stream": [],
+      "options-69161845.mjs": [],
+      "postcss": [],
+      "postcss-6dc6dc19.mjs": [],
+      "postcss-selector-parser": [],
+      "replace.mjs": [],
+      "semver": [],
+      "shared-258ec756.mjs": [],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+      "vite.mjs": [
+        "UnifiedViteWeappTailwindcssPlugin",
+      ],
+      "webpack.mjs": [
+        "UnifiedWebpackPluginV5",
+      ],
+    },
+    "imports": [
+      "webpack.mjs",
+      "vite.mjs",
+      "gulp.mjs",
+      "options-69161845.mjs",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.mjs",
+      "shared-258ec756.mjs",
+      "tailwindcss-mangle-shared",
+      "postcss",
+      "postcss-6dc6dc19.mjs",
+      "postcss-selector-parser",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+      "node:stream",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "index",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import { g as getOptions, c as createPatch } from './options-69161845.mjs';
+import 'micromatch';
+import '@babel/types';
+import '@babel/generator';
+import '@babel/parser';
+import '@babel/traverse';
+import './replace.mjs';
+import './shared-258ec756.mjs';
+import 'tailwindcss-mangle-shared';
+import 'postcss';
+import './postcss-6dc6dc19.mjs';
+import 'postcss-selector-parser';
+import '@csstools/postcss-is-pseudo-class';
+import 'node:path';
+import 'node:fs';
+import 'semver';
+import 'tailwindcss-patch';
+
+const args = process.argv.slice(2);
+if (args[0] === 'patch') {
+    const options = getOptions();
+    const patch = createPatch(options.supportCustomLengthUnitsPatch);
+    patch();
+}
+",
+    "dynamicImports": [],
+    "exports": [],
+    "fileName": "cli.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "options-69161845.mjs": [
+        "g",
+        "c",
+      ],
+      "postcss": [],
+      "postcss-6dc6dc19.mjs": [],
+      "postcss-selector-parser": [],
+      "replace.mjs": [],
+      "semver": [],
+      "shared-258ec756.mjs": [],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+    },
+    "imports": [
+      "options-69161845.mjs",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.mjs",
+      "shared-258ec756.mjs",
+      "tailwindcss-mangle-shared",
+      "postcss",
+      "postcss-6dc6dc19.mjs",
+      "postcss-selector-parser",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "cli",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import { g as getOptions, a as createTailwindcssPatcher } from './options-69161845.mjs';
+import { a as pluginName, N as NS } from './postcss-6dc6dc19.mjs';
+import { c as initStore, g as getGroupedEntries, d as setRuntimeSet } from './shared-258ec756.mjs';
+import 'micromatch';
+import '@babel/types';
+import '@babel/generator';
+import '@babel/parser';
+import '@babel/traverse';
+import './replace.mjs';
+import 'postcss';
+import '@csstools/postcss-is-pseudo-class';
+import 'node:path';
+import 'node:fs';
+import 'semver';
+import 'tailwindcss-patch';
+import 'postcss-selector-parser';
+import 'tailwindcss-mangle-shared';
+
+class UnifiedWebpackPluginV5 {
+    constructor(options = {}) {
+        if (options.customReplaceDictionary === undefined) {
+            options.customReplaceDictionary = 'simple';
+        }
+        this.options = getOptions(options, ['style', 'patch', 'templete', 'js']);
+        this.appType = this.options.appType;
+    }
+    apply(compiler) {
+        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, mangle } = this.options;
+        if (disabled) {
+            return;
+        }
+        patch === null || patch === void 0 ? void 0 : patch();
+        initStore(mangle);
+        const Compilation = compiler.webpack.Compilation;
+        const { ConcatSource } = compiler.webpack.sources;
+        const twPatcher = createTailwindcssPatcher();
+        function getClassSet() {
+            let set = twPatcher.getClassSet();
+            if (set.size === 0) {
+                const cacheSet = twPatcher.getCache();
+                if (cacheSet && cacheSet.size > 0) {
+                    set = cacheSet;
+                }
+            }
+            return set;
+        }
+        onLoad();
+        compiler.hooks.compilation.tap(pluginName, (compilation) => {
+            compilation.hooks.processAssets.tap({
+                name: pluginName,
+                stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE
+            }, (assets) => {
+                onStart();
+                const entries = Object.entries(assets);
+                const groupedEntries = getGroupedEntries(entries, this.options);
+                const set = getClassSet();
+                setRuntimeSet(set);
+                if (Array.isArray(groupedEntries.html)) {
+                    for (let i = 0; i < groupedEntries.html.length; i++) {
+                        const [file, originalSource] = groupedEntries.html[i];
+                        const rawSource = originalSource.source().toString();
+                        const wxml = templeteHandler(rawSource);
+                        const source = new ConcatSource(wxml);
+                        compilation.updateAsset(file, source);
+                        onUpdate(file, rawSource, wxml);
+                    }
+                }
+                if (Array.isArray(groupedEntries.js)) {
+                    for (let i = 0; i < groupedEntries.js.length; i++) {
+                        const [file, originalSource] = groupedEntries.js[i];
+                        const rawSource = originalSource.source().toString();
+                        const { code } = jsHandler(rawSource, set);
+                        const source = new ConcatSource(code);
+                        compilation.updateAsset(file, source);
+                        onUpdate(file, rawSource, code);
+                    }
+                }
+                if (Array.isArray(groupedEntries.css)) {
+                    for (let i = 0; i < groupedEntries.css.length; i++) {
+                        const [file, originalSource] = groupedEntries.css[i];
+                        const rawSource = originalSource.source().toString();
+                        const css = styleHandler(rawSource, {
+                            isMainChunk: mainCssChunkMatcher(file, this.appType)
+                        });
+                        const source = new ConcatSource(css);
+                        compilation.updateAsset(file, source);
+                        onUpdate(file, rawSource, css);
+                    }
+                }
+                onEnd();
+            });
+        });
+    }
+}
+UnifiedWebpackPluginV5.NS = NS;
+
+export { UnifiedWebpackPluginV5 };
+",
+    "dynamicImports": [],
+    "exports": [
+      "UnifiedWebpackPluginV5",
+    ],
+    "fileName": "webpack.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "options-69161845.mjs": [
+        "g",
+        "a",
+      ],
+      "postcss": [],
+      "postcss-6dc6dc19.mjs": [
+        "a",
+        "N",
+      ],
+      "postcss-selector-parser": [],
+      "replace.mjs": [],
+      "semver": [],
+      "shared-258ec756.mjs": [
+        "c",
+        "g",
+        "d",
+      ],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+    },
+    "imports": [
+      "options-69161845.mjs",
+      "postcss-6dc6dc19.mjs",
+      "shared-258ec756.mjs",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.mjs",
+      "postcss",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+      "postcss-selector-parser",
+      "tailwindcss-mangle-shared",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "webpack",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import stream from 'node:stream';
+import { g as getOptions, a as createTailwindcssPatcher } from './options-69161845.mjs';
+import { c as initStore, d as setRuntimeSet } from './shared-258ec756.mjs';
+import 'micromatch';
+import '@babel/types';
+import '@babel/generator';
+import '@babel/parser';
+import '@babel/traverse';
+import './replace.mjs';
+import 'postcss';
+import './postcss-6dc6dc19.mjs';
+import 'postcss-selector-parser';
+import '@csstools/postcss-is-pseudo-class';
+import 'node:path';
+import 'node:fs';
+import 'semver';
+import 'tailwindcss-patch';
+import 'tailwindcss-mangle-shared';
+
+const Transform = stream.Transform;
+function createPlugins(options = {}) {
+    if (options.customReplaceDictionary === undefined) {
+        options.customReplaceDictionary = 'simple';
+    }
+    const opts = getOptions(options, ['patch', 'style', 'templete', 'js']);
+    const { templeteHandler, styleHandler, patch, jsHandler, mangle } = opts;
+    let set = new Set();
+    patch === null || patch === void 0 ? void 0 : patch();
+    initStore(mangle);
+    const twPatcher = createTailwindcssPatcher();
+    function transformWxss() {
+        const transformStream = new Transform({ objectMode: true });
+        transformStream._transform = function (file, encoding, callback) {
+            set = twPatcher.getClassSet();
+            setRuntimeSet(set);
+            const error = null;
+            if (file.contents) {
+                const code = styleHandler(file.contents.toString(), {
+                    isMainChunk: true
+                });
+                file.contents = Buffer.from(code);
+            }
+            callback(error, file);
+        };
+        return transformStream;
+    }
+    function transformJs() {
+        const transformStream = new Transform({ objectMode: true });
+        transformStream._transform = function (file, encoding, callback) {
+            const error = null;
+            if (file.contents) {
+                const { code } = jsHandler(file.contents.toString(), set);
+                file.contents = Buffer.from(code);
+            }
+            callback(error, file);
+        };
+        return transformStream;
+    }
+    function transformWxml() {
+        const transformStream = new Transform({ objectMode: true });
+        transformStream._transform = function (file, encoding, callback) {
+            const error = null;
+            if (file.contents) {
+                const code = templeteHandler(file.contents.toString());
+                file.contents = Buffer.from(code);
+            }
+            callback(error, file);
+        };
+        return transformStream;
+    }
+    return {
+        transformWxss,
+        transformWxml,
+        transformJs
+    };
+}
+
+export { createPlugins };
+",
+    "dynamicImports": [],
+    "exports": [
+      "createPlugins",
+    ],
+    "fileName": "gulp.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "node:stream": [
+        "default",
+      ],
+      "options-69161845.mjs": [
+        "g",
+        "a",
+      ],
+      "postcss": [],
+      "postcss-6dc6dc19.mjs": [],
+      "postcss-selector-parser": [],
+      "replace.mjs": [],
+      "semver": [],
+      "shared-258ec756.mjs": [
+        "c",
+        "d",
+      ],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+    },
+    "imports": [
+      "node:stream",
+      "options-69161845.mjs",
+      "shared-258ec756.mjs",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.mjs",
+      "postcss",
+      "postcss-6dc6dc19.mjs",
+      "postcss-selector-parser",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+      "tailwindcss-mangle-shared",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "gulp",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import { h as escape, S as SimpleMappingChars2String, u as useStore } from './shared-258ec756.mjs';
+export { M as MappingChars2String, k as MappingChars2StringEntries, j as SYMBOL_TABLE, l as SimpleMappingChars2StringEntries, f as replaceCss } from './shared-258ec756.mjs';
+import 'tailwindcss-mangle-shared';
+
+function replaceWxml(original, options = {
+    keepEOL: false,
+    escapeMap: SimpleMappingChars2String
+}) {
+    if (typeof options === 'boolean') {
+        options = {
+            keepEOL: options
+        };
+    }
+    let res = original;
+    if (!options.keepEOL) {
+        res = res
+            .replaceAll(/[\\n\\r]+/g, '');
+    }
+    const { wxmlHandler } = useStore();
+    res = wxmlHandler(res);
+    res = escape(res, {
+        map: options.escapeMap
+    });
+    return res;
+}
+
+export { SimpleMappingChars2String, replaceWxml as replaceJs };
+",
+    "dynamicImports": [],
+    "exports": [
+      "MappingChars2String",
+      "MappingChars2StringEntries",
+      "SYMBOL_TABLE",
+      "SimpleMappingChars2String",
+      "SimpleMappingChars2StringEntries",
+      "replaceCss",
+      "replaceJs",
+    ],
+    "fileName": "replace.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "shared-258ec756.mjs": [
+        "h",
+        "S",
+        "u",
+        "M",
+        "k",
+        "j",
+        "l",
+        "f",
+      ],
+      "tailwindcss-mangle-shared": [],
+    },
+    "imports": [
+      "shared-258ec756.mjs",
+      "tailwindcss-mangle-shared",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "replace",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import { g as getOptions, a as createTailwindcssPatcher } from './options-69161845.mjs';
+import { v as vitePluginName } from './postcss-6dc6dc19.mjs';
+import { c as initStore, g as getGroupedEntries, d as setRuntimeSet } from './shared-258ec756.mjs';
+import 'micromatch';
+import '@babel/types';
+import '@babel/generator';
+import '@babel/parser';
+import '@babel/traverse';
+import './replace.mjs';
+import 'tailwindcss-mangle-shared';
+import 'postcss';
+import '@csstools/postcss-is-pseudo-class';
+import 'node:path';
+import 'node:fs';
+import 'semver';
+import 'tailwindcss-patch';
+import 'postcss-selector-parser';
+
+function UnifiedViteWeappTailwindcssPlugin(options = {}) {
+    if (options.customReplaceDictionary === undefined) {
+        options.customReplaceDictionary = 'simple';
+    }
+    const opts = getOptions(options, ['patch', 'style', 'templete', 'js']);
+    const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts;
+    if (disabled) {
+        return;
+    }
+    patch === null || patch === void 0 ? void 0 : patch();
+    initStore(mangle);
+    const twPatcher = createTailwindcssPatcher();
+    onLoad();
+    return {
+        name: vitePluginName,
+        enforce: 'post',
+        buildStart() {
+            onStart();
+        },
+        generateBundle(opt, bundle, isWrite) {
+            const entries = Object.entries(bundle);
+            const groupedEntries = getGroupedEntries(entries, opts);
+            const set = twPatcher.getClassSet();
+            setRuntimeSet(set);
+            if (Array.isArray(groupedEntries.html)) {
+                for (let i = 0; i < groupedEntries.html.length; i++) {
+                    const [file, originalSource] = groupedEntries.html[i];
+                    const oldVal = originalSource.source.toString();
+                    originalSource.source = templeteHandler(oldVal);
+                    onUpdate(file, oldVal, originalSource.source);
+                }
+            }
+            if (Array.isArray(groupedEntries.css)) {
+                for (let i = 0; i < groupedEntries.css.length; i++) {
+                    const [file, originalSource] = groupedEntries.css[i];
+                    const rawSource = originalSource.source.toString();
+                    const css = styleHandler(rawSource, {
+                        isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
+                    });
+                    originalSource.source = css;
+                    onUpdate(file, rawSource, css);
+                }
+            }
+            if (Array.isArray(groupedEntries.js)) {
+                for (let i = 0; i < groupedEntries.js.length; i++) {
+                    const [file, originalSource] = groupedEntries.js[i];
+                    const rawSource = originalSource.code;
+                    const { code } = jsHandler(rawSource, set);
+                    originalSource.code = code;
+                    onUpdate(file, rawSource, code);
+                }
+            }
+        },
+        buildEnd() {
+            onEnd();
+        }
+    };
+}
+
+export { UnifiedViteWeappTailwindcssPlugin };
+",
+    "dynamicImports": [],
+    "exports": [
+      "UnifiedViteWeappTailwindcssPlugin",
+    ],
+    "fileName": "vite.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@babel/generator": [],
+      "@babel/parser": [],
+      "@babel/traverse": [],
+      "@babel/types": [],
+      "@csstools/postcss-is-pseudo-class": [],
+      "micromatch": [],
+      "node:fs": [],
+      "node:path": [],
+      "options-69161845.mjs": [
+        "g",
+        "a",
+      ],
+      "postcss": [],
+      "postcss-6dc6dc19.mjs": [
+        "v",
+      ],
+      "postcss-selector-parser": [],
+      "replace.mjs": [],
+      "semver": [],
+      "shared-258ec756.mjs": [
+        "c",
+        "g",
+        "d",
+      ],
+      "tailwindcss-mangle-shared": [],
+      "tailwindcss-patch": [],
+    },
+    "imports": [
+      "options-69161845.mjs",
+      "postcss-6dc6dc19.mjs",
+      "shared-258ec756.mjs",
+      "micromatch",
+      "@babel/types",
+      "@babel/generator",
+      "@babel/parser",
+      "@babel/traverse",
+      "replace.mjs",
+      "tailwindcss-mangle-shared",
+      "postcss",
+      "@csstools/postcss-is-pseudo-class",
+      "node:path",
+      "node:fs",
+      "semver",
+      "tailwindcss-patch",
+      "postcss-selector-parser",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "vite",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "export { p as postcssWeappTailwindcss } from './postcss-6dc6dc19.mjs';
+export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class';
+import 'postcss-selector-parser';
+import './shared-258ec756.mjs';
+import 'tailwindcss-mangle-shared';
+import 'postcss';
+",
+    "dynamicImports": [],
+    "exports": [
+      "postcssIsPseudoClass",
+      "postcssWeappTailwindcss",
+    ],
+    "fileName": "postcss.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@csstools/postcss-is-pseudo-class": [
+        "default",
+      ],
+      "postcss": [],
+      "postcss-6dc6dc19.mjs": [
+        "p",
+      ],
+      "postcss-selector-parser": [],
+      "shared-258ec756.mjs": [],
+      "tailwindcss-mangle-shared": [],
+    },
+    "imports": [
+      "postcss-6dc6dc19.mjs",
+      "@csstools/postcss-is-pseudo-class",
+      "postcss-selector-parser",
+      "shared-258ec756.mjs",
+      "tailwindcss-mangle-shared",
+      "postcss",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": true,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "postcss",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import { ClassGenerator, defaultMangleClassFilter } from 'tailwindcss-mangle-shared';
+
+const SYMBOL_TABLE = {
+    BACKQUOTE: '\`',
+    TILDE: '~',
+    EXCLAM: '!',
+    AT: '@',
+    NUMBERSIGN: '#',
+    DOLLAR: '$',
+    PERCENT: '%',
+    CARET: '^',
+    AMPERSAND: '&',
+    ASTERISK: '*',
+    PARENLEFT: '(',
+    PARENRIGHT: ')',
+    MINUS: '-',
+    UNDERSCORE: '_',
+    EQUAL: '=',
+    PLUS: '+',
+    BRACKETLEFT: '[',
+    BRACELEFT: '{',
+    BRACKETRIGHT: ']',
+    BRACERIGHT: '}',
+    SEMICOLON: ';',
+    COLON: ':',
+    QUOTE: "'",
+    DOUBLEQUOTE: '"',
+    BACKSLASH: '\\\\',
+    BAR: '|',
+    COMMA: ',',
+    LESS: '<',
+    PERIOD: '.',
+    GREATER: '>',
+    SLASH: '/',
+    QUESTION: '?',
+    SPACE: ' ',
+    DOT: '.',
+    HASH: '#'
+};
+const MappingChars2String = {
+    '[': '_bl_',
+    ']': '_br_',
+    '(': '_pl_',
+    ')': '_qr_',
+    '#': '_h_',
+    '!': '_i_',
+    '/': '_s_',
+    '\\\\': '_bs_',
+    '.': '_d_',
+    ':': '_c_',
+    '%': '_p_',
+    ',': '_co_',
+    "'": '_q_',
+    '"': '_dq_',
+    '*': '_a_',
+    '&': '_am_',
+    '@': '_at_',
+    '{': '_bal_',
+    '}': '_bar_',
+    '+': '_plus_',
+    ';': '_se_',
+    '<': '_l_',
+    '~': '_t_',
+    '=': '_e_',
+    '>': '_g_',
+    '?': '_qu_',
+    '^': '_ca_',
+    '\`': '_bq_',
+    '|': '_b_',
+    $: '_do_'
+};
+const MappingChars2StringEntries = Object.entries(MappingChars2String);
+const SimpleMappingChars2String = {
+    '[': '_',
+    ']': '_',
+    '(': '_',
+    ')': '_',
+    '{': '_',
+    '}': '_',
+    '+': 'a',
+    ',': 'b',
+    ':': 'c',
+    '.': 'd',
+    '=': 'e',
+    ';': 'f',
+    '>': 'g',
+    '#': 'h',
+    '!': 'i',
+    '@': 'j',
+    '^': 'k',
+    '<': 'l',
+    '*': 'm',
+    '&': 'n',
+    '?': 'o',
+    '%': 'p',
+    "'": 'q',
+    $: 'r',
+    '/': 's',
+    '~': 't',
+    '|': 'u',
+    '\`': 'v',
+    '\\\\': 'w',
+    '"': 'x'
+};
+const SimpleMappingChars2StringEntries = Object.entries(SimpleMappingChars2String);
+
+const MAX_ASCII_CHAR_CODE = 127;
+function escape(selectors, options = {
+    map: SimpleMappingChars2String
+}) {
+    const { map = SimpleMappingChars2String } = options;
+    const sb = [...selectors];
+    for (let i = 0; i < sb.length; i++) {
+        const char = sb[i];
+        const code = char.codePointAt(0);
+        if (code !== undefined && code > MAX_ASCII_CHAR_CODE) {
+            sb[i] = 'u' + Number(code).toString(16);
+        }
+        else {
+            const hit = map[char];
+            if (hit) {
+                sb[i] = hit;
+            }
+        }
+    }
+    const res = sb.join('');
+    return res;
+}
+
+const validateFilterRE = /[\\w%-?\\u00A0-\\uFFFF-]/;
+function isValidSelector(selector = '') {
+    return validateFilterRE.test(selector);
+}
+const splitCode = (code, allowDoubleQuotes = false) => {
+    const splitter = allowDoubleQuotes ? /\\s+/ : /\\s+|"/;
+    return code.split(splitter).filter((element) => isValidSelector(element));
+};
+
+function isRegexp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]';
+}
+function isMap(value) {
+    return Object.prototype.toString.call(value) === '[object Map]';
+}
+const noop = () => { };
+function groupBy(arr, cb) {
+    if (!Array.isArray(arr)) {
+        throw new TypeError('expected an array for first argument');
+    }
+    if (typeof cb !== 'function') {
+        throw new TypeError('expected a function for second argument');
+    }
+    const result = {};
+    for (const item of arr) {
+        const bucketCategory = cb(item);
+        const bucket = result[bucketCategory];
+        if (Array.isArray(bucket)) {
+            result[bucketCategory].push(item);
+        }
+        else {
+            result[bucketCategory] = [item];
+        }
+    }
+    return result;
+}
+function getGroupedEntries(entries, options) {
+    const { cssMatcher, htmlMatcher, jsMatcher } = options;
+    const groupedEntries = groupBy(entries, ([file]) => {
+        if (cssMatcher(file)) {
+            return 'css';
+        }
+        else if (htmlMatcher(file)) {
+            return 'html';
+        }
+        else if (jsMatcher(file)) {
+            return 'js';
+        }
+        else {
+            return 'other';
+        }
+    });
+    return groupedEntries;
+}
+
+function escapeStringRegexp(str) {
+    if (typeof str !== 'string') {
+        throw new TypeError('Expected a string');
+    }
+    return str.replaceAll(/[$()*+.?[\\\\\\]^{|}]/g, '\\\\$&').replaceAll('-', '\\\\x2d');
+}
+const templateClassExactRegexp = /(?<=^|\\s)(?:hover-)?class=(?:["']\\W+\\s*\\w+\\()?["']([^"]+)["']/gs;
+const tagWithEitherClassAndHoverClassRegexp = /<[a-z][a-z-]*[a-z]*\\s+[^>]*?(?:hover-)?clas{2}="[^"]*"[^>]*?\\/?>/g;
+function handleRegexp(reg) {
+    return \`(?:\${reg.source})\`;
+}
+function getSourceString(input) {
+    let result;
+    if (typeof input === 'string') {
+        result = input;
+    }
+    else if (isRegexp(input)) {
+        result = input.source;
+    }
+    else {
+        result = input.toString();
+    }
+    return result;
+}
+function makePattern(arr) {
+    let pattern = '';
+    if (Array.isArray(arr)) {
+        pattern = arr
+            .reduce((acc, cur) => {
+            if (typeof cur === 'string') {
+                acc.push(cur);
+            }
+            else if (isRegexp(cur)) {
+                acc.push(handleRegexp(cur));
+            }
+            return acc;
+        }, [])
+            .join('|');
+    }
+    else if (typeof arr === 'string') {
+        pattern = arr;
+    }
+    else if (isRegexp(arr)) {
+        pattern = handleRegexp(arr);
+    }
+    return pattern;
+}
+function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    let tagPattern = getSourceString(tag);
+    if (tagPattern === '*') {
+        tagPattern = '[a-z][-a-z]*[a-z]*';
+    }
+    const source = \`<(\${tagPattern})\\\\s+[^>]*?(?:\${prefix}(\${pattern})="(?:[^"]*)")[^>]*?\\\\/?>\`;
+    return new RegExp(source, 'g');
+}
+function createTemplateClassRegexp(attrs, options = {}) {
+    const { exact = true } = options;
+    const prefix = exact ? '(?<=^|\\\\s)' : '';
+    const pattern = makePattern(attrs);
+    const source = \`(?:\${prefix}\${pattern})=(?:["']\\\\W+\\\\s*(?:\\\\w+)\\\\()?["']([^"]+)['"]\`;
+    return new RegExp(source, 'gs');
+}
+function makeCustomAttributes(entries) {
+    if (Array.isArray(entries)) {
+        return entries.map(([k, v]) => {
+            return {
+                tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+                attrRegexp: createTemplateClassRegexp(v),
+                tag: getSourceString(k),
+                attrs: v
+            };
+        });
+    }
+}
+const variableRegExp = /{{(.*?)}}/gs;
+function variableMatch(original) {
+    return variableRegExp.exec(original);
+}
+
+function getSelf(x) {
+    return x;
+}
+const defaultScopedStore = {
+    rawOptions: false,
+    runtimeSet: new Set(),
+    classGenerator: new ClassGenerator(),
+    filter: defaultMangleClassFilter,
+    cssHandler: getSelf,
+    jsHandler: getSelf,
+    wxmlHandler: getSelf
+};
+const store = Object.assign({}, defaultScopedStore);
+function useStore() {
+    return store;
+}
+function handleValue(rawSource) {
+    const arr = splitCode(rawSource);
+    for (const x of arr) {
+        if (store.runtimeSet.has(x)) {
+            rawSource = rawSource.replaceAll(new RegExp(escapeStringRegexp(x), 'g'), store.classGenerator.generateClassName(x).name);
+        }
+    }
+    return rawSource;
+}
+function initStore(options) {
+    var _a;
+    store.rawOptions = options;
+    if (options) {
+        if (options === true) {
+            options = {
+                classGenerator: {},
+                mangleClassFilter: defaultMangleClassFilter
+            };
+        }
+        store.classGenerator = new ClassGenerator(options.classGenerator);
+        store.filter = (_a = options.mangleClassFilter) !== null && _a !== void 0 ? _a : defaultMangleClassFilter;
+        store.jsHandler = (rawSource) => {
+            return handleValue(rawSource);
+        };
+        store.cssHandler = (rawSource) => {
+            return handleValue(rawSource);
+        };
+        store.wxmlHandler = (rawSource) => {
+            return handleValue(rawSource);
+        };
+    }
+}
+function setRuntimeSet(runtimeSet) {
+    const newSet = new Set();
+    for (const c of runtimeSet) {
+        if (store.filter(c)) {
+            newSet.add(c);
+        }
+    }
+    store.runtimeSet = newSet;
+}
+
+function internalCssSelectorReplacer(selectors, map = SimpleMappingChars2String) {
+    const { cssHandler } = useStore();
+    selectors = cssHandler(selectors);
+    return escape(selectors, {
+        map
+    });
+}
+
+export { MappingChars2String as M, SimpleMappingChars2String as S, templateClassExactRegexp as a, variableRegExp as b, initStore as c, setRuntimeSet as d, escapeStringRegexp as e, internalCssSelectorReplacer as f, getGroupedEntries as g, escape as h, isMap as i, SYMBOL_TABLE as j, MappingChars2StringEntries as k, SimpleMappingChars2StringEntries as l, makeCustomAttributes as m, noop as n, splitCode as s, tagWithEitherClassAndHoverClassRegexp as t, useStore as u, variableMatch as v };
+",
+    "dynamicImports": [],
+    "exports": [
+      "M",
+      "S",
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "s",
+      "t",
+      "u",
+      "v",
+    ],
+    "fileName": "shared-258ec756.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "tailwindcss-mangle-shared": [
+        "ClassGenerator",
+        "defaultMangleClassFilter",
+      ],
+    },
+    "imports": [
+      "tailwindcss-mangle-shared",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": false,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "shared",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import { isMatch } from 'micromatch';
+import * as t from '@babel/types';
+import generate from '@babel/generator';
+import { parse, parseExpression } from '@babel/parser';
+import traverse from '@babel/traverse';
+import { replaceJs as replaceWxml } from './replace.mjs';
+import { s as splitCode, e as escapeStringRegexp, u as useStore, n as noop, S as SimpleMappingChars2String, m as makeCustomAttributes, t as tagWithEitherClassAndHoverClassRegexp, a as templateClassExactRegexp, v as variableMatch, b as variableRegExp, M as MappingChars2String, i as isMap } from './shared-258ec756.mjs';
+import postcss from 'postcss';
+import { p as postcssWeappTailwindcss } from './postcss-6dc6dc19.mjs';
+import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class';
+import path from 'node:path';
+import fs from 'node:fs';
+import { gte } from 'semver';
+import { monkeyPatchForExposingContext, requireResolve, TailwindcssPatcher } from 'tailwindcss-patch';
+
+function isObject(value) {
+  return value !== null && typeof value === "object";
+}
+function _defu(baseObject, defaults, namespace = ".", merger) {
+  if (!isObject(defaults)) {
+    return _defu(baseObject, {}, namespace, merger);
+  }
+  const object = Object.assign({}, defaults);
+  for (const key in baseObject) {
+    if (key === "__proto__" || key === "constructor") {
+      continue;
+    }
+    const value = baseObject[key];
+    if (value === null || value === void 0) {
+      continue;
+    }
+    if (merger && merger(object, key, value, namespace)) {
+      continue;
+    }
+    if (Array.isArray(value) && Array.isArray(object[key])) {
+      object[key] = [...value, ...object[key]];
+    } else if (isObject(value) && isObject(object[key])) {
+      object[key] = _defu(
+        value,
+        object[key],
+        (namespace ? \`\${namespace}.\` : "") + key.toString(),
+        merger
+      );
+    } else {
+      object[key] = value;
+    }
+  }
+  return object;
+}
+function createDefu(merger) {
+  return (...arguments_) => (
+    // eslint-disable-next-line unicorn/no-array-reduce
+    arguments_.reduce((p, c) => _defu(p, c, "", merger), {})
+  );
+}
+const defu = createDefu();
+
+const isProd = () => process.env.NODE_ENV === 'production';
+
+function handleValue(str, node, options) {
+    var _a;
+    const set = options.classNameSet;
+    const escapeMap = options.escapeMap;
+    const allowDoubleQuotes = (_a = options.arbitraryValues) === null || _a === void 0 ? void 0 : _a.allowDoubleQuotes;
+    const arr = splitCode(str, allowDoubleQuotes);
+    let rawStr = str;
+    for (const v of arr) {
+        if (set.has(v)) {
+            let ignoreFlag = false;
+            if (Array.isArray(node.leadingComments)) {
+                ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1;
+            }
+            if (!ignoreFlag) {
+                const { jsHandler } = useStore();
+                rawStr = jsHandler(rawStr);
+                rawStr = rawStr.replaceAll(new RegExp(escapeStringRegexp(v), 'g'), replaceWxml(v, {
+                    escapeMap
+                }));
+            }
+        }
+    }
+    return rawStr;
+}
+function jsHandler(rawSource, options) {
+    var _a;
+    const ast = parse(rawSource, {
+        sourceType: 'unambiguous'
+    });
+    const topt = {
+        StringLiteral: {
+            enter(p) {
+                const n = p.node;
+                n.value = handleValue(n.value, n, options);
+            }
+        },
+        TemplateElement: {
+            enter(p) {
+                const n = p.node;
+                n.value.raw = handleValue(n.value.raw, n, options);
+            }
+        },
+        CallExpression: {
+            enter(p) {
+                const n = p.node;
+                if (t.isIdentifier(n.callee) && n.callee.name === 'eval' && t.isStringLiteral(n.arguments[0])) {
+                    const res = jsHandler(n.arguments[0].value, options);
+                    if (res.code) {
+                        n.arguments[0].value = res.code;
+                    }
+                }
+            }
+        },
+        noScope: true
+    };
+    traverse(ast, topt);
+    return generate(ast, {
+        minified: (_a = options.minifiedJs) !== null && _a !== void 0 ? _a : isProd()
+    });
+}
+function createjsHandler(options) {
+    return (rawSource, set) => {
+        return jsHandler(rawSource, {
+            classNameSet: set,
+            minifiedJs: options.minifiedJs,
+            escapeMap: options.escapeMap,
+            arbitraryValues: options.arbitraryValues
+        });
+    };
+}
+
+const defaultOptions = {
+    cssMatcher: (file) => /.+\\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
+    htmlMatcher: (file) => /.+\\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
+    jsMatcher: (file) => {
+        if (file.includes('node_modules')) {
+            return false;
+        }
+        return /.+\\.[cm]?js?$/.test(file);
+    },
+    mainCssChunkMatcher: (file, appType) => {
+        switch (appType) {
+            case 'uni-app': {
+                return /^common\\/main/.test(file);
+            }
+            case 'uni-app-vite': {
+                return file.startsWith('app') || /^common\\/main/.test(file);
+            }
+            case 'mpx': {
+                return file.startsWith('app');
+            }
+            case 'taro': {
+                return file.startsWith('app');
+            }
+            case 'remax': {
+                return file.startsWith('app');
+            }
+            case 'rax': {
+                return file.startsWith('bundle');
+            }
+            case 'native': {
+                return file.startsWith('app');
             }
             case 'kbone': {
                 return /^(?:common\\/)?miniprogram-app/.test(file);
@@ -2487,12 +3285,274 @@ const defaultOptions = {
             overwrite: true
         }
     },
-    appType: undefined
+    appType: undefined,
+    arbitraryValues: {
+        allowDoubleQuotes: false
+    }
 };
+
+function generateCode(match, options = {}) {
+    const ast = parseExpression(match);
+    traverse(ast, {
+        StringLiteral(path) {
+            var _a;
+            if (t.isMemberExpression(path.parent)) {
+                return;
+            }
+            if (t.isBinaryExpression(path.parent) && t.isConditionalExpression((_a = path.parentPath) === null || _a === void 0 ? void 0 : _a.parent)) {
+                return;
+            }
+            path.node.value = replaceWxml(path.node.value, options);
+        },
+        noScope: true
+    });
+    const { code } = generate(ast, {
+        compact: true,
+        minified: true,
+        jsescOption: {
+            quotes: 'single',
+            minimal: true
+        }
+    });
+    return code;
+}
+function extractSource(original) {
+    let match = variableMatch(original);
+    const sources = [];
+    while (match !== null) {
+        const start = match.index;
+        const end = variableRegExp.lastIndex;
+        sources.push({
+            start,
+            end,
+            raw: match[1],
+            prevConcatenated: !/\\s/.test(original[start - 1]),
+            nextConcatenated: !/\\s/.test(original[end])
+        });
+        match = variableMatch(original);
+    }
+    return sources;
+}
+function templeteReplacer(original, options = {}) {
+    const sources = extractSource(original);
+    if (sources.length > 0) {
+        const resultArray = [];
+        let p = 0;
+        for (let i = 0; i < sources.length; i++) {
+            const m = sources[i];
+            const before = original.slice(p, m.start);
+            resultArray.push(replaceWxml(before, {
+                keepEOL: true,
+                escapeMap: options.escapeMap
+            }));
+            p = m.start;
+            if (m.raw.trim().length > 0) {
+                const code = generateCode(m.raw, options);
+                const source = \`{{\${code}}}\`;
+                m.source = source;
+            }
+            else {
+                m.source = '';
+            }
+            resultArray.push(m.source);
+            p = m.end;
+            if (i === sources.length - 1) {
+                const after = original.slice(m.end);
+                resultArray.push(replaceWxml(after, {
+                    keepEOL: true,
+                    escapeMap: options.escapeMap
+                }));
+            }
+        }
+        return resultArray
+            .filter(Boolean)
+            .join('')
+            .trim();
+    }
+    else {
+        return replaceWxml(original, {
+            keepEOL: false,
+            escapeMap: options.escapeMap
+        });
+    }
+}
+function templeteHandler(rawSource, options = {}) {
+    return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
+        return m0.replace(templateClassExactRegexp, (m1, className) => {
+            return m1.replace(className, templeteReplacer(className, options));
+        });
+    });
+}
+function customTempleteHandler(rawSource, options = {}) {
+    let source = templeteHandler(rawSource, options);
+    const regexps = makeCustomAttributes(options.customAttributesEntities);
+    if (regexps) {
+        if (Array.isArray(regexps)) {
+            for (const regexp of regexps) {
+                source = source.replace(regexp.tagRegexp, (m0) => {
+                    return m0.replace(regexp.attrRegexp, (m1, className) => {
+                        return m1.replace(className, templeteReplacer(className, options));
+                    });
+                });
+            }
+        }
+        return source;
+    }
+    else {
+        return source;
+    }
+}
+function createTempleteHandler(options = {}) {
+    return (rawSource, opt = {}) => {
+        return customTempleteHandler(rawSource, defu(opt, options));
+    };
+}
+
+function styleHandler(rawSource, options) {
+    return postcss([postcssWeappTailwindcss(options), postcssIsPseudoClass()]).process(rawSource).css;
+}
+function createStyleHandler(options) {
+    return (rawSource, opt) => {
+        return styleHandler(rawSource, defu(opt, options));
+    };
+}
+
+const createInjectPreflight = (options) => {
+    const result = [];
+    if (options && typeof options === 'object') {
+        const entries = Object.entries(options);
+        for (const [prop, value] of entries) {
+            if (value !== false) {
+                result.push({
+                    prop,
+                    value: value.toString()
+                });
+            }
+        }
+    }
+    return () => {
+        return result;
+    };
+};
+
+function findAstNode(content, options) {
+    const DOPTS = options.dangerousOptions;
+    const ast = parse(content);
+    let arrayRef;
+    let changed = false;
+    traverse(ast, {
+        Identifier(path) {
+            if (path.node.name === DOPTS.variableName && t.isVariableDeclarator(path.parent) && t.isArrayExpression(path.parent.init)) {
+                arrayRef = path.parent.init;
+                const set = new Set(path.parent.init.elements.map((x) => x.value));
+                for (let i = 0; i < options.units.length; i++) {
+                    const unit = options.units[i];
+                    if (!set.has(unit)) {
+                        path.parent.init.elements = path.parent.init.elements.map((x) => {
+                            if (t.isStringLiteral(x)) {
+                                return {
+                                    type: x === null || x === void 0 ? void 0 : x.type,
+                                    value: x === null || x === void 0 ? void 0 : x.value
+                                };
+                            }
+                            return x;
+                        });
+                        path.parent.init.elements.push({
+                            type: 'StringLiteral',
+                            value: unit
+                        });
+                        changed = true;
+                    }
+                }
+            }
+        }
+    });
+    return {
+        arrayRef,
+        changed
+    };
+}
+
+function getInstalledPkgJsonPath(options) {
+    const dangerousOptions = options.dangerousOptions;
+    try {
+        const tmpJsonPath = requireResolve(\`\${dangerousOptions.packageName}/package.json\`, {
+            paths: options.paths,
+            basedir: options.basedir
+        });
+        return tmpJsonPath;
+    }
+    catch (error) {
+        if (error.code === 'MODULE_NOT_FOUND') {
+            console.warn('没有找到\`tailwindcss\`包，请确认是否安装。想要禁用打上rpx支持patch或者非\`tailwindcss\`框架，你可以设置 \`supportCustomLengthUnitsPatch\` 为 false');
+        }
+    }
+}
+function createPatch(options) {
+    if (options === false) {
+        return noop;
+    }
+    return () => {
+        try {
+            return internalPatch(getInstalledPkgJsonPath(options), options);
+        }
+        catch (error) {
+            console.warn(\`patch tailwindcss failed:\` + error.message);
+        }
+    };
+}
+function monkeyPatchForSupportingCustomUnit(rootDir, options) {
+    var _a;
+    const { dangerousOptions } = options;
+    const DOPTS = dangerousOptions;
+    const dataTypesFilePath = path.resolve(rootDir, DOPTS.lengthUnitsFilePath);
+    const dataTypesFileContent = fs.readFileSync(dataTypesFilePath, {
+        encoding: 'utf8'
+    });
+    const { arrayRef, changed } = findAstNode(dataTypesFileContent, options);
+    if (arrayRef && changed) {
+        const { code } = generate(arrayRef, {
+            jsescOption: {
+                quotes: 'single'
+            }
+        });
+        if (arrayRef.start && arrayRef.end) {
+            const prev = dataTypesFileContent.slice(0, arrayRef.start);
+            const next = dataTypesFileContent.slice(arrayRef.end);
+            const newCode = prev + code + next;
+            if (DOPTS.overwrite) {
+                fs.writeFileSync((_a = DOPTS.destPath) !== null && _a !== void 0 ? _a : dataTypesFilePath, newCode, {
+                    encoding: 'utf8'
+                });
+                console.log('patch tailwindcss for custom length unit successfully!');
+            }
+        }
+        return code;
+    }
+}
+function internalPatch(pkgJsonPath, options, overwrite = true) {
+    if (pkgJsonPath) {
+        const pkgJson = require(pkgJsonPath);
+        const dangerousOptions = options.dangerousOptions;
+        if (gte(pkgJson.version, dangerousOptions.gteVersion)) {
+            const rootDir = path.dirname(pkgJsonPath);
+            const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options);
+            const result = monkeyPatchForExposingContext(rootDir, {
+                overwrite
+            });
+            return Object.assign(Object.assign({}, result), { dataTypes });
+        }
+    }
+}
+function createTailwindcssPatcher() {
+    return new TailwindcssPatcher({
+        cache: true
+    });
+}
 
 function createGlobMatcher(pattern) {
     return function (file) {
-        return micromatch.isMatch(file, pattern);
+        return isMatch(file, pattern);
     };
 }
 function normalizeMatcher(options, key) {
@@ -2531,17 +3591,12 @@ function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']
     const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
     result.escapeMap = customReplaceDictionary;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
-    let customAttributesEntities;
-    if (isMap(options.customAttributes)) {
-        customAttributesEntities = Array.from(options.customAttributes.entries());
-    }
-    else {
-        customAttributesEntities = Object.entries(customAttributes);
-    }
+    const customAttributesEntities = isMap(options.customAttributes) ? [...options.customAttributes.entries()] : Object.entries(customAttributes);
+    const { escapeMap, minifiedJs } = result;
     if (registerModules.templete) {
         result.templeteHandler = createTempleteHandler({
             customAttributesEntities,
-            escapeMap: result.escapeMap
+            escapeMap
         });
     }
     if (registerModules.style) {
@@ -2550,13 +3605,13 @@ function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']
             customRuleCallback,
             cssPreflightRange,
             replaceUniversalSelectorWith,
-            escapeMap: result.escapeMap
+            escapeMap
         });
     }
     if (registerModules.js) {
         result.jsHandler = createjsHandler({
-            minifiedJs: result.minifiedJs,
-            escapeMap: result.escapeMap
+            minifiedJs,
+            escapeMap
         });
     }
     if (registerModules.patch) {
@@ -2565,78 +3620,23 @@ function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']
     return result;
 }
 
-function UnifiedViteWeappTailwindcssPlugin(options = {}) {
-    if (typeof options.customReplaceDictionary === 'undefined') {
-        options.customReplaceDictionary = 'simple';
-    }
-    const opts = getOptions(options, ['patch', 'style', 'templete', 'js']);
-    const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType } = opts;
-    if (disabled) {
-        return;
-    }
-    patch === null || patch === void 0 ? void 0 : patch();
-    const twPatcher = createTailwindcssPatcher();
-    onLoad();
-    return {
-        name: vitePluginName,
-        enforce: 'post',
-        buildStart() {
-            onStart();
-        },
-        generateBundle(opt, bundle, isWrite) {
-            const entries = Object.entries(bundle);
-            const groupedEntries = getGroupedEntries(entries, opts);
-            if (Array.isArray(groupedEntries.html)) {
-                for (let i = 0; i < groupedEntries.html.length; i++) {
-                    const [file, originalSource] = groupedEntries.html[i];
-                    const oldVal = originalSource.source.toString();
-                    originalSource.source = templeteHandler(oldVal);
-                    onUpdate(file, oldVal, originalSource.source);
-                }
-            }
-            if (Array.isArray(groupedEntries.css)) {
-                for (let i = 0; i < groupedEntries.css.length; i++) {
-                    const [file, originalSource] = groupedEntries.css[i];
-                    const rawSource = originalSource.source.toString();
-                    const css = styleHandler(rawSource, {
-                        isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
-                    });
-                    originalSource.source = css;
-                    onUpdate(file, rawSource, css);
-                }
-            }
-            if (Array.isArray(groupedEntries.js)) {
-                const set = twPatcher.getClassSet();
-                for (let i = 0; i < groupedEntries.js.length; i++) {
-                    const [file, originalSource] = groupedEntries.js[i];
-                    const rawSource = originalSource.code;
-                    const { code } = jsHandler(rawSource, set);
-                    originalSource.code = code;
-                    onUpdate(file, rawSource, code);
-                }
-            }
-        },
-        buildEnd() {
-            onEnd();
-        }
-    };
-}
-
-exports.UnifiedViteWeappTailwindcssPlugin = UnifiedViteWeappTailwindcssPlugin;
+export { createTailwindcssPatcher as a, createPatch as c, getOptions as g };
 ",
     "dynamicImports": [],
     "exports": [
-      "UnifiedViteWeappTailwindcssPlugin",
+      "a",
+      "c",
+      "g",
     ],
-    "fileName": "vite.js",
+    "fileName": "options-69161845.mjs",
     "implicitlyLoadedBefore": [],
     "importedBindings": {
       "@babel/generator": [
         "default",
       ],
       "@babel/parser": [
-        "parseExpression",
         "parse",
+        "parseExpression",
       ],
       "@babel/traverse": [
         "default",
@@ -2647,51 +3647,210 @@ exports.UnifiedViteWeappTailwindcssPlugin = UnifiedViteWeappTailwindcssPlugin;
       "@csstools/postcss-is-pseudo-class": [
         "default",
       ],
-      "fs": [
-        "default",
-      ],
       "micromatch": [
         "isMatch",
       ],
-      "path": [
+      "node:fs": [
+        "default",
+      ],
+      "node:path": [
         "default",
       ],
       "postcss": [
-        "Rule",
-        "Declaration",
         "default",
       ],
-      "postcss-selector-parser": [
-        "default",
+      "postcss-6dc6dc19.mjs": [
+        "p",
+      ],
+      "replace.mjs": [
+        "replaceJs",
       ],
       "semver": [
         "gte",
       ],
+      "shared-258ec756.mjs": [
+        "s",
+        "e",
+        "u",
+        "n",
+        "S",
+        "m",
+        "t",
+        "a",
+        "v",
+        "b",
+        "M",
+        "i",
+      ],
       "tailwindcss-patch": [
-        "TailwindcssPatcher",
         "monkeyPatchForExposingContext",
         "requireResolve",
+        "TailwindcssPatcher",
       ],
     },
     "imports": [
       "micromatch",
+      "@babel/types",
       "@babel/generator",
       "@babel/parser",
       "@babel/traverse",
-      "@babel/types",
+      "replace.mjs",
+      "shared-258ec756.mjs",
       "postcss",
-      "postcss-selector-parser",
+      "postcss-6dc6dc19.mjs",
       "@csstools/postcss-is-pseudo-class",
-      "path",
-      "fs",
+      "node:path",
+      "node:fs",
       "semver",
       "tailwindcss-patch",
     ],
     "isDynamicEntry": false,
-    "isEntry": true,
+    "isEntry": false,
     "isImplicitEntry": false,
     "map": null,
-    "name": "index",
+    "name": "options",
+    "referencedFiles": [],
+    "type": "chunk",
+  },
+  {
+    "code": "import selectorParser from 'postcss-selector-parser';
+import { f as internalCssSelectorReplacer } from './shared-258ec756.mjs';
+import { Rule, Declaration } from 'postcss';
+import '@csstools/postcss-is-pseudo-class';
+
+const createTransform = (rule, options) => {
+    const replaceFlag = options.replaceUniversalSelectorWith !== false;
+    const transform = (selectors) => {
+        selectors.walk((selector) => {
+            if (selector.type === 'universal' && replaceFlag) {
+                selector.value = options.replaceUniversalSelectorWith;
+            }
+            if (selector.type === 'selector') {
+                const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover');
+                node && selector.remove();
+            }
+            if (selector.type === 'class') {
+                selector.value = internalCssSelectorReplacer(selector.value, options.escapeMap);
+            }
+        });
+        if (selectors.length === 0) {
+            rule.remove();
+        }
+    };
+    return transform;
+};
+const getTransformer = (rule, options) => {
+    return selectorParser(createTransform(rule, options));
+};
+const transformSync = (rule, options) => {
+    const transformer = getTransformer(rule, options);
+    return transformer.transformSync(rule, {
+        lossless: false,
+        updateSelector: true
+    });
+};
+
+const PATTERNS = [/:not\\(template\\)\\s*~\\s*:not\\(template\\)/.source, /:not\\(\\[hidden\\]\\)\\s*~\\s*:not\\(\\[hidden\\]\\)/.source].join('|');
+const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g');
+function testIfVariablesScope(node, count = 1) {
+    if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+        for (let i = 0; i < count; i++) {
+            const tryTestDecl = node.nodes[i];
+            if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+function commonChunkPreflight(node, options) {
+    node.selector = node.selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, 'view + view');
+    if (testIfVariablesScope(node)) {
+        const selectorParts = node.selector.split(',');
+        if (!selectorParts.includes('view')) {
+            selectorParts.push('view');
+        }
+        if (options.cssPreflightRange === 'all' &&
+            !selectorParts.includes(':not(not)')) {
+            selectorParts.push(':not(not)');
+        }
+        node.selector = selectorParts.join(',');
+        if (typeof options.cssInjectPreflight === 'function') {
+            node.append(...options.cssInjectPreflight());
+        }
+        const pseudoVarRule = new Rule({
+            selector: '::before,::after'
+        });
+        pseudoVarRule.append(new Declaration({
+            prop: '--tw-content',
+            value: '""'
+        }));
+        node.before(pseudoVarRule);
+    }
+}
+
+const NS = 'jsx-rename-loader';
+const postcssPlugin = 'postcss-weapp-tailwindcss-rename-plugin';
+const pluginName = 'weapp-tailwindcss-webpack-plugin';
+const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor';
+
+const postcssWeappTailwindcss = (options = {
+    isMainChunk: true
+}) => {
+    const { customRuleCallback, isMainChunk } = options;
+    const flag = typeof customRuleCallback === 'function';
+    return {
+        postcssPlugin,
+        Once(css) {
+            css.walkRules((rule) => {
+                transformSync(rule, options);
+                isMainChunk && commonChunkPreflight(rule, options);
+                flag && customRuleCallback(rule, options);
+            });
+        }
+    };
+};
+postcssWeappTailwindcss.postcss = true;
+
+export { NS as N, pluginName as a, postcssWeappTailwindcss as p, vitePluginName as v };
+",
+    "dynamicImports": [],
+    "exports": [
+      "N",
+      "a",
+      "p",
+      "v",
+    ],
+    "fileName": "postcss-6dc6dc19.mjs",
+    "implicitlyLoadedBefore": [],
+    "importedBindings": {
+      "@csstools/postcss-is-pseudo-class": [],
+      "postcss": [
+        "Rule",
+        "Declaration",
+      ],
+      "postcss-selector-parser": [
+        "default",
+      ],
+      "shared-258ec756.mjs": [
+        "f",
+      ],
+    },
+    "imports": [
+      "postcss-selector-parser",
+      "shared-258ec756.mjs",
+      "postcss",
+      "@csstools/postcss-is-pseudo-class",
+    ],
+    "isDynamicEntry": false,
+    "isEntry": false,
+    "isImplicitEntry": false,
+    "map": null,
+    "name": "postcss",
     "referencedFiles": [],
     "type": "chunk",
   },

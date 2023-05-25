@@ -1,14 +1,14 @@
 import { rollup } from 'rollup'
 import type { OutputChunk, OutputAsset } from 'rollup'
+import omit from 'lodash/omit'
 import configs from '../rollup.config'
-import { excludeKeys } from '../filter-obj'
 function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]]) {
   return outputs.map((x) => {
-    return excludeKeys(x, ['modules', 'facadeModuleId', 'moduleIds'])
+    return omit(x, ['modules', 'facadeModuleId', 'moduleIds'])
   })
 }
 // import type { RollupBuild } from 'rollup'
-describe.skip('rollup build', () => {
+describe('rollup build', () => {
   it('lib build', async () => {
     // const result:RollupBuild[] = []
     for (const config of configs) {
