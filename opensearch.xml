@@ -4,8 +4,8 @@
   <ShortName>weapp-tw 把tailwindcss带给小程序开发者们</ShortName>
   <Description>Search weapp-tw 把tailwindcss带给小程序开发者们</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://weapp-tw.icebreaker.top/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://weapp-tw.icebreaker.top/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://weapp-tw.icebreaker.top/opensearch.xml" />
-  <moz:SearchForm>https://weapp-tw.icebreaker.top/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://weapp-tw.icebreaker.top/weapp-tailwindcss/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://weapp-tw.icebreaker.top/weapp-tailwindcss/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://weapp-tw.icebreaker.top/weapp-tailwindcss/opensearch.xml" />
+  <moz:SearchForm>https://weapp-tw.icebreaker.top/weapp-tailwindcss/</moz:SearchForm>
 </OpenSearchDescription>
