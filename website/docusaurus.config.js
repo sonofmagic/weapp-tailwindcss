@@ -35,12 +35,12 @@ const config = {
   url: 'https://weapp-tw.icebreaker.top',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: isGithub ? '/weapp-tailwindcss-webpack-plugin/' : '/',
+  baseUrl: isGithub ? '/weapp-tailwindcss/' : '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'sonofmagic', // Usually your GitHub org/user name.
-  projectName: 'weapp-tailwindcss-webpack-plugin', // Usually your repo name.
+  projectName: 'weapp-tailwindcss', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -82,7 +82,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/dev/website'
+          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/dev/website'
         },
         // blog: {
         //   showReadingTime: true,
@@ -220,7 +220,7 @@ const config = {
           },
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin',
+            href: 'https://github.com/sonofmagic/weapp-tailwindcss',
             label: 'GitHub',
             position: 'right'
           }
@@ -272,7 +272,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin'
+                href: 'https://github.com/sonofmagic/weapp-tailwindcss'
               }
             ]
           }

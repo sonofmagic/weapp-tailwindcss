@@ -20,16 +20,16 @@
 </a>
 <br> -->
 
-![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss-webpack-plugin)
+![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
 ![dm1](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
-![license](https://badgen.net/npm/license/weapp-tailwindcss-webpack-plugin)
-[![test](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss-webpack-plugin)
+![license](https://badgen.net/npm/license/weapp-tailwindcss)
+[![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
 
 > `小程序` + `tailwindcss` 全方面解决方案
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss-webpack-plugin/)\] \| \[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 
 - [Tips](#tips)
 - [特性](#特性)
@@ -122,7 +122,7 @@
 
 #### 原生小程序开发模板
 
-[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/gulp-app)
+[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
 
 [weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
@@ -138,4 +138,4 @@
 
 目前这个插件正在快速的开发中，如果遇到 `Bug` 或者想提出 `Issue`
 
-[欢迎提交到此处](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
+[欢迎提交到此处](https://github.com/sonofmagic/weapp-tailwindcss/issues)
