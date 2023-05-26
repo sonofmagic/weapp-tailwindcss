@@ -24,8 +24,12 @@ jobs:
         with:
           node-version: 18
           cache: pnpm
-          cache-dependency-path: website/pnpm-lock.yaml
-      - name: Install dependencies
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            website/pnpm-lock.yaml
+      - name: Install Root dependencies
+        run: pnpm i
+      - name: Install Website dependencies
         working-directory: ./website
         run: pnpm i
       - name: Build website and Deploy to GitHub Pages
