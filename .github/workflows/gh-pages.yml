@@ -32,6 +32,10 @@ jobs:
       - name: Install Website dependencies
         working-directory: ./website
         run: pnpm i
+      - name: Set git user email and name
+        run: |
+          git config --global user.email "qq1324318532@gmail.com"
+          git config --global user.name "icebreaker-bot"
       - name: Build website and Deploy to GitHub Pages
         working-directory: ./website
         # Error: Please set the GIT_USER environment variable, or explicitly specify USE_SSH instead!
