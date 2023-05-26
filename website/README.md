@@ -1,4 +1,4 @@
-# Weapp-tailwindcss-webpack-plugin Website
+# Weapp-tailwindcss Website
 
 docusaurus + tailwindcss
 
