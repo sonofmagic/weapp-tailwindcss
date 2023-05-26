@@ -7,6 +7,7 @@
     "start": "cross-env TYPEDOC_WATCH=true docusaurus start",
     "dev": "cross-env TYPEDOC_WATCH=true docusaurus start",
     "build": "docusaurus build",
+    "build:github": "cross-env PROVIDER=GITHUB docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy:github": "cross-env PROVIDER=GITHUB docusaurus deploy",
     "clear": "docusaurus clear",

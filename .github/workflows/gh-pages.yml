@@ -35,7 +35,7 @@ jobs:
         run: pnpm i
       - name: Build website
         working-directory: ./website
-        run: pnpm build
+        run: pnpm build:github
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
       - name: Deploy to GitHub Pages
