@@ -30,4 +30,5 @@ jobs:
         run: pnpm i
       - name: Build website and Deploy to GitHub Pages
         working-directory: ./website
-        run: pnpm run deploy:github
+        # Error: Please set the GIT_USER environment variable, or explicitly specify USE_SSH instead!
+        run: GIT_USER=sonofmagic pnpm run deploy:github
