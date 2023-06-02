@@ -58,3 +58,11 @@ npx @dcloudio/uvm alpha
 当然运行时，很有可能报各种各样的错误: 比如 `babel-xxx` 插件找不到，这种安装即可。
 
 或者什么 `webpack` 插件报错，这种可以暂时去除看看能不能打包成功。
+
+:::tip
+假如你使用了 `uni-app` 的同时使用了云函数，云函数导致编译到微信出现 `TypeError: I18n is not a constructor`
+
+解决方案详情见: <https://ask.dcloud.net.cn/question/170057>
+
+相关 issue : [issues/74#issuecomment-1573033475](https://github.com/sonofmagic/weapp-tailwindcss/issues/74#issuecomment-1573033475)
+:::
