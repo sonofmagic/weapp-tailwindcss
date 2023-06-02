@@ -7,7 +7,7 @@ import type { RollupOutput } from 'rollup'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
-// const isApp = process.env.UNI_PLATFORM === 'app'
+// const isApp = process.env.UNI_PLATFORM === 'app-plus'
 // const WeappTailwindcssDisabled = isH5 || isApp
 // postcss 插件配置
 const postcssPlugins = [

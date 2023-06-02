@@ -22,7 +22,7 @@
 
 ```js
 const isH5 = process.env.UNI_PLATFORM === "h5";
-const isApp = process.env.UNI_PLATFORM === "app";
+const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
 
 
@@ -95,7 +95,7 @@ module.exports = {
 ```js
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === "h5";
-const isApp = process.env.UNI_PLATFORM === "app";
+const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
 const vitePlugins = [uni(), uvwt({
   disabled: WeappTailwindcssDisabled
@@ -113,3 +113,9 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 目录下创建一个 `.npmrc`，设置 `resolution-mode` 为 `highest`，然后重新安装，
 
 或者，使用 `pnpm up -Li` 升级一下你 `package.json` 里的依赖包版本到最新即可。
+
+## uni-app 在从v1升级到v2的过程中，如果使用了云函数相关功能，编译到小程序会出现问题
+
+解决方案详情见: <https://ask.dcloud.net.cn/question/170057>
+
+相关 issue : [issues/74#issuecomment-1573033475](https://github.com/sonofmagic/weapp-tailwindcss/issues/74#issuecomment-1573033475)

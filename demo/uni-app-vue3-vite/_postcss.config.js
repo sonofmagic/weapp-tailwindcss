@@ -1,6 +1,6 @@
 // 假如不起作用，请使用内联postcss
 const isH5 = process.env.UNI_PLATFORM === 'h5';
-const isApp = process.env.UNI_PLATFORM === 'app';
+const isApp = process.env.UNI_PLATFORM === 'app-plus';
 const WeappTailwindcssDisabled = isH5 || isApp;
 
 const plugins = [require('autoprefixer')(), require('tailwindcss')()];
