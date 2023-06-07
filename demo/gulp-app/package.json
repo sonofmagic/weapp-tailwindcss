@@ -62,7 +62,7 @@
     "sass": "^1.62.1",
     "tailwind-css-variables-theme-generator": "^0.3.8",
     "tailwindcss": "^3.3.2",
-    "tailwindcss-patch": "^1.2.1",
+    "tailwindcss-patch": "^1.2.4",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
