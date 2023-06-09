@@ -1,4 +1,3 @@
-
 import type { InternalUserDefinedOptions } from '@/types'
 
 export function isRegexp(value: unknown) {
@@ -37,8 +36,6 @@ export const noop = () => {}
 //   }
 //   return true
 // }
-
-
 
 export function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]> {
   if (!Array.isArray(arr)) {

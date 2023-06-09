@@ -25,7 +25,6 @@ function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatche
   }
 }
 
-
 export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
   if (options.supportCustomLengthUnitsPatch === true) {
     options.supportCustomLengthUnitsPatch = undefined
@@ -46,12 +45,23 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     minifiedJs: isProd()
   })
 
-  const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch, arbitraryValues } = result
+  const {
+    cssPreflight,
+    customRuleCallback,
+    cssPreflightRange,
+    replaceUniversalSelectorWith,
+    customAttributes,
+    customReplaceDictionary,
+    supportCustomLengthUnitsPatch,
+    arbitraryValues
+  } = result
 
   result.escapeMap = customReplaceDictionary
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
 
-  const customAttributesEntities: ICustomAttributesEntities = isMap(options.customAttributes) ? [...(options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()] : Object.entries(customAttributes);
+  const customAttributesEntities: ICustomAttributesEntities = isMap(options.customAttributes)
+    ? [...(options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()]
+    : Object.entries(customAttributes)
 
   // const custom = customAttributesEntities.length > 0
   const { escapeMap, minifiedJs } = result
@@ -60,7 +70,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   result.templeteHandler = createTempleteHandler({
     customAttributesEntities,
     escapeMap,
-    mangleContext,
+    mangleContext
   })
   result.styleHandler = createStyleHandler({
     cssInjectPreflight,
@@ -68,7 +78,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cssPreflightRange,
     replaceUniversalSelectorWith,
     escapeMap,
-    mangleContext,
+    mangleContext
   })
 
   result.jsHandler = createjsHandler({

@@ -11,8 +11,8 @@ export function escape(
   options: {
     map?: Record<string, string>
   } = {
-      map: SimpleMappingChars2String
-    }
+    map: SimpleMappingChars2String
+  }
 ) {
   const { map = <Record<string, string>>SimpleMappingChars2String } = options
 

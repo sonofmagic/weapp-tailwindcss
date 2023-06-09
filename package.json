@@ -169,6 +169,8 @@
     "del": "^6.1.1",
     "eslint": "8.42.0",
     "eslint-config-icebreaker": "^1.1.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "execa": "5",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.1",
