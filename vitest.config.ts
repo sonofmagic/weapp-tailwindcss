@@ -7,9 +7,13 @@ export default defineConfig({
       {
         find: '@',
         replacement: path.resolve(__dirname, './src')
+      },
+      {
+        find: '#test',
+        replacement: path.resolve(__dirname, './test')
       }
     ],
-    include: ['test/vite.test.ts', 'test/responsive-design.test.ts'],
+    include: ['test/vitest/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     coverage: {
       enabled: true,
       reportsDirectory: 'coverage/vitest'

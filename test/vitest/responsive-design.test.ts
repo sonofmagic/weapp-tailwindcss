@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { getCss } from './helpers/getTwCss'
+import { getCss } from '../helpers/getTwCss'
 import { getOptions } from '@/options'
 describe('responsive-design', () => {
   let styleHandler: ReturnType<typeof getOptions>['styleHandler']

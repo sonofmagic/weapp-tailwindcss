@@ -155,8 +155,12 @@ describe('templeteReplacer', () => {
   })
 
   it('start up with num case', () => {
-    const testCase = '2xl:text-base'
-    const result = templeteReplacer(testCase)
-    expect(result).toBe('_2xlctext-base')
+    const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    for (const num of nums) {
+      const testCase = num + 'xl:text-base'
+      const result = templeteReplacer(testCase)
+      expect(result).toBe(`_${num}xlctext-base`)
+    }
   })
 })
