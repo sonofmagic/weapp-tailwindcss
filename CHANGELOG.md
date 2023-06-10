@@ -2,10 +2,15 @@
 
 ## Unreleased
 
-- 仓库改名为 `weapp-tailwindcss`
+## 2.4.3 (2023-06-10)
+
+### Fixed
+
+- 修复class name 第一个css selector 为数字，导致的16进制选择器问题，导致小程序报错的问题，解决方案位添加首字母阻止\3转义
 
 ## 2.4.2 (2023-05-25)
 
+- 仓库改名为 `weapp-tailwindcss`
 - 添加 `arbitraryvalues` 配置项，允许用户切换分割模式
 - 使用 `typedoc` 来生成 `options` 的文档
 - 重构 `mangle` 功能代码，添加对应的单元测试用例，现在的单元测试代码覆盖率已经提升到了 `99%`

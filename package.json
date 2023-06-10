@@ -220,5 +220,5 @@
     "tailwindcss-mangle-shared": "^1.2.4",
     "tailwindcss-patch": "^1.2.4"
   },
-  "packageManager": "pnpm@8.5.1"
+  "packageManager": "pnpm@8.6.1"
 }
