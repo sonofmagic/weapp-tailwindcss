@@ -8,7 +8,7 @@ export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
 }
 
 export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
-  return (rawSource: string, opt: IStyleHandlerOptions) => {
+  return (rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     return styleHandler(rawSource, defu<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt, options))
   }
 }

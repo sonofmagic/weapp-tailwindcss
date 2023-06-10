@@ -9,7 +9,7 @@ export default defineConfig({
         replacement: path.resolve(__dirname, './src')
       }
     ],
-    include: ['test/vite.test.ts'],
+    include: ['test/vite.test.ts', 'test/responsive-design.test.ts'],
     coverage: {
       enabled: true,
       reportsDirectory: 'coverage/vitest'

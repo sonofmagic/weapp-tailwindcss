@@ -153,4 +153,10 @@ describe('templeteReplacer', () => {
     const result = complexReplacer(testCase)
     expect(result).toBe("btn a{{num>='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
   })
+
+  it('start up with num case', () => {
+    const testCase = '2xl:text-base'
+    const result = templeteReplacer(testCase)
+    expect(result).toBe('_2xlctext-base')
+  })
 })
