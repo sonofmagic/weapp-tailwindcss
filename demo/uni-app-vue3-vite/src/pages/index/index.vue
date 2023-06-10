@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <view class="2xl:text-base">xl:text-base</view>
     <view v-if="flag" :class="[flag ? 'bg-[#3482f2]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view v-else :class="[flag ? 'bg-[#434354]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view :class="classArray">classArray</view>
@@ -134,6 +135,15 @@ const classArray = [
 </script>
 
 <style lang="scss">
+// css不合法
+// .22222 {
+//   color: blue;
+// }
+
+// .\32 {
+//   color: blue;
+// }
+
 page {
   --primary-color-hex: #4268ea;
   --primary-color-bg: yellow;

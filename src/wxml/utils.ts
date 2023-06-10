@@ -102,10 +102,7 @@ export function templeteReplacer(original: string, options: ITempleteHandlerOpti
       }
     }
 
-    return resultArray
-      .filter(Boolean)
-      .join('')
-      .trim()
+    return resultArray.filter(Boolean).join('').trim()
   } else {
     return replaceWxml(original, {
       keepEOL: false,

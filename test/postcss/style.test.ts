@@ -1,5 +1,7 @@
+/* eslint-disable no-octal-escape */
 import { cssCasePath, createGetCase, createPutCase } from '../util'
 import { styleHandler } from '@/postcss/index'
+import { cssUnescape } from '@/postcss/shared'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
 import { MappingChars2String } from '@/dic'
@@ -457,5 +459,13 @@ describe('styleHandler', () => {
       escapeMap: MappingChars2String
     }).replaceAll('\r\n', '\n')
     expect(result).toMatchSnapshot()
+  })
+
+  it('cssUnescape case 0', () => {
+    expect(cssUnescape('\\31 2345')).toBe('12345')
+  })
+
+  it('cssUnescape case 1', () => {
+    expect(cssUnescape('\\32xlctext-base')).toBe('2xlctext-base')
   })
 })

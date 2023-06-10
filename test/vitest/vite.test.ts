@@ -13,7 +13,7 @@ import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 const postcssPlugins = [
   // require('autoprefixer')(),
   require('tailwindcss')({
-    config: path.resolve(__dirname, './fixtures/vite/tailwind.config.js')
+    config: path.resolve(__dirname, '../fixtures/vite/tailwind.config.js')
   })
 ]
 
@@ -21,9 +21,7 @@ async function assertSnap(plugin: Plugin | undefined) {
   // if (plugin === undefined) {
   //   return
   // }
-  const vitePlugins: (Plugin | undefined)[] = [
-
-  ]
+  const vitePlugins: (Plugin | undefined)[] = []
   // {
   //   name: 'emit-wxml',
   //   transform(code, id) {
@@ -45,7 +43,7 @@ async function assertSnap(plugin: Plugin | undefined) {
   vitePlugins.push(plugin)
 
   const res = (await build({
-    root: path.resolve(__dirname, './fixtures/vite/src'),
+    root: path.resolve(__dirname, '../fixtures/vite/src'),
     plugins: vitePlugins,
     logLevel: 'silent',
     css: {
@@ -74,9 +72,11 @@ async function assertSnap(plugin: Plugin | undefined) {
 
 describe('vite test', () => {
   it('vite common build', async () => {
-    await assertSnap(uvwt({
-      htmlMatcher: ['**/*.html']
-    }))
+    await assertSnap(
+      uvwt({
+        htmlMatcher: ['**/*.html']
+      })
+    )
   })
 
   it('vite common build with mangle true', async () => {
@@ -136,9 +136,11 @@ describe('vite test', () => {
   })
 
   it('vite disabled build', async () => {
-    await assertSnap(uvwt({
-      disabled: true,
-      htmlMatcher: ['**/*.html']
-    }))
-  });
+    await assertSnap(
+      uvwt({
+        disabled: true,
+        htmlMatcher: ['**/*.html']
+      })
+    )
+  })
 })

@@ -7,8 +7,6 @@ function getSelf(x: string) {
   return x
 }
 
-
-
 export const defaultMangleContext: IMangleScopeContext = {
   rawOptions: false,
   runtimeSet: new Set<string>(),

@@ -6,7 +6,7 @@ export function replaceWxml(
   original: string,
   options: ITempleteHandlerOptions = {
     keepEOL: false,
-    escapeMap: SimpleMappingChars2String,
+    escapeMap: SimpleMappingChars2String
   }
 ) {
   const { keepEOL, escapeMap, mangleContext } = options

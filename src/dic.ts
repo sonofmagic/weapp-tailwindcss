@@ -84,7 +84,7 @@ export const MappingChars2String: MappingStringDictionary = {
  * @deprecated
  */
 export const MappingChars2StringEntries = Object.entries(MappingChars2String)
-
+// 用 _ 比 - 好
 export const SimpleMappingChars2String: MappingStringDictionary = {
   '[': '_',
   ']': '_',
