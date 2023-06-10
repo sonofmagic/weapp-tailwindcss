@@ -4680,7 +4680,16 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.2.0:
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@8.4.23, postcss@^8.4.23:
+postcss@8.4.24:
+  version "8.4.24"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.24.tgz#f714dba9b2284be3cc07dbd2fc57ee4dc972d2df"
+  integrity sha512-M0RzbcI0sO/XJNucsGjvWU9ERWxb/ytp1w6dKtxTKgixdtQDq4rmx/g8W1hnaheq9jgwL/oyEdH5Bc4WwJKMqg==
+  dependencies:
+    nanoid "^3.3.6"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
+postcss@^8.4.23:
   version "8.4.23"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.23.tgz#df0aee9ac7c5e53e1075c24a3613496f9e6552ab"
   integrity sha512-bQ3qMcpF6A/YjR55xtoTr0jGOlnPOKAIMdOWiv0EIT6HVPEaJiJB4NLljSbiHoC2RX7DN5Uvjtpbg1NPdwv1oA==
@@ -5036,13 +5045,6 @@ semver@^7.3.5, semver@^7.3.8:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.5.0:
-  version "7.5.0"
-  resolved "https://registry.npmmirror.com/semver/-/semver-7.5.0.tgz#ed8c5dc8efb6c629c88b23d41dc9bf40c1d96cd0"
-  integrity sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==
-  dependencies:
-    lru-cache "^6.0.0"
-
 semver@^7.5.1:
   version "7.5.1"
   resolved "https://registry.npmmirror.com/semver/-/semver-7.5.1.tgz#c90c4d631cf74720e46b21c1d37ea07edfab91ec"
@@ -5313,22 +5315,10 @@ tailwind-css-variables-theme-generator@^0.3.8:
   dependencies:
     consola "^2.15.3"
 
-tailwindcss-mangle-shared@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmmirror.com/tailwindcss-mangle-shared/-/tailwindcss-mangle-shared-1.2.1.tgz#17530d8f88f4100db1bddecb506607fbe7b72206"
-  integrity sha512-s6/nwZ7Ojg9JCJ5S1AmnY6aRg7Va+xTV6zPF3A9WGA8TZdpN3OrCtF4GPhGVK9TCtvyeiFYVVdUopwjWNINTQQ==
-
-tailwindcss-patch@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.2.1.tgz#8f643f655868b69744ef4c0e2794ba6df2fabbd6"
-  integrity sha512-99o9tOab2CDwunfJ7XvlTh66TiRiYfwTpnM+BtnMT0OZy1mBAtjoAyIGVpB3EhO0hqOa4vUrSB8DfeXcONXj1g==
-  dependencies:
-    "@babel/generator" "^7.21.5"
-    "@babel/parser" "^7.21.8"
-    "@babel/traverse" "^7.21.5"
-    "@babel/types" "^7.21.5"
-    resolve "^1.22.2"
-    semver "^7.5.0"
+tailwindcss-mangle-shared@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.npmmirror.com/tailwindcss-mangle-shared/-/tailwindcss-mangle-shared-1.2.4.tgz#71bdd2ff68528ddf142a02774d045a099f1f677f"
+  integrity sha512-9S4ZKh1VuvfPDSIbkN2dFAJzaUWfjMLR+oF4iQfyrZbaE5R2YCL0RRE54/lqq6X4hrUuMQqAc8mNvA9NPJdQ4g==
 
 tailwindcss-patch@^1.2.4:
   version "1.2.4"
@@ -5585,10 +5575,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.4.2.tgz#b2c75a974c0c959ec824aeb51658550f60feae5b"
-  integrity sha512-4Lve2ntCiagZ7M+WqyDJTnhJSQ4VOSoh7hNOdOylpIkUoDM4baDJ7MgYeXdC5+IH8GysfOYdmzneCFaw4CLE9w==
+weapp-tailwindcss-webpack-plugin@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.4.3.tgz#3083cb3834f8c3b47b789251fa7ddd08c93a08a2"
+  integrity sha512-GoFd8hXKCtSj/cVnhxOsqNHkOBD8hxOS/V0ot/SOLTq1sDX6BS4NWW6xUZPNYnreBWgGVUaa0u1qlxBeukMaTw==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
@@ -5596,11 +5586,11 @@ weapp-tailwindcss-webpack-plugin@^2.4.2:
     "@babel/types" "^7.21.4"
     "@csstools/postcss-is-pseudo-class" "^3.2.1"
     micromatch "^4.0.5"
-    postcss "8.4.23"
+    postcss "8.4.24"
     postcss-selector-parser "^6.0.13"
     semver "^7.5.1"
-    tailwindcss-mangle-shared "^1.2.1"
-    tailwindcss-patch "^1.2.1"
+    tailwindcss-mangle-shared "^1.2.4"
+    tailwindcss-patch "^1.2.4"
 
 webpack-cli@^5.1.1:
   version "5.1.1"
