@@ -1,6 +1,7 @@
 <template>
   <view class="content">
-    <view class="2xl:text-base">xl:text-base</view>
+    <view class="2xl:text-base">2xl:text-base</view>
+    <view :class="numClassObj">2xl:text-[red]</view>
     <view v-if="flag" :class="[flag ? 'bg-[#3482f2]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view v-else :class="[flag ? 'bg-[#434354]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view :class="classArray">classArray</view>
@@ -98,6 +99,10 @@ const cardsColor = ref([
   'bg-cyan-500 shadow-cyan-100',
   'bg-amber-500 shadow-amber-100',
 ]);
+
+const numClassObj = ref({
+  '2xl:text-[red]': true
+})
 const disabled = ref(true);
 
 const go2SubDemo = () => {
