@@ -2,9 +2,7 @@ import { useMangleStore, defaultMangleContext } from '@/mangle'
 
 describe('mangle', () => {
   it('mangle api', () => {
-    const {
-      initMangle, mangleContext, resetMangle
-    } = useMangleStore()
+    const { initMangle, mangleContext, resetMangle } = useMangleStore()
     expect(mangleContext).toEqual(defaultMangleContext)
     initMangle(true)
     expect(mangleContext.rawOptions).toBe(true)
@@ -12,10 +10,10 @@ describe('mangle', () => {
     initMangle({
       mangleClassFilter() {
         return true
-      },
+      }
     })
     expect(mangleContext.filter('flex')).toBe(true)
     resetMangle()
     expect(mangleContext.filter('flex')).toBe(false)
-  });
-});
+  })
+})

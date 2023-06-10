@@ -8,6 +8,26 @@ import type { IStyleHandlerOptions } from '@/types'
 // :not([hidden]) ~ :not([hidden])
 // const regexp2 = /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/g
 
+/**
+ * 带有子选择器的
+ * https://tailwindcss.com/docs/space
+ * .space-x-4>:not([hidden])~:not([hidden])
+ *
+ * https://tailwindcss.com/docs/divide-width
+ * .divide-x>:not([hidden])~:not([hidden])
+ *
+ * https://tailwindcss.com/docs/divide-color
+ * .divide-blue-200>:not([hidden])~:not([hidden])
+ * :is(.dark .dark\:divide-slate-700)>:not([hidden])~:not([hidden])
+ *
+ * https://tailwindcss.com/docs/divide-style
+ * .divide-dashed>:not([hidden])~:not([hidden])
+ *
+ * 其中小程序里直接写
+ * .divide-y-4>:not(hidden) + :not(hidden)
+ * 会语法错误
+ */
+
 // eslint-disable-next-line unicorn/better-regex
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
@@ -28,7 +48,17 @@ export function testIfVariablesScope(node: Rule, count = 1): boolean {
 }
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
-  node.selector = node.selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, 'view + view')
+  // css child combinator selector replaceValue
+  // cssChildCombinatorReplaceValue
+  // options.cssChildCombinatorReplaceValue
+  let childCombinatorReplaceValue = 'view + view'
+  if (Array.isArray(options.cssChildCombinatorReplaceValue)) {
+    const part = options.cssChildCombinatorReplaceValue.join(',')
+    childCombinatorReplaceValue = [part, ' + ', part].join('')
+  } else if (typeof options.cssChildCombinatorReplaceValue === 'string') {
+    childCombinatorReplaceValue = options.cssChildCombinatorReplaceValue
+  }
+  node.selector = node.selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
@@ -38,10 +68,12 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
     if (!selectorParts.includes('view')) {
       selectorParts.push('view')
     }
-    if (options.cssPreflightRange === 'all' && // 默认对每个元素都生效
-      !selectorParts.includes(':not(not)')) {
-        selectorParts.push(':not(not)')
-      }
+    if (
+      options.cssPreflightRange === 'all' && // 默认对每个元素都生效
+      !selectorParts.includes(':not(not)')
+    ) {
+      selectorParts.push(':not(not)')
+    }
 
     node.selector = selectorParts.join(',')
 

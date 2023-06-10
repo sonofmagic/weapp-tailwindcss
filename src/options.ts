@@ -53,7 +53,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     customAttributes,
     customReplaceDictionary,
     supportCustomLengthUnitsPatch,
-    arbitraryValues
+    arbitraryValues,
+    cssChildCombinatorReplaceValue
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -78,7 +79,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cssPreflightRange,
     replaceUniversalSelectorWith,
     escapeMap,
-    mangleContext
+    mangleContext,
+    cssChildCombinatorReplaceValue
   })
 
   result.jsHandler = createjsHandler({

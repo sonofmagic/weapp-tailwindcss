@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { templeteHandler } from '@/wxml/index'
 // import { format } from '../util'
 

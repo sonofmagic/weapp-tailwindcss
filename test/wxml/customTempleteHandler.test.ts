@@ -9,5 +9,5 @@ describe('customTempleteHandler', () => {
       escapeMap: SimpleMappingChars2String
     })
     expect(res).toBe('<view class="p-_20px_"></view>')
-  });
-});
+  })
+})

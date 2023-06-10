@@ -170,14 +170,14 @@ describe('regexp', () => {
       // @ts-ignore
       escapeStringRegexp({})
     }).toThrow()
-  });
+  })
 
   it('getSourceString case0', () => {
-    let input:any = 'a'
-    expect(getSourceString(input)).toBe(input) 
+    let input: any = 'a'
+    expect(getSourceString(input)).toBe(input)
     input = /\s\w\b$/
-    expect(getSourceString(input)).toBe(input.source) 
+    expect(getSourceString(input)).toBe(input.source)
     input = {}
-    expect(getSourceString(input)).toBe(Object.prototype.toString.call(input)) 
-  });
+    expect(getSourceString(input)).toBe(Object.prototype.toString.call(input))
+  })
 })

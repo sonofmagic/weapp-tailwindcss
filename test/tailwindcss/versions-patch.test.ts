@@ -32,7 +32,7 @@ describe('versions-patch', () => {
     expect(res).toMatchSnapshot()
   })
 
-  let oldCacheResult: InternalPatchResult | undefined;
+  let oldCacheResult: InternalPatchResult | undefined
   it.each(['3.2.1', '3.2.2', '3.2.3', '3.2.4'])('if patch eq %s', (version) => {
     const options = getOptions()
     const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
@@ -42,7 +42,7 @@ describe('versions-patch', () => {
     oldCacheResult = res
   })
 
-  let cacheResult: InternalPatchResult | undefined;
+  let cacheResult: InternalPatchResult | undefined
   it.each(['3.2.6', '3.2.7', '3.3.0', '3.3.1', 'lts'])('if patch eq %s', (version) => {
     const options = getOptions()
     const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>

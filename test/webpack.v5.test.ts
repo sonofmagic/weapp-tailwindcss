@@ -55,7 +55,6 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
             // console.log()
           })
         }
-
       ]
     }
   })
@@ -108,7 +107,7 @@ describe('webpack5 plugin', () => {
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
-      },
+      }
     }).apply(emptyCompiler)
 
     const stats = await compile(emptyCompiler)
@@ -116,7 +115,7 @@ describe('webpack5 plugin', () => {
     expect(readAssets(emptyCompiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  });
+  })
 
   it('unified common', async () => {
     new UnifiedWebpackPluginV5({

@@ -172,7 +172,7 @@ describe('jsHandler', () => {
     const set = getClassCacheSet()
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
-  });
+  })
 
   it('vue3SaticNodeStr short case', async () => {
     const testCase = await getCase('taro-vue-static-node-short.js')
@@ -180,5 +180,5 @@ describe('jsHandler', () => {
     const set = getClassCacheSet()
     const code = h(testCase, set).code
     expect(code).toMatchSnapshot()
-  });
+  })
 })
