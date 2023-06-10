@@ -22,10 +22,8 @@ export function internalCssSelectorReplacer(
   })
 }
 
-function cssUnescapeReplace(value: string): string {
-  return String.fromCodePoint(Number.parseInt(value.replaceAll('\\', ''), 16))
-}
-
-export function cssUnescape(value: string): string {
-  return value.replaceAll('\\n', '').replaceAll(/\\([\dA-Fa-f]{1,6})\s?/g, cssUnescapeReplace)
+export const cssUnescape = (str: string) => {
+  return str.replaceAll(/\\([\dA-Fa-f]{1,6}[\t\n\f\r ]?|[\S\s])/g, (match) => {
+    return match.length > 2 ? String.fromCodePoint(Number.parseInt(match.slice(1).trim(), 16)) : match[1]
+  })
 }
