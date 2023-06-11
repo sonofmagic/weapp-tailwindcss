@@ -161,6 +161,17 @@ describe('templeteReplacer', () => {
       const testCase = num + 'xl:text-base'
       const result = templeteReplacer(testCase)
       expect(result).toBe(`_${num}xlctext-base`)
+
+      const netestCase = '-' + num + 'xl:text-base'
+      const neresult = templeteReplacer(netestCase)
+      expect(neresult).toBe(`_-${num}xlctext-base`)
     }
+  })
+  // https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
+  it('only - escape', () => {
+    let result = templeteReplacer('-')
+    expect(result).toBe(`_-`)
+    result = templeteReplacer('--')
+    expect(result).toBe(`--`)
   })
 })
