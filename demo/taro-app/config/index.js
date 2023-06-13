@@ -37,7 +37,9 @@ const config = {
     postcss: {
       pxtransform: {
         enable: true,
-        config: {}
+        config: {
+          selectorBlackList: ['shadow']
+        }
       },
       url: {
         enable: true,
@@ -58,7 +60,7 @@ const config = {
     webpackChain(chain, webpack) {
       const opt = {
         appType: 'taro',
-        minifiedJs:true
+        minifiedJs: true
         // customAttributes: {
         //   // '*': ['emptyImageClass','btnClassName'],
         //   '*': [/Class/]
