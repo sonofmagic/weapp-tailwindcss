@@ -62,7 +62,13 @@ const config = {
       // tailwindcss: {},
       // autoprefixer: {},
     },
+    /**
+     *
+     * @param {import('webpack-chain')} chain
+     * @param {import('webpack')} webpack
+     */
     webpackChain(chain, webpack) {
+
       const opt = {
         appType: 'taro',
         minifiedJs: true
@@ -71,6 +77,7 @@ const config = {
         //   '*': [/Class/]
         // }
       }
+
       // chain.merge({
       //   plugin: {
       //     install: {
