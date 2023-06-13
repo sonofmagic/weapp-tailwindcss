@@ -1,4 +1,5 @@
 import { View } from '@tarojs/components'
+import './index.scss'
 // https://taro-docs.jd.com/docs/independent-subpackage
 // https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html
 export default () => {

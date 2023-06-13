@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useState } from 'react'
-import { View, Navigator } from '@tarojs/components'
+import { View, Navigator, Button } from '@tarojs/components'
 import classNames from 'classnames'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 // import { Button } from 'antd-mobile'

@@ -25,6 +25,11 @@ export default {
         "pages/index",
       ],
       independent: true
-    }
+    },
+    // {
+    //   root: 'pages/sub',
+    //   pages: ['sub-one/index'],
+    //   independent: true,
+    // }
   ]
 }

@@ -12,7 +12,12 @@ if (isLocal) {
   UnifiedWebpackPluginV5 = plugin
 }
 const config = {
-  compiler: 'webpack5',
+  compiler: {
+    prebundle: {
+      enable: false,
+    },
+    type: 'webpack5'
+  },
   projectName: 'myApp',
   date: '2022-2-5',
   designWidth: 750,
@@ -79,7 +84,7 @@ const config = {
           plugin: {
             install: {
               plugin: UnifiedWebpackPluginV5,
-              args: [opt, 'taro']
+              // args: [opt, 'taro']
             }
           }
         })
