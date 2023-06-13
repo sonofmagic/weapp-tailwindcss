@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useState } from 'react'
-import { View } from '@tarojs/components'
+import { View, Navigator } from '@tarojs/components'
 import classNames from 'classnames'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 // import { Button } from 'antd-mobile'
@@ -23,6 +23,8 @@ const Index = () => {
   )
   return (
     <>
+      <Navigator url='/moduleA/pages/index'>普通分包</Navigator>
+      <Navigator url='/moduleB/pages/index'>独立分包</Navigator>
       {/* <Button>Button</Button> */}
       <View className={`w-full bg-indigo-400 bg-[url('https://xxx.com/xx.webp')] bg-bottom bg-contain bg-no-repeat`}>{'bg-[url]'}</View>
       <View className={aaa}>11</View>
