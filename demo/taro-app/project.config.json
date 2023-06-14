@@ -86,6 +86,20 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "普通分包",
+          "pathName": "moduleA/pages/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "独立分包",
+          "pathName": "moduleB/pages/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

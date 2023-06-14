@@ -97,5 +97,5 @@ describe('get options', () => {
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(true)
-  });
+  })
 })

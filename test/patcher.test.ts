@@ -10,12 +10,12 @@ describe('patcher unit test', () => {
   it('not found pkg', () => {
     const res = getInstalledPkgJsonPath({
       dangerousOptions: {
-        packageName: 'faketailwindcss',
+        packageName: 'faketailwindcss'
       },
       units: ['rpx']
     })
     expect(res).toBe(undefined)
-  });
+  })
 
   it('patch warning', () => {
     const patch = createPatch({
@@ -24,9 +24,9 @@ describe('patcher unit test', () => {
         // @ts-ignore
         lengthUnitsFilePath: 12_354,
         // @ts-ignore
-        overwrite: 'false',
+        overwrite: 'false'
       }
     })
     expect(patch()).toBe(undefined)
-  });
+  })
 })

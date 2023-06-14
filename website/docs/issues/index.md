@@ -119,3 +119,9 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 解决方案详情见: <https://ask.dcloud.net.cn/question/170057>
 
 相关 issue : [issues/74#issuecomment-1573033475](https://github.com/sonofmagic/weapp-tailwindcss/issues/74#issuecomment-1573033475)
+
+## uni-app vue2 中的 css 使用 @import 引入其他 css，导致在 `rpx` 在H5下不生效
+
+需要添加并配置 `postcss-import`，详见 [issues/75](https://github.com/sonofmagic/weapp-tailwindcss/issues/75#issuecomment-1574592907)
+
+你可以查看源码中 `demo/uni-app` 相关的示例来进行配置。

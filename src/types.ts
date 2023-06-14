@@ -26,6 +26,11 @@ export type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   cssPreflightRange?: 'view' | 'all'
+  /**
+   * @description 用于控制 tailwindcss 子组合器的生效标签范围
+   * @default 'view + view'
+   */
+  cssChildCombinatorReplaceValue?: string | string[]
   replaceUniversalSelectorWith?: string | false
   escapeMap?: Record<string, string>
 }
@@ -270,6 +275,34 @@ cssPreflight: {
    * @description 针对 tailwindcss arbitrary values 的一些配置
    */
   arbitraryValues?: IArbitraryValues
+  /**
+   * @description 用于控制 tailwindcss 子组合器的生效标签范围, 这里我们用一个例子来说明这个配置是干啥用的.
+   *
+   * 我们布局的时候往往会使用 `space-x-4`
+   * 那么实际上会生成这样的css选择器:
+   * ```css
+   * .space-x-4>:not([hidden])~:not([hidden]){}
+   * ```
+   * 然而很不幸，这个选择器在小程序中是不支持的，写了会报错导致编译失败。
+   * 所以出于保守起见，我把它替换为了：
+   * ```css
+   * .space-x-4>view + view{}
+   * ```
+   * 这同时也是默认值, 而这个选项就允许你进行自定义子组合器的行为
+   *
+   * 你可以传入一个 字符串，或者字符串数组
+   * 1. 传入字符串数组,比如 `['view','text']` 生成:
+   * ```css
+   * .space-y-4>view,text + view,text{}
+   * ```
+   *
+   * 2. 传入一个字符串，此时行为变成了整个替换，比如 `'view,text,button,input ~ view,text,button,input'` 生成:
+   * ```css
+   * .space-y-4>view,text,button,input ~ view,text,button,input{}
+   * ```
+   * @default 'view + view'
+   */
+  cssChildCombinatorReplaceValue?: string | string[]
 }
 
 export interface IMangleScopeContext {

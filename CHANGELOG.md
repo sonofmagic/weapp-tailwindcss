@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.4.4 (2023-06-14)
+
+### Features
+
+- 添加 `cssChildCombinatorReplaceValue` 配置项，允许用户自定义直接子代选择器行为
+- 更精细化的处理了 css 选择器的转义逻辑
+
 ## 2.4.3 (2023-06-10)
 
 ### Fixed

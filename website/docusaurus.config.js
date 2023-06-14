@@ -127,8 +127,8 @@ const config = {
         tsconfig: '../tsconfig.json',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH
-      },
-    ],
+      }
+    ]
     // function nodeLoader(context, options) {
     //   return {
     //     name: 'canvas-node-loader-plugin',
@@ -204,9 +204,9 @@ const config = {
             label: '配置项'
           },
           {
-            to: 'docs/api/',  // 'api' is the 'out' directory
+            to: 'docs/api/', // 'api' is the 'out' directory
             label: 'API',
-            position: 'left',
+            position: 'left'
           },
           {
             type: 'doc',

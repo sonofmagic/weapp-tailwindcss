@@ -77,5 +77,6 @@ export const defaultOptions: UserDefinedOptions = {
   appType: undefined,
   arbitraryValues: {
     allowDoubleQuotes: false
-  }
+  },
+  cssChildCombinatorReplaceValue: 'view + view'
 }

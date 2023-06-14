@@ -12,7 +12,12 @@ if (isLocal) {
   UnifiedWebpackPluginV5 = plugin
 }
 const config = {
-  compiler: 'webpack5',
+  compiler: {
+    prebundle: {
+      enable: false,
+    },
+    type: 'webpack5'
+  },
   projectName: 'myApp',
   date: '2022-2-5',
   designWidth: 750,
@@ -37,7 +42,9 @@ const config = {
     postcss: {
       pxtransform: {
         enable: true,
-        config: {}
+        config: {
+          selectorBlackList: ['shadow']
+        }
       },
       url: {
         enable: true,
@@ -55,15 +62,22 @@ const config = {
       // tailwindcss: {},
       // autoprefixer: {},
     },
+    /**
+     *
+     * @param {import('webpack-chain')} chain
+     * @param {import('webpack')} webpack
+     */
     webpackChain(chain, webpack) {
+
       const opt = {
         appType: 'taro',
-        minifiedJs:true
+        minifiedJs: true
         // customAttributes: {
         //   // '*': ['emptyImageClass','btnClassName'],
         //   '*': [/Class/]
         // }
       }
+
       // chain.merge({
       //   plugin: {
       //     install: {
@@ -77,7 +91,7 @@ const config = {
           plugin: {
             install: {
               plugin: UnifiedWebpackPluginV5,
-              args: [opt, 'taro']
+              // args: [opt, 'taro']
             }
           }
         })

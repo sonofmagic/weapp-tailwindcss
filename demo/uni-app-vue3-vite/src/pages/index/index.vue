@@ -2,6 +2,19 @@
   <view class="content">
     <view class="2xl:text-base">2xl:text-base</view>
     <view :class="numClassObj">2xl:text-[red]</view>
+    <view class="space-y-4 flex flex-col bg-red-400">
+      <view class="bg-sky-500">view space-y-4</view>
+      <view class="bg-sky-500">view space-y-4</view>
+      <input class="bg-sky-500" value="input space-y-4"/>
+      <text class="bg-sky-500">text space-y-4</text>
+      <button class="bg-sky-500">button space-y-4</button>
+      <CommonCom class="bg-sky-500">CommonCom space-y-4</CommonCom>
+      <view class="bg-sky-500">view space-y-4</view>
+      <text class="bg-sky-500">text space-y-4</text>
+      <VirtualHostCom class="bg-sky-500">VirtualHostCom space-y-4</VirtualHostCom>
+      <view class="bg-sky-500">view space-y-4</view>
+      <text class="bg-sky-500">text space-y-4</text>
+    </view>
     <view v-if="flag" :class="[flag ? 'bg-[#3482f2]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view v-else :class="[flag ? 'bg-[#434354]' : 'bg-[#e6e6e6]']">bgbgbgbg</view>
     <view :class="classArray">classArray</view>
@@ -74,7 +87,8 @@
 
 
 <script setup lang="ts">
-
+import CommonCom from '@/components/CommonCom.vue'
+import VirtualHostCom from '@/components/VirtualHostCom.vue'
 import { ref, onBeforeUnmount } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 const title = ref('测试标题');

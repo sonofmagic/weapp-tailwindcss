@@ -37,19 +37,19 @@
   ],
   "author": "",
   "dependencies": {
-    "@babel/runtime": "^7.22.3",
+    "@babel/runtime": "^7.22.5",
     "@tarojs/components": "3.6.7",
     "@tarojs/react": "3.6.7",
     "@tarojs/runtime": "3.6.7",
     "@tarojs/taro": "3.6.7",
-    "antd-mobile": "^5.30.0",
+    "antd-mobile": "^5.31.0",
     "classnames": "^2.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "taro-hooks": "1.5.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.1",
+    "@babel/core": "^7.22.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@tarojs/cli": "3.6.7",
     "@tarojs/mini-runner": "3.6.7",
@@ -57,10 +57,10 @@
     "@tarojs/plugin-platform-h5": "^3.6.7",
     "@tarojs/webpack-runner": "3.6.7",
     "@tarojs/webpack5-runner": "3.6.7",
-    "@types/react": "^18.2.8",
+    "@types/react": "^18.2.12",
     "@types/webpack-env": "^1.18.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.9",
-    "@typescript-eslint/parser": "^5.59.9",
+    "@typescript-eslint/eslint-plugin": "^5.59.11",
+    "@typescript-eslint/parser": "^5.59.11",
     "autoprefixer": "^10.4.14",
     "babel-plugin-import": "^1.13.6",
     "babel-preset-taro": "3.6.7",
@@ -84,7 +84,8 @@
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^2.4.3",
-    "webpack": "^5.86.0"
+    "webpack": "^5.86.0",
+    "webpack-chain": "^6.5.1"
   },
   "engines": {
     "node": ">=12.0.0"

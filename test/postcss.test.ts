@@ -51,7 +51,7 @@ describe('postcss plugin', () => {
     const res = await getCss('<view class="after:content-["对酒当歌，人生几何"]"></view>')
     const set = getClassCacheSet()
     expect(set.has('after:content-["对酒当歌，人生几何"]')).toBe(true)
-    // const y = 
+    // const y =
     expect(res.css.toString()).toMatchSnapshot()
   })
 
@@ -59,7 +59,7 @@ describe('postcss plugin', () => {
     // after:content-[\"*\"]
     const res = await getCss('<view class="after:content-[\'对酒当歌，人生几何\']"></view>')
     const set = getClassCacheSet()
-    expect(set.has('after:content-[\'对酒当歌，人生几何\']')).toBe(true)
+    expect(set.has("after:content-['对酒当歌，人生几何']")).toBe(true)
 
     expect(res.css.toString()).toMatchSnapshot()
   })
