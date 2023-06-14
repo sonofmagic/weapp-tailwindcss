@@ -163,7 +163,7 @@
     "babel-loader": "^9.1.2",
     "bumpp": "^9.1.1",
     "chalk": "4.1.2",
-    "create-functional-loader": "^0.0.3",
+    "create-functional-loader": "^0.0.4",
     "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",
     "defu": "6.1.2",

@@ -1,5 +1,5 @@
 import type { LoaderDefinitionFunction } from 'webpack'
-import M from 'create-functional-loader'
+import { createLoader } from 'create-functional-loader'
 
 // const { createLoader } = require('simple-functional-loader')
 // const name = '1234567890'
@@ -15,6 +15,5 @@ import M from 'create-functional-loader'
 //   }
 // }
 export default function (processor: LoaderDefinitionFunction) {
-  // @ts-ignore
-  return M.createLoader(processor)
+  return createLoader(processor)
 }

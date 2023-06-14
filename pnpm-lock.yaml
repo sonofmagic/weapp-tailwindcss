@@ -125,8 +125,8 @@ devDependencies:
     specifier: 4.1.2
     version: 4.1.2
   create-functional-loader:
-    specifier: ^0.0.3
-    version: 0.0.3
+    specifier: ^0.0.4
+    version: 0.0.4
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3
@@ -3517,8 +3517,8 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /create-functional-loader@0.0.3:
-    resolution: {integrity: sha512-F/KhMpP7EXRK6A2qFo6nDM+JbrdgYrAeuoO+gl2wstXmBWHbHJXnFy2l0KeAPz2oL8NRA995DJI7pB4LmymP2A==}
+  /create-functional-loader@0.0.4:
+    resolution: {integrity: sha512-WsujOe7RQztOkyE/vsyhW/E6UMiah6vIbJXOLhfr8SnnR+hWzsVJblnCB0WQEfMOCpUme8Sjjjlk5F2f40wG0Q==}
     dependencies:
       '@types/loader-utils': 2.0.3
       '@types/webpack4': /@types/webpack@4.41.33
