@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import type { Compiler, Configuration } from 'webpack'
 import postcss from 'postcss'
-import { getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
+import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string }) {

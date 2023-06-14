@@ -175,9 +175,6 @@ devDependencies:
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
-  memfs:
-    specifier: ^3.5.3
-    version: 3.5.3
   mini-css-extract-plugin:
     specifier: ^2.7.6
     version: 2.7.6(webpack@5.86.0)
@@ -253,6 +250,9 @@ devDependencies:
   webpack:
     specifier: ^5.86.0
     version: 5.86.0
+  webpack-build-utils:
+    specifier: ^0.0.1
+    version: 0.0.1
 
 packages:
 
@@ -9419,6 +9419,13 @@ packages:
       tailwindcss: ^3.0.0
     dependencies:
       tailwindcss: 3.3.2(ts-node@10.9.1)
+    dev: true
+
+  /webpack-build-utils@0.0.1:
+    resolution: {integrity: sha512-CkfR4ZY7NjKttVM7f02kJpqbyW7W21G7MLwbfJxDsqIPReWI7QJzPA6y/olpnut57KadwP1NXFnOXu0lGxl4Hw==}
+    dependencies:
+      create-functional-loader: 0.0.4
+      memfs: 3.5.3
     dev: true
 
   /webpack-sources@3.2.3:
