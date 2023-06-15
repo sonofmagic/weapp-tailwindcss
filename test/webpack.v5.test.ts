@@ -402,6 +402,8 @@ describe('webpack5 plugin', () => {
     const anotherLoader = createLoader(function (source) {
       return source + '\nconst c = 2\nconsole.log(c)'
     }) as webapck.NormalModule['loaders'][number]
+    // https://github.com/webpack/webpack/blob/main/lib/webpack.js#L71
+    // https://github.com/webpack/webpack/blob/main/lib/NormalModule.js#L559
     const customCompiler = getCompiler5({
       mode: 'production',
       optimization: {
