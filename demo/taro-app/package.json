@@ -64,6 +64,7 @@
     "autoprefixer": "^10.4.14",
     "babel-plugin-import": "^1.13.6",
     "babel-preset-taro": "3.6.7",
+    "create-functional-loader": "^0.0.5",
     "cross-env": "^7.0.3",
     "eslint": "^8.42.0",
     "eslint-config-taro": "3.6.7",

@@ -31,9 +31,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       return
     }
     patch?.()
-
-    const Compilation = compiler.webpack.Compilation
-    const { ConcatSource } = compiler.webpack.sources
+    // NormalModule,
+    const { Compilation, sources } = compiler.webpack
+    const { ConcatSource } = sources
     // react
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
@@ -51,6 +51,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     }
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      // NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+      //   const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+      //   console.log(idx)
+      // })
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,

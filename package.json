@@ -213,6 +213,7 @@
     "@babel/traverse": "^7.21.4",
     "@babel/types": "^7.21.4",
     "@csstools/postcss-is-pseudo-class": "^3.2.1",
+    "create-functional-loader": "^0.0.5",
     "micromatch": "^4.0.5",
     "postcss": "8.4.24",
     "postcss-selector-parser": "^6.0.13",
