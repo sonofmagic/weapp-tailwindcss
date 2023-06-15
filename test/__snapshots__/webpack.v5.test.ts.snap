@@ -2424,6 +2424,39 @@ exports[`webpack5 plugin mangle true: errors 1`] = `[]`;
 
 exports[`webpack5 plugin mangle true: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: assets 1`] = `
+{
+  "index.css": ".bg-\\[url\\(\\'src\\/index\\.js\\'\\)\\] {
+    background-image: url('src/index.js')
+}
+.bg-\\[url\\(\\'src\\/index\\.wxml\\'\\)\\] {
+    background-image: url('src/index.wxml')
+}
+
+/* .a {
+  color: red;
+} */
+",
+  "index.js": "(()=>{var r={389:r=>{r.exports=" "}},e={};function o(t){var n=e[t];if(void 0!==n)return n.exports;var s=e[t]={exports:{}};return r[t](s,s.exports,o),s.exports}o.n=r=>{var e=r&&r.__esModule?()=>r.default:()=>r;return o.d(e,{a:e}),e},o.d=(r,e)=>{for(var t in e)o.o(e,t)&&!o.o(r,t)&&Object.defineProperty(r,t,{enumerable:!0,get:e[t]})},o.o=(r,e)=>Object.prototype.hasOwnProperty.call(r,e),(()=>{"use strict";o(389),console.log("bg-[url('src/index.js')]")})()})();",
+  "module.css": ".bg-\\[url\\(\\'src\\/module\\/index\\.js\\'\\)\\] {
+    background-image: url('src/module/index.js')
+}
+.bg-\\[url\\(\\'src\\/module\\/index\\.wxml\\'\\)\\] {
+    background-image: url('src/module/index.wxml')
+}
+
+/* .b {
+  color: blue;
+} */
+",
+  "module.js": "(()=>{var e={620:e=>{e.exports=" "}},r={};function o(t){var n=r[t];if(void 0!==n)return n.exports;var s=r[t]={exports:{}};return e[t](s,s.exports,o),s.exports}o.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return o.d(r,{a:r}),r},o.d=(e,r)=>{for(var t in r)o.o(r,t)&&!o.o(e,t)&&Object.defineProperty(e,t,{enumerable:!0,get:r[t]})},o.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";o(620),console.log("bg-[url('src/module/index.js')]")})()})();",
+}
+`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: errors 1`] = `[]`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin multiple tailwindcss contexts: assets 1`] = `
 {
   "index.css": "@tailwind utilities;

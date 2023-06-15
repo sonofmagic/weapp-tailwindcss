@@ -325,4 +325,74 @@ describe('webpack5 plugin', () => {
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
+
+  it('multiple tailwindcss contexts raw case 0', async () => {
+    const multipleContextsPath = path.resolve(__dirname, './fixtures/webpack/v5/multiple-contexts')
+    const twConfig = path.resolve(multipleContextsPath, 'tailwind.config.js')
+    const twmConfig = path.resolve(multipleContextsPath, 'tailwind.config.module.js')
+    const processor = postcss([require('tailwindcss')({ config: twConfig })])
+    const moduleProcessor = postcss([require('tailwindcss')({ config: twmConfig })])
+    const customCompiler = getCompiler5({
+      mode: 'production',
+      // 目录下必须有一个 package.json，不然 css 直接 sideEffects 被干掉了
+      // 或者设置 sideEffects: false
+      optimization: {
+        // minimize: true
+        // css purge
+        sideEffects: false
+      },
+      entry: {
+        index: './src/index.js',
+        module: './src/module/index.js'
+      },
+      // entry: indexEntry,
+      context: multipleContextsPath,
+      output: {
+        path: path.resolve(multipleContextsPath, './dist')
+        // filename: '[name].js', // ?var=[fullhash]
+        // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
+      },
+      module: {
+        rules: [
+          {
+            test: /\.js$/i,
+            use: [
+              createLoader(function (source) {
+                return source
+              })
+            ]
+          },
+          {
+            test: /\.css$/i,
+            use: [
+              // processor
+              // moduleProcessor
+              createLoader(function (source) {
+                let css = ''
+                // eslint-disable-next-line unicorn/prefer-ternary
+                if (/module[/\\]index\.css$/.test(this.resourcePath)) {
+                  css = moduleProcessor.process(source).css
+                  this.emitFile('module.css', css)
+                  // return 'module.exports = ' + JSON.stringify(css)
+                } else {
+                  // 直接变成空字符串 or postcss
+                  css = processor.process(source).css
+                  this.emitFile('index.css', css)
+                }
+                // 做成文件方便查看快照
+                return 'module.exports = " "' // JSON.stringify(css) //  JSON.stringify(source)
+              })
+            ]
+          }
+        ]
+      }
+      // resolve: {}
+    })
+
+    const stats = await compile(customCompiler)
+    const assets = readAssets(customCompiler, stats)
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
 })
