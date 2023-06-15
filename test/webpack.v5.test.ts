@@ -2,6 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import type { Compiler, Configuration } from 'webpack'
+import webapck from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
@@ -382,6 +383,70 @@ describe('webpack5 plugin', () => {
                 // 做成文件方便查看快照
                 return 'module.exports = " "' // JSON.stringify(css) //  JSON.stringify(source)
               })
+            ]
+          }
+        ]
+      }
+      // resolve: {}
+    })
+
+    const stats = await compile(customCompiler)
+    const assets = readAssets(customCompiler, stats)
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('hijack custom loader', async () => {
+    const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack')
+    const anotherLoader = createLoader(function (source) {
+      return source + '\nconst c = 2\nconsole.log(c)'
+    }) as webapck.NormalModule['loaders'][number]
+    const customCompiler = getCompiler5({
+      mode: 'production',
+      optimization: {
+        sideEffects: false
+      },
+      entry: {
+        index: './index.js'
+      },
+      // entry: indexEntry,
+      context: hijackPath,
+      output: {
+        path: path.resolve(hijackPath, './dist')
+        // filename: '[name].js', // ?var=[fullhash]
+        // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
+      },
+      plugins: [
+        {
+          apply(compiler: Compiler) {
+            const pluginName = 'hijack-a-plane-plugin'
+            const { NormalModule } = compiler.webpack
+            compiler.hooks.compilation.tap(pluginName, (compilation) => {
+              NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+                // const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+                // console.log(idx)
+                // const target = module.loaders[0]
+                // console.log(module.loaders)
+                // 最后执行
+                module.loaders.unshift(anotherLoader)
+                // 最先执行
+                // module.loaders.push(anotherLoader)
+              })
+            })
+          }
+        }
+      ],
+      module: {
+        rules: [
+          {
+            test: /\.js$/i,
+            use: [
+              {
+                ...createLoader(function (source) {
+                  return source + '\nconst b = 1\nconsole.log(b)'
+                })
+              }
             ]
           }
         ]

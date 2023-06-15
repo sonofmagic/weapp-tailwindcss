@@ -880,6 +880,16 @@ exports[`webpack5 plugin empty build: errors 1`] = `[]`;
 
 exports[`webpack5 plugin empty build: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin hijack custom loader: assets 1`] = `
+{
+  "index.js": "console.log(0),console.log(1),console.log(2);",
+}
+`;
+
+exports[`webpack5 plugin hijack custom loader: errors 1`] = `[]`;
+
+exports[`webpack5 plugin hijack custom loader: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin mangle options mangleClassFilter all true: assets 1`] = `
 {
   "index.css": "::before,::after {
