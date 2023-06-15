@@ -2424,6 +2424,31 @@ exports[`webpack5 plugin mangle true: errors 1`] = `[]`;
 
 exports[`webpack5 plugin mangle true: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin multiple tailwindcss contexts: assets 1`] = `
+{
+  "index.css": "@tailwind utilities;
+
+/* .a {
+  color: red;
+} */
+
+",
+  "index.js": "(()=>{"use strict";console.log("bg-[url('src/index.js')]")})();",
+  "module.css": "@tailwind utilities;
+
+/* .b {
+  color: blue;
+} */
+
+",
+  "module.js": "(()=>{"use strict";console.log("bg-[url('src/module/index.js')]")})();",
+}
+`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts: errors 1`] = `[]`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin unified common: assets 1`] = `
 {
   "index.css": "::before,::after {

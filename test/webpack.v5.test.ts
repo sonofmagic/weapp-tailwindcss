@@ -1,7 +1,9 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import fss from 'node:fs'
 import type { Compiler, Configuration } from 'webpack'
 import postcss from 'postcss'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 
@@ -244,6 +246,77 @@ describe('webpack5 plugin', () => {
 
     // expect(classGenerator.newClassSize).toBeGreaterThan(0)
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('multiple tailwindcss contexts', async () => {
+    // WEBPACK IS TREE-SHAKING
+    const multipleContextsPath = path.resolve(__dirname, './fixtures/webpack/v5/multiple-contexts')
+    expect(fss.existsSync(multipleContextsPath)).toBe(true)
+    const indexEntry = path.resolve(multipleContextsPath, './src/index.js')
+    expect(fss.existsSync(indexEntry)).toBe(true)
+    const moduleEntry = path.resolve(multipleContextsPath, './src/module/index.js')
+    expect(fss.existsSync(moduleEntry)).toBe(true)
+    const customCompiler = getCompiler5({
+      mode: 'production',
+      // 目录下必须有一个 package.json，不然 css 直接 sideEffects 被干掉了
+      // 或者设置 sideEffects: false
+      optimization: {
+        // minimize: true
+        // css purge
+        sideEffects: false
+      },
+      entry: {
+        index: './src/index.js',
+        module: './src/module/index.js'
+      },
+      // entry: indexEntry,
+      context: multipleContextsPath,
+      output: {
+        path: path.resolve(multipleContextsPath, './dist')
+        // filename: '[name].js', // ?var=[fullhash]
+        // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
+      },
+      plugins: [new MiniCssExtractPlugin()],
+      // MiniCssExtractPlugin.loader,
+      // MiniCssExtractPlugin.loader,
+      module: {
+        rules: [
+          {
+            test: /\.css$/i,
+            use: [
+              MiniCssExtractPlugin.loader,
+              createLoader(function (source) {
+                return source
+              }),
+              'css-loader'
+              // createLoader(function (source) {
+              //   return source
+              // })
+              // createLoader(function (source) {
+              //   const f = path.relative(multipleContextsPath + '/src', this.resourcePath)
+              //   this.emitFile(f, source)
+              //   return source
+              // })
+              // {
+              //   loader: 'postcss-loader',
+              //   options: {
+              //     postcssOptions: {
+              //       config: path.resolve(multipleContextsPath, './postcss.config.js')
+              //     }
+              //   }
+              // }
+            ] // , 'postcss-loader'] // 'style-loader', // , 'postcss-loader']
+          }
+        ]
+      }
+      // resolve: {}
+    })
+
+    const stats = await compile(customCompiler)
+    const assets = readAssets(customCompiler, stats)
+    expect(assets).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
