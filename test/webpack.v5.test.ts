@@ -291,14 +291,19 @@ describe('webpack5 plugin', () => {
                 return source
               }),
               'css-loader'
+              // 'postcss-loader'
               // createLoader(function (source) {
               //   return source
               // })
               // createLoader(function (source) {
               //   const f = path.relative(multipleContextsPath + '/src', this.resourcePath)
-              //   this.emitFile(f, source)
+              //   this.emitFile('tmp_' + f, source)
               //   return source
               // })
+              // Error: ENOENT: no such file or directory,
+              // "ModuleBuildError: Module build failed
+              // TODO
+              // 为什么一加 postcss-loader 就报错??
               // {
               //   loader: 'postcss-loader',
               //   options: {
