@@ -355,34 +355,39 @@ describe('webpack5 plugin', () => {
       },
       module: {
         rules: [
-          {
-            test: /\.js$/i,
-            use: [
-              createLoader(function (source) {
-                return source
-              })
-            ]
-          },
+          // {
+          //   test: /\.js$/i,
+          //   use: [
+          //     createLoader(function (source) {
+          //       return source
+          //     })
+          //   ]
+          // },
           {
             test: /\.css$/i,
             use: [
               // processor
               // moduleProcessor
-              createLoader(function (source) {
-                let css = ''
-                // eslint-disable-next-line unicorn/prefer-ternary
-                if (/module[/\\]index\.css$/.test(this.resourcePath)) {
-                  css = moduleProcessor.process(source).css
-                  this.emitFile('module.css', css)
-                  // return 'module.exports = ' + JSON.stringify(css)
-                } else {
-                  // 直接变成空字符串 or postcss
-                  css = processor.process(source).css
-                  this.emitFile('index.css', css)
+              createLoader(
+                function (source) {
+                  let css = ''
+                  // eslint-disable-next-line unicorn/prefer-ternary
+                  if (/module[/\\]index\.css$/.test(this.resourcePath)) {
+                    css = moduleProcessor.process(source).css
+                    this.emitFile('module.css', css)
+                    // return 'module.exports = ' + JSON.stringify(css)
+                  } else {
+                    // 直接变成空字符串 or postcss
+                    css = processor.process(source).css
+                    this.emitFile('index.css', css)
+                  }
+                  // 做成文件方便查看快照
+                  return 'module.exports = " "' // JSON.stringify(css) //  JSON.stringify(source)
+                },
+                {
+                  ident: 'css-file-emiter'
                 }
-                // 做成文件方便查看快照
-                return 'module.exports = " "' // JSON.stringify(css) //  JSON.stringify(source)
-              })
+              )
             ]
           }
         ]
@@ -399,9 +404,14 @@ describe('webpack5 plugin', () => {
 
   it('hijack custom loader', async () => {
     const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack')
-    const anotherLoader = createLoader(function (source) {
-      return source + '\nconst c = 2\nconsole.log(c)'
-    }) as webapck.NormalModule['loaders'][number]
+    const anotherLoader = createLoader(
+      function (source) {
+        return source + '\nconst c = 2\nconsole.log(c)'
+      },
+      {
+        ident: 'anotherLoader'
+      }
+    ) as webapck.NormalModule['loaders'][number]
     // https://github.com/webpack/webpack/blob/main/lib/webpack.js#L71
     // https://github.com/webpack/webpack/blob/main/lib/NormalModule.js#L559
     const customCompiler = getCompiler5({
@@ -445,9 +455,14 @@ describe('webpack5 plugin', () => {
             test: /\.js$/i,
             use: [
               {
-                ...createLoader(function (source) {
-                  return source + '\nconst b = 1\nconsole.log(b)'
-                })
+                ...createLoader(
+                  function (source) {
+                    return source + '\nconst b = 1\nconsole.log(b)'
+                  },
+                  {
+                    ident: 'hijack'
+                  }
+                )
               }
             ]
           }
