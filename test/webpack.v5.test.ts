@@ -5,7 +5,7 @@ import type { Compiler, Configuration } from 'webpack'
 import webapck from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import { runLoaders } from 'loader-runner'
+import { runLoaders } from 'promisify-loader-runner'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string }) {
