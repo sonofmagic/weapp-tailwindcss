@@ -5,9 +5,9 @@ import type { Compiler, Configuration } from 'webpack'
 import webapck from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import { runLoaders } from 'loader-runner'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
-
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string }) {
   const { entry, mode, tailwindcssConfig } = params
 
@@ -442,6 +442,145 @@ describe('webpack5 plugin', () => {
                 // console.log(module.loaders)
                 // 最后执行
                 module.loaders.unshift(anotherLoader)
+                // 最先执行
+                // module.loaders.push(anotherLoader)
+              })
+            })
+          }
+        }
+      ],
+      module: {
+        rules: [
+          {
+            test: /\.js$/i,
+            use: [
+              {
+                ...createLoader(
+                  function (source) {
+                    return source + '\nconst b = 1\nconsole.log(b)'
+                  },
+                  {
+                    ident: 'hijack'
+                  }
+                )
+              }
+            ]
+          }
+        ]
+      }
+      // resolve: {}
+    })
+
+    const stats = await compile(customCompiler)
+    const assets = readAssets(customCompiler, stats)
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('raw run loader', (done) => {
+    const zeroLoader = createLoader(function (source) {
+      return source + '0'
+    })
+    const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack/index.js')
+    runLoaders(
+      // @ts-ignore
+      {
+        // @ts-ignore
+        resource: hijackPath,
+        loaders: [
+          {
+            ...zeroLoader
+          }
+        ]
+      },
+
+      (err, result) => {
+        expect(err).toBeFalsy()
+        expect(result).toBeTruthy()
+        const isArr = Array.isArray(result.result)
+        expect(isArr).toBe(true)
+        if (isArr) {
+          // @ts-ignore
+          expect(result.result[0]).toMatchSnapshot()
+        }
+        done()
+      }
+    )
+  })
+
+  it('hijack custom loader 0', async () => {
+    const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack')
+
+    const customCompiler = getCompiler5({
+      mode: 'production',
+      optimization: {
+        sideEffects: false
+      },
+      entry: {
+        index: './index.js'
+      },
+      // entry: indexEntry,
+      context: hijackPath,
+      output: {
+        path: path.resolve(hijackPath, './dist')
+        // filename: '[name].js', // ?var=[fullhash]
+        // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
+      },
+      plugins: [
+        {
+          apply(compiler: Compiler) {
+            const pluginName = 'hijack-a-plane-plugin'
+            const { NormalModule } = compiler.webpack
+            compiler.hooks.compilation.tap(pluginName, (compilation) => {
+              NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+                // const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+                // console.log(idx)
+                const target = module.loaders[0]
+
+                module.loaders[0] = {
+                  ...(createLoader(
+                    async function (source) {
+                      // await Promise.resolve()
+                      // const ctx = this
+                      const res = await new Promise((resolve, reject) => {
+                        runLoaders(
+                          // @ts-ignore
+                          {
+                            resource: this.resource,
+                            loaders: [target]
+                            // context: this,
+                            // readResource: fss.readFile.bind(fss)
+                          },
+                          function (err, result) {
+                            if (err) {
+                              reject(err)
+                              return
+                            }
+                            resolve(result)
+                          }
+                        )
+                      })
+                      // @ts-ignore
+                      return res.result[0] + '\nconst c = 2\nconsole.log(c)'
+                    },
+                    {
+                      ident: 'anotherLoader'
+                    }
+                  ) as webapck.NormalModule['loaders'][number])
+                }
+                // console.log(module.loaders)
+                // 最后执行
+                // module.loaders.unshift(
+                //   createLoader(
+                //     function (source) {
+                //       return source + '\nconst c = 2\nconsole.log(c)'
+                //     },
+                //     {
+                //       ident: 'anotherLoader'
+                //     }
+                //   ) as webapck.NormalModule['loaders'][number]
+                // )
                 // 最先执行
                 // module.loaders.push(anotherLoader)
               })

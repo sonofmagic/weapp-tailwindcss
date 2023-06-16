@@ -94,6 +94,9 @@ devDependencies:
   '@types/klaw':
     specifier: ^3.0.3
     version: 3.0.3
+  '@types/loader-runner':
+    specifier: ^2.2.4
+    version: 2.2.4
   '@types/lodash':
     specifier: ^4.14.195
     version: 4.14.195
@@ -178,6 +181,9 @@ devDependencies:
   klaw:
     specifier: ^4.1.0
     version: 4.1.0
+  loader-runner:
+    specifier: ^4.3.0
+    version: 4.3.0
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -2026,6 +2032,12 @@ packages:
 
   /@types/klaw@3.0.3:
     resolution: {integrity: sha512-mXlRDFbTLpVysvxahXUQav0hFctgu3Fqr2xmSrpf/ptO/FwOp7SFEGsJkEihwshMbof3/BIiVJ/o42cuOOuv6g==}
+    dependencies:
+      '@types/node': 20.3.1
+    dev: true
+
+  /@types/loader-runner@2.2.4:
+    resolution: {integrity: sha512-loD63p9KWQPgTvMBbhu9nD/2AeLqzP7ey/h1cWUK3wzLtilRO1kcCtlJvGrT/LEtOM7bjzaFSX1hxXaOdZdt8g==}
     dependencies:
       '@types/node': 20.3.1
     dev: true

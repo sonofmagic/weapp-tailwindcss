@@ -880,6 +880,16 @@ exports[`webpack5 plugin empty build: errors 1`] = `[]`;
 
 exports[`webpack5 plugin empty build: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin hijack custom loader 0: assets 1`] = `
+{
+  "index.js": "console.log(0),console.log(1),console.log(2);",
+}
+`;
+
+exports[`webpack5 plugin hijack custom loader 0: errors 1`] = `[]`;
+
+exports[`webpack5 plugin hijack custom loader 0: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin hijack custom loader: assets 1`] = `
 {
   "index.js": "console.log(0),console.log(1),console.log(2);",
@@ -2491,6 +2501,12 @@ exports[`webpack5 plugin multiple tailwindcss contexts: assets 1`] = `
 exports[`webpack5 plugin multiple tailwindcss contexts: errors 1`] = `[]`;
 
 exports[`webpack5 plugin multiple tailwindcss contexts: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin raw run loader 1`] = `
+"const a = 0
+
+console.log(a)0"
+`;
 
 exports[`webpack5 plugin unified common: assets 1`] = `
 {
