@@ -540,26 +540,12 @@ describe('webpack5 plugin', () => {
 
                 module.loaders[0] = {
                   ...(createLoader(
-                    async function (source) {
-                      // await Promise.resolve()
-                      // const ctx = this
-                      const res = await new Promise((resolve, reject) => {
-                        runLoaders(
-                          // @ts-ignore
-                          {
-                            resource: this.resource,
-                            loaders: [target]
-                            // context: this,
-                            // readResource: fss.readFile.bind(fss)
-                          },
-                          function (err, result) {
-                            if (err) {
-                              reject(err)
-                              return
-                            }
-                            resolve(result)
-                          }
-                        )
+                    async function () {
+                      const res = await runLoaders({
+                        resource: this.resource,
+                        loaders: [target]
+                        // context: this,
+                        // readResource: fss.readFile.bind(fss)
                       })
                       // @ts-ignore
                       return res.result[0] + '\nconst c = 2\nconsole.log(c)'

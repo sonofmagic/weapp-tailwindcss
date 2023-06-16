@@ -206,7 +206,7 @@
     "vitest": "^0.32.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.87.0",
-    "webpack-build-utils": "^0.0.3"
+    "webpack-build-utils": "^0.0.4"
   },
   "dependencies": {
     "@babel/generator": "^7.21.4",
@@ -218,7 +218,7 @@
     "micromatch": "^4.0.5",
     "postcss": "8.4.24",
     "postcss-selector-parser": "^6.0.13",
-    "semver": "^7.5.1",
+    "semver": "^7.5.2",
     "tailwindcss-mangle-shared": "^1.2.5",
     "tailwindcss-patch": "^1.2.5"
   },

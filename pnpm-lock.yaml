@@ -33,8 +33,8 @@ dependencies:
     specifier: ^6.0.13
     version: 6.0.13
   semver:
-    specifier: ^7.5.1
-    version: 7.5.1
+    specifier: ^7.5.2
+    version: 7.5.2
   tailwindcss-mangle-shared:
     specifier: ^1.2.5
     version: 1.2.5
@@ -257,8 +257,8 @@ devDependencies:
     specifier: ^5.87.0
     version: 5.87.0
   webpack-build-utils:
-    specifier: ^0.0.3
-    version: 0.0.3
+    specifier: ^0.0.4
+    version: 0.0.4
 
 packages:
 
@@ -2191,7 +2191,7 @@ packages:
       ignore: 5.2.4
       natural-compare-lite: 1.4.0
       regexpp: 3.2.0
-      semver: 7.5.1
+      semver: 7.5.2
       tsutils: 3.21.0(typescript@5.1.3)
       typescript: 5.1.3
     transitivePeerDependencies:
@@ -2265,7 +2265,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.1
+      semver: 7.5.2
       tsutils: 3.21.0(typescript@5.1.3)
       typescript: 5.1.3
     transitivePeerDependencies:
@@ -2286,7 +2286,7 @@ packages:
       eslint: 8.42.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0(eslint@8.42.0)
-      semver: 7.5.1
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -3116,7 +3116,7 @@ packages:
   /builtins@5.0.1:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
-      semver: 7.5.1
+      semver: 7.5.2
     dev: true
 
   /bumpp@9.1.1:
@@ -3129,7 +3129,7 @@ packages:
       cac: 6.7.14
       fast-glob: 3.2.12
       prompts: 2.4.2
-      semver: 7.5.1
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3513,7 +3513,7 @@ packages:
       js-string-escape: 1.0.1
       lodash: 4.17.21
       md5-hex: 3.0.1
-      semver: 7.5.1
+      semver: 7.5.2
       well-known-symbols: 2.0.0
     dev: true
 
@@ -3598,7 +3598,7 @@ packages:
       postcss-modules-scope: 3.0.0(postcss@8.4.24)
       postcss-modules-values: 4.0.0(postcss@8.4.24)
       postcss-value-parser: 4.2.0
-      semver: 7.5.1
+      semver: 7.5.2
       webpack: 5.87.0
     dev: true
 
@@ -4275,7 +4275,7 @@ packages:
       is-core-module: 2.12.1
       minimatch: 3.1.2
       resolve: 1.22.2
-      semver: 7.5.1
+      semver: 7.5.2
     dev: true
 
   /eslint-plugin-node@11.1.0(eslint@8.42.0):
@@ -4340,7 +4340,7 @@ packages:
       regexp-tree: 0.1.27
       regjsparser: 0.10.0
       safe-regex: 2.1.1
-      semver: 7.5.1
+      semver: 7.5.2
       strip-indent: 3.0.0
     dev: true
 
@@ -6212,7 +6212,7 @@ packages:
       jest-util: 29.5.0
       natural-compare: 1.4.0
       pretty-format: 29.5.0
-      semver: 7.5.1
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7014,7 +7014,7 @@ packages:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.12.1
-      semver: 7.5.1
+      semver: 7.5.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -7588,7 +7588,7 @@ packages:
       cosmiconfig: 8.2.0
       jiti: 1.18.2
       postcss: 8.4.24
-      semver: 7.5.1
+      semver: 7.5.2
       webpack: 5.87.0
     dev: true
 
@@ -8172,8 +8172,8 @@ packages:
     hasBin: true
     dev: true
 
-  /semver@7.5.1:
-    resolution: {integrity: sha512-Wvss5ivl8TMRZXXESstBA4uR5iXgEN/VC5/sOcuXdVLzcdkz4HWetIoRfG5gb5X+ij/G9rw9YoGn3QoQ8OCSpw==}
+  /semver@7.5.2:
+    resolution: {integrity: sha512-SoftuTROv/cRjCze/scjGyiDtcUyxw1rgYQSZY7XTmtR5hX+dm76iDbTH8TkLPHCQmlbQVSSbNZCPM2hb0knnQ==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
@@ -8617,7 +8617,7 @@ packages:
       '@babel/traverse': 7.22.5
       '@babel/types': 7.22.5
       resolve: 1.22.2
-      semver: 7.5.1
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -8903,7 +8903,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.5.1
+      semver: 7.5.2
       typescript: 5.1.3
       yargs-parser: 21.1.1
     dev: true
@@ -8947,7 +8947,7 @@ packages:
       global-prefix: 3.0.0
       minimist: 1.2.8
       resolve: 1.22.2
-      semver: 7.5.1
+      semver: 7.5.2
       strip-ansi: 6.0.1
     dev: true
 
@@ -9439,11 +9439,12 @@ packages:
       tailwindcss: 3.3.2(ts-node@10.9.1)
     dev: true
 
-  /webpack-build-utils@0.0.3:
-    resolution: {integrity: sha512-qFxwc5rJfq+YbB+h4elk6y3+GKyT3ENGKWUjKRGyUme8R1fwZtTNxWY7BustPVf+Sz+xbw0guUq9CRhReLW3AQ==}
+  /webpack-build-utils@0.0.4:
+    resolution: {integrity: sha512-QwRPmrFemhP5kSkl0ztTR4sExnFUY/V3NnU+E6AcXSgNW0fJvPrPdx67g429lFCjY+Ph9FUizw3rXcVwdZf6Pw==}
     dependencies:
       create-functional-loader: 0.1.0
       memfs: 3.5.3
+      promisify-loader-runner: 1.0.0
     dev: true
 
   /webpack-sources@3.2.3:
