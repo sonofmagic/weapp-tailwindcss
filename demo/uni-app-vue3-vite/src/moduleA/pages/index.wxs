@@ -1,0 +1,7 @@
+/* eslint-disable */
+
+
+var className = 'after:content-[\'我来自outside-wxs\']'
+module.exports = {
+  className: className
+}
