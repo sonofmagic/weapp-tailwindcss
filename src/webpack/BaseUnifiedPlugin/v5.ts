@@ -1,8 +1,9 @@
 // webpack 5
 import type { Compiler } from 'webpack'
+import { createLoader } from 'create-functional-loader'
 import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import { getOptions } from '@/options'
-import { pluginName, NS } from '@/constants'
+import { pluginName, runtimeAopLoader } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/utils'
 
@@ -16,7 +17,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
 
-  static NS = NS
   constructor(options: UserDefinedOptions = {}) {
     if (options.customReplaceDictionary === undefined) {
       options.customReplaceDictionary = 'simple'
@@ -32,29 +32,35 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     }
     patch?.()
     // NormalModule,
-    const { Compilation, sources } = compiler.webpack
+    const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
     // react
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
-      let set = twPatcher.getClassSet()
-      // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
-      // tarojs save scss hmr trigger error
-      if (set.size === 0) {
-        const cacheSet = twPatcher.getCache()
-        if (cacheSet && cacheSet.size > 0) {
-          set = cacheSet
-        }
-      }
-      // }
-      return set
+      return twPatcher.getClassSet()
     }
+
+    const WeappTwRuntimeAopLoader = createLoader(
+      function (content: string) {
+        // for cache merge
+        getClassSet()
+        return content
+      },
+      {
+        ident: runtimeAopLoader
+      }
+    )
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      // NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
-      //   const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
-      //   console.log(idx)
-      // })
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+        const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+        // // css
+        if (idx > -1) {
+          // for aop
+          // @ts-ignore
+          module.loaders.unshift(WeappTwRuntimeAopLoader)
+        }
+      })
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
