@@ -2446,30 +2446,36 @@ exports[`webpack5 plugin mangle true: warnings 1`] = `[]`;
 
 exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: assets 1`] = `
 {
-  "index.css": ".bg-\\[url\\(\\'src\\/index\\.js\\'\\)\\] {
-    background-image: url('src/index.js')
-}
-.bg-\\[url\\(\\'src\\/index\\.wxml\\'\\)\\] {
-    background-image: url('src/index.wxml')
-}
+  "index.css": "
 
 /* .a {
   color: red;
 } */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
 ",
-  "index.js": "(()=>{var r={617:r=>{r.exports=" "}},e={};function o(t){var n=e[t];if(void 0!==n)return n.exports;var s=e[t]={exports:{}};return r[t](s,s.exports,o),s.exports}o.n=r=>{var e=r&&r.__esModule?()=>r.default:()=>r;return o.d(e,{a:e}),e},o.d=(r,e)=>{for(var t in e)o.o(e,t)&&!o.o(r,t)&&Object.defineProperty(r,t,{enumerable:!0,get:e[t]})},o.o=(r,e)=>Object.prototype.hasOwnProperty.call(r,e),(()=>{"use strict";o(617),console.log("bg-[url('src/index.js')]")})()})();",
-  "module.css": ".bg-\\[url\\(\\'src\\/module\\/index\\.js\\'\\)\\] {
-    background-image: url('src/module/index.js')
-}
-.bg-\\[url\\(\\'src\\/module\\/index\\.wxml\\'\\)\\] {
-    background-image: url('src/module/index.wxml')
-}
+  "index.js": "(()=>{var e={617:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(617),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
+  "module.css": "
 
 /* .b {
   color: blue;
 } */
+.after\\:content-\\[\\'m\\/index\\.js\\'\\]::after {
+    --tw-content: 'm/index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'m\\/index\\.wxml\\'\\]::after {
+    --tw-content: 'm/index.wxml';
+    content: var(--tw-content)
+}
 ",
-  "module.js": "(()=>{var e={731:e=>{e.exports=" "}},r={};function o(t){var n=r[t];if(void 0!==n)return n.exports;var s=r[t]={exports:{}};return e[t](s,s.exports,o),s.exports}o.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return o.d(r,{a:r}),r},o.d=(e,r)=>{for(var t in r)o.o(r,t)&&!o.o(e,t)&&Object.defineProperty(e,t,{enumerable:!0,get:r[t]})},o.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";o(731),console.log("bg-[url('src/module/index.js')]")})()})();",
+  "module.js": "(()=>{var e={731:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(731),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
 }
 `;
 
@@ -2479,22 +2485,38 @@ exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: warnings 1`] 
 
 exports[`webpack5 plugin multiple tailwindcss contexts: assets 1`] = `
 {
-  "index.css": "@tailwind utilities;
+  "index.css": "
 
 /* .a {
   color: red;
 } */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
 
 ",
-  "index.js": "(()=>{"use strict";console.log("bg-[url('src/index.js')]")})();",
-  "module.css": "@tailwind utilities;
+  "index.js": "(()=>{"use strict";document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})();",
+  "module.css": "
 
 /* .b {
   color: blue;
 } */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
 
 ",
-  "module.js": "(()=>{"use strict";console.log("bg-[url('src/module/index.js')]")})();",
+  "module.js": "(()=>{"use strict";document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})();",
 }
 `;
 

@@ -1,1 +1,1 @@
-<view class="bg-[url('src/module/index.wxml')]">src/module/index.wxml</view>
+<div class="after:content-['m/index.wxml']"></div>

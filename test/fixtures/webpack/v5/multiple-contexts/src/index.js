@@ -1,5 +1,6 @@
 import './index.css'
 
-const className = "bg-[url('src/index.js')]"
-
-console.log(className)
+document.querySelector('#app').innerHTML = `
+<main class="after:content-['index.js']"">
+</main>
+`

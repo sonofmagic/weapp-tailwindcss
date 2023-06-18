@@ -291,8 +291,8 @@ describe('webpack5 plugin', () => {
               createLoader(function (source) {
                 return source
               }),
-              'css-loader'
-              // 'postcss-loader'
+              'css-loader',
+              'postcss-loader'
               // createLoader(function (source) {
               //   return source
               // })

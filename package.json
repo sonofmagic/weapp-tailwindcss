@@ -54,6 +54,7 @@
     "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
     "test": "jest && vitest run",
     "jest-u": "jest -u",
+    "jest:u": "jest -u",
     "test:dev": "vitest",
     "vitest:coverage": "vitest run --coverage",
     "e2e": "vitest run -c ./vitest.e2e.config.ts",
