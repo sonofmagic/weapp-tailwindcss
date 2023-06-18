@@ -77,6 +77,7 @@ const config = {
         //   '*': [/Class/]
         // }
       }
+      // chain.module.rules
 
       // chain.merge({
       //   plugin: {

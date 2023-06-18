@@ -596,6 +596,7 @@ describe('webpack5 plugin', () => {
                 module.loaders[0] = {
                   ...(createLoader(
                     async function () {
+                      // @ts-ignore
                       const res = await runLoaders({
                         resource: this.resource,
                         loaders: [target]

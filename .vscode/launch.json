@@ -5,6 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm run test:dev",
+      "name": "Run vitest dev debug",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
       "command": "yarn dev",
       "name": "[Demo] taro app run weapp dev",
       "request": "launch",
