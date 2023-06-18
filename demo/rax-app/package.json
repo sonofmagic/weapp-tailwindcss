@@ -38,7 +38,7 @@
     "stylelint": "^15.7.0",
     "tailwind-css-variables-theme-generator": "^0.3.8",
     "tailwindcss": "^3.3.2",
-    "tailwindcss-patch": "^1.2.5",
+    "tailwindcss-patch": "^1.2.6",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
