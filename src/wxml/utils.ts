@@ -49,9 +49,9 @@ export function extractSource(original: string) {
     sources.push({
       start,
       end,
-      raw: match[1],
-      prevConcatenated: !/\s/.test(original[start - 1]),
-      nextConcatenated: !/\s/.test(original[end])
+      raw: match[1]
+      // prevConcatenated: !/\s/.test(original[start - 1]),
+      // nextConcatenated: !/\s/.test(original[end])
     })
 
     match = variableMatch(original)

@@ -64,8 +64,8 @@ export interface RawSource {
   raw: string
   // '' 直接 remove {{}}
   source?: string
-  prevConcatenated: boolean
-  nextConcatenated: boolean
+  // prevConcatenated: boolean
+  // nextConcatenated: boolean
 }
 
 export interface ILengthUnitsPatchDangerousOptions {

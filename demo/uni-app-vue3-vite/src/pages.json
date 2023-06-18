@@ -87,6 +87,12 @@
       "pages": [
         {
           "path": "pages/index"
+        },
+        {
+          "path": "pages/a"
+        },
+        {
+          "path": "pages/b"
         }
       ],
       // uni-app 当前不支持，而且文档中都没有提到
