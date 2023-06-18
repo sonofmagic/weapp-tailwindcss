@@ -90,9 +90,9 @@ export function makeCustomAttributes(entries?: [string | RegExp, ItemOrItemArray
 
 export const variableRegExp = /{{(.*?)}}/gs
 
-export function variableMatch(original: string) {
-  return variableRegExp.exec(original)
-}
+// export function variableMatch(original: string) {
+//   return variableRegExp.exec(original)
+// }
 
 // #region  deprecated
 /** @deprecated */

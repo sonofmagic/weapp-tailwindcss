@@ -72,15 +72,17 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           const groupedEntries = getGroupedEntries(entries, this.options)
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-          const set = getClassSet()
-          setMangleRuntimeSet(set)
+          const runtimeSet = getClassSet()
+          setMangleRuntimeSet(runtimeSet)
           if (Array.isArray(groupedEntries.html)) {
             for (let i = 0; i < groupedEntries.html.length; i++) {
               const [file, originalSource] = groupedEntries.html[i]
 
               const rawSource = originalSource.source().toString()
 
-              const wxml = templeteHandler(rawSource)
+              const wxml = templeteHandler(rawSource, {
+                runtimeSet
+              })
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, wxml)
@@ -92,7 +94,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const [file, originalSource] = groupedEntries.js[i]
 
               const rawSource = originalSource.source().toString()
-              const { code } = jsHandler(rawSource, set)
+              const { code } = jsHandler(rawSource, runtimeSet)
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)

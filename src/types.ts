@@ -303,6 +303,18 @@ cssPreflight: {
    * @default 'view + view'
    */
   cssChildCombinatorReplaceValue?: string | string[]
+
+  /**
+   * @description 各个平台 wxs 的匹配方法
+   * @default 默认包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
+   */
+  wxsMatcher?: ((name: string) => boolean) | string | string[]
+
+  /**
+   * @description 是否转义wxml中内联的 wxs
+   * @default false
+   */
+  inlineWxs?: boolean
 }
 
 export interface IMangleScopeContext {
@@ -334,9 +346,12 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   // regexps?: ICustomRegexp[]
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
+  inlineWxs?: boolean
+  jsHandler?: (rawSource: string, set: Set<string>) => GeneratorResult
+  runtimeSet?: Set<string>
 }
 
-export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
+export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher' | 'wxsMatcher'
 
 export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
