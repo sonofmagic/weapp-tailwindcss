@@ -65,6 +65,11 @@
         "name": "subPackages",
         "path": "subs/demo/pages/index",
         "query": ""
+      },
+      {
+        "name": "independent subPackages",
+        "path": "moduleA/pages/index",
+        "query": ""
       }
     ]
   },
@@ -76,6 +81,16 @@
           "path": "pages/index"
         }
       ]
+    },
+    {
+      "root": "moduleA",
+      "pages": [
+        {
+          "path": "pages/index"
+        }
+      ],
+      // uni-app 当前不支持，而且文档中都没有提到
+      "_independent": true
     }
   ],
   "easycom": {
