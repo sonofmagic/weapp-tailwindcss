@@ -1,0 +1,10 @@
+<wxs module="inline">
+
+	var className = 'after:content-[\'我来自inline-wxs\']'
+  module.exports = {
+    className: className
+  }
+
+</wxs>
+<wxs src="./index.wxs" module="outside"/>
+<view class="beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_"><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>

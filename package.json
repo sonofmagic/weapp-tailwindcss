@@ -207,7 +207,8 @@
     "vitest": "^0.32.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.87.0",
-    "webpack-build-utils": "^0.0.4"
+    "webpack-build-utils": "^0.0.4",
+    "magic-string": "^0.30.0"
   },
   "dependencies": {
     "@babel/generator": "^7.21.4",
