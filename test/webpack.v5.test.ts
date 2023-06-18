@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import type { Compiler, Configuration } from 'webpack'
-import webapck from 'webpack'
+import webpack from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
@@ -402,6 +402,61 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  it('multipleContexts case 1', async () => {
+    const context = path.resolve(__dirname, './fixtures/webpack/v5/multiple-contexts')
+    const pc = path.resolve(context, 'postcss.config.js')
+    const mpc = path.resolve(context, 'postcss.config.module.js')
+    const customCompiler = getCompiler5({
+      mode: 'production',
+
+      optimization: {
+        sideEffects: false
+      },
+      entry: {
+        index: './src/index.js',
+        module: './src/module/index.js'
+      },
+      context,
+      plugins: [new MiniCssExtractPlugin()],
+      //
+      module: {
+        rules: [
+          {
+            test: /\.css$/i,
+            use: [
+              MiniCssExtractPlugin.loader,
+              'css-loader',
+              {
+                loader: 'postcss-loader',
+                options: {
+                  // function
+                  postcssOptions: (loaderContext: webpack.LoaderContext<object>) => {
+                    const isModule = /module[/\\](?:\w+[/\\])*\w+\.css$/.test(loaderContext.resourcePath)
+                    if (isModule) {
+                      return {
+                        ...require(mpc)
+                      }
+                    }
+                    return {
+                      ...require(pc)
+                    }
+                  }
+                }
+              }
+            ] //, 'css-loader', 'postcss-loader'],
+          }
+        ]
+      }
+    })
+    // @ts-ignore
+    // customCompiler.outputFileSystem = fs
+    const stats = await compile(customCompiler)
+    const assets = readAssets(customCompiler, stats)
+    expect(assets).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
   it('hijack custom loader', async () => {
     const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack')
     const anotherLoader = createLoader(
@@ -411,7 +466,7 @@ describe('webpack5 plugin', () => {
       {
         ident: 'anotherLoader'
       }
-    ) as webapck.NormalModule['loaders'][number]
+    ) as webpack.NormalModule['loaders'][number]
     // https://github.com/webpack/webpack/blob/main/lib/webpack.js#L71
     // https://github.com/webpack/webpack/blob/main/lib/NormalModule.js#L559
     const customCompiler = getCompiler5({
@@ -553,7 +608,7 @@ describe('webpack5 plugin', () => {
                     {
                       ident: 'anotherLoader'
                     }
-                  ) as webapck.NormalModule['loaders'][number])
+                  ) as webpack.NormalModule['loaders'][number])
                 }
                 // console.log(module.loaders)
                 // 最后执行

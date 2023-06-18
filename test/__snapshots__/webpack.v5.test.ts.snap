@@ -2524,6 +2524,47 @@ exports[`webpack5 plugin multiple tailwindcss contexts: errors 1`] = `[]`;
 
 exports[`webpack5 plugin multiple tailwindcss contexts: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin multipleContexts case 1: assets 1`] = `
+{
+  "index.css": "
+
+/* .a {
+  color: red;
+} */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
+
+",
+  "index.js": "(()=>{"use strict";document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})();",
+  "module.css": "
+
+/* .b {
+  color: blue;
+} */
+.after\\:content-\\[\\'m\\/index\\.js\\'\\]::after {
+    --tw-content: 'm/index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'m\\/index\\.wxml\\'\\]::after {
+    --tw-content: 'm/index.wxml';
+    content: var(--tw-content)
+}
+
+",
+  "module.js": "(()=>{"use strict";document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})();",
+}
+`;
+
+exports[`webpack5 plugin multipleContexts case 1: errors 1`] = `[]`;
+
+exports[`webpack5 plugin multipleContexts case 1: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin raw run loader 1`] = `
 "const a = 0
 
