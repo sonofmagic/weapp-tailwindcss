@@ -176,7 +176,7 @@ page::before {
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .test {
   @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
 }

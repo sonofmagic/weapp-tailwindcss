@@ -31,7 +31,7 @@
 
 ## 创建与配置示例
 
-这里笔者先以 `taro@3.6.7` 和 `weapp-tailwindcss@2.5.0` 版本的项目作为示例
+这里笔者先以 `taro@3.6.7` 和 `weapp-tailwindcss@2.5.2` 版本的项目作为示例
 
 首先在 `config/index.js` 中关闭 `prebundle` 功能，因为这在独立分包场景下会报一些未知的错误:
 
