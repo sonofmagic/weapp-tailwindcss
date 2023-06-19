@@ -70,8 +70,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   const { escapeMap, minifiedJs } = result
   const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
   initMangle(options.mangle)
-
-  result.styleHandler = createStyleHandler({
+  const styleHandler = createStyleHandler({
     cssInjectPreflight,
     customRuleCallback,
     cssPreflightRange,
@@ -80,21 +79,23 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     mangleContext,
     cssChildCombinatorReplaceValue
   })
-
-  result.jsHandler = createjsHandler({
+  result.styleHandler = styleHandler
+  const jsHandler = createjsHandler({
     minifiedJs,
     escapeMap,
     mangleContext,
     arbitraryValues
   })
-  const { jsHandler } = result
-  result.templeteHandler = createTempleteHandler({
+  result.jsHandler = jsHandler
+
+  const templeteHandler = createTempleteHandler({
     customAttributesEntities,
     escapeMap,
     mangleContext,
     inlineWxs,
     jsHandler
   })
+  result.templeteHandler = templeteHandler
 
   result.patch = createPatch(supportCustomLengthUnitsPatch)
   // result.initMangle = initMangle

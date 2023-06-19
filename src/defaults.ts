@@ -86,5 +86,5 @@ export const defaultOptions: UserDefinedOptions = {
     allowDoubleQuotes: false
   },
   cssChildCombinatorReplaceValue: 'view + view',
-  inlineWxs: false
+  inlineWxs: true
 }

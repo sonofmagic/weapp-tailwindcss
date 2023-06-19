@@ -54,6 +54,23 @@ module.exports = {
 </view>"
 `;
 
+exports[`wxs > inline.wxml use templeteHandler 1`] = `
+"<wxs module=\\"inline\\">var className = \\"afterccontent-_qu6211u6765u81eainline-wxsq_\\";
+module.exports = {
+  className: className
+};</wxs>
+<wxs module=\\"outside\\">/* eslint-disable */
+
+var className = \\"afterccontent-_qu6211u6765u81eaoutside-wxsq_\\";
+module.exports = {
+  className: className
+};</wxs>
+<view class=\\"beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_\\">
+  <view class=\\"{{inline.className}}\\"></view>
+  <view class=\\"{{outside.className}}\\"></view>
+</view>"
+`;
+
 exports[`wxs > outside wxs content extract and escape 1`] = `
 [
   "var className = \\"afterccontent-_qu6211u6765u81eainline-wxsq_\\";
@@ -61,6 +78,15 @@ module.exports = {
   className: className
 };",
 ]
+`;
+
+exports[`wxs > outside.wxml use templeteHandler 1`] = `
+"<wxs module=\\"inline\\">var className = \\"afterccontent-_qu6211u6765u81eainline-wxsq_\\";
+module.exports = {
+  className: className
+};</wxs>
+<wxs src=\\"./index.wxs\\" module=\\"outside\\"/>
+<view class=\\"beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_\\"><view class=\\"{{inline.className}}\\"></view><view class=\\"{{outside.className}}\\"></view></view>"
 `;
 
 exports[`wxs > simple.wxs content extract and escape 1`] = `

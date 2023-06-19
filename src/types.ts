@@ -312,7 +312,7 @@ cssPreflight: {
 
   /**
    * @description 是否转义wxml中内联的 wxs
-   * @default false
+   * @default true
    */
   inlineWxs?: boolean
 }

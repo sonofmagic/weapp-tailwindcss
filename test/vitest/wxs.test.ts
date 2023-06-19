@@ -92,4 +92,34 @@ describe('wxs', () => {
     }
     expect(jsHandler(str, set).code).matchSnapshot()
   })
+
+  it('inline.wxml use templeteHandler', async () => {
+    const str = await getCase('inline.wxml')
+    const { templeteHandler } = getOptions()
+    const set = new Set<string>()
+    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    for (const cls of arr) {
+      set.add(cls)
+    }
+    expect(
+      templeteHandler(str, {
+        runtimeSet: set
+      })
+    ).toMatchSnapshot()
+  })
+
+  it('outside.wxml use templeteHandler', async () => {
+    const str = await getCase('outside.wxml')
+    const { templeteHandler } = getOptions()
+    const set = new Set<string>()
+    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    for (const cls of arr) {
+      set.add(cls)
+    }
+    expect(
+      templeteHandler(str, {
+        runtimeSet: set
+      })
+    ).toMatchSnapshot()
+  })
 })
