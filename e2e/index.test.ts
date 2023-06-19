@@ -1,6 +1,8 @@
 // import { expect } from '@jest/globals'
 import fs from 'node:fs'
 import path from 'node:path'
+import prettier from 'prettier'
+
 import automator from 'miniprogram-automator'
 import { expect, test, describe } from 'vitest'
 const TestProjectsEntries: {
@@ -83,8 +85,28 @@ describe('e2e', () => {
     if (page) {
       await testMethod(page)
       const pageEl = await page.$('page')
-      const wxml = await pageEl?.wxml()
-      expect(wxml).toMatchSnapshot()
+      let wxml = await pageEl?.wxml()
+      if (wxml) {
+        try {
+          wxml = prettier.format(wxml, {
+            parser: 'html',
+            tabWidth: 2,
+            useTabs: false,
+            semi: false,
+            singleQuote: true,
+            endOfLine: 'lf',
+            trailingComma: 'none',
+            printWidth: 180,
+            bracketSameLine: true,
+            htmlWhitespaceSensitivity: 'ignore'
+          })
+        } catch {
+          console.error('parse error:' + config.url)
+        }
+
+        expect(wxml).toMatchSnapshot()
+      }
+
       await page.waitFor(3000)
     }
 

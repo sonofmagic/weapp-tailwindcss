@@ -2392,14 +2392,6 @@
   resolved "https://registry.npmmirror.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@types/loader-utils@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.npmmirror.com/@types/loader-utils/-/loader-utils-2.0.3.tgz#fbc2337358f8f4a7dc532ac0a3646c74275edf2d"
-  integrity sha512-sDXXzZnTLXgdso54/iOpAFSDgqhVXabCvwGAt77Agadh/Xk0QYgOk520r3tpOouI098gyqGIFywx8Op1voc3vQ==
-  dependencies:
-    "@types/node" "*"
-    "@types/webpack" "^4"
-
 "@types/lodash.debounce@^4.0.6":
   version "4.0.7"
   resolved "https://registry.npmmirror.com/@types/lodash.debounce/-/lodash.debounce-4.0.7.tgz#0285879defb7cdb156ae633cecd62d5680eded9f"
@@ -2549,19 +2541,6 @@
     "@types/node" "*"
     "@types/source-list-map" "*"
     source-map "^0.7.3"
-
-"@types/webpack4@npm:@types/webpack@^4.41.26", "@types/webpack@^4":
-  name "@types/webpack4"
-  version "4.41.33"
-  resolved "https://registry.npmmirror.com/@types/webpack/-/webpack-4.41.33.tgz#16164845a5be6a306bcbe554a8e67f9cac215ffc"
-  integrity sha512-PPajH64Ft2vWevkerISMtnZ8rTs4YmRbs+23c402J0INmxDKCrhZNvwZYtzx96gY2wAtXdrK1BS2fiC8MlLr3g==
-  dependencies:
-    "@types/node" "*"
-    "@types/tapable" "^1"
-    "@types/uglify-js" "*"
-    "@types/webpack-sources" "*"
-    anymatch "^3.0.0"
-    source-map "^0.6.0"
 
 "@types/webpack@^4.41.8":
   version "4.41.32"
@@ -4812,15 +4791,6 @@ create-ecdh@^4.0.0:
   dependencies:
     bn.js "^4.1.0"
     elliptic "^6.5.3"
-
-create-functional-loader@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmmirror.com/create-functional-loader/-/create-functional-loader-0.1.0.tgz#377218c3259b715598963b079c0b681022acbc79"
-  integrity sha512-E5Jkn4NmfCcI0FphI8Oflz1nAWwOJHLkkPFPMvy3SxiL5IuE9NfJ/g38DD/kb8Hfe8hNMVo2kzYAXqRbNKcBVg==
-  dependencies:
-    "@types/loader-utils" "^2.0.3"
-    "@types/webpack4" "npm:@types/webpack@^4.41.26"
-    loader-utils "^2.0.3"
 
 create-hash@^1.1.0, create-hash@^1.1.2, create-hash@^1.2.0:
   version "1.2.0"
@@ -13520,17 +13490,17 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.5.2-beta.0:
-  version "2.5.2-beta.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.2-beta.0.tgz#8d8269c76a60186245312ef726adc0de343dd916"
-  integrity sha512-f17Rk4m/Uz8q6xyLQGPDog9M8qP/gGUap+RKDFKwUTpKOdPtd25fe2u+Nn782dKBOafrxBLnMK0Vi34Mya+5yQ==
+weapp-tailwindcss-webpack-plugin@^2.5.2-beta.1:
+  version "2.5.2-beta.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.2-beta.1.tgz#8f8aaa223cdd372cdce08ad9876465691e24b089"
+  integrity sha512-YR2F944PmJloj09K4SOxKx2BRjRFJr9jisNje6dg2DbWOU6YrnV8tDLftsjrH8fBKpNxK5y0qREp6bf/YfD7kw==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
     "@babel/traverse" "^7.21.4"
     "@babel/types" "^7.21.4"
     "@csstools/postcss-is-pseudo-class" "^3.2.1"
-    create-functional-loader "^0.1.0"
+    loader-utils "^2.0.3"
     micromatch "^4.0.5"
     postcss "8.4.24"
     postcss-selector-parser "^6.0.13"
