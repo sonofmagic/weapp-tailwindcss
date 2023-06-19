@@ -305,16 +305,15 @@ cssPreflight: {
   cssChildCombinatorReplaceValue?: string | string[]
 
   /**
-   * @experiment
-   * @description 各个平台 `wxs` 文件的匹配方法
+   * @experiment 实验性质，有可能会改变
+   * @description 各个平台 `wxs` 文件的匹配方法,可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
    * @default ()=>false
-   * 可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
    */
   wxsMatcher?: ((name: string) => boolean) | string | string[]
 
   /**
-   * @experiment
+   * @experiment 实验性质，有可能会改变
    * @description 是否转义 `wxml` 中内联的 `wxs`
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
    * @example 
