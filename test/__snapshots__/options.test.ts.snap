@@ -82,7 +82,7 @@ exports[`get options default options 1`] = `
     "~": "t",
   },
   "htmlMatcher": [Function],
-  "inlineWxs": true,
+  "inlineWxs": false,
   "jsHandler": [Function],
   "jsMatcher": [Function],
   "mainCssChunkMatcher": [Function],

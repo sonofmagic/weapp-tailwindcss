@@ -305,13 +305,16 @@ cssPreflight: {
   cssChildCombinatorReplaceValue?: string | string[]
 
   /**
+   * @experiment
    * @description 各个平台 `wxs` 文件的匹配方法
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
-   * @default 默认包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
+   * @default ()=>false
+   * 可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
    */
   wxsMatcher?: ((name: string) => boolean) | string | string[]
 
   /**
+   * @experiment
    * @description 是否转义 `wxml` 中内联的 `wxs`
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
    * @example 
@@ -320,7 +323,7 @@ cssPreflight: {
    * <wxs module="inline">
 // 我是内联wxs
 // 下方的类名会被转义
-	var className = 'after:content-[\'我来自inline-wxs\']'
+  var className = 'after:content-[\'我来自inline-wxs\']'
   module.exports = {
     className: className
   }
@@ -328,7 +331,7 @@ cssPreflight: {
 <wxs src="./index.wxs" module="outside"/>
 <view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
    * ```
-   * @default true
+   * @default false
    */
   inlineWxs?: boolean
 }
