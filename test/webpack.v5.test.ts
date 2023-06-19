@@ -6,6 +6,7 @@ import webpack from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
+import { copySync, mkdirSync } from 'fs-extra'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string }) {
@@ -66,6 +67,20 @@ describe('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
+  const cacheDir = path.resolve(process.cwd(), 'node_modules/.cache', 'tailwindcss-patch')
+  const cacheJson = path.resolve(cacheDir, 'index.json')
+  beforeAll(() => {
+    const isExisted = fss.existsSync(cacheDir)
+    if (!isExisted) {
+      mkdirSync(cacheDir, {
+        recursive: true
+      })
+    }
+
+    copySync(path.resolve(__dirname, 'fixtures/json/index.json'), cacheJson)
+    expect(fss.existsSync(cacheDir)).toBe(true)
+    expect(fss.existsSync(cacheJson)).toBe(true)
+  })
 
   beforeEach(() => {
     compiler = createCompiler({
@@ -94,9 +109,7 @@ describe('webpack5 plugin', () => {
   })
 
   afterAll(() => {
-    const dir = path.resolve(process.cwd(), 'node_modules/.cache', 'tailwindcss-patch')
-    expect(fss.existsSync(dir)).toBe(true)
-    const cacheJson = path.resolve(dir, 'index.json')
+    expect(fss.existsSync(cacheDir)).toBe(true)
     expect(fss.existsSync(cacheJson)).toBe(true)
   })
   it('common', async () => {
