@@ -23,7 +23,11 @@ const config = {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         disabled: WeappTailwindcssDisabled,
-        appType: 'uni-app'
+        appType: 'uni-app',
+        wxsMatcher() {
+          return false
+        },
+        inlineWxs: false
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())
