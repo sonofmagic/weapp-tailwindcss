@@ -1,7 +1,8 @@
 import fs from 'node:fs'
 // import path from 'node:path'
 import { describe, it, expect } from 'vitest'
-import MagicString from 'magic-string'
+import { getClassCacheSet } from 'tailwindcss-patch'
+import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { createGetCase, wxsCasePath } from '#test/util'
 // import { createTempleteHandler } from '@/wxml/index'
@@ -125,5 +126,19 @@ describe('wxs', () => {
         runtimeSet: set
       })
     ).toMatchSnapshot()
+  })
+
+  it.skip('wxs fail case0', () => {
+    const raw = `\n\n\tvar className = 'after:content-[\\'我来自inline-wxs\\']'\n  module.exports = {\n    className: className\n  }\n\n`
+    getCss(raw)
+    const set = getClassCacheSet()
+    const { jsHandler } = getOptions()
+    const code = jsHandler(raw, set)
+    expect(code).toMatchSnapshot()
+    // 一转义就有问题
+    // "after:content-['我来自inline-wxs']"
+    // "after:content-[\\'我来自inline-wxs\\']"
+    // "after:content-[\\'我来自inline-wxs\\']"
+    // "after:content-['我是自className2']"
   })
 })

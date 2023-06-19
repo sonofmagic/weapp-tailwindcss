@@ -32,7 +32,7 @@ if (!WeappTailwindcssDisabled) {
       wxsMatcher() {
         return false;
       },
-      inlineWxs: false,
+      inlineWxs: true,
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',

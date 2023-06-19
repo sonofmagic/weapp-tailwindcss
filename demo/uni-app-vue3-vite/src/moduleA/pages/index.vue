@@ -5,6 +5,9 @@
     <view class="{{inline.className}}">
 
     </view>
+    <view class="{{inline.className2}}">
+
+    </view>
     <view class="{{ outside.className }}">
 
     </view>
@@ -19,8 +22,10 @@
 
 <script module="inline" lang="wxs">
 	var className = 'after:content-[\'我来自inline-wxs\']'
+  var className2 = "after:content-['我是className']"
   module.exports = {
-    className: className
+    className: className,
+    className2: className2
   }
 </script>
 

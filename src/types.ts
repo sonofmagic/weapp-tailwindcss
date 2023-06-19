@@ -323,7 +323,7 @@ cssPreflight: {
    * <wxs module="inline">
 // 我是内联wxs
 // 下方的类名会被转义
-  var className = 'after:content-[\'我来自inline-wxs\']'
+  var className = "after:content-['我是className']"
   module.exports = {
     className: className
   }

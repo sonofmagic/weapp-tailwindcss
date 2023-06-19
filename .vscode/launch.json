@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm run dev:local",
+      "name": "[Demo] uni-app-vue3-vite dev:local",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/uni-app-vue3-vite"
+    },
+    {
       "command": "npm run test:dev",
       "name": "Run vitest dev debug",
       "request": "launch",
