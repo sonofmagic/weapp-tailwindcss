@@ -4,6 +4,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     # https://github.com/webpack/webpack/blob/main/.github/workflows/test.yml

@@ -66,6 +66,7 @@ describe('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
+
   beforeEach(() => {
     compiler = createCompiler({
       mode: 'development',
@@ -90,6 +91,13 @@ describe('webpack5 plugin', () => {
       },
       tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/empty/tailwind.config.js')
     })
+  })
+
+  afterAll(() => {
+    const dir = path.resolve(process.cwd(), 'node_modules/.cache', 'tailwindcss-patch')
+    expect(fss.existsSync(dir)).toBe(true)
+    const cacheJson = path.resolve(dir, 'index.json')
+    expect(fss.existsSync(cacheJson)).toBe(true)
   })
   it('common', async () => {
     new UnifiedWebpackPluginV5({
