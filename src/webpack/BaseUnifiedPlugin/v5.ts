@@ -1,8 +1,10 @@
 // webpack 5
+import path from 'node:path'
+import fs from 'node:fs'
 import type { Compiler } from 'webpack'
 import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import { getOptions } from '@/options'
-import { pluginName, NS } from '@/constants'
+import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/utils'
 
@@ -16,7 +18,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
 
-  static NS = NS
   constructor(options: UserDefinedOptions = {}) {
     if (options.customReplaceDictionary === undefined) {
       options.customReplaceDictionary = 'simple'
@@ -31,26 +32,49 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       return
     }
     patch?.()
-
-    const Compilation = compiler.webpack.Compilation
-    const { ConcatSource } = compiler.webpack.sources
+    // NormalModule,
+    const { Compilation, sources, NormalModule } = compiler.webpack
+    const { ConcatSource } = sources
     // react
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
-      let set = twPatcher.getClassSet()
-      // if (compiler.options.cache && compiler.options.cache.type === 'filesystem') {
-      // tarojs save scss hmr trigger error
-      if (set.size === 0) {
-        const cacheSet = twPatcher.getCache()
-        if (cacheSet && cacheSet.size > 0) {
-          set = cacheSet
-        }
-      }
-      // }
-      return set
+      return twPatcher.getClassSet()
     }
+
+    // const WeappTwRuntimeAopLoader = createLoader(
+    //   function (content: string) {
+    //     // for cache merge
+    //     getClassSet()
+    //     return content
+    //   },
+    //   {
+    //     // @ts-ignore
+    //     ident: null,
+    //     type: null
+    //   }
+    // )
     onLoad()
+    const loader = path.resolve(__dirname, './weapp-tw-runtime-loader.js')
+    const isExisted = fs.existsSync(loader)
+    const WeappTwRuntimeAopLoader = {
+      loader,
+      options: {
+        getClassSet
+      },
+      ident: null,
+      type: null
+    }
+
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+        if (isExisted) {
+          const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+          // // css
+          if (idx > -1) {
+            module.loaders.unshift(WeappTwRuntimeAopLoader)
+          }
+        }
+      })
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
@@ -62,15 +86,17 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           const groupedEntries = getGroupedEntries(entries, this.options)
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-          const set = getClassSet()
-          setMangleRuntimeSet(set)
+          const runtimeSet = getClassSet()
+          setMangleRuntimeSet(runtimeSet)
           if (Array.isArray(groupedEntries.html)) {
             for (let i = 0; i < groupedEntries.html.length; i++) {
               const [file, originalSource] = groupedEntries.html[i]
 
               const rawSource = originalSource.source().toString()
 
-              const wxml = templeteHandler(rawSource)
+              const wxml = templeteHandler(rawSource, {
+                runtimeSet
+              })
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, wxml)
@@ -82,7 +108,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const [file, originalSource] = groupedEntries.js[i]
 
               const rawSource = originalSource.source().toString()
-              const { code } = jsHandler(rawSource, set)
+              const { code } = jsHandler(rawSource, runtimeSet)
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)

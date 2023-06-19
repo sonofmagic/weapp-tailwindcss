@@ -1,0 +1,9 @@
+<import-sjs from="./foo.sjs" name="m" />
+<import-sjs from="./bar.sjs" name="{x, y: z}" />
+
+<view>js message: {{message}}</view>
+<view>sjs message: {{m.message}}</view>
+<view>formatted value: {{m.format(value)}}</view>
+
+<view>x: {{x}}</view>
+<view>z: {{z}}</view>

@@ -64,8 +64,8 @@ export interface RawSource {
   raw: string
   // '' 直接 remove {{}}
   source?: string
-  prevConcatenated: boolean
-  nextConcatenated: boolean
+  // prevConcatenated: boolean
+  // nextConcatenated: boolean
 }
 
 export interface ILengthUnitsPatchDangerousOptions {
@@ -303,6 +303,37 @@ cssPreflight: {
    * @default 'view + view'
    */
   cssChildCombinatorReplaceValue?: string | string[]
+
+  /**
+   * @experiment
+   * @description 各个平台 `wxs` 文件的匹配方法
+   * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
+   * @default ()=>false
+   * 可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
+   */
+  wxsMatcher?: ((name: string) => boolean) | string | string[]
+
+  /**
+   * @experiment
+   * @description 是否转义 `wxml` 中内联的 `wxs`
+   * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
+   * @example 
+   * ```html
+   * <!-- index.wxml -->
+   * <wxs module="inline">
+// 我是内联wxs
+// 下方的类名会被转义
+  var className = "after:content-['我是className']"
+  module.exports = {
+    className: className
+  }
+</wxs>
+<wxs src="./index.wxs" module="outside"/>
+<view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
+   * ```
+   * @default false
+   */
+  inlineWxs?: boolean
 }
 
 export interface IMangleScopeContext {
@@ -334,9 +365,12 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   // regexps?: ICustomRegexp[]
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
+  inlineWxs?: boolean
+  jsHandler?: (rawSource: string, set: Set<string>) => GeneratorResult
+  runtimeSet?: Set<string>
 }
 
-export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher'
+export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher' | 'wxsMatcher'
 
 export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {

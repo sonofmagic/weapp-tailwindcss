@@ -1,7 +1,7 @@
 import * as t from '@babel/types'
 import { replaceWxml } from './shared'
 import { parseExpression, traverse, generate } from '@/babel'
-import { variableMatch, variableRegExp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
+import { variableRegExp, wxsTagRegexp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
 import { defu } from '@/utils'
 import type { RawSource, ITempleteHandlerOptions } from '@/types'
 
@@ -37,26 +37,31 @@ export function generateCode(match: string, options: ITempleteHandlerOptions = {
   return code
 }
 
-export function extractSource(original: string) {
-  let match = variableMatch(original)
+/**
+ * @internal
+ */
+function extract(original: string, reg: RegExp) {
+  let match = reg.exec(original)
   const sources: RawSource[] = []
 
   while (match !== null) {
     // 过滤空字符串
     // if (match[1].trim().length) {
     const start = match.index
-    const end = variableRegExp.lastIndex
+    const end = reg.lastIndex
     sources.push({
       start,
       end,
-      raw: match[1],
-      prevConcatenated: !/\s/.test(original[start - 1]),
-      nextConcatenated: !/\s/.test(original[end])
+      raw: match[1]
     })
 
-    match = variableMatch(original)
+    match = reg.exec(original)
   }
   return sources
+}
+
+export function extractSource(original: string) {
+  return extract(original, variableRegExp)
 }
 
 export function templeteReplacer(original: string, options: ITempleteHandlerOptions = {}) {
@@ -120,28 +125,31 @@ export function templeteHandler(rawSource: string, options: ITempleteHandlerOpti
   })
 }
 
-export function customTempleteHandler(rawSource: string, options: ITempleteHandlerOptions = {}) {
+export function customTempleteHandler(rawSource: string, options: Required<ITempleteHandlerOptions>) {
+  const { customAttributesEntities, inlineWxs, runtimeSet, jsHandler } = options
   let source = templeteHandler(rawSource, options)
-  const regexps = makeCustomAttributes(options.customAttributesEntities)
-  if (regexps) {
-    if (Array.isArray(regexps)) {
-      for (const regexp of regexps) {
-        source = source.replace(regexp.tagRegexp, (m0) => {
-          return m0.replace(regexp.attrRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className, options))
-          })
+  const regexps = makeCustomAttributes(customAttributesEntities)
+  if (regexps && Array.isArray(regexps)) {
+    for (const regexp of regexps) {
+      source = source.replace(regexp.tagRegexp, (m0) => {
+        return m0.replace(regexp.attrRegexp, (m1, className) => {
+          return m1.replace(className, templeteReplacer(className, options))
         })
-      }
+      })
     }
-
-    return source
-  } else {
-    return source
   }
+  if (inlineWxs) {
+    const wxsTags = extract(source, wxsTagRegexp)
+    for (const x of wxsTags) {
+      const code = jsHandler(x.raw, runtimeSet).code
+      source = source.replaceAll(x.raw, code)
+    }
+  }
+  return source
 }
 
-export function createTempleteHandler(options: ITempleteHandlerOptions = {}) {
-  return (rawSource: string, opt: ITempleteHandlerOptions = {}) => {
-    return customTempleteHandler(rawSource, defu(opt, options))
+export function createTempleteHandler(options: Omit<ITempleteHandlerOptions, 'runtimeSet'> = {}) {
+  return (rawSource: string, opt: Pick<ITempleteHandlerOptions, 'runtimeSet'> = {}) => {
+    return customTempleteHandler(rawSource, defu(opt, options) as Required<ITempleteHandlerOptions>)
   }
 }

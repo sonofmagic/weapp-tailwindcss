@@ -90,9 +90,9 @@ export function makeCustomAttributes(entries?: [string | RegExp, ItemOrItemArray
 
 export const variableRegExp = /{{(.*?)}}/gs
 
-export function variableMatch(original: string) {
-  return variableRegExp.exec(original)
-}
+// export function variableMatch(original: string) {
+//   return variableRegExp.exec(original)
+// }
 
 // #region  deprecated
 /** @deprecated */
@@ -114,6 +114,7 @@ export function tagStringReplace(str: string, replacement: (substring: string, .
   return str.replaceAll(tagRegexp, replacement)
 }
 
+export const wxsTagRegexp = /<wxs\s*(?:[a-z][a-z-]*[a-z]*(?:\s*=\s*".*?")?)*\s*>(.*?)<\/wxs>/gs
 // /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
 
 // export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim

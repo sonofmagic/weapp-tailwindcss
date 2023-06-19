@@ -28,14 +28,18 @@ const config = {
             return false
           }
           // remove jsx tsx ts case
-          return /.+\.[cm]?[j]s?$/.test(file)
+          return /.+\.[cm]?js?$/.test(file)
         },
         disabled: WeappTailwindcssDisabled,
         customAttributes: {
           // '*': [/className/],
           '*': ['className']
         },
-        customReplaceDictionary: 'simple'
+        customReplaceDictionary: 'simple',
+        wxsMatcher() {
+          return false
+        },
+        inlineWxs: false
       })
     )
     // smp.wrap(config)

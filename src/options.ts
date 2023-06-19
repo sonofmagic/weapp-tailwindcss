@@ -39,6 +39,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   normalizeMatcher(options, 'cssMatcher')
   normalizeMatcher(options, 'htmlMatcher')
   normalizeMatcher(options, 'jsMatcher')
+  normalizeMatcher(options, 'wxsMatcher')
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
   const result = defu<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(options, defaultOptions as InternalUserDefinedOptions, {
@@ -54,7 +55,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     customReplaceDictionary,
     supportCustomLengthUnitsPatch,
     arbitraryValues,
-    cssChildCombinatorReplaceValue
+    cssChildCombinatorReplaceValue,
+    inlineWxs
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -68,12 +70,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   const { escapeMap, minifiedJs } = result
   const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
   initMangle(options.mangle)
-  result.templeteHandler = createTempleteHandler({
-    customAttributesEntities,
-    escapeMap,
-    mangleContext
-  })
-  result.styleHandler = createStyleHandler({
+  const styleHandler = createStyleHandler({
     cssInjectPreflight,
     customRuleCallback,
     cssPreflightRange,
@@ -82,13 +79,24 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     mangleContext,
     cssChildCombinatorReplaceValue
   })
-
-  result.jsHandler = createjsHandler({
+  result.styleHandler = styleHandler
+  const jsHandler = createjsHandler({
     minifiedJs,
     escapeMap,
     mangleContext,
     arbitraryValues
   })
+  result.jsHandler = jsHandler
+
+  const templeteHandler = createTempleteHandler({
+    customAttributesEntities,
+    escapeMap,
+    mangleContext,
+    inlineWxs,
+    jsHandler
+  })
+  result.templeteHandler = templeteHandler
+
   result.patch = createPatch(supportCustomLengthUnitsPatch)
   // result.initMangle = initMangle
   result.setMangleRuntimeSet = setMangleRuntimeSet

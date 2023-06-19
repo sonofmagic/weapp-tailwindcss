@@ -62,13 +62,13 @@ export function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]
 }
 
 export function getGroupedEntries<T>(entries: [string, T][], options: InternalUserDefinedOptions) {
-  const { cssMatcher, htmlMatcher, jsMatcher } = options
+  const { cssMatcher, htmlMatcher, jsMatcher, wxsMatcher } = options
   const groupedEntries = groupBy(entries, ([file]) => {
     if (cssMatcher(file)) {
       return 'css'
     } else if (htmlMatcher(file)) {
       return 'html'
-    } else if (jsMatcher(file)) {
+    } else if (jsMatcher(file) || wxsMatcher(file)) {
       return 'js'
     } else {
       return 'other'

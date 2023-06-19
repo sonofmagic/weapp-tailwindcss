@@ -37,8 +37,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
-      const set = twPatcher.getClassSet()
-      setMangleRuntimeSet(set)
+      const runtimeSet = twPatcher.getClassSet()
+      setMangleRuntimeSet(runtimeSet)
       if (Array.isArray(groupedEntries.html)) {
         for (let i = 0; i < groupedEntries.html.length; i++) {
           // let classGenerator
@@ -47,7 +47,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           //   classGenerator = globalClassGenerator
           // }
           const oldVal = originalSource.source.toString()
-          originalSource.source = templeteHandler(oldVal)
+          originalSource.source = templeteHandler(oldVal, {
+            runtimeSet
+          })
           onUpdate(file, oldVal, originalSource.source)
         }
       }
@@ -71,7 +73,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         for (let i = 0; i < groupedEntries.js.length; i++) {
           const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
           const rawSource = originalSource.code
-          const { code } = jsHandler(rawSource, set)
+          const { code } = jsHandler(rawSource, runtimeSet)
           originalSource.code = code
           onUpdate(file, rawSource, code)
         }

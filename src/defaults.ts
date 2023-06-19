@@ -46,6 +46,14 @@ export const defaultOptions: UserDefinedOptions = {
       }
     }
   },
+  wxsMatcher: (file) => {
+    return false
+    // if (file.includes('node_modules')) {
+    //   return false
+    // }
+    // // remove jsx tsx ts case
+    // return /.+\.(wx|sj)s?$/.test(file)
+  },
   cssPreflight: {
     'box-sizing': 'border-box',
     'border-width': '0',
@@ -78,5 +86,6 @@ export const defaultOptions: UserDefinedOptions = {
   arbitraryValues: {
     allowDoubleQuotes: false
   },
-  cssChildCombinatorReplaceValue: 'view + view'
+  cssChildCombinatorReplaceValue: 'view + view',
+  inlineWxs: false
 }

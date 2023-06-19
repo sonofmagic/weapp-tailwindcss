@@ -1,0 +1,21 @@
+<wxs module="inline">
+
+	var className = 'after:content-[\'我来自inline-wxs\']'
+  module.exports = {
+    className: className
+  }
+
+</wxs>
+<wxs module="outside">
+/* eslint-disable */
+
+
+var className = 'after:content-[\'我来自outside-wxs\']'
+module.exports = {
+  className: className
+}
+</wxs>
+<view class="beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_">
+  <view class="{{inline.className}}"></view>
+  <view class="{{outside.className}}"></view>
+</view>

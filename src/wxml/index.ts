@@ -1,2 +1,2 @@
 export { replaceWxml } from './shared'
-export { generateCode, templeteHandler, templeteReplacer } from './utils'
+export { generateCode, templeteHandler, templeteReplacer, customTempleteHandler, createTempleteHandler, extractSource } from './utils'

@@ -5,7 +5,7 @@
     <view class="space-y-4 flex flex-col bg-red-400">
       <view class="bg-sky-500">view space-y-4</view>
       <view class="bg-sky-500">view space-y-4</view>
-      <input class="bg-sky-500" value="input space-y-4"/>
+      <input class="bg-sky-500" value="input space-y-4" />
       <text class="bg-sky-500">text space-y-4</text>
       <button class="bg-sky-500">button space-y-4</button>
       <CommonCom class="bg-sky-500">CommonCom space-y-4</CommonCom>
@@ -37,7 +37,7 @@
       </view>
     </view>
     <u-button type="primary">主要按钮</u-button>
-    <u-input />
+    <!-- <u-input /> -->
     <view class="after:border-none">当前系统主题:{{ themeRef }}</view>
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
@@ -176,7 +176,7 @@ page::before {
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .test {
   @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
 }

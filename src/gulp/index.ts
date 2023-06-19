@@ -21,7 +21,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
   const { templeteHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet } = opts
 
-  let set = new Set<string>()
+  let runtimeSet = new Set<string>()
   patch?.()
 
   const twPatcher = createTailwindcssPatcher()
@@ -30,8 +30,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     const transformStream = new Transform({ objectMode: true })
 
     transformStream._transform = function (file: File, encoding, callback) {
-      set = twPatcher.getClassSet()
-      setMangleRuntimeSet(set)
+      runtimeSet = twPatcher.getClassSet()
+      setMangleRuntimeSet(runtimeSet)
       const error = null
 
       if (file.contents) {
@@ -53,7 +53,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     transformStream._transform = function (file: File, encoding, callback) {
       const error = null
       if (file.contents) {
-        const { code } = jsHandler(file.contents.toString(), set)
+        const { code } = jsHandler(file.contents.toString(), runtimeSet)
         file.contents = Buffer.from(code)
       }
       callback(error, file)
@@ -69,7 +69,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const error = null
       // file.path
       if (file.contents) {
-        const code = templeteHandler(file.contents.toString())
+        const code = templeteHandler(file.contents.toString(), {
+          runtimeSet
+        })
         file.contents = Buffer.from(code)
       }
 

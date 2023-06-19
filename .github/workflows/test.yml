@@ -4,6 +4,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     # https://github.com/webpack/webpack/blob/main/.github/workflows/test.yml
@@ -11,21 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [10.x, 20.x]
-        part: [a, b]
-        include:
-          - os: ubuntu-latest
-            node-version: 18.x
-            part: a
-          - os: ubuntu-latest
-            node-version: 16.x
-            part: a
-          - os: ubuntu-latest
-            node-version: 14.x
-            part: a
-          - os: ubuntu-latest
-            node-version: 12.x
-            part: a
+        node-version: [14.x, 16.x, 18.x, 20.x]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -36,6 +25,7 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm i
+      - run: pnpm postinstall
       - run: pnpm build
       - run: pnpm test
 

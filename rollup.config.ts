@@ -44,9 +44,9 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       }),
       isProd
         ? visualizer({
-          // emitFile: true,
-          filename: `stats/${entry.name}.html`
-        })
+            // emitFile: true,
+            filename: `stats/${entry.name}.html`
+          })
         : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
@@ -84,7 +84,8 @@ const entries: IEntry[] = [
       postcss: 'src/postcss.ts',
       cli: 'src/cli.ts',
       replace: 'src/replace.ts',
-      vite: 'src/vite.ts'
+      vite: 'src/vite.ts',
+      'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts'
     },
     output: [
       {
@@ -101,6 +102,19 @@ const entries: IEntry[] = [
       }
     ]
   }
+  // {
+  //   name: 'loader',
+  //   input: {
+  //     'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts'
+  //   },
+  //   output: [
+  //     {
+  //       dir: 'lib',
+  //       format: 'cjs',
+  //       ...mainOutputOptions
+  //     }
+  //   ]
+  // }
 ]
 
 const config = entries.map((x) => {

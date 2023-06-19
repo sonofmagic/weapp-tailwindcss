@@ -6,12 +6,14 @@ export function resolve(...args: string[]) {
 }
 
 export const rootPath = resolve(__dirname, '..')
+export const distPath = resolve(rootPath, 'dist')
 export const demoPath = resolve(rootPath, 'demo')
 export const configPath = resolve(__dirname, 'config')
 export const jsxCasePath = resolve(__dirname, 'fixtures/jsx')
 export const jsCasePath = resolve(__dirname, 'fixtures/js')
 export const cssCasePath = resolve(__dirname, 'fixtures/css')
 export const wxmlCasePath = resolve(__dirname, 'fixtures/wxml')
+export const wxsCasePath = resolve(__dirname, 'fixtures/wxs')
 export const loaderCasePath = resolve(__dirname, 'fixtures/loader')
 export const tailwindcssCasePath = resolve(__dirname, 'fixtures/tailwindcss')
 export const webpack5CasePath = resolve(__dirname, 'fixtures/webpack/v5')

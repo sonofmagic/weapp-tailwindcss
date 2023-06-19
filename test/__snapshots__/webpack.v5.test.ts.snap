@@ -880,6 +880,26 @@ exports[`webpack5 plugin empty build: errors 1`] = `[]`;
 
 exports[`webpack5 plugin empty build: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin hijack custom loader 0: assets 1`] = `
+{
+  "index.js": "console.log(0),console.log(1),console.log(2);",
+}
+`;
+
+exports[`webpack5 plugin hijack custom loader 0: errors 1`] = `[]`;
+
+exports[`webpack5 plugin hijack custom loader 0: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin hijack custom loader: assets 1`] = `
+{
+  "index.js": "console.log(0),console.log(1),console.log(2);",
+}
+`;
+
+exports[`webpack5 plugin hijack custom loader: errors 1`] = `[]`;
+
+exports[`webpack5 plugin hijack custom loader: warnings 1`] = `[]`;
+
 exports[`webpack5 plugin mangle options mangleClassFilter all true: assets 1`] = `
 {
   "index.css": "::before,::after {
@@ -2423,6 +2443,133 @@ view,::before,::after {
 exports[`webpack5 plugin mangle true: errors 1`] = `[]`;
 
 exports[`webpack5 plugin mangle true: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: assets 1`] = `
+{
+  "index.css": "
+
+/* .a {
+  color: red;
+} */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
+",
+  "index.js": "(()=>{var e={617:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(617),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
+  "module.css": "
+
+/* .b {
+  color: blue;
+} */
+.after\\:content-\\[\\'m\\/index\\.js\\'\\]::after {
+    --tw-content: 'm/index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'m\\/index\\.wxml\\'\\]::after {
+    --tw-content: 'm/index.wxml';
+    content: var(--tw-content)
+}
+",
+  "module.js": "(()=>{var e={731:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(731),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
+}
+`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: errors 1`] = `[]`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts raw case 0: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts: assets 1`] = `
+{
+  "index.css": "
+
+/* .a {
+  color: red;
+} */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
+
+",
+  "index.js": "(()=>{"use strict";document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})();",
+  "module.css": "
+
+/* .b {
+  color: blue;
+} */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
+
+",
+  "module.js": "(()=>{"use strict";document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})();",
+}
+`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts: errors 1`] = `[]`;
+
+exports[`webpack5 plugin multiple tailwindcss contexts: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin multipleContexts case 1: assets 1`] = `
+{
+  "index.css": "
+
+/* .a {
+  color: red;
+} */
+.after\\:content-\\[\\'index\\.js\\'\\]::after {
+    --tw-content: 'index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'index\\.wxml\\'\\]::after {
+    --tw-content: 'index.wxml';
+    content: var(--tw-content)
+}
+
+",
+  "index.js": "(()=>{"use strict";document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})();",
+  "module.css": "
+
+/* .b {
+  color: blue;
+} */
+.after\\:content-\\[\\'m\\/index\\.js\\'\\]::after {
+    --tw-content: 'm/index.js';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'m\\/index\\.wxml\\'\\]::after {
+    --tw-content: 'm/index.wxml';
+    content: var(--tw-content)
+}
+
+",
+  "module.js": "(()=>{"use strict";document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})();",
+}
+`;
+
+exports[`webpack5 plugin multipleContexts case 1: errors 1`] = `[]`;
+
+exports[`webpack5 plugin multipleContexts case 1: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin raw run loader 1`] = `
+"const a = 0
+
+console.log(a)0"
+`;
 
 exports[`webpack5 plugin unified common: assets 1`] = `
 {
