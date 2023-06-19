@@ -2392,6 +2392,14 @@
   resolved "https://registry.npmmirror.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
+"@types/loader-utils@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/@types/loader-utils/-/loader-utils-2.0.3.tgz#fbc2337358f8f4a7dc532ac0a3646c74275edf2d"
+  integrity sha512-sDXXzZnTLXgdso54/iOpAFSDgqhVXabCvwGAt77Agadh/Xk0QYgOk520r3tpOouI098gyqGIFywx8Op1voc3vQ==
+  dependencies:
+    "@types/node" "*"
+    "@types/webpack" "^4"
+
 "@types/lodash.debounce@^4.0.6":
   version "4.0.7"
   resolved "https://registry.npmmirror.com/@types/lodash.debounce/-/lodash.debounce-4.0.7.tgz#0285879defb7cdb156ae633cecd62d5680eded9f"
@@ -2541,6 +2549,18 @@
     "@types/node" "*"
     "@types/source-list-map" "*"
     source-map "^0.7.3"
+
+"@types/webpack4@npm:@types/webpack@^4.41.26", "@types/webpack@^4":
+  version "4.41.33"
+  resolved "https://registry.npmmirror.com/@types/webpack/-/webpack-4.41.33.tgz#16164845a5be6a306bcbe554a8e67f9cac215ffc"
+  integrity sha512-PPajH64Ft2vWevkerISMtnZ8rTs4YmRbs+23c402J0INmxDKCrhZNvwZYtzx96gY2wAtXdrK1BS2fiC8MlLr3g==
+  dependencies:
+    "@types/node" "*"
+    "@types/tapable" "^1"
+    "@types/uglify-js" "*"
+    "@types/webpack-sources" "*"
+    anymatch "^3.0.0"
+    source-map "^0.6.0"
 
 "@types/webpack@^4.41.8":
   version "4.41.32"
@@ -4791,6 +4811,15 @@ create-ecdh@^4.0.0:
   dependencies:
     bn.js "^4.1.0"
     elliptic "^6.5.3"
+
+create-functional-loader@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/create-functional-loader/-/create-functional-loader-0.1.0.tgz#377218c3259b715598963b079c0b681022acbc79"
+  integrity sha512-E5Jkn4NmfCcI0FphI8Oflz1nAWwOJHLkkPFPMvy3SxiL5IuE9NfJ/g38DD/kb8Hfe8hNMVo2kzYAXqRbNKcBVg==
+  dependencies:
+    "@types/loader-utils" "^2.0.3"
+    "@types/webpack4" "npm:@types/webpack@^4.41.26"
+    loader-utils "^2.0.3"
 
 create-hash@^1.1.0, create-hash@^1.1.2, create-hash@^1.2.0:
   version "1.2.0"
@@ -8662,6 +8691,15 @@ loader-utils@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npmmirror.com/loader-utils/-/loader-utils-2.0.2.tgz#d6e3b4fb81870721ae4e0868ab11dd638368c129"
   integrity sha512-TM57VeHptv569d/GKh6TAYdzKblwDNiumOdkFnejjD0XwTH87K90w3O7AiJRqdQoXygvi1VQTJTLGhJl7WqA7A==
+  dependencies:
+    big.js "^5.2.2"
+    emojis-list "^3.0.0"
+    json5 "^2.1.2"
+
+loader-utils@^2.0.3:
+  version "2.0.4"
+  resolved "https://registry.npmmirror.com/loader-utils/-/loader-utils-2.0.4.tgz#8b5cb38b5c34a9a018ee1fc0e6a066d1dfcc528c"
+  integrity sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==
   dependencies:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
@@ -13441,8 +13479,10 @@ watchpack@^1.7.4:
   resolved "https://registry.npmmirror.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
@@ -13481,16 +13521,17 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.4.5:
-  version "2.4.5"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.4.5.tgz#5de975d4841f60a86014d0f5be77a8b024920610"
-  integrity sha512-Q4UhF6qhKMYHFJGUkQ/YxShbbO9PDg8xnEeBgo0bL0dw1aLLHwTD4RYVdsOKnDL6IwU3m2z9xno6m8IAqxeMzg==
+weapp-tailwindcss-webpack-plugin@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.0.tgz#e11adcf975201d2e9cb86795128fd0297a797f30"
+  integrity sha512-nmZisL/85HnVOp/JPcF7bFNHvwz5Tn6SPiiiqinw85qqFdWnSZ7cF36desKmD84zp8LNfsSvpk3L9Aaz0NSDsw==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
     "@babel/traverse" "^7.21.4"
     "@babel/types" "^7.21.4"
     "@csstools/postcss-is-pseudo-class" "^3.2.1"
+    create-functional-loader "^0.1.0"
     micromatch "^4.0.5"
     postcss "8.4.24"
     postcss-selector-parser "^6.0.13"

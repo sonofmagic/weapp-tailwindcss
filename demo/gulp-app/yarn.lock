@@ -574,6 +574,14 @@
   resolved "https://registry.npmmirror.com/@types/json5/-/json5-0.0.29.tgz"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
+"@types/loader-utils@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/@types/loader-utils/-/loader-utils-2.0.3.tgz#fbc2337358f8f4a7dc532ac0a3646c74275edf2d"
+  integrity sha512-sDXXzZnTLXgdso54/iOpAFSDgqhVXabCvwGAt77Agadh/Xk0QYgOk520r3tpOouI098gyqGIFywx8Op1voc3vQ==
+  dependencies:
+    "@types/node" "*"
+    "@types/webpack" "^4"
+
 "@types/minimatch@*", "@types/minimatch@^5.1.2":
   version "5.1.2"
   resolved "https://registry.npmmirror.com/@types/minimatch/-/minimatch-5.1.2.tgz"
@@ -609,10 +617,20 @@
   resolved "https://registry.npmmirror.com/@types/semver/-/semver-7.3.13.tgz"
   integrity sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==
 
+"@types/source-list-map@*":
+  version "0.1.2"
+  resolved "https://registry.npmmirror.com/@types/source-list-map/-/source-list-map-0.1.2.tgz#0078836063ffaf17412349bba364087e0ac02ec9"
+  integrity sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==
+
 "@types/stack-utils@^2.0.0":
   version "2.0.1"
   resolved "https://registry.npmmirror.com/@types/stack-utils/-/stack-utils-2.0.1.tgz"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
+
+"@types/tapable@^1":
+  version "1.0.8"
+  resolved "https://registry.npmmirror.com/@types/tapable/-/tapable-1.0.8.tgz#b94a4391c85666c7b73299fd3ad79d4faa435310"
+  integrity sha512-ipixuVrh2OdNmauvtT51o3d8z12p6LtFW9in7U79der/kwejjdNchQC5UMn5u/KxNoM7VHHOs/l8KS8uHxhODQ==
 
 "@types/through2@*":
   version "2.0.38"
@@ -620,6 +638,13 @@
   integrity sha512-YFu+nHmjxMurkH1BSzA0Z1WrKDAY8jUKPZctNQn7mc+/KKtp2XxnclHFXxdB1m7Iqnzb5aywgP8TMK283LezGQ==
   dependencies:
     "@types/node" "*"
+
+"@types/uglify-js@*":
+  version "3.17.1"
+  resolved "https://registry.npmmirror.com/@types/uglify-js/-/uglify-js-3.17.1.tgz#e0ffcef756476410e5bce2cb01384ed878a195b5"
+  integrity sha512-GkewRA4i5oXacU/n4MA9+bLgt5/L3F1mKrYvFGm7r2ouLXhRKjuWwo9XHNnbx6WF3vlGW21S3fCvgqxvxXXc5g==
+  dependencies:
+    source-map "^0.6.1"
 
 "@types/undertaker-registry@*":
   version "1.0.1"
@@ -652,6 +677,27 @@
   dependencies:
     "@types/expect" "^1.20.4"
     "@types/node" "*"
+
+"@types/webpack-sources@*":
+  version "3.2.0"
+  resolved "https://registry.npmmirror.com/@types/webpack-sources/-/webpack-sources-3.2.0.tgz#16d759ba096c289034b26553d2df1bf45248d38b"
+  integrity sha512-Ft7YH3lEVRQ6ls8k4Ff1oB4jN6oy/XmU6tQISKdhfh+1mR+viZFphS6WL0IrtDOzvefmJg5a0s7ZQoRXwqTEFg==
+  dependencies:
+    "@types/node" "*"
+    "@types/source-list-map" "*"
+    source-map "^0.7.3"
+
+"@types/webpack4@npm:@types/webpack@^4.41.26", "@types/webpack@^4":
+  version "4.41.33"
+  resolved "https://registry.npmmirror.com/@types/webpack/-/webpack-4.41.33.tgz#16164845a5be6a306bcbe554a8e67f9cac215ffc"
+  integrity sha512-PPajH64Ft2vWevkerISMtnZ8rTs4YmRbs+23c402J0INmxDKCrhZNvwZYtzx96gY2wAtXdrK1BS2fiC8MlLr3g==
+  dependencies:
+    "@types/node" "*"
+    "@types/tapable" "^1"
+    "@types/uglify-js" "*"
+    "@types/webpack-sources" "*"
+    anymatch "^3.0.0"
+    source-map "^0.6.0"
 
 "@types/yargs-parser@*":
   version "21.0.0"
@@ -867,7 +913,7 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-anymatch@~3.1.2:
+anymatch@^3.0.0, anymatch@~3.1.2:
   version "3.1.3"
   resolved "https://registry.npmmirror.com/anymatch/-/anymatch-3.1.3.tgz"
   integrity sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==
@@ -1162,6 +1208,11 @@ beeper@^1.0.0:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/beeper/-/beeper-1.1.1.tgz"
   integrity sha512-3vqtKL1N45I5dV0RdssXZG7X6pCqQrWPNOlBPZPrd+QkE2HEhR57Z04m0KtpbsZH73j+a3F8UD1TQnn+ExTvIA==
+
+big.js@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.npmmirror.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
+  integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
 binary-extensions@^1.0.0:
   version "1.13.1"
@@ -1532,6 +1583,15 @@ core-util-is@~1.0.0:
   resolved "https://registry.npmmirror.com/core-util-is/-/core-util-is-1.0.3.tgz"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
+create-functional-loader@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/create-functional-loader/-/create-functional-loader-0.1.0.tgz#377218c3259b715598963b079c0b681022acbc79"
+  integrity sha512-E5Jkn4NmfCcI0FphI8Oflz1nAWwOJHLkkPFPMvy3SxiL5IuE9NfJ/g38DD/kb8Hfe8hNMVo2kzYAXqRbNKcBVg==
+  dependencies:
+    "@types/loader-utils" "^2.0.3"
+    "@types/webpack4" "npm:@types/webpack@^4.41.26"
+    loader-utils "^2.0.3"
+
 create-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/create-require/-/create-require-1.1.1.tgz"
@@ -1768,6 +1828,11 @@ electron-to-chromium@^1.4.284:
   version "1.4.369"
   resolved "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.4.369.tgz"
   integrity sha512-LfxbHXdA/S+qyoTEA4EbhxGjrxx7WK2h6yb5K2v0UCOufUKX+VZaHbl3svlzZfv9sGseym/g3Ne4DpsgRULmqg==
+
+emojis-list@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
+  integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
 
 end-of-stream@^1.0.0, end-of-stream@^1.1.0, end-of-stream@^1.4.1:
   version "1.4.4"
@@ -3528,6 +3593,11 @@ json5@^1.0.2:
   dependencies:
     minimist "^1.2.0"
 
+json5@^2.1.2:
+  version "2.2.3"
+  resolved "https://registry.npmmirror.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
+  integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
+
 jsprim@^1.2.2:
   version "1.4.2"
   resolved "https://registry.npmmirror.com/jsprim/-/jsprim-1.4.2.tgz"
@@ -3648,6 +3718,15 @@ load-json-file@^1.0.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
     strip-bom "^2.0.0"
+
+loader-utils@^2.0.3:
+  version "2.0.4"
+  resolved "https://registry.npmmirror.com/loader-utils/-/loader-utils-2.0.4.tgz#8b5cb38b5c34a9a018ee1fc0e6a066d1dfcc528c"
+  integrity sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==
+  dependencies:
+    big.js "^5.2.2"
+    emojis-list "^3.0.0"
+    json5 "^2.1.2"
 
 locate-path@^6.0.0:
   version "6.0.0"
@@ -5003,6 +5082,11 @@ source-map@^0.5.1, source-map@^0.5.6:
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.5.7.tgz"
   integrity sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==
 
+source-map@^0.6.0, source-map@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.npmmirror.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
+  integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
+
 source-map@^0.7.3:
   version "0.7.4"
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
@@ -5757,16 +5841,17 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.4.5:
-  version "2.4.5"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.4.5.tgz#5de975d4841f60a86014d0f5be77a8b024920610"
-  integrity sha512-Q4UhF6qhKMYHFJGUkQ/YxShbbO9PDg8xnEeBgo0bL0dw1aLLHwTD4RYVdsOKnDL6IwU3m2z9xno6m8IAqxeMzg==
+weapp-tailwindcss-webpack-plugin@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.0.tgz#e11adcf975201d2e9cb86795128fd0297a797f30"
+  integrity sha512-nmZisL/85HnVOp/JPcF7bFNHvwz5Tn6SPiiiqinw85qqFdWnSZ7cF36desKmD84zp8LNfsSvpk3L9Aaz0NSDsw==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"
     "@babel/traverse" "^7.21.4"
     "@babel/types" "^7.21.4"
     "@csstools/postcss-is-pseudo-class" "^3.2.1"
+    create-functional-loader "^0.1.0"
     micromatch "^4.0.5"
     postcss "8.4.24"
     postcss-selector-parser "^6.0.13"
