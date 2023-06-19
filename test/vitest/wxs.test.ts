@@ -95,7 +95,9 @@ describe('wxs', () => {
 
   it('inline.wxml use templeteHandler', async () => {
     const str = await getCase('inline.wxml')
-    const { templeteHandler } = getOptions()
+    const { templeteHandler } = getOptions({
+      inlineWxs: true
+    })
     const set = new Set<string>()
     const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
     for (const cls of arr) {
@@ -110,7 +112,9 @@ describe('wxs', () => {
 
   it('outside.wxml use templeteHandler', async () => {
     const str = await getCase('outside.wxml')
-    const { templeteHandler } = getOptions()
+    const { templeteHandler } = getOptions({
+      inlineWxs: true
+    })
     const set = new Set<string>()
     const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
     for (const cls of arr) {
