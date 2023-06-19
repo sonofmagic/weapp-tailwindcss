@@ -688,6 +688,7 @@
     source-map "^0.7.3"
 
 "@types/webpack4@npm:@types/webpack@^4.41.26", "@types/webpack@^4":
+  name "@types/webpack4"
   version "4.41.33"
   resolved "https://registry.npmmirror.com/@types/webpack/-/webpack-4.41.33.tgz#16164845a5be6a306bcbe554a8e67f9cac215ffc"
   integrity sha512-PPajH64Ft2vWevkerISMtnZ8rTs4YmRbs+23c402J0INmxDKCrhZNvwZYtzx96gY2wAtXdrK1BS2fiC8MlLr3g==
@@ -5841,10 +5842,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.0.tgz#e11adcf975201d2e9cb86795128fd0297a797f30"
-  integrity sha512-nmZisL/85HnVOp/JPcF7bFNHvwz5Tn6SPiiiqinw85qqFdWnSZ7cF36desKmD84zp8LNfsSvpk3L9Aaz0NSDsw==
+weapp-tailwindcss-webpack-plugin@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.1.tgz#716da02d0a35bf0c73bd7442f54419dfaa37051b"
+  integrity sha512-fEeLA5nmqgk/PdhpGGy3uhUjYoabg6L9x9yx+Fhvj/+dl6j36Y1yJ4CiVyCAPtExOFC8/CZxpO+IYrwXwkbZXg==
   dependencies:
     "@babel/generator" "^7.21.4"
     "@babel/parser" "^7.21.4"

@@ -1,9 +1,9 @@
 // webpack 5
 import type { Compiler } from 'webpack'
-// import { createLoader } from 'create-functional-loader'
+import { createLoader } from 'create-functional-loader'
 import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
 import { getOptions } from '@/options'
-import { pluginName, runtimeAopLoader } from '@/constants'
+import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/utils'
 
@@ -40,27 +40,28 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       return twPatcher.getClassSet()
     }
 
-    // const WeappTwRuntimeAopLoader = createLoader(
-    //   function (content: string) {
-    //     // for cache merge
-    //     getClassSet()
-    //     return content
-    //   },
-    //   {
-    //     ident: runtimeAopLoader
-    //   }
-    // )
+    const WeappTwRuntimeAopLoader = createLoader(
+      function (content: string) {
+        // for cache merge
+        getClassSet()
+        return content
+      },
+      {
+        // @ts-ignore
+        ident: null,
+        type: null
+      }
+    )
     onLoad()
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      // NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
-      //   const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
-      //   // // css
-      //   if (idx > -1) {
-      //     // for aop
-      //     // @ts-ignore
-      //     module.loaders.unshift(WeappTwRuntimeAopLoader)
-      //   }
-      // })
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+        const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+        // // css
+        if (idx > -1) {
+          // @ts-ignore
+          module.loaders.unshift(WeappTwRuntimeAopLoader)
+        }
+      })
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
