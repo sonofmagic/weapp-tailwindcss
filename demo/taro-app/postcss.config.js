@@ -6,14 +6,28 @@
 const path = require('path')
 
 module.exports = function config(loaderContext) {
-  const isIndependentModule = /moduleB[/\\](?:\w+[/\\])*\w+\.scss$/.test(
+  // 独立分包
+  const isBModule = /moduleB[/\\](?:\w+[/\\])*\w+\.scss$/.test(
     loaderContext.file
   )
-  if (isIndependentModule) {
+  const isCModule = /moduleC[/\\](?:\w+[/\\])*\w+\.scss$/.test(
+    loaderContext.file
+  )
+  if (isBModule) {
     return {
       plugins: {
         tailwindcss: {
-          config: path.resolve(__dirname, 'tailwind.config.sub.js')
+          config: path.resolve(__dirname, 'tailwind.config.sub-b.js')
+        },
+        autoprefixer: {},
+      }
+    }
+  }
+  if (isCModule) {
+    return {
+      plugins: {
+        tailwindcss: {
+          config: path.resolve(__dirname, 'tailwind.config.sub-c.js')
         },
         autoprefixer: {},
       }

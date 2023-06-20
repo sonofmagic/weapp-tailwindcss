@@ -26,6 +26,13 @@ export default {
       ],
       independent: true
     },
+    {
+      root: "moduleC",
+      pages: [
+        "pages/index",
+      ],
+      independent: true
+    },
     // {
     //   root: 'pages/sub',
     //   pages: ['sub-one/index'],
