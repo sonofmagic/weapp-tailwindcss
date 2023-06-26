@@ -125,3 +125,7 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 需要添加并配置 `postcss-import`，详见 [issues/75](https://github.com/sonofmagic/weapp-tailwindcss/issues/75#issuecomment-1574592907)
 
 你可以查看源码中 `demo/uni-app` 相关的示例来进行配置。
+
+## 为什么使用 taro 写 jsx，js 时候，转义不生效？
+
+这是因为 [patch 方法](/docs/quick-start/this-plugin) 没有生效，这个指令是用来在运行时暴露 `tailwindcss` 上下文的，只有暴露成功，我们写的 `js` 里的样式，才会变精准转义，否则就会出现在 `jsx` 里写 `className` 不生效的情况。
