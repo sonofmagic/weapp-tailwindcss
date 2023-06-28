@@ -11,14 +11,8 @@
 <h1 align="center">weapp-tailwindcss</h1>
 
 </p>
-<!-- <p align="center">
-<a href="https://weapp-tw.icebreaker.top#gh-light-mode-only">
-  <img src="./assets/logo-text-light.png#gh-light-mode-only" alt="weapp-tailwindcss-logo" width="300">
-</a>
-<a href="https://weapp-tw.icebreaker.top#gh-dark-mode-only">
-  <img src="./assets/logo-text-dark.png#gh-dark-mode-only" alt="weapp-tailwindcss-logo" width="300">
-</a>
-<br> -->
+
+> 简体中文(zh-cn) | [English](./README_en.md)
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
