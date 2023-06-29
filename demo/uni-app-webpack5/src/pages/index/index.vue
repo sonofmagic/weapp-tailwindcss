@@ -1,5 +1,9 @@
 <template>
   <div class="before:content-['hello'] before:block">
+    <view class="block"></view>
+    <view class="inline-block"></view>
+    <view class="list-item"></view>
+    <view class="flex"></view>
     <view :class="bbb">bbb</view>
     <view :class="classArray" class="after:content-['这是classArray,用于测试动态js绑定class']">classArray</view>
     <view :class="['text-[20px]', true ? 'text-[#898989]' : 'text-[#132323]', aaa]">:class="['text-sm', classObj]
