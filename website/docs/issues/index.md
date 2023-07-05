@@ -22,6 +22,8 @@
 
 ```js
 const isH5 = process.env.UNI_PLATFORM === "h5";
+// vue3 版本构建到 app, UNI_PLATFORM 的值为 app
+// vue2 版本为 app-plus
 const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
 
@@ -64,7 +66,7 @@ module.exports = {
 
 遇到这个问题是由于 `babel` 相关的包之间的版本产生了冲突导致的，这种时候可以删除掉 `lock`文件 (`yarn.lock`,`pnpm-lock.yaml`,`package-lock.json`)，然后重新安装即可。
 
-## taro3.6.2 webpack5 环境下，这个插件和 terser-webpack-plugin一起使用，会导致插件转义功能失效
+## taro webpack5 环境下，这个插件和 `terser-webpack-plugin` 一起使用，会导致插件转义功能失效
 
 [[#142](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/142)]
 例如：`.h-4/6` `!w-full` 正常会转义为`.h-4s6` `.iw-full`,本插件失效后小程序开发者工具报编译错误`.h-4\/6` `.\!w-full`。
@@ -72,7 +74,8 @@ module.exports = {
 压缩代码，不要使用 <https://docs.taro.zone/docs/config-detail/#terserenable> 链接中的方法，太老旧了。
 
 ~~`taro` 配置项里，已经有对应的 `terser` 配置项了，详见 <https://taro-docs.jd.com/docs/compile-optimized>~~
-```
+
+```js
 module.exports = {
   mini: {
     //不建议添加此配置项，会导致转义失效
@@ -109,11 +112,12 @@ module.exports = {
 
 即选择器变成了 `.space-y-1 > view + view`
 
-这时候解决方案有 `2` 种：
+这时候解决方案有 `3` 种：
 
 - 组件外层套view标签
 - `virtualHost` 解决方案，在自定义组件中添加
- options: { virtualHost: true, } 即可解决此问题.
+ `options: { virtualHost: true, }` 即可解决此问题.
+- [`cssChildCombinatorReplaceValue`配置项](/docs/api/interfaces/UserDefinedOptions#csschildcombinatorreplacevalue)
 
 ## 使用 uni-app vite vue 注册插件时，发行到 h5 环境出现: [plugin:vite-plugin-uni-app-weapp-tailwindcss-adaptor] 'import' and 'export' may appear only with 'sourceType: "module"' (1:0) 错误
 
@@ -122,6 +126,8 @@ module.exports = {
 ```js
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === "h5";
+// vue3 版本构建到 app, UNI_PLATFORM 的值为 app
+// vue2 版本为 app-plus
 const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
 const vitePlugins = [uni(), uvwt({
