@@ -67,10 +67,37 @@ module.exports = {
 ## taro3.6.2 webpack5 环境下，这个插件和 terser-webpack-plugin一起使用，会导致插件转义功能失效
 
 [[#142](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/142)]
+例如：`.h-4/6` `!w-full` 正常会转义为`.h-4s6` `.iw-full`,本插件失效后小程序开发者工具报编译错误`.h-4\/6` `.\!w-full`。
 
-压缩代码，不要使用 <https://docs.taro.zone/docs/config-detail/#terserenable> 链接中的方法，太老旧了
+压缩代码，不要使用 <https://docs.taro.zone/docs/config-detail/#terserenable> 链接中的方法，太老旧了。
 
-`taro` 配置项里，已经有对应的 `terser` 配置项了，详见 <https://taro-docs.jd.com/docs/compile-optimized>
+~~`taro` 配置项里，已经有对应的 `terser` 配置项了，详见 <https://taro-docs.jd.com/docs/compile-optimized>~~
+```
+module.exports = {
+  mini: {
+    //不建议添加此配置项，会导致转义失效
+    webpackChain: (chain, webpack) => {
+      chain.merge({
+        plugin: {
+          install: {
+            plugin: require('terser-webpack-plugin'),
+            args: [
+              {
+                terserOptions: {
+                  compress: true, // 默认使用terser压缩
+                  // mangle: false,
+                  keep_classnames: true, // 不改变class名称
+                  keep_fnames: true, // 不改变函数名称
+                },
+              },
+            ],
+          },
+        },
+      })
+    },
+  },
+}
+```
 
 另外也可以不利用 `webpack` 插件压缩代码，去使用微信开发者工具内部的压缩代码选项。
 
