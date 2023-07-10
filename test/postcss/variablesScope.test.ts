@@ -104,7 +104,7 @@ describe('variablesScope', () => {
     expect(testIfTwBackdrop(root.nodes[0] as Rule)).toBe(true)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 20)).toBe(true)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 100)).toBe(false)
-  });
+  })
 
   it('find backdrop case 1', () => {
     const root = postcss.parse(`::backdrop {
@@ -115,7 +115,7 @@ describe('variablesScope', () => {
     expect(testIfTwBackdrop(root.nodes[0] as Rule)).toBe(true)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 2)).toBe(false)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 100)).toBe(false)
-  });
+  })
 
   it('find backdrop case 2', () => {
     const root = postcss.parse(`::backdrop {
@@ -125,5 +125,5 @@ describe('variablesScope', () => {
     expect(testIfTwBackdrop(root.nodes[0] as Rule)).toBe(false)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 2)).toBe(false)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 100)).toBe(false)
-  });
+  })
 })

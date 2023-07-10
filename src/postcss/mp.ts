@@ -83,21 +83,24 @@ export function makePseudoVarRule() {
   return pseudoVarRule
 }
 
-export function remakeCssVarSelector(selector: string, cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
+export function remakeCssVarSelector(selectors: string[], cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
   // node.selector = node.selector.replace(/\*/g, 'view')
-  const selectorParts = selector.split(',')
+  const idx = selectors.indexOf('*')
+  if (idx > -1) {
+    selectors.splice(idx, 1)
+  }
   // 没有 view 元素时，添加 view
-  if (!selectorParts.includes('view')) {
-    selectorParts.push('view')
+  if (!selectors.includes('view')) {
+    selectors.push('view')
   }
   if (
     cssPreflightRange === 'all' && // 默认对每个元素都生效
-    !selectorParts.includes(':not(not)')
+    !selectors.includes(':not(not)')
   ) {
-    selectorParts.push(':not(not)')
+    selectors.push(':not(not)')
   }
 
-  return selectorParts.join(',')
+  return selectors
 }
 
 export function remakeCombinatorSelector(selector: string, cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']) {
@@ -111,38 +114,38 @@ export function remakeCombinatorSelector(selector: string, cssChildCombinatorRep
   return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
 }
 
-export function remakeRuleNode(node: Rule, options: IStyleHandlerOptions) {
-  node.selector = remakeCssVarSelector(node.selector, options.cssPreflightRange)
+// node.walkDecls((decl) => {
+//   // remove empty var 来避免压缩css报错
+//   if (/^\s*$/.test(decl.value)) {
+//     decl.remove()
+//   }
+//   //  console.log(decl.prop, decl.value)
+// })
 
-  // node.walkDecls((decl) => {
-  //   // remove empty var 来避免压缩css报错
-  //   if (/^\s*$/.test(decl.value)) {
-  //     decl.remove()
-  //   }
-  //   //  console.log(decl.prop, decl.value)
-  // })
-
-  // preset
-  if (typeof options.cssInjectPreflight === 'function') {
-    node.append(...options.cssInjectPreflight())
-  }
-  node.before(makePseudoVarRule())
-}
+// preset
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   node.selector = remakeCombinatorSelector(node.selector, options.cssChildCombinatorReplaceValue)
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
-    remakeRuleNode(node, options)
+    node.selectors = remakeCssVarSelector(node.selectors, options.cssPreflightRange)
+    node.before(makePseudoVarRule())
+    if (typeof options.cssInjectPreflight === 'function') {
+      node.append(...options.cssInjectPreflight())
+    }
   }
   if (options.injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
     const syntheticRule = new Rule({
-      selectors: ['*', '::after', '::before'],
+      // '*',
+      selectors: ['::after', '::before'],
       nodes: initialNodes
     })
-    remakeRuleNode(syntheticRule, options)
-
+    syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options.cssPreflightRange)
     node.before(syntheticRule)
+    node.before(makePseudoVarRule())
+    if (typeof options.cssInjectPreflight === 'function') {
+      syntheticRule.append(...options.cssInjectPreflight())
+    }
   }
 }

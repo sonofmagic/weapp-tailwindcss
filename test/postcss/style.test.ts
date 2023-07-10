@@ -468,4 +468,22 @@ describe('styleHandler', () => {
   it('cssUnescape case 1', () => {
     expect(cssUnescape('\\32xlctext-base')).toBe('2xlctext-base')
   })
+
+  it('injectAdditionalCssVarScope option true', async () => {
+    const { styleHandler } = getOptions({
+      injectAdditionalCssVarScope: true
+    })
+    const rawSource = await getCase('backdrop.css')
+    const result = styleHandler(rawSource, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('injectAdditionalCssVarScope option true isMainChunk false', async () => {
+    const { styleHandler } = getOptions({
+      injectAdditionalCssVarScope: true
+    })
+    const rawSource = await getCase('backdrop.css')
+    const result = styleHandler(rawSource, { isMainChunk: false })
+    expect(result).toMatchSnapshot()
+  })
 })
