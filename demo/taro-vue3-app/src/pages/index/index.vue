@@ -1,5 +1,6 @@
 <template>
   <view class="index container bg-[#ffffff]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
+    <!-- <nut-button>nut-button</nut-button> -->
     <First></First>
     <jsxRender></jsxRender>
     <view :class="classArray">classArray</view>
