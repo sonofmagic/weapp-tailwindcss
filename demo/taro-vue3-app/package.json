@@ -41,9 +41,7 @@
     "ios >= 8"
   ],
   "author": "",
-  "__comment": {
-    "@tarojs/plugin-html": "3.6.8"
-  },
+  "__comment": {},
   "dependencies": {
     "@babel/runtime": "^7.22.6",
     "@nutui/nutui-taro": "^4.0.12",
@@ -52,7 +50,8 @@
     "@tarojs/plugin-platform-h5": "3.6.8",
     "@tarojs/runtime": "3.6.8",
     "@tarojs/taro": "3.6.8",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "@tarojs/plugin-html": "3.6.8"
   },
   "devDependencies": {
     "@babel/core": "^7.22.8",
@@ -84,7 +83,7 @@
     "vue-loader": "^17.2.2",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.5.2",
+    "weapp-tailwindcss-webpack-plugin": "^2.6.0-beta.0",
     "webpack": "^5.88.1"
   }
 }
