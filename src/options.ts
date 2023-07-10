@@ -56,7 +56,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     supportCustomLengthUnitsPatch,
     arbitraryValues,
     cssChildCombinatorReplaceValue,
-    inlineWxs
+    inlineWxs,
+    injectAdditionalCssVarScope
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -77,7 +78,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     replaceUniversalSelectorWith,
     escapeMap,
     mangleContext,
-    cssChildCombinatorReplaceValue
+    cssChildCombinatorReplaceValue,
+    injectAdditionalCssVarScope
   })
   result.styleHandler = styleHandler
   const jsHandler = createjsHandler({

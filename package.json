@@ -65,6 +65,7 @@
     "clean": "node scripts/clean.js",
     "debug:web": "cd demo/web && yarn dev",
     "raw": "ts-node scripts/raw",
+    "get-decl": "ts-node scripts/get-decl.ts",
     "demo:dev": "node scripts/demo/dev.js",
     "demo:build": "node scripts/demo/build.js",
     "demo:build:local": "node scripts/demo/build.js --local",
