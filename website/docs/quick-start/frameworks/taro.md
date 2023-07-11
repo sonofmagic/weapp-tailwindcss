@@ -53,7 +53,20 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 然后正常运行项目即可，相关的配置可以参考模板 [taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
 :::tip
-另外在和 `@tarojs/plugin-html` 一起使用时，需要去配置一下 `postcss-html-transform` 这个插件，不然默认配置下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。
+
+## 和 NutUI 一起使用
+
+`taro vue3` 使用 [NutUI](nutui.jd.com) 的注意点:
+
+[NutUI](nutui.jd.com) 需要配合 `@tarojs/plugin-html` 一起使用，
+
+然而在和 `@tarojs/plugin-html` 一起使用时，默认配置下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。
+
+此时可以使用 [`injectAdditionalCssVarScope`](/docs/api/interfaces/UserDefinedOptions#injectadditionalcssvarscope) 配置项，把它设为 `true`，这能在插件内部重新注入 `tailwindcss css var` 区域块。
+
+## 可能有用但是过时的方案
+
+~~需要去配置一下 `postcss-html-transform` 这个插件~~ (这个方法在有些版本的`taro`是生效的，最新的 `3.6.8` `vue3` 版本不生效！实在找不到方法可以尝试一下)
 
 ```js
 // config/index.js

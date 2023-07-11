@@ -1,7 +1,5 @@
 <template>
   <view class="index container bg-[#ffffff]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
-    <view class="bg-gradient-to-r from-[#123456] to-[#654321] h-10 w-full"></view>
-    <nut-button>nut-button</nut-button>
     <First></First>
     <jsxRender></jsxRender>
     <view :class="classArray">classArray</view>
@@ -30,6 +28,8 @@
     </view>
     <view class="test">test</view>
     <Plain></Plain>
+    <view class="bg-gradient-to-r from-[#123456] to-[#654321] h-10 w-full"></view>
+    <nut-button>nut-button</nut-button>
   </view>
 </template>
 

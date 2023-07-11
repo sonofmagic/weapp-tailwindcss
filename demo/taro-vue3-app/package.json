@@ -47,11 +47,11 @@
     "@nutui/nutui-taro": "^4.0.12",
     "@tarojs/components": "3.6.8",
     "@tarojs/plugin-framework-vue3": "3.6.8",
+    "@tarojs/plugin-html": "3.6.8",
     "@tarojs/plugin-platform-h5": "3.6.8",
     "@tarojs/runtime": "3.6.8",
     "@tarojs/taro": "3.6.8",
-    "vue": "^3.3.4",
-    "@tarojs/plugin-html": "3.6.8"
+    "vue": "^3.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.22.8",
