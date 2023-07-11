@@ -33,6 +33,7 @@ export type RequiredStyleHandlerOptions = {
   cssChildCombinatorReplaceValue?: string | string[]
   replaceUniversalSelectorWith?: string | false
   escapeMap?: Record<string, string>
+  injectAdditionalCssVarScope?: boolean
 }
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
@@ -333,6 +334,20 @@ cssPreflight: {
    * @default false
    */
   inlineWxs?: boolean
+
+  /**
+   * `^2.6.0`
+   * @description  是否注入额外的 `tailwindcss css var scope` 区域，这个选项用于这样的场景
+   *
+   * 比如 `taro vue3` 使用 [NutUI](https://nutui.jd.com), 需要使用 `@tarojs/plugin-html`，而这个插件会启用 `postcss-html-transform` 从而移除所有带 `*` 选择器
+   *
+   * 这会导致 `tailwindcss css var scope` 区域被移除导致一些样式，比如渐变等等功能失效
+   *
+   * 这种场景下，启用这个选项会再次重新注入整个 `tailwindcss css var scope`
+   *
+   * @default false
+   */
+  injectAdditionalCssVarScope?: boolean
 }
 
 export interface IMangleScopeContext {

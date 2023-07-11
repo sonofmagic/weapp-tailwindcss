@@ -1,6 +1,13 @@
 import { Rule, Declaration } from 'postcss'
+import cssVars from './cssVars'
 import type { IStyleHandlerOptions } from '@/types'
 
+const initialNodes = cssVars.map((x) => {
+  return new Declaration({
+    prop: x.prop,
+    value: x.value
+  })
+})
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
 // const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
@@ -47,59 +54,98 @@ export function testIfVariablesScope(node: Rule, count = 1): boolean {
   return false
 }
 
-export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
-  // css child combinator selector replaceValue
-  // cssChildCombinatorReplaceValue
-  // options.cssChildCombinatorReplaceValue
-  let childCombinatorReplaceValue = 'view + view'
-  if (Array.isArray(options.cssChildCombinatorReplaceValue)) {
-    const part = options.cssChildCombinatorReplaceValue.join(',')
-    childCombinatorReplaceValue = [part, ' + ', part].join('')
-  } else if (typeof options.cssChildCombinatorReplaceValue === 'string') {
-    childCombinatorReplaceValue = options.cssChildCombinatorReplaceValue
+export function testIfTwBackdrop(node: Rule, count = 1) {
+  if (node.type === 'rule' && node.selector === '::backdrop') {
+    for (let i = 0; i < count; i++) {
+      const tryTestDecl = node.nodes[i]
+      if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
+        continue
+      } else {
+        return false
+      }
+    }
+    return true
   }
-  node.selector = node.selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
+  return false
+}
+
+export function makePseudoVarRule() {
+  const pseudoVarRule = new Rule({
+    // selectors: ['::before', '::after'],
+    selector: '::before,::after'
+  })
+  pseudoVarRule.append(
+    new Declaration({
+      prop: '--tw-content',
+      value: '""'
+    })
+  )
+  return pseudoVarRule
+}
+
+export function remakeCssVarSelector(selectors: string[], cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
+  // node.selector = node.selector.replace(/\*/g, 'view')
+  const idx = selectors.indexOf('*')
+  if (idx > -1) {
+    selectors.splice(idx, 1)
+  }
+  // 没有 view 元素时，添加 view
+  if (!selectors.includes('view')) {
+    selectors.push('view')
+  }
+  if (
+    cssPreflightRange === 'all' && // 默认对每个元素都生效
+    !selectors.includes(':not(not)')
+  ) {
+    selectors.push(':not(not)')
+  }
+
+  return selectors
+}
+
+export function remakeCombinatorSelector(selector: string, cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']) {
+  let childCombinatorReplaceValue = 'view + view'
+  if (Array.isArray(cssChildCombinatorReplaceValue)) {
+    const part = cssChildCombinatorReplaceValue.join(',')
+    childCombinatorReplaceValue = [part, ' + ', part].join('')
+  } else if (typeof cssChildCombinatorReplaceValue === 'string') {
+    childCombinatorReplaceValue = cssChildCombinatorReplaceValue
+  }
+  return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
+}
+
+// node.walkDecls((decl) => {
+//   // remove empty var 来避免压缩css报错
+//   if (/^\s*$/.test(decl.value)) {
+//     decl.remove()
+//   }
+//   //  console.log(decl.prop, decl.value)
+// })
+
+// preset
+
+export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
+  node.selector = remakeCombinatorSelector(node.selector, options.cssChildCombinatorReplaceValue)
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
-    // node.selector = node.selector.replace(/\*/g, 'view')
-    const selectorParts = node.selector.split(',')
-    // 没有 view 元素时，添加 view
-    if (!selectorParts.includes('view')) {
-      selectorParts.push('view')
-    }
-    if (
-      options.cssPreflightRange === 'all' && // 默认对每个元素都生效
-      !selectorParts.includes(':not(not)')
-    ) {
-      selectorParts.push(':not(not)')
-    }
-
-    node.selector = selectorParts.join(',')
-
-    // node.walkDecls((decl) => {
-    //   // remove empty var 来避免压缩css报错
-    //   if (/^\s*$/.test(decl.value)) {
-    //     decl.remove()
-    //   }
-    //   //  console.log(decl.prop, decl.value)
-    // })
-
-    // preset
+    node.selectors = remakeCssVarSelector(node.selectors, options.cssPreflightRange)
+    node.before(makePseudoVarRule())
     if (typeof options.cssInjectPreflight === 'function') {
       node.append(...options.cssInjectPreflight())
     }
-
-    const pseudoVarRule = new Rule({
-      // selectors: ['::before', '::after'],
-      selector: '::before,::after'
+  }
+  if (options.injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
+    const syntheticRule = new Rule({
+      // '*',
+      selectors: ['::after', '::before'],
+      nodes: initialNodes
     })
-    pseudoVarRule.append(
-      new Declaration({
-        prop: '--tw-content',
-        value: '""'
-      })
-    )
-    node.before(pseudoVarRule)
+    syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options.cssPreflightRange)
+    node.before(syntheticRule)
+    node.before(makePseudoVarRule())
+    if (typeof options.cssInjectPreflight === 'function') {
+      syntheticRule.append(...options.cssInjectPreflight())
+    }
   }
 }

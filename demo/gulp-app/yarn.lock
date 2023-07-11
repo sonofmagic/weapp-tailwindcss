@@ -7,7 +7,7 @@
   resolved "https://registry.npmmirror.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
-"@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.21.4":
+"@babel/code-frame@^7.12.13":
   version "7.21.4"
   resolved "https://registry.npmmirror.com/@babel/code-frame/-/code-frame-7.21.4.tgz"
   integrity sha512-LYvhNKfwWSPpocw8GI7gpK2nq3HSDuEPC/uSYaALSJu9xjsalaaYFOq0Pwt5KmVqwEbZlDu81aLXwBOmD/Fv9g==
@@ -21,16 +21,6 @@
   dependencies:
     "@babel/highlight" "^7.22.5"
 
-"@babel/generator@^7.21.4":
-  version "7.21.4"
-  resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.21.4.tgz"
-  integrity sha512-NieM3pVIYW2SwGzKoqfPrQsf4xGs9M9AIG3ThppsSRmO+m7eQhmI6amajKMUeIO37wFfsvnvcxQFx6x6iqxDnA==
-  dependencies:
-    "@babel/types" "^7.21.4"
-    "@jridgewell/gen-mapping" "^0.3.2"
-    "@jridgewell/trace-mapping" "^0.3.17"
-    jsesc "^2.5.1"
-
 "@babel/generator@^7.22.5":
   version "7.22.5"
   resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.22.5.tgz#1e7bf768688acfb05cf30b2369ef855e82d984f7"
@@ -41,23 +31,20 @@
     "@jridgewell/trace-mapping" "^0.3.17"
     jsesc "^2.5.1"
 
-"@babel/helper-environment-visitor@^7.18.9":
-  version "7.18.9"
-  resolved "https://registry.npmmirror.com/@babel/helper-environment-visitor/-/helper-environment-visitor-7.18.9.tgz"
-  integrity sha512-3r/aACDJ3fhQ/EVgFy0hpj8oHyHpQc+LPtJoY9SzTThAsStm4Ptegq92vqKoE3vD706ZVFWITnMnxucw+S9Ipg==
+"@babel/generator@^7.22.7":
+  version "7.22.7"
+  resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.22.7.tgz#a6b8152d5a621893f2c9dacf9a4e286d520633d5"
+  integrity sha512-p+jPjMG+SI8yvIaxGgeW24u7q9+5+TGpZh8/CuB7RhBKd7RCy8FayNEFNNKrNK/eUcY/4ExQqLmyrvBXKsIcwQ==
+  dependencies:
+    "@babel/types" "^7.22.5"
+    "@jridgewell/gen-mapping" "^0.3.2"
+    "@jridgewell/trace-mapping" "^0.3.17"
+    jsesc "^2.5.1"
 
 "@babel/helper-environment-visitor@^7.22.5":
   version "7.22.5"
   resolved "https://registry.npmmirror.com/@babel/helper-environment-visitor/-/helper-environment-visitor-7.22.5.tgz#f06dd41b7c1f44e1f8da6c4055b41ab3a09a7e98"
   integrity sha512-XGmhECfVA/5sAt+H+xpSg0mfrHq6FzNr9Oxh7PSEBBRUb/mL7Kz3NICXb194rCqAEdxkhPT1a88teizAFyvk8Q==
-
-"@babel/helper-function-name@^7.21.0":
-  version "7.21.0"
-  resolved "https://registry.npmmirror.com/@babel/helper-function-name/-/helper-function-name-7.21.0.tgz"
-  integrity sha512-HfK1aMRanKHpxemaY2gqBmL04iAPOPRj7DxtNbiDOrJK+gdwkiNRVpCpUJYbUT+aZyemKN8brqTOxzCaG6ExRg==
-  dependencies:
-    "@babel/template" "^7.20.7"
-    "@babel/types" "^7.21.0"
 
 "@babel/helper-function-name@^7.22.5":
   version "7.22.5"
@@ -67,26 +54,12 @@
     "@babel/template" "^7.22.5"
     "@babel/types" "^7.22.5"
 
-"@babel/helper-hoist-variables@^7.18.6":
-  version "7.18.6"
-  resolved "https://registry.npmmirror.com/@babel/helper-hoist-variables/-/helper-hoist-variables-7.18.6.tgz"
-  integrity sha512-UlJQPkFqFULIcyW5sbzgbkxn2FKRgwWiRexcuaR8RNJRy8+LLveqPjwZV/bwrLZCN0eUHD/x8D0heK1ozuoo6Q==
-  dependencies:
-    "@babel/types" "^7.18.6"
-
 "@babel/helper-hoist-variables@^7.22.5":
   version "7.22.5"
   resolved "https://registry.npmmirror.com/@babel/helper-hoist-variables/-/helper-hoist-variables-7.22.5.tgz#c01a007dac05c085914e8fb652b339db50d823bb"
   integrity sha512-wGjk9QZVzvknA6yKIUURb8zY3grXCcOZt+/7Wcy8O2uctxhplmUPkOdlgoNhmdVee2c92JXbf1xpMtVNbfoxRw==
   dependencies:
     "@babel/types" "^7.22.5"
-
-"@babel/helper-split-export-declaration@^7.18.6":
-  version "7.18.6"
-  resolved "https://registry.npmmirror.com/@babel/helper-split-export-declaration/-/helper-split-export-declaration-7.18.6.tgz"
-  integrity sha512-bde1etTx6ZyTmobl9LLMMQsaizFVZrquTEHOqKeQESMKo4PlObf+8+JA25ZsIpZhT/WEd39+vOdLXAFG/nELpA==
-  dependencies:
-    "@babel/types" "^7.18.6"
 
 "@babel/helper-split-export-declaration@^7.22.5":
   version "7.22.5"
@@ -95,17 +68,19 @@
   dependencies:
     "@babel/types" "^7.22.5"
 
-"@babel/helper-string-parser@^7.19.4":
-  version "7.19.4"
-  resolved "https://registry.npmmirror.com/@babel/helper-string-parser/-/helper-string-parser-7.19.4.tgz"
-  integrity sha512-nHtDoQcuqFmwYNYPz3Rah5ph2p8PFeFCsZk9A/48dPc/rGocJ5J3hAAZ7pb76VWX3fZKu+uEr/FhH5jLx7umrw==
+"@babel/helper-split-export-declaration@^7.22.6":
+  version "7.22.6"
+  resolved "https://registry.npmmirror.com/@babel/helper-split-export-declaration/-/helper-split-export-declaration-7.22.6.tgz#322c61b7310c0997fe4c323955667f18fcefb91c"
+  integrity sha512-AsUnxuLhRYsisFiaJwvp1QF+I3KjD5FOxut14q/GzovUe6orHLesW2C7d754kRm53h5gqrz6sFl6sxc4BVtE/g==
+  dependencies:
+    "@babel/types" "^7.22.5"
 
 "@babel/helper-string-parser@^7.22.5":
   version "7.22.5"
   resolved "https://registry.npmmirror.com/@babel/helper-string-parser/-/helper-string-parser-7.22.5.tgz#533f36457a25814cf1df6488523ad547d784a99f"
   integrity sha512-mM4COjgZox8U+JcXQwPijIZLElkgEpO5rsERVDJTc2qfCDfERyob6k5WegS14SX18IIjv+XD+GrqNumY5JRCDw==
 
-"@babel/helper-validator-identifier@^7.18.6", "@babel/helper-validator-identifier@^7.19.1":
+"@babel/helper-validator-identifier@^7.18.6":
   version "7.19.1"
   resolved "https://registry.npmmirror.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.19.1.tgz"
   integrity sha512-awrNfaMtnHUr653GgGEs++LlAvW6w+DcPrOliSMXWCKo597CwL5Acf/wWdNkf/tfEQE3mjkeD1YOVZOUV/od1w==
@@ -133,24 +108,15 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.20.7", "@babel/parser@^7.21.4":
-  version "7.21.4"
-  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.21.4.tgz"
-  integrity sha512-alVJj7k7zIxqBZ7BTRhz0IqJFxW1VJbm6N8JbcYhQ186df9ZBPbZBmWSqAMXwHGsCJdYks7z/voa3ibiS5bCIw==
-
 "@babel/parser@^7.22.5":
   version "7.22.5"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.22.5.tgz#721fd042f3ce1896238cf1b341c77eb7dee7dbea"
   integrity sha512-DFZMC9LJUG9PLOclRC32G63UXwzqS2koQC8dkx+PLdmt1xSePYpbT/NbsrJy8Q/muXz7o/h/d4A7Fuyixm559Q==
 
-"@babel/template@^7.20.7":
-  version "7.20.7"
-  resolved "https://registry.npmmirror.com/@babel/template/-/template-7.20.7.tgz"
-  integrity sha512-8SegXApWe6VoNw0r9JHpSteLKTpTiLZ4rMlGIm9JQ18KiCtyQiAMEazujAHrUS5flrcqYZa75ukev3P6QmUwUw==
-  dependencies:
-    "@babel/code-frame" "^7.18.6"
-    "@babel/parser" "^7.20.7"
-    "@babel/types" "^7.20.7"
+"@babel/parser@^7.22.7":
+  version "7.22.7"
+  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.22.7.tgz#df8cf085ce92ddbdbf668a7f186ce848c9036cae"
+  integrity sha512-7NF8pOkHP5o2vpmGgNGcfAeCvOYhGLyA3Z4eBQkT1RJlWu47n63bCs93QfJ2hIAFCil7L5P2IWhs1oToVgrL0Q==
 
 "@babel/template@^7.22.5":
   version "7.22.5"
@@ -160,22 +126,6 @@
     "@babel/code-frame" "^7.22.5"
     "@babel/parser" "^7.22.5"
     "@babel/types" "^7.22.5"
-
-"@babel/traverse@^7.21.4":
-  version "7.21.4"
-  resolved "https://registry.npmmirror.com/@babel/traverse/-/traverse-7.21.4.tgz"
-  integrity sha512-eyKrRHKdyZxqDm+fV1iqL9UAHMoIg0nDaGqfIOd8rKH17m5snv7Gn4qgjBoFfLz9APvjFU/ICT00NVCv1Epp8Q==
-  dependencies:
-    "@babel/code-frame" "^7.21.4"
-    "@babel/generator" "^7.21.4"
-    "@babel/helper-environment-visitor" "^7.18.9"
-    "@babel/helper-function-name" "^7.21.0"
-    "@babel/helper-hoist-variables" "^7.18.6"
-    "@babel/helper-split-export-declaration" "^7.18.6"
-    "@babel/parser" "^7.21.4"
-    "@babel/types" "^7.21.4"
-    debug "^4.1.0"
-    globals "^11.1.0"
 
 "@babel/traverse@^7.22.5":
   version "7.22.5"
@@ -193,14 +143,21 @@
     debug "^4.1.0"
     globals "^11.1.0"
 
-"@babel/types@^7.18.6", "@babel/types@^7.20.7", "@babel/types@^7.21.0", "@babel/types@^7.21.4":
-  version "7.21.4"
-  resolved "https://registry.npmmirror.com/@babel/types/-/types-7.21.4.tgz"
-  integrity sha512-rU2oY501qDxE8Pyo7i/Orqma4ziCOrby0/9mvbDUGEfvZjb279Nk9k19e2fiCxHbRRpY2ZyrgW1eq22mvmOIzA==
+"@babel/traverse@^7.22.8":
+  version "7.22.8"
+  resolved "https://registry.npmmirror.com/@babel/traverse/-/traverse-7.22.8.tgz#4d4451d31bc34efeae01eac222b514a77aa4000e"
+  integrity sha512-y6LPR+wpM2I3qJrsheCTwhIinzkETbplIgPBbwvqPKc+uljeA5gP+3nP8irdYt1mjQaDnlIcG+dw8OjAco4GXw==
   dependencies:
-    "@babel/helper-string-parser" "^7.19.4"
-    "@babel/helper-validator-identifier" "^7.19.1"
-    to-fast-properties "^2.0.0"
+    "@babel/code-frame" "^7.22.5"
+    "@babel/generator" "^7.22.7"
+    "@babel/helper-environment-visitor" "^7.22.5"
+    "@babel/helper-function-name" "^7.22.5"
+    "@babel/helper-hoist-variables" "^7.22.5"
+    "@babel/helper-split-export-declaration" "^7.22.6"
+    "@babel/parser" "^7.22.7"
+    "@babel/types" "^7.22.5"
+    debug "^4.1.0"
+    globals "^11.1.0"
 
 "@babel/types@^7.22.5":
   version "7.22.5"
@@ -218,18 +175,18 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@csstools/postcss-is-pseudo-class@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.npmmirror.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-3.2.1.tgz#610f451b9293307d83d484c84af332a05e48b661"
-  integrity sha512-AtANdV34kJl04Al62is3eQRk/BfOfyAvEmRJvbt+nx5REqImLC+2XhuE6skgkcPli1l8ONS67wS+l1sBzySc3Q==
+"@csstools/postcss-is-pseudo-class@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.npmmirror.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-4.0.0.tgz#954c489cf207a7cfeaf4d96d39fac50757dc48cf"
+  integrity sha512-0I6siRcDymG3RrkNTSvHDMxTQ6mDyYE8awkcaHNgtYacd43msl+4ZWDfQ1yZQ/viczVWjqJkLmPiRHSgxn5nZA==
   dependencies:
-    "@csstools/selector-specificity" "^2.0.0"
-    postcss-selector-parser "^6.0.10"
+    "@csstools/selector-specificity" "^3.0.0"
+    postcss-selector-parser "^6.0.13"
 
-"@csstools/selector-specificity@^2.0.0":
-  version "2.2.0"
-  resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-2.2.0.tgz"
-  integrity sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw==
+"@csstools/selector-specificity@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-3.0.0.tgz#798622546b63847e82389e473fd67f2707d82247"
+  integrity sha512-hBI9tfBtuPIi885ZsZ32IMEU/5nlZH/KOVYJCOh7gyMxaVLGmLedYqFN6Ui1LXkI8JlC8IsuC0rF0btcRZKd5g==
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.0"
@@ -4441,15 +4398,15 @@ postcss-pxtransform@^3.6.6:
 
 postcss-rem-to-responsive-pixel@^5.1.3:
   version "5.1.3"
-  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
+  resolved "https://registry.yarnpkg.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
   integrity sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==
 
 postcss-rpx-transform@^1.0.1:
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
+  resolved "https://registry.yarnpkg.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
   integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
 
-postcss-selector-parser@^6.0.10, postcss-selector-parser@^6.0.11:
+postcss-selector-parser@^6.0.11:
   version "6.0.11"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.11.tgz"
   integrity sha512-zbARubNdogI9j7WY4nQJBiNqQf3sLS3wCP4WfOidu+p28LofJqDH1tcXypGrcmMHhDk2t9wGhCsYe/+szLTy1g==
@@ -4470,10 +4427,10 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.2.0:
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@8.4.24:
-  version "8.4.24"
-  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.24.tgz#f714dba9b2284be3cc07dbd2fc57ee4dc972d2df"
-  integrity sha512-M0RzbcI0sO/XJNucsGjvWU9ERWxb/ytp1w6dKtxTKgixdtQDq4rmx/g8W1hnaheq9jgwL/oyEdH5Bc4WwJKMqg==
+postcss@8.4.25:
+  version "8.4.25"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.25.tgz#4a133f5e379eda7f61e906c3b1aaa9b81292726f"
+  integrity sha512-7taJ/8t2av0Z+sQEvNzCkpDynl0tX3uJMCODi6nT3PfASC7dYCWV9aQ+uiCf+KBD4SEFcu+GvJdGdwzQ6OSjCw==
   dependencies:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
@@ -4925,6 +4882,13 @@ semver@^7.5.2:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@^7.5.4:
+  version "7.5.4"
+  resolved "https://registry.npmmirror.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
+  integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
+  dependencies:
+    lru-cache "^6.0.0"
+
 set-blocking@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmmirror.com/set-blocking/-/set-blocking-2.0.0.tgz"
@@ -5276,7 +5240,7 @@ sver-compat@^1.5.0:
 
 tailwind-css-variables-theme-generator@^0.3.8:
   version "0.3.8"
-  resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.3.8.tgz#7aa2d7d3199fbea26f48517c54a56eff61cb1d1f"
+  resolved "https://registry.yarnpkg.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.3.8.tgz#7aa2d7d3199fbea26f48517c54a56eff61cb1d1f"
   integrity sha512-1IIF39wQpOnFQk7AxHkCg/QWZQ72oXOaYal4Zc4yuS00AIhCwRGkNWFD31FvIJs5XbD6QBKlGWDS3cR9PhzNog==
   dependencies:
     consola "^2.15.3"
@@ -5288,7 +5252,7 @@ tailwindcss-mangle-shared@^1.2.6:
 
 tailwindcss-patch@^1.2.6:
   version "1.2.6"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.2.6.tgz#daeecf3f64ab330993a5652acb8965bf0bb65cf0"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-1.2.6.tgz#daeecf3f64ab330993a5652acb8965bf0bb65cf0"
   integrity sha512-spZgVkoKsnOCyNzLz40Jxv0bVgjOQCET4rzou9uZ+tvK7gNFIGGWxweC1cLybx0fMLHfhWOKswqLcQdke0NOlw==
   dependencies:
     "@babel/generator" "^7.22.5"
@@ -5300,7 +5264,7 @@ tailwindcss-patch@^1.2.6:
 
 tailwindcss-rem2px-preset@^1.0.3:
   version "1.0.3"
-  resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
+  resolved "https://registry.yarnpkg.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
 tailwindcss@^3.3.2:
@@ -5771,31 +5735,31 @@ vinyl@^2.0.0, vinyl@^2.2.0:
 
 weapp-ide-cli@^1.0.1:
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-1.0.1.tgz#8c31df3a1cc01661d81de185733d98a82e73e6de"
+  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-1.0.1.tgz#8c31df3a1cc01661d81de185733d98a82e73e6de"
   integrity sha512-s0wrT8hB35HBz0/V7fhCp/WKU8jHyHzzYhDAidoAPlGMFNxBGA7ES2w/tHKst/vXz+UR4sp8E2i957cxb3ZnEQ==
   dependencies:
     execa "5.1.1"
 
 weapp-tailwindcss-children@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.5.2.tgz#cf47e0761efc0d718eba2c3ce281f752faff826d"
-  integrity sha512-SAdNjtMuW6HNjFx0caIZe8LDYUoW6iNV+Ot/3xCobYBlyyYlfeq5HgNeFxJWAun/ApKQoT15vVOG4MIC4Rhy7w==
+weapp-tailwindcss-webpack-plugin@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.6.0.tgz#d85dd3b014c98de5f30825e25c2e3ecdc9f92131"
+  integrity sha512-qr8/3qfe6wEgC0msP0I1qi1YI5rTI7uI9aSRUraPws46kSW6HPmv9GDHIm98sF5h9ix04RrwrX5vsssUzxgx/w==
   dependencies:
-    "@babel/generator" "^7.21.4"
-    "@babel/parser" "^7.21.4"
-    "@babel/traverse" "^7.21.4"
-    "@babel/types" "^7.21.4"
-    "@csstools/postcss-is-pseudo-class" "^3.2.1"
+    "@babel/generator" "^7.22.7"
+    "@babel/parser" "^7.22.7"
+    "@babel/traverse" "^7.22.8"
+    "@babel/types" "^7.22.5"
+    "@csstools/postcss-is-pseudo-class" "^4.0.0"
     loader-utils "^2.0.3"
     micromatch "^4.0.5"
-    postcss "8.4.24"
+    postcss "8.4.25"
     postcss-selector-parser "^6.0.13"
-    semver "^7.5.2"
+    semver "^7.5.4"
     tailwindcss-mangle-shared "^1.2.6"
     tailwindcss-patch "^1.2.6"
 

@@ -28,6 +28,8 @@
     </view>
     <view class="test">test</view>
     <Plain></Plain>
+    <view class="bg-gradient-to-r from-[#123456] to-[#654321] h-10 w-full"></view>
+    <nut-button>nut-button</nut-button>
   </view>
 </template>
 

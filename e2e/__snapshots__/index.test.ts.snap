@@ -32,7 +32,7 @@ exports[`e2e > 'mpx-app' 1`] = `
   <view class=\\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">bgUrl</view>
   <view class=\\"after content- aftercml-0d5 afterctext-red-500\\"></view>
   <view class=\\"afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500\\"></view>
-  <list is=\\"components/liste824c5b4/index\\">
+  <list is=\\"components/list9cf6a74a/index\\">
     <view class=\\"flex index--flex flex-col index--flex-col\\">
       <view class=\\"text-_blue_ index--text-_blue_\\">手机</view>
       <view class=\\"text-_he67240_ index--text-_he67240_\\">电视</view>
@@ -295,24 +295,25 @@ exports[`e2e > 'taro-vue2' 1`] = `
 `;
 
 exports[`e2e > 'taro-vue3' 1`] = `
-"<view class=\\"index container bg-_hffffff_ text-_haaaaaa_\\" data-sid=\\"_BJ\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BJ\\" style=\\"\\">
-  <view class=\\"text-amber-300\\" data-sid=\\"_BK\\" id=\\"_BK\\" style=\\"\\">
-    <view class=\\"text-center text-_50px_ text-_h123456_ mt-_22px_\\" data-sid=\\"_BL\\" hover-class=\\"bg-_h654321_\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BL\\" style=\\"\\">
+"<view class=\\"index container bg-_hffffff_ text-_haaaaaa_\\" data-sid=\\"_BU\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BU\\" style=\\"\\">
+  <view class=\\"text-amber-300\\" data-sid=\\"_BV\\" id=\\"_BV\\" style=\\"\\">
+    <view class=\\"text-center text-_50px_ text-_h123456_ mt-_22px_\\" data-sid=\\"_BW\\" hover-class=\\"bg-_h654321_\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BW\\" style=\\"\\">
       components ui
     </view>
   </view>
-  <view class=\\"text-amber-300\\" data-sid=\\"_BN\\" id=\\"_BN\\" style=\\"\\">
-    <view class=\\"text-center text-_50px_ text-red-400 mt-_22px_\\" data-sid=\\"_BO\\" id=\\"_BO\\" style=\\"\\">aaa</view>
+  <view class=\\"text-amber-300\\" data-sid=\\"_BY\\" id=\\"_BY\\" style=\\"\\">
+    <view class=\\"text-center text-_50px_ text-red-400 mt-_22px_\\" data-sid=\\"_BZ\\" id=\\"_BZ\\" style=\\"\\">aaa</view>
     <button
       app-parameter=\\"\\"
       business-id=\\"\\"
-      data-sid=\\"_BQ\\"
+      class=\\"h5-button\\"
+      data-sid=\\"_Bb\\"
       aria-disabled=\\"false\\"
       form-type=\\"\\"
       hover-class=\\"button-hover\\"
       hover-start-time=\\"20\\"
       hover-stay-time=\\"70\\"
-      id=\\"_BQ\\"
+      id=\\"_Bb\\"
       lang=\\"\\"
       open-type=\\"\\"
       send-message-img=\\"\\"
@@ -326,40 +327,64 @@ exports[`e2e > 'taro-vue3' 1`] = `
       first
     </button>
   </view>
-  <view class=\\"bg-_h543254_ h-_100px_ w-_300px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\" data-sid=\\"_BS\\" id=\\"_BS\\" style=\\"\\">classArray</view>
+  <view class=\\"bg-_h543254_ h-_100px_ w-_300px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\" data-sid=\\"_Bd\\" id=\\"_Bd\\" style=\\"\\">classArray</view>
   <view
     class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\"
-    data-sid=\\"_BU\\"
+    data-sid=\\"_Bf\\"
     hover-class=\\"bg-red-500 darkcbg-_h487512_\\"
     hover-start-time=\\"50\\"
     hover-stay-time=\\"400\\"
-    id=\\"_BU\\"
+    id=\\"_Bf\\"
     style=\\"\\"></view>
-  <view class=\\"bg-red-900\\" data-sid=\\"_BV\\" id=\\"_BV\\" style=\\"\\">bg-_hfafa00_</view>
-  <view class=\\"bg-_h098765_\\" data-sid=\\"_BX\\" id=\\"_BX\\" style=\\"\\">bg-_h098765_</view>
-  <view class=\\"h5-view p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_BZ\\" id=\\"_BZ\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
-  <view class=\\"h5-view space-y-_1d6rem_\\" data-sid=\\"_Bb\\" id=\\"_Bb\\" style=\\"\\">
-    <view class=\\"h5-view w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_Bc\\" id=\\"_Bc\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
-    <view class=\\"h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_Be\\" id=\\"_Be\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-    <view class=\\"h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_Bg\\" id=\\"_Bg\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-    <view class=\\"h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_Bi\\" id=\\"_Bi\\" style=\\"\\">
+  <view class=\\"bg-red-900\\" data-sid=\\"_Bg\\" id=\\"_Bg\\" style=\\"\\">bg-_hfafa00_</view>
+  <view class=\\"bg-_h098765_\\" data-sid=\\"_Bi\\" id=\\"_Bi\\" style=\\"\\">bg-_h098765_</view>
+  <view class=\\"h5-view p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_Bk\\" id=\\"_Bk\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
+  <view class=\\"h5-view space-y-_1d6rem_\\" data-sid=\\"_Bm\\" id=\\"_Bm\\" style=\\"\\">
+    <view class=\\"h5-view w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_Bn\\" id=\\"_Bn\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
+    <view class=\\"h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_Bp\\" id=\\"_Bp\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+    <view class=\\"h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_Br\\" id=\\"_Br\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+    <view class=\\"h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_Bt\\" id=\\"_Bt\\" style=\\"\\">
       Hello
     </view>
-    <view class=\\"h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_Bk\\" id=\\"_Bk\\" style=\\"\\">
+    <view class=\\"h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_Bv\\" id=\\"_Bv\\" style=\\"\\">
       border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
     </view>
-    <view class=\\"h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_Bm\\" id=\\"_Bm\\" style=\\"\\">
-      <view class=\\"h5-view\\" data-sid=\\"_Bn\\" id=\\"_Bn\\" style=\\"\\">1</view>
-      <view class=\\"h5-view\\" data-sid=\\"_Bp\\" id=\\"_Bp\\" style=\\"\\">2</view>
-      <view class=\\"h5-view\\" data-sid=\\"_Br\\" id=\\"_Br\\" style=\\"\\">3</view>
+    <view class=\\"h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_Bx\\" id=\\"_Bx\\" style=\\"\\">
+      <view class=\\"h5-view\\" data-sid=\\"_By\\" id=\\"_By\\" style=\\"\\">1</view>
+      <view class=\\"h5-view\\" data-sid=\\"_CA\\" id=\\"_CA\\" style=\\"\\">2</view>
+      <view class=\\"h5-view\\" data-sid=\\"_CC\\" id=\\"_CC\\" style=\\"\\">3</view>
     </view>
-    <view class=\\"h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-sid=\\"_Bt\\" id=\\"_Bt\\" style=\\"\\">Default</view>
+    <view class=\\"h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-sid=\\"_CE\\" id=\\"_CE\\" style=\\"\\">Default</view>
   </view>
-  <view class=\\"h5-view test\\" data-sid=\\"_Bv\\" id=\\"_Bv\\" style=\\"\\">test</view>
-  <view class=\\"flex justify-between\\" data-sid=\\"_Bx\\" id=\\"_Bx\\" style=\\"\\">
-    <view class=\\"text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_\\" data-sid=\\"_By\\" id=\\"_By\\" style=\\"\\">对酒当歌</view>
-    <view class=\\"text-_red_\\" data-sid=\\"_CA\\" id=\\"_CA\\" style=\\"\\">人生几何</view>
+  <view class=\\"h5-view test\\" data-sid=\\"_CG\\" id=\\"_CG\\" style=\\"\\">test</view>
+  <view class=\\"flex justify-between\\" data-sid=\\"_CI\\" id=\\"_CI\\" style=\\"\\">
+    <view class=\\"text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_\\" data-sid=\\"_CJ\\" id=\\"_CJ\\" style=\\"\\">对酒当歌</view>
+    <view class=\\"text-_red_\\" data-sid=\\"_CL\\" id=\\"_CL\\" style=\\"\\">人生几何</view>
   </view>
+  <view class=\\"bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full\\" data-sid=\\"_CN\\" id=\\"_CN\\" style=\\"\\"></view>
+  <button
+    app-parameter=\\"\\"
+    business-id=\\"\\"
+    class=\\"h5-button nut-button nut-button--default nut-button--normal nut-button--round\\"
+    data-sid=\\"_CO\\"
+    aria-disabled=\\"false\\"
+    form-type=\\"\\"
+    hover-class=\\"button-hover\\"
+    hover-start-time=\\"20\\"
+    hover-stay-time=\\"70\\"
+    id=\\"_CO\\"
+    lang=\\"\\"
+    open-type=\\"\\"
+    send-message-img=\\"\\"
+    send-message-path=\\"\\"
+    send-message-title=\\"\\"
+    session-from=\\"\\"
+    size=\\"default\\"
+    style=\\"\\"
+    type=\\"\\"
+    role=\\"button\\">
+    <view class=\\"nut-button__wrap\\" data-sid=\\"_CP\\" id=\\"_CP\\" style=\\"\\"><view data-sid=\\"_CU\\" id=\\"_CU\\" style=\\"\\">nut-button</view></view>
+  </button>
 </view>
 "
 `;
@@ -497,6 +522,10 @@ exports[`e2e > 'uni-app' 1`] = `
 
 exports[`e2e > 'uni-app-vue2-cli5' 1`] = `
 "<view class=\\"beforeccontent-_qhelloq_ beforecblock _div\\">
+  <view class=\\"block\\"></view>
+  <view class=\\"inline-block\\"></view>
+  <view class=\\"list-item\\"></view>
+  <view class=\\"flex\\"></view>
   <view class=\\"bg-_h00ff00_\\">bbb</view>
   <view class=\\"afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ text-_30rpx_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_h00ff00_\\">
     classArray
