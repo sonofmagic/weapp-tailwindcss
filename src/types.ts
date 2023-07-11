@@ -339,7 +339,7 @@ cssPreflight: {
    * `^2.6.0`
    * @description  是否注入额外的 `tailwindcss css var scope` 区域，这个选项用于这样的场景
    *
-   * 比如 `taro vue3` 使用 [NutUI](nutui.jd.com), 需要使用 `@tarojs/plugin-html`，而这个插件会启用 `postcss-html-transform` 从而移除所有带 `*` 选择器
+   * 比如 `taro vue3` 使用 [NutUI](https://nutui.jd.com), 需要使用 `@tarojs/plugin-html`，而这个插件会启用 `postcss-html-transform` 从而移除所有带 `*` 选择器
    *
    * 这会导致 `tailwindcss css var scope` 区域被移除导致一些样式，比如渐变等等功能失效
    *

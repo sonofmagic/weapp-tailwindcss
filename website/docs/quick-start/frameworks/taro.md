@@ -56,9 +56,9 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 
 ## 和 NutUI 一起使用
 
-`taro vue3` 使用 [NutUI](nutui.jd.com) 的注意点:
+`taro vue3` 使用 [NutUI](https://nutui.jd.com) 的注意点:
 
-[NutUI](nutui.jd.com) 需要配合 `@tarojs/plugin-html` 一起使用，
+[NutUI](https://nutui.jd.com) 需要配合 `@tarojs/plugin-html` 一起使用，
 
 然而在和 `@tarojs/plugin-html` 一起使用时，默认配置下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。
 
