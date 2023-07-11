@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 2.6.0 (2023-07-11)
+
+### Features
+
+- 添加 `injectAdditionalCssVarScope` 配置项，用于 `tailwindcss` 变量区域的重新注入
+
+### Chore
+
+- 升级 `@csstools` 到最新版本，使用 `MIT-0` 协议
+- 升级 `babel` 相关的依赖
+
 ## 2.5.0~2.5.2 (2023-06-19)
 
 ### Features
