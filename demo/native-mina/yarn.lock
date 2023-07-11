@@ -4716,12 +4716,12 @@ postcss-nested@^6.0.1:
 
 postcss-rem-to-responsive-pixel@^5.1.3:
   version "5.1.3"
-  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
+  resolved "https://registry.yarnpkg.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-5.1.3.tgz#d9486de84137bbca71bc4e903b92db66c9bf5fb3"
   integrity sha512-qi17MnTWzJ/3PnPrlspG5njMgmUomLXdgRc4AGqjfyMzn896V6tB4u5jW3xjtkxMM5IHB1z8LHnS81cLMpQ2Kg==
 
 postcss-rpx-transform@^1.0.1:
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
+  resolved "https://registry.yarnpkg.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
   integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
 
 postcss-selector-parser@^6.0.11:
@@ -5382,7 +5382,7 @@ supports-preserve-symlinks-flag@^1.0.0:
 
 tailwind-css-variables-theme-generator@^0.3.8:
   version "0.3.8"
-  resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.3.8.tgz#7aa2d7d3199fbea26f48517c54a56eff61cb1d1f"
+  resolved "https://registry.yarnpkg.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.3.8.tgz#7aa2d7d3199fbea26f48517c54a56eff61cb1d1f"
   integrity sha512-1IIF39wQpOnFQk7AxHkCg/QWZQ72oXOaYal4Zc4yuS00AIhCwRGkNWFD31FvIJs5XbD6QBKlGWDS3cR9PhzNog==
   dependencies:
     consola "^2.15.3"
@@ -5394,7 +5394,7 @@ tailwindcss-mangle-shared@^1.2.6:
 
 tailwindcss-patch@^1.2.6:
   version "1.2.6"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.2.6.tgz#daeecf3f64ab330993a5652acb8965bf0bb65cf0"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-1.2.6.tgz#daeecf3f64ab330993a5652acb8965bf0bb65cf0"
   integrity sha512-spZgVkoKsnOCyNzLz40Jxv0bVgjOQCET4rzou9uZ+tvK7gNFIGGWxweC1cLybx0fMLHfhWOKswqLcQdke0NOlw==
   dependencies:
     "@babel/generator" "^7.22.5"
@@ -5406,7 +5406,7 @@ tailwindcss-patch@^1.2.6:
 
 tailwindcss-rem2px-preset@^1.0.3:
   version "1.0.3"
-  resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
+  resolved "https://registry.yarnpkg.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
 tailwindcss@^3.3.2:
@@ -5637,20 +5637,20 @@ watchpack@^2.4.0:
 
 weapp-ide-cli@^1.0.1:
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-1.0.1.tgz#8c31df3a1cc01661d81de185733d98a82e73e6de"
+  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-1.0.1.tgz#8c31df3a1cc01661d81de185733d98a82e73e6de"
   integrity sha512-s0wrT8hB35HBz0/V7fhCp/WKU8jHyHzzYhDAidoAPlGMFNxBGA7ES2w/tHKst/vXz+UR4sp8E2i957cxb3ZnEQ==
   dependencies:
     execa "5.1.1"
 
 weapp-tailwindcss-children@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.6.0-beta.0:
-  version "2.6.0-beta.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.6.0-beta.0.tgz#189fe009af3953fdb14e4d3ed0eb079dc0b1e656"
-  integrity sha512-1EoqL2xVk5Z5AtYzVCbvKb1PeDkRgG0bRvJvGPd8L5ejWRdlyL5BHhZPBMSqKfPC8uY39s1c7Ur+RZAkIb27AQ==
+weapp-tailwindcss-webpack-plugin@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.6.0.tgz#d85dd3b014c98de5f30825e25c2e3ecdc9f92131"
+  integrity sha512-qr8/3qfe6wEgC0msP0I1qi1YI5rTI7uI9aSRUraPws46kSW6HPmv9GDHIm98sF5h9ix04RrwrX5vsssUzxgx/w==
   dependencies:
     "@babel/generator" "^7.22.7"
     "@babel/parser" "^7.22.7"
