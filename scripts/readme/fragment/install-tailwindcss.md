@@ -43,12 +43,14 @@ module.exports = {
 比如 `uni-app` 的 `App.vue`
 
 ```html
-<style>
+<style lang="scss">
 @tailwind base;
+@tailwind components;
 @tailwind utilities;
 /* 使用 scss */
-/* @import 'tailwindcss/base'; */
-/* @import 'tailwindcss/utilities'; */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 </style>
 ```
 
@@ -56,6 +58,7 @@ module.exports = {
 
 ```scss
 @import 'tailwindcss/base';
+@import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 ```
 
