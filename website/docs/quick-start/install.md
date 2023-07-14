@@ -71,10 +71,12 @@ module.exports = {
 ```html
 <style>
 @tailwind base;
+@tailwind components;
 @tailwind utilities;
 /* 使用 scss */
 /* @import 'tailwindcss/base'; */
 /* @import 'tailwindcss/utilities'; */
+/* @import 'tailwindcss/components'; */
 </style>
 ```
 
@@ -82,13 +84,10 @@ module.exports = {
 
 ```scss
 @import 'tailwindcss/base';
+@import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 ```
 
-然后在 `app.ts` 里引入这个样式文件即可
-
-:::tip Q&A
-为什么没有引入 `tailwindcss/components`? 是因为里面默认存放的是 pc 端自适应相关的样式，对小程序环境来说没有用处。如果你有 `@layer components` 相关的工具类需要使用，则可以引入。
-:::
+然后在 `app.ts` 里引入这个样式文件即可。
 
 这样 `tailwindcss` 的安装与配置就完成了，接下来让我们进入第二个环节：配置 `rem` 单位转化。
