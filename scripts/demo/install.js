@@ -10,7 +10,7 @@ const isRc = argvs.has('--rc')
     demoPath,
     `-D weapp-tailwindcss-webpack-plugin${isBeta ? '@beta' : ''} tailwindcss-patch${
       isRc ? '@rc' : ''
-    } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator --ignore-engines`,
+    } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator tailwindcss@latest --ignore-engines`,
     true
   )
 

@@ -390,17 +390,16 @@ describe('webpack5 plugin', () => {
               // processor
               // moduleProcessor
               createLoader(
-                function (source) {
-                  let css = ''
+                async function (source) {
                   // eslint-disable-next-line unicorn/prefer-ternary
                   if (/module[/\\]index\.css$/.test(this.resourcePath)) {
-                    css = moduleProcessor.process(source).css
-                    this.emitFile('module.css', css)
+                    const res = await moduleProcessor.process(source)
+                    this.emitFile('module.css', res.css)
                     // return 'module.exports = ' + JSON.stringify(css)
                   } else {
                     // 直接变成空字符串 or postcss
-                    css = processor.process(source).css
-                    this.emitFile('index.css', css)
+                    const res = await processor.process(source)
+                    this.emitFile('index.css', res.css)
                   }
                   // 做成文件方便查看快照
                   return 'module.exports = " "' // JSON.stringify(css) //  JSON.stringify(source)
