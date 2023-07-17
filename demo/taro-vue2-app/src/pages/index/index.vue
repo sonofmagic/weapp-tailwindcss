@@ -1,6 +1,7 @@
 <template>
   <view class="index">
     <Render></Render>
+    <view>{{ wildContent }}</view>
     <view :class="classArray">classArray11</view>
 
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
@@ -38,7 +39,8 @@ export default {
     return {
       msg: 'Hello world!',
       flag: true,
-      classArray: ['bg-[#543254]', 'h-[100px]', 'w-[320px]', "bg-[url('https://xxx.com/xx.webp')]"]
+      classArray: ['bg-[#543254]', 'h-[100px]', 'w-[320px]', "bg-[url('https://xxx.com/xx.webp')]"],
+      wildContent: '****'
     }
   },
   methods: {

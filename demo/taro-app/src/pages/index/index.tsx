@@ -21,10 +21,12 @@ const Index = () => {
     "bg-[url('https://xxx.com/xx.webp')]",
     "bg-[url('https://yyy.com/xx.webp')]"
   )
+  const wildContent = '****'
   return (
     <>
       <Navigator url='/moduleA/pages/index'>普通分包</Navigator>
       <Navigator url='/moduleB/pages/index'>独立分包</Navigator>
+      <View>{wildContent}</View>
       {/* <Button>Button</Button> */}
       <View className={`w-full bg-indigo-400 bg-[url('https://xxx.com/xx.webp')] bg-bottom bg-contain bg-no-repeat`}>{'bg-[url]'}</View>
       <View className={aaa}>11</View>

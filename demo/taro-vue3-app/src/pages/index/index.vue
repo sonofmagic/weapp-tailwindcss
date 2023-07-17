@@ -2,6 +2,7 @@
   <view class="index container bg-[#ffffff]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
     <First></First>
     <jsxRender></jsxRender>
+    <view>{{ wildContent }}</view>
     <view :class="classArray">classArray</view>
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]"
       hover-class="bg-red-500 dark:bg-[#487512]"></view>
@@ -42,4 +43,5 @@ import { ref } from 'vue'
 const msg = ref('Hello world!')
 const flag = ref(true)
 const classArray = ['bg-[#543254]', 'h-[100px]', 'w-[300px]', "bg-[url('https://xxx.com/xx.webp')]"]
+const wildContent = '******'
 </script>

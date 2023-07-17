@@ -8,6 +8,7 @@
         https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
       </view>
       <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
+      <view>{{wildContent}}</view>
     </view>
     <view class="{{contentStyle}}">
       <view class="text-base font-bold pb-[10px] mb-[20px] text-left border-b border-[#EEEEEE]">

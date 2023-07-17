@@ -1,5 +1,6 @@
 <template>
   <div class="before:content-['hello'] before:block">
+    <view>{{ wildContent }}</view>
     <view class="block"></view>
     <view class="inline-block"></view>
     <view class="list-item"></view>
@@ -103,7 +104,7 @@ export default Vue.extend({
       aaa: 'bg-[#ff0000]',
       bbb: /*weapp-tw ignore*/ 'bg-[#00ff00]',
       flag: false,
-
+      wildContent: '********',
       displayArray: [
         'block',
         'inline-block',

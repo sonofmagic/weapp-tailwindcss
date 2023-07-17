@@ -2,6 +2,7 @@
 <import src="../../wxml/motto/motto.wxml" />
 <view class="container">
   <ice-avatar></ice-avatar>
+  <view>{{wildContent}}</view>
   <view class="{{bgUrl}}">bgUrl</view>
   <view class="{{icebreaker}}">icebreaker</view>
   <user nickName="{{'icebreaker'}}"></user>

@@ -21,8 +21,11 @@ export default function Home() {
       },
     ],
   );
+
+  const wildContent = '****';
   return (
     <>
+      <View>{wildContent}</View>
       <View
         className={dClassNames}
         onClick={() => {
