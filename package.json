@@ -36,6 +36,11 @@
       "require": "./dist/gulp.js",
       "import": "./dist/gulp.mjs"
     },
+    "./defaults": {
+      "types": "./dist/defaults.d.ts",
+      "require": "./dist/defaults.js",
+      "import": "./dist/defaults.mjs"
+    },
     "./*": "./*"
   },
   "typesVersions": {
