@@ -58,6 +58,7 @@ export type IJsHandlerOptions = {
   minifiedJs?: boolean
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
+  jsPreserveClass?: (keyword: string) => boolean | undefined
 }
 export interface RawSource {
   start: number
@@ -348,6 +349,13 @@ cssPreflight: {
    * @default false
    */
   injectAdditionalCssVarScope?: boolean
+
+  /**
+   * `^2.6.1`
+   * @description 保留返回 true 不保留返回 false/undefined
+   * @default 默认保留 *
+   */
+  jsPreserveClass?: (keyword: string) => boolean | undefined
 }
 
 export interface IMangleScopeContext {
