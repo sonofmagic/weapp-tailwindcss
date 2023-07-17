@@ -10,6 +10,7 @@ exports[`e2e > 'gulp-app' 1`] = `
         https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
       </view>
       <view class=\\"text-xs font-medium\\">Fork from Jeff2Ma/WeApp-Workflow</view>
+      <view>******</view>
     </view>
     <view class=\\"mt-_24px_\\">
       <view class=\\"text-base font-bold pb-_10px_ mb-_20px_ text-left border-b border-_hEEEEEE_\\">功能介绍</view>
@@ -32,7 +33,8 @@ exports[`e2e > 'mpx-app' 1`] = `
   <view class=\\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">bgUrl</view>
   <view class=\\"after content- aftercml-0d5 afterctext-red-500\\"></view>
   <view class=\\"afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500\\"></view>
-  <list is=\\"components/list9cf6a74a/index\\">
+  <view>*****</view>
+  <list is=\\"components/liste824c5b4/index\\">
     <view class=\\"flex index--flex flex-col index--flex-col\\">
       <view class=\\"text-_blue_ index--text-_blue_\\">手机</view>
       <view class=\\"text-_he67240_ index--text-_he67240_\\">电视</view>
@@ -46,6 +48,7 @@ exports[`e2e > 'mpx-app' 1`] = `
 exports[`e2e > 'native-mina' 1`] = `
 "<view class=\\"container\\">
   <ice-avatar is=\\"components/avatar/avatar\\"><view class=\\"inner avatar--inner w-_20rpx_ avatar--w-_20rpx_\\">default value</view></ice-avatar>
+  <view>*****</view>
   <view class=\\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">bgUrl</view>
   <view class=\\"bg-_h123456_ text-_50px_ text-_h654321_\\">icebreaker</view>
   <user is=\\"components/user/user\\">
@@ -108,45 +111,46 @@ exports[`e2e > 'native-mina' 1`] = `
 
 exports[`e2e > 'rax-app' 1`] = `
 "<view data-private-node-id=\\"e-body-pages/index/index-2\\" style=\\"\\">
-  <view class=\\"h5-div\\" data-private-node-id=\\"n_38\\" id=\\"root\\" style=\\"\\">
-    <view class=\\"h5-div rax-view-v2 bg-_h123456_ text-_hfff_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_50px_ h-_100px_\\" data-private-node-id=\\"n_39\\" style=\\"\\">clsx</view>
-    <view class=\\"h5-div rax-view-v2 bg-_h654321_ darkcbg-_h666555_ h-10 w-10\\" data-private-node-id=\\"n_41\\" style=\\"\\"></view>
-    <view class=\\"h5-div rax-view-v2 index--homeContainer--npg8wSy\\" data-private-node-id=\\"n_42\\" style=\\"\\">
+  <view class=\\"h5-div\\" data-private-node-id=\\"n_40\\" id=\\"root\\" style=\\"\\">
+    <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_41\\" style=\\"\\">****</view>
+    <view class=\\"h5-div rax-view-v2 bg-_h123456_ text-_hfff_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_50px_ h-_100px_\\" data-private-node-id=\\"n_43\\" style=\\"\\">clsx</view>
+    <view class=\\"h5-div rax-view-v2 bg-_h654321_ darkcbg-_h666555_ h-10 w-10\\" data-private-node-id=\\"n_45\\" style=\\"\\"></view>
+    <view class=\\"h5-div rax-view-v2 index--homeContainer--npg8wSy\\" data-private-node-id=\\"n_46\\" style=\\"\\">
       <image
         class=\\"h5-img Logo--logo--x8fxjJl\\"
-        data-private-node-id=\\"n_43\\"
+        data-private-node-id=\\"n_47\\"
         mode=\\"scaleToFill\\"
         src=\\"//gw.alicdn.com/tfs/TB1MRC_cvb2gK0jSZK9XXaEgFXa-1701-1535.png\\"
         style=\\"\\"
         role=\\"img\\"></image>
-      <text class=\\"rax-text-v2 index--homeTitle--FjXOpje\\" data-private-node-id=\\"n_44\\" space=\\"\\" style=\\"\\">Welcome to Your Rax App</text>
-      <text class=\\"rax-text-v2 index--homeInfo--Kmw_BNe\\" data-private-node-id=\\"n_46\\" space=\\"\\" style=\\"\\">More information about Rax</text>
-      <text class=\\"rax-text-v2 index--homeInfo--Kmw_BNe\\" data-private-node-id=\\"n_48\\" space=\\"\\" style=\\"\\">Visit https://rax.js.org</text>
+      <text class=\\"rax-text-v2 index--homeTitle--FjXOpje\\" data-private-node-id=\\"n_48\\" space=\\"\\" style=\\"\\">Welcome to Your Rax App</text>
+      <text class=\\"rax-text-v2 index--homeInfo--Kmw_BNe\\" data-private-node-id=\\"n_50\\" space=\\"\\" style=\\"\\">More information about Rax</text>
+      <text class=\\"rax-text-v2 index--homeInfo--Kmw_BNe\\" data-private-node-id=\\"n_52\\" space=\\"\\" style=\\"\\">Visit https://rax.js.org</text>
     </view>
-    <view class=\\"h5-div rax-view-v2 p-_20px_ -mt-2 mb-_-20px_\\" data-private-node-id=\\"n_50\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
-    <view class=\\"h5-div rax-view-v2 space-y-_1d6rem_ w-_200p_\\" data-private-node-id=\\"n_52\\" style=\\"\\">
-      <view class=\\"h5-div rax-view-v2 w-_300rpx_ text-black text-opacity-_0d19_\\" data-private-node-id=\\"n_53\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
-      <view class=\\"h5-div rax-view-v2 min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-private-node-id=\\"n_55\\" style=\\"\\">
+    <view class=\\"h5-div rax-view-v2 p-_20px_ -mt-2 mb-_-20px_\\" data-private-node-id=\\"n_54\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+    <view class=\\"h5-div rax-view-v2 space-y-_1d6rem_ w-_200p_\\" data-private-node-id=\\"n_56\\" style=\\"\\">
+      <view class=\\"h5-div rax-view-v2 w-_300rpx_ text-black text-opacity-_0d19_\\" data-private-node-id=\\"n_57\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
+      <view class=\\"h5-div rax-view-v2 min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-private-node-id=\\"n_59\\" style=\\"\\">
         min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_
       </view>
-      <view class=\\"h5-div rax-view-v2 max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-private-node-id=\\"n_57\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+      <view class=\\"h5-div rax-view-v2 max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-private-node-id=\\"n_61\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
       <view
         class=\\"h5-div rax-view-v2 flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\"
-        data-private-node-id=\\"n_59\\"
+        data-private-node-id=\\"n_63\\"
         style=\\"\\">
         Hello
       </view>
-      <view class=\\"h5-div rax-view-v2 iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_\\" data-private-node-id=\\"n_61\\" style=\\"\\">
+      <view class=\\"h5-div rax-view-v2 iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_\\" data-private-node-id=\\"n_65\\" style=\\"\\">
         iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_
       </view>
-      <view class=\\"h5-div rax-view-v2 grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-private-node-id=\\"n_63\\" style=\\"\\">
-        <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_64\\" style=\\"\\">1</view>
-        <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_66\\" style=\\"\\">2</view>
-        <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_68\\" style=\\"\\">3</view>
+      <view class=\\"h5-div rax-view-v2 grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-private-node-id=\\"n_67\\" style=\\"\\">
+        <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_68\\" style=\\"\\">1</view>
+        <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_70\\" style=\\"\\">2</view>
+        <view class=\\"h5-div rax-view-v2\\" data-private-node-id=\\"n_72\\" style=\\"\\">3</view>
       </view>
-      <view class=\\"h5-div rax-view-v2 w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-private-node-id=\\"n_70\\" style=\\"\\">Default</view>
+      <view class=\\"h5-div rax-view-v2 w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-private-node-id=\\"n_74\\" style=\\"\\">Default</view>
     </view>
-    <view class=\\"h5-div rax-view-v2 test\\" data-private-node-id=\\"n_72\\" style=\\"\\">test</view>
+    <view class=\\"h5-div rax-view-v2 test\\" data-private-node-id=\\"n_76\\" style=\\"\\">test</view>
   </view>
 </view>
 "
@@ -154,24 +158,6 @@ exports[`e2e > 'rax-app' 1`] = `
 
 exports[`e2e > 'taro-react' 1`] = `
 "<navigator
-  app-id=\\"\\"
-  data-sid=\\"_BR\\"
-  delta=\\"1\\"
-  extra-data=\\"null\\"
-  hover-class=\\"navigator-hover\\"
-  hover-start-time=\\"50\\"
-  hover-stay-time=\\"600\\"
-  id=\\"_BR\\"
-  open-type=\\"navigate\\"
-  path=\\"\\"
-  style=\\"\\"
-  target=\\"self\\"
-  url=\\"/moduleA/pages/index\\"
-  version=\\"version\\"
-  role=\\"link\\">
-  普通分包
-</navigator>
-<navigator
   app-id=\\"\\"
   data-sid=\\"_BT\\"
   delta=\\"1\\"
@@ -184,72 +170,91 @@ exports[`e2e > 'taro-react' 1`] = `
   path=\\"\\"
   style=\\"\\"
   target=\\"self\\"
+  url=\\"/moduleA/pages/index\\"
+  version=\\"version\\"
+  role=\\"link\\">
+  普通分包
+</navigator>
+<navigator
+  app-id=\\"\\"
+  data-sid=\\"_BV\\"
+  delta=\\"1\\"
+  extra-data=\\"null\\"
+  hover-class=\\"navigator-hover\\"
+  hover-start-time=\\"50\\"
+  hover-stay-time=\\"600\\"
+  id=\\"_BV\\"
+  open-type=\\"navigate\\"
+  path=\\"\\"
+  style=\\"\\"
+  target=\\"self\\"
   url=\\"/moduleB/pages/index\\"
   version=\\"version\\"
   role=\\"link\\">
   独立分包
 </navigator>
-<view class=\\"w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat\\" data-sid=\\"_BV\\" id=\\"_BV\\" style=\\"\\">bg-_url_</view>
+<view data-sid=\\"_BX\\" id=\\"_BX\\" style=\\"\\">****</view>
+<view class=\\"w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat\\" data-sid=\\"_BZ\\" id=\\"_BZ\\" style=\\"\\">bg-_url_</view>
 <view
   class=\\"text-_50px_ bg-_h3232ff_ h-_10px_ w-_20px_ text-_hfa00aa_ text-_hfa0000_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_url_qhttpscssyyydcomsxxdwebpq__\\"
-  data-sid=\\"_BX\\"
-  id=\\"_BX\\"
+  data-sid=\\"_Bb\\"
+  id=\\"_Bb\\"
   style=\\"\\">
   11
 </view>
-<view class=\\"shadow-md\\" data-sid=\\"_BZ\\" id=\\"_BZ\\" style=\\"\\">shadow-md</view>
-<view class=\\"form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_\\" data-sid=\\"_Bb\\" id=\\"_Bb\\" style=\\"\\">py-_62px_ px-_95px_</view>
-<view data-sid=\\"_Bc\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_Bc\\" style=\\"\\"></view>
-<view class=\\"bg-_h654321_ w-_100px_ h-_20px_\\" data-sid=\\"_Be\\" id=\\"_Be\\" style=\\"\\">123</view>
-<view class=\\"text-_h564564_\\" data-sid=\\"_Bg\\" id=\\"_Bg\\" style=\\"\\">emptyImageClass</view>
-<view class=\\"text-_h66ffff_\\" data-sid=\\"_Bi\\" id=\\"_Bi\\" style=\\"\\">btnClassName</view>
-<view class=\\"aftercborder-none afterccontent-_qHello_Worldq_ a\\" data-sid=\\"_Bk\\" id=\\"_Bk\\" style=\\"\\">aftercborder-none</view>
-<view class=\\"after content- m aftercml-0d5 afterctext-red-500 b\\" data-sid=\\"_Bm\\" id=\\"_Bm\\" style=\\"\\">yellow</view>
-<view class=\\"after content- aftercml-0d5 afterctext-red-500\\" data-sid=\\"_Bo\\" id=\\"_Bo\\" style=\\"\\">事实上</view>
-<view class=\\"afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500\\" data-sid=\\"_Bq\\" id=\\"_Bq\\" style=\\"\\">事实上</view>
-<view class=\\"afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16\\" data-sid=\\"_Bx\\" id=\\"_Bx\\" style=\\"\\">
-  <view class=\\"itext-_h555_\\" data-sid=\\"_Bs\\" id=\\"_Bs\\" style=\\"\\">aspect</view>
-  <view class=\\"bg-_hfaf_\\" data-sid=\\"_Bu\\" id=\\"_Bu\\" style=\\"\\">w</view>
-  <view class=\\"bg-_h123_\\" data-sid=\\"_Bw\\" id=\\"_Bw\\" style=\\"\\">16</view>
+<view class=\\"shadow-md\\" data-sid=\\"_Bd\\" id=\\"_Bd\\" style=\\"\\">shadow-md</view>
+<view class=\\"form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_\\" data-sid=\\"_Bf\\" id=\\"_Bf\\" style=\\"\\">py-_62px_ px-_95px_</view>
+<view data-sid=\\"_Bg\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_Bg\\" style=\\"\\"></view>
+<view class=\\"bg-_h654321_ w-_100px_ h-_20px_\\" data-sid=\\"_Bi\\" id=\\"_Bi\\" style=\\"\\">123</view>
+<view class=\\"text-_h564564_\\" data-sid=\\"_Bk\\" id=\\"_Bk\\" style=\\"\\">emptyImageClass</view>
+<view class=\\"text-_h66ffff_\\" data-sid=\\"_Bm\\" id=\\"_Bm\\" style=\\"\\">btnClassName</view>
+<view class=\\"aftercborder-none afterccontent-_qHello_Worldq_ a\\" data-sid=\\"_Bo\\" id=\\"_Bo\\" style=\\"\\">aftercborder-none</view>
+<view class=\\"after content- aftercml-0d5 afterctext-red-500 b\\" data-sid=\\"_Bq\\" id=\\"_Bq\\" style=\\"\\">yellow</view>
+<view class=\\"after content- aftercml-0d5 afterctext-red-500\\" data-sid=\\"_Bs\\" id=\\"_Bs\\" style=\\"\\">事实上</view>
+<view class=\\"afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500\\" data-sid=\\"_Bu\\" id=\\"_Bu\\" style=\\"\\">事实上</view>
+<view class=\\"afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16\\" data-sid=\\"_CB\\" id=\\"_CB\\" style=\\"\\">
+  <view class=\\"itext-_h555_\\" data-sid=\\"_Bw\\" id=\\"_Bw\\" style=\\"\\">aspect</view>
+  <view class=\\"bg-_hfaf_\\" data-sid=\\"_By\\" id=\\"_By\\" style=\\"\\">w</view>
+  <view class=\\"bg-_h123_\\" data-sid=\\"_CA\\" id=\\"_CA\\" style=\\"\\">16</view>
 </view>
-<view class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\" data-sid=\\"_By\\" hover-class=\\"bg-red-500 darkcbg-green-500\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_By\\" style=\\"\\"></view>
-<view class=\\"bg-_h123456_\\" data-sid=\\"_CA\\" id=\\"_CA\\" style=\\"\\">className</view>
-<view class=\\"p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_CC\\" id=\\"_CC\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
-<view class=\\"space-y-_1d6rem_ text-_16px_ w-_200p_\\" data-sid=\\"_CW\\" id=\\"_CW\\" style=\\"\\">
-  <view class=\\"w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_CE\\" id=\\"_CE\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
-  <view class=\\"min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_CG\\" id=\\"_CG\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-  <view class=\\"max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_CI\\" id=\\"_CI\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-  <view class=\\"flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_CK\\" id=\\"_CK\\" style=\\"\\">Hello</view>
-  <view class=\\"border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_CM\\" id=\\"_CM\\" style=\\"\\">
+<view class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\" data-sid=\\"_CC\\" hover-class=\\"bg-red-500 darkcbg-green-500\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_CC\\" style=\\"\\"></view>
+<view class=\\"bg-_h123456_\\" data-sid=\\"_CE\\" id=\\"_CE\\" style=\\"\\">className</view>
+<view class=\\"p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_CG\\" id=\\"_CG\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+<view class=\\"space-y-_1d6rem_ text-_16px_ w-_200p_\\" data-sid=\\"_Ca\\" id=\\"_Ca\\" style=\\"\\">
+  <view class=\\"w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_CI\\" id=\\"_CI\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
+  <view class=\\"min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_CK\\" id=\\"_CK\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+  <view class=\\"max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_CM\\" id=\\"_CM\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+  <view class=\\"flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_CO\\" id=\\"_CO\\" style=\\"\\">Hello</view>
+  <view class=\\"border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_CQ\\" id=\\"_CQ\\" style=\\"\\">
     border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
   </view>
-  <view class=\\"grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_CT\\" id=\\"_CT\\" style=\\"\\">
-    <view data-sid=\\"_CO\\" id=\\"_CO\\" style=\\"\\">1</view>
-    <view data-sid=\\"_CQ\\" id=\\"_CQ\\" style=\\"\\">2</view>
-    <view data-sid=\\"_CS\\" id=\\"_CS\\" style=\\"\\">3</view>
+  <view class=\\"grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_CX\\" id=\\"_CX\\" style=\\"\\">
+    <view data-sid=\\"_CS\\" id=\\"_CS\\" style=\\"\\">1</view>
+    <view data-sid=\\"_CU\\" id=\\"_CU\\" style=\\"\\">2</view>
+    <view data-sid=\\"_CW\\" id=\\"_CW\\" style=\\"\\">3</view>
   </view>
-  <view class=\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-sid=\\"_CV\\" id=\\"_CV\\" style=\\"\\">Default</view>
+  <view class=\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-sid=\\"_CZ\\" id=\\"_CZ\\" style=\\"\\">Default</view>
 </view>
-<view class=\\"test\\" data-sid=\\"_CY\\" id=\\"_CY\\" style=\\"\\">test</view>
+<view class=\\"test\\" data-sid=\\"_Cc\\" id=\\"_Cc\\" style=\\"\\">test</view>
 "
 `;
 
 exports[`e2e > 'taro-vue2' 1`] = `
-"<view class=\\"index\\" data-sid=\\"_As\\" id=\\"_As\\" style=\\"\\">
-  <view class=\\"text-amber-300\\" data-sid=\\"_At\\" id=\\"_At\\" style=\\"\\">
-    <view class=\\"text-center text-_50px_ text-_h123456_ mt-_22px_\\" data-sid=\\"_Au\\" hover-class=\\"bg-_h654321_\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_Au\\" style=\\"\\">
+"<view class=\\"index\\" data-sid=\\"_Au\\" id=\\"_Au\\" style=\\"\\">
+  <view class=\\"text-amber-300\\" data-sid=\\"_Av\\" id=\\"_Av\\" style=\\"\\">
+    <view class=\\"text-center text-_50px_ text-_h123456_ mt-_22px_\\" data-sid=\\"_Aw\\" hover-class=\\"bg-_h654321_\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_Aw\\" style=\\"\\">
       aaa
     </view>
     <button
       app-parameter=\\"\\"
       business-id=\\"\\"
-      data-sid=\\"_Aw\\"
+      data-sid=\\"_Ay\\"
       aria-disabled=\\"false\\"
       form-type=\\"\\"
       hover-class=\\"button-hover\\"
       hover-start-time=\\"20\\"
       hover-stay-time=\\"70\\"
-      id=\\"_Aw\\"
+      id=\\"_Ay\\"
       lang=\\"\\"
       open-type=\\"\\"
       send-message-img=\\"\\"
@@ -263,57 +268,58 @@ exports[`e2e > 'taro-vue2' 1`] = `
       first
     </button>
   </view>
-  <view class=\\"bg-_h543254_ h-_100px_ w-_320px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\" data-sid=\\"_Ay\\" id=\\"_Ay\\" style=\\"\\">classArray11</view>
+  <view data-sid=\\"_BA\\" id=\\"_BA\\" style=\\"\\">****</view>
+  <view class=\\"bg-_h543254_ h-_100px_ w-_320px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\" data-sid=\\"_BC\\" id=\\"_BC\\" style=\\"\\">classArray11</view>
   <view
     class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\"
-    data-sid=\\"_BA\\"
+    data-sid=\\"_BE\\"
     hover-class=\\"bg-red-500 darkcbg-green-500\\"
     hover-start-time=\\"50\\"
     hover-stay-time=\\"400\\"
-    id=\\"_BA\\"
+    id=\\"_BE\\"
     style=\\"\\"></view>
-  <view class=\\"bg-red-900\\" data-sid=\\"_BB\\" id=\\"_BB\\" style=\\"\\">bg-_hfafa00_</view>
-  <view class=\\"bg-_h098765_\\" data-sid=\\"_BD\\" id=\\"_BD\\" style=\\"\\">bg-_h098765_</view>
-  <view class=\\"p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_BF\\" id=\\"_BF\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-_20px_</view>
-  <view class=\\"space-y-_1d6rem_\\" data-sid=\\"_BH\\" id=\\"_BH\\" style=\\"\\">
-    <view class=\\"w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_BI\\" id=\\"_BI\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
-    <view class=\\"min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_BK\\" id=\\"_BK\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-    <view class=\\"max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_BM\\" id=\\"_BM\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-    <view class=\\"flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_BO\\" id=\\"_BO\\" style=\\"\\">Hello</view>
-    <view class=\\"border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_BQ\\" id=\\"_BQ\\" style=\\"\\">
+  <view class=\\"bg-red-900\\" data-sid=\\"_BF\\" id=\\"_BF\\" style=\\"\\">bg-_hfafa00_</view>
+  <view class=\\"bg-_h098765_\\" data-sid=\\"_BH\\" id=\\"_BH\\" style=\\"\\">bg-_h098765_</view>
+  <view class=\\"p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_BJ\\" id=\\"_BJ\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-_20px_</view>
+  <view class=\\"space-y-_1d6rem_\\" data-sid=\\"_BL\\" id=\\"_BL\\" style=\\"\\">
+    <view class=\\"w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_BM\\" id=\\"_BM\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
+    <view class=\\"min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_BO\\" id=\\"_BO\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+    <view class=\\"max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_BQ\\" id=\\"_BQ\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+    <view class=\\"flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_BS\\" id=\\"_BS\\" style=\\"\\">Hello</view>
+    <view class=\\"border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_BU\\" id=\\"_BU\\" style=\\"\\">
       border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
     </view>
-    <view class=\\"grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_BS\\" id=\\"_BS\\" style=\\"\\">
-      <view data-sid=\\"_BT\\" id=\\"_BT\\" style=\\"\\">1</view>
-      <view data-sid=\\"_BV\\" id=\\"_BV\\" style=\\"\\">2</view>
-      <view data-sid=\\"_BX\\" id=\\"_BX\\" style=\\"\\">3</view>
+    <view class=\\"grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_BW\\" id=\\"_BW\\" style=\\"\\">
+      <view data-sid=\\"_BX\\" id=\\"_BX\\" style=\\"\\">1</view>
+      <view data-sid=\\"_BZ\\" id=\\"_BZ\\" style=\\"\\">2</view>
+      <view data-sid=\\"_Bb\\" id=\\"_Bb\\" style=\\"\\">3</view>
     </view>
   </view>
-  <view class=\\"test\\" data-sid=\\"_BZ\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BZ\\" style=\\"\\">test</view>
+  <view class=\\"test\\" data-sid=\\"_Bd\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_Bd\\" style=\\"\\">test</view>
 </view>
 "
 `;
 
 exports[`e2e > 'taro-vue3' 1`] = `
-"<view class=\\"index container bg-_hffffff_ text-_haaaaaa_\\" data-sid=\\"_BU\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BU\\" style=\\"\\">
-  <view class=\\"text-amber-300\\" data-sid=\\"_BV\\" id=\\"_BV\\" style=\\"\\">
-    <view class=\\"text-center text-_50px_ text-_h123456_ mt-_22px_\\" data-sid=\\"_BW\\" hover-class=\\"bg-_h654321_\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BW\\" style=\\"\\">
+"<view class=\\"index container bg-_hffffff_ text-_haaaaaa_\\" data-sid=\\"_BW\\" hover-class=\\"none\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BW\\" style=\\"\\">
+  <view class=\\"text-amber-300\\" data-sid=\\"_BX\\" id=\\"_BX\\" style=\\"\\">
+    <view class=\\"text-center text-_50px_ text-_h123456_ mt-_22px_\\" data-sid=\\"_BY\\" hover-class=\\"bg-_h654321_\\" hover-start-time=\\"50\\" hover-stay-time=\\"400\\" id=\\"_BY\\" style=\\"\\">
       components ui
     </view>
   </view>
-  <view class=\\"text-amber-300\\" data-sid=\\"_BY\\" id=\\"_BY\\" style=\\"\\">
-    <view class=\\"text-center text-_50px_ text-red-400 mt-_22px_\\" data-sid=\\"_BZ\\" id=\\"_BZ\\" style=\\"\\">aaa</view>
+  <view class=\\"text-amber-300\\" data-sid=\\"_Ba\\" id=\\"_Ba\\" style=\\"\\">
+    <view class=\\"text-center text-_50px_ text-red-400 mt-_22px_\\" data-sid=\\"_Bb\\" id=\\"_Bb\\" style=\\"\\">aaa</view>
     <button
       app-parameter=\\"\\"
       business-id=\\"\\"
       class=\\"h5-button\\"
-      data-sid=\\"_Bb\\"
+      data-sid=\\"_Bd\\"
       aria-disabled=\\"false\\"
       form-type=\\"\\"
       hover-class=\\"button-hover\\"
       hover-start-time=\\"20\\"
       hover-stay-time=\\"70\\"
-      id=\\"_Bb\\"
+      id=\\"_Bd\\"
       lang=\\"\\"
       open-type=\\"\\"
       send-message-img=\\"\\"
@@ -327,52 +333,53 @@ exports[`e2e > 'taro-vue3' 1`] = `
       first
     </button>
   </view>
-  <view class=\\"bg-_h543254_ h-_100px_ w-_300px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\" data-sid=\\"_Bd\\" id=\\"_Bd\\" style=\\"\\">classArray</view>
+  <view data-sid=\\"_Bf\\" id=\\"_Bf\\" style=\\"\\">******</view>
+  <view class=\\"bg-_h543254_ h-_100px_ w-_300px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\" data-sid=\\"_Bh\\" id=\\"_Bh\\" style=\\"\\">classArray</view>
   <view
     class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\"
-    data-sid=\\"_Bf\\"
+    data-sid=\\"_Bj\\"
     hover-class=\\"bg-red-500 darkcbg-_h487512_\\"
     hover-start-time=\\"50\\"
     hover-stay-time=\\"400\\"
-    id=\\"_Bf\\"
+    id=\\"_Bj\\"
     style=\\"\\"></view>
-  <view class=\\"bg-red-900\\" data-sid=\\"_Bg\\" id=\\"_Bg\\" style=\\"\\">bg-_hfafa00_</view>
-  <view class=\\"bg-_h098765_\\" data-sid=\\"_Bi\\" id=\\"_Bi\\" style=\\"\\">bg-_h098765_</view>
-  <view class=\\"h5-view p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_Bk\\" id=\\"_Bk\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
-  <view class=\\"h5-view space-y-_1d6rem_\\" data-sid=\\"_Bm\\" id=\\"_Bm\\" style=\\"\\">
-    <view class=\\"h5-view w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_Bn\\" id=\\"_Bn\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
-    <view class=\\"h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_Bp\\" id=\\"_Bp\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-    <view class=\\"h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_Br\\" id=\\"_Br\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-    <view class=\\"h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_Bt\\" id=\\"_Bt\\" style=\\"\\">
+  <view class=\\"bg-red-900\\" data-sid=\\"_Bk\\" id=\\"_Bk\\" style=\\"\\">bg-_hfafa00_</view>
+  <view class=\\"bg-_h098765_\\" data-sid=\\"_Bm\\" id=\\"_Bm\\" style=\\"\\">bg-_h098765_</view>
+  <view class=\\"h5-view p-_20px_ -mt-2 mb-_-20px_\\" data-sid=\\"_Bo\\" id=\\"_Bo\\" style=\\"\\">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
+  <view class=\\"h5-view space-y-_1d6rem_\\" data-sid=\\"_Bq\\" id=\\"_Bq\\" style=\\"\\">
+    <view class=\\"h5-view w-_300rpx_ text-black text-opacity-_0d19_\\" data-sid=\\"_Br\\" id=\\"_Br\\" style=\\"\\">w-_300rpx_ text-black text-opacity-_0d19_</view>
+    <view class=\\"h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\" data-sid=\\"_Bt\\" id=\\"_Bt\\" style=\\"\\">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+    <view class=\\"h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\" data-sid=\\"_Bv\\" id=\\"_Bv\\" style=\\"\\">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+    <view class=\\"h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_\\" data-sid=\\"_Bx\\" id=\\"_Bx\\" style=\\"\\">
       Hello
     </view>
-    <view class=\\"h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_Bv\\" id=\\"_Bv\\" style=\\"\\">
+    <view class=\\"h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\" data-sid=\\"_Bz\\" id=\\"_Bz\\" style=\\"\\">
       border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
     </view>
-    <view class=\\"h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_Bx\\" id=\\"_Bx\\" style=\\"\\">
-      <view class=\\"h5-view\\" data-sid=\\"_By\\" id=\\"_By\\" style=\\"\\">1</view>
-      <view class=\\"h5-view\\" data-sid=\\"_CA\\" id=\\"_CA\\" style=\\"\\">2</view>
-      <view class=\\"h5-view\\" data-sid=\\"_CC\\" id=\\"_CC\\" style=\\"\\">3</view>
+    <view class=\\"h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\" data-sid=\\"_CB\\" id=\\"_CB\\" style=\\"\\">
+      <view class=\\"h5-view\\" data-sid=\\"_CC\\" id=\\"_CC\\" style=\\"\\">1</view>
+      <view class=\\"h5-view\\" data-sid=\\"_CE\\" id=\\"_CE\\" style=\\"\\">2</view>
+      <view class=\\"h5-view\\" data-sid=\\"_CG\\" id=\\"_CG\\" style=\\"\\">3</view>
     </view>
-    <view class=\\"h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-sid=\\"_CE\\" id=\\"_CE\\" style=\\"\\">Default</view>
+    <view class=\\"h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\" data-sid=\\"_CI\\" id=\\"_CI\\" style=\\"\\">Default</view>
   </view>
-  <view class=\\"h5-view test\\" data-sid=\\"_CG\\" id=\\"_CG\\" style=\\"\\">test</view>
-  <view class=\\"flex justify-between\\" data-sid=\\"_CI\\" id=\\"_CI\\" style=\\"\\">
-    <view class=\\"text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_\\" data-sid=\\"_CJ\\" id=\\"_CJ\\" style=\\"\\">对酒当歌</view>
-    <view class=\\"text-_red_\\" data-sid=\\"_CL\\" id=\\"_CL\\" style=\\"\\">人生几何</view>
+  <view class=\\"h5-view test\\" data-sid=\\"_CK\\" id=\\"_CK\\" style=\\"\\">test</view>
+  <view class=\\"flex justify-between\\" data-sid=\\"_CM\\" id=\\"_CM\\" style=\\"\\">
+    <view class=\\"text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_\\" data-sid=\\"_CN\\" id=\\"_CN\\" style=\\"\\">对酒当歌</view>
+    <view class=\\"text-_red_\\" data-sid=\\"_CP\\" id=\\"_CP\\" style=\\"\\">人生几何</view>
   </view>
-  <view class=\\"bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full\\" data-sid=\\"_CN\\" id=\\"_CN\\" style=\\"\\"></view>
+  <view class=\\"bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full\\" data-sid=\\"_CR\\" id=\\"_CR\\" style=\\"\\"></view>
   <button
     app-parameter=\\"\\"
     business-id=\\"\\"
     class=\\"h5-button nut-button nut-button--default nut-button--normal nut-button--round\\"
-    data-sid=\\"_CO\\"
+    data-sid=\\"_CS\\"
     aria-disabled=\\"false\\"
     form-type=\\"\\"
     hover-class=\\"button-hover\\"
     hover-start-time=\\"20\\"
     hover-stay-time=\\"70\\"
-    id=\\"_CO\\"
+    id=\\"_CS\\"
     lang=\\"\\"
     open-type=\\"\\"
     send-message-img=\\"\\"
@@ -383,7 +390,7 @@ exports[`e2e > 'taro-vue3' 1`] = `
     style=\\"\\"
     type=\\"\\"
     role=\\"button\\">
-    <view class=\\"nut-button__wrap\\" data-sid=\\"_CP\\" id=\\"_CP\\" style=\\"\\"><view data-sid=\\"_CU\\" id=\\"_CU\\" style=\\"\\">nut-button</view></view>
+    <view class=\\"nut-button__wrap\\" data-sid=\\"_CT\\" id=\\"_CT\\" style=\\"\\"><view data-sid=\\"_CY\\" id=\\"_CY\\" style=\\"\\">nut-button</view></view>
   </button>
 </view>
 "
@@ -391,6 +398,8 @@ exports[`e2e > 'taro-vue3' 1`] = `
 
 exports[`e2e > 'uni-app' 1`] = `
 "<view>
+  <view>* 1 * 2 * 3 ****</view>
+  <view>****</view>
   <view class=\\"ab text-left _div\\">111</view>
   <label class=\\"pp text-xs _span text-left\\">222</label>
   <button
@@ -522,6 +531,7 @@ exports[`e2e > 'uni-app' 1`] = `
 
 exports[`e2e > 'uni-app-vue2-cli5' 1`] = `
 "<view class=\\"beforeccontent-_qhelloq_ beforecblock _div\\">
+  <view>********</view>
   <view class=\\"block\\"></view>
   <view class=\\"inline-block\\"></view>
   <view class=\\"list-item\\"></view>
@@ -557,4 +567,4 @@ exports[`e2e > 'uni-app-vue2-cli5' 1`] = `
 "
 `;
 
-exports[`e2e > 'uni-app-vue3-vite' 1`] = `"<view class=\\"content\\"><view class=\\"_2xlctext-base\\">2xl:text-base</view><view class=\\"_2xlctext-_red_\\">2xl:text-[red]</view><view class=\\"space-y-4 flex flex-col bg-red-400\\"><view class=\\"bg-sky-500\\">view space-y-4</view><view class=\\"bg-sky-500\\">view space-y-4</view><input class=\\"bg-sky-500\\" value=\\"input space-y-4\\"></input><text class=\\"bg-sky-500\\">text space-y-4</text><button class=\\"bg-sky-500\\" role=\\"button\\" aria-disabled=\\"false\\">button space-y-4</button><common-com is=\\"components/CommonCom\\" class=\\"bg-sky-500\\"><text>CommonCom space-y-4</text></common-com><view class=\\"bg-sky-500\\">view space-y-4</view><text class=\\"bg-sky-500\\">text space-y-4</text><text>VirtualHostCom space-y-4</text><view class=\\"bg-sky-500\\">view space-y-4</view><text class=\\"bg-sky-500\\">text space-y-4</text></view><view class=\\"bg-_h3482f2_\\">bgbgbgbg</view><view class=\\"text-_30rpx_ text-_hfafafa_ font-bold bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">classArray</view><view class=\\"text-sm text-_hfafafa_\\">:class=\\"['text-sm', classObj]</view><view class=\\"rotate-_10deg_\\">rotate1111111</view><view class=\\"td highlight\\">你好</view><view class=\\"td\\">1</view><view class=\\"td\\">2</view><view class=\\"text-_32rpx_ border-_10rpx_\\">rpx</view><view class=\\"text-_32px_ border-_10px_\\">px</view><button role=\\"button\\" aria-disabled=\\"false\\">显示Tabbar</button><button role=\\"button\\" aria-disabled=\\"false\\">隐藏Tabbar</button><view class=\\"itext-primary iborder-primary text-_32px_\\">1111</view><view class=\\"border-b-_4rpx_ border-t-_4px_ border w-screen h-3 border-_red_\\"></view><view class=\\"_n_du-count-downw_w_text_citext-red-400\\"><view></view><view></view><view></view><view></view><view><view class=\\"u-count-down__text\\">u-count-down__text</view></view></view><button app-parameter=\\"\\" class=\\"u-button button--u-button u-reset-button button--u-reset-button data-v-5c003edf button--data-v-5c003edf u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal\\" data-name=\\"\\" form-type=\\"\\" hover-class=\\"u-button--active\\" hover-start-time=\\"0\\" hover-stay-time=\\"200\\" lang=\\"en\\" open-type=\\"\\" send-message-img=\\"\\" send-message-path=\\"\\" send-message-title=\\"\\" session-from=\\"\\" style=\\";\\" role=\\"button\\" aria-disabled=\\"false\\" hover-stop-propagation=\\"\\">主要按钮</button><view class=\\"aftercborder-none\\">当前系统主题:light</view><view class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\" hover-class=\\"bg-red-500 darkcbg-green-500\\"></view><view class=\\"h-5 w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__ beforeccontent-_qFestivusq_\\"></view><view class=\\"h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_\\"></view><view class=\\"text-_22px_ darkctext-yellow-400\\">text-[22px]</view><view class=\\"text-_hbada55_\\">text-[#bada55]</view><view class=\\"text-_lengthcvar_--my-var-length__\\">text-[length:var(--my-var-length)]</view><view class=\\"text-_colorcvar_--my-var__\\">text-[color:var(--my-var)]</view><button class=\\"ibg-green-500 isr-onlytext-white opacity-50\\" aria-disabled=\\"true\\" role=\\"button\\" disabled=\\"\\"> disable </button><view class=\\"test\\">test</view><view class=\\"h-_20px_ w-_20px_ bg-_h4268EA_ shadow-indigo-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-_h123456_ shadow-blue-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-green-500 shadow-green-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-cyan-500 shadow-cyan-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-amber-500 shadow-amber-100\\"></view><view class=\\"w-2 h-2 bg-_h123456_\\"></view><view class=\\"w-2 h-2 bg-blue-500s50\\"></view><view class=\\"flex items-center justify-center w-screen h-screen\\"><view class=\\"ifont-bold itext-_h990000_ text-2xl underline\\">测试标题</view></view><image class=\\"logo h-10 w-10\\" src=\\"/static/logo.png\\" role=\\"img\\"></image><view class=\\"text-area\\"><text class=\\"title h-_200p_\\">测试标题</text></view><view class=\\"p-_20px_ -mt-2 mb-_-20px_\\">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view><view class=\\"space-y-_1d6rem_\\"><view class=\\"w-_300rpx_ text-black text-opacity-_0d19_\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\"min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\"max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\"flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_ text-_h123456_ bg-_h666600_\\">Hello</view><view class=\\"border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\"grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\"><view>1</view><view>2</view><view>3</view></view><view class=\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\"> Default </view></view></view>"`;
+exports[`e2e > 'uni-app-vue3-vite' 1`] = `"<view class=\\"content\\"><view>*******</view><view class=\\"_2xlctext-base\\">2xl:text-base</view><view class=\\"_2xlctext-_red_\\">2xl:text-[red]</view><view class=\\"space-y-4 flex flex-col bg-red-400\\"><view class=\\"bg-sky-500\\">view space-y-4</view><view class=\\"bg-sky-500\\">view space-y-4</view><input class=\\"bg-sky-500\\" value=\\"input space-y-4\\"></input><text class=\\"bg-sky-500\\">text space-y-4</text><button class=\\"bg-sky-500\\" role=\\"button\\" aria-disabled=\\"false\\">button space-y-4</button><common-com is=\\"components/CommonCom\\" class=\\"bg-sky-500\\"><text>CommonCom space-y-4</text></common-com><view class=\\"bg-sky-500\\">view space-y-4</view><text class=\\"bg-sky-500\\">text space-y-4</text><text>VirtualHostCom space-y-4</text><view class=\\"bg-sky-500\\">view space-y-4</view><text class=\\"bg-sky-500\\">text space-y-4</text></view><view class=\\"bg-_h3482f2_\\">bgbgbgbg</view><view class=\\"text-_30rpx_ text-_hfafafa_ font-bold bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">classArray</view><view class=\\"text-sm text-_hfafafa_\\">:class=\\"['text-sm', classObj]</view><view class=\\"rotate-_10deg_\\">rotate1111111</view><view class=\\"td highlight\\">你好</view><view class=\\"td\\">1</view><view class=\\"td\\">2</view><view class=\\"text-_32rpx_ border-_10rpx_\\">rpx</view><view class=\\"text-_32px_ border-_10px_\\">px</view><button role=\\"button\\" aria-disabled=\\"false\\">显示Tabbar</button><button role=\\"button\\" aria-disabled=\\"false\\">隐藏Tabbar</button><view class=\\"itext-primary iborder-primary text-_32px_\\">1111</view><view class=\\"border-b-_4rpx_ border-t-_4px_ border w-screen h-3 border-_red_\\"></view><view class=\\"_n_du-count-downw_w_text_citext-red-400\\"><view></view><view></view><view></view><view></view><view><view class=\\"u-count-down__text\\">u-count-down__text</view></view></view><button app-parameter=\\"\\" class=\\"u-button button--u-button u-reset-button button--u-reset-button data-v-5c003edf button--data-v-5c003edf u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal\\" data-name=\\"\\" form-type=\\"\\" hover-class=\\"u-button--active\\" hover-start-time=\\"0\\" hover-stay-time=\\"200\\" lang=\\"en\\" open-type=\\"\\" send-message-img=\\"\\" send-message-path=\\"\\" send-message-title=\\"\\" session-from=\\"\\" style=\\";\\" role=\\"button\\" aria-disabled=\\"false\\" hover-stop-propagation=\\"\\">主要按钮</button><view class=\\"aftercborder-none\\">当前系统主题:light</view><view class=\\"bg-gray-100 darkcbg-zinc-800 h-10 w-10\\" hover-class=\\"bg-red-500 darkcbg-green-500\\"></view><view class=\\"h-5 w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__ beforeccontent-_qFestivusq_\\"></view><view class=\\"h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_\\"></view><view class=\\"text-_22px_ darkctext-yellow-400\\">text-[22px]</view><view class=\\"text-_hbada55_\\">text-[#bada55]</view><view class=\\"text-_lengthcvar_--my-var-length__\\">text-[length:var(--my-var-length)]</view><view class=\\"text-_colorcvar_--my-var__\\">text-[color:var(--my-var)]</view><button class=\\"ibg-green-500 isr-onlytext-white opacity-50\\" aria-disabled=\\"true\\" role=\\"button\\" disabled=\\"\\"> disable </button><view class=\\"test\\">test</view><view class=\\"h-_20px_ w-_20px_ bg-_h4268EA_ shadow-indigo-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-_h123456_ shadow-blue-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-green-500 shadow-green-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-cyan-500 shadow-cyan-100\\"></view><view class=\\"h-_20px_ w-_20px_ bg-amber-500 shadow-amber-100\\"></view><view class=\\"w-2 h-2 bg-_h123456_\\"></view><view class=\\"w-2 h-2 bg-blue-500s50\\"></view><view class=\\"flex items-center justify-center w-screen h-screen\\"><view class=\\"ifont-bold itext-_h990000_ text-2xl underline\\">测试标题</view></view><image class=\\"logo h-10 w-10\\" src=\\"/static/logo.png\\" role=\\"img\\"></image><view class=\\"text-area\\"><text class=\\"title h-_200p_\\">测试标题</text></view><view class=\\"p-_20px_ -mt-2 mb-_-20px_\\">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view><view class=\\"space-y-_1d6rem_\\"><view class=\\"w-_300rpx_ text-black text-opacity-_0d19_\\">w-[300rpx] text-black text-opacity-[0.19]</view><view class=\\"min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_\\">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view><view class=\\"max-w-_300rpx_ min-h-_100px_ text-_hdddddd_\\">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view><view class=\\"flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_ text-_h123456_ bg-_h666600_\\">Hello</view><view class=\\"border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_\\">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view><view class=\\"grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid\\"><view>1</view><view>2</view><view>3</view></view><view class=\\"w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300\\"> Default </view></view></view>"`;
