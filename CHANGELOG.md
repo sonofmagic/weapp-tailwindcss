@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 2.6.1 (2023-07-17)
+
+### Features
+
+- 添加 `jsPreserveClass` 配置项，用于处理 `tailwindcss` 和 `js` 转义字面量撞车的情况。
+- 现在所有的默认值可以通过 `weapp-tailwindcss/defaults` 获取到了，
+
+### Fixed
+
+- 修复带 `*` 的 `js` 字面量，由于和 `tailwindcss` 运行时冲突，导致错误转义的问题。
+
 ## 2.6.0 (2023-07-11)
 
 ### Features
