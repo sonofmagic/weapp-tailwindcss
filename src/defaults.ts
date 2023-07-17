@@ -88,5 +88,14 @@ export const defaultOptions: UserDefinedOptions = {
   },
   cssChildCombinatorReplaceValue: 'view + view',
   inlineWxs: false,
-  injectAdditionalCssVarScope: false
+  injectAdditionalCssVarScope: false,
+  jsPreserveClass: (keyword) => {
+    /**
+     * 默认保留 keyword
+     */
+    if (keyword === '*') {
+      return true
+    }
+    return false
+  }
 }

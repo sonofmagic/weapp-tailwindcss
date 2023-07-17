@@ -85,7 +85,8 @@ const entries: IEntry[] = [
       cli: 'src/cli.ts',
       replace: 'src/replace.ts',
       vite: 'src/vite.ts',
-      'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts'
+      'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts',
+      defaults: 'src/defaults.ts'
     },
     output: [
       {

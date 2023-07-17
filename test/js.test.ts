@@ -4,11 +4,14 @@ import { createGetCase, jsCasePath } from './util'
 import { SimpleMappingChars2String } from '@/dic'
 import { createjsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
+import { getOptions } from '@/options'
+import { defaultOptions } from '@/defaults'
 const getCase = createGetCase(jsCasePath)
 describe('jsHandler', () => {
   let h: ReturnType<typeof createjsHandler>
   let mh: ReturnType<typeof createjsHandler>
   let dh: ReturnType<typeof createjsHandler>
+  let defaultJsHandler: ReturnType<typeof createjsHandler>
   beforeEach(() => {
     h = createjsHandler({
       escapeMap: SimpleMappingChars2String
@@ -25,6 +28,9 @@ describe('jsHandler', () => {
         allowDoubleQuotes: true
       }
     })
+
+    const { jsHandler } = getOptions()
+    defaultJsHandler = jsHandler
   })
   it('common case', () => {
     const set: Set<string> = new Set()
@@ -179,6 +185,55 @@ describe('jsHandler', () => {
     await getCss(testCase)
     const set = getClassCacheSet()
     const code = h(testCase, set).code
+    expect(code).toMatchSnapshot()
+  })
+
+  it("jsPreserveClass '*' keyword", () => {
+    const set: Set<string> = new Set()
+    set.add('*')
+
+    const code = defaultJsHandler("const n = '* 1 * 2'", set).code
+
+    expect(code).toMatchSnapshot()
+  })
+
+  it("jsPreserveClass '*' and 'w-[100px]' keyword", () => {
+    const set: Set<string> = new Set()
+    set.add('*')
+    set.add('w-[100px]')
+    const myCustomJsHandler = createjsHandler({
+      escapeMap: SimpleMappingChars2String,
+      jsPreserveClass(keyword) {
+        if (defaultOptions.jsPreserveClass?.(keyword)) {
+          return true
+        }
+        if (keyword === 'w-[100px]') {
+          return true
+        }
+      }
+    })
+    const code = myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+
+    expect(code).toMatchSnapshot()
+  })
+
+  it("jsPreserveClass '*' and but not 'w-[100px]' keyword", () => {
+    const set: Set<string> = new Set()
+    set.add('*')
+    set.add('w-[100px]')
+    const myCustomJsHandler = createjsHandler({
+      escapeMap: SimpleMappingChars2String,
+      jsPreserveClass(keyword) {
+        if (defaultOptions.jsPreserveClass?.(keyword)) {
+          return true
+        }
+        // if (keyword === 'w-[100px]') {
+        //   return true
+        // }
+      }
+    })
+    const code = myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+
     expect(code).toMatchSnapshot()
   })
 })

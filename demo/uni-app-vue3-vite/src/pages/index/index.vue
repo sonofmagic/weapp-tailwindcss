@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <view>{{ wildContent }}</view>
     <view class="2xl:text-base">2xl:text-base</view>
     <view :class="numClassObj">2xl:text-[red]</view>
     <view class="space-y-4 flex flex-col bg-red-400">
@@ -151,6 +152,8 @@ const classArray = [
   true ? 'font-bold' : '',
   "bg-[url('https://xxx.com/xx.webp')]"
 ]
+
+const wildContent = ref('*******')
 </script>
 
 <style lang="scss">

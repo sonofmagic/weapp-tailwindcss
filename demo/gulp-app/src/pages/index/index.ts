@@ -7,7 +7,8 @@ Page({
     motto: 'Hello World',
     userInfo: {},
     contentStyle: 'mt-[24px]',
-    classNames: "bg-[url('https://xxx.com/xx.webp')] text-[#123456] text-[50px] bg-[#fff]"
+    classNames: "bg-[url('https://xxx.com/xx.webp')] text-[#123456] text-[50px] bg-[#fff]",
+    wildContent: '******'
   },
   onLoad: function () {},
   copyText: function (e: any) {

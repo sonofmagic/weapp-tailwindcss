@@ -86,6 +86,7 @@ exports[`get options default options 1`] = `
   "inlineWxs": false,
   "jsHandler": [Function],
   "jsMatcher": [Function],
+  "jsPreserveClass": [Function],
   "mainCssChunkMatcher": [Function],
   "minifiedJs": false,
   "onEnd": [Function],

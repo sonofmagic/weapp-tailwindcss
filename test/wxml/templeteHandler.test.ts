@@ -9,6 +9,19 @@ function complexHandler(str: string) {
 }
 
 describe('templeteHandler', () => {
+  test('wildcard char', () => {
+    const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\">*****</view>"
+
+    const str = complexHandler(testCase)
+    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\">*****</view>")
+  })
+
+  test('only wildcard char', () => {
+    const testCase = '<view>*****</view>'
+
+    const str = templeteHandler(testCase)
+    expect(str).toBe('<view>*****</view>')
+  })
   test('with var', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
 

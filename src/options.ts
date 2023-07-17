@@ -57,7 +57,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     arbitraryValues,
     cssChildCombinatorReplaceValue,
     inlineWxs,
-    injectAdditionalCssVarScope
+    injectAdditionalCssVarScope,
+    jsPreserveClass
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -86,7 +87,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     minifiedJs,
     escapeMap,
     mangleContext,
-    arbitraryValues
+    arbitraryValues,
+    jsPreserveClass
   })
   result.jsHandler = jsHandler
 

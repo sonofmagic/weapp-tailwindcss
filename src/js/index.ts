@@ -13,10 +13,11 @@ export function handleValue(str: string, node: StringLiteral | TemplateElement, 
   const escapeMap = options.escapeMap
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const ctx = options.mangleContext
+  const jsPreserveClass = options.jsPreserveClass
   const arr = splitCode(str, allowDoubleQuotes) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
   let rawStr = str
   for (const v of arr) {
-    if (set.has(v)) {
+    if (set.has(v) && !jsPreserveClass?.(v)) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
         ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
@@ -81,14 +82,15 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
 }
 
 export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>) {
-  const { mangleContext, arbitraryValues, minifiedJs, escapeMap } = options
+  const { mangleContext, arbitraryValues, minifiedJs, escapeMap, jsPreserveClass } = options
   return (rawSource: string, set: Set<string>) => {
     return jsHandler(rawSource, {
       classNameSet: set,
       minifiedJs,
       escapeMap,
       arbitraryValues,
-      mangleContext
+      mangleContext,
+      jsPreserveClass
     })
   }
 }

@@ -58,6 +58,7 @@ export type IJsHandlerOptions = {
   minifiedJs?: boolean
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
+  jsPreserveClass?: (keyword: string) => boolean | undefined
 }
 export interface RawSource {
   start: number
@@ -348,6 +349,13 @@ cssPreflight: {
    * @default false
    */
   injectAdditionalCssVarScope?: boolean
+
+  /**
+   * `^2.6.1`+
+   * @description 当 `tailwindcss` 和 `js` 处理的字面量撞车的时候，配置此选项可以用来保留js字面量，不进行转义处理。返回值中，想要当前js字面量保留，则返回 `true`。想要转义则返回 `false/undefined`
+   * @default 保留所有带 `*` js字符串字面量
+   */
+  jsPreserveClass?: (keyword: string) => boolean | undefined
 }
 
 export interface IMangleScopeContext {

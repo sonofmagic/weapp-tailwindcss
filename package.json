@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -35,6 +35,11 @@
       "types": "./dist/gulp.d.ts",
       "require": "./dist/gulp.js",
       "import": "./dist/gulp.mjs"
+    },
+    "./defaults": {
+      "types": "./dist/defaults.d.ts",
+      "require": "./dist/defaults.js",
+      "import": "./dist/defaults.mjs"
     },
     "./*": "./*"
   },
@@ -141,7 +146,7 @@
     "@icebreakers/cli": "^0.1.1",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.0.0",
-    "@rollup/plugin-commonjs": "^25.0.2",
+    "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-terser": "^0.4.3",
@@ -171,7 +176,7 @@
     "css-loader": "^6.8.1",
     "defu": "6.1.2",
     "del": "^6.1.1",
-    "eslint": "8.44.0",
+    "eslint": "8.45.0",
     "eslint-config-icebreaker": "^1.1.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",

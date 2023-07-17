@@ -1,5 +1,7 @@
 <template>
   <view>
+    <view>{{ content }}</view>
+    <view>****</view>
     <div class="ab text-left">111</div>
     <span class="pp text-xs" :class="flag ? 'text-right' : 'text-left'">222</span>
     <u-button text="月落"></u-button>
@@ -26,6 +28,7 @@ export default Vue.extend({
     return {
       flag: false,
       className: 'bg-[#123456]',
+      content: '* 1 * 2 * 3 ****',
       steps: [
         {
           text: '步骤一',
