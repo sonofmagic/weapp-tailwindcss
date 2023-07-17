@@ -14,11 +14,11 @@ exports[`jsHandler img url case 1`] = `
 }"
 `;
 
-exports[`jsHandler jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]';"`;
+exports[`jsHandler jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n="* 1 * 2 w-[100px]";"`;
 
-exports[`jsHandler jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n = "* 1 * 2 w-_100px_";"`;
+exports[`jsHandler jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n="* 1 * 2 w-_100px_";"`;
 
-exports[`jsHandler jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2';"`;
+exports[`jsHandler jsPreserveClass '*' keyword 1`] = `"const n="* 1 * 2";"`;
 
 exports[`jsHandler mpx jit classNames 1`] = `
 "data: {
