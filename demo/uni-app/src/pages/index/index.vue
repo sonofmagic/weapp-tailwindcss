@@ -8,6 +8,9 @@
     <view class="bg-[#123456] text-[#fff123]">bg-[#123456]</view>
     <view :class="className" class="text-[#654321]">className</view>
     <view class="bg-black h-10 w-10" hover-class="h-20 w-20">dark mode</view>
+ 
+    {{ content }}
+    <view>****</view>
     <Layout />
     <van-steps :steps="steps" :active="0" />
   </view>
@@ -26,6 +29,7 @@ export default Vue.extend({
     return {
       flag: false,
       className: 'bg-[#123456]',
+      content: '* 1 * 2 * 3 ****',
       steps: [
         {
           text: '步骤一',
