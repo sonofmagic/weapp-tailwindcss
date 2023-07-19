@@ -58,7 +58,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cssChildCombinatorReplaceValue,
     inlineWxs,
     injectAdditionalCssVarScope,
-    jsPreserveClass
+    jsPreserveClass,
+    disabledDefaultTemplateHandler
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -97,7 +98,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     escapeMap,
     mangleContext,
     inlineWxs,
-    jsHandler
+    jsHandler,
+    disabledDefaultTemplateHandler
   })
   result.templeteHandler = templeteHandler
 

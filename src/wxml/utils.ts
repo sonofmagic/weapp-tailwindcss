@@ -118,6 +118,9 @@ export function templeteReplacer(original: string, options: ITempleteHandlerOpti
 }
 
 export function templeteHandler(rawSource: string, options: ITempleteHandlerOptions = {}) {
+  if (options.disabledDefaultTemplateHandler) {
+    return rawSource
+  }
   return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
     return m0.replace(templateClassExactRegexp, (m1, className) => {
       return m1.replace(className, templeteReplacer(className, options))

@@ -97,5 +97,6 @@ export const defaultOptions: UserDefinedOptions = {
       return true
     }
     return false
-  }
+  },
+  disabledDefaultTemplateHandler: false
 }

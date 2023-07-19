@@ -49,6 +49,7 @@ exports[`get options default options 1`] = `
   },
   "customRuleCallback": [Function],
   "disabled": false,
+  "disabledDefaultTemplateHandler": false,
   "escapeMap": {
     "!": "i",
     """: "x",
