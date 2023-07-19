@@ -389,7 +389,7 @@ export type ICustomRegexp = {
   tag: string
   attrs: ItemOrItemArray<string | RegExp>
 }
-export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
+export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   customAttributesEntities?: ICustomAttributesEntities
   // allMatchedAttributes?: (string | RegExp)[]
   // custom?: boolean
@@ -409,7 +409,7 @@ export type InternalUserDefinedOptions = Required<
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType?: AppType) => boolean : (name: string) => boolean
   } & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
-    templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
+    templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
     jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
     escapeMap: Record<string, string>

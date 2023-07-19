@@ -1,10 +1,10 @@
-import { ITempleteHandlerOptions } from '@/types'
+import { ITemplateHandlerOptions } from '@/types'
 import { escape } from '@/escape'
 import { SimpleMappingChars2String } from '@/dic'
 
 export function replaceWxml(
   original: string,
-  options: ITempleteHandlerOptions = {
+  options: ITemplateHandlerOptions = {
     keepEOL: false,
     escapeMap: SimpleMappingChars2String
   }

@@ -110,7 +110,7 @@ exports[`get options default options 1`] = `
       "rpx",
     ],
   },
-  "templeteHandler": [Function],
+  "templateHandler": [Function],
   "wxsMatcher": [Function],
 }
 `;

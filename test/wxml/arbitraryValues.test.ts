@@ -1,10 +1,10 @@
-import { templeteHandler } from '@/wxml/index'
+import { templateHandler } from '@/wxml/index'
 // import { format } from '../util'
 
 describe('arbitrary values', () => {
   test('top-[117px]', () => {
     expect(
-      templeteHandler(`<div class="top-[117px]">
+      templateHandler(`<div class="top-[117px]">
     <!-- ... -->
   </div>`)
     ).toMatchSnapshot()
@@ -12,7 +12,7 @@ describe('arbitrary values', () => {
 
   test('top-[117px] lg:top-[344px]', () => {
     expect(
-      templeteHandler(`<div class="top-[117px] lg:top-[344px]">
+      templateHandler(`<div class="top-[117px] lg:top-[344px]">
       <!-- ... -->
     </div>`)
     ).toMatchSnapshot()
@@ -20,7 +20,7 @@ describe('arbitrary values', () => {
 
   test("bg-[#bada55] text-[22px] before:content-['Festivus']", () => {
     expect(
-      templeteHandler(`<div class="bg-[#bada55] text-[22px] before:content-['Festivus']">
+      templateHandler(`<div class="bg-[#bada55] text-[22px] before:content-['Festivus']">
       <!-- ... -->
     </div>`)
     ).toMatchSnapshot()

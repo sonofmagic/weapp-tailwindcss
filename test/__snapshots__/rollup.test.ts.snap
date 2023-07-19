@@ -212,11 +212,11 @@ class UnifiedWebpackPluginV5 {
         if (options$1.customReplaceDictionary === undefined) {
             options$1.customReplaceDictionary = 'simple';
         }
-        this.options = options.getOptions(options$1, ['style', 'patch', 'templete', 'js']);
+        this.options = options.getOptions(options$1, ['style', 'patch', 'template', 'js']);
         this.appType = this.options.appType;
     }
     apply(compiler) {
-        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, mangle } = this.options;
+        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, mangle } = this.options;
         if (disabled) {
             return;
         }
@@ -250,7 +250,7 @@ class UnifiedWebpackPluginV5 {
                     for (let i = 0; i < groupedEntries.html.length; i++) {
                         const [file, originalSource] = groupedEntries.html[i];
                         const rawSource = originalSource.source().toString();
-                        const wxml = templeteHandler(rawSource);
+                        const wxml = templateHandler(rawSource);
                         const source = new ConcatSource(wxml);
                         compilation.updateAsset(file, source);
                         onUpdate(file, rawSource, wxml);
@@ -382,8 +382,8 @@ function createPlugins(options$1 = {}) {
     if (options$1.customReplaceDictionary === undefined) {
         options$1.customReplaceDictionary = 'simple';
     }
-    const opts = options.getOptions(options$1, ['patch', 'style', 'templete', 'js']);
-    const { templeteHandler, styleHandler, patch, jsHandler, mangle } = opts;
+    const opts = options.getOptions(options$1, ['patch', 'style', 'template', 'js']);
+    const { templateHandler, styleHandler, patch, jsHandler, mangle } = opts;
     let set = new Set();
     patch === null || patch === void 0 ? void 0 : patch();
     shared.initStore(mangle);
@@ -421,7 +421,7 @@ function createPlugins(options$1 = {}) {
         transformStream._transform = function (file, encoding, callback) {
             const error = null;
             if (file.contents) {
-                const code = templeteHandler(file.contents.toString());
+                const code = templateHandler(file.contents.toString());
                 file.contents = Buffer.from(code);
             }
             callback(error, file);
@@ -601,8 +601,8 @@ function UnifiedViteWeappTailwindcssPlugin(options$1 = {}) {
     if (options$1.customReplaceDictionary === undefined) {
         options$1.customReplaceDictionary = 'simple';
     }
-    const opts = options.getOptions(options$1, ['patch', 'style', 'templete', 'js']);
-    const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts;
+    const opts = options.getOptions(options$1, ['patch', 'style', 'template', 'js']);
+    const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts;
     if (disabled) {
         return;
     }
@@ -625,7 +625,7 @@ function UnifiedViteWeappTailwindcssPlugin(options$1 = {}) {
                 for (let i = 0; i < groupedEntries.html.length; i++) {
                     const [file, originalSource] = groupedEntries.html[i];
                     const oldVal = originalSource.source.toString();
-                    originalSource.source = templeteHandler(oldVal);
+                    originalSource.source = templateHandler(oldVal);
                     onUpdate(file, oldVal, originalSource.source);
                 }
             }
@@ -1012,7 +1012,7 @@ function makePattern(arr) {
     }
     return pattern;
 }
-function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
+function createTemplateHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
@@ -1034,7 +1034,7 @@ function makeCustomAttributes(entries) {
     if (Array.isArray(entries)) {
         return entries.map(([k, v]) => {
             return {
-                tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+                tagRegexp: createTemplateHandlerMatchRegexp(k, v),
                 attrRegexp: createTemplateClassRegexp(v),
                 tag: getSourceString(k),
                 attrs: v
@@ -1451,7 +1451,7 @@ function extractSource(original) {
     }
     return sources;
 }
-function templeteReplacer(original, options = {}) {
+function templateReplacer(original, options = {}) {
     const sources = extractSource(original);
     if (sources.length > 0) {
         const resultArray = [];
@@ -1494,22 +1494,22 @@ function templeteReplacer(original, options = {}) {
         });
     }
 }
-function templeteHandler(rawSource, options = {}) {
+function templateHandler(rawSource, options = {}) {
     return rawSource.replace(shared.tagWithEitherClassAndHoverClassRegexp, (m0) => {
         return m0.replace(shared.templateClassExactRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className, options));
+            return m1.replace(className, templateReplacer(className, options));
         });
     });
 }
-function customTempleteHandler(rawSource, options = {}) {
-    let source = templeteHandler(rawSource, options);
+function customTemplateHandler(rawSource, options = {}) {
+    let source = templateHandler(rawSource, options);
     const regexps = shared.makeCustomAttributes(options.customAttributesEntities);
     if (regexps) {
         if (Array.isArray(regexps)) {
             for (const regexp of regexps) {
                 source = source.replace(regexp.tagRegexp, (m0) => {
                     return m0.replace(regexp.attrRegexp, (m1, className) => {
-                        return m1.replace(className, templeteReplacer(className, options));
+                        return m1.replace(className, templateReplacer(className, options));
                     });
                 });
             }
@@ -1520,9 +1520,9 @@ function customTempleteHandler(rawSource, options = {}) {
         return source;
     }
 }
-function createTempleteHandler(options = {}) {
+function createTemplateHandler(options = {}) {
     return (rawSource, opt = {}) => {
-        return customTempleteHandler(rawSource, defu(opt, options));
+        return customTemplateHandler(rawSource, defu(opt, options));
     };
 }
 
@@ -1678,14 +1678,14 @@ function normalizeMatcher(options, key) {
         options[key] = createGlobMatcher(options[key]);
     }
 }
-function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']) {
+function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']) {
     const registerModules = modules.reduce((acc, cur) => {
         if (acc[cur] !== undefined) {
             acc[cur] = true;
         }
         return acc;
     }, {
-        templete: false,
+        template: false,
         style: false,
         patch: false,
         js: false
@@ -1711,8 +1711,8 @@ function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     const customAttributesEntities = shared.isMap(options.customAttributes) ? [...options.customAttributes.entries()] : Object.entries(customAttributes);
     const { escapeMap, minifiedJs } = result;
-    if (registerModules.templete) {
-        result.templeteHandler = createTempleteHandler({
+    if (registerModules.template) {
+        result.templateHandler = createTemplateHandler({
             customAttributesEntities,
             escapeMap
         });
@@ -2182,11 +2182,11 @@ class UnifiedWebpackPluginV5 {
         if (options.customReplaceDictionary === undefined) {
             options.customReplaceDictionary = 'simple';
         }
-        this.options = getOptions(options, ['style', 'patch', 'templete', 'js']);
+        this.options = getOptions(options, ['style', 'patch', 'template', 'js']);
         this.appType = this.options.appType;
     }
     apply(compiler) {
-        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, mangle } = this.options;
+        const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, mangle } = this.options;
         if (disabled) {
             return;
         }
@@ -2220,7 +2220,7 @@ class UnifiedWebpackPluginV5 {
                     for (let i = 0; i < groupedEntries.html.length; i++) {
                         const [file, originalSource] = groupedEntries.html[i];
                         const rawSource = originalSource.source().toString();
-                        const wxml = templeteHandler(rawSource);
+                        const wxml = templateHandler(rawSource);
                         const source = new ConcatSource(wxml);
                         compilation.updateAsset(file, source);
                         onUpdate(file, rawSource, wxml);
@@ -2344,8 +2344,8 @@ function createPlugins(options = {}) {
     if (options.customReplaceDictionary === undefined) {
         options.customReplaceDictionary = 'simple';
     }
-    const opts = getOptions(options, ['patch', 'style', 'templete', 'js']);
-    const { templeteHandler, styleHandler, patch, jsHandler, mangle } = opts;
+    const opts = getOptions(options, ['patch', 'style', 'template', 'js']);
+    const { templateHandler, styleHandler, patch, jsHandler, mangle } = opts;
     let set = new Set();
     patch === null || patch === void 0 ? void 0 : patch();
     initStore(mangle);
@@ -2383,7 +2383,7 @@ function createPlugins(options = {}) {
         transformStream._transform = function (file, encoding, callback) {
             const error = null;
             if (file.contents) {
-                const code = templeteHandler(file.contents.toString());
+                const code = templateHandler(file.contents.toString());
                 file.contents = Buffer.from(code);
             }
             callback(error, file);
@@ -2550,8 +2550,8 @@ function UnifiedViteWeappTailwindcssPlugin(options = {}) {
     if (options.customReplaceDictionary === undefined) {
         options.customReplaceDictionary = 'simple';
     }
-    const opts = getOptions(options, ['patch', 'style', 'templete', 'js']);
-    const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts;
+    const opts = getOptions(options, ['patch', 'style', 'template', 'js']);
+    const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, mangle } = opts;
     if (disabled) {
         return;
     }
@@ -2574,7 +2574,7 @@ function UnifiedViteWeappTailwindcssPlugin(options = {}) {
                 for (let i = 0; i < groupedEntries.html.length; i++) {
                     const [file, originalSource] = groupedEntries.html[i];
                     const oldVal = originalSource.source.toString();
-                    originalSource.source = templeteHandler(oldVal);
+                    originalSource.source = templateHandler(oldVal);
                     onUpdate(file, oldVal, originalSource.source);
                 }
             }
@@ -2943,7 +2943,7 @@ function makePattern(arr) {
     }
     return pattern;
 }
-function createTempleteHandlerMatchRegexp(tag, attrs, options = {}) {
+function createTemplateHandlerMatchRegexp(tag, attrs, options = {}) {
     const { exact = true } = options;
     const prefix = exact ? '(?<=^|\\\\s)' : '';
     const pattern = makePattern(attrs);
@@ -2965,7 +2965,7 @@ function makeCustomAttributes(entries) {
     if (Array.isArray(entries)) {
         return entries.map(([k, v]) => {
             return {
-                tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+                tagRegexp: createTemplateHandlerMatchRegexp(k, v),
                 attrRegexp: createTemplateClassRegexp(v),
                 tag: getSourceString(k),
                 attrs: v
@@ -3333,7 +3333,7 @@ function extractSource(original) {
     }
     return sources;
 }
-function templeteReplacer(original, options = {}) {
+function templateReplacer(original, options = {}) {
     const sources = extractSource(original);
     if (sources.length > 0) {
         const resultArray = [];
@@ -3376,22 +3376,22 @@ function templeteReplacer(original, options = {}) {
         });
     }
 }
-function templeteHandler(rawSource, options = {}) {
+function templateHandler(rawSource, options = {}) {
     return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
         return m0.replace(templateClassExactRegexp, (m1, className) => {
-            return m1.replace(className, templeteReplacer(className, options));
+            return m1.replace(className, templateReplacer(className, options));
         });
     });
 }
-function customTempleteHandler(rawSource, options = {}) {
-    let source = templeteHandler(rawSource, options);
+function customTemplateHandler(rawSource, options = {}) {
+    let source = templateHandler(rawSource, options);
     const regexps = makeCustomAttributes(options.customAttributesEntities);
     if (regexps) {
         if (Array.isArray(regexps)) {
             for (const regexp of regexps) {
                 source = source.replace(regexp.tagRegexp, (m0) => {
                     return m0.replace(regexp.attrRegexp, (m1, className) => {
-                        return m1.replace(className, templeteReplacer(className, options));
+                        return m1.replace(className, templateReplacer(className, options));
                     });
                 });
             }
@@ -3402,9 +3402,9 @@ function customTempleteHandler(rawSource, options = {}) {
         return source;
     }
 }
-function createTempleteHandler(options = {}) {
+function createTemplateHandler(options = {}) {
     return (rawSource, opt = {}) => {
-        return customTempleteHandler(rawSource, defu(opt, options));
+        return customTemplateHandler(rawSource, defu(opt, options));
     };
 }
 
@@ -3560,14 +3560,14 @@ function normalizeMatcher(options, key) {
         options[key] = createGlobMatcher(options[key]);
     }
 }
-function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']) {
+function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']) {
     const registerModules = modules.reduce((acc, cur) => {
         if (acc[cur] !== undefined) {
             acc[cur] = true;
         }
         return acc;
     }, {
-        templete: false,
+        template: false,
         style: false,
         patch: false,
         js: false
@@ -3593,8 +3593,8 @@ function getOptions(options = {}, modules = ['style', 'templete', 'patch', 'js']
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     const customAttributesEntities = isMap(options.customAttributes) ? [...options.customAttributes.entries()] : Object.entries(customAttributes);
     const { escapeMap, minifiedJs } = result;
-    if (registerModules.templete) {
-        result.templeteHandler = createTempleteHandler({
+    if (registerModules.template) {
+        result.templateHandler = createTemplateHandler({
             customAttributesEntities,
             escapeMap
         });

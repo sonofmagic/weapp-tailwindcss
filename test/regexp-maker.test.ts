@@ -1,5 +1,5 @@
 import { matchAll } from './util'
-import { createTemplateClassRegexp, createTempleteHandlerMatchRegexp, makePattern, handleRegexp } from '@/reg'
+import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, makePattern, handleRegexp } from '@/reg'
 describe('regexp-maker', () => {
   it('makePattern case signle option', () => {
     const case0 = '<el-shitter>'
@@ -21,24 +21,24 @@ describe('regexp-maker', () => {
     expect(pattern).toBe([case0, handleRegexp(case1)].join('|'))
     expect(matchAll(new RegExp(pattern, 'g'), ['van-bug', 'el-bug', 'ant-bug'].join('\n')).length).toBe(3)
   })
-  it('TempleteHandlerMatchRegexp single attr', () => {
-    const reg = createTempleteHandlerMatchRegexp('l-o-v-e-r', 'i-love-you')
+  it('TemplateHandlerMatchRegexp single attr', () => {
+    const reg = createTemplateHandlerMatchRegexp('l-o-v-e-r', 'i-love-you')
     const match0 = matchAll(reg, '<l-o-v-e-r i-love-you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match0.length).toBeTruthy()
     const match1 = matchAll(reg, '<l-o-v-e-r i-hate-you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match1.length).toBeFalsy()
   })
-  it('TempleteHandlerMatchRegexp multiple attrs', () => {
-    const reg = createTempleteHandlerMatchRegexp('l-o-v-e-r', ['i', 'love', 'you'])
+  it('TemplateHandlerMatchRegexp multiple attrs', () => {
+    const reg = createTemplateHandlerMatchRegexp('l-o-v-e-r', ['i', 'love', 'you'])
     const match0 = matchAll(reg, '<l-o-v-e-r i="" love="" you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match0.length).toBeTruthy()
     const match1 = matchAll(reg, '<l-o-v-e-r ii="" llove="" yyou="">l-o-v-e-r</l-o-v-e-r>')
     expect(match1.length).toBeFalsy()
   })
 
-  it('TempleteHandlerMatchRegexp multiple attrs with false exact option', () => {
+  it('TemplateHandlerMatchRegexp multiple attrs with false exact option', () => {
     // exact
-    const reg = createTempleteHandlerMatchRegexp('l-o-v-e-r', ['i', 'love', 'you'], {
+    const reg = createTemplateHandlerMatchRegexp('l-o-v-e-r', ['i', 'love', 'you'], {
       exact: false
     })
     const match0 = matchAll(reg, '<l-o-v-e-r i="" love="" you="">l-o-v-e-r</l-o-v-e-r>')

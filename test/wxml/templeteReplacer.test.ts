@@ -1,14 +1,14 @@
-import { templeteReplacer } from '@/wxml/index'
+import { templateReplacer } from '@/wxml/index'
 import { MappingChars2String } from '@/dic'
 const testTable = [[{}]]
 
 function complexReplacer(str: string) {
-  return templeteReplacer(str, {
+  return templateReplacer(str, {
     escapeMap: MappingChars2String
   })
 }
 
-describe('templeteReplacer', () => {
+describe('templateReplacer', () => {
   it.each(testTable)('$label isStringLiteral', () => {
     const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
 
@@ -159,19 +159,19 @@ describe('templeteReplacer', () => {
 
     for (const num of nums) {
       const testCase = num + 'xl:text-base'
-      const result = templeteReplacer(testCase)
+      const result = templateReplacer(testCase)
       expect(result).toBe(`_${num}xlctext-base`)
 
       const netestCase = '-' + num + 'xl:text-base'
-      const neresult = templeteReplacer(netestCase)
+      const neresult = templateReplacer(netestCase)
       expect(neresult).toBe(`_-${num}xlctext-base`)
     }
   })
   // https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
   it('only - escape', () => {
-    let result = templeteReplacer('-')
+    let result = templateReplacer('-')
     expect(result).toBe(`_-`)
-    result = templeteReplacer('--')
+    result = templateReplacer('--')
     expect(result).toBe(`--`)
   })
 })

@@ -55,7 +55,7 @@ export function makePattern(arr: ItemOrItemArray<string | RegExp>): string {
 }
 
 // try match tag
-export function createTempleteHandlerMatchRegexp(tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
+export function createTemplateHandlerMatchRegexp(tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
   const { exact = true } = options
   const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = makePattern(attrs)
@@ -79,7 +79,7 @@ export function makeCustomAttributes(entries?: [string | RegExp, ItemOrItemArray
   if (Array.isArray(entries)) {
     return entries.map(([k, v]) => {
       return {
-        tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+        tagRegexp: createTemplateHandlerMatchRegexp(k, v),
         attrRegexp: createTemplateClassRegexp(v),
         tag: getSourceString(k),
         attrs: v

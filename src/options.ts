@@ -3,7 +3,7 @@ import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatc
 import { createjsHandler } from './js'
 import { defaultOptions } from './defaults'
 import { defu, isMap } from '@/utils'
-import { createTempleteHandler } from '@/wxml/utils'
+import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { SimpleMappingChars2String, MappingChars2String } from '@/dic'
@@ -93,7 +93,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   })
   result.jsHandler = jsHandler
 
-  const templeteHandler = createTempleteHandler({
+  const templateHandler = createTemplateHandler({
     customAttributesEntities,
     escapeMap,
     mangleContext,
@@ -101,7 +101,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     jsHandler,
     disabledDefaultTemplateHandler
   })
-  result.templeteHandler = templeteHandler
+  result.templateHandler = templateHandler
 
   result.patch = createPatch(supportCustomLengthUnitsPatch)
   // result.initMangle = initMangle

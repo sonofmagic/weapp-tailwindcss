@@ -1,15 +1,15 @@
-import { templeteHandler } from '@/wxml/index'
+import { templateHandler } from '@/wxml/index'
 import { MappingChars2String, SimpleMappingChars2String } from '@/dic'
 // import { format } from '../util'
 // https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants
 function complexHandler(str: string) {
-  return templeteHandler(str, {
+  return templateHandler(str, {
     escapeMap: MappingChars2String
   })
 }
 // eslint-disable-next-line no-unused-vars
 function simpleHandler(str: string) {
-  return templeteHandler(str, {
+  return templateHandler(str, {
     escapeMap: SimpleMappingChars2String
   })
 }

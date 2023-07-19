@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { customTempleteHandler } from '@/wxml/utils'
+import { customTemplateHandler } from '@/wxml/utils'
 import { SimpleMappingChars2String } from '@/dic'
 
-describe('customTempleteHandler', () => {
+describe('customTemplateHandler', () => {
   it('invalid customAttributesEntities options', () => {
-    const res = customTempleteHandler('<view class="p-[20px]"></view>', {
+    const res = customTemplateHandler('<view class="p-[20px]"></view>', {
       customAttributesEntities: [],
       escapeMap: SimpleMappingChars2String
     })
@@ -13,7 +13,7 @@ describe('customTempleteHandler', () => {
 
   it('disabledDefaultTemplateHandler case 0', () => {
     const testCase = '<view class="p-[20px]" hover-class="w-[99px]"></view>'
-    const res = customTempleteHandler(testCase, {
+    const res = customTemplateHandler(testCase, {
       customAttributesEntities: [],
       disabledDefaultTemplateHandler: true
     })
@@ -23,7 +23,7 @@ describe('customTempleteHandler', () => {
   it('disabledDefaultTemplateHandler case 1', () => {
     const testCase = '<view class="p-[20px]" hover-class="w-[99px]"></view>'
     // 'p-[20px] hover-class='
-    const res = customTempleteHandler(testCase, {
+    const res = customTemplateHandler(testCase, {
       customAttributesEntities: [['*', /[A-Za-z]?[A-Za-z-]*[Cc]lass/]],
       disabledDefaultTemplateHandler: true
     })

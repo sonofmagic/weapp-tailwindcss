@@ -27,7 +27,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templeteHandler, jsHandler, setMangleRuntimeSet } = this.options
+    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, setMangleRuntimeSet } = this.options
     if (disabled) {
       return
     }
@@ -94,7 +94,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
               const rawSource = originalSource.source().toString()
 
-              const wxml = templeteHandler(rawSource, {
+              const wxml = templateHandler(rawSource, {
                 runtimeSet
               })
               const source = new ConcatSource(wxml)
