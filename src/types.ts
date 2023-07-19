@@ -242,7 +242,9 @@ const customAttributes = {
 }
 ```
 
-当然你可以根据需求，自定义单个或者多个正则/字符串，甚至有可能你编写正则，直接包括了默认的 `class`/`hover-class`，那么这种情况下，你完全取代插件的默认模板转化器，详见 [disabledDefaultTemplateHandler](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler)
+当然你可以根据自己的需求，定义单个或者多个正则/字符串。
+
+甚至有可能你编写正则表达式，它们匹配的范围，直接包括了插件里自带默认的 `class`/`hover-class`，那么这种情况下，你完全可以取代插件的默认模板转化器，开启 [disabledDefaultTemplateHandler](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler) 配置项,禁用默认的模版匹配转化器。
    */
   customAttributes?: ICustomAttributes
   /**
