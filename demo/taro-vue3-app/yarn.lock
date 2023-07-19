@@ -11558,13 +11558,6 @@ semver@^7.3.8:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.5.2:
-  version "7.5.2"
-  resolved "https://registry.npmmirror.com/semver/-/semver-7.5.2.tgz#5b851e66d1be07c1cdaf37dfc856f543325a2beb"
-  integrity sha512-SoftuTROv/cRjCze/scjGyiDtcUyxw1rgYQSZY7XTmtR5hX+dm76iDbTH8TkLPHCQmlbQVSSbNZCPM2hb0knnQ==
-  dependencies:
-    lru-cache "^6.0.0"
-
 semver@^7.5.4:
   version "7.5.4"
   resolved "https://registry.npmmirror.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
@@ -12372,22 +12365,22 @@ tailwind-css-variables-theme-generator@^0.3.8:
   dependencies:
     consola "^2.15.3"
 
-tailwindcss-mangle-shared@^1.2.6:
-  version "1.2.6"
-  resolved "https://registry.npmmirror.com/tailwindcss-mangle-shared/-/tailwindcss-mangle-shared-1.2.6.tgz#0f9bd509f35f4878c8ce393f81fdff4ae3686721"
-  integrity sha512-70Zoc+ENwkrZ/elU2qy+7D0o5xbhBuZZ1V9RSND90wFIl1QATUB6RAraf7hJVB56NOCKVnp8TT8A/zk4g1Hy0Q==
+tailwindcss-mangle-shared@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.npmmirror.com/tailwindcss-mangle-shared/-/tailwindcss-mangle-shared-1.2.7.tgz#19fce505d426734e31bc0b7930f3c0064560acb5"
+  integrity sha512-BeiU9WZOnYX1pq/NdAISvOV/2EgMceODh40TncIrW+g5GBK9prWw65CFapRoYaIUsRikRgEsM176xAZKL5Ch+w==
 
-tailwindcss-patch@^1.2.6:
-  version "1.2.6"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.2.6.tgz#daeecf3f64ab330993a5652acb8965bf0bb65cf0"
-  integrity sha512-spZgVkoKsnOCyNzLz40Jxv0bVgjOQCET4rzou9uZ+tvK7gNFIGGWxweC1cLybx0fMLHfhWOKswqLcQdke0NOlw==
+tailwindcss-patch@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-1.2.7.tgz#b09df2884d1fa1701ec70ce50dd2395afe86cfa6"
+  integrity sha512-zhQj835Djgxzth1fpgPPv3sGNE5rWNc/YrpV1Jg8xf6BIr0HUQlDZTtobxq8eqfqa2ouEltmwQsjvX2LkNtfkw==
   dependencies:
-    "@babel/generator" "^7.22.5"
-    "@babel/parser" "^7.22.5"
-    "@babel/traverse" "^7.22.5"
+    "@babel/generator" "^7.22.9"
+    "@babel/parser" "^7.22.7"
+    "@babel/traverse" "^7.22.8"
     "@babel/types" "^7.22.5"
     resolve "^1.22.2"
-    semver "^7.5.2"
+    semver "^7.5.4"
 
 tailwindcss-rem2px-preset@^1.0.3:
   version "1.0.3"
@@ -13328,10 +13321,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.6.1.tgz#6a3cad2e6cdc4386f782cd291c3a1e49f1be866d"
-  integrity sha512-eElqnSPEHIExJZfZAMolrNObbY1kCh3Oc6WDH3gQQoLNYYGVE5/h7krMbXN5s95iF4Ltj321Mj1DRP2PGHc6Yg==
+weapp-tailwindcss-webpack-plugin@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.6.2.tgz#faaabd7cfa6eef16e301950e225dec2a5c91472b"
+  integrity sha512-DssbKJgPoFlHR8JMALyJKqWu0Wxct76p4+qYHolILltNZ8g2lQnzf5grm9YIiDfchR/th/yKkAQiDOTX3am19w==
   dependencies:
     "@babel/generator" "^7.22.9"
     "@babel/parser" "^7.22.7"
@@ -13343,8 +13336,8 @@ weapp-tailwindcss-webpack-plugin@^2.6.1:
     postcss "8.4.26"
     postcss-selector-parser "^6.0.13"
     semver "^7.5.4"
-    tailwindcss-mangle-shared "^1.2.6"
-    tailwindcss-patch "^1.2.6"
+    tailwindcss-mangle-shared "^1.2.7"
+    tailwindcss-patch "^1.2.7"
 
 webidl-conversions@^7.0.0:
   version "7.0.0"
