@@ -2,8 +2,8 @@ import defu from 'defu'
 import { getOptions } from '@/options'
 import { MappingChars2String } from '@/dic'
 describe('customReplaceDictionary', () => {
-  it('templeteHandler custom map', () => {
-    const { templeteHandler } = getOptions({
+  it('templateHandler custom map', () => {
+    const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
@@ -15,40 +15,40 @@ describe('customReplaceDictionary', () => {
         MappingChars2String
       )
     })
-    const res = templeteHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w--0_d_5px-" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w--0_d_5px-"></van-image>')
   })
 
-  it('templeteHandler complex mode', () => {
-    const { templeteHandler } = getOptions({
+  it('templateHandler complex mode', () => {
+    const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
       customReplaceDictionary: 'complex'
     })
-    const res = templeteHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
   })
 
-  it('templeteHandler default(complex) mode', () => {
-    const { templeteHandler } = getOptions({
+  it('templateHandler default(complex) mode', () => {
+    const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
       customReplaceDictionary: 'complex'
     })
-    const res = templeteHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
   })
 
-  it('templeteHandler simple mode', () => {
-    const { templeteHandler } = getOptions({
+  it('templateHandler simple mode', () => {
+    const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
       customReplaceDictionary: 'simple'
     })
-    const res = templeteHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>')
   })
 
@@ -96,5 +96,25 @@ describe('customReplaceDictionary', () => {
       isMainChunk: true
     })
     expect(res).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
+  })
+
+  it('all prop with testClass', () => {
+    const { templateHandler } = getOptions({
+      customAttributes: {
+        '*': ['testClass']
+      }
+    })
+    const res = templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+  })
+
+  it('all prop with [Cc]lass', () => {
+    const { templateHandler } = getOptions({
+      customAttributes: {
+        '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/]
+      }
+    })
+    const res = templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-_0d5px_" image-class="w-_0d5px_" other-attr="w-[0.5px]"></van-image>')
   })
 })

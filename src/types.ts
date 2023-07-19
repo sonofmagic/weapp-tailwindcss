@@ -222,9 +222,29 @@ cssPreflight: {
   /**
    * @description **这是一个重要的配置!**
 
-它可以自定义`wxml`标签上的`attr`转化属性。默认转化所有的`class`和`hover-class`，这个`Map`的 `key`为匹配标签，`value`为属性字符串或者匹配正则数组。如果你想要增加转化的属性，你可以添加 `*`: `(string | Regexp)[]` 这样的键值对，使其中属性的转化，在所有标签上生效，更复杂的情况，可以传一个Map实例。
+它可以自定义`wxml`标签上的`attr`转化属性。默认转化所有的`class`和`hover-class`，这个`Map`的 `key`为匹配标签，`value`为属性字符串或者匹配正则数组。
 
-假如你要把 `className` 通过组件的prop传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134#issuecomment-1351288238)
+如果你想要增加，对于所有标签都生效的转化的属性，你可以添加 `*`: `(string | Regexp)[]` 这样的键值对。(`*` 是一个特殊值，代表所有标签)
+
+更复杂的情况，可以传一个 `Map<string | Regex, (string | Regex)[]>`实例。
+
+假如你要把 `className` 通过组件的`prop`传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134#issuecomment-1351288238)
+
+@example 
+
+```js
+const customAttributes = {
+  // 匹配所有带 Class / class 相关的标签，比如 `a-class`, `testClass` , `custom-class` 里的值
+  '*': [ /[A-Za-z]?[A-Za-z-]*[Cc]lass/ ],
+  // 额外匹配转化 `van-image` 标签上的 `custom-class` 的值
+  'van-image': ['custom-class'],
+  'ice-button': ['testClass']
+}
+```
+
+当然你可以根据自己的需求，定义单个或者多个正则/字符串。
+
+甚至有可能你编写正则表达式，它们匹配的范围，直接包括了插件里自带默认的 `class`/`hover-class`，那么这种情况下，你完全可以取代插件的默认模板转化器，开启 [disabledDefaultTemplateHandler](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler) 配置项,禁用默认的模版匹配转化器。
    */
   customAttributes?: ICustomAttributes
   /**
@@ -246,7 +266,7 @@ cssPreflight: {
    * @description 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
 
-```json
+```diff
  "scripts": {
 +  "postinstall": "weapp-tw patch"
  }
@@ -351,11 +371,20 @@ cssPreflight: {
   injectAdditionalCssVarScope?: boolean
 
   /**
-   * `^2.6.1`+
+   * `^2.6.1`
    * @description 当 `tailwindcss` 和 `js` 处理的字面量撞车的时候，配置此选项可以用来保留js字面量，不进行转义处理。返回值中，想要当前js字面量保留，则返回 `true`。想要转义则返回 `false/undefined`
    * @default 保留所有带 `*` js字符串字面量
    */
   jsPreserveClass?: (keyword: string) => boolean | undefined
+
+  /**
+   * `^2.6.2`
+   * @description 开启此选项，将会禁用默认 `wxml` 模板替换器，此时模板的匹配和转化将完全被 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 接管，
+   *
+   * 此时你需要自己编写匹配之前默认 `class`/`hover-class`，以及新的标签属性的正则表达式`regex`
+   * @default false
+   */
+  disabledDefaultTemplateHandler?: boolean
 }
 
 export interface IMangleScopeContext {
@@ -380,7 +409,7 @@ export type ICustomRegexp = {
   tag: string
   attrs: ItemOrItemArray<string | RegExp>
 }
-export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
+export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   customAttributesEntities?: ICustomAttributesEntities
   // allMatchedAttributes?: (string | RegExp)[]
   // custom?: boolean
@@ -390,6 +419,7 @@ export interface ITempleteHandlerOptions extends ICommonReplaceOptions {
   inlineWxs?: boolean
   jsHandler?: (rawSource: string, set: Set<string>) => GeneratorResult
   runtimeSet?: Set<string>
+  disabledDefaultTemplateHandler?: boolean
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher' | 'wxsMatcher'
@@ -399,7 +429,7 @@ export type InternalUserDefinedOptions = Required<
     [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType?: AppType) => boolean : (name: string) => boolean
   } & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
-    templeteHandler: (rawSource: string, options?: ITempleteHandlerOptions) => string
+    templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
     jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
     escapeMap: Record<string, string>

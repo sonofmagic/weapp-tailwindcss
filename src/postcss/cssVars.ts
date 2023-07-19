@@ -37,15 +37,15 @@ export default [
   },
   {
     prop: '--tw-pan-x',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-pan-y',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-pinch-zoom',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-scroll-snap-strictness',
@@ -53,43 +53,43 @@ export default [
   },
   {
     prop: '--tw-gradient-from-position',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-gradient-via-position',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-gradient-to-position',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-ordinal',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-slashed-zero',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-numeric-figure',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-numeric-spacing',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-numeric-fraction',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-ring-inset',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-ring-offset-width',
-    value: '0rpx'
+    value: '0px'
   },
   {
     prop: '--tw-ring-offset-color',
@@ -97,7 +97,7 @@ export default [
   },
   {
     prop: '--tw-ring-color',
-    value: 'rgba(59, 130, 246, 0.5)'
+    value: 'rgb(59 130 246 / 0.5)'
   },
   {
     prop: '--tw-ring-offset-shadow',
@@ -117,74 +117,74 @@ export default [
   },
   {
     prop: '--tw-blur',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-brightness',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-contrast',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-grayscale',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-hue-rotate',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-invert',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-saturate',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-sepia',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-drop-shadow',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-blur',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-brightness',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-contrast',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-grayscale',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-hue-rotate',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-invert',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-opacity',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-saturate',
-    value: ' '
+    value: '  '
   },
   {
     prop: '--tw-backdrop-sepia',
-    value: ' '
+    value: '  '
   }
 ]

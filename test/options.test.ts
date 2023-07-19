@@ -1,5 +1,6 @@
 import { defaultOptions } from '@/defaults'
 import { getOptions } from '@/options'
+import { defu, isMap } from '@/utils'
 
 describe('get options', () => {
   it('default options', () => {
@@ -98,4 +99,32 @@ describe('get options', () => {
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(true)
   })
+
+  it('customAttributes defu merge', () => {
+    // const { customAttributes } = getOptions()
+
+    const customAttributes = {
+      '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/]
+    }
+    const t = defu(customAttributes, {
+      '*': ['class', 'hover-class']
+    })
+    expect(t['*'].length).toBe(3)
+  })
+
+  // it('customAttributes map defu merge', () => {
+  //   // const { customAttributes } = getOptions()
+
+  //   const customAttributes = new Map<string, RegExp[]>()
+  //   customAttributes.set('*', [/[A-Za-z]?[A-Za-z-]*[Cc]lass/])
+
+  //   const t = defu(customAttributes, {
+  //     '*': ['class', 'hover-class']
+  //   })
+  //   expect(isMap(t)).toBe(true)
+  //   expect(t.get('*')).toBe(3)
+  //   //  expect(t['*']).toBe(2)
+  //   // expect(t.get('*')).toBe(1)
+  //   // expect(t['*']).toBe(2)
+  // })
 })

@@ -1,19 +1,11 @@
 // import replace from 'regexp-replace'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
-import {
-  classStringReplace,
-  tagStringReplace,
-  variableRegExp,
-  tagWithClassRegexp,
-  wxmlAllowClassCharsRegExp,
-  createTempleteHandlerMatchRegexp,
-  createTemplateClassRegexp,
-  escapeStringRegexp,
-  getSourceString
-} from '@/reg'
+import { variableRegExp, createTemplateHandlerMatchRegexp, createTemplateClassRegexp, escapeStringRegexp, getSourceString } from '@/reg'
+// #endregion
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
 import { MappingChars2String } from '@/dic'
+import { classStringReplace, tagStringReplace, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '#test/v2/reg'
 const getCase = createGetCase(wxmlCasePath)
 
 describe('regexp', () => {
@@ -153,7 +145,7 @@ describe('regexp', () => {
 
   test('customAttributes case 0', () => {
     const attrs = ['image-class', 'loading-class', 'error-class', 'custom-class']
-    const regexp = createTempleteHandlerMatchRegexp('van-image', attrs)
+    const regexp = createTemplateHandlerMatchRegexp('van-image', attrs)
     const testCase = '<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>'
     const matches = [...testCase.matchAll(regexp)]
     expect(matches.length > 0).toBe(true)

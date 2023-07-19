@@ -10,7 +10,7 @@ export function escapeStringRegexp(str: string) {
 
 export const templateClassExactRegexp = /(?<=^|\s)(?:hover-)?class=(?:["']\W+\s*\w+\()?["']([^"]+)["']/gs
 
-export const tagWithEitherClassAndHoverClassRegexp = /<[a-z][a-z-]*[a-z]*\s+[^>]*?(?:hover-)?clas{2}="[^"]*"[^>]*?\/?>/g
+export const tagWithEitherClassAndHoverClassRegexp = /<[a-z][a-z-]*[a-z]*\s+[^>]*?(?:hover-)?class="[^"]*"[^>]*?\/?>/g
 
 interface ICreateRegexpOptions {
   exact?: boolean
@@ -55,7 +55,7 @@ export function makePattern(arr: ItemOrItemArray<string | RegExp>): string {
 }
 
 // try match tag
-export function createTempleteHandlerMatchRegexp(tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
+export function createTemplateHandlerMatchRegexp(tag: string | RegExp, attrs: ItemOrItemArray<string | RegExp>, options: ICreateRegexpOptions = {}) {
   const { exact = true } = options
   const prefix = exact ? '(?<=^|\\s)' : ''
   const pattern = makePattern(attrs)
@@ -79,7 +79,7 @@ export function makeCustomAttributes(entries?: [string | RegExp, ItemOrItemArray
   if (Array.isArray(entries)) {
     return entries.map(([k, v]) => {
       return {
-        tagRegexp: createTempleteHandlerMatchRegexp(k, v),
+        tagRegexp: createTemplateHandlerMatchRegexp(k, v),
         attrRegexp: createTemplateClassRegexp(v),
         tag: getSourceString(k),
         attrs: v
@@ -90,48 +90,4 @@ export function makeCustomAttributes(entries?: [string | RegExp, ItemOrItemArray
 
 export const variableRegExp = /{{(.*?)}}/gs
 
-// export function variableMatch(original: string) {
-//   return variableRegExp.exec(original)
-// }
-
-// #region  deprecated
-/** @deprecated */
-export const classRegexp = /(?:class|className)=(?:["']\W+\s*\w+\()?["']([^"]+)["']/gs
-/** @deprecated */
-export const vueTemplateClassRegexp = /(?:hover-)?class=(?:["']\W+\s*\w+\()?["']([^"]+)["']/gs
-// TODO: poor perf
-/** @deprecated */
-export const tagRegexp = /<([a-z][a-z-]*[a-z]*)\s*(([a-z][a-z-]*[a-z]*)(?:\s*=\s*"(.*?)")?)*\s*\/?\s*>/gs
-/** @deprecated */
-export const tagWithClassRegexp = /<([a-z][a-z-]*[a-z]*)\s+[^>]*?class="([^"]*)"[^>]*?\/?>/g
-
-/** @deprecated */
-export function classStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
-  return str.replaceAll(classRegexp, replacement)
-}
-/** @deprecated */
-export function tagStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
-  return str.replaceAll(tagRegexp, replacement)
-}
-
 export const wxsTagRegexp = /<wxs\s*(?:[a-z][a-z-]*[a-z]*(?:\s*=\s*".*?")?)*\s*>(.*?)<\/wxs>/gs
-// /[\r\n\s]*<(?:\/)?([^ =>]+)([^>]*?)(?:\/)?>/gim
-
-// export const noClosedTagRegexp = /[\r\n\s]*<([^ =>]+)([^>]*?)(?:\/)?>/gim
-// #endregion
-
-// #region  test
-// '-' 不能单独存在,必须前或者后包含一个字母(不能是 '-'本身)
-// 相比来说 '_' 就宽泛多了，这就是选用 '_' 而不是 '-' 进行转义的原因
-export const wxmlAllowClassCharsRegExp = /[\w-]*/g
-
-export function createWxmlAllowClassCharsRegExp() {
-  return new RegExp(wxmlAllowClassCharsRegExp.source, 'g')
-}
-
-export const doubleQuoteRegexp = /"([^"]*)"/g
-
-export function doubleQuoteStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
-  return str.replaceAll(doubleQuoteRegexp, replacement)
-}
-// #endregion

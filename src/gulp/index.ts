@@ -19,7 +19,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options)
-  const { templeteHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet } = opts
+  const { templateHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet } = opts
 
   let runtimeSet = new Set<string>()
   patch?.()
@@ -69,7 +69,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const error = null
       // file.path
       if (file.contents) {
-        const code = templeteHandler(file.contents.toString(), {
+        const code = templateHandler(file.contents.toString(), {
           runtimeSet
         })
         file.contents = Buffer.from(code)

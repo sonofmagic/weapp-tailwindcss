@@ -1,14 +1,14 @@
 import { format } from '../util'
-import { templeteHandler } from '@/wxml/index'
+import { templateHandler } from '@/wxml/index'
 import { MappingChars2String } from '@/dic'
 
 function complexHandler(str: string) {
-  return templeteHandler(str, {
+  return templateHandler(str, {
     escapeMap: MappingChars2String
   })
 }
 
-describe('templeteHandler', () => {
+describe('templateHandler', () => {
   test('wildcard char', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\">*****</view>"
 
@@ -19,7 +19,7 @@ describe('templeteHandler', () => {
   test('only wildcard char', () => {
     const testCase = '<view>*****</view>'
 
-    const str = templeteHandler(testCase)
+    const str = templateHandler(testCase)
     expect(str).toBe('<view>*****</view>')
   })
   test('with var', () => {

@@ -1,5 +1,5 @@
 import { arbitraryValuesMap } from './arbitraryValuesMap'
-import { wxmlAllowClassCharsRegExp } from '@/reg'
+import { wxmlAllowClassCharsRegExp } from '#test/v2/reg'
 import { replaceWxml } from '@/wxml/shared'
 
 describe('all arbitrary values usages', () => {

@@ -54,7 +54,7 @@ module.exports = {
 </view>"
 `;
 
-exports[`wxs > inline.wxml use templeteHandler 1`] = `
+exports[`wxs > inline.wxml use templateHandler 1`] = `
 "<wxs module=\\"inline\\">var className = \\"afterccontent-_qu6211u6765u81eainline-wxsq_\\";
 module.exports = {
   className: className
@@ -80,7 +80,7 @@ module.exports = {
 ]
 `;
 
-exports[`wxs > outside.wxml use templeteHandler 1`] = `
+exports[`wxs > outside.wxml use templateHandler 1`] = `
 "<wxs module=\\"inline\\">var className = \\"afterccontent-_qu6211u6765u81eainline-wxsq_\\";
 module.exports = {
   className: className

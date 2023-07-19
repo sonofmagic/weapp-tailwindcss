@@ -49,6 +49,7 @@ exports[`get options default options 1`] = `
   },
   "customRuleCallback": [Function],
   "disabled": false,
+  "disabledDefaultTemplateHandler": false,
   "escapeMap": {
     "!": "i",
     """: "x",
@@ -109,7 +110,7 @@ exports[`get options default options 1`] = `
       "rpx",
     ],
   },
-  "templeteHandler": [Function],
+  "templateHandler": [Function],
   "wxsMatcher": [Function],
 }
 `;

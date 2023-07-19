@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 2.6.2 (2023-07-17)
+
+## Features
+
+- 添加 `disabledDefaultTemplateHandler` 配置项，可以禁用默认的模板标签匹配转化器
+
+## Fixed
+
+- 修复部分错误的 `injectAdditionalCssVarScope` 注入样式
+- 修复因为英语水平差，造成长久以来的拼写问题：`templete -> template`
+
+## Chore
+
+- 升级 `tailwindcss-patcher` 到 `1.2.7`
+
 ## 2.6.1 (2023-07-17)
 
 ### Features

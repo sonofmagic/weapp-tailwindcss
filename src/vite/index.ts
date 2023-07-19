@@ -16,7 +16,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options)
-  const { disabled, onEnd, onLoad, onStart, onUpdate, templeteHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet } = opts
+  const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet } = opts
   if (disabled) {
     return
   }
@@ -47,7 +47,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           //   classGenerator = globalClassGenerator
           // }
           const oldVal = originalSource.source.toString()
-          originalSource.source = templeteHandler(oldVal, {
+          originalSource.source = templateHandler(oldVal, {
             runtimeSet
           })
           onUpdate(file, oldVal, originalSource.source)

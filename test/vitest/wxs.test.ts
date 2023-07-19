@@ -5,7 +5,7 @@ import { getClassCacheSet } from 'tailwindcss-patch'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { createGetCase, wxsCasePath } from '#test/util'
-// import { createTempleteHandler } from '@/wxml/index'
+// import { createTemplateHandler } from '@/wxml/index'
 import { wxsTagRegexp } from '@/reg'
 import { RawSource } from '@/types'
 
@@ -94,9 +94,9 @@ describe('wxs', () => {
     expect(jsHandler(str, set).code).matchSnapshot()
   })
 
-  it('inline.wxml use templeteHandler', async () => {
+  it('inline.wxml use templateHandler', async () => {
     const str = await getCase('inline.wxml')
-    const { templeteHandler } = getOptions({
+    const { templateHandler } = getOptions({
       inlineWxs: true
     })
     const set = new Set<string>()
@@ -105,15 +105,15 @@ describe('wxs', () => {
       set.add(cls)
     }
     expect(
-      templeteHandler(str, {
+      templateHandler(str, {
         runtimeSet: set
       })
     ).toMatchSnapshot()
   })
 
-  it('outside.wxml use templeteHandler', async () => {
+  it('outside.wxml use templateHandler', async () => {
     const str = await getCase('outside.wxml')
-    const { templeteHandler } = getOptions({
+    const { templateHandler } = getOptions({
       inlineWxs: true
     })
     const set = new Set<string>()
@@ -122,7 +122,7 @@ describe('wxs', () => {
       set.add(cls)
     }
     expect(
-      templeteHandler(str, {
+      templateHandler(str, {
         runtimeSet: set
       })
     ).toMatchSnapshot()
