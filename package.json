@@ -198,7 +198,7 @@
     "postcss-rem-to-responsive-pixel": "^5.1.3",
     "prettier": "^2.8.8",
     "promisify-loader-runner": "^1.0.0",
-    "rollup": "^3.26.2",
+    "rollup": "^3.26.3",
     "rollup-plugin-visualizer": "^5.9.2",
     "style-loader": "^3.3.3",
     "tailwind-children": "^0.5.0",
@@ -214,7 +214,7 @@
     "vite": "^4.4.4",
     "vitest": "^0.33.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "webpack": "^5.88.1",
+    "webpack": "^5.88.2",
     "webpack-build-utils": "^0.0.4"
   },
   "dependencies": {
