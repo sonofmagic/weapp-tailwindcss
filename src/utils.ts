@@ -1,3 +1,5 @@
+// import { createDefu } from 'defu'
+// import type { Defu } from 'defu'
 import type { InternalUserDefinedOptions } from '@/types'
 
 export function isRegexp(value: unknown) {
@@ -78,3 +80,5 @@ export function getGroupedEntries<T>(entries: [string, T][], options: InternalUs
 }
 
 export { default as defu } from 'defu'
+
+// export const defu = createDefu()

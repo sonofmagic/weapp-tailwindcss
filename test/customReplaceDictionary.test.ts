@@ -97,4 +97,24 @@ describe('customReplaceDictionary', () => {
     })
     expect(res).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
   })
+
+  it('all prop with testClass', () => {
+    const { templeteHandler } = getOptions({
+      customAttributes: {
+        '*': ['testClass']
+      }
+    })
+    const res = templeteHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+  })
+
+  it('all prop with [Cc]lass', () => {
+    const { templeteHandler } = getOptions({
+      customAttributes: {
+        '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/]
+      }
+    })
+    const res = templeteHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-_0d5px_" image-class="w-_0d5px_" other-attr="w-[0.5px]"></van-image>')
+  })
 })

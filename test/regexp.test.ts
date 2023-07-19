@@ -1,19 +1,11 @@
 // import replace from 'regexp-replace'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
-import {
-  classStringReplace,
-  tagStringReplace,
-  variableRegExp,
-  tagWithClassRegexp,
-  wxmlAllowClassCharsRegExp,
-  createTempleteHandlerMatchRegexp,
-  createTemplateClassRegexp,
-  escapeStringRegexp,
-  getSourceString
-} from '@/reg'
+import { variableRegExp, createTempleteHandlerMatchRegexp, createTemplateClassRegexp, escapeStringRegexp, getSourceString } from '@/reg'
+// #endregion
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
 import { MappingChars2String } from '@/dic'
+import { classStringReplace, tagStringReplace, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '#test/v2/reg'
 const getCase = createGetCase(wxmlCasePath)
 
 describe('regexp', () => {

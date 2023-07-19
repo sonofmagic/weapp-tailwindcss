@@ -1,7 +1,7 @@
 /* eslint-disable no-octal-escape */
 import { cssCasePath, createGetCase, createPutCase } from '../util'
 import { styleHandler } from '@/postcss/index'
-import { cssUnescape } from '@/postcss/shared'
+
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
 import { MappingChars2String } from '@/dic'
@@ -10,6 +10,11 @@ const getCase = createGetCase(cssCasePath)
 // eslint-disable-next-line no-unused-vars
 const putCase = createPutCase(cssCasePath)
 
+export const cssUnescape = (str: string) => {
+  return str.replaceAll(/\\([\dA-Fa-f]{1,6}[\t\n\f\r ]?|[\S\s])/g, (match) => {
+    return match.length > 2 ? String.fromCodePoint(Number.parseInt(match.slice(1).trim(), 16)) : match[1]
+  })
+}
 describe('styleHandler', () => {
   it('css @media case', async () => {
     const opt = getOptions({
