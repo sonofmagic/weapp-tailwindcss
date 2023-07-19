@@ -36,11 +36,11 @@ dependencies:
     specifier: ^7.5.4
     version: 7.5.4
   tailwindcss-mangle-shared:
-    specifier: ^1.2.6
-    version: 1.2.6
+    specifier: ^1.2.7
+    version: 1.2.7
   tailwindcss-patch:
-    specifier: ^1.2.6
-    version: 1.2.6
+    specifier: ^1.2.7
+    version: 1.2.7
 
 devDependencies:
   '@babel/core':
@@ -8439,12 +8439,12 @@ packages:
       - ts-node
     dev: true
 
-  /tailwindcss-mangle-shared@1.2.6:
-    resolution: {integrity: sha512-70Zoc+ENwkrZ/elU2qy+7D0o5xbhBuZZ1V9RSND90wFIl1QATUB6RAraf7hJVB56NOCKVnp8TT8A/zk4g1Hy0Q==}
+  /tailwindcss-mangle-shared@1.2.7:
+    resolution: {integrity: sha512-BeiU9WZOnYX1pq/NdAISvOV/2EgMceODh40TncIrW+g5GBK9prWw65CFapRoYaIUsRikRgEsM176xAZKL5Ch+w==}
     dev: false
 
-  /tailwindcss-patch@1.2.6:
-    resolution: {integrity: sha512-spZgVkoKsnOCyNzLz40Jxv0bVgjOQCET4rzou9uZ+tvK7gNFIGGWxweC1cLybx0fMLHfhWOKswqLcQdke0NOlw==}
+  /tailwindcss-patch@1.2.7:
+    resolution: {integrity: sha512-zhQj835Djgxzth1fpgPPv3sGNE5rWNc/YrpV1Jg8xf6BIr0HUQlDZTtobxq8eqfqa2ouEltmwQsjvX2LkNtfkw==}
     hasBin: true
     dependencies:
       '@babel/generator': 7.22.9

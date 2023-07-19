@@ -80,11 +80,13 @@ export function internalPatch(pkgJsonPath: string | undefined, options: ILengthU
     // eslint-disable-next-line unicorn/prefer-module
     const pkgJson = require(pkgJsonPath) as PackageJson
     const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
-    if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
+    const version = pkgJson.version!
+    if (semverGte(version, dangerousOptions.gteVersion)) {
       const rootDir = path.dirname(pkgJsonPath)
       const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
       const result = monkeyPatchForExposingContext(rootDir, {
-        overwrite
+        overwrite,
+        version
       })
       return {
         ...result,

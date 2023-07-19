@@ -228,8 +228,8 @@
     "postcss": "8.4.26",
     "postcss-selector-parser": "^6.0.13",
     "semver": "^7.5.4",
-    "tailwindcss-mangle-shared": "^1.2.6",
-    "tailwindcss-patch": "^1.2.6"
+    "tailwindcss-mangle-shared": "^1.2.7",
+    "tailwindcss-patch": "^1.2.7"
   },
   "packageManager": "pnpm@8.6.3"
 }
