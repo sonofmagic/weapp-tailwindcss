@@ -12358,12 +12358,10 @@ table@^6.8.1:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
-tailwind-css-variables-theme-generator@^0.3.8:
-  version "0.3.8"
-  resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.3.8.tgz#7aa2d7d3199fbea26f48517c54a56eff61cb1d1f"
-  integrity sha512-1IIF39wQpOnFQk7AxHkCg/QWZQ72oXOaYal4Zc4yuS00AIhCwRGkNWFD31FvIJs5XbD6QBKlGWDS3cR9PhzNog==
-  dependencies:
-    consola "^2.15.3"
+tailwind-css-variables-theme-generator@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
+  integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
 
 tailwindcss-mangle-shared@^1.2.7:
   version "1.2.7"
