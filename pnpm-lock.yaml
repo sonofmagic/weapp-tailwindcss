@@ -130,9 +130,9 @@ devDependencies:
   bumpp:
     specifier: ^9.1.1
     version: 9.1.1
-  chalk:
-    specifier: 4.1.2
-    version: 4.1.2
+  colorette:
+    specifier: ^2.0.20
+    version: 2.0.20
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3

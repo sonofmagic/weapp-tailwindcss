@@ -1,7 +1,7 @@
 const del = require('del')
-const chalk = require('chalk')
+const { greenBright } = require('colorette')
 ;(async () => {
   const deletedDirectoryPaths = await del(['dist', 'types'])
-  console.log(chalk.green.bold('Deleted directories:'))
+  console.log(greenBright('Deleted directories:'))
   console.log(deletedDirectoryPaths.join('\n'))
 })()
