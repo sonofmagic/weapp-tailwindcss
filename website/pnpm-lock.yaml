@@ -57,7 +57,7 @@ devDependencies:
     version: 0.2.5(@docusaurus/core@2.4.1)(sass@1.64.1)(webpack@5.88.2)
   docusaurus-plugin-typedoc:
     specifier: ^0.19.2
-    version: 0.19.2(typedoc-plugin-markdown@3.15.3)(typedoc@0.24.8)
+    version: 0.19.2(typedoc-plugin-markdown@3.15.4)(typedoc@0.24.8)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -77,8 +77,8 @@ devDependencies:
     specifier: ^0.24.8
     version: 0.24.8(typescript@5.1.6)
   typedoc-plugin-markdown:
-    specifier: ^3.15.3
-    version: 3.15.3(typedoc@0.24.8)
+    specifier: ^3.15.4
+    version: 3.15.4(typedoc@0.24.8)
   typescript:
     specifier: ^5.1.6
     version: 5.1.6
@@ -2106,7 +2106,7 @@ packages:
       '@docusaurus/utils': 2.4.1(@docusaurus/types@2.4.1)
       '@docusaurus/utils-common': 2.4.1(@docusaurus/types@2.4.1)
       '@types/history': 4.7.11
-      '@types/react': 18.2.14
+      '@types/react': 18.2.16
       '@types/react-router-config': 5.0.7
       clsx: 1.2.1
       parse-numeric-range: 1.3.0
@@ -2740,8 +2740,8 @@ packages:
       '@types/history': 4.7.11
       '@types/react': 18.2.6
 
-  /@types/react@18.2.14:
-    resolution: {integrity: sha512-A0zjq+QN/O0Kpe30hA1GidzyFjatVvrpIvWLxD+xv67Vt91TWWgco9IvrJBkeyHm1trGaFS/FSGqPlhyeZRm0g==}
+  /@types/react@18.2.16:
+    resolution: {integrity: sha512-LLFWr12ZhBJ4YVw7neWLe6Pk7Ey5R9OCydfuMsz1L8bZxzaawJj2p06Q8/EFEHDeTBQNFLF62X+CG7B2zIyu0Q==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
@@ -3379,7 +3379,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001517
-      electron-to-chromium: 1.4.468
+      electron-to-chromium: 1.4.470
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.9)
     dev: true
@@ -4172,14 +4172,14 @@ packages:
       - webpack
     dev: true
 
-  /docusaurus-plugin-typedoc@0.19.2(typedoc-plugin-markdown@3.15.3)(typedoc@0.24.8):
+  /docusaurus-plugin-typedoc@0.19.2(typedoc-plugin-markdown@3.15.4)(typedoc@0.24.8):
     resolution: {integrity: sha512-N4B2MOaXIyu+FloFn6zVbGgSqszeFQE/7ZIgFakpkVg5F0rfysiDGac2PHbPf4o8DWdyyviJOAuhXk6U7Febeg==}
     peerDependencies:
       typedoc: '>=0.24.0'
       typedoc-plugin-markdown: '>=3.15.0'
     dependencies:
       typedoc: 0.24.8(typescript@5.1.6)
-      typedoc-plugin-markdown: 3.15.3(typedoc@0.24.8)
+      typedoc-plugin-markdown: 3.15.4(typedoc@0.24.8)
     dev: true
 
   /dom-converter@0.2.0:
@@ -4279,8 +4279,8 @@ packages:
   /electron-to-chromium@1.4.339:
     resolution: {integrity: sha512-MSXHBJGcbBydq/DQDlpBeUKnJ6C7aTiNCTRpfDV5Iz0sNr/Ng6RJFloq82AAicp/SrmDq4zF6XsKG0B8Xwn1UQ==}
 
-  /electron-to-chromium@1.4.468:
-    resolution: {integrity: sha512-6M1qyhaJOt7rQtNti1lBA0GwclPH+oKCmsra/hkcWs5INLxfXXD/dtdnaKUYQu/pjOBP/8Osoe4mAcNvvzoFag==}
+  /electron-to-chromium@1.4.470:
+    resolution: {integrity: sha512-zZM48Lmy2FKWgqyvsX9XK+J6FfP7aCDUFLmgooLJzA7v1agCs/sxSoBpTIwDLhmbhpx9yJIxj2INig/ncjJRqg==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -7970,8 +7970,8 @@ packages:
     dependencies:
       is-typedarray: 1.0.0
 
-  /typedoc-plugin-markdown@3.15.3(typedoc@0.24.8):
-    resolution: {integrity: sha512-idntFYu3vfaY3eaD+w9DeRd0PmNGqGuNLKihPU9poxFGnATJYGn9dPtEhn2QrTdishFMg7jPXAhos+2T6YCWRQ==}
+  /typedoc-plugin-markdown@3.15.4(typedoc@0.24.8):
+    resolution: {integrity: sha512-KpjFL/NDrQAbY147oIoOgob2vAdEchsMcTVd6+e6H2lC1l5xhi48bhP/fMJI7qYQ8th5nubervgqw51z7gY66A==}
     peerDependencies:
       typedoc: '>=0.24.0'
     dependencies:

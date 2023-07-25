@@ -43,7 +43,7 @@
     "sass-loader": "^13.3.2",
     "tailwindcss": "^3.3.3",
     "typedoc": "^0.24.8",
-    "typedoc-plugin-markdown": "^3.15.3",
+    "typedoc-plugin-markdown": "^3.15.4",
     "typescript": "^5.1.6",
     "webpack-node-externals": "^3.0.0"
   },
