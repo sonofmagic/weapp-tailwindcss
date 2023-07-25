@@ -34,6 +34,10 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'quick-start/intelliSense'
+    },
+    {
+      type: 'doc',
       id: 'mangle/index'
     },
     {

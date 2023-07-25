@@ -64,7 +64,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       ident: null,
       type: null
     }
-
+    // https://github.com/dcloudio/uni-app/blob/dev/packages/webpack-uni-mp-loader/lib/plugin/index-new.js
+    // PROCESS_ASSETS_STAGE_ADDITIONAL
+    // https://github.com/NervJS/taro/blob/next/packages/taro-webpack5-runner/src/webpack/MiniWebpackPlugin.ts
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
         if (isExisted) {
