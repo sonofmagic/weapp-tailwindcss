@@ -20,6 +20,9 @@ dependencies:
   '@csstools/postcss-is-pseudo-class':
     specifier: ^4.0.0
     version: 4.0.0(postcss@8.4.27)
+  '@weapp-core/escape':
+    specifier: ^1.0.0
+    version: 1.0.0
   loader-utils:
     specifier: ^2.0.3
     version: 2.0.4
@@ -2183,6 +2186,10 @@ packages:
       loupe: 2.3.6
       pretty-format: 29.6.1
     dev: true
+
+  /@weapp-core/escape@1.0.0:
+    resolution: {integrity: sha512-r/D9iyJlgZ6mG67j1ccgXzts8EgABETNWVu9cXCy4tpXnXXTMWV7RGPqD+uQutgcaUmDwN8sHlt/nPJODEJOlQ==}
+    dev: false
 
   /@webassemblyjs/ast@1.11.6:
     resolution: {integrity: sha512-IN1xI7PwOvLPgjcf180gC1bqn3q/QaOCwYUahIOhbYUu8KA/3tw2RT/T0Gidi1l7Hhj5D/INhJxiICObqpMu4Q==}

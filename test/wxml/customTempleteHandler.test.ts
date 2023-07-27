@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { customTemplateHandler } from '@/wxml/utils'
-import { SimpleMappingChars2String } from '@/dic'
+import { SimpleMappingChars2String } from '@/escape'
 
 describe('customTemplateHandler', () => {
   it('invalid customAttributesEntities options', () => {

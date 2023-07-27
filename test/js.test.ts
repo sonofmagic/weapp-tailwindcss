@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import { getClassCacheSet } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
-import { SimpleMappingChars2String } from '@/dic'
+import { SimpleMappingChars2String } from '@/escape'
 import { createjsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'

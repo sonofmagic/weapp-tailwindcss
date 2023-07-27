@@ -1,6 +1,6 @@
 import { format } from '../util'
 import { templateHandler } from '@/wxml/index'
-import { MappingChars2String } from '@/dic'
+import { MappingChars2String } from '@/escape'
 
 function complexHandler(str: string) {
   return templateHandler(str, {
