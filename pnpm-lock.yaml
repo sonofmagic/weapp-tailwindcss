@@ -23,6 +23,9 @@ dependencies:
   '@weapp-core/escape':
     specifier: ^1.0.0
     version: 1.0.0
+  '@weapp-core/regex':
+    specifier: ^1.0.0
+    version: 1.0.0
   loader-utils:
     specifier: ^2.0.3
     version: 2.0.4
@@ -2189,6 +2192,10 @@ packages:
 
   /@weapp-core/escape@1.0.0:
     resolution: {integrity: sha512-r/D9iyJlgZ6mG67j1ccgXzts8EgABETNWVu9cXCy4tpXnXXTMWV7RGPqD+uQutgcaUmDwN8sHlt/nPJODEJOlQ==}
+    dev: false
+
+  /@weapp-core/regex@1.0.0:
+    resolution: {integrity: sha512-XSzPETlGryMdPYOhmlGUtqye+tTuubPW4N9HlIhcwQNWaMWCp9nEEM4OpRrvtss01dBqZtgKMnr9a2mg+102xQ==}
     dev: false
 
   /@webassemblyjs/ast@1.11.6:

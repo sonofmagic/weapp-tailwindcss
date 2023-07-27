@@ -225,6 +225,7 @@
     "@babel/types": "^7.22.5",
     "@csstools/postcss-is-pseudo-class": "^4.0.0",
     "@weapp-core/escape": "^1.0.0",
+    "@weapp-core/regex": "^1.0.0",
     "loader-utils": "^2.0.3",
     "micromatch": "^4.0.5",
     "postcss": "8.4.27",

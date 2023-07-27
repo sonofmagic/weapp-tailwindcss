@@ -403,12 +403,6 @@ export interface ICommonReplaceOptions {
   // customAttributes?: Record<string, string | string[]>
 }
 
-export type ICustomRegexp = {
-  tagRegexp: RegExp
-  attrRegexp: RegExp
-  tag: string
-  attrs: ItemOrItemArray<string | RegExp>
-}
 export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   customAttributesEntities?: ICustomAttributesEntities
   // allMatchedAttributes?: (string | RegExp)[]
