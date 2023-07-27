@@ -4,7 +4,7 @@ import { styleHandler } from '@/postcss/index'
 
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
-import { MappingChars2String } from '@/dic'
+import { MappingChars2String } from '@/escape'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars

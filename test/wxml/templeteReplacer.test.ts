@@ -1,5 +1,5 @@
 import { templateReplacer } from '@/wxml/index'
-import { MappingChars2String } from '@/dic'
+import { MappingChars2String } from '@/escape'
 const testTable = [[{}]]
 
 function complexReplacer(str: string) {

@@ -4,7 +4,7 @@ import { variableRegExp, createTemplateHandlerMatchRegexp, createTemplateClassRe
 // #endregion
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
-import { MappingChars2String } from '@/dic'
+import { MappingChars2String } from '@/escape'
 import { classStringReplace, tagStringReplace, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '#test/v2/reg'
 const getCase = createGetCase(wxmlCasePath)
 

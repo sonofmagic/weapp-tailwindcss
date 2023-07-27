@@ -1,6 +1,6 @@
 import { templateHandler } from '@/wxml/index'
-import { MappingChars2String, SimpleMappingChars2String } from '@/dic'
-// import { format } from '../util'
+import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
+
 // https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants
 function complexHandler(str: string) {
   return templateHandler(str, {

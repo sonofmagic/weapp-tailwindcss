@@ -1,6 +1,6 @@
 import type { UserDefinedOptions } from './types'
 import { noop } from '@/utils'
-import { SimpleMappingChars2String } from '@/dic'
+import { SimpleMappingChars2String } from '@/escape'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
@@ -46,7 +46,7 @@ export const defaultOptions: UserDefinedOptions = {
       }
     }
   },
-  wxsMatcher: (file) => {
+  wxsMatcher: () => {
     return false
     // if (file.includes('node_modules')) {
     //   return false

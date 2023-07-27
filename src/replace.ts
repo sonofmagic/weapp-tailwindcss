@@ -1,4 +1,13 @@
-export * from './dic'
+export {
+  MappingChars2String,
+  MappingChars2StringEntries,
+  MappingStringDictionary,
+  SYMBOL_TABLE,
+  SYMBOL_TABLE_TYPE,
+  SYMBOL_TABLE_TYPE_VALUES,
+  SimpleMappingChars2String,
+  SimpleMappingChars2StringEntries
+} from './escape'
 // cssSelectorReplacer as replaceCss,
 // replaceEscapedCss
 

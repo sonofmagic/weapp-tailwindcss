@@ -1,4 +1,4 @@
-import { MappingChars2StringEntries, SimpleMappingChars2StringEntries } from '@/dic'
+import { MappingChars2StringEntries, SimpleMappingChars2StringEntries } from '@/escape'
 
 function check(e: [string, string][], allowUnderline = false) {
   const set = new Set()
