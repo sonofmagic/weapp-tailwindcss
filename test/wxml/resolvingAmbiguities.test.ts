@@ -1,5 +1,4 @@
 import { templateHandler } from '@/wxml/index'
-// import { format } from '../util'
 
 describe('resolving ambiguities', () => {
   test('text-[22px]', () => {
