@@ -140,4 +140,16 @@ describe('templateHandler', () => {
     const str = complexHandler(testCase)
     expect(str).toBe(testCase)
   })
+
+  it('after wx:if <view wx:if="{{xxx}}" class="ml-[16px]">', () => {
+    const testCase = '<view wx:if="{{xxx}}" class="ml-[16px]">'
+    const str = templateHandler(testCase)
+    expect(str).toBe('<view wx:if="{{xxx}}" class="ml-_16px_">')
+  })
+
+  it('before wx:if <view  class="ml-[16px]" wx:if="{{xxx}}">', () => {
+    const testCase = '<view class="ml-[16px]" wx:if="{{xxx}}">'
+    const str = templateHandler(testCase)
+    expect(str).toBe('<view class="ml-_16px_" wx:if="{{xxx}}">')
+  })
 })
