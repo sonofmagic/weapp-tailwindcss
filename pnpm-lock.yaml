@@ -148,6 +148,9 @@ devDependencies:
   css-loader:
     specifier: ^6.8.1
     version: 6.8.1(webpack@5.88.2)
+  dedent:
+    specifier: ^1.5.1
+    version: 1.5.1
   defu:
     specifier: 6.1.2
     version: 6.1.2

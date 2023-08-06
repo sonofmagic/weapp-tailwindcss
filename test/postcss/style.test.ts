@@ -1,10 +1,12 @@
 /* eslint-disable no-octal-escape */
 import { cssCasePath, createGetCase, createPutCase } from '../util'
+import { normalizeEol } from '../helpers/normalizeEol'
 import { styleHandler } from '@/postcss/index'
 
 import { createInjectPreflight } from '@/postcss/preflight'
 import { getOptions } from '@/options'
 import { MappingChars2String } from '@/escape'
+
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
@@ -235,7 +237,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe(
+    expect(normalizeEol(result)).toBe(
       '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
     )
   })
@@ -250,7 +252,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe('\n')
+    expect(normalizeEol(result)).toBe('\n')
   })
 
   it('arbitrary values case 2', async () => {
@@ -263,7 +265,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe(
+    expect(normalizeEol(result)).toBe(
       '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
     )
   })
@@ -278,7 +280,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
+    expect(normalizeEol(result)).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
   })
 
   it('arbitrary values case 4', async () => {
@@ -291,9 +293,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe(
-      '@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n'
-    )
+    expect(normalizeEol(result)).toBe('@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n')
   })
 
   it('arbitrary values case 5', async () => {
@@ -306,7 +306,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe(
+    expect(normalizeEol(result)).toBe(
       '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n'
     )
   })
@@ -321,7 +321,7 @@ describe('styleHandler', () => {
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
     })
-    expect(result.replaceAll('\r\n', '\n')).toBe(
+    expect(normalizeEol(result)).toBe(
       '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n'
     )
   })
@@ -335,8 +335,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\'}')
+    })
+    expect(normalizeEol(result)).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\'}')
   })
 
   it('global variables scope matched and inject', () => {
@@ -350,8 +350,10 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}')
+    })
+    expect(normalizeEol(result)).toBe(
+      '::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}'
+    )
   })
 
   it('global variables scope matched and inject with isMainChunk false', () => {
@@ -365,8 +367,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe(testCase)
+    })
+    expect(normalizeEol(result)).toBe(testCase)
   })
 
   it('global variables scope matched and inject and modify preflight range', () => {
@@ -380,8 +382,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe(
+    })
+    expect(normalizeEol(result)).toBe(
       '::before,::after{--tw-content:""}\n:before,:after,view,:not(not){--tw-:\'test\';box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}'
     )
   })
@@ -397,8 +399,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe(testCase)
+    })
+    expect(normalizeEol(result)).toBe(testCase)
   })
 
   it('global variables scope not matched', () => {
@@ -410,8 +412,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe(testCase)
+    })
+    expect(normalizeEol(result)).toBe(testCase)
   })
 
   it("before:content-['+']", () => {
@@ -423,8 +425,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
+    })
+    expect(normalizeEol(result)).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
   })
 
   it('@apply space-y/x css selector', () => {
@@ -436,8 +438,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe('.test>view + view{}')
+    })
+    expect(normalizeEol(result)).toBe('.test>view + view{}')
   })
 
   it('Is Pseudo Class', () => {
@@ -449,8 +451,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toBe('.dark .dark:bg-zinc-800 {}')
+    })
+    expect(normalizeEol(result)).toBe('.dark .dark:bg-zinc-800 {}')
   })
 
   it('utf8 charset', async () => {
@@ -462,8 +464,8 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
-    }).replaceAll('\r\n', '\n')
-    expect(result).toMatchSnapshot()
+    })
+    expect(normalizeEol(result)).toMatchSnapshot()
   })
 
   it('cssUnescape case 0', () => {

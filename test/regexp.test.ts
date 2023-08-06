@@ -1,5 +1,6 @@
 // import replace from 'regexp-replace'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
+import { normalizeEol } from './helpers/normalizeEol'
 import { variableRegExp, createTemplateHandlerMatchRegexp, createTemplateClassRegexp, escapeStringRegexp, getSourceString } from '@/reg'
 // #endregion
 import { replaceWxml } from '@/wxml/index'
@@ -119,7 +120,7 @@ describe('regexp', () => {
     expect(arr[9][2]).toBe('vue-ref')
   })
 
-  test('exec pref.wxml ', async () => {
+  test('exec pref.wxml 0', async () => {
     const testCase = await getCase('case1.wxml')
 
     const arr = matchAll(tagWithClassRegexp, testCase)
@@ -127,15 +128,15 @@ describe('regexp', () => {
     expect(arr.length).toBe(1)
     expect(format(arr[0][2])).toBe(
       format(`
-    bg-white
-    rounded-full
-    w-10
-    h-10
-    flex
-    justify-center
-    items-center
-    pointer-events-auto
-  `)
+      bg-white
+      rounded-full
+      w-10
+      h-10
+      flex
+      justify-center
+      items-center
+      pointer-events-auto
+    `)
     )
   })
 

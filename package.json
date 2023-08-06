@@ -176,6 +176,7 @@
     "colorette": "^2.0.20",
     "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",
+    "dedent": "^1.5.1",
     "defu": "6.1.2",
     "del": "^7.0.0",
     "eslint": "8.46.0",
