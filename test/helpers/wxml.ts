@@ -1,7 +1,5 @@
-import prettier from 'prettier'
+import { html } from 'js-beautify'
 
 export function format(source: string) {
-  return prettier.format(source, {
-    parser: 'html'
-  })
+  return html(source)
 }
