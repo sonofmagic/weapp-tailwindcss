@@ -71,7 +71,7 @@
 
 目前，这些插件支持最新版本的 `tailwindcss v3.x.x` 版本和 `webpack5`，`vite` 和 `gulp`。
 
-> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用本插件的 `1.x` 版本。另外请确保你的 `nodejs` 版本 `>=16`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS`版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用本插件的 `1.x` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS`版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
 ## [安装与使用方式](https://weapp-tw.icebreaker.top/docs/quick-start/install)
 
