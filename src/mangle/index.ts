@@ -1,4 +1,4 @@
-import { ClassGenerator, defaultMangleClassFilter } from 'tailwindcss-mangle-shared'
+import { ClassGenerator, defaultMangleClassFilter } from '@tailwindcss-mangle/shared'
 import type { UserDefinedOptions, IMangleScopeContext } from '@/types'
 import { splitCode } from '@/extractors/split'
 import { escapeStringRegexp } from '@/reg'
