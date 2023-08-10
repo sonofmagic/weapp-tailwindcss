@@ -1,6 +1,5 @@
 import type { Rule } from 'postcss'
 import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle/shared'
-import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
 export type ItemOrItemArray<T> = T | T[]
 
@@ -59,6 +58,7 @@ export type IJsHandlerOptions = {
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
+  strategy?: 'regenerate' | 'replace'
 }
 export interface RawSource {
   start: number
@@ -411,7 +411,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
   inlineWxs?: boolean
-  jsHandler?: (rawSource: string, set: Set<string>) => GeneratorResult
+  jsHandler?: (rawSource: string, set: Set<string>) => { code: string }
   runtimeSet?: Set<string>
   disabledDefaultTemplateHandler?: boolean
 }
@@ -425,7 +425,7 @@ export type InternalUserDefinedOptions = Required<
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
-    jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
+    jsHandler: (rawSource: string, set: Set<string>) => { code: string }
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
