@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 2.7.0
+
+## Features
+
+- 添加 `jsEscapeStrategy` 配置项，用于切换所有的 `js`字符串中，处理字符串和模板字面量的替换模式。
+- 详细配置见 <https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#jsescapestrategy>
+
+## Chore
+
+- 升级 `tailwindcss-patch` 和 `@tailwindcss-mangle` 相关依赖到 `2.x` 版本
+
 ## 2.6.3 (2023-07-27)
 
 ## Fixed
