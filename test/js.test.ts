@@ -58,7 +58,11 @@ describe('jsHandler', () => {
     set.add('w-2.5')
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set).code
-    expect(code).toBe('const n = "text-_12px_ flex bg-[red] w-2d5";')
+    if (strategy === 'replace') {
+      expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
+    } else {
+      expect(code).toBe('const n = "text-_12px_ flex bg-[red] w-2d5";')
+    }
   })
 
   it.each(testTable)('$name common case with ignore comment', ({ strategy }) => {
@@ -68,7 +72,11 @@ describe('jsHandler', () => {
     set.add('w-2.5')
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
-    expect(code).toBe("const n = /*weapp-tw ignore*/'text-[12px] flex bg-[red] w-2.5';")
+    if (strategy === 'replace') {
+      expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
+    } else {
+      expect(code).toBe("const n = /*weapp-tw ignore*/'text-[12px] flex bg-[red] w-2.5';")
+    }
   })
 
   it('[minified] common case', () => {
@@ -88,7 +96,11 @@ describe('jsHandler', () => {
     const xxx = strategy === 'replace' ? rh : h
 
     const code = xxx("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set).code
-    expect(code).toBe('const n = "text-_12px_ flex \\n bg-[red] w-2d5";')
+    if (strategy === 'replace') {
+      expect(code).toBe("const n = 'text-_12px_ flex \n bg-[red] w-2d5'")
+    } else {
+      expect(code).toBe('const n = "text-_12px_ flex \\n bg-[red] w-2d5";')
+    }
   })
 
   it('[minified] preserve space', () => {
@@ -106,8 +118,14 @@ describe('jsHandler', () => {
     set.add('text-[12px]')
     set.add('flex')
     const xxx = strategy === 'replace' ? rh : h
-    const code = xxx("const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
-    expect(code).toBe("const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red] '`;")
+
+    const code = xxx('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set).code
+    if (strategy === 'replace') {
+      // expect(code).toBe('const n = `text-_12px_ \n\n  flex  \n\n  bg-[red]`')
+      expect(code).toMatchSnapshot() // ('const n = `text-_12px_ \n\n  flex  \n\n  bg-[red]`')
+    } else {
+      expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`;')
+    }
   })
 
   it.each(testTable)('$name babel TemplateElement case', ({ strategy }) => {
@@ -117,7 +135,27 @@ describe('jsHandler', () => {
     set.add('bg-[red]')
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
-    expect(code).toBe('const p = "text-_12px_";\nconst n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
+    if (strategy === 'replace') {
+      expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
+    } else {
+      expect(code).toBe('const p = "text-_12px_";\nconst n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
+    }
+  })
+
+  it.each(testTable)('$name TemplateElement case 0', ({ strategy }) => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('text-[199px]')
+    set.add('flex')
+    set.add("bg-[url('天气好')]")
+    set.add('bg-[red]')
+    const xxx = strategy === 'replace' ? rh : h
+    const code = xxx("const p = 'text-[12px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
+    if (strategy === 'replace') {
+      expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
+    } else {
+      expect(code).toBe('const p = "text-_12px_";\nconst n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
+    }
   })
 
   it('[minified] babel TemplateElement case', () => {

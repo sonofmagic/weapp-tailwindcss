@@ -1,5 +1,4 @@
 import type { Node, StringLiteral, TemplateElement } from '@babel/types'
-import * as t from '@babel/types'
 import type { TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
 import { parse, traverse, generate } from '@/babel'
@@ -72,7 +71,11 @@ export function replaceHandleValue(str: string, node: StringLiteral | TemplateEl
   }
 
   if (typeof node.start === 'number' && typeof node.end === 'number') {
-    ms.update(node.start + offset, node.end - offset, rawStr)
+    const start = node.start + offset
+    const end = node.end - offset
+    if (start < end) {
+      ms.update(node.start + offset, node.end - offset, rawStr)
+    }
   }
 
   return rawStr
@@ -97,7 +100,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
       TemplateElement: {
         enter(p) {
           const n = p.node
-          replaceHandleValue(n.value.raw, n, options, ms)
+          replaceHandleValue(n.value.raw, n, options, ms, 0)
         }
       },
       CallExpression: {

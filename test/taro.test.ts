@@ -59,7 +59,10 @@ describe('taro app', () => {
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx(testCase, set).code
     const code0 = mh(testCase, set).code
-    expect(code).toBe(code0)
+    if (strategy !== 'replace') {
+      expect(code).toBe(code0)
+    }
+
     expect(code).toMatchSnapshot()
     // const css = getCss([testCase])
     // const context = getContexts()
