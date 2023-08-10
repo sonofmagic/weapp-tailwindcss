@@ -237,5 +237,8 @@
     "semver": "^7.5.4",
     "tailwindcss-patch": "^2.0.4"
   },
-  "packageManager": "pnpm@8.6.9"
+  "packageManager": "pnpm@8.6.11",
+  "engines": {
+    "node": ">=16.6.0"
+  }
 }

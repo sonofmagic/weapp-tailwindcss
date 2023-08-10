@@ -55,8 +55,7 @@ exports[`e2e > 'gulp-app' 2`] = `
   \\"text-center\\",
   \\"text-left\\",
   \\"text-xs\\",
-  \\"w-screen\\",
-  \\"*\\"
+  \\"w-screen\\"
 ]"
 `;
 
@@ -67,7 +66,7 @@ exports[`e2e > 'mpx-app' 1`] = `
   <view class=\\"after content- aftercml-0d5 afterctext-red-500\\"></view>
   <view class=\\"afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500\\"></view>
   <view>*****</view>
-  <list is=\\"components/list9cf6a74a/index\\">
+  <list is=\\"components/liste824c5b4/index\\">
     <view class=\\"flex index--flex flex-col index--flex-col\\">
       <view class=\\"text-_blue_ index--text-_blue_\\">手机</view>
       <view class=\\"text-_he67240_ index--text-_he67240_\\">电视</view>
@@ -92,8 +91,7 @@ exports[`e2e > 'mpx-app' 2`] = `
   \\"text-[#123456]\\",
   \\"text-[#e67240]\\",
   \\"text-[50px]\\",
-  \\"text-[blue]\\",
-  \\"*\\"
+  \\"text-[blue]\\"
 ]"
 `;
 
@@ -237,8 +235,7 @@ exports[`e2e > 'native-mina' 2`] = `
   \\"w-[200rpx]\\",
   \\"w-[20px]\\",
   \\"w-[20rpx]\\",
-  \\"w-[300rpx]\\",
-  \\"*\\"
+  \\"w-[300rpx]\\"
 ]"
 `;
 
@@ -344,8 +341,7 @@ exports[`e2e > 'rax-app' 2`] = `
   \\"w-32\\",
   \\"w-[100px]\\",
   \\"w-[200%]\\",
-  \\"w-[300rpx]\\",
-  \\"*\\"
+  \\"w-[300rpx]\\"
 ]"
 `;
 
@@ -525,10 +521,7 @@ exports[`e2e > 'taro-app' 2`] = `
   \\"w-[20px]\\",
   \\"w-[300rpx]\\",
   \\"w-[404px]\\",
-  \\"w-full\\",
-  \\"before:content-['moduleC_独立分包']\\",
-  \\"before:content-['moduleB_独立分包']\\",
-  \\"*\\"
+  \\"w-full\\"
 ]"
 `;
 
@@ -652,8 +645,7 @@ exports[`e2e > 'taro-vue2-app' 2`] = `
   \\"w-10\\",
   \\"w-[100px]\\",
   \\"w-[300rpx]\\",
-  \\"w-[320px]\\",
-  \\"*\\"
+  \\"w-[320px]\\"
 ]"
 `;
 
@@ -834,8 +826,7 @@ exports[`e2e > 'taro-vue3-app' 2`] = `
   \\"w-[100px]\\",
   \\"w-[300px]\\",
   \\"w-[300rpx]\\",
-  \\"w-full\\",
-  \\"*\\"
+  \\"w-full\\"
 ]"
 `;
 
@@ -1286,8 +1277,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"w-[33.33px]\\",
   \\"w-[52px]\\",
   \\"w-[77rpx]\\",
-  \\"w-screen\\",
-  \\"*\\"
+  \\"w-screen\\"
 ]"
 `;
 
