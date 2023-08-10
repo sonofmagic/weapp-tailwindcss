@@ -5,6 +5,27 @@ import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
 
+const usualEscapeSequences = {
+  '0': '\0',
+  b: '\b',
+  f: '\f',
+  n: '\n',
+  r: '\r',
+  t: '\t',
+  v: '\v',
+  "'": "'",
+  '"': '"',
+  '\\': '\\'
+}
+const usualEscapeSequencesEntries = Object.entries(usualEscapeSequences)
+
+export function escapeMagicString(str: string) {
+  for (const [key, value] of usualEscapeSequencesEntries) {
+    str = str.replaceAll(value, '\\' + key)
+  }
+  return str
+}
+
 export function regenerateHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
   const set = options.classNameSet
   const escapeMap = options.escapeMap
@@ -71,7 +92,7 @@ export function replaceHandleValue(str: string, node: StringLiteral | TemplateEl
     const start = node.start + offset
     const end = node.end - offset
     if (start < end) {
-      ms.update(node.start + offset, node.end - offset, rawStr)
+      ms.update(node.start + offset, node.end - offset, rawStr) // escapeMagicString(rawStr))
     }
   }
 

@@ -291,4 +291,15 @@ describe('jsHandler', () => {
     const code = myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set).code
     expect(code).toBe("const n = '* 1 * 2 w-_100px_'")
   })
+
+  it('LINEFEED case', () => {
+    const testCase = 'const LINEFEED = "\\n";'
+    const set = new Set<string>()
+    const code = rh(testCase, set).code
+    expect(code).toBe(testCase)
+
+    // \n 被展开导致的错误
+    //     const LINEFEED = "
+    // ";
+  })
 })
