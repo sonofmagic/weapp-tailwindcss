@@ -32,7 +32,7 @@ exports[`jsHandler [replace strategy] mpx jit classNames 1`] = `
     }"
 `;
 
-exports[`jsHandler [replace strategy] preserve space case2 1`] = `"const n = \`text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]\`"`;
+exports[`jsHandler [replace strategy] preserve space case2 1`] = `"const n = \`text-_12px_ \\\\n\\\\n  flex  \\\\n\\\\n  bg-[red]\`"`;
 
 exports[`jsHandler jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]';"`;
 

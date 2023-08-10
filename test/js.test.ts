@@ -97,7 +97,7 @@ describe('jsHandler', () => {
 
     const code = xxx("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set).code
     if (strategy === 'replace') {
-      expect(code).toBe("const n = 'text-_12px_ flex \n bg-[red] w-2d5'")
+      expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
     } else {
       expect(code).toBe('const n = "text-_12px_ flex \\n bg-[red] w-2d5";')
     }
@@ -136,7 +136,7 @@ describe('jsHandler', () => {
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
     if (strategy === 'replace') {
-      expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
+      expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\\\n\\\\n  flex  \\\\n\\\\n  bg-_red_ \\'`")
     } else {
       expect(code).toBe('const p = "text-_12px_";\nconst n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
     }
@@ -152,7 +152,7 @@ describe('jsHandler', () => {
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx("const p = 'text-[12px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
     if (strategy === 'replace') {
-      expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
+      expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\\\n\\\\n  flex  \\\\n\\\\n  bg-_red_ \\'`")
     } else {
       expect(code).toBe('const p = "text-_12px_";\nconst n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
     }
@@ -296,6 +296,8 @@ describe('jsHandler', () => {
     const testCase = 'const LINEFEED = "\\n";'
     const set = new Set<string>()
     const code = rh(testCase, set).code
+    // 'const LINEFEED = "\n";'
+    // 'const LINEFEED = "\\n";'
     expect(code).toBe(testCase)
 
     // \n 被展开导致的错误
