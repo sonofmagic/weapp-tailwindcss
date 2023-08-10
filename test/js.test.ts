@@ -122,7 +122,8 @@ describe('jsHandler', () => {
     const code = xxx('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set).code
     if (strategy === 'replace') {
       // expect(code).toBe('const n = `text-_12px_ \n\n  flex  \n\n  bg-[red]`')
-      expect(code).toMatchSnapshot() // ('const n = `text-_12px_ \n\n  flex  \n\n  bg-[red]`')
+      expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
+      // .toMatchSnapshot() // ('const n = `text-_12px_ \n\n  flex  \n\n  bg-[red]`')
     } else {
       expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`;')
     }
@@ -136,7 +137,7 @@ describe('jsHandler', () => {
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
     if (strategy === 'replace') {
-      expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\\\n\\\\n  flex  \\\\n\\\\n  bg-_red_ \\'`")
+      expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
     } else {
       expect(code).toBe('const p = "text-_12px_";\nconst n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
     }
@@ -152,7 +153,7 @@ describe('jsHandler', () => {
     const xxx = strategy === 'replace' ? rh : h
     const code = xxx("const p = 'text-[12px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
     if (strategy === 'replace') {
-      expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\\\n\\\\n  flex  \\\\n\\\\n  bg-_red_ \\'`")
+      expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
     } else {
       expect(code).toBe('const p = "text-_12px_";\nconst n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ \'`;')
     }

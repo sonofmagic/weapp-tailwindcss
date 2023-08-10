@@ -14400,10 +14400,8 @@ watchpack@^1.7.4:
   resolved "https://registry.npmmirror.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
@@ -14442,10 +14440,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.7.0:
-  version "2.7.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.7.0.tgz#889466eb4e886ae7cf8c5d2ef5745cff0baff5d2"
-  integrity sha512-uxHFVCCADNe4EFGM5ePo5GzdJwzRUXTnbQjBmE0FZviSxGiFVA34DLNz1FPasgZQ985Aj9Mi31MiCO7pwK7OWQ==
+weapp-tailwindcss-webpack-plugin@^2.7.1-beta.1:
+  version "2.7.1-beta.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.7.1-beta.1.tgz#f3e2d2cb51fa48dafe50b3007ce065b509aa8cb4"
+  integrity sha512-ByttVPiMdp+VYvIUHGwDS8Ic6n2G/j4tTaObjugk5jRSVfqkKkQBQBAMHjL01d2P+yKPgGPHnPlqBkVCEcKilg==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"

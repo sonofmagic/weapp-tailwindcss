@@ -26,7 +26,7 @@ import { splitCode } from '@/extractors/split'
 //   return str
 // }
 // https://github.com/joliss/js-string-escape
-// 用来加 \
+// 用来加 \, 这是因为 babel 和 magic string 配合使用导致的结果
 export function jsStringEscape(str: unknown) {
   return ('' + str).replaceAll(/[\n\r"'\\\u2028\u2029]/g, (character) => {
     // Escape all characters not included in SingleStringCharacters and
@@ -90,7 +90,7 @@ export function regenerateHandleValue(str: string, node: StringLiteral | Templat
   return rawStr
 }
 
-export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 1) {
+export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 0, needEscaped = false) {
   const set = options.classNameSet
   const escapeMap = options.escapeMap
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
@@ -124,7 +124,7 @@ export function replaceHandleValue(str: string, node: StringLiteral | TemplateEl
     const start = node.start + offset
     const end = node.end - offset
     if (start < end) {
-      ms.update(node.start + offset, node.end - offset, jsStringEscape(rawStr)) // escapeMagicString(rawStr))
+      ms.update(node.start + offset, node.end - offset, needEscaped ? jsStringEscape(rawStr) : rawStr) // escapeMagicString(rawStr))
     }
   }
 
