@@ -33,6 +33,7 @@ if (!WeappTailwindcssDisabled) {
         return false;
       },
       inlineWxs: true,
+      jsEscapeStrategy: 'replace', // 'regenerate'
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',
@@ -40,7 +41,7 @@ if (!WeappTailwindcssDisabled) {
       //   '(': '_',
       //   ')': '-',
       // },
-    })
+    }),
   );
 
   postcssPlugins.push(
@@ -48,7 +49,7 @@ if (!WeappTailwindcssDisabled) {
       rootValue: 32,
       propList: ['*'],
       transformUnit: 'rpx',
-    })
+    }),
   );
 }
 // https://vitejs.dev/config/

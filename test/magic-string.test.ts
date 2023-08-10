@@ -31,4 +31,9 @@ describe('MagicString', () => {
     s.update(1, 2, 'b')
     expect(s.toString()).toBe("'b'")
   })
+
+  it('\n\r', () => {
+    const s = new MagicString('\n\n\n')
+    expect(s.toString()).toBe('\n\n\n')
+  })
 })

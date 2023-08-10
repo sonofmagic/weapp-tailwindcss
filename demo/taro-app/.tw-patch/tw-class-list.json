@@ -90,8 +90,5 @@
   "w-[20px]",
   "w-[300rpx]",
   "w-[404px]",
-  "w-full",
-  "before:content-['moduleC_独立分包']",
-  "before:content-['moduleB_独立分包']",
-  "*"
+  "w-full"
 ]

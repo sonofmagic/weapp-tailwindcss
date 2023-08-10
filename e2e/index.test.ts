@@ -5,6 +5,7 @@ import prettier from 'prettier'
 import automator from 'miniprogram-automator'
 import { expect, test, describe } from 'vitest'
 import { execa } from 'execa'
+import { deleteAsync } from 'del'
 const TestProjectsEntries: {
   name: string
   projectPath: string
@@ -82,6 +83,8 @@ describe('e2e', () => {
       projectPath
     })
     const page = await miniProgram.reLaunch(config.url ?? '/pages/index/index')
+    const root = path.resolve(__dirname, '../demo', config.name)
+    await deleteAsync([path.resolve(root, 'node_modules/.cache')])
     if (page) {
       await testMethod(page)
       const pageEl = await page.$('page')
@@ -109,7 +112,6 @@ describe('e2e', () => {
 
       await page.waitFor(3000)
 
-      const root = path.resolve(__dirname, '../demo', config.name)
       await execa('npx', ['tw-patch', 'extract'], {
         cwd: root
       })

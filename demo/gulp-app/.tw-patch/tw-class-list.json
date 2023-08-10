@@ -25,6 +25,5 @@
   "text-center",
   "text-left",
   "text-xs",
-  "w-screen",
-  "*"
+  "w-screen"
 ]

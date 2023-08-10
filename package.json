@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -237,5 +237,8 @@
     "semver": "^7.5.4",
     "tailwindcss-patch": "^2.0.4"
   },
-  "packageManager": "pnpm@8.6.9"
+  "packageManager": "pnpm@8.6.11",
+  "engines": {
+    "node": ">=16.6.0"
+  }
 }

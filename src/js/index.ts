@@ -18,14 +18,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
       StringLiteral: {
         enter(p) {
           const n = p.node
-          replaceHandleValue(n.value, n, options, ms)
+          replaceHandleValue(n.value, n, options, ms, 1, true)
         }
         // exit(p) {}
       },
       TemplateElement: {
         enter(p) {
           const n = p.node
-          replaceHandleValue(n.value.raw, n, options, ms, 0)
+          replaceHandleValue(n.value.raw, n, options, ms, 0, false)
         }
       },
       CallExpression: {
