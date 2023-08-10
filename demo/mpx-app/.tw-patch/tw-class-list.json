@@ -1,0 +1,16 @@
+[
+  "after:content-[\"你好啊，我很无聊\"]",
+  "after:content-['你好啊，我这是中文字符串']",
+  "after:ml-0",
+  "after:ml-0.5",
+  "after:text-red-500",
+  "bg-[#fff]",
+  "bg-[url('https://xxx.com/xx.webp')]",
+  "flex",
+  "flex-col",
+  "text-[#123456]",
+  "text-[#e67240]",
+  "text-[50px]",
+  "text-[blue]",
+  "*"
+]

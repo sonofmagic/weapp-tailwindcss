@@ -4,6 +4,8 @@ title: 'tailwindcss in weapp 的原理'
 ---
 
 
+(2023-03-19) 版本，现在看了一下，已经比较老了，有空再改进改进。
+
 ## 前言
 
 笔者对 `tailwindcss` 这一类库的理解还算比较深刻。之前就已经撰写并发布过相关的许多包，比如像 [`tailwindcss-miniprogram-preset`](https://github.com/sonofmagic/tailwindcss-miniprogram-preset), [`weapp-tailwindcss-webpack-plugin`][weapp-link] [等等大堆的包](https://github.com/sonofmagic?tab=repositories&q=tailwindcss&type=&language=&sort=)。

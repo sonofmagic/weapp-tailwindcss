@@ -59,7 +59,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     inlineWxs,
     injectAdditionalCssVarScope,
     jsPreserveClass,
-    disabledDefaultTemplateHandler
+    disabledDefaultTemplateHandler,
+    jsEscapeStrategy
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -89,7 +90,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     escapeMap,
     mangleContext,
     arbitraryValues,
-    jsPreserveClass
+    jsPreserveClass,
+    strategy: jsEscapeStrategy
   })
   result.jsHandler = jsHandler
 

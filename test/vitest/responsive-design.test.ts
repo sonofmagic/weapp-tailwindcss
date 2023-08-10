@@ -9,8 +9,12 @@ describe('responsive-design', () => {
   it('xl:text-sm', async () => {
     const res = await getCss('xl:text-sm')
     expect(res.css).toMatchSnapshot()
-    // @ts-ignore
-    expect(styleHandler(res.css)).toMatchSnapshot()
+
+    expect(
+      styleHandler(res.css, {
+        isMainChunk: true
+      })
+    ).toMatchSnapshot()
   })
 
   it('2xl:text-sm', async () => {
@@ -23,7 +27,7 @@ describe('responsive-design', () => {
   it('space-y-4 cssChildCombinatorReplaceValue string array type', async () => {
     const res = await getCss('space-y-4')
     expect(res.css).toMatchSnapshot()
-    // @ts-ignore
+
     expect(
       styleHandler(res.css, {
         isMainChunk: true,
@@ -35,7 +39,7 @@ describe('responsive-design', () => {
   it('space-y-4 cssChildCombinatorReplaceValue string type', async () => {
     const res = await getCss('space-y-4')
     expect(res.css).toMatchSnapshot()
-    // @ts-ignore
+
     expect(
       styleHandler(res.css, {
         isMainChunk: true,

@@ -1,6 +1,5 @@
 import type { Rule } from 'postcss'
-import type { IClassGeneratorOptions, ClassGenerator } from 'tailwindcss-mangle-shared'
-import type { GeneratorResult } from '@babel/generator'
+import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle/shared'
 import type { InjectPreflight } from './postcss/preflight'
 export type ItemOrItemArray<T> = T | T[]
 
@@ -59,6 +58,7 @@ export type IJsHandlerOptions = {
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
+  strategy?: UserDefinedOptions['jsEscapeStrategy']
 }
 export interface RawSource {
   start: number
@@ -385,6 +385,19 @@ const customAttributes = {
    * @default false
    */
   disabledDefaultTemplateHandler?: boolean
+
+  /**
+   * `^2.7.0+`
+   * @description js 字面量以及模板字符串的转义替换模式
+   * - `regenerate` 模式，为需要转义的字面量，重新生成相同语义的字符串, （默认的传统模式）
+   * - `replace` 模式，为在原版本字符串上直接精准替换, (`2.7.0+` 新增)
+   *
+   * 如果用一个比喻来形容，那么 `regenerate` 类似于创造一个双胞胎，而 `replace` 模式就类似于一把精准的手术刀
+   *
+   * > `replace` 模式将在下个大版本中成为默认模式，另外使用这个模式之后，生成相关的参数，比如 `minifiedJs` 就会失效了。
+   * @default 'regenerate'
+   */
+  jsEscapeStrategy?: 'regenerate' | 'replace'
 }
 
 export interface IMangleScopeContext {
@@ -411,7 +424,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
   inlineWxs?: boolean
-  jsHandler?: (rawSource: string, set: Set<string>) => GeneratorResult
+  jsHandler?: (rawSource: string, set: Set<string>) => { code: string }
   runtimeSet?: Set<string>
   disabledDefaultTemplateHandler?: boolean
 }
@@ -425,7 +438,7 @@ export type InternalUserDefinedOptions = Required<
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
-    jsHandler: (rawSource: string, set: Set<string>) => GeneratorResult
+    jsHandler: (rawSource: string, set: Set<string>) => { code: string }
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
