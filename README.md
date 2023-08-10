@@ -24,7 +24,7 @@
 > `小程序` + `tailwindcss` 全方面解决方案  
 > 想试试在小程序里使用 `CSS-in-JS` 思想？ 👉🏻👉🏻试试 [`weapp-pandacss`](https://github.com/sonofmagic/weapp-pandacss)
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档](./v1.md)\]
 
 - [Tips](#tips)
 - [特性](#特性)
