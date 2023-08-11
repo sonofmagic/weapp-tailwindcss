@@ -24,8 +24,8 @@ dependencies:
     specifier: ^2.0.4
     version: 2.0.4
   '@weapp-core/escape':
-    specifier: ^1.0.0
-    version: 1.0.0
+    specifier: ^1.1.0
+    version: 1.1.0
   '@weapp-core/regex':
     specifier: ^1.0.0
     version: 1.0.0
@@ -299,6 +299,10 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.19
     dev: true
+
+  /@ast-core/escape@1.0.0:
+    resolution: {integrity: sha512-fK2+alQGwz8lgQ1V8hrV7Fe+z6BMptFPwEiJC2nF1tjetD6bK9+fLaKUn/Shft7cnKf3PefLBFKE1Qf7ZfL+5A==}
+    dev: false
 
   /@babel/code-frame@7.22.10:
     resolution: {integrity: sha512-/KKIMG4UEL35WmI9OlvMhurwtytjvXoFcGNrOvyG9zIzA8YmPjVtIZUf7b05+TPO7G7/GEmLHDaoCgACHl9hhA==}
@@ -2216,8 +2220,10 @@ packages:
       pretty-format: 29.6.2
     dev: true
 
-  /@weapp-core/escape@1.0.0:
-    resolution: {integrity: sha512-r/D9iyJlgZ6mG67j1ccgXzts8EgABETNWVu9cXCy4tpXnXXTMWV7RGPqD+uQutgcaUmDwN8sHlt/nPJODEJOlQ==}
+  /@weapp-core/escape@1.1.0:
+    resolution: {integrity: sha512-LO7bVIVpO6J7G2ENZ81PHSk5msp1rhmU1NLSX1iWHJm9YOmpNd2Xiu8fvk5uKtJffshMxJI/Kpp7lYPekDA6Mw==}
+    dependencies:
+      '@ast-core/escape': 1.0.0
     dev: false
 
   /@weapp-core/regex@1.0.0:
