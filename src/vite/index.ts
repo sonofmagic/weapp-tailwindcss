@@ -32,7 +32,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     buildStart() {
       onStart()
     },
-    generateBundle(opt, bundle, isWrite) {
+    generateBundle(opt, bundle) {
       // 也许应该都在这里处理
       // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
       const entries = Object.entries(bundle)

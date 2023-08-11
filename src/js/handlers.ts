@@ -73,7 +73,7 @@ export function replaceHandleValue(str: string, node: StringLiteral | TemplateEl
     const start = node.start + offset
     const end = node.end - offset
     if (start < end) {
-      ms.update(node.start + offset, node.end - offset, needEscaped ? jsStringEscape(rawStr) : rawStr) // escapeMagicString(rawStr))
+      ms.update(start, end, needEscaped ? jsStringEscape(rawStr) : rawStr)
     }
   }
 

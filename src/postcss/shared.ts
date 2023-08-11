@@ -1,5 +1,4 @@
-import { escape } from '@/escape'
-import { SimpleMappingChars2String } from '@/escape'
+import { escape, SimpleMappingChars2String } from '@/escape'
 import { InternalCssSelectorReplacerOptions } from '@/types'
 // css 中，要多加一个 '\' 来转义
 // for raw css selector
