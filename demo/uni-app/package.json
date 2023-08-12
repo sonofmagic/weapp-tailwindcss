@@ -94,6 +94,8 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "2.0.2-3080720230703001",
     "@dcloudio/webpack-uni-mp-loader": "2.0.2-3080720230703001",
     "@dcloudio/webpack-uni-pages-loader": "2.0.2-3080720230703001",
+    "@egoist/tailwindcss-icons": "^1.1.0",
+    "@iconify-json/mdi": "^1.1.54",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-typescript": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
