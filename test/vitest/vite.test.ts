@@ -72,32 +72,64 @@ async function assertSnap(plugin: Plugin | undefined) {
 
 describe('vite test', () => {
   it('vite common build', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html']
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
       })
     )
   })
 
   it('vite common build with mangle true', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
         mangle: true,
-        htmlMatcher: ['**/*.html']
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
       })
     )
   })
 
   it('vite common build with mangle options', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
         mangle: {},
-        htmlMatcher: ['**/*.html']
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
       })
     )
   })
 
   it('vite common build with mangle options 0', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
         mangle: {
@@ -105,24 +137,44 @@ describe('vite test', () => {
             classPrefix: ''
           }
         },
-        htmlMatcher: ['**/*.html']
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
       })
     )
   })
 
   it('vite common build with mangle options mangleClassFilter all true', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
         mangle: {
-          mangleClassFilter(className) {
+          mangleClassFilter() {
             return true
           }
+        },
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
         }
       })
     )
   })
 
   it('vite common build with mangle options mangleClassFilter variables', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
         mangle: {
@@ -130,16 +182,39 @@ describe('vite test', () => {
             return /[[\]]/.test(className)
           }
         },
-        htmlMatcher: ['**/*.html']
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
       })
     )
   })
 
   it('vite disabled build', async () => {
+    let timeStart: number
+    let timeTaken: number
     await assertSnap(
       uvwt({
         disabled: true,
-        htmlMatcher: ['**/*.html']
+        htmlMatcher: ['**/*.html'],
+        mangle: {
+          mangleClassFilter() {
+            return true
+          }
+        },
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+
+          console.log(`[vite disabled build] common case processAssets executed in ${timeTaken}ms`)
+        }
       })
     )
   })
