@@ -113,11 +113,20 @@ describe('webpack5 plugin', () => {
     expect(fss.existsSync(cacheJson)).toBe(true)
   })
   it('common', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: 'complex',
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+      }
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -128,9 +137,18 @@ describe('webpack5 plugin', () => {
   })
 
   it('empty build', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
+      },
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[empty build] common case processAssets executed in ${timeTaken}ms`)
       }
     }).apply(emptyCompiler)
 
@@ -142,9 +160,18 @@ describe('webpack5 plugin', () => {
   })
 
   it('unified common', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
+      },
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[unified common] common case processAssets executed in ${timeTaken}ms`)
       }
     }).apply(compiler)
 
@@ -156,9 +183,18 @@ describe('webpack5 plugin', () => {
   })
 
   it('unified prod common', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
+      },
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
       }
     }).apply(prodCompiler)
 
@@ -170,11 +206,21 @@ describe('webpack5 plugin', () => {
   })
 
   it('disabled true', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      disabled: true
+      disabled: true,
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        // 不会执行
+        console.log(`[disabled true] common case processAssets executed in ${timeTaken}ms`)
+      }
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -185,13 +231,23 @@ describe('webpack5 plugin', () => {
   })
 
   it('mangle true', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
 
       customReplaceDictionary: 'complex',
-      mangle: true
+      mangle: true,
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        // 不会执行
+        console.log(`[mangle true] common case processAssets executed in ${timeTaken}ms`)
+      }
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -205,6 +261,8 @@ describe('webpack5 plugin', () => {
   })
 
   it('mangle options', async () => {
+    let timeStart: number
+    let timeTaken: number
     new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
@@ -214,7 +272,15 @@ describe('webpack5 plugin', () => {
           classPrefix: ''
         }
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: 'complex',
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        // 不会执行
+        console.log(`[mangle options] common case processAssets executed in ${timeTaken}ms`)
+      }
     }).apply(compiler)
 
     const stats = await compile(compiler)

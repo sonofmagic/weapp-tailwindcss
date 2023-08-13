@@ -1,7 +1,10 @@
 <template>
-  <div :class="className">
-    className
-  </div>
+  <view>
+    <view class="i-mdi-home text-3xl text-red-600"></view>
+    <div :class="className">
+      className
+    </div>
+  </view>
 </template>
 
 <script lang="ts">

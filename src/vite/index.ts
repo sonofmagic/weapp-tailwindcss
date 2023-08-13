@@ -29,10 +29,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   return {
     name: vitePluginName,
     enforce: 'post',
-    buildStart() {
-      onStart()
-    },
     generateBundle(opt, bundle) {
+      onStart()
       // 也许应该都在这里处理
       // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
       const entries = Object.entries(bundle)
@@ -78,8 +76,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           onUpdate(file, rawSource, code)
         }
       }
-    },
-    buildEnd() {
       onEnd()
     }
   }

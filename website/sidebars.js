@@ -30,6 +30,10 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'icons/index'
+    },
+    {
+      type: 'doc',
       id: 'options/arbitrary-values'
     },
     {
