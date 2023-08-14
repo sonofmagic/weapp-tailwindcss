@@ -1,9 +1,9 @@
 <script lang="ts">
-  import mpx, { createApp } from '@mpxjs/core'
-  import apiProxy from '@mpxjs/api-proxy'
+import mpx, { createApp } from '@mpxjs/core'
+import apiProxy from '@mpxjs/api-proxy'
 
-  mpx.use(apiProxy, { usePromise: true })
-  createApp({})
+mpx.use(apiProxy, { usePromise: true })
+createApp({})
 </script>
 
 <style lang="scss">
@@ -11,10 +11,11 @@
   @import 'tailwindcss/components';
   @import 'tailwindcss/utilities';
 </style>
-
 <script type="application/json">
   {
-    "pages": ["./pages/index"]
+    "pages": [
+      "./pages/index"
+    ]
   }
 </script>
 

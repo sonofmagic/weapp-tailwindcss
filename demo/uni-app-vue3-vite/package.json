@@ -77,12 +77,12 @@
     "sass": "^1.65.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "^3.3.3",
-    "tailwindcss-patch": "^2.0.4",
+    "tailwindcss-patch": "^2.1.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~4.9.5",
     "vite": "4.1.4",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.7.1"
+    "weapp-tailwindcss-webpack-plugin": "^2.8.0-beta.0"
   }
 }

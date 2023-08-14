@@ -84,6 +84,8 @@
   "h-[128px]",
   "h-[200%]",
   "h-[20px]",
+  "h-[42.99px]",
+  "h-[50.99px]",
   "h-[52px]",
   "h-[77rpx]",
   "h-[88.88px]",
@@ -104,6 +106,8 @@
   "mb-[-20px]",
   "min-h-[100px]",
   "min-w-[300rpx]",
+  "mt-[26.2px]",
+  "mt-[96.3px]",
   "next-text:text-red-500",
   "next-view:text-yellow-500",
   "next:text-green-500",
@@ -178,7 +182,9 @@
   "w-[242px]",
   "w-[300rpx]",
   "w-[33.33px]",
+  "w-[43.1px]",
   "w-[52px]",
+  "w-[61.1px]",
   "w-[77rpx]",
   "w-screen"
 ]
