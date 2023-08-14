@@ -11,6 +11,7 @@
       "dom.iterable"
     ],
     "types": [
+      "jest"
     ]
   },
   "exclude": [

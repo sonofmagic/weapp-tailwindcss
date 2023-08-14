@@ -15,6 +15,11 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@ast-core/escape@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/@ast-core/escape/-/escape-1.0.0.tgz#8ec72629400b867083f4ff35485600c4d3dfc010"
+  integrity sha512-fK2+alQGwz8lgQ1V8hrV7Fe+z6BMptFPwEiJC2nF1tjetD6bK9+fLaKUn/Shft7cnKf3PefLBFKE1Qf7ZfL+5A==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7":
   version "7.16.7"
   resolved "https://registry.npmmirror.com/@babel/code-frame/-/code-frame-7.16.7.tgz#44416b6bd7624b998f5b1af5d470856c40138789"
@@ -1932,19 +1937,19 @@
   dependencies:
     "@sinonjs/commons" "^2.0.0"
 
-"@tailwindcss-mangle/config@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/config/-/config-2.0.4.tgz#d563d7d7afe358582c3ff2da5c097e952045636c"
-  integrity sha512-TQ97rZy9+L1WDGPw8H0479Hted+cK+Ar+AVbgj9uf6opQ6BXa/cmy2ts0Gcd7fYkKp0TP80dTwDh/qY0nDPbQA==
+"@tailwindcss-mangle/config@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/config/-/config-2.1.0.tgz#f5345a717c97e8cf52a9f3f59740796786decd62"
+  integrity sha512-3Ai5y2gUy6ZDA8urtPmCDj9hIeCVIXHIbIVUowvH5xQiJnq3sYwMiAcrEUN7C3FMPaCvyGHDhBf7RIq3koKDNg==
   dependencies:
-    "@tailwindcss-mangle/shared" "^2.0.4"
+    "@tailwindcss-mangle/shared" "^2.1.0"
     c12 "^1.4.2"
     dedent "^1.5.1"
 
-"@tailwindcss-mangle/shared@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-2.0.4.tgz#7296085e8c3b44270953905dd7c76228858f597f"
-  integrity sha512-kKejKGXDtHqodlhKfn9gJB+jfYuF9caOU1kl7jJgMgFaGEKdQBxtymmYfQDNLv4/nJ6DXldoC/LkoGl+Y4vrgQ==
+"@tailwindcss-mangle/shared@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-2.1.0.tgz#b67bc0ba2bb7ecd6fb3c6809d5cf36d32cca7e7d"
+  integrity sha512-YEeq/rgYNR2dSPugAUiUeo7PgQVN8/hMZwMol+7XhCzJFMXWomDFVkKNqIVdrsCGflThV4YQwEXvPhmpOGAYTw==
 
 "@types/babel__core@^7.1.14":
   version "7.1.19"
@@ -2081,10 +2086,12 @@
   resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.10.23.tgz#abf844048a726f2ffb65d201cffb143fe4b4530e"
   integrity sha512-Lqlc0oT89AxR8e4uLmP59xkI1KkWSTWKWV9kXM17CJz55eL0fPMo5jd0d132KpcfRmiwIOVr7TwK8u8v6XIhlg==
 
-"@weapp-core/escape@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-1.0.0.tgz#8ba36630fd03508501604914ec70e9ace7018550"
-  integrity sha512-r/D9iyJlgZ6mG67j1ccgXzts8EgABETNWVu9cXCy4tpXnXXTMWV7RGPqD+uQutgcaUmDwN8sHlt/nPJODEJOlQ==
+"@weapp-core/escape@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-1.1.0.tgz#de3a5c941beab7864a88d0e83cbcf878cc97d905"
+  integrity sha512-LO7bVIVpO6J7G2ENZ81PHSk5msp1rhmU1NLSX1iWHJm9YOmpNd2Xiu8fvk5uKtJffshMxJI/Kpp7lYPekDA6Mw==
+  dependencies:
+    "@ast-core/escape" "^1.0.0"
 
 "@weapp-core/regex@^1.0.0":
   version "1.0.0"
@@ -2947,6 +2954,36 @@ dlv@^1.1.3:
   resolved "https://registry.npmmirror.com/dlv/-/dlv-1.1.3.tgz#5c198a8a11453596e751494d49874bc7732f2e79"
   integrity sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==
 
+dom-serializer@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/dom-serializer/-/dom-serializer-2.0.0.tgz#e41b802e1eedf9f6cae183ce5e622d789d7d8e53"
+  integrity sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==
+  dependencies:
+    domelementtype "^2.3.0"
+    domhandler "^5.0.2"
+    entities "^4.2.0"
+
+domelementtype@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmmirror.com/domelementtype/-/domelementtype-2.3.0.tgz#5c45e8e869952626331d7aab326d01daf65d589d"
+  integrity sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==
+
+domhandler@^5.0.2, domhandler@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.npmmirror.com/domhandler/-/domhandler-5.0.3.tgz#cc385f7f751f1d1fc650c21374804254538c7d31"
+  integrity sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==
+  dependencies:
+    domelementtype "^2.3.0"
+
+domutils@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmmirror.com/domutils/-/domutils-3.1.0.tgz#c47f551278d3dc4b0b1ab8cbb42d751a6f0d824e"
+  integrity sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==
+  dependencies:
+    dom-serializer "^2.0.0"
+    domelementtype "^2.3.0"
+    domhandler "^5.0.3"
+
 dotenv@^16.3.1:
   version "16.3.1"
   resolved "https://registry.npmmirror.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
@@ -2999,6 +3036,11 @@ ensure-posix-path@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/ensure-posix-path/-/ensure-posix-path-1.1.1.tgz#3c62bdb19fa4681544289edb2b382adc029179ce"
   integrity sha512-VWU0/zXzVbeJNXvME/5EmLuEj2TauvoaTz6aFYK1Z92JCBlDlZ3Gu0tuGR42kpW1754ywTs+QB0g5TP0oj9Zaw==
+
+entities@^4.2.0, entities@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npmmirror.com/entities/-/entities-4.5.0.tgz#5d268ea5e7113ec74c4d033b79ea5a35a488fb48"
+  integrity sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==
 
 envinfo@^7.7.3:
   version "7.8.1"
@@ -3450,6 +3492,16 @@ html-escaper@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npmmirror.com/html-escaper/-/html-escaper-2.0.2.tgz#dfd60027da36a36dfcbe236262c00a5822681453"
   integrity sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==
+
+htmlparser2@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.npmmirror.com/htmlparser2/-/htmlparser2-9.0.0.tgz#e431142b7eeb1d91672742dea48af8ac7140cddb"
+  integrity sha512-uxbSI98wmFT/G4P2zXx4OVx04qWUmyFPrD2/CNepa2Zo3GPNaCaaxElDgwUrwYWkK1nr9fft0Ya8dws8coDLLQ==
+  dependencies:
+    domelementtype "^2.3.0"
+    domhandler "^5.0.3"
+    domutils "^3.1.0"
+    entities "^4.5.0"
 
 https-proxy-agent@^5.0.1:
   version "5.0.1"
@@ -5469,16 +5521,16 @@ tailwind-css-variables-theme-generator@^0.4.0:
   resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
   integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
 
-tailwindcss-patch@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-2.0.4.tgz#dd4541748a88d3e04a12559f7024581924807989"
-  integrity sha512-493MyiIjnUFUmaXjuGYbEaW0DbSbDvVYBT/CDPvzsbnCbiz/e021fIwZPtXE7VFt1bMmUzxe5Zua2o1bmEvd9A==
+tailwindcss-patch@2.1.0, tailwindcss-patch@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-2.1.0.tgz#b6276d024d2e5c13048326c1f0cbf159fbb50931"
+  integrity sha512-VO0vzUA1IB9o8u30d5wBvBylAWF5VKXP6QBecWsmMtvDPQ+9Julu5uatwEx1hIzX35r8HKF0SkaQRTISLu70qw==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"
     "@babel/traverse" "^7.22.10"
     "@babel/types" "^7.22.10"
-    "@tailwindcss-mangle/config" "^2.0.4"
+    "@tailwindcss-mangle/config" "^2.1.0"
     cac "^6.7.14"
     jiti "^1.19.1"
     lilconfig "^2.1.0"
@@ -5745,26 +5797,27 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.7.1.tgz#d50617e63c11b3cf2564e965b34885ba13167b22"
-  integrity sha512-JSg2jlRrwwH1TvZ+MdMaPB/cbnZ3yc0sFjVVrRwUe7OLs7Zzt5vzVp5HEkI/wA2b95NriJ7icnlMcFLStJkMJA==
+weapp-tailwindcss-webpack-plugin@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.0.tgz#f77d04052d0e20208bd4edbb04532a94eecbb9c3"
+  integrity sha512-JvFCOtdcbsrwdBCzu4MQ8enzeQWOpSh4GSPgDXE2zEJxDSLmIxKKs7sJwaqA+XSCtCven6lm3LGMSJ3uEHXj2w==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"
     "@babel/traverse" "^7.22.10"
     "@babel/types" "^7.22.10"
     "@csstools/postcss-is-pseudo-class" "^4.0.0"
-    "@tailwindcss-mangle/shared" "^2.0.4"
-    "@weapp-core/escape" "^1.0.0"
+    "@tailwindcss-mangle/shared" "^2.1.0"
+    "@weapp-core/escape" "^1.1.0"
     "@weapp-core/regex" "^1.0.0"
+    htmlparser2 "^9.0.0"
     loader-utils "^2.0.3"
     magic-string "^0.30.2"
     micromatch "^4.0.5"
     postcss "8.4.27"
     postcss-selector-parser "^6.0.13"
     semver "^7.5.4"
-    tailwindcss-patch "^2.0.4"
+    tailwindcss-patch "2.1.0"
 
 webpack-cli@^5.1.4:
   version "5.1.4"

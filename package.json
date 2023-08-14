@@ -1,7 +1,7 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.7.1",
-  "description": "把tailwindcss jit引擎，带给小程序开发者们\nbring tailwindcss jit engine to our miniprogram developers!",
+  "version": "2.8.0",
+  "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -218,7 +218,8 @@
     "vitest": "^0.34.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.88.2",
-    "webpack-build-utils": "^0.0.4"
+    "webpack-build-utils": "^0.0.4",
+    "domhandler": "^5.0.3"
   },
   "dependencies": {
     "@babel/generator": "^7.22.10",
@@ -229,13 +230,14 @@
     "@tailwindcss-mangle/shared": "^2.1.0",
     "@weapp-core/escape": "^1.1.0",
     "@weapp-core/regex": "^1.0.0",
+    "htmlparser2": "^9.0.0",
     "loader-utils": "^2.0.3",
     "magic-string": "^0.30.2",
     "micromatch": "^4.0.5",
     "postcss": "8.4.27",
     "postcss-selector-parser": "^6.0.13",
     "semver": "^7.5.4",
-    "tailwindcss-patch": "2.1.0"
+    "tailwindcss-patch": "^2.1.0"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

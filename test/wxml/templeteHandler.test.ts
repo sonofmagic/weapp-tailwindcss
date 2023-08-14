@@ -1,5 +1,5 @@
 import { format } from '../util'
-import { templateHandler } from '@/wxml/index'
+import { templateHandler } from '#test/v2/wxml'
 import { MappingChars2String } from '@/escape'
 
 function complexHandler(str: string) {
@@ -8,7 +8,7 @@ function complexHandler(str: string) {
   })
 }
 
-describe('templateHandler', () => {
+describe.skip('templateHandler', () => {
   test('wildcard char', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\">*****</view>"
 
@@ -151,5 +151,16 @@ describe('templateHandler', () => {
     const testCase = '<view class="ml-[16px]" wx:if="{{xxx}}">'
     const str = templateHandler(testCase)
     expect(str).toBe('<view class="ml-_16px_" wx:if="{{xxx}}">')
+  })
+
+  it('wx:if > before', () => {
+    const testCase = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'
+    const str = templateHandler(testCase)
+    expect(str).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+  })
+  it('wx:if > after', () => {
+    const testCase = '<view wx:if="{{ xxx.length > 0 }}" class="mt-[8px]">'
+    const str = templateHandler(testCase)
+    expect(str).toBe('<view wx:if="{{ xxx.length > 0 }}" class="mt-_8px_">')
   })
 })

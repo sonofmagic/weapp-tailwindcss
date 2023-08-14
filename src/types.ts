@@ -394,7 +394,7 @@ const customAttributes = {
    *
    * 如果用一个比喻来形容，那么 `regenerate` 类似于创造一个双胞胎，而 `replace` 模式就类似于一把精准的手术刀
    *
-   * > `replace` 模式将在下个大版本中成为默认模式，另外使用这个模式之后，生成相关的参数，比如 `minifiedJs` 就会失效了。
+   * > `replace` 模式已经在 `2.8.0` 版本中，成为默认模式，另外使用这个模式之后，生成相关的参数，比如 `minifiedJs` 就会失效了。
    * @default 'regenerate'
    */
   jsEscapeStrategy?: 'regenerate' | 'replace'

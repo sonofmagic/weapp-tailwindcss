@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 2.8.0 (2023-08-15)
+
+## Features
+
+- 默认使用 `jsEscapeStrategy` 的 `replace` 模式
+- 重写了 `wxml` 解析器以代替正则匹配替换的方式，以做到更加精确的匹配
+- 更加精准的 `customAttributes` 配置项，现在配置项中，使用字符串代表着，精确匹配标签或者属性，可以使用正则来匹配多个。
+
+## Chore
+
+- 升级 `tailwindcss-patch` 相关的依赖到 `^2.1.0`
+
 ## 2.7.0
 
 ## Features

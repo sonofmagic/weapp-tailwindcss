@@ -14,28 +14,25 @@ module.exports = defineConfig({
     mpx: {
       srcMode: 'wx',
       plugin: {
-        // writeMode: 'full',
-        // postcssInlineConfig: {
-        //   plugins: [
-        //     require('tailwindcss')(),
-        //     require('autoprefixer')({ remove: false })
-        //   ]
-        // }
+        hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
+          const path = require('path')
+          const packageJSONPath = path.resolve('package.json')
+          if (files.has(packageJSONPath)) files.delete(packageJSONPath)
+          if (resolveDependencies.files.has(packageJSONPath)) {
+            resolveDependencies.files.delete(packageJSONPath)
+          }
+        }
       },
       loader: {}
     }
   },
+  /**
+   * 如果希望node_modules下的文件时对应的缓存可以失效，
+   * 可以将configureWebpack.snap.managedPaths修改为 []
+   */
   configureWebpack(config) {
-    // console.log(config.module.rules)
-    // @ts-ignore
     config.plugins.push(new Plugin({
       appType: 'mpx'
     }))
-
-    // config.plugins.push(function (compiler) {
-    //   compiler.hooks.compilation.tap('xxxxxx', (compilation, params) => {
-    //     console.log(compilation, params)
-    //   })
-    // })
   }
 })

@@ -15,7 +15,7 @@
     "condition": false
   },
   "appid": "touristappid",
-  "projectname": "mpx-app",
+  "projectname": "mpx-project",
   "description": "A mpx project",
   "condition": {},
   "compileType": "miniprogram",
