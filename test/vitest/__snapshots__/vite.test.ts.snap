@@ -1,32 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`vite test > vite common build 1`] = `
-"(function () {
-  const r = document.createElement(\\"link\\").relList;
-  if (r && r.supports && r.supports(\\"modulepreload\\")) return;
-  for (const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) s(e);
-  new MutationObserver(e => {
-    for (const t of e) if (t.type === \\"childList\\") for (const o of t.addedNodes) o.tagName === \\"LINK\\" && o.rel === \\"modulepreload\\" && s(o);
-  }).observe(document, {
-    childList: !0,
-    subtree: !0
-  });
-  function i(e) {
-    const t = {};
-    return e.integrity && (t.integrity = e.integrity), e.referrerPolicy && (t.referrerPolicy = e.referrerPolicy), e.crossOrigin === \\"use-credentials\\" ? t.credentials = \\"include\\" : e.crossOrigin === \\"anonymous\\" ? t.credentials = \\"omit\\" : t.credentials = \\"same-origin\\", t;
-  }
-  function s(e) {
-    if (e.ep) return;
-    e.ep = !0;
-    const t = i(e);
-    fetch(e.href, t);
-  }
-})();
-const n = \\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";
-document.body.append(\`<div class=\\"\${n}\\">className</div>\`);
-const c = document.createElement();
-c.classList.add(\\"grid text-red-300s30 w-_99px_\\", \\"h-_99px_\\", \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");
-document.body.appendChild(c);"
+"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\\\\\"modulepreload\\\\\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"
 `;
 
 exports[`vite test > vite common build 2`] = `
@@ -66,32 +42,8 @@ exports[`vite test > vite common build 3`] = `
 `;
 
 exports[`vite test > vite common build with mangle options 0 1`] = `
-"(function () {
-  const r = document.createElement(\\"link\\").relList;
-  if (r && r.supports && r.supports(\\"modulepreload\\")) return;
-  for (const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) s(e);
-  new MutationObserver(e => {
-    for (const t of e) if (t.type === \\"childList\\") for (const o of t.addedNodes) o.tagName === \\"LINK\\" && o.rel === \\"modulepreload\\" && s(o);
-  }).observe(document, {
-    childList: !0,
-    subtree: !0
-  });
-  function i(e) {
-    const t = {};
-    return e.integrity && (t.integrity = e.integrity), e.referrerPolicy && (t.referrerPolicy = e.referrerPolicy), e.crossOrigin === \\"use-credentials\\" ? t.credentials = \\"include\\" : e.crossOrigin === \\"anonymous\\" ? t.credentials = \\"omit\\" : t.credentials = \\"same-origin\\", t;
-  }
-  function s(e) {
-    if (e.ep) return;
-    e.ep = !0;
-    const t = i(e);
-    fetch(e.href, t);
-  }
-})();
-const n = \\"flex g e c h\\";
-document.body.append(\`<div class=\\"\${n}\\">className</div>\`);
-const c = document.createElement();
-c.classList.add(\\"grid j f\\", \\"d\\", \\"i\\");
-document.body.appendChild(c);"
+"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\\\\\"modulepreload\\\\\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex g e c h\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid j f\\",\\"d\\",\\"i\\");document.body.appendChild(c);
+"
 `;
 
 exports[`vite test > vite common build with mangle options 0 2`] = `
@@ -131,32 +83,8 @@ exports[`vite test > vite common build with mangle options 0 3`] = `
 `;
 
 exports[`vite test > vite common build with mangle options 1`] = `
-"(function () {
-  const r = document.createElement(\\"link\\").relList;
-  if (r && r.supports && r.supports(\\"modulepreload\\")) return;
-  for (const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) s(e);
-  new MutationObserver(e => {
-    for (const t of e) if (t.type === \\"childList\\") for (const o of t.addedNodes) o.tagName === \\"LINK\\" && o.rel === \\"modulepreload\\" && s(o);
-  }).observe(document, {
-    childList: !0,
-    subtree: !0
-  });
-  function i(e) {
-    const t = {};
-    return e.integrity && (t.integrity = e.integrity), e.referrerPolicy && (t.referrerPolicy = e.referrerPolicy), e.crossOrigin === \\"use-credentials\\" ? t.credentials = \\"include\\" : e.crossOrigin === \\"anonymous\\" ? t.credentials = \\"omit\\" : t.credentials = \\"same-origin\\", t;
-  }
-  function s(e) {
-    if (e.ep) return;
-    e.ep = !0;
-    const t = i(e);
-    fetch(e.href, t);
-  }
-})();
-const n = \\"flex tw-g tw-e tw-c tw-h\\";
-document.body.append(\`<div class=\\"\${n}\\">className</div>\`);
-const c = document.createElement();
-c.classList.add(\\"grid tw-j tw-f\\", \\"tw-d\\", \\"tw-i\\");
-document.body.appendChild(c);"
+"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\\\\\"modulepreload\\\\\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex tw-g tw-e tw-c tw-h\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid tw-j tw-f\\",\\"tw-d\\",\\"tw-i\\");document.body.appendChild(c);
+"
 `;
 
 exports[`vite test > vite common build with mangle options 2`] = `
@@ -196,32 +124,8 @@ exports[`vite test > vite common build with mangle options 3`] = `
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 1`] = `
-"(function () {
-  const r = document.createElement(\\"link\\").relList;
-  if (r && r.supports && r.supports(\\"modulepreload\\")) return;
-  for (const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) s(e);
-  new MutationObserver(e => {
-    for (const t of e) if (t.type === \\"childList\\") for (const o of t.addedNodes) o.tagName === \\"LINK\\" && o.rel === \\"modulepreload\\" && s(o);
-  }).observe(document, {
-    childList: !0,
-    subtree: !0
-  });
-  function i(e) {
-    const t = {};
-    return e.integrity && (t.integrity = e.integrity), e.referrerPolicy && (t.referrerPolicy = e.referrerPolicy), e.crossOrigin === \\"use-credentials\\" ? t.credentials = \\"include\\" : e.crossOrigin === \\"anonymous\\" ? t.credentials = \\"omit\\" : t.credentials = \\"same-origin\\", t;
-  }
-  function s(e) {
-    if (e.ep) return;
-    e.ep = !0;
-    const t = i(e);
-    fetch(e.href, t);
-  }
-})();
-const n = \\"tw-a tw-i tw-e tw-c tw-j\\";
-document.body.append(\`<div class=\\"\${n}\\">className</div>\`);
-const c = document.createElement();
-c.classList.add(\\"tw-b tw-l tw-g\\", \\"tw-d\\", \\"tw-k\\");
-document.body.appendChild(c);"
+"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\\\\\"modulepreload\\\\\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"tw-a tw-i tw-e tw-c tw-j\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"tw-b tw-l tw-g\\",\\"tw-d\\",\\"tw-k\\");document.body.appendChild(c);
+"
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 2`] = `
@@ -261,32 +165,8 @@ exports[`vite test > vite common build with mangle options mangleClassFilter all
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 1`] = `
-"(function () {
-  const r = document.createElement(\\"link\\").relList;
-  if (r && r.supports && r.supports(\\"modulepreload\\")) return;
-  for (const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) s(e);
-  new MutationObserver(e => {
-    for (const t of e) if (t.type === \\"childList\\") for (const o of t.addedNodes) o.tagName === \\"LINK\\" && o.rel === \\"modulepreload\\" && s(o);
-  }).observe(document, {
-    childList: !0,
-    subtree: !0
-  });
-  function i(e) {
-    const t = {};
-    return e.integrity && (t.integrity = e.integrity), e.referrerPolicy && (t.referrerPolicy = e.referrerPolicy), e.crossOrigin === \\"use-credentials\\" ? t.credentials = \\"include\\" : e.crossOrigin === \\"anonymous\\" ? t.credentials = \\"omit\\" : t.credentials = \\"same-origin\\", t;
-  }
-  function s(e) {
-    if (e.ep) return;
-    e.ep = !0;
-    const t = i(e);
-    fetch(e.href, t);
-  }
-})();
-const n = \\"flex bg-yellow-300s30 tw-e tw-c tw-g\\";
-document.body.append(\`<div class=\\"\${n}\\">className</div>\`);
-const c = document.createElement();
-c.classList.add(\\"grid text-red-300s30 tw-f\\", \\"tw-d\\", \\"tw-h\\");
-document.body.appendChild(c);"
+"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\\\\\"modulepreload\\\\\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 tw-e tw-c tw-g\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 tw-f\\",\\"tw-d\\",\\"tw-h\\");document.body.appendChild(c);
+"
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 2`] = `
@@ -326,32 +206,8 @@ exports[`vite test > vite common build with mangle options mangleClassFilter var
 `;
 
 exports[`vite test > vite common build with mangle true 1`] = `
-"(function () {
-  const r = document.createElement(\\"link\\").relList;
-  if (r && r.supports && r.supports(\\"modulepreload\\")) return;
-  for (const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]')) s(e);
-  new MutationObserver(e => {
-    for (const t of e) if (t.type === \\"childList\\") for (const o of t.addedNodes) o.tagName === \\"LINK\\" && o.rel === \\"modulepreload\\" && s(o);
-  }).observe(document, {
-    childList: !0,
-    subtree: !0
-  });
-  function i(e) {
-    const t = {};
-    return e.integrity && (t.integrity = e.integrity), e.referrerPolicy && (t.referrerPolicy = e.referrerPolicy), e.crossOrigin === \\"use-credentials\\" ? t.credentials = \\"include\\" : e.crossOrigin === \\"anonymous\\" ? t.credentials = \\"omit\\" : t.credentials = \\"same-origin\\", t;
-  }
-  function s(e) {
-    if (e.ep) return;
-    e.ep = !0;
-    const t = i(e);
-    fetch(e.href, t);
-  }
-})();
-const n = \\"flex tw-g tw-e tw-c tw-h\\";
-document.body.append(\`<div class=\\"\${n}\\">className</div>\`);
-const c = document.createElement();
-c.classList.add(\\"grid tw-j tw-f\\", \\"tw-d\\", \\"tw-i\\");
-document.body.appendChild(c);"
+"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\\\\\"modulepreload\\\\\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex tw-g tw-e tw-c tw-h\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid tw-j tw-f\\",\\"tw-d\\",\\"tw-i\\");document.body.appendChild(c);
+"
 `;
 
 exports[`vite test > vite common build with mangle true 2`] = `

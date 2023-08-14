@@ -149,54 +149,39 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
     },
     onattribute(name, value) {
       if (value) {
-        if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class')) {
+        function update() {
           s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+        }
+        if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class')) {
+          update()
         }
         for (const [t, props] of customAttributesEntities) {
           if (t === '*') {
             if (isPropsMatch(props, name)) {
-              s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+              update()
             }
           } else if (typeof t === 'string') {
             if (t === tag && isPropsMatch(props, name)) {
-              s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+              update()
             }
           } else if (regTest(t, tag) && isPropsMatch(props, name)) {
-            s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+            update()
           }
         }
       }
     },
-    // onopentag(name, attribs, isImplied) {
-    //   console.log('onopentag:' + name)
-    //   console.log(s.slice(parser.startIndex, parser.endIndex))
-    //   // parser.endIndex
-    //   // parser.startIndex
-    // },
+    ontext(data) {
+      if (inlineWxs && tag === 'wxs') {
+        const code = jsHandler(data, runtimeSet).code
+        s.update(parser.startIndex, parser.endIndex + 1, code)
+      }
+    },
     onclosetag() {
       tag = ''
     }
   })
   parser.write(s.original)
   parser.end()
-  // let source = templateHandler(rawSource, options)
-  // const regexps = makeCustomAttributes(customAttributesEntities)
-  // if (regexps && Array.isArray(regexps)) {
-  //   for (const regexp of regexps) {
-  //     source = source.replace(regexp.tagRegexp, (m0) => {
-  //       return m0.replace(regexp.attrRegexp, (m1, className) => {
-  //         return m1.replace(className, templateReplacer(className, options))
-  //       })
-  //     })
-  //   }
-  // }
-  // if (inlineWxs) {
-  //   const wxsTags = extract(source, wxsTagRegexp)
-  //   for (const x of wxsTags) {
-  //     const code = jsHandler(x.raw, runtimeSet).code
-  //     source = source.replaceAll(x.raw, code)
-  //   }
-  // }
   return s.toString()
 }
 

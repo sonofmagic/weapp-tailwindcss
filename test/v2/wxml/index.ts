@@ -1,4 +1,4 @@
-import { variableRegExp, ItemOrItemArray, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
+import { templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
 import { ITemplateHandlerOptions } from '@/types'
 import { templateReplacer } from '@/wxml/utils'
 
