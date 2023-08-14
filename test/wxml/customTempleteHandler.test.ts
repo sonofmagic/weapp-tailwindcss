@@ -29,4 +29,13 @@ describe('customTemplateHandler', () => {
     })
     expect(res).toBe('<view class="p-_20px_" hover-class="w-_99px_"></view>')
   })
+
+  it('{{}} case 0', () => {
+    const testCase = '<view class="p-[20px]{{a>0}}" hover-class="w-[99px]{{a>0}}"  ccc sdsd="" sadf="{{fd<3||0>1}}">{{fd<3||0>1}}</view>'
+    // 'p-[20px] hover-class='
+    const res = customTemplateHandler(testCase, {
+      disabledDefaultTemplateHandler: false
+    })
+    expect(res).toBe('<view class="p-_20px_{{a>0}}" hover-class="w-_99px_{{a>0}}"  ccc sdsd="" sadf="{{fd<3||0>1}}">{{fd<3||0>1}}</view>')
+  })
 })

@@ -1,4 +1,4 @@
-import { templateHandler } from '@/wxml/index'
+import { templateHandler } from '#test/v2/wxml'
 
 describe('resolving ambiguities', () => {
   test('text-[22px]', () => {

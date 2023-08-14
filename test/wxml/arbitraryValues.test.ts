@@ -1,4 +1,4 @@
-import { templateHandler } from '@/wxml/index'
+import { templateHandler } from '#test/v2/wxml'
 
 describe('arbitrary values', () => {
   test('top-[117px]', () => {

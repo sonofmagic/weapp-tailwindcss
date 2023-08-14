@@ -1,6 +1,6 @@
 // import replace from 'regexp-replace'
 import { wxmlCasePath, createGetCase, matchAll, format } from './util'
-import { normalizeEol } from './helpers/normalizeEol'
+// import { normalizeEol } from './helpers/normalizeEol'
 import { variableRegExp, createTemplateHandlerMatchRegexp, createTemplateClassRegexp, escapeStringRegexp, getSourceString } from '@/reg'
 // #endregion
 import { replaceWxml } from '@/wxml/index'

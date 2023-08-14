@@ -1,2 +1,2 @@
 export { replaceWxml } from './shared'
-export { generateCode, templateHandler, templateReplacer, customTemplateHandler, createTemplateHandler, extractSource } from './utils'
+export { generateCode, templateReplacer, customTemplateHandler, createTemplateHandler, extractSource } from './utils'

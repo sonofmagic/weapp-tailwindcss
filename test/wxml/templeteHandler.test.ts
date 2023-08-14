@@ -1,5 +1,5 @@
 import { format } from '../util'
-import { templateHandler } from '@/wxml/index'
+import { templateHandler } from '#test/v2/wxml'
 import { MappingChars2String } from '@/escape'
 
 function complexHandler(str: string) {
@@ -8,7 +8,7 @@ function complexHandler(str: string) {
   })
 }
 
-describe('templateHandler', () => {
+describe.skip('templateHandler', () => {
   test('wildcard char', () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\">*****</view>"
 

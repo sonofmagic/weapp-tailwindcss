@@ -1,4 +1,4 @@
-import { templateHandler } from '@/wxml/index'
+import { templateHandler } from '#test/v2/wxml'
 import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
 
 // https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants

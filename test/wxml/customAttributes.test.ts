@@ -63,7 +63,7 @@ describe('customAttributes', () => {
 
   it('map case', () => {
     const map = new Map<string | RegExp, string | RegExp | (string | RegExp)[]>()
-    map.set(/(?:van|el|ant)-\w+/g, ['custom-attrs', /shit/g])
+    map.set(/(?:van|el|ant)-\w+/g, ['custom-attrs', /shit/])
     const { templateHandler } = getOptions({
       customAttributes: map,
       customReplaceDictionary: 'complex'
@@ -78,6 +78,26 @@ describe('customAttributes', () => {
     )
     expect(res).toBe(
       '<van-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></van-a>\n<el-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></el-a>\n<ant-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></ant-a>'
+    )
+  })
+
+  it('simple map case', () => {
+    const map = new Map<string | RegExp, string | RegExp | (string | RegExp)[]>()
+    map.set(/(?:van|el|ant)-\w+/, ['custom-attrs', /shit/])
+    const { templateHandler } = getOptions({
+      customAttributes: map,
+      customReplaceDictionary: 'complex'
+    })
+    const tags = ['van']
+    const res = templateHandler(
+      tags
+        .map((x) => {
+          return `<${x}-a class="w-[0.5px]" hover-class="w-[0.5px]" custom-attrs="w-[0.5px]" shit="w-[0.5px]" play-with-shit="w-[0.5px]"></${x}-a>`
+        })
+        .join('\n')
+    )
+    expect(res).toBe(
+      '<van-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></van-a>'
     )
   })
 })

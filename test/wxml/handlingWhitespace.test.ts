@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import { templateHandler } from '@/wxml/index'
+import { templateHandler } from '#test/v2/wxml'
 
 describe('handling whitespace', () => {
   test('grid grid-cols-[1fr_500px_2fr]', () => {

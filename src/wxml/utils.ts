@@ -1,10 +1,11 @@
 import * as t from '@babel/types'
+import { Parser } from 'htmlparser2'
+import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
 import { parseExpression, traverse, generate } from '@/babel'
-import { variableRegExp, wxsTagRegexp, templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp, makeCustomAttributes } from '@/reg'
+import { variableRegExp, ItemOrItemArray } from '@/reg'
 import { defu } from '@/utils'
 import type { RawSource, ITemplateHandlerOptions } from '@/types'
-
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   const ast = parseExpression(match)
 
@@ -117,38 +118,86 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
   }
 }
 
-export function templateHandler(rawSource: string, options: ITemplateHandlerOptions = {}) {
-  if (options.disabledDefaultTemplateHandler) {
-    return rawSource
+function regTest(reg: RegExp, str: string) {
+  reg.lastIndex = 0
+  return reg.test(str)
+}
+
+export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: string) {
+  if (Array.isArray(props)) {
+    for (const prop of props) {
+      const res = typeof prop === 'string' ? prop.toLowerCase() === attr : regTest(prop, attr)
+      if (res) {
+        return res
+      }
+    }
+    return false
+  } else if (typeof props === 'string') {
+    return props === attr
+  } else {
+    return regTest(props, attr)
   }
-  return rawSource.replace(tagWithEitherClassAndHoverClassRegexp, (m0) => {
-    return m0.replace(templateClassExactRegexp, (m1, className) => {
-      return m1.replace(className, templateReplacer(className, options))
-    })
-  })
 }
 
 export function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
-  const { customAttributesEntities, inlineWxs, runtimeSet, jsHandler } = options
-  let source = templateHandler(rawSource, options)
-  const regexps = makeCustomAttributes(customAttributesEntities)
-  if (regexps && Array.isArray(regexps)) {
-    for (const regexp of regexps) {
-      source = source.replace(regexp.tagRegexp, (m0) => {
-        return m0.replace(regexp.attrRegexp, (m1, className) => {
-          return m1.replace(className, templateReplacer(className, options))
-        })
-      })
+  const { customAttributesEntities = [], disabledDefaultTemplateHandler, inlineWxs, runtimeSet, jsHandler } = options
+  const s = new MagicString(rawSource)
+  let tag = ''
+  const parser = new Parser({
+    onopentagname(name) {
+      tag = name
+    },
+    onattribute(name, value) {
+      if (value) {
+        if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class')) {
+          s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+        }
+        for (const [t, props] of customAttributesEntities) {
+          if (t === '*') {
+            if (isPropsMatch(props, name)) {
+              s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+            }
+          } else if (typeof t === 'string') {
+            if (t === tag && isPropsMatch(props, name)) {
+              s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+            }
+          } else if (regTest(t, tag) && isPropsMatch(props, name)) {
+            s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+          }
+        }
+      }
+    },
+    // onopentag(name, attribs, isImplied) {
+    //   console.log('onopentag:' + name)
+    //   console.log(s.slice(parser.startIndex, parser.endIndex))
+    //   // parser.endIndex
+    //   // parser.startIndex
+    // },
+    onclosetag() {
+      tag = ''
     }
-  }
-  if (inlineWxs) {
-    const wxsTags = extract(source, wxsTagRegexp)
-    for (const x of wxsTags) {
-      const code = jsHandler(x.raw, runtimeSet).code
-      source = source.replaceAll(x.raw, code)
-    }
-  }
-  return source
+  })
+  parser.write(s.original)
+  parser.end()
+  // let source = templateHandler(rawSource, options)
+  // const regexps = makeCustomAttributes(customAttributesEntities)
+  // if (regexps && Array.isArray(regexps)) {
+  //   for (const regexp of regexps) {
+  //     source = source.replace(regexp.tagRegexp, (m0) => {
+  //       return m0.replace(regexp.attrRegexp, (m1, className) => {
+  //         return m1.replace(className, templateReplacer(className, options))
+  //       })
+  //     })
+  //   }
+  // }
+  // if (inlineWxs) {
+  //   const wxsTags = extract(source, wxsTagRegexp)
+  //   for (const x of wxsTags) {
+  //     const code = jsHandler(x.raw, runtimeSet).code
+  //     source = source.replaceAll(x.raw, code)
+  //   }
+  // }
+  return s.toString()
 }
 
 export function createTemplateHandler(options: Omit<ITemplateHandlerOptions, 'runtimeSet'> = {}) {
