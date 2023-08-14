@@ -152,4 +152,15 @@ describe('templateHandler', () => {
     const str = templateHandler(testCase)
     expect(str).toBe('<view class="ml-_16px_" wx:if="{{xxx}}">')
   })
+
+  it('wx:if > before', () => {
+    const testCase = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'
+    const str = templateHandler(testCase)
+    expect(str).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+  })
+  it('wx:if > after', () => {
+    const testCase = '<view wx:if="{{ xxx.length > 0 }}" class="mt-[8px]">'
+    const str = templateHandler(testCase)
+    expect(str).toBe('<view wx:if="{{ xxx.length > 0 }}" class="mt-_8px_">')
+  })
 })
