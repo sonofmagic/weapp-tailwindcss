@@ -1,0 +1,1 @@
+<wxs module="__stringify__" src="../../wxs/stringify693bc40b.wxs"></wxs><view class="flex flex-col"><view class='{{__stringify__.stringifyClass("", idx===1?classObj:classObj2)}}' wx:for="{{listData}}" wx:for-index="idx" wx:key="id">{{ item.label }}</view></view>

@@ -1837,22 +1837,6 @@
   dependencies:
     eslint-webpack-plugin "^3.1.1"
 
-"@mpxjs/vue-cli-plugin-mpx-mp@^1.6.30":
-  version "1.6.30"
-  resolved "https://registry.npmmirror.com/@mpxjs/vue-cli-plugin-mpx-mp/-/vue-cli-plugin-mpx-mp-1.6.30.tgz#5829cc83076d536dbc188bd9f3bd806b8346cd61"
-  integrity sha512-DGuP10PXMvSs815cj85LoQaoy7+Qno/q8xE4e0N+MHoXXjrbbGsx5M6BwkZ9kAoCYyERfQpFhRWzAJn3FUR+MA==
-  dependencies:
-    "@mpxjs/vue-cli-plugin-mpx" "1.6.30"
-    "@soda/friendly-errors-webpack-plugin" "^1.8.0"
-    "@vue/cli-shared-utils" "^5.0.4"
-    copy-webpack-plugin "^9.1.0"
-    execa "^4.1.0"
-    process "0.11.10"
-    terser-webpack-plugin "^5.3.6"
-    webpack-bundle-analyzer "^4.5.0"
-    webpack-chain "^6.5.1"
-    webpack-merge "^5.8.0"
-
 "@mpxjs/vue-cli-plugin-mpx-typescript@^2.0.0":
   version "2.0.6"
   resolved "https://registry.npmmirror.com/@mpxjs/vue-cli-plugin-mpx-typescript/-/vue-cli-plugin-mpx-typescript-2.0.6.tgz#b85a77645394ae6758d46307e157f6db71e0a2db"
@@ -1870,24 +1854,6 @@
     "@types/jest" "^27.5.1"
     babel-jest "^25.3.0"
     jest "^27.4.5"
-
-"@mpxjs/vue-cli-plugin-mpx-web@^1.6.30":
-  version "1.6.30"
-  resolved "https://registry.npmmirror.com/@mpxjs/vue-cli-plugin-mpx-web/-/vue-cli-plugin-mpx-web-1.6.30.tgz#2b8d0ceeeab73f684c797a6d088faa287c6171a8"
-  integrity sha512-T16yXurvBzuNTYdo9vNdKUSr8zzQloOkktsHkMr8p8sRCqqXvHHvluxEN02SWa6hKiQ521xkboHhBRthvUi/8g==
-  dependencies:
-    "@mpxjs/vue-cli-plugin-mpx" "1.6.30"
-    "@vue/vue-loader-v15" "npm:vue-loader@^15.9.7"
-
-"@mpxjs/vue-cli-plugin-mpx@1.6.30":
-  version "1.6.30"
-  resolved "https://registry.npmmirror.com/@mpxjs/vue-cli-plugin-mpx/-/vue-cli-plugin-mpx-1.6.30.tgz#8e2cbba1ec198474f25c49911c1bf23fc3874e11"
-  integrity sha512-eFe/aSNOediLkyEHLm+QsZN/lJw9Yr+OcN1DoJlDLWHXwmT9uZ8g4O1Fe9xClZukwo5aX4gSnrWmF58qAWIRNw==
-  dependencies:
-    "@vue/cli-shared-utils" "^5.0.4"
-    babel-loader "^8.1.0"
-    webpack-chain "^6.5.1"
-    webpack-merge "^5.8.0"
 
 "@mpxjs/vue-cli-plugin-mpx@^2.0.0":
   version "2.0.6"
@@ -1915,7 +1881,7 @@
     webpackbar "^5.0.0"
     wrap-ansi "^5.1.0"
 
-"@mpxjs/webpack-plugin@^2.7.47", "@mpxjs/webpack-plugin@^2.8.0":
+"@mpxjs/webpack-plugin@^2.7.47":
   version "2.8.39"
   resolved "https://registry.npmmirror.com/@mpxjs/webpack-plugin/-/webpack-plugin-2.8.39.tgz#9f143b801c395775d3f7095ebecf7b102c33d367"
   integrity sha512-M9Alap53OwDrVn83PDquu9mcGny7Pyv7wSy1/4FxOZ/7B2/00eR/quauEZkESQd4s10oRX0ni5PwOfv0zxPygQ==
@@ -4035,7 +4001,7 @@ cross-spawn@^6.0.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
+cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
   resolved "https://registry.npmmirror.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
@@ -5039,21 +5005,6 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npmmirror.com/execa/-/execa-4.1.0.tgz#4e5491ad1572f2f17a77d388c6c857135b22847a"
-  integrity sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==
-  dependencies:
-    cross-spawn "^7.0.0"
-    get-stream "^5.0.0"
-    human-signals "^1.1.1"
-    is-stream "^2.0.0"
-    merge-stream "^2.0.0"
-    npm-run-path "^4.0.0"
-    onetime "^5.1.0"
-    signal-exit "^3.0.2"
-    strip-final-newline "^2.0.0"
-
 exif-parser@^0.1.12:
   version "0.1.12"
   resolved "https://registry.npmmirror.com/exif-parser/-/exif-parser-0.1.12.tgz#58a9d2d72c02c1f6f02a0ef4a9166272b7760922"
@@ -5435,13 +5386,6 @@ get-stream@^4.0.0:
   version "4.1.0"
   resolved "https://registry.npmmirror.com/get-stream/-/get-stream-4.1.0.tgz#c1b255575f3dc21d59bfc79cd3d2b46b1c3a54b5"
   integrity sha512-GMat4EJ5161kIy2HevLlr4luNjBgvmj413KaQA7jt4V8B4RDsfpHk7WQ9GVqfYyyx8OS/L66Kox+rJRNklLK7w==
-  dependencies:
-    pump "^3.0.0"
-
-get-stream@^5.0.0:
-  version "5.2.0"
-  resolved "https://registry.npmmirror.com/get-stream/-/get-stream-5.2.0.tgz#4966a1795ee5ace65e706c4b7beb71257d6e22d3"
-  integrity sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==
   dependencies:
     pump "^3.0.0"
 
@@ -5859,11 +5803,6 @@ https-proxy-agent@^5.0.0, https-proxy-agent@^5.0.1:
   dependencies:
     agent-base "6"
     debug "4"
-
-human-signals@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmmirror.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
-  integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
 
 human-signals@^2.1.0:
   version "2.1.0"
@@ -7769,7 +7708,7 @@ npm-run-path@^2.0.0:
   dependencies:
     path-key "^2.0.0"
 
-npm-run-path@^4.0.0, npm-run-path@^4.0.1:
+npm-run-path@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmmirror.com/npm-run-path/-/npm-run-path-4.0.1.tgz#b7ecd1e5ed53da8e37a55e1c2269e0b97ed748ea"
   integrity sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==
