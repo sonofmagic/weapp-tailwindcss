@@ -140,15 +140,19 @@ export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: stri
 }
 
 export function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
-  const { customAttributesEntities = [], disabledDefaultTemplateHandler, inlineWxs, runtimeSet, jsHandler } = options
+  const { customAttributesEntities = [], disabledDefaultTemplateHandler, inlineWxs, runtimeSet, jsHandler } = options ?? {}
   const s = new MagicString(rawSource)
   let tag = ''
   const parser = new Parser({
     onopentagname(name) {
       tag = name
     },
-    onattribute(name, value) {
+    onattribute(name, value, quote) {
       if (value) {
+        if (quote === "'") {
+          s.update(parser.startIndex + name.length + 1, parser.startIndex + name.length + 2, '"')
+          s.update(parser.startIndex + name.length + value.length + 2, parser.startIndex + name.length + value.length + 3, '"')
+        }
         function update() {
           s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
         }
