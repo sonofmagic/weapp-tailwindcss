@@ -42,7 +42,7 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.8.0-beta.1"
+    "weapp-tailwindcss-webpack-plugin": "^2.8.0"
   },
   "private": true,
   "originTemplate": "@rax-materials/scaffolds-app-ts"
