@@ -1,5 +1,5 @@
 {
-  "name": "weapp-tailwindcss-webpack-plugin",
+  "name": "weapp-tailwindcss",
   "version": "2.8.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "main": "dist/index.js",
