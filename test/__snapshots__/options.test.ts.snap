@@ -85,7 +85,7 @@ exports[`get options default options 1`] = `
   "htmlMatcher": [Function],
   "injectAdditionalCssVarScope": false,
   "inlineWxs": false,
-  "jsEscapeStrategy": "regenerate",
+  "jsEscapeStrategy": "replace",
   "jsHandler": [Function],
   "jsMatcher": [Function],
   "jsPreserveClass": [Function],

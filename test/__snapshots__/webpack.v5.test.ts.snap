@@ -350,35 +350,30 @@ view,::before,::after {
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/(() => {
-  // webpackBootstrap
-  /******/
-  var __webpack_modules__ = {
-    /***/"./test/fixtures/webpack/v5/wxml/pages/index.js":
-    /*!******************************************************!*\\
-      !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-      \\******************************************************/
-    /***/
-    () => {
-      eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = \\"w-_bl_100px_br_ h-_bl_100px_br_ \\" + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\";\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`);\\nconst el = document.createElement();\\nel.classList.add(\\"w-_bl_99px_br_\\", \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\");\\ndocument.body.appendChild(el);\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
-      /***/
-    }
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
 
-    /******/
-  };
-  /************************************************************************/
-  /******/
-  /******/ // startup
-  /******/ // Load entry module and return exports
-  /******/ // This entry module can't be inlined because the eval devtool is used.
-  /******/
-  var __webpack_exports__ = {};
-  /******/
-  __webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-  /******/
-  /******/
-})();",
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
 }
 `;
 
@@ -872,7 +867,7 @@ view,::before,::after {
     --tw-backdrop-sepia:  
 }",
   "index.wxml": "<view>e</view>",
-  "wxml.js": "console.log("i'am empty !");",
+  "wxml.js": "console.log("i\\'am empty !");",
 }
 `;
 
@@ -1250,35 +1245,30 @@ view,::before,::after {
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/(() => {
-  // webpackBootstrap
-  /******/
-  var __webpack_modules__ = {
-    /***/"./test/fixtures/webpack/v5/wxml/pages/index.js":
-    /*!******************************************************!*\\
-      !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-      \\******************************************************/
-    /***/
-    () => {
-      eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = \\"som-s som-r \\" + \\"som-bb\\";\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`);\\nconst el = document.createElement();\\nel.classList.add(\\"som-cb\\", \`som-db\`, \\"som-eb\\");\\ndocument.body.appendChild(el);\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
-      /***/
-    }
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
 
-    /******/
-  };
-  /************************************************************************/
-  /******/
-  /******/ // startup
-  /******/ // Load entry module and return exports
-  /******/ // This entry module can't be inlined because the eval devtool is used.
-  /******/
-  var __webpack_exports__ = {};
-  /******/
-  __webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-  /******/
-  /******/
-})();",
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'som-s som-r \\' + \\"som-bb\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'som-cb\\', \`som-db\`, \\"som-eb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
 }
 `;
 
@@ -1636,35 +1626,30 @@ view,::before,::after {
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/(() => {
-  // webpackBootstrap
-  /******/
-  var __webpack_modules__ = {
-    /***/"./test/fixtures/webpack/v5/wxml/pages/index.js":
-    /*!******************************************************!*\\
-      !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-      \\******************************************************/
-    /***/
-    () => {
-      eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = \\"ice-q ice-p \\" + \\"ice-ya\\";\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`);\\nconst el = document.createElement();\\nel.classList.add(\\"ice-za\\", \`ice-ab\`, \\"ice-bb\\");\\ndocument.body.appendChild(el);\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
-      /***/
-    }
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
 
-    /******/
-  };
-  /************************************************************************/
-  /******/
-  /******/ // startup
-  /******/ // Load entry module and return exports
-  /******/ // This entry module can't be inlined because the eval devtool is used.
-  /******/
-  var __webpack_exports__ = {};
-  /******/
-  __webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-  /******/
-  /******/
-})();",
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'ice-q ice-p \\' + \\"ice-ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'ice-za\\', \`ice-ab\`, \\"ice-bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
 }
 `;
 
@@ -2022,35 +2007,30 @@ view,::before,::after {
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/(() => {
-  // webpackBootstrap
-  /******/
-  var __webpack_modules__ = {
-    /***/"./test/fixtures/webpack/v5/wxml/pages/index.js":
-    /*!******************************************************!*\\
-      !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-      \\******************************************************/
-    /***/
-    () => {
-      eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = \\"q p \\" + \\"ya\\";\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`);\\nconst el = document.createElement();\\nel.classList.add(\\"za\\", \`ab\`, \\"bb\\");\\ndocument.body.appendChild(el);\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
-      /***/
-    }
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
 
-    /******/
-  };
-  /************************************************************************/
-  /******/
-  /******/ // startup
-  /******/ // Load entry module and return exports
-  /******/ // This entry module can't be inlined because the eval devtool is used.
-  /******/
-  var __webpack_exports__ = {};
-  /******/
-  __webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-  /******/
-  /******/
-})();",
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'q p \\' + \\"ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'za\\', \`ab\`, \\"bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
 }
 `;
 
@@ -2408,35 +2388,30 @@ view,::before,::after {
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/(() => {
-  // webpackBootstrap
-  /******/
-  var __webpack_modules__ = {
-    /***/"./test/fixtures/webpack/v5/wxml/pages/index.js":
-    /*!******************************************************!*\\
-      !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-      \\******************************************************/
-    /***/
-    () => {
-      eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = \\"tw-q tw-p \\" + \\"tw-ya\\";\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`);\\nconst el = document.createElement();\\nel.classList.add(\\"tw-za\\", \`tw-ab\`, \\"tw-bb\\");\\ndocument.body.appendChild(el);\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
-      /***/
-    }
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
 
-    /******/
-  };
-  /************************************************************************/
-  /******/
-  /******/ // startup
-  /******/ // Load entry module and return exports
-  /******/ // This entry module can't be inlined because the eval devtool is used.
-  /******/
-  var __webpack_exports__ = {};
-  /******/
-  __webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-  /******/
-  /******/
-})();",
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'tw-q tw-p \\' + \\"tw-ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'tw-za\\', \`tw-ab\`, \\"tw-bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
 }
 `;
 
@@ -2921,35 +2896,30 @@ view,::before,::after {
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/(() => {
-  // webpackBootstrap
-  /******/
-  var __webpack_modules__ = {
-    /***/"./test/fixtures/webpack/v5/wxml/pages/index.js":
-    /*!******************************************************!*\\
-      !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
-      \\******************************************************/
-    /***/
-    () => {
-      eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = \\"w-_100px_ h-_100px_ \\" + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`);\\nconst el = document.createElement();\\nel.classList.add(\\"w-_99px_\\", \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");\\ndocument.body.appendChild(el);\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
-      /***/
-    }
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
 
-    /******/
-  };
-  /************************************************************************/
-  /******/
-  /******/ // startup
-  /******/ // Load entry module and return exports
-  /******/ // This entry module can't be inlined because the eval devtool is used.
-  /******/
-  var __webpack_exports__ = {};
-  /******/
-  __webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-  /******/
-  /******/
-})();",
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
 }
 `;
 
@@ -3299,11 +3269,7 @@ view,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
 </view>",
-  "wxml.js": "(() => {
-  document.body.append("<div class=\\"w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">className</div>");
-  const d = document.createElement();
-  d.classList.add("w-_99px_", "h-_99px_", "bg-_url_qhttpscssyyydcomsxxdwebpq__"), document.body.appendChild(d);
-})();",
+  "wxml.js": "(()=>{document.body.append("<div class=\\"w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">className</div>");const d=document.createElement();d.classList.add("w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__"),document.body.appendChild(d)})();",
 }
 `;
 

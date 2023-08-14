@@ -205,12 +205,12 @@ Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    contentStyle: "c",
+    contentStyle: 'c',
     classNames: "l z u k"
   },
   onLoad: function () {},
   copyText: function (e) {
-    const txt = e.currentTarget.dataset.text;
+    const txt = e.currentTarget.dataset.text
     wx.setClipboardData({
       data: txt,
       success: function (res) {
@@ -220,13 +220,14 @@ Page({
               title: '复制成功！',
               icon: 'success',
               duration: 1000
-            });
+            })
           }
-        });
+        })
       }
-    });
+    })
   }
-});"
+})
+"
 `;
 
 exports[`gulp common build with mangle options mangleClassFilter always true: wxml 1`] = `
@@ -462,12 +463,12 @@ Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    contentStyle: "c",
+    contentStyle: 'c',
     classNames: "k y t j"
   },
   onLoad: function () {},
   copyText: function (e) {
-    const txt = e.currentTarget.dataset.text;
+    const txt = e.currentTarget.dataset.text
     wx.setClipboardData({
       data: txt,
       success: function (res) {
@@ -477,13 +478,14 @@ Page({
               title: '复制成功！',
               icon: 'success',
               duration: 1000
-            });
+            })
           }
-        });
+        })
       }
-    });
+    })
   }
-});"
+})
+"
 `;
 
 exports[`gulp common build with mangle options prefix: wxml 1`] = `
@@ -719,12 +721,12 @@ Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    contentStyle: "tw-c",
+    contentStyle: 'tw-c',
     classNames: "tw-k tw-y tw-t tw-j"
   },
   onLoad: function () {},
   copyText: function (e) {
-    const txt = e.currentTarget.dataset.text;
+    const txt = e.currentTarget.dataset.text
     wx.setClipboardData({
       data: txt,
       success: function (res) {
@@ -734,13 +736,14 @@ Page({
               title: '复制成功！',
               icon: 'success',
               duration: 1000
-            });
+            })
           }
-        });
+        })
       }
-    });
+    })
   }
-});"
+})
+"
 `;
 
 exports[`gulp common build with mangle true: wxml 1`] = `
@@ -976,12 +979,12 @@ Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    contentStyle: "mt-_24px_",
+    contentStyle: 'mt-_24px_',
     classNames: "bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_h123456_ text-_50px_ bg-_hfff_"
   },
   onLoad: function () {},
   copyText: function (e) {
-    const txt = e.currentTarget.dataset.text;
+    const txt = e.currentTarget.dataset.text
     wx.setClipboardData({
       data: txt,
       success: function (res) {
@@ -991,13 +994,14 @@ Page({
               title: '复制成功！',
               icon: 'success',
               duration: 1000
-            });
+            })
           }
-        });
+        })
       }
-    });
+    })
   }
-});"
+})
+"
 `;
 
 exports[`gulp common build: wxml 1`] = `
