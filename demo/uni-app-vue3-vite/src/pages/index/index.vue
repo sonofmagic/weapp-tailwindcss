@@ -1,8 +1,8 @@
 <template>
   <view class="content">
     <view>{{ wildContent }}</view>
-    <n-image class="mt-[26.2px]"></n-image>
-    <NHostImage class="mt-[96.3px]"></NHostImage>
+    <n-image class="mt-[26.2px] w-[43.1px] h-[42.99px]"></n-image>
+    <NHostImage class="mt-[96.3px] w-[61.1px] h-[50.99px]"></NHostImage>
     <view class="2xl:text-base">2xl:text-base</view>
     <view :class="numClassObj">2xl:text-[red]</view>
     <view class="space-y-4 flex flex-col bg-red-400">
