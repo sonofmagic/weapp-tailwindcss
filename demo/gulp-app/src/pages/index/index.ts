@@ -8,7 +8,8 @@ Page({
     userInfo: {},
     contentStyle: 'mt-[24px]',
     classNames: "bg-[url('https://xxx.com/xx.webp')] text-[#123456] text-[50px] bg-[#fff]",
-    wildContent: '******'
+    wildContent: '******',
+    arr: [1]
   },
   onLoad: function () {},
   copyText: function (e: any) {
