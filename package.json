@@ -179,6 +179,7 @@
     "dedent": "^1.5.1",
     "defu": "6.1.2",
     "del": "^7.0.0",
+    "domhandler": "^5.0.3",
     "eslint": "8.47.0",
     "eslint-config-icebreaker": "^1.2.2",
     "eslint-config-prettier": "^9.0.0",
@@ -199,7 +200,7 @@
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.3.3",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
-    "prettier": "^3.0.1",
+    "prettier": "^3.0.2",
     "promisify-loader-runner": "^1.0.0",
     "rollup": "^3.28.0",
     "rollup-plugin-visualizer": "^5.9.2",
@@ -218,8 +219,7 @@
     "vitest": "^0.34.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.88.2",
-    "webpack-build-utils": "^0.0.4",
-    "domhandler": "^5.0.3"
+    "webpack-build-utils": "^0.0.4"
   },
   "dependencies": {
     "@babel/generator": "^7.22.10",
@@ -234,10 +234,10 @@
     "loader-utils": "^2.0.3",
     "magic-string": "^0.30.2",
     "micromatch": "^4.0.5",
-    "postcss": "8.4.27",
+    "postcss": "8.4.28",
     "postcss-selector-parser": "^6.0.13",
     "semver": "^7.5.4",
-    "tailwindcss-patch": "^2.1.0"
+    "tailwindcss-patch": "^2.1.1"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {
