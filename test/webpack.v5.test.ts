@@ -137,6 +137,31 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  it('common 0', async () => {
+    let timeStart: number
+    let timeTaken: number
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      customReplaceDictionary: 'complex',
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+      },
+      runtimeLoaderPath: path.resolve(__dirname, '../dist/weapp-tw-runtime-loader.js')
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
   it('common with loader', async () => {
     let timeStart: number
     let timeTaken: number

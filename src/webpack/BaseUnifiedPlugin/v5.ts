@@ -27,7 +27,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, setMangleRuntimeSet } = this.options
+    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, setMangleRuntimeSet, runtimeLoaderPath } =
+      this.options
     if (disabled) {
       return
     }
@@ -54,7 +55,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     //   }
     // )
     onLoad()
-    const loader = path.resolve(__dirname, './weapp-tw-runtime-loader.js')
+    const loader = runtimeLoaderPath ?? path.resolve(__dirname, './weapp-tw-runtime-loader.js')
     const isExisted = fs.existsSync(loader)
     const WeappTwRuntimeAopLoader = {
       loader,

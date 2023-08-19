@@ -399,6 +399,12 @@ const customAttributes = {
    * @default 'regenerate'
    */
   jsEscapeStrategy?: 'regenerate' | 'replace'
+
+  /**
+   * @ignore
+   * @internal
+   */
+  runtimeLoaderPath?: string
 }
 
 export interface IMangleScopeContext {
