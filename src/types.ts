@@ -59,6 +59,7 @@ export type IJsHandlerOptions = {
   mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
   strategy?: UserDefinedOptions['jsEscapeStrategy']
+  needEscaped?: boolean
 }
 export interface RawSource {
   start: number
