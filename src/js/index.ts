@@ -37,7 +37,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
       },
       TemplateElement: {
         enter(p) {
-          if (isEvalPath(p.parentPath)) {
+          if (p.parentPath.isTemplateLiteral() && isEvalPath(p.parentPath.parentPath)) {
             return
           }
           const n = p.node
@@ -110,7 +110,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
       },
       TemplateElement: {
         enter(p) {
-          if (isEvalPath(p.parentPath)) {
+          if (p.parentPath.isTemplateLiteral() && isEvalPath(p.parentPath.parentPath)) {
             return
           }
           const n = p.node
