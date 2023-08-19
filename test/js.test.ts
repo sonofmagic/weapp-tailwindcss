@@ -1,12 +1,15 @@
 /* eslint-disable no-template-curly-in-string */
 import { getClassCacheSet } from 'tailwindcss-patch'
 // import { createGetCase, jsCasePath } from './util'
+import { createGetCase, jsCasePath, createPutCase } from './util'
 import { SimpleMappingChars2String } from '@/escape'
 import { createjsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { defaultOptions } from '@/defaults'
-// const getCase = createGetCase(jsCasePath)
+
+const getCase = createGetCase(jsCasePath)
+const putCase = createPutCase(jsCasePath)
 
 const testTable = [
   {
@@ -305,4 +308,60 @@ describe('jsHandler', () => {
     //     const LINEFEED = "
     // ";
   })
+
+  it('mangleContext case', () => {
+    const set: Set<string> = new Set()
+    // set.add('*')
+    set.add('w-[100px]')
+    const { jsHandler, setMangleRuntimeSet } = getOptions({
+      mangle: true
+    })
+    setMangleRuntimeSet(set)
+    const code = jsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+    expect(code).toBe("const n = '* 1 * 2 tw-a'")
+  })
+
+  it('eval StringLiteral case 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = rh(`eval("const cls = 'w-[100px]';console.log(cls)")`, set).code
+    expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
+  })
+
+  it('eval TemplateElement case 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = rh("eval(`const cls = 'w-[100px]';console.log(cls)`)", set).code
+    expect(code).toBe("eval(`const cls = 'w-_100px_';console.log(cls)`)")
+  })
+
+  it('eval StringLiteral case regen 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = h(`eval("const cls = 'w-[100px]';console.log(cls)")`, set).code
+    expect(code).toBe('eval("const cls = \\"w-_100px_\\";\\nconsole.log(cls);");')
+  })
+
+  it('eval TemplateElement case regen 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = h("eval(`const cls = 'w-[100px]';console.log(cls)`)", set).code
+    expect(code).toBe('eval(`const cls = "w-_100px_";\nconsole.log(cls);`);')
+  })
+
+  it('jsStringEscape getCase 0', async () => {
+    const aarun = await getCase('jsStringEscape.js')
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    set.add('w-[99px]')
+    const code = rh(aarun, set).code
+    await putCase('jsStringEscape.res.js', code)
+    expect(code).toMatchSnapshot()
+  })
+  // it('eval StringLiteral case 1', () => {
+  //   const set: Set<string> = new Set()
+  //   set.add('w-[100px]')
+  //   const code = rh(`eval("const cls = 'w-[100px]'\\\n;console.log(cls)")`, set).code
+  //   expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
+  // })
 })

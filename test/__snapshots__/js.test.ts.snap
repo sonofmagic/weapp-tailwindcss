@@ -37,3 +37,9 @@ exports[`jsHandler jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n =
 exports[`jsHandler jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n = "* 1 * 2 w-_100px_";"`;
 
 exports[`jsHandler jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
+
+exports[`jsHandler jsStringEscape getCase 0 1`] = `
+"const a = 'w-_100px_';
+
+eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
+`;

@@ -1,5 +1,7 @@
 <template>
   <view class="content">
+    <Issue228 class="mt-[96.3px] w-[61.1px] h-[50.99px]"
+      src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"></Issue228>
     <view>{{ wildContent }}</view>
     <n-image class="mt-[26.2px] w-[43.1px] h-[42.99px]"></n-image>
     <NHostImage class="mt-[96.3px] w-[61.1px] h-[50.99px]"></NHostImage>
@@ -90,6 +92,7 @@
 
 
 <script setup lang="ts">
+import Issue228 from '@/components/Issue228.vue';
 import CommonCom from '@/components/CommonCom.vue'
 import VirtualHostCom from '@/components/VirtualHostCom.vue'
 import NImage from '@/components/NImage.vue';
