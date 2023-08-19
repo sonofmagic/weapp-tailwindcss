@@ -7,6 +7,7 @@ import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
 import { copySync, mkdirSync } from 'fs-extra'
+import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string }) {
@@ -126,6 +127,29 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+      }
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('common with loader', async () => {
+    let timeStart: number
+    let timeTaken: number
+    new UnifiedWebpackPluginV5WithLoader({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[common with loader] case processAssets executed in ${timeTaken}ms`)
       }
     }).apply(compiler)
 
