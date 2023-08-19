@@ -62,6 +62,23 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
                       const end = node.end - 1
                       if (start < end) {
                         ms.update(start, end, jsStringEscape(res.code))
+                        node.value = res.code
+                      }
+                    }
+                  }
+                }
+              },
+              TemplateElement: {
+                enter(s) {
+                  const res = jsHandler(s.node.value.raw, options)
+                  if (res.code) {
+                    const node = s.node
+                    if (typeof node.start === 'number' && typeof node.end === 'number') {
+                      const start = node.start
+                      const end = node.end
+                      if (start < end) {
+                        ms.update(start, end, res.code)
+                        s.node.value.raw = res.code
                       }
                     }
                   }
@@ -110,6 +127,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
                   const res = jsHandler(s.node.value, options)
                   if (res.code) {
                     s.node.value = res.code
+                  }
+                }
+              },
+              TemplateElement: {
+                enter(s) {
+                  const res = jsHandler(s.node.value.raw, options)
+                  if (res.code) {
+                    s.node.value.raw = res.code
                   }
                 }
               }

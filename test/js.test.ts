@@ -328,6 +328,27 @@ describe('jsHandler', () => {
     expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
   })
 
+  it('eval TemplateElement case 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = rh("eval(`const cls = 'w-[100px]';console.log(cls)`)", set).code
+    expect(code).toBe("eval(`const cls = 'w-_100px_';console.log(cls)`)")
+  })
+
+  it('eval StringLiteral case regen 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = h(`eval("const cls = 'w-[100px]';console.log(cls)")`, set).code
+    expect(code).toBe('eval("const cls = \\"w-_100px_\\";\\nconsole.log(cls);");')
+  })
+
+  it('eval TemplateElement case regen 0', () => {
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    const code = h("eval(`const cls = 'w-[100px]';console.log(cls)`)", set).code
+    expect(code).toBe('eval(`const cls = "w-_100px_";\nconsole.log(cls);`);')
+  })
+
   it('jsStringEscape getCase 0', async () => {
     const aarun = await getCase('jsStringEscape.js')
     const set: Set<string> = new Set()
