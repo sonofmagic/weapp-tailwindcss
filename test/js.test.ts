@@ -1,13 +1,15 @@
 /* eslint-disable no-template-curly-in-string */
 import { getClassCacheSet } from 'tailwindcss-patch'
 // import { createGetCase, jsCasePath } from './util'
+import { createGetCase, jsCasePath, createPutCase } from './util'
 import { SimpleMappingChars2String } from '@/escape'
 import { createjsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { defaultOptions } from '@/defaults'
 
-// const getCase = createGetCase(jsCasePath)
+const getCase = createGetCase(jsCasePath)
+const putCase = createPutCase(jsCasePath)
 
 const testTable = [
   {
@@ -326,6 +328,15 @@ describe('jsHandler', () => {
     expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
   })
 
+  it('jsStringEscape getCase 0', async () => {
+    const aarun = await getCase('jsStringEscape.js')
+    const set: Set<string> = new Set()
+    set.add('w-[100px]')
+    set.add('w-[99px]')
+    const code = rh(aarun, set).code
+    await putCase('jsStringEscape.res.js', code)
+    expect(code).toMatchSnapshot()
+  })
   // it('eval StringLiteral case 1', () => {
   //   const set: Set<string> = new Set()
   //   set.add('w-[100px]')
