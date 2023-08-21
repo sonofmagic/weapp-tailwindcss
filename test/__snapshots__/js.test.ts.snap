@@ -43,3 +43,26 @@ exports[`jsHandler jsStringEscape getCase 0 1`] = `
 
 eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
 `;
+
+exports[`jsHandler taro-url-before case 1`] = `
+"var findReg = /[!'()~]|%20|%00/g;
+var plusReg = /\\+/g;
+var replaceCharMap = {
+  '!': '%21',
+  "'": '%27',
+  '(': '%28',
+  ')': '%29',
+  '~': '%7E',
+  '%20': '+',
+  '%00': '\\x00'
+};
+"
+`;
+
+exports[`jsHandler unicode case 0 1`] = `
+"var replaceCharMap = {
+  "'": '%27',
+  '%00': '\\x00'
+};
+"
+`;

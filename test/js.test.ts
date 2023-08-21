@@ -364,4 +364,18 @@ describe('jsHandler', () => {
   //   const code = rh(`eval("const cls = 'w-[100px]'\\\n;console.log(cls)")`, set).code
   //   expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
   // })
+
+  it('taro-url-before case', async () => {
+    const aarun = await getCase('taro-url-before.js')
+    const set: Set<string> = new Set()
+    const code = rh(aarun, set).code
+    expect(code).toMatchSnapshot()
+  })
+
+  it('unicode case 0', async () => {
+    const unicodeCase = await getCase('taro-url-unicode.js')
+    const set: Set<string> = new Set()
+    const code = rh(unicodeCase, set).code
+    expect(code).toMatchSnapshot()
+  })
 })

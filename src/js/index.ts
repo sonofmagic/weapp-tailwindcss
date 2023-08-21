@@ -60,7 +60,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
                     if (typeof node.start === 'number' && typeof node.end === 'number') {
                       const start = node.start + 1
                       const end = node.end - 1
-                      if (start < end) {
+                      if (start < end && s.node.value !== res.code) {
                         ms.update(start, end, jsStringEscape(res.code))
                         node.value = res.code
                       }
@@ -76,7 +76,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
                     if (typeof node.start === 'number' && typeof node.end === 'number') {
                       const start = node.start
                       const end = node.end
-                      if (start < end) {
+                      if (start < end && s.node.value.raw !== res.code) {
                         ms.update(start, end, res.code)
                         s.node.value.raw = res.code
                       }
