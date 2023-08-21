@@ -9076,6 +9076,15 @@ postcss@8.4.27, postcss@^8.4.27:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
+postcss@8.4.28:
+  version "8.4.28"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.28.tgz#c6cc681ed00109072816e1557f889ef51cf950a5"
+  integrity sha512-Z7V5j0cq8oEKyejIKfpD8b4eBy9cwW2JWPk0+fB1HOAMsfHbnAXLLS+PfVWlzMSLQaWttKDt607I0XHmpE67Vw==
+  dependencies:
+    nanoid "^3.3.6"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
 postcss@^6.0.0:
   version "6.0.23"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-6.0.23.tgz#61c82cc328ac60e677645f979054eb98bc0e3324"
@@ -10549,10 +10558,10 @@ tailwind-css-variables-theme-generator@^0.4.0:
   resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
   integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
 
-tailwindcss-patch@2.1.0, tailwindcss-patch@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-2.1.0.tgz#b6276d024d2e5c13048326c1f0cbf159fbb50931"
-  integrity sha512-VO0vzUA1IB9o8u30d5wBvBylAWF5VKXP6QBecWsmMtvDPQ+9Julu5uatwEx1hIzX35r8HKF0SkaQRTISLu70qw==
+tailwindcss-patch@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-2.1.1.tgz#3e9ba45c97500d119f486940dd20a418b6974360"
+  integrity sha512-MQS5CVtizP/T7Wt0I/BjsS/mu0dwo9DHUVbt/rClT4OX0YUkB+E+vYLjok2oreuIT0AGkUM+FJyS1vzMfuvpHg==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"
@@ -11272,10 +11281,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.0.tgz#f77d04052d0e20208bd4edbb04532a94eecbb9c3"
-  integrity sha512-JvFCOtdcbsrwdBCzu4MQ8enzeQWOpSh4GSPgDXE2zEJxDSLmIxKKs7sJwaqA+XSCtCven6lm3LGMSJ3uEHXj2w==
+weapp-tailwindcss-webpack-plugin@^2.8.1-beta.0:
+  version "2.8.1-beta.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.1-beta.0.tgz#1461d621de4f002a45f27f9edbb83f6cf3259f21"
+  integrity sha512-dzH70dlL6YDftZqqGIVLno+DIEJyemCWz3TK06sTdIiNELv2Qz9/v+5RomrcFdwPzTUiox/+ltk5tHB70EVFHA==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"
@@ -11289,10 +11298,10 @@ weapp-tailwindcss-webpack-plugin@^2.8.0:
     loader-utils "^2.0.3"
     magic-string "^0.30.2"
     micromatch "^4.0.5"
-    postcss "8.4.27"
+    postcss "8.4.28"
     postcss-selector-parser "^6.0.13"
     semver "^7.5.4"
-    tailwindcss-patch "2.1.0"
+    tailwindcss-patch "^2.1.1"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
