@@ -68,6 +68,6 @@
     "typescript": "^5.1.6",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.8.1-beta.0"
+    "weapp-tailwindcss-webpack-plugin": "^2.8.1"
   }
 }
