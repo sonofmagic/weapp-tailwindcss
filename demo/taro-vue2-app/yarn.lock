@@ -9370,10 +9370,10 @@ magic-string@^0.25.7:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-magic-string@^0.30.2:
-  version "0.30.2"
-  resolved "https://registry.npmmirror.com/magic-string/-/magic-string-0.30.2.tgz#dcf04aad3d0d1314bc743d076c50feb29b3c7aca"
-  integrity sha512-lNZdu7pewtq/ZvWUp9Wpf/x7WzMTsR26TWV03BRZrXFsv+BI6dy8RAiKgm1uM/kyR0rCfUcqvOlXKG66KhIGug==
+magic-string@^0.30.3:
+  version "0.30.3"
+  resolved "https://registry.npmmirror.com/magic-string/-/magic-string-0.30.3.tgz#403755dfd9d6b398dfa40635d52e96c5ac095b85"
+  integrity sha512-B7xGbll2fG/VjP+SWg4sX3JynwIU0mjoTc6MPpKNuIvftk6u6vqhDnk1R80b8C2GBR6ywqy+1DcKBrevBg+bmw==
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.15"
 
@@ -11312,10 +11312,10 @@ postcss@7.0.21:
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postcss@8.4.27, postcss@^8.4.25, postcss@^8.4.27:
-  version "8.4.27"
-  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.27.tgz#234d7e4b72e34ba5a92c29636734349e0d9c3057"
-  integrity sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==
+postcss@8.4.28:
+  version "8.4.28"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.28.tgz#c6cc681ed00109072816e1557f889ef51cf950a5"
+  integrity sha512-Z7V5j0cq8oEKyejIKfpD8b4eBy9cwW2JWPk0+fB1HOAMsfHbnAXLLS+PfVWlzMSLQaWttKDt607I0XHmpE67Vw==
   dependencies:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
@@ -11351,6 +11351,15 @@ postcss@^8.4.23:
   version "8.4.23"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.23.tgz#df0aee9ac7c5e53e1075c24a3613496f9e6552ab"
   integrity sha512-bQ3qMcpF6A/YjR55xtoTr0jGOlnPOKAIMdOWiv0EIT6HVPEaJiJB4NLljSbiHoC2RX7DN5Uvjtpbg1NPdwv1oA==
+  dependencies:
+    nanoid "^3.3.6"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
+postcss@^8.4.25, postcss@^8.4.27:
+  version "8.4.27"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.27.tgz#234d7e4b72e34ba5a92c29636734349e0d9c3057"
+  integrity sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==
   dependencies:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
@@ -13313,10 +13322,10 @@ tailwind-css-variables-theme-generator@^0.4.0:
   resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
   integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
 
-tailwindcss-patch@2.1.0, tailwindcss-patch@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-2.1.0.tgz#b6276d024d2e5c13048326c1f0cbf159fbb50931"
-  integrity sha512-VO0vzUA1IB9o8u30d5wBvBylAWF5VKXP6QBecWsmMtvDPQ+9Julu5uatwEx1hIzX35r8HKF0SkaQRTISLu70qw==
+tailwindcss-patch@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-2.1.1.tgz#3e9ba45c97500d119f486940dd20a418b6974360"
+  integrity sha512-MQS5CVtizP/T7Wt0I/BjsS/mu0dwo9DHUVbt/rClT4OX0YUkB+E+vYLjok2oreuIT0AGkUM+FJyS1vzMfuvpHg==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"
@@ -14283,10 +14292,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.0.tgz#f77d04052d0e20208bd4edbb04532a94eecbb9c3"
-  integrity sha512-JvFCOtdcbsrwdBCzu4MQ8enzeQWOpSh4GSPgDXE2zEJxDSLmIxKKs7sJwaqA+XSCtCven6lm3LGMSJ3uEHXj2w==
+weapp-tailwindcss-webpack-plugin@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.1.tgz#5087ae3d54760fc17f7e08821fff68c201546e43"
+  integrity sha512-uTShjk5fFV8jKCkbkcqR2dfDG24xYwPg1YiSdhZoAbz/qIMxFQotW+xrNeXhVoVvOplNSRaSYq2so9tkQkpF6w==
   dependencies:
     "@babel/generator" "^7.22.10"
     "@babel/parser" "^7.22.10"
@@ -14298,12 +14307,12 @@ weapp-tailwindcss-webpack-plugin@^2.8.0:
     "@weapp-core/regex" "^1.0.0"
     htmlparser2 "^9.0.0"
     loader-utils "^2.0.3"
-    magic-string "^0.30.2"
+    magic-string "^0.30.3"
     micromatch "^4.0.5"
-    postcss "8.4.27"
+    postcss "8.4.28"
     postcss-selector-parser "^6.0.13"
     semver "^7.5.4"
-    tailwindcss-patch "2.1.0"
+    tailwindcss-patch "^2.1.1"
 
 webidl-conversions@^7.0.0:
   version "7.0.0"

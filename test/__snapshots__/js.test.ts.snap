@@ -37,3 +37,32 @@ exports[`jsHandler jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n =
 exports[`jsHandler jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n = "* 1 * 2 w-_100px_";"`;
 
 exports[`jsHandler jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
+
+exports[`jsHandler jsStringEscape getCase 0 1`] = `
+"const a = 'w-_100px_';
+
+eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
+`;
+
+exports[`jsHandler taro-url-before case 1`] = `
+"var findReg = /[!'()~]|%20|%00/g;
+var plusReg = /\\+/g;
+var replaceCharMap = {
+  '!': '%21',
+  "'": '%27',
+  '(': '%28',
+  ')': '%29',
+  '~': '%7E',
+  '%20': '+',
+  '%00': '\\x00'
+};
+"
+`;
+
+exports[`jsHandler unicode case 0 1`] = `
+"var replaceCharMap = {
+  "'": '%27',
+  '%00': '\\x00'
+};
+"
+`;
