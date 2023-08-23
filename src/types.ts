@@ -316,7 +316,7 @@ const customAttributes = {
    * 你可以传入一个 字符串，或者字符串数组
    * 1. 传入字符串数组,比如 `['view','text']` 生成:
    * ```css
-   * .space-y-4>view,text + view,text{}
+   * .space-y-4>view + view,text + text{}
    * ```
    *
    * 2. 传入一个字符串，此时行为变成了整个替换，比如 `'view,text,button,input ~ view,text,button,input'` 生成:
