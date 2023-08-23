@@ -27,7 +27,7 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string arr
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string array type 2`] = `
-".space-y-4>view,text,.aa + view,text,.aa {
+".space-y-4>view + view,text + text,.aa + .aa {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))

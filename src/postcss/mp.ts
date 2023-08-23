@@ -106,8 +106,13 @@ export function remakeCssVarSelector(selectors: string[], cssPreflightRange: ISt
 export function remakeCombinatorSelector(selector: string, cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']) {
   let childCombinatorReplaceValue = 'view + view'
   if (Array.isArray(cssChildCombinatorReplaceValue)) {
-    const part = cssChildCombinatorReplaceValue.join(',')
-    childCombinatorReplaceValue = [part, ' + ', part].join('')
+    // const part = cssChildCombinatorReplaceValue.join(',')
+    // [part, ' + ', part].join('')
+    childCombinatorReplaceValue = cssChildCombinatorReplaceValue
+      .map((x) => {
+        return x + ' + ' + x
+      })
+      .join(',')
   } else if (typeof cssChildCombinatorReplaceValue === 'string') {
     childCombinatorReplaceValue = cssChildCombinatorReplaceValue
   }
