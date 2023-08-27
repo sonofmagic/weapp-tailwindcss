@@ -10,8 +10,8 @@ import { copySync, mkdirSync } from 'fs-extra'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
-function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string }) {
-  const { entry, mode, tailwindcssConfig } = params
+function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string; devtool?: string }) {
+  const { entry, mode, tailwindcssConfig, devtool } = params
 
   const processor = postcss([
     // require('autoprefixer')(),
@@ -31,6 +31,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
       filename: '[name].js', // ?var=[fullhash]
       chunkFilename: '[id].[name].js' // ?ver=[fullhash]
     },
+    devtool,
     module: {
       rules: [
         {
@@ -68,6 +69,7 @@ describe('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
+  let sourceMapCompiler: Compiler
   const cacheDir = path.resolve(process.cwd(), 'node_modules/.cache', 'tailwindcss-patch')
   const cacheJson = path.resolve(cacheDir, 'index.json')
   beforeAll(() => {
@@ -107,6 +109,15 @@ describe('webpack5 plugin', () => {
       },
       tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/empty/tailwind.config.js')
     })
+
+    sourceMapCompiler = createCompiler({
+      mode: 'production',
+      entry: {
+        wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js')
+      },
+      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js'),
+      devtool: 'source-map'
+    })
   })
 
   afterAll(() => {
@@ -136,6 +147,30 @@ describe('webpack5 plugin', () => {
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
+
+  // it('common with source map', async () => {
+  //   let timeStart: number
+  //   let timeTaken: number
+  //   new UnifiedWebpackPluginV5({
+  //     mainCssChunkMatcher(name) {
+  //       return path.basename(name) === 'index.css'
+  //     },
+  //     customReplaceDictionary: 'simple',
+  //     onStart() {
+  //       timeStart = performance.now()
+  //     },
+  //     onEnd() {
+  //       timeTaken = performance.now() - timeStart
+  //       console.log(`[common with source map] case processAssets executed in ${timeTaken}ms`)
+  //     }
+  //   }).apply(sourceMapCompiler)
+
+  //   const stats = await compile(compiler)
+
+  //   expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+  //   expect(getErrors(stats)).toMatchSnapshot('errors')
+  //   expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  // })
 
   it('common 0', async () => {
     let timeStart: number

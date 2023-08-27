@@ -1,5 +1,7 @@
 import type { Rule } from 'postcss'
 import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle/shared'
+import type { SourceMap } from 'magic-string'
+import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
 export type ItemOrItemArray<T> = T | T[]
 
@@ -47,6 +49,10 @@ export type IStyleHandlerOptions = {
   mangleContext?: IMangleScopeContext
 } & RequiredStyleHandlerOptions
 
+export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
+
+export type JsHandlerResult = JsHandlerReplaceResult | GeneratorResult
+
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
@@ -60,6 +66,7 @@ export type IJsHandlerOptions = {
   jsPreserveClass?: (keyword: string) => boolean | undefined
   strategy?: UserDefinedOptions['jsEscapeStrategy']
   needEscaped?: boolean
+  generateMap?: boolean
 }
 export interface RawSource {
   start: number
@@ -407,6 +414,8 @@ const customAttributes = {
   runtimeLoaderPath?: string
 }
 
+export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
+
 export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']
   runtimeSet: Set<string>
@@ -431,7 +440,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
   inlineWxs?: boolean
-  jsHandler?: (rawSource: string, set: Set<string>) => { code: string }
+  jsHandler?: JsHandler
   runtimeSet?: Set<string>
   disabledDefaultTemplateHandler?: boolean
 }
@@ -445,7 +454,7 @@ export type InternalUserDefinedOptions = Required<
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
-    jsHandler: (rawSource: string, set: Set<string>) => { code: string }
+    jsHandler: JsHandler
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
@@ -476,3 +485,5 @@ export interface InternalPatchResult {
   processTailwindFeatures?: string
   plugin?: string
 }
+
+export type CreateJsHandlerOptions = Omit<IJsHandlerOptions, 'classNameSet'>

@@ -1,6 +1,6 @@
 import { isMatch } from 'micromatch'
 import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
-import { createjsHandler } from './js'
+import { createJsHandler } from './js'
 import { defaultOptions } from './defaults'
 import { defu, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
@@ -85,13 +85,14 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     injectAdditionalCssVarScope
   })
   result.styleHandler = styleHandler
-  const jsHandler = createjsHandler({
+  const jsHandler = createJsHandler({
     minifiedJs,
     escapeMap,
     mangleContext,
     arbitraryValues,
     jsPreserveClass,
-    strategy: jsEscapeStrategy
+    strategy: jsEscapeStrategy,
+    generateMap: true
   })
   result.jsHandler = jsHandler
 

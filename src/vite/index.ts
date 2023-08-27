@@ -55,13 +55,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         for (let i = 0; i < groupedEntries.css.length; i++) {
           // let classGenerator
           const [file, originalSource] = groupedEntries.css[i] as [string, OutputAsset]
-          // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
-          //   classGenerator = globalClassGenerator
-          // }
+
           const rawSource = originalSource.source.toString()
           const css = styleHandler(rawSource, {
             isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
-            // classGenerator
           })
           originalSource.source = css
           onUpdate(file, rawSource, css)
@@ -71,9 +68,17 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         for (let i = 0; i < groupedEntries.js.length; i++) {
           const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
           const rawSource = originalSource.code
-          const { code } = jsHandler(rawSource, runtimeSet)
+          const mapFilename = file + '.map'
+          const hasMap = Boolean(bundle[mapFilename])
+          const { code, map } = jsHandler(rawSource, runtimeSet, {
+            generateMap: hasMap
+          })
           originalSource.code = code
           onUpdate(file, rawSource, code)
+
+          if (hasMap && map) {
+            ;(bundle[mapFilename] as OutputAsset).source = map.toString()
+          }
         }
       }
       onEnd()
