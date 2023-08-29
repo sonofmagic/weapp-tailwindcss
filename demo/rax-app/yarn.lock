@@ -1412,20 +1412,20 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@csstools/css-parser-algorithms@^2.3.0":
+"@csstools/css-parser-algorithms@^2.3.1":
   version "2.3.1"
   resolved "https://registry.npmmirror.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-2.3.1.tgz#ec4fc764ba45d2bb7ee2774667e056aa95003f3a"
   integrity sha512-xrvsmVUtefWMWQsGgFffqWSK03pZ1vfDki4IVIIUxxDKnGBzqNgv0A7SB1oXtVNEkcVO8xi1ZrTL29HhSu5kGA==
 
-"@csstools/css-tokenizer@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.npmmirror.com/@csstools/css-tokenizer/-/css-tokenizer-2.1.1.tgz#07ae11a0a06365d7ec686549db7b729bc036528e"
-  integrity sha512-GbrTj2Z8MCTUv+52GE0RbFGM527xuXZ0Xa5g0Z+YN573uveS4G0qi6WNOMyz3yrFM/jaILTTwJ0+umx81EzqfA==
+"@csstools/css-tokenizer@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.npmmirror.com/@csstools/css-tokenizer/-/css-tokenizer-2.2.0.tgz#9d70e6dcbe94e44c7400a2929928db35c4de32b5"
+  integrity sha512-wErmsWCbsmig8sQKkM6pFhr/oPha1bHfvxsUY5CYSQxwyhA9Ulrs8EqCgClhg4Tgg2XapVstGqSVcz0xOYizZA==
 
-"@csstools/media-query-list-parser@^2.1.2":
-  version "2.1.3"
-  resolved "https://registry.npmmirror.com/@csstools/media-query-list-parser/-/media-query-list-parser-2.1.3.tgz#4471ebd436a22019378fe9c8ac8c0f30c4fbb796"
-  integrity sha512-ATul1u+pic4aVpstgueqxEv4MsObEbszAxfTXpx9LHaeD3LAh+wFqdCteyegWmjk0k5rkSCAvIOaJe9U3DD09w==
+"@csstools/media-query-list-parser@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.npmmirror.com/@csstools/media-query-list-parser/-/media-query-list-parser-2.1.4.tgz#0017f99945f6c16dd81a7aacf6821770933c3a5c"
+  integrity sha512-V/OUXYX91tAC1CDsiY+HotIcJR+vPtzrX8pCplCpT++i8ThZZsq5F5dzZh/bDM3WUOjrvC1ljed1oSJxMfjqhw==
 
 "@csstools/postcss-is-pseudo-class@^4.0.0":
   version "4.0.0"
@@ -1452,10 +1452,10 @@
   resolved "https://registry.npmmirror.com/@eslint-community/regexpp/-/regexpp-4.6.2.tgz#1816b5f6948029c5eaacb0703b850ee0cb37d8f8"
   integrity sha512-pPTNuaAG3QMH+buKyBIGJs3g/S5y0caxw0ygM3YyE6yJFySwiGGSzA+mM3KJ8QQvzeLh3blwgSonkFjgQdxzMw==
 
-"@eslint/eslintrc@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.npmmirror.com/@eslint/eslintrc/-/eslintrc-2.1.1.tgz#18d635e24ad35f7276e8a49d135c7d3ca6a46f93"
-  integrity sha512-9t7ZA7NGGK8ckelF0PQCfcxIUzs1Md5rrO6U/c+FIQNanea5UZC0wqKXH4vHBccmu4ZJgZ2idtPeW7+Q2npOEA==
+"@eslint/eslintrc@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.npmmirror.com/@eslint/eslintrc/-/eslintrc-2.1.2.tgz#c6936b4b328c64496692f76944e755738be62396"
+  integrity sha512-+wvgpDsrB1YqAMdEUCcnTlpfVBH7Vqn6A/NT3D8WVXFIaKMlErPIZT3oCIAVCOtarRpMtelZLqJeU3t7WY6X6g==
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
@@ -1467,10 +1467,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@^8.46.0":
-  version "8.46.0"
-  resolved "https://registry.npmmirror.com/@eslint/js/-/js-8.46.0.tgz#3f7802972e8b6fe3f88ed1aabc74ec596c456db6"
-  integrity sha512-a8TLtmPi8xzPkCbp/OGFUo5yhRkHM2Ko9kOWP4znJr0WAhWyThaw3PnwX4vOTWOAMsV2uRt32PPDcEz63esSaA==
+"@eslint/js@8.48.0":
+  version "8.48.0"
+  resolved "https://registry.npmmirror.com/@eslint/js/-/js-8.48.0.tgz#642633964e217905436033a2bd08bf322849b7fb"
+  integrity sha512-ZSjtmelB7IJfWD2Fvb7+Z+ChTIKWq6kjda95fLcQKNS5aheVHn4IkfgRQE3sIIzTcSLwLcLZUD9UBt+V7+h+Pw==
 
 "@gar/promisify@^1.1.3":
   version "1.1.3"
@@ -1886,10 +1886,10 @@
   resolved "https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
-"@types/rax@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.npmmirror.com/@types/rax/-/rax-1.0.10.tgz#fe0de2caf845c67deba727c5c9aa0cc409ee35b9"
-  integrity sha512-+okXhH2l6gqZJycBfwiXuMcN92A18yROgGtZRzP2pPSxI75gSZeWNCJa3B5Arp+dp5h1Egjf/5gxpr5Un63JaQ==
+"@types/rax@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.npmmirror.com/@types/rax/-/rax-1.0.11.tgz#0b9d705254ec44bbbe6f5f558f4180fc0cb99d37"
+  integrity sha512-MSCSCjW/TucjH4CWEoUoZIM60b5I4g5XcBxUNI6YzMIoNmWd7UqumKgO45V10vIk2nYOP9AVKBb9n/KItjdw/A==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -2435,13 +2435,13 @@ atob@^2.1.2:
   resolved "https://registry.npmmirror.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-autoprefixer@^10.4.14:
-  version "10.4.14"
-  resolved "https://registry.npmmirror.com/autoprefixer/-/autoprefixer-10.4.14.tgz#e28d49902f8e759dd25b153264e862df2705f79d"
-  integrity sha512-FQzyfOsTlwVzjHxKEqRIAdJx9niO6VCBCoEwax/VLSoQF29ggECcPuBqUMZ+u8jCZOPSy8b8/8KnuFbp0SaFZQ==
+autoprefixer@^10.4.15:
+  version "10.4.15"
+  resolved "https://registry.npmmirror.com/autoprefixer/-/autoprefixer-10.4.15.tgz#a1230f4aeb3636b89120b34a1f513e2f6834d530"
+  integrity sha512-KCuPB8ZCIqFdA4HwKXsvz7j6gvSDNhDP7WnUjBleRkKjPdvCmHFuQ77ocavI8FT6NdvlBnE2UFr2H4Mycn8Vew==
   dependencies:
-    browserslist "^4.21.5"
-    caniuse-lite "^1.0.30001464"
+    browserslist "^4.21.10"
+    caniuse-lite "^1.0.30001520"
     fraction.js "^4.2.0"
     normalize-range "^0.1.2"
     picocolors "^1.0.0"
@@ -2892,15 +2892,15 @@ browserslist@^4.20.2, browserslist@^4.20.3:
     node-releases "^2.0.3"
     picocolors "^1.0.0"
 
-browserslist@^4.21.5:
-  version "4.21.5"
-  resolved "https://registry.npmmirror.com/browserslist/-/browserslist-4.21.5.tgz#75c5dae60063ee641f977e00edd3cfb2fb7af6a7"
-  integrity sha512-tUkiguQGW7S3IhB7N+c2MV/HZPSCPAAiYBZXLsBhFB/PCy6ZKKsZrmBayHV9fdGV/ARIfJ14NkxKzRDjvp7L6w==
+browserslist@^4.21.10:
+  version "4.21.10"
+  resolved "https://registry.npmmirror.com/browserslist/-/browserslist-4.21.10.tgz#dbbac576628c13d3b2231332cb2ec5a46e015bb0"
+  integrity sha512-bipEBdZfVH5/pwrvqc+Ub0kUPVfGUhlKxbvfD+z1BDnPEO/X98ruXGA1WP5ASpAFKan7Qr6j736IacbZQuAlKQ==
   dependencies:
-    caniuse-lite "^1.0.30001449"
-    electron-to-chromium "^1.4.284"
-    node-releases "^2.0.8"
-    update-browserslist-db "^1.0.10"
+    caniuse-lite "^1.0.30001517"
+    electron-to-chromium "^1.4.477"
+    node-releases "^2.0.13"
+    update-browserslist-db "^1.0.11"
 
 bser@2.1.1:
   version "2.1.1"
@@ -3321,10 +3321,10 @@ caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001332:
   resolved "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001344.tgz#8a1e7fdc4db9c2ec79a05e9fd68eb93a761888bb"
   integrity sha512-0ZFjnlCaXNOAYcV7i+TtdKBp0L/3XEU2MF/x6Du1lrh+SRX4IfzIVL4HNJg5pB2PmFb8rszIGyOvsZnqqRoc2g==
 
-caniuse-lite@^1.0.30001449, caniuse-lite@^1.0.30001464:
-  version "1.0.30001466"
-  resolved "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001466.tgz#c1e6197c540392e09709ecaa9e3e403428c53375"
-  integrity sha512-ewtFBSfWjEmxUgNBSZItFSmVtvk9zkwkl1OfRZlKA8slltRN+/C/tuGVrF9styXkN36Yu3+SeJ1qkXxDEyNZ5w==
+caniuse-lite@^1.0.30001517, caniuse-lite@^1.0.30001520:
+  version "1.0.30001524"
+  resolved "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001524.tgz#1e14bce4f43c41a7deaeb5ebfe86664fe8dadb80"
+  integrity sha512-Jj917pJtYg9HSJBF95HVX3Cdr89JUyLT4IZ8SvM5aDRni95swKgYi3TgYLH5hnGfPE/U1dg6IfZ50UsIlLkwSA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -4591,10 +4591,10 @@ electron-to-chromium@^1.3.564, electron-to-chromium@^1.4.118:
   resolved "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.4.142.tgz#70cc8871f7c0122b29256089989e67cee637b40d"
   integrity sha512-ea8Q1YX0JRp4GylOmX4gFHIizi0j9GfRW4EkaHnkZp0agRCBB4ZGeCv17IEzIvBkiYVwfoKVhKZJbTfqCRdQdg==
 
-electron-to-chromium@^1.4.284:
-  version "1.4.328"
-  resolved "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.4.328.tgz#b4565ffa502542b561cea16086d6d9b916c7095a"
-  integrity sha512-DE9tTy2PNmy1v55AZAO542ui+MLC2cvINMK4P2LXGsJdput/ThVG9t+QGecPuAZZSgC8XoI+Jh9M1OG9IoNSCw==
+electron-to-chromium@^1.4.477:
+  version "1.4.504"
+  resolved "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.4.504.tgz#975522945676cf2d55910988a169f07b83081488"
+  integrity sha512-cSMwIAd8yUh54VwitVRVvHK66QqHWE39C3DRj8SWiXitEpVSY3wNPD9y1pxQtLIi4w3UdzF9klLsmuPshz09DQ==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -5062,10 +5062,10 @@ eslint-visitor-keys@^3.4.1:
   resolved "https://registry.npmmirror.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.1.tgz#c22c48f48942d08ca824cc526211ae400478a994"
   integrity sha512-pZnmmLwYzf+kWaM/Qgrvpen51upAktaaiI01nsJD/Yr3lMOdNtq0cxkrrg16w64VtisN6okbs7Q8AfGqj4c9fA==
 
-eslint-visitor-keys@^3.4.2:
-  version "3.4.2"
-  resolved "https://registry.npmmirror.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.2.tgz#8c2095440eca8c933bedcadf16fefa44dbe9ba5f"
-  integrity sha512-8drBzUEyZ2llkpCA67iYrgEssKDUu68V8ChqqOfFupIaG/LCVPUT+CoGJpT77zJprs4T/W7p07LP7zAIMuweVw==
+eslint-visitor-keys@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.npmmirror.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz#0cd72fe8550e3c2eae156a96a4dddcd1c8ac5800"
+  integrity sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==
 
 eslint-webpack-plugin@^3.0.1:
   version "3.1.1"
@@ -5078,15 +5078,15 @@ eslint-webpack-plugin@^3.0.1:
     normalize-path "^3.0.0"
     schema-utils "^3.1.1"
 
-eslint@^8.46.0:
-  version "8.46.0"
-  resolved "https://registry.npmmirror.com/eslint/-/eslint-8.46.0.tgz#a06a0ff6974e53e643acc42d1dcf2e7f797b3552"
-  integrity sha512-cIO74PvbW0qU8e0mIvk5IV3ToWdCq5FYG6gWPHHkx6gNdjlbAYvtfHmlCMXxjcoVaIdwy/IAt3+mDkZkfvb2Dg==
+eslint@^8.48.0:
+  version "8.48.0"
+  resolved "https://registry.npmmirror.com/eslint/-/eslint-8.48.0.tgz#bf9998ba520063907ba7bfe4c480dc8be03c2155"
+  integrity sha512-sb6DLeIuRXxeM1YljSe1KEx9/YYeZFQWcV8Rq9HfigmdDEugjLEVEa1ozDjL6YDjBpQHPJxJzze+alxi4T3OLg==
   dependencies:
     "@eslint-community/eslint-utils" "^4.2.0"
     "@eslint-community/regexpp" "^4.6.1"
-    "@eslint/eslintrc" "^2.1.1"
-    "@eslint/js" "^8.46.0"
+    "@eslint/eslintrc" "^2.1.2"
+    "@eslint/js" "8.48.0"
     "@humanwhocodes/config-array" "^0.11.10"
     "@humanwhocodes/module-importer" "^1.0.1"
     "@nodelib/fs.walk" "^1.2.8"
@@ -5097,7 +5097,7 @@ eslint@^8.46.0:
     doctrine "^3.0.0"
     escape-string-regexp "^4.0.0"
     eslint-scope "^7.2.2"
-    eslint-visitor-keys "^3.4.2"
+    eslint-visitor-keys "^3.4.3"
     espree "^9.6.1"
     esquery "^1.4.2"
     esutils "^2.0.2"
@@ -5370,7 +5370,7 @@ fast-glob@^3.2.12:
     merge2 "^1.3.0"
     micromatch "^4.0.4"
 
-fast-glob@^3.3.0:
+fast-glob@^3.3.1:
   version "3.3.1"
   resolved "https://registry.npmmirror.com/fast-glob/-/fast-glob-3.3.1.tgz#784b4e897340f3dbbef17413b3f11acf03c874c4"
   integrity sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==
@@ -7333,10 +7333,10 @@ kleur@^3.0.3:
   resolved "https://registry.npmmirror.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
-known-css-properties@^0.27.0:
-  version "0.27.0"
-  resolved "https://registry.npmmirror.com/known-css-properties/-/known-css-properties-0.27.0.tgz#82a9358dda5fe7f7bd12b5e7142c0a205393c0c5"
-  integrity sha512-uMCj6+hZYDoffuvAJjFAPz56E9uoowFHmTkqRtRq5WyC5Q6Cu/fTZKNQpX/RbzChBYLLl3lo8CjFZBAZXq9qFg==
+known-css-properties@^0.28.0:
+  version "0.28.0"
+  resolved "https://registry.npmmirror.com/known-css-properties/-/known-css-properties-0.28.0.tgz#8a8be010f368b3036fe6ab0ef4bbbed972bd6274"
+  integrity sha512-9pSL5XB4J+ifHP0e0jmmC98OGC1nL8/JjS+fi6mnTlIf//yt/MfVLtKg7S6nCtj/8KTcWX7nRlY0XywoYY1ISQ==
 
 less@^4.0.0:
   version "4.1.2"
@@ -8276,15 +8276,15 @@ node-releases@^1.1.61:
   resolved "https://registry.npmmirror.com/node-releases/-/node-releases-1.1.77.tgz#50b0cfede855dd374e7585bf228ff34e57c1c32e"
   integrity sha512-rB1DUFUNAN4Gn9keO2K1efO35IDK7yKHCdCaIMvFO7yUYmmZYeDjnGKle26G4rwj+LKRQpjyUUvMkPglwGCYNQ==
 
+node-releases@^2.0.13:
+  version "2.0.13"
+  resolved "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.13.tgz#d5ed1627c23e3461e819b02e57b75e4899b1c81d"
+  integrity sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==
+
 node-releases@^2.0.3:
   version "2.0.5"
   resolved "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.5.tgz#280ed5bc3eba0d96ce44897d8aee478bfb3d9666"
   integrity sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==
-
-node-releases@^2.0.8:
-  version "2.0.10"
-  resolved "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.10.tgz#c311ebae3b6a148c89b1813fd7c4d3c024ef537f"
-  integrity sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==
 
 nopt@^5.0.0:
   version "5.0.0"
@@ -9144,7 +9144,7 @@ postcss@6.0.1:
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
-postcss@8.4.28:
+postcss@8.4.28, postcss@^8.4.28:
   version "8.4.28"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.28.tgz#c6cc681ed00109072816e1557f889ef51cf950a5"
   integrity sha512-Z7V5j0cq8oEKyejIKfpD8b4eBy9cwW2JWPk0+fB1HOAMsfHbnAXLLS+PfVWlzMSLQaWttKDt607I0XHmpE67Vw==
@@ -9188,7 +9188,7 @@ postcss@^8.4.23:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postcss@^8.4.25, postcss@^8.4.27:
+postcss@^8.4.27:
   version "8.4.27"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.27.tgz#234d7e4b72e34ba5a92c29636734349e0d9c3057"
   integrity sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==
@@ -9207,10 +9207,10 @@ prettier@^2.0.2:
   resolved "https://registry.npmmirror.com/prettier/-/prettier-2.6.2.tgz#e26d71a18a74c3d0f0597f55f01fb6c06c206032"
   integrity sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==
 
-prettier@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.npmmirror.com/prettier/-/prettier-3.0.1.tgz#65271fc9320ce4913c57747a70ce635b30beaa40"
-  integrity sha512-fcOWSnnpCrovBsmFZIGIy9UqK2FaI7Hqax+DIO0A9UxeVoY4iweyaFjS5TavZN97Hfehph0nhsZnjlVKzEQSrQ==
+prettier@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.npmmirror.com/prettier/-/prettier-3.0.3.tgz#432a51f7ba422d1469096c0fdc28e235db8f9643"
+  integrity sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==
 
 pretty-data@^0.40.0:
   version "0.40.0"
@@ -10929,14 +10929,14 @@ stylelint-scss@^3.18.0:
     postcss-selector-parser "^6.0.2"
     postcss-value-parser "^4.1.0"
 
-stylelint@^15.10.2:
-  version "15.10.2"
-  resolved "https://registry.npmmirror.com/stylelint/-/stylelint-15.10.2.tgz#0ee5a8371d3a2e1ff27fefd48309d3ddef7c3405"
-  integrity sha512-UxqSb3hB74g4DTO45QhUHkJMjKKU//lNUAOWyvPBVPZbCknJ5HjOWWZo+UDuhHa9FLeVdHBZXxu43eXkjyIPWg==
+stylelint@^15.10.3:
+  version "15.10.3"
+  resolved "https://registry.npmmirror.com/stylelint/-/stylelint-15.10.3.tgz#995e4512fdad450fb83e13f3472001f6edb6469c"
+  integrity sha512-aBQMMxYvFzJJwkmg+BUUg3YfPyeuCuKo2f+LOw7yYbU8AZMblibwzp9OV4srHVeQldxvSFdz0/Xu8blq2AesiA==
   dependencies:
-    "@csstools/css-parser-algorithms" "^2.3.0"
-    "@csstools/css-tokenizer" "^2.1.1"
-    "@csstools/media-query-list-parser" "^2.1.2"
+    "@csstools/css-parser-algorithms" "^2.3.1"
+    "@csstools/css-tokenizer" "^2.2.0"
+    "@csstools/media-query-list-parser" "^2.1.4"
     "@csstools/selector-specificity" "^3.0.0"
     balanced-match "^2.0.0"
     colord "^2.9.3"
@@ -10944,7 +10944,7 @@ stylelint@^15.10.2:
     css-functions-list "^3.2.0"
     css-tree "^2.3.1"
     debug "^4.3.4"
-    fast-glob "^3.3.0"
+    fast-glob "^3.3.1"
     fastest-levenshtein "^1.0.16"
     file-entry-cache "^6.0.1"
     global-modules "^2.0.0"
@@ -10955,13 +10955,13 @@ stylelint@^15.10.2:
     import-lazy "^4.0.0"
     imurmurhash "^0.1.4"
     is-plain-object "^5.0.0"
-    known-css-properties "^0.27.0"
+    known-css-properties "^0.28.0"
     mathml-tag-names "^2.1.3"
     meow "^10.1.5"
     micromatch "^4.0.5"
     normalize-path "^3.0.0"
     picocolors "^1.0.0"
-    postcss "^8.4.25"
+    postcss "^8.4.27"
     postcss-resolve-nested-selector "^0.1.1"
     postcss-safe-parser "^6.0.0"
     postcss-selector-parser "^6.0.13"
@@ -11555,10 +11555,10 @@ upath@^1.1.1:
   resolved "https://registry.npmmirror.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
-update-browserslist-db@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.0.10.tgz#0f54b876545726f17d00cd9a2561e6dade943ff3"
-  integrity sha512-OztqDenkfFkbSG+tRxBeAnCVPckDBcvibKd35yDONx6OU8N7sqgwc7rCbkJ/WcYtVRZ4ba68d6byhC21GFh7sQ==
+update-browserslist-db@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.0.11.tgz#9a2a641ad2907ae7b3616506f4b977851db5b940"
+  integrity sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA==
   dependencies:
     escalade "^3.1.1"
     picocolors "^1.0.0"
