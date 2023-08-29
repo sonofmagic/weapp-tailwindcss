@@ -22,6 +22,12 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
         isMainChunk && commonChunkPreflight(rule, options)
         isCustomRuleCallbackFn && customRuleCallback(rule, options)
       })
+    },
+    AtRule(atRule) {
+      if (atRule.name === 'media' && atRule.params === '(hover: hover)') {
+        atRule.before(atRule.nodes)
+        atRule.remove()
+      }
     }
   } as Plugin
 }

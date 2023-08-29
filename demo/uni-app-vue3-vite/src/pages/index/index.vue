@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <!-- <button class="btn btn-primary">button</button> -->
     <Issue228 class="mt-[96.3px] w-[61.1px] h-[50.99px]"
       src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"></Issue228>
     <view>{{ wildContent }}</view>

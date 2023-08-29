@@ -1,7 +1,7 @@
-const plugin = require('tailwindcss/plugin');
 const { each, variants } = require('./variants.js');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
+const plugin = require('tailwindcss/plugin');
 fs.writeFileSync(path.resolve(__dirname, './variants.json'), JSON.stringify(variants, null, 2), {
   encoding: 'utf-8',
 });
@@ -19,6 +19,7 @@ module.exports = {
   },
   plugins: [
     tailwindcssChildrenPlugin,
+    require('daisyui'),
     // plugin(({ addVariant }) =>
     //   each((x) => {
     //     addVariant(...x)

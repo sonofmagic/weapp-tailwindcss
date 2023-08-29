@@ -37,6 +37,38 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
+  it('css @media hover case 0', () => {
+    const { styleHandler } = getOptions()
+    const code = styleHandler(
+      `@media (hover: hover) {
+      a {
+        color: white;
+        background: black;
+      }
+    }`,
+      {
+        isMainChunk: true
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
+
+  it('css @media hover case 1', () => {
+    const { styleHandler } = getOptions()
+    const code = styleHandler(
+      `@media (hover: hover) {
+      a:hover {
+        color: white;
+        background: black;
+      }
+    }`,
+      {
+        isMainChunk: true
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
+
   // it('main chunk remove empty var', async () => {
   //   const testCase = await getCase('taro.dev.css')
   //   const result = styleHandler(testCase, {

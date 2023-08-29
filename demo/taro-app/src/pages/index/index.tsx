@@ -24,6 +24,7 @@ const Index = () => {
   const wildContent = '****'
   return (
     <>
+      {/* <Button className='btn btn-primary'>Button</Button> */}
       <Navigator url='/moduleA/pages/index'>普通分包</Navigator>
       <Navigator url='/moduleB/pages/index'>独立分包</Navigator>
       <View>{wildContent}</View>
