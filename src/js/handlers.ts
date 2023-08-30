@@ -13,7 +13,7 @@ export function regenerateHandleValue(str: string, node: StringLiteral | Templat
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const ctx = options.mangleContext
   const jsPreserveClass = options.jsPreserveClass
-  const arr = splitCode(str, allowDoubleQuotes) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
+  const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
   for (const v of arr) {
     if (set.has(v) && !jsPreserveClass?.(v)) {
@@ -45,7 +45,7 @@ export function replaceHandleValue(str: string, node: StringLiteral | TemplateEl
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const ctx = options.mangleContext
   const jsPreserveClass = options.jsPreserveClass
-  const arr = splitCode(str, allowDoubleQuotes) // .split(/\s/).filter((x) => x) // splitCode(n.value) // .split(/\s/).filter((x) => x)
+  const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
   for (const v of arr) {
     if (set.has(v) && !jsPreserveClass?.(v)) {

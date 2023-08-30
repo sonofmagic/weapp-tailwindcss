@@ -32,6 +32,11 @@
     <button class="btn btn-xs">Tiny</button>
     <button class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg">Responsive</button>
     <button class="btn btn-wide">Wide</button>
+    <div class="avatar">
+
+      <img class="w-24 h-24 rounded" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+
+    </div>
   </div>
 </template>
 

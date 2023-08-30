@@ -539,4 +539,39 @@ describe('styleHandler', () => {
     const result = styleHandler(rawCode, { isMainChunk: false })
     expect(result).toBe('page,[data-theme]{}')
   })
+
+  it('combinator selector case 0', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.space-x-4>view + view{}')
+  })
+
+  it('combinator selector case 1', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.divide-x>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.divide-x>view + view{}')
+  })
+
+  it('combinator selector case 2', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.divide-blue-200>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.divide-blue-200>view + view{}')
+  })
+
+  it('combinator selector case 3', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:is(.dark .dark:divide-slate-700)>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.dark .dark:divide-slate-700>view + view{}')
+  })
+
+  it('combinator selector case 4', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.divide-dashed>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.divide-dashed>view + view{}')
+  })
 })

@@ -6,6 +6,7 @@ import { parse, traverse, generate } from '@/babel'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerReplaceResult, JsHandlerResult } from '@/types'
 import { isProd } from '@/env'
 import { jsStringEscape } from '@/escape'
+import { defu } from '@/utils'
 
 function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
@@ -165,19 +166,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 export function createJsHandler(options: CreateJsHandlerOptions) {
   const { mangleContext, arbitraryValues, minifiedJs, escapeMap, jsPreserveClass, strategy, generateMap } = options
   return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
-    const opts = Object.assign(
-      {
-        classNameSet: set,
-        minifiedJs,
-        escapeMap,
-        arbitraryValues,
-        mangleContext,
-        jsPreserveClass,
-        strategy,
-        generateMap
-      },
-      options
-    )
+    const opts = defu<IJsHandlerOptions, IJsHandlerOptions[]>(options, {
+      classNameSet: set,
+      minifiedJs,
+      escapeMap,
+      arbitraryValues,
+      mangleContext,
+      jsPreserveClass,
+      strategy,
+      generateMap
+    })
     return jsHandler(rawSource, opts)
   }
 }
