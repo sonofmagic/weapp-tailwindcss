@@ -24,7 +24,7 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
       })
     },
     AtRule(atRule) {
-      if (atRule.name === 'media' && atRule.params === '(hover: hover)') {
+      if (atRule.name === 'media' && /\(hover:\s*hover\)/.test(atRule.params)) {
         atRule.before(atRule.nodes)
         atRule.remove()
       }

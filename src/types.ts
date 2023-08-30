@@ -26,16 +26,8 @@ export type RequiredStyleHandlerOptions = {
    */
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
-  cssPreflightRange?: 'view' | 'all'
-  /**
-   * @description 用于控制 tailwindcss 子组合器的生效标签范围
-   * @default 'view + view'
-   */
-  cssChildCombinatorReplaceValue?: string | string[]
-  replaceUniversalSelectorWith?: string | false
   escapeMap?: Record<string, string>
-  injectAdditionalCssVarScope?: boolean
-}
+} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'replaceUniversalSelectorWith' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement'>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -412,6 +404,17 @@ const customAttributes = {
    * @internal
    */
   runtimeLoaderPath?: string
+
+  cssSelectorReplacement?: {
+    /**
+     * @default 'page'
+     */
+    root?: string | false
+    /**
+     * @default 'view'
+     */
+    universal?: string | false
+  }
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult

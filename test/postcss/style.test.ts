@@ -525,4 +525,18 @@ describe('styleHandler', () => {
     const result = styleHandler(rawSource, { isMainChunk: false })
     expect(result).toMatchSnapshot()
   })
+
+  it(':root pseudo case 0', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root{}`
+    const result = styleHandler(rawCode, { isMainChunk: false })
+    expect(result).toBe('page{}')
+  })
+
+  it(':root pseudo case 1', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root,[data-theme]{}`
+    const result = styleHandler(rawCode, { isMainChunk: false })
+    expect(result).toBe('page,[data-theme]{}')
+  })
 })

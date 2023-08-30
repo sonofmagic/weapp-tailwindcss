@@ -19,7 +19,7 @@ module.exports = {
   },
   plugins: [
     tailwindcssChildrenPlugin,
-    // require('daisyui'),
+    require('daisyui'),
     // plugin(({ addVariant }) =>
     //   each((x) => {
     //     addVariant(...x)

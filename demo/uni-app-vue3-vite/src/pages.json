@@ -8,6 +8,12 @@
       }
     },
     {
+      "path": "pages/index/daisyui",
+      "style": {
+        "navigationBarTitleText": "daisyui"
+      }
+    },
+    {
       "path": "pages/issue/case55",
       "style": {
         "navigationBarTitleText": "case55"
@@ -41,6 +47,10 @@
   "condition": {
     "current": 0,
     "list": [
+      {
+        "name": "daisyui",
+        "path": "pages/index/daisyui"
+      },
       {
         "name": "case55",
         "path": "pages/issue/case55",
