@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@ast-core/escape':
+    specifier: ^1.0.0
+    version: 1.0.0
   '@babel/generator':
     specifier: ^7.22.10
     version: 7.22.10
@@ -24,11 +27,11 @@ dependencies:
     specifier: ^2.1.0
     version: 2.1.0
   '@weapp-core/escape':
-    specifier: ^1.1.0
-    version: 1.1.0
+    specifier: ^2.0.0
+    version: 2.0.0
   '@weapp-core/regex':
-    specifier: ^1.0.0
-    version: 1.0.0
+    specifier: ^1.0.1
+    version: 1.0.1
   htmlparser2:
     specifier: ^9.0.0
     version: 9.0.0
@@ -2255,14 +2258,12 @@ packages:
       pretty-format: 29.6.3
     dev: true
 
-  /@weapp-core/escape@1.1.0:
-    resolution: {integrity: sha512-LO7bVIVpO6J7G2ENZ81PHSk5msp1rhmU1NLSX1iWHJm9YOmpNd2Xiu8fvk5uKtJffshMxJI/Kpp7lYPekDA6Mw==}
-    dependencies:
-      '@ast-core/escape': 1.0.0
+  /@weapp-core/escape@2.0.0:
+    resolution: {integrity: sha512-AB34eFpoVfj/urfJPoZURwamSzLlMuDL6TNV+aXLW8aJsw3ud0/XkrEL/FkBsuaTgTD1rarip+y4NkQwrhQ91A==}
     dev: false
 
-  /@weapp-core/regex@1.0.0:
-    resolution: {integrity: sha512-XSzPETlGryMdPYOhmlGUtqye+tTuubPW4N9HlIhcwQNWaMWCp9nEEM4OpRrvtss01dBqZtgKMnr9a2mg+102xQ==}
+  /@weapp-core/regex@1.0.1:
+    resolution: {integrity: sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==}
     dev: false
 
   /@webassemblyjs/ast@1.11.6:

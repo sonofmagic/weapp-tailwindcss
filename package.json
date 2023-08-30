@@ -224,14 +224,15 @@
     "webpack-build-utils": "^0.0.4"
   },
   "dependencies": {
+    "@ast-core/escape": "^1.0.0",
     "@babel/generator": "^7.22.10",
     "@babel/parser": "^7.22.13",
     "@babel/traverse": "^7.22.11",
     "@babel/types": "^7.22.11",
     "@csstools/postcss-is-pseudo-class": "^4.0.0",
     "@tailwindcss-mangle/shared": "^2.1.0",
-    "@weapp-core/escape": "^1.1.0",
-    "@weapp-core/regex": "^1.0.0",
+    "@weapp-core/escape": "^2.0.0",
+    "@weapp-core/regex": "^1.0.1",
     "htmlparser2": "^9.0.0",
     "loader-utils": "^2.0.3",
     "magic-string": "^0.30.3",
