@@ -1,5 +1,7 @@
 import type { Rule } from 'postcss'
 import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle/shared'
+import type { SourceMap } from 'magic-string'
+import type { GeneratorResult } from '@babel/generator'
 import type { InjectPreflight } from './postcss/preflight'
 export type ItemOrItemArray<T> = T | T[]
 
@@ -24,16 +26,8 @@ export type RequiredStyleHandlerOptions = {
    */
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
-  cssPreflightRange?: 'view' | 'all'
-  /**
-   * @description 用于控制 tailwindcss 子组合器的生效标签范围
-   * @default 'view + view'
-   */
-  cssChildCombinatorReplaceValue?: string | string[]
-  replaceUniversalSelectorWith?: string | false
   escapeMap?: Record<string, string>
-  injectAdditionalCssVarScope?: boolean
-}
+} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'replaceUniversalSelectorWith' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement'>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -46,6 +40,10 @@ export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
   mangleContext?: IMangleScopeContext
 } & RequiredStyleHandlerOptions
+
+export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
+
+export type JsHandlerResult = JsHandlerReplaceResult | GeneratorResult
 
 export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
@@ -60,6 +58,7 @@ export type IJsHandlerOptions = {
   jsPreserveClass?: (keyword: string) => boolean | undefined
   strategy?: UserDefinedOptions['jsEscapeStrategy']
   needEscaped?: boolean
+  generateMap?: boolean
 }
 export interface RawSource {
   start: number
@@ -316,7 +315,7 @@ const customAttributes = {
    * 你可以传入一个 字符串，或者字符串数组
    * 1. 传入字符串数组,比如 `['view','text']` 生成:
    * ```css
-   * .space-y-4>view,text + view,text{}
+   * .space-y-4>view + view,text + text{}
    * ```
    *
    * 2. 传入一个字符串，此时行为变成了整个替换，比如 `'view,text,button,input ~ view,text,button,input'` 生成:
@@ -405,7 +404,20 @@ const customAttributes = {
    * @internal
    */
   runtimeLoaderPath?: string
+
+  cssSelectorReplacement?: {
+    /**
+     * @default 'page'
+     */
+    root?: string | false
+    /**
+     * @default 'view'
+     */
+    universal?: string | false
+  }
 }
+
+export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
 
 export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']
@@ -431,7 +443,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
   inlineWxs?: boolean
-  jsHandler?: (rawSource: string, set: Set<string>) => { code: string }
+  jsHandler?: JsHandler
   runtimeSet?: Set<string>
   disabledDefaultTemplateHandler?: boolean
 }
@@ -445,7 +457,7 @@ export type InternalUserDefinedOptions = Required<
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
-    jsHandler: (rawSource: string, set: Set<string>) => { code: string }
+    jsHandler: JsHandler
     escapeMap: Record<string, string>
     patch: () => void
     customReplaceDictionary: Record<string, string>
@@ -476,3 +488,5 @@ export interface InternalPatchResult {
   processTailwindFeatures?: string
   plugin?: string
 }
+
+export type CreateJsHandlerOptions = Omit<IJsHandlerOptions, 'classNameSet'>

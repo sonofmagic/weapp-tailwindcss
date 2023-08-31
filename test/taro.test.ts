@@ -2,10 +2,10 @@
 import { getClassCacheSet } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
 import { SimpleMappingChars2String } from '@/escape'
-import { createjsHandler } from '@/js/index'
+import { createJsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
-import { getOptions } from '@/options'
-import { defaultOptions } from '@/defaults'
+// import { getOptions } from '@/options'
+// import { defaultOptions } from '@/defaults'
 const getCase = createGetCase(jsCasePath)
 
 const testTable = [
@@ -22,34 +22,34 @@ const testTable = [
 }[]
 
 describe('taro app', () => {
-  let h: ReturnType<typeof createjsHandler>
-  let rh: ReturnType<typeof createjsHandler>
-  let mh: ReturnType<typeof createjsHandler>
-  let dh: ReturnType<typeof createjsHandler>
-  let defaultJsHandler: ReturnType<typeof createjsHandler>
+  let h: ReturnType<typeof createJsHandler>
+  let rh: ReturnType<typeof createJsHandler>
+  let mh: ReturnType<typeof createJsHandler>
+  // let dh: ReturnType<typeof createJsHandler>
+  // let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
-    h = createjsHandler({
+    h = createJsHandler({
       escapeMap: SimpleMappingChars2String
     })
-    rh = createjsHandler({
+    rh = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       strategy: 'replace'
     })
-    mh = createjsHandler({
+    mh = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       minifiedJs: true
     })
 
-    dh = createjsHandler({
-      escapeMap: SimpleMappingChars2String,
-      minifiedJs: true,
-      arbitraryValues: {
-        allowDoubleQuotes: true
-      }
-    })
+    // dh = createJsHandler({
+    //   escapeMap: SimpleMappingChars2String,
+    //   minifiedJs: true,
+    //   arbitraryValues: {
+    //     allowDoubleQuotes: true
+    //   }
+    // })
 
-    const { jsHandler } = getOptions()
-    defaultJsHandler = jsHandler
+    // const { jsHandler } = getOptions()
+    // defaultJsHandler = jsHandler
   })
 
   it.each(testTable)('$name break taro-terser-minify case', async ({ strategy }) => {

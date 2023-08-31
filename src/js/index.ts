@@ -3,9 +3,10 @@ import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
 import { regenerateHandleValue, replaceHandleValue } from './handlers'
 import { parse, traverse, generate } from '@/babel'
-import type { IJsHandlerOptions } from '@/types'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerReplaceResult, JsHandlerResult } from '@/types'
 import { isProd } from '@/env'
 import { jsStringEscape } from '@/escape'
+import { defu } from '@/utils'
 
 function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
@@ -15,7 +16,7 @@ function isEvalPath(p: NodePath<Node>) {
   return false
 }
 
-export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
+export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const ast = parse(rawSource, {
     sourceType: 'unambiguous'
   })
@@ -53,7 +54,8 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
                   // ___CSS_LOADER_EXPORT___
                   const res = jsHandler(s.node.value, {
                     ...options,
-                    needEscaped: false
+                    needEscaped: false,
+                    generateMap: false
                   })
                   if (res.code) {
                     const node = s.node
@@ -70,7 +72,10 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
               },
               TemplateElement: {
                 enter(s) {
-                  const res = jsHandler(s.node.value.raw, options)
+                  const res = jsHandler(s.node.value.raw, {
+                    ...options,
+                    generateMap: false
+                  })
                   if (res.code) {
                     const node = s.node
                     if (typeof node.start === 'number' && typeof node.end === 'number') {
@@ -91,10 +96,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
     }
 
     traverse(ast, ropt)
-
-    return {
+    const result: JsHandlerReplaceResult = {
       code: ms.toString()
     }
+    // no use
+    // if (options.generateMap) {
+    //   result.map = ms.generateMap()
+    // }
+    return result
   } else {
     // 这样搞会把原先所有的 children 含有相关的 也都转义了
     const gopt: TraverseOptions<Node> = {
@@ -154,17 +163,19 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions) {
   }
 }
 
-export function createjsHandler(options: Omit<IJsHandlerOptions, 'classNameSet'>) {
-  const { mangleContext, arbitraryValues, minifiedJs, escapeMap, jsPreserveClass, strategy } = options
-  return (rawSource: string, set: Set<string>) => {
-    return jsHandler(rawSource, {
+export function createJsHandler(options: CreateJsHandlerOptions) {
+  const { mangleContext, arbitraryValues, minifiedJs, escapeMap, jsPreserveClass, strategy, generateMap } = options
+  return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
+    const opts = defu<IJsHandlerOptions, IJsHandlerOptions[]>(options, {
       classNameSet: set,
       minifiedJs,
       escapeMap,
       arbitraryValues,
       mangleContext,
       jsPreserveClass,
-      strategy
+      strategy,
+      generateMap
     })
+    return jsHandler(rawSource, opts)
   }
 }

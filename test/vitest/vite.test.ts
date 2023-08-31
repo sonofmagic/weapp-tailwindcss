@@ -1,9 +1,11 @@
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { build } from 'vite'
-import type { Plugin } from 'vite'
+import * as Diff from 'diff'
+import type { InlineConfig, Plugin } from 'vite'
 import type { RollupOutput } from 'rollup'
 
+import { defu } from 'defu'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
@@ -17,7 +19,7 @@ const postcssPlugins = [
   })
 ]
 
-async function assertSnap(plugin: Plugin | undefined) {
+async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result: RollupOutput) => void) {
   // if (plugin === undefined) {
   //   return
   // }
@@ -41,8 +43,7 @@ async function assertSnap(plugin: Plugin | undefined) {
   // }
 
   vitePlugins.push(plugin)
-
-  const res = (await build({
+  const opts = defu<InlineConfig, InlineConfig[]>(options, {
     root: path.resolve(__dirname, '../fixtures/vite/src'),
     plugins: vitePlugins,
     logLevel: 'silent',
@@ -54,19 +55,24 @@ async function assertSnap(plugin: Plugin | undefined) {
     build: {
       write: false
     }
-  })) as RollupOutput
+  })
+  const res = (await build(opts)) as RollupOutput
 
-  const output = res.output
-  expect(output.length).toBe(3)
-  expect(output[0].type).toBe('chunk')
-  expect(output[0].code).toMatchSnapshot()
-  expect(output[1].type).toBe('asset')
-  if (output[1].type === 'asset') {
-    expect(output[1].source).toMatchSnapshot()
-  }
-  expect(output[2].type).toBe('asset')
-  if (output[2].type === 'asset') {
-    expect(output[2].source).toMatchSnapshot()
+  if (fn && typeof fn === 'function') {
+    fn(res)
+  } else {
+    const output = res.output
+    expect(output.length).toBe(3)
+    expect(output[0].type).toBe('chunk')
+    expect(output[0].code).toMatchSnapshot()
+    expect(output[1].type).toBe('asset')
+    if (output[1].type === 'asset') {
+      expect(output[1].source).toMatchSnapshot()
+    }
+    expect(output[2].type).toBe('asset')
+    if (output[2].type === 'asset') {
+      expect(output[2].source).toMatchSnapshot()
+    }
   }
 }
 
@@ -216,6 +222,75 @@ describe('vite test', () => {
           console.log(`[vite disabled build] common case processAssets executed in ${timeTaken}ms`)
         }
       })
+    )
+  })
+
+  it.skip('source map case 0', async () => {
+    await assertSnap(
+      uvwt(),
+      {
+        build: {
+          sourcemap: true
+        }
+      },
+      (res) => {
+        const output = res.output
+        expect(output.length).toBe(4)
+        expect(output[0].type).toBe('chunk')
+        expect(output[0].code).toMatchSnapshot()
+        expect(output[1].type).toBe('asset')
+        if (output[1].type === 'asset') {
+          expect(output[1].source).toMatchSnapshot()
+        }
+        expect(output[2].type).toBe('asset')
+        if (output[2].type === 'asset') {
+          expect(output[2].source).toMatchSnapshot()
+        }
+        expect(output[3].type).toBe('asset')
+        if (output[3].type === 'asset') {
+          expect(output[3].source).toMatchSnapshot()
+        }
+      }
+    )
+  })
+
+  it.skip('source map compare case 0', async () => {
+    let before: string = ''
+    await assertSnap(
+      undefined,
+      {
+        build: {
+          sourcemap: true
+        }
+      },
+      (res) => {
+        const output = res.output
+        expect(output.length).toBe(4)
+        expect(output[2].type).toBe('asset')
+        if (output[2].type === 'asset') {
+          before = output[2].source.toString()
+          expect(before).toMatchSnapshot('before')
+        }
+      }
+    )
+
+    await assertSnap(
+      uvwt(),
+      {
+        build: {
+          sourcemap: true
+        }
+      },
+      (res) => {
+        const output = res.output
+        expect(output.length).toBe(4)
+        expect(output[2].type).toBe('asset')
+        if (output[2].type === 'asset') {
+          const after = output[2].source.toString()
+          expect(after).toMatchSnapshot('after')
+          expect(Diff.diffChars(before, after)).toMatchSnapshot('diff')
+        }
+      }
     )
   })
 })

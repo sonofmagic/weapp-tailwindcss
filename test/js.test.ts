@@ -3,7 +3,7 @@ import { getClassCacheSet } from 'tailwindcss-patch'
 // import { createGetCase, jsCasePath } from './util'
 import { createGetCase, jsCasePath, createPutCase } from './util'
 import { SimpleMappingChars2String } from '@/escape'
-import { createjsHandler } from '@/js/index'
+import { createJsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { defaultOptions } from '@/defaults'
@@ -25,31 +25,37 @@ const testTable = [
 }[]
 
 describe('jsHandler', () => {
-  let h: ReturnType<typeof createjsHandler>
-  let rh: ReturnType<typeof createjsHandler>
-  let mh: ReturnType<typeof createjsHandler>
-  let dh: ReturnType<typeof createjsHandler>
-  let defaultJsHandler: ReturnType<typeof createjsHandler>
+  let h: ReturnType<typeof createJsHandler>
+  let rh: ReturnType<typeof createJsHandler>
+  let mh: ReturnType<typeof createJsHandler>
+  let dh: ReturnType<typeof createJsHandler>
+  // let smh: ReturnType<typeof createJsHandler>
+  let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
-    h = createjsHandler({
+    h = createJsHandler({
       escapeMap: SimpleMappingChars2String
     })
-    rh = createjsHandler({
+    rh = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       strategy: 'replace'
     })
-    mh = createjsHandler({
+    mh = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       minifiedJs: true
     })
 
-    dh = createjsHandler({
+    dh = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       minifiedJs: true,
       arbitraryValues: {
         allowDoubleQuotes: true
       }
     })
+
+    // smh = createJsHandler({
+    //   escapeMap: SimpleMappingChars2String,
+    //   generateMap: true
+    // })
 
     const { jsHandler } = getOptions()
     defaultJsHandler = jsHandler
@@ -240,7 +246,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('*')
     set.add('w-[100px]')
-    const myCustomJsHandler = createjsHandler({
+    const myCustomJsHandler = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       jsPreserveClass(keyword) {
         if (defaultOptions.jsPreserveClass?.(keyword)) {
@@ -260,7 +266,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('*')
     set.add('w-[100px]')
-    const myCustomJsHandler = createjsHandler({
+    const myCustomJsHandler = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       jsPreserveClass(keyword) {
         if (defaultOptions.jsPreserveClass?.(keyword)) {
@@ -280,7 +286,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('*')
     set.add('w-[100px]')
-    const myCustomJsHandler = createjsHandler({
+    const myCustomJsHandler = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       jsPreserveClass(keyword) {
         if (defaultOptions.jsPreserveClass?.(keyword)) {
@@ -320,6 +326,17 @@ describe('jsHandler', () => {
     const code = jsHandler("const n = '* 1 * 2 w-[100px]'", set).code
     expect(code).toBe("const n = '* 1 * 2 tw-a'")
   })
+
+  // it('source map case 0', () => {
+  //   const set: Set<string> = new Set()
+  //   set.add('w-[100px]')
+  //   const { jsHandler, setMangleRuntimeSet } = getOptions()
+  //   setMangleRuntimeSet(set)
+  //   const { code, map } = jsHandler("const n = '* 1 * 2 w-[100px]'", set)
+  //   expect(code).toBe("const n = '* 1 * 2 w-_100px_'")
+  //   expect(map).toBeTruthy()
+  //   expect(map?.toString()).toBe('{"version":3,"sources":[""],"names":[],"mappings":"AAAA,WAAW,iBAAiB"}')
+  // })
 
   it('eval StringLiteral case 0', () => {
     const set: Set<string> = new Set()

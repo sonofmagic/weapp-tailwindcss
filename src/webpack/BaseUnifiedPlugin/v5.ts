@@ -35,25 +35,13 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     patch?.()
     // NormalModule,
     const { Compilation, sources, NormalModule } = compiler.webpack
-    const { ConcatSource } = sources
+    const { ConcatSource, RawSource } = sources
     // react
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
       return twPatcher.getClassSet()
     }
 
-    // const WeappTwRuntimeAopLoader = createLoader(
-    //   function (content: string) {
-    //     // for cache merge
-    //     getClassSet()
-    //     return content
-    //   },
-    //   {
-    //     // @ts-ignore
-    //     ident: null,
-    //     type: null
-    //   }
-    // )
     onLoad()
     const loader = runtimeLoaderPath ?? path.resolve(__dirname, './weapp-tw-runtime-loader.js')
     const isExisted = fs.existsSync(loader)
@@ -111,10 +99,19 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const [file, originalSource] = groupedEntries.js[i]
 
               const rawSource = originalSource.source().toString()
-              const { code } = jsHandler(rawSource, runtimeSet)
+              const mapFilename = file + '.map'
+              const hasMap = Boolean(assets[mapFilename])
+              const { code, map } = jsHandler(rawSource, runtimeSet, {
+                generateMap: hasMap
+              })
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)
+
+              if (hasMap && map) {
+                const source = new RawSource(map.toString())
+                compilation.updateAsset(mapFilename, source)
+              }
             }
           }
 
