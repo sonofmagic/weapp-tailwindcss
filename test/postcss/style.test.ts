@@ -233,6 +233,29 @@ describe('styleHandler', () => {
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
 
+  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 0', () => {
+    const { styleHandler } = getOptions()
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
+  })
+
+  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 1', () => {
+    const { styleHandler } = getOptions()
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      replaceUniversalSelectorWith: false,
+      cssSelectorReplacement: {
+        universal: false
+      }
+    })
+    expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
+  })
+
   it(':hover should be remove', () => {
     const testCase = '.a:hover{color:black;}'
     const result = styleHandler(testCase, {
@@ -533,11 +556,35 @@ describe('styleHandler', () => {
     expect(result).toBe('page{}')
   })
 
+  it(':root pseudo case 0 invert', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root{}`
+    const result = styleHandler(rawCode, {
+      isMainChunk: false,
+      cssSelectorReplacement: {
+        root: false
+      }
+    })
+    expect(result).toBe(rawCode)
+  })
+
   it(':root pseudo case 1', () => {
     const { styleHandler } = getOptions()
     const rawCode = `:root,[data-theme]{}`
     const result = styleHandler(rawCode, { isMainChunk: false })
     expect(result).toBe('page,[data-theme]{}')
+  })
+
+  it(':root pseudo case 1 invert', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root,[data-theme]{}`
+    const result = styleHandler(rawCode, {
+      isMainChunk: false,
+      cssSelectorReplacement: {
+        root: false
+      }
+    })
+    expect(result).toBe(rawCode)
   })
 
   it('combinator selector case 0', () => {
