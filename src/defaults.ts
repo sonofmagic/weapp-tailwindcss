@@ -94,5 +94,9 @@ export const defaultOptions: UserDefinedOptions = {
     return false
   },
   disabledDefaultTemplateHandler: false,
-  jsEscapeStrategy: 'replace'
+  jsEscapeStrategy: 'replace',
+  cssSelectorReplacement: {
+    root: 'page',
+    universal: 'view'
+  }
 }

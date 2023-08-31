@@ -1326,7 +1326,7 @@ function jsHandler(rawSource, options) {
         minified: (_a = options.minifiedJs) !== null && _a !== void 0 ? _a : isProd()
     });
 }
-function createjsHandler(options) {
+function createJsHandler(options) {
     return (rawSource, set) => {
         return jsHandler(rawSource, {
             classNameSet: set,
@@ -1727,7 +1727,7 @@ function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']
         });
     }
     if (registerModules.js) {
-        result.jsHandler = createjsHandler({
+        result.jsHandler = createJsHandler({
             minifiedJs,
             escapeMap
         });
@@ -3208,7 +3208,7 @@ function jsHandler(rawSource, options) {
         minified: (_a = options.minifiedJs) !== null && _a !== void 0 ? _a : isProd()
     });
 }
-function createjsHandler(options) {
+function createJsHandler(options) {
     return (rawSource, set) => {
         return jsHandler(rawSource, {
             classNameSet: set,
@@ -3609,7 +3609,7 @@ function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']
         });
     }
     if (registerModules.js) {
-        result.jsHandler = createjsHandler({
+        result.jsHandler = createJsHandler({
             minifiedJs,
             escapeMap
         });

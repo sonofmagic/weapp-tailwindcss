@@ -3,6 +3,7 @@ import path from 'node:path'
 import postcss, { Declaration, Rule } from 'postcss'
 import tailwindcss from 'tailwindcss'
 async function main() {
+  // @ts-ignore
   const source = await postcss([
     tailwindcss({
       content: {

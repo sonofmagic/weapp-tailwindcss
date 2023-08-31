@@ -14,6 +14,10 @@ exports[`get options default options 1`] = `
     "box-sizing": "border-box",
   },
   "cssPreflightRange": "view",
+  "cssSelectorReplacement": {
+    "root": "page",
+    "universal": "view",
+  },
   "customAttributes": {},
   "customReplaceDictionary": {
     "!": "i",

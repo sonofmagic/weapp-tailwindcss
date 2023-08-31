@@ -37,6 +37,38 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
+  it('css @media hover case 0', () => {
+    const { styleHandler } = getOptions()
+    const code = styleHandler(
+      `@media (hover: hover) {
+      a {
+        color: white;
+        background: black;
+      }
+    }`,
+      {
+        isMainChunk: true
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
+
+  it('css @media hover case 1', () => {
+    const { styleHandler } = getOptions()
+    const code = styleHandler(
+      `@media (hover: hover) {
+      a:hover {
+        color: white;
+        background: black;
+      }
+    }`,
+      {
+        isMainChunk: true
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
+
   // it('main chunk remove empty var', async () => {
   //   const testCase = await getCase('taro.dev.css')
   //   const result = styleHandler(testCase, {
@@ -197,6 +229,29 @@ describe('styleHandler', () => {
       customRuleCallback: () => {},
       replaceUniversalSelectorWith: false,
       escapeMap: MappingChars2String
+    })
+    expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
+  })
+
+  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 0', () => {
+    const { styleHandler } = getOptions()
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      replaceUniversalSelectorWith: false
+    })
+    expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
+  })
+
+  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 1', () => {
+    const { styleHandler } = getOptions()
+    const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
+    const result = styleHandler(testCase, {
+      isMainChunk: true,
+      replaceUniversalSelectorWith: false,
+      cssSelectorReplacement: {
+        universal: false
+      }
     })
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
@@ -492,5 +547,78 @@ describe('styleHandler', () => {
     const rawSource = await getCase('backdrop.css')
     const result = styleHandler(rawSource, { isMainChunk: false })
     expect(result).toMatchSnapshot()
+  })
+
+  it(':root pseudo case 0', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root{}`
+    const result = styleHandler(rawCode, { isMainChunk: false })
+    expect(result).toBe('page{}')
+  })
+
+  it(':root pseudo case 0 invert', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root{}`
+    const result = styleHandler(rawCode, {
+      isMainChunk: false,
+      cssSelectorReplacement: {
+        root: false
+      }
+    })
+    expect(result).toBe(rawCode)
+  })
+
+  it(':root pseudo case 1', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root,[data-theme]{}`
+    const result = styleHandler(rawCode, { isMainChunk: false })
+    expect(result).toBe('page,[data-theme]{}')
+  })
+
+  it(':root pseudo case 1 invert', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:root,[data-theme]{}`
+    const result = styleHandler(rawCode, {
+      isMainChunk: false,
+      cssSelectorReplacement: {
+        root: false
+      }
+    })
+    expect(result).toBe(rawCode)
+  })
+
+  it('combinator selector case 0', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.space-x-4>view + view{}')
+  })
+
+  it('combinator selector case 1', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.divide-x>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.divide-x>view + view{}')
+  })
+
+  it('combinator selector case 2', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.divide-blue-200>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.divide-blue-200>view + view{}')
+  })
+
+  it('combinator selector case 3', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:is(.dark .dark:divide-slate-700)>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.dark .dark:divide-slate-700>view + view{}')
+  })
+
+  it('combinator selector case 4', () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.divide-dashed>:not([hidden])~:not([hidden]){}`
+    const result = styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.divide-dashed>view + view{}')
   })
 })

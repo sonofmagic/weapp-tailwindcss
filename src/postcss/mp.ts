@@ -106,8 +106,6 @@ export function remakeCssVarSelector(selectors: string[], cssPreflightRange: ISt
 export function remakeCombinatorSelector(selector: string, cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']) {
   let childCombinatorReplaceValue = 'view + view'
   if (Array.isArray(cssChildCombinatorReplaceValue)) {
-    // const part = cssChildCombinatorReplaceValue.join(',')
-    // [part, ' + ', part].join('')
     childCombinatorReplaceValue = cssChildCombinatorReplaceValue
       .map((x) => {
         return x + ' + ' + x
@@ -126,8 +124,6 @@ export function remakeCombinatorSelector(selector: string, cssChildCombinatorRep
 //   }
 //   //  console.log(decl.prop, decl.value)
 // })
-
-// preset
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   node.selector = remakeCombinatorSelector(node.selector, options.cssChildCombinatorReplaceValue)

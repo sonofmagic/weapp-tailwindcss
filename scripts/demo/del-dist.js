@@ -1,8 +1,8 @@
 const path = require('node:path')
-const del = require('del')
 const { demoPaths } = require('./constants')
 
 async function main() {
+  const { deleteAsync: del } = await import('del')
   const root = path.resolve(__dirname, '../../')
   const sourcePath = path.resolve(root, 'demo/web/weapp-tw-dist')
   let dirCount = 0

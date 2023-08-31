@@ -5,19 +5,27 @@ import { internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
 const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {
-  const { replaceUniversalSelectorWith, escapeMap, mangleContext } = options
+  const { replaceUniversalSelectorWith, escapeMap, mangleContext, cssSelectorReplacement } = options
   const replaceFlag = replaceUniversalSelectorWith !== false
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector) => {
       // do something with the selector
       // node.selector.replace(/\*/g, 'view')
-      if (selector.type === 'universal' && replaceFlag) {
-        selector.value = replaceUniversalSelectorWith as string
+      if (selector.type === 'universal') {
+        if (replaceFlag) {
+          selector.value = replaceUniversalSelectorWith as string
+        } else if (cssSelectorReplacement && cssSelectorReplacement.universal) {
+          selector.value = cssSelectorReplacement.universal
+        }
       }
 
       if (selector.type === 'selector') {
         const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover')
         node && selector.remove()
+      }
+
+      if (selector.type === 'pseudo' && selector.value === ':root' && cssSelectorReplacement && cssSelectorReplacement.root) {
+        selector.value = cssSelectorReplacement.root
       }
 
       if (selector.type === 'class') {

@@ -12,6 +12,13 @@
       "cwd": "${workspaceFolder}/demo/uni-app-vue3-vite"
     },
     {
+      "command": "npm run dev",
+      "name": "[Demo] uni-app-vue3-vite dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/uni-app-vue3-vite"
+    },
+    {
       "command": "npm run test:dev",
       "name": "Run vitest dev debug",
       "request": "launch",
