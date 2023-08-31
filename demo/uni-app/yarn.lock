@@ -37,10 +37,10 @@
   resolved "https://registry.npmmirror.com/@antfu/utils/-/utils-0.7.5.tgz#c36f37add92a7de57b9c29ae0c1f399706bff345"
   integrity sha512-dlR6LdS+0SzOAPx/TPRhnoi7hE251OVeT2Snw0RguNbBSbjUHdWr0l3vcUUDg26rEysT89kCbtw1lVorBXLLCg==
 
-"@ast-core/escape@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@ast-core/escape/-/escape-1.0.0.tgz#8ec72629400b867083f4ff35485600c4d3dfc010"
-  integrity sha512-fK2+alQGwz8lgQ1V8hrV7Fe+z6BMptFPwEiJC2nF1tjetD6bK9+fLaKUn/Shft7cnKf3PefLBFKE1Qf7ZfL+5A==
+"@ast-core/escape@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@ast-core/escape/-/escape-1.0.1.tgz#213fd453bf700f831c74bacfcbf00252c8e73a10"
+  integrity sha512-/kVjBkDzYrSW1S+gTBCuOfhnNkge9qZFJgLT+MOZdmPN4Vts36S60uU5br3ozoxpJ1eRGe6pGy7/EfcOpFFHlA==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.21.4", "@babel/code-frame@^7.8.3":
   version "7.21.4"
@@ -463,10 +463,15 @@
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.22.10.tgz#e37634f9a12a1716136c44624ef54283cabd3f55"
   integrity sha512-lNbdGsQb9ekfsnjFGhEiF4hfFqGgfOP3H3d27re3n+CGhNuTSUEQdfWk556sTLNTloczcdM5TYF2LhzmDQKyvQ==
 
-"@babel/parser@^7.22.11", "@babel/parser@^7.22.13":
+"@babel/parser@^7.22.11":
   version "7.22.13"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.22.13.tgz#23fb17892b2be7afef94f573031c2f4b42839a2b"
   integrity sha512-3l6+4YOvc9wx7VlCSw4yQfcBo01ECA8TicQfbnCPuCEpRQrf+gTUyGdxNw+pyTUyywp6JRD1w0YQs9TpBXYlkw==
+
+"@babel/parser@^7.22.14":
+  version "7.22.14"
+  resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.22.14.tgz#c7de58e8de106e88efca42ce17f0033209dfd245"
+  integrity sha512-1KucTHgOvaw/LzCVrEOAyXkr9rQlp0A1HiHRYnSUE9dmb8PvPW7o5sscg+5169r54n3vGlbx6GevTE/Iw/P3AQ==
 
 "@babel/parser@^7.22.5":
   version "7.22.5"
@@ -2580,17 +2585,15 @@
   resolved "https://registry.npmmirror.com/@vue/web-component-wrapper/-/web-component-wrapper-1.3.0.tgz#b6b40a7625429d2bd7c2281ddba601ed05dc7f1a"
   integrity sha512-Iu8Tbg3f+emIIMmI2ycSI8QcEuAUgPTgHwesDU1eKMLE4YC/c/sFbGc70QgMq31ijRftV0R7vCm9co6rldCeOA==
 
-"@weapp-core/escape@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-1.1.0.tgz#de3a5c941beab7864a88d0e83cbcf878cc97d905"
-  integrity sha512-LO7bVIVpO6J7G2ENZ81PHSk5msp1rhmU1NLSX1iWHJm9YOmpNd2Xiu8fvk5uKtJffshMxJI/Kpp7lYPekDA6Mw==
-  dependencies:
-    "@ast-core/escape" "^1.0.0"
+"@weapp-core/escape@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-2.0.0.tgz#35984bf08ac934355b7a0ea0ca90ae3330bc1c54"
+  integrity sha512-AB34eFpoVfj/urfJPoZURwamSzLlMuDL6TNV+aXLW8aJsw3ud0/XkrEL/FkBsuaTgTD1rarip+y4NkQwrhQ91A==
 
-"@weapp-core/regex@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.0.tgz#34552b9ad33c67fa7021762a121cff7540f5972f"
-  integrity sha512-XSzPETlGryMdPYOhmlGUtqye+tTuubPW4N9HlIhcwQNWaMWCp9nEEM4OpRrvtss01dBqZtgKMnr9a2mg+102xQ==
+"@weapp-core/regex@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
+  integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
 "@webassemblyjs/ast@1.11.6", "@webassemblyjs/ast@^1.11.5":
   version "1.11.6"
@@ -11316,19 +11319,20 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^2.8.2-beta.0:
-  version "2.8.2-beta.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.2-beta.0.tgz#eca42c0e92771d40bd374e01342cad71e1b5936c"
-  integrity sha512-yhTl4OxDn1iVTCYtA0QZVs+4f+JyuS2muiGf4oFuR323SGvVDlxGuLnomIUtAuQZq5MuRQtr+PzvcjZawY8OVQ==
+weapp-tailwindcss-webpack-plugin@^2.8.2:
+  version "2.8.2"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-2.8.2.tgz#00b2f08fb45933d3ccd6cf0a0fe23e6a38cbc9cc"
+  integrity sha512-8ZEbyHzlmvZ36etSrNipBOxLqCzfgyhrmtuExDevkhBe5/IWYT/R3Y95QJKebRT5Jlc9iavq3bfTay7NkBj0FQ==
   dependencies:
+    "@ast-core/escape" "^1.0.1"
     "@babel/generator" "^7.22.10"
-    "@babel/parser" "^7.22.13"
+    "@babel/parser" "^7.22.14"
     "@babel/traverse" "^7.22.11"
     "@babel/types" "^7.22.11"
     "@csstools/postcss-is-pseudo-class" "^4.0.0"
     "@tailwindcss-mangle/shared" "^2.1.0"
-    "@weapp-core/escape" "^1.1.0"
-    "@weapp-core/regex" "^1.0.0"
+    "@weapp-core/escape" "^2.0.0"
+    "@weapp-core/regex" "^1.0.1"
     htmlparser2 "^9.0.0"
     loader-utils "^2.0.3"
     magic-string "^0.30.3"
