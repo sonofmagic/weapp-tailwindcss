@@ -50,6 +50,10 @@ module.exports = {
 
 `<view class="i-mdi-home text-3xl text-red-600"></view>`
 
+> 假如不起作用，请检查你的 `@tailwind components;` / `@import 'tailwindcss/components';`(scss) 是否入口 `css` 中引入
+
+</style>
+
 ## icon预览挑选网站
 
 <https://icones.js.org>
