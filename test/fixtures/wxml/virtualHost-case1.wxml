@@ -1,0 +1,1 @@
+<view><com-a u-s="{{['d']}}" class="text-_red_ text-_30px_" style="background:#d4eb07" u-i="4c6cb2cd-0" bind:__l="__l">11111</com-a></view>
