@@ -1,12 +1,33 @@
-import { format } from '../util'
+import { format, wxmlCasePath, createGetCase } from '../util'
 import { templateHandler } from '#test/v2/wxml'
 import { MappingChars2String } from '@/escape'
+import { getOptions } from '@/options'
+
+const getWxmlCase = createGetCase(wxmlCasePath)
 
 function complexHandler(str: string) {
   return templateHandler(str, {
     escapeMap: MappingChars2String
   })
 }
+
+describe('virtualHostClass', () => {
+  // 开启mergeVirtualHostAttributes
+  it('virtualHostClass case 0', async () => {
+    const testCase = await getWxmlCase('virtualHost-case0.wxml')
+    const { templateHandler } = getOptions()
+    const str = templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
+
+  // 不开启mergeVirtualHostAttributes
+  it('virtualHostClass case 1', async () => {
+    const testCase = await getWxmlCase('virtualHost-case1.wxml')
+    const { templateHandler } = getOptions()
+    const str = templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
+})
 
 describe.skip('templateHandler', () => {
   test('wildcard char', () => {

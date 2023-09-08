@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.8.3 (2023-09-08)
+
+- 添加 `mergeVirtualHostAttributes` 的 `virtualHost` 虚拟节点支持
+
 ## 2.8.0 (2023-08-15)
 
 ## Features

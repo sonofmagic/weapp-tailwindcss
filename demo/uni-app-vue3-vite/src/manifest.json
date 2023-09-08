@@ -55,7 +55,8 @@
       "urlCheck": false
     },
     "usingComponents": true,
-    "darkmode": true
+    "darkmode": true,
+    "mergeVirtualHostAttributes": true
   },
   "mp-alipay": {
     "usingComponents": true

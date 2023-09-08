@@ -1,0 +1,1 @@
+<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><com-a u-s="{{['d']}}" class="text-_red_ text-_30px_" virtualHostClass="text-[red] text-[30px]" style="background:#d4eb07" virtualHostStyle="background:#d4eb07" u-i="4c6cb2cd-0" bind:__l="__l">11111</com-a></view>

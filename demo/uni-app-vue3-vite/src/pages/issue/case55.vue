@@ -1,17 +1,19 @@
 <template>
   <view>
-    <TestCase55 className="h-[111px] w-[222px] bg-[#987654]"></TestCase55>
+    <ComA class="text-[red] text-[30px]" style="background: #d4eb07;">11111</ComA>
+    <!-- <TestCase55 className="h-[111px] w-[222px] bg-[#987654]"></TestCase55>
 
     <TestCase55 :className="className"></TestCase55>
 
     <button @click="toggleClass">toggleClass</button>
     <button @click="toggleBarVisible(true)">显示Tabbar</button>
-    <button @click="toggleBarVisible(false)">隐藏Tabbar</button>
+    <button @click="toggleBarVisible(false)">隐藏Tabbar</button> -->
   </view>
 </template>
 
 <script setup lang="ts">
 import TestCase55 from '@/components/TestCase55.vue';
+import ComA from '@/components/virtualHost/A.vue'
 import { ref } from 'vue';
 const className = ref<string>('h-[88.88px] w-[33.33px] bg-[yellow]');
 

@@ -156,7 +156,8 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
         function update() {
           s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
         }
-        if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class')) {
+        // add 'virtualHostClass' toLowerCase
+        if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class' || name === 'virtualhostclass')) {
           update()
         }
         for (const [t, props] of customAttributesEntities) {
