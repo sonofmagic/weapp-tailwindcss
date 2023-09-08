@@ -59,7 +59,7 @@ module.exports = {
 ```
 
 :::tip
-这块可以参考[tailwindcss官方具体的配置项link](https://tailwindcss.com/docs/configuration)
+这块可以参考[tailwindcss官方配置项link](https://tailwindcss.com/docs/configuration)
 :::
 
 ## 4. 引入 `tailwindcss`
