@@ -1,6 +1,8 @@
 <template>
   <view>
     <ComA class="text-[red] text-[30px]" style="background: #d4eb07;">11111</ComA>
+    <view class="testCmpnt bg-white">123456</view>
+    <view class="bg-white testCmpnt">123456</view>
     <!-- <TestCase55 className="h-[111px] w-[222px] bg-[#987654]"></TestCase55>
 
     <TestCase55 :className="className"></TestCase55>
@@ -20,12 +22,11 @@ const className = ref<string>('h-[88.88px] w-[33.33px] bg-[yellow]');
 const toggleClass = () => {
   className.value = 'h-[128px] w-[242px] bg-[#955443]';
 };
-function toggleBarVisible(visible:boolean){
+function toggleBarVisible(visible: boolean) {
   const app = getApp()
   app.globalData!.tabbarVisible = visible
   console.log(app.globalData)
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
