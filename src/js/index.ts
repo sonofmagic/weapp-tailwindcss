@@ -1,9 +1,10 @@
-import type { Node } from '@babel/types'
+import type { File, Node } from '@babel/types'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
+import type { ParseResult } from '@babel/parser'
 import { regenerateHandleValue, replaceHandleValue } from './handlers'
-import { parse, traverse, generate } from '@/babel'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerReplaceResult, JsHandlerResult } from '@/types'
+import { parse, traverse, generate } from '@/babel'
 import { isProd } from '@/env'
 import { jsStringEscape } from '@/escape'
 import { defu } from '@/utils'
@@ -17,9 +18,16 @@ function isEvalPath(p: NodePath<Node>) {
 }
 
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
-  const ast = parse(rawSource, {
-    sourceType: 'unambiguous'
-  })
+  let ast: ParseResult<File>
+  try {
+    ast = parse(rawSource, {
+      sourceType: 'unambiguous'
+    })
+  } catch {
+    return {
+      code: rawSource
+    } as JsHandlerResult
+  }
 
   if (options.strategy === 'replace') {
     const ms = new MagicString(rawSource)

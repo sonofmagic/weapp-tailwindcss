@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.8.4 (2023-09-08)
+
+## Fixed
+
+- 修复由于使用 `eval` 导致 `jsHandler` 递归处理时的 `ast` 解析错误问题。
+
 ## 2.8.3 (2023-09-08)
 
 - 添加 `mergeVirtualHostAttributes` 的 `virtualHost` 虚拟节点支持

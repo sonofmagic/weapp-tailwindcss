@@ -395,4 +395,34 @@ describe('jsHandler', () => {
     const code = rh(unicodeCase, set).code
     expect(code).toMatchSnapshot()
   })
+
+  it('taro-lottie-miniprogram-dev', async () => {
+    const testCase = await getCase('taro-lottie-miniprogram-dev.js')
+    const set: Set<string> = new Set()
+    const { jsHandler } = getOptions()
+    expect(() => {
+      const { code } = jsHandler(testCase, set)
+      expect(code).toBe(testCase)
+    }).not.toThrow()
+  })
+
+  it('taro-lottie-miniprogram-build-no-compress', async () => {
+    const testCase = await getCase('taro-lottie-miniprogram-build-no-compress.js')
+    const set: Set<string> = new Set()
+    const { jsHandler } = getOptions()
+    expect(() => {
+      const { code } = jsHandler(testCase, set)
+      expect(code).toBe(testCase)
+    }).not.toThrow()
+  })
+
+  it('taro-lottie-miniprogram-build', async () => {
+    const testCase = await getCase('taro-lottie-miniprogram-build.js')
+    const set: Set<string> = new Set()
+    const { jsHandler } = getOptions()
+    expect(() => {
+      const { code } = jsHandler(testCase, set)
+      expect(code).toBe(testCase)
+    }).not.toThrow()
+  })
 })
