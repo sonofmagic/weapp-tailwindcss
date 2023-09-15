@@ -1,5 +1,15 @@
 # 原生开发(webpack5/gulp)
 
+:::tip
+#### 这块建议直接使用下方配置好的原生小程序开发模板
+
+[weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
+
+[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
+
+给原生小程序加入编译时这块 `webpack/vite/gulp` 等等工具，思路都是一样的，然而实现起来比较复杂损耗精力，在此不提及原理。
+:::
+
 ## webpack5
 
 直接在 `webpack.config.js` 注册即可
