@@ -1,0 +1,15 @@
+{
+  "name": "demo-linked",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "weapp-tw patch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "weapp-tailwindcss-webpack-plugin": "link:.."
+  }
+}

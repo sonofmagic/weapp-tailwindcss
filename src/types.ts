@@ -2,7 +2,9 @@ import type { Rule } from 'postcss'
 import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle/shared'
 import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
+// import type { sources } from 'webpack'
 import type { InjectPreflight } from './postcss/preflight'
+import type { ICreateCacheReturnType } from '@/cache'
 export type ItemOrItemArray<T> = T | T[]
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
@@ -463,6 +465,7 @@ export type InternalUserDefinedOptions = Required<
     customReplaceDictionary: Record<string, string>
     // initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
     setMangleRuntimeSet: (runtimeSet: Set<string>) => void
+    cache: ICreateCacheReturnType
   }
 >
 

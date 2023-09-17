@@ -66,6 +66,34 @@
       ],
       "smartStep": true,
       "console": "integratedTerminal"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[demo-linked] taro-app-react dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo-linked/taro-app-react"
+    },
+    {
+      "command": "npm run build",
+      "name": "[demo-linked] taro-app-react build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo-linked/taro-app-react"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[demo-linked] uni-app-webpack5 dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo-linked/uni-app-webpack5"
+    },
+    {
+      "command": "npm run build",
+      "name": "[demo-linked] uni-app-webpack5 build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo-linked/uni-app-webpack5"
     }
   ]
 }

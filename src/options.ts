@@ -10,6 +10,7 @@ import { SimpleMappingChars2String, MappingChars2String } from '@/escape'
 import { createPatch } from '@/tailwindcss/patcher'
 import { isProd } from '@/env'
 import { useMangleStore } from '@/mangle'
+import { createCache } from '@/cache'
 
 // import { mangleClassRegex } from '@/mangle/expose'
 
@@ -111,5 +112,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   result.patch = createPatch(supportCustomLengthUnitsPatch)
   // result.initMangle = initMangle
   result.setMangleRuntimeSet = setMangleRuntimeSet
+
+  result.cache = createCache()
+
   return result
 }
