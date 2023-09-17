@@ -14,6 +14,8 @@ const { WeappTailwindcssDisabled } = require('./platform')
 //   // outputTarget: './smp.dat',
 // })
 // const { UniAppWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+
+let start
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
@@ -27,7 +29,13 @@ const config = {
         wxsMatcher() {
           return false
         },
-        inlineWxs: false
+        inlineWxs: false,
+        onStart() {
+          start = performance.now()
+        },
+        onEnd() {
+          console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+        }
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())

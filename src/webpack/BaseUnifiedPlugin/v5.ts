@@ -7,6 +7,7 @@ import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/utils'
+import { debug } from '@/debug'
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -73,12 +74,15 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         },
         (assets) => {
           onStart()
+          debug('processAssets: init runtimeSet start')
           const entries = Object.entries(assets)
           const groupedEntries = getGroupedEntries(entries, this.options)
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
           const runtimeSet = getClassSet()
           setMangleRuntimeSet(runtimeSet)
+          debug('processAssets: init runtimeSet end')
+          debug('processAssets: html handler start, count: %s', groupedEntries.html.length)
           if (Array.isArray(groupedEntries.html)) {
             for (let i = 0; i < groupedEntries.html.length; i++) {
               const [file, originalSource] = groupedEntries.html[i]
@@ -93,7 +97,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               onUpdate(file, rawSource, wxml)
             }
           }
-
+          debug('processAssets: html handler end')
+          debug('processAssets: js handler start, count: %s', groupedEntries.js.length)
           if (Array.isArray(groupedEntries.js)) {
             for (let i = 0; i < groupedEntries.js.length; i++) {
               const [file, originalSource] = groupedEntries.js[i]
@@ -114,7 +119,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               }
             }
           }
-
+          debug('processAssets: js handler end')
+          debug('processAssets: css handler start, count: %s', groupedEntries.css.length)
           if (Array.isArray(groupedEntries.css)) {
             for (let i = 0; i < groupedEntries.css.length; i++) {
               const [file, originalSource] = groupedEntries.css[i]
@@ -128,7 +134,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               onUpdate(file, rawSource, css)
             }
           }
-
+          debug('processAssets: css handler end')
           onEnd()
         }
       )
