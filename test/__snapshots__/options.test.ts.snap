@@ -5,6 +5,26 @@ exports[`get options default options 1`] = `
   "arbitraryValues": {
     "allowDoubleQuotes": false,
   },
+  "cache": {
+    "hashMap": Map {},
+    "instance": LRUCache {
+      "allowStale": false,
+      "allowStaleOnFetchAbort": false,
+      "allowStaleOnFetchRejection": false,
+      "ignoreFetchAbort": false,
+      "maxEntrySize": 0,
+      "noDeleteOnFetchRejection": false,
+      "noDeleteOnStaleGet": false,
+      "noDisposeOnSet": false,
+      "noUpdateTTL": false,
+      "sizeCalculation": undefined,
+      "ttl": 0,
+      "ttlAutopurge": false,
+      "ttlResolution": 1,
+      "updateAgeOnGet": false,
+      "updateAgeOnHas": false,
+    },
+  },
   "cssChildCombinatorReplaceValue": "view + view",
   "cssMatcher": [Function],
   "cssPreflight": {
