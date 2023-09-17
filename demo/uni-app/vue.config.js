@@ -21,6 +21,7 @@ const config = {
   transpileDependencies: ['uview-ui'],
   configureWebpack: (config) => {
     // let now
+    let start
     config.plugins.push(
       new UniAppWeappTailwindcssWebpackPluginV4({
         jsMatcher: (file) => {
@@ -39,7 +40,13 @@ const config = {
         wxsMatcher() {
           return false
         },
-        inlineWxs: false
+        inlineWxs: false,
+        onStart() {
+          start = performance.now()
+        },
+        onEnd() {
+          console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+        }
       })
     )
     // smp.wrap(config)

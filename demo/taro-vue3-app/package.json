@@ -76,14 +76,14 @@
     "stylelint": "15.10.3",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "^3.3.3",
-    "tailwindcss-patch": "^2.1.1",
+    "tailwindcss-patch": "^2.2.1",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.2.2",
     "unplugin-vue-components": "^0.25.1",
     "vue-loader": "^17.2.2",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.8.4",
+    "weapp-tailwindcss-webpack-plugin": "^2.9.0-beta.1",
     "webpack": "^5.88.2"
   }
 }

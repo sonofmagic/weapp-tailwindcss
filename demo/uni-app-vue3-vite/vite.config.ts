@@ -27,6 +27,7 @@ const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 
 // const postcssPlugins = [];
 if (!WeappTailwindcssDisabled) {
+  let start;
   vitePlugins.push(
     vwt({
       wxsMatcher() {
@@ -34,6 +35,12 @@ if (!WeappTailwindcssDisabled) {
       },
       inlineWxs: true,
       jsEscapeStrategy: 'replace', // 'regenerate'
+      onStart() {
+        start = performance.now();
+      },
+      onEnd() {
+        console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
+      },
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',
