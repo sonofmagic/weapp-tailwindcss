@@ -166,8 +166,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, wxml)
             }
+            debug('processAssets: html handle finish, count: %s', groupedEntries.html.length)
           }
-          debug('processAssets: html handle finish, count: %s', groupedEntries.html.length)
 
           if (Array.isArray(groupedEntries.js)) {
             for (let i = 0; i < groupedEntries.js.length; i++) {
@@ -197,8 +197,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                 }
               }
             }
+            debug('processAssets: js handler finish, count: %s', groupedEntries.js.length)
           }
-          debug('processAssets: js handler finish, count: %s', groupedEntries.js.length)
 
           if (Array.isArray(groupedEntries.css)) {
             for (let i = 0; i < groupedEntries.css.length; i++) {
@@ -212,8 +212,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, css)
             }
+            debug('processAssets: css handler finish, count: %s', groupedEntries.css.length)
           }
-          debug('processAssets: css handler finish, count: %s', groupedEntries.css.length)
+
           debug('processAssets: end')
           onEnd()
         }

@@ -53,9 +53,17 @@ const config = {
       }
     },
     webpackChain(chain, webpack) {
+      let start
       const opt = {
-        appType: 'taro'
+        appType: 'taro',
+        onStart() {
+          start = performance.now()
+        },
+        onEnd() {
+          console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+        }
       }
+
       // if (isWrite) {
       //   opt.loaderOptions = {
       //     jsxRename: {

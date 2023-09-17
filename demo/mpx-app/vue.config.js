@@ -31,8 +31,15 @@ module.exports = defineConfig({
    * 可以将configureWebpack.snap.managedPaths修改为 []
    */
   configureWebpack(config) {
+    let start
     config.plugins.push(new Plugin({
-      appType: 'mpx'
+      appType: 'mpx',
+      onStart() {
+        start = performance.now()
+      },
+      onEnd() {
+        console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+      }
     }))
   }
 })

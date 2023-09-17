@@ -78,9 +78,16 @@ const config = {
       chain.plugin('unplugin-vue-components').use(ComponentsPlugin({
         resolvers: [NutUIResolver({ taro: true })]
       }))
+      let start
       const opt = {
         appType: 'taro',
-        injectAdditionalCssVarScope: true
+        injectAdditionalCssVarScope: true,
+        onStart() {
+          start = performance.now()
+        },
+        onEnd() {
+          console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+        }
       }
       // if (isWrite) {
       //   opt.loaderOptions = {
