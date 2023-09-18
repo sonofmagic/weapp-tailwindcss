@@ -20,7 +20,7 @@ export interface ICreateCacheReturnType {
   getHashValue: (key: HashMapKey) => HashMapValue | undefined
   setHashValue: (key: HashMapKey, value: HashMapValue) => this['hashMap']
   // util
-  removeExt: (file: string) => string
+  // removeExt: (file: string) => string
   computeHash: (message: string | Buffer) => string
   // cache
   get: <V extends CacheValue = sources.Source>(key: string) => V | undefined
@@ -50,9 +50,6 @@ function createCache(): ICreateCacheReturnType {
     },
     setHashValue(key, value) {
       return hashMap.set(key, value)
-    },
-    removeExt(file) {
-      return file.replace(/\.[^./]+$/, '')
     },
     get<T>(key: string) {
       return instance.get(key) as T

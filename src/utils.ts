@@ -79,6 +79,10 @@ export function getGroupedEntries<T>(entries: [string, T][], options: InternalUs
   return groupedEntries as Record<'css' | 'html' | 'js' | 'other', [string, T][]>
 }
 
+export function removeExt(file: string) {
+  return file.replace(/\.[^./]+$/, '')
+}
+
 export { default as defu } from 'defu'
 
 // export const defu = createDefu()

@@ -6,7 +6,7 @@ import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebp
 import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
-import { getGroupedEntries } from '@/utils'
+import { getGroupedEntries, removeExt } from '@/utils'
 import { createDebug } from '@/debug'
 
 const debug = createDebug('')
@@ -145,7 +145,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
             let noCachedCount = 0
             for (let i = 0; i < groupedEntries.js.length; i++) {
               const [file, originalSource] = groupedEntries.js[i]
-              const cacheKey = cache.removeExt(file)
+              const cacheKey = removeExt(file)
 
               cache.process(
                 cacheKey,

@@ -6,8 +6,11 @@ exports[`get options default options 1`] = `
     "allowDoubleQuotes": false,
   },
   "cache": {
+    "calcHashValueChanged": [Function],
+    "computeHash": [Function],
     "get": [Function],
     "getHashValue": [Function],
+    "has": [Function],
     "hasHashKey": [Function],
     "hashMap": Map {},
     "instance": LRUCache {
@@ -27,7 +30,7 @@ exports[`get options default options 1`] = `
       "updateAgeOnGet": false,
       "updateAgeOnHas": false,
     },
-    "removeExt": [Function],
+    "process": [Function],
     "set": [Function],
     "setHashValue": [Function],
   },
