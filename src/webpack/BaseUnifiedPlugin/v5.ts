@@ -30,6 +30,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   apply(compiler: Compiler) {
     const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, setMangleRuntimeSet, runtimeLoaderPath, cache } =
       this.options
+
     if (disabled) {
       return
     }
@@ -85,33 +86,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           // 第一次进来的时候为 init
           for (const chunk of compilation.chunks) {
             if (chunk.id && chunk.hash) {
-              if (cache.hasHashKey(chunk.id)) {
-                const value = cache.getHashValue(chunk.id)
-                if (value) {
-                  // 文件内容没有改变
-                  if (chunk.hash === value.hash) {
-                    cache.setHashValue(chunk.id, {
-                      // no changed
-                      changed: false,
-                      hash: chunk.hash
-                    })
-                  } else {
-                    // 改变了，就给新的哈希值
-                    cache.setHashValue(chunk.id, {
-                      // new file should be changed
-                      changed: true,
-                      // new hash
-                      hash: chunk.hash
-                    })
-                  }
-                }
-              } else {
-                cache.setHashValue(chunk.id, {
-                  // new file should be changed
-                  changed: true,
-                  hash: chunk.hash
-                })
-              }
+              cache.calcHashValueChanged(chunk.id, chunk.hash)
             }
           }
 
@@ -129,12 +104,35 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
               const rawSource = originalSource.source().toString()
 
-              const wxml = templateHandler(rawSource, {
-                runtimeSet
-              })
-              const source = new ConcatSource(wxml)
-              compilation.updateAsset(file, source)
-              onUpdate(file, rawSource, wxml)
+              const hash = cache.computeHash(rawSource)
+              const cacheKey = file
+              cache.calcHashValueChanged(cacheKey, hash)
+              cache.process(
+                cacheKey,
+                () => {
+                  const source = cache.get(cacheKey)
+                  if (source) {
+                    compilation.updateAsset(file, source)
+                    debug('processAssets: html cache hit: %s', file)
+                  } else {
+                    return false
+                  }
+                },
+                () => {
+                  const wxml = templateHandler(rawSource, {
+                    runtimeSet
+                  })
+                  const source = new ConcatSource(wxml)
+                  compilation.updateAsset(file, source)
+
+                  onUpdate(file, rawSource, wxml)
+                  debug('processAssets: html handle: %s', file)
+                  return {
+                    key: cacheKey,
+                    source
+                  }
+                }
+              )
             }
             debug('processAssets: html handle finish, count: %s', groupedEntries.html.length)
           }
@@ -143,29 +141,41 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
             for (let i = 0; i < groupedEntries.js.length; i++) {
               const [file, originalSource] = groupedEntries.js[i]
               const cacheKey = cache.removeExt(file)
-              const hit = cache.getHashValue(cacheKey)
-              if (hit && !hit.changed) {
-                const source = cache.get(cacheKey)
-                source && compilation.updateAsset(file, source)
-                debug('processAssets: js cache hit: %s', file)
-              } else {
-                const rawSource = originalSource.source().toString()
-                const mapFilename = file + '.map'
-                const hasMap = Boolean(assets[mapFilename])
-                const { code, map } = jsHandler(rawSource, runtimeSet, {
-                  generateMap: hasMap
-                })
-                const source = new ConcatSource(code)
-                compilation.updateAsset(file, source)
-                onUpdate(file, rawSource, code)
-                debug('processAssets: js handle: %s', file)
-                // set cache
-                cache.set(cacheKey, source)
-                if (hasMap && map) {
-                  const source = new RawSource(map.toString())
-                  compilation.updateAsset(mapFilename, source)
+
+              cache.process(
+                cacheKey,
+                () => {
+                  const source = cache.get(cacheKey)
+                  if (source) {
+                    compilation.updateAsset(file, source)
+                    debug('processAssets: js cache hit: %s', file)
+                  } else {
+                    return false
+                  }
+                },
+                () => {
+                  const rawSource = originalSource.source().toString()
+                  const mapFilename = file + '.map'
+                  const hasMap = Boolean(assets[mapFilename])
+                  const { code, map } = jsHandler(rawSource, runtimeSet, {
+                    generateMap: hasMap
+                  })
+                  const source = new ConcatSource(code)
+                  compilation.updateAsset(file, source)
+                  onUpdate(file, rawSource, code)
+                  debug('processAssets: js handle: %s', file)
+                  // set cache
+
+                  if (hasMap && map) {
+                    const source = new RawSource(map.toString())
+                    compilation.updateAsset(mapFilename, source)
+                  }
+                  return {
+                    key: cacheKey,
+                    source
+                  }
                 }
-              }
+              )
             }
             debug('processAssets: js handler finish, count: %s', groupedEntries.js.length)
           }
@@ -175,12 +185,36 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const [file, originalSource] = groupedEntries.css[i]
 
               const rawSource = originalSource.source().toString()
-              const css = styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(file, this.appType)
-              })
-              const source = new ConcatSource(css)
-              compilation.updateAsset(file, source)
-              onUpdate(file, rawSource, css)
+              const hash = cache.computeHash(rawSource)
+              const cacheKey = file
+              cache.calcHashValueChanged(cacheKey, hash)
+
+              cache.process(
+                cacheKey,
+                () => {
+                  const source = cache.get(cacheKey)
+                  if (source) {
+                    compilation.updateAsset(file, source)
+                    debug('processAssets: css cache hit: %s', file)
+                  } else {
+                    return false
+                  }
+                },
+                () => {
+                  const css = styleHandler(rawSource, {
+                    isMainChunk: mainCssChunkMatcher(file, this.appType)
+                  })
+                  const source = new ConcatSource(css)
+                  compilation.updateAsset(file, source)
+
+                  onUpdate(file, rawSource, css)
+                  debug('processAssets: css handle: %s', file)
+                  return {
+                    key: cacheKey,
+                    source
+                  }
+                }
+              )
             }
             debug('processAssets: css handler finish, count: %s', groupedEntries.css.length)
           }

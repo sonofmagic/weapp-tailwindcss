@@ -1,6 +1,6 @@
-import path from 'node:path'
 import { LRUCache } from 'lru-cache'
 import type { sources } from 'webpack'
+import md5 from 'md5'
 
 export interface HashMapValue {
   hash: string
@@ -19,6 +19,10 @@ export interface ICreateCacheReturnType {
   removeExt: (file: string) => string
   get: (key: string) => sources.Source | undefined
   set: (key: string, value: sources.Source) => this['instance']
+  has: (key: string) => boolean
+  computeHash: (message: string | Buffer) => string
+  calcHashValueChanged: (key: HashMapKey, hash: string) => this
+  process: (key: string, callback: () => void | false, fallback: () => void | { key: string; source: sources.Source }) => void
 }
 
 function createCache(): ICreateCacheReturnType {
@@ -49,6 +53,49 @@ function createCache(): ICreateCacheReturnType {
     },
     set(key, value) {
       return instance.set(key, value)
+    },
+    computeHash(message) {
+      return md5(message)
+    },
+    calcHashValueChanged(key, hash) {
+      const hit = this.getHashValue(key)
+      if (hit) {
+        // 文件内容没有改变
+        // 改变了，就给新的哈希值
+        this.setHashValue(key, {
+          // new file should be changed
+          changed: hash !== hit.hash,
+          // new hash
+          hash
+        })
+      } else {
+        // add to hashmap
+        this.setHashValue(key, {
+          // new file should be changed
+          changed: true,
+          hash
+        })
+      }
+      return this
+    },
+    has(key) {
+      return instance.has(key)
+    },
+    process(key, callback, fallback) {
+      const hit = this.getHashValue(key)
+      // 文件没有改变
+      if (hit && !hit.changed) {
+        // 命中缓存
+        const returnFlag = callback()
+        if (returnFlag !== false) {
+          return
+        }
+      }
+      // 默认处理
+      const res = fallback()
+      if (res) {
+        this.set(res.key, res.source)
+      }
     }
   }
 }
