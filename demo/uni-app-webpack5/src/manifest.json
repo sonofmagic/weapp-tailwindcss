@@ -42,7 +42,7 @@
   "quickapp": { /* 快应用特有相关 */},
   "mp-weixin": { /* 小程序特有相关 */
     "usingComponents": true,
-    "appid": "",
+    "appid": "wxb3d842a4a7e3440d",
     "setting": {
       "urlCheck": true
     }

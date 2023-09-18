@@ -65,13 +65,13 @@ const mainOutputOptions: Partial<RollupOptions['output']> = {
     reservedNamesAsProps: false
   },
   interop: 'compat',
-  systemNullSetters: false,
-  sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
-    if (isDemo) {
-      return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replaceAll(/\.\.[/\\]/g, ''))
-    }
-    return relativeSourcePath
-  }
+  systemNullSetters: false
+  // sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+  //   if (isDemo) {
+  //     return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replaceAll(/\.\.[/\\]/g, ''))
+  //   }
+  //   return relativeSourcePath
+  // }
 }
 
 const entries: IEntry[] = [

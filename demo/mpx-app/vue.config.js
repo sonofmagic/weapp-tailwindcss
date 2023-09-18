@@ -1,12 +1,13 @@
 const { defineConfig } = require('@vue/cli-service')
-let Plugin
-if (process.env.LOCAL) {
-  const { UnifiedWebpackPluginV5 } = require('./weapp-tw-dist')
-  Plugin = UnifiedWebpackPluginV5
-} else {
-  const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  Plugin = UnifiedWebpackPluginV5
-}
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
+// let Plugin
+// if (process.env.LOCAL) {
+//   const { UnifiedWebpackPluginV5 } = require('./weapp-tw-dist')
+//   Plugin = UnifiedWebpackPluginV5
+// } else {
+//   const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
+//   Plugin = UnifiedWebpackPluginV5
+// }
 // const { MpxWeappTailwindcssWebpackPluginV5 } = require('../..')
 
 module.exports = defineConfig({
@@ -32,7 +33,7 @@ module.exports = defineConfig({
    */
   configureWebpack(config) {
     let start
-    config.plugins.push(new Plugin({
+    config.plugins.push(new UnifiedWebpackPluginV5({
       appType: 'mpx',
       onStart() {
         start = performance.now()
