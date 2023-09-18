@@ -2,15 +2,17 @@ import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 // import Unocss from 'unocss/vite';
 // import WindiCSS from 'vite-plugin-windicss';
-let vwt;
-if (process.env.LOCAL) {
-  console.log('use local built webpack plugin');
-  const { UnifiedViteWeappTailwindcssPlugin } = require('./weapp-tw-dist/vite');
-  vwt = UnifiedViteWeappTailwindcssPlugin;
-} else {
-  const { UnifiedViteWeappTailwindcssPlugin } = require('weapp-tailwindcss-webpack-plugin/vite');
-  vwt = UnifiedViteWeappTailwindcssPlugin;
-}
+
+// if (process.env.LOCAL) {
+//   console.log('use local built webpack plugin');
+//   const { UnifiedViteWeappTailwindcssPlugin } = require('./weapp-tw-dist/vite');
+//   vwt = UnifiedViteWeappTailwindcssPlugin;
+// } else {
+//   const { UnifiedViteWeappTailwindcssPlugin } = require('weapp-tailwindcss-webpack-plugin/vite');
+//   vwt = UnifiedViteWeappTailwindcssPlugin;
+// }
+const { UnifiedViteWeappTailwindcssPlugin: vwt } = require('weapp-tailwindcss-webpack-plugin/vite');
+
 // import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 // import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
 

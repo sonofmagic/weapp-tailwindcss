@@ -94,6 +94,20 @@
       "request": "launch",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo-linked/uni-app-webpack5"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[demo-linked] uni-app-vite dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo-linked/uni-app-vite"
+    },
+    {
+      "command": "npm run build",
+      "name": "[demo-linked] uni-app-vite build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo-linked/uni-app-vite"
     }
   ]
 }

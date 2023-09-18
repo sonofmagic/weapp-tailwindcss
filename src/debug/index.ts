@@ -1,3 +1,11 @@
-import createDebug from 'debug'
+import _createDebug from 'debug'
 
-export const debug = createDebug('weapp-tw')
+const _debug = _createDebug('weapp-tw')
+
+function createDebug(prefix?: string) {
+  return function debug(formatter: any, ...args: any[]) {
+    return _debug((prefix ?? '') + formatter, ...args)
+  }
+}
+
+export { createDebug }

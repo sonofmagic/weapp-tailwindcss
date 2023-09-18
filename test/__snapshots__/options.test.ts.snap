@@ -6,6 +6,12 @@ exports[`get options default options 1`] = `
     "allowDoubleQuotes": false,
   },
   "cache": {
+    "calcHashValueChanged": [Function],
+    "computeHash": [Function],
+    "get": [Function],
+    "getHashValue": [Function],
+    "has": [Function],
+    "hasHashKey": [Function],
     "hashMap": Map {},
     "instance": LRUCache {
       "allowStale": false,
@@ -24,6 +30,9 @@ exports[`get options default options 1`] = `
       "updateAgeOnGet": false,
       "updateAgeOnHas": false,
     },
+    "process": [Function],
+    "set": [Function],
+    "setHashValue": [Function],
   },
   "cssChildCombinatorReplaceValue": "view + view",
   "cssMatcher": [Function],

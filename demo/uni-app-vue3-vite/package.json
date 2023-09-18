@@ -2,7 +2,7 @@
   "name": "uni-preset-vue",
   "version": "0.0.0",
   "scripts": {
-    "dev": "uni -p mp-weixin",
+    "dev": "cross-env DEBUG=weapp-tw uni -p mp-weixin",
     "dev:local": "cross-env LOCAL=1 uni -p mp-weixin",
     "build": "uni build -p mp-weixin",
     "build:local": "cross-env LOCAL=1 uni build -p mp-weixin",
@@ -84,6 +84,6 @@
     "vite": "4.1.4",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.9.0"
+    "weapp-tailwindcss-webpack-plugin": "^2.9.1-beta.0"
   }
 }
