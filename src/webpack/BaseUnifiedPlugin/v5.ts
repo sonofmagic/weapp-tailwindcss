@@ -69,10 +69,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         }
       })
 
-      // compilation.hooks.chunkHash.tap(pluginName, (chunk, hash, ctx) => {
-      //   console.log(chunk, hash, ctx)
-      // })
-
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
@@ -86,48 +82,22 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           // javascript:
           // 'e4e833b622159d58a15d'
 
-          // hash: '9fe3a580c918e8ada4fc651d6484238e'
-
-          // chunk.contentHash.javascript
-          // 0:
-          // {"moduleB/pages/index" => "e4e833b622159d58a15d"}
-          // 1:
-          // {"moduleB/comp" => "1680af0b1bb412aa5187"}
-          // 2:
-          // {"moduleB/custom-wrapper" => "c9da87a25634648d0f2b"}
-          // 3:
-          // {"moduleB/runtime" => "585baa357d379556aef4"}
-          // 4:
-          // {"moduleB/vendors" => "090cae713fd0978fa6f3"}
-
-          // chunk.hash
-          // 0:
-          // {109 => "e23da65bef0a9eb97312ebdee9752b6b"}
-          // 1:
-          // {642 => "a8ac4f2bbdb0b86b8a73b65bbb53d653"}
-          // 2:
-          // {644 => "3a5ec990bdf0d2a6f42b0e8bfe0bebec"}
-          // 3:
-          // {422 => "2f7e84deed01145b2f6190de1c60dfb0"}
-          // 4:
-          // {730 => "dae6d0a9a1ca336e2b767bf6f8d517e2"}
-
           // 第一次进来的时候为 init
           for (const chunk of compilation.chunks) {
             if (chunk.id && chunk.hash) {
-              if (cache.hashMap.has(chunk.id)) {
-                const value = cache.hashMap.get(chunk.id)
+              if (cache.hasHashKey(chunk.id)) {
+                const value = cache.getHashValue(chunk.id)
                 if (value) {
                   // 文件内容没有改变
                   if (chunk.hash === value.hash) {
-                    cache.hashMap.set(chunk.id, {
+                    cache.setHashValue(chunk.id, {
                       // no changed
                       changed: false,
                       hash: chunk.hash
                     })
                   } else {
                     // 改变了，就给新的哈希值
-                    cache.hashMap.set(chunk.id, {
+                    cache.setHashValue(chunk.id, {
                       // new file should be changed
                       changed: true,
                       // new hash
@@ -136,22 +106,22 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   }
                 }
               } else {
-                cache.hashMap.set(chunk.id, {
+                cache.setHashValue(chunk.id, {
                   // new file should be changed
                   changed: true,
                   hash: chunk.hash
-                }) // ?? chunk.contentHash.javascript) // or contentHash.javascript) ?
+                })
               }
             }
           }
-          // console.log(compilation.chunkGraph, compilation.chunks)
+
           const entries = Object.entries(assets)
           const groupedEntries = getGroupedEntries(entries, this.options)
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
           const runtimeSet = getClassSet()
           setMangleRuntimeSet(runtimeSet)
-          debug('processAssets: runtimeSet inited, class count: %d', runtimeSet.size)
+          debug('processAssets: get runtimeSet, class count: %d', runtimeSet.size)
 
           if (Array.isArray(groupedEntries.html)) {
             for (let i = 0; i < groupedEntries.html.length; i++) {
@@ -172,12 +142,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           if (Array.isArray(groupedEntries.js)) {
             for (let i = 0; i < groupedEntries.js.length; i++) {
               const [file, originalSource] = groupedEntries.js[i]
-              const key = file.replace(/\.[^./]+$/, '')
-              const hit = cache.hashMap.get(key)
+              const cacheKey = cache.removeExt(file)
+              const hit = cache.getHashValue(cacheKey)
               if (hit && !hit.changed) {
-                const source = cache.instance.get(key)
+                const source = cache.get(cacheKey)
                 source && compilation.updateAsset(file, source)
-                debug('processAssets: js cache hited: %s', file)
+                debug('processAssets: js cache hit: %s', file)
               } else {
                 const rawSource = originalSource.source().toString()
                 const mapFilename = file + '.map'
@@ -190,7 +160,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                 onUpdate(file, rawSource, code)
                 debug('processAssets: js handle: %s', file)
                 // set cache
-                cache.instance.set(key, source)
+                cache.set(cacheKey, source)
                 if (hasMap && map) {
                   const source = new RawSource(map.toString())
                   compilation.updateAsset(mapFilename, source)
