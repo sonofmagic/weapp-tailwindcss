@@ -7,7 +7,9 @@ import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries } from '@/utils'
-import { debug } from '@/debug'
+import { createDebug } from '@/debug'
+
+const debug = createDebug('')
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -77,7 +79,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         },
         (assets) => {
           onStart()
-          debug('processAssets: start')
+          debug('start')
           // css/mini-extract:
           // '28f380ecd98b2d181c5a'
           // javascript:
@@ -96,9 +98,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
           const runtimeSet = getClassSet()
           setMangleRuntimeSet(runtimeSet)
-          debug('processAssets: get runtimeSet, class count: %d', runtimeSet.size)
+          debug('get runtimeSet, class count: %d', runtimeSet.size)
 
           if (Array.isArray(groupedEntries.html)) {
+            let noCachedCount = 0
             for (let i = 0; i < groupedEntries.html.length; i++) {
               const [file, originalSource] = groupedEntries.html[i]
 
@@ -113,7 +116,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   const source = cache.get(cacheKey)
                   if (source) {
                     compilation.updateAsset(file, source)
-                    debug('processAssets: html cache hit: %s', file)
+                    debug('html cache hit: %s', file)
                   } else {
                     return false
                   }
@@ -126,7 +129,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   compilation.updateAsset(file, source)
 
                   onUpdate(file, rawSource, wxml)
-                  debug('processAssets: html handle: %s', file)
+                  debug('html handle: %s', file)
+                  noCachedCount++
                   return {
                     key: cacheKey,
                     source
@@ -134,10 +138,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                 }
               )
             }
-            debug('processAssets: html handle finish, count: %s', groupedEntries.html.length)
+            debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
           }
 
           if (Array.isArray(groupedEntries.js)) {
+            let noCachedCount = 0
             for (let i = 0; i < groupedEntries.js.length; i++) {
               const [file, originalSource] = groupedEntries.js[i]
               const cacheKey = cache.removeExt(file)
@@ -148,7 +153,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   const source = cache.get(cacheKey)
                   if (source) {
                     compilation.updateAsset(file, source)
-                    debug('processAssets: js cache hit: %s', file)
+                    debug('js cache hit: %s', file)
                   } else {
                     return false
                   }
@@ -163,8 +168,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   const source = new ConcatSource(code)
                   compilation.updateAsset(file, source)
                   onUpdate(file, rawSource, code)
-                  debug('processAssets: js handle: %s', file)
-                  // set cache
+                  debug('js handle: %s', file)
+                  noCachedCount++
 
                   if (hasMap && map) {
                     const source = new RawSource(map.toString())
@@ -177,10 +182,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                 }
               )
             }
-            debug('processAssets: js handler finish, count: %s', groupedEntries.js.length)
+            debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
           }
 
           if (Array.isArray(groupedEntries.css)) {
+            let noCachedCount = 0
             for (let i = 0; i < groupedEntries.css.length; i++) {
               const [file, originalSource] = groupedEntries.css[i]
 
@@ -195,7 +201,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   const source = cache.get(cacheKey)
                   if (source) {
                     compilation.updateAsset(file, source)
-                    debug('processAssets: css cache hit: %s', file)
+                    debug('css cache hit: %s', file)
                   } else {
                     return false
                   }
@@ -208,7 +214,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   compilation.updateAsset(file, source)
 
                   onUpdate(file, rawSource, css)
-                  debug('processAssets: css handle: %s', file)
+                  debug('css handle: %s', file)
+                  noCachedCount++
                   return {
                     key: cacheKey,
                     source
@@ -216,10 +223,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                 }
               )
             }
-            debug('processAssets: css handler finish, count: %s', groupedEntries.css.length)
+            debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
           }
 
-          debug('processAssets: end')
+          debug('end')
           onEnd()
         }
       )

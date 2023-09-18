@@ -5,6 +5,9 @@ import { getOptions } from '@/options'
 import { vitePluginName } from '@/constants'
 import { getGroupedEntries } from '@/utils'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import { createDebug } from '@/debug'
+
+const debug = createDebug('generateBundle: ')
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
@@ -16,7 +19,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options)
-  const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet } = opts
+  const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet, cache } = opts
   if (disabled) {
     return
   }
@@ -30,58 +33,133 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     name: vitePluginName,
     enforce: 'post',
     generateBundle(opt, bundle) {
+      debug('start')
       onStart()
-      // 也许应该都在这里处理
-      // .filter(([, s]) => s.type === 'asset' || s.type === 'chunk')
+
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
       const runtimeSet = twPatcher.getClassSet()
       setMangleRuntimeSet(runtimeSet)
+      debug('get runtimeSet, class count: %d', runtimeSet.size)
       if (Array.isArray(groupedEntries.html)) {
+        let noCachedCount = 0
         for (let i = 0; i < groupedEntries.html.length; i++) {
-          // let classGenerator
           const [file, originalSource] = groupedEntries.html[i] as [string, OutputAsset]
-          // if (globalClassGenerator && globalClassGenerator.isFileIncluded(file)) {
-          //   classGenerator = globalClassGenerator
-          // }
-          const oldVal = originalSource.source.toString()
-          originalSource.source = templateHandler(oldVal, {
-            runtimeSet
-          })
-          onUpdate(file, oldVal, originalSource.source)
-        }
-      }
-      if (Array.isArray(groupedEntries.css)) {
-        for (let i = 0; i < groupedEntries.css.length; i++) {
-          // let classGenerator
-          const [file, originalSource] = groupedEntries.css[i] as [string, OutputAsset]
 
-          const rawSource = originalSource.source.toString()
-          const css = styleHandler(rawSource, {
-            isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
-          })
-          originalSource.source = css
-          onUpdate(file, rawSource, css)
+          const oldVal = originalSource.source.toString()
+
+          const hash = cache.computeHash(oldVal)
+          cache.calcHashValueChanged(file, hash)
+
+          cache.process(
+            file,
+            () => {
+              const source = cache.get<string>(file)
+              if (source) {
+                originalSource.source = source
+                debug('html cache hit: %s', file)
+              } else {
+                return false
+              }
+            },
+            () => {
+              originalSource.source = templateHandler(oldVal, {
+                runtimeSet
+              })
+              onUpdate(file, oldVal, originalSource.source)
+              debug('html handle: %s', file)
+              noCachedCount++
+              return {
+                key: file,
+                source: originalSource.source
+              }
+            }
+          )
         }
+        debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
       }
       if (Array.isArray(groupedEntries.js)) {
+        let noCachedCount = 0
         for (let i = 0; i < groupedEntries.js.length; i++) {
           const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
           const rawSource = originalSource.code
-          const mapFilename = file + '.map'
-          const hasMap = Boolean(bundle[mapFilename])
-          const { code, map } = jsHandler(rawSource, runtimeSet, {
-            generateMap: hasMap
-          })
-          originalSource.code = code
-          onUpdate(file, rawSource, code)
 
-          if (hasMap && map) {
-            ;(bundle[mapFilename] as OutputAsset).source = map.toString()
-          }
+          const hash = cache.computeHash(rawSource)
+          cache.calcHashValueChanged(file, hash)
+          cache.process(
+            file,
+            () => {
+              const source = cache.get<string>(file)
+              if (source) {
+                originalSource.code = source
+                debug('js cache hit: %s', file)
+              } else {
+                return false
+              }
+            },
+            () => {
+              const mapFilename = file + '.map'
+              const hasMap = Boolean(bundle[mapFilename])
+              const { code, map } = jsHandler(rawSource, runtimeSet, {
+                generateMap: hasMap
+              })
+              originalSource.code = code
+              onUpdate(file, rawSource, code)
+              debug('js handle: %s', file)
+              noCachedCount++
+              if (hasMap && map) {
+                ;(bundle[mapFilename] as OutputAsset).source = map.toString()
+              }
+              return {
+                key: file,
+                source: code
+              }
+            }
+          )
         }
+        debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
       }
+
+      if (Array.isArray(groupedEntries.css)) {
+        let noCachedCount = 0
+        for (let i = 0; i < groupedEntries.css.length; i++) {
+          const [file, originalSource] = groupedEntries.css[i] as [string, OutputAsset]
+
+          const rawSource = originalSource.source.toString()
+
+          const hash = cache.computeHash(rawSource)
+          cache.calcHashValueChanged(file, hash)
+          cache.process(
+            file,
+            () => {
+              const source = cache.get<string>(file)
+              if (source) {
+                originalSource.source = source
+                debug('css cache hit: %s', file)
+              } else {
+                return false
+              }
+            },
+            () => {
+              const css = styleHandler(rawSource, {
+                isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
+              })
+              originalSource.source = css
+              onUpdate(file, rawSource, css)
+              debug('css handle: %s', file)
+              noCachedCount++
+              return {
+                key: file,
+                source: css
+              }
+            }
+          )
+        }
+        debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
+      }
+
       onEnd()
+      debug('end')
     }
   }
 }

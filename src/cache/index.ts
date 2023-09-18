@@ -9,25 +9,31 @@ export interface HashMapValue {
 
 export type HashMapKey = string | number
 
+export type CacheValue = sources.Source | string
+
 export interface ICreateCacheReturnType {
-  // id:hash
+  // id:hash instance
   hashMap: Map<HashMapKey, HashMapValue>
-  instance: LRUCache<string, sources.Source>
+  instance: LRUCache<string, CacheValue>
+  // map
   hasHashKey: (key: HashMapKey) => boolean
   getHashValue: (key: HashMapKey) => HashMapValue | undefined
   setHashValue: (key: HashMapKey, value: HashMapValue) => this['hashMap']
+  // util
   removeExt: (file: string) => string
-  get: (key: string) => sources.Source | undefined
-  set: (key: string, value: sources.Source) => this['instance']
-  has: (key: string) => boolean
   computeHash: (message: string | Buffer) => string
+  // cache
+  get: <V extends CacheValue = sources.Source>(key: string) => V | undefined
+  set: <V extends CacheValue = sources.Source>(key: string, value: V) => this['instance']
+  has: (key: string) => boolean
+  // flow
   calcHashValueChanged: (key: HashMapKey, hash: string) => this
-  process: (key: string, callback: () => void | false, fallback: () => void | { key: string; source: sources.Source }) => void
+  process: (key: string, callback: () => void | false, fallback: () => void | { key: string; source: CacheValue }) => void
 }
 
 function createCache(): ICreateCacheReturnType {
   const hashMap = new Map<HashMapKey, HashMapValue>()
-  const instance = new LRUCache<string, sources.Source>({
+  const instance = new LRUCache<string, CacheValue>({
     // 可能会添加和删除一些页面和组件, 先设定 1024 吧
     max: 1024,
     ttl: 0,
@@ -48,8 +54,8 @@ function createCache(): ICreateCacheReturnType {
     removeExt(file) {
       return file.replace(/\.[^./]+$/, '')
     },
-    get(key) {
-      return instance.get(key)
+    get<T>(key: string) {
+      return instance.get(key) as T
     },
     set(key, value) {
       return instance.set(key, value)
