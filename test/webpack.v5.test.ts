@@ -7,6 +7,7 @@ import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
 import { copySync, mkdirSync } from 'fs-extra'
+// @ts-ignore
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
@@ -69,7 +70,7 @@ describe('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
-  let sourceMapCompiler: Compiler
+  // let sourceMapCompiler: Compiler
   const cacheDir = path.resolve(process.cwd(), 'node_modules/.cache', 'tailwindcss-patch')
   const cacheJson = path.resolve(cacheDir, 'index.json')
   beforeAll(() => {
@@ -110,14 +111,14 @@ describe('webpack5 plugin', () => {
       tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/empty/tailwind.config.js')
     })
 
-    sourceMapCompiler = createCompiler({
-      mode: 'production',
-      entry: {
-        wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js')
-      },
-      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js'),
-      devtool: 'source-map'
-    })
+    // sourceMapCompiler = createCompiler({
+    //   mode: 'production',
+    //   entry: {
+    //     wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js')
+    //   },
+    //   tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js'),
+    //   devtool: 'source-map'
+    // })
   })
 
   afterAll(() => {
@@ -142,6 +143,36 @@ describe('webpack5 plugin', () => {
     }).apply(compiler)
 
     const stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('common build twice for cache', async () => {
+    let timeStart: number
+    let timeTaken: number
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      customReplaceDictionary: 'complex',
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+      }
+    }).apply(compiler)
+
+    let stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+
+    stats = await compile(compiler)
 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
@@ -201,7 +232,7 @@ describe('webpack5 plugin', () => {
     let timeStart: number
     let timeTaken: number
     new UnifiedWebpackPluginV5WithLoader({
-      mainCssChunkMatcher(name) {
+      mainCssChunkMatcher(name: any) {
         return path.basename(name) === 'index.css'
       },
       onStart() {

@@ -95,6 +95,37 @@ describe('vite test', () => {
     )
   })
 
+  it('vite common build twice for cache', async () => {
+    let timeStart: number
+    let timeTaken: number
+    await assertSnap(
+      uvwt({
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
+      })
+    )
+    await assertSnap(
+      uvwt({
+        htmlMatcher: ['**/*.html'],
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        }
+      })
+    )
+  })
+
   it('vite common build with mangle true', async () => {
     let timeStart: number
     let timeTaken: number

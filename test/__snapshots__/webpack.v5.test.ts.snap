@@ -381,6 +381,768 @@ exports[`webpack5 plugin common 0: errors 1`] = `[]`;
 
 exports[`webpack5 plugin common 0: warnings 1`] = `[]`;
 
+exports[`webpack5 plugin common build twice for cache: assets 1`] = `
+{
+  "index.css": "::before,::after {
+    --tw-content: ""}
+view,::before,::after {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
+::backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}
+.-m-_bl_20px_br_ {
+    margin: -20px
+}
+.m-_bl_20px_br_ {
+    margin: 20px
+}
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto
+}
+.-mt-2 {
+    margin-top: -0.5rem
+}
+.mb-_bl_-20px_br_ {
+    margin-bottom: -20px
+}
+.flex {
+    display: flex
+}
+.grid {
+    display: grid
+}
+.h-10 {
+    height: 2.5rem
+}
+.h-_bl_100px_br_ {
+    height: 100px
+}
+.h-_bl_200_p__br_ {
+    height: 200%
+}
+.h-_bl_99px_br_ {
+    height: 99px
+}
+.max-h-_bl_100px_br_ {
+    max-height: 100px
+}
+.min-h-_bl_100px_br_ {
+    min-height: 100px
+}
+.w-10 {
+    width: 2.5rem
+}
+.w-32 {
+    width: 8rem
+}
+.w-_bl_100px_br_ {
+    width: 100px
+}
+.w-_bl_20px_br_ {
+    width: 20px
+}
+.w-_bl_300rpx_br_ {
+    width: 300rpx
+}
+.w-_bl_99px_br_ {
+    width: 99px
+}
+.min-w-_bl_300rpx_br_ {
+    min-width: 300rpx
+}
+.max-w-_bl_300rpx_br_ {
+    max-width: 300rpx
+}
+.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+}
+.items-center {
+    align-items: center
+}
+.justify-center {
+    justify-content: center
+}
+.space-y-_bl_1_d_6rem_br_>view + view {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
+}
+.divide-x-_bl_10px_br_>view + view {
+    --tw-divide-x-reverse: 0;
+    border-right-width: calc(10px * var(--tw-divide-x-reverse));
+    border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
+}
+.divide-solid>view + view {
+    border-style: solid
+}
+.divide-_bl__h_010101_br_>view + view {
+    --tw-divide-opacity: 1;
+    border-color: rgb(1 1 1 / var(--tw-divide-opacity))
+}
+.rounded-_bl_40px_br_ {
+    border-radius: 40px
+}
+.rounded-md {
+    border-radius: 0.375rem
+}
+.border-0 {
+    border-width: 0px
+}
+.border-_bl_10px_br_ {
+    border-width: 10px
+}
+.border-solid {
+    border-style: solid
+}
+.border-_bl__h_098765_br_ {
+    --tw-border-opacity: 1;
+    border-color: rgb(9 135 101 / var(--tw-border-opacity))
+}
+.border-opacity-_bl_0_d_44_br_ {
+    --tw-border-opacity: 0.44
+}
+.bg-_bl__h_123456_br_ {
+    --tw-bg-opacity: 1;
+    background-color: rgb(18 52 86 / var(--tw-bg-opacity))
+}
+.bg-pink-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(236 72 153 / var(--tw-bg-opacity))
+}
+.bg-sky-700 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(3 105 161 / var(--tw-bg-opacity))
+}
+.bg-opacity-_bl_0_d_54_br_ {
+    --tw-bg-opacity: 0.54
+}
+.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+    background-image: url('https://xxx.com/xx.webp')
+}
+.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+    background-image: url('https://yyy.com/xx.webp')
+}
+.p-_bl_20px_br_ {
+    padding: 20px
+}
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem
+}
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem
+}
+.text-_bl_20px_br_ {
+    font-size: 20px
+}
+.font-semibold {
+    font-weight: 600
+}
+.leading-_bl_0_d_9_br_ {
+    line-height: 0.9
+}
+.text-_bl__h_dddddd_br_ {
+    --tw-text-opacity: 1;
+    color: rgb(221 221 221 / var(--tw-text-opacity))
+}
+.text-_bl__h_ffffff_br_ {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+.text-black {
+    --tw-text-opacity: 1;
+    color: rgb(0 0 0 / var(--tw-text-opacity))
+}
+.text-white {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+.text-opacity-_bl_0_d_19_br_ {
+    --tw-text-opacity: 0.19
+}
+.ring-4 {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+}
+.ring-pink-300 {
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity))
+}
+@media (min-width: 640px) {
+    .sm_c_px-8 {
+        padding-left: 2rem;
+        padding-right: 2rem
+    }
+    .sm_c_py-3 {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem
+    }
+}",
+  "index.wxml": "<!-- index.wxml -->
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
+  </view>
+  <view class="motto">
+    <template is="motto" data="{{motto:motto}}" />
+  </view>
+  <view class="powered h-_bl_200_p__br_">
+    <text>{{powered.by}}</text>
+  </view>
+  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+    p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+  </view>
+  <view class="space-y-_bl_1_d_6rem_br_">
+    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+      w-[300rpx] text-black text-opacity-[0.19]
+    </view>
+    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+      max-w-[300rpx] min-h-[100px] text-[#dddddd]
+    </view>
+    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+      Hello
+    </view>
+    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
+      Default
+    </view>
+  </view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+</view>",
+  "wxml.js": "/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
+
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
+}
+`;
+
+exports[`webpack5 plugin common build twice for cache: assets 2`] = `
+{
+  "index.css": "::before,::after {
+    --tw-content: ""}
+view,::before,::after {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
+::backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x:  ;
+    --tw-pan-y:  ;
+    --tw-pinch-zoom:  ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position:  ;
+    --tw-gradient-via-position:  ;
+    --tw-gradient-to-position:  ;
+    --tw-ordinal:  ;
+    --tw-slashed-zero:  ;
+    --tw-numeric-figure:  ;
+    --tw-numeric-spacing:  ;
+    --tw-numeric-fraction:  ;
+    --tw-ring-inset:  ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur:  ;
+    --tw-brightness:  ;
+    --tw-contrast:  ;
+    --tw-grayscale:  ;
+    --tw-hue-rotate:  ;
+    --tw-invert:  ;
+    --tw-saturate:  ;
+    --tw-sepia:  ;
+    --tw-drop-shadow:  ;
+    --tw-backdrop-blur:  ;
+    --tw-backdrop-brightness:  ;
+    --tw-backdrop-contrast:  ;
+    --tw-backdrop-grayscale:  ;
+    --tw-backdrop-hue-rotate:  ;
+    --tw-backdrop-invert:  ;
+    --tw-backdrop-opacity:  ;
+    --tw-backdrop-saturate:  ;
+    --tw-backdrop-sepia:  
+}
+.-m-_bl_20px_br_ {
+    margin: -20px
+}
+.m-_bl_20px_br_ {
+    margin: 20px
+}
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto
+}
+.-mt-2 {
+    margin-top: -0.5rem
+}
+.mb-_bl_-20px_br_ {
+    margin-bottom: -20px
+}
+.flex {
+    display: flex
+}
+.grid {
+    display: grid
+}
+.h-10 {
+    height: 2.5rem
+}
+.h-_bl_100px_br_ {
+    height: 100px
+}
+.h-_bl_200_p__br_ {
+    height: 200%
+}
+.h-_bl_99px_br_ {
+    height: 99px
+}
+.max-h-_bl_100px_br_ {
+    max-height: 100px
+}
+.min-h-_bl_100px_br_ {
+    min-height: 100px
+}
+.w-10 {
+    width: 2.5rem
+}
+.w-32 {
+    width: 8rem
+}
+.w-_bl_100px_br_ {
+    width: 100px
+}
+.w-_bl_20px_br_ {
+    width: 20px
+}
+.w-_bl_300rpx_br_ {
+    width: 300rpx
+}
+.w-_bl_99px_br_ {
+    width: 99px
+}
+.min-w-_bl_300rpx_br_ {
+    min-width: 300rpx
+}
+.max-w-_bl_300rpx_br_ {
+    max-width: 300rpx
+}
+.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+}
+.items-center {
+    align-items: center
+}
+.justify-center {
+    justify-content: center
+}
+.space-y-_bl_1_d_6rem_br_>view + view {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
+}
+.divide-x-_bl_10px_br_>view + view {
+    --tw-divide-x-reverse: 0;
+    border-right-width: calc(10px * var(--tw-divide-x-reverse));
+    border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
+}
+.divide-solid>view + view {
+    border-style: solid
+}
+.divide-_bl__h_010101_br_>view + view {
+    --tw-divide-opacity: 1;
+    border-color: rgb(1 1 1 / var(--tw-divide-opacity))
+}
+.rounded-_bl_40px_br_ {
+    border-radius: 40px
+}
+.rounded-md {
+    border-radius: 0.375rem
+}
+.border-0 {
+    border-width: 0px
+}
+.border-_bl_10px_br_ {
+    border-width: 10px
+}
+.border-solid {
+    border-style: solid
+}
+.border-_bl__h_098765_br_ {
+    --tw-border-opacity: 1;
+    border-color: rgb(9 135 101 / var(--tw-border-opacity))
+}
+.border-opacity-_bl_0_d_44_br_ {
+    --tw-border-opacity: 0.44
+}
+.bg-_bl__h_123456_br_ {
+    --tw-bg-opacity: 1;
+    background-color: rgb(18 52 86 / var(--tw-bg-opacity))
+}
+.bg-pink-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(236 72 153 / var(--tw-bg-opacity))
+}
+.bg-sky-700 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(3 105 161 / var(--tw-bg-opacity))
+}
+.bg-opacity-_bl_0_d_54_br_ {
+    --tw-bg-opacity: 0.54
+}
+.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+    background-image: url('https://xxx.com/xx.webp')
+}
+.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+    background-image: url('https://yyy.com/xx.webp')
+}
+.p-_bl_20px_br_ {
+    padding: 20px
+}
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem
+}
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem
+}
+.text-_bl_20px_br_ {
+    font-size: 20px
+}
+.font-semibold {
+    font-weight: 600
+}
+.leading-_bl_0_d_9_br_ {
+    line-height: 0.9
+}
+.text-_bl__h_dddddd_br_ {
+    --tw-text-opacity: 1;
+    color: rgb(221 221 221 / var(--tw-text-opacity))
+}
+.text-_bl__h_ffffff_br_ {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+.text-black {
+    --tw-text-opacity: 1;
+    color: rgb(0 0 0 / var(--tw-text-opacity))
+}
+.text-white {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+.text-opacity-_bl_0_d_19_br_ {
+    --tw-text-opacity: 0.19
+}
+.ring-4 {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+}
+.ring-pink-300 {
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity))
+}
+@media (min-width: 640px) {
+    .sm_c_px-8 {
+        padding-left: 2rem;
+        padding-right: 2rem
+    }
+    .sm_c_py-3 {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem
+    }
+}",
+  "index.wxml": "<!-- index.wxml -->
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view bindtap="bindViewTap">
+    <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
+  </view>
+  <view class="motto">
+    <template is="motto" data="{{motto:motto}}" />
+  </view>
+  <view class="powered h-_bl_200_p__br_">
+    <text>{{powered.by}}</text>
+  </view>
+  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+    p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+  </view>
+  <view class="space-y-_bl_1_d_6rem_br_">
+    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+      w-[300rpx] text-black text-opacity-[0.19]
+    </view>
+    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+      max-w-[300rpx] min-h-[100px] text-[#dddddd]
+    </view>
+    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+      Hello
+    </view>
+    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">
+      Default
+    </view>
+  </view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+</view>",
+  "wxml.js": "/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/*!******************************************************!*\\
+  !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
+  \\******************************************************/
+/***/ (() => {
+
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss-webpack-plugin/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
+/******/ 	
+/******/ })()
+;",
+}
+`;
+
+exports[`webpack5 plugin common build twice for cache: errors 1`] = `[]`;
+
+exports[`webpack5 plugin common build twice for cache: errors 2`] = `[]`;
+
+exports[`webpack5 plugin common build twice for cache: warnings 1`] = `[]`;
+
+exports[`webpack5 plugin common build twice for cache: warnings 2`] = `[]`;
+
 exports[`webpack5 plugin common with loader: assets 1`] = `
 {
   "index.css": "::before,::after {

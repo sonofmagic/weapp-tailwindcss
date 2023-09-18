@@ -54,5 +54,136 @@ describe('cache', () => {
     expect(ctx.instance.size === 1).toBe(true)
     expect(ctx.has('2')).toBe(true)
     expect(ctx.get('2')).toBe('2')
+    ctx.set('3', new sources.ConcatSource('3'))
+    const s = ctx.get('3')
+    expect(s instanceof sources.ConcatSource).toBe(true)
+    expect(s?.source().toString()).toBe('3')
+  })
+
+  it('cache calcHashValueChanged', () => {
+    ctx.calcHashValueChanged('1', '1')
+    let v = ctx.getHashValue('1')
+    expect(v).toBeDefined()
+    expect(v).toEqual({
+      hash: '1',
+      changed: true
+    })
+
+    ctx.calcHashValueChanged('1', '1')
+    v = ctx.getHashValue('1')
+    expect(v).toBeDefined()
+    expect(v).toEqual({
+      hash: '1',
+      changed: false
+    })
+
+    ctx.calcHashValueChanged('1', '2')
+    v = ctx.getHashValue('1')
+    expect(v).toBeDefined()
+    expect(v).toEqual({
+      hash: '2',
+      changed: true
+    })
+  })
+
+  it('cache process case 0', () => {
+    const arr: number[] = []
+    ctx.process(
+      '1',
+      () => {
+        arr.push(0)
+      },
+      () => {
+        arr.push(1)
+      }
+    )
+    expect(arr.length).toBe(1)
+    expect(arr).toEqual([1])
+  })
+
+  it('cache process case 1', () => {
+    const arr: number[] = []
+    ctx.process(
+      '1',
+      () => {
+        arr.push(0)
+        return false
+      },
+      () => {
+        arr.push(1)
+      }
+    )
+    expect(arr.length).toBe(1)
+    expect(arr).toEqual([1])
+  })
+
+  it('cache process case 2', () => {
+    const arr: number[] = []
+
+    ctx.setHashValue('1', {
+      changed: false,
+      hash: '2'
+    })
+
+    ctx.process(
+      '1',
+      () => {
+        arr.push(0)
+      },
+      () => {
+        arr.push(1)
+      }
+    )
+    expect(arr.length).toBe(1)
+    expect(arr).toEqual([0])
+  })
+
+  it('cache process case 3', () => {
+    const arr: number[] = []
+
+    ctx.setHashValue('1', {
+      changed: false,
+      hash: '2'
+    })
+
+    ctx.process(
+      '1',
+      () => {
+        arr.push(0)
+        return false
+      },
+      () => {
+        arr.push(1)
+      }
+    )
+    expect(arr.length).toBe(2)
+    expect(arr).toEqual([0, 1])
+  })
+
+  it('cache process case 4', () => {
+    const arr: number[] = []
+
+    ctx.setHashValue('1', {
+      changed: false,
+      hash: '2'
+    })
+
+    ctx.process(
+      '1',
+      () => {
+        arr.push(0)
+        return false
+      },
+      () => {
+        arr.push(1)
+        return {
+          key: '2',
+          source: '2'
+        }
+      }
+    )
+    expect(arr.length).toBe(2)
+    expect(arr).toEqual([0, 1])
+    expect(ctx.instance.size).toBe(1)
   })
 })
