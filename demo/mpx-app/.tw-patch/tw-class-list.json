@@ -4,6 +4,7 @@
   "after:ml-0",
   "after:ml-0.5",
   "after:text-red-500",
+  "bg-[#929292]",
   "bg-[#fff]",
   "bg-[url('https://xxx.com/xx.webp')]",
   "flex",

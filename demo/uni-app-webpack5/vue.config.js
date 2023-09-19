@@ -40,6 +40,9 @@ const config = {
     )
     // config.plugins.push(new MiniCssExtractPlugin())
     // smp.wrap(config)
+  },
+  chainWebpack(config) {
+    config.plugins.delete('fork-ts-checker')
   }
 }
 
