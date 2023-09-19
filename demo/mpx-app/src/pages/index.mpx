@@ -1,10 +1,16 @@
 <template>
   <view>
-    <view wx:class="{{classNames}}">对酒当歌，人生几何</view>
+    <!-- <view wx:class="{{classNames}}">对酒当歌，人生几何</view>
     <view wx:class="{{bgUrl}}">bgUrl</view>
     <view wx:class="{{custom}}"></view>
     <view wx:class="{{custom2}}"></view>
-    <view>{{ wildContent }}</view>
+    <view>{{ wildContent }}</view> -->
+    <!--支持传入对象字面量，模板会显得杂乱，此处视图的style="color:red;font-size:16px;font-weight:bold;"-->
+    <view style="color:red;" wx:style="{{ {fontSize:'16px', fontWeight:'bold'} }}">
+    <!--更好的方式是直接传入对象数据，此处视图的style="color:blue;font-size:14px;"-->
+    <view wx:style="{{innerStyle}}"></view>
+     </view>
+    <!-- <view wx:style="{{ [{color: disabled ? "#bbbbbb" : color}] }}"></view> -->
     <list />
   </view>
 </template>
@@ -18,7 +24,13 @@ createPage({
     bgUrl: "bg-[url('https://xxx.com/xx.webp')]",
     custom: 'after:content-["你好啊，我很无聊"] after:ml-0.5 after:text-red-500',
     custom2: "after:content-['你好啊，我这是中文字符串'] after:ml-0.5 after:text-red-500",
-    wildContent: '*****'
+    wildContent: '*****',
+    disabled: false,
+    color: '#543345',
+    innerStyle: {
+      color: 'blue',
+      fontSize: '14px'
+    }
   },
   options: {
     addGlobalClass: true

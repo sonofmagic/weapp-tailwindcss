@@ -6,6 +6,15 @@ import { parseExpression, traverse, generate } from '@/babel'
 import { variableRegExp, ItemOrItemArray } from '@/reg'
 import { defu } from '@/utils'
 import type { RawSource, ITemplateHandlerOptions } from '@/types'
+
+function getQuotes(quote: string | null | undefined) {
+  const quotes = quote === "'" ? 'double' : 'single'
+  // if(quote === '"'){
+  //   quotes = 'single'
+  // }
+  return quotes
+}
+
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   const ast = parseExpression(match)
 
@@ -25,12 +34,12 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
     },
     noScope: true
   })
-  // @ts-ignore
+
   const { code } = generate(ast, {
     compact: true,
     minified: true,
     jsescOption: {
-      quotes: 'single',
+      quotes: getQuotes(options.quote),
       minimal: true
     }
   })
@@ -147,14 +156,23 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
     onopentagname(name) {
       tag = name
     },
+
     onattribute(name, value, quote) {
       if (value) {
-        if (quote === "'") {
-          s.update(parser.startIndex + name.length + 1, parser.startIndex + name.length + 2, '"')
-          s.update(parser.startIndex + name.length + value.length + 2, parser.startIndex + name.length + value.length + 3, '"')
-        }
+        // if (quote === "'") {
+        //   s.update(parser.startIndex + name.length + 1, parser.startIndex + name.length + 2, '"')
+        //   s.update(parser.startIndex + name.length + value.length + 2, parser.startIndex + name.length + value.length + 3, '"')
+        // }
+        // https://github.com/fb55/htmlparser2/blob/5eea942451c1b836999d4557ed98470678c789b9/src/Parser.ts#L431
         function update() {
-          s.update(parser.startIndex + name.length + 2, parser.endIndex, templateReplacer(value, options))
+          s.update(
+            parser.startIndex + name.length + 2,
+            parser.endIndex,
+            templateReplacer(value, {
+              ...options,
+              quote
+            })
+          )
         }
         // add 'virtualHostClass' toLowerCase
         if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class' || name === 'virtualhostclass')) {

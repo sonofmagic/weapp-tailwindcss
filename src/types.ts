@@ -448,6 +448,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   jsHandler?: JsHandler
   runtimeSet?: Set<string>
   disabledDefaultTemplateHandler?: boolean
+  quote?: string | null
 }
 
 export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher' | 'wxsMatcher'
