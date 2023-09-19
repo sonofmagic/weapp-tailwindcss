@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss",
-  "version": "2.9.1",
+  "version": "2.9.2",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -231,7 +231,7 @@
     "@babel/parser": "^7.22.16",
     "@babel/traverse": "^7.22.20",
     "@babel/types": "^7.22.19",
-    "@csstools/postcss-is-pseudo-class": "^4.0.1",
+    "@csstools/postcss-is-pseudo-class": "^4.0.2",
     "@tailwindcss-mangle/shared": "^2.2.1",
     "@weapp-core/escape": "^2.0.0",
     "@weapp-core/regex": "^1.0.1",
@@ -242,7 +242,7 @@
     "magic-string": "^0.30.3",
     "md5": "^2.3.0",
     "micromatch": "^4.0.5",
-    "postcss": "8.4.29",
+    "postcss": "8.4.30",
     "postcss-selector-parser": "^6.0.13",
     "semver": "^7.5.4",
     "tailwindcss-patch": "^2.2.1"

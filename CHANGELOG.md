@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 2.9.2 ~ 2.9.1 (2023-09-19)
+
+## Features
+
+- 建立缓存机制，大幅增加 `vite` 插件的热更新速度
+
+## Fixed
+
+- mpx编译wxml属性值单引号问题 [#241](https://github.com/sonofmagic/weapp-tailwindcss/issues/241)
+
 ## 2.9.0 (2023-09-18)
 
 ## Features

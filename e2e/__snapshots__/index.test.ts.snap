@@ -69,6 +69,8 @@ exports[`e2e > 'mpx-app' 1`] = `
   <view class=\\"after content- aftercml-0d5 afterctext-red-500\\"></view>
   <view class=\\"afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500\\"></view>
   <view>*****</view>
+  <view style=\\"color: red; font-size: 16px; font-weight: bold\\"><view class=\\"bg-_h929292_\\" style=\\"color: blue; font-size: 14px\\">111112222</view></view>
+  <view style=\\"color: blue; font-size: 14px; background-color: red\\">222222</view>
   <list is=\\"components/liste824c5b4/index\\">
     <view class=\\"flex index--flex flex-col index--flex-col\\">
       <view class=\\"text-_blue_ index--text-_blue_\\">手机</view>
@@ -87,6 +89,7 @@ exports[`e2e > 'mpx-app' 2`] = `
   \\"after:ml-0\\",
   \\"after:ml-0.5\\",
   \\"after:text-red-500\\",
+  \\"bg-[#929292]\\",
   \\"bg-[#fff]\\",
   \\"bg-[url('https://xxx.com/xx.webp')]\\",
   \\"flex\\",
