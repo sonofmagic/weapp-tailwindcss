@@ -12,9 +12,10 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "condition": false
+    "condition": false,
+    "ignoreUploadUnusedFiles": true
   },
-  "appid": "touristappid",
+  "appid": "wx6ffee4673b257014",
   "projectname": "mpx-project",
   "description": "A mpx project",
   "condition": {},

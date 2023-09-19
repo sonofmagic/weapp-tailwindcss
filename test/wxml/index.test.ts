@@ -10,4 +10,11 @@ describe('wxml', () => {
     const res = templateHandler(code)
     expect(res).toBe(code)
   })
+
+  it('mpx style single double', async () => {
+    const code = await getCase('mpx-style-1.wxml')
+    const { templateHandler } = getOptions()
+    const res = templateHandler(code)
+    expect(res).toBe(code)
+  })
 })

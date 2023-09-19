@@ -1,0 +1,7 @@
+<wxs module="__stringify__" src="../wxs/stringify693bc40b.wxs"></wxs>
+<view>
+  <view style="{{__stringify__.stringifyStyle('color:red;', ({fontSize:'16px', fontWeight:'bold'}))}}">
+    <view style="{{__stringify__.stringifyStyle('', (innerStyle))}}"></view>
+  </view>
+  <list />
+</view>
