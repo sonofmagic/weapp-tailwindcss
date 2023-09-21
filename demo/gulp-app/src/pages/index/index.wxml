@@ -23,6 +23,11 @@
         <view class="mt-[33px]" wx:if="{{arr.length>0}}">mt-[33px]</view>
       </view>
       <view class="{{classNames}}"></view>
+      <van-button type="primary">按钮</van-button>
+      <van-cell-group>
+        <van-cell title="单元格" value="内容" />
+        <van-cell title="单元格" value="内容" label="描述信息" border="{{ false }}" />
+      </van-cell-group>
     </view>
   </view>
 </view>
