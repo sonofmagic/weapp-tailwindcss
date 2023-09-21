@@ -19,7 +19,22 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options)
-  const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet, cache } = opts
+  const {
+    disabled,
+    onEnd,
+    onLoad,
+    onStart,
+    onUpdate,
+    templateHandler,
+    styleHandler,
+    patch,
+    jsHandler,
+    mainCssChunkMatcher,
+    appType,
+    setMangleRuntimeSet,
+    cache,
+    tailwindcssBasedir
+  } = opts
   if (disabled) {
     return
   }
@@ -38,7 +53,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
-      const runtimeSet = twPatcher.getClassSet()
+      const runtimeSet = twPatcher.getClassSet({
+        basedir: tailwindcssBasedir
+      })
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       if (Array.isArray(groupedEntries.html)) {
