@@ -71,7 +71,8 @@ const config = {
 
       const opt = {
         appType: 'taro',
-        minifiedJs: true
+        minifiedJs: true,
+        tailwindcssBasedir: __dirname,
         // customAttributes: {
         //   // '*': ['emptyImageClass','btnClassName'],
         //   '*': [/Class/]
@@ -92,7 +93,7 @@ const config = {
           plugin: {
             install: {
               plugin: UnifiedWebpackPluginV5,
-              // args: [opt, 'taro']
+              args: [opt, 'taro']
             }
           }
         })

@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-const bg = 'bg-[#324657]'
+const bg = 'bg-[#324657] !text-[#432143]'
 </script>
 
 <style scoped></style>
