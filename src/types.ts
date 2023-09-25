@@ -417,6 +417,11 @@ const customAttributes = {
      */
     universal?: string | false
   }
+
+  /**
+   * @description 用于指定路径来获取 tailwindcss 上下文，一般情况下不用传入，使用 linked / monorepo 可能需要指定具体位置，路径通常是目标项目的 package.json 所在目录
+   */
+  tailwindcssBasedir?: string
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult

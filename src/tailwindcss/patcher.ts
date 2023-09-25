@@ -9,21 +9,22 @@ import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { generate } from '@/babel'
 
+// `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
+// const pkgJson = require(tmpJsonPath) as PackageJson
+// https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
+// https://github.com/tailwindlabs/tailwindcss/discussions/9675
+// if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
+// }
+// const cwd = process.cwd()
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   try {
-    // const cwd = process.cwd()
     const tmpJsonPath = requireResolve(`${dangerousOptions.packageName}/package.json`, {
       paths: options.paths,
       basedir: options.basedir
     })
-    // `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
-    // const pkgJson = require(tmpJsonPath) as PackageJson
-    // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
-    // https://github.com/tailwindlabs/tailwindcss/discussions/9675
-    // if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
+
     return tmpJsonPath
-    // }
   } catch (error) {
     if ((<Error & { code: string }>error).code === 'MODULE_NOT_FOUND') {
       console.warn('没有找到`tailwindcss`包，请确认是否安装。想要禁用打上rpx支持patch或者非`tailwindcss`框架，你可以设置 `supportCustomLengthUnitsPatch` 为 false')

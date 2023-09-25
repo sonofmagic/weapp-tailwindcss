@@ -13,6 +13,12 @@
       "esnext",
       "dom"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "types": [
       "@dcloudio/types",
       "miniprogram-api-typings"

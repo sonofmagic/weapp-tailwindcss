@@ -9,7 +9,7 @@ import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries, removeExt } from '@/utils'
 import { createDebug } from '@/debug'
 
-const debug = createDebug('')
+const debug = createDebug('processAssets: ')
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -30,8 +30,22 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, setMangleRuntimeSet, runtimeLoaderPath, cache } =
-      this.options
+    const {
+      mainCssChunkMatcher,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart,
+      styleHandler,
+      patch,
+      templateHandler,
+      jsHandler,
+      setMangleRuntimeSet,
+      runtimeLoaderPath,
+      cache,
+      tailwindcssBasedir
+    } = this.options
 
     if (disabled) {
       return
@@ -43,7 +57,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     // react
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
-      return twPatcher.getClassSet()
+      return twPatcher.getClassSet({
+        basedir: tailwindcssBasedir
+      })
     }
 
     onLoad()

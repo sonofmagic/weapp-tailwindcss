@@ -30,6 +30,7 @@ if (!WeappTailwindcssDisabled) {
       onEnd() {
         console.log('UnifiedViteWeappTailwindcssPlugin onEnd:', performance.now() - start, 'ms');
       },
+      tailwindcssBasedir: __dirname,
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',
