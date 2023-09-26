@@ -464,7 +464,7 @@ export type InternalUserDefinedOptions = Required<
   } & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
-    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
+    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>
     jsHandler: JsHandler
     escapeMap: Record<string, string>
     patch: () => void

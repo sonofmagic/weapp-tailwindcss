@@ -52,7 +52,7 @@ describe('customReplaceDictionary', () => {
     expect(res).toBe('<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>')
   })
 
-  it('styleHandler custom map', () => {
+  it('styleHandler custom map', async () => {
     const { styleHandler } = getOptions({
       customReplaceDictionary: defu(
         {
@@ -62,37 +62,37 @@ describe('customReplaceDictionary', () => {
         MappingChars2String
       )
     })
-    const res = styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
     })
     expect(res).toBe('.w--0_d_5px-{--tw-border-opacity: 1;}')
   })
 
-  it('styleHandler complex mode', () => {
+  it('styleHandler complex mode', async () => {
     const { styleHandler } = getOptions({
       customReplaceDictionary: 'complex'
     })
-    const res = styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
     })
     expect(res).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
   })
 
-  it('styleHandler default(complex) mode', () => {
+  it('styleHandler default(complex) mode', async () => {
     const { styleHandler } = getOptions({
       customReplaceDictionary: 'complex'
     })
-    const res = styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
     })
     expect(res).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
   })
 
-  it('styleHandler simple mode', () => {
+  it('styleHandler simple mode', async () => {
     const { styleHandler } = getOptions({
       customReplaceDictionary: 'simple'
     })
-    const res = styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
     })
     expect(res).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
