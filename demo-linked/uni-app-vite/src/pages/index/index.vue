@@ -4,12 +4,14 @@
       world
       <div>Current Count: {{ counter.count }}</div>
       <button @click="counter.increment()">12345</button>
+      <view class="text-[64rpx]/[46rpx]">text-[64rpx]/[46rpx]</view>
     </view>
 
   </view>
 </template>
 
 <script setup lang="ts">
+// https://tailwindcss.com/docs/font-size#setting-the-line-height
 const bg = '!bg-[#aaaaab] !text-[#fafafa]'
 import { useCounterStore } from '@/stores/counter'
 const counter = useCounterStore()
