@@ -5,6 +5,7 @@
   "bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)]",
   "bg-no-repeat",
   "block",
+  "border",
   "border-[#EEEEEE]",
   "border-b",
   "font-bold",
