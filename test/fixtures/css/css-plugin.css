@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    font-size: theme("fontSize.2xl");
+  }
+  h2 {
+    font-size: theme("fontSize.xl");
+  }
+}
+
+@layer components {
+  .card {
+    background-color: theme("colors.white");
+    border-radius: theme("borderRadius.lg");
+    padding: theme("spacing.6");
+    box-shadow: theme("boxShadow.xl");
+  }
+}
+
+@layer utilities {
+  .content-auto {
+    content-visibility: "auto";
+  }
+}

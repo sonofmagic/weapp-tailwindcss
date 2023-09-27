@@ -29,7 +29,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformWxss() {
     const transformStream = new Transform({ objectMode: true })
 
-    transformStream._transform = function (file: File, encoding, callback) {
+    transformStream._transform = async function (file: File, encoding, callback) {
       runtimeSet = twPatcher.getClassSet({
         basedir: tailwindcssBasedir
       })
@@ -37,7 +37,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const error = null
 
       if (file.contents) {
-        const code = styleHandler(file.contents.toString(), {
+        const code = await styleHandler(file.contents.toString(), {
           isMainChunk: true
         })
         file.contents = Buffer.from(code)

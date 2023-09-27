@@ -11,7 +11,7 @@ describe('responsive-design', () => {
     expect(res.css).toMatchSnapshot()
 
     expect(
-      styleHandler(res.css, {
+      await styleHandler(res.css, {
         isMainChunk: true
       })
     ).toMatchSnapshot()
@@ -21,7 +21,7 @@ describe('responsive-design', () => {
     const res = await getCss('2xl:text-sm')
     expect(res.css).toMatchSnapshot()
     // @ts-ignore
-    expect(styleHandler(res.css)).toMatchSnapshot()
+    expect(await styleHandler(res.css)).toMatchSnapshot()
   })
 
   it('space-y-4 cssChildCombinatorReplaceValue string array type', async () => {
@@ -29,7 +29,7 @@ describe('responsive-design', () => {
     expect(res.css).toMatchSnapshot()
 
     expect(
-      styleHandler(res.css, {
+      await styleHandler(res.css, {
         isMainChunk: true,
         cssChildCombinatorReplaceValue: ['view', 'text', '.aa']
       })
@@ -41,7 +41,7 @@ describe('responsive-design', () => {
     expect(res.css).toMatchSnapshot()
 
     expect(
-      styleHandler(res.css, {
+      await styleHandler(res.css, {
         isMainChunk: true,
         cssChildCombinatorReplaceValue: 'view,text,button,input ~ view,text,button,input'
       })

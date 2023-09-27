@@ -43,7 +43,7 @@
     - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
     - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
     - [原生小程序开发模板](#原生小程序开发模板)
-  - [tailwindcss plugin](#tailwindcss-plugin)
+  - [tailwindcss plugin / util](#tailwindcss-plugin--util)
   - [weapp-pandacss](#weapp-pandacss)
 - [Bugs \& Issues](#bugs--issues)
 
@@ -123,9 +123,11 @@
 
 [weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
-### tailwindcss plugin
+### tailwindcss plugin / util
 
-[weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
+- [css-to-tailwindcss-plugin](./packages/css-to-tailwindcss-plugin/) transform your `css/scss` to `tailwindcss plugin`
+
+- [weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
 
 ### weapp-pandacss
 

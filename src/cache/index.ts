@@ -28,7 +28,11 @@ export interface ICreateCacheReturnType {
   has: (key: string) => boolean
   // flow
   calcHashValueChanged: (key: HashMapKey, hash: string) => this
-  process: (key: string, callback: () => void | false, fallback: () => void | { key: string; source: CacheValue }) => void
+  process: (
+    key: string,
+    callback: () => void | false | Promise<void | false>,
+    fallback: () => void | { key: string; source: CacheValue } | Promise<void | { key: string; source: CacheValue }>
+  ) => void | Promise<void>
 }
 
 function createCache(): ICreateCacheReturnType {
@@ -84,18 +88,18 @@ function createCache(): ICreateCacheReturnType {
     has(key) {
       return instance.has(key)
     },
-    process(key, callback, fallback) {
+    async process(key, callback, fallback) {
       const hit = this.getHashValue(key)
       // 文件没有改变
       if (hit && !hit.changed) {
         // 命中缓存
-        const returnFlag = callback()
+        const returnFlag = await callback()
         if (returnFlag !== false) {
           return
         }
       }
       // 默认处理
-      const res = fallback()
+      const res = await fallback()
       if (res) {
         this.set(res.key, res.source)
       }

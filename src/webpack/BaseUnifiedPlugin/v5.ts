@@ -88,12 +88,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         }
       })
 
-      compilation.hooks.processAssets.tap(
+      compilation.hooks.processAssets.tapPromise(
         {
           name: pluginName,
           stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE
         },
-        (assets) => {
+        async (assets) => {
           onStart()
           debug('start')
           // css/mini-extract:
@@ -126,7 +126,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const hash = cache.computeHash(rawSource)
               const cacheKey = file
               cache.calcHashValueChanged(cacheKey, hash)
-              cache.process(
+              await cache.process(
                 cacheKey,
                 () => {
                   const source = cache.get(cacheKey)
@@ -163,7 +163,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const [file, originalSource] = groupedEntries.js[i]
               const cacheKey = removeExt(file)
 
-              cache.process(
+              await cache.process(
                 cacheKey,
                 () => {
                   const source = cache.get(cacheKey)
@@ -211,7 +211,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const cacheKey = file
               cache.calcHashValueChanged(cacheKey, hash)
 
-              cache.process(
+              await cache.process(
                 cacheKey,
                 () => {
                   const source = cache.get(cacheKey)
@@ -222,8 +222,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                     return false
                   }
                 },
-                () => {
-                  const css = styleHandler(rawSource, {
+                async () => {
+                  const css = await styleHandler(rawSource, {
                     isMainChunk: mainCssChunkMatcher(file, this.appType)
                   })
                   const source = new ConcatSource(css)

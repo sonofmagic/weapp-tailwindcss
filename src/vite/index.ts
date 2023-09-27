@@ -47,7 +47,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   return {
     name: vitePluginName,
     enforce: 'post',
-    generateBundle(opt, bundle) {
+    async generateBundle(opt, bundle) {
       debug('start')
       onStart()
 
@@ -68,7 +68,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           const hash = cache.computeHash(oldVal)
           cache.calcHashValueChanged(file, hash)
 
-          cache.process(
+          await cache.process(
             file,
             () => {
               const source = cache.get<string>(file)
@@ -103,7 +103,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
           const hash = cache.computeHash(rawSource)
           cache.calcHashValueChanged(file, hash)
-          cache.process(
+          await cache.process(
             file,
             () => {
               const source = cache.get<string>(file)
@@ -146,7 +146,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
           const hash = cache.computeHash(rawSource)
           cache.calcHashValueChanged(file, hash)
-          cache.process(
+          await cache.process(
             file,
             () => {
               const source = cache.get<string>(file)
@@ -157,8 +157,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                 return false
               }
             },
-            () => {
-              const css = styleHandler(rawSource, {
+            async () => {
+              const css = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
               })
               originalSource.source = css

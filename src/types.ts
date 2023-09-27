@@ -359,7 +359,7 @@ const customAttributes = {
   inlineWxs?: boolean
 
   /**
-   * `^2.6.0`
+   * @version `^2.6.0`
    * @description  是否注入额外的 `tailwindcss css var scope` 区域，这个选项用于这样的场景
    *
    * 比如 `taro vue3` 使用 [NutUI](https://nutui.jd.com), 需要使用 `@tarojs/plugin-html`，而这个插件会启用 `postcss-html-transform` 从而移除所有带 `*` 选择器
@@ -373,14 +373,14 @@ const customAttributes = {
   injectAdditionalCssVarScope?: boolean
 
   /**
-   * `^2.6.1`
+   * @version `^2.6.1`
    * @description 当 `tailwindcss` 和 `js` 处理的字面量撞车的时候，配置此选项可以用来保留js字面量，不进行转义处理。返回值中，想要当前js字面量保留，则返回 `true`。想要转义则返回 `false/undefined`
    * @default 保留所有带 `*` js字符串字面量
    */
   jsPreserveClass?: (keyword: string) => boolean | undefined
 
   /**
-   * `^2.6.2`
+   * @version `^2.6.2`
    * @description 开启此选项，将会禁用默认 `wxml` 模板替换器，此时模板的匹配和转化将完全被 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 接管，
    *
    * 此时你需要自己编写匹配之前默认 `class`/`hover-class`，以及新的标签属性的正则表达式`regex`
@@ -389,7 +389,7 @@ const customAttributes = {
   disabledDefaultTemplateHandler?: boolean
 
   /**
-   * `^2.7.0+`
+   * @version `^2.7.0`
    * @description js 字面量以及模板字符串的转义替换模式
    * - `regenerate` 模式，为需要转义的字面量，重新生成相同语义的字符串, （默认的传统模式）
    * - `replace` 模式，为在原版本字符串上直接精准替换, (`2.7.0+` 新增)
@@ -419,6 +419,7 @@ const customAttributes = {
   }
 
   /**
+   * @version `^2.9.3`
    * @description 用于指定路径来获取 tailwindcss 上下文，一般情况下不用传入，使用 linked / monorepo 可能需要指定具体位置，路径通常是目标项目的 package.json 所在目录
    */
   tailwindcssBasedir?: string
@@ -464,7 +465,7 @@ export type InternalUserDefinedOptions = Required<
   } & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
-    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => string
+    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>
     jsHandler: JsHandler
     escapeMap: Record<string, string>
     patch: () => void

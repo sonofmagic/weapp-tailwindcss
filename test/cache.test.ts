@@ -138,7 +138,7 @@ describe('cache', () => {
     expect(arr).toEqual([0])
   })
 
-  it('cache process case 3', () => {
+  it('cache process case 3', async () => {
     const arr: number[] = []
 
     ctx.setHashValue('1', {
@@ -146,7 +146,7 @@ describe('cache', () => {
       hash: '2'
     })
 
-    ctx.process(
+    await ctx.process(
       '1',
       () => {
         arr.push(0)
@@ -160,7 +160,7 @@ describe('cache', () => {
     expect(arr).toEqual([0, 1])
   })
 
-  it('cache process case 4', () => {
+  it('cache process case 4', async () => {
     const arr: number[] = []
 
     ctx.setHashValue('1', {
@@ -168,7 +168,7 @@ describe('cache', () => {
       hash: '2'
     })
 
-    ctx.process(
+    await ctx.process(
       '1',
       () => {
         arr.push(0)
