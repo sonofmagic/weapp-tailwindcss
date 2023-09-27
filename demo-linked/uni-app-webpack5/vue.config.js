@@ -35,7 +35,8 @@ const config = {
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-        }
+        },
+        tailwindcssBasedir: __dirname
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())

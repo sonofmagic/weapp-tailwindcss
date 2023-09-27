@@ -19,7 +19,22 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     options.customReplaceDictionary = 'simple'
   }
   const opts = getOptions(options)
-  const { disabled, onEnd, onLoad, onStart, onUpdate, templateHandler, styleHandler, patch, jsHandler, mainCssChunkMatcher, appType, setMangleRuntimeSet, cache } = opts
+  const {
+    disabled,
+    onEnd,
+    onLoad,
+    onStart,
+    onUpdate,
+    templateHandler,
+    styleHandler,
+    patch,
+    jsHandler,
+    mainCssChunkMatcher,
+    appType,
+    setMangleRuntimeSet,
+    cache,
+    tailwindcssBasedir
+  } = opts
   if (disabled) {
     return
   }
@@ -32,13 +47,15 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   return {
     name: vitePluginName,
     enforce: 'post',
-    generateBundle(opt, bundle) {
+    async generateBundle(opt, bundle) {
       debug('start')
       onStart()
 
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
-      const runtimeSet = twPatcher.getClassSet()
+      const runtimeSet = twPatcher.getClassSet({
+        basedir: tailwindcssBasedir
+      })
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       if (Array.isArray(groupedEntries.html)) {
@@ -51,7 +68,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           const hash = cache.computeHash(oldVal)
           cache.calcHashValueChanged(file, hash)
 
-          cache.process(
+          await cache.process(
             file,
             () => {
               const source = cache.get<string>(file)
@@ -86,7 +103,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
           const hash = cache.computeHash(rawSource)
           cache.calcHashValueChanged(file, hash)
-          cache.process(
+          await cache.process(
             file,
             () => {
               const source = cache.get<string>(file)
@@ -129,7 +146,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
           const hash = cache.computeHash(rawSource)
           cache.calcHashValueChanged(file, hash)
-          cache.process(
+          await cache.process(
             file,
             () => {
               const source = cache.get<string>(file)
@@ -140,8 +157,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                 return false
               }
             },
-            () => {
-              const css = styleHandler(rawSource, {
+            async () => {
+              const css = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
               })
               originalSource.source = css

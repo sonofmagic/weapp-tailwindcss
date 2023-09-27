@@ -1,5 +1,5 @@
 <script lang="ts">
-import bus from './bus'
+
 import { defineComponent } from 'vue'
 import { onLaunch, onShow, onHide, } from '@dcloudio/uni-app'
 
@@ -24,5 +24,4 @@ export default defineComponent({
 
 <style lang="scss">
 @import './tailwind.scss';
-
 </style>

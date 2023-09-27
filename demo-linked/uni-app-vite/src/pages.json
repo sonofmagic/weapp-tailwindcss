@@ -6,6 +6,12 @@
       "style": {
         "navigationBarTitleText": "uni-app"
       }
+    },
+    {
+      "path": "pages/index/tabbar0"
+    },
+    {
+      "path": "pages/index/tabbar1"
     }
   ],
   "globalStyle": {
@@ -17,5 +23,25 @@
   "condition": {
     "current": 0,
     "list": []
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/index/tabbar0",
+        "text": "tabbar0"
+      },
+      {
+        "pagePath": "pages/index/tabbar1",
+        "text": "tabbar1"
+      }
+    ]
   }
 }

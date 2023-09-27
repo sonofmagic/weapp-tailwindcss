@@ -24,7 +24,7 @@
 > `小程序` + `tailwindcss` 全方面解决方案  
 > 想试试在小程序里使用 `CSS-in-JS` 思想？ 👉🏻👉🏻试试 [`weapp-pandacss`](https://github.com/sonofmagic/weapp-pandacss)
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档](./v1.md)\]
+\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 
 - [Tips](#tips)
 - [特性](#特性)
@@ -43,13 +43,15 @@
     - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
     - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
     - [原生小程序开发模板](#原生小程序开发模板)
-  - [tailwindcss plugin](#tailwindcss-plugin)
-  - [tailwindcss preset](#tailwindcss-preset)
+  - [tailwindcss plugin / util](#tailwindcss-plugin--util)
+  - [weapp-pandacss](#weapp-pandacss)
 - [Bugs \& Issues](#bugs--issues)
 
 ## Tips
 
-自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装 `weapp-tailwindcss` 这个包(当然现在 `webpack-plugin` 这个包也不会废弃，也会时刻保持版本的同步)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合描述现在这种，多插件并存的状态了，为了以后的发展改个名字哈哈。
+自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装 `weapp-tailwindcss` 这个包(当然现在 `webpack-plugin` 这个包也不会废弃，也会时刻保持版本的同步)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合描述现在这种，多插件并存的状态了，为了以后的发展就改了个名字。
+
+前沿阅读: [What’s Tailwind Oxide Engine? The Next Evolution of Tailwind CSS](https://medium.com/@bomber.marek/whats-tailwind-oxide-engine-the-next-evolution-of-tailwind-css-32e7ef8e19a1)，未来 `tailwindcss` 会切换到这个引擎来大幅加快构建和运行速度，当然等它发布正式版本的时候，我也会尽可能第一时间去进行兼容新的引擎。
 
 ## 特性
 
@@ -63,7 +65,7 @@
 
 ### 插件介绍
 
-从 `weapp-tailwindcss/webpack` 导出的`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack` 进行打包的框架都可以使用它。
+从 `weapp-tailwindcss/webpack` 导出的`UnifiedWebpackPluginV5` 是一个核心插件，所有使用 `webpack5` 进行打包的框架都可以使用它。
 
 从 `weapp-tailwindcss/vite` 导出的`UnifiedViteWeappTailwindcssPlugin` 为 `vite` 专用插件，配置项和使用方式和 `webpack` 插件是一致的。
 
@@ -121,13 +123,15 @@
 
 [weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
-### tailwindcss plugin
+### tailwindcss plugin / util
 
-[weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
+- [css-to-tailwindcss-plugin](./packages/css-to-tailwindcss-plugin/) transform your `css/scss` to `tailwindcss plugin`
 
-### tailwindcss preset
+- [weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
 
-[tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)
+### weapp-pandacss
+
+[weapp-pandacss](https://github.com/sonofmagic/weapp-pandacss) `CSS-in-JS` 编译时框架的小程序适配器
 
 ## Bugs & Issues
 

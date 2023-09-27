@@ -6,6 +6,24 @@ import automator from 'miniprogram-automator'
 import { expect, test, describe } from 'vitest'
 import { execa } from 'execa'
 import { deleteAsync } from 'del'
+
+async function loadCss(p: string) {
+  const css = await fs.readFile(p, 'utf8')
+  const code = await prettier.format(css, {
+    parser: 'css',
+    tabWidth: 2,
+    useTabs: false,
+    semi: false,
+    singleQuote: true,
+    endOfLine: 'lf',
+    trailingComma: 'none',
+    printWidth: 180,
+    bracketSameLine: true,
+    htmlWhitespaceSensitivity: 'ignore'
+  })
+  return code
+}
+
 const TestProjectsEntries: {
   name: string
   projectPath: string
@@ -16,53 +34,73 @@ const TestProjectsEntries: {
   {
     name: 'uni-app',
     projectPath: 'uni-app/dist/build/mp-weixin',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'common/main.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'uni-app-webpack5',
     projectPath: 'uni-app-webpack5/dist/build/mp-weixin',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'common/main.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'uni-app-vue3-vite',
     projectPath: 'uni-app-vue3-vite/dist/build/mp-weixin',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'app.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'taro-app',
     projectPath: 'taro-app',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'taro-vue3-app',
     projectPath: 'taro-vue3-app',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'taro-vue2-app',
     projectPath: 'taro-vue2-app',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'gulp-app',
     projectPath: 'gulp-app',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'mpx-app',
     projectPath: 'mpx-app/dist/wx',
-    testMethod: () => {},
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'app.wxss'))).toMatchSnapshot('css')
+    },
     url: '/pages/index'
   },
   {
     name: 'native-mina',
     projectPath: 'native-mina',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    }
   },
   {
     name: 'rax-app',
     projectPath: 'rax-app/build/wechat-miniprogram',
-    testMethod: () => {}
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'bundle.wxss'))).toMatchSnapshot('css')
+    }
   }
 ]
 
@@ -86,7 +124,7 @@ describe('e2e', () => {
     const root = path.resolve(__dirname, '../demo', config.name)
     await deleteAsync([path.resolve(root, 'node_modules/.cache')])
     if (page) {
-      await testMethod(page)
+      await testMethod(page, projectPath)
       const pageEl = await page.$('page')
       let wxml = await pageEl?.wxml()
       if (wxml) {

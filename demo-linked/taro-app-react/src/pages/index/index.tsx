@@ -59,7 +59,7 @@ const Index = () => {
           <View>2</View>
           <View>3</View>
         </View>
-        <View className='w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300'>Default</View>
+        <View className='w-32 py-[123rpx] rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300'>Default</View>
       </View>
       <View className='test'>test</View>
     </>

@@ -1,10 +1,15 @@
 import { templateReplacer } from '@/wxml/index'
-import { MappingChars2String } from '@/escape'
+import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
 const testTable = [[{}]]
 
 function complexReplacer(str: string) {
   return templateReplacer(str, {
     escapeMap: MappingChars2String
+  })
+}
+function simpleReplacer(str: string) {
+  return templateReplacer(str, {
+    escapeMap: SimpleMappingChars2String
   })
 }
 
@@ -173,5 +178,15 @@ describe('templateReplacer', () => {
     expect(result).toBe(`_-`)
     result = templateReplacer('--')
     expect(result).toBe(`--`)
+  })
+
+  it('font-size#setting-the-line-height', () => {
+    let testCase = 'text-sm/[17px]'
+
+    expect(simpleReplacer(testCase)).toBe('text-sms_17px_')
+    testCase = 'text-base/loose'
+    expect(simpleReplacer(testCase)).toBe('text-basesloose')
+    testCase = 'text-[64rpx]/[72rpx]'
+    expect(simpleReplacer(testCase)).toBe('text-_64rpx_s_72rpx_')
   })
 })

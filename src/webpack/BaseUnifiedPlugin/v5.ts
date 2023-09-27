@@ -9,7 +9,7 @@ import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries, removeExt } from '@/utils'
 import { createDebug } from '@/debug'
 
-const debug = createDebug('')
+const debug = createDebug('processAssets: ')
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -30,8 +30,22 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const { mainCssChunkMatcher, disabled, onLoad, onUpdate, onEnd, onStart, styleHandler, patch, templateHandler, jsHandler, setMangleRuntimeSet, runtimeLoaderPath, cache } =
-      this.options
+    const {
+      mainCssChunkMatcher,
+      disabled,
+      onLoad,
+      onUpdate,
+      onEnd,
+      onStart,
+      styleHandler,
+      patch,
+      templateHandler,
+      jsHandler,
+      setMangleRuntimeSet,
+      runtimeLoaderPath,
+      cache,
+      tailwindcssBasedir
+    } = this.options
 
     if (disabled) {
       return
@@ -43,7 +57,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     // react
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
-      return twPatcher.getClassSet()
+      return twPatcher.getClassSet({
+        basedir: tailwindcssBasedir
+      })
     }
 
     onLoad()
@@ -72,12 +88,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         }
       })
 
-      compilation.hooks.processAssets.tap(
+      compilation.hooks.processAssets.tapPromise(
         {
           name: pluginName,
           stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE
         },
-        (assets) => {
+        async (assets) => {
           onStart()
           debug('start')
           // css/mini-extract:
@@ -110,7 +126,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const hash = cache.computeHash(rawSource)
               const cacheKey = file
               cache.calcHashValueChanged(cacheKey, hash)
-              cache.process(
+              await cache.process(
                 cacheKey,
                 () => {
                   const source = cache.get(cacheKey)
@@ -147,7 +163,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const [file, originalSource] = groupedEntries.js[i]
               const cacheKey = removeExt(file)
 
-              cache.process(
+              await cache.process(
                 cacheKey,
                 () => {
                   const source = cache.get(cacheKey)
@@ -195,7 +211,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const cacheKey = file
               cache.calcHashValueChanged(cacheKey, hash)
 
-              cache.process(
+              await cache.process(
                 cacheKey,
                 () => {
                   const source = cache.get(cacheKey)
@@ -206,8 +222,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                     return false
                   }
                 },
-                () => {
-                  const css = styleHandler(rawSource, {
+                async () => {
+                  const css = await styleHandler(rawSource, {
                     isMainChunk: mainCssChunkMatcher(file, this.appType)
                   })
                   const source = new ConcatSource(css)

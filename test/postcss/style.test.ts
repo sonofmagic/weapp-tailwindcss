@@ -24,7 +24,7 @@ describe('styleHandler', () => {
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('media1.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
@@ -37,9 +37,9 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('css @media hover case 0', () => {
+  it('css @media hover case 0', async () => {
     const { styleHandler } = getOptions()
-    const code = styleHandler(
+    const code = await styleHandler(
       `@media (hover: hover) {
       a {
         color: white;
@@ -53,9 +53,9 @@ describe('styleHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it('css @media hover case 1', () => {
+  it('css @media hover case 1', async () => {
     const { styleHandler } = getOptions()
-    const code = styleHandler(
+    const code = await styleHandler(
       `@media (hover: hover) {
       a:hover {
         color: white;
@@ -71,7 +71,7 @@ describe('styleHandler', () => {
 
   // it('main chunk remove empty var', async () => {
   //   const testCase = await getCase('taro.dev.css')
-  //   const result = styleHandler(testCase, {
+  //   const result = await styleHandler(testCase, {
   //     isMainChunk: true
   //   })
   //   const expected = await getCase('taro.dev.result.css')
@@ -84,7 +84,7 @@ describe('styleHandler', () => {
     const opt = getOptions({ customReplaceDictionary: 'complex' })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('taro.build.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
@@ -100,7 +100,7 @@ describe('styleHandler', () => {
 
   it('before,after content case', async () => {
     const testCase = await getCase('after-content.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
@@ -118,7 +118,7 @@ describe('styleHandler', () => {
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
 
     const testCase = await getCase('kbone1.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
       customRuleCallback: (node, opt) => {
@@ -142,9 +142,9 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('tailwindcss v2 jit should append view selector', () => {
+  it('tailwindcss v2 jit should append view selector', async () => {
     const testCase = '::before,::after{--tw-border-opacity: 1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -155,9 +155,9 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('cssPreflightRange option view', () => {
+  it('cssPreflightRange option view', async () => {
     const testCase = '::before,::after{--tw-border-opacity: 1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -168,9 +168,9 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('cssPreflightRange option all', () => {
+  it('cssPreflightRange option all', async () => {
     const testCase = '::before,::after{--tw-border-opacity: 1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
@@ -181,9 +181,9 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('should pseudo element', () => {
+  it('should pseudo element', async () => {
     const testCase = '.after\\:content-\\[\\"\\*\\"\\]::after{}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -194,9 +194,9 @@ describe('styleHandler', () => {
     expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
   })
 
-  it('should * be replace as view etc', () => {
+  it('should * be replace as view etc', async () => {
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -207,9 +207,9 @@ describe('styleHandler', () => {
     expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
   })
 
-  it('replaceUniversalSelectorWith option should * be replace as any string', () => {
+  it('replaceUniversalSelectorWith option should * be replace as any string', async () => {
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -220,9 +220,9 @@ describe('styleHandler', () => {
     expect(result).toBe('.aspect-w-16>.happy,.a>.b{aspect-ratio:1/1;}')
   })
 
-  it('set replaceUniversalSelectorWith option to be false', () => {
+  it('set replaceUniversalSelectorWith option to be false', async () => {
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -233,20 +233,20 @@ describe('styleHandler', () => {
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
 
-  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 0', () => {
+  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 0', async () => {
     const { styleHandler } = getOptions()
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       replaceUniversalSelectorWith: false
     })
     expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
   })
 
-  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 1', () => {
+  it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 1', async () => {
     const { styleHandler } = getOptions()
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       replaceUniversalSelectorWith: false,
       cssSelectorReplacement: {
@@ -256,9 +256,9 @@ describe('styleHandler', () => {
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
 
-  it(':hover should be remove', () => {
+  it(':hover should be remove', async () => {
     const testCase = '.a:hover{color:black;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -269,9 +269,9 @@ describe('styleHandler', () => {
     expect(result).toBe('')
   })
 
-  it('mutiple selectors :hover should be remove only', () => {
+  it('mutiple selectors :hover should be remove only', async () => {
     const testCase = '.a:hover,.b{color:black;}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -284,7 +284,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 0', async () => {
     const testCase = await getCase('arbitrary-variants-0.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -299,7 +299,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 1', async () => {
     const testCase = await getCase('arbitrary-variants-1.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -312,7 +312,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 2', async () => {
     const testCase = await getCase('arbitrary-variants-2.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -327,7 +327,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 3', async () => {
     const testCase = await getCase('arbitrary-variants-3.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -340,7 +340,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 4', async () => {
     const testCase = await getCase('arbitrary-variants-4.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -353,7 +353,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 5', async () => {
     const testCase = await getCase('arbitrary-variants-5.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -368,7 +368,7 @@ describe('styleHandler', () => {
 
   it('arbitrary values case 6', async () => {
     const testCase = await getCase('arbitrary-variants-6.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -381,9 +381,9 @@ describe('styleHandler', () => {
     )
   })
 
-  it('global variables scope matched case', () => {
+  it('global variables scope matched case', async () => {
     const testCase = ":before,:after{--tw-:'test'}"
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -394,11 +394,11 @@ describe('styleHandler', () => {
     expect(normalizeEol(result)).toBe('::before,::after{--tw-content:""}\n:before,:after,view{--tw-:\'test\'}')
   })
 
-  it('global variables scope matched and inject', () => {
+  it('global variables scope matched and inject', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: 'view',
@@ -411,11 +411,11 @@ describe('styleHandler', () => {
     )
   })
 
-  it('global variables scope matched and inject with isMainChunk false', () => {
+  it('global variables scope matched and inject with isMainChunk false', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: false,
       cssInjectPreflight,
       cssPreflightRange: 'view',
@@ -426,11 +426,11 @@ describe('styleHandler', () => {
     expect(normalizeEol(result)).toBe(testCase)
   })
 
-  it('global variables scope matched and inject and modify preflight range', () => {
+  it('global variables scope matched and inject and modify preflight range', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: 'all',
@@ -443,11 +443,11 @@ describe('styleHandler', () => {
     )
   })
 
-  it('global variables scope matched and inject and modify preflight range with isMainChunk false', () => {
+  it('global variables scope matched and inject and modify preflight range with isMainChunk false', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ":before,:after{--tw-:'test'}"
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: false,
       cssInjectPreflight,
       cssPreflightRange: 'all',
@@ -458,9 +458,9 @@ describe('styleHandler', () => {
     expect(normalizeEol(result)).toBe(testCase)
   })
 
-  it('global variables scope not matched', () => {
+  it('global variables scope not matched', async () => {
     const testCase = ':before,:after{color:red}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -471,9 +471,9 @@ describe('styleHandler', () => {
     expect(normalizeEol(result)).toBe(testCase)
   })
 
-  it("before:content-['+']", () => {
+  it("before:content-['+']", async () => {
     const testCase = ".before\\:content-\\[\\'\\+\\'\\]::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}"
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -484,9 +484,9 @@ describe('styleHandler', () => {
     expect(normalizeEol(result)).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
   })
 
-  it('@apply space-y/x css selector', () => {
+  it('@apply space-y/x css selector', async () => {
     const testCase = '.test > :not([hidden]) ~ :not([hidden]){}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -497,9 +497,9 @@ describe('styleHandler', () => {
     expect(normalizeEol(result)).toBe('.test>view + view{}')
   })
 
-  it('Is Pseudo Class', () => {
+  it('Is Pseudo Class', async () => {
     const testCase = ':is(.dark .dark:bg-zinc-800) {}'
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -512,7 +512,7 @@ describe('styleHandler', () => {
 
   it('utf8 charset', async () => {
     const testCase = await getCase('utf8.css')
-    const result = styleHandler(testCase, {
+    const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'view',
@@ -536,7 +536,7 @@ describe('styleHandler', () => {
       injectAdditionalCssVarScope: true
     })
     const rawSource = await getCase('backdrop.css')
-    const result = styleHandler(rawSource, { isMainChunk: true })
+    const result = await styleHandler(rawSource, { isMainChunk: true })
     expect(result).toMatchSnapshot()
   })
 
@@ -545,21 +545,21 @@ describe('styleHandler', () => {
       injectAdditionalCssVarScope: true
     })
     const rawSource = await getCase('backdrop.css')
-    const result = styleHandler(rawSource, { isMainChunk: false })
+    const result = await styleHandler(rawSource, { isMainChunk: false })
     expect(result).toMatchSnapshot()
   })
 
-  it(':root pseudo case 0', () => {
+  it(':root pseudo case 0', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:root{}`
-    const result = styleHandler(rawCode, { isMainChunk: false })
+    const result = await styleHandler(rawCode, { isMainChunk: false })
     expect(result).toBe('page{}')
   })
 
-  it(':root pseudo case 0 invert', () => {
+  it(':root pseudo case 0 invert', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:root{}`
-    const result = styleHandler(rawCode, {
+    const result = await styleHandler(rawCode, {
       isMainChunk: false,
       cssSelectorReplacement: {
         root: false
@@ -568,17 +568,17 @@ describe('styleHandler', () => {
     expect(result).toBe(rawCode)
   })
 
-  it(':root pseudo case 1', () => {
+  it(':root pseudo case 1', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:root,[data-theme]{}`
-    const result = styleHandler(rawCode, { isMainChunk: false })
+    const result = await styleHandler(rawCode, { isMainChunk: false })
     expect(result).toBe('page,[data-theme]{}')
   })
 
-  it(':root pseudo case 1 invert', () => {
+  it(':root pseudo case 1 invert', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:root,[data-theme]{}`
-    const result = styleHandler(rawCode, {
+    const result = await styleHandler(rawCode, {
       isMainChunk: false,
       cssSelectorReplacement: {
         root: false
@@ -587,38 +587,38 @@ describe('styleHandler', () => {
     expect(result).toBe(rawCode)
   })
 
-  it('combinator selector case 0', () => {
+  it('combinator selector case 0', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`
-    const result = styleHandler(rawCode, { isMainChunk: true })
+    const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.space-x-4>view + view{}')
   })
 
-  it('combinator selector case 1', () => {
+  it('combinator selector case 1', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-x>:not([hidden])~:not([hidden]){}`
-    const result = styleHandler(rawCode, { isMainChunk: true })
+    const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.divide-x>view + view{}')
   })
 
-  it('combinator selector case 2', () => {
+  it('combinator selector case 2', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-blue-200>:not([hidden])~:not([hidden]){}`
-    const result = styleHandler(rawCode, { isMainChunk: true })
+    const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.divide-blue-200>view + view{}')
   })
 
-  it('combinator selector case 3', () => {
+  it('combinator selector case 3', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:is(.dark .dark:divide-slate-700)>:not([hidden])~:not([hidden]){}`
-    const result = styleHandler(rawCode, { isMainChunk: true })
+    const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.dark .dark:divide-slate-700>view + view{}')
   })
 
-  it('combinator selector case 4', () => {
+  it('combinator selector case 4', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-dashed>:not([hidden])~:not([hidden]){}`
-    const result = styleHandler(rawCode, { isMainChunk: true })
+    const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.divide-dashed>view + view{}')
   })
 })
