@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.9.3 (2023-09-28)
+
+## Features
+
+- 添加 `tailwindcssBasedir` 配置项
+- 异步化 `postcss` 以及缓存还有所有的插件
+
 ## 2.9.2 ~ 2.9.1 (2023-09-19)
 
 ## Features
