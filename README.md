@@ -125,7 +125,7 @@
 
 ### tailwindcss plugin / util
 
-- [css-to-tailwindcss-plugin](./packages/css-to-tailwindcss-plugin/) transform your `css/scss` to `tailwindcss plugin`
+- [css-to-tailwindcss-plugin](https://github.com/sonofmagic/icestack/tree/main/packages/css-to-tailwindcss-plugin) transform your `css/scss` to `tailwindcss plugin`
 
 - [weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
 
