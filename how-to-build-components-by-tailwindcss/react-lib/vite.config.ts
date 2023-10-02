@@ -13,15 +13,19 @@ export default defineConfig({
   })],
   build: {
     lib: {
-      entry: resolve('src', 'components', 'index.tsx'),
+      entry: {
+        index: resolve('src', 'components', 'index.tsx'),
+        taro: resolve('src', 'components', 'taro.tsx')
+      },
       name: 'ice-tw-buttons',
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format, entryName) => `${entryName}.${format}.js`,
     },
     rollupOptions: {
-      external: ['react'],
+      external: ['react', 'react-dom', '@tarojs/taro', '@tarojs/components'],
       output: {
         globals: {
           react: 'React',
+          'react-dom': 'ReactDOM',
         },
       },
     },
