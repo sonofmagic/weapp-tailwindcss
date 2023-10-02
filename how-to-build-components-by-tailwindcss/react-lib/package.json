@@ -1,6 +1,5 @@
 {
-  "name": "how-to-build-components-by-using-tailwindcss-react",
-  "private": true,
+  "name": "how-to-build-components-by-tailwindcss-react",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
