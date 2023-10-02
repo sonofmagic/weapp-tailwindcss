@@ -7,11 +7,15 @@
       <view class="text-[64rpx]/[46rpx]">text-[64rpx]/[46rpx]</view>
       <view class="text-[104rpx]/[146rpx]">text-[64rpx]/[46rpx]</view>
     </view>
-
+    <ApplyButton></ApplyButton>
+    <PrefixButton></PrefixButton>
+    <ScopedButton></ScopedButton>
   </view>
 </template>
 
 <script setup lang="ts">
+import 'how-to-build-components-by-tailwindcss-vue/dist/style.css'
+import { ApplyButton, PrefixButton, ScopedButton } from 'how-to-build-components-by-tailwindcss-vue'
 // https://tailwindcss.com/docs/font-size#setting-the-line-height
 const bg = '!bg-[#ff00ff] !text-[#00fffa] '
 import { useCounterStore } from '@/stores/counter'

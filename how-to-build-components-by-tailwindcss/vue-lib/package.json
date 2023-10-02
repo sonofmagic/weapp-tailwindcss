@@ -1,6 +1,6 @@
 {
   "name": "how-to-build-components-by-tailwindcss-vue",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.umd.js",
@@ -13,6 +13,15 @@
     ".": {
       "import": "./dist/index.es.js",
       "require": "./dist/index.umd.js"
+    },
+    "./*": "./*"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
     }
   },
   "scripts": {

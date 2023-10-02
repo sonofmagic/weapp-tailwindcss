@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { View, Navigator, Button } from '@tarojs/components'
 import classNames from 'classnames'
+
+import { ApplyButton, PrefixButton } from 'how-to-build-components-by-tailwindcss-react'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 // import { Button } from 'antd-mobile'
 import './index.scss'
@@ -24,6 +26,8 @@ const Index = () => {
   const wildContent = '****'
   return (
     <>
+      <ApplyButton></ApplyButton>
+      <PrefixButton></PrefixButton>
       {/* <Button className='btn btn-primary'>Button</Button> */}
       <Navigator url='/moduleA/pages/index'>普通分包</Navigator>
       <Navigator url='/moduleB/pages/index'>独立分包</Navigator>
