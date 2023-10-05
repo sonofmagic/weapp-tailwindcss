@@ -1,6 +1,10 @@
 # 旧有uni-app项目升级webpack5指南
 
-> 使用 uni-app vite vue3 的开发者可以忽略此指南
+:::caution
+目前 `uni-app` 默认创建的 `vue2` 项目,已经全面使用 `@vue/cli-service@5` 了(2023-10)，所以目前正常升级即可，本指南废弃! 留作归档处理
+
+使用 uni-app vite vue3 的开发者可以忽略此指南
+:::
 
 由于目前 `uni-app` `hbuilderx`和`cli`默认创建的 `vue2` 项目，还是使用的 `@vue/cli-service@4`
 

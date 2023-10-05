@@ -8,4 +8,4 @@
 
 ## Not OK
 
-- module css, this will change css selector
+- module css, this will change css selector (add hash)
