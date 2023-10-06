@@ -10,6 +10,8 @@
 另外假如你使用了 [`taro-plugin-compiler-optimization`](https://www.npmjs.com/package/taro-plugin-compiler-optimization) 记得把它干掉。因为和它一起使用时，它会使整个打包结果变得混乱。[issues/123](https://github.com/sonofmagic/weapp-tailwindcss/issues/123) [issues/131](https://github.com/sonofmagic/weapp-tailwindcss/issues/131)
 
 还有不要和 `terser-webpack-plugin` 一起注册使用，这会导致转义功能失效 详见 [**常见问题**](/docs/issues#taro-webpack5-环境下这个插件和-terser-webpack-plugin-一起使用会导致插件转义功能失效) 和 [issues/142](https://github.com/sonofmagic/weapp-tailwindcss/issues/142)
+
+还有 `taro` 的 `prebundle` 功能老是出错，最近更新之后，由于 `prebundle` 默认开启，有时候连 `taro cli` 初始化的模板项目都跑不起来，假如遇到问题找不到原因，可以尝试关闭这个配置。
 <!-- 
 **另外不要开启二次编译缓存!**
 
@@ -24,6 +26,10 @@ cache: {
 
 <!-- `taro` 开发时热更新的问题，开发中保存 `tailwind.config.js` 文件，触发热更新会导致所有样式挂掉，此时重新保存任意 `jsx/tsx` 文件恢复正常。 -->
 
+:::
+
+:::caution
+假如你和 `NutUI` 一起使用，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)
 :::
 
 在项目的配置文件 `config/index` 中注册:
@@ -51,43 +57,3 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 ```
 
 然后正常运行项目即可，相关的配置可以参考模板 [taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
-
-:::tip
-
-## 和 NutUI 一起使用
-
-`taro vue3` 使用 [NutUI](https://nutui.jd.com) 的注意点:
-
-[NutUI](https://nutui.jd.com) 需要配合 `@tarojs/plugin-html` 一起使用，
-
-然而在和 `@tarojs/plugin-html` 一起使用时，默认配置下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。
-
-此时可以使用 [`injectAdditionalCssVarScope`](/docs/api/interfaces/UserDefinedOptions#injectadditionalcssvarscope) 配置项，把它设为 `true`，这能在插件内部重新注入 `tailwindcss css var` 区域块。
-
-## 可能有用但是过时的方案
-
-~~需要去配置一下 `postcss-html-transform` 这个插件~~ (这个方法在有些版本的`taro`是生效的，最新的 `3.6.8` `vue3` 版本不生效！实在找不到方法可以尝试一下)
-
-```js
-// config/index.js
-config = {
-  // ...
-  mini: {
-    // ...
-    postcss: {
-      htmltransform: {
-        enable: true,
-        // 设置成 false 表示 不去除 * 相关的选择器区块
-        // 假如开启这个配置，它会把 tailwindcss 整个 css var 的区域块直接去除掉
-        // 需要用 config 套一层，官方文档上是错的
-        config: {
-          removeCursorStyle: false,
-        }
-      },
-    },
-  },
-}
-```
-
-相关的[taro官方文档](https://taro-docs.jd.com/docs/use-h5#%E6%8F%92%E4%BB%B6-postcss-%E9%85%8D%E7%BD%AE%E9%A1%B9), 讨论详情见 [issues/155](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/155)
-:::

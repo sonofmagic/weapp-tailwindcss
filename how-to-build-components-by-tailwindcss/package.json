@@ -1,0 +1,12 @@
+{
+  "name": "how-to-build-components-by-tailwindcss",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sync": "cnpm sync how-to-build-components-by-tailwindcss-react how-to-build-components-by-tailwindcss-vue"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -2,6 +2,9 @@
 import { useState } from 'react'
 import { View, Navigator, Button } from '@tarojs/components'
 import classNames from 'classnames'
+
+import { ApplyButton, PrefixButton } from 'how-to-build-components-by-tailwindcss-react'
+// import { TaroButton } from 'how-to-build-components-by-tailwindcss-react/taro'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 // import { Button } from 'antd-mobile'
 import './index.scss'
@@ -24,6 +27,9 @@ const Index = () => {
   const wildContent = '****'
   return (
     <>
+      {/* <TaroButton></TaroButton> */}
+      <ApplyButton></ApplyButton>
+      <PrefixButton></PrefixButton>
       {/* <Button className='btn btn-primary'>Button</Button> */}
       <Navigator url='/moduleA/pages/index'>普通分包</Navigator>
       <Navigator url='/moduleB/pages/index'>独立分包</Navigator>
