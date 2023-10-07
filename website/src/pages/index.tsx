@@ -7,6 +7,7 @@ import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'
 import PluginsImg from '@site/../assets/weapp-tw-plugins.png'
 // import Plugins from '@site/src/components/Plugins'
 // import Frameworks from '@site/src/components/Frameworks'
+// mask-image: linear-gradient(rgba(0, 0, 0, 1), transparent);
 function HomepageHeader() {
   // const { siteConfig } = useDocusaurusContext()
   return (
@@ -18,7 +19,7 @@ function HomepageHeader() {
         <div className="flex flex-col items-center">
           <h1>
             <span className="text-[#07c160]">weapp</span>
-            <span>-</span>
+            <span className="from-weapp-to-tailwindcss">-</span>
             <span className="text-sky-500">tailwindcss</span>
           </h1>
           <h3>

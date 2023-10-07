@@ -46,6 +46,10 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'quick-start/build-or-import-outside-components'
+    },
+    {
+      type: 'doc',
       label: '独立分包',
       id: 'quick-start/independent-pkg'
     },
