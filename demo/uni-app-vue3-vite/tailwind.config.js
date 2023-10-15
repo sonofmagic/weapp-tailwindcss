@@ -20,14 +20,15 @@ module.exports = {
   plugins: [
     tailwindcssChildrenPlugin,
     // require('daisyui'),
-    // plugin(({ addVariant }) =>
-    //   each((x) => {
-    //     addVariant(...x)
-    //     // addVariant('optional', '&:optional');
-    //     // addVariant('group-optional', ':merge(.group):optional &');
-    //     // addVariant('peer-optional', ':merge(.peer):optional ~ &');
-    //   })
-    // )
+    /*  #ifdef  %PLATFORM%  */
+    // 平台特有样式
+    /*  #endif  */
+    // https://github.com/tailwindlabs/tailwindcss/blob/master/src/lib/setupContextUtils.js#L224
+    plugin(({ addVariant }) => {
+      // addVariant('wx', '@/*#ifdef MP-WEIXIN*/\n&\n/*#endif*/');
+      // @media (hover: hover) {
+      addVariant('wx', '@media(weapp-tw-platform:MP-WEIXIN){&}');
+    }),
   ],
   presets: [
     require('tailwindcss-rem2px-preset').createPreset({
