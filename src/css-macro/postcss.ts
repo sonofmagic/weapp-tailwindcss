@@ -7,7 +7,7 @@ const creator: PluginCreator<Options> = () => {
     postcssPlugin: 'postcss-weapp-tw-css-macro-plugin',
     prepare() {
       return {
-        AtRuleExit(atRule, helper) {
+        AtRule(atRule, helper) {
           if (atRule.name === 'media') {
             const values: string[] = []
             matchCustomPropertyFromValue(atRule.params, (arr) => {
@@ -40,6 +40,12 @@ const creator: PluginCreator<Options> = () => {
           /*  #ifdef  %PLATFORM%  */
           // 平台特有样式
           /*  #endif  */
+        },
+        CommentExit(comment) {
+          if (/#(?:ifn?def|endif)/.test(comment.text)) {
+            comment.raws.left = ' '
+            comment.raws.right = ' '
+          }
         }
       }
     }

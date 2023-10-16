@@ -226,4 +226,23 @@ describe('css-macro tailwindcss plugin', () => {
     root = postcss.parse('/*  #ifdef  %PLATFORM%  */\n.a{}/*  #endif  */')
     expect(root).toBeDefined()
   })
+
+  it('fix comment eol case 0', async () => {
+    const css = `/*
+    #ifndef MP-WEIXIN */
+   .-wxcbg-red-500 {
+     --tw-bg-opacity: 1;
+     background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+   }
+   /*
+    #endif */
+   `
+    const root = postcss.parse(css)
+    expect(root).toBeDefined()
+
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
 })

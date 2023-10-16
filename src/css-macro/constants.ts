@@ -48,15 +48,15 @@ export function normalComment(text: string) {
 
 export function ifdef(text: string) {
   return {
-    start: ` #ifdef ${normalComment(text)} `,
-    end: ` #endif `
+    start: `#ifdef ${normalComment(text)}`,
+    end: `#endif`
   }
 }
 
 export function ifndef(text: string) {
   return {
-    start: ` #ifndef ${normalComment(text)} `,
-    end: ` #endif `
+    start: `#ifndef ${normalComment(text)}`,
+    end: `#endif`
   }
 }
 // uniVersion > 3.9
