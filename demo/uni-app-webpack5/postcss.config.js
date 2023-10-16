@@ -25,11 +25,11 @@ const config = {
           propList: ['*'],
           transformUnit: 'rpx'
         }),
-    // require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'),
+
     require('autoprefixer')({
       remove: process.env.UNI_PLATFORM !== 'h5'
     }),
-
+    // require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'),
     require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
   ]
 }
