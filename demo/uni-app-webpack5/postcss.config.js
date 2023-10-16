@@ -2,7 +2,7 @@ const path = require('node:path')
 const webpack = require('webpack')
 const { WeappTailwindcssDisabled } = require('./platform')
 const config = {
-  parser: require('postcss-comment'),
+  // parser: require('postcss-comment'),
   plugins: [
     require('postcss-import')({
       resolve(id, basedir, importOptions) {

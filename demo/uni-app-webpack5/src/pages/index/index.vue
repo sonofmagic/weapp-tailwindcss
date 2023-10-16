@@ -1,11 +1,18 @@
 <template>
   <div class="before:content-['hello'] before:block">
-    <view class="ifdef-[MP-WEIXIN]:bg-blue-500">bg-blue-500</view>
-    <view class="ifndef-[MP-WEIXIN]:bg-red-500">not bg-red-500</view>
-    <view class="wx:bg-blue-400">wx:bg-blue-400</view>
-    <view class="-wx:bg-red-400">-wx:bg-red-400</view>
-    <view class="mv:bg-blue-400">mv:bg-blue-400</view>
-    <view class="-mv:bg-red-400">-mv:bg-red-400</view>
+    <view>
+      <view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">
+        样式的条件编译:微信小程序为蓝色，不是微信小程序为红色
+      </view>
+
+      <view class="wx:bg-blue-500 -wx:bg-red-500">
+        <view>自定义配置的方式进行样式条件编译</view>
+        <view>相关配置见根目录下的tailwind.config.js</view>
+      </view>
+
+      <view class="apply-class-0">@apply 条件编译方式0</view>
+      <view class="apply-class-1">@apply 条件编译方式1</view>
+    </view>
 
     <view>{{ wildContent }}</view>
     <view class="block"></view>
@@ -147,6 +154,15 @@ export default Vue.extend({
 <style lang="scss">
 .test {
   @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+}
+
+.apply-class-0 {
+  @apply ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500;
+}
+
+.apply-class-1 {
+  // 这个需要在 tailwind.config.js 里进行自定义配置
+  @apply wx:bg-blue-500 -wx:bg-red-500;
 }
 </style>
 
