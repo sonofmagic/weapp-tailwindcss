@@ -7,9 +7,11 @@
       <view class="text-[64rpx]/[46rpx]">text-[64rpx]/[46rpx]</view>
       <view class="text-[104rpx]/[146rpx]">text-[64rpx]/[46rpx]</view>
     </view>
-    <view class="ifdef-[MP-WEIXIN]:bg-blue-500">bg-blue-500</view>
+
     <view class="ifdef-[uniVersion_>_3.9]:bg-blue-100">bg-blue-100</view>
     <view class="ifdef-[uniVersion>3.9]:bg-blue-200">bg-blue-200</view>
+
+    <view class="ifdef-[MP-WEIXIN]:bg-blue-500">bg-blue-500</view>
     <view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-300">bg-blue-300</view>
     <view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">bg-blue-400</view>
     <view class="ifndef-[MP-WEIXIN]:bg-red-500">not bg-red-500</view>
