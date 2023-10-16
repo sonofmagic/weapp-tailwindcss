@@ -74,23 +74,23 @@ module.exports = {
           display: 'none'
         }
       })
+    }),
+    cssMacro({
+      variantsMap: {
+        wx: 'MP-WEIXIN',
+        '-wx': {
+          value: 'MP-WEIXIN',
+          negative: true
+        },
+        mv: {
+          value: 'H5 || MP-WEIXIN'
+        },
+        '-mv': {
+          value: 'H5 || MP-WEIXIN',
+          negative: true
+        }
+      }
     })
-    // cssMacro({
-    //   variantsMap: {
-    //     wx: 'MP-WEIXIN',
-    //     '-wx': {
-    //       value: 'MP-WEIXIN',
-    //       negative: true
-    //     },
-    //     mv: {
-    //       value: 'H5 || MP-WEIXIN'
-    //     },
-    //     '-mv': {
-    //       value: 'H5 || MP-WEIXIN',
-    //       negative: true
-    //     }
-    //   }
-    // })
   ],
   corePlugins: {
     preflight: false,

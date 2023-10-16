@@ -182,3 +182,12 @@ module.exports = {
   ],
 };
 ```
+
+<!-- ## 常见问题
+
+### uni-app vue2 出现 Syntax Error CssSyntaxError Unknown word 错误
+
+Syntax Error: HookWebpackError: Module build failed (from ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/stylePostLoader.js):
+CssSyntaxError: .../uni-app-vue2-tailwind-vscode-template/src/pages/index/index.vue:50:2: Unknown word
+
+请删除掉默认 `uni.scss` 里的注释内容 -->

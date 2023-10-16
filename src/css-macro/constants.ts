@@ -32,11 +32,11 @@ export const uniAppPlatform = [
 export const queryKey = 'weapp-tw-platform'
 
 export function createMediaQuery(value: string) {
-  return `@media (${queryKey}:${value}){&}`
+  return `@media (${queryKey}:"${value}"){&}`
 }
 
 export function createNegativeMediaQuery(value: string) {
-  return `@media not screen and (${queryKey}:${value}){&}`
+  return `@media not screen and (${queryKey}:"${value}"){&}`
 }
 
 export function normalComment(text: string) {
@@ -65,7 +65,8 @@ export function ifndef(text: string) {
 export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecArray, index: number) => void) {
   let arr: RegExpExecArray | null
   let index = 0
-  const regex = new RegExp('\\(\\s*' + queryKey + '\\s*:([^)]*)\\)', 'g')
+
+  const regex = new RegExp('\\(\\s*' + queryKey + '\\s*:\\s*"([^)]*)"\\)', 'g')
   while ((arr = regex.exec(str)) !== null) {
     cb(arr, index)
     index++
