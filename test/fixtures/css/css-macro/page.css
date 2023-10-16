@@ -1,0 +1,25 @@
+@media (weapp-tw-platform:"MP-WEIXIN"){
+  .apply-class-0{
+          --tw-bg-opacity: 1;
+          background-color: rgb(59 130 246 / var(--tw-bg-opacity))
+  }
+  }
+  @media not screen and (weapp-tw-platform:"MP-WEIXIN"){
+  .apply-class-0{
+          --tw-bg-opacity: 1;
+          background-color: rgb(239 68 68 / var(--tw-bg-opacity))
+  }
+  }
+  @media (weapp-tw-platform:"MP-WEIXIN"){
+  .apply-class-1{
+          --tw-bg-opacity: 1;
+          background-color: rgb(59 130 246 / var(--tw-bg-opacity))
+  }
+  }
+  @media not screen and (weapp-tw-platform:"MP-WEIXIN"){
+  .apply-class-1{
+          --tw-bg-opacity: 1;
+          background-color: rgb(239 68 68 / var(--tw-bg-opacity))
+  }
+  }
+  
