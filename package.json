@@ -41,15 +41,15 @@
       "require": "./dist/defaults.js",
       "import": "./dist/defaults.mjs"
     },
+    "./css-macro": {
+      "types": "./dist/css-macro/index.d.ts",
+      "require": "./dist/css-macro/index.js",
+      "import": "./dist/css-macro/index.mjs"
+    },
     "./css-macro/postcss": {
       "types": "./dist/css-macro/postcss.d.ts",
       "require": "./dist/css-macro/postcss.js",
       "import": "./dist/css-macro/postcss.mjs"
-    },
-    "./css-macro/tailwindcss": {
-      "types": "./dist/css-macro/tailwindcss.d.ts",
-      "require": "./dist/css-macro/tailwindcss.js",
-      "import": "./dist/css-macro/tailwindcss.mjs"
     },
     "./*": "./*"
   },
@@ -159,7 +159,7 @@
     "@icebreakers/cli": "0.1.1",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.0.1",
-    "@rollup/plugin-commonjs": "^25.0.5",
+    "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
@@ -219,7 +219,7 @@
     "postcss-rem-to-responsive-pixel": "^5.1.3",
     "prettier": "^3.0.3",
     "promisify-loader-runner": "^1.0.0",
-    "rollup": "^4.1.1",
+    "rollup": "^4.1.4",
     "rollup-plugin-visualizer": "^5.9.2",
     "sass": "^1.69.3",
     "style-loader": "^3.3.3",

@@ -87,8 +87,8 @@ const entries: IEntry[] = [
       vite: 'src/vite.ts',
       'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts',
       defaults: 'src/defaults.ts',
-      'css-macro/postcss': 'src/css-macro/postcss.ts',
-      'css-macro/tailwindcss': 'src/css-macro/tailwindcss.ts'
+      'css-macro/index': 'src/css-macro/index.ts',
+      'css-macro/postcss': 'src/css-macro/postcss.ts'
     },
     output: [
       {
