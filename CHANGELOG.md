@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 2.10.0 (2023-10-16)
+
+## Features
+
+- 添加 [uni-app-css-macro](https://weapp-tw.icebreaker.top/docs/quick-start/uni-app-css-macro) 样式条件编译语法糖相关功能
+
+## Chore
+
+- 升级 `rollup` 相关依赖到 `4.x`
+
 ## 2.9.3 (2023-09-28)
 
 ## Features
