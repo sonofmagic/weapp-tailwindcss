@@ -9,7 +9,7 @@ exports[`css-macro tailwindcss plugin dynamic case 0: postcss 1`] = `
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 0: tw 1`] = `
-"@media(weapp-tw-platform:MP-WEIXIN) {
+"@media (weapp-tw-platform:MP-WEIXIN) {
     .ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
@@ -111,7 +111,7 @@ exports[`css-macro tailwindcss plugin static case 0: postcss 1`] = `
 `;
 
 exports[`css-macro tailwindcss plugin static case 0: tw 1`] = `
-"@media(weapp-tw-platform:MP-WEIXIN) {
+"@media (weapp-tw-platform:MP-WEIXIN) {
     .wx\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
@@ -145,7 +145,7 @@ exports[`css-macro tailwindcss plugin static case 2: postcss 1`] = `
 `;
 
 exports[`css-macro tailwindcss plugin static case 2: tw 1`] = `
-"@media(weapp-tw-platform:uniVersion > 3.9) {
+"@media (weapp-tw-platform:uniVersion > 3.9) {
     .hv\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
@@ -162,7 +162,7 @@ exports[`css-macro tailwindcss plugin static case 3: postcss 1`] = `
 `;
 
 exports[`css-macro tailwindcss plugin static case 3: tw 1`] = `
-"@media(weapp-tw-platform:H5 || MP-WEIXIN) {
+"@media (weapp-tw-platform:H5 || MP-WEIXIN) {
     .mv\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))

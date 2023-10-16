@@ -7,15 +7,23 @@
       <view class="text-[64rpx]/[46rpx]">text-[64rpx]/[46rpx]</view>
       <view class="text-[104rpx]/[146rpx]">text-[64rpx]/[46rpx]</view>
     </view>
-    <ApplyButton></ApplyButton>
-    <PrefixButton></PrefixButton>
-    <ScopedButton></ScopedButton>
+    <view class="ifdef-[MP-WEIXIN]:bg-blue-500">bg-blue-500</view>
+    <view class="ifdef-[uniVersion_>_3.9]:bg-blue-100">bg-blue-100</view>
+    <view class="ifdef-[uniVersion>3.9]:bg-blue-200">bg-blue-200</view>
+    <view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-300">bg-blue-300</view>
+    <view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">bg-blue-400</view>
+    <view class="ifndef-[MP-WEIXIN]:bg-red-500">not bg-red-500</view>
+    <view class="ifndef-[H5||MP-WEIXIN]:bg-red-400">bg-red-400</view>
+
+    <view class="wx:bg-blue-400">wx:bg-blue-400</view>
+    <view class="-wx:bg-red-400">-wx:bg-red-400</view>
+
+    <view class="mv:bg-blue-400">mv:bg-blue-400</view>
+    <view class="-mv:bg-red-400">-mv:bg-red-400</view>
   </view>
 </template>
 
 <script setup lang="ts">
-import 'how-to-build-components-by-tailwindcss-vue/dist/style.css'
-import { ApplyButton, PrefixButton, ScopedButton } from 'how-to-build-components-by-tailwindcss-vue'
 // https://tailwindcss.com/docs/font-size#setting-the-line-height
 const bg = '!bg-[#ff00ff] !text-[#00fffa] '
 import { useCounterStore } from '@/stores/counter'

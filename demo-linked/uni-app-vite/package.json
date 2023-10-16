@@ -53,7 +53,6 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-3081220230817001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-3081220230817001",
     "dayjs": "^1.11.9",
-    "how-to-build-components-by-tailwindcss-vue": "link:../../how-to-build-components-by-tailwindcss/vue-lib",
     "pinia": "~2.0.14",
     "vue": "^3.2.45",
     "vue-i18n": "^9.5.0",

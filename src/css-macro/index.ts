@@ -2,7 +2,6 @@ import plugin from 'tailwindcss/plugin'
 import { createMediaQuery, createNegativeMediaQuery } from './constants'
 import { defu } from '@/utils'
 export interface Options {
-  // static?: boolean
   variantsMap?: Record<string, string | { value: string; negative?: boolean }>
   dynamic?: boolean
 }
@@ -13,11 +12,6 @@ export default plugin.withOptions((options: Options) => {
     variantsMap: {}
   })
   return ({ matchVariant, addVariant }) => {
-    // if (staticMode) {
-    // }
-    // addVariant,
-    // addVariant('wx', '@media(weapp-tw-platform:MP-WEIXIN){&}')
-    // addVariant('-wx', '@media not screen and (weapp-tw-platform:MP-WEIXIN){&}')
     if (dynamicMode) {
       matchVariant('ifdef', (value) => {
         return createMediaQuery(value)
@@ -34,7 +28,5 @@ export default plugin.withOptions((options: Options) => {
         addVariant(name, obj.negative ? createNegativeMediaQuery(obj.value) : createMediaQuery(obj.value))
       }
     }
-    // ifdef
-    // ifndef
   }
 })

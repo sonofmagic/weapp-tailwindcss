@@ -15,7 +15,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -26,7 +28,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -37,7 +41,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -48,7 +54,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -59,7 +67,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -70,7 +80,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -87,7 +99,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -107,7 +121,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -126,7 +142,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
@@ -145,7 +163,9 @@ describe('css-macro tailwindcss plugin', () => {
       }
     })
     expect(css).toMatchSnapshot('tw')
-    const { css: cssOutput } = await postcss(postcssPlugin).process(css)
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 })

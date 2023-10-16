@@ -32,7 +32,7 @@ export const uniAppPlatform = [
 export const queryKey = 'weapp-tw-platform'
 
 export function createMediaQuery(value: string) {
-  return `@media(${queryKey}:${value}){&}`
+  return `@media (${queryKey}:${value}){&}`
 }
 
 export function createNegativeMediaQuery(value: string) {
@@ -62,3 +62,12 @@ export function ifndef(text: string) {
 // uniVersion > 3.9
 // H5 || MP-WEIXIN
 // not screen and (weapp-tw-platform:MP-WEIXIN)
+export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecArray, index: number) => void) {
+  let arr: RegExpExecArray | null
+  let index = 0
+  const regex = new RegExp('\\(\\s*' + queryKey + '\\s*:([^)]*)\\)', 'g')
+  while ((arr = regex.exec(str)) !== null) {
+    cb(arr, index)
+    index++
+  }
+}
