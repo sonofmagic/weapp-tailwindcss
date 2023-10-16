@@ -1,6 +1,7 @@
 // import plugin from 'tailwindcss/plugin'
 import postcss from 'postcss'
-import twPlugin from '../../dist/css-macro'
+// import twPlugin from '../../dist/css-macro'
+import twPlugin from '@/css-macro'
 import { getCss } from '#test/helpers/getTwCss'
 import postcssPlugin from '@/css-macro/postcss'
 
