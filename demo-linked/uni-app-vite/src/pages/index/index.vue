@@ -1,5 +1,7 @@
 <template>
   <view>
+    <view class="apply-test">1234567890</view>
+    <view class="apply-test-2">1234567890</view>
     <view class="text-[40rpx] text-[#543214] mb-[123px] pt-[100px] min-h-[89.76vh] inset-[43.43px]" :class="bg">hello
       world
       <div>Current Count: {{ counter.count }}</div>
@@ -22,6 +24,8 @@
 
     <view class="mv:bg-blue-400">mv:bg-blue-400</view>
     <view class="-mv:bg-red-400">-mv:bg-red-400</view>
+
+
   </view>
 </template>
 
@@ -37,4 +41,12 @@ const counter = useCounterStore()
 // counter.increment()
 </script>
 
-<style scoped></style>
+<style lang="scss" >
+.apply-test {
+  @apply mv:bg-blue-400 -mv:bg-red-400 wx:text-blue-400 -wx:text-red-400;
+}
+
+.apply-test-2 {
+  @apply ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-red-400;
+}
+</style>

@@ -32,10 +32,7 @@ const sidebars = {
       type: 'doc',
       id: 'icons/index'
     },
-    {
-      type: 'doc',
-      id: 'options/arbitrary-values'
-    },
+
     {
       type: 'doc',
       id: 'quick-start/intelliSense'
@@ -43,6 +40,10 @@ const sidebars = {
     {
       type: 'doc',
       id: 'quick-start/apply-themes'
+    },
+    {
+      type: 'doc',
+      id: 'quick-start/uni-app-css-macro'
     },
     {
       type: 'doc',
@@ -57,6 +58,10 @@ const sidebars = {
       type: 'doc',
       label: '跨端应用注意事项',
       id: 'multi-platform'
+    },
+    {
+      type: 'doc',
+      id: 'options/arbitrary-values'
     },
     {
       type: 'doc',

@@ -41,15 +41,15 @@
       "require": "./dist/defaults.js",
       "import": "./dist/defaults.mjs"
     },
-    "./css-macro": {
-      "types": "./dist/css-macro/index.d.ts",
-      "require": "./dist/css-macro/index.js",
-      "import": "./dist/css-macro/index.mjs"
-    },
     "./css-macro/postcss": {
       "types": "./dist/css-macro/postcss.d.ts",
       "require": "./dist/css-macro/postcss.js",
       "import": "./dist/css-macro/postcss.mjs"
+    },
+    "./css-macro": {
+      "types": "./dist/css-macro/index.d.ts",
+      "require": "./dist/css-macro/index.js",
+      "import": "./dist/css-macro/index.mjs"
     },
     "./*": "./*"
   },

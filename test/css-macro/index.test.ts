@@ -87,6 +87,22 @@ describe('css-macro tailwindcss plugin', () => {
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
+  it('dynamic apply case 6', async () => {
+    const { css } = await getCss('', {
+      css: `.apply-test {
+        @apply ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-red-400;
+      }`,
+      twConfig: {
+        plugins: [twPlugin]
+      }
+    })
+    expect(css).toMatchSnapshot('tw')
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
   it('static case 0', async () => {
     const { css } = await getCss('wx:bg-blue-500', {
       twConfig: {
