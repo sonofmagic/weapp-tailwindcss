@@ -1,30 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`snap uni-app vue2 app.css 1`] = `
-"/* #ifdef MP-WEIXIN  */
+"
+/*  #ifdef MP-WEIXIN  */
   .ifdef-_MP-WEIXIN_cbg-blue-500{
           --tw-bg-opacity: 1;
           background-color: rgb(59 130 246 / var(--tw-bg-opacity))
   }
-/* #endif */
-  /* #ifndef MP-WEIXIN  */
+/*  #endif  */
+  /*  #ifndef MP-WEIXIN  */
   .ifndef-_MP-WEIXIN_cbg-red-500{
           --tw-bg-opacity: 1;
           background-color: rgb(239 68 68 / var(--tw-bg-opacity))
   }
-  /* #endif */
-  /* #ifdef MP-WEIXIN  */
+  /*  #endif  */
+  /*  #ifdef MP-WEIXIN  */
   .wxcbg-blue-500{
           --tw-bg-opacity: 1;
           background-color: rgb(59 130 246 / var(--tw-bg-opacity))
   }
-  /* #endif */
-  /* #ifndef MP-WEIXIN  */
+  /*  #endif  */
+  /*  #ifndef MP-WEIXIN  */
   .-wxcbg-red-500{
           --tw-bg-opacity: 1;
           background-color: rgb(239 68 68 / var(--tw-bg-opacity))
   }
-  /* #endif */
+  /*  #endif  */
   "
 `;
 
@@ -57,57 +58,58 @@ exports[`snap uni-app vue2 app-with-comment.css 1`] = `
       color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
       display: flex !important
   }
-  /*#ifdef MP-WEIXIN */
+  /* #ifdef MP-WEIXIN */
   .apply-class-0{
           --tw-bg-opacity: 1;
           background-color: rgb(59 130 246 / var(--tw-bg-opacity))
   }
-  /*#endif*/
-  /*#ifndef MP-WEIXIN */
+  /* #endif */
+  /* #ifndef MP-WEIXIN */
   .apply-class-0{
           --tw-bg-opacity: 1;
           background-color: rgb(239 68 68 / var(--tw-bg-opacity))
   }
-  /*#endif*/
-  /*#ifdef MP-WEIXIN */
+  /* #endif */
+  /* #ifdef MP-WEIXIN */
   .apply-class-1{
           --tw-bg-opacity: 1;
           background-color: rgb(59 130 246 / var(--tw-bg-opacity))
   }
-  /*#endif*/
-  /*#ifndef MP-WEIXIN */
+  /* #endif */
+  /* #ifndef MP-WEIXIN */
   .apply-class-1{
           --tw-bg-opacity: 1;
           background-color: rgb(239 68 68 / var(--tw-bg-opacity))
   }
-  /*#endif*/
+  /* #endif */
   "
 `;
 
 exports[`snap uni-app vue2 page.css 1`] = `
-"/* #ifdef MP-WEIXIN  */
+"
+/*  #ifdef MP-WEIXIN  */
   .apply-class-0{
           --tw-bg-opacity: 1;
           background-color: rgb(59 130 246 / var(--tw-bg-opacity))
   }
-/* #endif */
-  /* #ifndef MP-WEIXIN  */
+/*  #endif  */
+  /*  #ifndef MP-WEIXIN  */
   .apply-class-0{
           --tw-bg-opacity: 1;
           background-color: rgb(239 68 68 / var(--tw-bg-opacity))
   }
-  /* #endif */
-  /* #ifdef MP-WEIXIN  */
+  /*  #endif  */
+  /*  #ifdef MP-WEIXIN  */
   .apply-class-1{
           --tw-bg-opacity: 1;
           background-color: rgb(59 130 246 / var(--tw-bg-opacity))
   }
-  /* #endif */
-  /* #ifndef MP-WEIXIN  */
+  /*  #endif  */
+  /*  #ifndef MP-WEIXIN  */
   .apply-class-1{
           --tw-bg-opacity: 1;
           background-color: rgb(239 68 68 / var(--tw-bg-opacity))
   }
-  /* #endif */
+  /*  #endif  */
   "
 `;

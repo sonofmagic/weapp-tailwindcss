@@ -20,6 +20,9 @@ const creator: PluginCreator<Options> = () => {
 
               atRule.before([
                 helper.comment({
+                  raws: {
+                    before: '\n'
+                  },
                   text: comment.start
                 }),
                 ...atRule.nodes, // .map((x) => x.clone()),
