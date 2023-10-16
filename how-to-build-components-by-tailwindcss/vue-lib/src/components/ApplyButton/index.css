@@ -1,0 +1,6 @@
+@config 'tailwind.config.js';
+@tailwind utilities;
+
+.apply-button {
+  @apply bg-sky-600 text-white p-4 rounded;
+}

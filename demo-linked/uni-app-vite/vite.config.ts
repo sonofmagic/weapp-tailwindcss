@@ -48,6 +48,7 @@ if (!WeappTailwindcssDisabled) {
       transformUnit: 'rpx',
     }),
   );
+  postcssPlugins.push(require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'));
 }
 // https://vitejs.dev/config/
 export default defineConfig({

@@ -141,3 +141,10 @@
     var(--ifm-color-emphasis-100) 100%
   );
 }
+
+.from-weapp-to-tailwindcss {
+  // mask-image: linear-gradient(to right, #07c160 0% 50%, red 50%);
+  background-image: linear-gradient(to right, #07c160 50%, theme("colors.sky.500") 50%);
+  background-clip: text;
+  color: transparent;
+}

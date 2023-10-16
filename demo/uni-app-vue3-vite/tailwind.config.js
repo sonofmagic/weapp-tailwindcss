@@ -3,8 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const plugin = require('tailwindcss/plugin');
 fs.writeFileSync(path.resolve(__dirname, './variants.json'), JSON.stringify(variants, null, 2), {
-  encoding: 'utf-8',
+  encoding: 'utf8',
 });
+const cssMacro = require('weapp-tailwindcss-webpack-plugin/css-macro');
 const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-children');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -20,14 +21,31 @@ module.exports = {
   plugins: [
     tailwindcssChildrenPlugin,
     // require('daisyui'),
-    // plugin(({ addVariant }) =>
-    //   each((x) => {
-    //     addVariant(...x)
-    //     // addVariant('optional', '&:optional');
-    //     // addVariant('group-optional', ':merge(.group):optional &');
-    //     // addVariant('peer-optional', ':merge(.peer):optional ~ &');
-    //   })
-    // )
+    /*  #ifdef  %PLATFORM%  */
+    // 平台特有样式
+    /*  #endif  */
+    // https://github.com/tailwindlabs/tailwindcss/blob/master/src/lib/setupContextUtils.js#L224
+    plugin(({ addVariant }) => {
+      // addVariant('wx', '@/*#ifdef MP-WEIXIN*/\n&\n/*#endif*/');
+      // @media (hover: hover) {
+      addVariant('wx', '@media(weapp-tw-platform:MP-WEIXIN){&}');
+    }),
+    cssMacro({
+      variantsMap: {
+        wx: 'MP-WEIXIN',
+        '-wx': {
+          value: 'MP-WEIXIN',
+          negative: true,
+        },
+        mv: {
+          value: 'H5 || MP-WEIXIN',
+        },
+        '-mv': {
+          value: 'H5 || MP-WEIXIN',
+          negative: true,
+        },
+      },
+    }),
   ],
   presets: [
     require('tailwindcss-rem2px-preset').createPreset({

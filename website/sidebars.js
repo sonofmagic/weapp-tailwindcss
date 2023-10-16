@@ -32,32 +32,22 @@ const sidebars = {
       type: 'doc',
       id: 'icons/index'
     },
-    {
-      type: 'doc',
-      id: 'options/arbitrary-values'
-    },
+
     {
       type: 'doc',
       id: 'quick-start/intelliSense'
     },
     {
       type: 'doc',
-      id: 'mangle/index'
+      id: 'quick-start/apply-themes'
     },
     {
       type: 'doc',
-      label: '从 v1 迁移到 v2',
-      id: 'migrations/v1'
+      id: 'quick-start/uni-app-css-macro'
     },
     {
       type: 'doc',
-      label: '旧有uni-app项目升级webpack5',
-      id: 'upgrade/uni-app'
-    },
-    {
-      type: 'doc',
-      label: 'wxs 的转义与处理',
-      id: 'quick-start/wxs'
+      id: 'quick-start/build-or-import-outside-components'
     },
     {
       type: 'doc',
@@ -68,6 +58,29 @@ const sidebars = {
       type: 'doc',
       label: '跨端应用注意事项',
       id: 'multi-platform'
+    },
+    {
+      type: 'doc',
+      id: 'options/arbitrary-values'
+    },
+    {
+      type: 'doc',
+      id: 'mangle/index'
+    },
+    {
+      type: 'doc',
+      label: 'wxs 的转义与处理',
+      id: 'quick-start/wxs'
+    },
+    {
+      type: 'doc',
+      label: '从 v1 迁移到 v2',
+      id: 'migrations/v1'
+    },
+    {
+      type: 'doc',
+      label: '旧有uni-app项目升级webpack5',
+      id: 'upgrade/uni-app'
     },
     {
       type: 'doc',
@@ -104,6 +117,10 @@ const sidebars = {
       type: 'doc',
       id: 'issues/v1',
       label: 'v1版本常见问题'
+    },
+    {
+      type: 'doc',
+      id: 'issues/use-with-nutui'
     },
     {
       type: 'doc',
