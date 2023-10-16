@@ -47,9 +47,6 @@ dependencies:
   dayjs:
     specifier: ^1.11.9
     version: 1.11.9
-  how-to-build-components-by-tailwindcss-vue:
-    specifier: link:../../how-to-build-components-by-tailwindcss/vue-lib
-    version: link:../../how-to-build-components-by-tailwindcss/vue-lib
   pinia:
     specifier: ~2.0.14
     version: 2.0.36(typescript@5.2.2)(vue@3.3.4)

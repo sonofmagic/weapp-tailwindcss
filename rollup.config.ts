@@ -49,7 +49,7 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
           })
         : undefined
     ],
-    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils']
+    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin']
   }
 }
 // 没有必要压缩徒增调试成本
@@ -86,7 +86,9 @@ const entries: IEntry[] = [
       replace: 'src/replace.ts',
       vite: 'src/vite.ts',
       'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts',
-      defaults: 'src/defaults.ts'
+      defaults: 'src/defaults.ts',
+      'css-macro/index': 'src/css-macro/index.ts',
+      'css-macro/postcss': 'src/css-macro/postcss.ts'
     },
     output: [
       {

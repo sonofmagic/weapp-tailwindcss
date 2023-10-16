@@ -1,5 +1,15 @@
 <template>
   <view>
+    <view class="ifdef-[MP-WEIXIN]:bg-blue-500">bg-blue-500</view>
+    <view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-300">bg-blue-300</view>
+    <view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">bg-blue-400</view>
+    <view class="ifndef-[MP-WEIXIN]:bg-red-500">not bg-red-500</view>
+    <view class="ifndef-[H5||MP-WEIXIN]:bg-red-400">bg-red-400</view>
+    <view class="wx:bg-blue-400">wx:bg-blue-400</view>
+    <view class="-wx:bg-red-400">-wx:bg-red-400</view>
+    <view class="mv:bg-blue-400">mv:bg-blue-400</view>
+    <view class="-mv:bg-red-400">-mv:bg-red-400</view>
+    
     <view>{{ content }}</view>
     <view>****</view>
     <div class="ab text-left">111</div>
