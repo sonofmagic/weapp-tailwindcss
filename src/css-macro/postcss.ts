@@ -21,6 +21,9 @@ const creator: PluginCreator<Options> = () => {
             }),
             ...atRule.nodes,
             helper.comment({
+              raws: {
+                before: '\n'
+              },
               text: comment.end
             })
           ])

@@ -103,6 +103,21 @@ describe('css-macro tailwindcss plugin', () => {
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
+  it('postcss expand case 0', async () => {
+    const { css: cssOutput } = await postcss(postcssPlugin).process(
+      `@media not screen and (weapp-tw-platform:"MP-WEIXIN") {
+      .-wxcbg-red-500 {
+          --tw-bg-opacity: 1;
+          background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+      }
+      }`,
+      {
+        from: undefined
+      }
+    )
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
   it('static case 0', async () => {
     const { css } = await getCss('wx:bg-blue-500', {
       twConfig: {
@@ -184,5 +199,14 @@ describe('css-macro tailwindcss plugin', () => {
       from: undefined
     })
     expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
+  it('comment error case 0', () => {
+    let root = postcss.parse('/**\n*/')
+    expect(root).toBeDefined()
+    root = postcss.parse('/*  #ifdef  %PLATFORM%  */\n.a{}\n/*  #endif  */')
+    expect(root).toBeDefined()
+    root = postcss.parse('/*  #ifdef  %PLATFORM%  */\n.a{}/*  #endif  */')
+    expect(root).toBeDefined()
   })
 })

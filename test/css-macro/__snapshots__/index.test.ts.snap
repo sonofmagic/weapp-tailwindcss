@@ -5,7 +5,8 @@ exports[`css-macro tailwindcss plugin dynamic apply case 6: postcss 1`] = `
     .apply-test {
         --tw-bg-opacity: 1;
         background-color: rgb(96 165 250 / var(--tw-bg-opacity))
-    }/* #endif */
+    }
+/* #endif */
 /* #ifndef H5||MP-WEIXIN  */
 .apply-test {
         --tw-bg-opacity: 1;
@@ -34,7 +35,8 @@ exports[`css-macro tailwindcss plugin dynamic case 0: postcss 1`] = `
     .ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 0: tw 1`] = `
@@ -51,7 +53,8 @@ exports[`css-macro tailwindcss plugin dynamic case 1: postcss 1`] = `
     .ifndef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 1: tw 1`] = `
@@ -68,7 +71,8 @@ exports[`css-macro tailwindcss plugin dynamic case 2: postcss 1`] = `
     .ifndef-\\[uniVersion\\>3\\.9\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 2: tw 1`] = `
@@ -85,7 +89,8 @@ exports[`css-macro tailwindcss plugin dynamic case 3: postcss 1`] = `
     .ifndef-\\[uniVersion_\\>_3\\.9\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 3: tw 1`] = `
@@ -102,7 +107,8 @@ exports[`css-macro tailwindcss plugin dynamic case 4: postcss 1`] = `
     .ifndef-\\[uni\\\\_version_\\>_3\\.9\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 4: tw 1`] = `
@@ -119,7 +125,8 @@ exports[`css-macro tailwindcss plugin dynamic case 5: postcss 1`] = `
     .ifndef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin dynamic case 5: tw 1`] = `
@@ -131,12 +138,22 @@ exports[`css-macro tailwindcss plugin dynamic case 5: tw 1`] = `
 }"
 `;
 
+exports[`css-macro tailwindcss plugin postcss expand case 0: postcss 1`] = `
+"/* #ifndef MP-WEIXIN  */
+      .-wxcbg-red-500 {
+          --tw-bg-opacity: 1;
+          background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+      }
+/* #endif */"
+`;
+
 exports[`css-macro tailwindcss plugin static case 0: postcss 1`] = `
 "/* #ifdef MP-WEIXIN  */
     .wx\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin static case 0: tw 1`] = `
@@ -153,7 +170,8 @@ exports[`css-macro tailwindcss plugin static case 1: postcss 1`] = `
     .-wx\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin static case 1: tw 1`] = `
@@ -170,7 +188,8 @@ exports[`css-macro tailwindcss plugin static case 2: postcss 1`] = `
     .hv\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin static case 2: tw 1`] = `
@@ -187,7 +206,8 @@ exports[`css-macro tailwindcss plugin static case 3: postcss 1`] = `
     .mv\\:bg-blue-500 {
         --tw-bg-opacity: 1;
         background-color: rgb(59 130 246 / var(--tw-bg-opacity))
-    }/* #endif */"
+    }
+/* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin static case 3: tw 1`] = `

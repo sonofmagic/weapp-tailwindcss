@@ -2,7 +2,7 @@ const path = require('node:path')
 const webpack = require('webpack')
 const { WeappTailwindcssDisabled } = require('./platform')
 const config = {
-  // parser: require('postcss-comment'),
+  parser: require('postcss-comment'),
   plugins: [
     require('postcss-import')({
       resolve(id, basedir, importOptions) {
@@ -25,10 +25,11 @@ const config = {
           propList: ['*'],
           transformUnit: 'rpx'
         }),
+    // require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'),
     require('autoprefixer')({
       remove: process.env.UNI_PLATFORM !== 'h5'
     }),
-    require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'),
+
     require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
   ]
 }
