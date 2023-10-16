@@ -182,7 +182,7 @@ module.exports = {
   ],
 };
 ```
-
+<!-- 
 ## 常见问题
 
 ### uni-app vue2 出现 Syntax Error CssSyntaxError Unknown word 错误
@@ -216,4 +216,4 @@ CssSyntaxError: .../uni-app-vue2-tailwind-vscode-template/src/pages/index/index.
 
 ```
 
-都不会报错，偏偏那种case会
+都不会报错，偏偏那种case会 -->
