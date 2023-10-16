@@ -621,4 +621,11 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.divide-dashed>view + view{}')
   })
+
+  it('comment case 0', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `/* #ifdef MP-WEIXIN */\n.divide-dashed>:not([hidden])~:not([hidden]){}\n/* #endif */`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('/* #ifdef MP-WEIXIN */\n.divide-dashed>view + view{}\n/* #endif */')
+  })
 })
