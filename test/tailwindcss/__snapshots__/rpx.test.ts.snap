@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rpx rpx case 0 1`] = `
+".m-\\[23\\.43rpx\\] {
+    margin: 23.43rpx
+}
+.h-\\[12rpx\\] {
+    height: 12rpx
+}
+.max-h-\\[12rpx\\] {
+    max-height: 12rpx
+}
+.min-h-\\[12rpx\\] {
+    min-height: 12rpx
+}
+.w-\\[12rpx\\] {
+    width: 12rpx
+}
+.min-w-\\[12rpx\\] {
+    min-width: 12rpx
+}
+.max-w-\\[12rpx\\] {
+    max-width: 12rpx
+}
+.basis-\\[32rpx\\] {
+    flex-basis: 32rpx
+}
+.space-y-\\[12\\.0rpx\\] > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(12.0rpx * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(12.0rpx * var(--tw-space-y-reverse))
+}
+.p-\\[0\\.32rpx\\] {
+    padding: 0.32rpx
+}
+.text-\\[32rpx\\] {
+    font-size: 32rpx
+}"
+`;
