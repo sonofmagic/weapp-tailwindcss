@@ -182,38 +182,21 @@ module.exports = {
   ],
 };
 ```
-<!-- 
-## 常见问题
 
-### uni-app vue2 出现 Syntax Error CssSyntaxError Unknown word 错误
+## IDE智能提示
 
-Syntax Error: HookWebpackError: Module build failed (from ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/stylePostLoader.js):
-CssSyntaxError: .../uni-app-vue2-tailwind-vscode-template/src/pages/index/index.vue:50:2: Unknown word
+只要你使用 `vscode`/`webstorm` 这类IDE，加上安装了 `tailwindcss` 的官方插件。
 
-请删除掉 `uni.scss` 这样的注释:
+智能提示会根据你对 `cssMacro` 这个插件的配置，直接生成出来！
 
-```css
-/**
- */
-```
+> 假如没有下方的智能提示出现，有可能是 `tailwindcss` 插件挂了，这时候可以改好配置之后 **重启** `vscode` 以重新运行插件
 
-这会导致 `postcss`报错
+这里我们以上面 `配置项` 为例:
 
-很奇怪
+### 动态提示: ifdef-[] 和 ifndef-[]
 
-```css
-/**/
+![macro-tip0](./img/macro-tip0.png)
 
-/*
- */
+### 配置的静态提示: wx 和 -wx
 
-/*
-**/
-
-/**
-**/
-
-
-```
-
-都不会报错，偏偏那种case会 -->
+![macro-tip1](./img/macro-tip1.png)
