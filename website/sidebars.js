@@ -115,16 +115,20 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'issues/v1',
-      label: 'v1版本常见问题'
-    },
-    {
-      type: 'doc',
       id: 'issues/use-with-nutui'
     },
     {
       type: 'doc',
+      id: 'issues/rpx-ambiguities'
+    },
+    {
+      type: 'doc',
       id: 'options/comments'
+    },
+    {
+      type: 'doc',
+      id: 'issues/v1',
+      label: 'v1版本常见问题'
     }
   ],
   API: [

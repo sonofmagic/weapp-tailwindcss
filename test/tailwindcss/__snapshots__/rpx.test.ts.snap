@@ -25,15 +25,83 @@ exports[`rpx rpx case 0 1`] = `
 .basis-\\[32rpx\\] {
     flex-basis: 32rpx
 }
+.translate-y-\\[17rpx\\] {
+    --tw-translate-y: 17rpx;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+}
+.grid-cols-\\[200rpx_minmax\\(900rpx\\2c _1fr\\)_100rpx\\] {
+    grid-template-columns: 200rpx minmax(900rpx, 1fr) 100rpx
+}
+.gap-\\[2\\.75rpx\\] {
+    gap: 2.75rpx
+}
 .space-y-\\[12\\.0rpx\\] > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
     margin-top: calc(12.0rpx * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(12.0rpx * var(--tw-space-y-reverse))
 }
+.divide-x-\\[3rpx\\] > :not([hidden]) ~ :not([hidden]) {
+    --tw-divide-x-reverse: 0;
+    border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
+    border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)))
+}
+.rounded-\\[12rpx\\] {
+    border-radius: 12rpx
+}
+.border-t-\\[3rpx\\] {
+    border-top-width: 3rpx
+}
+.bg-\\[length\\:200rpx_100rpx\\] {
+    background-size: 200rpx 100rpx
+}
+.bg-\\[center_top_1rpx\\] {
+    background-position: center top 1rpx
+}
 .p-\\[0\\.32rpx\\] {
     padding: 0.32rpx
 }
+.indent-\\[50rpx\\] {
+    text-indent: 50rpx
+}
 .text-\\[32rpx\\] {
     font-size: 32rpx
+}
+.text-\\[length\\:32rpx\\] {
+    font-size: 32rpx
+}
+.leading-\\[3rpx\\] {
+    line-height: 3rpx
+}
+.tracking-\\[\\.25rpx\\] {
+    letter-spacing: .25rpx
+}
+.text-\\[\\#fafafa\\] {
+    --tw-text-opacity: 1;
+    color: rgb(250 250 250 / var(--tw-text-opacity))
+}
+.text-\\[color\\:32rpx\\] {
+    color: 32rpx
+}
+.decoration-\\[3rpx\\] {
+    text-decoration-thickness: 3rpx
+}
+.underline-offset-\\[3rpx\\] {
+    text-underline-offset: 3rpx
+}
+.shadow-\\[0_35rpx_60rx_-15px_rgba\\(0\\2c 0\\2c 0\\2c 0\\.3\\)\\] {
+    --tw-shadow: 0 35rpx 60rx -15px rgba(0,0,0,0.3);
+    --tw-shadow-colored: 0 35rpx 60rx -15px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+}
+.outline-\\[5rpx\\] {
+    outline-width: 5rpx
+}
+.ring-\\[10rpx\\] {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(10rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+}
+.ring-offset-\\[3rpx\\] {
+    --tw-ring-offset-width: 3rpx
 }"
 `;
