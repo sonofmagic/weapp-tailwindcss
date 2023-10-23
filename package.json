@@ -197,7 +197,7 @@
     "del": "^7.1.0",
     "diff": "^5.1.0",
     "domhandler": "^5.0.3",
-    "eslint": "8.51.0",
+    "eslint": "8.52.0",
     "eslint-config-icebreaker": "^1.2.2",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
