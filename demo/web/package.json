@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "node ./index.js",
+    "build": "node ./index.js"
   },
   "dependencies": {
     "defu": "^6.1.2",
