@@ -83,7 +83,7 @@
     "style-loader": "3.3.3",
     "stylelint": "^15.10.3",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss": "^3.3.3",
+    "tailwindcss": "^3.3.5",
     "tailwindcss-patch": "^2.2.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.2.2",
