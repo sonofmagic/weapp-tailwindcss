@@ -32,7 +32,7 @@ async function main() {
   const decls = (rule.nodes as Declaration[]).map((x) => {
     return {
       prop: x.prop,
-      value: x.value
+      value: x.value.trim()
     }
   })
 
