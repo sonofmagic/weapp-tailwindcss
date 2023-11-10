@@ -45,6 +45,16 @@ describe('customAttributes', () => {
     expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
   })
 
+  it('wild card case 0', () => {
+    const { templateHandler } = getOptions({
+      customAttributes: {
+        '*': ['group-hover-class']
+      },
+    })
+    const res = templateHandler('<view class="w-0.5 group" group-hover-class="!bg-indigo-500 !text-red"></view>')
+    expect(res).toBe('<view class="w-0d5 group" group-hover-class="ibg-indigo-500 itext-red"></view>')
+  })
+
   it('wild card via normal case', () => {
     const { templateHandler } = getOptions({
       customAttributes: {
