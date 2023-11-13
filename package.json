@@ -31,6 +31,11 @@
       "require": "./dist/webpack.js",
       "import": "./dist/webpack.mjs"
     },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "require": "./dist/core.js",
+      "import": "./dist/core.mjs"
+    },
     "./gulp": {
       "types": "./dist/gulp.d.ts",
       "require": "./dist/gulp.js",
@@ -217,9 +222,9 @@
     "postcss-load-config": "^4.0.1",
     "postcss-loader": "^7.3.3",
     "postcss-rem-to-responsive-pixel": "^5.1.3",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "promisify-loader-runner": "^1.0.0",
-    "rollup": "^4.3.0",
+    "rollup": "^4.4.0",
     "rollup-plugin-visualizer": "^5.9.2",
     "sass": "^1.69.5",
     "style-loader": "^3.3.3",
@@ -252,7 +257,7 @@
     "debug": "^4.3.4",
     "htmlparser2": "^9.0.0",
     "loader-utils": "^2.0.3",
-    "lru-cache": "^10.0.1",
+    "lru-cache": "^10.0.2",
     "magic-string": "^0.30.5",
     "md5": "^2.3.0",
     "micromatch": "^4.0.5",
