@@ -90,7 +90,7 @@
     "vue-loader": "^15.11.1",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.11.0-beta.1",
+    "weapp-tailwindcss-webpack-plugin": "^2.11.0",
     "webpack": "^5.89.0"
   }
 }
