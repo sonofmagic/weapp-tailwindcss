@@ -31,7 +31,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     options.supportCustomLengthUnitsPatch = undefined
   }
 
-  if (options.customReplaceDictionary === 'simple') {
+  if (options.customReplaceDictionary === undefined || options.customReplaceDictionary === 'simple') {
     options.customReplaceDictionary = SimpleMappingChars2String
   } else if (options.customReplaceDictionary === 'complex') {
     options.customReplaceDictionary = MappingChars2String

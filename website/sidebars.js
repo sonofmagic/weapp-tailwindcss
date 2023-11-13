@@ -23,7 +23,7 @@ const sidebars = {
       collapsed: false
     },
     {
-      items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native', 'hbuilderx'].map((x) => 'quick-start/frameworks/' + x),
+      items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native', 'hbuilderx', 'api'].map((x) => 'quick-start/frameworks/' + x),
       label: '各个框架的注册方式',
       type: 'category',
       collapsed: false
@@ -115,16 +115,20 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'issues/v1',
-      label: 'v1版本常见问题'
-    },
-    {
-      type: 'doc',
       id: 'issues/use-with-nutui'
     },
     {
       type: 'doc',
+      id: 'issues/rpx-ambiguities'
+    },
+    {
+      type: 'doc',
       id: 'options/comments'
+    },
+    {
+      type: 'doc',
+      id: 'issues/v1',
+      label: 'v1版本常见问题'
     }
   ],
   API: [

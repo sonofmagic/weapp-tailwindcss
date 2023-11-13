@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view class="apply-test">1234567890</view>
+    <view class="apply-test rotate-45">1234567890</view>
     <view class="apply-test-2">1234567890</view>
     <view class="text-[40rpx] text-[#543214] mb-[123px] pt-[100px] min-h-[89.76vh] inset-[43.43px]" :class="bg">hello
       world

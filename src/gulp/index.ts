@@ -15,9 +15,6 @@ const Transform = stream.Transform
  * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/native
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
-  if (options.customReplaceDictionary === undefined) {
-    options.customReplaceDictionary = 'simple'
-  }
   const opts = getOptions(options)
   const { templateHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet, tailwindcssBasedir } = opts
 

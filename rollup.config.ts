@@ -88,7 +88,8 @@ const entries: IEntry[] = [
       'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts',
       defaults: 'src/defaults.ts',
       'css-macro/index': 'src/css-macro/index.ts',
-      'css-macro/postcss': 'src/css-macro/postcss.ts'
+      'css-macro/postcss': 'src/css-macro/postcss.ts',
+      core: 'src/core.ts'
     },
     output: [
       {

@@ -30,9 +30,11 @@ async function main() {
   const rule = root.nodes[0] as Rule
 
   const decls = (rule.nodes as Declaration[]).map((x) => {
+    const v = x.value.trim()
+    const value = v === '' ? ' ' : v
     return {
       prop: x.prop,
-      value: x.value
+      value
     }
   })
 
