@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.11.0 (2023-11-13)
+
+## Features
+
+- 添加单独的 Nodejs API [#255](https://github.com/sonofmagic/weapp-tailwindcss/issues/255), [相关文档](https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/api)
+
 ## 2.10.1 (2023-10-17)
 
 ## Fix

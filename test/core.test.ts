@@ -1,5 +1,5 @@
 import { createContext } from '@/core'
-
+import { getCss } from '#test/helpers/getTwCss'
 describe('core', () => {
   it('common usage case 0', async () => {
     const ctx = createContext()
@@ -13,11 +13,10 @@ describe('core', () => {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
-    const runtimeSet = new Set<string>()
-    runtimeSet.add('mb-[1.5rem]')
-    const js = ctx.transformJs(`const classNames = ['mb-[1.5rem]']`, {
-      runtimeSet
-    })
+    const content = `const classNames = ['mb-[1.5rem]']`
+    await getCss(content)
+
+    const js = ctx.transformJs(content)
     expect(js).toBe(`const classNames = ['mb-_1d5rem_']`)
   })
 })
