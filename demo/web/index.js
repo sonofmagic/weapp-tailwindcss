@@ -2,6 +2,7 @@ const fs = require('node:fs/promises')
 const { defu } = require('defu')
 const tailwindcss = require('tailwindcss')
 const postcss = require('postcss')
+const { createContext } = require('weapp-tailwindcss-webpack-plugin/core')
 
 async function getCss(content, options) {
   const { css, postcssPlugins, twConfig } = defu(options, {
@@ -72,7 +73,15 @@ async function main() {
     // Transforms
     'translate-y-[17rpx]'
   ])
-  await fs.writeFile('./index.css', css, 'utf8')
+  // await fs.writeFile('./index.css', css, 'utf8')
+  const ctx = createContext()
+  const wxml = ctx.transformWxml('<view class="shadow-[0_35rpx_60rx_-15px_rgba(0,0,0,0.3)]" wx:if="{{ xxx.length > 0 }}">')
+  await fs.writeFile('./out.html', wxml, 'utf8')
+  const wxss = await ctx.transformWxss(css)
+  await fs.writeFile('./out.css', wxss, 'utf8')
+  const content = `const classNames = ['bg-[length:200rpx_100rpx]']`
+  const js = ctx.transformJs(content)
+  await fs.writeFile('./out.js', js, 'utf8')
 }
 
 main()
