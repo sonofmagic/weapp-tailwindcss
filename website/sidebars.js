@@ -127,6 +127,10 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'issues/group-and-peer'
+    },
+    {
+      type: 'doc',
       id: 'issues/v1',
       label: 'v1版本常见问题'
     }
