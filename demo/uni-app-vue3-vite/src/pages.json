@@ -14,6 +14,12 @@
       }
     },
     {
+      "path": "pages/index/peer",
+      "style": {
+        "navigationBarTitleText": "peer"
+      }
+    },
+    {
       "path": "pages/issue/case55",
       "style": {
         "navigationBarTitleText": "case55"
@@ -47,6 +53,10 @@
   "condition": {
     "current": 0,
     "list": [
+      {
+        "path": "pages/index/peer",
+        "name": "peer"
+      },
       {
         "name": "daisyui",
         "path": "pages/index/daisyui"
