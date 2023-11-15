@@ -75,7 +75,7 @@
     "daisyui": "^3.6.3",
     "miniprogram-api-typings": "^3.12.0",
     "postcss": "^8.4.28",
-    "postcss-rem-to-responsive-pixel": "^5.1.3",
+    "postcss-rem-to-responsive-pixel": "^6.0.0",
     "postcss-rpx-transform": "^1.0.1",
     "sass": "^1.66.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",

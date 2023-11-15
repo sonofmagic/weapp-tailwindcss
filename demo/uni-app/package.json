@@ -107,7 +107,7 @@
     "miniprogram-api-typings": "3.12.0",
     "postcss": "8.4.29",
     "postcss-comment": "^2.0.0",
-    "postcss-rem-to-responsive-pixel": "^5.1.3",
+    "postcss-rem-to-responsive-pixel": "^6.0.0",
     "postcss-rpx-transform": "^1.0.1",
     "sass": "^1.66.1",
     "sass-loader": "13.3.2",

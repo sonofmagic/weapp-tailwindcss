@@ -51,6 +51,8 @@ module.exports = {
       propList: ['*'],
       // 转化的单位,可以变成 px / rpx
       transformUnit: 'rpx',
+      // postcss-rem-to-responsive-pixel@6 版本添加了 disabled 参数，用来禁止插件的转化
+      // disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'rn'
     },
   },
 };

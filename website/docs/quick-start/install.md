@@ -21,6 +21,8 @@ npx tailwindcss init
 
 ## 2. 创建 `postcss.config.js` 并注册 `tailwindcss`
 
+> 注意：这只是比较普遍的注册方式，各个框架很有可能是不同的! 尤其是 `uni-app vue3 vite`! 见下方注意事项
+
 ```js
 // postcss.config.js
 // 假如你使用的框架/工具不支持 postcss.config.js，则可以使用内联的写法
@@ -34,8 +36,8 @@ module.exports = {
 ```
 
 :::tip
-注意：这只是比较普遍的注册方式，各个框架很有可能是不同的。  
-像 `uni-app vite vue3` 可能要使用内联的写法，这点可以参考我的这个模板项目: [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)。  
+像 `uni-app vite vue3` 要使用 `postcss` 内联的写法，写入 `vite.config.ts` 文件中，相关写法可以参考我的这个模板项目: [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)。
+
 而 `uni-app vue webpack5 alpha` 版本中的 `postcss.config.js` 已经预置很多插件在里面了，这个配置可以参考 [uni-app-webpack5/postcss.config.js](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-webpack5/postcss.config.js)
 :::
 
