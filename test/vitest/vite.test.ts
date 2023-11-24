@@ -5,7 +5,7 @@ import type { InlineConfig, Plugin } from 'vite'
 import type { RollupOutput } from 'rollup'
 
 import { defu } from 'defu'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
 // const isApp = process.env.UNI_PLATFORM === 'app-plus'

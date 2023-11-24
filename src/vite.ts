@@ -1,1 +1,1 @@
-export * from './vite/index'
+export * from './bundlers/vite/index'
