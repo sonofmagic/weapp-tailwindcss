@@ -262,7 +262,7 @@ const customAttributes = {
 
 使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
    */
-  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
+  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions
 
   /**
    * @description 使用的框架类型(uni-app,taro...)，用于找到主要的 `css bundle` 进行转化，这个配置会影响默认方法 `mainCssChunkMatcher` 的行为，不传会去猜测 `tailwindcss css var inject scope` 的位置
@@ -373,7 +373,9 @@ const customAttributes = {
    * @internal
    */
   runtimeLoaderPath?: string
-
+  /**
+   * @description v2 版本的 `replaceUniversalSelectorWith` 被整合进了这个配置项，用于处理 css 选择器的替换
+   */
   cssSelectorReplacement?: {
     /**
      * @default 'page'

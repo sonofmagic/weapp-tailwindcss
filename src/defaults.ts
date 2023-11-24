@@ -80,7 +80,7 @@ export const defaultOptions: UserDefinedOptions = {
   arbitraryValues: {
     allowDoubleQuotes: false
   },
-  cssChildCombinatorReplaceValue: 'view + view',
+  cssChildCombinatorReplaceValue: ['view'],
   inlineWxs: false,
   injectAdditionalCssVarScope: false,
   jsPreserveClass: (keyword) => {

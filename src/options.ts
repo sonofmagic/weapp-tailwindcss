@@ -1,7 +1,7 @@
 import type { InternalUserDefinedOptions, UserDefinedOptions, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
 import { createJsHandler } from './js'
 import { defaultOptions } from './defaults'
-import { defu, isMap } from '@/utils'
+import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
@@ -11,15 +11,15 @@ import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
 
 export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
-  if (options.supportCustomLengthUnitsPatch === true) {
-    options.supportCustomLengthUnitsPatch = undefined
-  }
-
   if (options.customReplaceDictionary === undefined || options.customReplaceDictionary === 'simple') {
     options.customReplaceDictionary = SimpleMappingChars2String
   }
 
-  const result = defu<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(options, defaultOptions as InternalUserDefinedOptions, {})
+  const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
+    options as InternalUserDefinedOptions,
+    defaultOptions as InternalUserDefinedOptions,
+    {}
+  )
 
   const {
     cssPreflight,

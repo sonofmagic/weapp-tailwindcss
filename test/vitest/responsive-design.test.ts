@@ -30,7 +30,7 @@ describe('responsive-design', () => {
     expect(
       await styleHandler(res.css, {
         isMainChunk: true,
-        cssChildCombinatorReplaceValue: ['view', 'text', '.aa']
+        cssChildCombinatorReplaceValue: ['view', 'text']
       })
     ).toMatchSnapshot()
   })

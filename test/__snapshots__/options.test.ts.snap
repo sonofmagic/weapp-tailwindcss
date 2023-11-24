@@ -34,7 +34,9 @@ exports[`get options > default options 1`] = `
     "set": [Function],
     "setHashValue": [Function],
   },
-  "cssChildCombinatorReplaceValue": "view + view",
+  "cssChildCombinatorReplaceValue": [
+    "view",
+  ],
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",

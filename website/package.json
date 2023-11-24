@@ -30,7 +30,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.3",
     "@docusaurus/types": "^2.4.3",
-    "@icebreakers/deploy": "^0.1.4",
+    "@icebreakers/deploy": "^0.1.5",
     "@tsconfig/docusaurus": "^2.0.2",
     "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.16",

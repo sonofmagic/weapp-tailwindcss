@@ -6,7 +6,7 @@ import { replaceHandleValue } from './handlers'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerReplaceResult, JsHandlerResult } from '@/types'
 import { parse, traverse } from '@/babel'
 import { jsStringEscape } from '@/escape'
-import { defu } from '@/utils'
+import { defuOverrideArray } from '@/utils'
 
 function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
@@ -115,7 +115,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 export function createJsHandler(options: CreateJsHandlerOptions) {
   const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap } = options
   return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
-    const opts = defu<IJsHandlerOptions, IJsHandlerOptions[]>(options, {
+    const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
       classNameSet: set,
       escapeMap,
       arbitraryValues,

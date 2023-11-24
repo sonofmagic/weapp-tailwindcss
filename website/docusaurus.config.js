@@ -205,7 +205,7 @@ const config = {
           },
           {
             to: 'docs/api/', // 'api' is the 'out' directory
-            label: 'API',
+            label: 'Types',
             position: 'left'
           },
           {

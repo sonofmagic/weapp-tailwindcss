@@ -1,7 +1,7 @@
 import postcss from 'postcss'
 import { postcssIsPseudoClass, postcssWeappTailwindcss } from './plugin'
 import type { IStyleHandlerOptions } from '@/types'
-import { defu } from '@/utils'
+import { defuOverrideArray } from '@/utils'
 
 export async function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   return (
@@ -13,6 +13,6 @@ export async function styleHandler(rawSource: string, options: IStyleHandlerOpti
 
 export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
   return (rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
-    return styleHandler(rawSource, defu<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt, options))
+    return styleHandler(rawSource, defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt as IStyleHandlerOptions, options))
   }
 }
