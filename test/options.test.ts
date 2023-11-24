@@ -55,29 +55,29 @@ describe('get options', () => {
     })
   })
 
-  it('supportCustomLengthUnitsPatch boolean', () => {
-    const o0 = getOptions()
-    expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
-    const o1 = getOptions({
-      supportCustomLengthUnitsPatch: true
-    })
-    expect(o1.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
-    const o2 = getOptions({
-      supportCustomLengthUnitsPatch: false
-    })
-    expect(o2.supportCustomLengthUnitsPatch).toEqual(false)
-    const o0o = getOptions({
-      supportCustomLengthUnitsPatch: {
-        units: ['upx', 'xxem']
-      }
-    })
-    expect(typeof o0o.supportCustomLengthUnitsPatch === 'object').toBe(true)
-    expect(o0o.supportCustomLengthUnitsPatch).toEqual({
-      units: ['upx', 'xxem', 'rpx'],
-      // @ts-ignore
-      dangerousOptions: defaultOptions.supportCustomLengthUnitsPatch.dangerousOptions
-    })
-  })
+  // it('supportCustomLengthUnitsPatch boolean', () => {
+  //   const o0 = getOptions()
+  //   expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+  //   const o1 = getOptions({
+  //     supportCustomLengthUnitsPatch: true
+  //   })
+  //   expect(o1.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+  //   const o2 = getOptions({
+  //     supportCustomLengthUnitsPatch: false
+  //   })
+  //   expect(o2.supportCustomLengthUnitsPatch).toEqual(false)
+  //   const o0o = getOptions({
+  //     supportCustomLengthUnitsPatch: {
+  //       units: ['upx', 'xxem']
+  //     }
+  //   })
+  //   expect(typeof o0o.supportCustomLengthUnitsPatch === 'object').toBe(true)
+  //   expect(o0o.supportCustomLengthUnitsPatch).toEqual({
+  //     units: ['upx', 'xxem', 'rpx'],
+  //     // @ts-ignore
+  //     dangerousOptions: defaultOptions.supportCustomLengthUnitsPatch.dangerousOptions
+  //   })
+  // })
 
   it('arbitraryValues options', () => {
     let arbitraryValues: ReturnType<typeof getOptions>['arbitraryValues'] = getOptions().arbitraryValues

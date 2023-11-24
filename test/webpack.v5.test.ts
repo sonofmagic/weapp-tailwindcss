@@ -11,7 +11,7 @@ import { copySync, mkdirSync } from 'fs-extra'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
-
+import { MappingChars2String } from '@/escape'
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string; devtool?: string }) {
   const { entry, mode, tailwindcssConfig, devtool } = params
 
@@ -133,7 +133,7 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -157,7 +157,7 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -211,7 +211,7 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -354,7 +354,7 @@ describe('webpack5 plugin', () => {
         return path.basename(name) === 'index.css'
       },
 
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       mangle: true,
       onStart() {
         timeStart = performance.now()
@@ -388,7 +388,7 @@ describe('webpack5 plugin', () => {
           classPrefix: ''
         }
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },

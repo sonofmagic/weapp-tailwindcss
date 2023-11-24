@@ -53,7 +53,7 @@ describe('jsHandler', () => {
     const { jsHandler } = getOptions()
     defaultJsHandler = jsHandler
   })
-  it.each(testTable)('$name common case', ({ strategy }) => {
+  it.each(testTable)('$name common case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -63,7 +63,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
   })
 
-  it.each(testTable)('$name common case with ignore comment', ({ strategy }) => {
+  it.each(testTable)('$name common case with ignore comment', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -73,7 +73,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
   })
 
-  it.each(testTable)('$name preserve space', ({ strategy }) => {
+  it.each(testTable)('$name preserve space', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -84,7 +84,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
   })
 
-  it.each(testTable)('$name preserve space case2', ({ strategy }) => {
+  it.each(testTable)('$name preserve space case2', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -93,7 +93,7 @@ describe('jsHandler', () => {
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
-  it.each(testTable)('$name babel TemplateElement case', ({ strategy }) => {
+  it.each(testTable)('$name babel TemplateElement case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -103,7 +103,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it.each(testTable)('$name TemplateElement case 0', ({ strategy }) => {
+  it.each(testTable)('$name TemplateElement case 0', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('text-[199px]')
@@ -115,7 +115,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it.each(testTable)('$name mpx jit classNames', ({ strategy }) => {
+  it.each(testTable)('$name mpx jit classNames', () => {
     const testCase = `data: {
       classNames: "text-[#123456] text-[50px] bg-[#fff]"
     }`
@@ -129,7 +129,7 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it.each(testTable)('$name img url case', ({ strategy }) => {
+  it.each(testTable)('$name img url case', () => {
     const testCase = `data: {
       classNames: "bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]"
     }`
@@ -149,7 +149,7 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it.each(testTable)('$name "after:content-[\'对酒当歌，人生几何\']"', async ({ strategy }) => {
+  it.each(testTable)('$name "after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'
     await getCss(testCase)
     const set = getClassCacheSet()

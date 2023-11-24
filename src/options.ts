@@ -6,7 +6,7 @@ import { defu, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { SimpleMappingChars2String, MappingChars2String } from '@/escape'
+import { SimpleMappingChars2String } from '@/escape'
 import { createPatch } from '@/tailwindcss/patcher'
 import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
@@ -32,8 +32,6 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
 
   if (options.customReplaceDictionary === undefined || options.customReplaceDictionary === 'simple') {
     options.customReplaceDictionary = SimpleMappingChars2String
-  } else if (options.customReplaceDictionary === 'complex') {
-    options.customReplaceDictionary = MappingChars2String
   }
 
   normalizeMatcher(options, 'cssMatcher')

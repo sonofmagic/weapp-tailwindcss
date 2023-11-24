@@ -1,12 +1,12 @@
 import { getOptions } from '@/options'
-
+import { MappingChars2String } from '@/escape'
 describe('customAttributes', () => {
   it('van-image case 0', () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['image-class', 'loading-class', 'error-class']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-_bl_0_d_5px_br_" other-attr="w-[0.5px]"></van-image>')
@@ -17,7 +17,7 @@ describe('customAttributes', () => {
       customAttributes: {
         'van-image': ['other-attr']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
@@ -28,7 +28,7 @@ describe('customAttributes', () => {
       customAttributes: {
         view: ['aa', 'bb']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler('<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" cc=="w-[0.5px]"></view>')
     expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
@@ -39,7 +39,7 @@ describe('customAttributes', () => {
       customAttributes: {
         '*': ['aa', 'bb']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler('<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" cc=="w-[0.5px]"></view>')
     expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
@@ -49,7 +49,7 @@ describe('customAttributes', () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         '*': ['group-hover-class']
-      },
+      }
     })
     const res = templateHandler('<view class="w-0.5 group" group-hover-class="!bg-indigo-500 !text-red"></view>')
     expect(res).toBe('<view class="w-0d5 group" group-hover-class="ibg-indigo-500 itext-red"></view>')
@@ -61,7 +61,7 @@ describe('customAttributes', () => {
         '*': ['aa', 'bb'],
         cc: ['dd', 'ee']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler(
       '<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" dd="w-[0.5px]" ee="w-[0.5px]"></view><cc class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" dd="w-[0.5px]" ee="w-[0.5px]"></cc>'
@@ -76,7 +76,7 @@ describe('customAttributes', () => {
     map.set(/(?:van|el|ant)-\w+/g, ['custom-attrs', /shit/])
     const { templateHandler } = getOptions({
       customAttributes: map,
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const tags = ['van', 'el', 'ant']
     const res = templateHandler(
@@ -96,7 +96,7 @@ describe('customAttributes', () => {
     map.set(/(?:van|el|ant)-\w+/, ['custom-attrs', /shit/])
     const { templateHandler } = getOptions({
       customAttributes: map,
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const tags = ['van']
     const res = templateHandler(
