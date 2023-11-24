@@ -20,7 +20,7 @@ export const cssUnescape = (str: string) => {
 describe('styleHandler', () => {
   it('css @media case', async () => {
     const opt = getOptions({
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('media1.css')
@@ -81,7 +81,7 @@ describe('styleHandler', () => {
   // })
 
   it('main chunk build error', async () => {
-    const opt = getOptions({ customReplaceDictionary: 'complex' })
+    const opt = getOptions({ customReplaceDictionary: MappingChars2String })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('taro.build.css')
     const result = await styleHandler(testCase, {
@@ -115,7 +115,7 @@ describe('styleHandler', () => {
 
   it('new option for customRuleCallback kbone', async () => {
     const opt = getOptions({
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
 
@@ -151,7 +151,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view'
@@ -166,7 +166,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view'
@@ -196,7 +196,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view'
@@ -211,7 +211,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view'
@@ -226,7 +226,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: '.happy'
@@ -242,7 +242,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -282,7 +282,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -297,7 +297,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -312,7 +312,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -329,7 +329,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -344,7 +344,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -361,7 +361,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -376,7 +376,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -391,7 +391,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -408,7 +408,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -425,7 +425,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -442,7 +442,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -459,7 +459,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: false,
       cssInjectPreflight,
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -508,7 +508,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -523,7 +523,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -538,7 +538,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -553,7 +553,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false
@@ -568,7 +568,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
-      cssPreflightRange: 'view',
+
       customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false

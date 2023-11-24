@@ -111,22 +111,22 @@ export interface IArbitraryValues {
 
 export interface UserDefinedOptions {
   /**
-   * @description 匹配 `wxml`等等模板进行处理的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
+   * @description 匹配 `wxml`等等模板进行处理的方法
    */
-  htmlMatcher?: ((name: string) => boolean) | string | string[]
+  htmlMatcher?: (name: string) => boolean
   /**
-   * @description 匹配 `wxss` 等等样式文件的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
+   * @description 匹配 `wxss` 等等样式文件的方法
    */
-  cssMatcher?: ((name: string) => boolean) | string | string[]
+  cssMatcher?: (name: string) => boolean
   /**
-   * @description 匹配编译后 `js` 文件进行处理的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
+   * @description 匹配编译后 `js` 文件进行处理的方法
    */
-  jsMatcher?: ((name: string) => boolean) | string | string[]
+  jsMatcher?: (name: string) => boolean
   /**
    * @description `tailwindcss css var inject scope` 的匹配方法,用于处理原始变量和替换不兼容选择器。可以不传，但是遇到某些 `::before/::after` 选择器注入冲突时，建议传入参数手动指定 css bundle 文件位置
    *
    */
-  mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | string | string[]
+  mainCssChunkMatcher?: (name: string, appType?: AppType) => boolean
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * @description 在所有 view节点添加的 css 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:
@@ -314,7 +314,7 @@ const customAttributes = {
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
    * @default ()=>false
    */
-  wxsMatcher?: ((name: string) => boolean) | string | string[]
+  wxsMatcher?: (name: string) => boolean
 
   /**
    * @experiment 实验性质，有可能会改变
@@ -427,12 +427,8 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   quote?: string | null
 }
 
-export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher' | 'wxsMatcher'
-
 export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
-    [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType?: AppType) => boolean : (name: string) => boolean
-  } & {
+  Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>

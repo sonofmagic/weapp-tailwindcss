@@ -1528,7 +1528,7 @@ exports[`webpack5 plugin > common with loader > assets 1`] = `
 {
   "index.css": "::before,::after {
     --tw-content: \\"\\"}
-view,::before,::after {
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -2418,12 +2418,6 @@ exports[`webpack5 plugin > hijack custom loader 0 > assets 1`] = `
 exports[`webpack5 plugin > hijack custom loader 0 > errors 1`] = `[]`;
 
 exports[`webpack5 plugin > hijack custom loader 0 > warnings 1`] = `[]`;
-
-exports[`webpack5 plugin > hijack custom loader 0 1`] = `
-"const a = 0
-
-console.log(a)0"
-`;
 
 exports[`webpack5 plugin > mangle options > assets 1`] = `
 {
@@ -4069,6 +4063,12 @@ exports[`webpack5 plugin > multipleContexts case 1 > assets 1`] = `
 exports[`webpack5 plugin > multipleContexts case 1 > errors 1`] = `[]`;
 
 exports[`webpack5 plugin > multipleContexts case 1 > warnings 1`] = `[]`;
+
+exports[`webpack5 plugin > raw run loader 1`] = `
+"const a = 0
+
+console.log(a)0"
+`;
 
 exports[`webpack5 plugin > unified common > assets 1`] = `
 {

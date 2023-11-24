@@ -50,9 +50,6 @@ dependencies:
   md5:
     specifier: ^2.3.0
     version: 2.3.0
-  micromatch:
-    specifier: ^4.0.5
-    version: 4.0.5
   postcss:
     specifier: 8.4.31
     version: 8.4.31

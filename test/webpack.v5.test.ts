@@ -735,12 +735,12 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
-  it('raw run loader', (done) => {
+  it('raw run loader', async () => {
     const zeroLoader = createLoader(function (source) {
       return source + '0'
     })
     const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack/index.js')
-    runLoaders(
+    const result = await runLoaders(
       // @ts-ignore
       {
         // @ts-ignore
@@ -750,20 +750,16 @@ describe('webpack5 plugin', () => {
             ...zeroLoader
           }
         ]
-      },
-
-      (err, result) => {
-        expect(err).toBeFalsy()
-        expect(result).toBeTruthy()
-        const isArr = Array.isArray(result.result)
-        expect(isArr).toBe(true)
-        if (isArr) {
-          // @ts-ignore
-          expect(result.result[0]).toMatchSnapshot()
-        }
-        done()
       }
     )
+    // expect(err).toBeFalsy()
+    expect(result).toBeTruthy()
+    const isArr = Array.isArray(result.result)
+    expect(isArr).toBe(true)
+    if (isArr) {
+      // @ts-ignore
+      expect(result.result[0]).toMatchSnapshot()
+    }
   })
 
   it('hijack custom loader 0', async () => {

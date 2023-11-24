@@ -75,13 +75,16 @@ async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result:
   }
 }
 
+const htmlMatcher = (p: string) => {
+  return p.endsWith('.html')
+}
 describe('vite test', () => {
   it('vite common build', async () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -99,7 +102,7 @@ describe('vite test', () => {
     let timeTaken: number
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -112,7 +115,7 @@ describe('vite test', () => {
     )
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -131,7 +134,7 @@ describe('vite test', () => {
     await assertSnap(
       uvwt({
         mangle: true,
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -150,7 +153,7 @@ describe('vite test', () => {
     await assertSnap(
       uvwt({
         mangle: {},
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -173,7 +176,7 @@ describe('vite test', () => {
             classPrefix: ''
           }
         },
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -218,7 +221,7 @@ describe('vite test', () => {
             return /[[\]]/.test(className)
           }
         },
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -237,7 +240,7 @@ describe('vite test', () => {
     await assertSnap(
       uvwt({
         disabled: true,
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         mangle: {
           mangleClassFilter() {
             return true
