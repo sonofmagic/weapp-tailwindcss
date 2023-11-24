@@ -5,7 +5,12 @@ import { defuOverrideArray } from '@/utils'
 
 export async function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   return (
-    await postcss([postcssWeappTailwindcss(options), postcssIsPseudoClass()])
+    await postcss([
+      postcssWeappTailwindcss(options),
+      postcssIsPseudoClass({
+        specificityMatchingName: 'weapp-tw-ig'
+      })
+    ])
       .process(rawSource)
       .async()
   ).css

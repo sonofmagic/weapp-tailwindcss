@@ -697,4 +697,11 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe(':is(view,text),::before,::after,view,text{color:red;}')
   })
+
+  it('is-pseudo-class case 2', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:is(.aa,bb,view,text),::before,::after{color:red;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toBe('.aa,bb:not(.weapp-tw-ig),view:not(.weapp-tw-ig),text:not(.weapp-tw-ig),::before,::after{color:red;}')
+  })
 })

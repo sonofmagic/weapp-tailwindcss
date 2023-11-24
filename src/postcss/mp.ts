@@ -1,5 +1,6 @@
 import { Rule, Declaration } from 'postcss'
 import cssVars from './cssVars'
+import { composeIsPseudo } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
 const initialNodes = cssVars.map((x) => {
@@ -56,17 +57,19 @@ export function testIfVariablesScope(node: Rule, count = 2): boolean {
   return false
 }
 
-export function testIfTwBackdrop(node: Rule, count = 1) {
+export function testIfTwBackdrop(node: Rule, count = 2) {
   if (node.type === 'rule' && node.selector === '::backdrop') {
-    for (let i = 0; i < count; i++) {
-      const tryTestDecl = node.nodes[i]
+    const nodes = node.nodes
+    let c = 0
+    for (const tryTestDecl of nodes) {
       if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
-        continue
-      } else {
-        return false
+        c++
+      }
+      if (c >= count) {
+        return true
       }
     }
-    return true
+    return false
   }
   return false
 }
@@ -86,15 +89,6 @@ export function makePseudoVarRule() {
 }
 
 export function remakeCssVarSelector(selectors: string[], cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
-  // const idx = selectors.indexOf('*')
-  // if (idx > -1) {
-  //   selectors.splice(idx, 1)
-  // }
-  // 没有 view 元素时，添加 view
-  // if (cssPreflightRange === 'view' && !selectors.includes('view')) {
-  //   selectors.push('view')
-  // }
-
   if (
     cssPreflightRange === 'all' && // 默认对每个元素都生效
     !selectors.includes(':not(not)')
@@ -102,38 +96,23 @@ export function remakeCssVarSelector(selectors: string[], cssPreflightRange: ISt
     selectors.push(':not(not)')
   }
 
-  // if (Array.isArray(cssPreflightRange)) {
-  //   for (const s of cssPreflightRange) {
-  //     !selectors.includes(s) && selectors.push(s)
-  //   }
-  // }
-
   return selectors
 }
 
 export function remakeCombinatorSelector(selector: string, cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']) {
   let childCombinatorReplaceValue = 'view + view'
-  if (Array.isArray(cssChildCombinatorReplaceValue)) {
-    childCombinatorReplaceValue = cssChildCombinatorReplaceValue
-      .map((x) => {
-        return x + ' + ' + x
-      })
-      .join(',')
+
+  if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {
+    const x = composeIsPseudo(cssChildCombinatorReplaceValue)
+    childCombinatorReplaceValue = x + ' + ' + x
   } else if (typeof cssChildCombinatorReplaceValue === 'string') {
     childCombinatorReplaceValue = cssChildCombinatorReplaceValue
   }
   return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
 }
 
-// node.walkDecls((decl) => {
-//   // remove empty var 来避免压缩css报错
-//   if (/^\s*$/.test(decl.value)) {
-//     decl.remove()
-//   }
-//   //  console.log(decl.prop, decl.value)
-// })
-
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
+  // css vars scope
   node.selector = remakeCombinatorSelector(node.selector, options.cssChildCombinatorReplaceValue)
 
   // 变量注入和 preflight

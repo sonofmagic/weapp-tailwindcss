@@ -101,7 +101,7 @@ describe('variablesScope', () => {
     `)
 
     expect(root).toBeTruthy()
-    expect(testIfTwBackdrop(root.nodes[0] as Rule)).toBe(true)
+    expect(testIfTwBackdrop(root.nodes[0] as Rule, 1)).toBe(true)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 20)).toBe(true)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 100)).toBe(false)
   })
@@ -112,7 +112,7 @@ describe('variablesScope', () => {
     }
     `)
     expect(root).toBeTruthy()
-    expect(testIfTwBackdrop(root.nodes[0] as Rule)).toBe(true)
+    expect(testIfTwBackdrop(root.nodes[0] as Rule, 1)).toBe(true)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 2)).toBe(false)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 100)).toBe(false)
   })
@@ -122,7 +122,7 @@ describe('variablesScope', () => {
     }
     `)
     expect(root).toBeTruthy()
-    expect(testIfTwBackdrop(root.nodes[0] as Rule)).toBe(false)
+    expect(testIfTwBackdrop(root.nodes[0] as Rule, 1)).toBe(false)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 2)).toBe(false)
     expect(testIfTwBackdrop(root.nodes[0] as Rule, 100)).toBe(false)
   })
