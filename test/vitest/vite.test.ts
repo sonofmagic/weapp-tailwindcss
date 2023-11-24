@@ -1,5 +1,4 @@
 import path from 'node:path'
-import { describe, it, expect } from 'vitest'
 import { build } from 'vite'
 import * as Diff from 'diff'
 import type { InlineConfig, Plugin } from 'vite'

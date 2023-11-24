@@ -1,68 +1,68 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`jsHandler  "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_";"`;
+exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"const a=\\"afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_\\";"`;
 
-exports[`jsHandler  img url case 1`] = `
+exports[`jsHandler > '' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = \\"afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_\\";"`;
+
+exports[`jsHandler > '' img url case 1`] = `
 "data: {
-  classNames: "bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__";
+  classNames: \\"bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__\\";
 }"
 `;
 
-exports[`jsHandler  mpx jit classNames 1`] = `
+exports[`jsHandler > '' mpx jit classNames 1`] = `
 "data: {
-  classNames: "text-_h123456_ text-_50px_ bg-_hfff_";
+  classNames: \\"text-_h123456_ text-_50px_ bg-_hfff_\\";
 }"
 `;
 
-exports[`jsHandler "after:content-["对酒当歌，人生几何"]" 1`] = `"const a="afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_";"`;
+exports[`jsHandler > '[replace strategy]' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = \\"afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_\\""`;
 
-exports[`jsHandler [minified] mpx jit classNames 1`] = `"data:{classNames:"text-_h123456_ text-_50px_ bg-_hfff_"}"`;
-
-exports[`jsHandler [replace strategy] "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_""`;
-
-exports[`jsHandler [replace strategy] img url case 1`] = `
+exports[`jsHandler > '[replace strategy]' img url case 1`] = `
 "data: {
-      classNames: "bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__"
+      classNames: \\"bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__\\"
     }"
 `;
 
-exports[`jsHandler [replace strategy] mpx jit classNames 1`] = `
+exports[`jsHandler > '[replace strategy]' mpx jit classNames 1`] = `
 "data: {
-      classNames: "text-_h123456_ text-_50px_ bg-_hfff_"
+      classNames: \\"text-_h123456_ text-_50px_ bg-_hfff_\\"
     }"
 `;
 
-exports[`jsHandler jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]';"`;
+exports[`jsHandler > [minified] mpx jit classNames 1`] = `"data:{classNames:\\"text-_h123456_ text-_50px_ bg-_hfff_\\"}"`;
 
-exports[`jsHandler jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n = "* 1 * 2 w-_100px_";"`;
+exports[`jsHandler > jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]';"`;
 
-exports[`jsHandler jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
+exports[`jsHandler > jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n = \\"* 1 * 2 w-_100px_\\";"`;
 
-exports[`jsHandler jsStringEscape getCase 0 1`] = `
+exports[`jsHandler > jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
+
+exports[`jsHandler > jsStringEscape getCase 0 1`] = `
 "const a = 'w-_100px_';
 
-eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
+eval('const b = \\\\'w-_99px_\\\\';\\\\nconsole.log(b)');"
 `;
 
-exports[`jsHandler taro-url-before case 1`] = `
+exports[`jsHandler > taro-url-before case 1`] = `
 "var findReg = /[!'()~]|%20|%00/g;
-var plusReg = /\\+/g;
+var plusReg = /\\\\+/g;
 var replaceCharMap = {
   '!': '%21',
-  "'": '%27',
+  \\"'\\": '%27',
   '(': '%28',
   ')': '%29',
   '~': '%7E',
   '%20': '+',
-  '%00': '\\x00'
+  '%00': '\\\\x00'
 };
 "
 `;
 
-exports[`jsHandler unicode case 0 1`] = `
+exports[`jsHandler > unicode case 0 1`] = `
 "var replaceCharMap = {
-  "'": '%27',
-  '%00': '\\x00'
+  \\"'\\": '%27',
+  '%00': '\\\\x00'
 };
 "
 `;

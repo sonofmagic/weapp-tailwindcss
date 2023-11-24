@@ -181,7 +181,7 @@ cssPreflight: {
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62
    * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。默认为 `'view'` 即只对所有的 `view` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
    */
-  cssPreflightRange?: 'view' | 'all'
+  cssPreflightRange?: 'view' | 'all' | string[]
 
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81

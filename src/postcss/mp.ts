@@ -84,7 +84,7 @@ export function makePseudoVarRule() {
 }
 
 export function remakeCssVarSelector(selectors: string[], cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
-  // node.selector = node.selector.replace(/\*/g, 'view')
+
   const idx = selectors.indexOf('*')
   if (idx > -1) {
     selectors.splice(idx, 1)

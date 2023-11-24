@@ -11,6 +11,7 @@ import { copySync, mkdirSync } from 'fs-extra'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
+
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string; devtool?: string }) {
   const { entry, mode, tailwindcssConfig, devtool } = params
 

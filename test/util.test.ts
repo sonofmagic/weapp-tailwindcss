@@ -2,7 +2,42 @@ import path from 'node:path'
 import { switch2relative } from './util'
 import { regExpTest, groupBy } from '@/utils'
 
+function xxx(fn: any) {
+  const a1 = typeof fn !== 'function'
+  const a2 = Function.prototype.toString.call(fn).indexOf('function')
+  return {
+    a1,
+    a2
+  }
+}
+
 describe('test util', () => {
+  it('fn type', () => {
+    function x() {}
+    async function ax() {}
+    const arx = () => {}
+    const aarx = async () => {}
+    let res = xxx(x)
+    expect(res).toEqual({
+      a1: false,
+      a2: 0
+    })
+    res = xxx(ax)
+    expect(res).toEqual({
+      a1: false,
+      a2: 6
+    })
+    res = xxx(arx)
+    expect(res).toEqual({
+      a1: false,
+      a2: -1
+    })
+    res = xxx(aarx)
+    expect(res).toEqual({
+      a1: false,
+      a2: -1
+    })
+  })
   it('switch2relative', () => {
     const str = switch2relative(path.resolve(__dirname, './fixtures/vite'))
     expect(path.normalize(str).replaceAll('\\', '/')).toBe('fixtures/vite')
