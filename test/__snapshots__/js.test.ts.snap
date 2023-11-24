@@ -1,40 +1,22 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"const a=\\"afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_\\";"`;
+exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"const a = 'afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_'"`;
 
-exports[`jsHandler > '' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = \\"afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_\\";"`;
+exports[`jsHandler > 'common' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = \\"afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_\\""`;
 
-exports[`jsHandler > '' img url case 1`] = `
-"data: {
-  classNames: \\"bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__\\";
-}"
-`;
-
-exports[`jsHandler > '' mpx jit classNames 1`] = `
-"data: {
-  classNames: \\"text-_h123456_ text-_50px_ bg-_hfff_\\";
-}"
-`;
-
-exports[`jsHandler > '[replace strategy]' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = \\"afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_\\""`;
-
-exports[`jsHandler > '[replace strategy]' img url case 1`] = `
+exports[`jsHandler > 'common' img url case 1`] = `
 "data: {
       classNames: \\"bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__\\"
     }"
 `;
 
-exports[`jsHandler > '[replace strategy]' mpx jit classNames 1`] = `
+exports[`jsHandler > 'common' mpx jit classNames 1`] = `
 "data: {
       classNames: \\"text-_h123456_ text-_50px_ bg-_hfff_\\"
     }"
 `;
 
-exports[`jsHandler > [minified] mpx jit classNames 1`] = `"data:{classNames:\\"text-_h123456_ text-_50px_ bg-_hfff_\\"}"`;
-
-exports[`jsHandler > jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]';"`;
-
-exports[`jsHandler > jsPreserveClass '*' and but not 'w-[100px]' keyword 1`] = `"const n = \\"* 1 * 2 w-_100px_\\";"`;
+exports[`jsHandler > jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]'"`;
 
 exports[`jsHandler > jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
 

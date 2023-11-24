@@ -93,7 +93,6 @@ export const defaultOptions: UserDefinedOptions = {
     return false
   },
   disabledDefaultTemplateHandler: false,
-  jsEscapeStrategy: 'replace',
   cssSelectorReplacement: {
     root: 'page',
     universal: ['view', 'text']

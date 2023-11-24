@@ -8,7 +8,6 @@ import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { SimpleMappingChars2String, MappingChars2String } from '@/escape'
 import { createPatch } from '@/tailwindcss/patcher'
-import { isProd } from '@/env'
 import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
 
@@ -43,9 +42,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   normalizeMatcher(options, 'wxsMatcher')
   normalizeMatcher(options, 'mainCssChunkMatcher')
 
-  const result = defu<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(options, defaultOptions as InternalUserDefinedOptions, {
-    minifiedJs: isProd()
-  })
+  const result = defu<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(options, defaultOptions as InternalUserDefinedOptions, {})
 
   const {
     cssPreflight,
@@ -60,7 +57,6 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     injectAdditionalCssVarScope,
     jsPreserveClass,
     disabledDefaultTemplateHandler,
-    jsEscapeStrategy,
     cssSelectorReplacement
   } = result
 
@@ -72,7 +68,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     : Object.entries(customAttributes)
 
   // const custom = customAttributesEntities.length > 0
-  const { escapeMap, minifiedJs } = result
+  const { escapeMap } = result
   const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
   initMangle(options.mangle)
   const styleHandler = createStyleHandler({
@@ -87,12 +83,10 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   })
   result.styleHandler = styleHandler
   const jsHandler = createJsHandler({
-    minifiedJs,
     escapeMap,
     mangleContext,
     arbitraryValues,
     jsPreserveClass,
-    strategy: jsEscapeStrategy,
     generateMap: true
   })
   result.jsHandler = jsHandler

@@ -54,11 +54,9 @@ export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string
 export type IJsHandlerOptions = {
   escapeMap?: Record<string, string>
   classNameSet: Set<string>
-  minifiedJs?: boolean
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
-  strategy?: UserDefinedOptions['jsEscapeStrategy']
   needEscaped?: boolean
   generateMap?: boolean
 }
@@ -277,12 +275,6 @@ const customAttributes = {
   appType?: AppType
 
   /**
-   * @description 是否压缩 js (`process.env.NODE_ENV` 为 `production` 时默认开启)
-   * @default process.env.NODE_ENV === 'production'
-   */
-  minifiedJs?: boolean
-
-  /**
    * @description 是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
    * @url https://github.com/sonofmagic/tailwindcss-mangle
    */
@@ -380,19 +372,6 @@ const customAttributes = {
    * @default false
    */
   disabledDefaultTemplateHandler?: boolean
-
-  /**
-   * @version `^2.7.0`
-   * @description js 字面量以及模板字符串的转义替换模式
-   * - `regenerate` 模式，为需要转义的字面量，重新生成相同语义的字符串, （默认的传统模式）
-   * - `replace` 模式，为在原版本字符串上直接精准替换, (`2.7.0+` 新增)
-   *
-   * 如果用一个比喻来形容，那么 `regenerate` 类似于创造一个双胞胎，而 `replace` 模式就类似于一把精准的手术刀
-   *
-   * > `replace` 模式已经在 `2.8.0` 版本中，成为默认模式，另外使用这个模式之后，生成相关的参数，比如 `minifiedJs` 就会失效了。
-   * @default 'regenerate'
-   */
-  jsEscapeStrategy?: 'regenerate' | 'replace'
 
   /**
    * @ignore
