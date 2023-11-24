@@ -39,17 +39,19 @@ const initialNodes = cssVars.map((x) => {
 const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
-export function testIfVariablesScope(node: Rule, count = 1): boolean {
+export function testIfVariablesScope(node: Rule, count = 2): boolean {
   if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
-    for (let i = 0; i < count; i++) {
-      const tryTestDecl = node.nodes[i]
+    const nodes = node.nodes
+    let c = 0
+    for (const tryTestDecl of nodes) {
       if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
-        continue
-      } else {
-        return false
+        c++
+      }
+      if (c >= count) {
+        return true
       }
     }
-    return true
+    return false
   }
   return false
 }
@@ -84,21 +86,27 @@ export function makePseudoVarRule() {
 }
 
 export function remakeCssVarSelector(selectors: string[], cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
-
-  const idx = selectors.indexOf('*')
-  if (idx > -1) {
-    selectors.splice(idx, 1)
-  }
+  // const idx = selectors.indexOf('*')
+  // if (idx > -1) {
+  //   selectors.splice(idx, 1)
+  // }
   // 没有 view 元素时，添加 view
-  if (!selectors.includes('view')) {
-    selectors.push('view')
-  }
+  // if (cssPreflightRange === 'view' && !selectors.includes('view')) {
+  //   selectors.push('view')
+  // }
+
   if (
     cssPreflightRange === 'all' && // 默认对每个元素都生效
     !selectors.includes(':not(not)')
   ) {
     selectors.push(':not(not)')
   }
+
+  // if (Array.isArray(cssPreflightRange)) {
+  //   for (const s of cssPreflightRange) {
+  //     !selectors.includes(s) && selectors.push(s)
+  //   }
+  // }
 
   return selectors
 }

@@ -55,8 +55,7 @@ export const defaultOptions: UserDefinedOptions = {
     'border-style': 'solid',
     'border-color': 'currentColor'
   },
-  cssPreflightRange: 'view',
-  replaceUniversalSelectorWith: 'view',
+
   disabled: false,
   customRuleCallback: noop,
   onLoad: noop,
@@ -97,6 +96,6 @@ export const defaultOptions: UserDefinedOptions = {
   jsEscapeStrategy: 'replace',
   cssSelectorReplacement: {
     root: 'page',
-    universal: 'view'
+    universal: ['view', 'text']
   }
 }

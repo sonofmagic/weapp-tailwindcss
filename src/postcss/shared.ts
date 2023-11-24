@@ -20,3 +20,13 @@ export function internalCssSelectorReplacer(
     map: escapeMap
   })
 }
+
+export function composeIsPseudo(strs: string | string[]) {
+  if (typeof strs === 'string') {
+    return strs
+  }
+  if (strs.length > 1) {
+    return `:is(${strs.join(',')})`
+  }
+  return strs.join('')
+}

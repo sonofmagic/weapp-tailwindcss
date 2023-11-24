@@ -5,7 +5,7 @@ describe('variablesScope', () => {
     const root = postcss.parse(`::before,::after {
       --tw-content: "";
     }`)
-    expect(testIfVariablesScope(root.nodes[0] as Rule)).toBe(true)
+    expect(testIfVariablesScope(root.nodes[0] as Rule, 1)).toBe(true)
     expect(testIfVariablesScope(root.nodes[0] as Rule, 2)).toBe(false)
   })
 
@@ -34,8 +34,8 @@ describe('variablesScope', () => {
       box-sizing: border-box;
       --tw-translate-x: 0;
     }`)
-    expect(testIfVariablesScope(root.nodes[0] as Rule)).toBe(true)
-    expect(testIfVariablesScope(root.nodes[0] as Rule, 2)).toBe(false)
+    expect(testIfVariablesScope(root.nodes[0] as Rule, 1)).toBe(true)
+    expect(testIfVariablesScope(root.nodes[0] as Rule, 2)).toBe(true)
   })
 
   it('::before,::after{} with attrs and multiple var(2)', () => {

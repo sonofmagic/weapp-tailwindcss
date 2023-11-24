@@ -3,7 +3,7 @@
 exports[`gulp > common build > css 1`] = `
 "::before,::after {
     --tw-content: \\"\\"}
-view,::before,::after {
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -261,7 +261,7 @@ exports[`gulp > common build > wxml 1`] = `
 exports[`gulp > common build with mangle options mangleClassFilter always true > css 1`] = `
 "::before,::after {
     --tw-content: \\"\\"}
-view,::before,::after {
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -519,7 +519,7 @@ exports[`gulp > common build with mangle options mangleClassFilter always true >
 exports[`gulp > common build with mangle options prefix > css 1`] = `
 "::before,::after {
     --tw-content: \\"\\"}
-view,::before,::after {
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -777,7 +777,7 @@ exports[`gulp > common build with mangle options prefix > wxml 1`] = `
 exports[`gulp > common build with mangle true > css 1`] = `
 "::before,::after {
     --tw-content: \\"\\"}
-view,::before,::after {
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;

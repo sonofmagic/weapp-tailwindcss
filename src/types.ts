@@ -29,7 +29,7 @@ export type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   escapeMap?: Record<string, string>
-} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'replaceUniversalSelectorWith' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement'>
+} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement'>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -179,16 +179,9 @@ cssPreflight: {
 
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62
-   * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。默认为 `'view'` 即只对所有的 `view` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
+   * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。只对所有的 `view`,`text` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
    */
-  cssPreflightRange?: 'view' | 'all' | string[]
-
-  /**
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
-   * @default 'view'
-   * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
-   */
-  replaceUniversalSelectorWith?: string | false
+  cssPreflightRange?: 'all'
 
   /**
    * @description 是否禁用此插件，一般用于构建到多平台时使用
@@ -410,12 +403,15 @@ const customAttributes = {
   cssSelectorReplacement?: {
     /**
      * @default 'page'
+     * @description 把`css`中的全局选择器 **`:root`** 替换为指定值，默认替换为 `'page'`，设置为 `false` 时不进行替换
      */
-    root?: string | false
+    root?: string | string[] | false
     /**
+     * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
      * @default 'view'
+     * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
      */
-    universal?: string | false
+    universal?: string | string[] | false
   }
 
   /**
@@ -476,10 +472,7 @@ export type InternalUserDefinedOptions = Required<
   }
 >
 
-export type InternalPostcssOptions = Pick<
-  UserDefinedOptions,
-  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
->
+export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'>
 
 export interface IBaseWebpackPlugin {
   // new (options: UserDefinedOptions, appType: AppType): any

@@ -5,7 +5,7 @@ import { defu } from '@/utils'
 
 export async function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   return (
-    await postcss([postcssIsPseudoClass(), postcssWeappTailwindcss(options)])
+    await postcss([postcssWeappTailwindcss(options), postcssIsPseudoClass()])
       .process(rawSource)
       .async()
   ).css

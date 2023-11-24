@@ -42,10 +42,12 @@ exports[`get options > default options 1`] = `
     "border-width": "0",
     "box-sizing": "border-box",
   },
-  "cssPreflightRange": "view",
   "cssSelectorReplacement": {
     "root": "page",
-    "universal": "view",
+    "universal": [
+      "view",
+      "text",
+    ],
   },
   "customAttributes": {},
   "customReplaceDictionary": {
@@ -129,7 +131,6 @@ exports[`get options > default options 1`] = `
   "onStart": [Function],
   "onUpdate": [Function],
   "patch": [Function],
-  "replaceUniversalSelectorWith": "view",
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {

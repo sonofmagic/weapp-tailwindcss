@@ -11,7 +11,7 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
     isMainChunk: true
   }
 ) => {
-  const { customRuleCallback, isMainChunk } = options
+  const { customRuleCallback } = options
 
   const isCustomRuleCallbackFn = typeof customRuleCallback === 'function'
   return {
@@ -19,7 +19,7 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
     Once(css) {
       css.walkRules((rule) => {
         transformSync(rule, options)
-        isMainChunk && commonChunkPreflight(rule, options)
+        commonChunkPreflight(rule, options)
         isCustomRuleCallbackFn && customRuleCallback(rule, options)
       })
     },
