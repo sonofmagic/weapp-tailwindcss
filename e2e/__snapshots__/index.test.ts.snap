@@ -554,7 +554,7 @@ exports[`e2e > 'mpx-app' 1`] = `
 "<view>
   <view class=\\"text-_h123456_ text-_50px_ bg-_hfff_\\">对酒当歌，人生几何</view>
   <view class=\\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">bgUrl</view>
-  <view class=\\"after content- aftercml-0d5 afterctext-red-500\\"></view>
+  <view class=\\"after_c_content-_bl__dq_ _dq__br_ aftercml-0d5 afterctext-red-500\\"></view>
   <view class=\\"afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500\\"></view>
   <view>*****</view>
   <view style=\\"color: red; font-size: 16px; font-weight: bold\\"><view class=\\"bg-_h929292_\\" style=\\"color: blue; font-size: 14px\\">111112222</view></view>
@@ -4846,6 +4846,9 @@ view,
 .h-2 {
   height: 16rpx;
 }
+.h-20 {
+  height: 160rpx;
+}
 .h-24 {
   height: 192rpx;
 }
@@ -4899,6 +4902,9 @@ view,
 }
 .w-2 {
   width: 16rpx;
+}
+.w-20 {
+  width: 160rpx;
 }
 .w-24 {
   width: 192rpx;
@@ -5139,6 +5145,10 @@ view,
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+.bg-gray-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 .bg-green-500 {
   --tw-bg-opacity: 1;
@@ -8569,6 +8579,10 @@ view,
   --tw-content: \\\\'我来自inline-wxs\\\\';
   content: var(--tw-content);
 }
+.peer.tapped ~ .peer-_dtapped_cbg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
+}
 .childcmr-2 > view:not(.not-child) {
   margin-right: 16rpx;
 }
@@ -8792,6 +8806,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"bg-blue-500/50\\",
   \\"bg-cyan-500\\",
   \\"bg-gray-100\\",
+  \\"bg-gray-300\\",
   \\"bg-green-500\\",
   \\"bg-opacity-[0.54]\\",
   \\"bg-pink-500\\",
@@ -8837,6 +8852,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"grid-cols-3\\",
   \\"h-10\\",
   \\"h-2\\",
+  \\"h-20\\",
   \\"h-24\\",
   \\"h-3\\",
   \\"h-5\\",
@@ -8886,6 +8902,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"p-4\\",
   \\"p-[20px]\\",
   \\"p-[5rpx]\\",
+  \\"peer-[.tapped]:bg-red-400\\",
   \\"py-2\\",
   \\"relative\\",
   \\"ring-4\\",
@@ -8944,6 +8961,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"visible\\",
   \\"w-10\\",
   \\"w-2\\",
+  \\"w-20\\",
   \\"w-24\\",
   \\"w-32\\",
   \\"w-5\\",

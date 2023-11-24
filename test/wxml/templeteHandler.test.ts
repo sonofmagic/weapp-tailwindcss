@@ -27,6 +27,12 @@ describe('virtualHostClass', () => {
     const str = templateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
+
+  it('mpx after content double qutos', () => {
+    const x = '<view class="after:content-["你好啊，我很无聊"] after:ml-0.5 after:text-red-500"></view>'
+    const { templateHandler } = getOptions()
+    expect(templateHandler(x)).toMatchSnapshot()
+  })
 })
 
 describe.skip('templateHandler', () => {
