@@ -56,7 +56,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -437,7 +437,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -818,7 +818,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -1195,7 +1195,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -2340,7 +2340,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -2475,7 +2475,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -2856,7 +2856,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -3237,7 +3237,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -3618,7 +3618,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -4126,7 +4126,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -4507,7 +4507,7 @@ view,text,::before,::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: currentColor}
+    border-color: #e5e7eb}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;

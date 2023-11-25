@@ -53,7 +53,7 @@ export const defaultOptions: UserDefinedOptions = {
     'box-sizing': 'border-box',
     'border-width': '0',
     'border-style': 'solid',
-    'border-color': 'currentColor'
+    'border-color': '#e5e7eb'
   },
 
   disabled: false,
