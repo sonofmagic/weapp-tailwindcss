@@ -1703,20 +1703,20 @@ view,text,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_1d6rem_>view + view {
+.space-y-_1d6rem_>view+view {
     --tw-space-y-reverse: 0;
     margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
 }
-.divide-x-_10px_>view + view {
+.divide-x-_10px_>view+view {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
 }
-.divide-solid>view + view {
+.divide-solid>view+view {
     border-style: solid
 }
-.divide-_h010101_>view + view {
+.divide-_h010101_>view+view {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity))
 }
