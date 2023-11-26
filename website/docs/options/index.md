@@ -1,11 +1,10 @@
-# Options 配置项
+# 配置项(v3.x)
 
 :::info
 目前所有的配置项文档已经通过 `typedoc` 来自动生成.
 
 [点击跳转到用户配置项: `UserDefinedOptions`](/docs/api/interfaces/UserDefinedOptions)
 :::
-
 
 <!-- 
 ### htmlMatcher

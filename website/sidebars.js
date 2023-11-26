@@ -97,6 +97,10 @@ const sidebars = {
     {
       type: 'doc',
       id: 'options/index'
+    },
+    {
+      type: 'doc',
+      id: 'api-v2/interfaces/UserDefinedOptions'
     }
 
     // {
