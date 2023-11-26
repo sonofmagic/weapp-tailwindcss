@@ -96,6 +96,10 @@ export function remakeCssVarSelector(selectors: string[], cssPreflightRange: ISt
     selectors.push(':not(not)')
   }
 
+  if (!selectors.includes('*')) {
+    selectors.unshift('*')
+  }
+
   return selectors
 }
 

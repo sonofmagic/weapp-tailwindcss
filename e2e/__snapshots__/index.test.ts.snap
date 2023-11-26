@@ -6,6 +6,7 @@ exports[`e2e > 'gulp-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::before,
 ::after {
   --tw-border-spacing-x: 0;
@@ -389,6 +390,7 @@ exports[`e2e > 'mpx-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 :after,
 :before {
   --tw-border-spacing-x: 0;
@@ -595,6 +597,7 @@ exports[`e2e > 'native-mina' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::before,
 ::after {
   --tw-border-spacing-x: 0;
@@ -1112,6 +1115,7 @@ exports[`e2e > 'rax-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 :after,
 :before {
   --tw-border-spacing-x: 0;
@@ -1570,6 +1574,7 @@ exports[`e2e > 'taro-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::after,
 ::before {
   --tw-border-spacing-x: 0;
@@ -2251,6 +2256,7 @@ exports[`e2e > 'taro-vue2-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::after,
 ::before {
   --tw-border-spacing-x: 0;
@@ -2837,9 +2843,10 @@ exports[`e2e > 'taro-vue3-app' > css 1`] = `
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
 }
+view,
+text,
 ::after,
-::before,
-view {
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -3457,8 +3464,7 @@ exports[`e2e > 'uni-app' > css 1`] = `
   --tw-content: '';
 }
 :after,
-:before,
-view {
+:before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -4697,6 +4703,7 @@ exports[`e2e > 'uni-app-vue3-vite' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::before,
 ::after {
   --tw-border-spacing-x: 0;
@@ -8986,8 +8993,7 @@ exports[`e2e > 'uni-app-webpack5' > css 1`] = `
   --tw-content: '';
 }
 :after,
-:before,
-view {
+:before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
