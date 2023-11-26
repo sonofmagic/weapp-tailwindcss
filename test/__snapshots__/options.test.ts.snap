@@ -39,7 +39,7 @@ exports[`get options > default options 1`] = `
   ],
   "cssMatcher": [Function],
   "cssPreflight": {
-    "border-color": "#e5e7eb",
+    "border-color": "currentColor",
     "border-style": "solid",
     "border-width": "0",
     "box-sizing": "border-box",

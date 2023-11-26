@@ -7,3 +7,54 @@
     @apply bg-black;
   }
 }
+
+// .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+//   color: red;
+// }
+// .divide-x > :not([hidden]) ~ :not([hidden]) {
+//   color: red;
+// }
+// .divide-blue-200 > :not([hidden]) ~ :not([hidden]) {
+// }
+.xxx ~ .xxx-invalid:visible {
+  visibility: visible;
+}
+// .xxx:invalid ~ .xxx-invalid:visible {
+//   visibility: visible;
+// }
+// > + , ~
+// https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+
+[data-id] {
+  color: purple;
+}
+// attrs class,id,type,*
+
+// 报错
+// .xxx ~ #sx:visible {
+//   visibility: visible;
+// }
+
+// 不报错
+.xxx ~ .xxx:visible {
+  visibility: visible;
+}
+view ~ view {
+  visibility: visible;
+}
+
+// :not([hidden])
+// 
+// 报错
+// .xxx ~ [data-id]:visible {
+//   visibility: visible;
+// }
+// ~ 前后面跟伪类也会报错
+// 结论1 ~ 前和后面只能够跟class和type标签
+
+// [data-id] + .xxx:visible {
+//   visibility: visible;
+// }
+
+// 结论2 + 前 attrs class,id,type.:not(x)
+// 后 class和type标签

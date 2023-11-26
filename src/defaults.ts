@@ -49,11 +49,12 @@ export const defaultOptions: UserDefinedOptions = {
   wxsMatcher: () => {
     return false
   },
+  // https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
   cssPreflight: {
     'box-sizing': 'border-box',
     'border-width': '0',
     'border-style': 'solid',
-    'border-color': '#e5e7eb'
+    'border-color': 'currentColor'
   },
 
   disabled: false,

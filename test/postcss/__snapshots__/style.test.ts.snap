@@ -113,7 +113,7 @@ exports[`styleHandler > injectAdditionalCssVarScope option true 1`] = `
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
-  border-color: #e5e7eb;
+  border-color: currentColor;
 }
 ::before,::after {
   --tw-content: \\"\\";
@@ -278,7 +278,7 @@ view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
-  border-color: #e5e7eb;
+  border-color: currentColor;
 }
 
 .-m-_l_20px_r_ {
@@ -486,7 +486,7 @@ exports[`styleHandler > new option for customRuleCallback kbone 1`] = `
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
-  border-color: #e5e7eb}
+  border-color: currentColor}
 
 .-mt-2 {
   margin-top: -.5rem
