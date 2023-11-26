@@ -3463,6 +3463,8 @@ exports[`e2e > 'uni-app' > css 1`] = `
 ::after {
   --tw-content: '';
 }
+view,
+text,
 :after,
 :before {
   --tw-border-spacing-x: 0;
@@ -8992,6 +8994,8 @@ exports[`e2e > 'uni-app-webpack5' > css 1`] = `
 ::after {
   --tw-content: '';
 }
+view,
+text,
 :after,
 :before {
   --tw-border-spacing-x: 0;
