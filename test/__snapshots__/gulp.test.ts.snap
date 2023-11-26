@@ -126,7 +126,7 @@ view,text,::before,::after {
 .w-screen {
     width: 100vw
 }
-.space-y-4>view + view {
+.space-y-4>view+view {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))
@@ -384,7 +384,7 @@ view,text,::before,::after {
 .g {
     width: 100vw
 }
-.h>view + view {
+.h>view+view {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))
@@ -642,7 +642,7 @@ view,text,::before,::after {
 .f {
     width: 100vw
 }
-.g>view + view {
+.g>view+view {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))
@@ -900,7 +900,7 @@ view,text,::before,::after {
 .tw-f {
     width: 100vw
 }
-.tw-g>view + view {
+.tw-g>view+view {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))

@@ -545,7 +545,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String
     })
-    expect(normalizeEol(result)).toBe('.test>view + view{}')
+    expect(normalizeEol(result)).toBe('.test>view+view{}')
   })
 
   it('Is Pseudo Class', async () => {
@@ -589,6 +589,18 @@ describe('styleHandler', () => {
   it('injectAdditionalCssVarScope option true', async () => {
     const { styleHandler } = getOptions({
       injectAdditionalCssVarScope: true
+    })
+    const rawSource = await getCase('backdrop.css')
+    const result = await styleHandler(rawSource, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('injectAdditionalCssVarScope option true and replace universal', async () => {
+    const { styleHandler } = getOptions({
+      injectAdditionalCssVarScope: true,
+      cssSelectorReplacement: {
+        universal: ['view', 'text', 'button']
+      }
     })
     const rawSource = await getCase('backdrop.css')
     const result = await styleHandler(rawSource, { isMainChunk: true })
@@ -646,42 +658,42 @@ describe('styleHandler', () => {
     const { styleHandler } = getOptions()
     const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`
     const result = await styleHandler(rawCode, { isMainChunk: true })
-    expect(result).toBe('.space-x-4>view + view{}')
+    expect(result).toBe('.space-x-4>view+view{}')
   })
 
   it('combinator selector case 1', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-x>:not([hidden])~:not([hidden]){}`
     const result = await styleHandler(rawCode, { isMainChunk: true })
-    expect(result).toBe('.divide-x>view + view{}')
+    expect(result).toBe('.divide-x>view+view{}')
   })
 
   it('combinator selector case 2', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-blue-200>:not([hidden])~:not([hidden]){}`
     const result = await styleHandler(rawCode, { isMainChunk: true })
-    expect(result).toBe('.divide-blue-200>view + view{}')
+    expect(result).toBe('.divide-blue-200>view+view{}')
   })
 
   it('combinator selector case 3', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:is(.dark .dark:divide-slate-700)>:not([hidden])~:not([hidden]){}`
     const result = await styleHandler(rawCode, { isMainChunk: true })
-    expect(result).toBe('.dark .dark:divide-slate-700>view + view{}')
+    expect(result).toBe('.dark .dark:divide-slate-700>view+view{}')
   })
 
   it('combinator selector case 4', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-dashed>:not([hidden])~:not([hidden]){}`
     const result = await styleHandler(rawCode, { isMainChunk: true })
-    expect(result).toBe('.divide-dashed>view + view{}')
+    expect(result).toBe('.divide-dashed>view+view{}')
   })
 
   it('comment case 0', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `/* #ifdef MP-WEIXIN */\n.divide-dashed>:not([hidden])~:not([hidden]){}\n/* #endif */`
     const result = await styleHandler(rawCode, { isMainChunk: true })
-    expect(result).toBe('/* #ifdef MP-WEIXIN */\n.divide-dashed>view + view{}\n/* #endif */')
+    expect(result).toBe('/* #ifdef MP-WEIXIN */\n.divide-dashed>view+view{}\n/* #endif */')
   })
 
   it('is-pseudo-class case 0', async () => {

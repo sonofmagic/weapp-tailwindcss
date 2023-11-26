@@ -27,7 +27,7 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string arr
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string array type 2`] = `
-".space-y-4>view + view,.space-y-4>view + text,.space-y-4>text + view,.space-y-4>text + text {
+".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))
@@ -43,7 +43,7 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string typ
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string type 2`] = `
-".space-y-4>view,text,button,input ~ view,text,button,input {
+".space-y-4>view,text,button,input~view,text,button,input {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse))

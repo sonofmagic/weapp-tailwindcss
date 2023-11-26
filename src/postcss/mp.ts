@@ -125,8 +125,7 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   }
   if (options.injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
     const syntheticRule = new Rule({
-      // '*',
-      selectors: ['::after', '::before'],
+      selectors: ['*', '::after', '::before'],
       nodes: initialNodes
     })
     syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options.cssPreflightRange)

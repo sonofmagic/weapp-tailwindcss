@@ -21,11 +21,14 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
   return {
     postcssPlugin,
     Once(css) {
-      css.walkRules((rule) => {
-        transformSync(rule, options)
-        isMainChunk && commonChunkPreflight(rule, options)
-        isCustomRuleCallbackFn && customRuleCallback(rule, options)
-      })
+      isMainChunk &&
+        css.walkRules((rule) => {
+          commonChunkPreflight(rule, options)
+        })
+    },
+    Rule(rule) {
+      transformSync(rule, options)
+      isCustomRuleCallbackFn && customRuleCallback(rule, options)
     },
     AtRule(atRule) {
       if (isAtMediaHover(atRule)) {
