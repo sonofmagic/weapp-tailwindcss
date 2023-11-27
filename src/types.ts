@@ -398,8 +398,7 @@ const customAttributes = {
   tailwindcssBasedir?: string
   /**
    * @version `^3.0.0`
-   * @default false
-   * @description rem 转 rpx 配置，默认为 false，不开启，可传入配置项，配置项见 https://www.npmjs.com/package/postcss-rem-to-responsive-pixel
+   * @description rem 转 rpx 配置，默认为 `undefined` 不开启，可传入 `true` 启用默认配置项，也可传入自定义配置项，配置项列表见 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
    */
   rem2rpx?: boolean | rem2rpxOptions
 }

@@ -214,6 +214,11 @@ const config = {
             docId: 'issues/index'
           },
           {
+            type: 'doc',
+            label: '迁移',
+            docId: 'migrations/v2'
+          },
+          {
             href: 'https://icebreaker.top/',
             position: 'left',
             label: '博客'
