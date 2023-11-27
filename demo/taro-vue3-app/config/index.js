@@ -87,7 +87,8 @@ const config = {
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-        }
+        },
+        rem2rpx: true
       }
       // if (isWrite) {
       //   opt.loaderOptions = {

@@ -11966,10 +11966,10 @@ postcss-reduce-transforms@^5.1.0:
   dependencies:
     postcss-value-parser "^4.2.0"
 
-postcss-rem-to-responsive-pixel@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-6.0.0.tgz#f9b878d01cf1c494104b69e0252f86c0d989b4b5"
-  integrity sha512-Nhzc6IDAq5pCkbNdo/3p3+UXh+xSshypDTYpcjIjoHe+XJAC5wd3U+T6IgwkcVueuUkUHJiTmf09mTtAuHzWqg==
+postcss-rem-to-responsive-pixel@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-6.0.1.tgz#6a360f7c07c3dd38053a1d929edb8683416d540b"
+  integrity sha512-CbqKssPDiz+bT/HHI07KChLPm1IgnCCOqxCTxTw3/ddlpgTQeP8+oYzrjeC6Weo5UsKcRrhgScbmTBI1xsJEEA==
 
 postcss-resolve-nested-selector@^0.1.1:
   version "0.1.1"
@@ -15075,10 +15075,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^3.0.0-beta.2:
-  version "3.0.0-beta.2"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.0.0-beta.2.tgz#c6b3d3dedb74c9ca11e25bbe4862065e5479d7d5"
-  integrity sha512-L+2PxMQhjzmHRHa/jjPJ7u7ZhL2YW9NUPVqKxu8AB/PGQGl+SuTd5jRBPQmHGG+yjzdFWHZxXFziX25r57/GiQ==
+weapp-tailwindcss-webpack-plugin@^3.0.0-beta.3:
+  version "3.0.0-beta.3"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.0.0-beta.3.tgz#c1a1c59f5e6c7dd798ad3022c9d839e4437604a5"
+  integrity sha512-6cbGg//Nkn1QqhDdl5EsxZHX0byCRmrIkWuHy98KBIVGSYoDXJbKoIU/5cHghP5ywQdh0gqKYr5Yl02Uw+XyDQ==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "^7.23.4"
@@ -15096,6 +15096,7 @@ weapp-tailwindcss-webpack-plugin@^3.0.0-beta.2:
     magic-string "^0.30.5"
     md5 "^2.3.0"
     postcss "8.4.31"
+    postcss-rem-to-responsive-pixel "^6.0.1"
     postcss-selector-parser "^6.0.13"
     semver "^7.5.4"
     tailwindcss-patch "^2.2.2"

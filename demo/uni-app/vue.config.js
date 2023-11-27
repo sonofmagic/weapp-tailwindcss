@@ -1,12 +1,14 @@
-let UniAppWeappTailwindcssWebpackPluginV4
-if (process.env.LOCAL) {
-  console.log('use local built webpack plugin')
-  const { UniAppWeappTailwindcssWebpackPluginV4: plugin } = require('./weapp-tw-dist')
-  UniAppWeappTailwindcssWebpackPluginV4 = plugin
-} else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  UniAppWeappTailwindcssWebpackPluginV4 = plugin
-}
+// let UniAppWeappTailwindcssWebpackPluginV4
+// if (process.env.LOCAL) {
+//   console.log('use local built webpack plugin')
+//   const { UniAppWeappTailwindcssWebpackPluginV4: plugin } = require('./weapp-tw-dist')
+//   UniAppWeappTailwindcssWebpackPluginV4 = plugin
+// } else {
+//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
+//   UniAppWeappTailwindcssWebpackPluginV4 = plugin
+// }
+
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 const { WeappTailwindcssDisabled } = require('./platform')
 // const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
@@ -23,7 +25,7 @@ const config = {
     // let now
     let start
     config.plugins.push(
-      new UniAppWeappTailwindcssWebpackPluginV4({
+      new UnifiedWebpackPluginV5({
         jsMatcher: (file) => {
           if (file.includes('node_modules')) {
             return false
@@ -46,7 +48,8 @@ const config = {
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-        }
+        },
+        rem2rpx: true
       })
     )
     // smp.wrap(config)
