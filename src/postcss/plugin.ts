@@ -44,3 +44,4 @@ postcssWeappTailwindcss.postcss = true
 export { postcssWeappTailwindcss }
 
 export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class'
+export { default as postcssRem2rpx } from 'postcss-rem-to-responsive-pixel'

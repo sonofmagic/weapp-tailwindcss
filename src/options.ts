@@ -34,7 +34,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     injectAdditionalCssVarScope,
     jsPreserveClass,
     disabledDefaultTemplateHandler,
-    cssSelectorReplacement
+    cssSelectorReplacement,
+    rem2rpx
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -56,7 +57,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     mangleContext,
     cssChildCombinatorReplaceValue,
     injectAdditionalCssVarScope,
-    cssSelectorReplacement
+    cssSelectorReplacement,
+    rem2rpx
   })
   result.styleHandler = styleHandler
   const jsHandler = createJsHandler({

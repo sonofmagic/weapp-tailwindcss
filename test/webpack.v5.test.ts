@@ -150,6 +150,31 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  it('common with rem2rpx', async () => {
+    let timeStart: number
+    let timeTaken: number
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      customReplaceDictionary: MappingChars2String,
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+      },
+      rem2rpx: true
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
   it('common build twice for cache', async () => {
     let timeStart: number
     let timeTaken: number

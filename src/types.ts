@@ -3,6 +3,7 @@ import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle
 import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
 // import type { sources } from 'webpack'
+import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { InjectPreflight } from './postcss/preflight'
 import type { ICreateCacheReturnType } from '@/cache'
 export type ItemOrItemArray<T> = T | T[]
@@ -29,7 +30,7 @@ export type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   escapeMap?: Record<string, string>
-} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement'>
+} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement' | 'rem2rpx'>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -395,6 +396,12 @@ const customAttributes = {
    * @description 用于指定路径来获取 tailwindcss 上下文，一般情况下不用传入，使用 linked / monorepo 可能需要指定具体位置，路径通常是目标项目的 package.json 所在目录
    */
   tailwindcssBasedir?: string
+  /**
+   * @version `^3.0.0`
+   * @default false
+   * @description rem 转 rpx 配置，默认为 false，不开启，可传入配置项，配置项见 https://www.npmjs.com/package/postcss-rem-to-responsive-pixel
+   */
+  rem2rpx?: boolean | rem2rpxOptions
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult

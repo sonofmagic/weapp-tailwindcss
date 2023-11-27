@@ -53,6 +53,9 @@ dependencies:
   postcss:
     specifier: 8.4.31
     version: 8.4.31
+  postcss-rem-to-responsive-pixel:
+    specifier: ^6.0.1
+    version: 6.0.1
   postcss-selector-parser:
     specifier: ^6.0.13
     version: 6.0.13
@@ -241,9 +244,6 @@ devDependencies:
   postcss-loader:
     specifier: ^7.3.3
     version: 7.3.3(postcss@8.4.31)(webpack@5.89.0)
-  postcss-rem-to-responsive-pixel:
-    specifier: ^6.0.0
-    version: 6.0.0
   prettier:
     specifier: ^3.1.0
     version: 3.1.0
@@ -6853,9 +6853,10 @@ packages:
       postcss: 8.4.31
       postcss-selector-parser: 6.0.13
 
-  /postcss-rem-to-responsive-pixel@6.0.0:
-    resolution: {integrity: sha512-Nhzc6IDAq5pCkbNdo/3p3+UXh+xSshypDTYpcjIjoHe+XJAC5wd3U+T6IgwkcVueuUkUHJiTmf09mTtAuHzWqg==}
-    dev: true
+  /postcss-rem-to-responsive-pixel@6.0.1:
+    resolution: {integrity: sha512-CbqKssPDiz+bT/HHI07KChLPm1IgnCCOqxCTxTw3/ddlpgTQeP8+oYzrjeC6Weo5UsKcRrhgScbmTBI1xsJEEA==}
+    engines: {node: '>=16.6.0'}
+    dev: false
 
   /postcss-selector-parser@6.0.13:
     resolution: {integrity: sha512-EaV1Gl4mUEV4ddhDnv/xtj7sxwrwxdetHdWUGnT4VJQf+4d05v6lHYZr8N573k5Z0BViss7BDhfWtKS3+sfAqQ==}
