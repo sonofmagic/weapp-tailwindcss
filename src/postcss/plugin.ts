@@ -1,10 +1,14 @@
-import type { PluginCreator, Plugin } from 'postcss'
+import type { PluginCreator, Plugin, AtRule } from 'postcss'
 import { transformSync } from './selectorParser'
 import { commonChunkPreflight } from './mp'
 import type { IStyleHandlerOptions } from '@/types'
 import { postcssPlugin } from '@/constants'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
+
+function isAtMediaHover(atRule: AtRule) {
+  return /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name) || (atRule.name === 'media' && /\(\s*hover\s*:\s*hover\s*\)/.test(atRule.params))
+}
 
 const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
   options: IStyleHandlerOptions = {
@@ -17,14 +21,17 @@ const postcssWeappTailwindcss: PostcssWeappTailwindcssRenamePlugin = (
   return {
     postcssPlugin,
     Once(css) {
-      css.walkRules((rule) => {
-        transformSync(rule, options)
-        isMainChunk && commonChunkPreflight(rule, options)
-        isCustomRuleCallbackFn && customRuleCallback(rule, options)
-      })
+      isMainChunk &&
+        css.walkRules((rule) => {
+          commonChunkPreflight(rule, options)
+        })
+    },
+    Rule(rule) {
+      transformSync(rule, options)
+      isCustomRuleCallbackFn && customRuleCallback(rule, options)
     },
     AtRule(atRule) {
-      if (atRule.name === 'media' && /\(hover:\s*hover\)/.test(atRule.params)) {
+      if (isAtMediaHover(atRule)) {
         atRule.before(atRule.nodes)
         atRule.remove()
       }
@@ -37,3 +44,4 @@ postcssWeappTailwindcss.postcss = true
 export { postcssWeappTailwindcss }
 
 export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class'
+export { default as postcssRem2rpx } from 'postcss-rem-to-responsive-pixel'

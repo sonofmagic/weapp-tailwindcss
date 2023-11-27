@@ -13,12 +13,13 @@ export default defineConfig({
         replacement: path.resolve(__dirname, './test')
       }
     ],
-    include: ['test/vitest/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     coverage: {
-      enabled: true,
-      reportsDirectory: 'coverage/vitest'
+      enabled: true
+      // reportsDirectory: 'coverage/vitest'
     },
-    testTimeout: 60_000
+    testTimeout: 60_000,
+    globals: true
     // ...
   }
 })

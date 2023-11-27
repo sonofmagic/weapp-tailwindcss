@@ -1,9 +1,9 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`customTemplateHandler mpx-wxs case 1`] = `
-"<wxs module="__stringify__" src="../../wxs/stringify693bc40b.wxs"></wxs>
-<view class="flex flex-col">
-  <view class='{{__stringify__.stringifyClass("",idx===1?classObj:classObj2)}}' wx:for="{{listData}}" wx:for-index="idx" wx:key="id">
+exports[`customTemplateHandler > mpx-wxs case 1`] = `
+"<wxs module=\\"__stringify__\\" src=\\"../../wxs/stringify693bc40b.wxs\\"></wxs>
+<view class=\\"flex flex-col\\">
+  <view class='{{__stringify__.stringifyClass(\\"\\",idx===1?classObj:classObj2)}}' wx:for=\\"{{listData}}\\" wx:for-index=\\"idx\\" wx:key=\\"id\\">
     {{ item.label }}
   </view>
 </view>"

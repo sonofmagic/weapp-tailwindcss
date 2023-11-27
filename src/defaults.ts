@@ -49,14 +49,14 @@ export const defaultOptions: UserDefinedOptions = {
   wxsMatcher: () => {
     return false
   },
+  // https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
   cssPreflight: {
     'box-sizing': 'border-box',
     'border-width': '0',
     'border-style': 'solid',
     'border-color': 'currentColor'
   },
-  cssPreflightRange: 'view',
-  replaceUniversalSelectorWith: 'view',
+
   disabled: false,
   customRuleCallback: noop,
   onLoad: noop,
@@ -81,7 +81,7 @@ export const defaultOptions: UserDefinedOptions = {
   arbitraryValues: {
     allowDoubleQuotes: false
   },
-  cssChildCombinatorReplaceValue: 'view + view',
+  cssChildCombinatorReplaceValue: ['view'],
   inlineWxs: false,
   injectAdditionalCssVarScope: false,
   jsPreserveClass: (keyword) => {
@@ -94,9 +94,8 @@ export const defaultOptions: UserDefinedOptions = {
     return false
   },
   disabledDefaultTemplateHandler: false,
-  jsEscapeStrategy: 'replace',
   cssSelectorReplacement: {
     root: 'page',
-    universal: 'view'
+    universal: ['view', 'text']
   }
 }

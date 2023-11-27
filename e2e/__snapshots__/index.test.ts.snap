@@ -6,6 +6,7 @@ exports[`e2e > 'gulp-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::before,
 ::after {
   --tw-border-spacing-x: 0;
@@ -389,6 +390,7 @@ exports[`e2e > 'mpx-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 :after,
 :before {
   --tw-border-spacing-x: 0;
@@ -554,7 +556,7 @@ exports[`e2e > 'mpx-app' 1`] = `
 "<view>
   <view class=\\"text-_h123456_ text-_50px_ bg-_hfff_\\">对酒当歌，人生几何</view>
   <view class=\\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">bgUrl</view>
-  <view class=\\"after content- aftercml-0d5 afterctext-red-500\\"></view>
+  <view class=\\"after_c_content-_bl__dq_ _dq__br_ aftercml-0d5 afterctext-red-500\\"></view>
   <view class=\\"afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500\\"></view>
   <view>*****</view>
   <view style=\\"color: red; font-size: 16px; font-weight: bold\\"><view class=\\"bg-_h929292_\\" style=\\"color: blue; font-size: 14px\\">111112222</view></view>
@@ -595,6 +597,7 @@ exports[`e2e > 'native-mina' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::before,
 ::after {
   --tw-border-spacing-x: 0;
@@ -1112,6 +1115,7 @@ exports[`e2e > 'rax-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 :after,
 :before {
   --tw-border-spacing-x: 0;
@@ -1217,7 +1221,7 @@ view,
   margin: -20px;
 }
 .-mt-2 {
-  margin-top: -0.5rem;
+  margin-top: -16rpx;
 }
 .mb-_-20px_ {
   margin-bottom: -20px;
@@ -1229,7 +1233,7 @@ view,
   display: grid;
 }
 .h-10 {
-  height: 2.5rem;
+  height: 80rpx;
 }
 .h-_100px_ {
   height: 100px;
@@ -1241,10 +1245,10 @@ view,
   min-height: 100px;
 }
 .w-10 {
-  width: 2.5rem;
+  width: 80rpx;
 }
 .w-32 {
-  width: 8rem;
+  width: 256rpx;
 }
 .w-_100px_ {
   width: 100px;
@@ -1272,8 +1276,8 @@ view,
 }
 .space-y-_1d6rem_ > view + view {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
 .divide-x-_10px_ > view + view {
   --tw-divide-x-reverse: 0;
@@ -1291,7 +1295,7 @@ view,
   border-radius: 40px;
 }
 .rounded-md {
-  border-radius: 0.375rem;
+  border-radius: 12rpx;
 }
 .iborder-_10px_ {
   border-width: 10px !important;
@@ -1336,8 +1340,8 @@ view,
   padding: 20px;
 }
 .py-2 {
-  padding-bottom: 0.5rem;
-  padding-top: 0.5rem;
+  padding-bottom: 16rpx;
+  padding-top: 16rpx;
 }
 .text-_20px_ {
   font-size: 20px;
@@ -1570,6 +1574,7 @@ exports[`e2e > 'taro-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::after,
 ::before {
   --tw-border-spacing-x: 0;
@@ -1726,7 +1731,7 @@ view,
   margin: -20rpx;
 }
 .-mt-2 {
-  margin-top: -0.5rem;
+  margin-top: -16rpx;
 }
 .mb-_-20px_ {
   margin-bottom: -20rpx;
@@ -1741,7 +1746,7 @@ view,
   display: grid;
 }
 .h-10 {
-  height: 2.5rem;
+  height: 80rpx;
 }
 .h-_100px_ {
   height: 100rpx;
@@ -1762,10 +1767,10 @@ view,
   min-height: 100rpx;
 }
 .w-10 {
-  width: 2.5rem;
+  width: 80rpx;
 }
 .w-32 {
-  width: 8rem;
+  width: 256rpx;
 }
 .w-_100px_ {
   width: 100rpx;
@@ -1818,8 +1823,8 @@ view,
 }
 .space-y-_1d6rem_ > view + view {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
 .divide-x-_10px_ > view + view {
   --tw-divide-x-reverse: 0;
@@ -1837,7 +1842,7 @@ view,
   border-radius: 40rpx;
 }
 .rounded-md {
-  border-radius: 0.375rem;
+  border-radius: 12rpx;
 }
 .border-_10px_ {
   border-width: 10rpx;
@@ -1924,8 +1929,8 @@ view,
   padding-right: 95rpx;
 }
 .py-2 {
-  padding-bottom: 0.5rem;
-  padding-top: 0.5rem;
+  padding-bottom: 16rpx;
+  padding-top: 16rpx;
 }
 .py-_62px_ {
   padding-bottom: 62rpx;
@@ -2015,7 +2020,7 @@ view,
 }
 .aftercml-0d5::after {
   content: var(--tw-content);
-  margin-left: 0.125rem;
+  margin-left: 4rpx;
 }
 .aftercborder-none::after {
   border-style: none;
@@ -2251,6 +2256,7 @@ exports[`e2e > 'taro-vue2-app' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::after,
 ::before {
   --tw-border-spacing-x: 0;
@@ -2407,7 +2413,7 @@ view,
   margin: -20rpx;
 }
 .-mt-2 {
-  margin-top: -0.5rem;
+  margin-top: -16rpx;
 }
 .mb-_-20px_ {
   margin-bottom: -20rpx;
@@ -2428,7 +2434,7 @@ view,
   display: grid;
 }
 .h-10 {
-  height: 2.5rem;
+  height: 80rpx;
 }
 .h-_100px_ {
   height: 100rpx;
@@ -2440,7 +2446,7 @@ view,
   min-height: 100rpx;
 }
 .w-10 {
-  width: 2.5rem;
+  width: 80rpx;
 }
 .w-_100px_ {
   width: 100rpx;
@@ -2475,8 +2481,8 @@ view,
 }
 .space-y-_1d6rem_ > view + view {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
 .divide-x-_10px_ > view + view {
   --tw-divide-x-reverse: 0;
@@ -2837,9 +2843,10 @@ exports[`e2e > 'taro-vue3-app' > css 1`] = `
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
 }
+view,
+text,
 ::after,
-::before,
-view {
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2977,7 +2984,7 @@ view {
   margin: -20rpx;
 }
 .-mt-2 {
-  margin-top: -0.5rem;
+  margin-top: -16rpx;
 }
 .mb-_-20px_ {
   margin-bottom: -20rpx;
@@ -2998,7 +3005,7 @@ view {
   display: grid;
 }
 .h-10 {
-  height: 2.5rem;
+  height: 80rpx;
 }
 .h-_100px_ {
   height: 100rpx;
@@ -3013,16 +3020,16 @@ view {
   min-height: 100rpx;
 }
 .w-1 {
-  width: 0.25rem;
+  width: 8rpx;
 }
 .w-1d5 {
-  width: 0.375rem;
+  width: 12rpx;
 }
 .w-10 {
-  width: 2.5rem;
+  width: 80rpx;
 }
 .w-32 {
-  width: 8rem;
+  width: 256rpx;
 }
 .w-_100px_ {
   width: 100rpx;
@@ -3068,8 +3075,8 @@ view {
 }
 .space-y-_1d6rem_ > view + view {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
 .divide-x-_10px_ > view + view {
   --tw-divide-x-reverse: 0;
@@ -3087,7 +3094,7 @@ view {
   border-radius: 40rpx;
 }
 .rounded-md {
-  border-radius: 0.375rem;
+  border-radius: 12rpx;
 }
 .border-_10px_ {
   border-width: 10rpx;
@@ -3174,8 +3181,8 @@ view {
   padding: 20rpx;
 }
 .py-2 {
-  padding-bottom: 0.5rem;
-  padding-top: 0.5rem;
+  padding-bottom: 16rpx;
+  padding-top: 16rpx;
 }
 .text-center {
   text-align: center;
@@ -3456,9 +3463,10 @@ exports[`e2e > 'uni-app' > css 1`] = `
 ::after {
   --tw-content: '';
 }
+view,
+text,
 :after,
-:before,
-view {
+:before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -3823,7 +3831,7 @@ view {
 }
 .space-y-_1d6rem_ > view + view {
   --tw-space-y-reverse: 0;
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .divide-x > view + view {
@@ -4697,6 +4705,7 @@ exports[`e2e > 'uni-app-vue3-vite' > css 1`] = `
   --tw-content: '';
 }
 view,
+text,
 ::before,
 ::after {
   --tw-border-spacing-x: 0;
@@ -4846,6 +4855,9 @@ view,
 .h-2 {
   height: 16rpx;
 }
+.h-20 {
+  height: 160rpx;
+}
 .h-24 {
   height: 192rpx;
 }
@@ -4899,6 +4911,9 @@ view,
 }
 .w-2 {
   width: 16rpx;
+}
+.w-20 {
+  width: 160rpx;
 }
 .w-24 {
   width: 192rpx;
@@ -5139,6 +5154,10 @@ view,
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+.bg-gray-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 .bg-green-500 {
   --tw-bg-opacity: 1;
@@ -8569,6 +8588,10 @@ view,
   --tw-content: \\\\'我来自inline-wxs\\\\';
   content: var(--tw-content);
 }
+.peer.tapped ~ .peer-_dtapped_cbg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
+}
 .childcmr-2 > view:not(.not-child) {
   margin-right: 16rpx;
 }
@@ -8792,6 +8815,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"bg-blue-500/50\\",
   \\"bg-cyan-500\\",
   \\"bg-gray-100\\",
+  \\"bg-gray-300\\",
   \\"bg-green-500\\",
   \\"bg-opacity-[0.54]\\",
   \\"bg-pink-500\\",
@@ -8837,6 +8861,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"grid-cols-3\\",
   \\"h-10\\",
   \\"h-2\\",
+  \\"h-20\\",
   \\"h-24\\",
   \\"h-3\\",
   \\"h-5\\",
@@ -8886,6 +8911,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"p-4\\",
   \\"p-[20px]\\",
   \\"p-[5rpx]\\",
+  \\"peer-[.tapped]:bg-red-400\\",
   \\"py-2\\",
   \\"relative\\",
   \\"ring-4\\",
@@ -8944,6 +8970,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   \\"visible\\",
   \\"w-10\\",
   \\"w-2\\",
+  \\"w-20\\",
   \\"w-24\\",
   \\"w-32\\",
   \\"w-5\\",
@@ -8967,9 +8994,10 @@ exports[`e2e > 'uni-app-webpack5' > css 1`] = `
 ::after {
   --tw-content: '';
 }
+view,
+text,
 :after,
-:before,
-view {
+:before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -9194,7 +9222,7 @@ view {
 }
 .space-y-_1d6rem_ > view + view {
   --tw-space-y-reverse: 0;
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .divide-x > view + view {

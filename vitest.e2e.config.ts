@@ -10,7 +10,8 @@ export default defineConfig({
       }
     ],
     include: ['e2e/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    testTimeout: 36_000_000
+    testTimeout: 36_000_000,
+    globals: true
     // ...
   }
 })

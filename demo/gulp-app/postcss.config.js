@@ -11,11 +11,11 @@ module.exports = {
         828: 1.81 / 2,
         375: 2 / 1
       }
-    },
-    'postcss-rem-to-responsive-pixel': {
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
     }
+    // 'postcss-rem-to-responsive-pixel': {
+    //   rootValue: 32,
+    //   propList: ['*'],
+    //   transformUnit: 'rpx'
+    // }
   }
 }

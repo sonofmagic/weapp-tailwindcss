@@ -10,9 +10,6 @@ const getCase = createGetCase(jsCasePath)
 
 const testTable = [
   {
-    name: ''
-  },
-  {
     name: '[replace strategy]',
     strategy: 'replace'
   }
@@ -32,12 +29,10 @@ describe('taro app', () => {
       escapeMap: SimpleMappingChars2String
     })
     rh = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
-      strategy: 'replace'
+      escapeMap: SimpleMappingChars2String
     })
     mh = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
-      minifiedJs: true
+      escapeMap: SimpleMappingChars2String
     })
 
     // dh = createJsHandler({

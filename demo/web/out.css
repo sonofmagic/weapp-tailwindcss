@@ -32,12 +32,12 @@
 .gap-_2d75rpx_ {
     gap: 2.75rpx
 }
-.space-y-_12d0rpx_>view + view {
+.space-y-_12d0rpx_>view+view {
     --tw-space-y-reverse: 0;
     margin-top: calc(12.0rpx * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(12.0rpx * var(--tw-space-y-reverse))
 }
-.divide-x-_3rpx_>view + view {
+.divide-x-_3rpx_>view+view {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
     border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)))

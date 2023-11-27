@@ -38,5 +38,6 @@ module.exports = {
   ],
   corePlugins: {
     preflight: false,
+    container: false,
   },
 };

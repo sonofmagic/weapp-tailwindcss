@@ -1,5 +1,4 @@
 import { readFileSync } from 'node:fs'
-import * as path from 'node:path'
 import typescript from '@rollup/plugin-typescript'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -85,7 +84,7 @@ const entries: IEntry[] = [
       cli: 'src/cli.ts',
       replace: 'src/replace.ts',
       vite: 'src/vite.ts',
-      'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts',
+      'weapp-tw-runtime-loader': 'src/bundlers/webpack/loaders/weapp-tw-runtime-loader.ts',
       defaults: 'src/defaults.ts',
       'css-macro/index': 'src/css-macro/index.ts',
       'css-macro/postcss': 'src/css-macro/postcss.ts',

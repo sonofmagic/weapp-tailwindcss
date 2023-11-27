@@ -3,6 +3,7 @@ import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle
 import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
 // import type { sources } from 'webpack'
+import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { InjectPreflight } from './postcss/preflight'
 import type { ICreateCacheReturnType } from '@/cache'
 export type ItemOrItemArray<T> = T | T[]
@@ -29,7 +30,7 @@ export type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   escapeMap?: Record<string, string>
-} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'replaceUniversalSelectorWith' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement'>
+} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement' | 'rem2rpx'>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -54,11 +55,9 @@ export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string
 export type IJsHandlerOptions = {
   escapeMap?: Record<string, string>
   classNameSet: Set<string>
-  minifiedJs?: boolean
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
-  strategy?: UserDefinedOptions['jsEscapeStrategy']
   needEscaped?: boolean
   generateMap?: boolean
 }
@@ -81,9 +80,6 @@ export interface ILengthUnitsPatchDangerousOptions {
   destPath?: string
 }
 
-/**
- * @deprecated
- */
 export interface ILengthUnitsPatchOptions {
   units: string[]
   paths?: string[]
@@ -116,22 +112,22 @@ export interface IArbitraryValues {
 
 export interface UserDefinedOptions {
   /**
-   * @description 匹配 `wxml`等等模板进行处理的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
+   * @description 匹配 `wxml`等等模板进行处理的方法
    */
-  htmlMatcher?: ((name: string) => boolean) | string | string[]
+  htmlMatcher?: (name: string) => boolean
   /**
-   * @description 匹配 `wxss` 等等样式文件的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
+   * @description 匹配 `wxss` 等等样式文件的方法
    */
-  cssMatcher?: ((name: string) => boolean) | string | string[]
+  cssMatcher?: (name: string) => boolean
   /**
-   * @description 匹配编译后 `js` 文件进行处理的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
+   * @description 匹配编译后 `js` 文件进行处理的方法
    */
-  jsMatcher?: ((name: string) => boolean) | string | string[]
+  jsMatcher?: (name: string) => boolean
   /**
    * @description `tailwindcss css var inject scope` 的匹配方法,用于处理原始变量和替换不兼容选择器。可以不传，但是遇到某些 `::before/::after` 选择器注入冲突时，建议传入参数手动指定 css bundle 文件位置
    *
    */
-  mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | string | string[]
+  mainCssChunkMatcher?: (name: string, appType?: AppType) => boolean
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
    * @description 在所有 view节点添加的 css 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:
@@ -179,16 +175,9 @@ cssPreflight: {
 
   /**
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62
-   * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。默认为 `'view'` 即只对所有的 `view` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
+   * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。只对所有的 `view`,`text` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
    */
-  cssPreflightRange?: 'view' | 'all'
-
-  /**
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
-   * @default 'view'
-   * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
-   */
-  replaceUniversalSelectorWith?: string | false
+  cssPreflightRange?: 'all'
 
   /**
    * @description 是否禁用此插件，一般用于构建到多平台时使用
@@ -252,18 +241,16 @@ const customAttributes = {
   /**
    * @description 自定义转化class名称字典，这个配置项用来自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`
 
-插件中内置了`'simple'`模式和`'complex'`模式:
+插件中默认使用`'simple'`模式:
 
 - `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
-- `'complex'`模式: 把小程序中不允许的字符串，转义为**更长**的代替字符串，这种情况转化前后的字符串是等价的，可以从结果进行反推，缺点就是会生成更长的 `class` 导致 `wxml`和`wxss`这类的体积增大
 
 当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/src/dic.ts)
    * @default 'simple'
    */
-  customReplaceDictionary?: 'simple' | 'complex' | Record<string, string>
+  customReplaceDictionary?: 'simple' | Record<string, string>
 
   /**
-   * @deprecated
    * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
    * @description 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
@@ -276,18 +263,12 @@ const customAttributes = {
 
 使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
    */
-  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
+  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions
 
   /**
    * @description 使用的框架类型(uni-app,taro...)，用于找到主要的 `css bundle` 进行转化，这个配置会影响默认方法 `mainCssChunkMatcher` 的行为，不传会去猜测 `tailwindcss css var inject scope` 的位置
    */
   appType?: AppType
-
-  /**
-   * @description 是否压缩 js (`process.env.NODE_ENV` 为 `production` 时默认开启)
-   * @default process.env.NODE_ENV === 'production'
-   */
-  minifiedJs?: boolean
 
   /**
    * @description 是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
@@ -334,7 +315,7 @@ const customAttributes = {
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
    * @default ()=>false
    */
-  wxsMatcher?: ((name: string) => boolean) | string | string[]
+  wxsMatcher?: (name: string) => boolean
 
   /**
    * @experiment 实验性质，有可能会改变
@@ -389,33 +370,25 @@ const customAttributes = {
   disabledDefaultTemplateHandler?: boolean
 
   /**
-   * @version `^2.7.0`
-   * @description js 字面量以及模板字符串的转义替换模式
-   * - `regenerate` 模式，为需要转义的字面量，重新生成相同语义的字符串, （默认的传统模式）
-   * - `replace` 模式，为在原版本字符串上直接精准替换, (`2.7.0+` 新增)
-   *
-   * 如果用一个比喻来形容，那么 `regenerate` 类似于创造一个双胞胎，而 `replace` 模式就类似于一把精准的手术刀
-   *
-   * > `replace` 模式已经在 `2.8.0` 版本中，成为默认模式，另外使用这个模式之后，生成相关的参数，比如 `minifiedJs` 就会失效了。
-   * @default 'regenerate'
-   */
-  jsEscapeStrategy?: 'regenerate' | 'replace'
-
-  /**
    * @ignore
    * @internal
    */
   runtimeLoaderPath?: string
-
+  /**
+   * @description v2 版本的 `replaceUniversalSelectorWith` 被整合进了这个配置项，用于处理 css 选择器的替换
+   */
   cssSelectorReplacement?: {
     /**
      * @default 'page'
+     * @description 把`css`中的全局选择器 **`:root`** 替换为指定值，默认替换为 `'page'`，设置为 `false` 时不进行替换
      */
-    root?: string | false
+    root?: string | string[] | false
     /**
+     * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
      * @default 'view'
+     * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
      */
-    universal?: string | false
+    universal?: string | string[] | false
   }
 
   /**
@@ -423,6 +396,11 @@ const customAttributes = {
    * @description 用于指定路径来获取 tailwindcss 上下文，一般情况下不用传入，使用 linked / monorepo 可能需要指定具体位置，路径通常是目标项目的 package.json 所在目录
    */
   tailwindcssBasedir?: string
+  /**
+   * @version `^3.0.0`
+   * @description rem 转 rpx 配置，默认为 `undefined` 不开启，可传入 `true` 启用默认配置项，也可传入自定义配置项，配置项列表见 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
+   */
+  rem2rpx?: boolean | rem2rpxOptions
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
@@ -457,12 +435,8 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   quote?: string | null
 }
 
-export type GlobOrFunctionMatchers = 'htmlMatcher' | 'cssMatcher' | 'jsMatcher' | 'mainCssChunkMatcher' | 'wxsMatcher'
-
 export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, GlobOrFunctionMatchers | 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
-    [K in GlobOrFunctionMatchers]: K extends 'mainCssChunkMatcher' ? (name: string, appType?: AppType) => boolean : (name: string) => boolean
-  } & {
+  Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>
@@ -476,10 +450,7 @@ export type InternalUserDefinedOptions = Required<
   }
 >
 
-export type InternalPostcssOptions = Pick<
-  UserDefinedOptions,
-  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'replaceUniversalSelectorWith' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
->
+export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'>
 
 export interface IBaseWebpackPlugin {
   // new (options: UserDefinedOptions, appType: AppType): any

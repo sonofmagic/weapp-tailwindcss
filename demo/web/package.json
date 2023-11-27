@@ -13,13 +13,13 @@
     "tailwindcss": "^3.3.5"
   },
   "devDependencies": {
-    "postcss-rem-to-responsive-pixel": "^6.0.0",
+    "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss-patch": "^2.2.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^2.11.0"
+    "weapp-tailwindcss-webpack-plugin": "^3.0.0"
   }
 }

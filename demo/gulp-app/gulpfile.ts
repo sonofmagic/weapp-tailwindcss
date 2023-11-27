@@ -34,7 +34,9 @@ if (isLocal) {
 }
 
 // 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss ，然后转化 transformWxss， 然后 transformJs, transformWxml
-const { transformJs, transformWxml, transformWxss } = createPlugins()
+const { transformJs, transformWxml, transformWxss } = createPlugins({
+  rem2rpx: true
+})
 // {
 //   mangle: true
 // }
