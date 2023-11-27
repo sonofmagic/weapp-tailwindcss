@@ -1,16 +1,17 @@
 // let TaroWeappTailwindcssWebpackPluginV5
-let UnifiedWebpackPluginV5
+// let UnifiedWebpackPluginV5
 const path = require('path')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
-if (isLocal) {
-  console.log('use local built webpack plugin')
-  const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
-  UnifiedWebpackPluginV5 = plugin
-} else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  UnifiedWebpackPluginV5 = plugin
-}
+// if (isLocal) {
+//   console.log('use local built webpack plugin')
+//   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
+//   UnifiedWebpackPluginV5 = plugin
+// } else {
+//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
+//   UnifiedWebpackPluginV5 = plugin
+// }
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 const config = {
   compiler: {
     prebundle: {
@@ -101,7 +102,8 @@ const config = {
                   },
                   onEnd() {
                     console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-                  }
+                  },
+                  rem2rpx: true
                 }
               ]
               // args: [opt, 'taro']

@@ -1,1 +1,1 @@
-export * from './webpack/index'
+export * from './bundlers/webpack/index'

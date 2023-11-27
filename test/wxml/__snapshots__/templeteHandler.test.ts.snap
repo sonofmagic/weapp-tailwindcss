@@ -1,5 +1,7 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`virtualHostClass virtualHostClass case 0 1`] = `"<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><com-a u-s="{{['d']}}" class="text-_red_ text-_30px_" virtualHostClass="text-_red_ text-_30px_" style="background:#d4eb07" virtualHostStyle="background:#d4eb07" u-i="4c6cb2cd-0" bind:__l="__l">11111</com-a></view>"`;
+exports[`virtualHostClass > mpx after content double qutos 1`] = `"<view class=\\"afterccontent-_\\"你好啊，我很无聊\\"] after:ml-0.5 after:text-red-500\\"></view>"`;
 
-exports[`virtualHostClass virtualHostClass case 1 1`] = `"<view><com-a u-s="{{['d']}}" class="text-_red_ text-_30px_" style="background:#d4eb07" u-i="4c6cb2cd-0" bind:__l="__l">11111</com-a></view>"`;
+exports[`virtualHostClass > virtualHostClass case 0 1`] = `"<view class=\\"{{[virtualHostClass]}}\\" style=\\"{{virtualHostStyle}}\\"><com-a u-s=\\"{{['d']}}\\" class=\\"text-_red_ text-_30px_\\" virtualHostClass=\\"text-_red_ text-_30px_\\" style=\\"background:#d4eb07\\" virtualHostStyle=\\"background:#d4eb07\\" u-i=\\"4c6cb2cd-0\\" bind:__l=\\"__l\\">11111</com-a></view>"`;
+
+exports[`virtualHostClass > virtualHostClass case 1 1`] = `"<view><com-a u-s=\\"{{['d']}}\\" class=\\"text-_red_ text-_30px_\\" style=\\"background:#d4eb07\\" u-i=\\"4c6cb2cd-0\\" bind:__l=\\"__l\\">11111</com-a></view>"`;

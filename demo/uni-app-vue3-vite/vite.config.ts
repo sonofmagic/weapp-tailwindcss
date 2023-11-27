@@ -43,6 +43,8 @@ if (!WeappTailwindcssDisabled) {
       onEnd() {
         console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
       },
+      rem2rpx: true,
+
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',
@@ -53,13 +55,13 @@ if (!WeappTailwindcssDisabled) {
     }),
   );
 
-  postcssPlugins.push(
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx',
-    }),
-  );
+  // postcssPlugins.push(
+  //   require('postcss-rem-to-responsive-pixel')({
+  //     rootValue: 32,
+  //     propList: ['*'],
+  //     transformUnit: 'rpx',
+  //   }),
+  // );
   postcssPlugins.push(require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'));
 }
 // https://vitejs.dev/config/

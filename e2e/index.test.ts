@@ -3,7 +3,6 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import prettier from 'prettier'
 import automator from 'miniprogram-automator'
-import { expect, test, describe } from 'vitest'
 import { execa } from 'execa'
 import { deleteAsync } from 'del'
 

@@ -24,7 +24,7 @@ describe('customReplaceDictionary', () => {
       customAttributes: {
         'van-image': ['other-attr']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
@@ -35,7 +35,7 @@ describe('customReplaceDictionary', () => {
       customAttributes: {
         'van-image': ['other-attr']
       },
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
@@ -70,7 +70,7 @@ describe('customReplaceDictionary', () => {
 
   it('styleHandler complex mode', async () => {
     const { styleHandler } = getOptions({
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
@@ -80,7 +80,7 @@ describe('customReplaceDictionary', () => {
 
   it('styleHandler default(complex) mode', async () => {
     const { styleHandler } = getOptions({
-      customReplaceDictionary: 'complex'
+      customReplaceDictionary: MappingChars2String
     })
     const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true

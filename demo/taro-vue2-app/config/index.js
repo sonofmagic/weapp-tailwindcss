@@ -1,15 +1,16 @@
-let UnifiedWebpackPluginV5
+// let UnifiedWebpackPluginV5
 const path = require('path')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
-if (isLocal) {
-  console.log('use local built webpack plugin')
-  const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
-  UnifiedWebpackPluginV5 = plugin
-} else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  UnifiedWebpackPluginV5 = plugin
-}
+// if (isLocal) {
+//   console.log('use local built webpack plugin')
+//   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
+//   UnifiedWebpackPluginV5 = plugin
+// } else {
+//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
+//   UnifiedWebpackPluginV5 = plugin
+// }
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 const config = {
   projectName: 'taro-vue2-app',
   date: '2022-2-11',
@@ -61,7 +62,8 @@ const config = {
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-        }
+        },
+        rem2rpx: true
       }
 
       // if (isWrite) {
@@ -75,7 +77,7 @@ const config = {
         plugin: {
           install: {
             plugin: UnifiedWebpackPluginV5,
-            args: [opt, 'taro']
+            args: [opt]
           }
         }
       })

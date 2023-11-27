@@ -11,6 +11,7 @@ import { copySync, mkdirSync } from 'fs-extra'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
+import { MappingChars2String } from '@/escape'
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string; devtool?: string }) {
   const { entry, mode, tailwindcssConfig, devtool } = params
 
@@ -132,7 +133,7 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -149,6 +150,31 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  it('common with rem2rpx', async () => {
+    let timeStart: number
+    let timeTaken: number
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      customReplaceDictionary: MappingChars2String,
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+      },
+      rem2rpx: true
+    }).apply(compiler)
+
+    const stats = await compile(compiler)
+
+    expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
   it('common build twice for cache', async () => {
     let timeStart: number
     let timeTaken: number
@@ -156,7 +182,7 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -210,7 +236,7 @@ describe('webpack5 plugin', () => {
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -353,7 +379,7 @@ describe('webpack5 plugin', () => {
         return path.basename(name) === 'index.css'
       },
 
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       mangle: true,
       onStart() {
         timeStart = performance.now()
@@ -387,7 +413,7 @@ describe('webpack5 plugin', () => {
           classPrefix: ''
         }
       },
-      customReplaceDictionary: 'complex',
+      customReplaceDictionary: MappingChars2String,
       onStart() {
         timeStart = performance.now()
       },
@@ -734,12 +760,12 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
-  it('raw run loader', (done) => {
+  it('raw run loader', async () => {
     const zeroLoader = createLoader(function (source) {
       return source + '0'
     })
     const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack/index.js')
-    runLoaders(
+    const result = await runLoaders(
       // @ts-ignore
       {
         // @ts-ignore
@@ -749,20 +775,16 @@ describe('webpack5 plugin', () => {
             ...zeroLoader
           }
         ]
-      },
-
-      (err, result) => {
-        expect(err).toBeFalsy()
-        expect(result).toBeTruthy()
-        const isArr = Array.isArray(result.result)
-        expect(isArr).toBe(true)
-        if (isArr) {
-          // @ts-ignore
-          expect(result.result[0]).toMatchSnapshot()
-        }
-        done()
       }
     )
+    // expect(err).toBeFalsy()
+    expect(result).toBeTruthy()
+    const isArr = Array.isArray(result.result)
+    expect(isArr).toBe(true)
+    if (isArr) {
+      // @ts-ignore
+      expect(result.result[0]).toMatchSnapshot()
+    }
   })
 
   it('hijack custom loader 0', async () => {

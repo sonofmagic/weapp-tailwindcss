@@ -1,19 +1,19 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`arbitrary properties [--scroll-offset:56px] lg:[--scroll-offset:44px] 1`] = `
-"<div class="_--scroll-offsetc56px_ lgc_--scroll-offsetc44px_">
+exports[`arbitrary properties > [--scroll-offset:56px] lg:[--scroll-offset:44px] 1`] = `
+"<div class=\\"_--scroll-offsetc56px_ lgc_--scroll-offsetc44px_\\">
       <!-- ... -->
     </div>"
 `;
 
-exports[`arbitrary properties [mask-type:luminance] 1`] = `
-"<div class="_mask-typecluminance_">
+exports[`arbitrary properties > [mask-type:luminance] 1`] = `
+"<div class=\\"_mask-typecluminance_\\">
       <!-- ... -->
     </div>"
 `;
 
-exports[`arbitrary properties [mask-type:luminance] hover:[mask-type:alpha] 1`] = `
-"<div class="_mask-typecluminance_ hoverc_mask-typecalpha_">
+exports[`arbitrary properties > [mask-type:luminance] hover:[mask-type:alpha] 1`] = `
+"<div class=\\"_mask-typecluminance_ hoverc_mask-typecalpha_\\">
       <!-- ... -->
     </div>"
 `;

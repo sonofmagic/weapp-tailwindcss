@@ -205,13 +205,18 @@ const config = {
           },
           {
             to: 'docs/api/', // 'api' is the 'out' directory
-            label: 'API',
+            label: 'Types',
             position: 'left'
           },
           {
             type: 'doc',
             label: '常见问题',
             docId: 'issues/index'
+          },
+          {
+            type: 'doc',
+            label: '迁移',
+            docId: 'migrations/v2'
           },
           {
             href: 'https://icebreaker.top/',

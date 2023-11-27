@@ -93,9 +93,9 @@ module.exports = {
     })
   ],
   corePlugins: {
-    preflight: false,
+    preflight: false
     // 要把原先的 display corePlugins 去掉，不然无法去除 .list-item
-    display: false
+    // display: false
   },
   theme: {}
 }

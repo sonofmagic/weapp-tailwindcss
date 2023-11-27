@@ -1,12 +1,11 @@
 import path from 'node:path'
-import { describe, it, expect } from 'vitest'
 import { build } from 'vite'
 import * as Diff from 'diff'
 import type { InlineConfig, Plugin } from 'vite'
 import type { RollupOutput } from 'rollup'
-
+import prettier from 'prettier'
 import { defu } from 'defu'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/vite/index'
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
 // const isApp = process.env.UNI_PLATFORM === 'app-plus'
@@ -65,24 +64,35 @@ async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result:
     expect(output.length).toBe(3)
     expect(output[0].type).toBe('chunk')
     expect(output[0].code).toMatchSnapshot()
+    expect(/\.css$/.test(output[1].fileName)).toBe(true)
     expect(output[1].type).toBe('asset')
     if (output[1].type === 'asset') {
-      expect(output[1].source).toMatchSnapshot()
+      const r = await prettier.format(output[1].source.toString(), {
+        parser: 'css'
+      })
+      expect(r).toMatchSnapshot()
     }
+    expect(/\.html$/.test(output[2].fileName)).toBe(true)
     expect(output[2].type).toBe('asset')
     if (output[2].type === 'asset') {
-      expect(output[2].source).toMatchSnapshot()
+      const r = await prettier.format(output[2].source.toString(), {
+        parser: 'html'
+      })
+      expect(r).toMatchSnapshot()
     }
   }
 }
 
+const htmlMatcher = (p: string) => {
+  return p.endsWith('.html')
+}
 describe('vite test', () => {
   it('vite common build', async () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -95,12 +105,31 @@ describe('vite test', () => {
     )
   })
 
+  it('vite common build with rem2rpx', async () => {
+    let timeStart: number
+    let timeTaken: number
+    await assertSnap(
+      uvwt({
+        htmlMatcher,
+        onStart() {
+          timeStart = performance.now()
+        },
+        onEnd() {
+          timeTaken = performance.now() - timeStart
+          // 不会执行
+          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+        },
+        rem2rpx: true
+      })
+    )
+  })
+
   it('vite common build twice for cache', async () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -113,7 +142,7 @@ describe('vite test', () => {
     )
     await assertSnap(
       uvwt({
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -132,7 +161,7 @@ describe('vite test', () => {
     await assertSnap(
       uvwt({
         mangle: true,
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -151,7 +180,7 @@ describe('vite test', () => {
     await assertSnap(
       uvwt({
         mangle: {},
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -174,7 +203,7 @@ describe('vite test', () => {
             classPrefix: ''
           }
         },
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -219,7 +248,7 @@ describe('vite test', () => {
             return /[[\]]/.test(className)
           }
         },
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         onStart() {
           timeStart = performance.now()
         },
@@ -238,7 +267,7 @@ describe('vite test', () => {
     await assertSnap(
       uvwt({
         disabled: true,
-        htmlMatcher: ['**/*.html'],
+        htmlMatcher,
         mangle: {
           mangleClassFilter() {
             return true

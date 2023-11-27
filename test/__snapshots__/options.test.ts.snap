@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`get options default options 1`] = `
+exports[`get options > default options 1`] = `
 {
   "arbitraryValues": {
     "allowDoubleQuotes": false,
@@ -34,7 +34,9 @@ exports[`get options default options 1`] = `
     "set": [Function],
     "setHashValue": [Function],
   },
-  "cssChildCombinatorReplaceValue": "view + view",
+  "cssChildCombinatorReplaceValue": [
+    "view",
+  ],
   "cssMatcher": [Function],
   "cssPreflight": {
     "border-color": "currentColor",
@@ -42,15 +44,17 @@ exports[`get options default options 1`] = `
     "border-width": "0",
     "box-sizing": "border-box",
   },
-  "cssPreflightRange": "view",
   "cssSelectorReplacement": {
     "root": "page",
-    "universal": "view",
+    "universal": [
+      "view",
+      "text",
+    ],
   },
   "customAttributes": {},
   "customReplaceDictionary": {
     "!": "i",
-    """: "x",
+    "\\"": "x",
     "#": "h",
     "$": "r",
     "%": "p",
@@ -71,7 +75,7 @@ exports[`get options default options 1`] = `
     "?": "o",
     "@": "j",
     "[": "_",
-    "\\": "w",
+    "\\\\": "w",
     "]": "_",
     "^": "k",
     "\`": "v",
@@ -85,7 +89,7 @@ exports[`get options default options 1`] = `
   "disabledDefaultTemplateHandler": false,
   "escapeMap": {
     "!": "i",
-    """: "x",
+    "\\"": "x",
     "#": "h",
     "$": "r",
     "%": "p",
@@ -106,7 +110,7 @@ exports[`get options default options 1`] = `
     "?": "o",
     "@": "j",
     "[": "_",
-    "\\": "w",
+    "\\\\": "w",
     "]": "_",
     "^": "k",
     "\`": "v",
@@ -118,18 +122,15 @@ exports[`get options default options 1`] = `
   "htmlMatcher": [Function],
   "injectAdditionalCssVarScope": false,
   "inlineWxs": false,
-  "jsEscapeStrategy": "replace",
   "jsHandler": [Function],
   "jsMatcher": [Function],
   "jsPreserveClass": [Function],
   "mainCssChunkMatcher": [Function],
-  "minifiedJs": false,
   "onEnd": [Function],
   "onLoad": [Function],
   "onStart": [Function],
   "onUpdate": [Function],
   "patch": [Function],
-  "replaceUniversalSelectorWith": "view",
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {

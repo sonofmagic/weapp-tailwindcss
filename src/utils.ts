@@ -1,4 +1,4 @@
-// import { createDefu } from 'defu'
+import { createDefu } from 'defu'
 // import type { Defu } from 'defu'
 import type { InternalUserDefinedOptions } from '@/types'
 
@@ -85,4 +85,9 @@ export function removeExt(file: string) {
 
 export { default as defu } from 'defu'
 
-// export const defu = createDefu()
+export const defuOverrideArray = createDefu((obj, key, value) => {
+  if (Array.isArray(obj[key]) && Array.isArray(value)) {
+    obj[key] = value
+    return true
+  }
+})

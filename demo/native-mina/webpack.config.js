@@ -5,15 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWebpackPlugin = require('./plugin/MinaWebpackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
-let UnifiedWebpackPluginV5
-if (process.env.LOCAL) {
-  console.log('use local built webpack plugin')
-  const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist')
-  UnifiedWebpackPluginV5 = plugin
-} else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  UnifiedWebpackPluginV5 = plugin
-}
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 const debuggable = process.env.BUILD_TYPE !== 'release'
 
@@ -91,6 +83,7 @@ module.exports = {
     }),
     new UnifiedWebpackPluginV5({
       appType: 'native',
+      rem2rpx: true
       // mangle: true,
       // cssPreflight: {
       //   "border-color": false

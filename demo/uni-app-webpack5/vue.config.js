@@ -1,12 +1,13 @@
-let UnifiedWebpackPluginV5
-if (process.env.LOCAL) {
-  console.log('use local built webpack plugin')
-  const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist')
-  UnifiedWebpackPluginV5 = plugin
-} else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  UnifiedWebpackPluginV5 = plugin
-}
+// let UnifiedWebpackPluginV5
+// if (process.env.LOCAL) {
+//   console.log('use local built webpack plugin')
+//   const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist')
+//   UnifiedWebpackPluginV5 = plugin
+// } else {
+//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
+//   UnifiedWebpackPluginV5 = plugin
+// }
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { WeappTailwindcssDisabled } = require('./platform')
 // const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
@@ -35,7 +36,8 @@ const config = {
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-        }
+        },
+        rem2rpx: true
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())

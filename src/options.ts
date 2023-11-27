@@ -1,57 +1,30 @@
-import { isMatch } from 'micromatch'
-import type { InternalUserDefinedOptions, UserDefinedOptions, GlobOrFunctionMatchers, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
+import type { InternalUserDefinedOptions, UserDefinedOptions, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
 import { createJsHandler } from './js'
 import { defaultOptions } from './defaults'
-import { defu, isMap } from '@/utils'
+import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { SimpleMappingChars2String, MappingChars2String } from '@/escape'
+import { SimpleMappingChars2String } from '@/escape'
 import { createPatch } from '@/tailwindcss/patcher'
-import { isProd } from '@/env'
 import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
 
-// import { mangleClassRegex } from '@/mangle/expose'
-
-function createGlobMatcher(pattern: string | string[]) {
-  return function (file: string) {
-    return isMatch(file, pattern)
-  }
-}
-
-function normalizeMatcher(options: UserDefinedOptions, key: GlobOrFunctionMatchers) {
-  if (typeof options[key] === 'string' || Array.isArray(options[key])) {
-    options[key] = createGlobMatcher(options[key] as string | string[])
-  }
-}
-
 export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
-  if (options.supportCustomLengthUnitsPatch === true) {
-    options.supportCustomLengthUnitsPatch = undefined
-  }
-
   if (options.customReplaceDictionary === undefined || options.customReplaceDictionary === 'simple') {
     options.customReplaceDictionary = SimpleMappingChars2String
-  } else if (options.customReplaceDictionary === 'complex') {
-    options.customReplaceDictionary = MappingChars2String
   }
 
-  normalizeMatcher(options, 'cssMatcher')
-  normalizeMatcher(options, 'htmlMatcher')
-  normalizeMatcher(options, 'jsMatcher')
-  normalizeMatcher(options, 'wxsMatcher')
-  normalizeMatcher(options, 'mainCssChunkMatcher')
-
-  const result = defu<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(options, defaultOptions as InternalUserDefinedOptions, {
-    minifiedJs: isProd()
-  })
+  const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
+    options as InternalUserDefinedOptions,
+    defaultOptions as InternalUserDefinedOptions,
+    {}
+  )
 
   const {
     cssPreflight,
     customRuleCallback,
     cssPreflightRange,
-    replaceUniversalSelectorWith,
     customAttributes,
     customReplaceDictionary,
     supportCustomLengthUnitsPatch,
@@ -61,8 +34,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     injectAdditionalCssVarScope,
     jsPreserveClass,
     disabledDefaultTemplateHandler,
-    jsEscapeStrategy,
-    cssSelectorReplacement
+    cssSelectorReplacement,
+    rem2rpx
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -73,28 +46,26 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     : Object.entries(customAttributes)
 
   // const custom = customAttributesEntities.length > 0
-  const { escapeMap, minifiedJs } = result
+  const { escapeMap } = result
   const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
   initMangle(options.mangle)
   const styleHandler = createStyleHandler({
     cssInjectPreflight,
     customRuleCallback,
     cssPreflightRange,
-    replaceUniversalSelectorWith,
     escapeMap,
     mangleContext,
     cssChildCombinatorReplaceValue,
     injectAdditionalCssVarScope,
-    cssSelectorReplacement
+    cssSelectorReplacement,
+    rem2rpx
   })
   result.styleHandler = styleHandler
   const jsHandler = createJsHandler({
-    minifiedJs,
     escapeMap,
     mangleContext,
     arbitraryValues,
     jsPreserveClass,
-    strategy: jsEscapeStrategy,
     generateMap: true
   })
   result.jsHandler = jsHandler
