@@ -751,4 +751,11 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toMatchSnapshot()
   })
+
+  it('use with weapp-pandacss case 4 ', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `.space-y-4>:not([hidden])+:not([hidden]){--tw-border-opacity: 1;--tw-border-opacity: 1;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
 })

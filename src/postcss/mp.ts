@@ -38,7 +38,7 @@ const initialNodes = cssVars.map((x) => {
  */
 
 // eslint-disable-next-line unicorn/better-regex
-const PATTERNS = [/:not\(template\)\s*~\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/.source].join('|')
+const PATTERNS = [/:not\(template\)\s*[~+]\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
