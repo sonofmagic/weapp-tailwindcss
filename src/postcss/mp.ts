@@ -1,9 +1,9 @@
 import { Rule, Declaration } from 'postcss'
+import selectorParser from 'postcss-selector-parser'
 import cssVars from './cssVars'
 import { composeIsPseudo } from './shared'
 import { VariablesScopeSymbol } from './symbols'
 import type { IStyleHandlerOptions } from '@/types'
-
 const initialNodes = cssVars.map((x) => {
   return new Declaration({
     prop: x.prop,
@@ -41,8 +41,28 @@ const initialNodes = cssVars.map((x) => {
 const PATTERNS = [/:not\(template\)\s*[~+]\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
+export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
+  let b = false
+  let a = false
+
+  selectorParser((selectors) => {
+    selectors.walkPseudos((s) => {
+      if (s.parent?.length === 1) {
+        if (/^:?:before$/.test(s.value)) {
+          b = true
+        }
+        if (/^:?:after$/.test(s.value)) {
+          a = true
+        }
+      }
+    })
+  }).astSync(node)
+
+  return b && a
+}
+
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
-  if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+  if (isOnlyBeforeAndAfterPseudoElement(node)) {
     const nodes = node.nodes
     let c = 0
     for (const tryTestDecl of nodes) {
