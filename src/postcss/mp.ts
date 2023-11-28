@@ -1,6 +1,7 @@
 import { Rule, Declaration } from 'postcss'
 import cssVars from './cssVars'
 import { composeIsPseudo } from './shared'
+import { VariablesScopeSymbol } from './symbols'
 import type { IStyleHandlerOptions } from '@/types'
 
 const initialNodes = cssVars.map((x) => {
@@ -88,16 +89,27 @@ export function makePseudoVarRule() {
   return pseudoVarRule
 }
 
-export function remakeCssVarSelector(selectors: string[], cssPreflightRange: IStyleHandlerOptions['cssPreflightRange']) {
+export function remakeCssVarSelector(selectors: string[], options: IStyleHandlerOptions) {
+  const { cssPreflightRange, cssSelectorReplacement } = options
   if (
     cssPreflightRange === 'all' && // 默认对每个元素都生效
     !selectors.includes(':not(not)')
   ) {
     selectors.push(':not(not)')
   }
-
-  if (!selectors.includes('*')) {
-    selectors.unshift('*')
+  if (cssSelectorReplacement) {
+    if (Array.isArray(cssSelectorReplacement.universal)) {
+      if (
+        !cssSelectorReplacement.universal.every((x) => {
+          return selectors.includes(x)
+        }) &&
+        !selectors.includes('*')
+      ) {
+        selectors.unshift('*')
+      }
+    } else if (typeof cssSelectorReplacement.universal === 'string' && !selectors.includes(cssSelectorReplacement.universal) && !selectors.includes('*')) {
+      selectors.unshift('*')
+    }
   }
 
   return selectors
@@ -116,27 +128,29 @@ export function remakeCombinatorSelector(selector: string, cssChildCombinatorRep
 }
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
+  const { ctx, cssChildCombinatorReplaceValue, cssInjectPreflight, injectAdditionalCssVarScope } = options
   // css vars scope
-  node.selector = remakeCombinatorSelector(node.selector, options.cssChildCombinatorReplaceValue)
+  node.selector = remakeCombinatorSelector(node.selector, cssChildCombinatorReplaceValue)
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
-    node.selectors = remakeCssVarSelector(node.selectors, options.cssPreflightRange)
+    ctx?.variablesScopeWeakMap.set(node, VariablesScopeSymbol)
+    node.selectors = remakeCssVarSelector(node.selectors, options)
     node.before(makePseudoVarRule())
-    if (typeof options.cssInjectPreflight === 'function') {
-      node.append(...options.cssInjectPreflight())
+    if (typeof cssInjectPreflight === 'function') {
+      node.append(...cssInjectPreflight())
     }
   }
-  if (options.injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
+  if (injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
     const syntheticRule = new Rule({
       selectors: ['*', '::after', '::before'],
       nodes: initialNodes
     })
-    syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options.cssPreflightRange)
+    syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
     node.before(syntheticRule)
     node.before(makePseudoVarRule())
-    if (typeof options.cssInjectPreflight === 'function') {
-      syntheticRule.append(...options.cssInjectPreflight())
+    if (typeof cssInjectPreflight === 'function') {
+      syntheticRule.append(...cssInjectPreflight())
     }
   }
 }

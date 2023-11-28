@@ -1,1 +1,1 @@
-export * from './postcss/plugin'
+export * from './postcss/plugins'

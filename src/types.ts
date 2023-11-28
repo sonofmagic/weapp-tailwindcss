@@ -5,6 +5,7 @@ import type { GeneratorResult } from '@babel/generator'
 // import type { sources } from 'webpack'
 import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { InjectPreflight } from './postcss/preflight'
+import type { IContext as PostcssContext } from './postcss/plugins/ctx'
 import type { ICreateCacheReturnType } from '@/cache'
 export type ItemOrItemArray<T> = T | T[]
 
@@ -42,6 +43,7 @@ export interface InternalCssSelectorReplacerOptions {
 export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
   mangleContext?: IMangleScopeContext
+  ctx?: PostcssContext
 } & RequiredStyleHandlerOptions
 
 export type JsHandlerReplaceResult = { code: string; map?: SourceMap }

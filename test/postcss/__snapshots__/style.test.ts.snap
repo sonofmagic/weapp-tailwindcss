@@ -758,6 +758,31 @@ view,.h5-a,.h5-abbr,.h5-address,.h5-area,.h5-article,.h5-aside,.h5-audio,.h5-b,.
 
 exports[`styleHandler > tailwindcss v2 jit should append view selector 1`] = `"::before,::after{--tw-border-opacity: 1;}"`;
 
+exports[`styleHandler > use with weapp-pandacss case 0  1`] = `
+"::before,::after{--tw-content: \\"\\";}
+view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+`;
+
+exports[`styleHandler > use with weapp-pandacss case 1  1`] = `
+"::before,::after{--tw-content: \\"\\";}
+view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+`;
+
+exports[`styleHandler > use with weapp-pandacss case 2  1`] = `
+"::before,::after{--tw-content: \\"\\";}
+view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+`;
+
+exports[`styleHandler > use with weapp-pandacss case 2  2`] = `
+"::before,::after{--tw-content: \\"\\";}
+view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+`;
+
+exports[`styleHandler > use with weapp-pandacss case 3  1`] = `
+"::before,::after{--tw-content: \\"\\";}
+view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+`;
+
 exports[`styleHandler > utf8 charset 1`] = `
 ".after_c_content-_bl__q_u6211u662fu4f2au5143u7d20_q__br_::after {
     --tw-content: '我是伪元素';

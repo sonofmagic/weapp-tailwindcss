@@ -716,4 +716,39 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toBe('.aa,bb:not(.weapp-tw-ig),view:not(.weapp-tw-ig),text:not(.weapp-tw-ig),::before,::after{color:red;}')
   })
+
+  it('use with weapp-pandacss case 0 ', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `:is(view,text),view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('use with weapp-pandacss case 1 ', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `*,:is(view,text),view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('use with weapp-pandacss case 2 ', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `*,:is(view,text),::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('use with weapp-pandacss case 2 ', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `*,view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it('use with weapp-pandacss case 3 ', async () => {
+    const { styleHandler } = getOptions()
+    const rawCode = `*,view,text,:is(view,text),:is(view,text),::before,::after,*{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
 })
