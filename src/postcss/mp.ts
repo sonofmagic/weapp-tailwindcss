@@ -1,9 +1,8 @@
 import { Rule, Declaration } from 'postcss'
+import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 import cssVars from './cssVars'
 import { composeIsPseudo } from './shared'
-import { VariablesScopeSymbol } from './symbols'
 import type { IStyleHandlerOptions } from '@/types'
-
 const initialNodes = cssVars.map((x) => {
   return new Declaration({
     prop: x.prop,
@@ -42,7 +41,7 @@ const PATTERNS = [/:not\(template\)\s*[~+]\s*:not\(template\)/.source, /:not\(\[
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
-  if (/:?:before/.test(node.selector) && /:?:after/.test(node.selector)) {
+  if (isOnlyBeforeAndAfterPseudoElement(node)) {
     const nodes = node.nodes
     let c = 0
     for (const tryTestDecl of nodes) {
@@ -134,7 +133,7 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
-    ctx?.variablesScopeWeakMap.set(node, VariablesScopeSymbol)
+    ctx?.markVariablesScope(node)
     node.selectors = remakeCssVarSelector(node.selectors, options)
     node.before(makePseudoVarRule())
     if (typeof cssInjectPreflight === 'function') {
