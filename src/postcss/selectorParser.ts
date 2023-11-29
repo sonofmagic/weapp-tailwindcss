@@ -4,7 +4,7 @@ import type { Rule } from 'postcss'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
-const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {
+const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
   const { escapeMap, mangleContext, cssSelectorReplacement } = options
 
   const transform: SyncProcessor = (selectors) => {
@@ -38,15 +38,46 @@ const createTransform = (rule: Rule, options: IStyleHandlerOptions) => {
   return transform
 }
 
-const getTransformer = (rule: Rule, options: IStyleHandlerOptions) => {
-  return selectorParser(createTransform(rule, options))
+const getRuleTransformer = (rule: Rule, options: IStyleHandlerOptions) => {
+  return selectorParser(createRuleTransform(rule, options))
 }
 
-export const transformSync = (rule: Rule, options: IStyleHandlerOptions) => {
-  const transformer = getTransformer(rule, options)
+export const ruleTransformSync = (rule: Rule, options: IStyleHandlerOptions) => {
+  const transformer = getRuleTransformer(rule, options)
 
   return transformer.transformSync(rule, {
     lossless: false,
     updateSelector: true
   })
 }
+
+export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
+  let b = false
+  let a = false
+
+  selectorParser((selectors) => {
+    selectors.walkPseudos((s) => {
+      if (s.parent?.length === 1) {
+        if (/^:?:before$/.test(s.value)) {
+          b = true
+        }
+        if (/^:?:after$/.test(s.value)) {
+          a = true
+        }
+      }
+    })
+  }).astSync(node)
+
+  return b && a
+}
+
+export const fallbackRemove = selectorParser((selectors) => {
+  selectors.walk((selector) => {
+    if (selector.type === 'universal') {
+      selector.parent?.remove()
+    }
+    if (selector.type === 'pseudo' && selector.value === ':is') {
+      selector.parent?.remove()
+    }
+  })
+})

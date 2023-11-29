@@ -1,21 +1,9 @@
 import type { PluginCreator, Plugin } from 'postcss'
-import selectorParser from 'postcss-selector-parser'
 import { testIfVariablesScope } from '../mp'
-import { VariablesScopeSymbol } from '../symbols'
+import { fallbackRemove } from '../selectorParser'
 import type { IStyleHandlerOptions } from '@/types'
 import { postcssPlugin } from '@/constants'
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
-
-const fallback = selectorParser((selectors) => {
-  selectors.walk((selector) => {
-    if (selector.type === 'universal') {
-      selector.parent?.remove()
-    }
-    if (selector.type === 'pseudo' && selector.value === ':is') {
-      selector.parent?.remove()
-    }
-  })
-})
 
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   options: IStyleHandlerOptions = {
@@ -31,14 +19,14 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     p.OnceExit = (root) => {
       root.walkRules((rule) => {
         if (ctx) {
-          if (ctx.variablesScopeWeakMap.get(rule) === VariablesScopeSymbol) {
-            fallback.transformSync(rule, {
+          if (ctx.isVariablesScope(rule)) {
+            fallbackRemove.transformSync(rule, {
               updateSelector: true,
               lossless: false
             })
           }
         } else if (testIfVariablesScope(rule)) {
-          fallback.transformSync(rule, {
+          fallbackRemove.transformSync(rule, {
             updateSelector: true,
             lossless: false
           })

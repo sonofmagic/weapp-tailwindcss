@@ -1,5 +1,5 @@
 import type { PluginCreator, Plugin, AtRule } from 'postcss'
-import { transformSync } from '../selectorParser'
+import { ruleTransformSync } from '../selectorParser'
 import { commonChunkPreflight } from '../mp'
 import type { IStyleHandlerOptions } from '@/types'
 import { postcssPlugin } from '@/constants'
@@ -19,7 +19,7 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
   const p: Plugin = {
     postcssPlugin,
     Rule(rule) {
-      transformSync(rule, options)
+      ruleTransformSync(rule, options)
     },
     AtRule(atRule) {
       if (isAtMediaHover(atRule)) {
