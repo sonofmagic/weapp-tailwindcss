@@ -36,7 +36,7 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, \\"Helvetica Neue\\", Arial, \\"Noto Sans\\", sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\", \\"Noto Color Emoji\\";
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-feature-settings: normal;
   font-variation-settings: normal;
 }
@@ -80,7 +80,7 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-feature-settings: normal;
   font-variation-settings: normal;
   font-size: 1em;
@@ -224,7 +224,7 @@ textarea::placeholder {
 }
 
 button,
-[role=\\"button\\"] {
+[role="button"] {
   cursor: pointer;
 }
 :disabled {
@@ -461,34 +461,34 @@ exports[`postcss plugin > base utilities output 1`] = `
 .w-10 {
     width: 2.5rem
 }
-.bg-\\\\[rgba\\\\(255\\\\2c 254\\\\2c 253\\\\2c \\\\.5\\\\)\\\\] {
+.bg-\\[rgba\\(255\\2c 254\\2c 253\\2c \\.5\\)\\] {
     background-color: rgba(255,254,253,.5)
 }"
 `;
 
 exports[`postcss plugin > before:content-['+'] 1`] = `
-".before\\\\:content-\\\\[\\\\'\\\\+\\\\'\\\\]::before {
+".before\\:content-\\[\\'\\+\\'\\]::before {
     --tw-content: '+';
     content: var(--tw-content)
 }"
 `;
 
 exports[`postcss plugin > double quote after class 1`] = `
-".after\\\\:content-\\\\[\\\\\\"\\\\5BF9\\\\9152\\\\5F53\\\\6B4C\\\\FF0C\\\\4EBA\\\\751F\\\\51E0\\\\4F55\\\\\\"\\\\]::after {
-    --tw-content: \\"对酒当歌，人生几何\\";
+".after\\:content-\\[\\"\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\"\\]::after {
+    --tw-content: "对酒当歌，人生几何";
     content: var(--tw-content)
 }"
 `;
 
 exports[`postcss plugin > single quote after class 1`] = `
-".after\\\\:content-\\\\[\\\\'\\\\5BF9\\\\9152\\\\5F53\\\\6B4C\\\\FF0C\\\\4EBA\\\\751F\\\\51E0\\\\4F55\\\\'\\\\]::after {
+".after\\:content-\\[\\'\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\'\\]::after {
     --tw-content: '对酒当歌，人生几何';
     content: var(--tw-content)
 }"
 `;
 
 exports[`postcss plugin > utf-8 compat after:content-['我是伪元素'] 1`] = `
-".after\\\\:content-\\\\[\\\\'\\\\6211\\\\662F\\\\4F2A\\\\5143\\\\7D20\\\\'\\\\]::after {
+".after\\:content-\\[\\'\\6211\\662F\\4F2A\\5143\\7D20\\'\\]::after {
     --tw-content: '我是伪元素';
     content: var(--tw-content)
 }"

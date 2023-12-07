@@ -2,7 +2,7 @@
 
 exports[`responsive-design > 2xl:text-sm 1`] = `
 "@media (min-width: 1536px) {
-    .\\\\32xl\\\\:text-sm {
+    .\\32xl\\:text-sm {
         font-size: 0.875rem;
         line-height: 1.25rem
     }
@@ -52,7 +52,7 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string typ
 
 exports[`responsive-design > xl:text-sm 1`] = `
 "@media (min-width: 1280px) {
-    .xl\\\\:text-sm {
+    .xl\\:text-sm {
         font-size: 0.875rem;
         line-height: 1.25rem
     }
