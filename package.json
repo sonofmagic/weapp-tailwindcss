@@ -31,6 +31,11 @@
       "require": "./dist/webpack.js",
       "import": "./dist/webpack.mjs"
     },
+    "./webpack4": {
+      "types": "./dist/webpack4.d.ts",
+      "require": "./dist/webpack4.js",
+      "import": "./dist/webpack4.mjs"
+    },
     "./core": {
       "types": "./dist/core.d.ts",
       "require": "./dist/core.js",
@@ -246,6 +251,7 @@
     "@babel/types": "^7.23.5",
     "@csstools/postcss-is-pseudo-class": "^4.0.3",
     "@tailwindcss-mangle/shared": "^2.2.2",
+    "@types/webpack4": "npm:@types/webpack@4",
     "@weapp-core/escape": "^2.0.0",
     "@weapp-core/regex": "^1.0.1",
     "debug": "^4.3.4",
@@ -258,7 +264,8 @@
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-selector-parser": "^6.0.13",
     "semver": "^7.5.4",
-    "tailwindcss-patch": "^2.2.2"
+    "tailwindcss-patch": "^2.2.2",
+    "webpack-sources": "^3.2.3"
   },
   "packageManager": "pnpm@8.10.2",
   "engines": {
