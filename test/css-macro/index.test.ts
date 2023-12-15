@@ -2,6 +2,7 @@
 import postcss from 'postcss'
 // import twPlugin from '../../dist/css-macro'
 import twPlugin from '@/css-macro'
+import { normalComment } from '@/css-macro/constants'
 import { getCss } from '#test/helpers/getTwCss'
 import postcssPlugin from '@/css-macro/postcss'
 
@@ -91,6 +92,38 @@ describe('css-macro tailwindcss plugin', () => {
     const { css } = await getCss('', {
       css: `.apply-test {
         @apply ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-red-400;
+      }`,
+      twConfig: {
+        plugins: [twPlugin]
+      }
+    })
+    expect(css).toMatchSnapshot('tw')
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
+  it('dynamic apply case 7', async () => {
+    const { css } = await getCss('', {
+      css: `.apply-test {
+        @apply ifdef-[H5_||_MP-WEIXIN]:bg-blue-400 ifndef-[H5_||_MP-WEIXIN]:bg-red-400;
+      }`,
+      twConfig: {
+        plugins: [twPlugin]
+      }
+    })
+    expect(css).toMatchSnapshot('tw')
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined
+    })
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
+  it('dynamic apply case 8', async () => {
+    const { css } = await getCss('', {
+      css: `.apply-test {
+        @apply ifdef-[H5\\_||\\_MP-WEIXIN]:bg-blue-400 ifndef-[H5\\_||\\_MP-WEIXIN]:bg-red-400;
       }`,
       twConfig: {
         plugins: [twPlugin]
@@ -225,6 +258,11 @@ describe('css-macro tailwindcss plugin', () => {
     expect(root).toBeDefined()
     root = postcss.parse('/*  #ifdef  %PLATFORM%  */\n.a{}/*  #endif  */')
     expect(root).toBeDefined()
+  })
+
+  it('normalComment return self', () => {
+    // @ts-ignore
+    expect(normalComment([])).toEqual([])
   })
 
   it('fix comment eol case 0', async () => {

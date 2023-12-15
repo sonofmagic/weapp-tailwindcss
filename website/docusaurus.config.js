@@ -272,12 +272,20 @@ const config = {
             title: '更多',
             items: [
               {
+                label: 'GitHub',
+                href: 'https://github.com/sonofmagic/weapp-tailwindcss'
+              },
+              {
                 label: '博客',
                 href: 'https://icebreaker.top'
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/sonofmagic/weapp-tailwindcss'
+                label: '@icestack/ui',
+                href: 'https://ui.icebreaker.top/zh-CN'
+              },
+              {
+                label: 'weapp-pandacss',
+                href: 'https://github.com/sonofmagic/weapp-pandacss'
               }
             ]
           }

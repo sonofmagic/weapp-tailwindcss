@@ -71,21 +71,21 @@ exports[`Arbitrary groups > group case 0 1`] = `
     --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
     box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
 }
-.ring-slate-900\\\\/5 {
+.ring-slate-900\\/5 {
     --tw-ring-color: rgb(15 23 42 / 0.05)
 }
-.hover\\\\:bg-sky-500:hover {
+.hover\\:bg-sky-500:hover {
     --tw-bg-opacity: 1;
     background-color: rgb(14 165 233 / var(--tw-bg-opacity))
 }
-.hover\\\\:ring-sky-500:hover {
+.hover\\:ring-sky-500:hover {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgb(14 165 233 / var(--tw-ring-opacity))
 }
-.group:hover .group-hover\\\\:stroke-white {
+.group:hover .group-hover\\:stroke-white {
     stroke: #fff
 }
-.group:hover .group-hover\\\\:text-white {
+.group:hover .group-hover\\:text-white {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity))
 }"
@@ -95,30 +95,30 @@ exports[`Arbitrary groups > group case 1 1`] = `
 ".invisible {
     visibility: hidden
 }
-.hover\\\\:bg-slate-100:hover {
+.hover\\:bg-slate-100:hover {
     --tw-bg-opacity: 1;
     background-color: rgb(241 245 249 / var(--tw-bg-opacity))
 }
-.hover\\\\:bg-slate-200:hover {
+.hover\\:bg-slate-200:hover {
     --tw-bg-opacity: 1;
     background-color: rgb(226 232 240 / var(--tw-bg-opacity))
 }
-.group\\\\/item:hover .group-hover\\\\/item\\\\:visible {
+.group\\/item:hover .group-hover\\/item\\:visible {
     visibility: visible
 }
-.group\\\\/edit:hover .group-hover\\\\/edit\\\\:translate-x-0 {
+.group\\/edit:hover .group-hover\\/edit\\:translate-x-0 {
     --tw-translate-x: 0px;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
 }
-.group\\\\/edit:hover .group-hover\\\\/edit\\\\:translate-x-0\\\\.5 {
+.group\\/edit:hover .group-hover\\/edit\\:translate-x-0\\.5 {
     --tw-translate-x: 0.125rem;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
 }
-.group\\\\/edit:hover .group-hover\\\\/edit\\\\:text-gray-700 {
+.group\\/edit:hover .group-hover\\/edit\\:text-gray-700 {
     --tw-text-opacity: 1;
     color: rgb(55 65 81 / var(--tw-text-opacity))
 }
-.group\\\\/edit:hover .group-hover\\\\/edit\\\\:text-slate-500 {
+.group\\/edit:hover .group-hover\\/edit\\:text-slate-500 {
     --tw-text-opacity: 1;
     color: rgb(100 116 139 / var(--tw-text-opacity))
 }"
@@ -128,13 +128,13 @@ exports[`Arbitrary groups > group case 2 1`] = `
 ".hidden {
     display: none
 }
-.group.is-published .group-\\\\[\\\\.is-published\\\\]\\\\:block {
+.group.is-published .group-\\[\\.is-published\\]\\:block {
     display: block
 }"
 `;
 
 exports[`Arbitrary groups > group case 3 1`] = `
-":nth-of-type(3) .group .group-\\\\[\\\\:nth-of-type\\\\(3\\\\)_\\\\&\\\\]\\\\:block {
+":nth-of-type(3) .group .group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block {
     display: block
 }"
 `;
@@ -164,7 +164,7 @@ exports[`Arbitrary groups > peer case 0 1`] = `
     --tw-text-opacity: 1;
     color: rgb(51 65 85 / var(--tw-text-opacity))
 }
-.peer:invalid ~ .peer-invalid\\\\:visible {
+.peer:invalid ~ .peer-invalid\\:visible {
     visibility: visible
 }"
 `;
@@ -176,17 +176,17 @@ exports[`Arbitrary groups > peer case 1 1`] = `
 .hidden {
     display: none
 }
-.peer\\\\/draft:checked ~ .peer-checked\\\\/draft\\\\:block {
+.peer\\/draft:checked ~ .peer-checked\\/draft\\:block {
     display: block
 }
-.peer\\\\/published:checked ~ .peer-checked\\\\/published\\\\:block {
+.peer\\/published:checked ~ .peer-checked\\/published\\:block {
     display: block
 }
-.peer\\\\/draft:checked ~ .peer-checked\\\\/draft\\\\:text-sky-500 {
+.peer\\/draft:checked ~ .peer-checked\\/draft\\:text-sky-500 {
     --tw-text-opacity: 1;
     color: rgb(14 165 233 / var(--tw-text-opacity))
 }
-.peer\\\\/published:checked ~ .peer-checked\\\\/published\\\\:text-sky-500 {
+.peer\\/published:checked ~ .peer-checked\\/published\\:text-sky-500 {
     --tw-text-opacity: 1;
     color: rgb(14 165 233 / var(--tw-text-opacity))
 }"
@@ -196,7 +196,7 @@ exports[`Arbitrary groups > peer case 2 1`] = `
 ".hidden {
     display: none
 }
-.peer.is-dirty:required ~ .peer-\\\\[\\\\.is-dirty\\\\]\\\\:peer-required\\\\:block {
+.peer.is-dirty:required ~ .peer-\\[\\.is-dirty\\]\\:peer-required\\:block {
     display: block
 }"
 `;

@@ -2,17 +2,17 @@
 
 exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"const a = 'afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_'"`;
 
-exports[`jsHandler > 'common' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = \\"afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_\\""`;
+exports[`jsHandler > 'common' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_""`;
 
 exports[`jsHandler > 'common' img url case 1`] = `
 "data: {
-      classNames: \\"bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__\\"
+      classNames: "bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__"
     }"
 `;
 
 exports[`jsHandler > 'common' mpx jit classNames 1`] = `
 "data: {
-      classNames: \\"text-_h123456_ text-_50px_ bg-_hfff_\\"
+      classNames: "text-_h123456_ text-_50px_ bg-_hfff_"
     }"
 `;
 
@@ -23,28 +23,28 @@ exports[`jsHandler > jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
 exports[`jsHandler > jsStringEscape getCase 0 1`] = `
 "const a = 'w-_100px_';
 
-eval('const b = \\\\'w-_99px_\\\\';\\\\nconsole.log(b)');"
+eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
 `;
 
 exports[`jsHandler > taro-url-before case 1`] = `
 "var findReg = /[!'()~]|%20|%00/g;
-var plusReg = /\\\\+/g;
+var plusReg = /\\+/g;
 var replaceCharMap = {
   '!': '%21',
-  \\"'\\": '%27',
+  "'": '%27',
   '(': '%28',
   ')': '%29',
   '~': '%7E',
   '%20': '+',
-  '%00': '\\\\x00'
+  '%00': '\\x00'
 };
 "
 `;
 
 exports[`jsHandler > unicode case 0 1`] = `
 "var replaceCharMap = {
-  \\"'\\": '%27',
-  '%00': '\\\\x00'
+  "'": '%27',
+  '%00': '\\x00'
 };
 "
 `;

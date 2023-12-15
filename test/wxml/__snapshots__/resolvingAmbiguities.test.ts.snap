@@ -1,11 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`resolving ambiguities > text-[#bada55] 1`] = `"<div class=\\"text-_hbada55_\\">...</div>"`;
+exports[`resolving ambiguities > text-[#bada55] 1`] = `"<div class="text-_hbada55_">...</div>"`;
 
-exports[`resolving ambiguities > text-[22px] 1`] = `"<div class=\\"text-_22px_\\">...</div>"`;
+exports[`resolving ambiguities > text-[22px] 1`] = `"<div class="text-_22px_">...</div>"`;
 
-exports[`resolving ambiguities > text-[color:var(--my-var)] 1`] = `"<div class=\\"text-_colorcvar_--my-var__\\">...</div>"`;
+exports[`resolving ambiguities > text-[color:var(--my-var)] 1`] = `"<div class="text-_colorcvar_--my-var__">...</div>"`;
 
-exports[`resolving ambiguities > text-[length:var(--my-var)] 1`] = `"<div class=\\"text-_lengthcvar_--my-var__\\">...</div>"`;
+exports[`resolving ambiguities > text-[length:var(--my-var)] 1`] = `"<div class="text-_lengthcvar_--my-var__">...</div>"`;
 
-exports[`resolving ambiguities > text-[var(--my-var)] 1`] = `"<div class=\\"text-_var_--my-var__\\">...</div>"`;
+exports[`resolving ambiguities > text-[var(--my-var)] 1`] = `"<div class="text-_var_--my-var__">...</div>"`;

@@ -79,6 +79,7 @@ const entries: IEntry[] = [
     input: {
       index: 'src/index.ts',
       webpack: 'src/webpack.ts',
+      webpack4: 'src/webpack4.ts',
       gulp: 'src/gulp.ts',
       postcss: 'src/postcss.ts',
       cli: 'src/cli.ts',

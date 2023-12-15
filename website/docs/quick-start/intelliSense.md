@@ -1,8 +1,10 @@
-# vscode tailwindcss 智能提示设置
+# IDE 智能提示设置
 
-> 确保你已经安装 [`Tailwind CSS IntelliSense 插件`](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+## VS Code
 
-## js,jsx,ts,tsx,vue...这类文件的智能提示
+> 首先，确保你已经安装 [`Tailwind CSS IntelliSense 插件`](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+
+### js,jsx,ts,tsx,vue...这类文件的智能提示
 
 配置好插件后，我们在写代码时，写到那些标签中的 `class=`,`className=`，这种场景时，智能提示一下子就可以出来。
 
@@ -57,7 +59,7 @@ const btn = AAA('')
 
 另外，你可以依据这个特性，修改/添加 `"tailwindCSS.experimental.classRegex"` 里的正则，然后自行封装一个方法，用来进行 `tailwindcss` 的智能提示。
 
-## wxml 的智能提示
+### wxml 的智能提示
 
 我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。
 
@@ -76,3 +78,27 @@ const btn = AAA('')
 智能提示就出来了:
 
 ![智能提示](./frameworks/img/wxml-i.png)
+
+## WebStorm
+
+> 和 `vscode` 方式类似，同样使用 `clsx` 函数
+
+1. 确保你的版本大于等于 [WebStorm 2023.1](https://www.jetbrains.com/webstorm/whatsnew/#version-2023-1-tailwind-css-configuration)
+
+2. 打开设置，前往 [Languages and Frameworks | Style Sheets | Tailwind CSS](https://www.jetbrains.com/help/webstorm/tailwind-css.html#ws_css_tailwind_configuration)
+
+3. 添加以下的配置:
+
+```json
+{
+  "experimental": {
+    "classRegex": ["clsx\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  }
+}
+```
+
+> 如果你使用 `class-variance-authority` 的 `cva` 函数，只需再添加 `"cva\\(([^)]*)\\)"` 正则即可。
+
+## HbuilderX
+
+<https://ext.dcloud.net.cn/plugin?id=8560>

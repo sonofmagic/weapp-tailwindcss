@@ -23,6 +23,9 @@ function HomepageHeader() {
             <span className="text-sky-500">tailwindcss</span>
           </h1>
           <h3>
+            <b className="text-[#07c160]">降低</b>开发维护成本，<b className="text-sky-500">提升</b>开发效率的
+          </h3>
+          <h3>
             <span className="text-[#07c160]">小程序</span> 使用 <span className="text-sky-500">tailwindcss</span> 全方面解决方案
           </h3>
           {/* <p>{siteConfig.title}</p> */}

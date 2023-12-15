@@ -47,14 +47,14 @@ exports[`vite test > source map case 0 4`] = `
 exports[`vite test > source map compare case 0 1`] = `"{\\"version\\":3,\\"file\\":\\"index-12baa5df.js\\",\\"sources\\":[\\"../../index.js\\"],\\"sourcesContent\\":[\\"import './index.css'\\\\n\\\\nconst className = 'flex bg-yellow-300/30 w-[100px] h-[100px] ' + \\\\\\"bg-[url('https://xxx.com/xx.webp')]\\\\\\"\\\\n\\\\ndocument.body.append(\`<div class=\\\\\\"\${className}\\\\\\">className</div>\`)\\\\n\\\\nconst el = document.createElement()\\\\n\\\\nel.classList.add('grid text-red-300/30 w-[99px]', \`h-[99px]\`, \\\\\\"bg-[url('https://yyy.com/xx.webp')]\\\\\\")\\\\n\\\\ndocument.body.appendChild(el)\\"],\\"names\\":[\\"className\\",\\"el\\"],\\"mappings\\":\\"ssBAEA,MAAMA,EAAY,gFAElB,SAAS,KAAK,OAAO,eAAeA,CAAS,mBAAmB,EAEhE,MAAMC,EAAK,SAAS,cAAe,EAEnCA,EAAG,UAAU,IAAI,gCAAiC,WAAY,qCAAqC,EAEnG,SAAS,KAAK,YAAYA,CAAE\\"}"`;
 
 exports[`vite test > vite common build 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -210,47 +210,47 @@ text,
 
 exports[`vite test > vite common build 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-    <div class=\\"w-_1d5rem_ bg-_h929292_\\">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build twice for cache 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -406,47 +406,47 @@ text,
 
 exports[`vite test > vite common build twice for cache 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-    <div class=\\"w-_1d5rem_ bg-_h929292_\\">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build twice for cache 4`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build twice for cache 5`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -602,47 +602,47 @@ text,
 
 exports[`vite test > vite common build twice for cache 6`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-    <div class=\\"w-_1d5rem_ bg-_h929292_\\">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle options 0 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex e f g h\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid i j\\",\\"k\\",\\"l\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex e f g h";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid i j","k","l");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options 0 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -798,47 +798,47 @@ text,
 
 exports[`vite test > vite common build with mangle options 0 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"a b\\">hello</div>
-    <div class=\\"c d\\">world</div>
+    <div class="a b">hello</div>
+    <div class="c d">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle options 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex tw-e tw-f tw-g tw-h\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid tw-i tw-j\\",\\"tw-k\\",\\"tw-l\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex tw-e tw-f tw-g tw-h";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid tw-i tw-j","tw-k","tw-l");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -994,47 +994,47 @@ text,
 
 exports[`vite test > vite common build with mangle options 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"tw-a tw-b\\">hello</div>
-    <div class=\\"tw-c tw-d\\">world</div>
+    <div class="tw-a tw-b">hello</div>
+    <div class="tw-c tw-d">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"tw-a tw-b tw-c tw-d tw-e\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"tw-f tw-g tw-h\\",\\"tw-i\\",\\"tw-j\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="tw-a tw-b tw-c tw-d tw-e";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("tw-f tw-g tw-h","tw-i","tw-j");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -1190,47 +1190,47 @@ text,
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"w-[55px] bg-[red]\\">hello</div>
-    <div class=\\"w-[1.5rem] bg-[#929292]\\">world</div>
+    <div class="w-[55px] bg-[red]">hello</div>
+    <div class="w-[1.5rem] bg-[#929292]">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 tw-e tw-f tw-g\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 tw-h\\",\\"tw-i\\",\\"tw-j\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 tw-e tw-f tw-g";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 tw-h","tw-i","tw-j");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -1386,47 +1386,47 @@ text,
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"tw-a tw-b\\">hello</div>
-    <div class=\\"tw-c tw-d\\">world</div>
+    <div class="tw-a tw-b">hello</div>
+    <div class="tw-c tw-d">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle true 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex tw-e tw-f tw-g tw-h\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid tw-i tw-j\\",\\"tw-k\\",\\"tw-l\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex tw-e tw-f tw-g tw-h";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid tw-i tw-j","tw-k","tw-l");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle true 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -1582,47 +1582,47 @@ text,
 
 exports[`vite test > vite common build with mangle true 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"tw-a tw-b\\">hello</div>
-    <div class=\\"tw-c tw-d\\">world</div>
+    <div class="tw-a tw-b">hello</div>
+    <div class="tw-c tw-d">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with rem2rpx 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with rem2rpx 2`] = `
 "::before,
 ::after {
-  --tw-content: \\"\\";
+  --tw-content: "";
 }
 view,
 text,
@@ -1778,40 +1778,40 @@ text,
 
 exports[`vite test > vite common build with rem2rpx 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-    <div class=\\"w-_1d5rem_ bg-_h929292_\\">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite disabled build 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300/30 w-[99px]\\",\\"h-[99px]\\",\\"bg-[url('https://yyy.com/xx.webp')]\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -1922,42 +1922,42 @@ exports[`vite test > vite disabled build 2`] = `
 .grid {
   display: grid;
 }
-.h-\\\\[100px\\\\] {
+.h-\\[100px\\] {
   height: 100px;
 }
-.h-\\\\[99px\\\\] {
+.h-\\[99px\\] {
   height: 99px;
 }
-.w-\\\\[1\\\\.5rem\\\\] {
+.w-\\[1\\.5rem\\] {
   width: 1.5rem;
 }
-.w-\\\\[100px\\\\] {
+.w-\\[100px\\] {
   width: 100px;
 }
-.w-\\\\[55px\\\\] {
+.w-\\[55px\\] {
   width: 55px;
 }
-.w-\\\\[99px\\\\] {
+.w-\\[99px\\] {
   width: 99px;
 }
-.bg-\\\\[\\\\#929292\\\\] {
+.bg-\\[\\#929292\\] {
   --tw-bg-opacity: 1;
   background-color: rgb(146 146 146 / var(--tw-bg-opacity));
 }
-.bg-\\\\[red\\\\] {
+.bg-\\[red\\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
 }
-.bg-yellow-300\\\\/30 {
+.bg-yellow-300\\/30 {
   background-color: #fde0474d;
 }
-.bg-\\\\[url\\\\(\\\\'https\\\\:\\\\/\\\\/xxx\\\\.com\\\\/xx\\\\.webp\\\\'\\\\)\\\\] {
+.bg-\\[url\\(\\'https\\:\\/\\/xxx\\.com\\/xx\\.webp\\'\\)\\] {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-\\\\[url\\\\(\\\\'https\\\\:\\\\/\\\\/yyy\\\\.com\\\\/xx\\\\.webp\\\\'\\\\)\\\\] {
+.bg-\\[url\\(\\'https\\:\\/\\/yyy\\.com\\/xx\\.webp\\'\\)\\] {
   background-image: url(https://yyy.com/xx.webp);
 }
-.text-red-300\\\\/30 {
+.text-red-300\\/30 {
   color: #fca5a54d;
 }
 "
@@ -1965,33 +1965,33 @@ exports[`vite test > vite disabled build 2`] = `
 
 exports[`vite test > vite disabled build 3`] = `
 "<!doctype html>
-<html lang=\\"en\\">
+<html lang="en">
   <head>
-    <meta charset=\\"UTF-8\\" />
+    <meta charset="UTF-8" />
     <script>
       var coverSupport =
-        \\"CSS\\" in window &&
-        typeof CSS.supports === \\"function\\" &&
-        (CSS.supports(\\"top: env(a)\\") || CSS.supports(\\"top: constant(a)\\"));
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
       document.write(
-        '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-          (coverSupport ? \\", viewport-fit=cover\\" : \\"\\") +
-          '\\" />',
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />',
       );
     </script>
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type=\\"module\\" crossorigin src=\\"/assets/index-l5iO2Hdc.js\\"></script>
-    <link rel=\\"stylesheet\\" crossorigin href=\\"/assets/index-zkoDkyQq.css\\" />
+    <script type="module" crossorigin src="/assets/index-l5iO2Hdc.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zkoDkyQq.css" />
   </head>
 
   <body>
-    <div id=\\"app\\">
+    <div id="app">
       <!--app-html-->
     </div>
-    <div class=\\"w-[55px] bg-[red]\\">hello</div>
-    <div class=\\"w-[1.5rem] bg-[#929292]\\">world</div>
+    <div class="w-[55px] bg-[red]">hello</div>
+    <div class="w-[1.5rem] bg-[#929292]">world</div>
   </body>
 </html>
 "
