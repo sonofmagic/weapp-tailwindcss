@@ -1466,7 +1466,7 @@ exports[`e2e > 'rax-app' 1`] = `
 "<view data-private-node-id="e-body-pages/index/index-2" style="">
   <view class="h5-div" data-private-node-id="n_40" id="root" style="">
     <view class="h5-div rax-view-v2" data-private-node-id="n_41" style="">****</view>
-    <view class="rax-view-v2 bg-_h123456_ text-_hfff_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_30px_ h-_100px_" data-private-node-id="n_43" style="">clsx</view>
+    <view class="h5-div rax-view-v2 bg-_h123456_ text-_hfff_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_50px_ h-_100px_" data-private-node-id="n_43" style="">clsx</view>
     <view class="h5-div rax-view-v2 bg-_h654321_ darkcbg-_h666555_ h-10 w-10" data-private-node-id="n_45" style=""></view>
     <view class="h5-div rax-view-v2 index--homeContainer--npg8wSy" data-private-node-id="n_46" style="">
       <image
@@ -1480,7 +1480,7 @@ exports[`e2e > 'rax-app' 1`] = `
       <text class="rax-text-v2 index--homeInfo--Kmw_BNe" data-private-node-id="n_50" space="" style="">More information about Rax</text>
       <text class="rax-text-v2 index--homeInfo--Kmw_BNe" data-private-node-id="n_52" space="" style="">Visit https://rax.js.org</text>
     </view>
-    <view class="rax-view-v2" data-private-node-id="n_54" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+    <view class="h5-div rax-view-v2 p-_20px_ -mt-2 mb-_-20px_" data-private-node-id="n_54" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
     <view class="h5-div rax-view-v2 space-y-_1d6rem_ w-_200p_" data-private-node-id="n_56" style="">
       <view class="h5-div rax-view-v2 w-_300rpx_ text-black text-opacity-_0d19_" data-private-node-id="n_57" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
       <view class="h5-div rax-view-v2 min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-private-node-id="n_59" style="">
