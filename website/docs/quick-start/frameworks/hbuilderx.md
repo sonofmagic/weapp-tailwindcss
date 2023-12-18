@@ -1,6 +1,21 @@
 # Hbuilderx 使用方式
 
+## Hbuilderx 与 uni-app cli 环境汇总
+
+首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
+
+|                  | webpack  | vite | postcss  |
+| ---------------- | -------- | ---- | -------- |
+| hbuilderx vue2   | webpack4 | x    | postcss7 |
+| uni-app cli vue2 | webpack5 | x    | postcss8 |
+| hbuilderx vue3   | x        | √    | postcss8 |
+| uni-app cli vue3 | x        | √    | postcss8 |
+
+也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
+
 ## 默认使用方式
+
+> 配置会稍微复杂一些，这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
 注意: 在使用 `hbuilderx` 进行开发时，必须要给你 `tailwind.config.js` 传入绝对路径:
 
@@ -70,16 +85,14 @@ export default defineConfig({
 });
 ```
 
-这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
+`hbuilderx` 正式版本的 `vue2` 项目推荐使用本插件的 `webpack4` 或者 `v1` 版本， [uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)，或者下方也有一种 `Hack hbuilderx vue2 Way`
 
-`hbuilderx` 正式版本的 `vue2` 项目推荐使用本插件的 `v1` 版本 [uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)，或者使用下方的 `Hack hbuilderx vue2 Way`
-
-另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。
+<!-- 另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。 -->
 
 ## Hack hbuilderx vue2 Way
 
 :::caution
-以下方式为全局 Hack, 可能会在升级后产生问题
+以下方式为全局 Hack, 可能会在 hbuilderx 升级后出现问题
 :::
 
 `hbuilderx` 和 `hbuilderx alpha` 新建的 `vue2` 项目，发现它们的 `webpack` 版本被锁死在了 **`4`** ，我又用 `cli` 创建了一个 `vue2` 项目，发现已经是 `webpack5` 了，看起来只有 `cli` 创建的项目，会被默认升级 `webpack5`。

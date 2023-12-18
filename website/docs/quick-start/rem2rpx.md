@@ -1,4 +1,4 @@
-# rem 转 rpx (或 px)
+# 2. rem 转 rpx (或 px)
 
 前面我们安装配置好了 `tailwindcss`，接下来一步便是配置 `rem` 转 `rpx`
 
