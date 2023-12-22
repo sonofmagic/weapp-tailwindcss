@@ -1,6 +1,8 @@
 # 1. 安装与配置 tailwindcss
 
-> 请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> 请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)。
+>
+> 假如你安装的 `nodejs` 太新，可能会出现安装包不兼容的问题，这时候可以执行安装命令时，使用 `--ignore-engines` 参数进行 `nodejs` 版本的忽略 。
 
 首先安装本插件前，我们需要把 `tailwindcss` 对应的环境和配置安装好。
 
