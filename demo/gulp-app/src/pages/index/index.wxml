@@ -20,14 +20,9 @@
         <view class="text-xs">px 和 rem 单位转小程序单位rpx</view>
         <view class="text-xs">支持 typescript</view>
         <view wx:if="{{arr.length>0}}" class="mt-[24px]">mt-[24px]</view>
-        <view class="mt-[33px]" wx:if="{{arr.length>0}}">mt-[33px]</view>
+        <view class="mt-[101px]" wx:if="{{arr.length>0}}">mt-[33px]</view>
       </view>
       <view class="{{classNames}}"></view>
-      <van-button type="primary">按钮</van-button>
-      <van-cell-group>
-        <van-cell title="单元格" value="内容" />
-        <van-cell title="单元格" value="内容" label="描述信息" border="{{ false }}" />
-      </van-cell-group>
     </view>
   </view>
 </view>
