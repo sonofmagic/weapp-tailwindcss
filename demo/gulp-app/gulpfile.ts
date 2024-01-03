@@ -18,6 +18,24 @@ const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
 const isLocal = Boolean(process.env.LOCAL)
 
+const platformMap = {
+  weapp: {
+    template: 'wxml',
+    css: 'wxss'
+  },
+  tt: {
+    template: 'ttml',
+    css: 'ttss'
+  }
+}
+
+const platform = (process.env.PLATFORM ?? 'weapp') as keyof typeof platformMap
+
+const platformHit = platformMap[platform]
+if (!platformHit) {
+  throw new Error(`not support ${platform} platform`)
+}
+
 const sass = gulpSass(dartSass)
 const tsProject = ts.createProject('tsconfig.json')
 
@@ -63,13 +81,13 @@ const paths = {
     baseFiles: ['src/**/*.{png,jpg,json}'], // , '!src/assets/**/*', '!src/image/**/*'
     assetsDir: 'src/assets',
     assetsImgFiles: 'src/assets/images/**/*.{png,jpg,jpeg,svg,gif}',
-    wxmlFiles: 'src/**/*.wxml',
+    wxmlFiles: `src/**/*.${platformHit.template}`,
     jsFiles: 'src/**/*.{js,ts}'
   },
   dist: {
     baseDir: 'dist',
     imgDir: 'dist/image',
-    wxssFiles: 'dist/**/*.wxss'
+    wxssFiles: `dist/**/*.${platformHit.css}`
   },
   tmp: {
     baseDir: 'tmp',
@@ -93,10 +111,10 @@ function sassCompile() {
     .pipe(transformWxss())
     .pipe(
       rename({
-        extname: '.wxss'
+        extname: `.${platformHit.css}`
       })
     )
-    .pipe(replace('.scss', '.wxss'))
+    .pipe(replace('.scss', `.${platformHit.css}`))
     .pipe(gulp.dest(paths.dist.baseDir))
 }
 
@@ -129,7 +147,7 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   // SCSS 文件
   if (extname === '.scss') {
     if (type === 'removed') {
-      const tmp = file.replace('src/', 'dist/').replace(extname, '.wxss')
+      const tmp = file.replace('src/', 'dist/').replace(extname, `.${platformHit.css}`)
       del([tmp])
     } else {
       sassCompile()
@@ -149,7 +167,7 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   }
 
   // wxml
-  else if (extname === '.wxml') {
+  else if (extname === `.${platformHit.template}`) {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
