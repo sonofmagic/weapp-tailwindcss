@@ -63,13 +63,13 @@ const paths = {
     baseFiles: ['src/**/*.{png,jpg,json}'], // , '!src/assets/**/*', '!src/image/**/*'
     assetsDir: 'src/assets',
     assetsImgFiles: 'src/assets/images/**/*.{png,jpg,jpeg,svg,gif}',
-    wxmlFiles: 'src/**/*.wxml',
+    wxmlFiles: 'src/**/*.ttml',
     jsFiles: 'src/**/*.{js,ts}'
   },
   dist: {
     baseDir: 'dist',
     imgDir: 'dist/image',
-    wxssFiles: 'dist/**/*.wxss'
+    wxssFiles: 'dist/**/*.t t s s'
   },
   tmp: {
     baseDir: 'tmp',
@@ -93,10 +93,10 @@ function sassCompile() {
     .pipe(transformWxss())
     .pipe(
       rename({
-        extname: '.wxss'
+        extname: '.ttss'
       })
     )
-    .pipe(replace('.scss', '.wxss'))
+    .pipe(replace('.scss', '.ttss'))
     .pipe(gulp.dest(paths.dist.baseDir))
 }
 
@@ -109,7 +109,7 @@ function compileTsFiles() {
   return gulp.src(paths.src.jsFiles, {}).pipe(plumber()).pipe(tsProject()).pipe(transformJs()).pipe(gulp.dest(paths.dist.baseDir))
 }
 
-// 复制 WXML
+// 复制 ttml
 function copyWXML() {
   return gulp.src(paths.src.wxmlFiles, {}).pipe(transformWxml()).pipe(gulp.dest(paths.dist.baseDir))
 }
@@ -129,7 +129,7 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   // SCSS 文件
   if (extname === '.scss') {
     if (type === 'removed') {
-      const tmp = file.replace('src/', 'dist/').replace(extname, '.wxss')
+      const tmp = file.replace('src/', 'dist/').replace(extname, '.ttss')
       del([tmp])
     } else {
       sassCompile()
@@ -148,8 +148,8 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
     }
   }
 
-  // wxml
-  else if (extname === '.wxml') {
+  // ttml
+  else if (extname === '.ttml') {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
