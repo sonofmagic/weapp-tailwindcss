@@ -1,7 +1,7 @@
 # uni-app (vue2/3)
 
 :::tip
-截止到今天(2023/09/08)，目前所有的 `uni-app vue2` 版本，已经切换到了 `webpack5`，`@vue/cli 5.x`，所以不需要去特意使用 `uni-app vue2 alpha`版本了！
+截止到今天(2023/09/08)，目前所有的 `uni-app vue2 cli` 项目的 `webpack` 版本，已经切换到了 `webpack5`，`@vue/cli 5.x`，所以不需要去特意使用 `uni-app vue2 alpha`版本了！
 <!-- **在创建uni-app项目时，请选择uni-app alpha版本**  
 
 这是因为，目前默认创建的版本还是 `@vue/cli 4.x` 的版本，使用 `webpack 4.x` 和 `postcss 7.x`，而 `alpha` 版本使用 `@vue/cli 5.x` ，内部使用 `webpack 5.x` 和 `postcss 8.x`，这才可以使用最新版本的 `tailwindcss` 和本插件的最新插件版本。

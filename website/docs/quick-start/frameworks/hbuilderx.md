@@ -85,7 +85,7 @@ export default defineConfig({
 });
 ```
 
-`hbuilderx` 正式版本的 `vue2` 项目推荐使用本插件的 `webpack4` 或者 `v1` 版本， [uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)，或者下方也有一种 `Hack hbuilderx vue2 Way`
+`hbuilderx` 正式版本的 `vue2` 项目推荐使用本插件的 `weapp-tailwindcss/webpack4` 或者 `v1` 版本， [uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)，或者下方也有一种 `Hack hbuilderx vue2 Way`
 
 <!-- 另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。 -->
 

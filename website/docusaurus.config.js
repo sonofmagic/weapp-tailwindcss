@@ -280,7 +280,7 @@ const config = {
                 href: 'https://icebreaker.top'
               },
               {
-                label: '@icestack/ui',
+                label: 'IceStack',
                 href: 'https://ui.icebreaker.top/zh-CN'
               },
               {
