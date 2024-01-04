@@ -82,7 +82,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/dev/website'
+          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website'
         },
         // blog: {
         //   showReadingTime: true,
@@ -212,6 +212,11 @@ const config = {
             type: 'doc',
             label: '常见问题',
             docId: 'issues/index'
+          },
+          {
+            type: 'doc',
+            label: '生态',
+            docId: 'community/templates'
           },
           {
             type: 'doc',
