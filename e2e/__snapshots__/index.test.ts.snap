@@ -55,7 +55,8 @@ text,
   --tw-backdrop-invert:  ;
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
+  --tw-backdrop-sepia:   
+;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -108,7 +109,8 @@ text,
   --tw-backdrop-invert:  ;
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
+  --tw-backdrop-sepia:   
+;
 }
 .m-_20px_ {
   margin: 40rpx;
@@ -134,13 +136,15 @@ text,
 .w-screen {
   width: 100vw;
 }
+.space-y-1 > view + view {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
+}
 .space-y-4 > view + view {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
-}
-.border {
-  border-width: 2rpx;
 }
 .border-b {
   border-bottom-width: 2rpx;
@@ -165,6 +169,9 @@ text,
 .bg-no-repeat {
   background-repeat: no-repeat;
 }
+.p-4 {
+  padding: 32rpx;
+}
 .pb-_10px_ {
   padding-bottom: 20rpx;
 }
@@ -187,6 +194,10 @@ text,
   font-size: 32rpx;
   line-height: 48rpx;
 }
+.text-lg {
+  font-size: 36rpx;
+  line-height: 56rpx;
+}
 .text-xs {
   font-size: 24rpx;
   line-height: 32rpx;
@@ -204,76 +215,6 @@ text,
 .text-_h5ba4e5_ {
   --tw-text-opacity: 1;
   color: rgb(91 164 229 / var(--tw-text-opacity));
-}
-.app {
-  height: 100%;
-  justify-content: space-between;
-  text-align: center;
-  box-sizing: border-box;
-  font-family:
-    -apple-system-font,
-    Helvetica Neue,
-    Helvetica,
-    sans-serif;
-}
-
-.app__inner {
-  margin: 40rpx;
-}
-
-.app__title {
-  font-size: 32rpx;
-  line-height: 44rpx;
-  font-weight: bold;
-  padding-bottom: 20rpx;
-  margin-bottom: 40rpx;
-  text-align: left;
-  border-bottom: 1rpx solid #eeeeee;
-}
-
-.app__desc {
-  font-size: 24rpx;
-  text-align: left;
-  margin-bottom: 40rpx;
-  --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity));
-}
-
-@font-face {
-  font-family: 'fontello';
-  src: url('assets/fonts/fontello.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-[class^='icon-']:before,
-[class*=' icon-']:before {
-  font-family: 'fontello';
-  font-style: normal;
-  font-weight: normal;
-  speak: none;
-  display: inline-block;
-  text-decoration: inherit;
-  width: 1em;
-  margin-right: 0.2em;
-  text-align: center;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1em;
-  margin-left: 0.2em;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.icon-info:before {
-  content: '\\e81b';
-}
-
-.icon-date:before {
-  content: '\\e829';
-}
-
-.icon-view:before {
-  content: '\\e84f';
 }
 "
 `;
@@ -301,49 +242,6 @@ exports[`e2e > 'gulp-app' 1`] = `
         <view class="mt-_33px_">mt-[33px]</view>
       </view>
       <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_h123456_ text-_50px_ bg-_hfff_"></view>
-      <van-button is="miniprogram_npm/@vant/weapp/button/index">
-        <button
-          app-parameter=""
-          business-id=""
-          class="van-button button-index--van-button van-button--primary button-index--van-button--primary van-button--normal button-index--van-button--normal"
-          data-detail="null"
-          form-type=""
-          hover-class="van-button--active hover-class"
-          lang=""
-          open-type=""
-          send-message-img=""
-          send-message-path=""
-          send-message-title=""
-          session-from=""
-          style=""
-          role="button"
-          aria-disabled="false">
-          <view class="van-button__text button-index--van-button__text">按钮</view>
-        </button>
-      </van-button>
-      <van-cell-group is="miniprogram_npm/@vant/weapp/cell-group/index">
-        <view class="van-cell-group index--van-cell-group van-hairline--top-bottom index--van-hairline--top-bottom">
-          <van-cell is="miniprogram_npm/@vant/weapp/cell/index">
-            <view class="van-cell cell-index--van-cell" hover-class="van-cell--hover hover-class" hover-stay-time="70" style="">
-              <view class="van-cell__title cell-index--van-cell__title" style="">单元格</view>
-              <view class="van-cell__value cell-index--van-cell__value">内容</view>
-            </view>
-          </van-cell>
-          <van-cell is="miniprogram_npm/@vant/weapp/cell/index">
-            <view
-              class="van-cell cell-index--van-cell van-cell--borderless cell-index--van-cell--borderless"
-              hover-class="van-cell--hover hover-class"
-              hover-stay-time="70"
-              style="">
-              <view class="van-cell__title cell-index--van-cell__title" style="">
-                单元格
-                <view class="van-cell__label cell-index--van-cell__label">描述信息</view>
-              </view>
-              <view class="van-cell__value cell-index--van-cell__value">内容</view>
-            </view>
-          </van-cell>
-        </view>
-      </van-cell-group>
     </view>
   </view>
 </view>
@@ -358,7 +256,6 @@ exports[`e2e > 'gulp-app' 2`] = `
   "bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)]",
   "bg-no-repeat",
   "block",
-  "border",
   "border-[#EEEEEE]",
   "border-b",
   "font-bold",
@@ -369,8 +266,10 @@ exports[`e2e > 'gulp-app' 2`] = `
   "mb-[20px]",
   "mt-[24px]",
   "mt-[33px]",
+  "p-4",
   "pb-[10px]",
   "pl-[15px]",
+  "space-y-1",
   "space-y-4",
   "text-[#123456]",
   "text-[#5ba4e5]",
@@ -379,6 +278,7 @@ exports[`e2e > 'gulp-app' 2`] = `
   "text-base",
   "text-center",
   "text-left",
+  "text-lg",
   "text-xs",
   "w-screen"
 ]"
@@ -938,6 +838,16 @@ text,
   padding: 10rpx 0;
   box-sizing: border-box;
 }
+@media (min-width: 640px) {
+  .smcpx-8 {
+    padding-left: 64rpx;
+    padding-right: 64rpx;
+  }
+  .smcpy-3 {
+    padding-top: 24rpx;
+    padding-bottom: 24rpx;
+  }
+}
 @media (prefers-color-scheme: dark) {
   .darkcbg-_h487512_ {
     --tw-bg-opacity: 1;
@@ -950,16 +860,6 @@ text,
   .darkcbg-zinc-800 {
     --tw-bg-opacity: 1;
     background-color: rgb(39 39 42 / var(--tw-bg-opacity));
-  }
-}
-@media (min-width: 640px) {
-  .smcpx-8 {
-    padding-left: 64rpx;
-    padding-right: 64rpx;
-  }
-  .smcpy-3 {
-    padding-top: 24rpx;
-    padding-bottom: 24rpx;
   }
 }
 "
@@ -1869,6 +1769,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgb(50 50 255 / var(--tw-bg-opacity));
 }
+.bg-_h444400_ {
+  --tw-bg-opacity: 1;
+  background-color: rgb(68 68 0 / var(--tw-bg-opacity));
+}
 .bg-_h654321_ {
   --tw-bg-opacity: 1;
   background-color: rgb(101 67 33 / var(--tw-bg-opacity));
@@ -2039,6 +1943,10 @@ text,
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
+.afterccontent-_qmq_::after {
+  --tw-content: '*';
+  content: var(--tw-content);
+}
 .afterccontent-_qHello_Worldq_::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
@@ -2073,13 +1981,13 @@ text,
 exports[`e2e > 'taro-app' 1`] = `
 "<navigator
   app-id=""
-  data-sid="_BT"
+  data-sid="_AP"
   delta="1"
   extra-data="null"
   hover-class="navigator-hover"
   hover-start-time="50"
   hover-stay-time="600"
-  id="_BT"
+  id="_AP"
   open-type="navigate"
   path=""
   style=""
@@ -2091,13 +1999,13 @@ exports[`e2e > 'taro-app' 1`] = `
 </navigator>
 <navigator
   app-id=""
-  data-sid="_BV"
+  data-sid="_AR"
   delta="1"
   extra-data="null"
   hover-class="navigator-hover"
   hover-start-time="50"
   hover-stay-time="600"
-  id="_BV"
+  id="_AR"
   open-type="navigate"
   path=""
   style=""
@@ -2107,49 +2015,49 @@ exports[`e2e > 'taro-app' 1`] = `
   role="link">
   独立分包
 </navigator>
-<view data-sid="_BX" id="_BX" style="">****</view>
-<view class="w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat" data-sid="_BZ" id="_BZ" style="">bg-_url_</view>
+<view data-sid="_AT" id="_AT" style="">****</view>
+<view class="w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat" data-sid="_AV" id="_AV" style="">bg-_url_</view>
 <view
   class="text-_50px_ bg-_h3232ff_ h-_10px_ w-_20px_ text-_hfa00aa_ text-_hfa0000_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_url_qhttpscssyyydcomsxxdwebpq__"
-  data-sid="_Bb"
-  id="_Bb"
+  data-sid="_AX"
+  id="_AX"
   style="">
   11
 </view>
-<view class="shadow-md" data-sid="_Bd" id="_Bd" style="">shadow-md</view>
-<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" data-sid="_Bf" id="_Bf" style="">py-_62px_ px-_95px_</view>
-<view data-sid="_Bg" hover-class="none" hover-start-time="50" hover-stay-time="400" id="_Bg" style=""></view>
-<view class="bg-_h654321_ w-_100px_ h-_20px_" data-sid="_Bi" id="_Bi" style="">123</view>
-<view class="text-_h564564_" data-sid="_Bk" id="_Bk" style="">emptyImageClass</view>
-<view class="text-_h66ffff_" data-sid="_Bm" id="_Bm" style="">btnClassName</view>
-<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" data-sid="_Bo" id="_Bo" style="">aftercborder-none</view>
-<view class="after content- aftercml-0d5 afterctext-red-500 b" data-sid="_Bq" id="_Bq" style="">yellow</view>
-<view class="after content- aftercml-0d5 afterctext-red-500" data-sid="_Bs" id="_Bs" style="">事实上</view>
-<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" data-sid="_Bu" id="_Bu" style="">事实上</view>
-<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" data-sid="_CB" id="_CB" style="">
-  <view class="itext-_h555_" data-sid="_Bw" id="_Bw" style="">aspect</view>
-  <view class="bg-_hfaf_" data-sid="_By" id="_By" style="">w</view>
-  <view class="bg-_h123_" data-sid="_CA" id="_CA" style="">16</view>
+<view class="shadow-md" data-sid="_AZ" id="_AZ" style="">shadow-md</view>
+<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" data-sid="_Ab" id="_Ab" style="">py-_62px_ px-_95px_</view>
+<view data-sid="_Ac" hover-class="none" hover-start-time="50" hover-stay-time="400" id="_Ac" style=""></view>
+<view class="bg-_h654321_ w-_100px_ h-_20px_" data-sid="_Ae" id="_Ae" style="">123</view>
+<view class="text-_h564564_" data-sid="_Ag" id="_Ag" style="">emptyImageClass</view>
+<view class="text-_h66ffff_" data-sid="_Ai" id="_Ai" style="">btnClassName</view>
+<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" data-sid="_Ak" id="_Ak" style="">aftercborder-none</view>
+<view class="after content- aftercml-0d5 afterctext-red-500 b" data-sid="_Am" id="_Am" style="">yellow</view>
+<view class="after content- aftercml-0d5 afterctext-red-500" data-sid="_Ao" id="_Ao" style="">事实上</view>
+<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" data-sid="_Aq" id="_Aq" style="">事实上</view>
+<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" data-sid="_Ax" id="_Ax" style="">
+  <view class="itext-_h555_" data-sid="_As" id="_As" style="">aspect</view>
+  <view class="bg-_hfaf_" data-sid="_Au" id="_Au" style="">w</view>
+  <view class="bg-_h123_" data-sid="_Aw" id="_Aw" style="">16</view>
 </view>
-<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-sid="_CC" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" id="_CC" style=""></view>
-<view class="bg-_h123456_" data-sid="_CE" id="_CE" style="">className</view>
-<view class="p-_20px_ -mt-2 mb-_-20px_" data-sid="_CG" id="_CG" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
-<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" data-sid="_Ca" id="_Ca" style="">
-  <view class="w-_300rpx_ text-black text-opacity-_0d19_" data-sid="_CI" id="_CI" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
-  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-sid="_CK" id="_CK" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-sid="_CM" id="_CM" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" data-sid="_CO" id="_CO" style="">Hello</view>
-  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" data-sid="_CQ" id="_CQ" style="">
+<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-sid="_Ay" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" id="_Ay" style=""></view>
+<view class="bg-_h123456_" data-sid="_BA" id="_BA" style="">className</view>
+<view class="p-_20px_ -mt-2 mb-_-20px_" data-sid="_BC" id="_BC" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" data-sid="_BW" id="_BW" style="">
+  <view class="w-_300rpx_ text-black text-opacity-_0d19_" data-sid="_BE" id="_BE" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
+  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-sid="_BG" id="_BG" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-sid="_BI" id="_BI" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" data-sid="_BK" id="_BK" style="">Hello</view>
+  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" data-sid="_BM" id="_BM" style="">
     border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
   </view>
-  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-sid="_CX" id="_CX" style="">
-    <view data-sid="_CS" id="_CS" style="">1</view>
-    <view data-sid="_CU" id="_CU" style="">2</view>
-    <view data-sid="_CW" id="_CW" style="">3</view>
+  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-sid="_BT" id="_BT" style="">
+    <view data-sid="_BO" id="_BO" style="">1</view>
+    <view data-sid="_BQ" id="_BQ" style="">2</view>
+    <view data-sid="_BS" id="_BS" style="">3</view>
   </view>
-  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" data-sid="_CZ" id="_CZ" style="">Default</view>
+  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" data-sid="_BV" id="_BV" style="">Default</view>
 </view>
-<view class="test" data-sid="_Cc" id="_Cc" style="">test</view>
+<view class="test" data-sid="_BY" id="_BY" style="">test</view>
 "
 `;
 
@@ -2162,6 +2070,7 @@ exports[`e2e > 'taro-app' 2`] = `
   "after:border-none",
   "after:content-[\\"*\\"]",
   "after:content-[\\"的撒的撒\\"]",
+  "after:content-['*']",
   "after:content-['Hello_World']",
   "after:content-['的撒的撒']",
   "after:content-[*]",
@@ -2172,6 +2081,7 @@ exports[`e2e > 'taro-app' 2`] = `
   "bg-[#123456]",
   "bg-[#123]",
   "bg-[#3232ff]",
+  "bg-[#444400]",
   "bg-[#654321]",
   "bg-[#faf]",
   "bg-[#fff]",
