@@ -19,6 +19,9 @@ const config = {
     },
     type: 'webpack5'
   },
+  cache: {
+    enable: false
+  },
   projectName: 'myApp',
   date: '2022-2-5',
   designWidth: 750,
@@ -26,9 +29,6 @@ const config = {
     640: 2.34 / 2,
     750: 1,
     828: 1.81 / 2
-  },
-  cache: {
-    enable: false
   },
   sourceRoot: 'src',
   outputRoot: 'dist',

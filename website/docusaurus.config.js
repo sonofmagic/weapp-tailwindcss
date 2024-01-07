@@ -82,7 +82,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/dev/website'
+          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website'
         },
         // blog: {
         //   showReadingTime: true,
@@ -215,6 +215,11 @@ const config = {
           },
           {
             type: 'doc',
+            label: '生态',
+            docId: 'community/templates'
+          },
+          {
+            type: 'doc',
             label: '迁移',
             docId: 'migrations/v2'
           },
@@ -280,7 +285,7 @@ const config = {
                 href: 'https://icebreaker.top'
               },
               {
-                label: '@icestack/ui',
+                label: 'IceStack',
                 href: 'https://ui.icebreaker.top/zh-CN'
               },
               {

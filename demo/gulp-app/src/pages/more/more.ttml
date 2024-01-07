@@ -1,5 +1,5 @@
 <view class="p-4">
-  <view class="space-y-1">
+  <view class="space-y-[2rem]">
     <view class="text-lg border-b">图片CDN</view>
     <view>在src 目录下SCSS 或WXML 文件通过 %ASSETS_IMG% 自定义变量的方式写路径。</view>
     <view class="text-lg border-b">SASS Minxins</view>

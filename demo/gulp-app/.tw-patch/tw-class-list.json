@@ -5,7 +5,6 @@
   "bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)]",
   "bg-no-repeat",
   "block",
-  "border",
   "border-[#EEEEEE]",
   "border-b",
   "font-bold",
@@ -16,8 +15,10 @@
   "mb-[20px]",
   "mt-[24px]",
   "mt-[33px]",
+  "p-4",
   "pb-[10px]",
   "pl-[15px]",
+  "space-y-1",
   "space-y-4",
   "text-[#123456]",
   "text-[#5ba4e5]",
@@ -26,6 +27,7 @@
   "text-base",
   "text-center",
   "text-left",
+  "text-lg",
   "text-xs",
   "w-screen"
 ]

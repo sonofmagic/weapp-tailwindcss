@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 3.0.5 (2024-1-7)
+
+### Fixed
+
+- Lock htmlparser2 version [#268](https://github.com/sonofmagic/weapp-tailwindcss/issues/268)
+
+## 3.0.4-3.0.0
+
+<https://github.com/sonofmagic/weapp-tailwindcss/issues/259>
+
+<https://weapp-tw.icebreaker.top/docs/migrations/v2>
+
 ## 2.11.0 (2023-11-13)
 
 ## Features
