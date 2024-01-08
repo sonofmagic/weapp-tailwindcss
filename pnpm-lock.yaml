@@ -36,7 +36,7 @@ dependencies:
     specifier: ^4.3.4
     version: 4.3.4
   htmlparser2:
-    specifier: ^9.0.0
+    specifier: 9.0.0
     version: 9.0.0
   loader-utils:
     specifier: ^2.0.3

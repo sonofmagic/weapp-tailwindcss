@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss-webpack-plugin",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -255,7 +255,7 @@
     "@weapp-core/escape": "^2.0.0",
     "@weapp-core/regex": "^1.0.1",
     "debug": "^4.3.4",
-    "htmlparser2": "^9.0.0",
+    "htmlparser2": "9.0.0",
     "loader-utils": "^2.0.3",
     "lru-cache": "^10.0.2",
     "magic-string": "^0.30.5",
