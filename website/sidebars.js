@@ -17,16 +17,36 @@ const sidebars = {
   tutorialSidebar: [
     'intro',
     {
-      items: ['install', 'rem2rpx', 'this-plugin'].map((x) => 'quick-start/' + x),
-      label: '快速上手',
       type: 'category',
+      label: '快速开始',
+      items: [
+        {
+          type: 'doc',
+          id: 'quick-start/install'
+        },
+
+        {
+          type: 'doc',
+          id: 'quick-start/this-plugin'
+        },
+        {
+          items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native', 'hbuilderx', 'api'].map((x) => 'quick-start/frameworks/' + x),
+          label: '3.各个框架的注册方式',
+          type: 'category',
+          collapsed: false
+        },
+        {
+          type: 'doc',
+          id: 'quick-start/rem2rpx'
+        }
+      ],
       collapsed: false
     },
+
     {
-      items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native', 'hbuilderx', 'api'].map((x) => 'quick-start/frameworks/' + x),
-      label: '各个框架的注册方式',
-      type: 'category',
-      collapsed: false
+      type: 'link',
+      href: 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270',
+      label: '谁在使用？'
     },
     {
       type: 'doc',
