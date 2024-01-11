@@ -24,4 +24,9 @@ export default defineComponent({
 
 <style lang="scss">
 @import './tailwind.scss';
+
+p {
+  color: red;
+
+}
 </style>
