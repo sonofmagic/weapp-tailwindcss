@@ -15,4 +15,10 @@ const nodes = `<article class="prose max-w-none tracking-widest text-justify lea
 @import "tailwindcss/utilities";
 
 @config "./tailwind.config.js";
+
+.prose {
+  p {
+    color: red;
+  }
+}
 </style>
