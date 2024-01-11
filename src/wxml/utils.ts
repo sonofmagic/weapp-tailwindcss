@@ -161,7 +161,11 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
         function update() {
           s.update(
             parser.startIndex + name.length + 2,
-            parser.endIndex,
+            // !important
+            // htmlparser2 9.0.0: parser.endIndex
+            // htmlparser2 9.1.0: parser.endIndex - 1
+            // https://github.com/sonofmagic/weapp-tailwindcss/issues/269
+            parser.endIndex - 1,
             templateReplacer(value, {
               ...options,
               quote
