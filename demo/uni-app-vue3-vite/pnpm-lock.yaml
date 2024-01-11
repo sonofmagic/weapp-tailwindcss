@@ -59,6 +59,9 @@ dependencies:
   htmlparser2:
     specifier: ^9.1.0
     version: 9.1.0
+  magic-string:
+    specifier: ^0.30.5
+    version: 0.30.5
   miniprogram-computed:
     specifier: ^4.4.0
     version: 4.4.0

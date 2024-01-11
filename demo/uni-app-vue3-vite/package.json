@@ -57,6 +57,7 @@
     "dayjs": "^1.11.10",
     "eventemitter3": "^4.0.7",
     "htmlparser2": "^9.1.0",
+    "magic-string": "^0.30.5",
     "miniprogram-computed": "^4.4.0",
     "p-queue": "6.6.2",
     "uview-plus": "^3.1.39",
