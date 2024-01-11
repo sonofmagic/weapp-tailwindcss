@@ -10,17 +10,17 @@ const computed = {
 };
 
 function inWhere(selector, { className, modifier, prefix }) {
-  // const prefixedNot = prefix(`.not-${className}`).slice(1);
+  const prefixedNot = prefix(`.not-${className}`).slice(1);
   const selectorPrefix = selector.startsWith('>') ? `${modifier === 'DEFAULT' ? `.${className}` : `.${className}-${modifier}`} ` : '';
 
   // Parse the selector, if every component ends in the same pseudo element(s) then move it to the end
   const [trailingPseudo, rebuiltSelector] = commonTrailingPseudos(selector);
-  // :not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))
+
   if (trailingPseudo) {
-    return `:where(${selectorPrefix}${rebuiltSelector})${trailingPseudo}`;
+    return `:where(${selectorPrefix}${rebuiltSelector}):not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))${trailingPseudo}`;
   }
-  // :not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))
-  return `:where(${selectorPrefix}${selector})`;
+
+  return `:where(${selectorPrefix}${selector}):not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))`;
 }
 
 function isObject(value) {
@@ -38,7 +38,7 @@ function configToCss(config = {}, { target, className, modifier, prefix }) {
     }
 
     if (isObject(v)) {
-      const nested = Object.values(v).some(isObject);
+      const nested = Object.values(v).some((element) => isObject(element));
       if (nested) {
         return [inWhere(k, { className, modifier, prefix }), v, Object.fromEntries(Object.entries(v).map(([k, v]) => updateSelector(k, v)))];
       }
@@ -63,12 +63,14 @@ function configToCss(config = {}, { target, className, modifier, prefix }) {
 }
 
 module.exports = plugin.withOptions(
-  ({ className = 'prose', target = 'modern' } = {}) => {
+  ({ className = 'prose', target = 'legacy' } = {}) => {
+    // legacy | modern
     return function ({ addVariant, addComponents, theme, prefix }) {
       const modifiers = theme('typography');
 
       const options = { className, prefix };
 
+      // eslint-disable-next-line prefer-const
       for (let [name, ...selectors] of [
         ['headings', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'th'],
         ['h1'],

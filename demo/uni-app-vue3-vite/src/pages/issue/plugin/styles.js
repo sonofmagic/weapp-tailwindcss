@@ -212,14 +212,14 @@ const defaultModifiers = {
           marginTop: em(8, 12),
         },
       },
-      {
-        '> :first-child': {
-          marginTop: '0',
-        },
-        '> :last-child': {
-          marginBottom: '0',
-        },
-      },
+      // {
+      //   '> :first-child': {
+      //     marginTop: '0',
+      //   },
+      //   '> :last-child': {
+      //     marginBottom: '0',
+      //   },
+      // },
     ],
   },
   base: {
@@ -417,14 +417,14 @@ const defaultModifiers = {
           marginTop: em(12, 14),
         },
       },
-      {
-        '> :first-child': {
-          marginTop: '0',
-        },
-        '> :last-child': {
-          marginBottom: '0',
-        },
-      },
+      // {
+      //   '> :first-child': {
+      //     marginTop: '0',
+      //   },
+      //   '> :last-child': {
+      //     marginBottom: '0',
+      //   },
+      // },
     ],
   },
   lg: {
@@ -622,14 +622,14 @@ const defaultModifiers = {
           marginTop: em(16, 16),
         },
       },
-      {
-        '> :first-child': {
-          marginTop: '0',
-        },
-        '> :last-child': {
-          marginBottom: '0',
-        },
-      },
+      // {
+      //   '> :first-child': {
+      //     marginTop: '0',
+      //   },
+      //   '> :last-child': {
+      //     marginBottom: '0',
+      //   },
+      // },
     ],
   },
   xl: {
@@ -827,14 +827,14 @@ const defaultModifiers = {
           marginTop: em(18, 18),
         },
       },
-      {
-        '> :first-child': {
-          marginTop: '0',
-        },
-        '> :last-child': {
-          marginBottom: '0',
-        },
-      },
+      // {
+      //   '> :first-child': {
+      //     marginTop: '0',
+      //   },
+      //   '> :last-child': {
+      //     marginBottom: '0',
+      //   },
+      // },
     ],
   },
   '2xl': {
@@ -1032,14 +1032,14 @@ const defaultModifiers = {
           marginTop: em(20, 20),
         },
       },
-      {
-        '> :first-child': {
-          marginTop: '0',
-        },
-        '> :last-child': {
-          marginBottom: '0',
-        },
-      },
+      // {
+      //   '> :first-child': {
+      //     marginTop: '0',
+      //   },
+      //   '> :last-child': {
+      //     marginBottom: '0',
+      //   },
+      // },
     ],
   },
 
@@ -1427,33 +1427,33 @@ module.exports = {
         ol: {
           listStyleType: 'decimal',
         },
-        // 'ol[type="A"]': {
-        //   listStyleType: 'upper-alpha',
-        // },
-        // 'ol[type="a"]': {
-        //   listStyleType: 'lower-alpha',
-        // },
+        'ol[type="A"]': {
+          listStyleType: 'upper-alpha',
+        },
+        'ol[type="a"]': {
+          listStyleType: 'lower-alpha',
+        },
         // 'ol[type="A" s]': {
         //   listStyleType: 'upper-alpha',
         // },
         // 'ol[type="a" s]': {
         //   listStyleType: 'lower-alpha',
         // },
-        // 'ol[type="I"]': {
-        //   listStyleType: 'upper-roman',
-        // },
-        // 'ol[type="i"]': {
-        //   listStyleType: 'lower-roman',
-        // },
+        'ol[type="I"]': {
+          listStyleType: 'upper-roman',
+        },
+        'ol[type="i"]': {
+          listStyleType: 'lower-roman',
+        },
         // 'ol[type="I" s]': {
         //   listStyleType: 'upper-roman',
         // },
         // 'ol[type="i" s]': {
         //   listStyleType: 'lower-roman',
         // },
-        // 'ol[type="1"]': {
-        //   listStyleType: 'decimal',
-        // },
+        'ol[type="1"]': {
+          listStyleType: 'decimal',
+        },
         ul: {
           listStyleType: 'disc',
         },
