@@ -149,6 +149,14 @@ const sidebars = {
     {
       type: 'doc',
       id: 'options/arbitrary-values'
+    },
+    {
+      type: 'doc',
+      id: 'issues/native-toutiao'
+    },
+    {
+      type: 'doc',
+      id: 'issues/format'
     }
   ],
   API: [
