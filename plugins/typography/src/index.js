@@ -63,8 +63,7 @@ function configToCss(config = {}, { target, className, modifier, prefix }) {
 }
 
 module.exports = plugin.withOptions(
-  ({ className = 'prose', target = 'legacy', prefix = 'ice-' } = {}) => {
-    const classPrefix = prefix
+  ({ className = 'prose', target = 'legacy' } = {}) => {
     // legacy | modern
     return function ({ addVariant, addComponents, theme, prefix }) {
       const modifiers = theme('typography')

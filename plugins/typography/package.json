@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/typography",
-  "description": "The typography of weapp-tailwindcss",
+  "description": "The tailwindcss typography plugin for weapp",
   "version": "0.0.0",
   "scripts": {
     "build": "unbuild",
@@ -20,11 +20,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    },
-    "./transform": {
-      "types": "./dist/transform.d.ts",
-      "import": "./dist/transform.mjs",
-      "require": "./dist/transform.cjs"
     },
     "./*": "./*"
   },
