@@ -18,14 +18,4 @@ A plugin that provides a set of `prose` classes you can use to add beautiful typ
 
 ## Documentation
 
-For full documentation, visit [tailwindcss.com/docs/typography-plugin](https://tailwindcss.com/docs/typography-plugin).
-
-## Community
-
-For help, discussion about best practices, or any other conversation that would benefit from being searchable:
-
-[Discuss the Tailwind CSS Typography plugin on GitHub](https://github.com/tailwindlabs/tailwindcss/discussions)
-
-For casual chit-chat with others using the framework:
-
-[Join the Tailwind CSS Discord Server](https://tailwindcss.com/discord)
+[weapp-tw.icebreaker.top/docs/community/typography](https://weapp-tw.icebreaker.top/docs/community/typography)
