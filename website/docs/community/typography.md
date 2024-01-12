@@ -73,4 +73,4 @@ module.exports = {
 
 ## Demo
 
-<https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/uni-app-vue3-vite/src/pages/issue/typography>
+<https://github.com/sonofmagic/weapp-tailwindcss/blob/main/demo/uni-app-vue3-vite/src/pages/issue/typography.vue>
