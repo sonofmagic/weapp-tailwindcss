@@ -74,6 +74,7 @@
     "@dcloudio/vite-plugin-uni": "3.0.0-3090920231225001",
     "@tailwindcss/typography": "^0.5.10",
     "@vue/runtime-core": "^3.2.45",
+    "@weapp-tailwindcss/typography": "^0.0.1",
     "autoprefixer": "^10.4.15",
     "daisyui": "^3.6.3",
     "miniprogram-api-typings": "^3.12.1",

@@ -62,7 +62,7 @@ function configToCss(config = {}, { target, className, modifier, prefix }) {
   )
 }
 
-module.exports = plugin.withOptions(
+const typographyPlugin = plugin.withOptions(
   ({ className = 'prose', target = 'legacy' } = {}) => {
     // legacy | modern
     return function ({ addVariant, addComponents, theme, prefix }) {
@@ -126,3 +126,5 @@ module.exports = plugin.withOptions(
     }
   }
 )
+
+module.exports = typographyPlugin

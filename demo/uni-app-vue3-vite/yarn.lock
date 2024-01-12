@@ -2748,6 +2748,16 @@
   resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-2.2.2.tgz#e2313b756eb2d3cdc0cb0a1d2e39876604397c07"
   integrity sha512-uUY8MD+iSS0afBclCV3C/tmot5DZdug6rTtao1Vp48zdUu4A/yw9Ji7CEmKq+bYjgtacLLxXnaOGDEbzEM50cA==
 
+"@tailwindcss/typography@^0.5.10":
+  version "0.5.10"
+  resolved "https://registry.npmmirror.com/@tailwindcss/typography/-/typography-0.5.10.tgz#2abde4c6d5c797ab49cf47610830a301de4c1e0a"
+  integrity sha512-Pe8BuPJQJd3FfRnm6H0ulKIGoMEQS+Vq01R6M5aCrFB/ccR/shT+0kXLjouGC1gFLm9hopTFN+DMP0pfwRWzPw==
+  dependencies:
+    lodash.castarray "^4.4.0"
+    lodash.isplainobject "^4.0.6"
+    lodash.merge "^4.6.2"
+    postcss-selector-parser "6.0.10"
+
 "@types/estree@^1.0.0":
   version "1.0.5"
   resolved "https://registry.npmmirror.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
@@ -2990,6 +3000,16 @@
   version "1.0.1"
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
+
+"@weapp-tailwindcss/typography@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/typography/-/typography-0.0.1.tgz#c9d102cc4d7fefe9eb8f8dda0e355ffd14cb2ce3"
+  integrity sha512-dLWZQdva6dgern4PvPO/oMM1OkUUhHTgv+/ldIpjGYfxe/LBk0vTwT1d9gWMBxuAZFrves34F3OWOqncDvRTJg==
+  dependencies:
+    lodash.castarray "^4.4.0"
+    lodash.isplainobject "^4.0.6"
+    lodash.merge "^4.6.2"
+    postcss-selector-parser "^6.0.15"
 
 accepts@~1.3.8:
   version "1.3.8"
@@ -4065,6 +4085,16 @@ htmlparser2@9.0.0:
     domutils "^3.1.0"
     entities "^4.5.0"
 
+htmlparser2@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.npmmirror.com/htmlparser2/-/htmlparser2-9.1.0.tgz#cdb498d8a75a51f739b61d3f718136c369bc8c23"
+  integrity sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==
+  dependencies:
+    domelementtype "^2.3.0"
+    domhandler "^5.0.3"
+    domutils "^3.1.0"
+    entities "^4.5.0"
+
 http-errors@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmmirror.com/http-errors/-/http-errors-2.0.0.tgz#b7774a1486ef73cf7667ac9ae0858c012c57b9d3"
@@ -4333,10 +4363,25 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.npmmirror.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==
 
+lodash.castarray@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.npmmirror.com/lodash.castarray/-/lodash.castarray-4.4.0.tgz#c02513515e309daddd4c24c60cfddcf5976d9115"
+  integrity sha512-aVx8ztPv7/2ULbArGJ2Y42bG1mEQ5mGjpdvrbJcJFU3TbYybe+QlLS4pst9zV52ymy2in1KpFPiZnAOATxD4+Q==
+
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmmirror.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
+
+lodash.isplainobject@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
+  integrity sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==
+
+lodash.merge@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.npmmirror.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
 lru-cache@10.1.0:
   version "10.1.0"
@@ -4931,7 +4976,15 @@ postcss-rpx-transform@^1.0.1:
   resolved "https://registry.npmmirror.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
   integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
 
-postcss-selector-parser@6.0.15:
+postcss-selector-parser@6.0.10:
+  version "6.0.10"
+  resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.10.tgz#79b61e2c0d1bfc2602d549e11d0876256f8df88d"
+  integrity sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==
+  dependencies:
+    cssesc "^3.0.0"
+    util-deprecate "^1.0.2"
+
+postcss-selector-parser@6.0.15, postcss-selector-parser@^6.0.15:
   version "6.0.15"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.15.tgz#11cc2b21eebc0b99ea374ffb9887174855a01535"
   integrity sha512-rEYkQOMUCEMhsKbK66tbEU9QVIxbhN18YiniAwA7XQYTVBqrBy+P2p5JcdqsHgKM2zWylp8d7J6eszocfds5Sw==

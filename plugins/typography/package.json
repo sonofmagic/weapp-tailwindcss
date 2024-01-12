@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/typography",
   "description": "The tailwindcss typography plugin for weapp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "build": "unbuild",
     "test": "vitest run",
@@ -46,11 +46,15 @@
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sonofmagic/icestack"
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
   },
-  "homepage": "https://ui.icebreaker.top",
+  "homepage": "https://weapp-tw.icebreaker.top",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sonofmagic/icestack"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

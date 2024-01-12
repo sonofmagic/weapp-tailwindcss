@@ -30,7 +30,7 @@ const arr = [
   // ['kbd'],
 ];
 
-export const html = `<article class="prose">
+export const html = `<article class="prose prose-2xl prose-slate">
 ${arr
   .map((array) => {
     return array

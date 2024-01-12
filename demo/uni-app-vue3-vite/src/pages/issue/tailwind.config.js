@@ -7,7 +7,7 @@ module.exports = {
     extend: {},
   },
   // require('./plugin'),
-  plugins: [require('./plugin')], // require('@tailwindcss/typography')],
+  plugins: [require('@weapp-tailwindcss/typography')], // [require('./plugin')], // require('@tailwindcss/typography')],
   corePlugins: {
     preflight: false,
   },
