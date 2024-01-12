@@ -40,18 +40,17 @@ const nodes = getNodes()
 </script>
 
 <style lang="scss">
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-
-@config "./tailwind.config.js";
+@config "./tailwind.typography.config.js";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 </style>
 ```
 
-在当前组件目录下，单独创建一个 `tailwind.config.js` 来单独处理它，
+在当前 `typography.vue` 组件目录下，单独创建一个 `tailwind.typography.config.js` 来创建独立的 `tailwindcss` 上下文，单独处理它，
 
 ```js
-// tailwind.config.js
+// tailwind.typography.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -65,7 +64,20 @@ module.exports = {
 
 ```
 
-此时渲染 `html` 就生效了
+此时渲染 `html` 就生效了。但是这还没有结束，为了防止这个上下文，影响到你全局的 `tailwindcss` 上下文，你必须做一个显式指定。
+
+此时要在你的引入 `tailwindcss` 的入口文件处(`App.vue`)，声明它用的是根目录的 `tailwind.config.js`
+
+```scss
+@config "../tailwind.config.js";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+这样配置才最终完成。
+
+> 使用 @import 要注意加载顺序是不同的，详见 <https://tailwindcss.com/docs/functions-and-directives#config>
 
 ## 配置项
 
