@@ -23,7 +23,7 @@ if (!WeappTailwindcssDisabled) {
         return false;
       },
       inlineWxs: true,
-      jsEscapeStrategy: 'replace', // 'regenerate'
+      // jsEscapeStrategy: 'replace', // 'regenerate'
       onStart() {
         start = performance.now();
       },
