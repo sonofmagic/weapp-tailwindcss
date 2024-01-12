@@ -1,16 +1,18 @@
 <template>
-  <image :mode="mode ?? 'widthFix'" :src="src" :style="styles" @load="onLoad" />
+  <image :mode="mode" :src="src" :style="styles" @load="onLoad" />
 </template>
 
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
 // :class="class" 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   mode?: string;
   src: string;
   style?: object;
   // class?: string
-}>();
+}>(),{
+  mode:'widthFix'
+}) ;
 
 const rect = reactive({
   width: 0,

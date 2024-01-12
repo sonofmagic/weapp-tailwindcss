@@ -1,52 +1,52 @@
-const plugin = require('tailwindcss/plugin');
-const merge = require('lodash.merge');
-const castArray = require('lodash.castarray');
-const styles = require('./styles');
-const { commonTrailingPseudos } = require('./utils');
+const plugin = require('tailwindcss/plugin')
+const merge = require('lodash.merge')
+const castArray = require('lodash.castarray')
+const styles = require('./styles')
+const { commonTrailingPseudos } = require('./utils')
 
 const computed = {
   // Reserved for future "magic properties", for example:
   // bulletColor: (color) => ({ 'ul > li::before': { backgroundColor: color } }),
-};
+}
 
 function inWhere(selector, { className, modifier, prefix }) {
-  const prefixedNot = prefix(`.not-${className}`).slice(1);
-  const selectorPrefix = selector.startsWith('>') ? `${modifier === 'DEFAULT' ? `.${className}` : `.${className}-${modifier}`} ` : '';
+  const prefixedNot = prefix(`.not-${className}`).slice(1)
+  const selectorPrefix = selector.startsWith('>') ? `${modifier === 'DEFAULT' ? `.${className}` : `.${className}-${modifier}`} ` : ''
 
   // Parse the selector, if every component ends in the same pseudo element(s) then move it to the end
-  const [trailingPseudo, rebuiltSelector] = commonTrailingPseudos(selector);
+  const [trailingPseudo, rebuiltSelector] = commonTrailingPseudos(selector)
 
   if (trailingPseudo) {
-    return `:where(${selectorPrefix}${rebuiltSelector}):not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))${trailingPseudo}`;
+    return `:where(${selectorPrefix}${rebuiltSelector}):not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))${trailingPseudo}`
   }
 
-  return `:where(${selectorPrefix}${selector}):not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))`;
+  return `:where(${selectorPrefix}${selector}):not(:where([class~="${prefixedNot}"],[class~="${prefixedNot}"] *))`
 }
 
 function isObject(value) {
-  return typeof value === 'object' && value !== null;
+  return typeof value === 'object' && value !== null
 }
 
 function configToCss(config = {}, { target, className, modifier, prefix }) {
   function updateSelector(k, v) {
     if (target === 'legacy') {
-      return [k, v];
+      return [k, v]
     }
 
     if (Array.isArray(v)) {
-      return [k, v];
+      return [k, v]
     }
 
     if (isObject(v)) {
-      const nested = Object.values(v).some((element) => isObject(element));
+      const nested = Object.values(v).some((element) => isObject(element))
       if (nested) {
-        return [inWhere(k, { className, modifier, prefix }), v, Object.fromEntries(Object.entries(v).map(([k, v]) => updateSelector(k, v)))];
+        return [inWhere(k, { className, modifier, prefix }), v, Object.fromEntries(Object.entries(v).map(([k, v]) => updateSelector(k, v)))]
       }
 
-      return [inWhere(k, { className, modifier, prefix }), v];
+      return [inWhere(k, { className, modifier, prefix }), v]
     }
 
-    return [k, v];
+    return [k, v]
   }
 
   return Object.fromEntries(
@@ -56,19 +56,20 @@ function configToCss(config = {}, { target, className, modifier, prefix }) {
         ...Object.keys(config)
           .filter((key) => computed[key])
           .map((key) => computed[key](config[key])),
-        ...castArray(config.css || {}),
-      ),
-    ).map(([k, v]) => updateSelector(k, v)),
-  );
+        ...castArray(config.css || {})
+      )
+    ).map(([k, v]) => updateSelector(k, v))
+  )
 }
 
 module.exports = plugin.withOptions(
-  ({ className = 'prose', target = 'legacy' } = {}) => {
+  ({ className = 'prose', target = 'legacy', prefix = 'ice-' } = {}) => {
+    const classPrefix = prefix
     // legacy | modern
     return function ({ addVariant, addComponents, theme, prefix }) {
-      const modifiers = theme('typography');
+      const modifiers = theme('typography')
 
-      const options = { className, prefix };
+      const options = { className, prefix }
 
       // eslint-disable-next-line prefer-const
       for (let [name, ...selectors] of [
@@ -99,13 +100,13 @@ module.exports = plugin.withOptions(
         ['img'],
         ['video'],
         ['hr'],
-        ['lead', '[class~="lead"]'],
+        ['lead', '[class~="lead"]']
       ]) {
-        selectors = selectors.length === 0 ? [name] : selectors;
+        selectors = selectors.length === 0 ? [name] : selectors
 
-        const selector = target === 'legacy' ? selectors.map((selector) => `& ${selector}`) : selectors.join(', ');
+        const selector = target === 'legacy' ? selectors.map((selector) => `& ${selector}`) : selectors.join(', ')
 
-        addVariant(`${className}-${name}`, target === 'legacy' ? selector : `& :is(${inWhere(selector, options)})`);
+        addVariant(`${className}-${name}`, target === 'legacy' ? selector : `& :is(${inWhere(selector, options)})`)
       }
 
       addComponents(
@@ -114,15 +115,15 @@ module.exports = plugin.withOptions(
             target,
             className,
             modifier,
-            prefix,
-          }),
-        })),
-      );
-    };
+            prefix
+          })
+        }))
+      )
+    }
   },
   () => {
     return {
-      theme: { typography: styles },
-    };
-  },
-);
+      theme: { typography: styles }
+    }
+  }
+)
