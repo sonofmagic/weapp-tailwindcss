@@ -4719,10 +4719,6 @@ text,
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
 }
-.testCmpnt {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-}
 .visible {
   visibility: visible;
 }
@@ -4755,6 +4751,9 @@ text,
 }
 .flex {
   display: flex;
+}
+.table {
+  display: table;
 }
 .grid {
   display: grid;
@@ -8843,6 +8842,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   "space-y-4",
   "space-y-[1.6rem]",
   "space-y-[11rpx]",
+  "table",
   "text-2xl",
   "text-[#123456]",
   "text-[#ab1932]",

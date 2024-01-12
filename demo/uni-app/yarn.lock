@@ -6264,10 +6264,10 @@ html-webpack-plugin@^5.1.0:
     pretty-error "^4.0.0"
     tapable "^2.0.0"
 
-htmlparser2@9.0.0:
-  version "9.0.0"
-  resolved "https://registry.npmmirror.com/htmlparser2/-/htmlparser2-9.0.0.tgz#e431142b7eeb1d91672742dea48af8ac7140cddb"
-  integrity sha512-uxbSI98wmFT/G4P2zXx4OVx04qWUmyFPrD2/CNepa2Zo3GPNaCaaxElDgwUrwYWkK1nr9fft0Ya8dws8coDLLQ==
+htmlparser2@9.1.0:
+  version "9.1.0"
+  resolved "https://registry.npmmirror.com/htmlparser2/-/htmlparser2-9.1.0.tgz#cdb498d8a75a51f739b61d3f718136c369bc8c23"
+  integrity sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==
   dependencies:
     domelementtype "^2.3.0"
     domhandler "^5.0.3"
@@ -11517,10 +11517,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.0.6.tgz#7abde69c926a325d305c5522c03f5b6b9b4c32d1"
-  integrity sha512-K+TsGnIUz5CTC6mAfR7tkxOoDOQc2IcquuJJ3mmv7YiS21WxGhynDjdq9PWXsC2ashDxFIBuREYEfMbloWLoew==
+weapp-tailwindcss-webpack-plugin@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.0.7.tgz#64483db7a7fb9d7591cebd4a3eaeeeba703307e3"
+  integrity sha512-GiEn8I+eB8X+TbRnIzuHh/wTM5zCAQ9dWbC7ClUmn24hYmhTKv5h+TfE2yiAZMOULfG6rIFedBZQIs2sIJXfsQ==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.23.6"
@@ -11532,7 +11532,7 @@ weapp-tailwindcss-webpack-plugin@^3.0.6:
     "@weapp-core/escape" "^2.0.0"
     "@weapp-core/regex" "^1.0.1"
     debug "4.3.4"
-    htmlparser2 "9.0.0"
+    htmlparser2 "9.1.0"
     loader-utils "2.0.3"
     lru-cache "10.1.0"
     magic-string "0.30.5"
