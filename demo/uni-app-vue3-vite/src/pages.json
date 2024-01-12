@@ -42,6 +42,12 @@
       "style": {
         "navigationBarTitleText": "case-support-rpx"
       }
+    },
+    {
+      "path": "pages/issue/typography",
+      "style": {
+        "navigationBarTitleText": "typography"
+      }
     }
   ],
   "globalStyle": {
@@ -89,6 +95,11 @@
       {
         "name": "independent subPackages",
         "path": "moduleA/pages/index",
+        "query": ""
+      },
+      {
+        "name": "typography",
+        "path": "pages/issue/typography",
         "query": ""
       }
     ]

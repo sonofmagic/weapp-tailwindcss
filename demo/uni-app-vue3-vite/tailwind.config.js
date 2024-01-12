@@ -1,15 +1,18 @@
-const { each, variants } = require('./variants.js');
-const fs = require('node:fs');
+// const { each, variants } = require('./variants.js');
+// const fs = require('node:fs');
 const path = require('node:path');
 const plugin = require('tailwindcss/plugin');
-fs.writeFileSync(path.resolve(__dirname, './variants.json'), JSON.stringify(variants, null, 2), {
-  encoding: 'utf8',
-});
+// fs.writeFileSync(path.resolve(__dirname, './variants.json'), JSON.stringify(variants, null, 2), {
+//   encoding: 'utf8',
+// });
+function r(...args) {
+  return path.resolve(__dirname, ...args);
+}
 const cssMacro = require('weapp-tailwindcss-webpack-plugin/css-macro');
 const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-children');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],
+  content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'].map((x) => r(x)), // ,
   darkMode: 'class',
   theme: {
     extend: {

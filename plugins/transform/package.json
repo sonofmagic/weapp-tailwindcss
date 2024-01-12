@@ -1,0 +1,63 @@
+{
+  "name": "@weapp-tailwindcss/x",
+  "description": "The typography of weapp-tailwindcss",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "unbuild",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "sync": "cnpm sync @weapp-tailwindcss/typography"
+  },
+  "keywords": [
+    "weapp",
+    "tailwindcss",
+    "typography"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./transform": {
+      "types": "./dist/transform.d.ts",
+      "import": "./dist/transform.mjs",
+      "require": "./dist/transform.cjs"
+    },
+    "./*": "./*"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "dependencies": {
+    "htmlparser2": "^9.1.0",
+    "lodash.castarray": "^4.4.0",
+    "lodash.isplainobject": "^4.0.6",
+    "lodash.merge": "^4.6.2",
+    "magic-string": "^0.30.5",
+    "postcss-selector-parser": "^6.0.15"
+  },
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/icestack"
+  },
+  "homepage": "https://ui.icebreaker.top",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sonofmagic/icestack"
+  }
+}

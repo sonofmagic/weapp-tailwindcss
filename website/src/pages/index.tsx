@@ -29,11 +29,14 @@ function HomepageHeader() {
             <span className="text-[#07c160]">小程序</span> 使用 <span className="text-sky-500">tailwindcss</span> 全方面解决方案
           </h3>
           {/* <p>{siteConfig.title}</p> */}
-          <div>
+          <div className="mb-4">
             <Link className="button button--secondary button--lg " to="/docs/intro">
               立刻开始使用!
             </Link>
           </div>
+          <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
+            谁在使用？
+          </a>
         </div>
 
         <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 justify-around mt-8">

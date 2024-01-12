@@ -197,6 +197,23 @@ const config = {
             position: 'left',
             label: '指南'
           },
+
+          {
+            type: 'doc',
+            label: '生态及解决方案',
+            docId: 'community/templates'
+          },
+          {
+            type: 'doc',
+            label: '常见问题',
+            docId: 'issues/index'
+          },
+
+          {
+            type: 'doc',
+            label: '迁移',
+            docId: 'migrations/v2'
+          },
           {
             type: 'doc',
             docId: 'options/index',
@@ -207,21 +224,6 @@ const config = {
             to: 'docs/api/', // 'api' is the 'out' directory
             label: 'Types',
             position: 'left'
-          },
-          {
-            type: 'doc',
-            label: '常见问题',
-            docId: 'issues/index'
-          },
-          {
-            type: 'doc',
-            label: '生态',
-            docId: 'community/templates'
-          },
-          {
-            type: 'doc',
-            label: '迁移',
-            docId: 'migrations/v2'
           },
           {
             href: 'https://icebreaker.top/',

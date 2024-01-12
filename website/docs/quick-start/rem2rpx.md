@@ -1,8 +1,6 @@
-# 2. rem 转 rpx (或 px)
+# 4. rem 转 rpx (或 px)
 
-前面我们安装配置好了 `tailwindcss`，接下来一步便是配置 `rem` 转 `rpx`
-
-## 为什么要配置这一步呢？
+## 为什么要配置 rem 转 rpx 呢？
 
 这是因为 `tailwindcss` 里面工具类的长度单位，默认都是 `rem`，比如:
 
@@ -16,7 +14,7 @@
 /*......*/
 ```
 
-`rem`这个单位在 `h5` 环境下自适应良好，但小程序环境下，我们大部分情况都是使用 `rpx` 这个单位来进行自适应，所以就需要把默认的 `rem` 单位转化成 `rpx`。
+`rem`这个单位在 `h5` 环境下自适应良好，但小程序环境下，我们大部分都是使用 `rpx` 这个 `wxss` 单位来进行自适应，所以就需要把默认的 `rem` 单位转化成 `rpx`。
 
 ## 三种转化方式(根据你的需求选其一即可)
 
@@ -105,7 +103,7 @@ module.exports = {
 
 ## 外置 tailwindcss 插件
 
-你想缩小一下范围，只把 `tailwindcss` 生成的工具类的单位，从 `rem` 转变为 `rpx`，那么 `tailwindcss preset`: [tailwindcss-rem2px-preset](https://www.npmjs.com/package/tailwindcss-rem2px-preset) 适合你。
+你想缩小一下范围，只把 `tailwindcss` 生成的工具类的单位，从 `rem` 转变为 `rpx`，那么我写的 `tailwindcss preset`: [tailwindcss-rem2px-preset](https://www.npmjs.com/package/tailwindcss-rem2px-preset) 适合你。
 
 同样我们安装它：
 

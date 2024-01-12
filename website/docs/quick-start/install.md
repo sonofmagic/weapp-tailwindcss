@@ -23,7 +23,7 @@ npx tailwindcss init
 
 ## 2. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`
 
-> 注意：这只是比较普遍的注册方式，各个框架很有可能是不同的! 比如 `uni-app vue3 vite` 项目就必须要内联注册 postcss! 详见下方的注意事项
+> 注意：这只是比较普遍的注册方式，各个框架很有可能是不同的! 比如 `uni-app vue3 vite` 项目就必须要内联注册 `postcss` 选项! 详见下方的注意事项
 
 ```js
 // postcss.config.js
@@ -37,7 +37,7 @@ module.exports = {
 }
 ```
 
-:::tip
+:::tip 注意事项
 `uni-app vite vue3` 项目，必须在`vite.config.ts` 文件中，使用 `postcss` 内联的写法注册插件。相关写法可以参考我的这个模板项目: [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)。
 
 而 `uni-app vue webpack5` 项目中的 `postcss.config.js`，在默认情况下，已经预置很多插件在里面，配置比较繁杂，可以参考这个文件 [uni-app-webpack5/postcss.config.js](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-webpack5/postcss.config.js)
@@ -61,10 +61,6 @@ module.exports = {
   }
 }
 ```
-
-:::tip
-这块可以参考[tailwindcss官方配置项link](https://tailwindcss.com/docs/configuration)
-:::
 
 ## 4. 引入 `tailwindcss`
 
@@ -98,4 +94,8 @@ module.exports = {
 
 然后在 `app.ts` 里引入这个样式文件即可。
 
-这样 `tailwindcss` 的安装与配置就完成了，接下来让我们进入第二个环节：配置 `rem` 单位转化。
+这样 `tailwindcss` 的安装与配置就完成了，接下来让我们进入第二个环节：安装 `weapp-tailwindcss`。
+
+## Refers
+
+[tailwindcss官方配置项link](https://tailwindcss.com/docs/configuration)
