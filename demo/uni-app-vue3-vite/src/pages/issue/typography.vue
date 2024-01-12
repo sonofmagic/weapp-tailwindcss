@@ -1,17 +1,10 @@
 <template>
-  <div>
-    <rich-text :nodes="nodes"></rich-text>
-  </div>
+  <rich-text :nodes="nodes"></rich-text>
 </template>
 
 <script lang="ts" setup>
 import { html } from './typography.js'
-import transform from './plugin/transform'
-
-// transform(s)
 const nodes = html
-
-
 </script>
 
 <style lang="scss">
@@ -20,5 +13,4 @@ const nodes = html
 @import "tailwindcss/utilities";
 
 @config "./tailwind.config.js";
-
 </style>
