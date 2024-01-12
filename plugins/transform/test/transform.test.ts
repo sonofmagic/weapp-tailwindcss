@@ -1,4 +1,4 @@
-import transform from '../src/transform'
+import transform from '../src/index'
 
 describe('transform', () => {
   it('case 0', () => {
