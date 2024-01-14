@@ -69,15 +69,15 @@ const defaults = css`
   }
 `
 
-function run(config: Config, plugin = tailwind) {
+function run(config: Config, options = {}) {
   const { currentTestName } = expect.getState()
   config = {
-    plugins: [typographyPlugin],
+    plugins: [typographyPlugin(options)],
     corePlugins: { preflight: false },
     ...config
   }
 
-  return postcss(plugin(config)).process(['@tailwind base;', '@tailwind components;', '@tailwind utilities'].join('\n'), {
+  return postcss(tailwind(config)).process(['@tailwind base;', '@tailwind components;', '@tailwind utilities'].join('\n'), {
     from: `${path.resolve(__filename)}?test=${currentTestName}`
   })
 }
@@ -1287,7 +1287,30 @@ describe('preifx', () => {
     const config = {
       content: [{ raw: html`<div class="prose"></div>` }]
     }
-    const result = await run(config)
+    const result = await run(config, {
+      mode: 'tag'
+    })
+    expect(result.css).toMatchSnapshot()
+  })
+
+  test('xxx case 0', async () => {
+    const config = {
+      content: [{ raw: html`<div class="prose"></div>` }]
+    }
+    const result = await run(config, {
+      mode: 'class'
+    })
+    expect(result.css).toMatchSnapshot()
+  })
+
+  test('xxx case 1', async () => {
+    const config = {
+      content: [{ raw: html`<div class="prose"></div>` }]
+    }
+    const result = await run(config, {
+      mode: 'class',
+      classPrefix: 'ice-'
+    })
     expect(result.css).toMatchSnapshot()
   })
 })

@@ -2,7 +2,7 @@ import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 
 export default (html: string, options?: Partial<{ prefix: string }>) => {
-  const { prefix = 'ice-' } = options ?? {}
+  const { prefix = '' } = options ?? {}
   const s = new MagicString(html)
   let tagName: string | undefined
   let hasClassAttr = false
@@ -15,6 +15,7 @@ export default (html: string, options?: Partial<{ prefix: string }>) => {
     },
     onattribute(name) {
       if (name === 'class' && tagName) {
+        // class=" length = 7
         s.appendLeft(parser.startIndex + 7, prefix + tagName + ' ')
       }
     },

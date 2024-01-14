@@ -1,9 +1,10 @@
 const plugin = require('tailwindcss/plugin')
 const merge = require('lodash.merge')
 const castArray = require('lodash.castarray')
+const parser = require('postcss-selector-parser')
 const styles = require('./styles')
 const { commonTrailingPseudos } = require('./utils')
-
+const parseSelector = parser()
 const computed = {
   // Reserved for future "magic properties", for example:
   // bulletColor: (color) => ({ 'ul > li::before': { backgroundColor: color } }),
@@ -27,10 +28,22 @@ function isObject(value) {
   return typeof value === 'object' && value !== null
 }
 
-function configToCss(config = {}, { target, className, modifier, prefix }) {
+function transformTag2Class(s, classPrefix = '') {
+  const ast = parseSelector.astSync(s)
+  ast.walkTags((tag) => {
+    tag.replaceWith(
+      parser.className({
+        value: classPrefix + tag.value
+      })
+    )
+  })
+  return ast.toString()
+}
+
+function configToCss(config = {}, { target, className, modifier, prefix, mode, classPrefix }) {
   function updateSelector(k, v) {
     if (target === 'legacy') {
-      return [k, v]
+      return mode === 'class' && typeof v === 'object' ? [transformTag2Class(k, classPrefix), v] : [k, v]
     }
 
     if (Array.isArray(v)) {
@@ -63,7 +76,7 @@ function configToCss(config = {}, { target, className, modifier, prefix }) {
 }
 
 const typographyPlugin = plugin.withOptions(
-  ({ className = 'prose', target = 'legacy' } = {}) => {
+  ({ className = 'prose', target = 'legacy', mode = 'class', classPrefix = '' } = {}) => {
     // legacy | modern
     return function ({ addVariant, addComponents, theme, prefix }) {
       const modifiers = theme('typography')
@@ -102,8 +115,8 @@ const typographyPlugin = plugin.withOptions(
         ['lead', '[class~="lead"]']
       ]) {
         selectors = selectors.length === 0 ? [name] : selectors
-
-        const selector = target === 'legacy' ? selectors.map((selector) => `& ${selector}`) : selectors.join(', ')
+        const isClassMode = mode === 'class'
+        const selector = target === 'legacy' ? selectors.map((selector) => `& ${isClassMode ? transformTag2Class(selector, classPrefix) : selector}`) : selectors.join(', ')
 
         addVariant(`${className}-${name}`, target === 'legacy' ? selector : `& :is(${inWhere(selector, options)})`)
       }
@@ -114,7 +127,9 @@ const typographyPlugin = plugin.withOptions(
             target,
             className,
             modifier,
-            prefix
+            prefix,
+            mode,
+            classPrefix
           })
         }))
       )

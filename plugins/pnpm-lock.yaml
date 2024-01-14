@@ -17,6 +17,9 @@ importers:
 
   typography:
     dependencies:
+      htmlparser2:
+        specifier: ^9.1.0
+        version: 9.1.0
       lodash.castarray:
         specifier: ^4.4.0
         version: 4.4.0
@@ -26,6 +29,9 @@ importers:
       lodash.merge:
         specifier: ^4.6.2
         version: 4.6.2
+      magic-string:
+        specifier: ^0.30.5
+        version: 0.30.5
       postcss-selector-parser:
         specifier: ^6.0.15
         version: 6.0.15
@@ -472,7 +478,6 @@ packages:
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
-    dev: true
 
   /@jridgewell/trace-mapping@0.3.20:
     resolution: {integrity: sha512-R8LcPeWZol2zR8mmH3JeKQ6QRCFb7XgUhV9ZlGhHLGyg4wpPiPZNQOOWhFZhxKw8u//yTbNGI42Bx/3paXEQ+Q==}
@@ -1096,18 +1101,15 @@ packages:
       domelementtype: 2.3.0
       domhandler: 5.0.3
       entities: 4.5.0
-    dev: true
 
   /domelementtype@2.3.0:
     resolution: {integrity: sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==}
-    dev: true
 
   /domhandler@5.0.3:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
     dependencies:
       domelementtype: 2.3.0
-    dev: true
 
   /domutils@3.1.0:
     resolution: {integrity: sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==}
@@ -1115,7 +1117,6 @@ packages:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
-    dev: true
 
   /electron-to-chromium@1.4.628:
     resolution: {integrity: sha512-2k7t5PHvLsufpP6Zwk0nof62yLOsCf032wZx7/q0mv8gwlXjhcxI3lz6f0jBr0GrnWKcm3burXzI3t5IrcdUxw==}
@@ -1124,7 +1125,6 @@ packages:
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
-    dev: true
 
   /esbuild@0.19.11:
     resolution: {integrity: sha512-HJ96Hev2hX/6i5cDVwcqiJBBtuo9+FeIJOtZ9W1kA5M6AMJRHUZlpYZ1/SbEwtO0ioNAW8rUooVpC/WehY2SfA==}
@@ -1315,6 +1315,15 @@ packages:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
     dev: true
 
+  /htmlparser2@9.1.0:
+    resolution: {integrity: sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==}
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      domutils: 3.1.0
+      entities: 4.5.0
+    dev: false
+
   /human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
@@ -1469,7 +1478,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
 
   /mdn-data@2.0.28:
     resolution: {integrity: sha512-aylIc7Z9y4yzHYAJNuESG3hfhC+0Ibp/MAMiaOZgNv4pmEdFyfZhhhny4MNiAfWdBQ1RQ2mfDWmM1x8SvGyp8g==}

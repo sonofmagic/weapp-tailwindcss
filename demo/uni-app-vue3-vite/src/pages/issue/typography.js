@@ -30,7 +30,7 @@ const arr = [
   // ['kbd'],
 ];
 
-export const html = `<article class="prose prose-2xl prose-slate">
+export const html = `
 ${arr
   .map((array) => {
     return array
@@ -40,4 +40,4 @@ ${arr
       .join('\n');
   })
   .join('\n')}
-</article>`;
+`;
