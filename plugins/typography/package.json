@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/typography",
   "description": "The tailwindcss typography plugin for weapp",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "scripts": {
     "build": "unbuild",
     "test": "vitest run",

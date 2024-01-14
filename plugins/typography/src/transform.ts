@@ -5,12 +5,12 @@ export default (html: string, options?: Partial<{ prefix: string }>) => {
   const { prefix = '' } = options ?? {}
   const s = new MagicString(html)
   let tagName: string | undefined
-  let hasClassAttr = false
+
+  const hasClassStack: boolean[] = []
   const stack: number[] = []
   const parser = new Parser({
-    onopentag(name, attribs) {
+    onopentagname(name) {
       tagName = name
-      hasClassAttr = 'class' in attribs
       stack.push(parser.endIndex)
     },
     onattribute(name) {
@@ -19,9 +19,12 @@ export default (html: string, options?: Partial<{ prefix: string }>) => {
         s.appendLeft(parser.startIndex + 7, prefix + tagName + ' ')
       }
     },
+    onopentag(name, attribs) {
+      hasClassStack.push('class' in attribs)
+    },
     onclosetag(name) {
       const p = stack.pop()
-      if (!hasClassAttr && typeof p === 'number') {
+      if (!hasClassStack.pop() && typeof p === 'number') {
         s.appendRight(p, ` class="${prefix + name}"`)
       }
       tagName = undefined
