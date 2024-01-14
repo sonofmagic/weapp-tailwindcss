@@ -28,18 +28,22 @@ npm i -D @weapp-tailwindcss/typography
 
 这里比较特殊，由于`rich-text` 组件的样式限制: 自定义组件中使用 `rich-text` 组件，那么仅自定义组件的 `wxss` 样式对 `rich-text` 中的 `class` 生效
 
+#### 创建组件
+
 这里以 `uni-app vue3 vite` 项目为例，比如此时我们目标组件为 `typography.vue`:
 
 ```html
 <template>
-  <rich-text :nodes="nodes"></rich-text>
+  <rich-text class="prose" :nodes="nodes"></rich-text>
 </template>
 
 <script lang="ts" setup>
-const nodes = getNodes()
+// getHtml 为你获取 html 的方法
+import transform from '@weapp-tailwindcss/typography/transform'
+const nodes = transform(getHtml()) 
 </script>
 
-<style lang="scss">
+<style>
 @config "./tailwind.typography.config.js";
 @tailwind base;
 @tailwind components;
@@ -47,28 +51,32 @@ const nodes = getNodes()
 </style>
 ```
 
+#### 创建独立 tailwindcss 上下文
+
 在当前 `typography.vue` 组件目录下，单独创建一个 `tailwind.typography.config.js` 来创建独立的 `tailwindcss` 上下文，单独处理它，
 
 ```js
-// tailwind.typography.config.js
+const path = require('node:path');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    {
-      // 由于此时 html 从服务端远程获取，你无法从本地提取到 class，只能服务端那里用到什么 prose 你这就提取什么
-      raw: 'prose prose-2xl prose-slate',
-    },
-  ],
+  content: [path.resolve(__dirname, './typography.vue')],
   plugins: [require('@weapp-tailwindcss/typography')],
+  corePlugins: {
+    preflight: false,
+  },
 };
-
 ```
 
-此时渲染 `html` 就生效了。但是这还没有结束，为了防止这个上下文，影响到你全局的 `tailwindcss` 上下文，你必须做一个显式指定。
+此时渲染 `html` 就生效了。
+
+#### 指定全局样式配置文件
+
+但是这还没有结束，为了防止这个上下文，影响到你全局的 `tailwindcss` 上下文，你必须做一个显式指定。
 
 此时要在你的引入 `tailwindcss` 的入口文件处(`App.vue`)，声明它用的是根目录的 `tailwind.config.js`
 
-```scss
+```css
 @config "../tailwind.config.js";
 @tailwind base;
 @tailwind components;
@@ -81,7 +89,17 @@ module.exports = {
 
 ## 配置项
 
-配置项与 <https://tailwindcss.com/docs/typography-plugin> 是相同的
+大体的配置项与 <https://tailwindcss.com/docs/typography-plugin> 是相同的
+
+额外添加了 `mode` 和 `classPrefix`
+
+## 原理解释
+
+`@weapp-tailwindcss/typography/transform` 这个方法是为你的 `html` 所有的元素给大上 `class` 属性，这样才能使用那些 `prose-headings:bg-red-100`,`prose-h5:text-green-400` 的写法，来覆盖原先富文本的样式。
+
+而 `@weapp-tailwindcss/typography` 通过 `mode` 的配置，`mode` 为 `tag` 表示为原先默认的行为，`mode` 为 `class`，此时插件更改为对所有的 `class` 选择器生效，而不是对所有的标签生效。默认值为 `class`
+
+假如你觉得 `@weapp-tailwindcss/typography/transform` 放在小程序端处理，体积太大了，你可以把它放在 `nodejs` 服务中，预先处理。
 
 ## Demo
 
