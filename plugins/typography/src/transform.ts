@@ -1,4 +1,4 @@
-import { Parser } from 'htmlparser2'
+import { Parser, parseDocument } from 'htmlparser2'
 import MagicString from 'magic-string'
 
 export default (html: string, options?: Partial<{ prefix: string }>) => {

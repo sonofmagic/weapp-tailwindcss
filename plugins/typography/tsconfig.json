@@ -11,6 +11,6 @@
   },
   "include": [
     "src",
-    "test"
-, "test/transform.test.ts"  ]
+    "test",
+  ]
 }
