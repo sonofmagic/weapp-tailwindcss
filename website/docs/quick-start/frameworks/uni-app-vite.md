@@ -1,4 +1,4 @@
-# uni-app vite(vue3)
+# uni-app vue3 vite
 
 `uni-app vite` 版本是 `uni-app` 最新的升级，它使用 `vue3` 的语法。
 
@@ -25,17 +25,20 @@ npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite';
-// uni 是 uni-app 官方插件， uvtw 一定要放在 uni 后，对生成文件进行处理
-const vitePlugins = [uni(),uvwt()]
 
 export default defineConfig({
-  plugins: vitePlugins,
-  // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
-  // css: {
-  //   postcss: {
-  //     plugins: postcssPlugins,
-  //   },
-  // },
+  // uni 是 uni-app 官方插件， uvtw 一定要放在 uni 后，对生成文件进行处理
+  plugins: [uni(),uvwt()],
+  css: {
+    postcss: {
+      plugins: [
+        // require('tailwindcss')() 和 require('tailwindcss') 等价的，表示什么参数都不传，如果你想传入参数
+        // require('tailwindcss')({} <- 这个是postcss插件参数)
+        require('tailwindcss'),
+        require('autoprefixer')
+      ],
+    },
+  },
 });
 
 ```

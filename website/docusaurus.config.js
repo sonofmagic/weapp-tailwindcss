@@ -208,6 +208,11 @@ const config = {
             label: '常见问题',
             docId: 'issues/index'
           },
+          {
+            type: 'doc',
+            label: '优秀案例展示',
+            docId: 'showcase/index'
+          },
 
           {
             type: 'doc',

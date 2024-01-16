@@ -13,3 +13,7 @@
 你可以很容易在各个框架，或者原生开发中集成 `tailwindcss`。
 
 现在，就让我们开始使用吧！
+
+## 演示视频
+
+<iframe src="//player.bilibili.com/player.html?aid=835925684&bvid=BV1fg4y1D7xx&cid=1398844948&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>

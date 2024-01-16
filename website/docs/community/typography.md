@@ -4,7 +4,7 @@
 
 `@weapp-tailwindcss/typography` 是 `@tailwindcss/typography` 的小程序迁移版本，帮助你渲染美丽的富文本。
 
-<iframe src="//player.bilibili.com/player.html?aid=751356751&bvid=BV16k4y1S7nY&cid=1408037969&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe src="//player.bilibili.com/player.html?aid=751356751&bvid=BV16k4y1S7nY&cid=1408037969&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 ## 介绍
 
