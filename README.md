@@ -28,35 +28,22 @@
 
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 
-- [Tips](#tips)
 - [特性](#特性)
   - [插件介绍](#插件介绍)
 - [安装与使用方式](#安装与使用方式)
 - [生态和解决方案](#生态和解决方案)
 - [常见问题](#常见问题)
+- [现成配置好的各个框架的模板](#现成配置好的各个框架的模板)
 - [旧版本迁移指南](#旧版本迁移指南)
 - [配置项参考](#配置项参考)
 - [变更日志](#变更日志)
+- [Tips](#tips)
 - [Contribute](#contribute)
 - [License](#license)
+- [Star History](#star-history)
 - [Related projects](#related-projects)
   - [CLI 工具](#cli-工具)
-  - [模板 template](#模板-template)
-    - [如何选择？](#如何选择)
-    - [使用`uni-app cli`进行构建 `vscode`开发](#使用uni-app-cli进行构建-vscode开发)
-    - [使用`hbuilderx` 进行构建和开发](#使用hbuilderx-进行构建和开发)
-    - [使用`tarojs`进行构建 `vscode`开发](#使用tarojs进行构建-vscode开发)
-    - [原生小程序开发模板](#原生小程序开发模板)
-  - [tailwindcss plugin / util](#tailwindcss-plugin--util)
   - [weapp-pandacss](#weapp-pandacss)
-
-## Tips
-
-自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装 `weapp-tailwindcss` 这个包，当然现在 `weapp-tailwindcss-webpack-plugin` 这个包也不会废弃，也会时刻保持版本的同步。
-
-为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合描述现在这种，多插件并存的状态了，为了以后的发展改个名。
-
-前沿阅读: [What’s Tailwind Oxide Engine? The Next Evolution of Tailwind CSS](https://medium.com/@bomber.marek/whats-tailwind-oxide-engine-the-next-evolution-of-tailwind-css-32e7ef8e19a1)，未来 `tailwindcss` 会切换到这个引擎来大幅加快构建和运行速度，当然等它发布正式版本的时候，我也会尽可能第一时间去进行兼容新的引擎。
 
 ## 特性
 
@@ -86,11 +73,21 @@
 
 ## [常见问题](https://weapp-tw.icebreaker.top/docs/issues/)
 
+## [现成配置好的各个框架的模板](https://weapp-tw.icebreaker.top/docs/community/templates)
+
 ## [旧版本迁移指南](https://weapp-tw.icebreaker.top/docs/migrations/v2)
 
 ## [配置项参考](https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
 ## [变更日志](./CHANGELOG.md)
+
+## Tips
+
+自从 `2.3.3` 版本开始，我发布了一个额外的包叫 `weapp-tailwindcss`,它和 `weapp-tailwindcss-webpack-plugin` 代码版本完全一致，且保持发布版本的同步。以后可以都去安装 `weapp-tailwindcss` 这个包，当然现在 `weapp-tailwindcss-webpack-plugin` 这个包也不会废弃，也会时刻保持版本的同步。
+
+为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合描述现在这种，多插件并存的状态了，为了以后的发展改个名。
+
+前沿阅读: [What’s Tailwind Oxide Engine? The Next Evolution of Tailwind CSS](https://medium.com/@bomber.marek/whats-tailwind-oxide-engine-the-next-evolution-of-tailwind-css-32e7ef8e19a1)，未来 `tailwindcss` 会切换到这个引擎来大幅加快构建和运行速度，当然等它发布正式版本的时候，我也会尽可能第一时间去进行兼容新的引擎。
 
 ## Contribute
 
@@ -107,45 +104,15 @@
 
 [MIT](./LICENSE)
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
+
 ## Related projects
 
 ### CLI 工具
 
 [weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
-
-### 模板 template
-
-#### 如何选择？
-
-假如你仅仅是开发一个`小程序` + `h5` 的组合，那么使用 `vscode` 模板就足够了
-
-假如你的项目构建的重点平台是 `app` 那么还是推荐使用 `hbuilderx` 模板，因为 `hbuilderx` 自带了一套 `app` 构建和调试的工具链，可以更好的支持你的开发。
-
-#### 使用`uni-app cli`进行构建 `vscode`开发
-
-[uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
-
-[uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
-
-#### 使用`hbuilderx` 进行构建和开发
-
-[uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
-
-#### 使用`tarojs`进行构建 `vscode`开发
-
-[taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
-
-#### 原生小程序开发模板
-
-[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
-
-[weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
-
-### tailwindcss plugin / util
-
-- [css-to-tailwindcss-plugin](https://github.com/sonofmagic/icestack/tree/main/packages/css-to-tailwindcss-plugin) transform your `css/scss` to `tailwindcss plugin`
-
-- [weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
 
 ### weapp-pandacss
 
