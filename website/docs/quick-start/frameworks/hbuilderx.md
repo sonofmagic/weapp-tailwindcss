@@ -1,25 +1,13 @@
-# Hbuilderx 使用方式
-
-## Hbuilderx 与 uni-app cli 环境汇总
-
-首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
-
-|                  | webpack  | vite | postcss  |
-| ---------------- | -------- | ---- | -------- |
-| hbuilderx vue2   | webpack4 | x    | postcss7 |
-| uni-app cli vue2 | webpack5 | x    | postcss8 |
-| hbuilderx vue3   | x        | √    | postcss8 |
-| uni-app cli vue3 | x        | √    | postcss8 |
-
-也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
+# uni-app HbuilderX 使用方式
 
 ## 默认使用方式
 
 > 配置会稍微复杂一些，这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
-注意: 在使用 `hbuilderx` 进行开发时，必须要给你 `tailwind.config.js` 传入绝对路径:
+注意: 在使用 `hbuilderx` 进行开发时，由于目录结构的不同，你必须要给你 `tailwind.config.js` 传入绝对路径:
 
 ```js
+// tailwind.config.js
 const path = require("path");
 
 const resolve = (p) => {
@@ -27,8 +15,9 @@ const resolve = (p) => {
 };
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // 注意此处，一定要 `path.resolve` 一下
-  content: ["./index.html", "./**/*.vue"].map(resolve),
+  // 注意此处，一定要 `path.resolve` 一下, 传入绝对路径
+  // 你要有其他目录，比如 components，也必须在这里，添加一下
+  content: ["./index.html", "./pages/**/*.{html,js,ts,jsx,tsx,vue}"].map(resolve),
   // ...
   corePlugins: {
     preflight: false,
@@ -52,34 +41,20 @@ const resolve = (p) => {
   return path.resolve(__dirname, p);
 };
 
-const vitePlugins = [uni(), uvwt({
-  disabled: WeappTailwindcssDisabled
-})];
-
-
-
-const postcssPlugins = [
-  require("autoprefixer")(),
-  require("tailwindcss")({
-    // 注意此处，手动传入你 `tailwind.config.js` 的位置
-    config: resolve("./tailwind.config.js"),
-  }),
-];
-if (!WeappTailwindcssDisabled) {
-  postcssPlugins.push(
-    require("postcss-rem-to-responsive-pixel")({
-      rootValue: 32,
-      propList: ["*"],
-      transformUnit: "rpx",
-    })
-  );
-}
-
 export default defineConfig({
-  plugins: vitePlugins,
+  plugins: [uni(), uvwt({
+    rem2rpx: true,
+    disabled: WeappTailwindcssDisabled
+  })],
   css: {
     postcss: {
-      plugins: postcssPlugins,
+      plugins: [
+        require("tailwindcss")({
+          // 注意此处，手动传入你 `tailwind.config.js` 的绝对路径
+          config: resolve("./tailwind.config.js"),
+        }),
+        require("autoprefixer"),
+      ],
     },
   },
 });
@@ -112,3 +87,16 @@ export default defineConfig({
 不过代价是什么呢？那就是，这项改动是全局的！
 
 你要想恢复设置，那只有重新安装 `uni-app vue2` 编译插件，或者重新安装整个 `hbuilderx`，所以这里还是推荐使用 `cli` 方式去创建项目，保证一个项目一个编译模式，你要节省空间就用 `pnpm`, 想用什么版本编译就用什么版本。
+
+## Hbuilderx 与 uni-app cli 环境汇总
+
+首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
+
+|                  | webpack  | vite | postcss  |
+| ---------------- | -------- | ---- | -------- |
+| hbuilderx vue2   | webpack4 | x    | postcss7 |
+| uni-app cli vue2 | webpack5 | x    | postcss8 |
+| hbuilderx vue3   | x        | √    | postcss8 |
+| uni-app cli vue3 | x        | √    | postcss8 |
+
+也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
