@@ -4,7 +4,7 @@
   "private": true,
   "description": "ge",
   "scripts": {
-    "dev": "cross-env DEBUG=weapp-tw npm run dev:weapp",
+    "dev": "cross-env DEBUG=weapp-tw NODE_ENV=production npm run dev:weapp",
     "dev:local": "cross-env LOCAL=1 WRITE=1 npm run dev:weapp",
     "dev:write": "cross-env WRITE=1 npm run dev:weapp",
     "build": "npm run build:weapp",
