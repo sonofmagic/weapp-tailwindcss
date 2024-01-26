@@ -20,6 +20,7 @@
     "@mpxjs/pinia": "^2.9.1",
     "@mpxjs/store": "^2.9.9",
     "@mpxjs/utils": "^2.9.1",
+    "@vant/weapp": "^1.11.4",
     "pinia": "^2.1.7",
     "tdesign-miniprogram": "^1.2.7",
     "vue": "^2.6.14",

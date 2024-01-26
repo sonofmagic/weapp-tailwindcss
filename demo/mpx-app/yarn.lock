@@ -3141,6 +3141,11 @@
   resolved "https://registry.npmmirror.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
+"@vant/weapp@^1.11.4":
+  version "1.11.4"
+  resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.11.4.tgz#9f758b95ab17d5b4e8d7a563bed26acf69a830c3"
+  integrity sha512-egOsWO4hVMP1SQSqQ46jy8UD3WysvlnUecRzPM21Y3ovkOFZ6wlaO7oHQmTXRpwr+V41Qri1qEbtNjhVxFqdyw==
+
 "@videojs/http-streaming@3.7.0":
   version "3.7.0"
   resolved "https://registry.npmmirror.com/@videojs/http-streaming/-/http-streaming-3.7.0.tgz#48ece0582602e24a3b403c2410bbcdf320bfcccd"
