@@ -1,0 +1,1 @@
+<button class="class {{className}}" form-type="{{disabled || loading ? '' : type}}" open-type="{{disabled || loading ? '' : openType}}" hover-class="{{disabled || loading ? '' : (hoverClass || classPrefix + '--hover')}}"></button>

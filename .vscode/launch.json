@@ -39,6 +39,13 @@
       "cwd": "${workspaceFolder}/demo/taro-app"
     },
     {
+      "command": "yarn dev",
+      "name": "[Demo Mpx] Mpx dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/mpx-app"
+    },
+    {
       "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",

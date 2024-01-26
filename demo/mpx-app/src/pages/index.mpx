@@ -15,6 +15,7 @@
   </view>
 
     <list />
+    <t-button>111</t-button>
   </view>
 </template>
 
@@ -54,7 +55,8 @@ createPage({
 <script type="application/json">
   {
     "usingComponents": {
-      "list": "../components/list"
+      "list": "../components/list",
+      "t-button": "tdesign-miniprogram/button/button"
     }
   }
 </script>
