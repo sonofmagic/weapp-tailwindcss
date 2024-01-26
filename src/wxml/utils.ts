@@ -16,35 +16,39 @@ function getQuotes(quote: string | null | undefined) {
 }
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
-  const ast = parseExpression(match)
+  try {
+    const ast = parseExpression(match)
 
-  traverse(ast, {
-    StringLiteral(path) {
-      // [g['人生']==='你好啊'?'highlight':'']
-      if (t.isMemberExpression(path.parent)) {
-        return
+    traverse(ast, {
+      StringLiteral(path) {
+        // [g['人生']==='你好啊'?'highlight':'']
+        if (t.isMemberExpression(path.parent)) {
+          return
+        }
+        // parentPath maybe null
+        // ['td',[(g.type==='你好啊')?'highlight':'']]
+        if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
+          return
+        }
+
+        path.node.value = replaceWxml(path.node.value, options)
+      },
+      noScope: true
+    })
+
+    const { code } = generate(ast, {
+      compact: true,
+      minified: true,
+      jsescOption: {
+        quotes: getQuotes(options.quote),
+        minimal: true
       }
-      // parentPath maybe null
-      // ['td',[(g.type==='你好啊')?'highlight':'']]
-      if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
-        return
-      }
+    })
 
-      path.node.value = replaceWxml(path.node.value, options)
-    },
-    noScope: true
-  })
-
-  const { code } = generate(ast, {
-    compact: true,
-    minified: true,
-    jsescOption: {
-      quotes: getQuotes(options.quote),
-      minimal: true
-    }
-  })
-
-  return code
+    return code
+  } catch {
+    return match
+  }
 }
 
 /**
