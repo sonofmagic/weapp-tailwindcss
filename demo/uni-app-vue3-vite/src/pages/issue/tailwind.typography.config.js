@@ -1,9 +1,10 @@
+const path = require('node:path');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    {
-      raw: 'prose prose-2xl prose-slate',
-    },
-  ],
+  content: [path.resolve(__dirname, './typography.vue')],
   plugins: [require('@weapp-tailwindcss/typography')],
+  corePlugins: {
+    preflight: false,
+  },
 };

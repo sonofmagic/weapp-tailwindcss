@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/typography",
   "description": "The tailwindcss typography plugin for weapp",
-  "version": "0.1.0",
+  "version": "0.2.4",
   "scripts": {
     "build": "unbuild",
     "test": "vitest run",
@@ -21,6 +21,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
+    "./transform": {
+      "types": "./dist/transform.d.ts",
+      "import": "./dist/transform.mjs",
+      "require": "./dist/transform.cjs"
+    },
     "./*": "./*"
   },
   "main": "./dist/index.cjs",
@@ -38,9 +43,11 @@
     }
   },
   "dependencies": {
+    "htmlparser2": "^9.1.0",
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",
+    "magic-string": "^0.30.5",
     "postcss-selector-parser": "^6.0.15"
   },
   "author": "SonOfMagic <qq1324318532@gmail.com>",

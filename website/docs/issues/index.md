@@ -66,41 +66,18 @@ module.exports = {
 
 遇到这个问题是由于 `babel` 相关的包之间的版本产生了冲突导致的，这种时候可以删除掉 `lock`文件 (`yarn.lock`,`pnpm-lock.yaml`,`package-lock.json`)，然后重新安装即可。
 
-## taro webpack5 环境下，这个插件和 `terser-webpack-plugin` 一起使用，会导致插件转义功能失效
+## taro webpack5 环境下，这个插件和外置额外安装的 `terser-webpack-plugin` 一起使用，会导致插件转义功能失效
 
 [[#142](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/142)]
 例如：`.h-4/6` `!w-full` 正常会转义为`.h-4s6` `.iw-full`,本插件失效后小程序开发者工具报编译错误`.h-4\/6` `.\!w-full`。
 
 压缩代码，不要使用 <https://docs.taro.zone/docs/config-detail/#terserenable> 链接中的方法，太老旧了。
 
-~~`taro` 配置项里，已经有对应的 `terser` 配置项了，详见 <https://taro-docs.jd.com/docs/compile-optimized>~~
+使用 `taro` 配置项里的的 `terser` 配置项，详见 <https://taro-docs.jd.com/docs/config-detail#terser>
 
-```js
-module.exports = {
-  mini: {
-    //不建议添加此配置项，会导致转义失效
-    webpackChain: (chain, webpack) => {
-      chain.merge({
-        plugin: {
-          install: {
-            plugin: require('terser-webpack-plugin'),
-            args: [
-              {
-                terserOptions: {
-                  compress: true, // 默认使用terser压缩
-                  // mangle: false,
-                  keep_classnames: true, // 不改变class名称
-                  keep_fnames: true, // 不改变函数名称
-                },
-              },
-            ],
-          },
-        },
-      })
-    },
-  },
-}
-```
+> terser 配置只在生产模式下生效。如果你正在使用 watch 模式，又希望启用 terser，那么则需要设置 process.env.NODE_ENV 为 'production'。
+
+也就是说，直接在开发 watch 模式的时候，设置环境变量 `NODE_ENV` 为 'production' 就行。
 
 另外也可以不利用 `webpack` 插件压缩代码，去使用微信开发者工具内部的压缩代码选项。
 

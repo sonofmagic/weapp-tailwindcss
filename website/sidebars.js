@@ -30,7 +30,7 @@ const sidebars = {
           id: 'quick-start/this-plugin'
         },
         {
-          items: ['uni-app', 'uni-app-vite', 'taro', 'rax', 'mpx', 'native', 'hbuilderx', 'api'].map((x) => 'quick-start/frameworks/' + x),
+          items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'taro', 'rax', 'mpx', 'native', 'api'].map((x) => 'quick-start/frameworks/' + x),
           label: '3.各个框架的注册方式',
           type: 'category',
           collapsed: false

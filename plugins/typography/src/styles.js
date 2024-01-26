@@ -1564,6 +1564,8 @@ module.exports = {
           backgroundColor: 'var(--tw-prose-pre-bg)',
           overflowX: 'auto',
           fontWeight: '400'
+          // add display
+          // display: 'flex'
         },
         'pre code': {
           backgroundColor: 'transparent',

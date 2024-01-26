@@ -189,4 +189,8 @@ describe('templateReplacer', () => {
     testCase = 'text-[64rpx]/[72rpx]'
     expect(simpleReplacer(testCase)).toBe('text-_64rpx_s_72rpx_')
   })
+
+  it('issues/274 {{class}}', () => {
+    expect(simpleReplacer(`{{class}}`)).toBe('{{class}}')
+  })
 })

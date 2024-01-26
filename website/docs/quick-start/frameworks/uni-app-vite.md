@@ -1,4 +1,35 @@
-# uni-app vite(vue3)
+# uni-app vue3 vite
+
+## 注册插件
+
+创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
+
+```js
+// vite.config.[jt]s
+import { defineConfig } from "vite";
+import uni from "@dcloudio/vite-plugin-uni";
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite';
+
+export default defineConfig({
+  // uni 是 uni-app 官方插件， uvtw 一定要放在 uni 后，对生成文件进行处理
+  plugins: [uni(),uvwt()],
+  css: {
+    postcss: {
+      plugins: [
+        // require('tailwindcss')() 和 require('tailwindcss') 等价的，表示什么参数都不传，如果你想传入参数
+        // require('tailwindcss')({} <- 这个是postcss插件参数)
+        require('tailwindcss'),
+        require('autoprefixer')
+      ],
+    },
+  },
+});
+
+```
+
+这里只列举了插件的注册，包括`postcss`配置完整的注册方式，参考配置项文件链接: <https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template>
+
+## 创建项目参考
 
 `uni-app vite` 版本是 `uni-app` 最新的升级，它使用 `vue3` 的语法。
 
@@ -18,26 +49,6 @@ npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project
 
 > gitee 地址见上方的 `参考官网文档` 链接，点击跳转到 uni-app 官网即可
 
-创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
+## 视频演示
 
-```js
-// vite.config.[jt]s
-import { defineConfig } from "vite";
-import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite';
-// uni 是 uni-app 官方插件， uvtw 一定要放在 uni 后，对生成文件进行处理
-const vitePlugins = [uni(),uvwt()]
-
-export default defineConfig({
-  plugins: vitePlugins,
-  // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
-  // css: {
-  //   postcss: {
-  //     plugins: postcssPlugins,
-  //   },
-  // },
-});
-
-```
-
-这里只列举了插件的注册，包括`postcss`配置完整的注册方式，参考配置项文件链接: <https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template>
+<iframe src="//player.bilibili.com/player.html?aid=326378691&bvid=BV14w411773C&cid=1409199088&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>

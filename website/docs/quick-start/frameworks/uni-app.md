@@ -1,4 +1,4 @@
-# uni-app (vue2/3)
+# uni-app vue2 webpack
 
 :::tip
 截止到今天(2023/09/08)，目前所有的 `uni-app vue2 cli` 项目的 `webpack` 版本，已经切换到了 `webpack5`，`@vue/cli 5.x`，所以不需要去特意使用 `uni-app vue2 alpha`版本了！

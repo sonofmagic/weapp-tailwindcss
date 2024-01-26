@@ -20,6 +20,27 @@ describe('virtualHostClass', () => {
     expect(str).toMatchSnapshot()
   })
 
+  it('mpx-tdesign-button case 0', async () => {
+    const testCase = await getWxmlCase('mpx-tdesign-button.wxml')
+    const { templateHandler } = getOptions()
+    const str = templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
+
+  it('mpx-tdesign-button short case 0', async () => {
+    const testCase = await getWxmlCase('mpx-tdesign-button-short.wxml')
+    const { templateHandler } = getOptions()
+    const str = templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
+
+  it('mpx-tdesign-button short case 1', () => {
+    const testCase = `<template name="icon"><t-icon style="{{style || ''}}" class="{{class}}" t-class="{{tClass}}" prefix="{{prefix || ''}}" name="{{name || ''}}" size="{{size || ''}}" color="{{color || ''}}" aria-hidden="{{ariaHidden || '' }}" aria-label="{{ariaLabel || ''}}" aria-role="{{ariaRole || ''}}" bind:click="{{bindclick || ''}}"/></template>`
+    const { templateHandler } = getOptions()
+    const str = templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
+
   // 不开启mergeVirtualHostAttributes
   it('virtualHostClass case 1', async () => {
     const testCase = await getWxmlCase('virtualHost-case1.wxml')
