@@ -1,9 +1,4 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`virtualHostClass > mpx after content double qutos 1`] = `"<view class="afterccontent-_"你好啊，我很无聊"] after:ml-0.5 after:text-red-500"></view>"`;
-
-exports[`virtualHostClass > mpx-tdesign-button case 0 1`] = `
-"<import src="../common/template/icon.wxml" />
+<import src="../common/template/icon.wxml" />
 <wxs src="../common/utils.wxs" module="_" />
 
 <button
@@ -18,7 +13,7 @@ exports[`virtualHostClass > mpx-tdesign-button case 0 1`] = `
   hover-stay-time="{{hoverStayTime}}"
   lang="{{lang}}"
   session-from="{{sessionFrom}}"
-  hover-class="{{disabled||loading?'':hoverClass||classPrefix+'--hover'}}"
+  hover-class="{{disabled || loading ? '' : (hoverClass || classPrefix + '--hover')}}"
   send-message-title="{{sendMessageTitle}}"
   send-message-path="{{sendMessagePath}}"
   send-message-img="{{sendMessageImg}}"
@@ -64,13 +59,3 @@ exports[`virtualHostClass > mpx-tdesign-button case 0 1`] = `
   </view>
   <slot name="suffix" />
 </button>
-"
-`;
-
-exports[`virtualHostClass > mpx-tdesign-button short case 0 1`] = `"<button class="class {{className}}" form-type="{{disabled || loading ? '' : type}}" open-type="{{disabled || loading ? '' : openType}}" hover-class="{{disabled||loading?'':hoverClass||classPrefix+'--hover'}}"></button>"`;
-
-exports[`virtualHostClass > mpx-tdesign-button short case 1 1`] = `"<template name="icon"><t-icon style="{{style || ''}}" class="{{class}}" t-class="{{tClass}}" prefix="{{prefix || ''}}" name="{{name || ''}}" size="{{size || ''}}" color="{{color || ''}}" aria-hidden="{{ariaHidden || '' }}" aria-label="{{ariaLabel || ''}}" aria-role="{{ariaRole || ''}}" bind:click="{{bindclick || ''}}"/></template>"`;
-
-exports[`virtualHostClass > virtualHostClass case 0 1`] = `"<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><com-a u-s="{{['d']}}" class="text-_red_ text-_30px_" virtualHostClass="text-_red_ text-_30px_" style="background:#d4eb07" virtualHostStyle="background:#d4eb07" u-i="4c6cb2cd-0" bind:__l="__l">11111</com-a></view>"`;
-
-exports[`virtualHostClass > virtualHostClass case 1 1`] = `"<view><com-a u-s="{{['d']}}" class="text-_red_ text-_30px_" style="background:#d4eb07" u-i="4c6cb2cd-0" bind:__l="__l">11111</com-a></view>"`;
