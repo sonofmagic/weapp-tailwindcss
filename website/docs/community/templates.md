@@ -2,6 +2,12 @@
 
 当你配置不对的时候，也可以参考参考
 
+:::tip
+假如你遇到网络问题，无法登陆 `Github` 的时候，你可以使用 `Gitee`。
+
+登陆进 `Gitee` 之后，点击右上角的加号，有一个导入仓库功能。然后你想使用什么模板，你就右键下方模板的link，点击复制链接地址，然后把复制的url，粘贴到`Gitee`导入仓库的 `Git Repository URL` 中去，点击确定导入之后，过几秒仓库就能够同步完成，就可以下载了。
+:::
+
 ## 使用`uni-app cli`进行构建 `vscode`开发
 
 [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)

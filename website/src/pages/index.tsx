@@ -34,9 +34,20 @@ function HomepageHeader() {
               立刻开始使用!
             </Link>
           </div>
-          <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
-            谁在使用？
-          </a>
+
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5">
+            <iframe
+              src="https://ghbtns.com/github-btn.html?user=sonofmagic&repo=weapp-tailwindcss&type=star&count=true"
+              frameborder="0"
+              scrolling="0"
+              width="110"
+              height="20"
+              title="GitHub"
+            ></iframe>
+            <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
+              谁在使用？
+            </a>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 justify-around mt-8">
