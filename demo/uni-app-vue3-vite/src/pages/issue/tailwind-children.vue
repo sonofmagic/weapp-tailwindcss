@@ -1,5 +1,6 @@
 <template>
   <view class="text-sm">
+    <view class="line-clamp-2">额sa额sad sad飒飒我饿的大煞风景的身份的身份额sad sad飒飒我饿的大煞风景的身份的身份额sad sad飒飒我饿的大煞风景的身份的身份d sad飒飒我饿的大煞风景的身份的身份</view>
     <view class="p-4">
       <view>child selector</view>
       <view class="child:text-red-500 child:inline-block child:mr-2">

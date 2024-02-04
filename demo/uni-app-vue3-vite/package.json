@@ -72,6 +72,10 @@
     "@dcloudio/uni-cli-shared": "3.0.0-3090920231225001",
     "@dcloudio/uni-stacktracey": "3.0.0-3090920231225001",
     "@dcloudio/vite-plugin-uni": "3.0.0-3090920231225001",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.10",
     "@vue/runtime-core": "^3.2.45",
     "@weapp-tailwindcss/typography": "^0.2.3",
@@ -89,6 +93,6 @@
     "vite": "4.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.8"
+    "weapp-tailwindcss-webpack-plugin": "^3.0.9"
   }
 }

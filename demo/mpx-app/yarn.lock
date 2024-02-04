@@ -3141,6 +3141,11 @@
   resolved "https://registry.npmmirror.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
+"@vant/weapp@^1.11.4":
+  version "1.11.4"
+  resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.11.4.tgz#9f758b95ab17d5b4e8d7a563bed26acf69a830c3"
+  integrity sha512-egOsWO4hVMP1SQSqQ46jy8UD3WysvlnUecRzPM21Y3ovkOFZ6wlaO7oHQmTXRpwr+V41Qri1qEbtNjhVxFqdyw==
+
 "@videojs/http-streaming@3.7.0":
   version "3.7.0"
   resolved "https://registry.npmmirror.com/@videojs/http-streaming/-/http-streaming-3.7.0.tgz#48ece0582602e24a3b403c2410bbcdf320bfcccd"
@@ -11865,10 +11870,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^3.0.8:
-  version "3.0.8"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.0.8.tgz#d26ef0c412e4bb7f4f3cebca1d6024728dd6388a"
-  integrity sha512-D4QtPArYjt55KP2P8gLFQn0sKRN2/kI+9YZRT1B3cK0V3tLbdths0TfzGyN4Ss7hhJ+z+2LwDG20NhEEpqGxFQ==
+weapp-tailwindcss-webpack-plugin@^3.0.9:
+  version "3.0.9"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.0.9.tgz#290664369fda38bae6b8b62b329dea0395a1b3c4"
+  integrity sha512-oIcq105BZw/IEoZuW5lq5wHjDuhTGyZpAJK4su2D4dNC9ftAhp4ixsiCMXX3YFFK2AmIlzt3DZSscAWNkSy+gg==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.23.6"

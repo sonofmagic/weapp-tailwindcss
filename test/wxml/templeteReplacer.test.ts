@@ -193,4 +193,16 @@ describe('templateReplacer', () => {
   it('issues/274 {{class}}', () => {
     expect(simpleReplacer(`{{class}}`)).toBe('{{class}}')
   })
+
+  it('issues/276 case 0', () => {
+    expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 rounded-[20rpx] before:rounded-[20rpx]`)).toBe(
+      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_'
+    )
+  })
+
+  it('issues/276 case 1', () => {
+    expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 before:rounded-[20rpx] rounded-[20rpx]`)).toBe(
+      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_'
+    )
+  })
 })

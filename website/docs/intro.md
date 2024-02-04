@@ -4,13 +4,13 @@
 自从 `2.3.3` 版本开始，我发布了一个额外的包叫 [`weapp-tailwindcss`](https://www.npmjs.com/package/weapp-tailwindcss),它和 [`weapp-tailwindcss-webpack-plugin`](https://www.npmjs.com/package/weapp-tailwindcss-webpack-plugin) 代码版本完全一致，且保持发布版本的同步。以后可以都去安装那个包(当然安装现在这个包也行)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合现在这种，多插件并存的状态了，为了以后的发展改个名字。
 ::: -->
 
-在小程序开发中，由于小程序本身有自己的一套 **独特的** 技术规范标准。这导致你无法使用`web`中很多的特性，你也无法直接使用像 `tailwindcss` 这种库。
+在小程序开发中，由于小程序本身有自己的一套 **独特的** 技术规范标准。这导致你无法使用`web`中很多的特性，你也无法 **直接** 使用像 `tailwindcss` 这种库。
 
 而 `weapp-tailwindcss`, 就能让你，在小程序开发中使用 `tailwindcss` **大部分** 特性。
 
-它支持目前上几乎所有使用 `webpack` 和 `vite` 的主流多端小程序框架和使用 `webpack` / `gulp`的原生小程序打包方式。
+它支持目前上所有使用 `webpack` 和 `vite` 的主流多端小程序框架和使用 `webpack` / `gulp`的原生小程序打包方式。
 
-你可以很容易在各个框架，或者原生开发中集成 `tailwindcss`。
+你可以很容易在各个框架，或原生开发中集成 `tailwindcss`。
 
 现在，就让我们开始使用吧！
 
@@ -22,7 +22,7 @@
 - 提供多种使用方式，方便项目集成，包括 `webpack`/`vite`/`gulp` 和 `nodejs api`
 - 生态以及解决方案丰富，提供大量现成模板，可以利用许多 `tailwindcss` 现有的生态来构建小程序。
 - 高效的解析和缓存机制，项目即使很大，热更新响应时间也是毫秒级
-- 设计顺从 `tailwindcss` 思路，智能提示友好
+- 贴合 `tailwindcss` 的设计思路，智能提示友好
 
 ## 演示视频
 

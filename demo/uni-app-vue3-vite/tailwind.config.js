@@ -22,6 +22,9 @@ module.exports = {
     },
   },
   plugins: [
+    // require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/container-queries'),
+    require('@tailwindcss/aspect-ratio'),
     tailwindcssChildrenPlugin,
     // require('daisyui'),
     /*  #ifdef  %PLATFORM%  */
@@ -58,5 +61,6 @@ module.exports = {
   ],
   corePlugins: {
     preflight: false,
+    aspectRatio: false,
   },
 };

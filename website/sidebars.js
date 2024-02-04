@@ -144,6 +144,7 @@ const sidebars = {
       type: 'doc',
       id: 'community/templates'
     },
+
     {
       type: 'doc',
       id: 'community/typography'
@@ -186,6 +187,10 @@ const sidebars = {
     {
       type: 'doc',
       id: 'community/consult'
+    },
+    {
+      type: 'doc',
+      id: 'community/plugins'
     }
   ],
   migrationsSidebar: [
