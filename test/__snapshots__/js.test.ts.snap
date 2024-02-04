@@ -16,6 +16,30 @@ exports[`jsHandler > 'common' mpx jit classNames 1`] = `
     }"
 `;
 
+exports[`jsHandler > issues/276 case 0 1`] = `
+{
+  "code": "const x = "rounded-_20rpx_ beforecrounded-_20rpx_"",
+}
+`;
+
+exports[`jsHandler > issues/276 case 1 1`] = `
+{
+  "code": "const x = "rounded-_20rpx_ beforecrounded-_20rpx_"",
+}
+`;
+
+exports[`jsHandler > issues/276 case 2 1`] = `
+{
+  "code": "const x = "beforecrounded-_20rpx_ rounded-_20rpx_"",
+}
+`;
+
+exports[`jsHandler > issues/276 case 3 1`] = `
+{
+  "code": "const x = "beforecrounded-_20rpx_ rounded-_20rpx_"",
+}
+`;
+
 exports[`jsHandler > jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]'"`;
 
 exports[`jsHandler > jsPreserveClass '*' keyword 1`] = `"const n = '* 1 * 2'"`;
