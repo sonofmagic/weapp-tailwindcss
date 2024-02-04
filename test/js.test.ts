@@ -348,4 +348,46 @@ describe('jsHandler', () => {
       expect(code).toBe(testCase)
     }).not.toThrow()
   })
+
+  it('issues/276 case 0', () => {
+    const testCase = `const x = "rounded-[20rpx] before:rounded-[20rpx]"`
+    const set: Set<string> = new Set()
+    set.add('rounded-[20rpx]')
+    set.add('before:rounded-[20rpx]')
+    const { jsHandler } = getOptions()
+    const code = jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('issues/276 case 1', () => {
+    const testCase = `const x = "rounded-[20rpx] before:rounded-[20rpx]"`
+    const set: Set<string> = new Set()
+    set.add('before:rounded-[20rpx]')
+    set.add('rounded-[20rpx]')
+
+    const { jsHandler } = getOptions()
+    const code = jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('issues/276 case 2', () => {
+    const testCase = `const x = "before:rounded-[20rpx] rounded-[20rpx]"`
+    const set: Set<string> = new Set()
+    set.add('rounded-[20rpx]')
+    set.add('before:rounded-[20rpx]')
+    const { jsHandler } = getOptions()
+    const code = jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('issues/276 case 3', () => {
+    const testCase = `const x = "before:rounded-[20rpx] rounded-[20rpx]"`
+    const set: Set<string> = new Set()
+    set.add('before:rounded-[20rpx]')
+    set.add('rounded-[20rpx]')
+
+    const { jsHandler } = getOptions()
+    const code = jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
 })

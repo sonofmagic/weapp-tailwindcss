@@ -27,8 +27,8 @@ export function replaceHandleValue(str: string, node: StringLiteral | TemplateEl
           rawStr = ctx.jsHandler(rawStr)
         }
 
-        rawStr = rawStr.replaceAll(
-          new RegExp(escapeStringRegexp(v), 'g'),
+        rawStr = rawStr.replace(
+          new RegExp(escapeStringRegexp(v)),
           replaceWxml(v, {
             escapeMap
           })

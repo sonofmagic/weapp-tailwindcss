@@ -462,10 +462,10 @@ exports[`e2e > 'mpx-app' 1`] = `
   <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_h929292_" style="color: blue; font-size: 14px">111112222</view></view>
   <view style="color: blue; font-size: 14px; background-color: red">222222</view>
   <list is="components/liste824c5b4/index">
-    <view class="flex index--flex flex-col index--flex-col">
-      <view class="text-_blue_ index--text-_blue_">手机</view>
-      <view class="text-_he67240_ index--text-_he67240_">电视</view>
-      <view class="text-_blue_ index--text-_blue_">电脑</view>
+    <view class="flex liste824c5b4-index--flex flex-col liste824c5b4-index--flex-col">
+      <view class="text-_blue_ liste824c5b4-index--text-_blue_">手机</view>
+      <view class="text-_he67240_ liste824c5b4-index--text-_he67240_">电视</view>
+      <view class="text-_blue_ liste824c5b4-index--text-_blue_">电脑</view>
     </view>
   </list>
   <button
@@ -487,6 +487,26 @@ exports[`e2e > 'mpx-app' 1`] = `
     class="t-button button--t-button t-button--base button--t-button--base t-button--default button--t-button--default t-button--rectangle button--t-button--rectangle t-button--size-medium button--t-button--size-medium">
     <view class="t-button__content button--t-button__content">111</view>
   </button>
+  <van-button is="components/vant/weapp62276973/button/index">
+    <button
+      app-parameter=""
+      business-id=""
+      class="van-button button-index--van-button van-button--default button-index--van-button--default van-button--normal button-index--van-button--normal"
+      data-detail="null"
+      form-type=""
+      hover-class="van-button--active hover-class"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      style=""
+      role="button"
+      aria-disabled="false">
+      <view class="van-button__text button-index--van-button__text">默认按钮</view>
+    </button>
+  </van-button>
 </view>
 "
 `;
@@ -1646,6 +1666,9 @@ text,
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
 }
+.relative {
+  position: relative;
+}
 .-m-_20px_ {
   margin: -20rpx;
 }
@@ -1667,6 +1690,9 @@ text,
 .h-10 {
   height: 80rpx;
 }
+.h-12 {
+  height: 96rpx;
+}
 .h-_100px_ {
   height: 100rpx;
 }
@@ -1687,6 +1713,9 @@ text,
 }
 .w-10 {
   width: 80rpx;
+}
+.w-12 {
+  width: 96rpx;
 }
 .w-32 {
   width: 256rpx;
@@ -1756,6 +1785,9 @@ text,
 .divide-_h010101_ > view + view {
   --tw-divide-opacity: 1;
   border-color: rgb(1 1 1 / var(--tw-divide-opacity));
+}
+.rounded-_20rpx_ {
+  border-radius: 20rpx;
 }
 .rounded-_40px_ {
   border-radius: 40rpx;
@@ -1933,6 +1965,27 @@ text,
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity));
 }
+.beforecabsolute::before {
+  content: var(--tw-content);
+  position: absolute;
+}
+.beforecinset-0::before {
+  content: var(--tw-content);
+  inset: 0rpx;
+}
+.beforecrounded-_20rpx_::before {
+  border-radius: 20rpx;
+  content: var(--tw-content);
+}
+.beforecborder-2::before {
+  border-width: 2rpx;
+  content: var(--tw-content);
+}
+.beforecborder-red-500::before {
+  --tw-border-opacity: 1;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity));
+  content: var(--tw-content);
+}
 .beforeccontent-_qmoduleA_u666eu901au5206u5305q_::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
@@ -1998,15 +2051,25 @@ text,
 `;
 
 exports[`e2e > 'taro-app' 1`] = `
-"<navigator
+"<view
+  class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_"
+  data-sid="_BU"
+  id="_BU"
+  style=""></view>
+<view
+  class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_"
+  data-sid="_BV"
+  id="_BV"
+  style=""></view>
+<navigator
   app-id=""
-  data-sid="_BT"
+  data-sid="_BX"
   delta="1"
   extra-data="null"
   hover-class="navigator-hover"
   hover-start-time="50"
   hover-stay-time="600"
-  id="_BT"
+  id="_BX"
   open-type="navigate"
   path=""
   style=""
@@ -2018,13 +2081,13 @@ exports[`e2e > 'taro-app' 1`] = `
 </navigator>
 <navigator
   app-id=""
-  data-sid="_BV"
+  data-sid="_BZ"
   delta="1"
   extra-data="null"
   hover-class="navigator-hover"
   hover-start-time="50"
   hover-stay-time="600"
-  id="_BV"
+  id="_BZ"
   open-type="navigate"
   path=""
   style=""
@@ -2034,49 +2097,49 @@ exports[`e2e > 'taro-app' 1`] = `
   role="link">
   独立分包
 </navigator>
-<view data-sid="_BX" id="_BX" style="">****</view>
-<view class="w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat" data-sid="_BZ" id="_BZ" style="">bg-_url_</view>
+<view data-sid="_Bb" id="_Bb" style="">****</view>
+<view class="w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat" data-sid="_Bd" id="_Bd" style="">bg-_url_</view>
 <view
   class="text-_50px_ bg-_h3232ff_ h-_10px_ w-_20px_ text-_hfa00aa_ text-_hfa0000_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_url_qhttpscssyyydcomsxxdwebpq__"
-  data-sid="_Bb"
-  id="_Bb"
+  data-sid="_Bf"
+  id="_Bf"
   style="">
   11
 </view>
-<view class="shadow-md" data-sid="_Bd" id="_Bd" style="">shadow-md</view>
-<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" data-sid="_Bf" id="_Bf" style="">py-_62px_ px-_95px_</view>
-<view data-sid="_Bg" hover-class="none" hover-start-time="50" hover-stay-time="400" id="_Bg" style=""></view>
-<view class="bg-_h654321_ w-_100px_ h-_20px_" data-sid="_Bi" id="_Bi" style="">123</view>
-<view class="text-_h564564_" data-sid="_Bk" id="_Bk" style="">emptyImageClass</view>
-<view class="text-_h66ffff_" data-sid="_Bm" id="_Bm" style="">btnClassName</view>
-<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" data-sid="_Bo" id="_Bo" style="">aftercborder-none</view>
-<view class="after content- aftercml-0d5 afterctext-red-500 b" data-sid="_Bq" id="_Bq" style="">yellow</view>
-<view class="after content- aftercml-0d5 afterctext-red-500" data-sid="_Bs" id="_Bs" style="">事实上</view>
-<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" data-sid="_Bu" id="_Bu" style="">事实上</view>
-<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" data-sid="_CB" id="_CB" style="">
-  <view class="itext-_h555_" data-sid="_Bw" id="_Bw" style="">aspect</view>
-  <view class="bg-_hfaf_" data-sid="_By" id="_By" style="">w</view>
-  <view class="bg-_h123_" data-sid="_CA" id="_CA" style="">16</view>
+<view class="shadow-md" data-sid="_Bh" id="_Bh" style="">shadow-md</view>
+<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" data-sid="_Bj" id="_Bj" style="">py-_62px_ px-_95px_</view>
+<view data-sid="_Bk" hover-class="none" hover-start-time="50" hover-stay-time="400" id="_Bk" style=""></view>
+<view class="bg-_h654321_ w-_100px_ h-_20px_" data-sid="_Bm" id="_Bm" style="">123</view>
+<view class="text-_h564564_" data-sid="_Bo" id="_Bo" style="">emptyImageClass</view>
+<view class="text-_h66ffff_" data-sid="_Bq" id="_Bq" style="">btnClassName</view>
+<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" data-sid="_Bs" id="_Bs" style="">aftercborder-none</view>
+<view class="after content- aftercml-0d5 afterctext-red-500 b" data-sid="_Bu" id="_Bu" style="">yellow</view>
+<view class="after content- aftercml-0d5 afterctext-red-500" data-sid="_Bw" id="_Bw" style="">事实上</view>
+<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" data-sid="_By" id="_By" style="">事实上</view>
+<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" data-sid="_CF" id="_CF" style="">
+  <view class="itext-_h555_" data-sid="_CA" id="_CA" style="">aspect</view>
+  <view class="bg-_hfaf_" data-sid="_CC" id="_CC" style="">w</view>
+  <view class="bg-_h123_" data-sid="_CE" id="_CE" style="">16</view>
 </view>
-<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-sid="_CC" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" id="_CC" style=""></view>
-<view class="bg-_h123456_" data-sid="_CE" id="_CE" style="">className</view>
-<view class="p-_20px_ -mt-2 mb-_-20px_" data-sid="_CG" id="_CG" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
-<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" data-sid="_Ca" id="_Ca" style="">
-  <view class="w-_300rpx_ text-black text-opacity-_0d19_" data-sid="_CI" id="_CI" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
-  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-sid="_CK" id="_CK" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-sid="_CM" id="_CM" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" data-sid="_CO" id="_CO" style="">Hello</view>
-  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" data-sid="_CQ" id="_CQ" style="">
+<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-sid="_CG" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" id="_CG" style=""></view>
+<view class="bg-_h123456_" data-sid="_CI" id="_CI" style="">className</view>
+<view class="p-_20px_ -mt-2 mb-_-20px_" data-sid="_CK" id="_CK" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" data-sid="_Ce" id="_Ce" style="">
+  <view class="w-_300rpx_ text-black text-opacity-_0d19_" data-sid="_CM" id="_CM" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
+  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-sid="_CO" id="_CO" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-sid="_CQ" id="_CQ" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" data-sid="_CS" id="_CS" style="">Hello</view>
+  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" data-sid="_CU" id="_CU" style="">
     border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
   </view>
-  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-sid="_CX" id="_CX" style="">
-    <view data-sid="_CS" id="_CS" style="">1</view>
-    <view data-sid="_CU" id="_CU" style="">2</view>
-    <view data-sid="_CW" id="_CW" style="">3</view>
+  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-sid="_Cb" id="_Cb" style="">
+    <view data-sid="_CW" id="_CW" style="">1</view>
+    <view data-sid="_CY" id="_CY" style="">2</view>
+    <view data-sid="_Ca" id="_Ca" style="">3</view>
   </view>
-  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" data-sid="_CZ" id="_CZ" style="">Default</view>
+  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" data-sid="_Cd" id="_Cd" style="">Default</view>
 </view>
-<view class="test" data-sid="_Cc" id="_Cc" style="">test</view>
+<view class="test" data-sid="_Cg" id="_Cg" style="">test</view>
 "
 `;
 
@@ -2096,7 +2159,12 @@ exports[`e2e > 'taro-app' 2`] = `
   "after:ml-0",
   "after:ml-0.5",
   "after:text-red-500",
+  "before:absolute",
+  "before:border-2",
+  "before:border-red-500",
   "before:content-['moduleA_普通分包']",
+  "before:inset-0",
+  "before:rounded-[20rpx]",
   "bg-[#123456]",
   "bg-[#123]",
   "bg-[#3232ff]",
@@ -2131,6 +2199,7 @@ exports[`e2e > 'taro-app' 2`] = `
   "grid",
   "grid-cols-3",
   "h-10",
+  "h-12",
   "h-[100px]",
   "h-[10px]",
   "h-[20px]",
@@ -2147,10 +2216,12 @@ exports[`e2e > 'taro-app' 2`] = `
   "px-[95px]",
   "py-2",
   "py-[62px]",
+  "relative",
   "resize",
   "ring-4",
   "ring-pink-300",
   "rotate-45",
+  "rounded-[20rpx]",
   "rounded-[40px]",
   "rounded-md",
   "shadow-md",
@@ -2169,6 +2240,7 @@ exports[`e2e > 'taro-app' 2`] = `
   "text-opacity-[0.19]",
   "text-white",
   "w-10",
+  "w-12",
   "w-32",
   "w-[100px]",
   "w-[200%]",
@@ -3251,16 +3323,16 @@ exports[`e2e > 'taro-vue3-app' 1`] = `
     style=""></view>
   <view class="bg-red-900" data-sid="_Bk" id="_Bk" style="">bg-_hfafa00_</view>
   <view class="bg-_h098765_" data-sid="_Bm" id="_Bm" style="">bg-_h098765_</view>
-  <view class="h5-view p-_20px_ -mt-2 mb-_-20px_" data-sid="_Bo" id="_Bo" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
+  <view class="h5-view p-_20px_ -mt-2 mb-_-20px_" data-sid="_Bo" id="_Bo" style="">p-[20px] -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
   <view class="h5-view space-y-_1d6rem_" data-sid="_Bq" id="_Bq" style="">
-    <view class="h5-view w-_300rpx_ text-black text-opacity-_0d19_" data-sid="_Br" id="_Br" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
-    <view class="h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-sid="_Bt" id="_Bt" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-    <view class="h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-sid="_Bv" id="_Bv" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+    <view class="h5-view w-_300rpx_ text-black text-opacity-_0d19_" data-sid="_Br" id="_Br" style="">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-sid="_Bt" id="_Bt" style="">min-w-[300rpx] max-h-_100px_ text-_20px_ leading-[0.9]</view>
+    <view class="h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-sid="_Bv" id="_Bv" style="">max-w-[300rpx] min-h-_100px_ text-[#dddddd]</view>
     <view class="h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" data-sid="_Bx" id="_Bx" style="">
       Hello
     </view>
     <view class="h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" data-sid="_Bz" id="_Bz" style="">
-      border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_
+      border-[10px] border-_h098765_ border-solid border-opacity-[0.44]
     </view>
     <view class="h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-sid="_CB" id="_CB" style="">
       <view class="h5-view" data-sid="_CC" id="_CC" style="">1</view>
@@ -4761,6 +4833,12 @@ text,
 }
 .mt-_96d3px_ {
   margin-top: 96.3px;
+}
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .block {
   display: block;
@@ -8819,6 +8897,7 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   "justify-center",
   "leading-[0.9]",
   "leading-[23rpx]",
+  "line-clamp-2",
   "m-[5rpx]",
   "max-h-[100px]",
   "max-w-[300rpx]",

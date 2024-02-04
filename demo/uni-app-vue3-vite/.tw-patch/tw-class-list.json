@@ -114,6 +114,7 @@
   "justify-center",
   "leading-[0.9]",
   "leading-[23rpx]",
+  "line-clamp-2",
   "m-[5rpx]",
   "max-h-[100px]",
   "max-w-[300rpx]",
