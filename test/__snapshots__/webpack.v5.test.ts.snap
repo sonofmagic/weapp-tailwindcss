@@ -2747,7 +2747,7 @@ view,::before,::after {
     <view class="som-z som-aa som-ba som-ca">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="som-da som-da-cols-3 som-fa som-ga som-ha">
+    <view class="som-da som-ea som-fa som-ga som-ha">
       <div>1</div>
       <div>2</div>
       <div>3</div>
