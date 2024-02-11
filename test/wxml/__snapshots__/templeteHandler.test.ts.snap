@@ -18,7 +18,7 @@ exports[`virtualHostClass > mpx-tdesign-button case 0 1`] = `
   hover-stay-time="{{hoverStayTime}}"
   lang="{{lang}}"
   session-from="{{sessionFrom}}"
-  hover-class="{{disabled||loading?'':hoverClass||classPrefix+'--hover'}}"
+  hover-class="{{disabled || loading ? '' : (hoverClass || classPrefix + '--hover')}}"
   send-message-title="{{sendMessageTitle}}"
   send-message-path="{{sendMessagePath}}"
   send-message-img="{{sendMessageImg}}"
@@ -67,7 +67,7 @@ exports[`virtualHostClass > mpx-tdesign-button case 0 1`] = `
 "
 `;
 
-exports[`virtualHostClass > mpx-tdesign-button short case 0 1`] = `"<button class="class {{className}}" form-type="{{disabled || loading ? '' : type}}" open-type="{{disabled || loading ? '' : openType}}" hover-class="{{disabled||loading?'':hoverClass||classPrefix+'--hover'}}"></button>"`;
+exports[`virtualHostClass > mpx-tdesign-button short case 0 1`] = `"<button class="class {{className}}" form-type="{{disabled || loading ? '' : type}}" open-type="{{disabled || loading ? '' : openType}}" hover-class="{{disabled || loading ? '' : (hoverClass || classPrefix + '--hover')}}"></button>"`;
 
 exports[`virtualHostClass > mpx-tdesign-button short case 1 1`] = `"<template name="icon"><t-icon style="{{style || ''}}" class="{{class}}" t-class="{{tClass}}" prefix="{{prefix || ''}}" name="{{name || ''}}" size="{{size || ''}}" color="{{color || ''}}" aria-hidden="{{ariaHidden || '' }}" aria-label="{{ariaLabel || ''}}" aria-role="{{ariaRole || ''}}" bind:click="{{bindclick || ''}}"/></template>"`;
 

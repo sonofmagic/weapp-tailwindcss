@@ -2,19 +2,21 @@ import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
-import { parseExpression, traverse, generate } from '@/babel'
+import { parseExpression, traverse } from '@/babel'
 import { variableRegExp, ItemOrItemArray } from '@/reg'
 import { defuOverrideArray } from '@/utils'
 import type { RawSource, ITemplateHandlerOptions } from '@/types'
+import { replaceHandleValue } from '@/js/handlers'
 
 // mpx class 中外部用单引号，所以 内部要用双引号
 // 反之亦然
-function getQuotes(quote: string | null | undefined) {
-  return quote === "'" ? 'double' : 'single'
-}
+// function getQuotes(quote: string | null | undefined) {
+//   return quote === "'" ? 'double' : 'single'
+// }
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
+    const ms = new MagicString(match)
     const ast = parseExpression(match)
 
     traverse(ast, {
@@ -28,22 +30,36 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
         if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
           return
         }
+        const n = path.node
 
-        path.node.value = replaceWxml(path.node.value, options)
+        replaceHandleValue(
+          n.value,
+          n,
+          {
+            mangleContext: options.mangleContext,
+            escapeMap: options.escapeMap,
+            classNameSet: options.runtimeSet,
+            needEscaped: true,
+            always: true
+          },
+          ms,
+          1
+        )
+        // path.node.value = replaceWxml(path.node.value, options)
       },
       noScope: true
     })
 
-    const { code } = generate(ast, {
-      compact: true,
-      minified: true,
-      jsescOption: {
-        quotes: getQuotes(options.quote),
-        minimal: true
-      }
-    })
+    // const { code } = generate(ast, {
+    //   compact: true,
+    //   minified: true,
+    //   jsescOption: {
+    //     quotes: getQuotes(options.quote),
+    //     minimal: true
+    //   }
+    // })
 
-    return code
+    return ms.toString()
   } catch {
     // https://github.com/sonofmagic/weapp-tailwindcss/issues/274
     // {{class}}

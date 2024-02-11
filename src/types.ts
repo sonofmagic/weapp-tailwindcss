@@ -56,12 +56,13 @@ export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string
 
 export type IJsHandlerOptions = {
   escapeMap?: Record<string, string>
-  classNameSet: Set<string>
+  classNameSet?: Set<string>
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean
   generateMap?: boolean
+  always?: boolean
 }
 export interface RawSource {
   start: number
