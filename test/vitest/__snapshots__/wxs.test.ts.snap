@@ -4,7 +4,7 @@ exports[`wxs > inline wxs content extract 1`] = `
 [
   "
 
-	var className = 'after:content-[\\\\'我来自inline-wxs\\\\']'
+	var className = 'after:content-[\\'我来自inline-wxs\\']'
   module.exports = {
     className: className
   }
@@ -14,7 +14,7 @@ exports[`wxs > inline wxs content extract 1`] = `
 /* eslint-disable */
 
 
-var className = 'after:content-[\\\\'我来自outside-wxs\\\\']'
+var className = 'after:content-[\\'我来自outside-wxs\\']'
 module.exports = {
   className: className
 }
@@ -45,7 +45,7 @@ module.exports = {
 `;
 
 exports[`wxs > inline wxs content extract and escape and replace 1`] = `
-"<wxs module=\\"inline\\">
+"<wxs module="inline">
 
 	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
   module.exports = {
@@ -53,7 +53,7 @@ exports[`wxs > inline wxs content extract and escape and replace 1`] = `
   }
 
 </wxs>
-<wxs module=\\"outside\\">
+<wxs module="outside">
 /* eslint-disable */
 
 
@@ -62,14 +62,14 @@ module.exports = {
   className: className
 }
 </wxs>
-<view class=\\"beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_\\">
-  <view class=\\"{{inline.className}}\\"></view>
-  <view class=\\"{{outside.className}}\\"></view>
+<view class="beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_">
+  <view class="{{inline.className}}"></view>
+  <view class="{{outside.className}}"></view>
 </view>"
 `;
 
 exports[`wxs > inline.wxml use templateHandler 1`] = `
-"<wxs module=\\"inline\\">
+"<wxs module="inline">
 
 	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
   module.exports = {
@@ -77,7 +77,7 @@ exports[`wxs > inline.wxml use templateHandler 1`] = `
   }
 
 </wxs>
-<wxs module=\\"outside\\">
+<wxs module="outside">
 /* eslint-disable */
 
 
@@ -86,9 +86,9 @@ module.exports = {
   className: className
 }
 </wxs>
-<view class=\\"beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_\\">
-  <view class=\\"{{inline.className}}\\"></view>
-  <view class=\\"{{outside.className}}\\"></view>
+<view class="beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_">
+  <view class="{{inline.className}}"></view>
+  <view class="{{outside.className}}"></view>
 </view>"
 `;
 
@@ -106,7 +106,7 @@ exports[`wxs > outside wxs content extract and escape 1`] = `
 `;
 
 exports[`wxs > outside.wxml use templateHandler 1`] = `
-"<wxs module=\\"inline\\">
+"<wxs module="inline">
 
 	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
   module.exports = {
@@ -114,8 +114,8 @@ exports[`wxs > outside.wxml use templateHandler 1`] = `
   }
 
 </wxs>
-<wxs src=\\"./index.wxs\\" module=\\"outside\\"/>
-<view class=\\"beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_\\"><view class=\\"{{inline.className}}\\"></view><view class=\\"{{outside.className}}\\"></view></view>"
+<wxs src="./index.wxs" module="outside"/>
+<view class="beforeccontent-_qmoduleA_u72ecu7acbu5206u5305q_"><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>"
 `;
 
 exports[`wxs > simple.wxs content extract and escape 1`] = `

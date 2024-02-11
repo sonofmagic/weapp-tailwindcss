@@ -47,369 +47,360 @@ exports[`vite test > source map case 0 4`] = `
 exports[`vite test > source map compare case 0 1`] = `"{\\"version\\":3,\\"file\\":\\"index-12baa5df.js\\",\\"sources\\":[\\"../../index.js\\"],\\"sourcesContent\\":[\\"import './index.css'\\\\n\\\\nconst className = 'flex bg-yellow-300/30 w-[100px] h-[100px] ' + \\\\\\"bg-[url('https://xxx.com/xx.webp')]\\\\\\"\\\\n\\\\ndocument.body.append(\`<div class=\\\\\\"\${className}\\\\\\">className</div>\`)\\\\n\\\\nconst el = document.createElement()\\\\n\\\\nel.classList.add('grid text-red-300/30 w-[99px]', \`h-[99px]\`, \\\\\\"bg-[url('https://yyy.com/xx.webp')]\\\\\\")\\\\n\\\\ndocument.body.appendChild(el)\\"],\\"names\\":[\\"className\\",\\"el\\"],\\"mappings\\":\\"ssBAEA,MAAMA,EAAY,gFAElB,SAAS,KAAK,OAAO,eAAeA,CAAS,mBAAmB,EAEhE,MAAMC,EAAK,SAAS,cAAe,EAEnCA,EAAG,UAAU,IAAI,gCAAiC,WAAY,qCAAqC,EAEnG,SAAS,KAAK,YAAYA,CAAE\\"}"`;
 
 exports[`vite test > vite common build 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-_100px_{height:100px}.h-_99px_{height:99px}.w-_100px_{width:100px}.w-_55px_{width:55px}.w-_99px_{width:99px}.bg-_red_{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.bg-_url_qhttpscssxxxdcomsxxdwebpq__{background-image:url(https://xxx.com/xx.webp)}.bg-_url_qhttpscssyyydcomsxxdwebpq__{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-_100px_{height:100px}.h-_99px_{height:99px}.w-_100px_{width:100px}.w-_55px_{width:55px}.w-_99px_{width:99px}.bg-_red_{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.bg-_url_qhttpscssxxxdcomsxxdwebpq__{background-image:url(https://xxx.com/xx.webp)}.bg-_url_qhttpscssyyydcomsxxdwebpq__{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-  
+  <div class="w-_55px_ bg-_red_">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build twice for cache 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-_100px_{height:100px}.h-_99px_{height:99px}.w-_100px_{width:100px}.w-_55px_{width:55px}.w-_99px_{width:99px}.bg-_red_{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.bg-_url_qhttpscssxxxdcomsxxdwebpq__{background-image:url(https://xxx.com/xx.webp)}.bg-_url_qhttpscssyyydcomsxxdwebpq__{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-_100px_{height:100px}.h-_99px_{height:99px}.w-_100px_{width:100px}.w-_55px_{width:55px}.w-_99px_{width:99px}.bg-_red_{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.bg-_url_qhttpscssxxxdcomsxxdwebpq__{background-image:url(https://xxx.com/xx.webp)}.bg-_url_qhttpscssyyydcomsxxdwebpq__{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build twice for cache 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-  
+  <div class="w-_55px_ bg-_red_">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build twice for cache 4`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 w-_99px_\\",\\"h-_99px_\\",\\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build twice for cache 5`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-_100px_{height:100px}.h-_99px_{height:99px}.w-_100px_{width:100px}.w-_55px_{width:55px}.w-_99px_{width:99px}.bg-_red_{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.bg-_url_qhttpscssxxxdcomsxxdwebpq__{background-image:url(https://xxx.com/xx.webp)}.bg-_url_qhttpscssyyydcomsxxdwebpq__{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-_100px_{height:100px}.h-_99px_{height:99px}.w-_100px_{width:100px}.w-_55px_{width:55px}.w-_99px_{width:99px}.bg-_red_{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.bg-_url_qhttpscssxxxdcomsxxdwebpq__{background-image:url(https://xxx.com/xx.webp)}.bg-_url_qhttpscssyyydcomsxxdwebpq__{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build twice for cache 6`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"w-_55px_ bg-_red_\\">hello</div>
-  
+  <div class="w-_55px_ bg-_red_">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build with mangle options 0 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex c d e f\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid g h\\",\\"i\\",\\"j\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex c d e f";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid g h","i","j");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options 0 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.e{height:100px}.i{height:99px}.d{width:100px}.a{width:55px}.h{width:99px}.b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.c{background-color:#fde0474d}.f{background-image:url(https://xxx.com/xx.webp)}.j{background-image:url(https://yyy.com/xx.webp)}.g{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.e{height:100px}.i{height:99px}.d{width:100px}.a{width:55px}.h{width:99px}.b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.c{background-color:#fde0474d}.f{background-image:url(https://xxx.com/xx.webp)}.j{background-image:url(https://yyy.com/xx.webp)}.g{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build with mangle options 0 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"a b\\">hello</div>
-  
+  <div class="a b">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build with mangle options 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex tw-c tw-d tw-e tw-f\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid tw-g tw-h\\",\\"tw-i\\",\\"tw-j\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex tw-c tw-d tw-e tw-f";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid tw-g tw-h","tw-i","tw-j");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.tw-e{height:100px}.tw-i{height:99px}.tw-d{width:100px}.tw-a{width:55px}.tw-h{width:99px}.tw-b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.tw-c{background-color:#fde0474d}.tw-f{background-image:url(https://xxx.com/xx.webp)}.tw-j{background-image:url(https://yyy.com/xx.webp)}.tw-g{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.tw-e{height:100px}.tw-i{height:99px}.tw-d{width:100px}.tw-a{width:55px}.tw-h{width:99px}.tw-b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.tw-c{background-color:#fde0474d}.tw-f{background-image:url(https://xxx.com/xx.webp)}.tw-j{background-image:url(https://yyy.com/xx.webp)}.tw-g{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build with mangle options 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"tw-a tw-b\\">hello</div>
-  
+  <div class="tw-a tw-b">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"tw-a tw-b tw-c tw-d tw-e\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"tw-f tw-g tw-h\\",\\"tw-i\\",\\"tw-j\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="tw-a tw-b tw-c tw-d tw-e";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("tw-f tw-g tw-h","tw-i","tw-j");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.tw-a{display:flex}.tw-f{display:grid}.tw-d{height:100px}.tw-i{height:99px}.tw-c{width:100px}.tw-k{width:55px}.tw-h{width:99px}.tw-l{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.tw-b{background-color:#fde0474d}.tw-e{background-image:url(https://xxx.com/xx.webp)}.tw-j{background-image:url(https://yyy.com/xx.webp)}.tw-g{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.tw-a{display:flex}.tw-f{display:grid}.tw-d{height:100px}.tw-i{height:99px}.tw-c{width:100px}.tw-k{width:55px}.tw-h{width:99px}.tw-l{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.tw-b{background-color:#fde0474d}.tw-e{background-image:url(https://xxx.com/xx.webp)}.tw-j{background-image:url(https://yyy.com/xx.webp)}.tw-g{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"w-[55px] bg-[red]\\">hello</div>
-  
+  <div class="w-[55px] bg-[red]">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300s30 tw-c tw-d tw-e\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300s30 tw-f\\",\\"tw-g\\",\\"tw-h\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 tw-c tw-d tw-e";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 tw-f","tw-g","tw-h");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.tw-d{height:100px}.tw-g{height:99px}.tw-c{width:100px}.tw-a{width:55px}.tw-f{width:99px}.tw-b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.tw-e{background-image:url(https://xxx.com/xx.webp)}.tw-h{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.tw-d{height:100px}.tw-g{height:99px}.tw-c{width:100px}.tw-a{width:55px}.tw-f{width:99px}.tw-b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300s30{background-color:#fde0474d}.tw-e{background-image:url(https://xxx.com/xx.webp)}.tw-h{background-image:url(https://yyy.com/xx.webp)}.text-red-300s30{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"tw-a tw-b\\">hello</div>
-  
+  <div class="tw-a tw-b">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite common build with mangle true 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex tw-c tw-d tw-e tw-f\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid tw-g tw-h\\",\\"tw-i\\",\\"tw-j\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex tw-c tw-d tw-e tw-f";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid tw-g tw-h","tw-i","tw-j");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite common build with mangle true 2`] = `
-"::before,::after{--tw-content: \\"\\"}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.tw-e{height:100px}.tw-i{height:99px}.tw-d{width:100px}.tw-a{width:55px}.tw-h{width:99px}.tw-b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.tw-c{background-color:#fde0474d}.tw-f{background-image:url(https://xxx.com/xx.webp)}.tw-j{background-image:url(https://yyy.com/xx.webp)}.tw-g{color:#fca5a54d}
+"::before,::after{--tw-content: ""}view,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor}::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.tw-e{height:100px}.tw-i{height:99px}.tw-d{width:100px}.tw-a{width:55px}.tw-h{width:99px}.tw-b{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.tw-c{background-color:#fde0474d}.tw-f{background-image:url(https://xxx.com/xx.webp)}.tw-j{background-image:url(https://yyy.com/xx.webp)}.tw-g{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite common build with mangle true 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"tw-a tw-b\\">hello</div>
-  
+  <div class="tw-a tw-b">hello</div>
 </body>
 
 </html>"
 `;
 
 exports[`vite test > vite disabled build 1`] = `
-"(function(){const r=document.createElement(\\"link\\").relList;if(r&&r.supports&&r.supports(\\"modulepreload\\"))return;for(const e of document.querySelectorAll('link[rel=\\"modulepreload\\"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type===\\"childList\\")for(const o of t.addedNodes)o.tagName===\\"LINK\\"&&o.rel===\\"modulepreload\\"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===\\"use-credentials\\"?t.credentials=\\"include\\":e.crossOrigin===\\"anonymous\\"?t.credentials=\\"omit\\":t.credentials=\\"same-origin\\",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n=\\"flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]\\";document.body.append(\`<div class=\\"\${n}\\">className</div>\`);const c=document.createElement();c.classList.add(\\"grid text-red-300/30 w-[99px]\\",\\"h-[99px]\\",\\"bg-[url('https://yyy.com/xx.webp')]\\");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
 exports[`vite test > vite disabled build 2`] = `
-"*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-\\\\[100px\\\\]{height:100px}.h-\\\\[99px\\\\]{height:99px}.w-\\\\[100px\\\\]{width:100px}.w-\\\\[55px\\\\]{width:55px}.w-\\\\[99px\\\\]{width:99px}.bg-\\\\[red\\\\]{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300\\\\/30{background-color:#fde0474d}.bg-\\\\[url\\\\(\\\\'https\\\\:\\\\/\\\\/xxx\\\\.com\\\\/xx\\\\.webp\\\\'\\\\)\\\\]{background-image:url(https://xxx.com/xx.webp)}.bg-\\\\[url\\\\(\\\\'https\\\\:\\\\/\\\\/yyy\\\\.com\\\\/xx\\\\.webp\\\\'\\\\)\\\\]{background-image:url(https://yyy.com/xx.webp)}.text-red-300\\\\/30{color:#fca5a54d}
+"*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.flex{display:flex}.grid{display:grid}.h-\\[100px\\]{height:100px}.h-\\[99px\\]{height:99px}.w-\\[100px\\]{width:100px}.w-\\[55px\\]{width:55px}.w-\\[99px\\]{width:99px}.bg-\\[red\\]{--tw-bg-opacity: 1;background-color:rgb(255 0 0 / var(--tw-bg-opacity))}.bg-yellow-300\\/30{background-color:#fde0474d}.bg-\\[url\\(\\'https\\:\\/\\/xxx\\.com\\/xx\\.webp\\'\\)\\]{background-image:url(https://xxx.com/xx.webp)}.bg-\\[url\\(\\'https\\:\\/\\/yyy\\.com\\/xx\\.webp\\'\\)\\]{background-image:url(https://yyy.com/xx.webp)}.text-red-300\\/30{color:#fca5a54d}
 "
 `;
 
 exports[`vite test > vite disabled build 3`] = `
 "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html lang="en">
 
 <head>
-  <meta charset=\\"UTF-8\\" />
+  <meta charset="UTF-8" />
   <script>
     var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
       CSS.supports('top: constant(a)'))
     document.write(
-      '<meta name=\\"viewport\\" content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-      (coverSupport ? ', viewport-fit=cover' : '') + '\\" />')
+      '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+      (coverSupport ? ', viewport-fit=cover' : '') + '" />')
   </script>
   <title></title>
   <!--preload-links-->
   <!--app-context-->
-  <script type=\\"module\\" crossorigin src=\\"/assets/index-12baa5df.js\\"></script>
-  <link rel=\\"stylesheet\\" href=\\"/assets/index-14050df3.css\\">
+  <script type="module" crossorigin src="/assets/index-B6UtINrG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B_C9lp-I.css">
 </head>
 
 <body>
-  <div id=\\"app\\">
+  <div id="app">
     <!--app-html-->
   </div>
-  <div class=\\"w-[55px] bg-[red]\\">hello</div>
-  
+  <div class="w-[55px] bg-[red]">hello</div>
 </body>
 
 </html>"

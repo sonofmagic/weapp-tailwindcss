@@ -28,7 +28,7 @@ export function useMangleStore() {
     const arr = splitCode(rawSource)
     for (const x of arr) {
       if (ctx.runtimeSet.has(x)) {
-        rawSource = rawSource.replaceAll(new RegExp(escapeStringRegexp(x), 'g'), ctx.classGenerator.generateClassName(x).name)
+        rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x)), ctx.classGenerator.generateClassName(x).name)
       }
     }
     return rawSource
