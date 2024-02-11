@@ -38,7 +38,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
         }
 
         const n = p.node
-        replaceHandleValue(n.value, n, options, ms, 1, options.needEscaped ?? true)
+        replaceHandleValue(
+          n.value,
+          n,
+          {
+            ...options,
+            needEscaped: options.needEscaped ?? true
+          },
+          ms,
+          1
+        )
       }
       // exit(p) {}
     },
@@ -48,7 +57,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           return
         }
         const n = p.node
-        replaceHandleValue(n.value.raw, n, options, ms, 0, false)
+        replaceHandleValue(
+          n.value.raw,
+          n,
+          {
+            ...options,
+            needEscaped: false
+          },
+          ms,
+          0
+        )
       }
     },
     CallExpression: {
