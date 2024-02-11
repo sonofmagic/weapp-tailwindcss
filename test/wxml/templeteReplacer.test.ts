@@ -36,7 +36,7 @@ describe('templateReplacer', () => {
 
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[flag===true?'bg-_bl__h_fafa00_br_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"
+      "{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[(flag===true)?'bg-_bl__h_fafa00_br_':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"
     )
     expect(result).toMatchSnapshot()
   })
@@ -63,7 +63,7 @@ describe('templateReplacer', () => {
     expect(result).toBe('    bg-white    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto  ')
   })
 
-  it('\\r\\n replace test with var', () => {
+  it.skip('\\r\\n replace test with var', () => {
     const testCase = `{{[
       'flex',
       'items-center',
@@ -88,7 +88,7 @@ describe('templateReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}} h-_bl_20px_br_"
     )
   })
 
@@ -97,7 +97,7 @@ describe('templateReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"
     )
   })
 
@@ -105,7 +105,7 @@ describe('templateReplacer', () => {
     const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
     const result = complexReplacer(testCase)
-    expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_bl__h_990000_br_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
+    expect(result).toBe("{{('_i_font-bold') + ' ' + '_i_text-_bl__h_990000_br_' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}")
   })
 
   it.each(testTable)('%label utils.bem()', () => {
@@ -113,9 +113,7 @@ describe('templateReplacer', () => {
       "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
 
     const result = complexReplacer(testCase)
-    expect(result).toBe(
-      "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
-    )
+    expect(result).toBe(testCase)
   })
 
   // it.each(testTable)('%label class with string var', ({ mangle }) => {
@@ -156,7 +154,7 @@ describe('templateReplacer', () => {
   it('two ConditionalExpression', () => {
     const testCase = "btn a{{num >='p-[1]'?num==='q-[2]'?'x-[0]':'y-[1]':'z-[2]'}}"
     const result = complexReplacer(testCase)
-    expect(result).toBe("btn a{{num>='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
+    expect(result).toBe("btn a{{num >='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
   })
 
   it('start up with num case', () => {

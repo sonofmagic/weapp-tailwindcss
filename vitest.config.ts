@@ -16,7 +16,8 @@ export default defineConfig({
     include: ['test/vitest/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     coverage: {
       enabled: true,
-      reportsDirectory: 'coverage/vitest'
+      reportsDirectory: 'coverage/vitest',
+      all: false
     },
     testTimeout: 60_000
     // ...

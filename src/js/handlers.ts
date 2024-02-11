@@ -8,15 +8,14 @@ import { jsStringEscape } from '@/escape'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
 export function regenerateHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions) {
-  const set = options.classNameSet
-  const escapeMap = options.escapeMap
-  const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
-  const ctx = options.mangleContext
-  const jsPreserveClass = options.jsPreserveClass
+  const { classNameSet: set, escapeMap, always, arbitraryValues, mangleContext: ctx, jsPreserveClass } = options
+
+  const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
+
   const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
   for (const v of arr) {
-    if (set.has(v) && !jsPreserveClass?.(v)) {
+    if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
         ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
@@ -40,15 +39,13 @@ export function regenerateHandleValue(str: string, node: StringLiteral | Templat
 }
 
 export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 0, needEscaped = false) {
-  const set = options.classNameSet
-  const escapeMap = options.escapeMap
-  const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
-  const ctx = options.mangleContext
-  const jsPreserveClass = options.jsPreserveClass
+  const { classNameSet: set, escapeMap, always, arbitraryValues, mangleContext: ctx, jsPreserveClass } = options
+
+  const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
   const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
   for (const v of arr) {
-    if (set.has(v) && !jsPreserveClass?.(v)) {
+    if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
         ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1

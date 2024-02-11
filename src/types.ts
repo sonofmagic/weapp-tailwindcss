@@ -53,7 +53,7 @@ export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string
 
 export type IJsHandlerOptions = {
   escapeMap?: Record<string, string>
-  classNameSet: Set<string>
+  classNameSet?: Set<string>
   minifiedJs?: boolean
   arbitraryValues?: IArbitraryValues
   mangleContext?: IMangleScopeContext
@@ -61,6 +61,7 @@ export type IJsHandlerOptions = {
   strategy?: UserDefinedOptions['jsEscapeStrategy']
   needEscaped?: boolean
   generateMap?: boolean
+  always?: boolean
 }
 export interface RawSource {
   start: number

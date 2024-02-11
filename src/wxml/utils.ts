@@ -2,23 +2,24 @@ import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
-import { parseExpression, traverse, generate } from '@/babel'
+import { parseExpression, traverse } from '@/babel'
 import { variableRegExp, ItemOrItemArray } from '@/reg'
 import { defu } from '@/utils'
 import type { RawSource, ITemplateHandlerOptions } from '@/types'
+import { replaceHandleValue } from '@/js/handlers'
 
-function getQuotes(quote: string | null | undefined) {
-  const quotes = quote === "'" ? 'double' : 'single'
-  // if(quote === '"'){
-  //   quotes = 'single'
-  // }
-  return quotes
-}
+// function getQuotes(quote: string | null | undefined) {
+//   const quotes = quote === "'" ? 'double' : 'single'
+//   // if(quote === '"'){
+//   //   quotes = 'single'
+//   // }
+//   return quotes
+// }
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
     const ast = parseExpression(match)
-
+    const ms = new MagicString(match)
     traverse(ast, {
       StringLiteral(path) {
         // [g['人生']==='你好啊'?'highlight':'']
@@ -30,22 +31,36 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
         if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
           return
         }
-
-        path.node.value = replaceWxml(path.node.value, options)
+        const n = path.node
+        replaceHandleValue(
+          n.value,
+          n,
+          {
+            always: true,
+            classNameSet: options.runtimeSet,
+            mangleContext: options.mangleContext,
+            escapeMap: options.escapeMap,
+            needEscaped: true
+          },
+          ms,
+          1,
+          true
+        )
+        // path.node.value = replaceWxml(path.node.value, options)
       },
       noScope: true
     })
 
-    const { code } = generate(ast, {
-      compact: true,
-      minified: true,
-      jsescOption: {
-        quotes: getQuotes(options.quote),
-        minimal: true
-      }
-    })
+    // const { code } = generate(ast, {
+    //   compact: true,
+    //   minified: true,
+    //   jsescOption: {
+    //     quotes: getQuotes(options.quote),
+    //     minimal: true
+    //   }
+    // })
 
-    return code
+    return ms.toString()
   } catch {
     return match
   }
@@ -171,7 +186,7 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
         function update() {
           s.update(
             parser.startIndex + name.length + 2,
-            parser.endIndex,
+            parser.endIndex - 1,
             templateReplacer(value, {
               ...options,
               quote
