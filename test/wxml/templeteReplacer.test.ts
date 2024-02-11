@@ -36,7 +36,7 @@ describe('templateReplacer', () => {
 
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[flag===true?'bg-_bl__h_fafa00_br_':'',true?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"
+      "{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[(flag===true)?'bg-_bl__h_fafa00_br_':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"
     )
     expect(result).toMatchSnapshot()
   })
@@ -68,18 +68,30 @@ describe('templateReplacer', () => {
       'flex',
       'items-center',
       'justify-center',
-      'h-_l_100px_r_',
-      'w-_l_100px_r_',
-      'rounded-_l_40px_r_',
-      'bg-_l__h_123456_r_',
-      'bg-opacity-_l_0-dot-54_r_',
-      'text-_l__h_ffffff_r_',
+      'h-[100px]',
+      'w-[100px]',
+      'rounded-[40px]',
+      'bg-[#123456]',
+      'bg-opacity-[0.54]',
+      'text-[#ffffff]',
       'data-v-1badc801',
-      'text-_l__h_123456_r_',
+      'text-[#123456]',
       b]}}`
-    const result = complexReplacer(testCase)
+    const result = simpleReplacer(testCase)
     expect(result).toBe(
-      "{{['flex','items-center','justify-center','h-_l_100px_r_','w-_l_100px_r_','rounded-_l_40px_r_','bg-_l__h_123456_r_','bg-opacity-_l_0-dot-54_r_','text-_l__h_ffffff_r_','data-v-1badc801','text-_l__h_123456_r_',b]}}"
+      `{{[
+      'flex',
+      'items-center',
+      'justify-center',
+      'h-_100px_',
+      'w-_100px_',
+      'rounded-_40px_',
+      'bg-_h123456_',
+      'bg-opacity-_0d54_',
+      'text-_hffffff_',
+      'data-v-1badc801',
+      'text-_h123456_',
+      b]}}`
     )
   })
 
@@ -88,7 +100,7 @@ describe('templateReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}} h-_bl_20px_br_"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}} h-_bl_20px_br_"
     )
   })
 
@@ -97,7 +109,7 @@ describe('templateReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"
+      "border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"
     )
   })
 
@@ -105,7 +117,7 @@ describe('templateReplacer', () => {
     const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
     const result = complexReplacer(testCase)
-    expect(result).toBe("{{'_i_font-bold'+' '+'_i_text-_bl__h_990000_br_'+' '+'data-v-1badc801'+' '+'text-2xl'+' '+b}}")
+    expect(result).toBe("{{('_i_font-bold') + ' ' + '_i_text-_bl__h_990000_br_' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}")
   })
 
   it.each(testTable)('%label utils.bem()', () => {
@@ -114,7 +126,7 @@ describe('templateReplacer', () => {
 
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "custom-class {{utils.bem('button',[type,size,{block,round,plain,square,loading,disabled,hairline,unclickable:disabled||loading}])}} {{hairline?'van-hairline--surround':''}}"
+      "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
     )
   })
 
@@ -156,7 +168,7 @@ describe('templateReplacer', () => {
   it('two ConditionalExpression', () => {
     const testCase = "btn a{{num >='p-[1]'?num==='q-[2]'?'x-[0]':'y-[1]':'z-[2]'}}"
     const result = complexReplacer(testCase)
-    expect(result).toBe("btn a{{num>='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
+    expect(result).toBe("btn a{{num >='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
   })
 
   it('start up with num case', () => {

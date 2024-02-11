@@ -340,7 +340,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -721,7 +721,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1102,7 +1102,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1479,7 +1479,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1864,7 +1864,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -2245,7 +2245,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-[20px]'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -3140,7 +3140,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="na icon oa pa qa {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} ra {{flag=='p-[20px]'?'d':'sa'}}"></view>
   <button class="ta ua ia ka va wa xa">...</button>
-  <view class="na icon oa pa qa {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} ra {{flag=='p-[20px]'?'d':'sa'}}"></view>
+  <view class="na icon oa pa qa {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} ra {{flag=='p-[20px]'? 'd' : 'sa'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -3521,7 +3521,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="som-qa icon som-ra som-sa som-ta {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} som-ua {{flag=='p-[20px]'?'som-e':'som-va'}}"></view>
   <button class="som-wa som-xa som-la som-na som-ya som-za som-ab">...</button>
-  <view class="som-qa icon som-ra som-sa som-ta {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} som-ua {{flag=='p-[20px]'?'som-e':'som-va'}}"></view>
+  <view class="som-qa icon som-ra som-sa som-ta {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} som-ua {{flag=='p-[20px]'? 'som-e' : 'som-va'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -3902,7 +3902,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="ice-na icon ice-oa ice-pa ice-qa {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} ice-ra {{flag=='p-[20px]'?'ice-d':'ice-sa'}}"></view>
   <button class="ice-ta ice-ua ice-ia ice-ka ice-va ice-wa ice-xa">...</button>
-  <view class="ice-na icon ice-oa ice-pa ice-qa {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} ice-ra {{flag=='p-[20px]'?'ice-d':'ice-sa'}}"></view>
+  <view class="ice-na icon ice-oa ice-pa ice-qa {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} ice-ra {{flag=='p-[20px]'? 'ice-d' : 'ice-sa'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -4283,7 +4283,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="tw-na icon tw-oa tw-pa tw-qa {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} tw-ra {{flag=='p-[20px]'?'tw-d':'tw-sa'}}"></view>
   <button class="tw-ta tw-ua tw-ia tw-ka tw-va tw-wa tw-xa">...</button>
-  <view class="tw-na icon tw-oa tw-pa tw-qa {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} tw-ra {{flag=='p-[20px]'?'tw-d':'tw-sa'}}"></view>
+  <view class="tw-na icon tw-oa tw-pa tw-qa {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} tw-ra {{flag=='p-[20px]'? 'tw-d' : 'tw-sa'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -4381,7 +4381,7 @@ exports[`webpack5 plugin > multiple tailwindcss contexts raw case 0 > assets 1`]
     content: var(--tw-content)
 }
 ",
-  "index.js": "(()=>{var e={394:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(394),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
+  "index.js": "(()=>{var e={76:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(76),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
   "module.css": "
 
 /* .b {
@@ -4396,7 +4396,7 @@ exports[`webpack5 plugin > multiple tailwindcss contexts raw case 0 > assets 1`]
     content: var(--tw-content)
 }
 ",
-  "module.js": "(()=>{var e={147:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(147),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
+  "module.js": "(()=>{var e={660:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(660),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
 }
 `;
 
@@ -4791,7 +4791,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -5172,7 +5172,7 @@ view,text,::before,::after {
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "(()=>{document.body.append("<div class=\\"w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">className</div>");const d=document.createElement();d.classList.add("w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__"),document.body.appendChild(d)})();",
 }

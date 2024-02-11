@@ -62,14 +62,14 @@
     "stylus-loader": "^8.0.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "^3.4.1",
-    "tailwindcss-patch": "^2.2.2",
+    "tailwindcss-patch": "^2.2.3",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.9",
+    "weapp-tailwindcss-webpack-plugin": "^3.0.10",
     "webpack": "^5.90.0"
   },
   "browserslist": [
