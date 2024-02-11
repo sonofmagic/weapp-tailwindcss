@@ -7,11 +7,12 @@ import { splitCode } from '@/extractors/split'
 import { jsStringEscape } from '@/escape'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
-export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 0, needEscaped = false) {
+export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
   const set = options.classNameSet
   const escapeMap = options.escapeMap
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const ctx = options.mangleContext
+  const needEscaped = options.needEscaped ?? false
   const jsPreserveClass = options.jsPreserveClass
   const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
