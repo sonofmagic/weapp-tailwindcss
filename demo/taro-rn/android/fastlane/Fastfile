@@ -1,0 +1,43 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+  desc "assemble"
+  lane :assemble do
+    update_android_strings(
+      xml_path: 'app/src/main/res/values/strings.xml',
+      block: lambda { |strings|
+        strings['app_name'] = ENV['APP_NAME']
+      }
+    )
+    gradle(
+      task: "assemble",
+      build_type: ENV['BUILD_TYPE'],
+      properties: {
+        "app_id" => ENV['APP_ID'],
+        "android.injected.version.code" => ENV['VERSION_CODE'].to_i,
+        "android.injected.version.name" => ENV['VERSION_NAME'],
+        "android.injected.signing.store.file" => ENV['KEYSTORE_FILE'],
+        "android.injected.signing.store.password" => ENV['KEYSTORE_PASSWORD'],
+        "android.injected.signing.key.alias" => ENV['KEYSTORE_KEY_ALIAS'],
+        "android.injected.signing.key.password" => ENV['KEYSTORE_KEY_PASSWORD'],
+      }
+    )
+  end
+
+end

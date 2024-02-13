@@ -1,0 +1,122 @@
+# 工作流名称
+name: Assemble Ios Release
+
+# 触发工作流程的事件
+on:
+  push:
+    branches: [ master ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+# 工作流环境变量
+env:
+  # 应用的application_id
+  APP_ID: com.taro.demo
+  APP_NAME: Taro Demo
+  VERSION_NUMBER: 1.0.0
+  BUILD_NUMBER: 1.0.0.0
+  BUILD_TYPE: release
+  TEAM_ID: XXXXXXXXXX
+  PROVISIONING_PROFILE_SPECIFIER: Product_profile
+  CODE_SIGN_IDENTITY: iPhone Distribution
+  SIGNING_CERTIFICATE_P12_DATA: ${{secrets.RELEASE_SIGNING_CERTIFICATE_P12_DATA}}
+  SIGNING_CERTIFICATE_PASSWORD: ${{secrets.RELEASE_SIGNING_CERTIFICATE_PASSWORD}}
+  PROVISIONING_PROFILE_DATA: ${{secrets.RELEASE_PROVISIONING_PROFILE_DATA}}
+  APP_STORE_CONNECT_USERNAME: ${{secrets.APP_STORE_CONNECT_USERNAME}}
+  APP_STORE_CONNECT_PASSWORD: ${{secrets.APP_STORE_CONNECT_PASSWORD}}
+
+jobs:
+  assemble:
+    runs-on: macos-12
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=timestamp::$(date +'%s')"
+      - name: Checkout Project
+        uses: actions/checkout@v2
+      - name: Cache node_modules Folder
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node_modules
+          restore-keys: ${{ runner.os }}-node_modules
+      - name: Get Yarn Cache Directory Path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache Yarn
+        uses: actions/cache@v2
+        env:
+          cache-name: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Cache Pods
+        uses: actions/cache@v2
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: Install Dependencies
+        run: |
+          yarn
+      - name: Install pods
+        run: cd ios && pod update --no-repo-update
+      - name: Import signing certificate
+        env:
+          SIGNING_CERTIFICATE_P12_DATA: ${{ env.SIGNING_CERTIFICATE_P12_DATA }}
+          SIGNING_CERTIFICATE_PASSWORD: ${{ env.SIGNING_CERTIFICATE_PASSWORD }}
+        run: |
+          exec .github/scripts/import-certificate.sh
+      - name: Import provisioning profile
+        env:
+          PROVISIONING_PROFILE_DATA: ${{ env.PROVISIONING_PROFILE_DATA }}
+        run: |
+          exec .github/scripts/import-profile.sh
+      - name: Build app
+        env:
+          FL_APP_IDENTIFIER: ${{ env.APP_ID }}
+          FL_UPDATE_PLIST_DISPLAY_NAME: ${{ env.APP_NAME }}
+          FL_UPDATE_PLIST_PATH: taroDemo/Info.plist
+          FL_VERSION_NUMBER_VERSION_NUMBER: ${{ env.VERSION_NUMBER }}
+          FL_BUILD_NUMBER_BUILD_NUMBER: ${{ env.BUILD_NUMBER }}.${{steps.date.outputs.timestamp}}
+          FL_CODE_SIGN_IDENTITY: ${{ env.CODE_SIGN_IDENTITY }}
+          FL_PROVISIONING_PROFILE_SPECIFIER: ${{ env.PROVISIONING_PROFILE_SPECIFIER }}
+          FASTLANE_TEAM_ID: ${{ env.TEAM_ID }}
+        run: |
+          cd ios
+          bundle update
+          bundle exec fastlane build_release
+      - name: Upload Ios Products
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-${{ env.BUILD_TYPE }}
+          path: |
+            ${{ github.workspace }}/ios/taroDemo.ipa
+            ${{ github.workspace }}/ios/taroDemo.app.dSYM.zip
+      - name: Upload app to App Store Connect
+        env:
+          APP_STORE_CONNECT_USERNAME: ${{ env.APP_STORE_CONNECT_USERNAME }}
+          APP_STORE_CONNECT_PASSWORD: ${{ env.APP_STORE_CONNECT_PASSWORD }}
+        run: |
+          cd ios
+          xcrun altool --upload-app -t ios -f "taroDemo.ipa" -u "$APP_STORE_CONNECT_USERNAME" -p "$APP_STORE_CONNECT_PASSWORD"
+      - name: Rename release assets
+        run: |
+          mv ios/taroDemo.ipa ios/app-${{ env.BUILD_TYPE }}.ipa
+          mv ios/taroDemo.app.dSYM.zip ios/app-${{ env.BUILD_TYPE }}.app.dSYM.zip
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          prerelease: ${{ contains(github.ref, 'beta') }}
+          files: |
+            ios/app-${{ env.BUILD_TYPE }}.ipa
+            ios/app-${{ env.BUILD_TYPE }}.app.dSYM.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
