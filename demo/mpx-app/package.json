@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "mpx-cli-service serve",
+    "dev": "cross-env DEBUG=weapp-tw mpx-cli-service serve",
     "serve": "mpx-cli-service serve",
     "build": "mpx-cli-service build",
     "test:e2e": "npx e2e-runner j---config=./jest-e2e.config.js",
@@ -69,7 +69,7 @@
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.11-beta.0",
+    "weapp-tailwindcss-webpack-plugin": "^3.0.11-beta.1",
     "webpack": "^5.90.0"
   },
   "browserslist": [
