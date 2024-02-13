@@ -68,3 +68,6 @@ buck-out/
 
 ## taro-react-native-release
 !release/** 
+*.bundle
+*.map
+*.jsbundle
