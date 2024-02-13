@@ -5,7 +5,6 @@ import { UserDefinedOptions } from '@/types'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { createDebug } from '@/debug'
 
-const debug = createDebug('')
 const Transform = stream.Transform
 
 // export interface IBaseTransformOptions {
@@ -18,6 +17,7 @@ const Transform = stream.Transform
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
+  const debug = createDebug('')
   const { templateHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet, tailwindcssBasedir, cache } = opts
 
   let runtimeSet = new Set<string>()
@@ -124,7 +124,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
             const source = cache.get<string>(file.path)
             if (source) {
               file.contents = Buffer.from(source)
-              debug('html handle: %s', file.path)
+              debug('html cache hit: %s', file.path)
             } else {
               return false
             }
