@@ -404,6 +404,12 @@ const customAttributes = {
    * @description rem 转 rpx 配置，默认为 `undefined` 不开启，可传入 `true` 启用默认配置项，也可传入自定义配置项，配置项列表见 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
    */
   rem2rpx?: boolean | rem2rpxOptions
+
+  /**
+   * @version `^3.0.11`
+   * @description 缓存策略
+   */
+  cache?: boolean | ICreateCacheReturnType
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
@@ -439,7 +445,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
 }
 
 export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary'> & {
+  Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary' | 'cache'> & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>

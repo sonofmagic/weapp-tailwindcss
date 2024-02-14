@@ -4,7 +4,7 @@
   "description": "A workflow for better weapp developing.",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env WATCH=1 gulp",
+    "dev": "cross-env WATCH=1 DEBUG=weapp-tw gulp",
     "dev:tt": "cross-env WATCH=1 PLATFORM=tt gulp",
     "dev:local": "cross-env WATCH=1 LOCAL=1 gulp",
     "build:local": "cross-env LOCAL=1 gulp",
@@ -70,7 +70,7 @@
     "typescript": "^5.3.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.10"
+    "weapp-tailwindcss-webpack-plugin": "^3.0.11-beta.3"
   },
   "dependencies": {
     "@vant/weapp": "^1.11.2"

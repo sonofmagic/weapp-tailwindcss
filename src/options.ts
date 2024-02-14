@@ -35,7 +35,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     jsPreserveClass,
     disabledDefaultTemplateHandler,
     cssSelectorReplacement,
-    rem2rpx
+    rem2rpx,
+    cache
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -83,8 +84,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
   result.patch = createPatch(supportCustomLengthUnitsPatch)
   // result.initMangle = initMangle
   result.setMangleRuntimeSet = setMangleRuntimeSet
-
-  result.cache = createCache()
+  result.cache = cache === undefined || typeof cache === 'boolean' ? createCache(cache) : cache
 
   return result
 }
