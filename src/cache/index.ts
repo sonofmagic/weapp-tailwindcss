@@ -35,7 +35,10 @@ export interface ICreateCacheReturnType {
   ) => void | Promise<void>
 }
 
-function createCache(): ICreateCacheReturnType {
+export type ICreateCacheOptions = boolean
+
+function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
+  const disabled = options === false
   const hashMap = new Map<HashMapKey, HashMapValue>()
   const instance = new LRUCache<string, CacheValue>({
     // 可能会添加和删除一些页面和组件, 先设定 1024 吧
@@ -89,19 +92,27 @@ function createCache(): ICreateCacheReturnType {
       return instance.has(key)
     },
     async process(key, callback, fallback) {
-      const hit = this.getHashValue(key)
-      // 文件没有改变
-      if (hit && !hit.changed) {
-        // 命中缓存
-        const returnFlag = await callback()
-        if (returnFlag !== false) {
-          return
+      if (disabled) {
+        // 默认处理
+        const res = await fallback()
+        if (res) {
+          this.set(res.key, res.source)
         }
-      }
-      // 默认处理
-      const res = await fallback()
-      if (res) {
-        this.set(res.key, res.source)
+      } else {
+        const hit = this.getHashValue(key)
+        // 文件没有改变
+        if (hit && !hit.changed) {
+          // 命中缓存
+          const returnFlag = await callback()
+          if (returnFlag !== false) {
+            return
+          }
+        }
+        // 默认处理
+        const res = await fallback()
+        if (res) {
+          this.set(res.key, res.source)
+        }
       }
     }
   }
