@@ -4381,7 +4381,7 @@ exports[`webpack5 plugin > multiple tailwindcss contexts raw case 0 > assets 1`]
     content: var(--tw-content)
 }
 ",
-  "index.js": "(()=>{var e={76:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(76),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
+  "index.js": "(()=>{var e={115:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(115),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
   "module.css": "
 
 /* .b {
@@ -4396,7 +4396,7 @@ exports[`webpack5 plugin > multiple tailwindcss contexts raw case 0 > assets 1`]
     content: var(--tw-content)
 }
 ",
-  "module.js": "(()=>{var e={660:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(660),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
+  "module.js": "(()=>{var e={954:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(954),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
 }
 `;
 
