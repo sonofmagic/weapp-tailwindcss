@@ -65,6 +65,16 @@ const sidebars = {
       id: 'principle/index'
     },
     {
+      type: 'doc',
+      label: '如何贡献',
+      id: 'how-to-contribute'
+    },
+    {
+      type: 'doc',
+      label: 'Tailwindcss 原子类维护指南',
+      id: 'tailwindcss-maintenance-book'
+    },
+    {
       type: 'link',
       href: 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270',
       label: '谁在使用？'
