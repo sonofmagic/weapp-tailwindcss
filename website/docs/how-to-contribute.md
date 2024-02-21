@@ -108,3 +108,5 @@ Why？
 - `tailwindcss`: 用于 `hack` `tailwindcss`，给它打补丁，强制让它支持小程序的一些特性
 - `wxml`: 处理 `wxml` 的地方
 - `*`: `src` 其他一些文件，大多是一些导出文件
+
+想要知道各自做了什么事情，详见 [深入核心原理](./principle)
