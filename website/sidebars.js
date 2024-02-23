@@ -110,6 +110,10 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'issues/css-vars'
+    },
+    {
+      type: 'doc',
       id: 'issues/rpx-ambiguities'
     },
     {

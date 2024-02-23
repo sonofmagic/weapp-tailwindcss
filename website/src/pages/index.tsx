@@ -35,7 +35,7 @@ function HomepageHeader() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5 mb-2">
             <iframe
               src="https://ghbtns.com/github-btn.html?user=sonofmagic&repo=weapp-tailwindcss&type=star&count=true"
               frameborder="0"
@@ -47,6 +47,10 @@ function HomepageHeader() {
             <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
               谁在使用？
             </a>
+          </div>
+
+          <div>
+            <Link to="/docs/tailwindcss-maintenance-book">进阶阅读：如何降低维护成本 ?</Link>
           </div>
         </div>
 

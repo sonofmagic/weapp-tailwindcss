@@ -27,3 +27,7 @@
 ## 演示视频
 
 <iframe src="//player.bilibili.com/player.html?aid=835925684&bvid=BV1fg4y1D7xx&cid=1398844948&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+## 另外特别感谢 [舜岳同学](https://space.bilibili.com/475498258) 为 `weapp-tailwindcss` 制作的视频
+
+<iframe src="//player.bilibili.com/player.html?aid=1850100366&bvid=BV1kp421Z7HL&cid=1428939742&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
