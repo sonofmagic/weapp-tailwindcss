@@ -1,4 +1,5 @@
 import { AcceptedPlugin } from 'postcss'
+// @ts-ignore
 import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { postcssWeappTailwindcssPrePlugin } from './pre'
@@ -33,5 +34,6 @@ export function getPlugins(options: IStyleHandlerOptions) {
 
 export { postcssWeappTailwindcssPostPlugin } from './post'
 export { postcssWeappTailwindcssPrePlugin } from './pre'
+// @ts-ignore
 export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class'
 export { default as postcssRem2rpx } from 'postcss-rem-to-responsive-pixel'

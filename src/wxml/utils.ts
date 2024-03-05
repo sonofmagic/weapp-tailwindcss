@@ -155,7 +155,7 @@ function regTest(reg: RegExp, str: string) {
 export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: string) {
   if (Array.isArray(props)) {
     for (const prop of props) {
-      const res = typeof prop === 'string' ? prop.toLowerCase() === attr : regTest(prop, attr)
+      const res = typeof prop === 'string' ? prop.toLowerCase() === attr.toLowerCase() : regTest(prop, attr)
       if (res) {
         return res
       }
@@ -172,57 +172,62 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
   const { customAttributesEntities = [], disabledDefaultTemplateHandler, inlineWxs, runtimeSet, jsHandler } = options ?? {}
   const s = new MagicString(rawSource)
   let tag = ''
-  const parser = new Parser({
-    onopentagname(name) {
-      tag = name
-    },
+  const parser = new Parser(
+    {
+      onopentagname(name) {
+        tag = name
+      },
 
-    onattribute(name, value, quote) {
-      if (value) {
-        // https://github.com/fb55/htmlparser2/blob/5eea942451c1b836999d4557ed98470678c789b9/src/Parser.ts#L431
-        function update() {
-          s.update(
-            parser.startIndex + name.length + 2,
-            // !important
-            // htmlparser2 9.0.0: parser.endIndex
-            // htmlparser2 9.1.0: parser.endIndex - 1
-            // https://github.com/sonofmagic/weapp-tailwindcss/issues/269
-            parser.endIndex - 1,
-            templateReplacer(value, {
-              ...options,
-              quote
-            })
-          )
-        }
-        // add 'virtualHostClass' toLowerCase
-        if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class' || name === 'virtualhostclass')) {
-          update()
-        }
-        for (const [t, props] of customAttributesEntities) {
-          if (t === '*') {
-            if (isPropsMatch(props, name)) {
-              update()
-            }
-          } else if (typeof t === 'string') {
-            if (t === tag && isPropsMatch(props, name)) {
-              update()
-            }
-          } else if (regTest(t, tag) && isPropsMatch(props, name)) {
+      onattribute(name, value, quote) {
+        if (value) {
+          // https://github.com/fb55/htmlparser2/blob/5eea942451c1b836999d4557ed98470678c789b9/src/Parser.ts#L431
+          function update() {
+            s.update(
+              parser.startIndex + name.length + 2,
+              // !important
+              // htmlparser2 9.0.0: parser.endIndex
+              // htmlparser2 9.1.0: parser.endIndex - 1
+              // https://github.com/sonofmagic/weapp-tailwindcss/issues/269
+              parser.endIndex - 1,
+              templateReplacer(value, {
+                ...options,
+                quote
+              })
+            )
+          }
+          // add 'virtualHostClass' toLowerCase
+          if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class' || name === 'virtualHostClass' || name === 'virtualhostclass')) {
             update()
           }
+          for (const [t, props] of customAttributesEntities) {
+            if (t === '*') {
+              if (isPropsMatch(props, name)) {
+                update()
+              }
+            } else if (typeof t === 'string') {
+              if (t === tag && isPropsMatch(props, name)) {
+                update()
+              }
+            } else if (regTest(t, tag) && isPropsMatch(props, name)) {
+              update()
+            }
+          }
         }
+      },
+      ontext(data) {
+        if (inlineWxs && tag === 'wxs') {
+          const code = jsHandler(data, runtimeSet).code
+          s.update(parser.startIndex, parser.endIndex + 1, code)
+        }
+      },
+      onclosetag() {
+        tag = ''
       }
     },
-    ontext(data) {
-      if (inlineWxs && tag === 'wxs') {
-        const code = jsHandler(data, runtimeSet).code
-        s.update(parser.startIndex, parser.endIndex + 1, code)
-      }
-    },
-    onclosetag() {
-      tag = ''
+    {
+      xmlMode: true
     }
-  })
+  )
   parser.write(s.original)
   parser.end()
   return s.toString()

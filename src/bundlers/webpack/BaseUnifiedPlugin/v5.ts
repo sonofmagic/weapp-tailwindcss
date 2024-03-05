@@ -9,7 +9,7 @@ import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries, removeExt } from '@/utils'
 import { createDebug } from '@/debug'
 
-const debug = createDebug('processAssets: ')
+const debug = createDebug()
 
 /**
  * @name UnifiedWebpackPluginV5

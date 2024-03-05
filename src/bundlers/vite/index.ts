@@ -7,7 +7,7 @@ import { getGroupedEntries } from '@/utils'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { createDebug } from '@/debug'
 
-const debug = createDebug('generateBundle: ')
+const debug = createDebug()
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
