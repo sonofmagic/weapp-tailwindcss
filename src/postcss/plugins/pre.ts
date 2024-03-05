@@ -23,8 +23,11 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
     },
     AtRule(atRule) {
       if (isAtMediaHover(atRule)) {
-        atRule.before(atRule.nodes)
-        atRule.remove()
+        if (atRule.nodes) {
+          atRule.replaceWith(atRule.nodes)
+        } else {
+          atRule.remove()
+        }
       }
     }
   }

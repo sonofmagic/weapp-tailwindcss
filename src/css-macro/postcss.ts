@@ -17,15 +17,14 @@ const creator: PluginCreator<Options> = () => {
               const isNegative = atRule.params.includes('not')
               const text = values.join(' ')
               const comment = isNegative ? ifndef(text) : ifdef(text)
-
-              atRule.before([
+              atRule.replaceWith([
                 helper.comment({
                   raws: {
                     before: '\n'
                   },
                   text: comment.start
                 }),
-                ...atRule.nodes, // .map((x) => x.clone()),
+                ...(atRule.nodes ?? []), // .map((x) => x.clone()),
                 helper.comment({
                   raws: {
                     before: '\n'
@@ -33,7 +32,6 @@ const creator: PluginCreator<Options> = () => {
                   text: comment.end
                 })
               ])
-              atRule.remove()
             }
           }
 

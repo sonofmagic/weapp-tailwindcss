@@ -1,0 +1,30 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pre plugin > isAtMediaHover case 0 1`] = `
+"
+    @media not (hover: none){
+
+    }
+    "
+`;
+
+exports[`pre plugin > isAtMediaHover case 1 1`] = `
+"
+    "
+`;
+
+exports[`pre plugin > isAtMediaHover case 2 1`] = `
+"
+      .a{
+
+      }
+    "
+`;
+
+exports[`pre plugin > isAtMediaHover case 3 1`] = `
+"
+      .a{
+        color: red;
+      }
+    "
+`;
