@@ -45,7 +45,8 @@
   "include": [
     "src/**/*",
     "types/**/*",
-    "test/**/*"
+    "test/**/*",
+    "e2e/**/*"
   ],
   "ts-node": {
     "compilerOptions": {

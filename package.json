@@ -210,7 +210,7 @@
     "eslint-config-icebreaker": "^1.2.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
-    "execa": "^7.2.0",
+    "execa": "^8.0.1",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "gulp": "^4.0.2",
