@@ -28,8 +28,10 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
   if (options.jsAstTool === 'swc') {
     let ast: Module
     try {
-      ast = swc.parseSync(rawSource, {
-        syntax: 'ecmascript'
+      const compiler = new swc.Compiler()
+      ast = compiler.parseSync(rawSource, {
+        syntax: 'ecmascript',
+        target: 'es2022'
       })
     } catch {
       return {
