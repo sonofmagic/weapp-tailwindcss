@@ -1,4 +1,4 @@
-import type { StringLiteral, TemplateElement } from '@babel/types'
+// import type { StringLiteral, TemplateElement, Comment } from '@babel/types'
 import MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '@/types'
 import { replaceWxml } from '@/wxml/shared'
@@ -7,7 +7,13 @@ import { splitCode } from '@/extractors/split'
 import { jsStringEscape } from '@/escape'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
-export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
+interface ReplaceNode {
+  leadingComments?: { value: string }[] | null | undefined
+  start?: number | null
+  end?: number | null
+}
+
+export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
   const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes

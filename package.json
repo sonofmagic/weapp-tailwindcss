@@ -188,6 +188,7 @@
     "@types/micromatch": "^4.0.6",
     "@types/node": "^20.11.25",
     "@types/semver": "^7.5.8",
+    "@types/traverse": "^0.6.36",
     "@types/vinyl": "^2.0.11",
     "@types/webpack": "^5.28.5",
     "@types/webpack-sources": "^3.2.3",
@@ -251,6 +252,7 @@
     "@babel/traverse": "7.24.0",
     "@babel/types": "7.24.0",
     "@csstools/postcss-is-pseudo-class": "4.0.5",
+    "@swc/core": "^1.4.6",
     "@tailwindcss-mangle/shared": "^2.2.2",
     "@weapp-core/escape": "^2.0.0",
     "@weapp-core/regex": "^1.0.1",
@@ -265,6 +267,7 @@
     "postcss-selector-parser": "6.0.15",
     "semver": "7.6.0",
     "tailwindcss-patch": "^2.2.3",
+    "traverse": "^0.6.8",
     "webpack-sources": "3.2.3"
   },
   "packageManager": "pnpm@8.10.2",

@@ -63,6 +63,7 @@ export type IJsHandlerOptions = {
   needEscaped?: boolean
   generateMap?: boolean
   always?: boolean
+  jsAstTool?: 'babel' | 'swc'
 }
 export interface RawSource {
   start: number
@@ -410,6 +411,12 @@ const customAttributes = {
    * @description 缓存策略
    */
   cache?: boolean | ICreateCacheReturnType
+
+  /**
+   * @version `^3.1.0`
+   * @description 对解析 js 使用的 ast 工具
+   */
+  jsAstTool?: 'babel' | 'swc'
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
