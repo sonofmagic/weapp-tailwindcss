@@ -2,18 +2,12 @@ import type { File, Node } from '@babel/types'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
 import type { ParseResult } from '@babel/parser'
-import swc from '@swc/core'
-import type { StringLiteral, Literal, Module, TemplateElement } from '@swc/core'
-import objectTraverse from 'traverse'
+import { SgNode, js } from '@ast-grep/napi'
 import { replaceHandleValue } from './handlers'
-import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerReplaceResult, JsHandlerResult } from '@/types'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '@/types'
 import { parse, traverse } from '@/babel'
 import { jsStringEscape } from '@/escape'
 import { defuOverrideArray } from '@/utils'
-
-function isObject(obj: unknown) {
-  return Object.prototype.toString.call(obj) === '[object Object]'
-}
 
 function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
@@ -23,87 +17,49 @@ function isEvalPath(p: NodePath<Node>) {
   return false
 }
 
+// node.kind()
+// node.children()
+// node.range()
+function SgNodeTraverse(node: SgNode, cb: (node: SgNode) => void) {
+  cb(node)
+  for (const child of node.children()) {
+    SgNodeTraverse(child, cb)
+  }
+}
+
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const ms = new MagicString(rawSource)
-  if (options.jsAstTool === 'swc') {
-    let ast: Module
+  if (options.jsAstTool === 'ast-grep') {
+    let ast: SgNode
     try {
-      const compiler = new swc.Compiler()
-      ast = compiler.parseSync(rawSource, {
-        syntax: 'ecmascript',
-        target: 'es2022'
-      })
+      ast = js.parse(rawSource).root()
     } catch {
       return {
         code: rawSource
       } as JsHandlerResult
     }
 
-    let start: number
-    // const TemplateElementOffest = 0
-    // let end: number
-    // eslint-disable-next-line unicorn/no-array-for-each
-    objectTraverse(ast).forEach(function (node: TemplateElement | Module | Literal) {
-      if (isObject(node) && typeof node.type === 'string') {
-        switch (node.type) {
-          case 'Module': {
-            start = node.span.start
-            // end = node.span.end
-            break
-          }
-          case 'StringLiteral': {
-            // console.log('[SWC StringLiteral]', node.span)
-            replaceHandleValue(
-              node.value,
-              {
-                start: node.span.start - start,
-                end: node.span.end - start
-              },
-              {
-                ...options,
-                needEscaped: options.needEscaped ?? true
-              },
-              ms,
-              1
-            )
-            break
-          }
-          case 'TemplateElement': {
-            // console.log('[SWC TemplateElement]', node.span)
-            const startIndex = node.span.start - start
-            if (node.tail) {
-              replaceHandleValue(
-                node.raw,
-                {
-                  start: startIndex,
-                  end: startIndex + node.raw.length // node.span.end - start // node.span.start - start + (node.cooked?.length ?? 0) // node.span.end - start
-                },
-                {
-                  ...options,
-                  needEscaped: false
-                },
-                ms,
-                0
-              )
-            } else {
-              // TemplateElementOffest = node.span.end - start - node.raw.length
-              replaceHandleValue(
-                node.raw,
-                {
-                  start: startIndex,
-                  end: startIndex + node.raw.length // node.span.end - start // node.span.start - start + (node.cooked?.length ?? 0) // node.span.end - start
-                },
-                {
-                  ...options,
-                  needEscaped: false
-                },
-                ms,
-                0
-              )
-            }
-
-            break
-          }
+    SgNodeTraverse(ast, (node) => {
+      const kind = node.kind()
+      switch (kind) {
+        // string
+        // string_fragment
+        // template_string
+        case 'string_fragment': {
+          const range = node.range()
+          replaceHandleValue(
+            node.text(),
+            {
+              end: range.end.index,
+              start: range.start.index
+            },
+            {
+              ...options
+            },
+            ms,
+            0
+          )
+          break
         }
       }
     })
@@ -210,10 +166,10 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
     traverse(ast, ropt)
   }
-  const result: JsHandlerReplaceResult = {
+
+  return {
     code: ms.toString()
   }
-  return result
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions) {

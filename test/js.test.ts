@@ -2,12 +2,18 @@
 import { getClassCacheSet } from 'tailwindcss-patch'
 // import { createGetCase, jsCasePath } from './util'
 // import { js } from '@ast-grep/napi'
+// import swc from '@swc/core'
+// import MagicString from 'magic-string'
+// import { jsStringEscape } from '@ast-core/escape'
+
+// swc 在解析中文的时候，会导致 span 增加，从而无法精确定位，不知道是不是bug
 import { createGetCase, jsCasePath, createPutCase } from './util'
 import { SimpleMappingChars2String } from '@/escape'
 import { createJsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { defaultOptions } from '@/defaults'
+// import { parse } from '@/babel'
 const getCase = createGetCase(jsCasePath)
 const putCase = createPutCase(jsCasePath)
 
@@ -23,7 +29,7 @@ const testTable = [
 describe('jsHandler', () => {
   let h: ReturnType<typeof createJsHandler>
   let dh: ReturnType<typeof createJsHandler>
-  let swch: ReturnType<typeof createJsHandler>
+  let astGreph: ReturnType<typeof createJsHandler>
   let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
     h = createJsHandler({
@@ -38,9 +44,9 @@ describe('jsHandler', () => {
       }
     })
 
-    swch = createJsHandler({
+    astGreph = createJsHandler({
       escapeMap: SimpleMappingChars2String,
-      jsAstTool: 'swc'
+      jsAstTool: 'ast-grep'
     })
 
     const { jsHandler } = getOptions()
@@ -56,13 +62,13 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
   })
 
-  it('swc common case', () => {
+  it('astGrep common case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
 
-    const code = swch(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set).code
+    const code = astGreph(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set).code
     expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
   })
 
@@ -76,13 +82,13 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
   })
 
-  // it('swc common case with ignore comment', () => {
+  // it('astGrep common case with ignore comment', () => {
   //   const set: Set<string> = new Set()
   //   set.add('text-[12px]')
   //   set.add('flex')
   //   set.add('w-2.5')
 
-  //   const code = swch(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
+  //   const code = astGreph(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
   //   expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
   // })
 
@@ -97,13 +103,13 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
   })
 
-  it('swc preserve space', () => {
+  it('astGrep preserve space', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
 
-    const code = swch("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set).code
+    const code = astGreph("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set).code
     expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
   })
 
@@ -116,12 +122,12 @@ describe('jsHandler', () => {
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
-  it('swc preserve space case2', () => {
+  it('astGrep preserve space case2', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
 
-    const code = swch('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set).code
+    const code = astGreph('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set).code
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
@@ -135,13 +141,13 @@ describe('jsHandler', () => {
     expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it('swc TemplateElement case', () => {
+  it('astGrep TemplateElement case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('bg-[red]')
 
-    const code = swch("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
+    const code = astGreph("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
     expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
@@ -157,16 +163,17 @@ describe('jsHandler', () => {
     expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it('swc TemplateElement case 0', () => {
+  it('astGrep TemplateElement case 0', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('text-[199px]')
     set.add('flex')
     set.add("bg-[url('天气好')]")
     set.add('bg-[red]')
-
-    const code = swch("const p = 'text-[12px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
-    expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
+    set.add('leading-[24px]')
+    const s = "const p = 'text-[12px] leading-[24px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`"
+    const code = astGreph(s, set).code
+    expect(code).toBe("const p = 'text-_12px_ leading-_24px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
   it.each(testTable)('$name mpx jit classNames', () => {
