@@ -5,6 +5,15 @@
     "removeComments": true,
     "sourceMap": false
   },
-  "include": ["src/**/*", "types/**/*"],
-  "exclude": ["dist", "node_modules", "test/types", "./*.d.ts"]
+  "include": [
+    "src/**/*",
+    "types/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test/**/*",
+    "e2e/**/*",
+    "./*.d.ts"
+  ]
 }

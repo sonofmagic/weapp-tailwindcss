@@ -150,6 +150,31 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
+  // it('ast-grep common', async () => {
+  //   let timeStart: number
+  //   let timeTaken: number
+  //   new UnifiedWebpackPluginV5({
+  //     mainCssChunkMatcher(name) {
+  //       return path.basename(name) === 'index.css'
+  //     },
+  //     customReplaceDictionary: MappingChars2String,
+  //     onStart() {
+  //       timeStart = performance.now()
+  //     },
+  //     onEnd() {
+  //       timeTaken = performance.now() - timeStart
+  //       console.log(`[common] case processAssets executed in ${timeTaken}ms`)
+  //     },
+  //     jsAstTool: 'ast-grep'
+  //   }).apply(compiler)
+
+  //   const stats = await compile(compiler)
+
+  //   expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
+  //   expect(getErrors(stats)).toMatchSnapshot('errors')
+  //   expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  // })
+
   it('common with rem2rpx', async () => {
     let timeStart: number
     let timeTaken: number
@@ -337,6 +362,30 @@ describe('webpack5 plugin', () => {
         timeTaken = performance.now() - timeStart
         console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
       }
+    }).apply(prodCompiler)
+
+    const stats = await compile(prodCompiler)
+
+    expect(readAssets(prodCompiler, stats)).toMatchSnapshot('assets')
+    expect(getErrors(stats)).toMatchSnapshot('errors')
+    expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  })
+
+  it('ast grep unified prod common', async () => {
+    let timeStart: number
+    let timeTaken: number
+    new UnifiedWebpackPluginV5({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+      onStart() {
+        timeStart = performance.now()
+      },
+      onEnd() {
+        timeTaken = performance.now() - timeStart
+        console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
+      },
+      jsAstTool: 'ast-grep'
     }).apply(prodCompiler)
 
     const stats = await compile(prodCompiler)

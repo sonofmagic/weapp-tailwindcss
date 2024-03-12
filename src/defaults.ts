@@ -98,4 +98,5 @@ export const defaultOptions: UserDefinedOptions = {
     root: 'page',
     universal: ['view', 'text']
   }
+  // jsAstTool: 'ast-grep'
 }

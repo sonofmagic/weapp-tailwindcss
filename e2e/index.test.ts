@@ -5,6 +5,7 @@ import prettier from 'prettier'
 import automator from 'miniprogram-automator'
 import { execa } from 'execa'
 import { deleteAsync } from 'del'
+import Page from 'miniprogram-automator/out/Page'
 
 async function loadCss(p: string) {
   const css = await fs.readFile(p, 'utf8')
@@ -27,7 +28,7 @@ const TestProjectsEntries: {
   name: string
   projectPath: string
   // eslint-disable-next-line @typescript-eslint/ban-types
-  testMethod: Function
+  testMethod: (page: Page, b: string) => void
   url?: string
 }[] = [
   {
