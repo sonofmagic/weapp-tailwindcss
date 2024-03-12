@@ -44,7 +44,7 @@ if (!WeappTailwindcssDisabled) {
         console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
       },
       rem2rpx: true,
-
+      // jsAstTool: 'ast-grep',
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',

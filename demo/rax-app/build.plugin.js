@@ -19,6 +19,7 @@ module.exports = ({ context, onGetWebpackConfig }) => {
       {
         appType: 'rax',
         rem2rpx: true,
+        // jsAstTool: 'ast-grep',
         // cssPreflight: {
         //   'box-sizing': 'content-box',
         //   'background': 'black'
