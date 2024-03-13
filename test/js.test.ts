@@ -44,10 +44,10 @@ describe('jsHandler', () => {
       }
     })
 
-    astGreph = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
-      jsAstTool: 'ast-grep'
-    })
+    // astGreph = createJsHandler({
+    //   escapeMap: SimpleMappingChars2String,
+    //   jsAstTool: 'ast-grep'
+    // })
 
     const { jsHandler } = getOptions()
     defaultJsHandler = jsHandler
@@ -62,7 +62,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
   })
 
-  it('astGrep common case', () => {
+  it.skip('astGrep common case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -103,7 +103,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
   })
 
-  it('astGrep preserve space', () => {
+  it.skip('astGrep preserve space', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -122,7 +122,7 @@ describe('jsHandler', () => {
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
-  it('astGrep preserve space case2', () => {
+  it.skip('astGrep preserve space case2', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -141,7 +141,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it('astGrep TemplateElement case', () => {
+  it.skip('astGrep TemplateElement case', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
@@ -163,7 +163,7 @@ describe('jsHandler', () => {
     expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it('astGrep TemplateElement case 0', () => {
+  it.skip('astGrep TemplateElement case 0', () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('text-[199px]')

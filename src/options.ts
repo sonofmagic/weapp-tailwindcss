@@ -36,8 +36,7 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     disabledDefaultTemplateHandler,
     cssSelectorReplacement,
     rem2rpx,
-    cache,
-    jsAstTool
+    cache
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -68,8 +67,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     mangleContext,
     arbitraryValues,
     jsPreserveClass,
-    generateMap: true,
-    jsAstTool
+    generateMap: true
+    // jsAstTool
   })
   result.jsHandler = jsHandler
 

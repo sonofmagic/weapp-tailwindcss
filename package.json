@@ -246,7 +246,6 @@
   },
   "dependencies": {
     "@ast-core/escape": "^1.0.1",
-    "@ast-grep/napi": "^0.19.4",
     "@babel/generator": "7.23.6",
     "@babel/parser": "7.24.0",
     "@babel/traverse": "7.24.0",

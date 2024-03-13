@@ -63,7 +63,7 @@ export type IJsHandlerOptions = {
   needEscaped?: boolean
   generateMap?: boolean
   always?: boolean
-  jsAstTool?: 'babel' | 'ast-grep'
+  // jsAstTool?: 'babel' | 'ast-grep'
 }
 export interface RawSource {
   start: number
@@ -416,7 +416,7 @@ const customAttributes = {
    * @version `^3.1.0`
    * @description 对解析 js 使用的 ast 工具
    */
-  jsAstTool?: 'babel' | 'ast-grep'
+  // jsAstTool?: 'babel' | 'ast-grep'
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
