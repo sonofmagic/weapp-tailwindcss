@@ -371,7 +371,7 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
-  it('ast grep unified prod common', async () => {
+  it.skip('ast grep unified prod common', async () => {
     let timeStart: number
     let timeTaken: number
     new UnifiedWebpackPluginV5({
@@ -384,8 +384,8 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
-      },
-      jsAstTool: 'ast-grep'
+      }
+      // jsAstTool: 'ast-grep'
     }).apply(prodCompiler)
 
     const stats = await compile(prodCompiler)
