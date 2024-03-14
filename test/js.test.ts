@@ -451,4 +451,48 @@ describe('jsHandler', () => {
     const code = jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
+
+  it('中文字符 case 0', async () => {
+    const testCase = `const a ={ className: "after:content-['\u7684\u6492\u7684\u6492']", children: "\u4E8B\u5B9E\u4E0A" }`
+    const set: Set<string> = new Set()
+    set.add("after:content-['的撒的撒']")
+
+    const { jsHandler } = getOptions()
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符 case 1', async () => {
+    const testCase = `const a ={ className: "after:content-['\u7684\u6492\u7684\u6492']", children: "\u4E8B\u5B9E\u4E0A" }`
+    const set: Set<string> = new Set()
+    set.add("after:content-['的撒的撒']")
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符 case 2', async () => {
+    const testCase = `"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before:content-['moduleA_\u666E\u901A\u5206\u5305']",children:"moduleA \u666E\u901A\u5206\u5305"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);`
+    const set: Set<string> = new Set()
+    set.add("before:content-['moduleA_普通分包']")
+
+    const { jsHandler } = getOptions()
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符 case 3', async () => {
+    const testCase = `"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before:content-['moduleA_\u666E\u901A\u5206\u5305']",children:"moduleA \u666E\u901A\u5206\u5305"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);`
+    const set: Set<string> = new Set()
+    set.add("before:content-['moduleA_普通分包']")
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
 })

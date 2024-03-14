@@ -72,3 +72,27 @@ exports[`jsHandler > unicode case 0 1`] = `
 };
 "
 `;
+
+exports[`jsHandler > 中文字符 case 0 1`] = `
+{
+  "code": "const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }",
+}
+`;
+
+exports[`jsHandler > 中文字符 case 1 1`] = `
+{
+  "code": "const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }",
+}
+`;
+
+exports[`jsHandler > 中文字符 case 2 1`] = `
+{
+  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);",
+}
+`;
+
+exports[`jsHandler > 中文字符 case 3 1`] = `
+{
+  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);",
+}
+`;
