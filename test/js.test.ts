@@ -495,4 +495,28 @@ describe('jsHandler', () => {
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
+
+  it('中文字符产物 case 0', async () => {
+    const testCase = await getCase('taro-vue-rust-zh.js')
+    const set: Set<string> = new Set()
+    set.add("after:content-['我知道我心,永恒12we_ds']")
+
+    const { jsHandler } = getOptions()
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符产物 case 1', async () => {
+    const testCase = await getCase('taro-vue-rust-zh.js')
+    const set: Set<string> = new Set()
+    set.add("after:content-['我知道我心,永恒12we_ds']")
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  // "after:content-['我知道我心,永恒12we_ds']"
 })
