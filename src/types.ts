@@ -419,7 +419,7 @@ const customAttributes = {
   jsAstTool?: 'babel' | 'ast-grep'
 }
 
-export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult
+export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult | Promise<JsHandlerResult>
 
 export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']
@@ -454,7 +454,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
 export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary' | 'cache'> & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
-    templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => string
+    templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>
     jsHandler: JsHandler
     escapeMap: Record<string, string>

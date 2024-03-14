@@ -168,10 +168,15 @@ export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: stri
   }
 }
 
-export function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
+export async function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
   const { customAttributesEntities = [], disabledDefaultTemplateHandler, inlineWxs, runtimeSet, jsHandler } = options ?? {}
   const s = new MagicString(rawSource)
   let tag = ''
+  const wxsArray: {
+    startIndex: number
+    endIndex: number
+    data: string
+  }[] = []
   const parser = new Parser(
     {
       onopentagname(name) {
@@ -216,8 +221,11 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
       },
       ontext(data) {
         if (inlineWxs && tag === 'wxs') {
-          const code = jsHandler(data, runtimeSet).code
-          s.update(parser.startIndex, parser.endIndex + 1, code)
+          wxsArray.push({
+            data,
+            endIndex: parser.endIndex + 1,
+            startIndex: parser.startIndex
+          })
         }
       },
       onclosetag() {
@@ -230,6 +238,11 @@ export function customTemplateHandler(rawSource: string, options: Required<ITemp
   )
   parser.write(s.original)
   parser.end()
+  for (const { data, endIndex, startIndex } of wxsArray) {
+    const { code } = await jsHandler(data, runtimeSet)
+    s.update(startIndex, endIndex, code)
+  }
+
   return s.toString()
 }
 

@@ -9349,10 +9349,10 @@ postcss-rpx-transform@^1.0.1:
   resolved "https://registry.npmmirror.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
   integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
 
-postcss-selector-parser@6.0.15:
-  version "6.0.15"
-  resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.15.tgz#11cc2b21eebc0b99ea374ffb9887174855a01535"
-  integrity sha512-rEYkQOMUCEMhsKbK66tbEU9QVIxbhN18YiniAwA7XQYTVBqrBy+P2p5JcdqsHgKM2zWylp8d7J6eszocfds5Sw==
+postcss-selector-parser@6.0.16:
+  version "6.0.16"
+  resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.16.tgz#3b88b9f5c5abd989ef4e2fc9ec8eedd34b20fb04"
+  integrity sha512-A0RVJrX+IUkVZbW3ClroRWurercFhieevHB38sr2+l9eUClMqome3LmEmnhlNy+5Mr2EYN6B2Kaw9wYdd+VHiw==
   dependencies:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
@@ -11646,10 +11646,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^3.1.0-beta.0:
-  version "3.1.0-beta.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.1.0-beta.0.tgz#0c0f6f319eaa6649aa7dade75c0b13ed3fb0f13d"
-  integrity sha512-qIZ97LFc+uxc0v554CrQ0VZ92im/ju8fpFM5a0up1I2TGbsdqhI6giNYQoHvyE01KVjHCXzC7yA8ABNGvSN21A==
+weapp-tailwindcss-webpack-plugin@^3.1.0-beta.1:
+  version "3.1.0-beta.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.1.0-beta.1.tgz#e3e003e3462a2ea02d45848374fc497539efa0b9"
+  integrity sha512-+z6sL/gFPu0G6+clOu4aitReG7nrT3F8860EVP44gER/4qx6stQ1RyH4+cqvQXmfWU/IjnZaRiwo+B6oWG/qWQ==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@ast-grep/napi" "^0.19.4"
@@ -11669,7 +11669,7 @@ weapp-tailwindcss-webpack-plugin@^3.1.0-beta.0:
     md5 "2.3.0"
     postcss "8.4.35"
     postcss-rem-to-responsive-pixel "^6.0.1"
-    postcss-selector-parser "6.0.15"
+    postcss-selector-parser "6.0.16"
     semver "7.6.0"
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"

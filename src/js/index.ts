@@ -167,6 +167,43 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
   }
 }
 
+export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptions): Promise<JsHandlerResult> {
+  const ms = new MagicString(rawSource)
+
+  let ast: SgNode
+  try {
+    const root = await js.parseAsync(rawSource)
+    ast = root.root()
+  } catch {
+    return {
+      code: rawSource
+    } as JsHandlerResult
+  }
+
+  const nodes = ast.findAll(js.kind('string_fragment'))
+
+  for (const node of nodes) {
+    const range = node.range()
+    const text = node.text()
+    replaceHandleValue(
+      text,
+      {
+        end: range.end.index,
+        start: range.start.index
+      },
+      {
+        ...options
+      },
+      ms,
+      0
+    )
+  }
+
+  return {
+    code: ms.toString()
+  }
+}
+
 export function createJsHandler(options: CreateJsHandlerOptions) {
   const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool } = options
   return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
@@ -179,6 +216,9 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       generateMap,
       jsAstTool
     })
+    if (opts.jsAstTool === 'ast-grep') {
+      return jsHandlerAsync(rawSource, opts)
+    }
     return jsHandler(rawSource, opts)
   }
 }

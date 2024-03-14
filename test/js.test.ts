@@ -52,33 +52,33 @@ describe('jsHandler', () => {
     const { jsHandler } = getOptions()
     defaultJsHandler = jsHandler
   })
-  it.each(testTable)('$name common case', () => {
+  it.each(testTable)('$name common case', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
 
-    const code = h(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set).code
+    const { code } = await h(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set)
     expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
   })
 
-  it('astGrep common case', () => {
+  it('astGrep common case', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
 
-    const code = astGreph(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set).code
+    const { code } = await astGreph(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set)
     expect(code).toBe("const n = 'text-_12px_ flex bg-[red] w-2d5'")
   })
 
-  it.each(testTable)('$name common case with ignore comment', () => {
+  it.each(testTable)('$name common case with ignore comment', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
 
-    const code = h(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
+    const { code } = await h(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set)
     expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
   })
 
@@ -92,66 +92,66 @@ describe('jsHandler', () => {
   //   expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
   // })
 
-  it.each(testTable)('$name preserve space', () => {
+  it.each(testTable)('$name preserve space', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
     const xxx = h
 
-    const code = xxx("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set).code
+    const { code } = await xxx("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set)
     expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
   })
 
-  it('astGrep preserve space', () => {
+  it('astGrep preserve space', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('w-2.5')
 
-    const code = astGreph("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set).code
+    const { code } = await astGreph("const n = 'text-[12px] flex \\n bg-[red] w-2.5'", set)
     expect(code).toBe("const n = 'text-_12px_ flex \\n bg-[red] w-2d5'")
   })
 
-  it.each(testTable)('$name preserve space case2', () => {
+  it.each(testTable)('$name preserve space case2', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
 
-    const code = h('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set).code
+    const { code } = await h('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set)
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
-  it('astGrep preserve space case2', () => {
+  it('astGrep preserve space case2', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
 
-    const code = astGreph('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set).code
+    const { code } = await astGreph('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set)
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
-  it.each(testTable)('$name babel TemplateElement case', () => {
+  it.each(testTable)('$name babel TemplateElement case', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('bg-[red]')
 
-    const code = h("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
+    const { code } = await h("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set)
     expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it('astGrep TemplateElement case', () => {
+  it('astGrep TemplateElement case', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
     set.add('bg-[red]')
 
-    const code = astGreph("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
+    const { code } = await astGreph("const p = 'text-[12px]';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] '`", set)
     expect(code).toBe("const p = 'text-_12px_';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it.each(testTable)('$name TemplateElement case 0', () => {
+  it.each(testTable)('$name TemplateElement case 0', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('text-[199px]')
@@ -159,11 +159,11 @@ describe('jsHandler', () => {
     set.add("bg-[url('天气好')]")
     set.add('bg-[red]')
 
-    const code = h("const p = 'text-[12px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`", set).code
+    const { code } = await h("const p = 'text-[12px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`", set)
     expect(code).toBe("const p = 'text-_12px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it('astGrep TemplateElement case 0', () => {
+  it('astGrep TemplateElement case 0', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('text-[199px]')
@@ -172,11 +172,11 @@ describe('jsHandler', () => {
     set.add('bg-[red]')
     set.add('leading-[24px]')
     const s = "const p = 'text-[12px] leading-[24px]';const n = `bg-[url('天气好')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] '`"
-    const code = astGreph(s, set).code
+    const { code } = await astGreph(s, set)
     expect(code).toBe("const p = 'text-_12px_ leading-_24px_';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ '`")
   })
 
-  it.each(testTable)('$name mpx jit classNames', () => {
+  it.each(testTable)('$name mpx jit classNames', async () => {
     const testCase = `data: {
       classNames: "text-[#123456] text-[50px] bg-[#fff]"
     }`
@@ -186,11 +186,11 @@ describe('jsHandler', () => {
     set.add('bg-[#fff]')
     set.add('text-[50px]')
 
-    const code = h(testCase, set).code
+    const { code } = await h(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
-  it.each(testTable)('$name img url case', () => {
+  it.each(testTable)('$name img url case', async () => {
     const testCase = `data: {
       classNames: "bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]"
     }`
@@ -198,7 +198,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add("bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]")
 
-    const code = h(testCase, set).code
+    const { code } = await h(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -206,7 +206,7 @@ describe('jsHandler', () => {
     const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
     await getCss(testCase)
     const set = getClassCacheSet()
-    const code = dh(testCase, set).code
+    const { code } = await dh(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -215,20 +215,20 @@ describe('jsHandler', () => {
     await getCss(testCase)
     const set = getClassCacheSet()
 
-    const code = h(testCase, set).code
+    const { code } = await h(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
-  it("jsPreserveClass '*' keyword", () => {
+  it("jsPreserveClass '*' keyword", async () => {
     const set: Set<string> = new Set()
     set.add('*')
 
-    const code = defaultJsHandler("const n = '* 1 * 2'", set).code
+    const { code } = await defaultJsHandler("const n = '* 1 * 2'", set)
 
     expect(code).toMatchSnapshot()
   })
 
-  it("jsPreserveClass '*' and 'w-[100px]' keyword", () => {
+  it("jsPreserveClass '*' and 'w-[100px]' keyword", async () => {
     const set: Set<string> = new Set()
     set.add('*')
     set.add('w-[100px]')
@@ -243,12 +243,12 @@ describe('jsHandler', () => {
         }
       }
     })
-    const code = myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+    const { code } = await myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set)
 
     expect(code).toMatchSnapshot()
   })
 
-  it("jsPreserveClass '*' and but not 'w-[100px]' keyword", () => {
+  it("jsPreserveClass '*' and but not 'w-[100px]' keyword", async () => {
     const set: Set<string> = new Set()
     set.add('*')
     set.add('w-[100px]')
@@ -263,11 +263,11 @@ describe('jsHandler', () => {
         // }
       }
     })
-    const code = myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+    const { code } = await myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set)
     expect(code).toBe("const n = '* 1 * 2 w-_100px_'")
   })
 
-  it("[replace] jsPreserveClass '*' and but not 'w-[100px]' keyword", () => {
+  it("[replace] jsPreserveClass '*' and but not 'w-[100px]' keyword", async () => {
     const set: Set<string> = new Set()
     set.add('*')
     set.add('w-[100px]')
@@ -282,14 +282,14 @@ describe('jsHandler', () => {
         // }
       }
     })
-    const code = myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+    const { code } = await myCustomJsHandler("const n = '* 1 * 2 w-[100px]'", set)
     expect(code).toBe("const n = '* 1 * 2 w-_100px_'")
   })
 
-  it('LINEFEED case', () => {
+  it('LINEFEED case', async () => {
     const testCase = 'const LINEFEED = "\\n";'
     const set = new Set<string>()
-    const code = h(testCase, set).code
+    const { code } = await h(testCase, set)
     // 'const LINEFEED = "\n";'
     // 'const LINEFEED = "\\n";'
     expect(code).toBe(testCase)
@@ -299,7 +299,7 @@ describe('jsHandler', () => {
     // ";
   })
 
-  it('mangleContext case', () => {
+  it('mangleContext case', async () => {
     const set: Set<string> = new Set()
     // set.add('*')
     set.add('w-[100px]')
@@ -307,7 +307,7 @@ describe('jsHandler', () => {
       mangle: true
     })
     setMangleRuntimeSet(set)
-    const code = jsHandler("const n = '* 1 * 2 w-[100px]'", set).code
+    const { code } = await jsHandler("const n = '* 1 * 2 w-[100px]'", set)
     expect(code).toBe("const n = '* 1 * 2 tw-a'")
   })
 
@@ -322,31 +322,31 @@ describe('jsHandler', () => {
   //   expect(map?.toString()).toBe('{"version":3,"sources":[""],"names":[],"mappings":"AAAA,WAAW,iBAAiB"}')
   // })
 
-  it('eval StringLiteral case 0', () => {
+  it('eval StringLiteral case 0', async () => {
     const set: Set<string> = new Set()
     set.add('w-[100px]')
-    const code = h(`eval("const cls = 'w-[100px]';console.log(cls)")`, set).code
+    const { code } = await h(`eval("const cls = 'w-[100px]';console.log(cls)")`, set)
     expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
   })
 
-  it('eval TemplateElement case 0', () => {
+  it('eval TemplateElement case 0', async () => {
     const set: Set<string> = new Set()
     set.add('w-[100px]')
-    const code = h("eval(`const cls = 'w-[100px]';console.log(cls)`)", set).code
+    const { code } = await h("eval(`const cls = 'w-[100px]';console.log(cls)`)", set)
     expect(code).toBe("eval(`const cls = 'w-_100px_';console.log(cls)`)")
   })
 
-  it('eval StringLiteral case regen 0', () => {
+  it('eval StringLiteral case regen 0', async () => {
     const set: Set<string> = new Set()
     set.add('w-[100px]')
-    const code = h(`eval("const cls = 'w-[100px]';console.log(cls)")`, set).code
+    const { code } = await h(`eval("const cls = 'w-[100px]';console.log(cls)")`, set)
     expect(code).toBe('eval("const cls = \\\'w-_100px_\\\';console.log(cls)")')
   })
 
-  it('eval TemplateElement case regen 0', () => {
+  it('eval TemplateElement case regen 0', async () => {
     const set: Set<string> = new Set()
     set.add('w-[100px]')
-    const code = h("eval(`const cls = 'w-[100px]';console.log(cls)`)", set).code
+    const { code } = await h("eval(`const cls = 'w-[100px]';console.log(cls)`)", set)
     expect(code).toBe("eval(`const cls = 'w-_100px_';console.log(cls)`)")
   })
 
@@ -355,7 +355,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('w-[100px]')
     set.add('w-[99px]')
-    const code = h(aarun, set).code
+    const { code } = await h(aarun, set)
     await putCase('jsStringEscape.res.js', code)
     expect(code).toMatchSnapshot()
   })
@@ -369,14 +369,14 @@ describe('jsHandler', () => {
   it('taro-url-before case', async () => {
     const aarun = await getCase('taro-url-before.js')
     const set: Set<string> = new Set()
-    const code = h(aarun, set).code
+    const { code } = await h(aarun, set)
     expect(code).toMatchSnapshot()
   })
 
   it('unicode case 0', async () => {
     const unicodeCase = await getCase('taro-url-unicode.js')
     const set: Set<string> = new Set()
-    const code = h(unicodeCase, set).code
+    const { code } = await h(unicodeCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -384,8 +384,8 @@ describe('jsHandler', () => {
     const testCase = await getCase('taro-lottie-miniprogram-dev.js')
     const set: Set<string> = new Set()
     const { jsHandler } = getOptions()
-    expect(() => {
-      const { code } = jsHandler(testCase, set)
+    expect(async () => {
+      const { code } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
     }).not.toThrow()
   })
@@ -394,8 +394,8 @@ describe('jsHandler', () => {
     const testCase = await getCase('taro-lottie-miniprogram-build-no-compress.js')
     const set: Set<string> = new Set()
     const { jsHandler } = getOptions()
-    expect(() => {
-      const { code } = jsHandler(testCase, set)
+    expect(async () => {
+      const { code } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
     }).not.toThrow()
   })
@@ -404,8 +404,8 @@ describe('jsHandler', () => {
     const testCase = await getCase('taro-lottie-miniprogram-build.js')
     const set: Set<string> = new Set()
     const { jsHandler } = getOptions()
-    expect(() => {
-      const { code } = jsHandler(testCase, set)
+    expect(async () => {
+      const { code } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
     }).not.toThrow()
   })

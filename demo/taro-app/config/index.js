@@ -104,7 +104,7 @@ const config = {
                     console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
                   },
                   rem2rpx: true,
-                  // jsAstTool: 'ast-grep'
+                  jsAstTool: 'ast-grep'
                 }
               ]
               // args: [opt, 'taro']
