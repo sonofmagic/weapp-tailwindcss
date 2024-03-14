@@ -84,7 +84,7 @@ module.exports = {
     new UnifiedWebpackPluginV5({
       appType: 'native',
       rem2rpx: true,
-      // jsAstTool: 'ast-grep'
+      jsAstTool: 'ast-grep'
       // mangle: true,
       // cssPreflight: {
       //   "border-color": false
