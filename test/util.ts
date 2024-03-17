@@ -1,6 +1,23 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import MagicString from 'magic-string'
+import * as htmlparser2 from 'htmlparser2'
 export { format } from './helpers/wxml'
+
+export function removeWxmlId(html: string) {
+  const ms = new MagicString(html)
+  const parser = new htmlparser2.Parser({
+    onattribute(name) {
+      if (name === 'data-sid' || name === 'id') {
+        ms.update(parser.startIndex - 1, parser.endIndex, '')
+      }
+    }
+  })
+  parser.write(html)
+  parser.end()
+  return ms.toString()
+}
+
 export function resolve(...args: string[]) {
   return path.resolve(...args)
 }
