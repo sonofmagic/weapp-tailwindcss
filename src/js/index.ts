@@ -40,16 +40,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       } as JsHandlerResult
     }
 
-    const nodes = ast.findAll(js.kind('string_fragment'))
+    const nodes = ast.findAll(js.kind('string'))
 
     for (const node of nodes) {
       const range = node.range()
       const text = node.text()
       replaceHandleValue(
-        text,
+        text.slice(1, -1),
         {
-          end: range.end.index,
-          start: range.start.index
+          end: range.end.index - 1,
+          start: range.start.index + 1
         },
         {
           ...options
@@ -57,6 +57,27 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
         ms,
         0
       )
+    }
+
+    const templateNodes = ast.findAll(js.kind('template_string'))
+    for (const node of templateNodes) {
+      const fragments = node.findAll(js.kind('string_fragment'))
+      for (const fragment of fragments) {
+        const range = fragment.range()
+        const text = fragment.text()
+        replaceHandleValue(
+          text,
+          {
+            end: range.end.index,
+            start: range.start.index
+          },
+          {
+            ...options
+          },
+          ms,
+          0
+        )
+      }
     }
   } else {
     let ast: ParseResult<File>
@@ -180,25 +201,47 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
     } as JsHandlerResult
   }
 
-  const nodes = ast.findAll(js.kind('string_fragment'))
+  const nodes = ast.findAll(js.kind('string'))
 
   for (const node of nodes) {
     const range = node.range()
     const text = node.text()
     replaceHandleValue(
-      text,
+      text.slice(1, -1),
       {
-        end: range.end.index,
-        start: range.start.index
+        end: range.end.index - 1,
+        start: range.start.index + 1
       },
       {
-        ...options
+        ...options,
+        unescapeUnicode: true
       },
       ms,
       0
     )
   }
 
+  const templateNodes = ast.findAll(js.kind('template_string'))
+  for (const node of templateNodes) {
+    const fragments = node.findAll(js.kind('string_fragment'))
+    for (const fragment of fragments) {
+      const range = fragment.range()
+      const text = fragment.text()
+      replaceHandleValue(
+        text,
+        {
+          end: range.end.index,
+          start: range.start.index
+        },
+        {
+          ...options,
+          unescapeUnicode: true
+        },
+        ms,
+        0
+      )
+    }
+  }
   return {
     code: ms.toString()
   }

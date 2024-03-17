@@ -1,4 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
+// import punycode from 'node:punycode'
 import { getClassCacheSet } from 'tailwindcss-patch'
 // import { createGetCase, jsCasePath } from './util'
 // import { js } from '@ast-grep/napi'
@@ -17,6 +18,9 @@ import { defaultOptions } from '@/defaults'
 const getCase = createGetCase(jsCasePath)
 const putCase = createPutCase(jsCasePath)
 
+function decodeUnicode(s: string) {
+  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
+}
 const testTable = [
   {
     name: 'common'
@@ -517,6 +521,73 @@ describe('jsHandler', () => {
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
+
+  it('中文字符产物 case 2', async () => {
+    const testCase = await getCase('taro-vue3-test-dist.js')
+    const set: Set<string> = new Set()
+    set.add("after:content-['我知道我心,永恒12we_ds']")
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符产物 case 3', async () => {
+    const testCase = await getCase('taro-vue3-test-build-dist.js')
+    const set: Set<string> = new Set()
+    set.add("after:content-['我知道我心,永恒12we_ds']")
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符产物 case 4', async () => {
+    const testCase = await getCase('taro-vue3-test-build-dist-short.js')
+    const set: Set<string> = new Set()
+    set.add("after:content-['我知道我心,永恒12we_ds']")
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('中文字符转义 case 0', () => {
+    const a1: string = "after:content-['\\u6211\\u77e5\\u9053\\u6211\\u5fc3,\\u6c38\\u605212we_ds']"
+    const a2: string = "after:content-['我知道我心,永恒12we_ds']"
+    expect(a1 === a2).toBe(false)
+  })
+
+  it('中文字符转义 case 1', () => {
+    const a1: string = "after:content-['\u6211\u77E5\u9053\u6211\u5FC3,\u6C38\u605212we_ds']"
+    const a2: string = "after:content-['我知道我心,永恒12we_ds']"
+    expect(a1 === a2).toBe(true)
+  })
+
+  it('中文字符转义 case 2', () => {
+    const str: string = decodeUnicode("after:content-['\\u6211\\u77e5\\u9053\\u6211\\u5fc3,\\u6c38\\u605212we_ds']")
+    // 匹配Unicode编码的正则表达式
+    // const unicodeRegex = /\\\\?\\/g
+
+    // // 替换Unicode编码为对应字符
+    // str = str.replaceAll(unicodeRegex, function (match) {
+    //   return match === '\\' ? '' : String.fromCodePoint(Number.parseInt('0x' + match.slice(2), 16))
+    // })
+    const a2: string = "after:content-['我知道我心,永恒12we_ds']"
+    expect(str === a2).toBe(true)
+  })
+
+  // it('中文字符产物 after build case 0', () => {
+  //   const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after:content-['\u6211\u77E5\u9053\u6211\u5FC3,\u6C38\u605212we_ds']"
+  // })
+
+  // const b = "after:content-['\\u6211\\u77e5\\u9053\\u6211\\u5fc3,\\u6c38\\u605212we_ds']"
 
   // "after:content-['我知道我心,永恒12we_ds']"
 })

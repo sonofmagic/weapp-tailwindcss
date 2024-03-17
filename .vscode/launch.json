@@ -39,6 +39,13 @@
       "cwd": "${workspaceFolder}/demo/taro-vue3-app"
     },
     {
+      "command": "yarn build",
+      "name": "[Demo] taro-vue3-app run weapp build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/taro-vue3-app"
+    },
+    {
       "command": "yarn dev:local",
       "name": "[Demo] local taro app run weapp dev",
       "request": "launch",

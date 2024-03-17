@@ -64,6 +64,7 @@ export type IJsHandlerOptions = {
   generateMap?: boolean
   always?: boolean
   jsAstTool?: 'babel' | 'ast-grep'
+  unescapeUnicode?: boolean
 }
 export interface RawSource {
   start: number

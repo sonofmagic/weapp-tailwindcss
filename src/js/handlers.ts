@@ -13,14 +13,26 @@ interface ReplaceNode {
   end?: number | null
 }
 
+function decodeUnicode(s: string) {
+  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
+}
+
 export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
-  const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always } = options
+  const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always, unescapeUnicode } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
 
   const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
-  for (const v of arr) {
+  let needDecodeUnicode = false
+  if (unescapeUnicode && rawStr.includes('\\')) {
+    rawStr = decodeUnicode(rawStr)
+    needDecodeUnicode = true
+  }
+  for (let v of arr) {
+    if (needDecodeUnicode && v.includes('\\')) {
+      v = decodeUnicode(v)
+    }
     if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {

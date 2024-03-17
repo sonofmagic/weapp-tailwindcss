@@ -371,29 +371,29 @@ describe('webpack5 plugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
   })
 
-  it.skip('ast grep unified prod common', async () => {
-    let timeStart: number
-    let timeTaken: number
-    new UnifiedWebpackPluginV5({
-      mainCssChunkMatcher(name) {
-        return path.basename(name) === 'index.css'
-      },
-      onStart() {
-        timeStart = performance.now()
-      },
-      onEnd() {
-        timeTaken = performance.now() - timeStart
-        console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
-      }
-      // jsAstTool: 'ast-grep'
-    }).apply(prodCompiler)
+  // it('ast grep unified prod common', async () => {
+  //   let timeStart: number
+  //   let timeTaken: number
+  //   new UnifiedWebpackPluginV5({
+  //     mainCssChunkMatcher(name) {
+  //       return path.basename(name) === 'index.css'
+  //     },
+  //     onStart() {
+  //       timeStart = performance.now()
+  //     },
+  //     onEnd() {
+  //       timeTaken = performance.now() - timeStart
+  //       console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
+  //     },
+  //     jsAstTool: 'ast-grep'
+  //   }).apply(prodCompiler)
 
-    const stats = await compile(prodCompiler)
+  //   const stats = await compile(prodCompiler)
 
-    expect(readAssets(prodCompiler, stats)).toMatchSnapshot('assets')
-    expect(getErrors(stats)).toMatchSnapshot('errors')
-    expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  })
+  //   expect(readAssets(prodCompiler, stats)).toMatchSnapshot('assets')
+  //   expect(getErrors(stats)).toMatchSnapshot('errors')
+  //   expect(getWarnings(stats)).toMatchSnapshot('warnings')
+  // })
 
   it('disabled true', async () => {
     let timeStart: number
