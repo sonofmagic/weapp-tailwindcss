@@ -28,6 +28,50 @@ function isEvalPath(p: NodePath<Node>) {
 //   }
 // }
 
+function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
+  const nodes = ast.findAll(js.kind('string'))
+
+  for (const node of nodes) {
+    const range = node.range()
+    const text = node.text()
+    replaceHandleValue(
+      text.slice(1, -1),
+      {
+        end: range.end.index - 1,
+        start: range.start.index + 1
+      },
+      {
+        ...options,
+        unescapeUnicode: true
+      },
+      ms,
+      0
+    )
+  }
+
+  const templateNodes = ast.findAll(js.kind('template_string'))
+  for (const node of templateNodes) {
+    const fragments = node.findAll(js.kind('string_fragment'))
+    for (const fragment of fragments) {
+      const range = fragment.range()
+      const text = fragment.text()
+      replaceHandleValue(
+        text,
+        {
+          end: range.end.index,
+          start: range.start.index
+        },
+        {
+          ...options,
+          unescapeUnicode: true
+        },
+        ms,
+        0
+      )
+    }
+  }
+}
+
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const ms = new MagicString(rawSource)
   if (options.jsAstTool === 'ast-grep') {
@@ -40,45 +84,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       } as JsHandlerResult
     }
 
-    const nodes = ast.findAll(js.kind('string'))
-
-    for (const node of nodes) {
-      const range = node.range()
-      const text = node.text()
-      replaceHandleValue(
-        text.slice(1, -1),
-        {
-          end: range.end.index - 1,
-          start: range.start.index + 1
-        },
-        {
-          ...options
-        },
-        ms,
-        0
-      )
-    }
-
-    const templateNodes = ast.findAll(js.kind('template_string'))
-    for (const node of templateNodes) {
-      const fragments = node.findAll(js.kind('string_fragment'))
-      for (const fragment of fragments) {
-        const range = fragment.range()
-        const text = fragment.text()
-        replaceHandleValue(
-          text,
-          {
-            end: range.end.index,
-            start: range.start.index
-          },
-          {
-            ...options
-          },
-          ms,
-          0
-        )
-      }
-    }
+    astGrepUpdateString(ast, options, ms)
   } else {
     let ast: ParseResult<File>
     try {
@@ -200,48 +206,8 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
       code: rawSource
     } as JsHandlerResult
   }
+  astGrepUpdateString(ast, options, ms)
 
-  const nodes = ast.findAll(js.kind('string'))
-
-  for (const node of nodes) {
-    const range = node.range()
-    const text = node.text()
-    replaceHandleValue(
-      text.slice(1, -1),
-      {
-        end: range.end.index - 1,
-        start: range.start.index + 1
-      },
-      {
-        ...options,
-        unescapeUnicode: true
-      },
-      ms,
-      0
-    )
-  }
-
-  const templateNodes = ast.findAll(js.kind('template_string'))
-  for (const node of templateNodes) {
-    const fragments = node.findAll(js.kind('string_fragment'))
-    for (const fragment of fragments) {
-      const range = fragment.range()
-      const text = fragment.text()
-      replaceHandleValue(
-        text,
-        {
-          end: range.end.index,
-          start: range.start.index
-        },
-        {
-          ...options,
-          unescapeUnicode: true
-        },
-        ms,
-        0
-      )
-    }
-  }
   return {
     code: ms.toString()
   }
