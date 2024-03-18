@@ -9415,6 +9415,15 @@ postcss@8.4.35, postcss@^8.4.34:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
+postcss@8.4.36:
+  version "8.4.36"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.36.tgz#dba513c3c3733c44e0288a712894f8910bbaabc6"
+  integrity sha512-/n7eumA6ZjFHAsbX30yhHup/IMkOmlmvtEi7P+6RMYf+bGJSUHc3geH4a0NSZxAz/RJfiS9tooCTs9LAVYUZKw==
+  dependencies:
+    nanoid "^3.3.7"
+    picocolors "^1.0.0"
+    source-map-js "^1.1.0"
+
 postcss@^6.0.0:
   version "6.0.23"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-6.0.23.tgz#61c82cc328ac60e677645f979054eb98bc0e3324"
@@ -10513,6 +10522,11 @@ source-list-map@^2.0.0:
   version "1.0.2"
   resolved "https://registry.npmmirror.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
   integrity sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==
+
+source-map-js@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/source-map-js/-/source-map-js-1.1.0.tgz#9e7d5cb46f0689fb6691b30f226937558d0fa94b"
+  integrity sha512-9vC2SfsJzlej6MAaMPLu8HiBSHGdRAJ9hVFYN1ibZoNkeanmDmLUcIrj6G9DGL7XMJ54AKg/G75akXl1/izTOw==
 
 source-map-resolve@^0.5.0, source-map-resolve@^0.5.2:
   version "0.5.3"
@@ -11646,10 +11660,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^3.1.0-beta.3:
-  version "3.1.0-beta.3"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.1.0-beta.3.tgz#0dbf3de965c7a1f82988b43920e1376cc45a9390"
-  integrity sha512-pPknMW7Mr7r7ye2z1LM7VHtmykoyNsaggzc5slxZaIIzZ+z92ZcvUm+M8c77GqZa1lhfard9Mqj7SDqdQVoIuQ==
+weapp-tailwindcss-webpack-plugin@^3.1.0-beta.4:
+  version "3.1.0-beta.4"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.1.0-beta.4.tgz#ceab166eb1db6955bed6e2b7b5c9b72a50a67390"
+  integrity sha512-iVfmyI3lNoAV8ehaUw7c61lLebDHOfnTg7t6jzstEgDFK3IebPKxOQKO3vfawDL7szCZDdXgEVdiChJLgPuHAg==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@ast-grep/napi" "^0.19.4"
@@ -11667,7 +11681,7 @@ weapp-tailwindcss-webpack-plugin@^3.1.0-beta.3:
     lru-cache "10.2.0"
     magic-string "0.30.8"
     md5 "2.3.0"
-    postcss "8.4.35"
+    postcss "8.4.36"
     postcss-rem-to-responsive-pixel "^6.0.1"
     postcss-selector-parser "6.0.16"
     semver "7.6.0"
