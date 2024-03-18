@@ -16,6 +16,12 @@ exports[`jsHandler > 'common' mpx jit classNames 1`] = `
     }"
 `;
 
+exports[`jsHandler > empty case 0 1`] = `
+{
+  "code": "const a = ''",
+}
+`;
+
 exports[`jsHandler > issues/276 case 0 1`] = `
 {
   "code": "const x = "rounded-_20rpx_ beforecrounded-_20rpx_"",
@@ -48,6 +54,12 @@ exports[`jsHandler > jsStringEscape getCase 0 1`] = `
 "const a = 'w-_100px_';
 
 eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
+`;
+
+exports[`jsHandler > short case 0 1`] = `
+{
+  "code": "const a = '1'",
+}
 `;
 
 exports[`jsHandler > taro-url-before case 1`] = `

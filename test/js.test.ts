@@ -583,6 +583,27 @@ describe('jsHandler', () => {
     expect(str === a2).toBe(true)
   })
 
+  it('empty case 0', async () => {
+    const testCase = `const a = ''`
+    const set: Set<string> = new Set()
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('short case 0', async () => {
+    const testCase = `const a = '1'`
+    const set: Set<string> = new Set()
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep'
+    })
+    const code = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
   // it('中文字符产物 after build case 0', () => {
   //   const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after:content-['\u6211\u77E5\u9053\u6211\u5FC3,\u6C38\u605212we_ds']"
   // })
