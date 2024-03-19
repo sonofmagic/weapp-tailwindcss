@@ -60,6 +60,13 @@
       "cwd": "${workspaceFolder}/demo/mpx-app"
     },
     {
+      "command": "yarn build",
+      "name": "[Demo Mpx] Mpx build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/mpx-app"
+    },
+    {
       "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",

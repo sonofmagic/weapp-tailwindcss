@@ -38,6 +38,14 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "start": "node test"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.0",
+    "dayjs": "^1.11.10",
+    "fs-extra": "^11.2.0",
+    "lodash": "^4.17.21"
   }
 }

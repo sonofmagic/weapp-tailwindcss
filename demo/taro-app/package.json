@@ -9,6 +9,7 @@
     "dev:local": "cross-env LOCAL=1 WRITE=1 npm run dev:weapp",
     "dev:write": "cross-env WRITE=1 npm run dev:weapp",
     "build": "npm run build:weapp",
+    "build:babel": "cross-env BABEL=1 npm run build:weapp",
     "build:local": "cross-env LOCAL=1 npm run build:weapp",
     "build:weapp": "taro build --type weapp",
     "build:swan": "taro build --type swan",

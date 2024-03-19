@@ -1,6 +1,7 @@
 // let TaroWeappTailwindcssWebpackPluginV5
 // let UnifiedWebpackPluginV5
 const path = require('path')
+const bench = require('../../bench')('taro-react')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 // if (isLocal) {
@@ -90,21 +91,28 @@ const config = {
       // })
 
       if (process.env.TARO_ENV === 'weapp') {
-        let start
+        // let start
         chain.merge({
           plugin: {
             install: {
               plugin: UnifiedWebpackPluginV5,
               args: [
                 {
+                  // onStart() {
+                  //   start = performance.now()
+                  // },
+                  // onEnd() {
+                  //   console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+                  // },
                   onStart() {
-                    start = performance.now()
+                    bench.start();
                   },
                   onEnd() {
-                    console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+                    bench.end();
+                    bench.dump();
                   },
                   rem2rpx: true,
-                  jsAstTool: 'ast-grep'
+                  jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
                 }
               ]
               // args: [opt, 'taro']

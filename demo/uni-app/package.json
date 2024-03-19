@@ -6,6 +6,7 @@
     "serve": "npm run dev:h5",
     "dev": "npm run dev:mp-weixin",
     "build": "npm run build:mp-weixin",
+    "build:babel": "cross-env BABEL=1 npm run build:mp-weixin",
     "build:local": "cross-env LOCAL=1 npm run build:mp-weixin",
     "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
     "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",

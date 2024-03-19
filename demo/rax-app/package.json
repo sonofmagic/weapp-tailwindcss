@@ -7,6 +7,7 @@
     "dev": "npm run start",
     "start": "rax-app start",
     "build": "rax-app build",
+    "build:babel": "cross-env BABEL=1 rax-app build",
     "build:local": "cross-env LOCAL=1 rax-app build",
     "eslint": "eslint --ext .js,.jsx,.tsx,.ts ./",
     "stylelint": "stylelint \"**/*.{css,scss,less}\"",
