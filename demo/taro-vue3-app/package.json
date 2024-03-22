@@ -13,6 +13,7 @@
     "dev:local": "cross-env LOCAL=1 WRITE=1 npm run dev:weapp",
     "dev:write": "cross-env WRITE=1 npm run dev:weapp",
     "build": "npm run build:weapp",
+    "build:babel": "cross-env BABEL=1 npm run build:weapp",
     "build:local": "cross-env LOCAL=1 npm run build:weapp",
     "build:weapp": "taro build --type weapp",
     "build:swan": "taro build --type swan",
@@ -83,7 +84,7 @@
     "vue-loader": "^17.2.2",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.11",
+    "weapp-tailwindcss-webpack-plugin": "^3.1.0",
     "webpack": "^5.90.3"
   }
 }

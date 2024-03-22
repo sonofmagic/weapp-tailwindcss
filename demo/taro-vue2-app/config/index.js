@@ -2,6 +2,7 @@
 const path = require('path')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
+const bench = require('../../bench')('taro-vue2')
 // if (isLocal) {
 //   console.log('use local built webpack plugin')
 //   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
@@ -59,11 +60,15 @@ const config = {
         appType: 'taro',
         onStart() {
           start = performance.now()
+          bench.start()
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+          bench.end()
+          bench.dump()
         },
-        rem2rpx: true
+        rem2rpx: true,
+        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
       }
 
       // if (isWrite) {

@@ -9,7 +9,7 @@
 //   UnifiedWebpackPluginV5 = plugin;
 // }
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack');
-
+const bench = require('../bench')('rax');
 // const { RaxTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
@@ -19,6 +19,15 @@ module.exports = ({ context, onGetWebpackConfig }) => {
       {
         appType: 'rax',
         rem2rpx: true,
+        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
+        onStart() {
+          bench.start();
+        },
+        onEnd() {
+          bench.end();
+          bench.dump();
+        },
+
         // cssPreflight: {
         //   'box-sizing': 'content-box',
         //   'background': 'black'

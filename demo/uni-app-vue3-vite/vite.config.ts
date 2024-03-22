@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
+const bench = require('../bench')('uni-app-vite-vue3');
 // import Unocss from 'unocss/vite';
 // import WindiCSS from 'vite-plugin-windicss';
 
@@ -38,13 +39,16 @@ if (!WeappTailwindcssDisabled) {
       inlineWxs: true,
       jsEscapeStrategy: 'replace', // 'regenerate'
       onStart() {
+        bench.start();
         start = performance.now();
       },
       onEnd() {
+        bench.end();
+        bench.dump();
         console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
       },
       rem2rpx: true,
-
+      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',

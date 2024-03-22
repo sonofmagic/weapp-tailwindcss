@@ -10,6 +10,7 @@
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { WeappTailwindcssDisabled } = require('./platform')
+const bench = require('../bench')('uni-app-webpack5-vue2')
 // const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
 // const smp = new SpeedMeasurePlugin({
 //   // outputTarget: './smp.dat',
@@ -33,11 +34,15 @@ const config = {
         inlineWxs: false,
         onStart() {
           start = performance.now()
+          bench.start()
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+          bench.end()
+          bench.dump()
         },
-        rem2rpx: true
+        rem2rpx: true,
+        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())

@@ -137,8 +137,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                     return false
                   }
                 },
-                () => {
-                  const wxml = templateHandler(rawSource, {
+                async () => {
+                  const wxml = await templateHandler(rawSource, {
                     runtimeSet
                   })
                   const source = new ConcatSource(wxml)
@@ -174,11 +174,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                     return false
                   }
                 },
-                () => {
+                async () => {
                   const rawSource = originalSource.source().toString()
                   const mapFilename = file + '.map'
                   const hasMap = Boolean(assets[mapFilename])
-                  const { code, map } = jsHandler(rawSource, runtimeSet, {
+                  const { code, map } = await jsHandler(rawSource, runtimeSet, {
                     generateMap: hasMap
                   })
                   const source = new ConcatSource(code)

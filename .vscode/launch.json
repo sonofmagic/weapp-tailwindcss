@@ -32,6 +32,20 @@
       "cwd": "${workspaceFolder}/demo/taro-app"
     },
     {
+      "command": "yarn dev",
+      "name": "[Demo] taro-vue3-app run weapp dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/taro-vue3-app"
+    },
+    {
+      "command": "yarn build",
+      "name": "[Demo] taro-vue3-app run weapp build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/taro-vue3-app"
+    },
+    {
       "command": "yarn dev:local",
       "name": "[Demo] local taro app run weapp dev",
       "request": "launch",
@@ -41,6 +55,13 @@
     {
       "command": "yarn dev",
       "name": "[Demo Mpx] Mpx dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/mpx-app"
+    },
+    {
+      "command": "yarn build",
+      "name": "[Demo Mpx] Mpx build",
       "request": "launch",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo/mpx-app"

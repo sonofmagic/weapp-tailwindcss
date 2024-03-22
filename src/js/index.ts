@@ -2,8 +2,9 @@ import type { File, Node } from '@babel/types'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
 import type { ParseResult } from '@babel/parser'
+import type { SgNode } from '@ast-grep/napi'
 import { replaceHandleValue } from './handlers'
-import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerReplaceResult, JsHandlerResult } from '@/types'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '@/types'
 import { parse, traverse } from '@/babel'
 import { jsStringEscape } from '@/escape'
 import { defuOverrideArray } from '@/utils'
@@ -16,7 +17,74 @@ function isEvalPath(p: NodePath<Node>) {
   return false
 }
 
+// node.kind()
+// node.children()
+// node.range()
+// function SgNodeTraverse(node: SgNode, cb: (node: SgNode) => void) {
+//   cb(node)
+//   for (const child of node.children()) {
+//     SgNodeTraverse(child, cb)
+//   }
+// }
+
+async function getAstGrep() {
+  try {
+    const { js } = await import('@ast-grep/napi')
+    return js
+  } catch (error) {
+    console.warn('请先安装 `@ast-grep/napi` , 安装完成后再尝试运行！')
+    throw error
+  }
+}
+
+async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
+  const js = await getAstGrep()
+  const nodes = ast.findAll(js.kind('string'))
+
+  for (const node of nodes) {
+    const range = node.range()
+    const text = node.text()
+    replaceHandleValue(
+      text.slice(1, -1),
+      {
+        end: range.end.index - 1,
+        start: range.start.index + 1
+      },
+      {
+        ...options,
+        unescapeUnicode: true
+      },
+      ms,
+      0
+    )
+  }
+
+  const templateNodes = ast.findAll(js.kind('template_string'))
+  for (const node of templateNodes) {
+    const fragments = node.findAll(js.kind('string_fragment'))
+    for (const fragment of fragments) {
+      const range = fragment.range()
+      const text = fragment.text()
+      replaceHandleValue(
+        text,
+        {
+          end: range.end.index,
+          start: range.start.index
+        },
+        {
+          ...options,
+          unescapeUnicode: true
+        },
+        ms,
+        0
+      )
+    }
+  }
+}
+
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
+  const ms = new MagicString(rawSource)
+
   let ast: ParseResult<File>
   try {
     ast = parse(rawSource, {
@@ -28,9 +96,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     } as JsHandlerResult
   }
 
-  const ms = new MagicString(rawSource)
-
-  const ropt: TraverseOptions<Node> = {
+  const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
       enter(p) {
         if (isEvalPath(p.parentPath)) {
@@ -119,19 +185,34 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     }
   }
 
-  traverse(ast, ropt)
-  const result: JsHandlerReplaceResult = {
+  traverse(ast, traverseOptions)
+
+  return {
     code: ms.toString()
   }
-  // no use
-  // if (options.generateMap) {
-  //   result.map = ms.generateMap()
-  // }
-  return result
+}
+
+export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptions): Promise<JsHandlerResult> {
+  const ms = new MagicString(rawSource)
+  const js = await getAstGrep()
+  let ast: SgNode
+  try {
+    const root = await js.parseAsync(rawSource)
+    ast = root.root()
+  } catch {
+    return {
+      code: rawSource
+    } as JsHandlerResult
+  }
+  await astGrepUpdateString(ast, options, ms)
+
+  return {
+    code: ms.toString()
+  }
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions) {
-  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap } = options
+  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool } = options
   return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
       classNameSet: set,
@@ -139,8 +220,12 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       arbitraryValues,
       mangleContext,
       jsPreserveClass,
-      generateMap
+      generateMap,
+      jsAstTool
     })
+    if (opts.jsAstTool === 'ast-grep') {
+      return jsHandlerAsync(rawSource, opts)
+    }
     return jsHandler(rawSource, opts)
   }
 }

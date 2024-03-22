@@ -79,8 +79,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                 return false
               }
             },
-            () => {
-              originalSource.source = templateHandler(oldVal, {
+            async () => {
+              originalSource.source = await templateHandler(oldVal, {
                 runtimeSet
               })
               onUpdate(file, oldVal, originalSource.source)
@@ -114,10 +114,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                 return false
               }
             },
-            () => {
+            async () => {
               const mapFilename = file + '.map'
               const hasMap = Boolean(bundle[mapFilename])
-              const { code, map } = jsHandler(rawSource, runtimeSet, {
+              const { code, map } = await jsHandler(rawSource, runtimeSet, {
                 generateMap: hasMap
               })
               originalSource.code = code

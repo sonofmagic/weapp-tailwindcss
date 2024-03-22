@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./index.js",
-    "build": "node ./index.js"
+    "build": "node ./index.js",
+    "build:babel": "node ./index.js"
   },
   "dependencies": {
     "defu": "^6.1.2",
@@ -20,6 +21,6 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.11"
+    "weapp-tailwindcss-webpack-plugin": "^3.1.0"
   }
 }

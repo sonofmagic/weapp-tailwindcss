@@ -2,7 +2,7 @@ import defu from 'defu'
 import { getOptions } from '@/options'
 import { MappingChars2String } from '@/escape'
 describe('customReplaceDictionary', () => {
-  it('templateHandler custom map', () => {
+  it('templateHandler custom map', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
@@ -15,40 +15,40 @@ describe('customReplaceDictionary', () => {
         MappingChars2String
       )
     })
-    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w--0_d_5px-" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w--0_d_5px-"></van-image>')
   })
 
-  it('templateHandler complex mode', () => {
+  it('templateHandler complex mode', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
       customReplaceDictionary: MappingChars2String
     })
-    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
   })
 
-  it('templateHandler default(complex) mode', () => {
+  it('templateHandler default(complex) mode', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
       customReplaceDictionary: MappingChars2String
     })
-    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
   })
 
-  it('templateHandler simple mode', () => {
+  it('templateHandler simple mode', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
       },
       customReplaceDictionary: 'simple'
     })
-    const res = templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>')
   })
 
@@ -98,23 +98,23 @@ describe('customReplaceDictionary', () => {
     expect(res).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
   })
 
-  it('all prop with testClass', () => {
+  it('all prop with testClass', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         '*': ['testClass']
       }
     })
-    const res = templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = await templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
   })
 
-  it('all prop with [Cc]lass', () => {
+  it('all prop with [Cc]lass', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/]
       }
     })
-    const res = templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    const res = await templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-_0d5px_" image-class="w-_0d5px_" other-attr="w-[0.5px]"></van-image>')
   })
 })

@@ -5,7 +5,8 @@ import prettier from 'prettier'
 import automator from 'miniprogram-automator'
 import { execa } from 'execa'
 import { deleteAsync } from 'del'
-
+import Page from 'miniprogram-automator/out/Page'
+import { removeWxmlId } from '../test/util'
 async function loadCss(p: string) {
   const css = await fs.readFile(p, 'utf8')
   const code = await prettier.format(css, {
@@ -27,7 +28,7 @@ const TestProjectsEntries: {
   name: string
   projectPath: string
   // eslint-disable-next-line @typescript-eslint/ban-types
-  testMethod: Function
+  testMethod: (page: Page, b: string) => void
   url?: string
 }[] = [
   {
@@ -127,6 +128,7 @@ describe('e2e', () => {
       const pageEl = await page.$('page')
       let wxml = await pageEl?.wxml()
       if (wxml) {
+        wxml = removeWxmlId(wxml)
         try {
           wxml = await prettier.format(wxml, {
             parser: 'html',
