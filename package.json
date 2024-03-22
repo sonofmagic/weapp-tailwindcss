@@ -92,6 +92,7 @@
     "get-decl": "ts-node scripts/get-decl.ts",
     "demo:dev": "node scripts/demo/dev.js",
     "demo:build": "node scripts/demo/build.js",
+    "demo:bench": "node scripts/demo/bench.js",
     "demo:build:local": "node scripts/demo/build.js --local",
     "demo:link": "node scripts/demo/link.js",
     "demo:install": "node scripts/demo/install.js",
