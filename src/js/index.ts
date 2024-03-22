@@ -2,7 +2,6 @@ import type { File, Node } from '@babel/types'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
 import type { ParseResult } from '@babel/parser'
-import { js } from '@ast-grep/napi'
 import type { SgNode } from '@ast-grep/napi'
 import { replaceHandleValue } from './handlers'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '@/types'
@@ -28,7 +27,18 @@ function isEvalPath(p: NodePath<Node>) {
 //   }
 // }
 
-function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
+async function getAstGrep() {
+  try {
+    const { js } = await import('@ast-grep/napi')
+    return js
+  } catch (error) {
+    console.warn('请先安装 `@ast-grep/napi` , 安装完成后再尝试运行！')
+    throw error
+  }
+}
+
+async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
+  const js = await getAstGrep()
   const nodes = ast.findAll(js.kind('string'))
 
   for (const node of nodes) {
@@ -74,120 +84,108 @@ function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicS
 
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const ms = new MagicString(rawSource)
-  if (options.jsAstTool === 'ast-grep') {
-    let ast: SgNode
-    try {
-      ast = js.parse(rawSource).root()
-    } catch {
-      return {
-        code: rawSource
-      } as JsHandlerResult
-    }
 
-    astGrepUpdateString(ast, options, ms)
-  } else {
-    let ast: ParseResult<File>
-    try {
-      ast = parse(rawSource, {
-        sourceType: 'unambiguous'
-      })
-    } catch {
-      return {
-        code: rawSource
-      } as JsHandlerResult
-    }
+  let ast: ParseResult<File>
+  try {
+    ast = parse(rawSource, {
+      sourceType: 'unambiguous'
+    })
+  } catch {
+    return {
+      code: rawSource
+    } as JsHandlerResult
+  }
 
-    const traverseOptions: TraverseOptions<Node> = {
-      StringLiteral: {
-        enter(p) {
-          if (isEvalPath(p.parentPath)) {
-            return
-          }
-
-          const n = p.node
-          replaceHandleValue(
-            n.value,
-            n,
-            {
-              ...options,
-              needEscaped: options.needEscaped ?? true
-            },
-            ms,
-            1
-          )
+  const traverseOptions: TraverseOptions<Node> = {
+    StringLiteral: {
+      enter(p) {
+        if (isEvalPath(p.parentPath)) {
+          return
         }
-        // exit(p) {}
-      },
-      TemplateElement: {
-        enter(p) {
-          if (p.parentPath.isTemplateLiteral() && isEvalPath(p.parentPath.parentPath)) {
-            return
-          }
-          const n = p.node
-          replaceHandleValue(
-            n.value.raw,
-            n,
-            {
-              ...options,
-              needEscaped: false
-            },
-            ms,
-            0
-          )
+
+        const n = p.node
+        replaceHandleValue(
+          n.value,
+          n,
+          {
+            ...options,
+            needEscaped: options.needEscaped ?? true
+          },
+          ms,
+          1
+        )
+      }
+      // exit(p) {}
+    },
+    TemplateElement: {
+      enter(p) {
+        if (p.parentPath.isTemplateLiteral() && isEvalPath(p.parentPath.parentPath)) {
+          return
         }
-      },
-      CallExpression: {
-        enter(p) {
-          if (isEvalPath(p)) {
-            p.traverse({
-              StringLiteral: {
-                enter(s) {
-                  // ___CSS_LOADER_EXPORT___
-                  const res = jsHandler(s.node.value, {
-                    ...options,
-                    needEscaped: false,
-                    generateMap: false
-                  })
-                  if (res.code) {
-                    const node = s.node
-                    if (typeof node.start === 'number' && typeof node.end === 'number') {
-                      const start = node.start + 1
-                      const end = node.end - 1
-                      if (start < end && s.node.value !== res.code) {
-                        ms.update(start, end, jsStringEscape(res.code))
-                        node.value = res.code
-                      }
-                    }
-                  }
-                }
-              },
-              TemplateElement: {
-                enter(s) {
-                  const res = jsHandler(s.node.value.raw, {
-                    ...options,
-                    generateMap: false
-                  })
-                  if (res.code) {
-                    const node = s.node
-                    if (typeof node.start === 'number' && typeof node.end === 'number') {
-                      const start = node.start
-                      const end = node.end
-                      if (start < end && s.node.value.raw !== res.code) {
-                        ms.update(start, end, res.code)
-                        s.node.value.raw = res.code
-                      }
+        const n = p.node
+        replaceHandleValue(
+          n.value.raw,
+          n,
+          {
+            ...options,
+            needEscaped: false
+          },
+          ms,
+          0
+        )
+      }
+    },
+    CallExpression: {
+      enter(p) {
+        if (isEvalPath(p)) {
+          p.traverse({
+            StringLiteral: {
+              enter(s) {
+                // ___CSS_LOADER_EXPORT___
+                const res = jsHandler(s.node.value, {
+                  ...options,
+                  needEscaped: false,
+                  generateMap: false
+                })
+                if (res.code) {
+                  const node = s.node
+                  if (typeof node.start === 'number' && typeof node.end === 'number') {
+                    const start = node.start + 1
+                    const end = node.end - 1
+                    if (start < end && s.node.value !== res.code) {
+                      ms.update(start, end, jsStringEscape(res.code))
+                      node.value = res.code
                     }
                   }
                 }
               }
-            })
-          }
+            },
+            TemplateElement: {
+              enter(s) {
+                const res = jsHandler(s.node.value.raw, {
+                  ...options,
+                  generateMap: false
+                })
+                if (res.code) {
+                  const node = s.node
+                  if (typeof node.start === 'number' && typeof node.end === 'number') {
+                    const start = node.start
+                    const end = node.end
+                    if (start < end && s.node.value.raw !== res.code) {
+                      ms.update(start, end, res.code)
+                      s.node.value.raw = res.code
+                    }
+                  }
+                }
+              }
+            }
+          })
         }
       }
     }
-
-    traverse(ast, traverseOptions)
   }
+
+  traverse(ast, traverseOptions)
 
   return {
     code: ms.toString()
@@ -196,7 +194,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
 export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptions): Promise<JsHandlerResult> {
   const ms = new MagicString(rawSource)
-
+  const js = await getAstGrep()
   let ast: SgNode
   try {
     const root = await js.parseAsync(rawSource)
@@ -206,7 +204,7 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
       code: rawSource
     } as JsHandlerResult
   }
-  astGrepUpdateString(ast, options, ms)
+  await astGrepUpdateString(ast, options, ms)
 
   return {
     code: ms.toString()
