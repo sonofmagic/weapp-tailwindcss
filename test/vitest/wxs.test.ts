@@ -45,7 +45,8 @@ describe('wxs', () => {
     for (const cls of arr) {
       set.add(cls)
     }
-    expect(res.map((x) => jsHandler(x[1], set).code)).matchSnapshot()
+    const result = await Promise.all(res.map((x) => jsHandler(x[1], set)))
+    expect(result.map((x) => x.code)).matchSnapshot()
   })
 
   it('inline wxs content extract and escape and replace', async () => {
@@ -60,7 +61,7 @@ describe('wxs', () => {
     }
     // const s = new MagicString(str)
     for (const x of res) {
-      const code = jsHandler(x.raw, set).code
+      const { code } = await jsHandler(x.raw, set)
       str = str.replaceAll(x.raw, code)
       // s.update(x.start, x.end, code)
     }
@@ -77,7 +78,7 @@ describe('wxs', () => {
     for (const cls of arr) {
       set.add(cls)
     }
-    expect(res.map((x) => jsHandler(x[1], set).code)).matchSnapshot()
+    expect(await Promise.all(res.map(async (x) => (await jsHandler(x[1], set)).code))).matchSnapshot()
   })
 
   it('simple.wxs content extract and escape', async () => {
@@ -88,7 +89,8 @@ describe('wxs', () => {
     for (const cls of arr) {
       set.add(cls)
     }
-    expect(jsHandler(str, set).code).matchSnapshot()
+    const { code } = await jsHandler(str, set)
+    expect(code).matchSnapshot()
   })
 
   it('inline.wxml use templateHandler', async () => {
@@ -102,7 +104,7 @@ describe('wxs', () => {
       set.add(cls)
     }
     expect(
-      templateHandler(str, {
+      await templateHandler(str, {
         runtimeSet: set
       })
     ).toMatchSnapshot()
@@ -119,18 +121,18 @@ describe('wxs', () => {
       set.add(cls)
     }
     expect(
-      templateHandler(str, {
+      await templateHandler(str, {
         runtimeSet: set
       })
     ).toMatchSnapshot()
   })
 
-  it.skip('wxs fail case0', () => {
+  it.skip('wxs fail case0', async () => {
     const raw = `\n\n\tvar className = 'after:content-[\\'我来自inline-wxs\\']'\n  module.exports = {\n    className: className\n  }\n\n`
     getCss(raw)
     const set = getClassCacheSet()
     const { jsHandler } = getOptions()
-    const code = jsHandler(raw, set)
+    const code = await jsHandler(raw, set)
     expect(code).toMatchSnapshot()
     // 一转义就有问题
     // "after:content-['我来自inline-wxs']"

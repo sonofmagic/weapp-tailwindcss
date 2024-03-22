@@ -1,5 +1,6 @@
 let UnifiedWebpackPluginV5
 const path = require('path')
+const bench = require('../../bench')('taro-vue3')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 import ComponentsPlugin from 'unplugin-vue-components/webpack'
@@ -84,11 +85,15 @@ const config = {
         injectAdditionalCssVarScope: true,
         onStart() {
           start = performance.now()
+          bench.start()
         },
         onEnd() {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+          bench.end()
+          bench.dump()
         },
-        rem2rpx: true
+        rem2rpx: true,
+        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
       }
       // if (isWrite) {
       //   opt.loaderOptions = {

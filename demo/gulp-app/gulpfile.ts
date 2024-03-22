@@ -17,6 +17,7 @@ import internal from 'stream'
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
 const isLocal = Boolean(process.env.LOCAL)
+const useBabel = Boolean(process.env.BABEL)
 
 const platformMap = {
   weapp: {
@@ -53,7 +54,8 @@ if (isLocal) {
 
 // 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss ，然后转化 transformWxss， 然后 transformJs, transformWxml
 const { transformJs, transformWxml, transformWxss } = createPlugins({
-  rem2rpx: true
+  rem2rpx: true,
+  jsAstTool: useBabel ? 'babel' : 'ast-grep'
 })
 // {
 //   mangle: true

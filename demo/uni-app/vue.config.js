@@ -7,7 +7,7 @@
 //   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
 //   UniAppWeappTailwindcssWebpackPluginV4 = plugin
 // }
-
+const bench = require('../bench')('uni-app-webpack-vue2')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
 
 const { WeappTailwindcssDisabled } = require('./platform')
@@ -44,12 +44,16 @@ const config = {
         },
         inlineWxs: false,
         onStart() {
+          bench.start()
           start = performance.now()
         },
         onEnd() {
+          bench.end()
+          bench.dump()
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
         },
-        rem2rpx: true
+        rem2rpx: true,
+        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
       })
     )
     // smp.wrap(config)

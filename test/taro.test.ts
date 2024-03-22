@@ -52,8 +52,8 @@ describe('taro app', () => {
     const set: Set<string> = new Set()
     process.env.NODE_ENV = 'production'
     const xxx = strategy === 'replace' ? rh : h
-    const code = xxx(testCase, set).code
-    const code0 = mh(testCase, set).code
+    const { code } = await xxx(testCase, set)
+    const { code: code0 } = await mh(testCase, set)
     if (strategy !== 'replace') {
       expect(code).toBe(code0)
     }
@@ -70,7 +70,7 @@ describe('taro app', () => {
     await getCss(testCase)
     const set = getClassCacheSet()
     const xxx = strategy === 'replace' ? rh : h
-    const code = xxx(testCase, set).code
+    const { code } = await xxx(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -79,7 +79,7 @@ describe('taro app', () => {
     await getCss(testCase)
     const set = getClassCacheSet()
     const xxx = strategy === 'replace' ? rh : h
-    const code = xxx(testCase, set).code
+    const { code } = await xxx(testCase, set)
     expect(code).toMatchSnapshot()
   })
 })

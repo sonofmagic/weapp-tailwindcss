@@ -18,7 +18,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     return code
   }
 
-  function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } = {}) {
+  async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } = {}) {
     runtimeSet =
       options && options.runtimeSet
         ? options.runtimeSet
@@ -26,7 +26,7 @@ export function createContext(options: UserDefinedOptions = {}) {
             basedir: tailwindcssBasedir
           })
 
-    const { code } = jsHandler(rawJs, runtimeSet)
+    const { code } = await jsHandler(rawJs, runtimeSet)
     return code
   }
 

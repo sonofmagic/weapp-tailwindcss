@@ -6,7 +6,7 @@ const MinaWebpackPlugin = require('./plugin/MinaWebpackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
-
+const bench = require('../bench')('native-webpack')
 const debuggable = process.env.BUILD_TYPE !== 'release'
 
 module.exports = {
@@ -83,7 +83,15 @@ module.exports = {
     }),
     new UnifiedWebpackPluginV5({
       appType: 'native',
-      rem2rpx: true
+      rem2rpx: true,
+      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
+      onStart() {
+        bench.start()
+      },
+      onEnd() {
+        bench.end()
+        bench.dump()
+      }
       // mangle: true,
       // cssPreflight: {
       //   "border-color": false

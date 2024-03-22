@@ -1,4 +1,4 @@
-import type { StringLiteral, TemplateElement } from '@babel/types'
+// import type { StringLiteral, TemplateElement, Comment } from '@babel/types'
 import MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '@/types'
 import { replaceWxml } from '@/wxml/shared'
@@ -7,14 +7,32 @@ import { splitCode } from '@/extractors/split'
 import { jsStringEscape } from '@/escape'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
-export function replaceHandleValue(str: string, node: StringLiteral | TemplateElement, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
-  const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always } = options
+interface ReplaceNode {
+  leadingComments?: { value: string }[] | null | undefined
+  start?: number | null
+  end?: number | null
+}
+
+function decodeUnicode(s: string) {
+  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
+}
+
+export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
+  const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always, unescapeUnicode } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
 
   const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
-  for (const v of arr) {
+  let needDecodeUnicode = false
+  if (unescapeUnicode && rawStr.includes('\\')) {
+    rawStr = decodeUnicode(rawStr)
+    needDecodeUnicode = true
+  }
+  for (let v of arr) {
+    if (needDecodeUnicode && v.includes('\\')) {
+      v = decodeUnicode(v)
+    }
     if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {

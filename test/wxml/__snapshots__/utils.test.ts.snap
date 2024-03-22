@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`utils > remove all id 1`] = `
+"<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" style="">
+    <view class="itext-_h555_" style="">aspect</view>
+    <view class="bg-_hfaf_" style="">w</view>
+    <view class="bg-_h123_" style="">16</view>
+  </view>"
+`;
+
+exports[`utils > remove all id case 0 1`] = `
+"<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" style="">
+    <view class="itext-_h555_" style="">aspect</view>
+    <view class="bg-_hfaf_" style="">w</view>
+    <view class="bg-_h123_" style="">16</view>
+  </view>"
+`;

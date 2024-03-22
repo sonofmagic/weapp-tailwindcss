@@ -48,7 +48,7 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
           })
         : undefined
     ],
-    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin']
+    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin', '@ast-grep/napi']
   }
 }
 // 没有必要压缩徒增调试成本

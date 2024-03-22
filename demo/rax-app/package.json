@@ -7,6 +7,7 @@
     "dev": "npm run start",
     "start": "rax-app start",
     "build": "rax-app build",
+    "build:babel": "cross-env BABEL=1 rax-app build",
     "build:local": "cross-env LOCAL=1 rax-app build",
     "eslint": "eslint --ext .js,.jsx,.tsx,.ts ./",
     "stylelint": "stylelint \"**/*.{css,scss,less}\"",
@@ -16,7 +17,7 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "clsx": "^2.0.0",
+    "clsx": "^2.1.0",
     "rax": "^1.2.3",
     "rax-document": "^0.1.0",
     "rax-image": "^2.4.3",
@@ -26,23 +27,23 @@
   },
   "devDependencies": {
     "@iceworks/spec": "^1.6.0",
-    "@types/rax": "^1.0.17",
-    "autoprefixer": "^10.4.16",
+    "@types/rax": "^1.0.18",
+    "autoprefixer": "^10.4.18",
     "cross-env": "^7.0.3",
-    "eslint": "^8.54.0",
-    "postcss": "^8.4.31",
+    "eslint": "^8.57.0",
+    "postcss": "^8.4.35",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-rpx-transform": "^1.0.1",
-    "prettier": "^3.1.0",
+    "prettier": "^3.2.5",
     "rax-app": "3.8.22",
-    "stylelint": "^15.11.0",
+    "stylelint": "^16.2.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-patch": "^2.2.3",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.0.11"
+    "weapp-tailwindcss-webpack-plugin": "^3.1.0"
   },
   "private": true,
   "originTemplate": "@rax-materials/scaffolds-app-ts"

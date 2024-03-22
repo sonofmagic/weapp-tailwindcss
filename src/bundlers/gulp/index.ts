@@ -95,8 +95,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
                 return false
               }
             },
-            () => {
-              const { code } = jsHandler(rawSource, runtimeSet)
+            async () => {
+              const { code } = await jsHandler(rawSource, runtimeSet)
               file.contents = Buffer.from(code)
               debug('js handle: %s', file.path)
               return {
@@ -137,8 +137,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
                 return false
               }
             },
-            () => {
-              const code = templateHandler(rawSource, {
+            async () => {
+              const code = await templateHandler(rawSource, {
                 runtimeSet
               })
               file.contents = Buffer.from(code)

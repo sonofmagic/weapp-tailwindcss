@@ -16,28 +16,28 @@ describe('virtualHostClass', () => {
   it('virtualHostClass case 0', async () => {
     const testCase = await getWxmlCase('virtualHost-case0.wxml')
     const { templateHandler } = getOptions()
-    const str = templateHandler(testCase)
+    const str = await templateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
 
   it('mpx-tdesign-button case 0', async () => {
     const testCase = await getWxmlCase('mpx-tdesign-button.wxml')
     const { templateHandler } = getOptions()
-    const str = templateHandler(testCase)
+    const str = await templateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
 
   it('mpx-tdesign-button short case 0', async () => {
     const testCase = await getWxmlCase('mpx-tdesign-button-short.wxml')
     const { templateHandler } = getOptions()
-    const str = templateHandler(testCase)
+    const str = await templateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
 
-  it('mpx-tdesign-button short case 1', () => {
+  it('mpx-tdesign-button short case 1', async () => {
     const testCase = `<template name="icon"><t-icon style="{{style || ''}}" class="{{class}}" t-class="{{tClass}}" prefix="{{prefix || ''}}" name="{{name || ''}}" size="{{size || ''}}" color="{{color || ''}}" aria-hidden="{{ariaHidden || '' }}" aria-label="{{ariaLabel || ''}}" aria-role="{{ariaRole || ''}}" bind:click="{{bindclick || ''}}"/></template>`
     const { templateHandler } = getOptions()
-    const str = templateHandler(testCase)
+    const str = await templateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
 
@@ -45,22 +45,22 @@ describe('virtualHostClass', () => {
   it('virtualHostClass case 1', async () => {
     const testCase = await getWxmlCase('virtualHost-case1.wxml')
     const { templateHandler } = getOptions()
-    const str = templateHandler(testCase)
+    const str = await templateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
 
-  it('mpx after content double qutos', () => {
+  it('mpx after content double qutos', async () => {
     const x = '<view class="after:content-["你好啊，我很无聊"] after:ml-0.5 after:text-red-500"></view>'
     const { templateHandler } = getOptions()
-    expect(templateHandler(x)).toMatchSnapshot()
+    expect(await templateHandler(x)).toMatchSnapshot()
   })
 })
 
 describe.skip('templateHandler', () => {
-  test('wildcard char', () => {
+  test('wildcard char', async () => {
     const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\">*****</view>"
 
-    const str = complexHandler(testCase)
+    const str = await complexHandler(testCase)
     expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\">*****</view>")
   })
 
