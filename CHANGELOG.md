@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.1.0 (2024-3-22)
+
+### Features
+
+- 使用 `htmlparser` 的 `xml` 模式来解析 `wxml`
+- 增加 `jsAstTool` 配置项，可选使用 `@ast-grep/napi` 来解析 `js ast`，速度可提升 `1.5`- `2` 倍多左右
+
 ## 3.0.5 (2024-1-7)
 
 ### Fixed
@@ -236,7 +243,7 @@ after:content-['你好啊，我很无聊'] √
 
 ### Chores
 
-- 给之前的  `v1` 版本的插件打上 `deprecated` 标记，添加对应的 `jsdoc`
+- 给之前的 `v1` 版本的插件打上 `deprecated` 标记，添加对应的 `jsdoc`
 - 整理目录去除 `v1` 版本的 `markdown` 文件目录，相关转移到了 `website` 中
 
 ## 2.1.4 (2023-04-30)
@@ -506,7 +513,7 @@ const config = {
 
 ### Features
 
-- 添加 `disabled` 配置项，用来表示是否禁用该插件，默认为 `false`，一般用于多平台构建，有些平台比如 `h5` 不需要开启此插件，所以可以根据环境变量进行禁用。  
+- 添加 `disabled` 配置项，用来表示是否禁用该插件，默认为 `false`，一般用于多平台构建，有些平台比如 `h5` 不需要开启此插件，所以可以根据环境变量进行禁用。
 - `onUpdate` 这个生命周期 `hook` 增加传入参数，即编译前的 `rawSource` 和 编译后的 `newSource` 作为第二和第三个参数，用于插件调试和文件内容比较。
 
 ### Docs & Demos
@@ -517,7 +524,7 @@ const config = {
 
 ### Features
 
-- 添加 `cssPreflightRange` 配置项 [pull/62](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62)，用来限制全局选择器影响的 `dom` 范围，从而增加或者减少  `cssPreflight` 注入的 `dom`，具体的使用方式见 `README.md`
+- 添加 `cssPreflightRange` 配置项 [pull/62](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62)，用来限制全局选择器影响的 `dom` 范围，从而增加或者减少 `cssPreflight` 注入的 `dom`，具体的使用方式见 `README.md`
 
 ## 1.6.7 (2022-06-22)
 
@@ -575,8 +582,8 @@ const config = {
 `vite` 引入插件的方式，改为:
 
 ```js
-import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
-import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
+import vwt from 'weapp-tailwindcss-webpack-plugin/vite'
+import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss'
 ```
 
 详见 [vite.config.ts](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-vue3-vite/vite.config.ts)
