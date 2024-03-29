@@ -112,14 +112,14 @@
     "sass": "^1.71.1",
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.3",
     "tailwindcss-patch": "^2.2.3",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.4.2",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "^3.1.0"
+    "weapp-tailwindcss-webpack-plugin": "^3.1.1"
   },
   "browserslist": [
     "Android >= 4.4",
