@@ -17,9 +17,9 @@ jobs:
         node-version: [16.x, 18.x, 20.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
@@ -29,7 +29,7 @@ jobs:
       - run: pnpm build
       - run: pnpm test
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           directory: coverage
           # files: ./coverage/clover.xml,./coverage-vitest/clover.xml
