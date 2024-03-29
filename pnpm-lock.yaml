@@ -69,12 +69,10 @@ dependencies:
     specifier: 3.2.3
     version: 3.2.3
 
-optionalDependencies:
+devDependencies:
   '@ast-grep/napi':
     specifier: ^0.20.2
     version: 0.20.2
-
-devDependencies:
   '@babel/core':
     specifier: ^7.24.3
     version: 7.24.3
@@ -345,7 +343,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-darwin-x64@0.20.2:
@@ -354,7 +352,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-linux-arm64-gnu@0.20.2:
@@ -364,7 +362,7 @@ packages:
     os: [linux]
     libc: [glibc]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-linux-x64-gnu@0.20.2:
@@ -374,7 +372,7 @@ packages:
     os: [linux]
     libc: [glibc]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-linux-x64-musl@0.20.2:
@@ -384,7 +382,7 @@ packages:
     os: [linux]
     libc: [musl]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-win32-arm64-msvc@0.20.2:
@@ -393,7 +391,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-win32-ia32-msvc@0.20.2:
@@ -402,7 +400,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi-win32-x64-msvc@0.20.2:
@@ -411,13 +409,12 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /@ast-grep/napi@0.20.2:
     resolution: {integrity: sha512-hB+BtwCJVch532PBx98bgzgiyZR3cH7rrbQFb1OMjSijIseEK/gGrvZkM/93B1CVOw9wHivD/5Dz9loPhiLGFQ==}
     engines: {node: '>= 10'}
-    requiresBuild: true
     optionalDependencies:
       '@ast-grep/napi-darwin-arm64': 0.20.2
       '@ast-grep/napi-darwin-x64': 0.20.2
@@ -427,7 +424,7 @@ packages:
       '@ast-grep/napi-win32-arm64-msvc': 0.20.2
       '@ast-grep/napi-win32-ia32-msvc': 0.20.2
       '@ast-grep/napi-win32-x64-msvc': 0.20.2
-    optional: true
+    dev: true
 
   /@babel/code-frame@7.24.1:
     resolution: {integrity: sha512-bC49z4spJQR3j8vFtJBLqzyzFV0ciuL5HYX7qfSl3KEqeMVV+eTquRvmXxpvB0AMubRrvv7y5DILiLLPi57Ewg==}
