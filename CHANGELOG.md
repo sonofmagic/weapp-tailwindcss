@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.1.1 (2024-3-30)
+
+### Chore
+
+- 去除 `package.json` 里的 `optionalDependencies` 以减小安装依赖的大小，此时启用 `jsAstTool`: `ast-grep` 需要用户自己手动安装 `@ast-grep/napi`
+
 ## 3.1.0 (2024-3-22)
 
 ### Features
