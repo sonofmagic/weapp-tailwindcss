@@ -25,60 +25,6 @@
   resolved "https://registry.npmmirror.com/@ast-core/escape/-/escape-1.0.1.tgz#213fd453bf700f831c74bacfcbf00252c8e73a10"
   integrity sha512-/kVjBkDzYrSW1S+gTBCuOfhnNkge9qZFJgLT+MOZdmPN4Vts36S60uU5br3ozoxpJ1eRGe6pGy7/EfcOpFFHlA==
 
-"@ast-grep/napi-darwin-arm64@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-darwin-arm64/-/napi-darwin-arm64-0.19.4.tgz#d7ee7c0363af8bdd9792ab9332c4ed8f67624e9e"
-  integrity sha512-tZUCBZuP0jFkdNHuEbjJD6KgPe15CEMrA5bAl3W2zyo/QiwNStHqDekgWgwLY46ct/Y2BQaTjuvSDy0Ze651gg==
-
-"@ast-grep/napi-darwin-x64@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-darwin-x64/-/napi-darwin-x64-0.19.4.tgz#5b34af7da4407ae1e088db94aed0115c4fc58b72"
-  integrity sha512-GBT+LFRaSrUz897C2XlLrnEp6mI6kYpkzaQRncERbWMiuH9gWiBc1r5GLJVEqFLssnC+e9e6FLnI3PrcnEGf1w==
-
-"@ast-grep/napi-linux-arm64-gnu@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-linux-arm64-gnu/-/napi-linux-arm64-gnu-0.19.4.tgz#368ae9d8e13f0470d26e6ae128812895fa340332"
-  integrity sha512-xwtuUurvz1np3YIdljuCKOPH0bLtHK7Fs70nT+HDl7sUEo/7a8mp3EOmuLgviB6GIpOx/Lzbptp+d1EYW4eUIw==
-
-"@ast-grep/napi-linux-x64-gnu@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-linux-x64-gnu/-/napi-linux-x64-gnu-0.19.4.tgz#1283d72286aee3ebac8020c2e11bff82651c7923"
-  integrity sha512-NDtmg7Zp7zxUhJ1mpOpeAshI5SJhIRlOnBncAWqb+LgzwHafXBLGXnCQ5GNU6xcOyhZRDS2OpPSIhd1E+ztTTw==
-
-"@ast-grep/napi-linux-x64-musl@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-linux-x64-musl/-/napi-linux-x64-musl-0.19.4.tgz#ada30e625d32e7c2257225da2603038681a94a75"
-  integrity sha512-Xgd4CFIugfbdoyN0pYWEwhbdq9EK9y2yGjxXNRs4raW91b6Vdc+140FsBJgWeO1/ek1f5zOzOguJh+L5fuBynQ==
-
-"@ast-grep/napi-win32-arm64-msvc@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-win32-arm64-msvc/-/napi-win32-arm64-msvc-0.19.4.tgz#835abf6b0d91e4c79015f21dc6a9708a9d359ab3"
-  integrity sha512-gZpq5dSEObJJLY9Vd3oDc3FtsvLAKjc7XS2X2c9trjHZ64KTt9t59SKG8bvBcAe5mqejPWjnWJYdIh7wQLgRZA==
-
-"@ast-grep/napi-win32-ia32-msvc@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-win32-ia32-msvc/-/napi-win32-ia32-msvc-0.19.4.tgz#6cdb065a751afb66fe69c899e32ad7d4dfed43dd"
-  integrity sha512-kSqYHfsd8yfMkLJU6R8iJyJ/APsmm/8TEUcAOcaFR2TY26eFPNKhF4cDxVs7ZFsRLFItHlT4mj6b8VJn4lXPWA==
-
-"@ast-grep/napi-win32-x64-msvc@0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi-win32-x64-msvc/-/napi-win32-x64-msvc-0.19.4.tgz#ba12727853c14aaca2fbf0fb8210b088ee7ca082"
-  integrity sha512-Dh9AKWk5AoxLgeQxiJCSTHFlagS/SMznaLv7Q0RyalXoOzZSdMBtJ345tYRbISKubMg3uO7PWu4vrQN1EvPqMg==
-
-"@ast-grep/napi@^0.19.4":
-  version "0.19.4"
-  resolved "https://registry.npmmirror.com/@ast-grep/napi/-/napi-0.19.4.tgz#34d495a3e2c3cb097a80e017bd7f613f683681ce"
-  integrity sha512-Lv68h2sePJApz7LkOJ4S6lUQgI5L28BDfbzeyK6BeU3t9Df6AbqiwWfAxc1C6vbUcRDv+AH3t0+eI+iLFBhoTw==
-  optionalDependencies:
-    "@ast-grep/napi-darwin-arm64" "0.19.4"
-    "@ast-grep/napi-darwin-x64" "0.19.4"
-    "@ast-grep/napi-linux-arm64-gnu" "0.19.4"
-    "@ast-grep/napi-linux-x64-gnu" "0.19.4"
-    "@ast-grep/napi-linux-x64-musl" "0.19.4"
-    "@ast-grep/napi-win32-arm64-msvc" "0.19.4"
-    "@ast-grep/napi-win32-ia32-msvc" "0.19.4"
-    "@ast-grep/napi-win32-x64-msvc" "0.19.4"
-
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.npmmirror.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -7270,11 +7216,6 @@ jiti@^1.18.2:
   resolved "https://registry.npmmirror.com/jiti/-/jiti-1.18.2.tgz#80c3ef3d486ebf2450d9335122b32d121f2a83cd"
   integrity sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==
 
-jiti@^1.19.1:
-  version "1.20.0"
-  resolved "https://registry.npmmirror.com/jiti/-/jiti-1.20.0.tgz#2d823b5852ee8963585c8dd8b7992ffc1ae83b42"
-  integrity sha512-3TV69ZbrvV6U5DfQimop50jE9Dl6J8O1ja1dvBbMba/sZ3YBEQqJ2VZRoQPVnhlzjNtU1vaXRZVrVjU4qtm8yA==
-
 jiti@^1.21.0:
   version "1.21.0"
   resolved "https://registry.npmmirror.com/jiti/-/jiti-1.21.0.tgz#7c97f8fe045724e136a397f7340475244156105d"
@@ -11226,10 +11167,10 @@ tailwindcss-rem2px-preset@^1.0.3:
   resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
-tailwindcss@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.1.tgz#f512ca5d1dd4c9503c7d3d28a968f1ad8f5c839d"
-  integrity sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==
+tailwindcss@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.3.tgz#be48f5283df77dfced705451319a5dffb8621519"
+  integrity sha512-U7sxQk/n397Bmx4JHbJx/iSOOv5G+II3f1kpLpY2QeUv5DcPdcTsYLlusZfq1NthHS1c1cZoyFmmkex1rzke0A==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
     arg "^5.0.2"
@@ -11239,7 +11180,7 @@ tailwindcss@^3.4.1:
     fast-glob "^3.3.0"
     glob-parent "^6.0.2"
     is-glob "^4.0.3"
-    jiti "^1.19.1"
+    jiti "^1.21.0"
     lilconfig "^2.1.0"
     micromatch "^4.0.5"
     normalize-path "^3.0.0"
@@ -11849,10 +11790,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss-webpack-plugin@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.1.0.tgz#26348b5bdb48e91d0138b3d260f7b9542161d5ec"
-  integrity sha512-hGq90WqQQ7yYKX27Y1a1dGWMep+1VoKeqCRsxv7Ipm1g7ilDohbZfEsxKa+SCHrCA7X3tiVaplK2nvcTqQ345w==
+weapp-tailwindcss-webpack-plugin@^3.1.1-beta.0:
+  version "3.1.1-beta.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss-webpack-plugin/-/weapp-tailwindcss-webpack-plugin-3.1.1-beta.0.tgz#b544e9eaa106d1eaf2496d623c1e1adaa4d3751a"
+  integrity sha512-WSbiASCv2K93CAzeHRPfbZzV/W9uZZCSHyry4PCAEYkon20EXOZQVkq4Y48SXBWUo6P33pKzZUI0Aa1LsqTqeA==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.1"
@@ -11875,8 +11816,6 @@ weapp-tailwindcss-webpack-plugin@^3.1.0:
     semver "7.6.0"
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
-  optionalDependencies:
-    "@ast-grep/napi" "^0.19.4"
 
 webpack-chain@^6.5.1:
   version "6.5.1"
