@@ -51,7 +51,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -104,7 +108,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_bl_20px_br_ {
     margin: -20px
@@ -432,7 +440,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -485,7 +497,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_bl_20px_br_ {
     margin: -20px
@@ -813,7 +829,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -866,7 +886,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_bl_20px_br_ {
     margin: -20px
@@ -1190,7 +1214,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -1243,7 +1271,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_bl_20px_br_ {
     margin: -20px
@@ -1575,7 +1607,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -1628,7 +1664,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_20px_ {
     margin: -20px
@@ -1956,7 +1996,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -2009,7 +2053,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_bl_20px_br_ {
     margin: -20px
@@ -2335,7 +2383,11 @@ exports[`webpack5 plugin > disabled true > assets 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -2384,7 +2436,11 @@ exports[`webpack5 plugin > disabled true > assets 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-\\[20px\\] {
     margin: -20px
@@ -2716,7 +2772,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -2769,7 +2829,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }",
   "index.wxml": "<view>e</view>",
   "wxml.js": "console.log("i'am empty !");",
@@ -2851,7 +2915,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -2904,7 +2972,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .cb {
     margin: -20px
@@ -3232,7 +3304,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -3285,7 +3361,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .som-fb {
     margin: -20px
@@ -3613,7 +3693,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -3666,7 +3750,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .ice-cb {
     margin: -20px
@@ -3994,7 +4082,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -4047,7 +4139,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .tw-cb {
     margin: -20px
@@ -4502,7 +4598,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -4555,7 +4655,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_20px_ {
     margin: -20px
@@ -4883,7 +4987,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 ;
     box-sizing: border-box;
     border-width: 0;
@@ -4936,7 +5044,11 @@ view,text,::before,::after {
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .-m-_20px_ {
     margin: -20px
