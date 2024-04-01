@@ -186,5 +186,21 @@ export default [
   {
     prop: '--tw-backdrop-sepia',
     value: ' '
+  },
+  {
+    prop: '--tw-contain-size',
+    value: ' '
+  },
+  {
+    prop: '--tw-contain-layout',
+    value: ' '
+  },
+  {
+    prop: '--tw-contain-paint',
+    value: ' '
+  },
+  {
+    prop: '--tw-contain-style',
+    value: ' '
   }
 ]

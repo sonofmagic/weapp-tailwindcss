@@ -177,6 +177,10 @@ exports[`styleHandler > injectAdditionalCssVarScope option true 1`] = `
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -286,6 +290,10 @@ exports[`styleHandler > injectAdditionalCssVarScope option true and replace univ
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
