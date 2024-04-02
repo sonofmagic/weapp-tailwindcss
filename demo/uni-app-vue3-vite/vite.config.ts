@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
+import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin/vite';
 const bench = require('../bench')('uni-app-vite-vue3');
 // import Unocss from 'unocss/vite';
 // import WindiCSS from 'vite-plugin-windicss';
@@ -12,7 +13,7 @@ const bench = require('../bench')('uni-app-vite-vue3');
 //   const { UnifiedViteWeappTailwindcssPlugin } = require('weapp-tailwindcss-webpack-plugin/vite');
 //   vwt = UnifiedViteWeappTailwindcssPlugin;
 // }
-const { UnifiedViteWeappTailwindcssPlugin: vwt } = require('weapp-tailwindcss-webpack-plugin/vite');
+// const { UnifiedViteWeappTailwindcssPlugin: vwt } = require('weapp-tailwindcss-webpack-plugin/vite');
 
 // import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
 // import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
@@ -30,14 +31,26 @@ const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
 
 // const postcssPlugins = [];
 if (!WeappTailwindcssDisabled) {
-  let start;
-  vitePlugins.push(
+  // postcssPlugins.push(
+  //   require('postcss-rem-to-responsive-pixel')({
+  //     rootValue: 32,
+  //     propList: ['*'],
+  //     transformUnit: 'rpx',
+  //   }),
+  // );
+  postcssPlugins.push(require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'));
+}
+let start;
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    uni(),
     vwt({
       wxsMatcher() {
         return false;
       },
       inlineWxs: true,
-      jsEscapeStrategy: 'replace', // 'regenerate'
+      // jsEscapeStrategy: 'replace', // 'regenerate'
       onStart() {
         bench.start();
         start = performance.now();
@@ -49,6 +62,10 @@ if (!WeappTailwindcssDisabled) {
       },
       rem2rpx: true,
       jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
+      cssSelectorReplacement: {
+        universal: ['view', 'text', 'button'],
+      },
+      disabled: WeappTailwindcssDisabled,
       // appType: 'uni-app'
       // customReplaceDictionary: {
       //   '[': '_',
@@ -57,20 +74,7 @@ if (!WeappTailwindcssDisabled) {
       //   ')': '-',
       // },
     }),
-  );
-
-  // postcssPlugins.push(
-  //   require('postcss-rem-to-responsive-pixel')({
-  //     rootValue: 32,
-  //     propList: ['*'],
-  //     transformUnit: 'rpx',
-  //   }),
-  // );
-  postcssPlugins.push(require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'));
-}
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: vitePlugins,
+  ],
   // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
   css: {
     postcss: {
