@@ -405,19 +405,19 @@ const customAttributes = {
    */
   runtimeLoaderPath?: string
   /**
-   * @group 3.一般配置
-   * @description v2 版本的 `replaceUniversalSelectorWith` 被整合进了这个配置项，用于处理 css 选择器的替换
+   * @group 0.重要配置
+   * @description 用于处理 css 选择器的替换
    */
   cssSelectorReplacement?: {
     /**
-     * @default 'page'
+     * @default `'page'` <br/>
      * @description 把`css`中的全局选择器 **`:root`** 替换为指定值，默认替换为 `'page'`，设置为 `false` 时不进行替换
      */
     root?: string | string[] | false
     /**
-     * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81
-     * @default 'view'
-     * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
+     * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81 <br/>
+     * @default `['view','text']` <br/>
+     * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view','text'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
      */
     universal?: string | string[] | false
   }
