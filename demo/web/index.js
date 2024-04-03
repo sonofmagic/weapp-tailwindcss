@@ -8,7 +8,12 @@ async function getCss(content, options) {
   const { css, postcssPlugins, twConfig } = defu(options, {
     css: '@tailwind utilities;',
     postcssPlugins: [],
-    twConfig: {}
+    /**
+     * @type {import('tailwindcss').Config}
+     */
+    twConfig: {
+      darkMode: 'class'
+    }
   })
   if (typeof content === 'string') {
     content = [content]
@@ -71,9 +76,10 @@ async function main() {
     // Effects
     'shadow-[0_35rpx_60rx_-15px_rgba(0,0,0,0.3)]',
     // Transforms
-    'translate-y-[17rpx]'
+    'translate-y-[17rpx]',
+    'dark:text-[14.54rpx]'
   ])
-  // await fs.writeFile('./index.css', css, 'utf8')
+  await fs.writeFile('./index.css', css, 'utf8')
   const ctx = createContext()
   const wxml = await ctx.transformWxml('<view class="shadow-[0_35rpx_60rx_-15px_rgba(0,0,0,0.3)]" wx:if="{{ xxx.length > 0 }}">')
   await fs.writeFile('./out.html', wxml, 'utf8')

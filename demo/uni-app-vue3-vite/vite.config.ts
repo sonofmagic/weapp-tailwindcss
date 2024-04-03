@@ -62,9 +62,9 @@ export default defineConfig({
       },
       rem2rpx: true,
       jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
-      cssSelectorReplacement: {
-        universal: ['view', 'text', 'button'],
-      },
+      // cssSelectorReplacement: {
+      //   universal: ['view', 'text', 'button'],
+      // },
       disabled: WeappTailwindcssDisabled,
       // appType: 'uni-app'
       // customReplaceDictionary: {

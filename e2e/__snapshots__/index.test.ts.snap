@@ -55,7 +55,11 @@ text,
   --tw-backdrop-invert:  ;
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:   
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:   
 ;
   box-sizing: border-box;
   border-width: 0;
@@ -109,7 +113,11 @@ text,
   --tw-backdrop-invert:  ;
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:   
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:   
 ;
 }
 .m-_20px_ {
@@ -340,6 +348,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -393,6 +405,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .flex {
   display: -webkit-flex;
@@ -586,6 +602,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -639,6 +659,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .-m-_20px_ {
   margin: -20px;
@@ -1103,6 +1127,10 @@ text,
   --tw-backdrop-invert: ;
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -1155,6 +1183,10 @@ text,
   --tw-backdrop-invert: ;
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
 }
 .-m-_20px_ {
   margin: -20px;
@@ -1563,6 +1595,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -1616,6 +1652,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 ::backdrop {
   --tw-border-spacing-x: 0;
@@ -1665,6 +1705,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .relative {
   position: relative;
@@ -2071,15 +2115,18 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-.dark .darkcbg-_h123456_ {
+.dark view.darkcbg-_h123456_,
+.dark text.darkcbg-_h123456_ {
   --tw-bg-opacity: 1;
   background-color: rgb(18 52 86 / var(--tw-bg-opacity));
 }
-.dark .darkcbg-green-500 {
+.dark view.darkcbg-green-500,
+.dark text.darkcbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(34 197 94 / var(--tw-bg-opacity));
 }
-.dark .darkcbg-zinc-800 {
+.dark view.darkcbg-zinc-800,
+.dark text.darkcbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(39 39 42 / var(--tw-bg-opacity));
 }
@@ -2337,6 +2384,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -2390,6 +2441,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 ::backdrop {
   --tw-border-spacing-x: 0;
@@ -2439,6 +2494,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .-m-_20px_ {
   margin: -20rpx;
@@ -2811,6 +2870,10 @@ exports[`e2e > 'taro-vue3-app' > css 1`] = `
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 ::-ms-backdrop {
   --tw-border-spacing-x: 0;
@@ -2860,6 +2923,10 @@ exports[`e2e > 'taro-vue3-app' > css 1`] = `
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 view,
 text,
@@ -2969,6 +3036,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .container {
   width: 100%;
@@ -3515,6 +3586,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -3568,6 +3643,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 ::backdrop {
   --tw-border-spacing-x: 0;
@@ -3617,6 +3696,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .container {
   width: 100%;
@@ -4756,6 +4839,10 @@ text,
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -4809,6 +4896,10 @@ text,
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
 }
 .visible {
   visibility: visible;
@@ -5512,7 +5603,6 @@ text,
 .u-reset-button {
   padding: 0;
   background-color: transparent;
-
   font-size: inherit;
   line-height: inherit;
   color: inherit;
@@ -8711,15 +8801,18 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgb(96 165 250 / var(--tw-bg-opacity));
 }
-.dark .darkcbg-green-500 {
+.dark view.darkcbg-green-500,
+.dark text.darkcbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(34 197 94 / var(--tw-bg-opacity));
 }
-.dark .darkcbg-zinc-800 {
+.dark view.darkcbg-zinc-800,
+.dark text.darkcbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(39 39 42 / var(--tw-bg-opacity));
 }
-.dark .darkctext-yellow-400 {
+.dark view.darkctext-yellow-400,
+.dark text.darkctext-yellow-400 {
   --tw-text-opacity: 1;
   color: rgb(250 204 21 / var(--tw-text-opacity));
 }
@@ -9053,6 +9146,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -9106,6 +9203,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 .container {
   width: 100%;
