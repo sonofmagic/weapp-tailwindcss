@@ -198,10 +198,10 @@ const sidebars = {
       type: 'doc',
       id: 'community/group'
     },
-    {
-      type: 'doc',
-      id: 'community/consult'
-    },
+    // {
+    //   type: 'doc',
+    //   id: 'community/consult'
+    // },
     {
       type: 'doc',
       id: 'community/plugins'
