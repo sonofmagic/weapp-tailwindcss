@@ -1,0 +1,39 @@
+{
+  "name": "@weapp-tailwindcss/cli",
+  "version": "0.0.0",
+  "description": "The cli of weapp-tailwindcss",
+  "scripts": {
+    "dev": "unbuild --sourcemap",
+    "build": "unbuild",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "sideEffects": false,
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "weapp-tailwindcss": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4"
+  }
+}
