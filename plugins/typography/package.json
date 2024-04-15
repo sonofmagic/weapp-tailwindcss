@@ -43,6 +43,7 @@
     }
   },
   "dependencies": {
+    "cosmiconfig": "^9.0.0",
     "htmlparser2": "^9.1.0",
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
