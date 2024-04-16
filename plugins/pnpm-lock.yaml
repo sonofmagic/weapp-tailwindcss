@@ -23,6 +23,9 @@ importers:
       commander:
         specifier: ^12.0.0
         version: 12.0.0
+      cosmiconfig:
+        specifier: ^9.0.0
+        version: 9.0.0(typescript@5.4.5)
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -33,12 +36,12 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
 
   typography:
     dependencies:
-      cosmiconfig:
-        specifier: ^9.0.0
-        version: 9.0.0(typescript@5.4.5)
       htmlparser2:
         specifier: ^9.1.0
         version: 9.1.0
