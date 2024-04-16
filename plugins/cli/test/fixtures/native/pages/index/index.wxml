@@ -10,6 +10,7 @@
           <text class="nickname-label">昵称</text>
           <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
         </view>
+        <view>{{ num }}</view>
       </block>
       <block wx:elif="{{!hasUserInfo}}">
         <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>

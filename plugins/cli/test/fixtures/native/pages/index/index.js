@@ -1,6 +1,6 @@
 // index.js
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
-
+const _ = require('lodash')
 Page({
   data: {
     motto: 'Hello World',
@@ -8,6 +8,7 @@ Page({
       avatarUrl: defaultAvatarUrl,
       nickName: '',
     },
+    num: _.add(2, 3),
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
