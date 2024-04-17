@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`config > init js config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > init ts config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > load js config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > load nothing 1`] = `undefined`;
+
+exports[`config > load ts config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
