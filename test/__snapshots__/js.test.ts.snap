@@ -77,6 +77,29 @@ var replaceCharMap = {
 "
 `;
 
+exports[`jsHandler > ts file parser 0 1`] = `
+"// app.ts
+App<IAppOption>({
+  globalData: {
+    c: 'text-_100px_ bg-_h123456_'
+  },
+  onLaunch() {
+    // 展示本地存储能力
+    const logs = wx.getStorageSync('logs') || []
+    logs.unshift(Date.now())
+    wx.setStorageSync('logs', logs)
+
+    // 登录
+    wx.login({
+      success: res => {
+        console.log(res.code)
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      },
+    })
+  },
+})"
+`;
+
 exports[`jsHandler > unicode case 0 1`] = `
 "var replaceCharMap = {
   "'": '%27',

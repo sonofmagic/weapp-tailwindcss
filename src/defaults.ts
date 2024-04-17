@@ -97,6 +97,9 @@ export const defaultOptions: UserDefinedOptions = {
   cssSelectorReplacement: {
     root: 'page',
     universal: ['view', 'text']
+  },
+  babelParserOptions: {
+    sourceType: 'unambiguous'
   }
   // jsAstTool: 'ast-grep'
 }
