@@ -3,6 +3,7 @@ import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
 import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import fs from 'fs-extra'
+import loadConfig, { Result } from 'postcss-load-config'
 
 export function createConfigLoader(root: string = process.cwd()) {
   const explorer = cosmiconfigSync('weapp-tw')

@@ -5,9 +5,13 @@ import type { GeneratorResult } from '@babel/generator'
 import type { ParseError, ParserOptions } from '@babel/parser'
 // import type { sources } from 'webpack'
 import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
+import type { Result } from 'postcss-load-config'
 import type { InjectPreflight } from './postcss/preflight'
 import type { IContext as PostcssContext } from './postcss/plugins/ctx'
 import type { ICreateCacheReturnType } from '@/cache'
+
+type PostcssOptions = Partial<Omit<Result, 'file'>>
+
 export type ItemOrItemArray<T> = T | T[]
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
@@ -45,6 +49,7 @@ export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
   mangleContext?: IMangleScopeContext
   ctx?: PostcssContext
+  postcssOptions?: PostcssOptions
 } & RequiredStyleHandlerOptions
 
 export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
@@ -456,6 +461,12 @@ const customAttributes = {
    * @description 对解析 js 使用的 `@babel/parser` 工具的配置
    */
   babelParserOptions?: ParserOptions
+  /**
+   * @version `^3.2.0`
+   * @group 3.一般配置
+   * @description 对解析 css 使用的 `postcss` 工具的配置
+   */
+  postcssOptions?: PostcssOptions
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult | Promise<JsHandlerResult>

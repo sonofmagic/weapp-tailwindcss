@@ -100,6 +100,7 @@ export const defaultOptions: UserDefinedOptions = {
   },
   babelParserOptions: {
     sourceType: 'unambiguous'
-  }
+  },
+  postcssOptions: {}
   // jsAstTool: 'ast-grep'
 }

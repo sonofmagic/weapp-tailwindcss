@@ -135,6 +135,7 @@ exports[`get options > default options 1`] = `
   "onStart": [Function],
   "onUpdate": [Function],
   "patch": [Function],
+  "postcssOptions": {},
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {
