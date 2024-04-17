@@ -7,7 +7,8 @@
     "build": "unbuild",
     "test": "vitest run",
     "test:dev": "vitest",
-    "release": "pnpm publish"
+    "release": "pnpm publish",
+    "dev:watch": "node test/scripts/watch.js"
   },
   "keywords": [],
   "author": "",
@@ -28,11 +29,13 @@
     "dist"
   ],
   "dependencies": {
+    "@types/gulp": "^4.0.17",
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",
     "cosmiconfig": "^9.0.0",
     "del": "^7.1.0",
     "fs-extra": "^11.2.0",
+    "gulp": "^5.0.0",
     "weapp-tailwindcss": "^3.1.1"
   },
   "devDependencies": {
