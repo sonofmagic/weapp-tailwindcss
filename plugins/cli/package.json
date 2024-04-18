@@ -29,19 +29,19 @@
     "dist"
   ],
   "dependencies": {
-    "@types/gulp": "^4.0.17",
-    "chokidar": "^3.6.0",
     "commander": "^12.0.0",
     "cosmiconfig": "^9.0.0",
     "del": "^7.1.0",
-    "fs-extra": "^11.2.0",
     "gulp": "^5.0.0",
     "postcss-load-config": "^5.0.3",
-    "ts-morph": "^22.0.0",
-    "weapp-tailwindcss": "^3.1.1"
+    "weapp-tailwindcss": "3.1.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "defu": "^6.1.4"
+    "@types/gulp": "^4.0.17",
+    "chokidar": "^3.6.0",
+    "defu": "^6.1.4",
+    "fs-extra": "^11.2.0",
+    "ts-morph": "^22.0.0"
   }
 }

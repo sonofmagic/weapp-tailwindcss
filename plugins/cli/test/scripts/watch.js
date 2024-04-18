@@ -36,7 +36,7 @@ async function main() {
         cwd: nativePath
       })
       .pipe(
-        gulp.dest('./dist', {
+        gulp.dest('dist', {
           cwd: nativePath
         })
       )

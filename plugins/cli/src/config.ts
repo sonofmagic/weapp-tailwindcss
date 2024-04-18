@@ -74,6 +74,7 @@ module.exports = {}
       'utf8'
     )
   }
-  console.log(`✨ ${configFilename} init successfully!`)
+  console.log(`✨ ${configFilename} 配置文件，初始化成功!`)
+  // const postcssConfigPath = path.resolve(root, 'postcss.config.js')
   return configPath
 }
