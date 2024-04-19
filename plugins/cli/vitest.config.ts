@@ -10,7 +10,7 @@ export default defineProject({
       }
     ],
     globals: true,
-    testTimeout: 60_000,
+    testTimeout: 30_000,
     setupFiles: ['./vitest.setup.ts']
   }
 })

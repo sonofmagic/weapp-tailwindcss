@@ -9,7 +9,7 @@ const isRc = argvs.has('--rc')
   await run(demoPath, '--ignore-engines')
   await run(
     demoPath,
-    `add -D weapp-tailwindcss-webpack-plugin${isBeta ? '@beta' : ''} tailwindcss-patch${
+    `add -D weapp-tailwindcss-webpack-plugin${isBeta ? '@beta' : ''} weapp-tailwindcss${isBeta ? '@alpha' : ''} tailwindcss-patch${
       isRc ? '@rc' : ''
     } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator tailwindcss@latest --ignore-engines`
   )

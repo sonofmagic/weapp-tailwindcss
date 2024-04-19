@@ -1,3 +1,4 @@
 {
-  "testing.openTesting": "neverOpen"
+  "testing.openTesting": "neverOpen",
+  "vitest.disableWorkspaceWarning": true
 }

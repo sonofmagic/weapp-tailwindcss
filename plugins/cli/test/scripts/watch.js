@@ -32,9 +32,13 @@ async function main() {
 
   await promisify(
     gulp
-      .src(['**/*.{js,ts,json,css,wxss,wxml}', '!dist/**/*', '!node_modules/**/*', '!miniprogram_npm/**/*'], {
-        cwd: nativePath
-      })
+      .src(
+        ['**/*.{js,ts,json,css,wxss,wxml}', '!dist/**/*', '!**/node_modules/**', '!**/miniprogram_npm/**'], // '!node_modules/**/*', '!miniprogram_npm/**/*'],
+
+        {
+          cwd: nativePath
+        }
+      )
       .pipe(
         gulp.dest('dist', {
           cwd: nativePath
