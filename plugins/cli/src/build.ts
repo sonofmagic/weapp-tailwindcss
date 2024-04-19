@@ -3,7 +3,7 @@ import path from 'node:path'
 import defu from 'defu'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import type { UserDefinedOptions } from 'weapp-tailwindcss'
-import gulp from 'gulp'
+import vfs from 'vinyl-fs'
 import { ensureDir } from 'fs-extra'
 
 export enum AssetType {
@@ -58,7 +58,7 @@ const defaultTypescriptExtensions = ['ts'] //, 'cts', 'mts']
 
 const defaultWxsExtensions = ['wxs']
 
-const defaultNodeModulesDirs = ['**/node_modules/**', '**/miniprogram_npm/**']
+const defaultNodeModulesDirs = ['**/node_modules/**', '**/miniprogram_npm/**', '**/project.config.json/**', '**/project.private.config.json/**', '**/package.json/**']
 
 export async function build(options?: Partial<BuildOptions>) {
   const {
@@ -77,9 +77,9 @@ export async function build(options?: Partial<BuildOptions>) {
     src: '',
     exclude: [...defaultNodeModulesDirs],
     extensions: {
-      javascript: [...defaultJavascriptExtensions], // , ...defaultTypescriptExtensions], //  //, ...defaultTypescriptExtensions], //  , ...defaultWxsExtensions],
+      javascript: [...defaultJavascriptExtensions, ...defaultTypescriptExtensions, ...defaultWxsExtensions],
       html: ['wxml'],
-      css: ['wxss', 'less', 'sass', 'scss'],
+      css: ['wxss'], //  'less', 'sass', 'scss'],
       json: ['json']
     }
   })
@@ -91,18 +91,18 @@ export async function build(options?: Partial<BuildOptions>) {
   }
 
   await ensureDir(path.resolve(cwd, outDir))
-
+  const base = srcBase ? srcBase + '/' : ''
   function getGlobs(type: AssetType) {
     const globs: string[] = []
     if (typeof include === 'function') {
-      globs.push(...include(type))
+      globs.push(...include(type).map((x) => x))
     }
     if (typeof exclude === 'function') {
       globs.push(...exclude(type).map((x) => '!' + x))
     } else if (Array.isArray(exclude)) {
       globs.push(...exclude.map((x) => '!' + x))
     }
-    globs.push(`${outDir}/**/*`)
+    globs.push(`!${outDir}/**/*`)
     return globs
   }
 
@@ -113,11 +113,20 @@ export async function build(options?: Partial<BuildOptions>) {
     const globs = getGlobs(assetType)
     return extensions[assetType].map((x) => {
       return () =>
-        gulp
-          .src([`${srcBase ? srcBase + '/' : ''}**/*.${x}`, ...globs], { cwd })
-          .pipe(transformJs())
+        vfs
+          .src([`${base}**/*.${x}`, ...globs], { cwd })
           .pipe(
-            gulp.dest(outDir, {
+            transformJs({
+              babelParserOptions:
+                x === 'ts'
+                  ? {
+                      plugins: ['typescript']
+                    }
+                  : undefined
+            })
+          )
+          .pipe(
+            vfs.dest(outDir, {
               cwd
             })
           )
@@ -129,8 +138,8 @@ export async function build(options?: Partial<BuildOptions>) {
     const globs = getGlobs(assetType)
     return extensions[assetType].map((x) => {
       return () =>
-        gulp.src([`${srcBase}/**/*.${x}`, ...globs], { cwd }).pipe(
-          gulp.dest(outDir, {
+        vfs.src([`${base}**/*.${x}`, ...globs], { cwd }).pipe(
+          vfs.dest(outDir, {
             cwd
           })
         )
@@ -142,11 +151,11 @@ export async function build(options?: Partial<BuildOptions>) {
     const globs = getGlobs(assetType)
     return extensions[assetType].map((x) => {
       return () =>
-        gulp
-          .src([`${srcBase}/**/*.${x}`, ...globs], { cwd })
+        vfs
+          .src([`${base}**/*.${x}`, ...globs], { cwd })
           .pipe(transformWxss())
           .pipe(
-            gulp.dest(outDir, {
+            vfs.dest(outDir, {
               cwd
             })
           )
@@ -158,11 +167,11 @@ export async function build(options?: Partial<BuildOptions>) {
     const globs = getGlobs(assetType)
     return extensions[assetType].map((x) => {
       return () =>
-        gulp
-          .src([`${srcBase}/**/*.${x}`, ...globs], { cwd })
+        vfs
+          .src([`${base}**/*.${x}`, ...globs], { cwd })
           .pipe(transformWxml())
           .pipe(
-            gulp.dest(outDir, {
+            vfs.dest(outDir, {
               cwd
             })
           )
@@ -171,29 +180,30 @@ export async function build(options?: Partial<BuildOptions>) {
 
   function copyOthers() {
     if (Array.isArray(include)) {
-      return gulp
+      return vfs
         .src(
           include.map((x) => {
-            return `${srcBase}/${x}`
+            return `${base}${x}`
           }),
           { cwd }
         )
         .pipe(
-          gulp.dest(outDir, {
+          vfs.dest(outDir, {
             cwd
           })
         )
     }
   }
-  // ...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(),
-  const tasks = [...getJsTasks()] // ,copyOthers]
+  // ...getJsTasks(), ,
+  const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
   for (const task of tasks) {
     const s = task()
     if (s) {
-      await new Promise((resolve) => s.on('finish', resolve))
+      await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
     }
   }
-  // const parallelTask = gulp.parallel(...tasks)
+
+  // const parallelTask = vfs.parallel(...tasks)
 
   // return await new Promise((resolve, reject) => {
   //   parallelTask((err) => {

@@ -32,14 +32,16 @@
     "commander": "^12.0.0",
     "cosmiconfig": "^9.0.0",
     "del": "^7.1.0",
-    "gulp": "^5.0.0",
+    "fs-extra": "^11.2.0",
     "postcss-load-config": "^5.0.3",
-    "weapp-tailwindcss": "3.2.0-alpha.0",
-    "fs-extra": "^11.2.0"
+    "vinyl-fs": "^4.0.0",
+    "weapp-tailwindcss": "3.2.0-alpha.1"
   },
   "devDependencies": {
+    "gulp": "^5.0.0",
     "@types/fs-extra": "^11.0.4",
     "@types/gulp": "^4.0.17",
+    "@types/vinyl-fs": "^3.0.5",
     "chokidar": "^3.6.0",
     "defu": "^6.1.4",
     "ts-morph": "^22.0.0"
