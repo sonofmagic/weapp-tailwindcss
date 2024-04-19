@@ -1,7 +1,7 @@
 {
   "gulp-app": true,
   "mpx-app": true,
-  "native-mina": true,
+  "native-mina": false,
   "rax-app": true,
   "taro-app": true,
   "taro-vue2-app": true,
@@ -9,5 +9,7 @@
   "uni-app": true,
   "uni-app-vue3-vite": true,
   "uni-app-webpack5": true,
-  "web": true
+  "web": true,
+  "native": true,
+  "native-ts": true
 }
