@@ -1,7 +1,7 @@
 {
   "gulp-app": true,
   "mpx-app": true,
-  "native-mina": false,
+  "native-mina": true,
   "rax-app": true,
   "taro-app": true,
   "taro-vue2-app": true,

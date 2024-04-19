@@ -1,18 +1,19 @@
-let UnifiedWebpackPluginV5
+// let UnifiedWebpackPluginV5
 const path = require('path')
 const bench = require('../../bench')('taro-vue3')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 import ComponentsPlugin from 'unplugin-vue-components/webpack'
 import NutUIResolver from '@nutui/nutui-taro/dist/resolver'
-if (isLocal) {
-  console.log('use local built webpack plugin')
-  const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
-  UnifiedWebpackPluginV5 = plugin
-} else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-  UnifiedWebpackPluginV5 = plugin
-}
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+// if (isLocal) {
+//   console.log('use local built webpack plugin')
+//   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
+//   UnifiedWebpackPluginV5 = plugin
+// } else {
+//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
+//   UnifiedWebpackPluginV5 = plugin
+// }
 
 const config = {
   projectName: 'taro-vue3-app',

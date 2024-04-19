@@ -2979,6 +2979,10 @@ text,
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;

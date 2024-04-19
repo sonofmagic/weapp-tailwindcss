@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin/vite';
+import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss/vite';
 const bench = require('../bench')('uni-app-vite-vue3');
 // import Unocss from 'unocss/vite';
 // import WindiCSS from 'vite-plugin-windicss';
