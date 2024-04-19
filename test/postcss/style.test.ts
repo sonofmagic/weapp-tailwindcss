@@ -825,4 +825,17 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, { isMainChunk: true })
     expect(result).toMatchSnapshot()
   })
+
+  it('add postcss plugins case 0', async () => {
+    const tw = await import('tailwindcss')
+    const { styleHandler } = getOptions({
+      postcssOptions: {
+        plugins: [tw.default({ content: [], corePlugins: { preflight: false } })]
+      }
+    })
+    const rawCode = `@tailwind base;
+  `
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
 })
