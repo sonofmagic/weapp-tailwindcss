@@ -29,3 +29,81 @@ exports[`config > load ts config 1`] = `
   "srcDir": ".",
 }
 `;
+
+exports[`config > updateProjectConfig > updateProjectConfig js native configed project 1`] = `
+{
+  "appid": "wxb3d842a4a7e3440d",
+  "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "auto",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "coverView": true,
+    "enhance": true,
+    "es6": true,
+    "minified": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": true,
+    "showShadowRootInWxmlPanel": true,
+  },
+  "srcMiniprogramRoot": "dist/",
+}
+`;
+
+exports[`config > updateProjectConfig > updateProjectConfig js native project 1`] = `
+{
+  "appid": "wxb3d842a4a7e3440d",
+  "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "auto",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "coverView": true,
+    "enhance": true,
+    "es6": true,
+    "minified": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": true,
+    "showShadowRootInWxmlPanel": true,
+  },
+  "srcMiniprogramRoot": "dist/",
+}
+`;

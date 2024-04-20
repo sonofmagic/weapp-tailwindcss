@@ -79,15 +79,15 @@ export async function build(options?: Partial<BuildOptions>) {
     extensions: {
       javascript: [...defaultJavascriptExtensions, ...defaultTypescriptExtensions, ...defaultWxsExtensions],
       html: ['wxml'],
-      css: ['wxss'], //  'less', 'sass', 'scss'],
+      css: ['wxss', 'less', 'sass', 'scss'],
       json: ['json']
     }
   })
 
   if (clean) {
     const { deleteAsync } = await import('del')
-    const patterns = [outDir, ...defaultNodeModulesDirs.map((x) => '!' + x)]
-    await deleteAsync(patterns, { cwd })
+    const patterns = [outDir + '/**']
+    await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
   }
 
   await ensureDir(path.resolve(cwd, outDir))

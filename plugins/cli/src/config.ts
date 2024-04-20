@@ -3,13 +3,17 @@ import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
 import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import fs from 'fs-extra'
-import loadConfig from 'postcss-load-config'
-import type { Result } from 'postcss-load-config'
 
-export function createConfigLoader(root: string = process.cwd()) {
+export type WeappTwCosmiconfigResult = {
+  config: UserConfig
+  filepath: string
+  isEmpty?: boolean
+}
+
+export function createConfigLoader(root: string) {
   const explorer = cosmiconfigSync('weapp-tw')
 
-  function search(searchFrom: string = root) {
+  function search(searchFrom: string = root): WeappTwCosmiconfigResult | undefined {
     const searchFor = explorer.search(searchFrom)
     if (searchFor) {
       searchFor.config = defu<UserConfig, UserConfig[]>(searchFor.config, getDefaultConfig(root))
@@ -54,7 +58,8 @@ export interface InitConfigOptions {
 
 export function updateProjectConfig(options: { root: string; dest?: string }) {
   const { root, dest } = options
-  const projectConfigPath = path.resolve(root, 'project.config.json')
+  const projectConfigFilename = 'project.config.json'
+  const projectConfigPath = path.resolve(root, projectConfigFilename)
   if (fs.existsSync(projectConfigPath)) {
     try {
       const projectConfig = fs.readJSONSync(projectConfigPath) as {
@@ -88,14 +93,16 @@ export function updateProjectConfig(options: { root: string; dest?: string }) {
           }
         ]
       }
-      fs.outputJSONSync(dest ?? projectConfigPath, projectConfig)
+      fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
+        spaces: 2
+      })
 
-      console.log(`✨ 设置 ${projectConfigPath} 配置文件成功!`)
+      console.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
     } catch {
-      console.warn(`✨ 设置 ${projectConfigPath} 配置文件失败!`)
+      console.warn(`✨ 设置 ${projectConfigFilename} 配置文件失败!`)
     }
   } else {
-    console.warn(`✨ 没有找到 project.config.json 文件!`)
+    console.warn(`✨ 没有找到 ${projectConfigFilename} 文件!`)
   }
 }
 
@@ -127,8 +134,7 @@ module.exports = {}
   }
   console.log(`✨ ${configFilename} 配置文件，初始化成功!`)
 
-  // const isTs = fs.existsSync(tsconfigPath)
   updateProjectConfig({ root })
-  // const postcssConfigPath = path.resolve(root, 'postcss.config.js')
+
   return configPath
 }

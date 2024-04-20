@@ -1,3 +1,5 @@
+import fs from 'fs-extra'
+
 const cssMatcher = (file: string) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)
 const htmlMatcher = (file: string) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)
 const jsMatcher = (file: string) => {
@@ -8,3 +10,13 @@ const jsMatcher = (file: string) => {
 }
 
 export { cssMatcher, htmlMatcher, jsMatcher }
+
+export function touch(filename: string) {
+  const time = new Date()
+
+  try {
+    fs.utimesSync(filename, time, time)
+  } catch {
+    fs.closeSync(fs.openSync(filename, 'w'))
+  }
+}

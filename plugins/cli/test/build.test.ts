@@ -10,4 +10,13 @@ describe('build', () => {
     })
     expect(true).toBe(true)
   })
+
+  it('native-ts', async () => {
+    const nativePath = path.resolve(fixturesPath, 'native-ts')
+    await build({
+      root: nativePath,
+      src: 'miniprogram'
+    })
+    expect(true).toBe(true)
+  })
 })

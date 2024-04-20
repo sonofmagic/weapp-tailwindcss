@@ -6,12 +6,12 @@ Page({
     motto: 'Hello World',
     userInfo: {
       avatarUrl: defaultAvatarUrl,
-      nickName: '',
+      nickName: ''
     },
-    num: _.add(2, 3),
+    num: _.add(100, 3),
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
-    canIUseNicknameComp: wx.canIUse('input.type.nickname'),
+    canIUseNicknameComp: wx.canIUse('input.type.nickname')
   },
   bindViewTap() {
     wx.navigateTo({
@@ -22,16 +22,16 @@ Page({
     const { avatarUrl } = e.detail
     const { nickName } = this.data.userInfo
     this.setData({
-      "userInfo.avatarUrl": avatarUrl,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+      'userInfo.avatarUrl': avatarUrl,
+      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl
     })
   },
   onInputChange(e) {
     const nickName = e.detail.value
     const { avatarUrl } = this.data.userInfo
     this.setData({
-      "userInfo.nickName": nickName,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+      'userInfo.nickName': nickName,
+      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl
     })
   },
   getUserProfile(e) {
@@ -46,5 +46,5 @@ Page({
         })
       }
     })
-  },
+  }
 })
