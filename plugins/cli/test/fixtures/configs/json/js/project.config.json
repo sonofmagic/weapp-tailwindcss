@@ -18,19 +18,12 @@
       "outputPath": ""
     },
     "packNpmManually": true,
-    "packNpmRelationList": [
-      {
-        "packageJsonPath": "./package.json",
-        "miniprogramNpmDistDir": "./dist"
-      }
-    ]
+    "packNpmRelationList": []
   },
   "condition": {},
   "editorSetting": {
     "tabIndent": "auto",
     "tabSize": 2
   },
-  "appid": "wxb3d842a4a7e3440d",
-  "miniprogramRoot": "dist/",
-  "srcMiniprogramRoot": "dist/"
+  "appid": "wxb3d842a4a7e3440d"
 }
