@@ -1,7 +1,7 @@
 import path from 'node:path'
 import fs from 'fs-extra'
 import { fixturesPath } from './utils'
-import { createConfigLoader, initConfig, updateProjectConfig } from '@/config'
+import { createConfigLoader, initConfig, updateProjectConfig, updatePackageJson } from '@/config'
 
 describe('config', () => {
   it('load js config', () => {
@@ -70,6 +70,32 @@ describe('config', () => {
       const root = path.resolve(fixturesPath, 'configs/json/js-configed')
       const target = path.resolve(root, 'output.json')
       updateProjectConfig({
+        root,
+        dest: target
+      })
+      expect(fs.existsSync(target)).toBe(true)
+      const res = await import(target)
+      expect(res.default).toMatchSnapshot()
+    })
+  })
+
+  describe('updatePackageJson', () => {
+    it('updatePackageJson js native project', async () => {
+      const root = path.resolve(fixturesPath, 'configs/js')
+      const target = path.resolve(root, 'pkg.json')
+      updatePackageJson({
+        root,
+        dest: target
+      })
+      expect(fs.existsSync(target)).toBe(true)
+      const res = await import(target)
+      expect(res.default).toMatchSnapshot()
+    })
+
+    it('updatePackageJson ts native project', async () => {
+      const root = path.resolve(fixturesPath, 'configs/ts')
+      const target = path.resolve(root, 'pkg.json')
+      updatePackageJson({
         root,
         dest: target
       })

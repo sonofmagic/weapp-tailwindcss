@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "0.0.0",
+  "version": "0.0.0-alpha.0",
   "description": "The cli of weapp-tailwindcss",
   "scripts": {
     "dev": "unbuild --sourcemap",
@@ -8,7 +8,8 @@
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
-    "dev:watch": "node test/scripts/watch.js"
+    "dev:watch": "node test/scripts/watch.js",
+    "sync": "cnpm sync @weapp-tailwindcss/cli"
   },
   "keywords": [],
   "author": "",
@@ -41,13 +42,21 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
+    "@types/get-value": "^3.0.5",
     "@types/gulp": "^4.0.17",
     "@types/gulp-less": "^0.0.36",
     "@types/gulp-sass": "^5.0.4",
+    "@types/set-value": "^4.0.3",
     "@types/vinyl-fs": "^3.0.5",
     "chokidar": "^3.6.0",
     "defu": "^6.1.4",
+    "get-value": "^3.0.1",
+    "set-value": "^4.1.0",
     "ts-morph": "^22.0.0",
     "vinyl-fs": "^4.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

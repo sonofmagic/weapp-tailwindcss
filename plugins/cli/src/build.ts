@@ -6,6 +6,7 @@ import gulp from 'gulp'
 import { ensureDir } from 'fs-extra'
 import { AssetType } from '@/enum'
 import type { BuildOptions } from '@/type'
+
 // import { touch } from '@/utils'
 
 export function promisify(task: Transform | Transform[]) {
@@ -30,7 +31,15 @@ const defaultTypescriptExtensions = ['ts'] //, 'cts', 'mts']
 
 const defaultWxsExtensions = ['wxs']
 
-const defaultNodeModulesDirs = ['**/node_modules/**', '**/miniprogram_npm/**', '**/project.config.json/**', '**/project.private.config.json/**', '**/package.json/**']
+const defaultNodeModulesDirs = [
+  '**/node_modules/**',
+  '**/miniprogram_npm/**',
+  '**/project.config.json/**',
+  '**/project.private.config.json/**',
+  '**/package.json/**',
+  'postcss.config.js',
+  'tailwind.config.js'
+]
 
 export async function build(options?: Partial<BuildOptions>) {
   const {

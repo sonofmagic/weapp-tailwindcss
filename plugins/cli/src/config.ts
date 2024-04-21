@@ -3,6 +3,7 @@ import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
 import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import fs from 'fs-extra'
+import { get, set } from '@/utils'
 
 export type WeappTwCosmiconfigResult = {
   config: UserConfig
@@ -73,11 +74,12 @@ export function updateProjectConfig(options: { root: string; dest?: string }) {
           }[]
         }
       }
-      projectConfig.miniprogramRoot = 'dist/'
-      projectConfig.srcMiniprogramRoot = 'dist/'
 
-      projectConfig.setting.packNpmManually = true
-      if (Array.isArray(projectConfig.setting.packNpmRelationList)) {
+      set(projectConfig, 'miniprogramRoot', 'dist/')
+      set(projectConfig, 'srcMiniprogramRoot', 'dist/')
+      set(projectConfig, 'setting.packNpmManually', true)
+
+      if (Array.isArray(get(projectConfig, 'setting.packNpmRelationList'))) {
         const x = projectConfig.setting.packNpmRelationList.find((x) => x.packageJsonPath === './package.json' && x.miniprogramNpmDistDir === './dist')
         if (!x) {
           projectConfig.setting.packNpmRelationList.push({
@@ -86,12 +88,12 @@ export function updateProjectConfig(options: { root: string; dest?: string }) {
           })
         }
       } else {
-        projectConfig.setting.packNpmRelationList = [
+        set(projectConfig, 'setting.packNpmRelationList', [
           {
             packageJsonPath: './package.json',
             miniprogramNpmDistDir: './dist'
           }
-        ]
+        ])
       }
       fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
         spaces: 2
@@ -103,6 +105,24 @@ export function updateProjectConfig(options: { root: string; dest?: string }) {
     }
   } else {
     console.warn(`✨ 没有找到 ${projectConfigFilename} 文件!`)
+  }
+}
+
+export function updatePackageJson(options: { root: string; dest?: string }) {
+  const { root, dest } = options
+  const packageJsonFilename = 'package.json'
+  const packageJsonPath = path.resolve(root, packageJsonFilename)
+  if (fs.existsSync(packageJsonPath)) {
+    try {
+      const packageJson = fs.readJSONSync(packageJsonPath) as {
+        scripts: Record<string, string>
+      }
+      set(packageJson, 'scripts.dev', 'weapp-tw dev')
+      set(packageJson, 'scripts.build', 'weapp-tw build')
+      fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
+        spaces: 2
+      })
+    } catch {}
   }
 }
 
@@ -135,6 +155,6 @@ module.exports = {}
   console.log(`✨ ${configFilename} 配置文件，初始化成功!`)
 
   updateProjectConfig({ root })
-
+  updatePackageJson({ root })
   return configPath
 }

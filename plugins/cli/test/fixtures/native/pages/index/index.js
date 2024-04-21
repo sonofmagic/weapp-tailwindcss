@@ -8,7 +8,7 @@ Page({
       avatarUrl: defaultAvatarUrl,
       nickName: ''
     },
-    num: _.add(100, 3),
+    num: _.add(100, 300),
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname')

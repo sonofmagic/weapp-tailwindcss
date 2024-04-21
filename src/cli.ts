@@ -15,4 +15,13 @@ if (command === 'patch') {
   const options = getOptions()
   const patch = createPatch(options.supportCustomLengthUnitsPatch)
   patch()
+} else {
+  try {
+    import('@weapp-tailwindcss/cli').then(({ createCli }) => {
+      createCli().parse()
+    })
+  } catch (error) {
+    console.warn('请先安装 `@weapp-tailwindcss/cli` , 安装完成后再尝试运行！')
+    throw error
+  }
 }
