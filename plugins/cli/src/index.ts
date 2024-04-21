@@ -1,6 +1,6 @@
 export { createCli } from './cli'
 
-export { createWatcher } from './watch'
+export { build, createBuilder } from './build'
 
 export { createConfigLoader, defineConfig } from './config'
 

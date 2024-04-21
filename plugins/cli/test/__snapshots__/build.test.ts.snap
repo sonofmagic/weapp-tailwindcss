@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`build > native 1`] = `
+Set {
+  "!**/node_modules/**",
+  "!**/miniprogram_npm/**",
+  "!**/project.config.json/**",
+  "!**/project.private.config.json/**",
+  "!**/package.json/**",
+  "!postcss.config.js",
+  "!tailwind.config.js",
+  "!dist/**/*",
+  "**/*.js",
+  "**/*.ts",
+  "**/*.wxs",
+  "**/*.json",
+  "**/*.wxss",
+  "**/*.less",
+  "**/*.sass",
+  "**/*.scss",
+  "**/*.wxml",
+}
+`;
+
+exports[`build > native-ts 1`] = `
+Set {
+  "!**/node_modules/**",
+  "!**/miniprogram_npm/**",
+  "!**/project.config.json/**",
+  "!**/project.private.config.json/**",
+  "!**/package.json/**",
+  "!postcss.config.js",
+  "!tailwind.config.js",
+  "!dist/**/*",
+  "miniprogram/**/*.js",
+  "miniprogram/**/*.ts",
+  "miniprogram/**/*.wxs",
+  "miniprogram/**/*.json",
+  "miniprogram/**/*.wxss",
+  "miniprogram/**/*.less",
+  "miniprogram/**/*.sass",
+  "miniprogram/**/*.scss",
+  "miniprogram/**/*.wxml",
+}
+`;

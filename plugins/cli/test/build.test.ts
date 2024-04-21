@@ -5,18 +5,18 @@ import { build } from '@/build'
 describe('build', () => {
   it('native', async () => {
     const nativePath = path.resolve(fixturesPath, 'native')
-    await build({
+    const { globsSet } = await build({
       root: nativePath
     })
-    expect(true).toBe(true)
+    expect(globsSet).toMatchSnapshot()
   })
 
   it('native-ts', async () => {
     const nativePath = path.resolve(fixturesPath, 'native-ts')
-    await build({
+    const { globsSet } = await build({
       root: nativePath,
       src: 'miniprogram'
     })
-    expect(true).toBe(true)
+    expect(globsSet).toMatchSnapshot()
   })
 })
