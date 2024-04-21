@@ -9,10 +9,4 @@ export interface CreateWatcherOptions {
   outDir: string
 }
 
-export function createWatcher(options?: Partial<CreateWatcherOptions>) {
-  const { paths, watchOptions, weappTailwindcssOptions, outDir } = defu<CreateWatcherOptions, Partial<CreateWatcherOptions>[]>(options, {
-    outDir: 'dist'
-  })
-
-  const { transformJs, transformWxml, transformWxss } = createPlugins(weappTailwindcssOptions)
-}
+export function createWatcher(options?: Partial<CreateWatcherOptions>) {}

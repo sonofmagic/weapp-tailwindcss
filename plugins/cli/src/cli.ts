@@ -19,7 +19,9 @@ export function createCli() {
     })
 
   program.command('build').action(async () => {
-    const postcssOptions = await loadPostcssConfig()
+    const postcssOptions = await loadPostcssConfig({
+      cwd
+    })
 
     await build(
       defu(userDefinedConfig?.config, {

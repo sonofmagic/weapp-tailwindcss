@@ -2,39 +2,11 @@ import type { Transform } from 'node:stream'
 import path from 'node:path'
 import defu from 'defu'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
-import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import gulp from 'gulp'
 import { ensureDir } from 'fs-extra'
-
-export enum AssetType {
-  // wxs is JavaScript
-  // TypeScript is JavaScript = 'typescript',
-  JavaScript = 'javascript',
-  Json = 'json',
-  Css = 'css',
-  Html = 'html'
-
-  // Less = 'less',
-  // Sass = 'sass',
-  // Scss = 'scss'
-}
-
-export interface BuildOptions {
-  weappTailwindcssOptions: UserDefinedOptions
-  outDir: string
-  root: string
-  clean: boolean
-  src: string
-  exclude: string[] | ((type: AssetType) => string[])
-  include: string[] | ((type: AssetType) => string[])
-  extensions: {
-    javascript: string[]
-    html: string[]
-    css: string[]
-    json: string[]
-  }
-}
-// typescript?: string[]
+import { AssetType } from '@/enum'
+import type { BuildOptions } from '@/type'
+// import { touch } from '@/utils'
 
 export function promisify(task: Transform | Transform[]) {
   return new Promise((resolve, reject) => {
@@ -92,6 +64,7 @@ export async function build(options?: Partial<BuildOptions>) {
 
   await ensureDir(path.resolve(cwd, outDir))
   const base = srcBase ? srcBase + '/' : ''
+
   function getGlobs(type: AssetType) {
     const globs: string[] = []
     if (typeof include === 'function') {
@@ -196,22 +169,11 @@ export async function build(options?: Partial<BuildOptions>) {
   }
 
   const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
+
   for (const task of tasks) {
     const s = task()
     if (s) {
       await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
     }
   }
-
-  // const parallelTask = gulp.parallel(...tasks)
-
-  // return await new Promise((resolve, reject) => {
-  //   parallelTask((err) => {
-  //     if (err) {
-  //       reject(err)
-  //       return
-  //     }
-  //     resolve(undefined)
-  //   })
-  // })
 }
