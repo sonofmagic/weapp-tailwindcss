@@ -1,4 +1,5 @@
 import type { UserDefinedOptions } from 'weapp-tailwindcss'
+import type { WatchOptions } from 'gulp'
 import type { AssetType } from '@/enum'
 
 export interface BuildOptions {
@@ -15,4 +16,5 @@ export interface BuildOptions {
     css: string[]
     json: string[]
   }
+  watchOptions: WatchOptions
 }

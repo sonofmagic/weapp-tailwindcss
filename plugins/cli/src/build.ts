@@ -1,6 +1,7 @@
 import path from 'node:path'
 import defu from 'defu'
-import { ensureDir } from 'fs-extra'
+import { FSWatcher, ensureDirSync } from 'fs-extra'
+import gulp from 'gulp'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
 
@@ -29,7 +30,8 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     clean,
     extensions,
     exclude,
-    include
+    include,
+    watchOptions
   } = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
     outDir: 'dist',
     weappTailwindcssOptions: {},
@@ -52,19 +54,21 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     clean,
     extensions,
     exclude,
-    include
+    include,
+    watchOptions
   })
 
   const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
 
   return {
+    watcher: <FSWatcher | undefined>undefined,
     async build() {
       if (clean) {
         const { deleteAsync } = await import('del')
         const patterns = [outDir + '/**']
         await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
       }
-      await ensureDir(path.resolve(cwd, outDir))
+      ensureDirSync(path.resolve(cwd, outDir))
       for (const task of tasks) {
         const s = task()
         if (s) {
@@ -73,8 +77,21 @@ export function createBuilder(options?: Partial<BuildOptions>) {
       }
       return this
     },
-    async watch() {
-      await ensureDir(path.resolve(cwd, outDir))
+    watch() {
+      ensureDirSync(path.resolve(cwd, outDir))
+      const watcher = gulp.watch([...globsSet], watchOptions, gulp.parallel(...tasks))
+      watcher.on('change', function (path) {
+        console.log(`File ${path} was changed`)
+      })
+
+      watcher.on('add', function (path) {
+        console.log(`File ${path} was added`)
+      })
+
+      watcher.on('unlink', function (path) {
+        console.log(`File ${path} was removed`)
+      })
+      this.watcher = watcher
       return this
     },
     globsSet
@@ -84,4 +101,9 @@ export function createBuilder(options?: Partial<BuildOptions>) {
 export function build(options?: Partial<BuildOptions>) {
   const builder = createBuilder(options)
   return builder.build()
+}
+
+export function watch(options?: Partial<BuildOptions>) {
+  const builder = createBuilder(options)
+  return builder.watch()
 }

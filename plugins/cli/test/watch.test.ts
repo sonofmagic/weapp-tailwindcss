@@ -1,13 +1,16 @@
 import path from 'node:path'
-import fs from 'fs-extra'
-import gulp from 'gulp'
 import { fixturesPath } from './utils'
+import { watch } from '@/build'
 // import { createWatcher } from '@/watch'
 // const stubGetWatchedCode = /getWatched\(\) {.+?return {};.+?}/s
 
 describe('watch', () => {
   it('native watch', () => {
-    expect(true).toBe(true)
+    const nativePath = path.resolve(fixturesPath, 'native')
+    const { globsSet } = watch({
+      root: nativePath
+    })
+    expect(globsSet).toMatchSnapshot()
     // gulp
     //   .src(['./**/*.{js,ts}', '!./dist/**/*'], {
     //     cwd: path.resolve(fixturesPath, 'native')
@@ -21,5 +24,5 @@ describe('watch', () => {
     // expect(watcher.getWatched.toString()).not.toMatch(stubGetWatchedCode)
   })
 
-  it('native-ts watch', () => {})
+  // it('native-ts watch', () => {})
 })
