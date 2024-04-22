@@ -60,6 +60,15 @@ export function createBuilder(options?: Partial<BuildOptions>) {
 
   const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
 
+  async function runTasks() {
+    for (const task of tasks) {
+      const s = task()
+      if (s) {
+        await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
+      }
+    }
+  }
+
   return {
     watcher: <FSWatcher | undefined>undefined,
     async build() {
@@ -69,17 +78,19 @@ export function createBuilder(options?: Partial<BuildOptions>) {
         await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
       }
       ensureDirSync(path.resolve(cwd, outDir))
-      for (const task of tasks) {
-        const s = task()
-        if (s) {
-          await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
-        }
-      }
+      await runTasks()
       return this
     },
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
-      const watcher = gulp.watch([...globsSet], watchOptions, gulp.parallel(...tasks))
+      const watcher = gulp.watch([...globsSet], watchOptions, async (cb) => {
+        try {
+          await runTasks()
+          cb()
+        } catch (error) {
+          cb(error as Error)
+        }
+      })
       watcher.on('change', function (path) {
         console.log(`File ${path} was changed`)
       })

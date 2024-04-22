@@ -1309,10 +1309,10 @@ util-deprecate@^1.0.2:
   resolved "https://registry.npmmirror.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-weapp-tailwindcss@^3.2.0-alpha.2:
-  version "3.2.0-alpha.2"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.2.tgz#2b8265f21b2531e2945fa63d4ac1c1749adc8d8c"
-  integrity sha512-V/3iV0kw0LBY8ERtzBcH7Hil+vXQsVxCRg4nCfHgwOE3Mn6ZW/errQHkAypdVkewJz/X5ZRPBJA6YOJIk0XmAw==
+weapp-tailwindcss@^3.2.0-alpha.3:
+  version "3.2.0-alpha.3"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.3.tgz#9187fb8b5abca0f87f39581c387ebe88dd72dd68"
+  integrity sha512-TK074TQnLnE1TH5Ztz7zFpMijQBKJ/PLz/+DRBmHE5Oty0uHRqUsbY1Wsm8MsB7cc/OsAYXF2adzNjl+NDxkmg==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.4"
