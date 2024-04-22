@@ -1,6 +1,9 @@
 import type { Transform } from 'node:stream'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import gulp from 'gulp'
+import postcssrc from 'gulp-postcss'
+import plumber from 'gulp-plumber'
+import gulpif from 'gulp-if'
 import { AssetType } from '@/enum'
 import type { BuildOptions } from '@/type'
 
@@ -21,7 +24,7 @@ export function promisify(task: Transform | Transform[]) {
 }
 
 export function getTasks(options: BuildOptions) {
-  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include } = options
+  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include, postcssOptions } = options
   const globsSet = new Set<string>()
   const base = srcBase ? srcBase + '/' : ''
 
@@ -59,9 +62,10 @@ export function getTasks(options: BuildOptions) {
     return extensions[assetType].map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
-      return () =>
-        gulp
-          .src([src, ...globs], { cwd })
+      return function JsTask() {
+        return gulp
+          .src([src, ...globs], { cwd, since: gulp.lastRun(JsTask) })
+          .pipe(plumber())
           .pipe(
             transformJs({
               babelParserOptions:
@@ -77,6 +81,7 @@ export function getTasks(options: BuildOptions) {
               cwd
             })
           )
+      }
     })
   }
 
@@ -87,12 +92,16 @@ export function getTasks(options: BuildOptions) {
     return extensions[assetType].map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
-      return () =>
-        gulp.src([src, ...globs], { cwd }).pipe(
-          gulp.dest(outDir, {
-            cwd
-          })
-        )
+      return function JsonTask() {
+        return gulp
+          .src([src, ...globs], { cwd, since: gulp.lastRun(JsonTask) })
+          .pipe(plumber())
+          .pipe(
+            gulp.dest(outDir, {
+              cwd
+            })
+          )
+      }
     })
   }
 
@@ -103,15 +112,18 @@ export function getTasks(options: BuildOptions) {
     return extensions[assetType].map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
-      return () =>
-        gulp
-          .src([src, ...globs], { cwd })
+      return function CssTask() {
+        return gulp
+          .src([src, ...globs], { cwd, since: gulp.lastRun(CssTask) })
+          .pipe(plumber())
+          .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
           .pipe(transformWxss())
           .pipe(
             gulp.dest(outDir, {
               cwd
             })
           )
+      }
     })
   }
 
@@ -122,15 +134,17 @@ export function getTasks(options: BuildOptions) {
     return extensions[assetType].map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
-      return () =>
-        gulp
-          .src([src, ...globs], { cwd })
+      return function HtmlTask() {
+        return gulp
+          .src([src, ...globs], { cwd, since: gulp.lastRun(HtmlTask) })
+          .pipe(plumber())
           .pipe(transformWxml())
           .pipe(
             gulp.dest(outDir, {
               cwd
             })
           )
+      }
     })
   }
 
@@ -140,11 +154,14 @@ export function getTasks(options: BuildOptions) {
         return `${base}${x}`
       })
       globsSetAdd(globs)
-      return gulp.src(globs, { cwd }).pipe(
-        gulp.dest(outDir, {
-          cwd
-        })
-      )
+      return gulp
+        .src(globs, { cwd, since: gulp.lastRun(copyOthers) })
+        .pipe(plumber())
+        .pipe(
+          gulp.dest(outDir, {
+            cwd
+          })
+        )
     }
   }
 

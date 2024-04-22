@@ -1,6 +1,5 @@
 import { Command } from 'commander'
 import defu from 'defu'
-import loadPostcssConfig from 'postcss-load-config'
 import { build, watch } from '@/build'
 import { createConfigLoader, initConfig } from '@/config'
 
@@ -15,31 +14,17 @@ export function createCli() {
     .command('dev')
     .alias('serve')
     .action(async () => {
-      const postcssOptions = await loadPostcssConfig({
-        cwd
-      })
-
       await watch(
         defu(userDefinedConfig?.config, {
-          root: cwd,
-          weappTailwindcssOptions: {
-            postcssOptions
-          }
+          root: cwd
         })
       )
     })
 
   program.command('build').action(async () => {
-    const postcssOptions = await loadPostcssConfig({
-      cwd
-    })
-
     await build(
       defu(userDefinedConfig?.config, {
-        root: cwd,
-        weappTailwindcssOptions: {
-          postcssOptions
-        }
+        root: cwd
       })
     )
   })

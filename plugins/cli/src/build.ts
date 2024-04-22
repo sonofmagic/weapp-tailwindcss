@@ -2,6 +2,8 @@ import path from 'node:path'
 import defu from 'defu'
 import { FSWatcher, ensureDirSync } from 'fs-extra'
 import gulp from 'gulp'
+import loadPostcssConfig from 'postcss-load-config'
+import type { Result } from 'postcss-load-config'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
 
@@ -31,7 +33,8 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     extensions,
     exclude,
     include,
-    watchOptions
+    watchOptions,
+    postcssOptions
   } = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
     outDir: 'dist',
     weappTailwindcssOptions: {},
@@ -43,6 +46,9 @@ export function createBuilder(options?: Partial<BuildOptions>) {
       html: ['wxml'],
       css: ['wxss', 'less', 'sass', 'scss'],
       json: ['json']
+    },
+    watchOptions: {
+      events: ['add', 'change', 'unlink', 'ready']
     }
   })
 
@@ -55,7 +61,8 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     extensions,
     exclude,
     include,
-    watchOptions
+    watchOptions,
+    postcssOptions
   })
 
   const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
@@ -83,6 +90,7 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     },
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
+
       const watcher = gulp.watch([...globsSet], watchOptions, async (cb) => {
         try {
           await runTasks()
@@ -102,6 +110,10 @@ export function createBuilder(options?: Partial<BuildOptions>) {
       watcher.on('unlink', function (path) {
         console.log(`File ${path} was removed`)
       })
+
+      watcher.on('ready', function () {
+        console.log(`Weapp-tailwindcss is Ready!`)
+      })
       this.watcher = watcher
       return this
     },
@@ -109,12 +121,21 @@ export function createBuilder(options?: Partial<BuildOptions>) {
   }
 }
 
-export function build(options?: Partial<BuildOptions>) {
-  const builder = createBuilder(options)
-  return builder.build()
+export async function build(options?: Partial<BuildOptions>) {
+  let postcssOptions: Result | undefined
+  try {
+    postcssOptions = await loadPostcssConfig({ cwd: options?.root })
+  } catch {}
+
+  const builder = createBuilder(defu<BuildOptions, Partial<BuildOptions>[]>(options, { postcssOptions }))
+  return await builder.build()
 }
 
-export function watch(options?: Partial<BuildOptions>) {
-  const builder = createBuilder(options)
-  return builder.watch()
+export async function watch(options?: Partial<BuildOptions>) {
+  let postcssOptions: Result | undefined
+  try {
+    postcssOptions = await loadPostcssConfig({ cwd: options?.root })
+  } catch {}
+  const builder = createBuilder(defu<BuildOptions, Partial<BuildOptions>[]>(options, { postcssOptions }))
+  return await builder.watch()
 }

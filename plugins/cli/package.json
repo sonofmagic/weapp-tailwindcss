@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "0.0.0-alpha.3",
+  "version": "0.0.0-alpha.5",
   "description": "The cli of weapp-tailwindcss",
   "scripts": {
     "dev": "unbuild --sourcemap",
@@ -36,15 +36,22 @@
     "fs-extra": "^11.2.0",
     "gulp": "^5.0.0",
     "gulp-less": "^5.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^10.0.0",
     "gulp-sass": "^5.1.0",
+    "gulp-if": "^3.0.0",
+    "postcss": "^8.4.38",
     "postcss-load-config": "^5.0.3",
-    "weapp-tailwindcss": "3.2.0-alpha.3"
+    "weapp-tailwindcss": "3.2.0-alpha.4"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/get-value": "^3.0.5",
     "@types/gulp": "^4.0.17",
+    "@types/gulp-if": "^3.0.4",
     "@types/gulp-less": "^0.0.36",
+    "@types/gulp-plumber": "^0.0.37",
+    "@types/gulp-postcss": "^8.0.6",
     "@types/gulp-sass": "^5.0.4",
     "@types/set-value": "^4.0.3",
     "@types/vinyl-fs": "^3.0.5",

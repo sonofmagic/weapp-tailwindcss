@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss",
-  "version": "3.2.0-alpha.3",
+  "version": "3.2.0-alpha.4",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -197,7 +197,7 @@
     "@types/webpack4": "npm:@types/webpack@4",
     "@vitest/coverage-v8": "^1.5.0",
     "@vitest/ui": "^1.5.0",
-    "@weapp-tailwindcss/cli": "0.0.0-alpha.2",
+    "@weapp-tailwindcss/cli": "0.0.0-alpha.4",
     "autoprefixer": "^10.4.19",
     "babel-loader": "^9.1.3",
     "bumpp": "^9.4.0",

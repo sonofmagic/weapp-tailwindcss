@@ -167,8 +167,8 @@ devDependencies:
     specifier: ^1.5.0
     version: 1.5.0(vitest@1.5.0)
   '@weapp-tailwindcss/cli':
-    specifier: 0.0.0-alpha.2
-    version: 0.0.0-alpha.2(postcss@8.4.38)(tailwindcss@3.4.3)(typescript@5.4.5)
+    specifier: 0.0.0-alpha.4
+    version: 0.0.0-alpha.4(postcss@8.4.38)(tailwindcss@3.4.3)(typescript@5.4.5)
   autoprefixer:
     specifier: ^10.4.19
     version: 10.4.19(postcss@8.4.38)
@@ -2132,8 +2132,8 @@ packages:
   /@weapp-core/regex@1.0.1:
     resolution: {integrity: sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==}
 
-  /@weapp-tailwindcss/cli@0.0.0-alpha.2(postcss@8.4.38)(tailwindcss@3.4.3)(typescript@5.4.5):
-    resolution: {integrity: sha512-nrGmfzBGrrJASllsO7wx8GFygELCZECrvMwZOGfdN4araAhd6EiAm+p/LhMqDi6eEoAAtamFWal4/r1UAmjFPQ==}
+  /@weapp-tailwindcss/cli@0.0.0-alpha.4(postcss@8.4.38)(tailwindcss@3.4.3)(typescript@5.4.5):
+    resolution: {integrity: sha512-ojtIWzzERVjfnGctnnon6CVwivIC3NkTn5fQG+O+Ao4FT8fkD/aRPLwJMdvl97vdzyktzHtbXkoVzPv2jT1Cvw==}
     dependencies:
       commander: 12.0.0
       cosmiconfig: 9.0.0(typescript@5.4.5)
@@ -2143,7 +2143,7 @@ packages:
       gulp-less: 5.0.0
       gulp-sass: 5.1.0
       postcss-load-config: 5.0.3(postcss@8.4.38)
-      weapp-tailwindcss: 3.2.0-alpha.1(tailwindcss@3.4.3)
+      weapp-tailwindcss: 3.2.0-alpha.3(tailwindcss@3.4.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - jiti
@@ -6624,6 +6624,7 @@ packages:
 
   /safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
+    requiresBuild: true
     dev: true
 
   /sass@1.75.0:
@@ -7670,8 +7671,8 @@ packages:
       tailwindcss: 3.4.3(ts-node@10.9.2)
     dev: true
 
-  /weapp-tailwindcss@3.2.0-alpha.1(tailwindcss@3.4.3):
-    resolution: {integrity: sha512-LGSXSzXQIvvKgtkN4TNoCcchrJHUYxNnk7LQMmwrRkYggNTRljswdNs5+8LtSc+yqGyJgjn+rHuwpG0Z9fS/kA==}
+  /weapp-tailwindcss@3.2.0-alpha.3(tailwindcss@3.4.3):
+    resolution: {integrity: sha512-TK074TQnLnE1TH5Ztz7zFpMijQBKJ/PLz/+DRBmHE5Oty0uHRqUsbY1Wsm8MsB7cc/OsAYXF2adzNjl+NDxkmg==}
     engines: {node: '>=16.6.0'}
     hasBin: true
     requiresBuild: true
