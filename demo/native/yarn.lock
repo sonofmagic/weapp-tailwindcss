@@ -1227,6 +1227,7 @@ source-map-js@^1.2.0:
   integrity sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.npmmirror.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -1245,6 +1246,7 @@ string-width@^5.0.1, string-width@^5.1.2:
     strip-ansi "^7.0.1"
 
 "strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  name strip-ansi-cjs
   version "6.0.1"
   resolved "https://registry.npmmirror.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -1440,10 +1442,10 @@ weapp-tailwindcss-webpack-plugin@^3.1.1-beta.0:
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
-weapp-tailwindcss@^3.2.0-alpha.1:
-  version "3.2.0-alpha.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.1.tgz#6795ffd488f78713cbddbc6abc77bec2884b55c1"
-  integrity sha512-LGSXSzXQIvvKgtkN4TNoCcchrJHUYxNnk7LQMmwrRkYggNTRljswdNs5+8LtSc+yqGyJgjn+rHuwpG0Z9fS/kA==
+weapp-tailwindcss@^3.2.0-alpha.6:
+  version "3.2.0-alpha.6"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.6.tgz#2afdc066b1d0f84baf404f606de8949091fed427"
+  integrity sha512-9KKPkb+njaT8V7y5j88SqlJi3EU4sxlymmrJ3NfIXuTx71G3HSW5KBME3OAi9CwZaFQtG4YwaPwDhcQ+jFZfVA==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.4"

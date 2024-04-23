@@ -5190,10 +5190,10 @@ weapp-tailwindcss-webpack-plugin@^3.1.1-beta.0:
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
-weapp-tailwindcss@^3.2.0-alpha.1:
-  version "3.2.0-alpha.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.1.tgz#6795ffd488f78713cbddbc6abc77bec2884b55c1"
-  integrity sha512-LGSXSzXQIvvKgtkN4TNoCcchrJHUYxNnk7LQMmwrRkYggNTRljswdNs5+8LtSc+yqGyJgjn+rHuwpG0Z9fS/kA==
+weapp-tailwindcss@^3.2.0-alpha.6:
+  version "3.2.0-alpha.6"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.6.tgz#2afdc066b1d0f84baf404f606de8949091fed427"
+  integrity sha512-9KKPkb+njaT8V7y5j88SqlJi3EU4sxlymmrJ3NfIXuTx71G3HSW5KBME3OAi9CwZaFQtG4YwaPwDhcQ+jFZfVA==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.4"

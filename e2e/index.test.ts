@@ -6,7 +6,7 @@ import automator from 'miniprogram-automator'
 import { execa } from 'execa'
 import { deleteAsync } from 'del'
 import Page from 'miniprogram-automator/out/Page'
-import { removeWxmlId } from '../test/util'
+import { removeWxmlId } from '../packages/weapp-tailwindcss/test/util'
 async function loadCss(p: string) {
   const css = await fs.readFile(p, 'utf8')
   const code = await prettier.format(css, {

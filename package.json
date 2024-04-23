@@ -98,7 +98,7 @@
     "demo:link": "node scripts/demo/link.js",
     "demo:install": "node scripts/demo/install.js",
     "demo:install:beta": "node scripts/demo/install.js --beta",
-    "demo:install:alpha": "node scripts/demo/install.js --beta",
+    "demo:install:alpha": "node scripts/demo/install.js --alpha",
     "demo:remove-deps": "node scripts/demo/del.js",
     "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js",
     "demo:sync-dist": "node scripts/demo/copy-dist.js",
