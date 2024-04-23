@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -11,6 +11,6 @@
   },
   "include": [
     "src",
-    "test"
-, "test/transform.test.ts"  ]
+    "test",
+  ]
 }
