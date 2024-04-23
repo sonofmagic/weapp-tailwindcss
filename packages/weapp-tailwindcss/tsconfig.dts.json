@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "declaration": true
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test/types",
+    "./*.d.ts"
+  ]
+}
