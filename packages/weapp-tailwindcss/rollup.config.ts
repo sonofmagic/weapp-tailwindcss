@@ -18,7 +18,6 @@ const pkg = JSON.parse(
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
-const isDemo = process.env.NODE_ENV === 'demo'
 
 interface IEntry {
   name?: string
@@ -37,15 +36,15 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       }),
       commonjs(),
       typescript({
-        tsconfig: isDemo ? './tsconfig.demo.json' : './tsconfig.build.json',
-        sourceMap: isDev || isDemo,
+        tsconfig: './tsconfig.build.json',
+        sourceMap: isDev,
         declaration: false
       }),
       isProd
         ? visualizer({
-            // emitFile: true,
-            filename: `stats/${entry.name}.html`
-          })
+          // emitFile: true,
+          filename: `stats/${entry.name}.html`
+        })
         : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin', '@ast-grep/napi', '@weapp-tailwindcss/cli']
@@ -57,7 +56,7 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
 // }
 
 const mainOutputOptions: Partial<RollupOptions['output']> = {
-  sourcemap: isDev || isDemo,
+  sourcemap: isDev,
   exports: 'auto',
   esModule: true,
   generatedCode: {
@@ -65,12 +64,6 @@ const mainOutputOptions: Partial<RollupOptions['output']> = {
   },
   interop: 'compat',
   systemNullSetters: false
-  // sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
-  //   if (isDemo) {
-  //     return path.resolve(path.dirname(sourcemapPath), '../../../', relativeSourcePath.replaceAll(/\.\.[/\\]/g, ''))
-  //   }
-  //   return relativeSourcePath
-  // }
 }
 
 const entries: IEntry[] = [
@@ -93,12 +86,12 @@ const entries: IEntry[] = [
     },
     output: [
       {
-        dir: isDemo ? 'demo/web/weapp-tw-dist' : 'dist',
+        dir: 'dist',
         format: 'cjs',
         ...mainOutputOptions
       },
       {
-        dir: isDemo ? 'demo/web/weapp-tw-dist' : 'dist',
+        dir: 'dist',
         format: 'esm',
         ...mainOutputOptions,
         entryFileNames: '[name].mjs',
@@ -106,19 +99,6 @@ const entries: IEntry[] = [
       }
     ]
   }
-  // {
-  //   name: 'loader',
-  //   input: {
-  //     'weapp-tw-runtime-loader': 'src/webpack/loaders/weapp-tw-runtime-loader.ts'
-  //   },
-  //   output: [
-  //     {
-  //       dir: 'lib',
-  //       format: 'cjs',
-  //       ...mainOutputOptions
-  //     }
-  //   ]
-  // }
 ]
 
 const config = entries.map((x) => {

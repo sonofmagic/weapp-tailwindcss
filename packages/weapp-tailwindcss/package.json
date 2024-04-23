@@ -75,7 +75,6 @@
   "scripts": {
     "dev": "pnpm clean && pnpm dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
     "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && pnpm dts",
-    "build:demo": "pnpm demo:del-dist && cross-env NODE_ENV=demo rollup -c rollup.config.ts --configPlugin typescript && pnpm demo:sync-dist",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
@@ -88,7 +87,6 @@
     "e2e:u": "vitest run -u -c ./vitest.e2e.config.ts",
     "init:rename": "node scripts/init/rename.js",
     "clean": "node scripts/clean.js",
-    "debug:web": "cd demo/web && pnpm dev",
     "raw": "ts-node scripts/raw",
     "get-decl": "ts-node scripts/get-decl.ts",
     "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss",
@@ -99,8 +97,6 @@
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
     "prepare": "ts-patch install -s",
     "release": "bumpp",
-    "css-build": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css",
-    "css-build-out": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css --out tw-plugins",
     "-------": "-----------",
     "postinstall": "node bin/weapp-tailwindcss.js patch"
   },
