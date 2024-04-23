@@ -9,5 +9,7 @@
   "uni-app": true,
   "uni-app-vue3-vite": true,
   "uni-app-webpack5": true,
-  "web": true
+  "web": true,
+  "native": true,
+  "native-ts": true
 }

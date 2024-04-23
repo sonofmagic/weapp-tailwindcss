@@ -37,7 +37,9 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cssSelectorReplacement,
     rem2rpx,
     cache,
-    jsAstTool
+    jsAstTool,
+    babelParserOptions,
+    postcssOptions
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -60,7 +62,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cssChildCombinatorReplaceValue,
     injectAdditionalCssVarScope,
     cssSelectorReplacement,
-    rem2rpx
+    rem2rpx,
+    postcssOptions
   })
   result.styleHandler = styleHandler
   const jsHandler = createJsHandler({
@@ -69,7 +72,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     arbitraryValues,
     jsPreserveClass,
     generateMap: true,
-    jsAstTool
+    jsAstTool,
+    babelParserOptions
   })
   result.jsHandler = jsHandler
 

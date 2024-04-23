@@ -1,7 +1,7 @@
 import type { File, Node } from '@babel/types'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
-import type { ParseResult } from '@babel/parser'
+import type { ParseResult, ParseError } from '@babel/parser'
 import type { SgNode } from '@ast-grep/napi'
 import { replaceHandleValue } from './handlers'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '@/types'
@@ -87,12 +87,11 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
   let ast: ParseResult<File>
   try {
-    ast = parse(rawSource, {
-      sourceType: 'unambiguous'
-    })
-  } catch {
+    ast = parse(rawSource, options.babelParserOptions)
+  } catch (error) {
     return {
-      code: rawSource
+      code: rawSource,
+      error: error as ParseError
     } as JsHandlerResult
   }
 
@@ -212,7 +211,7 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions) {
-  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool } = options
+  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool, babelParserOptions } = options
   return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
       classNameSet: set,
@@ -221,7 +220,8 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       mangleContext,
       jsPreserveClass,
       generateMap,
-      jsAstTool
+      jsAstTool,
+      babelParserOptions
     })
     if (opts.jsAstTool === 'ast-grep') {
       return jsHandlerAsync(rawSource, opts)

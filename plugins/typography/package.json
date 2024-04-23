@@ -47,7 +47,7 @@
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",
-    "magic-string": "^0.30.9",
+    "magic-string": "^0.30.10",
     "postcss-selector-parser": "^6.0.16"
   },
   "author": "SonOfMagic <qq1324318532@gmail.com>",

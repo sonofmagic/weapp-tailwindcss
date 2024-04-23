@@ -1,7 +1,7 @@
 import stream from 'node:stream'
 import type File from 'vinyl'
 import { getOptions } from '@/options'
-import { UserDefinedOptions } from '@/types'
+import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { createDebug } from '@/debug'
 
@@ -27,7 +27,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   const twPatcher = createTailwindcssPatcher()
 
-  function transformWxss() {
+  function transformWxss(options: Partial<IStyleHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
       transform: async function (file: File, encoding, callback) {
@@ -54,7 +54,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
             },
             async () => {
               const code = await styleHandler(rawSource, {
-                isMainChunk: true
+                isMainChunk: true,
+                ...options
               })
               file.contents = Buffer.from(code)
               debug('css handle: %s', file.path)
@@ -75,7 +76,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
   }
 
-  function transformJs() {
+  function transformJs(options: Partial<CreateJsHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
       transform: async function (file: File, encoding, callback) {
@@ -96,7 +97,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
               }
             },
             async () => {
-              const { code } = await jsHandler(rawSource, runtimeSet)
+              const { code } = await jsHandler(rawSource, runtimeSet, options)
               file.contents = Buffer.from(code)
               debug('js handle: %s', file.path)
               return {
@@ -115,7 +116,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
   }
 
-  function transformWxml() {
+  function transformWxml(options: Partial<ITemplateHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
       transform: async function (file: File, encoding, callback) {
@@ -139,7 +140,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
             },
             async () => {
               const code = await templateHandler(rawSource, {
-                runtimeSet
+                runtimeSet,
+                ...options
               })
               file.contents = Buffer.from(code)
               debug('html handle: %s', file.path)

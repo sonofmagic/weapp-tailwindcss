@@ -8,7 +8,7 @@ import { getClassCacheSet } from 'tailwindcss-patch'
 // import { jsStringEscape } from '@ast-core/escape'
 
 // swc 在解析中文的时候，会导致 span 增加，从而无法精确定位，不知道是不是bug
-import { createGetCase, jsCasePath, createPutCase } from './util'
+import { createGetCase, jsCasePath, createPutCase, tsCasePath } from './util'
 import { SimpleMappingChars2String } from '@/escape'
 import { createJsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
@@ -16,6 +16,7 @@ import { getOptions } from '@/options'
 import { defaultOptions } from '@/defaults'
 // import { parse } from '@/babel'
 const getCase = createGetCase(jsCasePath)
+const getTsCase = createGetCase(tsCasePath)
 const putCase = createPutCase(jsCasePath)
 
 function decodeUnicode(s: string) {
@@ -611,4 +612,65 @@ describe('jsHandler', () => {
   // const b = "after:content-['\\u6211\\u77e5\\u9053\\u6211\\u5fc3,\\u6c38\\u605212we_ds']"
 
   // "after:content-['我知道我心,永恒12we_ds']"
+
+  it('ts file parser 0', async () => {
+    const testCase = await getTsCase('native-ts-0.ts')
+    const set: Set<string> = new Set()
+    set.add('text-[100px]')
+    set.add('bg-[#123456]')
+    const { jsHandler } = getOptions()
+    expect(async () => {
+      const { code, error } = await jsHandler(testCase, set)
+      expect(code).toMatchSnapshot()
+      expect(error).toBeFalsy()
+    }).not.toThrow()
+  })
+
+  it('ts file parser noting', async () => {
+    const testCase = await getTsCase('native-ts-noting.ts')
+    const set: Set<string> = new Set()
+
+    const { jsHandler } = getOptions()
+    expect(async () => {
+      const { code, error } = await jsHandler(testCase, set)
+      expect(code).toBe(testCase)
+      expect(error).toBeFalsy()
+    }).not.toThrow()
+  })
+
+  it('ts file parser throw error', async () => {
+    const testCase = await getTsCase('native-ts-throw.ts')
+    const set: Set<string> = new Set()
+
+    const { jsHandler } = getOptions()
+    const { error } = await jsHandler(testCase, set)
+    expect(error).toBeTruthy()
+  })
+
+  it('ts file parser not throw error 0', async () => {
+    const testCase = await getTsCase('native-ts-throw.ts')
+    const set: Set<string> = new Set()
+
+    const { jsHandler } = getOptions({
+      babelParserOptions: {
+        plugins: ['typescript']
+      }
+    })
+    const { error } = await jsHandler(testCase, set)
+    expect(error).toBeFalsy()
+  })
+
+  it('ts file parser not throw error 1', async () => {
+    const testCase = await getTsCase('native-ts-throw.ts')
+    const set: Set<string> = new Set()
+
+    const { jsHandler } = getOptions({
+      babelParserOptions: {
+        // @ts-ignore
+        plugins: ['@babel/plugin-syntax-typescript']
+      }
+    })
+    const { error } = await jsHandler(testCase, set)
+    expect(error).toBeTruthy()
+  })
 })

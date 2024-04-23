@@ -10,6 +10,7 @@ export function getPlugins(options: IStyleHandlerOptions) {
   const ctx = createContext()
   options.ctx = ctx
   const plugins: AcceptedPlugin[] = [
+    ...(options.postcssOptions?.plugins ?? []),
     postcssWeappTailwindcssPrePlugin(options),
     postcssIsPseudoClass({
       specificityMatchingName: 'weapp-tw-ig'

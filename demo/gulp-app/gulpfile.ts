@@ -12,11 +12,11 @@ import gutil from 'gulp-util'
 import debug from 'gulp-debug'
 import ts from 'gulp-typescript'
 import plumber from 'gulp-plumber'
-import internal from 'stream'
-
+import type { Transform } from 'stream'
+import { createPlugins } from 'weapp-tailwindcss/gulp'
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
-const isLocal = Boolean(process.env.LOCAL)
+// const isLocal = Boolean(process.env.LOCAL)
 const useBabel = Boolean(process.env.BABEL)
 
 const platformMap = {
@@ -40,18 +40,6 @@ if (!platformHit) {
 const sass = gulpSass(dartSass)
 const tsProject = ts.createProject('tsconfig.json')
 
-let createPlugins
-// pnpm build:demo
-// isLocal 的逻辑可以删除，这段是给本地调试使用的
-if (isLocal) {
-  console.log('use local built gulp plugin')
-  const twGulp = require('./weapp-tw-dist/gulp')
-  createPlugins = twGulp.createPlugins
-} else {
-  const twGulp = require('weapp-tailwindcss-webpack-plugin/gulp')
-  createPlugins = twGulp.createPlugins
-}
-
 // 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss ，然后转化 transformWxss， 然后 transformJs, transformWxml
 const { transformJs, transformWxml, transformWxss } = createPlugins({
   rem2rpx: true,
@@ -61,7 +49,7 @@ const { transformJs, transformWxml, transformWxss } = createPlugins({
 //   mangle: true
 // }
 
-function promisify(task: internal.Transform) {
+function promisify(task: Transform) {
   return new Promise((resolve, reject) => {
     if (task.destroyed) {
       resolve(undefined)
@@ -174,7 +162,9 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
     } else {
+      // @ts-ignore
       await promisify(sassCompile())
+      // @ts-ignore
       await promisify(copyWXML())
     }
   } else if (extname === '.js' || extname === '.ts') {
@@ -182,7 +172,9 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
     } else {
+      // @ts-ignore
       await promisify(sassCompile())
+      // @ts-ignore
       await promisify(compileTsFiles())
     }
   }
@@ -218,6 +210,7 @@ function watch() {
 
 const buildTasks = [cleanTmp, copyBasicFiles, sassCompile, copyWXML, compileTsFiles]
 if (isWatch) {
+  // @ts-ignore
   buildTasks.push(watch)
 }
 // 注册默认任务

@@ -11,7 +11,7 @@ const bench = require('../../bench')('taro-vue2')
 //   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
 //   UnifiedWebpackPluginV5 = plugin
 // }
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const config = {
   projectName: 'taro-vue2-app',
   date: '2022-2-11',

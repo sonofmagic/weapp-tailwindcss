@@ -10,7 +10,6 @@
       "ES2021"
     ],
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
     "moduleResolution": "Node",
@@ -40,13 +39,14 @@
     "node_modules",
     "test/types",
     "./*.d.ts",
-    "demo/**/*"
+    "demo/**/*",
+    "test/fixtures/**/*"
   ],
   "include": [
     "src/**/*",
     "types/**/*",
     "test/**/*",
-    "e2e/**/*"
+    "e2e/**/*",
   ],
   "ts-node": {
     "compilerOptions": {

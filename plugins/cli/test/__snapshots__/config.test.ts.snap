@@ -1,0 +1,149 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`config > init js config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > init ts config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > load js config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > load nothing 1`] = `undefined`;
+
+exports[`config > load ts config 1`] = `
+{
+  "outDir": "dist",
+  "srcDir": ".",
+}
+`;
+
+exports[`config > updatePackageJson > updatePackageJson js native project 1`] = `
+{
+  "author": "",
+  "dependencies": {
+    "@weapp-tailwindcss/cli": "link:../../../..",
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "js",
+  "scripts": {
+    "build": "weapp-tw build",
+    "dev": "weapp-tw dev",
+    "test": "echo "Error: no test specified" && exit 1",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`config > updatePackageJson > updatePackageJson ts native project 1`] = `
+{
+  "author": "",
+  "dependencies": {
+    "@weapp-tailwindcss/cli": "link:../../../..",
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "ts",
+  "scripts": {
+    "build": "weapp-tw build",
+    "dev": "weapp-tw dev",
+    "test": "echo "Error: no test specified" && exit 1",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`config > updateProjectConfig > updateProjectConfig js native configed project 1`] = `
+{
+  "appid": "wxb3d842a4a7e3440d",
+  "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "auto",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "coverView": true,
+    "enhance": true,
+    "es6": true,
+    "minified": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": true,
+    "showShadowRootInWxmlPanel": true,
+  },
+  "srcMiniprogramRoot": "dist/",
+}
+`;
+
+exports[`config > updateProjectConfig > updateProjectConfig js native project 1`] = `
+{
+  "appid": "wxb3d842a4a7e3440d",
+  "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "auto",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "coverView": true,
+    "enhance": true,
+    "es6": true,
+    "minified": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": true,
+    "showShadowRootInWxmlPanel": true,
+  },
+  "srcMiniprogramRoot": "dist/",
+}
+`;

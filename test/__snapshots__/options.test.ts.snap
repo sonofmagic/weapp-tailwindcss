@@ -5,6 +5,9 @@ exports[`get options > default options 1`] = `
   "arbitraryValues": {
     "allowDoubleQuotes": false,
   },
+  "babelParserOptions": {
+    "sourceType": "unambiguous",
+  },
   "cache": {
     "calcHashValueChanged": [Function],
     "computeHash": [Function],
@@ -132,6 +135,7 @@ exports[`get options > default options 1`] = `
   "onStart": [Function],
   "onUpdate": [Function],
   "patch": [Function],
+  "postcssOptions": {},
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
   "supportCustomLengthUnitsPatch": {

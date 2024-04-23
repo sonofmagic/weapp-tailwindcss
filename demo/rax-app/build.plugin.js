@@ -8,7 +8,7 @@
 //   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack');
 //   UnifiedWebpackPluginV5 = plugin;
 // }
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin/webpack');
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack');
 const bench = require('../bench')('rax');
 // const { RaxTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
 module.exports = ({ context, onGetWebpackConfig }) => {
