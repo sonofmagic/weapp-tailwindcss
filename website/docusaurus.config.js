@@ -129,8 +129,8 @@ const config = {
       {
         // '../src/webpack.ts', '../src/vite.ts', '../src/gulp.ts'
         // '../src/types.ts',
-        entryPoints: ['../src/index.ts'],
-        tsconfig: '../tsconfig.json',
+        entryPoints: ['../packages/weapp-tailwindcss/src/index.ts'],
+        tsconfig: '../packages/weapp-tailwindcss/tsconfig.json',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH
       }
