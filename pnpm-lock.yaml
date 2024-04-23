@@ -322,6 +322,41 @@ importers:
         specifier: ^0.0.7
         version: 0.0.7
 
+  apps/native:
+    dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.0
+        version: 4.17.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      tailwindcss:
+        specifier: ^3.4.3
+        version: 3.4.3(ts-node@10.9.2)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../..
+
+  apps/native-ts:
+    dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.0
+        version: 4.17.0
+      miniprogram-api-typings:
+        specifier: ^2.8.3-1
+        version: 2.12.0
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../..
+
   plugins/cli:
     dependencies:
       commander:
@@ -330,6 +365,9 @@ importers:
       cosmiconfig:
         specifier: ^9.0.0
         version: 9.0.0(typescript@5.4.5)
+      debug:
+        specifier: 4.3.4
+        version: 4.3.4
       del:
         specifier: ^7.1.0
         version: 7.1.0
@@ -354,6 +392,9 @@ importers:
       gulp-sass:
         specifier: ^5.1.0
         version: 5.1.0
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.0.0
       postcss:
         specifier: ^8.4.38
         version: 8.4.38
@@ -364,6 +405,9 @@ importers:
         specifier: workspace:*
         version: link:../..
     devDependencies:
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
@@ -6045,7 +6089,6 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -6289,6 +6332,10 @@ packages:
   /minipass@7.0.4:
     resolution: {integrity: sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  /miniprogram-api-typings@2.12.0:
+    resolution: {integrity: sha512-ibvbqeslVFur0IAvTxLMvsbtvVcMo6gwvOnj0YZHV7aeDLu091VQRrETT2QuiG9P6aZWRcxeNGJChRKVPCp9VQ==}
+    dev: true
 
   /miniprogram-automator@0.12.1:
     resolution: {integrity: sha512-HIzpx9FuDJZjRCi8dx39E2IWNiSD6mAPEnZ3yC8ahl31o+2uphPINWhWSGN03CReb9ZvcNBuBGNjnwRBhVm4NQ==}

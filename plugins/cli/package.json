@@ -32,14 +32,16 @@
   "dependencies": {
     "commander": "^12.0.0",
     "cosmiconfig": "^9.0.0",
+    "debug": "4.3.4",
     "del": "^7.1.0",
     "fs-extra": "^11.2.0",
     "gulp": "^5.0.0",
+    "gulp-if": "^3.0.0",
     "gulp-less": "^5.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^10.0.0",
     "gulp-sass": "^5.1.0",
-    "gulp-if": "^3.0.0",
+    "picocolors": "^1.0.0",
     "postcss": "^8.4.38",
     "postcss-load-config": "^5.0.3"
   },
@@ -47,6 +49,7 @@
     "weapp-tailwindcss": "workspace:*"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.12",
     "@types/fs-extra": "^11.0.4",
     "@types/get-value": "^3.0.5",
     "@types/gulp": "^4.0.17",

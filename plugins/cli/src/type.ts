@@ -12,11 +12,13 @@ export interface BuildOptions {
   exclude: string[] | ((type: AssetType) => string[])
   include: string[] | ((type: AssetType) => string[])
   extensions: {
-    javascript: string[]
-    html: string[]
-    css: string[]
-    json: string[]
+    javascript?: string[]
+    html?: string[]
+    css?: string[]
+    json?: string[]
   }
   postcssOptions?: Partial<Omit<Result, 'file'>>
   watchOptions: WatchOptions
 }
+
+export type UserConfig = Partial<BuildOptions>

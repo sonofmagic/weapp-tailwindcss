@@ -1,0 +1,21 @@
+{
+  "name": "miniprogram-ts-less-quickstart",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "cross-env DEBUG='weapp-tw' weapp-tw dev",
+    "build": "cross-env DEBUG='weapp-tw' weapp-tw build",
+    "_postinstall": "weapp-tw patch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.0",
+    "miniprogram-api-typings": "^2.8.3-1",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}

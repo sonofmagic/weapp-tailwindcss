@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "weapp-tw dev",
-    "build": "weapp-tw build"
+    "dev": "cross-env DEBUG='weapp-tw' weapp-tw dev",
+    "build": "cross-env DEBUG='weapp-tw' weapp-tw build",
+    "_postinstall": "weapp-tw patch"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +16,8 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
+    "cross-env": "^7.0.3",
     "tailwindcss": "^3.4.3",
-    "weapp-tailwindcss": "^3.2.0-alpha.4"
+    "weapp-tailwindcss": "workspace:*"
   }
 }

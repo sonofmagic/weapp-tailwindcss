@@ -4,6 +4,8 @@ import { FSWatcher, ensureDirSync } from 'fs-extra'
 import gulp from 'gulp'
 import loadPostcssConfig from 'postcss-load-config'
 import type { Result } from 'postcss-load-config'
+import pc from 'picocolors'
+import { debug } from './debug'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
 
@@ -65,24 +67,38 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     postcssOptions
   })
 
-  const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
+  const tasks = {
+    css: getCssTasks(),
+    html: getHtmlTasks(),
+    json: getJsonTasks(),
+    js: getJsTasks(),
+    extra: [copyOthers]
+  }
 
   async function runTasks() {
-    for (const task of tasks) {
-      const s = task()
-      if (s) {
-        await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
+    debug('run tasks start')
+    for (const [key, value] of Object.entries(tasks)) {
+      debug(`run task ${pc.bold(pc.green(key))} start`)
+      for (const task of value) {
+        const s = task()
+        if (s) {
+          await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
+        }
       }
+      debug(`run task ${pc.bold(pc.green(key))} end`)
     }
+    debug('run tasks end')
   }
 
   return {
     watcher: <FSWatcher | undefined>undefined,
     async build() {
       if (clean) {
+        debug('del start')
         const { deleteAsync } = await import('del')
         const patterns = [outDir + '/**']
         await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
+        debug('del end')
       }
       ensureDirSync(path.resolve(cwd, outDir))
       await runTasks()
@@ -100,19 +116,19 @@ export function createBuilder(options?: Partial<BuildOptions>) {
         }
       })
       watcher.on('change', function (path) {
-        console.log(`File ${path} was changed`)
+        console.log(`${pc.green('changed')} ${path}`)
       })
 
       watcher.on('add', function (path) {
-        console.log(`File ${path} was added`)
+        console.log(`${pc.green('add')} ${path}`)
       })
 
       watcher.on('unlink', function (path) {
-        console.log(`File ${path} was removed`)
+        console.log(`${pc.green('remove')} ${path}`)
       })
 
       watcher.on('ready', function () {
-        console.log(`Weapp-tailwindcss is Ready!`)
+        console.log(`${pc.green('weapp')}-${pc.blue('tailwindcss')} is ready!`)
       })
       this.watcher = watcher
       return this

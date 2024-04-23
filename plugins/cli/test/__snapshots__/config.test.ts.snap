@@ -3,21 +3,21 @@
 exports[`config > init js config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 
 exports[`config > init ts config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 
 exports[`config > load js config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 
@@ -26,7 +26,7 @@ exports[`config > load nothing 1`] = `undefined`;
 exports[`config > load ts config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 

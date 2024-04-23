@@ -10,15 +10,15 @@ Set {
   "!postcss.config.js",
   "!tailwind.config.js",
   "!dist/**/*",
-  "**/*.js",
-  "**/*.ts",
-  "**/*.wxs",
-  "**/*.json",
   "**/*.wxss",
   "**/*.less",
   "**/*.sass",
   "**/*.scss",
   "**/*.wxml",
+  "**/*.json",
+  "**/*.js",
+  "**/*.ts",
+  "**/*.wxs",
 }
 `;
 
@@ -32,14 +32,14 @@ Set {
   "!postcss.config.js",
   "!tailwind.config.js",
   "!dist/**/*",
-  "miniprogram/**/*.js",
-  "miniprogram/**/*.ts",
-  "miniprogram/**/*.wxs",
-  "miniprogram/**/*.json",
   "miniprogram/**/*.wxss",
   "miniprogram/**/*.less",
   "miniprogram/**/*.sass",
   "miniprogram/**/*.scss",
   "miniprogram/**/*.wxml",
+  "miniprogram/**/*.json",
+  "miniprogram/**/*.js",
+  "miniprogram/**/*.ts",
+  "miniprogram/**/*.wxs",
 }
 `;

@@ -1,12 +1,12 @@
 import path from 'node:path'
 import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
-import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import fs from 'fs-extra'
-import { get, set } from '@/utils'
+import { get, set } from './utils'
+import { BuildOptions } from '@/type'
 
 export type WeappTwCosmiconfigResult = {
-  config: UserConfig
+  config: BuildOptions
   filepath: string
   isEmpty?: boolean
 }
@@ -17,7 +17,7 @@ export function createConfigLoader(root: string) {
   function search(searchFrom: string = root): WeappTwCosmiconfigResult | undefined {
     const searchFor = explorer.search(searchFrom)
     if (searchFor) {
-      searchFor.config = defu<UserConfig, UserConfig[]>(searchFor.config, getDefaultConfig(root))
+      searchFor.config = defu<BuildOptions, Partial<BuildOptions>[]>(searchFor.config, getDefaultConfig(root))
       return searchFor
     }
   }
@@ -32,23 +32,15 @@ export function createConfigLoader(root: string) {
   }
 }
 
-export function getDefaultConfig(root: string): UserConfig {
+export function getDefaultConfig(root: string): Partial<BuildOptions> {
   return {
     outDir: 'dist',
     root,
-    srcDir: '.'
+    src: '.'
   }
 }
 
-export type UserConfig = {
-  outDir?: string
-  root?: string
-  srcDir?: string
-  weappTailwindcssOptions?: UserDefinedOptions
-  clean?: boolean
-}
-
-export function defineConfig(options: UserConfig) {
+export function defineConfig(options: Partial<BuildOptions>) {
   return options
 }
 

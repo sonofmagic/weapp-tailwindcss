@@ -3,7 +3,7 @@ const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia0
 const _ = require('lodash')
 Page({
   data: {
-    motto: 'Hello World',
+    motto: 'text-[#434343]',
     userInfo: {
       avatarUrl: defaultAvatarUrl,
       nickName: ''
