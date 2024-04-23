@@ -49,6 +49,10 @@ exports[`custom class name 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -98,6 +102,10 @@ exports[`custom class name 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .markdown {
     color: var(--tw-prose-body);
@@ -185,7 +193,11 @@ exports[`customizing defaults with multiple values does not result in invalid cs
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -234,7 +246,11 @@ exports[`customizing defaults with multiple values does not result in invalid cs
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .prose {
     .text-align: -webkit-match-parent;
@@ -290,7 +306,11 @@ exports[`does not modify selectors with differing pseudo elements 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -339,12 +359,16 @@ exports[`does not modify selectors with differing pseudo elements 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .prose .ol .li::before,.prose .ul .li::after {
     color: red
 }
-:is(.dark .dark\\:prose) .ol .li::before,:is(.dark .dark\\:prose) .ul .li::after {
+.dark\\:prose:is(.dark *) .ol .li::before,.dark\\:prose:is(.dark *) .ul .li::after {
     color: red
 }"
 `;
@@ -398,6 +422,10 @@ exports[`element variants 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -447,6 +475,10 @@ exports[`element variants 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -616,6 +648,10 @@ exports[`element variants with custom class name 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -665,6 +701,10 @@ exports[`element variants with custom class name 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .markdown {
     color: var(--tw-prose-body);
@@ -833,7 +873,11 @@ exports[`ignores common non-trailing pseudo-elements in selectors 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -882,12 +926,16 @@ exports[`ignores common non-trailing pseudo-elements in selectors 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .prose .ol .li::before::scroll-thumb,.prose .ul .li::before::scroll-track {
     color: red
 }
-:is(.dark .dark\\:prose) .ol .li::before::scroll-thumb,:is(.dark .dark\\:prose) .ul .li::before::scroll-track {
+.dark\\:prose:is(.dark *) .ol .li::before::scroll-thumb,.dark\\:prose:is(.dark *) .ul .li::before::scroll-track {
     color: red
 }"
 `;
@@ -941,6 +989,10 @@ exports[`lead styles are inserted after paragraph styles 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -990,6 +1042,10 @@ exports[`lead styles are inserted after paragraph styles 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -1439,6 +1495,10 @@ exports[`legacy target 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -1488,6 +1548,10 @@ exports[`legacy target 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -1599,7 +1663,11 @@ exports[`lifts all common, trailing pseudo elements when the same across all sel
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -1648,12 +1716,16 @@ exports[`lifts all common, trailing pseudo elements when the same across all sel
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .prose .ol .li::marker::before,.prose .ul .li::marker::before {
     color: red
 }
-:is(.dark .dark\\:prose) .ol .li::marker::before,:is(.dark .dark\\:prose) .ul .li::marker::before {
+.dark\\:prose:is(.dark *) .ol .li::marker::before,.dark\\:prose:is(.dark *) .ul .li::marker::before {
     color: red
 }"
 `;
@@ -1706,7 +1778,11 @@ exports[`lifts only the common, trailing pseudo elements from selectors 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -1755,12 +1831,16 @@ exports[`lifts only the common, trailing pseudo elements from selectors 1`] = `
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 .prose .ol .li::scroll-thumb::before,.prose .ul .li::scroll-track::before {
     color: red
 }
-:is(.dark .dark\\:prose) .ol .li::scroll-thumb::before,:is(.dark .dark\\:prose) .ul .li::scroll-track::before {
+.dark\\:prose:is(.dark *) .ol .li::scroll-thumb::before,.dark\\:prose:is(.dark *) .ul .li::scroll-track::before {
     color: red
 }"
 `;
@@ -1814,6 +1894,10 @@ exports[`modifiers 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -1863,6 +1947,10 @@ exports[`modifiers 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -1984,6 +2072,10 @@ exports[`preifx > xxx 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -2033,6 +2125,10 @@ exports[`preifx > xxx 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -2482,6 +2578,10 @@ exports[`preifx > xxx case 0 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -2531,6 +2631,10 @@ exports[`preifx > xxx case 0 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -2980,6 +3084,10 @@ exports[`preifx > xxx case 1 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -3029,6 +3137,10 @@ exports[`preifx > xxx case 1 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -3478,6 +3590,10 @@ exports[`should be possible to specify custom h5 and h6 styles 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -3527,6 +3643,10 @@ exports[`should be possible to specify custom h5 and h6 styles 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -3984,6 +4104,10 @@ exports[`should be possible to use nested syntax (&) when extending the config 1
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -4033,6 +4157,10 @@ exports[`should be possible to use nested syntax (&) when extending the config 1
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: #000;
@@ -4484,7 +4612,11 @@ exports[`should not break with multiple selectors with pseudo elements using var
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -4533,9 +4665,13 @@ exports[`should not break with multiple selectors with pseudo elements using var
     --tw-backdrop-invert:  ;
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  
+    --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  
 }
-:is(.dark .dark\\:prose) .ol .li::before,:is(.dark .dark\\:prose) .ul .li::before {
+.dark\\:prose:is(.dark *) .ol .li::before,.dark\\:prose:is(.dark *) .ul .li::before {
     color: red
 }"
 `;
@@ -4589,6 +4725,10 @@ exports[`specificity is reduced with :where 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -4638,6 +4778,10 @@ exports[`specificity is reduced with :where 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .prose {
     color: var(--tw-prose-body);
@@ -4730,6 +4874,10 @@ exports[`variants 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 ::backdrop {
     --tw-border-spacing-x: 0;
@@ -4779,6 +4927,10 @@ exports[`variants 1`] = `
     --tw-backdrop-opacity:  ;
     --tw-backdrop-saturate:  ;
     --tw-backdrop-sepia:  ;
+    --tw-contain-size:  ;
+    --tw-contain-layout:  ;
+    --tw-contain-paint:  ;
+    --tw-contain-style:  ;
 }
 .hover\\:prose-lg:hover {
     color: green;

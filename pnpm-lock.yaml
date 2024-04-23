@@ -169,7 +169,7 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0(vitest@1.5.0)
       '@weapp-tailwindcss/cli':
-        specifier: 0.0.0-alpha.5
+        specifier: workspace:*
         version: link:plugins/cli
       autoprefixer:
         specifier: ^10.4.19
@@ -361,8 +361,8 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3(postcss@8.4.38)
       weapp-tailwindcss:
-        specifier: 3.2.0-alpha.4
-        version: 3.2.0-alpha.4(tailwindcss@3.4.3)
+        specifier: workspace:*
+        version: link:../..
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -8869,39 +8869,6 @@ packages:
     dependencies:
       tailwindcss: 3.4.3(ts-node@10.9.2)
     dev: true
-
-  /weapp-tailwindcss@3.2.0-alpha.4(tailwindcss@3.4.3):
-    resolution: {integrity: sha512-ziqZYLyUSqv+/J2XUgF3JHNh/NFUxAZoDL2X3guww/PXCSPdMh3wualUEP0Ul3rJ8+SfV+OCaCn+4BmGHUgauA==}
-    engines: {node: '>=16.6.0'}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      '@ast-core/escape': 1.0.1
-      '@babel/generator': 7.24.4
-      '@babel/parser': 7.24.4
-      '@babel/traverse': 7.24.1
-      '@babel/types': 7.24.0
-      '@csstools/postcss-is-pseudo-class': 4.0.6(postcss@8.4.38)
-      '@tailwindcss-mangle/shared': 2.2.2
-      '@weapp-core/escape': 2.0.0
-      '@weapp-core/regex': 1.0.1
-      debug: 4.3.4
-      htmlparser2: 9.1.0
-      loader-utils: 2.0.4
-      lru-cache: 10.2.0
-      magic-string: 0.30.10
-      md5: 2.3.0
-      postcss: 8.4.38
-      postcss-rem-to-responsive-pixel: 6.0.1
-      postcss-selector-parser: 6.0.16
-      semver: 7.6.0
-      tailwindcss-patch: 2.2.3(tailwindcss@3.4.3)
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-      - tailwindcss
-    dev: false
 
   /webpack-build-utils@0.0.7:
     resolution: {integrity: sha512-DITiVtG+5nfxW06XZW6pAlPt1giVoGom0Z4R7S51jqmXNiP3cxVQtODzWHf0H9sX2WgfXPtDwGdvfzbvBEVJLg==}
