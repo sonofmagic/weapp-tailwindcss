@@ -17,6 +17,7 @@ if (command === 'patch') {
   patch()
 } else {
   try {
+    // @ts-ignore
     import('@weapp-tailwindcss/cli').then(({ createCli }) => {
       createCli().parse()
     })
