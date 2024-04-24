@@ -1,16 +1,30 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`config > init js config 1`] = `
+exports[`config > initConfig > init js config 1`] = `
 {
   "outDir": "dist",
   "src": ".",
 }
 `;
 
-exports[`config > init ts config 1`] = `
+exports[`config > initConfig > init js config with tsconfig 1`] = `
+{
+  "outDir": "dist",
+  "src": "./miniprogram",
+}
+`;
+
+exports[`config > initConfig > init ts config 1`] = `
 {
   "outDir": "dist",
   "src": ".",
+}
+`;
+
+exports[`config > initConfig > init ts config with tsconfig 1`] = `
+{
+  "outDir": "dist",
+  "src": "./miniprogram",
 }
 `;
 

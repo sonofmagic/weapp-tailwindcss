@@ -79,7 +79,7 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
 export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite = true): InternalPatchResult | undefined {
   if (pkgJsonPath) {
     // eslint-disable-next-line unicorn/prefer-module
-    const pkgJson = require(pkgJsonPath) as PackageJson
+    const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8')) as PackageJson
     const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
     const version = pkgJson.version!
     if (semverGte(version, dangerousOptions.gteVersion)) {

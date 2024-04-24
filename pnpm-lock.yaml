@@ -215,6 +215,9 @@ importers:
       sass:
         specifier: ^1.75.0
         version: 1.75.0
+      semver:
+        specifier: 7.6.0
+        version: 7.6.0
       style-loader:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.91.0)
@@ -292,6 +295,9 @@ importers:
       miniprogram-api-typings:
         specifier: ^2.8.3-1
         version: 2.12.0
+      tailwindcss:
+        specifier: ^3.4.3
+        version: 3.4.3(ts-node@10.9.2)
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss

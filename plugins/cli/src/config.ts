@@ -122,16 +122,21 @@ export function initConfig(options?: InitConfigOptions) {
   const { lang, root } = defu<InitConfigOptions, InitConfigOptions[]>(options, { lang: 'js', root: process.cwd() }) as Required<InitConfigOptions>
   const configFilename = `weapp-tw.config.${lang ?? 'js'}`
   const configPath = path.resolve(root, configFilename)
-
-  // const tsconfigPath = path.resolve(root, 'tsconfig.json')
+  const tsconfigPath = path.resolve(root, 'tsconfig.json')
+  const isTsconfigExisted = fs.existsSync(tsconfigPath)
 
   fs.ensureDirSync(root)
+  const configOptionsStr = isTsconfigExisted
+    ? `{
+  src: './miniprogram'
+}`
+    : '{}'
   if (lang === 'ts') {
     fs.writeFileSync(
       configPath,
       `import { defineConfig } from '@weapp-tailwindcss/cli'
 
-export default defineConfig({})
+export default defineConfig(${configOptionsStr})
 `,
       'utf8'
     )
@@ -139,7 +144,7 @@ export default defineConfig({})
     fs.writeFileSync(
       configPath,
       `/** @type {import('@weapp-tailwindcss/cli').UserConfig} */
-module.exports = {}
+module.exports = ${configOptionsStr}
 `,
       'utf8'
     )
