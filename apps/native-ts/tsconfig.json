@@ -16,13 +16,15 @@
     "noUnusedParameters": true,
     "strict": true,
     "strictPropertyInitialization": true,
-    "lib": ["ES2020"],
-    "typeRoots": [
-      "./typings"
+    "lib": [
+      "ES2020"
+    ],
+    "types": [
+      "miniprogram-api-typings"
     ]
   },
   "include": [
-    "./**/*.ts"
+    "miniprogram/**/*.ts"
   ],
   "exclude": [
     "node_modules"

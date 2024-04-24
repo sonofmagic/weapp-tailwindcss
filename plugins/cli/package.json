@@ -57,25 +57,6 @@
   "peerDependencies": {
     "weapp-tailwindcss": "workspace:*"
   },
-  "devDependencies": {
-    "@types/debug": "^4.1.12",
-    "@types/fs-extra": "^11.0.4",
-    "@types/get-value": "^3.0.5",
-    "@types/gulp": "^4.0.17",
-    "@types/gulp-if": "^3.0.4",
-    "@types/gulp-less": "^0.0.36",
-    "@types/gulp-plumber": "^0.0.37",
-    "@types/gulp-postcss": "^8.0.6",
-    "@types/gulp-sass": "^5.0.4",
-    "@types/set-value": "^4.0.3",
-    "@types/vinyl-fs": "^3.0.5",
-    "chokidar": "^3.6.0",
-    "defu": "^6.1.4",
-    "get-value": "^3.0.1",
-    "set-value": "^4.1.0",
-    "ts-morph": "^22.0.0",
-    "vinyl-fs": "^4.0.0"
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
