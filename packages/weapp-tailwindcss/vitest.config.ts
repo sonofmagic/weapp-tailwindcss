@@ -14,7 +14,7 @@ export default defineConfig({
       }
     ],
     // ,
-    include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)', process.env.TARGET === '1' ? undefined : 'plugins/**/test/**/*.{test,spec}.?(c|m)[jt]s?(x)'].filter(Boolean) as string[],
+    include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     coverage: {
       enabled: true,
       all: false
