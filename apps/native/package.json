@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env DEBUG='weapp-tw' weapp-tw dev",
     "build": "cross-env DEBUG='weapp-tw' weapp-tw build",
-    "_postinstall": "weapp-tw patch"
+    "postinstall": "weapp-tw patch"
   },
   "keywords": [],
   "author": "",

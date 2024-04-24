@@ -244,7 +244,7 @@
     "webpack": "^5.91.0",
     "webpack-build-utils": "^0.0.7"
   },
-  "packageManager": "pnpm@8.15.4",
+  "packageManager": "pnpm@9.0.6",
   "engines": {
     "node": ">=16.6.0"
   }
