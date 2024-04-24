@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "0.0.0-alpha.5",
+  "version": "0.0.0-alpha.6",
   "description": "The cli of weapp-tailwindcss",
   "scripts": {
     "dev": "unbuild --sourcemap",
@@ -11,9 +11,18 @@
     "dev:watch": "node test/scripts/watch.js",
     "sync": "cnpm sync @weapp-tailwindcss/cli"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "weapp",
+    "tailwindcss",
+    "cli",
+    "plugin"
+  ],
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+  },
+  "homepage": "https://weapp-tw.icebreaker.top",
   "sideEffects": false,
   "type": "commonjs",
   "exports": {
