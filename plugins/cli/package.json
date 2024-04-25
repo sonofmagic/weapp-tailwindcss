@@ -51,12 +51,27 @@
     "gulp-postcss": "^10.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
+    "gulp-typescript": "6.0.0-alpha.1",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.38",
     "postcss-load-config": "^5.0.3"
   },
   "peerDependencies": {
-    "weapp-tailwindcss": "workspace:*"
+    "less": "*",
+    "sass": "*",
+    "weapp-tailwindcss": "workspace:*",
+    "typescript": "*"
+  },
+  "peerDependenciesMeta": {
+    "less": {
+      "optional": true
+    },
+    "sass": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public",

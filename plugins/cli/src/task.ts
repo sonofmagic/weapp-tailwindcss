@@ -4,6 +4,10 @@ import gulp from 'gulp'
 import postcssrc from 'gulp-postcss'
 import plumber from 'gulp-plumber'
 import gulpif from 'gulp-if'
+import createSass from 'gulp-sass'
+import rename from 'gulp-rename'
+import less from 'gulp-less'
+import typescript from 'gulp-typescript'
 import { AssetType } from '@/enum'
 import type { BuildOptions } from '@/type'
 
@@ -23,10 +27,34 @@ export function promisify(task: Transform | Transform[]) {
   })
 }
 
-export function getTasks(options: BuildOptions) {
-  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include, postcssOptions } = options
+function isSassLang(lang: string): lang is 'scss' | 'sass' {
+  return lang === 'scss' || lang === 'sass'
+}
+
+function isLessLang(lang: string): lang is 'less' {
+  return lang === 'less'
+}
+
+function isTsLang(lang: string): lang is 'ts' {
+  return lang === 'ts'
+}
+
+// function isPreprocessorLang(lang: string) {
+//   return isSassLang(lang) || isLessLang(lang)
+// }
+
+export async function getTasks(options: BuildOptions) {
+  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include, postcssOptions, preprocessorOptions, typescriptOptions } = options
   const globsSet = new Set<string>()
   const base = srcBase ? srcBase + '/' : ''
+  const enableSass = Boolean(preprocessorOptions?.sass)
+  const enableLess = Boolean(preprocessorOptions?.less)
+  const enableTs = Boolean(typescriptOptions)
+  let sass: ReturnType<typeof createSass>
+  if (enableSass) {
+    const { default: sassLib } = await import('sass')
+    sass = createSass(sassLib)
+  }
 
   function globsSetAdd(...value: string[] | string[][]) {
     for (const v of value) {
@@ -59,22 +87,32 @@ export function getTasks(options: BuildOptions) {
     const assetType = AssetType.JavaScript
     const globs = getGlobs(assetType)
     globsSetAdd(globs)
-    return extensions[assetType].map((x) => {
+    return extensions[assetType]?.map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
+      const isTs = isTsLang(x)
+      const loadTs = enableTs && isTs
       return function JsTask() {
         return gulp
           .src([src, ...globs], { cwd, since: gulp.lastRun(JsTask) })
           .pipe(plumber())
+          .pipe(gulpif(loadTs, typescript(typeof typescriptOptions === 'boolean' ? {} : typescriptOptions)))
           .pipe(
             transformJs({
-              babelParserOptions:
-                x === 'ts'
-                  ? {
-                      plugins: ['typescript']
-                    }
-                  : undefined
+              babelParserOptions: isTs
+                ? {
+                    plugins: ['typescript']
+                  }
+                : undefined
             })
+          )
+          .pipe(
+            gulpif(
+              loadTs,
+              rename({
+                extname: '.js'
+              })
+            )
           )
           .pipe(
             gulp.dest(outDir, {
@@ -89,7 +127,7 @@ export function getTasks(options: BuildOptions) {
     const assetType = AssetType.Json
     const globs = getGlobs(assetType)
     globsSetAdd(globs)
-    return extensions[assetType].map((x) => {
+    return extensions[assetType]?.map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
       return function JsonTask() {
@@ -109,15 +147,37 @@ export function getTasks(options: BuildOptions) {
     const assetType = AssetType.Css
     const globs = getGlobs(assetType)
     globsSetAdd(globs)
-    return extensions[assetType].map((x) => {
+    return extensions[assetType]?.map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
+      const loadSass = enableSass && isSassLang(x)
+      const loadLess = enableLess && isLessLang(x)
       return function CssTask() {
         return gulp
           .src([src, ...globs], { cwd, since: gulp.lastRun(CssTask) })
           .pipe(plumber())
+          .pipe(
+            gulpif(
+              loadSass,
+              sass
+                .sync(
+                  // @ts-ignore
+                  typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass
+                )
+                .on('error', sass.logError)
+            )
+          )
+          .pipe(gulpif(loadLess, less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less)))
           .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
           .pipe(transformWxss())
+          .pipe(
+            gulpif(
+              loadSass || loadLess,
+              rename({
+                extname: '.wxss'
+              })
+            )
+          )
           .pipe(
             gulp.dest(outDir, {
               cwd
@@ -131,7 +191,7 @@ export function getTasks(options: BuildOptions) {
     const assetType = AssetType.Html
     const globs = getGlobs(assetType)
     globsSetAdd(globs)
-    return extensions[assetType].map((x) => {
+    return extensions[assetType]?.map((x) => {
       const src = `${base}**/*.${x}`
       globsSetAdd(src)
       return function HtmlTask() {

@@ -25,19 +25,12 @@ const defaultNodeModulesDirs = [
   'tailwind.config.js'
 ]
 
-export function createBuilder(options?: Partial<BuildOptions>) {
-  const {
-    root: cwd,
-    weappTailwindcssOptions,
-    outDir,
-    src: srcBase,
-    clean,
-    extensions,
-    exclude,
-    include,
-    watchOptions,
-    postcssOptions
-  } = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
+export async function createBuilder(options?: Partial<BuildOptions>) {
+  let postcssOptionsFromConfig: Result | undefined
+  try {
+    postcssOptionsFromConfig = await loadPostcssConfig({ cwd: options?.root })
+  } catch {}
+  const opt = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
     outDir: 'dist',
     weappTailwindcssOptions: {},
     clean: true,
@@ -51,21 +44,11 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     },
     watchOptions: {
       events: ['add', 'change', 'unlink', 'ready']
-    }
+    },
+    postcssOptions: postcssOptionsFromConfig
   })
 
-  const { copyOthers, getCssTasks, getHtmlTasks, getJsTasks, getJsonTasks, globsSet } = getTasks({
-    root: cwd,
-    weappTailwindcssOptions,
-    outDir,
-    src: srcBase,
-    clean,
-    extensions,
-    exclude,
-    include,
-    watchOptions,
-    postcssOptions
-  })
+  const { copyOthers, getCssTasks, getHtmlTasks, getJsTasks, getJsonTasks, globsSet } = await getTasks(opt)
 
   const tasks = {
     css: getCssTasks(),
@@ -78,18 +61,20 @@ export function createBuilder(options?: Partial<BuildOptions>) {
   async function runTasks() {
     debug('run tasks start')
     for (const [key, value] of Object.entries(tasks)) {
-      debug(`run task ${pc.bold(pc.green(key))} start`)
-      for (const task of value) {
-        const s = task()
-        if (s) {
-          await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
+      if (value) {
+        debug(`run task ${pc.bold(pc.green(key))} start`)
+        for (const task of value) {
+          const s = task()
+          if (s) {
+            await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
+          }
         }
+        debug(`run task ${pc.bold(pc.green(key))} end`)
       }
-      debug(`run task ${pc.bold(pc.green(key))} end`)
     }
     debug('run tasks end')
   }
-
+  const { clean, outDir, root: cwd, watchOptions } = opt
   return {
     watcher: <FSWatcher | undefined>undefined,
     async build() {
@@ -138,20 +123,11 @@ export function createBuilder(options?: Partial<BuildOptions>) {
 }
 
 export async function build(options?: Partial<BuildOptions>) {
-  let postcssOptions: Result | undefined
-  try {
-    postcssOptions = await loadPostcssConfig({ cwd: options?.root })
-  } catch {}
-
-  const builder = createBuilder(defu<BuildOptions, Partial<BuildOptions>[]>(options, { postcssOptions }))
+  const builder = await createBuilder(options)
   return await builder.build()
 }
 
 export async function watch(options?: Partial<BuildOptions>) {
-  let postcssOptions: Result | undefined
-  try {
-    postcssOptions = await loadPostcssConfig({ cwd: options?.root })
-  } catch {}
-  const builder = createBuilder(defu<BuildOptions, Partial<BuildOptions>[]>(options, { postcssOptions }))
+  const builder = await createBuilder(options)
   return await builder.watch()
 }

@@ -1,7 +1,23 @@
 import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import type { WatchOptions } from 'gulp'
 import type { Result } from 'postcss-load-config'
+import type { Options as SassOptions } from 'sass'
+import type { Settings } from 'gulp-typescript'
 import type { AssetType } from '@/enum'
+
+export interface GulpLessOptions {
+  modifyVars?: object | undefined
+  paths?: string[] | undefined
+  plugins?: any[] | undefined
+  relativeUrls?: boolean | undefined
+}
+
+export interface GulpSassOptions extends SassOptions<'sync'> {
+  errLogToConsole?: boolean | undefined
+  onSuccess?: ((css: string) => any) | undefined
+  onError?: ((err: Error) => any) | undefined
+  sync?: boolean | undefined
+}
 
 export interface BuildOptions {
   weappTailwindcssOptions: UserDefinedOptions
@@ -18,7 +34,12 @@ export interface BuildOptions {
     json?: string[]
   }
   postcssOptions?: Partial<Omit<Result, 'file'>>
+  preprocessorOptions?: {
+    sass?: boolean | GulpSassOptions
+    less?: boolean | GulpLessOptions
+  }
   watchOptions: WatchOptions
+  typescriptOptions: boolean | Settings
 }
 
 export type UserConfig = Partial<BuildOptions>
