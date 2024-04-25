@@ -1,4 +1,6 @@
 import { readFileSync } from 'node:fs'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import typescript from '@rollup/plugin-typescript'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -6,7 +8,6 @@ import json from '@rollup/plugin-json'
 import { visualizer } from 'rollup-plugin-visualizer'
 import type { PackageJson } from 'pkg-types'
 // import terser from '@rollup/plugin-terser'
-// import { resolve } from 'path'
 import type { RollupOptions } from 'rollup'
 import lodash from 'lodash'
 const { omit } = lodash
@@ -15,6 +16,7 @@ const pkg = JSON.parse(
     encoding: 'utf8'
   })
 ) as PackageJson
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
@@ -36,15 +38,15 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       }),
       commonjs(),
       typescript({
-        tsconfig: './tsconfig.build.json',
+        tsconfig: resolve(__dirname, './tsconfig.build.json'),
         sourceMap: isDev,
         declaration: false
       }),
       isProd
         ? visualizer({
-          // emitFile: true,
-          filename: `stats/${entry.name}.html`
-        })
+            // emitFile: true,
+            filename: `stats/${entry.name}.html`
+          })
         : undefined
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin', '@ast-grep/napi', '@weapp-tailwindcss/cli']

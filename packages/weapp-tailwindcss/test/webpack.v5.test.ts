@@ -26,6 +26,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
   ])
 
   return getCompiler5({
+    context: path.resolve(__dirname, '..'),
     mode,
     entry,
     output: {
