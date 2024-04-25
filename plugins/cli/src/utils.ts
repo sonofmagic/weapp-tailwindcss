@@ -1,3 +1,4 @@
+import type { Transform } from 'node:stream'
 import fs from 'fs-extra'
 
 const cssMatcher = (file: string) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)
@@ -23,3 +24,23 @@ export function touch(filename: string) {
 
 export { default as set } from 'set-value'
 export { default as get } from 'get-value'
+
+export function isObject(x: unknown): x is Record<string | symbol | number, unknown> {
+  return typeof x === 'object' && x !== null
+}
+
+export function promisify(task: Transform | Transform[]) {
+  return new Promise((resolve, reject) => {
+    if (Array.isArray(task)) {
+      Promise.all(task.map((x) => promisify(x)))
+        .then(resolve)
+        .catch(reject)
+    } else {
+      if (task.destroyed) {
+        resolve(undefined)
+        return
+      }
+      task.on('finish', resolve).on('error', reject)
+    }
+  })
+}

@@ -1,4 +1,3 @@
-import type { Transform } from 'node:stream'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import gulp from 'gulp'
 import postcssrc from 'gulp-postcss'
@@ -10,22 +9,7 @@ import less from 'gulp-less'
 import typescript from 'gulp-typescript'
 import { AssetType } from '@/enum'
 import type { BuildOptions } from '@/type'
-
-export function promisify(task: Transform | Transform[]) {
-  return new Promise((resolve, reject) => {
-    if (Array.isArray(task)) {
-      Promise.all(task.map((x) => promisify(x)))
-        .then(resolve)
-        .catch(reject)
-    } else {
-      if (task.destroyed) {
-        resolve(undefined)
-        return
-      }
-      task.on('finish', resolve).on('error', reject)
-    }
-  })
-}
+import { isObject } from '@/utils'
 
 function isSassLang(lang: string): lang is 'scss' | 'sass' {
   return lang === 'scss' || lang === 'sass'
@@ -39,22 +23,31 @@ function isTsLang(lang: string): lang is 'ts' {
   return lang === 'ts'
 }
 
-// function isPreprocessorLang(lang: string) {
-//   return isSassLang(lang) || isLessLang(lang)
-// }
-
 export async function getTasks(options: BuildOptions) {
-  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include, postcssOptions, preprocessorOptions, typescriptOptions } = options
+  let { typescriptOptions } = options
+  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include, postcssOptions, preprocessorOptions } = options
   const globsSet = new Set<string>()
   const base = srcBase ? srcBase + '/' : ''
   const enableSass = Boolean(preprocessorOptions?.sass)
   const enableLess = Boolean(preprocessorOptions?.less)
+
+  if (typescriptOptions === true) {
+    typescriptOptions = {
+      tsConfigFileName: 'tsconfig.json'
+    }
+  } else if (isObject(typescriptOptions) && typescriptOptions.tsConfigFileName === undefined) {
+    typescriptOptions.tsConfigFileName = 'tsconfig.json'
+  }
+
   const enableTs = Boolean(typescriptOptions)
+
   let sass: ReturnType<typeof createSass>
   if (enableSass) {
-    const { default: sassLib } = await import('sass')
+    const sassLib = await import('sass')
+    // { default: sassLib }
     sass = createSass(sassLib)
   }
+  const { transformJs, transformWxml, transformWxss } = createPlugins(weappTailwindcssOptions)
 
   function globsSetAdd(...value: string[] | string[][]) {
     for (const v of value) {
@@ -81,8 +74,6 @@ export async function getTasks(options: BuildOptions) {
     return globs
   }
 
-  const { transformJs, transformWxml, transformWxss } = createPlugins(weappTailwindcssOptions)
-
   function getJsTasks() {
     const assetType = AssetType.JavaScript
     const globs = getGlobs(assetType)
@@ -92,18 +83,25 @@ export async function getTasks(options: BuildOptions) {
       globsSetAdd(src)
       const isTs = isTsLang(x)
       const loadTs = enableTs && isTs
+      let gulpTs: ReturnType<typeof typescript.createProject>
+      if (enableTs && typeof typescriptOptions !== 'boolean') {
+        gulpTs = typescript.createProject(typescriptOptions.tsConfigFileName ?? 'tsconfig.json', typeof typescriptOptions === 'boolean' ? {} : typescriptOptions)
+      }
+
       return function JsTask() {
-        return gulp
-          .src([src, ...globs], { cwd, since: gulp.lastRun(JsTask) })
-          .pipe(plumber())
-          .pipe(gulpif(loadTs, typescript(typeof typescriptOptions === 'boolean' ? {} : typescriptOptions)))
+        let chain: NodeJS.ReadWriteStream = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(JsTask) }).pipe(plumber())
+        if (loadTs) {
+          chain = chain.pipe(gulpTs())
+        }
+        return chain
           .pipe(
             transformJs({
-              babelParserOptions: isTs
-                ? {
-                    plugins: ['typescript']
-                  }
-                : undefined
+              babelParserOptions:
+                !enableTs && isTs
+                  ? {
+                      plugins: ['typescript']
+                    }
+                  : undefined
             })
           )
           .pipe(
@@ -153,20 +151,18 @@ export async function getTasks(options: BuildOptions) {
       const loadSass = enableSass && isSassLang(x)
       const loadLess = enableLess && isLessLang(x)
       return function CssTask() {
-        return gulp
-          .src([src, ...globs], { cwd, since: gulp.lastRun(CssTask) })
-          .pipe(plumber())
-          .pipe(
-            gulpif(
-              loadSass,
-              sass
-                .sync(
-                  // @ts-ignore
-                  typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass
-                )
-                .on('error', sass.logError)
-            )
+        let chain: NodeJS.ReadWriteStream = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(CssTask) }).pipe(plumber())
+        if (loadSass) {
+          chain = chain.pipe(
+            sass
+              .sync(
+                // @ts-ignore
+                typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass
+              )
+              .on('error', sass.logError)
           )
+        }
+        return chain
           .pipe(gulpif(loadLess, less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less)))
           .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
           .pipe(transformWxss())

@@ -39,7 +39,12 @@ export interface BuildOptions {
     less?: boolean | GulpLessOptions
   }
   watchOptions: WatchOptions
-  typescriptOptions: boolean | Settings
+  typescriptOptions:
+    | boolean
+    | {
+        settings?: Settings
+        tsConfigFileName?: string
+      }
 }
 
 export type UserConfig = Partial<BuildOptions>
