@@ -90,8 +90,8 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     },
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
-
-      const watcher = gulp.watch(globsSet.dump(), watchOptions, async (cb) => {
+      const dumps = globsSet.dump()
+      const watcher = gulp.watch(dumps, watchOptions, async (cb) => {
         try {
           await runTasks()
           cb()

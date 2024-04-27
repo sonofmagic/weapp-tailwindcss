@@ -32,7 +32,7 @@ export function isObject(x: unknown): x is Record<string | symbol | number, unkn
 export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[]): Promise<unknown> {
   return new Promise((resolve, reject) => {
     if (Array.isArray(task)) {
-      Promise.all(task.map((x) => promisify(x)))
+      return Promise.all(task.map((x) => promisify(x)))
         .then(resolve)
         .catch(reject)
     } else {
@@ -40,7 +40,31 @@ export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[
         resolve(undefined)
         return
       }
-      task.on('finish', resolve).on('error', reject)
+      task
+        .on('finish', () => {
+          resolve(undefined)
+        })
+        .on('error', (err) => {
+          reject(err)
+        })
+        .on('end', () => {
+          console.log('end')
+        })
+        .on('close', () => {
+          console.log('close')
+        })
+        .on('drain', () => {
+          console.log('drain')
+        })
+        .on('pipe', () => {
+          console.log('pipe')
+        })
+        .on('unpipe', () => {
+          console.log('unpipe')
+        })
+        .on('data', (data: any) => {
+          console.log('data', data.path)
+        })
     }
   })
 }

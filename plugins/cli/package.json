@@ -45,6 +45,7 @@
     "del": "^7.1.0",
     "fs-extra": "^11.2.0",
     "gulp": "^5.0.0",
+    "gulp-debug": "^5.0.1",
     "gulp-if": "^3.0.0",
     "gulp-less": "^5.0.0",
     "gulp-plumber": "^1.2.1",
