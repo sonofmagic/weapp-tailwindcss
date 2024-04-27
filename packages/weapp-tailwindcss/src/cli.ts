@@ -3,6 +3,7 @@ import { createPatch } from '@/tailwindcss/patcher'
 import { getOptions } from '@/options'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from '@/constants'
 
+process.title = 'node (weapp-tailwindcss)'
 const args = process.argv.slice(2)
 
 if (semver.lt(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION)) {

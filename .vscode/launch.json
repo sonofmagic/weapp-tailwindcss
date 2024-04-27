@@ -5,6 +5,34 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm run dev",
+      "name": "[App] native",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/native"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[App] native-skyline",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/native-skyline"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[App] native-ts",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/native-ts"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[App] native-ts-skyline",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/native-ts-skyline"
+    },
+    {
       "command": "npm run dev:watch",
       "name": "[CLI] watch script",
       "request": "launch",

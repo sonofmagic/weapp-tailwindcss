@@ -66,10 +66,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
       if (value) {
         debug(`run task ${pc.bold(pc.green(key))} start`)
         for (const task of value) {
-          const s = task()
-          if (s) {
-            await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
-          }
+          await task()
         }
         debug(`run task ${pc.bold(pc.green(key))} end`)
       }
@@ -94,7 +91,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
 
-      const watcher = gulp.watch([...globsSet], watchOptions, async (cb) => {
+      const watcher = gulp.watch(globsSet.dump(), watchOptions, async (cb) => {
         try {
           await runTasks()
           cb()

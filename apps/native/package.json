@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env DEBUG='weapp-tw' weapp-tw dev",
-    "build": "cross-env DEBUG='weapp-tw' weapp-tw build",
+    "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",
+    "build": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw build",
     "postinstall": "weapp-tw patch"
   },
   "keywords": [],

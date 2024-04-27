@@ -29,14 +29,14 @@ export function isObject(x: unknown): x is Record<string | symbol | number, unkn
   return typeof x === 'object' && x !== null
 }
 
-export function promisify(task: Transform | Transform[]) {
+export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[]): Promise<unknown> {
   return new Promise((resolve, reject) => {
     if (Array.isArray(task)) {
       Promise.all(task.map((x) => promisify(x)))
         .then(resolve)
         .catch(reject)
     } else {
-      if (task.destroyed) {
+      if ((<Transform>task).destroyed) {
         resolve(undefined)
         return
       }
