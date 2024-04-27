@@ -1,4 +1,6 @@
 /** @type {import('@weapp-tailwindcss/cli').UserConfig} */
-module.exports = {
+const config = {
   src: './miniprogram'
 }
+
+module.exports = config

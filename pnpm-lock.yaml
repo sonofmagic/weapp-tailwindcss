@@ -325,6 +325,18 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
+  apps/native-skyline:
+    devDependencies:
+      '@weapp-tailwindcss/cli':
+        specifier: workspace:*
+        version: link:../../plugins/cli
+      tailwindcss:
+        specifier: ^3.4.3
+        version: 3.4.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+
   apps/native-ts:
     dependencies:
       lodash:
@@ -343,6 +355,12 @@ importers:
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
+
+  apps/native-ts-skyline:
+    devDependencies:
+      miniprogram-api-typings:
+        specifier: ^2.8.3-1
+        version: 2.12.0
 
   packages/weapp-tailwindcss:
     dependencies:
@@ -454,6 +472,9 @@ importers:
       less:
         specifier: '*'
         version: 4.2.0
+      local-pkg:
+        specifier: ^0.5.0
+        version: 0.5.0
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
@@ -6047,6 +6068,9 @@ packages:
   minipass@7.0.4:
     resolution: {integrity: sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  miniprogram-api-typings@2.12.0:
+    resolution: {integrity: sha512-ibvbqeslVFur0IAvTxLMvsbtvVcMo6gwvOnj0YZHV7aeDLu091VQRrETT2QuiG9P6aZWRcxeNGJChRKVPCp9VQ==}
 
   miniprogram-api-typings@3.12.2:
     resolution: {integrity: sha512-OJB2uVAfhycX4teG/zEVpoThushQqLOx946XACDpVc6OQydiJWjn7djVzvNCbv0VOA7sbHGPQp/RkXD9vMCDEw==}
@@ -15489,6 +15513,8 @@ snapshots:
   minipass@5.0.0: {}
 
   minipass@7.0.4: {}
+
+  miniprogram-api-typings@2.12.0: {}
 
   miniprogram-api-typings@3.12.2: {}
 

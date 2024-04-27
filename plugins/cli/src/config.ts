@@ -111,6 +111,8 @@ export function updatePackageJson(options: { root: string; dest?: string }) {
       }
       set(packageJson, 'scripts.dev', 'weapp-tw dev')
       set(packageJson, 'scripts.build', 'weapp-tw build')
+      set(packageJson, 'scripts.postinstall', 'weapp-tw patch')
+
       fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
         spaces: 2
       })
@@ -144,7 +146,9 @@ export default defineConfig(${configOptionsStr})
     fs.writeFileSync(
       configPath,
       `/** @type {import('@weapp-tailwindcss/cli').UserConfig} */
-module.exports = ${configOptionsStr}
+const config = ${configOptionsStr}
+
+module.exports = config
 `,
       'utf8'
     )

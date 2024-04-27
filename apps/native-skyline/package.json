@@ -1,0 +1,19 @@
+{
+  "name": "native-skyline",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env DEBUG='weapp-tw' weapp-tw dev",
+    "build": "cross-env DEBUG='weapp-tw' weapp-tw build",
+    "postinstall": "weapp-tw patch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@weapp-tailwindcss/cli": "workspace:*",
+    "tailwindcss": "^3.4.3",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}

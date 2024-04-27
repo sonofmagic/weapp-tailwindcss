@@ -52,6 +52,7 @@
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-typescript": "6.0.0-alpha.1",
+    "local-pkg": "^0.5.0",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.38",
     "postcss-load-config": "^5.0.3"
@@ -59,8 +60,8 @@
   "peerDependencies": {
     "less": "*",
     "sass": "*",
-    "weapp-tailwindcss": "workspace:*",
-    "typescript": "*"
+    "typescript": "*",
+    "weapp-tailwindcss": "workspace:*"
   },
   "peerDependenciesMeta": {
     "less": {

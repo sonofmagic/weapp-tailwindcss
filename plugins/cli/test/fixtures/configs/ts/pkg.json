@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "weapp-tw dev",
-    "build": "weapp-tw build"
+    "build": "weapp-tw build",
+    "postinstall": "weapp-tw patch"
   },
   "keywords": [],
   "author": "",

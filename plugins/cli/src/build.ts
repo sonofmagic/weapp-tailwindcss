@@ -5,6 +5,8 @@ import gulp from 'gulp'
 import loadPostcssConfig from 'postcss-load-config'
 import type { Result } from 'postcss-load-config'
 import pc from 'picocolors'
+import { getPackageInfo } from 'local-pkg'
+import { version } from '../package.json'
 import { debug } from './debug'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
@@ -112,8 +114,14 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
         console.log(`${pc.green('remove')} ${path}`)
       })
 
-      watcher.on('ready', function () {
-        console.log(`${pc.green('weapp')}-${pc.blue('tailwindcss')} is ready!`)
+      watcher.on('ready', async function () {
+        const meta = await getPackageInfo('weapp-tailwindcss')
+        let weappTwVersionStr: string = ''
+        if (meta) {
+          weappTwVersionStr = `(${pc.blue(pc.underline(meta.version))})`
+        }
+
+        console.log(`${pc.bold(`${pc.green('weapp')}-${pc.blue('tailwindcss')}`)}${weappTwVersionStr} ${pc.cyan('cli')}(${pc.blue(pc.underline(version))}) is ready!`)
       })
       this.watcher = watcher
       return this

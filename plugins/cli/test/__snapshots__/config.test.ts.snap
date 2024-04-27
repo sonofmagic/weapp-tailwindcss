@@ -58,6 +58,7 @@ exports[`config > updatePackageJson > updatePackageJson js native project 1`] = 
   "scripts": {
     "build": "weapp-tw build",
     "dev": "weapp-tw dev",
+    "postinstall": "weapp-tw patch",
     "test": "echo "Error: no test specified" && exit 1",
   },
   "version": "1.0.0",
@@ -78,6 +79,7 @@ exports[`config > updatePackageJson > updatePackageJson ts native project 1`] = 
   "scripts": {
     "build": "weapp-tw build",
     "dev": "weapp-tw dev",
+    "postinstall": "weapp-tw patch",
     "test": "echo "Error: no test specified" && exit 1",
   },
   "version": "1.0.0",
