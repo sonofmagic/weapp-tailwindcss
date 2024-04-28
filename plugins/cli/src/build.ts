@@ -45,6 +45,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
       json: ['json']
     },
     watchOptions: {
+      cwd: options?.root,
       events: ['add', 'change', 'unlink', 'ready']
     },
     postcssOptions: postcssOptionsFromConfig

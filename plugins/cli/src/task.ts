@@ -1,8 +1,8 @@
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import gulp from 'gulp'
 import postcssrc from 'gulp-postcss'
-import debug from 'gulp-debug'
-import plumber from 'gulp-plumber'
+// import debug from 'gulp-debug'
+// import plumber from 'gulp-plumber'
 import gulpif from 'gulp-if'
 import createSass from 'gulp-sass'
 import rename from 'gulp-rename'
@@ -62,6 +62,7 @@ export async function getTasks(options: BuildOptions) {
       globs.push(...exclude.map((x) => '!' + x))
     }
     globs.push(`!${outDir}/**/*`)
+    globs.push(`!./${outDir}/**/*`)
     return globs
   }
 
@@ -143,10 +144,8 @@ export async function getTasks(options: BuildOptions) {
       const loadSass = enableSass && isSassLang(x)
       const loadLess = enableLess && isLessLang(x)
       return function CssTask() {
-        let chain: NodeJS.ReadWriteStream = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(CssTask), debug: true })
-        chain.on('data', (src) => {
-          console.log(src.path)
-        })
+        let chain: NodeJS.ReadWriteStream = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(CssTask) })
+
         // .pipe(plumber())
         // .on('pipe', (...args) => {
         //   console.log(args)
@@ -163,7 +162,7 @@ export async function getTasks(options: BuildOptions) {
         }
         return promisify(
           chain
-            .pipe(debug({ title: 'css start:' }))
+            // .pipe(debug({ title: 'css start:' }))
             .pipe(gulpif(loadLess, less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less)))
             .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
             .pipe(transformWxss())
@@ -175,7 +174,7 @@ export async function getTasks(options: BuildOptions) {
                 })
               )
             )
-            .pipe(debug({ title: 'css end:' }))
+            // .pipe(debug({ title: 'css end:' }))
             .pipe(
               gulp.dest(outDir, {
                 cwd

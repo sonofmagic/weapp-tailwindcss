@@ -47,24 +47,6 @@ export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[
         .on('error', (err) => {
           reject(err)
         })
-        .on('end', () => {
-          console.log('end')
-        })
-        .on('close', () => {
-          console.log('close')
-        })
-        .on('drain', () => {
-          console.log('drain')
-        })
-        .on('pipe', () => {
-          console.log('pipe')
-        })
-        .on('unpipe', () => {
-          console.log('unpipe')
-        })
-        .on('data', (data: any) => {
-          console.log('data', data.path)
-        })
     }
   })
 }
