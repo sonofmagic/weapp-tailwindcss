@@ -224,7 +224,7 @@
     "postcss-loader": "^8.1.1",
     "prettier": "^3.2.5",
     "promisify-loader-runner": "^1.0.1",
-    "rollup": "^4.16.4",
+    "rollup": "^4.17.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.75.0",
     "semver": "7.6.0",

@@ -21,8 +21,8 @@
         <text class="userinfo-nickname">{{userInfo.nickName}}</text>
       </block>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+    <view class="flex flex-col">
+      <text class="{{motto}} bg-gray-700">{{motto}} 111</text>
     </view>
   </view>
 </scroll-view>

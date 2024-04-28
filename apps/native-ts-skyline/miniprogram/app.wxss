@@ -1,4 +1,7 @@
-/**app.wxss**/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .container {
   height: 100%;
   display: flex;

@@ -5,36 +5,36 @@ const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia0
 
 Component({
   data: {
-    motto: 'Hello World',
+    motto: 'border-[pink] border-[10px]',
     userInfo: {
       avatarUrl: defaultAvatarUrl,
-      nickName: '',
+      nickName: ''
     },
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
-    canIUseNicknameComp: wx.canIUse('input.type.nickname'),
+    canIUseNicknameComp: wx.canIUse('input.type.nickname')
   },
   methods: {
     // 事件处理函数
     bindViewTap() {
       wx.navigateTo({
-        url: '../logs/logs',
+        url: '../logs/logs'
       })
     },
     onChooseAvatar(e: any) {
       const { avatarUrl } = e.detail
       const { nickName } = this.data.userInfo
       this.setData({
-        "userInfo.avatarUrl": avatarUrl,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        'userInfo.avatarUrl': avatarUrl,
+        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl
       })
     },
     onInputChange(e: any) {
       const nickName = e.detail.value
       const { avatarUrl } = this.data.userInfo
       this.setData({
-        "userInfo.nickName": nickName,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        'userInfo.nickName': nickName,
+        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl
       })
     },
     getUserProfile() {
@@ -49,6 +49,6 @@ Component({
           })
         }
       })
-    },
-  },
+    }
+  }
 })
