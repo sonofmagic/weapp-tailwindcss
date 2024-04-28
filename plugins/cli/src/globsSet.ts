@@ -29,4 +29,8 @@ export default class GlobsSet {
   dump() {
     return [...this.includeSet, ...this.excludeSet]
   }
+
+  dumpIgnored() {
+    return [...this.excludeSet].map((x) => x.slice(1))
+  }
 }

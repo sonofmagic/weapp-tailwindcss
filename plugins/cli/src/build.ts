@@ -6,6 +6,7 @@ import loadPostcssConfig from 'postcss-load-config'
 import type { Result } from 'postcss-load-config'
 import pc from 'picocolors'
 import { getPackageInfo } from 'local-pkg'
+// import type { Matcher } from 'anymatch'
 import { version } from '../package.json'
 import { debug } from './debug'
 import type { BuildOptions } from '@/type'
@@ -24,7 +25,8 @@ const defaultNodeModulesDirs = [
   '**/project.private.config.json/**',
   '**/package.json/**',
   'postcss.config.js',
-  'tailwind.config.js'
+  'tailwind.config.js',
+  'weapp-tw.config.js'
 ]
 
 export async function createBuilder(options?: Partial<BuildOptions>) {
@@ -92,6 +94,9 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
       const dumps = globsSet.dump()
+      const arr = (Array.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored]).filter(Boolean) as string[]
+      watchOptions.ignored = [...globsSet.dumpIgnored(), ...arr]
+
       const watcher = gulp.watch(dumps, watchOptions, async (cb) => {
         try {
           await runTasks()

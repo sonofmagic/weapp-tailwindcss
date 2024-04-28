@@ -50,3 +50,7 @@ export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[
     }
   })
 }
+
+export function arrify<T>(val: T) {
+  return Array.isArray(val) ? (val as T) : [val]
+}
