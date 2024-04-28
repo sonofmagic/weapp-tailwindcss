@@ -74,6 +74,7 @@
   },
   "sideEffects": false,
   "scripts": {
+    "build:lib": "turbo run build --filter='./packages/*' && turbo run build --filter='./plugins/*'",
     "test": "vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
@@ -236,6 +237,7 @@
     "ts-patch": "^3.1.2",
     "tsd": "^0.31.0",
     "tslib": "^2.6.2",
+    "turbo": "^1.13.3",
     "typescript": "^5.4.5",
     "typescript-transform-paths": "^3.4.7",
     "unbuild": "^2.0.0",
