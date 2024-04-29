@@ -1,8 +1,10 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-
-const lightCodeTheme = require('prism-react-renderer/themes/github')
-const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const { themes } = require('prism-react-renderer')
+const lightCodeTheme = themes.github
+const darkCodeTheme = themes.dracula
+// const lightCodeTheme = require('prism-react-renderer/themes/github')
+// const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 // const nodeExternals = require('webpack-node-externals')
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
@@ -127,11 +129,23 @@ const config = {
     [
       'docusaurus-plugin-typedoc',
       {
+        id: 'api',
         // '../src/webpack.ts', '../src/vite.ts', '../src/gulp.ts'
         // '../src/types.ts',
         entryPoints: ['../packages/weapp-tailwindcss/src/index.ts'],
         tsconfig: '../packages/weapp-tailwindcss/tsconfig.json',
         readme: 'none',
+        watch: process.env.TYPEDOC_WATCH
+      }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'api-cli',
+        entryPoints: ['../plugins/cli/src/type.ts'],
+        tsconfig: '../plugins/cli/tsconfig.md.json',
+        readme: 'none',
+        out: './docs/api-cli',
         watch: process.env.TYPEDOC_WATCH
       }
     ]
@@ -237,6 +251,11 @@ const config = {
             position: 'left'
           },
           {
+            to: 'docs/api-cli/', // 'api' is the 'out' directory
+            label: 'Types-CLI',
+            position: 'left'
+          },
+          {
             href: 'https://icebreaker.top/',
             position: 'left',
             label: '博客'
@@ -324,7 +343,10 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme
       }
-    })
+    }),
+  markdown: {
+    format: 'detect'
+  }
 }
 
 module.exports = config
