@@ -15,5 +15,10 @@
     "@weapp-tailwindcss/cli": "workspace:*",
     "tailwindcss": "^3.4.3",
     "weapp-tailwindcss": "workspace:*"
+  },
+  "dependencies": {
+    "cowsay": "^1.6.0",
+    "lodash": "^4.17.21",
+    "miniprogram-computed": "^4.4.0"
   }
 }
