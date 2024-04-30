@@ -53,7 +53,7 @@
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "homepage": "https://weapp-tw.icebreaker.top/docs/community/typography",
   "repository": {

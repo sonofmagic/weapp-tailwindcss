@@ -99,7 +99,8 @@ const config = {
         //   editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/'
         // },
         theme: {
-          customCss: require.resolve('./src/css/custom.scss')
+          // 升级到 docusaurus@3 之后 docusaurus-plugin-sass 似乎挂了
+          customCss: ['./src/css/custom.css'] // require.resolve('./src/css/custom.scss'),
         },
         gtag: {
           trackingID: 'G-S81Q4GRTPM'
@@ -114,7 +115,7 @@ const config = {
     ]
   ],
   plugins: [
-    'docusaurus-plugin-sass',
+    // 'docusaurus-plugin-sass',
     function twPlugin(context, options) {
       return {
         name: 'docusaurus-tailwindcss',

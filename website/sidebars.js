@@ -48,7 +48,15 @@ const sidebars = {
       items: [
         {
           type: 'doc',
-          id: 'quick-start/install'
+          id: 'quick-start/native/install'
+        },
+        {
+          type: 'doc',
+          id: 'quick-start/native/install-plugin'
+        },
+        {
+          type: 'doc',
+          id: 'quick-start/native/principle'
         }
       ],
       collapsed: false

@@ -20,9 +20,9 @@
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "homepage": "https://weapp-tw.icebreaker.top",
+  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
   "sideEffects": false,
   "type": "commonjs",
   "exports": {

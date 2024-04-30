@@ -33,6 +33,13 @@
       "cwd": "${workspaceFolder}/apps/native-ts-skyline"
     },
     {
+      "command": "npm run dev",
+      "name": "[Docs] website dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/website"
+    },
+    {
       "command": "npm run dev:watch",
       "name": "[CLI] watch script",
       "request": "launch",
