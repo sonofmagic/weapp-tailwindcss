@@ -25,11 +25,10 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm i
-      - run: pnpm postinstall
       - run: pnpm build
       - run: pnpm test
-
-      - uses: codecov/codecov-action@v4
-        with:
-          directory: coverage
+      # TODO
+      # - uses: codecov/codecov-action@v4
+      #   with:
+      #     directory: coverage
           # files: ./coverage/clover.xml,./coverage-vitest/clover.xml

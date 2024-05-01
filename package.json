@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "scripts": {
-    "build:lib": "turbo run build --filter=weapp-tailwindcss && turbo run build --filter=./plugins/*",
+    "build": "turbo run build --filter=weapp-tailwindcss && turbo run build --filter=./plugins/*",
     "test": "vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
