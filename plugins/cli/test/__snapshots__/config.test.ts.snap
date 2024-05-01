@@ -1,23 +1,37 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`config > init js config 1`] = `
+exports[`config > initConfig > init js config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 
-exports[`config > init ts config 1`] = `
+exports[`config > initConfig > init js config with tsconfig 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": "./miniprogram",
+}
+`;
+
+exports[`config > initConfig > init ts config 1`] = `
+{
+  "outDir": "dist",
+  "src": ".",
+}
+`;
+
+exports[`config > initConfig > init ts config with tsconfig 1`] = `
+{
+  "outDir": "dist",
+  "src": "./miniprogram",
 }
 `;
 
 exports[`config > load js config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 
@@ -26,7 +40,7 @@ exports[`config > load nothing 1`] = `undefined`;
 exports[`config > load ts config 1`] = `
 {
   "outDir": "dist",
-  "srcDir": ".",
+  "src": ".",
 }
 `;
 
@@ -44,6 +58,7 @@ exports[`config > updatePackageJson > updatePackageJson js native project 1`] = 
   "scripts": {
     "build": "weapp-tw build",
     "dev": "weapp-tw dev",
+    "postinstall": "weapp-tw patch",
     "test": "echo "Error: no test specified" && exit 1",
   },
   "version": "1.0.0",
@@ -64,6 +79,7 @@ exports[`config > updatePackageJson > updatePackageJson ts native project 1`] = 
   "scripts": {
     "build": "weapp-tw build",
     "dev": "weapp-tw dev",
+    "postinstall": "weapp-tw patch",
     "test": "echo "Error: no test specified" && exit 1",
   },
   "version": "1.0.0",

@@ -28,29 +28,56 @@ describe('config', () => {
     expect(s?.config).toMatchSnapshot()
   })
 
-  it('init js config', () => {
-    const root = path.resolve(fixturesPath, 'configs-output/js')
-    const p = initConfig({
-      root
+  describe('initConfig', () => {
+    it('init js config', () => {
+      const root = path.resolve(fixturesPath, 'configs-output/js')
+      const p = initConfig({
+        root
+      })
+      expect(fs.existsSync(p)).toBe(true)
+      const configLoader = createConfigLoader(root)
+      const s = configLoader.search()
+      delete s?.config.root
+      expect(s?.config).toMatchSnapshot()
     })
-    expect(fs.existsSync(p)).toBe(true)
-    const configLoader = createConfigLoader(root)
-    const s = configLoader.search()
-    delete s?.config.root
-    expect(s?.config).toMatchSnapshot()
-  })
 
-  it('init ts config', () => {
-    const root = path.resolve(fixturesPath, 'configs-output/ts')
-    const p = initConfig({
-      root,
-      lang: 'ts'
+    it('init ts config', () => {
+      const root = path.resolve(fixturesPath, 'configs-output/ts')
+      const p = initConfig({
+        root,
+        lang: 'ts'
+      })
+      expect(fs.existsSync(p)).toBe(true)
+      const configLoader = createConfigLoader(root)
+      const s = configLoader.search()
+      delete s?.config.root
+      expect(s?.config).toMatchSnapshot()
     })
-    expect(fs.existsSync(p)).toBe(true)
-    const configLoader = createConfigLoader(root)
-    const s = configLoader.search()
-    delete s?.config.root
-    expect(s?.config).toMatchSnapshot()
+
+    it('init js config with tsconfig', () => {
+      const root = path.resolve(fixturesPath, 'configs-output/js-tsconfig')
+      const p = initConfig({
+        root
+      })
+      expect(fs.existsSync(p)).toBe(true)
+      const configLoader = createConfigLoader(root)
+      const s = configLoader.search()
+      delete s?.config.root
+      expect(s?.config).toMatchSnapshot()
+    })
+
+    it('init ts config with tsconfig', () => {
+      const root = path.resolve(fixturesPath, 'configs-output/ts-tsconfig')
+      const p = initConfig({
+        root,
+        lang: 'ts'
+      })
+      expect(fs.existsSync(p)).toBe(true)
+      const configLoader = createConfigLoader(root)
+      const s = configLoader.search()
+      delete s?.config.root
+      expect(s?.config).toMatchSnapshot()
+    })
   })
 
   describe('updateProjectConfig', () => {

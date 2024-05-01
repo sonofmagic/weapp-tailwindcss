@@ -1,4 +1,0 @@
-/**app.wxss**/
-@tailwind base;
-@tailwind components;
-@tailwind utilities;

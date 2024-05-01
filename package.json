@@ -1,95 +1,16 @@
 {
-  "name": "weapp-tailwindcss",
-  "version": "3.2.0-alpha.5",
+  "name": "weapp-tailwindcss-monorepo",
+  "private": true,
+  "version": "0.0.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    },
-    "./replace": {
-      "types": "./dist/replace.d.ts",
-      "require": "./dist/replace.js",
-      "import": "./dist/replace.mjs"
-    },
-    "./postcss": {
-      "types": "./dist/postcss.d.ts",
-      "require": "./dist/postcss.js",
-      "import": "./dist/postcss.mjs"
-    },
-    "./vite": {
-      "types": "./dist/vite.d.ts",
-      "require": "./dist/vite.js",
-      "import": "./dist/vite.mjs"
-    },
-    "./webpack": {
-      "types": "./dist/webpack.d.ts",
-      "require": "./dist/webpack.js",
-      "import": "./dist/webpack.mjs"
-    },
-    "./webpack4": {
-      "types": "./dist/webpack4.d.ts",
-      "require": "./dist/webpack4.js",
-      "import": "./dist/webpack4.mjs"
-    },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "require": "./dist/core.js",
-      "import": "./dist/core.mjs"
-    },
-    "./gulp": {
-      "types": "./dist/gulp.d.ts",
-      "require": "./dist/gulp.js",
-      "import": "./dist/gulp.mjs"
-    },
-    "./defaults": {
-      "types": "./dist/defaults.d.ts",
-      "require": "./dist/defaults.js",
-      "import": "./dist/defaults.mjs"
-    },
-    "./css-macro/postcss": {
-      "types": "./dist/css-macro/postcss.d.ts",
-      "require": "./dist/css-macro/postcss.js",
-      "import": "./dist/css-macro/postcss.mjs"
-    },
-    "./css-macro": {
-      "types": "./dist/css-macro/index.d.ts",
-      "require": "./dist/css-macro/index.js",
-      "import": "./dist/css-macro/index.mjs"
-    },
-    "./*": "./*"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ]
-    }
-  },
-  "sideEffects": false,
   "scripts": {
-    "dev": "pnpm clean && pnpm dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
-    "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && pnpm dts",
-    "build:demo": "pnpm demo:del-dist && cross-env NODE_ENV=demo rollup -c rollup.config.ts --configPlugin typescript && pnpm demo:sync-dist",
-    "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
-    "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
-    "test": "npm run postinstall && cross-env TARGET=1 vitest run",
-    "test:dev": "cross-env TARGET=1 vitest",
+    "build": "turbo run build --filter=weapp-tailwindcss && turbo run build --filter=./plugins/*",
+    "test": "vitest run",
+    "test:dev": "vitest",
     "test:ui": "vitest --ui",
-    "vitest:coverage": "vitest run --coverage",
-    "e2e": "vitest run -c ./vitest.e2e.config.ts",
-    "e2e:dev": "vitest -c ./vitest.e2e.config.ts",
-    "e2e:u": "vitest run -u -c ./vitest.e2e.config.ts",
-    "init:rename": "node scripts/init/rename.js",
-    "clean": "node scripts/clean.js",
-    "debug:web": "cd demo/web && pnpm dev",
-    "raw": "ts-node scripts/raw",
-    "get-decl": "ts-node scripts/get-decl.ts",
+    "e2e": "vitest run -c ./e2e/vitest.e2e.config.ts",
+    "e2e:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
+    "e2e:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
     "demo:dev": "node scripts/demo/dev.js",
     "demo:build": "node scripts/demo/build.js",
     "demo:bench": "node scripts/demo/bench.js",
@@ -97,7 +18,7 @@
     "demo:link": "node scripts/demo/link.js",
     "demo:install": "node scripts/demo/install.js",
     "demo:install:beta": "node scripts/demo/install.js --beta",
-    "demo:install:alpha": "node scripts/demo/install.js --beta",
+    "demo:install:alpha": "node scripts/demo/install.js --alpha",
     "demo:remove-deps": "node scripts/demo/del.js",
     "demo:remove-test-coms": "node scripts/demo/remove-test-coms.js",
     "demo:sync-dist": "node scripts/demo/copy-dist.js",
@@ -112,21 +33,11 @@
     "release": "bumpp",
     "css-build": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css",
     "css-build-out": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css --out tw-plugins",
-    "-------": "-----------",
-    "postinstall": "node bin/weapp-tailwindcss.js patch"
+    "-------": "-----------"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
-  },
-  "files": [
-    "bin",
-    "dist"
-  ],
-  "bin": {
-    "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
-    "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
-    "weapp-tw": "bin/weapp-tailwindcss.js"
   },
   "publishConfig": {
     "access": "public",
@@ -165,8 +76,8 @@
   },
   "homepage": "https://weapp-tw.icebreaker.top",
   "devDependencies": {
-    "@ast-grep/napi": "^0.20.5",
-    "@babel/core": "^7.24.4",
+    "@ast-grep/napi": "^0.21.1",
+    "@babel/core": "^7.24.5",
     "@icebreakers/cli": "0.1.1",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
@@ -181,8 +92,15 @@
     "@types/debug": "^4.1.12",
     "@types/diff": "^5.2.0",
     "@types/fs-extra": "^11.0.4",
+    "@types/get-value": "^3.0.5",
     "@types/gulp": "^4.0.17",
+    "@types/gulp-debug": "^2.0.36",
+    "@types/gulp-if": "^3.0.4",
+    "@types/gulp-less": "^0.0.36",
+    "@types/gulp-plumber": "^0.0.37",
     "@types/gulp-postcss": "^8.0.6",
+    "@types/gulp-rename": "^2.0.6",
+    "@types/gulp-sass": "^5.0.4",
     "@types/js-beautify": "^1.14.3",
     "@types/klaw": "^3.0.6",
     "@types/loader-utils": "^2.0.6",
@@ -191,20 +109,25 @@
     "@types/micromatch": "^4.0.7",
     "@types/node": "^20.12.7",
     "@types/semver": "^7.5.8",
+    "@types/set-value": "^4.0.3",
     "@types/vinyl": "^2.0.12",
+    "@types/vinyl-fs": "^3.0.5",
     "@types/webpack": "^5.28.5",
     "@types/webpack-sources": "^3.2.3",
     "@types/webpack4": "npm:@types/webpack@4",
-    "@vitest/coverage-v8": "^1.5.0",
-    "@vitest/ui": "^1.5.0",
-    "@weapp-tailwindcss/cli": "0.0.0-alpha.5",
+    "@vitest/coverage-v8": "^1.5.3",
+    "@vitest/ui": "^1.5.3",
+    "@weapp-tailwindcss/cli": "workspace:*",
+    "anymatch": "^3.1.3",
     "autoprefixer": "^10.4.19",
     "babel-loader": "^9.1.3",
-    "bumpp": "^9.4.0",
+    "bumpp": "^9.4.1",
+    "chokidar": "^3.6.0",
     "colorette": "^2.0.20",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.1",
     "css-to-tailwindcss-plugin": "^0.3.0",
+    "debug": "4.3.4",
     "dedent": "^1.5.3",
     "defu": "6.1.4",
     "del": "^7.1.0",
@@ -217,6 +140,7 @@
     "execa": "^8.0.1",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
+    "get-value": "^3.0.1",
     "gulp": "^5.0.0",
     "gulp-postcss": "^10.0.0",
     "html-loader": "^5.0.0",
@@ -226,52 +150,36 @@
     "mini-css-extract-plugin": "^2.9.0",
     "miniprogram-automator": "^0.12.1",
     "pkg-types": "^1.1.0",
+    "postcss": "^8.4.38",
     "postcss-load-config": "^5.0.3",
     "postcss-loader": "^8.1.1",
     "prettier": "^3.2.5",
     "promisify-loader-runner": "^1.0.1",
-    "rollup": "^4.16.3",
+    "rollup": "^4.17.2",
     "rollup-plugin-visualizer": "^5.12.0",
-    "sass": "^1.75.0",
+    "sass": "^1.76.0",
+    "semver": "7.6.0",
+    "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
     "tailwindcss": "^3.4.3",
+    "ts-morph": "^22.0.0",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.1.2",
     "tsd": "^0.31.0",
     "tslib": "^2.6.2",
+    "turbo": "^1.13.3",
     "typescript": "^5.4.5",
     "typescript-transform-paths": "^3.4.7",
+    "unbuild": "^2.0.0",
     "vinyl": "^3.0.0",
+    "vinyl-fs": "^4.0.0",
     "vite": "^5.2.10",
-    "vitest": "^1.5.0",
+    "vitest": "^1.5.3",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.91.0",
     "webpack-build-utils": "^0.0.7"
   },
-  "dependencies": {
-    "@ast-core/escape": "^1.0.1",
-    "@babel/generator": "7.24.4",
-    "@babel/parser": "7.24.4",
-    "@babel/traverse": "7.24.1",
-    "@babel/types": "7.24.0",
-    "@csstools/postcss-is-pseudo-class": "4.0.6",
-    "@tailwindcss-mangle/shared": "^2.2.2",
-    "@weapp-core/escape": "^2.0.0",
-    "@weapp-core/regex": "^1.0.1",
-    "debug": "4.3.4",
-    "htmlparser2": "9.1.0",
-    "loader-utils": "2.0.4",
-    "lru-cache": "10.2.0",
-    "magic-string": "0.30.10",
-    "md5": "2.3.0",
-    "postcss": "8.4.38",
-    "postcss-rem-to-responsive-pixel": "^6.0.1",
-    "postcss-selector-parser": "6.0.16",
-    "semver": "7.6.0",
-    "tailwindcss-patch": "^2.2.3",
-    "webpack-sources": "3.2.3"
-  },
-  "packageManager": "pnpm@8.15.4",
+  "packageManager": "pnpm@9.0.6",
   "engines": {
     "node": ">=16.6.0"
   }

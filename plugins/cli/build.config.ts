@@ -20,5 +20,6 @@ export default defineBuildConfig({
     '@': path.resolve(__dirname, './src')
   },
   // dts
-  declaration: true
+  declaration: true,
+  externals: ['weapp-tailwindcss']
 })

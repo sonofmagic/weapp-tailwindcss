@@ -1,0 +1,13 @@
+<navigation-bar title="通讯录" back="{{true}}"></navigation-bar>
+<view class="w-screen grow overflow-hidden">
+  <address-book list="{{list}}">
+    <view class="text-black/90">
+      <view class="page__hd">
+        <view class="page__title">Address Book</view>
+        <view class="page__desc">类通讯录列表</view>
+      </view>
+      <view class="page__bd">
+      </view>
+    </view>
+  </address-book>
+</view>

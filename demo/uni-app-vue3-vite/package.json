@@ -79,6 +79,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.10",
     "@vue/runtime-core": "^3.3.11",
+    "@weapp-tailwindcss/cli": "^1.0.0",
     "@weapp-tailwindcss/typography": "^0.2.4",
     "autoprefixer": "^10.4.18",
     "miniprogram-api-typings": "^3.12.2",
@@ -93,7 +94,7 @@
     "typescript": "~5.4.2",
     "vite": "4.3.5",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.2.0-alpha.1",
+    "weapp-tailwindcss": "^3.2.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^3.1.1-beta.0"
   }

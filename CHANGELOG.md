@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 3.2.0 (2024-5-1)
+
+### Features
+
+- 添加对原生微信小程序的支持，添加 `@weapp-tailwindcss/cli`
+
+### Chore
+
+- 整个项目变为 `monorepo`
+
 ## 3.1.1 (2024-3-30)
 
 ### Chore

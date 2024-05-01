@@ -1,0 +1,56 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDirs": [
+      "src",
+      "test"
+    ],
+    "lib": [
+      "ES2021"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "#test/*": [
+        "test/*"
+      ],
+    },
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ],
+    "types": [
+      "webpack",
+      "node",
+      "vitest/globals"
+    ]
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test/types",
+    "./*.d.ts",
+    "demo/**/*",
+    "test/fixtures/**/*"
+  ],
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "test/**/*",
+    "e2e/**/*",
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
+}

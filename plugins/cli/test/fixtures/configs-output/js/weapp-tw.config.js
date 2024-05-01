@@ -1,2 +1,4 @@
 /** @type {import('@weapp-tailwindcss/cli').UserConfig} */
-module.exports = {}
+const config = {}
+
+module.exports = config

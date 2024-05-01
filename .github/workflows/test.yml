@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x] # 16.x,
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -25,11 +25,10 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm i
-      - run: pnpm postinstall
       - run: pnpm build
       - run: pnpm test
-
-      - uses: codecov/codecov-action@v4
-        with:
-          directory: coverage
+      # TODO
+      # - uses: codecov/codecov-action@v4
+      #   with:
+      #     directory: coverage
           # files: ./coverage/clover.xml,./coverage-vitest/clover.xml

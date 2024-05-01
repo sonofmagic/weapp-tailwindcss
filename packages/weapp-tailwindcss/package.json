@@ -1,0 +1,176 @@
+{
+  "name": "weapp-tailwindcss",
+  "version": "3.2.0",
+  "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./replace": {
+      "types": "./dist/replace.d.ts",
+      "require": "./dist/replace.js",
+      "import": "./dist/replace.mjs"
+    },
+    "./postcss": {
+      "types": "./dist/postcss.d.ts",
+      "require": "./dist/postcss.js",
+      "import": "./dist/postcss.mjs"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "require": "./dist/vite.js",
+      "import": "./dist/vite.mjs"
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "require": "./dist/webpack.js",
+      "import": "./dist/webpack.mjs"
+    },
+    "./webpack4": {
+      "types": "./dist/webpack4.d.ts",
+      "require": "./dist/webpack4.js",
+      "import": "./dist/webpack4.mjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "require": "./dist/core.js",
+      "import": "./dist/core.mjs"
+    },
+    "./gulp": {
+      "types": "./dist/gulp.d.ts",
+      "require": "./dist/gulp.js",
+      "import": "./dist/gulp.mjs"
+    },
+    "./defaults": {
+      "types": "./dist/defaults.d.ts",
+      "require": "./dist/defaults.js",
+      "import": "./dist/defaults.mjs"
+    },
+    "./css-macro/postcss": {
+      "types": "./dist/css-macro/postcss.d.ts",
+      "require": "./dist/css-macro/postcss.js",
+      "import": "./dist/css-macro/postcss.mjs"
+    },
+    "./css-macro": {
+      "types": "./dist/css-macro/index.d.ts",
+      "require": "./dist/css-macro/index.js",
+      "import": "./dist/css-macro/index.mjs"
+    },
+    "./*": "./*"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "dev": "pnpm clean && pnpm dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
+    "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && pnpm dts",
+    "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
+    "build:cli": "cd plugins/cli && pnpm run build",
+    "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
+    "test": "npm run postinstall && vitest run",
+    "test:dev": "vitest",
+    "test:ui": "vitest --ui",
+    "vitest:coverage": "vitest run --coverage",
+    "init:rename": "node scripts/init/rename.js",
+    "clean": "node scripts/clean.js",
+    "raw": "ts-node scripts/raw",
+    "get-decl": "ts-node scripts/get-decl.ts",
+    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss",
+    "generate:readme": "ts-node scripts/readme/write.ts",
+    "format": "prettier --check \"src/**/*.{ts,js}\" -w",
+    "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
+    "ls:pack": "npm pack --dry-run",
+    "cli:patch": "node bin/weapp-tailwindcss.js patch",
+    "prepare": "ts-patch install -s",
+    "release": "bumpp",
+    "-------": "-----------",
+    "postinstall": "node bin/weapp-tailwindcss.js patch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "bin": {
+    "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
+    "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
+    "weapp-tw": "bin/weapp-tailwindcss.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "tailwindcss",
+    "weapp",
+    "wechat",
+    "mini",
+    "miniprogram",
+    "mini app",
+    "weapp-tw",
+    "weapp-tailwindcss",
+    "taro",
+    "uni-app",
+    "remax",
+    "rax",
+    "mpx",
+    "jit",
+    "mp",
+    "android",
+    "ios",
+    "小程序",
+    "vite",
+    "postcss",
+    "webpack",
+    "webpack-plugin",
+    "gulp",
+    "gulp-plugin"
+  ],
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "homepage": "https://weapp-tw.icebreaker.top",
+  "dependencies": {
+    "@ast-core/escape": "^1.0.1",
+    "@babel/generator": "7.24.5",
+    "@babel/parser": "7.24.5",
+    "@babel/traverse": "7.24.5",
+    "@babel/types": "7.24.5",
+    "@csstools/postcss-is-pseudo-class": "4.0.6",
+    "@tailwindcss-mangle/shared": "^2.2.2",
+    "@weapp-core/escape": "^2.0.0",
+    "@weapp-core/regex": "^1.0.1",
+    "debug": "4.3.4",
+    "htmlparser2": "9.1.0",
+    "loader-utils": "2.0.4",
+    "lru-cache": "10.2.2",
+    "magic-string": "0.30.10",
+    "md5": "2.3.0",
+    "postcss": "8.4.38",
+    "postcss-rem-to-responsive-pixel": "^6.0.1",
+    "postcss-selector-parser": "6.0.16",
+    "semver": "7.6.0",
+    "tailwindcss-patch": "^2.2.3",
+    "webpack-sources": "3.2.3"
+  },
+  "packageManager": "pnpm@9.0.6",
+  "engines": {
+    "node": ">=16.6.0"
+  }
+}

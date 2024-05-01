@@ -1,0 +1,38 @@
+page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.page__hd {
+  padding: 40px;
+}
+
+.page__bd {
+  padding-bottom: 40px;
+}
+
+.page__title {
+  text-align: left;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.page__desc {
+  margin-top: 5px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: left;
+  font-size: 14px;
+}
+
+.header {
+  height: 100px;
+}
+
+.cell {
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+}

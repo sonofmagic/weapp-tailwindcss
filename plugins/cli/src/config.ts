@@ -1,12 +1,12 @@
 import path from 'node:path'
 import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
-import type { UserDefinedOptions } from 'weapp-tailwindcss'
 import fs from 'fs-extra'
-import { get, set } from '@/utils'
+import { get, set } from './utils'
+import { BuildOptions } from '@/type'
 
 export type WeappTwCosmiconfigResult = {
-  config: UserConfig
+  config: BuildOptions
   filepath: string
   isEmpty?: boolean
 }
@@ -17,7 +17,7 @@ export function createConfigLoader(root: string) {
   function search(searchFrom: string = root): WeappTwCosmiconfigResult | undefined {
     const searchFor = explorer.search(searchFrom)
     if (searchFor) {
-      searchFor.config = defu<UserConfig, UserConfig[]>(searchFor.config, getDefaultConfig(root))
+      searchFor.config = defu<BuildOptions, Partial<BuildOptions>[]>(searchFor.config, getDefaultConfig(root))
       return searchFor
     }
   }
@@ -32,23 +32,15 @@ export function createConfigLoader(root: string) {
   }
 }
 
-export function getDefaultConfig(root: string): UserConfig {
+export function getDefaultConfig(root: string): Partial<BuildOptions> {
   return {
     outDir: 'dist',
     root,
-    srcDir: '.'
+    src: '.'
   }
 }
 
-export type UserConfig = {
-  outDir?: string
-  root?: string
-  srcDir?: string
-  weappTailwindcssOptions?: UserDefinedOptions
-  clean?: boolean
-}
-
-export function defineConfig(options: UserConfig) {
+export function defineConfig(options: Partial<BuildOptions>) {
   return options
 }
 
@@ -119,6 +111,8 @@ export function updatePackageJson(options: { root: string; dest?: string }) {
       }
       set(packageJson, 'scripts.dev', 'weapp-tw dev')
       set(packageJson, 'scripts.build', 'weapp-tw build')
+      set(packageJson, 'scripts.postinstall', 'weapp-tw patch')
+
       fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
         spaces: 2
       })
@@ -130,16 +124,21 @@ export function initConfig(options?: InitConfigOptions) {
   const { lang, root } = defu<InitConfigOptions, InitConfigOptions[]>(options, { lang: 'js', root: process.cwd() }) as Required<InitConfigOptions>
   const configFilename = `weapp-tw.config.${lang ?? 'js'}`
   const configPath = path.resolve(root, configFilename)
-
-  // const tsconfigPath = path.resolve(root, 'tsconfig.json')
+  const tsconfigPath = path.resolve(root, 'tsconfig.json')
+  const isTsconfigExisted = fs.existsSync(tsconfigPath)
 
   fs.ensureDirSync(root)
+  const configOptionsStr = isTsconfigExisted
+    ? `{
+  src: './miniprogram'
+}`
+    : '{}'
   if (lang === 'ts') {
     fs.writeFileSync(
       configPath,
       `import { defineConfig } from '@weapp-tailwindcss/cli'
 
-export default defineConfig({})
+export default defineConfig(${configOptionsStr})
 `,
       'utf8'
     )
@@ -147,7 +146,9 @@ export default defineConfig({})
     fs.writeFileSync(
       configPath,
       `/** @type {import('@weapp-tailwindcss/cli').UserConfig} */
-module.exports = {}
+const config = ${configOptionsStr}
+
+module.exports = config
 `,
       'utf8'
     )

@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "0.0.0-alpha.5",
+  "version": "1.0.0",
   "description": "The cli of weapp-tailwindcss",
   "scripts": {
     "dev": "unbuild --sourcemap",
@@ -11,9 +11,18 @@
     "dev:watch": "node test/scripts/watch.js",
     "sync": "cnpm sync @weapp-tailwindcss/cli"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "weapp",
+    "tailwindcss",
+    "cli",
+    "plugin"
+  ],
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
   "sideEffects": false,
   "type": "commonjs",
   "exports": {
@@ -32,35 +41,39 @@
   "dependencies": {
     "commander": "^12.0.0",
     "cosmiconfig": "^9.0.0",
+    "debug": "4.3.4",
     "del": "^7.1.0",
     "fs-extra": "^11.2.0",
-    "gulp": "^5.0.0",
+    "gulp": "^4.0.2",
+    "gulp-debug": "^5.0.1",
+    "gulp-if": "^3.0.0",
     "gulp-less": "^5.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
-    "gulp-if": "^3.0.0",
+    "gulp-typescript": "6.0.0-alpha.1",
+    "local-pkg": "^0.5.0",
+    "picocolors": "^1.0.0",
     "postcss": "^8.4.38",
-    "postcss-load-config": "^5.0.3",
-    "weapp-tailwindcss": "3.2.0-alpha.4"
+    "postcss-load-config": "^5.0.3"
   },
-  "devDependencies": {
-    "@types/fs-extra": "^11.0.4",
-    "@types/get-value": "^3.0.5",
-    "@types/gulp": "^4.0.17",
-    "@types/gulp-if": "^3.0.4",
-    "@types/gulp-less": "^0.0.36",
-    "@types/gulp-plumber": "^0.0.37",
-    "@types/gulp-postcss": "^8.0.6",
-    "@types/gulp-sass": "^5.0.4",
-    "@types/set-value": "^4.0.3",
-    "@types/vinyl-fs": "^3.0.5",
-    "chokidar": "^3.6.0",
-    "defu": "^6.1.4",
-    "get-value": "^3.0.1",
-    "set-value": "^4.1.0",
-    "ts-morph": "^22.0.0",
-    "vinyl-fs": "^4.0.0"
+  "peerDependencies": {
+    "less": "*",
+    "sass": "*",
+    "typescript": "*",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "less": {
+      "optional": true
+    },
+    "sass": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public",

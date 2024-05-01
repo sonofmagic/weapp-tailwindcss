@@ -4,6 +4,11 @@ import { FSWatcher, ensureDirSync } from 'fs-extra'
 import gulp from 'gulp'
 import loadPostcssConfig from 'postcss-load-config'
 import type { Result } from 'postcss-load-config'
+import pc from 'picocolors'
+import { getPackageInfo } from 'local-pkg'
+// import type { Matcher } from 'anymatch'
+import { version } from '../package.json'
+import { debug } from './debug'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
 
@@ -20,22 +25,16 @@ const defaultNodeModulesDirs = [
   '**/project.private.config.json/**',
   '**/package.json/**',
   'postcss.config.js',
-  'tailwind.config.js'
+  'tailwind.config.js',
+  'weapp-tw.config.js'
 ]
 
-export function createBuilder(options?: Partial<BuildOptions>) {
-  const {
-    root: cwd,
-    weappTailwindcssOptions,
-    outDir,
-    src: srcBase,
-    clean,
-    extensions,
-    exclude,
-    include,
-    watchOptions,
-    postcssOptions
-  } = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
+export async function createBuilder(options?: Partial<BuildOptions>) {
+  let postcssOptionsFromConfig: Result | undefined
+  try {
+    postcssOptionsFromConfig = await loadPostcssConfig({ cwd: options?.root })
+  } catch {}
+  const opt = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
     outDir: 'dist',
     weappTailwindcssOptions: {},
     clean: true,
@@ -48,41 +47,45 @@ export function createBuilder(options?: Partial<BuildOptions>) {
       json: ['json']
     },
     watchOptions: {
+      cwd: options?.root,
       events: ['add', 'change', 'unlink', 'ready']
-    }
+    },
+    postcssOptions: postcssOptionsFromConfig
   })
 
-  const { copyOthers, getCssTasks, getHtmlTasks, getJsTasks, getJsonTasks, globsSet } = getTasks({
-    root: cwd,
-    weappTailwindcssOptions,
-    outDir,
-    src: srcBase,
-    clean,
-    extensions,
-    exclude,
-    include,
-    watchOptions,
-    postcssOptions
-  })
+  const { copyOthers, getCssTasks, getHtmlTasks, getJsTasks, getJsonTasks, globsSet } = await getTasks(opt)
 
-  const tasks = [...getJsTasks(), ...getJsonTasks(), ...getCssTasks(), ...getHtmlTasks(), copyOthers]
-
-  async function runTasks() {
-    for (const task of tasks) {
-      const s = task()
-      if (s) {
-        await new Promise((resolve, reject) => s.on('finish', resolve).on('error', reject))
-      }
-    }
+  const tasks = {
+    css: getCssTasks(),
+    html: getHtmlTasks(),
+    json: getJsonTasks(),
+    js: getJsTasks(),
+    extra: [copyOthers]
   }
 
+  async function runTasks() {
+    debug('run tasks start')
+    for (const [key, value] of Object.entries(tasks)) {
+      if (value) {
+        debug(`run task ${pc.bold(pc.green(key))} start`)
+        for (const task of value) {
+          await task()
+        }
+        debug(`run task ${pc.bold(pc.green(key))} end`)
+      }
+    }
+    debug('run tasks end')
+  }
+  const { clean, outDir, root: cwd, watchOptions } = opt
   return {
     watcher: <FSWatcher | undefined>undefined,
     async build() {
       if (clean) {
+        debug('del start')
         const { deleteAsync } = await import('del')
         const patterns = [outDir + '/**']
         await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
+        debug('del end')
       }
       ensureDirSync(path.resolve(cwd, outDir))
       await runTasks()
@@ -90,8 +93,11 @@ export function createBuilder(options?: Partial<BuildOptions>) {
     },
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
+      const dumps = globsSet.dump()
+      const arr = (Array.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored]).filter(Boolean) as string[]
+      watchOptions.ignored = [...globsSet.dumpIgnored(), ...arr]
 
-      const watcher = gulp.watch([...globsSet], watchOptions, async (cb) => {
+      const watcher = gulp.watch(dumps, watchOptions, async (cb) => {
         try {
           await runTasks()
           cb()
@@ -100,19 +106,25 @@ export function createBuilder(options?: Partial<BuildOptions>) {
         }
       })
       watcher.on('change', function (path) {
-        console.log(`File ${path} was changed`)
+        console.log(`${pc.green('changed')} ${path}`)
       })
 
       watcher.on('add', function (path) {
-        console.log(`File ${path} was added`)
+        console.log(`${pc.green('add')} ${path}`)
       })
 
       watcher.on('unlink', function (path) {
-        console.log(`File ${path} was removed`)
+        console.log(`${pc.green('remove')} ${path}`)
       })
 
-      watcher.on('ready', function () {
-        console.log(`Weapp-tailwindcss is Ready!`)
+      watcher.on('ready', async function () {
+        const meta = await getPackageInfo('weapp-tailwindcss')
+        let weappTwVersionStr: string = ''
+        if (meta) {
+          weappTwVersionStr = `(${pc.blue(pc.underline(meta.version))})`
+        }
+
+        console.log(`${pc.bold(`${pc.green('weapp')}-${pc.blue('tailwindcss')}`)}${weappTwVersionStr} ${pc.cyan('cli')}(${pc.blue(pc.underline(version))}) is ready!`)
       })
       this.watcher = watcher
       return this
@@ -122,20 +134,11 @@ export function createBuilder(options?: Partial<BuildOptions>) {
 }
 
 export async function build(options?: Partial<BuildOptions>) {
-  let postcssOptions: Result | undefined
-  try {
-    postcssOptions = await loadPostcssConfig({ cwd: options?.root })
-  } catch {}
-
-  const builder = createBuilder(defu<BuildOptions, Partial<BuildOptions>[]>(options, { postcssOptions }))
+  const builder = await createBuilder(options)
   return await builder.build()
 }
 
 export async function watch(options?: Partial<BuildOptions>) {
-  let postcssOptions: Result | undefined
-  try {
-    postcssOptions = await loadPostcssConfig({ cwd: options?.root })
-  } catch {}
-  const builder = createBuilder(defu<BuildOptions, Partial<BuildOptions>[]>(options, { postcssOptions }))
+  const builder = await createBuilder(options)
   return await builder.watch()
 }

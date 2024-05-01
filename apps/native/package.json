@@ -1,0 +1,23 @@
+{
+  "name": "native",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",
+    "build": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw build",
+    "postinstall": "weapp-tw patch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.0",
+    "cross-env": "^7.0.3",
+    "tailwindcss": "^3.4.3",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}
