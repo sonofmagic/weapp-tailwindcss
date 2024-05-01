@@ -1,12 +1,24 @@
-# 原理
+# 更多的细节
 
-利用 `gulp` 构建最小化的一个微信小程序原生开发的工具链
+## CLI 配置项和类型定义
 
-## 为什么不是XXX
+`CLI` 内部本身也集成了 `typescript` 和 `sass` / `less` 的编译，你可以通过配置项，开启它们进行编译，
 
-其实使用 `webpack` / `vite` 这些都是可以的
+也可以使用使用微信开发者工具中的 `setting#useCompilerPlugins` 字段，使用微信开发者工具内置插件进行编译
 
-## 修改 `project.config.json`
+[详见BuildOptions](/docs/api-cli/interfaces/BuildOptions)
+
+## 如何兼容原生小程序的？
+
+主要是依靠 `@weapp-tailwindcss/cli`
+
+`@weapp-tailwindcss/cli`  是一个利用 `gulp` 构建最小化的一个微信小程序原生开发的工具链
+
+## 为什么不是 `webpack`/`vite`
+
+其实使用 `webpack` / `vite` 这些实现都是可以的，主要的区别仅仅在于是否够用，从第一阶段的目的来说 `gulp` 是够用的。
+
+## 初始化修改 `project.config.json` 的字段
 
 额外添加:
 
