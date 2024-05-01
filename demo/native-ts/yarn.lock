@@ -318,10 +318,10 @@
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/cli@^0.0.0-alpha.8":
-  version "0.0.0-alpha.8"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-0.0.0-alpha.8.tgz#44366a03a63593d0b14308a6dc12c027dbb78546"
-  integrity sha512-Tq72Pen7vsOlOoZFtY/rFUwzcFr/Uc13ys633Cr8gtFurLZV05LjA3o4L5+R2EswRRiHZpa51fSDwqiU4Mxb7Q==
+"@weapp-tailwindcss/cli@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-1.0.0.tgz#09eb44e15924a502428e041a0fb667e92de59b9d"
+  integrity sha512-lLWhBNVllBZijUIrLdi7oxWWTTGCM/VEm+G14zu+8l76r+hsMnaM6BRRZBh7fpIMO/fwX5NSPdJlIVSo7CjGXQ==
   dependencies:
     commander "^12.0.0"
     cosmiconfig "^9.0.0"
@@ -4292,10 +4292,10 @@ weapp-tailwindcss-webpack-plugin@^3.1.1-beta.0:
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
-weapp-tailwindcss@^3.2.0-alpha.10:
-  version "3.2.0-alpha.10"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0-alpha.10.tgz#9049ccdbc7b41affa316ec29ef2c7b6ec2820373"
-  integrity sha512-y7Wtcmprcy4L2eL/OmKWLNefkHfwzmjnLGXCX0uDLwa7ieC24UvNIxg01ML5MbXGpdP8P10pBH3dpgKqKG8svg==
+weapp-tailwindcss@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0.tgz#2320ead9fbac62d44caf8537dab7939b1e0bff96"
+  integrity sha512-Dao6JlQkqKwoegJg8zaWvdgqAEyiR+i4WQ6bKoa+/ucky/Jj1srQUMXLMqW01I8Uz8dRAfDvAM8MHEvLy+cF5A==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.5"

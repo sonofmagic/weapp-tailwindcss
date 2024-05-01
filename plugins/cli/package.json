@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "0.0.0-alpha.9",
+  "version": "1.0.0",
   "description": "The cli of weapp-tailwindcss",
   "scripts": {
     "dev": "unbuild --sourcemap",
