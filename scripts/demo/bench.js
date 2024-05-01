@@ -1,6 +1,6 @@
 const path = require('node:path')
 const { run } = require('./run')
-// const { run } = require('@icebreakers/cli')
+
 ;(async () => {
   const demoPath = path.resolve(__dirname, '../../demo')
   const result = []

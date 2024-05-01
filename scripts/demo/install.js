@@ -1,6 +1,6 @@
 const path = require('node:path')
 const { run } = require('./run')
-// const { install, raw } = require('@icebreakers/cli')
+
 const argvs = new Set(process.argv.slice(2))
 const isBeta = argvs.has('--beta')
 const isAlpha = argvs.has('--alpha')

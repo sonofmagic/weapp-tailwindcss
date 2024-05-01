@@ -1,6 +1,6 @@
 const path = require('node:path')
 const { run } = require('./run')
-// const { run } = require('@icebreakers/cli')
+
 const argvs = process.argv.slice(2)
 const useLocal = argvs.includes('--local')
 ;(async () => {
