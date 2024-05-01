@@ -6,6 +6,10 @@
   "scripts": {
     "build": "turbo run build --filter=weapp-tailwindcss && turbo run build --filter=./plugins/*",
     "test": "vitest run",
+    "test:plugins": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/*",
+    "test:cli": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/cli",
+    "test:typography": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/typography",
+    "test:core": "vitest run --coverage.enabled --coverage.all=false --project=weapp-tailwindcss",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
     "e2e": "vitest run -c ./e2e/vitest.e2e.config.ts",

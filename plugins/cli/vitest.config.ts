@@ -11,6 +11,10 @@ export default defineProject({
     ],
     globals: true,
     testTimeout: 30_000,
-    setupFiles: ['./vitest.setup.ts']
+    setupFiles: ['./vitest.setup.ts'],
+    coverage: {
+      enabled: true,
+      all: false
+    }
   }
 })

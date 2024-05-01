@@ -11,6 +11,10 @@ export default defineProject({
     ],
     globals: true,
     testTimeout: 60_000,
-    setupFiles: []
+    setupFiles: [],
+    coverage: {
+      enabled: true,
+      all: false
+    }
   }
 })
