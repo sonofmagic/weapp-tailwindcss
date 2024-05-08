@@ -25,8 +25,7 @@ npx tailwindcss init
 
 > 注意：这只是比较普遍的注册方式，各个框架很有可能是不同的! 比如 `uni-app vue3 vite` 项目就必须要内联注册 `postcss` 选项! 详见下方的注意事项
 
-```js
-// postcss.config.js
+```js title="postcss.config.js"
 // 假如你使用的框架/工具不支持 postcss.config.js 配置文件，则可以使用内联的写法
 module.exports = {
   plugins: {
@@ -47,7 +46,7 @@ module.exports = {
 
 `tailwind.config.js` 是 `tailwindcss` 的配置文件，我们可以在里面配置 `tailwindcss` 的各种行为。
 
-```js
+```js title="tailwind.config.js"
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // 这里给出了一份 uni-app /taro 通用示例，具体要根据你自己项目的目录结构进行配置
@@ -70,7 +69,7 @@ module.exports = {
 
 比如 `uni-app` 的 `App.vue` 文件:
 
-```html
+```html title="App.vue"
 <style>
 @tailwind base;
 @tailwind components;
@@ -86,7 +85,7 @@ module.exports = {
 
 又或者 `Taro` 的 `app.scss` 文件:
 
-```scss
+```scss title="app.scss"
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';

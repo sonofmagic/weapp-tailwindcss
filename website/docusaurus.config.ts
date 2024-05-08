@@ -1,8 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-const { themes } = require('prism-react-renderer')
-const lightCodeTheme = themes.github
-const darkCodeTheme = themes.dracula
+import PrismLight from './src/utils/prismLight'
+import PrismDark from './src/utils/prismDark'
 // const lightCodeTheme = require('prism-react-renderer/themes/github')
 // const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 // const nodeExternals = require('webpack-node-externals')
@@ -85,9 +84,9 @@ const config = {
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      {
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: 'sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website'
@@ -111,7 +110,7 @@ const config = {
           ignorePatterns: ['/tags/**'],
           filename: 'sitemap.xml'
         }
-      })
+      }
     ]
   ],
   plugins: [
@@ -182,7 +181,7 @@ const config = {
   ],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
+    {
       colorMode: {
         defaultMode: 'dark'
       },
@@ -341,10 +340,12 @@ const config = {
         })}</span></div>`
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme
+        theme: PrismLight,
+        darkTheme: PrismDark,
+        // https://github.com/FormidableLabs/prism-react-renderer/blob/master/packages/generate-prism-languages/index.ts#L9-L23
+        additionalLanguages: ['json', 'javascript', 'css', 'clike', 'bash', 'scss', 'yaml', 'typescript', 'diff']
       }
-    }),
+    },
   markdown: {
     format: 'detect'
   }

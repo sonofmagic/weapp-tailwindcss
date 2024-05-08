@@ -4,8 +4,7 @@
 
 创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
 
-```js
-// vite.config.[jt]s
+```js title="vite.config.[jt]s"
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite';

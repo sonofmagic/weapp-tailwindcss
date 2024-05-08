@@ -8,8 +8,7 @@
 
 注意: 在使用 `hbuilderx` 进行开发时，由于目录结构和启动项的不同，你必须要给你 `tailwind.config.js` 传入**绝对路径**:
 
-```js
-// tailwind.config.js
+```js title="tailwind.config.js"
 const path = require("path");
 
 const resolve = (p) => {
@@ -31,7 +30,7 @@ module.exports = {
 
 另外使用 `vite.config.[tj]s` 中注册 `tailwindcss` 时，也要传入绝对路径:
 
-```js
+```js title="vite.config.[tj]s"
 import path from "path";
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";

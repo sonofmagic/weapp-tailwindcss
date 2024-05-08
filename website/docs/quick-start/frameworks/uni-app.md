@@ -17,14 +17,14 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 另外如果你有旧有的 `uni-app webpack4` 项目需要迁移到 `webpack5`，可以看这篇 [旧有uni-app项目升级webpack5指南](/docs/upgrade/uni-app)
 :::
 
-```js
-// 在 vue.config.js 里注册
+```js title="vue.config.js"
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 const config = {
   // some option...
+  // highlight-start
   configureWebpack: (config) => {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
@@ -32,6 +32,7 @@ const config = {
       })
     )
   }
+  // highlight-end
   // other option...
 }
 

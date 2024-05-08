@@ -2,8 +2,7 @@
 
 在 `vue.config.js` 中注册：
 
-```js
-// vue.config.js
+```js title="vue.config.js"
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 

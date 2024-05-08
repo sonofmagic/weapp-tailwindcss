@@ -11,9 +11,10 @@ npx weapp-tw patch
 
 然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
 
-```json
+```json title="package.json"
  "scripts": {
-+  "postinstall": "weapp-tw patch"
+    // highlight-next-line
+   "postinstall": "weapp-tw patch"
  }
 ```
 

@@ -9,7 +9,7 @@
   margin: 1rem;
 }
 .h-4 {
-  height: 1rem; 
+  height: 1rem;
 }
 /*......*/
 ```
@@ -22,16 +22,20 @@
 
 在 `^3.0.0` 版本中，所有插件都内置了 `rem2rpx` 参数，默认不开启，要启用它只需将它设置成 `true` 即可
 
-```diff
+```js
 // vite.config.js
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 UnifiedViteWeappTailwindcssPlugin({
-+ rem2rpx: true
+  // ...other-options
+  // highlight-next-line
+  rem2rpx: true
 })
 // webpack
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 new UnifiedWebpackPluginV5({
-+ rem2rpx: true
+  // ...other-options
+  // highlight-next-line
+  rem2rpx: true
 })
 ```
 
@@ -68,8 +72,7 @@ npm i -D postcss-rem-to-responsive-pixel
 
 安装好之后，把它注册进你的 `postcss.config.js` 即可:
 
-```js
-// postcss.config.js
+```js title="postcss.config.js"
 module.exports = {
   plugins: {
     tailwindcss: {},
@@ -80,12 +83,12 @@ module.exports = {
       // 默认所有属性都转化
       propList: ['*'],
       // 转化的单位,可以变成 px / rpx
-      transformUnit: 'rpx',
+      transformUnit: 'rpx'
       // postcss-rem-to-responsive-pixel@6 版本添加了 disabled 参数，用来禁止插件的转化
       // disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'rn'
-    },
-  },
-};
+    }
+  }
+}
 ```
 
 :::tip
@@ -113,9 +116,7 @@ npm i -D tailwindcss-rem2px-preset
 
 然后在 `tailwind.config.js` 中，注册这个预设：
 
-```js
-// tailwind.config.js
-
+```js title="tailwind.config.js"
 module.exports = {
   presets: [
     require('tailwindcss-rem2px-preset').createPreset({
@@ -124,7 +125,7 @@ module.exports = {
       // 转化的单位,可以变成 px / rpx
       unit: 'rpx'
     })
-  ],
+  ]
   // ...
 }
 ```

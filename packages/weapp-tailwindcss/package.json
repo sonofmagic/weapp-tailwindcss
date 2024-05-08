@@ -165,11 +165,10 @@
     "postcss": "8.4.38",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-selector-parser": "6.0.16",
-    "semver": "7.6.0",
+    "semver": "7.6.1",
     "tailwindcss-patch": "^2.2.3",
     "webpack-sources": "3.2.3"
   },
-  "packageManager": "pnpm@9.0.6",
   "engines": {
     "node": ">=16.6.0"
   }

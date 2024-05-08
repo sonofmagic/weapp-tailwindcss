@@ -9,15 +9,14 @@
 
 假如你和 `NutUI` 一起使用，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)
 
-有群友遇到了转义特殊字符失败，之后变成了空格的文件，结果 `node_modules` 删了重新安装就好了。
+<!-- 有群友遇到了转义特殊字符失败，之后变成了空格的文件，结果 `node_modules` 删了重新安装就好了。 -->
 :::
 
 ## 注册插件
 
 在项目的配置文件 `config/index` 中注册:
 
-```js
-// config/index.[jt]s
+```js title="config/index.[jt]s"
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 // 假如你使用 ts 配置，则使用下方 import 的写法
 // import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
@@ -52,7 +51,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 
 `weapp-tailwindcss/webpack4` 对应的插件 `UnifiedWebpackPluginV4` 对应 `webpack4`
 
-在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本，推荐使用 'webpack5'
+在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本，推荐使用 `'webpack5'`
 
 另外假如你使用了 [`taro-plugin-compiler-optimization`](https://www.npmjs.com/package/taro-plugin-compiler-optimization) 记得把它干掉。因为和它一起使用时，它会使整个打包结果变得混乱。详见 [issues/123](https://github.com/sonofmagic/weapp-tailwindcss/issues/123) [issues/131](https://github.com/sonofmagic/weapp-tailwindcss/issues/131)
 

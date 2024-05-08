@@ -18,9 +18,11 @@
 
 其实使用 `webpack` / `vite` 这些实现都是可以的，主要的区别仅仅在于是否够用，从第一阶段的目的来说 `gulp` 是够用的。
 
-## 初始化修改 `project.config.json` 的字段
+## 初始化修改你的配置
 
-额外添加:
+`@weapp-tailwindcss/cli` 会去修改你项目里的 `project.config.json` 配置
+
+在你的 `project.config.json` 额外添加:
 
 ```json
 {
