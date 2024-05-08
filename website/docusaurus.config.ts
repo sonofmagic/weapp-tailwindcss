@@ -2,9 +2,6 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 import PrismLight from './src/utils/prismLight'
 import PrismDark from './src/utils/prismDark'
-// const lightCodeTheme = require('prism-react-renderer/themes/github')
-// const darkCodeTheme = require('prism-react-renderer/themes/dracula')
-// const nodeExternals = require('webpack-node-externals')
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
@@ -19,7 +16,7 @@ console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
  * }} params
  * @returns
  */
-function createLink(params = {}) {
+function createLink(params: { target?: string; rel?: string; href?: string; textContent?: string } = {}) {
   const { target = '_blank', rel = 'nofollow', href, textContent = '' } = params
 
   return `<a ${target ? `target="${target}"` : ''} ${rel ? `rel="${rel}"` : ''} ${href ? `href="${href}"` : ''}">${textContent}</a>`
@@ -115,7 +112,7 @@ const config = {
   ],
   plugins: [
     // 'docusaurus-plugin-sass',
-    function twPlugin(context, options) {
+    function twPlugin() {
       return {
         name: 'docusaurus-tailwindcss',
         configurePostCss(postcssOptions) {
