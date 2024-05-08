@@ -93,7 +93,7 @@
     "ls:pack": "npm pack --dry-run",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
     "prepare": "ts-patch install -s",
-    "release": "bumpp",
+    "release": "node scripts/release.js",
     "-------": "-----------",
     "postinstall": "node bin/weapp-tailwindcss.js patch"
   },
