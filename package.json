@@ -76,7 +76,7 @@
   },
   "homepage": "https://weapp-tw.icebreaker.top",
   "devDependencies": {
-    "@ast-grep/napi": "^0.21.4",
+    "@ast-grep/napi": "^0.22.0",
     "@babel/core": "^7.24.5",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
@@ -106,7 +106,7 @@
     "@types/lodash": "^4.17.1",
     "@types/md5": "^2.3.5",
     "@types/micromatch": "^4.0.7",
-    "@types/node": "^20.12.10",
+    "@types/node": "^20.12.11",
     "@types/semver": "^7.5.8",
     "@types/set-value": "^4.0.3",
     "@types/vinyl": "^2.0.12",
