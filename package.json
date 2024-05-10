@@ -23,7 +23,7 @@
     "demo:install:alpha": "node scripts/demo/install.js --alpha",
     "demo:sync-dist": "node scripts/demo/copy-dist.js",
     "demo:del-dist": "node scripts/demo/del-dist.js",
-    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss",
+    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw @weapp-tailwindcss/cli @weapp-tailwindcss/typography",
     "generate:readme": "ts-node scripts/readme/write.ts",
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
@@ -178,7 +178,7 @@
     "webpack": "^5.91.0",
     "webpack-build-utils": "^0.0.7"
   },
-  "packageManager": "pnpm@9.1.0",
+  "_packageManager": "pnpm@9.1.0",
   "engines": {
     "node": ">=20.0.0"
   }

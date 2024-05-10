@@ -6014,6 +6014,11 @@ semver@7.6.0, semver@^7.6.0:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@7.6.1:
+  version "7.6.1"
+  resolved "https://registry.npmmirror.com/semver/-/semver-7.6.1.tgz#60bfe090bf907a25aa8119a72b9f90ef7ca281b2"
+  integrity sha512-f/vbBsu+fOiYt+lmwZV0rVwJScl46HppnOA1ZvIuBWKOTlllpyJ3bfVax76/OrhCH38dyxoDIA8K7uB963IYgA==
+
 semver@^5.6.0:
   version "5.7.2"
   resolved "https://registry.npmmirror.com/semver/-/semver-5.7.2.tgz#48d55db737c3287cd4835e17fa13feace1c41ef8"
@@ -7053,10 +7058,10 @@ weapp-tailwindcss-webpack-plugin@^3.1.1-beta.0:
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
-weapp-tailwindcss@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0.tgz#2320ead9fbac62d44caf8537dab7939b1e0bff96"
-  integrity sha512-Dao6JlQkqKwoegJg8zaWvdgqAEyiR+i4WQ6bKoa+/ucky/Jj1srQUMXLMqW01I8Uz8dRAfDvAM8MHEvLy+cF5A==
+weapp-tailwindcss@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.1.tgz#8d49fbc8a90856c629a1db88bd6117416e7ae5b2"
+  integrity sha512-NxDhwEHEyaM54jZsf7ahUeO520PptH4W3jncGXt/Rjvb6ecMIPjh5jSYVrY8RHJXLEeWph2QPMjXE1qinh4j1w==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.5"
@@ -7076,7 +7081,7 @@ weapp-tailwindcss@^3.2.0:
     postcss "8.4.38"
     postcss-rem-to-responsive-pixel "^6.0.1"
     postcss-selector-parser "6.0.16"
-    semver "7.6.0"
+    semver "7.6.1"
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 

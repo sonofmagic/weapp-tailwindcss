@@ -3098,8 +3098,7 @@
   resolved "https://registry.npmmirror.com/@vue/shared/-/shared-3.4.21.tgz#de526a9059d0a599f0b429af7037cd0c3ed7d5a1"
   integrity sha512-PuJe7vDIi6VYSinuEbUIQgMIRZGgM8e4R+G+/dQTk0X1NEdvgvvgv7m+rfmDH1gZzyA1OjjoWskvHlfRNfQf3g==
 
-"@vue/vue-loader-v15@npm:vue-loader@^15.9.7", vue-loader@^15.6.4:
-  name "@vue/vue-loader-v15"
+"@vue/vue-loader-v15@npm:vue-loader@^15.9.7":
   version "15.10.1"
   resolved "https://registry.npmmirror.com/vue-loader/-/vue-loader-15.10.1.tgz#c451c4cd05a911aae7b5dbbbc09fb913fb3cca18"
   integrity sha512-SaPHK1A01VrNthlix6h1hq4uJu7S/z0kdLUb6klubo738NeQoLbS6V9/d8Pv19tU0XdQKju3D1HSKuI8wJ5wMA==
@@ -11956,6 +11955,11 @@ semver@7.6.0, semver@^7.6.0:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@7.6.1:
+  version "7.6.1"
+  resolved "https://registry.npmmirror.com/semver/-/semver-7.6.1.tgz#60bfe090bf907a25aa8119a72b9f90ef7ca281b2"
+  integrity sha512-f/vbBsu+fOiYt+lmwZV0rVwJScl46HppnOA1ZvIuBWKOTlllpyJ3bfVax76/OrhCH38dyxoDIA8K7uB963IYgA==
+
 semver@^6.0.0, semver@^6.1.1, semver@^6.1.2, semver@^6.3.0:
   version "6.3.0"
   resolved "https://registry.npmmirror.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
@@ -13515,6 +13519,17 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.npmmirror.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
+vue-loader@^15.6.4:
+  version "15.10.1"
+  resolved "https://registry.npmmirror.com/vue-loader/-/vue-loader-15.10.1.tgz#c451c4cd05a911aae7b5dbbbc09fb913fb3cca18"
+  integrity sha512-SaPHK1A01VrNthlix6h1hq4uJu7S/z0kdLUb6klubo738NeQoLbS6V9/d8Pv19tU0XdQKju3D1HSKuI8wJ5wMA==
+  dependencies:
+    "@vue/component-compiler-utils" "^3.1.0"
+    hash-sum "^1.0.2"
+    loader-utils "^1.1.0"
+    vue-hot-reload-api "^2.3.0"
+    vue-style-loader "^4.1.0"
+
 vue-loader@^17.0.0:
   version "17.0.1"
   resolved "https://registry.npmmirror.com/vue-loader/-/vue-loader-17.0.1.tgz#c0ee8875e0610a0c2d13ba9b4d50a9c8442e7a3a"
@@ -13672,10 +13687,10 @@ weapp-tailwindcss-webpack-plugin@^3.1.1-beta.0:
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
-weapp-tailwindcss@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.0.tgz#2320ead9fbac62d44caf8537dab7939b1e0bff96"
-  integrity sha512-Dao6JlQkqKwoegJg8zaWvdgqAEyiR+i4WQ6bKoa+/ucky/Jj1srQUMXLMqW01I8Uz8dRAfDvAM8MHEvLy+cF5A==
+weapp-tailwindcss@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.2.1.tgz#8d49fbc8a90856c629a1db88bd6117416e7ae5b2"
+  integrity sha512-NxDhwEHEyaM54jZsf7ahUeO520PptH4W3jncGXt/Rjvb6ecMIPjh5jSYVrY8RHJXLEeWph2QPMjXE1qinh4j1w==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.5"
@@ -13695,7 +13710,7 @@ weapp-tailwindcss@^3.2.0:
     postcss "8.4.38"
     postcss-rem-to-responsive-pixel "^6.0.1"
     postcss-selector-parser "6.0.16"
-    semver "7.6.0"
+    semver "7.6.1"
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
