@@ -1,15 +1,47 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/list/index",
+    "pages/cart/index",
+    "pages/user/index",
+    "pages/details/index",
+    "pages/bindPhone/index",
+    "pages/coupon/index",
+    "pages/order/index",
+    "pages/addressList/index",
+    "pages/addressAdd/index",
+    "pages/orderDetails/index"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
-    "navigationBarBackgroundColor": "#ffffff"
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
   },
-  "style": "v2",
-  "componentFramework": "glass-easel",
-  "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "tabBar": {
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "color": "#333",
+    "selectedColor": "#ff5f19",
+    "list": [
+      {
+        "selectedIconPath": "images/home_page_n.png",
+        "iconPath": "images/home_page_y.png",
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "selectedIconPath": "images/Shopping.png",
+        "iconPath": "images/shopping_select.png",
+        "pagePath": "pages/cart/index",
+        "text": "购物车"
+      },
+      {
+        "selectedIconPath": "images/my_y.png",
+        "iconPath": "images/my_n.png",
+        "pagePath": "pages/user/index",
+        "text": "我的"
+      }
+    ]
+  }
 }

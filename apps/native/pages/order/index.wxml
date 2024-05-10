@@ -1,0 +1,30 @@
+<view class='main'>
+  <view class='tab'>
+    <view bindtap='tabFun' data-index="{{1}}">
+      <text class='{{tabIndex==1?"active":""}}'>待付款</text>
+    </view>
+    <view bindtap='tabFun' data-index="2">
+      <text class='{{tabIndex==2?"active":""}}'>待发货</text>
+    </view>
+    <view bindtap='tabFun' data-index="3">
+      <text class='{{tabIndex==3?"active":""}}'>已发货</text>
+    </view>
+    <view bindtap='tabFun' data-index="4">
+      <text class='{{tabIndex==4?"active":""}}'>已完成</text>
+    </view>
+  </view>
+  <scroll-view scroll-y class='list'>
+      <view class='item' wx:if="{{!isEdit}}" wx:for="{{list}}">
+      <navigator class='content' hover-class="none" url="/pages/orderDetails/index?id={{item._id}}">
+        <image src='{{item.goods[0].img}}'></image>
+        <view class='text'>
+          <view class='title'>共{{item.goods.length}}件商品</view>
+          <view class='spec'>{{item.creat_date}}</view>
+          <view class='price'>
+            <text>¥{{item.totalPrice}}</text>
+          </view>
+        </view>
+      </navigator>
+    </view>
+  </scroll-view>
+</view>

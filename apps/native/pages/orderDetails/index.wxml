@@ -1,0 +1,94 @@
+<view style='height:100vh'>
+  <scroll-view scroll-y style='height:92vh'>
+    <view class='title'>
+      <view class='left'>
+        购物清单
+      </view>
+    </view>
+     <view class='list'>
+        <view class='item1' wx:if="{{!isEdit}}" wx:for="{{data.goods}}">
+          <navigator class='content' hover-class="none" url="/pages/details/index?id=1">
+            <image src='{{item.img}}'></image>
+            <view class='text'>
+              <view class='name'>{{item.title}}</view>
+              <view class='price1'>
+                <text>¥{{item.price}}</text>
+                <text>x{{item.num}}</text>
+              </view>
+            </view>
+          </navigator>
+        </view>
+      </view>
+    <view class='title'>
+      <view class='left'>
+        收货地址
+      </view>
+    </view>
+     <navigator hover-class="none" url="/pages/addressList/index?type=1" class='address'>
+      <view class='left'>
+        <view>{{address.mobile}} {{address.name}} 收</view>
+        <view>{{address.city[0]}} {{address.city[1]}} {{address.city[2]}} {{address.detailed}}</view>
+      </view>
+       <view class='choice'>
+        <image style='width:8px;height:15px;' src='/images/my_order.png'></image>
+      </view>
+    </navigator>
+    <view class='title' style='border-top:1px solid #dedede;'>
+      <view class='left'>
+        发票信息
+      </view>
+      <view class='right'>
+        <image src='/images/my_order.png'></image>
+      </view>
+    </view>
+    <view class='title'>
+      <view class='left'>
+        优惠券
+      </view>
+      <view class='right'>
+        <text>满200减50优惠券</text>
+        <image src='/images/my_order.png'></image>
+      </view>
+    </view>
+    <view class='title'>
+      <view class='left'>
+        商品价格
+      </view>
+    </view>
+    <view class='title price'>
+      <view class='left'>
+        原价
+      </view>
+       <view class='right'>
+        <text>{{data.costPrice}}</text>
+      </view>
+    </view>
+    <view class='title price'>
+      <view class='left '>
+        运费
+      </view>
+      <view class='right'>
+        <text>{{data.freight}}</text>
+      </view>
+    </view>
+    <view class='title price'>
+      <view class='left'>
+        优惠
+      </view>
+      <view class='right'>
+        <text>{{data.costPrice - data.totalPrice}}</text>
+      </view>
+    </view>
+    <view class='title price'>
+      <view class='left'>
+        总价
+      </view>
+      <view class='right'>
+        <text>{{data.totalPrice}}</text>
+      </view>
+    </view>
+  </scroll-view>
+  <navigator class='btn'>
+  支付
+  </navigator>
+</view>

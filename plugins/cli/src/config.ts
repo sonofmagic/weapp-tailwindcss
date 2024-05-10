@@ -72,7 +72,9 @@ export function updateProjectConfig(options: { root: string; dest?: string }) {
       set(projectConfig, 'setting.packNpmManually', true)
 
       if (Array.isArray(get(projectConfig, 'setting.packNpmRelationList'))) {
-        const x = projectConfig.setting.packNpmRelationList.find((x) => x.packageJsonPath === './package.json' && x.miniprogramNpmDistDir === './dist')
+        const x = projectConfig.setting.packNpmRelationList.find(
+          (x) => x.packageJsonPath === './package.json' && x.miniprogramNpmDistDir === './dist'
+        )
         if (!x) {
           projectConfig.setting.packNpmRelationList.push({
             packageJsonPath: './package.json',
@@ -121,7 +123,10 @@ export function updatePackageJson(options: { root: string; dest?: string }) {
 }
 
 export function initConfig(options?: InitConfigOptions) {
-  const { lang, root } = defu<InitConfigOptions, InitConfigOptions[]>(options, { lang: 'js', root: process.cwd() }) as Required<InitConfigOptions>
+  const { lang, root } = defu<InitConfigOptions, InitConfigOptions[]>(options, {
+    lang: 'js',
+    root: process.cwd()
+  }) as Required<InitConfigOptions>
   const configFilename = `weapp-tw.config.${lang ?? 'js'}`
   const configPath = path.resolve(root, configFilename)
   const tsconfigPath = path.resolve(root, 'tsconfig.json')

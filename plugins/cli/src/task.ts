@@ -27,7 +27,17 @@ function isTsLang(lang: string): lang is 'ts' {
 
 export async function getTasks(options: BuildOptions) {
   let { typescriptOptions } = options
-  const { root: cwd, weappTailwindcssOptions, outDir, src: srcBase, extensions, exclude, include, postcssOptions, preprocessorOptions } = options
+  const {
+    root: cwd,
+    weappTailwindcssOptions,
+    outDir,
+    src: srcBase,
+    extensions,
+    exclude,
+    include,
+    postcssOptions,
+    preprocessorOptions
+  } = options
   const globsSet = new GlobsSet()
   const base = srcBase ? srcBase + '/' : ''
   const enableSass = Boolean(preprocessorOptions?.sass)
@@ -77,7 +87,10 @@ export async function getTasks(options: BuildOptions) {
       const loadTs = enableTs && isTs
       let gulpTs: ReturnType<typeof typescript.createProject>
       if (enableTs && typeof typescriptOptions !== 'boolean') {
-        gulpTs = typescript.createProject(typescriptOptions.tsConfigFileName ?? 'tsconfig.json', typeof typescriptOptions === 'boolean' ? {} : typescriptOptions)
+        gulpTs = typescript.createProject(
+          typescriptOptions.tsConfigFileName ?? 'tsconfig.json',
+          typeof typescriptOptions === 'boolean' ? {} : typescriptOptions
+        )
       }
 
       return function JsTask() {
@@ -163,7 +176,12 @@ export async function getTasks(options: BuildOptions) {
         return promisify(
           chain
             // .pipe(debug({ title: 'css start:' }))
-            .pipe(gulpif(loadLess, less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less)))
+            .pipe(
+              gulpif(
+                loadLess,
+                less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less)
+              )
+            )
             .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
             .pipe(transformWxss())
             .pipe(

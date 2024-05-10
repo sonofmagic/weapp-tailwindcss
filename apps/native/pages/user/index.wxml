@@ -1,0 +1,53 @@
+<scroll-view scroll-y style='height:100vh;'>
+  <view class='top'>
+    <!-- <navigator url="/pages/bindPhone/index" class='img'>
+      
+    </navigator> -->
+    <view>
+       <view class='img'><open-data type="userAvatarUrl"></open-data></view><view class='text'><open-data type="userNickName"></open-data></view>
+    </view>
+  </view>
+  <navigator url="/pages/order/index" class='item'>
+    <view class='left'>
+      我的订单
+    </view>
+    <view class='right'>
+      <text>查看全部订单</text>
+      <image src='/images/my_order.png'></image>
+    </view>
+  </navigator>
+  <view class='icon'>
+    <navigator url="/pages/order/index?type=1" hover-class="none" >
+      <image src='/images/pending_payment.png' mode="aspectFit"></image>
+      <text>代付款</text>
+    </navigator>
+    <navigator url="/pages/order/index?type=2" hover-class="none" >
+      <image src='/images/pending_delivery.png' mode="aspectFit"></image>
+      <text>代发货</text>
+    </navigator>
+    <navigator url="/pages/order/index?type=3" hover-class="none" >
+      <image src='/images/already_shipped.png' mode="aspectFit"></image>
+      <text>已发货</text>
+    </navigator>
+    <navigator url="/pages/order/index?type=4" hover-class="none" >
+      <image src='/images/completed.png' mode="aspectFit"></image>
+      <text>已完成</text>
+    </navigator>
+  </view>
+  <navigator url="/pages/coupon/index" class='item'>
+    <view class='left'>
+      我的优惠券
+    </view>
+    <view class='right'>
+      <image src='/images/my_order.png'></image>
+    </view>
+  </navigator>
+  <navigator url="/pages/addressList/index" class='item'>
+    <view class='left'>
+      地址管理
+    </view>
+    <view class='right'>
+      <image src='/images/my_order.png'></image>
+    </view>
+  </navigator>
+</scroll-view>

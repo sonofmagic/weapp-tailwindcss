@@ -1,0 +1,34 @@
+<view style='height:100vh;'>
+  <view class='tab'>
+    <view bindtap='tabFun' data-index="1">
+      <text class='{{tabIndex==1?"active":""}}'>未使用</text>
+    </view>
+    <view bindtap='tabFun' data-index="2">
+      <text class='{{tabIndex==2?"active":""}}'>已使用</text>
+    </view>
+    <view bindtap='tabFun' data-index="3">
+      <text class='{{tabIndex==3?"active":""}}'>已过期</text>
+    </view>
+  </view>
+  <scroll-view scroll-y class='list'>
+    <view class='item' wx:for="{{list}}">
+      <view class='left'>
+        <text>￥</text>{{item.money}}
+      </view>
+       <view class='right'>
+          <view style='font-size: 15px;color: #C3B353;'>{{item.name}}</view>
+          <view>满{{item.condition}}元可用，特价商品除外</view>
+          <view class='state' wx:if="{{tabIndex==1}}">
+            <text>未过期</text>
+            {{item.effective[0]}}-{{item.effective[1]}}
+          </view>
+          <view class='state' wx:if="{{tabIndex==2}}">
+            <text>已使用</text>
+          </view>
+          <view class='state' wx:if="{{tabIndex==3}}">
+            <text>已过期</text>
+          </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

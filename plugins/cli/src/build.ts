@@ -94,7 +94,9 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     watch() {
       ensureDirSync(path.resolve(cwd, outDir))
       const dumps = globsSet.dump()
-      const arr = (Array.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored]).filter(Boolean) as string[]
+      const arr = (Array.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored]).filter(
+        Boolean
+      ) as string[]
       watchOptions.ignored = [...globsSet.dumpIgnored(), ...arr]
 
       const watcher = gulp.watch(dumps, watchOptions, async (cb) => {
@@ -102,6 +104,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
           await runTasks()
           cb()
         } catch (error) {
+          // eslint-disable-next-line n/no-callback-literal
           cb(error as Error)
         }
       })
@@ -124,7 +127,9 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
           weappTwVersionStr = `(${pc.blue(pc.underline(meta.version))})`
         }
 
-        console.log(`${pc.bold(`${pc.green('weapp')}-${pc.blue('tailwindcss')}`)}${weappTwVersionStr} ${pc.cyan('cli')}(${pc.blue(pc.underline(version))}) is ready!`)
+        console.log(
+          `${pc.bold(`${pc.green('weapp')}-${pc.blue('tailwindcss')}`)}${weappTwVersionStr} ${pc.cyan('cli')}(${pc.blue(pc.underline(version))}) is ready!`
+        )
       })
       this.watcher = watcher
       return this
