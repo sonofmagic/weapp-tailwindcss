@@ -39,7 +39,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     cache,
     jsAstTool,
     babelParserOptions,
-    postcssOptions
+    postcssOptions,
+    cssRemoveHoverPseudoClass
   } = result
 
   result.escapeMap = customReplaceDictionary
@@ -63,7 +64,8 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     injectAdditionalCssVarScope,
     cssSelectorReplacement,
     rem2rpx,
-    postcssOptions
+    postcssOptions,
+    cssRemoveHoverPseudoClass
   })
   result.styleHandler = styleHandler
   const jsHandler = createJsHandler({

@@ -9,6 +9,14 @@ exports[`styleHandler > .steps @icestack/ui case 0 1`] = `
     }"
 `;
 
+exports[`styleHandler > :hover remove case 0 1`] = `""`;
+
+exports[`styleHandler > :hover remove case 0 revert 1`] = `".a:hover{color:red;}"`;
+
+exports[`styleHandler > :hover remove case 1 1`] = `".b{color:red;}"`;
+
+exports[`styleHandler > :hover remove case 1 revert 1`] = `".b,.a:hover{color:red;}"`;
+
 exports[`styleHandler > add postcss plugins case 0 1`] = `
 "::before,::after {
     --tw-content: ""

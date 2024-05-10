@@ -50,6 +50,7 @@ export type IStyleHandlerOptions = {
   mangleContext?: IMangleScopeContext
   ctx?: PostcssContext
   postcssOptions?: PostcssOptions
+  cssRemoveHoverPseudoClass?: boolean
 } & RequiredStyleHandlerOptions
 
 export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
@@ -467,6 +468,14 @@ const customAttributes = {
    * @description 对解析 css 使用的 `postcss` 工具的配置
    */
   postcssOptions?: PostcssOptions
+  /**
+   * @version `^3.2.1`
+   * @group 3.一般配置
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/293
+   * @default `true`
+   * @description 是否删除 css :hover 选择器节点，默认为 `true`, 原因在于，小程序 css :hover 是不生效的，要使用 view 这种标签的 hover-class 属性
+   */
+  cssRemoveHoverPseudoClass?: boolean
 }
 
 export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult | Promise<JsHandlerResult>

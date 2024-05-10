@@ -101,6 +101,7 @@ export const defaultOptions: UserDefinedOptions = {
   babelParserOptions: {
     sourceType: 'unambiguous'
   },
-  postcssOptions: {}
+  postcssOptions: {},
+  cssRemoveHoverPseudoClass: true
   // jsAstTool: 'ast-grep'
 }
