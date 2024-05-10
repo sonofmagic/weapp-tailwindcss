@@ -5,18 +5,13 @@ import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { SimpleMappingChars2String } from '@/escape'
 import { createPatch } from '@/tailwindcss/patcher'
 import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
 
-export function getOptions(options: UserDefinedOptions = {}): InternalUserDefinedOptions {
-  if (options.customReplaceDictionary === undefined || options.customReplaceDictionary === 'simple') {
-    options.customReplaceDictionary = SimpleMappingChars2String
-  }
-
+export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
-    options as InternalUserDefinedOptions,
+    opts as InternalUserDefinedOptions,
     defaultOptions as InternalUserDefinedOptions,
     {}
   )
@@ -42,17 +37,18 @@ export function getOptions(options: UserDefinedOptions = {}): InternalUserDefine
     babelParserOptions,
     postcssOptions,
     cssRemoveHoverPseudoClass,
-    escapeMap
+    escapeMap,
+    mangle
   } = result
 
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
 
-  const customAttributesEntities: ICustomAttributesEntities = isMap(options.customAttributes)
-    ? [...(options.customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()]
+  const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
+    ? [...(customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()]
     : Object.entries(customAttributes)
 
   const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
-  initMangle(options.mangle)
+  initMangle(mangle)
 
   const styleHandler = createStyleHandler({
     cssInjectPreflight,

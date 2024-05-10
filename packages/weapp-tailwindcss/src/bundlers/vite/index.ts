@@ -15,9 +15,6 @@ const debug = createDebug()
  * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
-  if (options.customReplaceDictionary === undefined) {
-    options.customReplaceDictionary = 'simple'
-  }
   const opts = getOptions(options)
   const {
     disabled,

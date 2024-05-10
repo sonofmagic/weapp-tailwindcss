@@ -38,7 +38,6 @@ const config = {
           // '*': [/className/],
           '*': ['className']
         },
-        customReplaceDictionary: 'simple',
         wxsMatcher() {
           return false
         },
