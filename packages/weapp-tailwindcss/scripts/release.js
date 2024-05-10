@@ -1,7 +1,9 @@
 const path = require('node:path')
 const fs = require('fs-extra')
 // 'weapp-tailwindcss',
-const pluginNames = ['weapp-tailwindcss-webpack-plugin', 'weapp-tw']
+const pluginNames = ['weapp-tailwindcss', 'weapp-tailwindcss-webpack-plugin', 'weapp-tw']
+
+// pnpm publish --access public --no-git-checks
 
 async function main() {
   const { execa } = await import('execa')
@@ -12,7 +14,7 @@ async function main() {
   for (const pluginName of pluginNames) {
     try {
       await fs.writeJSON(pkgJsonPath, { ...pkgJson, name: pluginName })
-      await execa('pnpm', ['publish']).pipeStdout(process.stdout)
+      await execa('pnpm', ['publish', '--access', 'public', '--no-git-checks']).pipeStdout(process.stdout)
     } catch (error) {
       console.error(error)
     }
