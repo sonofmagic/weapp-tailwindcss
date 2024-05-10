@@ -40,6 +40,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     clean: true,
     src: '',
     exclude: [...defaultNodeModulesDirs],
+    include: ['**/*.{png,jpg,jpeg,gif,svg,webp}'],
     extensions: {
       javascript: [...defaultJavascriptExtensions, ...defaultTypescriptExtensions, ...defaultWxsExtensions],
       html: ['wxml'],

@@ -1,6 +1,4 @@
 /** @type {import('@weapp-tailwindcss/cli').UserConfig} */
-const config = {
-  include: ['**/*.png']
-}
+const config = {}
 
 module.exports = config
