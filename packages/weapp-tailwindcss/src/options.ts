@@ -1,4 +1,10 @@
-import type { InternalUserDefinedOptions, UserDefinedOptions, ICustomAttributes, ICustomAttributesEntities, ItemOrItemArray } from './types'
+import type {
+  InternalUserDefinedOptions,
+  UserDefinedOptions,
+  ICustomAttributes,
+  ICustomAttributesEntities,
+  ItemOrItemArray
+} from './types'
 import { createJsHandler } from './js'
 import { defaultOptions } from './defaults'
 import { defuOverrideArray, isMap } from '@/utils'

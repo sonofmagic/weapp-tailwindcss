@@ -36,7 +36,14 @@ export type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   escapeMap?: Record<string, string>
-} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement' | 'rem2rpx'>
+} & Pick<
+  UserDefinedOptions,
+  | 'cssPreflightRange'
+  | 'cssChildCombinatorReplaceValue'
+  | 'injectAdditionalCssVarScope'
+  | 'cssSelectorReplacement'
+  | 'rem2rpx'
+>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -57,7 +64,9 @@ export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
 
 export type JsHandlerResult = (JsHandlerReplaceResult | GeneratorResult) & { error?: ParseError }
 
-export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
+export type ICustomAttributes =
+  | Record<string, ItemOrItemArray<string | RegExp>>
+  | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
 
@@ -478,7 +487,11 @@ const customAttributes = {
   cssRemoveHoverPseudoClass?: boolean
 }
 
-export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult | Promise<JsHandlerResult>
+export type JsHandler = (
+  rawSource: string,
+  set: Set<string>,
+  options?: CreateJsHandlerOptions
+) => JsHandlerResult | Promise<JsHandlerResult>
 
 export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']
@@ -525,7 +538,10 @@ export type InternalUserDefinedOptions = Required<
   }
 >
 
-export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'>
+export type InternalPostcssOptions = Pick<
+  UserDefinedOptions,
+  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
+>
 
 export interface IBaseWebpackPlugin {
   // new (options: UserDefinedOptions, appType: AppType): any

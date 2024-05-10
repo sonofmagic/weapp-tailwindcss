@@ -7,7 +7,10 @@ import { postcssPlugin } from '@/constants'
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
 function isAtMediaHover(atRule: AtRule) {
-  return /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name) || (atRule.name === 'media' && /\(\s*hover\s*:\s*hover\s*\)/.test(atRule.params))
+  return (
+    /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name) ||
+    (atRule.name === 'media' && /\(\s*hover\s*:\s*hover\s*\)/.test(atRule.params))
+  )
 }
 
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (

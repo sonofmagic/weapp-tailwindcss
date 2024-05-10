@@ -20,7 +20,12 @@ const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
         node && selector.remove()
       }
 
-      if (selector.type === 'pseudo' && selector.value === ':root' && cssSelectorReplacement && cssSelectorReplacement.root) {
+      if (
+        selector.type === 'pseudo' &&
+        selector.value === ':root' &&
+        cssSelectorReplacement &&
+        cssSelectorReplacement.root
+      ) {
         selector.value = composeIsPseudo(cssSelectorReplacement.root)
       }
 

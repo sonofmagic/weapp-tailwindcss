@@ -18,6 +18,9 @@ export async function styleHandler(rawSource: string, options: IStyleHandlerOpti
 
 export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
   return (rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
-    return styleHandler(rawSource, defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt as IStyleHandlerOptions, options))
+    return styleHandler(
+      rawSource,
+      defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt as IStyleHandlerOptions, options)
+    )
   }
 }
