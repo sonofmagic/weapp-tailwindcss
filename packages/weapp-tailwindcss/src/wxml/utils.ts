@@ -169,7 +169,13 @@ export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: stri
 }
 
 export async function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
-  const { customAttributesEntities = [], disabledDefaultTemplateHandler, inlineWxs, runtimeSet, jsHandler } = options ?? {}
+  const {
+    customAttributesEntities = [],
+    disabledDefaultTemplateHandler,
+    inlineWxs,
+    runtimeSet,
+    jsHandler
+  } = options ?? {}
   const s = new MagicString(rawSource)
   let tag = ''
   const wxsArray: {
@@ -201,7 +207,10 @@ export async function customTemplateHandler(rawSource: string, options: Required
             )
           }
           // add 'virtualHostClass' toLowerCase
-          if (!disabledDefaultTemplateHandler && (name === 'class' || name === 'hover-class' || name === 'virtualHostClass' || name === 'virtualhostclass')) {
+          if (
+            !disabledDefaultTemplateHandler &&
+            (name === 'class' || name === 'hover-class' || name === 'virtualHostClass' || name === 'virtualhostclass')
+          ) {
             update()
           }
           for (const [t, props] of customAttributesEntities) {

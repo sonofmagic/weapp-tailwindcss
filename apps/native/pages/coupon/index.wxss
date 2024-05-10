@@ -1,0 +1,53 @@
+.tab{
+  height: 7vh;
+  display: flex;
+  line-height: 7vh;
+}
+
+.tab view{
+  flex: 1 0 auto;
+  font-size: 14px;
+  color: #333333;
+  text-align: center;
+}
+.tab .active{
+  color: #ff5f19;
+  border-bottom: 1px solid #ff5f19;
+  padding-bottom:1.8vh;
+}
+.list{
+  height: 93vh;
+}
+
+.item{
+  display: flex;
+  border: 1px solid #C5B558;
+  height: 120px;
+  margin: 10px 10px 0 10px;
+}
+
+.item .left{
+  flex: 0 1 25%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 36px;
+  margin: 32px 0;
+  color: #ff5f19;
+  border-right: 2px dashed #C5B558;
+}
+.item .left text{
+  font-size: 20px;
+  color: #ff5f19;
+}
+
+.item .right{
+  flex: 1 1 auto;
+  font-size: 12px;
+  color: #999999;
+  margin-top: 32px;
+  margin-left: 25px;
+}
+
+.item .right text{
+  color: #ff5f19;
+}

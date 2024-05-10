@@ -1,0 +1,169 @@
+/* pages/cart/index.wxss */
+.top{
+  display: flex;
+  line-height: 44px;
+  border-top: 1px solid #EDEDED;
+  border-bottom: 1px solid #EDEDED;
+  font-size: 14px;
+  padding: 0 16px;
+  align-items: center;
+}
+
+.top .city{
+  padding-left: 30px;
+  color: #999;
+}
+
+.top .edit-btn{
+  color: #6EA1F5;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.label{
+  width: 20px;
+  height:20px;
+}
+
+.label image {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.list .item{
+  display: flex;
+  border-bottom: 1px solid #EDEDED;
+  padding: 0 16px;
+  height: 118px;
+  align-items: center;
+}
+
+.list .label{
+  flex: 0 0 auto;
+  padding:10px 0;
+}
+
+.list .content{
+  flex-grow: 1;
+  display:flex;
+}
+
+.list .content image{
+  flex: 0 0 auto;
+  height: 94px;
+  width: 94px;
+  padding:10px;
+}
+
+.list .content .text{
+  flex-grow: 1;
+  font-size: 14px;
+}
+
+.list .content .title{
+  height: 44px;
+  overflow: hidden;
+}
+
+.list .content .spec{
+  font-size: 12px;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-height: 24px;    
+  max-height: 24px;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.list .content .price{
+  display: flex;
+  font-size: 14px;
+  padding-top:10px; 
+}
+
+.list .content .price text:nth-child(1){
+  color: #ff5f19;
+  flex: 1 0 50%;
+}
+
+.list .content .price text:nth-child(2){
+  color: #999999;
+  flex: 1 0 50%;
+  text-align: right;
+}
+
+.bottom{
+  display: flex;
+  font-size: 14px;
+}
+
+.bottom .left{
+  display: flex;
+  flex: 1 0 70%;
+  align-items: center;
+}
+
+.bottom .left .text{
+  display: flex;
+  flex: 0 0 50%;
+  
+}
+
+.bottom .left .total-price{
+  flex: 0 0 50%;
+  color: #333333;
+  text-align: right;
+}
+
+.bottom .right{
+  flex: 1 0 30%;
+  background: #ff5f19;
+  font-size: 17px;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 10vh;
+}
+
+.edit{
+  padding-right: 0px !important;
+}
+
+.edit .title{
+  display: flex;
+  width: 70%;
+  line-height: 32px;
+  text-align: center;
+  border: 1px solid #D5D5D5;
+  height: 32px !important;
+  margin: 5px 0;
+}
+
+.edit .title input {
+  flex: 1 0 33.333%;
+  border-left: 1px solid #D5D5D5;
+  border-right: 1px solid #D5D5D5;
+  height: 32px;
+}
+
+.edit .title text {
+  flex: 1 0 33.333%;
+  height: 32px;
+  font-size: 18px;
+}
+
+.edit .del-btn{
+  line-height:118px;
+  width: 65px;
+  background: #ff5f19;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+}
+
+.prohibit{
+  background: #E5E5E5 !important;
+}

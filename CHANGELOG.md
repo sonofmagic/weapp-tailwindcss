@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.2.1 (2024-5-10)
+
+### Features
+
+- 添加 `cssRemoveHoverPseudoClass` 配置，默认在小程序平台去除 `:hover` 元素
+
 ## 3.2.0 (2024-5-1)
 
 ### Features

@@ -6,6 +6,7 @@ import { collapse } from './collapse'
 function load(filename: string) {
   return fs.readFileSync(path.resolve(__dirname, './fragment', filename + '.md'), 'utf8')
 }
+// https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
 const renderer = new ReadmeRender({
   templatePath: 'scripts/readme/T.md'
 })

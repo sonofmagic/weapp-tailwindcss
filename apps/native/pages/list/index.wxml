@@ -1,0 +1,24 @@
+<scroll-view style='height:100vh;'>
+<view class='sort'>
+  <view class='item' bindtap="sortFun" data-data="1">
+  <text class='{{sortActive==1?"active":""}}'>价格</text><image class='item-active' src='/images/triangle.png' mode="aspectFit"></image></view>
+  <view class='item' bindtap="sortFun" data-data="2">
+  <text class='{{sortActive==2?"active":""}}'>口味</text><image src='/images/triangle_2.png' mode="aspectFit"></image></view>
+  <view class='item' bindtap="sortFun" data-data="3">
+  <text class='{{sortActive==3?"active":""}}'>销量</text><image src='/images/triangle_2.png' mode="aspectFit"></image></view>
+</view>
+<scroll-view scroll-y style='height:100%;'>
+<view class='list'>
+  <view class='item' wx:for="{{list}}">
+      <navigator hover-class="none" url="/pages/details/index?id={{item._id}}">
+        <image class='product' src='{{item.img}}'></image>
+        <text class='text'>{{item.title}}.</text>
+      </navigator>
+      <view class='price'>
+        <text>￥{{item.price}}</text>
+        <view bindtap='addCart' data-item="{{item}}"><image src='/images/Shopping.png'></image></view>
+      </view>
+    </view>
+</view>
+</scroll-view>
+</scroll-view>

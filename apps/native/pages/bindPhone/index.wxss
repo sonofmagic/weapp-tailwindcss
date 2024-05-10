@@ -1,0 +1,60 @@
+.main{
+ 
+  height: 100vh;
+  background: #e8e9e8;
+}
+.item{
+  display: flex;
+  border-bottom: 1px solid #d8d8d8;
+  line-height: 40px;
+  padding: 15px 0 0 0;
+  
+}
+.data{
+  background: #fff;
+  padding: 0 20px;
+}
+.item text {
+  flex: 0 1 25%;
+  font-size: 14px;
+  color: #333333;
+}
+
+.item input{
+  flex: 1 1 auto;
+  font-size: 16px;
+  color: #333333;
+  line-height: 40px;
+  height: 40px;
+}
+
+.item .code{
+    flex: 0 1 25%;
+    font-size: 12px;
+    color:#ff5f19;
+    border-left: 1px solid #d8d8d8;
+    text-align: center;
+    height: 24px;
+    margin: 8px 0;
+    line-height: 24px;
+}
+
+.text{
+  font-size: 12px;
+  color: #999999;
+  background: #fff;
+  padding: 10px 20px;
+}
+
+.btn{
+  line-height: 46px;
+  background: #E5E5E5;
+  font-size: 18px;
+  color: #FFFFFF;
+  text-align:center;
+  margin:50px 30px;
+  border-radius:2px;
+}
+.active{
+  background:#ff5f19;
+}

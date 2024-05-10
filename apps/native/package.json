@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.1",
+    "@weapp-tailwindcss/cli": "workspace:*",
     "cross-env": "^7.0.3",
     "tailwindcss": "^3.4.3",
     "weapp-tailwindcss": "workspace:*"

@@ -36,7 +36,14 @@ export type RequiredStyleHandlerOptions = {
   isMainChunk: boolean
   cssInjectPreflight?: InjectPreflight
   escapeMap?: Record<string, string>
-} & Pick<UserDefinedOptions, 'cssPreflightRange' | 'cssChildCombinatorReplaceValue' | 'injectAdditionalCssVarScope' | 'cssSelectorReplacement' | 'rem2rpx'>
+} & Pick<
+  UserDefinedOptions,
+  | 'cssPreflightRange'
+  | 'cssChildCombinatorReplaceValue'
+  | 'injectAdditionalCssVarScope'
+  | 'cssSelectorReplacement'
+  | 'rem2rpx'
+>
 
 export type CustomRuleCallback = (node: Rule, options: Readonly<RequiredStyleHandlerOptions>) => void
 
@@ -50,13 +57,16 @@ export type IStyleHandlerOptions = {
   mangleContext?: IMangleScopeContext
   ctx?: PostcssContext
   postcssOptions?: PostcssOptions
+  cssRemoveHoverPseudoClass?: boolean
 } & RequiredStyleHandlerOptions
 
 export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
 
 export type JsHandlerResult = (JsHandlerReplaceResult | GeneratorResult) & { error?: ParseError }
 
-export type ICustomAttributes = Record<string, ItemOrItemArray<string | RegExp>> | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
+export type ICustomAttributes =
+  | Record<string, ItemOrItemArray<string | RegExp>>
+  | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
 
@@ -273,9 +283,9 @@ const customAttributes = {
 - `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
 
 当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)
-   * @default 'simple'
+   * @default SimpleMappingChars2String
    */
-  customReplaceDictionary?: 'simple' | Record<string, string>
+  customReplaceDictionary?: Record<string, string>
 
   /**
    * @group 3.一般配置
@@ -467,9 +477,21 @@ const customAttributes = {
    * @description 对解析 css 使用的 `postcss` 工具的配置
    */
   postcssOptions?: PostcssOptions
+  /**
+   * @version `^3.2.1`
+   * @group 3.一般配置
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/293
+   * @default `true`
+   * @description 是否删除 css :hover 选择器节点，默认为 `true`, 原因在于，小程序 css :hover 是不生效的，要使用 view 这种标签的 hover-class 属性
+   */
+  cssRemoveHoverPseudoClass?: boolean
 }
 
-export type JsHandler = (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => JsHandlerResult | Promise<JsHandlerResult>
+export type JsHandler = (
+  rawSource: string,
+  set: Set<string>,
+  options?: CreateJsHandlerOptions
+) => JsHandlerResult | Promise<JsHandlerResult>
 
 export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']
@@ -516,7 +538,10 @@ export type InternalUserDefinedOptions = Required<
   }
 >
 
-export type InternalPostcssOptions = Pick<UserDefinedOptions, 'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'>
+export type InternalPostcssOptions = Pick<
+  UserDefinedOptions,
+  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
+>
 
 export interface IBaseWebpackPlugin {
   // new (options: UserDefinedOptions, appType: AppType): any

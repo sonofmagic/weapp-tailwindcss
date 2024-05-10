@@ -27,7 +27,9 @@ export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
     return tmpJsonPath
   } catch (error) {
     if ((<Error & { code: string }>error).code === 'MODULE_NOT_FOUND') {
-      console.warn('没有找到`tailwindcss`包，请确认是否安装。想要禁用打上rpx支持patch或者非`tailwindcss`框架，你可以设置 `supportCustomLengthUnitsPatch` 为 false')
+      console.warn(
+        '没有找到`tailwindcss`包，请确认是否安装。想要禁用打上rpx支持patch或者非`tailwindcss`框架，你可以设置 `supportCustomLengthUnitsPatch` 为 false'
+      )
     }
   }
 }
@@ -76,7 +78,11 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
   }
 }
 
-export function internalPatch(pkgJsonPath: string | undefined, options: ILengthUnitsPatchOptions, overwrite = true): InternalPatchResult | undefined {
+export function internalPatch(
+  pkgJsonPath: string | undefined,
+  options: ILengthUnitsPatchOptions,
+  overwrite = true
+): InternalPatchResult | undefined {
   if (pkgJsonPath) {
     // eslint-disable-next-line unicorn/prefer-module
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8')) as PackageJson

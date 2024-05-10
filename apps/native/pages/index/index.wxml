@@ -1,28 +1,28 @@
 <!-- index.wxml -->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="w-[100px] h-[100px]" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-        <view class="text-[#432432]">{{ num }}</view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile">获取头像昵称</button>
-        <view wx:else>请使用2.10.4及以上版本基础库</view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text>{{userInfo.nickName}}</text>
-      </block>
-    </view>
-    <view class="mt-[40px]">
-      <text class="{{ motto }}">{{motto}}</text>
-    </view>
+<scroll-view scroll-y bindscrolltolower="lower">
+  <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+    <block wx:for="{{imgUrls}}">
+      <swiper-item>
+        <image src='{{baseUrl+item.img_url}}' style='width:100%;height:220px;' />
+      </swiper-item>
+    </block>
+  </swiper>
+  <view class='flex justify-evenly'>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=生日&id=5b8e37e34b640a63b33272dc">
+      <image class="w-8" src='/images/birthday.png' mode="aspectFit"></image>
+      <text class="text-[#4de265]">生日</text>
+    </navigator>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=节日&id=5b8f45f2afb7c17788e11994">
+      <image class="w-8" src='/images/festival.png' mode="aspectFit"></image>
+      <text class="text-[#4049bd]">节日</text>
+    </navigator>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=婚礼&id=5b8f4603afb7c17788e11996">
+      <image class="w-8" src='/images/wedding.png' mode="aspectFit"></image>
+      <text class="text-[#da6a4f]">婚礼</text>
+    </navigator>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=party&id=5b8f4612afb7c17788e11998">
+      <image class="w-8" src='/images/party.png' mode="aspectFit"></image>
+      <text class="text-[#41cac8]">party</text>
+    </navigator>
   </view>
 </scroll-view>

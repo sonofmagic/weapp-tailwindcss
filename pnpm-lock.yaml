@@ -321,6 +321,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.1
         version: 4.17.1
+      '@weapp-tailwindcss/cli':
+        specifier: workspace:*
+        version: link:../../plugins/cli
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3

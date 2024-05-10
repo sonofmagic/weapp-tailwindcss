@@ -1,0 +1,107 @@
+<view style='height:100vh;'>
+<scroll-view scroll-y style='height:92vh'>
+  <swiper 
+      indicator-dots="{{indicatorDots}}"
+      autoplay="{{autoplay}}" 
+      interval="{{interval}}" 
+      duration="{{duration}}"
+      >
+        <block wx:for="{{imgUrls}}">
+          <swiper-item>
+            <image src='{{item}}' style='height:60vh;' />
+          </swiper-item>
+        </block>
+  </swiper>
+  <view class='title'>
+    {{data.title}}
+    <view class='spec'>
+    {{data.spec}}
+    </view>
+  </view>
+  <view class='price'>
+  <text>￥</text>
+  {{data.price}}
+  </view>
+  <view class='freight'>
+    <view class='left'>
+    运费:免运费
+    </view>
+    <view class='right'>
+    销量：3424
+    </view>
+   </view> 
+   <!-- <view class='choice' bindtap='specFun'>
+      规格：请选择蛋糕规格
+   </view> -->
+   <view class='tab'>
+    <view class='left' bindtap="tabFun" data-state="{{1}}">
+      <text class='{{tabIs?"tab-acitve":""}}'>产品详情</text>
+    </view>
+    <view class='right' bindtap="tabFun" data-state="{{2}}">
+      <text class='{{!tabIs?"tab-acitve":""}}'>售后保障</text>
+    </view>
+   </view>
+   <view class='content' wx:if="{{tabIs}}">
+        产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情 产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情产品详情
+      </view>
+   <view class='content' wx:if="{{!tabIs}}">
+    售后保障
+   </view>
+</scroll-view>
+<view class='bottom'>
+<view class='icon' bindtap='goShopCar'>
+    <image src='/images/shopping_cart_return.png' style='width:20px;height:17px;'></image>
+    <text>购物车</text>
+</view>
+ <!-- bindtap='specFun' -->
+<view class='btn' bindtap='addCart'>
+  加入购物车
+</view>
+<view class='btn' style='background: #FE4543;' bindtap='specFun'>
+  立即购买
+</view>
+</view>
+<view class='popup' wx:if="{{specIs}}">
+    <view class='title'>
+      <view class='img'>
+        <image src='https://wx.yogalt.com/file/images/img1.jpeg'></image>
+      </view>
+      <view class='text'>
+        <text>热卖款：四重奏蛋糕2磅/3磅/4磅...</text>
+        <view>￥180.00</view>
+      </view>
+      <view class='icon' bindtap='specFun'>
+        <image src="/images/delete.png"></image>
+      </view>
+    </view>
+  <scroll-view scroll-y class='content'>
+      <view class='item'>
+        <text style='padding-top:10px;'>款式:</text>
+        <view class='list'>
+          <view class='active'>奥术大师多</view>
+          <view>奥术大师多</view>
+          <view>奥术大师多</view>
+          <view>奥术大师多</view>
+        </view>
+      </view>
+      <view class='item'>
+        <text>搭配套餐:</text>
+        <view class='list'>
+          <view>奥术大师多asdasdasd</view>
+          <view>奥术大师多asdasd</view>
+          <view>奥术大师多</view>
+          <view>奥术大师多asdasdasdddddddd</view>
+          <view>奥术大师多asdasdasd</view>
+          <view>奥术大师多asdasd</view>
+          <view>奥术大师多</view>
+          <view>奥术大师多asdasdasdddddddd</view>
+        </view>
+      </view>
+  </scroll-view>
+  <view class='btn' bindtap='specFun'>
+  下一步
+  </view>
+</view>
+</view>
+
+

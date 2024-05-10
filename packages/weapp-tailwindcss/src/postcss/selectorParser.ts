@@ -5,7 +5,7 @@ import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
 const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
-  const { escapeMap, mangleContext, cssSelectorReplacement } = options
+  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options
 
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector) => {
@@ -15,12 +15,17 @@ const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
         selector.value = composeIsPseudo(cssSelectorReplacement.universal)
       }
 
-      if (selector.type === 'selector') {
+      if (cssRemoveHoverPseudoClass && selector.type === 'selector') {
         const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover')
         node && selector.remove()
       }
 
-      if (selector.type === 'pseudo' && selector.value === ':root' && cssSelectorReplacement && cssSelectorReplacement.root) {
+      if (
+        selector.type === 'pseudo' &&
+        selector.value === ':root' &&
+        cssSelectorReplacement &&
+        cssSelectorReplacement.root
+      ) {
         selector.value = composeIsPseudo(cssSelectorReplacement.root)
       }
 

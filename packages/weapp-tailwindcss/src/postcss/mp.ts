@@ -36,8 +36,12 @@ const initialNodes = cssVars.map((x) => {
  * 会语法错误
  */
 
-// eslint-disable-next-line unicorn/better-regex
-const PATTERNS = [/:not\(template\)\s*[~+]\s*:not\(template\)/.source, /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source].join('|')
+const PATTERNS = [
+  // eslint-disable-next-line unicorn/better-regex
+  /:not\(template\)\s*[~+]\s*:not\(template\)/.source,
+  // eslint-disable-next-line unicorn/better-regex
+  /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source
+].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
@@ -106,7 +110,11 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
       ) {
         selectors.unshift('*')
       }
-    } else if (typeof cssSelectorReplacement.universal === 'string' && !selectors.includes(cssSelectorReplacement.universal) && !selectors.includes('*')) {
+    } else if (
+      typeof cssSelectorReplacement.universal === 'string' &&
+      !selectors.includes(cssSelectorReplacement.universal) &&
+      !selectors.includes('*')
+    ) {
       selectors.unshift('*')
     }
   }
@@ -114,7 +122,10 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
   return selectors
 }
 
-export function remakeCombinatorSelector(selector: string, cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']) {
+export function remakeCombinatorSelector(
+  selector: string,
+  cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']
+) {
   let childCombinatorReplaceValue = 'view + view'
 
   if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {

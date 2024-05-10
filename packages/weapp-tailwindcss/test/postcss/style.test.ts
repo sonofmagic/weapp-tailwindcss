@@ -287,7 +287,8 @@ describe('styleHandler', () => {
       cssSelectorReplacement: {
         universal: false
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
+      cssRemoveHoverPseudoClass: true
     })
     expect(result).toBe('')
   })
@@ -302,7 +303,8 @@ describe('styleHandler', () => {
       cssSelectorReplacement: {
         universal: false
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
+      cssRemoveHoverPseudoClass: true
     })
     expect(result).toBe('.b{color:black;}')
   })
@@ -334,7 +336,8 @@ describe('styleHandler', () => {
       cssSelectorReplacement: {
         universal: false
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
+      cssRemoveHoverPseudoClass: true
     })
     expect(normalizeEol(result)).toBe('\n')
   })
@@ -836,6 +839,34 @@ describe('styleHandler', () => {
     const rawCode = `@tailwind base;
   `
     const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it(':hover remove case 0', async () => {
+    const { styleHandler } = getOptions({})
+    const rawCode = `.a:hover{color:red;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it(':hover remove case 1', async () => {
+    const { styleHandler } = getOptions({})
+    const rawCode = `.b,.a:hover{color:red;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true })
+    expect(result).toMatchSnapshot()
+  })
+
+  it(':hover remove case 0 revert', async () => {
+    const { styleHandler } = getOptions({})
+    const rawCode = `.a:hover{color:red;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
+    expect(result).toMatchSnapshot()
+  })
+
+  it(':hover remove case 1 revert', async () => {
+    const { styleHandler } = getOptions({})
+    const rawCode = `.b,.a:hover{color:red;}`
+    const result = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
     expect(result).toMatchSnapshot()
   })
 })

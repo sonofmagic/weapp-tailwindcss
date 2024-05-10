@@ -45,8 +45,7 @@ describe('customReplaceDictionary', () => {
     const { templateHandler } = getOptions({
       customAttributes: {
         'van-image': ['other-attr']
-      },
-      customReplaceDictionary: 'simple'
+      }
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
     expect(res).toBe('<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>')
@@ -89,9 +88,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('styleHandler simple mode', async () => {
-    const { styleHandler } = getOptions({
-      customReplaceDictionary: 'simple'
-    })
+    const { styleHandler } = getOptions({})
     const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true
     })

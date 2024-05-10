@@ -17,8 +17,23 @@ function decodeUnicode(s: string) {
   return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
 }
 
-export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
-  const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always, unescapeUnicode } = options
+export function replaceHandleValue(
+  str: string,
+  node: ReplaceNode,
+  options: IJsHandlerOptions,
+  ms: MagicString,
+  offset = 0
+) {
+  const {
+    classNameSet: set,
+    escapeMap,
+    mangleContext: ctx,
+    needEscaped = false,
+    jsPreserveClass,
+    arbitraryValues,
+    always,
+    unescapeUnicode
+  } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
 
@@ -36,7 +51,8 @@ export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsH
     if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
-        ignoreFlag = node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
+        ignoreFlag =
+          node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
       }
 
       if (!ignoreFlag) {

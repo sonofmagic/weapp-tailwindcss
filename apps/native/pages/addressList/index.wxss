@@ -1,0 +1,33 @@
+.list .item{
+  display: flex;
+  margin: 0 18px;
+  border-bottom: 1px solid #dedede;
+  padding: 15px 0;
+  align-items: center;
+  height: 98px;
+}
+.item .left{
+  flex: 1 0 80%;
+  font-size: 14px;
+}
+.item .edit,.choice{
+  flex: 1 0 10%;
+  text-align: center;
+}
+.item .edit image{
+  width: 20px;
+  height: 20px;
+}
+.item .choice image{
+  width: 20px;
+  height: 20px;
+}
+
+.btn{
+  height: 8vh;
+  line-height: 8vh;
+  text-align: center;
+  background:#ff5f19;
+  font-size: 14px;
+  color: #fff;
+}

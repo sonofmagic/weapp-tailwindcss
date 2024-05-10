@@ -9,7 +9,7 @@ function load(filename: string) {
 const renderer = new ReadmeRender({
   templatePath: 'scripts/readme/T.md'
 })
-
+// https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
 const tableData = [
   // ['配置项', '类型', '描述'],
   ['`htmlMatcher`', '`((assetPath:string)=>boolean)`\\|`string`\\|`string[]`', '匹配 `wxml`等等模板进行处理的方法'],
