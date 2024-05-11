@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 功能需求与问题探讨
+    url: https://github.com/sonofmagic/weapp-tailwindcss/discussions
+    about: 提出一些功能需求或者进行一些问题的探讨
+  # - name: Discord Chat
+  #   url: https://chat.vuejs.org
+  #   about: Ask questions and discuss with other Vue users in real time.
+  # - name: Questions & Discussions
+  #   url: https://github.com/vuejs/core/discussions
+  #   about: Use GitHub discussions for message-board style questions and discussions.
+  # - name: Patreon
+  #   url: https://www.patreon.com/evanyou
+  #   about: Love Vue.js? Please consider supporting us via Patreon.
+  # - name: Open Collective
+  #   url: https://opencollective.com/vuejs/donate
+  #   about: Love Vue.js? Please consider supporting us via Open Collective.
