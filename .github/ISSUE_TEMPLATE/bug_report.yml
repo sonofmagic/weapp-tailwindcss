@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **在你开始之前你要知道...**
+        **在你开始提 bug 之前, 你要知道...**
 
         此表格仅用于提交错误报告。如果您有使用问题, 或者你不确定这是否真的是一个错误，请确保：
 
@@ -28,10 +28,10 @@ body:
     attributes:
       label: 框架 & 小程序平台
       description: |
-        在什么框架,编译到的什么小程序平台,出现了问题? e.g
+        在什么框架, 编译到的什么小程序平台, 出现了问题? 例如:
         - uni-app vue3 vite 编译到 qq 小程序
         - taro react 编译到 微信小程序
-      placeholder: uni-app vue3 vite 编译到 qq 小程序出现问题
+      placeholder: taro vue2 编译到 京东小程序
     validations:
       required: true
   - type: input
@@ -59,12 +59,14 @@ body:
     id: expected
     attributes:
       label: 预期是什么？
+      placeholder: 如你期望的运行表现
     validations:
       required: true
   - type: textarea
     id: actually-happening
     attributes:
       label: 实际发生了什么？
+      placeholder: 目前实际的运行表现
     validations:
       required: true
   - type: textarea
