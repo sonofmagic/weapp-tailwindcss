@@ -27,7 +27,7 @@ body:
     id: platform
     attributes:
       label: 框架 & 小程序平台
-      description: ｜
+      description: |
         在什么框架,编译到的什么小程序平台,出现了问题? e.g
         - uni-app vue3 vite 编译到 qq 小程序
         - taro react 编译到 微信小程序
@@ -40,16 +40,18 @@ body:
       label: 最小复现bug的代码仓库链接
       description: |
         这里你可以提供 `GitHub` / `Gitee` 等可以在线访问到的 git 地址。用例应该尽可能只包含复现错误,所需**最少**的代码。
-        另外请不要随意填写无关链接。如果未提供有效的链接，这个issue将被关闭。
+        这个复现 demo 非常重要! 可以有效帮助 bug 的解决, 请尽量提供‼️
+        另外请不要随意填写无关链接。如果提供无关的链接，这个issue将被关闭。
       placeholder: 复现bug的代码仓库链接
-    validations:
-      required: true
+    # validations:
+    #   required: true
   - type: textarea
     id: steps-to-reproduce
     attributes:
       label: 复现bug的步骤
       description: |
-        打开您的代码仓库后,我们需要做什么才能使bug复现？清晰简洁的陈述，对于我们能够及时分类您的问题非常重要。请注意，您可以使用 [Markdown](https://guides.github.com/features/mastering-markdown/) 来格式化列表和代码。
+        打开您的代码仓库后,我们需要做什么才能使bug复现？清晰简洁的陈述，对于我们能够及时分类您的问题非常重要。
+        请注意，您可以使用 [Markdown](https://guides.github.com/features/mastering-markdown/) 来格式化列表和代码。
       placeholder: 复现bug的步骤
     validations:
       required: true
