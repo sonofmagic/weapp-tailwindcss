@@ -3,9 +3,10 @@ import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
 import { parseExpression, traverse } from '@/babel'
-import { variableRegExp, ItemOrItemArray } from '@/reg'
+import type { ItemOrItemArray } from '@/reg'
+import { variableRegExp } from '@/reg'
 import { defuOverrideArray } from '@/utils'
-import type { RawSource, ITemplateHandlerOptions } from '@/types'
+import type { ITemplateHandlerOptions, RawSource } from '@/types'
 import { replaceHandleValue } from '@/js/handlers'
 
 // mpx class 中外部用单引号，所以 内部要用双引号
@@ -40,14 +41,14 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
             escapeMap: options.escapeMap,
             classNameSet: options.runtimeSet,
             needEscaped: true,
-            always: true
+            always: true,
           },
           ms,
-          1
+          1,
         )
         // path.node.value = replaceWxml(path.node.value, options)
       },
-      noScope: true
+      noScope: true,
     })
 
     // const { code } = generate(ast, {
@@ -60,7 +61,8 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
     // })
 
     return ms.toString()
-  } catch {
+  }
+  catch {
     // https://github.com/sonofmagic/weapp-tailwindcss/issues/274
     // {{class}}
     return match
@@ -82,7 +84,7 @@ function extract(original: string, reg: RegExp) {
     sources.push({
       start,
       end,
-      raw: match[1]
+      raw: match[1],
     })
 
     match = reg.exec(original)
@@ -109,8 +111,8 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
         replaceWxml(before, {
           keepEOL: true,
           escapeMap: options.escapeMap,
-          mangleContext: options.mangleContext
-        })
+          mangleContext: options.mangleContext,
+        }),
       )
       p = m.start
       // 匹配后值
@@ -118,7 +120,8 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
         const code = generateCode(m.raw, options)
         const source = `{{${code}}}`
         m.source = source
-      } else {
+      }
+      else {
         m.source = ''
       }
 
@@ -131,18 +134,19 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
           replaceWxml(after, {
             keepEOL: true,
             escapeMap: options.escapeMap,
-            mangleContext: options.mangleContext
-          })
+            mangleContext: options.mangleContext,
+          }),
         )
       }
     }
 
     return resultArray.filter(Boolean).join('').trim()
-  } else {
+  }
+  else {
     return replaceWxml(original, {
       keepEOL: false,
       escapeMap: options.escapeMap,
-      mangleContext: options.mangleContext
+      mangleContext: options.mangleContext,
     })
   }
 }
@@ -161,9 +165,11 @@ export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: stri
       }
     }
     return false
-  } else if (typeof props === 'string') {
+  }
+  else if (typeof props === 'string') {
     return props === attr
-  } else {
+  }
+  else {
     return regTest(props, attr)
   }
 }
@@ -174,7 +180,7 @@ export async function customTemplateHandler(rawSource: string, options: Required
     disabledDefaultTemplateHandler,
     inlineWxs,
     runtimeSet,
-    jsHandler
+    jsHandler,
   } = options ?? {}
   const s = new MagicString(rawSource)
   let tag = ''
@@ -202,14 +208,14 @@ export async function customTemplateHandler(rawSource: string, options: Required
               parser.endIndex - 1,
               templateReplacer(value, {
                 ...options,
-                quote
-              })
+                quote,
+              }),
             )
           }
           // add 'virtualHostClass' toLowerCase
           if (
-            !disabledDefaultTemplateHandler &&
-            (name === 'class' || name === 'hover-class' || name === 'virtualHostClass' || name === 'virtualhostclass')
+            !disabledDefaultTemplateHandler
+            && (name === 'class' || name === 'hover-class' || name === 'virtualHostClass' || name === 'virtualhostclass')
           ) {
             update()
           }
@@ -218,11 +224,13 @@ export async function customTemplateHandler(rawSource: string, options: Required
               if (isPropsMatch(props, name)) {
                 update()
               }
-            } else if (typeof t === 'string') {
+            }
+            else if (typeof t === 'string') {
               if (t === tag && isPropsMatch(props, name)) {
                 update()
               }
-            } else if (regTest(t, tag) && isPropsMatch(props, name)) {
+            }
+            else if (regTest(t, tag) && isPropsMatch(props, name)) {
               update()
             }
           }
@@ -233,17 +241,17 @@ export async function customTemplateHandler(rawSource: string, options: Required
           wxsArray.push({
             data,
             endIndex: parser.endIndex + 1,
-            startIndex: parser.startIndex
+            startIndex: parser.startIndex,
           })
         }
       },
       onclosetag() {
         tag = ''
-      }
+      },
     },
     {
-      xmlMode: true
-    }
+      xmlMode: true,
+    },
   )
   parser.write(s.original)
   parser.end()

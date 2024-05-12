@@ -25,7 +25,7 @@ export const uniAppPlatform = [
   'MP',
   'QUICKAPP-WEBVIEW',
   'QUICKAPP-WEBVIEW-UNION',
-  'QUICKAPP-WEBVIEW-HUAWEI'
+  'QUICKAPP-WEBVIEW-HUAWEI',
 ]
 
 // export const staticVariants = {}
@@ -49,14 +49,14 @@ export function normalComment(text: string) {
 export function ifdef(text: string) {
   return {
     start: `#ifdef ${normalComment(text)}`,
-    end: `#endif`
+    end: `#endif`,
   }
 }
 
 export function ifndef(text: string) {
   return {
     start: `#ifndef ${normalComment(text)}`,
-    end: `#endif`
+    end: `#endif`,
   }
 }
 // uniVersion > 3.9
@@ -66,7 +66,7 @@ export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecAr
   let arr: RegExpExecArray | null
   let index = 0
 
-  const regex = new RegExp('\\(\\s*' + queryKey + '\\s*:\\s*"([^)]*)"\\)', 'g')
+  const regex = new RegExp(`\\(\\s*${queryKey}\\s*:\\s*"([^)]*)"\\)`, 'g')
   while ((arr = regex.exec(str)) !== null) {
     cb(arr, index)
     index++

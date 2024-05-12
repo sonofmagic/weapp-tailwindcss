@@ -4,9 +4,9 @@ import loaderUtils from 'loader-utils'
 const WeappTwRuntimeAopLoader: webpack.LoaderDefinitionFunction<{
   getClassSet: () => void
 }> = function (this: webpack.LoaderContext<any>, source: string) {
-  // @ts-ignore
+  // @ts-expect-error
   const opt = loaderUtils.getOptions(this) // this.getOptions()
-  // @ts-ignore
+  // @ts-expect-error
   opt?.getClassSet?.()
   return source
 }

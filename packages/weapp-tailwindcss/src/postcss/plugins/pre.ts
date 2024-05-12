@@ -1,4 +1,4 @@
-import type { PluginCreator, Plugin, AtRule } from 'postcss'
+import type { AtRule, Plugin, PluginCreator } from 'postcss'
 import { ruleTransformSync } from '../selectorParser'
 import { commonChunkPreflight } from '../mp'
 import type { IStyleHandlerOptions } from '@/types'
@@ -8,15 +8,15 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 
 function isAtMediaHover(atRule: AtRule) {
   return (
-    /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name) ||
-    (atRule.name === 'media' && /\(\s*hover\s*:\s*hover\s*\)/.test(atRule.params))
+    /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name)
+    || (atRule.name === 'media' && /\(\s*hover\s*:\s*hover\s*\)/.test(atRule.params))
   )
 }
 
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
   options: IStyleHandlerOptions = {
-    isMainChunk: true
-  }
+    isMainChunk: true,
+  },
 ) => {
   const { isMainChunk } = options
   const p: Plugin = {
@@ -28,11 +28,12 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
       if (isAtMediaHover(atRule)) {
         if (atRule.nodes) {
           atRule.replaceWith(atRule.nodes)
-        } else {
+        }
+        else {
           atRule.remove()
         }
       }
-    }
+    },
   }
   if (isMainChunk) {
     p.Once = (root) => {

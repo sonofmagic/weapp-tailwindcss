@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import type { OutputAsset, OutputChunk } from 'rollup'
-import { UserDefinedOptions } from '@/types'
+import type { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/options'
 import { vitePluginName } from '@/constants'
 import { getGroupedEntries } from '@/utils'
@@ -30,7 +30,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     appType,
     setMangleRuntimeSet,
     cache,
-    tailwindcssBasedir
+    tailwindcssBasedir,
   } = opts
   if (disabled) {
     return
@@ -51,7 +51,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
       const runtimeSet = twPatcher.getClassSet({
-        basedir: tailwindcssBasedir
+        basedir: tailwindcssBasedir,
       })
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
@@ -72,22 +72,23 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               if (source) {
                 originalSource.source = source
                 debug('html cache hit: %s', file)
-              } else {
+              }
+              else {
                 return false
               }
             },
             async () => {
               originalSource.source = await templateHandler(oldVal, {
-                runtimeSet
+                runtimeSet,
               })
               onUpdate(file, oldVal, originalSource.source)
               debug('html handle: %s', file)
               noCachedCount++
               return {
                 key: file,
-                source: originalSource.source
+                source: originalSource.source,
               }
-            }
+            },
           )
         }
         debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
@@ -107,15 +108,16 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               if (source) {
                 originalSource.code = source
                 debug('js cache hit: %s', file)
-              } else {
+              }
+              else {
                 return false
               }
             },
             async () => {
-              const mapFilename = file + '.map'
+              const mapFilename = `${file}.map`
               const hasMap = Boolean(bundle[mapFilename])
               const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                generateMap: hasMap
+                generateMap: hasMap,
               })
               originalSource.code = code
               onUpdate(file, rawSource, code)
@@ -126,9 +128,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               }
               return {
                 key: file,
-                source: code
+                source: code,
               }
-            }
+            },
           )
         }
         debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
@@ -150,13 +152,14 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               if (source) {
                 originalSource.source = source
                 debug('css cache hit: %s', file)
-              } else {
+              }
+              else {
                 return false
               }
             },
             async () => {
               const css = await styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType)
+                isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
               })
               originalSource.source = css
               onUpdate(file, rawSource, css)
@@ -164,9 +167,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               noCachedCount++
               return {
                 key: file,
-                source: css
+                source: css,
               }
-            }
+            },
           )
         }
         debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
@@ -174,6 +177,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
       onEnd()
       debug('end')
-    }
+    },
   }
 }

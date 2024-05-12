@@ -12,7 +12,7 @@ export function createContext() {
   return {
     variablesScopeWeakMap,
     isVariablesScope,
-    markVariablesScope
+    markVariablesScope,
   }
 }
 

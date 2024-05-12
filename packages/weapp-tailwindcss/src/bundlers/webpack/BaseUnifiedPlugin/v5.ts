@@ -2,7 +2,7 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import type { Compiler } from 'webpack'
-import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
@@ -41,7 +41,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       setMangleRuntimeSet,
       runtimeLoaderPath,
       cache,
-      tailwindcssBasedir
+      tailwindcssBasedir,
     } = this.options
 
     if (disabled) {
@@ -55,7 +55,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
       return twPatcher.getClassSet({
-        basedir: tailwindcssBasedir
+        basedir: tailwindcssBasedir,
       })
     }
 
@@ -65,10 +65,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const WeappTwRuntimeAopLoader = {
       loader,
       options: {
-        getClassSet
+        getClassSet,
       },
       ident: null,
-      type: null
+      type: null,
     }
 
     // https://github.com/dcloudio/uni-app/blob/dev/packages/webpack-uni-mp-loader/lib/plugin/index-new.js
@@ -77,7 +77,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
         if (isExisted) {
-          const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+          const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
           // // css
           if (idx > -1) {
             module.loaders.unshift(WeappTwRuntimeAopLoader)
@@ -88,7 +88,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       compilation.hooks.processAssets.tapPromise(
         {
           name: pluginName,
-          stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE
+          stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
         },
         async (assets) => {
           onStart()
@@ -130,13 +130,14 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   if (source) {
                     compilation.updateAsset(file, source)
                     debug('html cache hit: %s', file)
-                  } else {
+                  }
+                  else {
                     return false
                   }
                 },
                 async () => {
                   const wxml = await templateHandler(rawSource, {
-                    runtimeSet
+                    runtimeSet,
                   })
                   const source = new ConcatSource(wxml)
                   compilation.updateAsset(file, source)
@@ -146,9 +147,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   noCachedCount++
                   return {
                     key: cacheKey,
-                    source
+                    source,
                   }
-                }
+                },
               )
             }
             debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
@@ -167,16 +168,17 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   if (source) {
                     compilation.updateAsset(file, source)
                     debug('js cache hit: %s', file)
-                  } else {
+                  }
+                  else {
                     return false
                   }
                 },
                 async () => {
                   const rawSource = originalSource.source().toString()
-                  const mapFilename = file + '.map'
+                  const mapFilename = `${file}.map`
                   const hasMap = Boolean(assets[mapFilename])
                   const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                    generateMap: hasMap
+                    generateMap: hasMap,
                   })
                   const source = new ConcatSource(code)
                   compilation.updateAsset(file, source)
@@ -190,9 +192,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   }
                   return {
                     key: cacheKey,
-                    source
+                    source,
                   }
-                }
+                },
               )
             }
             debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
@@ -215,13 +217,14 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   if (source) {
                     compilation.updateAsset(file, source)
                     debug('css cache hit: %s', file)
-                  } else {
+                  }
+                  else {
                     return false
                   }
                 },
                 async () => {
                   const css = await styleHandler(rawSource, {
-                    isMainChunk: mainCssChunkMatcher(file, this.appType)
+                    isMainChunk: mainCssChunkMatcher(file, this.appType),
                   })
                   const source = new ConcatSource(css)
                   compilation.updateAsset(file, source)
@@ -231,9 +234,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   noCachedCount++
                   return {
                     key: cacheKey,
-                    source
+                    source,
                   }
-                }
+                },
               )
             }
             debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
@@ -241,7 +244,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
           debug('end')
           onEnd()
-        }
+        },
       )
     })
   }

@@ -1,9 +1,9 @@
 import type {
-  InternalUserDefinedOptions,
-  UserDefinedOptions,
   ICustomAttributes,
   ICustomAttributesEntities,
-  ItemOrItemArray
+  InternalUserDefinedOptions,
+  ItemOrItemArray,
+  UserDefinedOptions,
 } from './types'
 import { createJsHandler } from './js'
 import { defaultOptions } from './defaults'
@@ -19,7 +19,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
   const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
     opts as InternalUserDefinedOptions,
     defaultOptions as InternalUserDefinedOptions,
-    {}
+    {},
   )
 
   result.escapeMap = result.customReplaceDictionary
@@ -44,7 +44,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     postcssOptions,
     cssRemoveHoverPseudoClass,
     escapeMap,
-    mangle
+    mangle,
   } = result
 
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -67,7 +67,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     cssSelectorReplacement,
     rem2rpx,
     postcssOptions,
-    cssRemoveHoverPseudoClass
+    cssRemoveHoverPseudoClass,
   })
 
   const jsHandler = createJsHandler({
@@ -77,7 +77,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     jsPreserveClass,
     generateMap: true,
     jsAstTool,
-    babelParserOptions
+    babelParserOptions,
   })
 
   const templateHandler = createTemplateHandler({
@@ -86,7 +86,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     mangleContext,
     inlineWxs,
     jsHandler,
-    disabledDefaultTemplateHandler
+    disabledDefaultTemplateHandler,
   })
 
   result.styleHandler = styleHandler

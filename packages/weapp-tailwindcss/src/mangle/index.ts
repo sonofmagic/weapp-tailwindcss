@@ -1,5 +1,5 @@
 import { ClassGenerator, defaultMangleClassFilter } from '@tailwindcss-mangle/shared'
-import type { UserDefinedOptions, IMangleScopeContext } from '@/types'
+import type { IMangleScopeContext, UserDefinedOptions } from '@/types'
 import { splitCode } from '@/extractors/split'
 import { escapeStringRegexp } from '@/reg'
 
@@ -14,7 +14,7 @@ export const defaultMangleContext: IMangleScopeContext = {
   filter: defaultMangleClassFilter,
   cssHandler: getSelf,
   jsHandler: getSelf,
-  wxmlHandler: getSelf
+  wxmlHandler: getSelf,
 } // as default
 
 export function useMangleStore() {
@@ -41,7 +41,7 @@ export function useMangleStore() {
       if (options === true) {
         options = {
           classGenerator: {},
-          mangleClassFilter: defaultMangleClassFilter
+          mangleClassFilter: defaultMangleClassFilter,
         }
       }
       ctx.classGenerator = new ClassGenerator(options.classGenerator)
@@ -64,7 +64,6 @@ export function useMangleStore() {
   function setMangleRuntimeSet(runtimeSet: Set<string>) {
     const newSet = new Set<string>()
     for (const c of runtimeSet) {
-      // eslint-disable-next-line unicorn/no-array-callback-reference
       if (ctx.filter(c)) {
         newSet.add(c)
       }
@@ -76,6 +75,6 @@ export function useMangleStore() {
     mangleContext: ctx,
     resetMangle,
     initMangle,
-    setMangleRuntimeSet
+    setMangleRuntimeSet,
   }
 }

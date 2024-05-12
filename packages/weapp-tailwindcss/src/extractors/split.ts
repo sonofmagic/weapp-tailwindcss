@@ -8,12 +8,12 @@ export function isValidSelector(selector = ''): selector is string {
 
 // export const splitCode = (code: string) => [...new Set(code.split(/\\?[\s'"`;={}]+/g))].filter(isValidSelector)
 
-export const splitCode = (code: string, allowDoubleQuotes = false) => {
+export function splitCode(code: string, allowDoubleQuotes = false) {
   // , onlyWhiteSpace?: boolean
   // const regex = onlyWhiteSpace ? /[\s]+/ : /"|[\s]+/
   // default /\s+/
   // for vue static node
   // |class="
   const splitter = allowDoubleQuotes ? /\s+/ : /\s+|"/
-  return code.split(splitter).filter((element) => isValidSelector(element))
+  return code.split(splitter).filter(element => isValidSelector(element))
 }

@@ -1,5 +1,5 @@
 import type { Rule } from 'postcss'
-import type { IClassGeneratorOptions, ClassGenerator } from '@tailwindcss-mangle/shared'
+import type { ClassGenerator, IClassGeneratorOptions } from '@tailwindcss-mangle/shared'
 import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
 import type { ParseError, ParserOptions } from '@babel/parser'
@@ -25,8 +25,8 @@ export type CssPresetProps = string
 
 export type CssPreflightOptions =
   | {
-      [key: CssPresetProps]: string | number | boolean
-    }
+    [key: CssPresetProps]: string | number | boolean
+  }
   | false
 
 export type RequiredStyleHandlerOptions = {
@@ -60,7 +60,7 @@ export type IStyleHandlerOptions = {
   cssRemoveHoverPseudoClass?: boolean
 } & RequiredStyleHandlerOptions
 
-export type JsHandlerReplaceResult = { code: string; map?: SourceMap }
+export interface JsHandlerReplaceResult { code: string, map?: SourceMap }
 
 export type JsHandlerResult = (JsHandlerReplaceResult | GeneratorResult) & { error?: ParseError }
 
@@ -70,7 +70,7 @@ export type ICustomAttributes =
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
 
-export type IJsHandlerOptions = {
+export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
   arbitraryValues?: IArbitraryValues
@@ -256,7 +256,7 @@ cssPreflight: {
 
 假如你要把 `className` 通过组件的`prop`传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134#issuecomment-1351288238)
 
-@example 
+@example
 
 ```js
 const customAttributes = {
@@ -365,7 +365,7 @@ const customAttributes = {
    * @experiment 实验性质，有可能会改变
    * @description 是否转义 `wxml` 中内联的 `wxs`
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
-   * @example 
+   * @example
    * ```html
    * <!-- index.wxml -->
    * <wxs module="inline">
