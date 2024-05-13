@@ -62,6 +62,8 @@ export async function getTasks(options: BuildOptions) {
   }
   const { transformJs, transformWxml, transformWxss } = createPlugins(weappTailwindcssOptions)
 
+  const outDirGlobs = [`!${outDir}/**/*`, `!./${outDir}/**/*`]
+
   function getGlobs(type: AssetType) {
     const globs: string[] = []
     if (typeof include === 'function') {
@@ -73,8 +75,8 @@ export async function getTasks(options: BuildOptions) {
     else if (Array.isArray(exclude)) {
       globs.push(...exclude.map(x => `!${x}`))
     }
-    globs.push(`!${outDir}/**/*`)
-    globs.push(`!./${outDir}/**/*`)
+    globs.push(...outDirGlobs)
+
     return globs
   }
 
@@ -234,7 +236,7 @@ export async function getTasks(options: BuildOptions) {
       })
       globsSet.add(globs)
       return promisify(
-        gulp.src(globs, { cwd, since: gulp.lastRun(copyOthers) }).pipe(
+        gulp.src([...globs, ...outDirGlobs], { cwd, since: gulp.lastRun(copyOthers) }).pipe(
           gulp.dest(outDir, {
             cwd,
           }),
