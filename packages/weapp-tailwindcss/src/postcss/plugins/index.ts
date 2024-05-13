@@ -1,11 +1,12 @@
-import { AcceptedPlugin } from 'postcss'
-// @ts-ignore
+import type { AcceptedPlugin } from 'postcss'
+// @ts-expect-error
 import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { postcssWeappTailwindcssPrePlugin } from './pre'
 import { postcssWeappTailwindcssPostPlugin } from './post'
 import { createContext } from './ctx'
-import { IStyleHandlerOptions } from '@/types'
+import type { IStyleHandlerOptions } from '@/types'
+
 export function getPlugins(options: IStyleHandlerOptions) {
   const ctx = createContext()
   options.ctx = ctx
@@ -13,8 +14,8 @@ export function getPlugins(options: IStyleHandlerOptions) {
     ...(options.postcssOptions?.plugins ?? []),
     postcssWeappTailwindcssPrePlugin(options),
     postcssIsPseudoClass({
-      specificityMatchingName: 'weapp-tw-ig'
-    })
+      specificityMatchingName: 'weapp-tw-ig',
+    }),
   ]
   if (options.rem2rpx) {
     plugins.push(
@@ -24,9 +25,9 @@ export function getPlugins(options: IStyleHandlerOptions) {
           : {
               rootValue: 32,
               propList: ['*'],
-              transformUnit: 'rpx'
-            }
-      )
+              transformUnit: 'rpx',
+            },
+      ),
     )
   }
   plugins.push(postcssWeappTailwindcssPostPlugin(options))
@@ -35,6 +36,6 @@ export function getPlugins(options: IStyleHandlerOptions) {
 
 export { postcssWeappTailwindcssPostPlugin } from './post'
 export { postcssWeappTailwindcssPrePlugin } from './pre'
-// @ts-ignore
+// @ts-expect-error
 export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class'
 export { default as postcssRem2rpx } from 'postcss-rem-to-responsive-pixel'

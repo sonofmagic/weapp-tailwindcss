@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Arbitrary groups > group case 0 1`] = `
+exports[`arbitrary groups > group case 0 1`] = `
 ".mx-auto {
     margin-left: auto;
     margin-right: auto
@@ -91,7 +91,7 @@ exports[`Arbitrary groups > group case 0 1`] = `
 }"
 `;
 
-exports[`Arbitrary groups > group case 1 1`] = `
+exports[`arbitrary groups > group case 1 1`] = `
 ".invisible {
     visibility: hidden
 }
@@ -124,7 +124,7 @@ exports[`Arbitrary groups > group case 1 1`] = `
 }"
 `;
 
-exports[`Arbitrary groups > group case 2 1`] = `
+exports[`arbitrary groups > group case 2 1`] = `
 ".hidden {
     display: none
 }
@@ -133,13 +133,13 @@ exports[`Arbitrary groups > group case 2 1`] = `
 }"
 `;
 
-exports[`Arbitrary groups > group case 3 1`] = `
+exports[`arbitrary groups > group case 3 1`] = `
 ":nth-of-type(3) .group .group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block {
     display: block
 }"
 `;
 
-exports[`Arbitrary groups > peer case 0 1`] = `
+exports[`arbitrary groups > peer case 0 1`] = `
 ".invisible {
     visibility: hidden
 }
@@ -169,7 +169,7 @@ exports[`Arbitrary groups > peer case 0 1`] = `
 }"
 `;
 
-exports[`Arbitrary groups > peer case 1 1`] = `
+exports[`arbitrary groups > peer case 1 1`] = `
 ".visible {
     visibility: visible
 }
@@ -192,7 +192,7 @@ exports[`Arbitrary groups > peer case 1 1`] = `
 }"
 `;
 
-exports[`Arbitrary groups > peer case 2 1`] = `
+exports[`arbitrary groups > peer case 2 1`] = `
 ".hidden {
     display: none
 }

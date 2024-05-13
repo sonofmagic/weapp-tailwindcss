@@ -30,9 +30,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformWxss(options: Partial<IStyleHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
-      transform: async function (file: File, encoding, callback) {
+      async transform(file: File, encoding, callback) {
         runtimeSet = twPatcher.getClassSet({
-          basedir: tailwindcssBasedir
+          basedir: tailwindcssBasedir,
         })
         setMangleRuntimeSet(runtimeSet)
         const error = null
@@ -48,27 +48,28 @@ export function createPlugins(options: UserDefinedOptions = {}) {
               if (source) {
                 file.contents = Buffer.from(source)
                 debug('css cache hit: %s', file.path)
-              } else {
+              }
+              else {
                 return false
               }
             },
             async () => {
               const code = await styleHandler(rawSource, {
                 isMainChunk: true,
-                ...options
+                ...options,
               })
               file.contents = Buffer.from(code)
               debug('css handle: %s', file.path)
               return {
                 key: file.path,
-                source: code
+                source: code,
               }
-            }
+            },
           )
         }
 
         callback(error, file)
-      }
+      },
       // construct(callback) {
       //   debug('transformWxss start')
       //   callback()
@@ -79,7 +80,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformJs(options: Partial<CreateJsHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
-      transform: async function (file: File, encoding, callback) {
+      async transform(file: File, encoding, callback) {
         const error = null
         if (file.contents) {
           const rawSource = file.contents.toString()
@@ -92,7 +93,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
               if (source) {
                 file.contents = Buffer.from(source)
                 debug('js cache hit: %s', file.path)
-              } else {
+              }
+              else {
                 return false
               }
             },
@@ -102,13 +104,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
               debug('js handle: %s', file.path)
               return {
                 key: file.path,
-                source: code
+                source: code,
               }
-            }
+            },
           )
         }
         callback(error, file)
-      }
+      },
       // construct(callback) {
       //   debug('transformJs start')
       //   callback()
@@ -119,7 +121,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformWxml(options: Partial<ITemplateHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
-      transform: async function (file: File, encoding, callback) {
+      async transform(file: File, encoding, callback) {
         const error = null
         // file.path
         if (file.contents) {
@@ -134,27 +136,28 @@ export function createPlugins(options: UserDefinedOptions = {}) {
               if (source) {
                 file.contents = Buffer.from(source)
                 debug('html cache hit: %s', file.path)
-              } else {
+              }
+              else {
                 return false
               }
             },
             async () => {
               const code = await templateHandler(rawSource, {
                 runtimeSet,
-                ...options
+                ...options,
               })
               file.contents = Buffer.from(code)
               debug('html handle: %s', file.path)
               return {
                 key: file.path,
-                source: code
+                source: code,
               }
-            }
+            },
           )
         }
 
         callback(error, file)
-      }
+      },
       // construct(callback) {
       //   debug('transformWxml start')
       //   callback()
@@ -165,6 +168,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   return {
     transformWxss,
     transformWxml,
-    transformJs
+    transformJs,
   }
 }

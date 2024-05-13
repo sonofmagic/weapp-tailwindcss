@@ -16,7 +16,8 @@ export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
         if (str.includes(item)) {
           return true
         }
-      } else if (isRegexp(item)) {
+      }
+      else if (isRegexp(item)) {
         item.lastIndex = 0
         if (item.test(str)) {
           return true
@@ -25,10 +26,10 @@ export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
     }
     return false
   }
-  throw new TypeError("paramater 'arr' should be a Array of Regexp | String !")
+  throw new TypeError('paramater \'arr\' should be a Array of Regexp | String !')
 }
 
-export const noop = () => {}
+export function noop() {}
 
 // const MAX_ASCII_CHAR_CODE = 127
 
@@ -55,7 +56,8 @@ export function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]
 
     if (Array.isArray(bucket)) {
       result[bucketCategory].push(item)
-    } else {
+    }
+    else {
       result[bucketCategory] = [item]
     }
   }
@@ -68,11 +70,14 @@ export function getGroupedEntries<T>(entries: [string, T][], options: InternalUs
   const groupedEntries = groupBy(entries, ([file]) => {
     if (cssMatcher(file)) {
       return 'css'
-    } else if (htmlMatcher(file)) {
+    }
+    else if (htmlMatcher(file)) {
       return 'html'
-    } else if (jsMatcher(file) || wxsMatcher(file)) {
+    }
+    else if (jsMatcher(file) || wxsMatcher(file)) {
       return 'js'
-    } else {
+    }
+    else {
       return 'other'
     }
   })

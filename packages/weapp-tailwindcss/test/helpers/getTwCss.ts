@@ -12,7 +12,7 @@ export async function getCss(content: string | string[], options: IGetCssOptions
   const { css, postcssPlugins, twConfig } = defu(options, {
     css: '@tailwind utilities;',
     postcssPlugins: [],
-    twConfig: {}
+    twConfig: {},
   })
   if (typeof content === 'string') {
     content = [content]
@@ -21,22 +21,22 @@ export async function getCss(content: string | string[], options: IGetCssOptions
     tailwindcss({
       content: content.map((x) => {
         return {
-          raw: x
+          raw: x,
         }
       }),
-      ...twConfig
+      ...twConfig,
     }),
     {
       Comment(comment, helper) {
         comment.remove()
       },
-      postcssPlugin: 'remove-all-comment'
+      postcssPlugin: 'remove-all-comment',
     },
-    ...postcssPlugins
+    ...postcssPlugins,
   ])
   const res = await processor.process(css, {
     from: 'index.css',
-    to: 'index.css'
+    to: 'index.css',
   })
   return res
 }

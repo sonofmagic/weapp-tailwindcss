@@ -1,7 +1,7 @@
 import type { File, Node } from '@babel/types'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
-import type { ParseResult, ParseError } from '@babel/parser'
+import type { ParseError, ParseResult } from '@babel/parser'
 import type { SgNode } from '@ast-grep/napi'
 import { replaceHandleValue } from './handlers'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '@/types'
@@ -31,7 +31,8 @@ async function getAstGrep() {
   try {
     const { js } = await import('@ast-grep/napi')
     return js
-  } catch (error) {
+  }
+  catch (error) {
     console.warn('请先安装 `@ast-grep/napi` , 安装完成后再尝试运行！')
     throw error
   }
@@ -48,14 +49,14 @@ async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: 
       text.slice(1, -1),
       {
         end: range.end.index - 1,
-        start: range.start.index + 1
+        start: range.start.index + 1,
       },
       {
         ...options,
-        unescapeUnicode: true
+        unescapeUnicode: true,
       },
       ms,
-      0
+      0,
     )
   }
 
@@ -69,14 +70,14 @@ async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: 
         text,
         {
           end: range.end.index,
-          start: range.start.index
+          start: range.start.index,
         },
         {
           ...options,
-          unescapeUnicode: true
+          unescapeUnicode: true,
         },
         ms,
-        0
+        0,
       )
     }
   }
@@ -88,10 +89,11 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
   let ast: ParseResult<File>
   try {
     ast = parse(rawSource, options.babelParserOptions)
-  } catch (error) {
+  }
+  catch (error) {
     return {
       code: rawSource,
-      error: error as ParseError
+      error: error as ParseError,
     } as JsHandlerResult
   }
 
@@ -108,12 +110,12 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           n,
           {
             ...options,
-            needEscaped: options.needEscaped ?? true
+            needEscaped: options.needEscaped ?? true,
           },
           ms,
-          1
+          1,
         )
-      }
+      },
       // exit(p) {}
     },
     TemplateElement: {
@@ -127,12 +129,12 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           n,
           {
             ...options,
-            needEscaped: false
+            needEscaped: false,
           },
           ms,
-          0
+          0,
         )
-      }
+      },
     },
     CallExpression: {
       enter(p) {
@@ -144,7 +146,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                 const res = jsHandler(s.node.value, {
                   ...options,
                   needEscaped: false,
-                  generateMap: false
+                  generateMap: false,
                 })
                 if (res.code) {
                   const node = s.node
@@ -157,13 +159,13 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                     }
                   }
                 }
-              }
+              },
             },
             TemplateElement: {
               enter(s) {
                 const res = jsHandler(s.node.value.raw, {
                   ...options,
-                  generateMap: false
+                  generateMap: false,
                 })
                 if (res.code) {
                   const node = s.node
@@ -176,18 +178,18 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                     }
                   }
                 }
-              }
-            }
+              },
+            },
           })
         }
-      }
-    }
+      },
+    },
   }
 
   traverse(ast, traverseOptions)
 
   return {
-    code: ms.toString()
+    code: ms.toString(),
   }
 }
 
@@ -198,21 +200,22 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
   try {
     const root = await js.parseAsync(rawSource)
     ast = root.root()
-  } catch {
+  }
+  catch {
     return {
-      code: rawSource
+      code: rawSource,
     } as JsHandlerResult
   }
   await astGrepUpdateString(ast, options, ms)
 
   return {
-    code: ms.toString()
+    code: ms.toString(),
   }
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions) {
-  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool, babelParserOptions } =
-    options
+  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool, babelParserOptions }
+    = options
   return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
       classNameSet: set,
@@ -222,7 +225,7 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       jsPreserveClass,
       generateMap,
       jsAstTool,
-      babelParserOptions
+      babelParserOptions,
     })
     if (opts.jsAstTool === 'ast-grep') {
       return jsHandlerAsync(rawSource, opts)

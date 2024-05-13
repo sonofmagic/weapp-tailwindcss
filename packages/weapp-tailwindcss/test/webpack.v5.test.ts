@@ -1,23 +1,25 @@
+/* eslint-disable prefer-arrow-callback */
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import type { Compiler, Configuration } from 'webpack'
-import webpack from 'webpack'
+import type webpack from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
 import { copySync, mkdirSync } from 'fs-extra'
 // @ts-ignore
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
-import { getMemfsCompiler5 as getCompiler5, compile, readAssets, createLoader, getErrors, getWarnings } from './helpers'
+import { compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings, readAssets } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 import { MappingChars2String } from '@/escape'
-function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string; devtool?: string }) {
+
+function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string, devtool?: string }) {
   const { entry, mode, tailwindcssConfig, devtool } = params
 
   const processor = postcss([
     // require('autoprefixer')(),
-    require('tailwindcss')({ config: tailwindcssConfig })
+    require('tailwindcss')({ config: tailwindcssConfig }),
     // require('postcss-rem-to-responsive-pixel')({
     //   rootValue: 32,
     //   propList: ['*'],
@@ -32,7 +34,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
     output: {
       path: path.resolve(__dirname, './dist'),
       filename: '[name].js', // ?var=[fullhash]
-      chunkFilename: '[id].[name].js' // ?ver=[fullhash]
+      chunkFilename: '[id].[name].js', // ?ver=[fullhash]
     },
     devtool,
     module: {
@@ -42,30 +44,30 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
           // https://webpack.js.org/configuration/module/#useentry
           use: createLoader(async function (source) {
             const basename = path.basename(this.resourcePath, path.extname(this.resourcePath))
-            const filename = basename + '.wxml'
+            const filename = `${basename}.wxml`
             const content = await fs.readFile(path.resolve(this.context, filename), {
-              encoding: 'utf8'
+              encoding: 'utf8',
             })
             this.emitFile(filename, content)
 
-            const cssFilename = basename + '.css'
+            const cssFilename = `${basename}.css`
 
             const cssContent = await fs.readFile(path.resolve(this.context, cssFilename), {
-              encoding: 'utf8'
+              encoding: 'utf8',
             })
 
             const res = await processor.process(cssContent, {
               from: undefined,
-              map: false
+              map: false,
             })
             this.emitFile(cssFilename, res.toString())
             return source
             // this.emitFile('hello.xx', '12345')
             // console.log()
-          })
-        }
-      ]
-    }
+          }),
+        },
+      ],
+    },
   })
 }
 describe('webpack5 plugin', () => {
@@ -79,7 +81,7 @@ describe('webpack5 plugin', () => {
     const isExisted = fss.existsSync(cacheDir)
     if (!isExisted) {
       mkdirSync(cacheDir, {
-        recursive: true
+        recursive: true,
       })
     }
 
@@ -92,25 +94,25 @@ describe('webpack5 plugin', () => {
     compiler = createCompiler({
       mode: 'development',
       entry: {
-        wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js')
+        wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js'),
       },
-      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js')
+      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js'),
     })
 
     prodCompiler = createCompiler({
       mode: 'production',
       entry: {
-        wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js')
+        wxml: path.resolve(__dirname, './fixtures/webpack/v5/wxml/pages/index.js'),
       },
-      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js')
+      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/wxml/tailwind.config.js'),
     })
 
     emptyCompiler = createCompiler({
       mode: 'production',
       entry: {
-        wxml: path.resolve(__dirname, './fixtures/webpack/v5/empty/index.js')
+        wxml: path.resolve(__dirname, './fixtures/webpack/v5/empty/index.js'),
       },
-      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/empty/tailwind.config.js')
+      tailwindcssConfig: path.resolve(__dirname, './fixtures/webpack/v5/empty/tailwind.config.js'),
     })
 
     // sourceMapCompiler = createCompiler({
@@ -141,7 +143,7 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[common] case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -191,7 +193,7 @@ describe('webpack5 plugin', () => {
         timeTaken = performance.now() - timeStart
         console.log(`[common] case processAssets executed in ${timeTaken}ms`)
       },
-      rem2rpx: true
+      rem2rpx: true,
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -215,7 +217,7 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[common] case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     let stats = await compile(compiler)
@@ -270,7 +272,7 @@ describe('webpack5 plugin', () => {
         timeTaken = performance.now() - timeStart
         console.log(`[common] case processAssets executed in ${timeTaken}ms`)
       },
-      runtimeLoaderPath: path.resolve(__dirname, '../dist/weapp-tw-runtime-loader.js')
+      runtimeLoaderPath: path.resolve(__dirname, '../dist/weapp-tw-runtime-loader.js'),
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -293,7 +295,7 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[common with loader] case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -316,7 +318,7 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[empty build] common case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(emptyCompiler)
 
     const stats = await compile(emptyCompiler)
@@ -339,7 +341,7 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[unified common] common case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -362,7 +364,7 @@ describe('webpack5 plugin', () => {
       onEnd() {
         timeTaken = performance.now() - timeStart
         console.log(`[unified prod common] common case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(prodCompiler)
 
     const stats = await compile(prodCompiler)
@@ -411,7 +413,7 @@ describe('webpack5 plugin', () => {
         timeTaken = performance.now() - timeStart
         // 不会执行
         console.log(`[disabled true] common case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -438,7 +440,7 @@ describe('webpack5 plugin', () => {
         timeTaken = performance.now() - timeStart
         // 不会执行
         console.log(`[mangle true] common case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -460,8 +462,8 @@ describe('webpack5 plugin', () => {
       },
       mangle: {
         classGenerator: {
-          classPrefix: ''
-        }
+          classPrefix: '',
+        },
       },
       customReplaceDictionary: MappingChars2String,
       onStart() {
@@ -471,7 +473,7 @@ describe('webpack5 plugin', () => {
         timeTaken = performance.now() - timeStart
         // 不会执行
         console.log(`[mangle options] common case processAssets executed in ${timeTaken}ms`)
-      }
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -491,9 +493,9 @@ describe('webpack5 plugin', () => {
       },
       mangle: {
         classGenerator: {
-          classPrefix: 'ice-'
-        }
-      }
+          classPrefix: 'ice-',
+        },
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -513,10 +515,10 @@ describe('webpack5 plugin', () => {
       },
       mangle: {
         classGenerator: {
-          classPrefix: 'som-'
+          classPrefix: 'som-',
         },
-        mangleClassFilter: () => true
-      }
+        mangleClassFilter: () => true,
+      },
     }).apply(compiler)
 
     const stats = await compile(compiler)
@@ -544,16 +546,16 @@ describe('webpack5 plugin', () => {
       optimization: {
         // minimize: true
         // css purge
-        sideEffects: false
+        sideEffects: false,
       },
       entry: {
         index: './src/index.js',
-        module: './src/module/index.js'
+        module: './src/module/index.js',
       },
       // entry: indexEntry,
       context: multipleContextsPath,
       output: {
-        path: path.resolve(multipleContextsPath, './dist')
+        path: path.resolve(multipleContextsPath, './dist'),
         // filename: '[name].js', // ?var=[fullhash]
         // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
       },
@@ -570,7 +572,7 @@ describe('webpack5 plugin', () => {
                 return source
               }),
               'css-loader',
-              'postcss-loader'
+              'postcss-loader',
               // createLoader(function (source) {
               //   return source
               // })
@@ -591,10 +593,10 @@ describe('webpack5 plugin', () => {
               //     }
               //   }
               // }
-            ] // , 'postcss-loader'] // 'style-loader', // , 'postcss-loader']
-          }
-        ]
-      }
+            ], // , 'postcss-loader'] // 'style-loader', // , 'postcss-loader']
+          },
+        ],
+      },
       // resolve: {}
     })
 
@@ -618,16 +620,16 @@ describe('webpack5 plugin', () => {
       optimization: {
         // minimize: true
         // css purge
-        sideEffects: false
+        sideEffects: false,
       },
       entry: {
         index: './src/index.js',
-        module: './src/module/index.js'
+        module: './src/module/index.js',
       },
       // entry: indexEntry,
       context: multipleContextsPath,
       output: {
-        path: path.resolve(multipleContextsPath, './dist')
+        path: path.resolve(multipleContextsPath, './dist'),
         // filename: '[name].js', // ?var=[fullhash]
         // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
       },
@@ -648,12 +650,12 @@ describe('webpack5 plugin', () => {
               // moduleProcessor
               createLoader(
                 async function (source) {
-                  // eslint-disable-next-line unicorn/prefer-ternary
                   if (/module[/\\]index\.css$/.test(this.resourcePath)) {
                     const res = await moduleProcessor.process(source)
                     this.emitFile('module.css', res.css)
                     // return 'module.exports = ' + JSON.stringify(css)
-                  } else {
+                  }
+                  else {
                     // 直接变成空字符串 or postcss
                     const res = await processor.process(source)
                     this.emitFile('index.css', res.css)
@@ -662,13 +664,13 @@ describe('webpack5 plugin', () => {
                   return 'module.exports = " "' // JSON.stringify(css) //  JSON.stringify(source)
                 },
                 {
-                  ident: 'css-file-emiter'
-                }
-              )
-            ]
-          }
-        ]
-      }
+                  ident: 'css-file-emiter',
+                },
+              ),
+            ],
+          },
+        ],
+      },
       // resolve: {}
     })
 
@@ -687,11 +689,11 @@ describe('webpack5 plugin', () => {
       mode: 'production',
 
       optimization: {
-        sideEffects: false
+        sideEffects: false,
       },
       entry: {
         index: './src/index.js',
-        module: './src/module/index.js'
+        module: './src/module/index.js',
       },
       context,
       plugins: [new MiniCssExtractPlugin()],
@@ -711,19 +713,19 @@ describe('webpack5 plugin', () => {
                     const isModule = /module[/\\](?:\w+[/\\])*\w+\.css$/.test(loaderContext.resourcePath)
                     if (isModule) {
                       return {
-                        ...require(mpc)
+                        ...require(mpc),
                       }
                     }
                     return {
-                      ...require(pc)
+                      ...require(pc),
                     }
-                  }
-                }
-              }
-            ] //, 'css-loader', 'postcss-loader'],
-          }
-        ]
-      }
+                  },
+                },
+              },
+            ], // , 'css-loader', 'postcss-loader'],
+          },
+        ],
+      },
     })
     // @ts-ignore
     // customCompiler.outputFileSystem = fs
@@ -738,26 +740,26 @@ describe('webpack5 plugin', () => {
     const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack')
     const anotherLoader = createLoader(
       function (source) {
-        return source + '\nconst c = 2\nconsole.log(c)'
+        return `${source}\nconst c = 2\nconsole.log(c)`
       },
       {
-        ident: 'anotherLoader'
-      }
+        ident: 'anotherLoader',
+      },
     ) as webpack.NormalModule['loaders'][number]
     // https://github.com/webpack/webpack/blob/main/lib/webpack.js#L71
     // https://github.com/webpack/webpack/blob/main/lib/NormalModule.js#L559
     const customCompiler = getCompiler5({
       mode: 'production',
       optimization: {
-        sideEffects: false
+        sideEffects: false,
       },
       entry: {
-        index: './index.js'
+        index: './index.js',
       },
       // entry: indexEntry,
       context: hijackPath,
       output: {
-        path: path.resolve(hijackPath, './dist')
+        path: path.resolve(hijackPath, './dist'),
         // filename: '[name].js', // ?var=[fullhash]
         // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
       },
@@ -778,8 +780,8 @@ describe('webpack5 plugin', () => {
                 // module.loaders.push(anotherLoader)
               })
             })
-          }
-        }
+          },
+        },
       ],
       module: {
         rules: [
@@ -789,17 +791,17 @@ describe('webpack5 plugin', () => {
               {
                 ...createLoader(
                   function (source) {
-                    return source + '\nconst b = 1\nconsole.log(b)'
+                    return `${source}\nconst b = 1\nconsole.log(b)`
                   },
                   {
-                    ident: 'hijack'
-                  }
-                )
-              }
-            ]
-          }
-        ]
-      }
+                    ident: 'hijack',
+                  },
+                ),
+              },
+            ],
+          },
+        ],
+      },
       // resolve: {}
     })
 
@@ -812,7 +814,7 @@ describe('webpack5 plugin', () => {
 
   it('raw run loader', async () => {
     const zeroLoader = createLoader(function (source) {
-      return source + '0'
+      return `${source}0`
     })
     const hijackPath = path.resolve(__dirname, './fixtures/webpack/v5/hijack/index.js')
     const result = await runLoaders(
@@ -822,10 +824,10 @@ describe('webpack5 plugin', () => {
         resource: hijackPath,
         loaders: [
           {
-            ...zeroLoader
-          }
-        ]
-      }
+            ...zeroLoader,
+          },
+        ],
+      },
     )
     // expect(err).toBeFalsy()
     expect(result).toBeTruthy()
@@ -843,15 +845,15 @@ describe('webpack5 plugin', () => {
     const customCompiler = getCompiler5({
       mode: 'production',
       optimization: {
-        sideEffects: false
+        sideEffects: false,
       },
       entry: {
-        index: './index.js'
+        index: './index.js',
       },
       // entry: indexEntry,
       context: hijackPath,
       output: {
-        path: path.resolve(hijackPath, './dist')
+        path: path.resolve(hijackPath, './dist'),
         // filename: '[name].js', // ?var=[fullhash]
         // chunkFilename: '[id].[name].js' // ?ver=[fullhash]
       },
@@ -872,17 +874,17 @@ describe('webpack5 plugin', () => {
                       // @ts-ignore
                       const res = await runLoaders({
                         resource: this.resource,
-                        loaders: [target]
+                        loaders: [target],
                         // context: this,
                         // readResource: fss.readFile.bind(fss)
                       })
                       // @ts-ignore
-                      return res.result[0] + '\nconst c = 2\nconsole.log(c)'
+                      return `${res.result[0]}\nconst c = 2\nconsole.log(c)`
                     },
                     {
-                      ident: 'anotherLoader'
-                    }
-                  ) as webpack.NormalModule['loaders'][number])
+                      ident: 'anotherLoader',
+                    },
+                  ) as webpack.NormalModule['loaders'][number]),
                 }
                 // console.log(module.loaders)
                 // 最后执行
@@ -900,8 +902,8 @@ describe('webpack5 plugin', () => {
                 // module.loaders.push(anotherLoader)
               })
             })
-          }
-        }
+          },
+        },
       ],
       module: {
         rules: [
@@ -911,17 +913,17 @@ describe('webpack5 plugin', () => {
               {
                 ...createLoader(
                   function (source) {
-                    return source + '\nconst b = 1\nconsole.log(b)'
+                    return `${source}\nconst b = 1\nconsole.log(b)`
                   },
                   {
-                    ident: 'hijack'
-                  }
-                )
-              }
-            ]
-          }
-        ]
-      }
+                    ident: 'hijack',
+                  },
+                ),
+              },
+            ],
+          },
+        ],
+      },
       // resolve: {}
     })
 

@@ -1,5 +1,5 @@
 import { getOptions } from '@/options'
-import { UserDefinedOptions } from '@/types'
+import type { UserDefinedOptions } from '@/types'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 
 export function createContext(options: UserDefinedOptions = {}) {
@@ -13,18 +13,18 @@ export function createContext(options: UserDefinedOptions = {}) {
 
   async function transformWxss(rawCss: string) {
     const code = await styleHandler(rawCss, {
-      isMainChunk: true
+      isMainChunk: true,
     })
     return code
   }
 
   async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } = {}) {
-    runtimeSet =
-      options && options.runtimeSet
+    runtimeSet
+      = options && options.runtimeSet
         ? options.runtimeSet
         : twPatcher.getClassSet({
-            basedir: tailwindcssBasedir
-          })
+          basedir: tailwindcssBasedir,
+        })
 
     const { code } = await jsHandler(rawJs, runtimeSet)
     return code
@@ -32,7 +32,7 @@ export function createContext(options: UserDefinedOptions = {}) {
 
   function transformWxml(rawWxml: string) {
     const code = templateHandler(rawWxml, {
-      runtimeSet
+      runtimeSet,
     })
     return code
   }
@@ -40,6 +40,6 @@ export function createContext(options: UserDefinedOptions = {}) {
   return {
     transformWxss,
     transformWxml,
-    transformJs
+    transformJs,
   }
 }

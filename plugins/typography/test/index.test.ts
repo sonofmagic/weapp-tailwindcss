@@ -1,6 +1,8 @@
 import path from 'node:path'
-import tailwind, { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss'
+import tailwind from 'tailwindcss'
 import postcss from 'postcss'
+
 const typographyPlugin = require('../src/index')
 // import typographyPlugin from '@/index'
 
@@ -74,15 +76,15 @@ function run(config: Config, options = {}) {
   config = {
     plugins: [typographyPlugin(options)],
     corePlugins: { preflight: false },
-    ...config
+    ...config,
   }
 
   return postcss(tailwind(config)).process(['@tailwind base;', '@tailwind components;', '@tailwind utilities'].join('\n'), {
-    from: `${path.resolve(__filename)}?test=${currentTestName}`
+    from: `${path.resolve(__filename)}?test=${currentTestName}`,
   })
 }
 
-test('specificity is reduced with :where', async () => {
+it('specificity is reduced with :where', async () => {
   const config = {
     content: [{ raw: html`<div class="prose"></div>` }],
     theme: {
@@ -90,49 +92,49 @@ test('specificity is reduced with :where', async () => {
         DEFAULT: {
           css: [
             {
-              color: 'var(--tw-prose-body)',
-              maxWidth: '65ch',
+              'color': 'var(--tw-prose-body)',
+              'maxWidth': '65ch',
               '[class~="lead"]': {
-                color: 'var(--tw-prose-lead)'
+                color: 'var(--tw-prose-lead)',
               },
-              strong: {
+              'strong': {
                 color: 'var(--tw-prose-bold)',
-                fontWeight: '600'
+                fontWeight: '600',
               },
               'ol[type="A"]': {
-                listStyleType: 'upper-alpha'
+                listStyleType: 'upper-alpha',
               },
               'blockquote p:first-of-type::before': {
-                content: 'open-quote'
+                content: 'open-quote',
               },
               'blockquote p:last-of-type::after': {
-                content: 'close-quote'
+                content: 'close-quote',
               },
               'h4 strong': {
-                fontWeight: '700'
+                fontWeight: '700',
               },
               'figure > *': {
-                margin: 0
+                margin: 0,
               },
               'ol > li::marker': {
                 fontWeight: '400',
-                color: 'var(--tw-prose-counters)'
+                color: 'var(--tw-prose-counters)',
               },
               '> ul > li p': {
                 marginTop: '16px',
-                marginBottom: '16px'
+                marginBottom: '16px',
               },
               'code::before': {
-                content: '"&#96;"'
+                content: '"&#96;"',
               },
               'code::after': {
-                content: '"&#96;"'
-              }
-            }
-          ]
-        }
-      }
-    }
+                content: '"&#96;"',
+              },
+            },
+          ],
+        },
+      },
+    },
   }
 
   const result = await run(config)
@@ -183,7 +185,7 @@ test('specificity is reduced with :where', async () => {
   // `)
 })
 
-test('variants', async () => {
+it('variants', async () => {
   const config = {
     content: [{ raw: html`<div class="sm:prose hover:prose-lg lg:prose-lg"></div>` }],
     theme: {
@@ -191,37 +193,37 @@ test('variants', async () => {
         DEFAULT: {
           css: [
             {
-              color: 'red',
-              p: {
-                color: 'lime'
+              'color': 'red',
+              'p': {
+                color: 'lime',
               },
               '> ul > li': {
-                color: 'purple'
-              }
-            }
-          ]
+                color: 'purple',
+              },
+            },
+          ],
         },
         lg: {
           css: {
-            color: 'green',
-            p: {
-              color: 'tomato'
+            'color': 'green',
+            'p': {
+              color: 'tomato',
             },
             '> ul > li': {
-              color: 'blue'
-            }
-          }
+              color: 'blue',
+            },
+          },
         },
         xl: {
           css: {
-            color: 'yellow',
+            'color': 'yellow',
             '> ul > li': {
-              color: 'hotpink'
-            }
-          }
-        }
-      }
-    }
+              color: 'hotpink',
+            },
+          },
+        },
+      },
+    },
   }
 
   const result = await run(config)
@@ -263,7 +265,7 @@ test('variants', async () => {
   // `)
 })
 
-test('modifiers', async () => {
+it('modifiers', async () => {
   const config = {
     content: [{ raw: html`<div class="prose prose-lg"></div>` }],
     theme: {
@@ -271,82 +273,82 @@ test('modifiers', async () => {
         DEFAULT: {
           css: [
             {
-              color: 'var(--tw-prose-body)',
-              maxWidth: '65ch',
+              'color': 'var(--tw-prose-body)',
+              'maxWidth': '65ch',
               '[class~="lead"]': {
-                color: 'var(--tw-prose-lead)'
+                color: 'var(--tw-prose-lead)',
               },
-              strong: {
+              'strong': {
                 color: 'var(--tw-prose-bold)',
-                fontWeight: '600'
+                fontWeight: '600',
               },
               'ol[type="A"]': {
-                listStyleType: 'upper-alpha'
+                listStyleType: 'upper-alpha',
               },
               'blockquote p:first-of-type::before': {
-                content: 'open-quote'
+                content: 'open-quote',
               },
               'blockquote p:last-of-type::after': {
-                content: 'close-quote'
+                content: 'close-quote',
               },
               'h4 strong': {
-                fontWeight: '700'
+                fontWeight: '700',
               },
               'figure > *': {
-                margin: 0
+                margin: 0,
               },
               'ol > li::marker': {
                 fontWeight: '400',
-                color: 'var(--tw-prose-counters)'
+                color: 'var(--tw-prose-counters)',
               },
               'code::before': {
-                content: '"&#96;"'
+                content: '"&#96;"',
               },
               'code::after': {
-                content: '"&#96;"'
-              }
-            }
-          ]
+                content: '"&#96;"',
+              },
+            },
+          ],
         },
         lg: {
           css: [
             {
-              fontSize: '18px',
-              lineHeight: '1.75',
-              p: {
+              'fontSize': '18px',
+              'lineHeight': '1.75',
+              'p': {
                 marginTop: '24px',
-                marginBottom: '24px'
+                marginBottom: '24px',
               },
               '[class~="lead"]': {
-                fontSize: '22px'
+                fontSize: '22px',
               },
-              blockquote: {
+              'blockquote': {
                 marginTop: '40px',
-                marginBottom: '40px'
+                marginBottom: '40px',
               },
               '> ul > li': {
-                paddingLeft: '12px'
+                paddingLeft: '12px',
               },
-              h1: {
+              'h1': {
                 fontSize: '48px',
                 marginTop: '0',
-                marginBottom: '40px'
+                marginBottom: '40px',
               },
-              h2: {
+              'h2': {
                 fontSize: '30px',
                 marginTop: '56px',
-                marginBottom: '32px'
+                marginBottom: '32px',
               },
-              h3: {
+              'h3': {
                 fontSize: '24px',
                 marginTop: '40px',
-                marginBottom: '16px'
-              }
-            }
-          ]
-        }
-      }
-    }
+                marginBottom: '16px',
+              },
+            },
+          ],
+        },
+      },
+    },
   }
 
   const result = await run(config)
@@ -426,7 +428,7 @@ test('modifiers', async () => {
   // `)
 })
 
-test('legacy target', async () => {
+it('legacy target', async () => {
   const config = {
     plugins: [typographyPlugin({ target: 'legacy' })],
     content: [{ raw: html`<div class="prose prose-h1:text-center prose-headings:text-ellipsis"></div>` }],
@@ -435,45 +437,45 @@ test('legacy target', async () => {
         DEFAULT: {
           css: [
             {
-              color: 'var(--tw-prose-body)',
-              maxWidth: '65ch',
+              'color': 'var(--tw-prose-body)',
+              'maxWidth': '65ch',
               '[class~="lead"]': {
-                color: 'var(--tw-prose-lead)'
+                color: 'var(--tw-prose-lead)',
               },
-              strong: {
+              'strong': {
                 color: 'var(--tw-prose-bold)',
-                fontWeight: '600'
+                fontWeight: '600',
               },
               'ol[type="A"]': {
-                listStyleType: 'upper-alpha'
+                listStyleType: 'upper-alpha',
               },
               'blockquote p:first-of-type::before': {
-                content: 'open-quote'
+                content: 'open-quote',
               },
               'blockquote p:last-of-type::after': {
-                content: 'close-quote'
+                content: 'close-quote',
               },
               'h4 strong': {
-                fontWeight: '700'
+                fontWeight: '700',
               },
               'figure > *': {
-                margin: 0
+                margin: 0,
               },
               'ol > li::marker': {
                 fontWeight: '400',
-                color: 'var(--tw-prose-counters)'
+                color: 'var(--tw-prose-counters)',
               },
               'code::before': {
-                content: '"&#96;"'
+                content: '"&#96;"',
               },
               'code::after': {
-                content: '"&#96;"'
-              }
-            }
-          ]
-        }
-      }
-    }
+                content: '"&#96;"',
+              },
+            },
+          ],
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -543,7 +545,7 @@ test('legacy target', async () => {
   // `)
 })
 
-test('custom class name', async () => {
+it('custom class name', async () => {
   const config = {
     plugins: [typographyPlugin({ className: 'markdown' })],
     content: [{ raw: html`<div class="markdown"></div>` }],
@@ -552,45 +554,45 @@ test('custom class name', async () => {
         DEFAULT: {
           css: [
             {
-              color: 'var(--tw-prose-body)',
-              maxWidth: '65ch',
+              'color': 'var(--tw-prose-body)',
+              'maxWidth': '65ch',
               '[class~="lead"]': {
-                color: 'var(--tw-prose-lead)'
+                color: 'var(--tw-prose-lead)',
               },
-              strong: {
+              'strong': {
                 color: 'var(--tw-prose-bold)',
-                fontWeight: '600'
+                fontWeight: '600',
               },
               'ol[type="A"]': {
-                listStyleType: 'upper-alpha'
+                listStyleType: 'upper-alpha',
               },
               'blockquote p:first-of-type::before': {
-                content: 'open-quote'
+                content: 'open-quote',
               },
               'blockquote p:last-of-type::after': {
-                content: 'close-quote'
+                content: 'close-quote',
               },
               'h4 strong': {
-                fontWeight: '700'
+                fontWeight: '700',
               },
               'figure > *': {
-                margin: 0
+                margin: 0,
               },
               'ol > li::marker': {
                 fontWeight: '400',
-                color: 'var(--tw-prose-counters)'
+                color: 'var(--tw-prose-counters)',
               },
               'code::before': {
-                content: '"&#96;"'
+                content: '"&#96;"',
               },
               'code::after': {
-                content: '"&#96;"'
-              }
-            }
-          ]
-        }
-      }
-    }
+                content: '"&#96;"',
+              },
+            },
+          ],
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -636,7 +638,7 @@ test('custom class name', async () => {
   // `)
 })
 
-test('element variants', async () => {
+it('element variants', async () => {
   const config = {
     content: [
       {
@@ -670,30 +672,30 @@ test('element variants', async () => {
             prose-video:my-12
             prose-hr:border-t-2
         "
-        ></div>`
-      }
+        ></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: [
             {
-              color: 'var(--tw-prose-body)',
+              'color': 'var(--tw-prose-body)',
               '[class~="lead"]': {
-                color: 'var(--tw-prose-lead)'
+                color: 'var(--tw-prose-lead)',
               },
-              strong: {
+              'strong': {
                 color: 'var(--tw-prose-bold)',
-                fontWeight: '600'
+                fontWeight: '600',
               },
               'h4 strong': {
-                fontWeight: '700'
-              }
-            }
-          ]
-        }
-      }
-    }
+                fontWeight: '700',
+              },
+            },
+          ],
+        },
+      },
+    },
   }
 
   const result = await run(config)
@@ -803,7 +805,7 @@ test('element variants', async () => {
   // `)
 })
 
-test('element variants with custom class name', async () => {
+it('element variants with custom class name', async () => {
   const config = {
     plugins: [typographyPlugin({ className: 'markdown' })],
     content: [
@@ -838,30 +840,30 @@ test('element variants with custom class name', async () => {
             markdown-video:my-12
             markdown-hr:border-t-2
         "
-        ></div>`
-      }
+        ></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: [
             {
-              color: 'var(--tw-prose-body)',
+              'color': 'var(--tw-prose-body)',
               '[class~="lead"]': {
-                color: 'var(--tw-prose-lead)'
+                color: 'var(--tw-prose-lead)',
               },
-              strong: {
+              'strong': {
                 color: 'var(--tw-prose-bold)',
-                fontWeight: '600'
+                fontWeight: '600',
               },
               'h4 strong': {
-                fontWeight: '700'
-              }
-            }
-          ]
-        }
-      }
-    }
+                fontWeight: '700',
+              },
+            },
+          ],
+        },
+      },
+    },
   }
 
   const result = await run(config)
@@ -971,23 +973,23 @@ test('element variants with custom class name', async () => {
   // `)
 })
 
-test('customizing defaults with multiple values does not result in invalid css', async () => {
+it('customizing defaults with multiple values does not result in invalid css', async () => {
   const config = {
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose"></div>`
-      }
+        raw: html`<div class="prose"></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: {
-            textAlign: ['-webkit-match-parent', 'match-parent']
-          }
-        }
-      }
-    }
+            textAlign: ['-webkit-match-parent', 'match-parent'],
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1006,8 +1008,8 @@ it('should be possible to use nested syntax (&) when extending the config', asyn
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose"></div>`
-      }
+        raw: html`<div class="prose"></div>`,
+      },
     ],
     theme: {
       extend: {
@@ -1016,16 +1018,16 @@ it('should be possible to use nested syntax (&) when extending the config', asyn
             css: {
               color: '#000',
               a: {
-                color: '#888',
+                'color': '#888',
                 '&:hover': {
-                  color: '#ff0000'
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  color: '#ff0000',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1056,9 +1058,9 @@ it('should be possible to specify custom h5 and h6 styles', async () => {
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose prose-h5:text-sm prose-h6:text-xl"></div>`
-      }
-    ]
+        raw: html`<div class="prose prose-h5:text-sm prose-h6:text-xl"></div>`,
+      },
+    ],
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1080,20 +1082,20 @@ it('should not break with multiple selectors with pseudo elements using variants
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="dark:prose"></div>`
-      }
+        raw: html`<div class="dark:prose"></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: {
             'ol li::before, ul li::before': {
-              color: 'red'
-            }
-          }
-        }
-      }
-    }
+              color: 'red',
+            },
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1110,20 +1112,20 @@ it('lifts all common, trailing pseudo elements when the same across all selector
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose dark:prose"></div>`
-      }
+        raw: html`<div class="prose dark:prose"></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: {
             'ol li::marker::before, ul li::marker::before': {
-              color: 'red'
-            }
-          }
-        }
-      }
-    }
+              color: 'red',
+            },
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1148,20 +1150,20 @@ it('does not modify selectors with differing pseudo elements', async () => {
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose dark:prose"></div>`
-      }
+        raw: html`<div class="prose dark:prose"></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: {
             'ol li::before, ul li::after': {
-              color: 'red'
-            }
-          }
-        }
-      }
-    }
+              color: 'red',
+            },
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1186,20 +1188,20 @@ it('lifts only the common, trailing pseudo elements from selectors', async () =>
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose dark:prose"></div>`
-      }
+        raw: html`<div class="prose dark:prose"></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: {
             'ol li::scroll-thumb::before, ul li::scroll-track::before': {
-              color: 'red'
-            }
-          }
-        }
-      }
-    }
+              color: 'red',
+            },
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1225,20 +1227,20 @@ it('ignores common non-trailing pseudo-elements in selectors', async () => {
     plugins: [typographyPlugin()],
     content: [
       {
-        raw: html`<div class="prose dark:prose"></div>`
-      }
+        raw: html`<div class="prose dark:prose"></div>`,
+      },
     ],
     theme: {
       typography: {
         DEFAULT: {
           css: {
             'ol li::before::scroll-thumb, ul li::before::scroll-track': {
-              color: 'red'
-            }
-          }
-        }
-      }
-    }
+              color: 'red',
+            },
+          },
+        },
+      },
+    },
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1257,9 +1259,9 @@ it('ignores common non-trailing pseudo-elements in selectors', async () => {
   // `)
 })
 
-test('lead styles are inserted after paragraph styles', async () => {
+it('lead styles are inserted after paragraph styles', async () => {
   const config = {
-    content: [{ raw: html`<div class="prose"></div>` }]
+    content: [{ raw: html`<div class="prose"></div>` }],
   }
   const result = await run(config)
   expect(result.css).toMatchSnapshot()
@@ -1283,33 +1285,33 @@ test('lead styles are inserted after paragraph styles', async () => {
 })
 
 describe('preifx', () => {
-  test('xxx', async () => {
+  it('xxx', async () => {
     const config = {
-      content: [{ raw: html`<div class="prose"></div>` }]
+      content: [{ raw: html`<div class="prose"></div>` }],
     }
     const result = await run(config, {
-      mode: 'tag'
+      mode: 'tag',
     })
     expect(result.css).toMatchSnapshot()
   })
 
-  test('xxx case 0', async () => {
+  it('xxx case 0', async () => {
     const config = {
-      content: [{ raw: html`<div class="prose"></div>` }]
-    }
-    const result = await run(config, {
-      mode: 'class'
-    })
-    expect(result.css).toMatchSnapshot()
-  })
-
-  test('xxx case 1', async () => {
-    const config = {
-      content: [{ raw: html`<div class="prose"></div>` }]
+      content: [{ raw: html`<div class="prose"></div>` }],
     }
     const result = await run(config, {
       mode: 'class',
-      classPrefix: 'ice-'
+    })
+    expect(result.css).toMatchSnapshot()
+  })
+
+  it('xxx case 1', async () => {
+    const config = {
+      content: [{ raw: html`<div class="prose"></div>` }],
+    }
+    const result = await run(config, {
+      mode: 'class',
+      classPrefix: 'ice-',
     })
     expect(result.css).toMatchSnapshot()
   })

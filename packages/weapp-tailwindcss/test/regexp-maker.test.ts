@@ -1,5 +1,6 @@
 import { matchAll } from './util'
-import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, makePattern, handleRegexp } from '@/reg'
+import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, handleRegexp, makePattern } from '@/reg'
+
 describe('regexp-maker', () => {
   it('makePattern case signle option', () => {
     const case0 = '<el-shitter>'
@@ -21,14 +22,14 @@ describe('regexp-maker', () => {
     expect(pattern).toBe([case0, handleRegexp(case1)].join('|'))
     expect(matchAll(new RegExp(pattern, 'g'), ['van-bug', 'el-bug', 'ant-bug'].join('\n')).length).toBe(3)
   })
-  it('TemplateHandlerMatchRegexp single attr', () => {
+  it('templateHandlerMatchRegexp single attr', () => {
     const reg = createTemplateHandlerMatchRegexp('l-o-v-e-r', 'i-love-you')
     const match0 = matchAll(reg, '<l-o-v-e-r i-love-you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match0.length).toBeTruthy()
     const match1 = matchAll(reg, '<l-o-v-e-r i-hate-you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match1.length).toBeFalsy()
   })
-  it('TemplateHandlerMatchRegexp multiple attrs', () => {
+  it('templateHandlerMatchRegexp multiple attrs', () => {
     const reg = createTemplateHandlerMatchRegexp('l-o-v-e-r', ['i', 'love', 'you'])
     const match0 = matchAll(reg, '<l-o-v-e-r i="" love="" you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match0.length).toBeTruthy()
@@ -36,10 +37,10 @@ describe('regexp-maker', () => {
     expect(match1.length).toBeFalsy()
   })
 
-  it('TemplateHandlerMatchRegexp multiple attrs with false exact option', () => {
+  it('templateHandlerMatchRegexp multiple attrs with false exact option', () => {
     // exact
     const reg = createTemplateHandlerMatchRegexp('l-o-v-e-r', ['i', 'love', 'you'], {
-      exact: false
+      exact: false,
     })
     const match0 = matchAll(reg, '<l-o-v-e-r i="" love="" you="">l-o-v-e-r</l-o-v-e-r>')
     expect(match0.length).toBeTruthy()
@@ -47,7 +48,7 @@ describe('regexp-maker', () => {
     expect(match1.length).toBeTruthy()
   })
 
-  it('TemplateClassRegexp single option', () => {
+  it('templateClassRegexp single option', () => {
     const reg = createTemplateClassRegexp('shit')
     expect(matchAll(reg, 'shit="happens"').length).toBeTruthy()
     expect(matchAll(reg, ' shit=" happens " aaa ').length).toBeTruthy()
@@ -57,7 +58,7 @@ describe('regexp-maker', () => {
     expect(matchAll(reg, ' a b c shitttttt="happens" ').length).toBeFalsy()
   })
 
-  it('TemplateClassRegexp single option with false exact option', () => {
+  it('templateClassRegexp single option with false exact option', () => {
     const reg = createTemplateClassRegexp('shit', { exact: false })
     expect(matchAll(reg, 'shit="happens"').length).toBeTruthy()
     expect(matchAll(reg, ' shit=" happens " aaa ').length).toBeTruthy()

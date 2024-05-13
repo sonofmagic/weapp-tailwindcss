@@ -1,12 +1,12 @@
-import { ITemplateHandlerOptions } from '@/types'
-import { escape, SimpleMappingChars2String } from '@/escape'
+import type { ITemplateHandlerOptions } from '@/types'
+import { SimpleMappingChars2String, escape } from '@/escape'
 
 export function replaceWxml(
   original: string,
   options: ITemplateHandlerOptions = {
     keepEOL: false,
-    escapeMap: SimpleMappingChars2String
-  }
+    escapeMap: SimpleMappingChars2String,
+  },
 ) {
   const { keepEOL, escapeMap, mangleContext } = options
   let res = original
@@ -21,7 +21,7 @@ export function replaceWxml(
   }
 
   res = escape(res, {
-    map: escapeMap
+    map: escapeMap,
   })
 
   return res

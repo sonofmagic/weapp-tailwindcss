@@ -1,10 +1,11 @@
 import path from 'node:path'
 import fs from 'node:fs'
+import process from 'node:process'
 import { gte as semverGte } from 'semver'
 import type { PackageJson } from 'pkg-types'
-import { monkeyPatchForExposingContext, requireResolve, TailwindcssPatcher } from 'tailwindcss-patch'
+import { TailwindcssPatcher, monkeyPatchForExposingContext, requireResolve } from 'tailwindcss-patch'
 import { findAstNode } from './supportCustomUnit'
-import type { ILengthUnitsPatchOptions, ILengthUnitsPatchDangerousOptions, InternalPatchResult } from '@/types'
+import type { ILengthUnitsPatchDangerousOptions, ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { generate } from '@/babel'
@@ -21,14 +22,15 @@ export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   try {
     const tmpJsonPath = requireResolve(`${dangerousOptions.packageName}/package.json`, {
       paths: options.paths,
-      basedir: options.basedir
+      basedir: options.basedir,
     })
 
     return tmpJsonPath
-  } catch (error) {
+  }
+  catch (error) {
     if ((<Error & { code: string }>error).code === 'MODULE_NOT_FOUND') {
       console.warn(
-        '没有找到`tailwindcss`包，请确认是否安装。想要禁用打上rpx支持patch或者非`tailwindcss`框架，你可以设置 `supportCustomLengthUnitsPatch` 为 false'
+        '没有找到`tailwindcss`包，请确认是否安装。想要禁用打上rpx支持patch或者非`tailwindcss`框架，你可以设置 `supportCustomLengthUnitsPatch` 为 false',
       )
     }
   }
@@ -41,8 +43,9 @@ export function createPatch(options: false | ILengthUnitsPatchOptions) {
   return () => {
     try {
       return internalPatch(getInstalledPkgJsonPath(options), options)
-    } catch (error) {
-      console.warn(`patch tailwindcss failed:` + (<Error>error).message)
+    }
+    catch (error) {
+      console.warn(`patch tailwindcss failed:${(<Error>error).message}`)
     }
   }
 }
@@ -52,15 +55,14 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
   const DOPTS = dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   const dataTypesFilePath = path.resolve(rootDir, DOPTS.lengthUnitsFilePath)
   const dataTypesFileContent = fs.readFileSync(dataTypesFilePath, {
-    encoding: 'utf8'
+    encoding: 'utf8',
   })
   const { arrayRef, changed } = findAstNode(dataTypesFileContent, options)
   if (arrayRef && changed) {
-    // @ts-ignore
     const { code } = generate(arrayRef, {
       jsescOption: {
-        quotes: 'single'
-      }
+        quotes: 'single',
+      },
     })
 
     if (arrayRef.start && arrayRef.end) {
@@ -69,7 +71,7 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
       const newCode = prev + code + next
       if (DOPTS.overwrite) {
         fs.writeFileSync(DOPTS.destPath ?? dataTypesFilePath, newCode, {
-          encoding: 'utf8'
+          encoding: 'utf8',
         })
         console.log('patch tailwindcss for custom length unit successfully!')
       }
@@ -81,10 +83,9 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
 export function internalPatch(
   pkgJsonPath: string | undefined,
   options: ILengthUnitsPatchOptions,
-  overwrite = true
+  overwrite = true,
 ): InternalPatchResult | undefined {
   if (pkgJsonPath) {
-    // eslint-disable-next-line unicorn/prefer-module
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8')) as PackageJson
     const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
     const version = pkgJson.version!
@@ -93,11 +94,11 @@ export function internalPatch(
       const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
       const result = monkeyPatchForExposingContext(rootDir, {
         overwrite,
-        version
+        version,
       })
       return {
         ...result,
-        dataTypes
+        dataTypes,
       }
     }
   }
@@ -109,7 +110,7 @@ export function mkCacheDirectory(cwd = process.cwd()) {
   const exists = fs.existsSync(cacheDirectory)
   if (!exists) {
     fs.mkdirSync(cacheDirectory, {
-      recursive: true
+      recursive: true,
     })
   }
   return cacheDirectory
@@ -117,6 +118,6 @@ export function mkCacheDirectory(cwd = process.cwd()) {
 
 export function createTailwindcssPatcher() {
   return new TailwindcssPatcher({
-    cache: true
+    cache: true,
   })
 }

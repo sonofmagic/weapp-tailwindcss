@@ -94,6 +94,8 @@
     "bump": "bumpp",
     "release": "node scripts/release.js",
     "generate:readme": "ts-node scripts/readme/write.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint ./test --fix",
     "-------": "-----------",
     "postinstall": "node bin/weapp-tailwindcss.js patch"
   },
@@ -152,7 +154,7 @@
     "@babel/parser": "7.24.5",
     "@babel/traverse": "7.24.5",
     "@babel/types": "7.24.5",
-    "@csstools/postcss-is-pseudo-class": "4.0.6",
+    "@csstools/postcss-is-pseudo-class": "4.0.7",
     "@tailwindcss-mangle/shared": "^2.2.2",
     "@weapp-core/escape": "^2.0.0",
     "@weapp-core/regex": "^1.0.1",
@@ -165,7 +167,7 @@
     "postcss": "8.4.38",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-selector-parser": "6.0.16",
-    "semver": "7.6.1",
+    "semver": "7.6.2",
     "tailwindcss-patch": "^2.2.3",
     "webpack-sources": "3.2.3"
   },

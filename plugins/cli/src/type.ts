@@ -96,9 +96,9 @@ export interface BuildOptions {
   typescriptOptions:
     | boolean
     | {
-        settings?: Settings
-        tsConfigFileName?: string
-      }
+      settings?: Settings
+      tsConfigFileName?: string
+    }
 }
 
 export type UserConfig = Partial<BuildOptions>

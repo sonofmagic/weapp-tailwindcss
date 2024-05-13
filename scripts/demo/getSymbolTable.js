@@ -5,7 +5,8 @@ function getSymbol() {
     const text = cur.textContent
     if (idx % 2 === 0) {
       v = text
-    } else {
+    }
+    else {
       acc[text.toUpperCase()] = v
     }
     return acc

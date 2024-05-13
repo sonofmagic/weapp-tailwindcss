@@ -1,11 +1,13 @@
 const path = require('node:path')
 const fs = require('node:fs/promises')
+const process = require('node:process')
 
 async function isExist(pathLike) {
   try {
     await fs.access(pathLike)
     return true
-  } catch {
+  }
+  catch {
     return false
   }
 }
@@ -29,13 +31,14 @@ async function run(dirPath, command) {
         console.log(`[${filename}]:${baseDir}`)
         console.log(divideString)
         try {
-          await execaCommand('yarn ' + command, {
+          await execaCommand(`yarn ${command}`, {
             cwd: baseDir,
-            stdio: 'inherit'
+            stdio: 'inherit',
           })
           // .pipeStdout(process.stdout)
           await setJson(path.resolve(dirPath, 'result.json'), filename, true)
-        } catch {
+        }
+        catch {
           await setJson(path.resolve(dirPath, 'result.json'), filename, false)
         }
       }
@@ -45,5 +48,5 @@ async function run(dirPath, command) {
 
 module.exports = {
   run,
-  isExist
+  isExist,
 }

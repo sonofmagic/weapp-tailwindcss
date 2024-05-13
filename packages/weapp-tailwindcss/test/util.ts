@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import MagicString from 'magic-string'
 import * as htmlparser2 from 'htmlparser2'
+
 export { format } from './helpers/wxml'
 
 export function removeWxmlId(html: string) {
@@ -11,7 +12,7 @@ export function removeWxmlId(html: string) {
       if (name === 'data-sid' || name === 'id') {
         ms.update(parser.startIndex - 1, parser.endIndex, '')
       }
-    }
+    },
   })
   parser.write(html)
   parser.end()
@@ -39,13 +40,13 @@ export const gulpCasePath = resolve(__dirname, 'fixtures/gulp')
 
 export function readFile(filepath: string) {
   return fs.readFile(filepath, {
-    encoding: 'utf8'
+    encoding: 'utf8',
   })
 }
 
 export function writeFile(filepath: string, data: string) {
   return fs.writeFile(filepath, data, {
-    encoding: 'utf8'
+    encoding: 'utf8',
   })
 }
 
@@ -65,7 +66,7 @@ export function isWebpackPlugin(constructor: new () => object) {
   return typeof constructor.prototype.apply === 'function'
 }
 
-export const matchAll = (regex: RegExp, str: string) => {
+export function matchAll(regex: RegExp, str: string) {
   const arr = []
   let res
   do {

@@ -4,7 +4,7 @@ import type { Rule } from 'postcss'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
 
-const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
+function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
   const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options
 
   const transform: SyncProcessor = (selectors) => {
@@ -16,15 +16,15 @@ const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
       }
 
       if (cssRemoveHoverPseudoClass && selector.type === 'selector') {
-        const node = selector.nodes.find((x) => x.type === 'pseudo' && x.value === ':hover')
+        const node = selector.nodes.find(x => x.type === 'pseudo' && x.value === ':hover')
         node && selector.remove()
       }
 
       if (
-        selector.type === 'pseudo' &&
-        selector.value === ':root' &&
-        cssSelectorReplacement &&
-        cssSelectorReplacement.root
+        selector.type === 'pseudo'
+        && selector.value === ':root'
+        && cssSelectorReplacement
+        && cssSelectorReplacement.root
       ) {
         selector.value = composeIsPseudo(cssSelectorReplacement.root)
       }
@@ -32,7 +32,7 @@ const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
       if (selector.type === 'class') {
         selector.value = internalCssSelectorReplacer(selector.value, {
           escapeMap,
-          mangleContext
+          mangleContext,
         })
       }
     })
@@ -43,16 +43,16 @@ const createRuleTransform = (rule: Rule, options: IStyleHandlerOptions) => {
   return transform
 }
 
-const getRuleTransformer = (rule: Rule, options: IStyleHandlerOptions) => {
+function getRuleTransformer(rule: Rule, options: IStyleHandlerOptions) {
   return selectorParser(createRuleTransform(rule, options))
 }
 
-export const ruleTransformSync = (rule: Rule, options: IStyleHandlerOptions) => {
+export function ruleTransformSync(rule: Rule, options: IStyleHandlerOptions) {
   const transformer = getRuleTransformer(rule, options)
 
   return transformer.transformSync(rule, {
     lossless: false,
-    updateSelector: true
+    updateSelector: true,
   })
 }
 

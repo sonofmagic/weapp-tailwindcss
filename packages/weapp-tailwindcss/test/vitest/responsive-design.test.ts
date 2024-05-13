@@ -1,5 +1,6 @@
 import { getCss } from '../helpers/getTwCss'
 import { getOptions } from '@/options'
+
 describe('responsive-design', () => {
   let styleHandler: ReturnType<typeof getOptions>['styleHandler']
   beforeEach(() => {
@@ -11,8 +12,8 @@ describe('responsive-design', () => {
 
     expect(
       await styleHandler(res.css, {
-        isMainChunk: true
-      })
+        isMainChunk: true,
+      }),
     ).toMatchSnapshot()
   })
 
@@ -30,8 +31,8 @@ describe('responsive-design', () => {
     expect(
       await styleHandler(res.css, {
         isMainChunk: true,
-        cssChildCombinatorReplaceValue: ['view', 'text']
-      })
+        cssChildCombinatorReplaceValue: ['view', 'text'],
+      }),
     ).toMatchSnapshot()
   })
 
@@ -42,8 +43,8 @@ describe('responsive-design', () => {
     expect(
       await styleHandler(res.css, {
         isMainChunk: true,
-        cssChildCombinatorReplaceValue: 'view,text,button,input ~ view,text,button,input'
-      })
+        cssChildCombinatorReplaceValue: 'view,text,button,input ~ view,text,button,input',
+      }),
     ).toMatchSnapshot()
   })
 })

@@ -1,6 +1,5 @@
-import { defaultOptions } from '@/defaults'
 import { getOptions } from '@/options'
-import { defu, isMap } from '@/utils'
+import { defu } from '@/utils'
 
 describe('get options', () => {
   it('default options', () => {
@@ -33,7 +32,7 @@ describe('get options', () => {
 
   it('cssPreflight false', () => {
     const config = getOptions({
-      cssPreflight: false
+      cssPreflight: false,
     })
     expect(config.cssPreflight).toBe(false)
   })
@@ -42,16 +41,16 @@ describe('get options', () => {
     const cssPreflight = {
       'border-color': false,
       'box-sizing': 'content-box',
-      'border-style': 0
+      'border-style': 0,
     }
     const config = getOptions({
-      cssPreflight
+      cssPreflight,
     })
     expect(config.cssPreflight).toStrictEqual({
       'border-color': false,
       'border-style': 0,
       'border-width': '0',
-      'box-sizing': 'content-box'
+      'box-sizing': 'content-box',
     })
   })
 
@@ -85,15 +84,15 @@ describe('get options', () => {
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
     arbitraryValues = getOptions({
-      arbitraryValues: {}
+      arbitraryValues: {},
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
     arbitraryValues = getOptions({
       arbitraryValues: {
-        allowDoubleQuotes: true
-      }
+        allowDoubleQuotes: true,
+      },
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
@@ -104,10 +103,10 @@ describe('get options', () => {
     // const { customAttributes } = getOptions()
 
     const customAttributes = {
-      '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/]
+      '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/],
     }
     const t = defu(customAttributes, {
-      '*': ['class', 'hover-class']
+      '*': ['class', 'hover-class'],
     })
     expect(t['*'].length).toBe(3)
   })

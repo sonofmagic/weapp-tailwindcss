@@ -2,10 +2,10 @@
 module.exports = {
   content: [],
   theme: {
-    extend: {}
+    extend: {},
   },
   plugins: [],
   corePlugins: {
-    preflight: false
-  }
+    preflight: false,
+  },
 }

@@ -2,7 +2,7 @@ import type { CssPreflightOptions, IPropValue } from '@/types'
 
 export type InjectPreflight = () => IPropValue[]
 
-export const createInjectPreflight = (options?: CssPreflightOptions): InjectPreflight => {
+export function createInjectPreflight(options?: CssPreflightOptions): InjectPreflight {
   const result: IPropValue[] = []
   // if options false ,do no thing
   if (options && typeof options === 'object') {
@@ -11,7 +11,7 @@ export const createInjectPreflight = (options?: CssPreflightOptions): InjectPref
       if (value !== false) {
         result.push({
           prop,
-          value: value.toString()
+          value: value.toString(),
         })
       }
     }

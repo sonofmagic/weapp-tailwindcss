@@ -8,7 +8,7 @@ describe('watch', () => {
   it.skip('native watch', async () => {
     const nativePath = path.resolve(fixturesPath, 'native')
     const { globsSet } = await watch({
-      root: nativePath
+      root: nativePath,
     })
     expect(globsSet).toMatchSnapshot()
     // gulp

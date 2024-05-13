@@ -36,18 +36,19 @@ export async function getTasks(options: BuildOptions) {
     exclude,
     include,
     postcssOptions,
-    preprocessorOptions
+    preprocessorOptions,
   } = options
   const globsSet = new GlobsSet()
-  const base = srcBase ? srcBase + '/' : ''
+  const base = srcBase ? `${srcBase}/` : ''
   const enableSass = Boolean(preprocessorOptions?.sass)
   const enableLess = Boolean(preprocessorOptions?.less)
 
   if (typescriptOptions === true) {
     typescriptOptions = {
-      tsConfigFileName: 'tsconfig.json'
+      tsConfigFileName: 'tsconfig.json',
     }
-  } else if (isObject(typescriptOptions) && typescriptOptions.tsConfigFileName === undefined) {
+  }
+  else if (isObject(typescriptOptions) && typescriptOptions.tsConfigFileName === undefined) {
     typescriptOptions.tsConfigFileName = 'tsconfig.json'
   }
 
@@ -64,12 +65,13 @@ export async function getTasks(options: BuildOptions) {
   function getGlobs(type: AssetType) {
     const globs: string[] = []
     if (typeof include === 'function') {
-      globs.push(...include(type).map((x) => x))
+      globs.push(...include(type).map(x => x))
     }
     if (typeof exclude === 'function') {
-      globs.push(...exclude(type).map((x) => '!' + x))
-    } else if (Array.isArray(exclude)) {
-      globs.push(...exclude.map((x) => '!' + x))
+      globs.push(...exclude(type).map(x => `!${x}`))
+    }
+    else if (Array.isArray(exclude)) {
+      globs.push(...exclude.map(x => `!${x}`))
     }
     globs.push(`!${outDir}/**/*`)
     globs.push(`!./${outDir}/**/*`)
@@ -89,7 +91,7 @@ export async function getTasks(options: BuildOptions) {
       if (enableTs && typeof typescriptOptions !== 'boolean') {
         gulpTs = typescript.createProject(
           typescriptOptions.tsConfigFileName ?? 'tsconfig.json',
-          typeof typescriptOptions === 'boolean' ? {} : typescriptOptions
+          typeof typescriptOptions === 'boolean' ? {} : typescriptOptions,
         )
       }
 
@@ -105,24 +107,24 @@ export async function getTasks(options: BuildOptions) {
                 babelParserOptions:
                   !enableTs && isTs
                     ? {
-                        plugins: ['typescript']
+                        plugins: ['typescript'],
                       }
-                    : undefined
-              })
+                    : undefined,
+              }),
             )
             .pipe(
               gulpif(
                 loadTs,
                 rename({
-                  extname: '.js'
-                })
-              )
+                  extname: '.js',
+                }),
+              ),
             )
             .pipe(
               gulp.dest(outDir, {
-                cwd
-              })
-            )
+                cwd,
+              }),
+            ),
         )
       }
     })
@@ -139,9 +141,9 @@ export async function getTasks(options: BuildOptions) {
         return promisify(
           gulp.src([src, ...globs], { cwd, since: gulp.lastRun(JsonTask) }).pipe(
             gulp.dest(outDir, {
-              cwd
-            })
-          )
+              cwd,
+            }),
+          ),
         )
       }
     })
@@ -168,9 +170,9 @@ export async function getTasks(options: BuildOptions) {
             sass
               .sync(
                 // @ts-ignore
-                typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass
+                typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass,
               )
-              .on('error', sass.logError)
+              .on('error', sass.logError),
           )
         }
         return promisify(
@@ -179,8 +181,8 @@ export async function getTasks(options: BuildOptions) {
             .pipe(
               gulpif(
                 loadLess,
-                less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less)
-              )
+                less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less),
+              ),
             )
             .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
             .pipe(transformWxss())
@@ -188,16 +190,16 @@ export async function getTasks(options: BuildOptions) {
               gulpif(
                 loadSass || loadLess,
                 rename({
-                  extname: '.wxss'
-                })
-              )
+                  extname: '.wxss',
+                }),
+              ),
             )
             // .pipe(debug({ title: 'css end:' }))
             .pipe(
               gulp.dest(outDir, {
-                cwd
-              })
-            )
+                cwd,
+              }),
+            ),
         )
       }
     })
@@ -217,9 +219,9 @@ export async function getTasks(options: BuildOptions) {
             .pipe(transformWxml())
             .pipe(
               gulp.dest(outDir, {
-                cwd
-              })
-            )
+                cwd,
+              }),
+            ),
         )
       }
     })
@@ -234,9 +236,9 @@ export async function getTasks(options: BuildOptions) {
       return promisify(
         gulp.src(globs, { cwd, since: gulp.lastRun(copyOthers) }).pipe(
           gulp.dest(outDir, {
-            cwd
-          })
-        )
+            cwd,
+          }),
+        ),
       )
     }
   }
@@ -248,6 +250,6 @@ export async function getTasks(options: BuildOptions) {
     getCssTasks,
     getHtmlTasks,
     copyOthers,
-    globsSet
+    globsSet,
   }
 }

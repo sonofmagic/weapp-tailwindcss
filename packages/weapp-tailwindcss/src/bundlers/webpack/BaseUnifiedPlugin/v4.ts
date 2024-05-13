@@ -4,7 +4,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import type { Compiler } from 'webpack4'
 import { ConcatSource, RawSource } from 'webpack-sources'
-import type { AppType, UserDefinedOptions, InternalUserDefinedOptions, IBaseWebpackPlugin } from '@/types'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
@@ -43,7 +43,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       setMangleRuntimeSet,
       runtimeLoaderPath,
       cache,
-      tailwindcssBasedir
+      tailwindcssBasedir,
     } = this.options
 
     if (disabled) {
@@ -55,7 +55,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
       return twPatcher.getClassSet({
-        basedir: tailwindcssBasedir
+        basedir: tailwindcssBasedir,
       })
     }
 
@@ -65,20 +65,20 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     const WeappTwRuntimeAopLoader = {
       loader,
       options: {
-        getClassSet
+        getClassSet,
       },
       ident: null,
-      type: null
+      type: null,
     }
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
         if (isExisted) {
-          // @ts-ignore
-          const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
+          // @ts-expect-error
+          const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
           // // css
           if (idx > -1) {
-            // @ts-ignore
+            // @ts-expect-error
             module.loaders.unshift(WeappTwRuntimeAopLoader)
           }
         }
@@ -108,7 +108,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         let noCachedCount = 0
         for (let i = 0; i < groupedEntries.html.length; i++) {
           const [file, originalSource] = groupedEntries.html[i]
-          // @ts-ignore
+          // @ts-expect-error
           const rawSource = originalSource.source().toString()
 
           const hash = cache.computeHash(rawSource)
@@ -119,17 +119,18 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             () => {
               const source = cache.get(cacheKey)
               if (source) {
-                // @ts-ignore
+                // @ts-expect-error
                 compilation.updateAsset(file, source)
                 debug('html cache hit: %s', file)
-              } else {
+              }
+              else {
                 return false
               }
             },
-            // @ts-ignore
+            // @ts-expect-error
             async () => {
               const wxml = await templateHandler(rawSource, {
-                runtimeSet
+                runtimeSet,
               })
               const source = new ConcatSource(wxml)
               compilation.updateAsset(file, source)
@@ -139,9 +140,9 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               noCachedCount++
               return {
                 key: cacheKey,
-                source
+                source,
               }
-            }
+            },
           )
         }
         debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
@@ -158,21 +159,22 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             () => {
               const source = cache.get(cacheKey)
               if (source) {
-                // @ts-ignore
+                // @ts-expect-error
                 compilation.updateAsset(file, source)
                 debug('js cache hit: %s', file)
-              } else {
+              }
+              else {
                 return false
               }
             },
-            // @ts-ignore
+            // @ts-expect-error
             async () => {
-              // @ts-ignore
+              // @ts-expect-error
               const rawSource = originalSource.source().toString()
-              const mapFilename = file + '.map'
+              const mapFilename = `${file}.map`
               const hasMap = Boolean(assets[mapFilename])
               const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                generateMap: hasMap
+                generateMap: hasMap,
               })
               const source = new ConcatSource(code)
               compilation.updateAsset(file, source)
@@ -186,9 +188,9 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               }
               return {
                 key: cacheKey,
-                source
+                source,
               }
-            }
+            },
           )
         }
         debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
@@ -198,7 +200,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         let noCachedCount = 0
         for (let i = 0; i < groupedEntries.css.length; i++) {
           const [file, originalSource] = groupedEntries.css[i]
-          // @ts-ignore
+          // @ts-expect-error
           const rawSource = originalSource.source().toString()
           const hash = cache.computeHash(rawSource)
           const cacheKey = file
@@ -209,17 +211,18 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             () => {
               const source = cache.get(cacheKey)
               if (source) {
-                // @ts-ignore
+                // @ts-expect-error
                 compilation.updateAsset(file, source)
                 debug('css cache hit: %s', file)
-              } else {
+              }
+              else {
                 return false
               }
             },
-            // @ts-ignore
+            // @ts-expect-error
             async () => {
               const css = await styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(file, this.appType)
+                isMainChunk: mainCssChunkMatcher(file, this.appType),
               })
               const source = new ConcatSource(css)
               compilation.updateAsset(file, source)
@@ -229,9 +232,9 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               noCachedCount++
               return {
                 key: cacheKey,
-                source
+                source,
               }
-            }
+            },
           )
         }
         debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)

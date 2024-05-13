@@ -6,7 +6,7 @@ export {
   SYMBOL_TABLE_TYPE,
   SYMBOL_TABLE_TYPE_VALUES,
   SimpleMappingChars2String,
-  SimpleMappingChars2StringEntries
+  SimpleMappingChars2StringEntries,
 } from './escape'
 // cssSelectorReplacer as replaceCss,
 // replaceEscapedCss

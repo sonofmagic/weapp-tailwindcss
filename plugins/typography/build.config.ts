@@ -12,14 +12,14 @@ export default defineBuildConfig({
     cjsBridge: true,
     dts: {
       // https://github.com/unjs/unbuild/issues/135
-      respectExternal: false
-    }
+      respectExternal: false,
+    },
   },
   alias: {
     // 别名
-    '@': path.resolve(__dirname, './src')
+    '@': path.resolve(__dirname, './src'),
   },
   // dts
   declaration: true,
-  externals: ['tailwindcss/plugin', 'tailwindcss/colors']
+  externals: ['tailwindcss/plugin', 'tailwindcss/colors'],
 })

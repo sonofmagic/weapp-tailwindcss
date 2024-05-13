@@ -1,5 +1,4 @@
-/* eslint-disable no-octal-escape */
-import { cssCasePath, createGetCase, createPutCase } from '../util'
+import { createGetCase, createPutCase, cssCasePath } from '../util'
 import { normalizeEol } from '../helpers/normalizeEol'
 import { styleHandler } from '@/postcss/index'
 
@@ -9,10 +8,10 @@ import { MappingChars2String } from '@/escape'
 
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
-// eslint-disable-next-line no-unused-vars
+
 const putCase = createPutCase(cssCasePath)
 
-export const cssUnescape = (str: string) => {
+export function cssUnescape(str: string) {
   return str.replaceAll(/\\([\dA-Fa-f]{1,6}[\t\n\f\r ]?|[\S\s])/g, (match) => {
     return match.length > 2 ? String.fromCodePoint(Number.parseInt(match.slice(1).trim(), 16)) : match[1]
   })
@@ -20,7 +19,7 @@ export const cssUnescape = (str: string) => {
 describe('styleHandler', () => {
   it('css @media case', async () => {
     const opt = getOptions({
-      customReplaceDictionary: MappingChars2String
+      customReplaceDictionary: MappingChars2String,
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('media1.css')
@@ -29,7 +28,7 @@ describe('styleHandler', () => {
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
       customRuleCallback: opt.customRuleCallback,
-      cssSelectorReplacement: opt.cssSelectorReplacement
+      cssSelectorReplacement: opt.cssSelectorReplacement,
     })
     // const expected = await getCase('media1.result.css')
     // await putCase('media1.result.css', result)
@@ -47,8 +46,8 @@ describe('styleHandler', () => {
       }
     }`,
       {
-        isMainChunk: true
-      }
+        isMainChunk: true,
+      },
     )
     expect(code).toMatchSnapshot()
   })
@@ -63,8 +62,8 @@ describe('styleHandler', () => {
       }
     }`,
       {
-        isMainChunk: true
-      }
+        isMainChunk: true,
+      },
     )
     expect(code).toMatchSnapshot()
   })
@@ -89,7 +88,7 @@ describe('styleHandler', () => {
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
       customRuleCallback: opt.customRuleCallback,
-      cssSelectorReplacement: opt.cssSelectorReplacement
+      cssSelectorReplacement: opt.cssSelectorReplacement,
     })
     // const expected = await getCase('taro.build.result.css')
     // await putCase('taro.build.result.css', result)
@@ -106,16 +105,16 @@ describe('styleHandler', () => {
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toMatchSnapshot()
   })
 
   it('new option for customRuleCallback kbone', async () => {
     const opt = getOptions({
-      customReplaceDictionary: MappingChars2String
+      customReplaceDictionary: MappingChars2String,
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
 
@@ -136,9 +135,9 @@ describe('styleHandler', () => {
       },
       cssPreflightRange: opt.cssPreflightRange,
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     // const expected = await getCase('kbone1.result.css')
     // await putCase('kbone1.result.css', result)
@@ -154,9 +153,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toMatchSnapshot()
   })
@@ -169,9 +168,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toMatchSnapshot()
   })
@@ -184,9 +183,9 @@ describe('styleHandler', () => {
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toMatchSnapshot()
   })
@@ -199,9 +198,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
   })
@@ -214,9 +213,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: 'view'
+        universal: 'view',
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
   })
@@ -229,10 +228,10 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: '.happy'
+        universal: '.happy',
       },
 
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toBe('.aspect-w-16>.happy,.a>.b{aspect-ratio:1/1;}')
   })
@@ -245,9 +244,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
@@ -258,8 +257,8 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssSelectorReplacement: {
-        universal: 'view'
-      }
+        universal: 'view',
+      },
     })
     expect(result).toBe('.aspect-w-16>view,.a>.b{aspect-ratio:1/1;}')
   })
@@ -271,8 +270,8 @@ describe('styleHandler', () => {
       isMainChunk: true,
 
       cssSelectorReplacement: {
-        universal: false
-      }
+        universal: false,
+      },
     })
     expect(result).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
   })
@@ -285,10 +284,10 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
       escapeMap: MappingChars2String,
-      cssRemoveHoverPseudoClass: true
+      cssRemoveHoverPseudoClass: true,
     })
     expect(result).toBe('')
   })
@@ -301,10 +300,10 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
       escapeMap: MappingChars2String,
-      cssRemoveHoverPseudoClass: true
+      cssRemoveHoverPseudoClass: true,
     })
     expect(result).toBe('.b{color:black;}')
   })
@@ -317,12 +316,12 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(
-      '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
+      '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n',
     )
   })
 
@@ -334,10 +333,10 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
       escapeMap: MappingChars2String,
-      cssRemoveHoverPseudoClass: true
+      cssRemoveHoverPseudoClass: true,
     })
     expect(normalizeEol(result)).toBe('\n')
   })
@@ -350,12 +349,12 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(
-      '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n'
+      '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n',
     )
   })
 
@@ -367,9 +366,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
   })
@@ -382,9 +381,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe('@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n')
   })
@@ -397,12 +396,12 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(
-      '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n'
+      '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n',
     )
   })
 
@@ -414,26 +413,26 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(
-      '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n'
+      '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n',
     )
   })
 
   it('global variables scope matched case', async () => {
-    const testCase = ":before,:after{--tw-:'test'}"
+    const testCase = ':before,:after{--tw-:\'test\'}'
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toMatchSnapshot()
   })
@@ -441,16 +440,16 @@ describe('styleHandler', () => {
   it('global variables scope matched and inject', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
-    const testCase = ":before,:after{--tw-:'test'}"
+    const testCase = ':before,:after{--tw-:\'test\'}'
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(testCase)
   })
@@ -458,16 +457,16 @@ describe('styleHandler', () => {
   it('global variables scope matched and inject with isMainChunk false', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
-    const testCase = ":before,:after{--tw-:'test'}"
+    const testCase = ':before,:after{--tw-:\'test\'}'
     const result = await styleHandler(testCase, {
       isMainChunk: false,
       cssInjectPreflight,
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(testCase)
   })
@@ -475,16 +474,16 @@ describe('styleHandler', () => {
   it('global variables scope matched and inject and modify preflight range', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
-    const testCase = ":before,:after{--tw-:'test'}"
+    const testCase = ':before,:after{--tw-:\'test\'}'
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(testCase)
   })
@@ -492,16 +491,16 @@ describe('styleHandler', () => {
   it('global variables scope matched and inject and modify preflight range with isMainChunk false', async () => {
     const opt = getOptions()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
-    const testCase = ":before,:after{--tw-:'test'}"
+    const testCase = ':before,:after{--tw-:\'test\'}'
     const result = await styleHandler(testCase, {
       isMainChunk: false,
       cssInjectPreflight,
       cssPreflightRange: 'all',
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(testCase)
   })
@@ -514,26 +513,26 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe(testCase)
   })
 
-  it("before:content-['+']", async () => {
-    const testCase = ".before\\:content-\\[\\'\\+\\'\\]::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}"
+  it('before:content-[\'+\']', async () => {
+    const testCase = '.before\\:content-\\[\\\'\\+\\\'\\]::before {\n    --tw-content: \'+\';\n    content: var(--tw-content)\n}'
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(result)).toBe(".before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: '+';\n    content: var(--tw-content)\n}")
+    expect(normalizeEol(result)).toBe('.before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: \'+\';\n    content: var(--tw-content)\n}')
   })
 
   it('@apply space-y/x css selector', async () => {
@@ -544,14 +543,14 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe('.test>view+view{}')
   })
 
-  it('Is Pseudo Class', async () => {
+  it('is Pseudo Class', async () => {
     const testCase = ':is(.dark .dark:bg-zinc-800) {}'
     const result = await styleHandler(testCase, {
       isMainChunk: true,
@@ -559,9 +558,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toBe('.dark .dark:bg-zinc-800 {}')
   })
@@ -574,9 +573,9 @@ describe('styleHandler', () => {
 
       customRuleCallback: () => {},
       cssSelectorReplacement: {
-        universal: false
+        universal: false,
       },
-      escapeMap: MappingChars2String
+      escapeMap: MappingChars2String,
     })
     expect(normalizeEol(result)).toMatchSnapshot()
   })
@@ -591,7 +590,7 @@ describe('styleHandler', () => {
 
   it('injectAdditionalCssVarScope option true', async () => {
     const { styleHandler } = getOptions({
-      injectAdditionalCssVarScope: true
+      injectAdditionalCssVarScope: true,
     })
     const rawSource = await getCase('backdrop.css')
     const result = await styleHandler(rawSource, { isMainChunk: true })
@@ -602,8 +601,8 @@ describe('styleHandler', () => {
     const { styleHandler } = getOptions({
       injectAdditionalCssVarScope: true,
       cssSelectorReplacement: {
-        universal: ['view', 'text', 'button']
-      }
+        universal: ['view', 'text', 'button'],
+      },
     })
     const rawSource = await getCase('backdrop.css')
     const result = await styleHandler(rawSource, { isMainChunk: true })
@@ -612,7 +611,7 @@ describe('styleHandler', () => {
 
   it('injectAdditionalCssVarScope option true isMainChunk false', async () => {
     const { styleHandler } = getOptions({
-      injectAdditionalCssVarScope: true
+      injectAdditionalCssVarScope: true,
     })
     const rawSource = await getCase('backdrop.css')
     const result = await styleHandler(rawSource, { isMainChunk: false })
@@ -632,8 +631,8 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, {
       isMainChunk: false,
       cssSelectorReplacement: {
-        root: false
-      }
+        root: false,
+      },
     })
     expect(result).toBe(rawCode)
   })
@@ -651,8 +650,8 @@ describe('styleHandler', () => {
     const result = await styleHandler(rawCode, {
       isMainChunk: false,
       cssSelectorReplacement: {
-        root: false
-      }
+        root: false,
+      },
     })
     expect(result).toBe(rawCode)
   })
@@ -833,8 +832,8 @@ describe('styleHandler', () => {
     const tw = await import('tailwindcss')
     const { styleHandler } = getOptions({
       postcssOptions: {
-        plugins: [tw.default({ content: [], corePlugins: { preflight: false } })]
-      }
+        plugins: [tw.default({ content: [], corePlugins: { preflight: false } })],
+      },
     })
     const rawCode = `@tailwind base;
   `

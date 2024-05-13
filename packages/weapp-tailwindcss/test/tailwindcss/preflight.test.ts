@@ -4,7 +4,7 @@ describe('preflight', () => {
   it('preflight', async () => {
     const { css } = await getCss([], {
       css: '@tailwind base;',
-      twConfig: {}
+      twConfig: {},
     })
     expect(css).toMatchSnapshot()
   })

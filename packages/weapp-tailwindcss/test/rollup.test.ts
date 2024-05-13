@@ -1,7 +1,8 @@
 import { rollup } from 'rollup'
-import type { OutputChunk, OutputAsset } from 'rollup'
+import type { OutputAsset, OutputChunk } from 'rollup'
 import { omit } from 'lodash'
 import configs from '../rollup.config'
+
 function normalizeOutput(outputs: [OutputChunk, ...(OutputChunk | OutputAsset)[]]) {
   return outputs.map((x) => {
     return omit(x, ['modules', 'facadeModuleId', 'moduleIds'])
@@ -16,14 +17,15 @@ describe.skip('rollup build', () => {
         input: config.input,
         external: config.external,
         output: config.output,
-        plugins: config.plugins
+        plugins: config.plugins,
       })
       if (Array.isArray(config.output)) {
         for (let j = 0; j < config.output.length; j++) {
           const { output } = await bundle.generate(config.output[j])
           expect(normalizeOutput(output)).toMatchSnapshot()
         }
-      } else if (config.output) {
+      }
+      else if (config.output) {
         const { output } = await bundle.generate(config.output)
         expect(normalizeOutput(output)).toMatchSnapshot()
       }

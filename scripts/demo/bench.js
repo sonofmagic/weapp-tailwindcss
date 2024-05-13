@@ -1,7 +1,9 @@
 const path = require('node:path')
 const { run } = require('./run')
 
-;(async () => {
+;
+
+(async () => {
   const demoPath = path.resolve(__dirname, '../../demo')
   const result = []
   try {
@@ -19,7 +21,8 @@ const { run } = require('./run')
       console.log(i)
       console.log(divide)
     }
-  } catch (error) {
+  }
+  catch (error) {
     result.push(error)
   }
   if (result.length > 0) {

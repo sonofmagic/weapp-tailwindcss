@@ -14,8 +14,8 @@ import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index
 const postcssPlugins = [
   // require('autoprefixer')(),
   require('tailwindcss')({
-    config: path.resolve(__dirname, '../fixtures/vite/tailwind.config.js')
-  })
+    config: path.resolve(__dirname, '../fixtures/vite/tailwind.config.js'),
+  }),
 ]
 
 async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result: RollupOutput) => void) {
@@ -48,18 +48,19 @@ async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result:
     logLevel: 'silent',
     css: {
       postcss: {
-        plugins: postcssPlugins
-      }
+        plugins: postcssPlugins,
+      },
     },
     build: {
-      write: false
-    }
+      write: false,
+    },
   })
   const res = (await build(opts)) as RollupOutput
 
   if (fn && typeof fn === 'function') {
     fn(res)
-  } else {
+  }
+  else {
     const output = res.output
     expect(output.length).toBe(3)
     expect(output[0].type).toBe('chunk')
@@ -68,7 +69,7 @@ async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result:
     expect(output[1].type).toBe('asset')
     if (output[1].type === 'asset') {
       const r = await prettier.format(output[1].source.toString(), {
-        parser: 'css'
+        parser: 'css',
       })
       expect(r).toMatchSnapshot()
     }
@@ -76,14 +77,14 @@ async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result:
     expect(output[2].type).toBe('asset')
     if (output[2].type === 'asset') {
       const r = await prettier.format(output[2].source.toString(), {
-        parser: 'html'
+        parser: 'html',
       })
       expect(r).toMatchSnapshot()
     }
   }
 }
 
-const htmlMatcher = (p: string) => {
+function htmlMatcher(p: string) {
   return p.endsWith('.html')
 }
 describe('vite test', () => {
@@ -100,8 +101,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -119,8 +120,8 @@ describe('vite test', () => {
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
         },
-        rem2rpx: true
-      })
+        rem2rpx: true,
+      }),
     )
   })
 
@@ -137,8 +138,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
     await assertSnap(
       uvwt({
@@ -150,8 +151,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -169,8 +170,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -188,8 +189,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -200,8 +201,8 @@ describe('vite test', () => {
       uvwt({
         mangle: {
           classGenerator: {
-            classPrefix: ''
-          }
+            classPrefix: '',
+          },
         },
         htmlMatcher,
         onStart() {
@@ -211,8 +212,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -224,7 +225,7 @@ describe('vite test', () => {
         mangle: {
           mangleClassFilter() {
             return true
-          }
+          },
         },
         onStart() {
           timeStart = performance.now()
@@ -233,8 +234,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -246,7 +247,7 @@ describe('vite test', () => {
         mangle: {
           mangleClassFilter(className) {
             return /[[\]]/.test(className)
-          }
+          },
         },
         htmlMatcher,
         onStart() {
@@ -256,8 +257,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
           // 不会执行
           console.log(`[vite common build] generate executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -271,7 +272,7 @@ describe('vite test', () => {
         mangle: {
           mangleClassFilter() {
             return true
-          }
+          },
         },
         onStart() {
           timeStart = performance.now()
@@ -280,8 +281,8 @@ describe('vite test', () => {
           timeTaken = performance.now() - timeStart
 
           console.log(`[vite disabled build] common case processAssets executed in ${timeTaken}ms`)
-        }
-      })
+        },
+      }),
     )
   })
 
@@ -290,8 +291,8 @@ describe('vite test', () => {
       uvwt(),
       {
         build: {
-          sourcemap: true
-        }
+          sourcemap: true,
+        },
       },
       (res) => {
         const output = res.output
@@ -310,7 +311,7 @@ describe('vite test', () => {
         if (output[3].type === 'asset') {
           expect(output[3].source).toMatchSnapshot()
         }
-      }
+      },
     )
   })
 
@@ -320,8 +321,8 @@ describe('vite test', () => {
       undefined,
       {
         build: {
-          sourcemap: true
-        }
+          sourcemap: true,
+        },
       },
       (res) => {
         const output = res.output
@@ -331,15 +332,15 @@ describe('vite test', () => {
           before = output[2].source.toString()
           expect(before).toMatchSnapshot('before')
         }
-      }
+      },
     )
 
     await assertSnap(
       uvwt(),
       {
         build: {
-          sourcemap: true
-        }
+          sourcemap: true,
+        },
       },
       (res) => {
         const output = res.output
@@ -350,7 +351,7 @@ describe('vite test', () => {
           expect(after).toMatchSnapshot('after')
           expect(Diff.diffChars(before, after)).toMatchSnapshot('diff')
         }
-      }
+      },
     )
   })
 })

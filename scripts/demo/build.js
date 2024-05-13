@@ -1,4 +1,5 @@
 const path = require('node:path')
+const process = require('node:process')
 const { run } = require('./run')
 
 const argvs = process.argv.slice(2)
@@ -8,7 +9,8 @@ const useLocal = argvs.includes('--local')
   const result = []
   try {
     await run(demoPath, `build${useLocal ? ':local' : ''}`)
-  } catch (error) {
+  }
+  catch (error) {
     result.push(error)
   }
   if (result.length > 0) {

@@ -1,12 +1,13 @@
-import { Rule, Declaration } from 'postcss'
+import { Declaration, Rule } from 'postcss'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 import cssVars from './cssVars'
 import { composeIsPseudo } from './shared'
 import type { IStyleHandlerOptions } from '@/types'
+
 const initialNodes = cssVars.map((x) => {
   return new Declaration({
     prop: x.prop,
-    value: x.value
+    value: x.value,
   })
 })
 // ':not(template) ~ :not(template)'
@@ -37,10 +38,10 @@ const initialNodes = cssVars.map((x) => {
  */
 
 const PATTERNS = [
-  // eslint-disable-next-line unicorn/better-regex
+
   /:not\(template\)\s*[~+]\s*:not\(template\)/.source,
-  // eslint-disable-next-line unicorn/better-regex
-  /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source
+
+  /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source,
 ].join('|')
 const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
@@ -81,13 +82,13 @@ export function testIfTwBackdrop(node: Rule, count = 2) {
 export function makePseudoVarRule() {
   const pseudoVarRule = new Rule({
     // selectors: ['::before', '::after'],
-    selector: '::before,::after'
+    selector: '::before,::after',
   })
   pseudoVarRule.append(
     new Declaration({
       prop: '--tw-content',
-      value: '""'
-    })
+      value: '""',
+    }),
   )
   return pseudoVarRule
 }
@@ -95,8 +96,8 @@ export function makePseudoVarRule() {
 export function remakeCssVarSelector(selectors: string[], options: IStyleHandlerOptions) {
   const { cssPreflightRange, cssSelectorReplacement } = options
   if (
-    cssPreflightRange === 'all' && // 默认对每个元素都生效
-    !selectors.includes(':not(not)')
+    cssPreflightRange === 'all' // 默认对每个元素都生效
+    && !selectors.includes(':not(not)')
   ) {
     selectors.push(':not(not)')
   }
@@ -105,15 +106,16 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
       if (
         !cssSelectorReplacement.universal.every((x) => {
           return selectors.includes(x)
-        }) &&
-        !selectors.includes('*')
+        })
+        && !selectors.includes('*')
       ) {
         selectors.unshift('*')
       }
-    } else if (
-      typeof cssSelectorReplacement.universal === 'string' &&
-      !selectors.includes(cssSelectorReplacement.universal) &&
-      !selectors.includes('*')
+    }
+    else if (
+      typeof cssSelectorReplacement.universal === 'string'
+      && !selectors.includes(cssSelectorReplacement.universal)
+      && !selectors.includes('*')
     ) {
       selectors.unshift('*')
     }
@@ -124,14 +126,15 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
 
 export function remakeCombinatorSelector(
   selector: string,
-  cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue']
+  cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue'],
 ) {
   let childCombinatorReplaceValue = 'view + view'
 
   if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {
     const x = composeIsPseudo(cssChildCombinatorReplaceValue)
-    childCombinatorReplaceValue = x + ' + ' + x
-  } else if (typeof cssChildCombinatorReplaceValue === 'string') {
+    childCombinatorReplaceValue = `${x} + ${x}`
+  }
+  else if (typeof cssChildCombinatorReplaceValue === 'string') {
     childCombinatorReplaceValue = cssChildCombinatorReplaceValue
   }
   return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
@@ -154,7 +157,7 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   if (injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
     const syntheticRule = new Rule({
       selectors: ['*', '::after', '::before'],
-      nodes: initialNodes
+      nodes: initialNodes,
     })
     syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
     node.before(syntheticRule)

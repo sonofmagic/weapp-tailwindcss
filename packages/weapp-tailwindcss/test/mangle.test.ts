@@ -1,4 +1,4 @@
-import { useMangleStore, defaultMangleContext } from '@/mangle'
+import { defaultMangleContext, useMangleStore } from '@/mangle'
 
 describe('mangle', () => {
   it('mangle api', () => {
@@ -10,7 +10,7 @@ describe('mangle', () => {
     initMangle({
       mangleClassFilter() {
         return true
-      }
+      },
     })
     expect(mangleContext.filter('flex')).toBe(true)
     resetMangle()

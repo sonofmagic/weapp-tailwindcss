@@ -5,8 +5,8 @@ import { SimpleMappingChars2String } from '@/escape'
 // import { mangleClassRegex } from '@/mangle/expose'
 
 export const defaultOptions: UserDefinedOptions = {
-  cssMatcher: (file) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
-  htmlMatcher: (file) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
+  cssMatcher: file => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file),
+  htmlMatcher: file => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file),
   jsMatcher: (file) => {
     if (file.includes('node_modules')) {
       return false
@@ -54,7 +54,7 @@ export const defaultOptions: UserDefinedOptions = {
     'box-sizing': 'border-box',
     'border-width': '0',
     'border-style': 'solid',
-    'border-color': 'currentColor'
+    'border-color': 'currentColor',
   },
 
   disabled: false,
@@ -74,12 +74,12 @@ export const defaultOptions: UserDefinedOptions = {
       lengthUnitsFilePath: 'lib/util/dataTypes.js',
       packageName: 'tailwindcss',
       variableName: 'lengthUnits',
-      overwrite: true
-    }
+      overwrite: true,
+    },
   },
   appType: undefined,
   arbitraryValues: {
-    allowDoubleQuotes: false
+    allowDoubleQuotes: false,
   },
   cssChildCombinatorReplaceValue: ['view'],
   inlineWxs: false,
@@ -96,12 +96,12 @@ export const defaultOptions: UserDefinedOptions = {
   disabledDefaultTemplateHandler: false,
   cssSelectorReplacement: {
     root: 'page',
-    universal: ['view', 'text']
+    universal: ['view', 'text'],
   },
   babelParserOptions: {
-    sourceType: 'unambiguous'
+    sourceType: 'unambiguous',
   },
   postcssOptions: {},
-  cssRemoveHoverPseudoClass: true
+  cssRemoveHoverPseudoClass: true,
   // jsAstTool: 'ast-grep'
 }

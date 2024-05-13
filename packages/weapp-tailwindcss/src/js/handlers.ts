@@ -1,5 +1,5 @@
 // import type { StringLiteral, TemplateElement, Comment } from '@babel/types'
-import MagicString from 'magic-string'
+import type MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '@/types'
 import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
@@ -22,7 +22,7 @@ export function replaceHandleValue(
   node: ReplaceNode,
   options: IJsHandlerOptions,
   ms: MagicString,
-  offset = 0
+  offset = 0,
 ) {
   const {
     classNameSet: set,
@@ -32,7 +32,7 @@ export function replaceHandleValue(
     jsPreserveClass,
     arbitraryValues,
     always,
-    unescapeUnicode
+    unescapeUnicode,
   } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
@@ -51,8 +51,8 @@ export function replaceHandleValue(
     if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
-        ignoreFlag =
-          node.leadingComments.findIndex((x) => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
+        ignoreFlag
+          = node.leadingComments.findIndex(x => x.value.includes('weapp-tw') && x.value.includes('ignore')) > -1
       }
 
       if (!ignoreFlag) {
@@ -63,8 +63,8 @@ export function replaceHandleValue(
         rawStr = rawStr.replace(
           new RegExp(escapeStringRegexp(v)),
           replaceWxml(v, {
-            escapeMap
-          })
+            escapeMap,
+          }),
         )
       }
     }

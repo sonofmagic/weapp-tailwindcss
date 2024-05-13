@@ -9,8 +9,8 @@ export async function styleHandler(rawSource: string, options: IStyleHandlerOpti
       .process(
         rawSource,
         options.postcssOptions?.options ?? {
-          from: undefined
-        }
+          from: undefined,
+        },
       )
       .async()
   ).css
@@ -20,7 +20,7 @@ export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
   return (rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     return styleHandler(
       rawSource,
-      defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt as IStyleHandlerOptions, options)
+      defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(opt as IStyleHandlerOptions, options),
     )
   }
 }

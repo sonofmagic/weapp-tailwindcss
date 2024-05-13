@@ -5,7 +5,8 @@ import semver from 'semver'
 import { findAstNode } from '@/tailwindcss/supportCustomUnit'
 import { defaultOptions } from '@/defaults'
 import { demoPath } from '#test/util'
-import { ILengthUnitsPatchOptions } from '@/types'
+import type { ILengthUnitsPatchOptions } from '@/types'
+
 describe.skip('demo projects', () => {
   // 'remax-app',
   const demoDir = ['uni-app', 'uni-app-vue3-vite', 'taro-app', 'mpx-app', 'native-mina', 'rax-app', 'taro-vue3-app', 'taro-vue2-app']

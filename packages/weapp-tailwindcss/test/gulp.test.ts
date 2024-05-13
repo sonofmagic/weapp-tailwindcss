@@ -1,5 +1,5 @@
 import path from 'node:path'
-import internal from 'node:stream'
+import type internal from 'node:stream'
 import gulp from 'gulp'
 import postcss from 'gulp-postcss'
 import { createPlugins } from '@/gulp'
@@ -32,14 +32,14 @@ async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
 
   const cssTask = gulp
     .src('./src/**/*.css', {
-      cwd: gulpCasePath
+      cwd: gulpCasePath,
     })
     .pipe(
       postcss([
         require('tailwindcss')({
-          config: path.resolve(gulpCasePath, 'tailwind.config.js')
-        })
-      ])
+          config: path.resolve(gulpCasePath, 'tailwind.config.js'),
+        }),
+      ]),
     )
     .pipe(transformWxss())
 
@@ -49,21 +49,21 @@ async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
 
   const jsTask = gulp
     .src('./src/**/*.js', {
-      cwd: gulpCasePath
+      cwd: gulpCasePath,
     })
     .pipe(transformJs())
 
   const wxmlTask = gulp
     .src('./src/**/*.wxml', {
-      cwd: gulpCasePath
+      cwd: gulpCasePath,
     })
     .pipe(transformWxml())
 
   const ptasks = [jsTask, wxmlTask]
-  const [jsRes, wxmlRes] = await Promise.all(ptasks.map((element) => readContent(element)))
+  const [jsRes, wxmlRes] = await Promise.all(ptasks.map(element => readContent(element)))
   expect(jsRes).toMatchSnapshot('js')
   expect(wxmlRes).toMatchSnapshot('wxml')
-  await Promise.all(ptasks.map((element) => promisify(element)))
+  await Promise.all(ptasks.map(element => promisify(element)))
 }
 describe('gulp', () => {
   it('common build', async () => {
@@ -73,8 +73,8 @@ describe('gulp', () => {
   it('common build with mangle true', async () => {
     await matchSnap(
       createPlugins({
-        mangle: true
-      })
+        mangle: true,
+      }),
     )
   })
 
@@ -83,10 +83,10 @@ describe('gulp', () => {
       createPlugins({
         mangle: {
           classGenerator: {
-            classPrefix: ''
-          }
-        }
-      })
+            classPrefix: '',
+          },
+        },
+      }),
     )
   })
 
@@ -95,11 +95,11 @@ describe('gulp', () => {
       createPlugins({
         mangle: {
           classGenerator: {
-            classPrefix: ''
+            classPrefix: '',
           },
-          mangleClassFilter: () => true
-        }
-      })
+          mangleClassFilter: () => true,
+        },
+      }),
     )
   })
 })

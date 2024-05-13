@@ -20,7 +20,8 @@ export default class GlobsSet {
         for (const vv of v) {
           this.addSingle(vv)
         }
-      } else {
+      }
+      else {
         this.addSingle(v)
       }
     }
@@ -31,6 +32,6 @@ export default class GlobsSet {
   }
 
   dumpIgnored() {
-    return [...this.excludeSet].map((x) => x.slice(1))
+    return [...this.excludeSet].map(x => x.slice(1))
   }
 }

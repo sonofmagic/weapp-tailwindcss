@@ -1,5 +1,6 @@
 import type { PluginCreator } from 'postcss'
-import { matchCustomPropertyFromValue, ifdef, ifndef } from './constants'
+import { ifdef, ifndef, matchCustomPropertyFromValue } from './constants'
+
 export interface Options {}
 
 const creator: PluginCreator<Options> = () => {
@@ -20,17 +21,17 @@ const creator: PluginCreator<Options> = () => {
               atRule.replaceWith([
                 helper.comment({
                   raws: {
-                    before: '\n'
+                    before: '\n',
                   },
-                  text: comment.start
+                  text: comment.start,
                 }),
                 ...(atRule.nodes ?? []), // .map((x) => x.clone()),
                 helper.comment({
                   raws: {
-                    before: '\n'
+                    before: '\n',
                   },
-                  text: comment.end
-                })
+                  text: comment.end,
+                }),
               ])
             }
           }
@@ -44,9 +45,9 @@ const creator: PluginCreator<Options> = () => {
             comment.raws.left = ' '
             comment.raws.right = ' '
           }
-        }
+        },
       }
-    }
+    },
   }
 }
 

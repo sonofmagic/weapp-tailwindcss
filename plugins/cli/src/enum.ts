@@ -8,5 +8,5 @@ export enum AssetType {
   JavaScript = 'javascript',
   Json = 'json',
   Css = 'css',
-  Html = 'html'
+  Html = 'html',
 }

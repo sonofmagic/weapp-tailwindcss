@@ -3,8 +3,8 @@ import { getCss as _getCss } from '#test/helpers/getTwCss'
 function getCss(content: string[]) {
   return _getCss(content, {
     twConfig: {
-      plugins: [] // require('tailwind-children')
-    }
+      plugins: [], // require('tailwind-children')
+    },
   })
 }
 describe.skip('tailwind plugins', () => {
@@ -12,7 +12,7 @@ describe.skip('tailwind plugins', () => {
     const res = await getCss([
       `<div class="child:ring-white">
     <p>I have a white ring.</p>
-</div>`
+</div>`,
     ])
     expect(res.css.toString()).toMatchSnapshot()
   })
@@ -23,7 +23,7 @@ describe.skip('tailwind plugins', () => {
             <div class="child-p:ring-white hover:child-p:border">
                 <p>I have a white ring, and a border on hover.</p>
                 <b>I am ignored!</b>
-            </div>`
+            </div>`,
     ])
 
     expect(res.css.toString()).toMatchSnapshot()
@@ -39,7 +39,7 @@ describe.skip('tailwind plugins', () => {
           <p>And a shadow on hover!</p>
           <b>I am not a \`p\`, so am ignored.</b>
       </div>
-  </div>`
+  </div>`,
     ])
 
     expect(res.css.toString()).toMatchSnapshot()
@@ -52,7 +52,7 @@ describe.skip('tailwind plugins', () => {
           I have a white ring & shadow on hover
       </p>
       <p>I am his twin, so have the same!</p>
-  </div>`
+  </div>`,
     ])
 
     expect(res.css.toString()).toMatchSnapshot()
@@ -67,7 +67,7 @@ describe.skip('tailwind plugins', () => {
             <img src="/img2.jpg">
             <img src="/img3.jpg">
             <img src="/img4.jpg">
-        </div>`
+        </div>`,
     ])
 
     expect(res.css.toString()).toMatchSnapshot()

@@ -6,7 +6,7 @@ import { getCss } from './helpers/getTwCss'
 describe('postcss plugin', () => {
   it('base tw output', async () => {
     const res = await getCss('', {
-      css: '@tailwind base;@tailwind utilities;'
+      css: '@tailwind base;@tailwind utilities;',
     })
     expect(res.css.toString()).toMatchSnapshot()
   })
@@ -16,9 +16,9 @@ describe('postcss plugin', () => {
       css: '@tailwind base;@tailwind utilities;',
       twConfig: {
         corePlugins: {
-          preflight: false
-        }
-      }
+          preflight: false,
+        },
+      },
     })
     expect(res.css.toString()).toMatchSnapshot()
   })
@@ -28,20 +28,20 @@ describe('postcss plugin', () => {
     expect(res.css.toString()).toMatchSnapshot()
   })
 
-  it("before:content-['+']", async () => {
+  it('before:content-[\'+\']', async () => {
     const res = await getCss('<view class="before:content-[\'+\']"></view>')
     expect(res.css.toString()).toMatchSnapshot()
   })
 
-  it("utf-8 compat after:content-['我是伪元素']", async () => {
-    const res = await getCss("<view class=\"after:content-['我是伪元素']")
+  it('utf-8 compat after:content-[\'我是伪元素\']', async () => {
+    const res = await getCss('<view class="after:content-[\'我是伪元素\']')
     expect(res.css.toString()).toMatchSnapshot()
     // fs.writeFileSync('./utf8.css', res.css.toString(), 'utf-8')
   })
 
   it('@apply space-y/x case', async () => {
     const res = await getCss('<view class="test"></view>', {
-      css: '@tailwind utilities;.test{\n@apply space-x-1 space-y-2 text-[#123456];\n font-size:20px}'
+      css: '@tailwind utilities;.test{\n@apply space-x-1 space-y-2 text-[#123456];\n font-size:20px}',
     })
     expect(res.css.toString()).toMatchSnapshot()
   })
@@ -59,7 +59,7 @@ describe('postcss plugin', () => {
     // after:content-[\"*\"]
     const res = await getCss('<view class="after:content-[\'对酒当歌，人生几何\']"></view>')
     const set = getClassCacheSet()
-    expect(set.has("after:content-['对酒当歌，人生几何']")).toBe(true)
+    expect(set.has('after:content-[\'对酒当歌，人生几何\']')).toBe(true)
 
     expect(res.css.toString()).toMatchSnapshot()
   })

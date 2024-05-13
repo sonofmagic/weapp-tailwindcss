@@ -31,7 +31,7 @@ export interface ICreateCacheReturnType {
   process: (
     key: string,
     callback: () => void | false | Promise<void | false>,
-    fallback: () => void | { key: string; source: CacheValue } | Promise<void | { key: string; source: CacheValue }>
+    fallback: () => void | { key: string, source: CacheValue } | Promise<void | { key: string, source: CacheValue }>
   ) => void | Promise<void>
 }
 
@@ -44,7 +44,7 @@ function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
     // 可能会添加和删除一些页面和组件, 先设定 1024 吧
     max: 1024,
     ttl: 0,
-    ttlAutopurge: false
+    ttlAutopurge: false,
   })
   return {
     hashMap,
@@ -76,14 +76,15 @@ function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
           // new file should be changed
           changed: hash !== hit.hash,
           // new hash
-          hash
+          hash,
         })
-      } else {
+      }
+      else {
         // add to hashmap
         this.setHashValue(key, {
           // new file should be changed
           changed: true,
-          hash
+          hash,
         })
       }
       return this
@@ -98,7 +99,8 @@ function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
         if (res) {
           this.set(res.key, res.source)
         }
-      } else {
+      }
+      else {
         const hit = this.getHashValue(key)
         // 文件没有改变
         if (hit && !hit.changed) {
@@ -114,7 +116,7 @@ function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
           this.set(res.key, res.source)
         }
       }
-    }
+    },
   }
 }
 

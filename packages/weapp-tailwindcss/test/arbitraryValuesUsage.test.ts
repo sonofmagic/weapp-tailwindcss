@@ -7,7 +7,7 @@ describe('all arbitrary values usages', () => {
     // beforeEach(() => {
     //   wxmlAllowClassCharsRegExp.lastIndex = 0
     // })
-    test.each(Object.entries(subTitleObj))('%s', (subTitle, testCases) => {
+    it.each(Object.entries(subTitleObj))('%s', (subTitle, testCases) => {
       for (const testCase of testCases) {
         wxmlAllowClassCharsRegExp.lastIndex = 0
         const res = replaceWxml(testCase)

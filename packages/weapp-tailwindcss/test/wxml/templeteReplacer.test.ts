@@ -1,42 +1,43 @@
 import { templateReplacer } from '@/wxml/index'
 import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
+
 const testTable = [[{}]]
 
 function complexReplacer(str: string) {
   return templateReplacer(str, {
-    escapeMap: MappingChars2String
+    escapeMap: MappingChars2String,
   })
 }
 function simpleReplacer(str: string) {
   return templateReplacer(str, {
-    escapeMap: SimpleMappingChars2String
+    escapeMap: SimpleMappingChars2String,
   })
 }
 
 describe('templateReplacer', () => {
   it.each(testTable)('$label isStringLiteral', () => {
-    const testCase = "{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"
+    const testCase = '{{[\'som-node__label\',\'data-v-59229c4a\',\'som-org__text-\'+(node.align||\'\'),node.active||collapsed?\'som-node__label-active\':\'\',d]}}'
 
     const result = complexReplacer(testCase)
 
-    expect(result).toBe("{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}")
+    expect(result).toBe('{{[\'som-node__label\',\'data-v-59229c4a\',\'som-org__text-\'+(node.align||\'\'),node.active||collapsed?\'som-node__label-active\':\'\',d]}}')
     expect(result).toMatchSnapshot()
   })
 
   it('isConditionalExpression', () => {
-    const testCase = "{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}"
+    const testCase = '{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}'
     const result = complexReplacer(testCase)
-    expect(result).toBe("{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}")
+    expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\']}}')
     expect(result).toMatchSnapshot()
   })
 
   it('nest ', () => {
-    const testCase =
-      "{{[flag?'bg-red-900':'bg-[#fafa00]',classObject,[(flag===true)?'bg-[#fafa00]':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-[#000]':'bg-[#fafa00]']}}"
+    const testCase
+      = '{{[flag?\'bg-red-900\':\'bg-[#fafa00]\',classObject,[(flag===true)?\'bg-[#fafa00]\':\'\',(true)?\'text-sm\':\'\'],flag?flag===false?\'bg-red-900\':\'bg-[#000]\':\'bg-[#fafa00]\']}}'
 
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[(flag===true)?'bg-_bl__h_fafa00_br_':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"
+      '{{[flag?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\',classObject,[(flag===true)?\'bg-_bl__h_fafa00_br_\':\'\',(true)?\'text-sm\':\'\'],flag?flag===false?\'bg-red-900\':\'bg-_bl__h_000_br_\':\'bg-_bl__h_fafa00_br_\']}}',
     )
     expect(result).toMatchSnapshot()
   })
@@ -91,42 +92,40 @@ describe('templateReplacer', () => {
       'text-_hffffff_',
       'data-v-1badc801',
       'text-_h123456_',
-      b]}}`
+      b]}}`,
     )
   })
 
   it('variables with multiple literal', () => {
-    // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}}   w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}} h-_bl_20px_br_"
+      'border-0 icon h-10 w-10 mx-auto {{active==\'home\'? \'icon-home-selected\' : \'icon-home\'}}   w-_bl_20px_br_ {{flag==\'p-[20px]\'? \'p-_bl_20px_br_\' : \'m-_bl_20px_br_\'}} h-_bl_20px_br_',
     )
   })
 
   it.each(testTable)('variables with multiple literal(2)', () => {
-    // eslint-disable-next-line quotes
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-[20px]'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"
+      'border-0 icon h-10 w-10 mx-auto {{active==\'home\'? \'icon-home-selected\' : \'icon-home\'}} {{b}} {{ a===\'cc\' }} w-_bl_20px_br_ {{flag==\'p-[20px]\'? \'p-_bl_20px_br_\' : \'m-_bl_20px_br_\'}}',
     )
   })
 
   it.each(testTable)('%label for toutiao str add not array', () => {
-    const testCase = "{{('!font-bold') + ' ' + '!text-[#990000]' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}" // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
+    const testCase = '{{(\'!font-bold\') + \' \' + \'!text-[#990000]\' + \' \' + \'data-v-1badc801\' + \' \' + \'text-2xl\' + \' \' + b}}' // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
     const result = complexReplacer(testCase)
-    expect(result).toBe("{{('_i_font-bold') + ' ' + '_i_text-_bl__h_990000_br_' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}")
+    expect(result).toBe('{{(\'_i_font-bold\') + \' \' + \'_i_text-_bl__h_990000_br_\' + \' \' + \'data-v-1badc801\' + \' \' + \'text-2xl\' + \' \' + b}}')
   })
 
   it.each(testTable)('%label utils.bem()', () => {
-    const testCase =
-      "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
+    const testCase
+      = 'custom-class {{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? \'van-hairline--surround\' : \'\' }}'
 
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      "custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"
+      'custom-class {{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? \'van-hairline--surround\' : \'\' }}',
     )
   })
 
@@ -159,27 +158,27 @@ describe('templateReplacer', () => {
     expect(result).toBe('shadow-_bl_0px_2px_11px_0px__h_00000a_br_')
   })
 
-  it("arbitrary before:content-['hello']", () => {
-    const testCase = "before:content-['hello']"
+  it('arbitrary before:content-[\'hello\']', () => {
+    const testCase = 'before:content-[\'hello\']'
     const result = complexReplacer(testCase)
     expect(result).toBe('before_c_content-_bl__q_hello_q__br_')
   })
 
   it('two ConditionalExpression', () => {
-    const testCase = "btn a{{num >='p-[1]'?num==='q-[2]'?'x-[0]':'y-[1]':'z-[2]'}}"
+    const testCase = 'btn a{{num >=\'p-[1]\'?num===\'q-[2]\'?\'x-[0]\':\'y-[1]\':\'z-[2]\'}}'
     const result = complexReplacer(testCase)
-    expect(result).toBe("btn a{{num >='p-[1]'?num==='q-[2]'?'x-_bl_0_br_':'y-_bl_1_br_':'z-_bl_2_br_'}}")
+    expect(result).toBe('btn a{{num >=\'p-[1]\'?num===\'q-[2]\'?\'x-_bl_0_br_\':\'y-_bl_1_br_\':\'z-_bl_2_br_\'}}')
   })
 
   it('start up with num case', () => {
     const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     for (const num of nums) {
-      const testCase = num + 'xl:text-base'
+      const testCase = `${num}xl:text-base`
       const result = templateReplacer(testCase)
       expect(result).toBe(`_${num}xlctext-base`)
 
-      const netestCase = '-' + num + 'xl:text-base'
+      const netestCase = `-${num}xl:text-base`
       const neresult = templateReplacer(netestCase)
       expect(neresult).toBe(`_-${num}xlctext-base`)
     }
@@ -208,13 +207,13 @@ describe('templateReplacer', () => {
 
   it('issues/276 case 0', () => {
     expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 rounded-[20rpx] before:rounded-[20rpx]`)).toBe(
-      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_'
+      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_',
     )
   })
 
   it('issues/276 case 1', () => {
     expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 before:rounded-[20rpx] rounded-[20rpx]`)).toBe(
-      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_'
+      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_',
     )
   })
 })

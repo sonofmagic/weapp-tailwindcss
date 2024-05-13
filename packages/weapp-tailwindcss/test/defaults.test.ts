@@ -1,9 +1,10 @@
 import { isWebpackPlugin } from './util'
 import { defaultOptions } from '@/defaults'
+
 const { mainCssChunkMatcher } = defaultOptions
 
 describe('defaults function test group', () => {
-  test('mainCssChunkMatcher', () => {
+  it('mainCssChunkMatcher', () => {
     const case1 = 'dsd/sdsd.wxss'
 
     const uniappWxss = 'common/main.wxss'
@@ -29,7 +30,8 @@ describe('defaults function test group', () => {
       expect(mainCssChunkMatcher('miniprogram-app.wxss', 'kbone')).toBe(true)
 
       expect(mainCssChunkMatcher(taroWxss, 'taro')).toBe(true)
-    } else {
+    }
+    else {
       expect(true).toBe(false)
     }
   })
