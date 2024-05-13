@@ -1,11 +1,11 @@
 module.exports = {
   plugins: {
-    autoprefixer: {},
-    tailwindcss: {},
+    'autoprefixer': {},
+    'tailwindcss': {},
     'postcss-rem-to-responsive-pixel': {
       rootValue: 32,
       propList: ['*'],
-      transformUnit: 'rpx'
-    }
-  }
+      transformUnit: 'rpx',
+    },
+  },
 }

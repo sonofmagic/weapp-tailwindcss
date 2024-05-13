@@ -1,13 +1,13 @@
 import path from 'node:path'
 import { switch2relative } from './util'
-import { regExpTest, groupBy } from '@/utils'
+import { groupBy, regExpTest } from '@/utils'
 
 function xxx(fn: any) {
   const a1 = typeof fn !== 'function'
   const a2 = Function.prototype.toString.call(fn).indexOf('function')
   return {
     a1,
-    a2
+    a2,
   }
 }
 
@@ -20,22 +20,22 @@ describe('test util', () => {
     let res = xxx(x)
     expect(res).toEqual({
       a1: false,
-      a2: 0
+      a2: 0,
     })
     res = xxx(ax)
     expect(res).toEqual({
       a1: false,
-      a2: 6
+      a2: 6,
     })
     res = xxx(arx)
     expect(res).toEqual({
       a1: false,
-      a2: -1
+      a2: -1,
     })
     res = xxx(aarx)
     expect(res).toEqual({
       a1: false,
-      a2: -1
+      a2: -1,
     })
   })
   it('switch2relative', () => {
@@ -69,7 +69,7 @@ describe('test util', () => {
   it('groupBy throw error case', () => {
     expect(() => {
       // @ts-ignore
-      groupBy({}, (x) => x.name)
+      groupBy({}, x => x.name)
     }).toThrow()
 
     expect(() => {
@@ -83,45 +83,45 @@ describe('test util', () => {
       [
         {
           name: 'a',
-          price: 1
+          price: 1,
         },
         {
           name: 'a',
-          price: 2
+          price: 2,
         },
         {
           name: 'a',
-          price: 3
+          price: 3,
         },
         {
           name: 'b',
-          price: 30
-        }
+          price: 30,
+        },
       ],
-      (x) => x.name
+      x => x.name,
     )
 
     expect(res).toEqual({
       a: [
         {
           name: 'a',
-          price: 1
+          price: 1,
         },
         {
           name: 'a',
-          price: 2
+          price: 2,
         },
         {
           name: 'a',
-          price: 3
-        }
+          price: 3,
+        },
       ],
       b: [
         {
           name: 'b',
-          price: 30
-        }
-      ]
+          price: 30,
+        },
+      ],
     })
   })
 })

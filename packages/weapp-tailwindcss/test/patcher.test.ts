@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import { mkCacheDirectory, getInstalledPkgJsonPath, createPatch } from '@/tailwindcss/patcher'
+import { createPatch, getInstalledPkgJsonPath, mkCacheDirectory } from '@/tailwindcss/patcher'
 
 describe('patcher unit test', () => {
   it('if will create cache directory', () => {
@@ -10,9 +10,9 @@ describe('patcher unit test', () => {
   it('not found pkg', () => {
     const res = getInstalledPkgJsonPath({
       dangerousOptions: {
-        packageName: 'faketailwindcss'
+        packageName: 'faketailwindcss',
       },
-      units: ['rpx']
+      units: ['rpx'],
     })
     expect(res).toBe(undefined)
   })
@@ -20,9 +20,9 @@ describe('patcher unit test', () => {
   it('found pkg', () => {
     const res = getInstalledPkgJsonPath({
       dangerousOptions: {
-        packageName: 'tailwindcss'
+        packageName: 'tailwindcss',
       },
-      units: ['rpx']
+      units: ['rpx'],
     })
     expect(res).toBeTruthy()
     const isStr = typeof res === 'string'
@@ -37,8 +37,8 @@ describe('patcher unit test', () => {
         // @ts-ignore
         lengthUnitsFilePath: 12_354,
         // @ts-ignore
-        overwrite: 'false'
-      }
+        overwrite: 'false',
+      },
     })
     expect(patch()).toBe(undefined)
   })

@@ -1,4 +1,4 @@
-import { format, wxmlCasePath, createGetCase } from '../util'
+import { createGetCase, format, wxmlCasePath } from '../util'
 import { templateHandler } from '#test/v2/wxml'
 import { MappingChars2String } from '@/escape'
 import { getOptions } from '@/options'
@@ -7,7 +7,7 @@ const getWxmlCase = createGetCase(wxmlCasePath)
 
 function complexHandler(str: string) {
   return templateHandler(str, {
-    escapeMap: MappingChars2String
+    escapeMap: MappingChars2String,
   })
 }
 
@@ -57,27 +57,27 @@ describe('virtualHostClass', () => {
 })
 
 describe.skip('templateHandler', () => {
-  test('wildcard char', async () => {
-    const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\">*****</view>"
+  it('wildcard char', async () => {
+    const testCase = '<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}">*****</view>'
 
     const str = await complexHandler(testCase)
-    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\">*****</view>")
+    expect(str).toBe('<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\']}}">*****</view>')
   })
 
-  test('only wildcard char', () => {
+  it('only wildcard char', () => {
     const testCase = '<view>*****</view>'
 
     const str = templateHandler(testCase)
     expect(str).toBe('<view>*****</view>')
   })
-  test('with var', () => {
-    const testCase = "<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
+  it('with var', () => {
+    const testCase = '<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}"></view>'
 
     const str = complexHandler(testCase)
-    expect(str).toBe("<view class=\"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\"></view>")
+    expect(str).toBe('<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\']}}"></view>')
   })
 
-  test('dark mode and hover-class', () => {
+  it('dark mode and hover-class', () => {
     const testCase = '<view class="bg-gray-100 dark:bg-zinc-800" hover-class="bg-red-500 dark:bg-green-500"></view>'
     const str = complexHandler(testCase)
     expect(str).toBe('<view class="bg-gray-100 dark_c_bg-zinc-800" hover-class="bg-red-500 dark_c_bg-green-500"></view>')
@@ -119,17 +119,17 @@ describe.skip('templateHandler', () => {
     const result = complexHandler(testCase)
 
     expect(result).toBe(
-      '<button class="    u-reset-button    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto    bg-white    shadow  " open-type="contact"><tui-icon vue-id="{{(\'17a41c02-4\')+\',\'+(\'17a41c02-3\')}}" name="kefu" color="rgb(41, 121, 255)" size="40" unit="rpx" bind:__l="__l"></tui-icon></button>'
+      '<button class="    u-reset-button    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto    bg-white    shadow  " open-type="contact"><tui-icon vue-id="{{(\'17a41c02-4\')+\',\'+(\'17a41c02-3\')}}" name="kefu" color="rgb(41, 121, 255)" size="40" unit="rpx" bind:__l="__l"></tui-icon></button>',
     )
   })
 
-  test('with var 3', () => {
-    const testCase = "<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-[#fafa00]']}}\"></view>"
+  it('with var 3', () => {
+    const testCase = '<view class="{{[flag<2?\'a\':\'b\',flag>=1?\'bg-red-900\':\'bg-[#fafa00]\']}}"></view>'
     const res = complexHandler(testCase)
-    expect(res).toBe("<view class=\"{{[flag<2?'a':'b',flag>=1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}\"></view>")
+    expect(res).toBe('<view class="{{[flag<2?\'a\':\'b\',flag>=1?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\']}}"></view>')
   })
 
-  test('with var 4', () => {
+  it('with var 4', () => {
     const testCase = `<button id="{{ id }}" data-detail="{{ dataset }}" class="custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}" hover-class="van-button--active hover-class" lang="{{ lang }}" form-type="{{ formType }}" style="{{ computed.rootStyle({ plain, color, customStyle }) }}" open-type="{{ disabled || loading || (canIUseGetUserProfile && openType === 'getUserInfo') ? '' : openType }}" business-id="{{ businessId }}" session-from="{{ sessionFrom }}" send-message-title="{{ sendMessageTitle }}" send-message-path="{{ sendMessagePath }}" send-message-img="{{ sendMessageImg }}" show-message-card="{{ showMessageCard }}" app-parameter="{{ appParameter }}" aria-label="{{ ariaLabel }}" bindtap="{{ disabled || loading ? '' : 'onClick' }}" bindgetuserinfo="onGetUserInfo" bindcontact="onContact" bindgetphonenumber="onGetPhoneNumber" binderror="onError" bindlaunchapp="onLaunchApp" bindopensetting="onOpenSetting">
     </button>`
 
@@ -139,7 +139,7 @@ describe.skip('templateHandler', () => {
     </button>`)
   })
 
-  test('with var 2', () => {
+  it('with var 2', () => {
     const navbarTestCase = format(
       `<view data-aaa="{{aaa || 'a'}} t" disabled="true" hidden class="{{['tui-navigation-bar','data-v-ec49da2a',(opacity>0.85&&splitLine)?'tui-bar-line':'',(isFixed)?'tui-navbar-fixed':'',(backdropFilter&&dropDownOpacity>0)?'tui-backdrop__filter':'']}}" style="{{'height:'+(height+'px')+';'+('background-color:'+('rgba('+background+','+opacity+')')+';')+('opacity:'+(dropDownOpacity)+';')+('z-index:'+(isFixed?zIndex:'auto')+';')}}">
       <block wx:if="{{isImmersive}}">
@@ -151,7 +151,7 @@ describe.skip('templateHandler', () => {
           </view>
       </block>
       <slot></slot>
-  </view>`
+  </view>`,
     )
     const str = complexHandler(navbarTestCase)
     expect(str).toBe(
@@ -166,8 +166,8 @@ describe.skip('templateHandler', () => {
         </view>
     </block>
     <slot></slot>
-</view>`
-      )
+</view>`,
+      ),
     )
   })
 

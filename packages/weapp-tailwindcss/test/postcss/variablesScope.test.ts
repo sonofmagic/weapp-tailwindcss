@@ -1,5 +1,7 @@
-import postcss, { Rule } from 'postcss'
-import { testIfVariablesScope, testIfTwBackdrop } from '@/postcss/mp'
+import type { Rule } from 'postcss'
+import postcss from 'postcss'
+import { testIfTwBackdrop, testIfVariablesScope } from '@/postcss/mp'
+
 describe('variablesScope', () => {
   it('::before,::after{} with single var', () => {
     const root = postcss.parse(`::before,::after {

@@ -1,5 +1,5 @@
-import { templateClassExactRegexp, tagWithEitherClassAndHoverClassRegexp } from '@/reg'
-import { ITemplateHandlerOptions } from '@/types'
+import { tagWithEitherClassAndHoverClassRegexp, templateClassExactRegexp } from '@/reg'
+import type { ITemplateHandlerOptions } from '@/types'
 import { templateReplacer } from '@/wxml/utils'
 
 export function templateHandler(rawSource: string, options: ITemplateHandlerOptions = {}) {

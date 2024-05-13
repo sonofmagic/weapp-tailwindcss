@@ -1,28 +1,27 @@
-/* eslint-disable no-useless-escape */
 import { templateHandler } from '#test/v2/wxml'
 
 describe('handling whitespace', () => {
-  test('grid grid-cols-[1fr_500px_2fr]', () => {
+  it('grid grid-cols-[1fr_500px_2fr]', () => {
     expect(
       templateHandler(`<div class="grid grid-cols-[1fr_500px_2fr]">
       <!-- ... -->
-    </div>`)
+    </div>`),
     ).toMatchSnapshot()
   })
 
-  test("bg-[url('/what_a_rush.png')]", () => {
+  it('bg-[url(\'/what_a_rush.png\')]', () => {
     expect(
       templateHandler(`<div class="bg-[url('/what_a_rush.png')]">
       <!-- ... -->
-    </div>`)
+    </div>`),
     ).toMatchSnapshot()
   })
 
-  test("before:content-['hello_world']", () => {
+  it('before:content-[\'hello_world\']', () => {
     expect(
       templateHandler(`<div class="before:content-['hello\_world']">
       <!-- ... -->
-    </div>`)
+    </div>`),
     ).toMatchSnapshot()
   })
 })

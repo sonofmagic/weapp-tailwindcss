@@ -13,12 +13,12 @@ describe('css-macro tailwindcss plugin', () => {
   it('dynamic case 0', async () => {
     const { css } = await getCss('ifdef-[MP-WEIXIN]:bg-blue-500', {
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -26,12 +26,12 @@ describe('css-macro tailwindcss plugin', () => {
   it('dynamic case 1', async () => {
     const { css } = await getCss('ifndef-[MP-WEIXIN]:bg-blue-500', {
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -39,12 +39,12 @@ describe('css-macro tailwindcss plugin', () => {
   it('dynamic case 2', async () => {
     const { css } = await getCss('ifndef-[uniVersion>3.9]:bg-blue-500', {
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -52,12 +52,12 @@ describe('css-macro tailwindcss plugin', () => {
   it('dynamic case 3', async () => {
     const { css } = await getCss('ifndef-[uniVersion_>_3.9]:bg-blue-500', {
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -65,12 +65,12 @@ describe('css-macro tailwindcss plugin', () => {
   it('dynamic case 4', async () => {
     const { css } = await getCss('ifndef-[uni\\_version_>_3.9]:bg-blue-500', {
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -78,12 +78,12 @@ describe('css-macro tailwindcss plugin', () => {
   it('dynamic case 5', async () => {
     const { css } = await getCss('ifndef-[H5||MP-WEIXIN]:bg-blue-500', {
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -94,12 +94,12 @@ describe('css-macro tailwindcss plugin', () => {
         @apply ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-red-400;
       }`,
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -110,12 +110,12 @@ describe('css-macro tailwindcss plugin', () => {
         @apply ifdef-[H5_||_MP-WEIXIN]:bg-blue-400 ifndef-[H5_||_MP-WEIXIN]:bg-red-400;
       }`,
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -126,12 +126,12 @@ describe('css-macro tailwindcss plugin', () => {
         @apply ifdef-[H5\\_||\\_MP-WEIXIN]:bg-blue-400 ifndef-[H5\\_||\\_MP-WEIXIN]:bg-red-400;
       }`,
       twConfig: {
-        plugins: [twPlugin]
-      }
+        plugins: [twPlugin],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -145,8 +145,8 @@ describe('css-macro tailwindcss plugin', () => {
       }
       }`,
       {
-        from: undefined
-      }
+        from: undefined,
+      },
     )
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -161,8 +161,8 @@ describe('css-macro tailwindcss plugin', () => {
         }
         }`,
         {
-          from: undefined
-        }
+          from: undefined,
+        },
       )
       .async()
     expect(css).toMatchSnapshot('postcss')
@@ -174,15 +174,15 @@ describe('css-macro tailwindcss plugin', () => {
         plugins: [
           twPlugin({
             variantsMap: {
-              wx: 'MP-WEIXIN'
-            }
-          })
-        ]
-      }
+              wx: 'MP-WEIXIN',
+            },
+          }),
+        ],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -195,16 +195,16 @@ describe('css-macro tailwindcss plugin', () => {
             variantsMap: {
               '-wx': {
                 value: 'MP-WEIXIN',
-                negative: true
-              }
-            }
-          })
-        ]
-      }
+                negative: true,
+              },
+            },
+          }),
+        ],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -216,16 +216,16 @@ describe('css-macro tailwindcss plugin', () => {
           twPlugin({
             variantsMap: {
               hv: {
-                value: 'uniVersion > 3.9'
-              }
-            }
-          })
-        ]
-      }
+                value: 'uniVersion > 3.9',
+              },
+            },
+          }),
+        ],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -237,16 +237,16 @@ describe('css-macro tailwindcss plugin', () => {
           twPlugin({
             variantsMap: {
               mv: {
-                value: 'H5 || MP-WEIXIN'
-              }
-            }
-          })
-        ]
-      }
+                value: 'H5 || MP-WEIXIN',
+              },
+            },
+          }),
+        ],
+      },
     })
     expect(css).toMatchSnapshot('tw')
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })
@@ -279,7 +279,7 @@ describe('css-macro tailwindcss plugin', () => {
     expect(root).toBeDefined()
 
     const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
-      from: undefined
+      from: undefined,
     })
     expect(cssOutput).toMatchSnapshot('postcss')
   })

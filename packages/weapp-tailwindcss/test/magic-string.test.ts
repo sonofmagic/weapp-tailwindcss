@@ -1,6 +1,6 @@
 import MagicString from 'magic-string'
 
-describe('MagicString', () => {
+describe('magicString', () => {
   it('default', () => {
     const s = new MagicString('problems = 99')
 
@@ -27,9 +27,9 @@ describe('MagicString', () => {
   })
 
   it('a to b', () => {
-    const s = new MagicString("'a'")
+    const s = new MagicString('\'a\'')
     s.update(1, 2, 'b')
-    expect(s.toString()).toBe("'b'")
+    expect(s.toString()).toBe('\'b\'')
   })
 
   it('\n\r', () => {

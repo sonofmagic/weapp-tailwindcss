@@ -4,7 +4,7 @@ import { getOptions } from '@/options'
 import { createGetCase, wxsCasePath } from '#test/util'
 // import { createTemplateHandler } from '@/wxml/index'
 import { wxsTagRegexp } from '@/reg'
-import { RawSource } from '@/types'
+import type { RawSource } from '@/types'
 
 const getCase = createGetCase(wxsCasePath)
 
@@ -20,7 +20,7 @@ function extractSource(original: string, reg: RegExp) {
     sources.push({
       start,
       end,
-      raw: match[1]
+      raw: match[1],
     })
 
     match = reg.exec(original)
@@ -32,7 +32,7 @@ describe('wxs', () => {
     const str = await getCase('inline.wxml')
     const res = [...str.matchAll(wxsTagRegexp)]
     expect(res.length).toEqual(2)
-    expect(res.map((x) => x[1])).matchSnapshot()
+    expect(res.map(x => x[1])).matchSnapshot()
   })
 
   it('inline wxs content extract and escape', async () => {
@@ -41,12 +41,12 @@ describe('wxs', () => {
     expect(res.length).toEqual(2)
     const { jsHandler } = getOptions()
     const set = new Set<string>()
-    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
       set.add(cls)
     }
-    const result = await Promise.all(res.map((x) => jsHandler(x[1], set)))
-    expect(result.map((x) => x.code)).matchSnapshot()
+    const result = await Promise.all(res.map(x => jsHandler(x[1], set)))
+    expect(result.map(x => x.code)).matchSnapshot()
   })
 
   it('inline wxs content extract and escape and replace', async () => {
@@ -55,7 +55,7 @@ describe('wxs', () => {
     expect(res.length).toEqual(2)
     const { jsHandler } = getOptions()
     const set = new Set<string>()
-    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
       set.add(cls)
     }
@@ -74,18 +74,18 @@ describe('wxs', () => {
     expect(res.length).toEqual(1)
     const { jsHandler } = getOptions()
     const set = new Set<string>()
-    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
       set.add(cls)
     }
-    expect(await Promise.all(res.map(async (x) => (await jsHandler(x[1], set)).code))).matchSnapshot()
+    expect(await Promise.all(res.map(async x => (await jsHandler(x[1], set)).code))).matchSnapshot()
   })
 
   it('simple.wxs content extract and escape', async () => {
     const str = await getCase('simple.wxs')
     const { jsHandler } = getOptions()
     const set = new Set<string>()
-    const arr = ["after:content-['我来自outside-wxs']"]
+    const arr = ['after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
       set.add(cls)
     }
@@ -96,34 +96,34 @@ describe('wxs', () => {
   it('inline.wxml use templateHandler', async () => {
     const str = await getCase('inline.wxml')
     const { templateHandler } = getOptions({
-      inlineWxs: true
+      inlineWxs: true,
     })
     const set = new Set<string>()
-    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
       set.add(cls)
     }
     expect(
       await templateHandler(str, {
-        runtimeSet: set
-      })
+        runtimeSet: set,
+      }),
     ).toMatchSnapshot()
   })
 
   it('outside.wxml use templateHandler', async () => {
     const str = await getCase('outside.wxml')
     const { templateHandler } = getOptions({
-      inlineWxs: true
+      inlineWxs: true,
     })
     const set = new Set<string>()
-    const arr = ["after:content-['我来自inline-wxs']", "after:content-['我来自outside-wxs']"]
+    const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
       set.add(cls)
     }
     expect(
       await templateHandler(str, {
-        runtimeSet: set
-      })
+        runtimeSet: set,
+      }),
     ).toMatchSnapshot()
   })
 

@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { getInstalledPkgJsonPath, internalPatch } from '@/tailwindcss/patcher'
 import { findAstNode } from '@/tailwindcss/supportCustomUnit'
-import { tailwindcssCasePath, createGetCase } from '#test/util'
+import { createGetCase, tailwindcssCasePath } from '#test/util'
 
 const supportCustomLengthUnitsPatch = {
   units: ['rpx'],
@@ -10,8 +10,8 @@ const supportCustomLengthUnitsPatch = {
     lengthUnitsFilePath: 'lib/util/dataTypes.js',
     packageName: 'tailwindcss',
     variableName: 'lengthUnits',
-    overwrite: true
-  }
+    overwrite: true,
+  },
 }
 const getCase = createGetCase(tailwindcssCasePath)
 

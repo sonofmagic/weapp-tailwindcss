@@ -1,6 +1,7 @@
 import { sources } from 'webpack'
 import { LRUCache } from 'lru-cache'
 import { createCache } from '@/cache'
+
 describe('cache', () => {
   let ctx: ReturnType<typeof createCache>
   beforeEach(() => {
@@ -28,12 +29,12 @@ describe('cache', () => {
     expect(ctx.hashMap.size === 0).toBe(true)
     const a = {
       changed: false,
-      hash: '1'
+      hash: '1',
     }
     ctx.setHashValue(1, a)
     const b = {
       changed: false,
-      hash: '2'
+      hash: '2',
     }
     ctx.setHashValue('2', b)
     expect(ctx.hashMap.size === 2).toBe(true)
@@ -66,7 +67,7 @@ describe('cache', () => {
     expect(v).toBeDefined()
     expect(v).toEqual({
       hash: '1',
-      changed: true
+      changed: true,
     })
 
     ctx.calcHashValueChanged('1', '1')
@@ -74,7 +75,7 @@ describe('cache', () => {
     expect(v).toBeDefined()
     expect(v).toEqual({
       hash: '1',
-      changed: false
+      changed: false,
     })
 
     ctx.calcHashValueChanged('1', '2')
@@ -82,7 +83,7 @@ describe('cache', () => {
     expect(v).toBeDefined()
     expect(v).toEqual({
       hash: '2',
-      changed: true
+      changed: true,
     })
   })
 
@@ -95,7 +96,7 @@ describe('cache', () => {
       },
       () => {
         arr.push(1)
-      }
+      },
     )
     expect(arr.length).toBe(1)
     expect(arr).toEqual([1])
@@ -111,7 +112,7 @@ describe('cache', () => {
       },
       () => {
         arr.push(1)
-      }
+      },
     )
     expect(arr.length).toBe(1)
     expect(arr).toEqual([1])
@@ -122,7 +123,7 @@ describe('cache', () => {
 
     ctx.setHashValue('1', {
       changed: false,
-      hash: '2'
+      hash: '2',
     })
 
     ctx.process(
@@ -132,7 +133,7 @@ describe('cache', () => {
       },
       () => {
         arr.push(1)
-      }
+      },
     )
     expect(arr.length).toBe(1)
     expect(arr).toEqual([0])
@@ -143,7 +144,7 @@ describe('cache', () => {
 
     ctx.setHashValue('1', {
       changed: false,
-      hash: '2'
+      hash: '2',
     })
 
     await ctx.process(
@@ -154,7 +155,7 @@ describe('cache', () => {
       },
       () => {
         arr.push(1)
-      }
+      },
     )
     expect(arr.length).toBe(2)
     expect(arr).toEqual([0, 1])
@@ -165,7 +166,7 @@ describe('cache', () => {
 
     ctx.setHashValue('1', {
       changed: false,
-      hash: '2'
+      hash: '2',
     })
 
     await ctx.process(
@@ -178,9 +179,9 @@ describe('cache', () => {
         arr.push(1)
         return {
           key: '2',
-          source: '2'
+          source: '2',
         }
-      }
+      },
     )
     expect(arr.length).toBe(2)
     expect(arr).toEqual([0, 1])

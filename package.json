@@ -78,9 +78,9 @@
   },
   "homepage": "https://weapp-tw.icebreaker.top",
   "devDependencies": {
-    "@ast-grep/napi": "^0.22.2",
+    "@ast-grep/napi": "^0.22.3",
     "@babel/core": "^7.24.5",
-    "@icebreakers/eslint-config": "^0.0.3",
+    "@icebreakers/eslint-config": "^0.1.0",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^25.0.7",

@@ -1,4 +1,4 @@
-import { wxmlCasePath, createGetCase } from './util'
+import { createGetCase, wxmlCasePath } from './util'
 import { templateHandler } from '#test/v2/wxml'
 
 const getCase = createGetCase(wxmlCasePath)
@@ -6,7 +6,7 @@ describe('performance', () => {
   beforeEach(() => {
     process.env.DEBUG = '*'
   })
-  test('long time', async () => {
+  it('long time', async () => {
     const now = Date.now()
     const source = await getCase('pref.wxml')
     const str = templateHandler(source)

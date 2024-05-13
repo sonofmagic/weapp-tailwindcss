@@ -41,7 +41,7 @@ describe('rpx', () => {
       // Effects
       'shadow-[0_35rpx_60rx_-15px_rgba(0,0,0,0.3)]',
       // Transforms
-      'translate-y-[17rpx]'
+      'translate-y-[17rpx]',
     ])
     expect(css).toMatchSnapshot()
   })

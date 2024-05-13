@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 import { getClassCacheSet } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
 import { SimpleMappingChars2String } from '@/escape'
@@ -11,8 +10,8 @@ const getCase = createGetCase(jsCasePath)
 const testTable = [
   {
     name: '[replace strategy]',
-    strategy: 'replace'
-  }
+    strategy: 'replace',
+  },
 ] as {
   name: string
   strategy?: 'replace'
@@ -26,13 +25,13 @@ describe('taro app', () => {
   // let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
     h = createJsHandler({
-      escapeMap: SimpleMappingChars2String
+      escapeMap: SimpleMappingChars2String,
     })
     rh = createJsHandler({
-      escapeMap: SimpleMappingChars2String
+      escapeMap: SimpleMappingChars2String,
     })
     mh = createJsHandler({
-      escapeMap: SimpleMappingChars2String
+      escapeMap: SimpleMappingChars2String,
     })
 
     // dh = createJsHandler({

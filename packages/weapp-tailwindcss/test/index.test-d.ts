@@ -1,7 +1,7 @@
 import { expectType } from 'tsd'
 // import vitePlugin from '../vite'
 import type { PluginCreator } from 'postcss'
-import { postcssWeappTailwindcssPrePlugin, postcssWeappTailwindcssPostPlugin } from '@/postcss/plugins'
+import { postcssWeappTailwindcssPostPlugin, postcssWeappTailwindcssPrePlugin } from '@/postcss/plugins'
 import type { IStyleHandlerOptions } from '@/types'
 import { replaceCss, replaceJs } from '@/replace'
 // import type { Plugin as VitePlugin } from 'vite'

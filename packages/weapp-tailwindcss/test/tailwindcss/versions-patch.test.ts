@@ -7,14 +7,15 @@ import type { ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 const versionsPkgDir = path.resolve(tailwindcssCasePath, 'versions/package.json')
 
 function getTailwindcssVersion(str: string) {
-  // eslint-disable-next-line no-useless-escape
   const match = /^tailwindcss([\d.]*)$/.exec(str)
   if (match === null) {
     // 不是 tailwindcss
     return false
-  } else if (match[1] === '') {
+  }
+  else if (match[1] === '') {
     return 'lts'
-  } else {
+  }
+  else {
     return match[1]
   }
 }

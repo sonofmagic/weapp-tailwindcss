@@ -2,6 +2,7 @@ import fs from 'node:fs'
 // import path from 'node:path'
 import klaw from 'klaw'
 import { distPath } from '#test/util'
+
 describe('dts', () => {
   it('dist dts no `from "@/xxx`', async () => {
     for await (const file of klaw(distPath)) {

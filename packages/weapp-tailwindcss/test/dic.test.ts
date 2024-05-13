@@ -11,7 +11,8 @@ function check(e: [string, string][], allowUnderline = false) {
       valid = false
       console.log(`duplicate value: '${value}' `)
       break
-    } else {
+    }
+    else {
       set.add(value)
     }
   }
