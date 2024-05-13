@@ -28,7 +28,6 @@ async function loadCss(p: string) {
 const TestProjectsEntries: {
   name: string
   projectPath: string
-  // eslint-disable-next-line @typescript-eslint/ban-types
   testMethod: (page: Page, b: string) => void
   url?: string
 }[] = [
