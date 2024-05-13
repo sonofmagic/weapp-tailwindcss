@@ -6,7 +6,7 @@ describe.skip('build', () => {
   it('native', async () => {
     const nativePath = path.resolve(fixturesPath, 'native')
     const { globsSet } = await build({
-      root: nativePath
+      root: nativePath,
     })
     expect(globsSet).toMatchSnapshot()
   })
@@ -15,7 +15,7 @@ describe.skip('build', () => {
     const nativePath = path.resolve(fixturesPath, 'native-ts')
     const { globsSet } = await build({
       root: nativePath,
-      src: 'miniprogram'
+      src: 'miniprogram',
     })
     expect(globsSet).toMatchSnapshot()
   })

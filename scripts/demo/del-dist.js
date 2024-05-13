@@ -8,7 +8,7 @@ async function main() {
   let dirCount = 0
   for (const demoPath of demoPaths) {
     const res = await del(path.resolve(root, `demo/${demoPath}/weapp-tw-dist`), {
-      force: true
+      force: true,
     })
     res.length > 0 && dirCount++
   }

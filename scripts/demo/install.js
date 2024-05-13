@@ -1,4 +1,5 @@
 const path = require('node:path')
+const process = require('node:process')
 const { run } = require('./run')
 
 const argvs = new Set(process.argv.slice(2))
@@ -15,7 +16,7 @@ const version = isAlpha ? '@alpha' : isBeta ? '@beta' : isRc ? '@rc' : ''
     demoPath,
     `add -D weapp-tailwindcss${version} @weapp-tailwindcss/cli${version} tailwindcss-patch${
       isRc ? '@rc' : ''
-    } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator tailwindcss@latest --ignore-engines`
+    } tailwindcss-rem2px-preset@latest postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator tailwindcss@latest --ignore-engines`,
   )
 
   // await install(demoPath, '-D @icebreakers/weapp-tailwindcss-test-components', true)

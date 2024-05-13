@@ -11,7 +11,8 @@ async function main() {
     try {
       await fs.ensureDir(dest)
       await fs.copy(sourcePath, dest)
-    } catch (error) {
+    }
+    catch (error) {
       console.log(error)
     }
   }

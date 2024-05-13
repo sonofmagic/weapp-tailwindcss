@@ -19,7 +19,7 @@ async function main() {
     objectMode: true,
     transform(chunk, encoding, cb) {
       cb(null, chunk)
-    }
+    },
   })
 
   // chokidar
@@ -36,14 +36,14 @@ async function main() {
         ['**/*.{js,ts,json,css,wxss,wxml}', '!dist/**/*', '!**/node_modules/**', '!**/miniprogram_npm/**'], // '!node_modules/**/*', '!miniprogram_npm/**/*'],
 
         {
-          cwd: nativePath
-        }
+          cwd: nativePath,
+        },
       )
       .pipe(
         gulp.dest('dist', {
-          cwd: nativePath
-        })
-      )
+          cwd: nativePath,
+        }),
+      ),
   )
   console.log('-----------')
 }

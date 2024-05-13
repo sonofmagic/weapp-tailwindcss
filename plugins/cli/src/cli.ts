@@ -1,6 +1,7 @@
+import process from 'node:process'
 import { Command } from 'commander'
 import defu from 'defu'
-import { BuildOptions } from './type'
+import type { BuildOptions } from './type'
 import { build, watch } from '@/build'
 import { createConfigLoader, initConfig } from '@/config'
 
@@ -17,22 +18,22 @@ export function createCli() {
     .action(async () => {
       await watch(
         defu<Partial<BuildOptions>, Partial<BuildOptions>[]>(userDefinedConfig?.config, {
-          root: cwd
-        })
+          root: cwd,
+        }),
       )
     })
 
   program.command('build').action(async () => {
     await build(
       defu<Partial<BuildOptions>, Partial<BuildOptions>[]>(userDefinedConfig?.config, {
-        root: cwd
-      })
+        root: cwd,
+      }),
     )
   })
 
   program.command('init').action(() => {
     initConfig({
-      root: cwd
+      root: cwd,
     })
   })
 

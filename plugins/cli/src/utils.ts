@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 
 const cssMatcher = (file: string) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)
 const htmlMatcher = (file: string) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)
-const jsMatcher = (file: string) => {
+function jsMatcher(file: string) {
   if (file.includes('node_modules')) {
     return false
   }
@@ -17,7 +17,8 @@ export function touch(filename: string) {
 
   try {
     fs.utimesSync(filename, time, time)
-  } catch {
+  }
+  catch {
     fs.closeSync(fs.openSync(filename, 'w'))
   }
 }
@@ -32,10 +33,11 @@ export function isObject(x: unknown): x is Record<string | symbol | number, unkn
 export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[]): Promise<unknown> {
   return new Promise((resolve, reject) => {
     if (Array.isArray(task)) {
-      return Promise.all(task.map((x) => promisify(x)))
+      return Promise.all(task.map(x => promisify(x)))
         .then(resolve)
         .catch(reject)
-    } else {
+    }
+    else {
       if ((<Transform>task).destroyed) {
         resolve(undefined)
         return

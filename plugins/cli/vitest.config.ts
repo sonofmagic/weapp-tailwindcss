@@ -6,15 +6,15 @@ export default defineProject({
     alias: [
       {
         find: '@',
-        replacement: path.resolve(__dirname, './src')
-      }
+        replacement: path.resolve(__dirname, './src'),
+      },
     ],
     globals: true,
     testTimeout: 30_000,
     setupFiles: ['./vitest.setup.ts'],
-    coverage: {
-      enabled: true,
-      all: false
-    }
-  }
+    // coverage: {
+    //   enabled: true,
+    //   all: false,
+    // },
+  },
 })

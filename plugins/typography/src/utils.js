@@ -1,6 +1,7 @@
 const isPlainObject = require('lodash.isplainobject')
 
 const parser = require('postcss-selector-parser')
+
 const parseSelector = parser()
 
 module.exports = {
@@ -42,14 +43,14 @@ module.exports = {
         continue
       }
 
-      const values = new Set(pseudos.map((p) => p.value))
+      const values = new Set(pseudos.map(p => p.value))
 
       // The pseudo elements are not the same
       if (values.size > 1) {
         break
       }
 
-      for (const pseudo of pseudos) pseudo.remove()
+      for (const pseudo of pseudos) { pseudo.remove() }
       trailingPseudos.prepend(pseudos[0])
     }
 
@@ -58,5 +59,5 @@ module.exports = {
     }
 
     return [null, selector]
-  }
+  },
 }

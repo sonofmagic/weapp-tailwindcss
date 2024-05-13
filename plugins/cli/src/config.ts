@@ -1,11 +1,12 @@
 import path from 'node:path'
+import process from 'node:process'
 import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
 import fs from 'fs-extra'
 import { get, set } from './utils'
-import { BuildOptions } from '@/type'
+import type { BuildOptions } from '@/type'
 
-export type WeappTwCosmiconfigResult = {
+export interface WeappTwCosmiconfigResult {
   config: BuildOptions
   filepath: string
   isEmpty?: boolean
@@ -28,7 +29,7 @@ export function createConfigLoader(root: string) {
 
   return {
     search,
-    load
+    load,
   }
 }
 
@@ -36,7 +37,7 @@ export function getDefaultConfig(root: string): Partial<BuildOptions> {
   return {
     outDir: 'dist',
     root,
-    src: '.'
+    src: '.',
   }
 }
 
@@ -49,7 +50,7 @@ export interface InitConfigOptions {
   root?: string
 }
 
-export function updateProjectConfig(options: { root: string; dest?: string }) {
+export function updateProjectConfig(options: { root: string, dest?: string }) {
   const { root, dest } = options
   const projectConfigFilename = 'project.config.json'
   const projectConfigPath = path.resolve(root, projectConfigFilename)
@@ -73,36 +74,39 @@ export function updateProjectConfig(options: { root: string; dest?: string }) {
 
       if (Array.isArray(get(projectConfig, 'setting.packNpmRelationList'))) {
         const x = projectConfig.setting.packNpmRelationList.find(
-          (x) => x.packageJsonPath === './package.json' && x.miniprogramNpmDistDir === './dist'
+          x => x.packageJsonPath === './package.json' && x.miniprogramNpmDistDir === './dist',
         )
         if (!x) {
           projectConfig.setting.packNpmRelationList.push({
             packageJsonPath: './package.json',
-            miniprogramNpmDistDir: './dist'
+            miniprogramNpmDistDir: './dist',
           })
         }
-      } else {
+      }
+      else {
         set(projectConfig, 'setting.packNpmRelationList', [
           {
             packageJsonPath: './package.json',
-            miniprogramNpmDistDir: './dist'
-          }
+            miniprogramNpmDistDir: './dist',
+          },
         ])
       }
       fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
-        spaces: 2
+        spaces: 2,
       })
 
       console.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
-    } catch {
+    }
+    catch {
       console.warn(`✨ 设置 ${projectConfigFilename} 配置文件失败!`)
     }
-  } else {
+  }
+  else {
     console.warn(`✨ 没有找到 ${projectConfigFilename} 文件!`)
   }
 }
 
-export function updatePackageJson(options: { root: string; dest?: string }) {
+export function updatePackageJson(options: { root: string, dest?: string }) {
   const { root, dest } = options
   const packageJsonFilename = 'package.json'
   const packageJsonPath = path.resolve(root, packageJsonFilename)
@@ -116,16 +120,17 @@ export function updatePackageJson(options: { root: string; dest?: string }) {
       set(packageJson, 'scripts.postinstall', 'weapp-tw patch')
 
       fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
-        spaces: 2
+        spaces: 2,
       })
-    } catch {}
+    }
+    catch {}
   }
 }
 
 export function initConfig(options?: InitConfigOptions) {
   const { lang, root } = defu<InitConfigOptions, InitConfigOptions[]>(options, {
     lang: 'js',
-    root: process.cwd()
+    root: process.cwd(),
   }) as Required<InitConfigOptions>
   const configFilename = `weapp-tw.config.${lang ?? 'js'}`
   const configPath = path.resolve(root, configFilename)
@@ -145,9 +150,10 @@ export function initConfig(options?: InitConfigOptions) {
 
 export default defineConfig(${configOptionsStr})
 `,
-      'utf8'
+      'utf8',
     )
-  } else {
+  }
+  else {
     fs.writeFileSync(
       configPath,
       `/** @type {import('@weapp-tailwindcss/cli').UserConfig} */
@@ -155,7 +161,7 @@ const config = ${configOptionsStr}
 
 module.exports = config
 `,
-      'utf8'
+      'utf8',
     )
   }
   console.log(`✨ ${configFilename} 配置文件，初始化成功!`)

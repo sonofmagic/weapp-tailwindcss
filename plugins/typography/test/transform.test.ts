@@ -22,8 +22,8 @@ describe('transform', () => {
       }
     }
     </code></pre>`,
-        { prefix: '' }
-      )
+        { prefix: '' },
+      ),
     ).toBe(`<pre class="pre"><code class="code language-js">module.exports = {
       plugins: {
         '@pandacss/dev/postcss': {}
@@ -41,8 +41,8 @@ describe('transform', () => {
       }
     }
     </code></pre>`,
-        { prefix: '' }
-      )
+        { prefix: '' },
+      ),
     ).toBe(`<pre class="pre b"><code class="code language-js">module.exports = {
       plugins: {
         '@pandacss/dev/postcss': {}
@@ -60,8 +60,8 @@ describe('transform', () => {
       }
     }
     </code></pre>`,
-        { prefix: '' }
-      )
+        { prefix: '' },
+      ),
     ).toBe(`<pre class="pre b"><code class="code" >module.exports = {
       plugins: {
         '@pandacss/dev/postcss': {}

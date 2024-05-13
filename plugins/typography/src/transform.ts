@@ -16,7 +16,7 @@ export default (html: string, options?: Partial<{ prefix: string }>) => {
     onattribute(name) {
       if (name === 'class' && tagName) {
         // class=" length = 7
-        s.appendLeft(parser.startIndex + 7, prefix + tagName + ' ')
+        s.appendLeft(parser.startIndex + 7, `${prefix + tagName} `)
       }
     },
     onopentag(name, attribs) {
@@ -28,7 +28,7 @@ export default (html: string, options?: Partial<{ prefix: string }>) => {
         s.appendRight(p, ` class="${prefix + name}"`)
       }
       tagName = undefined
-    }
+    },
   })
 
   parser.write(s.original)

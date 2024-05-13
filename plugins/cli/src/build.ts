@@ -1,6 +1,7 @@
 import path from 'node:path'
 import defu from 'defu'
-import { FSWatcher, ensureDirSync } from 'fs-extra'
+import type { FSWatcher } from 'fs-extra'
+import { ensureDirSync } from 'fs-extra'
 import gulp from 'gulp'
 import loadPostcssConfig from 'postcss-load-config'
 import type { Result } from 'postcss-load-config'
@@ -12,9 +13,9 @@ import { debug } from './debug'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
 
-const defaultJavascriptExtensions = ['js'] //, 'cjs', 'mjs']
+const defaultJavascriptExtensions = ['js'] // , 'cjs', 'mjs']
 
-const defaultTypescriptExtensions = ['ts'] //, 'cts', 'mts']
+const defaultTypescriptExtensions = ['ts'] // , 'cts', 'mts']
 
 const defaultWxsExtensions = ['wxs']
 
@@ -26,14 +27,15 @@ const defaultNodeModulesDirs = [
   '**/package.json/**',
   'postcss.config.js',
   'tailwind.config.js',
-  'weapp-tw.config.js'
+  'weapp-tw.config.js',
 ]
 
 export async function createBuilder(options?: Partial<BuildOptions>) {
   let postcssOptionsFromConfig: Result | undefined
   try {
     postcssOptionsFromConfig = await loadPostcssConfig({ cwd: options?.root })
-  } catch {}
+  }
+  catch {}
   const opt = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
     outDir: 'dist',
     weappTailwindcssOptions: {},
@@ -45,13 +47,13 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
       javascript: [...defaultJavascriptExtensions, ...defaultTypescriptExtensions, ...defaultWxsExtensions],
       html: ['wxml'],
       css: ['wxss', 'less', 'sass', 'scss'],
-      json: ['json']
+      json: ['json'],
     },
     watchOptions: {
       cwd: options?.root,
-      events: ['add', 'change', 'unlink', 'ready']
+      events: ['add', 'change', 'unlink', 'ready'],
     },
-    postcssOptions: postcssOptionsFromConfig
+    postcssOptions: postcssOptionsFromConfig,
   })
 
   const { copyOthers, getCssTasks, getHtmlTasks, getJsTasks, getJsonTasks, globsSet } = await getTasks(opt)
@@ -61,7 +63,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     html: getHtmlTasks(),
     json: getJsonTasks(),
     js: getJsTasks(),
-    extra: [copyOthers]
+    extra: [copyOthers],
   }
 
   async function runTasks() {
@@ -84,7 +86,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
       if (clean) {
         debug('del start')
         const { deleteAsync } = await import('del')
-        const patterns = [outDir + '/**']
+        const patterns = [`${outDir}/**`]
         await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
         debug('del end')
       }
@@ -96,7 +98,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
       ensureDirSync(path.resolve(cwd, outDir))
       const dumps = globsSet.dump()
       const arr = (Array.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored]).filter(
-        Boolean
+        Boolean,
       ) as string[]
       watchOptions.ignored = [...globsSet.dumpIgnored(), ...arr]
 
@@ -104,24 +106,24 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
         try {
           await runTasks()
           cb()
-        } catch (error) {
-          // eslint-disable-next-line n/no-callback-literal
+        }
+        catch (error) {
           cb(error as Error)
         }
       })
-      watcher.on('change', function (path) {
+      watcher.on('change', (path) => {
         console.log(`${pc.green('changed')} ${path}`)
       })
 
-      watcher.on('add', function (path) {
+      watcher.on('add', (path) => {
         console.log(`${pc.green('add')} ${path}`)
       })
 
-      watcher.on('unlink', function (path) {
+      watcher.on('unlink', (path) => {
         console.log(`${pc.green('remove')} ${path}`)
       })
 
-      watcher.on('ready', async function () {
+      watcher.on('ready', async () => {
         const meta = await getPackageInfo('weapp-tailwindcss')
         let weappTwVersionStr: string = ''
         if (meta) {
@@ -129,13 +131,13 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
         }
 
         console.log(
-          `${pc.bold(`${pc.green('weapp')}-${pc.blue('tailwindcss')}`)}${weappTwVersionStr} ${pc.cyan('cli')}(${pc.blue(pc.underline(version))}) is ready!`
+          `${pc.bold(`${pc.green('weapp')}-${pc.blue('tailwindcss')}`)}${weappTwVersionStr} ${pc.cyan('cli')}(${pc.blue(pc.underline(version))}) is ready!`,
         )
       })
       this.watcher = watcher
       return this
     },
-    globsSet
+    globsSet,
   }
 }
 

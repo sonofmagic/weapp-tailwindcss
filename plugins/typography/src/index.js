@@ -4,6 +4,7 @@ const castArray = require('lodash.castarray')
 const parser = require('postcss-selector-parser')
 const styles = require('./styles')
 const { commonTrailingPseudos } = require('./utils')
+
 const parseSelector = parser()
 const computed = {
   // Reserved for future "magic properties", for example:
@@ -33,8 +34,8 @@ function transformTag2Class(s, classPrefix = '') {
   ast.walkTags((tag) => {
     tag.replaceWith(
       parser.className({
-        value: classPrefix + tag.value
-      })
+        value: classPrefix + tag.value,
+      }),
     )
   })
   return ast.toString()
@@ -51,7 +52,7 @@ function configToCss(config = {}, { target, className, modifier, prefix, mode, c
     }
 
     if (isObject(v)) {
-      const nested = Object.values(v).some((element) => isObject(element))
+      const nested = Object.values(v).some(element => isObject(element))
       if (nested) {
         return [inWhere(k, { className, modifier, prefix }), v, Object.fromEntries(Object.entries(v).map(([k, v]) => updateSelector(k, v)))]
       }
@@ -67,11 +68,11 @@ function configToCss(config = {}, { target, className, modifier, prefix, mode, c
       merge(
         {},
         ...Object.keys(config)
-          .filter((key) => computed[key])
-          .map((key) => computed[key](config[key])),
-        ...castArray(config.css || {})
-      )
-    ).map(([k, v]) => updateSelector(k, v))
+          .filter(key => computed[key])
+          .map(key => computed[key](config[key])),
+        ...castArray(config.css || {}),
+      ),
+    ).map(([k, v]) => updateSelector(k, v)),
   )
 }
 
@@ -83,7 +84,6 @@ const typographyPlugin = plugin.withOptions(
 
       const options = { className, prefix }
 
-      // eslint-disable-next-line prefer-const
       for (let [name, ...selectors] of [
         ['headings', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'th'],
         ['h1'],
@@ -112,34 +112,34 @@ const typographyPlugin = plugin.withOptions(
         ['img'],
         ['video'],
         ['hr'],
-        ['lead', '[class~="lead"]']
+        ['lead', '[class~="lead"]'],
       ]) {
         selectors = selectors.length === 0 ? [name] : selectors
         const isClassMode = mode === 'class'
-        const selector = target === 'legacy' ? selectors.map((selector) => `& ${isClassMode ? transformTag2Class(selector, classPrefix) : selector}`) : selectors.join(', ')
+        const selector = target === 'legacy' ? selectors.map(selector => `& ${isClassMode ? transformTag2Class(selector, classPrefix) : selector}`) : selectors.join(', ')
 
         addVariant(`${className}-${name}`, target === 'legacy' ? selector : `& :is(${inWhere(selector, options)})`)
       }
 
       addComponents(
-        Object.keys(modifiers).map((modifier) => ({
+        Object.keys(modifiers).map(modifier => ({
           [modifier === 'DEFAULT' ? `.${className}` : `.${className}-${modifier}`]: configToCss(modifiers[modifier], {
             target,
             className,
             modifier,
             prefix,
             mode,
-            classPrefix
-          })
-        }))
+            classPrefix,
+          }),
+        })),
       )
     }
   },
   () => {
     return {
-      theme: { typography: styles }
+      theme: { typography: styles },
     }
-  }
+  },
 )
 
 module.exports = typographyPlugin

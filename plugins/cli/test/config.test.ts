@@ -1,7 +1,7 @@
 import path from 'node:path'
 import fs from 'fs-extra'
 import { fixturesPath } from './utils'
-import { createConfigLoader, initConfig, updateProjectConfig, updatePackageJson } from '@/config'
+import { createConfigLoader, initConfig, updatePackageJson, updateProjectConfig } from '@/config'
 
 describe('config', () => {
   it('load js config', () => {
@@ -32,7 +32,7 @@ describe('config', () => {
     it('init js config', () => {
       const root = path.resolve(fixturesPath, 'configs-output/js')
       const p = initConfig({
-        root
+        root,
       })
       expect(fs.existsSync(p)).toBe(true)
       const configLoader = createConfigLoader(root)
@@ -45,7 +45,7 @@ describe('config', () => {
       const root = path.resolve(fixturesPath, 'configs-output/ts')
       const p = initConfig({
         root,
-        lang: 'ts'
+        lang: 'ts',
       })
       expect(fs.existsSync(p)).toBe(true)
       const configLoader = createConfigLoader(root)
@@ -57,7 +57,7 @@ describe('config', () => {
     it('init js config with tsconfig', () => {
       const root = path.resolve(fixturesPath, 'configs-output/js-tsconfig')
       const p = initConfig({
-        root
+        root,
       })
       expect(fs.existsSync(p)).toBe(true)
       const configLoader = createConfigLoader(root)
@@ -70,7 +70,7 @@ describe('config', () => {
       const root = path.resolve(fixturesPath, 'configs-output/ts-tsconfig')
       const p = initConfig({
         root,
-        lang: 'ts'
+        lang: 'ts',
       })
       expect(fs.existsSync(p)).toBe(true)
       const configLoader = createConfigLoader(root)
@@ -86,7 +86,7 @@ describe('config', () => {
       const target = path.resolve(root, 'output.json')
       updateProjectConfig({
         root,
-        dest: target
+        dest: target,
       })
       expect(fs.existsSync(target)).toBe(true)
       const res = await import(target)
@@ -98,7 +98,7 @@ describe('config', () => {
       const target = path.resolve(root, 'output.json')
       updateProjectConfig({
         root,
-        dest: target
+        dest: target,
       })
       expect(fs.existsSync(target)).toBe(true)
       const res = await import(target)
@@ -112,7 +112,7 @@ describe('config', () => {
       const target = path.resolve(root, 'pkg.json')
       updatePackageJson({
         root,
-        dest: target
+        dest: target,
       })
       expect(fs.existsSync(target)).toBe(true)
       const res = await import(target)
@@ -124,7 +124,7 @@ describe('config', () => {
       const target = path.resolve(root, 'pkg.json')
       updatePackageJson({
         root,
-        dest: target
+        dest: target,
       })
       expect(fs.existsSync(target)).toBe(true)
       const res = await import(target)
