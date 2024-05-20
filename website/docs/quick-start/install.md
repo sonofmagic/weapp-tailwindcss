@@ -6,7 +6,7 @@
 
 首先安装本插件前，我们需要把 `tailwindcss` 对应的环境和配置安装好。
 
-这里我们参考 `tailwindcss` 官网中 `postcss` 的使用方式进行安装 ([参考链接](https://tailwindcss.com/docs/installation/using-postcss))：
+这里我们参考 `tailwindcss` 官网中 `postcss` 的使用方式进行安装 ([参考链接](https://tailwindcss.com/docs/installation/using-postcss))
 
 ## 1. 使用包管理器安装 `tailwindcss`
 
@@ -95,6 +95,6 @@ module.exports = {
 
 这样 `tailwindcss` 的安装与配置就完成了，接下来让我们进入第二个环节：安装 `weapp-tailwindcss`。
 
-## Refers
+## 参考链接
 
-[tailwindcss官方配置项link](https://tailwindcss.com/docs/configuration)
+[`tailwindcss` 官方配置项link](https://tailwindcss.com/docs/configuration)

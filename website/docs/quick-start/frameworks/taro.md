@@ -7,7 +7,7 @@
 :::caution
 假如你写了 `tailwindcss` 工具类不生效，可能是由于微信开发者工具默认开启了 `代码自动热重载` 功能，关闭它即可生效。
 
-假如你和 `NutUI` 一起使用，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)
+假如你和 `NutUI` 一起使用，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)!
 
 <!-- 有群友遇到了转义特殊字符失败，之后变成了空格的文件，结果 `node_modules` 删了重新安装就好了。 -->
 :::
@@ -46,10 +46,10 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 
 然后正常运行项目即可，相关的配置可以参考模板 [taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
-:::tip
-`weapp-tailwindcss/webpack` 对应的插件 `UnifiedWebpackPluginV5` 对应 `webpack5`
+:::info
+`weapp-tailwindcss/webpack` 对应的插件 `UnifiedWebpackPluginV5` 对应 `webpack@5`
 
-`weapp-tailwindcss/webpack4` 对应的插件 `UnifiedWebpackPluginV4` 对应 `webpack4`
+`weapp-tailwindcss/webpack4` 对应的插件 `UnifiedWebpackPluginV4` 对应 `webpack@4`
 
 在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本，推荐使用 `'webpack5'`
 

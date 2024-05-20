@@ -4,9 +4,13 @@
 自从 `2.3.3` 版本开始，我发布了一个额外的包叫 [`weapp-tailwindcss`](https://www.npmjs.com/package/weapp-tailwindcss),它和 [`weapp-tailwindcss-webpack-plugin`](https://www.npmjs.com/package/weapp-tailwindcss-webpack-plugin) 代码版本完全一致，且保持发布版本的同步。以后可以都去安装那个包(当然安装现在这个包也行)。为什么要这么做的原因，主要是因为 `weapp-tailwindcss-webpack-plugin` 这个名字，已经不适合现在这种，多插件并存的状态了，为了以后的发展改个名字。
 ::: -->
 
-在小程序开发中，由于小程序本身有自己的一套 **独特的** 技术规范标准。这导致你无法使用`web`中很多的特性，你也无法 **直接** 使用像 `tailwindcss` 这种库。
+## 总览
 
-而 `weapp-tailwindcss`, 就能让你，在小程序开发中使用 `tailwindcss` **大部分** 特性。
+由于小程序运行时，本身有自己的一套 **独特的** 技术规范标准。这导致你无法使用 `web` 开发中的很多的特性，
+
+你也无法 **直接** 使用像 [`tailwindcss`](https://www.tailwindcss.com/) 这种原子化 `css` 生成器来提升你的开发效率。
+
+而 `weapp-tailwindcss` 就能让你，在小程序开发中使用 `tailwindcss` **大部分** 特性。
 
 它支持目前上所有使用 `webpack` 和 `vite` 的主流多端小程序框架和使用 `webpack` / `gulp`的原生小程序打包方式。
 
@@ -14,7 +18,9 @@
 
 现在，就让我们开始使用吧！
 
-> 本质上它是一个转义器。它负责把 `tailwindcss` 中，所采集的类名，以及生成的结果，转化成小程序中可以接受的方式。
+:::tip
+从本质上讲，它是一个字符串转义器。它负责把 `tailwindcss` 中，所采集的类名，以及生成的结果，转化成小程序中可以接受的方式。
+:::
 
 ## Why `weapp-tailwindcss`?
 
@@ -25,12 +31,13 @@
 5. 高效的解析和缓存机制，项目即使很大，热更新响应时间也是毫秒级
 6. 贴合 `tailwindcss` 的设计思路，智能提示友好
 
-## 快速开始
+## 快速开始 :rocket:
 
 `weapp-tailwindcss` 主要提供了 `2` 种使用方式:
 
-1. \[[框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)\]
-2. \[[原生小程序开发的快速开始](/docs/quick-start/native/install)\]
+### 👉 [1. 框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)
+
+### 👉 [2. 原生小程序开发的快速开始](/docs/quick-start/native/install)
 
 ## 演示视频
 

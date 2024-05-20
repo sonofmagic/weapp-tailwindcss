@@ -18,8 +18,11 @@ npx weapp-tw patch
  }
 ```
 
-:::tip
-执行 `weapp-tw patch` 主要是做2件事情，一个是给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁，另外一个是用来暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。
+:::info
+执行 `weapp-tw patch` 主要是做2件事情
+
+1. 给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁 (小程序特有单位，非 `web` 标准)
+2. 用来暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。
 
 而添加上面一段 `npm scripts` 的用途是，利用 `npm hook`, 每次安装包后，都会自动执行一遍 `weapp-tw patch` 这个脚本。
 

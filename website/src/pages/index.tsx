@@ -23,10 +23,18 @@ function HomepageHeader() {
             <span className="text-sky-500">tailwindcss</span>
           </h1>
           <h3>
-            <b className="text-[#07c160]">降低</b>开发维护成本，<b className="text-sky-500">提升</b>开发效率的
+            <b className="text-[#07c160]">降低</b>
+            开发维护成本，
+            <b className="text-sky-500">提升</b>
+            开发效率的
           </h3>
           <h3>
-            <span className="text-[#07c160]">小程序</span> 使用 <span className="text-sky-500">tailwindcss</span> 全方面解决方案
+            <span className="text-[#07c160]">小程序</span>
+            {' '}
+            使用
+            <span className="text-sky-500">tailwindcss</span>
+            {' '}
+            全方面解决方案
           </h3>
           {/* <p>{siteConfig.title}</p> */}
           <div className="mb-4">
@@ -35,7 +43,7 @@ function HomepageHeader() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5 mb-2">
+          <div className="mb-2 flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5">
             <iframe
               src="https://ghbtns.com/github-btn.html?user=sonofmagic&repo=weapp-tailwindcss&type=star&count=true"
               frameborder="0"
@@ -43,7 +51,8 @@ function HomepageHeader() {
               width="110"
               height="20"
               title="GitHub"
-            ></iframe>
+            >
+            </iframe>
             <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
               谁在使用？
             </a>
@@ -54,7 +63,7 @@ function HomepageHeader() {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 justify-around mt-8">
+        <div className="mt-8 flex flex-col justify-around space-y-8 md:flex-row md:space-y-0">
           <div className="text-center">
             <h3>不仅仅是 webpack</h3>
             <img src={PluginsImg}></img>
