@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from 'react'
-import { fabric } from './fabric'
+import React, { useEffect, useRef } from 'react'
 import type { PropsWithChildren } from 'react'
 import gulpLogo from '@site/src/assets/gulp.png'
 import webpackLogo from '@site/src/assets/webpack.png'
 import viteLogo from '@site/src/assets/vite.png'
 import { saveAs } from 'file-saver'
+import { fabric } from './fabric'
+
 export default function Plugins(props: PropsWithChildren<{}>) {
   const height = 250
   const width = 250
@@ -16,30 +17,30 @@ export default function Plugins(props: PropsWithChildren<{}>) {
     }
     canvasRef.current = new fabric.Canvas(canvasElRef.current)
     const canvas = canvasRef.current
-    fabric.Image.fromURL(webpackLogo, function (oImg) {
+    fabric.Image.fromURL(webpackLogo, (oImg) => {
       oImg.scale(0.03)
       oImg.set({
         left: 10,
-        top: 10
+        top: 10,
       })
       canvas.add(oImg)
     })
 
-    fabric.Image.fromURL(viteLogo, function (oImg) {
+    fabric.Image.fromURL(viteLogo, (oImg) => {
       oImg.scale(0.2)
       oImg.set({
         left: 10,
-        top: 110
+        top: 110,
       })
       // oImg.animate('angle', 45, { onChange: canvas.renderAll.bind(canvas), duration: 1000, easing: fabric.util.ease.easeOutBounce })
       canvas.add(oImg)
     })
 
-    fabric.Image.fromURL(gulpLogo, function (oImg) {
+    fabric.Image.fromURL(gulpLogo, (oImg) => {
       oImg.scale(0.3)
       oImg.set({
         left: 160,
-        top: 50
+        top: 50,
       })
       canvas.add(oImg)
     })
@@ -52,7 +53,7 @@ export default function Plugins(props: PropsWithChildren<{}>) {
     <div className="flex flex-col items-center">
       <h3>not only webpack vite gulp and more </h3>
       <div>
-        <canvas className="border border-sky-500 border-dashed rounded" ref={canvasElRef} width={width} height={height}></canvas>
+        <canvas className="rounded border border-dashed border-sky-500" ref={canvasElRef} width={width} height={height}></canvas>
       </div>
       <button
         className="mt-2"

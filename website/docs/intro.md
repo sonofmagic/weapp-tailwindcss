@@ -12,21 +12,21 @@
 
 而 `weapp-tailwindcss` 就能让你，在小程序开发中使用 `tailwindcss` **大部分** 特性。
 
-它支持目前上所有使用 `webpack` 和 `vite` 的主流多端小程序框架和使用 `webpack` / `gulp`的原生小程序打包方式。
+它支持目前上所有使用 `webpack` 和 `vite` 的主流多端小程序框架和使用 `webpack` / `gulp` 的原生小程序打包方式。
 
 你可以很容易在各个框架，或原生开发中集成 `tailwindcss`。
 
 现在，就让我们开始使用吧！
 
-:::tip
+:::info
 从本质上讲，它是一个字符串转义器。它负责把 `tailwindcss` 中，所采集的类名，以及生成的结果，转化成小程序中可以接受的方式。
 :::
 
 ## Why `weapp-tailwindcss`?
 
 1. 不但可以处理和转义 `wxml`/`wxss` , 还能处理 `js` 和 `wxs` 产物 (以微信小程序为例)
-2. 支持最原生的小程序开发，也支持许多框架如 `taro`,`uni-app`,`mpx`,`rax` 等等..
-3. 提供多种使用方式，方便项目集成，包括 `webpack`/`vite`/`gulp` 插件和直接的 `nodejs api`
+2. 支持最原生的小程序开发，也支持许多框架如 `taro` , `uni-app` , `mpx` , `rax` 等等..
+3. 提供多种使用方式，方便项目集成，包括 `webpack` / `vite` / `gulp` 插件和直接的 `nodejs api`
 4. 生态以及解决方案丰富，提供大量现成模板，可以利用许多 `tailwindcss` 现有的生态来构建小程序。
 5. 高效的解析和缓存机制，项目即使很大，热更新响应时间也是毫秒级
 6. 贴合 `tailwindcss` 的设计思路，智能提示友好
