@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # 1. 安装与配置 tailwindcss
 
 ## 前言
@@ -26,12 +29,37 @@
 
 然后执行:
 
+<Tabs>
+  <TabItem label="npm" value="npm">
+  
 ```bash
-# 使用你喜欢的任意 npm / yarn / pnpm 
-npm install -D tailwindcss postcss
+npm i -D tailwindcss postcss
 # 初始化 tailwind.config.js 文件
 npx tailwindcss init
 ```
+
+  </TabItem>
+  <TabItem label="yarn" value="yarn">
+  
+```bash
+yarn add -D tailwindcss postcss
+# 初始化 tailwind.config.js 文件
+npx tailwindcss init
+```
+
+  </TabItem>
+  <TabItem label="pnpm" value="pnpm">
+  
+```bash
+pnpm i -D tailwindcss postcss
+# 初始化 tailwind.config.js 文件
+npx tailwindcss init
+```
+
+  </TabItem>
+</Tabs>
+
+
 
 这样 `tailwindcss` 就被安装到你项目本地了
 
