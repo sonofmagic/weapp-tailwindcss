@@ -1,8 +1,49 @@
 {
   "name": "weapp-tailwindcss-monorepo",
-  "private": true,
+  "type": "module",
   "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.1.1",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://weapp-tw.icebreaker.top",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+  },
+  "keywords": [
+    "tailwindcss",
+    "weapp",
+    "wechat",
+    "mini",
+    "miniprogram",
+    "mini app",
+    "weapp-tw",
+    "weapp-tailwindcss",
+    "taro",
+    "uni-app",
+    "remax",
+    "rax",
+    "mpx",
+    "jit",
+    "mp",
+    "android",
+    "ios",
+    "小程序",
+    "vite",
+    "postcss",
+    "webpack",
+    "webpack-plugin",
+    "gulp",
+    "gulp-plugin"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "turbo run build --filter=weapp-tailwindcss && turbo run build --filter=./plugins/*",
     "test": "vitest run",
@@ -35,52 +76,18 @@
     "css-build-out": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css --out tw-plugins",
     "-------": "-----------",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+    "lint:fix": "eslint . --fix",
+    "lint:view": "npx @eslint/config-inspector"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "keywords": [
-    "tailwindcss",
-    "weapp",
-    "wechat",
-    "mini",
-    "miniprogram",
-    "mini app",
-    "weapp-tw",
-    "weapp-tailwindcss",
-    "taro",
-    "uni-app",
-    "remax",
-    "rax",
-    "mpx",
-    "jit",
-    "mp",
-    "android",
-    "ios",
-    "小程序",
-    "vite",
-    "postcss",
-    "webpack",
-    "webpack-plugin",
-    "gulp",
-    "gulp-plugin"
-  ],
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
-  },
-  "homepage": "https://weapp-tw.icebreaker.top",
   "devDependencies": {
     "@ast-grep/napi": "^0.22.3",
     "@babel/core": "^7.24.5",
-    "@icebreakers/eslint-config": "^0.2.0",
+    "@eslint/config-inspector": "^0.4.8",
+    "@icebreakers/eslint-config": "^0.3.1",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^25.0.7",
@@ -180,9 +187,5 @@
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.91.0",
     "webpack-build-utils": "^0.0.7"
-  },
-  "packageManager": "pnpm@9.1.1",
-  "engines": {
-    "node": ">=20.0.0"
   }
 }
