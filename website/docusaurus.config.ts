@@ -327,7 +327,7 @@ const config = {
           },
         ],
         // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
-        copyright: `<div class="flex justify-center space-x-2">
+        copyright: `<div class="flex flex-col items-center md:items-start md:flex-row justify-center md:space-x-2">
         <span>Copyright © ${new Date().getFullYear()} icebreaker</span> ${createLink({
           href: 'http://beian.miit.gov.cn',
           textContent: '苏ICP备19002675号-2',

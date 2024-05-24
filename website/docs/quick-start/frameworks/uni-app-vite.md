@@ -1,4 +1,8 @@
-# uni-app vue3 vite
+# uni-app cli vue3 vite
+
+:::warning
+这是 `uni-app cli` 创建的项目的注册方式，如果你使用 `HbuilderX`，应该查看 [uni-app HbuilderX 使用方式](/docs/quick-start/frameworks/hbuilderx)
+:::
 
 ## 注册插件
 

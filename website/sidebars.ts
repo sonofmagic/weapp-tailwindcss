@@ -17,7 +17,7 @@ const sidebars: SidebarsConfig = {
     'intro',
     {
       type: 'category',
-      label: '快速开始(框架类)',
+      label: '🔥快速开始(框架类)',
       items: [
         {
           type: 'doc',
@@ -43,7 +43,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: '快速开始(纯原生)',
+      label: '🔥快速开始(纯原生)',
       items: [
         {
           type: 'doc',
@@ -60,7 +60,11 @@ const sidebars: SidebarsConfig = {
       ],
       collapsed: false,
     },
-
+    {
+      type: 'doc',
+      id: 'community/templates',
+      label: '🔥快速开始(配置好的模板项目)',
+    },
     {
       type: 'doc',
       id: 'community',

@@ -26,8 +26,10 @@
 html[data-theme="dark"] {
   --docusaurus-highlighted-code-line-bg: rgb(66 66 66 / 35%);
 
-  --ifm-background-color: rgb(15 23 42);
-  --ifm-navbar-background-color: initial;
+  --ifm-background-color: theme("colors.slate.900");
+  --ifm-navbar-background-color: theme("colors.slate.900");
+  /* --ifm-navbar-background-color: initial; */
+
   --ifm-toc-border-color: theme("colors.slate.50" / 6%);
   /* --ifm-navbar-background-color: rgb(15 23 42); */
   /* background-color: rgb(15 23 42 / var(--tw-bg-opacity)); */
@@ -37,7 +39,12 @@ html[data-theme="dark"] {
 }
 
 .navbar {
-  @apply backdrop-blur lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/95 dark:bg-transparent;
+  @apply lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06];
+
+  /* bg-white/95; */
+  /* dark:bg-transparent; */
+  /*  */
+  /* backdrop-blur */
 }
 
 .footer {
