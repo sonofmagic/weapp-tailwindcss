@@ -1,0 +1,10 @@
+<view class="w-screen grow overflow-hidden">
+  <view class="text-black/90">
+    <view class="p-10">
+      <view class="text-center">Address Book</view>
+      <view class="text-[#123456]">类通讯录列表</view>
+      <view class="bg-yellow-600">ICON</view>
+    </view>
+    <view class="pb-10 {{motto}}">motto</view>
+  </view>
+</view>

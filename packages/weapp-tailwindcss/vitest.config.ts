@@ -6,23 +6,23 @@ export default defineConfig({
     alias: [
       {
         find: '@',
-        replacement: path.resolve(__dirname, './src')
+        replacement: path.resolve(__dirname, './src'),
       },
       {
         find: '#test',
-        replacement: path.resolve(__dirname, './test')
-      }
+        replacement: path.resolve(__dirname, './test'),
+      },
     ],
     // ,
     include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     coverage: {
       enabled: true,
-      all: false
+      all: false,
 
       // reportsDirectory: 'coverage/vitest'
     },
     testTimeout: 60_000,
-    globals: true
+    globals: true,
     // ...
-  }
+  },
 })

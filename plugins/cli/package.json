@@ -1,30 +1,22 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The cli of weapp-tailwindcss",
-  "scripts": {
-    "dev": "unbuild --sourcemap",
-    "build": "unbuild",
-    "test": "vitest run",
-    "test:dev": "vitest",
-    "release": "pnpm publish",
-    "dev:watch": "node test/scripts/watch.js",
-    "sync": "cnpm sync @weapp-tailwindcss/cli"
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "keywords": [
     "weapp",
     "tailwindcss",
     "cli",
-    "plugin"
+    "plugin",
+    "gulp",
+    "native"
   ],
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
-  },
-  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
   "sideEffects": false,
-  "type": "commonjs",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -38,6 +30,32 @@
   "files": [
     "dist"
   ],
+  "scripts": {
+    "dev": "unbuild --sourcemap",
+    "build": "unbuild",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "dev:watch": "node test/scripts/watch.js",
+    "sync": "cnpm sync @weapp-tailwindcss/cli"
+  },
+  "peerDependencies": {
+    "less": "*",
+    "sass": "*",
+    "typescript": "*",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "less": {
+      "optional": true
+    },
+    "sass": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "commander": "^12.1.0",
     "cosmiconfig": "^9.0.0",
@@ -58,25 +76,11 @@
     "postcss": "^8.4.38",
     "postcss-load-config": "^5.1.0"
   },
-  "peerDependencies": {
-    "less": "*",
-    "sass": "*",
-    "typescript": "*",
-    "weapp-tailwindcss": "workspace:*"
-  },
-  "peerDependenciesMeta": {
-    "less": {
-      "optional": true
-    },
-    "sass": {
-      "optional": true
-    },
-    "typescript": {
-      "optional": true
-    }
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
   }
 }
