@@ -87,7 +87,7 @@
     "@ast-grep/napi": "^0.22.4",
     "@babel/core": "^7.24.6",
     "@eslint/config-inspector": "^0.4.8",
-    "@icebreakers/eslint-config": "^0.3.3",
+    "@icebreakers/eslint-config": "^0.3.4",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^25.0.8",

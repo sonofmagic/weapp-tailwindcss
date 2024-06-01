@@ -1,28 +1,28 @@
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import gulp from 'gulp'
 import postcssrc from 'gulp-postcss'
-// import debug from 'gulp-debug'
-// import plumber from 'gulp-plumber'
 import gulpif from 'gulp-if'
 import createSass from 'gulp-sass'
 import rename from 'gulp-rename'
 import less from 'gulp-less'
 import typescript from 'gulp-typescript'
 import GlobsSet from './globsSet'
+import { isStream } from './is-stream'
 import { AssetType } from '@/enum'
 import type { BuildOptions } from '@/type'
-import { isObject, promisify } from '@/utils'
+import { isLessLang, isObject, isSassLang, isTsLang, promisify } from '@/utils'
 
-function isSassLang(lang: string): lang is 'scss' | 'sass' {
-  return lang === 'scss' || lang === 'sass'
-}
-
-function isLessLang(lang: string): lang is 'less' {
-  return lang === 'less'
-}
-
-function isTsLang(lang: string): lang is 'ts' {
-  return lang === 'ts'
+export function normalizePlugin(plugin: Function | [Function, ...any[]]) {
+  if (isStream(plugin)) {
+    return plugin
+  }
+  else if (typeof plugin === 'function') {
+    return plugin.apply(plugin)
+  }
+  else if (Array.isArray(plugin)) {
+    const [fn, ...args] = plugin
+    return fn.apply(fn, args)
+  }
 }
 
 export async function getTasks(options: BuildOptions) {
@@ -37,11 +37,20 @@ export async function getTasks(options: BuildOptions) {
     include,
     postcssOptions,
     preprocessorOptions,
+    gulpChain,
   } = options
   const globsSet = new GlobsSet()
   const base = srcBase ? `${srcBase}/` : ''
   const enableSass = Boolean(preprocessorOptions?.sass)
   const enableLess = Boolean(preprocessorOptions?.less)
+
+  function resolvePipes(plugins: any[], type: AssetType) {
+    const newPlugins = gulpChain(plugins, type)
+    if (newPlugins === undefined) {
+      return plugins
+    }
+    return newPlugins.map(x => normalizePlugin(x)).filter(x => x)
+  }
 
   if (typescriptOptions === true) {
     typescriptOptions = {
@@ -99,35 +108,31 @@ export async function getTasks(options: BuildOptions) {
 
       return function JsTask() {
         let chain: NodeJS.ReadWriteStream = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(JsTask) })
+        const pipes: NodeJS.ReadWriteStream[] = []
         if (loadTs) {
-          chain = chain.pipe(gulpTs())
+          pipes.push(gulpTs())
         }
-        return promisify(
-          chain
-            .pipe(
-              transformJs({
-                babelParserOptions:
-                  !enableTs && isTs
-                    ? {
-                        plugins: ['typescript'],
-                      }
-                    : undefined,
-              }),
-            )
-            .pipe(
-              gulpif(
-                loadTs,
-                rename({
-                  extname: '.js',
-                }),
-              ),
-            )
-            .pipe(
-              gulp.dest(outDir, {
-                cwd,
-              }),
-            ),
-        )
+        pipes.push(transformJs({
+          babelParserOptions:
+            !enableTs && isTs
+              ? {
+                  plugins: ['typescript'],
+                }
+              : undefined,
+        }))
+        pipes.push(gulpif(
+          loadTs,
+          rename({
+            extname: '.js',
+          }),
+        ))
+        pipes.push(gulp.dest(outDir, {
+          cwd,
+        }))
+        for (const p of resolvePipes(pipes, assetType)) {
+          chain = chain.pipe(p)
+        }
+        return promisify(chain)
       }
     })
   }
@@ -140,13 +145,15 @@ export async function getTasks(options: BuildOptions) {
       const src = `${base}**/*.${x}`
       globsSet.add(src)
       return function JsonTask() {
-        return promisify(
-          gulp.src([src, ...globs], { cwd, since: gulp.lastRun(JsonTask) }).pipe(
-            gulp.dest(outDir, {
-              cwd,
-            }),
-          ),
-        )
+        const pipes = [gulp.dest(outDir, {
+          cwd,
+        })]
+        let chain = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(JsonTask) })
+
+        for (const p of resolvePipes(pipes, assetType)) {
+          chain = chain.pipe(p)
+        }
+        return promisify(chain)
       }
     })
   }
@@ -160,49 +167,45 @@ export async function getTasks(options: BuildOptions) {
       globsSet.add(src)
       const loadSass = enableSass && isSassLang(x)
       const loadLess = enableLess && isLessLang(x)
+
       return function CssTask() {
         let chain: NodeJS.ReadWriteStream = gulp.src([src, ...globs], { cwd, since: gulp.lastRun(CssTask) })
-
-        // .pipe(plumber())
-        // .on('pipe', (...args) => {
-        //   console.log(args)
-        // })
+        const pipes: NodeJS.ReadWriteStream[] = []
         if (loadSass) {
-          chain = chain.pipe(
-            sass
-              .sync(
-                // @ts-ignore
-                typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass,
-              )
-              .on('error', sass.logError),
-          )
+          // load sass and scss
+          pipes.push(sass
+            .sync(
+              // @ts-ignore
+              typeof preprocessorOptions?.sass === 'boolean' ? undefined : preprocessorOptions?.sass,
+            )
+            .on('error', sass.logError))
         }
-        return promisify(
-          chain
-            // .pipe(debug({ title: 'css start:' }))
-            .pipe(
-              gulpif(
-                loadLess,
-                less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less),
-              ),
-            )
-            .pipe(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
-            .pipe(transformWxss())
-            .pipe(
-              gulpif(
-                loadSass || loadLess,
-                rename({
-                  extname: '.wxss',
-                }),
-              ),
-            )
-            // .pipe(debug({ title: 'css end:' }))
-            .pipe(
-              gulp.dest(outDir, {
-                cwd,
-              }),
-            ),
-        )
+        // load less
+        pipes.push(gulpif(
+          loadLess,
+          less(typeof preprocessorOptions?.less === 'boolean' ? undefined : preprocessorOptions?.less),
+        ))
+        // load postcss
+        pipes.push(gulpif(Boolean(postcssOptions), postcssrc(postcssOptions?.plugins, postcssOptions?.options)))
+        // load weapp-tailwindcss transformWxss
+        pipes.push(transformWxss())
+        // load rename
+        pipes.push(gulpif(
+          loadSass || loadLess,
+          rename({
+            extname: '.wxss',
+          }),
+        ))
+        // output
+        pipes.push(gulp.dest(outDir, {
+          cwd,
+        }))
+
+        for (const p of resolvePipes(pipes, assetType)) {
+          chain = chain.pipe(p)
+        }
+
+        return promisify(chain)
       }
     })
   }
@@ -214,16 +217,18 @@ export async function getTasks(options: BuildOptions) {
     return extensions[assetType]?.map((x) => {
       const src = `${base}**/*.${x}`
       globsSet.add(src)
+
       return function HtmlTask() {
+        let chain = gulp
+          .src([src, ...globs], { cwd, since: gulp.lastRun(HtmlTask) })
+        const pipes = [transformWxml(), gulp.dest(outDir, {
+          cwd,
+        })]
+        for (const p of resolvePipes(pipes, assetType)) {
+          chain = chain.pipe(p)
+        }
         return promisify(
-          gulp
-            .src([src, ...globs], { cwd, since: gulp.lastRun(HtmlTask) })
-            .pipe(transformWxml())
-            .pipe(
-              gulp.dest(outDir, {
-                cwd,
-              }),
-            ),
+          chain,
         )
       }
     })
@@ -235,13 +240,16 @@ export async function getTasks(options: BuildOptions) {
         return `${base}${x}`
       })
       globsSet.add(globs)
-      return promisify(
-        gulp.src([...globs, ...outDirGlobs], { cwd, since: gulp.lastRun(copyOthers) }).pipe(
-          gulp.dest(outDir, {
-            cwd,
-          }),
-        ),
-      )
+
+      let chain = gulp.src([...globs, ...outDirGlobs], { cwd, since: gulp.lastRun(copyOthers) })
+      // output
+      const pipes = [gulp.dest(outDir, {
+        cwd,
+      })]
+      for (const p of pipes) {
+        chain = chain.pipe(p)
+      }
+      return promisify(chain)
     }
   }
 

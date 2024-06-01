@@ -1,8 +1,10 @@
-import type { Transform } from 'node:stream'
+import type {
+  Transform as TransformStream,
+} from 'node:stream'
 import fs from 'fs-extra'
 
 const cssMatcher = (file: string) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)
-const htmlMatcher = (file: string) => /.+\.(?:(?:(?:wx|ax|jx|ks|tt|q)ml)|swan)$/.test(file)
+const htmlMatcher = (file: string) => /.+\.(?:(?:wx|ax|jx|ks|tt|q)ml|swan)$/.test(file)
 function jsMatcher(file: string) {
   if (file.includes('node_modules')) {
     return false
@@ -38,7 +40,7 @@ export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[
         .catch(reject)
     }
     else {
-      if ((<Transform>task).destroyed) {
+      if ((<TransformStream>task).destroyed) {
         resolve(undefined)
         return
       }
@@ -55,4 +57,16 @@ export function promisify(task: NodeJS.ReadWriteStream | NodeJS.ReadWriteStream[
 
 export function arrify<T>(val: T) {
   return Array.isArray(val) ? (val as T) : [val]
+}
+
+export function isSassLang(lang: string): lang is 'scss' | 'sass' {
+  return lang === 'scss' || lang === 'sass'
+}
+
+export function isLessLang(lang: string): lang is 'less' {
+  return lang === 'less'
+}
+
+export function isTsLang(lang: string): lang is 'ts' {
+  return lang === 'ts'
 }

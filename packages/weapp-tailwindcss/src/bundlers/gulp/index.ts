@@ -1,4 +1,5 @@
 import stream from 'node:stream'
+import { Buffer } from 'node:buffer'
 import type File from 'vinyl'
 import { getOptions } from '@/options'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
@@ -9,9 +10,6 @@ const debug = createDebug()
 
 const Transform = stream.Transform
 
-// export interface IBaseTransformOptions {
-//   encoding?: BufferEncoding
-// }
 /**
  * @name weapp-tw-gulp
  * @description gulp版本weapp-tw插件
@@ -111,10 +109,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         }
         callback(error, file)
       },
-      // construct(callback) {
-      //   debug('transformJs start')
-      //   callback()
-      // }
     })
   }
 
@@ -123,7 +117,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       objectMode: true,
       async transform(file: File, encoding, callback) {
         const error = null
-        // file.path
+
         if (file.contents) {
           const rawSource = file.contents.toString()
           const hash = cache.computeHash(rawSource)
@@ -155,13 +149,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
             },
           )
         }
-
         callback(error, file)
       },
-      // construct(callback) {
-      //   debug('transformWxml start')
-      //   callback()
-      // }
     })
   }
 
