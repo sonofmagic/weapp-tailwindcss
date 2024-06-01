@@ -1,30 +1,26 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The cli of weapp-tailwindcss",
-  "scripts": {
-    "dev": "unbuild --sourcemap",
-    "build": "unbuild",
-    "test": "vitest run",
-    "test:dev": "vitest",
-    "release": "pnpm publish",
-    "dev:watch": "node test/scripts/watch.js",
-    "sync": "cnpm sync @weapp-tailwindcss/cli"
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "keywords": [
     "weapp",
     "tailwindcss",
     "cli",
-    "plugin"
+    "plugin",
+    "gulp",
+    "native"
   ],
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
-  },
-  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
   "sideEffects": false,
-  "type": "commonjs",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -38,25 +34,14 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "commander": "^12.1.0",
-    "cosmiconfig": "^9.0.0",
-    "debug": "4.3.4",
-    "del": "^7.1.0",
-    "fs-extra": "^11.2.0",
-    "gulp": "^4.0.2",
-    "gulp-debug": "^5.0.1",
-    "gulp-if": "^3.0.0",
-    "gulp-less": "^5.0.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^10.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.1.0",
-    "gulp-typescript": "6.0.0-alpha.1",
-    "local-pkg": "^0.5.0",
-    "picocolors": "^1.0.1",
-    "postcss": "^8.4.38",
-    "postcss-load-config": "^5.1.0"
+  "scripts": {
+    "dev": "unbuild --sourcemap",
+    "build": "unbuild",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "dev:watch": "node test/scripts/watch.js",
+    "sync": "cnpm sync @weapp-tailwindcss/cli"
   },
   "peerDependencies": {
     "less": "*",
@@ -75,8 +60,31 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "cosmiconfig": "^9.0.0",
+    "debug": "4.3.5",
+    "del": "^7.1.0",
+    "fs-extra": "^11.2.0",
+    "gulp": "^4.0.2",
+    "gulp-debug": "^5.0.1",
+    "gulp-if": "^3.0.0",
+    "gulp-less": "^5.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-typescript": "6.0.0-alpha.1",
+    "local-pkg": "^0.5.0",
+    "picocolors": "^1.0.1",
+    "postcss": "^8.4.38",
+    "postcss-load-config": "^5.1.0"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
   }
 }

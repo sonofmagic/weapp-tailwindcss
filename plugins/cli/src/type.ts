@@ -90,7 +90,7 @@ export interface BuildOptions {
   watchOptions: WatchOptions
   /**
    * @group 2.编译支持
-   * @description typescript 的编译配置，默认不传伟不编译 ts
+   * @description typescript 的编译配置，默认不传为不编译 ts
    * @description 需要安装 typescript
    */
   typescriptOptions:
@@ -99,6 +99,13 @@ export interface BuildOptions {
       settings?: Settings
       tsConfigFileName?: string
     }
+  /**
+   * @group 2.编译支持
+   * @description 扩展 cli 里默认的 gulp 文件流处理方式
+   * 第一个参数为原型注册的内置插件, 第二个参数为处理的文件类型
+   * 返回一个新的插件数组为取代原先的处理流程，返回 undefined 为使用默认处理流程
+   */
+  gulpChain: (plugins: any[], type: AssetType) => any[] | undefined
 }
 
 export type UserConfig = Partial<BuildOptions>

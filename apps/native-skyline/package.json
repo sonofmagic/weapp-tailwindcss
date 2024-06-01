@@ -6,19 +6,24 @@
   "scripts": {
     "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",
     "build": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw build",
-    "postinstall": "weapp-tw patch"
+    "postinstall": "weapp-tw patch",
+    "open": "weapp open -p"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.8.0",
+    "@iconify-json/lucide": "^1.1.188",
+    "@iconify-json/mdi": "^1.1.66",
     "@weapp-tailwindcss/cli": "workspace:*",
     "tailwindcss": "^3.4.3",
+    "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss": "workspace:*"
   },
   "dependencies": {
     "cowsay": "^1.6.0",
     "lodash": "^4.17.21",
-    "miniprogram-computed": "^4.4.0"
+    "miniprogram-computed": "^5.0.0"
   }
 }

@@ -2,11 +2,12 @@
 <view class="w-screen grow overflow-hidden">
   <address-book list="{{list}}">
     <view class="text-black/90">
-      <view class="page__hd">
+      <view class="p-10">
         <view class="page__title">Address Book</view>
         <view class="page__desc">类通讯录列表</view>
+        <view class="i-mdi-home bg-yellow-600 w-4 h-4"></view>
       </view>
-      <view class="page__bd">
+      <view class="pb-10">
       </view>
     </view>
   </address-book>

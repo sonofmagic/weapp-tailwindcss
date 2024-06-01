@@ -9,52 +9,18 @@ import pc from 'picocolors'
 import { getPackageInfo } from 'local-pkg'
 // import type { Matcher } from 'anymatch'
 import { version } from '../package.json'
-import { debug } from './debug'
+import { debug } from '@/debug'
+import { defaultNodeModulesDirs, getDefaultOptions } from '@/defaults'
 import type { BuildOptions } from '@/type'
 import { getTasks } from '@/task'
-
-const defaultJavascriptExtensions = ['js'] // , 'cjs', 'mjs']
-
-const defaultTypescriptExtensions = ['ts'] // , 'cts', 'mts']
-
-const defaultWxsExtensions = ['wxs']
-
-const defaultNodeModulesDirs = [
-  '**/node_modules/**',
-  '**/miniprogram_npm/**',
-  '**/project.config.json/**',
-  '**/project.private.config.json/**',
-  '**/package.json/**',
-  'postcss.config.js',
-  'tailwind.config.js',
-  'weapp-tw.config.js',
-]
 
 export async function createBuilder(options?: Partial<BuildOptions>) {
   let postcssOptionsFromConfig: Result | undefined
   try {
     postcssOptionsFromConfig = await loadPostcssConfig({ cwd: options?.root })
   }
-  catch {}
-  const opt = defu<BuildOptions, Partial<BuildOptions>[]>(options, {
-    outDir: 'dist',
-    weappTailwindcssOptions: {},
-    clean: true,
-    src: '',
-    exclude: [...defaultNodeModulesDirs],
-    include: ['**/*.{png,jpg,jpeg,gif,svg,webp}'],
-    extensions: {
-      javascript: [...defaultJavascriptExtensions, ...defaultTypescriptExtensions, ...defaultWxsExtensions],
-      html: ['wxml'],
-      css: ['wxss', 'less', 'sass', 'scss'],
-      json: ['json'],
-    },
-    watchOptions: {
-      cwd: options?.root,
-      events: ['add', 'change', 'unlink', 'ready'],
-    },
-    postcssOptions: postcssOptionsFromConfig,
-  })
+  catch { }
+  const opt = defu<BuildOptions, Partial<BuildOptions>[]>(options, getDefaultOptions(options, postcssOptionsFromConfig))
 
   const { copyOthers, getCssTasks, getHtmlTasks, getJsTasks, getJsonTasks, globsSet } = await getTasks(opt)
 
