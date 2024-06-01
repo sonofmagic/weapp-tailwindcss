@@ -41,7 +41,7 @@
   "dependencies": {
     "commander": "^12.1.0",
     "cosmiconfig": "^9.0.0",
-    "debug": "4.3.4",
+    "debug": "4.3.5",
     "del": "^7.1.0",
     "fs-extra": "^11.2.0",
     "gulp": "^4.0.2",

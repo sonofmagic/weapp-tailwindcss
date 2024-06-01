@@ -19,6 +19,6 @@
   "dependencies": {
     "cowsay": "^1.6.0",
     "lodash": "^4.17.21",
-    "miniprogram-computed": "^4.4.0"
+    "miniprogram-computed": "^5.0.0"
   }
 }
