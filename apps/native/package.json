@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",
     "build": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw build",
-    "postinstall": "weapp-tw patch"
+    "postinstall": "weapp-tw patch",
+    "open": "weapp open -p"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "@weapp-tailwindcss/cli": "workspace:*",
     "cross-env": "^7.0.3",
     "tailwindcss": "^3.4.3",
+    "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss": "workspace:*"
   }
 }
