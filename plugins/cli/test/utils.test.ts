@@ -1,6 +1,6 @@
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import postcssrc from 'gulp-postcss'
-import gulpif from 'gulp-if'
+// import gulpif from 'gulp-if'
 // import createSass from 'gulp-sass'
 import rename from 'gulp-rename'
 import less from 'gulp-less'
@@ -16,7 +16,7 @@ describe('utils', () => {
       expect(isStream(transformWxss())).toBe(true)
 
       expect(isStream(postcssrc())).toBe(true)
-      expect(isStream(gulpif(true, postcssrc()))).toBe(true)
+      // expect(isStream(postcssrc())).toBe(true)
       expect(isStream(rename({}))).toBe(true)
       expect(isStream(less())).toBe(true)
       expect(isStream(typescript())).toBe(true)
@@ -29,7 +29,7 @@ describe('utils', () => {
       expect(isTransformStream(transformWxss())).toBe(true)
 
       expect(isTransformStream(postcssrc())).toBe(true)
-      expect(isTransformStream(gulpif(true, postcssrc()))).toBe(true)
+      // expect(isTransformStream(gulpif(true, postcssrc()))).toBe(true)
       expect(isTransformStream(rename({}))).toBe(true)
       // expect(isTransformStream(less())).toBe(true)
       // expect(isTransformStream(typescript())).toBe(true)
@@ -42,7 +42,7 @@ describe('utils', () => {
       expect(isDuplexStream(transformWxss())).toBe(true)
 
       expect(isDuplexStream(postcssrc())).toBe(true)
-      expect(isDuplexStream(gulpif(true, postcssrc()))).toBe(true)
+      // expect(isDuplexStream(gulpif(true, postcssrc()))).toBe(true)
       expect(isDuplexStream(rename({}))).toBe(true)
       // expect(isDuplexStream(less())).toBe(true)
       expect(isDuplexStream(typescript())).toBe(true)
