@@ -28,7 +28,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.8.0",
     "@icebreakers/eslint-config-ts": "^1.2.3",
+    "@iconify-json/mdi": "^1.1.66",
     "@types/gulp": "^4.0.17",
     "@types/gulp-debug": "^2.0.36",
     "@types/gulp-if": "^3.0.4",

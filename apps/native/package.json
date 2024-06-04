@@ -16,6 +16,8 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.8.0",
+    "@iconify-json/mdi": "^1.1.66",
     "@types/lodash": "^4.17.4",
     "@weapp-tailwindcss/cli": "workspace:*",
     "cross-env": "^7.0.3",

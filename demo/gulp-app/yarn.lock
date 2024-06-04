@@ -12,6 +12,19 @@
   resolved "https://registry.npmmirror.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
+"@antfu/install-pkg@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmmirror.com/@antfu/install-pkg/-/install-pkg-0.1.1.tgz#157bb04f0de8100b9e4c01734db1a6c77e98bbb5"
+  integrity sha512-LyB/8+bSfa0DFGC06zpCEfs89/XoWZwws5ygEa5D+Xsm3OfI+aXQ86VgVG7Acyef+rSZ5HE7J8rrxzrQeM3PjQ==
+  dependencies:
+    execa "^5.1.1"
+    find-up "^5.0.0"
+
+"@antfu/utils@^0.7.7":
+  version "0.7.8"
+  resolved "https://registry.npmmirror.com/@antfu/utils/-/utils-0.7.8.tgz#86cb0974bcab7e64e29b57d6d9021102307257de"
+  integrity sha512-rWQkqXRESdjXtc+7NRfK9lASQjpXJu1ayp7qi1d23zZorY+wBHVLHHoVcMsEnkqEBWTFqbztO7/QdJFzyEcLTg==
+
 "@ast-core/escape@^1.0.1":
   version "1.0.1"
   resolved "https://registry.npmmirror.com/@ast-core/escape/-/escape-1.0.1.tgz#213fd453bf700f831c74bacfcbf00252c8e73a10"
@@ -413,6 +426,13 @@
   resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-3.0.3.tgz#208a3929ee614967a1fc8cd6cb758d9fcbf0caae"
   integrity sha512-KEPNw4+WW5AVEIyzC80rTbWEUatTW2lXpN8+8ILC8PiPeWPjwUzrPZDIOZ2wwqDmeqOYTdSGyL3+vE5GC3FB3Q==
 
+"@egoist/tailwindcss-icons@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.npmmirror.com/@egoist/tailwindcss-icons/-/tailwindcss-icons-1.8.0.tgz#923b07972c4c8d619010678416251f108d08647a"
+  integrity sha512-75LfllKL2lq0sGH+wcpsn/sLtJ0kMkDWmcZTLAB76QLDTmfsFu4QHwZVbtCD2woGyKl9c8KvtOUW9JSjRqOVtA==
+  dependencies:
+    "@iconify/utils" "^2.1.23"
+
 "@eslint-community/eslint-utils@^4.1.2", "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
   resolved "https://registry.npmmirror.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz"
@@ -491,6 +511,31 @@
     "@types/jest" "^29.5.11"
     "@typescript-eslint/eslint-plugin" "^6.14.0"
     "@typescript-eslint/parser" "^6.14.0"
+
+"@iconify-json/mdi@^1.1.66":
+  version "1.1.66"
+  resolved "https://registry.npmmirror.com/@iconify-json/mdi/-/mdi-1.1.66.tgz#eb48d02d5438ee545519dfb9f265ee1944faeaa9"
+  integrity sha512-7KPF2RVUUWav/hXCM8Ti/smqu3cmgePJpiX9CSkldiL+80+eBRBeKlc4vPOc9jhAItlqIU1vKsbKoPP0JIfgbg==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify/types@*", "@iconify/types@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
+  integrity sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==
+
+"@iconify/utils@^2.1.23":
+  version "2.1.24"
+  resolved "https://registry.npmmirror.com/@iconify/utils/-/utils-2.1.24.tgz#a9ac378eaccd654e5d6890e35a0104ba62b38386"
+  integrity sha512-H8r2KpL5uKyrkb3z9/3HD/22JcxqW3BJyjEWZhX2T7DehnYVZthEap1cNsEl/UtCDC3TlpNmwiPX8wg3y8E4dg==
+  dependencies:
+    "@antfu/install-pkg" "^0.1.1"
+    "@antfu/utils" "^0.7.7"
+    "@iconify/types" "^2.0.0"
+    debug "^4.3.4"
+    kolorist "^1.8.0"
+    local-pkg "^0.5.0"
+    mlly "^1.6.1"
 
 "@jest/expect-utils@^29.5.0":
   version "29.5.0"
@@ -1991,6 +2036,11 @@ concat-stream@^1.6.0:
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
+confbox@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.npmmirror.com/confbox/-/confbox-0.1.7.tgz#ccfc0a2bcae36a84838e83a3b7f770fb17d6c579"
+  integrity sha512-uJcB/FKZtBMCJpK8MQji6bJHgu1tixKPxRLeGkNzBoOZzpnZUJm0jm2/sBDWcuBx1dYgxV4JU+g5hmNxCyAmdA==
+
 convert-source-map@^1.5.0:
   version "1.9.0"
   resolved "https://registry.npmmirror.com/convert-source-map/-/convert-source-map-1.9.0.tgz"
@@ -2743,7 +2793,7 @@ esutils@^2.0.2:
   resolved "https://registry.npmmirror.com/esutils/-/esutils-2.0.3.tgz"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
-execa@5.1.1:
+execa@5.1.1, execa@^5.1.1:
   version "5.1.1"
   resolved "https://registry.npmmirror.com/execa/-/execa-5.1.1.tgz"
   integrity sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==
@@ -4461,6 +4511,11 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.npmmirror.com/kind-of/-/kind-of-6.0.3.tgz"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
+kolorist@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.npmmirror.com/kolorist/-/kolorist-1.8.0.tgz#edddbbbc7894bc13302cdf740af6374d4a04743c"
+  integrity sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==
+
 last-run@^1.1.0:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/last-run/-/last-run-1.1.1.tgz"
@@ -4903,6 +4958,16 @@ mlly@^1.4.2:
     pathe "^1.1.2"
     pkg-types "^1.0.3"
     ufo "^1.3.2"
+
+mlly@^1.6.1, mlly@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.npmmirror.com/mlly/-/mlly-1.7.0.tgz#587383ae40dda23cadb11c3c3cc972b277724271"
+  integrity sha512-U9SDaXGEREBYQgfejV97coK0UL1r+qnF2SyO9A3qcI8MzKnsIFKHNVEkrDyNncQTKQQumsasmeq84eNMdBfsNQ==
+  dependencies:
+    acorn "^8.11.3"
+    pathe "^1.1.2"
+    pkg-types "^1.1.0"
+    ufo "^1.5.3"
 
 mri@^1.2.0:
   version "1.2.0"
@@ -5444,6 +5509,15 @@ pkg-types@^1.0.3:
     jsonc-parser "^3.2.0"
     mlly "^1.2.0"
     pathe "^1.1.0"
+
+pkg-types@^1.1.0:
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/pkg-types/-/pkg-types-1.1.1.tgz#07b626880749beb607b0c817af63aac1845a73f2"
+  integrity sha512-ko14TjmDuQJ14zsotODv7dBlwxKhUKQEhuhmbqo1uCi9BB0Z2alo/wAXg6q1dTR5TyuqYyWhjtfe/Tsh+X28jQ==
+  dependencies:
+    confbox "^0.1.7"
+    mlly "^1.7.0"
+    pathe "^1.1.2"
 
 plugin-error@^0.1.2:
   version "0.1.2"
@@ -6890,7 +6964,7 @@ ufo@^1.1.2:
   resolved "https://registry.npmmirror.com/ufo/-/ufo-1.2.0.tgz#28d127a087a46729133fdc89cb1358508b3f80ba"
   integrity sha512-RsPyTbqORDNDxqAdQPQBpgqhWle1VcTSou/FraClYlHf6TZnQcGslpLcAphNR+sQW4q5lLWLbOsRlh9j24baQg==
 
-ufo@^1.3.2:
+ufo@^1.3.2, ufo@^1.5.3:
   version "1.5.3"
   resolved "https://registry.npmmirror.com/ufo/-/ufo-1.5.3.tgz#3325bd3c977b6c6cd3160bf4ff52989adc9d3344"
   integrity sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==

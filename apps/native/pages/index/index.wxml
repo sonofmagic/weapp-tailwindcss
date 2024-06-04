@@ -10,19 +10,19 @@
   <view class='flex justify-evenly'>
     <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=生日&id=5b8e37e34b640a63b33272dc">
       <image class="w-8" src='/images/birthday.png' mode="aspectFit"></image>
-      <text class="text-[#4de265]">生日</text>
+      <text class="text-[#4de265]">生日<text class="i-mdi-123"></text></text>
     </navigator>
     <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=节日&id=5b8f45f2afb7c17788e11994">
       <image class="w-8" src='/images/festival.png' mode="aspectFit"></image>
-      <text class="text-[#4049bd]">节日</text>
+      <text class="text-[#4049bd]">节日<text class="i-mdi-ab-testing"></text></text>
     </navigator>
     <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=婚礼&id=5b8f4603afb7c17788e11996">
       <image class="w-8" src='/images/wedding.png' mode="aspectFit"></image>
-      <text class="text-[#da6a4f]">婚礼</text>
+      <text class="text-[#da6a4f]">婚礼<text class="i-mdi-abacus"></text></text>
     </navigator>
     <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=party&id=5b8f4612afb7c17788e11998">
       <image class="w-8" src='/images/party.png' mode="aspectFit"></image>
-      <text class="text-[#41cac8]">party</text>
+      <text class="text-[#41cac8]">party<text class="i-mdi-abjad-arabic"></text></text>
     </navigator>
   </view>
 </scroll-view>

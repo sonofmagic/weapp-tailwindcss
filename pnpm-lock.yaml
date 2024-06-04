@@ -324,6 +324,12 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
+      '@egoist/tailwindcss-icons':
+        specifier: ^1.8.0
+        version: 1.8.0(tailwindcss@3.4.3(ts-node@10.9.2(@types/node@20.14.1)(typescript@5.4.5)))
+      '@iconify-json/mdi':
+        specifier: ^1.1.66
+        version: 1.1.66
       '@types/lodash':
         specifier: ^4.17.4
         version: 4.17.4
@@ -19101,7 +19107,7 @@ snapshots:
       fs-extra: 11.2.0
       globby: 13.2.2
       jiti: 1.21.0
-      mlly: 1.6.1
+      mlly: 1.7.0
       mri: 1.2.0
       pathe: 1.1.2
       postcss: 8.4.38

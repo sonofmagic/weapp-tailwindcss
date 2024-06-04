@@ -1,5 +1,5 @@
 const platform = process.env.PLATFORM ?? 'weapp'
-
+const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")
 const platformMap = {
   weapp: {
     template: 'wxml',
@@ -19,7 +19,11 @@ module.exports = {
   theme: {
     extend: {}
   },
-  plugins: [],
+  plugins: [
+    iconsPlugin({
+      collections: getIconCollections(['mdi'])
+    })
+  ],
   corePlugins: {
     preflight: false
   }
