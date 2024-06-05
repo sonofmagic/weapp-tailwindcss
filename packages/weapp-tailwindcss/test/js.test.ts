@@ -14,6 +14,7 @@ import { createJsHandler } from '@/js/index'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { defaultOptions } from '@/defaults'
+import { decodeUnicode } from '@/js/handlers'
 // import { parse } from '@/babel'
 const getCase = createGetCase(jsCasePath)
 const getTsCase = createGetCase(tsCasePath)
@@ -24,9 +25,6 @@ function getClassCacheSet() {
   return twPatcher.getClassCacheSet()
 }
 
-function decodeUnicode(s: string) {
-  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/g, '%$1'))
-}
 const testTable = [
   {
     name: 'common',

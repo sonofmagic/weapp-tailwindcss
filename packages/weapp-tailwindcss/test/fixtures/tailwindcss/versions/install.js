@@ -13,8 +13,9 @@ if (version) {
     // pnpm EPERM: operation not permitted,
     // try yarn 
     const { stdout } = await execa('yarn', ['add', `tailwindcss${version}@npm:tailwindcss@${version}`], {
-      cwd
-    }).pipeStdout(process.stdout)
+      cwd,
+      stdout: process.stdout,
+    })//.pipeStdout(process.stdout)
     // const filename = getCurrentFilename(import.meta.url)
     // const dirname = path.dirname(filename)
     // const nodeModulesPath = path.resolve(dirname, 'node_modules')

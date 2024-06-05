@@ -1,120 +1,16 @@
 {
   "name": "weapp-tailwindcss",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    },
-    "./replace": {
-      "types": "./dist/replace.d.ts",
-      "require": "./dist/replace.js",
-      "import": "./dist/replace.mjs"
-    },
-    "./postcss": {
-      "types": "./dist/postcss.d.ts",
-      "require": "./dist/postcss.js",
-      "import": "./dist/postcss.mjs"
-    },
-    "./vite": {
-      "types": "./dist/vite.d.ts",
-      "require": "./dist/vite.js",
-      "import": "./dist/vite.mjs"
-    },
-    "./webpack": {
-      "types": "./dist/webpack.d.ts",
-      "require": "./dist/webpack.js",
-      "import": "./dist/webpack.mjs"
-    },
-    "./webpack4": {
-      "types": "./dist/webpack4.d.ts",
-      "require": "./dist/webpack4.js",
-      "import": "./dist/webpack4.mjs"
-    },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "require": "./dist/core.js",
-      "import": "./dist/core.mjs"
-    },
-    "./gulp": {
-      "types": "./dist/gulp.d.ts",
-      "require": "./dist/gulp.js",
-      "import": "./dist/gulp.mjs"
-    },
-    "./defaults": {
-      "types": "./dist/defaults.d.ts",
-      "require": "./dist/defaults.js",
-      "import": "./dist/defaults.mjs"
-    },
-    "./css-macro/postcss": {
-      "types": "./dist/css-macro/postcss.d.ts",
-      "require": "./dist/css-macro/postcss.js",
-      "import": "./dist/css-macro/postcss.mjs"
-    },
-    "./css-macro": {
-      "types": "./dist/css-macro/index.d.ts",
-      "require": "./dist/css-macro/index.js",
-      "import": "./dist/css-macro/index.mjs"
-    },
-    "./*": "./*"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ]
-    }
-  },
-  "sideEffects": false,
-  "scripts": {
-    "dev": "pnpm clean && pnpm dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
-    "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && pnpm dts",
-    "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
-    "build:cli": "cd plugins/cli && pnpm run build",
-    "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
-    "test": "npm run postinstall && vitest run",
-    "test:dev": "vitest",
-    "test:ui": "vitest --ui",
-    "vitest:coverage": "vitest run --coverage",
-    "clean": "node scripts/clean.js",
-    "raw": "ts-node scripts/raw",
-    "get-decl": "ts-node scripts/get-decl.ts",
-    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw",
-    "format": "prettier --check \"src/**/*.{ts,js}\" -w",
-    "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
-    "ls:pack": "npm pack --dry-run",
-    "cli:patch": "node bin/weapp-tailwindcss.js patch",
-    "prepare": "ts-patch install -s",
-    "bump": "bumpp",
-    "release": "node scripts/release.js",
-    "generate:readme": "ts-node scripts/readme/write.ts",
-    "lint": "eslint .",
-    "lint:fix": "eslint ./test --fix",
-    "-------": "-----------",
-    "postinstall": "node bin/weapp-tailwindcss.js patch"
-  },
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://weapp-tw.icebreaker.top",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
   },
-  "files": [
-    "bin",
-    "dist"
-  ],
-  "bin": {
-    "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
-    "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
-    "weapp-tw": "bin/weapp-tailwindcss.js"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org"
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "keywords": [
     "tailwindcss",
@@ -142,12 +38,119 @@
     "gulp",
     "gulp-plugin"
   ],
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./replace": {
+      "types": "./dist/replace.d.ts",
+      "import": "./dist/replace.mjs",
+      "require": "./dist/replace.js"
+    },
+    "./postcss": {
+      "types": "./dist/postcss.d.ts",
+      "import": "./dist/postcss.mjs",
+      "require": "./dist/postcss.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.mjs",
+      "require": "./dist/vite.js"
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "import": "./dist/webpack.mjs",
+      "require": "./dist/webpack.js"
+    },
+    "./webpack4": {
+      "types": "./dist/webpack4.d.ts",
+      "import": "./dist/webpack4.mjs",
+      "require": "./dist/webpack4.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.js"
+    },
+    "./gulp": {
+      "types": "./dist/gulp.d.ts",
+      "import": "./dist/gulp.mjs",
+      "require": "./dist/gulp.js"
+    },
+    "./defaults": {
+      "types": "./dist/defaults.d.ts",
+      "import": "./dist/defaults.mjs",
+      "require": "./dist/defaults.js"
+    },
+    "./css-macro/postcss": {
+      "types": "./dist/css-macro/postcss.d.ts",
+      "import": "./dist/css-macro/postcss.mjs",
+      "require": "./dist/css-macro/postcss.js"
+    },
+    "./css-macro": {
+      "types": "./dist/css-macro/index.d.ts",
+      "import": "./dist/css-macro/index.mjs",
+      "require": "./dist/css-macro/index.js"
+    },
+    "./*": "./*"
   },
-  "homepage": "https://weapp-tw.icebreaker.top",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "bin": {
+    "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
+    "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
+    "weapp-tw": "bin/weapp-tailwindcss.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=16.6.0"
+  },
+  "scripts": {
+    "dev": "pnpm clean && pnpm dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
+    "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript && pnpm dts",
+    "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
+    "build:cli": "cd plugins/cli && pnpm run build",
+    "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
+    "test": "npm run postinstall && vitest run",
+    "test:dev": "vitest",
+    "test:ui": "vitest --ui",
+    "vitest:coverage": "vitest run --coverage",
+    "clean": "node scripts/clean.js",
+    "raw": "ts-node scripts/raw",
+    "get-decl": "ts-node scripts/get-decl.ts",
+    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw",
+    "format": "prettier --check \"src/**/*.{ts,js}\" -w",
+    "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
+    "ls:pack": "npm pack --dry-run",
+    "cli:patch": "node bin/weapp-tailwindcss.js patch",
+    "prepare": "ts-patch install -s",
+    "bump": "bumpp",
+    "release": "node scripts/release.js",
+    "generate:readme": "ts-node scripts/readme/write.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint ./test --fix",
+    "-------": "-----------",
+    "postinstall": "node bin/weapp-tailwindcss.js patch"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "dependencies": {
     "@ast-core/escape": "^1.0.1",
     "@babel/generator": "7.24.7",
@@ -170,8 +173,5 @@
     "semver": "7.6.2",
     "tailwindcss-patch": "^3.0.0",
     "webpack-sources": "3.2.3"
-  },
-  "engines": {
-    "node": ">=16.6.0"
   }
 }

@@ -120,6 +120,58 @@ text,
   --tw-contain-style:   
 ;
 }
+.i-mdi-123 {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M4 17V9H2V7h4v10zm18-2a2 2 0 0 1-2 2h-4v-2h4v-2h-2v-2h2V9h-4V7h4a2 2 0 0 1 2 2v1.5a1.5 1.5 0 0 1-1.5 1.5a1.5 1.5 0 0 1 1.5 1.5zm-8 0v2H8v-4a2 2 0 0 1 2-2h2V9H8V7h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2v2z'/%3E%3C/svg%3E");
+}
+.i-mdi-ab-testing {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M4 2a2 2 0 0 0-2 2v8h2V8h2v4h2V4a2 2 0 0 0-2-2zm0 2h2v2H4m18 9.5V14a2 2 0 0 0-2-2h-4v10h4a2 2 0 0 0 2-2v-1.5a1.54 1.54 0 0 0-1.5-1.5a1.54 1.54 0 0 0 1.5-1.5M20 20h-2v-2h2zm0-4h-2v-2h2M5.79 21.61l-1.58-1.22l14-18l1.58 1.22Z'/%3E%3C/svg%3E");
+}
+.i-mdi-abacus {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M5 5h2v6H5zm5 0H8v6h2zM5 19h2v-6H5zm5-6H8v6h2v-2h5v-2h-5zm-8 8h2V3H2zM20 3v4h-7V5h-2v6h2V9h7v6h-2v-2h-2v6h2v-2h2v4h2V3z'/%3E%3C/svg%3E");
+}
+.i-mdi-typewriter {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M20 13h-4c0 1.1-.9 2-2 2h-4c-1.1 0-2-.9-2-2H4l-2 5v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-2M6 20c-.89 0-1.34-1.08-.71-1.71S7 18.11 7 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S11 18.11 11 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S15 18.11 15 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S19 18.11 19 19c0 .55-.45 1-1 1m0-10V3H6v7H3v2h18v-2M8 5h8v1H8m0 1h6v1H8'/%3E%3C/svg%3E");
+}
 .m-_20px_ {
   margin: 40rpx;
 }
@@ -242,10 +294,22 @@ exports[`e2e > 'gulp-app' 1`] = `
     <view class="mt-_24px_">
       <view class="text-base font-bold pb-_10px_ mb-_20px_ text-left border-b border-_hEEEEEE_">功能介绍</view>
       <view class="pl-_15px_ text-left block">
-        <view class="text-xs">支持 tailwindcss</view>
-        <view class="text-xs">SCSS 实时编译为 WXSS</view>
-        <view class="text-xs">px 和 rem 单位转小程序单位rpx</view>
-        <view class="text-xs">支持 typescript</view>
+        <view class="text-xs">
+          支持 tailwindcss
+          <text class="i-mdi-123"></text>
+        </view>
+        <view class="text-xs">
+          SCSS 实时编译为 WXSS
+          <text class="i-mdi-ab-testing"></text>
+        </view>
+        <view class="text-xs">
+          px 和 rem 单位转小程序单位rpx
+          <text class="i-mdi-abacus"></text>
+        </view>
+        <view class="text-xs">
+          支持 typescript
+          <text class="i-mdi-typewriter"></text>
+        </view>
         <view class="mt-_24px_">mt-[24px]</view>
         <view class="mt-_33px_">mt-[33px]</view>
       </view>
@@ -270,6 +334,10 @@ exports[`e2e > 'gulp-app' 2`] = `
   "font-medium",
   "h-[41.54vw]",
   "h-full",
+  "i-mdi-123",
+  "i-mdi-ab-testing",
+  "i-mdi-abacus",
+  "i-mdi-typewriter",
   "m-[20px]",
   "mb-[20px]",
   "mt-[24px]",
@@ -293,195 +361,26 @@ exports[`e2e > 'gulp-app' 2`] = `
 `;
 
 exports[`e2e > 'mpx-app' > css 1`] = `
-"::before,
-::after {
-  --tw-content: '';
-}
-view,
-text,
-:after,
-:before {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-}
-::backdrop {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-.flex {
-  display: -webkit-flex;
-  display: flex;
-}
-.flex-col {
-  -webkit-flex-direction: column;
-  flex-direction: column;
-}
-.bg-_h929292_ {
-  --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
-}
-.bg-_hfff_ {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.text-_50px_ {
-  font-size: 50px;
-}
-.text-_h123456_ {
-  --tw-text-opacity: 1;
-  color: rgb(18 52 86 / var(--tw-text-opacity));
-}
-.text-_he67240_ {
-  --tw-text-opacity: 1;
-  color: rgb(230 114 64 / var(--tw-text-opacity));
-}
-.text-_blue_ {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 255 / var(--tw-text-opacity));
-}
-.aftercml-0:after {
-  content: var(--tw-content);
-  margin-left: 0;
-}
-.aftercml-0d5:after {
-  content: var(--tw-content);
-  margin-left: 4rpx;
-}
-.afterctext-red-500:after {
-  --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity));
-  content: var(--tw-content);
-}
-.afterccontent-_xu4f60u597du554auff0cu6211u5f88u65e0u804ax_:after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_:after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
+"/* @import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities'; */
 "
 `;
 
 exports[`e2e > 'mpx-app' 1`] = `
 "<view>
-  <view class="text-_h123456_ text-_50px_ bg-_hfff_">对酒当歌，人生几何</view>
-  <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__">bgUrl</view>
-  <view class="after_c_content-_bl__dq_ _dq__br_ aftercml-0d5 afterctext-red-500"></view>
-  <view class="afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500"></view>
+  <view class="text-_bl__h_123456_br_ text-_bl_50px_br_ bg-_bl__h_fff_br_">对酒当歌，人生几何</view>
+  <view class="bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__pr__br_">bgUrl</view>
+  <view class="after_c_content-_bl__dq_ _dq__br_ after_c_ml-0_d_5 after_c_text-red-500"></view>
+  <view class="after_c_content-_bl__q_ _q__br_ after_c_ml-0_d_5 after_c_text-red-500"></view>
   <view>*****</view>
-  <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_h929292_" style="color: blue; font-size: 14px">111112222</view></view>
+  <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg- 929292" style="color: blue; font-size: 14px">111112222</view></view>
   <view style="color: blue; font-size: 14px; background-color: red">222222</view>
   <list is="components/liste824c5b4/index">
     <view class="flex liste824c5b4-index--flex flex-col liste824c5b4-index--flex-col">
-      <view class="text-_blue_ liste824c5b4-index--text-_blue_">手机</view>
-      <view class="text-_he67240_ liste824c5b4-index--text-_he67240_">电视</view>
-      <view class="text-_blue_ liste824c5b4-index--text-_blue_">电脑</view>
+      <view class="text-_bl_blue_br_ liste824c5b4-index--text-_bl_blue_br_">手机</view>
+      <view class="text-_bl__h_e67240_br_ liste824c5b4-index--text-_bl__h_e67240_br_">电视</view>
+      <view class="text-_bl_blue_br_ liste824c5b4-index--text-_bl_blue_br_">电脑</view>
     </view>
   </list>
   <button

@@ -1,6 +1,6 @@
-const path = require('node:path')
-const fs = require('node:fs/promises')
-const process = require('node:process')
+import path from 'node:path'
+import fs from 'node:fs/promises'
+import process from 'node:process'
 
 async function isExist(pathLike) {
   try {
@@ -46,7 +46,7 @@ async function run(dirPath, command) {
   }
 }
 
-module.exports = {
+export {
   run,
   isExist,
 }

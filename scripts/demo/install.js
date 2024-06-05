@@ -1,6 +1,11 @@
-const path = require('node:path')
-const process = require('node:process')
-const { run } = require('./run')
+import path from 'node:path'
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
+import { run } from './run.js'
+
+const getFilename = () => fileURLToPath(import.meta.url)
+const getDirname = () => path.dirname(getFilename())
+const __dirname = /* @__PURE__ */ getDirname()
 
 const argvs = new Set(process.argv.slice(2))
 const isBeta = argvs.has('--beta')
