@@ -1,4 +1,4 @@
-import { getClassCacheSet } from 'tailwindcss-patch'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCss } from '#test/helpers/getTwCss'
 import { getOptions } from '@/options'
 import { createGetCase, wxsCasePath } from '#test/util'
@@ -6,6 +6,10 @@ import { createGetCase, wxsCasePath } from '#test/util'
 import { wxsTagRegexp } from '@/reg'
 import type { RawSource } from '@/types'
 
+function getClassCacheSet() {
+  const twPatcher = new TailwindcssPatcher()
+  return twPatcher.getClassCacheSet()
+}
 const getCase = createGetCase(wxsCasePath)
 
 function extractSource(original: string, reg: RegExp) {

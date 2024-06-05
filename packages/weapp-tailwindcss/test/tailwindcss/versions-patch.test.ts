@@ -8,7 +8,9 @@ import type { ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 const versionsPkgDir = path.resolve(tailwindcssCasePath, 'versions/package.json')
 
 function internalPatch(...args: any[]) {
+  // @ts-ignore
   const res0 = internalPatch0(...args)
+  // @ts-ignore
   const res1 = internalPatch1(...args)
   return { ...res0, ...res1 }
 }
@@ -26,7 +28,8 @@ function getTailwindcssVersion(str: string) {
     return match[1]
   }
 }
-
+// @ts-ignore
+// eslint-disable-next-line ts/no-var-requires, ts/no-require-imports
 const pkg = require(versionsPkgDir)
 const versions = Object.keys(pkg.dependencies)
 
