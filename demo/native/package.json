@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@weapp-tailwindcss/cli": "^0.0.0-alpha.9",
+    "@weapp-tailwindcss/cli": "^1.0.3",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
@@ -18,7 +18,7 @@
     "tailwindcss-patch": "^3.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.3.0-alpha.0",
+    "weapp-tailwindcss": "^3.3.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^3.1.1-beta.0"
   },
