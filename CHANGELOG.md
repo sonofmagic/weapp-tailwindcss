@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.3.0 (2024-6-5)
+
+### Features
+
+- 升级到 `tailwindcss-patch@3` ，支持 `tailwindcss postcss7 compat` 的 `jit` 模式
+
 ## 3.2.1 (2024-5-10)
 
 ### Features
