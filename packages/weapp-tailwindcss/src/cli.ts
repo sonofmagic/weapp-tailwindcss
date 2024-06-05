@@ -1,6 +1,6 @@
 import process from 'node:process'
 import semver from 'semver'
-import { createPatch } from '@/tailwindcss/patcher'
+import { createPatch, createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getOptions } from '@/options'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from '@/constants'
 
@@ -17,8 +17,7 @@ if (semver.lt(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION)) {
 const command = args[0]
 if (command === 'patch') {
   const options = getOptions()
-  const patch = createPatch(options.supportCustomLengthUnitsPatch)
-  patch()
+  options.patch()
 }
 else {
   try {
