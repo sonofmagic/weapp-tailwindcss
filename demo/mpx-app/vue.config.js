@@ -35,19 +35,19 @@ module.exports = defineConfig({
    */
   configureWebpack(config) {
     // let start
-    config.plugins.push(new UnifiedWebpackPluginV5({
-      appType: 'mpx',
-      onStart() {
-        // start = performance.now()
-        bench.start()
-      },
-      onEnd() {
-        bench.end()
-        bench.dump()
-        // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-      },
-      rem2rpx: true,
-      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
-    }))
+    // config.plugins.push(new UnifiedWebpackPluginV5({
+    //   appType: 'mpx',
+    //   onStart() {
+    //     // start = performance.now()
+    //     bench.start()
+    //   },
+    //   onEnd() {
+    //     bench.end()
+    //     bench.dump()
+    //     // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+    //   },
+    //   rem2rpx: true,
+    //   jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
+    // }))
   }
 })

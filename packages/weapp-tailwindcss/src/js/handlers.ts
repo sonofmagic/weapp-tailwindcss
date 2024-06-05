@@ -13,8 +13,8 @@ interface ReplaceNode {
   end?: number | null
 }
 
-function decodeUnicode(s: string) {
-  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
+export function decodeUnicode(s: string) {
+  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/g, '%$1'))
 }
 
 export function replaceHandleValue(

@@ -1553,10 +1553,10 @@ util-deprecate@^1.0.2:
   resolved "https://registry.npmmirror.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-weapp-tailwindcss@^3.3.0-alpha.0:
-  version "3.3.0-alpha.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.0-alpha.0.tgz#22acd49f38544291be94beef3393141e41388cce"
-  integrity sha512-LqZmN7QETTRhM3WGF++4OLACceS9NUdpplcBKRdERapiAUwY7PAXONb9d4PJ+j7FaRxZyk6Vtp2vPPc8P7Nzvw==
+weapp-tailwindcss@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.0.tgz#adb7721b994fbd13aae1a8baf1b6a7bb4168844a"
+  integrity sha512-eUGHAVFLYBfsB9Og3V4MPmob2GmOnGNUu+XD8eVZhsqApf8lQ5sG1+1ut0OTWlkjJ4Vvpi4GlJSGLPZ2RV0yOA==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.7"
