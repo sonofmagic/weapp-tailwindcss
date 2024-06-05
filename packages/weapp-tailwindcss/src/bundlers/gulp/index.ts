@@ -18,20 +18,16 @@ const Transform = stream.Transform
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
 
-  const { templateHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet, tailwindcssBasedir, cache } = opts
+  const { templateHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet, cache, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
   patch?.()
-
-  const twPatcher = createTailwindcssPatcher()
 
   function transformWxss(options: Partial<IStyleHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
       async transform(file: File, encoding, callback) {
-        runtimeSet = twPatcher.getClassSet({
-          basedir: tailwindcssBasedir,
-        })
+        runtimeSet = twPatcher.getClassSet()
         setMangleRuntimeSet(runtimeSet)
         const error = null
 

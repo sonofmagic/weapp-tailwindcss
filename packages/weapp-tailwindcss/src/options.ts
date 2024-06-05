@@ -11,7 +11,7 @@ import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { createPatch } from '@/tailwindcss/patcher'
+import { createPatch, createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
 
@@ -45,6 +45,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     cssRemoveHoverPseudoClass,
     escapeMap,
     mangle,
+    tailwindcssBasedir,
   } = result
 
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -92,9 +93,13 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
   result.styleHandler = styleHandler
   result.jsHandler = jsHandler
   result.templateHandler = templateHandler
-  result.patch = createPatch(supportCustomLengthUnitsPatch)
+  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir)
+  result.patch = () => {
+    createPatch(supportCustomLengthUnitsPatch)()
+    twPatcher.patch()
+  }
   result.setMangleRuntimeSet = setMangleRuntimeSet
   result.cache = cache === undefined || typeof cache === 'boolean' ? createCache(cache) : cache
-
+  result.twPatcher = twPatcher
   return result
 }

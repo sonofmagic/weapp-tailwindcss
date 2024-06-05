@@ -30,7 +30,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     appType,
     setMangleRuntimeSet,
     cache,
-    tailwindcssBasedir,
+    twPatcher,
   } = opts
   if (disabled) {
     return
@@ -38,7 +38,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   patch?.()
 
-  const twPatcher = createTailwindcssPatcher()
   onLoad()
   // 要在 vite:css 处理之前运行
   return {
@@ -50,9 +49,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
-      const runtimeSet = twPatcher.getClassSet({
-        basedir: tailwindcssBasedir,
-      })
+      const runtimeSet = twPatcher.getClassSet()
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       if (Array.isArray(groupedEntries.html)) {

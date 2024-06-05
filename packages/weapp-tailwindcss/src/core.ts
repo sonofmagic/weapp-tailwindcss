@@ -9,7 +9,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   let runtimeSet = new Set<string>()
   patch?.()
 
-  const twPatcher = createTailwindcssPatcher()
+  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir)
 
   async function transformWxss(rawCss: string) {
     const code = await styleHandler(rawCss, {
@@ -22,9 +22,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
-        : twPatcher.getClassSet({
-          basedir: tailwindcssBasedir,
-        })
+        : twPatcher.getClassSet()
 
     const { code } = await jsHandler(rawJs, runtimeSet)
     return code

@@ -41,7 +41,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       setMangleRuntimeSet,
       runtimeLoaderPath,
       cache,
-      tailwindcssBasedir,
+      twPatcher,
     } = this.options
 
     if (disabled) {
@@ -52,11 +52,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource, RawSource } = sources
     // react
-    const twPatcher = createTailwindcssPatcher()
     function getClassSet() {
-      return twPatcher.getClassSet({
-        basedir: tailwindcssBasedir,
-      })
+      return twPatcher.getClassSet()
     }
 
     onLoad()

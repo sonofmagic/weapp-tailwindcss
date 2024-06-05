@@ -4,6 +4,8 @@ import { defu } from '@/utils'
 describe('get options', () => {
   it('default options', () => {
     const options = getOptions({})
+    // @ts-ignore
+    delete options.twPatcher
     expect(options).toMatchSnapshot()
   })
 
@@ -103,7 +105,7 @@ describe('get options', () => {
     // const { customAttributes } = getOptions()
 
     const customAttributes = {
-      '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/],
+      '*': [/[A-Za-z-]*[Cc]lass/],
     }
     const t = defu(customAttributes, {
       '*': ['class', 'hover-class'],

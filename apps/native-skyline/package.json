@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.8.0",
+    "@egoist/tailwindcss-icons": "^1.8.1",
     "@iconify-json/lucide": "^1.1.189",
     "@iconify-json/mdi": "^1.1.66",
     "@weapp-tailwindcss/cli": "workspace:*",

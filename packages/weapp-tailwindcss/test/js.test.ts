@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 // import punycode from 'node:punycode'
-import { getClassCacheSet } from 'tailwindcss-patch'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 // import { createGetCase, jsCasePath } from './util'
 // import { js } from '@ast-grep/napi'
 // import swc from '@swc/core'
@@ -19,8 +19,13 @@ const getCase = createGetCase(jsCasePath)
 const getTsCase = createGetCase(tsCasePath)
 const putCase = createPutCase(jsCasePath)
 
+function getClassCacheSet() {
+  const twPatcher = new TailwindcssPatcher()
+  return twPatcher.getClassCacheSet()
+}
+
 function decodeUnicode(s: string) {
-  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
+  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/g, '%$1'))
 }
 const testTable = [
   {

@@ -150,10 +150,10 @@
   "homepage": "https://weapp-tw.icebreaker.top",
   "dependencies": {
     "@ast-core/escape": "^1.0.1",
-    "@babel/generator": "7.24.6",
-    "@babel/parser": "7.24.6",
-    "@babel/traverse": "7.24.6",
-    "@babel/types": "7.24.6",
+    "@babel/generator": "7.24.7",
+    "@babel/parser": "7.24.7",
+    "@babel/traverse": "7.24.7",
+    "@babel/types": "7.24.7",
     "@csstools/postcss-is-pseudo-class": "4.0.8",
     "@tailwindcss-mangle/shared": "^2.2.2",
     "@weapp-core/escape": "^2.0.0",
@@ -168,7 +168,7 @@
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-selector-parser": "6.1.0",
     "semver": "7.6.2",
-    "tailwindcss-patch": "^2.2.4",
+    "tailwindcss-patch": "^3.0.0",
     "webpack-sources": "3.2.3"
   },
   "engines": {

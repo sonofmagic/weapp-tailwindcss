@@ -3,20 +3,13 @@ import fs from 'node:fs'
 import process from 'node:process'
 import { gte as semverGte } from 'semver'
 import type { PackageJson } from 'pkg-types'
-import { TailwindcssPatcher, monkeyPatchForExposingContext, requireResolve } from 'tailwindcss-patch'
+import { TailwindcssPatcher, requireResolve } from 'tailwindcss-patch'
 import { findAstNode } from './supportCustomUnit'
 import type { ILengthUnitsPatchDangerousOptions, ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 import { noop } from '@/utils'
 import { pluginName } from '@/constants'
 import { generate } from '@/babel'
 
-// `${cwd}/node_modules/${dangerousOptions.packageName}/package.json`
-// const pkgJson = require(tmpJsonPath) as PackageJson
-// https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
-// https://github.com/tailwindlabs/tailwindcss/discussions/9675
-// if (semverGte(pkgJson.version!, dangerousOptions.gteVersion)) {
-// }
-// const cwd = process.cwd()
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
   try {
@@ -45,7 +38,7 @@ export function createPatch(options: false | ILengthUnitsPatchOptions) {
       return internalPatch(getInstalledPkgJsonPath(options), options)
     }
     catch (error) {
-      console.warn(`patch tailwindcss failed:${(<Error>error).message}`)
+      console.warn(`patch tailwindcss failed: ${(<Error>error).message}`)
     }
   }
 }
@@ -83,7 +76,6 @@ export function monkeyPatchForSupportingCustomUnit(rootDir: string, options: ILe
 export function internalPatch(
   pkgJsonPath: string | undefined,
   options: ILengthUnitsPatchOptions,
-  overwrite = true,
 ): InternalPatchResult | undefined {
   if (pkgJsonPath) {
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8')) as PackageJson
@@ -92,12 +84,8 @@ export function internalPatch(
     if (semverGte(version, dangerousOptions.gteVersion)) {
       const rootDir = path.dirname(pkgJsonPath)
       const dataTypes = monkeyPatchForSupportingCustomUnit(rootDir, options)
-      const result = monkeyPatchForExposingContext(rootDir, {
-        overwrite,
-        version,
-      })
+
       return {
-        ...result,
         dataTypes,
       }
     }
@@ -116,8 +104,11 @@ export function mkCacheDirectory(cwd = process.cwd()) {
   return cacheDirectory
 }
 
-export function createTailwindcssPatcher() {
+export function createTailwindcssPatcher(basedir?: string) {
   return new TailwindcssPatcher({
     cache: true,
+    patch: {
+      basedir,
+    },
   })
 }

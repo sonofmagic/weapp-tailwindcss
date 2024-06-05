@@ -1,10 +1,17 @@
 import path from 'node:path'
-import { internalPatch } from '@/tailwindcss/patcher'
+import { internalPatch as internalPatch1 } from 'tailwindcss-patch'
+import { internalPatch as internalPatch0 } from '@/tailwindcss/patcher'
 import { tailwindcssCasePath } from '#test/util'
 import { getOptions } from '@/options'
 import type { ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 
 const versionsPkgDir = path.resolve(tailwindcssCasePath, 'versions/package.json')
+
+function internalPatch(...args: any[]) {
+  const res0 = internalPatch0(...args)
+  const res1 = internalPatch1(...args)
+  return { ...res0, ...res1 }
+}
 
 function getTailwindcssVersion(str: string) {
   const match = /^tailwindcss([\d.]*)$/.exec(str)
@@ -29,7 +36,7 @@ describe('versions-patch', () => {
     const options = getOptions()
     const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
     opt.dangerousOptions.overwrite = false
-    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${v}/package.json`), opt, false)
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${v}/package.json`), opt)
     expect(res).toMatchSnapshot()
   })
 
@@ -38,7 +45,7 @@ describe('versions-patch', () => {
     const options = getOptions()
     const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
     opt.dangerousOptions.overwrite = false
-    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt, false)
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt)
     expect(res).toEqual(oldCacheResult ?? res)
     oldCacheResult = res
   })
@@ -48,7 +55,7 @@ describe('versions-patch', () => {
     const options = getOptions()
     const opt = options.supportCustomLengthUnitsPatch as Required<ILengthUnitsPatchOptions>
     opt.dangerousOptions.overwrite = false
-    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt, false)
+    const res = internalPatch(path.resolve(tailwindcssCasePath, `versions/${version}/package.json`), opt)
     expect(res).toEqual(cacheResult ?? res)
     cacheResult = res
   })

@@ -1,8 +1,14 @@
-import { getClassCacheSet } from 'tailwindcss-patch'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCss } from './helpers/getTwCss'
 // import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
 // import fs from 'fs'
+
+function getClassCacheSet() {
+  const tw = new TailwindcssPatcher()
+  return tw.getClassCacheSet()
+}
+
 describe('postcss plugin', () => {
   it('base tw output', async () => {
     const res = await getCss('', {

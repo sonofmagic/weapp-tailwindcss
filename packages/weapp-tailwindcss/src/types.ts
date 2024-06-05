@@ -6,6 +6,7 @@ import type { ParseError, ParserOptions } from '@babel/parser'
 // import type { sources } from 'webpack'
 import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { Result } from 'postcss-load-config'
+import type { TailwindcssPatcher } from 'tailwindcss-patch'
 import type { InjectPreflight } from './postcss/preflight'
 import type { IContext as PostcssContext } from './postcss/plugins/ctx'
 import type { ICreateCacheReturnType } from '@/cache'
@@ -535,6 +536,7 @@ export type InternalUserDefinedOptions = Required<
     // initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
     setMangleRuntimeSet: (runtimeSet: Set<string>) => void
     cache: ICreateCacheReturnType
+    twPatcher: TailwindcssPatcher
   }
 >
 

@@ -1,4 +1,4 @@
-import { getClassCacheSet } from 'tailwindcss-patch'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
 import { SimpleMappingChars2String } from '@/escape'
 import { createJsHandler } from '@/js/index'
@@ -6,6 +6,11 @@ import { getCss } from '#test/helpers/getTwCss'
 // import { getOptions } from '@/options'
 // import { defaultOptions } from '@/defaults'
 const getCase = createGetCase(jsCasePath)
+
+function getClassCacheSet() {
+  const twPatcher = new TailwindcssPatcher()
+  return twPatcher.getClassCacheSet()
+}
 
 const testTable = [
   {
