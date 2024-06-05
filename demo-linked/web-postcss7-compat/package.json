@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ."
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,10 @@
   "devDependencies": {
     "autoprefixer": "^9",
     "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "weapp-tailwindcss": "^3.3.0-alpha.0"
+  },
+  "dependencies": {
+    "tailwindcss-patch": "^3.0.0"
   }
 }
