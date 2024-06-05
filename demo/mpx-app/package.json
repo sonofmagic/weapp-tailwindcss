@@ -49,7 +49,7 @@
     "@mpxjs/vue-cli-plugin-mpx-unit-test": "^2.1.8",
     "@mpxjs/webpack-plugin": "^2.9.30",
     "@vue/cli-service": "~5.0.0",
-    "@weapp-tailwindcss/cli": "^1.0.0",
+    "@weapp-tailwindcss/cli": "^0.0.0-alpha.9",
     "autoprefixer": "^10.4.19",
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
@@ -65,13 +65,13 @@
     "stylus-loader": "^8.1.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "^3.4.3",
-    "tailwindcss-patch": "^2.2.3",
+    "tailwindcss-patch": "^3.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.5",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.2.1",
+    "weapp-tailwindcss": "^3.3.0-alpha.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^3.1.1",
     "webpack": "^5.91.0"
@@ -79,5 +79,6 @@
   "browserslist": [
     "ios >= 8",
     "chrome >= 47"
-  ]
+  ],
+  "packageManager": "yarn@1.22.22"
 }

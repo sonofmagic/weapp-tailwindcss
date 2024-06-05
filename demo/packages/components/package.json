@@ -38,5 +38,6 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme"
+  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
+  "packageManager": "yarn@1.22.22"
 }

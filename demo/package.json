@@ -47,5 +47,6 @@
     "dayjs": "^1.11.10",
     "fs-extra": "^11.2.0",
     "lodash": "^4.17.21"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
