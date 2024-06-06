@@ -34,20 +34,20 @@ module.exports = defineConfig({
    * 可以将configureWebpack.snap.managedPaths修改为 []
    */
   configureWebpack(config) {
-    // let start
-    // config.plugins.push(new UnifiedWebpackPluginV5({
-    //   appType: 'mpx',
-    //   onStart() {
-    //     // start = performance.now()
-    //     bench.start()
-    //   },
-    //   onEnd() {
-    //     bench.end()
-    //     bench.dump()
-    //     // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
-    //   },
-    //   rem2rpx: true,
-    //   jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
-    // }))
+    let start
+    config.plugins.push(new UnifiedWebpackPluginV5({
+      appType: 'mpx',
+      onStart() {
+        // start = performance.now()
+        bench.start()
+      },
+      onEnd() {
+        bench.end()
+        bench.dump()
+        // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+      },
+      rem2rpx: true,
+      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
+    }))
   }
 })

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env mpx-cli-service serve",
+    "dev": "cross-env BABEL=1 mpx-cli-service serve",
     "dev:debug": "cross-env DEBUG=weapp-tw mpx-cli-service serve",
     "serve": "mpx-cli-service serve",
-    "build": "mpx-cli-service build",
+    "build": "cross-env BABEL=1 mpx-cli-service build",
     "build:babel": "cross-env BABEL=1 mpx-cli-service build",
     "test:e2e": "npx e2e-runner j---config=./jest-e2e.config.js",
     "lint": "eslint --ext .js,.ts,.mpx src/",

@@ -37,6 +37,7 @@ export const loaderCasePath = resolve(__dirname, 'fixtures/loader')
 export const tailwindcssCasePath = resolve(__dirname, 'fixtures/tailwindcss')
 export const webpack5CasePath = resolve(__dirname, 'fixtures/webpack/v5')
 export const gulpCasePath = resolve(__dirname, 'fixtures/gulp')
+export const unicodeCasePath = resolve(__dirname, 'fixtures/unicode')
 
 export function readFile(filepath: string) {
   return fs.readFile(filepath, {
