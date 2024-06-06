@@ -1,6 +1,6 @@
-import { decodeUnicode } from '@/js/handlers'
 import { createGetCase, unicodeCasePath } from './util'
-import { jsHandlerAsync } from '@/js'
+import { decodeUnicode } from '@/js/handlers'
+import { jsHandler, jsHandlerAsync } from '@/js'
 
 const getCase = createGetCase(unicodeCasePath)
 
@@ -15,7 +15,16 @@ describe('unicode', () => {
     const testCase = await getCase('case0.js')
 
     const { code } = await jsHandlerAsync(testCase, {
-      jsAstTool: 'ast-grep'
+      jsAstTool: 'ast-grep',
+    })
+    expect(code).toMatchSnapshot()
+  })
+
+  it('unicode case 1 fs', async () => {
+    const testCase = await getCase('case0.js')
+
+    const { code } = await jsHandler(testCase, {
+
     })
     expect(code).toMatchSnapshot()
   })

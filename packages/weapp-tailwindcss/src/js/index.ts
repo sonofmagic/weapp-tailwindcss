@@ -45,6 +45,7 @@ async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: 
   for (const node of nodes) {
     const range = node.range()
     const text = node.text()
+
     replaceHandleValue(
       text.slice(1, -1),
       {

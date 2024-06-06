@@ -17,6 +17,10 @@ export function decodeUnicode(s: string) {
   return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/g, '%$1'))
 }
 
+export function decodeUnicode2(input: string) {
+  return JSON.parse(`"${input}"`)
+}
+
 export function replaceHandleValue(
   str: string,
   node: ReplaceNode,
@@ -40,13 +44,13 @@ export function replaceHandleValue(
   const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
   let needDecodeUnicode = false
-  if (unescapeUnicode && rawStr.includes('\\')) {
-    rawStr = decodeUnicode(rawStr)
+  if (unescapeUnicode && rawStr.includes('\\u')) {
+    rawStr = decodeUnicode2(rawStr)
     needDecodeUnicode = true
   }
   for (let v of arr) {
-    if (needDecodeUnicode && v.includes('\\')) {
-      v = decodeUnicode(v)
+    if (needDecodeUnicode && v.includes('\\u')) {
+      v = decodeUnicode2(v)
     }
     if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false

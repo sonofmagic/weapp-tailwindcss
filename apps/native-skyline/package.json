@@ -17,7 +17,7 @@
     "@iconify-json/lucide": "^1.1.189",
     "@iconify-json/mdi": "^1.1.66",
     "@weapp-tailwindcss/cli": "workspace:*",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^3.4.4",
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss": "workspace:*"
   },
