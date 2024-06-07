@@ -28,10 +28,11 @@ function HomepageHeader() {
             <b className="text-sky-500">提升</b>
             开发效率的
           </h3>
-          <h3>
+          <h3 className="text-lg sm:text-xl">
             <span className="text-[#07c160]">小程序</span>
             {' '}
             使用
+            {' '}
             <span className="text-sky-500">tailwindcss</span>
             {' '}
             全方面解决方案

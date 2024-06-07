@@ -135,6 +135,7 @@ const config = {
         tsconfig: '../packages/weapp-tailwindcss/tsconfig.json',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH,
+        skipErrorChecking: true,
       },
     ],
     [
@@ -146,6 +147,7 @@ const config = {
         readme: 'none',
         out: './docs/api-cli',
         watch: process.env.TYPEDOC_WATCH,
+        skipErrorChecking: true,
       },
     ],
     // function nodeLoader(context, options) {
