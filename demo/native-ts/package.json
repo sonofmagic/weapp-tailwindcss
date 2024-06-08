@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "echo build"
+    "build": "echo build",
+    "build:babel": "echo build:babel"
   },
   "keywords": [],
   "author": "",

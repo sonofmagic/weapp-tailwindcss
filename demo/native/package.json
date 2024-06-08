@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "echo build"
+    "build": "echo build",
+    "build:babel": "echo build:babel"
   },
   "keywords": [],
   "author": "",
