@@ -28,7 +28,7 @@
   "devDependencies": {
     "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.18",
-    "@weapp-tailwindcss/cli": "^1.0.3",
+    "@weapp-tailwindcss/cli": "^0.0.0-alpha.9",
     "autoprefixer": "^10.4.18",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
@@ -39,11 +39,11 @@
     "rax-app": "3.8.22",
     "stylelint": "^16.2.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^3.4.4",
     "tailwindcss-patch": "^3.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.3.0",
+    "weapp-tailwindcss": "^3.3.1-alpha.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^3.1.1-beta.0"
   },

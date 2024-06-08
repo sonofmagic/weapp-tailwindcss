@@ -61,17 +61,13 @@ export function replaceHandleValue(
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
 
-  const arr = splitCode(str, allowDoubleQuotes)
   let rawStr = str
-  let needDecodeUnicode = false
+  let needUpdate = false
   if (unescapeUnicode && rawStr.includes('\\u')) {
     rawStr = decodeUnicode2(rawStr)
-    needDecodeUnicode = true
   }
-  for (let v of arr) {
-    if (needDecodeUnicode && v.includes('\\u')) {
-      v = decodeUnicode2(v)
-    }
+  const arr = splitCode(rawStr, allowDoubleQuotes)
+  for (const v of arr) {
     if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
@@ -90,14 +86,12 @@ export function replaceHandleValue(
             escapeMap,
           }),
         )
+        needUpdate = true
       }
-    }
-    if (needDecodeUnicode) {
-      rawStr = toUnicodeEscapedString(rawStr)
     }
   }
 
-  if (typeof node.start === 'number' && typeof node.end === 'number') {
+  if (needUpdate && typeof node.start === 'number' && typeof node.end === 'number') {
     const start = node.start + offset
     const end = node.end - offset
 
