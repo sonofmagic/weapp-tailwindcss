@@ -1,0 +1,1 @@
+const x = "after:content-['\u6211\u77e5\u9053\u6211\u5fc3,\u6c38\u605212we_ds']"

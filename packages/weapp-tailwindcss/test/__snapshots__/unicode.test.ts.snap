@@ -7,9 +7,7 @@ exports[`unicode > unicode case 0 1`] = `
 `;
 
 exports[`unicode > unicode case 0 fs 1`] = `
-"const testCase = '	
-
-      '
+"const testCase = '\\u0009\\u000a\\u000b\\u000c\\u000d      '
       + '          　  ﻿'"
 `;
 
@@ -17,3 +15,7 @@ exports[`unicode > unicode case 1 fs 1`] = `
 "const testCase = '\\u0009\\u000A\\u000B\\u000C\\u000D\\u0020\\u00A0\\u1680\\u2000\\u2001\\u2002'
       + '\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000\\u2028\\u2029\\uFEFF'"
 `;
+
+exports[`unicode > unicode case 2 fs 1`] = `"const x = "afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_""`;
+
+exports[`unicode > unicode case 2 fs 1 1`] = `"const x = "after:content-['我知道我心,永恒12we_ds']""`;

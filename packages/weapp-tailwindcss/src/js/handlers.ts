@@ -18,7 +18,27 @@ export function decodeUnicode(s: string) {
 }
 
 export function decodeUnicode2(input: string) {
-  return JSON.parse(`"${input}"`)
+  try {
+    return JSON.parse(`"${input}"`)
+  }
+  catch (error) {
+    return input
+  }
+}
+
+export function toUnicodeEscapedString(str: string) {
+  return str.split('').map((char) => {
+    const code = char.charCodeAt(0)
+    if (code <= 31) {
+      const hexCode = code.toString(16).padStart(4, '0')
+      return `\\u${hexCode}`
+    }
+    return char
+  }).join('')
+}
+
+export function toUnicodeEscapedString2(str: string) {
+  return escape(str).replace(/%u/g, '\\u').replace(/%/g, '\\u00')
 }
 
 export function replaceHandleValue(
@@ -71,6 +91,9 @@ export function replaceHandleValue(
           }),
         )
       }
+    }
+    if (needDecodeUnicode) {
+      rawStr = toUnicodeEscapedString(rawStr)
     }
   }
 

@@ -113,7 +113,7 @@
     "@types/js-beautify": "^1.14.3",
     "@types/klaw": "^3.0.6",
     "@types/loader-utils": "^2.0.6",
-    "@types/lodash": "^4.17.4",
+    "@types/lodash": "^4.17.5",
     "@types/md5": "^2.3.5",
     "@types/micromatch": "^4.0.7",
     "@types/node": "^20.14.2",
