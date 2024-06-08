@@ -7,12 +7,13 @@ const getFilename = () => fileURLToPath(import.meta.url)
 const getDirname = () => path.dirname(getFilename())
 const __dirname = /* @__PURE__ */ getDirname()
 const argvs = process.argv.slice(2)
-const useLocal = argvs.includes('--local')
-;(async () => {
+const useBabel = argvs.includes('--babel')
+
+  ; (async () => {
   const demoPath = path.resolve(__dirname, '../../demo')
   const result = []
   try {
-    await run(demoPath, `build${useLocal ? ':local' : ''}`)
+    await run(demoPath, `build${useBabel ? ':babel' : ''}`)
   }
   catch (error) {
     result.push(error)

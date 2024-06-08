@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "echo build"
+    "build": "echo build",
+    "build:babel": "echo build:babel"
   },
   "keywords": [],
   "author": "",
@@ -14,11 +15,11 @@
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^3.4.4",
     "tailwindcss-patch": "^3.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.3.0",
+    "weapp-tailwindcss": "^3.3.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^3.1.1-beta.0"
   },
