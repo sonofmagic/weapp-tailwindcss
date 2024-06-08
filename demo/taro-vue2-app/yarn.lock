@@ -16113,10 +16113,10 @@ weapp-tailwindcss-webpack-plugin@^3.2.1:
     tailwindcss-patch "^2.2.3"
     webpack-sources "3.2.3"
 
-weapp-tailwindcss@^3.3.1-alpha.0:
-  version "3.3.1-alpha.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.1-alpha.0.tgz#101ca5c7df1a3ce13fe2b5f176c72dda190045e1"
-  integrity sha512-dnSmT1S+6fxJ2wAWdxyCT5qFSL06KpSfoQ4bcxZ5nHlMTfcDr8pOnkrO0Ynrh3FhYEMvRgCrNHegvqe5zyvA9Q==
+weapp-tailwindcss@^3.3.1-alpha.1:
+  version "3.3.1-alpha.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.1-alpha.1.tgz#046c6355e7e360a3179683e70f3651e5f42bec20"
+  integrity sha512-w55Kt3acNPnLTKndsPiN44u1qu6TFuGwjlL/zhM7u9Ru4RcYfOns+Tx6/2ie12JAvTFzGfsfJm/urleZ2lu9Ow==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.7"

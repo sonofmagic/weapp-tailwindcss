@@ -91,7 +91,7 @@
     "typescript": "~5.4.5",
     "vue-loader": "^15.11.1",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.3.1-alpha.0",
+    "weapp-tailwindcss": "^3.3.1-alpha.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-tailwindcss-webpack-plugin": "^3.2.1",
     "webpack": "^5.91.0"

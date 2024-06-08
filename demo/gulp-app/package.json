@@ -74,7 +74,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.3.1-alpha.0",
+    "weapp-tailwindcss": "^3.3.1-alpha.1",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "dependencies": {
