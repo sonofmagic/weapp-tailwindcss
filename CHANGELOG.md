@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 3.3.1 (2024-6-9)
+
+### Features
+
+- 支持涂鸦小程序
+
+### Fixed
+
+- 修复 [#304](https://github.com/sonofmagic/weapp-tailwindcss/issues/304)
+
 ## 3.3.0 (2024-6-5)
 
 ### Features
