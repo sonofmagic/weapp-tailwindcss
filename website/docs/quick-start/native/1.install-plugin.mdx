@@ -66,6 +66,36 @@ npx weapp-tw init
 
 使用微信开发者工具，直接导入这个目录，然后即可预览效果
 
+:::info
+在使用 原生 typescript 插件编译的注意事项:
+
+使用微信开发者工具编译 `typescript` 的配置如下：
+
+```json title="project.config.json"
+{
+  "setting": {
+    "useCompilerPlugins":[
+      "typescript"
+    ]
+  }
+}
+```
+
+进行编译 `ts` 文件的时候，记得把 `dist` 加入你的 `tsconfig.json` 的 `exclude` 字段中
+
+```json title="tsconfig.json"
+{
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
+```
+
+:::
+
 ## 更多
 
-更多详情和配置，请查看 `更多的细节` 章节
+更多详情和配置，请查看 `更多的细节` 章节;
+
+
