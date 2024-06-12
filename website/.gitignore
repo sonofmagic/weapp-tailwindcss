@@ -22,3 +22,4 @@ yarn-error.log*
 docs/api
 docs/api-cli
 !docs
+scripts/docx
