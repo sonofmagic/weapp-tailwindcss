@@ -48,4 +48,4 @@
 
 你还可以在项目的根目录的 `demo` 文件夹中，找到各个框架的注册方式。
 
-里面有 `gulp`,`mpx`,`webpack5`,`rax`,`taro-react`,`taro-vue2`,`taro-vue3`,`uni-app vue2 webpack5`,`uni-app vue3 vite` 的项目
+里面有 `gulp` , `mpx` , `webpack5` , `rax` , `taro-react` , `taro-vue2` , `taro-vue3` , `uni-app vue2 webpack5` , `uni-app vue3 vite` 的项目

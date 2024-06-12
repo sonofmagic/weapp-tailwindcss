@@ -2,7 +2,7 @@
 
 ## 默认使用方式
 
-> 配置会稍微复杂一些，这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
+> 配置会稍微复杂一些，这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template) 或者 [若依移动端 (Gitee 地址)](https://gitee.com/sonofmagic/RuoYi-App)
 
 ### tailwind.config.js
 
@@ -21,6 +21,7 @@ module.exports = {
   content: ["./index.html", "./pages/**/*.{html,js,ts,jsx,tsx,vue}"].map(resolve),
   // ...
   corePlugins: {
+    // 跨多端可以 h5 开启，小程序关闭
     preflight: false,
   },
 };
@@ -45,10 +46,15 @@ const resolve = (p) => {
 };
 
 export default defineConfig({
-  plugins: [uni(), uvwt({
-    rem2rpx: true,
-    disabled: WeappTailwindcssDisabled
-  })],
+  plugins: [
+    uni(), 
+    uvwt({
+      rem2rpx: true,
+      disabled: WeappTailwindcssDisabled,
+      // 由于 hbuilderx 会改变 process.cwd 所以这里必须传入当前目录的绝对路径
+      tailwindcssBasedir: __dirname
+    })
+  ],
   css: {
     postcss: {
       plugins: [
