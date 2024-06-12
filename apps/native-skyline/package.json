@@ -14,7 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
-    "@iconify-json/lucide": "^1.1.190",
+    "@iconify-json/lucide": "^1.1.191",
     "@iconify-json/mdi": "^1.1.66",
     "@weapp-tailwindcss/cli": "workspace:*",
     "tailwindcss": "^3.4.4",

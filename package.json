@@ -84,10 +84,10 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.22.6",
+    "@ast-grep/napi": "^0.23.0",
     "@babel/core": "^7.24.7",
-    "@eslint/config-inspector": "^0.4.10",
-    "@icebreakers/eslint-config": "^0.3.6",
+    "@eslint/config-inspector": "^0.4.11",
+    "@icebreakers/eslint-config": "^0.3.7",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
@@ -162,11 +162,11 @@
     "postcss": "^8.4.38",
     "postcss-load-config": "^6.0.1",
     "postcss-loader": "^8.1.1",
-    "prettier": "^3.3.1",
+    "prettier": "^3.3.2",
     "promisify-loader-runner": "^1.0.1",
     "rollup": "^4.18.0",
     "rollup-plugin-visualizer": "^5.12.0",
-    "sass": "^1.77.4",
+    "sass": "^1.77.5",
     "semver": "7.6.2",
     "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
@@ -185,7 +185,7 @@
     "vite": "^5.2.13",
     "vitest": "^1.6.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "webpack": "^5.91.0",
+    "webpack": "^5.92.0",
     "webpack-build-utils": "^0.0.7"
   }
 }
