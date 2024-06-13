@@ -19,7 +19,7 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "deploy:cos": "pnpm build && ice-deploy -c --dir=build",
-    "build:docs": "node scripts/index.js"
+    "build:docx": "tsx scripts/docx.ts"
   },
   "dependencies": {
     "@docusaurus/core": "3.4.0",
