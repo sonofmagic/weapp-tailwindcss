@@ -10,17 +10,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@dcloudio/uni-cli-i18n": "2.0.2-3090820231124001",
-    "@dcloudio/uni-cli-shared": "2.0.2-3090820231124001",
+    "@dcloudio/uni-cli-i18n": "2.0.2-4010520240507001",
+    "@dcloudio/uni-cli-shared": "2.0.2-4010520240507001",
     "@dcloudio/vue-cli-plugin-uni": "2.0.2-3090820231124001",
-    "postcss": "7",
-    "postcss-rem-to-responsive-pixel": "^5.1.3",
+    "postcss": "^8.4.38",
     "source-map-js": "^1.0.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "webpack": "npm:webpack@webpack-4",
-    "weapp-tailwindcss": "workspace:^"
+    "weapp-tailwindcss": "workspace:^",
+    "webpack": "npm:webpack@webpack-4"
   },
-  "dependencies": {},
   "uni-app": {
     "scripts": {
       "debug": {

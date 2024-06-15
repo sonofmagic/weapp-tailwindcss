@@ -12,7 +12,9 @@ const config = {
   configureWebpack: {
     plugins: [
       new UnifiedWebpackPluginV4({
-        disabled: WeappTailwindcssDisabled
+        disabled: WeappTailwindcssDisabled,
+        rem2rpx: true,
+        tailwindcssBasedir: __dirname
       })
     ]
   }

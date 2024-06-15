@@ -12,13 +12,13 @@ module.exports = {
       config: path.resolve(__dirname, './tailwind.config.js')
     }),
     // rem 转 rpx
-    WeappTailwindcssDisabled
-      ? undefined
-      : require('postcss-rem-to-responsive-pixel/postcss7')({
-          rootValue: 32,
-          propList: ['*'],
-          transformUnit: 'rpx'
-        }),
+    // WeappTailwindcssDisabled
+    //   ? undefined
+    //   : require('postcss-rem-to-responsive-pixel/postcss7')({
+    //       rootValue: 32,
+    //       propList: ['*'],
+    //       transformUnit: 'rpx'
+    //     }),
     WeappTailwindcssDisabled ? require('@dcloudio/vue-cli-plugin-uni/packages/postcss') : undefined
   ]
 }
