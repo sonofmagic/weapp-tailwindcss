@@ -1,7 +1,7 @@
 {
   "name": "weapp-tailwindcss-e2e-components-archived",
   "version": "0.0.2",
-  "description": "weapp-tailwindcss-webpack-plugin e2e test components",
+  "description": "weapp-tailwindcss e2e test components",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -30,14 +30,13 @@
   "optionalDependencies": {
     "@tarojs/components": "^3.6.6",
     "react": "^17.0.0 || ^18.0.0",
-    "vue": "^3.3.4",
-    "weapp-tailwindcss-webpack-plugin": "^2.3.4"
+    "vue": "^3.3.4"
   },
   "peerDependencies": {},
   "devDependencies": {},
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin#readme",
+  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss#readme",
   "packageManager": "yarn@1.22.22"
 }

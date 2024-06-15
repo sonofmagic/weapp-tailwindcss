@@ -85,7 +85,6 @@
     "weapp-ide-cli": "^1.0.1",
     "weapp-tailwindcss": "^2.11.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-tailwindcss-webpack-plugin": "link:../..",
     "webpack": "^5.89.0",
     "webpack-chain": "^6.5.1"
   },

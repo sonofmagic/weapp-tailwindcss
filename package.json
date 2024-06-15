@@ -13,7 +13,7 @@
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
   },
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues"
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "keywords": [
     "tailwindcss",
