@@ -1,5 +1,5 @@
 const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-children');
-const cssMacro = require('weapp-tailwindcss-webpack-plugin/css-macro');
+const cssMacro = require('weapp-tailwindcss/css-macro');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],

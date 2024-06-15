@@ -1,5 +1,5 @@
 <template>
-  <view :class="[classname, 'overflow-hidden', 'relative']">https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/55</view>
+  <view :class="[classname, 'overflow-hidden', 'relative']">https://github.com/sonofmagic/weapp-tailwindcss/issues/55</view>
 </template>
 
 <script setup lang="ts">

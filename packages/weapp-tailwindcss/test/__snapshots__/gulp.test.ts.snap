@@ -245,8 +245,8 @@ exports[`gulp > common build > wxml 1`] = `
     <view class="bg-_url_httpscsspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ bg-_lengthc100p_100p_ bg-no-repeat w-screen h-_41d54vw_"></view>
     <view class="space-y-4">
       <view class="text-_14px_">基于Gulp 的微信小程序前端开发工作流</view>
-      <view class="text-_14px_ text-_h5ba4e5_" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin">
-        https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
+      <view class="text-_14px_ text-_h5ba4e5_" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss">
+        https://github.com/sonofmagic/weapp-tailwindcss
       </view>
       <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
     </view>
@@ -511,8 +511,8 @@ exports[`gulp > common build with mangle options mangleClassFilter always true >
     <view class="m n o g e"></view>
     <view class="h">
       <view class="t">基于Gulp 的微信小程序前端开发工作流</view>
-      <view class="t aa" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin">
-        https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
+      <view class="t aa" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss">
+        https://github.com/sonofmagic/weapp-tailwindcss
       </view>
       <view class="w y">Fork from Jeff2Ma/WeApp-Workflow</view>
     </view>
@@ -777,8 +777,8 @@ exports[`gulp > common build with mangle options prefix > wxml 1`] = `
     <view class="l m n f d"></view>
     <view class="g">
       <view class="s">基于Gulp 的微信小程序前端开发工作流</view>
-      <view class="s z" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin">
-        https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
+      <view class="s z" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss">
+        https://github.com/sonofmagic/weapp-tailwindcss
       </view>
       <view class="v x">Fork from Jeff2Ma/WeApp-Workflow</view>
     </view>
@@ -1043,8 +1043,8 @@ exports[`gulp > common build with mangle true > wxml 1`] = `
     <view class="tw-l tw-m tw-n tw-f tw-d"></view>
     <view class="tw-g">
       <view class="tw-s">基于Gulp 的微信小程序前端开发工作流</view>
-      <view class="tw-s tw-z" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin">
-        https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin
+      <view class="tw-s tw-z" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss">
+        https://github.com/sonofmagic/weapp-tailwindcss
       </view>
       <view class="tw-v tw-x">Fork from Jeff2Ma/WeApp-Workflow</view>
     </view>

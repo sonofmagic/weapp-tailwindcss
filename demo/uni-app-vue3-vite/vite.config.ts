@@ -2,21 +2,6 @@ import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss/vite';
 const bench = require('../bench')('uni-app-vite-vue3');
-// import Unocss from 'unocss/vite';
-// import WindiCSS from 'vite-plugin-windicss';
-
-// if (process.env.LOCAL) {
-//   console.log('use local built webpack plugin');
-//   const { UnifiedViteWeappTailwindcssPlugin } = require('./weapp-tw-dist/vite');
-//   vwt = UnifiedViteWeappTailwindcssPlugin;
-// } else {
-//   const { UnifiedViteWeappTailwindcssPlugin } = require('weapp-tailwindcss-webpack-plugin/vite');
-//   vwt = UnifiedViteWeappTailwindcssPlugin;
-// }
-// const { UnifiedViteWeappTailwindcssPlugin: vwt } = require('weapp-tailwindcss-webpack-plugin/vite');
-
-// import vwt from 'weapp-tailwindcss-webpack-plugin/vite';
-// import postcssWeappTailwindcssRename from 'weapp-tailwindcss-webpack-plugin/postcss';
 
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === 'h5';
@@ -40,7 +25,7 @@ if (!WeappTailwindcssDisabled) {
   // );
   postcssPlugins.push(require('weapp-tailwindcss/css-macro/postcss'));
 }
-let start;
+let start: number;
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [

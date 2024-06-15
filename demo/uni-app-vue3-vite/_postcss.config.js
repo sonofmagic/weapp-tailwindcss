@@ -14,7 +14,7 @@ if (!WeappTailwindcssDisabled) {
     })
   );
 
-  // plugins.push(require('weapp-tailwindcss-webpack-plugin/postcss')());
+  // plugins.push(require('weapp-tailwindcss/postcss')());
 }
 
 module.exports = {

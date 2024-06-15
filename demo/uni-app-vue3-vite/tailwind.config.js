@@ -8,7 +8,7 @@ const plugin = require('tailwindcss/plugin');
 function r(...args) {
   return path.resolve(__dirname, ...args);
 }
-const cssMacro = require('weapp-tailwindcss-webpack-plugin/css-macro');
+const cssMacro = require('weapp-tailwindcss/css-macro');
 const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-children');
 /** @type {import('tailwindcss').Config} */
 module.exports = {

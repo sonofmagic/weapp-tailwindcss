@@ -3,14 +3,7 @@ const path = require('path')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 const bench = require('../../bench')('taro-vue2')
-// if (isLocal) {
-//   console.log('use local built webpack plugin')
-//   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
-//   UnifiedWebpackPluginV5 = plugin
-// } else {
-//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-//   UnifiedWebpackPluginV5 = plugin
-// }
+
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const config = {
   projectName: 'taro-vue2-app',

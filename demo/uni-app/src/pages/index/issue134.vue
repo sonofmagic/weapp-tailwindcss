@@ -8,7 +8,7 @@
 <script lang="ts">
 import Test from './test.vue'
 import Vue from 'vue'
-// https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134
+// https://github.com/sonofmagic/weapp-tailwindcss/issues/134
 export default Vue.extend({
   components: { Test },
   data() {

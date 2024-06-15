@@ -1,16 +1,6 @@
-// build.plugin.js
-// let UnifiedWebpackPluginV5;
-// if (process.env.LOCAL) {
-//   console.log('use local built webpack plugin');
-//   const { UnifiedWebpackPluginV5: plugin } = require('./weapp-tw-dist');
-//   UnifiedWebpackPluginV5 = plugin;
-// } else {
-//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack');
-//   UnifiedWebpackPluginV5 = plugin;
-// }
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack');
 const bench = require('../bench')('rax');
-// const { RaxTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
     // console.log(config);

@@ -12,7 +12,7 @@
       <view class="translate-y-[17rpx] backdrop-blur-[2rpx] blur-[2rpx]"></view>
     </view>
     <view>由此可见，只有arbitrary-values使用中产生二义性的时候复现</view>
-    <view>https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110</view>
+    <view>https://github.com/sonofmagic/weapp-tailwindcss/issues/110</view>
     <view>text/border/ring/ring-offset/outline</view>
     <view>outline-offset 没有出现这种情况</view>
     <view>divide-[3rpx] 不纳入因为本身 arbitrary-values 就是表示颜色</view>

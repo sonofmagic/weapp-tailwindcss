@@ -8,7 +8,7 @@ if (isLocal) {
   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
   UnifiedWebpackPluginV5 = plugin
 } else {
-  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
+  const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss/webpack')
   UnifiedWebpackPluginV5 = plugin
 }
 const config = {

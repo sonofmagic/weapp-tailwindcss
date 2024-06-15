@@ -9,12 +9,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "yarn@1.22.22",
   "devDependencies": {
     "autoprefixer": "^9",
     "postcss": "^7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "weapp-tailwindcss": "^3.3.0"
+    "weapp-tailwindcss": "workspace:^"
   },
   "dependencies": {
     "tailwindcss-patch": "^3.0.0"

@@ -1,8 +1,8 @@
-import _slicedToArray from 'G:/github2/weapp-tailwindcss-webpack-plugin/demo/taro-app/node_modules/@babel/runtime/helpers/esm/slicedToArray.js'
+import _slicedToArray from 'G:/github2/weapp-tailwindcss/demo/taro-app/node_modules/@babel/runtime/helpers/esm/slicedToArray.js'
 import { useState } from 'react'
 import { View } from '@tarojs/components' // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 
-import { replaceJs } from 'weapp-tailwindcss-webpack-plugin/replace'
+import { replaceJs } from 'weapp-tailwindcss/replace'
 import './index.scss'
 import { jsx as _jsx } from 'react/jsx-runtime'
 import { jsxs as _jsxs } from 'react/jsx-runtime'

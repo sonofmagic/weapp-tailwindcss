@@ -2,7 +2,7 @@ const fs = require('node:fs/promises')
 const { defu } = require('defu')
 const tailwindcss = require('tailwindcss')
 const postcss = require('postcss')
-const { createContext } = require('weapp-tailwindcss-webpack-plugin/core')
+const { createContext } = require('weapp-tailwindcss/core')
 
 async function getCss(content, options) {
   const { css, postcssPlugins, twConfig } = defu(options, {

@@ -16,7 +16,7 @@ const version = isAlpha ? '@alpha' : isBeta ? '@beta' : isRc ? '@rc' : ''
 ;(async () => {
   const demoPath = path.resolve(__dirname, '../../demo')
   await run(demoPath, '--ignore-engines')
-  // weapp-tailwindcss-webpack-plugin${isBeta ? '@beta' : ''}
+
   await run(
     demoPath,
     `add -D weapp-tailwindcss${version} @weapp-tailwindcss/cli${version} tailwindcss-patch${

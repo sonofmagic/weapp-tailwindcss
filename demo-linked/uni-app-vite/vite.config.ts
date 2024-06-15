@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss-webpack-plugin/vite';
+import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss/vite';
 
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === 'h5';
@@ -48,7 +48,7 @@ if (!WeappTailwindcssDisabled) {
       transformUnit: 'rpx',
     }),
   );
-  postcssPlugins.push(require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'));
+  postcssPlugins.push(require('weapp-tailwindcss/css-macro/postcss'));
 }
 // https://vitejs.dev/config/
 export default defineConfig({

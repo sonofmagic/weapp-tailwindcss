@@ -5,7 +5,7 @@ module.exports = {
   defineConstants: {},
   mini: {
     // https://docs.taro.zone/docs/config-detail/#terserenable
-    // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/142
+    // https://github.com/sonofmagic/weapp-tailwindcss/issues/142
     // https://taro-docs.jd.com/docs/compile-optimized
     // 使用的时候没进入本插件的断点
     // webpackChain: (chain, webpack) => {

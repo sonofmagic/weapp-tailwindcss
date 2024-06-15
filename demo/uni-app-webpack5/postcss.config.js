@@ -29,7 +29,7 @@ const config = {
     require('autoprefixer')({
       remove: process.env.UNI_PLATFORM !== 'h5'
     }),
-    require('weapp-tailwindcss-webpack-plugin/css-macro/postcss'),
+    require('weapp-tailwindcss/css-macro/postcss'),
     require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
   ]
 }

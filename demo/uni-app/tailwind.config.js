@@ -1,5 +1,5 @@
 const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons')
-const cssMacro = require('weapp-tailwindcss-webpack-plugin/css-macro')
+const cssMacro = require('weapp-tailwindcss/css-macro')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx,wxml}'],

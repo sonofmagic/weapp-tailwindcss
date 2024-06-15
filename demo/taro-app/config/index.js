@@ -1,17 +1,8 @@
-// let TaroWeappTailwindcssWebpackPluginV5
-// let UnifiedWebpackPluginV5
 const path = require('path')
 const bench = require('../../bench')('taro-react')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
-// if (isLocal) {
-//   console.log('use local built webpack plugin')
-//   const { UnifiedWebpackPluginV5: plugin } = require('../weapp-tw-dist')
-//   UnifiedWebpackPluginV5 = plugin
-// } else {
-//   const { UnifiedWebpackPluginV5: plugin } = require('weapp-tailwindcss-webpack-plugin/webpack')
-//   UnifiedWebpackPluginV5 = plugin
-// }
+
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const config = {
   compiler: {

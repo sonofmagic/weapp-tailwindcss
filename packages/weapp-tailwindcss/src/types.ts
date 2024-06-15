@@ -157,7 +157,7 @@ export interface UserDefinedOptions {
   mainCssChunkMatcher?: (name: string, appType?: AppType) => boolean
   /**
    * @group 0.重要配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/7
    * @description 在所有 view节点添加的 css 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。默认预置 `css` 同 `tailwindcss` 类似，详细用法如下:
    * ```js
    * // default 默认，这代表会添加给所有的 view / text 元素, 受到 cssPreflightRange 配置项影响 :
@@ -203,7 +203,7 @@ cssPreflight: {
 
   /**
    * @group 0.重要配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss/pull/62
    * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。只对所有的 `view`,`text` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
    */
   cssPreflightRange?: 'all'
@@ -255,7 +255,7 @@ cssPreflight: {
 
 更复杂的情况，可以传一个 `Map<string | Regex, (string | Regex)[]>`实例。
 
-假如你要把 `className` 通过组件的`prop`传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/134#issuecomment-1351288238)
+假如你要把 `className` 通过组件的`prop`传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)
 
 @example
 
@@ -290,8 +290,8 @@ const customAttributes = {
 
   /**
    * @group 3.一般配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110
-   * @description 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
+   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/110
+   * @description 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
 
 ```diff
@@ -433,7 +433,7 @@ const customAttributes = {
      */
     root?: string | string[] | false
     /**
-     * @issue https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/81 <br/>
+     * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/81 <br/>
      * @default `['view','text']` <br/>
      * @description 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view','text'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
      */
