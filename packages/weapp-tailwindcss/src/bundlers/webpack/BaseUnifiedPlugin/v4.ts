@@ -7,7 +7,6 @@ import { ConcatSource, RawSource } from 'webpack-sources'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { getOptions } from '@/options'
 import { pluginName } from '@/constants'
-import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getGroupedEntries, removeExt } from '@/utils'
 import { createDebug } from '@/debug'
 

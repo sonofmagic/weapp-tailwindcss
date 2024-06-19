@@ -9,12 +9,6 @@ import { defuOverrideArray } from '@/utils'
 import type { ITemplateHandlerOptions, RawSource } from '@/types'
 import { replaceHandleValue } from '@/js/handlers'
 
-// mpx class 中外部用单引号，所以 内部要用双引号
-// 反之亦然
-// function getQuotes(quote: string | null | undefined) {
-//   return quote === "'" ? 'double' : 'single'
-// }
-
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
     const ms = new MagicString(match)
@@ -50,15 +44,6 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
       },
       noScope: true,
     })
-
-    // const { code } = generate(ast, {
-    //   compact: true,
-    //   minified: true,
-    //   jsescOption: {
-    //     quotes: getQuotes(options.quote),
-    //     minimal: true
-    //   }
-    // })
 
     return ms.toString()
   }

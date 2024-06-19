@@ -1,15 +1,12 @@
 import { getOptions } from '@/options'
 import type { UserDefinedOptions } from '@/types'
-import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
-  const { templateHandler, styleHandler, patch, jsHandler, tailwindcssBasedir } = opts
+  const { templateHandler, styleHandler, patch, jsHandler, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
   patch?.()
-
-  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir)
 
   async function transformWxss(rawCss: string) {
     const code = await styleHandler(rawCss, {

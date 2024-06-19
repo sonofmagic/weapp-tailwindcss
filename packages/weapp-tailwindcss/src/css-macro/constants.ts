@@ -67,6 +67,7 @@ export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecAr
   let index = 0
 
   const regex = new RegExp(`\\(\\s*${queryKey}\\s*:\\s*"([^)]*)"\\)`, 'g')
+  // eslint-disable-next-line no-cond-assign
   while ((arr = regex.exec(str)) !== null) {
     cb(arr, index)
     index++

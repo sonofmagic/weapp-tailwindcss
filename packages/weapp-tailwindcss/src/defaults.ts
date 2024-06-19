@@ -2,8 +2,6 @@ import type { UserDefinedOptions } from './types'
 import { noop } from '@/utils'
 import { SimpleMappingChars2String } from '@/escape'
 
-// import { mangleClassRegex } from '@/mangle/expose'
-
 export const defaultOptions: UserDefinedOptions = {
   cssMatcher: file => /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(file),
   htmlMatcher: file => /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty)ml|swan)$/.test(file),

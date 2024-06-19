@@ -4,7 +4,6 @@ import type { UserDefinedOptions } from '@/types'
 import { getOptions } from '@/options'
 import { vitePluginName } from '@/constants'
 import { getGroupedEntries } from '@/utils'
-import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { createDebug } from '@/debug'
 
 const debug = createDebug()

@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import { LRUCache } from 'lru-cache'
 import type { sources } from 'webpack'
 import md5 from 'md5'

@@ -1,6 +1,5 @@
 import process from 'node:process'
 import semver from 'semver'
-import { createPatch, createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { getOptions } from '@/options'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from '@/constants'
 

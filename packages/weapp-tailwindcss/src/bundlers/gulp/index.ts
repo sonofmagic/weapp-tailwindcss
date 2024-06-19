@@ -3,7 +3,6 @@ import { Buffer } from 'node:buffer'
 import type File from 'vinyl'
 import { getOptions } from '@/options'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
-import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { createDebug } from '@/debug'
 
 const debug = createDebug()
