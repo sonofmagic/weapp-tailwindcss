@@ -2728,14 +2728,14 @@
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/cli@^0.0.0-alpha.9":
-  version "0.0.0-alpha.9"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-0.0.0-alpha.9.tgz#ef42f090fb233d71c628cad5c8026dfc7d7299c0"
-  integrity sha512-9pSvieiGvS3QrjnoHH7o+figERiQ0cDU7n1VwEE1+Mn3O7zydW1/xTfcJkDdit2x8Be6TMUqU5FBdIPcZNI6+g==
+"@weapp-tailwindcss/cli@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-1.0.3.tgz#f9a2241ce96d3696417eb275514e9de73cb25902"
+  integrity sha512-09qJY6LW91c4lquYlzQDpKUo0eNcI+7ZOH58CcKfhDe3O1t0CIYhnOZVvFNVqixRjBAaRAlWLgeGDN7lW51WzA==
   dependencies:
-    commander "^12.0.0"
+    commander "^12.1.0"
     cosmiconfig "^9.0.0"
-    debug "4.3.4"
+    debug "4.3.5"
     del "^7.1.0"
     fs-extra "^11.2.0"
     gulp "^4.0.2"
@@ -2748,9 +2748,9 @@
     gulp-sass "^5.1.0"
     gulp-typescript "6.0.0-alpha.1"
     local-pkg "^0.5.0"
-    picocolors "^1.0.0"
+    picocolors "^1.0.1"
     postcss "^8.4.38"
-    postcss-load-config "^5.0.3"
+    postcss-load-config "^5.1.0"
 
 "@weapp-tailwindcss/typography@^0.2.4":
   version "0.2.4"
@@ -3571,7 +3571,7 @@ color-support@^1.1.3:
   resolved "https://registry.npmmirror.com/color-support/-/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
-commander@^12.0.0:
+commander@^12.1.0:
   version "12.1.0"
   resolved "https://registry.npmmirror.com/commander/-/commander-12.1.0.tgz#01423b36f501259fdaac4d0e4d60c96c991585d3"
   integrity sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==
@@ -3793,17 +3793,17 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   dependencies:
     ms "2.0.0"
 
-debug@4.3.4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.3:
-  version "4.3.4"
-  resolved "https://registry.npmmirror.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
-  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
-  dependencies:
-    ms "2.1.2"
-
 debug@4.3.5:
   version "4.3.5"
   resolved "https://registry.npmmirror.com/debug/-/debug-4.3.5.tgz#e83444eceb9fedd4a1da56d671ae2446a01a6e1e"
   integrity sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==
+  dependencies:
+    ms "2.1.2"
+
+debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.3:
+  version "4.3.4"
+  resolved "https://registry.npmmirror.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
+  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
 
@@ -6534,6 +6534,11 @@ picocolors@^1.0.0:
   resolved "https://registry.npmmirror.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
   integrity sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==
 
+picocolors@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/picocolors/-/picocolors-1.0.1.tgz#a8ad579b571952f0e5d25892de5445bcfe25aaa1"
+  integrity sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==
+
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npmmirror.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
@@ -6685,7 +6690,7 @@ postcss-load-config@^5.0.0:
     lilconfig "^3.0.0"
     yaml "^2.3.4"
 
-postcss-load-config@^5.0.3:
+postcss-load-config@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npmmirror.com/postcss-load-config/-/postcss-load-config-5.1.0.tgz#4ded23410da973e05edae9d41fa99bb5c1d5477f"
   integrity sha512-G5AJ+IX0aD0dygOE0yFZQ/huFFMSNneyfp0e3/bT05a8OfPC5FUoZRPfGijUdGOJNMewJiwzcHJXFafFzeKFVA==
@@ -8250,10 +8255,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^3.3.2-alpha.0:
-  version "3.3.2-alpha.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.2-alpha.0.tgz#54e62a339f6b7d088ef0e64db57069083629694c"
-  integrity sha512-eSduK21dbA0/kUMuPEs/eRXj/n4KW/q6kBw/bvQ9aH14BU4haDH1YgiY+xuUpS8rWzYY0EHRcn740nBp8Zq08Q==
+weapp-tailwindcss@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.2.tgz#7bb458dd04195efb4f7aa80febbccdce97e7fb18"
+  integrity sha512-PaQ+gl41bXIYXq1gYqMwR29c3Ek08NLQGEJWN4vjbIUOsl/55HCUpjs0dzAeFKEgDNcuLHcdUeYynxEcn8tEWA==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.7"
