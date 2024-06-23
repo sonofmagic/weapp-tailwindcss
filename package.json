@@ -84,9 +84,9 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.23.0",
+    "@ast-grep/napi": "^0.23.1",
     "@babel/core": "^7.24.7",
-    "@eslint/config-inspector": "^0.4.12",
+    "@eslint/config-inspector": "^0.5.0",
     "@icebreakers/eslint-config": "^0.3.9",
     "@icebreakers/readme": "0.1.0",
     "@rollup/plugin-alias": "^5.1.0",
