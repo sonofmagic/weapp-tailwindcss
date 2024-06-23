@@ -69,12 +69,12 @@
     "sass": "^1.77.5",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "^3.4.4",
-    "tailwindcss-patch": "^3.0.0",
+    "tailwindcss-patch": "^3.0.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "^3.3.1",
+    "weapp-tailwindcss": "^3.3.2",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "dependencies": {
