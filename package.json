@@ -158,6 +158,7 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.9.0",
     "miniprogram-automator": "^0.12.1",
+    "pathe": "^1.1.2",
     "pkg-types": "^1.1.1",
     "postcss": "^8.4.38",
     "postcss-load-config": "^6.0.1",

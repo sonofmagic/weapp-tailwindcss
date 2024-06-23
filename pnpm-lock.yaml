@@ -230,6 +230,9 @@ importers:
       miniprogram-automator:
         specifier: ^0.12.1
         version: 0.12.1
+      pathe:
+        specifier: ^1.1.2
+        version: 1.1.2
       pkg-types:
         specifier: ^1.1.1
         version: 1.1.1
