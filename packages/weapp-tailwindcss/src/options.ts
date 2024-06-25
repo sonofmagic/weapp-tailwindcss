@@ -46,6 +46,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     escapeMap,
     mangle,
     tailwindcssBasedir,
+    appType,
   } = result
 
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -93,7 +94,8 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
   result.styleHandler = styleHandler
   result.jsHandler = jsHandler
   result.templateHandler = templateHandler
-  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir)
+
+  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir, appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined)
   result.patch = () => {
     createPatch(supportCustomLengthUnitsPatch)()
     twPatcher.patch()
