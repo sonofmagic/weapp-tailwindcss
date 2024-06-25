@@ -42,7 +42,7 @@
     "gulp-plugin"
   ],
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "build": "turbo run build --filter=weapp-tailwindcss && turbo run build --filter=./plugins/*",
