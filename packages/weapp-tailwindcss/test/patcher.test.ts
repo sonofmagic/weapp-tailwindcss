@@ -1,12 +1,6 @@
-import fs from 'node:fs'
-import { createPatch, getInstalledPkgJsonPath, mkCacheDirectory } from '@/tailwindcss/patcher'
+import { createPatch, getInstalledPkgJsonPath } from '@/tailwindcss/patcher'
 
 describe('patcher unit test', () => {
-  it('if will create cache directory', () => {
-    const p = mkCacheDirectory()
-    expect(fs.existsSync(p)).toBe(true)
-  })
-
   it('not found pkg', () => {
     const res = getInstalledPkgJsonPath({
       dangerousOptions: {

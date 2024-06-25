@@ -3,11 +3,11 @@ import fs from 'node:fs'
 import process from 'node:process'
 import { gte as semverGte } from 'semver'
 import type { PackageJson } from 'pkg-types'
+import type { CacheOptions } from 'tailwindcss-patch'
 import { TailwindcssPatcher, requireResolve } from 'tailwindcss-patch'
 import { findAstNode } from './supportCustomUnit'
 import type { ILengthUnitsPatchDangerousOptions, ILengthUnitsPatchOptions, InternalPatchResult } from '@/types'
 import { noop } from '@/utils'
-import { pluginName } from '@/constants'
 import { generate } from '@/babel'
 
 export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
@@ -92,21 +92,23 @@ export function internalPatch(
   }
 }
 
-export function mkCacheDirectory(cwd = process.cwd()) {
-  const cacheDirectory = path.resolve(cwd, 'node_modules', '.cache', pluginName)
+export function createTailwindcssPatcher(basedir?: string, cacheDir?: string) {
+  const cache: CacheOptions = {}
 
-  const exists = fs.existsSync(cacheDirectory)
-  if (!exists) {
-    fs.mkdirSync(cacheDirectory, {
-      recursive: true,
-    })
+  if (cacheDir) {
+    if (path.isAbsolute(cacheDir)) {
+      cache.dir = cacheDir
+    }
+    else if (basedir) {
+      cache.dir = path.resolve(basedir, cacheDir)
+    }
+    else {
+      cache.dir = path.resolve(process.cwd(), cacheDir)
+    }
   }
-  return cacheDirectory
-}
 
-export function createTailwindcssPatcher(basedir?: string) {
   return new TailwindcssPatcher({
-    cache: true,
+    cache,
     patch: {
       basedir,
     },

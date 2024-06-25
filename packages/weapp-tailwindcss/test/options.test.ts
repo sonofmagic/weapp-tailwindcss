@@ -113,6 +113,18 @@ describe('get options', () => {
     expect(t['*'].length).toBe(3)
   })
 
+  it('mpx should have unique cache dir', () => {
+    let config = getOptions({
+
+    })
+    expect(config.twPatcher.cacheOptions).toEqual({ enable: true })
+    expect(config.twPatcher.cacheOptions.dir).not.toBeTruthy()
+    config = getOptions({
+      appType: 'mpx',
+    })
+    expect(config.twPatcher.cacheOptions.dir).toBeTruthy()
+  })
+
   // it('customAttributes map defu merge', () => {
   //   // const { customAttributes } = getOptions()
 
