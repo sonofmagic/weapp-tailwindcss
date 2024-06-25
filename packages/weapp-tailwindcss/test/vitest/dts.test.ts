@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import klaw from 'klaw'
 import { distPath } from '#test/util'
 
-describe.skip('dts', () => {
+describe('dts', () => {
   it('dist dts no `from "@/xxx`', async () => {
     for await (const file of klaw(distPath)) {
       if (/\.d.ts$/.test(file.path)) {
