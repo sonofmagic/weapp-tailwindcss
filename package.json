@@ -178,7 +178,7 @@
     "tsd": "^0.31.1",
     "tslib": "^2.6.3",
     "turbo": "^2.0.4",
-    "typescript": "^5.5.2",
+    "typescript": "5.4.5",
     "typescript-transform-paths": "^3.4.7",
     "unbuild": "^2.0.0",
     "vinyl": "^3.0.0",
