@@ -20,7 +20,7 @@
     <view class="space-y-4 flex flex-col bg-red-400">
       <view class="bg-sky-500">view space-y-4</view>
       <view class="bg-sky-500">view space-y-4</view>
-      <input class="bg-sky-500" value="input space-y-4" />
+      <!-- <input class="bg-sky-500" value="input space-y-4" /> -->
       <text class="bg-sky-500">text space-y-4</text>
       <button class="bg-sky-500">button space-y-4</button>
       <CommonCom class="bg-sky-500">CommonCom space-y-4</CommonCom>

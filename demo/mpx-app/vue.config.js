@@ -27,6 +27,7 @@ module.exports = defineConfig({
     let start
     config.plugins.push(new UnifiedWebpackPluginV5({
       appType: 'mpx',
+      tailwindcssBasedir: __dirname,
       onStart() {
         // start = performance.now()
         bench.start()
