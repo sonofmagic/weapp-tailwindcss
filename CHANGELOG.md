@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 3.3.2 - 3.3.3 (2024-6-25)
+
+### Features
+
+- 升级 [`tailwindcss-mangle`](https://github.com/sonofmagic/tailwindcss-mangle) 相关依赖包到 `3.0`
+
+### Fixed
+
+- 修复 `dts` 类型问题 [#308](https://github.com/sonofmagic/weapp-tailwindcss/issues/308)
+
 ## 3.3.1 (2024-6-9)
 
 ### Features
