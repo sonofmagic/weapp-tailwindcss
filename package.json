@@ -84,7 +84,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.23.1",
+    "@ast-grep/napi": "^0.24.0",
     "@babel/core": "^7.24.7",
     "@eslint/config-inspector": "^0.5.0",
     "@icebreakers/eslint-config": "^0.3.9",
@@ -172,12 +172,12 @@
     "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
     "tailwindcss": "^3.4.4",
-    "ts-morph": "^22.0.0",
+    "ts-morph": "^23.0.0",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.2.0",
     "tsd": "^0.31.1",
     "tslib": "^2.6.3",
-    "turbo": "^2.0.4",
+    "turbo": "^2.0.5",
     "typescript": "5.4.5",
     "typescript-transform-paths": "^3.4.7",
     "unbuild": "^2.0.0",
