@@ -16,7 +16,6 @@ async function main(){
   // createContext 可传入参数，类型为 UserDefinedOptions
   const ctx = createContext()
   // 3.1.0 开始 api 都是异步的，为 rust 工具链做准备
-  // (!!!废弃)(在之前)transformWxss 是异步的，其他2个为同步 (!!!废弃)
   const wxssCode = await ctx.transformWxss(rawWxssCode)
   const wxmlCode = await ctx.transformWxml(rawWxmlCode)
   const jsCode = await ctx.transformJs(rawJsCode)

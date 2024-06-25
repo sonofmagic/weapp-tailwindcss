@@ -1,7 +1,5 @@
 # Taro v3 (所有框架)
 
-`taro` 是一个优秀的框架，和 `uni-app` 各有优点，另外 `rn` 虽然也有很多坑，但总比 `weex` 要好上不少。
-
 这个配置同时支持 `taro` 的 `react` / `preact` / `vue2` / `vue3` 所有框架
 
 :::caution
@@ -28,6 +26,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
     // 中的 webpackChain, 通常紧挨着 postcss 
     webpackChain(chain, webpack) {
       // 复制这块区域到你的配置代码中 region start
+      // highlight-start
       chain.merge({
         plugin: {
           install: {
@@ -38,6 +37,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
           }
         }
       })
+      // highlight-end
       // region end
     }
   }
