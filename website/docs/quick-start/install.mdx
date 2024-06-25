@@ -115,6 +115,11 @@ module.exports = {
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+// 非 scss 的纯 css 文件，下列写法也是可以生效的
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
 ```
 
 然后在 `app.ts` 里引入这个样式文件即可。
@@ -123,4 +128,4 @@ module.exports = {
 
 ## 参考链接
 
-[`tailwindcss` 官方配置项link](https://tailwindcss.com/docs/configuration)
+[`tailwindcss` 官方配置项](https://tailwindcss.com/docs/configuration)
