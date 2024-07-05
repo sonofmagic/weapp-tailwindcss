@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node ./index.js",
+    "build": "node ./index.js",
+    "build:babel": "node ./index.js",
+    "postinstall": "weapp-tw patch"
   },
   "keywords": [],
   "author": "",
