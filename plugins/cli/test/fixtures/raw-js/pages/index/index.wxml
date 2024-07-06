@@ -1,0 +1,9 @@
+<!--index.wxml-->
+<scroll-view scroll-y type="list">
+  <view class="bg-[#ff00ff] text-[#fafafa]">
+    Raw-JS
+  </view>
+  <view class="{{ac}}">
+    Raw-JS
+  </view>
+</scroll-view>
