@@ -8,6 +8,7 @@ import type compileTs from 'gulp-typescript'
 // import { isPackageExists } from 'local-pkg'
 import GlobsSet from './globsSet'
 import { isStream } from './is-stream'
+import { defaultNodeModulesDirs } from './defaults'
 import { AssetType } from '@/enum'
 import type { BuildOptions } from '@/type'
 import { isLessLang, isObject, isSassLang, isTsLang, promisify } from '@/utils'
@@ -276,7 +277,7 @@ export async function getTasks(options: BuildOptions) {
 
       return resolveTask({
         cwd,
-        globs: [...globs, ...outDirGlobs],
+        globs: [...globs, ...outDirGlobs, ...defaultNodeModulesDirs.map(x => `!${x}`)],
         pipes,
         since: copyOthers,
       })
