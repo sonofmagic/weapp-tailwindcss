@@ -116,7 +116,7 @@
     "@types/lodash": "^4.17.6",
     "@types/md5": "^2.3.5",
     "@types/micromatch": "^4.0.9",
-    "@types/node": "^20.14.9",
+    "@types/node": "^20.14.10",
     "@types/semver": "^7.5.8",
     "@types/set-value": "^4.0.3",
     "@types/vinyl": "^2.0.12",
