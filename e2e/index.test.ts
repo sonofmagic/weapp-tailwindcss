@@ -25,12 +25,14 @@ async function loadCss(p: string) {
   return code
 }
 
-const TestProjectsEntries: {
+interface ProjectEntry {
   name: string
   projectPath: string
   testMethod: (page: Page, b: string) => void
   url?: string
-}[] = [
+}
+
+const TestProjectsEntries: ProjectEntry[] = [
   {
     name: 'uni-app',
     projectPath: 'uni-app/dist/build/mp-weixin',
@@ -112,8 +114,12 @@ function wait(ts = 1000) {
   })
 }
 
+function projectFilter(x: ProjectEntry[]) {
+  return x
+}
+
 describe('e2e', () => {
-  it.each(TestProjectsEntries)('$name', async (config) => {
+  it.each(projectFilter(TestProjectsEntries))('$name', async (config) => {
     const projectPath = path.resolve(__dirname, '../demo', config.projectPath)
     const testMethod = config.testMethod
     const miniProgram = await automator.launch({
