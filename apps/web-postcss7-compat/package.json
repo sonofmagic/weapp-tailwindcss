@@ -1,5 +1,5 @@
 {
-  "name": "web-postcss7-compat",
+  "name": "@native-app/postcss7-compat",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

@@ -1,36 +1,10 @@
-// import { expect } from '@jest/globals'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import prettier from 'prettier'
 import automator from 'miniprogram-automator'
 import { execa } from 'execa'
 import { deleteAsync } from 'del'
-import type Page from 'miniprogram-automator/out/Page'
-import { removeWxmlId } from '../packages/weapp-tailwindcss/test/util'
-
-async function loadCss(p: string) {
-  const css = await fs.readFile(p, 'utf8')
-  const code = await prettier.format(css, {
-    parser: 'css',
-    tabWidth: 2,
-    useTabs: false,
-    semi: false,
-    singleQuote: true,
-    endOfLine: 'lf',
-    trailingComma: 'none',
-    printWidth: 180,
-    bracketSameLine: true,
-    htmlWhitespaceSensitivity: 'ignore',
-  })
-  return code
-}
-
-interface ProjectEntry {
-  name: string
-  projectPath: string
-  testMethod: (page: Page, b: string) => void
-  url?: string
-}
+import type { ProjectEntry } from './shared'
+import { formatWxml, loadCss, projectFilter, removeWxmlId, twExtract, wait } from './shared'
 
 const TestProjectsEntries: ProjectEntry[] = [
   {
@@ -106,18 +80,6 @@ const TestProjectsEntries: ProjectEntry[] = [
   },
 ]
 
-function wait(ts = 1000) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined)
-    }, ts)
-  })
-}
-
-function projectFilter(x: ProjectEntry[]) {
-  return x
-}
-
 describe('e2e', () => {
   it.each(projectFilter(TestProjectsEntries))('$name', async (config) => {
     const projectPath = path.resolve(__dirname, '../demo', config.projectPath)
@@ -129,6 +91,9 @@ describe('e2e', () => {
     const page = await miniProgram.reLaunch(config.url ?? '/pages/index/index')
     const root = path.resolve(__dirname, '../demo', config.name)
     await deleteAsync([path.resolve(root, 'node_modules/.cache')])
+    await twExtract(root)
+    const json = await fs.readFile(path.resolve(root, '.tw-patch/tw-class-list.json'), 'utf8')
+    expect(json).toMatchSnapshot('json')
     if (page) {
       await testMethod(page, projectPath)
       const pageEl = await page.$('page')
@@ -136,35 +101,16 @@ describe('e2e', () => {
       if (wxml) {
         wxml = removeWxmlId(wxml)
         try {
-          wxml = await prettier.format(wxml, {
-            parser: 'html',
-            tabWidth: 2,
-            useTabs: false,
-            semi: false,
-            singleQuote: true,
-            endOfLine: 'lf',
-            trailingComma: 'none',
-            printWidth: 180,
-            bracketSameLine: true,
-            htmlWhitespaceSensitivity: 'ignore',
-          })
+          wxml = await formatWxml(wxml)
         }
         catch {
           console.error(`parse error: ${config.projectPath}`)
         }
 
-        expect(wxml).toMatchSnapshot()
+        expect(wxml).toMatchSnapshot('wxml')
       }
 
       await page.waitFor(3000)
-
-      await execa('npx', ['tw-patch', 'extract'], {
-        cwd: root,
-      })
-
-      const json = await fs.readFile(path.resolve(root, '.tw-patch/tw-class-list.json'), 'utf8')
-
-      expect(json).toMatchSnapshot()
     }
 
     await miniProgram.close()

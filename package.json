@@ -56,7 +56,7 @@
     "e2e": "vitest run -c ./e2e/vitest.e2e.config.ts",
     "e2e:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
     "e2e:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
-    "demo:build": "node scripts/demo/build.js --babel",
+    "demo:build": "node scripts/demo/build.js --babel && pnpm run --filter \"@native-app/*\" build",
     "demo:build:ast": "node scripts/demo/build.js",
     "demo:bench": "node scripts/demo/bench.js",
     "demo:install": "node scripts/demo/install.js",
