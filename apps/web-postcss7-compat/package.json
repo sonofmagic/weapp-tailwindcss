@@ -1,0 +1,24 @@
+{
+  "name": "@native-app/postcss7-compat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "build": "node ./index.js",
+    "build:babel": "node ./index.js",
+    "postinstall": "weapp-tw patch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^9",
+    "postcss": "^7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "weapp-tailwindcss": "workspace:^"
+  },
+  "dependencies": {
+    "tailwindcss-patch": "^3.0.0"
+  }
+}

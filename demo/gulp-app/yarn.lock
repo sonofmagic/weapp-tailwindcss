@@ -892,10 +892,10 @@
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/cli@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-1.0.3.tgz#f9a2241ce96d3696417eb275514e9de73cb25902"
-  integrity sha512-09qJY6LW91c4lquYlzQDpKUo0eNcI+7ZOH58CcKfhDe3O1t0CIYhnOZVvFNVqixRjBAaRAlWLgeGDN7lW51WzA==
+"@weapp-tailwindcss/cli@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-1.0.4.tgz#20980117b473e0ba4d6c157c07b196da43b19637"
+  integrity sha512-yvX/9tnwoNqMlC8N2eQ5dR/3+pdzPSiQrnaS4bMOkoMSU3vo6SP95ULHRDCpZrV7MSLV9uGrtdSD4RkXZeVkWQ==
   dependencies:
     commander "^12.1.0"
     cosmiconfig "^9.0.0"
@@ -904,7 +904,6 @@
     fs-extra "^11.2.0"
     gulp "^4.0.2"
     gulp-debug "^5.0.1"
-    gulp-if "^3.0.0"
     gulp-less "^5.0.0"
     gulp-plumber "^1.2.1"
     gulp-postcss "^10.0.0"
@@ -913,8 +912,8 @@
     gulp-typescript "6.0.0-alpha.1"
     local-pkg "^0.5.0"
     picocolors "^1.0.1"
-    postcss "^8.4.38"
-    postcss-load-config "^5.1.0"
+    postcss "^8.4.39"
+    postcss-load-config "^6.0.1"
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -4566,10 +4565,10 @@ lodash.templatesettings@^3.0.0:
     lodash._reinterpolate "^3.0.0"
     lodash.escape "^3.0.0"
 
-lru-cache@10.2.2:
-  version "10.2.2"
-  resolved "https://registry.npmmirror.com/lru-cache/-/lru-cache-10.2.2.tgz#48206bc114c1252940c41b25b41af5b545aca878"
-  integrity sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==
+lru-cache@10.3.1:
+  version "10.3.1"
+  resolved "https://registry.npmmirror.com/lru-cache/-/lru-cache-10.3.1.tgz#a37050586f84ccfdb570148a253bf1632a29ef44"
+  integrity sha512-9/8QXrtbGeMB6LxwQd4x1tIMnsmUxMvIH/qWGsccz6bt9Uln3S+sgAaqfQNhbGA8ufzs2fHuP/yqapGgP9Hh2g==
 
 lru-cache@^6.0.0:
   version "6.0.0"
@@ -5451,13 +5450,12 @@ postcss-load-config@^5.0.0:
     lilconfig "^3.0.0"
     yaml "^2.3.4"
 
-postcss-load-config@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.npmmirror.com/postcss-load-config/-/postcss-load-config-5.1.0.tgz#4ded23410da973e05edae9d41fa99bb5c1d5477f"
-  integrity sha512-G5AJ+IX0aD0dygOE0yFZQ/huFFMSNneyfp0e3/bT05a8OfPC5FUoZRPfGijUdGOJNMewJiwzcHJXFafFzeKFVA==
+postcss-load-config@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmmirror.com/postcss-load-config/-/postcss-load-config-6.0.1.tgz#6fd7dcd8ae89badcf1b2d644489cbabf83aa8096"
+  integrity sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==
   dependencies:
     lilconfig "^3.1.1"
-    yaml "^2.4.2"
 
 postcss-nested@^6.0.1:
   version "6.0.1"
@@ -5510,13 +5508,13 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.2.0:
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@8.4.38, postcss@^8.4.38:
-  version "8.4.38"
-  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.38.tgz#b387d533baf2054288e337066d81c6bee9db9e0e"
-  integrity sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==
+postcss@8.4.39, postcss@^8.4.39:
+  version "8.4.39"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.39.tgz#aa3c94998b61d3a9c259efa51db4b392e1bde0e3"
+  integrity sha512-0vzE+lAiG7hZl1/9I8yzKLx3aR9Xbof3fBHKunvMfOCYAtMhrsnccJY2iTURb9EZd5+pLuiNV9/c/GZJOHsgIw==
   dependencies:
     nanoid "^3.3.7"
-    picocolors "^1.0.0"
+    picocolors "^1.0.1"
     source-map-js "^1.2.0"
 
 postcss@^8.4.23:
@@ -5527,6 +5525,15 @@ postcss@^8.4.23:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
+
+postcss@^8.4.38:
+  version "8.4.38"
+  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.38.tgz#b387d533baf2054288e337066d81c6bee9db9e0e"
+  integrity sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==
+  dependencies:
+    nanoid "^3.3.7"
+    picocolors "^1.0.0"
+    source-map-js "^1.2.0"
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -7015,10 +7022,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^3.3.3:
-  version "3.3.3"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.3.tgz#da24cb83d9aab801618325c512a972e68e0f9088"
-  integrity sha512-fU/2kK35dmuuUO1u4Isfia8OsvC2QxUX9b9Hfkv3QOWGoCVVpnLCH3MsJGuYO5SsommYFvEIpbtQobhjmpQgfg==
+weapp-tailwindcss@^3.3.4:
+  version "3.3.4"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.4.tgz#accc13422a56ded4bdf4711086c307dfb2f68c60"
+  integrity sha512-N8uBXBaA1BOlbeT2X+iLUVcoicmasoXyJ+ERWrSDER3k+n/7oZmkAzK3KL9tENG83hpDMc1Nu1oyKeVlbasFjw==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.7"
@@ -7032,10 +7039,10 @@ weapp-tailwindcss@^3.3.3:
     debug "4.3.5"
     htmlparser2 "9.1.0"
     loader-utils "2.0.4"
-    lru-cache "10.2.2"
+    lru-cache "10.3.1"
     magic-string "0.30.10"
     md5 "2.3.0"
-    postcss "8.4.38"
+    postcss "8.4.39"
     postcss-rem-to-responsive-pixel "^6.0.1"
     postcss-selector-parser "6.1.0"
     semver "7.6.2"
@@ -7132,11 +7139,6 @@ yaml@^2.3.4:
   version "2.4.1"
   resolved "https://registry.npmmirror.com/yaml/-/yaml-2.4.1.tgz#2e57e0b5e995292c25c75d2658f0664765210eed"
   integrity sha512-pIXzoImaqmfOrL7teGUBt/T7ZDnyeGBWyXQBvOVhLkWLN37GXv8NMLK406UY6dS51JfcQHsmcW5cJ441bHg6Lg==
-
-yaml@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.npmmirror.com/yaml/-/yaml-2.4.2.tgz#7a2b30f2243a5fc299e1f14ca58d475ed4bc5362"
-  integrity sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==
 
 yargs-parser@>=5.0.0-security.0:
   version "21.1.1"

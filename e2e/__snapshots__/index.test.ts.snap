@@ -279,46 +279,7 @@ text,
 "
 `;
 
-exports[`e2e > 'gulp-app' 1`] = `
-"<view class="h-full text-center">
-  <view class="m-_20px_">
-    <view class="bg-_url_httpscsspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ bg-_lengthc100p_100p_ bg-no-repeat w-screen h-_41d54vw_"></view>
-    <view class="space-y-4">
-      <view class="text-_14px_">基于Gulp 的微信小程序前端开发工作流</view>
-      <view class="text-_14px_ text-_h5ba4e5_" data-text="https://github.com/sonofmagic/weapp-tailwindcss">https://github.com/sonofmagic/weapp-tailwindcss</view>
-      <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
-      <view>******</view>
-    </view>
-    <view class="mt-_24px_">
-      <view class="text-base font-bold pb-_10px_ mb-_20px_ text-left border-b border-_hEEEEEE_">功能介绍</view>
-      <view class="pl-_15px_ text-left block">
-        <view class="text-xs">
-          支持 tailwindcss
-          <text class="i-mdi-123"></text>
-        </view>
-        <view class="text-xs">
-          SCSS 实时编译为 WXSS
-          <text class="i-mdi-ab-testing"></text>
-        </view>
-        <view class="text-xs">
-          px 和 rem 单位转小程序单位rpx
-          <text class="i-mdi-abacus"></text>
-        </view>
-        <view class="text-xs">
-          支持 typescript
-          <text class="i-mdi-typewriter"></text>
-        </view>
-        <view class="mt-_24px_">mt-[24px]</view>
-        <view class="mt-_33px_">mt-[33px]</view>
-      </view>
-      <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_h123456_ text-_50px_ bg-_hfff_"></view>
-    </view>
-  </view>
-</view>
-"
-`;
-
-exports[`e2e > 'gulp-app' 2`] = `
+exports[`e2e > 'gulp-app' > json 1`] = `
 "[
   "bg-[#fff]",
   "bg-[length:100%_100%]",
@@ -356,6 +317,45 @@ exports[`e2e > 'gulp-app' 2`] = `
   "text-xs",
   "w-screen"
 ]"
+`;
+
+exports[`e2e > 'gulp-app' > wxml 1`] = `
+"<view class="h-full text-center">
+  <view class="m-_20px_">
+    <view class="bg-_url_httpscsspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ bg-_lengthc100p_100p_ bg-no-repeat w-screen h-_41d54vw_"></view>
+    <view class="space-y-4">
+      <view class="text-_14px_">基于Gulp 的微信小程序前端开发工作流</view>
+      <view class="text-_14px_ text-_h5ba4e5_" data-text="https://github.com/sonofmagic/weapp-tailwindcss">https://github.com/sonofmagic/weapp-tailwindcss</view>
+      <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
+      <view>******</view>
+    </view>
+    <view class="mt-_24px_">
+      <view class="text-base font-bold pb-_10px_ mb-_20px_ text-left border-b border-_hEEEEEE_">功能介绍</view>
+      <view class="pl-_15px_ text-left block">
+        <view class="text-xs">
+          支持 tailwindcss
+          <text class="i-mdi-123"></text>
+        </view>
+        <view class="text-xs">
+          SCSS 实时编译为 WXSS
+          <text class="i-mdi-ab-testing"></text>
+        </view>
+        <view class="text-xs">
+          px 和 rem 单位转小程序单位rpx
+          <text class="i-mdi-abacus"></text>
+        </view>
+        <view class="text-xs">
+          支持 typescript
+          <text class="i-mdi-typewriter"></text>
+        </view>
+        <view class="mt-_24px_">mt-[24px]</view>
+        <view class="mt-_33px_">mt-[33px]</view>
+      </view>
+      <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_h123456_ text-_50px_ bg-_hfff_"></view>
+    </view>
+  </view>
+</view>
+"
 `;
 
 exports[`e2e > 'mpx-app' > css 1`] = `
@@ -534,7 +534,26 @@ text,
 "
 `;
 
-exports[`e2e > 'mpx-app' 1`] = `
+exports[`e2e > 'mpx-app' > json 1`] = `
+"[
+  "after:content-[\\"你好啊，我很无聊\\"]",
+  "after:content-['你好啊，我这是中文字符串']",
+  "after:ml-0",
+  "after:ml-0.5",
+  "after:text-red-500",
+  "bg-[#929292]",
+  "bg-[#fff]",
+  "bg-[url('https://xxx.com/xx.webp')]",
+  "flex",
+  "flex-col",
+  "text-[#123456]",
+  "text-[#e67240]",
+  "text-[50px]",
+  "text-[blue]"
+]"
+`;
+
+exports[`e2e > 'mpx-app' > wxml 1`] = `
 "<view>
   <view class="text-_h123456_ text-_50px_ bg-_hfff_">对酒当歌，人生几何</view>
   <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__">bgUrl</view>
@@ -591,25 +610,6 @@ exports[`e2e > 'mpx-app' 1`] = `
   </van-button>
 </view>
 "
-`;
-
-exports[`e2e > 'mpx-app' 2`] = `
-"[
-  "after:content-[\\"你好啊，我很无聊\\"]",
-  "after:content-['你好啊，我这是中文字符串']",
-  "after:ml-0",
-  "after:ml-0.5",
-  "after:text-red-500",
-  "bg-[#929292]",
-  "bg-[#fff]",
-  "bg-[url('https://xxx.com/xx.webp')]",
-  "flex",
-  "flex-col",
-  "text-[#123456]",
-  "text-[#e67240]",
-  "text-[50px]",
-  "text-[blue]"
-]"
 `;
 
 exports[`e2e > 'native-mina' > css 1`] = `
@@ -994,71 +994,7 @@ text,
 "
 `;
 
-exports[`e2e > 'native-mina' 1`] = `
-"<view class="container">
-  <ice-avatar is="components/avatar/avatar"><view class="inner avatar--inner w-_20rpx_ avatar--w-_20rpx_">default value</view></ice-avatar>
-  <view>*****</view>
-  <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__">bgUrl</view>
-  <view class="bg-_h123456_ text-_50px_ text-_h654321_">icebreaker</view>
-  <user is="components/user/user">
-    <view class="container user--container">
-      <text
-        class="rounded-full user--rounded-full bg-gray-700 user--bg-gray-700 w-24 user--w-24 h-24 user--h-24 text-white user--text-white flex user--flex items-center user--items-center justify-center user--justify-center">
-        icebreaker
-      </text>
-    </view>
-  </user>
-  <button role="button" aria-disabled="false">go2Demo</button>
-  <button class="btn a0" role="button" aria-disabled="false">0</button>
-  <button class="btn azzz" role="button" aria-disabled="false">0</button>
-  <van-button is="miniprogram_npm/@vant/weapp/button/index" class="w-_200rpx_ h-_50rpx_">
-    <button
-      app-parameter=""
-      business-id=""
-      class="van-button button-index--van-button van-button--primary button-index--van-button--primary van-button--normal button-index--van-button--normal"
-      data-detail="null"
-      form-type=""
-      hover-class="van-button--active hover-class"
-      lang=""
-      open-type=""
-      send-message-img=""
-      send-message-path=""
-      send-message-title=""
-      session-from=""
-      style=""
-      role="button"
-      aria-disabled="false">
-      <view class="van-button__text button-index--van-button__text"><view class="w-_100rpx_ h-_25rpx_ bg-_rgba_255b255b255b1__">按钮</view></view>
-    </button>
-  </van-button>
-  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 darkcbg-_h487512_"></view>
-  <view class="motto bg-_h123456_"><text class="user-motto">Hello World!</text></view>
-  <view class="powered h-_200p_"><text></text></view>
-  <view class="-mt-2 mb-_-20px_ p-_20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-  <view class="space-y-_1d6rem_">
-    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
-    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
-    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">Hello</view>
-    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
-    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </view>
-    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">Default</view>
-  </view>
-  <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto icon-home-selected ctx true w-_20px_ m-_20px_"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3" role="button" aria-disabled="false">...</button>
-  <view class="MANGLE__1234567890">MANGLE__1234567890</view>
-  <view class="MANGLE__qwertyuiopasdfghjklzxcvbnm">MANGLE__qwertyuiopasdfghjklzxcvbnm</view>
-  <view class="MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM">MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM</view>
-</view>
-"
-`;
-
-exports[`e2e > 'native-mina' 2`] = `
+exports[`e2e > 'native-mina' > json 1`] = `
 "[
   "-m-[20px]",
   "-mt-2",
@@ -1136,6 +1072,70 @@ exports[`e2e > 'native-mina' 2`] = `
   "w-[20rpx]",
   "w-[300rpx]"
 ]"
+`;
+
+exports[`e2e > 'native-mina' > wxml 1`] = `
+"<view class="container">
+  <ice-avatar is="components/avatar/avatar"><view class="inner avatar--inner w-_20rpx_ avatar--w-_20rpx_">default value</view></ice-avatar>
+  <view>*****</view>
+  <view class="bg-_url_qhttpscssxxxdcomsxxdwebpq__">bgUrl</view>
+  <view class="bg-_h123456_ text-_50px_ text-_h654321_">icebreaker</view>
+  <user is="components/user/user">
+    <view class="container user--container">
+      <text
+        class="rounded-full user--rounded-full bg-gray-700 user--bg-gray-700 w-24 user--w-24 h-24 user--h-24 text-white user--text-white flex user--flex items-center user--items-center justify-center user--justify-center">
+        icebreaker
+      </text>
+    </view>
+  </user>
+  <button role="button" aria-disabled="false">go2Demo</button>
+  <button class="btn a0" role="button" aria-disabled="false">0</button>
+  <button class="btn azzz" role="button" aria-disabled="false">0</button>
+  <van-button is="miniprogram_npm/@vant/weapp/button/index" class="w-_200rpx_ h-_50rpx_">
+    <button
+      app-parameter=""
+      business-id=""
+      class="van-button button-index--van-button van-button--primary button-index--van-button--primary van-button--normal button-index--van-button--normal"
+      data-detail="null"
+      form-type=""
+      hover-class="van-button--active hover-class"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      style=""
+      role="button"
+      aria-disabled="false">
+      <view class="van-button__text button-index--van-button__text"><view class="w-_100rpx_ h-_25rpx_ bg-_rgba_255b255b255b1__">按钮</view></view>
+    </button>
+  </van-button>
+  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 darkcbg-_h487512_"></view>
+  <view class="motto bg-_h123456_"><text class="user-motto">Hello World!</text></view>
+  <view class="powered h-_200p_"><text></text></view>
+  <view class="-mt-2 mb-_-20px_ p-_20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">Hello</view>
+    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </view>
+    <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">Default</view>
+  </view>
+  <view class="test">test</view>
+  <view class="border-0 icon h-10 w-10 mx-auto icon-home-selected ctx true w-_20px_ m-_20px_"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3" role="button" aria-disabled="false">...</button>
+  <view class="MANGLE__1234567890">MANGLE__1234567890</view>
+  <view class="MANGLE__qwertyuiopasdfghjklzxcvbnm">MANGLE__qwertyuiopasdfghjklzxcvbnm</view>
+  <view class="MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM">MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM</view>
+</view>
+"
 `;
 
 exports[`e2e > 'rax-app' > css 1`] = `
@@ -1499,54 +1499,7 @@ text,
 "
 `;
 
-exports[`e2e > 'rax-app' 1`] = `
-"<view data-private-node-id="e-body-pages/index/index-2" style="">
-  <view class="h5-div" data-private-node-id="n_40" style="">
-    <view class="h5-div rax-view-v2" data-private-node-id="n_41" style="">****</view>
-    <view class="h5-div rax-view-v2 bg-_h123456_ text-_hfff_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_50px_ h-_100px_" data-private-node-id="n_43" style="">clsx</view>
-    <view class="h5-div rax-view-v2 bg-_h654321_ darkcbg-_h666555_ h-10 w-10" data-private-node-id="n_45" style=""></view>
-    <view class="h5-div rax-view-v2 index--homeContainer--npg8wSy" data-private-node-id="n_46" style="">
-      <image
-        class="h5-img Logo--logo--x8fxjJl"
-        data-private-node-id="n_47"
-        mode="scaleToFill"
-        src="//gw.alicdn.com/tfs/TB1MRC_cvb2gK0jSZK9XXaEgFXa-1701-1535.png"
-        style=""
-        role="img"></image>
-      <text class="rax-text-v2 index--homeTitle--FjXOpje" data-private-node-id="n_48" space="" style="">Welcome to Your Rax App</text>
-      <text class="rax-text-v2 index--homeInfo--Kmw_BNe" data-private-node-id="n_50" space="" style="">More information about Rax</text>
-      <text class="rax-text-v2 index--homeInfo--Kmw_BNe" data-private-node-id="n_52" space="" style="">Visit https://rax.js.org</text>
-    </view>
-    <view class="h5-div rax-view-v2 p-_20px_ -mt-2 mb-_-20px_" data-private-node-id="n_54" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
-    <view class="h5-div rax-view-v2 space-y-_1d6rem_ w-_200p_" data-private-node-id="n_56" style="">
-      <view class="h5-div rax-view-v2 w-_300rpx_ text-black text-opacity-_0d19_" data-private-node-id="n_57" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
-      <view class="h5-div rax-view-v2 min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-private-node-id="n_59" style="">
-        min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_
-      </view>
-      <view class="h5-div rax-view-v2 max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-private-node-id="n_61" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-      <view
-        class="h5-div rax-view-v2 flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_"
-        data-private-node-id="n_63"
-        style="">
-        Hello
-      </view>
-      <view class="h5-div rax-view-v2 iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_" data-private-node-id="n_65" style="">
-        iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_
-      </view>
-      <view class="h5-div rax-view-v2 grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-private-node-id="n_67" style="">
-        <view class="h5-div rax-view-v2" data-private-node-id="n_68" style="">1</view>
-        <view class="h5-div rax-view-v2" data-private-node-id="n_70" style="">2</view>
-        <view class="h5-div rax-view-v2" data-private-node-id="n_72" style="">3</view>
-      </view>
-      <view class="h5-div rax-view-v2 w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" data-private-node-id="n_74" style="">Default</view>
-    </view>
-    <view class="h5-div rax-view-v2 test" data-private-node-id="n_76" style="">test</view>
-  </view>
-</view>
-"
-`;
-
-exports[`e2e > 'rax-app' 2`] = `
+exports[`e2e > 'rax-app' > json 1`] = `
 "[
   "!border-[#098765]",
   "!border-[10px]",
@@ -1603,6 +1556,53 @@ exports[`e2e > 'rax-app' 2`] = `
   "w-[200%]",
   "w-[300rpx]"
 ]"
+`;
+
+exports[`e2e > 'rax-app' > wxml 1`] = `
+"<view data-private-node-id="e-body-pages/index/index-2" style="">
+  <view class="h5-div" data-private-node-id="n_40" style="">
+    <view class="h5-div rax-view-v2" data-private-node-id="n_41" style="">****</view>
+    <view class="h5-div rax-view-v2 bg-_h123456_ text-_hfff_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_50px_ h-_100px_" data-private-node-id="n_43" style="">clsx</view>
+    <view class="h5-div rax-view-v2 bg-_h654321_ darkcbg-_h666555_ h-10 w-10" data-private-node-id="n_45" style=""></view>
+    <view class="h5-div rax-view-v2 index--homeContainer--npg8wSy" data-private-node-id="n_46" style="">
+      <image
+        class="h5-img Logo--logo--x8fxjJl"
+        data-private-node-id="n_47"
+        mode="scaleToFill"
+        src="//gw.alicdn.com/tfs/TB1MRC_cvb2gK0jSZK9XXaEgFXa-1701-1535.png"
+        style=""
+        role="img"></image>
+      <text class="rax-text-v2 index--homeTitle--FjXOpje" data-private-node-id="n_48" space="" style="">Welcome to Your Rax App</text>
+      <text class="rax-text-v2 index--homeInfo--Kmw_BNe" data-private-node-id="n_50" space="" style="">More information about Rax</text>
+      <text class="rax-text-v2 index--homeInfo--Kmw_BNe" data-private-node-id="n_52" space="" style="">Visit https://rax.js.org</text>
+    </view>
+    <view class="h5-div rax-view-v2 p-_20px_ -mt-2 mb-_-20px_" data-private-node-id="n_54" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+    <view class="h5-div rax-view-v2 space-y-_1d6rem_ w-_200p_" data-private-node-id="n_56" style="">
+      <view class="h5-div rax-view-v2 w-_300rpx_ text-black text-opacity-_0d19_" data-private-node-id="n_57" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
+      <view class="h5-div rax-view-v2 min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" data-private-node-id="n_59" style="">
+        min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_
+      </view>
+      <view class="h5-div rax-view-v2 max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" data-private-node-id="n_61" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+      <view
+        class="h5-div rax-view-v2 flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_"
+        data-private-node-id="n_63"
+        style="">
+        Hello
+      </view>
+      <view class="h5-div rax-view-v2 iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_" data-private-node-id="n_65" style="">
+        iborder-_10px_ iborder-_h098765_ iborder-solid iborder-opacity-_0d44_
+      </view>
+      <view class="h5-div rax-view-v2 grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" data-private-node-id="n_67" style="">
+        <view class="h5-div rax-view-v2" data-private-node-id="n_68" style="">1</view>
+        <view class="h5-div rax-view-v2" data-private-node-id="n_70" style="">2</view>
+        <view class="h5-div rax-view-v2" data-private-node-id="n_72" style="">3</view>
+      </view>
+      <view class="h5-div rax-view-v2 w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" data-private-node-id="n_74" style="">Default</view>
+    </view>
+    <view class="h5-div rax-view-v2 test" data-private-node-id="n_76" style="">test</view>
+  </view>
+</view>
+"
 `;
 
 exports[`e2e > 'taro-app' > css 1`] = `
@@ -2203,80 +2203,7 @@ text,
 "
 `;
 
-exports[`e2e > 'taro-app' 1`] = `
-"<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_" style=""></view>
-<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_" style=""></view>
-<navigator
-  app-id=""
-  delta="1"
-  extra-data="null"
-  hover-class="navigator-hover"
-  hover-start-time="50"
-  hover-stay-time="600"
-  open-type="navigate"
-  path=""
-  style=""
-  target="self"
-  url="/moduleA/pages/index"
-  version="version"
-  role="link">
-  普通分包
-</navigator>
-<navigator
-  app-id=""
-  delta="1"
-  extra-data="null"
-  hover-class="navigator-hover"
-  hover-start-time="50"
-  hover-stay-time="600"
-  open-type="navigate"
-  path=""
-  style=""
-  target="self"
-  url="/moduleB/pages/index"
-  version="version"
-  role="link">
-  独立分包
-</navigator>
-<view style="">****</view>
-<view class="w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat" style="">bg-_url_</view>
-<view class="text-_50px_ bg-_h3232ff_ h-_10px_ w-_20px_ text-_hfa00aa_ text-_hfa0000_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_url_qhttpscssyyydcomsxxdwebpq__" style="">11</view>
-<view class="shadow-md" style="">shadow-md</view>
-<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" style="">py-_62px_ px-_95px_</view>
-<view hover-class="none" hover-start-time="50" hover-stay-time="400" style=""></view>
-<view class="bg-_h654321_ w-_100px_ h-_20px_" style="">123</view>
-<view class="text-_h564564_" style="">emptyImageClass</view>
-<view class="text-_h66ffff_" style="">btnClassName</view>
-<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" style="">aftercborder-none</view>
-<view class="after content- aftercml-0d5 afterctext-red-500 b" style="">yellow</view>
-<view class="after content- aftercml-0d5 afterctext-red-500" style="">事实上</view>
-<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" style="">事实上</view>
-<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" style="">
-  <view class="itext-_h555_" style="">aspect</view>
-  <view class="bg-_hfaf_" style="">w</view>
-  <view class="bg-_h123_" style="">16</view>
-</view>
-<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" style=""></view>
-<view class="bg-_h123456_" style="">className</view>
-<view class="p-_20px_ -mt-2 mb-_-20px_" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
-<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" style="">
-  <view class="w-_300rpx_ text-black text-opacity-_0d19_" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
-  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
-  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_</view>
-  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
-    <view style="">1</view>
-    <view style="">2</view>
-    <view style="">3</view>
-  </view>
-  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
-</view>
-<view class="test" style="">test</view>
-"
-`;
-
-exports[`e2e > 'taro-app' 2`] = `
+exports[`e2e > 'taro-app' > json 1`] = `
 "[
   "!text-[#555]",
   "-m-[20px]",
@@ -2392,6 +2319,79 @@ exports[`e2e > 'taro-app' 2`] = `
   "w-[404px]",
   "w-full"
 ]"
+`;
+
+exports[`e2e > 'taro-app' > wxml 1`] = `
+"<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_" style=""></view>
+<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_" style=""></view>
+<navigator
+  app-id=""
+  delta="1"
+  extra-data="null"
+  hover-class="navigator-hover"
+  hover-start-time="50"
+  hover-stay-time="600"
+  open-type="navigate"
+  path=""
+  style=""
+  target="self"
+  url="/moduleA/pages/index"
+  version="version"
+  role="link">
+  普通分包
+</navigator>
+<navigator
+  app-id=""
+  delta="1"
+  extra-data="null"
+  hover-class="navigator-hover"
+  hover-start-time="50"
+  hover-stay-time="600"
+  open-type="navigate"
+  path=""
+  style=""
+  target="self"
+  url="/moduleB/pages/index"
+  version="version"
+  role="link">
+  独立分包
+</navigator>
+<view style="">****</view>
+<view class="w-full bg-indigo-400 bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-bottom bg-contain bg-no-repeat" style="">bg-_url_</view>
+<view class="text-_50px_ bg-_h3232ff_ h-_10px_ w-_20px_ text-_hfa00aa_ text-_hfa0000_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_url_qhttpscssyyydcomsxxdwebpq__" style="">11</view>
+<view class="shadow-md" style="">shadow-md</view>
+<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" style="">py-_62px_ px-_95px_</view>
+<view hover-class="none" hover-start-time="50" hover-stay-time="400" style=""></view>
+<view class="bg-_h654321_ w-_100px_ h-_20px_" style="">123</view>
+<view class="text-_h564564_" style="">emptyImageClass</view>
+<view class="text-_h66ffff_" style="">btnClassName</view>
+<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" style="">aftercborder-none</view>
+<view class="after content- aftercml-0d5 afterctext-red-500 b" style="">yellow</view>
+<view class="after content- aftercml-0d5 afterctext-red-500" style="">事实上</view>
+<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" style="">事实上</view>
+<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" style="">
+  <view class="itext-_h555_" style="">aspect</view>
+  <view class="bg-_hfaf_" style="">w</view>
+  <view class="bg-_h123_" style="">16</view>
+</view>
+<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" style=""></view>
+<view class="bg-_h123456_" style="">className</view>
+<view class="p-_20px_ -mt-2 mb-_-20px_" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" style="">
+  <view class="w-_300rpx_ text-black text-opacity-_0d19_" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
+  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
+  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_</view>
+  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
+    <view style="">1</view>
+    <view style="">2</view>
+    <view style="">3</view>
+  </view>
+  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
+</view>
+<view class="test" style="">test</view>
+"
 `;
 
 exports[`e2e > 'taro-vue2-app' > css 1`] = `
@@ -2776,55 +2776,7 @@ text,
 "
 `;
 
-exports[`e2e > 'taro-vue2-app' 1`] = `
-"<view class="index" style="">
-  <view class="text-amber-300" style="">
-    <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">aaa</view>
-    <button
-      app-parameter=""
-      business-id=""
-      aria-disabled="false"
-      form-type=""
-      hover-class="button-hover"
-      hover-start-time="20"
-      hover-stay-time="70"
-      lang=""
-      open-type=""
-      send-message-img=""
-      send-message-path=""
-      send-message-title=""
-      session-from=""
-      size="default"
-      style=""
-      type="primary"
-      role="button">
-      first
-    </button>
-  </view>
-  <view style="">****</view>
-  <view class="bg-_h543254_ h-_100px_ w-_320px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__" style="">classArray11</view>
-  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" style=""></view>
-  <view class="bg-red-900" style="">bg-_hfafa00_</view>
-  <view class="bg-_h098765_" style="">bg-_h098765_</view>
-  <view class="p-_20px_ -mt-2 mb-_-20px_" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-_20px_</view>
-  <view class="space-y-_1d6rem_" style="">
-    <view class="w-_300rpx_ text-black text-opacity-_0d19_" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
-    <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
-    <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
-    <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
-    <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_</view>
-    <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
-      <view style="">1</view>
-      <view style="">2</view>
-      <view style="">3</view>
-    </view>
-  </view>
-  <view class="test" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">test</view>
-</view>
-"
-`;
-
-exports[`e2e > 'taro-vue2-app' 2`] = `
+exports[`e2e > 'taro-vue2-app' > json 1`] = `
 "[
   "-m-[20px]",
   "-mt-2",
@@ -2885,6 +2837,54 @@ exports[`e2e > 'taro-vue2-app' 2`] = `
   "w-[300rpx]",
   "w-[320px]"
 ]"
+`;
+
+exports[`e2e > 'taro-vue2-app' > wxml 1`] = `
+"<view class="index" style="">
+  <view class="text-amber-300" style="">
+    <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">aaa</view>
+    <button
+      app-parameter=""
+      business-id=""
+      aria-disabled="false"
+      form-type=""
+      hover-class="button-hover"
+      hover-start-time="20"
+      hover-stay-time="70"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      size="default"
+      style=""
+      type="primary"
+      role="button">
+      first
+    </button>
+  </view>
+  <view style="">****</view>
+  <view class="bg-_h543254_ h-_100px_ w-_320px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__" style="">classArray11</view>
+  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" style=""></view>
+  <view class="bg-red-900" style="">bg-_hfafa00_</view>
+  <view class="bg-_h098765_" style="">bg-_h098765_</view>
+  <view class="p-_20px_ -mt-2 mb-_-20px_" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-_20px_</view>
+  <view class="space-y-_1d6rem_" style="">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
+    <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+    <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+    <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
+    <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_</view>
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
+      <view style="">1</view>
+      <view style="">2</view>
+      <view style="">3</view>
+    </view>
+  </view>
+  <view class="test" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">test</view>
+</view>
+"
 `;
 
 exports[`e2e > 'taro-vue3-app' > css 1`] = `
@@ -3436,86 +3436,7 @@ text,
 "
 `;
 
-exports[`e2e > 'taro-vue3-app' 1`] = `
-"<view class="index container bg-_hffffff_ text-_haaaaaa_" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
-  <view class="text-amber-300" style="">
-    <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">components ui</view>
-  </view>
-  <view class="text-amber-300" style="">
-    <view class="text-center text-_50px_ text-red-400 mt-_22px_" style="">aaa</view>
-    <button
-      app-parameter=""
-      business-id=""
-      class="h5-button"
-      aria-disabled="false"
-      form-type=""
-      hover-class="button-hover"
-      hover-start-time="20"
-      hover-stay-time="70"
-      lang=""
-      open-type=""
-      send-message-img=""
-      send-message-path=""
-      send-message-title=""
-      session-from=""
-      size="default"
-      style=""
-      type="primary"
-      role="button">
-      first
-    </button>
-  </view>
-  <view style="">******</view>
-  <view class="bg-_h543254_ h-_100px_ w-_300px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__" style="">classArray</view>
-  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-_h487512_" hover-start-time="50" hover-stay-time="400" style=""></view>
-  <view class="bg-red-900" style="">bg-_hfafa00_</view>
-  <view class="bg-_h098765_" style="">bg-_h098765_</view>
-  <view class="h5-view p-_20px_ -mt-2 mb-_-20px_" style="">p-[20px] -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
-  <view class="h5-view space-y-_1d6rem_" style="">
-    <view class="h5-view w-_300rpx_ text-black text-opacity-_0d19_" style="">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-[300rpx] max-h-_100px_ text-_20px_ leading-[0.9]</view>
-    <view class="h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-[300rpx] min-h-_100px_ text-[#dddddd]</view>
-    <view class="h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
-    <view class="h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-[10px] border-_h098765_ border-solid border-opacity-[0.44]</view>
-    <view class="h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
-      <view class="h5-view" style="">1</view>
-      <view class="h5-view" style="">2</view>
-      <view class="h5-view" style="">3</view>
-    </view>
-    <view class="h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
-  </view>
-  <view class="h5-view test" style="">test</view>
-  <view class="flex justify-between" style="">
-    <view class="text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_" style="">对酒当歌</view>
-    <view class="text-_red_" style="">人生几何</view>
-  </view>
-  <view class="bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full" style=""></view>
-  <button
-    app-parameter=""
-    business-id=""
-    class="h5-button nut-button nut-button--default nut-button--normal nut-button--round"
-    aria-disabled="false"
-    form-type=""
-    hover-class="button-hover"
-    hover-start-time="20"
-    hover-stay-time="70"
-    lang=""
-    open-type=""
-    send-message-img=""
-    send-message-path=""
-    send-message-title=""
-    session-from=""
-    size="default"
-    style=""
-    type=""
-    role="button">
-    <view class="nut-button__wrap" style=""><view style="">nut-button</view></view>
-  </button>
-</view>
-"
-`;
-
-exports[`e2e > 'taro-vue3-app' 2`] = `
+exports[`e2e > 'taro-vue3-app' > json 1`] = `
 "[
   "-m-[20px]",
   "-mt-2",
@@ -3598,6 +3519,85 @@ exports[`e2e > 'taro-vue3-app' 2`] = `
   "w-[300rpx]",
   "w-full"
 ]"
+`;
+
+exports[`e2e > 'taro-vue3-app' > wxml 1`] = `
+"<view class="index container bg-_hffffff_ text-_haaaaaa_" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
+  <view class="text-amber-300" style="">
+    <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">components ui</view>
+  </view>
+  <view class="text-amber-300" style="">
+    <view class="text-center text-_50px_ text-red-400 mt-_22px_" style="">aaa</view>
+    <button
+      app-parameter=""
+      business-id=""
+      class="h5-button"
+      aria-disabled="false"
+      form-type=""
+      hover-class="button-hover"
+      hover-start-time="20"
+      hover-stay-time="70"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      size="default"
+      style=""
+      type="primary"
+      role="button">
+      first
+    </button>
+  </view>
+  <view style="">******</view>
+  <view class="bg-_h543254_ h-_100px_ w-_300px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__" style="">classArray</view>
+  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-_h487512_" hover-start-time="50" hover-stay-time="400" style=""></view>
+  <view class="bg-red-900" style="">bg-_hfafa00_</view>
+  <view class="bg-_h098765_" style="">bg-_h098765_</view>
+  <view class="h5-view p-_20px_ -mt-2 mb-_-20px_" style="">p-[20px] -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
+  <view class="h5-view space-y-_1d6rem_" style="">
+    <view class="h5-view w-_300rpx_ text-black text-opacity-_0d19_" style="">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-[300rpx] max-h-_100px_ text-_20px_ leading-[0.9]</view>
+    <view class="h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-[300rpx] min-h-_100px_ text-[#dddddd]</view>
+    <view class="h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
+    <view class="h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-[10px] border-_h098765_ border-solid border-opacity-[0.44]</view>
+    <view class="h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
+      <view class="h5-view" style="">1</view>
+      <view class="h5-view" style="">2</view>
+      <view class="h5-view" style="">3</view>
+    </view>
+    <view class="h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
+  </view>
+  <view class="h5-view test" style="">test</view>
+  <view class="flex justify-between" style="">
+    <view class="text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_" style="">对酒当歌</view>
+    <view class="text-_red_" style="">人生几何</view>
+  </view>
+  <view class="bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full" style=""></view>
+  <button
+    app-parameter=""
+    business-id=""
+    class="h5-button nut-button nut-button--default nut-button--normal nut-button--round"
+    aria-disabled="false"
+    form-type=""
+    hover-class="button-hover"
+    hover-start-time="20"
+    hover-stay-time="70"
+    lang=""
+    open-type=""
+    send-message-img=""
+    send-message-path=""
+    send-message-title=""
+    session-from=""
+    size="default"
+    style=""
+    type=""
+    role="button">
+    <view class="nut-button__wrap" style=""><view style="">nut-button</view></view>
+  </button>
+</view>
+"
 `;
 
 exports[`e2e > 'uni-app' > css 1`] = `
@@ -4566,149 +4566,7 @@ page:after {
 "
 `;
 
-exports[`e2e > 'uni-app' 1`] = `
-"<view>
-  <view class="ifdef-_MP-WEIXIN_cbg-blue-500">bg-blue-500</view>
-  <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
-  <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
-  <view class="ifndef-_MP-WEIXIN_cbg-red-500">not bg-red-500</view>
-  <view class="ifndef-_H5uuMP-WEIXIN_cbg-red-400">bg-red-400</view>
-  <view class="wxcbg-blue-400">wx:bg-blue-400</view>
-  <view class="-wxcbg-red-400">-wx:bg-red-400</view>
-  <view class="mvcbg-blue-400">mv:bg-blue-400</view>
-  <view class="-mvcbg-red-400">-mv:bg-red-400</view>
-  <view>* 1 * 2 * 3 ****</view>
-  <view>****</view>
-  <view class="ab text-left _div">111</view>
-  <label class="pp text-xs _span text-left">222</label>
-  <button
-    app-parameter=""
-    class="u-button button--u-button u-reset-button button--u-reset-button data-v-18373a4f button--data-v-18373a4f u-button--info button--u-button--info u-button--square button--u-button--square u-button--normal button--u-button--normal"
-    data-event-opts="getphonenumber,getphonenumber,$event,getuserinfo,getuserinfo,$event,error,error,$event,opensetting,opensetting,$event,launchapp,launchapp,$event,tap,clickHandler,$event"
-    data-name=""
-    form-type=""
-    hover-class="u-button--active"
-    hover-start-time="0"
-    hover-stay-time="200"
-    hover-stop-propagation=""
-    lang="en"
-    open-type=""
-    send-message-img=""
-    send-message-path=""
-    send-message-title=""
-    session-from=""
-    style=""
-    role="button"
-    aria-disabled="false">
-    <text class="u-button__text button--u-button__text data-v-18373a4f button--data-v-18373a4f" style="font-size: 14px">月落</text>
-  </button>
-  <view class="bg-inherit aftercborder-none afterccontent-_qHello_Worldq_">after:border-none</view>
-  <view class="text-_h999999_ darkctext-white" hover-class="text-_h444444_">dark mode</view>
-  <view class="bg-_h123456_ text-_hfff123_">bg-[#123456]</view>
-  <view class="text-_h654321_ bg-_h123456_">className</view>
-  <view class="bg-black h-10 w-10" hover-class="h-20 w-20">dark mode</view>
-  <layout is="components/tailwind/Layout">
-    <view class="beforeccontent-_qhelloq_ Layout--beforeccontent-_qhelloq_ beforecblock Layout--beforecblock _div Layout--_div">
-      <view class="text-_22px_ Layout--text-_22px_">对酒当歌，人生几何</view>
-      <view class="ih-5 Layout--ih-5 w-5 Layout--w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__ Layout--shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__"></view>
-      <view class="h-5 Layout--h-5 w-5 Layout--w-5 shadow-_0px_2px_11px_0px_h00000a_ Layout--shadow-_0px_2px_11px_0px_h00000a_"></view>
-      <view class="text-_20px_ Layout--text-_20px_ bg-_h000000_ Layout--bg-_h000000_">classObject</view>
-      <view class="bg-_hfafa00_ Layout--bg-_hfafa00_">Toggle</view>
-      <view>Toggle</view>
-      <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
-      <view class="p-_20px_ Layout--p-_20px_ -mt-2 Layout---mt-2 mb-_-20px_ Layout--mb-_-20px_ h-_200p_ Layout--h-_200p_">
-        p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
-      </view>
-      <view class="space-y-_1d6rem_ Layout--space-y-_1d6rem_">
-        <view class="w-_300rpx_ Layout--w-_300rpx_ text-black Layout--text-black text-opacity-_0d19_ Layout--text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-        <view class="min-w-_300rpx_ Layout--min-w-_300rpx_ max-h-_100px_ Layout--max-h-_100px_ text-_20px_ Layout--text-_20px_ leading-_0d9_ Layout--leading-_0d9_">
-          min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
-        </view>
-        <view class="max-w-_300rpx_ Layout--max-w-_300rpx_ min-h-_100px_ Layout--min-h-_100px_ text-_hdddddd_ Layout--text-_hdddddd_">
-          max-w-[300rpx] min-h-[100px] text-[#dddddd]
-        </view>
-        <view
-          class="flex Layout--flex items-center Layout--items-center justify-center Layout--justify-center h-_100px_ Layout--h-_100px_ w-_100px_ Layout--w-_100px_ rounded-_40px_ Layout--rounded-_40px_ bg-_h123456_ Layout--bg-_h123456_ bg-opacity-_0d54_ Layout--bg-opacity-_0d54_ text-_hffffff_ Layout--text-_hffffff_">
-          Hello
-        </view>
-        <view
-          class="border-_10px_ Layout--border-_10px_ border-_h098765_ Layout--border-_h098765_ border-solid Layout--border-solid border-opacity-_0d44_ Layout--border-opacity-_0d44_">
-          border-[10px] border-[#098765] border-solid border-opacity-[0.44]
-        </view>
-        <view
-          class="grid Layout--grid grid-cols-3 Layout--grid-cols-3 divide-x-_10px_ Layout--divide-x-_10px_ divide-_h010101_ Layout--divide-_h010101_ divide-solid Layout--divide-solid">
-          <view class="_div Layout--_div">1</view>
-          <view class="_div Layout--_div">2</view>
-          <view class="_div Layout--_div">3</view>
-        </view>
-        <view
-          class="w-32 Layout--w-32 py-2 Layout--py-2 rounded-md Layout--rounded-md font-semibold Layout--font-semibold text-white Layout--text-white bg-pink-500 Layout--bg-pink-500 ring-4 Layout--ring-4 ring-pink-300 Layout--ring-pink-300">
-          Default
-        </view>
-      </view>
-      <view class="test Layout--test">test</view>
-    </view>
-  </layout>
-  <van-steps is="wxcomponents/@vant/weapp/steps/index">
-    <view class="van-steps index--van-steps van-steps--horizontal index--van-steps--horizontal">
-      <view class="van-step__wrapper index--van-step__wrapper">
-        <view
-          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--process index--van-step--process van-hairline index--van-hairline"
-          data-index="0"
-          style="">
-          <view class="van-step__title index--van-step__title" style="color: #07c160">
-            <view>步骤一</view>
-            <view>描述信息</view>
-          </view>
-          <view class="van-step__circle-container index--van-step__circle-container"><van-icon></van-icon></view>
-          <view class="van-step__line index--van-step__line" style="background-color: #969799"></view>
-        </view>
-        <view
-          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--inactive index--van-step--inactive van-hairline index--van-hairline"
-          data-index="1"
-          style="color: #969799">
-          <view class="van-step__title index--van-step__title" style="">
-            <view>步骤二</view>
-            <view>描述信息</view>
-          </view>
-          <view class="van-step__circle-container index--van-step__circle-container">
-            <view class="van-step__circle index--van-step__circle" style="background-color: #969799"></view>
-          </view>
-          <view class="van-step__line index--van-step__line" style="background-color: #969799"></view>
-        </view>
-        <view
-          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--inactive index--van-step--inactive van-hairline index--van-hairline"
-          data-index="2"
-          style="color: #969799">
-          <view class="van-step__title index--van-step__title" style="">
-            <view>步骤三</view>
-            <view>描述信息</view>
-          </view>
-          <view class="van-step__circle-container index--van-step__circle-container">
-            <view class="van-step__circle index--van-step__circle" style="background-color: #969799"></view>
-          </view>
-          <view class="van-step__line index--van-step__line" style="background-color: #969799"></view>
-        </view>
-        <view
-          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--inactive index--van-step--inactive van-hairline index--van-hairline"
-          data-index="3"
-          style="color: #969799">
-          <view class="van-step__title index--van-step__title" style="">
-            <view>步骤四</view>
-            <view>描述信息</view>
-          </view>
-          <view class="van-step__circle-container index--van-step__circle-container">
-            <view class="van-step__circle index--van-step__circle" style="background-color: #969799"></view>
-          </view>
-        </view>
-      </view>
-    </view>
-  </van-steps>
-</view>
-"
-`;
-
-exports[`e2e > 'uni-app' 2`] = `
+exports[`e2e > 'uni-app' > json 1`] = `
 "[
   "!h-5",
   "!w-full",
@@ -4851,6 +4709,148 @@ exports[`e2e > 'uni-app' 2`] = `
   "z-[-55]",
   "z-[55]"
 ]"
+`;
+
+exports[`e2e > 'uni-app' > wxml 1`] = `
+"<view>
+  <view class="ifdef-_MP-WEIXIN_cbg-blue-500">bg-blue-500</view>
+  <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
+  <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
+  <view class="ifndef-_MP-WEIXIN_cbg-red-500">not bg-red-500</view>
+  <view class="ifndef-_H5uuMP-WEIXIN_cbg-red-400">bg-red-400</view>
+  <view class="wxcbg-blue-400">wx:bg-blue-400</view>
+  <view class="-wxcbg-red-400">-wx:bg-red-400</view>
+  <view class="mvcbg-blue-400">mv:bg-blue-400</view>
+  <view class="-mvcbg-red-400">-mv:bg-red-400</view>
+  <view>* 1 * 2 * 3 ****</view>
+  <view>****</view>
+  <view class="ab text-left _div">111</view>
+  <label class="pp text-xs _span text-left">222</label>
+  <button
+    app-parameter=""
+    class="u-button button--u-button u-reset-button button--u-reset-button data-v-18373a4f button--data-v-18373a4f u-button--info button--u-button--info u-button--square button--u-button--square u-button--normal button--u-button--normal"
+    data-event-opts="getphonenumber,getphonenumber,$event,getuserinfo,getuserinfo,$event,error,error,$event,opensetting,opensetting,$event,launchapp,launchapp,$event,tap,clickHandler,$event"
+    data-name=""
+    form-type=""
+    hover-class="u-button--active"
+    hover-start-time="0"
+    hover-stay-time="200"
+    hover-stop-propagation=""
+    lang="en"
+    open-type=""
+    send-message-img=""
+    send-message-path=""
+    send-message-title=""
+    session-from=""
+    style=""
+    role="button"
+    aria-disabled="false">
+    <text class="u-button__text button--u-button__text data-v-18373a4f button--data-v-18373a4f" style="font-size: 14px">月落</text>
+  </button>
+  <view class="bg-inherit aftercborder-none afterccontent-_qHello_Worldq_">after:border-none</view>
+  <view class="text-_h999999_ darkctext-white" hover-class="text-_h444444_">dark mode</view>
+  <view class="bg-_h123456_ text-_hfff123_">bg-[#123456]</view>
+  <view class="text-_h654321_ bg-_h123456_">className</view>
+  <view class="bg-black h-10 w-10" hover-class="h-20 w-20">dark mode</view>
+  <layout is="components/tailwind/Layout">
+    <view class="beforeccontent-_qhelloq_ Layout--beforeccontent-_qhelloq_ beforecblock Layout--beforecblock _div Layout--_div">
+      <view class="text-_22px_ Layout--text-_22px_">对酒当歌，人生几何</view>
+      <view class="ih-5 Layout--ih-5 w-5 Layout--w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__ Layout--shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__"></view>
+      <view class="h-5 Layout--h-5 w-5 Layout--w-5 shadow-_0px_2px_11px_0px_h00000a_ Layout--shadow-_0px_2px_11px_0px_h00000a_"></view>
+      <view class="text-_20px_ Layout--text-_20px_ bg-_h000000_ Layout--bg-_h000000_">classObject</view>
+      <view class="bg-_hfafa00_ Layout--bg-_hfafa00_">Toggle</view>
+      <view>Toggle</view>
+      <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
+      <view class="p-_20px_ Layout--p-_20px_ -mt-2 Layout---mt-2 mb-_-20px_ Layout--mb-_-20px_ h-_200p_ Layout--h-_200p_">
+        p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+      </view>
+      <view class="space-y-_1d6rem_ Layout--space-y-_1d6rem_">
+        <view class="w-_300rpx_ Layout--w-_300rpx_ text-black Layout--text-black text-opacity-_0d19_ Layout--text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
+        <view class="min-w-_300rpx_ Layout--min-w-_300rpx_ max-h-_100px_ Layout--max-h-_100px_ text-_20px_ Layout--text-_20px_ leading-_0d9_ Layout--leading-_0d9_">
+          min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+        </view>
+        <view class="max-w-_300rpx_ Layout--max-w-_300rpx_ min-h-_100px_ Layout--min-h-_100px_ text-_hdddddd_ Layout--text-_hdddddd_">
+          max-w-[300rpx] min-h-[100px] text-[#dddddd]
+        </view>
+        <view
+          class="flex Layout--flex items-center Layout--items-center justify-center Layout--justify-center h-_100px_ Layout--h-_100px_ w-_100px_ Layout--w-_100px_ rounded-_40px_ Layout--rounded-_40px_ bg-_h123456_ Layout--bg-_h123456_ bg-opacity-_0d54_ Layout--bg-opacity-_0d54_ text-_hffffff_ Layout--text-_hffffff_">
+          Hello
+        </view>
+        <view
+          class="border-_10px_ Layout--border-_10px_ border-_h098765_ Layout--border-_h098765_ border-solid Layout--border-solid border-opacity-_0d44_ Layout--border-opacity-_0d44_">
+          border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+        </view>
+        <view
+          class="grid Layout--grid grid-cols-3 Layout--grid-cols-3 divide-x-_10px_ Layout--divide-x-_10px_ divide-_h010101_ Layout--divide-_h010101_ divide-solid Layout--divide-solid">
+          <view class="_div Layout--_div">1</view>
+          <view class="_div Layout--_div">2</view>
+          <view class="_div Layout--_div">3</view>
+        </view>
+        <view
+          class="w-32 Layout--w-32 py-2 Layout--py-2 rounded-md Layout--rounded-md font-semibold Layout--font-semibold text-white Layout--text-white bg-pink-500 Layout--bg-pink-500 ring-4 Layout--ring-4 ring-pink-300 Layout--ring-pink-300">
+          Default
+        </view>
+      </view>
+      <view class="test Layout--test">test</view>
+    </view>
+  </layout>
+  <van-steps is="wxcomponents/@vant/weapp/steps/index">
+    <view class="van-steps index--van-steps van-steps--horizontal index--van-steps--horizontal">
+      <view class="van-step__wrapper index--van-step__wrapper">
+        <view
+          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--process index--van-step--process van-hairline index--van-hairline"
+          data-index="0"
+          style="">
+          <view class="van-step__title index--van-step__title" style="color: #07c160">
+            <view>步骤一</view>
+            <view>描述信息</view>
+          </view>
+          <view class="van-step__circle-container index--van-step__circle-container"><van-icon></van-icon></view>
+          <view class="van-step__line index--van-step__line" style="background-color: #969799"></view>
+        </view>
+        <view
+          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--inactive index--van-step--inactive van-hairline index--van-hairline"
+          data-index="1"
+          style="color: #969799">
+          <view class="van-step__title index--van-step__title" style="">
+            <view>步骤二</view>
+            <view>描述信息</view>
+          </view>
+          <view class="van-step__circle-container index--van-step__circle-container">
+            <view class="van-step__circle index--van-step__circle" style="background-color: #969799"></view>
+          </view>
+          <view class="van-step__line index--van-step__line" style="background-color: #969799"></view>
+        </view>
+        <view
+          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--inactive index--van-step--inactive van-hairline index--van-hairline"
+          data-index="2"
+          style="color: #969799">
+          <view class="van-step__title index--van-step__title" style="">
+            <view>步骤三</view>
+            <view>描述信息</view>
+          </view>
+          <view class="van-step__circle-container index--van-step__circle-container">
+            <view class="van-step__circle index--van-step__circle" style="background-color: #969799"></view>
+          </view>
+          <view class="van-step__line index--van-step__line" style="background-color: #969799"></view>
+        </view>
+        <view
+          class="van-step index--van-step van-step--horizontal index--van-step--horizontal van-step--inactive index--van-step--inactive van-hairline index--van-hairline"
+          data-index="3"
+          style="color: #969799">
+          <view class="van-step__title index--van-step__title" style="">
+            <view>步骤四</view>
+            <view>描述信息</view>
+          </view>
+          <view class="van-step__circle-container index--van-step__circle-container">
+            <view class="van-step__circle index--van-step__circle" style="background-color: #969799"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </van-steps>
+</view>
+"
 `;
 
 exports[`e2e > 'uni-app-vue3-vite' > css 1`] = `
@@ -8941,125 +8941,7 @@ page {
 "
 `;
 
-exports[`e2e > 'uni-app-vue3-vite' 1`] = `
-"<view class="content" style="">
-  <view class="ifdef-_MP-WEIXIN_cbg-blue-500">bg-blue-500</view>
-  <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
-  <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
-  <view class="ifndef-_MP-WEIXIN_cbg-red-500">not bg-red-500</view>
-  <view class="ifndef-_H5uuMP-WEIXIN_cbg-red-400">bg-red-400</view>
-  <view class="wxcbg-blue-400">wx:bg-blue-400</view>
-  <view class="-wxcbg-red-400">-wx:bg-red-400</view>
-  <view class="mvcbg-blue-400">mv:bg-blue-400</view>
-  <view class="-mvcbg-red-400">-mv:bg-red-400</view>
-  <image
-    mode="widthFix"
-    src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
-    style="width: 529px; height: 220.417px"
-    class="mt-_96d3px_ Issue228--mt-_96d3px_ w-_61d1px_ Issue228--w-_61d1px_ h-_50d99px_ Issue228--h-_50d99px_"
-    role="img"></image>
-  <view>*******</view>
-  <n-image is="components/NImage" class="mt-_26d2px_ w-_43d1px_ h-_42d99px_">
-    <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img"></image>
-  </n-image>
-  <image
-    src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
-    style=""
-    class="mt-_96d3px_ NHostImage--mt-_96d3px_ w-_61d1px_ NHostImage--w-_61d1px_ h-_50d99px_ NHostImage--h-_50d99px_"
-    role="img"></image>
-  <view class="_2xlctext-base">2xl:text-base</view>
-  <view class="_2xlctext-_red_">2xl:text-[red]</view>
-  <view class="space-y-4 flex flex-col bg-red-400">
-    <view class="bg-sky-500">view space-y-4</view>
-    <view class="bg-sky-500">view space-y-4</view>
-    <text class="bg-sky-500">text space-y-4</text>
-    <button class="bg-sky-500" role="button" aria-disabled="false">button space-y-4</button>
-    <common-com is="components/CommonCom" class="bg-sky-500"><text>CommonCom space-y-4</text></common-com>
-    <view class="bg-sky-500">view space-y-4</view>
-    <text class="bg-sky-500">text space-y-4</text>
-    <text>VirtualHostCom space-y-4</text>
-    <view class="bg-sky-500">view space-y-4</view>
-    <text class="bg-sky-500">text space-y-4</text>
-  </view>
-  <view class="bg-_h3482f2_">bgbgbgbg</view>
-  <view class="text-_30rpx_ text-_hfafafa_ font-bold bg-_url_qhttpscssxxxdcomsxxdwebpq__">classArray</view>
-  <view class="text-sm text-_hfafafa_">:class="['text-sm', classObj]</view>
-  <view class="rotate-_10deg_">rotate1111111</view>
-  <view class="td highlight">你好</view>
-  <view class="td">1</view>
-  <view class="td">2</view>
-  <view class="text-_32rpx_ border-_10rpx_">rpx</view>
-  <view class="text-_32px_ border-_10px_">px</view>
-  <button role="button" aria-disabled="false">显示Tabbar</button>
-  <button role="button" aria-disabled="false">隐藏Tabbar</button>
-  <view class="itext-primary iborder-primary text-_32px_">1111</view>
-  <view class="border-b-_4rpx_ border-t-_4px_ border w-screen h-3 border-_red_"></view>
-  <view class="_n_du-count-downw_w_text_citext-red-400">
-    <view></view>
-    <view></view>
-    <view></view>
-    <view></view>
-    <view><view class="u-count-down__text">u-count-down__text</view></view>
-  </view>
-  <button
-    app-parameter=""
-    class="u-button button--u-button u-reset-button button--u-reset-button data-v-5c003edf button--data-v-5c003edf u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
-    data-name=""
-    form-type=""
-    hover-class="u-button--active"
-    hover-start-time="0"
-    hover-stay-time="200"
-    lang="en"
-    open-type=""
-    send-message-img=""
-    send-message-path=""
-    send-message-title=""
-    session-from=""
-    style=" ;"
-    role="button"
-    aria-disabled="false"
-    hover-stop-propagation="">
-    主要按钮
-  </button>
-  <view class="aftercborder-none">当前系统主题:light</view>
-  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500"></view>
-  <view class="h-5 w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__ beforeccontent-_qFestivusq_"></view>
-  <view class="h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_"></view>
-  <view class="text-_22px_ darkctext-yellow-400">text-[22px]</view>
-  <view class="text-_hbada55_">text-[#bada55]</view>
-  <view class="text-_lengthcvar_--my-var-length__">text-[length:var(--my-var-length)]</view>
-  <view class="text-_colorcvar_--my-var__">text-[color:var(--my-var)]</view>
-  <button class="ibg-green-500 isr-onlytext-white opacity-50" aria-disabled="true" role="button" disabled="">disable</button>
-  <view class="test">test</view>
-  <view class="h-_20px_ w-_20px_ bg-_h4268EA_ shadow-indigo-100"></view>
-  <view class="h-_20px_ w-_20px_ bg-_h123456_ shadow-blue-100"></view>
-  <view class="h-_20px_ w-_20px_ bg-green-500 shadow-green-100"></view>
-  <view class="h-_20px_ w-_20px_ bg-cyan-500 shadow-cyan-100"></view>
-  <view class="h-_20px_ w-_20px_ bg-amber-500 shadow-amber-100"></view>
-  <view class="w-2 h-2 bg-_h123456_"></view>
-  <view class="w-2 h-2 bg-blue-500s50"></view>
-  <view class="flex items-center justify-center w-screen h-screen"><view class="ifont-bold itext-_h990000_ text-2xl underline">测试标题</view></view>
-  <image class="logo h-10 w-10" src="/static/logo.png" role="img"></image>
-  <view class="text-area"><text class="title h-_200p_">测试标题</text></view>
-  <view class="p-_20px_ -mt-2 mb-_-20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-  <view class="space-y-_1d6rem_">
-    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
-    <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
-    <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_ text-_h123456_ bg-_h666600_">Hello</view>
-    <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
-    <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid">
-      <view>1</view>
-      <view>2</view>
-      <view>3</view>
-    </view>
-    <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">Default</view>
-  </view>
-</view>
-"
-`;
-
-exports[`e2e > 'uni-app-vue3-vite' 2`] = `
+exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
 "[
   "!bg-green-500",
   "!border-primary",
@@ -9274,6 +9156,124 @@ exports[`e2e > 'uni-app-vue3-vite' 2`] = `
   "w-screen",
   "wx:bg-blue-400"
 ]"
+`;
+
+exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
+"<view class="content" style="">
+  <view class="ifdef-_MP-WEIXIN_cbg-blue-500">bg-blue-500</view>
+  <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
+  <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
+  <view class="ifndef-_MP-WEIXIN_cbg-red-500">not bg-red-500</view>
+  <view class="ifndef-_H5uuMP-WEIXIN_cbg-red-400">bg-red-400</view>
+  <view class="wxcbg-blue-400">wx:bg-blue-400</view>
+  <view class="-wxcbg-red-400">-wx:bg-red-400</view>
+  <view class="mvcbg-blue-400">mv:bg-blue-400</view>
+  <view class="-mvcbg-red-400">-mv:bg-red-400</view>
+  <image
+    mode="widthFix"
+    src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
+    style="width: 529px; height: 220.417px"
+    class="mt-_96d3px_ Issue228--mt-_96d3px_ w-_61d1px_ Issue228--w-_61d1px_ h-_50d99px_ Issue228--h-_50d99px_"
+    role="img"></image>
+  <view>*******</view>
+  <n-image is="components/NImage" class="mt-_26d2px_ w-_43d1px_ h-_42d99px_">
+    <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img"></image>
+  </n-image>
+  <image
+    src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
+    style=""
+    class="mt-_96d3px_ NHostImage--mt-_96d3px_ w-_61d1px_ NHostImage--w-_61d1px_ h-_50d99px_ NHostImage--h-_50d99px_"
+    role="img"></image>
+  <view class="_2xlctext-base">2xl:text-base</view>
+  <view class="_2xlctext-_red_">2xl:text-[red]</view>
+  <view class="space-y-4 flex flex-col bg-red-400">
+    <view class="bg-sky-500">view space-y-4</view>
+    <view class="bg-sky-500">view space-y-4</view>
+    <text class="bg-sky-500">text space-y-4</text>
+    <button class="bg-sky-500" role="button" aria-disabled="false">button space-y-4</button>
+    <common-com is="components/CommonCom" class="bg-sky-500"><text>CommonCom space-y-4</text></common-com>
+    <view class="bg-sky-500">view space-y-4</view>
+    <text class="bg-sky-500">text space-y-4</text>
+    <text>VirtualHostCom space-y-4</text>
+    <view class="bg-sky-500">view space-y-4</view>
+    <text class="bg-sky-500">text space-y-4</text>
+  </view>
+  <view class="bg-_h3482f2_">bgbgbgbg</view>
+  <view class="text-_30rpx_ text-_hfafafa_ font-bold bg-_url_qhttpscssxxxdcomsxxdwebpq__">classArray</view>
+  <view class="text-sm text-_hfafafa_">:class="['text-sm', classObj]</view>
+  <view class="rotate-_10deg_">rotate1111111</view>
+  <view class="td highlight">你好</view>
+  <view class="td">1</view>
+  <view class="td">2</view>
+  <view class="text-_32rpx_ border-_10rpx_">rpx</view>
+  <view class="text-_32px_ border-_10px_">px</view>
+  <button role="button" aria-disabled="false">显示Tabbar</button>
+  <button role="button" aria-disabled="false">隐藏Tabbar</button>
+  <view class="itext-primary iborder-primary text-_32px_">1111</view>
+  <view class="border-b-_4rpx_ border-t-_4px_ border w-screen h-3 border-_red_"></view>
+  <view class="_n_du-count-downw_w_text_citext-red-400">
+    <view></view>
+    <view></view>
+    <view></view>
+    <view></view>
+    <view><view class="u-count-down__text">u-count-down__text</view></view>
+  </view>
+  <button
+    app-parameter=""
+    class="u-button button--u-button u-reset-button button--u-reset-button data-v-5c003edf button--data-v-5c003edf u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
+    data-name=""
+    form-type=""
+    hover-class="u-button--active"
+    hover-start-time="0"
+    hover-stay-time="200"
+    lang="en"
+    open-type=""
+    send-message-img=""
+    send-message-path=""
+    send-message-title=""
+    session-from=""
+    style=" ;"
+    role="button"
+    aria-disabled="false"
+    hover-stop-propagation="">
+    主要按钮
+  </button>
+  <view class="aftercborder-none">当前系统主题:light</view>
+  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500"></view>
+  <view class="h-5 w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__ beforeccontent-_qFestivusq_"></view>
+  <view class="h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_"></view>
+  <view class="text-_22px_ darkctext-yellow-400">text-[22px]</view>
+  <view class="text-_hbada55_">text-[#bada55]</view>
+  <view class="text-_lengthcvar_--my-var-length__">text-[length:var(--my-var-length)]</view>
+  <view class="text-_colorcvar_--my-var__">text-[color:var(--my-var)]</view>
+  <button class="ibg-green-500 isr-onlytext-white opacity-50" aria-disabled="true" role="button" disabled="">disable</button>
+  <view class="test">test</view>
+  <view class="h-_20px_ w-_20px_ bg-_h4268EA_ shadow-indigo-100"></view>
+  <view class="h-_20px_ w-_20px_ bg-_h123456_ shadow-blue-100"></view>
+  <view class="h-_20px_ w-_20px_ bg-green-500 shadow-green-100"></view>
+  <view class="h-_20px_ w-_20px_ bg-cyan-500 shadow-cyan-100"></view>
+  <view class="h-_20px_ w-_20px_ bg-amber-500 shadow-amber-100"></view>
+  <view class="w-2 h-2 bg-_h123456_"></view>
+  <view class="w-2 h-2 bg-blue-500s50"></view>
+  <view class="flex items-center justify-center w-screen h-screen"><view class="ifont-bold itext-_h990000_ text-2xl underline">测试标题</view></view>
+  <image class="logo h-10 w-10" src="/static/logo.png" role="img"></image>
+  <view class="text-area"><text class="title h-_200p_">测试标题</text></view>
+  <view class="p-_20px_ -mt-2 mb-_-20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+    <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_ text-_h123456_ bg-_h666600_">Hello</view>
+    <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid">
+      <view>1</view>
+      <view>2</view>
+      <view>3</view>
+    </view>
+    <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">Default</view>
+  </view>
+</view>
+"
 `;
 
 exports[`e2e > 'uni-app-webpack5' > css 1`] = `
@@ -9845,54 +9845,7 @@ page:after {
 "
 `;
 
-exports[`e2e > 'uni-app-webpack5' 1`] = `
-"<view class="beforeccontent-_qhelloq_ beforecblock _div">
-  <view>
-    <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifndef-_MP-WEIXIN_cbg-red-500">样式的条件编译:微信小程序为蓝色，不是微信小程序为红色</view>
-    <view class="wxcbg-blue-500 -wxcbg-red-500">
-      <view>自定义配置的方式进行样式条件编译</view>
-      <view>相关配置见根目录下的tailwind.config.js</view>
-    </view>
-    <view class="apply-class-0">@apply 条件编译方式0</view>
-    <view class="apply-class-1">@apply 条件编译方式1</view>
-  </view>
-  <view>********</view>
-  <view class="block"></view>
-  <view class="inline-block"></view>
-  <view class="list-item"></view>
-  <view class="flex"></view>
-  <view class="bg-_h00ff00_">bbb</view>
-  <view class="afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ text-_30rpx_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_h00ff00_">
-    classArray
-  </view>
-  <view class="text-_20px_ text-_h898989_ bg-_hff0000_">:class="['text-sm', classObj]</view>
-  <view class="text-_22px_">对酒当歌，人生几何</view>
-  <view class="ih-5 w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__"></view>
-  <view class="h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_"></view>
-  <view class="text-_20px_ bg-_h000000_">classObject</view>
-  <view class="bg-_hfafa00_">Toggle</view>
-  <view>Toggle</view>
-  <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
-  <view class="p-_20px_ -mt-2 mb-_-20px_ h-_200p_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-  <view class="space-y-_1d6rem_">
-    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
-    <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
-    <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">Hello</view>
-    <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
-    <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid">
-      <view class="_div">1</view>
-      <view class="_div">2</view>
-      <view class="_div">3</view>
-    </view>
-    <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">Default</view>
-  </view>
-  <view class="test">test</view>
-</view>
-"
-`;
-
-exports[`e2e > 'uni-app-webpack5' 2`] = `
+exports[`e2e > 'uni-app-webpack5' > json 1`] = `
 "[
   "!h-5",
   "-m-[20px]",
@@ -10011,4 +9964,51 @@ exports[`e2e > 'uni-app-webpack5' 2`] = `
   "z-[-55]",
   "z-[55]"
 ]"
+`;
+
+exports[`e2e > 'uni-app-webpack5' > wxml 1`] = `
+"<view class="beforeccontent-_qhelloq_ beforecblock _div">
+  <view>
+    <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifndef-_MP-WEIXIN_cbg-red-500">样式的条件编译:微信小程序为蓝色，不是微信小程序为红色</view>
+    <view class="wxcbg-blue-500 -wxcbg-red-500">
+      <view>自定义配置的方式进行样式条件编译</view>
+      <view>相关配置见根目录下的tailwind.config.js</view>
+    </view>
+    <view class="apply-class-0">@apply 条件编译方式0</view>
+    <view class="apply-class-1">@apply 条件编译方式1</view>
+  </view>
+  <view>********</view>
+  <view class="block"></view>
+  <view class="inline-block"></view>
+  <view class="list-item"></view>
+  <view class="flex"></view>
+  <view class="bg-_h00ff00_">bbb</view>
+  <view class="afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ text-_30rpx_ bg-_url_qhttpscssxxxdcomsxxdwebpq__ bg-_h00ff00_">
+    classArray
+  </view>
+  <view class="text-_20px_ text-_h898989_ bg-_hff0000_">:class="['text-sm', classObj]</view>
+  <view class="text-_22px_">对酒当歌，人生几何</view>
+  <view class="ih-5 w-5 shadow-_0px_2px_11px_0px_rgba_0b0b0b0d4__"></view>
+  <view class="h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_"></view>
+  <view class="text-_20px_ bg-_h000000_">classObject</view>
+  <view class="bg-_hfafa00_">Toggle</view>
+  <view>Toggle</view>
+  <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
+  <view class="p-_20px_ -mt-2 mb-_-20px_ h-_200p_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+    <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">Hello</view>
+    <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid">
+      <view class="_div">1</view>
+      <view class="_div">2</view>
+      <view class="_div">3</view>
+    </view>
+    <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">Default</view>
+  </view>
+  <view class="test">test</view>
+</view>
+"
 `;

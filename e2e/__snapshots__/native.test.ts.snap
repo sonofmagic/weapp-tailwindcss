@@ -1,0 +1,425 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`e2e native > 'native' > css 1`] = `
+"::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::before,
+::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:   
+;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:   
+;
+}
+.i-mdi-123 {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M4 17V9H2V7h4v10zm18-2a2 2 0 0 1-2 2h-4v-2h4v-2h-2v-2h2V9h-4V7h4a2 2 0 0 1 2 2v1.5a1.5 1.5 0 0 1-1.5 1.5a1.5 1.5 0 0 1 1.5 1.5zm-8 0v2H8v-4a2 2 0 0 1 2-2h2V9H8V7h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2v2z'/%3E%3C/svg%3E");
+}
+.i-mdi-ab-testing {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M4 2a2 2 0 0 0-2 2v8h2V8h2v4h2V4a2 2 0 0 0-2-2zm0 2h2v2H4m18 9.5V14a2 2 0 0 0-2-2h-4v10h4a2 2 0 0 0 2-2v-1.5a1.54 1.54 0 0 0-1.5-1.5a1.54 1.54 0 0 0 1.5-1.5M20 20h-2v-2h2zm0-4h-2v-2h2M5.79 21.61l-1.58-1.22l14-18l1.58 1.22Z'/%3E%3C/svg%3E");
+}
+.i-mdi-abacus {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M5 5h2v6H5zm5 0H8v6h2zM5 19h2v-6H5zm5-6H8v6h2v-2h5v-2h-5zm-8 8h2V3H2zM20 3v4h-7V5h-2v6h2V9h7v6h-2v-2h-2v6h2v-2h2v4h2V3z'/%3E%3C/svg%3E");
+}
+.i-mdi-abjad-arabic {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M12 4c-1.92 0-3.5 1.58-3.5 3.5c0 .93.38 1.78 1 2.41c-1.53 1-2.5 2.71-2.5 4.59c0 3.03 2.47 5.5 5.5 5.5c1.76 0 3.5-.46 5-1.34l-1-1.73c-1.22.7-2.6 1.07-4 1.07c-1.94 0-3.5-1.55-3.5-3.5a3.49 3.49 0 0 1 2.59-3.38l5.21-1.4l-.52-1.93L11.83 9c-.75-.1-1.33-.72-1.33-1.5c0-.84.66-1.5 1.5-1.5c.26 0 .5.07.75.2l1-1.73C13.22 4.16 12.61 4 12 4'/%3E%3C/svg%3E");
+}
+.block {
+  display: block;
+}
+.flex {
+  display: flex;
+}
+.w-8 {
+  width: 2rem;
+}
+.flex-col {
+  flex-direction: column;
+}
+.justify-evenly {
+  justify-content: space-evenly;
+}
+.text-_h4049bd_ {
+  --tw-text-opacity: 1;
+  color: rgb(64 73 189 / var(--tw-text-opacity));
+}
+.text-_h41cac8_ {
+  --tw-text-opacity: 1;
+  color: rgb(65 202 200 / var(--tw-text-opacity));
+}
+.text-_h4de265_ {
+  --tw-text-opacity: 1;
+  color: rgb(77 226 101 / var(--tw-text-opacity));
+}
+.text-_hda6a4f_ {
+  --tw-text-opacity: 1;
+  color: rgb(218 106 79 / var(--tw-text-opacity));
+}
+"
+`;
+
+exports[`e2e native > 'native' > json 1`] = `
+"[
+  "block",
+  "flex",
+  "flex-col",
+  "i-mdi-123",
+  "i-mdi-ab-testing",
+  "i-mdi-abacus",
+  "i-mdi-abjad-arabic",
+  "justify-evenly",
+  "text-[#4049bd]",
+  "text-[#41cac8]",
+  "text-[#4de265]",
+  "text-[#da6a4f]",
+  "w-8"
+]"
+`;
+
+exports[`e2e native > 'native' > wxml 1`] = `
+"<scroll-view scroll-y="">
+  <swiper autoplay="" duration="1000" indicator-dots="" interval="5000" role="listbox"></swiper>
+  <view class="flex justify-evenly">
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=生日&amp;id=5b8e37e34b640a63b33272dc" role="link">
+      <image class="w-8" mode="aspectFit" src="/images/birthday.png" role="img"></image>
+      <text class="text-_h4de265_">
+        生日
+        <text class="i-mdi-123"></text>
+        生日
+        <text class="i-mdi-123"></text>
+      </text>
+    </navigator>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=节日&amp;id=5b8f45f2afb7c17788e11994" role="link">
+      <image class="w-8" mode="aspectFit" src="/images/festival.png" role="img"></image>
+      <text class="text-_h4049bd_">
+        节日
+        <text class="i-mdi-ab-testing"></text>
+        节日
+        <text class="i-mdi-ab-testing"></text>
+      </text>
+    </navigator>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=婚礼&amp;id=5b8f4603afb7c17788e11996" role="link">
+      <image class="w-8" mode="aspectFit" src="/images/wedding.png" role="img"></image>
+      <text class="text-_hda6a4f_">
+        婚礼
+        <text class="i-mdi-abacus"></text>
+        婚礼
+        <text class="i-mdi-abacus"></text>
+      </text>
+    </navigator>
+    <navigator class="flex flex-col" hover-class="none" url="/pages/list/index?title=party&amp;id=5b8f4612afb7c17788e11998" role="link">
+      <image class="w-8" mode="aspectFit" src="/images/party.png" role="img"></image>
+      <text class="text-_h41cac8_">
+        party
+        <text class="i-mdi-abjad-arabic"></text>
+        party
+        <text class="i-mdi-abjad-arabic"></text>
+      </text>
+    </navigator>
+  </view>
+</scroll-view>
+"
+`;
+
+exports[`e2e native > 'native-ts' > css 1`] = `
+"::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::before,
+::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:   
+;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:   
+;
+}
+.block {
+  display: block;
+}
+.bg-_yellow_ {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 0 / var(--tw-bg-opacity));
+}
+.text-_60px_ {
+  font-size: 60px;
+}
+"
+`;
+
+exports[`e2e native > 'native-ts' > json 1`] = `
+"[
+  "bg-[yellow]",
+  "block",
+  "text-[60px]"
+]"
+`;
+
+exports[`e2e native > 'native-ts' > wxml 1`] = `"<navigation-bar is="components/navigation-bar/navigation-bar"><view class="weui-navigation-bar bar--weui-navigation-bar"><view class="weui-navigation-bar__inner bar--weui-navigation-bar__inner ios bar--ios" style="color: black; background: #FFF; ; padding-right: 94px; height: calc(var(--height) + 47px); padding-top: 47px;"><view class="weui-navigation-bar__left bar--weui-navigation-bar__left" style="width: 94px;"></view><view class="weui-navigation-bar__center bar--weui-navigation-bar__center"><text>Weixin</text></view><view class="weui-navigation-bar__right bar--weui-navigation-bar__right"></view></view></view></navigation-bar><scroll-view scroll-y="" class="scrollarea" type="list" enable-back-to-top=""><view class="container"><view class="userinfo"><button class="avatar-wrapper" open-type="chooseAvatar" role="button" aria-disabled="false"><image class="avatar" src="https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0" role="img"></image></button><view class="nickname-wrapper"><text class="nickname-label">昵称</text><input class="nickname-input" placeholder="请输入昵称11" type="nickname">请输入昵称11</input></view></view><view class="usermotto"><text class="bg-_yellow_ text-_60px_">bg-_yellow_ text-_60px_ </text></view></view></scroll-view>"`;
+
+exports[`e2e native > 'web-postcss7-compat' > css 1`] = `
+".h-\\[121px\\] {
+  height: 121px;
+}
+.w-\\[99px\\] {
+  width: 99px;
+}
+"
+`;
+
+exports[`e2e native > 'web-postcss7-compat' > json 1`] = `"[]"`;

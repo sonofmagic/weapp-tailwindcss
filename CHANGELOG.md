@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.3.4 (2023-7-6)
+
+### Fixed
+
+- [#314](https://github.com/sonofmagic/weapp-tailwindcss/issues/314)
+- [#310](https://github.com/sonofmagic/weapp-tailwindcss/issues/310)
+
 ## 3.3.2 - 3.3.3 (2024-6-25)
 
 ### Features
