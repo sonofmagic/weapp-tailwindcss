@@ -12,17 +12,17 @@
 
 ---
 
-## 使用 `uni-app cli` 进行构建 `vscode` 开发
+### 使用 `uni-app cli` 进行构建 `vscode` 开发
 
-[uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
+🔥  [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)
 
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
 
-## 若依移动端 (`hbuilderx` 集成 `tailwindcss`)
+### 若依移动端 (`hbuilderx` 集成 `tailwindcss`)
 
-[若依移动端 (Gitee 地址)](https://gitee.com/sonofmagic/RuoYi-App)
+🔥 [若依移动端 (Gitee 地址)](https://gitee.com/sonofmagic/RuoYi-App)
 
-## 使用 `hbuilderx` 进行构建和开发
+### 使用 `hbuilderx` 进行构建和开发
 
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
@@ -30,21 +30,23 @@
 
 ---
 
-## 使用 `tarojs` 进行构建 `vscode` 开发
+### 使用 `tarojs` 进行构建 `vscode` 开发
 
-[taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
+🔥 [taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
 ## native
 
 ---
 
-## 原生小程序开发模板
+### 原生小程序开发模板
+
+🔥 [native-weapp-tailwindcss-template(cli 打包)](https://github.com/sonofmagic/native-weapp-tailwindcss-template)
 
 [weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
 
 [weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
-## 更多
+### 更多
 
 你还可以在项目的根目录的 `demo` 文件夹中，找到各个框架的注册方式。
 

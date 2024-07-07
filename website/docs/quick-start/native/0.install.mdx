@@ -21,11 +21,15 @@ import TabItem from '@theme/TabItem';
 
 首先安装本插件前，我们需要把 `tailwindcss` 对应的环境和配置安装好。
 
+## 0. 初始化 `package.json`
+
+首先，假如你使用原生的 JS 模板创建的项目。
+
+在创建的项目目录下，是没有 `package.json` 文件 (`原生的 TS 模板有这个文件`), 你需要执行命令:
+
+`npm init -y`，快速创建一个 `package.json` 文件在你的项目下
+
 ## 1. 使用包管理器安装 `tailwindcss`
-
-首先，假如你项目目录下，没有 `package.json` 文件, 你需要执行命令，或者手动创建一下:
-
-运行 `npm init -y` 命令，快速创建一个 `package.json` 文件在你的项目下
 
 然后执行:
 
@@ -33,7 +37,7 @@ import TabItem from '@theme/TabItem';
   <TabItem label="npm" value="npm">
   
 ```bash
-npm i -D tailwindcss postcss
+npm i -D tailwindcss postcss autoprefixer
 # 初始化 tailwind.config.js 文件
 npx tailwindcss init
 ```
@@ -63,7 +67,26 @@ npx tailwindcss init
 
 这样 `tailwindcss` 就被安装到你项目本地了
 
-## 2. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`
+## 2. 配置 `tailwind.config.js`
+
+`tailwind.config.js` 是 `tailwindcss` 的配置文件，我们可以在里面配置 `tailwindcss` 的各种行为。
+
+这里给出了一份 `JS微信小程序` 通用示例，具体要根据你自己项目的目录结构进行配置
+
+```js title="tailwind.config.js"
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['**/*.{js,ts,wxml}', '!node_modules/**', '!dist/**'],
+  // 假如你使用 ts 模板，则可以使用下方的配置
+  // content: ['miniprogram/**/*.{ts,js,wxml}'],
+  corePlugins: {
+    // 小程序不需要 preflight，因为这主要是给 h5 的，如果你要同时开发小程序和 h5 端，你应该使用环境变量来控制它
+    preflight: false
+  }
+}
+```
+
+## 3. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`
 
 内容如下:
 
@@ -71,29 +94,13 @@ npx tailwindcss init
 module.exports = {
   plugins: {
     tailwindcss: {},
+    autoprefixer: {},
   }
 }
 ```
 
-这个文件和 `tailwind.config.js` 平级
+> 这个文件和 `tailwind.config.js` 平级
 
-## 3. 配置 `tailwind.config.js`
-
-`tailwind.config.js` 是 `tailwindcss` 的配置文件，我们可以在里面配置 `tailwindcss` 的各种行为。
-
-这里给出了一份 微信小程序 通用示例，具体要根据你自己项目的目录结构进行配置
-
-```js title="tailwind.config.js"
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  // 假如你使用 ts 开发，则需要在下方的 glob 表达式中，把 ts 后缀配置进去 
-  content: ['**/*.{js,wxml}', '!node_modules/**', '!dist/**'],
-  corePlugins: {
-    // 小程序不需要 preflight，因为这主要是给 h5 的，如果你要同时开发小程序和 h5 端，你应该使用环境变量来控制它
-    preflight: false
-  }
-}
-```
 
 ## 4. 引入 `tailwindcss`
 
@@ -104,5 +111,7 @@ module.exports = {
 @tailwind components;
 @tailwind utilities;
 ```
+
+在 `app.wxss` 加入这一段代码之后，微信开发者工具会报错。不用担心，这是因为我们还没有完全配置好。
 
 接下来，赶紧进入下一步，安装 `weapp-tailwindcss` 并运行吧！

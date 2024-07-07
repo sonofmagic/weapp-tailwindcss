@@ -58,44 +58,24 @@ npx weapp-tw init
 
 ## 开始运行
 
-使用 `npm run dev` 进入开发模式, 此时是有热更新的，主要用于开发
+使用 `npm run dev` 进入开发模式, 此模式带有热更新的，主要用于开发
 
 使用 `npm run build` 进行构建
 
-> 构建产物都在 `dist` 目录
+不论是 `npm run dev` 还是 `npm run build`, 他们的构建产物，都在工程目录下的 `dist` 目录
 
-使用微信开发者工具，直接导入这个目录，然后即可预览效果
+使用微信开发者工具，直接导入工程目录，然后即可预览效果！
 
-:::info
-在使用 原生 typescript 插件编译的注意事项:
+>注意不是导入 `dist` 目录，是你工程的根目录! 通常是 `dist` 的父级目录，不要搞错了！
 
-使用微信开发者工具编译 `typescript` 的配置如下：
+## 配置好的模板
 
-```json title="project.config.json"
-{
-  "setting": {
-    "useCompilerPlugins":[
-      "typescript"
-    ]
-  }
-}
-```
+假如你配置不成功，你可以参考以下模板进行配置文件对比:
 
-进行编译 `ts` 文件的时候，记得把 `dist` 加入你的 `tsconfig.json` 的 `exclude` 字段中
+[native-weapp-tailwindcss-template](https://github.com/sonofmagic/native-weapp-tailwindcss-template)
 
-```json title="tsconfig.json"
-{
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
-}
-```
+## 更多场景
 
-:::
-
-## 更多
-
-更多详情和配置，请查看 `更多的细节` 章节;
+更多场景和配置，请查看 `更多场景` 章节;
 
 
