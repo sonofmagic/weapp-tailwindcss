@@ -1,3 +1,4 @@
+import scssParser from 'postcss-scss'
 import { createContext } from '@/core'
 import { getCss } from '#test/helpers/getTwCss'
 
@@ -33,6 +34,26 @@ describe('core', () => {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
+    const content = `const classNames = ['mb-[1.5rem]']`
+    await getCss(content)
+    const runtimeSet = new Set<string>()
+    const js = await ctx.transformJs(content, { runtimeSet })
+    expect(js).toBe(`const classNames = ['mb-[1.5rem]']`)
+  })
+
+  it('scss usage case 1', async () => {
+    const ctx = createContext()
+    const wxml = await ctx.transformWxml('<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">')
+    expect(wxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    const wxss = await ctx.transformWxss(`// xx`, {
+      isMainChunk: true,
+      postcssOptions: {
+        options: {
+          parser: scssParser,
+        },
+      },
+    })
+    expect(wxss).toBe(`/* xx*/`)
     const content = `const classNames = ['mb-[1.5rem]']`
     await getCss(content)
     const runtimeSet = new Set<string>()

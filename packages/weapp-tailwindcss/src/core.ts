@@ -1,5 +1,5 @@
 import { getOptions } from '@/options'
-import type { UserDefinedOptions } from '@/types'
+import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
 
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
@@ -8,27 +8,27 @@ export function createContext(options: UserDefinedOptions = {}) {
   let runtimeSet = new Set<string>()
   patch?.()
 
-  async function transformWxss(rawCss: string) {
-    const code = await styleHandler(rawCss, {
+  async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
+    const code = await styleHandler(rawCss, Object.assign({
       isMainChunk: true,
-    })
+    }, options))
     return code
   }
 
-  async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } = {}) {
+  async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
         : twPatcher.getClassSet()
 
-    const { code } = await jsHandler(rawJs, runtimeSet)
+    const { code } = await jsHandler(rawJs, runtimeSet, options)
     return code
   }
 
-  function transformWxml(rawWxml: string) {
-    const code = templateHandler(rawWxml, {
+  function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
+    const code = templateHandler(rawWxml, Object.assign({
       runtimeSet,
-    })
+    }, options))
     return code
   }
 

@@ -6,6 +6,7 @@ import rename from 'gulp-rename'
 import less from 'gulp-less'
 import type compileTs from 'gulp-typescript'
 // import { isPackageExists } from 'local-pkg'
+import postcssScssParser from 'postcss-scss'
 import GlobsSet from './globsSet'
 import { isStream } from './is-stream'
 import { defaultNodeModulesDirs } from './defaults'
@@ -215,9 +216,20 @@ export async function getTasks(options: BuildOptions) {
           // load postcss
           pipes.push(postcssrc(postcssOptions?.plugins, postcssOptions?.options))
         }
-
+        if (x === 'scss') {
+          pipes.push(transformWxss({
+            postcssOptions: {
+              options: {
+                parser: postcssScssParser,
+              },
+            },
+          }))
+        }
+        else {
+          pipes.push(transformWxss())
+        }
         // load weapp-tailwindcss transformWxss
-        pipes.push(transformWxss())
+
         if (loadSass || loadLess) {
           // load rename
           pipes.push(rename({

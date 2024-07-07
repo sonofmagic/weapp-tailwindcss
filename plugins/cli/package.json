@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The cli of weapp-tailwindcss",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
@@ -77,7 +77,8 @@
     "local-pkg": "^0.5.0",
     "picocolors": "^1.0.1",
     "postcss": "^8.4.39",
-    "postcss-load-config": "^6.0.1"
+    "postcss-load-config": "^6.0.1",
+    "postcss-scss": "^4.0.9"
   },
   "publishConfig": {
     "access": "public",
