@@ -5,8 +5,8 @@ import createSass from 'gulp-sass'
 import rename from 'gulp-rename'
 import less from 'gulp-less'
 import type compileTs from 'gulp-typescript'
-// import { isPackageExists } from 'local-pkg'
 import postcssScssParser from 'postcss-scss'
+import { isPackageExists } from 'local-pkg'
 import GlobsSet from './globsSet'
 import { isStream } from './is-stream'
 import { defaultNodeModulesDirs } from './defaults'
@@ -81,17 +81,26 @@ export async function getTasks(options: BuildOptions) {
 
   let sass: ReturnType<typeof createSass>
   if (enableSass) {
+    if (!isPackageExists('sass')) {
+      throw new Error('请先执行 npm / yarn / pnpm 命令安装 `sass` 后重试!')
+    }
     const sassLib = await import('sass')
-    // { default: sassLib }
     sass = createSass(sassLib)
   }
   let ts: typeof compileTs
-
+  let gulpTs: compileTs.Project
   if (enableTs) {
+    if (!isPackageExists('typescript')) {
+      throw new Error('请先执行 npm / yarn / pnpm 命令安装 `typescript` 后重试!')
+    }
     ts = (await import('gulp-typescript')).default
-    // if (!isPackageExists('typescript')) {
-    //   throw new Error('请执行命令安装 `typescript` !')
-    // }
+
+    if (typeof typescriptOptions !== 'boolean') {
+      gulpTs = ts.createProject(
+        typescriptOptions.tsConfigFileName ?? 'tsconfig.json',
+        typescriptOptions.settings,
+      )
+    }
   }
 
   const { transformJs, transformWxml, transformWxss } = createPlugins(weappTailwindcssOptions)
@@ -123,17 +132,10 @@ export async function getTasks(options: BuildOptions) {
       globsSet.add(src)
       const isTs = isTsLang(x)
       const loadTs = enableTs && isTs
-      let gulpTs: compileTs.Project
-      if (enableTs && typeof typescriptOptions !== 'boolean') {
-        gulpTs = ts.createProject(
-          typescriptOptions.tsConfigFileName ?? 'tsconfig.json',
-          typeof typescriptOptions === 'boolean' ? {} : typescriptOptions,
-        )
-      }
 
       return function JsTask() {
         const pipes: NodeJS.ReadWriteStream[] = []
-        if (loadTs) {
+        if (loadTs && gulpTs) {
           pipes.push(gulpTs())
         }
         pipes.push(transformJs({
@@ -216,7 +218,7 @@ export async function getTasks(options: BuildOptions) {
           // load postcss
           pipes.push(postcssrc(postcssOptions?.plugins, postcssOptions?.options))
         }
-        if (x === 'scss') {
+        if (x === 'scss' && !enableSass) {
           pipes.push(transformWxss({
             postcssOptions: {
               options: {
