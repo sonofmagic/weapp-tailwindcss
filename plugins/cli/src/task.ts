@@ -136,7 +136,7 @@ export async function getTasks(options: BuildOptions) {
       return function JsTask() {
         const pipes: NodeJS.ReadWriteStream[] = []
         if (loadTs && gulpTs) {
-          pipes.push(gulpTs())
+          pipes.push(gulpTs().on('error', () => {}))
         }
         pipes.push(transformJs({
           babelParserOptions:
