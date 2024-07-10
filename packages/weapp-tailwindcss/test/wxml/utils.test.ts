@@ -4,6 +4,15 @@ import { isPropsMatch } from '@/wxml/utils'
 describe('utils', () => {
   it('isPropsMatch', () => {
     expect(isPropsMatch('a', 'a')).toBe(true)
+    expect(isPropsMatch(['a'], 'a')).toBe(true)
+    expect(isPropsMatch('rd-btn-class', 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(['rd-btn-class'], 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(/^rd-btn-class$/, 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch([/^rd-btn-class$/], 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(/^rd-\w+-class$/, 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch([/^rd-\w+-class$/], 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(/^rd-[A-Za-z]+-class$/, 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch([/^rd-[A-Za-z]+-class$/], 'rd-btn-class')).toBe(true)
   })
 
   it('remove all id', () => {
