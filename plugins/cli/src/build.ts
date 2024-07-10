@@ -1,7 +1,7 @@
 import path from 'node:path'
 import defu from 'defu'
 import type { FSWatcher } from 'fs-extra'
-import { ensureDirSync } from 'fs-extra'
+import { ensureDir } from 'fs-extra'
 import gulp from 'gulp'
 import loadPostcssConfig from 'postcss-load-config'
 import type { Result } from 'postcss-load-config'
@@ -46,22 +46,30 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
     debug('run tasks end')
   }
   const { clean, outDir, root: cwd, watchOptions } = opt
+
+  async function doClean() {
+    debug('del start')
+    const { deleteAsync } = await import('del')
+    const patterns = [`${outDir}/**`]
+    await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
+    debug('del end')
+  }
+
   return {
     watcher: <FSWatcher | undefined>undefined,
     async build() {
       if (clean) {
-        debug('del start')
-        const { deleteAsync } = await import('del')
-        const patterns = [`${outDir}/**`]
-        await deleteAsync(patterns, { cwd, ignore: defaultNodeModulesDirs })
-        debug('del end')
+        await doClean()
       }
-      ensureDirSync(path.resolve(cwd, outDir))
+      await ensureDir(path.resolve(cwd, outDir))
       await runTasks()
       return this
     },
-    watch() {
-      ensureDirSync(path.resolve(cwd, outDir))
+    async watch() {
+      if (clean) {
+        await doClean()
+      }
+      await ensureDir(path.resolve(cwd, outDir))
       const dumps = globsSet.dump()
       const arr = (Array.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored]).filter(
         Boolean,
@@ -104,6 +112,7 @@ export async function createBuilder(options?: Partial<BuildOptions>) {
       return this
     },
     globsSet,
+    clean: doClean,
   }
 }
 
@@ -115,4 +124,9 @@ export async function build(options?: Partial<BuildOptions>) {
 export async function watch(options?: Partial<BuildOptions>) {
   const builder = await createBuilder(options)
   return await builder.watch()
+}
+
+export async function clean(options?: Partial<BuildOptions>) {
+  const builder = await createBuilder(options)
+  return await builder.clean()
 }

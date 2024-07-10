@@ -2,7 +2,7 @@ import process from 'node:process'
 import { Command } from 'commander'
 import defu from 'defu'
 import type { BuildOptions } from './type'
-import { build, watch } from '@/build'
+import { build, clean, watch } from '@/build'
 import { createConfigLoader, initConfig } from '@/config'
 
 export function createCli() {
@@ -35,6 +35,14 @@ export function createCli() {
     initConfig({
       root: cwd,
     })
+  })
+
+  program.command('clean').action(async () => {
+    await clean(
+      defu<Partial<BuildOptions>, Partial<BuildOptions>[]>(userDefinedConfig?.config, {
+        root: cwd,
+      }),
+    )
   })
 
   // program.command('watch').action(() => {})
