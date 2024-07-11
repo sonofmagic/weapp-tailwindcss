@@ -488,11 +488,19 @@ const customAttributes = {
   cssRemoveHoverPseudoClass?: boolean
 }
 
-export type JsHandler = (
-  rawSource: string,
-  set: Set<string>,
-  options?: CreateJsHandlerOptions
-) => JsHandlerResult | Promise<JsHandlerResult>
+export interface JsHandler {
+  (
+    rawSource: string,
+    set: Set<string>,
+    options?: CreateJsHandlerOptions
+  ): JsHandlerResult | Promise<JsHandlerResult>
+
+  sync: (
+    rawSource: string,
+    set: Set<string>,
+    options?: CreateJsHandlerOptions
+  ) => JsHandlerResult
+}
 
 export interface IMangleScopeContext {
   rawOptions: UserDefinedOptions['mangle']

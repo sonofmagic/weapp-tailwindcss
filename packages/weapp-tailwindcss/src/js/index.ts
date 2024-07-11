@@ -217,7 +217,8 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
 export function createJsHandler(options: CreateJsHandlerOptions) {
   const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool, babelParserOptions }
     = options
-  return (rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) => {
+
+  function _jsHandler(rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
       classNameSet: set,
       escapeMap,
@@ -233,4 +234,22 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
     }
     return jsHandler(rawSource, opts)
   }
+
+  function sync(rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) {
+    const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
+      classNameSet: set,
+      escapeMap,
+      arbitraryValues,
+      mangleContext,
+      jsPreserveClass,
+      generateMap,
+      jsAstTool,
+      babelParserOptions,
+    })
+    return jsHandler(rawSource, opts)
+  }
+
+  _jsHandler.sync = sync
+
+  return _jsHandler
 }
