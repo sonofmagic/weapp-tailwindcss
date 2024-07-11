@@ -12,9 +12,16 @@ import { copySync, mkdirSync } from 'fs-extra'
 // @ts-ignore
 import normalizeNewline from 'normalize-newline'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
-import { compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings, readAssets } from './helpers'
+import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 import { MappingChars2String } from '@/escape'
+
+function readAssets(...args: Parameters<typeof _readAssets>) {
+  return Object.entries(_readAssets(...args)).reduce<Record<string, string>>((acc, cur) => {
+    acc[cur[0]] = normalizeNewline(cur[1])
+    return acc
+  }, {})
+}
 
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string, devtool?: string }) {
   const { entry, mode, tailwindcssConfig, devtool } = params
