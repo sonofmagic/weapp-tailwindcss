@@ -159,7 +159,7 @@
     "@babel/types": "7.24.7",
     "@csstools/postcss-is-pseudo-class": "4.0.8",
     "@tailwindcss-mangle/shared": "^3.0.0",
-    "@weapp-core/escape": "^2.0.0",
+    "@weapp-core/escape": "^2.1.0",
     "@weapp-core/regex": "^1.0.1",
     "debug": "4.3.5",
     "htmlparser2": "9.1.0",

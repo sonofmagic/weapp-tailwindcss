@@ -22,6 +22,7 @@ export function replaceWxml(
 
   res = escape(res, {
     map: escapeMap,
+    ignoreHead: true,
   })
 
   return res
