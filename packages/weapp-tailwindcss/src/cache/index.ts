@@ -107,6 +107,8 @@ function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
         if (hit && !hit.changed) {
           // 命中缓存
           const returnFlag = await callback()
+          // 返回 false 则继续走 fallback
+          // 否则直接返回
           if (returnFlag !== false) {
             return
           }
