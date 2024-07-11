@@ -216,4 +216,10 @@ describe('templateReplacer', () => {
       'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_',
     )
   })
+  // https://github.com/sonofmagic/weapp-tailwindcss/issues/316
+  it('issues/316 case 0', () => {
+    expect(simpleReplacer(`{{tabActive === '1' && 'book-txt__active'}}`)).toBe(
+      `{{tabActive === '1' && 'book-txt__active'}}`,
+    )
+  });
 })
