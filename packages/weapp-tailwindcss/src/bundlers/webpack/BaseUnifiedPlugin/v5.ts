@@ -71,7 +71,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     // PROCESS_ASSETS_STAGE_ADDITIONAL
     // https://github.com/NervJS/taro/blob/next/packages/taro-webpack5-runner/src/webpack/MiniWebpackPlugin.ts
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+      NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
         if (isExisted) {
           const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
           // // css

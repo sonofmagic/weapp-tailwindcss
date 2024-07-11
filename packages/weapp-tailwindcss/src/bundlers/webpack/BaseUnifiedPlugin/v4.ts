@@ -67,13 +67,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     }
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      compilation.hooks.normalModuleLoader.tap(pluginName, (loaderContext, module) => {
+      compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module) => {
         if (isExisted) {
-          // @ts-expect-error
           const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
-          // // css
+
           if (idx > -1) {
-            // @ts-expect-error
             module.loaders.unshift(WeappTwRuntimeAopLoader)
           }
         }
@@ -103,7 +101,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         let noCachedCount = 0
         for (let i = 0; i < groupedEntries.html.length; i++) {
           const [file, originalSource] = groupedEntries.html[i]
-          // @ts-expect-error
+
           const rawSource = originalSource.source().toString()
 
           const hash = cache.computeHash(rawSource)
@@ -114,7 +112,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             () => {
               const source = cache.get(cacheKey)
               if (source) {
-                // @ts-expect-error
                 compilation.updateAsset(file, source)
                 debug('html cache hit: %s', file)
               }
@@ -122,12 +119,13 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 return false
               }
             },
-            // @ts-expect-error
+            // @ts-ignore
             async () => {
               const wxml = await templateHandler(rawSource, {
                 runtimeSet,
               })
               const source = new ConcatSource(wxml)
+              // @ts-ignore
               compilation.updateAsset(file, source)
 
               onUpdate(file, rawSource, wxml)
@@ -154,7 +152,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             () => {
               const source = cache.get(cacheKey)
               if (source) {
-                // @ts-expect-error
                 compilation.updateAsset(file, source)
                 debug('js cache hit: %s', file)
               }
@@ -162,9 +159,8 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 return false
               }
             },
-            // @ts-expect-error
+            // @ts-ignore
             async () => {
-              // @ts-expect-error
               const rawSource = originalSource.source().toString()
               const mapFilename = `${file}.map`
               const hasMap = Boolean(assets[mapFilename])
@@ -172,6 +168,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 generateMap: hasMap,
               })
               const source = new ConcatSource(code)
+              // @ts-ignore
               compilation.updateAsset(file, source)
               onUpdate(file, rawSource, code)
               debug('js handle: %s', file)
@@ -179,6 +176,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
               if (hasMap && map) {
                 const source = new RawSource(map.toString())
+                // @ts-ignore
                 compilation.updateAsset(mapFilename, source)
               }
               return {
@@ -195,7 +193,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         let noCachedCount = 0
         for (let i = 0; i < groupedEntries.css.length; i++) {
           const [file, originalSource] = groupedEntries.css[i]
-          // @ts-expect-error
           const rawSource = originalSource.source().toString()
           const hash = cache.computeHash(rawSource)
           const cacheKey = file
@@ -206,7 +203,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             () => {
               const source = cache.get(cacheKey)
               if (source) {
-                // @ts-expect-error
                 compilation.updateAsset(file, source)
                 debug('css cache hit: %s', file)
               }
@@ -214,12 +210,13 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 return false
               }
             },
-            // @ts-expect-error
+            // @ts-ignore
             async () => {
               const css = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(file, this.appType),
               })
               const source = new ConcatSource(css)
+              // @ts-ignore
               compilation.updateAsset(file, source)
 
               onUpdate(file, rawSource, css)
