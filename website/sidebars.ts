@@ -132,6 +132,10 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
+      id: 'issues/externalClasses',
+    },
+    {
+      type: 'doc',
       id: 'issues/css-vars',
     },
     {
