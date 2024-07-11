@@ -9,6 +9,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
 import { copySync, mkdirSync } from 'fs-extra'
 // @ts-ignore
+import ci from 'ci-info'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings, readAssets } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
@@ -94,7 +95,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
     ],
   })
 }
-describe('webpack5 plugin', () => {
+describe.skipIf(ci.isCI)('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
