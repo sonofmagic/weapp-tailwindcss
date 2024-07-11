@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.3.5-3.3.6 (2023-7-11)
+
+### Fixed
+
+- [#316](https://github.com/sonofmagic/weapp-tailwindcss/issues/316)
+- 修复原生小程序在一个 `class` 中使用 {{x}}-{{y}} 写法造成重复转译问题。
+
 ## 3.3.4 (2023-7-6)
 
 ### Fixed

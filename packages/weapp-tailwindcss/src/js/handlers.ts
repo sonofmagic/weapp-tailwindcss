@@ -4,26 +4,13 @@ import type { IJsHandlerOptions } from '@/types'
 import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@/reg'
 import { splitCode } from '@/extractors/split'
-import { jsStringEscape } from '@/escape'
+import { decodeUnicode2, jsStringEscape } from '@/escape'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
 interface ReplaceNode {
   leadingComments?: { value: string }[] | null | undefined
   start?: number | null
   end?: number | null
-}
-
-export function decodeUnicode(s: string) {
-  return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/g, '%$1'))
-}
-
-export function decodeUnicode2(input: string) {
-  try {
-    return JSON.parse(`"${input}"`)
-  }
-  catch (error) {
-    return input
-  }
 }
 
 export function toUnicodeEscapedString(str: string) {

@@ -882,20 +882,20 @@
   resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.11.6.tgz#3a7f4f68aed35ec4657daea7fec4c8b29ec71e47"
   integrity sha512-a3heReWYT2gNdsyj6x1hBwsM8V8NrjcPAmle86NH2CD2V/i/h0le75piW6KntSfOPCwekVWMBKhysNrBpJeKdw==
 
-"@weapp-core/escape@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-2.0.0.tgz#35984bf08ac934355b7a0ea0ca90ae3330bc1c54"
-  integrity sha512-AB34eFpoVfj/urfJPoZURwamSzLlMuDL6TNV+aXLW8aJsw3ud0/XkrEL/FkBsuaTgTD1rarip+y4NkQwrhQ91A==
+"@weapp-core/escape@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-2.1.0.tgz#792f042f002cc3c7e59f06ea874fc319eef19f33"
+  integrity sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==
 
 "@weapp-core/regex@^1.0.1":
   version "1.0.1"
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/cli@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-1.0.4.tgz#20980117b473e0ba4d6c157c07b196da43b19637"
-  integrity sha512-yvX/9tnwoNqMlC8N2eQ5dR/3+pdzPSiQrnaS4bMOkoMSU3vo6SP95ULHRDCpZrV7MSLV9uGrtdSD4RkXZeVkWQ==
+"@weapp-tailwindcss/cli@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-1.0.8.tgz#8fcb3276f8dcd791237cfbe1c67001d9d54da0bd"
+  integrity sha512-ZwdukkRKc6jRqQaUf6VOT1Sl5a7ZvYLzFMZBpiZsXdqf5N9GvvejaseBUFSCH6h7D/b2RATk1Gm1iFGeW8fnyQ==
   dependencies:
     commander "^12.1.0"
     cosmiconfig "^9.0.0"
@@ -914,6 +914,7 @@
     picocolors "^1.0.1"
     postcss "^8.4.39"
     postcss-load-config "^6.0.1"
+    postcss-scss "^4.0.9"
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -5479,6 +5480,11 @@ postcss-rpx-transform@^1.0.1:
   resolved "https://registry.npmmirror.com/postcss-rpx-transform/-/postcss-rpx-transform-1.0.1.tgz#b671a690d975a3db1b036dbe8ecb8aa49a8f1012"
   integrity sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==
 
+postcss-scss@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.npmmirror.com/postcss-scss/-/postcss-scss-4.0.9.tgz#a03c773cd4c9623cb04ce142a52afcec74806685"
+  integrity sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==
+
 postcss-selector-parser@6.1.0:
   version "6.1.0"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.1.0.tgz#49694cb4e7c649299fea510a29fa6577104bcf53"
@@ -7022,10 +7028,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^3.3.4:
-  version "3.3.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.4.tgz#accc13422a56ded4bdf4711086c307dfb2f68c60"
-  integrity sha512-N8uBXBaA1BOlbeT2X+iLUVcoicmasoXyJ+ERWrSDER3k+n/7oZmkAzK3KL9tENG83hpDMc1Nu1oyKeVlbasFjw==
+weapp-tailwindcss@^3.3.6:
+  version "3.3.6"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.6.tgz#dba6c5845eed176df26af3d613988c5df3ab0c6b"
+  integrity sha512-/3bHQSZDBfA8+QTF6fW0CqFod9r4N9BRZlgVU7gQRDH9ftVqZyux5YBi1uF/R999AmjUqKqVmWOXUY6sQVdDAQ==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.7"
@@ -7034,7 +7040,7 @@ weapp-tailwindcss@^3.3.4:
     "@babel/types" "7.24.7"
     "@csstools/postcss-is-pseudo-class" "4.0.8"
     "@tailwindcss-mangle/shared" "^3.0.0"
-    "@weapp-core/escape" "^2.0.0"
+    "@weapp-core/escape" "^2.1.0"
     "@weapp-core/regex" "^1.0.1"
     debug "4.3.5"
     htmlparser2 "9.1.0"

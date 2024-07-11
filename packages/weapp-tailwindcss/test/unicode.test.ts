@@ -1,5 +1,5 @@
 import { createGetCase, unicodeCasePath } from './util'
-import { decodeUnicode } from '@/js/handlers'
+import { decodeUnicode } from '@/escape'
 import { jsHandler, jsHandlerAsync } from '@/js'
 
 const getCase = createGetCase(unicodeCasePath)

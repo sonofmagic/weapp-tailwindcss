@@ -11,41 +11,48 @@ import { replaceHandleValue } from '@/js/handlers'
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
-    const ms = new MagicString(match)
-    const ast = parseExpression(match)
+    const { jsHandler, runtimeSet } = options
+    if (jsHandler && jsHandler.sync && runtimeSet) {
+      const { code } = jsHandler.sync(match, runtimeSet)
+      return code
+    }
+    else {
+      const ms = new MagicString(match)
+      const ast = parseExpression(match)
 
-    traverse(ast, {
-      StringLiteral(path) {
-        // [g['人生']==='你好啊'?'highlight':'']
-        if (t.isMemberExpression(path.parent)) {
-          return
-        }
-        // parentPath maybe null
-        // ['td',[(g.type==='你好啊')?'highlight':'']]
-        if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
-          return
-        }
-        const n = path.node
+      traverse(ast, {
+        StringLiteral(path) {
+          // [g['人生']==='你好啊'?'highlight':'']
+          if (t.isMemberExpression(path.parent)) {
+            return
+          }
+          // parentPath maybe null
+          // ['td',[(g.type==='你好啊')?'highlight':'']]
+          if (t.isBinaryExpression(path.parent) && (t.isConditionalExpression(path.parentPath?.parent) || t.isLogicalExpression(path.parentPath?.parent))) {
+            return
+          }
+          const n = path.node
 
-        replaceHandleValue(
-          n.value,
-          n,
-          {
-            mangleContext: options.mangleContext,
-            escapeMap: options.escapeMap,
-            classNameSet: options.runtimeSet,
-            needEscaped: true,
-            always: true,
-          },
-          ms,
-          1,
-        )
-        // path.node.value = replaceWxml(path.node.value, options)
-      },
-      noScope: true,
-    })
+          replaceHandleValue(
+            n.value,
+            n,
+            {
+              mangleContext: options.mangleContext,
+              escapeMap: options.escapeMap,
+              classNameSet: options.runtimeSet,
+              needEscaped: true,
+              always: true,
+            },
+            ms,
+            1,
+          )
+          // path.node.value = replaceWxml(path.node.value, options)
+        },
+        noScope: true,
+      })
 
-    return ms.toString()
+      return ms.toString()
+    }
   }
   catch {
     // https://github.com/sonofmagic/weapp-tailwindcss/issues/274

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "rd-icon":"../rd-icon/rd-icon"
+  }
+}

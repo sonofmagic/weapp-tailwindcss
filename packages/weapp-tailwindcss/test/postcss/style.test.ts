@@ -1,4 +1,5 @@
-import { createGetCase, createPutCase, cssCasePath } from '../util'
+import type postcss from 'postcss'
+import { createGetCase, cssCasePath } from '../util'
 import { normalizeEol } from '../helpers/normalizeEol'
 import { styleHandler } from '@/postcss/index'
 
@@ -9,10 +10,10 @@ import { MappingChars2String } from '@/escape'
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 
-const putCase = createPutCase(cssCasePath)
+// const putCase = createPutCase(cssCasePath)
 
 export function cssUnescape(str: string) {
-  return str.replaceAll(/\\([\dA-Fa-f]{1,6}[\t\n\f\r ]?|[\S\s])/g, (match) => {
+  return str.replaceAll(/\\([\dA-F]{1,6}[\t\n\f\r ]?|[\s\S])/gi, (match) => {
     return match.length > 2 ? String.fromCodePoint(Number.parseInt(match.slice(1).trim(), 16)) : match[1]
   })
 }
@@ -122,7 +123,7 @@ describe('styleHandler', () => {
     const result = await styleHandler(testCase, {
       isMainChunk: true,
       cssInjectPreflight,
-      customRuleCallback: (node, opt) => {
+      customRuleCallback: (_node, _opt) => {
         // if (opt.isMainChunk) {
         //   if (node.selector.includes('page,::after,::before')) {
         //     // page,::after,::before
@@ -740,7 +741,7 @@ describe('styleHandler', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('use with weapp-pandacss case 2 ', async () => {
+  it('use with weapp-pandacss case 2.1 ', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `*,view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const result = await styleHandler(rawCode, { isMainChunk: true })
@@ -830,9 +831,10 @@ describe('styleHandler', () => {
 
   it('add postcss plugins case 0', async () => {
     const tw = await import('tailwindcss')
+
     const { styleHandler } = getOptions({
       postcssOptions: {
-        plugins: [tw.default({ content: [], corePlugins: { preflight: false } })],
+        plugins: [tw.default({ content: [], corePlugins: { preflight: false } }) as postcss.Plugin],
       },
     })
     const rawCode = `@tailwind base;

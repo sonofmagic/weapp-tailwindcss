@@ -1,0 +1,246 @@
+rd-tag{
+  --color-danger: #ff2332;
+  --color-success: #19b435;
+  --color-warning: #ff8812;
+  --color-primary: #0188ff;
+  --color-grey: #f5f5f5;
+  --rgba-danger: rgba(255, 35, 50,0.1);
+  --rgba-success: rgba(25, 180, 53,0.1);
+  --rgba-warning: rgba(255, 136, 18,0.1);
+  --rgba-primary: rgb(1, 136, 255,0.1);
+  --rgba-grey: rgba(245, 245, 245,1);
+}
+
+.rd-tag-box{
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border: 1px;
+  border-style: solid;
+  box-sizing: border-box;
+  background: #fff;
+  border-color: #dcdcdc;
+  max-width: 124px;
+
+}
+.rd-tag-text{
+  text-align: center;
+  font-size: 12px;
+  display: -webkit-box;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+}
+.rd-tag-icon-close{
+ height: 100%;
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ justify-content: center;
+}
+/* 角度 圆角样式 square[方]， round[圆], halfRound[半圆], single[单直角]*/
+.rd-tag-radius-square{
+  border-radius: 4px;
+}
+.rd-tag-radius-round{
+  border-radius: 12px;
+}
+.rd-tag-radius-halfRound{
+  border-radius: 0 12px 12px 0
+}
+.rd-tag-radius-single{
+  border-radius: 12px 12px 12px 0
+}
+.rd-tag-icon{
+ margin-right: 4px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+}
+/* tag 类型  dark/light/outline/light-outline */
+/* danger */
+/* 深色模式 边框透明 字体白色*/
+.rd-tag-dark-danger{
+  border-color: transparent;
+  background: var(--color-danger);
+  color: #fff;
+}
+/*  边框透明 背景浅色 字体高亮*/
+.rd-tag-light-danger{
+  border-color: transparent;
+  background: var(--rgba-danger);
+  color: var(--color-danger);
+}
+/* 背景透明，边框高亮 字体高亮*/
+.rd-tag-outline-danger{
+  background:#fff;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+/* 背景浅色，边框高亮 字体高亮*/
+.rd-tag-light-outline-danger{
+   background: var(--rgba-danger);
+   color: var(--color-danger);
+   border-color:var(--color-danger);
+}
+/* success */
+/*  深色模式 边框透明 字体白色*/
+.rd-tag-dark-success{
+  border-color: transparent;
+  background: var(--color-success);
+  color: #fff;
+}
+/*  边框透明 背景浅色 字体高亮*/
+.rd-tag-light-success{
+  border-color: transparent;
+  background: var(--rgba-success);
+  color: var(--color-success);
+}
+/* 背景透明，边框高亮 字体高亮*/
+.rd-tag-outline-success{
+  background:#fff;
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+/* 背景浅色，边框高亮 字体高亮*/
+.rd-tag-light-outline-success{
+   background: var(--rgba-success);
+   color: var(--color-success);
+   border-color:var(--color-success);
+}
+
+/* warning */
+/*  深色模式 边框透明 字体白色*/
+.rd-tag-dark-warning{
+  border-color: transparent;
+  background: var(--color-warning);
+  color: #fff;
+}
+/*  边框透明 背景浅色 字体高亮*/
+.rd-tag-light-warning{
+  border-color: transparent;
+  background: var(--rgba-warning);
+  color: var(--color-warning);
+}
+/* 背景透明，边框高亮 字体高亮*/
+.rd-tag-outline-warning{
+  background:#fff;
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+/* 背景浅色，边框高亮 字体高亮*/
+.rd-tag-light-outline-warning{
+   background: var(--rgba-warning);
+   color: var(--color-warning);
+   border-color:var(--color-warning);
+}
+
+/* primary */
+/*  深色模式 边框透明 字体白色*/
+.rd-tag-dark-primary{
+  border-color: transparent;
+  background: var(--color-primary);
+  color: #fff;
+}
+/*  边框透明 背景浅色 字体高亮*/
+.rd-tag-light-primary{
+  border-color: transparent;
+  background: var(--rgba-primary);
+  color: var(--color-primary);
+}
+/* 背景透明，边框高亮 字体高亮*/
+.rd-tag-outline-primary{
+  background:#fff;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+/* 背景浅色，边框高亮 字体高亮*/
+.rd-tag-light-outline-primary{
+   background: var(--rgba-primary);
+   color: var(--color-primary);
+   border-color:var(--color-primary);
+}
+
+/* grey */
+/*  深色模式 边框透明 字体白色*/
+.rd-tag-dark-grey{
+  border-color: transparent;
+  background: var(--color-grey);
+  color: #333;
+}
+/*  边框透明 背景浅色 字体高亮*/
+.rd-tag-light-grey{
+  border-color: transparent;
+  background: var(--color-grey);
+  color: #333;
+}
+/* 背景透明，边框高亮 字体高亮*/
+.rd-tag-outline-grey{
+  background:#fff;
+  border-color: #dcdcdc;
+  color: #333;
+}
+/* 背景浅色，边框高亮 字体高亮*/
+.rd-tag-light-outline-grey{
+  background: var(--color-grey);
+  color: #3333;
+  border-color:transparent;
+}
+
+/* tag 类型  dark/light/outline/light-outline */
+.rd-tag-disabeld-true-dark,.rd-tag-disabeld-true-light,.rd-tag-disabeld-true-light-outline{
+  background: #f5f5f5 !important;
+  border-color: transparent !important;
+  color: #bdbdbd !important;
+}
+ 
+
+.rd-tag-disabeld-true-outline{
+  border-color: #dcdcdc !important;
+  background: #fff !important;
+  color: #bdbdbd !important;
+}
+
+/* 尺寸 size */
+.rd-tag-size-xl{
+  height: 40px;
+  padding: 0 16px;
+  font-size: 16px !important;
+}
+.rd-tag-size-l{
+  height: 32px;
+  padding: 0 12px;
+  font-size: 14px !important;
+}
+.rd-tag-size-m{
+  height: 24px;
+  padding: 0 6px;
+  font-size: 12px !important;
+}
+.rd-tag-size-s{
+  height: 20px;
+  padding: 0 4px;
+  font-size: 12px !important;
+}
+.rd-tag-size-xs{
+  height: 16px;
+  padding: 0 2px;
+  font-size: 10px !important;
+}
+.tag-close-icon-l,
+.tag-close-icon-xl,
+.tag-close-icon-m
+{
+  margin-left: 4px;
+}
+.tag-close-icon-s,
+.tag-close-icon-xs
+{
+  margin-left: 2px;
+}
+
+ 

@@ -3,16 +3,25 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import type { Compiler, Configuration } from 'webpack'
-import type webpack from 'webpack'
+import webpack from 'webpack'
 import postcss from 'postcss'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { runLoaders } from 'promisify-loader-runner'
 import { copySync, mkdirSync } from 'fs-extra'
+// import ci from 'ci-info'
 // @ts-ignore
+import normalizeNewline from 'normalize-newline'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
-import { compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings, readAssets } from './helpers'
+import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
 import { MappingChars2String } from '@/escape'
+
+function readAssets(...args: Parameters<typeof _readAssets>) {
+  return Object.entries(_readAssets(...args)).reduce<Record<string, string>>((acc, cur) => {
+    acc[cur[0]] = normalizeNewline(cur[1])
+    return acc
+  }, {})
+}
 
 function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwindcssConfig: string, devtool?: string }) {
   const { entry, mode, tailwindcssConfig, devtool } = params
@@ -68,6 +77,30 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
         },
       ],
     },
+    plugins: [
+      {
+        apply: (compiler) => {
+          compiler.hooks.compilation.tap('ReplaceNewlinePlugin', (compilation) => {
+            compilation.hooks.processAssets.tap(
+              {
+                name: 'ReplaceNewlinePlugin',
+                stage: webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
+              },
+              (assets) => {
+                for (const assetName in assets) {
+                  if (Object.hasOwnProperty.call(assets, assetName)) {
+                    const asset = assets[assetName]
+                    const source = asset.source().toString()
+                    const updatedSource = normalizeNewline(source) // .replace(/\r\n/g, '\n')
+                    compilation.updateAsset(assetName, new webpack.sources.RawSource(updatedSource))
+                  }
+                }
+              },
+            )
+          })
+        },
+      },
+    ],
   })
 }
 describe('webpack5 plugin', () => {

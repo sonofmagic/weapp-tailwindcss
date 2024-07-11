@@ -25,9 +25,9 @@ export async function getCss(content: string | string[], options: IGetCssOptions
         }
       }),
       ...twConfig,
-    }),
+    }) as postcss.Plugin,
     {
-      Comment(comment, helper) {
+      Comment(comment, _helper) {
         comment.remove()
       },
       postcssPlugin: 'remove-all-comment',

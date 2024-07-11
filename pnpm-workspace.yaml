@@ -3,4 +3,5 @@ packages:
   - "plugins/*"
   - "apps/*"
   - "website"
+  - "benchmark"
   # - "demo-linked/*"

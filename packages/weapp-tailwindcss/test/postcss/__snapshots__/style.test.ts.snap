@@ -973,7 +973,7 @@ exports[`styleHandler > use with weapp-pandacss case 2  1`] = `
 view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
-exports[`styleHandler > use with weapp-pandacss case 2  2`] = `
+exports[`styleHandler > use with weapp-pandacss case 2.1  1`] = `
 "::before,::after{--tw-content: "";}
 view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
