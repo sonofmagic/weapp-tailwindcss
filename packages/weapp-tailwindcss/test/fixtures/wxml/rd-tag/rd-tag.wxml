@@ -1,0 +1,7 @@
+<view class="rd-tag-box rd-tag-{{type}}-{{theme}} rd-tag-radius-{{radiusType}} rd-tag-disabeld-{{disabled}}-{{type}} rd-tag-size-{{size}} rd-tag-class" bindtap="handleClick">
+  <view wx:if="{{iconProps.name || iconProps.url}}" class="rd-tag-icon">
+    <rd-icon name="{{iconProps.name}}" color="{{iconProps.color}}" size="{{iconProps.size || 14}}" url="{{iconProps.url}}" />
+  </view>
+  <text class="rd-tag-text rd-tag-text-class">{{text}}</text>
+  <rd-icon rd-icon-class="tag-close-icon-{{size}}" bind:onClick="handleClose"  wx:if="{{closeIcon}}"  name="{{closeIconProps.name || 'rd-icon-close'}}" color="{{closeIconProps.color}}" size="{{closeIconProps.size || sizeIconFont[size]}}" url="{{closeIconProps.url}}" />
+</view>

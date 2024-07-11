@@ -222,4 +222,10 @@ describe('templateReplacer', () => {
       `{{tabActive === '1' && 'book-txt__active'}}`,
     )
   })
+
+  it('rd-tag case 0', () => {
+    expect(simpleReplacer(`rd-tag-{{type}}-{{theme}}`)).toBe(
+      `rd-tag-{{type}}-{{theme}}`,
+    )
+  })
 })
