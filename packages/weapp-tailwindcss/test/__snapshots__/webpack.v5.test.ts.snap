@@ -1902,9 +1902,9 @@ view,text,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-[20px]'?'p-_20px_':'m-_20px_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
