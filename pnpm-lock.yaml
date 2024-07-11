@@ -233,6 +233,9 @@ importers:
       miniprogram-automator:
         specifier: ^0.12.1
         version: 0.12.1
+      normalize-newline:
+        specifier: ^4.1.0
+        version: 4.1.0
       pathe:
         specifier: ^1.1.2
         version: 1.1.2
@@ -8212,6 +8215,10 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     hasBin: true
 
+  normalize-newline@4.1.0:
+    resolution: {integrity: sha512-ff4jKqMI8Xl50/4Mms/9jPobzAV/UK+kXG2XJ/7AqOmxIx8mqfqTIHYxuAnEgJ2AQeBbLnlbmZ5+38Y9A0w/YA==}
+    engines: {node: '>=12'}
+
   normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
 
@@ -9505,6 +9512,10 @@ packages:
   repeat-string@1.6.1:
     resolution: {integrity: sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w==}
     engines: {node: '>=0.10'}
+
+  replace-buffer@1.2.1:
+    resolution: {integrity: sha512-ly3OKwKu+3T55DjP5PjIMzxgz9lFx6dQnBmAIxryZyRKl8f22juy12ShOyuq8WrQE5UlFOseZgQZDua0iF9DHw==}
+    engines: {node: '>=4'}
 
   replace-ext@1.0.1:
     resolution: {integrity: sha512-yD5BHCe7quCgBph4rMQ+0KkIRKwWCrHDOX1p1Gp6HwjPM5kVoCdKGNhN7ydqqsX6lJEnQDKZ/tFMiEdQ1dvPEw==}
@@ -21138,6 +21149,10 @@ snapshots:
     dependencies:
       abbrev: 2.0.0
 
+  normalize-newline@4.1.0:
+    dependencies:
+      replace-buffer: 1.2.1
+
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
@@ -22518,6 +22533,8 @@ snapshots:
   repeat-element@1.1.4: {}
 
   repeat-string@1.6.1: {}
+
+  replace-buffer@1.2.1: {}
 
   replace-ext@1.0.1: {}
 

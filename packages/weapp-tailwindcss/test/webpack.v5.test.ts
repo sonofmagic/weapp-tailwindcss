@@ -10,6 +10,7 @@ import { runLoaders } from 'promisify-loader-runner'
 import { copySync, mkdirSync } from 'fs-extra'
 // import ci from 'ci-info'
 // @ts-ignore
+import normalizeNewline from 'normalize-newline'
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings, readAssets } from './helpers'
 import { UnifiedWebpackPluginV5 } from '@/index'
@@ -83,7 +84,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
                   if (Object.hasOwnProperty.call(assets, assetName)) {
                     const asset = assets[assetName]
                     const source = asset.source().toString()
-                    const updatedSource = source.replace(/\r\n/g, '\n')
+                    const updatedSource = normalizeNewline(source) // .replace(/\r\n/g, '\n')
                     compilation.updateAsset(assetName, new webpack.sources.RawSource(updatedSource))
                   }
                 }

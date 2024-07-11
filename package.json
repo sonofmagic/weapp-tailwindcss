@@ -159,6 +159,7 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.9.0",
     "miniprogram-automator": "^0.12.1",
+    "normalize-newline": "^4.1.0",
     "pathe": "^1.1.2",
     "pkg-types": "^1.1.3",
     "postcss": "^8.4.39",
