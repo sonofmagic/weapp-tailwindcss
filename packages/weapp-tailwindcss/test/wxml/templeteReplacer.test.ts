@@ -221,5 +221,5 @@ describe('templateReplacer', () => {
     expect(simpleReplacer(`{{tabActive === '1' && 'book-txt__active'}}`)).toBe(
       `{{tabActive === '1' && 'book-txt__active'}}`,
     )
-  });
+  })
 })

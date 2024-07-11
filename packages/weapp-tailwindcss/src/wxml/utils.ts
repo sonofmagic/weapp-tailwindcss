@@ -22,7 +22,7 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
         }
         // parentPath maybe null
         // ['td',[(g.type==='你好啊')?'highlight':'']]
-        if (t.isBinaryExpression(path.parent) && t.isConditionalExpression(path.parentPath?.parent)) {
+        if (t.isBinaryExpression(path.parent) && (t.isConditionalExpression(path.parentPath?.parent) || t.isLogicalExpression(path.parentPath?.parent))) {
           return
         }
         const n = path.node
