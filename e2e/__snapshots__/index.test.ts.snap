@@ -9184,8 +9184,8 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     style=""
     class="mt-_96d3px_ NHostImage--mt-_96d3px_ w-_61d1px_ NHostImage--w-_61d1px_ h-_50d99px_ NHostImage--h-_50d99px_"
     role="img"></image>
-  <view class="_2xlctext-base">2xl:text-base</view>
-  <view class="_2xlctext-_red_">2xl:text-[red]</view>
+  <view class="2xlctext-base">2xl:text-base</view>
+  <view class="2xlctext-_red_">2xl:text-[red]</view>
   <view class="space-y-4 flex flex-col bg-red-400">
     <view class="bg-sky-500">view space-y-4</view>
     <view class="bg-sky-500">view space-y-4</view>
@@ -9246,7 +9246,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
   <view class="text-_hbada55_">text-[#bada55]</view>
   <view class="text-_lengthcvar_--my-var-length__">text-[length:var(--my-var-length)]</view>
   <view class="text-_colorcvar_--my-var__">text-[color:var(--my-var)]</view>
-  <button class="ibg-green-500 isr-onlytext-white opacity-50" aria-disabled="true" role="button" disabled="">disable</button>
+  <button class="ibg-green-500 sr-onlytext-white opacity-50" aria-disabled="true" role="button" disabled="">disable</button>
   <view class="test">test</view>
   <view class="h-_20px_ w-_20px_ bg-_h4268EA_ shadow-indigo-100"></view>
   <view class="h-_20px_ w-_20px_ bg-_h123456_ shadow-blue-100"></view>
