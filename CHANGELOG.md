@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.3.7
+
+### Fixed
+
+- 使用新的 `Tokenizer` 来对 `wxml`  进行词法分析获取最精确的结果, 完成 [#319](https://github.com/sonofmagic/weapp-tailwindcss/issues/319)
+
 ## 3.3.5-3.3.6 (2023-7-11)
 
 ### Fixed

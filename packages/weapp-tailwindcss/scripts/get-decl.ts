@@ -1,7 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import postcss, { Declaration, Rule } from 'postcss'
+import type { Declaration, Rule } from 'postcss'
+import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
+
 async function main() {
   // @ts-ignore
   const source = await postcss([
@@ -9,14 +11,14 @@ async function main() {
       content: {
         files: [
           {
-            raw: ''
-          }
-        ]
+            raw: '',
+          },
+        ],
       },
       corePlugins: {
-        preflight: false
-      }
-    })
+        preflight: false,
+      },
+    }),
   ]).process(`@tailwind base;
   @tailwind components;
   @tailwind utilities;`)
@@ -34,7 +36,7 @@ async function main() {
     const value = v === '' ? ' ' : v
     return {
       prop: x.prop,
-      value
+      value,
     }
   })
 

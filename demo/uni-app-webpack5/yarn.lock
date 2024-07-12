@@ -9062,10 +9062,10 @@ lower-case@^2.0.2:
   dependencies:
     tslib "^2.0.3"
 
-lru-cache@10.3.1:
-  version "10.3.1"
-  resolved "https://registry.npmmirror.com/lru-cache/-/lru-cache-10.3.1.tgz#a37050586f84ccfdb570148a253bf1632a29ef44"
-  integrity sha512-9/8QXrtbGeMB6LxwQd4x1tIMnsmUxMvIH/qWGsccz6bt9Uln3S+sgAaqfQNhbGA8ufzs2fHuP/yqapGgP9Hh2g==
+lru-cache@10.4.3:
+  version "10.4.3"
+  resolved "https://registry.npmmirror.com/lru-cache/-/lru-cache-10.4.3.tgz#410fc8a17b70e598013df257c2446b7f3383f119"
+  integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
 
 lru-cache@^4.1.2:
   version "4.1.5"
@@ -13528,10 +13528,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^3.3.6:
-  version "3.3.6"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.6.tgz#dba6c5845eed176df26af3d613988c5df3ab0c6b"
-  integrity sha512-/3bHQSZDBfA8+QTF6fW0CqFod9r4N9BRZlgVU7gQRDH9ftVqZyux5YBi1uF/R999AmjUqKqVmWOXUY6sQVdDAQ==
+weapp-tailwindcss@^3.3.7:
+  version "3.3.7"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.3.7.tgz#ae7c26d0901cccbe87913acc07621866855dcee6"
+  integrity sha512-SCguXCNlhfJdr3k107ymTo+IOMxN6EyKru32lthZX8JcOEcaVO8QpZuZVUvmhBibpWS1//Cqm24o6VZusE6ryQ==
   dependencies:
     "@ast-core/escape" "^1.0.1"
     "@babel/generator" "7.24.7"
@@ -13545,7 +13545,7 @@ weapp-tailwindcss@^3.3.6:
     debug "4.3.5"
     htmlparser2 "9.1.0"
     loader-utils "2.0.4"
-    lru-cache "10.3.1"
+    lru-cache "10.4.3"
     magic-string "0.30.10"
     md5 "2.3.0"
     postcss "8.4.39"

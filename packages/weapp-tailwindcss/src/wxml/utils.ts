@@ -2,6 +2,7 @@ import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
+import { Tokenizer } from './Tokenizer'
 import { parseExpression, traverse } from '@/babel'
 import type { ItemOrItemArray } from '@/reg'
 import { variableRegExp } from '@/reg'
@@ -88,7 +89,7 @@ export function extractSource(original: string) {
   return extract(original, variableRegExp)
 }
 
-export function templateReplacer(original: string, options: ITemplateHandlerOptions = {}) {
+export function handleEachClassFragment(original: string, options: ITemplateHandlerOptions = {}) {
   const sources = extractSource(original)
 
   if (sources.length > 0) {
@@ -104,6 +105,9 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
           keepEOL: true,
           escapeMap: options.escapeMap,
           mangleContext: options.mangleContext,
+          // 首的str才会被转译
+          // example: 2xl:xx 2x{{y}}
+          ignoreHead: p > 0,
         }),
       )
       p = m.start
@@ -127,6 +131,7 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
             keepEOL: true,
             escapeMap: options.escapeMap,
             mangleContext: options.mangleContext,
+            ignoreHead: true,
           }),
         )
       }
@@ -139,8 +144,22 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
       keepEOL: false,
       escapeMap: options.escapeMap,
       mangleContext: options.mangleContext,
+      ignoreHead: false,
     })
   }
+}
+
+export function templateReplacer(original: string, options: ITemplateHandlerOptions = {}) {
+  const ms = new MagicString(original)
+  const tokenizer = new Tokenizer()
+  const tokens = tokenizer.run(ms.original)
+
+  for (const token of tokens) {
+    const target = handleEachClassFragment(token.value, options)
+    ms.update(token.start, token.end, target)
+  }
+
+  return ms.toString()
 }
 
 function regTest(reg: RegExp, str: string) {

@@ -1,39 +1,46 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "lib": [
+      "ES2021"
+    ],
+    "baseUrl": ".",
     "rootDirs": [
       "src",
       "test"
     ],
-    "lib": [
-      "ES2021"
-    ],
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "resolveJsonModule": true,
-    "moduleResolution": "Node",
     "module": "ESNext",
+    "moduleResolution": "Node",
     "paths": {
       "@/*": [
         "src/*"
       ],
       "#test/*": [
         "test/*"
-      ],
+      ]
     },
+    "resolveJsonModule": true,
+    "types": [
+      "webpack",
+      "node",
+      "vitest/globals"
+    ],
+    "strictPropertyInitialization": false,
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
     "plugins": [
       {
         "transform": "typescript-transform-paths",
         "afterDeclarations": true
       }
-    ],
-    "types": [
-      "webpack",
-      "node",
-      "vitest/globals"
     ]
   },
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "test/**/*",
+    "e2e/**/*"
+  ],
   "exclude": [
     "dist",
     "node_modules",
@@ -41,12 +48,6 @@
     "./*.d.ts",
     "demo/**/*",
     "test/fixtures/**/*"
-  ],
-  "include": [
-    "src/**/*",
-    "types/**/*",
-    "test/**/*",
-    "e2e/**/*",
   ],
   "ts-node": {
     "compilerOptions": {

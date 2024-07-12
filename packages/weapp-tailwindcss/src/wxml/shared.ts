@@ -8,7 +8,7 @@ export function replaceWxml(
     escapeMap: SimpleMappingChars2String,
   },
 ) {
-  const { keepEOL, escapeMap, mangleContext } = options
+  const { keepEOL, escapeMap, mangleContext, ignoreHead } = options
   let res = original
   if (!keepEOL) {
     res = res
@@ -22,7 +22,7 @@ export function replaceWxml(
 
   res = escape(res, {
     map: escapeMap,
-    ignoreHead: true,
+    ignoreHead,
   })
 
   return res

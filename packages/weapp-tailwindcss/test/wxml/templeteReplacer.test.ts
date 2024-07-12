@@ -1,4 +1,5 @@
 import { templateReplacer } from '@/wxml/index'
+import { handleEachClassFragment } from '@/wxml/utils'
 import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
 
 const testTable = [[{}]]
@@ -226,6 +227,18 @@ describe('templateReplacer', () => {
   it('rd-tag case 0', () => {
     expect(simpleReplacer(`rd-tag-{{type}}-{{theme}}`)).toBe(
       `rd-tag-{{type}}-{{theme}}`,
+    )
+  })
+
+  it('handleEachClassFragment case 0', () => {
+    expect(handleEachClassFragment(`rd-tag-{{type}}-{{theme}}`)).toBe(
+      `rd-tag-{{type}}-{{theme}}`,
+    )
+  })
+
+  it('handleEachClassFragment case 1', () => {
+    expect(handleEachClassFragment(`{{type}}-{{theme}}`)).toBe(
+      `{{type}}-{{theme}}`,
     )
   })
 })
