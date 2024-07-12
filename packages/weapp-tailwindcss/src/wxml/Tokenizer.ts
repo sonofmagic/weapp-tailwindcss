@@ -29,7 +29,7 @@ export class Tokenizer {
   private bufferStartIndex: number
   private expressionStartIndex: number
   private expressionBuffer: string
-  private expressions: { start: number, end: number, value: string }[]
+  private expressions: Expression[]
 
   constructor() {
     this.reset()
@@ -98,8 +98,8 @@ export class Tokenizer {
           this.state = State.BRACES_COMPLETE
         }
         else {
-          this.buffer += `}${char}`
-          this.expressionBuffer += `}${char}`
+          this.buffer += char
+          this.expressionBuffer += char
           this.state = State.OPEN_BRACE
         }
         break

@@ -54,11 +54,11 @@ exports[`tokenizer bugs > bug 0 case 0 1`] = `
       {
         "end": 148,
         "start": 13,
-        "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }}]) }}",
+        "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}",
       },
     ],
     "start": 13,
-    "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }}]) }}",
+    "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}",
   },
   {
     "end": 195,
@@ -83,11 +83,11 @@ exports[`tokenizer bugs > bug 0 case 1 1`] = `
       {
         "end": 135,
         "start": 0,
-        "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }}]) }}",
+        "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}",
       },
     ],
     "start": 0,
-    "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }}]) }}",
+    "value": "{{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}",
   },
 ]
 `;
