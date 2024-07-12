@@ -89,7 +89,7 @@ export function extractSource(original: string) {
   return extract(original, variableRegExp)
 }
 
-function handleEachClassFragment(original: string, options: ITemplateHandlerOptions = {}) {
+export function handleEachClassFragment(original: string, options: ITemplateHandlerOptions = {}) {
   const sources = extractSource(original)
 
   if (sources.length > 0) {
@@ -105,6 +105,9 @@ function handleEachClassFragment(original: string, options: ITemplateHandlerOpti
           keepEOL: true,
           escapeMap: options.escapeMap,
           mangleContext: options.mangleContext,
+          // 首的str才会被转译
+          // example: 2xl:xx 2x{{y}}
+          ignoreHead: p > 0,
         }),
       )
       p = m.start
@@ -128,6 +131,7 @@ function handleEachClassFragment(original: string, options: ITemplateHandlerOpti
             keepEOL: true,
             escapeMap: options.escapeMap,
             mangleContext: options.mangleContext,
+            ignoreHead: true,
           }),
         )
       }
@@ -140,6 +144,7 @@ function handleEachClassFragment(original: string, options: ITemplateHandlerOpti
       keepEOL: false,
       escapeMap: options.escapeMap,
       mangleContext: options.mangleContext,
+      ignoreHead: false,
     })
   }
 }

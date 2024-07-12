@@ -530,6 +530,8 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   runtimeSet?: Set<string>
   disabledDefaultTemplateHandler?: boolean
   quote?: string | null
+  // 是否转译首字母，默认转译，传入 true 不转
+  ignoreHead?: boolean
 }
 
 export type InternalUserDefinedOptions = Required<
