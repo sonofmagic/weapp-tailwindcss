@@ -2,6 +2,7 @@ import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
+import type { Token } from './Tokenizer'
 import { Tokenizer } from './Tokenizer'
 import { parseExpression, traverse } from '@/babel'
 import type { ItemOrItemArray } from '@/reg'
@@ -149,6 +150,45 @@ export function handleEachClassFragment(original: string, options: ITemplateHand
   }
 }
 
+export function handleEachClassFragment2(ms: MagicString, tokens: Token[], options: ITemplateHandlerOptions = {}) {
+  for (const token of tokens) {
+    let p = token.start
+    if (token.expressions.length > 0) {
+      for (const exp of token.expressions) {
+        if (exp.start > p) {
+          ms.update(p, exp.start, replaceWxml(ms.slice(p, exp.start), {
+            keepEOL: true,
+            escapeMap: options.escapeMap,
+            mangleContext: options.mangleContext,
+            // 首的str才会被转译
+            // example: 2xl:xx 2x{{y}}
+            ignoreHead: p > 0,
+          }))
+        }
+
+        ms.update(exp.start, exp.end, `{{${generateCode(exp.value.slice(2, -2), options)}}}`)
+        p = exp.end
+      }
+      if (ms.original.length > p) {
+        ms.update(p, ms.original.length, replaceWxml(ms.slice(p, ms.original.length), {
+          keepEOL: false,
+          escapeMap: options.escapeMap,
+          mangleContext: options.mangleContext,
+          ignoreHead: true,
+        }))
+      }
+    }
+    else {
+      ms.update(token.start, token.end, replaceWxml(token.value, {
+        keepEOL: false,
+        escapeMap: options.escapeMap,
+        mangleContext: options.mangleContext,
+        ignoreHead: false,
+      }))
+    }
+  }
+}
+
 export function templateReplacer(original: string, options: ITemplateHandlerOptions = {}) {
   const ms = new MagicString(original)
   const tokenizer = new Tokenizer()
@@ -158,7 +198,16 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
     const target = handleEachClassFragment(token.value, options)
     ms.update(token.start, token.end, target)
   }
+  // handleEachClassFragment2(ms, tokens, options)
 
+  return ms.toString()
+}
+
+export function templateReplacer2(original: string, options: ITemplateHandlerOptions = {}) {
+  const ms = new MagicString(original)
+  const tokenizer = new Tokenizer()
+  const tokens = tokenizer.run(ms.original)
+  handleEachClassFragment2(ms, tokens, options)
   return ms.toString()
 }
 

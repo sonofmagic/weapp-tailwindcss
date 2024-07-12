@@ -1,5 +1,5 @@
 import { templateReplacer } from '@/wxml/index'
-import { handleEachClassFragment } from '@/wxml/utils'
+import { handleEachClassFragment, templateReplacer2 } from '@/wxml/utils'
 import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
 
 const testTable = [[{}]]
@@ -240,5 +240,13 @@ describe('templateReplacer', () => {
     expect(handleEachClassFragment(`{{type}}-{{theme}}`)).toBe(
       `{{type}}-{{theme}}`,
     )
+  })
+})
+
+describe('templateReplacer2', () => {
+  it('isConditionalExpression', () => {
+    const testCase = '{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}'
+    const result = templateReplacer2(testCase)
+    expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_hfafa00_\']}}')
   })
 })
