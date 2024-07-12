@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tokenizer > should tokenize a string with spaces and text correctly 1`] = `
+[
+  {
+    "end": 11,
+    "expressions": [],
+    "start": 0,
+    "value": "2xl:text-xs",
+  },
+  {
+    "end": 37,
+    "expressions": [
+      {
+        "end": 27,
+        "start": 19,
+        "value": "{{type}}",
+      },
+      {
+        "end": 37,
+        "start": 28,
+        "value": "{{theme}}",
+      },
+    ],
+    "start": 12,
+    "value": "rd-tag-{{type}}-{{theme}}",
+  },
+  {
+    "end": 52,
+    "expressions": [
+      {
+        "end": 48,
+        "start": 38,
+        "value": "{{prefix}}",
+      },
+    ],
+    "start": 38,
+    "value": "{{prefix}}-btn",
+  },
+]
+`;

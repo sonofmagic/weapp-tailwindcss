@@ -1,4 +1,5 @@
 import MagicString from 'magic-string'
+import type { Token } from '@/wxml/Tokenizer'
 import { Tokenizer } from '@/wxml/Tokenizer'
 
 describe('tokenizer', () => {
@@ -6,9 +7,11 @@ describe('tokenizer', () => {
     const inputString = new MagicString('2xl:text-xs rd-tag-{{type}}-{{theme}} {{prefix}}-btn')
     const tokenizer = new Tokenizer()
     const result = tokenizer.run(inputString.original)
+    expect(result).toMatchSnapshot()
     expect(result.map((x) => {
       return inputString.slice(x.start, x.end)
     })).toEqual(['2xl:text-xs', 'rd-tag-{{type}}-{{theme}}', '{{prefix}}-btn'])
+
     inputString.update(result[0].start, result[0].end, 'x')
     inputString.update(result[1].start, result[1].end, 'x')
     inputString.update(result[2].start, result[2].end, 'x')
@@ -200,5 +203,155 @@ describe('tokenizer wechat-app-mall', () => {
       })).toEqual(item.expected)
       tokenizer.reset()
     }
+  })
+})
+
+describe('tokenizer1', () => {
+  let tokenizer: Tokenizer
+
+  beforeEach(() => {
+    tokenizer = new Tokenizer()
+  })
+
+  it('should tokenize a simple text without expressions', () => {
+    const input = 'simple text'
+    const expected: Token[] = [
+      { start: 0, end: 6, value: 'simple', expressions: [] },
+      { start: 7, end: 11, value: 'text', expressions: [] },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should tokenize text with a single expression', () => {
+    const input = 'hello {{name}}'
+    const expected: Token[] = [
+      { start: 0, end: 5, value: 'hello', expressions: [] },
+      {
+        start: 6,
+        end: 14,
+        value: '{{name}}',
+        expressions: [
+          { start: 6, end: 14, value: '{{name}}' },
+        ],
+      },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should tokenize text with multiple expressions', () => {
+    const input = 'rd-tag-{{type}}-{{theme}}'
+    const expected: Token[] = [
+      {
+        start: 0,
+        end: 25,
+        value: 'rd-tag-{{type}}-{{theme}}',
+        expressions: [{
+          start: 7,
+          end: 15,
+          value: '{{type}}',
+        }, {
+          start: 16,
+          end: 25,
+          value: '{{theme}}',
+        }],
+      },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should handle text with spaces and expressions', () => {
+    const input = 'class is {{className}} and id is {{idName}}'
+    const expected: Token[] = [
+      { start: 0, end: 5, value: 'class', expressions: [] },
+      { start: 6, end: 8, value: 'is', expressions: [] },
+      {
+        start: 9,
+        end: 22,
+        value: '{{className}}',
+        expressions: [
+          { start: 9, end: 22, value: '{{className}}' },
+        ],
+      },
+      { start: 23, end: 26, value: 'and', expressions: [] },
+      { start: 27, end: 29, value: 'id', expressions: [] },
+      { start: 30, end: 32, value: 'is', expressions: [] },
+      {
+        start: 33,
+        end: 43,
+        value: '{{idName}}',
+        expressions: [
+          { start: 33, end: 43, value: '{{idName}}' },
+        ],
+      },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should handle empty input', () => {
+    const input = ''
+    const expected: Token[] = []
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should handle input with only spaces', () => {
+    const input = '   '
+    const expected: Token[] = []
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should handle input with only expressions', () => {
+    const input = '{{only}}'
+    const expected: Token[] = [
+      {
+        start: 0,
+        end: 8,
+        value: '{{only}}',
+        expressions: [
+          { start: 0, end: 8, value: '{{only}}' },
+        ],
+      },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should handle mixed content with leading and trailing spaces', () => {
+    const input = '  prefix {{expr}} suffix  '
+    const expected: Token[] = [
+      { start: 2, end: 8, value: 'prefix', expressions: [] },
+      {
+        start: 9,
+        end: 17,
+        value: '{{expr}}',
+        expressions: [
+          { start: 9, end: 17, value: '{{expr}}' },
+        ],
+      },
+      { start: 18, end: 24, value: 'suffix', expressions: [] },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('should handle nested expressions correctly (although invalid in some contexts)', () => {
+    const input = 'outer{{inner{{deep}}inner}}outer'
+    const expected: Token[] = [
+      {
+        start: 0,
+        end: 32,
+        value: 'outer{{inner{{deep}}inner}}outer',
+        expressions: [
+          { start: 5, end: 20, value: '{{inner{{deep}}' },
+        ],
+      },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
   })
 })

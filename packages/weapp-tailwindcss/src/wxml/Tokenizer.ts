@@ -9,10 +9,17 @@ export enum State {
   BRACES_COMPLETE,
 }
 
+export interface Expression {
+  start: number
+  end: number
+  value: string
+}
+
 export interface Token {
   start: number
   end: number
   value: string
+  expressions: Expression[]
 }
 
 export class Tokenizer {
@@ -20,6 +27,9 @@ export class Tokenizer {
   private buffer: string
   private tokens: Token[]
   private bufferStartIndex: number
+  private expressionStartIndex: number
+  private expressionBuffer: string
+  private expressions: { start: number, end: number, value: string }[]
 
   constructor() {
     this.reset()
@@ -35,6 +45,8 @@ export class Tokenizer {
           this.state = State.OPEN_BRACE
           this.bufferStartIndex = index
           this.buffer += char
+          this.expressionBuffer = char
+          this.expressionStartIndex = index
         }
         else {
           this.state = State.TEXT
@@ -45,12 +57,15 @@ export class Tokenizer {
 
       case State.TEXT:
         if (char === ' ') {
-          this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer })
+          this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer, expressions: this.expressions })
           this.buffer = ''
+          this.expressions = []
           this.state = State.START
         }
         else if (char === '{') {
           this.buffer += char
+          this.expressionBuffer = char
+          this.expressionStartIndex = index
           this.state = State.OPEN_BRACE
         }
         else {
@@ -61,29 +76,51 @@ export class Tokenizer {
       case State.OPEN_BRACE:
         if (char === '}') {
           this.buffer += char
+          this.expressionBuffer += char
           this.state = State.POTENTIAL_CLOSE
         }
         else {
           this.buffer += char
+          this.expressionBuffer += char
         }
         break
 
       case State.POTENTIAL_CLOSE:
         if (char === '}') {
           this.buffer += char
+          this.expressionBuffer += char
+          this.expressions.push({
+            start: this.expressionStartIndex,
+            end: index + 1,
+            value: this.expressionBuffer,
+          })
+          this.expressionBuffer = ''
           this.state = State.BRACES_COMPLETE
         }
         else {
           this.buffer += `}${char}`
+          this.expressionBuffer += `}${char}`
           this.state = State.OPEN_BRACE
         }
         break
 
       case State.BRACES_COMPLETE:
         if (char === ' ') {
-          this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer })
+          this.tokens.push({
+            start: this.bufferStartIndex,
+            end: index,
+            value: this.buffer,
+            expressions: this.expressions,
+          })
           this.buffer = ''
+          this.expressions = []
           this.state = State.START
+        }
+        else if (char === '{') {
+          this.expressionStartIndex = index
+          this.expressionBuffer = char
+          this.buffer += char
+          this.state = State.OPEN_BRACE
         }
         else {
           this.buffer += char
@@ -103,7 +140,12 @@ export class Tokenizer {
     }
     // Push the last buffer if it's not empty
     if (this.buffer.length > 0) {
-      this.tokens.push({ start: this.bufferStartIndex, end: input.length, value: this.buffer })
+      this.tokens.push({
+        start: this.bufferStartIndex,
+        end: input.length,
+        value: this.buffer,
+        expressions: this.expressions,
+      })
     }
     return this.tokens
   }
@@ -113,5 +155,8 @@ export class Tokenizer {
     this.buffer = ''
     this.tokens = []
     this.bufferStartIndex = 0
+    this.expressionBuffer = ''
+    this.expressionStartIndex = 0
+    this.expressions = []
   }
 }
