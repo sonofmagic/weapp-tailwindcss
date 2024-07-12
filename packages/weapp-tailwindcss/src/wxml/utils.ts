@@ -2,6 +2,7 @@ import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { replaceWxml } from './shared'
+import { Tokenizer } from './Tokenizer'
 import { parseExpression, traverse } from '@/babel'
 import type { ItemOrItemArray } from '@/reg'
 import { variableRegExp } from '@/reg'
@@ -88,7 +89,7 @@ export function extractSource(original: string) {
   return extract(original, variableRegExp)
 }
 
-export function templateReplacer(original: string, options: ITemplateHandlerOptions = {}) {
+function handleEachClassFragment(original: string, options: ITemplateHandlerOptions = {}) {
   const sources = extractSource(original)
 
   if (sources.length > 0) {
@@ -141,6 +142,19 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
       mangleContext: options.mangleContext,
     })
   }
+}
+
+export function templateReplacer(original: string, options: ITemplateHandlerOptions = {}) {
+  const ms = new MagicString(original)
+  const tokenizer = new Tokenizer()
+  const tokens = tokenizer.run(ms.original)
+
+  for (const token of tokens) {
+    const target = handleEachClassFragment(token.value, options)
+    ms.update(token.start, token.end, target)
+  }
+
+  return ms.toString()
 }
 
 function regTest(reg: RegExp, str: string) {

@@ -355,3 +355,22 @@ describe('tokenizer1', () => {
     expect(tokenizer.run(input)).toEqual(expected)
   })
 })
+
+describe('tokenizer bugs', () => {
+  let tokenizer: Tokenizer
+
+  beforeEach(() => {
+    tokenizer = new Tokenizer()
+  })
+  it('bug 0 case 0', () => {
+    const tokens = tokenizer.run('custom-class {{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? \'van-hairline--surround\' : \'\' }}')
+    expect(tokens).toMatchSnapshot()
+  })
+
+  it('bug 0 case 1', () => {
+    const inputStr = '{{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }}'
+    const tokens = tokenizer.run(inputStr)
+    expect(tokens).toMatchSnapshot()
+    expect(tokens[0].value).toBe(inputStr)
+  })
+})
