@@ -78,3 +78,9 @@ describe('tokenizerStateMachine', () => {
     expect(result).toEqual(['prefix-{{ someValue }}-mid-{{ another + value }}-suffix'])
   })
 })
+
+describe('tokenizerStateMachine wechat-app-mall', () => {
+  it('common usage', () => {
+
+  })
+})

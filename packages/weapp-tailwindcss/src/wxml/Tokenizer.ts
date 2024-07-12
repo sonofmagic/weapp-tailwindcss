@@ -15,9 +15,7 @@ export class TokenizerStateMachine {
   private tokens: string[]
 
   constructor() {
-    this.state = State.START
-    this.buffer = ''
-    this.tokens = []
+    this.reset()
   }
 
   private processChar(char: string) {
@@ -98,5 +96,11 @@ export class TokenizerStateMachine {
       this.tokens.push(this.buffer)
     }
     return this.tokens
+  }
+
+  public reset() {
+    this.state = State.START
+    this.buffer = ''
+    this.tokens = []
   }
 }
