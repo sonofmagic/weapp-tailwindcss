@@ -137,3 +137,7 @@ module.exports = {
 ### 优势
 
 这种方式受影响范围 **最小**，因为 `preset` 方式处理 `tailwindcss`,不会把你写的其他样式里的 `rem` 转化成 `rpx`
+
+## px 转 rpx
+
+如果你也有 [`px 转 rpx`](/docs/quick-start/css-unit-transform) 的需求，你可以查看 [CSS 单位转化](/docs/quick-start/css-unit-transform) 这个章节。

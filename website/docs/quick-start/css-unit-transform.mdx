@@ -1,0 +1,83 @@
+# CSS 单位转化
+
+## rem 转 rpx (或 px)
+
+在 [rem 转 rpx (或 px)](/docs/quick-start/rem2rpx) 章节，我们做了 `CSS` 中 `rem` 转化成 `px` / `rpx` 的方式。
+
+但是除了 [rem 转 rpx (或 px)](/docs/quick-start/rem2rpx)，我们可能也有 `px 转 rpx` 的需求，这种情况实际上也很容易就能做到。
+
+## px 转 rpx
+
+这里我们使用 [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform) 这个 `postcss` 插件来做。
+
+> [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform) 由京东团队出品，应该是目前质量最高的 `px` 转 `rpx` 插件，而且已经被内置在了 `tarojs` 框架内
+
+### 安装插件
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem label="npm" value="npm">
+  
+```bash
+npm i -D postcss-pxtransform
+```
+
+  </TabItem>
+  <TabItem label="yarn" value="yarn">
+  
+```bash
+yarn add -D postcss-pxtransform
+```
+
+  </TabItem>
+  <TabItem label="pnpm" value="pnpm">
+  
+```bash
+pnpm i -D postcss-pxtransform
+```
+
+  </TabItem>
+</Tabs>
+
+### 注册到 postcss 配置中
+
+```js title="postcss.config.js"
+module.exports = {
+  plugins: {
+    'tailwindcss': {},
+    'autoprefixer': {},
+    // highlight-start
+    // 下方为 px 转 rpx 区域
+    'postcss-pxtransform': {
+      platform: 'weapp',
+      // 根据你的设计稿宽度进行配置
+      // 可以传入一个 function
+      // designWidth (input) {
+      //   if (input.file.replace(/\\+/g, '/').indexOf('@nutui/nutui-taro') > -1) {
+      //     return 375
+      //   }
+      //   return 750
+      // },
+      designWidth: 750, // 可以设置为 375 等等来应用下方的规则,
+      deviceRatio: {
+        640: 2.34 / 2,
+        // 此时应用到的规则，代表 1px = 1rpx
+        750: 1,
+        828: 1.81 / 2,
+        // 假如你把 designWidth 设置成 375 则使用这条规则 1px = 2rpx
+        375: 2 / 1,
+      },
+    },
+    // highlight-end
+  },
+}
+
+```
+
+这样就能进行转化了，此时假如你写 `w-[20px]` 这种 `class` 它最终生效的样式会经过 `postcss-pxtransform` 转化，转变为 `width: 20rpx`, 当然这取决于你传入插件的配置，比如设计稿宽度 (`designWidth`)
+
+你可以在 [taro 官网的设计稿及尺寸单位章节内](https://taro-docs.jd.com/docs/size) 查看这个插件的所有用法。
+
+另外，假如你要禁止单个文件 `px` 转 `rpx`，可以在样式表文件内头部，添加 `/*postcss-pxtransform disable*/` 这样的注视，禁用该文件 `px` 转 `rpx`。

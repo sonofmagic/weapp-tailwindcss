@@ -74,6 +74,10 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'quick-start/intelliSense',
     },
+    {
+      type: 'doc',
+      id: 'quick-start/css-unit-transform',
+    },
 
     // {
     //   type: 'doc',
