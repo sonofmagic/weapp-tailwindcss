@@ -9,16 +9,23 @@ export enum State {
   BRACES_COMPLETE,
 }
 
-export class TokenizerStateMachine {
+export interface Token {
+  start: number
+  end: number
+  value: string
+}
+
+export class Tokenizer {
   private state: State
   private buffer: string
-  private tokens: string[]
+  private tokens: Token[]
+  private bufferStartIndex: number
 
   constructor() {
     this.reset()
   }
 
-  private processChar(char: string) {
+  private processChar(char: string, index: number) {
     switch (this.state) {
       case State.START:
         if (char === ' ') {
@@ -26,17 +33,19 @@ export class TokenizerStateMachine {
         }
         else if (char === '{') {
           this.state = State.OPEN_BRACE
+          this.bufferStartIndex = index
           this.buffer += char
         }
         else {
           this.state = State.TEXT
+          this.bufferStartIndex = index
           this.buffer += char
         }
         break
 
       case State.TEXT:
         if (char === ' ') {
-          this.tokens.push(this.buffer)
+          this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer })
           this.buffer = ''
           this.state = State.START
         }
@@ -72,7 +81,7 @@ export class TokenizerStateMachine {
 
       case State.BRACES_COMPLETE:
         if (char === ' ') {
-          this.tokens.push(this.buffer)
+          this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer })
           this.buffer = ''
           this.state = State.START
         }
@@ -87,13 +96,14 @@ export class TokenizerStateMachine {
     }
   }
 
-  public run(input: string): string[] {
-    for (const char of input) {
-      this.processChar(char)
+  public run(input: string): Token[] {
+    for (let i = 0; i < input.length; i++) {
+      const char = input[i]
+      this.processChar(char, i)
     }
     // Push the last buffer if it's not empty
     if (this.buffer.length > 0) {
-      this.tokens.push(this.buffer)
+      this.tokens.push({ start: this.bufferStartIndex, end: input.length, value: this.buffer })
     }
     return this.tokens
   }
@@ -102,5 +112,6 @@ export class TokenizerStateMachine {
     this.state = State.START
     this.buffer = ''
     this.tokens = []
+    this.bufferStartIndex = 0
   }
 }
