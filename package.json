@@ -180,6 +180,7 @@
     "ts-patch": "^3.2.1",
     "tsd": "^0.31.1",
     "tslib": "^2.6.3",
+    "tsx": "^4.16.2",
     "turbo": "^2.0.6",
     "typescript": "5.4.5",
     "typescript-transform-paths": "^3.4.7",

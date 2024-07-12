@@ -51,6 +51,9 @@
   "uni-app-vite-vue3": {
     "babel": [
       343.51820799999996
+    ],
+    "ast-grep": [
+      383.23745800000006
     ]
   },
   "uni-app-webpack5-vue2": {
