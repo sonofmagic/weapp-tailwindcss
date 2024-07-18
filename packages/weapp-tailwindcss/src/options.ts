@@ -95,7 +95,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
   result.jsHandler = jsHandler
   result.templateHandler = templateHandler
 
-  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir, appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined)
+  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir, appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined, supportCustomLengthUnitsPatch)
   result.patch = twPatcher.patch
   result.setMangleRuntimeSet = setMangleRuntimeSet
   result.cache = cache === undefined || typeof cache === 'boolean' ? createCache(cache) : cache

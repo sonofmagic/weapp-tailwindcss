@@ -1,15 +1,14 @@
 import path from 'node:path'
 import process from 'node:process'
-import type { CacheOptions } from 'tailwindcss-patch'
+import type { CacheOptions, ILengthUnitsPatchOptions } from 'tailwindcss-patch'
 import { TailwindcssPatcher, requireResolve } from 'tailwindcss-patch'
-import type { ILengthUnitsPatchDangerousOptions, ILengthUnitsPatchOptions } from '@/types'
 
-export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
-  const dangerousOptions = options.dangerousOptions as Required<ILengthUnitsPatchDangerousOptions>
+export function getInstalledPkgJsonPath(options?: Partial<{ basedir: string, paths: string[] }>) {
+  const packageName = 'tailwindcss'
   try {
-    const tmpJsonPath = requireResolve(`${dangerousOptions.packageName}/package.json`, {
-      paths: options.paths,
-      basedir: options.basedir,
+    const tmpJsonPath = requireResolve(`${packageName}/package.json`, {
+      paths: options?.paths,
+      basedir: options?.basedir,
     })
 
     return tmpJsonPath
@@ -23,7 +22,7 @@ export function getInstalledPkgJsonPath(options: ILengthUnitsPatchOptions) {
   }
 }
 
-export function createTailwindcssPatcher(basedir?: string, cacheDir?: string) {
+export function createTailwindcssPatcher(basedir?: string, cacheDir?: string, supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions) {
   const cache: CacheOptions = {}
 
   if (cacheDir) {
@@ -44,7 +43,7 @@ export function createTailwindcssPatcher(basedir?: string, cacheDir?: string) {
       basedir,
       applyPatches: {
         exportContext: true,
-        extendLengthUnits: true,
+        extendLengthUnits: supportCustomLengthUnitsPatch,
       },
     },
   })

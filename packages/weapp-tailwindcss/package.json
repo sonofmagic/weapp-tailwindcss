@@ -168,7 +168,7 @@
     "postcss-rem-to-responsive-pixel": "~6.0.1",
     "postcss-selector-parser": "~6.1.1",
     "semver": "~7.6.2",
-    "tailwindcss-patch": "3.1.0-alpha.0",
+    "tailwindcss-patch": "3.1.0-alpha.1",
     "webpack-sources": "3.2.3"
   }
 }

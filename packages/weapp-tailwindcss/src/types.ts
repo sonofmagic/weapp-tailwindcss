@@ -3,10 +3,9 @@ import type { ClassGenerator, IClassGeneratorOptions } from '@tailwindcss-mangle
 import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
 import type { ParseError, ParserOptions } from '@babel/parser'
-// import type { sources } from 'webpack'
 import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { Result } from 'postcss-load-config'
-import type { TailwindcssPatcher } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { InjectPreflight } from './postcss/preflight'
 import type { IContext as PostcssContext } from './postcss/plugins/ctx'
 import type { ICreateCacheReturnType } from '@/cache'
@@ -92,22 +91,6 @@ export interface RawSource {
   source?: string
   // prevConcatenated: boolean
   // nextConcatenated: boolean
-}
-
-export interface ILengthUnitsPatchDangerousOptions {
-  packageName?: string
-  gteVersion?: string
-  lengthUnitsFilePath?: string
-  variableName?: string
-  overwrite?: boolean
-  destPath?: string
-}
-
-export interface ILengthUnitsPatchOptions {
-  units: string[]
-  paths?: string[]
-  dangerousOptions?: ILengthUnitsPatchDangerousOptions
-  basedir?: string
 }
 
 export interface IMangleOptions {
@@ -292,7 +275,7 @@ const customAttributes = {
    * @group 3.一般配置
    * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/110
    * @description 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
-> 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
+> 目前自动检索可能存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
 
 ```diff
  "scripts": {
@@ -302,7 +285,7 @@ const customAttributes = {
 
 使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
    */
-  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions
+  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
 
   /**
    * @group 3.一般配置
@@ -536,7 +519,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
 
 export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary' | 'cache'> & {
-    supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | false
+    supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | boolean
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
     styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>
     jsHandler: JsHandler

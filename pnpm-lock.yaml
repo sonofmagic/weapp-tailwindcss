@@ -542,8 +542,8 @@ importers:
         specifier: ~7.6.2
         version: 7.6.3
       tailwindcss-patch:
-        specifier: 3.1.0-alpha.0
-        version: 3.1.0-alpha.0(magicast@0.3.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))
+        specifier: 3.1.0-alpha.1
+        version: 3.1.0-alpha.1(magicast@0.3.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))
       webpack-sources:
         specifier: 3.2.3
         version: 3.2.3
@@ -10450,8 +10450,8 @@ packages:
       tailwindcss:
         optional: true
 
-  tailwindcss-patch@3.1.0-alpha.0:
-    resolution: {integrity: sha512-8LW6whOr7bAEY/0Xmr4+xy40hpGPsx7R8B5t+j5Jvj+zgTXdfLFaLc0EFBRefVppTQVoxVALJ5oXq9b6cfEhBA==}
+  tailwindcss-patch@3.1.0-alpha.1:
+    resolution: {integrity: sha512-dBxiWwfUaV3OzWSzzgQNHyR4uFD8GAp2fpyl7TaelXg7nL0/K7UHe/VgG7gACfZpDb46b6IHTNekFwjGFzu7Tg==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=3.0.0'
@@ -23764,7 +23764,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@3.1.0-alpha.0(magicast@0.3.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3))):
+  tailwindcss-patch@3.1.0-alpha.1(magicast@0.3.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3))):
     dependencies:
       '@babel/generator': 7.24.10
       '@babel/parser': 7.24.8
