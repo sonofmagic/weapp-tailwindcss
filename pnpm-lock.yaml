@@ -485,7 +485,7 @@ importers:
   packages/weapp-tailwindcss:
     dependencies:
       '@ast-core/escape':
-        specifier: ^1.0.1
+        specifier: ~1.0.1
         version: 1.0.1
       '@babel/generator':
         specifier: 7.24.8
@@ -503,16 +503,16 @@ importers:
         specifier: 4.0.8
         version: 4.0.8(postcss@8.4.39)
       '@tailwindcss-mangle/shared':
-        specifier: ^3.0.0
+        specifier: ~3.0.0
         version: 3.0.0
       '@weapp-core/escape':
-        specifier: ^2.1.0
+        specifier: ~2.1.0
         version: 2.1.0
       '@weapp-core/regex':
-        specifier: ^1.0.1
+        specifier: ~1.0.1
         version: 1.0.1
       debug:
-        specifier: 4.3.5
+        specifier: ~4.3.5
         version: 4.3.5
       htmlparser2:
         specifier: 9.1.0
@@ -530,19 +530,19 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       postcss:
-        specifier: 8.4.39
+        specifier: ~8.4.39
         version: 8.4.39
       postcss-rem-to-responsive-pixel:
-        specifier: ^6.0.1
+        specifier: ~6.0.1
         version: 6.0.1
       postcss-selector-parser:
-        specifier: 6.1.1
+        specifier: ~6.1.1
         version: 6.1.1
       semver:
-        specifier: 7.6.2
+        specifier: ~7.6.2
         version: 7.6.2
       tailwindcss-patch:
-        specifier: ^3.0.2
+        specifier: ~3.0.2
         version: 3.0.2(magicast@0.3.4)(tailwindcss@3.4.4(ts-node@10.9.2(@types/node@20.14.10)(typescript@5.4.5)))
       webpack-sources:
         specifier: 3.2.3
@@ -22192,17 +22192,17 @@ snapshots:
   postcss-nested@4.2.3:
     dependencies:
       postcss: 7.0.39
-      postcss-selector-parser: 6.1.0
+      postcss-selector-parser: 6.1.1
 
   postcss-nested@6.0.1(postcss@8.4.38):
     dependencies:
       postcss: 8.4.38
-      postcss-selector-parser: 6.1.0
+      postcss-selector-parser: 6.1.1
 
   postcss-nested@6.0.1(postcss@8.4.39):
     dependencies:
       postcss: 8.4.39
-      postcss-selector-parser: 6.1.0
+      postcss-selector-parser: 6.1.1
 
   postcss-normalize-charset@6.0.2(postcss@8.4.39):
     dependencies:
@@ -22433,7 +22433,7 @@ snapshots:
       commander: 8.3.0
       glob: 7.2.3
       postcss: 8.4.39
-      postcss-selector-parser: 6.1.0
+      postcss-selector-parser: 6.1.1
 
   qrcode-reader@1.0.4: {}
 
