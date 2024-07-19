@@ -21,6 +21,7 @@ export interface IPropValue {
   prop: string
   value: string
 }
+
 // 'box-sizing' | 'border-width' | 'border-style' | 'border-color' |
 export type CssPresetProps = string
 
@@ -61,7 +62,10 @@ export type IStyleHandlerOptions = {
   cssRemoveHoverPseudoClass?: boolean
 } & RequiredStyleHandlerOptions
 
-export interface JsHandlerReplaceResult { code: string, map?: SourceMap }
+export interface JsHandlerReplaceResult {
+  code: string
+  map?: SourceMap
+}
 
 export type JsHandlerResult = (JsHandlerReplaceResult | GeneratorResult) & { error?: ParseError }
 
@@ -84,6 +88,7 @@ export interface IJsHandlerOptions {
   unescapeUnicode?: boolean
   babelParserOptions?: ParserOptions
 }
+
 export interface RawSource {
   start: number
   end: number
@@ -135,76 +140,88 @@ export interface IArbitraryValues {
 
 export interface UserDefinedOptions {
   /**
-   * @group 1.文件匹配
-   * @description 匹配 `wxml`等等模板进行处理的方法
+   * @group 2、文件匹配
+   * @description 匹配 `.wxml` 等模板进行处理的方法。
    */
   htmlMatcher?: (name: string) => boolean
   /**
-   * @group 1.文件匹配
-   * @description 匹配 `wxss` 等等样式文件的方法
+   * @group 2、文件匹配
+   * @description 匹配 `.wxss` 等样式文件的方法。
    */
   cssMatcher?: (name: string) => boolean
   /**
-   * @group 1.文件匹配
+   * @group 2、文件匹配
    * @description 匹配编译后 `js` 文件进行处理的方法
    */
   jsMatcher?: (name: string) => boolean
   /**
-   * @group 1.文件匹配
+   * @group 2、文件匹配
    * @description `tailwindcss css var inject scope` 的匹配方法,用于处理原始变量和替换不兼容选择器。可以不传，但是遇到某些 `::before/::after` 选择器注入冲突时，建议传入参数手动指定 css bundle 文件位置
    *
    */
   mainCssChunkMatcher?: (name: string, appType?: AppType) => boolean
   /**
-   * @group 0.重要配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/7
-   * @description 在所有 view节点添加的 css 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。默认预置 `css` 同 `tailwindcss` 类似，详细用法如下:
+   * @group 1、重要配置
+   * @issue 关于此接口的议题 https://github.com/sonofmagic/weapp-tailwindcss/issues/7
+   * @description 在所有 `view` 的节点中添加 `css` 预设，可根据情况自由的禁用原先规则，或者添加新的规则。这代表会添加给所有的元素, 根据 `cssPreflightRange` 配置项影响结果。默认预置 `css` 同 `tailwindcss` 类似，详细用法如下:
+   * @example
+   * ##### 默认
    * ```js
-   * // default 默认，这代表会添加给所有的 view / text 元素, 受到 cssPreflightRange 配置项影响 :
-cssPreflight: {
-  'box-sizing': 'border-box',
-  'border-width': '0',
-  'border-style': 'solid',
-  'border-color': 'currentColor'
-}
-// result
-// box-sizing: border-box;
-// border-width: 0;
-// border-style: solid;
-// border-color: currentColor
-
-// case 禁用所有
-cssPreflight: false
-// result
-// none
-
-// case 禁用单个属性
-cssPreflight: {
-  'box-sizing': false
-}
-// border-width: 0;
-// border-style: solid;
-// border-color: currentColor
-
-// case 更改和添加单个属性
-cssPreflight: {
-  'box-sizing': 'content-box',
-  'background': 'black'
-}
-// result
-// box-sizing: content-box;
-// border-width: 0;
-// border-style: solid;
-// border-color: currentColor;
-// background: black
+   * cssPreflight: {
+   *     'box-sizing': 'border-box',
+   *     'border-width': '0',
+   *     'border-style': 'solid',
+   *     'border-color': 'currentColor'
+   * }
+   * ```
+   * ##### 结果
+   * ```js
+   * // box-sizing: border-box;
+   * // border-width: 0;
+   * // border-style: solid;
+   * // border-color: currentColor
+   * ```
+   * ##### 禁用所有预设
+   * ```js
+   * cssPreflight: false
+   * ```
+   * ##### 结果
+   * ```js
+   * // none
+   * ```
+   * ##### 禁用单个属性
+   * ```js
+   * cssPreflight: {
+   *   'box-sizing': false
+   * }
+   * ```
+   * ##### 结果
+   * ```js
+   * // border-width: 0;
+   * // border-style: solid;
+   * // border-color: currentColor
+   * ```
+   * ##### 更改和添加单个属性
+   * ```js
+   * cssPreflight: {
+   *     'box-sizing': 'content-box',
+   *     'background': 'black'
+   * }
+   * ```
+   * ##### 结果
+   * ```js
+   * // box-sizing: content-box;
+   * // border-width: 0;
+   * // border-style: solid;
+   * // border-color: currentColor;
+   * // background: black;
    * ```
    */
   cssPreflight?: CssPreflightOptions
-
   /**
-   * @group 0.重要配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss/pull/62
-   * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。只对所有的 `view`,`text` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
+   * @group 1、重要配置
+   * @issue 关于此接口的议题 https://github.com/sonofmagic/weapp-tailwindcss/pull/62
+   * @description 全局 `dom` 选择器，只有在这个选择器作用范围内的 `dom` 会被注入 `cssPreflight` 的变量和默认样式。只对所有的 `<view>`、`<text>` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`，此时需要自行处理和客户端默认样式的冲突
    */
   cssPreflightRange?: 'all'
 
@@ -249,41 +266,41 @@ cssPreflight: {
    * @group 0.重要配置
    * @description **这是一个重要的配置!**
 
-它可以自定义`wxml`标签上的`attr`转化属性。默认转化所有的`class`和`hover-class`，这个`Map`的 `key`为匹配标签，`value`为属性字符串或者匹配正则数组。
+   它可以自定义`wxml`标签上的`attr`转化属性。默认转化所有的`class`和`hover-class`，这个`Map`的 `key`为匹配标签，`value`为属性字符串或者匹配正则数组。
 
-如果你想要增加，对于所有标签都生效的转化的属性，你可以添加 `*`: `(string | Regexp)[]` 这样的键值对。(`*` 是一个特殊值，代表所有标签)
+   如果你想要增加，对于所有标签都生效的转化的属性，你可以添加 `*`: `(string | Regexp)[]` 这样的键值对。(`*` 是一个特殊值，代表所有标签)
 
-更复杂的情况，可以传一个 `Map<string | Regex, (string | Regex)[]>`实例。
+   更复杂的情况，可以传一个 `Map<string | Regex, (string | Regex)[]>`实例。
 
-假如你要把 `className` 通过组件的`prop`传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)
+   假如你要把 `className` 通过组件的`prop`传递给子组件，又或者想要自定义转化的标签属性时，需要用到此配置，案例详见：[issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688),[issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)
 
-@example
+   @example
 
-```js
-const customAttributes = {
-    // 匹配所有带 Class / class 相关的标签，比如某个组件上的 `a-class`, `testClass` , `custom-class` 里面的值
-    '*': [ /[A-Za-z]?[A-Za-z-]*[Cc]lass/ ],
-    // 额外匹配转化 `van-image` 标签上属性为 `custom-class` 的值
-    'van-image': ['custom-class'],
-    // 转化所有 `ice-button` 标签上属性为 `testClass` 的值
-    'ice-button': ['testClass']
-}
-```
+   ```js
+   const customAttributes = {
+   // 匹配所有带 Class / class 相关的标签，比如某个组件上的 `a-class`, `testClass` , `custom-class` 里面的值
+   '*': [ /[A-Za-z]?[A-Za-z-]*[Cc]lass/ ],
+   // 额外匹配转化 `van-image` 标签上属性为 `custom-class` 的值
+   'van-image': ['custom-class'],
+   // 转化所有 `ice-button` 标签上属性为 `testClass` 的值
+   'ice-button': ['testClass']
+   }
+   ```
 
-当然你可以根据自己的需求，定义单个或者多个正则/字符串。
+   当然你可以根据自己的需求，定义单个或者多个正则/字符串。
 
-甚至有可能你编写正则表达式，它们匹配的范围，直接包括了插件里自带默认的 `class`/`hover-class`，那么这种情况下，你完全可以取代插件的默认模板转化器，开启 [disabledDefaultTemplateHandler](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler) 配置项,禁用默认的模版匹配转化器。
+   甚至有可能你编写正则表达式，它们匹配的范围，直接包括了插件里自带默认的 `class`/`hover-class`，那么这种情况下，你完全可以取代插件的默认模板转化器，开启 [disabledDefaultTemplateHandler](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler) 配置项,禁用默认的模版匹配转化器。
    */
   customAttributes?: ICustomAttributes
   /**
    * @group 0.重要配置
    * @description 自定义转化class名称字典，这个配置项用来自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`
 
-插件中默认使用`'simple'`模式:
+   插件中默认使用`'simple'`模式:
 
-- `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
+   - `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
 
-当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)
+   当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)
    * @default SimpleMappingChars2String
    */
   customReplaceDictionary?: Record<string, string>
@@ -292,15 +309,15 @@ const customAttributes = {
    * @group 3.一般配置
    * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/110
    * @description 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
-> 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
+   > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
 
-```diff
- "scripts": {
-+  "postinstall": "weapp-tw patch"
- }
-```
+   ```diff
+   "scripts": {
+   +  "postinstall": "weapp-tw patch"
+   }
+   ```
 
-使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
+   使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
    */
   supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions
 
@@ -353,7 +370,7 @@ const customAttributes = {
   cssChildCombinatorReplaceValue?: string | string[]
 
   /**
-   * @group 1.文件匹配
+   * @group 2、文件匹配
    * @experiment 实验性质，有可能会改变
    * @description 各个平台 `wxs` 文件的匹配方法,可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
@@ -362,7 +379,7 @@ const customAttributes = {
   wxsMatcher?: (name: string) => boolean
 
   /**
-   * @group 1.文件匹配
+   * @group 2、文件匹配
    * @experiment 实验性质，有可能会改变
    * @description 是否转义 `wxml` 中内联的 `wxs`
    * > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
@@ -370,15 +387,15 @@ const customAttributes = {
    * ```html
    * <!-- index.wxml -->
    * <wxs module="inline">
-// 我是内联wxs
-// 下方的类名会被转义
-  var className = "after:content-['我是className']"
-  module.exports = {
-    className: className
-  }
-</wxs>
-<wxs src="./index.wxs" module="outside"/>
-<view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
+   // 我是内联wxs
+   // 下方的类名会被转义
+   var className = "after:content-['我是className']"
+   module.exports = {
+   className: className
+   }
+   </wxs>
+   <wxs src="./index.wxs" module="outside"/>
+   <view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
    * ```
    * @default false
    */
@@ -389,7 +406,7 @@ const customAttributes = {
    * @version `^2.6.0`
    * @description  是否注入额外的 `tailwindcss css var scope` 区域，这个选项用于这样的场景
    *
-   * 比如 `taro vue3` 使用 [NutUI](https://nutui.jd.com), 需要使用 `@tarojs/plugin-html`，而这个插件会启用 `postcss-html-transform` 从而移除所有带 `*` 选择器
+   * 例如在 `taro vue3` 中使用 [NutUI](https://nutui.jd.com)，需要使用 `@tarojs/plugin-html`，而这个插件会启用 `postcss-html-transform` 来移除所有带 `*` 的选择器。
    *
    * 这会导致 `tailwindcss css var scope` 区域被移除导致一些样式，比如渐变等等功能失效
    *
