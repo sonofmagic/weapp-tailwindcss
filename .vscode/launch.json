@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm run postinstall",
+      "name": "postinstall",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/web"
+    },
+    {
       "command": "npm run dev",
       "name": "[App] native",
       "request": "launch",

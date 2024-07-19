@@ -18,6 +18,8 @@ export default defineConfig({
   },
   dts: true,
   clean: true,
+  cjsInterop: true,
+  splitting: true,
   format: ['cjs', 'esm'],
   external: ['webpack', 'loader-utils', 'tailwindcss/plugin', '@ast-grep/napi', '@weapp-tailwindcss/cli'],
 })
