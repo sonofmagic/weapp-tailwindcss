@@ -122,7 +122,7 @@
   },
   "scripts": {
     "dev": "tsup --watch --sourcemap",
-    "build": "tsup --clean",
+    "build": "tsup",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "dts": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
@@ -136,7 +136,6 @@
     "ls:pack": "npm pack --dry-run",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
     "prepare": "ts-patch install -s",
-    "bump": "bumpp",
     "release": "node scripts/release.js",
     "generate:readme": "tsx scripts/readme/write.ts",
     "lint": "eslint .",
