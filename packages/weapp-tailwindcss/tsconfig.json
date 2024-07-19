@@ -27,7 +27,13 @@
     ],
     "strictPropertyInitialization": false,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ]
   },
   "include": [
     "src/**/*",
