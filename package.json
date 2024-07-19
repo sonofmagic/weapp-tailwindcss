@@ -84,7 +84,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.25.1",
+    "@ast-grep/napi": "^0.25.2",
     "@babel/core": "^7.24.9",
     "@eslint/config-inspector": "^0.5.2",
     "@icebreakers/eslint-config": "^0.3.12",
@@ -180,6 +180,7 @@
     "ts-patch": "^3.2.1",
     "tsd": "^0.31.1",
     "tslib": "^2.6.3",
+    "tsup": "^8.2.0",
     "tsx": "^4.16.2",
     "turbo": "^2.0.7",
     "typescript": "5.5.3",
