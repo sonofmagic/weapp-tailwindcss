@@ -56,6 +56,9 @@ importers:
       '@types/diff':
         specifier: ^5.2.1
         version: 5.2.1
+      '@types/dlv':
+        specifier: ^1.1.4
+        version: 1.1.4
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
@@ -182,6 +185,9 @@ importers:
       diff:
         specifier: ^5.2.0
         version: 5.2.0
+      dlv:
+        specifier: ^1.1.3
+        version: 1.1.3
       domhandler:
         specifier: ^5.0.3
         version: 5.0.3
@@ -3361,6 +3367,9 @@ packages:
 
   '@types/diff@5.2.1':
     resolution: {integrity: sha512-uxpcuwWJGhe2AR1g8hD9F5OYGCqjqWnBUQFD8gMZsDbv8oPHzxJF6iMO6n8Tk0AdzlxoaaoQhOYlIg/PukVU8g==}
+
+  '@types/dlv@1.1.4':
+    resolution: {integrity: sha512-m8KmImw4Jt+4rIgupwfivrWEOnj1LzkmKkqbh075uG13eTQ1ZxHWT6T0vIdSQhLIjQCiR0n0lZdtyDOPO1x2Mw==}
 
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
@@ -15339,6 +15348,8 @@ snapshots:
       '@types/ms': 0.7.34
 
   '@types/diff@5.2.1': {}
+
+  '@types/dlv@1.1.4': {}
 
   '@types/eslint-scope@3.7.7':
     dependencies:
