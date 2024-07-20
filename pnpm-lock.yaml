@@ -485,6 +485,8 @@ importers:
         specifier: ^2.0.26
         version: 2.0.26(typescript@5.5.3)
 
+  packages/tailwindcss-core-plugins-extractor: {}
+
   packages/weapp-tailwindcss:
     dependencies:
       '@ast-core/escape':
