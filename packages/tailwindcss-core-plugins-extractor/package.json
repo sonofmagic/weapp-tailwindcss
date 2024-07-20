@@ -1,7 +1,7 @@
 {
   "name": "tailwindcss-core-plugins-extractor",
   "type": "module",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "tailwindcss-core-plugins-extractor",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
@@ -18,14 +18,15 @@
     "core-plugins",
     "extractor"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "extract": "node scripts/extract.cjs",
+    "extract": "node scripts/main.js",
+    "build": "tsup",
     "sync": "cnpm sync tailwindcss-core-plugins-extractor"
   },
   "publishConfig": {
