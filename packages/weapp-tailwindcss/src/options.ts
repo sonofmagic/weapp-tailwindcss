@@ -11,7 +11,7 @@ import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createStyleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
-import { createPatch, createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { useMangleStore } from '@/mangle'
 import { createCache } from '@/cache'
 
@@ -95,11 +95,8 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
   result.jsHandler = jsHandler
   result.templateHandler = templateHandler
 
-  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir, appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined)
-  result.patch = () => {
-    createPatch(supportCustomLengthUnitsPatch)()
-    twPatcher.patch()
-  }
+  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir, appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined, supportCustomLengthUnitsPatch ?? true)
+  result.patch = twPatcher.patch
   result.setMangleRuntimeSet = setMangleRuntimeSet
   result.cache = cache === undefined || typeof cache === 'boolean' ? createCache(cache) : cache
   result.twPatcher = twPatcher

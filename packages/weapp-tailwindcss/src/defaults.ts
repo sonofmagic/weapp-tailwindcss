@@ -64,17 +64,6 @@ export const defaultOptions: UserDefinedOptions = {
 
   customAttributes: {},
   customReplaceDictionary: SimpleMappingChars2String,
-
-  supportCustomLengthUnitsPatch: {
-    units: ['rpx'],
-    dangerousOptions: {
-      gteVersion: '3.0.0',
-      lengthUnitsFilePath: 'lib/util/dataTypes.js',
-      packageName: 'tailwindcss',
-      variableName: 'lengthUnits',
-      overwrite: true,
-    },
-  },
   appType: undefined,
   arbitraryValues: {
     allowDoubleQuotes: false,

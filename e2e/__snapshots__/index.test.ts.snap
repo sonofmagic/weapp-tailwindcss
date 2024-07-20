@@ -510,10 +510,6 @@ text,
   --tw-text-opacity: 1;
   color: rgb(0 0 255 / var(--tw-text-opacity));
 }
-.aftercml-0:after {
-  content: var(--tw-content);
-  margin-left: 0;
-}
 .aftercml-0d5:after {
   content: var(--tw-content);
   margin-left: 4rpx;
@@ -538,7 +534,6 @@ exports[`e2e > 'mpx-app' > json 1`] = `
 "[
   "after:content-[\\"你好啊，我很无聊\\"]",
   "after:content-['你好啊，我这是中文字符串']",
-  "after:ml-0",
   "after:ml-0.5",
   "after:text-red-500",
   "bg-[#929292]",
@@ -2140,10 +2135,6 @@ text,
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.aftercml-0::after {
-  content: var(--tw-content);
-  margin-left: 0rpx;
-}
 .aftercml-0d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
@@ -2216,7 +2207,6 @@ exports[`e2e > 'taro-app' > json 1`] = `
   "after:content-['Hello_World']",
   "after:content-['的撒的撒']",
   "after:content-[*]",
-  "after:ml-0",
   "after:ml-0.5",
   "after:text-red-500",
   "before:absolute",
@@ -3178,9 +3168,6 @@ text,
 .min-h-_100px_ {
   min-height: 100rpx;
 }
-.w-1 {
-  width: 8rpx;
-}
 .w-1d5 {
   width: 12rpx;
 }
@@ -3510,7 +3497,6 @@ exports[`e2e > 'taro-vue3-app' > json 1`] = `
   "text-red-400",
   "text-white",
   "to-[#654321]",
-  "w-1",
   "w-1.5",
   "w-10",
   "w-32",
@@ -8808,10 +8794,6 @@ text,
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
-.twincring-white ~ view:not(.not-twin) {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
-}
 .twinctext-green-500 ~ text:not(.not-twin) {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
@@ -8819,10 +8801,6 @@ text,
 .twinctext-red-500 ~ text:not(.not-twin) {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
-}
-.twincring-white ~ text:not(.not-twin) {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
 }
 .nextctext-green-500 + view:not(.not-next) {
   --tw-text-opacity: 1;
@@ -9131,7 +9109,6 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "text-white",
   "transition",
   "translate-y-[17rpx]",
-  "twin:ring-white",
   "twin:text-green-500",
   "twin:text-red-500",
   "underline",

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "echarts": "^5.5.1",
-    "vue": "^3.4.21",
+    "vue": "^3.4.33",
     "vue-echarts": "^6.7.3"
   },
   "devDependencies": {

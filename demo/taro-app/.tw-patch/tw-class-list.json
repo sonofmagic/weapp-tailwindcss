@@ -10,7 +10,6 @@
   "after:content-['Hello_World']",
   "after:content-['的撒的撒']",
   "after:content-[*]",
-  "after:ml-0",
   "after:ml-0.5",
   "after:text-red-500",
   "before:absolute",

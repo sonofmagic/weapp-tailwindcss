@@ -19,6 +19,6 @@
     "weapp-tailwindcss": "workspace:^"
   },
   "dependencies": {
-    "tailwindcss-patch": "^3.0.0"
+    "tailwindcss-patch": "^4.0.0"
   }
 }

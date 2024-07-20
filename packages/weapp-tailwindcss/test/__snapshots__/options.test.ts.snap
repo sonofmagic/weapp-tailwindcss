@@ -139,18 +139,6 @@ exports[`get options > default options 1`] = `
   "postcssOptions": {},
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
-  "supportCustomLengthUnitsPatch": {
-    "dangerousOptions": {
-      "gteVersion": "3.0.0",
-      "lengthUnitsFilePath": "lib/util/dataTypes.js",
-      "overwrite": true,
-      "packageName": "tailwindcss",
-      "variableName": "lengthUnits",
-    },
-    "units": [
-      "rpx",
-    ],
-  },
   "templateHandler": [Function],
   "wxsMatcher": [Function],
 }

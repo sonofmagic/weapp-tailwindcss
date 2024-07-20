@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.4.0
+
+### Feature
+
+- 升级到 `tailwindcss-patch@4.0.0` ，采用新的内置补丁配置
+
 ## 3.3.7
 
 ### Fixed
