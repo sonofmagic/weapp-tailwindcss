@@ -59,7 +59,8 @@
     "darkmode": true
   },
   "mp-alipay": {
-    "usingComponents": true
+    "usingComponents": true,
+    "component2": true
   },
   "mp-baidu": {
     "usingComponents": true

@@ -58,6 +58,8 @@
     "@vue/shared": "^3.3.11",
     "pinia": "~2.1.7",
     "tailwindcss-core-plugins-extractor": "^0.2.0",
+    "uni-app-mp-html": "^2.5.0",
+    "uview-plus": "^3.3.5",
     "vue": "^3.4.21"
   },
   "devDependencies": {
