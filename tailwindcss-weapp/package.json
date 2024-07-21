@@ -77,6 +77,7 @@
     "@vue/runtime-core": "^3.4.21",
     "autoprefixer": "^10.4.19",
     "eslint": "^9.7.0",
+    "miniprogram-api-typings": "^3.12.2",
     "postcss": "^8.4.39",
     "postcss-pxtransform": "^3.6.34",
     "postcss-rem-to-responsive-pixel": "^6.0.1",

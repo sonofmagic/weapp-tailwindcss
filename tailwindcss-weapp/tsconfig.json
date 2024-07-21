@@ -8,6 +8,7 @@
     ],
     "useDefineForClassFields": true,
     "baseUrl": ".",
+    "rootDir": ".",
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
@@ -17,7 +18,8 @@
     },
     "resolveJsonModule": true,
     "types": [
-      "@dcloudio/types"
+      "@dcloudio/types",
+      "miniprogram-api-typings"
     ],
     "allowJs": true,
     "strict": true,

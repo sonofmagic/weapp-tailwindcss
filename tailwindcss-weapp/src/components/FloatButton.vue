@@ -60,10 +60,8 @@ const resetToYaxis = debounce((x, y, source) => {
   console.log('[Final]', x, y, source)
 }, 100)
 
-function fabChange(event: Event) {
-  // @ts-ignore
+function fabChange(event: WechatMiniprogram.TouchEvent) {
   if (event && event.detail) {
-    // @ts-ignore
     const { x, y, source } = event.detail
 
     resetToYaxis(x, y, source)
