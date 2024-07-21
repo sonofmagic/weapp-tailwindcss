@@ -33,7 +33,7 @@ function go2ThemeDemo() {
     <up-navbar fixed bgColor="inherit" safeAreaInsetTop>
       <template #left>
         <view class="relative flex items-center">
-          <view class="i-logos-tailwindcss-icon mr-2 shrink-0 text-2xl" />
+          <view class="i-logos-tailwindcss-icon mr-2 h-[20.57px] w-[34px] shrink-0" />
           <view class="text-lg font-semibold">
             Tailwind CSS
           </view>
