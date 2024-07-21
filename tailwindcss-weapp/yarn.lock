@@ -1918,6 +1918,13 @@
     eslint-plugin-vuejs-accessibility "^2.3.1"
     local-pkg "0.5.0"
 
+"@iconify-json/logos@^1.1.43":
+  version "1.1.43"
+  resolved "https://registry.npmmirror.com/@iconify-json/logos/-/logos-1.1.43.tgz#9e4f08a5c013a65bd926e3713328233e20ff3a2e"
+  integrity sha512-UtvL1yDHUr9dl1Tqihh6K9m5dmbYKOYyLf3i9aKhymSW76QjOCGjpgQc0PQ4GJCAdU1cAMu+WO61TgPxdonrlg==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/mdi@^1.1.67":
   version "1.1.67"
   resolved "https://registry.npmmirror.com/@iconify-json/mdi/-/mdi-1.1.67.tgz#89e82b598c7bd98880a5f46a20f94c55038e1546"
@@ -4002,7 +4009,7 @@ data-view-byte-offset@^1.0.0:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
-dayjs@^1.11.3:
+dayjs@^1.11.12, dayjs@^1.11.3:
   version "1.11.12"
   resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.12.tgz#5245226cc7f40a15bf52e0b99fd2a04669ccac1d"
   integrity sha512-Rt2g+nTbLlDWZTwwrIXjy9MeiZmSDI375FvZs72ngxx8PDC6YXOeR3q5LAuPzjZQxhiWdRKac7RKV+YyQYfYIg==

@@ -1,6 +1,5 @@
 import { createSSRApp } from 'vue'
 import * as Pinia from 'pinia'
-// @ts-ignore
 import uviewPlus from 'uview-plus'
 import App from './App.vue'
 

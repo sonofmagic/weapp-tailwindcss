@@ -43,22 +43,19 @@ const currentCssVar = computed(() => {
 })
 
 function toggleTheme(t: ModeEnum) {
-  console.log(t)
   mode.value = t
 }
 
-const VariantContent
-      /* weapp-tw ignore */
-      = '```html\n<view class="bg-green-50\n deep:bg-green-300\n dark:bg-green-600\n fantasy:bg-green-950"></view>\n```'
+const VariantContent =/* weapp-tw ignore */ '```html\n<view class="\n bg-green-50\n deep:bg-green-300\n dark:bg-green-600\n fantasy:bg-green-950"></view>\n```'
 
 const CssVarContent
-      = '```js\n'
-      + `colors: {
+  = '```js\n'
+  + `colors: {
   'primary': 'rgba(var(--ice-color-primary), <alpha-value>)',
   'primary-content': 'rgba(var(--ice-color-primary-content), <alpha-value>)',
   'base': 'rgba(var(--ice-color-base), <alpha-value>)'
 }`
-      + '\n```'
+  + '\n```'
 
 function viewCode() {
   uni.navigateTo({
@@ -78,9 +75,7 @@ function toggleCode(idx: 'a' | 'b') {
   <view>
     <Theme :mode="mode" :css-vars="currentCssVar">
       <view class="min-h-[50vh] bg-base py-2 transition-colors duration-300">
-        <view
-          class="mb-2 px-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200"
-        >
+        <view class="mb-2 px-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
           CssVar 方案， 一个原子化对应一/n个动态的 css var
         </view>
 
@@ -107,9 +102,7 @@ function toggleCode(idx: 'a' | 'b') {
       <view
         class="min-h-[50vh] bg-green-50 p-2 transition-colors duration-300 deep:bg-green-300 fantasy:bg-green-950 dark:bg-green-600"
       >
-        <view
-          class="mb-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200"
-        >
+        <view class="mb-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
           Variant 方案，语义化的原子类生成全局样式利用优先级进行覆盖
         </view>
         <view v-show="visibles.b">

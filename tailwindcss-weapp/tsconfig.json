@@ -19,7 +19,8 @@
     "resolveJsonModule": true,
     "types": [
       "@dcloudio/types",
-      "miniprogram-api-typings"
+      "miniprogram-api-typings",
+      "uview-plus/types"
     ],
     "allowJs": true,
     "strict": true,
