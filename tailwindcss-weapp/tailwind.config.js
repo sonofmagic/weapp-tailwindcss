@@ -5,11 +5,15 @@ const { isMp } = require('./platform')
 
 module.exports = {
   content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],
-  //  darkMode: 'media', // or 'media' or 'class'
   darkMode: 'class',
   theme: {
     extend: {
-
+      colors: {
+        'primary': 'rgba(var(--ice-color-primary), <alpha-value>)',
+        'primary-content':
+          'rgba(var(--ice-color-primary-content), <alpha-value>)',
+        'base': 'rgba(var(--ice-color-base), <alpha-value>)',
+      },
     },
   },
   // https://weapp-tw.icebreaker.top/docs/quick-start/uni-app-css-macro
@@ -25,17 +29,9 @@ module.exports = {
           value: 'MP-WEIXIN',
           negative: true,
         },
-        // mv: {
-        //   value: 'H5 || MP-WEIXIN'
-        // },
-        // '-mv': {
-        //   value: 'H5 || MP-WEIXIN',
-        //   negative: true
-        // }
       },
     }),
     iconsPlugin({
-      // Select the icon collections you want to use
       collections: getIconCollections(['svg-spinners', 'mdi']),
     }),
   ],

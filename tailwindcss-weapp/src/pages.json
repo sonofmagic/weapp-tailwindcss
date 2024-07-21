@@ -3,7 +3,26 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "weapp-tailwindcss"
+        "navigationBarTitleText": "weapp-tailwindcss",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/index/detail",
+      "style": {
+        "navigationBarTitleText": "core-plugin"
+      }
+    },
+    {
+      "path": "pages/theme/index",
+      "style": {
+        "navigationBarTitleText": "theme demo"
+      }
+    },
+    {
+      "path": "pages/theme/code",
+      "style": {
+        "navigationBarTitleText": "theme code"
       }
     }
   ],

@@ -19,7 +19,9 @@ function toggleTheme() {
 }
 
 function go2ThemeDemo() {
-
+  uni.navigateTo({
+    url: '/pages/theme/index',
+  })
 }
 </script>
 
@@ -39,7 +41,3 @@ function go2ThemeDemo() {
     </FloatButton>
   </BaseLayout>
 </template>
-
-<style scoped lang="scss">
-
-</style>
