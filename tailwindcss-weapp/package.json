@@ -1,7 +1,6 @@
 {
   "name": "tailwindcss-weapp",
   "version": "0.0.0",
-  "packageManager": "yarn@1.22.22",
   "scripts": {
     "dev": "uni -p mp-weixin",
     "build": "npm run build:mp-weixin",
