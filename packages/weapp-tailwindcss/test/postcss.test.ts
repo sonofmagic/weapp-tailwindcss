@@ -1,5 +1,6 @@
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCss } from './helpers/getTwCss'
+import { getOptions } from '@/options'
 // import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
 // import fs from 'fs'
@@ -68,6 +69,97 @@ describe('postcss plugin', () => {
     expect(set.has('after:content-[\'对酒当歌，人生几何\']')).toBe(true)
 
     expect(res.css.toString()).toMatchSnapshot()
+  })
+
+  it('dark mode media', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('', {
+      css: `.tbody {
+  .tr {
+    @apply border-b border-slate-100 dark:border-slate-400/10;
+  }
+}`,
+    })
+    const css = res.css.toString()
+    expect(css).toMatchSnapshot()
+    const ctx = getOptions()
+    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+  })
+
+  it('dark mode class', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('', {
+      css: `.tbody {
+  .tr {
+    @apply border-b border-slate-100 dark:border-slate-400/10;
+  }
+}`,
+      twConfig: {
+        darkMode: 'class',
+      },
+    })
+
+    const css = res.css.toString()
+    expect(css).toMatchSnapshot()
+    const ctx = getOptions()
+    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+  })
+
+  it('dark mode selector', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('', {
+      css: `.tbody {
+  .tr {
+    @apply border-b border-slate-100 dark:border-slate-400/10;
+  }
+}`,
+      twConfig: {
+        darkMode: 'selector',
+      },
+    })
+
+    const css = res.css.toString()
+    expect(css).toMatchSnapshot()
+    const ctx = getOptions()
+    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+  })
+
+  it('dark mode variant 1', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('', {
+      css: `.tbody {
+  .tr {
+    @apply border-b border-slate-100 dark:border-slate-400/10;
+  }
+}`,
+      twConfig: {
+        darkMode: ['variant', '&:not(.light *)'],
+      },
+    })
+
+    const css = res.css.toString()
+    expect(css).toMatchSnapshot()
+    const ctx = getOptions()
+    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+  })
+
+  it('dark mode variant 2', async () => {
+    // after:content-[\"*\"]
+    const res = await getCss('', {
+      css: `.tbody {
+  .tr {
+    @apply border-b border-slate-100 dark:border-slate-400/10;
+  }
+}`,
+      twConfig: {
+        darkMode: ['variant', ['&:is(.dark *)', '@media (prefers-color-scheme: dark) { &:not(.light *) }']],
+      },
+    })
+
+    const css = res.css.toString()
+    expect(css).toMatchSnapshot()
+    const ctx = getOptions()
+    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
   })
 })
 

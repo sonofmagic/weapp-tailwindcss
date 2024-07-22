@@ -3,9 +3,13 @@ const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons')
 const plugin = require('tailwindcss/plugin')
 const { isMp } = require('./platform')
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],
-  darkMode: 'class',
+  // https://tailwindcss.com/docs/dark-mode
+  // darkMode: 'class',
+  // darkMode: ['variant', ['&:is(.dark *)']],
+  darkMode: ['variant', ':is(.dark &)'],
   theme: {
     extend: {
       colors: {

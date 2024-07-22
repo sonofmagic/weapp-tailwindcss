@@ -492,6 +492,173 @@ exports[`postcss plugin > before:content-['+'] 1`] = `
 }"
 `;
 
+exports[`postcss plugin > dark mode class > css 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .dark view.tr,.dark text.tr {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode class 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .tr:is(.dark *) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode media > css 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  @media (prefers-color-scheme: dark) {
+    .tr {
+      border-color: rgb(148 163 184 / 0.1)
+    }
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode media 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  @media (prefers-color-scheme: dark) {
+    .tr {
+      border-color: rgb(148 163 184 / 0.1)
+    }
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode selector > css 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .tr:where(.dark,.dark view) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+  .tr:where(.dark,.dark text) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode selector 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .tr:where(.dark, .dark *) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode variant 1 > css 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .tr:not(view,text) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode variant 1 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .tr:not(.light *) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode variant 2 > css 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .dark view.tr,.dark text.tr {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+  @media (prefers-color-scheme: dark) {
+    .tr:not(view,text) {
+      border-color: rgb(148 163 184 / 0.1)
+    }
+  }
+}"
+`;
+
+exports[`postcss plugin > dark mode variant 2 1`] = `
+".tbody {
+  .tr {
+    border-bottom-width: 1px
+  }
+  .tr {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity))
+  }
+  .tr:is(.dark *) {
+    border-color: rgb(148 163 184 / 0.1)
+  }
+  @media (prefers-color-scheme: dark) {
+    .tr:not(.light *) {
+      border-color: rgb(148 163 184 / 0.1)
+    }
+  }
+}"
+`;
+
 exports[`postcss plugin > double quote after class 1`] = `
 ".after\\:content-\\[\\"\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\"\\]::after {
     --tw-content: "对酒当歌，人生几何";
