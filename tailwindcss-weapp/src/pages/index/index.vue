@@ -3,6 +3,7 @@ import { devDependencies } from '../../../package.json'
 import BaseLayout from '@/components/BaseLayout.vue'
 import FloatButton from '@/components/FloatButton.vue'
 import { useSystemStore } from '@/stores'
+import { documentationNav } from '@/stores/documentation'
 
 const version = devDependencies.tailwindcss.slice(1)
 
@@ -26,11 +27,37 @@ function go2ThemeDemo() {
     url: '/pages/theme/index',
   })
 }
+
+type Child = string | { title: string, href: string }
+
+interface NavItem {
+  name: string
+  children: Child[]
+  current: number
+  disabled?: boolean
+  open: boolean
+}
+
+interface SearchItem {
+  title: string
+  parent: string
+}
+
+const navs = Object.entries(documentationNav).reduce<NavItem[]>((acc, cur) => {
+  acc.push({
+    name: cur[0],
+    children: cur[1],
+    current: -1,
+    disabled: false,
+    open: false,
+  })
+  return acc
+}, [])
 </script>
 
 <template>
   <BaseLayout>
-    <up-navbar fixed bgColor="inherit" safeAreaInsetTop>
+    <up-navbar fixed bgColor="inherit" safeAreaInsetTop placeholder>
       <template #left>
         <view class="relative flex items-center">
           <view class="i-logos-tailwindcss-icon mr-2 h-[20.57px] w-[34px] shrink-0" />
@@ -45,6 +72,15 @@ function go2ThemeDemo() {
         </view>
       </template>
     </up-navbar>
+    <view>
+      <up-collapse>
+        <up-collapse-item v-for="nav in navs" :key="nav.name" :name="nav.name" :title="nav.name">
+          <up-cell-group :border="false">
+            <up-cell v-for="child in nav.children" :key="child" :title="child" isLink clickable :url="`/pages/index/detail?t=${child}`" />
+          </up-cell-group>
+        </up-collapse-item>
+      </up-collapse>
+    </view>
     <FloatButton store-key="index-float-btn" :padding="[256, 32, 256, 32]">
       <view class="float-btn mb-3">
         <view class="i-mdi-flask-round-bottom-empty-outline text-sky-400 dark:text-sky-500" @click="go2ThemeDemo" />

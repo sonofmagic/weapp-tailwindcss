@@ -32,7 +32,7 @@ module.exports = {
       },
     }),
     iconsPlugin({
-      collections: getIconCollections(['svg-spinners', 'mdi', 'logos']),
+      collections: getIconCollections(['svg-spinners', 'mdi', 'logos', 'ci', 'ri']),
     }),
   ],
   corePlugins: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 onLaunch(() => {
-  console.log(uni.getSystemInfoSync().statusBarHeight)
+  // console.log(uni.getSystemInfoSync().statusBarHeight)
   console.log('App Launch')
 })
 onShow(() => {

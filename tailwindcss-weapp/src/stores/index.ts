@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import * as corePlugins from 'tailwindcss-core-plugins-extractor'
+import { documentationNav } from './documentation'
 
 const themeCacheKey = 'theme-mode'
 
@@ -9,6 +10,7 @@ export const useSystemStore = defineStore('system', {
       corePlugins,
       systemInfo: uni.getSystemInfoSync(),
       theme: (uni.getStorageSync(themeCacheKey) || 'dark') as 'dark' | 'light',
+      documentationNav,
     }
   },
   getters: {
