@@ -4,6 +4,7 @@ import camelCase from 'lodash/camelCase'
 import BaseLayout from '@/components/BaseLayout.vue'
 import Fab from '@/components/FloatButton.vue'
 import { useSystemStore } from '@/stores'
+import Navbar from '@/components/Navbar.vue'
 
 const store = useSystemStore()
 
@@ -54,7 +55,7 @@ function longpressCopy(item: TableItem) {
 }
 
 onLoad((params) => {
-  title.value = params.t as string
+  title.value = params?.t as string
   plugin.value = camelCase(title.value)
   switch (plugin.value) {
     case 'topRightBottomLeft': {
@@ -159,10 +160,29 @@ onLoad((params) => {
     title: title.value,
   })
 })
+
+onShareAppMessage(() => {
+  return {
+    title: plugin.value,
+    path: currentUrl.value,
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: plugin.value,
+    path: currentUrl.value,
+  }
+})
 </script>
 
 <template>
   <BaseLayout>
+    <Navbar autoBack>
+      <template #center>
+        {{ title }}
+      </template>
+    </Navbar>
     <view class="px-4">
       <view class="tw-table">
         <view class="thead sticky top-0 z-50 bg-white transition-colors duration-500 dark:bg-slate-900">

@@ -5,6 +5,7 @@ import BaseLayout from '@/components/BaseLayout.vue'
 import FloatButton from '@/components/FloatButton.vue'
 import { useSystemStore } from '@/stores'
 import { documentationNav } from '@/stores/documentation'
+import Navbar from '@/components/Navbar.vue'
 
 const version = devDependencies.tailwindcss.slice(1)
 
@@ -90,7 +91,7 @@ function doSearch(text: string = '', num: number = 50) {
 }
 
 function close() {
-  searchVisible.value = true
+  searchVisible.value = false
 }
 
 function go2Detail(t: string) {
@@ -104,15 +105,21 @@ function open() {
 }
 
 const debounceSearch = debounce(() => {
-  if (keyword.value && keyword.value.length > 1) {
+  if (keyword.value && keyword.value.length > 0) {
     search(keyword.value)
   }
 }, 200)
+
+function copy(data: string) {
+  uni.setClipboardData({
+    data,
+  })
+}
 </script>
 
 <template>
   <BaseLayout>
-    <up-navbar fixed bgColor="inherit" safeAreaInsetTop placeholder>
+    <Navbar>
       <template #left>
         <view class="relative flex items-center">
           <view class="i-logos-tailwindcss-icon mr-2 h-[20.57px] w-[34px] shrink-0" />
@@ -126,7 +133,7 @@ const debounceSearch = debounce(() => {
           </view>
         </view>
       </template>
-    </up-navbar>
+    </Navbar>
     <view>
       <up-collapse>
         <up-collapse-item v-for="nav in navs" :key="nav.name" :name="nav.name" :title="nav.name">
@@ -135,6 +142,18 @@ const debounceSearch = debounce(() => {
           </up-cell-group>
         </up-collapse-item>
       </up-collapse>
+    </view>
+    <view class="py-4 text-center text-sm text-slate-900 dark:text-slate-200">
+      <view class="mb-3 flex items-center justify-center" @click="copy('https://github.com/sonofmagic')">
+        made by <view class="ml-2 flex items-center justify-center">
+          <view class="i-mdi-github mr-1 size-6" /> sonofmagic
+        </view>
+      </view>
+      <view class="flex items-center justify-center" @click="copy('https://github.com/sonofmagic/weapp-tailwindcss')">
+        @powered by
+        <image class="ml-2 w-6" src="../../../../assets/logo.png" mode="widthFix" />
+        weapp-tailwindcss!
+      </view>
     </view>
     <u-popup :show="searchVisible" mode="bottom" :round="10" @close="close" @open="open">
       <view class="h-[50vh] dark:bg-slate-900">

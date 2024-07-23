@@ -10,7 +10,8 @@
     {
       "path": "pages/index/detail",
       "style": {
-        "navigationBarTitleText": "core-plugin"
+        "navigationBarTitleText": "core-plugin",
+        "navigationStyle": "custom"
       }
     },
     {

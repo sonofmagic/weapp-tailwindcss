@@ -1,10 +1,17 @@
 <script setup lang="ts">
+// import { useSystemStore } from '@/stores'
+
+// const store = useSystemStore()
 onLaunch(() => {
   // console.log(uni.getSystemInfoSync().statusBarHeight)
   console.log('App Launch')
 })
 onShow(() => {
   console.log('App Show')
+  // uni.setNavigationBarColor({
+  //   frontColor: store.theme === 'dark' ? '#ffffff' : '#000000',
+  //   backgroundColor: store.theme === 'dark' ? '#ffffff' : '#000000',
+  // })
 })
 onHide(() => {
   console.log('App Hide')
@@ -38,6 +45,7 @@ onHide(() => {
 
 .u-line {
   @apply border-slate-100 dark:border-slate-800 #{!important};
+  @apply transition-colors duration-500;
 }
 
 .u-cell {
@@ -50,6 +58,7 @@ onHide(() => {
 .u-navbar__content,
 .u-status-bar {
   @apply bg-white dark:bg-slate-900 #{!important};
+  @apply transition-colors duration-500;
 }
 
 page {
