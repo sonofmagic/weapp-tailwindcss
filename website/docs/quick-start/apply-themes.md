@@ -93,6 +93,8 @@ export default defineComponent({
 
 ## 参考示例
 
-微信上搜索 `tailwind`，进入小程序即可，小程序码：
+微信上搜索 `tailwind`（未交 `30` 元个人资质费用，已无法搜索），进入小程序即可，小程序码：
 
 ![tailwind](./frameworks/img/tailwind-mp-qrcode.jpg)
+
+实现源代码详见: [weapp-tailwindcss/tailwindcss-weapp](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/tailwindcss-weapp)

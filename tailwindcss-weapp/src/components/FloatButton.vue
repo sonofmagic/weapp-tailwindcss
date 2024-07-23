@@ -2,14 +2,15 @@
 import debounce from 'lodash/debounce'
 import { useSystemStore } from '@/stores'
 
-const props = defineProps({
-  storeKey: {
-    type: String,
-    default: '',
+const props = withDefaults(defineProps<{
+  storeKey: string
+  padding: number[]
+}>(), {
+  padding() {
+    return [256, 32, 256, 32]
   },
-  padding: {
-    type: Array,
-    default: () => [256, 32, 64, 32],
+  storeKey() {
+    return ''
   },
 })
 

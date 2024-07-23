@@ -33,7 +33,9 @@ const cssVarsMap: Record<ModeEnum, Record<string, string>> = {
   },
 }
 const mode = ref(ModeEnum.light)
-
+onLoad(() => {
+  toggleTheme(ModeEnum.light)
+})
 const currentCssVar = computed(() => {
   return Object.entries(cssVarsMap[mode.value])
     .map(([k, v]) => {
@@ -44,6 +46,9 @@ const currentCssVar = computed(() => {
 
 function toggleTheme(t: ModeEnum) {
   mode.value = t
+  uni.setNavigationBarTitle({
+    title: `当前主题:${mode.value}`,
+  })
 }
 
 const VariantContent =/* weapp-tw ignore */ '```html\n<view class="\n bg-green-50\n deep:bg-green-300\n dark:bg-green-600\n fantasy:bg-green-950"></view>\n```'
@@ -63,8 +68,8 @@ function viewCode() {
   })
 }
 const visibles = ref({
-  a: false,
-  b: false,
+  a: true,
+  b: true,
 })
 function toggleCode(idx: 'a' | 'b') {
   visibles.value[idx] = !visibles.value[idx]
@@ -75,7 +80,7 @@ function toggleCode(idx: 'a' | 'b') {
   <view>
     <Theme :mode="mode" :css-vars="currentCssVar">
       <view class="min-h-[50vh] bg-base py-2 transition-colors duration-300">
-        <view class="mb-2 px-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
+        <view class="px-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
           CssVar 方案， 一个原子化对应一/n个动态的 css var
         </view>
 
@@ -102,7 +107,7 @@ function toggleCode(idx: 'a' | 'b') {
       <view
         class="min-h-[50vh] bg-green-50 p-2 transition-colors duration-300 deep:bg-green-300 fantasy:bg-green-950 dark:bg-green-600"
       >
-        <view class="mb-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
+        <view class="text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
           Variant 方案，语义化的原子类生成全局样式利用优先级进行覆盖
         </view>
         <view v-show="visibles.b">

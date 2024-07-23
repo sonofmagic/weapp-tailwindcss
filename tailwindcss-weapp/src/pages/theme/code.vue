@@ -4,12 +4,12 @@ import mpHtml from 'uni-app-mp-html/components/mp-html/mp-html.vue'
 const content
       = '```js\n'
       + `const plugin = require('tailwindcss/plugin')
-const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx,wxml}'],
-  darkMode: 'class',
+  // darkMode: 'class', 3.4.1 版本 tailwindcss 之前可行
+  darkMode: ['variant', ':is(.dark &)']
   theme: {
     extend: {
       colors: {
@@ -26,9 +26,6 @@ module.exports = {
       addVariant('deep', ':is(.deep &)')
       addVariant('fantasy', ':is(.fantasy &)')
     }),
-    iconsPlugin({
-      collections: getIconCollections(['mdi'])
-    })
   ],
   corePlugins: {
     preflight: false,
