@@ -2,14 +2,14 @@
   "name": "@native-app/ts",
   "version": "1.0.0",
   "description": "",
+  "author": "",
+  "license": "",
+  "keywords": [],
   "scripts": {
     "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",
     "build": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw build",
     "postinstall": "weapp-tw patch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "",
   "dependencies": {
     "lodash": "^4.17.21"
   },

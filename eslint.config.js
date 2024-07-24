@@ -8,11 +8,15 @@ export default icebreaker(
   {
     ignores: [
       '**/fixtures/**',
-      'apps',
+      // 'apps',
       'demo',
       'demo-linked',
       'how-to-build-components-by-tailwindcss',
       'packages/tailwindcss-core-plugins-extractor/src',
     ],
   },
+  {
+
+  },
+
 )

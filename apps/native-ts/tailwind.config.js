@@ -7,7 +7,6 @@ module.exports = {
   plugins: [],
   corePlugins: {
     container: false,
-    preflight: false
-  }
+    preflight: false,
+  },
 }
-
