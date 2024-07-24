@@ -84,7 +84,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.25.2",
+    "@ast-grep/napi": "^0.25.3",
     "@babel/core": "^7.24.9",
     "@eslint/config-inspector": "^0.5.2",
     "@icebreakers/eslint-config": "^0.3.13",
@@ -117,7 +117,7 @@
     "@types/lodash": "^4.17.7",
     "@types/md5": "^2.3.5",
     "@types/micromatch": "^4.0.9",
-    "@types/node": "^20.14.11",
+    "@types/node": "^20.14.12",
     "@types/semver": "^7.5.8",
     "@types/set-value": "^4.0.3",
     "@types/vinyl": "^2.0.12",

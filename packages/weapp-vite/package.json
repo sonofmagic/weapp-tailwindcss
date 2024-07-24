@@ -1,0 +1,35 @@
+{
+  "name": "weapp-vite",
+  "version": "0.0.0",
+  "description": "WIP",
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [],
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch --sourcemap",
+    "build": "tsup",
+    "release": "node scripts/release.js"
+  },
+  "peerDependencies": {
+    "vite": ">=2.6.0"
+  },
+  "dependencies": {
+    "@rollup/pluginutils": "^5.1.0",
+    "fast-glob": "^3.3.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}
