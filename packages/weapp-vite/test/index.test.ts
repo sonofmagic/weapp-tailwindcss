@@ -2,13 +2,11 @@ import os from 'node:os'
 import path from 'node:path'
 import { createServer } from 'vite'
 import fs from 'fs-extra'
-// import ci from 'ci-info'
+import ci from 'ci-info'
 import { v4 } from 'uuid'
 import plugin from '@/index'
 
-// .skipIf(ci.isCI)
-
-describe('vite', () => {
+describe.skipIf(ci.isCI)('vite', () => {
   it('createServer', async () => {
     // const app = express()
     // app.listen()
