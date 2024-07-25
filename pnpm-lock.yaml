@@ -459,6 +459,27 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
+  apps/vite-native:
+    devDependencies:
+      weapp-vite:
+        specifier: workspace:*
+        version: link:../../packages/weapp-vite
+
+  apps/vite-native-skyline:
+    devDependencies:
+      weapp-vite:
+        specifier: workspace:*
+        version: link:../../packages/weapp-vite
+
+  apps/vite-native-ts:
+    devDependencies:
+      miniprogram-api-typings:
+        specifier: ^2.8.3-1
+        version: 2.12.0
+      weapp-vite:
+        specifier: workspace:*
+        version: link:../../packages/weapp-vite
+
   apps/web-postcss7-compat:
     dependencies:
       tailwindcss-patch:
@@ -9723,6 +9744,9 @@ packages:
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  miniprogram-api-typings@2.12.0:
+    resolution: {integrity: sha512-ibvbqeslVFur0IAvTxLMvsbtvVcMo6gwvOnj0YZHV7aeDLu091VQRrETT2QuiG9P6aZWRcxeNGJChRKVPCp9VQ==}
 
   miniprogram-api-typings@3.12.2:
     resolution: {integrity: sha512-OJB2uVAfhycX4teG/zEVpoThushQqLOx946XACDpVc6OQydiJWjn7djVzvNCbv0VOA7sbHGPQp/RkXD9vMCDEw==}
@@ -25507,6 +25531,8 @@ snapshots:
   minipass@7.0.4: {}
 
   minipass@7.1.2: {}
+
+  miniprogram-api-typings@2.12.0: {}
 
   miniprogram-api-typings@3.12.2: {}
 
