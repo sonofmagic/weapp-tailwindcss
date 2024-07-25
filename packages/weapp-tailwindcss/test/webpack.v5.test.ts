@@ -29,6 +29,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
 
   const processor = postcss([
     // require('autoprefixer')(),
+    // eslint-disable-next-line ts/no-require-imports
     require('tailwindcss')({ config: tailwindcssConfig }),
     // require('postcss-rem-to-responsive-pixel')({
     //   rootValue: 32,
@@ -71,7 +72,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
               map: false,
             })
             this.emitFile(cssFilename, res.toString())
-            return source
+            return normalizeNewline(source)
             // this.emitFile('hello.xx', '12345')
             // console.log()
           }),
