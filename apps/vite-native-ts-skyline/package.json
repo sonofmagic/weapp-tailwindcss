@@ -1,0 +1,18 @@
+{
+  "name": "miniprogram-ts-less-quickstart",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "",
+  "keywords": [],
+  "scripts": {
+    "dev": "weapp-vite dev",
+    "build": "weapp-vite build"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "miniprogram-api-typings": "^2.8.3-1",
+    "weapp-vite": "workspace:*"
+  }
+}
