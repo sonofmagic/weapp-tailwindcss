@@ -1,0 +1,74 @@
+{
+  "pages": [ // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "weapp-tailwindcss",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/index/detail",
+      "style": {
+        "navigationBarTitleText": "core-plugin",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/theme/index",
+      "style": {
+        "navigationBarTitleText": "theme demo"
+      }
+    },
+    {
+      "path": "pages/theme/code",
+      "style": {
+        "navigationBarTitleText": "theme code"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "weapp-tailwindcss",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "easycom": {
+    "autoscan": true,
+    // 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+    "custom": {
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "condition": {
+    // 模式配置，仅开发期间生效
+    "current": -1, // 当前激活的模式（list 的索引项）
+    "list": [
+      {
+        "name": "index", // 模式名称
+        "path": "pages/index/index", // 启动页面，必选
+        "query": "" // 启动参数，在页面的onLoad函数里面得到。
+      },
+      {
+        "name": "detail(fontSize)",
+        "path": "pages/index/detail",
+        "query": "t=fontSize"
+      },
+      {
+        "name": "detail(textColor)",
+        "path": "pages/index/detail",
+        "query": "t=textColor"
+      },
+      {
+        "name": "theme code",
+        "path": "pages/theme/code"
+      },
+      {
+        "name": "theme demo",
+        "path": "pages/theme/index"
+      }
+    ]
+  }
+}

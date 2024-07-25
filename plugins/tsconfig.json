@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     "target": "ESNext",
+    "jsx": "react",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "strict": true,
     "types": [
       "vitest/globals"
-    ]
+    ],
+    "strict": true,
+    "esModuleInterop": true
   }
 }

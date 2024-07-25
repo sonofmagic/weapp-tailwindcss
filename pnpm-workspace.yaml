@@ -4,4 +4,5 @@ packages:
   - "apps/*"
   - "website"
   - "benchmark"
+  - "tailwindcss-weapp"
   # - "demo-linked/*"
