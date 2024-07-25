@@ -579,6 +579,9 @@ importers:
       '@rollup/pluginutils':
         specifier: ^5.1.0
         version: 5.1.0(rollup@4.19.0)
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
@@ -828,8 +831,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.1
       weapp-tailwindcss:
-        specifier: ^3.4.0
-        version: 3.4.0(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.5.4)))
+        specifier: workspace:^
+        version: link:../packages/weapp-tailwindcss
 
   website:
     dependencies:
@@ -13176,11 +13179,6 @@ packages:
     resolution: {integrity: sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==}
     peerDependencies:
       tailwindcss: ^3.0.0
-
-  weapp-tailwindcss@3.4.0:
-    resolution: {integrity: sha512-graqMsPj1B+qJfuC+C+wD6u84ehZsWZMEtk8nIf4MKEVAhHSHUo3X60aNWF7v8lNC95ZTrwdd9R1rsZUYbSfSg==}
-    engines: {node: '>=16.6.0'}
-    hasBin: true
 
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
@@ -28179,27 +28177,6 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@4.0.0(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.5.4))):
-    dependencies:
-      '@babel/generator': 7.24.10
-      '@babel/parser': 7.24.8
-      '@babel/traverse': 7.24.8
-      '@babel/types': 7.24.9
-      '@tailwindcss-mangle/config': 3.0.0(magicast@0.3.4)
-      cac: 6.7.14
-      consola: 3.2.3
-      fs-extra: 11.2.0
-      jiti: 1.21.6
-      lilconfig: 3.1.2
-      postcss: 8.4.40
-      resolve: 1.22.8
-      semver: 7.6.3
-    optionalDependencies:
-      tailwindcss: 3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.5.4))
-    transitivePeerDependencies:
-      - magicast
-      - supports-color
-
   tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.4.5)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
@@ -29443,34 +29420,6 @@ snapshots:
   weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.4.5))):
     dependencies:
       tailwindcss: 3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.4.5))
-
-  weapp-tailwindcss@3.4.0(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.5.4))):
-    dependencies:
-      '@ast-core/escape': 1.0.1
-      '@babel/generator': 7.24.10
-      '@babel/parser': 7.24.8
-      '@babel/traverse': 7.24.8
-      '@babel/types': 7.24.9
-      '@csstools/postcss-is-pseudo-class': 4.0.8(postcss@8.4.40)
-      '@tailwindcss-mangle/shared': 3.0.0
-      '@weapp-core/escape': 2.1.0
-      '@weapp-core/regex': 1.0.1
-      debug: 4.3.5
-      htmlparser2: 9.1.0
-      loader-utils: 2.0.4
-      lru-cache: 10.4.3
-      magic-string: 0.30.10
-      md5: 2.3.0
-      postcss: 8.4.40
-      postcss-rem-to-responsive-pixel: 6.0.1
-      postcss-selector-parser: 6.1.1
-      semver: 7.6.3
-      tailwindcss-patch: 4.0.0(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.12)(typescript@5.5.4)))
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - magicast
-      - supports-color
-      - tailwindcss
 
   web-namespaces@2.0.1: {}
 
