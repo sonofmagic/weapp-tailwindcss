@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@rollup/pluginutils": "^5.1.0",
+    "commander": "^12.1.0",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0"
   },

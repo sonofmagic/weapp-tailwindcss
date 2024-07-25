@@ -89,6 +89,6 @@
     "vite": "5.3.5",
     "vue-eslint-parser": "^9.4.3",
     "weapp-ide-cli": "^1.0.0",
-    "weapp-tailwindcss": "^3.4.0"
+    "weapp-tailwindcss": "workspace:^"
   }
 }

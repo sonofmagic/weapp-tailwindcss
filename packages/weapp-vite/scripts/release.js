@@ -1,6 +1,7 @@
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import fs from 'fs-extra'
+import { execa } from 'execa'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 // const path = require('node:path')
@@ -11,7 +12,7 @@ const pluginNames = ['weapp-vite', 'vite-plugin-weapp']
 // pnpm publish --access public --no-git-checks
 
 async function main() {
-  const { execa } = await import('execa')
+  // const { execa } = await import('execa')
   const pkgJsonPath = path.resolve(__dirname, '../package.json')
   const pkgJson = await fs.readJSON(pkgJsonPath)
   const pkgName = pkgJson.name
