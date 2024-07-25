@@ -1,5 +1,10 @@
-const path = require('node:path')
-const fs = require('fs-extra')
+import path, { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import fs from 'fs-extra'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+// const path = require('node:path')
+// const fs = require('fs-extra')
 
 const pluginNames = ['weapp-vite', 'vite-plugin-weapp']
 
