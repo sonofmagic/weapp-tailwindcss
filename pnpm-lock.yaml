@@ -480,6 +480,15 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-vite
 
+  apps/vite-native-ts-skyline:
+    devDependencies:
+      miniprogram-api-typings:
+        specifier: ^2.8.3-1
+        version: 2.12.0
+      weapp-vite:
+        specifier: workspace:*
+        version: link:../../packages/weapp-vite
+
   apps/web-postcss7-compat:
     dependencies:
       tailwindcss-patch:
