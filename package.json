@@ -77,7 +77,9 @@
     "-------": "-----------",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:view": "npx @eslint/config-inspector"
+    "lint:view": "npx @eslint/config-inspector",
+    "changeset": "changeset",
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
   },
   "publishConfig": {
     "access": "public",
@@ -86,6 +88,7 @@
   "devDependencies": {
     "@ast-grep/napi": "^0.25.3",
     "@babel/core": "^7.24.9",
+    "@changesets/cli": "^2.27.7",
     "@eslint/config-inspector": "^0.5.2",
     "@icebreakers/eslint-config": "^0.3.14",
     "@icebreakers/readme": "0.1.0",
