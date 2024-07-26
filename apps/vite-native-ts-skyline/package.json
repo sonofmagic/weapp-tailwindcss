@@ -1,5 +1,5 @@
 {
-  "name": "miniprogram-ts-less-quickstart",
+  "name": "vite-native-ts-skyline",
   "version": "1.0.0",
   "description": "",
   "author": "",
@@ -9,10 +9,8 @@
     "dev": "weapp-vite dev",
     "build": "weapp-vite build"
   },
-  "dependencies": {
-  },
   "devDependencies": {
-    "miniprogram-api-typings": "^2.8.3-1",
+    "miniprogram-api-typings": "^3.12.2",
     "weapp-vite": "workspace:*"
   }
 }

@@ -5,7 +5,9 @@ export async function runDev() {
   const watcher = (await build({
     build: {
       watch: {
-
+        chokidar: {
+          persistent: true,
+        },
       },
     },
   })) as RollupWatcher
