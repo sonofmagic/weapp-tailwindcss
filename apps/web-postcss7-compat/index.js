@@ -1,7 +1,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
-const process = require('node:process')
-const postcss = require('postcss')
+const postcss = require('postcss7')
 const tailwindcss = require('tailwindcss')
 const { TailwindcssPatcher } = require('tailwindcss-patch')
 
@@ -17,8 +16,8 @@ async function main() {
       }],
     },
     corePlugins: {
-      preflight: false
-    }
+      preflight: false,
+    },
   })
   const result = postcss([tw]).process(`@tailwind base;
   @tailwind components;

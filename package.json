@@ -86,7 +86,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.25.3",
+    "@ast-grep/napi": "^0.25.4",
     "@babel/core": "^7.24.9",
     "@changesets/cli": "^2.27.7",
     "@eslint/config-inspector": "^0.5.2",
@@ -161,7 +161,7 @@
     "get-value": "^3.0.1",
     "gulp": "^5.0.0",
     "gulp-postcss": "^10.0.0",
-    "html-loader": "^5.0.0",
+    "html-loader": "^5.1.0",
     "js-beautify": "^1.15.1",
     "klaw": "^4.1.0",
     "lodash": "^4.17.21",
@@ -182,7 +182,7 @@
     "semver": "7.6.3",
     "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
-    "tailwindcss": "^3.4.6",
+    "tailwindcss": "^3.4.7",
     "ts-morph": "^23.0.0",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.2.1",

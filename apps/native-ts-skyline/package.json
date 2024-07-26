@@ -2,18 +2,18 @@
   "name": "@native-app/skyline-ts",
   "version": "1.0.0",
   "description": "",
+  "author": "",
+  "license": "",
+  "keywords": [],
   "scripts": {
     "dev": "weapp-tw dev",
     "build": "weapp-tw build",
     "postinstall": "weapp-tw patch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "",
   "devDependencies": {
     "@weapp-tailwindcss/cli": "workspace:*",
     "miniprogram-api-typings": "^3.12.2",
-    "tailwindcss": "^3.4.4",
+    "tailwindcss": "^3.4.7",
     "weapp-tailwindcss": "workspace:*"
   }
 }

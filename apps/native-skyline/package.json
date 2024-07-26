@@ -2,6 +2,9 @@
   "name": "@native-app/skyline",
   "version": "1.0.0",
   "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
   "main": "index.js",
   "scripts": {
     "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",
@@ -9,21 +12,18 @@
     "postinstall": "weapp-tw patch",
     "open": "weapp open -p"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.8.1",
-    "@iconify-json/lucide": "^1.1.201",
-    "@iconify-json/mdi": "^1.1.67",
-    "@weapp-tailwindcss/cli": "workspace:*",
-    "tailwindcss": "^3.4.4",
-    "weapp-ide-cli": "^1.0.1",
-    "weapp-tailwindcss": "workspace:*"
-  },
   "dependencies": {
     "cowsay": "^1.6.0",
     "lodash": "^4.17.21",
     "miniprogram-computed": "^5.0.0"
+  },
+  "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.8.1",
+    "@iconify-json/lucide": "^1.1.202",
+    "@iconify-json/mdi": "^1.1.67",
+    "@weapp-tailwindcss/cli": "workspace:*",
+    "tailwindcss": "^3.4.7",
+    "weapp-ide-cli": "^1.0.1",
+    "weapp-tailwindcss": "workspace:*"
   }
 }
