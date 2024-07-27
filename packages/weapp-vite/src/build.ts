@@ -9,6 +9,9 @@ export async function runDev() {
           persistent: true,
         },
       },
+      rollupOptions: {
+
+      },
     },
   })) as RollupWatcher
 

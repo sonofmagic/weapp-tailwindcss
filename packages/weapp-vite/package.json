@@ -14,17 +14,10 @@
   },
   "keywords": [],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+    ".": "./src/index.ts"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "bin": {
-    "weapp-vite": "bin/weapp-vite.js"
+    "weapp-vite": "src/bin.js"
   },
   "files": [
     "dist"
@@ -42,11 +35,26 @@
   "dependencies": {
     "@rollup/pluginutils": "^5.1.0",
     "commander": "^12.1.0",
+    "debug": "^4.3.6",
     "fast-glob": "^3.3.2",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.0.1"
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      }
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "bin": {
+      "weapp-vite": "bin/weapp-vite.js"
+    }
   }
 }
