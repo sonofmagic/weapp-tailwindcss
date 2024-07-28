@@ -4,11 +4,17 @@ import klaw from 'klaw'
 import { addExtension, createFilter } from '@rollup/pluginutils'
 
 // https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
-export function isAppRoot(root: string) {
-  return Boolean(findAppEntry(root))
-}
 // js + json
-export function findAppEntry(root: string) {
+export function isAppRoot(root: string) {
+  return Boolean(searchAppEntry(root))
+}
+
+// wxml + js
+export function isPage(wxmlPath: string) {
+  return Boolean(searchPageEntry(wxmlPath))
+}
+
+export function searchAppEntry(root: string) {
   const extensions = ['js', 'ts']
   const appJson = path.resolve(root, 'app.json')
   if (fs.existsSync(appJson)) {
@@ -26,22 +32,7 @@ function removeFileExtension(path: string) {
   return path.replace(/\.[^/.]+$/, '')
 }
 
-// wxml + js
-export function isPage(wxmlPath: string) {
-  if (fs.existsSync(wxmlPath)) {
-    const extensions = ['js', 'ts']
-    const base = removeFileExtension(wxmlPath)
-    for (const ext of extensions) {
-      const entryPath = addExtension(base, `.${ext}`)
-      if (fs.existsSync(entryPath)) {
-        return true
-      }
-    }
-  }
-  return false
-}
-
-export function getPageEntry(wxmlPath: string) {
+export function searchPageEntry(wxmlPath: string) {
   if (fs.existsSync(wxmlPath)) {
     const extensions = ['js', 'ts']
     const base = removeFileExtension(wxmlPath)
@@ -64,7 +55,7 @@ export function isComponent(wxmlPath: string) {
 }
 
 export function getWxmlEntry(wxmlPath: string) {
-  const pageEntry = getPageEntry(wxmlPath)
+  const pageEntry = searchPageEntry(wxmlPath)
   if (pageEntry) {
     const jsonPath = addExtension(removeFileExtension(wxmlPath), '.json')
     if (fs.existsSync(jsonPath) && fs.readJsonSync(jsonPath).component) {
@@ -103,7 +94,7 @@ export function getProjectConfig(root: string, options?: { ignorePrivate?: boole
 }
 
 export async function scanEntries(root: string, options?: { relative?: boolean }) {
-  const appEntry = findAppEntry(root)
+  const appEntry = searchAppEntry(root)
   // TODO exclude 需要和 output 配套
   const filter = createFilter([], ['**/node_modules/**', '**/miniprogram_npm/**', 'dist/**'])
 
