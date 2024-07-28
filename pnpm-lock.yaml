@@ -185,6 +185,9 @@ importers:
       dedent:
         specifier: ^1.5.3
         version: 1.5.3
+      deep-object-diff:
+        specifier: ^1.1.9
+        version: 1.1.9
       defu:
         specifier: 6.1.4
         version: 6.1.4
@@ -239,6 +242,9 @@ importers:
       js-beautify:
         specifier: ^1.15.1
         version: 1.15.1
+      just-diff:
+        specifier: ^6.0.2
+        version: 6.0.2
       klaw:
         specifier: ^4.1.0
         version: 4.1.0
@@ -627,6 +633,9 @@ importers:
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
+      klaw:
+        specifier: ^4.1.0
+        version: 4.1.0
       picocolors:
         specifier: ^1.0.1
         version: 1.0.1
@@ -6460,6 +6469,9 @@ packages:
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
 
+  deep-object-diff@1.1.9:
+    resolution: {integrity: sha512-Rn+RuwkmkDwCi2/oXOFS9Gsr5lJZu/yTGpK7wAaAIE75CC+LCGEZHpY6VQJa/RoJcrmaA/docWJZvYohlNkWPA==}
+
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
@@ -9173,6 +9185,9 @@ packages:
 
   just-debounce@1.1.0:
     resolution: {integrity: sha512-qpcRocdkUmf+UTNBYx5w6dexX5J31AKK1OmPwH630a83DdVVUIngk55RSAiIGpQyoH0dlr872VHfPjnQnK1qDQ==}
+
+  just-diff@6.0.2:
+    resolution: {integrity: sha512-S59eriX5u3/QhMNq3v/gm8Kd0w8OS6Tz2FS1NG4blv+z0MuQcBRJyFWjdovM0Rad4/P4aUPFtnkNjMjyMlMSYA==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -21236,6 +21251,8 @@ snapshots:
 
   deep-is@0.1.4: {}
 
+  deep-object-diff@1.1.9: {}
+
   deepmerge@4.3.1: {}
 
   default-browser-id@5.0.0: {}
@@ -24790,6 +24807,8 @@ snapshots:
       object.values: 1.2.0
 
   just-debounce@1.1.0: {}
+
+  just-diff@6.0.2: {}
 
   keyv@4.5.4:
     dependencies:
