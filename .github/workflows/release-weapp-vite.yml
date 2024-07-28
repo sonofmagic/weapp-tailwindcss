@@ -1,4 +1,4 @@
-name: release-weapp-vite
+name: Release weapp-vite
 
 permissions:
   contents: write
