@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { diff } from 'just-diff'
-import { findAppEntry, getProjectConfig, isAppRoot, scanEntries } from '@/utils'
+import { getProjectConfig, isAppRoot, scanEntries, searchAppEntry } from '@/utils'
 
 describe('utils', () => {
   const appsDir = path.resolve(__dirname, '../../../apps')
@@ -44,13 +44,13 @@ describe('utils', () => {
     })
   })
 
-  describe('findAppEntry', () => {
+  describe('searchAppEntry', () => {
     it.each(absDirs)('$name', ({ path: p, name }) => {
       if (name.includes('-ts')) {
-        expect(findAppEntry(path.resolve(p, 'miniprogram'))).toBeTruthy()
+        expect(searchAppEntry(path.resolve(p, 'miniprogram'))).toBeTruthy()
       }
       else {
-        expect(findAppEntry(p)).toBeTruthy()
+        expect(searchAppEntry(p)).toBeTruthy()
       }
     })
   })
