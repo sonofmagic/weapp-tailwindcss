@@ -1,0 +1,235 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`utils > getProjectConfig > 'native' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "description",
+    ],
+    "value": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  },
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "native",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'native-skyline' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "description",
+    ],
+    "value": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  },
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "native-skyline",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'native-ts' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "native-ts",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'native-ts-skyline' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "native-ts-skyline",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'vite-native' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "description",
+    ],
+    "value": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  },
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "vite-native",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'vite-native-skyline' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "description",
+    ],
+    "value": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  },
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "vite-native-skyline",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'vite-native-ts' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "vite-native-ts",
+  },
+]
+`;
+
+exports[`utils > getProjectConfig > 'vite-native-ts-skyline' 1`] = `
+[
+  {
+    "op": "add",
+    "path": [
+      "projectname",
+    ],
+    "value": "vite-native-ts-skyline",
+  },
+]
+`;
+
+exports[`utils > scanEntries > 'native' 1`] = `
+{
+  "app": "app.js",
+  "components": [],
+  "pages": [
+    "pages/addressAdd/index.js",
+    "pages/addressList/index.js",
+    "pages/bindPhone/index.js",
+    "pages/cart/index.js",
+    "pages/coupon/index.js",
+    "pages/details/index.js",
+    "pages/index/index.js",
+    "pages/list/index.js",
+    "pages/order/index.js",
+    "pages/orderDetails/index.js",
+    "pages/user/index.js",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'native-skyline' 1`] = `
+{
+  "app": "app.js",
+  "components": [
+    "components/address-book/index.js",
+    "components/navigation-bar/index.js",
+    "components/navigation-bar/navigation-bar.js",
+    "dist/components/address-book/index.js",
+    "dist/components/navigation-bar/index.js",
+    "dist/components/navigation-bar/navigation-bar.js",
+  ],
+  "pages": [
+    "pages/index/index.js",
+    "dist/pages/index/index.js",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'native-ts' 1`] = `
+{
+  "app": "app.ts",
+  "components": [
+    "components/navigation-bar/navigation-bar.ts",
+  ],
+  "pages": [
+    "pages/index/index.ts",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'native-ts-skyline' 1`] = `
+{
+  "app": "app.ts",
+  "components": [
+    "components/navigation-bar/navigation-bar.ts",
+  ],
+  "pages": [
+    "pages/index/index.ts",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'vite-native' 1`] = `
+{
+  "app": "app.js",
+  "components": [],
+  "pages": [
+    "pages/index/index.js",
+    "pages/logs/logs.js",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'vite-native-skyline' 1`] = `
+{
+  "app": "app.js",
+  "components": [
+    "components/navigation-bar/navigation-bar.js",
+  ],
+  "pages": [
+    "pages/index/index.js",
+    "pages/logs/logs.js",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'vite-native-ts' 1`] = `
+{
+  "app": "app.ts",
+  "components": [],
+  "pages": [
+    "pages/index/index.ts",
+    "pages/logs/logs.ts",
+  ],
+}
+`;
+
+exports[`utils > scanEntries > 'vite-native-ts-skyline' 1`] = `
+{
+  "app": "app.ts",
+  "components": [
+    "components/navigation-bar/navigation-bar.ts",
+  ],
+  "pages": [
+    "pages/index/index.ts",
+    "pages/logs/logs.ts",
+  ],
+}
+`;
