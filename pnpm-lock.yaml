@@ -648,6 +648,9 @@ importers:
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
+      is-css-request:
+        specifier: ^1.0.1
+        version: 1.0.1
       klaw:
         specifier: ^4.1.0
         version: 4.1.0

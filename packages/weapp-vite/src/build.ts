@@ -6,14 +6,24 @@ import { scanEntries } from './utils'
 export async function runDev(cwd: string) {
   const entries = await scanEntries(cwd)
   if (entries) {
-    const input = [entries.app, ...entries.pages, ...entries.components]
+    const input = [entries.app, ...entries.pages, ...entries.components, ...entries.css]
       .reduce<Record<string, string>>((acc, cur) => {
         acc[path.relative(cwd, cur)] = cur
         return acc
       }, {})
     const watcher = (await build({
       plugins: [
-
+        // {
+        //   enforce: 'pre',
+        //   resolveId(source, importer, options) {
+        //     console.log(source, importer, options)
+        //     if (/\.wxss$/.test(source)) {
+        //       return {
+        //         id: 'app.css',
+        //       }
+        //     }
+        //   },
+        // },
       ],
       build: {
         watch: {

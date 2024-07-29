@@ -2,6 +2,7 @@ import path from 'node:path'
 import fs from 'fs-extra'
 import klaw from 'klaw'
 import { addExtension, createFilter } from '@rollup/pluginutils'
+import { isCSSRequest } from 'is-css-request'
 // https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
 // js + json
 export function isAppRoot(root: string) {
@@ -107,6 +108,7 @@ export async function scanEntries(root: string, options?: { relative?: boolean }
   if (appEntry) {
     const pageEntries = new Set<string>()
     const componentEntries = new Set<string>()
+    const cssEntries = new Set<string>()
     for await (const file of klaw(root, {
       filter,
     })) {
@@ -122,6 +124,9 @@ export async function scanEntries(root: string, options?: { relative?: boolean }
             }
           }
         }
+        else if (/\.wxss$/.test(file.path) || isCSSRequest(file.path)) {
+          cssEntries.add(getPath(file.path))
+        }
       }
     }
 
@@ -129,6 +134,7 @@ export async function scanEntries(root: string, options?: { relative?: boolean }
       app: getPath(appEntry),
       pages: [...pageEntries],
       components: [...componentEntries],
+      css: [...cssEntries],
     }
   }
 }

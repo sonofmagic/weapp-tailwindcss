@@ -128,6 +128,20 @@ exports[`utils > scanEntries > 'native' 1`] = `
 {
   "app": "app.js",
   "components": [],
+  "css": [
+    "app.wxss",
+    "pages/addressAdd/index.wxss",
+    "pages/addressList/index.wxss",
+    "pages/bindPhone/index.wxss",
+    "pages/cart/index.wxss",
+    "pages/coupon/index.wxss",
+    "pages/details/index.wxss",
+    "pages/index/index.wxss",
+    "pages/list/index.wxss",
+    "pages/order/index.wxss",
+    "pages/orderDetails/index.wxss",
+    "pages/user/index.wxss",
+  ],
   "pages": [
     "pages/addressAdd/index.js",
     "pages/addressList/index.js",
@@ -152,6 +166,13 @@ exports[`utils > scanEntries > 'native-skyline' 1`] = `
     "components/navigation-bar/index.js",
     "components/navigation-bar/navigation-bar.js",
   ],
+  "css": [
+    "app.wxss",
+    "components/address-book/index.wxss",
+    "components/navigation-bar/index.wxss",
+    "components/navigation-bar/navigation-bar.wxss",
+    "pages/index/index.wxss",
+  ],
   "pages": [
     "pages/index/index.js",
   ],
@@ -163,6 +184,11 @@ exports[`utils > scanEntries > 'native-ts' 1`] = `
   "app": "app.ts",
   "components": [
     "components/navigation-bar/navigation-bar.ts",
+  ],
+  "css": [
+    "app.scss",
+    "components/navigation-bar/navigation-bar.scss",
+    "pages/index/index.scss",
   ],
   "pages": [
     "pages/index/index.ts",
@@ -176,6 +202,11 @@ exports[`utils > scanEntries > 'native-ts-skyline' 1`] = `
   "components": [
     "components/navigation-bar/navigation-bar.ts",
   ],
+  "css": [
+    "app.wxss",
+    "components/navigation-bar/navigation-bar.wxss",
+    "pages/index/index.wxss",
+  ],
   "pages": [
     "pages/index/index.ts",
   ],
@@ -186,6 +217,10 @@ exports[`utils > scanEntries > 'vite-native' 1`] = `
 {
   "app": "app.js",
   "components": [],
+  "css": [
+    "app.wxss",
+    "pages/index/index.wxss",
+  ],
   "pages": [
     "pages/index/index.js",
   ],
@@ -198,6 +233,11 @@ exports[`utils > scanEntries > 'vite-native-skyline' 1`] = `
   "components": [
     "components/navigation-bar/navigation-bar.js",
   ],
+  "css": [
+    "app.wxss",
+    "components/navigation-bar/navigation-bar.wxss",
+    "pages/index/index.wxss",
+  ],
   "pages": [
     "pages/index/index.js",
   ],
@@ -208,6 +248,10 @@ exports[`utils > scanEntries > 'vite-native-ts' 1`] = `
 {
   "app": "app.ts",
   "components": [],
+  "css": [
+    "app.wxss",
+    "pages/index/index.wxss",
+  ],
   "pages": [
     "pages/index/index.ts",
   ],
@@ -219,6 +263,11 @@ exports[`utils > scanEntries > 'vite-native-ts-skyline' 1`] = `
   "app": "app.ts",
   "components": [
     "components/navigation-bar/navigation-bar.ts",
+  ],
+  "css": [
+    "app.wxss",
+    "components/navigation-bar/navigation-bar.wxss",
+    "pages/index/index.wxss",
   ],
   "pages": [
     "pages/index/index.ts",
