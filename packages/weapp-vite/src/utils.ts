@@ -2,7 +2,6 @@ import path from 'node:path'
 import fs from 'fs-extra'
 import klaw from 'klaw'
 import { addExtension, createFilter } from '@rollup/pluginutils'
-
 // https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
 // js + json
 export function isAppRoot(root: string) {
@@ -96,7 +95,7 @@ export function getProjectConfig(root: string, options?: { ignorePrivate?: boole
 export async function scanEntries(root: string, options?: { relative?: boolean }) {
   const appEntry = searchAppEntry(root)
   // TODO exclude 需要和 output 配套
-  const filter = createFilter([], ['**/node_modules/**', '**/miniprogram_npm/**', 'dist/**'])
+  const filter = createFilter([], ['**/node_modules/**', '**/miniprogram_npm/**', path.resolve(root, 'dist/**')])
 
   function getPath(to: string) {
     if (options?.relative) {
@@ -133,3 +132,6 @@ export async function scanEntries(root: string, options?: { relative?: boolean }
     }
   }
 }
+
+export { default as set } from 'set-value'
+export { default as get } from 'get-value'

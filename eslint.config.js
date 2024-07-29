@@ -16,7 +16,14 @@ export default icebreaker(
     ],
   },
   {
-
+    files: ['apps/**/*.{ts,js}', 'demo/**/*.{ts,js}'],
+    languageOptions: {
+      globals: {
+        wx: true,
+        App: true,
+        Page: true,
+      },
+    },
   },
 
 )
