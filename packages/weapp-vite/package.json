@@ -33,6 +33,7 @@
     "vite": ">=2.6.0"
   },
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/pluginutils": "^5.1.0",
     "commander": "^12.1.0",
     "debug": "^4.3.6",
