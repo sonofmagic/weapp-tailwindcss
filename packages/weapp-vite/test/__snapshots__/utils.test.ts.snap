@@ -151,13 +151,9 @@ exports[`utils > scanEntries > 'native-skyline' 1`] = `
     "components/address-book/index.js",
     "components/navigation-bar/index.js",
     "components/navigation-bar/navigation-bar.js",
-    "dist/components/address-book/index.js",
-    "dist/components/navigation-bar/index.js",
-    "dist/components/navigation-bar/navigation-bar.js",
   ],
   "pages": [
     "pages/index/index.js",
-    "dist/pages/index/index.js",
   ],
 }
 `;
@@ -192,7 +188,6 @@ exports[`utils > scanEntries > 'vite-native' 1`] = `
   "components": [],
   "pages": [
     "pages/index/index.js",
-    "pages/logs/logs.js",
   ],
 }
 `;
@@ -205,7 +200,6 @@ exports[`utils > scanEntries > 'vite-native-skyline' 1`] = `
   ],
   "pages": [
     "pages/index/index.js",
-    "pages/logs/logs.js",
   ],
 }
 `;
@@ -216,7 +210,6 @@ exports[`utils > scanEntries > 'vite-native-ts' 1`] = `
   "components": [],
   "pages": [
     "pages/index/index.ts",
-    "pages/logs/logs.ts",
   ],
 }
 `;
@@ -229,7 +222,6 @@ exports[`utils > scanEntries > 'vite-native-ts-skyline' 1`] = `
   ],
   "pages": [
     "pages/index/index.ts",
-    "pages/logs/logs.ts",
   ],
 }
 `;

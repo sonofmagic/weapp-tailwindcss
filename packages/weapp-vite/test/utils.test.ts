@@ -1,4 +1,4 @@
-import path from 'node:path'
+import path from 'pathe'
 import { diff } from 'just-diff'
 import { getProjectConfig, isAppRoot, scanEntries, searchAppEntry } from '@/utils'
 
@@ -55,13 +55,21 @@ describe('utils', () => {
     })
   })
 
+  function normalizeScanEntries(result: Awaited<ReturnType<typeof scanEntries>>) {
+    return {
+      // @ts-ignore
+      app: path.normalize(result?.app),
+      pages: result?.pages.map(x => path.normalize(x)),
+      components: result?.components.map(x => path.normalize(x)),
+    }
+  }
   describe('scanEntries', () => {
     it.each(absDirs)('$name', async ({ path: p, name }) => {
       if (name.includes('-ts')) {
-        expect(await scanEntries(path.resolve(p, 'miniprogram'), { relative: true })).toMatchSnapshot()
+        expect(normalizeScanEntries(await scanEntries(path.resolve(p, 'miniprogram'), { relative: true }))).toMatchSnapshot()
       }
       else {
-        expect(await scanEntries(p, { relative: true })).toMatchSnapshot()
+        expect(normalizeScanEntries(await scanEntries(p, { relative: true }))).toMatchSnapshot()
       }
     })
   })
