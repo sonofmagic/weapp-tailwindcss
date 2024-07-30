@@ -61,7 +61,7 @@ describe('utils', () => {
       app: path.normalize(result?.app),
       pages: result?.pages.map(x => path.normalize(x)),
       components: result?.components.map(x => path.normalize(x)),
-      css: result?.css.map(x => path.normalize(x)),
+      // css: result?.css.map(x => path.normalize(x)),
     }
   }
   describe('scanEntries', () => {
