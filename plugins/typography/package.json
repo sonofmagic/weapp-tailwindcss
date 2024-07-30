@@ -57,7 +57,7 @@
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",
-    "magic-string": "^0.30.10",
+    "magic-string": "^0.30.11",
     "postcss-selector-parser": "^6.1.1"
   },
   "publishConfig": {
