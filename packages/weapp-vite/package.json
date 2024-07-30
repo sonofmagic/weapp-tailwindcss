@@ -41,7 +41,8 @@
     "fs-extra": "^11.2.0",
     "is-css-request": "^1.0.1",
     "klaw": "^4.1.0",
-    "picocolors": "^1.0.1"
+    "picocolors": "^1.0.1",
+    "vite-plugin-static-copy": "^1.0.6"
   },
   "publishConfig": {
     "access": "public",
