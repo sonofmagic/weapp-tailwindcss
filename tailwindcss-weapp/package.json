@@ -1,6 +1,7 @@
 {
   "name": "tailwindcss-weapp",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "uni -p mp-weixin",
     "build": "npm run build:mp-weixin",

@@ -1,6 +1,7 @@
 {
   "name": "vite-native-ts-skyline",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "author": "",
   "license": "",
