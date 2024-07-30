@@ -1,6 +1,7 @@
 {
   "name": "@native-app/ts",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "author": "",
   "license": "",
