@@ -3,7 +3,7 @@
     "target": "ESNext",
     "jsx": "react",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "types": [
       "vitest/globals"
     ],

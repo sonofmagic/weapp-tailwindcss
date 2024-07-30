@@ -5,4 +5,5 @@ packages:
   - "website"
   - "benchmark"
   - "tailwindcss-weapp"
+  - "@weapp-core/*"
   # - "demo-linked/*"
