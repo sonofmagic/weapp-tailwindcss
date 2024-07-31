@@ -116,3 +116,4 @@ docs
 miniprogram_npm
 .cloudbase
 .turbo
+.vite-inspect
