@@ -3,6 +3,7 @@ import { build } from 'vite'
 import type { RollupOutput, RollupWatcher } from 'rollup'
 import fs from 'fs-extra'
 import { addExtension } from '@rollup/pluginutils'
+// import Inspect from 'vite-plugin-inspect'
 import { scanEntries } from './utils'
 
 export function removeExt(file: string) {
@@ -31,7 +32,16 @@ export async function runDev(cwd: string) {
             }
           },
           load(id) {
-            if (id.endsWith('.virtual.wxss.css')) {
+            if (allSet.has(id)) {
+              const mayBeCssPath = addExtension(removeExt(id), '.wxss')
+              if (fs.existsSync(mayBeCssPath)) {
+                // path.relative(cwd, mayBeCssPath)
+                return {
+                  code: `import '${mayBeCssPath}'\n${fs.readFileSync(id, 'utf8')}`,
+                }
+              }
+            }
+            else if (id.endsWith('.virtual.wxss.css')) {
               const wxssFilePath = id.replace(/\.virtual\.wxss\.css$/, '.wxss')
               if (fs.existsSync(wxssFilePath)) {
                 const wxssContent = fs.readFileSync(wxssFilePath, 'utf8')
@@ -39,14 +49,9 @@ export async function runDev(cwd: string) {
               }
             }
           },
-          transform(code, id) {
-            if (allSet.has(id)) {
-              const mayBeCssPath = addExtension(removeExt(id), '.wxss')
-              if (fs.existsSync(mayBeCssPath)) {
-                // path.relative(cwd, mayBeCssPath)
-                return `import '${mayBeCssPath}'\n${code}`
-              }
-            }
+          buildEnd() {
+            const files = this.getWatchFiles()
+            console.log(files)
           },
           // moduleParsed(info) {
           //   console.log(info)
@@ -54,6 +59,7 @@ export async function runDev(cwd: string) {
         },
         {
           name: 'weapp-vite:css',
+
           // renderStart() {
           //   const ids = this.getModuleIds()
           //   console.log(ids)
@@ -79,6 +85,7 @@ export async function runDev(cwd: string) {
         {
           name: 'weapp-vite:css-post',
           enforce: 'post',
+
           // load(id, options) {
 
           // },
@@ -87,6 +94,11 @@ export async function runDev(cwd: string) {
           //   console.log(code, chunk, options, meta)
           // },
         },
+        // Inspect({
+        //   build: true,
+        //   outputDir: '.vite-inspect',
+        //   open: true,
+        // }),
       ],
       build: {
         watch: {
