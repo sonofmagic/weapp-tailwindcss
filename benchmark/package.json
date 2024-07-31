@@ -11,7 +11,7 @@
   "dependencies": {
     "@google/model-viewer": "^3.5.0",
     "echarts": "^5.5.1",
-    "vue": "^3.4.34",
+    "vue": "^3.4.35",
     "vue-echarts": "^6.7.3",
     "vue-router": "^4.4.0"
   },
