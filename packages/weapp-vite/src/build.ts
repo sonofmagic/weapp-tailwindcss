@@ -10,6 +10,13 @@ export function removeExt(file: string) {
   return file.replace(/\.[^./]+$/, '')
 }
 
+export function getPathFromCss(code: string) {
+  const arr = code.match(/\/\*#weapp-vite:css-start\{(.*?)\}weapp-vite:css-end#\*\//)
+  if (arr) {
+    return arr[1]
+  }
+}
+
 export async function runDev(cwd: string) {
   const entries = await scanEntries(cwd)
 
@@ -44,40 +51,22 @@ export async function runDev(cwd: string) {
             else if (id.endsWith('.virtual.wxss.css')) {
               const wxssFilePath = id.replace(/\.virtual\.wxss\.css$/, '.wxss')
               if (fs.existsSync(wxssFilePath)) {
-                const wxssContent = fs.readFileSync(wxssFilePath, 'utf8')
+                const wxssContent = `/*#weapp-vite:css-start{${wxssFilePath}}weapp-vite:css-end#*/\n${fs.readFileSync(wxssFilePath, 'utf8')}`
                 return wxssContent
               }
             }
           },
-          buildEnd() {
-            const files = this.getWatchFiles()
-            console.log(files)
-          },
-          // moduleParsed(info) {
-          //   console.log(info)
-          // },
         },
         {
           name: 'weapp-vite:css',
-
-          // renderStart() {
-          //   const ids = this.getModuleIds()
-          //   console.log(ids)
-          //   // for (const id of ids) {
-
-          //   // }
-          // },
-          // renderChunk() {
-          //   console.log('-----')
-          // },
-          // renderChunk(code, chunk, options, meta) {
-          //   console.log(code, chunk, options, meta)
-          // },
           generateBundle(_options, bundle) {
-            for (const [key, value] of Object.entries(bundle)) {
-              if (value.type === 'asset' && value.fileName.endsWith('.wxss')) {
-                const cssPath = path.relative(cwd, key)
-                value.fileName = cssPath
+            for (const [_key, value] of Object.entries(bundle)) {
+              if (value.type === 'asset' && value.fileName.endsWith('.css')) {
+                const p = getPathFromCss(value.source.toString())
+                if (p) {
+                  const cssPath = path.relative(cwd, p)
+                  value.fileName = cssPath
+                }
               }
             }
           },
@@ -85,20 +74,7 @@ export async function runDev(cwd: string) {
         {
           name: 'weapp-vite:css-post',
           enforce: 'post',
-
-          // load(id, options) {
-
-          // },
-
-          // renderChunk(code, chunk, options, meta) {
-          //   console.log(code, chunk, options, meta)
-          // },
         },
-        // Inspect({
-        //   build: true,
-        //   outputDir: '.vite-inspect',
-        //   open: true,
-        // }),
       ],
       build: {
         watch: {
@@ -113,14 +89,6 @@ export async function runDev(cwd: string) {
             format: 'cjs',
             entryFileNames: (chunkInfo) => {
               return chunkInfo.name
-            },
-            assetFileNames(chunkInfo) {
-              if (chunkInfo.name?.endsWith('.css')) {
-                return chunkInfo.name.replace(/\.css$/, '.wxss')
-              }
-              else {
-                return '[name][extname]'
-              }
             },
             // chunkFileNames: '[name].js',
           },
