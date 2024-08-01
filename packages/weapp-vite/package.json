@@ -35,6 +35,7 @@
   "dependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/pluginutils": "^5.1.0",
+    "@weapp-core/shared": "workspace:^",
     "commander": "^12.1.0",
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",

@@ -4,16 +4,17 @@ import type { RollupOutput, RollupWatcher } from 'rollup'
 import fs from 'fs-extra'
 import { addExtension } from '@rollup/pluginutils'
 // import Inspect from 'vite-plugin-inspect'
-import { scanEntries } from './utils'
+import { removeExt, scanEntries } from './utils'
 
-export function removeExt(file: string) {
-  return file.replace(/\.[^./]+$/, '')
-}
-
-export function getPathFromCss(code: string) {
-  const arr = code.match(/\/\*#weapp-vite:css-start\{(.*?)\}weapp-vite:css-end#\*\//)
+export function extractPathFromCss(code: string) {
+  const reg = /\/\*#weapp-vite:css-start\{(.*?)\}weapp-vite:css-end#\*\//
+  const arr = code.match(reg)
   if (arr) {
-    return arr[1]
+    return {
+      path: arr[1],
+      start: arr.index,
+      end: reg.lastIndex + arr[0].length,
+    }
   }
 }
 
@@ -62,9 +63,10 @@ export async function runDev(cwd: string) {
           generateBundle(_options, bundle) {
             for (const [_key, value] of Object.entries(bundle)) {
               if (value.type === 'asset' && value.fileName.endsWith('.css')) {
-                const p = getPathFromCss(value.source.toString())
-                if (p) {
-                  const cssPath = path.relative(cwd, p)
+                const code = value.source.toString()
+                const meta = extractPathFromCss(code)
+                if (meta) {
+                  const cssPath = path.relative(cwd, meta.path)
                   value.fileName = cssPath
                 }
               }
