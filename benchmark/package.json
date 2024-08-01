@@ -13,7 +13,7 @@
     "echarts": "^5.5.1",
     "vue": "^3.4.35",
     "vue-echarts": "^6.7.3",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.0.0-alpha.17",
