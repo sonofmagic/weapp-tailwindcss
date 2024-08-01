@@ -647,6 +647,9 @@ importers:
       '@rollup/pluginutils':
         specifier: ^5.1.0
         version: 5.1.0(rollup@4.19.2)
+      '@weapp-core/shared':
+        specifier: workspace:^
+        version: link:../../@weapp-core/shared
       commander:
         specifier: ^12.1.0
         version: 12.1.0
