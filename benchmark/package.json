@@ -12,12 +12,12 @@
     "@google/model-viewer": "^3.5.0",
     "echarts": "^5.5.1",
     "vue": "^3.4.35",
-    "vue-echarts": "^6.7.3",
+    "vue-echarts": "7.0.0-beta.0",
     "vue-router": "^4.4.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.0.0-alpha.18",
-    "@vitejs/plugin-vue": "^5.1.1",
+    "@vitejs/plugin-vue": "^5.1.2",
     "tailwindcss": "4.0.0-alpha.18",
     "vite": "^5.3.5",
     "vue-tsc": "^2.0.29"
