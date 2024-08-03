@@ -109,10 +109,12 @@ export async function scanEntries(root: string, options?: { relative?: boolean, 
   if (appEntry) {
     const pageEntries = new Set<string>()
     const componentEntries = new Set<string>()
-    // const cssEntries = new Set<string>()
-    for await (const file of klaw(root, {
-      filter: options?.filter,
-    })) {
+
+    for await (
+      const file of klaw(root, {
+        filter: options?.filter,
+      })
+    ) {
       if (file.stats.isFile()) {
         if (/\.wxml$/.test(file.path)) {
           const entry = getWxmlEntry(file.path)
