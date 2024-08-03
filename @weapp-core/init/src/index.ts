@@ -1,6 +1,4 @@
 import path from 'node:path'
-// import process from 'node:process'
-// import defu from 'defu'
 import fs from 'fs-extra'
 import { get, set } from '@weapp-core/shared'
 
@@ -60,8 +58,8 @@ export function updateProjectConfig(options: { root: string, dest?: string }) {
   }
 }
 
-export function updatePackageJson(options: { root: string, dest?: string }) {
-  const { root, dest } = options
+export function updatePackageJson(options: { root: string, dest?: string, command?: string }) {
+  const { root, dest, command } = options
   const packageJsonFilename = 'package.json'
   const packageJsonPath = path.resolve(root, packageJsonFilename)
   if (fs.existsSync(packageJsonPath)) {
@@ -69,14 +67,14 @@ export function updatePackageJson(options: { root: string, dest?: string }) {
       const packageJson = fs.readJSONSync(packageJsonPath) as {
         scripts: Record<string, string>
       }
-      set(packageJson, 'scripts.dev', 'weapp-tw dev')
-      set(packageJson, 'scripts.build', 'weapp-tw build')
+      set(packageJson, 'scripts.dev', `${command} dev`)
+      set(packageJson, 'scripts.build', `${command} build`)
 
       fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
         spaces: 2,
       })
     }
-    catch {}
+    catch { }
   }
 }
 

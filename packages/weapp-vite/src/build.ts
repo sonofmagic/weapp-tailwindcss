@@ -9,24 +9,12 @@ export async function runDev(cwd: string) {
   const filter = createFilter([], [...defaultExcluded, path.resolve(cwd, 'dist/**')])
   const entries = await scanEntries(cwd, { filter })
 
-  function relative(p: string) {
-    return path.relative(cwd, p)
-  }
-
   if (entries) {
-    const allEntries = [entries.app, ...entries.pages, ...entries.components]
-    const allSet = new Set<string>(allEntries)
-    const input = allEntries
-      .reduce<Record<string, string>>((acc, cur) => {
-        acc[relative(cur)] = cur
-        return acc
-      }, {})
-
     const watcher = (await build({
       plugins: [
         vitePluginWeapp({
           cwd,
-          entries: allSet,
+          entries: entries.all,
         }),
       ],
       build: {
@@ -35,21 +23,7 @@ export async function runDev(cwd: string) {
             persistent: true,
           },
         },
-        assetsDir: '.',
-        rollupOptions: {
-          input,
-          output: {
-            format: 'cjs',
-            entryFileNames: (chunkInfo) => {
-              return chunkInfo.name
-            },
-          },
-        },
         minify: false,
-        commonjsOptions: {
-          transformMixedEsModules: true,
-        },
-
       },
     })) as RollupWatcher
 
@@ -57,12 +31,20 @@ export async function runDev(cwd: string) {
   }
 }
 
-export async function runProd(_cwd: string) {
-  const output = (await build({
-    build: {
+export async function runProd(cwd: string) {
+  const filter = createFilter([], [...defaultExcluded, path.resolve(cwd, 'dist/**')])
+  const entries = await scanEntries(cwd, { filter })
 
-    },
-  })) as RollupOutput | RollupOutput[]
+  if (entries) {
+    const output = (await build({
+      plugins: [
+        vitePluginWeapp({
+          cwd,
+          entries: entries.all,
+        }),
+      ],
+    })) as RollupOutput | RollupOutput[]
 
-  return output
+    return output
+  }
 }
