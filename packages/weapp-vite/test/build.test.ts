@@ -1,4 +1,4 @@
-import { addPathForCss, extractPathFromCss } from '@/build'
+import { addPathForCss, extractPathFromCss } from '@/utils'
 
 describe('build', () => {
   describe('extractPathFromCss', () => {
