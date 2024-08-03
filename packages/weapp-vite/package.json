@@ -33,6 +33,7 @@
     "vite": ">=2.6.0"
   },
   "dependencies": {
+    "@weapp-core/init": "workspace:^",
     "@weapp-core/shared": "workspace:^",
     "commander": "^12.1.0",
     "debug": "^4.3.6",

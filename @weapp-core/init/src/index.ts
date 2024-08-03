@@ -78,7 +78,8 @@ export function updatePackageJson(options: { root: string, dest?: string, comman
   }
 }
 
-export function initConfig(root: string) {
+export function initConfig(options: { root: string, command?: string }) {
+  const { root, command } = options
   updateProjectConfig({ root })
-  updatePackageJson({ root })
+  updatePackageJson({ root, command })
 }

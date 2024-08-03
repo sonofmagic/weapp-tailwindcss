@@ -644,6 +644,9 @@ importers:
 
   packages/weapp-vite:
     dependencies:
+      '@weapp-core/init':
+        specifier: workspace:^
+        version: link:../../@weapp-core/init
       '@weapp-core/shared':
         specifier: workspace:^
         version: link:../../@weapp-core/shared

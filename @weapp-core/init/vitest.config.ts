@@ -12,5 +12,9 @@ export default defineProject({
     globals: true,
     testTimeout: 60_000,
     setupFiles: ['./vitest.setup.ts'],
+    include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    // https://vitest.dev/config/#forcereruntriggers
+    // @ts-ignore
+    forceRerunTriggers: ['**/vitest.config.*/**', '**/vite.config.*/**'],
   },
 })
