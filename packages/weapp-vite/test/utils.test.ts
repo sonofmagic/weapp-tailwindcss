@@ -1,12 +1,18 @@
 import path from 'pathe'
 import { diff } from 'just-diff'
-import { getProjectConfig, isAppRoot, scanEntries, searchAppEntry } from '@/utils'
+import { createFilter } from 'vite'
+import { defaultExcluded, getProjectConfig, isAppRoot, scanEntries, searchAppEntry } from '@/utils'
+
+function getFilter(cwd: string) {
+  return createFilter([], [...defaultExcluded, path.resolve(cwd, 'dist/**')])
+}
 
 describe('utils', () => {
   const appsDir = path.resolve(__dirname, '../../../apps')
   function getApp(app: string) {
     return path.resolve(appsDir, app)
   }
+
   const dirs = [
     'native',
     'native-skyline',
@@ -57,20 +63,20 @@ describe('utils', () => {
 
   function normalizeScanEntries(result: Awaited<ReturnType<typeof scanEntries>>) {
     return {
-      // @ts-ignore
-      app: path.normalize(result?.app),
-      pages: result?.pages.map(x => path.normalize(x)),
-      components: result?.components.map(x => path.normalize(x)),
+      app: path.normalize(result?.app ?? ''),
+      pages: [...result?.pages ?? []].map(x => path.normalize(x)),
+      components: [...result?.components ?? []].map(x => path.normalize(x)),
       // css: result?.css.map(x => path.normalize(x)),
     }
   }
   describe('scanEntries', () => {
     it.each(absDirs)('$name', async ({ path: p, name }) => {
       if (name.includes('-ts')) {
-        expect(normalizeScanEntries(await scanEntries(path.resolve(p, 'miniprogram'), { relative: true }))).toMatchSnapshot()
+        const cwd = path.resolve(p, 'miniprogram')
+        expect(normalizeScanEntries(await scanEntries(cwd, { relative: true, filter: getFilter(cwd) }))).toMatchSnapshot()
       }
       else {
-        expect(normalizeScanEntries(await scanEntries(p, { relative: true }))).toMatchSnapshot()
+        expect(normalizeScanEntries(await scanEntries(p, { relative: true, filter: getFilter(p) }))).toMatchSnapshot()
       }
     })
   })

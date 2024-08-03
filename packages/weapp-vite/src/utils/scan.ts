@@ -1,7 +1,9 @@
-import path from 'node:path'
+import path from 'pathe'
 import fs from 'fs-extra'
 import klaw from 'klaw'
-import { addExtension, createFilter } from '@rollup/pluginutils'
+import { addExtension } from '@rollup/pluginutils'
+
+export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
 // import { isCSSRequest } from 'is-css-request'
 // https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
 // js + json
@@ -93,10 +95,9 @@ export function getProjectConfig(root: string, options?: { ignorePrivate?: boole
   return Object.assign({}, privateJson, baseJson)
 }
 
-export async function scanEntries(root: string, options?: { relative?: boolean }) {
+export async function scanEntries(root: string, options?: { relative?: boolean, filter?: (id: string | unknown) => boolean }) {
   const appEntry = searchAppEntry(root)
   // TODO exclude 需要和 output 配套
-  const filter = createFilter([], ['**/node_modules/**', '**/miniprogram_npm/**', path.resolve(root, 'dist/**')])
 
   function getPath(to: string) {
     if (options?.relative) {
@@ -110,7 +111,7 @@ export async function scanEntries(root: string, options?: { relative?: boolean }
     const componentEntries = new Set<string>()
     // const cssEntries = new Set<string>()
     for await (const file of klaw(root, {
-      filter,
+      filter: options?.filter,
     })) {
       if (file.stats.isFile()) {
         if (/\.wxml$/.test(file.path)) {
@@ -132,8 +133,8 @@ export async function scanEntries(root: string, options?: { relative?: boolean }
 
     return {
       app: getPath(appEntry),
-      pages: [...pageEntries],
-      components: [...componentEntries],
+      pages: pageEntries,
+      components: componentEntries,
       // css: [...cssEntries],
     }
   }

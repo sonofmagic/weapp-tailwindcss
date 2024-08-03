@@ -42,6 +42,8 @@
     "fs-extra": "^11.2.0",
     "is-css-request": "^1.0.1",
     "klaw": "^4.1.0",
+    "magic-string": "^0.30.11",
+    "pathe": "^1.1.2",
     "picocolors": "^1.0.1",
     "vite-plugin-static-copy": "^1.0.6"
   },
