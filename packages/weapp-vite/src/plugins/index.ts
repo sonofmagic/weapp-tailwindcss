@@ -1,44 +1,92 @@
 import path from 'node:path'
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 import { addExtension } from '@rollup/pluginutils'
 import MagicString from 'magic-string'
 import { removeExtension } from '@weapp-core/shared'
 import fg from 'fast-glob'
 import defu from 'defu'
-import { addPathForCss, defaultExcluded, extractPathFromCss } from '../utils'
+import { isCSSRequest, preprocessCSS } from 'vite'
+import { defaultExcluded, supportedCssExtensions } from '../utils'
 
-const supportCss = ['wxss', 'scss', 'sass', 'less', 'styl']
+export interface ParseRequestResponse {
+  filename: string
+  query: { wxss?: true }
+}
 
-const supportCssExtensions = supportCss.map(x => `.${x}`)
-
-interface VitePluginWeappOptions {
+export function parseRequest(id: string): ParseRequestResponse {
+  const [filename, rawQuery] = id.split(`?`, 2)
+  const query = Object.fromEntries(new URLSearchParams(rawQuery)) as { wxss?: true }
+  if (query.wxss !== null) {
+    query.wxss = true
+  }
+  return {
+    filename,
+    query,
+  }
+}
+export interface VitePluginWeappOptions {
   cwd?: string
-  entries?: Set<string>
+  entries?: string[]
   src?: string
 }
 
+function normalizeCssPath(id: string) {
+  return addExtension(removeExtension(id), '.wxss')
+}
+
+function getRealPath(res: ParseRequestResponse) {
+  if (res.query.wxss) {
+    return addExtension(removeExtension(res.filename), '.wxss')
+  }
+  return res.filename
+}
+
 export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
-  const { cwd, entries, src } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
+  const { cwd, entries: _entries, src } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
     src: '',
   })
+
+  const input = _entries
+    .reduce<Record<string, string>>((acc, cur) => {
+      acc[relative(cur)] = cur
+      return acc
+    }, {})
+  const entries = Array.isArray(_entries) ? new Set(_entries) : _entries
   function relative(p: string) {
     return path.relative(cwd, p)
   }
+
+  const stylesIds = new Set<string>()
+
+  let configResolved: ResolvedConfig
+
   return [
     {
-      name: 'weapp-vite:css-pre',
+      name: 'weapp-vite:pre',
       enforce: 'pre',
+      configResolved(config) {
+        config.build.rollupOptions.input = input
+        config.build.rollupOptions.output = {
+          format: 'cjs',
+          entryFileNames: (chunkInfo) => {
+            return chunkInfo.name
+          },
+        }
+        config.build.assetsDir = '.'
+        config.build.commonjsOptions.transformMixedEsModules = true
+        configResolved = config
+      },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
-          return source.replace(/\.wxss$/, '.virtual.wxss.css')
+          return source.replace(/\.wxss$/, '.css?wxss')
         }
       },
       load(id) {
         if (entries.has(id)) {
           const base = removeExtension(id)
           const ms = new MagicString(fs.readFileSync(id, 'utf8'))
-          for (const ext of supportCssExtensions) {
+          for (const ext of supportedCssExtensions) {
             const mayBeCssPath = addExtension(base, ext)
 
             if (fs.existsSync(mayBeCssPath)) {
@@ -50,23 +98,42 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
             code: ms.toString(),
           }
         }
-        else if (id.endsWith('.virtual.wxss.css')) {
-          const wxssFilePath = id.replace(/\.virtual\.wxss\.css$/, '.wxss')
-          if (fs.existsSync(wxssFilePath)) {
-            return {
-              code: addPathForCss(wxssFilePath, fs.readFileSync(wxssFilePath, 'utf8')),
-            }
+        else if (isCSSRequest(id)) {
+          stylesIds.add(id)
+          return {
+            code: '',
           }
         }
       },
       async buildEnd() {
+        const styles: Record<string, string> = {}
+        for (const stylesId of stylesIds) {
+          const parsed = parseRequest(stylesId)
+
+          const css = await fs.readFile(getRealPath(parsed), 'utf8')
+          const res = await preprocessCSS(css, stylesId, configResolved)
+          const fileName = relative(normalizeCssPath(stylesId))
+          if (styles[fileName]) {
+            styles[fileName] += res.code
+          }
+          else {
+            styles[fileName] = res.code
+          }
+        }
+        for (const style of Object.entries(styles)) {
+          this.emitFile({
+            type: 'asset',
+            fileName: style[0],
+            source: style[1],
+          })
+        }
         const files = await fg(
           [path.join(src, '**/*.{wxml,json,png,jpg,jpeg,gif,svg,webp}')],
           {
             cwd,
             ignore: [
               ...defaultExcluded,
-              path.resolve(cwd, 'dist/**'),
+              'dist/**',
               'project.config.json',
               'project.private.config.json',
               'package.json',
@@ -83,26 +150,10 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
       },
     },
     {
-      name: 'weapp-vite:css',
-      generateBundle(_options, bundle) {
-        for (const [_key, value] of Object.entries(bundle)) {
-          if (value.type === 'asset' && value.fileName.endsWith('.css')) {
-            const code = value.source.toString()
-            const meta = extractPathFromCss(code)
-            if (meta) {
-              const cssPath = relative(meta.path)
-              value.fileName = cssPath
-              const ms = new MagicString(code)
-              // + \n
-              ms.remove(meta.start, meta.end + 1)
-              value.source = ms.toString()
-            }
-          }
-        }
-      },
+      name: 'weapp-vite',
     },
     {
-      name: 'weapp-vite:css-post',
+      name: 'weapp-vite:post',
       enforce: 'post',
     },
   ]

@@ -41,6 +41,41 @@
     },
     {
       "command": "npm run dev",
+      "name": "[App] vite-native",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/vite-native"
+    },
+    {
+      "command": "npm run build",
+      "name": "[App] vite-native build",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/vite-native"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[App] vite-native-skyline",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/vite-native-skyline"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[App] vite-native-ts",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/vite-native-ts"
+    },
+    {
+      "command": "npm run dev",
+      "name": "[App] vite-native-ts-skyline",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/apps/vite-native-ts-skyline"
+    },
+    {
+      "command": "npm run dev",
       "name": "[Docs] website dev",
       "request": "launch",
       "type": "node-terminal",

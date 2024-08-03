@@ -10,7 +10,7 @@ export function escapeStringRegexp(str: string) {
 }
 
 export function removeExtension(file: string) {
-  return file.replace(/\.[^./]+$/, '')
+  return file.replace(/\.[^/.]+$/, '')
 }
 
 export function arrify<T>(val: T) {

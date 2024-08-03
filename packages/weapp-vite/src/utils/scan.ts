@@ -125,16 +125,14 @@ export async function scanEntries(root: string, options?: { relative?: boolean, 
             }
           }
         }
-        // else if (/\.wxss$/.test(file.path) || isCSSRequest(file.path)) {
-        //   cssEntries.add(getPath(file.path))
-        // }
       }
     }
-
+    const app = getPath(appEntry)
     return {
-      app: getPath(appEntry),
+      app,
       pages: pageEntries,
       components: componentEntries,
+      all: [app, ...pageEntries, ...componentEntries],
       // css: [...cssEntries],
     }
   }
