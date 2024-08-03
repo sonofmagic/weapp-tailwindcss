@@ -1,11 +1,9 @@
 import path from 'node:path'
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
-import { addExtension } from '@rollup/pluginutils'
 import MagicString from 'magic-string'
-import { removeExtension } from '@weapp-core/shared'
+import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import fg from 'fast-glob'
-import defu from 'defu'
 import { isCSSRequest, preprocessCSS } from 'vite'
 import { defaultExcluded, supportedCssExtensions } from '../utils'
 

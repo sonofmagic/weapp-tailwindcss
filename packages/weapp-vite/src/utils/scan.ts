@@ -1,7 +1,7 @@
 import path from 'pathe'
 import fs from 'fs-extra'
 import klaw from 'klaw'
-import { addExtension } from '@rollup/pluginutils'
+import { addExtension } from '@weapp-core/shared'
 
 export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
 // import { isCSSRequest } from 'is-css-request'

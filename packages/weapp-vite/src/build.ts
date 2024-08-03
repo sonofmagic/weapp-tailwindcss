@@ -1,12 +1,21 @@
-import path from 'node:path'
 import { build } from 'vite'
 import type { RollupOutput, RollupWatcher } from 'rollup'
-import { createFilter } from '@rollup/pluginutils'
+import mm from 'micromatch'
+import { defu } from '@weapp-core/shared'
 import { defaultExcluded, scanEntries } from './utils'
 import { vitePluginWeapp } from './plugins'
 
+function createFilter(include: string[], exclude: string[], options?: mm.Options) {
+  const opts = defu<mm.Options, mm.Options[]>(options, {
+    ignore: exclude,
+  })
+  return function (id: unknown) {
+    return mm.isMatch(id as string, include, opts)
+  }
+}
+
 export async function runDev(cwd: string) {
-  const filter = createFilter([], [...defaultExcluded, path.resolve(cwd, 'dist/**')])
+  const filter = createFilter([], [...defaultExcluded, 'dist/**'], { cwd })
   const entries = await scanEntries(cwd, { filter })
 
   if (entries) {
@@ -27,12 +36,16 @@ export async function runDev(cwd: string) {
       },
     })) as RollupWatcher
 
+    watcher.on('change', (id, change) => {
+      console.log(id, change)
+    })
+
     return watcher
   }
 }
 
 export async function runProd(cwd: string) {
-  const filter = createFilter([], [...defaultExcluded, path.resolve(cwd, 'dist/**')])
+  const filter = createFilter([], [...defaultExcluded, 'dist/**'], { cwd })
   const entries = await scanEntries(cwd, { filter })
 
   if (entries) {

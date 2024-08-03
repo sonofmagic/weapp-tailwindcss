@@ -1,3 +1,4 @@
+import { extname } from 'node:path'
 import { createDefu } from 'defu'
 
 export { default as set } from 'set-value'
@@ -11,6 +12,14 @@ export function escapeStringRegexp(str: string) {
 
 export function removeExtension(file: string) {
   return file.replace(/\.[^/.]+$/, '')
+}
+
+export function addExtension(filename: string, ext = '.js') {
+  let result = `${filename}`
+  if (!extname(filename)) {
+    result += ext
+  }
+  return result
 }
 
 export function arrify<T>(val: T) {
