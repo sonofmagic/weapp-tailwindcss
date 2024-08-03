@@ -386,6 +386,9 @@ importers:
       '@weapp-core/shared':
         specifier: workspace:^
         version: link:../shared
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
 
   '@weapp-core/shared': {}
 
