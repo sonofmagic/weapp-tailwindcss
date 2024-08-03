@@ -37,7 +37,7 @@
     "@docusaurus/types": "3.4.0",
     "@icebreakers/deploy": "^0.1.5",
     "@types/file-saver": "^2.0.7",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "docusaurus-plugin-sass": "^0.2.5",
     "docusaurus-plugin-typedoc": "1.0.4",

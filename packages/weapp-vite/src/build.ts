@@ -9,13 +9,20 @@ function createFilter(include: string[], exclude: string[], options?: mm.Options
   const opts = defu<mm.Options, mm.Options[]>(options, {
     ignore: exclude,
   })
-  return function (id: unknown) {
+  return function (id: unknown | string) {
+    if (typeof id !== 'string') {
+      return false
+    }
+    if (/\0/.test(id)) {
+      return false
+    }
+
     return mm.isMatch(id as string, include, opts)
   }
 }
 
 export async function runDev(cwd: string) {
-  const filter = createFilter([], [...defaultExcluded, 'dist/**'], { cwd })
+  const filter = createFilter(['**/*'], [...defaultExcluded, 'dist/**'])
   const entries = await scanEntries(cwd, { filter })
 
   if (entries) {
@@ -27,25 +34,21 @@ export async function runDev(cwd: string) {
         }),
       ],
       build: {
-        watch: {
-          chokidar: {
-            persistent: true,
-          },
-        },
+        watch: {},
         minify: false,
       },
     })) as RollupWatcher
 
-    watcher.on('change', (id, change) => {
-      console.log(id, change)
-    })
+    // watcher.on('event', (event) => {
+    //   console.log(event)
+    // })
 
     return watcher
   }
 }
 
 export async function runProd(cwd: string) {
-  const filter = createFilter([], [...defaultExcluded, 'dist/**'], { cwd })
+  const filter = createFilter(['**/*'], [...defaultExcluded, 'dist/**'])
   const entries = await scanEntries(cwd, { filter })
 
   if (entries) {

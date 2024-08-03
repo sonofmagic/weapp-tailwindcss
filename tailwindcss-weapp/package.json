@@ -78,7 +78,7 @@
     "@iconify-json/svg-spinners": "^1.1.2",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@vue/runtime-core": "^3.4.21",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^3.12.2",
     "postcss": "^8.4.40",
     "postcss-pxtransform": "^3.6.34",
