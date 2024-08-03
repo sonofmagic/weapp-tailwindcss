@@ -38,6 +38,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
-    "@weapp-core/shared": "workspace:^"
+    "@weapp-core/shared": "workspace:^",
+    "fs-extra": "^11.2.0"
   }
 }
