@@ -1,0 +1,17 @@
+{
+  "name": "vite-native-ts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "author": "",
+  "license": "",
+  "keywords": [],
+  "scripts": {
+    "dev": "weapp-vite dev",
+    "build": "weapp-vite build"
+  },
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.2",
+    "weapp-vite": "workspace:*"
+  }
+}
