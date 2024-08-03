@@ -33,19 +33,15 @@
     "vite": ">=2.6.0"
   },
   "dependencies": {
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/pluginutils": "^5.1.0",
     "@weapp-core/shared": "workspace:^",
     "commander": "^12.1.0",
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
-    "is-css-request": "^1.0.1",
     "klaw": "^4.1.0",
     "magic-string": "^0.30.11",
-    "pathe": "^1.1.2",
-    "picocolors": "^1.0.1",
-    "vite-plugin-static-copy": "^1.0.6"
+    "micromatch": "^4.0.7",
+    "pathe": "^1.1.2"
   },
   "publishConfig": {
     "access": "public",

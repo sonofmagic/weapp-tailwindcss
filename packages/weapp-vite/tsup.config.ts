@@ -8,5 +8,5 @@ export default defineConfig({
   dts: true,
   clean: true,
   format: ['cjs', 'esm'],
-  external: ['vite'],
+  // external: ['vite'],
 })
