@@ -78,6 +78,7 @@
     "prerelease": "changeset pre enter alpha",
     "prerelease:beta": "changeset pre enter beta",
     "prerelease:rc": "changeset pre enter rc",
+    "prerelease:exit": "changeset pre exit",
     "--------": "----------------",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
