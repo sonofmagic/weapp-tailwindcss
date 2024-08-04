@@ -1,7 +1,7 @@
 import path from 'pathe'
 import fs from 'fs-extra'
 import klaw from 'klaw'
-import { addExtension } from '@weapp-core/shared'
+import { addExtension, removeExtension } from '@weapp-core/shared'
 
 export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
 // import { isCSSRequest } from 'is-css-request'
@@ -29,15 +29,10 @@ export function searchAppEntry(root: string) {
   }
 }
 
-function removeFileExtension(path: string) {
-  // 使用正则表达式去掉路径中的文件后缀
-  return path.replace(/\.[^/.]+$/, '')
-}
-
 export function searchPageEntry(wxmlPath: string) {
   if (fs.existsSync(wxmlPath)) {
     const extensions = ['js', 'ts']
-    const base = removeFileExtension(wxmlPath)
+    const base = removeExtension(wxmlPath)
     for (const ext of extensions) {
       const entryPath = addExtension(base, `.${ext}`)
       if (fs.existsSync(entryPath)) {
@@ -49,17 +44,21 @@ export function searchPageEntry(wxmlPath: string) {
 
 export function isComponent(wxmlPath: string) {
   if (isPage(wxmlPath)) {
-    const jsonPath = addExtension(removeFileExtension(wxmlPath), '.json')
+    const jsonPath = addExtension(removeExtension(wxmlPath), '.json')
     if (fs.existsSync(jsonPath)) {
-      return fs.readJsonSync(jsonPath).component
+      const json = fs.readJsonSync(jsonPath, { throws: false })
+      if (json && json.component) {
+        return true
+      }
     }
   }
+  return false
 }
 
 export function getWxmlEntry(wxmlPath: string) {
   const pageEntry = searchPageEntry(wxmlPath)
   if (pageEntry) {
-    const jsonPath = addExtension(removeFileExtension(wxmlPath), '.json')
+    const jsonPath = addExtension(removeExtension(wxmlPath), '.json')
     if (fs.existsSync(jsonPath)) {
       const json = fs.readJsonSync(jsonPath, { throws: false })
       if (json && json.component) {

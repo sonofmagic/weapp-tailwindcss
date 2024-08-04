@@ -187,9 +187,9 @@ describe('build', () => {
 
   describe('rollup', () => {
     const mixjsDir = path.resolve(__dirname, './fixtures/mixjs')
-    function r(...args: string[]) {
-      return path.resolve(mixjsDir, ...args)
-    }
+    // function r(...args: string[]) {
+    //   return path.resolve(mixjsDir, ...args)
+    // }
 
     it('mixjs getEntries', async () => {
       const entries = await getEntries({
@@ -200,14 +200,25 @@ describe('build', () => {
     })
 
     it('mixjs vite build', async () => {
+      function relative(p: string) {
+        return path.relative(mixjsDir, p)
+      }
+      const entries = await getEntries({
+        cwd: mixjsDir,
+      })
+      if (!entries) {
+        return
+      }
+      const input = entries.all
+        .reduce<Record<string, string>>((acc, cur) => {
+          acc[relative(cur)] = cur
+          return acc
+        }, {})
+
       const res = await build({
         build: {
           rollupOptions: {
-            input: {
-              app: r('app.js'),
-              index: r('index.js'),
-              index2: r('index2.js'),
-            },
+            input,
             output: {
               format: 'cjs',
               entryFileNames: (chunkInfo) => {
@@ -236,6 +247,9 @@ describe('build', () => {
             load(id, options) {
               console.log('load', id, options)
             },
+            generateBundle(_options, _bundle) {
+              console.log('generateBundle', _bundle)
+            },
           },
         ],
 
@@ -251,7 +265,33 @@ describe('build', () => {
       const res = await runProd(mixjsDir, {
         build: {
           minify: false,
+          commonjsOptions: {
+            include: undefined,
+            transformMixedEsModules: true,
+          },
         },
+
+        plugins: [
+          {
+            name: 'inspect',
+            enforce: 'pre',
+            configResolved(_config) {
+              // console.log(config)
+            },
+            resolveId(source) {
+              console.log('resolveId', source)
+            },
+            load(id, options) {
+              console.log('load', id, options)
+            },
+            generateBundle(_options, _bundle) {
+              console.log('generateBundle', _bundle)
+            },
+            buildEnd(error) {
+              console.log(error)
+            },
+          },
+        ],
       }) as RollupOutput
 
       for (const item of res.output) {

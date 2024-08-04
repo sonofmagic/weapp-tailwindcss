@@ -44,6 +44,9 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
   const { cwd, entries: _entries, src } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
     src: '',
   })
+  function relative(p: string) {
+    return path.relative(cwd, p)
+  }
 
   const input = _entries
     .reduce<Record<string, string>>((acc, cur) => {
@@ -51,9 +54,6 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
       return acc
     }, {})
   const entries = Array.isArray(_entries) ? new Set(_entries) : _entries
-  function relative(p: string) {
-    return path.relative(cwd, p)
-  }
 
   const stylesIds = new Set<string>()
 
@@ -65,15 +65,6 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
       enforce: 'pre',
       configResolved(config) {
         config.build.rollupOptions.input = input
-        config.build.rollupOptions.output = {
-          format: 'cjs',
-          entryFileNames: (chunkInfo) => {
-            return chunkInfo.name
-          },
-        }
-        config.build.assetsDir = '.'
-        config.build.commonjsOptions.transformMixedEsModules = true
-        config.build.commonjsOptions.include = undefined
         configResolved = config
       },
       resolveId(source) {
@@ -89,10 +80,11 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
             const mayBeCssPath = addExtension(base, ext)
 
             if (fs.existsSync(mayBeCssPath)) {
+              this.addWatchFile(mayBeCssPath)
               ms.prepend(`import '${mayBeCssPath}'\n`)
             }
           }
-
+          this.addWatchFile(id)
           return {
             code: ms.toString(),
           }
@@ -140,16 +132,19 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
           },
         )
         for (const file of files) {
+          const filepath = path.resolve(cwd, file)
+          this.addWatchFile(filepath)
           this.emitFile({
             type: 'asset',
             fileName: file,
-            source: await fs.readFile(path.resolve(cwd, file)),
+            source: await fs.readFile(filepath),
           })
         }
       },
-      generateBundle(_options, _bundle) {
-        // console.log(bundle)
-      },
+      // generateBundle(_options, _bundle) {
+      //   const files = this.getWatchFiles()
+      //   console.log(files)
+      // },
     },
     {
       name: 'weapp-vite',
