@@ -1,0 +1,111 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`build > rollup > mixjs getEntries 1`] = `
+{
+  "all": [
+    "app.js",
+    "index.js",
+    "pages/index.js",
+    "index2.js",
+  ],
+  "app": "app.js",
+  "components": Set {
+    "index2.js",
+  },
+  "pages": Set {
+    "index.js",
+    "pages/index.js",
+  },
+}
+`;
+
+exports[`build > rollup > mixjs runProd > app.js 1`] = `
+""use strict";
+const x = require("./cjs");
+console.log(x);
+"
+`;
+
+exports[`build > rollup > mixjs runProd > app.json 1`] = `undefined`;
+
+exports[`build > rollup > mixjs runProd > esm-CR02SQDf.js 1`] = `
+""use strict";
+const c = "c";
+exports.c = c;
+"
+`;
+
+exports[`build > rollup > mixjs runProd > index.js 1`] = `
+""use strict";
+const esm = require("./esm-CR02SQDf.js");
+const a = require("./cjs");
+console.log(a, esm.c);
+"
+`;
+
+exports[`build > rollup > mixjs runProd > index.wxml 1`] = `undefined`;
+
+exports[`build > rollup > mixjs runProd > index2.js 1`] = `
+""use strict";
+const esm = require("./esm-CR02SQDf.js");
+const a = require("./cjs.js");
+console.log(a, esm.c);
+"
+`;
+
+exports[`build > rollup > mixjs runProd > index2.json 1`] = `undefined`;
+
+exports[`build > rollup > mixjs runProd > index2.wxml 1`] = `undefined`;
+
+exports[`build > rollup > mixjs runProd > pages/index.js 1`] = `
+""use strict";
+"
+`;
+
+exports[`build > rollup > mixjs runProd > pages/index.wxml 1`] = `undefined`;
+
+exports[`build > rollup > mixjs vite build > app 1`] = `
+""use strict";
+const cjs = require("./cjs-B3a6j7Rd.js");
+const x = cjs.cjs;
+console.log(x);
+"
+`;
+
+exports[`build > rollup > mixjs vite build > cjs-B3a6j7Rd.js 1`] = `
+""use strict";
+const a = "1";
+var cjs = {
+  a,
+  b: () => {
+    return "b";
+  }
+};
+exports.cjs = cjs;
+"
+`;
+
+exports[`build > rollup > mixjs vite build > esm-CR02SQDf.js 1`] = `
+""use strict";
+const c = "c";
+exports.c = c;
+"
+`;
+
+exports[`build > rollup > mixjs vite build > index 1`] = `
+""use strict";
+const cjs = require("./cjs-B3a6j7Rd.js");
+const esm = require("./esm-CR02SQDf.js");
+const a = cjs.cjs;
+console.log(a, esm.c);
+"
+`;
+
+exports[`build > rollup > mixjs vite build > index2 1`] = `
+""use strict";
+const cjs = require("./cjs-B3a6j7Rd.js");
+const esm = require("./esm-CR02SQDf.js");
+const a = cjs.cjs;
+console.log(a, esm.c);
+"
+`;

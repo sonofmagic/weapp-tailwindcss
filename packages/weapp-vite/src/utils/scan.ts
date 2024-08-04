@@ -60,10 +60,13 @@ export function getWxmlEntry(wxmlPath: string) {
   const pageEntry = searchPageEntry(wxmlPath)
   if (pageEntry) {
     const jsonPath = addExtension(removeFileExtension(wxmlPath), '.json')
-    if (fs.existsSync(jsonPath) && fs.readJsonSync(jsonPath).component) {
-      return {
-        path: pageEntry,
-        type: 'component',
+    if (fs.existsSync(jsonPath)) {
+      const json = fs.readJsonSync(jsonPath, { throws: false })
+      if (json && json.component) {
+        return {
+          path: pageEntry,
+          type: 'component',
+        }
       }
     }
     return {

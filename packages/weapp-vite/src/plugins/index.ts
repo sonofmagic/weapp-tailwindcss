@@ -147,6 +147,9 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
           })
         }
       },
+      generateBundle(_options, _bundle) {
+        // console.log(bundle)
+      },
     },
     {
       name: 'weapp-vite',
