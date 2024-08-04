@@ -1,4 +1,8 @@
+import path from 'pathe'
+import { build } from 'vite'
+import type { RollupOutput } from 'rollup'
 import { addPathForCss, extractPathFromCss } from './utils'
+import { getEntries, runProd } from '@/build'
 
 describe('build', () => {
   describe('extractPathFromCss', () => {
@@ -178,6 +182,82 @@ describe('build', () => {
         start: 0,
         end: modifiedCode.indexOf(cssCode) - 1,
       })
+    })
+  })
+
+  describe('rollup', () => {
+    const mixjsDir = path.resolve(__dirname, './fixtures/mixjs')
+    function r(...args: string[]) {
+      return path.resolve(mixjsDir, ...args)
+    }
+
+    it('mixjs getEntries', async () => {
+      const entries = await getEntries({
+        cwd: mixjsDir,
+        relative: true,
+      })
+      expect(entries).toMatchSnapshot()
+    })
+
+    it('mixjs vite build', async () => {
+      const res = await build({
+        build: {
+          rollupOptions: {
+            input: {
+              app: r('app.js'),
+              index: r('index.js'),
+              index2: r('index2.js'),
+            },
+            output: {
+              format: 'cjs',
+              entryFileNames: (chunkInfo) => {
+                return chunkInfo.name
+              },
+            },
+          },
+          assetsDir: '.',
+          write: false,
+          commonjsOptions: {
+            include: undefined,
+            transformMixedEsModules: true,
+          },
+          minify: false,
+        },
+        plugins: [
+          {
+            name: 'inspect',
+            enforce: 'pre',
+            configResolved(_config) {
+              // console.log(config)
+            },
+            resolveId(source) {
+              console.log('resolveId', source)
+            },
+            load(id, options) {
+              console.log('load', id, options)
+            },
+          },
+        ],
+
+      }) as RollupOutput
+
+      for (const item of res.output) {
+        // @ts-ignore
+        expect(item.code).toMatchSnapshot(item.fileName)
+      }
+    })
+
+    it('mixjs runProd', async () => {
+      const res = await runProd(mixjsDir, {
+        build: {
+          minify: false,
+        },
+      }) as RollupOutput
+
+      for (const item of res.output) {
+        // @ts-ignore
+        expect(item.code).toMatchSnapshot(item.fileName)
+      }
     })
   })
 })

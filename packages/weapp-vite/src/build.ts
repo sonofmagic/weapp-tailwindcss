@@ -1,3 +1,4 @@
+import type { InlineConfig } from 'vite'
 import { build } from 'vite'
 import type { RollupOutput, RollupWatcher } from 'rollup'
 import mm from 'micromatch'
@@ -24,23 +25,43 @@ export function createFilter(include: string[], exclude: string[], options?: mm.
   }
 }
 
-export async function runDev(cwd: string) {
+export function getEntries(options: string | { cwd: string, relative?: boolean }) {
+  let cwd: string
+  let relative
+  if (typeof options === 'string') {
+    cwd = options
+  }
+  else {
+    cwd = options.cwd
+    relative = options.relative
+  }
+
   const filter = createFilter(['**/*'], [...defaultExcluded, path.resolve(cwd, 'dist/**')], { cwd })
-  const entries = await scanEntries(cwd, { filter })
+  return scanEntries(cwd, { filter, relative })
+}
+
+export async function runDev(cwd: string, options?: InlineConfig) {
+  const entries = await getEntries(cwd)
 
   if (entries) {
-    const watcher = (await build({
-      plugins: [
-        vitePluginWeapp({
-          cwd,
-          entries: entries.all,
-        }),
-      ],
-      build: {
-        watch: {},
-        minify: false,
-      },
-    })) as RollupWatcher
+    const watcher = (await build(
+      defu(
+        options,
+        {
+          plugins: [
+            vitePluginWeapp({
+              cwd,
+              entries: entries.all,
+            }),
+          ],
+          build: {
+            watch: {},
+            minify: false,
+          },
+        },
+      )
+      ,
+    )) as RollupWatcher
 
     // watcher.on('event', (event) => {
     //   console.log(event)
@@ -50,19 +71,23 @@ export async function runDev(cwd: string) {
   }
 }
 
-export async function runProd(cwd: string) {
-  const filter = createFilter(['**/*'], [...defaultExcluded, path.resolve(cwd, 'dist/**')], { cwd })
-  const entries = await scanEntries(cwd, { filter })
+export async function runProd(cwd: string, options?: InlineConfig) {
+  const entries = await getEntries(cwd)
 
   if (entries) {
-    const output = (await build({
-      plugins: [
-        vitePluginWeapp({
-          cwd,
-          entries: entries.all,
-        }),
-      ],
-    })) as RollupOutput | RollupOutput[]
+    const output = (await build(
+      defu(
+        options,
+        {
+          plugins: [
+            vitePluginWeapp({
+              cwd,
+              entries: entries.all,
+            }),
+          ],
+        },
+      ),
+    )) as RollupOutput | RollupOutput[]
 
     return output
   }
