@@ -40,20 +40,41 @@ export function getEntries(options: string | { cwd: string, relative?: boolean }
   return scanEntries(cwd, { filter, relative })
 }
 
+export function getDefaultConfig(options: { cwd?: string, entries?: string[] }): InlineConfig {
+  return {
+    build: {
+      rollupOptions: {
+        output: {
+          format: 'cjs',
+          entryFileNames: (chunkInfo) => {
+            return chunkInfo.name
+          },
+        },
+      },
+      assetsDir: '.',
+      commonjsOptions: {
+        transformMixedEsModules: true,
+        include: undefined,
+      },
+    },
+    plugins: [
+      vitePluginWeapp(options),
+    ],
+  }
+}
+
 export async function runDev(cwd: string, options?: InlineConfig) {
   const entries = await getEntries(cwd)
 
   if (entries) {
     const watcher = (await build(
-      defu(
+      defu<InlineConfig, InlineConfig[]>(
         options,
+        getDefaultConfig({
+          cwd,
+          entries: entries.all,
+        }),
         {
-          plugins: [
-            vitePluginWeapp({
-              cwd,
-              entries: entries.all,
-            }),
-          ],
           build: {
             watch: {},
             minify: false,
@@ -76,16 +97,12 @@ export async function runProd(cwd: string, options?: InlineConfig) {
 
   if (entries) {
     const output = (await build(
-      defu(
+      defu<InlineConfig, InlineConfig[]>(
         options,
-        {
-          plugins: [
-            vitePluginWeapp({
-              cwd,
-              entries: entries.all,
-            }),
-          ],
-        },
+        getDefaultConfig({
+          cwd,
+          entries: entries.all,
+        }),
       ),
     )) as RollupOutput | RollupOutput[]
 
