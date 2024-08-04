@@ -1,5 +1,14 @@
 # weapp-vite
 
+## 0.0.2-alpha.1
+
+### Patch Changes
+
+- a4adb3f: feat: add serve watch files
+- Updated dependencies [a4adb3f]
+  - @weapp-core/shared@0.0.2-alpha.1
+  - @weapp-core/init@0.0.2-alpha.1
+
 ## 0.0.2-alpha.0
 
 ### Patch Changes
