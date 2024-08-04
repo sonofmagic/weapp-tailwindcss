@@ -73,6 +73,7 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
         }
         config.build.assetsDir = '.'
         config.build.commonjsOptions.transformMixedEsModules = true
+        config.build.commonjsOptions.include = undefined
         configResolved = config
       },
       resolveId(source) {
