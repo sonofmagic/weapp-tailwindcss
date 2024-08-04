@@ -12,7 +12,7 @@
     "@google/model-viewer": "^3.5.0",
     "echarts": "^5.5.1",
     "vue": "^3.4.35",
-    "vue-echarts": "7.0.0",
+    "vue-echarts": "7.0.1",
     "vue-router": "^4.4.2"
   },
   "devDependencies": {

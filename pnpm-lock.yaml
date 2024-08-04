@@ -555,8 +555,8 @@ importers:
         specifier: ^3.4.35
         version: 3.4.35(typescript@5.5.4)
       vue-echarts:
-        specifier: 7.0.0
-        version: 7.0.0(@vue/runtime-core@3.4.35)(echarts@5.5.1)(vue@3.4.35(typescript@5.5.4))
+        specifier: 7.0.1
+        version: 7.0.1(@vue/runtime-core@3.4.35)(echarts@5.5.1)(vue@3.4.35(typescript@5.5.4))
       vue-router:
         specifier: ^4.4.2
         version: 4.4.2(vue@3.4.35(typescript@5.5.4))
@@ -13382,8 +13382,8 @@ packages:
       '@vue/composition-api':
         optional: true
 
-  vue-echarts@7.0.0:
-    resolution: {integrity: sha512-lMSn7twd81eC/Sw4wwCsOsg9+upY8ToRe7nTA6fCfL2C/kozvpkcl5Q92NAFondSgPQaGq13P/f/fjFW7thq3w==}
+  vue-echarts@7.0.1:
+    resolution: {integrity: sha512-P+u6mwAtHuPKC3uDQ+sqIhwBBTvrvEFvgHYzV2Ba1/7+rSzRd6o3Dv/A8PuLP24hB1zPPNfu6BvNyD139X1qbg==}
     peerDependencies:
       '@vue/runtime-core': ^3.0.0
       echarts: ^5.5.1
@@ -29845,7 +29845,7 @@ snapshots:
     dependencies:
       vue: 3.4.35(typescript@5.5.4)
 
-  vue-echarts@7.0.0(@vue/runtime-core@3.4.35)(echarts@5.5.1)(vue@3.4.35(typescript@5.5.4)):
+  vue-echarts@7.0.1(@vue/runtime-core@3.4.35)(echarts@5.5.1)(vue@3.4.35(typescript@5.5.4)):
     dependencies:
       echarts: 5.5.1
       vue: 3.4.35(typescript@5.5.4)
