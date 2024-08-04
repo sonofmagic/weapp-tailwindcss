@@ -1,0 +1,57 @@
+{
+  "name": "weapp-ide-cli",
+  "version": "1.0.1",
+  "description": "让微信开发者工具，用起来更加方便吧！",
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [
+    "weapp",
+    "weapp-cli",
+    "wechat",
+    "cli",
+    "uni-app",
+    "taro",
+    "ide",
+    "weapp-ide",
+    "mini",
+    "miniprogram"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "bin": {
+    "weapp": "bin/weapp.js",
+    "weapp-ide-cli": "bin/weapp.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch --sourcemap",
+    "build": "tsup",
+    "release": "node scripts/release.js",
+    "test:dev": "vitest",
+    "test": "vitest run",
+    "weapp": "tsx src/cli.ts",
+    "debug": "tsx src/cli.ts config",
+    "raw": "node bin/weapp.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "execa": "9.3.0",
+    "fs-extra": "^11.2.0",
+    "pathe": "^1.1.2"
+  }
+}
