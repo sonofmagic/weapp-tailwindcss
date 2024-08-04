@@ -22,5 +22,7 @@
     "tailwindcss-weapp": "0.0.0",
     "website": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "happy-falcons-hear"
+  ]
 }
