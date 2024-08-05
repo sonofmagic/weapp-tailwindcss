@@ -13,6 +13,7 @@
     "open": "weapp open -p"
   },
   "devDependencies": {
+    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*"
   }
 }

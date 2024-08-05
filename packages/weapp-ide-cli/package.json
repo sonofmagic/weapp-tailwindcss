@@ -1,7 +1,8 @@
 {
   "name": "weapp-ide-cli",
+  "type": "module",
   "version": "1.0.1",
-  "description": "让微信开发者工具，用起来更加方便吧！",
+  "description": "让微信开发者工具，用起来更加方便！",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss",
@@ -24,12 +25,14 @@
     "mini",
     "miniprogram"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
   "bin": {
-    "weapp": "bin/weapp.js",
-    "weapp-ide-cli": "bin/weapp.js"
+    "weapp": "src/bin.js"
   },
   "files": [
     "bin",
@@ -47,9 +50,24 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      }
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "bin": {
+      "weapp": "bin/weapp.js",
+      "weapp-ide-cli": "bin/weapp.js"
+    }
   },
   "dependencies": {
+    "consola": "^3.2.3",
     "execa": "9.3.0",
     "fs-extra": "^11.2.0",
     "pathe": "^1.1.2"

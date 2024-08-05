@@ -12,6 +12,7 @@
     "build": "weapp-vite build"
   },
   "devDependencies": {
+    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*"
   }
 }
