@@ -66,6 +66,12 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
     {
       name: 'weapp-vite:pre',
       enforce: 'pre',
+      // config(config, env) {
+      //   console.log(config, env)
+      // },
+      // options(options) {
+      //   console.log(options)
+      // },
       configResolved(config) {
         config.build.rollupOptions.input = input
         configResolved = config

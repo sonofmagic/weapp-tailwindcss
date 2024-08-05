@@ -2,8 +2,27 @@ import path from 'node:path'
 import fs from 'fs-extra'
 import { get, set } from '@weapp-core/shared'
 
-export function updateProjectConfig(options: { root: string, dest?: string }) {
-  const { root, dest } = options
+export interface SetMethod {
+  (path: set.InputType, value: any, options?: set.Options): void
+}
+
+export interface SharedUpdateOptions {
+  root: string
+  dest?: string
+  write?: boolean
+  cb?: (set: SetMethod) => void
+}
+
+export interface UpdateProjectConfigOptions extends SharedUpdateOptions {
+
+}
+
+export interface UpdatePackageJsonOptions extends SharedUpdateOptions {
+  command?: string
+}
+
+export function updateProjectConfig(options: UpdateProjectConfigOptions) {
+  const { root, dest, cb, write = true } = options
   const projectConfigFilename = 'project.config.json'
   const projectConfigPath = path.resolve(root, projectConfigFilename)
   if (fs.existsSync(projectConfigPath)) {
@@ -23,7 +42,11 @@ export function updateProjectConfig(options: { root: string, dest?: string }) {
       set(projectConfig, 'miniprogramRoot', 'dist/')
       set(projectConfig, 'srcMiniprogramRoot', 'dist/')
       set(projectConfig, 'setting.packNpmManually', true)
-
+      cb?.(
+        (...args) => {
+          set(projectConfig, ...args)
+        },
+      )
       if (Array.isArray(get(projectConfig, 'setting.packNpmRelationList'))) {
         const x = projectConfig.setting.packNpmRelationList.find(
           x => x.packageJsonPath === './package.json' && x.miniprogramNpmDistDir === './dist',
@@ -43,11 +66,15 @@ export function updateProjectConfig(options: { root: string, dest?: string }) {
           },
         ])
       }
-      fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
-        spaces: 2,
-      })
+      if (write) {
+        fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
+          spaces: 2,
+        })
+      }
 
       console.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
+
+      return projectConfig
     }
     catch {
       console.warn(`✨ 设置 ${projectConfigFilename} 配置文件失败!`)
@@ -58,8 +85,8 @@ export function updateProjectConfig(options: { root: string, dest?: string }) {
   }
 }
 
-export function updatePackageJson(options: { root: string, dest?: string, command?: string }) {
-  const { root, dest, command } = options
+export function updatePackageJson(options: UpdatePackageJsonOptions) {
+  const { root, dest, command, cb, write = true } = options
   const packageJsonFilename = 'package.json'
   const packageJsonPath = path.resolve(root, packageJsonFilename)
   if (fs.existsSync(packageJsonPath)) {
@@ -69,17 +96,41 @@ export function updatePackageJson(options: { root: string, dest?: string, comman
       }
       set(packageJson, 'scripts.dev', `${command} dev`)
       set(packageJson, 'scripts.build', `${command} build`)
+      cb?.(
+        (...args) => {
+          set(packageJson, ...args)
+        },
+      )
+      if (write) {
+        fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
+          spaces: 2,
+        })
+      }
 
-      fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
-        spaces: 2,
-      })
+      return packageJson
     }
     catch { }
   }
+}
+
+export function initViteConfigFile(options: SharedUpdateOptions) {
+  const { root, write = true } = options
+  const viteConfigFile = path.resolve(root, 'vite.config.ts')
+  const code = `import { defineConfig } from 'weapp-vite/config'
+
+export default defineConfig({})
+`
+  if (write) {
+    fs.outputFileSync(viteConfigFile, code, 'utf8')
+  }
+  return code
 }
 
 export function initConfig(options: { root: string, command?: string }) {
   const { root, command } = options
   updateProjectConfig({ root })
   updatePackageJson({ root, command })
+  if (command === 'weapp-vite') {
+    initViteConfigFile({ root })
+  }
 }
