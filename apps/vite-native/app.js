@@ -2,7 +2,7 @@ const { formatTime } = require('./utils/util')
 // app.js
 App({
   data: {
-    time: formatTime('xx'),
+    time: formatTime(new Date()),
   },
   onLaunch() {
     // 展示本地存储能力

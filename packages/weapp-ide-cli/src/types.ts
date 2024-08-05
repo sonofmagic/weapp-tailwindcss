@@ -1,8 +1,8 @@
-export interface IBaseConfig {
+export interface BaseConfig {
   cliPath: string
 }
 
-export interface IAliasEntry {
+export interface AliasEntry {
   find: string
   replacement: string
 }
