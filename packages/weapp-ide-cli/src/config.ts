@@ -1,4 +1,5 @@
 import fs from 'fs-extra'
+import logger from './logger'
 
 import {
   defaultCustomConfigDirPath,
@@ -6,9 +7,9 @@ import {
   defaultPath,
 } from './defaults'
 
-import type { IBaseConfig } from './types'
+import type { BaseConfig } from './types'
 
-export async function createCustomConfig(params: IBaseConfig) {
+export async function createCustomConfig(params: BaseConfig) {
   const isExisted = await fs.exists(defaultCustomConfigDirPath)
   if (!isExisted) {
     await fs.mkdir(defaultCustomConfigDirPath, { recursive: true })
@@ -27,14 +28,14 @@ export async function createCustomConfig(params: IBaseConfig) {
     },
   )
 }
-export async function getConfig(): Promise<IBaseConfig> {
+export async function getConfig(): Promise<BaseConfig> {
   const isExisted = await fs.exists(defaultCustomConfigFilePath)
   if (isExisted) {
     const content = await fs.readFile(defaultCustomConfigFilePath, {
       encoding: 'utf8',
     })
     const config = JSON.parse(content)
-    console.log('> 自定义cli路径：', config.cliPath)
+    logger.log('> 自定义cli路径：', config.cliPath)
     return config
   }
   else {

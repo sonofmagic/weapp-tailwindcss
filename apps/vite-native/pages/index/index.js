@@ -14,7 +14,7 @@ Page({
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
-    time: formatTime('xxx'),
+    time: formatTime(new Date()),
   },
   bindViewTap() {
     wx.navigateTo({

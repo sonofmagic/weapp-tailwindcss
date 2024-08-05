@@ -1,7 +1,7 @@
 import process from 'node:process'
 import path from 'pathe'
 import { execa } from 'execa'
-import type { IAliasEntry } from './types'
+import type { AliasEntry } from './types'
 
 export async function execute(cliPath: string, argv: string[]) {
   const task = execa(cliPath, argv)
@@ -23,7 +23,7 @@ export function resolvePath(filePath: string) {
   }
 }
 
-function alias(argv: string[], entry: IAliasEntry) {
+function alias(argv: string[], entry: AliasEntry) {
   let findIdx = argv.indexOf(entry.find)
   // alias -p as --project
   if (findIdx > -1) {
@@ -64,7 +64,7 @@ function pathCompat(argv: string[], option: string) {
   return argv
 }
 
-export function createAlias(entry: IAliasEntry) {
+export function createAlias(entry: AliasEntry) {
   return function (argv: string[]) {
     return alias(argv, entry)
   }

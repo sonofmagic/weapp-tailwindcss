@@ -2,6 +2,10 @@ import path from 'node:path'
 import os from 'node:os'
 
 const homedir = os.homedir()
+
+/**
+ * 微信开发者工具只有2个平台
+ */
 const SupportedPlatformsMap = {
   Windows_NT: 'Windows_NT',
   Darwin: 'Darwin',
