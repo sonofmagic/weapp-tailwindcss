@@ -5,7 +5,6 @@ exports[`index > vite-native callback 1`] = `
   "author": "",
   "description": "",
   "devDependencies": {
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -16,7 +15,7 @@ exports[`index > vite-native callback 1`] = `
   "scripts": {
     "build": "weapp-vite build",
     "dev": "weapp-vite dev",
-    "open": "weapp open -p",
+    "open": "weapp-vite open",
   },
   "type": "module",
   "version": "1.0.0",
@@ -85,6 +84,7 @@ exports[`index > vite-native-skyline callback 1`] = `
   "scripts": {
     "build": "weapp-vite build",
     "dev": "weapp-vite dev",
+    "open": "weapp-vite open",
   },
   "type": "module",
   "version": "1.0.0",
@@ -153,6 +153,7 @@ exports[`index > vite-native-ts callback 1`] = `
   "scripts": {
     "build": "weapp-vite build",
     "dev": "weapp-vite dev",
+    "open": "weapp-vite open",
   },
   "type": "module",
   "version": "1.0.0",
@@ -229,6 +230,7 @@ exports[`index > vite-native-ts-skyline callback 1`] = `
   "scripts": {
     "build": "weapp-vite build",
     "dev": "weapp-vite dev",
+    "open": "weapp-vite open",
   },
   "type": "module",
   "version": "1.0.0",

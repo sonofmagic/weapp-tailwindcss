@@ -12,7 +12,6 @@
   },
   "devDependencies": {
     "miniprogram-api-typings": "^3.12.2",
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*"
   }
 }

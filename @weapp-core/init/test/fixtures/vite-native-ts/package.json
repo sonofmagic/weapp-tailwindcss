@@ -8,7 +8,8 @@
   "keywords": [],
   "scripts": {
     "dev": "weapp-vite dev",
-    "build": "weapp-vite build"
+    "build": "weapp-vite build",
+    "open": "weapp-vite open"
   },
   "devDependencies": {
     "miniprogram-api-typings": "^3.12.2",

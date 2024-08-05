@@ -11,10 +11,9 @@
   "scripts": {
     "dev": "weapp-vite dev",
     "build": "weapp-vite build",
-    "open": "weapp open -p"
+    "open": "weapp-vite open"
   },
   "devDependencies": {
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*"
   }
 }
