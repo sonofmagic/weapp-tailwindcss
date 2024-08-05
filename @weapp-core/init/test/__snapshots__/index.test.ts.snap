@@ -1,0 +1,290 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`index > vite-native callback 1`] = `
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "weapp-ide-cli": "workspace:*",
+    "weapp-vite": "workspace:*",
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "vite-native",
+  "private": true,
+  "scripts": {
+    "build": "weapp-vite build",
+    "dev": "weapp-vite dev",
+    "open": "weapp open -p",
+  },
+  "type": "module",
+  "version": "1.0.0",
+}
+`;
+
+exports[`index > vite-native callback 2`] = `
+{
+  "appid": "wx6ffee4673b257014",
+  "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "auto",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "coverView": true,
+    "enhance": true,
+    "es6": true,
+    "minified": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": true,
+    "showShadowRootInWxmlPanel": true,
+  },
+  "srcMiniprogramRoot": "dist/",
+}
+`;
+
+exports[`index > vite-native vite.config.ts 1`] = `
+"import { defineConfig } from 'weapp-vite/config'
+
+export default defineConfig({})
+"
+`;
+
+exports[`index > vite-native-skyline callback 1`] = `
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "weapp-ide-cli": "workspace:*",
+    "weapp-vite": "workspace:*",
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "vite-native-skyline",
+  "private": true,
+  "scripts": {
+    "build": "weapp-vite build",
+    "dev": "weapp-vite dev",
+  },
+  "type": "module",
+  "version": "1.0.0",
+}
+`;
+
+exports[`index > vite-native-skyline callback 2`] = `
+{
+  "appid": "wx6ffee4673b257014",
+  "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "auto",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "coverView": true,
+    "enhance": true,
+    "es6": true,
+    "minified": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": true,
+    "showShadowRootInWxmlPanel": true,
+  },
+  "srcMiniprogramRoot": "dist/",
+}
+`;
+
+exports[`index > vite-native-skyline vite.config.ts 1`] = `
+"import { defineConfig } from 'weapp-vite/config'
+
+export default defineConfig({})
+"
+`;
+
+exports[`index > vite-native-ts callback 1`] = `
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.2",
+    "weapp-ide-cli": "workspace:*",
+    "weapp-vite": "workspace:*",
+  },
+  "keywords": [],
+  "license": "",
+  "name": "vite-native-ts",
+  "private": true,
+  "scripts": {
+    "build": "weapp-vite build",
+    "dev": "weapp-vite dev",
+  },
+  "type": "module",
+  "version": "1.0.0",
+}
+`;
+
+exports[`index > vite-native-ts callback 2`] = `
+{
+  "appid": "wx6ffee4673b257014",
+  "compileType": "miniprogram",
+  "condition": {},
+  "description": "项目配置文件",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "compileHotReLoad": false,
+    "coverView": false,
+    "enhance": false,
+    "ignoreUploadUnusedFiles": true,
+    "minified": false,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": false,
+    "showShadowRootInWxmlPanel": false,
+    "skylineRenderEnable": true,
+    "useCompilerPlugins": [
+      "typescript",
+    ],
+  },
+  "simulatorPluginLibVersion": {},
+  "simulatorType": "wechat",
+  "srcMiniprogramRoot": "dist/",
+}
+`;
+
+exports[`index > vite-native-ts vite.config.ts 1`] = `
+"import { defineConfig } from 'weapp-vite/config'
+
+export default defineConfig({})
+"
+`;
+
+exports[`index > vite-native-ts-skyline callback 1`] = `
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.2",
+    "weapp-ide-cli": "workspace:*",
+    "weapp-vite": "workspace:*",
+  },
+  "keywords": [],
+  "license": "",
+  "name": "vite-native-ts-skyline",
+  "private": true,
+  "scripts": {
+    "build": "weapp-vite build",
+    "dev": "weapp-vite dev",
+  },
+  "type": "module",
+  "version": "1.0.0",
+}
+`;
+
+exports[`index > vite-native-ts-skyline callback 2`] = `
+{
+  "appid": "wx6ffee4673b257014",
+  "compileType": "miniprogram",
+  "condition": {},
+  "description": "项目配置文件",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2,
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "dist/",
+  "packOptions": {
+    "ignore": [],
+    "include": [],
+  },
+  "setting": {
+    "babelSetting": {
+      "disablePlugins": [],
+      "ignore": [],
+      "outputPath": "",
+    },
+    "compileHotReLoad": false,
+    "coverView": false,
+    "enhance": false,
+    "ignoreUploadUnusedFiles": true,
+    "minified": false,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "miniprogramNpmDistDir": "./dist",
+        "packageJsonPath": "./package.json",
+      },
+    ],
+    "postcss": false,
+    "showShadowRootInWxmlPanel": false,
+    "skylineRenderEnable": true,
+    "useCompilerPlugins": [
+      "typescript",
+    ],
+  },
+  "simulatorPluginLibVersion": {},
+  "simulatorType": "wechat",
+  "srcMiniprogramRoot": "dist/",
+}
+`;
+
+exports[`index > vite-native-ts-skyline vite.config.ts 1`] = `
+"import { defineConfig } from 'weapp-vite/config'
+
+export default defineConfig({})
+"
+`;
