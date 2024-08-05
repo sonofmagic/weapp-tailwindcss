@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@ast-grep/napi':
-        specifier: ^0.25.5
-        version: 0.25.5
+        specifier: ^0.25.6
+        version: 0.25.6
       '@babel/core':
         specifier: ^7.25.2
         version: 7.25.2
@@ -399,8 +399,8 @@ importers:
         specifier: ^1.8.1
         version: 1.8.1(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@22.1.0)(typescript@5.4.5)))
       '@iconify-json/mdi':
-        specifier: ^1.1.67
-        version: 1.1.67
+        specifier: ^1.1.68
+        version: 1.1.68
       '@types/lodash':
         specifier: ^4.17.6
         version: 4.17.7
@@ -436,11 +436,11 @@ importers:
         specifier: ^1.8.1
         version: 1.8.1(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@22.1.0)(typescript@5.4.5)))
       '@iconify-json/lucide':
-        specifier: ^1.1.204
-        version: 1.1.204
+        specifier: ^1.1.205
+        version: 1.1.205
       '@iconify-json/mdi':
-        specifier: ^1.1.67
-        version: 1.1.67
+        specifier: ^1.1.68
+        version: 1.1.68
       '@weapp-tailwindcss/cli':
         specifier: workspace:*
         version: link:../../plugins/cli
@@ -899,14 +899,14 @@ importers:
         specifier: ^1.1.43
         version: 1.1.43
       '@iconify-json/mdi':
-        specifier: ^1.1.67
-        version: 1.1.67
+        specifier: ^1.1.68
+        version: 1.1.68
       '@iconify-json/ri':
-        specifier: ^1.1.21
-        version: 1.1.21
+        specifier: ^1.1.22
+        version: 1.1.22
       '@iconify-json/svg-spinners':
-        specifier: ^1.1.2
-        version: 1.1.2
+        specifier: ^1.1.3
+        version: 1.1.3
       '@rollup/plugin-commonjs':
         specifier: ^26.0.1
         version: 26.0.1(rollup@4.20.0)
@@ -923,8 +923,8 @@ importers:
         specifier: ^8.4.40
         version: 8.4.40
       postcss-pxtransform:
-        specifier: ^3.6.34
-        version: 3.6.34(postcss@8.4.40)
+        specifier: ^4.0.4
+        version: 4.0.4(postcss@8.4.40)
       postcss-rem-to-responsive-pixel:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1189,66 +1189,66 @@ packages:
   '@ast-core/escape@1.0.1':
     resolution: {integrity: sha512-/kVjBkDzYrSW1S+gTBCuOfhnNkge9qZFJgLT+MOZdmPN4Vts36S60uU5br3ozoxpJ1eRGe6pGy7/EfcOpFFHlA==}
 
-  '@ast-grep/napi-darwin-arm64@0.25.5':
-    resolution: {integrity: sha512-Wv1mlKbhqxR+NPQlxxrz6StBHi9uatlHlKs3UxdRR3GRTvRJIs70BmLkPEoN7a8isDKfwEb0EgXJUuper8wcpQ==}
+  '@ast-grep/napi-darwin-arm64@0.25.6':
+    resolution: {integrity: sha512-67NxIdCLq552yLTIcSaB0id3BKj0TO02echHVMG8WJlvi2NRZ/53rgpm969jdFjyXjJbQWD4KepZeYs5YtBraQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@ast-grep/napi-darwin-x64@0.25.5':
-    resolution: {integrity: sha512-fFcJk0V9jW37gF5qSRY/icIL2abqbmw+Y27xCkGos3dfrAN438cAKV3SXo22Is0URZ7JmYtcrfmjVlMp0FuwJQ==}
+  '@ast-grep/napi-darwin-x64@0.25.6':
+    resolution: {integrity: sha512-jepByMrFsUtDviO6ASYxUTyue8QOEpSn+BEdACXGR2DR3imeAdPIKycsrog+0Ci3RJ8aLXzCN9HQI0YFvoiBNw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@ast-grep/napi-linux-arm64-gnu@0.25.5':
-    resolution: {integrity: sha512-ji+SFE2myVo5cJDoKeGQrIv6+7ZnoK8xs6Ox+zW/LPV6FQ6ARcoB/MIHDdYm0Rd7+ldp1srNDD5yC8cb7s+v4w==}
+  '@ast-grep/napi-linux-arm64-gnu@0.25.6':
+    resolution: {integrity: sha512-sJqAHxZqWy/+fzgz/yhZUHttpC5IXL4BsHJ8+Or7vb3fd4AVqxQRmEvOr2l8sknTUvLYpQAwykhlxpNhZOIdnA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ast-grep/napi-linux-arm64-musl@0.25.5':
-    resolution: {integrity: sha512-k4v743+MSKPIfGPU3Z5bcNWniB/uvscyPMnUwhrLh6u7F9hI+Q52OhRpeyN1ml6MrA/P7DnVyDfukOf1fteM7A==}
+  '@ast-grep/napi-linux-arm64-musl@0.25.6':
+    resolution: {integrity: sha512-8d79uARsSCadvINHT7edk5wdmMLVhTKAYxDaJEkB7nuMHkEknNSJjMwUl4zDNJPgnxgwYUBQj5qDS5Q4ZGEc9w==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ast-grep/napi-linux-x64-gnu@0.25.5':
-    resolution: {integrity: sha512-3Lae/4P4cK1oxQ3x+98DGGXt5WZ0wBqpwVLDwKxyP93EG3AaPgaxbMyk+nU83YBGF8HxJw+3G8DFhVNMgaazrQ==}
+  '@ast-grep/napi-linux-x64-gnu@0.25.6':
+    resolution: {integrity: sha512-0F0Shj2+TAp2vZ7S5owcXInZ9R6FGUFzYyuQ8E1ErGrC31L8TQdSnC92Na4mOBuczDnGIj9l3p2y81JIadXtZg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ast-grep/napi-linux-x64-musl@0.25.5':
-    resolution: {integrity: sha512-NSlejHoxj/6FrkpQOKWnEDV2bUCWjjbIhgza2sQfELzBti0BTpQK1dLvNxhNfmQAAg0rCLT3f+J826/Y53DCqw==}
+  '@ast-grep/napi-linux-x64-musl@0.25.6':
+    resolution: {integrity: sha512-U/THQ22c/bhgEurPutTVzyqfjk5oU1DHIjujqkFkGjtyC0+/cmX3T3RA8cTnNnWlvZRLPFSgMlH9DhKHFnu8jA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ast-grep/napi-win32-arm64-msvc@0.25.5':
-    resolution: {integrity: sha512-nI22HIuXwaiVmUYE6t4hHVi9hOUNkPUjMzRPRiwGh1q4K96HsPR83CyHF8lsGids4IcejzALMsnsOLRZ+kXKrA==}
+  '@ast-grep/napi-win32-arm64-msvc@0.25.6':
+    resolution: {integrity: sha512-JgToqUSdheSnqZbqSUqArvU8YRTS2fyRuQZSGJFuKuJR/4ZGjT3AbItT+x2rqKKrZ/HZlSV/HTtKopvpimy0oQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@ast-grep/napi-win32-ia32-msvc@0.25.5':
-    resolution: {integrity: sha512-Eyz3k3p8POdht1lgxiNkfawGGdpQUGIIJg9w7HwV1zMQ6RdtuIIkOG316IZs2gFl4UIy7haFJNlZl55XAaHrEg==}
+  '@ast-grep/napi-win32-ia32-msvc@0.25.6':
+    resolution: {integrity: sha512-kZzw4iBll+/gDlkWLZsSlgxWWXCq2SIvDcrDapwgvamTkiPY3UJGEMk0PbLSwok/AbyUF1HnM0H4DLVulnv7gQ==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@ast-grep/napi-win32-x64-msvc@0.25.5':
-    resolution: {integrity: sha512-Q7+QCTdR9zdycTfiQ1/TZtSe4OeFI/UwMq08xzL7ActK/egmHl5jy6AQKnhu+SkE+Lo7dI2GfmgwhZgSKWcPCQ==}
+  '@ast-grep/napi-win32-x64-msvc@0.25.6':
+    resolution: {integrity: sha512-OlExtrHtEhtkdVjtW1F6nAkLCxO+mgOeNcECGYGW33Z3ByTN7I9kaSX+p6PTOa3TQP1qAgvZFkes8c3yCqI2Ng==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@ast-grep/napi@0.25.5':
-    resolution: {integrity: sha512-/X/oDv1sxVMslUNxAcDjKif+oD4SdaXGOqPB7vMWmPftBKyaR2mijbYXXRbI9dqCxyCwuHzyGYVJE/c3q2Os/Q==}
+  '@ast-grep/napi@0.25.6':
+    resolution: {integrity: sha512-vkOBXvPhjGyMWf0XZDMfY2FfyyinLy7w4AS3ICQ+PG32kCMBLw/9fr5gnpoRPNkYi2ZiMqIxg3NIUXtgTFOhVg==}
     engines: {node: '>= 10'}
 
   '@babel/code-frame@7.24.7':
@@ -2977,17 +2977,17 @@ packages:
   '@iconify-json/logos@1.1.43':
     resolution: {integrity: sha512-UtvL1yDHUr9dl1Tqihh6K9m5dmbYKOYyLf3i9aKhymSW76QjOCGjpgQc0PQ4GJCAdU1cAMu+WO61TgPxdonrlg==}
 
-  '@iconify-json/lucide@1.1.204':
-    resolution: {integrity: sha512-yu85ErrSULW+4/glQjfa+RhwNVq/N55nxQJMUSo2d/gojSr6DdyaoI/l/o6YkPrG0UEwvnP6nWDD8YEJSThVrA==}
+  '@iconify-json/lucide@1.1.205':
+    resolution: {integrity: sha512-PTA7UXYCRETE7DneGSW5XbUKCmyNYHp2KuM623NgTK3IjqdRbTw0dm2YPhsSZpaRswvHFFi71JtbKPHQTLfX+Q==}
 
-  '@iconify-json/mdi@1.1.67':
-    resolution: {integrity: sha512-00nllHES8hyACwIfgySlQgAE6MKgpr2wsKfpifMiZWZ9aXC5l4Jb0lR3lJSWwXgOW6kzAOdzC3T+2VOfBBZ13A==}
+  '@iconify-json/mdi@1.1.68':
+    resolution: {integrity: sha512-7//TKCiXLU6kNWeOJRTBbisofVO7rF1sD1TZTL4/V9nqlmVNczQ5IOY0GgKOTsitkcTnX9GXgrgbjw3OI5B69w==}
 
-  '@iconify-json/ri@1.1.21':
-    resolution: {integrity: sha512-ssU2CRaB4T83Q3cncCZtITholhYkH6gEL5XLmdMII6Xzn8bTCpDCkt+HdX4URc24uUMD0PGIaNLJUIAgdfLMjQ==}
+  '@iconify-json/ri@1.1.22':
+    resolution: {integrity: sha512-Pi0I54CFXYSfWlm4xIAGqyDvtibNEpSSyQvHrSrfxFgZgDtFum9tbtYmaTKK0wJWWzYzF3XIpIJTC9/KVYX3SQ==}
 
-  '@iconify-json/svg-spinners@1.1.2':
-    resolution: {integrity: sha512-Aab6SqkORaTJ1W+ooufn6C8BsBitrn3uk8iRQLPA6pjhyvQAhkKCGMctyXIL5ZjrycnoFVsZ4mx7KnwEMra8qg==}
+  '@iconify-json/svg-spinners@1.1.3':
+    resolution: {integrity: sha512-sP7m+/1Z42ROH3MO21ZRoAnYPOtcVVWqTveDyEl8nUCUcGJozYr0awLVqhKT0lUqEg6y2U2UdpHXelyV8beJ1w==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -10836,10 +10836,11 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
 
-  postcss-pxtransform@3.6.34:
-    resolution: {integrity: sha512-55xbzv6ACUSCld944anGXPjfseQIGJDEw71uL6+UoeeQqKCs3khVXcECiLlOdVBmK5p13MQgrNRw63KYRppohw==}
+  postcss-pxtransform@4.0.4:
+    resolution: {integrity: sha512-InzfJDiswg0x18+oFlOLUqTd7Z3/pHrWLvrjrWfjmq/k6bUskHHTJva0fQh0W/AByGTYj0ckVKtJ37IN/dor0g==}
+    engines: {node: '>= 18'}
     peerDependencies:
-      postcss: ^8.4.18
+      postcss: ^8
 
   postcss-reduce-idents@6.0.3:
     resolution: {integrity: sha512-G3yCqZDpsNPoQgbDUy3T0E6hqOQ5xigUtBQyrmq3tn2GxlyiL0yyl7H+T8ulQR6kOcHJ9t7/9H4/R2tv8tJbMA==}
@@ -13803,44 +13804,44 @@ snapshots:
 
   '@ast-core/escape@1.0.1': {}
 
-  '@ast-grep/napi-darwin-arm64@0.25.5':
+  '@ast-grep/napi-darwin-arm64@0.25.6':
     optional: true
 
-  '@ast-grep/napi-darwin-x64@0.25.5':
+  '@ast-grep/napi-darwin-x64@0.25.6':
     optional: true
 
-  '@ast-grep/napi-linux-arm64-gnu@0.25.5':
+  '@ast-grep/napi-linux-arm64-gnu@0.25.6':
     optional: true
 
-  '@ast-grep/napi-linux-arm64-musl@0.25.5':
+  '@ast-grep/napi-linux-arm64-musl@0.25.6':
     optional: true
 
-  '@ast-grep/napi-linux-x64-gnu@0.25.5':
+  '@ast-grep/napi-linux-x64-gnu@0.25.6':
     optional: true
 
-  '@ast-grep/napi-linux-x64-musl@0.25.5':
+  '@ast-grep/napi-linux-x64-musl@0.25.6':
     optional: true
 
-  '@ast-grep/napi-win32-arm64-msvc@0.25.5':
+  '@ast-grep/napi-win32-arm64-msvc@0.25.6':
     optional: true
 
-  '@ast-grep/napi-win32-ia32-msvc@0.25.5':
+  '@ast-grep/napi-win32-ia32-msvc@0.25.6':
     optional: true
 
-  '@ast-grep/napi-win32-x64-msvc@0.25.5':
+  '@ast-grep/napi-win32-x64-msvc@0.25.6':
     optional: true
 
-  '@ast-grep/napi@0.25.5':
+  '@ast-grep/napi@0.25.6':
     optionalDependencies:
-      '@ast-grep/napi-darwin-arm64': 0.25.5
-      '@ast-grep/napi-darwin-x64': 0.25.5
-      '@ast-grep/napi-linux-arm64-gnu': 0.25.5
-      '@ast-grep/napi-linux-arm64-musl': 0.25.5
-      '@ast-grep/napi-linux-x64-gnu': 0.25.5
-      '@ast-grep/napi-linux-x64-musl': 0.25.5
-      '@ast-grep/napi-win32-arm64-msvc': 0.25.5
-      '@ast-grep/napi-win32-ia32-msvc': 0.25.5
-      '@ast-grep/napi-win32-x64-msvc': 0.25.5
+      '@ast-grep/napi-darwin-arm64': 0.25.6
+      '@ast-grep/napi-darwin-x64': 0.25.6
+      '@ast-grep/napi-linux-arm64-gnu': 0.25.6
+      '@ast-grep/napi-linux-arm64-musl': 0.25.6
+      '@ast-grep/napi-linux-x64-gnu': 0.25.6
+      '@ast-grep/napi-linux-x64-musl': 0.25.6
+      '@ast-grep/napi-win32-arm64-msvc': 0.25.6
+      '@ast-grep/napi-win32-ia32-msvc': 0.25.6
+      '@ast-grep/napi-win32-x64-msvc': 0.25.6
 
   '@babel/code-frame@7.24.7':
     dependencies:
@@ -16736,19 +16737,19 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/lucide@1.1.204':
+  '@iconify-json/lucide@1.1.205':
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/mdi@1.1.67':
+  '@iconify-json/mdi@1.1.68':
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/ri@1.1.21':
+  '@iconify-json/ri@1.1.22':
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/svg-spinners@1.1.2':
+  '@iconify-json/svg-spinners@1.1.3':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -21465,9 +21466,9 @@ snapshots:
       '@typescript-eslint/parser': 6.21.0(eslint@9.8.0)(typescript@5.4.5)
       eslint: 9.8.0
       eslint-config-prettier: 9.1.0(eslint@9.8.0)
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint-plugin-n@16.4.0(eslint@9.8.0))(eslint-plugin-promise@6.1.1(eslint@9.8.0))(eslint@9.8.0)
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0))(eslint-plugin-n@16.4.0(eslint@9.8.0))(eslint-plugin-promise@6.1.1(eslint@9.8.0))(eslint@9.8.0)
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@9.8.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)
       eslint-plugin-n: 16.4.0(eslint@9.8.0)
       eslint-plugin-node: 11.1.0(eslint@9.8.0)
       eslint-plugin-promise: 6.1.1(eslint@9.8.0)
@@ -21482,10 +21483,10 @@ snapshots:
     dependencies:
       eslint: 9.8.0
 
-  eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint-plugin-n@16.4.0(eslint@9.8.0))(eslint-plugin-promise@6.1.1(eslint@9.8.0))(eslint@9.8.0):
+  eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0))(eslint-plugin-n@16.4.0(eslint@9.8.0))(eslint-plugin-promise@6.1.1(eslint@9.8.0))(eslint@9.8.0):
     dependencies:
       eslint: 9.8.0
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@9.8.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)
       eslint-plugin-n: 16.4.0(eslint@9.8.0)
       eslint-plugin-promise: 6.1.1(eslint@9.8.0)
 
@@ -21524,7 +21525,7 @@ snapshots:
       enhanced-resolve: 5.16.0
       eslint: 9.8.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@9.8.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
       is-core-module: 2.13.1
@@ -21637,7 +21638,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@9.8.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.8.0)(typescript@5.4.5))(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0):
     dependencies:
       array-includes: 3.1.7
       array.prototype.findlastindex: 1.2.3
@@ -26561,7 +26562,7 @@ snapshots:
       postcss: 8.4.40
       postcss-value-parser: 4.2.0
 
-  postcss-pxtransform@3.6.34(postcss@8.4.40):
+  postcss-pxtransform@4.0.4(postcss@8.4.40):
     dependencies:
       postcss: 8.4.40
 
