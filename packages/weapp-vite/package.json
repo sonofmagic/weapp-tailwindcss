@@ -37,13 +37,15 @@
     "@weapp-core/init": "workspace:^",
     "@weapp-core/shared": "workspace:^",
     "commander": "^12.1.0",
+    "consola": "^3.2.3",
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "klaw": "^4.1.0",
     "magic-string": "^0.30.11",
     "micromatch": "^4.0.7",
-    "pathe": "^1.1.2"
+    "pathe": "^1.1.2",
+    "weapp-ide-cli": "workspace:^"
   },
   "publishConfig": {
     "access": "public",

@@ -7,6 +7,10 @@ const argv = process.argv.slice(2)
 // https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html
 // https://developers.weixin.qq.com/miniprogram/dev/devtools/cli.html
 
-parse(argv).catch((err) => {
-  logger.error(err)
-})
+parse(argv)
+  .catch((err) => {
+    logger.error(err)
+  })
+  .finally(() => {
+    process.exit()
+  })

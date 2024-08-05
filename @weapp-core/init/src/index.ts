@@ -18,7 +18,7 @@ export interface UpdateProjectConfigOptions extends SharedUpdateOptions {
 }
 
 export interface UpdatePackageJsonOptions extends SharedUpdateOptions {
-  command?: string
+  command?: 'weapp-vite'
 }
 
 export function updateProjectConfig(options: UpdateProjectConfigOptions) {
@@ -96,6 +96,9 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
       }
       set(packageJson, 'scripts.dev', `${command} dev`)
       set(packageJson, 'scripts.build', `${command} build`)
+      if (command === 'weapp-vite') {
+        set(packageJson, 'scripts.open', `${command} open`)
+      }
       cb?.(
         (...args) => {
           set(packageJson, ...args)
@@ -126,7 +129,7 @@ export default defineConfig({})
   return code
 }
 
-export function initConfig(options: { root: string, command?: string }) {
+export function initConfig(options: { root: string, command?: 'weapp-vite' }) {
   const { root, command } = options
   updateProjectConfig({ root })
   updatePackageJson({ root, command })

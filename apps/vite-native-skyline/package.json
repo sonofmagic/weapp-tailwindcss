@@ -9,10 +9,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "weapp-vite dev",
-    "build": "weapp-vite build"
+    "build": "weapp-vite build",
+    "open": "weapp-vite open"
   },
   "devDependencies": {
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*"
   }
 }

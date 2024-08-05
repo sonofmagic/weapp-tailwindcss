@@ -499,18 +499,12 @@ importers:
 
   apps/vite-native:
     devDependencies:
-      weapp-ide-cli:
-        specifier: workspace:*
-        version: link:../../packages/weapp-ide-cli
       weapp-vite:
         specifier: workspace:*
         version: link:../../packages/weapp-vite
 
   apps/vite-native-skyline:
     devDependencies:
-      weapp-ide-cli:
-        specifier: workspace:*
-        version: link:../../packages/weapp-ide-cli
       weapp-vite:
         specifier: workspace:*
         version: link:../../packages/weapp-vite
@@ -520,9 +514,6 @@ importers:
       miniprogram-api-typings:
         specifier: ^3.12.2
         version: 3.12.2
-      weapp-ide-cli:
-        specifier: workspace:*
-        version: link:../../packages/weapp-ide-cli
       weapp-vite:
         specifier: workspace:*
         version: link:../../packages/weapp-vite
@@ -532,9 +523,6 @@ importers:
       miniprogram-api-typings:
         specifier: ^3.12.2
         version: 3.12.2
-      weapp-ide-cli:
-        specifier: workspace:*
-        version: link:../../packages/weapp-ide-cli
       weapp-vite:
         specifier: workspace:*
         version: link:../../packages/weapp-vite
@@ -686,6 +674,9 @@ importers:
       commander:
         specifier: ^12.1.0
         version: 12.1.0
+      consola:
+        specifier: ^3.2.3
+        version: 3.2.3
       debug:
         specifier: ^4.3.6
         version: 4.3.6
@@ -710,6 +701,9 @@ importers:
       vite:
         specifier: '>=2.6.0'
         version: 5.3.5(@types/node@22.1.0)(less@4.2.0)(lightningcss@1.25.1)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.3)
+      weapp-ide-cli:
+        specifier: workspace:^
+        version: link:../weapp-ide-cli
 
   plugins/cli:
     dependencies:
