@@ -941,8 +941,8 @@ importers:
         specifier: ^9.4.3
         version: 9.4.3(eslint@9.8.0)
       weapp-ide-cli:
-        specifier: ^1.0.0
-        version: 1.0.1
+        specifier: workspace:^
+        version: link:../packages/weapp-ide-cli
       weapp-tailwindcss:
         specifier: workspace:^
         version: link:../packages/weapp-tailwindcss
@@ -13231,10 +13231,6 @@ packages:
 
   wbuf@1.7.3:
     resolution: {integrity: sha512-O84QOnr0icsbFGLS0O3bI5FswxzRr8/gHwWkDlQFskhSPryQXvrTMxjxGP4+iWYoauLoBvfDpkrOauZ+0iZpDA==}
-
-  weapp-ide-cli@1.0.1:
-    resolution: {integrity: sha512-s0wrT8hB35HBz0/V7fhCp/WKU8jHyHzzYhDAidoAPlGMFNxBGA7ES2w/tHKst/vXz+UR4sp8E2i957cxb3ZnEQ==}
-    hasBin: true
 
   weapp-tailwindcss-children@0.1.0:
     resolution: {integrity: sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==}
@@ -29426,10 +29422,6 @@ snapshots:
   wbuf@1.7.3:
     dependencies:
       minimalistic-assert: 1.0.1
-
-  weapp-ide-cli@1.0.1:
-    dependencies:
-      execa: 5.1.1
 
   weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@22.1.0)(typescript@5.4.5))):
     dependencies:
