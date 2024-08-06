@@ -2,7 +2,8 @@ import path from 'pathe'
 import { build } from 'vite'
 import type { RollupOutput } from 'rollup'
 
-import { getEntries, runProd } from '@/build'
+import { runProd } from '@/build'
+import { getEntries } from '@/entry'
 
 describe('build', () => {
   describe('rollup', () => {

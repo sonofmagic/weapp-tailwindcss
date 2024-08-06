@@ -387,6 +387,12 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0
 
+  '@weapp-core/logger':
+    dependencies:
+      consola:
+        specifier: ^3.2.3
+        version: 3.2.3
+
   '@weapp-core/shared': {}
 
   apps/native:
@@ -584,9 +590,9 @@ importers:
 
   packages/weapp-ide-cli:
     dependencies:
-      consola:
-        specifier: ^3.2.3
-        version: 3.2.3
+      '@weapp-core/logger':
+        specifier: workspace:^
+        version: link:../../@weapp-core/logger
       execa:
         specifier: 9.3.0
         version: 9.3.0
@@ -668,15 +674,15 @@ importers:
       '@weapp-core/init':
         specifier: workspace:^
         version: link:../../@weapp-core/init
+      '@weapp-core/logger':
+        specifier: workspace:^
+        version: link:../../@weapp-core/logger
       '@weapp-core/shared':
         specifier: workspace:^
         version: link:../../@weapp-core/shared
       commander:
         specifier: ^12.1.0
         version: 12.1.0
-      consola:
-        specifier: ^3.2.3
-        version: 3.2.3
       debug:
         specifier: ^4.3.6
         version: 4.3.6

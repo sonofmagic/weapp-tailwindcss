@@ -1,3 +1,3 @@
-import { createConsola } from 'consola'
+import logger from '@weapp-core/logger'
 
-export default createConsola()
+export default logger
