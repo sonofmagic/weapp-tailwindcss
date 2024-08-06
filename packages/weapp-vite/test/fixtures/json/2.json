@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "list": "../components/list",
+    "t-button": "tdesign-miniprogram/button/button",
+    "van-button": "@vant/weapp/button/index"
+  }
+}
