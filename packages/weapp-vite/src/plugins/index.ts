@@ -6,6 +6,7 @@ import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import fg from 'fast-glob'
 import { isCSSRequest, preprocessCSS } from 'vite'
 import { defaultExcluded, supportedCssExtensions } from '../utils'
+import { getEntries } from '../entry'
 
 export interface ParseRequestResponse {
   filename: string
@@ -28,7 +29,6 @@ export function parseRequest(id: string): ParseRequestResponse {
 }
 export interface VitePluginWeappOptions {
   cwd?: string
-  entries?: string[]
   src?: string
 }
 
@@ -44,51 +44,45 @@ function getRealPath(res: ParseRequestResponse) {
 }
 
 export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
-  const { cwd, entries: _entries, src } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
+  const { cwd, src } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
     src: '',
   })
   function relative(p: string) {
     return path.relative(cwd, p)
   }
 
-  const input = _entries
-    .reduce<Record<string, string>>((acc, cur) => {
-      acc[relative(cur)] = cur
-      return acc
-    }, {})
-  const entries = Array.isArray(_entries) ? new Set(_entries) : _entries
-
   const stylesIds = new Set<string>()
 
   let configResolved: ResolvedConfig
+  let entriesSet: Set<string> = new Set()
 
   return [
     {
       name: 'weapp-vite:pre',
       enforce: 'pre',
       // config->configResolved->|watching|options->buildStart
-      // config(config, env) {
-      //   // console.log('config', config, env)
-      // },
-      options(options) {
-        // console.log('options', options)
-        options.input = input
+      async options(options) {
+        const entries = await getEntries(cwd)
+        if (entries) {
+          const input = entries.all
+            .reduce<Record<string, string>>((acc, cur) => {
+              acc[relative(cur)] = cur
+              return acc
+            }, {})
+          entriesSet = Array.isArray(entries.all) ? new Set(entries.all) : entries.all
+          options.input = input
+        }
       },
       configResolved(config) {
-        // console.log('configResolved', config)
-        // config.build.rollupOptions.input = input
         configResolved = config
       },
-      // buildStart() {
-      //   console.log('buildStart')
-      // },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
           return source.replace(/\.wxss$/, '.css?wxss')
         }
       },
       load(id) {
-        if (entries.has(id)) {
+        if (entriesSet.has(id)) {
           const base = removeExtension(id)
           const ms = new MagicString(fs.readFileSync(id, 'utf8'))
           for (const ext of supportedCssExtensions) {
