@@ -80,7 +80,7 @@
     "@vue/runtime-core": "^3.4.21",
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^3.12.2",
-    "postcss": "^8.4.40",
+    "postcss": "^8.4.41",
     "postcss-pxtransform": "^4.0.4",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "prettier": "^3.3.3",
