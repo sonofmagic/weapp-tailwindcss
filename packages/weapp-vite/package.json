@@ -35,9 +35,9 @@
   },
   "dependencies": {
     "@weapp-core/init": "workspace:^",
+    "@weapp-core/logger": "workspace:^",
     "@weapp-core/shared": "workspace:^",
     "commander": "^12.1.0",
-    "consola": "^3.2.3",
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",

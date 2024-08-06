@@ -66,16 +66,22 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
     {
       name: 'weapp-vite:pre',
       enforce: 'pre',
+      // config->configResolved->|watching|options->buildStart
       // config(config, env) {
-      //   console.log(config, env)
+      //   // console.log('config', config, env)
       // },
-      // options(options) {
-      //   console.log(options)
-      // },
+      options(options) {
+        // console.log('options', options)
+        options.input = input
+      },
       configResolved(config) {
-        config.build.rollupOptions.input = input
+        // console.log('configResolved', config)
+        // config.build.rollupOptions.input = input
         configResolved = config
       },
+      // buildStart() {
+      //   console.log('buildStart')
+      // },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
           return source.replace(/\.wxss$/, '.css?wxss')
