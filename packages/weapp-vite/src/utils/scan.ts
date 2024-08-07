@@ -1,7 +1,8 @@
 import path from 'pathe'
 import fs from 'fs-extra'
 import klaw from 'klaw'
-import { addExtension, removeExtension } from '@weapp-core/shared'
+import { addExtension, isObject, removeExtension } from '@weapp-core/shared'
+import type { Dep, Entry, Subpackage } from '../types'
 
 export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
 // import { isCSSRequest } from 'is-css-request'
@@ -16,14 +17,54 @@ export function isPage(wxmlPath: string) {
   return Boolean(searchPageEntry(wxmlPath))
 }
 
-export function searchAppEntry(root: string) {
+export function searchAppEntry(root: string): Entry | undefined {
   const extensions = ['js', 'ts']
-  const appJson = path.resolve(root, 'app.json')
-  if (fs.existsSync(appJson)) {
+  const appJsonPath = path.resolve(root, 'app.json')
+  if (fs.existsSync(appJsonPath)) {
     for (const ext of extensions) {
       const entryPath = path.resolve(root, addExtension('app', `.${ext}`))
       if (fs.existsSync(entryPath)) {
-        return entryPath
+        const appJson = fs.readJSONSync(appJsonPath, { throws: false })
+        const deps: Dep[] = []
+        if (appJson) {
+          if (Array.isArray(appJson.pages)) {
+            deps.push(...(appJson.pages as string[]).map<Dep>((x) => {
+              return {
+                path: x,
+                type: 'page',
+              }
+            }))
+          }
+          if (isObject(appJson.usingComponents)) {
+            deps.push(...(Object.values(appJson.usingComponents) as string[]).map<Dep>((x) => {
+              return {
+                path: x,
+                type: 'component',
+              }
+            }))
+          }
+          if (Array.isArray(appJson.subpackages)) {
+            for (const subpackage of appJson.subpackages) {
+              // 独立分包中不能依赖主包和其他分包中的内容，包括 js 文件、template、wxss、自定义组件、插件等（使用 分包异步化 时 js 文件、自定义组件、插件不受此条限制）
+              deps.push(...(subpackage as Subpackage[]).map<Dep>((x) => {
+                return {
+                  type: 'subpackage',
+                  ...x,
+                }
+              }))
+              // subpackage.root
+              // subpackage.pages
+              // subpackage.entry
+              // subpackage.name
+              // subpackage.independent
+            }
+          }
+        }
+        return {
+          path: entryPath,
+          deps,
+          type: 'app',
+        }
       }
     }
   }
@@ -55,7 +96,7 @@ export function isComponent(wxmlPath: string) {
   return false
 }
 
-export function getWxmlEntry(wxmlPath: string) {
+export function getWxmlEntry(wxmlPath: string): Entry | undefined {
   const pageEntry = searchPageEntry(wxmlPath)
   if (pageEntry) {
     const jsonPath = addExtension(removeExtension(wxmlPath), '.json')
@@ -63,54 +104,34 @@ export function getWxmlEntry(wxmlPath: string) {
       const json = fs.readJsonSync(jsonPath, { throws: false })
       if (json && json.component) {
         return {
+          deps: [],
           path: pageEntry,
           type: 'component',
         }
       }
     }
     return {
+      deps: [],
       path: pageEntry,
       type: 'page',
     }
   }
 }
 
-export function getProjectConfig(root: string, options?: { ignorePrivate?: boolean }) {
-  const baseJsonPath = path.resolve(root, 'project.config.json')
-  const privateJsonPath = path.resolve(root, 'project.private.config.json')
-  let baseJson = {}
-  let privateJson = {}
-  if (fs.existsSync(baseJsonPath)) {
-    baseJson = fs.readJsonSync(baseJsonPath) || {}
-  }
-  else {
-    throw new Error(`在 ${root} 目录下找不到 project.config.json`)
-  }
-  if (!options?.ignorePrivate) {
-    if (fs.existsSync(privateJsonPath)) {
-      privateJson = fs.readJsonSync(privateJsonPath, {
-        throws: false,
-      }) || {}
-    }
-  }
-
-  return Object.assign({}, privateJson, baseJson)
-}
-
 export async function scanEntries(root: string, options?: { relative?: boolean, filter?: (id: string | unknown) => boolean }) {
   const appEntry = searchAppEntry(root)
   // TODO exclude 需要和 output 配套
 
-  function getPath(to: string) {
-    if (options?.relative) {
-      return path.relative(root, to)
-    }
-    return to
-  }
+  // function getPath(to: string) {
+  //   if (options?.relative) {
+  //     return path.relative(root, to)
+  //   }
+  //   return to
+  // }
 
   if (appEntry) {
-    const pageEntries = new Set<string>()
-    const componentEntries = new Set<string>()
+    const pageEntries = new Set<Entry>()
+    const componentEntries = new Set<Entry>()
 
     for await (
       const file of klaw(root, {
@@ -122,22 +143,21 @@ export async function scanEntries(root: string, options?: { relative?: boolean, 
           const entry = getWxmlEntry(file.path)
           if (entry) {
             if (entry.type === 'component') {
-              componentEntries.add(getPath(entry.path))
+              componentEntries.add(entry)
             }
             else if (entry.type === 'page') {
-              pageEntries.add(getPath(entry.path))
+              pageEntries.add(entry)
             }
           }
         }
       }
     }
-    const app = getPath(appEntry)
+
     return {
-      app,
+      app: appEntry,
       pages: pageEntries,
       components: componentEntries,
-      all: [app, ...pageEntries, ...componentEntries],
-      // css: [...cssEntries],
+      subpackages: [],
     }
   }
 }

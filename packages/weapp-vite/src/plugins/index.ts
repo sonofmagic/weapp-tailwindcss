@@ -7,26 +7,10 @@ import fg from 'fast-glob'
 import { isCSSRequest, preprocessCSS } from 'vite'
 import { defaultExcluded, supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
+import { createPluginCache } from '../cache'
+import type { ParseRequestResponse } from './parse'
+import { parseRequest } from './parse'
 
-export interface ParseRequestResponse {
-  filename: string
-  query: { wxss?: true }
-}
-
-// const virtualModuleId = 'virtual:weapp-vite-pages'
-// const resolvedVirtualModuleId = '\0' + virtualModuleId
-
-export function parseRequest(id: string): ParseRequestResponse {
-  const [filename, rawQuery] = id.split(`?`, 2)
-  const query = Object.fromEntries(new URLSearchParams(rawQuery)) as { wxss?: true }
-  if (query.wxss !== null) {
-    query.wxss = true
-  }
-  return {
-    filename,
-    query,
-  }
-}
 export interface VitePluginWeappOptions {
   cwd?: string
   src?: string
@@ -51,11 +35,21 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
     return path.relative(cwd, p)
   }
 
+  function getInputOption(entries: string[]) {
+    return entries
+      .reduce<Record<string, string>>((acc, cur) => {
+        acc[relative(cur)] = cur
+        return acc
+      }, {})
+  }
+
   const stylesIds = new Set<string>()
 
   let configResolved: ResolvedConfig
   let entriesSet: Set<string> = new Set()
-
+  // TODO
+  // eslint-disable-next-line ts/no-unused-vars
+  const cacheInstance = createPluginCache(Object.create(null))
   return [
     {
       name: 'weapp-vite:pre',
@@ -64,11 +58,9 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
       async options(options) {
         const entries = await getEntries(cwd)
         if (entries) {
-          const input = entries.all
-            .reduce<Record<string, string>>((acc, cur) => {
-              acc[relative(cur)] = cur
-              return acc
-            }, {})
+          // @ts-ignore
+          const input = getInputOption(entries.all)
+          // @ts-ignore
           entriesSet = Array.isArray(entries.all) ? new Set(entries.all) : entries.all
           options.input = input
         }

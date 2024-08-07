@@ -1,4 +1,5 @@
 export * from './scan'
+export * from './projectConfig'
 
 export const supportedCssLangs = ['wxss', 'scss', 'less', 'sass', 'styl']
 
