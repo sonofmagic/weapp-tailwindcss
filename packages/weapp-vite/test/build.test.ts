@@ -78,7 +78,7 @@ describe('build', () => {
 
       for (const item of res.output) {
         // @ts-ignore
-        expect(item.code).toMatchSnapshot(item.fileName)
+        expect(item.code).toMatchSnapshot(path.normalize(item.fileName))
       }
     })
 
@@ -117,7 +117,7 @@ describe('build', () => {
 
       for (const item of res.output) {
         // @ts-ignore
-        expect(item.code).toMatchSnapshot(item.fileName)
+        expect(item.code).toMatchSnapshot(path.normalize(item.fileName))
       }
     })
   })
