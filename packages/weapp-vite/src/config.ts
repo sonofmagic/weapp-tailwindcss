@@ -1,4 +1,14 @@
+// https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/types/vite.ts
+// https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/public/config.ts
 import type { UserConfig, UserConfigExport, UserConfigFnObject } from 'vite'
+import type { InlineConfig } from './types'
+
+// 扩展 vite 的 UserConfig
+declare module 'vite' {
+  interface UserConfig {
+    weapp?: InlineConfig
+  }
+}
 
 export function defineConfig(config: UserConfig): UserConfig
 export function defineConfig(config: Promise<UserConfig>): Promise<UserConfig>
