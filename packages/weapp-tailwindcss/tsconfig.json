@@ -5,10 +5,6 @@
       "ES2021"
     ],
     "baseUrl": ".",
-    "rootDirs": [
-      "src",
-      "test"
-    ],
     "module": "ESNext",
     "moduleResolution": "Node",
     "paths": {
@@ -27,19 +23,11 @@
     ],
     "strictPropertyInitialization": false,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true,
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths",
-        "afterDeclarations": true
-      }
-    ]
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*",
-    "types/**/*",
-    "test/**/*",
-    "e2e/**/*"
+    "test/**/*"
   ],
   "exclude": [
     "dist",
@@ -48,10 +36,5 @@
     "./*.d.ts",
     "demo/**/*",
     "test/fixtures/**/*"
-  ],
-  "ts-node": {
-    "compilerOptions": {
-      "module": "CommonJS"
-    }
-  }
+  ]
 }
