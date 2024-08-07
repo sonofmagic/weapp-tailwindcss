@@ -1,4 +1,5 @@
 import path from 'node:path'
+import process from 'node:process'
 import fs from 'fs-extra'
 import { get, set } from '@weapp-core/shared'
 
@@ -129,8 +130,8 @@ export default defineConfig({})
   return code
 }
 
-export function initConfig(options: { root: string, command?: 'weapp-vite' }) {
-  const { root, command } = options
+export function initConfig(options: { root?: string, command?: 'weapp-vite' }) {
+  const { root = process.cwd(), command } = options
   updateProjectConfig({ root })
   updatePackageJson({ root, command })
   if (command === 'weapp-vite') {

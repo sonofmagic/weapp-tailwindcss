@@ -85,7 +85,7 @@ describe('build', () => {
       }
     })
 
-    it('mixjs runProd', async () => {
+    it('mixjs runProd abs root', async () => {
       const res = await runProd({
         root: mixjsDir,
         build: {
@@ -120,8 +120,12 @@ describe('build', () => {
       }) as RollupOutput
 
       for (const item of res.output) {
-        // @ts-ignore
-        expect(item.code).toMatchSnapshot(path.normalize(item.fileName))
+        if (item.type === 'chunk') {
+          expect(item.code).toMatchSnapshot(path.normalize(item.fileName))
+        }
+        else {
+          expect(item.source).toMatchSnapshot(path.normalize(item.fileName))
+        }
       }
     })
   })

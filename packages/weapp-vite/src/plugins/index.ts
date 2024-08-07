@@ -124,25 +124,28 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
           })
         }
         const files = await fg(
-          [path.join(configResolved.root, '**/*.{wxml,json,png,jpg,jpeg,gif,svg,webp}')],
+          // 假如去 join root 就是返回 absolute
+          ['**/*.{wxml,json,png,jpg,jpeg,gif,svg,webp}'],
           {
             cwd: configResolved.root,
             ignore: [
               ...defaultExcluded,
-              'dist/**',
+              `${configResolved.build.outDir}/**`,
               'project.config.json',
               'project.private.config.json',
               'package.json',
             ],
+            absolute: false,
           },
         )
         for (const file of files) {
           const filepath = path.resolve(configResolved.root, file)
+
           this.addWatchFile(filepath)
           this.emitFile({
             type: 'asset',
             fileName: file,
-            source: await fs.readFile(filepath),
+            source: await fs.readFile(filepath, 'utf8'),
           })
         }
       },

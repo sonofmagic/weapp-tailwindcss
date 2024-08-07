@@ -5,22 +5,19 @@ import { parse } from 'weapp-ide-cli'
 import { runDev, runProd } from './build'
 import logger from './logger'
 
-const cwd = process.cwd()
-
 program
   .command('dev').action(async () => {
-    await runDev(cwd)
+    await runDev()
   })
 
 program
   .command('build').action(async () => {
-    await runProd(cwd)
+    await runProd()
   })
 
 program
   .command('init').action(() => {
     initConfig({
-      root: cwd,
       command: 'weapp-vite',
     })
   })
