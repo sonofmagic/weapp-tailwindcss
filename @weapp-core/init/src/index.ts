@@ -119,15 +119,87 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
 
 export function initViteConfigFile(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const viteConfigFile = path.resolve(root, 'vite.config.ts')
-  const code = `import { defineConfig } from 'weapp-vite/config'
+  const viteConfigFilePath = path.resolve(root, 'vite.config.ts')
+  const viteConfigFileCode = `import { defineConfig } from 'weapp-vite/config'
 
 export default defineConfig({})
 `
   if (write) {
-    fs.outputFileSync(viteConfigFile, code, 'utf8')
+    fs.outputFileSync(viteConfigFilePath, viteConfigFileCode, 'utf8')
+  }
+  return viteConfigFileCode
+}
+
+export function initTsDtsFile(options: SharedUpdateOptions) {
+  const { root, write = true } = options
+  const viteDtsFilePath = path.resolve(root, 'vite-env.d.ts')
+  const code = `/// <reference types="vite/client" />
+`
+  if (write) {
+    fs.outputFileSync(viteDtsFilePath, code, 'utf8')
   }
   return code
+}
+
+export function initTsJsonFiles(options: SharedUpdateOptions) {
+  const { root, write = true } = options
+  const tsJsonFilePath = path.resolve(root, 'tsconfig.json')
+  const tsNodeJsonFilePath = path.resolve(root, 'tsconfig.node.json')
+  if (write) {
+    fs.outputJSONSync(tsJsonFilePath, {
+      compilerOptions: {
+        target: 'ES2020',
+        jsx: 'preserve',
+        lib: [
+          'ES2020',
+          'DOM',
+          'DOM.Iterable',
+        ],
+        useDefineForClassFields: true,
+        module: 'ESNext',
+        moduleResolution: 'bundler',
+        resolveJsonModule: true,
+        allowImportingTsExtensions: true,
+        allowJs: true,
+        strict: true,
+        noFallthroughCasesInSwitch: true,
+        noUnusedLocals: true,
+        noUnusedParameters: true,
+        noEmit: true,
+        isolatedModules: true,
+        skipLibCheck: true,
+      },
+      references: [
+        {
+          path: './tsconfig.node.json',
+        },
+      ],
+      include: [
+        'src/**/*.ts',
+        'src/**/*.js',
+      ],
+    }, {
+      encoding: 'utf8',
+      spaces: 2,
+    })
+
+    fs.outputJSONSync(tsNodeJsonFilePath, {
+      compilerOptions: {
+        composite: true,
+        module: 'ESNext',
+        moduleResolution: 'bundler',
+        strict: true,
+        allowSyntheticDefaultImports: true,
+        skipLibCheck: true,
+      },
+      include: [
+        'vite.config.ts',
+      ],
+    }, {
+      encoding: 'utf8',
+      spaces: 2,
+    })
+  }
 }
 
 export function initConfig(options: { root?: string, command?: 'weapp-vite' }) {
@@ -136,5 +208,7 @@ export function initConfig(options: { root?: string, command?: 'weapp-vite' }) {
   updatePackageJson({ root, command })
   if (command === 'weapp-vite') {
     initViteConfigFile({ root })
+    initTsDtsFile({ root })
+    initTsJsonFiles({ root })
   }
 }

@@ -1,6 +1,6 @@
 import path from 'pathe'
 import fs from 'fs-extra'
-import { initViteConfigFile, updatePackageJson, updateProjectConfig } from '@/index'
+import { initConfig, initViteConfigFile, updatePackageJson, updateProjectConfig } from '@/index'
 
 const appsDir = path.resolve(__dirname, '../../../apps')
 const fixturesDir = path.resolve(__dirname, './fixtures')
@@ -39,7 +39,16 @@ describe('index', () => {
     const root = path.resolve(appsDir, name)
     const res0 = initViteConfigFile({
       root,
-      write: true,
+      write: false,
+    })
+    expect(res0).toMatchSnapshot()
+  })
+
+  it.each(['vite-native', 'vite-native-skyline', 'vite-native-ts', 'vite-native-ts-skyline'])('%s vite.config.ts', (name) => {
+    const root = path.resolve(fixturesDir, name)
+    const res0 = initConfig({
+      root,
+      command: 'weapp-vite',
     })
     expect(res0).toMatchSnapshot()
   })
