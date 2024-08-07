@@ -4,7 +4,7 @@ import type { RollupOutput, RollupWatcher } from 'rollup'
 import { defu } from '@weapp-core/shared'
 import { vitePluginWeapp } from './plugins'
 
-export function getDefaultConfig(options: { cwd?: string }): InlineConfig {
+export function getDefaultConfig(): InlineConfig {
   return {
     build: {
       rollupOptions: {
@@ -22,18 +22,16 @@ export function getDefaultConfig(options: { cwd?: string }): InlineConfig {
       },
     },
     plugins: [
-      vitePluginWeapp(options),
+      vitePluginWeapp(),
     ],
   }
 }
 
-export async function runDev(cwd: string, options?: InlineConfig) {
+export async function runDev(options?: InlineConfig) {
   const watcher = (await build(
     defu<InlineConfig, InlineConfig[]>(
       options,
-      getDefaultConfig({
-        cwd,
-      }),
+      getDefaultConfig(),
       {
         build: {
           watch: {},
@@ -51,13 +49,11 @@ export async function runDev(cwd: string, options?: InlineConfig) {
   return watcher
 }
 
-export async function runProd(cwd: string, options?: InlineConfig) {
+export async function runProd(options?: InlineConfig) {
   const output = (await build(
     defu<InlineConfig, InlineConfig[]>(
       options,
-      getDefaultConfig({
-        cwd,
-      }),
+      getDefaultConfig(),
     ),
   )) as RollupOutput | RollupOutput[]
 

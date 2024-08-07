@@ -1,3 +1,4 @@
+import process from 'node:process'
 import mm from 'micromatch'
 import { defu } from '@weapp-core/shared'
 import path from 'pathe'
@@ -21,17 +22,13 @@ export function createFilter(include: string[], exclude: string[], options?: mm.
   }
 }
 
-export function getEntries(options: string | { cwd: string, relative?: boolean }) {
-  let cwd: string
-  let relative
-  if (typeof options === 'string') {
-    cwd = options
-  }
-  else {
-    cwd = options.cwd
-    relative = options.relative
-  }
-
-  const filter = createFilter(['**/*'], [...defaultExcluded, path.resolve(cwd, 'dist/**')], { cwd })
-  return scanEntries(cwd, { filter, relative })
+export function getEntries(options: { root?: string, srcRoot?: string, outDir?: string, relative?: boolean }) {
+  // build.outDir
+  const { root = process.cwd(), outDir = 'dist', relative, srcRoot = '' } = options
+  const filter = createFilter(
+    [path.join(srcRoot, '**/*')],
+    [...defaultExcluded, path.join(root, `${outDir}/**`)],
+    { cwd: root },
+  )
+  return scanEntries(root, { filter, relative })
 }

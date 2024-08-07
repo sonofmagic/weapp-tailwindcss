@@ -17,7 +17,7 @@ export function isPage(wxmlPath: string) {
   return Boolean(searchPageEntry(wxmlPath))
 }
 
-export function searchAppEntry(root: string): Entry | undefined {
+export function searchAppEntry(root: string, formatPath?: (p: string) => string): Entry | undefined {
   const extensions = ['js', 'ts']
   const appJsonPath = path.resolve(root, 'app.json')
   if (fs.existsSync(appJsonPath)) {
@@ -36,12 +36,7 @@ export function searchAppEntry(root: string): Entry | undefined {
             }))
           }
           if (isObject(appJson.usingComponents)) {
-            deps.push(...(Object.values(appJson.usingComponents) as string[]).map<Dep>((x) => {
-              return {
-                path: x,
-                type: 'component',
-              }
-            }))
+            deps.push(...parseJsonUseComponents(appJson))
           }
           if (Array.isArray(appJson.subpackages)) {
             for (const subpackage of appJson.subpackages) {
@@ -61,7 +56,7 @@ export function searchAppEntry(root: string): Entry | undefined {
           }
         }
         return {
-          path: entryPath,
+          path: formatPath ? formatPath(entryPath) : entryPath,
           deps,
           type: 'app',
         }
@@ -96,57 +91,87 @@ export function isComponent(wxmlPath: string) {
   return false
 }
 
-export function getWxmlEntry(wxmlPath: string): Entry | undefined {
+export function parseJsonUseComponents(json: any) {
+  const deps: Dep[] = []
+  if (isObject(json.usingComponents)) {
+    deps.push(...(
+      Object.values(json.usingComponents) as string[]
+    ).map<Dep>((x) => {
+      return {
+        path: x,
+        type: 'component',
+      }
+    }))
+  }
+  return deps
+}
+
+export function getWxmlEntry(wxmlPath: string, formatPath: (p: string) => string): Entry | undefined {
   const pageEntry = searchPageEntry(wxmlPath)
   if (pageEntry) {
     const jsonPath = addExtension(removeExtension(wxmlPath), '.json')
+    const finalPath = formatPath(pageEntry)
     if (fs.existsSync(jsonPath)) {
       const json = fs.readJsonSync(jsonPath, { throws: false })
+      // 是否标识 component 为 true
       if (json && json.component) {
         return {
-          deps: [],
-          path: pageEntry,
+          deps: parseJsonUseComponents(json),
+          path: finalPath,
           type: 'component',
+        }
+      }
+      else {
+        return {
+          deps: parseJsonUseComponents(json),
+          path: finalPath,
+          type: 'page',
         }
       }
     }
     return {
       deps: [],
-      path: pageEntry,
+      path: finalPath,
       type: 'page',
     }
   }
 }
 
 export async function scanEntries(root: string, options?: { relative?: boolean, filter?: (id: string | unknown) => boolean }) {
-  const appEntry = searchAppEntry(root)
+  function formatPath(to: string) {
+    if (options?.relative) {
+      return path.relative(root, to)
+    }
+    return path.normalize(to)
+  }
+
+  const appEntry = searchAppEntry(root, formatPath)
   // TODO exclude 需要和 output 配套
-
-  // function getPath(to: string) {
-  //   if (options?.relative) {
-  //     return path.relative(root, to)
-  //   }
-  //   return to
-  // }
-
+  // const walkPathsSet = new Set<string>()
   if (appEntry) {
-    const pageEntries = new Set<Entry>()
-    const componentEntries = new Set<Entry>()
+    const pageEntries: Entry[] = []
+    const componentEntries: Entry[] = []
 
     for await (
-      const file of klaw(root, {
-        filter: options?.filter,
-      })
+      const file of klaw(
+        root,
+        {
+          filter: options?.filter,
+        },
+      )
     ) {
       if (file.stats.isFile()) {
         if (/\.wxml$/.test(file.path)) {
-          const entry = getWxmlEntry(file.path)
+          const entry = getWxmlEntry(file.path, formatPath)
           if (entry) {
+            //  && !walkPathsSet.has(file.path)
+            // 防止重复，理论上不会
+            // walkPathsSet.add(file.path)
             if (entry.type === 'component') {
-              componentEntries.add(entry)
+              componentEntries.push(entry)
             }
             else if (entry.type === 'page') {
-              pageEntries.add(entry)
+              pageEntries.push(entry)
             }
           }
         }
@@ -158,6 +183,7 @@ export async function scanEntries(root: string, options?: { relative?: boolean, 
       pages: pageEntries,
       components: componentEntries,
       subpackages: [],
+      // walkPathsSet,
     }
   }
 }
