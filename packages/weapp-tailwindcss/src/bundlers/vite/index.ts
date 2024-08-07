@@ -1,10 +1,10 @@
 import type { Plugin } from 'vite'
 import type { OutputAsset, OutputChunk } from 'rollup'
-import type { UserDefinedOptions } from '@/types'
-import { getOptions } from '@/options'
-import { vitePluginName } from '@/constants'
-import { getGroupedEntries } from '@/utils'
-import { createDebug } from '@/debug'
+import type { UserDefinedOptions } from '../../types'
+import { getOptions } from '../../options'
+import { vitePluginName } from '../../constants'
+import { getGroupedEntries } from '../../utils'
+import { createDebug } from '../../debug'
 
 const debug = createDebug()
 
@@ -42,7 +42,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   return {
     name: vitePluginName,
     enforce: 'post',
-    async generateBundle(opt, bundle) {
+    async generateBundle(_opt, bundle) {
       debug('start')
       onStart()
 

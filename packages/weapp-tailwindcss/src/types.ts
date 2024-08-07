@@ -8,7 +8,7 @@ import type { Result } from 'postcss-load-config'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { InjectPreflight } from './postcss/preflight'
 import type { IContext as PostcssContext } from './postcss/plugins/ctx'
-import type { ICreateCacheReturnType } from '@/cache'
+import type { ICreateCacheReturnType } from './cache'
 
 type PostcssOptions = Partial<Omit<Result, 'file'>>
 

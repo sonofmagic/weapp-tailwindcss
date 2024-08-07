@@ -1,8 +1,8 @@
 import type { AtRule, Plugin, PluginCreator } from 'postcss'
 import { ruleTransformSync } from '../selectorParser'
 import { commonChunkPreflight } from '../mp'
-import type { IStyleHandlerOptions } from '@/types'
-import { postcssPlugin } from '@/constants'
+import type { IStyleHandlerOptions } from '../../types'
+import { postcssPlugin } from '../../constants'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
