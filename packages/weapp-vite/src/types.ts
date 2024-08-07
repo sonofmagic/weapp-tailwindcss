@@ -29,3 +29,7 @@ export interface Entry {
   path: string
   deps: Dep[]
 }
+
+export interface InlineConfig {
+  srcRoot?: string
+}

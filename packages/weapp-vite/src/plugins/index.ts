@@ -2,18 +2,20 @@ import path from 'node:path'
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
-import { addExtension, defu, removeExtension } from '@weapp-core/shared'
+import { addExtension, removeExtension } from '@weapp-core/shared'
 import fg from 'fast-glob'
 import { isCSSRequest, preprocessCSS } from 'vite'
 import { defaultExcluded, supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
 import { createPluginCache } from '../cache'
+import { createDebugger } from '../debugger'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
-export interface VitePluginWeappOptions {
-  srcRoot?: string
-}
+const debug = createDebugger('weapp-vite:plugin')
+// export interface VitePluginWeappOptions {
+//   srcRoot?: string
+// }
 
 function normalizeCssPath(id: string) {
   return addExtension(removeExtension(id), '.wxss')
@@ -26,10 +28,11 @@ function getRealPath(res: ParseRequestResponse) {
   return res.filename
 }
 
-export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
-  const { srcRoot } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
-    srcRoot: '',
-  })
+export function vitePluginWeapp(): Plugin[] {
+  // options?: VitePluginWeappOptions
+  // const { srcRoot } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
+  //   srcRoot: '',
+  // })
 
   function getInputOption(entries: string[]) {
     return entries
@@ -54,11 +57,14 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
       name: 'weapp-vite:pre',
       enforce: 'pre',
       // config->configResolved->|watching|options->buildStart
+      config(config, env) {
+        debug?.(config, env)
+      },
       async options(options) {
         const entries = await getEntries({
           root: configResolved.root,
           outDir: configResolved.build.outDir,
-          srcRoot,
+          srcRoot: configResolved.weapp?.srcRoot,
         })
         if (entries) {
           const paths = [entries.app, ...entries.pages, ...entries.components].map((x) => {
@@ -70,6 +76,7 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
         }
       },
       configResolved(config) {
+        debug?.(config)
         configResolved = config
       },
       resolveId(source) {
