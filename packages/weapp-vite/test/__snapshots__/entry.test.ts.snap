@@ -183,7 +183,7 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
   "pages": [
     {
       "deps": [],
-      "path": "pages/index/index.js",
+      "path": "pages/index/index.ts",
       "type": "page",
     },
   ],
