@@ -68,12 +68,13 @@ export default defineConfig({})
 "
 `;
 
+exports[`index > vite-native vite.config.ts 2`] = `undefined`;
+
 exports[`index > vite-native-skyline callback 1`] = `
 {
   "author": "",
   "description": "",
   "devDependencies": {
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -137,13 +138,14 @@ export default defineConfig({})
 "
 `;
 
+exports[`index > vite-native-skyline vite.config.ts 2`] = `undefined`;
+
 exports[`index > vite-native-ts callback 1`] = `
 {
   "author": "",
   "description": "",
   "devDependencies": {
     "miniprogram-api-typings": "^3.12.2",
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -214,13 +216,14 @@ export default defineConfig({})
 "
 `;
 
+exports[`index > vite-native-ts vite.config.ts 2`] = `undefined`;
+
 exports[`index > vite-native-ts-skyline callback 1`] = `
 {
   "author": "",
   "description": "",
   "devDependencies": {
     "miniprogram-api-typings": "^3.12.2",
-    "weapp-ide-cli": "workspace:*",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -290,3 +293,5 @@ exports[`index > vite-native-ts-skyline vite.config.ts 1`] = `
 export default defineConfig({})
 "
 `;
+
+exports[`index > vite-native-ts-skyline vite.config.ts 2`] = `undefined`;

@@ -1,12 +1,13 @@
 // index.js
 // import { formatTime } from '../../utils/util'
 
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
-const { formatTime } = require('../../utils/util')
+// const { formatTime } = require('../../utils/util')
+import { formatTime } from '../../utils/util'
 
+const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 Page({
   data: {
-    motto: 'Hello World',
+    motto: JSON.stringify(import.meta.env),
     userInfo: {
       avatarUrl: defaultAvatarUrl,
       nickName: '',

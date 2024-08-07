@@ -125,7 +125,7 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
         }
         const files = await fg(
           // 假如去 join root 就是返回 absolute
-          ['**/*.{wxml,json,png,jpg,jpeg,gif,svg,webp}'],
+          ['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'],
           {
             cwd: configResolved.root,
             ignore: [

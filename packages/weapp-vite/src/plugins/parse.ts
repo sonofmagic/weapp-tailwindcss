@@ -8,7 +8,7 @@ export interface ParseRequestResponse {
 export function parseRequest(id: string): ParseRequestResponse {
   const [filename, rawQuery] = id.split(`?`, 2)
   const query = Object.fromEntries(new URLSearchParams(rawQuery)) as { wxss?: true }
-  if (query.wxss !== null) {
+  if (Reflect.has(query, 'wxss')) {
     query.wxss = true
   }
   return {
