@@ -1,5 +1,16 @@
 # weapp-vite
 
+## 0.0.2-alpha.3
+
+### Patch Changes
+
+- 792f50c: chore: compact for `weapp-vite`
+- Updated dependencies [792f50c]
+  - weapp-ide-cli@2.0.0-alpha.1
+  - @weapp-core/logger@0.0.1-alpha.0
+  - @weapp-core/shared@0.0.2-alpha.3
+  - @weapp-core/init@0.0.2-alpha.3
+
 ## 0.0.2-alpha.2
 
 ### Patch Changes
