@@ -3,11 +3,11 @@ import type { NodePath, TraverseOptions } from '@babel/traverse'
 import MagicString from 'magic-string'
 import type { ParseError, ParseResult } from '@babel/parser'
 import type { SgNode } from '@ast-grep/napi'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '../types'
+import { parse, traverse } from '../babel'
+import { jsStringEscape } from '../escape'
+import { defuOverrideArray } from '../utils'
 import { replaceHandleValue } from './handlers'
-import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '@/types'
-import { parse, traverse } from '@/babel'
-import { jsStringEscape } from '@/escape'
-import { defuOverrideArray } from '@/utils'
 
 function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {

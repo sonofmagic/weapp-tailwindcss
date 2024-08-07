@@ -1,9 +1,9 @@
 import stream from 'node:stream'
 import { Buffer } from 'node:buffer'
 import type File from 'vinyl'
-import { getOptions } from '@/options'
-import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
-import { createDebug } from '@/debug'
+import { getOptions } from '../../options'
+import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '../../types'
+import { createDebug } from '../../debug'
 
 const debug = createDebug()
 
@@ -25,7 +25,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformWxss(options: Partial<IStyleHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
-      async transform(file: File, encoding, callback) {
+      async transform(file: File, _encoding, callback) {
         runtimeSet = twPatcher.getClassSet()
         setMangleRuntimeSet(runtimeSet)
         const error = null
@@ -73,7 +73,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformJs(options: Partial<CreateJsHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
-      async transform(file: File, encoding, callback) {
+      async transform(file: File, _encoding, callback) {
         const error = null
         if (file.contents) {
           const rawSource = file.contents.toString()
@@ -110,7 +110,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function transformWxml(options: Partial<ITemplateHandlerOptions> = {}) {
     return new Transform({
       objectMode: true,
-      async transform(file: File, encoding, callback) {
+      async transform(file: File, _encoding, callback) {
         const error = null
 
         if (file.contents) {

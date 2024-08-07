@@ -1,6 +1,6 @@
 import { createDefu } from 'defu'
 // import type { Defu } from 'defu'
-import type { InternalUserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions } from './types'
 
 export function isRegexp(value: unknown) {
   return Object.prototype.toString.call(value) === '[object RegExp]'
@@ -29,7 +29,7 @@ export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
   throw new TypeError('paramater \'arr\' should be a Array of Regexp | String !')
 }
 
-export function noop() {}
+export function noop() { }
 
 // const MAX_ASCII_CHAR_CODE = 127
 

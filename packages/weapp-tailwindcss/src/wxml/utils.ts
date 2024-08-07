@@ -1,15 +1,15 @@
 import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
+import { parseExpression, traverse } from '../babel'
+import type { ItemOrItemArray } from '../reg'
+import { variableRegExp } from '../reg'
+import { defuOverrideArray } from '../utils'
+import type { ITemplateHandlerOptions, RawSource } from '../types'
+import { replaceHandleValue } from '../js/handlers'
 import { replaceWxml } from './shared'
 import type { Token } from './Tokenizer'
 import { Tokenizer } from './Tokenizer'
-import { parseExpression, traverse } from '@/babel'
-import type { ItemOrItemArray } from '@/reg'
-import { variableRegExp } from '@/reg'
-import { defuOverrideArray } from '@/utils'
-import type { ITemplateHandlerOptions, RawSource } from '@/types'
-import { replaceHandleValue } from '@/js/handlers'
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {

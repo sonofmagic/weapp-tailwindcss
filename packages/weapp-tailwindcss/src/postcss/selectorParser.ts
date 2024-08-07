@@ -1,8 +1,8 @@
 import selectorParser from 'postcss-selector-parser'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { Rule } from 'postcss'
+import type { IStyleHandlerOptions } from '../types'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
-import type { IStyleHandlerOptions } from '@/types'
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
   const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options
@@ -17,7 +17,9 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
 
       if (cssRemoveHoverPseudoClass && selector.type === 'selector') {
         const node = selector.nodes.find(x => x.type === 'pseudo' && x.value === ':hover')
-        node && selector.remove()
+        if (node) {
+          selector.remove()
+        }
       }
 
       if (

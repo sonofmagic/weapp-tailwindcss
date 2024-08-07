@@ -1,4 +1,4 @@
-import 'tailwindcss/types/config'
+// import 'tailwindcss/types/config'
 import plugin from 'tailwindcss/plugin'
 import { createMediaQuery, createNegativeMediaQuery } from './constants'
 import { defu } from '@/utils'

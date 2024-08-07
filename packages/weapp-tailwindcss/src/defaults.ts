@@ -1,6 +1,6 @@
 import type { UserDefinedOptions } from './types'
-import { noop } from '@/utils'
-import { SimpleMappingChars2String } from '@/escape'
+import { noop } from './utils'
+import { SimpleMappingChars2String } from './escape'
 
 export const defaultOptions: UserDefinedOptions = {
   cssMatcher: file => /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(file),

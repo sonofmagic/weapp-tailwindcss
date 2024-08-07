@@ -2,11 +2,11 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import type { Compiler } from 'webpack'
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
-import { getOptions } from '@/options'
-import { pluginName } from '@/constants'
-import { getGroupedEntries, removeExt } from '@/utils'
-import { createDebug } from '@/debug'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
+import { getOptions } from '../../../options'
+import { pluginName } from '../../../constants'
+import { getGroupedEntries, removeExt } from '../../../utils'
+import { createDebug } from '../../../debug'
 
 const debug = createDebug()
 

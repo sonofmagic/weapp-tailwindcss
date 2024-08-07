@@ -1,8 +1,8 @@
 import type { Plugin, PluginCreator } from 'postcss'
 import { testIfVariablesScope } from '../mp'
 import { fallbackRemove } from '../selectorParser'
-import type { IStyleHandlerOptions } from '@/types'
-import { postcssPlugin } from '@/constants'
+import type { IStyleHandlerOptions } from '../../types'
+import { postcssPlugin } from '../../constants'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 

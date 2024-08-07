@@ -1,7 +1,7 @@
 import process from 'node:process'
 import semver from 'semver'
-import { getOptions } from '@/options'
-import { WEAPP_TW_REQUIRED_NODE_VERSION } from '@/constants'
+import { getOptions } from './options'
+import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 
 process.title = 'node (weapp-tailwindcss)'
 const args = process.argv.slice(2)
