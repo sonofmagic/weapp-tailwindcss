@@ -21,11 +21,13 @@
     "@weapp-tailwindcss/cli": "1.0.8",
     "@weapp-tailwindcss/typography": "0.2.4",
     "tailwindcss-weapp": "0.0.0",
-    "website": "0.0.0"
+    "website": "0.0.0",
+    "@weapp-core/logger": "0.0.0"
   },
   "changesets": [
     "curly-walls-rest",
     "happy-falcons-hear",
+    "serious-students-boil",
     "young-teachers-hunt"
   ]
 }
