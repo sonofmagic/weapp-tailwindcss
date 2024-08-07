@@ -1,0 +1,231 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`entry > scanEntries > 'native' 1`] = `
+{
+  "app": {
+    "deps": [
+      {
+        "path": "pages/index/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/list/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/cart/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/user/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/details/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/bindPhone/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/coupon/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/order/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/addressList/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/addressAdd/index",
+        "type": "page",
+      },
+      {
+        "path": "pages/orderDetails/index",
+        "type": "page",
+      },
+    ],
+    "path": "app.js",
+    "type": "app",
+  },
+  "components": [],
+  "pages": [
+    {
+      "deps": [],
+      "path": "pages/addressAdd/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/addressList/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/bindPhone/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/cart/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/coupon/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/details/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/index/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/list/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/order/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/orderDetails/index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/user/index.js",
+      "type": "page",
+    },
+  ],
+  "subpackages": [],
+}
+`;
+
+exports[`entry > scanEntries > 'native-skyline' 1`] = `
+{
+  "app": {
+    "deps": [
+      {
+        "path": "pages/index/index",
+        "type": "page",
+      },
+    ],
+    "path": "app.js",
+    "type": "app",
+  },
+  "components": [
+    {
+      "deps": [],
+      "path": "components/address-book/index.js",
+      "type": "component",
+    },
+    {
+      "deps": [],
+      "path": "components/navigation-bar/index.js",
+      "type": "component",
+    },
+    {
+      "deps": [],
+      "path": "components/navigation-bar/navigation-bar.js",
+      "type": "component",
+    },
+  ],
+  "pages": [
+    {
+      "deps": [
+        {
+          "path": "../../components/navigation-bar",
+          "type": "component",
+        },
+        {
+          "path": "../../components/address-book",
+          "type": "component",
+        },
+      ],
+      "path": "pages/index/index.js",
+      "type": "page",
+    },
+  ],
+  "subpackages": [],
+}
+`;
+
+exports[`entry > scanEntries > 'native-ts' 1`] = `undefined`;
+
+exports[`entry > scanEntries > 'native-ts-skyline' 1`] = `undefined`;
+
+exports[`entry > scanEntries > 'vite-native' 1`] = `
+{
+  "app": {
+    "deps": [
+      {
+        "path": "pages/index/index",
+        "type": "page",
+      },
+    ],
+    "path": "app.js",
+    "type": "app",
+  },
+  "components": [],
+  "pages": [
+    {
+      "deps": [],
+      "path": "pages/index/index.js",
+      "type": "page",
+    },
+  ],
+  "subpackages": [],
+}
+`;
+
+exports[`entry > scanEntries > 'vite-native-skyline' 1`] = `
+{
+  "app": {
+    "deps": [
+      {
+        "path": "pages/index/index",
+        "type": "page",
+      },
+    ],
+    "path": "app.js",
+    "type": "app",
+  },
+  "components": [
+    {
+      "deps": [],
+      "path": "components/navigation-bar/navigation-bar.js",
+      "type": "component",
+    },
+  ],
+  "pages": [
+    {
+      "deps": [
+        {
+          "path": "/components/navigation-bar/navigation-bar",
+          "type": "component",
+        },
+      ],
+      "path": "pages/index/index.js",
+      "type": "page",
+    },
+  ],
+  "subpackages": [],
+}
+`;
+
+exports[`entry > scanEntries > 'vite-native-ts' 1`] = `undefined`;
+
+exports[`entry > scanEntries > 'vite-native-ts-skyline' 1`] = `undefined`;

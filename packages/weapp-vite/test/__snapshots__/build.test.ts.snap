@@ -2,20 +2,31 @@
 
 exports[`build > rollup > mixjs getEntries 1`] = `
 {
-  "all": [
-    "app.js",
-    "index.js",
-    "pages/index.js",
-    "index2.js",
+  "app": {
+    "deps": [],
+    "path": "app.js",
+    "type": "app",
+  },
+  "components": [
+    {
+      "deps": [],
+      "path": "index2.js",
+      "type": "component",
+    },
   ],
-  "app": "app.js",
-  "components": Set {
-    "index2.js",
-  },
-  "pages": Set {
-    "index.js",
-    "pages/index.js",
-  },
+  "pages": [
+    {
+      "deps": [],
+      "path": "index.js",
+      "type": "page",
+    },
+    {
+      "deps": [],
+      "path": "pages/index.js",
+      "type": "page",
+    },
+  ],
+  "subpackages": [],
 }
 `;
 
@@ -26,8 +37,6 @@ const x = cjs.cjs;
 console.log(x);
 "
 `;
-
-exports[`build > rollup > mixjs runProd > app.json 1`] = `undefined`;
 
 exports[`build > rollup > mixjs runProd > cjs-B3a6j7Rd.js 1`] = `
 ""use strict";
@@ -58,8 +67,6 @@ console.log(a, esm.c);
 "
 `;
 
-exports[`build > rollup > mixjs runProd > index.wxml 1`] = `undefined`;
-
 exports[`build > rollup > mixjs runProd > index2.js 1`] = `
 ""use strict";
 const cjs = require("./cjs-B3a6j7Rd.js");
@@ -69,16 +76,10 @@ console.log(a, esm.c);
 "
 `;
 
-exports[`build > rollup > mixjs runProd > index2.json 1`] = `undefined`;
-
-exports[`build > rollup > mixjs runProd > index2.wxml 1`] = `undefined`;
-
 exports[`build > rollup > mixjs runProd > pages/index.js 1`] = `
 ""use strict";
 "
 `;
-
-exports[`build > rollup > mixjs runProd > pages/index.wxml 1`] = `undefined`;
 
 exports[`build > rollup > mixjs vite build > app.js 1`] = `
 ""use strict";

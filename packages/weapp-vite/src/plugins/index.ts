@@ -12,8 +12,7 @@ import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
 export interface VitePluginWeappOptions {
-  cwd?: string
-  src?: string
+  srcRoot?: string
 }
 
 function normalizeCssPath(id: string) {
@@ -28,12 +27,9 @@ function getRealPath(res: ParseRequestResponse) {
 }
 
 export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
-  const { cwd, src } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
-    src: '',
+  const { srcRoot } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
+    srcRoot: '',
   })
-  function relative(p: string) {
-    return path.relative(cwd, p)
-  }
 
   function getInputOption(entries: string[]) {
     return entries
@@ -47,6 +43,9 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
 
   let configResolved: ResolvedConfig
   let entriesSet: Set<string> = new Set()
+  function relative(p: string) {
+    return path.relative(configResolved.root, p)
+  }
   // TODO
   // eslint-disable-next-line ts/no-unused-vars
   const cacheInstance = createPluginCache(Object.create(null))
@@ -56,12 +55,17 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
       enforce: 'pre',
       // config->configResolved->|watching|options->buildStart
       async options(options) {
-        const entries = await getEntries(cwd)
+        const entries = await getEntries({
+          root: configResolved.root,
+          outDir: configResolved.build.outDir,
+          srcRoot,
+        })
         if (entries) {
-          // @ts-ignore
-          const input = getInputOption(entries.all)
-          // @ts-ignore
-          entriesSet = Array.isArray(entries.all) ? new Set(entries.all) : entries.all
+          const paths = [entries.app, ...entries.pages, ...entries.components].map((x) => {
+            return x.path
+          })
+          const input = getInputOption(paths)
+          entriesSet = new Set(paths)
           options.input = input
         }
       },
@@ -120,9 +124,9 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
           })
         }
         const files = await fg(
-          [path.join(src, '**/*.{wxml,json,png,jpg,jpeg,gif,svg,webp}')],
+          [path.join(configResolved.root, '**/*.{wxml,json,png,jpg,jpeg,gif,svg,webp}')],
           {
-            cwd,
+            cwd: configResolved.root,
             ignore: [
               ...defaultExcluded,
               'dist/**',
@@ -133,7 +137,7 @@ export function vitePluginWeapp(options?: VitePluginWeappOptions): Plugin[] {
           },
         )
         for (const file of files) {
-          const filepath = path.resolve(cwd, file)
+          const filepath = path.resolve(configResolved.root, file)
           this.addWatchFile(filepath)
           this.emitFile({
             type: 'asset',
