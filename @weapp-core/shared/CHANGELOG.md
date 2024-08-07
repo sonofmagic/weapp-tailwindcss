@@ -1,5 +1,11 @@
 # @weapp-core/shared
 
+## 0.0.2-alpha.3
+
+### Patch Changes
+
+- 792f50c: chore: compact for `weapp-vite`
+
 ## 0.0.2-alpha.2
 
 ### Patch Changes
