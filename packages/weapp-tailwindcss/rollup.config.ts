@@ -42,7 +42,7 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       typescript({
         tsconfig: resolve(__dirname, './tsconfig.build.json'),
         sourceMap: isDev,
-        declaration: false,
+        declaration: true,
       }),
       isProd
         ? visualizer({

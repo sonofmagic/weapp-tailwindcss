@@ -85,6 +85,6 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.7"
+    "tailwindcss": "^3.4.8"
   }
 }

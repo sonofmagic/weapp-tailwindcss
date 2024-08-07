@@ -11,16 +11,5 @@
   "include": [
     "src",
     "test"
-  ],
-  "ts-node": {
-    "esm": true,
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@/*": [
-          "src/*"
-        ]
-      }
-    }
-  }
+  ]
 }
