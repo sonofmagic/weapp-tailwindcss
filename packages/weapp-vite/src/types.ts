@@ -32,4 +32,5 @@ export interface Entry {
 
 export interface InlineConfig {
   srcRoot?: string
+  subPackage?: Partial<Subpackage>
 }

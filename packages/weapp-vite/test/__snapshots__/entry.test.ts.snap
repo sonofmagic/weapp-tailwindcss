@@ -218,7 +218,29 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
       "type": "page",
     },
   ],
-  "subPackages": [],
+  "subPackages": [
+    {
+      "entry": "index.js",
+      "name": "pack1",
+      "pages": [
+        "pages/cat",
+        "pages/dog",
+      ],
+      "root": "packageA",
+      "type": "subPackage",
+    },
+    {
+      "entry": "index.ts",
+      "independent": true,
+      "name": "pack2",
+      "pages": [
+        "pages/apple",
+        "pages/banana",
+      ],
+      "root": "packageB",
+      "type": "subPackage",
+    },
+  ],
 }
 `;
 
