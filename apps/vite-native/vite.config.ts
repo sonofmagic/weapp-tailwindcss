@@ -1,7 +1,15 @@
 import { defineConfig } from 'weapp-vite/config'
 
 export default defineConfig({
-  weapp: {
-    // srcRoot: 'src',
-  },
+  // root: './packageA',
+  // build: {
+  //   outDir: 'dist/packageA',
+  // },
+  // weapp: {
+  //   srcRoot: 'packageA',
+  //   subPackage: {
+
+  //   },
+  //   // srcRoot: 'src',
+  // },
 })

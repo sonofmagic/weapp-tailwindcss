@@ -9,6 +9,7 @@ import { defaultExcluded, supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
 import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
+import type { Context } from '../context'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -28,7 +29,7 @@ function getRealPath(res: ParseRequestResponse) {
   return res.filename
 }
 
-export function vitePluginWeapp(): Plugin[] {
+export function vitePluginWeapp(_ctx: Context): Plugin[] {
   // options?: VitePluginWeappOptions
   // const { srcRoot } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
   //   srcRoot: '',
@@ -65,15 +66,21 @@ export function vitePluginWeapp(): Plugin[] {
         configResolved = config
       },
       async options(options) {
+        const { root, build, weapp } = configResolved
         const entries = await getEntries({
-          root: configResolved.root,
-          outDir: configResolved.build.outDir,
-          srcRoot: configResolved.weapp?.srcRoot,
+          root,
+          outDir: build.outDir,
+          srcRoot: weapp?.srcRoot,
+          isSubPackage: Boolean(weapp?.subPackage),
         })
         if (entries) {
-          const paths = [entries.app, ...entries.pages, ...entries.components].map((x) => {
+          const paths: string[] = []
+          if (entries.app) {
+            paths.push(entries.app.path)
+          }
+          paths.push(...[...entries.pages, ...entries.components].map((x) => {
             return x.path
-          })
+          }))
           const input = getInputOption(paths)
           entriesSet = new Set(paths)
           options.input = input
@@ -109,6 +116,7 @@ export function vitePluginWeapp(): Plugin[] {
         }
       },
       async buildEnd() {
+        const { root, build } = configResolved
         const styles: Record<string, string> = {}
         for (const stylesId of stylesIds) {
           const parsed = parseRequest(stylesId)
@@ -134,10 +142,10 @@ export function vitePluginWeapp(): Plugin[] {
           // 假如去 join root 就是返回 absolute
           ['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'],
           {
-            cwd: configResolved.root,
+            cwd: root,
             ignore: [
               ...defaultExcluded,
-              `${configResolved.build.outDir}/**`,
+              `${build.outDir}/**`,
               'project.config.json',
               'project.private.config.json',
               'package.json',
@@ -148,7 +156,7 @@ export function vitePluginWeapp(): Plugin[] {
           },
         )
         for (const file of files) {
-          const filepath = path.resolve(configResolved.root, file)
+          const filepath = path.resolve(root, file)
 
           this.addWatchFile(filepath)
           this.emitFile({

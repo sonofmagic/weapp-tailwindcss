@@ -4,6 +4,7 @@ import type { RollupOutput } from 'rollup'
 
 import { runProd } from '@/build'
 import { getEntries } from '@/entry'
+import { createContext } from '@/context'
 
 describe('build', () => {
   describe('rollup', () => {
@@ -30,9 +31,9 @@ describe('build', () => {
       if (!entries) {
         return
       }
-      const paths = [entries.app, ...entries.pages, ...entries.components].map((x) => {
+      const paths = (entries.app ? [entries.app.path] : []).concat([...entries.pages, ...entries.components].map((x) => {
         return x.path
-      })
+      }))
       const input = paths
         .reduce<Record<string, string>>((acc, cur) => {
           acc[relative(cur)] = cur
@@ -86,7 +87,8 @@ describe('build', () => {
     })
 
     it('mixjs runProd abs root', async () => {
-      const res = await runProd({
+      const ctx = createContext()
+      const res = await runProd(ctx, {
         root: mixjsDir,
         build: {
           minify: false,

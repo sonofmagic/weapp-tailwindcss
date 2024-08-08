@@ -4,15 +4,17 @@ import { initConfig } from '@weapp-core/init'
 import { parse } from 'weapp-ide-cli'
 import { runDev, runProd } from './build'
 import logger from './logger'
+import { createContext } from './context'
 
+const ctx = createContext()
 program
   .command('dev').action(async () => {
-    await runDev()
+    await runDev(ctx)
   })
 
 program
   .command('build').action(async () => {
-    await runProd()
+    await runProd(ctx)
   })
 
 program
