@@ -60,6 +60,10 @@ export function vitePluginWeapp(): Plugin[] {
       config(config, env) {
         debug?.(config, env)
       },
+      configResolved(config) {
+        debug?.(config)
+        configResolved = config
+      },
       async options(options) {
         const entries = await getEntries({
           root: configResolved.root,
@@ -74,10 +78,6 @@ export function vitePluginWeapp(): Plugin[] {
           entriesSet = new Set(paths)
           options.input = input
         }
-      },
-      configResolved(config) {
-        debug?.(config)
-        configResolved = config
       },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
@@ -141,6 +141,8 @@ export function vitePluginWeapp(): Plugin[] {
               'project.config.json',
               'project.private.config.json',
               'package.json',
+              'tsconfig.json',
+              'tsconfig.node.json',
             ],
             absolute: false,
           },
@@ -151,7 +153,7 @@ export function vitePluginWeapp(): Plugin[] {
           this.addWatchFile(filepath)
           this.emitFile({
             type: 'asset',
-            fileName: file,
+            fileName: path.normalize(file),
             source: await fs.readFile(filepath, 'utf8'),
           })
         }

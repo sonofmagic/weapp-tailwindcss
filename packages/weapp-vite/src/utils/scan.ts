@@ -1,7 +1,6 @@
 import path from 'pathe'
 import fs from 'fs-extra'
-import klaw from 'klaw'
-import { addExtension, isObject, removeExtension } from '@weapp-core/shared'
+import { addExtension, defu, isObject, removeExtension } from '@weapp-core/shared'
 import type { Dep, Entry, Subpackage } from '../types'
 
 export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
@@ -17,7 +16,10 @@ export function isPage(wxmlPath: string) {
   return Boolean(searchPageEntry(wxmlPath))
 }
 
-export function searchAppEntry(root: string, formatPath?: (p: string) => string): Entry | undefined {
+export function searchAppEntry(root: string, options?: {
+  formatPath?: (p: string) => string
+}): Entry | undefined {
+  const { formatPath } = defu(options, {})
   const extensions = ['js', 'ts']
   const appJsonPath = path.resolve(root, 'app.json')
   if (fs.existsSync(appJsonPath)) {
@@ -38,21 +40,14 @@ export function searchAppEntry(root: string, formatPath?: (p: string) => string)
           if (isObject(appJson.usingComponents)) {
             deps.push(...parseJsonUseComponents(appJson))
           }
-          if (Array.isArray(appJson.subpackages)) {
-            for (const subpackage of appJson.subpackages) {
-              // 独立分包中不能依赖主包和其他分包中的内容，包括 js 文件、template、wxss、自定义组件、插件等（使用 分包异步化 时 js 文件、自定义组件、插件不受此条限制）
-              deps.push(...(subpackage as Subpackage[]).map<Dep>((x) => {
-                return {
-                  type: 'subpackage',
-                  ...x,
-                }
-              }))
-              // subpackage.root
-              // subpackage.pages
-              // subpackage.entry
-              // subpackage.name
-              // subpackage.independent
-            }
+          if (Array.isArray(appJson.subPackages)) {
+            // 独立分包中不能依赖主包和其他分包中的内容，包括 js 文件、template、wxss、自定义组件、插件等（使用 分包异步化 时 js 文件、自定义组件、插件不受此条限制）
+            deps.push(...(appJson.subPackages as Subpackage[]).map<Dep>((x) => {
+              return {
+                type: 'subPackage',
+                ...x,
+              }
+            }))
           }
         }
         return {
@@ -133,57 +128,6 @@ export function getWxmlEntry(wxmlPath: string, formatPath: (p: string) => string
       deps: [],
       path: finalPath,
       type: 'page',
-    }
-  }
-}
-
-export async function scanEntries(root: string, options?: { relative?: boolean, filter?: (id: string | unknown) => boolean }) {
-  function formatPath(to: string) {
-    if (options?.relative) {
-      return path.relative(root, to)
-    }
-    return path.normalize(to)
-  }
-
-  const appEntry = searchAppEntry(root, formatPath)
-  // TODO exclude 需要和 output 配套
-  // const walkPathsSet = new Set<string>()
-  if (appEntry) {
-    const pageEntries: Entry[] = []
-    const componentEntries: Entry[] = []
-
-    for await (
-      const file of klaw(
-        root,
-        {
-          filter: options?.filter,
-        },
-      )
-    ) {
-      if (file.stats.isFile()) {
-        if (/\.wxml$/.test(file.path)) {
-          const entry = getWxmlEntry(file.path, formatPath)
-          if (entry) {
-            //  && !walkPathsSet.has(file.path)
-            // 防止重复，理论上不会
-            // walkPathsSet.add(file.path)
-            if (entry.type === 'component') {
-              componentEntries.push(entry)
-            }
-            else if (entry.type === 'page') {
-              pageEntries.push(entry)
-            }
-          }
-        }
-      }
-    }
-
-    return {
-      app: appEntry,
-      pages: pageEntries,
-      components: componentEntries,
-      subpackages: [],
-      // walkPathsSet,
     }
   }
 }
