@@ -19,7 +19,7 @@ export interface Subpackage {
 }
 
 export interface SubpackageDep extends Subpackage {
-  type: 'subpackage'
+  type: 'subPackage'
 }
 
 export type Dep = PageDep | ComponentDep | SubpackageDep

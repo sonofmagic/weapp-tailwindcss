@@ -110,7 +110,7 @@ exports[`entry > scanEntries > 'native' 1`] = `
       "type": "page",
     },
   ],
-  "subpackages": [],
+  "subPackages": [],
 }
 `;
 
@@ -159,7 +159,7 @@ exports[`entry > scanEntries > 'native-skyline' 1`] = `
       "type": "page",
     },
   ],
-  "subpackages": [],
+  "subPackages": [],
 }
 `;
 
@@ -175,11 +175,42 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
         "path": "pages/index/index",
         "type": "page",
       },
+      {
+        "path": "/components/navigation-bar/navigation-bar",
+        "type": "component",
+      },
+      {
+        "entry": "index.js",
+        "name": "pack1",
+        "pages": [
+          "pages/cat",
+          "pages/dog",
+        ],
+        "root": "packageA",
+        "type": "subPackage",
+      },
+      {
+        "entry": "index.ts",
+        "independent": true,
+        "name": "pack2",
+        "pages": [
+          "pages/apple",
+          "pages/banana",
+        ],
+        "root": "packageB",
+        "type": "subPackage",
+      },
     ],
     "path": "app.js",
     "type": "app",
   },
-  "components": [],
+  "components": [
+    {
+      "deps": [],
+      "path": "components/navigation-bar/navigation-bar.ts",
+      "type": "component",
+    },
+  ],
   "pages": [
     {
       "deps": [],
@@ -187,7 +218,7 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
       "type": "page",
     },
   ],
-  "subpackages": [],
+  "subPackages": [],
 }
 `;
 
@@ -222,7 +253,7 @@ exports[`entry > scanEntries > 'vite-native-skyline' 1`] = `
       "type": "page",
     },
   ],
-  "subpackages": [],
+  "subPackages": [],
 }
 `;
 

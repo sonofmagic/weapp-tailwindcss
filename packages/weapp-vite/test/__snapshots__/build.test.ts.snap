@@ -31,7 +31,7 @@ exports[`build > rollup > mixjs getEntries 1`] = `
       "type": "page",
     },
   ],
-  "subpackages": [],
+  "subPackages": [],
 }
 `;
 
