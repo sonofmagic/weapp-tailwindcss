@@ -91,7 +91,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.25.7",
+    "@ast-grep/napi": "^0.26.0",
     "@babel/core": "^7.25.2",
     "@changesets/cli": "^2.27.7",
     "@commitlint/config-conventional": "^19.2.2",
@@ -198,7 +198,7 @@
     "tsd": "^0.31.1",
     "tslib": "^2.6.3",
     "tsup": "^8.2.4",
-    "tsx": "^4.16.5",
+    "tsx": "^4.17.0",
     "turbo": "^2.0.12",
     "typescript": "5.5.4",
     "unbuild": "^2.0.0",
