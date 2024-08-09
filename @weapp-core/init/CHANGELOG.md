@@ -1,5 +1,16 @@
 # @weapp-core/init
 
+## 1.0.0-alpha.4
+
+### Major Changes
+
+- 36f5a7c: release major version
+
+### Patch Changes
+
+- Updated dependencies [36f5a7c]
+  - @weapp-core/shared@1.0.0-alpha.4
+
 ## 0.0.2-alpha.3
 
 ### Patch Changes

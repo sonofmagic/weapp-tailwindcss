@@ -1,5 +1,13 @@
 # weapp-ide-cli
 
+## 2.0.0-alpha.2
+
+### Patch Changes
+
+- 36f5a7c: release major version
+- Updated dependencies [36f5a7c]
+  - @weapp-core/logger@1.0.0-alpha.1
+
 ## 2.0.0-alpha.1
 
 ### Patch Changes
