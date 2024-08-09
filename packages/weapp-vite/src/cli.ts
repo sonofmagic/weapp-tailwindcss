@@ -9,6 +9,7 @@ import { createContext } from './context'
 const ctx = createContext()
 program
   .command('dev').action(async () => {
+    ctx.isDev = true
     await runDev(ctx)
   })
 

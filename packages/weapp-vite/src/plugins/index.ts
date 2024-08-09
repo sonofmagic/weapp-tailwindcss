@@ -10,6 +10,7 @@ import { getEntries } from '../entry'
 import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
 import type { Context } from '../context'
+import { runDev, runProd } from '../build'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -29,7 +30,7 @@ function getRealPath(res: ParseRequestResponse) {
   return res.filename
 }
 
-export function vitePluginWeapp(_ctx: Context): Plugin[] {
+export function vitePluginWeapp(ctx: Context): Plugin[] {
   // options?: VitePluginWeappOptions
   // const { srcRoot } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
   //   srcRoot: '',
@@ -71,7 +72,7 @@ export function vitePluginWeapp(_ctx: Context): Plugin[] {
           root,
           outDir: build.outDir,
           srcRoot: weapp?.srcRoot,
-          isSubPackage: Boolean(weapp?.subPackage),
+          subPackage: weapp?.subPackage,
         })
         if (entries) {
           const paths: string[] = []
@@ -84,6 +85,24 @@ export function vitePluginWeapp(_ctx: Context): Plugin[] {
           const input = getInputOption(paths)
           entriesSet = new Set(paths)
           options.input = input
+          if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
+            for (const subPackage of entries.subPackages) {
+              if (ctx.isDev) {
+                runDev(ctx, {
+                  weapp: {
+                    subPackage,
+                  },
+                })
+              }
+              else {
+                runProd(ctx, {
+                  weapp: {
+                    subPackage,
+                  },
+                })
+              }
+            }
+          }
         }
       },
       resolveId(source) {

@@ -54,7 +54,7 @@ export async function runDev(ctx: Context, options?: InlineConfig) {
     ,
   )) as RollupWatcher
 
-  ctx.watcherCache.set(options?.weapp?.srcRoot || RootSymbol, watcher)
+  ctx.watcherCache.set(options?.weapp?.subPackage?.root || RootSymbol, watcher)
   // watcher.on('event', (event) => {
   //   console.log(event)
   // })
