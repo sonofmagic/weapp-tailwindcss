@@ -48,7 +48,7 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
   if (subPackage) {
     const subPackageRoot = subPackage.root ?? ''
     const filter = createFilter(
-      [path.join(subPackageRoot, '**/*')],
+      [path.join(root, subPackageRoot, '**/*')],
       [
         ...defaultExcluded,
       ],
@@ -57,6 +57,15 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
 
     const pageEntries: Entry[] = []
     const componentEntries: Entry[] = []
+    const subPackageEntries: Entry[] = []
+
+    if (subPackage.entry) {
+      subPackageEntries.push({
+        deps: [],
+        path: path.join(root, subPackageRoot, subPackage.entry),
+        type: 'subPackageEntry',
+      })
+    }
 
     for await (
       const file of klaw(
@@ -86,6 +95,7 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
     return {
       pages: pageEntries,
       components: componentEntries,
+      subPackageEntries,
     }
   }
   // 打包主包的场景

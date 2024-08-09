@@ -25,7 +25,7 @@ export interface SubpackageDep extends Subpackage {
 export type Dep = PageDep | ComponentDep | SubpackageDep
 
 export interface Entry {
-  type: 'page' | 'component' | 'app'
+  type: 'page' | 'component' | 'app' | 'subPackageEntry'
   path: string
   deps: Dep[]
 }
