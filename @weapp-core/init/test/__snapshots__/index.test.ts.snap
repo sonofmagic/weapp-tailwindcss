@@ -5,6 +5,10 @@ exports[`index > vite-native callback 1`] = `
   "author": "",
   "description": "",
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.9",
+    "weapp-tailwindcss": "workspace:*",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -14,8 +18,10 @@ exports[`index > vite-native callback 1`] = `
   "private": true,
   "scripts": {
     "build": "weapp-vite build",
+    "build-npm": "weapp-vite build-npm",
     "dev": "weapp-vite dev",
     "open": "weapp-vite open",
+    "postinstall": "weapp-tw patch",
   },
   "type": "module",
   "version": "1.0.0",
@@ -84,6 +90,7 @@ exports[`index > vite-native-skyline callback 1`] = `
   "private": true,
   "scripts": {
     "build": "weapp-vite build",
+    "build-npm": "weapp-vite build-npm",
     "dev": "weapp-vite dev",
     "open": "weapp-vite open",
   },
@@ -145,7 +152,7 @@ exports[`index > vite-native-ts callback 1`] = `
   "author": "",
   "description": "",
   "devDependencies": {
-    "miniprogram-api-typings": "^3.12.2",
+    "miniprogram-api-typings": "^3.12.3",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -154,6 +161,7 @@ exports[`index > vite-native-ts callback 1`] = `
   "private": true,
   "scripts": {
     "build": "weapp-vite build",
+    "build-npm": "weapp-vite build-npm",
     "dev": "weapp-vite dev",
     "open": "weapp-vite open",
   },
@@ -223,7 +231,7 @@ exports[`index > vite-native-ts-skyline callback 1`] = `
   "author": "",
   "description": "",
   "devDependencies": {
-    "miniprogram-api-typings": "^3.12.2",
+    "miniprogram-api-typings": "^3.12.3",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -232,6 +240,7 @@ exports[`index > vite-native-ts-skyline callback 1`] = `
   "private": true,
   "scripts": {
     "build": "weapp-vite build",
+    "build-npm": "weapp-vite build-npm",
     "dev": "weapp-vite dev",
     "open": "weapp-vite open",
   },

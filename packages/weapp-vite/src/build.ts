@@ -3,11 +3,18 @@ import type { InlineConfig } from 'vite'
 import { build } from 'vite'
 import type { RollupOutput, RollupWatcher } from 'rollup'
 import { addExtension, defu, removeExtension } from '@weapp-core/shared'
+import { readPackageJSON } from 'pkg-types'
 import { vitePluginWeapp } from './plugins'
 import type { Context } from './context'
 import { RootSymbol } from './symbols'
 
-export function getDefaultConfig(ctx: Context): InlineConfig {
+export async function getDefaultConfig(ctx: Context, _options?: InlineConfig): Promise<InlineConfig> {
+  // const root = options?.root ?? process.cwd()
+  const localPackageJson = await readPackageJSON()
+  const external: string[] = []
+  if (localPackageJson.dependencies) {
+    external.push(...Object.keys(localPackageJson.dependencies))
+  }
   return {
     build: {
       rollupOptions: {
@@ -24,6 +31,7 @@ export function getDefaultConfig(ctx: Context): InlineConfig {
             return chunkInfo.name
           },
         },
+        external,
       },
       assetsDir: '.',
       commonjsOptions: {
@@ -44,7 +52,7 @@ export async function runDev(ctx: Context, options?: InlineConfig) {
   const watcher = (await build(
     defu<InlineConfig, InlineConfig[]>(
       options,
-      getDefaultConfig(ctx),
+      await getDefaultConfig(ctx, options),
       {
         mode: 'development',
         build: {
@@ -69,7 +77,12 @@ export async function runProd(ctx: Context, options?: InlineConfig) {
   const output = (await build(
     defu<InlineConfig, InlineConfig[]>(
       options,
-      getDefaultConfig(ctx),
+      // {
+      //   build: {
+      //     emptyOutDir: true,
+      //   },
+      // },
+      await getDefaultConfig(ctx, options),
       {
         mode: 'production',
       },

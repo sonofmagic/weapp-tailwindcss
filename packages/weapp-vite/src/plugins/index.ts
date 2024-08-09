@@ -3,14 +3,17 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
 import { addExtension, removeExtension } from '@weapp-core/shared'
-import fg from 'fast-glob'
 import { isCSSRequest, preprocessCSS } from 'vite'
+// import chokidar from 'chokidar'
+import fg from 'fast-glob'
 import { defaultExcluded, supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
 // import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
 import type { Context } from '../context'
 import { runDev, runProd } from '../build'
+// import { MiscSymbol } from '../symbols'
+import type { AppEntry } from '../types'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -31,11 +34,6 @@ function getRealPath(res: ParseRequestResponse) {
 }
 
 export function vitePluginWeapp(ctx: Context): Plugin[] {
-  // options?: VitePluginWeappOptions
-  // const { srcRoot } = defu<Required<VitePluginWeappOptions>, Partial<VitePluginWeappOptions>[]>(options, {
-  //   srcRoot: '',
-  // })
-
   function getInputOption(entries: string[]) {
     return entries
       .reduce<Record<string, string>>((acc, cur) => {
@@ -51,6 +49,8 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
   function relative(p: string) {
     return path.relative(configResolved.root, p)
   }
+
+  let appEntry: AppEntry
   // TODO
 
   // const cacheInstance = createPluginCache(Object.create(null))
@@ -78,6 +78,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           const paths: string[] = []
           if (entries.app) {
             paths.push(entries.app.path)
+            appEntry = entries.app
           }
           paths.push(...[...entries.pages, ...entries.components].map((x) => {
             return x.path
@@ -112,6 +113,112 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           }
         }
       },
+      async buildStart() {
+        const { root, build, weapp } = configResolved
+        let cwd = root
+        const ignore: string[] = [
+          ...defaultExcluded,
+        ]
+        if (!appEntry && weapp?.subPackage && weapp.subPackage.root) {
+          // subPackage
+          cwd = path.join(root, weapp.subPackage.root)
+        }
+        else {
+          ignore.push(
+            ...[
+              `${build.outDir}/**`,
+              ...appEntry.deps.filter(
+                x => x.type === 'subPackage',
+              )
+                .map((x) => {
+                  return `${x.root}/**`
+                }),
+              'project.config.json',
+              'project.private.config.json',
+              'package.json',
+              'tsconfig.json',
+              'tsconfig.node.json',
+            ],
+          )
+        }
+        const files = await fg(
+          // 假如去 join root 就是返回 absolute
+          ['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'],
+          {
+            cwd,
+            ignore,
+            absolute: false,
+          },
+        )
+        for (const file of files) {
+          const filepath = path.resolve(cwd, file)
+
+          this.addWatchFile(filepath)
+          this.emitFile({
+            type: 'asset',
+            fileName: path.normalize(file),
+            source: await fs.readFile(filepath, 'utf8'),
+          })
+        }
+        // if (!ctx.watcherCache.has(MiscSymbol)) {
+        //   // ctx.watcherCache.
+        //   const watcher = chokidar.watch('**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}', {
+        //     ignored: [
+        //       ...defaultExcluded,
+        //       `${build.outDir}/**`,
+        //       'project.config.json',
+        //       'project.private.config.json',
+        //       'package.json',
+        //       'tsconfig.json',
+        //       'tsconfig.node.json',
+        //     ],
+        //     cwd: root,
+        //   })
+
+        //   // const fileReferenceIdMap: Record<string, string> = {}
+
+        //   watcher
+        //     .on(
+        //       'add',
+        //       async (file) => {
+        //         const filepath = path.resolve(root, file)
+        //         this.addWatchFile(filepath)
+        //         ctx.assetCache.set(file, {
+        //           type: 'asset',
+        //           fileName: path.normalize(file),
+        //           source: await fs.readFile(filepath, 'utf8'),
+        //         })
+        //       },
+        //     )
+        //     .on(
+        //       'change',
+        //       async (file) => {
+        //         const filepath = path.resolve(root, file)
+        //         this.addWatchFile(filepath)
+        //         ctx.assetCache.set(file, {
+        //           type: 'asset',
+        //           fileName: path.normalize(file),
+        //           source: await fs.readFile(filepath, 'utf8'),
+        //         })
+        //       },
+        //     )
+        //     .on(
+        //       'unlink',
+        //       (file) => {
+        //         ctx.assetCache.delete(file)
+        //       },
+        //     )
+        //     .on('ready', () => {
+        //       console.log('ready')
+        //     })
+
+        //   ctx.watcherCache.set(MiscSymbol, watcher)
+        // }
+
+        // for (const emittedFile of ctx.assetCache.values()) {
+        //   this.emitFile(emittedFile)
+        // }
+      },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
           return source.replace(/\.wxss$/, '.css?wxss')
@@ -142,7 +249,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         }
       },
       async buildEnd() {
-        const { root, build } = configResolved
         const styles: Record<string, string> = {}
         for (const stylesId of stylesIds) {
           const parsed = parseRequest(stylesId)
@@ -162,33 +268,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             type: 'asset',
             fileName: style[0],
             source: style[1],
-          })
-        }
-        const files = await fg(
-          // 假如去 join root 就是返回 absolute
-          ['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'],
-          {
-            cwd: root,
-            ignore: [
-              ...defaultExcluded,
-              `${build.outDir}/**`,
-              'project.config.json',
-              'project.private.config.json',
-              'package.json',
-              'tsconfig.json',
-              'tsconfig.node.json',
-            ],
-            absolute: false,
-          },
-        )
-        for (const file of files) {
-          const filepath = path.resolve(root, file)
-
-          this.addWatchFile(filepath)
-          this.emitFile({
-            type: 'asset',
-            fileName: path.normalize(file),
-            source: await fs.readFile(filepath, 'utf8'),
           })
         }
       },

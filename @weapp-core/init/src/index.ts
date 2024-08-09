@@ -99,6 +99,7 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
       set(packageJson, 'scripts.build', `${command} build`)
       if (command === 'weapp-vite') {
         set(packageJson, 'scripts.open', `${command} open`)
+        set(packageJson, 'scripts.build-npm', `${command} build-npm`)
       }
       cb?.(
         (...args) => {
