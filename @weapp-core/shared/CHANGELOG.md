@@ -1,5 +1,11 @@
 # @weapp-core/shared
 
+## 1.0.0-alpha.4
+
+### Major Changes
+
+- 36f5a7c: release major version
+
 ## 0.0.2-alpha.3
 
 ### Patch Changes
