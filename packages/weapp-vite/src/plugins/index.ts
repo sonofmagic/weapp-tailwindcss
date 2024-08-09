@@ -58,9 +58,15 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
     {
       name: 'weapp-vite:pre',
       enforce: 'pre',
+      api: {
+
+      },
       // config->configResolved->|watching|options->buildStart
       config(config, env) {
         debug?.(config, env)
+        if (config?.weapp?.srcRoot && !config?.weapp.subPackage && !ctx.srcRootRef.value) {
+          ctx.srcRootRef.value = config.weapp.srcRoot
+        }
       },
       configResolved(config) {
         debug?.(config)
@@ -143,7 +149,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         }
         const files = await fg(
           // 假如去 join root 就是返回 absolute
-          ['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'],
+          [path.join(weapp?.srcRoot ?? '', '**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}')],
           {
             cwd,
             ignore,
@@ -156,7 +162,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           this.addWatchFile(filepath)
           this.emitFile({
             type: 'asset',
-            fileName: path.normalize(file),
+            fileName: ctx.relativeSrcRoot(file),
             source: await fs.readFile(filepath, 'utf8'),
           })
         }
@@ -266,7 +272,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         for (const style of Object.entries(styles)) {
           this.emitFile({
             type: 'asset',
-            fileName: style[0],
+            fileName: ctx.relativeSrcRoot(style[0]),
             source: style[1],
           })
         }

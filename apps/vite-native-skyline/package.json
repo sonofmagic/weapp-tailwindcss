@@ -1,5 +1,6 @@
 {
   "name": "vite-native-skyline",
+  "type": "module",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -10,7 +11,8 @@
   "scripts": {
     "dev": "weapp-vite dev",
     "build": "weapp-vite build",
-    "open": "weapp-vite open"
+    "open": "weapp-vite open",
+    "build-npm": "weapp-vite build-npm"
   },
   "devDependencies": {
     "weapp-vite": "workspace:*"

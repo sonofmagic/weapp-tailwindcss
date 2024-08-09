@@ -15,6 +15,9 @@
     "postinstall": "weapp-tw patch",
     "build-npm": "weapp-vite build-npm"
   },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",

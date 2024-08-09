@@ -71,9 +71,8 @@ export function updateProjectConfig(options: UpdateProjectConfigOptions) {
         fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
           spaces: 2,
         })
+        console.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
       }
-
-      console.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
 
       return projectConfig
     }
@@ -98,6 +97,7 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
       set(packageJson, 'scripts.dev', `${command} dev`)
       set(packageJson, 'scripts.build', `${command} build`)
       if (command === 'weapp-vite') {
+        set(packageJson, 'type', 'module')
         set(packageJson, 'scripts.open', `${command} open`)
         set(packageJson, 'scripts.build-npm', `${command} build-npm`)
       }
@@ -110,6 +110,7 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
         fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
           spaces: 2,
         })
+        console.log(`✨ 设置 ${packageJsonFilename} 配置文件成功!`)
       }
 
       return packageJson
@@ -120,32 +121,42 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
 
 export function initViteConfigFile(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const viteConfigFilePath = path.resolve(root, 'vite.config.ts')
+  const targetFilename = 'vite.config.ts'
+  const viteConfigFilePath = path.resolve(root, targetFilename)
   const viteConfigFileCode = `import { defineConfig } from 'weapp-vite/config'
 
-export default defineConfig({})
+export default defineConfig({
+  weapp: {
+    // weapp-vite options
+  },
+})
 `
   if (write) {
     fs.outputFileSync(viteConfigFilePath, viteConfigFileCode, 'utf8')
+    console.log(`✨ 设置 ${targetFilename} 配置文件成功!`)
   }
   return viteConfigFileCode
 }
 
 export function initTsDtsFile(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const viteDtsFilePath = path.resolve(root, 'vite-env.d.ts')
+  const targetFilename = 'vite-env.d.ts'
+  const viteDtsFilePath = path.resolve(root, targetFilename)
   const code = `/// <reference types="vite/client" />
 `
   if (write) {
     fs.outputFileSync(viteDtsFilePath, code, 'utf8')
+    console.log(`✨ 设置 ${targetFilename} 配置文件成功!`)
   }
   return code
 }
 
 export function initTsJsonFiles(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const tsJsonFilePath = path.resolve(root, 'tsconfig.json')
-  const tsNodeJsonFilePath = path.resolve(root, 'tsconfig.node.json')
+  const tsJsonFilename = 'tsconfig.json'
+  const tsJsonFilePath = path.resolve(root, tsJsonFilename)
+  const tsNodeJsonFilename = 'tsconfig.node.json'
+  const tsNodeJsonFilePath = path.resolve(root, tsNodeJsonFilename)
   if (write) {
     fs.outputJSONSync(tsJsonFilePath, {
       compilerOptions: {
@@ -183,6 +194,7 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
       encoding: 'utf8',
       spaces: 2,
     })
+    console.log(`✨ 设置 ${tsJsonFilename} 配置文件成功!`)
 
     fs.outputJSONSync(tsNodeJsonFilePath, {
       compilerOptions: {
@@ -200,6 +212,7 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
       encoding: 'utf8',
       spaces: 2,
     })
+    console.log(`✨ 设置 ${tsNodeJsonFilename} 配置文件成功!`)
   }
 }
 

@@ -3,6 +3,9 @@
 exports[`index > vite-native callback 1`] = `
 {
   "author": "",
+  "dependencies": {
+    "lodash": "^4.17.21",
+  },
   "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.20",
@@ -70,7 +73,11 @@ exports[`index > vite-native callback 2`] = `
 exports[`index > vite-native vite.config.ts 1`] = `
 "import { defineConfig } from 'weapp-vite/config'
 
-export default defineConfig({})
+export default defineConfig({
+  weapp: {
+    // weapp-vite options
+  },
+})
 "
 `;
 
@@ -141,7 +148,11 @@ exports[`index > vite-native-skyline callback 2`] = `
 exports[`index > vite-native-skyline vite.config.ts 1`] = `
 "import { defineConfig } from 'weapp-vite/config'
 
-export default defineConfig({})
+export default defineConfig({
+  weapp: {
+    // weapp-vite options
+  },
+})
 "
 `;
 
@@ -220,7 +231,11 @@ exports[`index > vite-native-ts callback 2`] = `
 exports[`index > vite-native-ts vite.config.ts 1`] = `
 "import { defineConfig } from 'weapp-vite/config'
 
-export default defineConfig({})
+export default defineConfig({
+  weapp: {
+    // weapp-vite options
+  },
+})
 "
 `;
 
@@ -299,7 +314,11 @@ exports[`index > vite-native-ts-skyline callback 2`] = `
 exports[`index > vite-native-ts-skyline vite.config.ts 1`] = `
 "import { defineConfig } from 'weapp-vite/config'
 
-export default defineConfig({})
+export default defineConfig({
+  weapp: {
+    // weapp-vite options
+  },
+})
 "
 `;
 
