@@ -1,5 +1,11 @@
 # weapp-vite
 
+## 1.0.1
+
+### Patch Changes
+
+- 2e458bb: fix: Cannot find module `weapp-vite/config` error
+
 ## 1.0.0
 
 ### Major Changes
