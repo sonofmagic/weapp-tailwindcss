@@ -2,7 +2,7 @@
   "name": "weapp-vite",
   "type": "module",
   "version": "1.0.0",
-  "description": "WIP",
+  "description": "weapp-vite 一个现代化的小程序打包工具",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -28,7 +28,8 @@
     "build": "tsup",
     "release": "node scripts/release.js",
     "test:dev": "vitest",
-    "test": "vitest run"
+    "test": "vitest run",
+    "sync": "cnpm sync weapp-vite"
   },
   "peerDependencies": {
     "vite": ">=2.6.0"

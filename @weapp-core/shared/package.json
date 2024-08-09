@@ -26,7 +26,8 @@
     "test:dev": "vitest",
     "release": "pnpm publish",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "sync": "cnpm sync @weapp-core/shared"
   },
   "publishConfig": {
     "exports": {

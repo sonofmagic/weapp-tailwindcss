@@ -65,6 +65,7 @@
     "demo:sync-dist": "node scripts/demo/copy-dist.js",
     "demo:del-dist": "node scripts/demo/del-dist.js",
     "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw @weapp-tailwindcss/cli @weapp-tailwindcss/typography",
+    "sync:all": "turbo run sync",
     "generate:readme": "tsx scripts/readme/write.ts",
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",

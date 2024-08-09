@@ -46,7 +46,8 @@
     "test": "vitest run",
     "weapp": "tsx src/cli.ts",
     "debug": "tsx src/cli.ts config",
-    "raw": "node bin/weapp.js"
+    "raw": "node bin/weapp.js",
+    "sync": "cnpm sync weapp-ide-cli"
   },
   "publishConfig": {
     "access": "public",
