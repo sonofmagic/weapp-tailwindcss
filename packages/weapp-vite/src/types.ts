@@ -1,3 +1,5 @@
+import type { UserConfig as ViteUserConfig } from 'vite'
+
 export interface PageDep {
   type: 'page'
   path: string
@@ -56,7 +58,9 @@ export interface AppEntry {
 
 export type Entry = AppEntry | PageEntry | ComponentEntry | SubPackageEntry
 
-export interface InlineConfig {
+export interface WeappViteConfig {
   srcRoot?: string
   subPackage?: Partial<Subpackage>
 }
+
+export type UserConfig = ViteUserConfig & { weapp?: WeappViteConfig }
