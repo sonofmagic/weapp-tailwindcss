@@ -101,7 +101,7 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
   // 打包主包的场景
   else {
     const appEntry = searchAppEntry({
-      root,
+      root: path.join(root, srcRoot),
       formatPath,
     })
 

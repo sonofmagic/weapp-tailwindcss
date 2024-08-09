@@ -20,9 +20,17 @@ program
 
 program
   .command('init').action(() => {
-    initConfig({
-      command: 'weapp-vite',
-    })
+    try {
+      initConfig({
+        command: 'weapp-vite',
+      })
+    }
+    catch (error) {
+      logger.error(error)
+    }
+    finally {
+      process.exit()
+    }
   })
 
 program
