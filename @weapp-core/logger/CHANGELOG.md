@@ -1,5 +1,15 @@
 # @weapp-core/logger
 
+## 1.0.0
+
+### Major Changes
+
+- 36f5a7c: release major version
+
+### Patch Changes
+
+- f22c535: chore: compact for `weapp-vite`
+
 ## 1.0.0-alpha.1
 
 ### Major Changes

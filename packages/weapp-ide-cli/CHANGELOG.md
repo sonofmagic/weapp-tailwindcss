@@ -1,5 +1,25 @@
 # weapp-ide-cli
 
+## 2.0.0
+
+### Major Changes
+
+- 80ce9ca: `@weapp-ide-cli` cjs -> esm ( `type: module` ) (BREAKING CHANGE!)
+
+  `weapp-vite` use `@weapp-ide-cli`
+
+  `vite.config.ts` support
+
+  enhance `@weapp-core/init`
+
+### Patch Changes
+
+- f22c535: chore: compact for `weapp-vite`
+- 36f5a7c: release major version
+- Updated dependencies [f22c535]
+- Updated dependencies [36f5a7c]
+  - @weapp-core/logger@1.0.0
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes

@@ -79,6 +79,7 @@
     "pr:beta": "changeset pre enter beta",
     "pr:rc": "changeset pre enter rc",
     "pr:exit": "changeset pre exit",
+    "cv": "changeset version ",
     "--------": "----------------",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
