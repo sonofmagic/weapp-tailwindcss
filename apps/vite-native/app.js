@@ -1,4 +1,8 @@
+import { add } from 'lodash'
+
 const { formatTime } = require('./utils/util')
+
+console.log(add(1, 2))
 // app.js
 App({
   data: {

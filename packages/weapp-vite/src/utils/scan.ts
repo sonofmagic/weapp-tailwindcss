@@ -1,7 +1,7 @@
 import path from 'pathe'
 import fs from 'fs-extra'
 import { addExtension, defu, isObject, removeExtension } from '@weapp-core/shared'
-import type { Dep, Entry, Subpackage } from '../types'
+import type { AppEntry, Dep, Entry, Subpackage } from '../types'
 
 export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
 // import { isCSSRequest } from 'is-css-request'
@@ -23,7 +23,7 @@ export interface SearchAppEntryOptions {
   formatPath?: (p: string) => string
 }
 
-export function searchAppEntry(options?: SearchAppEntryOptions): Entry | undefined {
+export function searchAppEntry(options?: SearchAppEntryOptions): AppEntry | undefined {
   const { formatPath, root } = defu(options, {
     formatPath: (x: string) => x,
   })

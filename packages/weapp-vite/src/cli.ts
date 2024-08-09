@@ -38,4 +38,17 @@ program
     }
   })
 
+program
+  .command('build-npm').alias('build:npm').action(async () => {
+    try {
+      await parse(['build-npm', '-p'])
+    }
+    catch (error) {
+      logger.error(error)
+    }
+    finally {
+      process.exit()
+    }
+  })
+
 program.parse()

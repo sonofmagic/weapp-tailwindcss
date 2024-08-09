@@ -11,9 +11,15 @@
   "scripts": {
     "dev": "weapp-vite dev",
     "build": "weapp-vite build",
-    "open": "weapp-vite open"
+    "open": "weapp-vite open",
+    "postinstall": "weapp-tw patch",
+    "build-npm": "weapp-vite build-npm"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.9",
+    "weapp-tailwindcss": "workspace:*",
     "weapp-vite": "workspace:*"
   }
 }

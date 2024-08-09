@@ -9,10 +9,11 @@
   "scripts": {
     "dev": "weapp-vite dev",
     "build": "weapp-vite build",
-    "open": "weapp-vite open"
+    "open": "weapp-vite open",
+    "build-npm": "weapp-vite build-npm"
   },
   "devDependencies": {
-    "miniprogram-api-typings": "^3.12.2",
+    "miniprogram-api-typings": "^3.12.3",
     "weapp-vite": "workspace:*"
   }
 }
