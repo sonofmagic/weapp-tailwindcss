@@ -1,1 +1,1 @@
-console.log('packageA')
+console.log('--------------packageA----------------')

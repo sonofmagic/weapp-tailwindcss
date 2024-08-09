@@ -37,6 +37,7 @@
     "@weapp-core/init": "workspace:^",
     "@weapp-core/logger": "workspace:^",
     "@weapp-core/shared": "workspace:^",
+    "chokidar": "^3.6.0",
     "commander": "^12.1.0",
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",

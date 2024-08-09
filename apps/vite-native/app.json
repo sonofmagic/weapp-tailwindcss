@@ -27,7 +27,7 @@
         "pages/apple",
         "pages/banana"
       ],
-      "entry": "index.ts",
+      "entry": "index.js",
       "independent": true
     }
   ],

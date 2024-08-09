@@ -48,7 +48,7 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
   if (subPackage) {
     const subPackageRoot = subPackage.root ?? ''
     const filter = createFilter(
-      [path.join(root, subPackageRoot, '**/*')],
+      [path.join(root, srcRoot, subPackageRoot, '**/*')],
       [
         ...defaultExcluded,
       ],
@@ -100,7 +100,8 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
   }
   // 打包主包的场景
   else {
-    const appEntry = searchAppEntry(root, {
+    const appEntry = searchAppEntry({
+      root,
       formatPath,
     })
 
@@ -109,7 +110,7 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
     if (appEntry) {
       const subPackageDeps = appEntry.deps.filter(x => x.type === 'subPackage')
       const filter = createFilter(
-        [path.join(srcRoot, '**/*')],
+        [path.join(root, srcRoot, '**/*')],
         [
           ...defaultExcluded,
           path.join(root, `${outDir}/**`),
