@@ -1324,9 +1324,9 @@
   integrity sha512-a7cxGcJ2wIlMFLlh8z2ONm+715QkPHiyJcxwQlKOz/03GPw1COpfhcmC9wm4xlZfp//jWHNNMwzjtqHXVWU9KA==
 
 "@dcloudio/types@^3.4.8":
-  version "3.4.8"
-  resolved "https://registry.npmmirror.com/@dcloudio/types/-/types-3.4.8.tgz#97eab3fde7e8a55c11a7f4422f2f9bf0efb4d49c"
-  integrity sha512-IPXuoghLv7qNPOnRuP7vC5++MdRHhE0U7EMw9ia//uOh69fFXZiRTfoHd51+nzciD6R50gqYhbrCCZIxnxhM9Q==
+  version "3.4.12"
+  resolved "https://registry.npmmirror.com/@dcloudio/types/-/types-3.4.12.tgz#85965797515dcc6396c692f3e2bd1f84f852e962"
+  integrity sha512-xSFDhBCm4bqdRBO9mBj7wySz7fzOv9sMeK9VMI21tHvZbT2bIdGMU5o+kJ/J4H2+N5+7SW2kDY+aIzZs94DAOg==
 
 "@dcloudio/uni-app-harmony@3.0.0-alpha-4010920240607001":
   version "3.0.0-alpha-4010920240607001"
