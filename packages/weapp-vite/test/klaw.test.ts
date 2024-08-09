@@ -18,7 +18,7 @@ describe('klaw', () => {
     })
     console.log(res)
     const subPackageRoot = 'packageA'
-    const include = [path.join(subPackageRoot, '**/*')]
+    const include = [path.join(viteNativeRoot, subPackageRoot, '**/*')]
     const filter = createFilter(
       include,
       [
@@ -26,7 +26,9 @@ describe('klaw', () => {
       { cwd: viteNativeRoot },
     )
     for await (const file of klaw(path.resolve(viteNativeRoot, 'packageA'), { filter })) {
-      console.log(path.relative(viteNativeRoot, file.path))
+      if (file.stats.isFile()) {
+        console.log(path.relative(viteNativeRoot, file.path))
+      }
     }
   })
 })

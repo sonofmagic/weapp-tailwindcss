@@ -30,10 +30,12 @@ export function getDefaultConfig(ctx: Context): InlineConfig {
         transformMixedEsModules: true,
         include: undefined,
       },
+      emptyOutDir: false,
     },
     plugins: [
       vitePluginWeapp(ctx),
     ],
+    // logLevel: 'silent',
   }
 }
 
@@ -55,6 +57,7 @@ export async function runDev(ctx: Context, options?: InlineConfig) {
   )) as RollupWatcher
 
   ctx.watcherCache.set(options?.weapp?.subPackage?.root || RootSymbol, watcher)
+
   // watcher.on('event', (event) => {
   //   console.log(event)
   // })

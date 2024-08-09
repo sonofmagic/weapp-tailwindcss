@@ -7,7 +7,7 @@ import fg from 'fast-glob'
 import { isCSSRequest, preprocessCSS } from 'vite'
 import { defaultExcluded, supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
-import { createPluginCache } from '../cache'
+// import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
 import type { Context } from '../context'
 import { runDev, runProd } from '../build'
@@ -52,8 +52,8 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
     return path.relative(configResolved.root, p)
   }
   // TODO
-  // eslint-disable-next-line ts/no-unused-vars
-  const cacheInstance = createPluginCache(Object.create(null))
+
+  // const cacheInstance = createPluginCache(Object.create(null))
   return [
     {
       name: 'weapp-vite:pre',
@@ -82,24 +82,31 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           paths.push(...[...entries.pages, ...entries.components].map((x) => {
             return x.path
           }))
+          if (entries.subPackageEntries) {
+            paths.push(...entries.subPackageEntries.map((x) => {
+              return x.path
+            }))
+          }
           const input = getInputOption(paths)
           entriesSet = new Set(paths)
           options.input = input
           if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (ctx.isDev) {
-                runDev(ctx, {
-                  weapp: {
-                    subPackage,
-                  },
-                })
-              }
-              else {
-                runProd(ctx, {
-                  weapp: {
-                    subPackage,
-                  },
-                })
+              if (subPackage.root && !ctx.watcherCache.has(subPackage.root)) {
+                if (ctx.isDev) {
+                  runDev(ctx, {
+                    weapp: {
+                      subPackage,
+                    },
+                  })
+                }
+                else {
+                  runProd(ctx, {
+                    weapp: {
+                      subPackage,
+                    },
+                  })
+                }
               }
             }
           }
