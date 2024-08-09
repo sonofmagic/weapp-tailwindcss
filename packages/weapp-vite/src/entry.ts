@@ -9,9 +9,17 @@ import type { Entry, InlineConfig } from './types'
 export function createFilter(include: string[], exclude: string[], options?: mm.Options) {
   const opts = defu<mm.Options, mm.Options[]>(options, {
     ignore: exclude,
+    // debug: true,
     // dot: true,
     // contains: true,
   })
+  // function getPath(id: string) {
+  //   if (typeof opts.cwd === 'string') {
+  //     return path.relative(opts.cwd, id)
+  //   }
+  //   return id
+  // }
+
   return function (id: unknown | string) {
     if (typeof id !== 'string') {
       return false
@@ -19,6 +27,7 @@ export function createFilter(include: string[], exclude: string[], options?: mm.
     if (/\0/.test(id)) {
       return false
     }
+    // const x = getPath(id)
 
     return mm.isMatch(id as string, include, opts)
   }
@@ -42,7 +51,6 @@ export async function getEntries(options: { root?: string, srcRoot?: string, out
       [path.join(subPackageRoot, '**/*')],
       [
         ...defaultExcluded,
-        path.join(root, `${outDir}/**`),
       ],
       { cwd: root },
     )
