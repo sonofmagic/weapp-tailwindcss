@@ -49,6 +49,54 @@ exports[`entry > scanEntries > 'native' 1`] = `
         "type": "page",
       },
     ],
+    "json": {
+      "pages": [
+        "pages/index/index",
+        "pages/list/index",
+        "pages/cart/index",
+        "pages/user/index",
+        "pages/details/index",
+        "pages/bindPhone/index",
+        "pages/coupon/index",
+        "pages/order/index",
+        "pages/addressList/index",
+        "pages/addressAdd/index",
+        "pages/orderDetails/index",
+      ],
+      "tabBar": {
+        "backgroundColor": "#fff",
+        "borderStyle": "black",
+        "color": "#333",
+        "list": [
+          {
+            "iconPath": "images/home_page_y.png",
+            "pagePath": "pages/index/index",
+            "selectedIconPath": "images/home_page_n.png",
+            "text": "首页",
+          },
+          {
+            "iconPath": "images/shopping_select.png",
+            "pagePath": "pages/cart/index",
+            "selectedIconPath": "images/Shopping.png",
+            "text": "购物车",
+          },
+          {
+            "iconPath": "images/my_n.png",
+            "pagePath": "pages/user/index",
+            "selectedIconPath": "images/my_y.png",
+            "text": "我的",
+          },
+        ],
+        "selectedColor": "#ff5f19",
+      },
+      "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "WeChat",
+      },
+    },
+    "jsonPath": "app.json",
     "path": "app.js",
     "type": "app",
   },
@@ -56,56 +104,104 @@ exports[`entry > scanEntries > 'native' 1`] = `
   "pages": [
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "新增地址",
+      },
+      "jsonPath": "pages/addressAdd/index.json",
       "path": "pages/addressAdd/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "我的地址",
+      },
+      "jsonPath": "pages/addressList/index.json",
       "path": "pages/addressList/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "绑定手机",
+      },
+      "jsonPath": "pages/bindPhone/index.json",
       "path": "pages/bindPhone/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "disableScroll": true,
+        "navigationBarTitleText": "购物车",
+      },
+      "jsonPath": "pages/cart/index.json",
       "path": "pages/cart/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "优惠券",
+      },
+      "jsonPath": "pages/coupon/index.json",
       "path": "pages/coupon/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "商品详情",
+      },
+      "jsonPath": "pages/details/index.json",
       "path": "pages/details/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "backgroundTextStyle": "dark",
+        "enablePullDownRefresh": true,
+        "navigationBarTitleText": "首页",
+      },
+      "jsonPath": "pages/index/index.json",
       "path": "pages/index/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "disableScroll": true,
+        "navigationBarTitleText": "列表",
+      },
+      "jsonPath": "pages/list/index.json",
       "path": "pages/list/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "我的订单",
+      },
+      "jsonPath": "pages/order/index.json",
       "path": "pages/order/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "订单",
+      },
+      "jsonPath": "pages/orderDetails/index.json",
       "path": "pages/orderDetails/index.js",
       "type": "page",
     },
     {
       "deps": [],
+      "json": {
+        "navigationBarTitleText": "我的",
+      },
+      "jsonPath": "pages/user/index.json",
       "path": "pages/user/index.js",
       "type": "page",
     },
@@ -123,22 +219,65 @@ exports[`entry > scanEntries > 'native-skyline' 1`] = `
         "type": "page",
       },
     ],
+    "json": {
+      "componentFramework": "glass-easel",
+      "lazyCodeLoading": "requiredComponents",
+      "pages": [
+        "pages/index/index",
+      ],
+      "renderer": "skyline",
+      "rendererOptions": {
+        "skyline": {
+          "defaultDisplayBlock": true,
+          "disableABTest": true,
+          "sdkVersionBegin": "3.0.0",
+          "sdkVersionEnd": "15.255.255",
+        },
+      },
+      "sitemapLocation": "sitemap.json",
+      "style": "v2",
+      "window": {
+        "navigationBarTextStyle": "black",
+        "navigationStyle": "custom",
+      },
+    },
+    "jsonPath": "app.json",
     "path": "app.js",
     "type": "app",
   },
   "components": [
     {
       "deps": [],
+      "json": {
+        "addGlobalClass": false,
+        "component": true,
+        "componentFramework": "glass-easel",
+        "usingComponents": {},
+      },
+      "jsonPath": "components/address-book/index.json",
       "path": "components/address-book/index.js",
       "type": "component",
     },
     {
       "deps": [],
+      "json": {
+        "addGlobalClass": true,
+        "component": true,
+        "componentFramework": "glass-easel",
+        "usingComponents": {},
+      },
+      "jsonPath": "components/navigation-bar/index.json",
       "path": "components/navigation-bar/index.js",
       "type": "component",
     },
     {
       "deps": [],
+      "json": {
+        "component": true,
+        "styleIsolation": "apply-shared",
+        "usingComponents": {},
+      },
+      "jsonPath": "components/navigation-bar/navigation-bar.json",
       "path": "components/navigation-bar/navigation-bar.js",
       "type": "component",
     },
@@ -155,6 +294,15 @@ exports[`entry > scanEntries > 'native-skyline' 1`] = `
           "type": "component",
         },
       ],
+      "json": {
+        "disableScroll": true,
+        "navigationStyle": "custom",
+        "usingComponents": {
+          "address-book": "../../components/address-book",
+          "navigation-bar": "../../components/navigation-bar",
+        },
+      },
+      "jsonPath": "pages/index/index.json",
       "path": "pages/index/index.js",
       "type": "page",
     },
@@ -190,7 +338,7 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
         "type": "subPackage",
       },
       {
-        "entry": "index.ts",
+        "entry": "index.js",
         "independent": true,
         "name": "pack2",
         "pages": [
@@ -201,12 +349,57 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
         "type": "subPackage",
       },
     ],
+    "json": {
+      "componentFramework": "glass-easel",
+      "lazyCodeLoading": "requiredComponents",
+      "pages": [
+        "pages/index/index",
+      ],
+      "sitemapLocation": "sitemap.json",
+      "style": "v2",
+      "subPackages": [
+        {
+          "entry": "index.js",
+          "name": "pack1",
+          "pages": [
+            "pages/cat",
+            "pages/dog",
+          ],
+          "root": "packageA",
+        },
+        {
+          "entry": "index.js",
+          "independent": true,
+          "name": "pack2",
+          "pages": [
+            "pages/apple",
+            "pages/banana",
+          ],
+          "root": "packageB",
+        },
+      ],
+      "usingComponents": {
+        "navigation-bar": "/components/navigation-bar/navigation-bar",
+      },
+      "window": {
+        "navigationBarBackgroundColor": "#ffffff",
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "Weixin",
+      },
+    },
+    "jsonPath": "app.json",
     "path": "app.js",
     "type": "app",
   },
   "components": [
     {
       "deps": [],
+      "json": {
+        "component": true,
+        "styleIsolation": "apply-shared",
+        "usingComponents": {},
+      },
+      "jsonPath": "components/navigation-bar/navigation-bar.json",
       "path": "components/navigation-bar/navigation-bar.ts",
       "type": "component",
     },
@@ -214,6 +407,10 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
   "pages": [
     {
       "deps": [],
+      "json": {
+        "usingComponents": {},
+      },
+      "jsonPath": "pages/index/index.json",
       "path": "pages/index/index.ts",
       "type": "page",
     },
@@ -230,7 +427,7 @@ exports[`entry > scanEntries > 'vite-native' 1`] = `
       "type": "subPackage",
     },
     {
-      "entry": "index.ts",
+      "entry": "index.js",
       "independent": true,
       "name": "pack2",
       "pages": [
@@ -253,12 +450,41 @@ exports[`entry > scanEntries > 'vite-native-skyline' 1`] = `
         "type": "page",
       },
     ],
+    "json": {
+      "componentFramework": "glass-easel",
+      "lazyCodeLoading": "requiredComponents",
+      "pages": [
+        "pages/index/index",
+      ],
+      "renderer": "skyline",
+      "rendererOptions": {
+        "skyline": {
+          "defaultDisplayBlock": true,
+          "disableABTest": true,
+          "sdkVersionBegin": "3.0.0",
+          "sdkVersionEnd": "15.255.255",
+        },
+      },
+      "sitemapLocation": "sitemap.json",
+      "style": "v2",
+      "window": {
+        "navigationBarTextStyle": "black",
+        "navigationStyle": "custom",
+      },
+    },
+    "jsonPath": "app.json",
     "path": "app.js",
     "type": "app",
   },
   "components": [
     {
       "deps": [],
+      "json": {
+        "component": true,
+        "styleIsolation": "apply-shared",
+        "usingComponents": {},
+      },
+      "jsonPath": "components/navigation-bar/navigation-bar.json",
       "path": "components/navigation-bar/navigation-bar.js",
       "type": "component",
     },
@@ -271,6 +497,12 @@ exports[`entry > scanEntries > 'vite-native-skyline' 1`] = `
           "type": "component",
         },
       ],
+      "json": {
+        "usingComponents": {
+          "navigation-bar": "/components/navigation-bar/navigation-bar",
+        },
+      },
+      "jsonPath": "pages/index/index.json",
       "path": "pages/index/index.js",
       "type": "page",
     },

@@ -3,5 +3,52 @@
   "projectname": "vite-native",
   "setting": {
     "compileHotReLoad": true
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "A/cat",
+          "pathName": "packageA/pages/cat",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "A/dog",
+          "pathName": "packageA/pages/dog",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "B/apple",
+          "pathName": "packageB/pages/apple",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "B/banana",
+          "pathName": "packageB/pages/banana",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "packOptions": {
+    "ignore": [],
+    "include": [
+      {
+        "value": "packageA/index.js",
+        "type": "file"
+      },
+      {
+        "value": "packageB/index.js",
+        "type": "file"
+      }
+    ]
   }
 }

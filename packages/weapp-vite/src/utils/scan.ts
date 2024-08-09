@@ -8,7 +8,9 @@ export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_
 // https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
 // js + json
 export function isAppRoot(root: string) {
-  return Boolean(searchAppEntry(root))
+  return Boolean(searchAppEntry({
+    root,
+  }))
 }
 
 // wxml + js
@@ -16,10 +18,15 @@ export function isPage(wxmlPath: string) {
   return Boolean(searchPageEntry(wxmlPath))
 }
 
-export function searchAppEntry(root: string, options?: {
+export interface SearchAppEntryOptions {
+  root: string
   formatPath?: (p: string) => string
-}): Entry | undefined {
-  const { formatPath } = defu(options, {})
+}
+
+export function searchAppEntry(options?: SearchAppEntryOptions): Entry | undefined {
+  const { formatPath, root } = defu(options, {
+    formatPath: (x: string) => x,
+  })
   const extensions = ['js', 'ts']
   const appJsonPath = path.resolve(root, 'app.json')
   if (fs.existsSync(appJsonPath)) {
@@ -51,7 +58,9 @@ export function searchAppEntry(root: string, options?: {
           }
         }
         return {
-          path: formatPath ? formatPath(entryPath) : entryPath,
+          jsonPath: formatPath(appJsonPath),
+          json: appJson,
+          path: formatPath(entryPath),
           deps,
           type: 'app',
         }
@@ -114,6 +123,8 @@ export function getWxmlEntry(wxmlPath: string, formatPath: (p: string) => string
           deps: parseJsonUseComponents(json),
           path: finalPath,
           type: 'component',
+          json,
+          jsonPath: formatPath(jsonPath),
         }
       }
       else {
@@ -121,6 +132,8 @@ export function getWxmlEntry(wxmlPath: string, formatPath: (p: string) => string
           deps: parseJsonUseComponents(json),
           path: finalPath,
           type: 'page',
+          json,
+          jsonPath: formatPath(jsonPath),
         }
       }
     }
@@ -128,6 +141,8 @@ export function getWxmlEntry(wxmlPath: string, formatPath: (p: string) => string
       deps: [],
       path: finalPath,
       type: 'page',
+      // json: undefined,
+      // jsonPath: undefined,
     }
   }
 }

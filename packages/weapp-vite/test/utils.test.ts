@@ -27,10 +27,14 @@ describe('utils', () => {
   describe('searchAppEntry', () => {
     it.each(absDirs)('$name', ({ path: p, name }) => {
       if (name.includes('-ts')) {
-        expect(searchAppEntry(path.resolve(p, 'miniprogram'))).toBeTruthy()
+        expect(searchAppEntry({
+          root: path.resolve(p, 'miniprogram'),
+        })).toBeTruthy()
       }
       else {
-        expect(searchAppEntry(p)).toBeTruthy()
+        expect(searchAppEntry({
+          root: p,
+        })).toBeTruthy()
       }
     })
   })

@@ -24,11 +24,37 @@ export interface SubpackageDep extends Subpackage {
 
 export type Dep = PageDep | ComponentDep | SubpackageDep
 
-export interface Entry {
-  type: 'page' | 'component' | 'app' | 'subPackageEntry'
+export interface SubPackageEntry {
+  type: 'subPackageEntry'
   path: string
   deps: Dep[]
 }
+
+export interface PageEntry {
+  type: 'page'
+  path: string
+  deps: Dep[]
+  jsonPath?: string
+  json?: any
+}
+
+export interface ComponentEntry {
+  type: 'component'
+  path: string
+  deps: Dep[]
+  jsonPath: string
+  json: any
+}
+
+export interface AppEntry {
+  type: 'app'
+  path: string
+  deps: Dep[]
+  jsonPath: string
+  json: any
+}
+
+export type Entry = AppEntry | PageEntry | ComponentEntry | SubPackageEntry
 
 export interface InlineConfig {
   srcRoot?: string

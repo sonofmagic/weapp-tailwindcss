@@ -9,12 +9,22 @@ exports[`build > rollup > mixjs getEntries 1`] = `
         "type": "page",
       },
     ],
+    "json": {
+      "pages": [
+        "pages/index",
+      ],
+    },
+    "jsonPath": "app.json",
     "path": "app.js",
     "type": "app",
   },
   "components": [
     {
       "deps": [],
+      "json": {
+        "component": true,
+      },
+      "jsonPath": "index2.json",
       "path": "index2.js",
       "type": "component",
     },
