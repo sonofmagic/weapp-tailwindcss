@@ -4455,10 +4455,10 @@ weapp-tailwindcss@^3.4.0:
     tailwindcss-patch "~4.0.0"
     webpack-sources "3.2.3"
 
-weapp-vite@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/weapp-vite/-/weapp-vite-1.0.0.tgz#f4952d44c59f314e32e05b44a1211bec203f9227"
-  integrity sha512-eF15SiKmfJQiOyZqgj3Jd+C7H6qL04rv9vKAHyyo7hc1zRt0k9mUE71Nuf3od3J3VibJiqJycJv2sChzL+AptQ==
+weapp-vite@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/weapp-vite/-/weapp-vite-1.0.1.tgz#24b2a7f20d6b049bf50b0821aae4e56ea15201a5"
+  integrity sha512-rIpAlu6u+ucuVZ7earnWlkahvsCDrOb16UoKn1bNoyt+KgzzMxW8gCF4gVALUr1ZJfOo1AuS+hOTOwUADTlG7w==
   dependencies:
     "@weapp-core/init" "^1.0.0"
     "@weapp-core/logger" "^1.0.0"
