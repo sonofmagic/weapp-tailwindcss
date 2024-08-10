@@ -61,7 +61,7 @@
     "pinia": "~2.1.7",
     "tailwindcss-core-plugins-extractor": "^0.2.0",
     "uni-app-mp-html": "^2.5.0",
-    "uview-plus": "^3.3.14",
+    "uview-plus": "^3.3.15",
     "vue": "^3.4.37"
   },
   "devDependencies": {
@@ -84,7 +84,7 @@
     "postcss-pxtransform": "^4.0.4",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.5",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.9",
     "unplugin-auto-import": "^0.18.2",
     "vite": "5.4.0",
