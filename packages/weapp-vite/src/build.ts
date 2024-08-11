@@ -59,7 +59,9 @@ export async function runDev(ctx: Context, options?: UserConfig) {
       {
         mode: 'development',
         build: {
-          watch: {},
+          watch: {
+
+          },
           minify: false,
         },
       },

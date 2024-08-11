@@ -117,3 +117,4 @@ miniprogram_npm
 .cloudbase
 .turbo
 .vite-inspect
+vite.config.ts.timestamp-*.mjs

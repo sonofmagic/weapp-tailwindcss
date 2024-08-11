@@ -1,5 +1,21 @@
-<!--index.wxml-->
+<!-- index.wxml -->
+<template name="staffName">
+  <view>FirstName: {{firstName}}, LastName: {{lastName}}</view>
+</template>
 <navigation-bar></navigation-bar>
-<scroll-view  scroll-y type="list">
-  <view class="bg-[#654321] text-[100px] text-[#123456]">111</view>
+<scroll-view scroll-y type="list">
+  <view class="bg-[#7d7ac2] text-[100px] text-[#123456]">111</view>
+  <view>{{message}}</view>
+  <view wx:for="{{array}}">{{item}}</view>
+  <template is="staffName" data="{{...staffA}}"></template>
+  <template is="staffName" data="{{...staffB}}"></template>
+  <template is="staffName" data="{{...staffC}}"></template>
+  <view>{{m1.message}}</view>
+  <wxs module="wxs" src="./test.wxs"></wxs>
+  <view id="tapTest" data-hi="Weixin" bindtap="{{wxs.tapName}}">Click me!</view>
 </scroll-view>
+<wxs module="m1">
+var msg = "hello world";
+
+module.exports.message = msg;
+</wxs>

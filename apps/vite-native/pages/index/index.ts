@@ -8,14 +8,19 @@ const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia0
 Page({
   data: {
     motto: JSON.stringify(import.meta.env),
+    message: 'Hello MINA!',
     userInfo: {
       avatarUrl: defaultAvatarUrl,
       nickName: '',
     },
+    array: [1, 2, 3, 4, 5],
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
     time: formatTime(new Date()),
+    staffA: { firstName: 'Hulk', lastName: 'Hu' },
+    staffB: { firstName: 'Shang', lastName: 'You' },
+    staffC: { firstName: 'Gideon', lastName: 'Lin' },
   },
   bindViewTap() {
     wx.navigateTo({

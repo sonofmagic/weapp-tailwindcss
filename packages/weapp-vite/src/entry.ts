@@ -4,7 +4,7 @@ import { defu } from '@weapp-core/shared'
 import path from 'pathe'
 import klaw from 'klaw'
 import { defaultExcluded, getWxmlEntry, searchAppEntry } from './utils'
-import type { Entry, InlineConfig } from './types'
+import type { Entry, WeappViteConfig } from './types'
 
 export function createFilter(include: string[], exclude: string[], options?: mm.Options) {
   const opts = defu<mm.Options, mm.Options[]>(options, {
@@ -33,7 +33,7 @@ export function createFilter(include: string[], exclude: string[], options?: mm.
   }
 }
 
-export async function getEntries(options: { root?: string, srcRoot?: string, outDir?: string, relative?: boolean, subPackage?: InlineConfig['subPackage'] }) {
+export async function getEntries(options: { root?: string, srcRoot?: string, outDir?: string, relative?: boolean, subPackage?: WeappViteConfig['subPackage'] }) {
   // build.outDir
   const { root = process.cwd(), outDir = 'dist', relative, srcRoot = '', subPackage } = options
 
