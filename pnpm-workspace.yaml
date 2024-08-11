@@ -3,6 +3,7 @@ packages:
   - "plugins/*"
   - "apps/*"
   - "website"
+  - "website-weapp-vite"
   - "benchmark"
   - "tailwindcss-weapp"
   - "@weapp-core/*"
