@@ -1,0 +1,16 @@
+{
+  "name": "cjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "weapp-vite dev",
+    "build": "weapp-vite build",
+    "open": "weapp-vite open",
+    "build-npm": "weapp-vite build-npm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
