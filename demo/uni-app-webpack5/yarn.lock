@@ -1374,10 +1374,10 @@
     i18n "^0.13.3"
     os-locale-s-fix "^1.0.8-fix-1"
 
-"@dcloudio/uni-cli-shared@2.0.2-4010520240507001":
-  version "2.0.2-4010520240507001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-cli-shared/-/uni-cli-shared-2.0.2-4010520240507001.tgz#ce1cd3afc4de3f3dea38b76c89b78bd473133ebe"
-  integrity sha512-kHRRoI9Tvi88UbtpoZzUKfHypevAlD4WsiTgmsN2QB3lf0jLgDXCOoPY+OSA+rMsnODkx4dr4NNDePxiLhbpOw==
+"@dcloudio/uni-cli-shared@2.0.2-4020420240722003":
+  version "2.0.2-4020420240722003"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-cli-shared/-/uni-cli-shared-2.0.2-4020420240722003.tgz#9e08cbcb25e7bbdc87545efcf86f0ed4e12f0a2c"
+  integrity sha512-/z/zMZtDXydMl/y9vFcJBKyBFVo6fzVWkCcTXk4dQtdPPNoz7BU1d5ua+JBz28NmQcE2IgnBxyNFm7AO8FpyQA==
   dependencies:
     escape-string-regexp "^4.0.0"
     fast-glob "^3.2.11"
