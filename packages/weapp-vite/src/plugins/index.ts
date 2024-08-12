@@ -1,4 +1,4 @@
-import path from 'node:path'
+import path from 'pathe'
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
