@@ -1,3 +1,3 @@
-export const RootSymbol = Symbol('root')
+export const RootRollupSymbol = Symbol('root-rollup')
 
-export const MiscSymbol = Symbol('misc')
+export const DevSymbol = Symbol('dev')
