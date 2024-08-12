@@ -28,5 +28,8 @@ export function getProjectConfig(root: string, options?: { ignorePrivate?: boole
     }
   }
 
-  return Object.assign({}, privateJson, baseJson)
+  return Object.assign({}, privateJson, baseJson) as {
+    miniprogramRoot: string
+    srcMiniprogramRoot: string
+  }
 }

@@ -84,7 +84,7 @@ export async function runDev(ctx: Context, options?: UserConfig) {
     const watcher = watch(['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'], {
       ignored: [
         ...defaultExcluded,
-        'dist/**',
+        path.join(ctx.projectConfig.miniprogramRoot || ctx.projectConfig.srcMiniprogramRoot, '**'),
       ],
       cwd: ctx.cwd,
     })
