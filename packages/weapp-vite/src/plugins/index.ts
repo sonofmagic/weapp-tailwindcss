@@ -13,7 +13,9 @@ import { createDebugger } from '../debugger'
 import type { Context } from '../context'
 import { runDev, runProd } from '../build'
 // import { MiscSymbol } from '../symbols'
-import type { AppEntry } from '../types'
+import type { AppEntry, SubpackageDep } from '../types'
+// import type { WxmlDep } from '../utils/wxml'
+// import { getDeps } from '../utils/wxml'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -46,6 +48,11 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
   }
 
   const stylesIds = new Set<string>()
+  // const templateIds = new Set<string>()
+  // const templateCacheMap = new Map<string, {
+  //   source: string
+  //   deps: WxmlDep[]
+  // }>()
 
   let configResolved: ResolvedConfig
   let entriesSet: Set<string> = new Set()
@@ -73,11 +80,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
       },
       configResolved(config) {
         debug?.(config)
-        // if (ctx.isDev) {
-        //   set(config, 'build.watch.include', [path.join(ctx.srcRootRef.value, '**/*.{wxml,wxs}')])
-        //   set(config, 'build.watch.exclude', [...defaultExcluded])
-        //   // config.build?.watch?.include ||=
-        // }
         configResolved = config
       },
       async options(options) {
@@ -107,7 +109,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           options.input = input
           if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (subPackage.root && !ctx.watcherCache.has(subPackage.root)) {
+              if (subPackage.root && subPackage.independent && !ctx.watcherCache.has(subPackage.root)) {
                 if (ctx.isDev) {
                   runDev(ctx, {
                     weapp: {
@@ -145,10 +147,10 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             ...[
               `${build.outDir}/**`,
               ...appEntry.deps.filter(
-                x => x.type === 'subPackage',
+                x => x.type === 'subPackage' && x.independent,
               )
                 .map((x) => {
-                  return `${x.root}/**`
+                  return `${(x as SubpackageDep).root}/**`
                 }),
               'project.config.json',
               'project.private.config.json',
@@ -177,64 +179,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             source: await fs.readFile(filepath, 'utf8'),
           })
         }
-        // if (!ctx.watcherCache.has(MiscSymbol)) {
-        //   // ctx.watcherCache.
-        //   const watcher = chokidar.watch('**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}', {
-        //     ignored: [
-        //       ...defaultExcluded,
-        //       `${build.outDir}/**`,
-        //       'project.config.json',
-        //       'project.private.config.json',
-        //       'package.json',
-        //       'tsconfig.json',
-        //       'tsconfig.node.json',
-        //     ],
-        //     cwd: root,
-        //   })
-
-        //   // const fileReferenceIdMap: Record<string, string> = {}
-
-        //   watcher
-        //     .on(
-        //       'add',
-        //       async (file) => {
-        //         const filepath = path.resolve(root, file)
-        //         this.addWatchFile(filepath)
-        //         ctx.assetCache.set(file, {
-        //           type: 'asset',
-        //           fileName: path.normalize(file),
-        //           source: await fs.readFile(filepath, 'utf8'),
-        //         })
-        //       },
-        //     )
-        //     .on(
-        //       'change',
-        //       async (file) => {
-        //         const filepath = path.resolve(root, file)
-        //         this.addWatchFile(filepath)
-        //         ctx.assetCache.set(file, {
-        //           type: 'asset',
-        //           fileName: path.normalize(file),
-        //           source: await fs.readFile(filepath, 'utf8'),
-        //         })
-        //       },
-        //     )
-        //     .on(
-        //       'unlink',
-        //       (file) => {
-        //         ctx.assetCache.delete(file)
-        //       },
-        //     )
-        //     .on('ready', () => {
-        //       console.log('ready')
-        //     })
-
-        //   ctx.watcherCache.set(MiscSymbol, watcher)
-        // }
-
-        // for (const emittedFile of ctx.assetCache.values()) {
-        //   this.emitFile(emittedFile)
-        // }
       },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
@@ -253,6 +197,19 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
               ms.prepend(`import '${mayBeCssPath}'\n`)
             }
           }
+          // const mayBeWxmlPath = addExtension(base, '.wxml')
+          // if (fs.existsSync(mayBeWxmlPath)) {
+          //   this.addWatchFile(mayBeWxmlPath)
+          //   ms.prepend(`import '${mayBeWxmlPath}'\n`)
+
+          //   // const source = fs.readFileSync(mayBeWxmlPath, 'utf8')
+          //   // const { deps } = getDeps(source)
+          //   // templateCacheMap.set(id, {
+          //   //   deps,
+          //   //   source,
+          //   // })
+          //   // deps.filter(x => x.tagName === 'import' || x.tagName === 'include').map(x => x.name === 'src')
+          // }
           this.addWatchFile(id)
           return {
             code: ms.toString(),
@@ -264,6 +221,11 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             code: '',
           }
         }
+        // else if (id.endsWith('.wxml')) {
+        //   return {
+        //     code: '',
+        //   }
+        // }
       },
       async buildEnd() {
         const styles: Record<string, string> = {}

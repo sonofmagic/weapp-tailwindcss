@@ -11,15 +11,17 @@ const srcImportTagsMap: Record<string, string[]> = {
   include: ['src'],
 }
 
+export interface WxmlDep {
+  tagName: string
+  start: number
+  end: number
+  quote: string | null | undefined
+  name: string
+  value: string
+}
+
 export function getDeps(wxml: string) {
-  const deps: {
-    tagName: string
-    start: number
-    end: number
-    quote: string | null | undefined
-    name: string
-    value: string
-  }[] = []
+  const deps: WxmlDep[] = []
   let currentTagName = ''
   let importAttrs: undefined | string[]
   const parser = new Parser({
