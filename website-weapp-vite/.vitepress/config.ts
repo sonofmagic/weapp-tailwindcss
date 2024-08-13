@@ -7,22 +7,26 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' },
+      { text: '指引', link: '/guide' },
     ],
 
-    sidebar: [
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' },
-        ],
-      },
-    ],
+    sidebar: {
+      '/guide/': [
+        {
+          text: '指引',
+          items: [
+            {
+              text: '为什么选 Weapp-Vite',
+              link: '/guide/why',
+            },
+            { text: '开始', link: '/guide/' },
+          ],
+        },
+      ],
+    },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
+      { icon: 'github', link: 'https://github.com/sonofmagic/weapp-tailwindcss' },
     ],
   },
 })
