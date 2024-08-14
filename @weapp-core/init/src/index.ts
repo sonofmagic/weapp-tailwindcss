@@ -2,25 +2,8 @@ import path from 'node:path'
 import process from 'node:process'
 import fs from 'fs-extra'
 import { get, set } from '@weapp-core/shared'
-
-export interface SetMethod {
-  (path: set.InputType, value: any, options?: set.Options): void
-}
-
-export interface SharedUpdateOptions {
-  root: string
-  dest?: string
-  write?: boolean
-  cb?: (set: SetMethod) => void
-}
-
-export interface UpdateProjectConfigOptions extends SharedUpdateOptions {
-
-}
-
-export interface UpdatePackageJsonOptions extends SharedUpdateOptions {
-  command?: 'weapp-vite'
-}
+import logger from '@weapp-core/logger'
+import type { SharedUpdateOptions, UpdatePackageJsonOptions, UpdateProjectConfigOptions } from './types'
 
 export function updateProjectConfig(options: UpdateProjectConfigOptions) {
   const { root, dest, cb, write = true } = options
@@ -71,17 +54,17 @@ export function updateProjectConfig(options: UpdateProjectConfigOptions) {
         fs.outputJSONSync(dest ?? projectConfigPath, projectConfig, {
           spaces: 2,
         })
-        console.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
+        logger.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
       }
 
       return projectConfig
     }
     catch {
-      console.warn(`✨ 设置 ${projectConfigFilename} 配置文件失败!`)
+      logger.warn(`✨ 设置 ${projectConfigFilename} 配置文件失败!`)
     }
   }
   else {
-    console.warn(`✨ 没有找到 ${projectConfigFilename} 文件!`)
+    logger.warn(`✨ 没有找到 ${projectConfigFilename} 文件!`)
   }
 }
 
@@ -97,7 +80,7 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
       set(packageJson, 'scripts.dev', `${command} dev`)
       set(packageJson, 'scripts.build', `${command} build`)
       if (command === 'weapp-vite') {
-        set(packageJson, 'type', 'module')
+        // set(packageJson, 'type', 'module')
         set(packageJson, 'scripts.open', `${command} open`)
         set(packageJson, 'scripts.build-npm', `${command} build-npm`)
       }
@@ -110,7 +93,7 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
         fs.outputJSONSync(dest ?? packageJsonPath, packageJson, {
           spaces: 2,
         })
-        console.log(`✨ 设置 ${packageJsonFilename} 配置文件成功!`)
+        logger.log(`✨ 设置 ${packageJsonFilename} 配置文件成功!`)
       }
 
       return packageJson
@@ -121,7 +104,15 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
 
 export function initViteConfigFile(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const targetFilename = 'vite.config.ts'
+  const packageJsonFilename = 'package.json'
+  const packageJsonPath = path.resolve(root, packageJsonFilename)
+  const packageJson = fs.readJSONSync(packageJsonPath, { throws: false }) as {
+    scripts: Record<string, string>
+  }
+
+  const type = get(packageJson, 'type')
+
+  const targetFilename = type === 'module' ? 'vite.config.ts' : 'vite.config.mts'
   const viteConfigFilePath = path.resolve(root, targetFilename)
   const viteConfigFileCode = `import { defineConfig } from 'weapp-vite/config'
 
@@ -133,7 +124,7 @@ export default defineConfig({
 `
   if (write) {
     fs.outputFileSync(viteConfigFilePath, viteConfigFileCode, 'utf8')
-    console.log(`✨ 设置 ${targetFilename} 配置文件成功!`)
+    logger.log(`✨ 设置 ${targetFilename} 配置文件成功!`)
   }
   return viteConfigFileCode
 }
@@ -146,7 +137,7 @@ export function initTsDtsFile(options: SharedUpdateOptions) {
 `
   if (write) {
     fs.outputFileSync(viteDtsFilePath, code, 'utf8')
-    console.log(`✨ 设置 ${targetFilename} 配置文件成功!`)
+    logger.log(`✨ 设置 ${targetFilename} 配置文件成功!`)
   }
   return code
 }
@@ -194,7 +185,7 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
       encoding: 'utf8',
       spaces: 2,
     })
-    console.log(`✨ 设置 ${tsJsonFilename} 配置文件成功!`)
+    logger.log(`✨ 设置 ${tsJsonFilename} 配置文件成功!`)
 
     fs.outputJSONSync(tsNodeJsonFilePath, {
       compilerOptions: {
@@ -212,7 +203,7 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
       encoding: 'utf8',
       spaces: 2,
     })
-    console.log(`✨ 设置 ${tsNodeJsonFilename} 配置文件成功!`)
+    logger.log(`✨ 设置 ${tsNodeJsonFilename} 配置文件成功!`)
   }
 }
 

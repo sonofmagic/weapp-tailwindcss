@@ -42,6 +42,7 @@
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
+    "htmlparser2": "^9.1.0",
     "klaw": "^4.1.0",
     "magic-string": "^0.30.11",
     "micromatch": "^4.0.7",

@@ -87,7 +87,7 @@ describe('build', () => {
     })
 
     it('mixjs runProd abs root', async () => {
-      const ctx = createContext()
+      const ctx = createContext(mixjsDir)
       const res = await runProd(ctx, {
         root: mixjsDir,
         build: {

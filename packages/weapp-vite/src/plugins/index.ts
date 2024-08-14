@@ -1,4 +1,4 @@
-import path from 'node:path'
+import path from 'pathe'
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
@@ -13,14 +13,13 @@ import { createDebugger } from '../debugger'
 import type { Context } from '../context'
 import { runDev, runProd } from '../build'
 // import { MiscSymbol } from '../symbols'
-import type { AppEntry } from '../types'
+import type { AppEntry, SubpackageDep } from '../types'
+// import type { WxmlDep } from '../utils/wxml'
+// import { getDeps } from '../utils/wxml'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
 const debug = createDebugger('weapp-vite:plugin')
-// export interface VitePluginWeappOptions {
-//   srcRoot?: string
-// }
 
 function normalizeCssPath(id: string) {
   return addExtension(removeExtension(id), '.wxss')
@@ -32,7 +31,13 @@ function getRealPath(res: ParseRequestResponse) {
   }
   return res.filename
 }
+// <wxs module="wxs" src="./test.wxs"></wxs>
+// https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html
 
+// https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/import.html
+
+// https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/fileWatcher.ts#L2
+// https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/watch.ts#L174
 export function vitePluginWeapp(ctx: Context): Plugin[] {
   function getInputOption(entries: string[]) {
     return entries
@@ -43,6 +48,11 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
   }
 
   const stylesIds = new Set<string>()
+  // const templateIds = new Set<string>()
+  // const templateCacheMap = new Map<string, {
+  //   source: string
+  //   deps: WxmlDep[]
+  // }>()
 
   let configResolved: ResolvedConfig
   let entriesSet: Set<string> = new Set()
@@ -99,7 +109,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           options.input = input
           if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (subPackage.root && !ctx.watcherCache.has(subPackage.root)) {
+              if (subPackage.root && subPackage.independent && !ctx.watcherCache.has(subPackage.root)) {
                 if (ctx.isDev) {
                   runDev(ctx, {
                     weapp: {
@@ -118,6 +128,9 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             }
           }
         }
+        else {
+          throw new Error(`在 ${path.join(root, weapp?.srcRoot ?? '')} 目录下没有找到 \`app.json\`, 请确保你初始化了小程序项目，或者在 \`vite.config.ts\` 中设置的正确的 \`weapp.srcRoot\` 配置路径  `)
+        }
       },
       async buildStart() {
         const { root, build, weapp } = configResolved
@@ -134,10 +147,10 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             ...[
               `${build.outDir}/**`,
               ...appEntry.deps.filter(
-                x => x.type === 'subPackage',
+                x => x.type === 'subPackage' && x.independent,
               )
                 .map((x) => {
-                  return `${x.root}/**`
+                  return `${(x as SubpackageDep).root}/**`
                 }),
               'project.config.json',
               'project.private.config.json',
@@ -166,64 +179,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             source: await fs.readFile(filepath, 'utf8'),
           })
         }
-        // if (!ctx.watcherCache.has(MiscSymbol)) {
-        //   // ctx.watcherCache.
-        //   const watcher = chokidar.watch('**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}', {
-        //     ignored: [
-        //       ...defaultExcluded,
-        //       `${build.outDir}/**`,
-        //       'project.config.json',
-        //       'project.private.config.json',
-        //       'package.json',
-        //       'tsconfig.json',
-        //       'tsconfig.node.json',
-        //     ],
-        //     cwd: root,
-        //   })
-
-        //   // const fileReferenceIdMap: Record<string, string> = {}
-
-        //   watcher
-        //     .on(
-        //       'add',
-        //       async (file) => {
-        //         const filepath = path.resolve(root, file)
-        //         this.addWatchFile(filepath)
-        //         ctx.assetCache.set(file, {
-        //           type: 'asset',
-        //           fileName: path.normalize(file),
-        //           source: await fs.readFile(filepath, 'utf8'),
-        //         })
-        //       },
-        //     )
-        //     .on(
-        //       'change',
-        //       async (file) => {
-        //         const filepath = path.resolve(root, file)
-        //         this.addWatchFile(filepath)
-        //         ctx.assetCache.set(file, {
-        //           type: 'asset',
-        //           fileName: path.normalize(file),
-        //           source: await fs.readFile(filepath, 'utf8'),
-        //         })
-        //       },
-        //     )
-        //     .on(
-        //       'unlink',
-        //       (file) => {
-        //         ctx.assetCache.delete(file)
-        //       },
-        //     )
-        //     .on('ready', () => {
-        //       console.log('ready')
-        //     })
-
-        //   ctx.watcherCache.set(MiscSymbol, watcher)
-        // }
-
-        // for (const emittedFile of ctx.assetCache.values()) {
-        //   this.emitFile(emittedFile)
-        // }
       },
       resolveId(source) {
         if (/\.wxss$/.test(source)) {
@@ -242,6 +197,19 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
               ms.prepend(`import '${mayBeCssPath}'\n`)
             }
           }
+          // const mayBeWxmlPath = addExtension(base, '.wxml')
+          // if (fs.existsSync(mayBeWxmlPath)) {
+          //   this.addWatchFile(mayBeWxmlPath)
+          //   ms.prepend(`import '${mayBeWxmlPath}'\n`)
+
+          //   // const source = fs.readFileSync(mayBeWxmlPath, 'utf8')
+          //   // const { deps } = getDeps(source)
+          //   // templateCacheMap.set(id, {
+          //   //   deps,
+          //   //   source,
+          //   // })
+          //   // deps.filter(x => x.tagName === 'import' || x.tagName === 'include').map(x => x.name === 'src')
+          // }
           this.addWatchFile(id)
           return {
             code: ms.toString(),
@@ -253,6 +221,11 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             code: '',
           }
         }
+        // else if (id.endsWith('.wxml')) {
+        //   return {
+        //     code: '',
+        //   }
+        // }
       },
       async buildEnd() {
         const styles: Record<string, string> = {}

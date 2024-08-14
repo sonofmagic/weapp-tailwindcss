@@ -1,5 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`index > cjs vite.config.ts 1`] = `undefined`;
+
+exports[`index > no-pkg-json vite.config.ts 1`] = `undefined`;
+
 exports[`index > vite-native callback 1`] = `
 {
   "author": "",

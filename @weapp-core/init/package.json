@@ -39,6 +39,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "@weapp-core/logger": "workspace:^",
     "@weapp-core/shared": "workspace:^",
     "fs-extra": "^11.2.0"
   }

@@ -4,10 +4,12 @@ import type { RollupOutput, RollupWatcher } from 'rollup'
 import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import { readPackageJSON } from 'pkg-types'
 import path from 'pathe'
+import { watch } from 'chokidar'
 import type { UserConfig } from './types'
 import { vitePluginWeapp } from './plugins'
 import type { Context } from './context'
-import { RootSymbol } from './symbols'
+import { RootRollupSymbol } from './symbols'
+import { defaultExcluded } from './utils/scan'
 
 export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
   // const root = options?.root ?? process.cwd()
@@ -52,31 +54,63 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
 
 export async function runDev(ctx: Context, options?: UserConfig) {
   process.env.NODE_ENV = 'development'
-  const watcher = (await build(
-    defu<UserConfig, UserConfig[]>(
-      options,
-      await getDefaultConfig(ctx),
-      {
-        mode: 'development',
-        build: {
-          watch: {},
-          minify: false,
+
+  async function innerDev() {
+    const rollupWatcher = (await build(
+      defu<UserConfig, UserConfig[]>(
+        options,
+        await getDefaultConfig(ctx),
+        {
+          mode: 'development',
+          build: {
+            watch: {
+
+            },
+            minify: false,
+          },
         },
-      },
-    )
-    ,
-  )) as RollupWatcher
+      )
+      ,
+    )) as RollupWatcher
 
-  ctx.watcherCache.set(options?.weapp?.subPackage?.root || RootSymbol, watcher)
+    ctx.watcherCache.set(options?.weapp?.subPackage?.root || RootRollupSymbol, rollupWatcher)
+    return rollupWatcher
+  }
 
-  // watcher.on('event', (event) => {
-  //   console.log(event)
-  // })
+  if (options?.weapp?.subPackage) {
+    return await innerDev()
+  }
+  else {
+    const watcher = watch(['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'], {
+      ignored: [
+        ...defaultExcluded,
+        path.join(ctx.projectConfig.miniprogramRoot || ctx.projectConfig.srcMiniprogramRoot, '**'),
+      ],
+      cwd: ctx.cwd,
+    })
+    let isReady = false
+    watcher.on('all', async (eventName) => {
+      if (isReady && (eventName === 'add' || eventName === 'change' || eventName === 'unlink')) {
+        await innerDev()
+      }
+    }).on('ready', async () => {
+      await innerDev()
+      isReady = true
+    })
 
-  return watcher
+    return watcher
+  }
 }
 
 export async function runProd(ctx: Context, options?: UserConfig) {
+  // const watcher = watch(['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'], {
+  //   ignored: [
+  //     ...defaultExcluded,
+  //     'dist/**',
+  //   ],
+  //   persistent: false,
+  // })
+  // console.log(watcher)
   const output = (await build(
     defu<UserConfig, UserConfig[]>(
       options,

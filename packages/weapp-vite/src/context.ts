@@ -1,9 +1,11 @@
+import process from 'node:process'
 import type { EmittedFile, RollupWatcher } from 'rollup'
 import type { FSWatcher } from 'chokidar'
 import path from 'pathe'
+import { getProjectConfig } from './utils/projectConfig'
 
-export function createContext() {
-  const watcherCache = new Map<string | symbol, RollupWatcher | FSWatcher>()
+export function createContext(cwd: string = process.cwd()) {
+  const watcherCache = new Map< string | symbol, RollupWatcher | FSWatcher>()
 
   const assetCache = new Map<string, EmittedFile>()
 
@@ -19,12 +21,16 @@ export function createContext() {
     return p
   }
 
+  const projectConfig = getProjectConfig(cwd)
+
   return {
     watcherCache,
     isDev,
     assetCache,
     srcRootRef,
     relativeSrcRoot,
+    cwd,
+    projectConfig,
   }
 }
 

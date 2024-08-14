@@ -7,18 +7,29 @@ export function getProjectConfig(root: string, options?: { ignorePrivate?: boole
   let baseJson = {}
   let privateJson = {}
   if (fs.existsSync(baseJsonPath)) {
-    baseJson = fs.readJsonSync(baseJsonPath) || {}
+    try {
+      baseJson = fs.readJsonSync(baseJsonPath) || {}
+    }
+    catch {
+      throw new Error(`解析 json 格式失败, project.config.json 为非法的 json 格式`)
+    }
   }
   else {
     throw new Error(`在 ${root} 目录下找不到 project.config.json`)
   }
   if (!options?.ignorePrivate) {
     if (fs.existsSync(privateJsonPath)) {
-      privateJson = fs.readJsonSync(privateJsonPath, {
-        throws: false,
-      }) || {}
+      try {
+        privateJson = fs.readJsonSync(privateJsonPath) || {}
+      }
+      catch {
+        throw new Error(`解析 json 格式失败, project.private.config.json 为非法的 json 格式`)
+      }
     }
   }
 
-  return Object.assign({}, privateJson, baseJson)
+  return Object.assign({}, privateJson, baseJson) as {
+    miniprogramRoot: string
+    srcMiniprogramRoot: string
+  }
 }
