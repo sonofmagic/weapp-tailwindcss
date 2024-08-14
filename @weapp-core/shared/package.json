@@ -1,7 +1,7 @@
 {
   "name": "@weapp-core/shared",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "@weapp-core/shared",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
