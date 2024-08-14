@@ -2450,13 +2450,21 @@ exports[`e2e > 'taro-app-v4' > css 1`] = `
 
 exports[`e2e > 'taro-app-v4' > json 1`] = `
 "[
-  "bg-[#654321]",
+  "before:content-[\\"11111\\"]",
+  "before:content-[\\"222\\"]",
+  "bg-[#89ab8d]",
+  "flex",
+  "flex-col",
+  "text-[#3d31a4]",
   "text-[#438821]"
 ]"
 `;
 
 exports[`e2e > 'taro-app-v4' > wxml 1`] = `
-"<view class="bg-_h654321_" style=""><text class="text-_h438821_" space="" style=""></text></view>
+"<view class="bg-_h89ab8d_ flex flex-col" style="">
+  <text class="text-_h438821_ before content- 11111" space="" style=""></text>
+  <text class="text-_h3d31a4_ before content- 222" space="" style=""></text>
+</view>
 "
 `;
 
