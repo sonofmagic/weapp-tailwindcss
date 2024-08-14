@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-
+import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Weapp-vite',
@@ -9,6 +9,7 @@ export default defineConfig({
     nav: [
       { text: '指引', link: '/guide' },
     ],
+    logo: '/logo.svg',
 
     sidebar: {
       '/guide/': [
@@ -28,5 +29,16 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/sonofmagic/weapp-tailwindcss' },
     ],
+    editLink: {
+      pattern: 'https://github.com/sonofmagic/weapp-tailwindcss/edit/main/docs/:path',
+      text: '改进此页面',
+    },
   },
+  markdown: {
+    // @ts-ignore
+    codeTransformers: [transformerTwoslash()],
+  },
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+  ],
 })
