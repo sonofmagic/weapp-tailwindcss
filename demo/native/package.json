@@ -19,7 +19,7 @@
     "tailwindcss-patch": "^4.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^2.0.0",
-    "weapp-tailwindcss": "^3.4.0",
+    "weapp-tailwindcss": "^3.5.0",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "packageManager": "yarn@1.22.22"
