@@ -1,5 +1,5 @@
 <template>
-  <view class="index container bg-[#ffffff]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
+  <view class="index container bg-[#dbdada]" :class="flag ? 'text-[#aaaaaa]' : 'text-[#fafafa]'">
     <First></First>
     <jsxRender></jsxRender>
     <view>{{ wildContent }}</view>

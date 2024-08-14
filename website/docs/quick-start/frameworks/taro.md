@@ -1,6 +1,6 @@
-# Taro v3 (所有框架)
+# Taro (所有框架)
 
-这个配置同时支持 `taro` 的 `react` / `preact` / `vue2` / `vue3` 所有框架
+目前 Taro v4 同时支持了 `Webpack` 和 `Vite` 进行打包编译，`weapp-tailwindcss` 这 `2` 者都支持，但是配置有些许的不同
 
 :::caution
 假如你写了 `tailwindcss` 工具类不生效，可能是由于微信开发者工具默认开启了 `代码自动热重载` 功能，关闭它即可生效。
@@ -10,7 +10,48 @@
 <!-- 有群友遇到了转义特殊字符失败，之后变成了空格的文件，结果 `node_modules` 删了重新安装就好了。 -->
 :::
 
-## 注册插件
+下列配置同时支持 `taro` 的 `react` / `preact` / `vue2` / `vue3` 所有框架
+
+## 使用 Vite 作为打包工具
+
+由于 `taro@4` 的 `vite` 版本，目前加载 `postcss.config.js` 配置是失效的，所以我们目前暂时只能使用内联 `postcss` 插件的写法
+
+### 创建 `vite.config.ts` 文件
+
+在你的项目根目录下，创建 `vite.config.ts` 文件, 并写入:
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import tailwindcss from 'tailwindcss'
+import autoprefixer from 'autoprefixer'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    // @ts-ignore
+    UnifiedViteWeappTailwindcssPlugin({
+      rem2rpx: true
+    })
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss(),
+        autoprefixer()
+      ]
+    }
+  }
+})
+
+```
+
+`tailwindcss` 即可注册成功，正常使用了
+
+这段代码的意思为，在 `vite` 里注册 `postcss` 插件和 `vite` 插件
+
+## 使用 Webpack 作为打包工具
+
+### 注册插件
 
 在项目的配置文件 `config/index` 中注册:
 

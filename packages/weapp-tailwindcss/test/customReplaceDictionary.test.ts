@@ -62,38 +62,38 @@ describe('customReplaceDictionary', () => {
         MappingChars2String,
       ),
     })
-    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(res).toBe('.w--0_d_5px-{--tw-border-opacity: 1;}')
+    expect(css).toBe('.w--0_d_5px-{--tw-border-opacity: 1;}')
   })
 
   it('styleHandler complex mode', async () => {
     const { styleHandler } = getOptions({
       customReplaceDictionary: MappingChars2String,
     })
-    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(res).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
+    expect(css).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
   })
 
   it('styleHandler default(complex) mode', async () => {
     const { styleHandler } = getOptions({
       customReplaceDictionary: MappingChars2String,
     })
-    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(res).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
+    expect(css).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
   })
 
   it('styleHandler simple mode', async () => {
     const { styleHandler } = getOptions({})
-    const res = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
+    const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(res).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
+    expect(css).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
   })
 
   it('all prop with testClass', async () => {
@@ -109,7 +109,7 @@ describe('customReplaceDictionary', () => {
   it('all prop with [Cc]lass', async () => {
     const { templateHandler } = getOptions({
       customAttributes: {
-        '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/],
+        '*': [/[A-Za-z-]*[Cc]lass/],
       },
     })
     const res = await templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')

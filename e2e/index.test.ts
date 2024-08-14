@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import automator from 'miniprogram-automator'
-import { execa } from 'execa'
+// import { execa } from 'execa'
 import { deleteAsync } from 'del'
 import type { ProjectEntry } from './shared'
 import { formatWxml, loadCss, projectFilter, removeWxmlId, twExtract, wait } from './shared'
@@ -31,6 +31,13 @@ const TestProjectsEntries: ProjectEntry[] = [
   {
     name: 'taro-app',
     projectPath: 'taro-app',
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    },
+  },
+  {
+    name: 'taro-app-v4',
+    projectPath: 'taro-app-v4',
     testMethod: async (_, projectPath) => {
       expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
     },

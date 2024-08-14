@@ -46,8 +46,7 @@ exports[`build > rollup > mixjs getEntries 1`] = `
 `;
 
 exports[`build > rollup > mixjs runProd abs root > app.js 1`] = `
-""use strict";
-const cjs = require("./cjs-B3a6j7Rd.js");
+"const cjs = require("./cjs-Bv_6Yq1C.js");
 const x = cjs.cjs;
 console.log(x);
 "
@@ -61,9 +60,8 @@ exports[`build > rollup > mixjs runProd abs root > app.json 1`] = `
 }"
 `;
 
-exports[`build > rollup > mixjs runProd abs root > cjs-B3a6j7Rd.js 1`] = `
-""use strict";
-const a = "1";
+exports[`build > rollup > mixjs runProd abs root > cjs-Bv_6Yq1C.js 1`] = `
+"const a = "1";
 var cjs = {
   a,
   b: () => {
@@ -74,17 +72,15 @@ exports.cjs = cjs;
 "
 `;
 
-exports[`build > rollup > mixjs runProd abs root > esm-CR02SQDf.js 1`] = `
-""use strict";
-const c = "c";
+exports[`build > rollup > mixjs runProd abs root > esm-Rs6lX_O8.js 1`] = `
+"const c = "c";
 exports.c = c;
 "
 `;
 
 exports[`build > rollup > mixjs runProd abs root > index.js 1`] = `
-""use strict";
-const cjs = require("./cjs-B3a6j7Rd.js");
-const esm = require("./esm-CR02SQDf.js");
+"const cjs = require("./cjs-Bv_6Yq1C.js");
+const esm = require("./esm-Rs6lX_O8.js");
 const a = cjs.cjs;
 console.log(a, esm.c);
 "
@@ -93,9 +89,8 @@ console.log(a, esm.c);
 exports[`build > rollup > mixjs runProd abs root > index.wxml 1`] = `"<view class="text-gray-50">index.wxml</view>"`;
 
 exports[`build > rollup > mixjs runProd abs root > index2.js 1`] = `
-""use strict";
-const cjs = require("./cjs-B3a6j7Rd.js");
-const esm = require("./esm-CR02SQDf.js");
+"const cjs = require("./cjs-Bv_6Yq1C.js");
+const esm = require("./esm-Rs6lX_O8.js");
 const a = cjs.cjs;
 console.log(a, esm.c);
 "
@@ -110,8 +105,7 @@ exports[`build > rollup > mixjs runProd abs root > index2.json 1`] = `
 exports[`build > rollup > mixjs runProd abs root > index2.wxml 1`] = `"<view>Index2</view>"`;
 
 exports[`build > rollup > mixjs runProd abs root > pages/index.js 1`] = `
-""use strict";
-console.log("pages/index.wxml");
+"console.log("pages/index.wxml");
 "
 `;
 

@@ -24,8 +24,8 @@ const Index = () => {
   const wildContent = '****'
   return (
     <>
-      <View className='relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 rounded-[20rpx] before:rounded-[20rpx]' />
-      <View className='relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 before:rounded-[20rpx] rounded-[20rpx]' />
+      <View className='relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-[#4bd650] rounded-[20rpx] before:rounded-[20rpx]' />
+      <View className='relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-[#0000ff] before:rounded-[20rpx] rounded-[20rpx]' />
       {/* <Button className='btn btn-primary'>Button</Button> */}
       <Navigator url='/moduleA/pages/index'>普通分包</Navigator>
       <Navigator url='/moduleB/pages/index'>独立分包</Navigator>

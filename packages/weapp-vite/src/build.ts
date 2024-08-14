@@ -24,6 +24,7 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
       rollupOptions: {
         output: {
           format: 'cjs',
+          strict: false,
           entryFileNames: (chunkInfo) => {
             const name = ctx.relativeSrcRoot(chunkInfo.name)
             if (name.endsWith('.ts')) {
@@ -72,8 +73,12 @@ export async function runDev(ctx: Context, options?: UserConfig) {
       )
       ,
     )) as RollupWatcher
+    const key = options?.weapp?.subPackage?.root || RootRollupSymbol
 
-    ctx.watcherCache.set(options?.weapp?.subPackage?.root || RootRollupSymbol, rollupWatcher)
+    const watcher = ctx.watcherCache.get(key)
+    watcher?.close()
+    ctx.watcherCache.set(key, rollupWatcher)
+
     return rollupWatcher
   }
 

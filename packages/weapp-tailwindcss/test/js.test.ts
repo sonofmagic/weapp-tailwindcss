@@ -417,45 +417,45 @@ describe('jsHandler', () => {
     }).not.toThrow()
   })
 
-  it('issues/276 case 0', () => {
+  it('issues/276 case 0', async () => {
     const testCase = `const x = "rounded-[20rpx] before:rounded-[20rpx]"`
     const set: Set<string> = new Set()
     set.add('rounded-[20rpx]')
     set.add('before:rounded-[20rpx]')
     const { jsHandler } = getOptions()
-    const code = jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
-  it('issues/276 case 1', () => {
+  it('issues/276 case 1', async () => {
     const testCase = `const x = "rounded-[20rpx] before:rounded-[20rpx]"`
     const set: Set<string> = new Set()
     set.add('before:rounded-[20rpx]')
     set.add('rounded-[20rpx]')
 
     const { jsHandler } = getOptions()
-    const code = jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
-  it('issues/276 case 2', () => {
+  it('issues/276 case 2', async () => {
     const testCase = `const x = "before:rounded-[20rpx] rounded-[20rpx]"`
     const set: Set<string> = new Set()
     set.add('rounded-[20rpx]')
     set.add('before:rounded-[20rpx]')
     const { jsHandler } = getOptions()
-    const code = jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
-  it('issues/276 case 3', () => {
+  it('issues/276 case 3', async () => {
     const testCase = `const x = "before:rounded-[20rpx] rounded-[20rpx]"`
     const set: Set<string> = new Set()
     set.add('before:rounded-[20rpx]')
     set.add('rounded-[20rpx]')
 
     const { jsHandler } = getOptions()
-    const code = jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -465,7 +465,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'的撒的撒\']')
 
     const { jsHandler } = getOptions()
-    const code = await jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -487,7 +487,7 @@ describe('jsHandler', () => {
     set.add('before:content-[\'moduleA_普通分包\']')
 
     const { jsHandler } = getOptions()
-    const code = await jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -509,7 +509,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
     const { jsHandler } = getOptions()
-    const code = await jsHandler(testCase, set)
+    const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 

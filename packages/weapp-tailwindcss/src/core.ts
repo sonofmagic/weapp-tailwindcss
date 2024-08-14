@@ -8,28 +8,25 @@ export function createContext(options: UserDefinedOptions = {}) {
   let runtimeSet = new Set<string>()
   patch?.()
 
-  async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
-    const code = await styleHandler(rawCss, Object.assign({
+  function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
+    return styleHandler(rawCss, Object.assign({
       isMainChunk: true,
     }, options))
-    return code
   }
 
-  async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
+  function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
         : twPatcher.getClassSet()
 
-    const { code } = await jsHandler(rawJs, runtimeSet, options)
-    return code
+    return jsHandler(rawJs, runtimeSet, options)
   }
 
   function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
-    const code = templateHandler(rawWxml, Object.assign({
+    return templateHandler(rawWxml, Object.assign({
       runtimeSet,
     }, options))
-    return code
   }
 
   return {

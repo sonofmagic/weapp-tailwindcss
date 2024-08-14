@@ -47,15 +47,15 @@ export function createPlugins(options: UserDefinedOptions = {}) {
               }
             },
             async () => {
-              const code = await styleHandler(rawSource, {
+              const { css } = await styleHandler(rawSource, {
                 isMainChunk: true,
                 ...options,
               })
-              file.contents = Buffer.from(code)
+              file.contents = Buffer.from(css)
               debug('css handle: %s', file.path)
               return {
                 key: file.path,
-                source: code,
+                source: css,
               }
             },
           )

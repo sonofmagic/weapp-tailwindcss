@@ -1718,6 +1718,59 @@ text,
   --tw-contain-paint: ;
   --tw-contain-style: ;
 }
+::-ms-backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
+}
 ::backdrop {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -1868,13 +1921,13 @@ text,
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .items-center {
-  -ms-flex-align: center;
   -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
 }
 .justify-center {
-  -ms-flex-pack: center;
   -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 .space-y-_1d6rem_ > view + view {
@@ -2126,10 +2179,15 @@ text,
   border-width: 2rpx;
   content: var(--tw-content);
 }
-.beforecborder-red-500::before {
-  --tw-border-opacity: 1;
-  border-color: rgb(239 68 68 / var(--tw-border-opacity));
+.beforecborder-_h0000ff_::before {
   content: var(--tw-content);
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 255 / var(--tw-border-opacity));
+}
+.beforecborder-_h4bd650_::before {
+  content: var(--tw-content);
+  --tw-border-opacity: 1;
+  border-color: rgb(75 214 80 / var(--tw-border-opacity));
 }
 .beforeccontent-_qmoduleA_u666eu901au5206u5305q_::before {
   --tw-content: 'moduleA 普通分包';
@@ -2144,9 +2202,9 @@ text,
   content: var(--tw-content);
 }
 .afterctext-red-500::after {
+  content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
-  content: var(--tw-content);
 }
 .afterccontent-_xmx_::after {
   --tw-content: '*';
@@ -2211,7 +2269,8 @@ exports[`e2e > 'taro-app' > json 1`] = `
   "after:text-red-500",
   "before:absolute",
   "before:border-2",
-  "before:border-red-500",
+  "before:border-[#0000ff]",
+  "before:border-[#4bd650]",
   "before:content-['moduleA_普通分包']",
   "before:inset-0",
   "before:rounded-[20rpx]",
@@ -2312,8 +2371,8 @@ exports[`e2e > 'taro-app' > json 1`] = `
 `;
 
 exports[`e2e > 'taro-app' > wxml 1`] = `
-"<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_" style=""></view>
-<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_" style=""></view>
+"<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-_h4bd650_ rounded-_20rpx_ beforecrounded-_20rpx_" style=""></view>
+<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-_h0000ff_ beforecrounded-_20rpx_ rounded-_20rpx_" style=""></view>
 <navigator
   app-id=""
   delta="1"
@@ -2381,6 +2440,31 @@ exports[`e2e > 'taro-app' > wxml 1`] = `
   <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
 </view>
 <view class="test" style="">test</view>
+"
+`;
+
+exports[`e2e > 'taro-app-v4' > css 1`] = `
+"@import 'app-origin.wxss';
+"
+`;
+
+exports[`e2e > 'taro-app-v4' > json 1`] = `
+"[
+  "before:content-[\\"11111\\"]",
+  "before:content-[\\"222\\"]",
+  "bg-[#89ab8d]",
+  "flex",
+  "flex-col",
+  "text-[#3d31a4]",
+  "text-[#438821]"
+]"
+`;
+
+exports[`e2e > 'taro-app-v4' > wxml 1`] = `
+"<view class="bg-_h89ab8d_ flex flex-col" style="">
+  <text class="text-_h438821_ before content- 11111" space="" style=""></text>
+  <text class="text-_h3d31a4_ before content- 222" space="" style=""></text>
+</view>
 "
 `;
 
@@ -3275,6 +3359,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgb(101 67 33 / var(--tw-bg-opacity));
 }
+.bg-_hdbdada_ {
+  --tw-bg-opacity: 1;
+  background-color: rgb(219 218 218 / var(--tw-bg-opacity));
+}
 .bg-_hfafa00_ {
   --tw-bg-opacity: 1;
   background-color: rgb(250 250 0 / var(--tw-bg-opacity));
@@ -3282,10 +3370,6 @@ text,
 .bg-_hfafafa_ {
   --tw-bg-opacity: 1;
   background-color: rgb(250 250 250 / var(--tw-bg-opacity));
-}
-.bg-_hffffff_ {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 .bg-gray-100 {
   --tw-bg-opacity: 1;
@@ -3433,9 +3517,9 @@ exports[`e2e > 'taro-vue3-app' > json 1`] = `
   "bg-[#543254]",
   "bg-[#654123]",
   "bg-[#654321]",
+  "bg-[#dbdada]",
   "bg-[#fafa00]",
   "bg-[#fafafa]",
-  "bg-[#ffffff]",
   "bg-[url('https://xxx.com/xx.webp')]",
   "bg-gradient-to-r",
   "bg-gray-100",
@@ -3508,7 +3592,7 @@ exports[`e2e > 'taro-vue3-app' > json 1`] = `
 `;
 
 exports[`e2e > 'taro-vue3-app' > wxml 1`] = `
-"<view class="index container bg-_hffffff_ text-_haaaaaa_" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
+"<view class="index container bg-_hdbdada_ text-_haaaaaa_" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
   <view class="text-amber-300" style="">
     <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">components ui</view>
   </view>
@@ -8794,6 +8878,10 @@ text,
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
+.twincring-white ~ view:not(.not-twin) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
+}
 .twinctext-green-500 ~ text:not(.not-twin) {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
@@ -8801,6 +8889,10 @@ text,
 .twinctext-red-500 ~ text:not(.not-twin) {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+.twincring-white ~ text:not(.not-twin) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
 }
 .nextctext-green-500 + view:not(.not-next) {
   --tw-text-opacity: 1;
@@ -9109,6 +9201,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "text-white",
   "transition",
   "translate-y-[17rpx]",
+  "twin:ring-white",
   "twin:text-green-500",
   "twin:text-red-500",
   "underline",
