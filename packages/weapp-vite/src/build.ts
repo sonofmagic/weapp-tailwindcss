@@ -24,6 +24,7 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
       rollupOptions: {
         output: {
           format: 'cjs',
+          strict: false,
           entryFileNames: (chunkInfo) => {
             const name = ctx.relativeSrcRoot(chunkInfo.name)
             if (name.endsWith('.ts')) {
