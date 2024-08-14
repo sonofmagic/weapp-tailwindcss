@@ -3,8 +3,8 @@
   "type": "module",
   "version": "1.0.0",
   "description": "@weapp-core/logger",
-  "author": "",
-  "license": "ISC",
+  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "license": "MIT",
   "keywords": [],
   "sideEffects": false,
   "exports": {
