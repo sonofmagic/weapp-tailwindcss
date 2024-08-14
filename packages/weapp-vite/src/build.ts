@@ -73,8 +73,12 @@ export async function runDev(ctx: Context, options?: UserConfig) {
       )
       ,
     )) as RollupWatcher
+    const key = options?.weapp?.subPackage?.root || RootRollupSymbol
 
-    ctx.watcherCache.set(options?.weapp?.subPackage?.root || RootRollupSymbol, rollupWatcher)
+    const watcher = ctx.watcherCache.get(key)
+    watcher?.close()
+    ctx.watcherCache.set(key, rollupWatcher)
+
     return rollupWatcher
   }
 
