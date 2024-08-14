@@ -46,6 +46,8 @@
   },
   "scripts": {
     "build": "turbo run build --filter=./packages/* --filter=./@weapp-core/* && turbo run build --filter=./plugins/*",
+    "build:vite-docs": "turbo run build --filter=./website-weapp-vite/",
+    "build:tw-docs": "turbo run build --filter=./website/",
     "test": "vitest run",
     "test:plugins": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/*",
     "test:cli": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/cli",
