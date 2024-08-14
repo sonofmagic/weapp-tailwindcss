@@ -1,5 +1,11 @@
 # @weapp-core/shared
 
+## 1.0.1
+
+### Patch Changes
+
+- f7a2d5d: fix: watcher do not close error
+
 ## 1.0.0
 
 ### Major Changes

@@ -1,5 +1,12 @@
 # weapp-ide-cli
 
+## 2.0.1
+
+### Patch Changes
+
+- Updated dependencies [f7a2d5d]
+  - @weapp-core/logger@1.0.1
+
 ## 2.0.0
 
 ### Major Changes

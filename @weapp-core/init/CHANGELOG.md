@@ -1,5 +1,14 @@
 # @weapp-core/init
 
+## 1.0.1
+
+### Patch Changes
+
+- f7a2d5d: fix: watcher do not close error
+- Updated dependencies [f7a2d5d]
+  - @weapp-core/logger@1.0.1
+  - @weapp-core/shared@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
