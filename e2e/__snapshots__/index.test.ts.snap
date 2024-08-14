@@ -2384,6 +2384,23 @@ exports[`e2e > 'taro-app' > wxml 1`] = `
 "
 `;
 
+exports[`e2e > 'taro-app-v4' > css 1`] = `
+"@import 'app-origin.wxss';
+"
+`;
+
+exports[`e2e > 'taro-app-v4' > json 1`] = `
+"[
+  "bg-[#654321]",
+  "text-[#438821]"
+]"
+`;
+
+exports[`e2e > 'taro-app-v4' > wxml 1`] = `
+"<view class="bg-_h654321_" style=""><text class="text-_h438821_" space="" style=""></text></view>
+"
+`;
+
 exports[`e2e > 'taro-vue2-app' > css 1`] = `
 "::before,
 ::after {
@@ -8794,6 +8811,10 @@ text,
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
+.twincring-white ~ view:not(.not-twin) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
+}
 .twinctext-green-500 ~ text:not(.not-twin) {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
@@ -8801,6 +8822,10 @@ text,
 .twinctext-red-500 ~ text:not(.not-twin) {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+.twincring-white ~ text:not(.not-twin) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
 }
 .nextctext-green-500 + view:not(.not-next) {
   --tw-text-opacity: 1;
@@ -9109,6 +9134,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "text-white",
   "transition",
   "translate-y-[17rpx]",
+  "twin:ring-white",
   "twin:text-green-500",
   "twin:text-red-500",
   "underline",

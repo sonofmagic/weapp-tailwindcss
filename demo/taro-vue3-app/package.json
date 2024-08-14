@@ -52,7 +52,7 @@
     "@tarojs/plugin-platform-h5": "3.6.31",
     "@tarojs/runtime": "3.6.31",
     "@tarojs/taro": "3.6.31",
-    "tailwindcss": "^3.4.6",
+    "tailwindcss": "^3.4.10",
     "vue": "^3.3.4"
   },
   "devDependencies": {
@@ -83,7 +83,7 @@
     "typescript": "~5.4.5",
     "unplugin-vue-components": "^0.27.0",
     "vue-loader": "^17.2.2",
-    "weapp-ide-cli": "^1.0.1",
+    "weapp-ide-cli": "^2.0.0",
     "weapp-tailwindcss": "^3.4.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.90.3"

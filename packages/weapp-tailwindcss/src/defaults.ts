@@ -25,6 +25,7 @@ export const defaultOptions: UserDefinedOptions = {
         return file.startsWith('app')
       }
       case 'taro': {
+        // app.wxss & app-origin.wxss
         return file.startsWith('app')
       }
       case 'remax': {

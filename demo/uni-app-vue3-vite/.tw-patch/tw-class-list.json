@@ -187,6 +187,7 @@
   "text-white",
   "transition",
   "translate-y-[17rpx]",
+  "twin:ring-white",
   "twin:text-green-500",
   "twin:text-red-500",
   "underline",

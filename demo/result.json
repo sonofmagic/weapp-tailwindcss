@@ -11,5 +11,6 @@
   "uni-app-webpack5": true,
   "web": true,
   "native": true,
-  "native-ts": true
+  "native-ts": true,
+  "taro-app-v4": true
 }
