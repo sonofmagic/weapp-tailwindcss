@@ -154,7 +154,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               }
             },
             async () => {
-              const css = await styleHandler(rawSource, {
+              const { css } = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
               })
               originalSource.source = css

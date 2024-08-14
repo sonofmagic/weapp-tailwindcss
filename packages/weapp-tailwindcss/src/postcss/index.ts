@@ -3,17 +3,15 @@ import type { IStyleHandlerOptions } from '../types'
 import { defuOverrideArray } from '../utils'
 import { getPlugins } from './plugins'
 
-export async function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
-  return (
-    await postcss(getPlugins(options))
-      .process(
-        rawSource,
-        options.postcssOptions?.options ?? {
-          from: undefined,
-        },
-      )
-      .async()
-  ).css
+export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
+  return postcss(getPlugins(options))
+    .process(
+      rawSource,
+      options.postcssOptions?.options ?? {
+        from: undefined,
+      },
+    )
+    .async()
 }
 
 export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {

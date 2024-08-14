@@ -83,7 +83,8 @@ describe('postcss plugin', () => {
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
     const ctx = getOptions()
-    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+    const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
+    expect(cssRes).toMatchSnapshot('css')
   })
 
   it('dark mode class', async () => {
@@ -102,7 +103,8 @@ describe('postcss plugin', () => {
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
     const ctx = getOptions()
-    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+    const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
+    expect(cssRes).toMatchSnapshot('css')
   })
 
   it('dark mode selector', async () => {
@@ -121,7 +123,8 @@ describe('postcss plugin', () => {
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
     const ctx = getOptions()
-    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+    const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
+    expect(cssRes).toMatchSnapshot('css')
   })
 
   it('dark mode variant 1', async () => {
@@ -140,7 +143,8 @@ describe('postcss plugin', () => {
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
     const ctx = getOptions()
-    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+    const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
+    expect(cssRes).toMatchSnapshot('css')
   })
 
   it('dark mode variant 2', async () => {
@@ -159,7 +163,8 @@ describe('postcss plugin', () => {
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
     const ctx = getOptions()
-    expect(await ctx.styleHandler(css, { isMainChunk: true })).toMatchSnapshot('css')
+    const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
+    expect(cssRes).toMatchSnapshot('css')
   })
 })
 

@@ -191,6 +191,9 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
   return {
     code: ms.toString(),
+    get map() {
+      return ms.generateMap()
+    },
   }
 }
 

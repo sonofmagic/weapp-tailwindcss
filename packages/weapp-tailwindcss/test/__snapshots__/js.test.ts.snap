@@ -22,29 +22,13 @@ exports[`jsHandler > empty case 0 1`] = `
 }
 `;
 
-exports[`jsHandler > issues/276 case 0 1`] = `
-{
-  "code": "const x = "rounded-_20rpx_ beforecrounded-_20rpx_"",
-}
-`;
+exports[`jsHandler > issues/276 case 0 1`] = `"const x = "rounded-_20rpx_ beforecrounded-_20rpx_""`;
 
-exports[`jsHandler > issues/276 case 1 1`] = `
-{
-  "code": "const x = "rounded-_20rpx_ beforecrounded-_20rpx_"",
-}
-`;
+exports[`jsHandler > issues/276 case 1 1`] = `"const x = "rounded-_20rpx_ beforecrounded-_20rpx_""`;
 
-exports[`jsHandler > issues/276 case 2 1`] = `
-{
-  "code": "const x = "beforecrounded-_20rpx_ rounded-_20rpx_"",
-}
-`;
+exports[`jsHandler > issues/276 case 2 1`] = `"const x = "beforecrounded-_20rpx_ rounded-_20rpx_""`;
 
-exports[`jsHandler > issues/276 case 3 1`] = `
-{
-  "code": "const x = "beforecrounded-_20rpx_ rounded-_20rpx_"",
-}
-`;
+exports[`jsHandler > issues/276 case 3 1`] = `"const x = "beforecrounded-_20rpx_ rounded-_20rpx_""`;
 
 exports[`jsHandler > jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]'"`;
 
@@ -108,11 +92,7 @@ exports[`jsHandler > unicode case 0 1`] = `
 "
 `;
 
-exports[`jsHandler > 中文字符 case 0 1`] = `
-{
-  "code": "const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }",
-}
-`;
+exports[`jsHandler > 中文字符 case 0 1`] = `"const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }"`;
 
 exports[`jsHandler > 中文字符 case 1 1`] = `
 {
@@ -120,11 +100,7 @@ exports[`jsHandler > 中文字符 case 1 1`] = `
 }
 `;
 
-exports[`jsHandler > 中文字符 case 2 1`] = `
-{
-  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);",
-}
-`;
+exports[`jsHandler > 中文字符 case 2 1`] = `""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);"`;
 
 exports[`jsHandler > 中文字符 case 3 1`] = `
 {
@@ -133,8 +109,7 @@ exports[`jsHandler > 中文字符 case 3 1`] = `
 `;
 
 exports[`jsHandler > 中文字符产物 case 0 1`] = `
-{
-  "code": ""use strict";
+""use strict";
 (wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/index/index"],{
 
 /***/ "./node_modules/@tarojs/taro-loader/lib/raw.js!./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/index/index!./src/pages/index/index.vue":
@@ -351,8 +326,7 @@ var inst = Page((0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__.createPageConfig
 /******/ }
 ]);
 //# sourceMappingURL=index.js.map'
-",
-}
+"
 `;
 
 exports[`jsHandler > 中文字符产物 case 1 1`] = `

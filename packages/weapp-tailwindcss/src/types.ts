@@ -1,4 +1,4 @@
-import type { Rule } from 'postcss'
+import type { Result as PostcssResult, Root, Rule } from 'postcss'
 import type { ClassGenerator, IClassGeneratorOptions } from '@tailwindcss-mangle/shared'
 import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
@@ -33,7 +33,7 @@ export type RequiredStyleHandlerOptions = {
   /**
    * @description 默认为 true，此时会对样式主文件，进行猜测
    */
-  isMainChunk: boolean
+  isMainChunk?: boolean
   cssInjectPreflight?: InjectPreflight
   escapeMap?: Record<string, string>
 } & Pick<
@@ -521,7 +521,7 @@ export type InternalUserDefinedOptions = Required<
   Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary' | 'cache'> & {
     supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | boolean
     templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
-    styleHandler: (rawSource: string, options: IStyleHandlerOptions) => Promise<string>
+    styleHandler: (rawSource: string, options?: IStyleHandlerOptions) => Promise<PostcssResult<Root>>
     jsHandler: JsHandler
     escapeMap: Record<string, string>
     patch: () => void

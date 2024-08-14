@@ -212,7 +212,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             },
             // @ts-ignore
             async () => {
-              const css = await styleHandler(rawSource, {
+              const { css } = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(file, this.appType),
               })
               const source = new ConcatSource(css)
