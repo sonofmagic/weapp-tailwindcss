@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.5.0 (2024-8-15)
+
+### Feature
+
+- [#355](https://github.com/sonofmagic/weapp-tailwindcss/issues/355) 将 js 和 css 相关结果全部由 core 抛出，会影响 api 的返回值
+
 ## 3.4.0
 
 ### Feature
