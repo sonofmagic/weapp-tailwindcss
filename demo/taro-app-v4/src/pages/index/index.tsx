@@ -8,8 +8,9 @@ export default function Index () {
   })
 
   return (
-    <View className='bg-[#654321]'>
-      <Text className='text-[#438821]'>Hello world!</Text>
+    <View className='bg-[#89ab8d] flex flex-col'>
+      <Text className='text-[#438821] before:content-["11111"]'>Hello world!</Text>
+      <Text className='text-[#3d31a4] before:content-["222"]'>Hello world!</Text>
     </View>
   )
 }

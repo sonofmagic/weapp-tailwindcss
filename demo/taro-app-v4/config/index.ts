@@ -2,7 +2,7 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+// import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -30,9 +30,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     framework: 'react',
     compiler: {
       type: 'vite',
-      vitePlugins: [
-        uvtw()
-      ]
+      // vitePlugins: [
+      //   uvtw()
+      // ]
     },
     mini: {
       postcss: {
