@@ -36,8 +36,8 @@ const TestProjectsEntries: ProjectEntry[] = [
     },
   },
   {
-    name: 'taro-app-v4',
-    projectPath: 'taro-app-v4',
+    name: 'taro-app-vite',
+    projectPath: 'taro-app-vite',
     testMethod: async (_, projectPath) => {
       expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
     },

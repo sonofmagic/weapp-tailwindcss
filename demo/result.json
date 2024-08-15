@@ -12,5 +12,5 @@
   "web": true,
   "native": true,
   "native-ts": true,
-  "taro-app-v4": true
+  "taro-app-vite": true
 }

@@ -2135,10 +2135,10 @@
   resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-2.1.0.tgz#792f042f002cc3c7e59f06ea874fc319eef19f33"
   integrity sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==
 
-"@weapp-core/logger@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@weapp-core/logger/-/logger-1.0.0.tgz#c5f02d8f46b478e9e61ac15d6b7ace46ae7a3d6d"
-  integrity sha512-IM/M5xgrYxZNDyX+npMmoy7EcU1WZnDpocqiz9Nt/tB8VK2GF15W3po0eUoCkXYInsoq71UrTO+bavYmIgJikw==
+"@weapp-core/logger@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@weapp-core/logger/-/logger-1.0.1.tgz#ae5bdfb5b961fdbd1ab114cf9303d0b9757a300b"
+  integrity sha512-a6mRzO4GZKXHQvMhUv5CUctzHxg1dbD1+S+hr5A3j3y369PEPIQQpqQnwhICfBnDZkkBRcy1YVcOjiuWJo4qww==
   dependencies:
     consola "^3.2.3"
 
@@ -13488,12 +13488,12 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-weapp-ide-cli@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.0.tgz#e700cfa113bdf1c67d5d34a0931841bf2ad8dd96"
-  integrity sha512-Ug83Qos9XWNsfBjCgWE0fvzrqbiRaGLofVrlzmj6Z8GEO36AckktjIVAMseFA4d4HX3JAmIkittNH55sYOm1Ig==
+weapp-ide-cli@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.1.tgz#75806a3d88a1cf82297872bbacaeb6507a881b08"
+  integrity sha512-J/CQ8pnsJ7QAGdQ7wW6dH/hE8nLbTFAYF/QA96jq2dLBQWoDJEitYJmkCXiwEuJ9GM84v+pWZ/TgnqpfvLryzw==
   dependencies:
-    "@weapp-core/logger" "^1.0.0"
+    "@weapp-core/logger" "^1.0.1"
     execa "9.3.0"
     fs-extra "^11.2.0"
     pathe "^1.1.2"

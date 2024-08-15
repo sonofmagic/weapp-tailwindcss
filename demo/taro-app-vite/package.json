@@ -1,5 +1,5 @@
 {
-  "name": "taro-app-v4",
+  "name": "taro-app-vite",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -87,7 +87,7 @@
     "terser": "^5.30.4",
     "typescript": "^5.4.5",
     "vite": "^4.2.0",
-    "weapp-ide-cli": "^2.0.0",
+    "weapp-ide-cli": "^2.0.1",
     "weapp-tailwindcss": "^3.5.0",
     "weapp-tailwindcss-children": "^0.1.0"
   }

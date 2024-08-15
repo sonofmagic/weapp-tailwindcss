@@ -360,6 +360,13 @@
   dependencies:
     consola "^3.2.3"
 
+"@weapp-core/logger@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@weapp-core/logger/-/logger-1.0.1.tgz#ae5bdfb5b961fdbd1ab114cf9303d0b9757a300b"
+  integrity sha512-a6mRzO4GZKXHQvMhUv5CUctzHxg1dbD1+S+hr5A3j3y369PEPIQQpqQnwhICfBnDZkkBRcy1YVcOjiuWJo4qww==
+  dependencies:
+    consola "^3.2.3"
+
 "@weapp-core/regex@~1.0.1":
   version "1.0.1"
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
@@ -4403,6 +4410,16 @@ weapp-ide-cli@^2.0.0:
   integrity sha512-Ug83Qos9XWNsfBjCgWE0fvzrqbiRaGLofVrlzmj6Z8GEO36AckktjIVAMseFA4d4HX3JAmIkittNH55sYOm1Ig==
   dependencies:
     "@weapp-core/logger" "^1.0.0"
+    execa "9.3.0"
+    fs-extra "^11.2.0"
+    pathe "^1.1.2"
+
+weapp-ide-cli@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.1.tgz#75806a3d88a1cf82297872bbacaeb6507a881b08"
+  integrity sha512-J/CQ8pnsJ7QAGdQ7wW6dH/hE8nLbTFAYF/QA96jq2dLBQWoDJEitYJmkCXiwEuJ9GM84v+pWZ/TgnqpfvLryzw==
+  dependencies:
+    "@weapp-core/logger" "^1.0.1"
     execa "9.3.0"
     fs-extra "^11.2.0"
     pathe "^1.1.2"
