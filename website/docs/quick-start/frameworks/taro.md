@@ -16,38 +16,47 @@
 
 由于 `taro@4` 的 `vite` 版本，目前加载 `postcss.config.js` 配置是失效的，所以我们目前暂时只能使用内联 `postcss` 插件的写法
 
-### 创建 `vite.config.ts` 文件
+### 在 `config/index.ts` 中注册插件
 
-在你的项目根目录下，创建 `vite.config.ts` 文件, 并写入:
-
-```ts title="vite.config.ts"
-import { defineConfig } from 'vite'
+```ts title="config/index.[jt]s"
+import type { Plugin } from 'vite'
 import tailwindcss from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
-export default defineConfig({
-  plugins: [
-    // @ts-ignore
-    UnifiedViteWeappTailwindcssPlugin({
-      rem2rpx: true
-    })
-  ],
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss(),
-        autoprefixer()
-      ]
-    }
-  }
-})
-
+const baseConfig: UserConfigExport<'vite'> = {
+  // ... 其他配置
+  // highlight-start
+  compiler: {
+    type: 'vite',
+    vitePlugins: [
+      {
+        // 通过 vite 插件加载 postcss,
+        name: 'postcss-config-loader-plugin',
+        config(config) {
+          // 加载 tailwindcss
+          if (typeof config.css?.postcss === 'object') {
+            config.css?.postcss.plugins?.unshift(tailwindcss())
+          }
+        },
+      },
+      uvtw({
+        // rem转rpx
+        rem2rpx: true,
+        // 除了小程序这些，其他平台都 disable
+        disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn'
+      })
+    ] as Plugin[] // 从 vite 引入 type, 为了智能提示
+  },
+  // highlight-end
+  // ... 其他配置
+}
 ```
 
 `tailwindcss` 即可注册成功，正常使用了
 
 这段代码的意思为，在 `vite` 里注册 `postcss` 插件和 `vite` 插件
+
+> `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
 
 ## 使用 Webpack 作为打包工具
 
