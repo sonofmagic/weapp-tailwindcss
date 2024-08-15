@@ -12,7 +12,7 @@
 
 ## 和原生组件一起使用注意事项
 
-假如出现原生组件引入报错的情况，可以参考 [issue#35](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/35)，忽略指定目录下的文件，跳过插件处理，例如 `uni-app` 中的 `wxcomponents`。
+假如出现原生组件引入报错的情况，可以参阅 [issue#35](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/35)，忽略指定目录下的文件，跳过插件处理，例如 `uni-app` 中的 `wxcomponents`。
 
 如何更改？在传入的配置项 `cssMatcher`，`htmlMatcher` 这类配置，来过滤指定目录或文件。
 

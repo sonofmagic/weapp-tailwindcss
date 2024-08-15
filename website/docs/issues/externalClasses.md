@@ -1,6 +1,6 @@
 # 外部样式类（externalClasses）的支持
 
-在封装原生自定义组件的时候，我们经常会使用外部样式类（`externalClasses`），相关使用方式参阅[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E5%A4%96%E9%83%A8%E6%A0%B7%E5%BC%8F%E7%B1%BB)
+在封装原生自定义组件的时候，我们经常会使用外部样式类（`externalClasses`），相关使用方式请参阅微信开发者文档的[外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#外部样式类)
 
 我们以一个例子来介绍，一个原生组件定义一个或多个外部样式类：
 
