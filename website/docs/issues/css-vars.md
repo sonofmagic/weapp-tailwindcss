@@ -15,13 +15,13 @@
 
 ## 原因以及解决方案
 
-导致这个的原因，是由于全局的 `tailwindcss` 变量丢失，没有注入进 `App` 引起的。[(什么是全局 `tailwindcss` 变量注入区域)](#什么是全局-tailwindcss-变量注入区域)
+导致这个的原因，是由于全局的 `tailwindcss` 变量丢失，没有注入进 `App` 引起的。参阅[什么是 `tailwindcss` 全局变量注入区域](#什么是全局-tailwindcss-变量注入区域)。
 
-比如在 `taro` 中和 `@tarojs/plugin-html` 一起使用，就会出现这个问题，这是因为 `@tarojs/plugin-html` 把 `tailwindcss` 变量区域，直接给干掉了。
+例如在 `taro` 中和 `@tarojs/plugin-html` 一起使用，就会出现这个问题，这是因为 `@tarojs/plugin-html` 把 `tailwindcss` 变量区域直接删除了。
 
-遇到这样的问题，解决方案也很简单，只需要给插件传入一个 `injectAdditionalCssVarScope: true` 参数即可
+遇到这样的问题，解决方案也很简单，只需要给插件传入 `injectAdditionalCssVarScope: true` 参数即可。
 
-代码片段和配置详情详见 [和 NutUI 一起使用](./use-with-nutui)
+代码片段和配置详情详见[和 NutUI 一起使用](./use-with-nutui)。
 
 ## 设置成功后的效果
 
@@ -31,7 +31,7 @@
 
 ## 什么是全局 `tailwindcss` 变量注入区域
 
-在你的 `app.wxss` 样式产物文件中（比如：`taro` / `uni-app` 的 `dist` 文件夹内），都有这样一块区域。
+在你的 `app.wxss` 样式产物文件中（例如：`taro` 或 `uni-app` 的 `dist` 文件夹内），都有这样一块区域。
 
 上面的这个问题，就是这块变量注入区域没了导致的。
 
