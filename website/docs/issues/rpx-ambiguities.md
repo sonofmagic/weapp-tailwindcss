@@ -1,14 +1,14 @@
-# rpx 任意值颜色/长度单位二义性与解决方案
+# rpx 任意值颜色或长度单位二义性与解决方案
 
 ## 这是一个什么问题？
 
-在不使用 `weapp-tailwindcss` 的情况下，你直接写这样的 `rpx` 写法:
+在不使用 `weapp-tailwindcss` 的情况下，你直接写这样的 `rpx` 写法：
 
 ```html
 <div class="text-[32rpx]"></div>
 ```
 
-最终它会生成这样的 `css`:
+最终它会生成这样的 `css`：
 
 ```css
 .text-\[32rpx\] {
@@ -18,9 +18,9 @@
 
 为什么 `rpx` 这个好端端的长度单位，会变成颜色呢？
 
-原因在于 `rpx` 不是一个标准的 `W3C` 规定的 `CSS` 长度单位，这是微信小程序自己定的`WXSS`单位。
+原因在于 `rpx` 不是一个标准的 `W3C` 规定的 `CSS` 长度单位，这是微信小程序自己定的 `WXSS` 单位。
 
-而 `tailwindcss` 在针对具有 **`二义性`** 的任意值写法，比如:
+而 `tailwindcss` 在针对具有**二义性**的任意值写法，例如以下单位:
 
 - `text-[]`
 - `border-[]`
@@ -28,9 +28,9 @@
 - `outline-[]`
 - `ring-[]`
 
-等等单位时，会去校验 **`括号`** 内的任意值，是否为有效的`CSS`长度单位写法!
+这些会去校验**括号**内的任意值，是否为有效的 `CSS` 长度单位写法！
 
-是，则生成出长度`css`节点，否，则生成出颜色`css`节点:
+如果为 `true`，则生成出长度 `css` 节点，反之则生成出颜色 `css` 节点:
 
 ```css
 /* text-[16px] */
@@ -62,7 +62,7 @@
 
 ## 解决方案
 
-我们可以在使用这些带有 **`二义性`** 的单位的时候，通过 `length`/`color` 这种的前缀来指定它应该是什么，比如:
+我们可以在使用这些带有**二义性**的单位的时候，通过 `length` 或 `color` 这种的前缀来指定它应该是什么，例如：
 
 ```html
 <div class="text-[22rpx]">...</div>
@@ -80,7 +80,7 @@
 }
 ```
 
-同样你可以使用这 `2` 个前缀来指定 `css` 变量的生成形式:
+同样你可以使用这 2 个前缀来指定 `css` 变量的生成形式：
 
 ```html
 <!-- 生成 font-size  -->
@@ -90,12 +90,7 @@
 <div class="text-[color:var(--my-var)]">...</div>
 ```
 
-## 参考文档
+## 参见
 
-<https://tailwindcss.com/docs/adding-custom-styles#resolving-ambiguities>
-
-## 相关 issues
-
-<https://github.com/sonofmagic/weapp-tailwindcss/issues/110>
-
-<https://github.com/sonofmagic/weapp-tailwindcss/issues/109>
+- `tailwindcss` 中的[添加自定义样式](https://tailwindcss.com/docs/adding-custom-styles#resolving-ambiguities)
+- 相关 Issue：[#110](https://github.com/sonofmagic/weapp-tailwindcss/issues/110)、[#110](https://github.com/sonofmagic/weapp-tailwindcss/issues/109)
