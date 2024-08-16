@@ -1,5 +1,13 @@
 # weapp-vite
 
+## 1.0.3
+
+### Patch Changes
+
+- fbb1ed7: 修复 `@weapp-core/init` 和 `weapp-vite` 的一些问题
+- Updated dependencies [fbb1ed7]
+  - @weapp-core/init@1.0.2
+
 ## 1.0.2
 
 ### Patch Changes
