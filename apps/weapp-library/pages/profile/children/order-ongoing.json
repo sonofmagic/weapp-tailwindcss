@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "借阅进度",
+  "usingComponents":
+  {
+    "tab-bar": "/components/tab-bar/index",
+    "load-more": "/components/load-more/index",
+    "no-data": "/components/no-data/index"
+  }
+}

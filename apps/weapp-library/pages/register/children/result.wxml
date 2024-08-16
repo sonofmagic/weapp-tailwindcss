@@ -1,0 +1,19 @@
+<view class="weui-msg">
+  <view class="weui-msg__icon-area">
+    <icon type="success" size="93" />
+  </view>
+  <view class="weui-msg__text-area">
+    <view class="weui-msg__title">注册成功</view>
+    <view class="weui-msg__desc font-gray-28">完善个人信息后即可在线借阅图书</view>
+  </view>
+  <view class="weui-msg__opr-area">
+    <view class="weui-btn-area">
+      <navigator class="weui-btn" url="/pages/profile/children/children/personal-information-modify?from=register">
+        <button type="primary">完善个人信息</button>
+      </navigator>
+      <navigator class="weui-btn" url="/pages/home/home" open-type="switchTab">
+        <button type="default">稍后完善，先去逛逛</button>
+      </navigator>
+    </view>
+  </view>
+</view>

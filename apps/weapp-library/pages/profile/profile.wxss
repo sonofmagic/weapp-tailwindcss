@@ -1,0 +1,36 @@
+page {
+  padding-bottom: 20px;
+}
+
+.collapse__header {
+  background-color: #FFBF00 !important;
+  color: #FFF !important;
+  border-top: none !important;
+}
+
+collapse .ui-card {
+  padding: 15px;
+}
+collapse .ui-card:before {
+  display: none;
+}
+
+.icon {
+  margin-right: 5px;
+  vertical-align: middle;
+  width:20px; 
+  height: 20px;
+}
+
+.user-info__avatar {
+  width: 64px; 
+  height: 64px;
+  margin-right: 15px;
+  vertical-align: middle;
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.user-info__name {
+  margin-bottom: 12rpx;
+}

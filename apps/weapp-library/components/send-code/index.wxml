@@ -1,0 +1,4 @@
+<view class="weui-cell__ft">
+  <view wx:if="{{!disabled}}" class="weui-vcode-btn" catchtap="_onTap">{{str}}</view>
+  <view wx:else class="weui-vcode-btn" style="color: #888;">{{str}}</view>
+</view>

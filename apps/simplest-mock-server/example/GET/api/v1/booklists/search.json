@@ -1,0 +1,190 @@
+{
+  "booklists|0-2": [{
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "我的收藏集",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "给你人生哲理的书",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "经典好书",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "励志书籍",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "@ctitle(3, 5)",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "@ctitle(3, 5)",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "@ctitle(3, 5)",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": "@integer(0, 2)",
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "@ctitle(3, 5)",
+    "image|1": [
+      "https://img1.doubanio.com/spic/s1237549.jpg",
+      "https://img1.doubanio.com/spic/s27264181.jpg",
+      "https://img1.doubanio.com/spic/s1513425.jpg",
+      "https://img1.doubanio.com/spic/s29451990.jpg",
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ],
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }],
+  "start": "@integer(60, 100)",
+  "count": "@integer(60, 100)",
+  "total": "@integer(60, 100)"
+}

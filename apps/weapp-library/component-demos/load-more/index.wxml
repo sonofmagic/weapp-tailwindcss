@@ -1,0 +1,15 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">LoadMore</view>
+    <view class="page__desc">加载更多</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <load-more></load-more>
+    <load-more status="nomore"></load-more>
+
+    <view class="page__section-title">自定义文字</view>
+    <load-more loading-text="努力加载中"></load-more>
+    <load-more status="nomore" nomore-text="我是有底线的"></load-more>
+  </view>
+</view>

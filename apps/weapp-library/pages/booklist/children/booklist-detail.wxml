@@ -1,0 +1,41 @@
+<import src="/templates/page-status-indicator/index" />
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<block wx:if="{{pageStatus == 'done'}}">
+  <view class="booklist-header font-gray-28">
+    <view class="booklist-header__title" catchtap="onToggleDescription">
+      <image src="{{booklistInfo.creator.avatar}}" class="booklist-header__title-avatar"></image>
+      <view class="booklist-header__title-name">{{booklistInfo.creator.nickname}} 创建</view>
+      <view class="{{showDescription ? 'icon-up' : 'icon-down'}}"></view>
+    </view>
+    <view hidden="{{!showDescription}}" class="booklist-header__description">
+      <view>{{booklistInfo.created_at}} | {{booklistInfo.total}}本书 | {{booklistInfo.favorited_num}}人收藏</view>
+      <view>{{booklistInfo.description || '暂无描述'}}</view>
+    </view>
+  </view>
+  <view class="weui-cell weui-cell_switch booklist-switch">
+    <block wx:if="{{booklistInfo.status === 1}}">
+      <view class="weui-cell__bd">
+        <text wx:if="{{isSelecting}}" class="booklist-switch__delete {{selectedBooks.length ? '' : 'booklist-switch__delete--disabled'}} color-red" catchtap="onDelete">删除书目</text>
+        <text wx:else>编辑书单</text>
+      </view>
+      <view class="weui-cell__ft">
+        <async-switch checked="{{isSelecting}}" bindswitch="onToggleEditStatus"></async-switch>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="weui-cell__bd">收藏书单</view>
+      <view class="weui-cell__ft">
+        <async-switch checked="{{booklistInfo.status === 2}}" loading="{{isSwitchLoading}}" bindswitch="onToggleFavoriteStatus"></async-switch>
+      </view>
+    </block>
+  </view>
+  <!-- 书目列表 -->
+  <view class="booklist-item-container">
+    <view wx:for="{{booklistInfo.items}}" wx:key="{{item.book.title}}" class="booklist-item">
+      <booklist-item book="{{item.book}}" comment="{{item.comment}}" is-selecting="{{isSelecting}}" data-index="{{index}}" bindchange="onChange" bindmodify="onModify"></booklist-item>
+    </view>
+  </view>
+  <!-- 加载更多、暂无数据 -->
+  <load-more status="{{loadMoreStatus}}" nomore-text="没有更多图书了"></load-more>
+  <no-data wx:if="{{!booklistInfo.items.length}}" text="书单为空"></no-data>
+</block>

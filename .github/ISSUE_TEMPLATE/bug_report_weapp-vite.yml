@@ -1,0 +1,83 @@
+name: "\U0001F41E weapp-vite 汇报Bug (Bug report)"
+description: 汇报Bug并提供测试用例
+title: "[Bug(weapp-vite)]: "
+labels: ["bug(weapp-vite)"]
+assignees:
+  - sonofmagic
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **在你开始提 bug 之前, 你要知道...**
+
+        此表格仅用于提交错误报告。如果您有使用问题, 或者你不确定这是否真的是一个错误，请确保：
+
+        - [x] 已经在 [vite.icebreaker.top](https://vite.icebreaker.top/) 文档网站中搜索过相关的解决方案
+        - [x] 已经在 Github 的 [issues](https://github.com/sonofmagic/weapp-tailwindcss/issues) 中搜索过相关的问题
+
+        如果您发现最新版本中仍然存在旧的、已解决的问题，
+        您应该填写下方的表格打开一个新的 `issue`，而不是对旧的 `issue` 发表评论。
+  - type: input
+    id: version
+    attributes:
+      label: weapp-vite 版本
+    validations:
+      required: true
+  # - type: input
+  #   id: platform
+  #   attributes:
+  #     label: 框架 & 小程序平台
+  #     description: |
+  #       在什么框架, 编译到的什么小程序平台, 出现了问题? 例如:
+  #       - uni-app vue3 vite 编译到 qq 小程序
+  #       - taro react 编译到 微信小程序
+  #     placeholder: taro vue2 编译到 京东小程序
+  #   validations:
+  #     required: true
+  - type: input
+    id: reproduction-link
+    attributes:
+      label: 最小复现bug的代码仓库链接
+      description: |
+        这里你可以提供 `GitHub` / `Gitee` 等可以在线访问到的 git 地址。用例应该尽可能只包含复现错误,所需**最少**的代码。
+        这个复现 demo 非常重要! 可以有效帮助 bug 的解决, 请尽量提供‼️
+        另外请不要随意填写无关链接。如果提供无关的链接，这个issue将被关闭。
+      placeholder: 复现bug的代码仓库链接
+    # validations:
+    #   required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: 复现bug的步骤
+      description: |
+        打开您的代码仓库后,我们需要做什么才能使bug复现？清晰简洁的陈述，对于我们能够及时分类您的问题非常重要。
+        请注意，您可以使用 [Markdown](https://guides.github.com/features/mastering-markdown/) 来格式化列表和代码。
+      placeholder: 复现bug的步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期是什么？
+      placeholder: 如你期望的运行表现
+    validations:
+      required: true
+  - type: textarea
+    id: actually-happening
+    attributes:
+      label: 实际发生了什么？
+      placeholder: 目前实际的运行表现
+    validations:
+      required: true
+  - type: textarea
+    id: system-info
+    attributes:
+      label: 运行环境
+      description: 在你的命令行中执行 `npx envinfo --system --npmPackages --binaries` 后,把结果复制在下方
+      render: shell
+      placeholder: 系统/Nodejs版本
+  - type: textarea
+    id: additional-comments
+    attributes:
+      label: 其他附加信息
+      description: 任何其他的补充你可以写在这

@@ -1,0 +1,9 @@
+@import '/styles/weui.wxss'
+
+.weui-navbar {
+  position: relative;
+}
+
+.weui-tab__panel {
+  padding-top: 0;
+}

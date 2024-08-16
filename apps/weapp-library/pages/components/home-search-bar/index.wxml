@@ -1,0 +1,35 @@
+<view class="home-search-bar weui-search-bar">
+  <!-- 输入框 -->
+  <view class="weui-search-bar__form">
+    <!-- 聚焦后的搜索类型列表 -->
+    <view class="home-search-bar__option-btn" hover-class="ui--active" catchtap="_onTapOptionBtn">
+      <view>{{options.selected}}</view>
+      <view class="icon-down"></view>
+    </view>
+    <view class="home-search-bar__option-list" hidden="{{!options.show}}">
+      <view wx:for="{{options.list}}" wx:key="*this" class="home-search-bar__option-item" data-option="{{item}}" catchtap="_onSelectOption">{{item}}</view>
+    </view>
+    <!-- 聚焦后的搜索输入框 -->
+    <view class="home-search-bar__input-box weui-search-bar__box">
+      <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+      <input type="text" class="weui-search-bar__input" confirm-type="search" placeholder="搜索" value="{{value}}" focus="{{focus}}" bindinput="_onInput" bindconfirm="_onSearch" />
+      <image wx:if="{{value.length <= 0}}" mode="aspectFit" class="home-search-bar__icon-scan" src="/images/icon_scan.png" catchtap="_onScan"></image>
+      <view wx:else class="weui-icon-clear" bindtap="_onClear">
+        <icon type="clear" size="14"></icon>
+      </view>
+    </view>
+    <!-- 未聚焦时的搜索输入框 -->
+    <label class="weui-search-bar__label" hidden="{{focus}}" bindtap="_onFocus">
+      <icon class="weui-icon-search" type="search" size="14"></icon>
+      <view class="weui-search-bar__text">搜索图书</view>
+    </label>
+    <!-- 扫描图标 -->
+    <image hidden="{{focus}}" mode="aspectFit" class="home-search-bar__icon-scan" src="/images/icon_scan.png" catchtap="_onScan"></image>
+  </view>
+  <!-- 分类按钮-->
+  <navigator hidden="{{focus}}" class="home-search-bar__category" url="./children/classification">
+    <image mode="widthFix" src="/images/icon_drawer.png"></image>
+    <span>分类</span>
+  </navigator>
+  <view wx:if="{{focus}}" class="weui-search-bar__cancel-btn" bindtap="_onCancel">取消</view>
+</view>

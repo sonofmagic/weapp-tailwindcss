@@ -1,0 +1,52 @@
+<import src="/templates/showcase/index" />
+<import src="/templates/page-status-indicator/index" />
+<home-search-bar id="searchBar" bindfocus="onFocus" bindcancel="onCancel" bindsearch="onSearch"></home-search-bar>
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<!-- 主页 -->
+<view wx:if="{{pageStatus == 'done' && !search.focus}}" class="panel-area">
+  <panel title="阅读统计" url="/pages/profile/children/order-history">
+    <view class="color-green statistics-panel__number">
+      {{statistics.book_num}}<span class="statistics-panel__unit">本</span>
+    </view>
+    <view class="color-orange statistics-panel__number">
+      {{statistics.page_num}}<span class="statistics-panel__unit">页</span>
+    </view>
+  </panel>
+  <panel title="推荐图书" url="/pages/list/book?type=recommend">
+    <template is="showcase-book" data="{{books: recommendBooks}}"></template>
+  </panel>
+  <panel title="近期借阅排行" url="/pages/list/book?type=ranking">
+    <template is="showcase-book" data="{{books: ranking}}"></template>
+  </panel>
+  <panel title="推荐书单" url="/pages/list/booklist?type=recommend">
+    <template is="showcase-booklist" data="{{booklists: recommendBooklists}}"></template>
+  </panel>
+</view>
+<!-- 搜索栏容器 -->
+<view wx:if="{{search.focus}}" class="search-box">
+  <scroll-view scroll-y="true" style="height: 100%">
+    <!-- 搜索历史 -->
+    <block wx:if="{{search.history.length}}">
+      <view class="ui-label search-history__label">搜索历史
+        <view class="search-box-history__clear color-green" bindtap="onClearHistory">清除</view>
+      </view>
+      <view class="search-box-history">
+        <view class="search-box-history__item" wx:for="{{search.history}}" wx:key="{{item}}" data-value="{{item}}" bindtap="onClickHistoryItem">{{item}}</view>
+      </view>
+    </block>
+    <!-- 热门图书 -->
+    <view class="ui-label">热门图书</view>
+    <view class="search-box-trending">
+      <view class="search-box-trending__item" hover-class="ui--active" wx:for="{{ranking}}" wx:key="{{item.id}}" data-title="{{item.title}}" catchtap="onClickTrendingItem">
+        <image class="search-box-trending__icon" mode="widthFix" src="{{index < 3 ? '/images/icon_trending_' + (index + 1) : '../../images/icon_trending_up'}}.png">
+        </image>
+        <view class="search-box-trending__item-info">
+          <view class="font-black-34">{{item.title}}</view>
+          <view class="font-gray-26">
+            <text wx:for="{{item.author}}" wx:key="*this" class="ui-book-card__info-name">{{item}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

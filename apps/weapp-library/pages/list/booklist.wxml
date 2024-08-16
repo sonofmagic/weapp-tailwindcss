@@ -1,0 +1,19 @@
+<view wx:if="{{type == 'recommend'}}" class="ui-label">
+  <view>根据你的借阅、搜索和收藏等历史行为为你推荐</view>
+</view>
+<view wx:if="{{booklists.length}}" class="weui-cells weui-cells_after-title">
+  <navigator wx:for="{{booklists}}" wx:key="{{item.id}}" class="weui-cell ui-booklist-card" hover-class="ui--active" url="/pages/booklist/children/booklist-detail?id={{item.id}}">
+    <image class="ui-booklist-card__img" src="{{item.image || '/images/icon_empty_booklist.png'}}" mode="aspectFill"></image>
+    <view class="ui-booklist-card__info">
+      <view class="ui-booklist-card__info-title font-black-34">{{item.title}}</view>
+      <view class="font-gray-26">
+        {{item.total}}本 by {{item.creator.nickname}}，{{item.favorited_num}}人收藏</view>
+    </view>
+    <view class="ui-icon-more-area" data-index="{{index}}" catchtap="onShowActionSheet" hover-stop-propagation>
+      <image src="/images/icon_more.png" mode="widthFix" class="ui-icon-more"></image>
+    </view>
+  </navigator>
+</view>
+<!-- 加载更多、暂无数据 -->
+<load-more status="{{loadMoreStatus}}" nomore-text="没有更多书单了"></load-more>
+<no-data wx:if="{{isNoData}}"></no-data>

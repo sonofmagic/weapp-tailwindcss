@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Panel</view>
+    <view class="page__desc">带有一个导航标题栏的面板</view>
+  </view>
+  <view class="page__bd">
+    <panel title="点击跳转页面" url="/pages/profile/children/about">
+      <view class="page__placeholder">
+        这是 panel 的内容
+      </view>
+    </panel>
+  </view>
+</view>

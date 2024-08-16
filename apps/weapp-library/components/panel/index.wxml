@@ -1,0 +1,9 @@
+<view class="panel">
+  <navigator url="{{url}}" hover-class="panel-hd--active">
+    <view class="panel-hd">
+      <view>{{title}}</view>
+      <view class="panel-hd__arrow"></view>
+    </view>
+  </navigator>
+  <slot></slot>
+</view>

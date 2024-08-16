@@ -1,0 +1,59 @@
+/**
+ * 业务相关的辅助函数
+ */
+
+/**
+ * 订单状态
+ * switch的case语句不支持获取对象属性，需要解构对象
+ */
+var ORDER_STATUS = require('./constant.wxs').ORDER_STATUS
+var WAITING_TO_TAKE_RETURNED_BOOK = ORDER_STATUS.WAITING_TO_TAKE_RETURNED_BOOK
+var WAITING_TO_TAKE_AT_PLANED_TIME = ORDER_STATUS.WAITING_TO_TAKE_AT_PLANED_TIME
+var BORROWING = ORDER_STATUS.BORROWING
+
+/**
+ * 获取订单状态的颜色
+ * 可取书-绿色；已逾期-红色；其他-默认。
+ */
+function getStatusColor (order) {
+  switch (order.status) {
+    case WAITING_TO_TAKE_RETURNED_BOOK:
+    case WAITING_TO_TAKE_AT_PLANED_TIME:
+      return 'green'
+    case BORROWING:
+      if (order.is_overdue) {
+        return 'red'
+      }
+      break
+    default:
+      return ''
+  }
+}
+
+/**
+ * 订单可否续借：正在借阅、未超时、且续借次数少于1
+ */
+function isRenewable (order) {
+  return order.renew_count == 0 && order.status == ORDER_STATUS.BORROWING && !order.is_overdue
+}
+
+/**
+ * 订单可否取消：未取书时可取消
+ */
+function isCancelable (order) {
+  return order.status <= ORDER_STATUS.WAITING_TO_TAKE_AT_PLANED_TIME
+}
+
+/**
+ * 订单可否删除：已归还或已取消订单可以删除
+ */
+function isDeletable (order) {
+  return order.status >= ORDER_STATUS.NORMAL_CLOSE
+}
+
+module.exports = {
+  getStatusColor: getStatusColor,
+  isRenewable: isRenewable,
+  isCancelable: isCancelable,
+  isDeletable: isDeletable
+}

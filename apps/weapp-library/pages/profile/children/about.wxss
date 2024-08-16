@@ -1,0 +1,13 @@
+.logo-container {
+  margin-top: 36px;
+  text-align: center;
+}
+
+image {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+

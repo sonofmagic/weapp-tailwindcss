@@ -1,0 +1,26 @@
+<view class="logo-container">
+    <image src="/images/logo.jpeg"></image>
+    <view class="font-black-34">在线借书平台</view>
+</view>
+<view class="weui-cells">
+    <view class="weui-cell">
+        <view class="weui-cell__bd">GitHub</view>
+        <view class="weui-cell__ft">imageslr/weapp-library</view>
+    </view>
+    <view class="weui-cell">
+        <view class="weui-cell__bd">开发者</view>
+        <view class="weui-cell__ft">Images。</view>
+    </view>
+    <view class="weui-cell">
+        <view class="weui-cell__bd">联系方式</view>
+        <view class="weui-cell__ft color-blue">https://imageslr.com</view>
+    </view>
+</view>
+<view class="weui-msg__extra-area">
+    <view class="weui-footer">
+        <view class="weui-footer__links">
+            <view class="weui-footer__link" url="">GitHub @imageslr</view>
+        </view>
+        <view class="weui-footer__text">Copyright © 2017-2021 Imageslr</view>
+    </view>
+</view>

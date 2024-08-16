@@ -1,0 +1,12 @@
+.big-button-area > async-button {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.big-button-area > async-button:last-child {
+  margin-bottom: 0;
+}
+
+.mini-button-area > async-button {
+  margin-right: 6px;
+}

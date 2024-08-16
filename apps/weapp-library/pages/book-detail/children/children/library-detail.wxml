@@ -1,0 +1,35 @@
+<import src="/templates/page-status-indicator/index" />
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<!-- 图书馆信息 -->
+<block wx:if="{{pageStatus == 'done'}}">
+  <view class="ui-label">基本信息</view>
+  <view class="ui-card font-gray-28">
+    <view class="font-black-34" style="margin-bottom: 5px;">{{library.name}}</view>
+    <view>认证状态：
+      <span wx:if="{{library.status === 1}}" class="color-green">已认证</span>
+      <span wx:else>未认证</span>
+    </view>
+    <view>电话：{{library.phone}}</view>
+    <view>地址：{{library.address}}</view>
+  </view>
+  <view class="ui-label">简介</view>
+  <view class="ui-card pre-wrap font-black-28">{{library.introduction || '暂无'}}</view>
+  <view class="ui-label">馆藏信息</view>
+  <view class="ui-card font-black-28">
+    <view>图书种类：{{library.book_type_num}}种</view>
+    <view>馆藏数量：{{library.book_total_num}}本</view>
+  </view>
+  <view class="ui-label">
+    照片
+  </view>
+  <view class="ui-card font-black-28">
+    <view wx:if="{{library.photos.length}}" class="weui-uploader__bd">
+      <view class="weui-uploader__files">
+        <view wx:for="{{library.photos}}" class="weui-uploader__file">
+          <image class="weui-uploader__img" src="{{item}}" mode="aspectFill" catchtap="onPreview" data-index="{{index}}"></image>
+        </view>
+      </view>
+    </view>
+    <view wx:else>暂无</view>
+  </view>
+</block>

@@ -1,0 +1,41 @@
+<wxs module="ORDER_STATUS">
+  module.exports = require('../../../utils/constant.wxs').ORDER_STATUS
+</wxs>
+<wxs src="../../../utils/biz-helper.wxs" module="helper" />
+<import src="/templates/page-status-indicator/index" />
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<tab-bar tabs="{{tabs}}" bindclick="onClickTabBar">
+  <scroll-view wx:if="{{pageStatus == 'done'}}" wx:for="{{types}}" wx:for-item="type" wx:key="{{type}}" slot="{{tabs[index]}}" scroll-y class="order-list" data-type="{{type}}" bindscrolltolower="onScrollToLower">
+    <view wx:if="{{orders[type].length}}" class="weui-cells weui-cells_after-title">
+      <navigator wx:for="{{orders[type]}}" wx:key="{{item.id}}" url="./children/order-detail?id={{item.id}}" class="weui-cell ui-book-card" hover-class="ui--active" id="{{item.id}}">
+        <image class="ui-book-card__img" src="{{item.book.imgs.small}}" mode="widthFix"></image>
+        <view class="ui-book-card__info font-gray-26">
+          <view class="ui-book-card__info-title font-black-34">{{item.book.title}}</view>
+          <view>作者:
+            <text wx:for="{{item.book.author}}" wx:key="{{item}}" class="ui-book-card__info-name">{{item}}</text>
+          </view>
+          <view>出版社：{{item.book.publisher}}</view>
+          <view>图书馆：{{item.library.name}}</view>
+          <view wx:if="{{item.status <= ORDER_STATUS.WAITING_TO_TAKE_AT_PLANED_TIME}}">
+            预约日期：{{item.created_at}}
+          </view>
+          <view wx:if="{{item.status == ORDER_STATUS.WAITING_TO_TAKE_AT_PLANED_TIME}}">
+            预约取书日期：{{item.should_take_time}}
+          </view>
+          <block wx:if="{{item.status == ORDER_STATUS.BORROWING}}">
+            <view>取书日期：{{item.actual_take_time}}</view>
+            <view>应还日期：{{item.should_return_time}}</view>
+          </block>
+          <view>
+            借阅状态：
+            <text class="color-{{helper.getStatusColor(item)}}">{{item.status_text}}</text>
+          </view>
+        </view>
+        <view wx:if="{{helper.isCancelable(item)}}" class="ui-book-card__delete-btn font-gray-28" id="{{item.id}}" catchtap="onCancel" hover-stop-propagation>取消</view>
+        <view class="weui-cell__ft_in-access"></view>
+      </navigator>
+    </view>
+    <no-data wx:else></no-data>
+    <load-more status="{{loadMoreStatus[type]}}" nomore-text="没有更多订单了"></load-more>
+  </scroll-view>
+</tab-bar>

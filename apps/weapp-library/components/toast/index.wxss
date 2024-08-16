@@ -1,0 +1,29 @@
+.toast {
+  z-index: 500;
+  display: inline-block;
+  box-sizing:border-box;
+  position: fixed;
+  left: 50%;
+  width:60%;
+  transform: translateX(-50%);
+  padding:10px;
+  font-size: 14px;
+  line-height:1.5em;
+  text-align:center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+}
+
+.toast--top {
+  top: 20px;
+}
+
+.toast--center {
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.toast--bottom {
+  bottom: 20px;
+}

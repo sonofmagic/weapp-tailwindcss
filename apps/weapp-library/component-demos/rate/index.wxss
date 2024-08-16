@@ -1,0 +1,8 @@
+.rate-area > rate {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.rate-area > rate:last-child {
+  margin-bottom: 0;
+}

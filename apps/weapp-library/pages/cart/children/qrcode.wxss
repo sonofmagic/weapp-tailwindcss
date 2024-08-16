@@ -1,0 +1,13 @@
+
+.container {
+  margin-top: 100rpx;
+}
+
+.container>canvas {
+  margin: 0 auto;
+}
+
+.tip {
+  margin: 0 30rpx;
+  text-align: center;
+}

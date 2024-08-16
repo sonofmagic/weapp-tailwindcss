@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的书评",
+  "usingComponents":
+  {
+    "rate": "/components/rate/index",
+    "load-more": "/components/load-more/index",
+    "no-data": "/components/no-data/index"
+  }
+}

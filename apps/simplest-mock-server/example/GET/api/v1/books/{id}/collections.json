@@ -1,0 +1,389 @@
+{
+  "book": {
+    "id": "@integer(60, 100)",
+    "title": "追风筝的人",
+    "origin_title": "The Kite Runner",
+    "alt_title": "@string",
+    "subtitle": "@string",
+    "isbn": "97835108561644",
+    "publisher": "上海人民出版社",
+    "pubdate": "2006-5",
+    "class_num": "A11",
+    "call_number": "TP128.4",
+    "author": [
+      "[阿]卡勒德·胡赛尼"
+    ],
+    "author_intro": "卡勒德·胡赛尼（Khaled Hosseini），1965年生于阿富汗喀布尔市，后随父亲迁往美国。胡赛尼毕业于加州大学圣地亚哥医学系，现居加州。“立志拂去蒙在阿富汗普通...",
+    "translator": [
+      "李继宏"
+    ],
+    "translator_intro": "",
+    "binding": "精装",
+    "price": "@float(60, 100, 3, 5)",
+    "pages": "@integer(60, 100)",
+    "words": "@integer(60, 100)",
+    "summary": "12岁的阿富汗富家少爷阿米尔与仆人哈桑情同手足。然而，在一场风筝比赛后，发生了一件悲惨不堪的事，阿米尔为自己的懦弱感到自责和痛苦，逼走了哈桑，不久，自己也跟随父亲逃往美国。\n成年后的阿米尔始终无法原谅自己当年对哈桑的背叛。为了赎罪，阿米尔再度踏上暌违二十多年的故乡，希望能为不幸的好友尽最后一点心力，却发现一个惊天谎言，儿时的噩梦再度重演，阿米尔该如何抉择？\n故事如此残忍而又美丽，作者以温暖细腻的笔法勾勒人性的本质与救赎，读来令人荡气回肠。",
+    "catalog": "第一章\n第二章\n第三章\n第四章\n第五章\n第六章",
+    "preview": "谨以此书献给哈里斯和法拉，他们为我启蒙。献给所有阿富汗的孩子。 我成为今天的我，是在1975年某个阴云密布的寒冷冬日，那年我十二岁。我清楚地记得 …",
+    "tags": [
+      "@string"
+    ],
+    "total_score": "8.8",
+    "review_num": "@integer(60, 100)",
+    "imgs": {
+      "small": "https://img3.doubanio.com/lpic/s1727290.jpg",
+      "medium": "@string",
+      "large": "@string"
+    },
+    "relevant_books": [{
+      "id": "@integer(60, 100)",
+      "title": "霍乱时期的爱情",
+      "isbn": "@string",
+      "publisher": "@string",
+      "pubdate": "@string",
+      "class_num": "@string",
+      "call_number": "@string",
+      "author": [
+        "[哥]加西亚·马尔克斯"
+      ],
+      "translator": [
+        "杨玲"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 3, 5)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(60, 100, 3, 5)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s11284102.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    }, {
+      "id": "@integer(60, 100)",
+      "title": "月亮和六便士",
+      "isbn": "@string",
+      "publisher": "@string",
+      "pubdate": "@string",
+      "class_num": "@string",
+      "call_number": "@string",
+      "author": [
+        "[英]毛姆"
+      ],
+      "translator": [
+        "傅惟慈"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 3, 5)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(60, 100, 3, 5)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img1.doubanio.com/mpic/s2659208.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    }, {
+      "id": "@integer(60, 100)",
+      "title": "百年孤独",
+      "isbn": "@string",
+      "publisher": "@string",
+      "pubdate": "@string",
+      "class_num": "@string",
+      "call_number": "@string",
+      "author": [
+        "[哥]加西亚·马尔克斯"
+      ],
+      "translator": [
+        "李继宏"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 3, 5)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(60, 100, 3, 5)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s6384944.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    }, {
+      "id": "@integer(60, 100)",
+      "title": "小王子",
+      "isbn": "@string",
+      "publisher": "@string",
+      "pubdate": "@string",
+      "class_num": "@string",
+      "call_number": "@string",
+      "author": [
+        "[法]圣-埃克苏佩里"
+      ],
+      "translator": [
+        "马振聘"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 3, 5)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(60, 100, 3, 5)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s1237549.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    }, {
+      "id": "@integer(60, 100)",
+      "title": "解忧杂货店",
+      "isbn": "@string",
+      "publisher": "@string",
+      "pubdate": "@string",
+      "class_num": "@string",
+      "call_number": "@string",
+      "author": [
+        "[日]东野圭吾"
+      ],
+      "translator": [
+        "李盈春"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 3, 5)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(60, 100, 3, 5)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s27264181.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    }, {
+      "id": "@integer(60, 100)",
+      "title": "灿烂千阳",
+      "isbn": "@string",
+      "publisher": "@string",
+      "pubdate": "@string",
+      "class_num": "@string",
+      "call_number": "@string",
+      "author": [
+        "[美]卡勒德·胡赛尼"
+      ],
+      "translator": [
+        "李继宏"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 3, 5)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(60, 100, 3, 5)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s2347590.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    }],
+    relevant_booklists: [{
+      "status": 0,
+      "id": "@integer(60, 100)",
+      "creator": {
+        "phone": "@string",
+        "nickname": "@string"
+      },
+      "title": "我的收藏集",
+      "image": "https://img1.doubanio.com/spic/s1237549.jpg",
+      "total": "@integer(60, 100)",
+      "favorited_num": "@integer(60, 100)"
+    }, {
+      "status": 0,
+      "id": "@integer(60, 100)",
+      "creator": {
+        "phone": "@string",
+        "nickname": "@string"
+      },
+      "title": "给你人生哲理的书",
+      "image": "https://img1.doubanio.com/spic/s27264181.jpg",
+      "total": "@integer(60, 100)",
+      "favorited_num": "@integer(60, 100)"
+    }, {
+      "status": 0,
+      "id": "@integer(60, 100)",
+      "creator": {
+        "phone": "@string",
+        "nickname": "@string"
+      },
+      "title": "经典好书",
+      "image": "https://img1.doubanio.com/spic/s1513425.jpg",
+      "total": "@integer(60, 100)",
+      "favorited_num": "@integer(60, 100)"
+    }, {
+      "status": 0,
+      "id": "@integer(60, 100)",
+      "creator": {
+        "phone": "@string",
+        "nickname": "@string"
+      },
+      "title": "励志书籍",
+      "image": "https://img1.doubanio.com/spic/s29451990.jpg",
+      "total": "@integer(60, 100)",
+      "favorited_num": "@integer(60, 100)"
+    }],
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)"
+  },
+  "collections|0-2": [{
+    "library": {
+      "id": "@integer(60, 100)",
+      "status": 1,
+      "name|1": [
+        "北京大学北图书馆",
+        "北京大学图书馆",
+        "北京大学南图书馆",
+        "首都师范大学南校区逸夫图书馆",
+        "清华大学图书馆",
+        "北京市立图书馆",
+        "北京大学图书馆",
+      ],
+      "phone": "@string",
+      "address": "中关村北大街1号",
+      "introduction": "@string",
+      "book_type_num": "@integer(60, 100)",
+      "book_total_num": "@integer(60, 100)",
+      "photos": [
+        "@string"
+      ]
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)",
+    "is_available": "@boolean"
+  }, {
+    "library": {
+      "id": "@integer(60, 100)",
+      "status": 0,
+      "name|1": [
+        "北京大学北图书馆",
+        "北京大学图书馆",
+        "北京大学南图书馆",
+        "首都师范大学南校区逸夫图书馆",
+        "清华大学图书馆",
+        "北京市立图书馆",
+        "北京大学图书馆",
+      ],
+      "phone": "@string",
+      "address": "中关村北大街1号",
+      "introduction": "@string",
+      "book_type_num": "@integer(60, 100)",
+      "book_total_num": "@integer(60, 100)",
+      "photos": [
+        "@string"
+      ]
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)",
+    "is_available": "@boolean"
+  }, {
+    "library": {
+      "id": "@integer(60, 100)",
+      "status": 1,
+      "name": "首都师范大学南校区逸夫图书馆",
+      "phone": "@string",
+      "address": "一个很长很长很长很长很长很长很长很长的地址",
+      "introduction": "@string",
+      "book_type_num": "@integer(60, 100)",
+      "book_total_num": "@integer(60, 100)",
+      "photos": [
+        "@string"
+      ]
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)",
+    "is_available": "@boolean"
+  }, {
+    "library": {
+      "id": "@integer(60, 100)",
+      "status": 1,
+      "name": "北京市朝阳区图书馆",
+      "phone": "@string",
+      "address": "一个很长很长很长很长很长很长很长很长的地址",
+      "introduction": "@string",
+      "book_type_num": "@integer(60, 100)",
+      "book_total_num": "@integer(60, 100)",
+      "photos": [
+        "@string"
+      ]
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)",
+    "is_available": "@boolean"
+  }, {
+    "library": {
+      "id": "@integer(60, 100)",
+      "status": 0,
+      "name": "清华大学图书馆",
+      "phone": "@string",
+      "address": "一个很长很长很长很长很长很长很长很长的地址",
+      "introduction": "@string",
+      "book_type_num": "@integer(60, 100)",
+      "book_total_num": "@integer(60, 100)",
+      "photos": [
+        "@string"
+      ]
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)",
+    "is_available": "@boolean"
+  }, {
+    "library": {
+      "id": "@integer(60, 100)",
+      "status": 0,
+      "name": "北京大学图书馆",
+      "phone": "@string",
+      "address": "一个很长很长很长很长很长很长很长很长的地址",
+      "introduction": "@string",
+      "book_type_num": "@integer(60, 100)",
+      "book_total_num": "@integer(60, 100)",
+      "photos": [
+        "@string"
+      ]
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)",
+    "is_available": "@boolean"
+  }],
+  total: "@integer(60, 100)",
+  count: "@integer(60, 100)",
+  start: "@integer(60, 100)"
+}

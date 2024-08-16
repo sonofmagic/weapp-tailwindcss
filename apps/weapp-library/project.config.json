@@ -1,0 +1,279 @@
+{
+  "description": "项目配置文件。",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "autoAudits": false,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./dist"
+      }
+    ],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.5.4",
+  "appid": "wx6ffee4673b257014",
+  "projectname": "weapp-library",
+  "packOptions": {
+    "ignore": [
+      {
+        "value": "assets",
+        "type": "folder"
+      },
+      {
+        "value": "simplest-mock-server",
+        "type": "folder"
+      },
+      {
+        "value": "docs",
+        "type": "folder"
+      }
+    ],
+    "include": []
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "测试",
+          "pathName": "pages/test/index",
+          "query": ""
+        },
+        {
+          "name": "我的",
+          "pathName": "pages/profile/profile",
+          "query": ""
+        },
+        {
+          "name": "注册结果",
+          "pathName": "pages/register/children/result",
+          "query": ""
+        },
+        {
+          "name": "修改个人信息",
+          "pathName": "pages/profile/children/children/personal-information-modify",
+          "query": ""
+        },
+        {
+          "name": "注册页",
+          "pathName": "pages/register/register",
+          "query": ""
+        },
+        {
+          "name": "主页",
+          "pathName": "pages/home/home",
+          "query": ""
+        },
+        {
+          "name": "借书栏",
+          "pathName": "pages/cart/cart",
+          "query": ""
+        },
+        {
+          "name": "借书二维码",
+          "pathName": "pages/cart/children/qrcode",
+          "query": ""
+        },
+        {
+          "name": "图书详情",
+          "pathName": "pages/book-detail/book-detail",
+          "query": "id=151111"
+        },
+        {
+          "name": "修改个人信息",
+          "pathName": "pages/book/children/list",
+          "query": "from=register"
+        },
+        {
+          "name": "图书列表",
+          "pathName": "pages/list/book",
+          "query": "type=search&search_type=书名"
+        },
+        {
+          "name": "推荐图书",
+          "pathName": "pages/list/book",
+          "query": "type=recommend"
+        },
+        {
+          "name": "自动登录",
+          "pathName": "pages/login/login",
+          "query": ""
+        },
+        {
+          "name": "书单",
+          "pathName": "pages/booklist/booklist",
+          "query": ""
+        },
+        {
+          "name": "书单详情",
+          "pathName": "pages/booklist/children/booklist-detail",
+          "query": "id=1"
+        },
+        {
+          "name": "加入书单",
+          "pathName": "pages/book-detail/children/add",
+          "query": "id=1"
+        },
+        {
+          "name": "编辑书单",
+          "pathName": "pages/booklist/children/modify",
+          "query": "id=1&type=create"
+        },
+        {
+          "name": "编辑个性化描述",
+          "pathName": "pages/booklist/children/children/modify",
+          "query": "booklist_id=62&book_id=88&description=第一章 回答在牛奶箱里 第二章 深夜的口琴声 第三章 在思域车上等到天亮 第四章 听着披头士默祷 第五章 来自天上的祈祷"
+        },
+        {
+          "name": "查找图书馆",
+          "pathName": "pages/book-detail/children/library-list",
+          "query": "id=8"
+        },
+        {
+          "name": "图书评论",
+          "pathName": "pages/book-detail/children/review",
+          "query": "id=15004&show_book_info=true"
+        },
+        {
+          "name": "个人信息",
+          "pathName": "pages/profile/children/personal-information",
+          "query": ""
+        },
+        {
+          "name": "书单列表",
+          "pathName": "pages/list/booklist",
+          "query": "type=search&keyword=1"
+        },
+        {
+          "name": "确认订单",
+          "pathName": "pages/book-detail/children/order",
+          "query": "book_id=15001&library_id=2"
+        },
+        {
+          "name": "我的书评",
+          "pathName": "pages/profile/children/review",
+          "query": "id=1"
+        },
+        {
+          "name": "借阅进度",
+          "pathName": "pages/profile/children/order-ongoing",
+          "query": "id=1"
+        },
+        {
+          "name": "高级搜索",
+          "pathName": "pages/home/children/advanced-search",
+          "query": ""
+        },
+        {
+          "name": "分类搜索",
+          "pathName": "pages/home/children/classification",
+          "query": ""
+        },
+        {
+          "name": "订单详情",
+          "pathName": "pages/profile/children/children/order-detail",
+          "query": "id=1"
+        },
+        {
+          "name": "订单历史",
+          "pathName": "pages/profile/children/order-history",
+          "query": "id=1"
+        },
+        {
+          "name": "跳转",
+          "pathName": "pages/profile/navigate",
+          "query": "id=151111"
+        },
+        {
+          "name": "关于",
+          "pathName": "pages/profile/children/about",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示",
+          "pathName": "component-demos/index/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示async-button",
+          "pathName": "component-demos/async-button/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示async-switch",
+          "pathName": "component-demos/async-switch/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示collapse",
+          "pathName": "component-demos/collapse/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示load-more",
+          "pathName": "component-demos/load-more/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示no-data",
+          "pathName": "component-demos/no-data/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示popup",
+          "pathName": "component-demos/popup/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示search-bar",
+          "pathName": "component-demos/search-bar/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示send-code",
+          "pathName": "component-demos/send-code/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示spinner",
+          "pathName": "component-demos/spinner/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示sticky",
+          "pathName": "component-demos/sticky/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示tab-bar",
+          "pathName": "component-demos/tab-bar/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示toast",
+          "pathName": "component-demos/toast/index",
+          "query": "id=151111"
+        },
+        {
+          "name": "组件展示toptip",
+          "pathName": "component-demos/toptip/index",
+          "query": "id=151111"
+        }
+      ]
+    }
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}

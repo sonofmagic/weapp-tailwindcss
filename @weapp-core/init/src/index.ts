@@ -3,25 +3,19 @@ import process from 'node:process'
 import fs from 'fs-extra'
 import { get, set } from '@weapp-core/shared'
 import logger from '@weapp-core/logger'
-import type { SharedUpdateOptions, UpdatePackageJsonOptions, UpdateProjectConfigOptions } from './types'
+import type { PackageJson } from 'pkg-types'
+import type { ProjectConfig, SharedUpdateOptions, UpdatePackageJsonOptions, UpdateProjectConfigOptions } from './types'
+import { createContext } from './context'
+
+const ctx = createContext()
 
 export function updateProjectConfig(options: UpdateProjectConfigOptions) {
   const { root, dest, cb, write = true } = options
-  const projectConfigFilename = 'project.config.json'
-  const projectConfigPath = path.resolve(root, projectConfigFilename)
+  const projectConfigFilename = ctx.projectConfig.name = 'project.config.json'
+  const projectConfigPath = ctx.projectConfig.path = path.resolve(root, projectConfigFilename)
   if (fs.existsSync(projectConfigPath)) {
     try {
-      const projectConfig = fs.readJSONSync(projectConfigPath) as {
-        miniprogramRoot?: string
-        srcMiniprogramRoot?: string
-        setting: {
-          packNpmManually: boolean
-          packNpmRelationList: {
-            packageJsonPath: string
-            miniprogramNpmDistDir: string
-          }[]
-        }
-      }
+      const projectConfig = fs.readJSONSync(projectConfigPath) as ProjectConfig
 
       set(projectConfig, 'miniprogramRoot', 'dist/')
       set(projectConfig, 'srcMiniprogramRoot', 'dist/')
@@ -56,7 +50,7 @@ export function updateProjectConfig(options: UpdateProjectConfigOptions) {
         })
         logger.log(`✨ 设置 ${projectConfigFilename} 配置文件成功!`)
       }
-
+      ctx.projectConfig.value = projectConfig
       return projectConfig
     }
     catch {
@@ -70,19 +64,18 @@ export function updateProjectConfig(options: UpdateProjectConfigOptions) {
 
 export function updatePackageJson(options: UpdatePackageJsonOptions) {
   const { root, dest, command, cb, write = true } = options
-  const packageJsonFilename = 'package.json'
-  const packageJsonPath = path.resolve(root, packageJsonFilename)
+  const packageJsonFilename = ctx.packageJson.name = 'package.json'
+  const packageJsonPath = ctx.packageJson.path = path.resolve(root, packageJsonFilename)
   if (fs.existsSync(packageJsonPath)) {
     try {
-      const packageJson = fs.readJSONSync(packageJsonPath) as {
-        scripts: Record<string, string>
-      }
+      const packageJson = fs.readJSONSync(packageJsonPath) as PackageJson
       set(packageJson, 'scripts.dev', `${command} dev`)
       set(packageJson, 'scripts.build', `${command} build`)
       if (command === 'weapp-vite') {
         // set(packageJson, 'type', 'module')
         set(packageJson, 'scripts.open', `${command} open`)
         set(packageJson, 'scripts.build-npm', `${command} build-npm`)
+        set(packageJson, 'devDependencies.miniprogram-api-typings', `latest`)
       }
       cb?.(
         (...args) => {
@@ -95,7 +88,7 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
         })
         logger.log(`✨ 设置 ${packageJsonFilename} 配置文件成功!`)
       }
-
+      ctx.packageJson.value = packageJson
       return packageJson
     }
     catch { }
@@ -104,17 +97,12 @@ export function updatePackageJson(options: UpdatePackageJsonOptions) {
 
 export function initViteConfigFile(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const packageJsonFilename = 'package.json'
-  const packageJsonPath = path.resolve(root, packageJsonFilename)
-  const packageJson = fs.readJSONSync(packageJsonPath, { throws: false }) as {
-    scripts: Record<string, string>
-  }
 
-  const type = get(packageJson, 'type')
+  const type = get(ctx.packageJson.value, 'type')
 
-  const targetFilename = type === 'module' ? 'vite.config.ts' : 'vite.config.mts'
-  const viteConfigFilePath = path.resolve(root, targetFilename)
-  const viteConfigFileCode = `import { defineConfig } from 'weapp-vite/config'
+  const targetFilename = ctx.viteConfig.name = type === 'module' ? 'vite.config.ts' : 'vite.config.mts'
+  const viteConfigFilePath = ctx.viteConfig.path = path.resolve(root, targetFilename)
+  const viteConfigFileCode = ctx.viteConfig.value = `import { defineConfig } from 'weapp-vite/config'
 
 export default defineConfig({
   weapp: {
@@ -144,12 +132,12 @@ export function initTsDtsFile(options: SharedUpdateOptions) {
 
 export function initTsJsonFiles(options: SharedUpdateOptions) {
   const { root, write = true } = options
-  const tsJsonFilename = 'tsconfig.json'
-  const tsJsonFilePath = path.resolve(root, tsJsonFilename)
-  const tsNodeJsonFilename = 'tsconfig.node.json'
-  const tsNodeJsonFilePath = path.resolve(root, tsNodeJsonFilename)
+  const tsJsonFilename = ctx.tsconfig.name = 'tsconfig.json'
+  const tsJsonFilePath = ctx.tsconfig.path = path.resolve(root, tsJsonFilename)
+  const tsNodeJsonFilename = ctx.tsconfigNode.name = 'tsconfig.node.json'
+  const tsNodeJsonFilePath = ctx.tsconfigNode.path = path.resolve(root, tsNodeJsonFilename)
   if (write) {
-    fs.outputJSONSync(tsJsonFilePath, {
+    const tsJsonValue = {
       compilerOptions: {
         target: 'ES2020',
         jsx: 'preserve',
@@ -159,9 +147,18 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
           'DOM.Iterable',
         ],
         useDefineForClassFields: true,
+        baseUrl: '.',
         module: 'ESNext',
         moduleResolution: 'bundler',
+        paths: {
+          '@/*': [
+            './*',
+          ],
+        },
         resolveJsonModule: true,
+        types: [
+          'miniprogram-api-typings',
+        ],
         allowImportingTsExtensions: true,
         allowJs: true,
         strict: true,
@@ -178,16 +175,27 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
         },
       ],
       include: [
-        'src/**/*.ts',
-        'src/**/*.js',
+        '**/*.ts',
+        '**/*.js',
       ],
-    }, {
-      encoding: 'utf8',
-      spaces: 2,
-    })
-    logger.log(`✨ 设置 ${tsJsonFilename} 配置文件成功!`)
+      exclude: [
+        'node_modules',
+      ],
+    }
+    if (write) {
+      fs.outputJSONSync(
+        tsJsonFilePath,
+        tsJsonValue,
+        {
+          encoding: 'utf8',
+          spaces: 2,
+        },
+      )
+      logger.log(`✨ 设置 ${tsJsonFilename} 配置文件成功!`)
+    }
+    ctx.tsconfig.value = tsJsonValue
 
-    fs.outputJSONSync(tsNodeJsonFilePath, {
+    const tsJsonNodeValue = {
       compilerOptions: {
         composite: true,
         module: 'ESNext',
@@ -197,18 +205,23 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
         skipLibCheck: true,
       },
       include: [
-        'vite.config.ts',
+        ctx.viteConfig.name,
       ],
-    }, {
-      encoding: 'utf8',
-      spaces: 2,
-    })
-    logger.log(`✨ 设置 ${tsNodeJsonFilename} 配置文件成功!`)
+    }
+    if (write) {
+      fs.outputJSONSync(tsNodeJsonFilePath, tsJsonNodeValue, {
+        encoding: 'utf8',
+        spaces: 2,
+      })
+      logger.log(`✨ 设置 ${tsNodeJsonFilename} 配置文件成功!`)
+    }
+    ctx.tsconfigNode.value = tsJsonNodeValue
   }
 }
 
 export function initConfig(options: { root?: string, command?: 'weapp-vite' }) {
   const { root = process.cwd(), command } = options
+
   updateProjectConfig({ root })
   updatePackageJson({ root, command })
   if (command === 'weapp-vite') {
@@ -216,4 +229,5 @@ export function initConfig(options: { root?: string, command?: 'weapp-vite' }) {
     initTsDtsFile({ root })
     initTsJsonFiles({ root })
   }
+  return ctx
 }

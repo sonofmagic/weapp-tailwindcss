@@ -1,0 +1,19 @@
+.sticky-header1 {
+  padding: 10px 20px;
+  line-height: 30px;
+  background-color: #fff;
+  border-color: 1px solid #eee;
+}
+
+.sticky-header2 {
+  padding: 10px 20px;
+  line-height: 30px;
+  background-color: #ddd;
+  border-color: 1px solid #eee;
+}
+
+.sticky-header3 {
+  padding: 10px 20px;
+  background-color: #fff;
+  border-color: 1px solid #eee;
+}

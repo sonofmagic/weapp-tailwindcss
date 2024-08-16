@@ -1,0 +1,26 @@
+<!-- 推荐书单、近期热门图书的描述信息 -->
+<view wx:if="{{type == 'recommend' || type == 'ranking'}}" class="ui-label">
+  <view wx:if="{{type == 'recommend'}}">根据你的借阅、收藏和评分等历史行为为你推荐</view>
+  <view wx:if="{{type == 'ranking'}}">最近七天的热门图书</view>
+</view>
+<!-- 图书列表 -->
+<view wx:if="{{books.length}}" class="weui-cells weui-cells_after-title">
+  <navigator wx:for="{{books}}" wx:key="{{item.id}}" class="weui-cell ui-book-card" hover-class="ui--active" data-index="{{index}}" data-id="{{item.id}}" url="/pages/book-detail/book-detail?id={{item.id}}">
+    <image class="ui-book-card__img" src="{{item.imgs.small}}" mode="widthFix"></image>
+    <view class="ui-book-card__info font-gray-26">
+      <view class="ui-book-card__info-title font-black-34">{{item.title}}</view>
+      <view>
+        评分:
+        <text class="color-yellow">{{item.total_score}}</text>（{{item.review_num}}条评论）</view>
+      <view>作者: <text wx:for="{{item.author}}" wx:key="*this" class="ui-book-card__info-name">{{item}}</text></view>
+      <view>出版社: {{item.publisher}}</view>
+      <view>出版日期: {{item.pubdate}}</view>
+      <view>ISBN: {{item.isbn}}</view>
+      <view>藏书量: {{item.total_num}}（<text class="color-green">{{item.available_num}}</text>本可借）</view>
+      <view wx:if="{{type == 'recommend'}}" class="ui-book-card__description">{{comments[index]}}</view>
+    </view>
+  </navigator>
+</view>
+<!-- 加载更多、暂无数据 -->
+<load-more status="{{loadMoreStatus}}" nomore-text="没有更多图书了"></load-more>
+<no-data wx:if="{{isNoData}}"></no-data>

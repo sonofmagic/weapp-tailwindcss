@@ -1,0 +1,5 @@
+<import src="/templates/library-list/index" />
+<search-bar default-text="搜索图书馆" focus-text="图书馆名称" bindfocus="onFocus" bindinput="onInput" bindclear="onClear" bindhide="onUnfocus"></search-bar>
+
+<template wx:if="{{isFocus && keyword}}" is="library-list" data="{{...searching, id}}"></template>
+<template wx:else is="library-list" data="{{...default, id}}"></template>

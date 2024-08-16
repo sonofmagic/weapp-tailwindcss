@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "图书详情",
+  "usingComponents":
+  {
+    "popup": "/components/popup/index",
+    "load-more": "/components/load-more/index",
+    "no-data": "/components/no-data/index"
+  }
+}

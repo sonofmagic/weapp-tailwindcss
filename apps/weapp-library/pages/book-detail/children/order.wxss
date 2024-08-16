@@ -1,0 +1,19 @@
+.library__name {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  line-height: 1.8em;
+}
+
+.library__name image {
+  flex: 0 0 40rpx;
+  width: 30rpx;
+  height: 30rpx;
+  vertical-align: middle;
+}
+
+.container {
+  min-height: 100vh;
+  background-color: #fff;
+}

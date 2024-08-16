@@ -1,0 +1,17 @@
+{
+  "name": "simplest-mock-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "gulp mock"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "gulp": "^5.0.0",
+    "gulp-nodemon": "^2.5.0",
+    "minimist": "^1.2.5",
+    "mockjs": "^1.1.0",
+    "morgan": "^1.10.0",
+    "rd": "^2.0.1"
+  }
+}

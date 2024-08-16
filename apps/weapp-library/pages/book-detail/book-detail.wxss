@@ -1,0 +1,104 @@
+@import "/templates/showcase/index.wxss";
+
+page {
+  padding-bottom: 100rpx;
+}
+.ui-book-card__img {
+  width: 40%;
+  margin-left: 5px;
+  margin-right: 0;
+}
+
+.tip {
+  margin: 20rpx; 
+  text-align: center;
+}
+
+.menubar {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  height: 100rpx;
+  border-top: 1px solid #e5e5e5;
+  background-color: #f8f8f8;
+}
+
+.menubar__icon {
+  flex: 1;
+  border-right: 1px solid #ddd;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10rpx;
+}
+
+.menubar__icon-img {
+  height: 50rpx;
+  width: 50rpx;
+}
+
+.menubar__icon-text {
+  font-size: 20rpx;
+  color: #888;
+}
+
+.menubar__btn {
+  position: relative;
+  flex: 2;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 0;
+  height: 100rpx;  font-size: 36rpx;
+  line-height: 100rpx;
+  border: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.menubar__btn::after {
+  display: none;
+}
+
+.library-list {
+  max-height: 600rpx;
+}
+
+.library-list:before {
+  display: none;
+}
+
+.library-item__info {
+  flex: auto;
+  overflow: hidden;  /* 必须有这一行，否则不会有省略号 */
+}
+
+.library-item__info-name {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+}
+
+.library-item__info-name image {
+  flex: 0 0 40rpx;
+  width: 30rpx;
+  height: 30rpx;
+  vertical-align: middle;
+}
+
+.library-item__collection {
+  flex: none;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  align-items: baseline;
+}

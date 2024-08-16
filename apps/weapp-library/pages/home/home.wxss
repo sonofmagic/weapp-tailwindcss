@@ -1,0 +1,95 @@
+@import "/templates/showcase/index.wxss"
+
+/* TODO --- 抵掉最后一个 panel 的 margin-bottom */
+
+.search-box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  padding-top: 48px;
+  background-color: #F0EFF5;
+}
+
+.search-box-history {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.search-history__label {
+  position: relative;
+}
+
+.search-box-history__clear {
+  position: absolute;
+  top: 0;
+  right: 15px;
+  width: 20%; /* 扩大响应区域 */
+  text-align: right;
+}
+
+.search-box-history__item {
+  flex: 0 0 50%;
+  box-sizing: border-box;
+  padding: 20rpx 30rpx;
+  font-size: 28rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-right: 1rpx solid #e5e5e5;
+  border-top: 1rpx solid #e5e5e5;
+  border-bottom: 1rpx solid #e5e5e5;
+  background-color: #fff;
+  margin-top: -1rpx;
+}
+
+.search-box-trending {
+  width: 100%;
+}
+
+.search-box-trending__item {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  align-items: baseline;
+  padding: 20rpx 30rpx;
+  width: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.search-box-trending__icon {
+  width: 27rpx;
+  margin-right: 20rpx;
+}
+
+.search-box-trending__item-info {
+  flex: 1;
+}
+
+.statistics-panel__number {
+  font-size: 80rpx;
+  padding: 40rpx 0;
+  text-align: center;
+  display: inline-block;
+  width: 50%;
+}
+
+.statistics-panel__unit {
+  font-size: 34rpx;
+}
+
+.panel-area > panel {
+  display: block;
+  margin-bottom: 10px;
+}
+.panel-area > panel:last-child {
+  margin-bottom: 0;
+}

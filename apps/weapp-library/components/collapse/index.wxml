@@ -1,0 +1,12 @@
+<view class="collapse">
+  <view class="collapse__header font-gray-28 header-class" bindtap="_toggle">
+    <view class="{{show ? 'icon-down' : 'icon-right'}}"></view>
+    {{title}}
+    <view wx:if="{{actionText}}" class="collapse__header-action" catchtap="_onTapAction">
+      {{actionText}}
+    </view>
+  </view>
+  <view class="collapse__body {{show ? 'collapse__body--show' : ''}}">
+    <slot></slot>
+  </view>
+</view>

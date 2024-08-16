@@ -1,0 +1,21 @@
+page {
+  background-color: #fff;
+}
+
+.code {
+  width: 180px;
+  height:180px;
+  margin: 100px auto 30px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+.code > image {
+  width: 180px;
+  height:180px;
+}
+
+.weui-cells__tips {
+  text-align: center;
+}

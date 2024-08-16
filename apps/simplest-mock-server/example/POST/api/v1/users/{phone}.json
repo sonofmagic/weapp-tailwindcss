@@ -1,0 +1,31 @@
+{
+  "id": "@integer(60, 100)",
+  "phone": "@string",
+  "openid": "otvxTs4dckWG7imySrJd6jSi0CWE",
+  "status|1": [0, 2],
+  "review_msg": "@cparagraph(1, 3)",
+  "nickname": "@first",
+  "avatar|1": [
+    "https://img3.doubanio.com/icon/u1373026-121.jpg",
+    "https://img1.doubanio.com/icon/u3815216-37.jpg",
+    "https://img3.doubanio.com/icon/u55753308-31.jpg",
+    "https://img1.doubanio.com/icon/u3719134-8.jpg",
+    "https://img3.doubanio.com/icon/u136742199-2.jpg",
+    "https://img3.doubanio.com/icon/u171642416-1.jpg",
+    "https://img3.doubanio.com/icon/u176837971-1.jpg"
+  ],
+  "name": "@cname",
+  "birthday": "@date",
+  "id_number": "@id",
+  "id_card_img": {
+    "front": "http://ww2.sinaimg.cn/mw690/7cc829d3gw1f54ibvilhxj20g40c30tg.jpg",
+    "back": "http://imgsrc.baidu.com/image/c0%3Dpixel_huitu%2C0%2C0%2C294%2C40/sign=b05d0b3c38fa828bc52e95a394672458/d788d43f8794a4c2717d681205f41bd5ad6e39a8.jpg"
+  },
+  "address": "@city()",
+  "postcode": "@zip",
+  "deposit_status": 0,
+  "reading_statistics": {
+    "book_num": "@integer(60, 200)",
+    "page_num": "@integer(1001, 10000)"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "@integer(60, 100)",
+  "is_creator": true,
+  "user": {
+    "id": "@integer(60, 100)",
+    "phone": "@string",
+    "nickname": "@name",
+    "avatar|1": [
+        "https://img3.doubanio.com/icon/u1373026-121.jpg",
+        "https://img1.doubanio.com/icon/u3815216-37.jpg",
+        "https://img3.doubanio.com/icon/u55753308-31.jpg",
+        "https://img1.doubanio.com/icon/u3719134-8.jpg",
+        "https://img3.doubanio.com/icon/u136742199-2.jpg",
+        "https://img3.doubanio.com/icon/u171642416-1.jpg",
+        "https://img3.doubanio.com/icon/u176837971-1.jpg"
+      ]
+  },
+  "book": {
+    "id": "@integer(60, 100)",
+    "title": "@string",
+    "isbn": "@string",
+    "publisher": "@string",
+    "pubdate": "@string",
+    "class_num": "@string",
+    "call_number": "@string",
+    "author": [
+      "@string"
+    ],
+    "translator": [
+      "@string"
+    ],
+    "binding": "精装",
+    "price": "@float(60, 100, 3, 5)",
+    "pages": "@integer(60, 100)",
+    "words": "@integer(60, 100)",
+    "tags": [
+      "@string"
+    ],
+    "total_score": "@float(60, 100, 3, 5)",
+    "review_num": "@integer(60, 100)",
+    "imgs": {
+      "small": "@string",
+      "medium": "@string",
+      "large": "@string"
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)"
+  },
+  "score": "@integer(1, 10)",
+  "content": "@cparagraph(1, 3)",
+  "create_time": "@datetime"
+}

@@ -1,0 +1,11 @@
+{
+  "son_numbers|10-20": [{
+    "number": "string",
+    "parent_number": "string",
+    "name": "@name()",
+    "has_son|1": [true, false]
+  }],
+  "start": 0,
+  "count": 0,
+  "total": 0
+}

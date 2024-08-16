@@ -1,0 +1,53 @@
+.font-34 {
+  font-size: 34rpx;
+}
+.font-black-34 {
+  font-weight:400;
+  font-size:34rpx;
+  color: #353535
+}
+
+.font-32 {
+  font-size: 32rpx;
+}
+.font-black-32 {
+  font-weight:400;
+  font-size:32rpx;
+  color: #353535
+}
+
+.font-30 {
+  font-size: 30rpx;
+}
+.font-black-30 {
+  font-size: 30rpx;
+  color: #353535
+}
+.font-gray-30 {
+  color: #888;
+  font-size: 30rpx
+}
+
+.font-28 {
+  font-size: 28rpx;
+}
+.font-gray-28 {
+  color: #888;
+  font-size: 28rpx;
+}
+.font-black-28 {
+  color: #353535;
+  font-size: 28rpx;
+}
+
+.font-26 {
+  font-size: 26rpx;
+}
+.font-gray-26 {
+  color: #888;
+  font-size: 26rpx;
+}
+.font-black-26 {
+  color: #353535;
+  font-size: 26rpx;
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "Panel",
+  "usingComponents": {
+    "panel": "/components/panel/index"
+  }
+}

@@ -1,0 +1,34 @@
+.toptip {
+  z-index: 500;
+  display: block;
+  position: fixed;
+  -webkit-transform: translateZ(0) translateY(-100%);
+  transform: translateZ(0) translateY(-100%);
+  width: 100%;
+  /* 至少有一行的高度，保证第一次动画显示正常 */
+  min-height: 32px;
+  top: 0;
+  line-height: 2.3;
+  font-size: 14px;
+  text-align: center;
+  color: #FFF;
+  background-color: #E64340;
+
+  /* 动画部分 */
+  transition: all 0.4s ease;
+}
+
+.toptip--warn {
+  background-color: #FFBF00;
+}
+.toptip--success {
+  background-color: #09BB07;
+}
+.toptip--error {
+  background-color: #E64340;
+}
+
+.toptip--show {
+  -webkit-transform: translateZ(0) translateY(0);
+  transform: translateZ(0) translateY(0);
+}

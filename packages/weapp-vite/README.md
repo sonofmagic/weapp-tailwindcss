@@ -3,7 +3,9 @@
 > 给小程序现代化的开发体验
 
 - [x] Vite 支持，带来了 `typescript` / `scss` / `less` 等等所有支持
-- [x] 插件支持，可以使用 `weapp-tailwindcss` 等等插件，也可以自定义编写插件，方便扩展
+- [x] 插件生态支持，可以使用 `weapp-tailwindcss` 等等插件，也可以自定义编写插件，方便扩展
+
+## 文档地址: [vite.icebreaker.top](https://vite.icebreaker.top)
 
 ## 使用方式
 
@@ -17,7 +19,7 @@ npm i -D weapp-vite
 npx weapp-vite init
 ```
 
-### 热更新开发命令
+### 开发命令
 
 ```sh
 npm run dev

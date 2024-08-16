@@ -1,0 +1,25 @@
+<view class="ui-book-card" hover-class="ui--active" bindtap="_onTapCard">
+  <image class="ui-book-card__img" src="{{book.imgs.small}}" mode="widthFix"></image>
+  <view class="ui-book-card__info font-gray-26">
+    <view class="ui-book-card__info-title font-black-34">{{book.title}}</view>
+    <view>
+      评分:
+      <text class="color-yellow">{{book.total_score}}</text>（{{book.review_num}}条评论）</view>
+    <view>作者: <text wx:for="{{book.author}}" wx:key="{{item}}" class="ui-book-card__info-name">{{item}}</text></view>
+    <view>出版社: {{book.publisher}}</view>
+    <view>出版日期: {{book.pubdate}}</view>
+    <view>ISBN: {{book.isbn}}</view>
+    <view wx:if="{{comment}}" class="ui-book-card__description">{{comment}}</view>
+  </view>
+  <view class="booklist-item__action">
+    <view hidden="{{!isSelecting}}" class="booklist-item__icon-check">
+      <view class="weui-cell__hd weui-check__hd_in-checkbox">
+        <icon wx:if="{{checked}}" class="weui-icon-checkbox_success" type="success" size="23"></icon>
+        <icon wx:else class="weui-icon-checkbox_circle" type="circle" size="23"></icon>
+      </view>
+    </view>
+    <view hidden="{{isSelecting}}" catchtap="_onShowActionSheet" hover-stop-propagation>
+      <image src="/images/icon_more.png" class="booklist-item__icon-more" mode="widthFix"></image>
+    </view>
+  </view>
+</view>

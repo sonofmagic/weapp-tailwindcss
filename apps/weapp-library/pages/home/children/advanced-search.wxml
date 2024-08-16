@@ -1,0 +1,75 @@
+<view class="ui-label">书名、作者及译者</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">书名</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input class="weui-input" placeholder="请输入图书名称" data-label="title" bindinput="onInput" value="{{title}}"/>
+    </view>
+  </view>
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">作者</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input class="weui-input" placeholder="请输入作者" data-label="author" bindinput="onInput" value="{{author}}"/>
+    </view>
+  </view>
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">译者</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input class="weui-input" placeholder="请输入译者" data-label="translator" bindinput="onInput" value="{{translator}}"/>
+    </view>
+  </view>
+</view>
+<view class="ui-label">出版社及出版日期</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">出版社</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input class="weui-input" placeholder="请输入出版社名称" data-label="publisher" bindinput="onInput" value="{{publisher}}"/>
+    </view>
+  </view>
+  <view class="weui-cell weui-cell_select">
+    <view class="weui-cell__hd weui-cell__hd_in-select-after">
+      <view class="weui-label">起始日期</view>
+    </view>
+    <view class="weui-cell__bd">
+      <picker mode="date" value="{{pubdate_start}}" data-type='start' bindchange="onDateChange">
+        <view class="weui-select weui-select_in-select-after">{{pubdate_start}}</view>
+      </picker>
+    </view>
+  </view>
+  <view class="weui-cell weui-cell_select">
+    <view class="weui-cell__hd weui-cell__hd_in-select-after">
+      <view class="weui-label">结束日期</view>
+    </view>
+    <view class="weui-cell__bd">
+      <picker mode="date" value="{{pubdate_end}}" data-type='end' bindchange="onDateChange">
+        <view class="weui-select weui-select_in-select-after">{{pubdate_end}}</view>
+      </picker>
+    </view>
+  </view>
+</view>
+<view class="ui-label">语种</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell weui-cell_select">
+    <view class="weui-cell__bd">
+      <picker bindchange="onLanguageChange" range="{{languages}}">
+        <view class="weui-select">{{languages[selectedLanguageIndex]}}</view>
+      </picker>
+    </view>
+  </view>
+</view>
+<view class="font-gray-28 weui-cells__tips">
+  以上所有选项均可选填，请根据需要设置相关内容
+</view>
+<view class="weui-btn-area">
+  <button class="weui-btn" type="primary" catchtap="onSearch">搜索</button>
+  <button class="weui-btn" type="default" catchtap="onReset">重置</button>
+</view>

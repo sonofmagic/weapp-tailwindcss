@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "注册/登录",
+  "usingComponents":
+  {
+    "send-code": "/components/send-code/index",
+    "toptip": "/components/toptip/index",
+    "toast": "/components/toast/index"
+  }
+}

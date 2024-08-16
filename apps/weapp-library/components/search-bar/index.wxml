@@ -1,0 +1,17 @@
+<view class="search-bar weui-search-bar">
+  <view class="weui-search-bar__form">
+    <view class="weui-search-bar__box">
+      <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+      <input type="text" class="weui-search-bar__input" placeholder="{{focusText}}" confirm-type="search" value="{{value}}" focus="{{isFocus}}" bindinput="_onInput" bindconfirm="_onSearch"/>
+      <view class="weui-icon-clear" wx:if="{{value.length > 0}}" bindtap="_onClear">
+        <icon type="clear" size="14"></icon>
+      </view>
+    </view>
+    <label class="weui-search-bar__label" hidden="{{isFocus}}" bindtap="_onFocus">
+      <icon class="weui-icon-search" type="search" size="14"></icon>
+      <view class="weui-search-bar__text">{{defaultText}}</view>
+    </label>
+  </view>
+  <view class="weui-search-bar__cancel-btn" hidden="{{!isFocus}}" bindtap="_onHide">取消</view>
+</view>
+<view wx:if="{{isFocus && showMask}}" class="search-bar__mask" bindtap="_onTapMask" />

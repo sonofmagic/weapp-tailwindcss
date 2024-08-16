@@ -1,7 +1,7 @@
-name: "\U0001F41E 汇报Bug (Bug report)"
+name: "\U0001F41E weapp-tailwindcss 汇报Bug (Bug report)"
 description: 汇报Bug并提供测试用例
-title: "[Bug]: "
-labels: ["bug"]
+title: "[Bug(weapp-tailwindcss)]: "
+labels: ["bug(weapp-tailwindcss)"]
 assignees:
   - sonofmagic
 body:

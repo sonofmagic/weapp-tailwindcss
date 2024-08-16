@@ -1,0 +1,42 @@
+/* 一行省略号 */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
+/* 两行省略号 */
+.ellipsis-l2 {
+  max-height: 40px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 三行省略号 */
+.ellipsis-l3 {
+  max-height: 60px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* 保留空白符 */
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+/* 水平垂直居中. 要求父元素为relative定位 */
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

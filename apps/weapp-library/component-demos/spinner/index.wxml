@@ -1,0 +1,19 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Spinner</view>
+    <view class="page__desc">加载样式</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <spinner></spinner>
+    <spinner type="line-scale"></spinner>
+    <spinner type="ball-pulse-sync"></spinner>
+
+    <view class="page__section-title">自定义颜色</view>
+    <spinner bg-color="red"></spinner>
+    <spinner type="ball-pulse-sync" bg-color="#F56A00"></spinner>
+
+    <view class="page__section-title">样式</view>
+    <view class="page__desc">line-scale / line-scale-pulse-out / ball-pulse-sync</view>
+  </view>
+</view>

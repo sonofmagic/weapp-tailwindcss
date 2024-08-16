@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "书单",
+  "enablePullDownRefresh": true,
+  "usingComponents":
+  {
+    "search-bar": "/components/search-bar/index",
+    "collapse": "/components/collapse/index"
+  }
+}

@@ -1,0 +1,4 @@
+.container {
+  border: 1px solid #eee;
+  background-color: #fff;
+}

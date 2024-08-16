@@ -1,0 +1,14 @@
+.star {
+}
+
+.star__image{
+  position: relative;
+}
+.star__image:last-child {
+  margin-right: 0;
+}
+
+.star__mask{
+  position: absolute;
+  top: 0;
+}

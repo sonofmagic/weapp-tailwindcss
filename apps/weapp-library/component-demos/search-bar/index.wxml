@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">SearchBar</view>
+    <view class="page__desc">搜索框</view>
+  </view>
+  <view class="page__bd">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <search-bar></search-bar>
+
+    <view class="page__section-title">自定义文字</view>
+    <search-bar default-text="搜索图书" focus-text="输入书名、作者、ISBN"></search-bar>
+
+    <view class="page__section-title">显示遮罩背景</view>
+    <view class="weui-cells weui-cells_after-title">
+      <navigator url="./mask?tappable=true" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell__bd">点击遮罩背景可关闭</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </navigator>
+      <navigator url="./mask" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell__bd">点击遮罩背景不可关闭</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </navigator>
+    </view>
+
+    <view class="page__section-title">事件</view>
+    <view class="event-info">{{eventInfo}}</view>
+    <search-bar bindfocus="onEvent" bindinput="onEvent" bindclear="onEvent" bindhide="onEvent" bindsearch="onEvent"></search-bar>
+    <view class="page__desc">focus / input / clear / hide / search</view>
+    <view class="page__desc">input / search: { value: 输入框内容 }</view>
+    <view class="page__desc">输入框内容为空时不触发 search 事件</view>
+  </view>
+</view>

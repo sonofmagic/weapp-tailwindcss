@@ -1,0 +1,7 @@
+<view wx:if="{{status == 'loading'}}" class="load-more">
+  <view class="load-more__loading"></view>
+  <view class="load-more__text">{{loadingText}}</view>
+</view>
+<view wx:if="{{status == 'nomore'}}" class="load-more load-more__line">
+  <view class="load-more__text load-more__text--in-line">{{nomoreText}}</view>
+</view>

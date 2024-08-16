@@ -21,9 +21,11 @@
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
 
 > [!NOTE]
-> 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
+> 小程序原生工具链 `weapp-vite` 已经发布了，快来使用它改善你的开发体验吧，更多详见 [`weapp-vite` 文档](https://vite.icebreaker.top/)
+
+<!-- > 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
 >
-> `Tailwindcss/Unocss UI` 生成提取器: [`IceStack`](https://ui.icebreaker.top/zh-CN) 已经发布，快来用它管理你的原子化`CSS` 组件吧！
+> `Tailwindcss/Unocss UI` 生成提取器: [`IceStack`](https://ui.icebreaker.top/zh-CN) 已经发布，快来用它管理你的原子化`CSS` 组件吧！ -->
 
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 

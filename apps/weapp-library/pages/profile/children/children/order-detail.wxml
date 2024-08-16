@@ -1,0 +1,66 @@
+<import src="/templates/page-status-indicator/index" />
+<wxs module="ORDER_STATUS">
+  module.exports = require('../../../../utils/constant.wxs').ORDER_STATUS
+</wxs>
+<wxs src="../../../../utils/biz-helper.wxs" module="helper" />
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<!-- 订单信息 -->
+<block wx:if="{{pageStatus == 'done'}}">
+  <view class="ui-label">订单信息</view>
+  <view class="ui-card font-gray-26">
+    <view class="font-black-34">
+      订单状态：
+      <text class="color-{{order.is_overdue ? 'red' : 'green'}}">{{order.status_text}}</text>
+    </view>
+    <view>订单编号：{{order.id}}</view>
+    <view>订单创建日期：{{order.created_at}}</view>
+    <view wx:if="{{order.status == ORDER_STATUS.WAITING_TO_TAKE_AT_PLANED_TIME}}">
+      预约取书日期：{{order.should_take_time}}
+    </view>
+    <block wx:elif="{{order.status == ORDER_STATUS.BORROWING}}">
+      <view>取书日期：{{order.actual_take_time}}</view>
+      <view>应还日期：{{order.should_return_time}}</view>
+      <view>剩余续借次数：{{1 - order.renew_count}}</view>
+    </block>
+    <view wx:elif="{{order.status == ORDER_STATUS.NORMAL_CLOSE || order.status == ORDER_STATUS.ABNORMAL_CLOSE}}">
+      <view>借阅日期：{{item.actual_take_time}}</view>
+      <view>还书日期：{{item.actual_return_time}}</view>
+    </view>
+  </view>
+  <view class="ui-label">图书信息</view>
+  <navigator url="/pages/book-detail/book-detail?id={{order.book.id}}" class="ui-panel ui-book-card">
+    <image class="ui-book-card__img" src="{{order.book.imgs.small}}" mode="widthFix"></image>
+    <view class="ui-book-card__info font-gray-26">
+      <view class="ui-book-card__info-title font-black-34">{{order.book.title}}</view>
+      <view>
+        评分:
+        <text class="color-yellow">{{order.book.total_score}}</text>（{{order.book.review_num}}条评论）</view>
+      <view>作者:
+        <text wx:for="{{order.book.author}}" wx:key="*this" class="ui-book-card__info-name">{{item}}</text>
+      </view>
+      <view>出版社: {{order.book.publisher}}</view>
+      <view>出版日期: {{order.book.pubdate}}</view>
+      <view>ISBN: {{order.book.isbn}}</view>
+    </view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <view class="ui-label">图书馆信息</view>
+  <navigator url="/pages/book-detail/children/children/library-detail?id={{order.library.id}}" class="ui-panel" hover-class="ui--active">
+    <view class="weui-cell">
+      <view class="weui-cell__bd">
+        <view class="library__name">
+          <text class="font-black-34 ellipsis">{{order.library.name}}</text>
+          <image wx:if="{{order.library.status}}" src="/images/icon_certificated.png" mode="aspectFit"></image>
+          <image wx:else src="/images/icon_uncertificated.png" mode="aspectFit"></image>
+        </view>
+        <view class="font-gray-26">地址：{{order.library.address}}</view>
+      </view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </view>
+  </navigator>
+  <view class="weui-btn-area">
+    <button wx:if="{{helper.isRenewable(order)}}" class="weui-btn" type="primary" bindtap="onRenew">续借图书</button>
+    <button wx:if="{{helper.isCancelable(order)}}" class="weui-btn" type="default" bindtap="onCancel">取消订单</button>
+    <button wx:if="{{helper.isDeletable(order)}}" class="weui-btn" type="default" bindtap="onDelete">删除订单</button>
+  </view>
+</block>

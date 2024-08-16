@@ -13,7 +13,7 @@ import TabItem from '@theme/TabItem';
   
 
 ```bash
-npm i -D weapp-tailwindcss @weapp-tailwindcss/cli
+npm i -D weapp-tailwindcss weapp-vite
 ```
 
 
@@ -22,7 +22,7 @@ npm i -D weapp-tailwindcss @weapp-tailwindcss/cli
   
 
 ```bash
-yarn add -D weapp-tailwindcss @weapp-tailwindcss/cli
+yarn add -D weapp-tailwindcss weapp-vite
 ```
 
 
@@ -31,30 +31,63 @@ yarn add -D weapp-tailwindcss @weapp-tailwindcss/cli
   
 
 ```bash
-pnpm i -D weapp-tailwindcss @weapp-tailwindcss/cli
+pnpm i -D weapp-tailwindcss weapp-vite
 ```
 
 
   </TabItem>
 </Tabs>
 
-这样 `weapp-tailwindcss` 和 `cli` 工具就被安装在你的本地了
+这样 `weapp-tailwindcss` 和 `weapp-vite` 就被安装在你的本地了
 
 ## 执行初始化命令
 
 在命令行中运行
 
 ```sh
-npx weapp-tw init
+npx weapp-vite init
 ```
 
-对现有的原生小程序项目，进行 `weapp-tailwindcss` 的初始化
+对现有的原生小程序项目，进行 `weapp-vite` 的初始化
 
-执行后，会发现主要有三个文件改动，`CLI` 主要做了 `3` 件事情:
+执行后，会发现主要有许多文件改动，`CLI` 主要做了 `3` 件事情:
 
-- 创建 `weapp-tw.config.js` 文件，这个是 `@weapp-tailwindcss/cli` 的配置文件
-- 修改 `package.json`, 添加 `dev` 和 `build` 开发和构建脚本, 和 `postinstall`
+- 创建 `vite.config.ts` 文件，这个是 `weapp-vite` 和 `vite` 的配置文件
+- 修改 `package.json`, 添加 `dev` 和 `build` 开发和构建脚本，还有构建 `npm` 和打开微信开发者工具
 - 修改 `project.config.json` 内容，来适配构建产物
+- 添加适配 vite 的 `dts` 和 `tsconfig.json`
+
+## 注册插件
+
+给 `package.json` 添加下列脚本:
+```json title="package.json"
+{
+  "scripts": {
+    "postinstall": "weapp-tw patch"
+  }
+}
+
+```
+
+然后在你的 `vite.config.ts` 里对插件进行注册:
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'weapp-vite/config'
+import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  // highlight-start
+  plugins: [
+    // @ts-ignore
+    uvwt({
+      rem2rpx: true,
+    }),
+  ],
+  // highlight-end
+})
+
+```
+
 
 ## 开始运行
 
@@ -72,10 +105,13 @@ npx weapp-tw init
 
 假如你配置不成功，你可以参考以下模板进行配置文件对比:
 
-[native-weapp-tailwindcss-template](https://github.com/sonofmagic/native-weapp-tailwindcss-template)
+[vite-native](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/apps/vite-native)
 
-## 更多场景
+{/* [native-weapp-tailwindcss-template](https://github.com/sonofmagic/native-weapp-tailwindcss-template) */}
 
-更多场景和配置，请查看 `更多场景` 章节;
+## 想了解更多 weapp-vite
+
+更多场景和配置，请查看 [weapp-vite 文档网站](https://vite.icebreaker.top/)
+
 
 

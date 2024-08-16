@@ -1,0 +1,8 @@
+page {
+  height: 100%;
+}
+
+.order-list {
+  height: 100%;
+  /* padding-bottom:1rpx;  TODO --- 在iphone中load-more底部的margin不显示 */
+}

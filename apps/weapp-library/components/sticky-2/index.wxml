@@ -1,0 +1,5 @@
+<view class="sticky--selected sticky__wrapper" style="{{isSticky ? 'height: ' + wrapperHeight + 'px;' : ''}}">
+  <view class="sticky--selected {{isSticky ? 'is-sticky' : ''}}">
+    <slot></slot>
+  </view>
+</view>

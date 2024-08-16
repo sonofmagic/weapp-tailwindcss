@@ -1,0 +1,6 @@
+<view class="sticky">
+  <slot></slot>
+  <view hidden="{{ !fixed }}" class="sticky-faker" style="top: {{topSpacing}}px">
+    <slot name="sticky"></slot>
+  </view>
+</view>

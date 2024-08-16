@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "SearchBar",
+  "usingComponents": {
+    "search-bar": "/components/search-bar/index"
+  }
+}

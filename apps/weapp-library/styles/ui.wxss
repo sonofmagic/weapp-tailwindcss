@@ -1,0 +1,211 @@
+/**
+ * 容器、排版等样式
+ */
+
+/**
+ * 内容标题
+ */
+.ui-label {
+  font-size: 28rpx;
+  margin-top: .77em;
+  margin-bottom: .3em;
+  padding-left: 15px;
+  padding-right: 15px;
+  color: #999999;
+}
+
+/**
+ * 卡片 ui-card：padding，白色背景，上下边框
+ * 面板 ui-panel：白色背景，上下边框
+ */
+.ui-card {
+  position: relative;
+  padding: 10px 15px; 
+  background-color: #fff;
+}
+.ui-panel {
+  position: relative;
+  background-color: #fff;
+}
+.ui-panel:before,
+.ui-card:before {
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 1px;
+  border-top: 1rpx solid #E5E5E5;
+  color: #E5E5E5;
+}
+.ui-panel:after,
+.ui-card:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 1px;
+  border-bottom: 1rpx solid #E5E5E5;
+  color: #E5E5E5;
+}
+
+/**
+ * 图书卡片 ui-book-card: padding(15)，顶部对齐，白色背景，无边框
+ */
+.ui-book-card {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+  padding: 15px; 
+  background-color: #fff;
+}
+/* 图书封面 */
+.ui-book-card__img {
+  width: 90px;
+  margin-right: 10px;
+}
+/* 图书信息 */
+.ui-book-card__info {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  line-height: 1.7em;
+}
+/* 图书标题 */
+.ui-book-card__info-title {
+  line-height: 1.5em;
+}
+/* 图书描述 */
+.ui-book-card__description {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #F3F3F3;
+  border-radius: 4px;
+  white-space:pre-line;
+}
+/* 作者、译者名字：分隔线 */
+.ui-book-card__info-name:before {
+  content: ' / ';
+}
+.ui-book-card__info-name:first-child:before {
+  content: '';
+}
+/* 删除按钮 */
+.ui-book-card__delete-btn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+/* 右箭头垂直居中对齐 */
+.weui-cell__ft_in-access {
+  align-self: center;
+}
+
+/**
+ * 书单卡片 ui-booklist-card: padding(10,15)，居中对齐，白色背景，无边框
+ */
+.ui-booklist-card {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  padding: 10px 15px; 
+  background-color: #fff;
+}
+/* 书单封面 */
+.ui-booklist-card__img {
+  height: 50px;
+  width: 50px;
+  margin-right: 10px;
+}
+/* 书单信息 */
+.ui-booklist-card__info {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+/* 书单标题 */
+.ui-booklist-card__info-title {
+  margin-bottom: 5px;
+}
+
+/**
+ * 评论卡片 ui-review-card: padding(15,15,8,15)，顶部对齐，白色背景，无边框
+ */
+.ui-review-card {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+  padding: 15px 15px 8px; 
+  background-color: #fff;
+}
+/* 评论头像 */
+.ui-review-card__avatar {
+  width:35px; 
+  height: 35px;
+  border-radius: 18px;
+  margin-right: 10px;
+}
+/* 评论信息 */
+.ui-review-card__info {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+/* 评论标题 */
+.ui-review-card__title {
+}
+/* 评分 */
+.ui-review-card__rate {
+  display: inline-block;
+  margin-left: 5px;
+  height: 1em;  /* 这里注意<rate>组件的size应该与字体大小相等 */
+}
+/* 评论时间 */
+.ui-review-card__time {
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+/* 评论内容 */
+.ui-review-card__content {
+  line-height: 1.62em;
+}
+/* 删除按钮 */
+.ui-review-card__delete-btn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+/**
+ * “更多”图标、图标区域：长宽30px
+ */
+.ui-icon-more-area {
+  height: 30px;
+  text-align: center;
+  width: 30px;
+}
+.ui-icon-more {
+  position: relative;
+  top: 5px;
+  width: 20px;
+}
+
+/**
+ * hover类
+ */
+.ui--active {
+  background-color: #ECECEC !important; 
+}

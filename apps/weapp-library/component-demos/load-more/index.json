@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "LoadMore",
+  "usingComponents": {
+    "load-more": "/components/load-more/index"
+  }
+}

@@ -1,0 +1,12 @@
+<view class="popup {{ show ? 'popup--show' : '' }}">
+  <view class="popup__mask" bindtap="_onTapMask" />
+  <view class="popup__container">
+    <view class="popup__hd">
+      <view class="popup__hd-title">{{title}}</view>
+      <view class="popup__hd-close">
+        <view bindtap="_onHide">{{hideText}}</view>
+      </view>
+    </view>
+    <slot></slot>
+  </view>
+</view>

@@ -1,0 +1,4 @@
+<view class="container">
+  <canvas hidden="{{canvasHidden}}" style="width: 686rpx; height: 686rpx; background:#f1f1f1;" canvas-id="qrcode" />
+</view>
+<view class="tip">请将您的个人二维码出示给管理员</view>

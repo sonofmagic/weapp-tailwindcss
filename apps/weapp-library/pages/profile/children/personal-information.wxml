@@ -1,0 +1,55 @@
+<view class="weui-cells">
+  <view class="weui-cell">
+    <view class="weui-cell__bd">姓名</view>
+    <view class="weui-cell__ft">{{userInfo.name}}</view>
+  </view>
+  <view class="weui-cell">
+    <view class="weui-cell__bd">出生日期</view>
+    <view class="weui-cell__ft">{{userInfo.birthday}}</view>
+  </view>
+  <view class="weui-cell">
+    <view class="weui-cell__bd">身份证号</view>
+    <view class="weui-cell__ft">{{userInfo.id_number}}</view>
+  </view>
+  <view class="weui-cell">
+    <view class="weui-cell__bd">详细地址</view>
+    <view class="weui-cell__ft">{{userInfo.address}}</view>
+  </view>
+  <view class="weui-cell">
+    <view class="weui-cell__bd">邮政编码</view>
+    <view class="weui-cell__ft">{{userInfo.postcode}}</view>
+  </view>
+  <view wx:if="{{!userInfo.id_card_img.front && !userInfo.id_card_img.back}}" class="weui-cell">
+    <view class="weui-cell__bd">身份证照片</view>
+    <view class="weui-cell__ft">尚未上传</view>
+  </view>
+  <view wx:else class="weui-cell">
+    <view class="weui-cell__bd">
+      <view class="weui-uploader">
+        <view class="weui-uploader__hd">
+          <view class="weui-uploader__title">身份证照片</view>
+        </view>
+        <view class="weui-uploader__bd">
+          <view class="weui-uploader__files">
+            <view wx:if="{{userInfo.id_card_img.front}}" class="weui-uploader__file">
+              <image class="weui-uploader__img" src="{{userInfo.id_card_img.front}}" mode="aspectFill" catchtap="onPreview" data-type="front" />
+            </view>
+            <view wx:if="{{userInfo.id_card_img.back}}" class="weui-uploader__file">
+              <image class="weui-uploader__img" src="{{userInfo.id_card_img.back}}" mode="aspectFill" catchtap="onPreview" data-type="back" />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="weui-cell">
+    <view class="weui-cell__bd">绑定手机号</view>
+    <view class="weui-cell__ft">{{userInfo.phone}}</view>
+  </view>
+</view>
+<view class="weui-cells__tips">{{tips}}</view>
+<view wx:if="{{userInfo.status === 0 || userInfo.status === 2}}" class="weui-btn-area">
+  <navigator url="./children/personal-information-modify">
+    <button class="weui-btn" type="primary">修改个人信息</button>
+  </navigator>
+</view>
