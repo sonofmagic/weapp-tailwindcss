@@ -5,6 +5,7 @@ export default defineConfig({
   title: 'Weapp-vite',
   description: '把现代化的开发模式带入小程序',
   themeConfig: {
+
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '指引', link: '/guide' },
@@ -40,5 +41,9 @@ export default defineConfig({
   },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
   ],
+  sitemap: {
+    hostname: 'https://vite.icebreaker.top',
+  },
 })

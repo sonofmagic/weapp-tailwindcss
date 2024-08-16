@@ -2,6 +2,7 @@
 import Theme from 'vitepress/theme'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
 import '@shikijs/vitepress-twoslash/style.css'
+import './index.scss'
 import type { EnhanceAppContext } from 'vitepress'
 
 export default {

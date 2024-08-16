@@ -1,4 +1,4 @@
-# 开始 {#getting-started}
+# 快速开始 {#getting-started}
 
 ## 使用方式
 
