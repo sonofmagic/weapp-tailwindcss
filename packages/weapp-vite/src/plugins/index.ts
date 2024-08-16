@@ -60,7 +60,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
     return path.relative(configResolved.root, p)
   }
 
-  let appEntry: AppEntry
+  let appEntry: AppEntry | undefined
   // TODO
 
   // const cacheInstance = createPluginCache(Object.create(null))
@@ -138,20 +138,24 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         const ignore: string[] = [
           ...defaultExcluded,
         ]
-        if (!appEntry && weapp?.subPackage && weapp.subPackage.root) {
+        const isSubPackage = Boolean(!appEntry && weapp?.subPackage && weapp.subPackage.root)
+        if (isSubPackage) {
           // subPackage
-          cwd = path.join(root, weapp.subPackage.root)
+          cwd = path.join(root, weapp!.subPackage!.root!)
         }
         else {
+          const ignoreSubPackage = appEntry
+            ? appEntry.deps.filter(
+              x => x.type === 'subPackage' && x.independent,
+            )
+              .map((x) => {
+                return `${(x as SubpackageDep).root}/**`
+              })
+            : []
           ignore.push(
             ...[
               `${build.outDir}/**`,
-              ...appEntry.deps.filter(
-                x => x.type === 'subPackage' && x.independent,
-              )
-                .map((x) => {
-                  return `${(x as SubpackageDep).root}/**`
-                }),
+              ...ignoreSubPackage,
               'project.config.json',
               'project.private.config.json',
               'package.json',
@@ -169,8 +173,11 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             absolute: false,
           },
         )
-        for (const file of files) {
-          const filepath = path.resolve(cwd, file)
+        const relFiles = files.map((x) => {
+          return isSubPackage ? path.join(weapp!.subPackage!.root!, x) : x
+        })
+        for (const file of relFiles) {
+          const filepath = path.resolve(ctx.cwd, file)
 
           this.addWatchFile(filepath)
           this.emitFile({

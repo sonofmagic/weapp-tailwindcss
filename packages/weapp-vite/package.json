@@ -48,6 +48,7 @@
     "micromatch": "^4.0.7",
     "pathe": "^1.1.2",
     "pkg-types": "^1.1.3",
+    "vite-tsconfig-paths": "^5.0.1",
     "weapp-ide-cli": "workspace:^"
   },
   "publishConfig": {

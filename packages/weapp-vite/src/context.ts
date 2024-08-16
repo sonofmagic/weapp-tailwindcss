@@ -23,6 +23,8 @@ export function createContext(cwd: string = process.cwd()) {
 
   const projectConfig = getProjectConfig(cwd)
 
+  const mpRoot = projectConfig.miniprogramRoot || projectConfig.srcMiniprogramRoot
+
   return {
     watcherCache,
     isDev,
@@ -31,6 +33,7 @@ export function createContext(cwd: string = process.cwd()) {
     relativeSrcRoot,
     cwd,
     projectConfig,
+    mpRoot,
   }
 }
 

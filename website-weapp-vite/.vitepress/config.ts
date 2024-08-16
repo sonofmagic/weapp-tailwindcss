@@ -31,7 +31,7 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/sonofmagic/weapp-tailwindcss' },
     ],
     editLink: {
-      pattern: 'https://github.com/sonofmagic/weapp-tailwindcss/edit/main/docs/:path',
+      pattern: 'https://github.com/sonofmagic/weapp-tailwindcss/edit/main/website-weapp-vite/:path',
       text: '改进此页面',
     },
   },

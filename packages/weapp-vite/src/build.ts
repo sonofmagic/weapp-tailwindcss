@@ -5,6 +5,7 @@ import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import { readPackageJSON } from 'pkg-types'
 import path from 'pathe'
 import { watch } from 'chokidar'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import type { UserConfig } from './types'
 import { vitePluginWeapp } from './plugins'
 import type { Context } from './context'
@@ -12,7 +13,6 @@ import { RootRollupSymbol } from './symbols'
 import { defaultExcluded } from './utils/scan'
 
 export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
-  // const root = options?.root ?? process.cwd()
   const localPackageJson = await readPackageJSON()
   const external: string[] = []
   if (localPackageJson.dependencies) {
@@ -48,12 +48,13 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
     },
     plugins: [
       vitePluginWeapp(ctx),
+      tsconfigPaths(),
     ],
     // logLevel: 'silent',
   }
 }
 
-export async function runDev(ctx: Context, options?: UserConfig) {
+export function runDev(ctx: Context, options?: UserConfig) {
   process.env.NODE_ENV = 'development'
 
   async function innerDev() {
@@ -83,13 +84,13 @@ export async function runDev(ctx: Context, options?: UserConfig) {
   }
 
   if (options?.weapp?.subPackage) {
-    return await innerDev()
+    return innerDev()
   }
   else {
-    const watcher = watch(['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'], {
+    const watcher = watch(['**/*.{wxml,json,wxs}', '**/*.{png,jpg,jpeg,gif,svg,webp}'], {
       ignored: [
         ...defaultExcluded,
-        path.join(ctx.projectConfig.miniprogramRoot || ctx.projectConfig.srcMiniprogramRoot, '**'),
+        path.join(ctx.mpRoot, '**'),
       ],
       cwd: ctx.cwd,
     })
@@ -108,22 +109,9 @@ export async function runDev(ctx: Context, options?: UserConfig) {
 }
 
 export async function runProd(ctx: Context, options?: UserConfig) {
-  // const watcher = watch(['**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}'], {
-  //   ignored: [
-  //     ...defaultExcluded,
-  //     'dist/**',
-  //   ],
-  //   persistent: false,
-  // })
-  // console.log(watcher)
   const output = (await build(
     defu<UserConfig, UserConfig[]>(
       options,
-      // {
-      //   build: {
-      //     emptyOutDir: true,
-      //   },
-      // },
       await getDefaultConfig(ctx),
       {
         mode: 'production',
