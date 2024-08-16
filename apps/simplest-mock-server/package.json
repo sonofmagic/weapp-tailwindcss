@@ -1,5 +1,7 @@
 {
   "name": "simplest-mock-server",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "start": "gulp mock"
   },
