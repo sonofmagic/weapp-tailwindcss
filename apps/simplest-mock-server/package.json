@@ -1,4 +1,5 @@
 {
+  "name": "simplest-mock-server",
   "scripts": {
     "start": "gulp mock"
   },
