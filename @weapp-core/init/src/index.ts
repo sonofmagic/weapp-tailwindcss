@@ -149,42 +149,55 @@ export function initTsJsonFiles(options: SharedUpdateOptions) {
   const tsNodeJsonFilename = 'tsconfig.node.json'
   const tsNodeJsonFilePath = path.resolve(root, tsNodeJsonFilename)
   if (write) {
-    fs.outputJSONSync(tsJsonFilePath, {
-      compilerOptions: {
-        target: 'ES2020',
-        jsx: 'preserve',
-        lib: [
-          'ES2020',
-          'DOM',
-          'DOM.Iterable',
-        ],
-        useDefineForClassFields: true,
-        module: 'ESNext',
-        moduleResolution: 'bundler',
-        resolveJsonModule: true,
-        allowImportingTsExtensions: true,
-        allowJs: true,
-        strict: true,
-        noFallthroughCasesInSwitch: true,
-        noUnusedLocals: true,
-        noUnusedParameters: true,
-        noEmit: true,
-        isolatedModules: true,
-        skipLibCheck: true,
-      },
-      references: [
-        {
-          path: './tsconfig.node.json',
+    fs.outputJSONSync(
+      tsJsonFilePath,
+      {
+        compilerOptions: {
+          target: 'ES2020',
+          jsx: 'preserve',
+          lib: [
+            'ES2020',
+            'DOM',
+            'DOM.Iterable',
+          ],
+          useDefineForClassFields: true,
+          baseUrl: '.',
+          module: 'ESNext',
+          moduleResolution: 'bundler',
+          paths: {
+            '@/*': [
+              './*',
+            ],
+          },
+          resolveJsonModule: true,
+          allowImportingTsExtensions: true,
+          allowJs: true,
+          strict: true,
+          noFallthroughCasesInSwitch: true,
+          noUnusedLocals: true,
+          noUnusedParameters: true,
+          noEmit: true,
+          isolatedModules: true,
+          skipLibCheck: true,
         },
-      ],
-      include: [
-        'src/**/*.ts',
-        'src/**/*.js',
-      ],
-    }, {
-      encoding: 'utf8',
-      spaces: 2,
-    })
+        references: [
+          {
+            path: './tsconfig.node.json',
+          },
+        ],
+        include: [
+          '**/*.ts',
+          '**/*.js',
+        ],
+        exclude: [
+          'node_modules',
+        ],
+      },
+      {
+        encoding: 'utf8',
+        spaces: 2,
+      },
+    )
     logger.log(`✨ 设置 ${tsJsonFilename} 配置文件成功!`)
 
     fs.outputJSONSync(tsNodeJsonFilePath, {

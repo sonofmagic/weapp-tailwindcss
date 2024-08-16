@@ -1,6 +1,6 @@
 // index.js
-
-const util = require('../../utils/util.js')
+import * as util from '@/utils/util'
+// const util = require('../../utils/util.js')
 
 Page({
   data: {
@@ -35,10 +35,10 @@ Page({
   },
   lower() {
     wx.showNavigationBarLoading()
-    const that = this
+
     setTimeout(() => {
       wx.hideNavigationBarLoading()
-      that.nextLoad()
+      this.nextLoad()
     }, 1000)
     console.log('lower')
   },

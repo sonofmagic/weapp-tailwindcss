@@ -8,8 +8,14 @@
       "DOM.Iterable"
     ],
     "useDefineForClassFields": true,
+    "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
@@ -27,7 +33,10 @@
     }
   ],
   "include": [
-    "src/**/*.ts",
-    "src/**/*.js"
+    "**/*.ts",
+    "**/*.js"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

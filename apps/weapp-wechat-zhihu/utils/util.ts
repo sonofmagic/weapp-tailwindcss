@@ -1,3 +1,8 @@
+import index from '@/data/data_index.js'
+import index_next from '@/data/data_index_next.js'
+import discovery from '@/data/data_discovery.js'
+import discovery_next from '@/data/data_discovery_next.js'
+
 function formatTime(date) {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -14,15 +19,6 @@ function formatNumber(n) {
   n = n.toString()
   return n[1] ? n : `0${n}`
 }
-
-module.exports = {
-  formatTime,
-}
-
-const index = require('../data/data_index.js')
-const index_next = require('../data/data_index_next.js')
-const discovery = require('../data/data_discovery.js')
-const discovery_next = require('../data/data_discovery_next.js')
 
 function getData(url) {
   return new Promise((resolve, reject) => {
@@ -60,8 +56,11 @@ function discoveryNext() {
   return discovery_next.next
 }
 
-module.exports.getData = getData
-module.exports.getData2 = getData2
-module.exports.getNext = getNext
-module.exports.getDiscovery = getDiscovery
-module.exports.discoveryNext = discoveryNext
+export {
+  getData,
+  getData2,
+  getNext,
+  getDiscovery,
+  discoveryNext,
+  formatTime,
+}

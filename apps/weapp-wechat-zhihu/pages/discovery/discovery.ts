@@ -1,5 +1,5 @@
 // discovery.js
-const util = require('../../utils/util.js')
+import * as util from '@/utils/util'
 
 Page({
   data: {
@@ -23,7 +23,7 @@ Page({
     // 调用应用实例的方法获取全局数据
     this.refresh()
   },
-  switchTab(e) {
+  switchTab(e: any) {
     this.setData({
       currentNavtab: e.currentTarget.dataset.idx,
     })
@@ -50,10 +50,9 @@ Page({
   },
   lower() {
     wx.showNavigationBarLoading()
-    const that = this
     setTimeout(() => {
       wx.hideNavigationBarLoading()
-      that.nextLoad()
+      this.nextLoad()
     }, 1000)
     console.log('lower')
   },
