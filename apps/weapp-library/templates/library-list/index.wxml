@@ -1,0 +1,26 @@
+
+<!-- 图书馆列表，页面内必须引入load-more与no-data组件 -->
+<template name="library-list">
+  <!-- 图书馆列表 -->
+  <view wx:if="{{libraries.length}}" class="weui-cells weui-cells_after-title library-list">
+    <navigator wx:for="{{libraries}}" wx:key="{{item.library.id}}" url="./order?book_id={{id}}&library_id={{item.library.id}}" class="weui-cell" hover-class="ui--active" bindtap="onClickLibraryItem">
+      <view class="library-item__info">
+        <view class="library-item__info-name">
+          <text class="font-black-34 ellipsis">{{item.library.name}}</text>
+          <image wx:if="{{item.library.status}}" src="/images/icon_certificated.png" mode="aspectFit"></image>
+          <image wx:else="{{item.library.status}}" src="/images/icon_uncertificated.png" mode="aspectFit"></image>
+        </view>
+        <view class="font-gray-26 ellipsis">
+          {{item.library.address}}
+        </view>
+      </view>
+      <view class="library-item__collection font-gray-26">
+        馆藏：{{item.total_num}} | 可借：<span class="{{item.available_num == 0 ? 'color-gray' : 'color-orange'}}">{{item.available_num}}</span>
+      </view>
+      <view class="weui-cell__ft_in-access"></view>
+    </navigator>
+  </view>
+  <!-- 加载更多、暂无数据 -->
+  <load-more status="{{loadMoreStatus}}"></load-more>
+  <no-data wx:if="{{isNoData}}"></no-data>
+</template>

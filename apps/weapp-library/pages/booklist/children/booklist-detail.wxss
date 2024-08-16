@@ -1,0 +1,78 @@
+.booklist-header {
+  padding: 20px 15px 10px;
+  background-color: #FFF;
+}
+
+.booklist-header__title {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.booklist-header__title-name {
+  margin-right: 10px;
+}
+
+.booklist-header__title-avatar {
+  flex: 0 0 20px;
+  width: 20px; 
+  height: 20px;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 10px;
+}
+
+.booklist-header__description {
+  padding-top: 10px;
+  white-space: pre-wrap;
+}
+.booklist-header__description {
+  line-height: 1.8em;
+}
+
+.booklist-switch {
+  background-color: #FFF;
+  border-bottom: 1rpx solid #D9D9D9;
+}
+.booklist-switch:before {
+  display: none;
+}
+.booklist-switch__delete:active {
+  opacity: 0.8;
+}
+.booklist-switch__delete--disabled {
+  opacity: 0.6 !important;
+}
+
+.booklist-item-container {
+  position: relative;
+}
+.booklist-item-container:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 1px;
+  border-bottom: 1rpx solid #D9D9D9;
+  color: #D9D9D9;
+}
+.booklist-item {
+  position: relative;
+}
+.booklist-item:before {
+  z-index: 3;
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 1px;
+  border-top: 1rpx solid #D9D9D9;
+  color: #D9D9D9;
+  left: 15px;
+}
+.booklist-item:first-child:before {
+  display: none;
+}

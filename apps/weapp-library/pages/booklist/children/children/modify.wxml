@@ -1,0 +1,12 @@
+<view class="ui-label">图书描述</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell">
+    <view class="weui-cell__bd">
+      <textarea class="weui-textarea" placeholder="请输入图书描述" maxlength="200" value="{{comment}}" bindinput="onInput" />
+      <view class="weui-textarea-counter">{{comment.length}}/200</view>
+    </view>
+  </view>
+</view>
+<view class="weui-btn-area">
+  <button class="weui-btn" type="primary" catchtap="onSubmit">确认</button>
+</view>

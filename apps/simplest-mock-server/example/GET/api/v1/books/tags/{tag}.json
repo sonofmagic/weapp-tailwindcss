@@ -1,0 +1,195 @@
+{
+  "books": function({
+    _req,
+    Mock
+  }) {
+    if (_req.query.start >= 12) {
+      return []
+    } else {
+      return [{
+        "id": Mock.mock("@integer(60, 100)"),
+        "title": "霍乱时期的爱情",
+        "isbn": Mock.mock("@natural(9781782910284, 9981782910284)"),
+        "publisher": "上海人民出版社",
+        "pubdate": Mock.mock("@date"),
+        "class_num": Mock.mock("@character('upper')@integer(1, 17)"),
+        "call_number": Mock.mock("TP@float(302, 399, 1, 1)"),
+        "author": [
+          "[哥]加西亚·马尔克斯"
+        ],
+        "translator": [
+          "杨玲"
+        ],
+        "binding": "精装",
+        "price": Mock.mock("@float(60, 100, 2, 2)"),
+        "pages": Mock.mock("@integer(60, 100)"),
+        "words": Mock.mock("@integer(60, 100)"),
+        "tags": [
+          "@string"
+        ],
+        "total_score": Mock.mock("@float(0, 10, 1, 1)"),
+        "review_num": Mock.mock("@integer(60, 100)"),
+        "imgs": {
+          "small": "https://img3.doubanio.com/mpic/s11284102.jpg",
+          "medium": "@string",
+          "large": "@string"
+        },
+        "total_num": Mock.mock("@integer(60, 100)"),
+        "available_num": Mock.mock("@integer(60, 100)")
+      }, {
+        "id": Mock.mock("@integer(60, 100)"),
+        "title": "月亮和六便士",
+        "isbn": Mock.mock("@natural(9781782910284, 9981782910284)"),
+        "publisher": "上海人民出版社",
+        "pubdate": Mock.mock("@date"),
+        "class_num": Mock.mock("@character('upper')@integer(1, 17)"),
+        "call_number": Mock.mock("TP@float(302, 399, 1, 1)"),
+        "author": [
+          "[英]毛姆"
+        ],
+        "translator": [
+          "傅惟慈"
+        ],
+        "binding": "精装",
+        "price": Mock.mock("@float(60, 100, 2, 2)"),
+        "pages": Mock.mock("@integer(60, 100)"),
+        "words": Mock.mock("@integer(60, 100)"),
+        "tags": [
+          "@string"
+        ],
+        "total_score": Mock.mock("@float(0, 10, 1, 1)"),
+        "review_num": Mock.mock("@integer(60, 100)"),
+        "imgs": {
+          "small": "https://img1.doubanio.com/mpic/s2659208.jpg",
+          "medium": "@string",
+          "large": "@string"
+        },
+        "total_num": Mock.mock("@integer(60, 100)"),
+        "available_num": Mock.mock("@integer(60, 100)")
+      }, {
+        "id": Mock.mock("@integer(60, 100)"),
+        "title": "百年孤独",
+        "isbn": Mock.mock("@natural(9781782910284, 9981782910284)"),
+        "publisher": "上海人民出版社",
+        "pubdate": Mock.mock("@date"),
+        "class_num": Mock.mock("@character('upper')@integer(1, 17)"),
+        "call_number": Mock.mock("TP@float(302, 399, 1, 1)"),
+        "author": [
+          "[哥]加西亚·马尔克斯"
+        ],
+        "translator": [
+          "李继宏"
+        ],
+        "binding": "精装",
+        "price": Mock.mock("@float(60, 100, 2, 2)"),
+        "pages": Mock.mock("@integer(60, 100)"),
+        "words": Mock.mock("@integer(60, 100)"),
+        "tags": [
+          "@string"
+        ],
+        "total_score": Mock.mock("@float(0, 10, 1, 1)"),
+        "review_num": Mock.mock("@integer(60, 100)"),
+        "imgs": {
+          "small": "https://img3.doubanio.com/mpic/s6384944.jpg",
+          "medium": "@string",
+          "large": "@string"
+        },
+        "total_num": Mock.mock("@integer(60, 100)"),
+        "available_num": Mock.mock("@integer(60, 100)")
+      }, {
+        "id": Mock.mock("@integer(60, 100)"),
+        "title": "小王子",
+        "isbn": Mock.mock("@natural(9781782910284, 9981782910284)"),
+        "publisher": "上海人民出版社",
+        "pubdate": Mock.mock("@date"),
+        "class_num": Mock.mock("@character('upper')@integer(1, 17)"),
+        "call_number": Mock.mock("TP@float(302, 399, 1, 1)"),
+        "author": [
+          "[法]圣-埃克苏佩里"
+        ],
+        "translator": [
+          "马振聘"
+        ],
+        "binding": "精装",
+        "price": Mock.mock("@float(60, 100, 2, 2)"),
+        "pages": Mock.mock("@integer(60, 100)"),
+        "words": Mock.mock("@integer(60, 100)"),
+        "tags": [
+          "@string"
+        ],
+        "total_score": Mock.mock("@float(0, 10, 1, 1)"),
+        "review_num": Mock.mock("@integer(60, 100)"),
+        "imgs": {
+          "small": "https://img3.doubanio.com/mpic/s1237549.jpg",
+          "medium": "@string",
+          "large": "@string"
+        },
+        "total_num": Mock.mock("@integer(60, 100)"),
+        "available_num": Mock.mock("@integer(60, 100)")
+      }, {
+        "id": Mock.mock("@integer(60, 100)"),
+        "title": "解忧杂货店",
+        "isbn": Mock.mock("@natural(9781782910284, 9981782910284)"),
+        "publisher": "上海人民出版社",
+        "pubdate": Mock.mock("@date"),
+        "class_num": Mock.mock("@character('upper')@integer(1, 17)"),
+        "call_number": Mock.mock("TP@float(302, 399, 1, 1)"),
+        "author": [
+          "[日]东野圭吾"
+        ],
+        "translator": [
+          "李盈春"
+        ],
+        "binding": "精装",
+        "price": Mock.mock("@float(60, 100, 2, 2)"),
+        "pages": Mock.mock("@integer(60, 100)"),
+        "words": Mock.mock("@integer(60, 100)"),
+        "tags": [
+          "@string"
+        ],
+        "total_score": Mock.mock("@float(0, 10, 1, 1)"),
+        "review_num": Mock.mock("@integer(60, 100)"),
+        "imgs": {
+          "small": "https://img3.doubanio.com/mpic/s27264181.jpg",
+          "medium": "@string",
+          "large": "@string"
+        },
+        "total_num": Mock.mock("@integer(60, 100)"),
+        "available_num": Mock.mock("@integer(60, 100)")
+      }, {
+        "id": Mock.mock("@integer(60, 100)"),
+        "title": "灿烂千阳",
+        "isbn": Mock.mock("@natural(9781782910284, 9981782910284)"),
+        "publisher": "上海人民出版社",
+        "pubdate": Mock.mock("@date"),
+        "class_num": Mock.mock("@character('upper')@integer(1, 17)"),
+        "call_number": Mock.mock("TP@float(302, 399, 1, 1)"),
+        "author": [
+          "[美]卡勒德·胡赛尼"
+        ],
+        "translator": [
+          "李继宏"
+        ],
+        "binding": "精装",
+        "price": Mock.mock("@float(60, 100, 2, 2)"),
+        "pages": Mock.mock("@integer(60, 100)"),
+        "words": Mock.mock("@integer(60, 100)"),
+        "tags": [
+          "@string"
+        ],
+        "total_score": Mock.mock("@float(0, 10, 1, 1)"),
+        "review_num": Mock.mock("@integer(60, 100)"),
+        "imgs": {
+          "small": "https://img3.doubanio.com/mpic/s2347590.jpg",
+          "medium": "@string",
+          "large": "@string"
+        },
+        "total_num": Mock.mock("@integer(60, 100)"),
+        "available_num": Mock.mock("@integer(60, 100)")
+      }]
+    }
+  },
+  "start": "@integer(60, 100)",
+  "count": "@integer(60, 100)",
+  "total": "@integer(60, 100)"
+}

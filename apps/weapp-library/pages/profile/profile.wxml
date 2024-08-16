@@ -1,0 +1,102 @@
+<collapse wx:if="{{showLoginBtn}}" title="微信授权提醒" header-class="collapse__header">
+  <view class="ui-card">
+    <view class="font-gray-28">点击按钮授权后，您的头像与昵称将显示在创建的书单与发表的评论中，否则只显示默认头像与随机昵称</view>
+    <button class="weui-btn" open-type="getUserInfo" bindgetuserinfo="onClickLoginBtn">上传我的头像与昵称</button>
+  </view>
+</collapse>
+<view class="weui-cells">
+  <navigator url="./children/personal-information" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <view class="user-info__avatar">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+    </view>
+    <view class="weui-cell__bd">
+      <view class="user-info__name">
+        <open-data type="userNickName"></open-data>
+      </view>
+      <view class="font-gray-28">查看 / 修改个人信息</view>
+    </view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<view class="weui-cells">
+  <navigator url="./children/qrcode" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_paper_plane.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">我的二维码</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<view class="weui-cells">
+  <navigator url="./children/order-ongoing" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_in_process.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">借阅进度</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <navigator url="./children/order-history" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_time.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">借阅历史</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <!-- <navigator url="./navigate" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_deposit.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">我的押金</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator> -->
+  <navigator url="./children/review" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_review_2.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">我的书评</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<view class="weui-cells">
+  <!-- <navigator url="./navigate" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_setting.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">字体大小</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator> -->
+  <navigator url="/component-demos/index/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_headlines.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">组件展示</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+<!-- </view>
+<view class="weui-cells">
+  <navigator url="./navigate" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_help.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">意见反馈</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator> -->
+  <navigator url="./children/about" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="../../images/icon_info.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd">关于</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<view class="weui-cells">
+  <view class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__hd">
+      <image src="/images/icon_logout.png" class="icon"></image>
+    </view>
+    <view class="weui-cell__bd" bindtap="onLogout">退出登录</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </view>
+</view>

@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">组件展示</view>
+    <view class="page__desc">微信小程序组件封装</view>
+  </view>
+  <view class="page__bd">
+    <view class="weui-cells weui-cells_after-title">
+      <navigator url="{{item.url}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active" wx:for="{{components}}" wx:for-index="idx" wx:key="*this">
+        <view class="weui-cell__bd">{{item.title}}</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </navigator>
+    </view>
+  </view>
+</view>

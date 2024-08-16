@@ -1,0 +1,52 @@
+<view class="weui-panel weui-panel_access">
+  <view class="weui-panel__hd font-black-34">已选图书</view>
+  <view class="weui-panel__bd">
+    <view wx:if="{{!selectedBooks.length}}" class="weui-media-box weui-media-box_text">
+      <view class="weui-media-box__desc">你还没有选择任何图书</view>
+    </view>
+    <view wx:if="{{selectedBooks.length}}" class="weui-cells weui-cells_after-title">
+      <navigator wx:for="{{selectedBooks}}" wx:key="{{item.id}}" class="weui-cell ui-book-card" hover-class="ui--active" url="/pages/book-detail/book-detail?id={{item.id}}">
+        <image class="ui-book-card__img" mode="widthFix" src="{{item.imgs.small}}"></image>
+        <view class="ui-book-card__info font-gray-26">
+          <view class="ui-book-card__info-title font-black-34">{{item.title}}</view>
+          <view>作者: <text wx:for="{{item.author}}" wx:key="{{item}}" class="ui-book-card__info-name">{{item}}</text></view>
+          <view>出版社: {{item.publisher}}</view>
+          <view>出版时间: {{item.pubdate}}</view>
+          <view>ISBN: {{item.isbn}}</view>
+          <view>索书号: {{item.call_number}}</view>
+        </view>
+        <view class="font-28 color-red" data-index="{{index}}" catchtap="onDelete" hover-stop-propagation>删除</view>
+      </navigator>
+    </view>
+  </view>
+  <view class="weui-panel__ft" wx:if="{{selectedBooks.length}}" catchtap="onShowHelp">
+    <view class="weui-cell weui-cell_access weui-cell_link">
+      <view class="weui-cell__bd">查看借书步骤</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </view>
+  </view>
+</view>
+<view wx:if="{{!selectedBooks.length}}" class="weui-panel weui-panel_access">
+  <view class="weui-panel__hd font-black-34">借书步骤</view>
+  <view class="weui-panel__bd">
+    <view class="weui-media-box weui-media-box_text step font-black-26">
+      <view>1、扫描图书馆图书的ISBN条形码，将其添加入借书栏，一次最多可添加两本图书</view>
+      <view>2、携带图书到前台，向管理员出示借书二维码</view>
+      <view>3、管理员确认后，微信支付提交押金，借书成功</view>
+    </view>
+  </view>
+  <view class="weui-panel__ft">
+    <navigator url="./children/help">
+      <view class="weui-cell weui-cell_access weui-cell_link">
+        <view class="weui-cell__bd">如何在线预订</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+    </navigator>
+  </view>
+</view>
+<view class="weui-btn-area">
+  <button class="weui-btn" type="primary" catchtap="onScan">扫描图书条形码</button>
+  <navigator wx:if="{{selectedBooks.length}}" hover-class="none" class="weui-btn" url="./children/qrcode">
+    <button type="default">生成借书二维码</button>
+  </navigator>
+</view>

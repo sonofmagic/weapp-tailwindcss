@@ -1,0 +1,31 @@
+
+.success,
+.color-green {
+  color: #09BB07;
+}
+
+.color-blue {
+  color: #576B95;
+}
+
+.error,
+.color-red {
+  color: #E64340;
+}
+
+.warning,
+.color-orange {
+  color: #F56A00;
+}
+
+.color-yellow {
+  color: #FFBF00
+}
+
+.color-gray {
+  color: #888888;
+}
+
+.color-black {
+  color: #353535;
+}

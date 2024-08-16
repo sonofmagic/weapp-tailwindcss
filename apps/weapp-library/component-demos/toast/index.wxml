@@ -1,0 +1,26 @@
+<toast id="toast"></toast>
+
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Toast</view>
+    <view class="page__desc">浮动提示，默认显示在底部 3 秒</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <view>
+      <button class="weui-btn" type="primary" bindtap="onShowDefault">显示 toast</button>
+    </view>
+    
+    <view class="page__section-title">提示位置</view>
+    <view>
+      <button class="weui-btn" bindtap="onShowPostion" data-pos="top">显示在顶部</button>
+      <button class="weui-btn" bindtap="onShowPostion" data-pos="center">显示在中间</button>
+    </view>
+    
+    <view class="page__section-title">自定义显示时长</view>
+    <view>
+      <button class="weui-btn" bindtap="onShowDuration">显示 5 秒</button>
+    </view>
+
+  </view>
+</view>

@@ -1,0 +1,40 @@
+
+/* ---------- 上、下、左、右箭头 ---------- */
+
+.icon-up,
+.icon-right,
+.icon-down {
+  display: inline-block;
+  padding-right: 13rpx;
+  position: relative;
+}
+
+.icon-up::after,
+.icon-right::after,
+.icon-down::after {
+  content: "";
+  display: inline-block;
+  position: relative;
+  bottom: 2rpx;
+  height: 6px;
+  width: 6px;
+  border-width: 2px 2px 0 0;
+  border-style: solid;
+}
+
+.icon-up::after {
+  top: 3rpx;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.icon-right::after {
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.icon-down::after {
+  bottom: 4rpx;
+  -webkit-transform: rotate(135deg);
+  transform: rotate(135deg);
+}

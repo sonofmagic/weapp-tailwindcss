@@ -1,0 +1,28 @@
+<toptip id="toptip"></toptip>
+<view class="ui-label">
+    标题</view>
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入书单标题" data-label="title" value="{{title}}" maxlength="30" bindinput="onInput" />
+      </view>
+      <view class="weui-cell__ft" wx:if="{{isWarning}}">
+        <icon type="warn" size="23" color="#E64340"></icon>
+      </view>
+    </view>
+  </view>
+
+  <view class="ui-label">
+    书单描述</view>
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell">
+      <view class="weui-cell__bd">
+        <textarea class="weui-textarea" placeholder="请输入书单描述（可选）" maxlength="300" value="{{description}}" data-label="description" bindinput="onInput" />
+        <view class="weui-textarea-counter">{{description.length}}/300</view>
+      </view>
+    </view>
+  </view>
+
+<view class="weui-btn-area">
+  <button class="weui-btn" type="primary" catchtap="onSubmit">确认</button>
+</view>

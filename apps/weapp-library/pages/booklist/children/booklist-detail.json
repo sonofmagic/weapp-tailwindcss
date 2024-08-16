@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "书单详情",
+  "usingComponents": {
+    "async-switch": "/components/async-switch/index",
+    "load-more": "/components/load-more/index",
+    "no-data": "/components/no-data/index",
+    "booklist-item": "/pages/components/booklist-item/index"
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "status": "@integer(0, 2)",
+  "id": "@integer(60, 100)",
+  "creator": {
+    "avatar": "https://img3.doubanio.com/icon/u55753308-31.jpg",
+    "phone": "@string",
+    "nickname": "@name"
+  },
+  "title": "我的收藏集",
+  "description": "村上绝不是“我只管写你只管看”型的单向式作家，他非常注重作品的呈现形式，以求让读者体会到他最想表达的东西。",
+  "image": "https://img3.doubanio.com/mpic/s2347590.jpg",
+  "start": "@integer(60, 100)",
+  "count": "@integer(60, 100)",
+  "total": "@integer(60, 100)",
+  "items": [{
+    book: {
+      "id": "@integer(60, 100)",
+      "title": "霍乱时期的爱情",
+      "isbn": "@natural(9781782910284, 9981782910284)",
+      "publisher": "上海人民出版社",
+      "pubdate": "@date",
+      "class_num": "@character('upper')@integer(1, 17)",
+      "call_number": "TP@float(302, 399, 1, 1)",
+      "author": [
+        "[哥]加西亚·马尔克斯"
+      ],
+      "translator": [
+        "杨玲"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 2, 2)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(0, 10, 1, 1)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s11284102.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    },
+    comment: "我曾经以为《挪威的森林》是我喜欢的小说，直到我遇到《不能承受的生命之轻》；我一直以为《不能承受的生命之轻》是我最喜欢的小说，直到我遇到《霍乱时期的爱情》。"
+  }, {
+    book: {
+      "id": "@integer(60, 100)",
+      "title": "月亮和六便士",
+      "isbn": "@natural(9781782910284, 9981782910284)",
+      "publisher": "上海人民出版社",
+      "pubdate": "@date",
+      "class_num": "@character('upper')@integer(1, 17)",
+      "call_number": "TP@float(302, 399, 1, 1)",
+      "author": [
+        "[英]毛姆"
+      ],
+      "translator": [
+        "傅惟慈"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 2, 2)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(0, 10, 1, 1)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img1.doubanio.com/mpic/s2659208.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    },
+    comment: "对我来说，世界上最难的事情是什么？不，不是穿了新衣服吹了新发型不去照镜子……当然这个也挺难的，我基本做不到。但严肃地说，更难的事情是，怎么才能，知道自己应该如何生活。"
+  }, {
+    book: {
+      "id": "@integer(60, 100)",
+      "title": "百年孤独",
+      "isbn": "@natural(9781782910284, 9981782910284)",
+      "publisher": "上海人民出版社",
+      "pubdate": "@date",
+      "class_num": "@character('upper')@integer(1, 17)",
+      "call_number": "TP@float(302, 399, 1, 1)",
+      "author": [
+        "[哥]加西亚·马尔克斯"
+      ],
+      "translator": [
+        "李继宏"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 2, 2)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(0, 10, 1, 1)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s6384944.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    },
+    comment: "回忆没有归路，春天总是一去不返。车窗外瞬间闪过世间万象，如同将一首飞逝的长诗撕成碎片向着遗忘之乡一路抛洒。"
+  }, {
+    book: {
+      "id": "@integer(60, 100)",
+      "title": "小王子",
+      "isbn": "@natural(9781782910284, 9981782910284)",
+      "publisher": "上海人民出版社",
+      "pubdate": "@date",
+      "class_num": "@character('upper')@integer(1, 17)",
+      "call_number": "TP@float(302, 399, 1, 1)",
+      "author": [
+        "[法]圣-埃克苏佩里"
+      ],
+      "translator": [
+        "马振聘"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 2, 2)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(0, 10, 1, 1)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s1237549.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    },
+    comment: "狐狸说：对你驯养过的东西，你永远负有责任。小王子说：只要用心，你们要找的东西在每一朵玫瑰或一点水里都能找到。心有戚戚焉，这需要彼此都很坚定的两个人，只有一方坚定另一方不断因为害怕而放弃的组合要修成正果会很艰难。开始相信老式婚姻的好，两个人抱着坚定的不可分割的决心让时间和耐心积累下去，执子之手与之偕老。"
+  }, {
+    book: {
+      "id": "@integer(60, 100)",
+      "title": "解忧杂货店",
+      "isbn": "@natural(9781782910284, 9981782910284)",
+      "publisher": "上海人民出版社",
+      "pubdate": "@date",
+      "class_num": "@character('upper')@integer(1, 17)",
+      "call_number": "TP@float(302, 399, 1, 1)",
+      "author": [
+        "[日]东野圭吾"
+      ],
+      "translator": [
+        "李盈春"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 2, 2)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(0, 10, 1, 1)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s27264181.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    },
+    comment: "第一章 回答在牛奶箱里\n\
+第二章 深夜的口琴声\n\
+第三章 在思域车上等到天亮\n\
+第四章 听着披头士默祷\n\
+第五章 来自天上的祈祷"
+  }, {
+    book: {
+      "id": "@integer(60, 100)",
+      "title": "灿烂千阳",
+      "isbn": "@natural(9781782910284, 9981782910284)",
+      "publisher": "上海人民出版社",
+      "pubdate": "@date",
+      "class_num": "@character('upper')@integer(1, 17)",
+      "call_number": "TP@float(302, 399, 1, 1)",
+      "author": [
+        "[美]卡勒德·胡赛尼"
+      ],
+      "translator": [
+        "李继宏"
+      ],
+      "binding": "精装",
+      "price": "@float(60, 100, 2, 2)",
+      "pages": "@integer(60, 100)",
+      "words": "@integer(60, 100)",
+      "tags": [
+        "@string"
+      ],
+      "total_score": "@float(0, 10, 1, 1)",
+      "review_num": "@integer(60, 100)",
+      "imgs": {
+        "small": "https://img3.doubanio.com/mpic/s2347590.jpg",
+        "medium": "@string",
+        "large": "@string"
+      },
+      "total_num": "@integer(60, 100)",
+      "available_num": "@integer(60, 100)"
+    },
+    comment: "我想起美国文学课上，霍大师向我们解释为什么学医的人都很容易成为作家：一个治疗外伤，一个抚慰心灵。就像龙应台说的：卡夫卡给你看的，是这个忧郁病患比海还要深、比夜还要黑的内心深沉之处──医学的任何仪器都测不到的地方，他用文学的X光照给你看，心灵的创伤纤毫毕露。是的，文学，是心灵的X光。它照得到“空”。"
+  }],
+  "favorited_num": "@integer(60, 100)",
+  "create_time": "@date",
+  "update_time": "@date"
+}

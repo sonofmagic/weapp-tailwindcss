@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">AsyncButton</view>
+    <view class="page__desc">异步圆角线性按钮</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <view class="big-button-area">
+      <async-button text="主要按钮"></async-button>
+      <async-button text="默认按钮" type="default"></async-button>
+      <async-button text="警告按钮" type="warn"></async-button>
+    </view>
+
+    <view class="page__section-title">小按钮</view>
+    <view class="mini-button-area">
+      <async-button text="主要按钮" type="primary" size="mini"></async-button>
+      <async-button text="默认按钮" type="default" size="mini"></async-button>
+      <async-button text="警告按钮" type="warn" size="mini"></async-button>
+    </view>
+
+    <view class="page__section-title">禁用状态</view>
+    <async-button text="默认按钮" type="default" disabled></async-button>
+
+    <view class="page__section-title">加载状态</view>
+    <async-button text="点击开始加载" type="default" loading="{{loading}}" catchtap="onLoading"></async-button>
+    <button class="weui-btn mini-btn" type="default" size="mini" bindtap="onCancelLoading">取消加载</button>
+
+    <view class="page__section-title">事件</view>
+    <view class="page__desc">tap</view>
+  </view>
+</view>

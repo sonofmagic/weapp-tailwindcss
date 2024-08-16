@@ -1,0 +1,31 @@
+<wxs module="ORDER_STATUS">
+  module.exports = require('../../../utils/constant.wxs').ORDER_STATUS
+</wxs>
+<import src="/templates/page-status-indicator/index" />
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<block wx:if="{{pageStatus == 'done'}}">
+  <view wx:if="{{orders.length}}" class="weui-cells weui-cells_after-title">
+    <navigator wx:for="{{orders}}" wx:key="{{item.id}}" url="./children/order-detail?id={{item.id}}" class="weui-cell ui-book-card" hover-class="ui--active" id="{{item.id}}">
+      <image class="ui-book-card__img" src="{{item.book.imgs.small}}" mode="widthFix"></image>
+      <view class="ui-book-card__info font-gray-26">
+        <view class="ui-book-card__info-title font-black-34">{{item.book.title}}</view>
+        <view>作者:
+          <text wx:for="{{item.book.author}}" wx:key="{{item}}" class="ui-book-card__info-name">{{item}}</text>
+        </view>
+        <view>出版社: {{item.book.publisher}}</view>
+        <view>图书馆: {{item.library.name}}</view>
+        <block wx:if="{{item.status == ORDER_STATUS.CANCELED_BY_USER}}">
+          <view>创建日期：{{item.created_at}}</view>
+          <view>订单状态：已取消</view>
+        </block>
+        <block wx:else>
+          <view>借阅日期：{{item.actual_take_time}}</view>
+          <view>还书日期：{{item.actual_return_time}}</view>
+        </block>
+      </view>
+      <view class="weui-cell__ft_in-access"></view>
+    </navigator>
+  </view>
+  <no-data wx:else></no-data>
+  <load-more status="{{loadMoreStatus}}" nomore-text="没有更多订单了"></load-more>
+</block>

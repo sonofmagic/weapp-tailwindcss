@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "TopTip",
+  "usingComponents": {
+    "toptip": "/components/toptip/index"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "weapp-library",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+    "dev": "weapp-vite dev | node simplest-mock-server/server.js",
+    "build": "weapp-vite build",
+    "open": "weapp-vite open",
+    "build-npm": "weapp-vite build-npm",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "miniprogram-api-typings": "latest"
+  }
+}

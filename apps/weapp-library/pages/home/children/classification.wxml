@@ -1,0 +1,14 @@
+<view class="ui-label">请选择分类</view>
+<view class="weui-cells weui-cells_after-title">
+  <navigator url="/pages/list/book?type=classify_search&class_num={{number}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">查询下列所有分类的图书</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<view wx:if="{{sonNumbers.length}}" class="weui-cells">
+  <navigator wx:for="{{sonNumbers}}" url="{{item.has_son ? './classification?number=' + item.number + '&name=' + item.name : '/pages/list/book?type=classify_search&class_num=number'}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">{{item.name}}</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<load-more status="{{loadMoreStatus}}" nomore-text="暂无更多分类"></load-more>

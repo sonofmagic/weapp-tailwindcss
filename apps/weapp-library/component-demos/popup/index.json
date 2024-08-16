@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "Popup",
+  "usingComponents": {
+    "popup": "/components/popup/index"
+  }
+}

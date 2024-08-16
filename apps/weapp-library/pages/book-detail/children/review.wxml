@@ -1,0 +1,77 @@
+<import src="/templates/page-status-indicator/index" />
+<toptip id="toptip"></toptip>
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<block wx:if="{{pageStatus == 'done'}}">
+  <!-- 评论列表 -->
+  <view wx:if="{{reviews.length}}" class="{{showBookInfo ? '' : 'fixed-header-container'}}">
+    <block wx:if="{{showBookInfo}}">
+      <navigator url="/pages/book-detail/book-detail?id={{book.id}}" class="ui-panel ui-book-card review-book">
+        <image class="ui-book-card__img" src="{{book.imgs.small}}" mode="widthFix"></image>
+        <view class="ui-book-card__info font-gray-26">
+          <view class="ui-book-card__info-title font-black-34">{{book.title}}</view>
+          <view>
+            评分:
+            <text class="color-yellow">{{book.total_score}}</text>（{{book.review_num}}条评论）</view>
+          <view>作者:
+            <text wx:for="{{book.author}}" wx:key="*this" class="ui-book-card__info-name">{{item}}</text>
+          </view>
+          <view>出版社: {{book.publisher}}</view>
+          <view>出版日期: {{book.pubdate}}</view>
+          <view>ISBN: {{book.isbn}}</view>
+        </view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </navigator>
+      <sticky scroll-top="{{scrollTop}}">
+        <view class="weui-cell review-header">
+          <view class="weui-cell__bd">评论</view>
+          <button size="mini" type="primary" catchtap="onShowPopup" plain>发表评论</button>
+        </view>
+        <view slot="sticky" class="weui-cell review-header">
+          <view class="weui-cell__bd">评论</view>
+          <button size="mini" type="primary" catchtap="onShowPopup" plain>发表评论</button>
+        </view>
+      </sticky>
+    </block>
+    <!-- 也可以删除这个wx:else，但是会在滚动时过渡会不太自然 -->
+    <view wx:else class="weui-cell review-header">
+      <view class="weui-cell__bd">评论</view>
+      <button size="mini" type="primary" catchtap="onShowPopup" plain>发表评论</button>
+    </view>
+    <view class="weui-cells weui-cells_after-title">
+      <view wx:for="{{reviews}}" wx:key="{{item.id}}" class="weui-cell ui-review-card font-30">
+        <image class="ui-review-card__avatar" src="{{item.user.avatar}}"></image>
+        <view class="ui-review-card__info">
+          <view class="ui-review-card__title">
+            <text>{{item.user.nickname}} </text>
+            <view class="ui-review-card__rate">
+              <rate value="{{item.score}}" star-size="30" unit="rpx" disabled></rate>
+            </view>
+          </view>
+          <view class="ui-review-card__time font-gray-26">{{item.created_at}}</view>
+          <view class="ui-review-card__content">{{item.content}}</view>
+        </view>
+        <view wx:if="{{item.is_creator}}" class="ui-review-card__delete-btn color-gray" data-id="{{item.id}}" data-index="{{index}}" catchtap="onDelete">删除</view>
+      </view>
+    </view>
+    <!-- 加载更多、暂无数据 -->
+    <load-more status="{{loadMoreStatus}}" nomore-text="没有更多评论了"></load-more>
+  </view>
+  <!-- 暂无数据 -->
+  <template wx:else is="page-empty" data="{{message: '暂无评论，快来做第一个评论的人吧', btnText: '发表评论'}}"></template>
+</block>
+<!-- 添加评论 -->
+<popup title="添加评论" hide-text="关闭" show="{{popup.show}}" bindhide="onHidePopup">
+  <view class="popup-bd">
+    <view class="popup-bd__label">{{popup.label[popup.score]}}</view>
+    <view class="popup-bd__score">
+      <rate value="{{popup.score}}" gutter-size="7" bindchange="onChange"></rate>
+    </view>
+    <view class="popup-bd__textarea">
+      <textarea hidden="{{!popup.show}}" class="weui-textarea" style="height: 3.3em" placeholder="写几句评论吧..." maxlength="200" value="{{popup.content}}" bindinput="onInput" fixed/>
+      <view class="weui-textarea-counter">{{popup.content.length}}/200</view>
+    </view>
+    <view class="popup-bd__btn-area">
+      <async-button text="发表评论" loading="{{popup.loading}}" bindtap="onSubmit"></async-button>
+    </view>
+  </view>
+</popup>

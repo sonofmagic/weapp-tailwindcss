@@ -1,0 +1,22 @@
+<view class="star" style="height: {{starSize + unit}}">
+  <block wx:for="{{starArray}}">
+    <image 
+      class="star__image" 
+      style="width: {{starSize + unit}};height: {{starSize + unit}};margin-right: {{gutterSize + unit}}" 
+      src="{{value > item ? (value - item === 1 ? halfSrc : fullSrc) : normalSrc}}"
+    >
+      <view 
+        class="star__mask" 
+        style="left: 0px;width: {{starSize + unit}};height: {{starSize + unit}};" 
+        data-value="{{item + 1}}" 
+        catchtap="_onTapLeft">
+      </view>
+      <view 
+        class="star__mask" 
+        style="left: {{starSize / 2 + unit}};width: {{starSize + unit}};height: {{starSize + unit}};" 
+        data-value="{{item + 2}}" 
+        catchtap="_onTapRight">
+      </view>
+    </image>
+  </block>
+</view>

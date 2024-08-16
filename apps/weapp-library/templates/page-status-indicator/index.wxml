@@ -1,0 +1,54 @@
+<!-- 
+  页面暂无数据提示页，带有图片、文字说明与操作按钮
+
+  bgColor: 背景颜色，默认‘#FFF’
+  message: 说明文本
+  btnType: 按钮类型，默认‘primary’
+  isPlain: 是否为线性按钮，默认false
+  btnText: 按钮文本，默认‘操作按钮’
+  hideBtn: 是否隐藏按钮，默认false
+  onTapPageEmptyBtn: 点击按钮时执行的函数，由页面提供
+-->
+<template name="page-empty">
+  <view class="page-empty-container" style="background-color: {{bgColor || '#FFF'}}">
+    <view class="page-empty">
+      <image class="page-empty__img" mode="widthFix" src="/images/no_data.png"></image>
+      <view class="page-empty__text">{{message}}</view>
+      <button wx:if="{{!hideBtn}}" class="page-empty__btn" type="{{btnType || 'primary'}}" plain="{{isPlain}}" bindtap="onTapPageEmptyBtn">{{btnText || '操作按钮'}}</button>
+    </view>
+  </view>
+</template>
+
+<!-- 
+  加载数据失败提示，带有一个重新加载按钮
+
+  message: 错误说明文本
+  btnText: 按钮文本，默认‘重新加载’
+  onReloadPage: 重新加载页面数据，由页面提供
+-->
+<template name="page-reloader">
+  <view class="page-reloader">
+    <image class="page-reloader__img" mode="widthFix" src="/images/load_fail.png"></image>
+    <view class="page-reloader__text">{{message || '网络出错啦，请点击按钮重新加载'}}</view>
+    <button class="page-reloader__btn" plain bindtap="onReloadPage">{{btnText || '重新加载'}}</button>
+  </view>
+</template>
+
+<!-- 
+  当前页面状态指示器：加载时(loading)、加载失败(error，重新加载按钮)、其他情况隐藏
+
+  pageStatus: 页面状态，'loading', 'error'. other('done'/'nodata'/...)
+  message: 错误说明文本
+  btnText: 按钮文本，默认‘重新加载’
+  onReloadPage: 重新加载页面数据，由页面提供
+-->
+<template name="page-status-indicator">
+  <view wx:if="{{pageStatus == 'loading'}}" class="page-status-indicator__spinner line-scale-pulse-out">
+    <view class="rect1"></view>
+    <view class="rect2"></view>
+    <view class="rect3"></view>
+    <view class="rect4"></view>
+    <view class="rect5"></view>
+  </view>
+  <template wx:elif="{{pageStatus == 'error'}}" is="page-reloader" data="{{message, btnText, onReloadPage}}"></template>
+</template>

@@ -1,0 +1,18 @@
+<view class="weui-msg">
+  <view class="weui-msg__icon-area">
+    <icon type="success" size="93"></icon>
+  </view>
+  <view class="weui-msg__text-area">
+    <view class="weui-msg__title">{{title}}</view>
+    <view class="weui-msg__desc">
+      <view>{{first}}</view>
+      <view>{{second}}</view>
+    </view>
+  </view>
+  <view class="weui-msg__opr-area">
+    <view class="weui-btn-area">
+      <button class="weui-btn" type="primary" bindtap="onBack">确定</button>
+      <button class="weui-btn" type="default" bindtap="onSwitch">回到主页</button>
+    </view>
+  </view>
+</view>

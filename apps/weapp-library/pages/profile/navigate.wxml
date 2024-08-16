@@ -1,0 +1,5 @@
+<navigator open-type="navigate" target="miniProgram" app-id="xxx" url="" class="code">
+  <image src="/images/miniapp_code.jpg"></image>
+</navigator>
+<view class="weui-cells__tips">该功能暂未开发</view>
+

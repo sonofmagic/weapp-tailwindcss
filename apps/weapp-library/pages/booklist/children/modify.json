@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "设置书单信息",
+  "usingComponents":
+  {
+    "toptip": "/components/toptip/index"
+  }
+}

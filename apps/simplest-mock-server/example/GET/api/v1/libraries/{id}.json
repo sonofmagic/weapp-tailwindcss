@@ -1,0 +1,34 @@
+{
+  "id": "@integer(60, 100)",
+  "status": 0,
+  "review_msg": "@string",
+  "name": "北京大学图书馆",
+  "phone": "010-68123492",
+  "address": "一个很长很长很长很长很长很长很长很长的地址",
+  "introduction": "@cparagraph(1, 3)",
+  "book_type_num": "@integer(60, 100)",
+  "book_total_num": "@integer(60, 100)",
+  "order_total_num": "@integer(60, 100)",
+  "recent_order_num": [
+    "@integer(60, 100)"
+  ],
+  "recent_borrowed_books_ranking": [{
+    "book_id": "@integer(60, 100)",
+    "title": "@string",
+    "number": "@integer(60, 100)"
+  }],
+  "total_borrowed_books_ranking": [{
+    "book_id": "@integer(60, 100)",
+    "name": "@string",
+    "value": "@integer(60, 100)"
+  }],
+  "order_accounting": "@float(60, 100, 3, 5)",
+  "photos": [
+    "http://n1-q.mafengwo.net/s7/M00/8B/BE/wKgB6lRs4X-AJ4pOACX-OTdBrLk34.jpeg?imageMogr2%2Fthumbnail%2F%21690x370r%2Fgravity%2FCenter%2Fcrop%2F%21690x370%2Fquality%2F100"
+  ],
+  "qualifications": [
+    "@string"
+  ],
+  "admin_name": "@string",
+  "admin_phone": "@string"
+}

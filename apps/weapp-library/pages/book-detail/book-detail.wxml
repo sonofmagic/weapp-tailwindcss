@@ -1,0 +1,100 @@
+<import src="/templates/showcase/index" />
+<import src="/templates/page-status-indicator/index" />
+<template data="{{pageStatus}}" is="page-status-indicator"></template>
+<!-- 获取到图书信息 -->
+<block wx:if="{{pageStatus == 'done'}}">
+  <!-- 图书信息 -->
+  <view class="ui-panel ui-book-card">
+    <view class="ui-book-card__info font-gray-26">
+      <view class="ui-book-card__info-title font-black-34">{{book.title}}</view>
+      <view>评分：<span class="color-yellow">{{book.total_score}} </span>({{book.review_num}}条评论)</view>
+      <view>作者:
+        <text wx:for="{{book.author}}" wx:key="*this" class="ui-book-card__info-name">{{item}}</text>
+      </view>
+      <view wx:if="{{book.translator.length}}">译者:
+        <text wx:for="{{book.translator}}" wx:key="*this" class="ui-book-card__info-name">{{item}}</text>
+      </view>
+      <view>出版社: {{book.publisher}}</view>
+      <view>出版时间: {{book.pubdate}}</view>
+      <view>分类号: {{book.class_num}}</view>
+      <view>索书号: {{book.call_number}}</view>
+      <view>页数: {{book.page}}页</view>
+      <view>字数: 约{{book.word}}字</view>
+      <view>ISBN: {{book.isbn}}</view>
+    </view>
+    <image class="ui-book-card__img" src="{{book.imgs.small}}" mode="widthFix" bindtap="onPreview"></image>
+  </view>
+  <!-- 馆藏信息 -->
+  <view class="ui-label">馆藏信息</view>
+  <view class="ui-panel" hover-class="ui--active" bindtap="onShowPopup">
+    <view class="weui-cell">
+      <view class="weui-cell__bd font-black-26">共有<span class="color-green"> {{book.available_num}} </span>本可借</view>
+      <view class="weui-cell__ft_in-access"></view>
+    </view>
+  </view>
+  <!-- 图书详情 -->
+  <view class="ui-label">内容简介</view>
+  <view class="ui-card font-black-26 pre-wrap">{{book.introduction || "暂无内容简介"}}</view>
+  <view class="ui-label">作者简介</view>
+  <view class="ui-card font-black-26 pre-wrap">{{book.author_intro || "暂无作者简介"}}</view>
+  <view class="ui-label">译者简介</view>
+  <view class="ui-card font-black-26 pre-wrap">{{book.translator_intro || "暂无译者简介"}}</view>
+  <view class="ui-label">目录</view>
+  <view class="ui-card font-black-26 pre-wrap">{{book.catalog || "暂无目录"}}</view>
+  <view class="ui-label">试读</view>
+  <view class="ui-card font-black-26 pre-wrap">{{book.preview || "暂无试读"}}</view>
+  <!-- 相关图书 -->
+  <view class="ui-label">相关图书</view>
+  <view wx:if="{{book.relevant_books && book.relevant_books.length}}" class="ui-panel">
+    <template is="showcase-book" data="{{books: book.relevant_books}}"></template>
+  </view>
+  <view wx:else class="font-black-26 ui-card">暂无</view>
+  <!-- 包含这本书的书单 -->
+  <view class="ui-label">包含这本书的书单</view>
+  <view wx:if="{{book.relevant_booklists && book.relevant_booklists.length}}" class="ui-panel">
+    <template is="showcase-booklist" data="{{booklists: book.relevant_booklists}}"></template>
+  </view>
+  <view wx:else class="font-black-26 ui-card">暂无</view>
+  <!-- 底部链接 -->
+  <view class="font-28 color-blue tip" catchtap="onShowTip">对本页内容有疑问？</view>
+  <!-- 底部菜单 -->
+  <view class="menubar">
+    <view class="menubar__icon" data-target="add" catchtap="onNavigate">
+      <image class="menubar__icon-img" src="/images/icon_add_to_booklist.png" mode="aspectFit"></image>
+      <span class="menubar__icon-text">加入书单</span>
+    </view>
+    <view class="menubar__icon" data-target="review" catchtap="onNavigate">
+      <image class="menubar__icon-img" src="/images/icon_review.png" mode="widthFix"></image>
+      <span class="menubar__icon-text">查看书评</span>
+    </view>
+    <button class="menubar__btn" type="primary" bindtap="onShowPopup">借阅此书</button>
+  </view>
+  <!-- 馆藏列表 -->
+  <popup title="请选择图书馆" hide-text="取消" show="{{libraryList.show}}" bindhide="onHidePopup">
+    <scroll-view class="weui-cells weui-cells_after-title library-list" scroll-y>
+      <view wx:if="{{libraryList.data.length}}" wx:for="{{libraryList.data}}" wx:key="{{item.library.id}}" class="weui-cell" hover-class="ui--active" data-id="{{item.library.id}}" data-target="libraryItem" catchtap="onNavigate">
+        <view class="library-item__info">
+          <view class="library-item__info-name">
+            <text class="font-black-34 ellipsis">{{item.library.name}}</text>
+            <image wx:if="{{item.library.status}}" src="/images/icon_certificated.png" mode="aspectFit"></image>
+            <image wx:else="{{item.library.status}}" src="/images/icon_uncertificated.png" mode="aspectFit"></image>
+          </view>
+          <view class="font-gray-26 ellipsis">
+            {{item.library.address}}
+          </view>
+        </view>
+        <view class="library-item__collection font-gray-26">
+          馆藏：{{item.total_num}} | 可借：<span class="{{item.available_num == 0 ? 'color-gray' : 'color-orange'}}">{{item.available_num}}</span>
+        </view>
+        <view class="weui-cell__ft_in-access"></view>
+      </view>
+      <load-more wx:if="{{libraryList.status == 'loading' || libraryList.status == 'nomore'}}" status="{{libraryList.status}}" loading-text="正在加载馆藏列表"></load-more>
+      <no-data wx:if="{{libraryList.status == 'nodata'}}" text="暂无馆藏信息"></no-data>
+      <view wx:if="{{libraryList.data.length}}" class="weui-cell" hover-class="ui--active" data-target="libraryList" catchtap="onNavigate">
+        <view class="weui-cell__bd font-26 color-blue">查看所有图书馆</view>
+        <view class="weui-cell__ft_in-access"></view>
+      </view>
+    </scroll-view>
+  </popup>
+</block>
+<template wx:elif="{{pageStatus == 'nodata'}}" is="page-empty" data="{{message: '系统中暂无该图书信息，您可以通过图书wiki系统为该图书创建一个新条目', btnText: '创建新条目'}}"></template>

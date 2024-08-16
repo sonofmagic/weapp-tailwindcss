@@ -1,0 +1,16 @@
+page {
+  padding-bottom: 25px;
+}
+
+.step>view {
+  line-height: 1.5;
+  margin-top: 10rpx;
+}
+
+.step>view:first-child {
+  margin-top: 0;
+}
+
+.weui-cells:after {
+  display: none;
+}

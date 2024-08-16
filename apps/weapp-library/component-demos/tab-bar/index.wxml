@@ -1,0 +1,56 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">TabBar</view>
+    <view class="page__desc">选项卡</view>
+  </view>
+  <view class="page__bd">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <view class="container">
+      <tab-bar tabs="{{['选项卡一', '选项卡二', '选项卡三']}}">
+        <view slot="选项卡一" class="page__placeholder">这是选项卡一的内容</view>
+        <view slot="选项卡二" class="page__placeholder">这是选项卡二的内容</view>
+        <view slot="选项卡三" class="page__placeholder">这是选项卡三的内容</view>
+      </tab-bar>
+    </view>
+
+    <view class="page__section-title">四个选项卡</view>
+    <view class="container">
+      <tab-bar tabs="{{['选项卡一', '选项卡二', '选项卡三', '选项卡四']}}">
+        <view slot="选项卡一" class="page__placeholder">这是选项卡一的内容</view>
+        <view slot="选项卡二" class="page__placeholder">这是选项卡二的内容</view>
+        <view slot="选项卡三" class="page__placeholder">这是选项卡三的内容</view>
+        <view slot="选项卡四" class="page__placeholder">这是选项卡四的内容</view>
+      </tab-bar>
+    </view>
+
+    <view class="page__section-title">设置默认选项卡</view>
+    <view class="container">
+      <tab-bar tabs="{{['选项卡一', '选项卡二', '选项卡三']}}" active-index="1">
+        <view slot="选项卡一" class="page__placeholder">这是选项卡一的内容</view>
+        <view slot="选项卡二" class="page__placeholder">默认激活选项卡二</view>
+        <view slot="选项卡三" class="page__placeholder">这是选项卡三的内容</view>
+      </tab-bar>
+    </view>
+
+    <view class="page__section-title">手动切换选项卡</view>
+    <view class="container">
+      <tab-bar id='tab-bar' tabs="{{['选项卡一', '选项卡二', '选项卡三', '选项卡四']}}">
+        <view slot="选项卡一" class="page__placeholder">
+          <button class="weui-btn mini-btn" type="default" size="mini" bindtap="onActiveTab" data-index="0">点击激活下一个选项卡</button>
+        </view>
+        <view slot="选项卡二" class="page__placeholder">
+          <button class="weui-btn mini-btn" type="default" size="mini" bindtap="onActiveTab" data-index="1">点击激活下一个选项卡</button>
+        </view>
+        <view slot="选项卡三" class="page__placeholder">
+          <button class="weui-btn mini-btn" type="default" size="mini" bindtap="onActiveTab" data-index="2">点击激活下一个选项卡</button>
+        </view>
+        <view slot="选项卡四" class="page__placeholder">
+          <button class="weui-btn mini-btn" type="default" size="mini" bindtap="onActiveTab" data-index="3">点击激活下一个选项卡</button>
+        </view>
+      </tab-bar>
+    </view>
+
+    <view class="page__section-title">事件</view>
+    <view class="page__desc">click: { index: 点击的选项卡下标 }</view>
+  </view>
+</view>

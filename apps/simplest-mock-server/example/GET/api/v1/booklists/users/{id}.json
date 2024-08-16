@@ -1,0 +1,48 @@
+{
+  "create": [{
+    "status": 1,
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "我的收藏集",
+    "image": "https://img1.doubanio.com/spic/s1237549.jpg",
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": 1,
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "经典好书",
+    "image": "https://img1.doubanio.com/spic/s1513425.jpg",
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }],
+  "favorite": [{
+    "status": 1,
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "给你人生哲理的书",
+    "image": "https://img1.doubanio.com/spic/s29451990.jpg",
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }, {
+    "status": 1,
+    "id": "@integer(60, 100)",
+    "creator": {
+      "phone": "@string",
+      "nickname": "@name"
+    },
+    "title": "励志书籍",
+    "image": "https://img1.doubanio.com/spic/s27264181.jpg",
+    "total": "@integer(60, 100)",
+    "favorited_num": "@integer(60, 100)"
+  }]
+}

@@ -1,0 +1,4 @@
+<view class="no-data">
+  <icon type="search" size="40" />
+  <text class="no-data__text font-30">{{ text || "暂无数据" }}</text>
+</view>

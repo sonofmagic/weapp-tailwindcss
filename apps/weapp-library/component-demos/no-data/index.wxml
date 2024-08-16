@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">NoData</view>
+    <view class="page__desc">暂无数据</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <no-data></no-data>
+
+    <view class="page__section-title">自定义文字</view>
+    <no-data text="没有任何数据啦"></no-data>
+  </view>
+</view>

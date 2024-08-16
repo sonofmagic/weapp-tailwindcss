@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "Sticky",
+  "usingComponents": {
+    "sticky": "/components/sticky/index"
+  }
+}

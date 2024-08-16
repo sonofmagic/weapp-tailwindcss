@@ -1,0 +1,37 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Collapse</view>
+    <view class="page__desc">折叠面板</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <view class="container">
+      <collapse title="点击这里展开或折叠">
+        <view class="page__placeholder">这是 collapse 的内容</view>
+      </collapse>
+    </view>
+
+    <view class="page__section-title">带有操作按钮</view>
+    <view class="container">
+      <collapse title="点击这里展开或折叠" action-text="操作" bindtapaction="onTapAction" show="{{false}}">
+        <view class="page__placeholder">这是 collapse 的内容</view>
+      </collapse>
+    </view>
+
+    <view class="page__section-title">自定义标题样式</view>
+    <view class="container">
+      <collapse title="点击这里展开或折叠" header-class="custom-header" show="{{false}}">
+        <view class="page__placeholder">这是 collapse 的内容</view>
+      </collapse>
+    </view>
+    <view class="page__desc">注意：自定义样式类的优先级是未知的</view>
+
+    <view class="page__section-title">事件</view>
+    <view class="container">
+      <collapse title="点击这里展开或折叠" action-text="操作" bindshow="onShowCollapse" bindhide="onHideCollapse" bindtapaction="onTapAction" show="{{false}}">
+        <view class="page__placeholder">这是 collapse 的内容</view>
+      </collapse>
+    </view>
+    <view class="page__desc">show / hide / tapaction</view>
+  </view>
+</view>

@@ -1,0 +1,21 @@
+<view wx:if="{{type == 'line-scale'}}" class="line-scale">
+  <view class="rect1" style="background-color: {{bgColor}}"></view>
+  <view class="rect2" style="background-color: {{bgColor}}"></view>
+  <view class="rect3" style="background-color: {{bgColor}}"></view>
+  <view class="rect4" style="background-color: {{bgColor}}"></view>
+  <view class="rect5" style="background-color: {{bgColor}}"></view>
+</view>
+
+<view wx:if="{{type == 'line-scale-pulse-out'}}" class="line-scale-pulse-out">
+  <view class="rect1" style="background-color: {{bgColor}}"></view>
+  <view class="rect2" style="background-color: {{bgColor}}"></view>
+  <view class="rect3" style="background-color: {{bgColor}}"></view>
+  <view class="rect4" style="background-color: {{bgColor}}"></view>
+  <view class="rect5" style="background-color: {{bgColor}}"></view>
+</view>
+
+<view wx:if="{{type == 'ball-pulse-sync'}}" class="ball-pulse-sync">
+  <view class="ball1" style="background-color: {{bgColor}}"></view>
+  <view class="ball2" style="background-color: {{bgColor}}"></view>
+  <view class="ball3" style="background-color: {{bgColor}}"></view>
+</view>

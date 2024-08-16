@@ -1,0 +1,26 @@
+{
+  "token": "12312312",
+  "user": {
+    "id": 1,
+    "phone": "13000000000",
+    "openid": "@id",
+    "status": 0,
+    "review_msg": "@paragraph(1, 3)",
+    "nickname": "@nickname",
+    "avatar": "",
+    "name": "@cname",
+    "birthday": "@now",
+    "id_number": "@natural",
+    "id_card_img": {
+      "front": "",
+      "back": ""
+    },
+    "address": "@city(true)",
+    "postcode": "@natural(100000, 100099)",
+    "deposit_status": 0,
+    "reading_statistics": {
+      "book_num": "@natural(60, 100)",
+      "page_num": "@natural(60, 100)"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<view>
+  <toptip id="toptip"></toptip>
+  <toast id="toast"></toast>
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_select">
+      <view class="weui-cell__hd weui-cell__hd_in-select-after">
+        <view class="weui-label">国家/地区</view>
+      </view>
+      <view class="weui-cell__bd">
+        <picker bindchange="onCountryChange" value="{{countryIndex}}" range="{{countries}}">
+          <view class="weui-select weui-select_in-select-after">{{countries[countryIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__hd">
+        <view class="weui-label">手机号</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入手机号" bindinput="onInput" data-label="phone" type="number"/>
+      </view>
+      <send-code id="send-btn" bindtap="onSend"></send-code>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">验证码</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入验证码" data-label="vrcode" type="number" bindinput="onInput"/>
+      </view>
+    </view>
+  </view>
+  <view class="weui-btn-area">
+    <button class="weui-btn" type="primary" catchtap="onSubmit">下一步</button>
+  </view>
+</view>

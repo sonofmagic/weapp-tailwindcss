@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Sticky</view>
+    <view class="page__desc">吸顶元素</view>
+  </view>
+  <view class="page__bd">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <sticky scroll-top="{{ scrollTop }}">
+      <view class="sticky-header1">滚动页面，我会固定在顶部！</view>
+      <view slot="sticky" class="sticky-header1">滚动页面，我会固定在顶部！</view>
+    </sticky>
+
+    <view class="page__section-title">自定义与顶部的距离</view>
+    <sticky scroll-top="{{ scrollTop }}" top-spacing="50">
+      <view class="sticky-header2">我距离顶部50px！</view>
+      <view slot="sticky" class="sticky-header2">我距离顶部50px！</view>
+    </sticky>
+
+    <view class="page__section-title">事件</view>
+    <sticky scroll-top="{{ scrollTop }}" top-spacing="99" bindstickystart="onSticky" bindstickyend="onSticky">
+      <view class="sticky-header3">
+        <view>top：{{eventInfo.top}}</view>
+        <view>bottom{{eventInfo.bottom}}</view>
+      </view>
+      <view slot="sticky" class="sticky-header3">
+        <view>top：{{eventInfo.top}}</view>
+        <view>bottom{{eventInfo.bottom}}</view>
+      </view>
+    </sticky>
+    <view class="page__desc">stickystart / stickyend：开始固定 / 结束固定</view>
+    <view class="page__desc">事件对象为元素的布局信息 { left, top, right, bottom }</view>
+
+
+    <view class="page__placeholder"></view>
+    <view class="page__placeholder"></view>
+    <view class="page__placeholder">占位元素</view>
+    <view class="page__placeholder"></view>
+    <view class="page__placeholder"></view>
+  </view>
+</view>

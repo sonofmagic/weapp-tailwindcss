@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Popup</view>
+    <view class="page__desc">底部弹出菜单</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <button id="0" class="weui-btn" type="primary" bindtap="onShowPopup">显示 Popup</button>
+    <popup id="0" title="标题" show="{{show[0]}}" bindhide="onHidePopup">
+      <view class="page__placeholder">
+        这是 popup 的内容
+      </view>
+    </popup>
+
+    <view class="page__section-title">自定义文字</view>
+    <button id="1" class="weui-btn" bindtap="onShowPopup">显示 Popup</button>
+    <popup id="1" title="自定义标题" hide-text="自定义关闭文字" show="{{show[1]}}" bindhide="onHidePopup">
+      <view class="page__placeholder">
+        这是 popup 的内容
+      </view>
+    </popup>
+
+    <view class="page__section-title">点击背景无法关闭</view>
+    <button id="2" class="weui-btn" bindtap="onShowPopup">显示 Popup</button>
+    <popup id="2" title="点击背景无法关闭" hide-text="只能点击这里关闭" tappable-mask="{{false}}" show="{{show[2]}}" bindhide="onHidePopup">
+      <view class="page__placeholder">
+        这是 popup 的内容
+      </view>
+    </popup>
+
+    <view class="page__section-title">事件</view>
+    <button id="3" class="weui-btn" bindtap="onShowPopup">显示 Popup</button>
+    <popup id="3" title="标题" show="{{show[3]}}" bindhide="onHidePopup">
+      <view class="page__placeholder">
+        这是 popup 的内容
+      </view>
+    </popup>
+    <view class="page__desc">hide</view>
+  </view>
+</view>

@@ -1,0 +1,61 @@
+{
+  "id": "@integer(60, 100)",
+  "status": 1001,
+  "user": {
+    "id": "@integer(60, 100)",
+    "phone": "@string",
+    "nickname": "@string",
+    "avatar": "@string"
+  },
+  "book": {
+    "id": "@integer(60, 100)",
+    "title": "@string",
+    "isbn": "@string",
+    "publisher": "@string",
+    "pubdate": "@string",
+    "class_num": "@string",
+    "call_number": "@string",
+    "author": [
+      "@string"
+    ],
+    "translator": [
+      "@string"
+    ],
+    "binding": "精装",
+    "price": "@float(60, 100, 3, 5)",
+    "pages": "@integer(60, 100)",
+    "words": "@integer(60, 100)",
+    "tags": [
+      "@string"
+    ],
+    "total_score": "@float(60, 100, 3, 5)",
+    "review_num": "@integer(60, 100)",
+    "imgs": {
+      "small": "@string",
+      "medium": "@string",
+      "large": "@string"
+    },
+    "total_num": "@integer(60, 100)",
+    "available_num": "@integer(60, 100)"
+  },
+  "library": {
+    "id": "@integer(60, 100)",
+    "status": 0,
+    "name": "@string",
+    "phone": "@string",
+    "address": "@string",
+    "introduction": "@string",
+    "book_type_num": "@integer(60, 100)",
+    "book_total_num": "@integer(60, 100)",
+    "photos": [
+      "@string"
+    ]
+  },
+  "create_time": "@string",
+  "shoule_take_time": "@string",
+  "actual_take_time": "@string",
+  "renew_count": "@string",
+  "shoule_return_time": "@string",
+  "actual_return_time": "@string",
+  "fine": "@float(60, 100, 3, 5)"
+}

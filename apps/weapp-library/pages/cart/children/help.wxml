@@ -1,0 +1,46 @@
+<view class="weui-article">
+  <view class="weui-article__h1">如何在线预订图书？</view>
+  <view class="weui-article__section">
+    <view class="weui-article__title">1. 搜索图书</view>
+    <view class="weui-article__section">
+      <view class="weui-article__p">
+        通过主页搜索框可搜索图书；点击“分类”可按照学科门类搜索图书； 点击搜索框后，左侧可选择搜索条件，或进入高级搜索。
+      </view>
+    </view>
+  </view>
+  <view class="weui-article__section">
+    <view class="weui-article__title">2. 图书详情</view>
+    <view class="weui-article__section">
+      <view class="weui-article__p">
+        <view>点击首页图书，或点击搜索结果中的列表项，可进入图书详情。</view>
+        <view>点击“馆藏信息”或右下角借阅按钮，可展开馆藏列表。</view>
+      </view>
+    </view>
+  </view>
+  <view class="weui-article__section">
+    <view class="weui-article__title">3. 在线预订</view>
+    <view class="weui-article__section">
+      <view class="weui-article__p">
+        <view>选择图书馆，进入订单页。</view>
+        <view>
+          当该图书馆有此图书时，你可以选择一个取书日期预订此书，需在一个月之内取书；当该图书馆暂无此书时，你可以预约图书，当他人归还时，你将收到系统提醒。</view>
+      </view>
+    </view>
+  </view>
+  <view class="weui-article__section">
+    <view class="weui-article__title">4. 取书</view>
+    <view class="weui-article__section">
+      <view class="weui-article__p">
+        在约定的取书日期前往图书馆，向图书管理员出示订单号（订单可在“我的-借阅进度”中查看），管理员确认后，完成取书。
+      </view>
+    </view>
+  </view>
+  <view class="weui-article__section">
+    <view class="weui-article__title">5. 还书</view>
+    <view class="weui-article__section">
+      <view class="weui-article__p">
+        图书借阅时长为一个月，每本图书可续借一次。需在还书日期前归还图书。
+      </view>
+    </view>
+  </view>
+</view>

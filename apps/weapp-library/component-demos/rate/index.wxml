@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">Rate</view>
+    <view class="page__desc">可打半星的评分组件，默认满分 10 分</view>
+  </view>
+  <view class="page__bd page__bd--spacing">
+    <view class="page__section-title page__section-title--first">基本用法</view>
+    <view class="rate-area">
+      <rate value="5"></rate>
+      <rate value="5" number="6"></rate>
+    </view>
+    <view class="page__desc">每颗星 2 分，半颗星 1 分</view>
+
+    <view class="page__section-title">自定义大小与间距</view>
+    <view class="rate-area">
+      <rate value="5" star-size="20"></rate>
+      <rate value="5" star-size="25"></rate>
+      <rate value="5" star-size="30" gutter-size="20"></rate>
+    </view>
+    <view class="page__desc">大小与间距的单位默认为 px，可选 rpx</view>
+
+    <view class="page__section-title">禁用状态</view>
+    <rate value="5" disabled></rate>
+
+    <view class="page__section-title">事件</view>
+    <rate value="5" number="6" bindchange="onChange"></rate>
+    <view class="page__desc">change: { value: 当前评分 }</view>
+  </view>
+</view>
