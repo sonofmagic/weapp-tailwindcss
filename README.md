@@ -4,7 +4,7 @@
 <td align="center">
 <a href="https://weapp-tw.icebreaker.top">
 
-<img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
+<img src="./assets/logo.png" alt="weapp-tailwindcss-logo" height="128">
 </a>
 
 <br>
@@ -16,7 +16,7 @@
 
 <a href="https://vite.icebreaker.top">
 
-<img src="./website-weapp-vite/public/logo.png" alt="weapp-vite-logo" width="128">
+<img src="./website-weapp-vite/public/logo.png" alt="weapp-vite-logo" height="128">
 </a>
 
 <br>
@@ -33,30 +33,35 @@
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
 [![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
+
 > 简体中文(zh-cn) | [English](./README_en.md)
 
 目前这个仓库存在 2 个主要项目: `weapp-tailwindcss` 和 `weapp-vite`
 
-## weapp-tailwindcss
+## 🔥 weapp-tailwindcss
 
-介绍: 把原子化思想带入小程序开发吧！
+### 介绍: 把原子化思想带入小程序开发吧！
 
-仓库链接: [packages/weapp-tailwindcss](./packages/weapp-tailwindcss/)
+### 仓库链接: [packages/weapp-tailwindcss](./packages/weapp-tailwindcss/)
 
-## weapp-vite
+### 官网链接: [weapp-tw.icebreaker.top](https://weapp-tw.icebreaker.top)
 
-介绍: 把现代化的工具链和生态带入小程序开发吧！
+## 🔥 weapp-vite
 
-仓库链接: [packages/weapp-tailwindcss](./packages/weapp-vite/)
+### 介绍: 把现代化的工具链和生态带入小程序开发吧！
 
-## Contribute
+### 仓库链接: [packages/weapp-vite](./packages/weapp-vite/)
 
-我们邀请你来贡献和帮助改进 `weapp-tailwindcss` 💚💚💚
+### 官网链接: [vite.icebreaker.top](https://vite.icebreaker.top)
+
+## 贡献
+
+我们邀请你来贡献和帮助改进 `weapp-tailwindcss` 和 `weapp-vite` 💚💚💚
 
 以下有几个方式可以参与:
 
 - 报告错误：如果您遇到任何错误或问题，请提`issue`并提供完善的错误信息和复现方式。
-- 建议：有增强 `weapp-tailwindcss` 的想法吗？请提 `issue` 来分享您的建议。
+- 建议：有增强 `weapp-tailwindcss` 和 `weapp-vite` 的想法吗？请提 `issue` 来分享您的建议。
 - 文档：如果您对文档有更好的见解或者更棒的修辞方式，欢迎 `pr`。
 - 代码：任何人的代码都不是完美的，我们欢迎你通过 `pr` 给代码提供更好的质量与活力。
 
