@@ -1,6 +1,7 @@
 {
   "name": "weapp-wechat-zhihu",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "author": "",
   "license": "ISC",
