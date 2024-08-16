@@ -5,6 +5,7 @@
   "description": "weapp-vite 一个现代化的小程序打包工具",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
+  "homepage": "https://vite.icebreaker.top/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
@@ -12,7 +13,16 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "keywords": [],
+  "keywords": [
+    "weapp",
+    "vite",
+    "ts",
+    "wxml",
+    "wxss",
+    "mp",
+    "miniprogram",
+    "scss"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./config": "./src/config.ts"

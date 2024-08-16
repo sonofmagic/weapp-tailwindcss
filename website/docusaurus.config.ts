@@ -119,7 +119,9 @@ const config = {
         name: 'docusaurus-tailwindcss',
         configurePostCss(postcssOptions) {
           // Appends TailwindCSS and AutoPrefixer.
+          // eslint-disable-next-line ts/no-require-imports
           postcssOptions.plugins.push(require('tailwindcss'))
+          // eslint-disable-next-line ts/no-require-imports
           postcssOptions.plugins.push(require('autoprefixer'))
           return postcssOptions
         },
@@ -251,10 +253,15 @@ const config = {
             label: 'Types',
             position: 'left',
           },
+          // {
+          //   to: 'docs/api-cli/', // 'api' is the 'out' directory
+          //   label: 'Types-CLI',
+          //   position: 'left',
+          // },
           {
-            to: 'docs/api-cli/', // 'api' is the 'out' directory
-            label: 'Types-CLI',
+            href: 'https://vite.icebreaker.top/',
             position: 'left',
+            label: '🔥Weapp-vite',
           },
           {
             href: 'https://icebreaker.top/',
@@ -312,6 +319,10 @@ const config = {
               {
                 label: 'GitHub',
                 href: 'https://github.com/sonofmagic/weapp-tailwindcss',
+              },
+              {
+                label: 'weapp-vite',
+                href: 'https://vite.icebreaker.top',
               },
               {
                 label: '博客',
