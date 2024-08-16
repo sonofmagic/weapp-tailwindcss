@@ -44,7 +44,6 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
         transformMixedEsModules: true,
         include: undefined,
       },
-      emptyOutDir: false,
     },
     plugins: [
       vitePluginWeapp(ctx),
@@ -65,10 +64,9 @@ export function runDev(ctx: Context, options?: UserConfig) {
         {
           mode: 'development',
           build: {
-            watch: {
-
-            },
+            watch: {},
             minify: false,
+            emptyOutDir: false,
           },
         },
       )

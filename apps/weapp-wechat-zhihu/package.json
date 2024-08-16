@@ -12,5 +12,8 @@
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm",
     "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "miniprogram-api-typings": "latest"
   }
 }

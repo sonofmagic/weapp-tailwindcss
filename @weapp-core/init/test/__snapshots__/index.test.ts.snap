@@ -1,9 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`index > cjs vite.config.ts 1`] = `undefined`;
-
-exports[`index > no-pkg-json vite.config.ts 1`] = `undefined`;
-
 exports[`index > vite-native callback 1`] = `
 {
   "author": "",
@@ -13,6 +9,7 @@ exports[`index > vite-native callback 1`] = `
   "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "miniprogram-api-typings": "latest",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "weapp-tailwindcss": "workspace:*",
@@ -85,13 +82,12 @@ export default defineConfig({
 "
 `;
 
-exports[`index > vite-native vite.config.ts 2`] = `undefined`;
-
 exports[`index > vite-native-skyline callback 1`] = `
 {
   "author": "",
   "description": "",
   "devDependencies": {
+    "miniprogram-api-typings": "latest",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -160,14 +156,12 @@ export default defineConfig({
 "
 `;
 
-exports[`index > vite-native-skyline vite.config.ts 2`] = `undefined`;
-
 exports[`index > vite-native-ts callback 1`] = `
 {
   "author": "",
   "description": "",
   "devDependencies": {
-    "miniprogram-api-typings": "^3.12.3",
+    "miniprogram-api-typings": "latest",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -243,14 +237,12 @@ export default defineConfig({
 "
 `;
 
-exports[`index > vite-native-ts vite.config.ts 2`] = `undefined`;
-
 exports[`index > vite-native-ts-skyline callback 1`] = `
 {
   "author": "",
   "description": "",
   "devDependencies": {
-    "miniprogram-api-typings": "^3.12.3",
+    "miniprogram-api-typings": "latest",
     "weapp-vite": "workspace:*",
   },
   "keywords": [],
@@ -325,5 +317,3 @@ export default defineConfig({
 })
 "
 `;
-
-exports[`index > vite-native-ts-skyline vite.config.ts 2`] = `undefined`;

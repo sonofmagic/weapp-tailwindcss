@@ -17,6 +17,9 @@
       ]
     },
     "resolveJsonModule": true,
+    "types": [
+      "miniprogram-api-typings"
+    ],
     "allowImportingTsExtensions": true,
     "allowJs": true,
     "strict": true,
