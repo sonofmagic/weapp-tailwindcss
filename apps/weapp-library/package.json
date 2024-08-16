@@ -7,7 +7,7 @@
   "keywords": [],
   "main": "index.js",
   "scripts": {
-    "dev": "weapp-vite dev | node simplest-mock-server/server.js",
+    "dev": "weapp-vite dev | node ../simplest-mock-server/server.js",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm",
