@@ -1,0 +1,30 @@
+{
+  "miniprogramRoot": "dist/",
+  "srcMiniprogramRoot": "dist/",
+  "setting": {
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./dist"
+      }
+    ],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "appid": "wx6ffee4673b257014",
+  "compileType": "miniprogram",
+  "libVersion": "3.5.4",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}

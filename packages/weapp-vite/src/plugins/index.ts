@@ -180,10 +180,11 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           const filepath = path.resolve(ctx.cwd, file)
 
           this.addWatchFile(filepath)
+          const isMedia = !/\.(?:wxml|json|wxs)$/.test(file)
           this.emitFile({
             type: 'asset',
             fileName: ctx.relativeSrcRoot(file),
-            source: await fs.readFile(filepath, 'utf8'),
+            source: isMedia ? await fs.readFile(filepath) : await fs.readFile(filepath, 'utf8'),
           })
         }
       },

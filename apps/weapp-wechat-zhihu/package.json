@@ -1,0 +1,16 @@
+{
+  "name": "weapp-wechat-zhihu",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+    "dev": "weapp-vite dev",
+    "build": "weapp-vite build",
+    "open": "weapp-vite open",
+    "build-npm": "weapp-vite build-npm",
+    "lint:fix": "eslint . --fix"
+  }
+}

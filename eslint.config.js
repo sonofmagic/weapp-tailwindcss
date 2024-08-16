@@ -22,6 +22,7 @@ export default icebreaker(
         wx: true,
         App: true,
         Page: true,
+        getApp: true,
       },
     },
   },
