@@ -239,15 +239,20 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         const styles: Record<string, string> = {}
         for (const stylesId of stylesIds) {
           const parsed = parseRequest(stylesId)
-
-          const css = await fs.readFile(getRealPath(parsed), 'utf8')
-          const res = await preprocessCSS(css, stylesId, configResolved)
-          const fileName = relative(normalizeCssPath(stylesId))
-          if (styles[fileName]) {
-            styles[fileName] += res.code
+          const realPath = getRealPath(parsed)
+          if (await fs.exists(realPath)) {
+            const css = await fs.readFile(realPath, 'utf8')
+            const res = await preprocessCSS(css, stylesId, configResolved)
+            const fileName = relative(normalizeCssPath(stylesId))
+            if (styles[fileName]) {
+              styles[fileName] += res.code
+            }
+            else {
+              styles[fileName] = res.code
+            }
           }
           else {
-            styles[fileName] = res.code
+            stylesIds.delete(stylesId)
           }
         }
         for (const style of Object.entries(styles)) {
