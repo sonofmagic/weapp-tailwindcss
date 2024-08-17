@@ -1,5 +1,12 @@
 # weapp-vite
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [6f469c3]
+  - weapp-ide-cli@2.0.2
+
 ## 1.0.3
 
 ### Patch Changes
