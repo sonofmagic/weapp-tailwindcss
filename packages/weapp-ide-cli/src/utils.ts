@@ -1,9 +1,9 @@
 import process from 'node:process'
 import path from 'pathe'
-import { execa } from 'execa'
 import type { AliasEntry } from './types'
 
 export async function execute(cliPath: string, argv: string[]) {
+  const { execa } = await import('execa')
   const task = execa(cliPath, argv)
 
   task?.stdout?.pipe(process.stdout)
