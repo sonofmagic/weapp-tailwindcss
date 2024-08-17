@@ -1,6 +1,7 @@
 {
   "name": "weapp-vite",
-  "version": "1.0.6",
+  "type": "module",
+  "version": "1.0.7",
   "description": "weapp-vite 一个现代化的小程序打包工具",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
@@ -49,6 +50,7 @@
     "@weapp-core/init": "workspace:^",
     "@weapp-core/logger": "workspace:^",
     "@weapp-core/shared": "workspace:^",
+    "chokidar": "^3.6.0",
     "commander": "^12.1.0",
     "debug": "^4.3.6",
     "fast-glob": "^3.3.2",
@@ -83,7 +85,8 @@
     "types": "./dist/index.d.ts",
     "bin": {
       "weapp-vite": "bin/weapp-vite.js",
-      "weapp-vite-esm": "bin/weapp-vite-esm.js"
+      "weapp-vite-esm": "bin/weapp-vite-esm.js",
+      "weapp-vite-cjs": "bin/weapp-vite-cjs.js"
     }
   }
 }
