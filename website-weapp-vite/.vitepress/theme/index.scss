@@ -2,9 +2,12 @@
 
 $p1: #95ec69;
 $p2: #2ba245;
-$hb: color.adjust($p2, $lightness: -10%);
+$p3: color.adjust($p2, $lightness: -10%);
 
 :root {
+  --vp-c-brand-1: #{$p3};
+  --vp-c-brand-2: #{$p2};
+  --vp-c-brand-3: #{$p1};
   //   <stop stop-color="#95EC69"/>
   // <stop offset="1" stop-color="#2BA245"/>
   --vp-home-hero-name-color: transparent;
@@ -20,9 +23,15 @@ $hb: color.adjust($p2, $lightness: -10%);
 
   --vp-button-brand-hover-border: #{$p1};
   // --vp-button-brand-hover-text: #fff;
-  --vp-button-brand-hover-bg: #{$hb};
+  --vp-button-brand-hover-bg: #{$p3};
   --vp-button-brand-active-border: #{$p1};
   --vp-button-brand-active-bg: #{$p2};
+}
+
+html.dark{
+  --vp-c-brand-1: #{$p1};
+  --vp-c-brand-2: #{$p2};
+  --vp-c-brand-3: #{$p3};
 }
 
 .VPHome {

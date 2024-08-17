@@ -48,6 +48,7 @@ export default defineConfig({
   markdown: {
     // @ts-ignore
     codeTransformers: [transformerTwoslash()],
+
   },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
@@ -56,5 +57,6 @@ export default defineConfig({
   sitemap: {
     hostname: 'https://vite.icebreaker.top',
   },
+  lastUpdated: true,
 
 })
