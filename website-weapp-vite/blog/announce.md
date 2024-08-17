@@ -1,4 +1,4 @@
-# 改善小程序开发体验的 `weapp-vite` 发布了！
+# `weapp-vite` 发布：重塑小程序开发体验！
 
 大家好，我是 [`weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss) 的作者 [`ice breaker`](https://github.com/sonofmagic)
 
@@ -6,17 +6,15 @@
 
 ## 什么是 `weapp-vite`?
 
-`weapp-vite` 是一个 `vite` 的小程序版本的封装，你可以利用它，开箱即用的进行小程序开发。
+`weapp-vite` 是对 `vite` 的封装，专为小程序开发设计。
 
-它支持绝大部分 `vite` 的配置和插件系统，同时对小程序架构做了一些特殊的优化
-
-有了它，能立马支持 `ts` / `postcss` / `sass` / `less` / `tailwindcss` 还能使用众多 `vite` 插件
+它保留了 `vite` 的强大配置和插件系统，同时针对小程序的开发流程进行了优化，支持 `ts`、`postcss`、`sass`、`less` 等现代前端技术栈，让小程序开发更加高效、便捷。
 
 ## 诞生背景
 
 ### 开始吐槽
 
-首先我要狠狠的吐槽一下：
+首先我要小小的吐槽一下：
 
 嗯，是的，原生的小程序开发方式，令人十分不愉快！
 
@@ -28,7 +26,7 @@
 
 并不想上什么框架，学习什么类似 `vue` 又不像 `vue` 新语法。
 
-我就想要看着微信官方文档，简简单单的写一个小程序而已！！！
+我就想要看着微信官方文档，简简单单的写一个小程序而已！
 
 ### 越来越大的差异化
 
@@ -54,16 +52,17 @@
 
 ## 快速开始
 
-### 使用方式
+### 创建与初始化
 
-打开微信开发者工具, 创建一个 `js`/`ts` 项目
+1. 在微信开发者工具中创建一个新的 `js`/`ts` 项目。
 
 ![](../images/create-project.png)
 
-> 假如你这个项目没有 `package.json`，在你的小程序目录下，使用 `npm init -y` 创建一个 `package.json`
+2. 确保项目根目录下有 `package.json`，若无则运行 `npm init -y`
+
 > 假如你创建的是一个 `ts` 项目，你需要在 `vite.config.ts` 里的 `weapp.srcRoot` 配置项，指明使用的是 `'./miniprogram'` 目录，详见本页下方
 
-然后执行：
+3. 安装 weapp-vite 并执行初始化命令
 
 ```sh
 npm i -D weapp-vite
@@ -71,7 +70,7 @@ npm i -D weapp-vite
 npx weapp-vite init
 ```
 
-于是就初始化成功了！然后再执行一下安装包的命令
+于是就初始化成功了！然后再执行一下安装包的命令，去安装智能提示的类型定义
 
 ```sh
 npm i
@@ -79,41 +78,16 @@ npm i
 
 这样微信开发小程序的智能提示(`types`)，就也被安装进来
 
-## typescript / sass / less 等的默认支持
+## 语言默认支持
 
 你可以直接使用 `typescript`，把 `js` 改成 `ts` 后缀即可，也可以通过安装 `sass` / `less`，并把 `index.wxss` 的后缀名改成相应的后缀来支持样式预处理器，比如 `scss` / `less` 。
 
-### 开发命令
+## 开发与构建
 
-```sh
-npm run dev
-```
-
-此时会启动 **1到多个** `fs.watcher` 对项目进行监听，发生更改就重新打包编译，并输出到 `dist` 目录
-
-### 构建命令
-
-```sh
-npm run build
-```
-
-此时会启用 `vite` 自带的 `build` 模式，删除整个 `dist` 目录重新生成，并进行代码压缩
-
-### 构建 npm 命令
-
-```sh
-npm run build-npm
-```
-
-使用这个指令，可以触发微信开发者工具的 构建 npm 命令，构建结果在 `dist/miniprogram_npm` 下
-
-### 打开微信开发者工具命令
-
-```sh
-npm run open
-```
-
-使用这个命令直接打开微信开发者工具
+- 开发模式：使用 `npm run dev` 启动开发服务器，实时监听文件变化并自动编译。
+- 构建模式：通过 `npm run build` 进行生产环境的构建，包括代码压缩等优化。
+- 构建 npm：`npm run build-npm` 用于微信开发者工具中的 npm 构建，输出至 `dist/miniprogram_npm`。
+- 打开微信开发者工具：`npm run open` 直接启动微信开发者工具，便捷调试。
 
 ## 配置项
 
@@ -137,17 +111,25 @@ export default defineConfig({
 
 你可以在 `defineConfig` 使用其他的 `vite` 插件，比如 `weapp-tailwindcss`
 
-## 尾言
+## 关于 `weapp-vite` 的承诺与展望
 
-目前这个项目还刚刚出生，还存在很多不足，不过我是打算以我维护 `weapp-tailwindcss` 的恒心，来长期维护这个项目的（目前 `weapp-tailwindcss` 已经维护了将近 `3` 年！）
+在过去的三年里，`weapp-tailwindcss` 不仅见证了小程序开发社区的蓬勃发展，也陪伴了无数开发者从初识到精通的旅程。这份历程教会了我耐心、细致与不懈追求。现在，我将这份恒心带入 `weapp-vite`，致力于打造一个更加高效、灵活且易于使用的小程序开发解决方案。
 
-笔者在此邀请感兴趣的朋友们，来贡献和帮助改进 `weapp-vite` 💚💚💚
+## 期待大家的加入
 
-以下有几个方式可以参与:
+`weapp-vite` 刚刚起步，虽已初具雏形，但仍有许多待完善之处。我诚挚邀请各位开发者加入我们的行列，共同推动项目的成长：
 
 - 报告错误：如果您遇到任何错误或问题，请提`issue`并提供完善的错误信息和复现方式。
 - 建议：有增强 `weapp-vite` 的想法吗？请提 `issue` 来分享您的建议。
 - 文档：如果您对文档有更好的见解或者更棒的修辞方式，欢迎 `pr`。
 - 代码：任何人的代码都不是完美的，我们欢迎你通过 `pr` 给代码提供更好的质量与活力。
+
+## 未来展望
+
+展望未来，`weapp-vite` 将不断进化以适应小程序开发的最新趋势。我们将持续关注各平台小程序的更新迭代，确保 `weapp-vite` 能够无缝兼容并充分利用这些新特性。同时，我们也期待与广大开发者建立更加紧密的联系，听取大家的意见与建议，共同推动 `weapp-vite` 的发展与完善。
+
+## 尾言
+
+感谢每一位对 `weapp-tailwindcss` 及 `weapp-vite` 给予关注与支持的朋友。让我们携手并进，在小程序开发的道路上不断前行，共创辉煌！
 
 [Github 项目地址](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/packages/weapp-vite)
