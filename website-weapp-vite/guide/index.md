@@ -25,9 +25,9 @@ npm i
 
 这样微信开发小程序的智能提示(`types`)，就也被安装进来
 
-## sass / less 支持
+## typescript / sass / less 等的默认支持
 
-你可以通过安装 `sass` / `less`，并把 `index.wxss` 的后缀名改成相应的后缀来支持样式预处理器，比如 `scss` / `less` 。
+你可以直接使用 `typescript`，把 `js` 改成 `ts` 后缀即可，也可以通过安装 `sass` / `less`，并把 `index.wxss` 的后缀名改成相应的后缀来支持样式预处理器，比如 `scss` / `less` 。
 
 ### 开发命令
 
@@ -60,6 +60,35 @@ npm run open
 ```
 
 使用这个命令直接打开微信开发者工具
+
+## 别名
+
+项目内部启用了自动别名的功能:
+
+你只需在你的 `tsconfig.json` / `jsconfig.json` 中配置 `baseUrl` 和 `paths`，`js/ts` 引入的别名即可生效
+
+比如:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+  },
+}
+```
+
+你就可以在你的代码里面写:
+
+```ts
+import utils from '@/utils'
+```
+
+在经过 `weapp-vite dev` / `weapp-vite build` 只会会自动帮你做路径的 `resolve`
 
 ## 配置项
 
