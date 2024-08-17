@@ -18,11 +18,11 @@ export default defineConfig({
           text: '指引',
           items: [
             {
-              text: '为什么选 Weapp-Vite',
-              link: '/guide/why',
+              text: '什么是 Weapp-vite',
+              link: '/guide/what-is-weapp-vite',
             },
             { text: '快速开始', link: '/guide/' },
-            { text: '别名', link: '/guide/alias' },
+            { text: 'Alias 别名', link: '/guide/alias' },
             { text: '模块化风格', link: '/guide/module' },
             { text: 'Tailwindcss', link: '/guide/tailwindcss' },
           ],
@@ -37,6 +37,10 @@ export default defineConfig({
       pattern: 'https://github.com/sonofmagic/weapp-tailwindcss/edit/main/website-weapp-vite/:path',
       text: '改进此页面',
     },
+    footer: {
+      message: `Released under the MIT License.`,
+      copyright: 'Copyright © 2024-present sonofmagic',
+    },
   },
   markdown: {
     // @ts-ignore
@@ -49,4 +53,5 @@ export default defineConfig({
   sitemap: {
     hostname: 'https://vite.icebreaker.top',
   },
+
 })

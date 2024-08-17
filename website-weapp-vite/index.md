@@ -13,9 +13,12 @@ hero:
     - theme: brand
       text: 快速开始
       link: /guide/
-    # - theme: alt
-    #   text: 什么是 weapp-vite
-    #   link: /api-examples
+    - theme: alt
+      text: 什么是 Weapp-vite
+      link: /guide/what-is-weapp-vite
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/sonofmagic/weapp-tailwindcss
 
 features:
   - title: 丰富的功能

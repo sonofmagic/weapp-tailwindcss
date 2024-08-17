@@ -4,7 +4,10 @@
 
 打开微信开发者工具, 创建一个 `js`/`ts` 项目
 
+![](../images/create-project.png)
+
 > 假如你这个项目没有 `package.json`，在你的小程序目录下，使用 `npm init -y` 创建一个 `package.json`
+> 假如你创建的是一个 `ts` 项目，你需要在 `vite.config.ts` 里的 `weapp.srcRoot` 配置项，指明使用的是 `'./miniprogram'` 目录，详见本页下方
 
 然后执行：
 
@@ -26,7 +29,7 @@ npx weapp-vite init
 npm run dev
 ```
 
-此时会启动 1 到多个 `fs.watcher` 对项目进行监听，发生更改就重新打包编译，并输出到 `dist` 目录
+此时会启动 **1到多个** `fs.watcher` 对项目进行监听，发生更改就重新打包编译，并输出到 `dist` 目录
 
 ### 构建命令
 
