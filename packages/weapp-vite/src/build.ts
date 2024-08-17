@@ -4,7 +4,6 @@ import type { RollupOutput, RollupWatcher } from 'rollup'
 import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import { readPackageJSON } from 'pkg-types'
 import path from 'pathe'
-import { watch } from 'chokidar'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { UserConfig } from './types'
 import { vitePluginWeapp } from './plugins'
@@ -53,7 +52,7 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
   }
 }
 
-export function runDev(ctx: Context, options?: UserConfig) {
+export async function runDev(ctx: Context, options?: UserConfig) {
   process.env.NODE_ENV = 'development'
 
   async function innerDev() {
@@ -82,9 +81,10 @@ export function runDev(ctx: Context, options?: UserConfig) {
   }
 
   if (options?.weapp?.subPackage) {
-    return innerDev()
+    return await innerDev()
   }
   else {
+    const { watch } = await import('chokidar')
     const watcher = watch(['**/*.{wxml,json,wxs}', '**/*.{png,jpg,jpeg,gif,svg,webp}'], {
       ignored: [
         ...defaultExcluded,
