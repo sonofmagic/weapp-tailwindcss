@@ -1,5 +1,11 @@
 # weapp-ide-cli
 
+## 2.0.2
+
+### Patch Changes
+
+- 6f469c3: fix: execa cjs import error
+
 ## 2.0.1
 
 ### Patch Changes
