@@ -1,14 +1,15 @@
 {
   "name": "weapp-vite",
   "type": "module",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "weapp-vite 一个现代化的小程序打包工具",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
   "homepage": "https://vite.icebreaker.top/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-vite"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
@@ -31,6 +32,7 @@
     "weapp-vite": "src/bin.js"
   },
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {
@@ -74,7 +76,8 @@
         "types": "./dist/config.d.ts",
         "import": "./dist/config.js",
         "require": "./dist/config.cjs"
-      }
+      },
+      "./package.json": "./package.json"
     },
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
