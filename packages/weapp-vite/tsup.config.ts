@@ -9,5 +9,11 @@ export default defineConfig({
   dts: true,
   clean: true,
   format: ['cjs', 'esm'],
+  shims: true,
+  outExtension({ format }) {
+    return {
+      js: `.${format === 'esm' ? 'mjs' : 'cjs'}`,
+    }
+  },
   // external: ['vite'],
 })

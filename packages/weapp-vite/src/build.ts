@@ -1,5 +1,4 @@
 import process from 'node:process'
-import { build } from 'vite'
 import type { RollupOutput, RollupWatcher } from 'rollup'
 import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import { readPackageJSON } from 'pkg-types'
@@ -54,7 +53,7 @@ export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
 
 export async function runDev(ctx: Context, options?: UserConfig) {
   process.env.NODE_ENV = 'development'
-
+  const { build } = await import('vite')
   async function innerDev() {
     const rollupWatcher = (await build(
       defu<UserConfig, UserConfig[]>(
@@ -107,6 +106,7 @@ export async function runDev(ctx: Context, options?: UserConfig) {
 }
 
 export async function runProd(ctx: Context, options?: UserConfig) {
+  const { build } = await import('vite')
   const output = (await build(
     defu<UserConfig, UserConfig[]>(
       options,

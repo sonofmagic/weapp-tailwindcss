@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import '../dist/cli.js'
+require('../dist/cli.cjs')
