@@ -36,7 +36,7 @@ export default defineConfig({
           items: [
             // { text: '目录', link: '/blog/' },
             {
-              text: 'Weapp-vite 发布了(2024-08-17)',
+              text: 'Weapp-vite 发布了!',
               link: '/blog/announce',
             },
           ],
