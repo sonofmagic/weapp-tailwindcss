@@ -41,6 +41,9 @@ export default defineConfig({
       message: `Released under the MIT License.`,
       copyright: 'Copyright © 2024-present sonofmagic',
     },
+    search: {
+      provider: 'local',
+    },
   },
   markdown: {
     // @ts-ignore

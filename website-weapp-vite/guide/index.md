@@ -17,7 +17,13 @@ npm i -D weapp-vite
 npx weapp-vite init
 ```
 
-于是就初始化成功了！
+于是就初始化成功了！然后再执行一下安装包的命令
+
+```sh
+npm i
+```
+
+这样微信开发小程序的智能提示(`types`)，就也被安装进来
 
 ## sass / less 支持
 
