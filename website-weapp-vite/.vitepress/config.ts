@@ -9,6 +9,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '指引', link: '/guide' },
+      { text: '参考', link: '/config' },
       { text: '博客', link: '/blog' },
     ],
     logo: '/logo.svg',
@@ -25,9 +26,12 @@ export default defineConfig({
             { text: '快速开始', link: '/guide/' },
             { text: 'Alias 别名', link: '/guide/alias' },
             { text: '模块化风格', link: '/guide/module' },
-            { text: 'Tailwindcss', link: '/guide/tailwindcss' },
+            { text: 'Tailwindcss 集成', link: '/guide/tailwindcss' },
+            { text: '调试与贡献', link: '/guide/debug' },
           ],
         },
+
+        { text: '配置和 API 参考', link: 'config' },
       ],
       '/blog/': [
         {
@@ -42,6 +46,21 @@ export default defineConfig({
           ],
         },
       ],
+      '/config/': [
+        {
+          text: '参考',
+          items: [
+            {
+              text: 'Weapp-vite 配置项',
+              link: '/config/',
+            },
+            {
+              text: '配置 Vite',
+              link: 'https://cn.vitejs.dev/config/',
+            },
+          ],
+        },
+      ],
     },
 
     socialLinks: [
@@ -49,7 +68,11 @@ export default defineConfig({
     ],
     editLink: {
       pattern: 'https://github.com/sonofmagic/weapp-tailwindcss/edit/main/website-weapp-vite/:path',
-      text: '改进此页面',
+      text: '为此页提供修改建议',
+    },
+    outline: {
+      label: '本页目录',
+      level: [2, 3],
     },
     footer: {
       message: `Released under the MIT License.`,
@@ -58,11 +81,10 @@ export default defineConfig({
     search: {
       provider: 'local',
     },
+
   },
   markdown: {
-    // @ts-ignore
     codeTransformers: [transformerTwoslash()],
-
   },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],

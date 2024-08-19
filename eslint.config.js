@@ -28,5 +28,11 @@ export default icebreaker(
       },
     },
   },
+  {
+    files: ['**/*.md'],
+    rules: {
+      'ts/no-unused-vars': 'off',
+    },
+  },
 
 )

@@ -96,6 +96,7 @@ export default defineConfig({
 })
 ```
 
+![Image](https://pic4.zhimg.com/80/v2-ebc9231004dc0d7582a21d3af7acd302.png)
 你可以在 `defineConfig` 使用其他的 `vite` 插件，比如 `weapp-tailwindcss`
 
 ## 关于 `weapp-vite` 的承诺与展望
