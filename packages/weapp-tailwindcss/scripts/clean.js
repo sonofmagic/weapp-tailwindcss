@@ -1,7 +1,9 @@
 // const del = require('del')
 
 const { greenBright } = require('colorette')
-;(async () => {
+;
+
+(async () => {
   const { deleteAsync: del } = await import('del')
   const deletedDirectoryPaths = await del(['dist', 'types'])
   console.log(greenBright('Deleted directories:'))

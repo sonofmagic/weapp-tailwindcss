@@ -215,7 +215,7 @@
     "total_num": "@integer(60, 100)",
     "available_num": "@integer(60, 100)"
   }],
-  relevant_booklists: [{
+  "relevant_booklists": [{
     "status": 0,
     "id": "@integer(60, 100)",
     "creator": {

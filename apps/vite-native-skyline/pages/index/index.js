@@ -16,23 +16,23 @@ Component({
     // 事件处理函数
     bindViewTap() {
       wx.navigateTo({
-        url: '../logs/logs'
+        url: '../logs/logs',
       })
     },
     onChooseAvatar(e) {
       const { avatarUrl } = e.detail
       const { nickName } = this.data.userInfo
       this.setData({
-        "userInfo.avatarUrl": avatarUrl,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        'userInfo.avatarUrl': avatarUrl,
+        'hasUserInfo': nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
     },
     onInputChange(e) {
       const nickName = e.detail.value
       const { avatarUrl } = this.data.userInfo
       this.setData({
-        "userInfo.nickName": nickName,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        'userInfo.nickName': nickName,
+        'hasUserInfo': nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
     },
     getUserProfile(e) {
@@ -43,9 +43,9 @@ Component({
           console.log(res)
           this.setData({
             userInfo: res.userInfo,
-            hasUserInfo: true
+            hasUserInfo: true,
           })
-        }
+        },
       })
     },
   },

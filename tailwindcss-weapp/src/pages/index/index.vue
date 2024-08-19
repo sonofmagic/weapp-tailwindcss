@@ -138,7 +138,7 @@ function copy(data: string) {
       <up-collapse>
         <up-collapse-item v-for="nav in navs" :key="nav.name" :name="nav.name" :title="nav.name">
           <up-cell-group :border="false">
-            <up-cell v-for="child in nav.children" :key="child" :title="child" isLink clickable :url="`/pages/index/detail?t=${child}`" />
+            <up-cell v-for="child in nav.children" :key="child" :title="child" is-link clickable :url="`/pages/index/detail?t=${child}`" />
           </up-cell-group>
         </up-collapse-item>
       </up-collapse>
@@ -162,7 +162,7 @@ function copy(data: string) {
         </view>
         <scroll-view scroll-y style="height: calc(50vh - 50px)">
           <template v-if="searchResult.length > 0">
-            <u-cell v-for="(item, idx) in searchResult" :key="idx" isLink @click="go2Detail(item.title)">
+            <u-cell v-for="(item, idx) in searchResult" :key="idx" is-link @click="go2Detail(item.title)">
               <template #title>
                 <view class="flex space-x-1 text-sm">
                   <view class="text-gray-500 dark:text-white">

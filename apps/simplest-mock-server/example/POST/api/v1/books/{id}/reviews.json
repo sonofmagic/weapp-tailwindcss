@@ -6,14 +6,14 @@
     "phone": "@string",
     "nickname": "@name",
     "avatar|1": [
-        "https://img3.doubanio.com/icon/u1373026-121.jpg",
-        "https://img1.doubanio.com/icon/u3815216-37.jpg",
-        "https://img3.doubanio.com/icon/u55753308-31.jpg",
-        "https://img1.doubanio.com/icon/u3719134-8.jpg",
-        "https://img3.doubanio.com/icon/u136742199-2.jpg",
-        "https://img3.doubanio.com/icon/u171642416-1.jpg",
-        "https://img3.doubanio.com/icon/u176837971-1.jpg"
-      ]
+      "https://img3.doubanio.com/icon/u1373026-121.jpg",
+      "https://img1.doubanio.com/icon/u3815216-37.jpg",
+      "https://img3.doubanio.com/icon/u55753308-31.jpg",
+      "https://img1.doubanio.com/icon/u3719134-8.jpg",
+      "https://img3.doubanio.com/icon/u136742199-2.jpg",
+      "https://img3.doubanio.com/icon/u171642416-1.jpg",
+      "https://img3.doubanio.com/icon/u176837971-1.jpg"
+    ]
   },
   "book": {
     "id": "@integer(60, 100)",

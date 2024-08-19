@@ -1,4 +1,3 @@
-
 <p align="center">
 
 <a href="https://weapp-tw.icebreaker.top">
@@ -23,7 +22,7 @@
 
 > 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
 >
-> 我的其他项目:  
+> 我的其他项目:
 > `Tailwindcss/Unocss UI` 生成提取器: [`IceStack`](https://ui.icebreaker.top/zh-CN) 已经发布，快来用它管理你的原子化`CSS` 组件吧！
 
 \[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]

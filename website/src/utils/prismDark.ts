@@ -1,11 +1,11 @@
-import { themes, type PrismTheme } from 'prism-react-renderer'
+import { type PrismTheme, themes } from 'prism-react-renderer'
 
 const baseTheme = themes.vsDark
 
 export default {
   plain: {
     color: '#D4D4D4',
-    backgroundColor: '#212121'
+    backgroundColor: '#212121',
   },
   styles: [
     ...baseTheme.styles,
@@ -13,62 +13,62 @@ export default {
       types: ['title'],
       style: {
         color: '#569CD6',
-        fontWeight: 'bold'
-      }
+        fontWeight: 'bold',
+      },
     },
     {
       types: ['property', 'parameter'],
       style: {
-        color: '#9CDCFE'
-      }
+        color: '#9CDCFE',
+      },
     },
     {
       types: ['script'],
       style: {
-        color: '#D4D4D4'
-      }
+        color: '#D4D4D4',
+      },
     },
     {
       types: ['boolean', 'arrow', 'atrule', 'tag'],
       style: {
-        color: '#569CD6'
-      }
+        color: '#569CD6',
+      },
     },
     {
       types: ['number', 'color', 'unit'],
       style: {
-        color: '#B5CEA8'
-      }
+        color: '#B5CEA8',
+      },
     },
     {
       types: ['font-matter'],
       style: {
-        color: '#CE9178'
-      }
+        color: '#CE9178',
+      },
     },
     {
       types: ['keyword', 'rule'],
       style: {
-        color: '#C586C0'
-      }
+        color: '#C586C0',
+      },
     },
     {
       types: ['regex'],
       style: {
-        color: '#D16969'
-      }
+        color: '#D16969',
+      },
     },
     {
       types: ['maybe-class-name'],
       style: {
-        color: '#4EC9B0'
-      }
+        color: '#4EC9B0',
+      },
     },
     {
       types: ['constant'],
       style: {
-        color: '#4FC1FF'
-      }
-    }
-  ]
+        color: '#4FC1FF',
+      },
+    },
+  ],
 } satisfies PrismTheme

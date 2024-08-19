@@ -223,7 +223,7 @@
         "available_num": "@integer(60, 100)"
       }
     ],
-    relevant_booklists: [
+    "relevant_booklists": [
       {
         "status": 0,
         "id": "@integer(60, 100)",
@@ -330,7 +330,7 @@
       "create_time": "@datetime"
     }
   ],
-  total: "@integer(60, 100)",
-  count: "@integer(60, 100)",
-  start: "@integer(60, 100)"
+  "total": "@integer(60, 100)",
+  "count": "@integer(60, 100)",
+  "start": "@integer(60, 100)"
 }

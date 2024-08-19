@@ -216,7 +216,7 @@
       "total_num": "@integer(60, 100)",
       "available_num": "@integer(60, 100)"
     }],
-    relevant_booklists: [{
+    "relevant_booklists": [{
       "status": 0,
       "id": "@integer(60, 100)",
       "creator": {
@@ -275,7 +275,7 @@
         "首都师范大学南校区逸夫图书馆",
         "清华大学图书馆",
         "北京市立图书馆",
-        "北京大学图书馆",
+        "北京大学图书馆"
       ],
       "phone": "@string",
       "address": "中关村北大街1号",
@@ -300,7 +300,7 @@
         "首都师范大学南校区逸夫图书馆",
         "清华大学图书馆",
         "北京市立图书馆",
-        "北京大学图书馆",
+        "北京大学图书馆"
       ],
       "phone": "@string",
       "address": "中关村北大街1号",
@@ -383,7 +383,7 @@
     "available_num": "@integer(60, 100)",
     "is_available": "@boolean"
   }],
-  total: "@integer(60, 100)",
-  count: "@integer(60, 100)",
-  start: "@integer(60, 100)"
+  "total": "@integer(60, 100)",
+  "count": "@integer(60, 100)",
+  "start": "@integer(60, 100)"
 }

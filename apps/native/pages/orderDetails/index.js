@@ -14,7 +14,7 @@ Page({
         spec: '2磅，+19.9元得水果（中盒）…',
         price: 999,
         num: 2,
-        select: false
+        select: false,
       },
       {
         id: 3,
@@ -23,56 +23,56 @@ Page({
         spec: '2磅，+19.9元得水果（中盒）…',
         price: 999.01,
         num: 1,
-        select: false
-      }
+        select: false,
+      },
     ],
     address: null,
-    data: null
+    data: null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad(options) {
     console.log(options)
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {},
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow() {
     this.setData({
-      address: app.globalData.userInfo.address
+      address: app.globalData.userInfo.address,
     })
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {},
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {},
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {}
+  onShareAppMessage() {},
 })

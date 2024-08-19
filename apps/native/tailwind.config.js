@@ -1,18 +1,18 @@
-const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")
+const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['**/*.{js,wxml}', '!node_modules/**', '!dist/**'],
   theme: {
-    extend: {}
+    extend: {},
   },
   plugins: [
     iconsPlugin({
-      collections: getIconCollections(['mdi'])
-    })
+      collections: getIconCollections(['mdi']),
+    }),
   ],
   corePlugins: {
     preflight: false,
-    container: false
-  }
+    container: false,
+  },
 }

@@ -32,13 +32,6 @@
     "./*": "./*"
   },
   "main": "./dist/index.cjs",
-  "scripts": {
-    "build": "unbuild",
-    "test": "vitest run",
-    "test:dev": "vitest",
-    "release": "pnpm publish",
-    "sync": "cnpm sync @weapp-tailwindcss/typography"
-  },
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "typesVersions": {
@@ -52,6 +45,13 @@
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "unbuild",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "sync": "cnpm sync @weapp-tailwindcss/typography"
+  },
   "dependencies": {
     "htmlparser2": "^9.1.0",
     "lodash.castarray": "^4.4.0",

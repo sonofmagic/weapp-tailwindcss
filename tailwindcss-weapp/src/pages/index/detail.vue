@@ -178,7 +178,7 @@ onShareTimeline(() => {
 
 <template>
   <BaseLayout>
-    <Navbar autoBack>
+    <Navbar auto-back>
       <template #center>
         {{ title }}
       </template>

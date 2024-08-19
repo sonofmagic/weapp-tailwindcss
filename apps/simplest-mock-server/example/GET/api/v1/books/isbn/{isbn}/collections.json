@@ -1,5 +1,5 @@
 {
-  collections: [{
+  "collections": [{
     "library": {
       "id": "@integer(60, 100)",
       "status": 1,
@@ -102,7 +102,7 @@
     "available_num": "@integer(60, 100)",
     "is_available": "@boolean"
   }],
-  total: "@integer(60, 100)",
-  count: "@integer(60, 100)",
-  start: "@integer(60, 100)"
+  "total": "@integer(60, 100)",
+  "count": "@integer(60, 100)",
+  "start": "@integer(60, 100)"
 }

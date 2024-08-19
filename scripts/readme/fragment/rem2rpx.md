@@ -1,4 +1,3 @@
-
 #### 1. 两种转化方式(二者选其一即可)
 
 假如你想要把项目里，所有满足条件的 `rem` 都转化成 `rpx`，那么 `postcss plugin`: [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 适合你。
@@ -17,8 +16,8 @@ npm i -D postcss-rem-to-responsive-pixel
 // postcss.config.js
 module.exports = {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    'tailwindcss': {},
+    'autoprefixer': {},
     'postcss-rem-to-responsive-pixel': {
       // 32 意味着 1rem = 32rpx
       rootValue: 32,
@@ -28,7 +27,7 @@ module.exports = {
       transformUnit: 'rpx',
     },
   },
-};
+}
 ```
 
 #### 3. `tailwindcss-rem2px-preset`

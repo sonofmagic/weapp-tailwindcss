@@ -24,7 +24,7 @@
 
 ```json
 {
-  "packageManager": "pnpm@9.7.1",
+  "packageManager": "pnpm@9.7.1"
 }
 ```
 

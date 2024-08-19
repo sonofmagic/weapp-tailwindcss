@@ -1,9 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
     "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "@/*": [
         "src/*"
@@ -11,6 +11,6 @@
     }
   },
   "include": [
-    "src",
+    "src"
   ]
 }

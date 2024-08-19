@@ -1,19 +1,21 @@
+/* eslint-disable prefer-rest-params */
+/* eslint-disable style/max-statements-per-line */
 const throttle = function throttle(func, wait, options) {
   let context
   let args
   let result = void 0
   let timeout
   let previous = 0
-  if (!options) options = {}
+  if (!options) { options = {} }
   const later = function later() {
     previous = options.leading === false ? 0 : Date.now()
     timeout = null
     result = func.apply(context, args)
-    if (!timeout) context = args = null
+    if (!timeout) { context = args = null }
   }
   return function () {
     const now = Date.now()
-    if (!previous && options.leading === false) previous = now
+    if (!previous && options.leading === false) { previous = now }
     const remaining = wait - (now - previous)
     context = this
     args = arguments
@@ -22,8 +24,9 @@ const throttle = function throttle(func, wait, options) {
       timeout = null
       previous = now
       result = func.apply(context, args)
-      if (!timeout) context = args = null
-    } else if (!timeout && options.trailing !== false) {
+      if (!timeout) { context = args = null }
+    }
+    else if (!timeout && options.trailing !== false) {
       timeout = setTimeout(later, remaining)
     }
     return result
@@ -42,7 +45,7 @@ Component({
       type: Array,
       value: [],
       observer(newVal) {
-        if (newVal.length === 0) return
+        if (newVal.length === 0) { return }
         const alphabet = this.data.list.map((item, index) => {
           this.data._tops[index] = 2e10
           return item.alpha
@@ -50,7 +53,7 @@ Component({
         this._sharedTops.value = this.data._tops
         this.setData({
           alphabet,
-          current: alphabet[0]
+          current: alphabet[0],
         }, () => {
           this.computedSize()
         })
@@ -71,7 +74,7 @@ Component({
   },
 
   observers: {
-    'current': function (current) {
+    current(current) {
       this._sharedCurrentIdx.value = this.data.alphabet.indexOf(current)
     },
   },
@@ -86,13 +89,13 @@ Component({
     },
     attached() {
       // scroll-view 高度
-      this.createSelectorQuery().select('.scroll-view').boundingClientRect(res => {
+      this.createSelectorQuery().select('.scroll-view').boundingClientRect((res) => {
         this._sharedHeight.value = res.height
       }).exec()
 
       // 右侧目录计算
       const query = this.createSelectorQuery()
-      query.select('.anchor-list').boundingClientRect(rect => {
+      query.select('.anchor-list').boundingClientRect((rect) => {
         this.data._anchorItemH = rect.height / this.data.alphabet.length
         this.data._anchorItemW = rect.width
         this.data._anchorTop = rect.top
@@ -110,12 +113,12 @@ Component({
       const current = data.alphabet[index]
       if (current !== this.data.current) {
         wx.vibrateShort({
-          type: 'light'
+          type: 'light',
         })
         this.setData({
           current,
           intoView: current,
-          touching: true
+          touching: true,
         })
       }
     },
@@ -129,7 +132,7 @@ Component({
         // NOTE: 在 Skyline 下如果用了 list-view / grid-view 会有按需渲染特性，取其子节点的 clientRect
         // 时若不在屏会取不到，而这里是取 sticky-header 的，会立即渲染也就能立即返回，但 top 值是预估的。
         // 因为 list-view 的高度是预估的（第一个子节点的高度 * 数量），由于其子节点是等高，故预估是基本准确的
-        this.createSelectorQuery().select(`#${element}`).boundingClientRect(res => {
+        this.createSelectorQuery().select(`#${element}`).boundingClientRect((res) => {
           this.data._tops[index] = res.top
           this._sharedTops.value = this.data._tops
         }).exec()
@@ -155,8 +158,8 @@ Component({
       }
     },
     updateCurrent(idx) {
-      if (this.data.touching) return
+      if (this.data.touching) { return }
       this.setData({ current: this.data.alphabet[idx] })
     },
-  }
+  },
 })

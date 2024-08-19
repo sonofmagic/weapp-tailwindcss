@@ -1,13 +1,13 @@
 // app.js
 App({
-  onLaunch: function () {
+  onLaunch() {
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
     // 登录
     wx.login({
-      success: (res) => {}
+      success: (res) => {},
     })
     // 获取用户信息
     wx.getSetting({
@@ -24,51 +24,52 @@ App({
               if (this.userInfoReadyCallback) {
                 this.userInfoReadyCallback(res)
               }
-            }
+            },
           })
         }
-      }
+      },
     })
   },
-  http: function (url, data = '', method = 'GET') {
+  http(url, data = '', method = 'GET') {
     // 封装http请求
     const apiUrl = 'https://wx.yogalt.com/api/' // 请求域名
     console.log(this.globalData)
     const currency = {
-      openid: this.globalData.openid
+      openid: this.globalData.openid,
     }
     return new Promise((resolve, reject) => {
       wx.request({
         url: apiUrl + url,
         data: Object.assign(currency, data),
         method,
-        success: function (res) {
-          if (res.data.code != 200) {
+        success(res) {
+          if (res.data.code !== 200) {
             wx.showModal({
               title: '提示',
               content: res.data.message,
-              success: function (res) {
+              success(res) {
                 if (res.confirm) {
                   console.log('用户点击确定')
-                } else if (res.cancel) {
+                }
+                else if (res.cancel) {
                   console.log('用户点击取消')
                 }
-              }
+              },
             })
           }
           resolve(res.data)
         },
-        fail: function (res) {
+        fail(res) {
           reject(res)
         },
-        complete: function () {
+        complete() {
           console.log('complete')
-        }
+        },
       })
     })
   },
   globalData: {
     userInfo: null,
-    openid: null
-  }
+    openid: null,
+  },
 })

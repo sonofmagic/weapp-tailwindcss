@@ -342,14 +342,14 @@ const config = {
         // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
         copyright: `<div class="flex flex-col items-center md:items-start md:flex-row justify-center md:space-x-2">
         <span>Copyright © ${new Date().getFullYear()} icebreaker</span> ${createLink({
-          href: 'http://beian.miit.gov.cn',
-          textContent: '苏ICP备19002675号-2',
-        })} <span class="flex items-center space-x-1"><img src="/img/beian.png" class="h-4" /> ${createLink({
-          href: 'https://beian.mps.gov.cn/#/query/webSearch?code=32050602011962',
-          rel: 'noreferrer',
-          target: '_blank',
-          textContent: '苏公网安备32050602011962',
-        })}</span></div>`,
+  href: 'http://beian.miit.gov.cn',
+  textContent: '苏ICP备19002675号-2',
+})} <span class="flex items-center space-x-1"><img src="/img/beian.png" class="h-4" /> ${createLink({
+  href: 'https://beian.mps.gov.cn/#/query/webSearch?code=32050602011962',
+  rel: 'noreferrer',
+  target: '_blank',
+  textContent: '苏公网安备32050602011962',
+})}</span></div>`,
       },
       prism: {
         theme: PrismLight,

@@ -7,7 +7,7 @@ const slots = useSlots()
 </script>
 
 <template>
-  <up-navbar :autoBack="autoBack" fixed bgColor="inherit" safeAreaInsetTop placeholder>
+  <up-navbar :auto-back="autoBack" fixed bg-color="inherit" safe-area-inset-top placeholder>
     <template v-if="slots.left" #left>
       <slot name="left" />
     </template>

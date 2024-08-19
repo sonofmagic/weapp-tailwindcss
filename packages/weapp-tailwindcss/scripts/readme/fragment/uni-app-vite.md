@@ -1,9 +1,8 @@
-
 ```js
 // vite.config.[jt]s
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss-webpack-plugin/vite'
 
-const vitePlugins = [uni(),uvwt()]
+const vitePlugins = [uni(), uvwt()]
 
 export default defineConfig({
   plugins: vitePlugins,
@@ -13,6 +12,5 @@ export default defineConfig({
   //     plugins: postcssPlugins,
   //   },
   // },
-});
-
+})
 ```

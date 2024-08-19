@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: pnpm
 
       - run: pnpm i
       - run: pnpm build
@@ -31,4 +31,4 @@ jobs:
       # - uses: codecov/codecov-action@v4
       #   with:
       #     directory: coverage
-          # files: ./coverage/clover.xml,./coverage-vitest/clover.xml
+      # files: ./coverage/clover.xml,./coverage-vitest/clover.xml

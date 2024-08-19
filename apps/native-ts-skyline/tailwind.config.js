@@ -2,11 +2,11 @@
 module.exports = {
   content: ['miniprogram/**/*.{ts,js,wxml}'],
   theme: {
-    extend: {}
+    extend: {},
   },
   plugins: [],
   corePlugins: {
     container: false,
-    preflight: false
-  }
+    preflight: false,
+  },
 }

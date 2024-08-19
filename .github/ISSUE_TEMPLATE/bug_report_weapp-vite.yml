@@ -1,7 +1,7 @@
-name: "\U0001F41E weapp-vite 汇报Bug (Bug report)"
+name: 🐞 weapp-vite 汇报Bug (Bug report)
 description: 汇报Bug并提供测试用例
-title: "[Bug(weapp-vite)]: "
-labels: ["bug(weapp-vite)"]
+title: '[Bug(weapp-vite)]: '
+labels: [bug(weapp-vite)]
 assignees:
   - sonofmagic
 body:

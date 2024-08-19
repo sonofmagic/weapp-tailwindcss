@@ -11,37 +11,39 @@ Page({
     price: false,
     flavor: false,
     mount: false,
-    page: 1
+    page: 1,
   },
   addCart(data) {
     const item = data.currentTarget.dataset.item
   },
   sortFun(data) {
     this.setData({
-      sortActive: data.currentTarget.dataset.data
+      sortActive: data.currentTarget.dataset.data,
     })
 
-    if (data.currentTarget.dataset.data == 1) {
+    if (data.currentTarget.dataset.data === 1) {
       this.setData({
-        price: (this.price = !this.price)
+        price: (this.price = !this.price),
       })
-    } else if (data.currentTarget.dataset.data == 2) {
+    }
+    else if (data.currentTarget.dataset.data === 2) {
       this.setData({
-        flavor: (this.flavor = !this.flavor)
+        flavor: (this.flavor = !this.flavor),
       })
-    } else if (data.currentTarget.dataset.data == 3) {
+    }
+    else if (data.currentTarget.dataset.data === 3) {
       this.setData({
-        mount: (this.mount = !this.mount)
+        mount: (this.mount = !this.mount),
       })
     }
   },
-  getList: function (data) {},
+  getList(data) {},
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (e) {
+  onLoad(e) {
     wx.setNavigationBarTitle({
-      title: e.title // 页面标题为路由参数
+      title: e.title, // 页面标题为路由参数
     })
     console.log(e)
     this.getList(e)
@@ -50,35 +52,35 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {},
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {},
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {},
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {}
+  onShareAppMessage() {},
 })

@@ -11,35 +11,35 @@ Page({
     mobile: '',
     detailed: '',
     addressIs: true,
-    _id: null
+    _id: null,
   },
-  bindRegionChange: function (e) {
+  bindRegionChange(e) {
     console.log('picker发送选择改变，携带值为', e.detail.value)
     console.log(e.detail.value)
     this.setData({
-      region: e.detail.value
+      region: e.detail.value,
     })
   },
-  bindKeyName: function (e) {
+  bindKeyName(e) {
     this.setData({
-      name: e.detail.value
+      name: e.detail.value,
     })
   },
-  bindKeyMobile: function (e) {
+  bindKeyMobile(e) {
     this.setData({
-      mobile: e.detail.value
+      mobile: e.detail.value,
     })
   },
-  bindKeyDetailed: function (e) {
+  bindKeyDetailed(e) {
     this.setData({
-      detailed: e.detail.value
+      detailed: e.detail.value,
     })
   },
-  submitFun: function () {},
+  submitFun() {},
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad(options) {
     if (options.id) {
       this.setData({
         region: options.city.split(','),
@@ -47,7 +47,7 @@ Page({
         mobile: options.mobile,
         detailed: options.detailed,
         _id: options.id,
-        addressIs: false
+        addressIs: false,
       })
     }
   },
@@ -55,35 +55,35 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {},
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {},
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {},
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {}
+  onShareAppMessage() {},
 })

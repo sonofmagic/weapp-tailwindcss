@@ -1,4 +1,3 @@
-
 **在创建uni-app项目时，请选择uni-app alpha版本**
 
 ```bash

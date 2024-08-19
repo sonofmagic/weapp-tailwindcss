@@ -6,8 +6,8 @@ on:
       - main
     paths:
       - 'website/docs/**/*.md'
-      - 'website/docusaurus.config.js'
-      - 'website/sidebars.js'
+      - website/docusaurus.config.js
+      - website/sidebars.js
   workflow_dispatch:
 # https://docusaurus.io/docs/deployment#deploying-to-github-pages
 

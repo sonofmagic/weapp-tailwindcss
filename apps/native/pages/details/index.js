@@ -8,7 +8,7 @@ Page({
     imgUrls: [
       'https://wx.yogalt.com/file/images/img1.jpeg',
       'https://wx.yogalt.com/file/images/img2.jpeg',
-      'https://wx.yogalt.com/file/images/img3.jpeg'
+      'https://wx.yogalt.com/file/images/img3.jpeg',
     ],
     indicatorDots: true,
     autoplay: true,
@@ -16,68 +16,69 @@ Page({
     duration: 1000,
     tabIs: true,
     specIs: false,
-    data: null
+    data: null,
   },
   tabFun(e) {
     console.log(e)
-    if (e.currentTarget.dataset.state == 1) {
+    if (e.currentTarget.dataset.state === 1) {
       this.setData({
-        tabIs: true
+        tabIs: true,
       })
-    } else {
+    }
+    else {
       this.setData({
-        tabIs: false
+        tabIs: false,
       })
     }
   },
-  goShopCar: function () {
+  goShopCar() {
     wx.reLaunch({
-      url: '/pages/cart/index'
+      url: '/pages/cart/index',
     })
   },
   specFun() {
     this.setData({
-      specIs: !this.data.specIs
+      specIs: !this.data.specIs,
     })
   },
   addCart() {},
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {},
+  onLoad(options) {},
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {},
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {},
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {},
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {}
+  onShareAppMessage() {},
 })

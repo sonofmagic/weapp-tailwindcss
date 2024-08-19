@@ -1,4 +1,3 @@
-
 <p align="center">
 
 <a href="https://weapp-tw.icebreaker.top">
@@ -55,7 +54,7 @@
 This plugin allows you to use tailwindcss in `weapp`. At the same time, it provides the functions of tailwindcss class name escape and mangle.
 
 > What's [`weapp`](https://mp.weixin.qq.com/cgi-bin/wx) ?
-> it is a program running in [`WeChat`](https://en.wikipedia.org/wiki/WeChat),[Alipay](https://en.wikipedia.org/wiki/Alipay) or other third-party applications.  
+> it is a program running in [`WeChat`](https://en.wikipedia.org/wiki/WeChat),[Alipay](https://en.wikipedia.org/wiki/Alipay) or other third-party applications.
 > `weapp` is a new open capability. Developers can quickly develop a small program. Mini Programs can be easily obtained and disseminated within WeChat. At the same time, have an excellent user experience.
 
 The core plugin supports `webpack`/`vite`/`gulp` for building, covering almost all mainstream development frameworks for weapp.

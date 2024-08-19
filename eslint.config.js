@@ -2,7 +2,7 @@ import { icebreaker } from '@icebreakers/eslint-config'
 
 export default icebreaker(
   {
-    markdown: false,
+    markdown: true,
     // mdx: true,
   },
   {
@@ -25,14 +25,8 @@ export default icebreaker(
         App: true,
         Page: true,
         getApp: true,
+        Component: true,
       },
     },
   },
-  {
-    files: ['**/*.md'],
-    rules: {
-      'ts/no-unused-vars': 'off',
-    },
-  },
-
 )

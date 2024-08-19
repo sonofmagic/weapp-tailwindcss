@@ -7,7 +7,7 @@ Page({
     total: false, // 是否全选
     totalPrice: 0, // 总价
     list: [],
-    isEdit: false
+    isEdit: false,
   },
   totalPrice() {
     // 计算总价
@@ -19,7 +19,7 @@ Page({
       }
     }
     this.setData({
-      totalPrice: price.toFixed(2)
+      totalPrice: price.toFixed(2),
     })
   },
   totalFun() {
@@ -32,12 +32,12 @@ Page({
     //     this.data.list[i].select = false
     //   }
     // }
-    this.data.list.map((v, k) => {
+    this.data.list.forEach((v, k) => {
       v.select = !!this.data.total
     })
     this.setData({
       list: this.data.list,
-      total: this.data.total
+      total: this.data.total,
     })
 
     this.totalPrice()
@@ -47,22 +47,23 @@ Page({
     const that = this
     let num = 0
     for (let i = 0; i < that.data.list.length; i++) {
-      if (that.data.list[i].id == e.currentTarget.dataset.id) {
+      if (that.data.list[i].id === e.currentTarget.dataset.id) {
         that.data.list[i].select = that.data.list[i].select ? !that.data.list[i].select : true
         that.setData({
-          list: that.data.list
+          list: that.data.list,
         })
       }
 
       if (that.data.list[i].select) {
         num++
-        if (num == that.data.list.length) {
+        if (num === that.data.list.length) {
           that.setData({
-            total: true
+            total: true,
           })
-        } else {
+        }
+        else {
           that.setData({
-            total: false
+            total: false,
           })
         }
       }
@@ -72,27 +73,27 @@ Page({
   editFun() {
     // 编辑
     this.setData({
-      isEdit: !this.data.isEdit
+      isEdit: !this.data.isEdit,
     })
   },
   plusFun(item) {
     // 增加商品数量
 
     this.setData({
-      list: this.data.list
+      list: this.data.list,
     })
 
     this.totalPrice()
   },
   reduceFun(item) {
     // 减少商品数量
-    this.data.list.map((v, k) => {
-      if (v.id == item.target.dataset.item.id && this.data.list[k].num > 1) {
+    this.data.list.forEach((v, k) => {
+      if (v.id === item.target.dataset.item.id && this.data.list[k].num > 1) {
         this.data.list[k].num--
       }
     })
     this.setData({
-      list: this.data.list
+      list: this.data.list,
     })
 
     this.totalPrice()
@@ -102,14 +103,14 @@ Page({
 
     const id = item.target ? item.target.dataset.item.id : item.id
 
-    this.data.list.map((v, k) => {
-      if (v.id == id) {
+    this.data.list.forEach((v, k) => {
+      if (v.id === id) {
         this.data.list.splice(k, 1)
       }
     })
 
     this.setData({
-      list: this.data.list
+      list: this.data.list,
     })
 
     this.totalPrice()
@@ -118,25 +119,26 @@ Page({
     // 选中删除
     const list = []
 
-    this.data.list.map((v, k) => {
+    this.data.list.forEach((v, k) => {
       if (!v.select) {
         list.push(v)
       }
     })
 
     this.setData({
-      list
+      list,
     })
 
     this.totalPrice()
   },
-  closeFun: function () {
+  closeFun() {
     const list = []
     const listTotal = []
-    this.data.list.map((v, k) => {
+    this.data.list.forEach((v, k) => {
       if (v.select) {
         list.push(v)
-      } else {
+      }
+      else {
         listTotal.push(v)
       }
     })
@@ -144,40 +146,40 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {},
+  onLoad(options) {},
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {},
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {},
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {},
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {}
+  onShareAppMessage() {},
 })

@@ -7,52 +7,52 @@ Page({
   data: {
     list: [],
     id: '',
-    state: null
+    state: null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  defaultFun: function (data) {},
-  onLoad: function (options) {
+  defaultFun(data) {},
+  onLoad(options) {
     this.setData({
       id: app.globalData.userInfo.address._id,
-      state: options ? options.type : null
+      state: options ? options.type : null,
     })
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {},
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {},
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {},
+  onPullDownRefresh() {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {},
+  onReachBottom() {},
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {}
+  onShareAppMessage() {},
 })

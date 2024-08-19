@@ -1,11 +1,10 @@
-
 在根目录下创建一个 `build.plugin.js` 文件，然后在 `build.json` 中注册：
 
 ```json
 {
   "plugins": [
     "./build.plugin.js"
-  ],
+  ]
 }
 ```
 
@@ -20,8 +19,7 @@ module.exports = ({ context, onGetWebpackConfig }) => {
       {
         appType: 'rax',
       },
-    ]);
-  });
-};
-
+    ])
+  })
+}
 ```

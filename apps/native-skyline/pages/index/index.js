@@ -1,5 +1,6 @@
-import { cityData } from './data'
 import { add } from 'lodash'
+import { cityData } from './data'
+
 Component({
   data: {
     list: [],
@@ -17,7 +18,9 @@ Component({
       const map = new Map()
       for (const city of cities) {
         const alpha = city.pinyin[0].charAt(0).toUpperCase()
-        if (!map.has(alpha)) map.set(alpha, [])
+        if (!map.has(alpha)) {
+          map.set(alpha, [])
+        }
         map.get(alpha).push({ name: city.fullname })
       }
 
@@ -31,13 +34,13 @@ Component({
       for (const key of keys) {
         list.push({
           alpha: key,
-          subItems: map.get(key)
+          subItems: map.get(key),
         })
       }
 
       console.log('address-book list:', list)
       this.setData({ list })
-      console.log(add(1,3));
+      console.log(add(1, 3))
     },
   },
 })

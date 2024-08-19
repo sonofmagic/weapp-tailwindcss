@@ -1,11 +1,11 @@
-.container{
+.container {
   height: 1500rpx;
 }
-.top-tab{
+.top-tab {
   width: 750rpx;
   height: 100rpx;
-  background: #298DE5;
-  color: #8CCEFD;
+  background: #298de5;
+  color: #8ccefd;
   font-size: 28rpx;
   line-height: 100rpx;
   box-shadow: 0 2px 2px #bebebe;
@@ -13,19 +13,19 @@
   z-index: 9999;
 }
 
-.toptab.active{
+.toptab.active {
   color: #ffffff;
   border-bottom: solid 2px #ffffff;
 }
-.activity{
+.activity {
   width: 750rpx;
   height: 375rpx;
 }
-.activity image{
+.activity image {
   width: 750rpx;
   height: 375rpx;
 }
-.placehold{
+.placehold {
   font-size: 28rpx;
   padding: 80rpx 0;
 }

@@ -1,4 +1,3 @@
-
 在 `vue.config.js` 中注册：
 
 ```js
@@ -14,5 +13,4 @@ module.exports = defineConfig({
     }))
   }
 })
-
 ```

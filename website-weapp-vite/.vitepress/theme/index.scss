@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 $p1: #95ec69;
 $p2: #2ba245;
@@ -28,7 +28,7 @@ $p3: color.adjust($p2, $lightness: -10%);
   --vp-button-brand-active-bg: #{$p2};
 }
 
-html.dark{
+html.dark {
   --vp-c-brand-1: #{$p1};
   --vp-c-brand-2: #{$p2};
   --vp-c-brand-3: #{$p3};

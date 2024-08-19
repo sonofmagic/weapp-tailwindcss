@@ -1,8 +1,7 @@
-
 #### 1. 安装 `tailwindcss`
 
 ```bash
-# npm / yarn / pnpm 
+# npm / yarn / pnpm
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init
 ```
@@ -44,13 +43,13 @@ module.exports = {
 
 ```html
 <style lang="scss">
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* 使用 scss */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  /* 使用 scss */
+  @import 'tailwindcss/base';
+  @import 'tailwindcss/components';
+  @import 'tailwindcss/utilities';
 </style>
 ```
 

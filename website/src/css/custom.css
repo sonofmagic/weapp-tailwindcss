@@ -13,7 +13,7 @@
 
   --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 10%);
 
-  --ifm-toc-border-color: theme("colors.slate.900" / 10%);
+  --ifm-toc-border-color: theme('colors.slate.900' / 10%);
 }
 
 *,
@@ -23,19 +23,19 @@
   border: 0 solid #e5e7eb;
 }
 
-html[data-theme="dark"] {
+html[data-theme='dark'] {
   --docusaurus-highlighted-code-line-bg: rgb(66 66 66 / 35%);
 
-  --ifm-background-color: theme("colors.slate.900");
-  --ifm-navbar-background-color: theme("colors.slate.900");
+  --ifm-background-color: theme('colors.slate.900');
+  --ifm-navbar-background-color: theme('colors.slate.900');
   /* --ifm-navbar-background-color: initial; */
 
-  --ifm-toc-border-color: theme("colors.slate.50" / 6%);
+  --ifm-toc-border-color: theme('colors.slate.50' / 6%);
   /* --ifm-navbar-background-color: rgb(15 23 42); */
   /* background-color: rgb(15 23 42 / var(--tw-bg-opacity)); */
-  --ifm-navbar-link-color: theme("colors.slate.200");
-  --docsearch-text-color: theme("colors.slate.200");
-  --ifm-font-color-base: theme("colors.slate.200");
+  --ifm-navbar-link-color: theme('colors.slate.200');
+  --docsearch-text-color: theme('colors.slate.200');
+  --ifm-font-color-base: theme('colors.slate.200');
 }
 
 .navbar {
@@ -51,7 +51,7 @@ html[data-theme="dark"] {
   @apply lg:border-t lg:border-slate-900/10 dark:border-slate-50/[0.06] dark:bg-transparent;
 }
 
-[data-theme="light"] .DocSearch {
+[data-theme='light'] .DocSearch {
   /* --docsearch-primary-color: var(--ifm-color-primary); */
   /* --docsearch-text-color: var(--ifm-font-color-base); */
   --docsearch-muted-color: var(--ifm-color-secondary-darkest);
@@ -69,7 +69,7 @@ html[data-theme="dark"] {
   --docsearch-footer-background: var(--ifm-color-white);
 }
 
-[data-theme="dark"] .DocSearch {
+[data-theme='dark'] .DocSearch {
   --docsearch-text-color: var(--ifm-font-color-base);
   --docsearch-muted-color: var(--ifm-color-secondary-darkest);
   --docsearch-container-background: rgba(47, 55, 69, 0.7);
@@ -92,7 +92,7 @@ html[data-theme="dark"] {
 }
 
 .from-weapp-to-tailwindcss {
-  background-image: linear-gradient(to right, #07c160 50%, theme("colors.sky.500") 50%);
+  background-image: linear-gradient(to right, #07c160 50%, theme('colors.sky.500') 50%);
   background-clip: text;
   color: transparent;
 }

@@ -6,9 +6,9 @@
 // @tailwind base;
 // @tailwind components;
 // @tailwind utilities;
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 /* You can override the default Infima variables here. */
 // :root {
 //   // 微信主色
@@ -102,7 +102,7 @@
 //   --ifm-color-primary-lightest: hsl(var(--site-primary-hue-saturation-light) 73%);
 // }
 
-[data-theme="light"] .DocSearch {
+[data-theme='light'] .DocSearch {
   /* --docsearch-primary-color: var(--ifm-color-primary); */
   /* --docsearch-text-color: var(--ifm-font-color-base); */
   --docsearch-muted-color: var(--ifm-color-secondary-darkest);
@@ -120,7 +120,7 @@
   --docsearch-footer-background: var(--ifm-color-white);
 }
 
-[data-theme="dark"] .DocSearch {
+[data-theme='dark'] .DocSearch {
   --docsearch-text-color: var(--ifm-font-color-base);
   --docsearch-muted-color: var(--ifm-color-secondary-darkest);
   --docsearch-container-background: rgba(47, 55, 69, 0.7);
@@ -144,7 +144,7 @@
 
 .from-weapp-to-tailwindcss {
   // mask-image: linear-gradient(to right, #07c160 0% 50%, red 50%);
-  background-image: linear-gradient(to right, #07c160 50%, theme("colors.sky.500") 50%);
+  background-image: linear-gradient(to right, #07c160 50%, theme('colors.sky.500') 50%);
   background-clip: text;
   color: transparent;
 }

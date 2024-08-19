@@ -10,7 +10,9 @@ import 'xx'
 import x from 'x'
 export default x
 export {
-  x, y, z
+  x,
+  y,
+  z
 }
 // bad
 const x = require('x')

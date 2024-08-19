@@ -1,4 +1,4 @@
-export const formatTime = (date: Date) => {
+export function formatTime(date: Date) {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const day = date.getDate()
@@ -7,13 +7,13 @@ export const formatTime = (date: Date) => {
   const second = date.getSeconds()
 
   return (
-    [year, month, day].map(formatNumber).join('/') +
-    ' ' +
-    [hour, minute, second].map(formatNumber).join(':')
+    `${[year, month, day].map(formatNumber).join('/')
+    } ${
+      [hour, minute, second].map(formatNumber).join(':')}`
   )
 }
 
-const formatNumber = (n: number) => {
+function formatNumber(n: number) {
   const s = n.toString()
-  return s[1] ? s : '0' + s
+  return s[1] ? s : `0${s}`
 }
