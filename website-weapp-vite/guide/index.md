@@ -1,5 +1,10 @@
 # 快速开始 {#getting-started}
 
+> [!IMPORTANT]
+> 在使用前，请确保你安装了 `Nodejs` 且版本 `>=20.5.0 || >=18.18.0`
+>
+> 推荐使用 [Nodejs 官网](https://nodejs.org/) 上的 `LTS` 版本
+
 ## 使用方式
 
 打开微信开发者工具, 创建一个 `js`/`ts` 项目
