@@ -28,7 +28,16 @@
 }
 ```
 
-或者你也能开启（推荐使用）`corepack enable` 来使用项目包管理器及其版本，以免和你的全局包管理器版本冲突。
+或者你也能开启（推荐）`corepack enable` 来使用项目包管理器及其版本，以免和你的全局包管理器版本冲突。
+
+项目node版本维护在`.nvmrc`，你可以使用 [fnm](https://github.com/Schniz/fnm/tree/master) 来自动切换项目node版本和管理你的其他node版本。
+
+fnm配置shell参考如下：
+
+```bash
+// 配置 .zshrc 一定要提前设置env version-file-strategy=recursive 兼容 monorepo 的.nvmrc
+eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"
+```
 
 然后执行 `pnpm i`，这时候就会把所有的依赖安装，这时候你就可以直接启动小程序项目，同时命中 `weapp-vite` 里的断点了！
 
