@@ -1,31 +1,36 @@
 # 开箱即用的小程序icon解决方案
 
-这里介绍一种在小程序里，开箱即用的 icon 解决方案：[`iconify`](https://iconify.design/)
+这里介绍一种在小程序里，开箱即用的 `icon` 解决方案：[`iconify`](https://iconify.design/)
 
-很高兴，我们已经有这样的能力，为小程序提供大量的 `icon`, 供我们开发者自己进行选择。
+很高兴，我们已经有这样的能力，为小程序提供大量的 `icon`，供我们开发者自己进行选择。
 
 ## 立即开始
 
 首先，在已经安装和配置完本插件之后，安装 [`@egoist/tailwindcss-icons`](https://www.npmjs.com/package/@egoist/tailwindcss-icons)
 
 ```sh
-<npm|yarn|pnpm> i -D @egoist/tailwindcss-icons
+npm i -D @egoist/tailwindcss-icons
+pnpm i -D @egoist/tailwindcss-icons
+yarn i -D @egoist/tailwindcss-icons
 ```
 
 :::tip
 **Iconify for Tailwind CSS** 其实给我们提供了两种选择：
 `@iconify/tailwind` 和 `@egoist/tailwindcss-icons`
 
-个人用下来，感觉 `@egoist/tailwindcss-icons` 更好用一点，智能提示也更好，但是带来的问题就是开销更大，不过我不在乎。
+作者个人用下来，感觉 `@egoist/tailwindcss-icons` 更好用一点，智能提示也更好，但是带来的问题就是开销更大，不过我不在乎。
 
 因为它是直接把全部的 `icon` 生成在 `components` 里, 然后再交给 `Tailwind CSS` 从里面进行挑选再输出到我们的 `css` 文件中的。
 
 而 `@iconify/tailwind` 走的是 `jit` 动态加载生成，但是没有智能提示加 `<span class="icon-[mdi-light--home]"></span>` 不好用啊，笑～。
 
-详见 <https://iconify.design/docs/usage/css/tailwind/>
+参见：[适用于 Tailwind CSS 的 Iconify](https://iconify.design/docs/usage/css/tailwind/)
+
 :::
 
 然后在 `tailwind.config.js` 注册插件:
+
+### JavaScript
 
 ```js
 const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")
@@ -33,35 +38,44 @@ const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")
 module.exports = {
   plugins: [
     iconsPlugin({
-      // Select the icon collections you want to use
+      // 选择你想要使用的图标集合。
       collections: getIconCollections(["mdi", "lucide"]),
     }),
   ],
 }
 ```
 
-然后你还要安装你挑选的 `icon` 集合包，比如你选择了 `"mdi"` 和 `"lucide"`
+然后你还要安装你挑选的 `icon` 集合包，例如你选择了 `"mdi"` 和 `"lucide"`
 
-那你就要安装: `@iconify-json/mdi` 和 `@iconify-json/lucide` (包名的规则就是：`@iconify-json/{collection_name}`)
+那你就要安装: `@iconify-json/mdi` 和 `@iconify-json/lucide`（包名的规则就是：`@iconify-json/{collection_name}`）
 
-当然你也可以直接安装 `@iconify/json`，这里面包含了所有的 `icon`,不过代价就是，这个包比较大（50MB+）
+当然你也可以直接安装 `@iconify/json`，这里面包含了所有的 `icon`，不过代价就是，这个包比较大（50 MB+）
 
 然后你回到你的页面，输入 `i-` 智能提示就出来了，然后就可以这么写了：
 
-`<view class="i-mdi-home text-3xl text-red-600"></view>`
+### HTML
 
-> 假如不起作用，请检查你的 `@tailwind components;` / `@import 'tailwindcss/components';`(scss) 是否在入口 `css/scss` 中引入
+```html
+<view class="i-mdi-home text-3xl text-red-600"></view>
+```
 
-## icon预览挑选网站
+:::tip
+假如不起作用，请检查 `@tailwind components;` 或 `@import 'tailwindcss/components';`（scss）是否在入口 `css/scss` 中引入。
+:::
 
-<https://icones.js.org>
+## icon 预览挑选网站
+
+- [icones](https://icones.js.org)
+- [icon-sets](https://icon-sets.iconify.design/)
 
 ## 生成结果
 
 我们以 `i-mdi-home` 这个类的`css` 生成结果为例：
 
+### CSS
+
 ```css
-.i-mdi-home{
+.i-mdi-home {
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -76,10 +90,10 @@ module.exports = {
 }
 ```
 
-是的，它是通过 `css var` 的方式，把 `svg` 给内联了（`inline`）了进来，然后通过 `mask-image` 来把图形给显示出来的。 显然，这用多了 `icon` 之后会造成生成的 `css` 体积大的问题。
+是的，它是通过 `css` 的自定义属性（--*）的方式，把 `svg` 给内联了（`inline`）了进来，然后通过 `mask-image` 来把图形给显示出来的。 显然，这用多了 `icon` 之后会造成生成的 `css` 体积大的问题。
 
 对此还有 `mask-image` 和 `css var` 在部分机器上不兼容的问题。
 
-对此有解决方案吗？显然是有的，比如我们可以把它做成一个 `webfont`，更改每一个 `icon component class`，把里面换成字体，达到类似 `iconfont` 的效果，最后再生成一份 `ttf/woff` 等文件上传到自己的 `cdn`去，然后这里再引用即可。
+对此有解决方案吗？显然是有的，例如我们可以把它做成一个 `webfont`，更改每一个 `icon component class`，把里面换成字体，达到类似 `iconfont` 的效果，最后再生成一份 `ttf/woff` 等文件上传到自己的 `cdn`去，然后这里再引用即可。
 
-这样小程序体积又小，兼容性也好，就是多了些网络请求罢了,我们自己取舍吧。
+这样小程序体积又小，兼容性也好，就是多了些网络请求罢了，我们自己取舍吧。

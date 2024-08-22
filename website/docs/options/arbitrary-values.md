@@ -1,10 +1,10 @@
-# 使用 arbitrary values
+# 使用 arbitrary 值
 
 `arbitrary values` 是 `tailwindcss v3` 的重要更新内容，幸运的是你使用了本插件。
 
 使得你可以使用 `tailwindcss v3` 强大的 `arbitrary values` 功能。
 
-比如:
+例如：
 
 ```html
 <view :class="[flag?'bg-red-900':'bg-[#fafa00]']">bg-[#fafa00]</view>
@@ -24,10 +24,13 @@
 </view>
 ```
 
-or `@apply`
+或使用 `@apply`
 
 ```html
-<template><view class="hello">world</view></template>
+<template>
+  <view class="hello">world</view>
+</template>
+
 <style lang="scss">
 .hello {
   @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};

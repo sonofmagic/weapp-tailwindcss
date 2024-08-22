@@ -34,21 +34,21 @@
 [![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
 
-> 简体中文(zh-cn) | [English](./README_en.md)
+> 简体中文（zh-cn） | [English](./README_en.md)
 
-目前这个仓库存在 2 个主要项目: `weapp-tailwindcss` 和 `weapp-vite`
+目前这个仓库存在 2 个主要项目：`weapp-tailwindcss` 和 `weapp-vite`
 
 ## 🔥 weapp-tailwindcss
 
-### 介绍: 把原子化思想带入小程序开发吧！
+### 介绍：把原子化思想带入小程序开发吧！
 
-### 仓库链接: [packages/weapp-tailwindcss](./packages/weapp-tailwindcss/)
+### 仓库链接：[packages/weapp-tailwindcss](./packages/weapp-tailwindcss/)
 
-### 官网链接: [weapp-tw.icebreaker.top](https://weapp-tw.icebreaker.top)
+### 官网链接：[weapp-tw.icebreaker.top](https://weapp-tw.icebreaker.top)
 
 ## 🔥 weapp-vite
 
-### 介绍: 把现代化的工具链和生态带入小程序开发吧！
+### 介绍：把现代化的工具链和生态带入小程序开发吧！
 
 ### 仓库链接: [packages/weapp-vite](./packages/weapp-vite/)
 
@@ -58,7 +58,7 @@
 
 我们邀请你来贡献和帮助改进 `weapp-tailwindcss` 和 `weapp-vite` 💚💚💚
 
-以下有几个方式可以参与:
+以下有几个方式可以参与：
 
 - 报告错误：如果您遇到任何错误或问题，请提`issue`并提供完善的错误信息和复现方式。
 - 建议：有增强 `weapp-tailwindcss` 和 `weapp-vite` 的想法吗？请提 `issue` 来分享您的建议。
@@ -81,7 +81,7 @@
 
 ### weapp-ide-cli
 
-[weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
+[weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录、开发、预览、上传代码等等功能。
 
 ### weapp-pandacss
 

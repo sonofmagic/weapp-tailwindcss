@@ -4,7 +4,7 @@
 
 ## 为什么需要这样这个配置项呢？
 
-有时候我们会写出这样的 `class`:
+有时候我们会写出这样的 `class`：
 
 ```html
 <view
@@ -26,7 +26,7 @@
 
 如果你对生成类名的结果不满意，我也提供了许多的配置项帮助你自定义修改类名
 
-比如你对 `tw-` 这样的类名前缀不满意，那么可以传:
+例如你对 `tw-` 这样的类名前缀不满意，那么可以传:
 
 ```js
 const options = {
@@ -41,7 +41,7 @@ const options = {
 
 或者你有些类名不想被压缩混淆，那么就可以传入一个过滤方法 `mangleClassFilter`
 
-```js
+```ts
 const options = {
   mangle:{
     mangleClassFilter: (className:string) => boolean
@@ -55,17 +55,13 @@ const options = {
 
 ## 注意点
 
-默认情况下，不包含 `-` 或者 `:` 的类名是不会被压缩混淆的，比如 `flex`,`relative` 这种类名。
+默认情况下，不包含 `-` 或者 `:` 的类名是不会被压缩混淆的，例如 `flex`、`relative` 这种类名。
 
-为什么？
-
-因为压缩混淆 `js` 的字符串字面量是非常危险的一件事情，比如
+因此压缩混淆 `js` 的字符串字面量是非常危险的一件事情，例如
 
 ```js
 const innerHTML = "i'm flex and relative and grid"
 document.body.innerHTML = innerHTML
 ```
 
-这种情况下强行压缩混淆，那用户自己的结果就是有问题的了
-
-所以这就是原因，当然这个默认行为，可以使用自定义的 `mangleClassFilter` 来代替。
+这种情况下强行压缩混淆，那用户自己的结果就是有问题的了，所以这就是原因，当然这个默认行为，可以使用自定义的 `mangleClassFilter` 来代替。

@@ -4,22 +4,22 @@
 
 ## 创建项目
 
-创建项目 `test-miniapp`, 进入项目目录并初始化 `package.json`
+创建项目 `test-miniapp` 并进入项目目录并初始化 `package.json`。
 
 ```sh
 cd test-miniapp
 npm init -y
 ```
 
-新建小程序开发目录 `src`，对应的小程序代码，生成目标代码目录为 `dist`
+新建小程序开发目录 `src`，对应的小程序代码，生成目标代码目录为 `dist`。
 
-此时目录结构如下所示:
+此时目录结构如下所示：
 
 ```
-test-miniapp
--- src
--- dist
--- package.json
+-- test-miniapp
+  -- src
+  -- dist
+  -- package.json
 ```
 
 ## 安装 gulp 及插件
@@ -30,7 +30,7 @@ test-miniapp
 npm i -D gulp
 ```
 
-- 安装 gulp 模块及插件
+- 安装 `gulp` 模块及插件
 
 ```sh
 npm i -D gulp gulp-postcss gulp-plumber del@^6
@@ -38,13 +38,13 @@ npm i -D gulp gulp-postcss gulp-plumber del@^6
 
 ## 安装与配置 tailwindcss
 
-- 安装 tailwindcss
+- 安装 `tailwindcss`
 
 ```sh
 npm i -D tailwindcss postcss autoprefixer
 ```
 
-- 初始化 tailwindcss 配置文件
+- 初始化 `tailwindcss` 配置文件
 
 ```sh
 npx tailwindcss init
@@ -144,7 +144,7 @@ module.exports = {
   npm i -D weapp-tailwindcss-webpack-plugin
   ```
   
-  配置 `gulpfile.js`，需要注意的事，在面板执行 `serve` 后，即使后来停止了任务，程序里的监听 `watch` 也不会停，使得后续再启动 `serve` 后，会有多个监听 `watch` 和多个监听处理程序 `watchHandler`，重复处理文件。所以停止后再启动 `serve`，应该关闭 `vscode` 后重新打开
+  配置 `gulpfile.js`，需要注意的是，在面板执行 `serve` 后，即使后来停止了任务，程序里的监听 `watch` 也不会停，使得后续再启动 `serve` 后，会有多个监听 `watch` 和多个监听处理程序 `watchHandler`，重复处理文件。所以停止后再启动 `serve`，应该关闭 `vscode` 后重新打开。
   
   ```js
   const { src, dest, series, parallel, task, watch } = require('gulp')
