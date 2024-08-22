@@ -64,14 +64,15 @@ export async function runDev(ctx: Context, options?: UserConfig) {
 }
 
 export async function runProd(ctx: Context, options?: UserConfig) {
+  const inlineConfig = defu<UserConfig, UserConfig[]>(
+    options,
+    await getDefaultViteConfig(ctx),
+    {
+      mode: 'production',
+    },
+  )
   const output = (await build(
-    defu<UserConfig, UserConfig[]>(
-      options,
-      await getDefaultViteConfig(ctx),
-      {
-        mode: 'production',
-      },
-    ),
+    inlineConfig,
   )) as RollupOutput | RollupOutput[]
 
   return output

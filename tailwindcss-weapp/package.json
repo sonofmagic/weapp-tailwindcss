@@ -61,7 +61,7 @@
     "pinia": "~2.1.7",
     "tailwindcss-core-plugins-extractor": "^0.2.0",
     "uni-app-mp-html": "^2.5.0",
-    "uview-plus": "^3.3.21",
+    "uview-plus": "^3.3.27",
     "vue": "^3.4.38"
   },
   "devDependencies": {
@@ -87,7 +87,7 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.10",
     "unplugin-auto-import": "^0.18.2",
-    "vite": "5.4.1",
+    "vite": "5.4.2",
     "vue-eslint-parser": "^9.4.3",
     "weapp-ide-cli": "workspace:^",
     "weapp-tailwindcss": "workspace:^"
