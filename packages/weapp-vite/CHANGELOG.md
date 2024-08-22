@@ -1,5 +1,13 @@
 # weapp-vite
 
+## 1.1.0
+
+### Minor Changes
+
+- [`5507cd8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5507cd8c38fc0f0821548cb1f8382ae8e9d5fbf9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - support cli mode param
+
+  releated: https://github.com/sonofmagic/weapp-tailwindcss/discussions/369
+
 ## 1.0.6
 
 ### Patch Changes
