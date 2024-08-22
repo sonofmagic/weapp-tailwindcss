@@ -14,6 +14,10 @@ export function createContext(cwd: string = process.cwd()) {
     value: '',
   }
 
+  const watcherPathRef: Record<string, string | readonly string[]> = {
+    value: '',
+  }
+
   function relativeSrcRoot(p: string) {
     if (srcRootRef.value) {
       return path.relative(srcRootRef.value, p)
@@ -30,6 +34,7 @@ export function createContext(cwd: string = process.cwd()) {
     isDev,
     assetCache,
     srcRootRef,
+    watcherPathRef,
     relativeSrcRoot,
     cwd,
     projectConfig,

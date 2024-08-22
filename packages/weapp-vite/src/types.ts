@@ -61,6 +61,7 @@ export type Entry = AppEntry | PageEntry | ComponentEntry | SubPackageEntry
 export interface WeappViteConfig {
   srcRoot?: string
   subPackage?: Partial<Subpackage>
+  watcherPath?: string | ReadonlyArray<string>
 }
 
 export type UserConfig = ViteUserConfig & { weapp?: WeappViteConfig }

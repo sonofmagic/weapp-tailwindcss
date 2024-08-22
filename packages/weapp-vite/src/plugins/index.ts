@@ -76,6 +76,10 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         if (config?.weapp?.srcRoot && !config?.weapp.subPackage && !ctx.srcRootRef.value) {
           ctx.srcRootRef.value = config.weapp.srcRoot
         }
+
+        if (config?.weapp?.watcherPath) {
+          ctx.watcherPathRef.value = config.weapp.watcherPath
+        }
       },
       configResolved(config) {
         debug?.(config)
@@ -83,6 +87,8 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
       },
       async options(options) {
         const { root, build, weapp } = configResolved
+
+        // const filepath = path.resolve(ctx.cwd, file)
         const entries = await getEntries({
           root,
           outDir: build.outDir,
@@ -185,6 +191,19 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
             fileName: ctx.relativeSrcRoot(file),
             source: isMedia ? await fs.readFile(filepath) : await fs.readFile(filepath, 'utf8'),
           })
+        }
+
+        if (weapp?.watcherPath) {
+          if (Array.isArray(weapp.watcherPath)) {
+            weapp.watcherPath.forEach(async (x) => {
+              const filepath = path.resolve(ctx.cwd, x)
+              this.addWatchFile(filepath)
+            })
+          }
+          else {
+            const filepath = path.resolve(ctx.cwd, weapp.watcherPath as string)
+            this.addWatchFile(filepath)
+          }
         }
       },
       resolveId(source) {

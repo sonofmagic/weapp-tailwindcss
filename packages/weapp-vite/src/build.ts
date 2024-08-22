@@ -85,7 +85,7 @@ export async function runDev(ctx: Context, options?: UserConfig) {
     return await innerDev()
   }
   else {
-    const watcher = watch(['**/*.{wxml,json,wxs}', '**/*.{png,jpg,jpeg,gif,svg,webp}'], {
+    const watcher = watch(['**/*.{wxml,json,wxs}', '**/*.{png,jpg,jpeg,gif,svg,webp}', '.env', '.env.*'], {
       ignored: [
         ...defaultExcluded,
         path.join(ctx.mpRoot, '**'),
