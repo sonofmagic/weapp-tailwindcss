@@ -7,7 +7,7 @@ import { formatTime } from '../../utils/util'
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 Page({
   data: {
-    motto: JSON.stringify(import.meta.env),
+    motto: JSON.stringify(import.meta.env, null, 2),
     message: 'Hello MINA!',
     userInfo: {
       avatarUrl: defaultAvatarUrl,

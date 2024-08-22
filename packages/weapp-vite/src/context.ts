@@ -4,7 +4,7 @@ import type { FSWatcher } from 'chokidar'
 import path from 'pathe'
 import { getProjectConfig } from './utils/projectConfig'
 
-export function createContext(cwd: string = process.cwd()) {
+export function createContext(cwd: string = process.cwd(), options?: { mode?: string }) {
   const watcherCache = new Map<string | symbol, RollupWatcher | FSWatcher>()
 
   const assetCache = new Map<string, EmittedFile>()
@@ -26,6 +26,7 @@ export function createContext(cwd: string = process.cwd()) {
   const mpRoot = projectConfig.miniprogramRoot || projectConfig.srcMiniprogramRoot
 
   return {
+    options: options ?? {},
     watcherCache,
     isDev,
     assetCache,

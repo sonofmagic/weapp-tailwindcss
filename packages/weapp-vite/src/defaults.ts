@@ -25,6 +25,7 @@ export async function getDefaultViteConfig(ctx: Context): Promise<UserConfig> {
   }
 
   return {
+    mode: ctx.options.mode,
     build: {
       rollupOptions: {
         output: {

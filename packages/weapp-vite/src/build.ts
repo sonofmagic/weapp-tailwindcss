@@ -10,7 +10,9 @@ import { RootRollupSymbol } from './symbols'
 import { getDefaultViteConfig, getWeappWatchOptions } from './defaults'
 
 export async function runDev(ctx: Context, options?: UserConfig) {
-  process.env.NODE_ENV = 'development'
+  if (process.env.NODE_ENV === undefined) {
+    process.env.NODE_ENV = 'development'
+  }
   const inlineConfig = defu<UserConfig, UserConfig[]>(
     options,
     await getDefaultViteConfig(ctx),
