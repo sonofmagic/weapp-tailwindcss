@@ -26,3 +26,11 @@ export default defineConfig({
 - 类型: `string`
 
 `app.json` 的所在位置，创建 `js` 的小程序的时候默认在当前目录，创建 `ts` 小程序项目的时候，会出现在 `miniprogram` 目录中，此时就需要把 `srcRoot` 设置为 `./miniprogram`
+
+## watch
+
+- 类型: `object`
+
+通过此选项可以自定义 `watch` 的配置，可传入一个 `chokidar` 配置，[参考配置](https://www.npmjs.com/package/chokidar)
+
+常用为，可通过传入 `paths` 字符串数组来进行文件的额外监听

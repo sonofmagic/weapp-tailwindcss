@@ -8,12 +8,16 @@
   "license": "ISC",
   "keywords": [],
   "scripts": {
-    "dev": "vitepress dev",
-    "build": "vitepress build",
+    "predocs": "typedoc",
+    "dev": "npm run predocs && vitepress dev",
+    "build": "npm run predocs && vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {
     "@shikijs/vitepress-twoslash": "^1.14.1",
+    "typedoc": "^0.26.6",
+    "typedoc-plugin-markdown": "4.2.5",
+    "typedoc-vitepress-theme": "^1.0.1",
     "vitepress": "^1.3.3",
     "weapp-vite": "workspace:*"
   }

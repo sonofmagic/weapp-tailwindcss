@@ -4,6 +4,7 @@
     "jsx": "react",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
     "types": [
       "vitest/globals"
     ],

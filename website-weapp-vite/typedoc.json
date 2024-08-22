@@ -1,0 +1,13 @@
+{
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "typedoc-vitepress-theme"
+  ],
+  "docsRoot": "./",
+  "out": "./api",
+  "entryPoints": [
+    "../packages/weapp-vite/src/types.ts"
+  ],
+  "tsconfig": "../packages/weapp-vite/tsconfig.json",
+  "readme": "none"
+}

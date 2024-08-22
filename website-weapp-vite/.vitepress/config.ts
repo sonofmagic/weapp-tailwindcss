@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
+// @ts-ignore
+import typedocSidebar from '../api/typedoc-sidebar.json'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Weapp-vite',
@@ -11,10 +13,15 @@ export default defineConfig({
       { text: '指引', link: '/guide' },
       { text: '参考', link: '/config' },
       { text: '博客', link: '/blog' },
+      { text: 'API', link: '/api/' },
     ],
     logo: '/logo.svg',
 
     sidebar: {
+      '/api/': [{
+        text: 'API',
+        items: typedocSidebar,
+      }],
       '/guide/': [
         {
           text: '指引',
