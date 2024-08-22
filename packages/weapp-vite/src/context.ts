@@ -5,7 +5,7 @@ import path from 'pathe'
 import { getProjectConfig } from './utils/projectConfig'
 
 export function createContext(cwd: string = process.cwd()) {
-  const watcherCache = new Map< string | symbol, RollupWatcher | FSWatcher>()
+  const watcherCache = new Map<string | symbol, RollupWatcher | FSWatcher>()
 
   const assetCache = new Map<string, EmittedFile>()
 

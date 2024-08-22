@@ -1,4 +1,5 @@
 import type { UserConfig as ViteUserConfig } from 'vite'
+import type { WatchOptions as ChokidarWatchOptions } from 'chokidar'
 
 export interface PageDep {
   type: 'page'
@@ -58,9 +59,13 @@ export interface AppEntry {
 
 export type Entry = AppEntry | PageEntry | ComponentEntry | SubPackageEntry
 
+export interface WatchOptions extends ChokidarWatchOptions {
+  paths?: ReadonlyArray<string>
+}
 export interface WeappViteConfig {
   srcRoot?: string
   subPackage?: Partial<Subpackage>
+  watch?: WatchOptions
 }
 
 export type UserConfig = ViteUserConfig & { weapp?: WeappViteConfig }

@@ -3,24 +3,19 @@ import fs from 'fs-extra'
 import { addExtension, defu, isObject, removeExtension } from '@weapp-core/shared'
 import type { AppEntry, Dep, Entry, Subpackage } from '../types'
 
-export const defaultExcluded: string[] = ['**/node_modules/**', '**/miniprogram_npm/**']
-// import { isCSSRequest } from 'is-css-request'
-// https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
-// js + json
-export function isAppRoot(root: string) {
-  return Boolean(searchAppEntry({
-    root,
-  }))
-}
-
-// wxml + js
-export function isPage(wxmlPath: string) {
-  return Boolean(searchPageEntry(wxmlPath))
-}
-
-export interface SearchAppEntryOptions {
-  root: string
-  formatPath?: (p: string) => string
+export function parseJsonUseComponents(json: any) {
+  const deps: Dep[] = []
+  if (isObject(json.usingComponents)) {
+    deps.push(...(
+      Object.values(json.usingComponents) as string[]
+    ).map<Dep>((x) => {
+      return {
+        path: x,
+        type: 'component',
+      }
+    }))
+  }
+  return deps
 }
 
 export function searchAppEntry(options?: SearchAppEntryOptions): AppEntry | undefined {
@@ -68,6 +63,14 @@ export function searchAppEntry(options?: SearchAppEntryOptions): AppEntry | unde
     }
   }
 }
+// import { isCSSRequest } from 'is-css-request'
+// https://developers.weixin.qq.com/miniprogram/dev/framework/structure.html
+// js + json
+export function isAppRoot(root: string) {
+  return Boolean(searchAppEntry({
+    root,
+  }))
+}
 
 export function searchPageEntry(wxmlPath: string) {
   if (fs.existsSync(wxmlPath)) {
@@ -81,6 +84,15 @@ export function searchPageEntry(wxmlPath: string) {
     }
   }
 }
+// wxml + js
+export function isPage(wxmlPath: string) {
+  return Boolean(searchPageEntry(wxmlPath))
+}
+
+export interface SearchAppEntryOptions {
+  root: string
+  formatPath?: (p: string) => string
+}
 
 export function isComponent(wxmlPath: string) {
   if (isPage(wxmlPath)) {
@@ -93,21 +105,6 @@ export function isComponent(wxmlPath: string) {
     }
   }
   return false
-}
-
-export function parseJsonUseComponents(json: any) {
-  const deps: Dep[] = []
-  if (isObject(json.usingComponents)) {
-    deps.push(...(
-      Object.values(json.usingComponents) as string[]
-    ).map<Dep>((x) => {
-      return {
-        path: x,
-        type: 'component',
-      }
-    }))
-  }
-  return deps
 }
 
 export function getWxmlEntry(wxmlPath: string, formatPath: (p: string) => string): Entry | undefined {

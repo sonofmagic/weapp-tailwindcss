@@ -29,7 +29,7 @@
     "./config": "./src/config.ts"
   },
   "bin": {
-    "weapp-vite": "src/bin.js"
+    "weapp-vite": "dev/bin.js"
   },
   "files": [
     "bin",

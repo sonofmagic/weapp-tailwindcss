@@ -3,22 +3,14 @@ import mm from 'micromatch'
 import { defu } from '@weapp-core/shared'
 import path from 'pathe'
 import klaw from 'klaw'
-import { defaultExcluded, getWxmlEntry, searchAppEntry } from './utils'
+import { getWxmlEntry, searchAppEntry } from './utils'
+import { defaultExcluded } from './defaults'
 import type { Entry, WeappViteConfig } from './types'
 
 export function createFilter(include: string[], exclude: string[], options?: mm.Options) {
   const opts = defu<mm.Options, mm.Options[]>(options, {
     ignore: exclude,
-    // debug: true,
-    // dot: true,
-    // contains: true,
   })
-  // function getPath(id: string) {
-  //   if (typeof opts.cwd === 'string') {
-  //     return path.relative(opts.cwd, id)
-  //   }
-  //   return id
-  // }
 
   return function (id: unknown | string) {
     if (typeof id !== 'string') {
@@ -27,7 +19,6 @@ export function createFilter(include: string[], exclude: string[], options?: mm.
     if (/\0/.test(id)) {
       return false
     }
-    // const x = getPath(id)
 
     return mm.isMatch(id as string, include, opts)
   }

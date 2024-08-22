@@ -1,76 +1,31 @@
 import process from 'node:process'
 import type { RollupOutput, RollupWatcher } from 'rollup'
-import { addExtension, defu, removeExtension } from '@weapp-core/shared'
-import { readPackageJSON } from 'pkg-types'
+import { defu } from '@weapp-core/shared'
 import path from 'pathe'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { watch } from 'chokidar'
 import { build } from 'vite'
-import type { UserConfig } from './types'
-import { vitePluginWeapp } from './plugins'
+import type { UserConfig, WatchOptions } from './types'
 import type { Context } from './context'
 import { RootRollupSymbol } from './symbols'
-import { defaultExcluded } from './utils/scan'
-
-export async function getDefaultConfig(ctx: Context): Promise<UserConfig> {
-  const localPackageJson = await readPackageJSON()
-  const external: string[] = []
-  if (localPackageJson.dependencies) {
-    external.push(...Object.keys(localPackageJson.dependencies))
-  }
-
-  return {
-    build: {
-      rollupOptions: {
-        output: {
-          format: 'cjs',
-          strict: false,
-          entryFileNames: (chunkInfo) => {
-            const name = ctx.relativeSrcRoot(chunkInfo.name)
-            if (name.endsWith('.ts')) {
-              const baseFileName = removeExtension(name)
-              if (baseFileName.endsWith('.wxs')) {
-                return path.normalize((baseFileName))
-              }
-              return path.normalize(addExtension(baseFileName, '.js'))
-            }
-            return path.normalize(name)
-          },
-        },
-        external,
-      },
-      assetsDir: '.',
-      commonjsOptions: {
-        transformMixedEsModules: true,
-        include: undefined,
-      },
-    },
-    plugins: [
-      vitePluginWeapp(ctx),
-      tsconfigPaths(),
-    ],
-    // logLevel: 'silent',
-  }
-}
+import { getDefaultViteConfig, getWeappWatchOptions } from './defaults'
 
 export async function runDev(ctx: Context, options?: UserConfig) {
   process.env.NODE_ENV = 'development'
-
+  const inlineConfig = defu<UserConfig, UserConfig[]>(
+    options,
+    await getDefaultViteConfig(ctx),
+    {
+      mode: 'development',
+      build: {
+        watch: {},
+        minify: false,
+        emptyOutDir: false,
+      },
+    },
+  )
   async function innerDev() {
     const rollupWatcher = (await build(
-      defu<UserConfig, UserConfig[]>(
-        options,
-        await getDefaultConfig(ctx),
-        {
-          mode: 'development',
-          build: {
-            watch: {},
-            minify: false,
-            emptyOutDir: false,
-          },
-        },
-      )
-      ,
+      inlineConfig,
     )) as RollupWatcher
     const key = options?.weapp?.subPackage?.root || RootRollupSymbol
 
@@ -80,18 +35,18 @@ export async function runDev(ctx: Context, options?: UserConfig) {
 
     return rollupWatcher
   }
-
+  // 小程序分包的情况，再此创建一个 watcher
   if (options?.weapp?.subPackage) {
     return await innerDev()
   }
   else {
-    const watcher = watch(['**/*.{wxml,json,wxs}', '**/*.{png,jpg,jpeg,gif,svg,webp}'], {
+    const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(inlineConfig.weapp?.watch, {
       ignored: [
-        ...defaultExcluded,
         path.join(ctx.mpRoot, '**'),
       ],
       cwd: ctx.cwd,
-    })
+    }, getWeappWatchOptions())
+    const watcher = watch(paths, opts)
     let isReady = false
     watcher.on('all', async (eventName) => {
       if (isReady && (eventName === 'add' || eventName === 'change' || eventName === 'unlink')) {
@@ -110,7 +65,7 @@ export async function runProd(ctx: Context, options?: UserConfig) {
   const output = (await build(
     defu<UserConfig, UserConfig[]>(
       options,
-      await getDefaultConfig(ctx),
+      await getDefaultViteConfig(ctx),
       {
         mode: 'production',
       },

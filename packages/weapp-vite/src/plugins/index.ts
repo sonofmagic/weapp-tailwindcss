@@ -5,7 +5,7 @@ import MagicString from 'magic-string'
 import { addExtension, removeExtension } from '@weapp-core/shared'
 import { isCSSRequest, preprocessCSS } from 'vite'
 import fg from 'fast-glob'
-import { defaultExcluded, supportedCssExtensions } from '../utils'
+import { supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
 // import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
@@ -15,6 +15,7 @@ import { runDev, runProd } from '../build'
 import type { AppEntry, SubpackageDep } from '../types'
 // import type { WxmlDep } from '../utils/wxml'
 // import { getDeps } from '../utils/wxml'
+import { defaultExcluded } from '../defaults'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -38,14 +39,6 @@ function getRealPath(res: ParseRequestResponse) {
 // https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/fileWatcher.ts#L2
 // https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/watch.ts#L174
 export function vitePluginWeapp(ctx: Context): Plugin[] {
-  function getInputOption(entries: string[]) {
-    return entries
-      .reduce<Record<string, string>>((acc, cur) => {
-        acc[relative(cur)] = cur
-        return acc
-      }, {})
-  }
-
   const stylesIds = new Set<string>()
   // const templateIds = new Set<string>()
   // const templateCacheMap = new Map<string, {
@@ -57,6 +50,13 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
   let entriesSet: Set<string> = new Set()
   function relative(p: string) {
     return path.relative(configResolved.root, p)
+  }
+  function getInputOption(entries: string[]) {
+    return entries
+      .reduce<Record<string, string>>((acc, cur) => {
+        acc[relative(cur)] = cur
+        return acc
+      }, {})
   }
 
   let appEntry: AppEntry | undefined
