@@ -1,0 +1,93 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`loadDefaultConfig > compilerContext 1`] = `
+{
+  "inlineConfig": {},
+  "isDev": false,
+  "mode": "",
+  "packageJson": {},
+  "projectConfig": {},
+  "subPackage": undefined,
+  "subPackageContextMap": Map {},
+  "watcherMap": Map {},
+}
+`;
+
+exports[`loadDefaultConfig > compilerContext 2`] = `
+{
+  "inlineConfig": {
+    "build": {
+      "assetsDir": ".",
+      "commonjsOptions": {
+        "include": undefined,
+        "transformMixedEsModules": true,
+      },
+      "rollupOptions": {
+        "external": [
+          "dlv",
+        ],
+        "output": {
+          "entryFileNames": [Function],
+          "format": "cjs",
+          "strict": false,
+        },
+      },
+    },
+    "configFile": false,
+    "mode": "",
+    "plugins": [
+      [
+        {
+          "api": {},
+          "buildEnd": [Function],
+          "buildStart": [Function],
+          "config": [Function],
+          "configResolved": [Function],
+          "enforce": "pre",
+          "load": [Function],
+          "name": "weapp-vite:pre",
+          "options": [Function],
+          "resolveId": [Function],
+        },
+        {
+          "name": "weapp-vite",
+        },
+        {
+          "enforce": "post",
+          "name": "weapp-vite:post",
+        },
+      ],
+      {
+        "configResolved": [Function],
+        "enforce": "pre",
+        "name": "vite-tsconfig-paths",
+        "resolveId": [Function],
+      },
+    ],
+    "weapp": {
+      "srcRoot": "src",
+    },
+  },
+  "isDev": false,
+  "mode": "",
+  "packageJson": {
+    "author": "",
+    "dependencies": {
+      "dlv": "^1.1.3",
+    },
+    "description": "",
+    "keywords": [],
+    "license": "ISC",
+    "main": "index.js",
+    "name": "case0",
+    "scripts": {},
+    "version": "1.0.0",
+  },
+  "projectConfig": {
+    "xasd": "fdsa",
+  },
+  "subPackage": undefined,
+  "subPackageContextMap": Map {},
+  "watcherMap": Map {},
+}
+`;

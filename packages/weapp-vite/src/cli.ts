@@ -1,14 +1,10 @@
 import process from 'node:process'
 import { cac } from 'cac'
-import colors from 'picocolors'
 import { initConfig } from '@weapp-core/init'
 import { parse } from 'weapp-ide-cli'
-import path from 'pathe'
-import fs from 'fs-extra'
-import { runDev, runProd } from './build'
 import type { LogLevel } from './logger'
 import logger from './logger'
-import { createContext } from './context'
+import { CompilerContext } from './context'
 import { VERSION } from './constants'
 
 const cli = cac('weapp-vite')
@@ -28,37 +24,6 @@ interface GlobalCLIOptions {
   'm'?: string
   'mode'?: string
   'force'?: boolean
-}
-// @ts-ignore
-// eslint-disable-next-line no-restricted-globals
-let profileSession = global.__vite_profile_session
-let profileCount = 0
-
-export function stopProfiler(log: (message: string) => void): void | Promise<void> {
-  if (!profileSession) {
-    return
-  }
-  return new Promise((res, rej) => {
-    profileSession!.post('Profiler.stop', (err: any, { profile }: any) => {
-      // Write profile to disk, upload, etc.
-      if (!err) {
-        const outPath = path.resolve(
-          `./vite-profile-${profileCount++}.cpuprofile`,
-        )
-        fs.writeFileSync(outPath, JSON.stringify(profile))
-        log(
-          colors.yellow(
-            `CPU profile written to ${colors.white(colors.dim(outPath))}`,
-          ),
-        )
-        profileSession = undefined
-        res()
-      }
-      else {
-        rej(err)
-      }
-    })
-  })
 }
 
 function filterDuplicateOptions<T extends object>(options: T) {
@@ -93,11 +58,12 @@ cli
   .alias('dev') // alias to align with the script name
   .action(async (root: string, options: GlobalCLIOptions) => {
     filterDuplicateOptions(options)
-    const ctx = createContext(root, {
+    const ctx = new CompilerContext({
+      cwd: root,
       mode: options.mode,
+      isDev: true,
     })
-    ctx.isDev = true
-    await runDev(ctx)
+    await ctx.runDev()
   })
 
 cli
@@ -120,10 +86,11 @@ cli
   .option('-w, --watch', `[boolean] rebuilds when modules have changed on disk`)
   .action(async (root: string, options) => {
     filterDuplicateOptions(options)
-    const ctx = createContext(root, {
+    const ctx = new CompilerContext({
+      cwd: root,
       mode: options.mode,
     })
-    await runProd(ctx)
+    await ctx.runProd()
   })
 
 cli

@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`defaults > defaultExcluded 1`] = `
+[
+  "**/node_modules/**",
+  "**/miniprogram_npm/**",
+]
+`;
+
+exports[`defaults > getWeappWatchOptions 1`] = `
+{
+  "ignored": [
+    "**/node_modules/**",
+    "**/miniprogram_npm/**",
+  ],
+  "paths": [
+    "**/*.{wxml,json,wxs}",
+    "**/*.{png,jpg,jpeg,gif,svg,webp}",
+    ".env",
+    ".env.*",
+  ],
+}
+`;

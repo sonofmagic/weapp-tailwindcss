@@ -7,15 +7,11 @@ import { isCSSRequest, preprocessCSS } from 'vite'
 import fg from 'fast-glob'
 import { supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
-// import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
-import type { Context } from '../context'
-import { runDev, runProd } from '../build'
-// import { MiscSymbol } from '../symbols'
-import type { AppEntry, SubpackageDep } from '../types'
-// import type { WxmlDep } from '../utils/wxml'
-// import { getDeps } from '../utils/wxml'
+import type { CompilerContext } from '../context'
 import { defaultExcluded } from '../defaults'
+import type { AppEntry, SubPackageDep } from '../types'
+import { watcherCache } from '../cache'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -38,7 +34,7 @@ function getRealPath(res: ParseRequestResponse) {
 
 // https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/fileWatcher.ts#L2
 // https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/watch.ts#L174
-export function vitePluginWeapp(ctx: Context): Plugin[] {
+export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
   const stylesIds = new Set<string>()
   // const templateIds = new Set<string>()
   // const templateCacheMap = new Map<string, {
@@ -73,9 +69,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
       // config->configResolved->|watching|options->buildStart
       config(config, env) {
         debug?.(config, env)
-        if (config?.weapp?.srcRoot && !config?.weapp.subPackage && !ctx.srcRootRef.value) {
-          ctx.srcRootRef.value = config.weapp.srcRoot
-        }
       },
       configResolved(config) {
         debug?.(config)
@@ -108,21 +101,8 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           options.input = input
           if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (subPackage.root && subPackage.independent && !ctx.watcherCache.has(subPackage.root)) {
-                if (ctx.isDev) {
-                  runDev(ctx, {
-                    weapp: {
-                      subPackage,
-                    },
-                  })
-                }
-                else {
-                  runProd(ctx, {
-                    weapp: {
-                      subPackage,
-                    },
-                  })
-                }
+              if (subPackage.root && subPackage.independent && !watcherCache.has(subPackage.root)) {
+                ctx.forkSubPackage(subPackage).build()
               }
             }
           }
@@ -148,7 +128,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
               x => x.type === 'subPackage' && x.independent,
             )
               .map((x) => {
-                return `${(x as SubpackageDep).root}/**`
+                return `${(x as SubPackageDep).root}/**`
               })
             : []
           ignore.push(

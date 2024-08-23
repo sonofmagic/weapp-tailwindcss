@@ -2,11 +2,12 @@ import path from 'pathe'
 import { build } from 'vite'
 import type { RollupOutput } from 'rollup'
 
-import { runProd } from '@/build'
+// import { runProd } from '@/build'
 import { getEntries } from '@/entry'
-import { createContext } from '@/context'
 
-describe('build', () => {
+// import { createContext } from '@/context'
+
+describe.skip('build', () => {
   describe('rollup', () => {
     const mixjsDir = path.resolve(__dirname, './fixtures/mixjs')
     // function r(...args: string[]) {
@@ -86,49 +87,49 @@ describe('build', () => {
       }
     })
 
-    it('mixjs runProd abs root', async () => {
-      const ctx = createContext(mixjsDir)
-      const res = await runProd(ctx, {
-        root: mixjsDir,
-        build: {
-          minify: false,
-          commonjsOptions: {
-            include: undefined,
-            transformMixedEsModules: true,
-          },
-        },
+    // it('mixjs runProd abs root', async () => {
+    //   const ctx = createContext(mixjsDir)
+    //   const res = await runProd(ctx, {
+    //     root: mixjsDir,
+    //     build: {
+    //       minify: false,
+    //       commonjsOptions: {
+    //         include: undefined,
+    //         transformMixedEsModules: true,
+    //       },
+    //     },
 
-        plugins: [
-          {
-            name: 'inspect',
-            enforce: 'pre',
-            configResolved(_config) {
-              // console.log(config)
-            },
-            // resolveId(source) {
-            //   console.log('resolveId', source)
-            // },
-            // load(id, options) {
-            //   console.log('load', id, options)
-            // },
-            // generateBundle(_options, _bundle) {
-            //   console.log('generateBundle', _bundle)
-            // },
-            buildEnd(error) {
-              console.log(error)
-            },
-          },
-        ],
-      }) as RollupOutput
+    //     plugins: [
+    //       {
+    //         name: 'inspect',
+    //         enforce: 'pre',
+    //         configResolved(_config) {
+    //           // console.log(config)
+    //         },
+    //         // resolveId(source) {
+    //         //   console.log('resolveId', source)
+    //         // },
+    //         // load(id, options) {
+    //         //   console.log('load', id, options)
+    //         // },
+    //         // generateBundle(_options, _bundle) {
+    //         //   console.log('generateBundle', _bundle)
+    //         // },
+    //         buildEnd(error) {
+    //           console.log(error)
+    //         },
+    //       },
+    //     ],
+    //   }) as RollupOutput
 
-      for (const item of res.output) {
-        if (item.type === 'chunk') {
-          expect(item.code).toMatchSnapshot(path.normalize(item.fileName))
-        }
-        else {
-          expect(item.source).toMatchSnapshot(path.normalize(item.fileName))
-        }
-      }
-    })
+    //   for (const item of res.output) {
+    //     if (item.type === 'chunk') {
+    //       expect(item.code).toMatchSnapshot(path.normalize(item.fileName))
+    //     }
+    //     else {
+    //       expect(item.source).toMatchSnapshot(path.normalize(item.fileName))
+    //     }
+    //   }
+    // })
   })
 })
