@@ -11,7 +11,6 @@ import { createDebugger } from '../debugger'
 import type { CompilerContext } from '../context'
 import { defaultExcluded } from '../defaults'
 import type { AppEntry, SubPackageDep } from '../types'
-import { watcherCache } from '../cache'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -101,7 +100,8 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
           options.input = input
           if (weapp?.type === 'app' && Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (subPackage.root && !watcherCache.has(subPackage.root)) {
+              //
+              if (subPackage.root && !ctx.subPackageContextMap.has(subPackage.root)) {
                 ctx.forkSubPackage(subPackage).build()
               }
             }
@@ -117,7 +117,7 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
         const ignore: string[] = [
           ...defaultExcluded,
         ]
-        const isSubPackage = Boolean(!appEntry && ctx.subPackage && ctx.subPackage.root)
+        const isSubPackage = weapp?.type === 'subPackage' // Boolean(!appEntry && ctx.subPackage && ctx.subPackage.root)
         if (isSubPackage) {
           // subPackage
           cwd = path.join(root, ctx.subPackage!.root)

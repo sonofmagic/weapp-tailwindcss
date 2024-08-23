@@ -9,7 +9,6 @@ import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import fs from 'fs-extra'
 import { type ProjectConfig, getProjectConfig } from './utils/projectConfig'
-import { RootRollupSymbol } from './symbols'
 import type { SubPackage, WatchOptions } from './types'
 import { getWeappWatchOptions } from './defaults'
 import { vitePluginWeapp } from './plugins'
@@ -103,8 +102,7 @@ export class CompilerContext {
     const rollupWatcher = (await build(
       inlineConfig,
     )) as RollupWatcher
-    const key = this.subPackage?.root || RootRollupSymbol
-
+    const key = 'rollup'
     const watcher = this.watcherMap.get(key)
     watcher?.close()
     this.watcherMap.set(key, rollupWatcher)
@@ -135,13 +133,30 @@ export class CompilerContext {
 
     // 小程序分包的情况，再此创建一个 watcher
     if (this.type === 'subPackage' && this.subPackage) {
-      return await this.internalDev(Object.assign({}, inlineConfig, {
+      const key = 'root'
+      const subPackageInlineConfig = Object.assign({}, inlineConfig, {
         weapp: {
           srcRoot: this.parent?.srcRoot,
           type: this.type,
           subPackage: this.subPackage,
         },
-      }))
+      })
+      const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(subPackageInlineConfig.weapp?.watch, {
+        cwd: path.join(this.cwd, subPackageInlineConfig.weapp.srcRoot ?? '', this.subPackage.root),
+      }, getWeappWatchOptions())
+      const watcher = watch(paths, opts)
+      let isReady = false
+      watcher.on('all', async (eventName) => {
+        if (isReady && (eventName === 'add' || eventName === 'change' || eventName === 'unlink')) {
+          await this.internalDev(subPackageInlineConfig)
+        }
+      }).on('ready', async () => {
+        await this.internalDev(subPackageInlineConfig)
+        isReady = true
+      })
+      this.watcherMap.set(key, watcher)
+
+      return watcher
     }
     else if (this.type === 'app') {
       const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(inlineConfig.weapp?.watch, {
@@ -160,6 +175,7 @@ export class CompilerContext {
         await this.internalDev(inlineConfig)
         isReady = true
       })
+      this.watcherMap.set('root', watcher)
 
       return watcher
     }
