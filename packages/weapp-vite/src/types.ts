@@ -65,7 +65,14 @@ export interface WatchOptions extends ChokidarWatchOptions {
 export interface WeappViteConfig {
   srcRoot?: string
   type?: 'app' | 'subPackage'
+  /**
+   * 使用 subPackage 打包模式使用，传入配置
+   */
   subPackage?: Partial<SubPackage>
+  /**
+   * 使用 app 打包模式使用，传入配置用于进行独立监听
+   */
+  subPackagesConfig?: Record<string, Partial<SubPackage>>
   watch?: WatchOptions
 }
 
