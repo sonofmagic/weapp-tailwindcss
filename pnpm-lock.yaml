@@ -279,8 +279,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       pkg-types:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: ^1.2.0
+        version: 1.2.0
       postcss:
         specifier: ^8.4.41
         version: 8.4.41
@@ -357,8 +357,8 @@ importers:
         specifier: ^5.4.2
         version: 5.4.2(@types/node@22.5.0)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6)
       vite-plugin-inspect:
-        specifier: ^0.8.6
-        version: 0.8.6(rollup@4.21.0)(vite@5.4.2(@types/node@22.5.0)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6))
+        specifier: ^0.8.7
+        version: 0.8.7(rollup@4.21.0)(vite@5.4.2(@types/node@22.5.0)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6))
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.5.0)(@vitest/ui@2.0.5)(jsdom@24.1.1)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6)
@@ -658,8 +658,8 @@ importers:
         specifier: ~1.0.1
         version: 1.0.1
       '@babel/generator':
-        specifier: ~7.25.4
-        version: 7.25.4
+        specifier: ~7.25.5
+        version: 7.25.5
       '@babel/parser':
         specifier: ~7.25.4
         version: 7.25.4
@@ -763,8 +763,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       pkg-types:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: ^1.2.0
+        version: 1.2.0
       vite:
         specifier: '>=2.6.0'
         version: 5.4.2(@types/node@22.5.0)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6)
@@ -1024,7 +1024,7 @@ importers:
         version: 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@docusaurus/preset-classic':
         specifier: 3.5.2
-        version: 3.5.2(@algolia/client-search@5.1.1)(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)(typescript@5.5.4)(vue-template-compiler@2.7.16)
+        version: 3.5.2(@algolia/client-search@5.1.1)(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@mdx-js/react':
         specifier: ^3.0.1
         version: 3.0.1(@types/react@18.3.4)(react@18.3.1)
@@ -1112,7 +1112,7 @@ importers:
         version: 1.0.1(typedoc-plugin-markdown@4.2.5(typedoc@0.26.6(typescript@5.5.4)))
       vitepress:
         specifier: ^1.3.3
-        version: 1.3.3(@algolia/client-search@5.1.1)(@types/node@22.5.0)(@types/react@18.3.4)(less@4.2.0)(lightningcss@1.26.0)(nprogress@0.2.0)(postcss@8.4.41)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.8)(search-insights@2.16.3)(stylus@0.63.0)(terser@5.31.6)(typescript@5.5.4)
+        version: 1.3.3(@algolia/client-search@5.1.1)(@types/node@22.5.0)(@types/react@18.3.4)(less@4.2.0)(lightningcss@1.26.0)(nprogress@0.2.0)(postcss@8.4.41)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.8)(search-insights@2.17.0)(stylus@0.63.0)(terser@5.31.6)(typescript@5.5.4)
       weapp-vite:
         specifier: workspace:*
         version: link:../packages/weapp-vite
@@ -1350,8 +1350,8 @@ packages:
     resolution: {integrity: sha512-o9HBZL1G2129luEUlG1hB4N/nlYNWHnpwlND9eOMclRqqu1YDy2sSYVCFUZwl8I1Gxh+QSRrP2vD7EpUmFVXxg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/generator@7.25.4':
-    resolution: {integrity: sha512-NFtZmZsyzDPJnk9Zg3BbTfKKc9UlHYzD0E//p2Z3B9nCwwtJW9T0gVbCz8+fBngnn4zf1Dr3IK8PHQQHq0lDQw==}
+  '@babel/generator@7.25.5':
+    resolution: {integrity: sha512-abd43wyLfbWoxC6ahM8xTkqLpGB2iWBVyuKC9/srhFunCd1SDNrV1s72bBpK4hLj8KLzHBBcOblvLQZBNw9r3w==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-annotate-as-pure@7.24.7':
@@ -10922,8 +10922,8 @@ packages:
     resolution: {integrity: sha512-Ie9z/WINcxxLp27BKOCHGde4ITq9UklYKDzVo1nhk5sqGEXU3FpkwP5GM2voTGJkGd9B3Otl+Q4uwSOeSUtOBA==}
     engines: {node: '>=14.16'}
 
-  pkg-types@1.1.3:
-    resolution: {integrity: sha512-+JrgthZG6m3ckicaOB74TwQ+tBWsFl3qVQg7mN8ulwSOElJ7gBhKzj2VkCPnZ4NlF6kEquYU+RIYNVAvzd54UA==}
+  pkg-types@1.2.0:
+    resolution: {integrity: sha512-+ifYuSSqOQ8CqP4MbZA5hDpb97n3E8SVWdJe+Wms9kj745lmd3b7EZJiqvmLwAlmRfjrI7Hi5z3kdBJ93lFNPA==}
 
   pkg-up@3.1.0:
     resolution: {integrity: sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==}
@@ -12150,8 +12150,8 @@ packages:
   scule@1.3.0:
     resolution: {integrity: sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==}
 
-  search-insights@2.16.3:
-    resolution: {integrity: sha512-hSHy/s4Zk2xibhj9XTCACB+1PqS+CaJxepGNBhKc/OsHRpqvHAUAm5+uZ6kJJbGXn0pb3XqekHjg6JAqPExzqg==}
+  search-insights@2.17.0:
+    resolution: {integrity: sha512-AskayU3QNsXQzSL6v4LTYST7NNfs2HWyHHB+sdORP9chsytAhro5XRfToAMI/LAVYgNbzowVZTMfBRodgbUHKg==}
 
   section-matter@1.0.0:
     resolution: {integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==}
@@ -13565,8 +13565,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-inspect@0.8.6:
-    resolution: {integrity: sha512-iM/smnFRSuDq9UMVAN06fqBbHAofGDtB5yBucsl0QnPCFqQ2TmPIbsSgSR3gUv13qJ8oPE/FFhXlm9g1xX9nzg==}
+  vite-plugin-inspect@0.8.7:
+    resolution: {integrity: sha512-/XXou3MVc13A5O9/2Nd6xczjrUwt7ZyI9h8pTnUMkr5SshLcb0PJUOVq2V+XVkdeU4njsqAtmK87THZuO2coGA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@nuxt/kit': '*'
@@ -14095,19 +14095,19 @@ snapshots:
   '@adobe/css-tools@4.3.3':
     optional: true
 
-  '@algolia/autocomplete-core@1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.16.3)':
+  '@algolia/autocomplete-core@1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.17.0)':
     dependencies:
-      '@algolia/autocomplete-plugin-algolia-insights': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.16.3)
+      '@algolia/autocomplete-plugin-algolia-insights': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.17.0)
       '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)
     transitivePeerDependencies:
       - '@algolia/client-search'
       - algoliasearch
       - search-insights
 
-  '@algolia/autocomplete-plugin-algolia-insights@1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.16.3)':
+  '@algolia/autocomplete-plugin-algolia-insights@1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.17.0)':
     dependencies:
       '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)
-      search-insights: 2.16.3
+      search-insights: 2.17.0
     transitivePeerDependencies:
       - '@algolia/client-search'
       - algoliasearch
@@ -14337,7 +14337,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@babel/code-frame': 7.24.7
-      '@babel/generator': 7.25.4
+      '@babel/generator': 7.25.5
       '@babel/helper-compilation-targets': 7.25.2
       '@babel/helper-module-transforms': 7.25.2(@babel/core@7.25.2)
       '@babel/helpers': 7.25.0
@@ -14360,7 +14360,7 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 2.5.2
 
-  '@babel/generator@7.25.4':
+  '@babel/generator@7.25.5':
     dependencies:
       '@babel/types': 7.25.4
       '@jridgewell/gen-mapping': 0.3.5
@@ -15273,7 +15273,7 @@ snapshots:
   '@babel/traverse@7.25.4':
     dependencies:
       '@babel/code-frame': 7.24.7
-      '@babel/generator': 7.25.4
+      '@babel/generator': 7.25.5
       '@babel/parser': 7.25.4
       '@babel/template': 7.25.0
       '@babel/types': 7.25.4
@@ -15818,7 +15818,7 @@ snapshots:
 
   '@dcloudio/uni-mp-compiler@3.0.0-4020320240708001(@vueuse/core@11.0.1(vue@3.4.38(typescript@5.5.4)))(postcss@8.4.41)(rollup@4.21.0)(ts-node@10.9.2(@types/node@22.5.0)(typescript@5.5.4))(vue@3.4.38(typescript@5.5.4))':
     dependencies:
-      '@babel/generator': 7.25.4
+      '@babel/generator': 7.25.5
       '@babel/parser': 7.25.4
       '@babel/types': 7.25.4
       '@dcloudio/uni-cli-shared': 3.0.0-4020320240708001(@vueuse/core@11.0.1(vue@3.4.38(typescript@5.5.4)))(postcss@8.4.41)(rollup@4.21.0)(ts-node@10.9.2(@types/node@22.5.0)(typescript@5.5.4))(vue@3.4.38(typescript@5.5.4))
@@ -16086,9 +16086,9 @@ snapshots:
 
   '@docsearch/css@3.6.1': {}
 
-  '@docsearch/js@3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)':
+  '@docsearch/js@3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)':
     dependencies:
-      '@docsearch/react': 3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)
+      '@docsearch/react': 3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)
       preact: 10.23.2
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -16097,9 +16097,9 @@ snapshots:
       - react-dom
       - search-insights
 
-  '@docsearch/react@3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)':
+  '@docsearch/react@3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)':
     dependencies:
-      '@algolia/autocomplete-core': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.16.3)
+      '@algolia/autocomplete-core': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)(search-insights@2.17.0)
       '@algolia/autocomplete-preset-algolia': 1.9.3(@algolia/client-search@5.1.1)(algoliasearch@4.24.0)
       '@docsearch/css': 3.6.1
       algoliasearch: 4.24.0
@@ -16107,14 +16107,14 @@ snapshots:
       '@types/react': 18.3.4
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      search-insights: 2.16.3
+      search-insights: 2.17.0
     transitivePeerDependencies:
       - '@algolia/client-search'
 
   '@docusaurus/core@3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)':
     dependencies:
       '@babel/core': 7.25.2
-      '@babel/generator': 7.25.4
+      '@babel/generator': 7.25.5
       '@babel/plugin-syntax-dynamic-import': 7.8.3(@babel/core@7.25.2)
       '@babel/plugin-transform-runtime': 7.24.7(@babel/core@7.25.2)
       '@babel/preset-env': 7.25.3(@babel/core@7.25.2)
@@ -16526,7 +16526,7 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/preset-classic@3.5.2(@algolia/client-search@5.1.1)(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)(typescript@5.5.4)(vue-template-compiler@2.7.16)':
+  '@docusaurus/preset-classic@3.5.2(@algolia/client-search@5.1.1)(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)(typescript@5.5.4)(vue-template-compiler@2.7.16)':
     dependencies:
       '@docusaurus/core': 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@docusaurus/plugin-content-blog': 3.5.2(@docusaurus/plugin-content-docs@3.5.2(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
@@ -16539,7 +16539,7 @@ snapshots:
       '@docusaurus/plugin-sitemap': 3.5.2(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@docusaurus/theme-classic': 3.5.2(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@docusaurus/theme-common': 3.5.2(@docusaurus/plugin-content-docs@3.5.2(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16))(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)
-      '@docusaurus/theme-search-algolia': 3.5.2(@algolia/client-search@5.1.1)(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)(typescript@5.5.4)(vue-template-compiler@2.7.16)
+      '@docusaurus/theme-search-algolia': 3.5.2(@algolia/client-search@5.1.1)(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@docusaurus/types': 3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -16567,7 +16567,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@18.3.1)':
     dependencies:
-      '@types/react': 18.3.4
+      '@types/react': 18.3.3
       react: 18.3.1
 
   '@docusaurus/theme-classic@3.5.2(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)':
@@ -16644,9 +16644,9 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@docusaurus/theme-search-algolia@3.5.2(@algolia/client-search@5.1.1)(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)(typescript@5.5.4)(vue-template-compiler@2.7.16)':
+  '@docusaurus/theme-search-algolia@3.5.2(@algolia/client-search@5.1.1)(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(@types/react@18.3.4)(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)(typescript@5.5.4)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docsearch/react': 3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)
+      '@docsearch/react': 3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)
       '@docusaurus/core': 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
       '@docusaurus/logger': 3.5.2
       '@docusaurus/plugin-content-docs': 3.5.2(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))(debug@4.3.6)(esbuild@0.23.0)(eslint@9.9.0(jiti@1.21.6))(lightningcss@1.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(vue-template-compiler@2.7.16)
@@ -20577,7 +20577,7 @@ snapshots:
       ohash: 1.1.3
       pathe: 1.1.2
       perfect-debounce: 1.0.0
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       rc9: 2.1.2
     optionalDependencies:
       magicast: 0.3.4
@@ -21268,7 +21268,7 @@ snapshots:
 
   css-to-tailwindcss-plugin@0.3.0:
     dependencies:
-      '@babel/generator': 7.25.4
+      '@babel/generator': 7.25.5
       '@babel/types': 7.25.4
       cac: 6.7.14
       compose-tailwindcss-plugins: 0.0.4
@@ -22137,9 +22137,9 @@ snapshots:
       '@typescript-eslint/parser': 6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4)
       eslint: 9.9.0(jiti@1.21.6)
       eslint-config-prettier: 9.1.0(eslint@9.9.0(jiti@1.21.6))
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-n@16.4.0(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-promise@6.1.1(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@9.9.0(jiti@1.21.6))
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@9.9.0(jiti@1.21.6))
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-n@16.4.0(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-promise@6.1.1(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-n: 16.4.0(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-node: 11.1.0(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-promise: 6.1.1(eslint@9.9.0(jiti@1.21.6))
@@ -22154,10 +22154,10 @@ snapshots:
     dependencies:
       eslint: 9.9.0(jiti@1.21.6)
 
-  eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-n@16.4.0(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-promise@6.1.1(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)):
+  eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-n@16.4.0(eslint@9.9.0(jiti@1.21.6)))(eslint-plugin-promise@6.1.1(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)):
     dependencies:
       eslint: 9.9.0(jiti@1.21.6)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@9.9.0(jiti@1.21.6))
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-n: 16.4.0(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-promise: 6.1.1(eslint@9.9.0(jiti@1.21.6))
 
@@ -22190,13 +22190,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@9.9.0(jiti@1.21.6)):
+  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)):
     dependencies:
       debug: 4.3.6
       enhanced-resolve: 5.17.1
       eslint: 9.9.0(jiti@1.21.6)
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@9.9.0(jiti@1.21.6))
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
       is-core-module: 2.13.1
@@ -22232,14 +22232,14 @@ snapshots:
     dependencies:
       eslint: 9.9.0(jiti@1.21.6)
 
-  eslint-module-utils@2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)):
+  eslint-module-utils@2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)):
     dependencies:
       debug: 3.2.7(supports-color@5.5.0)
     optionalDependencies:
       '@typescript-eslint/parser': 6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4)
       eslint: 9.9.0(jiti@1.21.6)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@9.9.0(jiti@1.21.6))
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
     transitivePeerDependencies:
       - supports-color
 
@@ -22303,7 +22303,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@9.9.0(jiti@1.21.6)):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)):
     dependencies:
       array-includes: 3.1.7
       array.prototype.findlastindex: 1.2.3
@@ -22313,7 +22313,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.9.0(jiti@1.21.6)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1)(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6)))(eslint@9.9.0(jiti@1.21.6))
       hasown: 2.0.2
       is-core-module: 2.13.1
       is-glob: 4.0.3
@@ -24119,7 +24119,7 @@ snapshots:
       jiti: 2.0.0-beta.2
       jiti-v1: jiti@1.21.6
       pathe: 1.1.2
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       tsx: 4.17.0
     transitivePeerDependencies:
       - supports-color
@@ -24857,7 +24857,7 @@ snapshots:
   jest-snapshot@29.7.0:
     dependencies:
       '@babel/core': 7.25.2
-      '@babel/generator': 7.25.4
+      '@babel/generator': 7.25.5
       '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-syntax-typescript': 7.25.4(@babel/core@7.25.2)
       '@babel/types': 7.25.4
@@ -25405,7 +25405,7 @@ snapshots:
   local-pkg@0.5.0:
     dependencies:
       mlly: 1.6.1
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
 
   localstorage-polyfill@1.0.1: {}
 
@@ -26296,14 +26296,14 @@ snapshots:
     dependencies:
       acorn: 8.11.3
       pathe: 1.1.2
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       ufo: 1.5.3
 
   mlly@1.7.1:
     dependencies:
       acorn: 8.12.1
       pathe: 1.1.2
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       ufo: 1.5.4
 
   mockjs@1.1.0:
@@ -26533,7 +26533,7 @@ snapshots:
       consola: 3.2.3
       execa: 8.0.1
       pathe: 1.1.2
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       ufo: 1.5.4
 
   oauth-sign@0.9.0: {}
@@ -26979,7 +26979,7 @@ snapshots:
     dependencies:
       find-up: 6.3.0
 
-  pkg-types@1.1.3:
+  pkg-types@1.2.0:
     dependencies:
       confbox: 0.1.7
       mlly: 1.7.1
@@ -28240,7 +28240,7 @@ snapshots:
 
   scule@1.3.0: {}
 
-  search-insights@2.16.3: {}
+  search-insights@2.17.0: {}
 
   section-matter@1.0.0:
     dependencies:
@@ -29484,7 +29484,7 @@ snapshots:
       mkdist: 1.4.0(sass@1.77.8)(typescript@5.5.4)
       mlly: 1.6.1
       pathe: 1.1.2
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       pretty-bytes: 6.1.1
       rollup: 3.29.4
       rollup-plugin-dts: 6.1.0(rollup@3.29.4)(typescript@5.5.4)
@@ -29612,7 +29612,7 @@ snapshots:
       magic-string: 0.30.11
       mlly: 1.7.1
       pathe: 1.1.2
-      pkg-types: 1.1.3
+      pkg-types: 1.2.0
       scule: 1.3.0
       strip-literal: 2.1.0
       unplugin: 1.12.0
@@ -29999,7 +29999,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-inspect@0.8.6(rollup@4.21.0)(vite@5.4.2(@types/node@22.5.0)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6)):
+  vite-plugin-inspect@0.8.7(rollup@4.21.0)(vite@5.4.2(@types/node@22.5.0)(less@4.2.0)(lightningcss@1.26.0)(sass@1.77.8)(stylus@0.63.0)(terser@5.31.6)):
     dependencies:
       '@antfu/utils': 0.7.10
       '@rollup/pluginutils': 5.1.0(rollup@4.21.0)
@@ -30040,10 +30040,10 @@ snapshots:
       stylus: 0.63.0
       terser: 5.31.6
 
-  vitepress@1.3.3(@algolia/client-search@5.1.1)(@types/node@22.5.0)(@types/react@18.3.4)(less@4.2.0)(lightningcss@1.26.0)(nprogress@0.2.0)(postcss@8.4.41)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.8)(search-insights@2.16.3)(stylus@0.63.0)(terser@5.31.6)(typescript@5.5.4):
+  vitepress@1.3.3(@algolia/client-search@5.1.1)(@types/node@22.5.0)(@types/react@18.3.4)(less@4.2.0)(lightningcss@1.26.0)(nprogress@0.2.0)(postcss@8.4.41)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.8)(search-insights@2.17.0)(stylus@0.63.0)(terser@5.31.6)(typescript@5.5.4):
     dependencies:
       '@docsearch/css': 3.6.1
-      '@docsearch/js': 3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.16.3)
+      '@docsearch/js': 3.6.1(@algolia/client-search@5.1.1)(@types/react@18.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.0)
       '@shikijs/core': 1.14.1
       '@shikijs/transformers': 1.14.1
       '@types/markdown-it': 14.1.2
