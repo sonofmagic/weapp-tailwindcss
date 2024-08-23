@@ -99,16 +99,16 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
           const input = getInputOption(paths)
           entriesSet = new Set(paths)
           options.input = input
-          if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
+          if (weapp?.type === 'app' && Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (subPackage.root && subPackage.independent && !watcherCache.has(subPackage.root)) {
+              if (subPackage.root && !watcherCache.has(subPackage.root)) {
                 ctx.forkSubPackage(subPackage).build()
               }
             }
           }
         }
         else {
-          throw new Error(`在 ${path.join(root, weapp?.srcRoot ?? '')} 目录下没有找到 \`app.json\`, 请确保你初始化了小程序项目，或者在 \`vite.config.ts\` 中设置的正确的 \`weapp.srcRoot\` 配置路径  `)
+          throw new Error(`在 ${path.join(root, ctx.srcRoot ?? '')} 目录下没有找到 \`app.json\`, 请确保你初始化了小程序项目，或者在 \`vite.config.ts\` 中设置的正确的 \`weapp.srcRoot\` 配置路径  `)
         }
       },
       async buildStart() {
@@ -117,15 +117,15 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
         const ignore: string[] = [
           ...defaultExcluded,
         ]
-        const isSubPackage = Boolean(!appEntry && weapp?.subPackage && weapp.subPackage.root)
+        const isSubPackage = Boolean(!appEntry && ctx.subPackage && ctx.subPackage.root)
         if (isSubPackage) {
           // subPackage
-          cwd = path.join(root, weapp!.subPackage!.root!)
+          cwd = path.join(root, ctx.subPackage!.root)
         }
         else {
           const ignoreSubPackage = appEntry
             ? appEntry.deps.filter(
-              x => x.type === 'subPackage' && x.independent,
+              x => x.type === 'subPackage',
             )
               .map((x) => {
                 return `${(x as SubPackageDep).root}/**`
@@ -145,7 +145,7 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
         }
         const files = await fg(
           // 假如去 join root 就是返回 absolute
-          [path.join(weapp?.srcRoot ?? '', '**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}')],
+          [path.join(ctx.srcRoot ?? '', '**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}')],
           {
             cwd,
             ignore,
@@ -153,7 +153,7 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
           },
         )
         const relFiles = files.map((x) => {
-          return isSubPackage ? path.join(weapp!.subPackage!.root!, x) : x
+          return isSubPackage ? path.join(weapp?.subPackage?.root ?? '', x) : x
         })
         for (const file of relFiles) {
           const filepath = path.resolve(ctx.cwd, file)

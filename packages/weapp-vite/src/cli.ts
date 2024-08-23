@@ -63,6 +63,7 @@ cli
       mode: options.mode,
       isDev: true,
     })
+    await ctx.loadDefaultConfig()
     await ctx.runDev()
   })
 
@@ -90,6 +91,7 @@ cli
       cwd: root,
       mode: options.mode,
     })
+    await ctx.loadDefaultConfig()
     await ctx.runProd()
   })
 

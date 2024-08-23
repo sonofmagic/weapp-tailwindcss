@@ -64,6 +64,7 @@ export interface WatchOptions extends ChokidarWatchOptions {
 }
 export interface WeappViteConfig {
   srcRoot?: string
+  type?: 'app' | 'subPackage'
   subPackage?: Partial<SubPackage>
   watch?: WatchOptions
 }

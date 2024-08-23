@@ -1,19 +1,19 @@
 import process from 'node:process'
 import path from 'pathe'
 import { type InlineConfig, build, loadConfigFromFile } from 'vite'
-import defu from 'defu'
 import type { RollupOutput, RollupWatcher } from 'rollup'
 import type { FSWatcher } from 'chokidar'
 import { watch } from 'chokidar'
 import type { PackageJson } from 'pkg-types'
-import { readPackageJSON } from 'pkg-types'
-import { addExtension, removeExtension } from '@weapp-core/shared'
+import { addExtension, defu, removeExtension } from '@weapp-core/shared'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import fs from 'fs-extra'
 import { type ProjectConfig, getProjectConfig } from './utils/projectConfig'
 import { RootRollupSymbol } from './symbols'
 import type { SubPackage, WatchOptions } from './types'
 import { getWeappWatchOptions } from './defaults'
 import { vitePluginWeapp } from './plugins'
+import './config'
 // import { getProjectConfig } from './utils/projectConfig'
 
 export interface CompilerContextOptions {
@@ -36,8 +36,10 @@ export class CompilerContext {
   subPackage?: SubPackage
   watcherMap: Map<string | symbol, RollupWatcher | FSWatcher>
   subPackageContextMap: Map<string, CompilerContext>
+  type: CompilerContextOptions['type']
+  parent?: CompilerContext
   constructor(options?: CompilerContextOptions) {
-    const { cwd, isDev, inlineConfig, projectConfig, mode, packageJson, subPackage } = defu<Required<CompilerContextOptions>, CompilerContextOptions[]>(options, {
+    const { cwd, isDev, inlineConfig, projectConfig, mode, packageJson, subPackage, type } = defu<Required<CompilerContextOptions>, CompilerContextOptions[]>(options, {
       cwd: process.cwd(),
       isDev: false,
       projectConfig: {},
@@ -56,6 +58,7 @@ export class CompilerContext {
     this.subPackage = subPackage
     this.watcherMap = new Map()
     this.subPackageContextMap = new Map()
+    this.type = type
   }
 
   get srcRoot() {
@@ -73,13 +76,13 @@ export class CompilerContext {
     return this.projectConfig.miniprogramRoot || this.projectConfig.srcMiniprogramRoot || ''
   }
 
-  get weappConfig() {
-    return this.inlineConfig.weapp
-  }
+  // get weappConfig() {
+  //   return this.inlineConfig.weapp
+  // }
 
-  get inlineSubPackageConfig() {
-    return this.weappConfig?.subPackage
-  }
+  // get inlineSubPackageConfig() {
+  //   return this.weappConfig?.subPackage
+  // }
 
   forkSubPackage(subPackage: SubPackage): CompilerContext {
     const ctx = new CompilerContext({
@@ -92,6 +95,7 @@ export class CompilerContext {
       subPackage,
     })
     this.subPackageContextMap.set(subPackage.root, ctx)
+    ctx.parent = this
     return ctx
   }
 
@@ -104,7 +108,6 @@ export class CompilerContext {
     const watcher = this.watcherMap.get(key)
     watcher?.close()
     this.watcherMap.set(key, rollupWatcher)
-
     return rollupWatcher
   }
 
@@ -116,20 +119,31 @@ export class CompilerContext {
     const inlineConfig = defu<InlineConfig, InlineConfig[]>(
       this.inlineConfig,
       {
+        root: this.cwd,
         mode: 'development',
+        plugins: [vitePluginWeapp(this)],
         build: {
           watch: {},
           minify: false,
           emptyOutDir: false,
         },
+        weapp: {
+          type: 'app',
+        },
       },
     )
 
     // 小程序分包的情况，再此创建一个 watcher
-    if (inlineConfig?.weapp?.subPackage) {
-      return await this.internalDev(inlineConfig)
+    if (this.type === 'subPackage' && this.subPackage) {
+      return await this.internalDev(Object.assign({}, inlineConfig, {
+        weapp: {
+          srcRoot: this.parent?.srcRoot,
+          type: this.type,
+          subPackage: this.subPackage,
+        },
+      }))
     }
-    else {
+    else if (this.type === 'app') {
       const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(inlineConfig.weapp?.watch, {
         ignored: [
           path.join(this.mpDistRoot, '**'),
@@ -155,7 +169,12 @@ export class CompilerContext {
     const inlineConfig = defu<InlineConfig, InlineConfig[]>(
       this.inlineConfig,
       {
+        root: this.cwd,
+        plugins: [vitePluginWeapp(this)],
         mode: 'production',
+        weapp: {
+          type: 'app',
+        },
       },
     )
     const output = (await build(
@@ -177,17 +196,22 @@ export class CompilerContext {
   async loadDefaultConfig() {
     const projectConfig = getProjectConfig(this.cwd)
     this.projectConfig = projectConfig
-    const localPackageJson = await readPackageJSON(path.resolve(this.cwd, 'package.json'))
-    this.packageJson = localPackageJson
+    const packageJsonPath = path.resolve(this.cwd, 'package.json')
     const external: string[] = []
+    if (await fs.exists(packageJsonPath)) {
+      const localPackageJson: PackageJson = await fs.readJson(packageJsonPath, {
+        throws: false,
+      }) || {}
+      this.packageJson = localPackageJson
+      if (localPackageJson.dependencies) {
+        external.push(...Object.keys(localPackageJson.dependencies))
+      }
+    }
+
     const loaded = await loadConfigFromFile({
       command: this.isDev ? 'serve' : 'build',
       mode: this.mode,
     }, undefined, this.cwd)
-
-    if (localPackageJson.dependencies) {
-      external.push(...Object.keys(localPackageJson.dependencies))
-    }
 
     this.inlineConfig = defu<InlineConfig, (InlineConfig | undefined)[]>({
       mode: this.mode,
@@ -217,7 +241,6 @@ export class CompilerContext {
         },
       },
       plugins: [
-        vitePluginWeapp(this),
         tsconfigPaths(),
       ],
       configFile: false,

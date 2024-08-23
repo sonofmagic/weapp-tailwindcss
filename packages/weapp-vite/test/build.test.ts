@@ -7,7 +7,7 @@ import { getEntries } from '@/entry'
 
 // import { createContext } from '@/context'
 
-describe.skip('build', () => {
+describe('build', () => {
   describe('rollup', () => {
     const mixjsDir = path.resolve(__dirname, './fixtures/mixjs')
     // function r(...args: string[]) {
