@@ -47,7 +47,7 @@
     "sass-loader": "^16.0.0",
     "tailwindcss": "^3.4.10",
     "typedoc": "^0.26.6",
-    "typedoc-plugin-markdown": "4.2.5",
+    "typedoc-plugin-markdown": "4.2.6",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {
