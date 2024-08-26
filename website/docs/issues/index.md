@@ -2,17 +2,17 @@
 
 ## 为什么我更改了 class 保存重新打包的时候热更新失效？
 
-[[#93](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/93)]
+相关 issue：[#93](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/93)
 
-目前微信开发者工具会默认开启代码自动热重载 `compileHotReLoad` 功能，这个功能在原生开发中表现良好，但在 `uni-app` 和 `taro` 等的框架中，存在一定的问题，参见 [issues#37](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/37)，所以如果你遇到了此类问题，建议关闭 `compileHotReLoad` 功能。
+目前微信开发者工具会默认开启代码自动热重载 `compileHotReLoad` 功能，这个功能在原生开发中表现良好，但在 `uni-app` 和 `taro` 等的框架中，存在一定的问题，参见 [#37](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/37)，所以如果你遇到了此类问题，建议关闭 `compileHotReLoad` 功能。
 
 ## `disabled:opacity-50` 这类的 `tailwindcss` 工具类不生效?
 
-这是由于微信小程序 `wxss` 选择器的原生限制，无法突破。参见 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)。
+这是由于微信小程序 `wxss` 选择器的原生限制，无法突破。参见 [#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)。
 
 ## 和原生组件一起使用注意事项
 
-假如出现原生组件引入报错的情况，可以参阅 [issue#35](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/35)，忽略指定目录下的文件，跳过插件处理，例如 `uni-app` 中的 `wxcomponents`。
+假如出现原生组件引入报错的情况，可以参阅 [#35](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/35)，忽略指定目录下的文件，跳过插件处理，例如 `uni-app` 中的 `wxcomponents`。
 
 如何更改？在传入的配置项 `cssMatcher`，`htmlMatcher` 这类配置，来过滤指定目录或文件。
 

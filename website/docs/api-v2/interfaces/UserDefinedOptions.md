@@ -1,46 +1,38 @@
 ---
 id: "UserDefinedOptions"
-title: "Interface: UserDefinedOptions"
-sidebar_label: "配置项(v2.x)"
+title: 接口：UserDefinedOptions
+sidebar_label: "配置项（v2.x）"
 sidebar_position: 0
 custom_edit_url: null
 ---
 
-## Properties
+## 属性
 
 ### appType
 
-• `Optional` **appType**: [`AppType`](../#apptype)
+#### 描述
 
-**`Description`**
+使用的框架类型例如：`uni-app`、`taro` 等，用于找到主要的 `css bundle` 进行转化，这个配置会影响默认方法 `mainCssChunkMatcher` 的行为，不传会去猜测 `tailwindcss css var inject scope` 的位置。
 
-使用的框架类型(uni-app,taro...)，用于找到主要的 `css bundle` 进行转化，这个配置会影响默认方法 `mainCssChunkMatcher` 的行为，不传会去猜测 `tailwindcss css var inject scope` 的位置
+#### 参数
 
-#### Defined in
-
-[types.ts:284](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L284)
-
-___
+[`AppType`](../#apptype)，在 [types.ts](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L284) 中 284 行定义。
 
 ### arbitraryValues
 
-• `Optional` **arbitraryValues**: [`IArbitraryValues`](IArbitraryValues.md)
+#### 描述
 
-**`Description`**
+针对 `tailwindcss arbitrary` 值的一些配置。
 
-针对 tailwindcss arbitrary values 的一些配置
+#### 参数
 
-#### Defined in
-
-[types.ts:301](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L301)
-
-___
+[`IArbitraryValues`](IArbitraryValues.md)，在 [types.ts](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L301) 中 301 行定义。
 
 ### cssChildCombinatorReplaceValue
 
 • `Optional` **cssChildCombinatorReplaceValue**: `string` \| `string`[]
 
-**`Description`**
+#### 描述
 
 用于控制 tailwindcss 子组合器的生效标签范围, 这里我们用一个例子来说明这个配置是干啥用的.
 
@@ -90,7 +82,7 @@ ___
 
 • `Optional` **cssMatcher**: `string` \| `string`[] \| (`name`: `string`) => `boolean`
 
-**`Description`**
+#### 描述
 
 匹配 `wxss` 等等样式文件的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
 
@@ -108,7 +100,7 @@ ___
 
 <https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/7>
 
-**`Description`**
+#### 描述
 
 在所有 view节点添加的 css 预设，可根据情况自由的禁用原先的规则，或者添加新的规则。 详细用法如下:
 
@@ -166,7 +158,7 @@ ___
 
 <https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/pull/62>
 
-**`Description`**
+#### 描述
 
 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。默认为 `'view'` 即只对所有的 `view` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
 
@@ -197,7 +189,7 @@ ___
 
 • `Optional` **customAttributes**: [`ICustomAttributes`](../#icustomattributes)
 
-**`Description`**
+#### 描述
 
 **这是一个重要的配置!**
 
@@ -235,7 +227,7 @@ ___
 
 • `Optional` **customReplaceDictionary**: `Record`<`string`, `string`\> \| ``"simple"`` \| ``"complex"``
 
-**`Description`**
+#### 描述
 
 自定义转化class名称字典，这个配置项用来自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`
 
@@ -262,7 +254,7 @@ ___
 
 • `Optional` **customRuleCallback**: [`CustomRuleCallback`](../#customrulecallback)
 
-**`Description`**
+#### 描述
 
 用于自定义处理 css 的回调函数，可根据 Postcss walk 方法自由定制处理方案的 callback 方法
 
@@ -276,7 +268,7 @@ ___
 
 • `Optional` **disabled**: `boolean`
 
-**`Description`**
+#### 描述
 
 是否禁用此插件，一般用于构建到多平台时使用
 
@@ -294,7 +286,7 @@ ___
 
 `^2.6.2`
 
-**`Description`**
+#### 描述
 
 开启此选项，将会禁用默认 `wxml` 模板替换器，此时模板的匹配和转化将完全被 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 接管，
 
@@ -316,7 +308,7 @@ ___
 
 • `Optional` **htmlMatcher**: `string` \| `string`[] \| (`name`: `string`) => `boolean`
 
-**`Description`**
+#### 描述
 
 匹配 `wxml`等等模板进行处理的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
 
@@ -334,7 +326,7 @@ ___
 
 `^2.6.0`
 
-**`Description`**
+#### 描述
 
 是否注入额外的 `tailwindcss css var scope` 区域，这个选项用于这样的场景
 
@@ -364,7 +356,7 @@ ___
 
 实验性质，有可能会改变
 
-**`Description`**
+#### 描述
 
 是否转义 `wxml` 中内联的 `wxs`
 > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
@@ -405,7 +397,7 @@ ___
 
 `^2.7.0`
 
-**`Description`**
+#### 描述
 
 js 字面量以及模板字符串的转义替换模式
 
@@ -432,7 +424,7 @@ ___
 
 • `Optional` **jsMatcher**: `string` \| `string`[] \| (`name`: `string`) => `boolean`
 
-**`Description`**
+#### 描述
 
 匹配编译后 `js` 文件进行处理的方法，支持 `glob` by [micromatch](https://github.com/micromatch/micromatch)
 
@@ -464,7 +456,7 @@ ___
 
 `^2.6.1`
 
-**`Description`**
+#### 描述
 
 当 `tailwindcss` 和 `js` 处理的字面量撞车的时候，配置此选项可以用来保留js字面量，不进行转义处理。返回值中，想要当前js字面量保留，则返回 `true`。想要转义则返回 `false/undefined`
 
@@ -482,7 +474,7 @@ ___
 
 • `Optional` **mainCssChunkMatcher**: `string` \| `string`[] \| (`name`: `string`, `appType?`: [`AppType`](../#apptype)) => `boolean`
 
-**`Description`**
+#### 描述
 
 `tailwindcss css var inject scope` 的匹配方法,用于处理原始变量和替换不兼容选择器。可以不传，但是遇到某些 `::before/::after` 选择器注入冲突时，建议传入参数手动指定 css bundle 文件位置
 
@@ -496,7 +488,7 @@ ___
 
 • `Optional` **mangle**: `boolean` \| [`IMangleOptions`](IMangleOptions.md)
 
-**`Description`**
+#### 描述
 
 是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
 
@@ -514,7 +506,7 @@ ___
 
 • `Optional` **minifiedJs**: `boolean`
 
-**`Description`**
+#### 描述
 
 是否压缩 js (`process.env.NODE_ENV` 为 `production` 时默认开启)
 
@@ -542,7 +534,7 @@ ___
 
 `void`
 
-**`Description`**
+#### 描述
 
 结束处理时调用
 
@@ -564,7 +556,7 @@ ___
 
 `void`
 
-**`Description`**
+#### 描述
 
 plugin apply 初调用
 
@@ -586,7 +578,7 @@ ___
 
 `void`
 
-**`Description`**
+#### 描述
 
 开始处理时调用
 
@@ -616,7 +608,7 @@ ___
 
 `void`
 
-**`Description`**
+#### 描述
 
 匹配成功并修改文件内容后调用
 
@@ -640,7 +632,7 @@ ___
 'view'
 ```
 
-**`Description`**
+#### 描述
 
 把`css`中的全局选择器 **`*`** 替换为指定值，默认替换为 `'view'`，设置为 `false` 时不进行替换，此时小程序会由于不认识`*`选择器而报错
 
@@ -660,7 +652,7 @@ ___
 
 <https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110>
 
-**`Description`**
+#### 描述
 
 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
@@ -687,7 +679,7 @@ ___
 
 `^2.9.3`
 
-**`Description`**
+#### 描述
 
 用于指定路径来获取 tailwindcss 上下文，一般情况下不用传入，使用 linked / monorepo 可能需要指定具体位置，路径通常是目标项目的 package.json 所在目录
 
@@ -705,7 +697,7 @@ ___
 
 实验性质，有可能会改变
 
-**`Description`**
+#### 描述
 
 各个平台 `wxs` 文件的匹配方法,可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
 > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
