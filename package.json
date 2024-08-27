@@ -95,7 +95,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.26.2",
+    "@ast-grep/napi": "^0.26.3",
     "@babel/core": "^7.25.2",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.7",
@@ -192,7 +192,7 @@
     "postcss-scss": "^4.0.9",
     "prettier": "^3.3.3",
     "promisify-loader-runner": "^1.0.1",
-    "rollup": "^4.21.0",
+    "rollup": "^4.21.1",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.77.8",
     "semver": "7.6.3",
