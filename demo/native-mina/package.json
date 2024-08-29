@@ -50,7 +50,7 @@
     "jest": "^29.7.0",
     "lodash-webpack-plugin": "^0.11.5",
     "miniprogram-api-typings": "^3.12.2",
-    "npm-run-all": "^4.1.2",
+    "npm-run-all2": "^5.0.0",
     "postcss": "^8.4.36",
     "postcss-loader": "^8.1.1",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
