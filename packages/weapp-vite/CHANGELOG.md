@@ -1,5 +1,18 @@
 # weapp-vite
 
+## 1.1.1
+
+### Patch Changes
+
+- [`b40bc77`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b40bc7716861343bc63ca3a9fa8ade9388614ae8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - Date: 2024-09-01
+
+  - 重构 `vite` 上下文的实现
+  - 优化自定义的路径的显示效果
+
+- Updated dependencies [[`b40bc77`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b40bc7716861343bc63ca3a9fa8ade9388614ae8)]:
+  - weapp-ide-cli@2.0.3
+  - @weapp-core/init@1.0.3
+
 ## 1.1.0
 
 ### Minor Changes
