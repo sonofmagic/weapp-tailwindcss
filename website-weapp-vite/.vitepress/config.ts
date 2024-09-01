@@ -6,6 +6,7 @@ import typedocSidebar from '../api/typedoc-sidebar.json'
 export default defineConfig({
   title: 'Weapp-vite',
   description: '把现代化的开发模式带入小程序',
+  outDir: 'dist',
   themeConfig: {
 
     // https://vitepress.dev/reference/default-theme-config
