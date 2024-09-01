@@ -179,7 +179,7 @@
     "js-beautify": "^1.15.1",
     "just-diff": "^6.0.2",
     "klaw": "^4.1.0",
-    "lint-staged": "^15.2.9",
+    "lint-staged": "^15.2.10",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.9.1",
     "miniprogram-automator": "^0.12.1",
