@@ -161,7 +161,7 @@
     "lru-cache": "10.4.3",
     "magic-string": "0.30.11",
     "md5": "2.3.0",
-    "postcss": "~8.4.41",
+    "postcss": "~8.4.42",
     "postcss-rem-to-responsive-pixel": "~6.0.1",
     "postcss-selector-parser": "~6.1.2",
     "semver": "~7.6.2",

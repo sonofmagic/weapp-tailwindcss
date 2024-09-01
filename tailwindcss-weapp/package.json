@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "bootstrap": "pnpm i --ignore-workspace",
     "dev": "uni -p mp-weixin",
     "build": "npm run build:mp-weixin",
     "dev:app": "uni -p app",
@@ -61,9 +62,10 @@
     "pinia": "~2.1.7",
     "tailwindcss-core-plugins-extractor": "^0.2.0",
     "uni-app-mp-html": "^2.5.0",
-    "uview-plus": "^3.3.30",
+    "uview-plus": "^3.3.31",
     "vue": "^3.4.38"
   },
+  "optionalDependencies": {},
   "devDependencies": {
     "@dcloudio/types": "^3.4.8",
     "@dcloudio/uni-automator": "3.0.0-4020320240708001",
@@ -80,7 +82,7 @@
     "@vue/runtime-core": "^3.4.38",
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^3.12.3",
-    "postcss": "^8.4.41",
+    "postcss": "^8.4.42",
     "postcss-pxtransform": "^4.0.4",
     "postcss-rem-to-responsive-pixel": "^6.0.1",
     "prettier": "^3.3.3",
@@ -89,7 +91,7 @@
     "unplugin-auto-import": "^0.18.2",
     "vite": "5.4.2",
     "vue-eslint-parser": "^9.4.3",
-    "weapp-ide-cli": "workspace:^",
-    "weapp-tailwindcss": "workspace:^"
+    "weapp-ide-cli": "^2.0.2",
+    "weapp-tailwindcss": "^3.5.0"
   }
 }
