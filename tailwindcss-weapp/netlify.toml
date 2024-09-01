@@ -1,6 +1,8 @@
 # netlify 部署文件
 # 用于部署此项目的 h5 产物，可删除
+# https://docs.netlify.com/configure-builds/file-based-configuration/
 [build]
+base = "tailwindcss-weapp/"
 publish = "dist/build/h5"
 command = "pnpm run build:h5"
 
