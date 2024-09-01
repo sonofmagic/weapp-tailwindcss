@@ -1,5 +1,8 @@
 name: Release changeset
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:

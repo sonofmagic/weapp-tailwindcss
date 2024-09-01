@@ -1,13 +1,13 @@
-name: Release
+name: Release weapp-tailwindcss
 
 permissions:
   contents: write
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+  # push:
+  #   tags:
+  #     - 'v*'
 
   # pnpm publish --access public --no-git-checks
 
