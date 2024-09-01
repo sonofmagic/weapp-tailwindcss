@@ -135,7 +135,7 @@
     "ls:pack": "npm pack --dry-run",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
     "release": "node scripts/release.js",
-    "generate:readme": "tsx scripts/readme/write.ts",
+    "generate:readme": "tsx --watch scripts/readme/write.ts watch scripts/readme/**/*",
     "lint": "eslint .",
     "lint:fix": "eslint ./src --fix",
     "-------": "-----------",

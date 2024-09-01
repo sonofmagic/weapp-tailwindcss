@@ -23,16 +23,16 @@
 > [!NOTE]
 > 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
 >
-> `Tailwindcss/Unocss UI` 生成提取器: [`IceStack`](https://ui.icebreaker.top/zh-CN) 已经发布，快来用它管理你的原子化`CSS` 组件吧！
+> 小程序原生工具链 `weapp-vite` 已经发布，使用它改善你的原生小程序开发体验吧，更多详见 [官方文档](https://vite.icebreaker.top/)
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
+\[[文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用文档地址](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 
 - [特性](#特性)
 - [版本对应](#版本对应)
 - [安装与使用方式](#安装与使用方式)
 - [生态和解决方案](#生态和解决方案)
 - [常见问题](#常见问题)
-- [现成配置好的各个框架的模板](#现成配置好的各个框架的模板)
+- [各个框架的模板](#各个框架的模板)
 - [旧版本迁移指南](#旧版本迁移指南)
 - [配置项参考](#配置项参考)
 - [变更日志](#变更日志)
@@ -41,6 +41,7 @@
 - [License](#license)
 - [Star History](#star-history)
 - [Related projects](#related-projects)
+  - [weapp-vite](#weapp-vite)
   - [IceStack](#icestack)
   - [weapp-ide-cli](#weapp-ide-cli)
   - [weapp-pandacss](#weapp-pandacss)
@@ -61,7 +62,7 @@
 
 目前，`weapp-tailwindcss` 的 `2.x` 和 `3.x` 支持最新版本的 `tailwindcss v3.x.x` 版本和 `webpack5`，`webpack4`, `vite` 和 `gulp`。从 `3.2.0` 开始，`weapp-tailwindcss` 支持最原生的小程序开发方式。
 
-> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用本插件的 `1.x`/`webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS`版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
 ## [安装与使用方式](https://weapp-tw.icebreaker.top/docs/quick-start/install)
 
@@ -69,7 +70,7 @@
 
 ## [常见问题](https://weapp-tw.icebreaker.top/docs/issues/)
 
-## [现成配置好的各个框架的模板](https://weapp-tw.icebreaker.top/docs/community/templates)
+## [各个框架的模板](https://weapp-tw.icebreaker.top/docs/community/templates)
 
 ## [旧版本迁移指南](https://weapp-tw.icebreaker.top/docs/migrations/v2)
 
@@ -103,6 +104,10 @@
 [![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
 
 ## Related projects
+
+### weapp-vite
+
+[weapp-vite](https://vite.icebreaker.top/): 把现代化的开发模式带入小程序开发!
 
 ### IceStack
 
