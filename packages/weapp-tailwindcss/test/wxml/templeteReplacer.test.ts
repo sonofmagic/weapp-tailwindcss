@@ -1,5 +1,4 @@
-import { templateReplacer } from '@/wxml/index'
-import { handleEachClassFragment, templateReplacer2 } from '@/wxml/utils'
+import { templateReplacer } from '@/wxml/utils'
 import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
 
 const testTable = [[{}]]
@@ -101,7 +100,7 @@ describe('templateReplacer', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
     const result = complexReplacer(testCase)
     expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active==\'home\'? \'icon-home-selected\' : \'icon-home\'}}   w-_bl_20px_br_ {{flag==\'p-[20px]\'? \'p-_bl_20px_br_\' : \'m-_bl_20px_br_\'}} h-_bl_20px_br_',
+      'border-0 icon h-10 w-10 mx-auto {{active==\'home\'? \'icon-home-selected\' : \'icon-home\'}} {{}} {{ }} w-_bl_20px_br_ {{flag==\'p-[20px]\'? \'p-_bl_20px_br_\' : \'m-_bl_20px_br_\'}} h-_bl_20px_br_',
     )
   })
 
@@ -141,6 +140,27 @@ describe('templateReplacer', () => {
     // classGenerator
     const str = complexReplacer(testCase)
     expect(str).toBe('btn-_p_1 a_bl_p-1_br_{{num}}')
+  })
+
+  it('classGenerator class with string var case 0', () => {
+    const testCase = 'btn-%1 a[p-1]{{num}}'
+    // classGenerator
+    const str = simpleReplacer(testCase)
+    expect(str).toBe('btn-p1 a_p-1_{{num}}')
+  })
+
+  it('classGenerator class with string var case 1', () => {
+    const testCase = 'btn-%1 a[p-1]{{num}}b[b-2]'
+    // classGenerator
+    const str = simpleReplacer(testCase)
+    expect(str).toBe('btn-p1 a_p-1_{{num}}b_b-2_')
+  })
+
+  it('classGenerator class with string var case 2', () => {
+    const testCase = 'a[p-1]{{num}}b[b-2]{{p}}'
+    // classGenerator
+    const str = simpleReplacer(testCase)
+    expect(str).toBe('a_p-1_{{num}}b_b-2_{{p}}')
   })
 
   // .shadow-\[0px_2px_11px_0px_rgba\(0\2c 0\2c 0\2c 0\.4\)\]
@@ -230,23 +250,21 @@ describe('templateReplacer', () => {
     )
   })
 
-  it('handleEachClassFragment case 0', () => {
-    expect(handleEachClassFragment(`rd-tag-{{type}}-{{theme}}`)).toBe(
-      `rd-tag-{{type}}-{{theme}}`,
-    )
-  })
-
-  it('handleEachClassFragment case 1', () => {
-    expect(handleEachClassFragment(`{{type}}-{{theme}}`)).toBe(
-      `{{type}}-{{theme}}`,
-    )
-  })
-})
-
-describe('templateReplacer2', () => {
-  it('isConditionalExpression', () => {
+  it('isConditionalExpression case 0', () => {
     const testCase = '{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}'
-    const result = templateReplacer2(testCase)
+    const result = templateReplacer(testCase)
     expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_hfafa00_\']}}')
   })
+
+  // it('handleEachClassFragment case 0', () => {
+  //   expect(handleEachClassFragment(`rd-tag-{{type}}-{{theme}}`)).toBe(
+  //     `rd-tag-{{type}}-{{theme}}`,
+  //   )
+  // })
+
+  // it('handleEachClassFragment case 1', () => {
+  //   expect(handleEachClassFragment(`{{type}}-{{theme}}`)).toBe(
+  //     `{{type}}-{{theme}}`,
+  //   )
+  // })
 })
