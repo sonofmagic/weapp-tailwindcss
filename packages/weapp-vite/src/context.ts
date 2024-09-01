@@ -131,40 +131,7 @@ export class CompilerContext {
       },
     )
 
-    // 小程序分包的情况，再此创建一个 watcher
-    if (this.type === 'subPackage' && this.subPackage) {
-      const key = 'root'
-      const subPackageInlineConfig = Object.assign({}, inlineConfig, {
-        weapp: {
-          srcRoot: this.parent?.srcRoot,
-          type: this.type,
-          subPackage: this.subPackage,
-        },
-      })
-      const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(subPackageInlineConfig.weapp?.watch, {
-        cwd: path.join(this.cwd, subPackageInlineConfig.weapp.srcRoot ?? '', this.subPackage.root),
-      }, getWeappWatchOptions())
-      const watcher = watch(paths, opts)
-      let isReady = false
-      watcher.on('all', async (eventName) => {
-        if (isReady && (eventName === 'add' || eventName === 'change' || eventName === 'unlink')) {
-          await this.internalDev(subPackageInlineConfig)
-        }
-      }).on('ready', async () => {
-        await this.internalDev(subPackageInlineConfig)
-        isReady = true
-      })
-      this.watcherMap.set(key, watcher)
-
-      return watcher
-    }
-    else if (this.type === 'app') {
-      const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(inlineConfig.weapp?.watch, {
-        ignored: [
-          path.join(this.mpDistRoot, '**'),
-        ],
-        cwd: this.cwd,
-      }, getWeappWatchOptions())
+    const getWatcher = (paths: readonly string[], opts: WatchOptions, inlineConfig: InlineConfig) => {
       const watcher = watch(paths, opts)
       let isReady = false
       watcher.on('all', async (eventName) => {
@@ -175,7 +142,47 @@ export class CompilerContext {
         await this.internalDev(inlineConfig)
         isReady = true
       })
-      this.watcherMap.set('root', watcher)
+
+      return watcher
+    }
+
+    // 小程序分包的情况，再此创建一个 watcher
+    if (this.type === 'subPackage' && this.subPackage) {
+      const subPackageInlineConfig = Object.assign({}, inlineConfig, {
+        weapp: {
+          srcRoot: this.parent?.srcRoot,
+          type: this.type,
+          subPackage: this.subPackage,
+        },
+      })
+      const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(
+        subPackageInlineConfig.weapp?.watch,
+        {
+          cwd: path.join(this.cwd, subPackageInlineConfig.weapp.srcRoot ?? '', this.subPackage.root),
+        },
+        getWeappWatchOptions(),
+      )
+      const watcher = getWatcher(paths, opts, subPackageInlineConfig)
+
+      this.watcherMap.set(this.subPackage.root, watcher)
+
+      return watcher
+    }
+    else if (this.type === 'app') {
+      const { paths, ...opts } = defu<Required<WatchOptions>, WatchOptions[]>(
+        inlineConfig.weapp?.watch,
+        {
+          ignored: [
+            path.join(this.mpDistRoot, '**'),
+          ],
+          cwd: this.cwd,
+        },
+        getWeappWatchOptions(),
+      )
+
+      const watcher = getWatcher(paths, opts, inlineConfig)
+
+      this.watcherMap.set('/', watcher)
 
       return watcher
     }

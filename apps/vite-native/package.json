@@ -15,7 +15,7 @@
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "postinstall": "weapp-tw patch",
-    "build-npm": "weapp-vite build-npm"
+    "npm": "weapp-vite npm"
   },
   "dependencies": {
     "lodash": "^4.17.21"
