@@ -13,7 +13,7 @@ const debug = createDebug()
 /**
  * @name UnifiedWebpackPluginV5
  * @description webpack5 核心转义插件
- * @link https://weapp-tw.icebreaker.top/docs/intro
+ * @link https://tw.icebreaker.top/docs/intro
  */
 
 export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {

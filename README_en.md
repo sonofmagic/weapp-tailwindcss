@@ -1,6 +1,6 @@
 <p align="center">
 
-<a href="https://weapp-tw.icebreaker.top">
+<a href="https://tw.icebreaker.top">
 
 <img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
 </a>
@@ -22,7 +22,7 @@
 
 > `weapp` + `tailwindcss` all-round solution.
 
-\[[Docs deployed in China](https://weapp-tw.icebreaker.top)\] \| \[[Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x Docs]('./v1.md')\]
+\[[Docs deployed in China](https://tw.icebreaker.top)\] \| \[[Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x Docs]('./v1.md')\]
 
 - [Features](#features)
   - [Plugin Introduction](#plugin-introduction)
@@ -73,15 +73,15 @@ Currently, these plugins support the latest version of the `tailwindcss v3.x.x` 
 
 > If you are still using the `tailwindcss@2` version, then you should use the `1.x` version of this plugin. Also, make sure your `nodejs` version `>=16`. At present, the long-term maintenance version (`even-numbered version`) below `16` has ended its life cycle. It is recommended to install the `LTS` version of `nodejs`, See [nodejs/release](<https://github.com/> nodejs/release)
 
-## [Installation and usage](https://weapp-tw.icebreaker.top/docs/quick-start/install)
+## [Installation and usage](https://tw.icebreaker.top/docs/quick-start/install)
 
-## [Migrating from v1 to v2](https://weapp-tw.icebreaker.top/docs/migrations/v1)
+## [Migrating from v1 to v2](https://tw.icebreaker.top/docs/migrations/v1)
 
-## [Configuration reference](https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
+## [Configuration reference](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
 ## [Tailwindcss arbitrary values](https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values)
 
-## [FAQ](https://weapp-tw.icebreaker.top/docs/issues/)
+## [FAQ](https://tw.icebreaker.top/docs/issues/)
 
 ## [Changelog](./CHANGELOG.md)
 

@@ -12,7 +12,7 @@ const Transform = stream.Transform
 /**
  * @name weapp-tw-gulp
  * @description gulp版本weapp-tw插件
- * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/native
+ * @link https://tw.icebreaker.top/docs/quick-start/frameworks/native
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)

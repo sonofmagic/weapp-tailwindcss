@@ -4,7 +4,7 @@
   "description": "The tailwindcss typography plugin for weapp",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
-  "homepage": "https://weapp-tw.icebreaker.top/docs/community/typography",
+  "homepage": "https://tw.icebreaker.top/docs/community/typography",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"

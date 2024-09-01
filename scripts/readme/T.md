@@ -1,6 +1,6 @@
 <p align="center">
 
-<a href="https://weapp-tw.icebreaker.top">
+<a href="https://tw.icebreaker.top">
 
 <img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
 </a>
@@ -25,7 +25,7 @@
 > 我的其他项目:
 > `Tailwindcss/Unocss UI` 生成提取器: [`IceStack`](https://ui.icebreaker.top/zh-CN) 已经发布，快来用它管理你的原子化`CSS` 组件吧！
 
-\[[国内部署的文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
+\[[国内部署的文档地址](https://tw.icebreaker.top)\] \| \[[备用Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 
 - [特性](#特性)
   - [插件介绍](#插件介绍)
@@ -66,17 +66,17 @@
 
 > 如果你还在使用 `tailwindcss@2` 版本，那你应该使用本插件的 `1.x`/`webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS`版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
-## [安装与使用方式](https://weapp-tw.icebreaker.top/docs/quick-start/install)
+## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 
-## [生态和解决方案](https://weapp-tw.icebreaker.top/docs/community/templates)
+## [生态和解决方案](https://tw.icebreaker.top/docs/community/templates)
 
-## [常见问题](https://weapp-tw.icebreaker.top/docs/issues/)
+## [常见问题](https://tw.icebreaker.top/docs/issues/)
 
-## [现成配置好的各个框架的模板](https://weapp-tw.icebreaker.top/docs/community/templates)
+## [现成配置好的各个框架的模板](https://tw.icebreaker.top/docs/community/templates)
 
-## [旧版本迁移指南](https://weapp-tw.icebreaker.top/docs/migrations/v2)
+## [旧版本迁移指南](https://tw.icebreaker.top/docs/migrations/v2)
 
-## [配置项参考](https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
+## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
 ## [变更日志](./CHANGELOG.md)
 

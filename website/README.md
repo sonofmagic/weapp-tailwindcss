@@ -2,4 +2,4 @@
 
 docusaurus + tailwindcss
 
-<https://weapp-tw.icebreaker.top/>
+<https://tw.icebreaker.top/>

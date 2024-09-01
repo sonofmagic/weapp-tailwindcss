@@ -20,7 +20,7 @@ module.exports = {
       },
     },
   },
-  // https://weapp-tw.icebreaker.top/docs/quick-start/uni-app-css-macro
+  // https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro
   plugins: [
     plugin(({ addVariant }) => {
       addVariant('deep', ':is(.deep &)')

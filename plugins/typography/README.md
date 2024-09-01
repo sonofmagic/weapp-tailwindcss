@@ -18,4 +18,4 @@ A plugin that provides a set of `prose` classes you can use to add beautiful typ
 
 ## Documentation
 
-[weapp-tw.icebreaker.top/docs/community/typography](https://weapp-tw.icebreaker.top/docs/community/typography)
+[tw.icebreaker.top/docs/community/typography](https://tw.icebreaker.top/docs/community/typography)

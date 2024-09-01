@@ -4,4 +4,4 @@
 
 相关文档:
 
-👉 [https://weapp-tw.icebreaker.top/](https://weapp-tw.icebreaker.top/docs/quick-start/native/install)
+👉 [https://tw.icebreaker.top/](https://tw.icebreaker.top/docs/quick-start/native/install)

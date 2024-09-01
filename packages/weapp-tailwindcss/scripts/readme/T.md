@@ -1,6 +1,6 @@
 <p align="center">
 
-<a href="https://weapp-tw.icebreaker.top">
+<a href="https://tw.icebreaker.top">
 
 <img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
 </a>
@@ -25,7 +25,7 @@
 >
 > 小程序原生工具链 `weapp-vite` 已经发布，使用它改善你的原生小程序开发体验吧，更多详见 [官方文档](https://vite.icebreaker.top/)
 
-\[[文档地址](https://weapp-tw.icebreaker.top)\] \| \[[备用文档地址](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
+\[[文档地址](https://tw.icebreaker.top)\] \| \[[备用文档地址](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
 
 - [特性](#特性)
 - [版本对应](#版本对应)
@@ -64,17 +64,17 @@
 
 > 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
-## [安装与使用方式](https://weapp-tw.icebreaker.top/docs/quick-start/install)
+## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 
-## [生态和解决方案](https://weapp-tw.icebreaker.top/docs/community/templates)
+## [生态和解决方案](https://tw.icebreaker.top/docs/community/templates)
 
-## [常见问题](https://weapp-tw.icebreaker.top/docs/issues/)
+## [常见问题](https://tw.icebreaker.top/docs/issues/)
 
-## [各个框架的模板](https://weapp-tw.icebreaker.top/docs/community/templates)
+## [各个框架的模板](https://tw.icebreaker.top/docs/community/templates)
 
-## [旧版本迁移指南](https://weapp-tw.icebreaker.top/docs/migrations/v2)
+## [旧版本迁移指南](https://tw.icebreaker.top/docs/migrations/v2)
 
-## [配置项参考](https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
+## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
 ## [变更日志](./CHANGELOG.md)
 

@@ -16,7 +16,7 @@ webpack5 核心转义插件
 
 **`Link`**
 
-https://weapp-tw.icebreaker.top/docs/intro
+https://tw.icebreaker.top/docs/intro
 
 ## Implements
 

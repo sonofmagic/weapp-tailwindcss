@@ -15,7 +15,7 @@ const debug = createDebug()
 /**
  * @name UnifiedWebpackPluginV4
  * @description webpack4 核心转义插件
- * @link https://weapp-tw.icebreaker.top/docs/intro
+ * @link https://tw.icebreaker.top/docs/intro
  */
 
 export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {

@@ -18,7 +18,7 @@
 
 你可以在里面任意添加文章，修改文章，删除文章，然后提交到你 `fork` 的分支，然后在 `pr` 到 `weapp-tailwindcss` 的 `main` 分支。
 
-`website` 这个项目会被部署到 `https://weapp-tw.icebreaker.top` 这个域名下，作为 [`weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss) 的文档展示。
+`website` 这个项目会被部署到 `https://tw.icebreaker.top` 这个域名下，作为 [`weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss) 的文档展示。
 
 就项目而言，这是一个 `docusaurus@2` 的项目，和 `vuepress`/`vitepress` 类似，它也是一个开源的文档生成工具，不过它是 `react` 写的。
 

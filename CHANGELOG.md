@@ -104,13 +104,13 @@
 
 <https://github.com/sonofmagic/weapp-tailwindcss/issues/259>
 
-<https://weapp-tw.icebreaker.top/docs/migrations/v2>
+<https://tw.icebreaker.top/docs/migrations/v2>
 
 ## 2.11.0 (2023-11-13)
 
 ## Features
 
-- 添加单独的 Nodejs API [#255](https://github.com/sonofmagic/weapp-tailwindcss/issues/255), [相关文档](https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/api)
+- 添加单独的 Nodejs API [#255](https://github.com/sonofmagic/weapp-tailwindcss/issues/255), [相关文档](https://tw.icebreaker.top/docs/quick-start/frameworks/api)
 
 ## 2.10.1 (2023-10-17)
 
@@ -122,7 +122,7 @@
 
 ## Features
 
-- 添加 [uni-app-css-macro](https://weapp-tw.icebreaker.top/docs/quick-start/uni-app-css-macro) 样式条件编译语法糖相关功能
+- 添加 [uni-app-css-macro](https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro) 样式条件编译语法糖相关功能
 
 ## Chore
 
@@ -178,7 +178,7 @@
 ## Features
 
 - 添加 `jsEscapeStrategy` 配置项，用于切换所有的 `js`字符串中，处理字符串和模板字面量的替换模式。
-- 详细配置见 <https://weapp-tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#jsescapestrategy>
+- 详细配置见 <https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#jsescapestrategy>
 
 ## Chore
 
@@ -370,7 +370,7 @@ after:content-['你好啊，我很无聊'] √
 
 ### Docs
 
-- <https://weapp-tw.icebreaker.top/>
+- <https://tw.icebreaker.top/>
 
 ### Fixed
 

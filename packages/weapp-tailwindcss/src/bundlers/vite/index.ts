@@ -11,7 +11,7 @@ const debug = createDebug()
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
  * @description uni-app vite vue3 版本插件
- * @link https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
+ * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
   const opts = getOptions(options)

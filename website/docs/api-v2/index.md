@@ -280,7 +280,7 @@ uni-app vite vue3 版本插件
 
 **`Link`**
 
-https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
+https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
 
 #### Defined in
 
@@ -318,7 +318,7 @@ gulp版本weapp-tw插件
 
 **`Link`**
 
-https://weapp-tw.icebreaker.top/docs/quick-start/frameworks/native
+https://tw.icebreaker.top/docs/quick-start/frameworks/native
 
 #### Defined in
 

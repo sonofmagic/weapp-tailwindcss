@@ -4,7 +4,7 @@
   "description": "把 tailwindcss 原子化样式思想，带给小程序开发者们! bring tailwindcss to miniprogram developers!",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
-  "homepage": "https://weapp-tw.icebreaker.top",
+  "homepage": "https://tw.icebreaker.top",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"

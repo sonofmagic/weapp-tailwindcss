@@ -2,7 +2,7 @@
 <tbody>
 <tr>
 <td align="center">
-<a href="https://weapp-tw.icebreaker.top">
+<a href="https://tw.icebreaker.top">
 
 <img src="./assets/logo.png" alt="weapp-tailwindcss-logo" height="128">
 </a>
@@ -44,7 +44,7 @@
 
 ### 仓库链接: [packages/weapp-tailwindcss](./packages/weapp-tailwindcss/)
 
-### 官网链接: [weapp-tw.icebreaker.top](https://weapp-tw.icebreaker.top)
+### 官网链接: [tw.icebreaker.top](https://tw.icebreaker.top)
 
 ## 🔥 weapp-vite
 

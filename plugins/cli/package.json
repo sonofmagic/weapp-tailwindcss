@@ -4,7 +4,7 @@
   "description": "The cli of weapp-tailwindcss",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
-  "homepage": "https://weapp-tw.icebreaker.top/docs/quick-start/native/install",
+  "homepage": "https://tw.icebreaker.top/docs/quick-start/native/install",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
