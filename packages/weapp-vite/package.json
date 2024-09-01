@@ -1,7 +1,7 @@
 {
   "name": "weapp-vite",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "weapp-vite 一个现代化的小程序打包工具",
   "author": "SonOfMagic <qq1324318532@gmail.com>",
   "license": "MIT",
