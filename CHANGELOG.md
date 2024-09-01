@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 目前项目已经启用了 changeset 生成日志，对应的日志见：
+
+- [`weapp-tailwindcss`](./packages/weapp-tailwindcss/CHANGELOG.md)
+- [`weapp-vite`](./packages/weapp-vite/CHANGELOG.md)
+
 ## 3.5.0 (2024-8-15)
 
 ### Feature
