@@ -1545,10 +1545,10 @@
   resolved "https://registry.npmmirror.com/@dcloudio/uni-stat/-/uni-stat-2.0.2-4010520240507001.tgz#4f1ef6af4d3ba2c55b3e64b6213b289955e726f6"
   integrity sha512-cbwNIG4oDZXNIIKKfs5kNrMKcNqAofR/2wtagqkMEmABNfcKZL/BGdfZBZeKOYlkQfCq5o76/HwLK/65P4iNog==
 
-"@dcloudio/uni-template-compiler@2.0.2-4010520240507001":
-  version "2.0.2-4010520240507001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-template-compiler/-/uni-template-compiler-2.0.2-4010520240507001.tgz#8c77bb678919d9da35df9c3e75f6e0057d2e2f85"
-  integrity sha512-y9NpUWoYcRPTrtUtKamhuUb+g3JURnOKaZRaTSz+vE2hKp9bHcn4jSH4EZ130X4MzvyoJgCzHYQs8l9NKiXnjg==
+"@dcloudio/uni-template-compiler@2.0.2-4020420240722003":
+  version "2.0.2-4020420240722003"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-template-compiler/-/uni-template-compiler-2.0.2-4020420240722003.tgz#ca7e2e566a2e32132edc6d40923c7aca373510c9"
+  integrity sha512-B/EmW1RaySSlB7wFrTmAigomMzb6Qft+PghrIKMqOIU2/nO5wHXS+iKRNqyvlA5rtbf0g3Bb+8pb4B6qfgB/fg==
   dependencies:
     "@babel/parser" "^7.3.3"
     "@babel/template" "^7.3.3"

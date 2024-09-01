@@ -91,7 +91,7 @@
     "@dcloudio/uni-cli-i18n": "2.0.2-4010520240507001",
     "@dcloudio/uni-cli-shared": "2.0.2-4010520240507001",
     "@dcloudio/uni-migration": "2.0.2-4010520240507001",
-    "@dcloudio/uni-template-compiler": "2.0.2-4010520240507001",
+    "@dcloudio/uni-template-compiler": "2.0.2-4020420240722003",
     "@dcloudio/vue-cli-plugin-hbuilderx": "2.0.2-4010520240507001",
     "@dcloudio/vue-cli-plugin-uni": "2.0.2-4010520240507001",
     "@dcloudio/vue-cli-plugin-uni-optimize": "2.0.2-4010520240507001",
