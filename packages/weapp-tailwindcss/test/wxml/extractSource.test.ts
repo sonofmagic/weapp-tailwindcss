@@ -1,5 +1,31 @@
-import { extractSource } from '@/wxml/utils'
 import type { RawSource } from '@/types'
+import { variableRegExp } from '@/reg'
+/**
+ * @internal
+ */
+function extract(original: string, reg: RegExp) {
+  let match = reg.exec(original)
+  const sources: RawSource[] = []
+
+  while (match !== null) {
+    // 过滤空字符串
+    // if (match[1].trim().length) {
+    const start = match.index
+    const end = reg.lastIndex
+    sources.push({
+      start,
+      end,
+      raw: match[1],
+    })
+
+    match = reg.exec(original)
+  }
+  return sources
+}
+
+export function extractSource(original: string) {
+  return extract(original, variableRegExp)
+}
 
 describe('extractSource', () => {
   it('common', () => {

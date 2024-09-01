@@ -7,15 +7,10 @@ import { isCSSRequest, preprocessCSS } from 'vite'
 import fg from 'fast-glob'
 import { supportedCssExtensions } from '../utils'
 import { getEntries } from '../entry'
-// import { createPluginCache } from '../cache'
 import { createDebugger } from '../debugger'
-import type { Context } from '../context'
-import { runDev, runProd } from '../build'
-// import { MiscSymbol } from '../symbols'
-import type { AppEntry, SubpackageDep } from '../types'
-// import type { WxmlDep } from '../utils/wxml'
-// import { getDeps } from '../utils/wxml'
+import type { CompilerContext } from '../context'
 import { defaultExcluded } from '../defaults'
+import type { AppEntry, SubPackageDep } from '../types'
 import type { ParseRequestResponse } from './parse'
 import { parseRequest } from './parse'
 
@@ -38,7 +33,7 @@ function getRealPath(res: ParseRequestResponse) {
 
 // https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/fileWatcher.ts#L2
 // https://github.com/rollup/rollup/blob/c6751ff66d33bf0f4c87508765abb996f1dd5bbe/src/watch/watch.ts#L174
-export function vitePluginWeapp(ctx: Context): Plugin[] {
+export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
   const stylesIds = new Set<string>()
   // const templateIds = new Set<string>()
   // const templateCacheMap = new Map<string, {
@@ -73,9 +68,6 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
       // config->configResolved->|watching|options->buildStart
       config(config, env) {
         debug?.(config, env)
-        if (config?.weapp?.srcRoot && !config?.weapp.subPackage && !ctx.srcRootRef.value) {
-          ctx.srcRootRef.value = config.weapp.srcRoot
-        }
       },
       configResolved(config) {
         debug?.(config)
@@ -106,29 +98,17 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           const input = getInputOption(paths)
           entriesSet = new Set(paths)
           options.input = input
-          if (Array.isArray(entries.subPackages) && entries.subPackages.length) {
+          if (weapp?.type === 'app' && Array.isArray(entries.subPackages) && entries.subPackages.length) {
             for (const subPackage of entries.subPackages) {
-              if (subPackage.root && subPackage.independent && !ctx.watcherCache.has(subPackage.root)) {
-                if (ctx.isDev) {
-                  runDev(ctx, {
-                    weapp: {
-                      subPackage,
-                    },
-                  })
-                }
-                else {
-                  runProd(ctx, {
-                    weapp: {
-                      subPackage,
-                    },
-                  })
-                }
+              //
+              if (subPackage.root && !ctx.subPackageContextMap.has(subPackage.root)) {
+                ctx.forkSubPackage(subPackage).build()
               }
             }
           }
         }
         else {
-          throw new Error(`在 ${path.join(root, weapp?.srcRoot ?? '')} 目录下没有找到 \`app.json\`, 请确保你初始化了小程序项目，或者在 \`vite.config.ts\` 中设置的正确的 \`weapp.srcRoot\` 配置路径  `)
+          throw new Error(`在 ${path.join(root, ctx.srcRoot ?? '')} 目录下没有找到 \`app.json\`, 请确保你初始化了小程序项目，或者在 \`vite.config.ts\` 中设置的正确的 \`weapp.srcRoot\` 配置路径  `)
         }
       },
       async buildStart() {
@@ -137,18 +117,18 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         const ignore: string[] = [
           ...defaultExcluded,
         ]
-        const isSubPackage = Boolean(!appEntry && weapp?.subPackage && weapp.subPackage.root)
+        const isSubPackage = weapp?.type === 'subPackage' // Boolean(!appEntry && ctx.subPackage && ctx.subPackage.root)
         if (isSubPackage) {
           // subPackage
-          cwd = path.join(root, weapp!.subPackage!.root!)
+          cwd = path.join(root, ctx.subPackage!.root)
         }
         else {
           const ignoreSubPackage = appEntry
             ? appEntry.deps.filter(
-              x => x.type === 'subPackage' && x.independent,
+              x => x.type === 'subPackage',
             )
               .map((x) => {
-                return `${(x as SubpackageDep).root}/**`
+                return `${(x as SubPackageDep).root}/**`
               })
             : []
           ignore.push(
@@ -165,7 +145,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
         }
         const files = await fg(
           // 假如去 join root 就是返回 absolute
-          [path.join(weapp?.srcRoot ?? '', '**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}')],
+          [path.join(ctx.srcRoot ?? '', '**/*.{wxml,json,wxs,png,jpg,jpeg,gif,svg,webp}')],
           {
             cwd,
             ignore,
@@ -173,7 +153,7 @@ export function vitePluginWeapp(ctx: Context): Plugin[] {
           },
         )
         const relFiles = files.map((x) => {
-          return isSubPackage ? path.join(weapp!.subPackage!.root!, x) : x
+          return isSubPackage ? path.join(weapp?.subPackage?.root ?? '', x) : x
         })
         for (const file of relFiles) {
           const filepath = path.resolve(ctx.cwd, file)

@@ -1,7 +1,7 @@
 import path from 'pathe'
 import fs from 'fs-extra'
 import { addExtension, defu, isObject, removeExtension } from '@weapp-core/shared'
-import type { AppEntry, Dep, Entry, Subpackage } from '../types'
+import type { AppEntry, Dep, Entry, SubPackage } from '../types'
 
 export function parseJsonUseComponents(json: any) {
   const deps: Dep[] = []
@@ -44,7 +44,7 @@ export function searchAppEntry(options?: SearchAppEntryOptions): AppEntry | unde
           }
           if (Array.isArray(appJson.subPackages)) {
             // 独立分包中不能依赖主包和其他分包中的内容，包括 js 文件、template、wxss、自定义组件、插件等（使用 分包异步化 时 js 文件、自定义组件、插件不受此条限制）
-            deps.push(...(appJson.subPackages as Subpackage[]).map<Dep>((x) => {
+            deps.push(...(appJson.subPackages as SubPackage[]).map<Dep>((x) => {
               return {
                 type: 'subPackage',
                 ...x,

@@ -5,6 +5,6 @@ packages:
   - website
   - website-weapp-vite
   - benchmark
-  - tailwindcss-weapp
+  - '!tailwindcss-weapp'
   - '@weapp-core/*'
   # - "demo-linked/*"

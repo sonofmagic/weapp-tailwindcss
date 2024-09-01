@@ -1,5 +1,5 @@
-import path from 'node:path'
 import os from 'node:os'
+import path from 'pathe'
 
 const homedir = os.homedir()
 

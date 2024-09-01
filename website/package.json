@@ -27,7 +27,7 @@
     "@mdx-js/react": "^3.0.1",
     "clsx": "^2.1.0",
     "file-saver": "^2.0.5",
-    "prism-react-renderer": "^2.3.1",
+    "prism-react-renderer": "^2.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -35,7 +35,7 @@
     "@docusaurus/module-type-aliases": "3.5.2",
     "@docusaurus/tsconfig": "3.5.2",
     "@docusaurus/types": "3.5.2",
-    "@icebreakers/deploy": "^0.1.5",
+    "@icebreakers/deploy": "^0.1.6",
     "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
@@ -44,10 +44,10 @@
     "dotenv": "^16.4.5",
     "node-loader": "^2.0.0",
     "sass": "^1.77.8",
-    "sass-loader": "^16.0.0",
+    "sass-loader": "^16.0.1",
     "tailwindcss": "^3.4.10",
     "typedoc": "^0.26.6",
-    "typedoc-plugin-markdown": "4.2.5",
+    "typedoc-plugin-markdown": "4.2.6",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {

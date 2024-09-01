@@ -35,6 +35,7 @@ export async function getConfig(): Promise<BaseConfig> {
       encoding: 'utf8',
     })
     const config = JSON.parse(content)
+    logger.log('> 全局配置文件路径：', defaultCustomConfigFilePath)
     logger.log('> 自定义cli路径：', config.cliPath)
     return config
   }

@@ -11,7 +11,7 @@ export interface ComponentDep {
   path: string
 }
 
-export interface Subpackage {
+export interface SubPackage {
   pages: string[]
   root: string
   // 独立分包
@@ -21,11 +21,11 @@ export interface Subpackage {
   name?: string
 }
 
-export interface SubpackageDep extends Subpackage {
+export interface SubPackageDep extends SubPackage {
   type: 'subPackage'
 }
 
-export type Dep = PageDep | ComponentDep | SubpackageDep
+export type Dep = PageDep | ComponentDep | SubPackageDep
 
 export interface SubPackageEntry {
   type: 'subPackageEntry'
@@ -64,7 +64,15 @@ export interface WatchOptions extends ChokidarWatchOptions {
 }
 export interface WeappViteConfig {
   srcRoot?: string
-  subPackage?: Partial<Subpackage>
+  type?: 'app' | 'subPackage'
+  /**
+   * 使用 subPackage 打包模式使用，传入配置
+   */
+  subPackage?: Partial<SubPackage>
+  /**
+   * 使用 app 打包模式使用，传入配置用于进行独立监听
+   */
+  subPackagesConfig?: Record<string, Partial<SubPackage>>
   watch?: WatchOptions
 }
 

@@ -3,9 +3,8 @@ import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { parseExpression, traverse } from '../babel'
 import type { ItemOrItemArray } from '../reg'
-import { variableRegExp } from '../reg'
 import { defuOverrideArray } from '../utils'
-import type { ITemplateHandlerOptions, RawSource } from '../types'
+import type { ITemplateHandlerOptions } from '../types'
 import { replaceHandleValue } from '../js/handlers'
 import { replaceWxml } from './shared'
 import type { Token } from './Tokenizer'
@@ -63,99 +62,12 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
   }
 }
 
-/**
- * @internal
- */
-function extract(original: string, reg: RegExp) {
-  let match = reg.exec(original)
-  const sources: RawSource[] = []
-
-  while (match !== null) {
-    // 过滤空字符串
-    // if (match[1].trim().length) {
-    const start = match.index
-    const end = reg.lastIndex
-    sources.push({
-      start,
-      end,
-      raw: match[1],
-    })
-
-    match = reg.exec(original)
-  }
-  return sources
-}
-
-export function extractSource(original: string) {
-  return extract(original, variableRegExp)
-}
-
-export function handleEachClassFragment(original: string, options: ITemplateHandlerOptions = {}) {
-  const sources = extractSource(original)
-
-  if (sources.length > 0) {
-    const resultArray: string[] = []
-    let p = 0
-    for (let i = 0; i < sources.length; i++) {
-      const m = sources[i]
-      const before = original.slice(p, m.start)
-
-      // 匹配前值
-      resultArray.push(
-        replaceWxml(before, {
-          keepEOL: true,
-          escapeMap: options.escapeMap,
-          mangleContext: options.mangleContext,
-          // 首的str才会被转译
-          // example: 2xl:xx 2x{{y}}
-          ignoreHead: p > 0,
-        }),
-      )
-      p = m.start
-      // 匹配后值
-      if (m.raw.trim().length > 0) {
-        const code = generateCode(m.raw, options)
-        const source = `{{${code}}}`
-        m.source = source
-      }
-      else {
-        m.source = ''
-      }
-
-      resultArray.push(m.source)
-      p = m.end
-      // 匹配最终尾部值
-      if (i === sources.length - 1) {
-        const after = original.slice(m.end)
-        resultArray.push(
-          replaceWxml(after, {
-            keepEOL: true,
-            escapeMap: options.escapeMap,
-            mangleContext: options.mangleContext,
-            ignoreHead: true,
-          }),
-        )
-      }
-    }
-
-    return resultArray.filter(Boolean).join('').trim()
-  }
-  else {
-    return replaceWxml(original, {
-      keepEOL: false,
-      escapeMap: options.escapeMap,
-      mangleContext: options.mangleContext,
-      ignoreHead: false,
-    })
-  }
-}
-
-export function handleEachClassFragment2(ms: MagicString, tokens: Token[], options: ITemplateHandlerOptions = {}) {
+export function handleEachClassFragment(ms: MagicString, tokens: Token[], options: ITemplateHandlerOptions = {}) {
   for (const token of tokens) {
     let p = token.start
     if (token.expressions.length > 0) {
       for (const exp of token.expressions) {
-        if (exp.start > p) {
+        if (exp.start > token.start) {
           ms.update(p, exp.start, replaceWxml(ms.slice(p, exp.start), {
             keepEOL: true,
             escapeMap: options.escapeMap,
@@ -165,12 +77,12 @@ export function handleEachClassFragment2(ms: MagicString, tokens: Token[], optio
             ignoreHead: p > 0,
           }))
         }
-
-        ms.update(exp.start, exp.end, `{{${generateCode(exp.value.slice(2, -2), options)}}}`)
+        const code = `{{${generateCode(exp.value.slice(2, -2), options)}}}`
+        ms.update(exp.start, exp.end, code)
         p = exp.end
       }
-      if (ms.original.length > p) {
-        ms.update(p, ms.original.length, replaceWxml(ms.slice(p, ms.original.length), {
+      if (token.end > p) {
+        ms.update(p, token.end, replaceWxml(ms.slice(p, token.end), {
           keepEOL: false,
           escapeMap: options.escapeMap,
           mangleContext: options.mangleContext,
@@ -193,21 +105,7 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
   const ms = new MagicString(original)
   const tokenizer = new Tokenizer()
   const tokens = tokenizer.run(ms.original)
-
-  for (const token of tokens) {
-    const target = handleEachClassFragment(token.value, options)
-    ms.update(token.start, token.end, target)
-  }
-  // handleEachClassFragment2(ms, tokens, options)
-
-  return ms.toString()
-}
-
-export function templateReplacer2(original: string, options: ITemplateHandlerOptions = {}) {
-  const ms = new MagicString(original)
-  const tokenizer = new Tokenizer()
-  const tokens = tokenizer.run(ms.original)
-  handleEachClassFragment2(ms, tokens, options)
+  handleEachClassFragment(ms, tokens, options)
   return ms.toString()
 }
 

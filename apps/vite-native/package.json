@@ -15,14 +15,14 @@
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "postinstall": "weapp-tw patch",
-    "build-npm": "weapp-vite build-npm"
+    "npm": "weapp-vite npm"
   },
   "dependencies": {
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.41",
+    "postcss": "^8.4.42",
     "tailwindcss": "^3.4.10",
     "weapp-tailwindcss": "workspace:*",
     "weapp-vite": "workspace:*"

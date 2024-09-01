@@ -1,7 +1,12 @@
 import path from 'pathe'
 import fs from 'fs-extra'
 
-export function getProjectConfig(root: string, options?: { ignorePrivate?: boolean }) {
+export interface ProjectConfig {
+  miniprogramRoot?: string
+  srcMiniprogramRoot?: string
+}
+
+export function getProjectConfig(root: string, options?: { ignorePrivate?: boolean }): ProjectConfig {
   const baseJsonPath = path.resolve(root, 'project.config.json')
   const privateJsonPath = path.resolve(root, 'project.private.config.json')
   let baseJson = {}
@@ -28,8 +33,5 @@ export function getProjectConfig(root: string, options?: { ignorePrivate?: boole
     }
   }
 
-  return Object.assign({}, privateJson, baseJson) as {
-    miniprogramRoot: string
-    srcMiniprogramRoot: string
-  }
+  return Object.assign({}, privateJson, baseJson)
 }

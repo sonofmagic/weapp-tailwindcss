@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`build > compilerContext 1`] = `
+{
+  "inlineConfig": {},
+  "isDev": false,
+  "mode": "",
+  "packageJson": {},
+  "parent": undefined,
+  "projectConfig": {},
+  "subPackage": undefined,
+  "subPackageContextMap": Map {},
+  "type": "app",
+  "watcherMap": Map {},
+}
+`;
+
+exports[`build > compilerContext 2`] = `
+{
+  "inlineConfig": {
+    "build": {
+      "assetsDir": ".",
+      "commonjsOptions": {
+        "include": undefined,
+        "transformMixedEsModules": true,
+      },
+      "rollupOptions": {
+        "external": [],
+        "output": {
+          "entryFileNames": [Function],
+          "format": "cjs",
+          "strict": false,
+        },
+      },
+    },
+    "configFile": false,
+    "mode": "",
+    "plugins": [
+      {
+        "configResolved": [Function],
+        "enforce": "pre",
+        "name": "vite-tsconfig-paths",
+        "resolveId": [Function],
+      },
+    ],
+  },
+  "isDev": false,
+  "mode": "",
+  "packageJson": {},
+  "parent": undefined,
+  "projectConfig": {},
+  "subPackage": undefined,
+  "subPackageContextMap": Map {},
+  "type": "app",
+  "watcherMap": Map {},
+}
+`;
