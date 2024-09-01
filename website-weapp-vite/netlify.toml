@@ -3,7 +3,7 @@
 [build]
 base = "website-weapp-vite/"
 publish = "dist"
-command = "pnpm run build:vite-docs"
+command = "pnpm run build"
 
 [build.environment]
 NODE_VERSION = "20"
