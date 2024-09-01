@@ -1,0 +1,13 @@
+# netlify 部署文件
+# 用于部署此项目的 h5 产物，可删除
+[build]
+publish = "dist/build/h5"
+command = "pnpm run build:h5"
+
+[build.environment]
+NODE_VERSION = "20"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
