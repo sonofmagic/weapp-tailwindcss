@@ -138,13 +138,32 @@
 而且，写法上它也遵从 `HTML` 里的写法。你可以很容易的从 `HTML` 中复制你的原子类到 `CSS` 中，再把它们提取成一个单独的类。
 
 ```css
-@layer components{
-  .btn{
-    @apply inline-block cursor-pointer rounded-md bg-gray-700 px-4 py-3.5 text-center text-sm font-semibold uppercase text-white transition duration-200 ease-in-out  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-95;
+@layer components {
+  /* 使用 utilities 里的 inline-flex-center */
+  .btn {
+    @apply inline-flex-center font-bold py-2 px-4 rounded cursor-pointer;
   }
-  /* more... */
+  /* 使用 components 里的 btn */
+  .btn-pink {
+    @apply btn bg-pink-600 hover:bg-pink-900 text-white;
+  }
+}
+
+@layer utilities {
+  .inline-flex-center {
+    @apply inline-flex items-center justify-center;
+  }
 }
 ```
+
+效果如下所示:
+
+<div class="inline-flex-center gap-2 mb-3">
+<button class="btn">btn</button>
+<button class="btn-pink">btn-pink</button>
+</div>
+
+
 
 这样，通过提取和组合，我们可以对原子类进行更高程度上的封装，值得一提的是 `Tailwindcss` 中最流行的 UI 框架: `daisyUI` 原理上也是类似的，不过它进行了进一步的处理和预提取，并最终把它们封装成了一个 `Tailwindcss` 插件罢了。
 

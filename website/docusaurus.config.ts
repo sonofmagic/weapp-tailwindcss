@@ -140,18 +140,18 @@ const config = {
         skipErrorChecking: true,
       },
     ],
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        id: 'api-cli',
-        entryPoints: ['../plugins/cli/src/type.ts'],
-        tsconfig: '../plugins/cli/tsconfig.md.json',
-        readme: 'none',
-        out: './docs/api-cli',
-        watch: process.env.TYPEDOC_WATCH,
-        skipErrorChecking: true,
-      },
-    ],
+    // [
+    //   'docusaurus-plugin-typedoc',
+    //   {
+    //     id: 'api-cli',
+    //     entryPoints: ['../plugins/cli/src/type.ts'],
+    //     tsconfig: '../plugins/cli/tsconfig.md.json',
+    //     readme: 'none',
+    //     out: './docs/api-cli',
+    //     watch: process.env.TYPEDOC_WATCH,
+    //     skipErrorChecking: true,
+    //   },
+    // ],
     // function nodeLoader(context, options) {
     //   return {
     //     name: 'canvas-node-loader-plugin',

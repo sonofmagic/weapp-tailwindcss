@@ -186,7 +186,7 @@
     "normalize-newline": "^4.1.0",
     "pathe": "^1.1.2",
     "pkg-types": "^1.2.0",
-    "postcss": "^8.4.42",
+    "postcss": "^8.4.44",
     "postcss-load-config": "^6.0.1",
     "postcss-loader": "^8.1.1",
     "postcss-scss": "^4.0.9",

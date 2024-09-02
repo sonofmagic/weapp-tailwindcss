@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn {
+    @apply inline-flex-center font-bold py-2 px-4 rounded cursor-pointer;
+  }
+
+  .btn-pink {
+    @apply btn bg-pink-600 hover:bg-pink-900 text-white;
+  }
+}
+
+@layer utilities {
+  .inline-flex-center {
+    @apply inline-flex items-center justify-center;
+  }
+}
+
 :root {
   --ifm-color-primary: #0ea5e9;
   --ifm-color-primary-dark: #0d95d2;
