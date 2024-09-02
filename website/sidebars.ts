@@ -53,10 +53,10 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'quick-start/native/install-plugin',
         },
-        {
-          type: 'doc',
-          id: 'quick-start/native/principle',
-        },
+        // {
+        //   type: 'doc',
+        //   id: 'quick-start/native/principle',
+        // },
       ],
       collapsed: false,
     },
