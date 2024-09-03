@@ -60,7 +60,7 @@
     "magic-string": "^0.30.11",
     "micromatch": "^4.0.8",
     "pathe": "^1.1.2",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.0",
     "pkg-types": "^1.2.0",
     "vite-tsconfig-paths": "^5.0.1",
     "weapp-ide-cli": "workspace:^"

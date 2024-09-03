@@ -73,5 +73,13 @@
     "scss",
     "pcss",
     "postcss"
+  ],
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.validate": [
+    "vue",
+    "css",
+    "scss"
   ]
 }
