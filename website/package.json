@@ -43,11 +43,11 @@
     "docusaurus-plugin-typedoc": "1.0.5",
     "dotenv": "^16.4.5",
     "node-loader": "^2.0.0",
-    "sass": "^1.77.8",
+    "sass": "^1.78.0",
     "sass-loader": "^16.0.1",
     "tailwindcss": "^3.4.10",
     "typedoc": "^0.26.6",
-    "typedoc-plugin-markdown": "4.2.6",
+    "typedoc-plugin-markdown": "4.2.7",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {
