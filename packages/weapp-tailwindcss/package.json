@@ -162,7 +162,7 @@
     "magic-string": "0.30.11",
     "md5": "2.3.0",
     "postcss": "~8.4.45",
-    "postcss-rem-to-responsive-pixel": "~6.0.1",
+    "postcss-rem-to-responsive-pixel": "~6.0.2",
     "postcss-selector-parser": "~6.1.2",
     "semver": "~7.6.2",
     "tailwindcss-patch": "~4.0.0",
