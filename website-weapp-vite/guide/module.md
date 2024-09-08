@@ -6,8 +6,8 @@
 
 ```ts
 // good
-import 'xx'
 import x from 'x'
+import 'xx'
 export default x
 export {
   x,
@@ -37,9 +37,11 @@ module.exports = {
 
 ```js
 // error ! 这种写法会报错，因为 esm 无法解构
-import { a , b , c } from './apple'
+import { a, b, c } from './apple'
+```
 
+```js
 // 你应该改成下方这种写法
 import * as apple from './apple'
-const { a , b , c } = apple
+const { a, b, c } = apple
 ```

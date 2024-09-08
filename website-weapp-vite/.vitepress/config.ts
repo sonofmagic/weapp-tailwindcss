@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
+import { defineConfig } from 'vitepress'
 // @ts-ignore
 import typedocSidebar from '../api/typedoc-sidebar.json'
 // https://vitepress.dev/reference/site-config

@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 import process from 'node:process'
-import PrismLight from './src/utils/prismLight'
 import PrismDark from './src/utils/prismDark'
+import PrismLight from './src/utils/prismLight'
 
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'

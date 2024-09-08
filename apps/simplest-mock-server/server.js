@@ -1,7 +1,7 @@
 const process = require('node:process')
 const express = require('express')
-const logger = require('morgan')
 const minimist = require('minimist')
+const logger = require('morgan')
 
 const args = minimist(process.argv.slice(2), {
   number: ['port'],

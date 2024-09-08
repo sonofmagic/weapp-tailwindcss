@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import AutoImport from 'unplugin-auto-import/vite'
+import { defineConfig } from 'vite'
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 import { WeappTailwindcssDisabled } from './platform'
 import postcssPlugins from './postcss.config.cjs'

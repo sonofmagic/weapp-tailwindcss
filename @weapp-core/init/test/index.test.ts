@@ -1,6 +1,6 @@
-import path from 'pathe'
-import fs from 'fs-extra'
 import { initConfig, initViteConfigFile, updatePackageJson, updateProjectConfig } from '@/index'
+import fs from 'fs-extra'
+import path from 'pathe'
 
 const appsDir = path.resolve(__dirname, '../../../apps')
 const fixturesDir = path.resolve(__dirname, './fixtures')

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import redent from 'redent'
-import camelCase from 'lodash/camelCase'
 import BaseLayout from '@/components/BaseLayout.vue'
 import Fab from '@/components/FloatButton.vue'
-import { useSystemStore } from '@/stores'
 import Navbar from '@/components/Navbar.vue'
+import { useSystemStore } from '@/stores'
+import camelCase from 'lodash/camelCase'
+import redent from 'redent'
 
 const store = useSystemStore()
 

@@ -1,7 +1,7 @@
-import index from '@/data/data_index.js'
-import index_next from '@/data/data_index_next.js'
 import discovery from '@/data/data_discovery.js'
 import discovery_next from '@/data/data_discovery_next.js'
+import index from '@/data/data_index.js'
+import index_next from '@/data/data_index_next.js'
 
 function formatTime(date) {
   const year = date.getFullYear()
@@ -57,10 +57,10 @@ function discoveryNext() {
 }
 
 export {
-  getData,
-  getData2,
-  getNext,
-  getDiscovery,
   discoveryNext,
   formatTime,
+  getData,
+  getData2,
+  getDiscovery,
+  getNext,
 }

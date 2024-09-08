@@ -1,14 +1,14 @@
 <script setup>
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart } from 'echarts/charts'
 import {
   LegendComponent,
   TitleComponent,
   TooltipComponent,
 } from 'echarts/components'
-import VChart, { THEME_KEY } from 'vue-echarts'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
 import { provide, ref } from 'vue'
+import VChart, { THEME_KEY } from 'vue-echarts'
 
 use([
   CanvasRenderer,

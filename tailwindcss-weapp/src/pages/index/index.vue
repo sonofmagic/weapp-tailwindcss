@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import debounce from 'lodash/debounce'
-import { devDependencies } from '../../../package.json'
 import BaseLayout from '@/components/BaseLayout.vue'
 import FloatButton from '@/components/FloatButton.vue'
+import Navbar from '@/components/Navbar.vue'
 import { useSystemStore } from '@/stores'
 import { documentationNav } from '@/stores/documentation'
-import Navbar from '@/components/Navbar.vue'
+import debounce from 'lodash/debounce'
+import { devDependencies } from '../../../package.json'
 
 const version = devDependencies.tailwindcss.slice(1)
 

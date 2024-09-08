@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import ConfigProvider from './ConfigProvider.vue'
 import { useSystemStore } from '@/stores'
+import ConfigProvider from './ConfigProvider.vue'
 
 const store = useSystemStore()
 </script>

@@ -1,6 +1,6 @@
-const cssMacro = require('weapp-tailwindcss/css-macro')
 const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons')
 const plugin = require('tailwindcss/plugin')
+const cssMacro = require('weapp-tailwindcss/css-macro')
 const { isMp } = require('./platform')
 
 /** @type {import('tailwindcss').Config} */

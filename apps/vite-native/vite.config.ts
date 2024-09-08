@@ -1,5 +1,5 @@
-import { defineConfig } from 'weapp-vite/config'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
+import { defineConfig } from 'weapp-vite/config'
 
 export default defineConfig({
   // root: './packageA',

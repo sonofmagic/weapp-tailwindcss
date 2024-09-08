@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import mpHtml from 'uni-app-mp-html/components/mp-html/mp-html.vue'
-import Theme from './custom/Theme.vue'
 import CssVarBtn from './custom/CssVarBtn.vue'
+import Theme from './custom/Theme.vue'
 import VariantBtn from './custom/VariantBtn.vue'
 
 enum ModeEnum {

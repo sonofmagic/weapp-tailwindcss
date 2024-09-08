@@ -1,10 +1,10 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const process = require('node:process')
-const Mock = require('mockjs')
 const express = require('express')
-const rd = require('rd')
 const minimist = require('minimist')
+const Mock = require('mockjs')
+const rd = require('rd')
 
 const router = express.Router()
 
