@@ -3,12 +3,13 @@
   "type": "module",
   "version": "0.2.0",
   "description": "tailwindcss-core-plugins-extractor",
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "homepage": "https://tw.icebreaker.top",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/tailwindcss-core-plugins-extractor"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"

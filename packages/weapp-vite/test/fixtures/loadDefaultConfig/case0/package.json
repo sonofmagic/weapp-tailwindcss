@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    
-  },
+  "scripts": {},
   "keywords": [],
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
   "dependencies": {
     "dlv": "^1.1.3"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-vite/test/fixtures/loadDefaultConfig/case0"
   }
 }

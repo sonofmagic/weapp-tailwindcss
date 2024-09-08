@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "pnpm@9.9.0",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "homepage": "https://tw.icebreaker.top",
   "repository": {
@@ -88,14 +88,17 @@
     "lint:fix": "eslint . --fix",
     "lint:view": "npx @eslint/config-inspector",
     "publish-packages": "pnpm build && pnpm test && changeset version && changeset publish",
-    "run:watch": "tsx scripts/watcher"
+    "run:watch": "tsx scripts/watcher",
+    "script:init": "tsx scripts/monorepo/init.ts",
+    "script:sync": "tsx scripts/monorepo/sync.ts",
+    "script:clean": "tsx scripts/monorepo/clean.ts"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@ast-grep/napi": "^0.26.3",
+    "@ast-grep/napi": "^0.27.0",
     "@babel/core": "^7.25.2",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.8",
@@ -104,7 +107,7 @@
     "@commitlint/prompt-cli": "^19.4.1",
     "@commitlint/types": "^19.0.3",
     "@eslint/config-inspector": "^0.5.4",
-    "@icebreakers/eslint-config": "^0.4.1",
+    "@icebreakers/eslint-config": "^0.4.2",
     "@icebreakers/readme": "0.1.0",
     "@icebreakers/stylelint-config": "^0.0.3",
     "@pnpm/workspace.find-packages": "^4.0.9",

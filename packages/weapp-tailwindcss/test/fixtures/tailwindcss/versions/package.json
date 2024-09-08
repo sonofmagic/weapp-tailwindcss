@@ -13,7 +13,7 @@
     "usage": "npm run get {version}"
   },
   "keywords": [],
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
   "dependencies": {
     "tailwindcss": "^3.3.1",
@@ -29,5 +29,13 @@
   },
   "devDependencies": {
     "execa": "^7.1.1"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-tailwindcss/test/fixtures/tailwindcss/versions"
   }
 }

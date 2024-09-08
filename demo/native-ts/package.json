@@ -10,7 +10,7 @@
     "build-npm": "weapp-vite build-npm"
   },
   "keywords": [],
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "",
   "dependencies": {},
   "devDependencies": {
@@ -28,5 +28,13 @@
     "weapp-vite": "^1.0.1"
   },
   "packageManager": "yarn@1.22.22",
-  "type": "module"
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/native-ts"
+  }
 }

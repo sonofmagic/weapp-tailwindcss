@@ -1,3 +1,12 @@
 {
-  "name": "weapp-tailwindcss"
+  "name": "weapp-tailwindcss",
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "assets"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  }
 }

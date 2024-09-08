@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "apps/native"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "keywords": [],
   "main": "index.js",
   "scripts": {

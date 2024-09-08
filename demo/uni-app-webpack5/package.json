@@ -132,5 +132,14 @@
   "uni-app": {
     "scripts": {}
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/uni-app-webpack5"
+  },
+  "author": "ice breaker <1324318532@qq.com>"
 }

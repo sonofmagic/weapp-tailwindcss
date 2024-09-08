@@ -5,5 +5,14 @@
   "devDependencies": {
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-tailwindcss/test/fixtures/webpack/v5/multiple-contexts"
+  },
+  "author": "ice breaker <1324318532@qq.com>"
 }

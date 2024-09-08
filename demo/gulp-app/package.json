@@ -80,5 +80,14 @@
   "dependencies": {
     "@vant/weapp": "^1.11.6"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/gulp-app"
+  },
+  "author": "ice breaker <1324318532@qq.com>"
 }

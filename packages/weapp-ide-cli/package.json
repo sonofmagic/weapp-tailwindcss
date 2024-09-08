@@ -3,12 +3,13 @@
   "type": "module",
   "version": "2.0.3",
   "description": "让微信开发者工具，用起来更加方便！",
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-ide-cli"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"

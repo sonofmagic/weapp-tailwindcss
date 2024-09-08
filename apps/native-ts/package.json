@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "apps/native-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "keywords": [],
   "scripts": {
     "dev": "cross-env DEBUG='weapp-tw,weapp-tw-cli' weapp-tw dev",

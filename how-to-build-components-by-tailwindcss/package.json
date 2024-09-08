@@ -7,6 +7,14 @@
     "sync": "cnpm sync how-to-build-components-by-tailwindcss-react how-to-build-components-by-tailwindcss-vue"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "how-to-build-components-by-tailwindcss"
+  }
 }

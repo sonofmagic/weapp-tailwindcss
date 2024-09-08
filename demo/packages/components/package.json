@@ -16,7 +16,7 @@
     "components",
     "test"
   ],
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "files": [
     "tarojs",
     "uni-app",
@@ -38,5 +38,10 @@
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss#readme",
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/packages/components"
+  }
 }

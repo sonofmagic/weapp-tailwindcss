@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
   "keywords": [],
   "main": "index.js",
@@ -17,5 +17,13 @@
   "devDependencies": {
     "weapp-vite": "workspace:*",
     "miniprogram-api-typings": "latest"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "@weapp-core/init/test/fixtures/vite-native-skyline"
   }
 }

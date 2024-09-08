@@ -11,9 +11,17 @@
     "build-npm": "weapp-vite build-npm"
   },
   "keywords": [],
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
   "devDependencies": {
     "miniprogram-api-typings": "latest"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "@weapp-core/init/test/fixtures/cjs"
   }
 }

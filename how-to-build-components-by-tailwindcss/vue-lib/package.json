@@ -39,5 +39,14 @@
     "vite-plugin-dts": "^3.6.0",
     "vue": "^3.3.4",
     "vue-tsc": "^1.8.5"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "how-to-build-components-by-tailwindcss/vue-lib"
+  },
+  "author": "ice breaker <1324318532@qq.com>"
 }

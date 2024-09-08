@@ -3,6 +3,15 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "benchmark"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",

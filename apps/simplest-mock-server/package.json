@@ -2,6 +2,15 @@
   "name": "simplest-mock-server",
   "version": "0.0.0",
   "private": true,
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "apps/simplest-mock-server"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "scripts": {
     "start": "gulp mock"
   },

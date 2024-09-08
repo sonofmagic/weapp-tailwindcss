@@ -3,8 +3,16 @@
   "type": "module",
   "version": "1.0.1",
   "description": "@weapp-core/shared",
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "@weapp-core/shared"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "keywords": [],
   "sideEffects": false,
   "exports": {

@@ -52,7 +52,10 @@ exports[`loadDefaultConfig > compilerContext 2`] = `
   "isDev": false,
   "mode": "",
   "packageJson": {
-    "author": "",
+    "author": "ice breaker <1324318532@qq.com>",
+    "bugs": {
+      "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues",
+    },
     "dependencies": {
       "dlv": "^1.1.3",
     },
@@ -61,6 +64,11 @@ exports[`loadDefaultConfig > compilerContext 2`] = `
     "license": "ISC",
     "main": "index.js",
     "name": "case0",
+    "repository": {
+      "directory": "packages/weapp-vite/test/fixtures/loadDefaultConfig/case0",
+      "type": "git",
+      "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    },
     "scripts": {},
     "version": "1.0.0",
   },

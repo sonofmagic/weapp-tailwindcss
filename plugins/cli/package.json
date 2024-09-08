@@ -2,12 +2,13 @@
   "name": "@weapp-tailwindcss/cli",
   "version": "1.0.9",
   "description": "The cli of weapp-tailwindcss",
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "homepage": "https://tw.icebreaker.top/docs/quick-start/native/install",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "plugins/cli"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"

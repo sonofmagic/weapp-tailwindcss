@@ -5,8 +5,14 @@
   "license": "MIT",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
-  "repository": "https://github.com/tailwindlabs/tailwindcss.git",
-  "bugs": "https://github.com/tailwindlabs/tailwindcss/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-tailwindcss/test/fixtures/tailwindcss/versions/lts"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "homepage": "https://tailwindcss.com",
   "bin": {
     "tailwind": "lib/cli.js",
@@ -122,5 +128,6 @@
   },
   "engines": {
     "node": ">=12.13.0"
-  }
+  },
+  "author": "ice breaker <1324318532@qq.com>"
 }

@@ -2,12 +2,13 @@
   "name": "@weapp-tailwindcss/typography",
   "version": "0.2.4",
   "description": "The tailwindcss typography plugin for weapp",
-  "author": "SonOfMagic <qq1324318532@gmail.com>",
+  "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "homepage": "https://tw.icebreaker.top/docs/community/typography",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "plugins/typography"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"

@@ -41,7 +41,7 @@
     "Android >= 4.1",
     "ios >= 8"
   ],
-  "author": "",
+  "author": "ice breaker <1324318532@qq.com>",
   "__comment": {},
   "dependencies": {
     "@babel/runtime": "^7.24.7",
@@ -89,5 +89,13 @@
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.90.3"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/taro-vue3-app"
+  }
 }
