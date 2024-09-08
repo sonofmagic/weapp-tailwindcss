@@ -1,5 +1,5 @@
-import path from 'pathe'
 import fs from 'fs-extra'
+import path from 'pathe'
 
 export interface ProjectConfig {
   miniprogramRoot?: string

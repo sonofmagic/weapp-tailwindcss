@@ -1,16 +1,16 @@
-import readline from 'node:readline'
 import process from 'node:process'
+import readline from 'node:readline'
 import fs from 'fs-extra'
+import { compose } from './compose'
+import { createCustomConfig, getConfig } from './config'
+
 import {
   defaultCustomConfigFilePath,
   defaultPath,
   operatingSystemName,
 } from './defaults'
-import { createCustomConfig, getConfig } from './config'
-
-import { createAlias, createPathCompat, execute } from './utils'
-import { compose } from './compose'
 import logger from './logger'
+import { createAlias, createPathCompat, execute } from './utils'
 
 // https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html
 // https://developers.weixin.qq.com/miniprogram/dev/devtools/cli.html

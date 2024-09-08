@@ -1,5 +1,5 @@
-import type { UserConfig as ViteUserConfig } from 'vite'
 import type { WatchOptions as ChokidarWatchOptions } from 'chokidar'
+import type { UserConfig as ViteUserConfig } from 'vite'
 
 export interface PageDep {
   type: 'page'

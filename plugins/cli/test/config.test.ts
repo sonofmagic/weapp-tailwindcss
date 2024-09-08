@@ -1,7 +1,7 @@
 import path from 'node:path'
+import { createConfigLoader, initConfig, updatePackageJson, updateProjectConfig } from '@/config'
 import fs from 'fs-extra'
 import { fixturesPath } from './utils'
-import { createConfigLoader, initConfig, updatePackageJson, updateProjectConfig } from '@/config'
 
 describe('config', () => {
   it('load js config', () => {

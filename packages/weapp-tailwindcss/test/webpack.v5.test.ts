@@ -1,21 +1,21 @@
 /* eslint-disable prefer-arrow-callback */
-import path from 'node:path'
-import fs from 'node:fs/promises'
 import fss from 'node:fs'
-import type { Compiler, Configuration } from 'webpack'
-import webpack from 'webpack'
-import postcss from 'postcss'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import { runLoaders } from 'promisify-loader-runner'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { copySync, mkdirSync } from 'fs-extra'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import postcss from 'postcss'
+import { runLoaders } from 'promisify-loader-runner'
+import webpack from 'webpack'
+import type { Compiler, Configuration } from 'webpack'
 // import ci from 'ci-info'
 
+import { MappingChars2String } from '@/escape'
+import { UnifiedWebpackPluginV5 } from '@/index'
 import normalizeNewline from 'normalize-newline'
 // @ts-ignore
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
-import { UnifiedWebpackPluginV5 } from '@/index'
-import { MappingChars2String } from '@/escape'
 
 function readAssets(...args: Parameters<typeof _readAssets>) {
   return Object.entries(_readAssets(...args)).reduce<Record<string, string>>((acc, cur) => {

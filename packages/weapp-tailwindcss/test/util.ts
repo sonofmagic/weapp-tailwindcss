@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import MagicString from 'magic-string'
 import * as htmlparser2 from 'htmlparser2'
+import MagicString from 'magic-string'
 
 export { format } from './helpers/wxml'
 

@@ -1,9 +1,9 @@
-import type { UserDefinedOptions } from 'weapp-tailwindcss'
+import type { AssetType } from '@/enum'
 import type { WatchOptions } from 'gulp'
+import type { Settings } from 'gulp-typescript'
 import type { Result } from 'postcss-load-config'
 import type { Options as SassOptions } from 'sass'
-import type { Settings } from 'gulp-typescript'
-import type { AssetType } from '@/enum'
+import type { UserDefinedOptions } from 'weapp-tailwindcss'
 
 export interface GulpLessOptions {
   modifyVars?: object | undefined

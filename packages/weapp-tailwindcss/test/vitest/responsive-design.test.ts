@@ -1,5 +1,5 @@
-import { getCss } from '../helpers/getTwCss'
 import { getOptions } from '@/options'
+import { getCss } from '../helpers/getTwCss'
 
 describe('responsive-design', () => {
   let styleHandler: ReturnType<typeof getOptions>['styleHandler']

@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import type { Declaration, Rule } from 'postcss'
 import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
+import type { Declaration, Rule } from 'postcss'
 
 async function main() {
   // @ts-ignore

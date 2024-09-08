@@ -1,6 +1,6 @@
-import scssParser from 'postcss-scss'
-import { createContext } from '@/core'
 import { getCss } from '#test/helpers/getTwCss'
+import { createContext } from '@/core'
+import scssParser from 'postcss-scss'
 
 describe('core', () => {
   it('common usage case 0', async () => {

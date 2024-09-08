@@ -1,7 +1,7 @@
+import fs from 'fs-extra'
 import type {
   Transform as TransformStream,
 } from 'node:stream'
-import fs from 'fs-extra'
 
 const cssMatcher = (file: string) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)
 const htmlMatcher = (file: string) => /.+\.(?:(?:wx|ax|jx|ks|tt|q)ml|swan)$/.test(file)
@@ -25,8 +25,8 @@ export function touch(filename: string) {
   }
 }
 
-export { default as set } from 'set-value'
 export { default as get } from 'get-value'
+export { default as set } from 'set-value'
 
 export function isObject(x: unknown): x is Record<string | symbol | number, unknown> {
   return typeof x === 'object' && x !== null

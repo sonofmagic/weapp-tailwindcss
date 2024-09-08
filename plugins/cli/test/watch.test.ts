@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { fixturesPath } from './utils'
 import { watch } from '@/build'
+import { fixturesPath } from './utils'
 // import { createWatcher } from '@/watch'
 // const stubGetWatchedCode = /getWatched\(\) {.+?return {};.+?}/s
 

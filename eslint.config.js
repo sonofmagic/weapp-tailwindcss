@@ -3,9 +3,6 @@ import { icebreaker } from '@icebreakers/eslint-config'
 export default icebreaker(
   {
     markdown: true,
-    // mdx: true,
-  },
-  {
     ignores: [
       '**/fixtures/**',
       // 'apps',
@@ -16,6 +13,11 @@ export default icebreaker(
       // tmp 添加
       'apps/weapp-library',
     ],
+  },
+  {
+    rules: {
+      'ts/no-require-imports': 'warn',
+    },
   },
   {
     files: ['apps/**/*.{ts,js}', 'demo/**/*.{ts,js}'],

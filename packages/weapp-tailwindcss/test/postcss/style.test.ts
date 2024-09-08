@@ -1,11 +1,11 @@
-import type postcss from 'postcss'
-import { createGetCase, cssCasePath } from '../util'
-import { normalizeEol } from '../helpers/normalizeEol'
-import { styleHandler } from '@/postcss/index'
-
-import { createInjectPreflight } from '@/postcss/preflight'
-import { getOptions } from '@/options'
 import { MappingChars2String } from '@/escape'
+import { getOptions } from '@/options'
+import { styleHandler } from '@/postcss/index'
+import { createInjectPreflight } from '@/postcss/preflight'
+
+import type postcss from 'postcss'
+import { normalizeEol } from '../helpers/normalizeEol'
+import { createGetCase, cssCasePath } from '../util'
 
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore

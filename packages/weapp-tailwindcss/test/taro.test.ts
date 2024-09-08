@@ -1,8 +1,8 @@
-import { TailwindcssPatcher } from 'tailwindcss-patch'
-import { createGetCase, jsCasePath } from './util'
+import { getCss } from '#test/helpers/getTwCss'
 import { SimpleMappingChars2String } from '@/escape'
 import { createJsHandler } from '@/js/index'
-import { getCss } from '#test/helpers/getTwCss'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
+import { createGetCase, jsCasePath } from './util'
 // import { getOptions } from '@/options'
 // import { defaultOptions } from '@/defaults'
 const getCase = createGetCase(jsCasePath)

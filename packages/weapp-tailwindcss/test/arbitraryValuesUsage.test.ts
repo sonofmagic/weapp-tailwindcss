@@ -1,6 +1,6 @@
-import { arbitraryValuesMap } from './arbitraryValuesMap'
 import { wxmlAllowClassCharsRegExp } from '#test/v2/reg'
 import { replaceWxml } from '@/wxml/shared'
+import { arbitraryValuesMap } from './arbitraryValuesMap'
 
 describe('all arbitrary values usages', () => {
   describe.each(Object.entries(arbitraryValuesMap))('%s', (title, subTitleObj) => {

@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { switch2relative } from './util'
 import { groupBy, regExpTest } from '@/utils'
+import { switch2relative } from './util'
 
 function xxx(fn: any) {
   const a1 = typeof fn !== 'function'

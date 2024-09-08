@@ -1,6 +1,6 @@
+import defu from 'defu'
 import postcss from 'postcss'
 import tailwindcss, { type Config } from 'tailwindcss'
-import defu from 'defu'
 // @tailwind components;
 export interface IGetCssOptions {
   twConfig?: Partial<Config>

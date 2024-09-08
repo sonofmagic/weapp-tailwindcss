@@ -1,8 +1,8 @@
 import { Declaration, Rule } from 'postcss'
-import type { IStyleHandlerOptions } from '../types'
-import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 import cssVars from './cssVars'
+import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 import { composeIsPseudo } from './shared'
+import type { IStyleHandlerOptions } from '../types'
 
 const initialNodes = cssVars.map((x) => {
   return new Declaration({

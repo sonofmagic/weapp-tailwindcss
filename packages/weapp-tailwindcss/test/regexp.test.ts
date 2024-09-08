@@ -1,12 +1,12 @@
 // import replace from 'regexp-replace'
-import { createGetCase, format, matchAll, wxmlCasePath } from './util'
+import { classStringReplace, tagStringReplace, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '#test/v2/reg'
+// import redent from 'redent'
+import { MappingChars2String } from '@/escape'
 // import { normalizeEol } from './helpers/normalizeEol'
 import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, escapeStringRegexp, getSourceString, variableRegExp } from '@/reg'
 // #endregion
 import { replaceWxml } from '@/wxml/index'
-// import redent from 'redent'
-import { MappingChars2String } from '@/escape'
-import { classStringReplace, tagStringReplace, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '#test/v2/reg'
+import { createGetCase, format, matchAll, wxmlCasePath } from './util'
 
 const getCase = createGetCase(wxmlCasePath)
 

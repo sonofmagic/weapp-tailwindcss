@@ -1,11 +1,11 @@
 import fs from 'fs-extra'
-import logger from './logger'
-
 import {
   defaultCustomConfigDirPath,
   defaultCustomConfigFilePath,
   defaultPath,
 } from './defaults'
+
+import logger from './logger'
 
 import type { BaseConfig } from './types'
 

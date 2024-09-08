@@ -1,7 +1,7 @@
 import path from 'node:path'
-import type { Config } from 'tailwindcss'
-import tailwind from 'tailwindcss'
 import postcss from 'postcss'
+import tailwind from 'tailwindcss'
+import type { Config } from 'tailwindcss'
 
 const typographyPlugin = require('../src/index')
 // import typographyPlugin from '@/index'

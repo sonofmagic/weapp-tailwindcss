@@ -1,9 +1,9 @@
-import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCss } from '#test/helpers/getTwCss'
-import { getOptions } from '@/options'
 import { createGetCase, wxsCasePath } from '#test/util'
+import { getOptions } from '@/options'
 // import { createTemplateHandler } from '@/wxml/index'
 import { wxsTagRegexp } from '@/reg'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 import type { RawSource } from '@/types'
 
 function getClassCacheSet() {

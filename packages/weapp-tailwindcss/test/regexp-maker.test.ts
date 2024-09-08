@@ -1,5 +1,5 @@
-import { matchAll } from './util'
 import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, handleRegexp, makePattern } from '@/reg'
+import { matchAll } from './util'
 
 describe('regexp-maker', () => {
   it('makePattern case signle option', () => {

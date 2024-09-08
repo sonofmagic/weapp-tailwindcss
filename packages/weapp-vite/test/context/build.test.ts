@@ -1,6 +1,6 @@
-import path from 'pathe'
-import { omit } from 'lodash'
 import { CompilerContext } from '@/context'
+import { omit } from 'lodash'
+import path from 'pathe'
 
 const fixturesDir = path.resolve(__dirname, '../fixtures')
 

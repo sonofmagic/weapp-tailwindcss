@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createGetCase, format, wxmlCasePath } from '../util'
-import { customTemplateHandler } from '@/wxml/utils'
 import { SimpleMappingChars2String } from '@/escape'
+import { customTemplateHandler } from '@/wxml/utils'
+import { createGetCase, format, wxmlCasePath } from '../util'
 
 const getCase = createGetCase(wxmlCasePath)
 describe('customTemplateHandler', () => {

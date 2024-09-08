@@ -1,7 +1,7 @@
 import postcss from 'postcss'
-import type { IStyleHandlerOptions } from '../types'
 import { defuOverrideArray } from '../utils'
 import { getPlugins } from './plugins'
+import type { IStyleHandlerOptions } from '../types'
 
 export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   return postcss(getPlugins(options))

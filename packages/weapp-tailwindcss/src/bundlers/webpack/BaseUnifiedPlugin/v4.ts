@@ -1,14 +1,14 @@
 // webpack 4
 
-import path from 'node:path'
 import fs from 'node:fs'
-import type { Compiler } from 'webpack4'
+import path from 'node:path'
 import { ConcatSource, RawSource } from 'webpack-sources'
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
-import { getOptions } from '../../../options'
+import type { Compiler } from 'webpack4'
 import { pluginName } from '../../../constants'
-import { getGroupedEntries, removeExt } from '../../../utils'
 import { createDebug } from '../../../debug'
+import { getOptions } from '../../../options'
+import { getGroupedEntries, removeExt } from '../../../utils'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
 
 const debug = createDebug()
 

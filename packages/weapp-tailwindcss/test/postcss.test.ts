@@ -1,6 +1,6 @@
+import { getOptions } from '@/options'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCss } from './helpers/getTwCss'
-import { getOptions } from '@/options'
 // import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
 // import fs from 'fs'

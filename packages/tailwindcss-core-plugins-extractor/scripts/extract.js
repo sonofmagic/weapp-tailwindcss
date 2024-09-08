@@ -1,9 +1,9 @@
 // import * as url from 'node:url'
-import resolveConfig from 'tailwindcss/resolveConfig.js'
-import tailwindDefaultConfig from 'tailwindcss/defaultConfig.js'
 import dlv from 'dlv'
-import negateValue from 'tailwindcss/lib/util/negateValue.js'
+import tailwindDefaultConfig from 'tailwindcss/defaultConfig.js'
 import nameClass from 'tailwindcss/lib/util/nameClass.js'
+import negateValue from 'tailwindcss/lib/util/negateValue.js'
+import resolveConfig from 'tailwindcss/resolveConfig.js'
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 

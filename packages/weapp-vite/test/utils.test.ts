@@ -1,7 +1,7 @@
-import path from 'pathe'
-import { diff } from 'just-diff'
-import { absDirs } from './utils'
 import { getProjectConfig, isAppRoot, searchAppEntry } from '@/utils'
+import { diff } from 'just-diff'
+import path from 'pathe'
+import { absDirs } from './utils'
 
 describe('utils', () => {
   describe('getProjectConfig', () => {

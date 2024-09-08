@@ -2,13 +2,13 @@ import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { parseExpression, traverse } from '../babel'
-import type { ItemOrItemArray } from '../reg'
-import { defuOverrideArray } from '../utils'
-import type { ITemplateHandlerOptions } from '../types'
 import { replaceHandleValue } from '../js/handlers'
+import { defuOverrideArray } from '../utils'
 import { replaceWxml } from './shared'
-import type { Token } from './Tokenizer'
 import { Tokenizer } from './Tokenizer'
+import type { ItemOrItemArray } from '../reg'
+import type { ITemplateHandlerOptions } from '../types'
+import type { Token } from './Tokenizer'
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {

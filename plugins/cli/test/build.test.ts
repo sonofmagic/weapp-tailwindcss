@@ -1,7 +1,7 @@
 import path from 'node:path'
+import { build } from '@/build'
 import tailwindcss from 'tailwindcss'
 import { fixturesPath } from './utils'
-import { build } from '@/build'
 
 describe.skip('build', () => {
   it('native', async () => {

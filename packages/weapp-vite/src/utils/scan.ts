@@ -1,6 +1,6 @@
-import path from 'pathe'
-import fs from 'fs-extra'
 import { addExtension, defu, isObject, removeExtension } from '@weapp-core/shared'
+import fs from 'fs-extra'
+import path from 'pathe'
 import type { AppEntry, Dep, Entry, SubPackage } from '../types'
 
 export function parseJsonUseComponents(json: any) {

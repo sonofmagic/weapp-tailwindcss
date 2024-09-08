@@ -2,14 +2,14 @@ export {
   MappingChars2String,
   MappingChars2StringEntries,
   MappingStringDictionary,
+  SimpleMappingChars2String,
+  SimpleMappingChars2StringEntries,
   SYMBOL_TABLE,
   SYMBOL_TABLE_TYPE,
   SYMBOL_TABLE_TYPE_VALUES,
-  SimpleMappingChars2String,
-  SimpleMappingChars2StringEntries,
 } from './escape'
 // cssSelectorReplacer as replaceCss,
 // replaceEscapedCss
 
-export { replaceWxml as replaceJs } from './wxml/shared'
 export { internalCssSelectorReplacer as replaceCss } from './postcss/shared'
+export { replaceWxml as replaceJs } from './wxml/shared'

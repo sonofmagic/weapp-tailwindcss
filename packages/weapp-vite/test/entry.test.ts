@@ -1,5 +1,5 @@
-import { absDirs } from './utils'
 import { getEntries } from '@/entry'
+import { absDirs } from './utils'
 
 describe('entry', () => {
   // function normalizeScanEntries(result: Awaited<ReturnType<typeof scanEntries>>) {

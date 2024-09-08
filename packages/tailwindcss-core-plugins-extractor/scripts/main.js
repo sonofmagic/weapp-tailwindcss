@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
-import _corePlugins from 'tailwindcss/lib/corePlugins.js'
 import defaultTheme from 'tailwindcss/defaultTheme.js'
+import _corePlugins from 'tailwindcss/lib/corePlugins.js'
 import { getUtilities } from './extract.js'
 
 const { screens } = defaultTheme

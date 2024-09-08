@@ -3,8 +3,8 @@ import process from 'node:process'
 import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
 import fs from 'fs-extra'
-import { get, set } from './utils'
 import type { BuildOptions } from '@/type'
+import { get, set } from './utils'
 
 export interface WeappTwCosmiconfigResult {
   config: BuildOptions

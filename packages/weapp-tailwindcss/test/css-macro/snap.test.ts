@@ -1,7 +1,7 @@
 import path from 'node:path'
-import postcss from 'postcss'
 import { createGetCase, cssCasePath } from '#test/util'
 import creator from '@/css-macro/postcss'
+import postcss from 'postcss'
 
 const getCase = createGetCase(path.resolve(cssCasePath, 'css-macro'))
 

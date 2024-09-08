@@ -1,6 +1,6 @@
-import defu from 'defu'
-import { getOptions } from '@/options'
 import { MappingChars2String } from '@/escape'
+import { getOptions } from '@/options'
+import defu from 'defu'
 
 describe('customReplaceDictionary', () => {
   it('templateHandler custom map', async () => {

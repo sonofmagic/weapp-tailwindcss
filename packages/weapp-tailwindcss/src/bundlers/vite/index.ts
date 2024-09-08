@@ -1,10 +1,10 @@
-import type { Plugin } from 'vite'
 import type { OutputAsset, OutputChunk } from 'rollup'
-import type { UserDefinedOptions } from '../../types'
-import { getOptions } from '../../options'
+import type { Plugin } from 'vite'
 import { vitePluginName } from '../../constants'
-import { getGroupedEntries } from '../../utils'
 import { createDebug } from '../../debug'
+import { getOptions } from '../../options'
+import { getGroupedEntries } from '../../utils'
+import type { UserDefinedOptions } from '../../types'
 
 const debug = createDebug()
 

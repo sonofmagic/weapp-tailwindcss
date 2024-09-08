@@ -1,18 +1,18 @@
-import path from 'pathe'
-import type { Plugin, ResolvedConfig } from 'vite'
+import { addExtension, removeExtension } from '@weapp-core/shared'
+import fg from 'fast-glob'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
-import { addExtension, removeExtension } from '@weapp-core/shared'
+import path from 'pathe'
 import { isCSSRequest, preprocessCSS } from 'vite'
-import fg from 'fast-glob'
-import { supportedCssExtensions } from '../utils'
-import { getEntries } from '../entry'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { createDebugger } from '../debugger'
-import type { CompilerContext } from '../context'
 import { defaultExcluded } from '../defaults'
+import { getEntries } from '../entry'
+import { supportedCssExtensions } from '../utils'
+import { parseRequest } from './parse'
+import type { CompilerContext } from '../context'
 import type { AppEntry, SubPackageDep } from '../types'
 import type { ParseRequestResponse } from './parse'
-import { parseRequest } from './parse'
 
 const debug = createDebugger('weapp-vite:plugin')
 
@@ -126,10 +126,9 @@ export function vitePluginWeapp(ctx: CompilerContext): Plugin[] {
           const ignoreSubPackage = appEntry
             ? appEntry.deps.filter(
               x => x.type === 'subPackage',
-            )
-              .map((x) => {
-                return `${(x as SubPackageDep).root}/**`
-              })
+            ).map((x) => {
+              return `${(x as SubPackageDep).root}/**`
+            })
             : []
           ignore.push(
             ...[

@@ -1,11 +1,11 @@
-import { createPlugins } from 'weapp-tailwindcss/gulp'
-import postcssrc from 'gulp-postcss'
 // import gulpif from 'gulp-if'
+import { isDuplexStream, isStream, isTransformStream } from '@/is-stream'
+import less from 'gulp-less'
+import postcssrc from 'gulp-postcss'
 // import createSass from 'gulp-sass'
 import rename from 'gulp-rename'
-import less from 'gulp-less'
 import typescript from 'gulp-typescript'
-import { isDuplexStream, isStream, isTransformStream } from '@/is-stream'
+import { createPlugins } from 'weapp-tailwindcss/gulp'
 
 describe('utils', () => {
   describe('is stream', () => {

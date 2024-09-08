@@ -1,5 +1,5 @@
-import { removeWxmlId } from '../util'
 import { isPropsMatch } from '@/wxml/utils'
+import { removeWxmlId } from '../util'
 
 describe('utils', () => {
   it('isPropsMatch', () => {

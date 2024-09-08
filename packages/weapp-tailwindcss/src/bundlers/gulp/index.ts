@@ -1,9 +1,9 @@
-import stream from 'node:stream'
 import { Buffer } from 'node:buffer'
+import stream from 'node:stream'
 import type File from 'vinyl'
+import { createDebug } from '../../debug'
 import { getOptions } from '../../options'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '../../types'
-import { createDebug } from '../../debug'
 
 const debug = createDebug()
 

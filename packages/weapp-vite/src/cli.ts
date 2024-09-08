@@ -1,11 +1,11 @@
 import process from 'node:process'
-import { cac } from 'cac'
 import { initConfig } from '@weapp-core/init'
+import { cac } from 'cac'
 import { parse } from 'weapp-ide-cli'
-import type { LogLevel } from './logger'
-import logger from './logger'
-import { CompilerContext } from './context'
 import { VERSION } from './constants'
+import { CompilerContext } from './context'
+import logger from './logger'
+import type { LogLevel } from './logger'
 
 const cli = cac('weapp-vite')
 
@@ -96,7 +96,8 @@ cli
   })
 
 cli
-  .command('init').action(() => {
+  .command('init')
+  .action(() => {
     try {
       initConfig({
         command: 'weapp-vite',
@@ -111,7 +112,8 @@ cli
   })
 
 cli
-  .command('open').action(async () => {
+  .command('open')
+  .action(async () => {
     try {
       await parse(['open', '-p'])
     }
@@ -124,7 +126,10 @@ cli
   })
 
 cli
-  .command('npm').alias('build:npm').alias('build-npm').action(async () => {
+  .command('npm')
+  .alias('build:npm')
+  .alias('build-npm')
+  .action(async () => {
     try {
       await parse(['build-npm', '-p'])
     }

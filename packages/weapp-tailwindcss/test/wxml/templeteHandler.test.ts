@@ -1,6 +1,6 @@
-import { createGetCase, wxmlCasePath } from '../util'
 // import { templateHandler } from '#test/v2/wxml'
 import { getOptions } from '@/options'
+import { createGetCase, wxmlCasePath } from '../util'
 
 const getWxmlCase = createGetCase(wxmlCasePath)
 

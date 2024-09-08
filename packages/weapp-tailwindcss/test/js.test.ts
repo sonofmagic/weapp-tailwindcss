@@ -7,13 +7,13 @@ import { TailwindcssPatcher } from 'tailwindcss-patch'
 // import MagicString from 'magic-string'
 // import { jsStringEscape } from '@ast-core/escape'
 
+import { getCss } from '#test/helpers/getTwCss'
+import { defaultOptions } from '@/defaults'
+import { decodeUnicode, SimpleMappingChars2String } from '@/escape'
+import { createJsHandler } from '@/js/index'
+import { getOptions } from '@/options'
 // swc 在解析中文的时候，会导致 span 增加，从而无法精确定位，不知道是不是bug
 import { createGetCase, createPutCase, jsCasePath, tsCasePath } from './util'
-import { SimpleMappingChars2String, decodeUnicode } from '@/escape'
-import { createJsHandler } from '@/js/index'
-import { getCss } from '#test/helpers/getTwCss'
-import { getOptions } from '@/options'
-import { defaultOptions } from '@/defaults'
 // import { parse } from '@/babel'
 const getCase = createGetCase(jsCasePath)
 const getTsCase = createGetCase(tsCasePath)

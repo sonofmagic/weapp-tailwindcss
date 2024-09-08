@@ -1,5 +1,5 @@
-import { createGetCase, wxmlCasePath } from '../util'
 import { getOptions } from '@/options'
+import { createGetCase, wxmlCasePath } from '../util'
 
 const getCase = createGetCase(wxmlCasePath)
 

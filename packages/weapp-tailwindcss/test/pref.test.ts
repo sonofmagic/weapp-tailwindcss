@@ -1,5 +1,5 @@
-import { createGetCase, wxmlCasePath } from './util'
 import { templateHandler } from '#test/v2/wxml'
+import { createGetCase, wxmlCasePath } from './util'
 
 const getCase = createGetCase(wxmlCasePath)
 describe('performance', () => {

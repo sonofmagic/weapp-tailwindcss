@@ -1,7 +1,7 @@
 // import 'tailwindcss/types/config'
+import { defu } from '@/utils'
 import plugin from 'tailwindcss/plugin'
 import { createMediaQuery, createNegativeMediaQuery } from './constants'
-import { defu } from '@/utils'
 
 export interface Options {
   variantsMap?: Record<string, string | { value: string, negative?: boolean }>

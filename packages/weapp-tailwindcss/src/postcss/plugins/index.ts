@@ -1,11 +1,11 @@
-import type { AcceptedPlugin } from 'postcss'
 // @ts-expect-error
 import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
-import type { IStyleHandlerOptions } from '../../types'
-import { postcssWeappTailwindcssPrePlugin } from './pre'
-import { postcssWeappTailwindcssPostPlugin } from './post'
+import type { AcceptedPlugin } from 'postcss'
 import { createContext } from './ctx'
+import { postcssWeappTailwindcssPostPlugin } from './post'
+import { postcssWeappTailwindcssPrePlugin } from './pre'
+import type { IStyleHandlerOptions } from '../../types'
 
 export function getPlugins(options: IStyleHandlerOptions) {
   const ctx = createContext()

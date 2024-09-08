@@ -1,5 +1,5 @@
-import { isWebpackPlugin } from './util'
 import { defaultOptions } from '@/defaults'
+import { isWebpackPlugin } from './util'
 
 const { mainCssChunkMatcher } = defaultOptions
 

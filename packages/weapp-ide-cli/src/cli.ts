@@ -1,6 +1,6 @@
 import process from 'node:process'
-import { parse } from './parse'
 import logger from './logger'
+import { parse } from './parse'
 
 const argv = process.argv.slice(2)
 

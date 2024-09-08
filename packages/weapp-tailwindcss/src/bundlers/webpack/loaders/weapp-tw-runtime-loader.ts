@@ -1,5 +1,5 @@
-import type webpack from 'webpack'
 import loaderUtils from 'loader-utils'
+import type webpack from 'webpack'
 
 const WeappTwRuntimeAopLoader: webpack.LoaderDefinitionFunction<{
   getClassSet: () => void

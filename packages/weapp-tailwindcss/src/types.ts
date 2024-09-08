@@ -1,14 +1,14 @@
-import type { Document, Result as PostcssResult, Root, Rule } from 'postcss'
-import type { ClassGenerator, IClassGeneratorOptions } from '@tailwindcss-mangle/shared'
-import type { SourceMap } from 'magic-string'
 import type { GeneratorResult } from '@babel/generator'
 import type { ParseError, ParserOptions } from '@babel/parser'
-import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
+import type { ClassGenerator, IClassGeneratorOptions } from '@tailwindcss-mangle/shared'
+import type { SourceMap } from 'magic-string'
+import type { Document, Result as PostcssResult, Root, Rule } from 'postcss'
 import type { Result } from 'postcss-load-config'
+import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
-import type { InjectPreflight } from './postcss/preflight'
-import type { IContext as PostcssContext } from './postcss/plugins/ctx'
 import type { ICreateCacheReturnType } from './cache'
+import type { IContext as PostcssContext } from './postcss/plugins/ctx'
+import type { InjectPreflight } from './postcss/preflight'
 
 type PostcssOptions = Partial<Omit<Result, 'file'>>
 

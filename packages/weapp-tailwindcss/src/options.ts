@@ -1,3 +1,12 @@
+import { createCache } from './cache'
+import { defaultOptions } from './defaults'
+import { createJsHandler } from './js'
+import { useMangleStore } from './mangle'
+import { createStyleHandler } from './postcss/index'
+import { createInjectPreflight } from './postcss/preflight'
+import { createTailwindcssPatcher } from './tailwindcss/patcher'
+import { defuOverrideArray, isMap } from './utils'
+import { createTemplateHandler } from './wxml/utils'
 import type {
   ICustomAttributes,
   ICustomAttributesEntities,
@@ -5,15 +14,6 @@ import type {
   ItemOrItemArray,
   UserDefinedOptions,
 } from './types'
-import { createJsHandler } from './js'
-import { defaultOptions } from './defaults'
-import { useMangleStore } from './mangle'
-import { createCache } from './cache'
-import { createStyleHandler } from './postcss/index'
-import { createInjectPreflight } from './postcss/preflight'
-import { createTemplateHandler } from './wxml/utils'
-import { defuOverrideArray, isMap } from './utils'
-import { createTailwindcssPatcher } from './tailwindcss/patcher'
 
 export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(

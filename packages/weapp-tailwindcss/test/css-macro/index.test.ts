@@ -1,10 +1,10 @@
 // import plugin from 'tailwindcss/plugin'
-import postcss from 'postcss'
+import { getCss } from '#test/helpers/getTwCss'
 // import twPlugin from '../../dist/css-macro'
 import twPlugin from '@/css-macro'
 import { normalComment } from '@/css-macro/constants'
-import { getCss } from '#test/helpers/getTwCss'
 import postcssPlugin from '@/css-macro/postcss'
+import postcss from 'postcss'
 
 // not screen and (weapp-tw-platform:MP-WEIXIN)
 // not screen and (weapp-tw-platform:uniVersion > 3.9)
