@@ -57,7 +57,7 @@
     "jest": "^29.7.0",
     "postcss": "^8.4.38",
     "postcss-loader": "^8.1.1",
-    "postcss-rem-to-responsive-pixel": "^6.0.1",
+    "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
@@ -71,7 +71,7 @@
     "typescript": "^5.5.2",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^2.0.3",
-    "weapp-tailwindcss": "^3.5.1",
+    "weapp-tailwindcss": "^3.5.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.92.1"
   },

@@ -77,7 +77,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "less": "^4.2.0",
     "postcss": "^8.4.41",
-    "postcss-rem-to-responsive-pixel": "^6.0.1",
+    "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "stylelint": "16.8.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
@@ -87,7 +87,7 @@
     "terser-webpack-plugin": "^5.3.10",
     "typescript": "~5.5.4",
     "weapp-ide-cli": "^2.0.3",
-    "weapp-tailwindcss": "^3.5.1",
+    "weapp-tailwindcss": "^3.5.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.93.0",
     "webpack-chain": "^6.5.1"
