@@ -39,6 +39,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
   ])
 
   return getCompiler5({
+    target: ['web', 'es5'],
     context: path.resolve(__dirname, '..'),
     mode,
     entry,
@@ -804,7 +805,7 @@ describe('webpack5 plugin', () => {
             const pluginName = 'hijack-a-plane-plugin'
             const { NormalModule } = compiler.webpack
             compiler.hooks.compilation.tap(pluginName, (compilation) => {
-              NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+              NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
                 // const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
                 // console.log(idx)
                 // const target = module.loaders[0]
@@ -898,7 +899,7 @@ describe('webpack5 plugin', () => {
             const pluginName = 'hijack-a-plane-plugin'
             const { NormalModule } = compiler.webpack
             compiler.hooks.compilation.tap(pluginName, (compilation) => {
-              NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (loaderContext, module) => {
+              NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
                 // const idx = module.loaders.findIndex((x) => x.loader.includes('postcss-loader'))
                 // console.log(idx)
                 const target = module.loaders[0]
