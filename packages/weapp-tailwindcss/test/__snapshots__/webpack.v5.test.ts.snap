@@ -350,38 +350,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -739,38 +713,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -1128,38 +1076,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -1513,38 +1435,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -1906,38 +1802,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -2295,38 +2165,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -2682,38 +2526,12 @@ exports[`webpack5 plugin > disabled true > assets 1`] = `
   <button class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = 'w-[100px] h-[100px] ' + \\"bg-[url('https://xxx.com/xx.webp')]\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add('w-[99px]', \`h-[99px]\`, \\"bg-[url('https://yyy.com/xx.webp')]\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import './index.wxml'\\n// import './index.css'\\n\\nconst className = 'w-[100px] h-[100px] ' + \\"bg-[url('https://xxx.com/xx.webp')]\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add('w-[99px]', \`h-[99px]\`, \\"bg-[url('https://yyy.com/xx.webp')]\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -2856,7 +2674,7 @@ exports[`webpack5 plugin > hijack custom loader > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > hijack custom loader 0 > assets 1`] = `
 {
-  "index.js": "console.log(0),console.log(1),console.log(2);",
+  "index.js": "!(function(){console.log(0);console.log(1);console.log(2)})();",
 }
 `;
 
@@ -3214,38 +3032,12 @@ view,text,::before,::after {
   <button class="ta ua ia ka va wa xa">...</button>
   <view class="na icon oa pa qa {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} ra {{flag=='d'? 'd' : 'sa'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'q p \\' + \\"ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'za\\', \`ab\`, \\"bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'q p \\' + \\"ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'za\\', \`ab\`, \\"bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -3603,38 +3395,12 @@ view,text,::before,::after {
   <button class="som-wa som-xa som-la som-na som-ya som-za som-ab">...</button>
   <view class="som-qa icon som-ra som-sa som-ta {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} som-ua {{flag=='som-e'? 'som-e' : 'som-va'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'som-s som-r \\' + \\"som-bb\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'som-cb\\', \`som-db\`, \\"som-eb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'som-s som-r \\' + \\"som-bb\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'som-cb\\', \`som-db\`, \\"som-eb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -3992,38 +3758,12 @@ view,text,::before,::after {
   <button class="ice-ta ice-ua ice-ia ice-ka ice-va ice-wa ice-xa">...</button>
   <view class="ice-na icon ice-oa ice-pa ice-qa {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} ice-ra {{flag=='ice-d'? 'ice-d' : 'ice-sa'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'ice-q ice-p \\' + \\"ice-ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'ice-za\\', \`ice-ab\`, \\"ice-bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'ice-q ice-p \\' + \\"ice-ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'ice-za\\', \`ice-ab\`, \\"ice-bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -4381,38 +4121,12 @@ view,text,::before,::after {
   <button class="tw-ta tw-ua tw-ia tw-ka tw-va tw-wa tw-xa">...</button>
   <view class="tw-na icon tw-oa tw-pa tw-qa {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} tw-ra {{flag=='tw-d'? 'tw-d' : 'tw-sa'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'tw-q tw-p \\' + \\"tw-ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'tw-za\\', \`tw-ab\`, \\"tw-bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'tw-q tw-p \\' + \\"tw-ya\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'tw-za\\', \`tw-ab\`, \\"tw-bb\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -4897,38 +4611,12 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
-  "wxml.js": "/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-/******/ (function() { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
-/*!******************************************************!*\\
+  "wxml.js": "/*! For license information please see wxml.js.LICENSE.txt */
+(function(){var __webpack_modules__={"./test/fixtures/webpack/v5/wxml/pages/index.js":function(){eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?")}},__webpack_exports__={};__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]()})();",
+  "wxml.js.LICENSE.txt": "/*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (function() {
-
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./test/fixtures/webpack/v5/wxml/pages/index.js"]();
-/******/ 	
-/******/ })()
-;",
+",
 }
 `;
 
@@ -5286,7 +4974,7 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
-  "wxml.js": "!function(){document.body.append("<div class=\\"w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">className</div>");const d=document.createElement();d.classList.add("w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__"),document.body.appendChild(d)}();",
+  "wxml.js": "!(function(){document.body.append("<div class=\\"w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__\\">className</div>");const d=document.createElement();d.classList.add("w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__"),document.body.appendChild(d)})();",
 }
 `;
 

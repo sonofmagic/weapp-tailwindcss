@@ -2,17 +2,18 @@
 import fss from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { copySync, mkdirSync } from 'fs-extra'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import postcss from 'postcss'
-import { runLoaders } from 'promisify-loader-runner'
-import webpack from 'webpack'
-import type { Compiler, Configuration } from 'webpack'
-// import ci from 'ci-info'
-
 import { MappingChars2String } from '@/escape'
 import { UnifiedWebpackPluginV5 } from '@/index'
+import { copySync, mkdirSync } from 'fs-extra'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import normalizeNewline from 'normalize-newline'
+import postcss from 'postcss'
+import { runLoaders } from 'promisify-loader-runner'
+// import ci from 'ci-info'
+import TerserPlugin from 'terser-webpack-plugin'
+import webpack from 'webpack'
+import type { Compiler, Configuration } from 'webpack'
+
 // @ts-ignore
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
@@ -104,6 +105,23 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
         },
       },
     ],
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              // 其他压缩选项...
+            },
+            output: {
+              beautify: false, // 是否美化输出代码
+              wrap_iife: true, // 是否包裹 IIFE
+              // 其他输出选项...
+            },
+          },
+        }),
+      ],
+    },
   })
 }
 describe('webpack5 plugin', () => {
@@ -882,6 +900,21 @@ describe('webpack5 plugin', () => {
       mode: 'production',
       optimization: {
         sideEffects: false,
+        minimize: true,
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              compress: {
+                // 其他压缩选项...
+              },
+              output: {
+                beautify: false, // 是否美化输出代码
+                wrap_iife: true, // 是否包裹 IIFE
+                // 其他输出选项...
+              },
+            },
+          }),
+        ],
       },
       entry: {
         index: './index.js',
