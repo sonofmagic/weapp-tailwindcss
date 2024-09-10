@@ -63,4 +63,17 @@ describe('virtualHostClass', () => {
     const { templateHandler } = getOptions()
     expect(await templateHandler(x)).toMatchSnapshot()
   })
+
+  it('mp-html case 0', async () => {
+    const testCase = await getWxmlCase('mp-html.wxml')
+    const { templateHandler } = getOptions()
+    const str = await templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
+  it('mp-html node case 0', async () => {
+    const testCase = await getWxmlCase('mp-html-node.wxml')
+    const { templateHandler } = getOptions()
+    const str = await templateHandler(testCase)
+    expect(str).toMatchSnapshot()
+  })
 })

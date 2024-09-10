@@ -109,6 +109,15 @@ describe('tokenizer', () => {
       return inputString.slice(x.start, x.end)
     })).toEqual(['prefix-{{ someValue }}-mid-{{ another + value }}-suffix'])
   })
+
+  it('连起来', () => {
+    const inputString = '{{n.attrs.href?\'_a \':\'\'}}{{n.attrs.class}}'
+    const tokenizer = new Tokenizer()
+    const result = tokenizer.run(inputString)
+    expect(result.map((x) => {
+      return inputString.slice(x.start, x.end)
+    })).toEqual(['{{n.attrs.href?\'_a \':\'\'}}{{n.attrs.class}}'])
+  })
 })
 
 describe('tokenizer wechat-app-mall', () => {

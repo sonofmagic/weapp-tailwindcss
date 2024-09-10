@@ -67,7 +67,7 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
     let p = token.start
     if (token.expressions.length > 0) {
       for (const exp of token.expressions) {
-        if (exp.start > token.start) {
+        if (exp.start > token.start && p < exp.start) {
           ms.update(p, exp.start, replaceWxml(ms.slice(p, exp.start), {
             keepEOL: true,
             escapeMap: options.escapeMap,

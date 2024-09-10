@@ -256,6 +256,12 @@ describe('templateReplacer', () => {
     expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_hfafa00_\']}}')
   })
 
+  it('变量连起来 case 0', () => {
+    const testCase = '{{n.attrs.href?\'_a \':\'\'}}{{n.attrs.class}}'
+    const result = templateReplacer(testCase)
+    expect(result).toBe('{{n.attrs.href?\'_a \':\'\'}}{{n.attrs.class}}')
+  })
+
   // it('handleEachClassFragment case 0', () => {
   //   expect(handleEachClassFragment(`rd-tag-{{type}}-{{theme}}`)).toBe(
   //     `rd-tag-{{type}}-{{theme}}`,
