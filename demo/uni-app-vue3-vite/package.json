@@ -73,7 +73,7 @@
     "@dcloudio/uni-automator": "3.0.0-4020420240722002",
     "@dcloudio/uni-cli-shared": "3.0.0-4020420240722002",
     "@dcloudio/uni-stacktracey": "3.0.0-4020420240722002",
-    "@dcloudio/vite-plugin-uni": "3.0.0-4020420240722002",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-3000020210521001",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.7",

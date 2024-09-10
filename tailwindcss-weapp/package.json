@@ -82,7 +82,7 @@
     "@dcloudio/uni-automator": "3.0.0-4020420240722002",
     "@dcloudio/uni-cli-shared": "3.0.0-4020420240722002",
     "@dcloudio/uni-stacktracey": "3.0.0-4020420240722002",
-    "@dcloudio/vite-plugin-uni": "3.0.0-4020420240722002",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-3000020210521001",
     "@egoist/tailwindcss-icons": "^1.8.1",
     "@iconify-json/ci": "^1.1.13",
     "@iconify-json/logos": "^1.1.43",
