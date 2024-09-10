@@ -15,7 +15,7 @@
     "start": "gulp mock"
   },
   "devDependencies": {
-    "express": "^4.17.1",
+    "express": "^4.20.0",
     "gulp": "^5.0.0",
     "gulp-nodemon": "^2.5.0",
     "minimist": "^1.2.5",
