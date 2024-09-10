@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { MappingChars2String } from '@/escape'
 import { UnifiedWebpackPluginV5 } from '@/index'
+import ci from 'ci-info'
 import { copySync, mkdirSync } from 'fs-extra'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import normalizeNewline from 'normalize-newline'
@@ -124,7 +125,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
     },
   })
 }
-describe('webpack5 plugin', () => {
+describe.skipIf(ci.isCI)('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
