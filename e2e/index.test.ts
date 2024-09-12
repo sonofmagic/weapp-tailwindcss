@@ -1,10 +1,10 @@
+import type { ProjectEntry } from './shared'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 // import { execa } from 'execa'
 import { deleteAsync } from 'del'
 import automator from 'miniprogram-automator'
 import { formatWxml, loadCss, projectFilter, removeWxmlId, twExtract, wait } from './shared'
-import type { ProjectEntry } from './shared'
 
 const TestProjectsEntries: ProjectEntry[] = [
   {

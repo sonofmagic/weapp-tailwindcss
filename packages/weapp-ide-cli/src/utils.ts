@@ -1,6 +1,6 @@
+import type { AliasEntry } from './types'
 import process from 'node:process'
 import path from 'pathe'
-import type { AliasEntry } from './types'
 
 export async function execute(cliPath: string, argv: string[]) {
   const { execa } = await import('execa')

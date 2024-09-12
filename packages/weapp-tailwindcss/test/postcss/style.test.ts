@@ -1,9 +1,9 @@
+import type postcss from 'postcss'
 import { MappingChars2String } from '@/escape'
 import { getOptions } from '@/options'
 import { styleHandler } from '@/postcss/index'
-import { createInjectPreflight } from '@/postcss/preflight'
 
-import type postcss from 'postcss'
+import { createInjectPreflight } from '@/postcss/preflight'
 import { normalizeEol } from '../helpers/normalizeEol'
 import { createGetCase, cssCasePath } from '../util'
 

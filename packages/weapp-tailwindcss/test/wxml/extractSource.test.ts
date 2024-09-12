@@ -1,5 +1,5 @@
-import { variableRegExp } from '@/reg'
 import type { RawSource } from '@/types'
+import { variableRegExp } from '@/reg'
 /**
  * @internal
  */

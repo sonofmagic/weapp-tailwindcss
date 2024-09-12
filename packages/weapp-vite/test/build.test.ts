@@ -1,9 +1,9 @@
 // import { runProd } from '@/build'
+import type { RollupOutput } from 'rollup'
 import { getEntries } from '@/entry'
 import path from 'pathe'
-import { build } from 'vite'
 
-import type { RollupOutput } from 'rollup'
+import { build } from 'vite'
 
 // import { createContext } from '@/context'
 

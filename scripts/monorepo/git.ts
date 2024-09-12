@@ -1,7 +1,7 @@
+import type { ConfigValues, SimpleGit, SimpleGitOptions } from 'simple-git'
 import get from 'get-value'
 import gitUrlParse from 'git-url-parse'
 import { simpleGit } from 'simple-git'
-import type { ConfigValues, SimpleGit, SimpleGitOptions } from 'simple-git'
 
 export class GitClient {
   private client: SimpleGit

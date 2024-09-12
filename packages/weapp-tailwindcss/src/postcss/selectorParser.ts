@@ -1,8 +1,8 @@
-import selectorParser from 'postcss-selector-parser'
 import type { Rule } from 'postcss'
 import type { SyncProcessor } from 'postcss-selector-parser'
-import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 import type { IStyleHandlerOptions } from '../types'
+import selectorParser from 'postcss-selector-parser'
+import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
   const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options

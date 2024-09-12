@@ -1,3 +1,4 @@
+import type { LogLevel } from './logger'
 import process from 'node:process'
 import { initConfig } from '@weapp-core/init'
 import { cac } from 'cac'
@@ -5,7 +6,6 @@ import { parse } from 'weapp-ide-cli'
 import { VERSION } from './constants'
 import { CompilerContext } from './context'
 import logger from './logger'
-import type { LogLevel } from './logger'
 
 const cli = cac('weapp-vite')
 

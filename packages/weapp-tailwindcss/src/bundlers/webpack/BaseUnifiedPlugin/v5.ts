@@ -1,12 +1,12 @@
 // webpack 5
+import type { Compiler } from 'webpack'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
 import fs from 'node:fs'
 import path from 'node:path'
-import type { Compiler } from 'webpack'
 import { pluginName } from '../../../constants'
 import { createDebug } from '../../../debug'
 import { getOptions } from '../../../options'
 import { getGroupedEntries, removeExt } from '../../../utils'
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
 
 const debug = createDebug()
 

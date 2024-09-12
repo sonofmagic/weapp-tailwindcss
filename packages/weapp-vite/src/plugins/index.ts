@@ -1,18 +1,18 @@
+import type { Plugin, ResolvedConfig } from 'vite'
+import type { CompilerContext } from '../context'
+import type { AppEntry, SubPackageDep } from '../types'
+import type { ParseRequestResponse } from './parse'
 import { addExtension, removeExtension } from '@weapp-core/shared'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
 import path from 'pathe'
 import { isCSSRequest, preprocessCSS } from 'vite'
-import type { Plugin, ResolvedConfig } from 'vite'
 import { createDebugger } from '../debugger'
 import { defaultExcluded } from '../defaults'
 import { getEntries } from '../entry'
 import { supportedCssExtensions } from '../utils'
 import { parseRequest } from './parse'
-import type { CompilerContext } from '../context'
-import type { AppEntry, SubPackageDep } from '../types'
-import type { ParseRequestResponse } from './parse'
 
 const debug = createDebugger('weapp-vite:plugin')
 

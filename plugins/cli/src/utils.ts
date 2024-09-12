@@ -1,7 +1,7 @@
-import fs from 'fs-extra'
 import type {
   Transform as TransformStream,
 } from 'node:stream'
+import fs from 'fs-extra'
 
 const cssMatcher = (file: string) => /.+\.(?:wx|ac|jx|tt|q|c)ss$/.test(file)
 const htmlMatcher = (file: string) => /.+\.(?:(?:wx|ax|jx|ks|tt|q)ml|swan)$/.test(file)

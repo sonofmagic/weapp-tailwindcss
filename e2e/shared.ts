@@ -1,7 +1,7 @@
+import type Page from 'miniprogram-automator/out/Page'
 import fs from 'node:fs/promises'
 import { execa } from 'execa'
 import prettier from 'prettier'
-import type Page from 'miniprogram-automator/out/Page'
 import { removeWxmlId } from '../packages/weapp-tailwindcss/test/util'
 
 export {

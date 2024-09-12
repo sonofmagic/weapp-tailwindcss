@@ -1,3 +1,4 @@
+import type { Entry, WeappViteConfig } from './types'
 import process from 'node:process'
 import { defu } from '@weapp-core/shared'
 import klaw from 'klaw'
@@ -5,7 +6,6 @@ import mm from 'micromatch'
 import path from 'pathe'
 import { defaultExcluded } from './defaults'
 import { getWxmlEntry, searchAppEntry } from './utils'
-import type { Entry, WeappViteConfig } from './types'
 
 export function createFilter(include: string[], exclude: string[], options?: mm.Options) {
   const opts = defu<mm.Options, mm.Options[]>(options, {

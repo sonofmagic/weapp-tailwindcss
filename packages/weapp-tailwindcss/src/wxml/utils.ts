@@ -1,3 +1,6 @@
+import type { ItemOrItemArray } from '../reg'
+import type { ITemplateHandlerOptions } from '../types'
+import type { Token } from './Tokenizer'
 import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
@@ -6,9 +9,6 @@ import { replaceHandleValue } from '../js/handlers'
 import { defuOverrideArray } from '../utils'
 import { replaceWxml } from './shared'
 import { Tokenizer } from './Tokenizer'
-import type { ItemOrItemArray } from '../reg'
-import type { ITemplateHandlerOptions } from '../types'
-import type { Token } from './Tokenizer'
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {

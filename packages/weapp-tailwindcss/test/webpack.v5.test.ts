@@ -1,4 +1,5 @@
 /* eslint-disable prefer-arrow-callback */
+import type { Compiler, Configuration } from 'webpack'
 import fss from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -7,7 +8,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import postcss from 'postcss'
 import { runLoaders } from 'promisify-loader-runner'
 import webpack from 'webpack'
-import type { Compiler, Configuration } from 'webpack'
 // import ci from 'ci-info'
 
 import { MappingChars2String } from '@/escape'

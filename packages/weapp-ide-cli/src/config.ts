@@ -1,4 +1,6 @@
+import type { BaseConfig } from './types'
 import fs from 'fs-extra'
+
 import {
   defaultCustomConfigDirPath,
   defaultCustomConfigFilePath,
@@ -6,8 +8,6 @@ import {
 } from './defaults'
 
 import logger from './logger'
-
-import type { BaseConfig } from './types'
 
 export async function createCustomConfig(params: BaseConfig) {
   const isExisted = await fs.exists(defaultCustomConfigDirPath)

@@ -1,9 +1,9 @@
+import type { BuildOptions } from '@/type'
 import path from 'node:path'
 import process from 'node:process'
 import { cosmiconfigSync } from 'cosmiconfig'
 import defu from 'defu'
 import fs from 'fs-extra'
-import type { BuildOptions } from '@/type'
 import { get, set } from './utils'
 
 export interface WeappTwCosmiconfigResult {

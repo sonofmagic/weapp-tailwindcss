@@ -1,5 +1,5 @@
-import { getOptions } from './options'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
+import { getOptions } from './options'
 
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)

@@ -1,3 +1,6 @@
+import type { PackageJson } from 'pkg-types'
+// import terser from '@rollup/plugin-terser'
+import type { RollupOptions } from 'rollup'
 import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
@@ -8,9 +11,6 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import lodash from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
-import type { PackageJson } from 'pkg-types'
-// import terser from '@rollup/plugin-terser'
-import type { RollupOptions } from 'rollup'
 
 const { omit } = lodash
 const pkg = JSON.parse(

@@ -1,5 +1,5 @@
-import { escape, SimpleMappingChars2String } from '../escape'
 import type { ITemplateHandlerOptions } from '../types'
+import { escape, SimpleMappingChars2String } from '../escape'
 
 export function replaceWxml(
   original: string,

@@ -1,13 +1,13 @@
-import MagicString from 'magic-string'
 import type { SgNode } from '@ast-grep/napi'
 import type { ParseError, ParseResult } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import type { File, Node } from '@babel/types'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '../types'
+import MagicString from 'magic-string'
 import { parse, traverse } from '../babel'
 import { jsStringEscape } from '../escape'
 import { defuOverrideArray } from '../utils'
 import { replaceHandleValue } from './handlers'
-import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '../types'
 
 function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {

@@ -1,6 +1,6 @@
-import { createDefu } from 'defu'
 // import type { Defu } from 'defu'
 import type { InternalUserDefinedOptions } from './types'
+import { createDefu } from 'defu'
 
 export function isRegexp(value: unknown) {
   return Object.prototype.toString.call(value) === '[object RegExp]'

@@ -1,7 +1,7 @@
+import type { Config } from 'tailwindcss'
 import path from 'node:path'
 import postcss from 'postcss'
 import tailwind from 'tailwindcss'
-import type { Config } from 'tailwindcss'
 
 const typographyPlugin = require('../src/index')
 // import typographyPlugin from '@/index'
@@ -60,7 +60,7 @@ const vars = `
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
 `
-const defaults = css`
+const _defaults = css`
   *,
   ::before,
   ::after {

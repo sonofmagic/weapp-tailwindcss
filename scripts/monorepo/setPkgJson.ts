@@ -1,8 +1,8 @@
+import type { PackageJson } from 'pkg-types'
+import type { Context } from './context'
 import fs from 'fs-extra'
 import path from 'pathe'
 import set from 'set-value'
-import type { PackageJson } from 'pkg-types'
-import type { Context } from './context'
 
 export default async function (ctx: Context) {
   const { git, projects, cwd, workspaceFilepath } = ctx

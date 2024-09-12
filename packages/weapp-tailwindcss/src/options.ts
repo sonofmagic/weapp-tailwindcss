@@ -1,3 +1,10 @@
+import type {
+  ICustomAttributes,
+  ICustomAttributesEntities,
+  InternalUserDefinedOptions,
+  ItemOrItemArray,
+  UserDefinedOptions,
+} from './types'
 import { createCache } from './cache'
 import { defaultOptions } from './defaults'
 import { createJsHandler } from './js'
@@ -7,13 +14,6 @@ import { createInjectPreflight } from './postcss/preflight'
 import { createTailwindcssPatcher } from './tailwindcss/patcher'
 import { defuOverrideArray, isMap } from './utils'
 import { createTemplateHandler } from './wxml/utils'
-import type {
-  ICustomAttributes,
-  ICustomAttributesEntities,
-  InternalUserDefinedOptions,
-  ItemOrItemArray,
-  UserDefinedOptions,
-} from './types'
 
 export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(

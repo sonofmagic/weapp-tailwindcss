@@ -1,11 +1,11 @@
+import type { PackageJson } from 'pkg-types'
+import type { ProjectConfig, SharedUpdateOptions, UpdatePackageJsonOptions, UpdateProjectConfigOptions } from './types'
 import path from 'node:path'
 import process from 'node:process'
 import logger from '@weapp-core/logger'
 import { get, set } from '@weapp-core/shared'
 import fs from 'fs-extra'
-import type { PackageJson } from 'pkg-types'
 import { createContext } from './context'
-import type { ProjectConfig, SharedUpdateOptions, UpdatePackageJsonOptions, UpdateProjectConfigOptions } from './types'
 
 const ctx = createContext()
 

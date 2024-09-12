@@ -1,10 +1,10 @@
 // import type { StringLiteral, TemplateElement, Comment } from '@babel/types'
 import type MagicString from 'magic-string'
+import type { IJsHandlerOptions } from '../types'
 import { decodeUnicode2, jsStringEscape } from '../escape'
 import { splitCode } from '../extractors/split'
 import { escapeStringRegexp } from '../reg'
 import { replaceWxml } from '../wxml/shared'
-import type { IJsHandlerOptions } from '../types'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
 interface ReplaceNode {

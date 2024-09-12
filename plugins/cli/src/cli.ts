@@ -1,9 +1,9 @@
+import type { BuildOptions } from './type'
 import process from 'node:process'
 import { build, clean, watch } from '@/build'
 import { createConfigLoader, initConfig } from '@/config'
 import { Command } from 'commander'
 import defu from 'defu'
-import type { BuildOptions } from './type'
 
 export function createCli() {
   const cwd = process.cwd()

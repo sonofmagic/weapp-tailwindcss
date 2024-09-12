@@ -1,6 +1,6 @@
+import type { Context } from './context'
 import fs from 'fs-extra'
 import path from 'pathe'
-import type { Context } from './context'
 
 async function getRows(ctx: Context) {
   const { projects, git, cwd } = ctx

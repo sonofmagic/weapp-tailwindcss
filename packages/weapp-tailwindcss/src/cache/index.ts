@@ -1,7 +1,7 @@
-import { LRUCache } from 'lru-cache'
-import md5 from 'md5'
 import type { Buffer } from 'node:buffer'
 import type { sources } from 'webpack'
+import { LRUCache } from 'lru-cache'
+import md5 from 'md5'
 
 export interface HashMapValue {
   hash: string
