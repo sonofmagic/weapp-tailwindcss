@@ -1812,10 +1812,10 @@
   dependencies:
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-stacktracey@3.0.0-4020420240722002":
-  version "3.0.0-4020420240722002"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-stacktracey/-/uni-stacktracey-3.0.0-4020420240722002.tgz#76aceb152f0e58e872e1a03adbe7df6736dbbe93"
-  integrity sha512-SFc5wFqGBd5Gfk3uq0WPl3T1YsPcRP17euilbjJHvrdzAs3U5QlI9Azu6IYYTOBhxsRa5n234dfu+YHjvHysrQ==
+"@dcloudio/uni-stacktracey@3.0.0-alpha-4020820240914002":
+  version "3.0.0-alpha-4020820240914002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-stacktracey/-/uni-stacktracey-3.0.0-alpha-4020820240914002.tgz#84896646ac8950a952787a184de443fda66008ad"
+  integrity sha512-rG3nwKAeJR+FXQNJNbT9J+OAH1avf2Na7tZL4HrOjy0FbdE2nmnY83E34UrMEkd+uR8yUD9yvutQuWRP2jaFrQ==
 
 "@dcloudio/uni-stat@3.0.0-4020420240722002":
   version "3.0.0-4020420240722002"
