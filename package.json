@@ -107,7 +107,7 @@
     "@commitlint/prompt-cli": "^19.5.0",
     "@commitlint/types": "^19.5.0",
     "@eslint/config-inspector": "^0.5.4",
-    "@icebreakers/eslint-config": "^0.4.5",
+    "@icebreakers/eslint-config": "^0.5.0",
     "@icebreakers/readme": "0.1.0",
     "@icebreakers/stylelint-config": "^0.0.3",
     "@pnpm/workspace.find-packages": "^4.0.10",

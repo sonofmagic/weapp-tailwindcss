@@ -1,4 +1,4 @@
-name: Release changeset
+name: Release
 
 permissions:
   contents: write
