@@ -91,7 +91,8 @@
     "run:watch": "tsx scripts/watcher",
     "script:init": "tsx scripts/monorepo/init.ts",
     "script:sync": "tsx scripts/monorepo/sync.ts",
-    "script:clean": "tsx scripts/monorepo/clean.ts"
+    "script:clean": "tsx scripts/monorepo/clean.ts",
+    "script:mirror": "tsx scripts/monorepo/binaryMirror.ts"
   },
   "publishConfig": {
     "access": "public",
@@ -107,7 +108,7 @@
     "@commitlint/prompt-cli": "^19.5.0",
     "@commitlint/types": "^19.5.0",
     "@eslint/config-inspector": "^0.5.4",
-    "@icebreakers/eslint-config": "^0.5.0",
+    "@icebreakers/eslint-config": "^0.5.1",
     "@icebreakers/readme": "0.1.0",
     "@icebreakers/stylelint-config": "^0.0.3",
     "@pnpm/workspace.find-packages": "^4.0.10",
@@ -162,6 +163,7 @@
     "chokidar": "^4.0.0",
     "ci-info": "^4.0.0",
     "colorette": "^2.0.20",
+    "comment-json": "^4.2.5",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "css-to-tailwindcss-plugin": "^0.3.0",
