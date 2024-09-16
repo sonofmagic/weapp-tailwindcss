@@ -1,7 +1,36 @@
+import type { DefaultTheme } from 'vitepress/theme'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { defineConfig } from 'vitepress'
 // @ts-ignore
 import typedocSidebar from '../api/typedoc-sidebar.json'
+
+const sharedSidebarItems: DefaultTheme.SidebarItem[] = [
+  {
+    text: '指引',
+    items: [
+      {
+        text: '什么是 Weapp-vite',
+        link: '/guide/what-is-weapp-vite',
+      },
+      { text: '快速开始', link: '/guide/' },
+      { text: 'Alias 别名', link: '/guide/alias' },
+      { text: '模块化风格', link: '/guide/module' },
+      { text: 'Tailwindcss 集成', link: '/guide/tailwindcss' },
+      { text: '调试与贡献', link: '/guide/debug' },
+    ],
+  },
+  {
+    text: '社区',
+    items: [
+      {
+        text: '加入技术交流群',
+        link: '/community/group',
+      },
+    ],
+  },
+  { text: '配置和 API 参考', link: 'config' },
+]
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Weapp-vite',
@@ -23,24 +52,8 @@ export default defineConfig({
         text: 'API',
         items: typedocSidebar,
       }],
-      '/guide/': [
-        {
-          text: '指引',
-          items: [
-            {
-              text: '什么是 Weapp-vite',
-              link: '/guide/what-is-weapp-vite',
-            },
-            { text: '快速开始', link: '/guide/' },
-            { text: 'Alias 别名', link: '/guide/alias' },
-            { text: '模块化风格', link: '/guide/module' },
-            { text: 'Tailwindcss 集成', link: '/guide/tailwindcss' },
-            { text: '调试与贡献', link: '/guide/debug' },
-          ],
-        },
-
-        { text: '配置和 API 参考', link: 'config' },
-      ],
+      '/guide/': sharedSidebarItems,
+      '/community/': sharedSidebarItems,
       '/blog/': [
         {
           text: '文章目录',
