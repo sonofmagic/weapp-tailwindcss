@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "@weapp-core/logger": "workspace:^",
-    "execa": "9.3.1",
+    "execa": "9.4.0",
     "fs-extra": "^11.2.0",
     "pathe": "^1.1.2"
   }
