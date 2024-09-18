@@ -5,7 +5,7 @@
 <navigation-bar></navigation-bar>
 <scroll-view scroll-y type="list">
   {{ motto }}
-  <view class="bg-[#7d7ac2] text-[100px] text-[#123456] {{true?'h-[30px]':'h-[45px]'}}">111</view>
+  <view class="bg-[#7d7ac2] text-[100px] text-[#123456] w-[323px] {{true?'h-[30px]':'h-[45px]'}}">111</view>
   <view>{{message}}</view>
   <view wx:for="{{array}}">{{item}}</view>
   <template is="staffName" data="{{...staffA}}"></template>
