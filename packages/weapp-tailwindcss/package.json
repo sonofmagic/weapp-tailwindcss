@@ -122,7 +122,7 @@
     "node": ">=16.6.0"
   },
   "scripts": {
-    "dev": "pnpm clean && pnpm dts && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
+    "dev": "pnpm clean && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
     "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
