@@ -1667,10 +1667,10 @@
   resolved "https://registry.npmmirror.com/@dcloudio/webpack-uni-mp-loader/-/webpack-uni-mp-loader-2.0.2-4010520240507001.tgz#20eefa8c56ca8e3acd2ac52962fd60d804aeb763"
   integrity sha512-eujT4hdyO36lP+GkdVlkM1TgcEDJIkfr7CdtcjKc2bcQ90xw3BYP6dkhS6fVIf72EIaQd0Breci/PbuusS8vGg==
 
-"@dcloudio/webpack-uni-pages-loader@2.0.2-4010520240507001":
-  version "2.0.2-4010520240507001"
-  resolved "https://registry.npmmirror.com/@dcloudio/webpack-uni-pages-loader/-/webpack-uni-pages-loader-2.0.2-4010520240507001.tgz#49f209fd0efe1f1032f8dd685d4fc5b812b16b23"
-  integrity sha512-mfoG44T81UPOXNgQSkWRLAATFwZliYwT4IOXXxH/7ekeu4hko6/ZbYfrHttUj9JkCKk9emu6nKUUFVJlpeSClw==
+"@dcloudio/webpack-uni-pages-loader@2.0.2-4020420240722003":
+  version "2.0.2-4020420240722003"
+  resolved "https://registry.npmmirror.com/@dcloudio/webpack-uni-pages-loader/-/webpack-uni-pages-loader-2.0.2-4020420240722003.tgz#24f7d38d6bd4552e65e171b900a2f5de9293d99b"
+  integrity sha512-kayE5XuNbMY/ZAa3B6KUjKTZKEThfWaW3dlbanCi7v4DKzaSxNU9mgTlOFZ5ZppBWMsGQCSl3xSRKPeb8i370w==
   dependencies:
     merge "^2.1.1"
     strip-json-comments "^2.0.1"
