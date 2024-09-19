@@ -1,7 +1,7 @@
-name: 🐞 weapp-tailwindcss 汇报Bug (Bug report)
+name: 🐞 汇报Bug (Bug report)
 description: 汇报Bug并提供测试用例
-title: '[Bug(weapp-tailwindcss)]: '
-labels: [bug(weapp-tailwindcss)]
+title: '[Bug]: '
+labels: [bug]
 assignees:
   - sonofmagic
 body:
