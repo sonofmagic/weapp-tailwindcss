@@ -1556,10 +1556,15 @@
   resolved "https://registry.npmmirror.com/@dcloudio/uni-stacktracey/-/uni-stacktracey-2.0.2-4010520240507001.tgz#33ae568b394706563eb441ae89acb457306fa743"
   integrity sha512-Ht2kvmChf3VUAuWY+p/L/cpajdxVsVLQQqOzMIuEeSaJ1cboIu2pODNxHy55X8tnzCaZOObbZSrMUpcN/hW4nA==
 
-"@dcloudio/uni-stat@2.0.2-4010520240507001", "@dcloudio/uni-stat@^2.0.2-4010520240507001":
+"@dcloudio/uni-stat@2.0.2-4010520240507001":
   version "2.0.2-4010520240507001"
   resolved "https://registry.npmmirror.com/@dcloudio/uni-stat/-/uni-stat-2.0.2-4010520240507001.tgz#4f1ef6af4d3ba2c55b3e64b6213b289955e726f6"
   integrity sha512-cbwNIG4oDZXNIIKKfs5kNrMKcNqAofR/2wtagqkMEmABNfcKZL/BGdfZBZeKOYlkQfCq5o76/HwLK/65P4iNog==
+
+"@dcloudio/uni-stat@^2.0.2-4020420240722003":
+  version "2.0.2-4020420240722003"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-stat/-/uni-stat-2.0.2-4020420240722003.tgz#d9409f65b7b5b639d3ce3192e0c362fb2ec6348b"
+  integrity sha512-BT48kBvkPJ1GpMJCaNbfjlqbxZ9/QmTY1z4yE8gmbfAZNNh4XyOsJmJfwkx5VKwwCeEWODtu7RnnDsInZSXY3g==
 
 "@dcloudio/uni-template-compiler@2.0.2-4010520240507001":
   version "2.0.2-4010520240507001"
@@ -1586,12 +1591,12 @@
   resolved "https://registry.npmmirror.com/@dcloudio/vue-cli-plugin-uni-optimize/-/vue-cli-plugin-uni-optimize-2.0.2-4010520240507001.tgz#89ad4ff53c35d8cf153cfb359c783d8cfb5d5ee9"
   integrity sha512-OoYw1FOmbez+8M3DNufk75ouVLewam9Rk+dbW76nQDBl+Ae0yRzx7eqz/n2Fc6yVI2bC3flAADnrNxvtX74Z+Q==
 
-"@dcloudio/vue-cli-plugin-uni@2.0.2-4010520240507001":
-  version "2.0.2-4010520240507001"
-  resolved "https://registry.npmmirror.com/@dcloudio/vue-cli-plugin-uni/-/vue-cli-plugin-uni-2.0.2-4010520240507001.tgz#8f34213ca1dd9cb4d9c7dd45193db4560adb2eb9"
-  integrity sha512-CRgI/6a0p5JNFlnj1JoYF+GQIhtI2wAEBc36N+17DM4YKkkzJsZ2y2WcZx/EsvqhGcX/e5qca8nUB/xjTGZqXg==
+"@dcloudio/vue-cli-plugin-uni@2.0.2-4020420240722003":
+  version "2.0.2-4020420240722003"
+  resolved "https://registry.npmmirror.com/@dcloudio/vue-cli-plugin-uni/-/vue-cli-plugin-uni-2.0.2-4020420240722003.tgz#55315867d0b1f575f061ca35fe80d9112d4d4c70"
+  integrity sha512-AGxV8a9lAu7LZCKX0Koshl8wWgiRrNXHU5fuxazkkOG+1SRej2dlsIHFsgapQHTa3LpGZ4FqLJ9+mwG+z5vjbw==
   dependencies:
-    "@dcloudio/uni-stat" "^2.0.2-4010520240507001"
+    "@dcloudio/uni-stat" "^2.0.2-4020420240722003"
     buffer-json "^2.0.0"
     clone-deep "^4.0.1"
     cross-env "^5.2.0"
