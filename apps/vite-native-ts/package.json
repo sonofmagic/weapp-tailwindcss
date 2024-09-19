@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "miniprogram-api-typings": "^3.12.3",
-    "weapp-vite": "workspace:*"
+    "weapp-vite": "^1.1.2"
   }
 }
