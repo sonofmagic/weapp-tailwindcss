@@ -2108,49 +2108,50 @@
     "@tarojs/runtime" "3.6.34"
     "@tarojs/shared" "3.6.34"
 
-"@tarojs/binding-darwin-arm64@3.6.31":
-  version "3.6.31"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-arm64/-/binding-darwin-arm64-3.6.31.tgz#19ba578ef5ee541a217bb99e4039922da366e6d5"
-  integrity sha512-1FmsPg89ZnjPagDxpzZpZvpSIXVWmzU4YGOZWnoFF9FijQTPQvUSvq7YoXVtudnzzBb7p5nKBfSj0m3bo6LV1g==
+"@tarojs/binding-darwin-arm64@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-arm64/-/binding-darwin-arm64-3.6.35.tgz#848ab6d015db4b3398a7bfd4405ab7f96aa6b8a6"
+  integrity sha512-gTAohh6agHL9Rs53S83buBSoCGiSXaRx7xI3IJUc49Nr1MqS8HUrVIY63j/UPOWPwzzhADi7hTRUeCssmLT/6A==
 
-"@tarojs/binding-darwin-x64@3.6.31":
-  version "3.6.31"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-x64/-/binding-darwin-x64-3.6.31.tgz#e5f2a4497f414d5aeb9b697d404fc1276a3e4d7d"
-  integrity sha512-O0ApK7p8oYxcOH4wuKl+n3TbZkCr7HfwAKTJz8V8ECg7le881bvbZPc7VCIOEoPpljj/y3uIaPO/3T0d35qnUA==
+"@tarojs/binding-darwin-x64@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-x64/-/binding-darwin-x64-3.6.35.tgz#680e9c0486596eeeedab4f2472a0f5067d095cba"
+  integrity sha512-ATreEzRH1yjjC8BVgfs6RXIqYygWyV+MUb986K4AubQTRgluj7B3SSsdMkrnwVtWLRGhI1Ok6kC7EA1a8XsS3w==
 
-"@tarojs/binding-linux-x64-gnu@3.6.31":
-  version "3.6.31"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-linux-x64-gnu/-/binding-linux-x64-gnu-3.6.31.tgz#a7729bd4476452c1dc92849cf49275e687023f0c"
-  integrity sha512-aT6PQ5dlVYrVF0iKQbUpj7q3mAM06jzWOMHAKSu4uKGdXnspbEGrsrKPUexfEqAyvBzjrMHgcWQdokRgAfKpcw==
+"@tarojs/binding-linux-x64-gnu@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-linux-x64-gnu/-/binding-linux-x64-gnu-3.6.35.tgz#58a3ea45aacec1b33a73481c1a013939113e3536"
+  integrity sha512-Ypr4kct/7tQiEXmZWCbMtaTbJ/CQbhqmaj15CT68m7ml6ezNx3l4ccgSoU9VCxeIIs6aiZKCauhymqFeTNKYsw==
 
-"@tarojs/binding-win32-x64-msvc@3.6.31":
-  version "3.6.31"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-win32-x64-msvc/-/binding-win32-x64-msvc-3.6.31.tgz#1ab39cfb1fc79c3a2d4dcd4801f6fd67b12d625f"
-  integrity sha512-AiqSz+RPS16tc2KuP7PjY4kvVEEmCWiE9KxuYc640qau6FJ9xb+uL3Dkth04k1fpRMUx/YCYO89B36JubdndzA==
+"@tarojs/binding-win32-x64-msvc@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-win32-x64-msvc/-/binding-win32-x64-msvc-3.6.35.tgz#02e4ffd15c1e21bfdb6cc24e7af1a3a7fbe0e814"
+  integrity sha512-JQvOzME7b3t/SI1uwz2/imi/pMnPz4RuUMKuUwCwXD504c+EXwaELzYrxV8hPZ94OVrfnv3Hp0Vvn8N4INd3Jw==
 
-"@tarojs/binding@3.6.31":
-  version "3.6.31"
-  resolved "https://registry.npmmirror.com/@tarojs/binding/-/binding-3.6.31.tgz#1562d683741e84b25776998e8a0c30d13989787a"
-  integrity sha512-Lpj8Qwki0z+a2PtAZUzjk6FdbQp2RPWQLAGU+Fwgs1dpO1e/JH0CBu+M8iVrq1tW93Zm5ywZAzog2s0viBi6Dg==
+"@tarojs/binding@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/binding/-/binding-3.6.35.tgz#b20106350b006450ed20c1ffa3bce62c28348658"
+  integrity sha512-yh1zq/2Xfj1f/HiaJOVNi5vKMhhgLFchwKZOJfruqtCLKdOzIMAvL7OG61V9IMx9A1SXtFZ8PY60k5c+niGf3w==
   dependencies:
     "@napi-rs/triples" "1.2.0"
   optionalDependencies:
-    "@tarojs/binding-darwin-arm64" "3.6.31"
-    "@tarojs/binding-darwin-x64" "3.6.31"
-    "@tarojs/binding-linux-x64-gnu" "3.6.31"
-    "@tarojs/binding-win32-x64-msvc" "3.6.31"
+    "@tarojs/binding-darwin-arm64" "3.6.35"
+    "@tarojs/binding-darwin-x64" "3.6.35"
+    "@tarojs/binding-linux-x64-gnu" "3.6.35"
+    "@tarojs/binding-win32-x64-msvc" "3.6.35"
 
-"@tarojs/cli@3.6.31":
-  version "3.6.31"
-  resolved "https://registry.npmmirror.com/@tarojs/cli/-/cli-3.6.31.tgz#8053858ae708ae7f36dd63e16d49eb918bd33bfd"
-  integrity sha512-MG1yWuZ6yxaL/5TqjxZG5Bde0vyT8DBPbJEOTqJzvC8kxrghNXD32yIO+wsHu/dN9ScdK8OgpZN1Y7okamRLPA==
+"@tarojs/cli@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/cli/-/cli-3.6.35.tgz#b52386a9670e0f34da22306742182815db8e5ca4"
+  integrity sha512-gai0QOd01y3eihhDnI3/S2j9ELwmCY/WCx7S2jMaG0NbYniaBkZ64JZlHINSsoz057OQNvmxp426y8NoyngrTQ==
   dependencies:
-    "@tarojs/binding" "3.6.31"
-    "@tarojs/helper" "3.6.31"
+    "@tarojs/binding" "3.6.35"
+    "@tarojs/helper" "3.6.35"
     "@tarojs/plugin-doctor" "^0.0.11"
-    "@tarojs/service" "3.6.31"
-    "@tarojs/shared" "3.6.31"
+    "@tarojs/service" "3.6.35"
+    "@tarojs/shared" "3.6.35"
     adm-zip "^0.4.13"
+    axios "^1.6.8"
     cli-highlight "^2.1.11"
     download-git-repo "^2.0.0"
     envinfo "^7.8.1"
@@ -2243,6 +2244,39 @@
   version "3.6.34"
   resolved "https://registry.npmmirror.com/@tarojs/helper/-/helper-3.6.34.tgz#06d39177870a212e513c22cc9b21e4c5a55781e0"
   integrity sha512-EnXq0XNKBiV23zMj3oEsRYGk5Fbv3ZD7FeZPyVkkh3SOfsTc1E6JobcVOTssOISi4iS+y1jQH7g9kDppgkjuXQ==
+  dependencies:
+    "@babel/core" "^7.14.5"
+    "@babel/parser" "^7.14.5"
+    "@babel/plugin-proposal-decorators" "^7.14.5"
+    "@babel/plugin-proposal-object-rest-spread" "^7.14.5"
+    "@babel/plugin-transform-runtime" "^7.14.5"
+    "@babel/preset-env" "^7.14.5"
+    "@babel/preset-typescript" "^7.14.5"
+    "@babel/register" "^7.14.5"
+    "@babel/runtime" "^7.14.5"
+    "@babel/traverse" "^7.14.5"
+    "@swc/core" "1.3.96"
+    "@swc/register" "0.1.10"
+    ansi-escapes "^4.3.2"
+    chalk "3.0.0"
+    chokidar "^3.3.1"
+    cross-spawn "^7.0.3"
+    debug "4.3.4"
+    dotenv "^16.0.3"
+    dotenv-expand "^9.0.0"
+    esbuild "~0.19.5"
+    find-yarn-workspace-root "2.0.0"
+    fs-extra "^8.0.1"
+    lodash "^4.17.21"
+    require-from-string "^2.0.2"
+    resolve "^1.22.0"
+    supports-hyperlinks "^2.2.0"
+    yauzl "2.10.0"
+
+"@tarojs/helper@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/helper/-/helper-3.6.35.tgz#3b443262fd262acbe31a58c7a09b869aeb7de771"
+  integrity sha512-BJblrUEyLchSWse9G9FT1HZYpmylS/+3XMBZ65DiifQd1/KhLhVHa2qiZoJpPfGQi8aG95qrNMUVZKmziXB5Pg==
   dependencies:
     "@babel/core" "^7.14.5"
     "@babel/parser" "^7.14.5"
@@ -2605,6 +2639,19 @@
     tapable "^1.1.3"
     webpack-merge "^4.2.2"
 
+"@tarojs/service@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/service/-/service-3.6.35.tgz#0f3d7690a0372b17d039b5519faa8c6d6d0934ff"
+  integrity sha512-xwNmgGYXQt76RBmV+x1khmsO70gCESQNMJuoM7xjLJ32TQ+sRAf/T7QUJoKTfuPrfJuxtmt3lBCcWBx9sfr37A==
+  dependencies:
+    "@tarojs/helper" "3.6.35"
+    joi "^17.6.0"
+    lodash "^4.17.21"
+    ora "^5.0.0"
+    resolve "^1.22.0"
+    tapable "^1.1.3"
+    webpack-merge "^4.2.2"
+
 "@tarojs/shared@3.6.31":
   version "3.6.31"
   resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-3.6.31.tgz#c5743fba62b9d047c3a1ec87418ac37f2e51f7ab"
@@ -2614,6 +2661,11 @@
   version "3.6.34"
   resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-3.6.34.tgz#5c2c9d1a8d6cbf8ef205ba0378e0c020f52f02b8"
   integrity sha512-mcRIj8Avn1WtFzlB9fgVSid9xN5Q/tkMvRwrB5JTy38WU04OyBVY6BfQx+G5ac6OcQfJg58Qva0irJ+3lDb00Q==
+
+"@tarojs/shared@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-3.6.35.tgz#dd673674f7ab0c8229251cd797036557fcf9ccac"
+  integrity sha512-QqqxEtGAD9QMl62iXHANMYvKntEnx5srdr7xEqOYt21UJode81yv05eIyQ8NEOdmtXXkHJuzXPxivldSSTVDIg==
 
 "@tarojs/taro-h5@3.6.31":
   version "3.6.31"
@@ -4158,6 +4210,15 @@ aws4@^1.8.0:
   version "1.13.1"
   resolved "https://registry.npmmirror.com/aws4/-/aws4-1.13.1.tgz#bb5f8b8a20739f6ae1caeaf7eea2c7913df8048e"
   integrity sha512-u5w79Rd7SU4JaIlA/zFqG+gOiuq25q5VLyZ8E+ijJeILuTxVzZgp2CaGw/UTw6pXYN9XMO9yiqj/nEHmhTG5CA==
+
+axios@^1.6.8:
+  version "1.7.7"
+  resolved "https://registry.npmmirror.com/axios/-/axios-1.7.7.tgz#2f554296f9892a72ac8d8e4c5b79c14a91d0a47f"
+  integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 babel-helper-evaluate-path@^0.5.0:
   version "0.5.0"
@@ -7758,6 +7819,11 @@ follow-redirects@^1.0.0:
   version "1.15.2"
   resolved "https://registry.npmmirror.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
+
+follow-redirects@^1.15.6:
+  version "1.15.9"
+  resolved "https://registry.npmmirror.com/follow-redirects/-/follow-redirects-1.15.9.tgz#a604fa10e443bf98ca94228d9eebcc2e8a2c8ee1"
+  integrity sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==
 
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
@@ -12692,6 +12758,11 @@ proxy-addr@~2.0.7:
   dependencies:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
+
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
+  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
 prr@~1.0.1:
   version "1.0.1"
