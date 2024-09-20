@@ -27,7 +27,7 @@
     "@weapp-tailwindcss/cli": "workspace:*",
     "miniprogram-api-typings": "^3.12.3",
     "tailwindcss": "^3.4.12",
-    "weapp-ide-cli": "^2.0.4",
+    "weapp-ide-cli": "^2.0.5",
     "weapp-tailwindcss": "workspace:*"
   }
 }
