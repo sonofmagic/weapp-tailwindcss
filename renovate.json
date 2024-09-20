@@ -4,6 +4,7 @@
     "config:recommended"
   ],
   "ignoreDeps": [
-    "@dcloudio/*"
+    "@dcloudio/*",
+    "@mpxjs/*"
   ]
 }
