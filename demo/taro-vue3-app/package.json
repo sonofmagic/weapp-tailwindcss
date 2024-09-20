@@ -58,7 +58,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.7",
     "@babel/plugin-syntax-decorators": "^7.24.7",
-    "@tarojs/cli": "3.6.31",
+    "@tarojs/cli": "3.6.35",
     "@tarojs/mini-runner": "3.6.31",
     "@tarojs/webpack5-runner": "^3.6.31",
     "@types/webpack-env": "^1.18.5",
