@@ -75,16 +75,20 @@ ${ctx.type === 'module' ? 'export default ' : 'module.exports = '}{
   await fs.writeFile(path.resolve(ctx.cwd, ctx.tailwindConfigBasename), data)
 }
 
-export async function init(options?: CreateContextOptions) {
-  const opts = defu<
-    Required<CreateContextOptions>,
-    Partial<CreateContextOptions>[]
-  >(options, {
+export function getInitDefaults() {
+  return {
     cwd: process.cwd(),
     postcssConfigBasename: 'postcss.config.js',
     tailwindConfigBasename: 'tailwind.config.js',
     pkgJsonBasename: 'package.json',
-  })
+  }
+}
+
+export async function init(options?: CreateContextOptions) {
+  const opts = defu<
+    Required<CreateContextOptions>,
+    Partial<CreateContextOptions>[]
+  >(options, getInitDefaults())
   const ctx = await createContext(opts)
   if (ctx) {
     await updatePackageJson(ctx)

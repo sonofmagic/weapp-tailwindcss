@@ -23,19 +23,20 @@ export async function getLatestVersionInRange(packageName: string, versionRange:
   return filteredVersions[filteredVersions.length - 1]
 }
 
+// tailwindcss postcss autoprefixer weapp-tailwindcss
+export const defaultDevDeps = {
+  'tailwindcss': '3',
+  'postcss': '8',
+  'autoprefixer': '10',
+  'weapp-tailwindcss': '3',
+}
+
 export async function getDevDepsVersions() {
-  // tailwindcss postcss autoprefixer weapp-tailwindcss
-  const devDeps = {
-    'tailwindcss': '3',
-    'postcss': '8',
-    'autoprefixer': '10',
-    'weapp-tailwindcss': '3',
-  }
   return Object.fromEntries(await Promise.all(
-    Object.entries(devDeps).map(
+    Object.entries(defaultDevDeps).map(
       async (x) => {
         return [x[0], `^${await getLatestVersionInRange(...x)}`]
       },
     ),
-  )) as typeof devDeps
+  )) as typeof defaultDevDeps
 }
