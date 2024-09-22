@@ -23,6 +23,12 @@ export default defineConfig({
     },
     testTimeout: 60_000,
     globals: true,
+    forceRerunTriggers: ['**\/{vitest,vite}.config.*\/**'],
     // ...
+  },
+  server: {
+    watch: {
+      ignored: ['**\/package.json/**'],
+    },
   },
 })

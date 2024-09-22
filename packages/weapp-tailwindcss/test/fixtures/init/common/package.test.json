@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "postinstall": "weapp-tw patch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.12",
+    "postcss": "^8.4.47",
+    "autoprefixer": "^10.4.20",
+    "weapp-tailwindcss": "^3.5.2"
+  }
+}

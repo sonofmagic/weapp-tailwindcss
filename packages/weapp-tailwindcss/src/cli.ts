@@ -1,6 +1,7 @@
 import process from 'node:process'
 import semver from 'semver'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
+import { init } from './init'
 import { getOptions } from './options'
 
 process.title = 'node (weapp-tailwindcss)'
@@ -17,6 +18,9 @@ const command = args[0]
 if (command === 'patch') {
   const options = getOptions()
   options.patch()
+}
+else if (command === 'init') {
+  init()
 }
 else {
   try {
