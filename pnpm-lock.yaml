@@ -37,7 +37,7 @@ importers:
         version: 0.5.4(eslint@9.11.0(jiti@1.21.6))
       '@icebreakers/eslint-config':
         specifier: ^0.5.2
-        version: 0.5.2(@typescript-eslint/utils@8.6.0(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@vue/compiler-sfc@3.5.8)(eslint@9.11.0(jiti@1.21.6))(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))(typescript@5.6.2)(vitest@2.0.5(@types/node@22.5.5)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0))
+        version: 0.5.2(@typescript-eslint/utils@8.6.0(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@vue/compiler-sfc@3.5.8)(eslint@9.11.0(jiti@1.21.6))(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))(typescript@5.6.2)(vitest@2.0.5(@types/node@22.5.5)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0))
       '@icebreakers/monorepo':
         specifier: ^0.5.2
         version: 0.5.2
@@ -51,8 +51,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1(rollup@4.22.4)
       '@rollup/plugin-commonjs':
-        specifier: ^26.0.1
-        version: 26.0.1(rollup@4.22.4)
+        specifier: ^28.0.0
+        version: 28.0.0(rollup@4.22.4)
       '@rollup/plugin-json':
         specifier: ^6.1.0
         version: 6.1.0(rollup@4.22.4)
@@ -348,8 +348,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.94.0(esbuild@0.23.1))
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       terser-webpack-plugin:
         specifier: ^5.3.10
         version: 5.3.10(esbuild@0.23.1)(webpack@5.94.0(esbuild@0.23.1))
@@ -397,7 +397,7 @@ importers:
         version: 2.0.5(@types/node@22.5.5)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0)
       weapp-tailwindcss-children:
         specifier: ^0.1.0
-        version: 0.1.0(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
+        version: 0.1.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
       webpack:
         specifier: ^5.94.0
         version: 5.94.0(esbuild@0.23.1)
@@ -416,7 +416,7 @@ importers:
     devDependencies:
       '@egoist/tailwindcss-icons':
         specifier: ^1.8.1
-        version: 1.8.1(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
+        version: 1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
       '@iconify-json/mdi':
         specifier: ^1.2.0
         version: 1.2.0
@@ -430,8 +430,8 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       weapp-ide-cli:
         specifier: ^2.0.5
         version: 2.0.5
@@ -453,7 +453,7 @@ importers:
     devDependencies:
       '@egoist/tailwindcss-icons':
         specifier: ^1.8.1
-        version: 1.8.1(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
+        version: 1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
       '@iconify-json/lucide':
         specifier: ^1.2.5
         version: 1.2.5
@@ -464,8 +464,8 @@ importers:
         specifier: workspace:*
         version: link:../../plugins/cli
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       weapp-ide-cli:
         specifier: ^2.0.5
         version: 2.0.5
@@ -489,8 +489,8 @@ importers:
         specifier: ^3.12.3
         version: 3.12.3
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       weapp-ide-cli:
         specifier: ^2.0.5
         version: 2.0.5
@@ -507,8 +507,8 @@ importers:
         specifier: ^3.12.3
         version: 3.12.3
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       weapp-ide-cli:
         specifier: ^2.0.5
         version: 2.0.5
@@ -553,8 +553,8 @@ importers:
         specifier: ^8.4.47
         version: 8.4.47
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -720,7 +720,7 @@ importers:
         version: 7.6.3
       tailwindcss-patch:
         specifier: ~4.0.0
-        version: 4.0.0(magicast@0.3.5)(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
+        version: 4.0.0(magicast@0.3.5)(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
       webpack-sources:
         specifier: 3.2.3
         version: 3.2.3
@@ -795,8 +795,8 @@ importers:
         version: link:../../packages/weapp-tailwindcss
     devDependencies:
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
 
   plugins/typography:
     dependencies:
@@ -886,8 +886,8 @@ importers:
         specifier: ^16.0.2
         version: 16.0.2(sass@1.79.3)(webpack@5.94.0(esbuild@0.23.1))
       tailwindcss:
-        specifier: ^3.4.12
-        version: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
       typedoc:
         specifier: ^0.26.7
         version: 0.26.7(typescript@5.6.2)
@@ -3309,8 +3309,8 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-commonjs@26.0.1':
-    resolution: {integrity: sha512-UnsKoZK6/aGIH6AdkptXhNvhaqftcjq3zZdT+LY5Ftms6JR06nADcDsYp5hTU9E2lbJUEOhdlY5J4DNTneM+jQ==}
+  '@rollup/plugin-commonjs@28.0.0':
+    resolution: {integrity: sha512-BJcu+a+Mpq476DMXG+hevgPSl56bkUoi88dKT8t3RyUp8kGuOh+2bU8Gs7zXDlu+fyZggnJ+iOBGrb/O1SorYg==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
@@ -7106,11 +7106,6 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
 
-  glob@10.4.1:
-    resolution: {integrity: sha512-2jelhlq3E4ho74ZyVLN03oKdAZVUa6UDZzFLVH1H7dnoax+y9qyaq8zBkfDIggjniU19z0wU18y16jMB2eyVIw==}
-    engines: {node: '>=16 || 14 >=14.18'}
-    hasBin: true
-
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
@@ -8187,10 +8182,6 @@ packages:
 
   jackspeak@2.3.6:
     resolution: {integrity: sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==}
-    engines: {node: '>=14'}
-
-  jackspeak@3.4.0:
-    resolution: {integrity: sha512-JVYhQnN59LVPFCEcVa2C3CrEKYacvjRfqIQl+h8oi91aLYQVWRYbxjPcv1bUiUy/kLmQaANrYfNMCO3kuEDHfw==}
     engines: {node: '>=14'}
 
   jackspeak@3.4.3:
@@ -11855,8 +11846,8 @@ packages:
       tailwindcss:
         optional: true
 
-  tailwindcss@3.4.12:
-    resolution: {integrity: sha512-Htf/gHj2+soPb9UayUNci/Ja3d8pTmu9ONTfh4QY8r3MATTZOzmv6UYWF7ZwikEIC8okpfqmGqrmDehua8mF8w==}
+  tailwindcss@3.4.13:
+    resolution: {integrity: sha512-KqjHOJKogOUt5Bs752ykCeiwvi0fKVkr5oqsFNt/8px/tA8scFPIlkygsf6jXrfCqGHz7VflA6+yytWuM+XhFw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -15351,10 +15342,10 @@ snapshots:
 
   '@dual-bundle/import-meta-resolve@4.1.0': {}
 
-  '@egoist/tailwindcss-icons@1.8.1(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))':
+  '@egoist/tailwindcss-icons@1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))':
     dependencies:
       '@iconify/utils': 2.1.24
-      tailwindcss: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -15804,7 +15795,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@icebreakers/eslint-config@0.5.2(@typescript-eslint/utils@8.6.0(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@vue/compiler-sfc@3.5.8)(eslint@9.11.0(jiti@1.21.6))(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))(typescript@5.6.2)(vitest@2.0.5(@types/node@22.5.5)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0))':
+  '@icebreakers/eslint-config@0.5.2(@typescript-eslint/utils@8.6.0(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@vue/compiler-sfc@3.5.8)(eslint@9.11.0(jiti@1.21.6))(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))(typescript@5.6.2)(vitest@2.0.5(@types/node@22.5.5)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0))':
     dependencies:
       '@antfu/eslint-config': 3.7.1(@eslint-react/eslint-plugin@1.14.2(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@typescript-eslint/utils@8.6.0(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@unocss/eslint-plugin@0.62.4(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2))(@vue/compiler-sfc@3.5.8)(eslint-plugin-format@0.1.2(eslint@9.11.0(jiti@1.21.6)))(eslint-plugin-react-hooks@4.6.2(eslint@9.11.0(jiti@1.21.6)))(eslint-plugin-react-refresh@0.4.12(eslint@9.11.0(jiti@1.21.6)))(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2)(vitest@2.0.5(@types/node@22.5.5)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0))
       '@eslint-react/eslint-plugin': 1.14.2(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2)
@@ -15814,7 +15805,7 @@ snapshots:
       eslint-plugin-mdx: 3.1.5(eslint@9.11.0(jiti@1.21.6))
       eslint-plugin-react-hooks: 4.6.2(eslint@9.11.0(jiti@1.21.6))
       eslint-plugin-react-refresh: 0.4.12(eslint@9.11.0(jiti@1.21.6))
-      eslint-plugin-tailwindcss: 3.17.4(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
+      eslint-plugin-tailwindcss: 3.17.4(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)))
       eslint-plugin-vuejs-accessibility: 2.4.1(eslint@9.11.0(jiti@1.21.6))
       globals: 15.9.0
       local-pkg: 0.5.0
@@ -16666,14 +16657,15 @@ snapshots:
     optionalDependencies:
       rollup: 3.29.5
 
-  '@rollup/plugin-commonjs@26.0.1(rollup@4.22.4)':
+  '@rollup/plugin-commonjs@28.0.0(rollup@4.22.4)':
     dependencies:
       '@rollup/pluginutils': 5.1.1(rollup@4.22.4)
       commondir: 1.0.1
       estree-walker: 2.0.2
-      glob: 10.4.1
+      fdir: 6.3.0(picomatch@2.3.1)
       is-reference: 1.2.1
       magic-string: 0.30.11
+      picomatch: 2.3.1
     optionalDependencies:
       rollup: 4.22.4
 
@@ -20374,11 +20366,11 @@ snapshots:
       regexp-ast-analysis: 0.7.1
       scslre: 0.3.0
 
-  eslint-plugin-tailwindcss@3.17.4(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))):
+  eslint-plugin-tailwindcss@3.17.4(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))):
     dependencies:
       fast-glob: 3.3.2
       postcss: 8.4.47
-      tailwindcss: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
 
   eslint-plugin-toml@0.11.1(eslint@9.11.0(jiti@1.21.6)):
     dependencies:
@@ -20801,6 +20793,10 @@ snapshots:
   faye-websocket@0.11.4:
     dependencies:
       websocket-driver: 0.7.4
+
+  fdir@6.3.0(picomatch@2.3.1):
+    optionalDependencies:
+      picomatch: 2.3.1
 
   fdir@6.3.0(picomatch@4.0.2):
     optionalDependencies:
@@ -21272,14 +21268,6 @@ snapshots:
       minimatch: 9.0.5
       minipass: 7.0.4
       path-scurry: 1.10.2
-
-  glob@10.4.1:
-    dependencies:
-      foreground-child: 3.1.1
-      jackspeak: 3.4.0
-      minimatch: 9.0.5
-      minipass: 7.1.2
-      path-scurry: 1.11.1
 
   glob@10.4.5:
     dependencies:
@@ -22460,12 +22448,6 @@ snapshots:
       set-function-name: 2.0.2
 
   jackspeak@2.3.6:
-    dependencies:
-      '@isaacs/cliui': 8.0.2
-    optionalDependencies:
-      '@pkgjs/parseargs': 0.11.0
-
-  jackspeak@3.4.0:
     dependencies:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
@@ -26701,7 +26683,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@4.0.0(magicast@0.3.5)(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))):
+  tailwindcss-patch@4.0.0(magicast@0.3.5)(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))):
     dependencies:
       '@babel/generator': 7.24.10
       '@babel/parser': 7.24.8
@@ -26717,12 +26699,12 @@ snapshots:
       resolve: 1.22.8
       semver: 7.6.3
     optionalDependencies:
-      tailwindcss: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
     transitivePeerDependencies:
       - magicast
       - supports-color
 
-  tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)):
+  tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -27830,9 +27812,9 @@ snapshots:
       fs-extra: 11.2.0
       pathe: 1.1.2
 
-  weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))):
+  weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))):
     dependencies:
-      tailwindcss: 3.4.12(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
+      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
 
   weapp-vite@1.1.5(typescript@5.6.2)(vite@5.4.7(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.3)(stylus@0.63.0)(terser@5.33.0)):
     dependencies:

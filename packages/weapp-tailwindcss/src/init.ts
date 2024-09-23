@@ -1,4 +1,5 @@
 import type { PackageJson } from 'pkg-types'
+import type { FetchOptions } from './npm'
 import process from 'node:process'
 import fs from 'fs-extra'
 import path from 'pathe'
@@ -12,14 +13,15 @@ export interface CreateContextOptions {
   pkgJsonBasename?: string
   postcssConfigBasename?: string
   tailwindConfigBasename?: string
+  fetchOptions?: FetchOptions
 }
 
 export async function createContext(options: Required<CreateContextOptions>) {
-  const { cwd, pkgJsonBasename, postcssConfigBasename, tailwindConfigBasename } = options
+  const { cwd, pkgJsonBasename, postcssConfigBasename, tailwindConfigBasename, fetchOptions } = options
   const pkgJsonPath = path.resolve(cwd, pkgJsonBasename)
   if (await fs.exists(pkgJsonPath)) {
     const pkgJson: PackageJson = await fs.readJson(pkgJsonPath)
-    const versions = await getDevDepsVersions()
+    const versions = await getDevDepsVersions(fetchOptions)
     return {
       pkgJson,
       pkgJsonPath,

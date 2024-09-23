@@ -1,3 +1,4 @@
+import type { FetchOptions } from '@/npm'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import * as htmlparser2 from 'htmlparser2'
@@ -86,4 +87,10 @@ export function switch2relative(p: string): string {
     str = path.relative(__dirname, p)
   }
   return str.replaceAll('\\', '/')
+}
+
+export const npmmirrorRegistry = 'https://registry.npmmirror.com'
+
+export const fetchOptions: FetchOptions = {
+  registry: npmmirrorRegistry,
 }

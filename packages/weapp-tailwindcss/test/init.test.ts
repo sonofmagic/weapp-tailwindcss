@@ -3,7 +3,7 @@ import { defaultDevDeps } from '@/npm'
 import fs from 'fs-extra'
 import get from 'get-value'
 import path from 'pathe'
-import { fixturesRootPath } from './util'
+import { fetchOptions, fixturesRootPath } from './util'
 
 describe('init', () => {
   const defaults = getInitDefaults()
@@ -13,6 +13,7 @@ describe('init', () => {
     await init({
       cwd,
       pkgJsonBasename: 'package.test.json',
+      fetchOptions,
     })
     expect(await fs.exists(path.resolve(cwd, defaults.postcssConfigBasename))).toBe(true)
     expect(await fs.exists(path.resolve(cwd, defaults.tailwindConfigBasename))).toBe(true)
@@ -29,6 +30,7 @@ describe('init', () => {
     await init({
       cwd,
       pkgJsonBasename: 'package.test.json',
+      fetchOptions,
     })
     expect(await fs.exists(path.resolve(cwd, defaults.postcssConfigBasename))).toBe(true)
     expect(await fs.exists(path.resolve(cwd, defaults.tailwindConfigBasename))).toBe(true)
@@ -45,6 +47,7 @@ describe('init', () => {
     await init({
       cwd,
       pkgJsonBasename: 'package.test.json',
+      fetchOptions,
     })
     expect(await fs.exists(path.resolve(cwd, defaults.postcssConfigBasename))).toBe(false)
     expect(await fs.exists(path.resolve(cwd, defaults.tailwindConfigBasename))).toBe(false)

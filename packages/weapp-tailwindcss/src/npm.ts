@@ -1,7 +1,13 @@
+import type { Options } from 'npm-registry-fetch'
 import fetch from 'npm-registry-fetch'
 
-export function fetchPackage(packageName: string) {
-  return fetch.json(`/${packageName}`) as Promise<{
+export type FetchOptions = Options
+/**
+ * @example 'https://registry.npmjs.org'
+ * @example 'https://registry.npmmirror.com'
+ */
+export function fetchPackage(packageName: string, options?: FetchOptions) {
+  return fetch.json(`/${packageName}`, options) as Promise<{
     'dist-tags': {
       latest: string
     }
@@ -9,13 +15,13 @@ export function fetchPackage(packageName: string) {
   }>
 }
 
-export async function getLatestVersion(packageName: string) {
-  const response = await fetchPackage(packageName)
+export async function getLatestVersion(packageName: string, options?: FetchOptions) {
+  const response = await fetchPackage(packageName, options)
   return response['dist-tags'].latest
 }
 
-export async function getLatestVersionInRange(packageName: string, versionRange: string) {
-  const response = await fetchPackage(packageName)
+export async function getLatestVersionInRange(packageName: string, versionRange: string, options?: FetchOptions) {
+  const response = await fetchPackage(packageName, options)
   const versions = Object.keys(response.versions)
   // 过滤出符合指定版本范围的版本
   const filteredVersions = versions.filter(version => version.startsWith(versionRange))
@@ -31,11 +37,11 @@ export const defaultDevDeps = {
   'weapp-tailwindcss': '3',
 }
 
-export async function getDevDepsVersions() {
+export async function getDevDepsVersions(options?: FetchOptions) {
   return Object.fromEntries(await Promise.all(
     Object.entries(defaultDevDeps).map(
       async (x) => {
-        return [x[0], `^${await getLatestVersionInRange(...x)}`]
+        return [x[0], `^${await getLatestVersionInRange(...x, options)}`]
       },
     ),
   )) as typeof defaultDevDeps
