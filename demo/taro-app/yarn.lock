@@ -8782,10 +8782,10 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
 
-execa@9.3.1:
-  version "9.3.1"
-  resolved "https://registry.npmmirror.com/execa/-/execa-9.3.1.tgz#09c86ab4dc2ef3de6d34f6568f4bad76ded4fded"
-  integrity sha512-gdhefCCNy/8tpH/2+ajP9IQc14vXchNdd0weyzSJEFURhRMGncQ+zKFxwjAufIewPEJm9BPOaJnvg2UtlH2gPQ==
+execa@9.4.0:
+  version "9.4.0"
+  resolved "https://registry.npmmirror.com/execa/-/execa-9.4.0.tgz#071ff6516c46eb82af9a559dba3c891637a10f3f"
+  integrity sha512-yKHlle2YGxZE842MERVIplWwNH5VYmqqcPFgtnlU//K8gxuFFXu0pwd/CrfXTumFpeEiufsP7+opT/bPJa1yVw==
   dependencies:
     "@sindresorhus/merge-streams" "^4.0.0"
     cross-spawn "^7.0.3"
@@ -8794,7 +8794,7 @@ execa@9.3.1:
     human-signals "^8.0.0"
     is-plain-obj "^4.1.0"
     is-stream "^4.0.1"
-    npm-run-path "^5.2.0"
+    npm-run-path "^6.0.0"
     pretty-ms "^9.0.0"
     signal-exit "^4.1.0"
     strip-final-newline "^4.0.0"
@@ -12962,12 +12962,20 @@ npm-run-path@^4.0.1:
   dependencies:
     path-key "^3.0.0"
 
-npm-run-path@^5.1.0, npm-run-path@^5.2.0:
+npm-run-path@^5.1.0:
   version "5.3.0"
   resolved "https://registry.npmmirror.com/npm-run-path/-/npm-run-path-5.3.0.tgz#e23353d0ebb9317f174e93417e4a4d82d0249e9f"
   integrity sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==
   dependencies:
     path-key "^4.0.0"
+
+npm-run-path@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.npmmirror.com/npm-run-path/-/npm-run-path-6.0.0.tgz#25cfdc4eae04976f3349c0b1afc089052c362537"
+  integrity sha512-9qny7Z9DsQU8Ou39ERsPU4OZQlSTP47ShQzuKZ6PRXpYLtIFgl/DEBYEXKlvcEa+9tHVcK8CF81Y2V72qaZhWA==
+  dependencies:
+    path-key "^4.0.0"
+    unicorn-magic "^0.3.0"
 
 nth-check@^2.0.1:
   version "2.1.1"
@@ -16580,10 +16588,10 @@ tailwindcss-rem2px-preset@^1.0.3:
   resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
-tailwindcss@^3.4.10:
-  version "3.4.10"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.10.tgz#70442d9aeb78758d1f911af29af8255ecdb8ffef"
-  integrity sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==
+tailwindcss@^3.4.12:
+  version "3.4.12"
+  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.12.tgz#fd3b67c6d2c04d9d7bfa13e3fc70ccef9fef0455"
+  integrity sha512-Htf/gHj2+soPb9UayUNci/Ja3d8pTmu9ONTfh4QY8r3MATTZOzmv6UYWF7ZwikEIC8okpfqmGqrmDehua8mF8w==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
     arg "^5.0.2"
@@ -17246,6 +17254,11 @@ unicorn-magic@^0.1.0:
   resolved "https://registry.npmmirror.com/unicorn-magic/-/unicorn-magic-0.1.0.tgz#1bb9a51c823aaf9d73a8bfcd3d1a23dde94b0ce4"
   integrity sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==
 
+unicorn-magic@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npmmirror.com/unicorn-magic/-/unicorn-magic-0.3.0.tgz#4efd45c85a69e0dd576d25532fbfa22aa5c8a104"
+  integrity sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==
+
 union-value@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmmirror.com/union-value/-/union-value-1.0.1.tgz#0b6fe7b835aecda61c6ea4d4f02c14221e109847"
@@ -17626,13 +17639,13 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weapp-ide-cli@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.3.tgz#ecb710e79d91d253f781b56745e69be4ec5a2a61"
-  integrity sha512-JEIP0hF8GviocSOITesrsmeoKHcKzKgOcNUVqCILmQAmVrfygUiPSHY1mn/Zgk23qtJ0739hgcU5ucOvqKuR7A==
+weapp-ide-cli@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.5.tgz#9d1d45d52c3dbadc4355b069213e62a0c415737c"
+  integrity sha512-ML4C6eRJ5mSYbzZME9h4Shb6rls5xoar9EDeSzy83QBR+TuXqWzbZLG/kbdPj9hVO2QGlP01a/XiqaWmNgE4JA==
   dependencies:
     "@weapp-core/logger" "^1.0.1"
-    execa "9.3.1"
+    execa "9.4.0"
     fs-extra "^11.2.0"
     pathe "^1.1.2"
 
