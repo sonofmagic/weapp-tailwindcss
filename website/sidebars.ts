@@ -176,6 +176,10 @@ const sidebars: SidebarsConfig = {
       label: '跨端应用注意事项',
       id: 'multi-platform',
     },
+    {
+      type: 'doc',
+      id: 'issues/toast-svg-bug',
+    },
   ],
   API: [
     {
