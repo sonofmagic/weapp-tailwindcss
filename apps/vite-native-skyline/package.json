@@ -23,6 +23,6 @@
     "build-npm": "weapp-vite build-npm"
   },
   "devDependencies": {
-    "weapp-vite": "^1.1.5"
+    "weapp-vite": "^1.1.7"
   }
 }

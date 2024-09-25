@@ -15,7 +15,7 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "miniprogram-api-typings": "^4.0.0"
+    "miniprogram-api-typings": "^4.0.1"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
