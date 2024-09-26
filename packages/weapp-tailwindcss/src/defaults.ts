@@ -3,8 +3,28 @@ import { SimpleMappingChars2String } from './escape'
 import { noop } from './utils'
 
 export const defaultOptions: UserDefinedOptions = {
+  /**
+   * wxss 微信小程序
+   * acss 支付宝小程序
+   * jxss 京东小程序
+   * ttss 头条小程序
+   * qss QQ小程序
+   * css 最正常的样式文件
+   * tyss 涂鸦小程序
+   */
   cssMatcher: file => /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(file),
-  htmlMatcher: file => /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty)ml|swan)$/.test(file),
+  /**
+   * wxml 微信小程序
+   * axml 支付宝小程序
+   * jxml 京东小程序
+   * ksml 快手小程序
+   * ttml 头条小程序
+   * qml QQ小程序
+   * tyml 涂鸦小程序
+   * xhsml 小红书小程序
+   * swan 百度小程序
+   */
+  htmlMatcher: file => /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/.test(file),
   jsMatcher: (file) => {
     if (file.includes('node_modules')) {
       return false
