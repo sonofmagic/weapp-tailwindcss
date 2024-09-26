@@ -80,7 +80,7 @@
   "devDependencies": {
     "@dcloudio/types": "^3.4.12",
     "@dcloudio/uni-automator": "3.0.0-4020420240722002",
-    "@dcloudio/uni-cli-shared": "3.0.0-4020420240722002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030120240925001",
     "@dcloudio/uni-stacktracey": "3.0.0-4020420240722002",
     "@dcloudio/vite-plugin-uni": "3.0.0-4020420240722002",
     "@egoist/tailwindcss-icons": "^1.8.1",
