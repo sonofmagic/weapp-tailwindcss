@@ -1,5 +1,12 @@
 # weapp-tailwindcss
 
+## 3.5.3
+
+### Patch Changes
+
+- [`fef8375`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fef8375ab825842b3beb5d30170891eb400da79d) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 添加小红书 `xhsml` 支持
+  feat: 添加 `weapp-tw init` 一键式初始化脚本
+
 ## 3.5.1
 
 ### Patch Changes
