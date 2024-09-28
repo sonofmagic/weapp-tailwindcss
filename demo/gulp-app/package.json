@@ -1,7 +1,29 @@
 {
   "name": "weapp-workflow",
   "version": "0.0.5",
+  "packageManager": "yarn@1.22.22",
   "description": "A workflow for better weapp developing.",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/gulp-app"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [
+    "gulp",
+    "gulpjs",
+    "workflow",
+    "weapp",
+    "wexin",
+    "wechat",
+    "css",
+    "wxml",
+    "wxss"
+  ],
   "main": "index.js",
   "scripts": {
     "dev": "cross-env WATCH=1 gulp",
@@ -15,18 +37,9 @@
     "prepare": "weapp-tw patch",
     "open": "weapp open -p"
   },
-  "keywords": [
-    "gulp",
-    "gulpjs",
-    "workflow",
-    "weapp",
-    "wexin",
-    "wechat",
-    "css",
-    "wxml",
-    "wxss"
-  ],
-  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.6"
+  },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
     "@icebreakers/eslint-config-ts": "^1.2.3",
@@ -73,21 +86,8 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
-    "weapp-ide-cli": "^2.0.5",
+    "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "^3.5.3",
     "weapp-tailwindcss-children": "^0.1.0"
-  },
-  "dependencies": {
-    "@vant/weapp": "^1.11.6"
-  },
-  "packageManager": "yarn@1.22.22",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
-    "directory": "demo/gulp-app"
-  },
-  "author": "ice breaker <1324318532@qq.com>"
+  }
 }

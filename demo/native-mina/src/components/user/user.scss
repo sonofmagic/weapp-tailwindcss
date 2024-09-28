@@ -1,22 +1,21 @@
-
-@import 'share';
+@import "../../styles/share";
 
 .container {
-	@extend %center-flex;
+  @extend %center-flex;
 
-	flex-direction: column;
-	align-items: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .avatar {
-	$r: 120rpx;
+  $r: 120rpx;
 
-	width: $r;
-	height: $r;
-	margin: 20rpx;
-	border-radius: 50%;
+  width: $r;
+  height: $r;
+  margin: 20rpx;
+  border-radius: 50%;
 }
 
 .nickname {
-	color: #aaa;
+  color: #aaa;
 }

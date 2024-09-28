@@ -32,7 +32,7 @@
     "@iconify-json/mdi": "^1.2.0",
     "@weapp-tailwindcss/cli": "workspace:*",
     "tailwindcss": "^3.4.13",
-    "weapp-ide-cli": "^2.0.5",
+    "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "workspace:*"
   }
 }

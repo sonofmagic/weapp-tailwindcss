@@ -13845,10 +13845,10 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-weapp-ide-cli@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.5.tgz#9d1d45d52c3dbadc4355b069213e62a0c415737c"
-  integrity sha512-ML4C6eRJ5mSYbzZME9h4Shb6rls5xoar9EDeSzy83QBR+TuXqWzbZLG/kbdPj9hVO2QGlP01a/XiqaWmNgE4JA==
+weapp-ide-cli@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.6.tgz#8d5da156a9cac0e763d625dde5571105d2994c57"
+  integrity sha512-Dm0WDCol4xnQxaToULW6QRc9wRaHEPXUm2maT+SoHcMmnM+fVPAL8HC08srRfbx0DNGYXHr/GUOQznjF3EK/7Q==
   dependencies:
     "@weapp-core/logger" "^1.0.1"
     execa "9.4.0"

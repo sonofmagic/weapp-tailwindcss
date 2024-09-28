@@ -1,23 +1,23 @@
 @import 'mixins';
 
 %clearfix {
-  @include clearfix();
+  @include clearfix;
 }
 
 %ellipsis {
-  @include ellipsis();
+  @include ellipsis;
 }
 
 %word-break {
-  @include word-break();
+  @include word-break;
 }
 
 %full-100 {
-  @include full-100();
+  @include full-100;
 }
 
 %full {
-  @include full();
+  @include full;
 }
 
 %full-fixed {
@@ -25,11 +25,11 @@
 }
 
 %center-transform {
-  @include center-transform();
+  @include center-transform;
 }
 
 %center-flex {
-  @include center-flex();
+  @include center-flex;
 }
 
 %ui-bg {

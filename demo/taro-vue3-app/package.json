@@ -2,11 +2,21 @@
   "name": "taro-vue3-app",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "yarn@1.22.22",
   "description": "taro-vue3-app",
   "templateInfo": {
     "name": "default",
     "typescript": true,
     "css": "sass"
+  },
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/taro-vue3-app"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "scripts": {
     "dev": "npm run dev:weapp",
@@ -41,7 +51,6 @@
     "Android >= 4.1",
     "ios >= 8"
   ],
-  "author": "ice breaker <1324318532@qq.com>",
   "__comment": {},
   "dependencies": {
     "@babel/runtime": "^7.24.7",
@@ -84,18 +93,9 @@
     "typescript": "~5.4.5",
     "unplugin-vue-components": "^0.27.0",
     "vue-loader": "^17.2.2",
-    "weapp-ide-cli": "^2.0.5",
+    "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "^3.5.3",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.90.3"
-  },
-  "packageManager": "yarn@1.22.22",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
-    "directory": "demo/taro-vue3-app"
   }
 }

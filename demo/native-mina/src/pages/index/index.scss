@@ -1,11 +1,13 @@
-@import 'share';
+@import "../../styles/share";
 
 .MANGLE__1234567890{
   @apply text-red-500;
 }
+
 .MANGLE__qwertyuiopasdfghjklzxcvbnm{
   @apply text-green-500;
 }
+
 .MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM{
   @apply text-yellow-500;
 }
@@ -24,6 +26,7 @@
   height: $r;
   border-radius: 50%;
   margin-right: 10px;
+
   @apply w-[200%];
 }
 

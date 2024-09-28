@@ -1,8 +1,18 @@
 {
   "name": "@rax-materials/scaffolds-app-ts",
-  "author": "ice breaker <1324318532@qq.com>",
-  "description": "Rax 无线跨端应用工程，使用 TypeScript。",
   "version": "0.1.0",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "description": "Rax 无线跨端应用工程，使用 TypeScript。",
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/rax-app"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "scripts": {
     "dev": "npm run start",
     "start": "rax-app start",
@@ -42,19 +52,9 @@
     "tailwindcss": "^3.4.13",
     "tailwindcss-patch": "^4.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
-    "weapp-ide-cli": "^2.0.5",
+    "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "^3.5.3",
     "weapp-tailwindcss-children": "^0.1.0"
   },
-  "private": true,
-  "originTemplate": "@rax-materials/scaffolds-app-ts",
-  "packageManager": "yarn@1.22.22",
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
-    "directory": "demo/rax-app"
-  }
+  "originTemplate": "@rax-materials/scaffolds-app-ts"
 }

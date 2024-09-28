@@ -9,6 +9,15 @@
     "css": "Sass",
     "framework": "React"
   },
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/taro-app-vite"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "scripts": {
     "dev": "npm run dev:weapp",
     "build": "npm run build:weapp",
@@ -38,7 +47,6 @@
     "defaults and fully supports es6-module",
     "maintained node versions"
   ],
-  "author": "ice breaker <1324318532@qq.com>",
   "dependencies": {
     "@babel/runtime": "^7.24.4",
     "@tarojs/components": "4.0.4",
@@ -87,16 +95,8 @@
     "terser": "^5.30.4",
     "typescript": "^5.4.5",
     "vite": "^4.2.0",
-    "weapp-ide-cli": "^2.0.5",
+    "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "^3.5.3",
     "weapp-tailwindcss-children": "^0.1.0"
-  },
-  "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
-    "directory": "demo/taro-app-vite"
   }
 }
