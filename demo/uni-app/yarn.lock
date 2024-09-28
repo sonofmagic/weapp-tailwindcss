@@ -1481,10 +1481,10 @@
     qrcode-terminal "^0.12.0"
     ws "^7.2.3"
 
-"@dcloudio/uni-cli-i18n@2.0.2-4010520240507001":
-  version "2.0.2-4010520240507001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-cli-i18n/-/uni-cli-i18n-2.0.2-4010520240507001.tgz#30aefb1a11716a704eaa80146631e276be1e39f8"
-  integrity sha512-t2t1OIjHVKrGxYz7jMbPwo9v8MummucPe4q5mrm8UyQ3BefyFnq6Uv0Wvw265p1+LS5a8gPUpSyuhj/pVZ82Ug==
+"@dcloudio/uni-cli-i18n@2.0.2-4020420240722004":
+  version "2.0.2-4020420240722004"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-cli-i18n/-/uni-cli-i18n-2.0.2-4020420240722004.tgz#2a8e1054778b04c9547a231d5612c83b374143cc"
+  integrity sha512-+uYmUuk8u3mTKaDYtSq3TTb0iJbl/bG4AQERRWyzPGhuw7vhCyWPPdRKCJFzalM6aE/JedDpRA1zovu9vT5SJg==
   dependencies:
     i18n "^0.13.3"
     os-locale-s-fix "^1.0.8-fix-1"

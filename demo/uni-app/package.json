@@ -86,7 +86,7 @@
     "@babel/runtime": "~7.24.0",
     "@dcloudio/types": "3.4.12",
     "@dcloudio/uni-automator": "2.0.2-4010520240507001",
-    "@dcloudio/uni-cli-i18n": "2.0.2-4010520240507001",
+    "@dcloudio/uni-cli-i18n": "2.0.2-4020420240722004",
     "@dcloudio/uni-cli-shared": "2.0.2-4010520240507001",
     "@dcloudio/uni-migration": "2.0.2-4010520240507001",
     "@dcloudio/uni-template-compiler": "2.0.2-4010520240507001",
