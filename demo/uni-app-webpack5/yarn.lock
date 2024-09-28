@@ -1413,10 +1413,10 @@
   resolved "https://registry.npmmirror.com/@dcloudio/uni-app/-/uni-app-2.0.2-4010520240507001.tgz#e5aa8cd6836c9cd6088e8893b84d6aadea90e485"
   integrity sha512-kZKFwurhyJORZeUu843EnHeBhZfs/H6ZKGkBlH6WLaLw3SIKHqyopeyrFefmizWsxRUoE2aSUH7LszKZzoX78w==
 
-"@dcloudio/uni-automator@2.0.2-4010520240507001":
-  version "2.0.2-4010520240507001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-automator/-/uni-automator-2.0.2-4010520240507001.tgz#e44dce8cf7be9ab8053a0d163ae5966af2d64d42"
-  integrity sha512-ecYq6Gjdoi4b75nnLU12VqiTWZssLhLH243wOTLn7nuaJ0EobHiQ491CFqdyfoMwZkD8mOMCUP3hiPgjnwWleQ==
+"@dcloudio/uni-automator@2.0.2-4020420240722004":
+  version "2.0.2-4020420240722004"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-automator/-/uni-automator-2.0.2-4020420240722004.tgz#cb7f206afd7125d7be4b9ed7b926c52fb228c788"
+  integrity sha512-SRk8P+IbuUD+l+wwDQZmNgc3nIerPIOIYYn9unXdk9qDSEamUFOdpWNrGbR7H6HA2CyPArRrNQlxWkodzIcFtQ==
   dependencies:
     address "^1.1.2"
     debug "^4.1.1"
