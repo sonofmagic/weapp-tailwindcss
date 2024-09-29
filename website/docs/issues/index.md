@@ -144,6 +144,6 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 
 这可能是由于 tailwindcss 包被提升，导致项目获取不到正确的 tailwind 上下文，有两种解决方案。
 
-- 配置 [tailwindcssBasedir](/docs/api/interfaces/userdefinedoptions#tailwindcssbasedir)
+- 配置 [tailwindcssBasedir](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#tailwindcssbasedir)
 
-- 禁止 tailwindcss 包被提升，具体配置方法可以去查阅各包管理器的说明文档 
+- 禁止 `tailwindcss` 包被提升，具体配置方法可以去查阅各包管理器的说明文档 
