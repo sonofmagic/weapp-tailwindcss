@@ -139,3 +139,11 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 ## 为什么使用 taro 写 jsx，js 时候，转义不生效？
 
 这是因为 [patch](/docs/quick-start/this-plugin) 方法没有生效，这个指令是用来在运行时暴露 `tailwindcss` 上下文的，只有暴露成功，我们写的 `js` 里的样式，才会变精准转义，否则就会出现在 `jsx` 里写 `className` 不生效的情况。
+
+## monorepo 项目中 arbitrary values 写法无效？
+
+这可能是由于 tailwindcss 包被提升，导致项目获取不到正确的 tailwind 上下文，有两种解决方案。
+
+- 配置 [tailwindcssBasedir](/docs/api/interfaces/userdefinedoptions#tailwindcssbasedir)
+
+- 禁止 tailwindcss 包被提升，具体配置方法可以去查阅各包管理器的说明文档 
