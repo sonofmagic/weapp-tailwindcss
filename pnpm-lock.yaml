@@ -39,8 +39,8 @@ importers:
         specifier: ^0.5.4
         version: 0.5.4(@typescript-eslint/utils@8.7.0(eslint@9.11.1(jiti@2.0.0))(typescript@5.6.2))(@vue/compiler-sfc@3.5.10)(eslint@9.11.1(jiti@2.0.0))(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2)))(typescript@5.6.2)(vitest@2.0.5(@types/node@22.7.4)(@vitest/ui@2.0.5)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))
       '@icebreakers/monorepo':
-        specifier: ^0.5.4
-        version: 0.5.4
+        specifier: ^0.5.5
+        version: 0.5.5
       '@icebreakers/readme':
         specifier: 0.1.0
         version: 0.1.0
@@ -559,14 +559,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.2.4
-        version: 1.2.4(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
+        specifier: ^1.2.5
+        version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/vite-native-skyline:
     devDependencies:
       weapp-vite:
-        specifier: ^1.2.4
-        version: 1.2.4(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
+        specifier: ^1.2.5
+        version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/vite-native-ts:
     devDependencies:
@@ -574,8 +574,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       weapp-vite:
-        specifier: ^1.2.4
-        version: 1.2.4(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
+        specifier: ^1.2.5
+        version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/vite-native-ts-skyline:
     devDependencies:
@@ -583,8 +583,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       weapp-vite:
-        specifier: ^1.2.4
-        version: 1.2.4(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
+        specifier: ^1.2.5
+        version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/weapp-library:
     devDependencies:
@@ -2770,8 +2770,8 @@ packages:
   '@icebreakers/eslint-config@0.5.4':
     resolution: {integrity: sha512-5DtGlDQcNu34nyZv0nmTSqG5JAagADrRBsLvdtnEkYLGRYoJee+FVOlKkFCSaAjTi37r9R7UAuYjBWK3o6s/4A==}
 
-  '@icebreakers/monorepo@0.5.4':
-    resolution: {integrity: sha512-Si5eul5JobgSogDE6EmACJP0ND+eaSV2/ZuJ3Nnqr2kkywvItZwEzPVwgZBtCwUyWOYt841pkbdZ2j53pXOfPg==}
+  '@icebreakers/monorepo@0.5.5':
+    resolution: {integrity: sha512-ZZfwjBxdBys6aDaHEl/j9qahl87KoZ3t+8FMv4WbN/io9AbnhP7GWoVW+F/DUYSPQXhEy6y23xJm0pS9d1lUEg==}
     hasBin: true
 
   '@icebreakers/readme@0.1.0':
@@ -4352,8 +4352,8 @@ packages:
   '@weapp-core/escape@2.1.0':
     resolution: {integrity: sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==}
 
-  '@weapp-core/init@1.0.4':
-    resolution: {integrity: sha512-xUMqIJU++oF5K3OJqvREjETjspl8yRhm558Ycft+wvZQl+CqHH6BizgZXGkXiCb2QyL5FqGBcLLPfnedUeHH3g==}
+  '@weapp-core/init@1.0.5':
+    resolution: {integrity: sha512-afQHFW4I/m9t88dGjlVr4EExT0YxN14iLFoGP5ob0GwUZr76SmZsNbWV+iLeAAFtOrW8oEoCWnagEOlAV0IvLw==}
 
   '@weapp-core/logger@1.0.1':
     resolution: {integrity: sha512-a6mRzO4GZKXHQvMhUv5CUctzHxg1dbD1+S+hr5A3j3y369PEPIQQpqQnwhICfBnDZkkBRcy1YVcOjiuWJo4qww==}
@@ -6822,6 +6822,14 @@ packages:
 
   fdir@6.3.0:
     resolution: {integrity: sha512-QOnuT+BOtivR77wYvCWHfGt9s4Pz1VIMbD463vegT5MLqNXy8rYFT/lPVEqf/bhYeT6qmqrNHhsX+rWwe3rOCQ==}
+    peerDependencies:
+      picomatch: ^3 || ^4
+    peerDependenciesMeta:
+      picomatch:
+        optional: true
+
+  fdir@6.4.0:
+    resolution: {integrity: sha512-3oB133prH1o4j/L5lLW7uOCF1PlD+/It2L0eL/iAqWMB91RBbqTewABqxhj0ibBd90EEmWZq7ntIWzVaWcXTGQ==}
     peerDependencies:
       picomatch: ^3 || ^4
     peerDependenciesMeta:
@@ -12917,8 +12925,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-vite@1.2.4:
-    resolution: {integrity: sha512-Dm03lCGg9Ym9tYAI9wSUztfrzHKqZsmKIXiXx8WEzlwFY+tE9KHfEzdqJs3jww8E9otYufsXwxQI55KLS4nbcw==}
+  weapp-vite@1.2.5:
+    resolution: {integrity: sha512-b0/crj7Hp4/AA6T85ozo912ZW2VqEWH2wnwlCX2Y50uH9hpmlpqk+yUaQXu0aC4i6WjaViFm/baCRVVLl1Sp3w==}
     hasBin: true
     peerDependencies:
       vite: '>=2.6.0'
@@ -15273,7 +15281,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@18.3.1)':
     dependencies:
-      '@types/react': 18.3.3
+      '@types/react': 18.3.10
       react: 18.3.1
 
   '@docusaurus/theme-classic@3.5.2(@types/react@18.3.10)(debug@4.3.7)(esbuild@0.23.1)(eslint@9.11.1(jiti@2.0.0))(lightningcss@1.27.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2)(vue-template-compiler@2.7.16)':
@@ -15973,7 +15981,7 @@ snapshots:
       - typescript
       - vitest
 
-  '@icebreakers/monorepo@0.5.4':
+  '@icebreakers/monorepo@0.5.5':
     dependencies:
       '@inquirer/checkbox': 3.0.1
       '@inquirer/confirm': 4.0.1
@@ -17986,7 +17994,7 @@ snapshots:
 
   '@weapp-core/escape@2.1.0': {}
 
-  '@weapp-core/init@1.0.4':
+  '@weapp-core/init@1.0.5':
     dependencies:
       '@weapp-core/logger': 1.0.1
       '@weapp-core/shared': 1.0.1
@@ -21031,7 +21039,7 @@ snapshots:
     optionalDependencies:
       picomatch: 2.3.1
 
-  fdir@6.3.0(picomatch@4.0.2):
+  fdir@6.4.0(picomatch@4.0.2):
     optionalDependencies:
       picomatch: 4.0.2
 
@@ -27150,7 +27158,7 @@ snapshots:
 
   tinyglobby@0.2.6:
     dependencies:
-      fdir: 6.3.0(picomatch@4.0.2)
+      fdir: 6.4.0(picomatch@4.0.2)
       picomatch: 4.0.2
 
   tinypool@1.0.1: {}
@@ -28104,16 +28112,16 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))
 
-  weapp-vite@1.2.4(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1):
+  weapp-vite@1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1):
     dependencies:
-      '@weapp-core/init': 1.0.4
+      '@weapp-core/init': 1.0.5
       '@weapp-core/logger': 1.0.1
       '@weapp-core/shared': 1.0.1
       cac: 6.7.14
       chokidar: 3.6.0
       debug: 4.3.7
       fast-glob: 3.3.2
-      fdir: 6.3.0(picomatch@4.0.2)
+      fdir: 6.4.0(picomatch@4.0.2)
       fs-extra: 11.2.0
       htmlparser2: 9.1.0
       magic-string: 0.30.11

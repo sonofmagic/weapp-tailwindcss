@@ -9,5 +9,15 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "subpackages": [
+    {
+      "root": "packageA",
+      "pages": [
+        "pages/cat",
+        "pages/dog",
+        "pages/dog0"
+      ]
+    }
+  ]
 }

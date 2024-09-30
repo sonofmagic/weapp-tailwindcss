@@ -110,6 +110,13 @@
     },
     {
       "command": "yarn dev",
+      "name": "[Demo] native-mina weapp dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo/native-mina"
+    },
+    {
+      "command": "yarn dev",
       "name": "[Demo] taro app run weapp dev",
       "request": "launch",
       "type": "node-terminal",

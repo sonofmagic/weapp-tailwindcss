@@ -109,7 +109,7 @@
     "@commitlint/types": "^19.5.0",
     "@eslint/config-inspector": "^0.5.4",
     "@icebreakers/eslint-config": "^0.5.4",
-    "@icebreakers/monorepo": "^0.5.4",
+    "@icebreakers/monorepo": "^0.5.5",
     "@icebreakers/readme": "0.1.0",
     "@icebreakers/stylelint-config": "^0.1.0",
     "@rollup/plugin-alias": "^5.1.1",
