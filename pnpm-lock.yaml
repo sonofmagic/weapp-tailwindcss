@@ -570,20 +570,50 @@ importers:
 
   apps/vite-native-ts:
     devDependencies:
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.20(postcss@8.4.47)
       miniprogram-api-typings:
-        specifier: ^4.0.1
+        specifier: latest
         version: 4.0.1
+      postcss:
+        specifier: ^8.4.47
+        version: 8.4.47
+      tailwindcss:
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))
+      typescript:
+        specifier: latest
+        version: 5.6.2
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.2.5
+        specifier: latest
         version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/vite-native-ts-skyline:
     devDependencies:
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.20(postcss@8.4.47)
       miniprogram-api-typings:
-        specifier: ^4.0.1
+        specifier: latest
         version: 4.0.1
+      postcss:
+        specifier: ^8.4.47
+        version: 8.4.47
+      tailwindcss:
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))
+      typescript:
+        specifier: latest
+        version: 5.6.2
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.2.5
+        specifier: latest
         version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/weapp-library:
@@ -4061,9 +4091,6 @@ packages:
 
   '@types/react@18.3.3':
     resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
-
-  '@types/react@18.3.8':
-    resolution: {integrity: sha512-syBUrW3/XpnW4WJ41Pft+I+aPoDVbrBVQGEnbD7NijDGlVC+8gV/XKRY+7vMDlfPpbwYt0l1vd/Sj8bJGMbs9Q==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -15340,7 +15367,7 @@ snapshots:
       '@docusaurus/utils': 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.23.1)(typescript@5.6.2)
       '@docusaurus/utils-common': 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@types/history': 4.7.11
-      '@types/react': 18.3.8
+      '@types/react': 18.3.10
       '@types/react-router-config': 5.0.11
       clsx: 2.1.1
       parse-numeric-range: 1.3.0
@@ -17570,7 +17597,7 @@ snapshots:
   '@types/react-router@5.1.20':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.3.3
+      '@types/react': 18.3.10
 
   '@types/react@18.3.10':
     dependencies:
@@ -17580,11 +17607,6 @@ snapshots:
   '@types/react@18.3.3':
     dependencies:
       '@types/prop-types': 15.7.12
-      csstype: 3.1.3
-
-  '@types/react@18.3.8':
-    dependencies:
-      '@types/prop-types': 15.7.13
       csstype: 3.1.3
 
   '@types/resolve@1.20.2': {}
@@ -25396,7 +25418,7 @@ snapshots:
     dependencies:
       commander: 8.3.0
       glob: 7.2.3
-      postcss: 8.4.41
+      postcss: 8.4.47
       postcss-selector-parser: 6.1.2
 
   qrcode-reader@1.0.4: {}
@@ -26964,7 +26986,7 @@ snapshots:
       fs-extra: 11.2.0
       jiti: 1.21.6
       lilconfig: 3.1.2
-      postcss: 8.4.41
+      postcss: 8.4.47
       resolve: 1.22.8
       semver: 7.6.3
     optionalDependencies:
@@ -26985,7 +27007,7 @@ snapshots:
       fs-extra: 11.2.0
       jiti: 1.21.6
       lilconfig: 3.1.2
-      postcss: 8.4.41
+      postcss: 8.4.47
       resolve: 1.22.8
       semver: 7.6.3
     optionalDependencies:

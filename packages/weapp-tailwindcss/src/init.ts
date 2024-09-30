@@ -94,7 +94,11 @@ export async function init(options?: CreateContextOptions) {
   const ctx = await createContext(opts)
   if (ctx) {
     await updatePackageJson(ctx)
+    logger.success('package.json 文件修改完成！')
     await touchPostcssConfig(ctx)
+    logger.success('postcss.config.js 文件创建完成！')
     await touchTailwindConfig(ctx)
+    logger.success('tailwind.config.js 文件创建完成！')
+    logger.success('weapp-tailwindcss 初始化完成！请根据你自定义的需求，更改对应的配置文件(比如 tailwind.config.js 中的 content 配置)')
   }
 }

@@ -20,9 +20,16 @@
     "dev": "weapp-vite dev",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
-    "build-npm": "weapp-vite build-npm"
+    "build-npm": "weapp-vite build-npm",
+    "postinstall": "weapp-tw patch"
   },
   "devDependencies": {
-    "weapp-vite": "^1.2.5"
+    "autoprefixer": "^10.4.20",
+    "miniprogram-api-typings": "latest",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "latest",
+    "weapp-tailwindcss": "^3.5.3",
+    "weapp-vite": "latest"
   }
 }

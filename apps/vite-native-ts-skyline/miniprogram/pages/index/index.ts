@@ -5,7 +5,6 @@ Component({
   data: {
     motto: 'Hello World',
     userInfo: {
-      avatarUrl: defaultAvatarUrl,
       nickName: '',
     },
     hasUserInfo: false,

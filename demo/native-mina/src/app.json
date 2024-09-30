@@ -10,7 +10,7 @@
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",
-  "subpackages": [
+  "subPackages": [
     {
       "root": "packageA",
       "pages": [
