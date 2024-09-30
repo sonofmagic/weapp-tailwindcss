@@ -564,8 +564,26 @@ importers:
 
   apps/vite-native-skyline:
     devDependencies:
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.20(postcss@8.4.47)
+      miniprogram-api-typings:
+        specifier: latest
+        version: 4.0.1
+      postcss:
+        specifier: ^8.4.47
+        version: 8.4.47
+      tailwindcss:
+        specifier: ^3.4.13
+        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))
+      typescript:
+        specifier: latest
+        version: 5.6.2
+      weapp-tailwindcss:
+        specifier: ^3.5.3
+        version: 3.5.3(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2)))
       weapp-vite:
-        specifier: ^1.2.5
+        specifier: latest
         version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
 
   apps/vite-native-ts:
@@ -610,8 +628,8 @@ importers:
         specifier: latest
         version: 5.6.2
       weapp-tailwindcss:
-        specifier: workspace:*
-        version: link:../../packages/weapp-tailwindcss
+        specifier: ^3.5.3
+        version: 3.5.3(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2)))
       weapp-vite:
         specifier: latest
         version: 1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1)
@@ -12951,6 +12969,11 @@ packages:
     resolution: {integrity: sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==}
     peerDependencies:
       tailwindcss: ^3.0.0
+
+  weapp-tailwindcss@3.5.3:
+    resolution: {integrity: sha512-NnVJDIQ1wptu1uXaQuNJ5egNCyWTrh5SzxlMQ1Ter7pGcuRwU2GyuOQw1rmgms8bB5sXGarfb9TbOLJUx5iqzg==}
+    engines: {node: '>=16.6.0'}
+    hasBin: true
 
   weapp-vite@1.2.5:
     resolution: {integrity: sha512-b0/crj7Hp4/AA6T85ozo912ZW2VqEWH2wnwlCX2Y50uH9hpmlpqk+yUaQXu0aC4i6WjaViFm/baCRVVLl1Sp3w==}
@@ -27016,6 +27039,27 @@ snapshots:
       - magicast
       - supports-color
 
+  tailwindcss-patch@4.0.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))):
+    dependencies:
+      '@babel/generator': 7.24.10
+      '@babel/parser': 7.24.8
+      '@babel/traverse': 7.24.8
+      '@babel/types': 7.24.9
+      '@tailwindcss-mangle/config': 3.0.0(magicast@0.3.5)
+      cac: 6.7.14
+      consola: 3.2.3
+      fs-extra: 11.2.0
+      jiti: 1.21.6
+      lilconfig: 3.1.2
+      postcss: 8.4.47
+      resolve: 1.22.8
+      semver: 7.6.3
+    optionalDependencies:
+      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))
+    transitivePeerDependencies:
+      - magicast
+      - supports-color
+
   tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
@@ -28133,6 +28177,36 @@ snapshots:
   weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))):
     dependencies:
       tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))
+
+  weapp-tailwindcss@3.5.3(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2))):
+    dependencies:
+      '@ast-core/escape': 1.0.1
+      '@babel/generator': 7.25.6
+      '@babel/parser': 7.25.6
+      '@babel/traverse': 7.25.6
+      '@babel/types': 7.25.6
+      '@csstools/postcss-is-pseudo-class': 4.0.8(postcss@8.4.47)
+      '@tailwindcss-mangle/shared': 3.0.0
+      '@weapp-core/escape': 2.1.0
+      '@weapp-core/regex': 1.0.1
+      consola: 3.2.3
+      debug: 4.3.7
+      htmlparser2: 9.1.0
+      loader-utils: 2.0.4
+      lru-cache: 10.4.3
+      magic-string: 0.30.11
+      md5: 2.3.0
+      npm-registry-fetch: 17.1.0
+      postcss: 8.4.47
+      postcss-rem-to-responsive-pixel: 6.0.2
+      postcss-selector-parser: 6.1.2
+      semver: 7.6.3
+      tailwindcss-patch: 4.0.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2)))
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - magicast
+      - supports-color
+      - tailwindcss
 
   weapp-vite@1.2.5(jiti@2.0.0)(picomatch@4.0.2)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.4)(stylus@0.63.0)(terser@5.34.1))(yaml@2.5.1):
     dependencies:
