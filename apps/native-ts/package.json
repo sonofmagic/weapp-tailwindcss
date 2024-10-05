@@ -23,7 +23,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.9",
+    "@types/lodash": "^4.17.10",
     "@weapp-tailwindcss/cli": "workspace:*",
     "miniprogram-api-typings": "^4.0.1",
     "tailwindcss": "^3.4.13",
