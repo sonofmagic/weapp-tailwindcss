@@ -15,10 +15,16 @@ describe('init', () => {
       pkgJsonBasename: 'package.test.json',
       fetchOptions,
     })
-    expect(await fs.exists(path.resolve(cwd, defaults.postcssConfigBasename))).toBe(true)
-    expect(await fs.exists(path.resolve(cwd, defaults.tailwindConfigBasename))).toBe(true)
-    expect(await fs.exists(path.resolve(cwd, 'package.test.json'))).toBe(true)
-    const json = await fs.readJSON(path.resolve(cwd, 'package.test.json'))
+    const postcssConfigPath = path.resolve(cwd, defaults.postcssConfigBasename)
+    expect(await fs.exists(postcssConfigPath)).toBe(true)
+    expect(await fs.readFile(postcssConfigPath, 'utf8')).toMatchSnapshot('postcssConfig')
+    const tailwindConfigPath = path.resolve(cwd, defaults.tailwindConfigBasename)
+    expect(await fs.exists(tailwindConfigPath)).toBe(true)
+    expect(await fs.readFile(tailwindConfigPath, 'utf8')).toMatchSnapshot('tailwindConfig')
+    const pkgJsonPath = path.resolve(cwd, 'package.test.json')
+    expect(await fs.exists(pkgJsonPath)).toBe(true)
+    const json = await fs.readJSON(pkgJsonPath)
+    expect(json).toMatchSnapshot('pkgJson')
     for (const [key, value] of Object.entries(defaultDevDeps)) {
       const version = get(json, `devDependencies.${key}`) as string
       expect(version.slice(1).startsWith(value)).toBe(true)
@@ -32,10 +38,16 @@ describe('init', () => {
       pkgJsonBasename: 'package.test.json',
       fetchOptions,
     })
-    expect(await fs.exists(path.resolve(cwd, defaults.postcssConfigBasename))).toBe(true)
-    expect(await fs.exists(path.resolve(cwd, defaults.tailwindConfigBasename))).toBe(true)
-    expect(await fs.exists(path.resolve(cwd, 'package.test.json'))).toBe(true)
-    const json = await fs.readJSON(path.resolve(cwd, 'package.test.json'))
+    const postcssConfigPath = path.resolve(cwd, defaults.postcssConfigBasename)
+    expect(await fs.exists(postcssConfigPath)).toBe(true)
+    expect(await fs.readFile(postcssConfigPath, 'utf8')).toMatchSnapshot('postcssConfig')
+    const tailwindConfigPath = path.resolve(cwd, defaults.tailwindConfigBasename)
+    expect(await fs.exists(tailwindConfigPath)).toBe(true)
+    expect(await fs.readFile(tailwindConfigPath, 'utf8')).toMatchSnapshot('tailwindConfig')
+    const pkgJsonPath = path.resolve(cwd, 'package.test.json')
+    expect(await fs.exists(pkgJsonPath)).toBe(true)
+    const json = await fs.readJSON(pkgJsonPath)
+    expect(json).toMatchSnapshot('pkgJson')
     for (const [key, value] of Object.entries(defaultDevDeps)) {
       const version = get(json, `devDependencies.${key}`) as string
       expect(version.slice(1).startsWith(value)).toBe(true)

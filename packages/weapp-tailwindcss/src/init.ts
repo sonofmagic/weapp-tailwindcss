@@ -55,8 +55,9 @@ export async function touchPostcssConfig(ctx: Context) {
     tailwindcss: {},
     // 假如框架已经内置了 \`autoprefixer\`，可以去除下一行
     autoprefixer: {},
-  }
-}`
+  },
+}
+`
 
   await fs.writeFile(path.resolve(ctx.cwd, ctx.postcssConfigBasename), data)
 }
@@ -66,14 +67,16 @@ export async function touchTailwindConfig(ctx: Context) {
 ${ctx.type === 'module' ? 'export default ' : 'module.exports = '}{
   // 这里给出了一份 uni-app /taro 通用示例，具体要根据你自己项目的目录结构进行配置
   // 不在 content 包括的文件内，你编写的 class，是不会生成对应的css工具类的
-  content: ['./public/index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],
+  content: ['./public/index.html', './src/**/*.{wxml,html,js,ts,jsx,tsx,vue}'],
   // 其他配置项
   // ...
   corePlugins: {
-    // 小程序不需要 preflight，因为这主要是给 h5 的，如果你要同时开发小程序和 h5 端，你应该使用环境变量来控制它
+    // 小程序不需要 preflight 和 container，因为这主要是给 h5 的，如果你要同时开发小程序和 h5 端，你应该使用环境变量来控制它
     preflight: false,
+    container: false,
   },
-}`
+}
+`
   await fs.writeFile(path.resolve(ctx.cwd, ctx.tailwindConfigBasename), data)
 }
 
@@ -94,11 +97,11 @@ export async function init(options?: CreateContextOptions) {
   const ctx = await createContext(opts)
   if (ctx) {
     await updatePackageJson(ctx)
-    logger.success('package.json 文件修改完成！')
+    logger.success('`package.json` 文件修改完成！')
     await touchPostcssConfig(ctx)
-    logger.success('postcss.config.js 文件创建完成！')
+    logger.success('`postcss.config.js` 文件创建完成！')
     await touchTailwindConfig(ctx)
-    logger.success('tailwind.config.js 文件创建完成！')
-    logger.success('weapp-tailwindcss 初始化完成！请根据你自定义的需求，更改对应的配置文件(比如 tailwind.config.js 中的 content 配置)')
+    logger.success('`tailwind.config.js` 文件创建完成！')
+    logger.success('`weapp-tailwindcss` 初始化完成！请根据你自定义的需求，更改对应的配置文件(比如 `tailwind.config.js` 中的 `content` 配置)')
   }
 }
