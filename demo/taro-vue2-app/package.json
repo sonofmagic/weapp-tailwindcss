@@ -86,7 +86,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "6.10.0",
     "eslint": "^8.57.0",
-    "eslint-config-taro": "3.6.32",
+    "eslint-config-taro": "3.6.35",
     "eslint-plugin-vue": "^9.26.0",
     "postcss": "^8.4.38",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
