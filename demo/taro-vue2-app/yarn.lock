@@ -2185,6 +2185,15 @@
     "@tarojs/runtime" "3.6.32"
     "@tarojs/shared" "3.6.32"
 
+"@tarojs/api@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/api/-/api-3.6.35.tgz#45bfa3046af747255aa57d21e56f2b5532fff096"
+  integrity sha512-RTyI09J2kgQBhjd0H/JtFsWygFIGYUFly88qm+ozQWxsgr9BTOSDpb94eQ/i9OZNFEXxGk8EGk1aLeoqKYOSaw==
+  dependencies:
+    "@babel/runtime" "^7.14.5"
+    "@tarojs/runtime" "3.6.35"
+    "@tarojs/shared" "3.6.35"
+
 "@tarojs/binding-darwin-arm64@3.6.35":
   version "3.6.35"
   resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-arm64/-/binding-darwin-arm64-3.6.35.tgz#848ab6d015db4b3398a7bfd4405ab7f96aa6b8a6"
@@ -2586,10 +2595,26 @@
     "@tarojs/helper" "3.6.32"
     scss-bundle "^3.0.2"
 
+"@tarojs/runner-utils@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/runner-utils/-/runner-utils-3.6.35.tgz#781af8795f0c1ace6522c8b7e9f32421d1c9f973"
+  integrity sha512-0Kax3kZJJv4RkfxlR1CTYGsXYc1elnJOP2SKlX0LMmChwgTyD+zcYzaEvIoHuoOA7CCjNKtgYrB0CSd4Xs2X4Q==
+  dependencies:
+    "@tarojs/helper" "3.6.35"
+    scss-bundle "^3.0.2"
+
 "@tarojs/runtime@3.6.32":
   version "3.6.32"
   resolved "https://registry.npmmirror.com/@tarojs/runtime/-/runtime-3.6.32.tgz#8bd64ea90161918aaee79058d454ad90fe495def"
   integrity sha512-1W46qkKaSEU9NctryijvE4jgVJA83jBRrKBickmiRKFdoS36CmxN/djm6N1ae9NSp/95xldQzM/aTTQfLf4e3g==
+  dependencies:
+    lodash-es "4.17.21"
+    tslib "^2.6.2"
+
+"@tarojs/runtime@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/runtime/-/runtime-3.6.35.tgz#f807b3278dc412681c1081793da5d1edaf881482"
+  integrity sha512-W8DbKfsChflWoSplYYf8IcWEemjPt6lwTATJn0YzLqSAWhtVfsQ8I5+Dw8qZVzdBxUwJI6WEywOgDgfxUQ0EEg==
   dependencies:
     lodash-es "4.17.21"
     tslib "^2.6.2"
@@ -2672,6 +2697,15 @@
     "@tarojs/taro" "3.6.32"
     loader-utils "^1.2.3"
 
+"@tarojs/taro-loader@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/taro-loader/-/taro-loader-3.6.35.tgz#3d1206aedd7242a93a3d36d3541b721be28e4de8"
+  integrity sha512-MvJzduehY6qZvqMiySe9E380ie+U9mmI3GTmrDy74fT5kF8IiQsGNNIJiiFOjGHLi/KcJWbDgj7I7vpqju7miw==
+  dependencies:
+    "@tarojs/helper" "3.6.35"
+    "@tarojs/taro" "3.6.35"
+    loader-utils "^1.2.3"
+
 "@tarojs/taro@3.6.32":
   version "3.6.32"
   resolved "https://registry.npmmirror.com/@tarojs/taro/-/taro-3.6.32.tgz#4070df07b64180e4e3388c59672e5ca81beb80c0"
@@ -2679,17 +2713,24 @@
   dependencies:
     "@tarojs/api" "3.6.32"
 
-"@tarojs/webpack-runner@3.6.32":
-  version "3.6.32"
-  resolved "https://registry.npmmirror.com/@tarojs/webpack-runner/-/webpack-runner-3.6.32.tgz#6c5f9b04d3dbaa14f00c66e5d7ed29e738d3a306"
-  integrity sha512-AjZSm9+QXXTZ5DA+CwpQ2CqwMA1r9tORrSvTQvoKJSr0ZQHBbLz320kQvy1Ki4f7Xqijqy4g7JJLhrcEskGyoQ==
+"@tarojs/taro@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/taro/-/taro-3.6.35.tgz#bbc055c81f4e10f99da213d662c00ec4908bbf62"
+  integrity sha512-yT75itfSXwNN6yHgSm0R1M1QXBfiuhFSd16J3PC39uqGwBMshhkWtEqE1zRBhzHK/sIi4Npjrvo3pnYsHIaCKA==
+  dependencies:
+    "@tarojs/api" "3.6.35"
+
+"@tarojs/webpack-runner@3.6.35":
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/@tarojs/webpack-runner/-/webpack-runner-3.6.35.tgz#5d0297eaefd79c2dd01361adb400d1f765409270"
+  integrity sha512-I3zqwyLzRAmchvyFfeJWqMAaO5LOUKyr/b63mNuk15DLxgB7kV/hGx5kivLR3Y9nIKoq3Z8SndP5lfWvaNXD6A==
   dependencies:
     "@open-wc/webpack-import-meta-loader" "^0.4.7"
-    "@tarojs/helper" "3.6.32"
-    "@tarojs/runner-utils" "3.6.32"
-    "@tarojs/runtime" "3.6.32"
-    "@tarojs/taro" "3.6.32"
-    "@tarojs/taro-loader" "3.6.32"
+    "@tarojs/helper" "3.6.35"
+    "@tarojs/runner-utils" "3.6.35"
+    "@tarojs/runtime" "3.6.35"
+    "@tarojs/taro" "3.6.35"
+    "@tarojs/taro-loader" "3.6.35"
     acorn-walk "^8.0.0"
     autoprefixer "^9.7.4"
     babel-loader "8.2.1"
@@ -2705,11 +2746,11 @@
     mini-css-extract-plugin "0.9.0"
     open "7.0.2"
     ora "^5.0.0"
-    postcss-html-transform "3.6.32"
+    postcss-html-transform "3.6.35"
     postcss-import "12.0.1"
     postcss-loader "4.3.0"
-    postcss-plugin-constparse "3.6.32"
-    postcss-pxtransform "3.6.32"
+    postcss-plugin-constparse "3.6.35"
+    postcss-pxtransform "3.6.35"
     postcss-url "8.0.0"
     resolve "^1.22.0"
     resolve-url-loader "3.1.3"
@@ -12908,6 +12949,11 @@ postcss-html-transform@3.6.32:
   resolved "https://registry.npmmirror.com/postcss-html-transform/-/postcss-html-transform-3.6.32.tgz#46f624f6cd77881f755030beb5da2f60b28cbd66"
   integrity sha512-f9tF1+RbdCkoO6zGqxVOznHcNjCaxSRp8Rw3Nn02mKhdm8iu0uGk5ziWzQ3GV8r8RVNfuRkY2MpAlQadAIArTg==
 
+postcss-html-transform@3.6.35:
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/postcss-html-transform/-/postcss-html-transform-3.6.35.tgz#51062b7ea8b53da40c6b1a81313b2042efa3d3de"
+  integrity sha512-aeiiwSl4UJCLLBY5AI8+z5fh0DfYXeHThWmnuVstyWwQfCqtwIDN0y9CUHiF9Pw7x2A4xjthMONj2rT7/WylDw==
+
 postcss-import@12.0.1:
   version "12.0.1"
   resolved "https://registry.npmmirror.com/postcss-import/-/postcss-import-12.0.1.tgz#cf8c7ab0b5ccab5649024536e565f841928b7153"
@@ -13163,10 +13209,20 @@ postcss-plugin-constparse@3.6.32:
   resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-3.6.32.tgz#9d98d7b295f7bc7f1cb135b62148ee9d5df1629e"
   integrity sha512-P6UZqSUQ8eoBdcVpSRCR9Tz9OIBUcU8LPuRYT3un2XDwjhvcUAqjxczRhW9okBb8+3QhiLB/4k2vEqxalPpfgA==
 
+postcss-plugin-constparse@3.6.35:
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-3.6.35.tgz#e31a27b4ca2fbc159a5ef7eefab5b295b3733f4c"
+  integrity sha512-rCxXBteevyIheyk/zf562kFPynDKa8BtsTNjBIe/mSL9jc448YeFXcx7aSRhSO75xOQEVkNotxUH4KxnXMcIMg==
+
 postcss-pxtransform@3.6.32:
   version "3.6.32"
   resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-3.6.32.tgz#808dba4cdb8ff0aa1acefe22a02666340ac523f2"
   integrity sha512-LEzh2nrq5zQPRtkZiGSlDnYwNjswOmgs2lvwJbVAGMIkxDtkxRzZa6qrskDq1QuKFC49kWRYnYuGHkScfOX6dw==
+
+postcss-pxtransform@3.6.35:
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-3.6.35.tgz#0b90f008ec214d7cf4b7fbf2edce28daea4ac1e2"
+  integrity sha512-6zNAf7Wa8F/IyHM5HLAYaDBNzxDnOTkYI1aFDkdGbDmLH8+0lMxSVVQdqHHykW5FFzfL9lAWMwfi67PAXdxrYg==
 
 postcss-reduce-initial@^5.1.0:
   version "5.1.0"
