@@ -46,7 +46,7 @@
   resolved "https://registry.npmmirror.com/@babel/compat-data/-/compat-data-7.25.7.tgz#b8479fe0018ef0ac87b6b7a5c6916fcd67ae2c9c"
   integrity sha512-9ickoLz+hcXCeh7jrcin+/SLWm+GkxE2kTvoYyp38p4WkdFXfQJxDFGWp/YHjiKLPx06z2A7W8XKuqbReXDzsw==
 
-"@babel/core@^7.14.5", "@babel/core@^7.22.9", "@babel/core@^7.24.4", "@babel/core@^7.24.5":
+"@babel/core@^7.14.5", "@babel/core@^7.22.9", "@babel/core@^7.24.4", "@babel/core@^7.25.2":
   version "7.25.7"
   resolved "https://registry.npmmirror.com/@babel/core/-/core-7.25.7.tgz#1b3d144157575daf132a3bc80b2b18e6e3ca6ece"
   integrity sha512-yJ474Zv3cwiSOO9nXJuqzvwEeM+chDuQ8GJirw+pZ91sCGCyOZ3dJkVE09fTV0VEVzXyLWhh3G/AolYTPX7Mow==
@@ -967,19 +967,19 @@
   dependencies:
     "@babel/plugin-transform-react-jsx" "^7.25.7"
 
-"@babel/plugin-transform-react-jsx-self@^7.24.5":
-  version "7.24.7"
-  resolved "https://registry.npmmirror.com/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.24.7.tgz#66bff0248ea0b549972e733516ffad577477bdab"
-  integrity sha512-fOPQYbGSgH0HUp4UJO4sMBFjY6DuWq+2i8rixyUMb3CdGixs/gccURvYOAhajBdKDoGajFr3mUq5rH3phtkGzw==
+"@babel/plugin-transform-react-jsx-self@^7.24.7":
+  version "7.25.7"
+  resolved "https://registry.npmmirror.com/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.25.7.tgz#3d11df143131fd8f5486a1f7d3839890f88f8c85"
+  integrity sha512-JD9MUnLbPL0WdVK8AWC7F7tTG2OS6u/AKKnsK+NdRhUiVdnzyR1S3kKQCaRLOiaULvUiqK6Z4JQE635VgtCFeg==
   dependencies:
-    "@babel/helper-plugin-utils" "^7.24.7"
+    "@babel/helper-plugin-utils" "^7.25.7"
 
-"@babel/plugin-transform-react-jsx-source@^7.24.1":
-  version "7.24.7"
-  resolved "https://registry.npmmirror.com/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.24.7.tgz#1198aab2548ad19582013815c938d3ebd8291ee3"
-  integrity sha512-J2z+MWzZHVOemyLweMqngXrgGC42jQ//R0KdxqkIz/OrbVIIlhFI3WigZ5fO+nwFvBlncr4MGapd8vTyc7RPNQ==
+"@babel/plugin-transform-react-jsx-source@^7.24.7":
+  version "7.25.7"
+  resolved "https://registry.npmmirror.com/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.25.7.tgz#a0d8372310d5ea5b0447dfa03a8485f960eff7be"
+  integrity sha512-S/JXG/KrbIY06iyJPKfxr0qRxnhNOdkNXYBl/rmwgDd72cQLH9tEGkDm/yJPGvcSIUoikzfjMios9i+xT/uv9w==
   dependencies:
-    "@babel/helper-plugin-utils" "^7.24.7"
+    "@babel/helper-plugin-utils" "^7.25.7"
 
 "@babel/plugin-transform-react-jsx@^7.25.7":
   version "7.25.7"
@@ -1335,15 +1335,30 @@
   resolved "https://registry.npmmirror.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-2.7.1.tgz#6d93a8f7d8aeb7cd9ed0868f946e46f021b6aa70"
   integrity sha512-2SJS42gxmACHgikc1WGesXLIT8d/q2l0UFM7TaEeIzdFCE/FPMtTiizcPGGJtlPo2xuQzY09OhrLTzRxqJqwGw==
 
+"@csstools/css-parser-algorithms@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-3.0.1.tgz#f14ade63bae5f6025ac85c7d03fe47a7ca0e58af"
+  integrity sha512-lSquqZCHxDfuTg/Sk2hiS0mcSFCEBuj49JfzPHJogDBT0mGCyY5A1AQzBWngitrp7i1/HAZpIgzF/VjhOEIJIg==
+
 "@csstools/css-tokenizer@^2.4.1":
   version "2.4.1"
   resolved "https://registry.npmmirror.com/@csstools/css-tokenizer/-/css-tokenizer-2.4.1.tgz#1d8b2e200197cf5f35ceb07ca2dade31f3a00ae8"
   integrity sha512-eQ9DIktFJBhGjioABJRtUucoWR2mwllurfnM8LuNGAqX3ViZXaUchqk+1s7jjtkFiT9ySdACsFEA3etErkALUg==
 
+"@csstools/css-tokenizer@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/@csstools/css-tokenizer/-/css-tokenizer-3.0.1.tgz#9dd9b10084f3011290f96789598091e5bcb3c29a"
+  integrity sha512-UBqaiu7kU0lfvaP982/o3khfXccVlHPWp0/vwwiIgDF0GmqqqxoiXC/6FCjlS9u92f7CoEz6nXKQnrn1kIAkOw==
+
 "@csstools/media-query-list-parser@^2.1.13":
   version "2.1.13"
   resolved "https://registry.npmmirror.com/@csstools/media-query-list-parser/-/media-query-list-parser-2.1.13.tgz#f00be93f6bede07c14ddf51a168ad2748e4fe9e5"
   integrity sha512-XaHr+16KRU9Gf8XLi3q8kDlI18d5vzKSKCY510Vrtc9iNR0NJzbY9hhTmwhzYZj/ZwGL4VmB3TA9hJW0Um2qFA==
+
+"@csstools/media-query-list-parser@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/@csstools/media-query-list-parser/-/media-query-list-parser-3.0.1.tgz#9474e08e6d7767cf68c56bf1581b59d203360cb0"
+  integrity sha512-HNo8gGD02kHmcbX6PvCoUuOQvn4szyB9ca63vZHKX5A81QytgDG4oxG4IaEfHTlEZSZ6MjPEMWIVU+zF2PZcgw==
 
 "@csstools/postcss-is-pseudo-class@~4.0.8":
   version "4.0.8"
@@ -1357,6 +1372,11 @@
   version "3.1.1"
   resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-3.1.1.tgz#63085d2995ca0f0e55aa8b8a07d69bfd48b844fe"
   integrity sha512-a7cxGcJ2wIlMFLlh8z2ONm+715QkPHiyJcxwQlKOz/03GPw1COpfhcmC9wm4xlZfp//jWHNNMwzjtqHXVWU9KA==
+
+"@csstools/selector-specificity@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-4.0.0.tgz#7dfccb9df5499e627e7bfdbb4021a06813a45dba"
+  integrity sha512-189nelqtPd8++phaHNwYovKZI0FOzH1vQEE3QhHHkNIGrg5fSs9CbYP3RvfEH5geztnIA9Jwq91wyOIwAW5JIQ==
 
 "@dual-bundle/import-meta-resolve@^4.1.0":
   version "4.1.0"
@@ -1970,53 +1990,53 @@
   resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-3.0.0.tgz#8a60fa4168da0069c62fba75f212864ac796c54b"
   integrity sha512-h1ateiRm/o0JvRsD5755dyS4H1RPE5sgeyEAOorLGVkGvNawkACtM+0MsiD/ZFNgrfQ7aYDD+DF/dV/8LN5Lmw==
 
-"@tarojs/api@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/api/-/api-4.0.4.tgz#9cc00a376d28be46c60f0abd6bf372fdeba40ea5"
-  integrity sha512-G4iicwV6Y4QRLhC53cvZxo3EJvnPHtIJ+/tA56UkXWG4pJlBDR+qQoVA6boYbpaU1fi7Yqbs5NWTZlhfyMT5hA==
+"@tarojs/api@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/api/-/api-4.0.6.tgz#f9b0c700a4360b73a59d17b508515ed6e3497f8d"
+  integrity sha512-kcvFYb6S5BMrpejnmLtlWRUtc21E7EQqmeSjV4ZEO7OuCWiIaFXZL/24f8D8W30HtTktLWN3WumMfvGP8Jhtmg==
 
-"@tarojs/binding-darwin-arm64@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-arm64/-/binding-darwin-arm64-4.0.4.tgz#036c90dd48e019ae0669ba844c44b2927b745939"
-  integrity sha512-TppITAcdUPGTriiIF/xKK4hTc5QRn/9GLqCTuRysFwSwZNUhI+++GOYvvaqH2karpjZ6pg3BRYgNEUE9fMCvFA==
+"@tarojs/binding-darwin-arm64@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-arm64/-/binding-darwin-arm64-4.0.6.tgz#35581788612f3489f07d355398f2da53841c516c"
+  integrity sha512-d3SqopFz6aGQIMX/OHTNwGNayRthlMlAGdsTFudx2zOvMp+zZvFOcDeUy9NudnBYNFL3i34DYjSIoxwuJOuiyg==
 
-"@tarojs/binding-darwin-x64@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-x64/-/binding-darwin-x64-4.0.4.tgz#7f6aa474485d1066ee24f4753b0f80f5d3cbc4a7"
-  integrity sha512-z/e3FbJWpX/0O0D7wmyTZxHysYCHBFpAPfudfL5vRmG7+bCPRpHIfH9Laq9PfJIPwkfjbyx71XD+X3VgnVxOTQ==
+"@tarojs/binding-darwin-x64@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-darwin-x64/-/binding-darwin-x64-4.0.6.tgz#f517b693d318dc86b391e499464a0a44b48c7a33"
+  integrity sha512-5kaDTlIOV6V1baV6o8u3fhOyG9xBOIP+szPlowk7t05h3mO6vdz/PwHSoCjDSKNKV8orCCBsdpZXuc8ZiXA9qA==
 
-"@tarojs/binding-linux-x64-gnu@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-linux-x64-gnu/-/binding-linux-x64-gnu-4.0.4.tgz#5bdeeae4498d346e8afce14c5ab9a628e0d3ba6f"
-  integrity sha512-jO6Tz4gS2pJ875c/O9RBZp1ZxA6o+OJ3KhPEXFfQDq+b3yzZ6/ToSOlxMdySpM7kRQhkN6r1knHSQ3UCTqd5Vg==
+"@tarojs/binding-linux-x64-gnu@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-linux-x64-gnu/-/binding-linux-x64-gnu-4.0.6.tgz#8de052b9515e114ada95610924faeb2f23e7bc04"
+  integrity sha512-2HSN17fUOOVOeCGyx4UUunhxlccmg7Gdm3bcN1R907qSfHohooemZwfdxWvfAvXJTq5pPMLm5nkUK7oro6JCgg==
 
-"@tarojs/binding-win32-x64-msvc@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/binding-win32-x64-msvc/-/binding-win32-x64-msvc-4.0.4.tgz#2a8731c1a1f781a5a063d7553d72149aa8b45e92"
-  integrity sha512-+IrHwV9QhAcmu/6CKuut07GPJj0nqvHR7cGuxzhGjSoPnM/q1vuplS21pVb+oDj9xGhjCHFXpTn7NRwWZP0sZw==
+"@tarojs/binding-win32-x64-msvc@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/binding-win32-x64-msvc/-/binding-win32-x64-msvc-4.0.6.tgz#c47e3239ccc5d4330a988dba3eee2ac7abaa35d0"
+  integrity sha512-yvBL+x7V7wz3eBG7Tf3SuYc7YkZY3sGDNJbOUVUZ9nGPubok94b5qLxPh/BD2dbZgz8dMtcED/6QhrBdFOsQLw==
 
-"@tarojs/binding@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/binding/-/binding-4.0.4.tgz#f93a91aad1e77f0680f23b149917ee10c400c76c"
-  integrity sha512-2HDHvlXlc5XX1P5vCdPcpoAw/VVkcGBAblmlM1hbUH7/mMRzc0RlJlqT93TTR/JuoQfLjoAuJC7g4BOK4D2YLg==
+"@tarojs/binding@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/binding/-/binding-4.0.6.tgz#d80659c2e4f0b077022e3261b4c6bb8ef6a4e31f"
+  integrity sha512-HVA4bOSrkRiyVIm0ro2Jfiehk22PwPgV7ooKxX6KVliKqUWyUfURUR9e0uNAFN/jRypM+wUR8Jyoirp9w29HkQ==
   dependencies:
     "@napi-rs/triples" "1.2.0"
   optionalDependencies:
-    "@tarojs/binding-darwin-arm64" "4.0.4"
-    "@tarojs/binding-darwin-x64" "4.0.4"
-    "@tarojs/binding-linux-x64-gnu" "4.0.4"
-    "@tarojs/binding-win32-x64-msvc" "4.0.4"
+    "@tarojs/binding-darwin-arm64" "4.0.6"
+    "@tarojs/binding-darwin-x64" "4.0.6"
+    "@tarojs/binding-linux-x64-gnu" "4.0.6"
+    "@tarojs/binding-win32-x64-msvc" "4.0.6"
 
-"@tarojs/cli@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/cli/-/cli-4.0.4.tgz#11fcd65c14c72e55f79dd5d86b044609b2a139db"
-  integrity sha512-WdWsJSGDHMLC2cXVaf3endNxwWdctX0goFRFv8zQB3Ombb8D1lWAQrjhYGAaXvwZNMNAc/TCHncbDZvnx8iOHw==
+"@tarojs/cli@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/cli/-/cli-4.0.6.tgz#149552df79abc609f1d2143eaa6f7dfbcf6b56ae"
+  integrity sha512-H26i2kWKUq1Hj1E3CjZwPsaI70tpwf41kY3OO2v3neJzry91676HWQXqWUTYSfadPdYKDAHZAIUsPEoaN5neaA==
   dependencies:
-    "@tarojs/binding" "4.0.4"
-    "@tarojs/helper" "4.0.4"
+    "@tarojs/binding" "4.0.6"
+    "@tarojs/helper" "4.0.6"
     "@tarojs/plugin-doctor" "^0.0.13"
-    "@tarojs/service" "4.0.4"
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/service" "4.0.6"
+    "@tarojs/shared" "4.0.6"
     adm-zip "^0.5.12"
     axios "^1.6.8"
     cli-highlight "^2.1.11"
@@ -2029,50 +2049,50 @@
     semver "^7.6.0"
     validate-npm-package-name "^5.0.0"
 
-"@tarojs/components-advanced@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/components-advanced/-/components-advanced-4.0.4.tgz#2bf7dc3685dcb1d09a1afefee368052c49e701b9"
-  integrity sha512-hmiU3U1R3eGyOR8gi4JvOMQfULnsY7BjPCzwYA+lSpMVXpR9Pmv78OujqkHucoO4tp3ciyzx4lVUFvlPfKqz3A==
+"@tarojs/components-advanced@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/components-advanced/-/components-advanced-4.0.6.tgz#40d6dc576a587d4dc3308471c99d269ef81f1006"
+  integrity sha512-YLfeIr3J/DIaThWQaMRrvINRX8LrhOGhAAyH5zWwQkknFZb1bAdjjpoWR8mHGzzfM9XT9V+9nZqqSQuJ60F9+w==
   dependencies:
-    "@tarojs/components" "4.0.4"
+    "@tarojs/components" "4.0.6"
     classnames "^2.2.5"
     csstype "^3.1.1"
     memoize-one "^6.0.0"
     tslib "^2.6.2"
 
-"@tarojs/components-react@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/components-react/-/components-react-4.0.4.tgz#2e06dd5fcc1f3faa68154c724e95ea0634ae51a1"
-  integrity sha512-zbaKCWrwqtM6vDtfjdN9/GBkVS2CwNU1sQDxoJGlVpCownzer6u4R9wDHUSeouO/wxgkHtefMK8EltOi+DX3vA==
+"@tarojs/components-react@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/components-react/-/components-react-4.0.6.tgz#a96e46a99b7cab5f5e321956e9b23726bb1736c6"
+  integrity sha512-Ght6vjSIeSmCbgD32dykccYBafiwpzz5Klbwi67cTxkcyRjxVqaVsEX/idTvOcFmR0ZAa2QrCR1rkc0vjk0yxQ==
   dependencies:
     "@babel/runtime" "^7.24.4"
-    "@tarojs/components" "4.0.4"
-    "@tarojs/shared" "4.0.4"
-    "@tarojs/taro" "4.0.4"
+    "@tarojs/components" "4.0.6"
+    "@tarojs/shared" "4.0.6"
+    "@tarojs/taro" "4.0.6"
     classnames "^2.2.5"
-    swiper "6.8.0"
+    swiper "11.1.0"
     tslib "^2.6.2"
 
-"@tarojs/components@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/components/-/components-4.0.4.tgz#ba234abb5d286c1cf8c91f15495e29a31e3942bd"
-  integrity sha512-FFW+1wF4YjP2elIpXAKut9KQOtiE+dbqCXHUjpUJ0S9o0Jt6BWfmHRWWUFsGWJ9jz2t2/yGSV6bLIf9eiNihAQ==
+"@tarojs/components@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/components/-/components-4.0.6.tgz#5429bdbc9123d0bdd8f35e15a00cf84bad2413a5"
+  integrity sha512-mnMihKlKoE306fHdJyMBdeKdsIaQn7NihI4WOg6PTNcYjBxiiI5AlwkBi1umIaQouoX+WlKP8QHuRh1NRtshIA==
   dependencies:
     "@stencil/core" "2.22.3"
-    "@tarojs/components-advanced" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/taro" "4.0.4"
+    "@tarojs/components-advanced" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/taro" "4.0.6"
     classnames "^2.2.5"
     hammerjs "^2.0.8"
     hls.js "^1.1.5"
     resolve-pathname "^3.0.0"
-    swiper "6.8.0"
+    swiper "11.1.0"
     tslib "^2.6.2"
 
-"@tarojs/helper@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/helper/-/helper-4.0.4.tgz#931750cfb0e618b82bc51877ff867d0b20857525"
-  integrity sha512-BUwyuUZfxs+Jq2TsgbNfTM2VUNaqoXSrQmL2ek4xO9FQ0MZl+keIxL/HWrCCFU1tt2hlFaIreIhJpS34IhDUXg==
+"@tarojs/helper@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/helper/-/helper-4.0.6.tgz#bc884c0996a81938a03ac1e99f4594df315edabf"
+  integrity sha512-E1Uq7OEQx21JwOnl4V0Yr+Id6cL+RdUgHytPMIEpxXhUGZZjNIp9FdiGAs1ENc2eOGB97m3Uj7Mocrh5vEfVaA==
   dependencies:
     "@babel/core" "^7.24.4"
     "@babel/generator" "^7.24.4"
@@ -2237,56 +2257,56 @@
     "@tarojs/plugin-doctor-win32-ia32-msvc" "0.0.13"
     "@tarojs/plugin-doctor-win32-x64-msvc" "0.0.13"
 
-"@tarojs/plugin-framework-react@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-framework-react/-/plugin-framework-react-4.0.4.tgz#19ee4d6b853e57060a7484350ee4b6010a59658b"
-  integrity sha512-3tA+y4VVZPMtPa0bzeFgNj5DyF6CQK+4xgK/n0O2bxZb7GXZxn6M5jGX49DJIrTfKpkU7Xctpg0CVzWfqOY6yA==
+"@tarojs/plugin-framework-react@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-framework-react/-/plugin-framework-react-4.0.6.tgz#f13a19c45952d1a6c267c0a576485f765f28f5ac"
+  integrity sha512-t8fUVSnwN/IrOFAeIml3dp1FsKGIiP5v8zMOxK0iyw3mPnk6FtBs7f31G+Hu0WnaNLnQ6tsyIiVd5SWYiYErHw==
   dependencies:
     acorn "^8.11.3"
     acorn-walk "^8.3.2"
     lodash "^4.17.21"
     tslib "^2.6.2"
 
-"@tarojs/plugin-platform-alipay@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-alipay/-/plugin-platform-alipay-4.0.4.tgz#1afd4955e4e7d81ccb531bcd01898b49c8505731"
-  integrity sha512-iCX3Ub0hfQDfR1Len3EJhDm3G0v6SUWzALjwBglAbBgSNP11gVoItk9tkaY/viabC8nfwD1H4hBOz/aCKim/Fw==
+"@tarojs/plugin-platform-alipay@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-alipay/-/plugin-platform-alipay-4.0.6.tgz#f6408b34614733e977f75c5e0a5c8dfc39833c31"
+  integrity sha512-8gutRunN+ckixsBhPQKRyS7fJoznV7Z4sXxxX0c8mFWG8m0eaEVVQfXy1YmIKKfrGr8iOH4MMrHjdoHFWl6xEQ==
 
-"@tarojs/plugin-platform-h5@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-h5/-/plugin-platform-h5-4.0.4.tgz#4309e651d9981f124e8316b908bb008b897f8d09"
-  integrity sha512-+CyX9LUS0w4/WLMJB3LVFx7aKbNWKeSq3Nmylfop6gSdbSj9ZjqQ8KxDQagS+3L+V4qFQupc5gQ+T1kH0T52Wg==
+"@tarojs/plugin-platform-h5@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-h5/-/plugin-platform-h5-4.0.6.tgz#b70ba50a0a436a72ebd7603858da143a7d99ea85"
+  integrity sha512-H6aRktX6Ze8ogVeRcvWvtbZ5BsOt/RnlYdQhAYJVTs4JhEzmxpQ2WRXMiRZ/MaCWjPJazpCIUIZweryYIIIStQ==
   dependencies:
     "@babel/core" "^7.14.5"
-    "@tarojs/components" "4.0.4"
-    "@tarojs/components-react" "4.0.4"
-    "@tarojs/helper" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/service" "4.0.4"
-    "@tarojs/shared" "4.0.4"
-    "@tarojs/taro-h5" "4.0.4"
-    babel-plugin-transform-taroapi "4.0.4"
+    "@tarojs/components" "4.0.6"
+    "@tarojs/components-react" "4.0.6"
+    "@tarojs/helper" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/service" "4.0.6"
+    "@tarojs/shared" "4.0.6"
+    "@tarojs/taro-h5" "4.0.6"
+    babel-plugin-transform-taroapi "4.0.6"
     change-case "^4.1.2"
     lodash-es "4.17.21"
     tslib "^2.6.2"
 
-"@tarojs/plugin-platform-harmony-hybrid@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-harmony-hybrid/-/plugin-platform-harmony-hybrid-4.0.4.tgz#245b929921dd93a0df85d2e292ded2b79aab438a"
-  integrity sha512-D7mMh6HIpSiia8HIiosD/NUEwZFDnKM+zBAd7iUOTO/3JYYYl23uLuZ5Ui/xCOsFohoUnt0l2d5ylRmFEhrEeA==
+"@tarojs/plugin-platform-harmony-hybrid@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-harmony-hybrid/-/plugin-platform-harmony-hybrid-4.0.6.tgz#c6c50e4a95976d1f24a6320fb2d45f9b55bc0916"
+  integrity sha512-7Mna5pXpwQaDyf5KOpFvdCa228xRRrDQsVfUIEifTYn2UiTnT1ltpFqDQoJzJ6iCW78jfAo84Nbcq0DYyAlCkQ==
   dependencies:
-    "@tarojs/api" "4.0.4"
-    "@tarojs/components" "4.0.4"
-    "@tarojs/components-react" "4.0.4"
-    "@tarojs/helper" "4.0.4"
-    "@tarojs/plugin-platform-h5" "4.0.4"
-    "@tarojs/router" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/service" "4.0.4"
-    "@tarojs/shared" "4.0.4"
-    "@tarojs/taro-h5" "4.0.4"
+    "@tarojs/api" "4.0.6"
+    "@tarojs/components" "4.0.6"
+    "@tarojs/components-react" "4.0.6"
+    "@tarojs/helper" "4.0.6"
+    "@tarojs/plugin-platform-h5" "4.0.6"
+    "@tarojs/router" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/service" "4.0.6"
+    "@tarojs/shared" "4.0.6"
+    "@tarojs/taro-h5" "4.0.6"
     axios "^1.6.8"
-    babel-plugin-transform-taroapi "4.0.4"
+    babel-plugin-transform-taroapi "4.0.6"
     base64-js "^1.5.1"
     change-case "^4.1.2"
     jsonp-retry "^1.0.3"
@@ -2294,46 +2314,46 @@
     query-string "^9.0.0"
     whatwg-fetch "^3.6.20"
 
-"@tarojs/plugin-platform-jd@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-jd/-/plugin-platform-jd-4.0.4.tgz#0d3ecc2455ae45b6fa5e90aa682f504d3b7f6b10"
-  integrity sha512-e+YxhC07hPdk8erO2DMW0um2zXmAIhDSHGVFgv9ye/D8UHgUM2DJ1QHZhTTyAk/Pti8tcbjxquaB51CH/boAfQ==
+"@tarojs/plugin-platform-jd@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-jd/-/plugin-platform-jd-4.0.6.tgz#95d17834dfd2e66f0d630ee23cbce75f61ed3559"
+  integrity sha512-wu/OsbUR8Qb0hWLrA01f4A5qWRtxz0ykNsVxzxJpzcLeEwZRbOjnBAtKuVl98e7EcoXib7Eim0UtqYnmnUTjXQ==
 
-"@tarojs/plugin-platform-qq@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-qq/-/plugin-platform-qq-4.0.4.tgz#06b25bf9547678d2870b180cfeee21ca936bf230"
-  integrity sha512-N+IXsUdve8McNNQNdNHLmrrxc/yNZOgEU762mB6HtUT45NwZ9PnjKmPHignfoQ9DaA0J/1EDvJr1RNmnVvpuqw==
+"@tarojs/plugin-platform-qq@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-qq/-/plugin-platform-qq-4.0.6.tgz#0c0a6c764201e26def9772a5d6653042c87b143f"
+  integrity sha512-cR0lmOV3pJ4QTcxWv+GjOXgFljGBdXIuHGMLXF5YmsO7B6yqn/nugeGRLzWt+4S4u4pufImbd91YDApHHqtZ+w==
   dependencies:
-    "@tarojs/plugin-platform-weapp" "4.0.4"
+    "@tarojs/plugin-platform-weapp" "4.0.6"
 
-"@tarojs/plugin-platform-swan@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-swan/-/plugin-platform-swan-4.0.4.tgz#d35c99baa985d28fd2baab64d47c4eafaae6e44b"
-  integrity sha512-fV5sV5iny8+IQxbpgooqnOynHd7DeHKfSRjdFx3mPkZmMrMP8WPUonTMnfHP2GO4KpTRIG8oUsVP8ekiWI93qw==
+"@tarojs/plugin-platform-swan@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-swan/-/plugin-platform-swan-4.0.6.tgz#d8aa97aa69c04369dc5c7d214d5cb04918ea43e4"
+  integrity sha512-pjfhZhI6MV8qmEBesH6/Q1+96Uninc83D648oOXRHUNfN2/vuoHQuH0TxiW2JSC5qV4qdpIr/uGOvjEtYhu6kA==
 
-"@tarojs/plugin-platform-tt@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-tt/-/plugin-platform-tt-4.0.4.tgz#637536f375eadb8ab2f3f32ac3d0590caa03b49c"
-  integrity sha512-au9bP+567GF+/RYV+kEUYP1f1vQQfuPe7k1KE8WIDhbkm9u2d8WKriLgDC1JX3w/d1y4zstr534k51Do5BIy8A==
+"@tarojs/plugin-platform-tt@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-tt/-/plugin-platform-tt-4.0.6.tgz#e2a36038cc0533bdd5a229319907ff8bdf011bb0"
+  integrity sha512-q+BIGk7aTtwgVxcPtgoKcxvjR9AMi+7f8CG2TCONFqjzoPysCBVfpwiFt+gGQoficmi93F4B1quDUjf4KPcWVw==
 
-"@tarojs/plugin-platform-weapp@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-weapp/-/plugin-platform-weapp-4.0.4.tgz#c0810b3d82a670504ffd9f0bef4bdbb60ac2f3a1"
-  integrity sha512-XucA5Ov1mTtQwzn7nGXqVjKN3vjzz3RoaQBXqa6pXMmg9Xa0+KAf65+eA5aqHHmaRQSarRzFQa8LQ7SwaTI4Iw==
+"@tarojs/plugin-platform-weapp@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-platform-weapp/-/plugin-platform-weapp-4.0.6.tgz#817a10602ba101578041a0bbb2569a260d80426e"
+  integrity sha512-FdChNqnlM5xnta24mQvEdbNJeqf4/PeodkcBYKWiKHOCn9ufFpYc4bvvEy9unXPjqh0MN7jdc1yLcedQE8EfjQ==
 
-"@tarojs/react@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/react/-/react-4.0.4.tgz#36005f8cb8988be1d6ff85ded9406dc1cf8f203d"
-  integrity sha512-wN39Aia4beOGgWWffhXdKRlR8l+KNmat03Atthmif3VJGyAIBtOJonwNxJwS8mEeymgL+cRg5eVftXBBKpWLew==
+"@tarojs/react@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/react/-/react-4.0.6.tgz#fe7781430f3e16c659defe1d050ba7fb9e67c579"
+  integrity sha512-qNtSF7ey0VgfiNIEdlOr160ijRR3oj/Z8TFPvLfRBZlGMTTOin+hSe08/jxnAyJQ3UfpGvrKEJO1muF20IZZIA==
   dependencies:
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/shared" "4.0.6"
     react-reconciler "0.29.0"
 
-"@tarojs/router@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/router/-/router-4.0.4.tgz#c7044971a28f84ce7f4d40b80aac1f075845b32e"
-  integrity sha512-hqQV2zUuFSM53QfLi4inlVBa4VpjHHu/orlD4afxxuV24hdZPUIP0Qbk3BUOl2vFU8H7IxqLDK+4GgLI/luOlw==
+"@tarojs/router@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/router/-/router-4.0.6.tgz#ec00f15e6c4abef01b7f1381d31ee682521d67d7"
+  integrity sha512-4fqBUM8DFu3YZjgPbgILndz9vYnSWSW7qoFtd2LnypEwE8scL5A6snPq4t75zH0QhAeavr4B+vhBtTwn+nQ3LA==
   dependencies:
     dingtalk-jsapi "~2.15.2"
     history "^5.3.0"
@@ -2342,31 +2362,31 @@
     tslib "^2.6.2"
     universal-router "^9.2.0"
 
-"@tarojs/runner-utils@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/runner-utils/-/runner-utils-4.0.4.tgz#c1f52be3fec35273ed033b17f8c0e4115371a580"
-  integrity sha512-FwoJLxgXwBrQ4mPz/9xaBx3ibs7cubbw1rKbDwRUjPzoHq5DNV3JvLIc8ISvSbx6qnJixWOQEwRHMW3LkCsfJw==
+"@tarojs/runner-utils@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/runner-utils/-/runner-utils-4.0.6.tgz#b11683286409d31c2f01b017136a0bf96426240e"
+  integrity sha512-FPyqpiSotXFMiWxl/UhcyzbbbKKEsxEpAd8ce/BQOa/PPybl/baU8SiSgDHKXb1j8Tx/uZhd4KLsM5hfDIa87Q==
   dependencies:
-    "@tarojs/helper" "4.0.4"
+    "@tarojs/helper" "4.0.6"
     rollup "^3.29.4"
     scss-bundle "^3.1.2"
 
-"@tarojs/runtime@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/runtime/-/runtime-4.0.4.tgz#74978f64a098a61408b85bb79c7603d015b46fb4"
-  integrity sha512-By6aDhEwfVz+G0Kz7+hoX4SDBX/lE1uu9FIwUdVFHRHD7sXNSC8HoHYpNVK5sz8tpwpUVQVU2BPAYythJxcCKg==
+"@tarojs/runtime@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/runtime/-/runtime-4.0.6.tgz#c175a03508f49d7ac24b469cdb3201ebd5533772"
+  integrity sha512-9Z0+HNYvNqVcyZT+YKOxNqKlUHH1qtzkXw2iaQ8bwSmruGQrGkuGBSfs2qykYnWthVgE9F7XjXfUN08LIPVSlw==
   dependencies:
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/shared" "4.0.6"
     tslib "^2.6.2"
 
-"@tarojs/service@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/service/-/service-4.0.4.tgz#dc5c64aa907ac95ec4121f5a17a3c001724e81af"
-  integrity sha512-KYB+yqmjTf0AVgaal6Q9AGIDxFjQ/KH3AsNAGdbIPPJZuQ/IXmSIs5aqxYlYIBK3RPzgLY9SjzLt3fXZ7OgwcA==
+"@tarojs/service@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/service/-/service-4.0.6.tgz#6ff76b4d8678885da224ddecc987d4f8921244d5"
+  integrity sha512-iyZSz8P+lR++uz7CNopotlCP+PUSmdSFybPUIfdglYYCJ8MRB+wLY6j/3Pu9ofu4zSiy53PMCOJxu7n6KBV3ww==
   dependencies:
-    "@tarojs/helper" "4.0.4"
-    "@tarojs/runner-utils" "4.0.4"
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/helper" "4.0.6"
+    "@tarojs/runner-utils" "4.0.6"
+    "@tarojs/shared" "4.0.6"
     joi "^17.12.3"
     lodash "^4.17.21"
     ora "^5.4.1"
@@ -2374,21 +2394,21 @@
     tapable "^2.2.1"
     webpack-merge "^5.10.0"
 
-"@tarojs/shared@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-4.0.4.tgz#513250e268432fd0897e8ff74bdec8a074b27ee8"
-  integrity sha512-iktpJwyxC1U1lHhVZbhyNd0XXyr3DM8QwYqBiBtaxE8qX0Wsm4STgFSAKODgguAqjrLgBxwoXcmFziBR7UZk3g==
+"@tarojs/shared@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-4.0.6.tgz#ff897805a4e6bd0254d40577f93b4c9cc99391b9"
+  integrity sha512-E+L/W7+7yXWOUM/lKlbeoO6YdID8A6A9TFv27zsIgD9gNsenV4WrUSCfVuswYg1REFsK44WOJZBJh4sX6AVQ0g==
 
-"@tarojs/taro-h5@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/taro-h5/-/taro-h5-4.0.4.tgz#92603425e246d808400a896a757981e5f45a769f"
-  integrity sha512-057xfTSUMPjJ58x7py38i7/u9LNOs0QdiUcRo7lqSXznG+EPSV5VzzdJld5VuCsAVwUWA0JnK/RsR9annhx75w==
+"@tarojs/taro-h5@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/taro-h5/-/taro-h5-4.0.6.tgz#ee57adfebb6ec38b9c6a8fdb2407a5911c0e4715"
+  integrity sha512-aX7mqYRf+sxmmN7HtKY4MQOgXuhfRmnYNLpF5JF8SC1cp8QJi/MJXz5FUpcsWUahwF85K6FhYYGf4XSPGDaGcg==
   dependencies:
-    "@tarojs/api" "4.0.4"
-    "@tarojs/components" "4.0.4"
-    "@tarojs/router" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/api" "4.0.6"
+    "@tarojs/components" "4.0.6"
+    "@tarojs/router" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/shared" "4.0.6"
     abortcontroller-polyfill "^1.7.5"
     base64-js "^1.5.1"
     ics "^3.7.2"
@@ -2400,19 +2420,19 @@
     tslib "^2.6.2"
     whatwg-fetch "^3.6.20"
 
-"@tarojs/taro@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/taro/-/taro-4.0.4.tgz#bfcfabfbbc0748bed40cf9930effdf8a2c85fe92"
-  integrity sha512-kXnpyGq/q68qbQiC+9A/JxjcJDHRTlmKMNpEq8fYTtn/FlDeLaNNMQNEzQZDrbCJYmOF+LmDyXJ1ToAuI0aiQQ==
+"@tarojs/taro@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/taro/-/taro-4.0.6.tgz#ba8f84bf222d8117a1e8079bc940c4a676b0afa5"
+  integrity sha512-MYBUwuTK7fesmH0hisBtpebNkYFWnHFL3hGNQ9cceixxuwjoDl5NQ0dxJWBJbH5iwfzxnWjuV1nmNP1XkW89Eg==
   dependencies:
-    "@tarojs/api" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
+    "@tarojs/api" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
     "@types/postcss-url" "^10.0.4"
 
-"@tarojs/vite-runner@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/vite-runner/-/vite-runner-4.0.4.tgz#56559e44932af48b9ae21e3ebdd6fc90a2da6f67"
-  integrity sha512-NerHaLUrqROptyetUD8AOfhNsf8nIzp9HBkODbIIAz+oksT15DjWimbxiZErktNNUhGavkTqbYuYaQ8vWvXt4A==
+"@tarojs/vite-runner@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/vite-runner/-/vite-runner-4.0.6.tgz#6d1be253b450f2b78505ea5c2271cd87a780e089"
+  integrity sha512-gcJnVoG8Lg+pKqKQEUdHiW/MA0g3wNXObGXw+QezeJUpUwyHslsMjbsxALfg1i9/KAq76KS9uiAQSaW6mpHAhw==
   dependencies:
     "@ampproject/remapping" "^2.3.0"
     "@babel/core" "^7.24.4"
@@ -2420,15 +2440,15 @@
     "@rollup/plugin-inject" "^5.0.5"
     "@rollup/plugin-terser" "^0.4.4"
     "@rollup/pluginutils" "^5.1.0"
-    "@tarojs/helper" "4.0.4"
+    "@tarojs/helper" "4.0.6"
     "@tarojs/parse-css-to-stylesheet" "^0.0.69"
-    "@tarojs/runner-utils" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/runner-utils" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/shared" "4.0.6"
     "@vitejs/plugin-legacy" "^4.1.1"
     acorn-walk "^8.3.2"
     autoprefixer "^10.4.19"
-    babel-plugin-transform-taroapi "4.0.4"
+    babel-plugin-transform-taroapi "4.0.6"
     connect-history-api-fallback "^2.0.0"
     fast-glob "^3.3.2"
     html-minifier "^4.0.0"
@@ -2438,12 +2458,12 @@
     mrmime "^2.0.0"
     picomatch "^4.0.2"
     postcss-css-variables "^0.19.0"
-    postcss-html-transform "4.0.4"
+    postcss-html-transform "4.0.6"
     postcss-import "^16.1.0"
     postcss-load-config "^5.0.3"
     postcss-modules "^6.0.0"
-    postcss-plugin-constparse "4.0.4"
-    postcss-pxtransform "4.0.4"
+    postcss-plugin-constparse "4.0.6"
+    postcss-pxtransform "4.0.6"
     regenerator-runtime "0.11"
     sax "1.2.4"
     stylelint "^16.4.0"
@@ -2571,10 +2591,10 @@
   resolved "https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.12.tgz#12bb1e2be27293c1406acb6af1c3f3a1481d98c6"
   integrity sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==
 
-"@types/react@^18.0.0":
-  version "18.3.3"
-  resolved "https://registry.npmmirror.com/@types/react/-/react-18.3.3.tgz#9679020895318b0915d7a3ab004d92d33375c45f"
-  integrity sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==
+"@types/react@^18.3.11":
+  version "18.3.11"
+  resolved "https://registry.npmmirror.com/@types/react/-/react-18.3.11.tgz#9d530601ff843ee0d7030d4227ea4360236bd537"
+  integrity sha512-r6QZ069rFTjrEYgFdOck1gK7FLVsgJE7tTz0pQBczlBNUhBNk0MQH4UbnFSwjpQLMkLzgqvBBa+qGpLje16eTQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -2703,14 +2723,14 @@
     regenerator-runtime "^0.13.11"
     systemjs "^6.14.1"
 
-"@vitejs/plugin-react@^4.3.0":
-  version "4.3.1"
-  resolved "https://registry.npmmirror.com/@vitejs/plugin-react/-/plugin-react-4.3.1.tgz#d0be6594051ded8957df555ff07a991fb618b48e"
-  integrity sha512-m/V2syj5CuVnaxcUJOQRel/Wr31FFXRFlnOoq1TVtkCxsY5veGMTEmpWHndrhB2U8ScHtCQB1e+4hWYExQc6Lg==
+"@vitejs/plugin-react@^4.3.2":
+  version "4.3.2"
+  resolved "https://registry.npmmirror.com/@vitejs/plugin-react/-/plugin-react-4.3.2.tgz#1e13f666fe3135b477220d3c13b783704636b6e4"
+  integrity sha512-hieu+o05v4glEBucTcKMK3dlES0OeJlD9YVOAPraVMOInBCwzumaIFiUjr4bHK7NPgnAHgiskUoceKercrN8vg==
   dependencies:
-    "@babel/core" "^7.24.5"
-    "@babel/plugin-transform-react-jsx-self" "^7.24.5"
-    "@babel/plugin-transform-react-jsx-source" "^7.24.1"
+    "@babel/core" "^7.25.2"
+    "@babel/plugin-transform-react-jsx-self" "^7.24.7"
+    "@babel/plugin-transform-react-jsx-source" "^7.24.7"
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.14.2"
 
@@ -3281,27 +3301,27 @@ babel-plugin-transform-imports-api@1.0.0:
   dependencies:
     is-invalid-path "^1.0.2"
 
-babel-plugin-transform-solid-jsx@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/babel-plugin-transform-solid-jsx/-/babel-plugin-transform-solid-jsx-4.0.4.tgz#eac91b47a350afcee5f2922bcf82e6a584cafd23"
-  integrity sha512-AOAqRhdudVxEZLVchDb2uYevx0y9k8wr0lJGXY8nsAD1xpsKzZmhCmqmLWxyc38WtvMI74PJeTAYTD9oD0XqUg==
+babel-plugin-transform-solid-jsx@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/babel-plugin-transform-solid-jsx/-/babel-plugin-transform-solid-jsx-4.0.6.tgz#5eefbd8d98597a3c4b7f85eef71976445d60089f"
+  integrity sha512-K4KnW83l54qRSpe7i2hMHhBdsB9/4jx36qYyibkZMSKAwukc8G6CFIImeIO5R6E8TAZ5pzHOSCAx9RoXWiFoAA==
   dependencies:
     "@babel/helper-module-imports" "7.18.6"
     "@babel/plugin-syntax-jsx" "^7.18.6"
     html-entities "2.3.3"
     validate-html-nesting "^1.2.1"
 
-babel-plugin-transform-taroapi@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/babel-plugin-transform-taroapi/-/babel-plugin-transform-taroapi-4.0.4.tgz#25484ec8d99e2265f63477ec957655d5f15d7103"
-  integrity sha512-K3fIqUD6bptSG6JzQWrQymkn6UpFjbvoM9NGka/oeB6Tq4O0lSsOcH0cKsiLaKHS2Ts6S4+BhAUh5zTJdR+USA==
+babel-plugin-transform-taroapi@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/babel-plugin-transform-taroapi/-/babel-plugin-transform-taroapi-4.0.6.tgz#efd3cb196317bed1eea0aff995a040f463b116e2"
+  integrity sha512-DmCyyYDdRr4dMNnnhO+BxJUEYviw8NWrr3x9W8zBhnbNyc397numZB4y1pzlPedTIdNLlgePKYWvuG0412utqw==
   dependencies:
     lodash "^4.17.21"
 
-babel-preset-taro@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/babel-preset-taro/-/babel-preset-taro-4.0.4.tgz#540a376645d3a6d65616337ffa296453a304dbb3"
-  integrity sha512-v8D7E1KRunBDdUmnp+v8/5H+k3cEAiGYY5tqYQVKJoguPRXOvwSlTzB7xs02Jl5H8eVHTnKjbuv4R6qK9cXLOw==
+babel-preset-taro@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/babel-preset-taro/-/babel-preset-taro-4.0.6.tgz#7bd449c6496557acc84531f4fd68dd18dfbf92d3"
+  integrity sha512-xSDnREUm6/mTFEZnNV19cq1e7vxQEbqaGGMw6RsJZZs0YeyE1tGa84aFfMR+qp5z7e1fBvmRX1qWzDITTyMWYA==
   dependencies:
     "@babel/plugin-proposal-decorators" "^7.24.1"
     "@babel/plugin-transform-class-properties" "^7.24.1"
@@ -3311,11 +3331,11 @@ babel-preset-taro@4.0.4:
     "@babel/runtime" "^7.24.4"
     "@babel/runtime-corejs3" "^7.24.4"
     "@rnx-kit/babel-preset-metro-react-native" "^1.1.8"
-    "@tarojs/helper" "4.0.4"
+    "@tarojs/helper" "4.0.6"
     babel-plugin-dynamic-import-node "^2.3.3"
     babel-plugin-minify-dead-code-elimination "^0.5.2"
     babel-plugin-transform-imports-api "1.0.0"
-    babel-plugin-transform-solid-jsx "4.0.4"
+    babel-plugin-transform-solid-jsx "4.0.6"
     core-js "^3.36.1"
 
 bach@^1.0.0:
@@ -3754,6 +3774,13 @@ chokidar@^2.0.0:
     upath "^1.1.1"
   optionalDependencies:
     fsevents "^1.2.7"
+
+chokidar@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.npmmirror.com/chokidar/-/chokidar-4.0.1.tgz#4a6dff66798fb0f72a94f616abbd7e1a19f31d41"
+  integrity sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==
+  dependencies:
+    readdirp "^4.0.1"
 
 chownr@^2.0.0:
   version "2.0.0"
@@ -4429,13 +4456,6 @@ dom-serializer@^2.0.0:
     domhandler "^5.0.2"
     entities "^4.2.0"
 
-dom7@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmmirror.com/dom7/-/dom7-3.0.0.tgz#b861ce5d67a6becd7aaa3ad02942ff14b1240331"
-  integrity sha512-oNlcUdHsC4zb7Msx7JN3K0Nro1dzJ48knvBOnDPKJ2GV9wl1i5vydJZUSyOfrkKFDZEud/jBsTk92S/VGSAe/g==
-  dependencies:
-    ssr-window "^3.0.0-alpha.1"
-
 domelementtype@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmmirror.com/domelementtype/-/domelementtype-2.3.0.tgz#5c45e8e869952626331d7aab326d01daf65d589d"
@@ -4845,10 +4865,10 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.npmmirror.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
-eslint-config-taro@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/eslint-config-taro/-/eslint-config-taro-4.0.4.tgz#9096bb312142695dc5a553cc863dde7649d6fadd"
-  integrity sha512-cXb25wlnGgp/LqjA6quyf2FJsKA1s/BXP+XtfsLD2nsCI2NSWrUVAi7VlWiEtqi7kgZHmfVPYA5b8Wah8aW3MQ==
+eslint-config-taro@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/eslint-config-taro/-/eslint-config-taro-4.0.6.tgz#94f4ffd07f086b242155c64a9de0bc2a7fe97c47"
+  integrity sha512-iTYeDVpYe0JUIP2IZmWoB5bqDB8tos2T1hKGnGlNhVTFDck25n0Q1YnbTsmri1dJ4hbGo827EKYB5Jcg9kaRSw==
   dependencies:
     "@babel/eslint-parser" "^7.24.1"
     "@typescript-eslint/eslint-plugin" "^6.2.0"
@@ -4899,10 +4919,10 @@ eslint-plugin-react-hooks@^4.4.0:
   resolved "https://registry.npmmirror.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.6.2.tgz#c829eb06c0e6f484b3fbb85a97e57784f328c596"
   integrity sha512-QzliNJq4GinDBcD8gPB5v0wh6g8q3SUi6EFF0x8N/BL9PoVs0atuGc47ozMRyOWAKdwaZ5OnbOEa3WR+dSGKuQ==
 
-eslint-plugin-react@^7.34.1:
-  version "7.35.0"
-  resolved "https://registry.npmmirror.com/eslint-plugin-react/-/eslint-plugin-react-7.35.0.tgz#00b1e4559896710e58af6358898f2ff917ea4c41"
-  integrity sha512-v501SSMOWv8gerHkk+IIQBkcGRGrO2nfybfj5pLxuJNFTPxxA3PSryhXTK+9pNbtkggheDdsC0E9Q8CuPk6JKA==
+eslint-plugin-react@^7.37.1:
+  version "7.37.1"
+  resolved "https://registry.npmmirror.com/eslint-plugin-react/-/eslint-plugin-react-7.37.1.tgz#56493d7d69174d0d828bc83afeffe96903fdadbd"
+  integrity sha512-xwTnwDqzbDRA8uJ7BMxPs/EXRB3i8ZfnOIp8BsxEQkT0nHPp+WWceqGgo6rKb9ctNi8GJLDT4Go5HAWELa/WMg==
   dependencies:
     array-includes "^3.1.8"
     array.prototype.findlast "^1.2.5"
@@ -6361,7 +6381,7 @@ ieee754@^1.1.13:
   resolved "https://registry.npmmirror.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
 
-ignore@^5.2.0, ignore@^5.2.4, ignore@^5.3.1:
+ignore@^5.2.0, ignore@^5.2.4, ignore@^5.3.1, ignore@^5.3.2:
   version "5.3.2"
   resolved "https://registry.npmmirror.com/ignore/-/ignore-5.3.2.tgz#3cd40e729f3643fd87cb04e50bf0eb722bc596f5"
   integrity sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==
@@ -7515,6 +7535,14 @@ micromatch@^4.0.2, micromatch@^4.0.4, micromatch@^4.0.5, micromatch@^4.0.7:
     braces "^3.0.3"
     picomatch "^2.3.1"
 
+micromatch@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.npmmirror.com/micromatch/-/micromatch-4.0.8.tgz#d66fa18f3a47076789320b9b1af32bd86d9fa202"
+  integrity sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==
+  dependencies:
+    braces "^3.0.3"
+    picomatch "^2.3.1"
+
 mime-db@1.52.0:
   version "1.52.0"
   resolved "https://registry.npmmirror.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
@@ -8473,10 +8501,10 @@ postcss-css-variables@^0.19.0:
     escape-string-regexp "^1.0.3"
     extend "^3.0.1"
 
-postcss-html-transform@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/postcss-html-transform/-/postcss-html-transform-4.0.4.tgz#0fa159c8b86de4ace45131b4d69260c54e96eafd"
-  integrity sha512-ahdyklZW4Oj+KUuLfTlhUhGGiwf2bZl091ulvDsHfa2bAeCA5Ko75gLXNFg0Q2CrOSvw2oeeMY0pE33kPO/E5g==
+postcss-html-transform@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/postcss-html-transform/-/postcss-html-transform-4.0.6.tgz#c23dd6f6a8968848aba83578bb47a439da26e57c"
+  integrity sha512-Qh0J6gaHwYgCym9rSOrSvBaJu315Z3jR+vCUfBpw98vyJcIQHNFNewML42NZScbFRqaRXuiHK6XaRDbH13ksIw==
 
 postcss-import@^15.1.0:
   version "15.1.0"
@@ -8575,22 +8603,22 @@ postcss-nested@^6.0.1:
   dependencies:
     postcss-selector-parser "^6.1.1"
 
-postcss-plugin-constparse@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-4.0.4.tgz#491fe7f0349146a5d272671c621552afc62d4a27"
-  integrity sha512-SjAY0C3xWghfUiqouecG89+gMHfv2seB8hUAelD75w1mWGEdEusUypV23s4+efxg4efrDbPvp2DwNVms28+8Ow==
+postcss-plugin-constparse@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-4.0.6.tgz#376d06f51e6f88eda8ff5d643357b0be539a8691"
+  integrity sha512-uB7zFypYqxqyam6kV1UzOehvxcP3JIhrIIBiEMZhQsCoC+jw8WEbvDbfZq3Ql8Kis5l7ffqjlW474g0EpTUEsg==
 
-postcss-pxtransform@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-4.0.4.tgz#ea7264b65b12053c7f18499adfbc255847a6d62d"
-  integrity sha512-InzfJDiswg0x18+oFlOLUqTd7Z3/pHrWLvrjrWfjmq/k6bUskHHTJva0fQh0W/AByGTYj0ckVKtJ37IN/dor0g==
+postcss-pxtransform@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-4.0.6.tgz#5ff03a97d658faec1cf0ca95734e80cdad38eac3"
+  integrity sha512-OZISN653pYMzX2LLpdKtSFGIT2sRi1TZj6AgOP+qMx2eXPUUWTEYk3BHSFgwtbwlF7WELZheNx/zWZ3PySje+Q==
 
 postcss-rem-to-responsive-pixel@^6.0.2, postcss-rem-to-responsive-pixel@~6.0.2:
   version "6.0.2"
   resolved "https://registry.npmmirror.com/postcss-rem-to-responsive-pixel/-/postcss-rem-to-responsive-pixel-6.0.2.tgz#f14b1de148adf677fc0301fcdbbbe595b51cd25b"
   integrity sha512-Qseol4vPNC+WJIzwU7AWXGc7pjcw+7c2YRh6bwpwz/4akmtL9Zu/mZ87yeaiGuqQaBgQy45266uxIBQY+BMUfQ==
 
-postcss-resolve-nested-selector@^0.1.4:
+postcss-resolve-nested-selector@^0.1.4, postcss-resolve-nested-selector@^0.1.6:
   version "0.1.6"
   resolved "https://registry.npmmirror.com/postcss-resolve-nested-selector/-/postcss-resolve-nested-selector-0.1.6.tgz#3d84dec809f34de020372c41b039956966896686"
   integrity sha512-0sglIs9Wmkzbr8lQwEyIzlDOOC9bGmfVKcJTaxv3vMmd3uo4o4DerC3En0bnmgceeql9BfC8hRkp7cg0fjdVqw==
@@ -8610,7 +8638,7 @@ postcss-scss@^4.0.9:
   resolved "https://registry.npmmirror.com/postcss-scss/-/postcss-scss-4.0.9.tgz#a03c773cd4c9623cb04ce142a52afcec74806685"
   integrity sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==
 
-postcss-selector-parser@^6.0.11, postcss-selector-parser@^6.0.13, postcss-selector-parser@^6.0.2, postcss-selector-parser@^6.0.4, postcss-selector-parser@^6.1.1, postcss-selector-parser@~6.1.2:
+postcss-selector-parser@^6.0.11, postcss-selector-parser@^6.0.13, postcss-selector-parser@^6.0.2, postcss-selector-parser@^6.0.4, postcss-selector-parser@^6.1.1, postcss-selector-parser@^6.1.2, postcss-selector-parser@~6.1.2:
   version "6.1.2"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.1.2.tgz#27ecb41fb0e3b6ba7a1ec84fff347f734c7929de"
   integrity sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==
@@ -8885,6 +8913,11 @@ readdirp@^2.2.1:
     graceful-fs "^4.1.11"
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
+
+readdirp@^4.0.1:
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/readdirp/-/readdirp-4.0.2.tgz#388fccb8b75665da3abffe2d8f8ed59fe74c230a"
+  integrity sha512-yDMz9g+VaZkqBYS/ozoBJwaBhTbZo3UNYQHNRw1D3UFQB8oHB4uS/tAODO+ZLjGWmUbKnIlOWO+aaIiAxrUWHA==
 
 readdirp@~3.6.0:
   version "3.6.0"
@@ -9231,12 +9264,21 @@ safe-regex@^1.1.0:
   resolved "https://registry.npmmirror.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sass@*, sass@^1.23.7, sass@^1.75.0:
+sass@*, sass@^1.23.7:
   version "1.77.8"
   resolved "https://registry.npmmirror.com/sass/-/sass-1.77.8.tgz#9f18b449ea401759ef7ec1752a16373e296b52bd"
   integrity sha512-4UHg6prsrycW20fqLGPShtEvo/WyHRVRHwOP4DzkUrObWoWI05QBSfzU71TVB7PFaL104TwNaHpjlWXAZbQiNQ==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
+    immutable "^4.0.0"
+    source-map-js ">=0.6.2 <2.0.0"
+
+sass@^1.79.4:
+  version "1.79.4"
+  resolved "https://registry.npmmirror.com/sass/-/sass-1.79.4.tgz#f9c45af35fbeb53d2c386850ec842098d9935267"
+  integrity sha512-K0QDSNPXgyqO4GZq2HO5Q70TLxTH6cIT59RdoCHMivrC8rqzaTw5ab9prjz9KUN1El4FLXrBXJhik61JR4HcGg==
+  dependencies:
+    chokidar "^4.0.0"
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
 
@@ -9604,11 +9646,6 @@ sprintf-js@^1.1.3:
   resolved "https://registry.npmmirror.com/sprintf-js/-/sprintf-js-1.1.3.tgz#4914b903a2f8b685d17fdf78a70e917e872e444a"
   integrity sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==
 
-ssr-window@^3.0.0, ssr-window@^3.0.0-alpha.1:
-  version "3.0.0"
-  resolved "https://registry.npmmirror.com/ssr-window/-/ssr-window-3.0.0.tgz#fd5b82801638943e0cc704c4691801435af7ac37"
-  integrity sha512-q+8UfWDg9Itrg0yWK7oe5p/XRCJpJF9OBtXfOPgSJl+u3Xd5KI328RUEvUqSMVM9CiQUEf1QdBzJMkYGErj9QA==
-
 ssri@^10.0.0:
   version "10.0.6"
   resolved "https://registry.npmmirror.com/ssri/-/ssri-10.0.6.tgz#a8aade2de60ba2bce8688e3fa349bad05c7dc1e5"
@@ -9881,6 +9918,51 @@ stylelint@^16.4.0:
     table "^6.8.2"
     write-file-atomic "^5.0.1"
 
+stylelint@^16.9.0:
+  version "16.9.0"
+  resolved "https://registry.npmmirror.com/stylelint/-/stylelint-16.9.0.tgz#81615c0608b9dc645486e08e35c6c9206e1ba132"
+  integrity sha512-31Nm3WjxGOBGpQqF43o3wO9L5AC36TPIe6030Lnm13H3vDMTcS21DrLh69bMX+DBilKqMMVLian4iG6ybBoNRQ==
+  dependencies:
+    "@csstools/css-parser-algorithms" "^3.0.1"
+    "@csstools/css-tokenizer" "^3.0.1"
+    "@csstools/media-query-list-parser" "^3.0.1"
+    "@csstools/selector-specificity" "^4.0.0"
+    "@dual-bundle/import-meta-resolve" "^4.1.0"
+    balanced-match "^2.0.0"
+    colord "^2.9.3"
+    cosmiconfig "^9.0.0"
+    css-functions-list "^3.2.2"
+    css-tree "^2.3.1"
+    debug "^4.3.6"
+    fast-glob "^3.3.2"
+    fastest-levenshtein "^1.0.16"
+    file-entry-cache "^9.0.0"
+    global-modules "^2.0.0"
+    globby "^11.1.0"
+    globjoin "^0.1.4"
+    html-tags "^3.3.1"
+    ignore "^5.3.2"
+    imurmurhash "^0.1.4"
+    is-plain-object "^5.0.0"
+    known-css-properties "^0.34.0"
+    mathml-tag-names "^2.1.3"
+    meow "^13.2.0"
+    micromatch "^4.0.8"
+    normalize-path "^3.0.0"
+    picocolors "^1.0.1"
+    postcss "^8.4.41"
+    postcss-resolve-nested-selector "^0.1.6"
+    postcss-safe-parser "^7.0.0"
+    postcss-selector-parser "^6.1.2"
+    postcss-value-parser "^4.2.0"
+    resolve-from "^5.0.0"
+    string-width "^4.2.3"
+    strip-ansi "^7.1.0"
+    supports-hyperlinks "^3.1.0"
+    svg-tags "^1.0.0"
+    table "^6.8.2"
+    write-file-atomic "^5.0.1"
+
 sucrase@^3.32.0:
   version "3.35.0"
   resolved "https://registry.npmmirror.com/sucrase/-/sucrase-3.35.0.tgz#57f17a3d7e19b36d8995f06679d121be914ae263"
@@ -9921,6 +10003,14 @@ supports-hyperlinks@^3.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
+supports-hyperlinks@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmmirror.com/supports-hyperlinks/-/supports-hyperlinks-3.1.0.tgz#b56150ff0173baacc15f21956450b61f2b18d3ac"
+  integrity sha512-2rn0BZ+/f7puLOHZm1HOJfwBggfaHXUpPUSSG/SWM4TWp5KCfmNYwnC3hruy2rZlMnmWZ+QAGpZfchu3f3695A==
+  dependencies:
+    has-flag "^4.0.0"
+    supports-color "^7.0.0"
+
 supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
@@ -9939,13 +10029,10 @@ svg-tags@^1.0.0:
   resolved "https://registry.npmmirror.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha512-ovssysQTa+luh7A5Weu3Rta6FJlFBBbInjOh722LIt6klpU2/HtdUbszju/G4devcvk8PGt7FCLv5wftu3THUA==
 
-swiper@6.8.0:
-  version "6.8.0"
-  resolved "https://registry.npmmirror.com/swiper/-/swiper-6.8.0.tgz#61c850f49ba778e403f00a01fe0b768bd85d0d20"
-  integrity sha512-6H3e7VOihasMp8sPXNhRDkc61UD0XeFlefbWfUHecBLBTtmA+9WxJiKDBMdzgetK1cny+5+mKfVcsmxYgnEDSw==
-  dependencies:
-    dom7 "^3.0.0"
-    ssr-window "^3.0.0"
+swiper@11.1.0:
+  version "11.1.0"
+  resolved "https://registry.npmmirror.com/swiper/-/swiper-11.1.0.tgz#3497b60d65d1320e427cdf11dfaad5c555283826"
+  integrity sha512-Pm78CgU7Wvg+w/MgIL/1NwMSLgx0XqFof25EnVyX8iZFCYJv5CppH7LHkBj43qW2k5Cp3Iz7FcdBxrox7XX2AQ==
 
 systemjs@^6.14.1:
   version "6.15.1"
@@ -10050,10 +10137,20 @@ tar@^6.1.11, tar@^6.2.0:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-terser@^5.17.4, terser@^5.30.4:
+terser@^5.17.4:
   version "5.31.6"
   resolved "https://registry.npmmirror.com/terser/-/terser-5.31.6.tgz#c63858a0f0703988d0266a82fcbf2d7ba76422b1"
   integrity sha512-PQ4DAriWzKj+qgehQ7LK5bQqCFNMmlhjR2PFFLuqGCpuCAauxemVBWwWOxo3UIwWQx8+Pr61Df++r76wDmkQBg==
+  dependencies:
+    "@jridgewell/source-map" "^0.3.3"
+    acorn "^8.8.2"
+    commander "^2.20.0"
+    source-map-support "~0.5.20"
+
+terser@^5.34.1:
+  version "5.34.1"
+  resolved "https://registry.npmmirror.com/terser/-/terser-5.34.1.tgz#af40386bdbe54af0d063e0670afd55c3105abeb6"
+  integrity sha512-FsJZ7iZLd/BXkz+4xrRTGJ26o/6VTjQytUk8b8OxkwcD2I+79VPJlz7qss1+zE7h8GNIScFqXcDyJ/KqBYZFVA==
   dependencies:
     "@jridgewell/source-map" "^0.3.3"
     acorn "^8.8.2"
@@ -10328,10 +10425,10 @@ typedarray@^0.0.6:
   resolved "https://registry.npmmirror.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^5.4.5:
-  version "5.5.4"
-  resolved "https://registry.npmmirror.com/typescript/-/typescript-5.5.4.tgz#d9852d6c82bad2d2eda4fd74a5762a8f5909e9ba"
-  integrity sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==
+typescript@^5.6.2:
+  version "5.6.2"
+  resolved "https://registry.npmmirror.com/typescript/-/typescript-5.6.2.tgz#d1de67b6bef77c41823f822df8f0b3bcff60a5a0"
+  integrity sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==
 
 ufo@^1.5.3:
   version "1.5.4"

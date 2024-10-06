@@ -1,5 +1,5 @@
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack');
-const bench = require('../bench')('rax');
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const bench = require('../bench')('rax')
 
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
@@ -11,11 +11,11 @@ module.exports = ({ context, onGetWebpackConfig }) => {
         rem2rpx: true,
         jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
         onStart() {
-          bench.start();
+          bench.start()
         },
         onEnd() {
-          bench.end();
-          bench.dump();
+          bench.end()
+          bench.dump()
         },
 
         // cssPreflight: {
@@ -23,6 +23,6 @@ module.exports = ({ context, onGetWebpackConfig }) => {
         //   'background': 'black'
         // }
       },
-    ]);
-  });
-};
+    ])
+  })
+}

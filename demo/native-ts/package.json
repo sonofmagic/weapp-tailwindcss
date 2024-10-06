@@ -15,7 +15,7 @@
   "dependencies": {},
   "devDependencies": {
     "@weapp-tailwindcss/cli": "^1.0.10",
-    "miniprogram-api-typings": "^3.12.2",
+    "miniprogram-api-typings": "^4.0.1",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
@@ -25,7 +25,7 @@
     "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "^3.5.3",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-vite": "^1.0.1"
+    "weapp-vite": "^1.4.4"
   },
   "packageManager": "yarn@1.22.22",
   "type": "module",
