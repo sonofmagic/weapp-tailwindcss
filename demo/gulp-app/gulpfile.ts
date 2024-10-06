@@ -1,19 +1,20 @@
-/* eslint-disable no-useless-escape */
-import path from 'path'
-import gulp from 'gulp'
-import dartSass from 'sass'
-import gulpSass from 'gulp-sass'
-import rename from 'gulp-rename'
+import type { Transform } from 'node:stream'
+import path from 'node:path'
+import process from 'node:process'
 import del from 'del'
-import replace from 'gulp-replace'
-import postcss from 'gulp-postcss'
-import gulpif from 'gulp-if'
-import gutil from 'gulp-util'
+import gulp from 'gulp'
 import debug from 'gulp-debug'
-import ts from 'gulp-typescript'
+import gulpif from 'gulp-if'
 import plumber from 'gulp-plumber'
-import type { Transform } from 'stream'
+import postcss from 'gulp-postcss'
+import rename from 'gulp-rename'
+import replace from 'gulp-replace'
+import gulpSass from 'gulp-sass'
+import ts from 'gulp-typescript'
+import gutil from 'gulp-util'
+import dartSass from 'sass'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
+
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
 // const isLocal = Boolean(process.env.LOCAL)
@@ -22,12 +23,12 @@ const useBabel = Boolean(process.env.BABEL)
 const platformMap = {
   weapp: {
     template: 'wxml',
-    css: 'wxss'
+    css: 'wxss',
   },
   tt: {
     template: 'ttml',
-    css: 'ttss'
-  }
+    css: 'ttss',
+  },
 }
 
 const platform = (process.env.PLATFORM ?? 'weapp') as keyof typeof platformMap
@@ -43,7 +44,7 @@ const tsProject = ts.createProject('tsconfig.json')
 // 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss ，然后转化 transformWxss， 然后 transformJs, transformWxml
 const { transformJs, transformWxml, transformWxss } = createPlugins({
   rem2rpx: true,
-  jsAstTool: useBabel ? 'babel' : 'ast-grep'
+  jsAstTool: useBabel ? 'babel' : 'ast-grep',
 })
 // {
 //   mangle: true
@@ -72,18 +73,18 @@ const paths = {
     assetsDir: 'src/assets',
     assetsImgFiles: 'src/assets/images/**/*.{png,jpg,jpeg,svg,gif}',
     wxmlFiles: `src/**/*.${platformHit.template}`,
-    jsFiles: 'src/**/*.{js,ts}'
+    jsFiles: 'src/**/*.{js,ts}',
   },
   dist: {
     baseDir: 'dist',
     imgDir: 'dist/image',
-    wxssFiles: `dist/**/*.${platformHit.css}`
+    wxssFiles: `dist/**/*.${platformHit.css}`,
   },
   tmp: {
     baseDir: 'tmp',
     imgDir: 'tmp/assets/images',
-    imgFiles: 'tmp/assets/images/**/*.{png,jpg,jpeg,svg,gif}'
-  }
+    imgFiles: 'tmp/assets/images/**/*.{png,jpg,jpeg,svg,gif}',
+  },
 }
 
 // Log for output msg.
@@ -95,14 +96,18 @@ function log(...args: any[]) {
 function sassCompile() {
   return gulp
     .src(paths.src.scssFiles)
-    .pipe(sass({ errLogToConsole: true, outputStyle: 'expanded' }).on('error', sass.logError))
+    .pipe(sass({
+      errLogToConsole: true,
+      outputStyle: 'expanded',
+      silenceDeprecations: ['legacy-js-api'],
+    }).on('error', sass.logError))
     .pipe(gulpif(isDebug, debug({ title: '`sassCompile` Debug:' })))
     .pipe(postcss())
     .pipe(transformWxss())
     .pipe(
       rename({
-        extname: `.${platformHit.css}`
-      })
+        extname: `.${platformHit.css}`,
+      }),
     )
     .pipe(replace('.scss', `.${platformHit.css}`))
     .pipe(gulp.dest(paths.dist.baseDir))
@@ -139,19 +144,22 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/').replace(extname, `.${platformHit.css}`)
       del([tmp])
-    } else {
+    }
+    else {
       sassCompile()
     }
   }
   // 图片文件
   else if (extname === '.png' || extname === '.jpg' || extname === '.jpeg' || extname === '.svg' || extname === '.gif') {
     if (type === 'removed') {
-      if (file.indexOf('assets') > -1) {
+      if (file.includes('assets')) {
         del([file.replace('src/', 'tmp/')])
-      } else {
+      }
+      else {
         del([file.replace('src/', 'dist/')])
       }
-    } else {
+    }
+    else {
       // do sth
     }
   }
@@ -161,17 +169,20 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
-    } else {
+    }
+    else {
       // @ts-ignore
       await promisify(sassCompile())
       // @ts-ignore
       await promisify(copyWXML())
     }
-  } else if (extname === '.js' || extname === '.ts') {
+  }
+  else if (extname === '.js' || extname === '.ts') {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
-    } else {
+    }
+    else {
       // @ts-ignore
       await promisify(sassCompile())
       // @ts-ignore
@@ -184,7 +195,8 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
       del([tmp])
-    } else {
+    }
+    else {
       copyBasicFiles()
     }
   }
@@ -192,18 +204,18 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
 
 // 监听文件
 function watch() {
-  const watcher = gulp.watch([paths.src.baseDir, paths.tmp.imgDir], { ignored: /[\/\\]\./ })
+  const watcher = gulp.watch([paths.src.baseDir, paths.tmp.imgDir], { ignored: /[/\\]\./ })
   watcher
-    .on('change', function (file) {
-      log(gutil.colors.yellow(file) + ' is changed')
+    .on('change', (file) => {
+      log(`${gutil.colors.yellow(file)} is changed`)
       watchHandler('changed', file)
     })
-    .on('add', function (file) {
-      log(gutil.colors.yellow(file) + ' is added')
+    .on('add', (file) => {
+      log(`${gutil.colors.yellow(file)} is added`)
       watchHandler('add', file)
     })
-    .on('unlink', function (file) {
-      log(gutil.colors.yellow(file) + ' is deleted')
+    .on('unlink', (file) => {
+      log(`${gutil.colors.yellow(file)} is deleted`)
       watchHandler('removed', file)
     })
 }

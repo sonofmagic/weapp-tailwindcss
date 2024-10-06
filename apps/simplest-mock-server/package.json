@@ -18,7 +18,7 @@
     "express": "^4.21.0",
     "gulp": "^5.0.0",
     "gulp-nodemon": "^2.5.0",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.8",
     "mockjs": "^1.1.0",
     "morgan": "^1.10.0",
     "rd": "^2.0.1"

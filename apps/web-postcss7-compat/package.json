@@ -25,8 +25,8 @@
     "tailwindcss-patch": "^4.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^9",
-    "postcss7": "npm:postcss@7",
+    "autoprefixer": "^9.8.8",
+    "postcss7": "npm:postcss@^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "weapp-tailwindcss": "workspace:^"
   }
