@@ -82,7 +82,7 @@
     "@vue/babel-preset-jsx": "^1.2.4",
     "@weapp-tailwindcss/cli": "^1.0.10",
     "autoprefixer": "^10.4.19",
-    "babel-preset-taro": "3.6.32",
+    "babel-preset-taro": "3.6.35",
     "cross-env": "^7.0.3",
     "css-loader": "6.10.0",
     "eslint": "^8.57.0",
