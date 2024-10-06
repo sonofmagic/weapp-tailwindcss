@@ -6472,9 +6472,9 @@ minipass@^7.0.2, minipass@^7.0.3, minipass@^7.1.2:
   integrity sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==
 
 miniprogram-api-typings@^3.12.2:
-  version "3.12.2"
-  resolved "https://registry.npmmirror.com/miniprogram-api-typings/-/miniprogram-api-typings-3.12.2.tgz#88f9a43e5a7ab9162d848feee0e876f9bae52585"
-  integrity sha512-OJB2uVAfhycX4teG/zEVpoThushQqLOx946XACDpVc6OQydiJWjn7djVzvNCbv0VOA7sbHGPQp/RkXD9vMCDEw==
+  version "3.12.3"
+  resolved "https://registry.npmmirror.com/miniprogram-api-typings/-/miniprogram-api-typings-3.12.3.tgz#b42e45d79f99fe9afabb9c3be6053b5fe081139e"
+  integrity sha512-o7bOfrU28MEMCBWo83nXv0ROQSBFxJcfCl4f2wTYqah64ipC5RGqLJfvWJTWhlQt2ECVwspSzM8LgvnfMo7TEQ==
 
 miniprogram-computed@^4.4.0:
   version "4.4.0"
