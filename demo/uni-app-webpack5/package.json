@@ -85,7 +85,7 @@
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.23.3",
-    "@babel/runtime": "~7.24.0",
+    "@babel/runtime": "~7.25.0",
     "@dcloudio/types": "^3.4.8",
     "@dcloudio/uni-automator": "2.0.2-4010520240507001",
     "@dcloudio/uni-cli-i18n": "2.0.2-4010520240507001",
@@ -127,7 +127,7 @@
     "ios >= 9"
   ],
   "resolutions": {
-    "@babel/runtime": "~7.17.9"
+    "@babel/runtime": "~7.25.0"
   },
   "uni-app": {
     "scripts": {}
