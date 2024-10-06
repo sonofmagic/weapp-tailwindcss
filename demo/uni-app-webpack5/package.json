@@ -106,7 +106,7 @@
     "jest": "^25.4.0",
     "mini-css-extract-plugin": "^2.8.1",
     "mini-types": "*",
-    "miniprogram-api-typings": "3.12.2",
+    "miniprogram-api-typings": "3.12.3",
     "postcss-comment": "^2.0.0",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",

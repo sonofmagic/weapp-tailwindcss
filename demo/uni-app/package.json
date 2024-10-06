@@ -106,7 +106,7 @@
     "cross-env": "^7.0.2",
     "jest": "^25.4.0",
     "mini-types": "*",
-    "miniprogram-api-typings": "3.12.2",
+    "miniprogram-api-typings": "3.12.3",
     "postcss": "8.4.35",
     "postcss-comment": "^2.0.0",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
