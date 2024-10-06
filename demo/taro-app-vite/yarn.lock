@@ -2096,6 +2096,33 @@
     resolve "^1.22.8"
     supports-hyperlinks "^3.0.0"
 
+"@tarojs/helper@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/helper/-/helper-4.0.6.tgz#bc884c0996a81938a03ac1e99f4594df315edabf"
+  integrity sha512-E1Uq7OEQx21JwOnl4V0Yr+Id6cL+RdUgHytPMIEpxXhUGZZjNIp9FdiGAs1ENc2eOGB97m3Uj7Mocrh5vEfVaA==
+  dependencies:
+    "@babel/core" "^7.24.4"
+    "@babel/generator" "^7.24.4"
+    "@babel/parser" "^7.24.4"
+    "@babel/traverse" "^7.24.1"
+    "@babel/types" "^7.24.0"
+    "@swc/core" "1.3.96"
+    "@swc/register" "0.1.10"
+    ansi-escapes "^4.3.2"
+    chalk "^4.1.2"
+    chokidar "^3.6.0"
+    cross-spawn "^7.0.3"
+    debug "^4.3.4"
+    dotenv "^16.4.5"
+    dotenv-expand "^11.0.6"
+    esbuild "~0.21.0"
+    find-yarn-workspace-root "^2.0.0"
+    fs-extra "^11.2.0"
+    lodash "^4.17.21"
+    require-from-string "^2.0.2"
+    resolve "^1.22.8"
+    supports-hyperlinks "^3.0.0"
+
 "@tarojs/parse-css-to-stylesheet-android-arm-eabi@0.0.69":
   version "0.0.69"
   resolved "https://registry.npmmirror.com/@tarojs/parse-css-to-stylesheet-android-arm-eabi/-/parse-css-to-stylesheet-android-arm-eabi-0.0.69.tgz#e6c3fe037a4c16139bdf7d11cec59f990ea2bfb7"
@@ -2351,12 +2378,29 @@
     rollup "^3.29.4"
     scss-bundle "^3.1.2"
 
+"@tarojs/runner-utils@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/runner-utils/-/runner-utils-4.0.6.tgz#b11683286409d31c2f01b017136a0bf96426240e"
+  integrity sha512-FPyqpiSotXFMiWxl/UhcyzbbbKKEsxEpAd8ce/BQOa/PPybl/baU8SiSgDHKXb1j8Tx/uZhd4KLsM5hfDIa87Q==
+  dependencies:
+    "@tarojs/helper" "4.0.6"
+    rollup "^3.29.4"
+    scss-bundle "^3.1.2"
+
 "@tarojs/runtime@4.0.4":
   version "4.0.4"
   resolved "https://registry.npmmirror.com/@tarojs/runtime/-/runtime-4.0.4.tgz#74978f64a098a61408b85bb79c7603d015b46fb4"
   integrity sha512-By6aDhEwfVz+G0Kz7+hoX4SDBX/lE1uu9FIwUdVFHRHD7sXNSC8HoHYpNVK5sz8tpwpUVQVU2BPAYythJxcCKg==
   dependencies:
     "@tarojs/shared" "4.0.4"
+    tslib "^2.6.2"
+
+"@tarojs/runtime@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/runtime/-/runtime-4.0.6.tgz#c175a03508f49d7ac24b469cdb3201ebd5533772"
+  integrity sha512-9Z0+HNYvNqVcyZT+YKOxNqKlUHH1qtzkXw2iaQ8bwSmruGQrGkuGBSfs2qykYnWthVgE9F7XjXfUN08LIPVSlw==
+  dependencies:
+    "@tarojs/shared" "4.0.6"
     tslib "^2.6.2"
 
 "@tarojs/service@4.0.4":
@@ -2378,6 +2422,11 @@
   version "4.0.4"
   resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-4.0.4.tgz#513250e268432fd0897e8ff74bdec8a074b27ee8"
   integrity sha512-iktpJwyxC1U1lHhVZbhyNd0XXyr3DM8QwYqBiBtaxE8qX0Wsm4STgFSAKODgguAqjrLgBxwoXcmFziBR7UZk3g==
+
+"@tarojs/shared@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/shared/-/shared-4.0.6.tgz#ff897805a4e6bd0254d40577f93b4c9cc99391b9"
+  integrity sha512-E+L/W7+7yXWOUM/lKlbeoO6YdID8A6A9TFv27zsIgD9gNsenV4WrUSCfVuswYg1REFsK44WOJZBJh4sX6AVQ0g==
 
 "@tarojs/taro-h5@4.0.4":
   version "4.0.4"
@@ -2409,10 +2458,10 @@
     "@tarojs/runtime" "4.0.4"
     "@types/postcss-url" "^10.0.4"
 
-"@tarojs/vite-runner@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/@tarojs/vite-runner/-/vite-runner-4.0.4.tgz#56559e44932af48b9ae21e3ebdd6fc90a2da6f67"
-  integrity sha512-NerHaLUrqROptyetUD8AOfhNsf8nIzp9HBkODbIIAz+oksT15DjWimbxiZErktNNUhGavkTqbYuYaQ8vWvXt4A==
+"@tarojs/vite-runner@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@tarojs/vite-runner/-/vite-runner-4.0.6.tgz#6d1be253b450f2b78505ea5c2271cd87a780e089"
+  integrity sha512-gcJnVoG8Lg+pKqKQEUdHiW/MA0g3wNXObGXw+QezeJUpUwyHslsMjbsxALfg1i9/KAq76KS9uiAQSaW6mpHAhw==
   dependencies:
     "@ampproject/remapping" "^2.3.0"
     "@babel/core" "^7.24.4"
@@ -2420,15 +2469,15 @@
     "@rollup/plugin-inject" "^5.0.5"
     "@rollup/plugin-terser" "^0.4.4"
     "@rollup/pluginutils" "^5.1.0"
-    "@tarojs/helper" "4.0.4"
+    "@tarojs/helper" "4.0.6"
     "@tarojs/parse-css-to-stylesheet" "^0.0.69"
-    "@tarojs/runner-utils" "4.0.4"
-    "@tarojs/runtime" "4.0.4"
-    "@tarojs/shared" "4.0.4"
+    "@tarojs/runner-utils" "4.0.6"
+    "@tarojs/runtime" "4.0.6"
+    "@tarojs/shared" "4.0.6"
     "@vitejs/plugin-legacy" "^4.1.1"
     acorn-walk "^8.3.2"
     autoprefixer "^10.4.19"
-    babel-plugin-transform-taroapi "4.0.4"
+    babel-plugin-transform-taroapi "4.0.6"
     connect-history-api-fallback "^2.0.0"
     fast-glob "^3.3.2"
     html-minifier "^4.0.0"
@@ -2438,12 +2487,12 @@
     mrmime "^2.0.0"
     picomatch "^4.0.2"
     postcss-css-variables "^0.19.0"
-    postcss-html-transform "4.0.4"
+    postcss-html-transform "4.0.6"
     postcss-import "^16.1.0"
     postcss-load-config "^5.0.3"
     postcss-modules "^6.0.0"
-    postcss-plugin-constparse "4.0.4"
-    postcss-pxtransform "4.0.4"
+    postcss-plugin-constparse "4.0.6"
+    postcss-pxtransform "4.0.6"
     regenerator-runtime "0.11"
     sax "1.2.4"
     stylelint "^16.4.0"
@@ -3295,6 +3344,13 @@ babel-plugin-transform-taroapi@4.0.4:
   version "4.0.4"
   resolved "https://registry.npmmirror.com/babel-plugin-transform-taroapi/-/babel-plugin-transform-taroapi-4.0.4.tgz#25484ec8d99e2265f63477ec957655d5f15d7103"
   integrity sha512-K3fIqUD6bptSG6JzQWrQymkn6UpFjbvoM9NGka/oeB6Tq4O0lSsOcH0cKsiLaKHS2Ts6S4+BhAUh5zTJdR+USA==
+  dependencies:
+    lodash "^4.17.21"
+
+babel-plugin-transform-taroapi@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/babel-plugin-transform-taroapi/-/babel-plugin-transform-taroapi-4.0.6.tgz#efd3cb196317bed1eea0aff995a040f463b116e2"
+  integrity sha512-DmCyyYDdRr4dMNnnhO+BxJUEYviw8NWrr3x9W8zBhnbNyc397numZB4y1pzlPedTIdNLlgePKYWvuG0412utqw==
   dependencies:
     lodash "^4.17.21"
 
@@ -8473,10 +8529,10 @@ postcss-css-variables@^0.19.0:
     escape-string-regexp "^1.0.3"
     extend "^3.0.1"
 
-postcss-html-transform@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/postcss-html-transform/-/postcss-html-transform-4.0.4.tgz#0fa159c8b86de4ace45131b4d69260c54e96eafd"
-  integrity sha512-ahdyklZW4Oj+KUuLfTlhUhGGiwf2bZl091ulvDsHfa2bAeCA5Ko75gLXNFg0Q2CrOSvw2oeeMY0pE33kPO/E5g==
+postcss-html-transform@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/postcss-html-transform/-/postcss-html-transform-4.0.6.tgz#c23dd6f6a8968848aba83578bb47a439da26e57c"
+  integrity sha512-Qh0J6gaHwYgCym9rSOrSvBaJu315Z3jR+vCUfBpw98vyJcIQHNFNewML42NZScbFRqaRXuiHK6XaRDbH13ksIw==
 
 postcss-import@^15.1.0:
   version "15.1.0"
@@ -8575,15 +8631,15 @@ postcss-nested@^6.0.1:
   dependencies:
     postcss-selector-parser "^6.1.1"
 
-postcss-plugin-constparse@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-4.0.4.tgz#491fe7f0349146a5d272671c621552afc62d4a27"
-  integrity sha512-SjAY0C3xWghfUiqouecG89+gMHfv2seB8hUAelD75w1mWGEdEusUypV23s4+efxg4efrDbPvp2DwNVms28+8Ow==
+postcss-plugin-constparse@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-4.0.6.tgz#376d06f51e6f88eda8ff5d643357b0be539a8691"
+  integrity sha512-uB7zFypYqxqyam6kV1UzOehvxcP3JIhrIIBiEMZhQsCoC+jw8WEbvDbfZq3Ql8Kis5l7ffqjlW474g0EpTUEsg==
 
-postcss-pxtransform@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-4.0.4.tgz#ea7264b65b12053c7f18499adfbc255847a6d62d"
-  integrity sha512-InzfJDiswg0x18+oFlOLUqTd7Z3/pHrWLvrjrWfjmq/k6bUskHHTJva0fQh0W/AByGTYj0ckVKtJ37IN/dor0g==
+postcss-pxtransform@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-4.0.6.tgz#5ff03a97d658faec1cf0ca95734e80cdad38eac3"
+  integrity sha512-OZISN653pYMzX2LLpdKtSFGIT2sRi1TZj6AgOP+qMx2eXPUUWTEYk3BHSFgwtbwlF7WELZheNx/zWZ3PySje+Q==
 
 postcss-rem-to-responsive-pixel@^6.0.2, postcss-rem-to-responsive-pixel@~6.0.2:
   version "6.0.2"
