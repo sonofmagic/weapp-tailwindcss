@@ -14,7 +14,8 @@
       // https://docs.renovatebot.com/string-pattern-matching/#use-regex101-to-test-your-patterns
       "matchPackageNames": [
         "@dcloudio/*",
-        "@mpxjs/*"
+        "@mpxjs/*",
+        "@tarojs/*"
       ],
       "enabled": false
     }
