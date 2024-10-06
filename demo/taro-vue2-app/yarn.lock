@@ -7188,10 +7188,10 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-taro@3.6.32:
-  version "3.6.32"
-  resolved "https://registry.npmmirror.com/eslint-config-taro/-/eslint-config-taro-3.6.32.tgz#6017020cf5e1e61cababfce0cda9b7696b560e3e"
-  integrity sha512-k7+jfCECpLKiDB7ZvTKw3qo7WcVD1L7muSPde1571Kw2bHlOc8O7lGoiOfQFJ/XEMK85RBxnTj645B6NKWLppA==
+eslint-config-taro@3.6.35:
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/eslint-config-taro/-/eslint-config-taro-3.6.35.tgz#fcabb63da35f9e09b21f69d2545cd05fa832bf7a"
+  integrity sha512-90fsuc9zofEW/YPriadQQ7rmYyJIknjKgoFXBan/IR1WRVsei/sJTXadUdv3GxTx7XGLyHTO4a3OiQWp75oujg==
   dependencies:
     "@babel/eslint-parser" "^7.17.0"
     "@typescript-eslint/parser" "^6.2.0"

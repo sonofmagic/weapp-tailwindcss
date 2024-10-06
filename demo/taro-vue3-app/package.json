@@ -80,7 +80,7 @@
     "babel-preset-taro": "3.6.31",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
-    "eslint-config-taro": "3.6.31",
+    "eslint-config-taro": "3.6.35",
     "eslint-plugin-vue": "^9.26.0",
     "less": "^4.2.0",
     "postcss": "^8.4.38",
