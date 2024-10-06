@@ -4426,6 +4426,29 @@ babel-preset-taro@3.6.32:
     metro-react-native-babel-preset "^0.72.1"
     react-refresh "^0.11.0"
 
+babel-preset-taro@3.6.35:
+  version "3.6.35"
+  resolved "https://registry.npmmirror.com/babel-preset-taro/-/babel-preset-taro-3.6.35.tgz#6c321778d37075b28164c529261829432085f640"
+  integrity sha512-isK8iVOeISNM2cMaGgxBhfb0DRIbfXnPKU16tMz066od1SOvGhGKalWDgN55g+6mo0816rKM3n4tyJcYCGctxw==
+  dependencies:
+    "@babel/plugin-proposal-class-properties" "^7.14.5"
+    "@babel/plugin-proposal-decorators" "^7.14.5"
+    "@babel/plugin-syntax-jsx" "^7.14.5"
+    "@babel/plugin-transform-runtime" "^7.14.5"
+    "@babel/preset-env" "^7.14.5"
+    "@babel/preset-react" "^7.14.5"
+    "@babel/preset-typescript" "^7.14.5"
+    "@babel/runtime" "^7.14.5"
+    "@babel/runtime-corejs3" "^7.14.5"
+    "@tarojs/helper" "3.6.35"
+    babel-plugin-dynamic-import-node "2.3.3"
+    babel-plugin-minify-dead-code-elimination "^0.5.2"
+    babel-plugin-transform-imports-api "1.0.0"
+    core-js "^3.6.5"
+    lodash "^4.17.21"
+    metro-react-native-babel-preset "^0.72.1"
+    react-refresh "^0.11.0"
+
 bach@^1.0.0:
   version "1.2.0"
   resolved "https://registry.npmmirror.com/bach/-/bach-1.2.0.tgz#4b3ce96bf27134f79a1b414a51c14e34c3bd9880"
