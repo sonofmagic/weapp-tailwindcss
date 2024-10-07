@@ -4056,10 +4056,15 @@ d@1, d@^1.0.1, d@^1.0.2:
     es5-ext "^0.10.64"
     type "^2.7.2"
 
-dayjs@^1.11.10, dayjs@^1.11.3:
+dayjs@^1.11.10:
   version "1.11.10"
   resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
   integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
+
+dayjs@^1.11.3:
+  version "1.11.13"
+  resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
+  integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
@@ -8854,9 +8859,9 @@ utils-merge@1.0.1:
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
 uview-plus@^3.1.45:
-  version "3.1.45"
-  resolved "https://registry.npmmirror.com/uview-plus/-/uview-plus-3.1.45.tgz#48f2d617bee0d5f4e994d856255d16cd80a429d8"
-  integrity sha512-JHgLp2heaMciLdGimO/v4tMM8iwb2vTEOk6sXqn5X198AHjM5A/IGzH84GZPvUISFTEJbxGEHiGPxpv2K26AGw==
+  version "3.3.35"
+  resolved "https://registry.npmmirror.com/uview-plus/-/uview-plus-3.3.35.tgz#d480983dd744ef705bfc7053ba4987a7900d3d57"
+  integrity sha512-OhcmmSrt//SHqFBHE1TE/s0es8+pwXHYm2sx85uvz7Mf1QuV8J+MYr1yQlegajfD04HPR8/O9/+ocWUd6DATNA==
   dependencies:
     clipboard "^2.0.11"
     dayjs "^1.11.3"
