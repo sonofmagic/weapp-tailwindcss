@@ -19,5 +19,6 @@
       ],
       "enabled": false
     }
-  ]
+  ],
+  "commitBody": "[skip netlify]"
 }
