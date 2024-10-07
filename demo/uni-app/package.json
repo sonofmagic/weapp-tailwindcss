@@ -107,7 +107,7 @@
     "jest": "^25.4.0",
     "mini-types": "*",
     "miniprogram-api-typings": "3.12.3",
-    "postcss": "8.4.35",
+    "postcss": "8.4.47",
     "postcss-comment": "^2.0.0",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
