@@ -456,7 +456,7 @@ importers:
         version: 1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.4)(typescript@5.6.2)))
       '@iconify-json/lucide':
         specifier: ^1.2.7
-        version: 1.2.7
+        version: 1.2.8
       '@iconify-json/mdi':
         specifier: ^1.2.0
         version: 1.2.0
@@ -2917,8 +2917,8 @@ packages:
     resolution: {integrity: sha512-D25NVkvFYc7fkrUk2krD20+Cz1dKKbWSl7SMZTHF09xQxR2stCPLayhnmJP4D3vEF8kfMwgUyZWxvFfpcdpl9w==}
     hasBin: true
 
-  '@iconify-json/lucide@1.2.7':
-    resolution: {integrity: sha512-j85GBSDqQoBJCKU3XrVV97alx4ADuphrt5u/LfAGEybuXyQCn63ZahUJ164LELGvxqTbt4ZoRLb4PsFuMzkeWg==}
+  '@iconify-json/lucide@1.2.8':
+    resolution: {integrity: sha512-knmDUXky8AAQ0rnGdnBjS1mBr6c0tT7aVbBd7AJcDTcJYvx9XEeyHlabFKG03DaLbOkCy0QHwCYoeZHRDEzOFA==}
 
   '@iconify-json/mdi@1.2.0':
     resolution: {integrity: sha512-E9/3l5Syg3wfuarorFodhn4s8YorxhH3U3U20LaNBNiqw1kFNIDWhF6HymuzAD35k7RH0OBasJ+ZUyFtVVV6eg==}
@@ -16067,7 +16067,7 @@ snapshots:
       - postcss
       - stylelint
 
-  '@iconify-json/lucide@1.2.7':
+  '@iconify-json/lucide@1.2.8':
     dependencies:
       '@iconify/types': 2.0.0
 
