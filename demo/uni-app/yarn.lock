@@ -1929,9 +1929,9 @@
     "@hapi/hoek" "^9.0.0"
 
 "@iconify-json/mdi@^1.1.64":
-  version "1.1.64"
-  resolved "https://registry.npmmirror.com/@iconify-json/mdi/-/mdi-1.1.64.tgz#ef734e33161106485e36b0f92222babe506d3a8d"
-  integrity sha512-zGeo5TjhNFAY6FmSDBLAzDO811t77r6v/mDi7CAL9w5eXqKez6bIjk8R9AL/RHIeq44ALP4Ozr4lMqFTkHr7ug==
+  version "1.2.1"
+  resolved "https://registry.npmmirror.com/@iconify-json/mdi/-/mdi-1.2.1.tgz#029deff92cedf38430a9ed2ee811a8818f1ded43"
+  integrity sha512-dSkQU78gsZV6Yxnq78+LuX7jzeFC/5NAmz7O3rh558GimGFcwMVY/OtqRowIzjqJBmMmWZft7wkFV4TrwRXjlg==
   dependencies:
     "@iconify/types" "*"
 
