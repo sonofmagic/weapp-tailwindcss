@@ -2052,14 +2052,14 @@
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
 "@types/prop-types@*":
-  version "15.7.5"
-  resolved "https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
-  integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
+  version "15.7.13"
+  resolved "https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.13.tgz#2af91918ee12d9d32914feb13f5326658461b451"
+  integrity sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==
 
 "@types/rax@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.npmmirror.com/@types/rax/-/rax-1.0.18.tgz#a73036bdf580e774fd0872c3acb458cc13d43498"
-  integrity sha512-hFVVqi52ZUXJYSBuycB8rQPtD4byTHW0PEF0A+r8wsDrNFKj6UbNVAQ0YKOYCtrBeTxIACsdrdWrnbGBRARPVQ==
+  version "1.0.19"
+  resolved "https://registry.npmmirror.com/@types/rax/-/rax-1.0.19.tgz#cfdd4e542c9d000b45bcddb4a82e27effa23e24d"
+  integrity sha512-pXlxv0+5mWg98zIf2IyaVmirK27gwu3glGw4oHmH9FcxoyKkyq6jgOO3j37ftKF67x2DPMS3JxHO8karyZ1w8g==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -4623,9 +4623,9 @@ csso@^4.0.3, csso@^4.2.0:
     css-tree "^1.1.2"
 
 csstype@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.npmmirror.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
-  integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
+  version "3.1.3"
+  resolved "https://registry.npmmirror.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
+  integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
 
 cyclist@^1.0.1:
   version "1.0.1"
