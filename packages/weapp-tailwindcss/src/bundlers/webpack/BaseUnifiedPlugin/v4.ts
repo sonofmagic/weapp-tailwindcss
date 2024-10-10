@@ -1,5 +1,5 @@
 // webpack 4
-
+// @ts-nocheck
 import type { Compiler } from 'webpack4'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
 import fs from 'node:fs'
