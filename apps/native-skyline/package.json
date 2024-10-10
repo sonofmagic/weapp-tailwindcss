@@ -24,12 +24,12 @@
   "dependencies": {
     "cowsay": "^1.6.0",
     "lodash": "^4.17.21",
-    "miniprogram-computed": "^5.0.0"
+    "miniprogram-computed": "^5.1.0"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
-    "@iconify-json/lucide": "^1.2.7",
-    "@iconify-json/mdi": "^1.2.0",
+    "@iconify-json/lucide": "^1.2.8",
+    "@iconify-json/mdi": "^1.2.1",
     "@weapp-tailwindcss/cli": "workspace:*",
     "tailwindcss": "^3.4.13",
     "weapp-ide-cli": "^2.0.6",
