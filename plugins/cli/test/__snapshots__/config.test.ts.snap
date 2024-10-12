@@ -58,6 +58,7 @@ exports[`config > updatePackageJson > updatePackageJson js native project 1`] = 
   "license": "ISC",
   "main": "index.js",
   "name": "js",
+  "private": true,
   "repository": {
     "directory": "plugins/cli/test/fixtures/configs/js",
     "type": "git",
@@ -87,6 +88,7 @@ exports[`config > updatePackageJson > updatePackageJson ts native project 1`] = 
   "license": "ISC",
   "main": "index.js",
   "name": "ts",
+  "private": true,
   "repository": {
     "directory": "plugins/cli/test/fixtures/configs/ts",
     "type": "git",
