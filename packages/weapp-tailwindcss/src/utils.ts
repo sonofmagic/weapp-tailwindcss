@@ -1,4 +1,3 @@
-// import type { Defu } from 'defu'
 import type { InternalUserDefinedOptions } from './types'
 import { createDefu } from 'defu'
 

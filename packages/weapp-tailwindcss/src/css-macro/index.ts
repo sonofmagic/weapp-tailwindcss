@@ -1,6 +1,5 @@
-// import 'tailwindcss/types/config'
-import { defu } from '@/utils'
 import plugin from 'tailwindcss/plugin'
+import { defu } from '../utils'
 import { createMediaQuery, createNegativeMediaQuery } from './constants'
 
 export interface Options {
@@ -8,7 +7,7 @@ export interface Options {
   dynamic?: boolean
 }
 
-export default plugin.withOptions((options: Options) => {
+const cssMacro = plugin.withOptions((options: Options) => {
   const { dynamic: dynamicMode, variantsMap } = defu<Required<Options>, Options[]>(options, {
     dynamic: true,
     variantsMap: {},
@@ -33,3 +32,5 @@ export default plugin.withOptions((options: Options) => {
     }
   }
 })
+
+export default cssMacro
