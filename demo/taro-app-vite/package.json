@@ -75,7 +75,7 @@
     "@tarojs/vite-runner": "4.0.6",
     "@types/react": "^18.3.11",
     "@vitejs/plugin-react": "^4.3.2",
-    "@weapp-tailwindcss/cli": "^1.0.10",
+    "@weapp-tailwindcss/cli": "^2.0.0",
     "autoprefixer": "^10.4.20",
     "babel-preset-taro": "4.0.6",
     "eslint": "^8.57.0",
@@ -96,7 +96,7 @@
     "typescript": "^5.6.2",
     "vite": "^4.2.0",
     "weapp-ide-cli": "^2.0.6",
-    "weapp-tailwindcss": "^3.5.3",
+    "weapp-tailwindcss": "^3.6.0",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }

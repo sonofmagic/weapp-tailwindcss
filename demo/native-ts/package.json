@@ -15,7 +15,7 @@
   "license": "",
   "dependencies": {},
   "devDependencies": {
-    "@weapp-tailwindcss/cli": "^1.0.10",
+    "@weapp-tailwindcss/cli": "^2.0.0",
     "miniprogram-api-typings": "^4.0.1",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
@@ -24,7 +24,7 @@
     "tailwindcss-patch": "^4.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^2.0.6",
-    "weapp-tailwindcss": "^3.5.3",
+    "weapp-tailwindcss": "^3.6.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-vite": "^1.4.4"
   },
