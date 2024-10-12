@@ -9,12 +9,11 @@ process.title = 'node (weapp-tailwindcss)'
 const args = process.argv.slice(2)
 
 if (semver.lt(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION)) {
-  logger.error(
+  logger.warn(
     `You are using Node.js ${process.versions.node}. For weapp-tailwindcss, Node.js version >= v${WEAPP_TW_REQUIRED_NODE_VERSION} is required.`,
   )
-
-  process.exit(1)
 }
+// nodejs 最低版本 '16.6.0' , init 需要 '18.17.0'
 const command = args[0]
 if (command === 'patch') {
   const options = getOptions()
