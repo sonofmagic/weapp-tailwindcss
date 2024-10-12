@@ -1,5 +1,6 @@
 {
   "name": "miniprogram-ts-sass-quickstart",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "scripts": {},

@@ -1,5 +1,6 @@
 {
   "name": "weapp-workflow",
+  "private": true,
   "version": "0.0.5",
   "packageManager": "yarn@1.22.22",
   "description": "A workflow for better weapp developing.",

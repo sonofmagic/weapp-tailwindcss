@@ -1,6 +1,7 @@
 {
   "name": "weapp-tailwindcss-e2e-components-archived",
   "version": "0.0.2",
+  "private": true,
   "description": "weapp-tailwindcss e2e test components",
   "main": "index.js",
   "types": "index.d.ts",

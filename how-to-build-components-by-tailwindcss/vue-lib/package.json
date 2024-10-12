@@ -1,5 +1,6 @@
 {
   "name": "how-to-build-components-by-tailwindcss-vue",
+  "private": true,
   "version": "0.0.1",
   "type": "module",
   "sideEffects": false,

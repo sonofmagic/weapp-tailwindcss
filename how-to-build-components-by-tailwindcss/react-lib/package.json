@@ -1,6 +1,7 @@
 {
   "name": "how-to-build-components-by-tailwindcss-react",
   "version": "0.0.1",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
