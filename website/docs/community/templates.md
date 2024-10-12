@@ -72,15 +72,7 @@
 
 ### 原生小程序开发模板
 
-🔥 [weapp-vite-tailwindcss-template (weapp-vite 打包)](https://github.com/icebreaker-template/weapp-vite-tailwindcss-template) <iframe
-              src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=weapp-vite-tailwindcss-template&type=star&count=true"
-              frameborder="0"
-              scrolling="0"
-              width="110"
-              height="20"
-              title="GitHub"
-            >
-            </iframe>
+🔥 [weapp-vite-tailwindcss-template (weapp-vite 打包)](https://vite.icebreaker.top/guide/)
 
 [native-weapp-tailwindcss-template (cli 打包)](https://github.com/sonofmagic/native-weapp-tailwindcss-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=native-weapp-tailwindcss-template&type=star&count=true"

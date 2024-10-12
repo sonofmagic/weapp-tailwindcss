@@ -2,17 +2,18 @@
 import type { Compiler, Configuration } from 'webpack'
 import fss from 'node:fs'
 import fs from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
+import { MappingChars2String } from '@/escape'
+import { UnifiedWebpackPluginV5 } from '@/index'
+import ci from 'ci-info'
 import { copySync, mkdirSync } from 'fs-extra'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import normalizeNewline from 'normalize-newline'
+
 import postcss from 'postcss'
 import { runLoaders } from 'promisify-loader-runner'
 import webpack from 'webpack'
-// import ci from 'ci-info'
-
-import { MappingChars2String } from '@/escape'
-import { UnifiedWebpackPluginV5 } from '@/index'
-import normalizeNewline from 'normalize-newline'
 // @ts-ignore
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
@@ -106,7 +107,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
     ],
   })
 }
-describe('webpack5 plugin', () => {
+describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => {
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler

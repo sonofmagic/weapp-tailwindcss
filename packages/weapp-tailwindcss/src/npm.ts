@@ -1,5 +1,4 @@
 import type { Options } from 'npm-registry-fetch'
-import fetch from 'npm-registry-fetch'
 import { defu } from './utils'
 
 export type FetchOptions = Options
@@ -12,7 +11,10 @@ export function fetchPackage(packageName: string, options?: FetchOptions) {
     // 默认使用国内镜像地址
     registry: 'https://registry.npmmirror.com',
   })
-  return fetch.json(`/${packageName}`, opts) as Promise<{
+  return import('npm-registry-fetch')
+    .then(({ json }) => {
+      return json(`/${packageName}`, opts)
+    }) as Promise<{
     'dist-tags': {
       latest: string
     }

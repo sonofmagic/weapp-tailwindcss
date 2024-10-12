@@ -14,7 +14,7 @@ type PostcssOptions = Partial<Omit<Result, 'file'>>
 
 export type ItemOrItemArray<T> = T | T[]
 
-export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx'
+export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | 'weapp-vite'
 
 export interface IPropValue {
   prop: string

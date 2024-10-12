@@ -18,4 +18,19 @@ describe.skipIf(CI.isCI)('getLatestVersion', () => {
     const res = await getDevDepsVersions(fetchOptions)
     console.log(res)
   })
+
+  it('tailwindcss@2', async () => {
+    const version = await getLatestVersionInRange('tailwindcss', '2', fetchOptions)
+    expect(version.startsWith('2.')).toBe(true)// .toBe('2.2.19')
+  })
+
+  it('tailwindcss@3', async () => {
+    const version = await getLatestVersionInRange('tailwindcss', '3', fetchOptions)
+    expect(version).toBe('3.4.13')
+  })
+
+  it('tailwindcss@latest', async () => {
+    const version = await getLatestVersion('tailwindcss', fetchOptions)
+    expect(version).toBe('3.4.13')
+  })
 })
