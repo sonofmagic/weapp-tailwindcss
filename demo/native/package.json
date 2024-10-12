@@ -30,5 +30,6 @@
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
     "directory": "demo/native"
-  }
+  },
+  "private": true
 }

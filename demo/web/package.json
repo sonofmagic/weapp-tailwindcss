@@ -34,5 +34,6 @@
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
     "directory": "demo/web"
   },
-  "author": "ice breaker <1324318532@qq.com>"
+  "author": "ice breaker <1324318532@qq.com>",
+  "private": true
 }

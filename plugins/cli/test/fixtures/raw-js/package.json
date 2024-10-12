@@ -20,5 +20,6 @@
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
     "directory": "plugins/cli/test/fixtures/raw-js"
-  }
+  },
+  "private": true
 }

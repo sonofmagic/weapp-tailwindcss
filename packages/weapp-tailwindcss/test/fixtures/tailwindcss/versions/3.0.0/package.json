@@ -116,5 +116,6 @@
   "engines": {
     "node": ">=12.13.0"
   },
-  "author": "ice breaker <1324318532@qq.com>"
+  "author": "ice breaker <1324318532@qq.com>",
+  "private": true
 }

@@ -25,5 +25,6 @@
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
     "directory": "plugins/cli/test/fixtures/native-watch"
-  }
+  },
+  "private": true
 }

@@ -14,5 +14,6 @@
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
     "directory": "packages/weapp-tailwindcss/test/fixtures/webpack/v5/multiple-contexts"
   },
-  "author": "ice breaker <1324318532@qq.com>"
+  "author": "ice breaker <1324318532@qq.com>",
+  "private": true
 }
