@@ -1,6 +1,6 @@
 // const del = require('del')
+import { greenBright } from 'colorette'
 
-const { greenBright } = require('colorette')
 ;
 
 (async () => {

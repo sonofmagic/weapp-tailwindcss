@@ -1,4 +1,3 @@
-// import type { StringLiteral, TemplateElement, Comment } from '@babel/types'
 import type MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '../types'
 import { decodeUnicode2, jsStringEscape } from '../escape'
@@ -7,26 +6,30 @@ import { escapeStringRegexp } from '../reg'
 import { replaceWxml } from '../wxml/shared'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
-interface ReplaceNode {
+export interface ReplaceNode {
   leadingComments?: { value: string }[] | null | undefined
   start?: number | null
   end?: number | null
 }
 
 export function toUnicodeEscapedString(str: string) {
-  return str.split('').map((char) => {
-    const code = char.charCodeAt(0)
-    if (code <= 31) {
-      const hexCode = code.toString(16).padStart(4, '0')
-      return `\\u${hexCode}`
-    }
-    return char
-  }).join('')
+  return str
+    .split('')
+    .map((char) => {
+      const code = char.charCodeAt(0)
+      // String.fromCharCode(31)
+      if (code <= 31) {
+        const hexCode = code.toString(16).padStart(4, '0')
+        return `\\u${hexCode}`
+      }
+      return char
+    })
+    .join('')
 }
 
-export function toUnicodeEscapedString2(str: string) {
-  return escape(str).replace(/%u/g, '\\u').replace(/%/g, '\\u00')
-}
+// export function toUnicodeEscapedString2(str: string) {
+//   return escape(str).replace(/%u/g, '\\u').replace(/%/g, '\\u00')
+// }
 
 export function replaceHandleValue(
   str: string,

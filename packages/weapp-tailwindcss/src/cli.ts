@@ -2,13 +2,14 @@ import process from 'node:process'
 import semver from 'semver'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 import { init } from './init'
+import { logger } from './logger'
 import { getOptions } from './options'
 
 process.title = 'node (weapp-tailwindcss)'
 const args = process.argv.slice(2)
 
 if (semver.lt(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION)) {
-  console.error(
+  logger.error(
     `You are using Node.js ${process.versions.node}. For weapp-tailwindcss, Node.js version >= v${WEAPP_TW_REQUIRED_NODE_VERSION} is required.`,
   )
 

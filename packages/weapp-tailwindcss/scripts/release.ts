@@ -1,7 +1,6 @@
-const path = require('node:path')
-// const process = require('node:process')
-const fs = require('fs-extra')
-// 'weapp-tailwindcss',
+import fs from 'fs-extra'
+import path from 'pathe'
+
 const pluginNames = ['weapp-tailwindcss', 'weapp-tailwindcss-webpack-plugin', 'weapp-tw']
 
 // pnpm publish --access public --no-git-checks

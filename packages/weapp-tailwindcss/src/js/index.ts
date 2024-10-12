@@ -1,42 +1,15 @@
 import type { SgNode } from '@ast-grep/napi'
 import type { ParseError, ParseResult } from '@babel/parser'
-import type { NodePath, TraverseOptions } from '@babel/traverse'
+import type { TraverseOptions } from '@babel/traverse'
 import type { File, Node } from '@babel/types'
 import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandlerResult } from '../types'
 import MagicString from 'magic-string'
 import { parse, traverse } from '../babel'
 import { jsStringEscape } from '../escape'
 import { defuOverrideArray } from '../utils'
+import { getAstGrep } from './ast-grep'
+import { isEvalPath } from './babel'
 import { replaceHandleValue } from './handlers'
-
-function isEvalPath(p: NodePath<Node>) {
-  if (p.isCallExpression()) {
-    const calleePath = p.get('callee')
-    return calleePath.isIdentifier() && calleePath.node.name === 'eval'
-  }
-  return false
-}
-
-// node.kind()
-// node.children()
-// node.range()
-// function SgNodeTraverse(node: SgNode, cb: (node: SgNode) => void) {
-//   cb(node)
-//   for (const child of node.children()) {
-//     SgNodeTraverse(child, cb)
-//   }
-// }
-
-async function getAstGrep() {
-  try {
-    const { js } = await import('@ast-grep/napi')
-    return js
-  }
-  catch (error) {
-    console.warn('请先安装 `@ast-grep/napi` , 安装完成后再尝试运行！')
-    throw error
-  }
-}
 
 async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
   const js = await getAstGrep()
