@@ -28,7 +28,7 @@
     "@tailwindcss/vite": "4.0.0-alpha.26",
     "@vitejs/plugin-vue": "^5.1.4",
     "tailwindcss": "4.0.0-alpha.26",
-    "vite": "^5.4.8",
+    "vite": "^5.4.9",
     "vue-tsc": "^2.1.6"
   }
 }
