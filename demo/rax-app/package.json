@@ -49,7 +49,7 @@
     "rax-app": "3.8.22",
     "stylelint": "^16.9.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss": "^3.4.13",
+    "tailwindcss": "^3.4.14",
     "tailwindcss-patch": "^4.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^2.0.6",
