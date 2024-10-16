@@ -26,11 +26,11 @@ describe.skipIf(CI.isCI)('getLatestVersion', () => {
 
   it('tailwindcss@3', async () => {
     const version = await getLatestVersionInRange('tailwindcss', '3', fetchOptions)
-    expect(version).toBe('3.4.13')
+    expect(version).toBe('3.4.14')
   })
 
   it('tailwindcss@latest', async () => {
     const version = await getLatestVersion('tailwindcss', fetchOptions)
-    expect(version).toBe('3.4.13')
+    expect(version).toBe('3.4.14')
   })
 })

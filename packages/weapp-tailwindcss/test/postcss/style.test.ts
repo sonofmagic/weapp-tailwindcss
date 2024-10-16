@@ -870,4 +870,13 @@ describe('styleHandler', () => {
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
     expect(css).toMatchSnapshot()
   })
+
+  it('https://github.com/tailwindlabs/tailwindcss/pull/14625/files', async () => {
+    const { styleHandler } = getOptions({})
+    const rawCode = `[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}`
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
+    expect(css).toMatchSnapshot()
+  })
 })

@@ -359,7 +359,7 @@ video {
   max-width: 100%;
   height: auto;
 }
-[hidden] {
+[hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }"
 `;

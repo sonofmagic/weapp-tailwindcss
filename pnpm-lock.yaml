@@ -37,10 +37,10 @@ importers:
         version: 0.5.4(eslint@9.12.0(jiti@2.3.1))
       '@icebreakers/eslint-config':
         specifier: ^0.6.0
-        version: 0.6.0(@typescript-eslint/utils@8.8.0(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@vue/compiler-sfc@3.5.12)(eslint@9.12.0(jiti@2.3.1))(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))(typescript@5.6.3)(vitest@2.1.3)
+        version: 0.6.0(@typescript-eslint/utils@8.8.0(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@vue/compiler-sfc@3.5.12)(eslint@9.12.0(jiti@2.3.1))(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))(typescript@5.6.3)(vitest@2.1.3)
       '@icebreakers/monorepo':
-        specifier: ^0.6.6
-        version: 0.6.6(@types/node@22.7.5)
+        specifier: ^0.6.8
+        version: 0.6.8(@types/node@22.7.5)
       '@icebreakers/readme':
         specifier: 0.1.0
         version: 0.1.0
@@ -51,8 +51,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1(rollup@4.24.0)
       '@rollup/plugin-commonjs':
-        specifier: ^28.0.0
-        version: 28.0.0(rollup@4.24.0)
+        specifier: ^28.0.1
+        version: 28.0.1(rollup@4.24.0)
       '@rollup/plugin-json':
         specifier: ^6.1.0
         version: 6.1.0(rollup@4.24.0)
@@ -63,8 +63,8 @@ importers:
         specifier: ^0.4.4
         version: 0.4.4(rollup@4.24.0)
       '@rollup/plugin-typescript':
-        specifier: ^12.1.0
-        version: 12.1.0(rollup@4.24.0)(tslib@2.7.0)(typescript@5.6.3)
+        specifier: ^12.1.1
+        version: 12.1.1(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.3)
       '@rollup/pluginutils':
         specifier: ^5.1.2
         version: 5.1.2(rollup@4.24.0)
@@ -348,8 +348,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.95.0(esbuild@0.23.1))
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       terser-webpack-plugin:
         specifier: ^5.3.10
         version: 5.3.10(esbuild@0.23.1)(webpack@5.95.0(esbuild@0.23.1))
@@ -360,8 +360,8 @@ importers:
         specifier: ^0.31.2
         version: 0.31.2
       tslib:
-        specifier: ^2.7.0
-        version: 2.7.0
+        specifier: ^2.8.0
+        version: 2.8.0
       tsup:
         specifier: ^8.3.0
         version: 8.3.0(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(yaml@2.6.0)
@@ -397,7 +397,7 @@ importers:
         version: 2.1.3(@types/node@22.7.5)(@vitest/ui@2.1.3)(jsdom@25.0.1)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1)
       weapp-tailwindcss-children:
         specifier: ^0.1.0
-        version: 0.1.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
+        version: 0.1.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
       webpack:
         specifier: ^5.95.0
         version: 5.95.0(esbuild@0.23.1)
@@ -416,7 +416,7 @@ importers:
     devDependencies:
       '@egoist/tailwindcss-icons':
         specifier: ^1.8.1
-        version: 1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
+        version: 1.8.1(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
       '@iconify-json/mdi':
         specifier: ^1.2.1
         version: 1.2.1
@@ -430,8 +430,8 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       weapp-ide-cli:
         specifier: ^2.0.6
         version: 2.0.6
@@ -453,7 +453,7 @@ importers:
     devDependencies:
       '@egoist/tailwindcss-icons':
         specifier: ^1.8.1
-        version: 1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
+        version: 1.8.1(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
       '@iconify-json/lucide':
         specifier: ^1.2.9
         version: 1.2.9
@@ -464,8 +464,8 @@ importers:
         specifier: workspace:*
         version: link:../../plugins/cli
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       weapp-ide-cli:
         specifier: ^2.0.6
         version: 2.0.6
@@ -489,8 +489,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       weapp-ide-cli:
         specifier: ^2.0.6
         version: 2.0.6
@@ -507,8 +507,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       weapp-ide-cli:
         specifier: ^2.0.6
         version: 2.0.6
@@ -553,14 +553,14 @@ importers:
         specifier: ^8.4.47
         version: 8.4.47
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.2
-        version: 1.6.2(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.3
+        version: 1.6.3(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/vite-native-skyline:
     devDependencies:
@@ -574,8 +574,8 @@ importers:
         specifier: ^8.4.47
         version: 8.4.47
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -583,8 +583,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.2
-        version: 1.6.2(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.3
+        version: 1.6.3(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/vite-native-ts:
     devDependencies:
@@ -598,8 +598,8 @@ importers:
         specifier: ^8.4.47
         version: 8.4.47
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -607,8 +607,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.2
-        version: 1.6.2(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.3
+        version: 1.6.3(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/vite-native-ts-skyline:
     devDependencies:
@@ -622,8 +622,8 @@ importers:
         specifier: ^8.4.47
         version: 8.4.47
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -631,8 +631,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.2
-        version: 1.6.2(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.3
+        version: 1.6.3(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/weapp-library:
     devDependencies:
@@ -768,7 +768,7 @@ importers:
         version: 7.6.3
       tailwindcss-patch:
         specifier: ~4.0.0
-        version: 4.0.0(magicast@0.3.5)(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
+        version: 4.0.0(magicast@0.3.5)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
       webpack-sources:
         specifier: 3.2.3
         version: 3.2.3
@@ -843,8 +843,8 @@ importers:
         version: link:../../packages/weapp-tailwindcss
     devDependencies:
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
 
   plugins/typography:
     dependencies:
@@ -920,7 +920,7 @@ importers:
         version: 0.2.5(@docusaurus/core@3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.0.1(@types/react@18.3.11)(react@18.3.1))(debug@4.3.7)(esbuild@0.23.1)(eslint@9.12.0(jiti@2.3.1))(lightningcss@1.27.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)(vue-template-compiler@2.7.16))(sass@1.79.5)(webpack@5.95.0(esbuild@0.23.1))
       docusaurus-plugin-typedoc:
         specifier: 1.0.5
-        version: 1.0.5(typedoc-plugin-markdown@4.2.9(typedoc@0.26.9(typescript@5.6.3)))
+        version: 1.0.5(typedoc-plugin-markdown@4.2.9(typedoc@0.26.10(typescript@5.6.3)))
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -934,14 +934,14 @@ importers:
         specifier: ^16.0.2
         version: 16.0.2(sass@1.79.5)(webpack@5.95.0(esbuild@0.23.1))
       tailwindcss:
-        specifier: ^3.4.13
-        version: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
       typedoc:
-        specifier: ^0.26.9
-        version: 0.26.9(typescript@5.6.3)
+        specifier: ^0.26.10
+        version: 0.26.10(typescript@5.6.3)
       typedoc-plugin-markdown:
         specifier: 4.2.9
-        version: 4.2.9(typedoc@0.26.9(typescript@5.6.3))
+        version: 4.2.9(typedoc@0.26.10(typescript@5.6.3))
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -2909,8 +2909,8 @@ packages:
   '@icebreakers/eslint-config@0.6.0':
     resolution: {integrity: sha512-pFdBYMkjdX5LoE8NfNLEiSRBjlyZw7kJVdyZbGDh8+f2dzbr9gr4CHiVd7meGhoqIyJrOTyRK8lDp1APE5WsaA==}
 
-  '@icebreakers/monorepo@0.6.6':
-    resolution: {integrity: sha512-q1ndvmMS8bb9taj4Gni+9tTJc5W0k2tSHgzN5ODbeA3WwapJkQXcrvF8UH5I1/FVTf6GAdPAZwEsvPzDy1Xq5w==}
+  '@icebreakers/monorepo@0.6.8':
+    resolution: {integrity: sha512-Ykyyi9cimqqZDe7q8mD/WA+mHJAhF6cG2z+k7SIJ2bKbUqFg6yjvaWIoQjDDMzEuAuEZZggijAmByVKmR77Hgg==}
     hasBin: true
 
   '@icebreakers/readme@0.1.0':
@@ -3557,8 +3557,8 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-commonjs@28.0.0':
-    resolution: {integrity: sha512-BJcu+a+Mpq476DMXG+hevgPSl56bkUoi88dKT8t3RyUp8kGuOh+2bU8Gs7zXDlu+fyZggnJ+iOBGrb/O1SorYg==}
+  '@rollup/plugin-commonjs@28.0.1':
+    resolution: {integrity: sha512-+tNWdlWKbpB3WgBN7ijjYkq9X5uhjmcvyjEght4NmH5fAU++zfQzAJ6wumLS+dNcvwEZhKx2Z+skY8m7v0wGSA==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
@@ -3602,8 +3602,8 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-typescript@12.1.0':
-    resolution: {integrity: sha512-Kzs8KGJofe7cfTRODsnG1jNGxSvU8gVoNNd7Z/QaY25AYwe2LSSUpx/kPxqF38NYkpR8de3m51r9uwJpDlz6dg==}
+  '@rollup/plugin-typescript@12.1.1':
+    resolution: {integrity: sha512-t7O653DpfB5MbFrqPe/VcKFFkvRuFNp9qId3xq4Eth5xlyymzxNpye2z8Hrl0RIMuXTSr5GGcFpkdlMeacUiFQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.14.0||^3.0.0||^4.0.0
@@ -4622,6 +4622,11 @@ packages:
 
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+
+  acorn@8.13.0:
+    resolution: {integrity: sha512-8zSiw54Oxrdym50NlZ9sUusyO1Z1ZchgRLWRaK6c86XJFClyCgFKetdowBg5bKxyp/u+CDBJG4Mpp0m3HLZl9w==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -12221,8 +12226,8 @@ packages:
       tailwindcss:
         optional: true
 
-  tailwindcss@3.4.13:
-    resolution: {integrity: sha512-KqjHOJKogOUt5Bs752ykCeiwvi0fKVkr5oqsFNt/8px/tA8scFPIlkygsf6jXrfCqGHz7VflA6+yytWuM+XhFw==}
+  tailwindcss@3.4.14:
+    resolution: {integrity: sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -12371,11 +12376,11 @@ packages:
     resolution: {integrity: sha512-n1cw8k1k0x4pgA2+9XrOkFydTerNcJ1zWCO5Nn9scWHTD+5tp8dghT2x1uduQePZTZgd3Tupf+x9BxJjeJi77Q==}
     engines: {node: '>=14.0.0'}
 
-  tldts-core@6.1.51:
-    resolution: {integrity: sha512-bu9oCYYWC1iRjx+3UnAjqCsfrWNZV1ghNQf49b3w5xE8J/tNShHTzp5syWJfwGH+pxUgTTLUnzHnfuydW7wmbg==}
+  tldts-core@6.1.52:
+    resolution: {integrity: sha512-j4OxQI5rc1Ve/4m/9o2WhWSC4jGc4uVbCINdOEJRAraCi0YqTqgMcxUx7DbmuP0G3PCixoof/RZB0Q5Kh9tagw==}
 
-  tldts@6.1.51:
-    resolution: {integrity: sha512-33lfQoL0JsDogIbZ8fgRyvv77GnRtwkNE/MOKocwUgPO1WrSfsq7+vQRKxRQZai5zd+zg97Iv9fpFQSzHyWdLA==}
+  tldts@6.1.52:
+    resolution: {integrity: sha512-fgrDJXDjbAverY6XnIt0lNfv8A0cf7maTEaZxNykLGsLG7XP+5xhjBTrt/ieAsFjAlZ+G5nmXomLcZDkxXnDzw==}
     hasBin: true
 
   tmp@0.0.33:
@@ -12527,8 +12532,8 @@ packages:
   tslib@2.3.0:
     resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
 
-  tslib@2.7.0:
-    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
+  tslib@2.8.0:
+    resolution: {integrity: sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==}
 
   tsup@8.3.0:
     resolution: {integrity: sha512-ALscEeyS03IomcuNdFdc0YWGVIkwH1Ws7nfTbAPuoILvEV2hpGQAY72LIOjglGo4ShWpZfpBqP/jpQVCzqYQag==}
@@ -12665,8 +12670,8 @@ packages:
     peerDependencies:
       typedoc: 0.26.x
 
-  typedoc@0.26.9:
-    resolution: {integrity: sha512-Rc7QpWL7EtmrT8yxV0GmhOR6xHgFnnhphbD9Suti3fz3um7ZOrou6q/g9d6+zC5PssTLZmjaW4Upmzv8T1rCcQ==}
+  typedoc@0.26.10:
+    resolution: {integrity: sha512-xLmVKJ8S21t+JeuQLNueebEuTVphx6IrP06CdV7+0WVflUSW3SPmR+h1fnWVdAR/FQePEgsSWCUHXqKKjzuUAw==}
     engines: {node: '>= 18'}
     hasBin: true
     peerDependencies:
@@ -13156,8 +13161,9 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-vite@1.6.2:
-    resolution: {integrity: sha512-U7NJHLc73UCgJdXqKq41xFYsDyL5FYArR4A+MFyEJmj2kIY3dCElCQRuOxe0i3TFJpby42SI6mJrevW/wDiMOw==}
+  weapp-vite@1.6.3:
+    resolution: {integrity: sha512-Qb0L0fpYjMKOGAcIK8G5SLcBTSlSWg0X5LD0IHuFB00grb2mwjoPWBmVOk8RTWcRaN1UAQpRXthDZYbWiMTJaw==}
+    engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
       vite: '>=2.6.0'
@@ -15035,7 +15041,7 @@ snapshots:
       serve-handler: 6.1.5
       shelljs: 0.8.5
       terser-webpack-plugin: 5.3.10(esbuild@0.23.1)(webpack@5.95.0(esbuild@0.23.1))
-      tslib: 2.7.0
+      tslib: 2.8.0
       update-notifier: 6.0.2
       url-loader: 4.1.1(file-loader@6.2.0(webpack@5.95.0(esbuild@0.23.1)))(webpack@5.95.0(esbuild@0.23.1))
       webpack: 5.95.0(esbuild@0.23.1)
@@ -15067,12 +15073,12 @@ snapshots:
       cssnano-preset-advanced: 6.1.2(postcss@8.4.47)
       postcss: 8.4.47
       postcss-sort-media-queries: 5.2.0(postcss@8.4.47)
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@docusaurus/logger@3.5.2':
     dependencies:
       chalk: 4.1.2
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@docusaurus/mdx-loader@3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)':
     dependencies:
@@ -15096,7 +15102,7 @@ snapshots:
       remark-frontmatter: 5.0.0
       remark-gfm: 4.0.0
       stringify-object: 3.3.0
-      tslib: 2.7.0
+      tslib: 2.8.0
       unified: 11.0.5
       unist-util-visit: 5.0.0
       url-loader: 4.1.1(file-loader@6.2.0(webpack@5.95.0(esbuild@0.23.1)))(webpack@5.95.0(esbuild@0.23.1))
@@ -15148,7 +15154,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       reading-time: 1.5.0
       srcset: 4.0.0
-      tslib: 2.7.0
+      tslib: 2.8.0
       unist-util-visit: 5.0.0
       utility-types: 3.11.0
       webpack: 5.95.0(esbuild@0.23.1)
@@ -15189,7 +15195,7 @@ snapshots:
       lodash: 4.17.21
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
       utility-types: 3.11.0
       webpack: 5.95.0(esbuild@0.23.1)
     transitivePeerDependencies:
@@ -15221,7 +15227,7 @@ snapshots:
       fs-extra: 11.2.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
       webpack: 5.95.0(esbuild@0.23.1)
     transitivePeerDependencies:
       - '@mdx-js/react'
@@ -15251,7 +15257,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-json-view-lite: 1.5.0(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - '@mdx-js/react'
       - '@parcel/css'
@@ -15278,7 +15284,7 @@ snapshots:
       '@docusaurus/utils-validation': 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.23.1)(typescript@5.6.3)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - '@mdx-js/react'
       - '@parcel/css'
@@ -15306,7 +15312,7 @@ snapshots:
       '@types/gtag.js': 0.0.12
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - '@mdx-js/react'
       - '@parcel/css'
@@ -15333,7 +15339,7 @@ snapshots:
       '@docusaurus/utils-validation': 3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.23.1)(typescript@5.6.3)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - '@mdx-js/react'
       - '@parcel/css'
@@ -15365,7 +15371,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       sitemap: 7.1.2
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - '@mdx-js/react'
       - '@parcel/css'
@@ -15456,7 +15462,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-router-dom: 5.3.4(react@18.3.1)
       rtlcss: 4.3.0
-      tslib: 2.7.0
+      tslib: 2.8.0
       utility-types: 3.11.0
     transitivePeerDependencies:
       - '@parcel/css'
@@ -15492,7 +15498,7 @@ snapshots:
       prism-react-renderer: 2.4.0(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
       utility-types: 3.11.0
     transitivePeerDependencies:
       - '@docusaurus/types'
@@ -15521,7 +15527,7 @@ snapshots:
       lodash: 4.17.21
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
       utility-types: 3.11.0
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -15549,7 +15555,7 @@ snapshots:
   '@docusaurus/theme-translations@3.5.2':
     dependencies:
       fs-extra: 11.2.0
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@docusaurus/tsconfig@3.5.2': {}
 
@@ -15575,7 +15581,7 @@ snapshots:
 
   '@docusaurus/utils-common@3.5.2(@docusaurus/types@3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       '@docusaurus/types': 3.5.2(esbuild@0.23.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
@@ -15588,7 +15594,7 @@ snapshots:
       joi: 17.13.3
       js-yaml: 4.1.0
       lodash: 4.17.21
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - '@docusaurus/types'
       - '@swc/core'
@@ -15616,7 +15622,7 @@ snapshots:
       prompts: 2.4.2
       resolve-pathname: 3.0.0
       shelljs: 0.8.5
-      tslib: 2.7.0
+      tslib: 2.8.0
       url-loader: 4.1.1(file-loader@6.2.0(webpack@5.95.0(esbuild@0.23.1)))(webpack@5.95.0(esbuild@0.23.1))
       utility-types: 3.11.0
       webpack: 5.95.0(esbuild@0.23.1)
@@ -15638,10 +15644,10 @@ snapshots:
 
   '@dual-bundle/import-meta-resolve@4.1.0': {}
 
-  '@egoist/tailwindcss-icons@1.8.1(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))':
+  '@egoist/tailwindcss-icons@1.8.1(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))':
     dependencies:
       '@iconify/utils': 2.1.33
-      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -16173,7 +16179,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@icebreakers/eslint-config@0.6.0(@typescript-eslint/utils@8.8.0(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@vue/compiler-sfc@3.5.12)(eslint@9.12.0(jiti@2.3.1))(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))(typescript@5.6.3)(vitest@2.1.3)':
+  '@icebreakers/eslint-config@0.6.0(@typescript-eslint/utils@8.8.0(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@vue/compiler-sfc@3.5.12)(eslint@9.12.0(jiti@2.3.1))(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))(typescript@5.6.3)(vitest@2.1.3)':
     dependencies:
       '@antfu/eslint-config': 3.7.3(@eslint-react/eslint-plugin@1.14.3(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@typescript-eslint/utils@8.8.0(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@unocss/eslint-plugin@0.63.4(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3))(@vue/compiler-sfc@3.5.12)(eslint-plugin-format@0.1.2(eslint@9.12.0(jiti@2.3.1)))(eslint-plugin-react-hooks@4.6.2(eslint@9.12.0(jiti@2.3.1)))(eslint-plugin-react-refresh@0.4.12(eslint@9.12.0(jiti@2.3.1)))(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3)(vitest@2.1.3)
       '@eslint-react/eslint-plugin': 1.14.3(eslint@9.12.0(jiti@2.3.1))(typescript@5.6.3)
@@ -16183,7 +16189,7 @@ snapshots:
       eslint-plugin-mdx: 3.1.5(eslint@9.12.0(jiti@2.3.1))
       eslint-plugin-react-hooks: 4.6.2(eslint@9.12.0(jiti@2.3.1))
       eslint-plugin-react-refresh: 0.4.12(eslint@9.12.0(jiti@2.3.1))
-      eslint-plugin-tailwindcss: 3.17.4(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
+      eslint-plugin-tailwindcss: 3.17.4(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)))
       eslint-plugin-vuejs-accessibility: 2.4.1(eslint@9.12.0(jiti@2.3.1))
       globals: 15.10.0
       local-pkg: 0.5.0
@@ -16206,7 +16212,7 @@ snapshots:
       - typescript
       - vitest
 
-  '@icebreakers/monorepo@0.6.6(@types/node@22.7.5)':
+  '@icebreakers/monorepo@0.6.8(@types/node@22.7.5)':
     dependencies:
       '@inquirer/checkbox': 4.0.0(@types/node@22.7.5)
       '@inquirer/confirm': 5.0.0(@types/node@22.7.5)
@@ -16574,21 +16580,21 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
     optional: true
 
-  '@jsonjoy.com/base64@1.1.2(tslib@2.7.0)':
+  '@jsonjoy.com/base64@1.1.2(tslib@2.8.0)':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
-  '@jsonjoy.com/json-pack@1.1.0(tslib@2.7.0)':
+  '@jsonjoy.com/json-pack@1.1.0(tslib@2.8.0)':
     dependencies:
-      '@jsonjoy.com/base64': 1.1.2(tslib@2.7.0)
-      '@jsonjoy.com/util': 1.3.0(tslib@2.7.0)
+      '@jsonjoy.com/base64': 1.1.2(tslib@2.8.0)
+      '@jsonjoy.com/util': 1.3.0(tslib@2.8.0)
       hyperdyperid: 1.2.0
-      thingies: 1.21.0(tslib@2.7.0)
-      tslib: 2.7.0
+      thingies: 1.21.0(tslib@2.8.0)
+      tslib: 2.8.0
 
-  '@jsonjoy.com/util@1.3.0(tslib@2.7.0)':
+  '@jsonjoy.com/util@1.3.0(tslib@2.8.0)':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@kwsites/file-exists@1.1.1':
     dependencies:
@@ -17121,15 +17127,15 @@ snapshots:
     optionalDependencies:
       rollup: 3.29.5
 
-  '@rollup/plugin-commonjs@28.0.0(rollup@4.24.0)':
+  '@rollup/plugin-commonjs@28.0.1(rollup@4.24.0)':
     dependencies:
       '@rollup/pluginutils': 5.1.2(rollup@4.24.0)
       commondir: 1.0.1
       estree-walker: 2.0.2
-      fdir: 6.4.0(picomatch@2.3.1)
+      fdir: 6.4.0(picomatch@4.0.2)
       is-reference: 1.2.1
       magic-string: 0.30.12
-      picomatch: 2.3.1
+      picomatch: 4.0.2
     optionalDependencies:
       rollup: 4.24.0
 
@@ -17180,14 +17186,14 @@ snapshots:
     optionalDependencies:
       rollup: 4.24.0
 
-  '@rollup/plugin-typescript@12.1.0(rollup@4.24.0)(tslib@2.7.0)(typescript@5.6.3)':
+  '@rollup/plugin-typescript@12.1.1(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.3)':
     dependencies:
       '@rollup/pluginutils': 5.1.2(rollup@4.24.0)
       resolve: 1.22.8
       typescript: 5.6.3
     optionalDependencies:
       rollup: 4.24.0
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@rollup/pluginutils@5.1.2(rollup@3.29.5)':
     dependencies:
@@ -18400,6 +18406,9 @@ snapshots:
 
   acorn@8.12.1: {}
 
+  acorn@8.13.0:
+    optional: true
+
   address@1.2.2: {}
 
   agent-base@6.0.2:
@@ -19091,7 +19100,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   camelcase-css@2.0.1: {}
 
@@ -20156,9 +20165,9 @@ snapshots:
       - node-sass
       - webpack
 
-  docusaurus-plugin-typedoc@1.0.5(typedoc-plugin-markdown@4.2.9(typedoc@0.26.9(typescript@5.6.3))):
+  docusaurus-plugin-typedoc@1.0.5(typedoc-plugin-markdown@4.2.9(typedoc@0.26.10(typescript@5.6.3))):
     dependencies:
-      typedoc-plugin-markdown: 4.2.9(typedoc@0.26.9(typescript@5.6.3))
+      typedoc-plugin-markdown: 4.2.9(typedoc@0.26.10(typescript@5.6.3))
 
   dom-converter@0.2.0:
     dependencies:
@@ -20203,7 +20212,7 @@ snapshots:
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   dot-prop@5.3.0:
     dependencies:
@@ -20616,7 +20625,7 @@ snapshots:
       remark-parse: 11.0.0
       remark-stringify: 11.0.0
       synckit: 0.9.1
-      tslib: 2.7.0
+      tslib: 2.8.0
       unified: 11.0.5
       unified-engine: 11.2.1
       unist-util-visit: 5.0.0
@@ -20672,7 +20681,7 @@ snapshots:
       minimatch: 9.0.5
       semver: 7.6.3
       stable-hash: 0.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -20740,7 +20749,7 @@ snapshots:
       remark-mdx: 3.0.1
       remark-parse: 11.0.0
       remark-stringify: 11.0.0
-      tslib: 2.7.0
+      tslib: 2.8.0
       unified: 11.0.5
       vfile: 6.0.3
     transitivePeerDependencies:
@@ -20913,11 +20922,11 @@ snapshots:
       regexp-ast-analysis: 0.7.1
       scslre: 0.3.0
 
-  eslint-plugin-tailwindcss@3.17.4(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))):
+  eslint-plugin-tailwindcss@3.17.4(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))):
     dependencies:
       fast-glob: 3.3.2
       postcss: 8.4.47
-      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
 
   eslint-plugin-toml@0.11.1(eslint@9.12.0(jiti@2.3.1)):
     dependencies:
@@ -21341,10 +21350,6 @@ snapshots:
   faye-websocket@0.11.4:
     dependencies:
       websocket-driver: 0.7.4
-
-  fdir@6.4.0(picomatch@2.3.1):
-    optionalDependencies:
-      picomatch: 2.3.1
 
   fdir@6.4.0(picomatch@4.0.2):
     optionalDependencies:
@@ -23252,7 +23257,7 @@ snapshots:
     dependencies:
       copy-anything: 2.0.6
       parse-node-version: 1.0.1
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       errno: 0.1.8
       graceful-fs: 4.2.11
@@ -23523,7 +23528,7 @@ snapshots:
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   lowercase-keys@3.0.0: {}
 
@@ -23854,10 +23859,10 @@ snapshots:
 
   memfs@4.12.0:
     dependencies:
-      '@jsonjoy.com/json-pack': 1.1.0(tslib@2.7.0)
-      '@jsonjoy.com/util': 1.3.0(tslib@2.7.0)
-      tree-dump: 1.0.2(tslib@2.7.0)
-      tslib: 2.7.0
+      '@jsonjoy.com/json-pack': 1.1.0(tslib@2.8.0)
+      '@jsonjoy.com/util': 1.3.0(tslib@2.8.0)
+      tree-dump: 1.0.2(tslib@2.8.0)
+      tslib: 2.8.0
 
   meow@12.1.1: {}
 
@@ -24492,7 +24497,7 @@ snapshots:
   no-case@3.0.4:
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   node-addon-api@7.1.1: {}
 
@@ -24890,7 +24895,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   parent-module@1.0.1:
     dependencies:
@@ -24996,7 +25001,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   pascalcase@0.1.1: {}
 
@@ -26427,7 +26432,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   sade@1.8.1:
     dependencies:
@@ -26778,7 +26783,7 @@ snapshots:
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   snapdragon-node@2.1.1:
     dependencies:
@@ -27324,12 +27329,12 @@ snapshots:
 
   synckit@0.6.2:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   synckit@0.9.1:
     dependencies:
       '@pkgr/core': 0.1.1
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   table@6.8.2:
     dependencies:
@@ -27360,7 +27365,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@4.0.0(magicast@0.3.5)(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))):
+  tailwindcss-patch@4.0.0(magicast@0.3.5)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))):
     dependencies:
       '@babel/generator': 7.25.7
       '@babel/parser': 7.25.7
@@ -27376,12 +27381,12 @@ snapshots:
       resolve: 1.22.8
       semver: 7.6.3
     optionalDependencies:
-      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
     transitivePeerDependencies:
       - magicast
       - supports-color
 
-  tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)):
+  tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -27500,9 +27505,9 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
-  thingies@1.21.0(tslib@2.7.0):
+  thingies@1.21.0(tslib@2.8.0):
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   three@0.169.0: {}
 
@@ -27556,12 +27561,12 @@ snapshots:
 
   tinyspy@3.0.2: {}
 
-  tldts-core@6.1.51:
+  tldts-core@6.1.52:
     optional: true
 
-  tldts@6.1.51:
+  tldts@6.1.52:
     dependencies:
-      tldts-core: 6.1.51
+      tldts-core: 6.1.52
     optional: true
 
   tmp@0.0.33:
@@ -27622,7 +27627,7 @@ snapshots:
 
   tough-cookie@5.0.0:
     dependencies:
-      tldts: 6.1.51
+      tldts: 6.1.52
     optional: true
 
   tr46@0.0.3: {}
@@ -27636,9 +27641,9 @@ snapshots:
       punycode: 2.3.1
     optional: true
 
-  tree-dump@1.0.2(tslib@2.7.0):
+  tree-dump@1.0.2(tslib@2.8.0):
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   tree-kill@1.2.2: {}
 
@@ -27672,7 +27677,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 22.7.5
-      acorn: 8.12.1
+      acorn: 8.13.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -27703,7 +27708,7 @@ snapshots:
 
   tslib@2.3.0: {}
 
-  tslib@2.7.0: {}
+  tslib@2.8.0: {}
 
   tsup@8.3.0(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(yaml@2.6.0):
     dependencies:
@@ -27837,11 +27842,11 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typedoc-plugin-markdown@4.2.9(typedoc@0.26.9(typescript@5.6.3)):
+  typedoc-plugin-markdown@4.2.9(typedoc@0.26.10(typescript@5.6.3)):
     dependencies:
-      typedoc: 0.26.9(typescript@5.6.3)
+      typedoc: 0.26.10(typescript@5.6.3)
 
-  typedoc@0.26.9(typescript@5.6.3):
+  typedoc@0.26.10(typescript@5.6.3):
     dependencies:
       lunr: 2.3.9
       markdown-it: 14.1.0
@@ -28485,11 +28490,11 @@ snapshots:
       fs-extra: 11.2.0
       pathe: 1.1.2
 
-  weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))):
+  weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))):
     dependencies:
-      tailwindcss: 3.4.13(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.7.5)(typescript@5.6.3))
 
-  weapp-vite@1.6.2(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0):
+  weapp-vite@1.6.3(jiti@2.3.1)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.5)(less@4.2.0)(lightningcss@1.27.0)(sass@1.79.5)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0):
     dependencies:
       '@weapp-core/init': 1.1.4
       '@weapp-core/logger': 1.0.1
