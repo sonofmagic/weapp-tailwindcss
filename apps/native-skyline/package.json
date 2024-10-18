@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
-    "@iconify-json/lucide": "^1.2.9",
+    "@iconify-json/lucide": "^1.2.10",
     "@iconify-json/mdi": "^1.2.1",
     "@weapp-tailwindcss/cli": "workspace:*",
     "tailwindcss": "^3.4.14",
