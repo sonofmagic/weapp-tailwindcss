@@ -54,7 +54,7 @@
     "@types/gulp-sass": "^5.0.4",
     "@types/gulp-util": "^3.0.41",
     "@types/node": "^22.7.4",
-    "@weapp-tailwindcss/cli": "^2.0.0",
+    "@weapp-tailwindcss/cli": "^2.0.1",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "del": "^6.1.1",
@@ -87,7 +87,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "weapp-ide-cli": "^2.0.6",
-    "weapp-tailwindcss": "^3.6.0",
+    "weapp-tailwindcss": "^3.6.1",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }

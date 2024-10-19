@@ -182,6 +182,7 @@
   "text-[var(--my-var)]",
   "text-black",
   "text-opacity-[0.19]",
+  "text-red-400",
   "text-red-500",
   "text-sm",
   "text-white",

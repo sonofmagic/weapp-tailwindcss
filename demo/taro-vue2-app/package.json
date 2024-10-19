@@ -80,7 +80,7 @@
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
     "@vue/babel-preset-jsx": "^1.2.4",
-    "@weapp-tailwindcss/cli": "^2.0.0",
+    "@weapp-tailwindcss/cli": "^2.0.1",
     "autoprefixer": "^10.4.19",
     "babel-preset-taro": "3.6.35",
     "cross-env": "^7.0.3",
@@ -100,7 +100,7 @@
     "typescript": "~5.4.5",
     "vue-loader": "^15.11.1",
     "weapp-ide-cli": "^2.0.6",
-    "weapp-tailwindcss": "^3.6.0",
+    "weapp-tailwindcss": "^3.6.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.92.0"
   }
