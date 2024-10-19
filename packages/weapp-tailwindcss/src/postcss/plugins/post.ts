@@ -1,7 +1,6 @@
 import type { Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../../types'
 import { postcssPlugin } from '../../constants'
-import { testIfVariablesScope } from '../mp'
 import { fallbackRemove } from '../selectorParser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
@@ -11,7 +10,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     isMainChunk: true,
   },
 ) => {
-  const { customRuleCallback, isMainChunk, ctx } = options
+  const { customRuleCallback, isMainChunk } = options
   const p: Plugin = {
     postcssPlugin,
   }
@@ -19,20 +18,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   if (isMainChunk) {
     p.OnceExit = (root) => {
       root.walkRules((rule) => {
-        if (ctx) {
-          if (ctx.isVariablesScope(rule)) {
-            fallbackRemove.transformSync(rule, {
-              updateSelector: true,
-              lossless: false,
-            })
-          }
-        }
-        else if (testIfVariablesScope(rule)) {
-          fallbackRemove.transformSync(rule, {
-            updateSelector: true,
-            lossless: false,
-          })
-        }
+        fallbackRemove.transformSync(rule, {
+          updateSelector: true,
+          lossless: false,
+        })
       })
     }
   }

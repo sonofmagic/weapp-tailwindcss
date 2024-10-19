@@ -249,7 +249,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(css).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
+    expect(css).toBe('.a>.b{aspect-ratio:1/1;}')
   })
 
   it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 0', async () => {
@@ -274,7 +274,7 @@ describe('styleHandler', () => {
         universal: false,
       },
     })
-    expect(css).toBe('.aspect-w-16>*,.a>.b{aspect-ratio:1/1;}')
+    expect(css).toBe('.a>.b{aspect-ratio:1/1;}')
   })
 
   it(':hover should be remove', async () => {
@@ -710,7 +710,7 @@ describe('styleHandler', () => {
     const { styleHandler } = getOptions()
     const rawCode = `:is(view,text),::before,::after,view,text{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
-    expect(css).toBe(':is(view,text),::before,::after,view,text{color:red;}')
+    expect(css).toBe('::before,::after,view,text{color:red;}')
   })
 
   it('is-pseudo-class case 2', async () => {
