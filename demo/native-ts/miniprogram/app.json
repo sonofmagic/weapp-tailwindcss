@@ -3,8 +3,8 @@
     "pages/index/index"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationStyle": "custom"
+    "navigationBarTextStyle": "black"
+    // "navigationStyle": "custom"
   },
   "style": "v2",
   "rendererOptions": {

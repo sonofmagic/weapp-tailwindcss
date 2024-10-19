@@ -52,7 +52,7 @@
     "docusaurus-plugin-typedoc": "1.0.5",
     "dotenv": "^16.4.5",
     "node-loader": "^2.0.0",
-    "sass": "^1.80.2",
+    "sass": "^1.80.3",
     "sass-loader": "^16.0.2",
     "tailwindcss": "^3.4.14",
     "typedoc": "^0.26.10",

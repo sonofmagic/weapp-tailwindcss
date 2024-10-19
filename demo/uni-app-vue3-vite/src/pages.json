@@ -48,6 +48,12 @@
       "style": {
         "navigationBarTitleText": "typography"
       }
+    },
+    {
+      "path": "pages/issue/issue470",
+      "style": {
+        "navigationBarTitleText": "issue470"
+      }
     }
   ],
   "globalStyle": {
@@ -59,6 +65,10 @@
   "condition": {
     "current": 0,
     "list": [
+      {
+        "path": "pages/issue/issue470",
+        "name": "issue470"
+      },
       {
         "path": "pages/index/peer",
         "name": "peer"

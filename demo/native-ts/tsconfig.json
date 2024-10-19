@@ -19,7 +19,10 @@
     "noUnusedParameters": true,
     "noEmit": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "miniprogram-api-typings"
+    ],
   },
   "references": [
     {
@@ -27,7 +30,7 @@
     }
   ],
   "include": [
-    "src/**/*.ts",
-    "src/**/*.js"
+    "miniprogram/**/*.ts",
+    "miniprogram/**/*.js"
   ]
 }
