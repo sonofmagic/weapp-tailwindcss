@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 3.6.1
+
+### Patch Changes
+
+- [#471](https://github.com/sonofmagic/weapp-tailwindcss/pull/471) [`b60fe7f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b60fe7f338df7db87ab1c8fb705f1659d9df6afd) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: [#470](https://github.com/sonofmagic/weapp-tailwindcss/issues/470)
+
 ## 3.6.0
 
 ### Minor Changes
