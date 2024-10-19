@@ -6,10 +6,11 @@ export interface IGetCssOptions {
   twConfig?: Partial<Config>
   css?: string
   postcssPlugins?: postcss.AcceptedPlugin[]
+  isContentGlob?: boolean
 }
 
 export async function getCss(content: string | string[], options: IGetCssOptions = {}) {
-  const { css, postcssPlugins, twConfig } = defu(options, {
+  const { css, postcssPlugins, twConfig, isContentGlob } = defu(options, {
     css: '@tailwind utilities;',
     postcssPlugins: [],
     twConfig: {},
@@ -19,11 +20,13 @@ export async function getCss(content: string | string[], options: IGetCssOptions
   }
   const processor = postcss([
     tailwindcss({
-      content: content.map((x) => {
-        return {
-          raw: x,
-        }
-      }),
+      content: isContentGlob
+        ? content
+        : content.map((x) => {
+          return {
+            raw: x,
+          }
+        }),
       ...twConfig,
     }) as postcss.Plugin,
     {
