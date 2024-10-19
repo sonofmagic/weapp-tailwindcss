@@ -8,7 +8,8 @@
     "build:babel": "echo build:babel",
     "dev": "weapp-vite dev",
     "open": "weapp-vite open",
-    "build-npm": "weapp-vite build-npm"
+    "build-npm": "weapp-vite build-npm",
+    "postinstall": "weapp-tw patch"
   },
   "keywords": [],
   "author": "ice breaker <1324318532@qq.com>",
@@ -16,7 +17,9 @@
   "dependencies": {},
   "devDependencies": {
     "@weapp-tailwindcss/cli": "^2.0.0",
+    "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^4.0.1",
+    "postcss": "^8.4.47",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
@@ -26,7 +29,7 @@
     "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "^3.6.0",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-vite": "^1.4.4"
+    "weapp-vite": "^1.6.4"
   },
   "packageManager": "yarn@1.22.22",
   "type": "module",
