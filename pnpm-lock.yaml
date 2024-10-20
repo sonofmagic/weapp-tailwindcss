@@ -40,7 +40,7 @@ importers:
         version: 0.6.1(@typescript-eslint/utils@8.10.0(eslint@9.13.0(jiti@2.3.1))(typescript@5.6.3))(@vue/compiler-sfc@3.5.12)(eslint@9.13.0(jiti@2.3.1))(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.7.7)(typescript@5.6.3)))(typescript@5.6.3)(vitest@2.1.3)
       '@icebreakers/monorepo':
         specifier: ^0.6.9
-        version: 0.6.9(@types/node@22.7.7)
+        version: 0.6.10(@types/node@22.7.7)
       '@icebreakers/readme':
         specifier: 0.1.0
         version: 0.1.0
@@ -2909,8 +2909,8 @@ packages:
   '@icebreakers/eslint-config@0.6.1':
     resolution: {integrity: sha512-S2gHs7UWNjQ1hZZe+5I8olxJUqu7feUkGeAppMN5maOMt5L4mtB12Z37Tl/XwExxRezMThsAotC1GoZb7OCRtA==}
 
-  '@icebreakers/monorepo@0.6.9':
-    resolution: {integrity: sha512-5LQtNzWI7xyW3sHG545DDxW0lOKOruABwppxzhqML64vI+6nqpumugS4YKjUAAOSw4weKnS4qmks/AcbsSBDLA==}
+  '@icebreakers/monorepo@0.6.10':
+    resolution: {integrity: sha512-5lz5MKwERNgIGvfYJ58qAtVPdRC3Lf9dvsvudHOYGr9mTS8RkKcAqhxs3uvYsnvDgjxBL+BwprT99Dcb2tpe7g==}
     hasBin: true
 
   '@icebreakers/readme@0.1.0':
@@ -16242,7 +16242,7 @@ snapshots:
       - typescript
       - vitest
 
-  '@icebreakers/monorepo@0.6.9(@types/node@22.7.7)':
+  '@icebreakers/monorepo@0.6.10(@types/node@22.7.7)':
     dependencies:
       '@inquirer/checkbox': 4.0.0(@types/node@22.7.7)
       '@inquirer/confirm': 5.0.0(@types/node@22.7.7)
