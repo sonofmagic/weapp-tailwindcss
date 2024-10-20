@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@ast-grep/napi':
-        specifier: ^0.28.0
-        version: 0.28.0
+        specifier: ^0.28.1
+        version: 0.28.1
       '@babel/core':
         specifier: ^7.25.8
         version: 7.25.8
@@ -559,8 +559,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.4
-        version: 1.6.4(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.5
+        version: 1.6.5(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/vite-native-skyline:
     devDependencies:
@@ -583,8 +583,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.4
-        version: 1.6.4(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.5
+        version: 1.6.5(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/vite-native-ts:
     devDependencies:
@@ -607,8 +607,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.4
-        version: 1.6.4(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.5
+        version: 1.6.5(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/vite-native-ts-skyline:
     devDependencies:
@@ -631,8 +631,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.6.4
-        version: 1.6.4(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
+        specifier: ^1.6.5
+        version: 1.6.5(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0)
 
   apps/weapp-library:
     devDependencies:
@@ -1102,66 +1102,66 @@ packages:
   '@ast-core/escape@1.0.1':
     resolution: {integrity: sha512-/kVjBkDzYrSW1S+gTBCuOfhnNkge9qZFJgLT+MOZdmPN4Vts36S60uU5br3ozoxpJ1eRGe6pGy7/EfcOpFFHlA==}
 
-  '@ast-grep/napi-darwin-arm64@0.28.0':
-    resolution: {integrity: sha512-YmNX/ks3/+0tKKMML0qjOLHsZD/agU1H8i29FAnLIOKBePprHndTCmZ8FhRHZm+Po6ybV/OYgBctwaENNuplFg==}
+  '@ast-grep/napi-darwin-arm64@0.28.1':
+    resolution: {integrity: sha512-RSon42R7fO7KQbUS1XaITiUQjzCELJjvhioNobDumnSUujnrPrUQ/W4rJm/yTacVQzf+0PhG5AfDHvcR3CeOrw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@ast-grep/napi-darwin-x64@0.28.0':
-    resolution: {integrity: sha512-AJvQ52AW8aynH60iHOyjZbSsAaaIuDSLQJNRDvg4+Ploz3n2VL5cvPa5wrjaQIudX2qGZuvsS5Bls6nIGYsYjg==}
+  '@ast-grep/napi-darwin-x64@0.28.1':
+    resolution: {integrity: sha512-akqXGA3smY+5lSdnbXw1RBETZvSQPHVvB1c7Vm10u9C7OnXCUI7NKxgY+hBNNThiq1XDSOBERAuDbJEYKdizfQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@ast-grep/napi-linux-arm64-gnu@0.28.0':
-    resolution: {integrity: sha512-N1rYmfbm8G+BptwO/N0SN7cFbMlDcwdUGh+UEla31U98DqocsSr9KdsAYWJ4NPi6IFlyV0nuReVc6HFEoKdOiw==}
+  '@ast-grep/napi-linux-arm64-gnu@0.28.1':
+    resolution: {integrity: sha512-VtatyjDc742sBz3wY2xRxGYjLFhHG4x/u7mqNGpEVPnF7K8Cgy09zQXZf5CaSzFRWAGE7p8th/uBvn/WfKteGg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ast-grep/napi-linux-arm64-musl@0.28.0':
-    resolution: {integrity: sha512-PSEeOSxvXLafOhmp7KVqHz1cH4SBlNYwzePo2krqawZ2aS3uw6n6X2QRAFokwX6cjbH8oqOO4BQUiN57gulvHA==}
+  '@ast-grep/napi-linux-arm64-musl@0.28.1':
+    resolution: {integrity: sha512-tWjlbyVcPQHngilsZSJDs074UK9VSbUfyqB5DpkgzWJAB6ANUnzu13McUkXLtsBgAcH09gAEJydxkkqUMUwh4Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ast-grep/napi-linux-x64-gnu@0.28.0':
-    resolution: {integrity: sha512-KNZ9o+iI7ucvkc0jqC4qVL8dssTlqsoz8igOxYGcNRRfXxUQ4PWop/+YpRm1a/Pc0msTNhtV1qABa/lNUlh/Ag==}
+  '@ast-grep/napi-linux-x64-gnu@0.28.1':
+    resolution: {integrity: sha512-tadcQ/Ne/k7YiOCZBVxDPYtGhtuLZ9bMrKfZVWZeNdsCSjR3UsvTK0Cx2hWDbTqhJ7v2rCdKAAevNDWbcSquBw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ast-grep/napi-linux-x64-musl@0.28.0':
-    resolution: {integrity: sha512-gc7pL2oCq+fsDHPLUcd45RJmuApjpZh8hRARA0n+vmAnViwBv5kHWoGuSUO2kslLGxbAYTBO/q495t6rF823eQ==}
+  '@ast-grep/napi-linux-x64-musl@0.28.1':
+    resolution: {integrity: sha512-qHsWSBgz66H6co6bgCCUh8ebPH8QmS2RijSTJUG+q99Rey1AkAvyUzCKHd//6Cq7jB9oaqi0GLgOotXCuIJAQg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ast-grep/napi-win32-arm64-msvc@0.28.0':
-    resolution: {integrity: sha512-HOLK6RK4N0+cBZFfeD/urIWIJZw6FT94fM0k43ZP+QG7nTb2J97buX/Ussm/hipLIuqTbBS0LsuYuEMMNFuzQw==}
+  '@ast-grep/napi-win32-arm64-msvc@0.28.1':
+    resolution: {integrity: sha512-BSWh1RSDqqKZnt23JAU5TZn7NcfI+JADL/Q8bZT64ZYX4WyDYgaU0RnEraVo5PVmu50RD7b5MPvCNqUUDg4hJw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@ast-grep/napi-win32-ia32-msvc@0.28.0':
-    resolution: {integrity: sha512-2jwuBgpMcPCNY2lQc8ZTFb5rp7WdRoVGOqWcl/Y60Wm4ZPvY+m21P8on3AvElMuulf2P3hDAG2wWqzH+P/MXPg==}
+  '@ast-grep/napi-win32-ia32-msvc@0.28.1':
+    resolution: {integrity: sha512-o9qqy3Wr0Z6T3JYWiuQX/8MO+asHsr9QvzR0Muymf2dJrgx6HDQFKXTdywYviZCUuK20macfKczijik7TUy9Bw==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@ast-grep/napi-win32-x64-msvc@0.28.0':
-    resolution: {integrity: sha512-radx5aK9QvsiAFG6FV1nUEJaQsrp5Aro9I+Eai9EUYvwEWQmFzRQ4O8eDuRbMKN42+0LU8YHLDAvLiwCFD5JYw==}
+  '@ast-grep/napi-win32-x64-msvc@0.28.1':
+    resolution: {integrity: sha512-UJVucm6ksqB9dN0i9PvlOJL028gmNzkw21RFPDJ3yRBEfT4FOPTF/WMhvbpmLNFw/i1CeJ5/uNDFFxXFn+CUiA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@ast-grep/napi@0.28.0':
-    resolution: {integrity: sha512-m1ejvc1tR3kq6Lt4iCmechrX39rAvDRhaj/c68QyoTN+Ue3yavKHfS+qZt3TRPEywYTT0RerSxUFuITPhQ5f/A==}
+  '@ast-grep/napi@0.28.1':
+    resolution: {integrity: sha512-0/+mAJaPj/qxkYStEIsrN4ibF/WTWgxAZC8kAo+b02IzP62qcWnyRJOiTvkPr5v00Fc6iXj4BIZOVQPjaM4MtQ==}
     engines: {node: '>= 10'}
 
   '@babel/code-frame@7.25.7':
@@ -4513,8 +4513,8 @@ packages:
   '@weapp-core/escape@2.1.0':
     resolution: {integrity: sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==}
 
-  '@weapp-core/init@1.1.5':
-    resolution: {integrity: sha512-EWyH1VBDrUh3rEoFgRNnI9JU9ZDPCyN1snEqzHoFzatOPWI5fZMJR7Jshz4/f8nKG8h4CSrX2zo9EzPKR8e13g==}
+  '@weapp-core/init@1.1.6':
+    resolution: {integrity: sha512-9CRtFYJD6gNH5ZD1QglgOsMtzvzWvd6w/lVF84+e+TrELbL3Q+ECOVU63LszokuwdtwJyrPrubzQbVVePkAYqQ==}
 
   '@weapp-core/logger@1.0.1':
     resolution: {integrity: sha512-a6mRzO4GZKXHQvMhUv5CUctzHxg1dbD1+S+hr5A3j3y369PEPIQQpqQnwhICfBnDZkkBRcy1YVcOjiuWJo4qww==}
@@ -13193,8 +13193,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-vite@1.6.4:
-    resolution: {integrity: sha512-F/AxJi5XPaWP8pCwj3iAoh6W1zLgj5Ogt/YP1ltGQosYAgD1i6/m2LvoymJRbR2ayGep2Kis2Ql7a9CAXRZBcg==}
+  weapp-vite@1.6.5:
+    resolution: {integrity: sha512-wfLvDygK1Abl0FnP4Gp5BKOfNmvFNvThhC3jVMER9XpPM+qQvHi/qb06VZEeq9/opT3uMDflRSTnAHNm60hGbA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -13756,44 +13756,44 @@ snapshots:
 
   '@ast-core/escape@1.0.1': {}
 
-  '@ast-grep/napi-darwin-arm64@0.28.0':
+  '@ast-grep/napi-darwin-arm64@0.28.1':
     optional: true
 
-  '@ast-grep/napi-darwin-x64@0.28.0':
+  '@ast-grep/napi-darwin-x64@0.28.1':
     optional: true
 
-  '@ast-grep/napi-linux-arm64-gnu@0.28.0':
+  '@ast-grep/napi-linux-arm64-gnu@0.28.1':
     optional: true
 
-  '@ast-grep/napi-linux-arm64-musl@0.28.0':
+  '@ast-grep/napi-linux-arm64-musl@0.28.1':
     optional: true
 
-  '@ast-grep/napi-linux-x64-gnu@0.28.0':
+  '@ast-grep/napi-linux-x64-gnu@0.28.1':
     optional: true
 
-  '@ast-grep/napi-linux-x64-musl@0.28.0':
+  '@ast-grep/napi-linux-x64-musl@0.28.1':
     optional: true
 
-  '@ast-grep/napi-win32-arm64-msvc@0.28.0':
+  '@ast-grep/napi-win32-arm64-msvc@0.28.1':
     optional: true
 
-  '@ast-grep/napi-win32-ia32-msvc@0.28.0':
+  '@ast-grep/napi-win32-ia32-msvc@0.28.1':
     optional: true
 
-  '@ast-grep/napi-win32-x64-msvc@0.28.0':
+  '@ast-grep/napi-win32-x64-msvc@0.28.1':
     optional: true
 
-  '@ast-grep/napi@0.28.0':
+  '@ast-grep/napi@0.28.1':
     optionalDependencies:
-      '@ast-grep/napi-darwin-arm64': 0.28.0
-      '@ast-grep/napi-darwin-x64': 0.28.0
-      '@ast-grep/napi-linux-arm64-gnu': 0.28.0
-      '@ast-grep/napi-linux-arm64-musl': 0.28.0
-      '@ast-grep/napi-linux-x64-gnu': 0.28.0
-      '@ast-grep/napi-linux-x64-musl': 0.28.0
-      '@ast-grep/napi-win32-arm64-msvc': 0.28.0
-      '@ast-grep/napi-win32-ia32-msvc': 0.28.0
-      '@ast-grep/napi-win32-x64-msvc': 0.28.0
+      '@ast-grep/napi-darwin-arm64': 0.28.1
+      '@ast-grep/napi-darwin-x64': 0.28.1
+      '@ast-grep/napi-linux-arm64-gnu': 0.28.1
+      '@ast-grep/napi-linux-arm64-musl': 0.28.1
+      '@ast-grep/napi-linux-x64-gnu': 0.28.1
+      '@ast-grep/napi-linux-x64-musl': 0.28.1
+      '@ast-grep/napi-win32-arm64-msvc': 0.28.1
+      '@ast-grep/napi-win32-ia32-msvc': 0.28.1
+      '@ast-grep/napi-win32-x64-msvc': 0.28.1
 
   '@babel/code-frame@7.25.7':
     dependencies:
@@ -18298,7 +18298,7 @@ snapshots:
 
   '@weapp-core/escape@2.1.0': {}
 
-  '@weapp-core/init@1.1.5':
+  '@weapp-core/init@1.1.6':
     dependencies:
       '@weapp-core/logger': 1.0.1
       '@weapp-core/shared': 1.0.3
@@ -28562,9 +28562,9 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.7.7)(typescript@5.6.3))
 
-  weapp-vite@1.6.4(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0):
+  weapp-vite@1.6.5(jiti@2.3.1)(postcss@8.4.47)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.7)(less@4.2.0)(lightningcss@1.27.0)(sass@1.80.3)(stylus@0.63.0)(terser@5.34.1))(yaml@2.6.0):
     dependencies:
-      '@weapp-core/init': 1.1.5
+      '@weapp-core/init': 1.1.6
       '@weapp-core/logger': 1.0.1
       '@weapp-core/schematics': 1.0.3
       '@weapp-core/shared': 1.0.3
