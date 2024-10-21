@@ -8790,9 +8790,9 @@ utils-merge@1.0.1:
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
 uview-plus@^3.1.45:
-  version "3.3.36"
-  resolved "https://registry.npmmirror.com/uview-plus/-/uview-plus-3.3.36.tgz#c7914e102d88ae7b404c10e885f95ef012ba9701"
-  integrity sha512-yiIIt3OkCDkBzflrr6by8qvYibvCzsFZ/Mn+Fdx9TDaTQAltWFBj7UNVN/wOeb3lou2T5S1QFy2rxw3OcAYi5g==
+  version "3.3.37"
+  resolved "https://registry.npmmirror.com/uview-plus/-/uview-plus-3.3.37.tgz#92827297c753122394844b67317a161cd3d8039f"
+  integrity sha512-hj0yTHaascwkoA1ManycM6gQZWz3iRg77zSegV88QhhbSw+thGQb/dD9HpDsG7Cpdd76i4H4VDrW0J9iuI6nDA==
   dependencies:
     clipboard "^2.0.11"
     dayjs "^1.11.3"
