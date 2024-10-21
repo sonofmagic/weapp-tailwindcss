@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 3.6.2
+
+### Patch Changes
+
+- [`8423d35`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8423d35c775c250730fc84b869cabe2525a01178) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: [Bug]: 将tailwind.config中的important选项设置为一个class选择器时，编译到微信小程序后wxss会报编译错误 #473
+
 ## 3.6.1
 
 ### Patch Changes
