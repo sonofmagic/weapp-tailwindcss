@@ -879,4 +879,11 @@ describe('styleHandler', () => {
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
     expect(css).toMatchSnapshot()
   })
+
+  it('remove zero selector', async () => {
+    const { styleHandler } = getOptions({})
+    const rawCode = `.b,.a:hover{color:red;} {color:red;} {color:red;}`
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
+    expect(css).toMatchSnapshot()
+  })
 })

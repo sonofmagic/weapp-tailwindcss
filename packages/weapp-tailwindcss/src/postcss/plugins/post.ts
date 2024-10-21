@@ -22,6 +22,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
           updateSelector: true,
           lossless: false,
         })
+        if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
+          rule.remove()
+        }
       })
     }
   }

@@ -962,6 +962,8 @@ view,.h5-a,.h5-abbr,.h5-address,.h5-area,.h5-article,.h5-aside,.h5-audio,.h5-b,.
 }"
 `;
 
+exports[`styleHandler > remove zero selector 1`] = `".b,.a:hover{color:red;}"`;
+
 exports[`styleHandler > tailwindcss v2 jit should append view selector 1`] = `"::before,::after{--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > use with weapp-pandacss case 0  1`] = `
