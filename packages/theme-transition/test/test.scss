@@ -1,4 +1,5 @@
-@use '@/mixins.scss' as M;
+@use 'sass-true' as *;
+@use '../scss/mixins.scss' as M;
 
 @include test-module('mixin') {
   @include test('mixin custom selector') {

@@ -1,10 +1,55 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`scss > compileString 1`] = `""`;
+exports[`scss > compileString 1`] = `
+"::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 2147483646;
+}
+
+.dark::view-transition-new(root) {
+  z-index: 1;
+}"
+`;
+
+exports[`scss > compileString case 0 1`] = `
+"::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
+
+[data-theme=dark]::view-transition-old(root) {
+  z-index: 2147483646;
+}
+
+[data-theme=dark]::view-transition-new(root) {
+  z-index: 1;
+}"
+`;
 
 exports[`scss > index 1`] = `
-"/* Color Mode transition */
-::view-transition-old(root),
+"::view-transition-old(root),
 ::view-transition-new(root) {
   mix-blend-mode: normal;
   animation: none;

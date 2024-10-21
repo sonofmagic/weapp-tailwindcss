@@ -1,7 +1,7 @@
 {
   "name": "theme-transition",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "tsup(esbuild) build package template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -17,7 +17,9 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./scss": "./scss/index.scss"
+    "./scss": "./scss/index.scss",
+    "./scss/*": "./scss/*",
+    "./tailwindcss": "./src/tailwindcss"
   },
   "files": [
     "dist"
@@ -38,7 +40,13 @@
         "import": "./dist/index.js",
         "require": "./dist/index.cjs"
       },
-      "./scss": "./scss/index.scss"
+      "./tailwindcss": {
+        "types": "./dist/tailwindcss.d.ts",
+        "import": "./dist/tailwindcss.js",
+        "require": "./dist/tailwindcss.cjs"
+      },
+      "./scss": "./scss/index.scss",
+      "./scss/*": "./scss/*"
     },
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
