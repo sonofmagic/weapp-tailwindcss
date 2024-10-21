@@ -14,6 +14,7 @@ const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-childre
 module.exports = {
   content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'].map((x) => r(x)), // ,
   darkMode: 'class',
+  // important: '.app',
   theme: {
     extend: {
       colors: {

@@ -81,7 +81,7 @@ export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
 export const fallbackRemove = selectorParser((selectors) => {
   let maybeImportantId = false
   selectors.walk((selector, idx) => {
-    if (idx === 0 && selector.type === 'id') {
+    if (idx === 0 && (selector.type === 'id' || selector.type === 'class' || selector.type === 'attribute')) {
       maybeImportantId = true
     }
     if (selector.type === 'universal') {
