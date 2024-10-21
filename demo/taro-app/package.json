@@ -64,7 +64,7 @@
     "@types/webpack-env": "^1.18.5",
     "@typescript-eslint/eslint-plugin": "^8.8.0",
     "@typescript-eslint/parser": "^8.8.0",
-    "@weapp-tailwindcss/cli": "^2.0.1",
+    "@weapp-tailwindcss/cli": "^2.0.2",
     "autoprefixer": "^10.4.20",
     "babel-plugin-import": "^1.13.8",
     "babel-preset-taro": "4.0.6",
@@ -87,7 +87,7 @@
     "terser-webpack-plugin": "^5.3.10",
     "typescript": "~5.6.2",
     "weapp-ide-cli": "^2.0.6",
-    "weapp-tailwindcss": "^3.6.1",
+    "weapp-tailwindcss": "^3.6.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.95.0",
     "webpack-chain": "^6.5.1"
