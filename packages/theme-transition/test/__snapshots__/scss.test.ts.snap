@@ -48,6 +48,30 @@ exports[`scss > compileString case 0 1`] = `
 }"
 `;
 
+exports[`scss > compileString case 1 1`] = `
+"::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+::view-transition-old(root) {
+  z-index: 2;
+}
+
+::view-transition-new(root) {
+  z-index: 3;
+}
+
+[data-theme=dark]::view-transition-old(root) {
+  z-index: 3;
+}
+
+[data-theme=dark]::view-transition-new(root) {
+  z-index: 2;
+}"
+`;
+
 exports[`scss > index 1`] = `
 "::view-transition-old(root),
 ::view-transition-new(root) {

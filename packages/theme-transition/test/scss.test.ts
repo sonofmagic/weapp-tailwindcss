@@ -34,6 +34,14 @@ describe('scss', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('compileString case 1', () => {
+    const { css } = compileString(`@use '../scss/mixins.scss' as M;
+      @include M.theme-transition("[data-theme='dark']",2,3);`, {
+      importers,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
   // it('sassTrue', () => {
   //   const sassFile = path.join(__dirname, 'test.scss')
   //   sassTrue.runSass({ describe, it }, sassFile, {

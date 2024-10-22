@@ -1,4 +1,4 @@
-@mixin theme-transition($darkSelector: '.dark') {
+@mixin theme-transition($darkSelector: '.dark', $floorZIndex: 1, $ceilingZIndex: 2147483646) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
     mix-blend-mode: normal;
@@ -6,18 +6,18 @@
   }
 
   ::view-transition-old(root) {
-    z-index: 1;
+    z-index: $floorZIndex;
   }
 
   ::view-transition-new(root) {
-    z-index: 2147483646;
+    z-index: $ceilingZIndex;
   }
 
   #{$darkSelector}::view-transition-old(root) {
-    z-index: 2147483646;
+    z-index: $ceilingZIndex;
   }
 
   #{$darkSelector}::view-transition-new(root) {
-    z-index: 1;
+    z-index: $floorZIndex;
   }
 }

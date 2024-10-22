@@ -1,8 +1,20 @@
 export interface UseToggleDarkOptions {
+  /**
+   * isDark.value = !isDark.value
+   * @returns
+   */
   toggle: () => any
+  /**
+   * isDark.value
+   * @returns
+   */
   getDarkValue: () => any
   viewTransition?: {
     before?: () => any
+    /**
+     * await nextTick()
+     * @returns
+     */
     after?: () => any
     callback?: () => any
   }
@@ -61,3 +73,4 @@ export function useToggleDark(options: UseToggleDarkOptions) {
     isAppearanceTransition,
   }
 }
+// https://github.com/antfu-collective/icones/blob/0869721765eeae895cc583b3a2d07fc4a35d70c8/src/components/DarkSwitcher.vue#L27
