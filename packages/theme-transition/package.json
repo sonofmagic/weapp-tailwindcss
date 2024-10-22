@@ -1,7 +1,7 @@
 {
   "name": "theme-transition",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "tsup(esbuild) build package template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -13,16 +13,22 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "keywords": [],
+  "keywords": [
+    "theme",
+    "transition"
+  ],
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
+    "./tailwindcss": "./src/tailwindcss",
     "./scss": "./scss/index.scss",
+    "./scss/mixins": "./scss/mixins.scss",
     "./scss/*": "./scss/*",
     "./css": "./css/index.css",
-    "./tailwindcss": "./src/tailwindcss"
+    "./css/*": "./css/*"
   },
   "files": [
+    "css",
     "dist",
     "scss"
   ],
@@ -49,8 +55,10 @@
         "require": "./dist/tailwindcss.cjs"
       },
       "./scss": "./scss/index.scss",
+      "./scss/mixins": "./scss/mixins.scss",
       "./scss/*": "./scss/*",
-      "./css": "./css/index.css"
+      "./css": "./css/index.css",
+      "./css/*": "./css/*"
     },
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
