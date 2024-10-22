@@ -608,10 +608,10 @@
   resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-2.1.0.tgz#792f042f002cc3c7e59f06ea874fc319eef19f33"
   integrity sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==
 
-"@weapp-core/init@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.npmmirror.com/@weapp-core/init/-/init-1.1.5.tgz#0c54469ecba535626923108650276a94aaa26c9c"
-  integrity sha512-EWyH1VBDrUh3rEoFgRNnI9JU9ZDPCyN1snEqzHoFzatOPWI5fZMJR7Jshz4/f8nKG8h4CSrX2zo9EzPKR8e13g==
+"@weapp-core/init@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.npmmirror.com/@weapp-core/init/-/init-1.1.6.tgz#e90b6aa64f098d30b0644e2950e1fd4e7d2dc022"
+  integrity sha512-9CRtFYJD6gNH5ZD1QglgOsMtzvzWvd6w/lVF84+e+TrELbL3Q+ECOVU63LszokuwdtwJyrPrubzQbVVePkAYqQ==
   dependencies:
     "@weapp-core/logger" "^1.0.1"
     "@weapp-core/shared" "^1.0.3"
@@ -1953,12 +1953,7 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
-fdir@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.npmmirror.com/fdir/-/fdir-6.4.0.tgz#8e80ab4b18a2ac24beebf9d20d71e1bc2627dbae"
-  integrity sha512-3oB133prH1o4j/L5lLW7uOCF1PlD+/It2L0eL/iAqWMB91RBbqTewABqxhj0ibBd90EEmWZq7ntIWzVaWcXTGQ==
-
-fdir@^6.4.2:
+fdir@^6.4.0, fdir@^6.4.2:
   version "6.4.2"
   resolved "https://registry.npmmirror.com/fdir/-/fdir-6.4.2.tgz#ddaa7ce1831b161bc3657bb99cb36e1622702689"
   integrity sha512-KnhMXsKSPZlAhp7+IjUkRZKPb4fUyccpDrdFXbi4QL1qkmFh9kVY09Yox+n4MaOb3lHZ1Tv829C3oaaXoMYPDQ==
@@ -3706,9 +3701,9 @@ p-map@^7.0.2:
   integrity sha512-z4cYYMMdKHzw4O5UkWJImbZynVIo0lSGTXc7bzB1e/rrDqkgGUNysK/o4bTr+0+xKvvLoTyGqYC4Fgljy9qe1Q==
 
 package-json-from-dist@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/package-json-from-dist/-/package-json-from-dist-1.0.0.tgz#e501cd3094b278495eb4258d4c9f6d5ac3019f00"
-  integrity sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/package-json-from-dist/-/package-json-from-dist-1.0.1.tgz#4f1471a010827a86f94cfd9b0727e36d267de505"
+  integrity sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -3844,15 +3839,15 @@ picocolors@^1.0.0:
   resolved "https://registry.npmmirror.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
   integrity sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==
 
-picocolors@^1.0.1, picocolors@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmmirror.com/picocolors/-/picocolors-1.1.0.tgz#5358b76a78cde483ba5cef6a9dc9671440b27d59"
-  integrity sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==
-
-picocolors@^1.1.1:
+picocolors@^1.0.1, picocolors@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
   integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
+
+picocolors@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/picocolors/-/picocolors-1.1.0.tgz#5358b76a78cde483ba5cef6a9dc9671440b27d59"
+  integrity sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==
 
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   version "2.3.1"
@@ -4995,9 +4990,9 @@ ts-interface-checker@^0.1.9:
   integrity sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==
 
 tsconfck@^3.0.3:
-  version "3.1.3"
-  resolved "https://registry.npmmirror.com/tsconfck/-/tsconfck-3.1.3.tgz#a8202f51dab684c426314796cdb0bbd0fe0cdf80"
-  integrity sha512-ulNZP1SVpRDesxeMLON/LtWM8HIgAJEIVpVVhBM6gsmvQ8+Rh+ZG7FWGvHh7Ah3pRABwVJWklWCr/BTZSv0xnQ==
+  version "3.1.4"
+  resolved "https://registry.npmmirror.com/tsconfck/-/tsconfck-3.1.4.tgz#de01a15334962e2feb526824339b51be26712229"
+  integrity sha512-kdqWFGVJqe+KGYvlSO9NIaWn9jT1Ny4oKVzAJsKii5eoE9snzTJzL4+MMVOMn+fikWGFmKEylcXL710V/kIPJQ==
 
 tslib@^2.3.0:
   version "2.6.2"
@@ -5299,11 +5294,11 @@ weapp-tailwindcss@^3.6.2:
     webpack-sources "3.2.3"
 
 weapp-vite@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.npmmirror.com/weapp-vite/-/weapp-vite-1.6.4.tgz#020c49f755eb3a60f8ce1402cec5276c8e0fb64b"
-  integrity sha512-F/AxJi5XPaWP8pCwj3iAoh6W1zLgj5Ogt/YP1ltGQosYAgD1i6/m2LvoymJRbR2ayGep2Kis2Ql7a9CAXRZBcg==
+  version "1.6.5"
+  resolved "https://registry.npmmirror.com/weapp-vite/-/weapp-vite-1.6.5.tgz#18f21b9af036df364cb8ba71811817b962f123c1"
+  integrity sha512-wfLvDygK1Abl0FnP4Gp5BKOfNmvFNvThhC3jVMER9XpPM+qQvHi/qb06VZEeq9/opT3uMDflRSTnAHNm60hGbA==
   dependencies:
-    "@weapp-core/init" "^1.1.5"
+    "@weapp-core/init" "^1.1.6"
     "@weapp-core/logger" "^1.0.1"
     "@weapp-core/schematics" "^1.0.3"
     "@weapp-core/shared" "^1.0.3"
