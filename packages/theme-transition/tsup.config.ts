@@ -7,6 +7,7 @@ export default defineConfig({
   clean: true,
   dts: true,
   external: ['tailwindcss'],
+  target: 'es6',
   // https://github.com/egoist/tsup/pull/1056
   // https://github.com/egoist/tsup/issues?q=cjsInterop
   // cjsInterop: true,

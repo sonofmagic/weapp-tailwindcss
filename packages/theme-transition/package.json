@@ -1,8 +1,8 @@
 {
   "name": "theme-transition",
   "type": "module",
-  "version": "0.0.3",
-  "description": "tsup(esbuild) build package template",
+  "version": "0.0.4",
+  "description": "theme-transition css,scss and tailwindcss plugin",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
