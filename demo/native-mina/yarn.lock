@@ -5085,9 +5085,9 @@ npm-registry-fetch@^18.0.2:
     proc-log "^5.0.0"
 
 npm-run-all2@^6.2.3:
-  version "6.2.3"
-  resolved "https://registry.npmmirror.com/npm-run-all2/-/npm-run-all2-6.2.3.tgz#ea0c0987337b828eaa78c2f5488e70de0969917b"
-  integrity sha512-5RsxC7jEc/RjxOYBVdEfrJf5FsJ0pHA7jr2/OxrThXknajETCTYjigOCG3iaGjdYIKEQlDuCG0ir0T1HTva8pg==
+  version "6.2.6"
+  resolved "https://registry.npmmirror.com/npm-run-all2/-/npm-run-all2-6.2.6.tgz#53dc4a871c9f5abae88d1d20ffc9f1dad06574f6"
+  integrity sha512-tkyb4pc0Zb0oOswCb5tORPk9MvVL6gcDq1cMItQHmsbVk1skk7YF6cH+UU2GxeNLHMuk6wFEOSmEmJ2cnAK1jg==
   dependencies:
     ansi-styles "^6.2.1"
     cross-spawn "^7.0.3"
@@ -5096,6 +5096,7 @@ npm-run-all2@^6.2.3:
     pidtree "^0.6.0"
     read-package-json-fast "^3.0.2"
     shell-quote "^1.7.3"
+    which "^3.0.1"
 
 npm-run-path@^4.0.1:
   version "4.0.1"
@@ -7170,6 +7171,13 @@ which@^2.0.1:
   version "2.0.2"
   resolved "https://registry.npmmirror.com/which/-/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
+  dependencies:
+    isexe "^2.0.0"
+
+which@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/which/-/which-3.0.1.tgz#89f1cd0c23f629a8105ffe69b8172791c87b4be1"
+  integrity sha512-XA1b62dzQzLfaEOSQFTCOd5KFf/1VSzZo7/7TUjnya6u0vGGKzU96UQBZTAThCb2j4/xjBAyii1OhRLJEivHvg==
   dependencies:
     isexe "^2.0.0"
 
