@@ -1,7 +1,7 @@
 {
   "name": "theme-transition",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "theme-transition css,scss and tailwindcss plugin",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -20,7 +20,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./tailwindcss": "./src/tailwindcss",
+    "./tailwindcss": "./src/tailwindcss.ts",
     "./scss": "./scss/index.scss",
     "./scss/mixins": "./scss/mixins.scss",
     "./scss/*": "./scss/*",

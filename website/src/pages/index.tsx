@@ -66,7 +66,7 @@ function HomepageHeader() {
 
         <div className="mt-8 flex flex-col justify-around space-y-8 md:flex-row md:space-y-0">
           <div className="text-center">
-            <h3>不仅仅是 webpack</h3>
+            <h3>不仅仅是 webpack/vite</h3>
             <img src={PluginsImg}></img>
             {/* <Plugins></Plugins> */}
           </div>

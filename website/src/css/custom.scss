@@ -1,8 +1,9 @@
-@use 'theme-transition/scss/mixins.scss' as M;
+// @use 'theme-transition/scss/mixins.scss' as M;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@include M.theme-transition('[data-theme="dark"]');
+
+// @include M.theme-transition('[data-theme="dark"]');
 
 @layer components {
   .btn {
