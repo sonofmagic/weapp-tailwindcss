@@ -9,3 +9,6 @@ NODE_VERSION = "20"
 from = "/*"
 to = "/index.html"
 status = 200
+
+[context.deploy-preview]
+ignore = "exit 0"
