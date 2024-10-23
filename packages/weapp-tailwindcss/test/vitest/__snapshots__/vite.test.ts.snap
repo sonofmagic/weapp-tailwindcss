@@ -235,8 +235,8 @@ exports[`vite test > vite common build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -439,8 +439,8 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -643,8 +643,8 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -847,8 +847,8 @@ exports[`vite test > vite common build with mangle options 0 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -1051,8 +1051,8 @@ exports[`vite test > vite common build with mangle options 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -1255,8 +1255,8 @@ exports[`vite test > vite common build with mangle options mangleClassFilter all
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -1459,8 +1459,8 @@ exports[`vite test > vite common build with mangle options mangleClassFilter var
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -1663,8 +1663,8 @@ exports[`vite test > vite common build with mangle true 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -1867,8 +1867,8 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
@@ -2062,8 +2062,8 @@ exports[`vite test > vite disabled build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Uf9kOXFw.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DEksRXWT.css" />
+    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
   </head>
 
   <body>
