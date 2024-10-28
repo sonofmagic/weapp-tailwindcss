@@ -11,13 +11,25 @@ import TabItem from '@theme/TabItem';
 
 本教程演示的是，使用微信开发者工具创建的原生 `js` 小程序，以及原生 `js` `skyline` 小程序使用 `tailwindcss` 的方式
 
-如果你使用 `typescript` 进行小程序开发，也可以遵循本教程，只需要最后更改一下 `weapp-tw.config.js` 中的 `src` 配置为 `miniprogram` 即可(相对路径)。
-
-## 前置运行环境
+### 运行环境
 
 请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)。
 
 假如你安装的 `nodejs` 太新，可能会出现安装包不兼容的问题，这时候可以执行安装命令时，使用 `--ignore-engines` 参数进行 `nodejs` 版本的忽略 。
+
+## 创建项目
+
+打开微信开发者工具, 点击 `+` 创建一个项目，依次选择:
+
+0. `AppID` 使用测试号
+1. 开发模式: `小程序` 
+2. 后端服务: `不使用云服务` 
+3. 模板选择: 第二项选择 `基础`
+4. 选择 `JS 基础模板`
+
+![](/img/create-project.png)
+
+> 使用 JS 基础模板创建的项目，依然可以使用 `Typescript`
 
 首先安装本插件前，我们需要把 `tailwindcss` 对应的环境和配置安装好。
 
@@ -46,7 +58,7 @@ npx tailwindcss init
   <TabItem label="yarn" value="yarn">
   
 ```bash
-yarn add -D tailwindcss postcss
+yarn add -D tailwindcss postcss autoprefixer
 # 初始化 tailwind.config.js 文件
 npx tailwindcss init
 ```
@@ -55,7 +67,7 @@ npx tailwindcss init
   <TabItem label="pnpm" value="pnpm">
   
 ```bash
-pnpm i -D tailwindcss postcss
+pnpm i -D tailwindcss postcss autoprefixer
 # 初始化 tailwind.config.js 文件
 npx tailwindcss init
 ```

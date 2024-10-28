@@ -48,7 +48,7 @@ pnpm i -D weapp-tailwindcss weapp-vite
 npx weapp-vite init
 ```
 
-对现有的原生小程序项目，进行 `weapp-vite` 的初始化
+这个命令会对现有的原生小程序项目，进行 `weapp-vite` 的初始化
 
 执行后，会发现主要有许多文件改动，`CLI` 主要做了 `3` 件事情:
 
@@ -56,6 +56,40 @@ npx weapp-vite init
 - 修改 `package.json`, 添加 `dev` 和 `build` 开发和构建脚本，还有构建 `npm` 和打开微信开发者工具
 - 修改 `project.config.json` 内容，来适配构建产物
 - 添加适配 vite 的 `dts` 和 `tsconfig.json`
+
+## 安装所有的依赖包
+
+在执行完成 `weapp-vite init` 初始化命令之后，我们需要在项目里执行一下安装命令:
+
+<Tabs>
+  <TabItem label="npm" value="npm">
+  
+
+```bash
+npm i
+```
+
+
+  </TabItem>
+  <TabItem label="yarn" value="yarn">
+  
+
+```bash
+yarn
+```
+
+
+  </TabItem>
+  <TabItem label="pnpm" value="pnpm">
+  
+
+```bash
+pnpm i
+```
+
+
+  </TabItem>
+</Tabs>
 
 ## 注册插件
 
@@ -104,7 +138,17 @@ export default defineConfig({
 
 假如你配置不成功，你可以参考以下模板进行配置文件对比:
 
-[vite-native](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/apps/vite-native)
+[weapp-vite-tailwindcss-template](https://github.com/weapp-vite/weapp-vite/tree/main/apps/weapp-vite-tailwindcss-template)
+
+或者直接执行命令:
+
+```bash
+npx weapp-vite create my-app
+```
+
+此命令会在当前目录下，创建一个目录名为 `my-app` 的 `weapp-vite` + `weapp-tailwindcss` 集成模板
+
+{/* [vite-native](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/apps/vite-native) */}
 
 {/* [native-weapp-tailwindcss-template](https://github.com/sonofmagic/native-weapp-tailwindcss-template) */}
 
