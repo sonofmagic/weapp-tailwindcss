@@ -132,7 +132,8 @@ export default defineConfig({
 
 使用微信开发者工具，直接导入工程目录，然后即可预览效果！
 
->注意不是导入 `dist` 目录，是你工程的根目录! 通常是 `dist` 的父级目录，不要搞错了！
+> 注意不是导入 `dist` 目录，是你工程的根目录! 通常是 `dist` 的父级目录，不要搞错了！
+
 
 ## 配置好的模板
 
@@ -151,6 +152,33 @@ npx weapp-vite create my-app
 {/* [vite-native](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/apps/vite-native) */}
 
 {/* [native-weapp-tailwindcss-template](https://github.com/sonofmagic/native-weapp-tailwindcss-template) */}
+
+## 原生组件样式的隔离性
+
+:::tip
+发现很多用户，在使用原生开发的时候，经常会问，为什么 `tailwindcss` 样式对自定义组件不生效。
+
+这可能有以下几个原因:
+
+1. 代码文件不在 `tailwind.config.js` 的 `content` 配置内
+2. 原生小程序组件是默认开启 **组件样式隔离** 的，默认情况下，自定义组件的样式只受到自定义组件 `wxss` 的影响。而 `tailwindcss` 生成的工具类，都在 `app.wxss` 这个全局样式文件里面。不属于组件内部，自然不生效。
+
+这时候可以在你组件的 `json` 文件配置中，设置下面一行 `styleIsolation` 来开启样式共享:
+
+```json title="custom-component.json"
+{
+  "styleIsolation": "apply-shared"
+}
+```
+
+> `apply-shared` 表示页面 `wxss` 样式将影响到自定义组件，但自定义组件 `wxss` 中指定的样式不会影响页面；
+
+来让组件应用到 `app.wxss` 里的样式。
+
+更多的文档详见: [微信小程序相关开发文档](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E7%BB%84%E4%BB%B6%E6%A0%B7%E5%BC%8F%E9%9A%94%E7%A6%BB)
+
+:::
+
 
 ## 想了解更多 weapp-vite
 

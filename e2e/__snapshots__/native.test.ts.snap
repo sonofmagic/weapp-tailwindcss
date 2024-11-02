@@ -221,7 +221,8 @@ exports[`e2e native > 'native' > json 1`] = `
   "text-[#4de265]",
   "text-[#da6a4f]",
   "w-8"
-]"
+]
+"
 `;
 
 exports[`e2e native > 'native' > wxml 1`] = `
@@ -407,7 +408,8 @@ exports[`e2e native > 'native-ts' > json 1`] = `
   "bg-[yellow]",
   "block",
   "text-[60px]"
-]"
+]
+"
 `;
 
 exports[`e2e native > 'native-ts' > wxml 1`] = `"<navigation-bar is="components/navigation-bar/navigation-bar"><view class="weui-navigation-bar bar--weui-navigation-bar"><view class="weui-navigation-bar__inner bar--weui-navigation-bar__inner ios bar--ios" style="color: black; background: #FFF; ; padding-right: 94px; height: calc(var(--height) + 47px); padding-top: 47px;"><view class="weui-navigation-bar__left bar--weui-navigation-bar__left" style="width: 94px;"></view><view class="weui-navigation-bar__center bar--weui-navigation-bar__center"><text>Weixin</text></view><view class="weui-navigation-bar__right bar--weui-navigation-bar__right"></view></view></view></navigation-bar><scroll-view scroll-y="" class="scrollarea" type="list" enable-back-to-top=""><view class="container"><view class="userinfo"><button class="avatar-wrapper" open-type="chooseAvatar" role="button" aria-disabled="false"><image class="avatar" src="https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0" role="img"></image></button><view class="nickname-wrapper"><text class="nickname-label">昵称</text><input class="nickname-input" placeholder="请输入昵称11" type="nickname">请输入昵称11</input></view></view><view class="usermotto"><text class="bg-_yellow_ text-_60px_">bg-_yellow_ text-_60px_ </text></view></view></scroll-view>"`;
@@ -422,4 +424,7 @@ exports[`e2e native > 'web-postcss7-compat' > css 1`] = `
 "
 `;
 
-exports[`e2e native > 'web-postcss7-compat' > json 1`] = `"[]"`;
+exports[`e2e native > 'web-postcss7-compat' > json 1`] = `
+"[]
+"
+`;

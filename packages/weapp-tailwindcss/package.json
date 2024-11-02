@@ -148,12 +148,12 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/generator": "~7.25.9",
-    "@babel/parser": "~7.25.9",
+    "@babel/generator": "~7.26.2",
+    "@babel/parser": "~7.26.2",
     "@babel/traverse": "~7.25.9",
-    "@babel/types": "~7.25.9",
-    "@csstools/postcss-is-pseudo-class": "~5.0.0",
-    "@tailwindcss-mangle/shared": "~3.0.0",
+    "@babel/types": "~7.26.0",
+    "@csstools/postcss-is-pseudo-class": "~5.0.1",
+    "@tailwindcss-mangle/shared": "~4.0.1",
     "@weapp-core/escape": "~2.1.0",
     "@weapp-core/regex": "~1.0.1",
     "consola": "^3.2.3",
@@ -166,9 +166,9 @@
     "npm-registry-fetch": "^18.0.2",
     "postcss": "~8.4.47",
     "postcss-rem-to-responsive-pixel": "~6.0.2",
-    "postcss-selector-parser": "~6.1.2",
+    "postcss-selector-parser": "~7.0.0",
     "semver": "~7.6.3",
-    "tailwindcss-patch": "~4.0.0",
+    "tailwindcss-patch": "~5.0.2",
     "webpack-sources": "3.2.3"
   }
 }

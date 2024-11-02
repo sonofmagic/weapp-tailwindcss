@@ -316,7 +316,8 @@ exports[`e2e > 'gulp-app' > json 1`] = `
   "text-lg",
   "text-xs",
   "w-screen"
-]"
+]
+"
 `;
 
 exports[`e2e > 'gulp-app' > wxml 1`] = `
@@ -545,7 +546,8 @@ exports[`e2e > 'mpx-app' > json 1`] = `
   "text-[#e67240]",
   "text-[50px]",
   "text-[blue]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'mpx-app' > wxml 1`] = `
@@ -1066,7 +1068,8 @@ exports[`e2e > 'native-mina' > json 1`] = `
   "w-[20px]",
   "w-[20rpx]",
   "w-[300rpx]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'native-mina' > wxml 1`] = `
@@ -1550,7 +1553,8 @@ exports[`e2e > 'rax-app' > json 1`] = `
   "w-[100px]",
   "w-[200%]",
   "w-[300rpx]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'rax-app' > wxml 1`] = `
@@ -2367,7 +2371,8 @@ exports[`e2e > 'taro-app' > json 1`] = `
   "w-[300rpx]",
   "w-[404px]",
   "w-full"
-]"
+]
+"
 `;
 
 exports[`e2e > 'taro-app' > wxml 1`] = `
@@ -2457,7 +2462,8 @@ exports[`e2e > 'taro-app-vite' > json 1`] = `
   "flex-col",
   "text-[#3d31a4]",
   "text-[#438821]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'taro-app-vite' > wxml 1`] = `
@@ -2910,7 +2916,8 @@ exports[`e2e > 'taro-vue2-app' > json 1`] = `
   "w-[100px]",
   "w-[300rpx]",
   "w-[320px]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'taro-vue2-app' > wxml 1`] = `
@@ -3588,7 +3595,8 @@ exports[`e2e > 'taro-vue3-app' > json 1`] = `
   "w-[300px]",
   "w-[300rpx]",
   "w-full"
-]"
+]
+"
 `;
 
 exports[`e2e > 'taro-vue3-app' > wxml 1`] = `
@@ -4778,7 +4786,8 @@ exports[`e2e > 'uni-app' > json 1`] = `
   "wx:bg-blue-400",
   "z-[-55]",
   "z-[55]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'uni-app' > wxml 1`] = `
@@ -10401,7 +10410,8 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "w-[77rpx]",
   "w-screen",
   "wx:bg-blue-400"
-]"
+]
+"
 `;
 
 exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
@@ -11209,7 +11219,8 @@ exports[`e2e > 'uni-app-webpack5' > json 1`] = `
   "wx:bg-blue-500",
   "z-[-55]",
   "z-[55]"
-]"
+]
+"
 `;
 
 exports[`e2e > 'uni-app-webpack5' > wxml 1`] = `

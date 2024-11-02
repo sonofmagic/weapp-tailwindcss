@@ -180,6 +180,10 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'issues/toast-svg-bug',
     },
+    {
+      type: 'doc',
+      id: 'issues/more-tags',
+    },
   ],
   API: [
     {

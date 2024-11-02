@@ -407,7 +407,7 @@ const customAttributes = {
   runtimeLoaderPath?: string
   /**
    * @group 0.重要配置
-   * @description 用于处理 css 选择器的替换
+   * @description 用于处理 css 选择器的替换规则
    */
   cssSelectorReplacement?: {
     /**

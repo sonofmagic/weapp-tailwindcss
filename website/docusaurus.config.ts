@@ -26,7 +26,7 @@ function createLink(params: { target?: string, rel?: string, href?: string, text
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'weapp-tw 把tailwindcss带给小程序开发者们',
+  title: 'weapp-tailwindcss 把tailwindcss带给小程序开发者们',
   tagline: '用tailwindcss来开发小程序吧!这是一个webpack/vite/gulp插件集合,兼容了各种用这类打包的框架,比如uni-app,tarojs,rax,mpx,remax,原生等等.伟大的icebreaker部署了这个文档网站',
   favicon: 'img/favicon.ico',
 
@@ -193,6 +193,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
+      // https://docusaurus.io/zh-CN/docs/markdown-features/toc#table-of-contents-heading-level
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 3,
+      },
       colorMode: {
         defaultMode: 'dark',
       },
@@ -216,7 +221,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/logo.png',
       navbar: {
-        title: 'weapp-tw',
+        title: 'weapp-tailwindcss',
         logo: {
           alt: 'weapp tailwindcss Logo',
           src: 'img/logo.png',
