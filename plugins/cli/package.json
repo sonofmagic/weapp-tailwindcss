@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/cli",
-  "version": "2.0.2",
+  "version": "3.0.0-alpha.0",
   "description": "The cli of weapp-tailwindcss",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
