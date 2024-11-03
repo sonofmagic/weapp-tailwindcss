@@ -1,0 +1,26 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@native-app/js": "1.0.0",
+    "@native-app/skyline": "1.0.0",
+    "@native-app/ts": "1.0.0",
+    "@native-app/skyline-ts": "1.0.0",
+    "simplest-mock-server": "0.0.0",
+    "vite-native": "1.0.0",
+    "vite-native-skyline": "1.0.0",
+    "vite-native-ts": "1.0.0",
+    "vite-native-ts-skyline": "1.0.0",
+    "weapp-library": "1.0.0",
+    "weapp-wechat-zhihu": "1.0.0",
+    "@native-app/postcss7-compat": "1.0.0",
+    "benchmark": "0.0.0",
+    "tailwindcss-core-plugins-extractor": "0.2.0",
+    "theme-transition": "0.0.5",
+    "weapp-tailwindcss": "3.6.2",
+    "@weapp-tailwindcss/cli": "2.0.2",
+    "@weapp-tailwindcss/typography": "0.2.4",
+    "website": "0.0.0"
+  },
+  "changesets": []
+}
