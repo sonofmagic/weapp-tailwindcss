@@ -22,5 +22,7 @@
     "@weapp-tailwindcss/typography": "0.2.4",
     "website": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "nasty-boats-behave"
+  ]
 }
