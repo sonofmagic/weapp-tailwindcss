@@ -708,8 +708,8 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(vue@3.5.12(typescript@5.6.3))
       tailwindcss:
-        specifier: 4.0.0-alpha.26
-        version: 4.0.0-alpha.26
+        specifier: 4.0.0-alpha.31
+        version: 4.0.0-alpha.31
       vite:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0)
@@ -12545,9 +12545,6 @@ packages:
     resolution: {integrity: sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
-
-  tailwindcss@4.0.0-alpha.26:
-    resolution: {integrity: sha512-jHLs/18tHTLWkuaWMrTFdeF8qM0ZqCtZHo/YvtZOuhZGA9wW1TVpIvPkAHECXRSp4JiTKBkCzUPdv505kMkgow==}
 
   tailwindcss@4.0.0-alpha.31:
     resolution: {integrity: sha512-wrS5eNGOwHclCJPGonDMxVuI/P1T3W9gjZw4q42Xfa13K5L1YJaRVMEP/UgP2F3Q7QULW6JR3XWrWjbgFU+/2w==}
@@ -28061,8 +28058,6 @@ snapshots:
       sucrase: 3.35.0
     transitivePeerDependencies:
       - ts-node
-
-  tailwindcss@4.0.0-alpha.26: {}
 
   tailwindcss@4.0.0-alpha.31: {}
 
