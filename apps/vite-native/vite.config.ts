@@ -19,6 +19,13 @@ export default defineConfig({
       rem2rpx: true,
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['legacy-js-api'],
+      },
+    },
+  },
   // build: {
   //   rollupOptions: {
   //     external: ['lodash'],

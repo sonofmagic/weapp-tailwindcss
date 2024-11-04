@@ -11,4 +11,11 @@ export default defineConfig({
     // weapp-vite options
     srcRoot: './miniprogram',
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['legacy-js-api'],
+      },
+    },
+  },
 })

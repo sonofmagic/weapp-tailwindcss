@@ -17,7 +17,7 @@
   "keywords": [],
   "main": "index.js",
   "scripts": {
-    "dev": "weapp-vite dev",
+    "dev": "weapp-vite dev -o",
     "dev:0": "weapp-vite dev -m x",
     "dev:1": "weapp-vite dev --mode xx",
     "build": "weapp-vite build",
@@ -33,6 +33,6 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^1.6.7"
+    "weapp-vite": "^1.7.0"
   }
 }
