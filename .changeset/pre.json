@@ -23,6 +23,7 @@
     "website": "0.0.0"
   },
   "changesets": [
-    "nasty-boats-behave"
+    "nasty-boats-behave",
+    "rare-dingos-give"
   ]
 }
