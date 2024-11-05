@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 3.7.0-alpha.1
+
+### Patch Changes
+
+- [`1c37dab`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1c37dab354da866565ee843419e3fdbef187630e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
 ## 3.7.0-alpha.0
 
 ### Minor Changes
