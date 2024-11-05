@@ -31,5 +31,11 @@ export default defineConfig({
       // @ts-ignore
       plugins: postcssPlugins,
     },
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['legacy-js-api', 'import'],
+        quietDeps: true,
+      },
+    },
   },
 })
