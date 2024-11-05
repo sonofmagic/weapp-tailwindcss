@@ -14296,10 +14296,10 @@ uuid@^8.3.2:
   resolved "https://registry.npmmirror.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
-uview-ui@2.0.37:
-  version "2.0.37"
-  resolved "https://registry.npmmirror.com/uview-ui/-/uview-ui-2.0.37.tgz#b47263ebe41e7edbecd9574eba806a7f45d2bf22"
-  integrity sha512-iBcWNmQa01Wr+z004G6XIVPDctOrJIAx7LObQceUAPxZh6kJYjIOAMp5JE1K4VpoMV5bKYDpCd0gmX+M4nTEQQ==
+uview-ui@2.0.38:
+  version "2.0.38"
+  resolved "https://registry.npmmirror.com/uview-ui/-/uview-ui-2.0.38.tgz#02a0585f2c966a81c2997c79cfff0e8538a89c61"
+  integrity sha512-6egHDf9lXHKpG3hEjRE0vMx4+VWwKk/ReTf5x18KrIKqdvdPRqO3+B8Unh7vYYwrIxzAWIlmhZ9RJpKI/4UqPQ==
 
 v8-to-istanbul@^4.1.3:
   version "4.1.4"
