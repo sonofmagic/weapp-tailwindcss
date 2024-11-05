@@ -2562,9 +2562,9 @@
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
 "@vant/weapp@^1.11.6":
-  version "1.11.6"
-  resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.11.6.tgz#3a7f4f68aed35ec4657daea7fec4c8b29ec71e47"
-  integrity sha512-a3heReWYT2gNdsyj6x1hBwsM8V8NrjcPAmle86NH2CD2V/i/h0le75piW6KntSfOPCwekVWMBKhysNrBpJeKdw==
+  version "1.11.7"
+  resolved "https://registry.npmmirror.com/@vant/weapp/-/weapp-1.11.7.tgz#bfd4092970d470719d5e93a6d4ff96746d1cb276"
+  integrity sha512-Rwn9BBnb4kHSV4XmvBicwtd42J+amEUfnFDcXJsGNPNX4a9c/DoT6YLsm4X1wB2+sQbdiQsbFBLAvGRBxCkD8g==
 
 "@vue/cli-overlay@^5.0.8":
   version "5.0.8"
