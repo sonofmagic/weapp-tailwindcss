@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 3.7.0
+
+### Minor Changes
+
+- [`9e3891e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9e3891ec6b18519b75d850d9637f2ea57e3bab91) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: upgrade to tailwindcss-patch@5.x
+
+### Patch Changes
+
+- [`1c37dab`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1c37dab354da866565ee843419e3fdbef187630e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
+- [`b55f4d7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b55f4d75962031d26f665f60106ea2ed52e162bb) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 支持使用 weappTwIgnore 在js中标识无需转译的字面量
+
 ## 3.7.0-alpha.2
 
 ### Patch Changes
