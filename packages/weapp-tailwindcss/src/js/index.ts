@@ -94,8 +94,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     },
     TemplateElement: {
       enter(p) {
-        if (p.parentPath.isTemplateLiteral() && isEvalPath(p.parentPath.parentPath)) {
-          return
+        if (p.parentPath.isTemplateLiteral()) {
+          if (
+            (p.parentPath.parentPath.isTaggedTemplateExpression()
+              && p.parentPath.parentPath.get('tag').isIdentifier({
+                name: 'weappTwIgnore',
+              })
+            )
+            || isEvalPath(p.parentPath.parentPath)) {
+            return
+          }
         }
         const n = p.node
         replaceHandleValue(

@@ -169,8 +169,12 @@ const classArray = [
   true ? 'font-bold' : '',
   "bg-[url('https://xxx.com/xx.webp')]"
 ]
-
+const weappTwIgnore = String.raw
 const wildContent = ref('*******')
+console.log('!hidden')
+console.log(/*@weapp-tw ignore*/ '!hidden')
+console.log(weappTwIgnore`!hidden`)
+// console.log('!hidden') 
 </script>
 
 <style lang="scss">
@@ -192,6 +196,7 @@ page {
 
 page::before {
   content: '';
+
   @apply w-10 h-5 bg-green-500 inline-block;
 }
 </style>
@@ -203,6 +208,7 @@ page::before {
 
 .content::before {
   content: '';
+
   @apply w-5 h-5 bg-red-500/50 inline-block;
 }
 </style>

@@ -683,3 +683,13 @@ exports[`jsHandler > 中文字符产物 case 4 1`] = `
   "code": "const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"",
 }
 `;
+
+exports[`jsHandler > 标识符忽略 case 4 1`] = `"const a = weappTwIgnore\`!hidden\`"`;
+
+exports[`jsHandler > 注释忽略 case 0 1`] = `"const a = 'ihidden'"`;
+
+exports[`jsHandler > 注释忽略 case 1 1`] = `"const a = 'ihidden'"`;
+
+exports[`jsHandler > 注释忽略 case 2 1`] = `"const a = /*weapp-tw ignore*/ 'ihidden'"`;
+
+exports[`jsHandler > 注释忽略 case 3 1`] = `"const a = /*@weapp-tw ignore*/ '!hidden'"`;

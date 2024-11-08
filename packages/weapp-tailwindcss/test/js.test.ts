@@ -675,4 +675,58 @@ describe('jsHandler', () => {
     const { error } = await jsHandler(testCase, set)
     expect(error).toBeTruthy()
   })
+
+  it('注释忽略 case 0', async () => {
+    const testCase = `const a = '!hidden'`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep',
+    })
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('注释忽略 case 1', async () => {
+    const testCase = `const a = '!hidden'`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({})
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('注释忽略 case 2', async () => {
+    const testCase = `const a = /*weapp-tw ignore*/ '!hidden'`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep',
+    })
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('注释忽略 case 3', async () => {
+    const testCase = `const a = /*@weapp-tw ignore*/ '!hidden'`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({})
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('标识符忽略 case 4', async () => {
+    const testCase = `const a = weappTwIgnore\`!hidden\``
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({})
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
 })

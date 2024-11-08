@@ -473,8 +473,8 @@ importers:
         specifier: ^1.8.1
         version: 1.8.1(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))
       '@iconify-json/lucide':
-        specifier: ^1.2.11
-        version: 1.2.11
+        specifier: ^1.2.12
+        version: 1.2.12
       '@iconify-json/mdi':
         specifier: ^1.2.1
         version: 1.2.1
@@ -577,8 +577,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.7.0
-        version: 1.7.0(esbuild@0.24.0)(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
+        specifier: ^1.7.3
+        version: 1.7.3(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
 
   apps/vite-native-skyline:
     devDependencies:
@@ -601,8 +601,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.7.0
-        version: 1.7.0(esbuild@0.24.0)(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
+        specifier: ^1.7.3
+        version: 1.7.3(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
 
   apps/vite-native-ts:
     devDependencies:
@@ -625,8 +625,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.7.0
-        version: 1.7.0(esbuild@0.24.0)(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
+        specifier: ^1.7.3
+        version: 1.7.3(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
 
   apps/vite-native-ts-skyline:
     devDependencies:
@@ -649,8 +649,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^1.7.0
-        version: 1.7.0(esbuild@0.24.0)(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
+        specifier: ^1.7.3
+        version: 1.7.3(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0)
 
   apps/weapp-library:
     devDependencies:
@@ -2946,8 +2946,8 @@ packages:
     resolution: {integrity: sha512-rBB9QeROpfnGC6Q3wbH8cheB6KIpgAKA7vUy4OG7pDSuADOOKTHZ7NwUN4VvrVWGenvaNSqJYhMRQlAzRNLetw==}
     hasBin: true
 
-  '@iconify-json/lucide@1.2.11':
-    resolution: {integrity: sha512-dqpbV7+g1qqxtZOHCZKwdKhtYYqEUjFhYiOg/+PcADbjtapoL+bwa1Brn12gAHq5r2K7Mf29xRHOTmZ3UHHOrw==}
+  '@iconify-json/lucide@1.2.12':
+    resolution: {integrity: sha512-pzcEQx7LuDoBZWHS1PSdCUBGcUU7/zpu3LINNiEixMz8i1zTWoxnvA2mQMciIn+yTRk4FsjRn/tGC69Rs9mbaA==}
 
   '@iconify-json/mdi@1.2.1':
     resolution: {integrity: sha512-dSkQU78gsZV6Yxnq78+LuX7jzeFC/5NAmz7O3rh558GimGFcwMVY/OtqRowIzjqJBmMmWZft7wkFV4TrwRXjlg==}
@@ -4661,8 +4661,8 @@ packages:
   '@weapp-core/escape@2.1.0':
     resolution: {integrity: sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==}
 
-  '@weapp-core/init@1.1.7':
-    resolution: {integrity: sha512-aO8lWhGbSJ5VE3YGbfvZlLdxNVHli63tayjyjSHid37/YalFVPlPJAF7GTWBU+j51AC6TTQ0Umim6xU+vzGr7w==}
+  '@weapp-core/init@1.1.8':
+    resolution: {integrity: sha512-rb6DOBAs6Eu8m3DXuwnv3IoXaoLcwffyXO7joEWplCz3gA5SA1Bo6ZxGqIgOVkPkavPOcUoko499n9DqjeNnsA==}
 
   '@weapp-core/logger@1.0.1':
     resolution: {integrity: sha512-a6mRzO4GZKXHQvMhUv5CUctzHxg1dbD1+S+hr5A3j3y369PEPIQQpqQnwhICfBnDZkkBRcy1YVcOjiuWJo4qww==}
@@ -4673,8 +4673,8 @@ packages:
   '@weapp-core/schematics@1.0.5':
     resolution: {integrity: sha512-yem892wP5jKBfPrnVlrVbB3/1DtA+RmVjMQbnzsBEn2/6ZEI2JTnWhx752VvKOXeeOSoq3ae/20SoPnBm9W09A==}
 
-  '@weapp-core/shared@1.0.3':
-    resolution: {integrity: sha512-+pEfV1G3UjZKG9O2e/R0+8V6+/lsQf7wFKJm0wJR/dB71g9cnh75nM+KfStuhFw+fX69GXR1E9hPmA95/HeOlg==}
+  '@weapp-core/shared@1.0.4':
+    resolution: {integrity: sha512-ASQ47Cqv1EV952DqQPU5aGElGgiGmU7Ozy2UIljntEB8qjc3d0Z/ZsBbp3+Z9/heeTSMVeIRZ+H7DOiY0ImmmA==}
 
   '@webassemblyjs/ast@1.12.1':
     resolution: {integrity: sha512-EKfMUOPRRUTy5UII4qJDGPpqfwjOmZ5jeGFwid9mnoqIFK+e0vqoi1qH56JpmZSzEL53jKnNzScdmftJyG5xWg==}
@@ -5929,6 +5929,10 @@ packages:
 
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
+    engines: {node: '>= 8'}
+
+  cross-spawn@7.0.5:
+    resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
     engines: {node: '>= 8'}
 
   crossws@0.3.1:
@@ -13345,8 +13349,8 @@ packages:
       '@nuxt/kit':
         optional: true
 
-  vite-tsconfig-paths@5.0.1:
-    resolution: {integrity: sha512-yqwv+LstU7NwPeNqajZzLEBVpUFU6Dugtb2P84FXuvaoYA+/70l9MHE+GYfYAycVyPSDYZ7mjOFuYBRqlEpTig==}
+  vite-tsconfig-paths@5.1.0:
+    resolution: {integrity: sha512-Y1PLGHCJfAq1Zf4YIGEsmuU/NCX1epoZx9zwSr32Gjn3aalwQHRKr5aUmbo6r0JHeHkqmWpmDg7WOynhYXw1og==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -13487,8 +13491,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-vite@1.7.0:
-    resolution: {integrity: sha512-ssTy0hBOkn+nL+e+9na/lYYkPe05uFHh0KnoSBhj8Hed4IDj9ZWo65PcJvdKsNbbsE630+qS3zWVP+b7kH9f3Q==}
+  weapp-vite@1.7.3:
+    resolution: {integrity: sha512-gaP5ltQY9wdcI3y3WjIQCXDI/6jn0cKd6L+mXJE3fUwaCe2ffj6R7RmenmT980FxbzbaIPRmTV2HEH3sE0RvWw==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -16627,7 +16631,7 @@ snapshots:
       - postcss
       - stylelint
 
-  '@iconify-json/lucide@1.2.11':
+  '@iconify-json/lucide@1.2.12':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -18741,10 +18745,10 @@ snapshots:
 
   '@weapp-core/escape@2.1.0': {}
 
-  '@weapp-core/init@1.1.7':
+  '@weapp-core/init@1.1.8':
     dependencies:
       '@weapp-core/logger': 1.0.1
-      '@weapp-core/shared': 1.0.3
+      '@weapp-core/shared': 1.0.4
       fs-extra: 11.2.0
 
   '@weapp-core/logger@1.0.1':
@@ -18755,7 +18759,7 @@ snapshots:
 
   '@weapp-core/schematics@1.0.5': {}
 
-  '@weapp-core/shared@1.0.3':
+  '@weapp-core/shared@1.0.4':
     dependencies:
       object-hash: 3.0.0
 
@@ -20171,6 +20175,12 @@ snapshots:
       which: 1.3.1
 
   cross-spawn@7.0.3:
+    dependencies:
+      path-key: 3.1.1
+      shebang-command: 2.0.0
+      which: 2.0.2
+
+  cross-spawn@7.0.5:
     dependencies:
       path-key: 3.1.1
       shebang-command: 2.0.0
@@ -21629,7 +21639,7 @@ snapshots:
 
   execa@5.1.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.5
       get-stream: 6.0.1
       human-signals: 2.1.0
       is-stream: 2.0.1
@@ -29017,7 +29027,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0)):
+  vite-tsconfig-paths@5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0)):
     dependencies:
       debug: 4.3.7
       globrex: 0.1.2
@@ -29168,16 +29178,21 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
 
-  weapp-vite@1.7.0(esbuild@0.24.0)(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0):
+  weapp-vite@1.7.3(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))(yaml@2.6.0):
     dependencies:
-      '@weapp-core/init': 1.1.7
+      '@babel/core': 7.26.0
+      '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
+      '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
+      '@babel/types': 7.26.0
+      '@weapp-core/init': 1.1.8
       '@weapp-core/logger': 1.0.1
       '@weapp-core/schematics': 1.0.5
-      '@weapp-core/shared': 1.0.3
+      '@weapp-core/shared': 1.0.4
       bundle-require: 5.0.0(esbuild@0.24.0)
       cac: 6.7.14
       comment-json: 4.2.5
       debug: 4.3.7
+      esbuild: 0.24.0
       fdir: 6.4.2(picomatch@4.0.2)
       fs-extra: 11.2.0
       htmlparser2: 9.1.0
@@ -29186,12 +29201,11 @@ snapshots:
       picomatch: 4.0.2
       tsup: 8.3.5(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)(yaml@2.6.0)
       vite: 5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0)
-      vite-tsconfig-paths: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))
+      vite-tsconfig-paths: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.80.6)(sass@1.80.6)(stylus@0.63.0)(terser@5.36.0))
       weapp-ide-cli: 2.0.6
     transitivePeerDependencies:
       - '@microsoft/api-extractor'
       - '@swc/core'
-      - esbuild
       - jiti
       - postcss
       - supports-color
