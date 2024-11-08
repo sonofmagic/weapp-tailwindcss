@@ -686,6 +686,19 @@ exports[`jsHandler > 中文字符产物 case 4 1`] = `
 
 exports[`jsHandler > 标识符忽略 case 4 1`] = `"const a = weappTwIgnore\`!hidden\`"`;
 
+exports[`jsHandler > 标识符忽略 case 5 1`] = `
+"    console.log("ihidden");
+    console.log(
+      /*@weapp-tw ignore*/
+      "!hidden"
+    );
+    console.log(weappTwIgnore\`!hidden\`)"
+`;
+
+exports[`jsHandler > 标识符忽略 case 6 1`] = `"console.log(weappTwIgnore\`!hidden\`);"`;
+
+exports[`jsHandler > 标识符忽略 case 7 1`] = `"console.log(weappTwIgnore\`!hidden\`);"`;
+
 exports[`jsHandler > 注释忽略 case 0 1`] = `"const a = 'ihidden'"`;
 
 exports[`jsHandler > 注释忽略 case 1 1`] = `"const a = 'ihidden'"`;

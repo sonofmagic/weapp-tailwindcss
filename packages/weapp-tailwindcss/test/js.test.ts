@@ -729,4 +729,41 @@ describe('jsHandler', () => {
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
+
+  it('标识符忽略 case 5', async () => {
+    const testCase = `    console.log("!hidden");
+    console.log(
+      /*@weapp-tw ignore*/
+      "!hidden"
+    );
+    console.log(weappTwIgnore\`!hidden\`)`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({})
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('标识符忽略 case 6', async () => {
+    const testCase = `console.log(weappTwIgnore\`!hidden\`);`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({})
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('标识符忽略 case 7', async () => {
+    const testCase = `console.log(weappTwIgnore\`!hidden\`);`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getOptions({
+      jsAstTool: 'ast-grep',
+    })
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
 })

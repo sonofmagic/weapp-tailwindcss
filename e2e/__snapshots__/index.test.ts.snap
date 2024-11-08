@@ -5095,6 +5095,9 @@ text,
 .grid {
   display: grid;
 }
+.ihidden {
+  display: none !important;
+}
 .h-10 {
   height: 80rpx;
 }
@@ -10200,6 +10203,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "!bg-green-500",
   "!border-primary",
   "!font-bold",
+  "!hidden",
   "!text-[#990000]",
   "!text-primary",
   "-m-[20px]",

@@ -11,6 +11,8 @@ import { getAstGrep } from './ast-grep'
 import { isEvalPath } from './babel'
 import { replaceHandleValue } from './handlers'
 
+const ignoreIdentifier = 'weappTwIgnore'
+
 async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
   const js = await getAstGrep()
   const nodes = ast.findAll(js.kind('string'))
@@ -36,6 +38,13 @@ async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: 
 
   const templateNodes = ast.findAll(js.kind('template_string'))
   for (const node of templateNodes) {
+    const p = node.parent()
+    if (p && p.kind() === 'call_expression') {
+      const c = p.child(0)
+      if (c && c.kind() === 'identifier' && c.text() === ignoreIdentifier) {
+        continue
+      }
+    }
     const fragments = node.findAll(js.kind('string_fragment'))
     for (const fragment of fragments) {
       const range = fragment.range()
@@ -98,7 +107,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           if (
             (p.parentPath.parentPath.isTaggedTemplateExpression()
               && p.parentPath.parentPath.get('tag').isIdentifier({
-                name: 'weappTwIgnore',
+                name: ignoreIdentifier,
               })
             )
             || isEvalPath(p.parentPath.parentPath)) {

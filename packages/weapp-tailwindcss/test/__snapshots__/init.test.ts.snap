@@ -6,7 +6,7 @@ exports[`init > common > pkgJson 1`] = `
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "weapp-tailwindcss": "^3.7.0-alpha.1",
+    "weapp-tailwindcss": "^3.7.0-alpha.2",
   },
   "scripts": {
     "postinstall": "weapp-tw patch",
@@ -48,7 +48,7 @@ exports[`init > esm > pkgJson 1`] = `
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "weapp-tailwindcss": "^3.7.0-alpha.1",
+    "weapp-tailwindcss": "^3.7.0-alpha.2",
   },
   "scripts": {
     "postinstall": "weapp-tw patch",

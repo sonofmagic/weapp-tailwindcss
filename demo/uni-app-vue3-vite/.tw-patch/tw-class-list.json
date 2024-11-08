@@ -2,6 +2,7 @@
   "!bg-green-500",
   "!border-primary",
   "!font-bold",
+  "!hidden",
   "!text-[#990000]",
   "!text-primary",
   "-m-[20px]",
