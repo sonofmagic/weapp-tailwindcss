@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 3.7.0-alpha.2
+
+### Patch Changes
+
+- [`b55f4d7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b55f4d75962031d26f665f60106ea2ed52e162bb) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 支持使用 weappTwIgnore 在js中标识无需转译的字面量
+
 ## 3.7.0-alpha.1
 
 ### Patch Changes
