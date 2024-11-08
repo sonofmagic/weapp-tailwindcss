@@ -2725,10 +2725,10 @@
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/cli@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-2.0.2.tgz#7174478c388ba184671bdfa7327be08e40cf27b9"
-  integrity sha512-SugHJEGEz5Ne2W2o116rb0ZaU5EJgY00lne9Z/FW9sJOQqQsamLATv88OPMQDInEX3RUJiZMX6+I7JihE8g9Cg==
+"@weapp-tailwindcss/cli@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/cli/-/cli-3.0.0.tgz#0c5d72e5f17cef1105ff9977b78e454996c5f314"
+  integrity sha512-QPoUH7M8e9TePjf6ql++JDpoBzKLCvQTrcLlnX1lhyQuJQ6TIhw/GjV8Hc9vvjjnsp2eIIjnyrGQZk7sLsYUnQ==
   dependencies:
     commander "^12.1.0"
     cosmiconfig "^9.0.0"
@@ -13635,10 +13635,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^3.7.0-alpha.2:
-  version "3.7.0-alpha.2"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.7.0-alpha.2.tgz#a07e1471e148c82b39b4efea871e4391a2368518"
-  integrity sha512-iKXU1ZOqhHD36zKwnDMeIZwbt7IvTXkodlqZIHh1wOaMF5wxJYV4mKi++zXUiVhMDlJVCPR9Hd6jL22BXGCK6g==
+weapp-tailwindcss@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.7.0.tgz#641145042f3f87b05cd7ce1d3bf956305ac20d16"
+  integrity sha512-JM1wyRbGQHnXmnmetGzP0ygQR5Yy2gGDNdRrM1lXgC+5pNBw5f6W8i8RvxVGOe4MNuWljey0X34qtOSnw2+9Lw==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/generator" "~7.26.2"

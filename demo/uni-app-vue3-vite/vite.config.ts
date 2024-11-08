@@ -46,7 +46,7 @@ export default defineConfig({
         console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
       },
       rem2rpx: true,
-      jsAstTool: 'babel',// bench.useBabel ? 'babel' : 'ast-grep',
+      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
       // cssSelectorReplacement: {
       //   universal: ['view', 'text', 'button'],
       // },
