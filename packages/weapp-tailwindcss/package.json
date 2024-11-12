@@ -164,7 +164,7 @@
     "magic-string": "0.30.12",
     "md5": "2.3.0",
     "npm-registry-fetch": "^18.0.2",
-    "postcss": "~8.4.47",
+    "postcss": "~8.4.49",
     "postcss-rem-to-responsive-pixel": "~6.0.2",
     "postcss-selector-parser": "~7.0.0",
     "semver": "~7.6.3",
