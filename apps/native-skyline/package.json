@@ -28,10 +28,10 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
-    "@iconify-json/lucide": "^1.2.14",
+    "@iconify-json/lucide": "^1.2.15",
     "@iconify-json/mdi": "^1.2.1",
     "@weapp-tailwindcss/cli": "workspace:*",
-    "tailwindcss": "^3.4.14",
+    "tailwindcss": "^3.4.15",
     "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "workspace:*"
   }

@@ -74,7 +74,7 @@
 }
 .text-_hfafafa_ {
     --tw-text-opacity: 1;
-    color: rgb(250 250 250 / var(--tw-text-opacity))
+    color: rgb(250 250 250 / var(--tw-text-opacity, 1))
 }
 .text-_colorc32rpx_ {
     color: 32rpx

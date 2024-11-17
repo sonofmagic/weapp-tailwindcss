@@ -195,11 +195,11 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
   background-color: #fde0474d;
@@ -235,8 +235,8 @@ exports[`vite test > vite common build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -399,11 +399,11 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
   background-color: #fde0474d;
@@ -439,8 +439,8 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -603,11 +603,11 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
   background-color: #fde0474d;
@@ -643,8 +643,8 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -807,11 +807,11 @@ text,
 }
 .d {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .b {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .e {
   background-color: #fde0474d;
@@ -847,8 +847,8 @@ exports[`vite test > vite common build with mangle options 0 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -1011,11 +1011,11 @@ text,
 }
 .tw-d {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .tw-b {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .tw-e {
   background-color: #fde0474d;
@@ -1051,8 +1051,8 @@ exports[`vite test > vite common build with mangle options 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -1215,11 +1215,11 @@ text,
 }
 .tw-m {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .tw-n {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .tw-b {
   background-color: #fde0474d;
@@ -1255,8 +1255,8 @@ exports[`vite test > vite common build with mangle options mangleClassFilter all
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -1419,11 +1419,11 @@ text,
 }
 .tw-d {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .tw-b {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
   background-color: #fde0474d;
@@ -1459,8 +1459,8 @@ exports[`vite test > vite common build with mangle options mangleClassFilter var
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -1623,11 +1623,11 @@ text,
 }
 .tw-d {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .tw-b {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .tw-e {
   background-color: #fde0474d;
@@ -1663,8 +1663,8 @@ exports[`vite test > vite common build with mangle true 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -1827,11 +1827,11 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
   background-color: #fde0474d;
@@ -1867,8 +1867,8 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>
@@ -2022,11 +2022,11 @@ exports[`vite test > vite disabled build 2`] = `
 }
 .bg-\\[\\#929292\\] {
   --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity));
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
 }
 .bg-\\[red\\] {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300\\/30 {
   background-color: #fde0474d;
@@ -2062,8 +2062,8 @@ exports[`vite test > vite disabled build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-C1qTdv8-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcSfJQf0.css" />
+    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
   </head>
 
   <body>

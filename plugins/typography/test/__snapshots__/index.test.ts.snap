@@ -532,7 +532,7 @@ exports[`element variants 1`] = `
 }
 .prose-p\\:text-gray-700 .p {
     --tw-text-opacity: 1;
-    color: rgb(55 65 81 / var(--tw-text-opacity));
+    color: rgb(55 65 81 / var(--tw-text-opacity, 1));
 }
 .prose-a\\:font-bold .a {
     font-weight: 700;
@@ -575,11 +575,11 @@ exports[`element variants 1`] = `
 }
 .prose-thead\\:border-red-300 .thead {
     --tw-border-opacity: 1;
-    border-color: rgb(252 165 165 / var(--tw-border-opacity));
+    border-color: rgb(252 165 165 / var(--tw-border-opacity, 1));
 }
 .prose-tr\\:border-red-200 .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(254 202 202 / var(--tw-border-opacity));
+    border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));
 }
 .prose-th\\:text-left .th {
     text-align: left;
@@ -758,7 +758,7 @@ exports[`element variants with custom class name 1`] = `
 }
 .markdown-p\\:text-gray-700 .p {
     --tw-text-opacity: 1;
-    color: rgb(55 65 81 / var(--tw-text-opacity));
+    color: rgb(55 65 81 / var(--tw-text-opacity, 1));
 }
 .markdown-a\\:font-bold .a {
     font-weight: 700;
@@ -801,11 +801,11 @@ exports[`element variants with custom class name 1`] = `
 }
 .markdown-thead\\:border-red-300 .thead {
     --tw-border-opacity: 1;
-    border-color: rgb(252 165 165 / var(--tw-border-opacity));
+    border-color: rgb(252 165 165 / var(--tw-border-opacity, 1));
 }
 .markdown-tr\\:border-red-200 .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(254 202 202 / var(--tw-border-opacity));
+    border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));
 }
 .markdown-th\\:text-left .th {
     text-align: left;

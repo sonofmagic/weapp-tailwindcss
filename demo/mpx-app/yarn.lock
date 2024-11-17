@@ -4172,6 +4172,21 @@ chokidar@^3.5.3:
   optionalDependencies:
     fsevents "~2.3.2"
 
+chokidar@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.npmmirror.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"
+  integrity sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==
+  dependencies:
+    anymatch "~3.1.2"
+    braces "~3.0.2"
+    glob-parent "~5.1.2"
+    is-binary-path "~2.1.0"
+    is-glob "~4.0.1"
+    normalize-path "~3.0.0"
+    readdirp "~3.6.0"
+  optionalDependencies:
+    fsevents "~2.3.2"
+
 chokidar@^4.0.0, chokidar@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmmirror.com/chokidar/-/chokidar-4.0.1.tgz#4a6dff66798fb0f72a94f616abbd7e1a19f31d41"
@@ -6107,7 +6122,7 @@ fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   resolved "https://registry.npmmirror.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
-fast-glob@^3.2.7, fast-glob@^3.2.9, fast-glob@^3.3.0:
+fast-glob@^3.2.7, fast-glob@^3.2.9:
   version "3.3.1"
   resolved "https://registry.npmmirror.com/fast-glob/-/fast-glob-3.3.1.tgz#784b4e897340f3dbbef17413b3f11acf03c874c4"
   integrity sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==
@@ -6654,19 +6669,7 @@ glob-watcher@^5.0.3:
     normalize-path "^3.0.0"
     object.defaults "^1.1.0"
 
-glob@7.1.6:
-  version "7.1.6"
-  resolved "https://registry.npmmirror.com/glob/-/glob-7.1.6.tgz#141f33b81a7c2492e125594307480c46679278a6"
-  integrity sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==
-  dependencies:
-    fs.realpath "^1.0.0"
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "^3.0.4"
-    once "^1.3.0"
-    path-is-absolute "^1.0.0"
-
-glob@^10.2.2, glob@^10.3.7:
+glob@^10.2.2, glob@^10.3.10, glob@^10.3.7:
   version "10.4.5"
   resolved "https://registry.npmmirror.com/glob/-/glob-10.4.5.tgz#f4d9f0b90ffdbab09c9d77f5f29b4262517b0956"
   integrity sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==
@@ -8789,10 +8792,10 @@ jiti@^1.20.0:
   resolved "https://registry.npmmirror.com/jiti/-/jiti-1.20.0.tgz#2d823b5852ee8963585c8dd8b7992ffc1ae83b42"
   integrity sha512-3TV69ZbrvV6U5DfQimop50jE9Dl6J8O1ja1dvBbMba/sZ3YBEQqJ2VZRoQPVnhlzjNtU1vaXRZVrVjU4qtm8yA==
 
-jiti@^1.21.0:
-  version "1.21.0"
-  resolved "https://registry.npmmirror.com/jiti/-/jiti-1.21.0.tgz#7c97f8fe045724e136a397f7340475244156105d"
-  integrity sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==
+jiti@^1.21.6:
+  version "1.21.6"
+  resolved "https://registry.npmmirror.com/jiti/-/jiti-1.21.6.tgz#6c7f7398dd4b3142767f9a168af2f317a428d268"
+  integrity sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==
 
 jiti@^2.3.0, jiti@^2.4.0:
   version "2.4.0"
@@ -9542,7 +9545,7 @@ micromatch@^4.0.0, micromatch@^4.0.2:
     braces "^3.0.2"
     picomatch "^2.3.1"
 
-micromatch@^4.0.4, micromatch@^4.0.5:
+micromatch@^4.0.4, micromatch@^4.0.5, micromatch@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmmirror.com/micromatch/-/micromatch-4.0.8.tgz#d66fa18f3a47076789320b9b1af32bd86d9fa202"
   integrity sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==
@@ -10882,13 +10885,13 @@ postcss-load-config@^3.1.1:
     lilconfig "^2.0.5"
     yaml "^1.10.2"
 
-postcss-load-config@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmmirror.com/postcss-load-config/-/postcss-load-config-4.0.1.tgz#152383f481c2758274404e4962743191d73875bd"
-  integrity sha512-vEJIc8RdiBRu3oRAI0ymerOn+7rPuMvRXslTvZUKZonDHFIczxztIyJ1urxM1x9JXEikvpWWTUUqal5j/8QgvA==
+postcss-load-config@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/postcss-load-config/-/postcss-load-config-4.0.2.tgz#7159dcf626118d33e299f485d6afe4aff7c4a3e3"
+  integrity sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==
   dependencies:
-    lilconfig "^2.0.5"
-    yaml "^2.1.1"
+    lilconfig "^3.0.0"
+    yaml "^2.3.4"
 
 postcss-load-config@^5.0.0:
   version "5.0.3"
@@ -11001,12 +11004,12 @@ postcss-modules-values@^4.0.0:
   dependencies:
     icss-utils "^5.0.0"
 
-postcss-nested@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.npmmirror.com/postcss-nested/-/postcss-nested-6.0.1.tgz#f83dc9846ca16d2f4fa864f16e9d9f7d0961662c"
-  integrity sha512-mEp4xPMi5bSWiMbsgoPfcP74lsWLHkQbZc3sY+jWYd65CUwXrUaTp0fmNpa01ZcETKlIgUdFN/MpS2xZtqL9dQ==
+postcss-nested@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.npmmirror.com/postcss-nested/-/postcss-nested-6.2.0.tgz#4c2d22ab5f20b9cb61e2c5c5915950784d068131"
+  integrity sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==
   dependencies:
-    postcss-selector-parser "^6.0.11"
+    postcss-selector-parser "^6.1.1"
 
 postcss-normalize-charset@^5.1.0:
   version "5.1.0"
@@ -11109,10 +11112,18 @@ postcss-scss@^4.0.9:
   resolved "https://registry.npmmirror.com/postcss-scss/-/postcss-scss-4.0.9.tgz#a03c773cd4c9623cb04ce142a52afcec74806685"
   integrity sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==
 
-postcss-selector-parser@^6.0.11, postcss-selector-parser@^6.0.2, postcss-selector-parser@^6.0.4, postcss-selector-parser@^6.0.5, postcss-selector-parser@^6.0.8, postcss-selector-parser@^6.0.9:
+postcss-selector-parser@^6.0.2, postcss-selector-parser@^6.0.4, postcss-selector-parser@^6.0.5, postcss-selector-parser@^6.0.8, postcss-selector-parser@^6.0.9:
   version "6.0.13"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.13.tgz#d05d8d76b1e8e173257ef9d60b706a8e5e99bf1b"
   integrity sha512-EaV1Gl4mUEV4ddhDnv/xtj7sxwrwxdetHdWUGnT4VJQf+4d05v6lHYZr8N573k5Z0BViss7BDhfWtKS3+sfAqQ==
+  dependencies:
+    cssesc "^3.0.0"
+    util-deprecate "^1.0.2"
+
+postcss-selector-parser@^6.1.1, postcss-selector-parser@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.1.2.tgz#27ecb41fb0e3b6ba7a1ec84fff347f734c7929de"
+  integrity sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==
   dependencies:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
@@ -11162,7 +11173,7 @@ postcss@^7.0.23, postcss@^7.0.36:
     picocolors "^0.2.1"
     source-map "^0.6.1"
 
-postcss@^8.2.6, postcss@^8.3.5, postcss@^8.4.14, postcss@^8.4.21, postcss@^8.4.23, postcss@^8.4.5:
+postcss@^8.2.6, postcss@^8.3.5, postcss@^8.4.14, postcss@^8.4.21, postcss@^8.4.5:
   version "8.4.27"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.27.tgz#234d7e4b72e34ba5a92c29636734349e0d9c3057"
   integrity sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==
@@ -11693,7 +11704,7 @@ resolve@^1.1.6, resolve@^1.22.8, resolve@^1.4.0:
     path-parse "^1.0.7"
     supports-preserve-symlinks-flag "^1.0.0"
 
-resolve@^1.1.7, resolve@^1.10.0, resolve@^1.14.2, resolve@^1.20.0, resolve@^1.22.1, resolve@^1.22.2, resolve@^1.22.3, resolve@^1.22.4:
+resolve@^1.1.7, resolve@^1.10.0, resolve@^1.14.2, resolve@^1.20.0, resolve@^1.22.1, resolve@^1.22.3, resolve@^1.22.4:
   version "1.22.4"
   resolved "https://registry.npmmirror.com/resolve/-/resolve-1.22.4.tgz#1dc40df46554cdaf8948a486a10f6ba1e2026c34"
   integrity sha512-PXNdCiPqDqeUou+w1C2eTQbNfxKSuMxqTCuvlmmMsk1NWHL5fRrhY6Pl0qEYYc6+QqGClco1Qj8XnjPego4wfg==
@@ -12583,14 +12594,14 @@ stylus@^0.63.0:
     sax "~1.3.0"
     source-map "^0.7.3"
 
-sucrase@^3.32.0:
-  version "3.34.0"
-  resolved "https://registry.npmmirror.com/sucrase/-/sucrase-3.34.0.tgz#1e0e2d8fcf07f8b9c3569067d92fbd8690fb576f"
-  integrity sha512-70/LQEZ07TEcxiU2dz51FKaE6hCTWC6vr7FOk3Gr0U60C3shtAN+H+BFr9XlYe5xqf3RA8nrc+VIwzCfnxuXJw==
+sucrase@^3.35.0:
+  version "3.35.0"
+  resolved "https://registry.npmmirror.com/sucrase/-/sucrase-3.35.0.tgz#57f17a3d7e19b36d8995f06679d121be914ae263"
+  integrity sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==
   dependencies:
     "@jridgewell/gen-mapping" "^0.3.2"
     commander "^4.0.0"
-    glob "7.1.6"
+    glob "^10.3.10"
     lines-and-columns "^1.1.6"
     mz "^2.7.0"
     pirates "^4.0.1"
@@ -12691,33 +12702,33 @@ tailwindcss-rem2px-preset@^1.0.3:
   resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
-tailwindcss@^3.4.14:
-  version "3.4.14"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.14.tgz#6dd23a7f54ec197b19159e91e3bb1e55e7aa73ac"
-  integrity sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==
+tailwindcss@^3.4.15:
+  version "3.4.15"
+  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.15.tgz#04808bf4bf1424b105047d19e7d4bfab368044a9"
+  integrity sha512-r4MeXnfBmSOuKUWmXe6h2CcyfzJCEk4F0pptO5jlnYSIViUkVmsawj80N5h2lO3gwcmSb4n3PuN+e+GC1Guylw==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
     arg "^5.0.2"
-    chokidar "^3.5.3"
+    chokidar "^3.6.0"
     didyoumean "^1.2.2"
     dlv "^1.1.3"
-    fast-glob "^3.3.0"
+    fast-glob "^3.3.2"
     glob-parent "^6.0.2"
     is-glob "^4.0.3"
-    jiti "^1.21.0"
+    jiti "^1.21.6"
     lilconfig "^2.1.0"
-    micromatch "^4.0.5"
+    micromatch "^4.0.8"
     normalize-path "^3.0.0"
     object-hash "^3.0.0"
-    picocolors "^1.0.0"
-    postcss "^8.4.23"
+    picocolors "^1.1.1"
+    postcss "^8.4.47"
     postcss-import "^15.1.0"
     postcss-js "^4.0.1"
-    postcss-load-config "^4.0.1"
-    postcss-nested "^6.0.1"
-    postcss-selector-parser "^6.0.11"
-    resolve "^1.22.2"
-    sucrase "^3.32.0"
+    postcss-load-config "^4.0.2"
+    postcss-nested "^6.2.0"
+    postcss-selector-parser "^6.1.2"
+    resolve "^1.22.8"
+    sucrase "^3.35.0"
 
 tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0:
   version "2.2.1"
@@ -14110,11 +14121,6 @@ yaml@^1.10.0, yaml@^1.10.2:
   version "1.10.2"
   resolved "https://registry.npmmirror.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
-
-yaml@^2.1.1:
-  version "2.3.1"
-  resolved "https://registry.npmmirror.com/yaml/-/yaml-2.3.1.tgz#02fe0975d23cd441242aa7204e09fc28ac2ac33b"
-  integrity sha512-2eHWfjaoXgTBC2jNM1LRef62VQa0umtvRiDSk6HSzW7RvS5YtkabJrwYLLEKWBc8a5U2PTSCs+dJjUTJdlHsWQ==
 
 yaml@^2.3.4:
   version "2.4.2"

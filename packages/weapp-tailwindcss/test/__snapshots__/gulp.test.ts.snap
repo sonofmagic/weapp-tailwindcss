@@ -144,11 +144,11 @@ view,text,::before,::after {
 }
 .border-_hEEEEEE_ {
     --tw-border-opacity: 1;
-    border-color: rgb(238 238 238 / var(--tw-border-opacity))
+    border-color: rgb(238 238 238 / var(--tw-border-opacity, 1))
 }
 .bg-_hfff_ {
     --tw-bg-opacity: 1;
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
 .bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
     background-image: url('https://xxx.com/xx.webp')
@@ -196,11 +196,11 @@ view,text,::before,::after {
 }
 .text-_h123456_ {
     --tw-text-opacity: 1;
-    color: rgb(18 52 86 / var(--tw-text-opacity))
+    color: rgb(18 52 86 / var(--tw-text-opacity, 1))
 }
 .text-_h5ba4e5_ {
     --tw-text-opacity: 1;
-    color: rgb(91 164 229 / var(--tw-text-opacity))
+    color: rgb(91 164 229 / var(--tw-text-opacity, 1))
 }"
 `;
 
@@ -410,11 +410,11 @@ view,text,::before,::after {
 }
 .j {
     --tw-border-opacity: 1;
-    border-color: rgb(238 238 238 / var(--tw-border-opacity))
+    border-color: rgb(238 238 238 / var(--tw-border-opacity, 1))
 }
 .k {
     --tw-bg-opacity: 1;
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
 .l {
     background-image: url('https://xxx.com/xx.webp')
@@ -462,11 +462,11 @@ view,text,::before,::after {
 }
 .z {
     --tw-text-opacity: 1;
-    color: rgb(18 52 86 / var(--tw-text-opacity))
+    color: rgb(18 52 86 / var(--tw-text-opacity, 1))
 }
 .aa {
     --tw-text-opacity: 1;
-    color: rgb(91 164 229 / var(--tw-text-opacity))
+    color: rgb(91 164 229 / var(--tw-text-opacity, 1))
 }"
 `;
 
@@ -676,11 +676,11 @@ view,text,::before,::after {
 }
 .i {
     --tw-border-opacity: 1;
-    border-color: rgb(238 238 238 / var(--tw-border-opacity))
+    border-color: rgb(238 238 238 / var(--tw-border-opacity, 1))
 }
 .j {
     --tw-bg-opacity: 1;
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
 .k {
     background-image: url('https://xxx.com/xx.webp')
@@ -728,11 +728,11 @@ view,text,::before,::after {
 }
 .y {
     --tw-text-opacity: 1;
-    color: rgb(18 52 86 / var(--tw-text-opacity))
+    color: rgb(18 52 86 / var(--tw-text-opacity, 1))
 }
 .z {
     --tw-text-opacity: 1;
-    color: rgb(91 164 229 / var(--tw-text-opacity))
+    color: rgb(91 164 229 / var(--tw-text-opacity, 1))
 }"
 `;
 
@@ -942,11 +942,11 @@ view,text,::before,::after {
 }
 .tw-i {
     --tw-border-opacity: 1;
-    border-color: rgb(238 238 238 / var(--tw-border-opacity))
+    border-color: rgb(238 238 238 / var(--tw-border-opacity, 1))
 }
 .tw-j {
     --tw-bg-opacity: 1;
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
 .tw-k {
     background-image: url('https://xxx.com/xx.webp')
@@ -994,11 +994,11 @@ view,text,::before,::after {
 }
 .tw-y {
     --tw-text-opacity: 1;
-    color: rgb(18 52 86 / var(--tw-text-opacity))
+    color: rgb(18 52 86 / var(--tw-text-opacity, 1))
 }
 .tw-z {
     --tw-text-opacity: 1;
-    color: rgb(91 164 229 / var(--tw-text-opacity))
+    color: rgb(91 164 229 / var(--tw-text-opacity, 1))
 }"
 `;
 

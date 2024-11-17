@@ -38,7 +38,7 @@ exports[`arbitrary groups > group case 0 1`] = `
 }
 .bg-white {
     --tw-bg-opacity: 1;
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
 .stroke-sky-500 {
     stroke: #0ea5e9
@@ -55,11 +55,11 @@ exports[`arbitrary groups > group case 0 1`] = `
 }
 .text-slate-500 {
     --tw-text-opacity: 1;
-    color: rgb(100 116 139 / var(--tw-text-opacity))
+    color: rgb(100 116 139 / var(--tw-text-opacity, 1))
 }
 .text-slate-900 {
     --tw-text-opacity: 1;
-    color: rgb(15 23 42 / var(--tw-text-opacity))
+    color: rgb(15 23 42 / var(--tw-text-opacity, 1))
 }
 .shadow-lg {
     --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -76,18 +76,18 @@ exports[`arbitrary groups > group case 0 1`] = `
 }
 .hover\\:bg-sky-500:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(14 165 233 / var(--tw-bg-opacity))
+    background-color: rgb(14 165 233 / var(--tw-bg-opacity, 1))
 }
 .hover\\:ring-sky-500:hover {
     --tw-ring-opacity: 1;
-    --tw-ring-color: rgb(14 165 233 / var(--tw-ring-opacity))
+    --tw-ring-color: rgb(14 165 233 / var(--tw-ring-opacity, 1))
 }
 .group:hover .group-hover\\:stroke-white {
     stroke: #fff
 }
 .group:hover .group-hover\\:text-white {
     --tw-text-opacity: 1;
-    color: rgb(255 255 255 / var(--tw-text-opacity))
+    color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }"
 `;
 
@@ -97,11 +97,11 @@ exports[`arbitrary groups > group case 1 1`] = `
 }
 .hover\\:bg-slate-100:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(241 245 249 / var(--tw-bg-opacity))
+    background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1))
 }
 .hover\\:bg-slate-200:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(226 232 240 / var(--tw-bg-opacity))
+    background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1))
 }
 .group\\/item:hover .group-hover\\/item\\:visible {
     visibility: visible
@@ -112,11 +112,11 @@ exports[`arbitrary groups > group case 1 1`] = `
 }
 .group\\/edit:hover .group-hover\\/edit\\:text-gray-700 {
     --tw-text-opacity: 1;
-    color: rgb(55 65 81 / var(--tw-text-opacity))
+    color: rgb(55 65 81 / var(--tw-text-opacity, 1))
 }
 .group\\/edit:hover .group-hover\\/edit\\:text-slate-500 {
     --tw-text-opacity: 1;
-    color: rgb(100 116 139 / var(--tw-text-opacity))
+    color: rgb(100 116 139 / var(--tw-text-opacity, 1))
 }"
 `;
 
@@ -154,11 +154,11 @@ exports[`arbitrary groups > peer case 0 1`] = `
 }
 .text-pink-600 {
     --tw-text-opacity: 1;
-    color: rgb(219 39 119 / var(--tw-text-opacity))
+    color: rgb(219 39 119 / var(--tw-text-opacity, 1))
 }
 .text-slate-700 {
     --tw-text-opacity: 1;
-    color: rgb(51 65 85 / var(--tw-text-opacity))
+    color: rgb(51 65 85 / var(--tw-text-opacity, 1))
 }
 .peer:invalid ~ .peer-invalid\\:visible {
     visibility: visible
@@ -180,11 +180,11 @@ exports[`arbitrary groups > peer case 1 1`] = `
 }
 .peer\\/draft:checked ~ .peer-checked\\/draft\\:text-sky-500 {
     --tw-text-opacity: 1;
-    color: rgb(14 165 233 / var(--tw-text-opacity))
+    color: rgb(14 165 233 / var(--tw-text-opacity, 1))
 }
 .peer\\/published:checked ~ .peer-checked\\/published\\:text-sky-500 {
     --tw-text-opacity: 1;
-    color: rgb(14 165 233 / var(--tw-text-opacity))
+    color: rgb(14 165 233 / var(--tw-text-opacity, 1))
 }"
 `;
 

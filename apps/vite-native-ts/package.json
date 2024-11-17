@@ -24,11 +24,11 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
-    "miniprogram-api-typings": "latest",
+    "miniprogram-api-typings": "^4.0.2",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.14",
+    "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^1.7.4"
+    "weapp-vite": "^1.7.6"
   }
 }
