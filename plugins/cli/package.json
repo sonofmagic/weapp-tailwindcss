@@ -75,7 +75,7 @@
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-typescript": "6.0.0-alpha.1",
-    "local-pkg": "^0.5.0",
+    "local-pkg": "^0.5.1",
     "picocolors": "^1.1.1",
     "postcss": "^8.4.49",
     "postcss-load-config": "^6.0.1",

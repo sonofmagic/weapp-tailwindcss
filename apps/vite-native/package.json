@@ -33,6 +33,6 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^1.7.6"
+    "weapp-vite": "^1.7.7"
   }
 }
