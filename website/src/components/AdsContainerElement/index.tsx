@@ -20,11 +20,11 @@ function AdsContainerElement() {
       </div>
 
       <a className="relative flex justify-between rounded-xl bg-[#f6f6f7] p-4 shadow-[inset_0_0_0_1px_#ffffff1a] hover:no-underline dark:bg-[#1e293b]" target="_blank" href="https://aizex.cn/0LcJ7G" rel="noopener sponsored nofollow">
-        <div className="flex shrink-0 items-center">
+        <div className="mr-2 flex shrink-0 items-center">
           <img className="h-14" src={Aizex} alt="aizex"></img>
         </div>
         <div className="flex flex-col justify-around self-stretch">
-          <div className="text-base font-semibold">
+          <div className="mb-0.5 text-base font-semibold">
             Aizex 合租面板
           </div>
           <div className="text-xs text-[rgb(95,181,221)]">
