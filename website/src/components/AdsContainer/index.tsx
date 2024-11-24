@@ -3,7 +3,7 @@ import React from 'react'
 
 function AdsContainer() {
   return (
-    <div>
+    <div className="border-t border-[color:var(--ifm-toc-border-color)] pt-4">
       <AdsContainerElement />
     </div>
 
