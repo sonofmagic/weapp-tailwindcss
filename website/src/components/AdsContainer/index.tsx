@@ -3,7 +3,7 @@ import React from 'react'
 
 function AdsContainer() {
   return (
-    <div className="">
+    <div>
       <AdsContainerElement />
     </div>
 

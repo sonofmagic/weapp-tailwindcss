@@ -920,6 +920,9 @@ importers:
       '@icebreakers/deploy':
         specifier: ^0.1.6
         version: 0.1.6(encoding@0.1.13)
+      '@tailwindcss/typography':
+        specifier: ^0.5.15
+        version: 0.5.15(tailwindcss@3.4.15(ts-node@10.9.2(@types/node@22.9.1)(typescript@5.6.3)))
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
@@ -938,6 +941,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      mini-svg-data-uri:
+        specifier: ^1.4.4
+        version: 1.4.4
       node-loader:
         specifier: ^2.1.0
         version: 2.1.0(webpack@5.96.1(esbuild@0.24.0))
@@ -4295,6 +4301,11 @@ packages:
     resolution: {integrity: sha512-3h2svqQAqYHxRZ1KjsJjZOVTQ04m29LjfrLjXyZZEJuvUuJN+BCIF9GI8vhE1s0plS0mogd6E6YLg6mu4Wv/Vw==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+
+  '@tailwindcss/typography@0.5.15':
+    resolution: {integrity: sha512-AqhlCXl+8grUz8uqExv5OTtgpjuVIwFTSXTrh8y9/pw6q2ek7fJ+Y8ZEVw7EB2DCcuCOtEjf9w3+J3rzts01uA==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
   '@tailwindcss/vite@4.0.0-alpha.31':
     resolution: {integrity: sha512-N+BvUWEBkhyP2YFmTdDqqIEWdm65nEHQwusa3cNbbh/A9DuiqdSAvNkLqUAimb4sWtm2GIMMgnUTaY1V6TVb3g==}
@@ -9791,6 +9802,10 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
 
+  mini-svg-data-uri@1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
+
   minimalistic-assert@1.0.1:
     resolution: {integrity: sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A==}
 
@@ -11334,6 +11349,10 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       postcss: ^8.4
+
+  postcss-selector-parser@6.0.10:
+    resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
+    engines: {node: '>=4'}
 
   postcss-selector-parser@6.1.2:
     resolution: {integrity: sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==}
@@ -18690,6 +18709,14 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
+  '@tailwindcss/typography@0.5.15(tailwindcss@3.4.15(ts-node@10.9.2(@types/node@22.9.1)(typescript@5.6.3)))':
+    dependencies:
+      lodash.castarray: 4.4.0
+      lodash.isplainobject: 4.0.6
+      lodash.merge: 4.6.2
+      postcss-selector-parser: 6.0.10
+      tailwindcss: 3.4.15(ts-node@10.9.2(@types/node@22.9.1)(typescript@5.6.3))
+
   '@tailwindcss/vite@4.0.0-alpha.31(vite@5.4.11(@types/node@22.9.1)(less@4.2.0)(lightningcss@1.27.0)(sass-embedded@1.81.0)(sass@1.81.0)(stylus@0.63.0)(terser@5.36.0))':
     dependencies:
       '@tailwindcss/node': 4.0.0-alpha.31
@@ -25516,6 +25543,8 @@ snapshots:
       tapable: 2.2.1
       webpack: 5.96.1(esbuild@0.24.0)
 
+  mini-svg-data-uri@1.4.4: {}
+
   minimalistic-assert@1.0.1: {}
 
   minimatch@10.0.1:
@@ -27098,6 +27127,11 @@ snapshots:
     dependencies:
       postcss: 8.4.49
       postcss-selector-parser: 7.0.0
+
+  postcss-selector-parser@6.0.10:
+    dependencies:
+      cssesc: 3.0.0
+      util-deprecate: 1.0.2
 
   postcss-selector-parser@6.1.2:
     dependencies:
