@@ -217,7 +217,7 @@ text,
 `;
 
 exports[`vite test > vite common build 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -421,7 +421,7 @@ text,
 `;
 
 exports[`vite test > vite common build twice for cache 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -625,7 +625,7 @@ text,
 `;
 
 exports[`vite test > vite common build twice for cache 6`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -829,7 +829,7 @@ text,
 `;
 
 exports[`vite test > vite common build with mangle options 0 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1033,7 +1033,7 @@ text,
 `;
 
 exports[`vite test > vite common build with mangle options 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1237,7 +1237,7 @@ text,
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1441,7 +1441,7 @@ text,
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1645,7 +1645,7 @@ text,
 `;
 
 exports[`vite test > vite common build with mangle true 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1849,7 +1849,7 @@ text,
 `;
 
 exports[`vite test > vite common build with rem2rpx 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -2044,7 +2044,7 @@ exports[`vite test > vite disabled build 2`] = `
 `;
 
 exports[`vite test > vite disabled build 3`] = `
-"<!doctype html>
+"<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />

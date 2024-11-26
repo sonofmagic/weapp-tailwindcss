@@ -1,11 +1,14 @@
+import { useLocation } from '@docusaurus/router'
 import Layout from '@theme-original/Layout'
 import React from 'react'
 
 export default function LayoutWrapper(props) {
-  // React.useEffect(() => {
-  //   // 可以在这里运行全局 JavaScript 代码
-  //   console.log('This will run globally on every page')
-  // }, [])
+  const location = useLocation()
 
-  return <Layout {...props} />
+  return (
+    <div className="relative">
+      {location.pathname !== '/' && <div className="light-effect pointer-events-none absolute right-[13.14%] z-[201]"></div> }
+      <Layout {...props} />
+    </div>
+  )
 }

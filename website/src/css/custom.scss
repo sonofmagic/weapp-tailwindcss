@@ -125,3 +125,29 @@ html[data-theme='dark'] {
   background-image: linear-gradient(to right, #07c160 50%, theme('colors.sky.500') 50%);
   background-clip: text;
 }
+
+// .glow {
+//   width: 500px;
+//   height: 300px;
+//   background: radial-gradient(circle at 30% 50%, rgb(255 0 255 / 80%), rgb(0 0 255 / 30%), transparent 70%);
+//   filter: blur(50px);
+//   border-radius: 50%;
+// }
+
+.light-effect {
+  width: 300px; /* 缩小光照范围 */
+  height: 1800px;
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 15%) 0%,
+    rgb(255 255 255 / 10%) 30%,
+    rgb(255 255 255 / 10%) 70%,
+    transparent 100%
+  );
+  filter: blur(40px);
+  border-radius: 80%; /* 让光照形状更加柔和 */
+  opacity: 0.4;
+  transform: translate(0, -500px) rotate(-50deg);
+
+  // transform: translate(0, -100px) rotate(-30deg); /* 定位并倾斜光束 */
+}

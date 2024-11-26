@@ -1,7 +1,7 @@
 /* eslint-disable style/no-tabs */
-import postcss from 'postcss'
 // @ts-ignore
 import isPseudoClass from '@csstools/postcss-is-pseudo-class'
+import postcss from 'postcss'
 
 describe('is-pseudo-class', () => {
   it('case 0', async () => {

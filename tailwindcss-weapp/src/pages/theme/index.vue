@@ -79,8 +79,8 @@ function toggleCode(idx: 'a' | 'b') {
 <template>
   <view>
     <Theme :mode="mode" :css-vars="currentCssVar">
-      <view class="min-h-[50vh] bg-base py-2 transition-colors duration-300">
-        <view class="px-2 text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
+      <view class="bg-base min-h-[50vh] py-2 transition-colors duration-300">
+        <view class="fantasy:text-white px-2 text-sm transition-colors duration-300 dark:text-gray-200">
           CssVar 方案， 一个原子化对应一/n个动态的 css var
         </view>
 
@@ -96,7 +96,7 @@ function toggleCode(idx: 'a' | 'b') {
         </view>
         <view class="flex justify-evenly">
           <view
-            class="i-mdi-application-braces text-5xl text-primary transition-colors duration-300"
+            class="i-mdi-application-braces text-primary text-5xl transition-colors duration-300"
             @click="toggleCode('a')"
           />
           <CssVarBtn @click="viewCode">
@@ -105,9 +105,9 @@ function toggleCode(idx: 'a' | 'b') {
         </view>
       </view>
       <view
-        class="min-h-[50vh] bg-green-50 p-2 transition-colors duration-300 deep:bg-green-300 fantasy:bg-green-950 dark:bg-green-600"
+        class="deep:bg-green-300 fantasy:bg-green-950 min-h-[50vh] bg-green-50 p-2 transition-colors duration-300 dark:bg-green-600"
       >
-        <view class="text-sm transition-colors duration-300 fantasy:text-white dark:text-gray-200">
+        <view class="fantasy:text-white text-sm transition-colors duration-300 dark:text-gray-200">
           Variant 方案，语义化的原子类生成全局样式利用优先级进行覆盖
         </view>
         <view v-show="visibles.b">
@@ -122,7 +122,7 @@ function toggleCode(idx: 'a' | 'b') {
         </view>
         <view class="flex justify-evenly">
           <view
-            class="i-mdi-application-braces bg-pink-900 text-5xl text-white transition-colors duration-300 deep:bg-pink-600 deep:text-gray-300 fantasy:bg-pink-100 fantasy:text-gray-900 dark:bg-pink-300 dark:text-gray-600"
+            class="i-mdi-application-braces deep:bg-pink-600 deep:text-gray-300 fantasy:bg-pink-100 fantasy:text-gray-900 bg-pink-900 text-5xl text-white transition-colors duration-300 dark:bg-pink-300 dark:text-gray-600"
             @click="toggleCode('b')"
           />
           <VariantBtn @click="viewCode">

@@ -156,11 +156,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
-      id: 'issues/v1',
-      label: 'v1版本常见问题',
-    },
-    {
-      type: 'doc',
       id: 'options/arbitrary-values',
     },
     {
@@ -173,6 +168,10 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
+      id: 'issues/more-tags',
+    },
+    {
+      type: 'doc',
       label: '跨端应用注意事项',
       id: 'multi-platform',
     },
@@ -182,7 +181,8 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
-      id: 'issues/more-tags',
+      id: 'issues/v1',
+      label: 'v1版本常见问题',
     },
   ],
   API: [
@@ -201,11 +201,6 @@ const sidebars: SidebarsConfig = {
     {
       type: 'doc',
       id: 'community/templates',
-    },
-
-    {
-      type: 'doc',
-      id: 'community/typography',
     },
     {
       type: 'doc',
@@ -249,6 +244,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'doc',
       id: 'community/plugins',
+    },
+    {
+      type: 'doc',
+      id: 'community/typography',
     },
   ],
   migrationsSidebar: [
