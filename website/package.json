@@ -16,8 +16,8 @@
   },
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "cross-env TYPEDOC_WATCH=true docusaurus start --port 4000",
-    "dev": "npm run start",
+    "dev": "docusaurus start --port 4000",
+    "dev:type": "cross-env TYPEDOC_WATCH=true docusaurus start --port 4000",
     "build": "docusaurus build",
     "build:github": "cross-env PROVIDER=GITHUB docusaurus build",
     "swizzle": "docusaurus swizzle",

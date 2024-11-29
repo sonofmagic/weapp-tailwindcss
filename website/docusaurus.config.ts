@@ -358,7 +358,11 @@ const config = {
       ],
       // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
       copyright: `<div class="flex flex-col items-center justify-center space-y-2">
-        <span>Copyright © ${new Date().getFullYear()} ${createLink({
+        <span>${createLink({
+          href: '/docs/copyright',
+          textContent: 'Copyright',
+          target: '_self',
+        })} © ${new Date().getFullYear()} ${createLink({
           href: 'https://github.com/sonofmagic',
           textContent: 'sonofmagic',
         })}</span>
