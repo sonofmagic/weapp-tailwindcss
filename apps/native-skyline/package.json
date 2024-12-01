@@ -24,7 +24,7 @@
   "dependencies": {
     "cowsay": "^1.6.0",
     "lodash": "^4.17.21",
-    "miniprogram-computed": "^5.1.0"
+    "miniprogram-computed": "^6.0.1"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
