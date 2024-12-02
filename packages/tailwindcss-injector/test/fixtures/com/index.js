@@ -1,0 +1,1 @@
+export const className = "bg-[url(js)]"

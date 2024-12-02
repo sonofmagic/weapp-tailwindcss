@@ -997,3 +997,5 @@ video {
       
       "
 `;
+
+exports[`postcss > process case 2 1`] = `""`;

@@ -1,4 +1,5 @@
 import creator from '@/postcss'
+import path from 'pathe'
 import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
 
@@ -23,6 +24,13 @@ describe('postcss', () => {
       
       `, {
       from: 'yyyy',
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 2', async () => {
+    const { css } = await postcss([creator]).process(``, {
+      from: path.resolve(__dirname, './fixtures/com/index.css'),
     })
     expect(css).toMatchSnapshot()
   })

@@ -49,6 +49,8 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "jiti": "^2.4.1",
+    "lilconfig": "^3.1.2",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15"
   }
