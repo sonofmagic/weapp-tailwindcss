@@ -17,7 +17,11 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./postcss": "./src/postcss.ts"
+    "./postcss": {
+      "types": "./dist/postcss.d.ts",
+      "import": "./dist/postcss.js",
+      "require": "./dist/postcss.cjs"
+    }
   },
   "files": [
     "dist"

@@ -567,6 +567,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.15
         version: 3.4.15(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
+      tailwindcss-injector:
+        specifier: workspace:*
+        version: link:../../packages/tailwindcss-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss

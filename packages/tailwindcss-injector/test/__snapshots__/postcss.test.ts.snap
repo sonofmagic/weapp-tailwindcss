@@ -998,4 +998,14 @@ video {
       "
 `;
 
-exports[`postcss > process case 2 1`] = `""`;
+exports[`postcss > process case 2 1`] = `
+".bg-\\[url\\(js\\)\\] {
+    background-image: url(js)
+}
+.bg-\\[url\\(ts\\)\\] {
+    background-image: url(ts)
+}
+.bg-\\[url\\(wxml\\)\\] {
+    background-image: url(wxml)
+}"
+`;
