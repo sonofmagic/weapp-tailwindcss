@@ -5030,9 +5030,9 @@ postcss-nested@^6.2.0:
     postcss-selector-parser "^6.1.1"
 
 postcss-pxtransform@^4.0.6:
-  version "4.0.6"
-  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-4.0.6.tgz#5ff03a97d658faec1cf0ca95734e80cdad38eac3"
-  integrity sha512-OZISN653pYMzX2LLpdKtSFGIT2sRi1TZj6AgOP+qMx2eXPUUWTEYk3BHSFgwtbwlF7WELZheNx/zWZ3PySje+Q==
+  version "4.0.8"
+  resolved "https://registry.npmmirror.com/postcss-pxtransform/-/postcss-pxtransform-4.0.8.tgz#8d7831ce054b50433c9c5032d30c1c4e33337aca"
+  integrity sha512-w7eolk4KNedWtk8K60cVz3F8mZFeH/nHqN8zqrLkJpcqU7SsPJ5ra9wW3TPnWkiVQFovdiZbNDz/3K9CpiYEhQ==
 
 postcss-rem-to-responsive-pixel@^6.0.2, postcss-rem-to-responsive-pixel@~6.0.2:
   version "6.0.2"
