@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.0.2
+
+### Patch Changes
+
+- [`1ea1fdc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1ea1fdca3f42a5935cde51d8af790357ec4a23eb) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: change directiveParams default and allow override
+
 ## 0.0.1
 
 ### Patch Changes
