@@ -2,12 +2,11 @@ import type { PluginCreator } from 'postcss'
 import type { Config } from 'tailwindcss'
 import type { Options } from './types'
 import process from 'node:process'
-import { defu } from 'defu'
 import postcss from 'postcss'
 import set from 'set-value'
 import tailwindcss from 'tailwindcss'
 import { loadConfig } from './config'
-import { removeFileExtension } from './utils'
+import { defuOverrideArray, removeFileExtension } from './utils'
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
 // }
@@ -16,10 +15,10 @@ export type {
 }
 
 const creator: PluginCreator<Partial<Options>> = (options) => {
-  const { config, filter, directiveParams, cwd, extensions } = defu<Options, Options[]>(options, {
+  const { config, filter, directiveParams, cwd, extensions } = defuOverrideArray<Options, Options[]>(options as Options, {
     filter: () => true,
     config: undefined,
-    directiveParams: ['utilities'],
+    directiveParams: ['utilities', 'components'],
     cwd: process.cwd(),
     extensions: ['wxml', 'js', 'ts'],
   })
@@ -50,9 +49,9 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
               })
             }
             else {
-              tailwindcssConfig = cfg ?? {
+              tailwindcssConfig = (cfg ?? {
                 content: [],
-              }
+              }) as Config
             }
 
             if (tailwindcssConfig && root.source?.input && root.source.input.file) {
@@ -70,7 +69,6 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
         },
       },
     ],
-
   }
 }
 creator.postcss = true

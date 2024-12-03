@@ -1009,3 +1009,21 @@ exports[`postcss > process case 2 1`] = `
     background-image: url(wxml)
 }"
 `;
+
+exports[`postcss > process case 3 1`] = `
+".btn {
+    color: red
+}
+.bg-\\[url\\(js\\)\\] {
+    background-image: url(js)
+}
+.bg-\\[url\\(ts\\)\\] {
+    background-image: url(ts)
+}
+.bg-\\[url\\(wxml\\)\\] {
+    background-image: url(wxml)
+}
+.swap {
+    color: blue
+}"
+`;

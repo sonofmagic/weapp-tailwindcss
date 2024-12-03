@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { createDefu, defu } from 'defu'
 
 // 去除文件的后缀
 export function removeFileExtension(filePath: string) {
@@ -12,3 +13,14 @@ export function removeFileExtension(filePath: string) {
   const dir = path.dirname(filePath)
   return path.join(dir, baseName)
 }
+
+export {
+  defu,
+}
+
+export const defuOverrideArray = createDefu((obj, key, value) => {
+  if (Array.isArray(obj[key]) && Array.isArray(value)) {
+    obj[key] = value
+    return true
+  }
+})

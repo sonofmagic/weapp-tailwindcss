@@ -1,9 +1,9 @@
 import type { Config } from 'tailwindcss'
 import path from 'node:path'
 import process from 'node:process'
-import { defu } from 'defu'
 import { createJiti } from 'jiti'
 import { lilconfig } from 'lilconfig'
+import { defuOverrideArray } from './utils'
 
 const jiti = createJiti(import.meta.url)
 
@@ -15,7 +15,7 @@ export interface LoadTailwindcssConfigOptions {
 const moduleName = 'tailwind'
 
 export async function loadConfig(options?: Partial<LoadTailwindcssConfigOptions>) {
-  const { config, cwd } = defu<LoadTailwindcssConfigOptions, Partial<LoadTailwindcssConfigOptions>[]>(options, {
+  const { config, cwd } = defuOverrideArray<LoadTailwindcssConfigOptions, Partial<LoadTailwindcssConfigOptions>[]>(options as LoadTailwindcssConfigOptions, {
     cwd: process.cwd(),
   })
 

@@ -13,6 +13,7 @@ export default icebreaker(
       'packages/tailwindcss-core-plugins-extractor/src',
       // tmp 添加
       'apps/weapp-library',
+      'packages/tailwindcss-injector/*.md',
     ],
   },
   {

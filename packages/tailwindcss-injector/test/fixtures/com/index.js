@@ -1,1 +1,1 @@
-export const className = "bg-[url(js)]"
+export const className = "bg-[url(js)] btn"

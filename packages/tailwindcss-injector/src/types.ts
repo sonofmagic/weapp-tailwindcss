@@ -1,7 +1,7 @@
 import type postcss from 'postcss'
 import type { Config } from 'tailwindcss'
 
-export type InlineTailwindcssOptions = string | Config | undefined
+export type InlineTailwindcssOptions = string | Partial<Config> | undefined
 
 export interface Options {
   cwd: string
@@ -9,4 +9,5 @@ export interface Options {
   config: InlineTailwindcssOptions | ((input?: postcss.Input) => InlineTailwindcssOptions)
   directiveParams: ('base' | 'components' | 'utilities' | 'variants')[]
   extensions: string[]
+
 }
