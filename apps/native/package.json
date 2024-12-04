@@ -30,7 +30,7 @@
     "@types/lodash": "^4.17.13",
     "@weapp-tailwindcss/cli": "workspace:*",
     "cross-env": "^7.0.3",
-    "tailwindcss": "^3.4.15",
+    "tailwindcss": "^3.4.16",
     "weapp-ide-cli": "^2.0.6",
     "weapp-tailwindcss": "workspace:*"
   }
