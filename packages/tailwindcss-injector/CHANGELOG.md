@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.0
+
+### Minor Changes
+
+- [`1580ba7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1580ba7def3eac6aad4076a824ca8356693f26b2) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: support analyze wxml deps
+
 ## 0.0.2
 
 ### Patch Changes
