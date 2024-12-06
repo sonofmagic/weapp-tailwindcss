@@ -1,0 +1,7 @@
+<import src="item.wxml" />
+<import class="bg-[url(index.wxml)]" src="./a.wxml" />
+<template is="item" data="{{text: 'forbar'}}" />
+<include src="header.wxml" />
+<view>body</view>
+<include src="./footer.wxml" />
+<include src="../xx.wxml" />

@@ -1,0 +1,1 @@
+const x = "bg-[url(a.ts)]"

@@ -53,7 +53,9 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "fs-extra": "^11.2.0",
     "htmlparser2": "^9.1.0",
+    "magic-string": "^0.30.14",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "tailwindcss-config": "workspace:*"

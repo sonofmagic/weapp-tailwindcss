@@ -1,0 +1,3 @@
+<template name="A">
+  <text class="bg-[url(a.wxml)]"> A template </text>
+</template>

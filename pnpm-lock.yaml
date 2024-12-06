@@ -727,9 +727,15 @@ importers:
 
   packages/tailwindcss-injector:
     dependencies:
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
       htmlparser2:
         specifier: ^9.1.0
         version: 9.1.0
+      magic-string:
+        specifier: ^0.30.14
+        version: 0.30.14
       postcss:
         specifier: ^8.4.49
         version: 8.4.49

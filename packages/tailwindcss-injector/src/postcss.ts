@@ -7,6 +7,7 @@ import set from 'set-value'
 import tailwindcss from 'tailwindcss'
 import { loadConfig } from 'tailwindcss-config'
 import { defuOverrideArray, removeFileExtension } from './utils'
+import { getDepFiles } from './wxml'
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
 // }
@@ -55,9 +56,18 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
             }
 
             if (tailwindcssConfig && root.source?.input && root.source.input.file) {
+              const basename = removeFileExtension(root.source.input.file)
               set(tailwindcssConfig, 'content', [
-                `${removeFileExtension(root.source.input.file)}.${extensionsGlob}`,
+                `${basename}.${extensionsGlob}`,
               ])
+
+              // 分析模板
+              const deps = await getDepFiles(`${basename}.wxml`)
+              for (const dep of deps) {
+                if (Array.isArray(tailwindcssConfig.content)) {
+                  tailwindcssConfig.content.push(`${removeFileExtension(dep)}.${extensionsGlob}`)
+                }
+              }
             }
 
             const { root: newRoot } = await postcss([

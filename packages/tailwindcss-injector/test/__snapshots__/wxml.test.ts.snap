@@ -1,0 +1,90 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`wxml > getDepFiles > case 0 1`] = `
+[
+  "test/fixtures/wxml/index.wxml",
+  "test/fixtures/wxml/item.wxml",
+  "test/fixtures/xx.wxml",
+  "test/fixtures/wxml/a.wxml",
+  "test/fixtures/wxml/header.wxml",
+  "test/fixtures/wxml/dep.wxml",
+  "test/fixtures/wxml/footer.wxml",
+]
+`;
+
+exports[`wxml > processWxml > process case 0 1`] = `
+[
+  {
+    "attrs": {
+      "src": "item.wxml",
+    },
+    "end": 23,
+    "name": "src",
+    "quote": """,
+    "start": 8,
+    "tagName": "import",
+    "value": "item.wxml",
+  },
+  {
+    "attrs": {
+      "class": "bg-[url(index.wxml)]",
+      "src": "./a.wxml",
+    },
+    "end": 78,
+    "name": "src",
+    "quote": """,
+    "start": 64,
+    "tagName": "import",
+    "value": "./a.wxml",
+  },
+  {
+    "attrs": {
+      "src": "header.wxml",
+    },
+    "end": 157,
+    "name": "src",
+    "quote": """,
+    "start": 140,
+    "tagName": "include",
+    "value": "header.wxml",
+  },
+  {
+    "attrs": {
+      "src": "./footer.wxml",
+    },
+    "end": 207,
+    "name": "src",
+    "quote": """,
+    "start": 188,
+    "tagName": "include",
+    "value": "./footer.wxml",
+  },
+  {
+    "attrs": {
+      "src": "../xx.wxml",
+    },
+    "end": 236,
+    "name": "src",
+    "quote": """,
+    "start": 220,
+    "tagName": "include",
+    "value": "../xx.wxml",
+  },
+]
+`;
+
+exports[`wxml > processWxml > process case 1 1`] = `
+[
+  {
+    "attrs": {
+      "src": "./dep.wxml",
+    },
+    "end": 77,
+    "name": "src",
+    "quote": """,
+    "start": 61,
+    "tagName": "include",
+    "value": "./dep.wxml",
+  },
+]
+`;

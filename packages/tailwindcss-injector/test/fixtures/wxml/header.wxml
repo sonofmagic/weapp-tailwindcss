@@ -1,0 +1,2 @@
+<view class="bg-[url(header.wxml)]"> header </view>
+<include src="./dep.wxml" />

@@ -1,0 +1,4 @@
+<template name="item">
+  <text class="bg-[url(item.wxml)]">{{text}}</text>
+</template>
+<include src="../xx.wxml" />

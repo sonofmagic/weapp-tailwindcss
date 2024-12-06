@@ -59,4 +59,28 @@ describe('postcss', () => {
     })
     expect(css).toMatchSnapshot()
   })
+
+  it('process case 4', async () => {
+    const { css } = await postcss([creator({
+      config: {
+        plugins: [
+          plugin(({ addComponents, addUtilities }) => {
+            addComponents({
+              '.btn': {
+                color: 'red',
+              },
+            })
+            addUtilities({
+              '.swap': {
+                color: 'blue',
+              },
+            })
+          }),
+        ],
+      },
+    })]).process(``, {
+      from: path.resolve(__dirname, './fixtures/wxml/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
 })
