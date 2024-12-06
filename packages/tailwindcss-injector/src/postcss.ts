@@ -5,7 +5,7 @@ import process from 'node:process'
 import postcss from 'postcss'
 import set from 'set-value'
 import tailwindcss from 'tailwindcss'
-import { loadConfig } from './config'
+import { loadConfig } from 'tailwindcss-config'
 import { defuOverrideArray, removeFileExtension } from './utils'
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
