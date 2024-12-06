@@ -25,7 +25,7 @@
 >
 > 小程序原生工具链 `weapp-vite` 已经发布，使用它改善你的原生小程序开发体验吧，更多详见 [官方文档](https://vite.icebreaker.top/)
 
-\[[文档地址](https://tw.icebreaker.top)\] \| \[[备用文档地址](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x文档]('./v1.md')\]
+\[[文档地址](https://tw.icebreaker.top)\] \| \[[加入技术交流群](https://tw.icebreaker.top/docs/community/group)\]
 
 - [特性](#特性)
 - [版本对应](#版本对应)
@@ -36,15 +36,11 @@
 - [旧版本迁移指南](#旧版本迁移指南)
 - [配置项参考](#配置项参考)
 - [变更日志](#变更日志)
-- [Tips](#tips)
 - [Contribute](#contribute)
 - [License](#license)
 - [Star History](#star-history)
 - [Related projects](#related-projects)
   - [weapp-vite](#weapp-vite)
-  - [IceStack](#icestack)
-  - [weapp-ide-cli](#weapp-ide-cli)
-  - [weapp-pandacss](#weapp-pandacss)
 
 ## 特性
 
@@ -78,12 +74,6 @@
 
 ## [变更日志](./CHANGELOG.md)
 
-## Tips
-
-前沿阅读: [What’s Tailwind Oxide Engine? The Next Evolution of Tailwind CSS](https://medium.com/@bomber.marek/whats-tailwind-oxide-engine-the-next-evolution-of-tailwind-css-32e7ef8e19a1)
-
-未来 `tailwindcss@4` 会切换到这个引擎来大幅加快构建和运行速度，当然等它发布正式版本的时候，我也会尽可能第一时间去进行兼容新的引擎。
-
 ## Contribute
 
 我们邀请你来贡献和帮助改进 `weapp-tailwindcss` 💚💚💚
@@ -108,15 +98,3 @@
 ### weapp-vite
 
 [weapp-vite](https://vite.icebreaker.top/): 把现代化的开发模式带入小程序开发!
-
-### IceStack
-
-[IceStack](https://github.com/sonofmagic/icestack): ❤️ IceStack, Web UI for Mobile, PC, open-source Css component library generator
-
-### weapp-ide-cli
-
-[weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
-
-### weapp-pandacss
-
-[weapp-pandacss](https://github.com/sonofmagic/weapp-pandacss) `CSS-in-JS` 编译时框架的小程序适配器

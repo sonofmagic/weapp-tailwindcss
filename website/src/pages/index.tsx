@@ -60,7 +60,8 @@ function HomepageHeader() {
           </div>
 
           <div>
-            <Link to="/docs/tailwindcss-maintenance-book">进阶阅读：如何降低维护成本 ?</Link>
+            {/* <Link to="/docs/tailwindcss-maintenance-book">进阶阅读：如何降低维护成本 ?</Link> */}
+            <Link to="/docs/community/group">🚀🚀🚀 加入技术交流群</Link>
           </div>
         </div>
 
