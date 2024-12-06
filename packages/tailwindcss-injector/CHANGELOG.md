@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.1
+
+### Patch Changes
+
+- [`f005551`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f0055512e8f205a48078eb59b56b01f121621e51) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 优化分析依赖的缓存设计
+
 ## 0.1.0
 
 ### Minor Changes
