@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import path from 'node:path'
 import { createDefu, defu } from 'defu'
 
@@ -29,3 +30,15 @@ export const defuOverrideArray = createDefu((obj, key, value) => {
     return true
   }
 })
+
+/**
+ * 计算字符串的 MD5 哈希值
+ * @param {string} input - 要计算哈希的字符串
+ * @returns {string} - 字符串的 MD5 哈希值
+ */
+export function md5(input: crypto.BinaryLike) {
+  // 使用 crypto 模块创建 MD5 哈希
+  const hash = crypto.createHash('md5')
+  hash.update(input) // 更新哈希内容
+  return hash.digest('hex') // 返回哈希值
+}

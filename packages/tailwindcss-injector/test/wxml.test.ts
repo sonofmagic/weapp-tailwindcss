@@ -18,6 +18,7 @@ describe('wxml', () => {
           ),
         ),
       )
+
       expect(deps).toMatchSnapshot()
     })
 
@@ -45,6 +46,12 @@ describe('wxml', () => {
           x,
         )
       })).matchSnapshot()
+      const { depsMap, hashMap } = await import('@/wxml')
+      expect(hashMap.size).toBe(7)
+      expect(depsMap.size).toBe(7)
+
+      // expect(hashMap).toMatchSnapshot()
+      // expect(depsMap).toMatchSnapshot()
     })
   })
 })
