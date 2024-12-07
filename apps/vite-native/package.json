@@ -32,8 +32,8 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
-    "tailwindcss-injector": "workspace:*",
+    "tailwindcss-injector": "0.1.1",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^1.8.4"
+    "weapp-vite": "^1.9.0"
   }
 }

@@ -33,11 +33,10 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
         postcssPlugin: 'post',
         async Once(root, helpers) {
           if (filter(root.source?.input)) {
-            let _root = root
             for (const params of directiveParams) {
               const node = root.nodes.find(x => x.type === 'atrule' && x.params === params)
               if (!node) {
-                _root = _root.prepend(helpers.atRule({ name: 'tailwind', params }))
+                root.prepend(helpers.atRule({ name: 'tailwind', params }))
               }
             }
 
@@ -70,11 +69,11 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
               }
             }
 
-            const { root: newRoot } = await postcss([
+            await postcss([
               tailwindcss(tailwindcssConfig),
-            ]).process(_root)
-
-            root.replaceWith(newRoot)
+            ]).process(root, {
+              from: root.source?.input.file,
+            })
           }
         },
       },

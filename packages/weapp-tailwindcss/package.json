@@ -157,7 +157,7 @@
     "@weapp-core/escape": "~2.1.0",
     "@weapp-core/regex": "~1.0.1",
     "consola": "^3.2.3",
-    "debug": "~4.3.7",
+    "debug": "~4.4.0",
     "htmlparser2": "9.1.0",
     "loader-utils": "2.0.4",
     "lru-cache": "10.4.3",
