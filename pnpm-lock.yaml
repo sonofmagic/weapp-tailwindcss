@@ -568,8 +568,8 @@ importers:
         specifier: ^3.4.16
         version: 3.4.16(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
       tailwindcss-injector:
-        specifier: 0.1.1
-        version: 0.1.1(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
+        specifier: workspace:*
+        version: link:../../packages/tailwindcss-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -13078,12 +13078,6 @@ packages:
   table@6.9.0:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
     engines: {node: '>=10.0.0'}
-
-  tailwindcss-config@0.0.0:
-    resolution: {integrity: sha512-/mWJf62UAfmyenQ1BPKxnPuGZLX3AkKKzd4wkkfMtV8gYRlRYUobX1H8SN5QPnAS3itZ+o6314UD+zAHQN+RnA==}
-
-  tailwindcss-injector@0.1.1:
-    resolution: {integrity: sha512-90RvWsqv3R5FFIoNeIuE+SRWd0ITdaa24oeYHKhe/u7lybH+iOiDzuOj5NXCjWZvBDUOWLEejXcI+4Ign8fcZg==}
 
   tailwindcss-patch@5.0.2:
     resolution: {integrity: sha512-cPeA9S+xDEKPjl0y+X9l5F+cCaoVkkzsjVrdFDcAitnrmj3wRYS3U7XHpsEV+boIMw8+07XTcW/J9hxdaKdMQw==}
@@ -29204,22 +29198,6 @@ snapshots:
       slice-ansi: 4.0.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
-
-  tailwindcss-config@0.0.0:
-    dependencies:
-      jiti: 2.4.1
-      lilconfig: 3.1.3
-
-  tailwindcss-injector@0.1.1(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)):
-    dependencies:
-      fs-extra: 11.2.0
-      htmlparser2: 9.1.0
-      magic-string: 0.30.14
-      postcss: 8.4.49
-      tailwindcss: 3.4.16(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
-      tailwindcss-config: 0.0.0
-    transitivePeerDependencies:
-      - ts-node
 
   tailwindcss-patch@5.0.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2)))(magicast@0.3.5):
     dependencies:
