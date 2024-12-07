@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.2
+
+### Patch Changes
+
+- [`080bf64`](https://github.com/sonofmagic/weapp-tailwindcss/commit/080bf6422c13361871fdb811b4def6f63605c5c4) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: root replace with error and pass from
+
 ## 0.1.1
 
 ### Patch Changes
