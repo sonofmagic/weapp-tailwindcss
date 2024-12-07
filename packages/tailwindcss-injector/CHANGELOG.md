@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.3
+
+### Patch Changes
+
+- [`af32436`](https://github.com/sonofmagic/weapp-tailwindcss/commit/af32436c6235933aea7ec151d479385c56d69041) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: root.source.input.file
+
 ## 0.1.2
 
 ### Patch Changes
