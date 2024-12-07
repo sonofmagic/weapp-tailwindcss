@@ -1,12 +1,13 @@
 import type { PluginCreator } from 'postcss'
 import type { Config } from 'tailwindcss'
 import type { Options } from './types'
-import process from 'node:process'
 import postcss from 'postcss'
 import set from 'set-value'
 import tailwindcss from 'tailwindcss'
 import { loadConfig } from 'tailwindcss-config'
-import { defuOverrideArray, removeFileExtension } from './utils'
+import { getConfig } from './config'
+import { postcssPlugin } from './constants'
+import { removeFileExtension } from './utils'
 import { getDepFiles } from './wxml'
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
@@ -16,21 +17,15 @@ export type {
 }
 
 const creator: PluginCreator<Partial<Options>> = (options) => {
-  const { config, filter, directiveParams, cwd, extensions } = defuOverrideArray<Options, Options[]>(options as Options, {
-    filter: () => true,
-    config: undefined,
-    directiveParams: ['utilities', 'components'],
-    cwd: process.cwd(),
-    extensions: ['wxml', 'js', 'ts'],
-  })
+  const { config, filter, directiveParams, cwd, extensions } = getConfig(options)
 
   const extensionsGlob = `{${extensions.join(',')}}`
 
   return {
-    postcssPlugin: 'postcss-tailwindcss-injector',
+    postcssPlugin,
     plugins: [
       {
-        postcssPlugin: 'post',
+        postcssPlugin: `${postcssPlugin}:post`,
         async Once(root, helpers) {
           if (filter(root.source?.input)) {
             for (const params of directiveParams) {
@@ -67,13 +62,13 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
                   tailwindcssConfig.content.push(`${removeFileExtension(dep)}.${extensionsGlob}`)
                 }
               }
-            }
 
-            await postcss([
-              tailwindcss(tailwindcssConfig),
-            ]).process(root, {
-              from: root.source?.input.file,
-            })
+              await postcss([
+                tailwindcss(tailwindcssConfig),
+              ]).process(root, {
+                from: root.source.input.file,
+              })
+            }
           }
         },
       },
