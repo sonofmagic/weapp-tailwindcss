@@ -4872,9 +4872,9 @@ minipass@^5.0.0:
   integrity sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==
 
 miniprogram-api-typings@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmmirror.com/miniprogram-api-typings/-/miniprogram-api-typings-4.0.1.tgz#14933639f710647e1a6102614ee3d49ab90f9be8"
-  integrity sha512-Ok4SSNCYnNLgbAhHCpIeqx6XICZ3aUxZ2iQDExmwKEinWaQQFzzxobK5JP9skrEOWn9PoKodjw4iUdF8Um0i/A==
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/miniprogram-api-typings/-/miniprogram-api-typings-4.0.2.tgz#c0baa171762a2f9b1080e05be2946030e0e2828c"
+  integrity sha512-hDrWCaJamsMB6Sg+0oMzGgSOse8EzumfN+VQFBKtJe2LbeKibGruB/ptNd4viXdcdgfahQ+Ji5Z9v9meoG9iuw==
 
 minizlib@^2.1.1:
   version "2.1.2"
