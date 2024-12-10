@@ -161,7 +161,7 @@
     "htmlparser2": "9.1.0",
     "loader-utils": "2.0.4",
     "lru-cache": "10.4.3",
-    "magic-string": "0.30.14",
+    "magic-string": "0.30.15",
     "md5": "2.3.0",
     "npm-registry-fetch": "^18.0.2",
     "postcss": "~8.4.49",

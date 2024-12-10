@@ -7,6 +7,11 @@ import { createContext } from './ctx'
 import { postcssWeappTailwindcssPostPlugin } from './post'
 import { postcssWeappTailwindcssPrePlugin } from './pre'
 
+/**
+ * 根据提供的选项生成一组 PostCSS 插件。
+ * @param options - 样式处理器选项，包含 PostCSS 插件和其他配置。
+ * @returns AcceptedPlugin[] - 生成的 PostCSS 插件数组。
+ */
 export function getPlugins(options: IStyleHandlerOptions) {
   const ctx = createContext()
   options.ctx = ctx

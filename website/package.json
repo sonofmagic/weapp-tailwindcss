@@ -58,8 +58,8 @@
     "sass-loader": "^16.0.4",
     "tailwindcss": "^3.4.16",
     "theme-transition": "workspace:*",
-    "typedoc": "^0.27.3",
-    "typedoc-plugin-markdown": "4.3.1",
+    "typedoc": "^0.27.4",
+    "typedoc-plugin-markdown": "4.3.2",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {

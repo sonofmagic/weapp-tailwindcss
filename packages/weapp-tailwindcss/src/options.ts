@@ -15,6 +15,11 @@ import { createTailwindcssPatcher } from './tailwindcss/patcher'
 import { defuOverrideArray, isMap } from './utils'
 import { createTemplateHandler } from './wxml/utils'
 
+/**
+ * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
+ * @param opts - 用户定义的选项，可选。
+ * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
+ */
 export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
     opts as InternalUserDefinedOptions,

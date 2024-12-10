@@ -1,5 +1,6 @@
 import { getCss } from '#test/helpers/getTwCss'
 import { createContext } from '@/core'
+
 import scssParser from 'postcss-scss'
 
 describe('core', () => {
@@ -64,5 +65,36 @@ describe('core', () => {
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
     expect(code).toBe(`const classNames = ['mb-[1.5rem]']`)
     expect(map).toMatchSnapshot()
+  })
+})
+
+describe('core transform functions', () => {
+  it('should transform WXML with runtimeSet', async () => {
+    const ctx = createContext()
+    const rawWxml = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'
+    const runtimeSet = new Set(['mt-[8px]'])
+    const options = { runtimeSet }
+    const transformedWxml = await ctx.transformWxml(rawWxml, options)
+    expect(transformedWxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+  })
+
+  it('should transform JS with runtimeSet', async () => {
+    const ctx = createContext()
+    const rawJs = `const classNames = ['mb-[1.5rem]']`
+    const runtimeSet = new Set(['mb-[1.5rem]'])
+    const options = { runtimeSet }
+    const { code } = await ctx.transformJs(rawJs, options)
+    expect(code).toBe(`const classNames = ['mb-_1d5rem_']`)
+  })
+
+  it('should handle empty runtimeSet', async () => {
+    const ctx = createContext()
+    const rawWxml = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'
+    const runtimeSet = new Set<string>()
+
+    const transformedWxml = await ctx.transformWxml(rawWxml, {
+      runtimeSet,
+    })
+    expect(transformedWxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
   })
 })
