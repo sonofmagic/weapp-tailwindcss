@@ -74,7 +74,7 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
                 tailwindcss(tailwindcssConfig),
               ]).process(root, {
                 from: root.source.input.file,
-              })
+              }).async()
             }
           }
         },
