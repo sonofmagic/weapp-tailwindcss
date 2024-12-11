@@ -10,4 +10,5 @@ export interface Options {
   directiveParams: ('base' | 'components' | 'utilities' | 'variants')[]
   extensions: string[]
   insertAfterAtRulesNames: string[]
+  insertAfterComments: (string | RegExp)[]
 }

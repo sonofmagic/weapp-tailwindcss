@@ -7,8 +7,9 @@ import tailwindcss from 'tailwindcss'
 import { loadConfig } from 'tailwindcss-config'
 import { getConfig } from './config'
 import { postcssPlugin } from './constants'
-import { removeFileExtension } from './utils'
+import { regExpTest, removeFileExtension } from './utils'
 import { getDepFiles } from './wxml'
+
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
 // }
@@ -17,7 +18,7 @@ export type {
 }
 
 const creator: PluginCreator<Partial<Options>> = (options) => {
-  const { config, filter, directiveParams, cwd, extensions, insertAfterAtRulesNames } = getConfig(options)
+  const { config, filter, directiveParams, cwd, extensions, insertAfterAtRulesNames, insertAfterComments } = getConfig(options)
 
   const extensionsGlob = `{${extensions.join(',')}}`
 
@@ -28,7 +29,9 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
         postcssPlugin: `${postcssPlugin}:post`,
         async Once(root, helpers) {
           if (filter(root.source?.input)) {
-            const lastIndex = root.nodes.findLastIndex(x => x.type === 'atrule' && insertAfterAtRulesNames.includes(x.name))
+            const atruleLastIndex = root.nodes.findLastIndex(x => x.type === 'atrule' && insertAfterAtRulesNames.includes(x.name))
+            const commentLastIndex = root.nodes.findLastIndex(x => x.type === 'comment' && regExpTest(insertAfterComments, x.text))
+            const lastIndex = Math.max(atruleLastIndex, commentLastIndex)
             for (const params of directiveParams) {
               const node = root.nodes.find(x => x.type === 'atrule' && x.params === params)
               if (!node) {

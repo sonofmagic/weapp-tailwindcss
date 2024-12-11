@@ -1112,3 +1112,34 @@ exports[`postcss > process case 8 1`] = `
 @use 'yyy';
 "
 `;
+
+exports[`postcss > process case 9 1`] = `
+"/*  @import  xxx.less  */
+.bg-\\[url\\(empty\\)\\] {
+    background-image: url(empty)
+}"
+`;
+
+exports[`postcss > process case 10 1`] = `
+"/*  @import  'xxx.less'  */
+.bg-\\[url\\(empty\\)\\] {
+    background-image: url(empty)
+}"
+`;
+
+exports[`postcss > process case 11 1`] = `
+"/*  @import  'xxx.less'  */
+@import 'xxx';
+.bg-\\[url\\(empty\\)\\]{
+    background-image: url(empty)
+}"
+`;
+
+exports[`postcss > process case 12 1`] = `
+"@import 'xxx';
+/*  @import  'xxx.less'  */
+.bg-\\[url\\(empty\\)\\]{
+    background-image: url(empty)
+}
+"
+`;

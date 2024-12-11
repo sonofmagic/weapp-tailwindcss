@@ -111,4 +111,32 @@ describe('postcss', () => {
     })
     expect(css).toMatchSnapshot()
   })
+
+  it('process case 9', async () => {
+    const { css } = await postcss([creator()]).process(`/*  @import  xxx.less  */`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 10', async () => {
+    const { css } = await postcss([creator()]).process(`/*  @import  'xxx.less'  */`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 11', async () => {
+    const { css } = await postcss([creator()]).process(`/*  @import  'xxx.less'  */\n@import 'xxx';`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 12', async () => {
+    const { css } = await postcss([creator()]).process(`@import 'xxx';\n/*  @import  'xxx.less'  */\n`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
 })

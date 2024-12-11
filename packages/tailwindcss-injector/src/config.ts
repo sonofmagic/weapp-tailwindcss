@@ -12,6 +12,7 @@ function getDefaultConfig(): Options {
     extensions: ['wxml', 'js', 'ts'],
     // @import and @use (scss)
     insertAfterAtRulesNames: ['import', 'use'],
+    insertAfterComments: ['@import'],
   }
 }
 
