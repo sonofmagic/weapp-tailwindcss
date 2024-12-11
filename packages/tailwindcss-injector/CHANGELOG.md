@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.5
+
+### Patch Changes
+
+- [`294a69e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/294a69e6a0654a6067dfbe5f1c7708091bf7f7e6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add `insertAfterComments` for insertAfter tailwind atRule
+
 ## 0.1.4
 
 ### Patch Changes
