@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.4
+
+### Patch Changes
+
+- [`5f321b8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5f321b84d997ff10eed77c0754544851622ed750) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add `insertAfterAtRulesNames` option for insert node after `@import` and `@use`
+
 ## 0.1.3
 
 ### Patch Changes
