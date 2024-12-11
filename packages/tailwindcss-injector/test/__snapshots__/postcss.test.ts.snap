@@ -1057,3 +1057,58 @@ exports[`postcss > process case 4 1`] = `
     background-image: url(item.wxml)
 }"
 `;
+
+exports[`postcss > process case 5 1`] = `
+".bg-\\[url\\(\\.\\.\\/xx\\.js\\)\\] {
+    background-image: url(../xx.js)
+}
+.bg-\\[url\\(\\.\\.\\/xx\\.wxml\\)\\] {
+    background-image: url(../xx.wxml)
+}
+.bg-\\[url\\(a\\.ts\\)\\] {
+    background-image: url(a.ts)
+}
+.bg-\\[url\\(a\\.wxml\\)\\] {
+    background-image: url(a.wxml)
+}
+.bg-\\[url\\(dep\\.wxml\\)\\] {
+    background-image: url(dep.wxml)
+}
+.bg-\\[url\\(footer\\.wxml\\)\\] {
+    background-image: url(footer.wxml)
+}
+.bg-\\[url\\(header\\.wxml\\)\\] {
+    background-image: url(header.wxml)
+}
+.bg-\\[url\\(index\\.wxml\\)\\] {
+    background-image: url(index.wxml)
+}
+.bg-\\[url\\(item\\.wxml\\)\\] {
+    background-image: url(item.wxml)
+}"
+`;
+
+exports[`postcss > process case 6 1`] = `
+"@import 'xxx';
+@use 'yyy';
+.bg-\\[url\\(empty\\)\\]{
+    background-image: url(empty)
+}
+"
+`;
+
+exports[`postcss > process case 7 1`] = `
+"@import 'xxx';
+.bg-\\[url\\(empty\\)\\]{
+    background-image: url(empty)
+}@use 'yyy';
+"
+`;
+
+exports[`postcss > process case 8 1`] = `
+".bg-\\[url\\(empty\\)\\]{
+    background-image: url(empty)
+}@import 'xxx';
+@use 'yyy';
+"
+`;

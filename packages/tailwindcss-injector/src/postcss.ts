@@ -17,7 +17,7 @@ export type {
 }
 
 const creator: PluginCreator<Partial<Options>> = (options) => {
-  const { config, filter, directiveParams, cwd, extensions } = getConfig(options)
+  const { config, filter, directiveParams, cwd, extensions, insertAfterAtRulesNames } = getConfig(options)
 
   const extensionsGlob = `{${extensions.join(',')}}`
 
@@ -28,10 +28,17 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
         postcssPlugin: `${postcssPlugin}:post`,
         async Once(root, helpers) {
           if (filter(root.source?.input)) {
+            const lastIndex = root.nodes.findLastIndex(x => x.type === 'atrule' && insertAfterAtRulesNames.includes(x.name))
             for (const params of directiveParams) {
               const node = root.nodes.find(x => x.type === 'atrule' && x.params === params)
               if (!node) {
-                root.prepend(helpers.atRule({ name: 'tailwind', params }))
+                const atRule = helpers.atRule({ name: 'tailwind', params })
+                if (lastIndex < 0) {
+                  root.prepend(atRule)
+                }
+                else {
+                  root.insertAfter(lastIndex, atRule)
+                }
               }
             }
 

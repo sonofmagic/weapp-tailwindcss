@@ -9,4 +9,5 @@ export interface Options {
   config: InlineTailwindcssOptions | ((input?: postcss.Input) => InlineTailwindcssOptions)
   directiveParams: ('base' | 'components' | 'utilities' | 'variants')[]
   extensions: string[]
+  insertAfterAtRulesNames: string[]
 }

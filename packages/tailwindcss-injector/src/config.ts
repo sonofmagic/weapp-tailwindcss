@@ -6,9 +6,12 @@ function getDefaultConfig(): Options {
   return {
     filter: () => true,
     config: undefined,
+    // 倒叙插入
     directiveParams: ['utilities', 'components'],
     cwd: process.cwd(),
     extensions: ['wxml', 'js', 'ts'],
+    // @import and @use (scss)
+    insertAfterAtRulesNames: ['import', 'use'],
   }
 }
 

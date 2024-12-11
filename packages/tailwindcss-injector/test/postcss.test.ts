@@ -83,4 +83,32 @@ describe('postcss', () => {
     })
     expect(css).toMatchSnapshot()
   })
+
+  it('process case 5', async () => {
+    const { css } = await postcss([creator({})]).process(``, {
+      from: path.resolve(__dirname, './fixtures/wxml/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 6', async () => {
+    const { css } = await postcss([creator()]).process(`@import 'xxx';\n@use 'yyy';\n`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 7', async () => {
+    const { css } = await postcss([creator()]).process(`@import 'xxx';\n@tailwind utilities;@use 'yyy';\n`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('process case 8', async () => {
+    const { css } = await postcss([creator()]).process(`@tailwind utilities;@import 'xxx';\n@use 'yyy';\n`, {
+      from: path.resolve(__dirname, './fixtures/empty/index.wxss'),
+    })
+    expect(css).toMatchSnapshot()
+  })
 })
