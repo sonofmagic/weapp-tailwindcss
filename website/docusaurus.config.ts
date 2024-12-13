@@ -146,49 +146,9 @@ const config = {
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH,
         skipErrorChecking: true,
+        lang: 'zh',
       },
     ],
-    // [
-    //   'docusaurus-plugin-typedoc',
-    //   {
-    //     id: 'api-cli',
-    //     entryPoints: ['../plugins/cli/src/type.ts'],
-    //     tsconfig: '../plugins/cli/tsconfig.md.json',
-    //     readme: 'none',
-    //     out: './docs/api-cli',
-    //     watch: process.env.TYPEDOC_WATCH,
-    //     skipErrorChecking: true,
-    //   },
-    // ],
-    // function nodeLoader(context, options) {
-    //   return {
-    //     name: 'canvas-node-loader-plugin',
-    //     configureWebpack(config, isServer, utils) {
-    //       if (isServer) {
-    //         return {
-    //           target: 'node',
-    //           // ReferenceError: __dirname is not defined
-    //           node: {
-    //             __dirname: true,
-    //           },
-    //           externals: [nodeExternals()],
-    //           module: {
-    //             rules: [
-    //               {
-    //                 test: /\.node$/,
-    //                 loader: "node-loader",
-    //               }
-    //             ]
-    //           }
-    //         }
-    //       }
-    //       return {
-
-    //       }
-
-    //     }
-    //   }
-    // }
   ],
   themeConfig:
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
