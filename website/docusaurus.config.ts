@@ -139,8 +139,6 @@ const config = {
       'docusaurus-plugin-typedoc',
       {
         id: 'api',
-        // '../src/webpack.ts', '../src/vite.ts', '../src/gulp.ts'
-        // '../src/types.ts',
         entryPoints: ['../packages/weapp-tailwindcss/src/index.ts'],
         tsconfig: '../packages/weapp-tailwindcss/tsconfig.json',
         readme: 'none',
