@@ -55,9 +55,9 @@
   "dependencies": {
     "fs-extra": "^11.2.0",
     "htmlparser2": "^9.1.0",
-    "magic-string": "^0.30.15",
+    "magic-string": "^0.30.17",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
+    "tailwindcss": "^3.4.17",
     "tailwindcss-config": "workspace:*"
   }
 }

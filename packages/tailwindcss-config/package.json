@@ -13,7 +13,11 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "keywords": ["tailwindcss", "config", "loader"],
+  "keywords": [
+    "tailwindcss",
+    "config",
+    "loader"
+  ],
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts"
@@ -43,7 +47,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
-    "jiti": "^2.4.1",
+    "jiti": "^2.4.2",
     "lilconfig": "^3.1.3"
   }
 }
