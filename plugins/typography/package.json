@@ -54,7 +54,7 @@
     "sync": "cnpm sync @weapp-tailwindcss/typography"
   },
   "dependencies": {
-    "htmlparser2": "^9.1.0",
+    "htmlparser2": "^10.0.0",
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",
