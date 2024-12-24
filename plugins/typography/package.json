@@ -23,16 +23,16 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.js"
     },
     "./transform": {
       "types": "./dist/transform.d.ts",
       "import": "./dist/transform.mjs",
-      "require": "./dist/transform.cjs"
+      "require": "./dist/transform.js"
     },
     "./*": "./*"
   },
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "typesVersions": {
@@ -47,7 +47,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "dev": "tsup --watch --sourcemap",
+    "build": "tsup",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",

@@ -19,7 +19,7 @@ export default (html: string, options?: Partial<{ prefix: string }>) => {
         s.appendLeft(parser.startIndex + 7, `${prefix + tagName} `)
       }
     },
-    onopentag(name, attribs) {
+    onopentag(_name, attribs) {
       hasClassStack.push('class' in attribs)
     },
     onclosetag(name) {
