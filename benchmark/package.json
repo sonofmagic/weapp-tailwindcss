@@ -27,7 +27,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "4.0.0-beta.8",
     "@vitejs/plugin-vue": "^5.2.1",
-    "tailwindcss": "4.0.0-alpha.31",
+    "tailwindcss": "4.0.0-beta.8",
     "vite": "^6.0.6",
     "vue-tsc": "^2.2.0"
   }
