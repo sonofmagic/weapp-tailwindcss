@@ -20,6 +20,7 @@
     "dev": "weapp-vite dev -o",
     "dev:0": "weapp-vite dev -m x",
     "dev:1": "weapp-vite dev --mode xx",
+    "dev:open": "weapp-vite dev -o",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "postinstall": "weapp-tw patch",
@@ -34,6 +35,6 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^1.9.3"
+    "weapp-vite": "^2.0.0"
   }
 }

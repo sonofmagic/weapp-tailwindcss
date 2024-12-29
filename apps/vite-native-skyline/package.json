@@ -18,6 +18,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "weapp-vite dev",
+    "dev:open": "weapp-vite dev -o",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm",
@@ -30,6 +31,6 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^1.9.3"
+    "weapp-vite": "^2.0.0"
   }
 }
