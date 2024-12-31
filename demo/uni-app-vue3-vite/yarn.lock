@@ -8835,9 +8835,9 @@ utils-merge@1.0.1:
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
 uview-plus@^3.1.45:
-  version "3.3.58"
-  resolved "https://registry.npmmirror.com/uview-plus/-/uview-plus-3.3.58.tgz#02ce54c0cb21b8447f247b7c5ed7987b6bc8e7ff"
-  integrity sha512-8h5PfGTHruxSh3jW0kFwKkjZ3l68rkbgCO5mk5Mhsb0F/XfAM9T5yl70668dggvTUWCfqbKou5dIn2Q51qkOSw==
+  version "3.3.61"
+  resolved "https://registry.npmmirror.com/uview-plus/-/uview-plus-3.3.61.tgz#0d0121c8de020a10cc3809d172e21e26c908062e"
+  integrity sha512-1IdZMYd7KuByW+bfBseEuSaKcYB6F4q8bGqAru1UDKIkRVTxkPlqvsTE8Q0+I0+jk6q1ov1KbGFDuyXxVzXcCg==
   dependencies:
     clipboard "^2.0.11"
     dayjs "^1.11.3"
