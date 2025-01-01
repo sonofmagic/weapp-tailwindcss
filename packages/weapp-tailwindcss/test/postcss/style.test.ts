@@ -1,8 +1,9 @@
 import type postcss from 'postcss'
 import { MappingChars2String } from '@/escape'
+import { transformCss } from '@/lightningcss'
 import { getOptions } from '@/options'
-import { styleHandler } from '@/postcss/index'
 
+import { styleHandler } from '@/postcss/index'
 import { createInjectPreflight } from '@/postcss/preflight'
 import { normalizeEol } from '../helpers/normalizeEol'
 import { createGetCase, cssCasePath } from '../util'
@@ -159,6 +160,8 @@ describe('styleHandler', () => {
       escapeMap: MappingChars2String,
     })
     expect(css).toMatchSnapshot()
+    const res = await transformCss(testCase)
+    expect(res.code.toString()).toBe(`:before,:after{--tw-border-opacity:1}`)
   })
 
   it('cssPreflightRange option view', async () => {
@@ -204,6 +207,22 @@ describe('styleHandler', () => {
       escapeMap: MappingChars2String,
     })
     expect(css).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
+  })
+
+  it('should pseudo element new case', async () => {
+    const testCase = '.after\\:content-\\[\\"\\*\\"\\]::after{color:red;}'
+    const { css } = await styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+
+      customRuleCallback: () => {},
+      cssSelectorReplacement: {
+        universal: 'view',
+      },
+    })
+    expect(css).toBe('.afterccontent-_xmx_::after{color:red;}')
+    const res = await transformCss(testCase)
+    expect(res.code.toString()).toBe('.afterccontent-_xmx_:after{color:red}')
   })
 
   it('should * be replace as view etc', async () => {
