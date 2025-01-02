@@ -973,7 +973,7 @@ importers:
         version: 0.2.6(@docusaurus/core@3.6.3(@mdx-js/react@3.1.0(@types/react@19.0.1)(react@19.0.0))(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.0)(eslint@9.17.0(jiti@2.4.2))(lightningcss@1.28.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)(vue-template-compiler@2.7.16))(sass-embedded@1.83.0)(sass@1.83.0)(webpack@5.96.1(esbuild@0.24.0))
       docusaurus-plugin-typedoc:
         specifier: 1.2.0
-        version: 1.2.0(typedoc-plugin-markdown@4.4.0(typedoc@0.27.6(typescript@5.7.2)))
+        version: 1.2.0(typedoc-plugin-markdown@4.4.1(typedoc@0.27.6(typescript@5.7.2)))
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -999,8 +999,8 @@ importers:
         specifier: ^0.27.6
         version: 0.27.6(typescript@5.7.2)
       typedoc-plugin-markdown:
-        specifier: 4.4.0
-        version: 4.4.0(typedoc@0.27.6(typescript@5.7.2))
+        specifier: 4.4.1
+        version: 4.4.1(typedoc@0.27.6(typescript@5.7.2))
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -13585,8 +13585,8 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  typedoc-plugin-markdown@4.4.0:
-    resolution: {integrity: sha512-4207DYcxJGWQRrEVTza7XkIo7ldhuEzJBaZO6dX5ogUGlvWeRTo4uiN+R1F11ttJGh4toLtxrpoi2wTTP+nEwA==}
+  typedoc-plugin-markdown@4.4.1:
+    resolution: {integrity: sha512-fx23nSCvewI9IR8lzIYtzDphETcgTDuxKcmHKGD4lo36oexC+B1k4NaCOY58Snqb4OlE8OXDAGVcQXYYuLRCNw==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.27.x
@@ -16711,7 +16711,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.1
+      '@types/react': 18.3.12
       react: 19.0.0
 
   '@docusaurus/theme-classic@3.6.3(@types/react@19.0.1)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.0)(eslint@9.17.0(jiti@2.4.2))(lightningcss@1.28.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)(vue-template-compiler@2.7.16)':
@@ -21559,9 +21559,9 @@ snapshots:
       - sass-embedded
       - webpack
 
-  docusaurus-plugin-typedoc@1.2.0(typedoc-plugin-markdown@4.4.0(typedoc@0.27.6(typescript@5.7.2))):
+  docusaurus-plugin-typedoc@1.2.0(typedoc-plugin-markdown@4.4.1(typedoc@0.27.6(typescript@5.7.2))):
     dependencies:
-      typedoc-plugin-markdown: 4.4.0(typedoc@0.27.6(typescript@5.7.2))
+      typedoc-plugin-markdown: 4.4.1(typedoc@0.27.6(typescript@5.7.2))
 
   dom-converter@0.2.0:
     dependencies:
@@ -29809,7 +29809,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typedoc-plugin-markdown@4.4.0(typedoc@0.27.6(typescript@5.7.2)):
+  typedoc-plugin-markdown@4.4.1(typedoc@0.27.6(typescript@5.7.2)):
     dependencies:
       typedoc: 0.27.6(typescript@5.7.2)
 
