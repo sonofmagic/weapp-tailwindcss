@@ -1,8 +1,8 @@
 import { getDevDepsVersions, getLatestVersion, getLatestVersionInRange } from '@/npm'
-import CI from 'ci-info'
+// import CI from 'ci-info'
 import { fetchOptions } from './util'
 
-describe.skipIf(CI.isCI)('getLatestVersion', () => {
+describe.skip('getLatestVersion', () => {
   it.skip('tailwindcss', async () => {
     let version = await getLatestVersion('tailwindcss', fetchOptions)
     expect(version).toBe('3.4.13')
