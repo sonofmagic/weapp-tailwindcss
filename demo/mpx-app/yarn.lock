@@ -2713,12 +2713,12 @@
   resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-2.1.0.tgz#792f042f002cc3c7e59f06ea874fc319eef19f33"
   integrity sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==
 
-"@weapp-core/logger@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmmirror.com/@weapp-core/logger/-/logger-1.0.1.tgz#ae5bdfb5b961fdbd1ab114cf9303d0b9757a300b"
-  integrity sha512-a6mRzO4GZKXHQvMhUv5CUctzHxg1dbD1+S+hr5A3j3y369PEPIQQpqQnwhICfBnDZkkBRcy1YVcOjiuWJo4qww==
+"@weapp-core/logger@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/@weapp-core/logger/-/logger-1.0.2.tgz#02e0ab8a76d6a2d6079254579a4c86d9a0408f6d"
+  integrity sha512-EiCBsl78Z+xlOD4IQ+GWCNcz0u0xcdPFdg/3PJ4QPM75YMi9OcSFKl5bNQcSCPGA+xw67MFuCFj8Uv7yAcNDYw==
   dependencies:
-    consola "^3.2.3"
+    consola "^3.3.1"
 
 "@weapp-core/regex@~1.0.1":
   version "1.0.1"
@@ -4553,6 +4553,11 @@ consola@^3.2.3:
   resolved "https://registry.npmmirror.com/consola/-/consola-3.2.3.tgz#0741857aa88cfa0d6fd53f1cff0375136e98502f"
   integrity sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==
 
+consola@^3.3.1:
+  version "3.3.3"
+  resolved "https://registry.npmmirror.com/consola/-/consola-3.3.3.tgz#0dd8a2314b0f7bf18a49064138ad685f3346543d"
+  integrity sha512-Qil5KwghMzlqd51UXM0b6fyaGHtOC22scxrwrz4A2882LyUMwQjnvaedN1HAeXzphspQ6CpHkzMAWxBTUruDLg==
+
 consolidate@^0.15.1:
   version "0.15.1"
   resolved "https://registry.npmmirror.com/consolidate/-/consolidate-0.15.1.tgz#21ab043235c71a07d45d9aad98593b0dba56bab7"
@@ -5898,10 +5903,10 @@ exec-sh@^0.3.2:
   resolved "https://registry.npmmirror.com/exec-sh/-/exec-sh-0.3.6.tgz#ff264f9e325519a60cb5e273692943483cca63bc"
   integrity sha512-nQn+hI3yp+oD0huYhKwvYI32+JFeq+XkNcD1GAo3Y/MjxsfVGmrrzrnzjWiNY6f+pUCP440fThsFh5gZrRAU/w==
 
-execa@9.4.0:
-  version "9.4.0"
-  resolved "https://registry.npmmirror.com/execa/-/execa-9.4.0.tgz#071ff6516c46eb82af9a559dba3c891637a10f3f"
-  integrity sha512-yKHlle2YGxZE842MERVIplWwNH5VYmqqcPFgtnlU//K8gxuFFXu0pwd/CrfXTumFpeEiufsP7+opT/bPJa1yVw==
+execa@9.5.2:
+  version "9.5.2"
+  resolved "https://registry.npmmirror.com/execa/-/execa-9.5.2.tgz#a4551034ee0795e241025d2f987dab3f4242dff2"
+  integrity sha512-EHlpxMCpHWSAh1dgS6bVeoLAXGnJNdR93aabr4QCGbzOM73o5XmRfM/e5FUqsw3aagP8S8XEWUWFAxnRBnAF0Q==
   dependencies:
     "@sindresorhus/merge-streams" "^4.0.0"
     cross-spawn "^7.0.3"
@@ -9170,7 +9175,7 @@ liftoff@^3.1.0:
     rechoir "^0.6.2"
     resolve "^1.1.7"
 
-lilconfig@^2.0.3, lilconfig@^2.0.5, lilconfig@^2.1.0:
+lilconfig@^2.0.3, lilconfig@^2.0.5:
   version "2.1.0"
   resolved "https://registry.npmmirror.com/lilconfig/-/lilconfig-2.1.0.tgz#78e23ac89ebb7e1bfbf25b18043de756548e7f52"
   integrity sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==
@@ -9189,6 +9194,11 @@ lilconfig@^3.1.2:
   version "3.1.2"
   resolved "https://registry.npmmirror.com/lilconfig/-/lilconfig-3.1.2.tgz#e4a7c3cb549e3a606c8dcc32e5ae1005e62c05cb"
   integrity sha512-eop+wDAvpItUys0FWkHIKeC9ybYrTGbU41U5K7+bttZZeohvnY7M9dZ5kB21GNWiFT2q1OoPTvncPCgSOVO5ow==
+
+lilconfig@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.npmmirror.com/lilconfig/-/lilconfig-3.1.3.tgz#a1bcfd6257f9585bf5ae14ceeebb7b559025e4c4"
+  integrity sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==
 
 lines-and-columns@^1.1.6:
   version "1.2.4"
@@ -12702,10 +12712,10 @@ tailwindcss-rem2px-preset@^1.0.3:
   resolved "https://registry.npmmirror.com/tailwindcss-rem2px-preset/-/tailwindcss-rem2px-preset-1.0.3.tgz#888990b7658118aedbe126dbad031b8f6628b6c7"
   integrity sha512-uG9CYE1WXsqSUIyqmHDyr63Zagfjn2Igk32gGPPzvq6FvZ2GVQx7sYj+pflkKA65VZw3rUsraQQoGQw2+EB31A==
 
-tailwindcss@^3.4.15:
-  version "3.4.15"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.15.tgz#04808bf4bf1424b105047d19e7d4bfab368044a9"
-  integrity sha512-r4MeXnfBmSOuKUWmXe6h2CcyfzJCEk4F0pptO5jlnYSIViUkVmsawj80N5h2lO3gwcmSb4n3PuN+e+GC1Guylw==
+tailwindcss@^3.4.17:
+  version "3.4.17"
+  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-3.4.17.tgz#ae8406c0f96696a631c790768ff319d46d5e5a63"
+  integrity sha512-w33E2aCvSDP0tW9RZuNXadXlkHXqFzSkQew/aIa2i/Sj8fThxwovwlXHSPXTbAHwEIhBFXAedUhP2tueAKP8Og==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
     arg "^5.0.2"
@@ -12716,7 +12726,7 @@ tailwindcss@^3.4.15:
     glob-parent "^6.0.2"
     is-glob "^4.0.3"
     jiti "^1.21.6"
-    lilconfig "^2.1.0"
+    lilconfig "^3.1.3"
     micromatch "^4.0.8"
     normalize-path "^3.0.0"
     object-hash "^3.0.0"
@@ -13631,13 +13641,13 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weapp-ide-cli@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.6.tgz#8d5da156a9cac0e763d625dde5571105d2994c57"
-  integrity sha512-Dm0WDCol4xnQxaToULW6QRc9wRaHEPXUm2maT+SoHcMmnM+fVPAL8HC08srRfbx0DNGYXHr/GUOQznjF3EK/7Q==
+weapp-ide-cli@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.8.tgz#ca8287515b17e392efd6acede74fa1745fdc0a04"
+  integrity sha512-cbj5HhC/U3Wd8Gh9i3lkRCmqvryqBxtabNlF01ztKL5V6+XPfHzH+rk2H/ZfdzSXP0cbPifmFuMbFb+KaVlnpQ==
   dependencies:
-    "@weapp-core/logger" "^1.0.1"
-    execa "9.4.0"
+    "@weapp-core/logger" "^1.0.2"
+    execa "9.5.2"
     fs-extra "^11.2.0"
     pathe "^1.1.2"
 
