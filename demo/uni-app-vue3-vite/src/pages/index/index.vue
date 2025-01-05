@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <view class="odd:mb-24"></view>
     <view class="ifdef-[MP-WEIXIN]:bg-blue-500">bg-blue-500</view>
     <view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-300">bg-blue-300</view>
     <view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">bg-blue-400</view>
