@@ -9,8 +9,6 @@ import { getDefaultConfig } from './default-config'
 // https://github.com/kaelansmith/tailwind-extended-shadows-merge
 export function withWeapp(config: Config<string, string>): Config<string, string> {
   return mergeConfigs(config, {
-    extend: {
-      ...getDefaultConfig(),
-    },
+    extend: getDefaultConfig(),
   })
 }

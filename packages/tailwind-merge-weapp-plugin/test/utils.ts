@@ -1,5 +1,6 @@
 import { withWeapp } from '@/index'
 import { createTailwindMerge, extendTailwindMerge, fromTheme, getDefaultConfig, mergeConfigs, twJoin, validators } from 'tailwind-merge'
+import { replaceJs } from 'weapp-tailwindcss/replace'
 
 export {
   createTailwindMerge,
@@ -7,6 +8,7 @@ export {
   fromTheme,
   getDefaultConfig,
   mergeConfigs,
+  replaceJs,
   twJoin,
   validators,
 }

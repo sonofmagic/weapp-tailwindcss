@@ -1,7 +1,8 @@
 // import type { Config, DefaultClassGroupIds, DefaultThemeGroupIds } from 'tailwind-merge'
-import { fromTheme, validators } from 'tailwind-merge'
+// import type { ThemeGetter } from 'tailwind-merge'
+import { fromTheme } from './from-theme'
+import { isAny, isArbitraryImage, isArbitraryLength, isArbitraryNumber, isArbitraryPosition, isArbitraryShadow, isArbitrarySize, isArbitraryValue, isInteger, isLength, isNumber, isPercent, isTshirtSize } from './validators'
 
-const { isAny, isArbitraryImage, isArbitraryLength, isArbitraryNumber, isArbitraryPosition, isArbitraryShadow, isArbitrarySize, isArbitraryValue, isInteger, isLength, isNumber, isPercent, isTshirtSize } = validators
 export function getDefaultConfig() {
   const colors = fromTheme('colors')
   const spacing = fromTheme('spacing')
@@ -1858,5 +1859,5 @@ export function getDefaultConfig() {
     conflictingClassGroupModifiers: {
       'font-size': ['leading'],
     },
-  } as const // satisfies Config<DefaultClassGroupIds, DefaultThemeGroupIds>
+  }// as const  satisfies Omit<Config<DefaultClassGroupIds, DefaultThemeGroupIds>, 'cacheSize' | 'prefix' | 'separator'>
 }
