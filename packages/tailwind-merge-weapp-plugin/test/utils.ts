@@ -1,3 +1,4 @@
+import type { ClassNameValue } from 'tailwind-merge'
 import { withWeapp } from '@/index'
 import { createTailwindMerge, extendTailwindMerge, fromTheme, getDefaultConfig, mergeConfigs, twJoin, validators } from 'tailwind-merge'
 import { replaceJs } from 'weapp-tailwindcss/replace'
@@ -14,3 +15,14 @@ export {
 }
 
 export const twMerge = extendTailwindMerge(withWeapp)
+
+export function twMergeReplaceJs(...classLists: ClassNameValue[]) {
+  return twMerge(classLists.map((x) => {
+    if (typeof x === 'string') {
+      return replaceJs(x)
+    }
+    else {
+      return x
+    }
+  }))
+}

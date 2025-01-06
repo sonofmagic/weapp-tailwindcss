@@ -1,6 +1,24 @@
 import { expect, it } from 'vitest'
 
-import { twMerge } from './utils'
+import { replaceJs, twMergeReplaceJs as twMerge } from './utils'
+
+expect.extend({
+  toBe: (received, expected) => {
+    const target = replaceJs(expected)
+    if (received !== target) {
+      return {
+        message: () => `expected ${received} to be ${target}`,
+        pass: false,
+      }
+    }
+    else {
+      return {
+        message: () => ``,
+        pass: true,
+      }
+    }
+  },
+})
 
 it('basic arbitrary variants', () => {
   expect(twMerge('[&>*]:underline [&>*]:line-through')).toBe('[&>*]:line-through')

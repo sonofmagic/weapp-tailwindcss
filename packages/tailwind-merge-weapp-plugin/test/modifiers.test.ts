@@ -1,6 +1,24 @@
 import { expect, it } from 'vitest'
 
-import { createTailwindMerge, twMerge } from './utils'
+import { createTailwindMerge, replaceJs, twMergeReplaceJs as twMerge } from './utils'
+
+expect.extend({
+  toBe: (received, expected) => {
+    const target = replaceJs(expected)
+    if (received !== target) {
+      return {
+        message: () => `expected ${received} to be ${target}`,
+        pass: false,
+      }
+    }
+    else {
+      return {
+        message: () => ``,
+        pass: true,
+      }
+    }
+  },
+})
 
 it('conflicts across prefix modifiers', () => {
   expect(twMerge('hover:block hover:inline')).toBe('hover:inline')

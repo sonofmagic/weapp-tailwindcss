@@ -2,13 +2,18 @@
 // https://github.com/dcastil/tailwind-merge/blob/main/src/lib/default-config.ts
 
 import type { Config } from 'tailwind-merge'
+import { SimpleMappingChars2String } from '@weapp-core/escape'
 import { mergeConfigs } from 'tailwind-merge'
 import { getDefaultConfig } from './default-config'
-
 // https://github.com/vltansky/tailwind-merge-rtl-plugin
 // https://github.com/kaelansmith/tailwind-extended-shadows-merge
 export function withWeapp(config: Config<string, string>): Config<string, string> {
   return mergeConfigs(config, {
+    separator: SimpleMappingChars2String[':'],
     extend: getDefaultConfig(),
   })
+}
+
+export {
+  getDefaultConfig,
 }

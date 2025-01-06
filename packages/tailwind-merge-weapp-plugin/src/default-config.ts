@@ -1,3 +1,4 @@
+import type { Config, DefaultClassGroupIds, DefaultThemeGroupIds } from './types'
 // import type { Config, DefaultClassGroupIds, DefaultThemeGroupIds } from 'tailwind-merge'
 // import type { ThemeGetter } from 'tailwind-merge'
 import { fromTheme } from './from-theme'
@@ -77,6 +78,7 @@ export function getDefaultConfig() {
 
   return {
     // cacheSize: 500,
+    // separator: SimpleMappingChars2String[':'],
     // separator: ':',
     theme: {
       colors: [isAny],
@@ -1859,5 +1861,5 @@ export function getDefaultConfig() {
     conflictingClassGroupModifiers: {
       'font-size': ['leading'],
     },
-  }// as const  satisfies Omit<Config<DefaultClassGroupIds, DefaultThemeGroupIds>, 'cacheSize' | 'prefix' | 'separator'>
+  } as const satisfies Config<DefaultClassGroupIds, DefaultThemeGroupIds>// Omit<Config<DefaultClassGroupIds, DefaultThemeGroupIds>, 'cacheSize' | 'prefix' | 'separator'>
 }
