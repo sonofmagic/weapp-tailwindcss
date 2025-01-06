@@ -64,7 +64,7 @@ describe('customTemplateHandler', () => {
   it('dark mode and hover-class', async () => {
     const testCase = '<view class="bg-gray-100 dark:bg-zinc-800" hover-class="bg-red-500 dark:bg-green-500"></view>'
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view class="bg-gray-100 darkcbg-zinc-800" hover-class="bg-red-500 darkcbg-green-500"></view>')
+    expect(str).toBe('<view class="bg-gray-100 dark_c_bg-zinc-800" hover-class="bg-red-500 dark_c_bg-green-500"></view>')
   })
 
   it('wxs should be ignored ', async () => {

@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`arbitrary values > bg-[#bada55] text-[22px] before:content-['Festivus'] 1`] = `
-"<div class="bg-_hbada55_ text-_22px_ beforeccontent-_qFestivusq_">
+"<div class="bg-_hbada55_ text-_22px_ before_c_content-_qFestivusq_">
       <!-- ... -->
     </div>"
 `;
@@ -13,7 +13,7 @@ exports[`arbitrary values > top-[117px] 1`] = `
 `;
 
 exports[`arbitrary values > top-[117px] lg:top-[344px] 1`] = `
-"<div class="top-_117px_ lgctop-_344px_">
+"<div class="top-_117px_ lg_c_top-_344px_">
       <!-- ... -->
     </div>"
 `;

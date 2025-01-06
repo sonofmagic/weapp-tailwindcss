@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"const a = 'afterccontent-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_'"`;
+exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"const a = 'after_c_content-_xu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55x_'"`;
 
-exports[`jsHandler > 'common' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "afterccontent-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_""`;
+exports[`jsHandler > 'common' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "after_c_content-_qu5bf9u9152u5f53u6b4cuff0cu4ebau751fu51e0u4f55q_""`;
 
 exports[`jsHandler > 'common' img url case 1`] = `
 "data: {
-      classNames: "bg-_url_qhttpscssylnavdcomsassetssimagessvusdivider-graydwebpq__"
+      classNames: "bg-_url_qhttps_c_ssylnavdcomsassetssimagessvusdivider-graydwebpq__"
     }"
 `;
 
@@ -22,13 +22,13 @@ exports[`jsHandler > empty case 0 1`] = `
 }
 `;
 
-exports[`jsHandler > issues/276 case 0 1`] = `"const x = "rounded-_20rpx_ beforecrounded-_20rpx_""`;
+exports[`jsHandler > issues/276 case 0 1`] = `"const x = "rounded-_20rpx_ before_c_rounded-_20rpx_""`;
 
-exports[`jsHandler > issues/276 case 1 1`] = `"const x = "rounded-_20rpx_ beforecrounded-_20rpx_""`;
+exports[`jsHandler > issues/276 case 1 1`] = `"const x = "rounded-_20rpx_ before_c_rounded-_20rpx_""`;
 
-exports[`jsHandler > issues/276 case 2 1`] = `"const x = "beforecrounded-_20rpx_ rounded-_20rpx_""`;
+exports[`jsHandler > issues/276 case 2 1`] = `"const x = "before_c_rounded-_20rpx_ rounded-_20rpx_""`;
 
-exports[`jsHandler > issues/276 case 3 1`] = `"const x = "beforecrounded-_20rpx_ rounded-_20rpx_""`;
+exports[`jsHandler > issues/276 case 3 1`] = `"const x = "before_c_rounded-_20rpx_ rounded-_20rpx_""`;
 
 exports[`jsHandler > jsPreserveClass '*' and 'w-[100px]' keyword 1`] = `"const n = '* 1 * 2 w-[100px]'"`;
 
@@ -92,19 +92,19 @@ exports[`jsHandler > unicode case 0 1`] = `
 "
 `;
 
-exports[`jsHandler > 中文字符 case 0 1`] = `"const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }"`;
+exports[`jsHandler > 中文字符 case 0 1`] = `"const a ={ className: "after_c_content-_qu7684u6492u7684u6492q_", children: "事实上" }"`;
 
 exports[`jsHandler > 中文字符 case 1 1`] = `
 {
-  "code": "const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }",
+  "code": "const a ={ className: "after_c_content-_qu7684u6492u7684u6492q_", children: "事实上" }",
 }
 `;
 
-exports[`jsHandler > 中文字符 case 2 1`] = `""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);"`;
+exports[`jsHandler > 中文字符 case 2 1`] = `""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before_c_content-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);"`;
 
 exports[`jsHandler > 中文字符 case 3 1`] = `
 {
-  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);",
+  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before_c_content-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);",
 }
 `;
 
@@ -193,7 +193,7 @@ var _hoisted_1 = {
 };
 
 var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("view", {
-  class: "text-[20px] text-[blue] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"
+  class: "text-[20px] text-[blue] after_c_content-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"
 }, "对酒当歌", -1
 /* HOISTED */
 );
@@ -415,7 +415,7 @@ var _hoisted_1 = {
 };
 
 var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("view", {
-  class: "text-[20px] text-[blue] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"
+  class: "text-[20px] text-[blue] after_c_content-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"
 }, "对酒当歌", -1
 /* HOISTED */
 );
@@ -603,7 +603,7 @@ if (false) {}
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* unplugin-vue-components disabled */
 var _hoisted_1 = {
-  class: "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"
+  class: "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_c_content-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, "123");
@@ -674,13 +674,13 @@ var inst = Page((0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__.createPageConfig
 
 exports[`jsHandler > 中文字符产物 case 3 1`] = `
 {
-  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[603],{422:function(n,e,t){var a=t(818),r=t(61),c={class:"w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"};function o(n,e,t,a,o,s){return(0,r.uX)(),(0,r.CE)("div",c,"123")}var s={},u=t(306);const f=(0,u.A)(s,[["render",o]]);var i=f,p={};Page((0,a.createPageConfig)(i,"pages/index/test",{root:{cn:[]}},p||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(422)}));n.O()}]);",
+  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[603],{422:function(n,e,t){var a=t(818),r=t(61),c={class:"w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_c_content-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"};function o(n,e,t,a,o,s){return(0,r.uX)(),(0,r.CE)("div",c,"123")}var s={},u=t(306);const f=(0,u.A)(s,[["render",o]]);var i=f,p={};Page((0,a.createPageConfig)(i,"pages/index/test",{root:{cn:[]}},p||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(422)}));n.O()}]);",
 }
 `;
 
 exports[`jsHandler > 中文字符产物 case 4 1`] = `
 {
-  "code": "const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"",
+  "code": "const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_c_content-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"",
 }
 `;
 

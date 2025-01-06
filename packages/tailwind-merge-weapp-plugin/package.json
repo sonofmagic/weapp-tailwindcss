@@ -46,7 +46,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
-    "@weapp-core/escape": "~2.1.0"
+    "@weapp-core/escape": "~3.0.0"
   },
   "devDependencies": {
     "tailwind-merge": "^2.6.0",

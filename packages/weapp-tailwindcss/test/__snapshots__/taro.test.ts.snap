@@ -7,9 +7,9 @@ exports[`taro app > '[replace strategy]' break taro-terser-minify case 1`] = `
 
 exports[`taro app > '[replace strategy]' vue3SaticNodeStr case 1`] = `
 "var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("view", {
-  class: "bg-gray-100 darkcbg-zinc-800 h-10 w-10",
-  "data-id": "bg-_h654123_ darkcbg-_habcdef_",
-  "hover-class": "bg-red-500 darkcbg-_h487512_"
+  class: "bg-gray-100 dark_c_bg-zinc-800 h-10 w-10",
+  "data-id": "bg-_h654123_ dark_c_bg-_habcdef_",
+  "hover-class": "bg-red-500 dark_c_bg-_h487512_"
 }, null, -1
 /* HOISTED */
 );

@@ -21,6 +21,11 @@ export function twMergeReplaceJs(...classLists: ClassNameValue[]) {
     if (typeof x === 'string') {
       return replaceJs(x)
     }
+    else if (Array.isArray(x)) {
+      return x.flatMap((x) => {
+        return replaceJs(x)
+      })
+    }
     else {
       return x
     }

@@ -52,7 +52,7 @@ exports[`virtualHostClass > mp-html node case 0 1`] = `
 </block>"
 `;
 
-exports[`virtualHostClass > mpx after content double qutos 1`] = `"<view class="afterccontent-_"你好啊，我很无聊"] after:ml-0.5 after:text-red-500"></view>"`;
+exports[`virtualHostClass > mpx after content double qutos 1`] = `"<view class="after_c_content-_"你好啊，我很无聊"] after:ml-0.5 after:text-red-500"></view>"`;
 
 exports[`virtualHostClass > mpx-tdesign-button case 0 1`] = `
 "<import src="../common/template/icon.wxml" />

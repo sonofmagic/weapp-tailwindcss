@@ -720,8 +720,8 @@ importers:
   packages/tailwind-merge-weapp-plugin:
     dependencies:
       '@weapp-core/escape':
-        specifier: ~2.1.0
-        version: 2.1.0
+        specifier: ~3.0.0
+        version: 3.0.0
     devDependencies:
       tailwind-merge:
         specifier: ^2.6.0
@@ -788,8 +788,8 @@ importers:
         specifier: ~4.0.1
         version: 4.0.1
       '@weapp-core/escape':
-        specifier: ~2.1.0
-        version: 2.1.0
+        specifier: ~3.0.0
+        version: 3.0.0
       '@weapp-core/regex':
         specifier: ~1.0.1
         version: 1.0.1
@@ -4919,8 +4919,8 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
-  '@weapp-core/escape@2.1.0':
-    resolution: {integrity: sha512-nloTsMWy6nIT5X8HYTaqIlU1ILLmQbM+n5XwGPzLEtkGCTtpCUsjobRSjkuWiozOaFyoM7SZkwQETF9syCD55g==}
+  '@weapp-core/escape@3.0.0':
+    resolution: {integrity: sha512-kUn+0OQPUZZUT2Ebufsy0IlviAxXKValC3jE9q3rq5aWtz0JNfjGauS6OUtEAhjvFYCeGNLUnHkmttG1kyAj2w==}
 
   '@weapp-core/init@1.1.15':
     resolution: {integrity: sha512-TaJtg8JHVQqvaBtfZd5r3Ckhn0tlUJovJ5ErccWZdSolN9ok9ot+/0n48I3J4hZh0VDa/26etsGRhOQ6e3TtSg==}
@@ -19659,7 +19659,7 @@ snapshots:
 
   '@vue/shared@3.5.13': {}
 
-  '@weapp-core/escape@2.1.0': {}
+  '@weapp-core/escape@3.0.0': {}
 
   '@weapp-core/init@1.1.15':
     dependencies:

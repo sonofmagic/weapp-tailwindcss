@@ -154,7 +154,7 @@
     "@babel/types": "~7.26.3",
     "@csstools/postcss-is-pseudo-class": "~5.0.1",
     "@tailwindcss-mangle/shared": "~4.0.1",
-    "@weapp-core/escape": "~2.1.0",
+    "@weapp-core/escape": "~3.0.0",
     "@weapp-core/regex": "~1.0.1",
     "consola": "^3.3.3",
     "debug": "~4.4.0",

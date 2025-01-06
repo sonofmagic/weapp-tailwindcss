@@ -1861,5 +1861,5 @@ export function getDefaultConfig() {
     conflictingClassGroupModifiers: {
       'font-size': ['leading'],
     },
-  } as const satisfies Config<DefaultClassGroupIds, DefaultThemeGroupIds>// Omit<Config<DefaultClassGroupIds, DefaultThemeGroupIds>, 'cacheSize' | 'prefix' | 'separator'>
+  } as const satisfies Omit<Config<DefaultClassGroupIds, DefaultThemeGroupIds>, 'cacheSize' | 'prefix' | 'separator'>
 }

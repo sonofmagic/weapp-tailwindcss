@@ -220,9 +220,9 @@ describe('styleHandler', () => {
         universal: 'view',
       },
     })
-    expect(css).toBe('.afterccontent-_xmx_::after{color:red;}')
+    expect(css).toBe('.after_c_content-_xmx_::after{color:red;}')
     const res = await transformCss(testCase)
-    expect(res.code.toString()).toBe('.afterccontent-_xmx_:after{color:red}')
+    expect(res.code.toString()).toBe('.after_c_content-_xmx_:after{color:red}')
   })
 
   it('should * be replace as view etc', async () => {

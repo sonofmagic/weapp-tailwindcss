@@ -150,13 +150,13 @@ view,text,::before,::after {
     --tw-bg-opacity: 1;
     background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
-.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_httpscsspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ {
+.bg-_url_https_c_sspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ {
     background-image: url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)
 }
-.bg-_lengthc100p_100p_ {
+.bg-_length_c_100p_100p_ {
     background-size: 100% 100%
 }
 .bg-no-repeat {
@@ -214,7 +214,7 @@ Page({
     motto: 'Hello World',
     userInfo: {},
     contentStyle: 'mt-_24px_',
-    classNames: "bg-_url_qhttpscssxxxdcomsxxdwebpq__ text-_h123456_ text-_50px_ bg-_hfff_"
+    classNames: "bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ text-_h123456_ text-_50px_ bg-_hfff_"
   },
   onLoad: function () {},
   copyText: function (e) {
@@ -242,7 +242,7 @@ exports[`gulp > common build > wxml 1`] = `
 "<!-- index.wxml -->
 <view class="h-full text-center">
   <view class="m-_20px_">
-    <view class="bg-_url_httpscsspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ bg-_lengthc100p_100p_ bg-no-repeat w-screen h-_41d54vw_"></view>
+    <view class="bg-_url_https_c_sspic1dzhimgdcomsv2-3ee20468f54bbfefcd0027283b21aaa8_720wdjpg__ bg-_length_c_100p_100p_ bg-no-repeat w-screen h-_41d54vw_"></view>
     <view class="space-y-4">
       <view class="text-_14px_">基于Gulp 的微信小程序前端开发工作流</view>
       <view class="text-_14px_ text-_h5ba4e5_" bindtap="copyText" data-text="https://github.com/sonofmagic/weapp-tailwindcss">

@@ -171,7 +171,7 @@ exports[`styleHandler > before,after content case 1`] = `
 
 exports[`styleHandler > css @media case 1`] = `
 "@media (min-width: 640px) {
-  .smctext-3xl {
+  .sm_c_text-3xl {
     font-size: 60rpx;
     line-height: 72rpx;
   }
