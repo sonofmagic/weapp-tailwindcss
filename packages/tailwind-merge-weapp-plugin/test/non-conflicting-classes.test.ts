@@ -23,5 +23,6 @@ expect.extend({
 it('merges non-conflicting classes correctly', () => {
   expect(twMerge('border-t border-white/10')).toBe('border-t border-white/10')
   expect(twMerge('border-t border-white')).toBe('border-t border-white')
+  // expect(cn('text-3.5xl text-black')).toEqual('text-3.5xl text-black')
   expect(twMerge('text-3.5xl text-black')).toBe('text-3.5xl text-black')
 })

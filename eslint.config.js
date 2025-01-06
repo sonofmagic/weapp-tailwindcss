@@ -33,4 +33,10 @@ export default icebreaker(
       },
     },
   },
+  {
+    files: ['packages/merge/**/*.test.ts'],
+    rules: {
+
+    },
+  },
 )

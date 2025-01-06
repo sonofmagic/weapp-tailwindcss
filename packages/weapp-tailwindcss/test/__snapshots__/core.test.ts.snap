@@ -1,5 +1,35 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`core > common usage case 0 1`] = `undefined`;
+
+exports[`core > common usage case 0 2`] = `
+SourceMap {
+  "file": undefined,
+  "mappings": "AAAA,qBAAqB,WAAW",
+  "names": [],
+  "sources": [
+    "",
+  ],
+  "sourcesContent": undefined,
+  "version": 3,
+}
+`;
+
+exports[`core > common usage case 1 1`] = `undefined`;
+
+exports[`core > common usage case 1 2`] = `
+SourceMap {
+  "file": undefined,
+  "mappings": "AAAA",
+  "names": [],
+  "sources": [
+    "",
+  ],
+  "sourcesContent": undefined,
+  "version": 3,
+}
+`;
+
 exports[`core > scss usage case 1 1`] = `
 SourceMap {
   "file": undefined,

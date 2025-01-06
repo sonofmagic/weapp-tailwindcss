@@ -211,7 +211,7 @@
     "promisify-loader-runner": "^1.0.1",
     "rimraf": "^6.0.1",
     "rollup": "^4.30.0",
-    "rollup-plugin-visualizer": "^5.13.1",
+    "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.83.1",
     "sass-embedded": "^1.83.1",
     "sass-true": "^8.1.0",

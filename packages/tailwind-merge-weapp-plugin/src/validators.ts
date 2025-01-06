@@ -8,7 +8,7 @@ const arbitraryValueRegex = new RegExp(`^${SimpleMappingChars2String['[']}(?:([a
 // const arbitraryValueRegex = /^\[(?:([a-z-]+):)?(.+)\]$/i
 const fractionRegex = /^\d+\/\d+$/
 const stringLengths = new Set(['px', 'full', 'screen'])
-const tshirtUnitRegex = /^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/
+const tshirtUnitRegex = new RegExp(`^(\\d+(${SimpleMappingChars2String['.']}\\d+)?)?(xs|sm|md|lg|xl)$`)
 const lengthUnitRegex
 // CHANGE! add rpx unit
     = /\d+(%|r?px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)|^0$/
@@ -41,7 +41,9 @@ export const isPercent = (value: string) => value.endsWith('%') && isNumber(valu
 
 export const isArbitraryValue = (value: string) => arbitraryValueRegex.test(value)
 
-export const isTshirtSize = (value: string) => tshirtUnitRegex.test(value)
+export function isTshirtSize(value: string) {
+  return tshirtUnitRegex.test(value)
+}
 
 const sizeLabels = new Set(['length', 'size', 'percentage'])
 

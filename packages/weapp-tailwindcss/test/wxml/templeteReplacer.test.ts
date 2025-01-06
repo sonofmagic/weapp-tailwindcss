@@ -228,13 +228,13 @@ describe('templateReplacer', () => {
 
   it('issues/276 case 0', () => {
     expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 rounded-[20rpx] before:rounded-[20rpx]`)).toBe(
-      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_',
+      'relative h-12 w-12 before_c_absolute before_c_inset-0 before_c_border-2 before_c_border-red-500 rounded-_20rpx_ before_c_rounded-_20rpx_',
     )
   })
 
   it('issues/276 case 1', () => {
     expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 before:rounded-[20rpx] rounded-[20rpx]`)).toBe(
-      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_',
+      'relative h-12 w-12 before_c_absolute before_c_inset-0 before_c_border-2 before_c_border-red-500 before_c_rounded-_20rpx_ rounded-_20rpx_',
     )
   })
   // https://github.com/sonofmagic/weapp-tailwindcss/issues/316
