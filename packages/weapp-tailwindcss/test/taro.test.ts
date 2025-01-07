@@ -1,6 +1,6 @@
 import { getCss } from '#test/helpers/getTwCss'
-import { SimpleMappingChars2String } from '@/escape'
 import { createJsHandler } from '@/js/index'
+import { SimpleMappingChars2String } from '@weapp-core/escape'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
 // import { getOptions } from '@/options'

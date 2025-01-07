@@ -1,5 +1,5 @@
-import { MappingChars2String } from '@/escape'
 import { getOptions } from '@/options'
+import { MappingChars2String } from '@weapp-core/escape'
 import defu from 'defu'
 
 describe('customReplaceDictionary', () => {

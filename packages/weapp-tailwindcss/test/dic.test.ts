@@ -1,4 +1,4 @@
-import { MappingChars2StringEntries, SimpleMappingChars2StringEntries } from '@/escape'
+import { MappingChars2StringEntries, SimpleMappingChars2StringEntries } from '@weapp-core/escape'
 
 function check(e: [string, string][], allowUnderline = false) {
   const set = new Set()

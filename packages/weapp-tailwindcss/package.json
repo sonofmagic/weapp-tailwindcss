@@ -96,6 +96,11 @@
       "import": "./dist/css-macro/index.mjs",
       "require": "./dist/css-macro/index.js"
     },
+    "./escape": {
+      "types": "./dist/escape/index.d.ts",
+      "import": "./dist/escape/index.mjs",
+      "require": "./dist/escape/index.js"
+    },
     "./*": "./*"
   },
   "main": "dist/index.js",

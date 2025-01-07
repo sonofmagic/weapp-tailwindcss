@@ -1,3 +1,10 @@
+export { internalCssSelectorReplacer as replaceCss } from './postcss/shared'
+
+export const weappTwIgnore = String.raw
+// cssSelectorReplacer as replaceCss,
+// replaceEscapedCss
+
+export { replaceWxml as replaceJs } from './wxml/shared'
 export {
   MappingChars2String,
   MappingChars2StringEntries,
@@ -7,11 +14,4 @@ export {
   SYMBOL_TABLE,
   SYMBOL_TABLE_TYPE,
   SYMBOL_TABLE_TYPE_VALUES,
-} from './escape'
-
-export const weappTwIgnore = String.raw
-// cssSelectorReplacer as replaceCss,
-// replaceEscapedCss
-
-export { internalCssSelectorReplacer as replaceCss } from './postcss/shared'
-export { replaceWxml as replaceJs } from './wxml/shared'
+} from '@weapp-core/escape'

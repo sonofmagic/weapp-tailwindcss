@@ -1,15 +1,11 @@
 /* eslint-disable no-template-curly-in-string */
 import { getCss } from '#test/helpers/getTwCss'
-// import { createGetCase, jsCasePath } from './util'
-// import { js } from '@ast-grep/napi'
-// import swc from '@swc/core'
-// import MagicString from 'magic-string'
-// import { jsStringEscape } from '@ast-core/escape'
 
 import { defaultOptions } from '@/defaults'
-import { decodeUnicode, SimpleMappingChars2String } from '@/escape'
 import { createJsHandler } from '@/js/index'
 import { getOptions } from '@/options'
+import { decodeUnicode } from '@/utils/decode'
+import { SimpleMappingChars2String } from '@weapp-core/escape'
 // import punycode from 'node:punycode'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 // swc 在解析中文的时候，会导致 span 增加，从而无法精确定位，不知道是不是bug

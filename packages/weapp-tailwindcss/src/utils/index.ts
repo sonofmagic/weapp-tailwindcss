@@ -1,4 +1,4 @@
-import type { InternalUserDefinedOptions } from './types'
+import type { InternalUserDefinedOptions } from '../types'
 import { createDefu } from 'defu'
 
 export function isRegexp(value: unknown) {

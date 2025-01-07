@@ -1,5 +1,5 @@
-import { MappingChars2String, SimpleMappingChars2String } from '@/escape'
 import { templateReplacer } from '@/wxml/utils'
+import { MappingChars2String, SimpleMappingChars2String } from '@weapp-core/escape'
 
 const testTable = [[{}]]
 

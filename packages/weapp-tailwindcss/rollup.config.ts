@@ -47,8 +47,8 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
       isProd
         ? visualizer({
           // emitFile: true,
-          filename: `stats/${entry.name}.html`,
-        })
+            filename: `stats/${entry.name}.html`,
+          })
         : undefined,
     ],
     external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin', '@ast-grep/napi', '@weapp-tailwindcss/cli'],
@@ -87,6 +87,7 @@ const entries: IEntry[] = [
       'css-macro/index': 'src/css-macro/index.ts',
       'css-macro/postcss': 'src/css-macro/postcss.ts',
       'core': 'src/core.ts',
+      'escape': 'src/escape.ts',
     },
     output: [
       {

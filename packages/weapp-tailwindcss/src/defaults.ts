@@ -1,5 +1,5 @@
 import type { UserDefinedOptions } from './types'
-import { SimpleMappingChars2String } from './escape'
+import { SimpleMappingChars2String } from '@weapp-core/escape'
 import { noop } from './utils'
 
 export const defaultOptions: UserDefinedOptions = {

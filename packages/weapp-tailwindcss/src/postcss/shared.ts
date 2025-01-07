@@ -1,5 +1,5 @@
 import type { InternalCssSelectorReplacerOptions } from '../types'
-import { escape, SimpleMappingChars2String } from '../escape'
+import { escape, SimpleMappingChars2String } from '@weapp-core/escape'
 // css 中，要多加一个 '\' 来转义
 // for raw css selector
 // export function cssSelectorReplacer(selector: string, escapeEntries = MappingChars2StringEntries) {
