@@ -1,12 +1,10 @@
-import { createDefu, defu } from 'defu'
+import { createDefu } from 'defu'
 import getValue from 'get-value'
 import setValue from 'set-value'
 
-export {
-  defu,
-  getValue,
-  setValue,
-}
+export { getValue, setValue }
+
+export { defu } from 'defu'
 
 export function isRegexp(value: unknown) {
   return Object.prototype.toString.call(value) === '[object RegExp]'
