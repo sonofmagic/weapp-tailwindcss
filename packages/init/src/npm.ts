@@ -1,5 +1,5 @@
 import type { Options } from 'npm-registry-fetch'
-import { defu } from './utils'
+import { defu } from '@weapp-tailwindcss/shared'
 
 export type FetchOptions = Options
 /**

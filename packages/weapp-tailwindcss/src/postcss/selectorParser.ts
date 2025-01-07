@@ -11,7 +11,7 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
     selectors.walk((selector) => {
       // do something with the selector
       // node.selector.replace(/\*/g, 'view')
-      if (selector.type === 'universal' && cssSelectorReplacement && cssSelectorReplacement.universal) {
+      if (selector.type === 'universal' && cssSelectorReplacement?.universal) {
         selector.value = composeIsPseudo(cssSelectorReplacement.universal)
       }
 
@@ -25,8 +25,7 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
       if (
         selector.type === 'pseudo'
         && selector.value === ':root'
-        && cssSelectorReplacement
-        && cssSelectorReplacement.root
+        && cssSelectorReplacement?.root
       ) {
         selector.value = composeIsPseudo(cssSelectorReplacement.root)
       }

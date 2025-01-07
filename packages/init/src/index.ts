@@ -1,12 +1,11 @@
 import type { PackageJson } from 'pkg-types'
 import type { FetchOptions } from './npm'
 import process from 'node:process'
+import { logger } from '@weapp-tailwindcss/logger'
+import { defu, setValue } from '@weapp-tailwindcss/shared'
 import fs from 'fs-extra'
 import path from 'pathe'
-import set from 'set-value'
-import { logger } from './logger'
 import { getDevDepsVersions } from './npm'
-import { defu } from './utils'
 
 export interface CreateContextOptions {
   cwd: string
@@ -42,9 +41,9 @@ export async function createContext(options: Required<CreateContextOptions>) {
 export type Context = Exclude<Awaited<ReturnType<typeof createContext>>, undefined>
 
 export async function updatePackageJson(ctx: Context) {
-  set(ctx.pkgJson, 'scripts.postinstall', 'weapp-tw patch')
+  setValue(ctx.pkgJson, 'scripts.postinstall', 'weapp-tw patch')
   for (const [key, value] of Object.entries(ctx.versions)) {
-    set(ctx.pkgJson, `devDependencies.${key}`, value)
+    setValue(ctx.pkgJson, `devDependencies.${key}`, value)
   }
   await fs.writeJSON(ctx.pkgJsonPath, ctx.pkgJson, { spaces: 2 })
 }

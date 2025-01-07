@@ -1,7 +1,7 @@
 import process from 'node:process'
+import { init } from '@weapp-tailwindcss/init'
 import semver from 'semver'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
-import { init } from './init'
 import { logger } from './logger'
 import { getOptions } from './options'
 

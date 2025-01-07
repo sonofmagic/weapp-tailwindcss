@@ -1,4 +1,4 @@
-import { getInitDefaults, init } from '@/init'
+import { getInitDefaults, init } from '@/index'
 import { defaultDevDeps } from '@/npm'
 import CI from 'ci-info'
 import fs from 'fs-extra'

@@ -1,3 +1,5 @@
-import { createConsola } from 'consola'
+import { logger } from '@weapp-tailwindcss/logger'
 
-export const logger = createConsola()
+export {
+  logger,
+}

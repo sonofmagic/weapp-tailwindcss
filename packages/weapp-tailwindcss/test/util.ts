@@ -1,4 +1,3 @@
-import type { FetchOptions } from '@/npm'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import * as htmlparser2 from 'htmlparser2'
