@@ -8,7 +8,7 @@ import { replaceWxml } from '../wxml/shared'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
 export interface ReplaceNode {
-  leadingComments?: { value: string }[] | null | undefined
+  leadingComments?: { value: string }[] | null
   start?: number | null
   end?: number | null
 }
