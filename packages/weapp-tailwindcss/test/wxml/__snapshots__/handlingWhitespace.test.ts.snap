@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`handling whitespace > before:content-['hello_world'] 1`] = `
-"<div class="before_c_content-_qhello_worldq_">
+"<div class="beforeccontent-_qhello_worldq_">
       <!-- ... -->
     </div>"
 `;

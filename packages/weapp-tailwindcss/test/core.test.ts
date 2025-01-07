@@ -12,7 +12,7 @@ describe('core', () => {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
-    expect(wxss).toBe(`.after_c_ml-0d5::after {
+    expect(wxss).toBe(`.aftercml-0d5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
@@ -33,7 +33,7 @@ describe('core', () => {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
-    expect(css).toBe(`.after_c_ml-0d5::after {
+    expect(css).toBe(`.aftercml-0d5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)

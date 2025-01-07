@@ -1,14 +1,14 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 1`] = `"_n_c_nth-child_3___c_underline"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 1`] = `"_ncnth-child_3__cunderline"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 2`] = `"lg_c__n_c_nth-child_3___c_hover_c_underline"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 2`] = `"lgc_ncnth-child_3__chovercunderline"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 3`] = `"_n_p__c_mt-4"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 3`] = `"_n_p_cmt-4"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 4`] = `"_jsupports_display_c_grid___c_grid"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 4`] = `"_jsupports_displaycgrid__cgrid"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 5`] = `"_jmedia_any-hover_c_hover__n_c_hover___c_opacity-100"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 5`] = `"_jmedia_any-hoverchover__nchover__copacity-100"`;
 
 exports[`all arbitrary values usages > Backgrounds > Background Color 1`] = `"bg-_h50d71e_"`;
 
@@ -16,7 +16,7 @@ exports[`all arbitrary values usages > Backgrounds > Background Image 1`] = `"bg
 
 exports[`all arbitrary values usages > Backgrounds > Background Position 1`] = `"bg-_center_top_1rem_"`;
 
-exports[`all arbitrary values usages > Backgrounds > Background Size 1`] = `"bg-_length_c_200px_100px_"`;
+exports[`all arbitrary values usages > Backgrounds > Background Size 1`] = `"bg-_lengthc200px_100px_"`;
 
 exports[`all arbitrary values usages > Backgrounds > Gradient Color Stops 1`] = `"from-_h243c5a_"`;
 
@@ -394,7 +394,7 @@ exports[`all arbitrary values usages > Transitions & Animation > Transition Prop
 
 exports[`all arbitrary values usages > Transitions & Animation > Transition Timing Function 1`] = `"ease-_cubic-bezier_0d95b0d05b0d795b0d035__"`;
 
-exports[`all arbitrary values usages > Typography > Content 1`] = `"before_c_content-_qHello_Worldq_"`;
+exports[`all arbitrary values usages > Typography > Content 1`] = `"beforeccontent-_qHello_Worldq_"`;
 
 exports[`all arbitrary values usages > Typography > Font Family 1`] = `"font-_qOpen_Sansq_"`;
 

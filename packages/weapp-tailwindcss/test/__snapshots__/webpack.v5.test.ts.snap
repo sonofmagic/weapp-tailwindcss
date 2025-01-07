@@ -1789,10 +1789,10 @@ view,text,::before,::after {
 .bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
     background-image: url('https://yyy.com/xx.webp')
 }
 .p-_20px_ {
@@ -1844,11 +1844,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -1895,7 +1895,7 @@ view,text,::before,::after {
   </view>
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
@@ -1914,7 +1914,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttps_c_ssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -4766,10 +4766,10 @@ view,text,::before,::after {
 .bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
     background-image: url('https://yyy.com/xx.webp')
 }
 .p-_20px_ {
@@ -4821,11 +4821,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -4872,7 +4872,7 @@ view,text,::before,::after {
   </view>
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
@@ -4891,7 +4891,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttps_c_ssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -5153,10 +5153,10 @@ view,text,::before,::after {
 .bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
     background-image: url('https://yyy.com/xx.webp')
 }
 .p-_20px_ {
@@ -5208,11 +5208,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -5259,10 +5259,10 @@ view,text,::before,::after {
   </view>
   <view class="test">test</view>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
-  "wxml.js": "const className="w-_100px_ h-_100px_ bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${className}">className</div>\`);const el=document.createElement();el.classList.add("w-_99px_","h-_99px_","bg-_url_qhttps_c_ssyyydcomsxxdwebpq__"),document.body.appendChild(el);",
+  "wxml.js": "const className="w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${className}">className</div>\`);const el=document.createElement();el.classList.add("w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__"),document.body.appendChild(el);",
 }
 `;
 

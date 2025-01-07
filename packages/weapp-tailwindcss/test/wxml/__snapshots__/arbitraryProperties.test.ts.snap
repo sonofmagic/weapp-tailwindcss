@@ -1,19 +1,19 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`arbitrary properties > [--scroll-offset:56px] lg:[--scroll-offset:44px] 1`] = `
-"<div class="_--scroll-offset_c_56px_ lg_c__--scroll-offset_c_44px_">
+"<div class="_--scroll-offsetc56px_ lgc_--scroll-offsetc44px_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`arbitrary properties > [mask-type:luminance] 1`] = `
-"<div class="_mask-type_c_luminance_">
+"<div class="_mask-typecluminance_">
       <!-- ... -->
     </div>"
 `;
 
 exports[`arbitrary properties > [mask-type:luminance] hover:[mask-type:alpha] 1`] = `
-"<div class="_mask-type_c_luminance_ hover_c__mask-type_c_alpha_">
+"<div class="_mask-typecluminance_ hoverc_mask-typecalpha_">
       <!-- ... -->
     </div>"
 `;

@@ -47,7 +47,7 @@ exports[`vite test > source map case 0 4`] = `
 exports[`vite test > source map compare case 0 1`] = `"{\\"version\\":3,\\"file\\":\\"index-12baa5df.js\\",\\"sources\\":[\\"../../index.js\\"],\\"sourcesContent\\":[\\"import './index.css'\\\\n\\\\nconst className = 'flex bg-yellow-300/30 w-[100px] h-[100px] ' + \\\\\\"bg-[url('https://xxx.com/xx.webp')]\\\\\\"\\\\n\\\\ndocument.body.append(\`<div class=\\\\\\"\${className}\\\\\\">className</div>\`)\\\\n\\\\nconst el = document.createElement()\\\\n\\\\nel.classList.add('grid text-red-300/30 w-[99px]', \`h-[99px]\`, \\\\\\"bg-[url('https://yyy.com/xx.webp')]\\\\\\")\\\\n\\\\ndocument.body.appendChild(el)\\"],\\"names\\":[\\"className\\",\\"el\\"],\\"mappings\\":\\"ssBAEA,MAAMA,EAAY,gFAElB,SAAS,KAAK,OAAO,eAAeA,CAAS,mBAAmB,EAEhE,MAAMC,EAAK,SAAS,cAAe,EAEnCA,EAAG,UAAU,IAAI,gCAAiC,WAAY,qCAAqC,EAEnG,SAAS,KAAK,YAAYA,CAAE\\"}"`;
 
 exports[`vite test > vite common build 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttps_c_ssyyydcomsxxdwebpq__");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
@@ -204,10 +204,10 @@ text,
 .bg-yellow-300s30 {
   background-color: #fde0474d;
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
   background-image: url(https://yyy.com/xx.webp);
 }
 .text-red-300s30 {
@@ -251,7 +251,7 @@ exports[`vite test > vite common build 3`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttps_c_ssyyydcomsxxdwebpq__");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
@@ -408,10 +408,10 @@ text,
 .bg-yellow-300s30 {
   background-color: #fde0474d;
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
   background-image: url(https://yyy.com/xx.webp);
 }
 .text-red-300s30 {
@@ -455,7 +455,7 @@ exports[`vite test > vite common build twice for cache 3`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 4`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttps_c_ssyyydcomsxxdwebpq__");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
@@ -612,10 +612,10 @@ text,
 .bg-yellow-300s30 {
   background-color: #fde0474d;
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
   background-image: url(https://yyy.com/xx.webp);
 }
 .text-red-300s30 {
@@ -1679,7 +1679,7 @@ exports[`vite test > vite common build with mangle true 3`] = `
 `;
 
 exports[`vite test > vite common build with rem2rpx 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttps_c_ssyyydcomsxxdwebpq__");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__");document.body.appendChild(c);
 "
 `;
 
@@ -1836,10 +1836,10 @@ text,
 .bg-yellow-300s30 {
   background-color: #fde0474d;
 }
-.bg-_url_qhttps_c_ssxxxdcomsxxdwebpq__ {
+.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_url_qhttps_c_ssyyydcomsxxdwebpq__ {
+.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
   background-image: url(https://yyy.com/xx.webp);
 }
 .text-red-300s30 {

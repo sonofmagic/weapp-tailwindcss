@@ -2,7 +2,7 @@
   "name": "@weapp-tailwindcss/merge",
   "type": "module",
   "version": "0.0.0",
-  "description": "weapp-tailwindcss merge function",
+  "description": "weapp-tailwindcss",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
@@ -41,5 +41,11 @@
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts"
+  },
+  "dependencies": {
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "weapp-tailwindcss": "workspace:*"
   }
 }

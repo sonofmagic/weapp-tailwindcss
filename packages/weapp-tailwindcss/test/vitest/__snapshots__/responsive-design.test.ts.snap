@@ -11,7 +11,7 @@ exports[`responsive-design > 2xl:text-sm 1`] = `
 
 exports[`responsive-design > 2xl:text-sm 2`] = `
 "@media (min-width: 1536px) {
-    ._2xl_c_text-sm {
+    ._2xlctext-sm {
         font-size: 0.875rem;
         line-height: 1.25rem
     }
@@ -61,7 +61,7 @@ exports[`responsive-design > xl:text-sm 1`] = `
 
 exports[`responsive-design > xl:text-sm 2`] = `
 "@media (min-width: 1280px) {
-    .xl_c_text-sm {
+    .xlctext-sm {
         font-size: 0.875rem;
         line-height: 1.25rem
     }
