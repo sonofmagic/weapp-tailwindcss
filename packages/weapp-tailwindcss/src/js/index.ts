@@ -14,8 +14,8 @@ import { replaceHandleValue } from './handlers'
 const ignoreIdentifier = 'weappTwIgnore'
 
 async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
-  const js = await getAstGrep()
-  const nodes = ast.findAll(js.kind('string'))
+  const { Lang, kind } = await getAstGrep()
+  const nodes = ast.findAll(kind(Lang.JavaScript, 'string'))
 
   for (const node of nodes) {
     const range = node.range()
@@ -36,7 +36,7 @@ async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: 
     )
   }
 
-  const templateNodes = ast.findAll(js.kind('template_string'))
+  const templateNodes = ast.findAll(kind(Lang.JavaScript, 'template_string'))
   for (const node of templateNodes) {
     const p = node.parent()
     if (p && p.kind() === 'call_expression') {
@@ -45,7 +45,7 @@ async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: 
         continue
       }
     }
-    const fragments = node.findAll(js.kind('string_fragment'))
+    const fragments = node.findAll(kind(Lang.JavaScript, 'string_fragment'))
     for (const fragment of fragments) {
       const range = fragment.range()
       const text = fragment.text()
@@ -189,10 +189,10 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
 export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptions): Promise<JsHandlerResult> {
   const ms = new MagicString(rawSource)
-  const js = await getAstGrep()
+  const { parseAsync, Lang } = await getAstGrep()
   let ast: SgNode
   try {
-    const root = await js.parseAsync(rawSource)
+    const root = await parseAsync(Lang.JavaScript, rawSource)
     ast = root.root()
   }
   catch {

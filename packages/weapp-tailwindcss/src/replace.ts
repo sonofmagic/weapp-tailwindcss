@@ -8,6 +8,8 @@ export {
   SYMBOL_TABLE_TYPE,
   SYMBOL_TABLE_TYPE_VALUES,
 } from './escape'
+
+export const weappTwIgnore = String.raw
 // cssSelectorReplacer as replaceCss,
 // replaceEscapedCss
 
