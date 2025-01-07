@@ -1,4 +1,4 @@
-import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, handleRegexp, makePattern } from '@/reg'
+import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, handleRegexp, makePattern } from '@weapp-core/regex'
 import { matchAll } from './util'
 
 describe('regexp-maker', () => {

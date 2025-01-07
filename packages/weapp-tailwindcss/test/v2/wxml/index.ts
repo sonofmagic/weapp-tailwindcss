@@ -1,6 +1,6 @@
 import type { ITemplateHandlerOptions } from '@/types'
-import { tagWithEitherClassAndHoverClassRegexp, templateClassExactRegexp } from '@/reg'
 import { templateReplacer } from '@/wxml/utils'
+import { tagWithEitherClassAndHoverClassRegexp, templateClassExactRegexp } from '@weapp-core/regex'
 
 export function templateHandler(rawSource: string, options: ITemplateHandlerOptions = {}) {
   if (options.disabledDefaultTemplateHandler) {

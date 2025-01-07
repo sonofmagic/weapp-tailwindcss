@@ -1,5 +1,5 @@
 import type { RawSource } from '@/types'
-import { variableRegExp } from '@/reg'
+import { variableRegExp } from '@weapp-core/regex'
 /**
  * @internal
  */

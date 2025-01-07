@@ -1,11 +1,11 @@
 // import replace from 'regexp-replace'
 import { classStringReplace, tagStringReplace, tagWithClassRegexp, wxmlAllowClassCharsRegExp } from '#test/v2/reg'
-// import { normalizeEol } from './helpers/normalizeEol'
-import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, escapeStringRegexp, getSourceString, variableRegExp } from '@/reg'
 // #endregion
 import { replaceWxml } from '@/wxml/index'
 // import redent from 'redent'
 import { MappingChars2String } from '@weapp-core/escape'
+// import { normalizeEol } from './helpers/normalizeEol'
+import { createTemplateClassRegexp, createTemplateHandlerMatchRegexp, escapeStringRegexp, getSourceString, variableRegExp } from '@weapp-core/regex'
 import { createGetCase, format, matchAll, wxmlCasePath } from './util'
 
 const getCase = createGetCase(wxmlCasePath)

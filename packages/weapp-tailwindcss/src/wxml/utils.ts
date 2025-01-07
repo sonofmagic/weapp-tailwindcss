@@ -1,4 +1,4 @@
-import type { ItemOrItemArray } from '../reg'
+import type { ItemOrItemArray } from '@weapp-core/regex'
 import type { ITemplateHandlerOptions } from '../types'
 import type { Token } from './Tokenizer'
 import * as t from '@babel/types'

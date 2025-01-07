@@ -1,4 +1,3 @@
-import type { ClassProp } from 'class-variance-authority/types'
 import { cva as _cva } from 'class-variance-authority'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -10,8 +9,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function cva(...inputs: Parameters<typeof _cva>) {
   const fn = _cva(...inputs)
-  return (props?: ClassProp | undefined) => {
-    return escape(fn(props))
+  return (...props: Parameters<typeof fn>) => {
+    return escape(fn(...props))
   }
 }
 

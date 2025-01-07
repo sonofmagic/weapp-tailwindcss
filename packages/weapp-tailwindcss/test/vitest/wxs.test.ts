@@ -3,7 +3,7 @@ import { getCss } from '#test/helpers/getTwCss'
 import { createGetCase, wxsCasePath } from '#test/util'
 import { getOptions } from '@/options'
 // import { createTemplateHandler } from '@/wxml/index'
-import { wxsTagRegexp } from '@/reg'
+import { wxsTagRegexp } from '@weapp-core/regex'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 
 function getClassCacheSet() {
