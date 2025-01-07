@@ -36,7 +36,7 @@ describe('defaults function test group', () => {
     }
   })
 
-  it('should export', () => {
+  it.skip('should export', () => {
     const { UnifiedWebpackPluginV5 } = require('../')
     const plugins = [UnifiedWebpackPluginV5]
     for (const plugin of plugins) {

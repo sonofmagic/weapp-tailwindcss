@@ -87,9 +87,3 @@ export function switch2relative(p: string): string {
   }
   return str.replaceAll('\\', '/')
 }
-
-export const npmmirrorRegistry = 'https://registry.npmmirror.com'
-
-export const fetchOptions: FetchOptions = {
-  registry: npmmirrorRegistry,
-}

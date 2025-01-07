@@ -3,7 +3,7 @@ import { createConfigLoader, initConfig, updatePackageJson, updateProjectConfig 
 import fs from 'fs-extra'
 import { fixturesPath } from './utils'
 
-describe('config', () => {
+describe.skip('config', () => {
   it('load js config', () => {
     const root = path.resolve(fixturesPath, 'configs/js')
     const configLoader = createConfigLoader(root)

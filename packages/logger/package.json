@@ -1,6 +1,5 @@
 {
   "name": "@weapp-tailwindcss/logger",
-  "type": "module",
   "version": "0.0.0",
   "description": "@weapp-tailwindcss/logger",
   "author": "ice breaker <1324318532@qq.com>",
@@ -34,12 +33,12 @@
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
       }
     },
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
