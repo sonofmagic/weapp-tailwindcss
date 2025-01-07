@@ -9,23 +9,24 @@ export function isMap(value: unknown) {
   return Object.prototype.toString.call(value) === '[object Map]'
 }
 export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
-  if (Array.isArray(arr)) {
-    for (const item of arr) {
-      if (typeof item === 'string') {
-        if (str.includes(item)) {
-          return true
-        }
-      }
-      else if (isRegexp(item)) {
-        item.lastIndex = 0
-        if (item.test(str)) {
-          return true
-        }
+  if (!Array.isArray(arr)) {
+    throw new TypeError('paramater \'arr\' should be an Array of Regexp | String')
+  }
+
+  for (const item of arr) {
+    if (typeof item === 'string') {
+      if (str.includes(item)) {
+        return true
       }
     }
-    return false
+    else if (isRegexp(item)) {
+      item.lastIndex = 0
+      if (item.test(str)) {
+        return true
+      }
+    }
   }
-  throw new TypeError('paramater \'arr\' should be a Array of Regexp | String !')
+  return false
 }
 
 export function noop() { }
@@ -84,7 +85,10 @@ export function getGroupedEntries<T>(entries: [string, T][], options: InternalUs
 }
 
 export function removeExt(file: string) {
-  return file.replace(/\.[^./]+$/, '')
+  if (!file) {
+    return file
+  }
+  return file.replace(/\.[^./]*$/, '')
 }
 
 export { default as defu } from 'defu'

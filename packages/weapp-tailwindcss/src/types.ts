@@ -82,6 +82,8 @@ export interface IJsHandlerOptions {
   jsAstTool?: 'babel' | 'ast-grep'
   unescapeUnicode?: boolean
   babelParserOptions?: ParserOptions
+  ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
+  ignoreCallExpressionIdentifiers?: (string | RegExp)[]
 }
 export interface RawSource {
   start: number
@@ -469,6 +471,10 @@ const customAttributes = {
    * @description 是否删除 css :hover 选择器节点，默认为 `true`, 原因在于，小程序 css :hover 是不生效的，要使用 view 这种标签的 hover-class 属性
    */
   cssRemoveHoverPseudoClass?: boolean
+
+  ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
+
+  ignoreCallExpressionIdentifiers?: (string | RegExp)[]
 }
 
 export interface JsHandler {

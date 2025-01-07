@@ -52,6 +52,8 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     mangle,
     tailwindcssBasedir,
     appType,
+    ignoreCallExpressionIdentifiers,
+    ignoreTaggedTemplateExpressionIdentifiers,
   } = result
 
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
@@ -85,6 +87,8 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     generateMap: true,
     jsAstTool,
     babelParserOptions,
+    ignoreCallExpressionIdentifiers,
+    ignoreTaggedTemplateExpressionIdentifiers,
   })
 
   const templateHandler = createTemplateHandler({

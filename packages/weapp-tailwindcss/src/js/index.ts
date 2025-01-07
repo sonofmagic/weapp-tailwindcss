@@ -208,8 +208,17 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions) {
-  const { mangleContext, arbitraryValues, escapeMap, jsPreserveClass, generateMap, jsAstTool, babelParserOptions }
-    = options
+  const {
+    mangleContext,
+    arbitraryValues,
+    escapeMap,
+    jsPreserveClass,
+    generateMap,
+    jsAstTool,
+    babelParserOptions,
+    ignoreCallExpressionIdentifiers,
+    ignoreTaggedTemplateExpressionIdentifiers,
+  } = options
 
   function _jsHandler(rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
@@ -221,6 +230,8 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       generateMap,
       jsAstTool,
       babelParserOptions,
+      ignoreCallExpressionIdentifiers,
+      ignoreTaggedTemplateExpressionIdentifiers,
     })
     if (opts.jsAstTool === 'ast-grep') {
       return jsHandlerAsync(rawSource, opts)
@@ -238,6 +249,8 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       generateMap,
       jsAstTool,
       babelParserOptions,
+      ignoreCallExpressionIdentifiers,
+      ignoreTaggedTemplateExpressionIdentifiers,
     })
     return jsHandler(rawSource, opts)
   }

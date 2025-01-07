@@ -125,6 +125,10 @@ exports[`get options > default options 1`] = `
     "~": "t",
   },
   "htmlMatcher": [Function],
+  "ignoreCallExpressionIdentifiers": [],
+  "ignoreTaggedTemplateExpressionIdentifiers": [
+    "weappTwIgnore",
+  ],
   "injectAdditionalCssVarScope": false,
   "inlineWxs": false,
   "jsHandler": [Function],

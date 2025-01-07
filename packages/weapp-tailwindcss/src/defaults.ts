@@ -111,5 +111,7 @@ export const defaultOptions: UserDefinedOptions = {
   },
   postcssOptions: {},
   cssRemoveHoverPseudoClass: true,
+  ignoreCallExpressionIdentifiers: [],
+  ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
   // jsAstTool: 'ast-grep'
 }
