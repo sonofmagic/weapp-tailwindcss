@@ -46,6 +46,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./escape": {
+      "types": "./dist/escape.d.ts",
+      "import": "./dist/escape.mjs",
+      "require": "./dist/escape.js"
+    },
     "./replace": {
       "types": "./dist/replace.d.ts",
       "import": "./dist/replace.mjs",
@@ -95,11 +100,6 @@
       "types": "./dist/css-macro/index.d.ts",
       "import": "./dist/css-macro/index.mjs",
       "require": "./dist/css-macro/index.js"
-    },
-    "./escape": {
-      "types": "./dist/escape/index.d.ts",
-      "import": "./dist/escape/index.mjs",
-      "require": "./dist/escape/index.js"
     },
     "./*": "./*"
   },
