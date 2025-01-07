@@ -15,6 +15,8 @@ export function isEvalPath(p: NodePath<Node>) {
   return false
 }
 
+const ignoreFlagMap = new WeakMap()
+
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const ms = new MagicString(rawSource)
 
@@ -28,10 +30,13 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-
+  let ignoreFlag = false
   const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
       enter(p) {
+        if (ignoreFlag) {
+          return
+        }
         if (isEvalPath(p.parentPath)) {
           return
         }
@@ -51,6 +56,9 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     },
     TemplateElement: {
       enter(p) {
+        if (ignoreFlag) {
+          return
+        }
         if (p.parentPath.isTemplateLiteral()) {
           if (
             (p.parentPath.parentPath.isTaggedTemplateExpression()
@@ -119,6 +127,17 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
               },
             },
           })
+        }
+        else if (p.get('callee').isIdentifier() && (options.ignoreCallExpressionIdentifiers?.includes((p.get('callee').node as Identifier).name))) {
+          ignoreFlag = true
+          ignoreFlagMap.set(p, true)
+        }
+      },
+      exit(p) {
+        const flag = ignoreFlagMap.get(p)
+        if (flag) {
+          ignoreFlag = false
+          ignoreFlagMap.delete(p)
         }
       },
     },

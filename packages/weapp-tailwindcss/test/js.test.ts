@@ -65,6 +65,82 @@ describe('jsHandler', () => {
     expect(code).toBe('const n = \'text-_12px_ flex bg-[red] w-2d5\'')
   })
 
+  it('ignoreCallExpressionIdentifiers common case', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+
+    const { code } = await defaultJsHandler(`const n = cn('text-[12px] flex bg-[red] w-2.5')`, set, {
+      ignoreCallExpressionIdentifiers: ['cn'],
+    })
+    expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5')`)
+  })
+
+  it('ignoreCallExpressionIdentifiers common case 1', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    set.add('p-1.5')
+    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
+    const { code } = await defaultJsHandler(testCase, set, {
+      ignoreCallExpressionIdentifiers: ['cn'],
+    })
+    expect(code).toBe(testCase)
+  })
+
+  it('ignoreCallExpressionIdentifiers common case 2', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    set.add('p-1.5')
+    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
+    const { code } = await defaultJsHandler(testCase, set, {
+      ignoreCallExpressionIdentifiers: ['cva'],
+    })
+    expect(code).toBe('const n = cn(\'text-_12px_ flex bg-[red] w-2d5 \' + cn(\'p-1d5\') )')
+  })
+
+  it('astgrep ignoreCallExpressionIdentifiers common case', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+
+    const { code } = await astGreph(`const n = cn('text-[12px] flex bg-[red] w-2.5')`, set, {
+      ignoreCallExpressionIdentifiers: ['cn'],
+    })
+    expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5')`)
+  })
+
+  it('astgrep ignoreCallExpressionIdentifiers common case 1', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    set.add('p-1.5')
+    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
+    const { code } = await astGreph(testCase, set, {
+      ignoreCallExpressionIdentifiers: ['cn'],
+    })
+    expect(code).toBe(testCase)
+  })
+
+  it('astgrep ignoreCallExpressionIdentifiers common case 2', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    set.add('p-1.5')
+    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
+    const { code } = await astGreph(testCase, set, {
+      ignoreCallExpressionIdentifiers: ['cva'],
+    })
+    expect(code).toBe('const n = cn(\'text-_12px_ flex bg-[red] w-2d5 \' + cn(\'p-1d5\') )')
+  })
+
   it('astGrep common case', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')

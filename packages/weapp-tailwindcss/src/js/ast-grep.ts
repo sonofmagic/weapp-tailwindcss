@@ -1,4 +1,4 @@
-import type { SgNode } from '@ast-grep/napi'
+import type { Range, SgNode } from '@ast-grep/napi'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import MagicString from 'magic-string'
 import { logger } from '../logger'
@@ -15,12 +15,37 @@ export async function getAstGrep() {
   }
 }
 
+export function isRangeWithinArray(ranges: Range[], targetRange: Range): boolean {
+  const { start: targetStart, end: targetEnd } = targetRange
+
+  // 遍历范围数组，判断是否有范围完全包含目标范围
+  return ranges.some(({ start, end }) => {
+    return start.index <= targetStart.index && end.index >= targetEnd.index
+  })
+}
 export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
   const { Lang, kind } = await getAstGrep()
+
+  const callExpressionNodes = ast.findAll(kind(Lang.JavaScript, 'call_expression'))
+
+  let chooseNodeRanges: Range[] = []
+
+  if (Array.isArray(options.ignoreCallExpressionIdentifiers) && options.ignoreCallExpressionIdentifiers.length) {
+    chooseNodeRanges = callExpressionNodes
+      .filter((x) => {
+        const id = x.child(0)
+        return id?.kindToRefine === 'identifier' && options.ignoreCallExpressionIdentifiers?.includes(id.text())
+      })
+      .map(x => x?.range())
+  }
+
   const nodes = ast.findAll(kind(Lang.JavaScript, 'string'))
 
   for (const node of nodes) {
     const range = node.range()
+    if (isRangeWithinArray(chooseNodeRanges, range)) {
+      continue
+    }
     const text = node.text()
 
     replaceHandleValue(
@@ -50,6 +75,9 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
     const fragments = node.findAll(kind(Lang.JavaScript, 'string_fragment'))
     for (const fragment of fragments) {
       const range = fragment.range()
+      if (isRangeWithinArray(chooseNodeRanges, range)) {
+        continue
+      }
       const text = fragment.text()
       replaceHandleValue(
         text,
