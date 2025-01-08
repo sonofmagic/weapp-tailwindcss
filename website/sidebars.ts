@@ -109,7 +109,8 @@ const sidebars: SidebarsConfig = {
   optionsSidebar: [
     {
       type: 'doc',
-      id: 'options/index',
+      id: 'api/interfaces/UserDefinedOptions',
+      label: '配置项(v3.x)',
     },
     {
       type: 'doc',

@@ -163,10 +163,7 @@ const customAttributes = {
   /**
    * @group 0.重要配置
    * @description 自定义转化class名称字典，这个配置项用来自定义转化`class`名称字典,你可以使用这个选项来简化生成的`class`
-
-插件中默认使用`'simple'`模式:
-
-- `'simple'`模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
+- 默认模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
 
 当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)
    * @default SimpleMappingChars2String
@@ -289,9 +286,18 @@ const customAttributes = {
    * @description 对解析 js 使用的 `@babel/parser` 工具的配置
    */
   babelParserOptions?: ParserOptions
-
+  /**
+   * @version `^3.8.0`
+   * @group 0.重要配置
+   * @description js 忽略标签模板表达式中的标识符，这样使用标识符包裹的模板字符串不会被转义
+   * @default ['weappTwIgnore']
+   */
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
-
+  /**
+   * @version `^3.8.0`
+   * @group 0.重要配置
+   * @description js 忽略调用表达式中的标识符，这样使用这个方法，包裹的模板字符串和字符串字面量不会被转义，一般用来配合 `@weapp-tailwindcss/merge` 使用，比如设置为 `['cn','cva']`
+   */
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
 }
 

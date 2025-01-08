@@ -51,7 +51,14 @@ const createSharedConfig: (entry: IEntry) => RollupOptions = (entry) => {
           })
         : undefined,
     ],
-    external: [...(pkg.dependencies ? Object.keys(pkg.dependencies) : []), 'webpack', 'loader-utils', 'tailwindcss/plugin', '@ast-grep/napi', '@weapp-tailwindcss/cli'],
+    external: [
+      ...(pkg.dependencies ? Object.keys(pkg.dependencies) : []),
+      'webpack',
+      'loader-utils',
+      'tailwindcss/plugin',
+      '@ast-grep/napi',
+      '@weapp-tailwindcss/cli',
+    ],
   }
 }
 // 没有必要压缩徒增调试成本
@@ -84,7 +91,7 @@ const entries: IEntry[] = [
       'vite': 'src/vite.ts',
       'weapp-tw-runtime-loader': 'src/bundlers/webpack/loaders/weapp-tw-runtime-loader.ts',
       'defaults': 'src/defaults.ts',
-      'css-macro/index': 'src/css-macro/index.ts',
+      'css-macro': 'src/css-macro/index.ts',
       'css-macro/postcss': 'src/css-macro/postcss.ts',
       'core': 'src/core.ts',
       'escape': 'src/escape.ts',

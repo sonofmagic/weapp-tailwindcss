@@ -215,15 +215,15 @@ const config = {
         },
         {
           type: 'doc',
-          docId: 'options/index',
+          docId: 'api/interfaces/UserDefinedOptions',
           position: 'left',
           label: '配置项',
         },
-        {
-          to: 'docs/api/', // 'api' is the 'out' directory
-          label: 'Types',
-          position: 'left',
-        },
+        // {
+        //   to: 'docs/api/', // 'api' is the 'out' directory
+        //   label: 'Types',
+        //   position: 'left',
+        // },
         // {
         //   to: 'docs/api-cli/', // 'api' is the 'out' directory
         //   label: 'Types-CLI',
