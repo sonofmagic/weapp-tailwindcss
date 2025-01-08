@@ -1,7 +1,7 @@
 import type { IMangleScopeContext, UserDefinedOptions } from '../types'
 import { ClassGenerator, defaultMangleClassFilter } from '@tailwindcss-mangle/shared'
 import { escapeStringRegexp } from '@weapp-core/regex'
-import { splitCode } from '../extractors/split'
+import { splitCode } from '../extractors'
 
 function getSelf(x: string) {
   return x

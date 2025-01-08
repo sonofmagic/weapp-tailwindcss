@@ -103,8 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-types
-
 stats/*.html
 
 packages/weapp-tailwindcss/stats/*.html

@@ -1,6 +1,13 @@
 import crypto from 'node:crypto'
 import path from 'node:path'
-import { createDefu, defu } from 'defu'
+import { defu, defuOverrideArray, isRegexp, regExpTest } from '@weapp-tailwindcss/shared'
+
+export {
+  defu,
+  defuOverrideArray,
+  isRegexp,
+  regExpTest,
+}
 
 export function removeFileExtension(filePath: string) {
   if (!filePath) {
@@ -20,17 +27,6 @@ export function removeFileExtension(filePath: string) {
   return path.join(dir, baseName) // 拼接路径
 }
 
-export {
-  defu,
-}
-
-export const defuOverrideArray = createDefu((obj, key, value) => {
-  if (Array.isArray(obj[key]) && Array.isArray(value)) {
-    obj[key] = value
-    return true
-  }
-})
-
 /**
  * 计算字符串的 MD5 哈希值
  * @param {string} input - 要计算哈希的字符串
@@ -41,28 +37,4 @@ export function md5(input: crypto.BinaryLike) {
   const hash = crypto.createHash('md5')
   hash.update(input) // 更新哈希内容
   return hash.digest('hex') // 返回哈希值
-}
-
-export function isRegexp(value: unknown) {
-  return Object.prototype.toString.call(value) === '[object RegExp]'
-}
-
-export function regExpTest(arr: (string | RegExp)[] = [], str: string) {
-  if (Array.isArray(arr)) {
-    for (const item of arr) {
-      if (typeof item === 'string') {
-        if (str.includes(item)) {
-          return true
-        }
-      }
-      else if (isRegexp(item)) {
-        item.lastIndex = 0
-        if (item.test(str)) {
-          return true
-        }
-      }
-    }
-    return false
-  }
-  throw new TypeError('paramater \'arr\' should be a Array of Regexp | String !')
 }

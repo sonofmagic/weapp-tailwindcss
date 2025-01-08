@@ -2,7 +2,7 @@ import type MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '../types'
 import { jsStringEscape } from '@ast-core/escape'
 import { escapeStringRegexp } from '@weapp-core/regex'
-import { splitCode } from '../extractors/split'
+import { splitCode } from '../extractors'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String

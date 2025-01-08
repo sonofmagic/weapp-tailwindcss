@@ -1,4 +1,4 @@
-import { splitCode } from '@/extractors/split'
+import { splitCode } from '@/extractors'
 
 describe('extractorSplit', () => {
   it('common case ', () => {

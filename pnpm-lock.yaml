@@ -33,8 +33,8 @@ importers:
         specifier: ^19.5.0
         version: 19.5.0
       '@eslint/config-inspector':
-        specifier: ^0.7.0
-        version: 0.7.0(eslint@9.17.0(jiti@2.4.2))
+        specifier: ^0.7.1
+        version: 0.7.1(eslint@9.17.0(jiti@2.4.2))
       '@icebreakers/eslint-config':
         specifier: ^0.7.9
         version: 0.7.9(@typescript-eslint/utils@8.19.0(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(@vue/compiler-sfc@3.5.13)(eslint@9.17.0(jiti@2.4.2))(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.2)))(typescript@5.7.2)(vitest@2.1.8)
@@ -81,8 +81,8 @@ importers:
         specifier: ^4.1.12
         version: 4.1.12
       '@types/diff':
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^7.0.0
+        version: 7.0.0
       '@types/dlv':
         specifier: ^1.1.5
         version: 1.1.5
@@ -188,6 +188,9 @@ importers:
       '@weapp-tailwindcss/cli':
         specifier: workspace:*
         version: link:plugins/cli
+      '@weapp-tailwindcss/shared':
+        specifier: workspace:*
+        version: link:packages/shared
       anymatch:
         specifier: ^3.1.3
         version: 3.1.3
@@ -766,6 +769,9 @@ importers:
 
   packages/tailwindcss-injector:
     dependencies:
+      '@weapp-tailwindcss/shared':
+        specifier: workspace:*
+        version: link:../shared
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -811,8 +817,8 @@ importers:
         specifier: ~4.0.1
         version: 4.0.1
       '@weapp-core/escape':
-        specifier: ~3.0.1
-        version: 3.0.1
+        specifier: ~3.0.2
+        version: 3.0.2
       '@weapp-core/regex':
         specifier: ~1.0.1
         version: 1.0.1
@@ -996,8 +1002,8 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6(encoding@0.1.13)
       '@tailwindcss/typography':
-        specifier: ^0.5.15
-        version: 0.5.15(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.2)))
+        specifier: ^0.5.16
+        version: 0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.2)))
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
@@ -3130,8 +3136,8 @@ packages:
     resolution: {integrity: sha512-fo6Mtm5mWyKjA/Chy1BYTdn5mGJoDNjC7C64ug20ADsRDGrA85bN3uK3MaKbeRkRuuIEAR5N33Jr1pbm411/PA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/config-inspector@0.7.0':
-    resolution: {integrity: sha512-soPcV7c4/oB9ktEIojw7O6n46+WIz0vEYnDj+PV6jLRFOD4PEFr40yA58nrpZuNRIo1catuLCJ9ZvP9Zedb/fQ==}
+  '@eslint/config-inspector@0.7.1':
+    resolution: {integrity: sha512-80+MJay0D/Kf2ImH04UOQtnL4141KviU0KNuT34xvQZ0TQ/aAfIzKnx4cc4lxIDOLi/ITCV3BxOQkHRrDULFQw==}
     hasBin: true
     peerDependencies:
       eslint: ^8.50.0 || ^9.0.0
@@ -4370,10 +4376,10 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  '@tailwindcss/typography@0.5.15':
-    resolution: {integrity: sha512-AqhlCXl+8grUz8uqExv5OTtgpjuVIwFTSXTrh8y9/pw6q2ek7fJ+Y8ZEVw7EB2DCcuCOtEjf9w3+J3rzts01uA==}
+  '@tailwindcss/typography@0.5.16':
+    resolution: {integrity: sha512-0wDLwCVF5V3x3b1SGXPCDcdsbDHMBe+lkFzBRaHeLvNi+nrrnZ1lA18u+OTWO8iSWU2GxUOCvlXtDuqftc1oiA==}
     peerDependencies:
-      tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
+      tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
   '@tailwindcss/vite@4.0.0-beta.8':
     resolution: {integrity: sha512-ZNlj0fdeH4/uWXafrXklZY+TgmN7wOHWHHBL4i3xzD4BflcCDZJkgJER/8baJCpagMzwWDnA6CyXDX+2q7lMRQ==}
@@ -4439,8 +4445,8 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
-  '@types/diff@6.0.0':
-    resolution: {integrity: sha512-dhVCYGv3ZSbzmQaBSagrv1WJ6rXCdkyTcDyoNu1MD8JohI7pR7k8wdZEm+mvdxRKXyHVwckFzWU1vJc+Z29MlA==}
+  '@types/diff@7.0.0':
+    resolution: {integrity: sha512-sVpkpbnTJL9CYoDf4U+tHaQLe5HiTaHWY7m9FuYA7oMCHwC9ie0Vh9eIGapyzYrU3+pILlSY2fAc4elfw5m4dg==}
 
   '@types/dlv@1.1.5':
     resolution: {integrity: sha512-JHOWNfiWepAhfwlSw17kiWrWrk6od2dEQgHltJw9AS0JPFoLZJBge5+Dnil2NfdjAvJ/+vGSX60/BRW20PpUXw==}
@@ -4948,8 +4954,8 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
-  '@weapp-core/escape@3.0.1':
-    resolution: {integrity: sha512-EPTM1CWY+otrRDVnl9+OdsZrSz+Z4PfIJn08B7oJk3qDCCxRABb2P5l1CvsU312fauqYZrQSrdHVnLlYL/mMMg==}
+  '@weapp-core/escape@3.0.2':
+    resolution: {integrity: sha512-/r6eqRgkTdAkn5uNQxKc4Gm3IQ3LL+3ej8/z72cXP59QTaC6t97YMGzu6CZRcOW+LVpCXT6RhetMRfS+zNe4Pg==}
 
   '@weapp-core/init@1.1.15':
     resolution: {integrity: sha512-TaJtg8JHVQqvaBtfZd5r3Ckhn0tlUJovJ5ErccWZdSolN9ok9ot+/0n48I3J4hZh0VDa/26etsGRhOQ6e3TtSg==}
@@ -16767,7 +16773,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.3
+      '@types/react': 19.0.2
       react: 19.0.0
 
   '@docusaurus/theme-classic@3.7.0(@types/react@19.0.3)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.0)(eslint@9.17.0(jiti@2.4.2))(lightningcss@1.28.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)(vue-template-compiler@2.7.16)':
@@ -17427,7 +17433,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/config-inspector@0.7.0(eslint@9.17.0(jiti@2.4.2))':
+  '@eslint/config-inspector@0.7.1(eslint@9.17.0(jiti@2.4.2))':
     dependencies:
       '@nodelib/fs.walk': 3.0.1
       bundle-require: 5.1.0(esbuild@0.24.2)
@@ -18923,7 +18929,7 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
-  '@tailwindcss/typography@0.5.15(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.2)))':
+  '@tailwindcss/typography@0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.2)))':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
@@ -19008,7 +19014,7 @@ snapshots:
     dependencies:
       '@types/ms': 0.7.34
 
-  '@types/diff@6.0.0': {}
+  '@types/diff@7.0.0': {}
 
   '@types/dlv@1.1.5': {}
 
@@ -19295,7 +19301,7 @@ snapshots:
   '@types/react-router@5.1.20':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.0.3
+      '@types/react': 19.0.2
 
   '@types/react@19.0.2':
     dependencies:
@@ -19691,7 +19697,7 @@ snapshots:
 
   '@vue/shared@3.5.13': {}
 
-  '@weapp-core/escape@3.0.1': {}
+  '@weapp-core/escape@3.0.2': {}
 
   '@weapp-core/init@1.1.15':
     dependencies:
