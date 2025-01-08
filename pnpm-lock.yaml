@@ -473,8 +473,8 @@ importers:
         specifier: ^1.8.2
         version: 1.8.2(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.2)))
       '@iconify-json/lucide':
-        specifier: ^1.2.21
-        version: 1.2.21
+        specifier: ^1.2.22
+        version: 1.2.22
       '@iconify-json/mdi':
         specifier: ^1.2.2
         version: 1.2.2
@@ -3231,8 +3231,8 @@ packages:
     resolution: {integrity: sha512-2NpbDnwwGTc9INRZL8/nDQdmbhtr8SJejrT1hbxRJM2GpmpSbCq/IQlHjU3C/3VWd8Qyct8EbbQpFKQy4LwrRA==}
     hasBin: true
 
-  '@iconify-json/lucide@1.2.21':
-    resolution: {integrity: sha512-Oi9bVtaDaiUg4DpmuFWO4bihwXvxFW47KYFUWEGRsqAWijnODTXIO24F2YNlz+k9WvdIr3RsOFiuNIoEzMPsRQ==}
+  '@iconify-json/lucide@1.2.22':
+    resolution: {integrity: sha512-sHRN/UFVTPTKCA9dVdO34OydvAf5d3CmT16a/U2+VzogI1uIsBXoYILU5oHGFMMq12aMJ65zgr1YOJCI0glxeg==}
 
   '@iconify-json/mdi@1.2.2':
     resolution: {integrity: sha512-84aznJXzfGdbOXGe8xB7E5uNAb7Yo5IABwTgq2X3kczb819qZeS9eL31bTVn7wJdCLK5ieaoUc2GTS3QYIkJ6g==}
@@ -17610,7 +17610,7 @@ snapshots:
       - postcss
       - stylelint
 
-  '@iconify-json/lucide@1.2.21':
+  '@iconify-json/lucide@1.2.22':
     dependencies:
       '@iconify/types': 2.0.0
 

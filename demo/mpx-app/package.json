@@ -56,6 +56,7 @@
     "@mpxjs/webpack-plugin": "^2.9.62",
     "@vue/cli-service": "~5.0.0",
     "@weapp-tailwindcss/cli": "^3.0.0",
+    "@weapp-tailwindcss/merge": "^0.0.1-alpha.0",
     "autoprefixer": "^10.4.20",
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
@@ -77,7 +78,7 @@
     "typescript": "^5.5.2",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^2.0.8",
-    "weapp-tailwindcss": "^3.7.0",
+    "weapp-tailwindcss": "^3.8.0-alpha.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.95.0"
   },

@@ -12,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@weapp-tailwindcss/cli": "^3.0.0",
+    "@weapp-tailwindcss/merge": "^0.0.1-alpha.0",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
@@ -19,7 +20,7 @@
     "tailwindcss-patch": "^5.0.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^2.0.8",
-    "weapp-tailwindcss": "^3.7.0",
+    "weapp-tailwindcss": "^3.8.0-alpha.0",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "packageManager": "yarn@1.22.22",

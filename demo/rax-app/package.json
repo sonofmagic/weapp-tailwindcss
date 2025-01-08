@@ -39,6 +39,7 @@
     "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.18",
     "@weapp-tailwindcss/cli": "^3.0.0",
+    "@weapp-tailwindcss/merge": "^0.0.1-alpha.0",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "eslint": "^9.12.0",
@@ -53,7 +54,7 @@
     "tailwindcss-patch": "^5.0.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^2.0.8",
-    "weapp-tailwindcss": "^3.7.0",
+    "weapp-tailwindcss": "^3.8.0-alpha.0",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "originTemplate": "@rax-materials/scaffolds-app-ts"
