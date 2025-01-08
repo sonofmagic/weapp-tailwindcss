@@ -39,7 +39,6 @@
     "gulp",
     "gulp-plugin"
   ],
-  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -97,9 +96,9 @@
       "require": "./dist/css-macro/postcss.js"
     },
     "./css-macro": {
-      "types": "./dist/css-macro/index.d.ts",
-      "import": "./dist/css-macro/index.mjs",
-      "require": "./dist/css-macro/index.js"
+      "types": "./dist/css-macro.d.ts",
+      "import": "./dist/css-macro.mjs",
+      "require": "./dist/css-macro.js"
     },
     "./*": "./*"
   },
@@ -127,8 +126,10 @@
     "node": "^18.17.0 || >=20.5.0"
   },
   "scripts": {
-    "dev": "pnpm clean && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
-    "build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript",
+    "dev": "tsup --watch --sourcemap",
+    "build": "tsup",
+    "_dev": "pnpm clean && cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript -w",
+    "_build": "pnpm clean && cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "test": "npm run postinstall && vitest run",
