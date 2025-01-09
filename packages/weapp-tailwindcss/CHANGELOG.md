@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 3.8.0-alpha.1
+
+### Patch Changes
+
+- [`21dc7a0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/21dc7a079c02e011961a0c9375d096432ee44768) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add @weapp-tailwindcss/merge as default ignoreCallExpressionIdentifiers options dep
+
 ## 3.8.0-alpha.0
 
 ### Minor Changes
