@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import { getCss } from '#test/helpers/getTwCss'
 
-import { defaultOptions } from '@/defaults'
+import { getDefaultOptions } from '@/defaults'
 import { createJsHandler } from '@/js/index'
 import { getOptions } from '@/options'
 import { decodeUnicode } from '@/utils/decode'
@@ -101,6 +101,31 @@ describe('jsHandler', () => {
       ignoreCallExpressionIdentifiers: ['cva'],
     })
     expect(code).toBe('const n = cn(\'text-_12px_ flex bg-[red] w-2d5 \' + cn(\'p-1d5\') )')
+  })
+
+  it('ignoreCallExpressionIdentifiers common case 3', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    set.add('p-1.5')
+    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
+    const { code } = await defaultJsHandler(testCase, set, {
+      ignoreCallExpressionIdentifiers: ['cxn'],
+    })
+    expect(code).toBe('const n = cn(\'text-_12px_ flex bg-[red] w-2d5 \' + cn(\'p-1d5\') )')
+  })
+
+  // 默认情况
+  it('ignoreCallExpressionIdentifiers common case 4', async () => {
+    const set: Set<string> = new Set()
+    set.add('text-[12px]')
+    set.add('flex')
+    set.add('w-2.5')
+    set.add('p-1.5')
+    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
+    const { code } = await defaultJsHandler(testCase, set)
+    expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`)
   })
 
   it('astgrep ignoreCallExpressionIdentifiers common case', async () => {
@@ -314,7 +339,7 @@ describe('jsHandler', () => {
     const myCustomJsHandler = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       jsPreserveClass(keyword) {
-        if (defaultOptions.jsPreserveClass?.(keyword)) {
+        if (getDefaultOptions().jsPreserveClass?.(keyword)) {
           return true
         }
         if (keyword === 'w-[100px]') {
@@ -334,7 +359,7 @@ describe('jsHandler', () => {
     const myCustomJsHandler = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       jsPreserveClass(keyword) {
-        if (defaultOptions.jsPreserveClass?.(keyword)) {
+        if (getDefaultOptions().jsPreserveClass?.(keyword)) {
           return true
         }
         // if (keyword === 'w-[100px]') {
@@ -353,7 +378,7 @@ describe('jsHandler', () => {
     const myCustomJsHandler = createJsHandler({
       escapeMap: SimpleMappingChars2String,
       jsPreserveClass(keyword) {
-        if (defaultOptions.jsPreserveClass?.(keyword)) {
+        if (getDefaultOptions().jsPreserveClass?.(keyword)) {
           return true
         }
         // if (keyword === 'w-[100px]') {

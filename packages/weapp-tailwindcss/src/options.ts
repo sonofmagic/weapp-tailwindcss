@@ -6,7 +6,7 @@ import type {
   UserDefinedOptions,
 } from './types'
 import { createCache } from './cache'
-import { defaultOptions } from './defaults'
+import { getDefaultOptions } from './defaults'
 import { createJsHandler } from './js'
 import { useMangleStore } from './mangle'
 import { createStyleHandler } from './postcss/index'
@@ -23,7 +23,7 @@ import { createTemplateHandler } from './wxml/utils'
 export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
     opts as InternalUserDefinedOptions,
-    defaultOptions as InternalUserDefinedOptions,
+    getDefaultOptions() as InternalUserDefinedOptions,
     {},
   )
 

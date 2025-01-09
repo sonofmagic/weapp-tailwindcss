@@ -1,7 +1,7 @@
-import { defaultOptions } from '@/defaults'
+import { getDefaultOptions } from '@/defaults'
 import { isWebpackPlugin } from './util'
 
-const { mainCssChunkMatcher } = defaultOptions
+const { mainCssChunkMatcher } = getDefaultOptions()
 
 describe('defaults function test group', () => {
   it('mainCssChunkMatcher', () => {

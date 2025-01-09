@@ -4,7 +4,6 @@ import { SimpleMappingChars2String } from '@weapp-core/escape'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
 // import { getOptions } from '@/options'
-// import { defaultOptions } from '@/defaults'
 const getCase = createGetCase(jsCasePath)
 
 function getClassCacheSet() {

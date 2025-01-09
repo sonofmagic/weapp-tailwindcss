@@ -177,5 +177,8 @@
     "semver": "~7.6.3",
     "tailwindcss-patch": "~5.0.2",
     "webpack-sources": "3.2.3"
+  },
+  "devDependencies": {
+    "local-pkg": "^1.0.0"
   }
 }
