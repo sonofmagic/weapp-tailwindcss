@@ -40,6 +40,8 @@
   "dependencies": {
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "npm-registry-fetch": "^18.0.2"
+    "fs-extra": "^11.2.0",
+    "npm-registry-fetch": "^18.0.2",
+    "pathe": "^2.0.1"
   }
 }

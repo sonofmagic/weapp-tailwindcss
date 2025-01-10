@@ -1,6 +1,5 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
-// @ts-ignore
 import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { createContext } from './ctx'

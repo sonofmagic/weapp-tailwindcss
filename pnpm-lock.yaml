@@ -617,9 +617,15 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
       npm-registry-fetch:
         specifier: ^18.0.2
         version: 18.0.2
+      pathe:
+        specifier: ^2.0.1
+        version: 2.0.1
 
   packages/logger:
     dependencies:
@@ -657,6 +663,9 @@ importers:
 
   packages/postcss:
     dependencies:
+      '@csstools/postcss-is-pseudo-class':
+        specifier: ^5.0.1
+        version: 5.0.1(postcss@8.4.49)
       '@weapp-core/escape':
         specifier: ~3.0.2
         version: 3.0.2

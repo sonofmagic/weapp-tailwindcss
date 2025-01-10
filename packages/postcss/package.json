@@ -59,6 +59,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "@csstools/postcss-is-pseudo-class": "^5.0.1",
     "@weapp-core/escape": "~3.0.2",
     "@weapp-tailwindcss/shared": "workspace:*",
     "postcss": "~8.4.49",
