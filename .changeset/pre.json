@@ -26,12 +26,15 @@
     "weapp-tailwindcss": "3.7.0",
     "@weapp-tailwindcss/cli": "3.0.0",
     "@weapp-tailwindcss/typography": "0.2.4",
-    "website": "0.0.0"
+    "website": "0.0.0",
+    "@weapp-tailwindcss/mangle": "0.0.0",
+    "@weapp-tailwindcss/postcss": "0.0.0"
   },
   "changesets": [
     "bright-planes-change",
     "hungry-ads-repeat",
     "selfish-lizards-mate",
-    "thin-carpets-act"
+    "thin-carpets-act",
+    "thirty-plants-doubt"
   ]
 }
