@@ -1,11 +1,11 @@
 import type { GeneratorResult } from '@babel/generator'
 import type { ParseError, ParserOptions } from '@babel/parser'
+import type { IMangleOptions, IMangleScopeContext } from '@weapp-tailwindcss/mangle/types'
+import type { CssPreflightOptions, IStyleHandlerOptions, UserDefinedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { SourceMap } from 'magic-string'
 import type { Document, Result as PostcssResult, Root } from 'postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../cache'
-import type { IMangleOptions, IMangleScopeContext } from './mangle'
-import type { CssPreflightOptions, IStyleHandlerOptions, UserDefinedPostcssOptions } from './postcss'
 
 export type { CssPreflightOptions, IMangleScopeContext, IStyleHandlerOptions }
 

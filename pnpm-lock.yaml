@@ -733,9 +733,6 @@ importers:
       '@babel/types':
         specifier: ~7.26.3
         version: 7.26.3
-      '@csstools/postcss-is-pseudo-class':
-        specifier: ~5.0.1
-        version: 5.0.1(postcss@8.4.49)
       '@tailwindcss-mangle/shared':
         specifier: ~4.0.1
         version: 4.0.1
@@ -751,6 +748,12 @@ importers:
       '@weapp-tailwindcss/logger':
         specifier: workspace:*
         version: link:../logger
+      '@weapp-tailwindcss/mangle':
+        specifier: workspace:*
+        version: link:../mangle
+      '@weapp-tailwindcss/postcss':
+        specifier: workspace:*
+        version: link:../postcss
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
@@ -775,15 +778,6 @@ importers:
       md5:
         specifier: 2.3.0
         version: 2.3.0
-      postcss:
-        specifier: ~8.4.49
-        version: 8.4.49
-      postcss-rem-to-responsive-pixel:
-        specifier: ~6.0.2
-        version: 6.0.2
-      postcss-selector-parser:
-        specifier: ~7.0.0
-        version: 7.0.0
       semver:
         specifier: ~7.6.3
         version: 7.6.3

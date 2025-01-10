@@ -50,16 +50,6 @@
       "import": "./dist/escape.mjs",
       "require": "./dist/escape.js"
     },
-    "./replace": {
-      "types": "./dist/replace.d.ts",
-      "import": "./dist/replace.mjs",
-      "require": "./dist/replace.js"
-    },
-    "./postcss": {
-      "types": "./dist/postcss.d.ts",
-      "import": "./dist/postcss.mjs",
-      "require": "./dist/postcss.js"
-    },
     "./vite": {
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.mjs",
@@ -163,12 +153,13 @@
     "@babel/parser": "~7.26.3",
     "@babel/traverse": "~7.26.4",
     "@babel/types": "~7.26.3",
-    "@csstools/postcss-is-pseudo-class": "~5.0.1",
     "@tailwindcss-mangle/shared": "~4.0.1",
     "@weapp-core/escape": "~3.0.2",
     "@weapp-core/regex": "~1.0.1",
     "@weapp-tailwindcss/init": "workspace:*",
     "@weapp-tailwindcss/logger": "workspace:*",
+    "@weapp-tailwindcss/mangle": "workspace:*",
+    "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
     "debug": "~4.4.0",
     "htmlparser2": "10.0.0",
@@ -177,9 +168,6 @@
     "lru-cache": "10.4.3",
     "magic-string": "0.30.17",
     "md5": "2.3.0",
-    "postcss": "~8.4.49",
-    "postcss-rem-to-responsive-pixel": "~6.0.2",
-    "postcss-selector-parser": "~7.0.0",
     "semver": "~7.6.3",
     "tailwindcss-patch": "~5.0.2",
     "webpack-sources": "3.2.3"

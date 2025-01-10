@@ -3,6 +3,10 @@ import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import postcss from 'postcss'
 import { getPlugins } from './plugins'
 
+export { createInjectPreflight } from './preflight'
+
+export { internalCssSelectorReplacer } from './shared'
+
 export function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   return postcss(getPlugins(options))
     .process(

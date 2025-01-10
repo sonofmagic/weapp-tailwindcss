@@ -1,10 +1,8 @@
 import type postcss from 'postcss'
 import { transformCss } from '@/lightningcss'
 import { getOptions } from '@/options'
-import { styleHandler } from '@/postcss/index'
-
-import { createInjectPreflight } from '@/postcss/preflight'
 import { MappingChars2String } from '@weapp-core/escape'
+import { createInjectPreflight, styleHandler } from '@weapp-tailwindcss/postcss'
 import { normalizeEol } from '../helpers/normalizeEol'
 import { createGetCase, cssCasePath } from '../util'
 

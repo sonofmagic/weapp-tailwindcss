@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer'
-import { internalCssSelectorReplacer } from '@/postcss/shared'
+import { internalCssSelectorReplacer } from '@weapp-tailwindcss/postcss'
 
 function getLightningCss() {
   return import('lightningcss')

@@ -1,10 +1,10 @@
-import { replaceCss } from '@/replace'
-import { createGetCase, createPutCase, cssCasePath } from '../util'
+import { internalCssSelectorReplacer as replaceCss } from '@weapp-tailwindcss/postcss'
+import { createGetCase, cssCasePath } from '../util'
 
 const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 
-const putCase = createPutCase(cssCasePath)
+// const putCase = createPutCase(cssCasePath)
 // replaceCss is refacted
 describe.skip('[postcss] replaceCss', () => {
   it('shadow arbitrary values 0', async () => {
