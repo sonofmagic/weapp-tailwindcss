@@ -733,9 +733,6 @@ importers:
       '@babel/types':
         specifier: ~7.26.3
         version: 7.26.3
-      '@tailwindcss-mangle/shared':
-        specifier: ~4.0.1
-        version: 4.0.1
       '@weapp-core/escape':
         specifier: ~3.0.2
         version: 3.0.2
