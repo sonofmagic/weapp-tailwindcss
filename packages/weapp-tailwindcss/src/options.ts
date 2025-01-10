@@ -5,11 +5,11 @@ import type {
   ItemOrItemArray,
   UserDefinedOptions,
 } from './types'
+import { useMangleStore } from '@weapp-tailwindcss/mangle'
+import { createInjectPreflight, createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { createCache } from './cache'
 import { getDefaultOptions } from './defaults'
 import { createJsHandler } from './js'
-import { useMangleStore } from './mangle'
-import { createInjectPreflight, createStyleHandler } from './postcss'
 import { createTailwindcssPatcher } from './tailwindcss/patcher'
 import { defuOverrideArray, isMap } from './utils'
 import { createTemplateHandler } from './wxml/utils'

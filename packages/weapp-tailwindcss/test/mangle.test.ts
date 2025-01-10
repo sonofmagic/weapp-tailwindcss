@@ -1,4 +1,4 @@
-import { defaultMangleContext, useMangleStore } from '@/mangle'
+import { defaultMangleContext, useMangleStore } from '@weapp-tailwindcss/mangle'
 
 describe('mangle', () => {
   it('mangle api', () => {
