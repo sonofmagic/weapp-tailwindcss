@@ -1,5 +1,17 @@
 # @weapp-tailwindcss/init
 
+## 1.0.0-alpha.2
+
+### Major Changes
+
+- [`bafd149`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bafd149f0510b30cbf95711223583055023e7875) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: monorepo changes
+
+### Patch Changes
+
+- Updated dependencies [[`bafd149`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bafd149f0510b30cbf95711223583055023e7875)]:
+  - @weapp-tailwindcss/logger@1.0.0-alpha.0
+  - @weapp-tailwindcss/shared@1.0.0-alpha.1
+
 ## 0.0.1-alpha.1
 
 ### Patch Changes
