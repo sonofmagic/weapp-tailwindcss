@@ -1,10 +1,7 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: {
-    index: 'src/index.ts',
-    extractors: 'src/extractors/index.ts',
-  }, // , 'src/cli.ts'],
+  entry: ['src/index.ts', 'src/types.ts'], // , 'src/cli.ts'],
   shims: true,
   format: ['cjs', 'esm'],
   clean: true,

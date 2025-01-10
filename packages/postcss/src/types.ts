@@ -1,7 +1,7 @@
+import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle/types'
 import type { Rule } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
-import type { IMangleScopeContext } from 'weapp-tailwindcss/types'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
 

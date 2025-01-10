@@ -19,6 +19,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./extractors": {
+      "types": "./dist/extractors.d.ts",
+      "import": "./dist/extractors.mjs",
+      "require": "./dist/extractors.js"
     }
   },
   "main": "./dist/index.js",

@@ -1,4 +1,5 @@
-import type { CssPreflightOptions, IPropValue } from '../types'
+import type { CssPreflightOptions } from '../types'
+import type { IPropValue } from '../types/postcss'
 
 export type InjectPreflight = () => IPropValue[]
 

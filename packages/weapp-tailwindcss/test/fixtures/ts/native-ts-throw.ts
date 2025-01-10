@@ -3,7 +3,7 @@ import MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '@/types'
 import { replaceWxml } from '@/wxml/shared'
 import { escapeStringRegexp } from '@weapp-core/regex'
-import { splitCode } from '@/extractors'
+import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { jsStringEscape } from '@/escape'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 

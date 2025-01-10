@@ -627,6 +627,18 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
 
+  packages/mangle:
+    dependencies:
+      '@tailwindcss-mangle/shared':
+        specifier: ~4.0.1
+        version: 4.0.1
+      '@weapp-core/regex':
+        specifier: ~1.0.1
+        version: 1.0.1
+      '@weapp-tailwindcss/shared':
+        specifier: workspace:*
+        version: link:../shared
+
   packages/merge:
     dependencies:
       class-variance-authority:
@@ -660,6 +672,10 @@ importers:
       postcss-selector-parser:
         specifier: ~7.0.0
         version: 7.0.0
+    devDependencies:
+      '@weapp-tailwindcss/mangle':
+        specifier: workspace:*
+        version: link:../mangle
 
   packages/shared: {}
 
@@ -16644,7 +16660,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.2
+      '@types/react': 19.0.3
       react: 19.0.0
 
   '@docusaurus/theme-classic@3.7.0(@types/react@19.0.3)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.0)(eslint@9.17.0(jiti@2.4.2))(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(vue-template-compiler@2.7.16)':

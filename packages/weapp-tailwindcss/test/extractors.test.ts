@@ -1,4 +1,4 @@
-import { splitCode } from '@/extractors'
+import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 
 describe('extractorSplit', () => {
   it('common case ', () => {

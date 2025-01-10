@@ -1,7 +1,7 @@
 {
-  "name": "@weapp-tailwindcss/postcss",
+  "name": "@weapp-tailwindcss/mangle",
   "version": "0.0.0",
-  "description": "@weapp-tailwindcss/postcss",
+  "description": "@weapp-tailwindcss/mangle",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
@@ -15,7 +15,8 @@
   "keywords": [],
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts"
   },
   "files": [
     "dist"
@@ -47,13 +48,8 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
-    "@weapp-core/escape": "~3.0.2",
-    "@weapp-tailwindcss/shared": "workspace:*",
-    "postcss": "~8.4.49",
-    "postcss-rem-to-responsive-pixel": "~6.0.2",
-    "postcss-selector-parser": "~7.0.0"
-  },
-  "devDependencies": {
-    "@weapp-tailwindcss/mangle": "workspace:*"
+    "@tailwindcss-mangle/shared": "~4.0.1",
+    "@weapp-core/regex": "~1.0.1",
+    "@weapp-tailwindcss/shared": "workspace:*"
   }
 }

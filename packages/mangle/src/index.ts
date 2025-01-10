@@ -1,4 +1,4 @@
-import type { IMangleScopeContext, UserDefinedOptions } from '../types'
+import type { IMangleOptions, IMangleScopeContext } from './types'
 import { ClassGenerator, defaultMangleClassFilter } from '@tailwindcss-mangle/shared'
 import { escapeStringRegexp } from '@weapp-core/regex'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
@@ -34,7 +34,7 @@ export function useMangleStore() {
     return rawSource
   }
 
-  function initMangle(options: UserDefinedOptions['mangle']) {
+  function initMangle(options?: boolean | IMangleOptions) {
     ctx.rawOptions = options
 
     if (options) {
