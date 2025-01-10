@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`is-pseudo-class > case 0 1`] = `
+"input:hover, input:focus, button:hover, button:focus {
+	order: 1;
+}"
+`;
+
+exports[`is-pseudo-class > case 1 1`] = `
+".alpha:focus > .beta ~ .beta {
+	order: 2;
+}"
+`;
+
+exports[`is-pseudo-class > case 2 1`] = `
+"#app-provider :is(.space-x-4>view+view) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1rem * var(--tw-space-x-reverse));
+    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)))
+}"
+`;

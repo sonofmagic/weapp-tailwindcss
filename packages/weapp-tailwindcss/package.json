@@ -100,6 +100,11 @@
       "import": "./dist/css-macro.mjs",
       "require": "./dist/css-macro.js"
     },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.mjs",
+      "require": "./dist/types.js"
+    },
     "./*": "./*"
   },
   "main": "dist/index.js",
@@ -168,6 +173,7 @@
     "debug": "~4.4.0",
     "htmlparser2": "10.0.0",
     "loader-utils": "2.0.4",
+    "local-pkg": "^1.0.0",
     "lru-cache": "10.4.3",
     "magic-string": "0.30.17",
     "md5": "2.3.0",
@@ -179,6 +185,6 @@
     "webpack-sources": "3.2.3"
   },
   "devDependencies": {
-    "local-pkg": "^1.0.0"
+
   }
 }

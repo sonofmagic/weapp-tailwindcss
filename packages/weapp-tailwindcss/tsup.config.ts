@@ -16,6 +16,7 @@ export default defineConfig({
     'css-macro/postcss': 'src/css-macro/postcss.ts',
     'core': 'src/core.ts',
     'escape': 'src/escape.ts',
+    'types': 'src/types/index.ts',
   },
   dts: true,
   clean: true,

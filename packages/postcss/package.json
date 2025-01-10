@@ -1,0 +1,56 @@
+{
+  "name": "@weapp-tailwindcss/postcss",
+  "version": "0.0.0",
+  "description": "@weapp-tailwindcss/postcss",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/monorepo-template.git",
+    "directory": "packages/bar"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/monorepo-template/issues"
+  },
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch --sourcemap",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      },
+      "./types": {
+        "types": "./dist/types.d.ts",
+        "import": "./dist/types.mjs",
+        "require": "./dist/types.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts"
+  },
+  "dependencies": {
+    "@weapp-core/escape": "~3.0.2",
+    "@weapp-tailwindcss/shared": "workspace:*",
+    "postcss": "~8.4.49",
+    "postcss-rem-to-responsive-pixel": "~6.0.2",
+    "postcss-selector-parser": "~7.0.0"
+  }
+}

@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`selectorParser > fallbackRemove case 0 1`] = `"#app-provider .space-x-4>view+view"`;
+
+exports[`selectorParser > fallbackRemove case 1 1`] = `"#app .space-x-0>view+view"`;

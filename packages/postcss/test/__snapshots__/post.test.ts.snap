@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`postcss post plugin > postcss process 1`] = `".b,.a:hover{color:red;}"`;
+
+exports[`postcss post plugin > postcss process case 0 1`] = `".b,.a:hover{color:red;}"`;

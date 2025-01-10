@@ -1,9 +1,9 @@
 import type { Rule } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
-import type { IContext as PostcssContext } from '../postcss/plugins/ctx'
-import type { InjectPreflight } from '../postcss/preflight'
-import type { IMangleScopeContext } from './mangle'
+import type { IMangleScopeContext } from 'weapp-tailwindcss/types'
+import type { IContext as PostcssContext } from './plugins/ctx'
+import type { InjectPreflight } from './preflight'
 
 export type LoadedPostcssOptions = Partial<Omit<Result, 'file'>>
 
