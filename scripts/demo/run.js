@@ -1,32 +1,28 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
 import process from 'node:process'
-
-async function isExist(pathLike) {
-  try {
-    await fs.access(pathLike)
-    return true
-  }
-  catch {
-    return false
-  }
-}
+import fs from 'fs-extra'
+import path from 'pathe'
 
 async function setJson(p, key, flag) {
-  const json = (await isExist(p)) ? JSON.parse(await fs.readFile(p, 'utf8')) : {}
+  const json = (await fs.exists(p)) ? JSON.parse(await fs.readFile(p, 'utf8')) : {}
   json[key] = flag
   await fs.writeFile(p, JSON.stringify(json, null, 2), 'utf8')
 }
+
 const divideString = '-'.repeat(process.stdout.columns)
+
 async function run(dirPath, command) {
   const { execaCommand } = await import('execa')
+  await execaCommand(`yarn ${command}`, {
+    cwd: dirPath,
+    stdio: 'inherit',
+  })
   const filenames = await fs.readdir(dirPath)
   for (const filename of filenames) {
     const baseDir = path.resolve(dirPath, filename)
     const stat = await fs.stat(baseDir)
     if (stat.isDirectory()) {
       const pkgPath = path.resolve(baseDir, 'package.json')
-      if (await isExist(pkgPath)) {
+      if (await fs.exists(pkgPath)) {
         console.log(divideString)
         console.log(`[${filename}]:${baseDir}`)
         console.log(divideString)
@@ -47,6 +43,5 @@ async function run(dirPath, command) {
 }
 
 export {
-  isExist,
   run,
 }

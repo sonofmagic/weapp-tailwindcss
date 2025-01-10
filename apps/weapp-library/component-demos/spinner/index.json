@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "Spinner",
-  "usingComponents": {
-    "spinner": "/components/spinner/index"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "",
-  "usingComponents":
-  {
-    "load-more": "/components/load-more/index",
-    "no-data": "/components/no-data/index"
-  }
-}

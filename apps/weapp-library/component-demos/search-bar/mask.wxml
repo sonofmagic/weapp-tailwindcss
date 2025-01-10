@@ -1,3 +1,0 @@
-<view class="page">
-  <search-bar show-mask tappable-mask="{{tappable}}"></search-bar>
-</view>

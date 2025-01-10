@@ -4779,6 +4779,11 @@ pathe@^1.1.2:
   resolved "https://registry.npmmirror.com/pathe/-/pathe-1.1.2.tgz#6c4cb47a945692e48a1ddd6e4094d170516437ec"
   integrity sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==
 
+pathe@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/pathe/-/pathe-2.0.1.tgz#ee1e6965c5ccfc98dc5a4b366a6ba6dd624a33d6"
+  integrity sha512-6jpjMpOth5S9ITVu5clZ7NOgHNsv5vRQdheL9ztp2vZmM6fRbLvyua1tiBIL4lk8SAe3ARzeXEly6siXCjDHDw==
+
 perfect-debounce@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/perfect-debounce/-/perfect-debounce-1.0.0.tgz#9c2e8bc30b169cc984a58b7d5b28049839591d2a"
@@ -6302,15 +6307,25 @@ weapp-ide-cli@^2.0.8:
     fs-extra "^11.2.0"
     pathe "^1.1.2"
 
+weapp-ide-cli@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.9.tgz#04fbeca30ae3ea50084948611f0726547c0a58e6"
+  integrity sha512-OYOwBbpYa1y/qSJjmKw4ztSzarjehVmNiHlrQp7gQ6JUakWooAjLaitmbdOOQDHsQxQqn2T5CsDXDLOI9Xx7Zw==
+  dependencies:
+    "@weapp-core/logger" "^1.0.2"
+    execa "9.5.2"
+    fs-extra "^11.2.0"
+    pathe "^2.0.1"
+
 weapp-tailwindcss-children@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^3.8.0-alpha.0:
-  version "3.8.0-alpha.0"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.8.0-alpha.0.tgz#ea32733ac9b8f9c41fd3f9f3f22045d3bf6cbf85"
-  integrity sha512-6B5qs5x31/e5ZnSqXRrSMN6PDllIl1y+dynAV6nv4eiPRnO9KflD84QVr7iv6IoM0gWr68VQ7+iObIFeyPme4w==
+weapp-tailwindcss@^3.8.0-alpha.1:
+  version "3.8.0-alpha.1"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-3.8.0-alpha.1.tgz#c2f0db4f25bf2529c64b3b8a4eb37924e1199bfa"
+  integrity sha512-Whw3Hhlw9jzIcqR16msfm2eJZQbzoNGhYiOwOAPhuItl40MmKlByCjZlGkM1xYfDCzdWTETsBnzhhqAxNqUSbA==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/generator" "~7.26.3"

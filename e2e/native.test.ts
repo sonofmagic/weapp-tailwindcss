@@ -7,20 +7,34 @@ import { formatWxml, loadCss, projectFilter, removeWxmlId, twExtract, wait } fro
 
 const TestProjectsEntries: ProjectEntry[] = [
   {
-    name: 'native',
-    projectPath: 'native',
+    name: 'vite-native',
+    projectPath: 'vite-native',
     testMethod: async (_, projectPath) => {
       expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
     },
   },
-
+  // skyline 有 bug 无法测试
+  // {
+  //   name: 'vite-native-skyline',
+  //   projectPath: 'vite-native-skyline',
+  //   testMethod: async (_, projectPath) => {
+  //     expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+  //   },
+  // },
   {
-    name: 'native-ts',
-    projectPath: 'native-ts',
+    name: 'vite-native-ts',
+    projectPath: 'vite-native-ts',
     testMethod: async (_, projectPath) => {
-      expect(await loadCss(path.resolve(projectPath, 'dist/app.scss'))).toMatchSnapshot('css')
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
     },
   },
+  // {
+  //   name: 'vite-native-ts-skyline',
+  //   projectPath: 'vite-native-ts-skyline',
+  //   testMethod: async (_, projectPath) => {
+  //     expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+  //   },
+  // },
   {
     name: 'web-postcss7-compat',
     projectPath: 'web-postcss7-compat',

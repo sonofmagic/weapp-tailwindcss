@@ -1,3 +1,0 @@
-<view wx:if="{{show}}" class="toast toast--{{position}}">
-  {{ title }}
-</view>

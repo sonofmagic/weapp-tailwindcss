@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "我的",
-  "usingComponents":
-  {
-    "collapse": "/components/collapse/index"
-  }
-}

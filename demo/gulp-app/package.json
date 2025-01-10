@@ -87,8 +87,8 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
-    "weapp-ide-cli": "^2.0.8",
-    "weapp-tailwindcss": "^3.8.0-alpha.0",
+    "weapp-ide-cli": "^2.0.9",
+    "weapp-tailwindcss": "^3.8.0-alpha.1",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }

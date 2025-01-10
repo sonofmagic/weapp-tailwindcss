@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "SendCode",
-  "usingComponents": {
-    "send-code": "/components/send-code/index"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "AsyncButton",
-  "usingComponents": {
-    "async-button": "/components/async-button/index"
-  }
-}

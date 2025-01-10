@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "设置个人信息",
-  "usingComponents":
-  {
-    "toptip": "/components/toptip/index"
-  }
-}

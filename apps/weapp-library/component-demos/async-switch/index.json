@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "AsyncSwitch",
-  "usingComponents": {
-    "async-switch": "/components/async-switch/index"
-  }
-}

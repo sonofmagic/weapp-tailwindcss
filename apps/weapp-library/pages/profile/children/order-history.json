@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "借阅历史",
-  "usingComponents":
-  {
-    "load-more": "/components/load-more/index",
-    "no-data": "/components/no-data/index"
-  }
-}
