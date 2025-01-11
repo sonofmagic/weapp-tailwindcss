@@ -1,4 +1,4 @@
-import type { IMangleOptions, IMangleScopeContext } from './types'
+import type { IMangleOptions, IMangleScopeContext } from '../types'
 import { ClassGenerator, defaultMangleClassFilter } from '@tailwindcss-mangle/shared'
 import { escapeStringRegexp } from '@weapp-core/regex'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'

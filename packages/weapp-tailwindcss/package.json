@@ -149,10 +149,10 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/generator": "~7.26.3",
-    "@babel/parser": "~7.26.3",
-    "@babel/traverse": "~7.26.4",
-    "@babel/types": "~7.26.3",
+    "@babel/generator": "~7.26.5",
+    "@babel/parser": "~7.26.5",
+    "@babel/traverse": "~7.26.5",
+    "@babel/types": "~7.26.5",
     "@weapp-core/escape": "~3.0.2",
     "@weapp-core/regex": "~1.0.1",
     "@weapp-tailwindcss/init": "workspace:*",
@@ -170,6 +170,5 @@
     "semver": "~7.6.3",
     "tailwindcss-patch": "~5.0.2",
     "webpack-sources": "3.2.3"
-  },
-  "devDependencies": {}
+  }
 }
