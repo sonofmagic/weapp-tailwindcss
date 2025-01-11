@@ -1,5 +1,12 @@
 ## 1.0.3 (2024-06-01)
 
+## 4.0.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - weapp-tailwindcss@4.0.0-alpha.4
+
 ## 4.0.0-alpha.3
 
 ### Patch Changes
