@@ -5702,6 +5702,12 @@ text,
 .text-_var_--my-var__ {
   color: var(--my-var);
 }
+.text-_var_--textw_secw_light__ {
+  color: var(--text_sec_light);
+}
+.text-_var_--text_sec_light__ {
+  color: var(--text sec light);
+}
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity, 1));
@@ -10579,6 +10585,8 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "text-[length:var(--my-var-length)]",
   "text-[red]",
   "text-[var(--my-var)]",
+  "text-[var(--text\\\\_sec\\\\_light)]",
+  "text-[var(--text_sec_light)]",
   "text-black",
   "text-opacity-[0.19]",
   "text-red-400",
@@ -10617,8 +10625,8 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
 
 exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
 "<view class="content content" style="">
-  <view class="oddcmb-24 oddcmb-24"></view>
-  <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifdef-_MP-WEIXIN_cbg-blue-500">bg-blue-500</view>
+  <view class="oddcmb-24 oddcmb-24 text-_var_--text_sec_light__ text-_var_--text_sec_light__"></view>
+  <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifdef-_MP-WEIXIN_cbg-blue-500 text-_var_--textw_secw_light__ text-_var_--textw_secw_light__">bg-blue-500</view>
   <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300 ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
   <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400 ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
   <view class="ifndef-_MP-WEIXIN_cbg-red-500 ifndef-_MP-WEIXIN_cbg-red-500">not bg-red-500</view>

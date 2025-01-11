@@ -183,6 +183,8 @@
   "text-[length:var(--my-var-length)]",
   "text-[red]",
   "text-[var(--my-var)]",
+  "text-[var(--text\\_sec\\_light)]",
+  "text-[var(--text_sec_light)]",
   "text-black",
   "text-opacity-[0.19]",
   "text-red-400",
