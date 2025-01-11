@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.0-alpha.2
+
+### Patch Changes
+
+- [`1df699b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1df699bf82d66847cbc64cc8f294ef237e0470c5) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: fix types import intel
+
 ## 1.0.0-alpha.1
 
 ### Major Changes
