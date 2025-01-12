@@ -65,7 +65,13 @@ export default defineConfig({
     postcss: {
       plugins: postcssPlugins,
     },
+    preprocessorOptions:{
+      scss: {
+        silenceDeprecations: ['legacy-js-api', 'import'],
+      },
+    }
   },
+
   build: {
     minify: false,
     sourcemap: true,

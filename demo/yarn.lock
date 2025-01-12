@@ -32,7 +32,7 @@
     "@jridgewell/trace-mapping" "^0.3.25"
     jsesc "^3.0.2"
 
-"@babel/generator@^7.26.5", "@babel/generator@~7.26.5":
+"@babel/generator@^7.26.5":
   version "7.26.5"
   resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.26.5.tgz#e44d4ab3176bbcaf78a5725da5f1dc28802a9458"
   integrity sha512-2caSP6fN9I7HOe6nqhtft7V4g7/V/gfDsC3Ag4W7kEzzvRGKqiv0pu0HogPiZ3KaVSoNDhUws6IJjDjpfmYIXw==
@@ -4633,13 +4633,12 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.0-alpha.4:
-  version "4.0.0-alpha.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.0-alpha.4.tgz#24c22ec498396b9c3df4c6d5c5f8802e71e80b13"
-  integrity sha512-pJ0ctqmuZFZqQtNL8E0nWxDwoecBaJl4/ER2Vh7OHnsv4z9Qt/wqoAJchGCSNXLl6YUUbuQ1x+W7jE58J7X/4A==
+weapp-tailwindcss@^4.0.0-alpha.5:
+  version "4.0.0-alpha.5"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.0-alpha.5.tgz#ad1d9bf15833477a4169fe97bbc2585a11ca11e8"
+  integrity sha512-nDAK9tuE4fTBjH/ZHOvxaefAtRXguZjSdtfFxex4S4NLXMi06IvjGFl89DlU1JPhvhm51M671y9WYvd/8u3Xag==
   dependencies:
     "@ast-core/escape" "~1.0.1"
-    "@babel/generator" "~7.26.5"
     "@babel/parser" "~7.26.5"
     "@babel/traverse" "~7.26.5"
     "@babel/types" "~7.26.5"

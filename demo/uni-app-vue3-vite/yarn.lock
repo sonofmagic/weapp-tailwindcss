@@ -141,7 +141,7 @@
     "@jridgewell/trace-mapping" "^0.3.25"
     jsesc "^3.0.2"
 
-"@babel/generator@^7.26.5", "@babel/generator@~7.26.5":
+"@babel/generator@^7.26.5":
   version "7.26.5"
   resolved "https://registry.npmmirror.com/@babel/generator/-/generator-7.26.5.tgz#e44d4ab3176bbcaf78a5725da5f1dc28802a9458"
   integrity sha512-2caSP6fN9I7HOe6nqhtft7V4g7/V/gfDsC3Ag4W7kEzzvRGKqiv0pu0HogPiZ3KaVSoNDhUws6IJjDjpfmYIXw==
@@ -1375,41 +1375,41 @@
   resolved "https://registry.npmmirror.com/@dcloudio/types/-/types-3.4.12.tgz#85965797515dcc6396c692f3e2bd1f84f852e962"
   integrity sha512-xSFDhBCm4bqdRBO9mBj7wySz7fzOv9sMeK9VMI21tHvZbT2bIdGMU5o+kJ/J4H2+N5+7SW2kDY+aIzZs94DAOg==
 
-"@dcloudio/uni-app-harmony@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-harmony/-/uni-app-harmony-3.0.0-alpha-4040420241231001.tgz#16a05753f375fa5ec0b78f5eb0625744dfd1f47e"
-  integrity sha512-dQQ0QLi0mB9rWOmPbPMEd4frAD3TW08ldx+GzUiMtexeiNRFT8OaNXWv2G/hfZj1wgNlUjpbvIA4sIETYz9bXw==
+"@dcloudio/uni-app-harmony@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-harmony/-/uni-app-harmony-3.0.0-4040520250104002.tgz#409c2e948e6bc9c2495c1d899382f418dea67458"
+  integrity sha512-UP8g6AQVuMhiQmeX03/T88OhMPtJBXEnjyVnsWxbCi5M22Qjt7yfyoTedLcOn1ttN8bGD6l0BY6CuSSCWqLXTA==
   dependencies:
-    "@dcloudio/uni-app-vite" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-app-vite" "3.0.0-4040520250104002"
     debug "^4.3.3"
     fs-extra "^10.0.0"
     licia "^1.29.0"
     postcss-selector-parser "^6.0.6"
 
-"@dcloudio/uni-app-plus@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-plus/-/uni-app-plus-3.0.0-alpha-4040420241231001.tgz#16e98ef786aee1f3bce5112c8d5810b54779fb74"
-  integrity sha512-wUB2C697TPSFSkhyhtmCaxpAccPtitnvqXR9lRChCSjizciFDXU8RSgectB8FjQJuH723w+0P9WBtRn73mwEJA==
+"@dcloudio/uni-app-plus@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-plus/-/uni-app-plus-3.0.0-4040520250104002.tgz#f228e10951065e49a2e5a74d900c70e7c8251251"
+  integrity sha512-skRBNw1LZQdQdXGFoPaDlo4Baq27k4yAb2LHeVbbJS0Rx8aRSe7ePuy1NeBomCTAQuOJqA+ZAbyVD6yZSNINFw==
   dependencies:
-    "@dcloudio/uni-app-uts" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-app-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-app-vue" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-app-uts" "3.0.0-4040520250104002"
+    "@dcloudio/uni-app-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-app-vue" "3.0.0-4040520250104002"
     debug "^4.3.3"
     fs-extra "^10.0.0"
     licia "^1.29.0"
     postcss-selector-parser "^6.0.6"
 
-"@dcloudio/uni-app-uts@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-uts/-/uni-app-uts-3.0.0-alpha-4040420241231001.tgz#770cf95d6fe44490b73cc79b5947e55c0194a17b"
-  integrity sha512-TPe3F4swNyzY+1UYx2I3C77/cpQkgeUFUCbaIHJOPonCoA8pAHkVck/7tSc83fCvnWswsqZFKRc4F0YNYPHP7Q==
+"@dcloudio/uni-app-uts@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-uts/-/uni-app-uts-3.0.0-4040520250104002.tgz#0773cf97eae4b866b58d7121817a4b9ccd85036b"
+  integrity sha512-+HZ6cZsmpWeKHvgTHiFUZP2vFLFoDkp4wwbTYk/ZwEUAkYVMtlCoz+CfWCvfNhBPj5bGDPGJauL1/Zf/zv7pmQ==
   dependencies:
     "@babel/parser" "^7.23.9"
     "@babel/types" "^7.20.7"
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-nvue-styler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-nvue-styler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@jridgewell/gen-mapping" "^0.3.3"
     "@jridgewell/trace-mapping" "^0.3.19"
     "@rollup/pluginutils" "^5.0.5"
@@ -1427,15 +1427,15 @@
     source-map-js "^1.0.2"
     unimport "^3.11.1"
 
-"@dcloudio/uni-app-vite@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-vite/-/uni-app-vite-3.0.0-alpha-4040420241231001.tgz#89cb155500fdd9a5a64b0814ad156abade4af862"
-  integrity sha512-GYSmTFLzypElzUWxguYqcTW7mZ370ly0A20fVIROKQOOp26VY8is3yNRwbVNMeyEQQsrygiSKsjG2YdvJJBsKQ==
+"@dcloudio/uni-app-vite@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-vite/-/uni-app-vite-3.0.0-4040520250104002.tgz#f83883fa18db27c04bb6e9d698a33cc228b52ade"
+  integrity sha512-PxmTt0e3J8P1mCxFzRRlyltC0h4/bVI2KvnFEuoepVk7yUapl8El+yw5ZaEmBMi/fhySlE5yUQJkTrirvUF8wg==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-nvue-styler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-nvue-styler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@rollup/pluginutils" "^5.0.5"
     "@vitejs/plugin-vue" "5.1.0"
     "@vue/compiler-dom" "3.4.21"
@@ -1444,31 +1444,31 @@
     fs-extra "^10.0.0"
     picocolors "^1.0.0"
 
-"@dcloudio/uni-app-vue@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-vue/-/uni-app-vue-3.0.0-alpha-4040420241231001.tgz#4359c7c3173df89f87a55342680d54b53d298b93"
-  integrity sha512-EUJTgGB0qvjGzXKXYy/NeXYClnNbHq60ZNSu0VM2dN84oKTAgl+a88sFPjnecg8zgXWisREYAUMq+dipDv4iZA==
+"@dcloudio/uni-app-vue@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-app-vue/-/uni-app-vue-3.0.0-4040520250104002.tgz#10f7e249928f2e6244a09d5749f5fce7fec97391"
+  integrity sha512-wBsuDOzE3ymT0G61fiCcG1l5kvQtCl7r0PVF/FT//fALuc3l9UbV4ZXNvkwUlhezPJVWtcYQX3p+1m4nTkZt5Q==
 
-"@dcloudio/uni-app@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-app/-/uni-app-3.0.0-alpha-4040420241231001.tgz#9e3c53a2831fac1f81204d5e7254d5da8604cfe5"
-  integrity sha512-M3n1o7Vm8piwrw5A6APbjhMRaXwBQczJ93GCl9eF860C8QOJWVXKc8IXkXpmZ+MW/WKUQdWzLZTG2WBqJhTM/Q==
+"@dcloudio/uni-app@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-app/-/uni-app-3.0.0-4040520250104002.tgz#86fa8ccc3de3931b44aa87d6d55a5ce161a20d0d"
+  integrity sha512-t6uewI90Yeuf3BQJF2Qk/NnDiPzYL1aoIeNXF4RCM282WyZGPAr5Kj+uqajaMAbLcOfZgmHqjWDRoSUzDSFpEg==
   dependencies:
-    "@dcloudio/uni-cloud" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-components" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-console" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-push" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-stat" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cloud" "3.0.0-4040520250104002"
+    "@dcloudio/uni-components" "3.0.0-4040520250104002"
+    "@dcloudio/uni-console" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-push" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-stat" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-automator@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-automator/-/uni-automator-3.0.0-alpha-4040420241231001.tgz#48304e6bddfec3b0ae1881490fc9b1e37216fd9c"
-  integrity sha512-bHpTbUB1chrkg6guBhzgljQwXZSfY4iRiIVibhNz5VFV8qPnbm/KMd08gUA3BC3GUGMyf1QzTbc4b8yVR7285Q==
+"@dcloudio/uni-automator@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-automator/-/uni-automator-3.0.0-4040520250104002.tgz#da7b111a77af1fc3538739b86d0fe53ad6f71d70"
+  integrity sha512-On6oU91vmm66qgxYSFzOTCeK/bbtBegTOeb7AdNzWFIODCJvHMr7MVtGwX7WIJBd06nsR2Sj5cBFz1Y5f+TEXQ==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
     address "^1.1.2"
     cross-env "^7.0.3"
     debug "^4.3.3"
@@ -1481,18 +1481,18 @@
     qrcode-terminal "^0.12.0"
     ws "^8.4.2"
 
-"@dcloudio/uni-cli-shared@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-cli-shared/-/uni-cli-shared-3.0.0-alpha-4040420241231001.tgz#e525cf34609a9fc511ef101ff9a2295e2475c1b7"
-  integrity sha512-NzjRwt9InxJKOHcAb1mZfgxO/ab9mSPuiNnC8HV9oWlLrVlq2tAxjzSoe+0jZL/Qa6RlQ5pcGH2Ac5dhcegneg==
+"@dcloudio/uni-cli-shared@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-cli-shared/-/uni-cli-shared-3.0.0-4040520250104002.tgz#f0896ced9dea71ca73a51f4739e2d0cbc700367b"
+  integrity sha512-tdiqZTPpT9JH6wFno+to3t3JGWaRicaSDxKELwAGwuFXx9qPPoPZa3M3dcYQrvZWKRhE7i3fqzqgEpyjoFobsQ==
   dependencies:
     "@ampproject/remapping" "^2.1.2"
     "@babel/code-frame" "^7.23.5"
     "@babel/core" "^7.23.3"
     "@babel/parser" "^7.23.9"
     "@babel/types" "^7.20.7"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@intlify/core-base" "9.1.9"
     "@intlify/shared" "9.1.9"
     "@intlify/vue-devtools" "9.1.9"
@@ -1534,40 +1534,40 @@
     unplugin-auto-import "^0.18.2"
     xregexp "3.1.0"
 
-"@dcloudio/uni-cloud@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-cloud/-/uni-cloud-3.0.0-alpha-4040420241231001.tgz#5d42ea77d9416c9e19490d37d1c2b7ab070336e5"
-  integrity sha512-Y+x3qxsg5FX3T+kxL5pt83awKfj4+zwzRdj9kpfGxWT7OWR28pSCUVMMxN2M7LGQ3taR3JMcSzZ/02+JBnmwOQ==
+"@dcloudio/uni-cloud@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-cloud/-/uni-cloud-3.0.0-4040520250104002.tgz#29cbba39df0bfa3f2125688b99c92b65f42963e4"
+  integrity sha512-K9NvEPFQ7eLNErLDL6uEuio7Jdv7vf6jLGzcLgJ3qcB/X8OWVIyq9LfH2M/gGPgGUNCjgr4O5Pvs0Q+/rwtYDw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
     fast-glob "^3.2.11"
 
-"@dcloudio/uni-components@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-components/-/uni-components-3.0.0-alpha-4040420241231001.tgz#66b486a9c78c8d9d7d4990167d9eb68b289da03e"
-  integrity sha512-O2B+fdlRH11shJeZkKpERMVPXneSBFrqDVaqRDvMdLDyQKHKXU6qoVidgUIfCRMf3C04QjgPaVt6OqrQOhGNug==
+"@dcloudio/uni-components@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-components/-/uni-components-3.0.0-4040520250104002.tgz#93a4de5530b1a62928865b056dbb98292e0e4bdf"
+  integrity sha512-cWHgCjp2DBvNRkRTln6CJe4bvn2gl2sUJN8dr1c+EBuN42GsUo30pB4WNpMvT7x82GsJIGf9fUkxh5nTPB+PGA==
   dependencies:
-    "@dcloudio/uni-cloud" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-h5" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cloud" "3.0.0-4040520250104002"
+    "@dcloudio/uni-h5" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
 
-"@dcloudio/uni-console@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-console/-/uni-console-3.0.0-alpha-4040420241231001.tgz#e5205e821736dc503b13d8327cecaf8aacf2d57f"
-  integrity sha512-FYn2HoPmdyw18/iwrQjxLO0BWT/3x1cZMWyOskcLWgjSmwtlFQDNdLzmzNDIJUGABg8vwkkgLocixViYtmoh/w==
+"@dcloudio/uni-console@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-console/-/uni-console-3.0.0-4040520250104002.tgz#85528a71cdf1f64df90b6340aa6ee3395a0fac89"
+  integrity sha512-dcUEHK+KkTspQoWco/KnEFPCLjE/tFm7qFTMkdRLx5Q828vgBefcpQV4gjf4bPE4Qp80wszm/Gp18w/iid/M6w==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
 
-"@dcloudio/uni-h5-vite@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-h5-vite/-/uni-h5-vite-3.0.0-alpha-4040420241231001.tgz#9b5f8a0222c65ada5c6a8dfbd5cb4368706ca03b"
-  integrity sha512-OEQEAEUro9MuQT+CBjZR2AAjIO3mZaJRZN6yQWoZ6N9nc/AZ8khSB5TTCMv+A/8IZcSmEKVjgT1rkipTQtSePg==
+"@dcloudio/uni-h5-vite@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-h5-vite/-/uni-h5-vite-3.0.0-4040520250104002.tgz#74ce8dd537c4d9a811d38c61d776a25e0692cd69"
+  integrity sha512-K4yFIsTTaRKHLFv8eyPbbl6FK8ogEWritU0F8ASFfoE8MVaP5zrGhqoyYYLmYTH6fESUOBRu4tvyld8q9rVDbg==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@rollup/pluginutils" "^5.0.5"
     "@vue/compiler-dom" "3.4.21"
     "@vue/compiler-sfc" "3.4.21"
@@ -1578,23 +1578,23 @@
     mime "^3.0.0"
     module-alias "^2.2.2"
 
-"@dcloudio/uni-h5-vue@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-h5-vue/-/uni-h5-vue-3.0.0-alpha-4040420241231001.tgz#87dbb00bf46e6387fe905be8d3e4a5ef1512cb37"
-  integrity sha512-BlvdEeA0f738pFACdeYfUbZ1atTPTLxXpGl4qK3foK3m3bQSCG9M4AVgWsGFdDybVkQyEYIVqb8FPr6AbbpVJQ==
+"@dcloudio/uni-h5-vue@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-h5-vue/-/uni-h5-vue-3.0.0-4040520250104002.tgz#cbb276e11d0d9e0b4888f2d3a890444c63ab5015"
+  integrity sha512-GxC/IUFPFA3bFsyTyDWiitO5nYPWjifjobrJ/4scTWozVjS5Zql7jlsVEl1JXSUXtRdvVW3yZgalfj5S1yuDKw==
   dependencies:
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/server-renderer" "3.4.21"
 
-"@dcloudio/uni-h5@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-h5/-/uni-h5-3.0.0-alpha-4040420241231001.tgz#c1475947e1525ed917cb217bd27fe33e8322339b"
-  integrity sha512-KxtK0q1Gq12gOeJmAN5MuYLpuhpqfSyBTfHkYIsLRdeZlkzhaOvKMS7YQwwhmCSKa83Z1WpvFEcq+JUt6Bhrog==
+"@dcloudio/uni-h5@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-h5/-/uni-h5-3.0.0-4040520250104002.tgz#0f1b88d582381a77da03d13d08350a1cb9e7f5ac"
+  integrity sha512-kpGBtNErn0iY3WVnMsRdh2P7lurOqTsIRSvfWDuCa+ohgANZAoCe2T21LrnCmREGupx1ymwh2k5r8wNtxW+dUQ==
   dependencies:
-    "@dcloudio/uni-h5-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-h5-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-h5-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-h5-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/server-renderer" "3.4.21"
     "@vue/shared" "3.4.21"
     debug "^4.3.3"
@@ -1604,35 +1604,35 @@
     vue-router "^4.3.0"
     xmlhttprequest "^1.8.0"
 
-"@dcloudio/uni-i18n@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-i18n/-/uni-i18n-3.0.0-alpha-4040420241231001.tgz#97836e336165dba34a1dccf74aa35507cfa2cbb2"
-  integrity sha512-rWydzvXMuzM9YOvWi1/trAtwRd/uaYM5WlNLKKcrIV+Cvlpytv6ugKOEOpkcfKUtGR7mZyrdG5pSaG/7rvhGfQ==
+"@dcloudio/uni-i18n@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-i18n/-/uni-i18n-3.0.0-4040520250104002.tgz#55bb57b1d4370fe75e884856feba549ee9f6aff6"
+  integrity sha512-wtT7xoSSRGdi5n5NuughnXYwWxCHlzX+d8vo4H+zwdckl976LOz33Lcq8kHE47+Zjvp5KUHNZVbme2wV1FmvOA==
 
-"@dcloudio/uni-mp-alipay@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-alipay/-/uni-mp-alipay-3.0.0-alpha-4040420241231001.tgz#058ae7b7028fd89e571f344ec1e091bd509acb4b"
-  integrity sha512-Bj+6d1TDeHh8UlqeXl4nxoxV7xcxsgn1DO92MYfypKrNdV0Ti5NlCCMEuIcUEgcQ1n7ZFJpy860JS8Wusd4djQ==
+"@dcloudio/uni-mp-alipay@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-alipay/-/uni-mp-alipay-3.0.0-4040520250104002.tgz#3e30fbfb6fff7319ba1f8085d154e07f25f95ad7"
+  integrity sha512-MARBxVSrkYhquWxQ/BhIlVgAZ6JRxW+ndGuMkg9RZQ6VjSvBCJm0QDQBWguLG5d1HT9YTl0PYECPO6QITaDWYw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-core" "3.4.21"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-mp-baidu@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-baidu/-/uni-mp-baidu-3.0.0-alpha-4040420241231001.tgz#9990ceca7688345f9fcbaa49f0e55ef4e25534c5"
-  integrity sha512-9JwDxc81rH2HSdUnTyoSpCAGEyBp+iXyT0rLVlRXNRA6zIB9trqeWxp0qEGH3vaxcMhkRJB099/3vY1fpFciyQ==
+"@dcloudio/uni-mp-baidu@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-baidu/-/uni-mp-baidu-3.0.0-4040520250104002.tgz#b11ebb233f8b9497e7f112db80223a844d24ff2e"
+  integrity sha512-rtXmckttL91IibtbgAVBr2VZMZmdpZ8fUWPZd5XwSp7TIQmtHXu8CUVU6syhFznJjVrFFUIO8liYnHBp6Q2WuQ==
   dependencies:
-    "@dcloudio/uni-app" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-weixin" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-app" "3.0.0-4040520250104002"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-weixin" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-core" "3.4.21"
     "@vue/shared" "3.4.21"
     jimp "^0.10.1"
@@ -1641,118 +1641,118 @@
     qrcode-terminal "^0.12.0"
     ws "^8.4.2"
 
-"@dcloudio/uni-mp-compiler@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-compiler/-/uni-mp-compiler-3.0.0-alpha-4040420241231001.tgz#b39b55bf6122031b64fe286b7b678bebe0fe6ee5"
-  integrity sha512-T3RCI6wNPvTpgIc0qPmBBh7cgP9PwcdHwPf2y9ubrhhyZ/iW7xgtKGb/cjyahXbW9HtEdPWUnyzCE5wexMeDeQ==
+"@dcloudio/uni-mp-compiler@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-compiler/-/uni-mp-compiler-3.0.0-4040520250104002.tgz#162378c6c66b8298f36d20d976632faddf7f58b0"
+  integrity sha512-i44fp919wD3A6iyU+skzmEVz0QWRiTSCKL2xHgKkbCb5f6VROF+M9LJ/H5tydMHBpA8TxZiQYq7Lotz6/sb1Aw==
   dependencies:
     "@babel/generator" "^7.20.5"
     "@babel/parser" "^7.23.9"
     "@babel/types" "^7.20.7"
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-core" "3.4.21"
     "@vue/compiler-dom" "3.4.21"
     "@vue/shared" "3.4.21"
     estree-walker "^2.0.2"
 
-"@dcloudio/uni-mp-jd@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-jd/-/uni-mp-jd-3.0.0-alpha-4040420241231001.tgz#9d8e29d0c7163dbea632e49f37ca2543ef2b7794"
-  integrity sha512-IHhgwb5kQBWyBlyiLJdKHGKOAW51Iuc0z6wdJYgoVTDByhq4tgbrxqn9qtZdtv/Y9jIK2Xb/Uxz82unxjJKmaA==
+"@dcloudio/uni-mp-jd@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-jd/-/uni-mp-jd-3.0.0-4040520250104002.tgz#d7f7f4bbe3b732c324084a93dd7860ac9dbb8bf6"
+  integrity sha512-NIHJh1zCuFRKk9YYxDqiTHA5AdrleXsY+VrMIAcK8yK24JXBidxTSG/8FhN1GkswV8YNX3UB7ua8hrR/VpW7rw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-mp-kuaishou@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-kuaishou/-/uni-mp-kuaishou-3.0.0-alpha-4040420241231001.tgz#febd3aa918631a98ce1dc4d38a612c3a61f2eb92"
-  integrity sha512-dPSNqLowvyB/RY5EKZr9zjL5cZUVgHO+TnT8Z/TFXyuEuaF+ybWxymbZzfB7jOSs2S+oVYSa88hehRF+Hul8kg==
+"@dcloudio/uni-mp-kuaishou@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-kuaishou/-/uni-mp-kuaishou-3.0.0-4040520250104002.tgz#079538efcb58166752efac75aba88c1c78501915"
+  integrity sha512-dPRx7PjLtc0s6l/qkEebChQnd2ghQ4Y/KuEiC20zeCYwVEg+mXXME+LWh68GuMrYifAQlk3WVDDEn2efH5YpJA==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-weixin" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-weixin" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-core" "3.4.21"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-mp-lark@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-lark/-/uni-mp-lark-3.0.0-alpha-4040420241231001.tgz#fc8fbfc96ce9814c6e04b796217ff473898878d1"
-  integrity sha512-waz5OYafwZUhYK5x7xZp24VoLTGlnh0DvenJ29smF8UdQgVkP5CbBiaJoBscWFqCLAiGkVnu4u57+vUrsZ8Kzg==
+"@dcloudio/uni-mp-lark@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-lark/-/uni-mp-lark-3.0.0-4040520250104002.tgz#42c4c4b086c86659d06169d4e9790a34d66d642f"
+  integrity sha512-EeTrglqvI04AtGXclAs154C0Z7+Fxav8DlE9dIWmJPrQTVlJiaT1TLbLjcvZBt8bqCf+F4LLRrMJQ/IjFF0hWw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-toutiao" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-toutiao" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-core" "3.4.21"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-mp-qq@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-qq/-/uni-mp-qq-3.0.0-alpha-4040420241231001.tgz#14d9517c2fddac5d177d561cfb1e66d32ba37fe7"
-  integrity sha512-LpCAiYyL2egN+5L7+cd9xQ+BomRPmXU+WXlFuvhbW7EXw6VAnTgvZA8z+VKcAc3Wosrqo2G6IfBF7uwOClgfOA==
+"@dcloudio/uni-mp-qq@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-qq/-/uni-mp-qq-3.0.0-4040520250104002.tgz#b679860e56a30a6b51f673f7d1aa1f0ccce25ad9"
+  integrity sha512-dUdi0z9wuID9SJHfEnwfJqV4pQg9VQ0cqP1chhHPSgWnmq3zJSYDw9YVBK3w+bnAH8q43pZUgx/Il0IV7sxVZw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
     fs-extra "^10.0.0"
 
-"@dcloudio/uni-mp-toutiao@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-toutiao/-/uni-mp-toutiao-3.0.0-alpha-4040420241231001.tgz#5a6f58888bf750f362307d5a9b0add5a50fa59a5"
-  integrity sha512-sLNDcd/qMq2y3BW1r2cDHZfPZapZ56lXRMioJHAOeXrRBnczhLpHgRP149rhEWfSpHHr4FYR6T0k9Ve0QcQv4A==
+"@dcloudio/uni-mp-toutiao@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-toutiao/-/uni-mp-toutiao-3.0.0-4040520250104002.tgz#d0f7dc391a0b72054b5a7647214ba590028ccb7b"
+  integrity sha512-8vw/LqnWptqyU9kvmdlYOawcl8rZXW17bXliF3mzhwfvlQGX4F/3f98nMSQNr2euLRM1evTj8HZRwPGFr7F3lw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-core" "3.4.21"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-mp-vite@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-vite/-/uni-mp-vite-3.0.0-alpha-4040420241231001.tgz#4eec77f93a409aef88c472d7642549795cdbb4e1"
-  integrity sha512-d7PcXMCAEiDoqaAz2WcEMQv0QlhfTKjM31aKSaRgIW/3KMyX9XYZpMiKlScT9FO/pVrZZiP3rK2PNk6kVRfdag==
+"@dcloudio/uni-mp-vite@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-vite/-/uni-mp-vite-3.0.0-4040520250104002.tgz#3743de85e6c0aecb658982489b278712741398fd"
+  integrity sha512-HFC209GGd9G7QMN87IOq2OlSBnl9qKzznAOMFQ+5FCtIDZila1qy+5KkelxNZNbIiRjjj/1PrY7aB1QDGfYZ3Q==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-i18n" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-i18n" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/compiler-dom" "3.4.21"
     "@vue/compiler-sfc" "3.4.21"
     "@vue/shared" "3.4.21"
     debug "^4.3.3"
 
-"@dcloudio/uni-mp-vue@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-vue/-/uni-mp-vue-3.0.0-alpha-4040420241231001.tgz#da2b0f425890d2af0dda219314465036650de3dc"
-  integrity sha512-PQuUcFrrY52X7UXYxunFYieTjZNy0CWr82CHXN6CQnOR6kXBHUaqhZriLObGFgwFqNpD2s9f079YqoqC+YCX5g==
+"@dcloudio/uni-mp-vue@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-vue/-/uni-mp-vue-3.0.0-4040520250104002.tgz#d3bec69e7c143ef94a411368b029bcfafc700269"
+  integrity sha512-4boINZEyYaylfy2Vb2ahcdDHFjKSej428uQq1AkltHXRiI6+VW/1IEDuzlCj7lxtbmdNN7F2A2gPPhsoj0884g==
   dependencies:
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-mp-weixin@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-weixin/-/uni-mp-weixin-3.0.0-alpha-4040420241231001.tgz#945fa2f4554188e63492f033e19abd672b88ac3b"
-  integrity sha512-QDk0WRqp2mn5Zq8R+MdG+8TzQ1SufbIqd2eWL/39goo+iEFk6WJ94sG8r57zRvfU/8hBX7FPpNjUrch4X2XCoQ==
+"@dcloudio/uni-mp-weixin@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-weixin/-/uni-mp-weixin-3.0.0-4040520250104002.tgz#69801cdabafbb0936ce9c64e5ba06c87729d2562"
+  integrity sha512-6UH4FNTqwh/Y5ZQ9fKmCRiaFy7BAOBfsQz2Pilay0TtScvz4em9mE688VVhuwhbvLHnmHSbiu6cPEUGgMb1Svw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
     jimp "^0.10.1"
     licia "^1.29.0"
@@ -1760,75 +1760,75 @@
     qrcode-terminal "^0.12.0"
     ws "^8.4.2"
 
-"@dcloudio/uni-mp-xhs@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-xhs/-/uni-mp-xhs-3.0.0-alpha-4040420241231001.tgz#613488e2564576707c3b642c988b63ab3491375a"
-  integrity sha512-K/5QYoPcI3/GTWif/meAxuogYUJ9YNUxqzoD168IaQ7EfAxuhE8yKPG4y70b4CzydxiTOgYwpqo2TpBec0zwdQ==
+"@dcloudio/uni-mp-xhs@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-mp-xhs/-/uni-mp-xhs-3.0.0-4040520250104002.tgz#6e53d600fd38776ec00f362cd1487b73430400f6"
+  integrity sha512-rG3Eo92njfEzAPXZbi36BmNQm85o2ibCIN7fRh8xZUnUxMy8ohpz5pVCerDQvUGxcFB8FQFsRMDFTYew0ECUDw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-compiler" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-compiler" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-nvue-styler@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-nvue-styler/-/uni-nvue-styler-3.0.0-alpha-4040420241231001.tgz#70110a05383595ee1bb224b6926c931930f05877"
-  integrity sha512-ohyQ3KAWpCLGlH9q9JJFr2bJdJm0k0I3nNApyxGyytQezc/4EcQLMpwZ3CtNAvIuCDkx1PqTHol0q0SXqQjwUw==
+"@dcloudio/uni-nvue-styler@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-nvue-styler/-/uni-nvue-styler-3.0.0-4040520250104002.tgz#fcf93a91b19a89ce0a4d383bfc81440105f02d2e"
+  integrity sha512-So6+GEOPcODJrjdY4aD5xUVOdEFRdQxxlwV0WNwvqJAP5xEb3WyeaEdmWsHo5yB50qkcSoCLXi13N/y0x0hAIw==
   dependencies:
     parse-css-font "^4.0.0"
     postcss "^8.4.35"
 
-"@dcloudio/uni-push@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-push/-/uni-push-3.0.0-alpha-4040420241231001.tgz#df72de02e481d06698463cda6446cc0abfe9c691"
-  integrity sha512-M9XB1Yd5rz+ljCHSZGoKqOZ65k8+/ltfS/pQ53NXje30vhmkP5QilbXkYzUkDkjsjPgX24FBrKMY9/4Bsm8lhA==
+"@dcloudio/uni-push@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-push/-/uni-push-3.0.0-4040520250104002.tgz#e795841682799f1e7c00003d0095ecbcab36f7c7"
+  integrity sha512-ph2gii/AEmh42Ch4QwO/rv7oVDMhg88JnBDdg8KNLCwMY/WUTdYn3EUEuyOFP+pkVFyHk2YJ8rD2pwCmcjSfYw==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
 
-"@dcloudio/uni-quickapp-webview@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-quickapp-webview/-/uni-quickapp-webview-3.0.0-alpha-4040420241231001.tgz#4aceddc00cae08a6543d45c2ce7930f6318df041"
-  integrity sha512-qLyT/WWY1DShxPnex8NoQjc1nJIlCRrn8xCMcyDE+naKt5jf8zfj9VkexZIUdpzcvHFPK+WbnpY4/imSf/O6yg==
+"@dcloudio/uni-quickapp-webview@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-quickapp-webview/-/uni-quickapp-webview-3.0.0-4040520250104002.tgz#5535f4875dc7a87c77d3dad1b7b35a0f032922d1"
+  integrity sha512-aZEAo9CZClC2Qxzh1btcGOWOI8KVl+ydPhs91p2R4gGvpX24jCMaZ1hfs6Bd+2pG3gFCDN0pW/SR554KDybP4A==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vite" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-mp-vue" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vite" "3.0.0-4040520250104002"
+    "@dcloudio/uni-mp-vue" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-shared@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-shared/-/uni-shared-3.0.0-alpha-4040420241231001.tgz#39123444897ebb63915182b5070e642dd188e49d"
-  integrity sha512-bMyC/s7TMyzxTTCo2M9depPQfL2V6RffGYE+wiJTP0mt8fM0OSpvSNVMpand8k7My/6ZVxlVqJDqw6RjWZTtzg==
+"@dcloudio/uni-shared@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-shared/-/uni-shared-3.0.0-4040520250104002.tgz#f3119e0a449d0742db61d9197858bd6cdbf19a28"
+  integrity sha512-iPVPe2YHdH2tf+ciQsU5mU5nzn/LXt0F3pYNkZl0DMJTp3XxPNYZ/OLbOsItaikGHB6TAoYn7rMVGbN6JBfh6w==
   dependencies:
     "@vue/shared" "3.4.21"
 
-"@dcloudio/uni-stacktracey@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-stacktracey/-/uni-stacktracey-3.0.0-alpha-4040420241231001.tgz#edb2b888616dea8010e777ed176158d7074bc17f"
-  integrity sha512-WyfPx0H4uXUh0KEN/jSWw9vz+8IxTyI4lZJ4FdL47+YIIu5DdYfMMxilO0UUh8W05caNrV9tkWeTnfkS6EhT9Q==
+"@dcloudio/uni-stacktracey@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-stacktracey/-/uni-stacktracey-3.0.0-4040520250104002.tgz#4211e625bb6f0bac5f85aa76e0ae8028ee7f6ac2"
+  integrity sha512-l2uUcfywn54JPY5T6oqxQ7AwCEZVzEOLq2Llkp68xnpoIz4xm64SLOVLuD27quYxQqbQQkeZEAvX2psr4xkJIg==
 
-"@dcloudio/uni-stat@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/uni-stat/-/uni-stat-3.0.0-alpha-4040420241231001.tgz#486c2cadb5cd76b62ce473554d2fb9b1d76c607d"
-  integrity sha512-tDxFc0ihownn5s3Iwwlh1vCpoDkW/bUZLlxrAWW4NE1JYjcNuhyH0pRZCX3vF0ujglTrg3dbs/irXGvvGBSQDw==
+"@dcloudio/uni-stat@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-stat/-/uni-stat-3.0.0-4040520250104002.tgz#c966066af81de430cdb9114c5f54b8169e50dd12"
+  integrity sha512-Ir5vpemDSWX4KRNXlC+1LOCJ7eVGm/AhzEUZw7+MLruJYtLugwOWkzhWAlAm3OPUqTPCy9VTs3MolmGD5CuxNg==
   dependencies:
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     debug "^4.3.3"
 
-"@dcloudio/vite-plugin-uni@3.0.0-alpha-4040420241231001":
-  version "3.0.0-alpha-4040420241231001"
-  resolved "https://registry.npmmirror.com/@dcloudio/vite-plugin-uni/-/vite-plugin-uni-3.0.0-alpha-4040420241231001.tgz#83633525a1fd76212c65c41e6dfa0662da499775"
-  integrity sha512-+0mHWr+jbXOGhPlnFle1i3RyImTRtdFbWA1adq8LRC6Ol2dOpgMIykP62QWtQMVd/8mub928bsjV6esD1CFiuQ==
+"@dcloudio/vite-plugin-uni@3.0.0-4040520250104002":
+  version "3.0.0-4040520250104002"
+  resolved "https://registry.npmmirror.com/@dcloudio/vite-plugin-uni/-/vite-plugin-uni-3.0.0-4040520250104002.tgz#03c6e8cc100c2c3d831a1e8c42c9be40a32e083b"
+  integrity sha512-FCzrNFtLPOBeBxMr/kRfciz+MXfk+FF4hUJ5hPlY0QsyF1sAlDW7qngqT1E8qWsK5LfMw2q30SJEO9I4iqVMQw==
   dependencies:
     "@babel/core" "^7.23.3"
     "@babel/plugin-syntax-import-meta" "^7.10.4"
     "@babel/plugin-transform-typescript" "^7.23.3"
-    "@dcloudio/uni-cli-shared" "3.0.0-alpha-4040420241231001"
-    "@dcloudio/uni-shared" "3.0.0-alpha-4040420241231001"
+    "@dcloudio/uni-cli-shared" "3.0.0-4040520250104002"
+    "@dcloudio/uni-shared" "3.0.0-4040520250104002"
     "@rollup/pluginutils" "^5.0.5"
     "@vitejs/plugin-legacy" "5.3.2"
     "@vitejs/plugin-vue" "5.1.0"
@@ -9174,13 +9174,12 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.0-alpha.4:
-  version "4.0.0-alpha.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.0-alpha.4.tgz#24c22ec498396b9c3df4c6d5c5f8802e71e80b13"
-  integrity sha512-pJ0ctqmuZFZqQtNL8E0nWxDwoecBaJl4/ER2Vh7OHnsv4z9Qt/wqoAJchGCSNXLl6YUUbuQ1x+W7jE58J7X/4A==
+weapp-tailwindcss@^4.0.0-alpha.5:
+  version "4.0.0-alpha.5"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.0-alpha.5.tgz#ad1d9bf15833477a4169fe97bbc2585a11ca11e8"
+  integrity sha512-nDAK9tuE4fTBjH/ZHOvxaefAtRXguZjSdtfFxex4S4NLXMi06IvjGFl89DlU1JPhvhm51M671y9WYvd/8u3Xag==
   dependencies:
     "@ast-core/escape" "~1.0.1"
-    "@babel/generator" "~7.26.5"
     "@babel/parser" "~7.26.5"
     "@babel/traverse" "~7.26.5"
     "@babel/types" "~7.26.5"
