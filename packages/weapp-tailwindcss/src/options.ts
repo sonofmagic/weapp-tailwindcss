@@ -108,7 +108,6 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
     supportCustomLengthUnitsPatch ?? true,
   )
-  ctx.patch = twPatcher.patch
   ctx.setMangleRuntimeSet = setMangleRuntimeSet
   ctx.cache = initializeCache(cache)
   ctx.twPatcher = twPatcher

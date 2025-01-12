@@ -102,6 +102,7 @@
   "devDependencies": {
     "@ast-grep/napi": "^0.33.0",
     "@babel/core": "^7.26.0",
+    "@babel/generator": "~7.26.5",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.11",
     "@commitlint/cli": "^19.6.1",

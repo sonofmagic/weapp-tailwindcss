@@ -1,4 +1,3 @@
-import type { GeneratorResult } from '@babel/generator'
 import type { ParseError, ParserOptions } from '@babel/parser'
 import type { IMangleOptions, IMangleScopeContext } from '@weapp-tailwindcss/mangle'
 import type { CssPreflightOptions, IStyleHandlerOptions, UserDefinedPostcssOptions } from '@weapp-tailwindcss/postcss'
@@ -6,10 +5,9 @@ import type { SourceMap } from 'magic-string'
 import type { Document, Result as PostcssResult, Root } from 'postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../cache'
+import type { ItemOrItemArray } from './base'
 
-export type { CssPreflightOptions, IMangleScopeContext, IStyleHandlerOptions }
-
-export type ItemOrItemArray<T> = T | T[]
+export type { CssPreflightOptions, IMangleScopeContext, IStyleHandlerOptions, ItemOrItemArray }
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | 'weapp-vite'
 
@@ -18,9 +16,7 @@ export interface InternalCssSelectorReplacerOptions {
   escapeMap?: Record<string, string>
 }
 
-export interface JsHandlerReplaceResult { code: string, map?: SourceMap }
-
-export type JsHandlerResult = (JsHandlerReplaceResult | GeneratorResult) & { error?: ParseError }
+export interface JsHandlerResult { code: string, map?: SourceMap, error?: ParseError }
 
 export type ICustomAttributes =
   | Record<string, ItemOrItemArray<string | RegExp>>
@@ -42,15 +38,6 @@ export interface IJsHandlerOptions {
   babelParserOptions?: ParserOptions
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
-}
-export interface RawSource {
-  start: number
-  end: number
-  raw: string
-  // '' 直接 remove {{}}
-  source?: string
-  // prevConcatenated: boolean
-  // nextConcatenated: boolean
 }
 
 export interface IArbitraryValues {
@@ -282,14 +269,14 @@ const customAttributes = {
    */
   babelParserOptions?: ParserOptions
   /**
-   * @version `^3.8.0`
+   * @version `^4.0.0`
    * @group 0.重要配置
    * @description js 忽略标签模板表达式中的标识符，这样使用标识符包裹的模板字符串不会被转义
    * @default ['weappTwIgnore']
    */
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
   /**
-   * @version `^3.8.0`
+   * @version `^4.0.0`
    * @group 0.重要配置
    * @description js 忽略调用表达式中的标识符，这样使用这个方法，包裹的模板字符串和字符串字面量不会被转义，一般用来配合 `@weapp-tailwindcss/merge` 使用，比如设置为 `['cn','cva']`
    */
@@ -313,14 +300,10 @@ export interface JsHandler {
 export interface ICommonReplaceOptions {
   keepEOL?: boolean
   escapeMap?: Record<string, string>
-  // customAttributes?: Record<string, string | string[]>
 }
 
 export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   customAttributesEntities?: ICustomAttributesEntities
-  // allMatchedAttributes?: (string | RegExp)[]
-  // custom?: boolean
-  // regexps?: ICustomRegexp[]
   escapeMap?: Record<string, string>
   mangleContext?: IMangleScopeContext
   inlineWxs?: boolean
@@ -339,9 +322,7 @@ export type InternalUserDefinedOptions = Required<
     styleHandler: (rawSource: string, options?: IStyleHandlerOptions) => Promise<PostcssResult<Root | Document>>
     jsHandler: JsHandler
     escapeMap: Record<string, string>
-    patch: () => void
     customReplaceDictionary: Record<string, string>
-    // initMangle: (mangleOptions: UserDefinedOptions['mangle']) => void
     setMangleRuntimeSet: (runtimeSet: Set<string>) => void
     cache: ICreateCacheReturnType
     twPatcher: TailwindcssPatcher

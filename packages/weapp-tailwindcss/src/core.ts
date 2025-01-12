@@ -1,4 +1,5 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
+import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getOptions } from './options'
 
 /**
@@ -8,15 +9,15 @@ import { getOptions } from './options'
  */
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
-  const { templateHandler, styleHandler, patch, jsHandler, twPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
-  patch?.()
+  twPatcher.patch()
 
   function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
-    return styleHandler(rawCss, Object.assign({
+    return styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
-    }, options))
+    }))
   }
 
   function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
@@ -29,9 +30,9 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
-    return templateHandler(rawWxml, Object.assign({
+    return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
-    }, options))
+    }))
   }
 
   return {

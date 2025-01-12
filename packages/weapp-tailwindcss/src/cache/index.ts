@@ -36,9 +36,7 @@ export interface ICreateCacheReturnType {
   ) => void | Promise<void>
 }
 
-export type ICreateCacheOptions = boolean
-
-function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
+function createCache(options?: boolean): ICreateCacheReturnType {
   const disabled = options === false
   const hashMap = new Map<HashMapKey, HashMapValue>()
   const instance = new LRUCache<string, CacheValue>({

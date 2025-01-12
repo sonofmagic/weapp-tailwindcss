@@ -149,7 +149,6 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/generator": "~7.26.5",
     "@babel/parser": "~7.26.5",
     "@babel/traverse": "~7.26.5",
     "@babel/types": "~7.26.5",

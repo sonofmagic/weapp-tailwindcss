@@ -34,7 +34,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       onEnd,
       onStart,
       styleHandler,
-      patch,
       templateHandler,
       jsHandler,
       setMangleRuntimeSet,
@@ -46,7 +45,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    patch?.()
+    twPatcher.patch()
     // NormalModule,
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource, RawSource } = sources
@@ -111,8 +110,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.html)) {
             let noCachedCount = 0
-            for (let i = 0; i < groupedEntries.html.length; i++) {
-              const [file, originalSource] = groupedEntries.html[i]
+            for (const element of groupedEntries.html) {
+              const [file, originalSource] = element
 
               const rawSource = originalSource.source().toString()
 
@@ -153,8 +152,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.js)) {
             let noCachedCount = 0
-            for (let i = 0; i < groupedEntries.js.length; i++) {
-              const [file, originalSource] = groupedEntries.js[i]
+            for (const element of groupedEntries.js) {
+              const [file, originalSource] = element
               const cacheKey = removeExt(file)
 
               await cache.process(
@@ -198,8 +197,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
           if (Array.isArray(groupedEntries.css)) {
             let noCachedCount = 0
-            for (let i = 0; i < groupedEntries.css.length; i++) {
-              const [file, originalSource] = groupedEntries.css[i]
+            for (const element of groupedEntries.css) {
+              const [file, originalSource] = element
 
               const rawSource = originalSource.source().toString()
               const hash = cache.computeHash(rawSource)

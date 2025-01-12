@@ -1,4 +1,3 @@
-import type { RawSource } from '@/types'
 import { getCss } from '#test/helpers/getTwCss'
 import { createGetCase, wxsCasePath } from '#test/util'
 import { getOptions } from '@/options'
@@ -6,6 +5,15 @@ import { getOptions } from '@/options'
 import { wxsTagRegexp } from '@weapp-core/regex'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 
+interface ExtractSourceToken {
+  start: number
+  end: number
+  raw: string
+  // '' 直接 remove {{}}
+  source?: string
+  // prevConcatenated: boolean
+  // nextConcatenated: boolean
+}
 function getClassCacheSet() {
   const twPatcher = new TailwindcssPatcher()
   return twPatcher.getClassCacheSet()
@@ -14,7 +22,7 @@ const getCase = createGetCase(wxsCasePath)
 
 function extractSource(original: string, reg: RegExp) {
   let match = reg.exec(original)
-  const sources: RawSource[] = []
+  const sources: ExtractSourceToken[] = []
 
   while (match !== null) {
     // 过滤空字符串

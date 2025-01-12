@@ -23,7 +23,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     onUpdate,
     templateHandler,
     styleHandler,
-    patch,
     jsHandler,
     mainCssChunkMatcher,
     appType,
@@ -35,7 +34,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     return
   }
 
-  patch?.()
+  twPatcher.patch()
 
   onLoad()
   // 要在 vite:css 处理之前运行
@@ -53,8 +52,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       if (Array.isArray(groupedEntries.html)) {
         let noCachedCount = 0
-        for (let i = 0; i < groupedEntries.html.length; i++) {
-          const [file, originalSource] = groupedEntries.html[i] as [string, OutputAsset]
+        for (const element of groupedEntries.html) {
+          const [file, originalSource] = element as [string, OutputAsset]
 
           const oldVal = originalSource.source.toString()
 
@@ -91,8 +90,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       }
       if (Array.isArray(groupedEntries.js)) {
         let noCachedCount = 0
-        for (let i = 0; i < groupedEntries.js.length; i++) {
-          const [file, originalSource] = groupedEntries.js[i] as [string, OutputChunk]
+        for (const element of groupedEntries.js) {
+          const [file, originalSource] = element as [string, OutputChunk]
           const rawSource = originalSource.code
 
           const hash = cache.computeHash(rawSource)
@@ -134,8 +133,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
       if (Array.isArray(groupedEntries.css)) {
         let noCachedCount = 0
-        for (let i = 0; i < groupedEntries.css.length; i++) {
-          const [file, originalSource] = groupedEntries.css[i] as [string, OutputAsset]
+        for (const element of groupedEntries.css) {
+          const [file, originalSource] = element as [string, OutputAsset]
 
           const rawSource = originalSource.source.toString()
 

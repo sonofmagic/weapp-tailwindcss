@@ -1,11 +1,20 @@
-import type { RawSource } from '@/types'
 import { variableRegExp } from '@weapp-core/regex'
+
+interface ExtractSourceToken {
+  start: number
+  end: number
+  raw: string
+  // '' 直接 remove {{}}
+  source?: string
+  // prevConcatenated: boolean
+  // nextConcatenated: boolean
+}
 /**
  * @internal
  */
 function extract(original: string, reg: RegExp) {
   let match = reg.exec(original)
-  const sources: RawSource[] = []
+  const sources: ExtractSourceToken[] = []
 
   while (match !== null) {
     // 过滤空字符串

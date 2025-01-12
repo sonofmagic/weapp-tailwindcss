@@ -17,10 +17,10 @@ const Transform = stream.Transform
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getOptions(options)
 
-  const { templateHandler, styleHandler, patch, jsHandler, setMangleRuntimeSet, cache, twPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, setMangleRuntimeSet, cache, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
-  patch?.()
+  twPatcher.patch()
 
   function transformWxss(options: Partial<IStyleHandlerOptions> = {}) {
     return new Transform({
