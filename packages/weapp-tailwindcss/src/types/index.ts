@@ -36,7 +36,7 @@ export interface IJsHandlerOptions {
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean
   generateMap?: boolean
-  always?: boolean
+  alwaysEscape?: boolean
   jsAstTool?: 'babel' | 'ast-grep'
   unescapeUnicode?: boolean
   babelParserOptions?: ParserOptions

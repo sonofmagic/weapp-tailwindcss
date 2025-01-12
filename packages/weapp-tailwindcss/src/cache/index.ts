@@ -123,4 +123,11 @@ function createCache(options?: ICreateCacheOptions): ICreateCacheReturnType {
   }
 }
 
-export { createCache }
+function initializeCache(cacheConfig?: boolean | ICreateCacheReturnType): ICreateCacheReturnType {
+  if (typeof cacheConfig === 'boolean' || cacheConfig === undefined) {
+    return createCache(cacheConfig)
+  }
+  return cacheConfig
+}
+
+export { createCache, initializeCache }

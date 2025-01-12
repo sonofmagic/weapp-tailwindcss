@@ -21,9 +21,9 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
     ignoreTaggedTemplateExpressionIdentifiers,
   } = options
 
-  function _jsHandler(rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) {
+  function handler(rawSource: string, classNameSet: Set<string>, options?: CreateJsHandlerOptions) {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
-      classNameSet: set,
+      classNameSet,
       escapeMap,
       arbitraryValues,
       mangleContext,
@@ -40,9 +40,9 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
     return jsHandler(rawSource, opts)
   }
 
-  function sync(rawSource: string, set: Set<string>, options?: CreateJsHandlerOptions) {
+  function sync(rawSource: string, classNameSet: Set<string>, options?: CreateJsHandlerOptions) {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
-      classNameSet: set,
+      classNameSet,
       escapeMap,
       arbitraryValues,
       mangleContext,
@@ -56,7 +56,7 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
     return jsHandler(rawSource, opts)
   }
 
-  _jsHandler.sync = sync
+  handler.sync = sync
 
-  return _jsHandler
+  return handler
 }

@@ -13,25 +13,6 @@ export interface ReplaceNode {
   end?: number | null
 }
 
-export function toUnicodeEscapedString(str: string) {
-  return str
-    .split('')
-    .map((char) => {
-      const code = char.charCodeAt(0)
-      // String.fromCharCode(31)
-      if (code <= 31) {
-        const hexCode = code.toString(16).padStart(4, '0')
-        return `\\u${hexCode}`
-      }
-      return char
-    })
-    .join('')
-}
-
-// export function toUnicodeEscapedString2(str: string) {
-//   return escape(str).replace(/%u/g, '\\u').replace(/%/g, '\\u00')
-// }
-
 export function replaceHandleValue(
   str: string,
   node: ReplaceNode,
@@ -40,13 +21,13 @@ export function replaceHandleValue(
   offset = 0,
 ) {
   const {
-    classNameSet: set,
+    classNameSet,
     escapeMap,
     mangleContext: ctx,
     needEscaped = false,
     jsPreserveClass,
     arbitraryValues,
-    always,
+    alwaysEscape,
     unescapeUnicode,
   } = options
 
@@ -59,7 +40,7 @@ export function replaceHandleValue(
   }
   const arr = splitCode(rawStr, allowDoubleQuotes)
   for (const v of arr) {
-    if (always || (set && set.has(v) && !jsPreserveClass?.(v))) {
+    if (alwaysEscape || (classNameSet && classNameSet.has(v) && !jsPreserveClass?.(v))) {
       let ignoreFlag = false
       if (Array.isArray(node.leadingComments)) {
         ignoreFlag

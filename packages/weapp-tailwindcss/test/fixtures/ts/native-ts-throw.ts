@@ -13,6 +13,21 @@ interface ReplaceNode {
   end?: number | null
 }
 
+export function toUnicodeEscapedString(str: string) {
+  return str
+    .split('')
+    .map((char) => {
+      const code = char.charCodeAt(0)
+      // String.fromCharCode(31)
+      if (code <= 31) {
+        const hexCode = code.toString(16).padStart(4, '0')
+        return `\\u${hexCode}`
+      }
+      return char
+    })
+    .join('')
+}
+
 function decodeUnicode(s: string) {
   return unescape(s.replaceAll(/\\(u[\dA-Fa-f]{4})/gm, '%$1'))
 }

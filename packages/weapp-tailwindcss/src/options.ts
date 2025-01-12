@@ -7,7 +7,7 @@ import type {
 } from './types'
 import { useMangleStore } from '@weapp-tailwindcss/mangle'
 import { createInjectPreflight, createStyleHandler } from '@weapp-tailwindcss/postcss'
-import { createCache } from './cache'
+import { initializeCache } from './cache'
 import { getDefaultOptions } from './defaults'
 import { createJsHandler } from './js'
 import { createTailwindcssPatcher } from './tailwindcss/patcher'
@@ -20,13 +20,13 @@ import { createTemplateHandler } from './wxml/utils'
  * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
  */
 export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
-  const result = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
+  const ctx = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
     opts as InternalUserDefinedOptions,
     getDefaultOptions() as InternalUserDefinedOptions,
     {},
   )
 
-  result.escapeMap = result.customReplaceDictionary
+  ctx.escapeMap = ctx.customReplaceDictionary
 
   const {
     cssPreflight,
@@ -53,7 +53,7 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     appType,
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
-  } = result
+  } = ctx
 
   const cssInjectPreflight = createInjectPreflight(cssPreflight)
 
@@ -99,14 +99,18 @@ export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOption
     disabledDefaultTemplateHandler,
   })
 
-  result.styleHandler = styleHandler
-  result.jsHandler = jsHandler
-  result.templateHandler = templateHandler
+  ctx.styleHandler = styleHandler
+  ctx.jsHandler = jsHandler
+  ctx.templateHandler = templateHandler
 
-  const twPatcher = createTailwindcssPatcher(tailwindcssBasedir, appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined, supportCustomLengthUnitsPatch ?? true)
-  result.patch = twPatcher.patch
-  result.setMangleRuntimeSet = setMangleRuntimeSet
-  result.cache = cache === undefined || typeof cache === 'boolean' ? createCache(cache) : cache
-  result.twPatcher = twPatcher
-  return result
+  const twPatcher = createTailwindcssPatcher(
+    tailwindcssBasedir,
+    appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
+    supportCustomLengthUnitsPatch ?? true,
+  )
+  ctx.patch = twPatcher.patch
+  ctx.setMangleRuntimeSet = setMangleRuntimeSet
+  ctx.cache = initializeCache(cache)
+  ctx.twPatcher = twPatcher
+  return ctx
 }

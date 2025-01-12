@@ -13,7 +13,7 @@ import { Tokenizer } from './Tokenizer'
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
     const { jsHandler, runtimeSet } = options
-    if (jsHandler && jsHandler.sync && runtimeSet) {
+    if (jsHandler?.sync && runtimeSet) {
       const { code } = jsHandler.sync(match, runtimeSet)
       return code
     }
@@ -42,7 +42,7 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
               escapeMap: options.escapeMap,
               classNameSet: options.runtimeSet,
               needEscaped: true,
-              always: true,
+              alwaysEscape: true,
             },
             ms,
             1,
@@ -173,7 +173,7 @@ export async function customTemplateHandler(rawSource: string, options: Required
           // add 'virtualHostClass' toLowerCase
           if (
             !disabledDefaultTemplateHandler
-            && (name === 'class' || name === 'hover-class' || name === 'virtualHostClass' || name === 'virtualhostclass')
+            && (['class', 'hover-class', 'virtualhostclass'].includes(name.toLocaleLowerCase()))
           ) {
             update()
           }

@@ -199,4 +199,18 @@ describe('customTemplateHandler', () => {
     const str = await customTemplateHandler(testCase)
     expect(str).toMatchSnapshot()
   })
+
+  it('https://github.com/weapp-vite/weapp-vite/issues/87', async () => {
+    const code = await customTemplateHandler(`<xxx>
+        <yyy class="[]">
+          <zzz></zzz>
+        </yyy>
+      </xxx>`)
+
+    expect(code).toBe(`<xxx>
+        <yyy class="__">
+          <zzz></zzz>
+        </yyy>
+      </xxx>`)
+  })
 })
