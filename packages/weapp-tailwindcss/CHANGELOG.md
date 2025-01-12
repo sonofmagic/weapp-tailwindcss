@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.0-alpha.5
+
+### Patch Changes
+
+- [`43f7ab8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/43f7ab82b047a067bf7d37d88ed861be7b0609d4) Thanks [@sonofmagic](https://github.com/sonofmagic)! - refactor: remove @babel/generator
+
 ## 4.0.0-alpha.4
 
 ### Patch Changes
