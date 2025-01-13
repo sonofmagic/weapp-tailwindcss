@@ -21,7 +21,11 @@
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm",
+    "g": "weapp-vite generate",
     "postinstall": "weapp-tw patch"
+  },
+  "dependencies": {
+    "@weapp-tailwindcss/merge": "workspace:*"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

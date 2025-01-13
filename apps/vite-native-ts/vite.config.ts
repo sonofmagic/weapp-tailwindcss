@@ -8,8 +8,28 @@ export default defineConfig({
     }),
   ],
   weapp: {
+    enhance: {
+      autoImportComponents: {
+        globs: ['miniprogram/components/**/*'],
+      },
+    },
     // weapp-vite options
     srcRoot: './miniprogram',
+    generate: {
+      extensions: {
+        js: 'ts',
+        wxss: 'scss',
+        json: 'ts',
+      },
+      dirs: {
+        component: 'miniprogram/components',
+        page: 'miniprogram/pages',
+      },
+      filenames: {
+        component: 'index',
+        page: 'index',
+      },
+    },
   },
   css: {
     preprocessorOptions: {
