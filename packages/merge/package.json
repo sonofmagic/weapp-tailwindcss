@@ -36,6 +36,11 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js",
         "require": "./dist/index.cjs"
+      },
+      "./cva": {
+        "types": "./dist/cva.d.ts",
+        "import": "./dist/cva.js",
+        "require": "./dist/cva.cjs"
       }
     },
     "main": "./dist/index.cjs",
