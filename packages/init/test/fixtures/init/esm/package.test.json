@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.17",
-    "postcss": "^8.4.49",
+    "postcss": "^8.5.1",
     "autoprefixer": "^10.4.20",
     "weapp-tailwindcss": "^3.8.0-alpha.2"
   }

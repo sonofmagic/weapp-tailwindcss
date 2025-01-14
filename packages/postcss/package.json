@@ -62,7 +62,7 @@
     "@csstools/postcss-is-pseudo-class": "^5.0.1",
     "@weapp-core/escape": "~3.0.2",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "postcss": "~8.4.49",
+    "postcss": "~8.5.1",
     "postcss-rem-to-responsive-pixel": "~6.0.2",
     "postcss-selector-parser": "~7.0.0"
   },
