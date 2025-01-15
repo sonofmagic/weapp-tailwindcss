@@ -76,7 +76,7 @@
     "@vue/babel-plugin-jsx": "^1.1.5",
     "@vue/compiler-sfc": "^3.5.13",
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.1",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.2",
     "autoprefixer": "^10.4.19",
     "babel-preset-taro": "3.6.35",
     "cross-env": "^7.0.3",

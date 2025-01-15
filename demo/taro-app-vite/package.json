@@ -76,7 +76,7 @@
     "@types/react": "^18.3.11",
     "@vitejs/plugin-react": "^4.3.2",
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.1",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.2",
     "autoprefixer": "^10.4.20",
     "babel-preset-taro": "4.0.6",
     "eslint": "^8.57.0",

@@ -55,7 +55,7 @@
     "@types/gulp-util": "^3.0.41",
     "@types/node": "^22.7.4",
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.1",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.2",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "del": "^6.1.1",

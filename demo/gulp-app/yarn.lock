@@ -851,10 +851,10 @@
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/shared" "1.0.0-alpha.1"
 
-"@weapp-tailwindcss/merge@^1.0.0-alpha.1":
-  version "1.0.0-alpha.1"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0-alpha.1.tgz#320cb5189e63ce4104cf35be1907b4d0ffa885d1"
-  integrity sha512-CmZxf009frAQhtiY/1ZFJ47QvWZHHXwmiQjK0hMJU6n9JitJD6HuA1wnlJ7D+B4Z1DtXM0SY9KuQbg+GJHuxzQ==
+"@weapp-tailwindcss/merge@^1.0.0-alpha.2":
+  version "1.0.0-alpha.2"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0-alpha.2.tgz#45b6a12f125713facf8f2bcb1827d96d9bde3a30"
+  integrity sha512-p94vDcEqcpPxtxp5KJi2GmovxeBMF5tNLTUjIO+By/kt7PUOsoE1wojXO+TVkRmbhPXDkungX9SU7b8dqdQONw==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"

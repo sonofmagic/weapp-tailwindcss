@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'

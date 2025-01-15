@@ -17,7 +17,7 @@
   "dependencies": {},
   "devDependencies": {
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.1",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.2",
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^4.0.1",
     "postcss": "^8.4.49",

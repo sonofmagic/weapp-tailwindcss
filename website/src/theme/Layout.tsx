@@ -7,8 +7,12 @@ export default function LayoutWrapper(props) {
 
   return (
     <div className="relative">
-      {location.pathname !== '/' && <div className="light-effect pointer-events-none absolute right-[13.14%] z-[201]"></div> }
+      {location.pathname !== '/' && <div className="light-effect pointer-events-none absolute right-[13.14%] z-[201]"></div>}
       <Layout {...props} />
+      <div className="pointer-events-none absolute inset-0 z-[202] flex-none">
+        <div className="size-full rounded-none bg-[url(/img/framer.png)] bg-[length:128px] bg-repeat opacity-5">
+        </div>
+      </div>
     </div>
   )
 }

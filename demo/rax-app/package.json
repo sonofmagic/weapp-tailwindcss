@@ -39,7 +39,7 @@
     "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.18",
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.1",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.2",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "eslint": "^9.18.0",
