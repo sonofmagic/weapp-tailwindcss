@@ -7,6 +7,43 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
+  // https://github.com/tailwindlabs/tailwindcss/discussions/5258
+  "css.customData": [
+    ".vscode/tailwind.json"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    // https://github.com/lukeed/clsx?tab=readme-ov-file#tailwind-support
+    [
+      "clsx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ],
+    [
+      "cn\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ],
+    // https://cva.style/docs/getting-started/installation
+    [
+      "cva\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ],
+    [
+      "cx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ]
+  ],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+    "tw-class",
+    "tw-hover-class",
+    "hover-class"
+  ],
+  "tailwindCSS.includeLanguages": {
+    "wxml": "html",
+    "mpx": "html"
+  },
   // Silent the stylistic rules in you IDE, but still auto fix them
   "eslint.rules.customizations": [
     // close "style/* off"
