@@ -14,6 +14,6 @@ describe('all', () => {
         important: '.app',
       },
     })
-    expect((await styleHandler(css, { isMainChunk: true })).css).toMatchSnapshot()
+    expect((await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })).css).toMatchSnapshot()
   })
 })

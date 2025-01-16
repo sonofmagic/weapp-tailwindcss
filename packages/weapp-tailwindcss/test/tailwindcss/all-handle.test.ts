@@ -11,6 +11,6 @@ describe('all', () => {
       css: `@tailwind base;@tailwind components;@tailwind utilities;`,
       isContentGlob: true,
     })
-    expect((await styleHandler(css, { isMainChunk: true })).css).toMatchSnapshot()
+    expect((await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })).css).toMatchSnapshot()
   })
 })

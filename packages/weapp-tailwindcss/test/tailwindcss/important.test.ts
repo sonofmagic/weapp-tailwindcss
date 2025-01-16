@@ -15,7 +15,7 @@ describe('important', () => {
     })
     expect(css).toMatchSnapshot()
     const { styleHandler } = getOptions()
-    const res = await styleHandler(css, { isMainChunk: true })
+    const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
   it('https://github.com/sonofmagic/weapp-tailwindcss/issues/470', async () => {
@@ -29,7 +29,7 @@ describe('important', () => {
     })
     expect(css).toMatchSnapshot()
     const { styleHandler } = getOptions()
-    const res = await styleHandler(css, { isMainChunk: true })
+    const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
 
@@ -44,7 +44,7 @@ describe('important', () => {
     })
     expect(css).toMatchSnapshot()
     const { styleHandler } = getOptions()
-    const res = await styleHandler(css, { isMainChunk: true })
+    const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
 
@@ -59,7 +59,7 @@ describe('important', () => {
     })
     expect(css).toMatchSnapshot()
     const { styleHandler } = getOptions()
-    const res = await styleHandler(css, { isMainChunk: true })
+    const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
 })

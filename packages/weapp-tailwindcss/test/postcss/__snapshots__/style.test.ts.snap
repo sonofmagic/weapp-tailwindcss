@@ -991,7 +991,7 @@ exports[`styleHandler > use with weapp-pandacss case 3  1`] = `
 view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
-exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view{--tw-border-opacity: 1;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > utf8 charset 1`] = `
 ".after_c_content-_bl__q_u6211u662fu4f2au5143u7d20_q__br_::after {

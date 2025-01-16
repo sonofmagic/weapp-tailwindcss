@@ -91,7 +91,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     arbitraryValues: {
       allowDoubleQuotes: false,
     },
-    cssChildCombinatorReplaceValue: ['view'],
+    cssChildCombinatorReplaceValue: ['view', 'text'],
     inlineWxs: false,
     injectAdditionalCssVarScope: false,
     jsPreserveClass: (keyword) => {

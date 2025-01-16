@@ -677,42 +677,42 @@ describe('styleHandler', () => {
   it('combinator selector case 0', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`
-    const { css } = await styleHandler(rawCode, { isMainChunk: true })
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.space-x-4>view+view{}')
   })
 
   it('combinator selector case 1', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-x>:not([hidden])~:not([hidden]){}`
-    const { css } = await styleHandler(rawCode, { isMainChunk: true })
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.divide-x>view+view{}')
   })
 
   it('combinator selector case 2', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-blue-200>:not([hidden])~:not([hidden]){}`
-    const { css } = await styleHandler(rawCode, { isMainChunk: true })
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.divide-blue-200>view+view{}')
   })
 
   it('combinator selector case 3', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `:is(.dark .dark:divide-slate-700)>:not([hidden])~:not([hidden]){}`
-    const { css } = await styleHandler(rawCode, { isMainChunk: true })
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.dark .dark:divide-slate-700>view+view{}')
   })
 
   it('combinator selector case 4', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `.divide-dashed>:not([hidden])~:not([hidden]){}`
-    const { css } = await styleHandler(rawCode, { isMainChunk: true })
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.divide-dashed>view+view{}')
   })
 
   it('comment case 0', async () => {
     const { styleHandler } = getOptions()
     const rawCode = `/* #ifdef MP-WEIXIN */\n.divide-dashed>:not([hidden])~:not([hidden]){}\n/* #endif */`
-    const { css } = await styleHandler(rawCode, { isMainChunk: true })
+    const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('/* #ifdef MP-WEIXIN */\n.divide-dashed>view+view{}\n/* #endif */')
   })
 
