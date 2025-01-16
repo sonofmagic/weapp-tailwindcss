@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.0-alpha.6
+
+### Patch Changes
+
+- [`06921c8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/06921c86fc10f4649818e4dafb2597114cb4204c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 更改 cssChildCombinatorReplaceValue 默认值从 ['view'] -> ['view', 'text'] 为了更好的小程序开发体验
+
 ## 4.0.0-alpha.5
 
 ### Patch Changes

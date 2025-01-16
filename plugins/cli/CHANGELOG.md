@@ -1,5 +1,12 @@
 ## 1.0.3 (2024-06-01)
 
+## 4.0.0-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [[`06921c8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/06921c86fc10f4649818e4dafb2597114cb4204c)]:
+  - weapp-tailwindcss@4.0.0-alpha.6
+
 ## 4.0.0-alpha.5
 
 ### Patch Changes
