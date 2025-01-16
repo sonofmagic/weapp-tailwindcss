@@ -333,6 +333,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
         timeTaken = performance.now() - timeStart
         console.log(`[common with loader] case processAssets executed in ${timeTaken}ms`)
       },
+      cssChildCombinatorReplaceValue: ['view'],
     }).apply(compiler)
 
     const stats = await compile(compiler)
