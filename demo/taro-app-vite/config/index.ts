@@ -48,12 +48,20 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         uvtw({
           rem2rpx: true,
           // 除了小程序这些，其他平台都 disabled
-          disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn'
+          disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
+          injectAdditionalCssVarScope: true,
         })
       ] as Plugin[]
     },
     mini: {
+      // https://taro-docs.jd.com/docs/config-detail#minipostcss
       postcss: {
+        // htmltransform: {
+        //   enable: true,
+        //   config: {
+        //     removeCursorStyle: false,
+        //   },
+        // },
         pxtransform: {
           enable: true,
           config: {

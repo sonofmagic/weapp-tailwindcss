@@ -140,7 +140,7 @@ const config = {
       {
         id: 'api',
         entryPoints: ['../packages/weapp-tailwindcss/src/index.ts'],
-        tsconfig: '../packages/weapp-tailwindcss/tsconfig.json',
+        tsconfig: '../packages/weapp-tailwindcss/tsconfig.typedoc.json',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH,
         skipErrorChecking: true,

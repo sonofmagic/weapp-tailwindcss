@@ -11,7 +11,7 @@ const Index = () => {
   // 此处写可以准确触发
   // debugger
   return <>
-    <View className='text-[#123456]'>{text}</View>
+    <View className='text-[#123456] px-[33.89080980rpx] py-[32.8989989rpx] bg-[#91ba306d]'>{text}</View>
     <TailwindPrefix></TailwindPrefix>
   </>
 }

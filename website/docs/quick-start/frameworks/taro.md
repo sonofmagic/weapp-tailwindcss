@@ -81,11 +81,11 @@ cache: {
 
 ## 使用 Vite 作为打包工具
 
-:::danger
+<!-- :::danger
 Taro Vite 目前存在一些 bug 还没有修复，不推荐使用! 
 
 下方注册方式会存在部分样式丢失的情况
-:::
+::: -->
 
 由于 `taro@4` 的 `vite` 版本，目前加载 `postcss.config.js` 配置是失效的，所以我们目前暂时只能使用内联 `postcss` 插件的写法
 
@@ -116,7 +116,9 @@ const baseConfig: UserConfigExport<'vite'> = {
         // rem转rpx
         rem2rpx: true,
         // 除了小程序这些，其他平台都 disable
-        disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn'
+        disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
+        // 由于 taro vite 默认会移除所有的 tailwindcss css 变量，所以一定要开启这个配置，进行css 变量的重新注入
+        injectAdditionalCssVarScope: true,
       })
     ] as Plugin[] // 从 vite 引入 type, 为了智能提示
   },
