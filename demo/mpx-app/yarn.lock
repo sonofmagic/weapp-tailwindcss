@@ -1577,12 +1577,12 @@
   resolved "https://registry.npmmirror.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@mpxjs/api-proxy@^2.9.60", "@mpxjs/api-proxy@^2.9.62":
-  version "2.9.62"
-  resolved "https://registry.npmmirror.com/@mpxjs/api-proxy/-/api-proxy-2.9.62.tgz#493fb766fc345dccd9a11c7f833be5ad413eff97"
-  integrity sha512-ZCAPm8InBLHPtXt1rMyu0Wy3HTlqu680bSjK7bDwmAx45xO5Pf2ojdY9EK3mLqdw+53u8vg9g0Csd0AXuER3wg==
+"@mpxjs/api-proxy@^2.9.71":
+  version "2.9.71"
+  resolved "https://registry.npmmirror.com/@mpxjs/api-proxy/-/api-proxy-2.9.71.tgz#85a6297793e75afc214eb27020ca8b52aeabf065"
+  integrity sha512-ffTK5oG9winFVoymx+S+m2YFhZXiWkUfabOdv8aWKylz9gCCL3VdrAolaK7zIW9E6FeSnpseWav9+UI28cfFjg==
   dependencies:
-    "@mpxjs/utils" "^2.9.59"
+    "@mpxjs/utils" "^2.9.70"
     axios "^1.7.3"
 
 "@mpxjs/babel-plugin-inject-page-events@^2.9.5":
@@ -1597,12 +1597,12 @@
   dependencies:
     execa "^5.0.0"
 
-"@mpxjs/core@^2.9.62":
-  version "2.9.62"
-  resolved "https://registry.npmmirror.com/@mpxjs/core/-/core-2.9.62.tgz#851fbab5b091a73723301a4ede5cecf53cf1e6ef"
-  integrity sha512-tUkDaGsCDLWrOQbqt3fF40EoBIiEIgQCn/zMVypzTSy2O3h0/Cn2R2iE3AraGAVrNuv9Itksc95PyxtUO/podg==
+"@mpxjs/core@^2.9.71":
+  version "2.9.71"
+  resolved "https://registry.npmmirror.com/@mpxjs/core/-/core-2.9.71.tgz#734606a3a87423c9e0a1bed97bafdf20d560a5e4"
+  integrity sha512-FOi23EfxzMHPR1lm2dbmm9eKBIq/RDRVYbe+nsb3C0HypNzitpMIxsI9dxk7YWxPWMhwpgS5oOU4vJqwcpspDg==
   dependencies:
-    "@mpxjs/utils" "^2.9.59"
+    "@mpxjs/utils" "^2.9.70"
     lodash "^4.1.1"
     miniprogram-api-typings "^3.10.0"
 
@@ -1642,12 +1642,13 @@
     eslint-plugin-n "^15.2.4"
     eslint-plugin-promise "^6.0.0"
 
-"@mpxjs/fetch@^2.9.62":
-  version "2.9.62"
-  resolved "https://registry.npmmirror.com/@mpxjs/fetch/-/fetch-2.9.62.tgz#39fb14b7934486b109d7a9f99122ca354133d1be"
-  integrity sha512-WKzdExPoMQYkLtbyq9eT61jM+K0OJHgvh2WKhsD+R6V2N02S52ZxvbZfNTgL0h8XEOPf0k6MIYwWk6HMqiR6VA==
+"@mpxjs/fetch@^2.9.71":
+  version "2.9.71"
+  resolved "https://registry.npmmirror.com/@mpxjs/fetch/-/fetch-2.9.71.tgz#49e8b09cfdaf128b6569db46f7aa375bbacd085b"
+  integrity sha512-luYY1rf7/c8aRFuS1mYQys9ZzhnGLd8AI3+QNQlbG08sCeyXoMCXHhfEfzzC+hrELu2HtUpOCksU4M3Tw4QWcg==
   dependencies:
-    "@mpxjs/api-proxy" "^2.9.60"
+    "@mpxjs/api-proxy" "^2.9.71"
+    "@mpxjs/utils" "^2.9.70"
     path-to-regexp "^6.2.0"
 
 "@mpxjs/miniprogram-simulate@^1.4.17", "@mpxjs/miniprogram-simulate@^1.4.8":
@@ -1690,12 +1691,12 @@
   resolved "https://registry.npmmirror.com/@mpxjs/mpx-jest/-/mpx-jest-0.0.9.tgz#ed9ae40059290e93aab8057a853fcd41c39919b1"
   integrity sha512-skhU3IoBcXLWbkWDfXERh/TTsfCs5nuLFfELLMU+v5fnxAYLmw1UNyFrPqqwajjBytcTNKrtXrYKyJoesvh7mA==
 
-"@mpxjs/pinia@^2.9.59":
-  version "2.9.59"
-  resolved "https://registry.npmmirror.com/@mpxjs/pinia/-/pinia-2.9.59.tgz#02ce58af7973532353968dbdea0d1b4888c8eccb"
-  integrity sha512-qRg7yHtWtIgCEDm/ZNYe3R4o7jVB/GxuSk7EwpWWV8fvyWSTnV2LDk29suW3CPNg4H6sSd1WCpCmqHPmzKRZ8g==
+"@mpxjs/pinia@^2.9.70":
+  version "2.9.70"
+  resolved "https://registry.npmmirror.com/@mpxjs/pinia/-/pinia-2.9.70.tgz#520e5e6f503272c518fda26e28352d9c4794098c"
+  integrity sha512-z27FIezh7zR8MqOTYTSNFvVutk2FZzJF06IRRWzzAXtABLAZxMwRTj9h1MnizGHuj0bw9ODdtmOQGhzoz078OQ==
   dependencies:
-    "@mpxjs/utils" "^2.9.59"
+    "@mpxjs/utils" "^2.9.70"
 
 "@mpxjs/size-report@^2.9.41":
   version "2.9.41"
@@ -1708,12 +1709,12 @@
     opener "^1.5.2"
     ws "^7.4.3"
 
-"@mpxjs/store@^2.9.59":
-  version "2.9.59"
-  resolved "https://registry.npmmirror.com/@mpxjs/store/-/store-2.9.59.tgz#cb139ae40e924de4d8ad86c80e1ff31b997a33de"
-  integrity sha512-1MDgpirOc2yyAQz2i2zF5SbPEaqEy/bOaX98qmEPbKvInrM4PjYVPOqANw+gfRM7acUUETyLD0jQrN9g5pdmsw==
+"@mpxjs/store@^2.9.70":
+  version "2.9.70"
+  resolved "https://registry.npmmirror.com/@mpxjs/store/-/store-2.9.70.tgz#446441f72bf94c87afcf0eece2d9443258018390"
+  integrity sha512-IzNK8CNStiF/at0YdOQQ726+UdwultRU2Y6YfXwkHrXdDhO/RgIlgp0IQw3oSVOt6JvZAVDlrparFvC/TputaQ==
   dependencies:
-    "@mpxjs/utils" "^2.9.59"
+    "@mpxjs/utils" "^2.9.70"
 
 "@mpxjs/template-engine@^2.8.7":
   version "2.8.7"
@@ -1731,6 +1732,11 @@
   version "2.9.59"
   resolved "https://registry.npmmirror.com/@mpxjs/utils/-/utils-2.9.59.tgz#393bc472a58aa6c9f7874870988a3413747cef91"
   integrity sha512-KQxRRc07VZhla30pF7nRL4hpvCeo5QDXr0PQBZyVVlPQ2smshJgny4iZhSKBIp0LoKenAUk2WHU6B2VqH8WTVg==
+
+"@mpxjs/utils@^2.9.70":
+  version "2.9.70"
+  resolved "https://registry.npmmirror.com/@mpxjs/utils/-/utils-2.9.70.tgz#34347a7820147c9800d6d49b79aedaa48ec8566d"
+  integrity sha512-x/HbnKa9E20iLKZdWz2r4srqxFhFpnaLO68aqP1HV0KbjKDzOfy0b5hu0B49xutb7sVdSfdoRDcWAFrniiJoPA==
 
 "@mpxjs/vue-cli-plugin-mpx-e2e-test@^2.1.16":
   version "2.1.16"
