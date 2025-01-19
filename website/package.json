@@ -50,7 +50,7 @@
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "docusaurus-plugin-sass": "^0.2.6",
-    "docusaurus-plugin-typedoc": "1.2.1",
+    "docusaurus-plugin-typedoc": "1.2.2",
     "dotenv": "^16.4.7",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
