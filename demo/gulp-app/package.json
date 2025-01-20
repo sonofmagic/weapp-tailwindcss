@@ -55,7 +55,7 @@
     "@types/gulp-util": "^3.0.41",
     "@types/node": "^22.10.7",
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.2",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.3",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "del": "^6.1.1",
@@ -88,7 +88,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "weapp-ide-cli": "^2.0.9",
-    "weapp-tailwindcss": "^4.0.0-alpha.6",
+    "weapp-tailwindcss": "^4.0.0-alpha.7",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }
