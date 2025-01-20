@@ -11,8 +11,6 @@
 
 </p>
 
-[<img src="https://api.gitsponsors.com/api/badge/img?id=448897619" height="90">](https://api.gitsponsors.com/api/badge/link?p=c6aIlBLPQGuNVEiUoXpJ+2CmJFZ0SlpKtu5uQrr1PPKoAFduJ4JVJSmuRoq4/N2/M2+BqpedgmsQkeC88RUQgdD/yDZlbCihkygOLom7CzRFpCECuFUYC2Lzp1QQZ7vH6k4460KSwUCBuhx3vFm9Vg==)
-
 > 简体中文(zh-cn) | [English](./README_en.md)
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
