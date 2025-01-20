@@ -210,8 +210,8 @@ const config = {
 
         {
           type: 'doc',
-          label: '迁移',
-          docId: 'migrations/v2',
+          label: '更新与迁移',
+          docId: 'migrations/v3',
         },
         {
           type: 'doc',

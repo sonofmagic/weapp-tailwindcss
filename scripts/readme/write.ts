@@ -1,6 +1,25 @@
 import fs from 'fs-extra'
 import path from 'pathe'
 
-const md = await fs.readFile(path.resolve(import.meta.dirname, './T.md'))
+function r(...args: string[]) {
+  return path.resolve(import.meta.dirname, ...args)
+}
 
-await fs.writeFile(path.resolve(import.meta.dirname, '../../README.md'), md)
+const md = await fs.readFile(r('./T.md'))
+
+for (const p of [
+  '../../README.md',
+  ...([
+    'init',
+    'logger',
+    'mangle',
+    'merge',
+    'postcss',
+    'shared',
+    'weapp-tailwindcss',
+  ].map((x) => {
+    return `../../packages/${x}/README.md`
+  })),
+]) {
+  await fs.writeFile(r(p), md)
+}

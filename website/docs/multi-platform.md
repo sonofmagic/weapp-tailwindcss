@@ -1,4 +1,4 @@
-# 跨端注意事项
+# 跨多端应用开发注意事项
 
 ## 何时开启插件
 
@@ -6,31 +6,25 @@
 
 然而在 `h5` 和 `app` 中，它们本来就是 `tailwindcss` 支持的环境，所以是没有必要开启本插件的。
 
-所以你可以这样写:
+所以你可以这样传入 `disabled` 选项, 这里我们以 `uni-app` 为例:
 
 ```js
 const isH5 = process.env.UNI_PLATFORM === "h5";
 // uni-app v2
-const isApp = process.env.UNI_PLATFORM === "app-plus";
+// const isApp = process.env.UNI_PLATFORM === "app-plus";
 // uni-app v3
-// const isApp = process.env.UNI_PLATFORM === "app";
+const isApp = process.env.UNI_PLATFORM === "app";
+// 只在小程序平台开启 weapp-tailwindcss 插件
+// highlight-next-line
 const WeappTailwindcssDisabled = isH5 || isApp;
 
-// 2种选一即可 region start
-// 1. 传递 disabled option
-const vitePlugins = [uni(), uvwt({
-  disabled: WeappTailwindcssDisabled
-})];
-
-// 2. 按照条件设置插件
-const vitePlugins = [uni()];
-
-if (!WeappTailwindcssDisabled) {
-  vitePlugins.push(
-    uvwt()
-  );
-}
-// region end
+const vitePlugins = [
+  uni(), 
+  uvwt({
+    // highlight-next-line
+    disabled: WeappTailwindcssDisabled
+  })
+];
 ```
 
 ## uni-app 打包安卓 `rgb()` 颜色失效问题

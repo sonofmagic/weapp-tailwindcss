@@ -69,7 +69,10 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'community',
     },
-
+    {
+      type: 'doc',
+      id: 'multi-platform',
+    },
     {
       type: 'doc',
       id: 'quick-start/intelliSense',
@@ -87,19 +90,10 @@ const sidebars: SidebarsConfig = {
 
     {
       type: 'doc',
-      label: '深入核心原理',
-      id: 'principle/index',
-    },
-    {
-      type: 'doc',
       label: '如何贡献',
       id: 'how-to-contribute',
     },
-    {
-      type: 'doc',
-      label: 'Tailwindcss 原子类维护指南',
-      id: 'tailwindcss-maintenance-book',
-    },
+
     {
       type: 'link',
       href: 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270',
@@ -171,11 +165,7 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'issues/more-tags',
     },
-    {
-      type: 'doc',
-      label: '跨端应用注意事项',
-      id: 'multi-platform',
-    },
+
     {
       type: 'doc',
       id: 'issues/toast-svg-bug',
@@ -184,6 +174,16 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'issues/v1',
       label: 'v1版本常见问题',
+    },
+    {
+      type: 'doc',
+      label: '深入核心原理',
+      id: 'principle/index',
+    },
+    {
+      type: 'doc',
+      label: 'Tailwindcss 原子类维护指南',
+      id: 'tailwindcss-maintenance-book',
     },
   ],
   API: [
@@ -252,6 +252,10 @@ const sidebars: SidebarsConfig = {
     },
   ],
   migrationsSidebar: [
+    {
+      type: 'doc',
+      id: 'migrations/v3',
+    },
     {
       type: 'doc',
       id: 'migrations/v2',
