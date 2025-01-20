@@ -1,5 +1,14 @@
 # @weapp-tailwindcss/mangle
 
+## 1.0.0-alpha.3
+
+### Patch Changes
+
+- [`2c51531`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2c515310f1fdfd15d11e2e35213c7e6bfcb55c3d) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
+- Updated dependencies [[`2c51531`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2c515310f1fdfd15d11e2e35213c7e6bfcb55c3d)]:
+  - @weapp-tailwindcss/shared@1.0.0-alpha.2
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes

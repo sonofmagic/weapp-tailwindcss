@@ -1,5 +1,12 @@
 # tailwindcss-injector
 
+## 0.1.6-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [[`2c51531`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2c515310f1fdfd15d11e2e35213c7e6bfcb55c3d)]:
+  - @weapp-tailwindcss/shared@1.0.0-alpha.2
+
 ## 0.1.6-alpha.1
 
 ### Patch Changes
