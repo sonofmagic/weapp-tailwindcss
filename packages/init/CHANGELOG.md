@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/init
 
+## 1.0.0-alpha.4
+
+### Patch Changes
+
+- [`d7fa028`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d7fa02877ce74792687765766ff94ae3e30edf3b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: rename export function
+
+- Updated dependencies [[`d7fa028`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d7fa02877ce74792687765766ff94ae3e30edf3b)]:
+  - @weapp-tailwindcss/logger@1.0.0-alpha.2
+  - @weapp-tailwindcss/shared@1.0.0-alpha.3
+
 ## 1.0.0-alpha.3
 
 ### Patch Changes
