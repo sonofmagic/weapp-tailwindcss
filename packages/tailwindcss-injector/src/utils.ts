@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
-import path from 'node:path'
 import { defu, defuOverrideArray, isRegexp, regExpTest } from '@weapp-tailwindcss/shared'
+import path from 'pathe'
 
 export {
   defu,
