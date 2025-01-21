@@ -1,5 +1,12 @@
 # vite-native-ts
 
+## 1.0.1-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [[`d7fa028`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d7fa02877ce74792687765766ff94ae3e30edf3b)]:
+  - @weapp-tailwindcss/merge@1.0.0-alpha.4
+
 ## 1.0.1-alpha.1
 
 ### Patch Changes
