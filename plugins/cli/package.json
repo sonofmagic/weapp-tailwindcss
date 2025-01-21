@@ -62,7 +62,7 @@
     }
   },
   "dependencies": {
-    "commander": "^13.0.0",
+    "commander": "^13.1.0",
     "cosmiconfig": "^9.0.0",
     "debug": "4.4.0",
     "del": "^8.0.0",

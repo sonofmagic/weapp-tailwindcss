@@ -127,7 +127,8 @@ exports[`get options > default options 1`] = `
   },
   "htmlMatcher": [Function],
   "ignoreCallExpressionIdentifiers": [
-    "cn",
+    "twMerge",
+    "twJoin",
     "cva",
   ],
   "ignoreTaggedTemplateExpressionIdentifiers": [

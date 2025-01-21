@@ -124,7 +124,9 @@ describe('jsHandler', () => {
     set.add('w-2.5')
     set.add('p-1.5')
     const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
-    const { code } = await defaultJsHandler(testCase, set)
+    const { code } = await defaultJsHandler(testCase, set, {
+      ignoreCallExpressionIdentifiers: ['cn'],
+    })
     expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`)
   })
 

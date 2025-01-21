@@ -278,7 +278,7 @@ const customAttributes = {
   /**
    * @version `^4.0.0`
    * @group 0.重要配置
-   * @description js 忽略调用表达式中的标识符，这样使用这个方法，包裹的模板字符串和字符串字面量不会被转义，一般用来配合 `@weapp-tailwindcss/merge` 使用，比如设置为 `['cn','cva']`
+   * @description js 忽略调用表达式中的标识符，这样使用这个方法，包裹的模板字符串和字符串字面量不会被转义，一般用来配合 `@weapp-tailwindcss/merge` 使用，比如设置为 `['twMerge', 'twJoin', 'cva']`
    */
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
 
