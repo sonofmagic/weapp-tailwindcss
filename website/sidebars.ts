@@ -165,7 +165,10 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'issues/more-tags',
     },
-
+    {
+      type: 'doc',
+      id: 'issues/at-apply',
+    },
     {
       type: 'doc',
       id: 'issues/toast-svg-bug',
