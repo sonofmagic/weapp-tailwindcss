@@ -40,5 +40,5 @@ module.exports = defineConfig({
       rem2rpx: true,
       jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
     }))
-  }
+  },
 })
