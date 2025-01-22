@@ -411,8 +411,8 @@ importers:
         specifier: ^6.0.11
         version: 6.0.11(@types/node@22.10.7)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
       vite-plugin-inspect:
-        specifier: ^10.0.7
-        version: 10.0.7(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))
+        specifier: ^10.1.0
+        version: 10.1.0(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))
       vitest:
         specifier: ~3.0.3
         version: 3.0.3(@types/node@22.10.7)(@vitest/ui@3.0.3)(jiti@2.4.2)(jsdom@26.0.0)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
@@ -13911,8 +13911,8 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
-  vite-plugin-inspect@10.0.7:
-    resolution: {integrity: sha512-ukocfUNiAgu0R0RF4E5XN4krAckqAbd+qjPW2nv8hIOx03W/erLNfQHypkrsRqlp1PrQmTQ4qu6DCbu4oxEzrQ==}
+  vite-plugin-inspect@10.1.0:
+    resolution: {integrity: sha512-solJQhkZULyR7Qq2CRGbO/8ijNPTwmxxLDMx3FkMzGQAuVqKrgqmV2cw/u8SXBsKDHgSMykipW+78MBMZz3O0g==}
     engines: {node: '>=14'}
     peerDependencies:
       '@nuxt/kit': '*'
@@ -30232,7 +30232,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-inspect@10.0.7(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)):
+  vite-plugin-inspect@10.1.0(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)):
     dependencies:
       debug: 4.4.0
       error-stack-parser-es: 1.0.5
