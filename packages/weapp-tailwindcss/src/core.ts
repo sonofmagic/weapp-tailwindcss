@@ -1,6 +1,6 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
+import { getCompilerContext } from '@/context'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
-import { getOptions } from './options'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
@@ -8,7 +8,7 @@ import { getOptions } from './options'
  * @returns 返回一个包含 transformWxss、transformWxml 和 transformJs 方法的对象
  */
 export function createContext(options: UserDefinedOptions = {}) {
-  const opts = getOptions(options)
+  const opts = getCompilerContext(options)
   const { templateHandler, styleHandler, jsHandler, twPatcher } = opts
 
   let runtimeSet = new Set<string>()

@@ -1,10 +1,10 @@
+import type { UserDefinedOptions } from '@/types'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
-import type { UserDefinedOptions } from '../../types'
-import { vitePluginName } from '../../constants'
-import { createDebug } from '../../debug'
-import { getOptions } from '../../options'
-import { getGroupedEntries } from '../../utils'
+import { vitePluginName } from '@/constants'
+import { getCompilerContext } from '@/context'
+import { createDebug } from '@/debug'
+import { getGroupedEntries } from '@/utils'
 
 const debug = createDebug()
 
@@ -14,7 +14,7 @@ const debug = createDebug()
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin | undefined {
-  const opts = getOptions(options)
+  const opts = getCompilerContext(options)
   const {
     disabled,
     onEnd,

@@ -1,14 +1,14 @@
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 // webpack 4
 // @ts-nocheck
 import type { Compiler } from 'webpack4'
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
 import fs from 'node:fs'
 import path from 'node:path'
+import { pluginName } from '@/constants'
+import { getCompilerContext } from '@/context'
+import { createDebug } from '@/debug'
+import { getGroupedEntries, removeExt } from '@/utils'
 import { ConcatSource, RawSource } from 'webpack-sources'
-import { pluginName } from '../../../constants'
-import { createDebug } from '../../../debug'
-import { getOptions } from '../../../options'
-import { getGroupedEntries, removeExt } from '../../../utils'
 
 const debug = createDebug()
 
@@ -23,7 +23,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
   appType?: AppType
 
   constructor(options: UserDefinedOptions = {}) {
-    this.options = getOptions(options)
+    this.options = getCompilerContext(options)
     this.appType = this.options.appType
   }
 

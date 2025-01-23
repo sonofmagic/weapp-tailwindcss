@@ -1,6 +1,6 @@
 import type postcss from 'postcss'
+import { getCompilerContext } from '@/context'
 import { transformCss } from '@/lightningcss'
-import { getOptions } from '@/options'
 import { MappingChars2String } from '@weapp-core/escape'
 import { createInjectPreflight, styleHandler } from '@weapp-tailwindcss/postcss'
 import { normalizeEol } from '../helpers/normalizeEol'
@@ -18,7 +18,7 @@ export function cssUnescape(str: string) {
 }
 describe('styleHandler', () => {
   it('css @media case', async () => {
-    const opt = getOptions({
+    const opt = getCompilerContext({
       customReplaceDictionary: MappingChars2String,
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
@@ -37,7 +37,7 @@ describe('styleHandler', () => {
   })
 
   it('css @media hover case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const { css } = await styleHandler(
       `@media (hover: hover) {
       a {
@@ -53,7 +53,7 @@ describe('styleHandler', () => {
   })
 
   it('css @media hover case 1', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const { css } = await styleHandler(
       `@media (hover: hover) {
       a:hover {
@@ -80,7 +80,7 @@ describe('styleHandler', () => {
   // })
 
   it('main chunk build error', async () => {
-    const opt = getOptions({ customReplaceDictionary: MappingChars2String })
+    const opt = getCompilerContext({ customReplaceDictionary: MappingChars2String })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = await getCase('taro.build.css')
     const { css } = await styleHandler(testCase, {
@@ -113,7 +113,7 @@ describe('styleHandler', () => {
   })
 
   it('new option for customRuleCallback kbone', async () => {
-    const opt = getOptions({
+    const opt = getCompilerContext({
       customReplaceDictionary: MappingChars2String,
     })
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
@@ -270,7 +270,7 @@ describe('styleHandler', () => {
   })
 
   it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
     const { css } = await styleHandler(testCase, {
       isMainChunk: true,
@@ -282,7 +282,7 @@ describe('styleHandler', () => {
   })
 
   it('set replaceUniversalSelectorWith option and cssSelectorReplacement case 1', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const testCase = '.aspect-w-16 > *,.a>.b{aspect-ratio:1/1;}'
     const { css } = await styleHandler(testCase, {
       isMainChunk: true,
@@ -456,7 +456,7 @@ describe('styleHandler', () => {
   })
 
   it('global variables scope matched and inject', async () => {
-    const opt = getOptions()
+    const opt = getCompilerContext()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ':before,:after{--tw-:\'test\'}'
     const { css } = await styleHandler(testCase, {
@@ -473,7 +473,7 @@ describe('styleHandler', () => {
   })
 
   it('global variables scope matched and inject with isMainChunk false', async () => {
-    const opt = getOptions()
+    const opt = getCompilerContext()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ':before,:after{--tw-:\'test\'}'
     const { css } = await styleHandler(testCase, {
@@ -490,7 +490,7 @@ describe('styleHandler', () => {
   })
 
   it('global variables scope matched and inject and modify preflight range', async () => {
-    const opt = getOptions()
+    const opt = getCompilerContext()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ':before,:after{--tw-:\'test\'}'
     const { css } = await styleHandler(testCase, {
@@ -507,7 +507,7 @@ describe('styleHandler', () => {
   })
 
   it('global variables scope matched and inject and modify preflight range with isMainChunk false', async () => {
-    const opt = getOptions()
+    const opt = getCompilerContext()
     const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
     const testCase = ':before,:after{--tw-:\'test\'}'
     const { css } = await styleHandler(testCase, {
@@ -607,7 +607,7 @@ describe('styleHandler', () => {
   })
 
   it('injectAdditionalCssVarScope option true', async () => {
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       injectAdditionalCssVarScope: true,
     })
     const rawSource = await getCase('backdrop.css')
@@ -616,7 +616,7 @@ describe('styleHandler', () => {
   })
 
   it('injectAdditionalCssVarScope option true and replace universal', async () => {
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       injectAdditionalCssVarScope: true,
       cssSelectorReplacement: {
         universal: ['view', 'text', 'button'],
@@ -628,7 +628,7 @@ describe('styleHandler', () => {
   })
 
   it('injectAdditionalCssVarScope option true isMainChunk false', async () => {
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       injectAdditionalCssVarScope: true,
     })
     const rawSource = await getCase('backdrop.css')
@@ -637,14 +637,14 @@ describe('styleHandler', () => {
   })
 
   it(':root pseudo case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:root{}`
     const { css } = await styleHandler(rawCode, { isMainChunk: false })
     expect(css).toBe('page{}')
   })
 
   it(':root pseudo case 0 invert', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:root{}`
     const { css } = await styleHandler(rawCode, {
       isMainChunk: false,
@@ -656,14 +656,14 @@ describe('styleHandler', () => {
   })
 
   it(':root pseudo case 1', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:root,[data-theme]{}`
     const { css } = await styleHandler(rawCode, { isMainChunk: false })
     expect(css).toBe('page,[data-theme]{}')
   })
 
   it(':root pseudo case 1 invert', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:root,[data-theme]{}`
     const { css } = await styleHandler(rawCode, {
       isMainChunk: false,
@@ -675,112 +675,112 @@ describe('styleHandler', () => {
   })
 
   it('combinator selector case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.space-x-4>view+view{}')
   })
 
   it('combinator selector case 1', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `.divide-x>:not([hidden])~:not([hidden]){}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.divide-x>view+view{}')
   })
 
   it('combinator selector case 2', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `.divide-blue-200>:not([hidden])~:not([hidden]){}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.divide-blue-200>view+view{}')
   })
 
   it('combinator selector case 3', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:is(.dark .dark:divide-slate-700)>:not([hidden])~:not([hidden]){}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.dark .dark:divide-slate-700>view+view{}')
   })
 
   it('combinator selector case 4', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `.divide-dashed>:not([hidden])~:not([hidden]){}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('.divide-dashed>view+view{}')
   })
 
   it('comment case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `/* #ifdef MP-WEIXIN */\n.divide-dashed>:not([hidden])~:not([hidden]){}\n/* #endif */`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(css).toBe('/* #ifdef MP-WEIXIN */\n.divide-dashed>view+view{}\n/* #endif */')
   })
 
   it('is-pseudo-class case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:is(view,text),:after.:before{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toBe('view,text,:after.:before{color:red;}')
   })
 
   it('is-pseudo-class case 1', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:is(view,text),::before,::after,view,text{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toBe('::before,::after,view,text{color:red;}')
   })
 
   it('is-pseudo-class case 2', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:is(.aa,bb,view,text),::before,::after{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toBe('.aa,bb:not(.weapp-tw-ig),view:not(.weapp-tw-ig),text:not(.weapp-tw-ig),::before,::after{color:red;}')
   })
 
   it('use with weapp-pandacss case 0 ', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `:is(view,text),view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it('use with weapp-pandacss case 1 ', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `*,:is(view,text),view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it('use with weapp-pandacss case 2 ', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `*,:is(view,text),::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it('use with weapp-pandacss case 2.1 ', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `*,view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it('use with weapp-pandacss case 3 ', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `*,view,text,:is(view,text),:is(view,text),::before,::after,*{--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it('use with weapp-pandacss case 4 ', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `.space-y-4>:not([hidden])+:not([hidden]){--tw-border-opacity: 1;--tw-border-opacity: 1;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it('.steps @icestack/ui case 0', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `.steps .step-primary+.step-primary:before,.steps .step-primary:after {
       --tw-bg-opacity: 1;
       background-color: rgba(var(--ice-primary) / var(--tw-bg-opacity));
@@ -792,7 +792,7 @@ describe('styleHandler', () => {
   })
 
   it('guess css var scoped', async () => {
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const rawCode = `*, ::before, ::after {
       --tw-border-spacing-x: 0;
       --tw-border-spacing-y: 0;
@@ -849,7 +849,7 @@ describe('styleHandler', () => {
   it('add postcss plugins case 0', async () => {
     const tw = await import('tailwindcss')
 
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       postcssOptions: {
         plugins: [tw.default({ content: [], corePlugins: { preflight: false } }) as postcss.Plugin],
       },
@@ -861,35 +861,35 @@ describe('styleHandler', () => {
   })
 
   it(':hover remove case 0', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const rawCode = `.a:hover{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it(':hover remove case 1', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const rawCode = `.b,.a:hover{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true })
     expect(css).toMatchSnapshot()
   })
 
   it(':hover remove case 0 revert', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const rawCode = `.a:hover{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
     expect(css).toMatchSnapshot()
   })
 
   it(':hover remove case 1 revert', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const rawCode = `.b,.a:hover{color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
     expect(css).toMatchSnapshot()
   })
 
   it('https://github.com/tailwindlabs/tailwindcss/pull/14625/files', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const rawCode = `[hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }`
@@ -898,7 +898,7 @@ describe('styleHandler', () => {
   })
 
   it('remove zero selector', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const rawCode = `.b,.a:hover{color:red;} {color:red;} {color:red;}`
     const { css } = await styleHandler(rawCode, { isMainChunk: true, cssRemoveHoverPseudoClass: false })
     expect(css).toMatchSnapshot()

@@ -1,16 +1,16 @@
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 import { defu } from '@/utils'
 
 describe('get options', () => {
   it('default options', () => {
-    const options = getOptions({})
+    const options = getCompilerContext({})
     // @ts-ignore
     delete options.twPatcher
     expect(options).toMatchSnapshot()
   })
 
   it('default matcher', () => {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getOptions()
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext()
     expect(cssMatcher('a.css')).toBe(true)
     expect(jsMatcher('a.js')).toBe(true)
     expect(jsMatcher('node_modules/a.js')).toBe(false)
@@ -19,7 +19,7 @@ describe('get options', () => {
   })
 
   // it.skip('glob matcher', () => {
-  //   const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getOptions({
+  //   const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext({
   //     cssMatcher: '*.xxss',
   //     jsMatcher: '*.abcd',
   //     mainCssChunkMatcher: '*.main',
@@ -33,7 +33,7 @@ describe('get options', () => {
   // })
 
   it('cssPreflight false', () => {
-    const config = getOptions({
+    const config = getCompilerContext({
       cssPreflight: false,
     })
     expect(config.cssPreflight).toBe(false)
@@ -45,7 +45,7 @@ describe('get options', () => {
       'box-sizing': 'content-box',
       'border-style': 0,
     }
-    const config = getOptions({
+    const config = getCompilerContext({
       cssPreflight,
     })
     expect(config.cssPreflight).toStrictEqual({
@@ -57,17 +57,17 @@ describe('get options', () => {
   })
 
   // it('supportCustomLengthUnitsPatch boolean', () => {
-  //   const o0 = getOptions()
+  //   const o0 = getCompilerContext()
   //   expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
-  //   const o1 = getOptions({
+  //   const o1 = getCompilerContext({
   //     supportCustomLengthUnitsPatch: true
   //   })
   //   expect(o1.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
-  //   const o2 = getOptions({
+  //   const o2 = getCompilerContext({
   //     supportCustomLengthUnitsPatch: false
   //   })
   //   expect(o2.supportCustomLengthUnitsPatch).toEqual(false)
-  //   const o0o = getOptions({
+  //   const o0o = getCompilerContext({
   //     supportCustomLengthUnitsPatch: {
   //       units: ['upx', 'xxem']
   //     }
@@ -81,17 +81,17 @@ describe('get options', () => {
   // })
 
   it('arbitraryValues options', () => {
-    let arbitraryValues: ReturnType<typeof getOptions>['arbitraryValues'] = getOptions().arbitraryValues
+    let arbitraryValues: ReturnType<typeof getCompilerContext>['arbitraryValues'] = getCompilerContext().arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
-    arbitraryValues = getOptions({
+    arbitraryValues = getCompilerContext({
       arbitraryValues: {},
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
-    arbitraryValues = getOptions({
+    arbitraryValues = getCompilerContext({
       arbitraryValues: {
         allowDoubleQuotes: true,
       },
@@ -102,7 +102,7 @@ describe('get options', () => {
   })
 
   it('customAttributes defu merge', () => {
-    // const { customAttributes } = getOptions()
+    // const { customAttributes } = getCompilerContext()
 
     const customAttributes = {
       '*': [/[A-Za-z-]*[Cc]lass/],
@@ -114,19 +114,19 @@ describe('get options', () => {
   })
 
   it('mpx should have unique cache dir', () => {
-    let config = getOptions({
+    let config = getCompilerContext({
 
     })
     expect(config.twPatcher.cacheOptions).toEqual({ enable: true })
     expect(config.twPatcher.cacheOptions.dir).not.toBeTruthy()
-    config = getOptions({
+    config = getCompilerContext({
       appType: 'mpx',
     })
     expect(config.twPatcher.cacheOptions.dir).toBeTruthy()
   })
 
   // it('customAttributes map defu merge', () => {
-  //   // const { customAttributes } = getOptions()
+  //   // const { customAttributes } = getCompilerContext()
 
   //   const customAttributes = new Map<string, RegExp[]>()
   //   customAttributes.set('*', [/[A-Za-z]?[A-Za-z-]*[Cc]lass/])

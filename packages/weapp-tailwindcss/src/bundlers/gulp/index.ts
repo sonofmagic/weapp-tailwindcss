@@ -1,9 +1,9 @@
+import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
 import type File from 'vinyl'
-import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '../../types'
 import { Buffer } from 'node:buffer'
 import stream from 'node:stream'
-import { createDebug } from '../../debug'
-import { getOptions } from '../../options'
+import { getCompilerContext } from '@/context'
+import { createDebug } from '@/debug'
 
 const debug = createDebug()
 
@@ -15,7 +15,7 @@ const Transform = stream.Transform
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/native
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
-  const opts = getOptions(options)
+  const opts = getCompilerContext(options)
 
   const { templateHandler, styleHandler, jsHandler, setMangleRuntimeSet, cache, twPatcher } = opts
 

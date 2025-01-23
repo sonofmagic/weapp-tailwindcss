@@ -1,4 +1,4 @@
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 // @ts-ignore
 // import isPseudoClass from '@csstools/postcss-is-pseudo-class'
 import { getCss } from '../helpers/getTwCss'
@@ -14,7 +14,7 @@ describe('important', () => {
       },
     })
     expect(css).toMatchSnapshot()
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
@@ -28,7 +28,7 @@ describe('important', () => {
       },
     })
     expect(css).toMatchSnapshot()
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
@@ -43,7 +43,7 @@ describe('important', () => {
       },
     })
     expect(css).toMatchSnapshot()
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })
@@ -58,7 +58,7 @@ describe('important', () => {
       },
     })
     expect(css).toMatchSnapshot()
-    const { styleHandler } = getOptions()
+    const { styleHandler } = getCompilerContext()
     const res = await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })
     expect(res.css).toMatchSnapshot()
   })

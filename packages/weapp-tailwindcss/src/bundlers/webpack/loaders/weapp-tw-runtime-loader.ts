@@ -5,7 +5,7 @@ const WeappTwRuntimeAopLoader: webpack.LoaderDefinitionFunction<{
   getClassSet: () => void
 }> = function (this: webpack.LoaderContext<any>, source: string) {
   // @ts-expect-error
-  const opt = loaderUtils.getOptions(this) // this.getOptions()
+  const opt = loaderUtils.getCompilerContext(this) // this.getCompilerContext()
   // @ts-expect-error
   opt?.getClassSet?.()
   return source

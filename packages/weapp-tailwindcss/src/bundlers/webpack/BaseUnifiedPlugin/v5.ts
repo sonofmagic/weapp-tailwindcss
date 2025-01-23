@@ -1,12 +1,12 @@
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 // webpack 5
 import type { Compiler } from 'webpack'
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '../../../types'
 import fs from 'node:fs'
 import path from 'node:path'
-import { pluginName } from '../../../constants'
-import { createDebug } from '../../../debug'
-import { getOptions } from '../../../options'
-import { getGroupedEntries, removeExt } from '../../../utils'
+import { pluginName } from '@/constants'
+import { getCompilerContext } from '@/context'
+import { createDebug } from '@/debug'
+import { getGroupedEntries, removeExt } from '@/utils'
 
 const debug = createDebug()
 
@@ -21,7 +21,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   appType?: AppType
 
   constructor(options: UserDefinedOptions = {}) {
-    this.options = getOptions(options)
+    this.options = getCompilerContext(options)
     this.appType = this.options.appType
   }
 

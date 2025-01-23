@@ -4,22 +4,22 @@ import type {
   InternalUserDefinedOptions,
   ItemOrItemArray,
   UserDefinedOptions,
-} from './types'
+} from '@/types'
+import { initializeCache } from '@/cache'
+import { getDefaultOptions } from '@/defaults'
+import { createJsHandler } from '@/js'
+import { createTailwindcssPatcher } from '@/tailwindcss'
+import { defuOverrideArray, isMap } from '@/utils'
+import { createTemplateHandler } from '@/wxml'
 import { useMangleStore } from '@weapp-tailwindcss/mangle'
 import { createInjectPreflight, createStyleHandler } from '@weapp-tailwindcss/postcss'
-import { initializeCache } from './cache'
-import { getDefaultOptions } from './defaults'
-import { createJsHandler } from './js'
-import { createTailwindcssPatcher } from './tailwindcss/patcher'
-import { defuOverrideArray, isMap } from './utils'
-import { createTemplateHandler } from './wxml/utils'
 
 /**
  * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
  * @param opts - 用户定义的选项，可选。
  * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
  */
-export function getOptions(opts?: UserDefinedOptions): InternalUserDefinedOptions {
+export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const ctx = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
     opts as InternalUserDefinedOptions,
     getDefaultOptions() as InternalUserDefinedOptions,

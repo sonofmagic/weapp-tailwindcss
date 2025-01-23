@@ -1,10 +1,10 @@
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 import { getCss } from '../helpers/getTwCss'
 
 describe('responsive-design', () => {
-  let styleHandler: ReturnType<typeof getOptions>['styleHandler']
+  let styleHandler: ReturnType<typeof getCompilerContext>['styleHandler']
   beforeEach(() => {
-    styleHandler = getOptions().styleHandler
+    styleHandler = getCompilerContext().styleHandler
   })
   it('xl:text-sm', async () => {
     const res = await getCss('xl:text-sm')

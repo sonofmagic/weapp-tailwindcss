@@ -1,4 +1,4 @@
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCss } from './helpers/getTwCss'
 // import { getClassCacheSet } from 'tailwindcss-patch'
@@ -82,7 +82,7 @@ describe('postcss plugin', () => {
     })
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
-    const ctx = getOptions()
+    const ctx = getCompilerContext()
     const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
     expect(cssRes).toMatchSnapshot('css')
   })
@@ -102,7 +102,7 @@ describe('postcss plugin', () => {
 
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
-    const ctx = getOptions()
+    const ctx = getCompilerContext()
     const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
     expect(cssRes).toMatchSnapshot('css')
   })
@@ -122,7 +122,7 @@ describe('postcss plugin', () => {
 
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
-    const ctx = getOptions()
+    const ctx = getCompilerContext()
     const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
     expect(cssRes).toMatchSnapshot('css')
   })
@@ -142,7 +142,7 @@ describe('postcss plugin', () => {
 
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
-    const ctx = getOptions()
+    const ctx = getCompilerContext()
     const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
     expect(cssRes).toMatchSnapshot('css')
   })
@@ -162,7 +162,7 @@ describe('postcss plugin', () => {
 
     const css = res.css.toString()
     expect(css).toMatchSnapshot()
-    const ctx = getOptions()
+    const ctx = getCompilerContext()
     const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
     expect(cssRes).toMatchSnapshot('css')
   })

@@ -1,9 +1,9 @@
 /* eslint-disable no-template-curly-in-string */
 import { getCss } from '#test/helpers/getTwCss'
 
+import { getCompilerContext } from '@/context'
 import { getDefaultOptions } from '@/defaults'
 import { createJsHandler } from '@/js/index'
-import { getOptions } from '@/options'
 import { decodeUnicode } from '@/utils/decode'
 import { SimpleMappingChars2String } from '@weapp-core/escape'
 // import punycode from 'node:punycode'
@@ -52,7 +52,7 @@ describe('jsHandler', () => {
       jsAstTool: 'ast-grep',
     })
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     defaultJsHandler = jsHandler
   })
   it.each(testTable)('$name common case', async () => {
@@ -409,7 +409,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     // set.add('*')
     set.add('w-[100px]')
-    const { jsHandler, setMangleRuntimeSet } = getOptions({
+    const { jsHandler, setMangleRuntimeSet } = getCompilerContext({
       mangle: true,
     })
     setMangleRuntimeSet(set)
@@ -420,7 +420,7 @@ describe('jsHandler', () => {
   // it('source map case 0', () => {
   //   const set: Set<string> = new Set()
   //   set.add('w-[100px]')
-  //   const { jsHandler, setMangleRuntimeSet } = getOptions()
+  //   const { jsHandler, setMangleRuntimeSet } = getCompilerContext()
   //   setMangleRuntimeSet(set)
   //   const { code, map } = jsHandler("const n = '* 1 * 2 w-[100px]'", set)
   //   expect(code).toBe("const n = '* 1 * 2 w-_100px_'")
@@ -489,7 +489,7 @@ describe('jsHandler', () => {
   it('taro-lottie-miniprogram-dev', async () => {
     const testCase = await getCase('taro-lottie-miniprogram-dev.js')
     const set: Set<string> = new Set()
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     expect(async () => {
       const { code } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
@@ -499,7 +499,7 @@ describe('jsHandler', () => {
   it('taro-lottie-miniprogram-build-no-compress', async () => {
     const testCase = await getCase('taro-lottie-miniprogram-build-no-compress.js')
     const set: Set<string> = new Set()
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     expect(async () => {
       const { code } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
@@ -509,7 +509,7 @@ describe('jsHandler', () => {
   it('taro-lottie-miniprogram-build', async () => {
     const testCase = await getCase('taro-lottie-miniprogram-build.js')
     const set: Set<string> = new Set()
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     expect(async () => {
       const { code } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
@@ -521,7 +521,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('rounded-[20rpx]')
     set.add('before:rounded-[20rpx]')
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -532,7 +532,7 @@ describe('jsHandler', () => {
     set.add('before:rounded-[20rpx]')
     set.add('rounded-[20rpx]')
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -542,7 +542,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('rounded-[20rpx]')
     set.add('before:rounded-[20rpx]')
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -553,7 +553,7 @@ describe('jsHandler', () => {
     set.add('before:rounded-[20rpx]')
     set.add('rounded-[20rpx]')
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -563,7 +563,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'的撒的撒\']')
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -573,7 +573,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'的撒的撒\']')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -585,7 +585,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('before:content-[\'moduleA_普通分包\']')
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -595,7 +595,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('before:content-[\'moduleA_普通分包\']')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -607,7 +607,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -617,7 +617,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -629,7 +629,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -641,7 +641,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -653,7 +653,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -689,7 +689,7 @@ describe('jsHandler', () => {
     const testCase = `const a = ''`
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -700,7 +700,7 @@ describe('jsHandler', () => {
     const testCase = `const a = '1'`
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const code = await jsHandler(testCase, set)
@@ -719,7 +719,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('text-[100px]')
     set.add('bg-[#123456]')
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     expect(async () => {
       const { code, error } = await jsHandler(testCase, set)
       expect(code).toMatchSnapshot()
@@ -731,7 +731,7 @@ describe('jsHandler', () => {
     const testCase = await getTsCase('native-ts-noting.ts')
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     expect(async () => {
       const { code, error } = await jsHandler(testCase, set)
       expect(code).toBe(testCase)
@@ -743,7 +743,7 @@ describe('jsHandler', () => {
     const testCase = await getTsCase('native-ts-throw.ts')
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const { error } = await jsHandler(testCase, set)
     expect(error).toBeTruthy()
   })
@@ -752,7 +752,7 @@ describe('jsHandler', () => {
     const testCase = await getTsCase('native-ts-throw.ts')
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       babelParserOptions: {
         plugins: ['typescript'],
       },
@@ -765,7 +765,7 @@ describe('jsHandler', () => {
     const testCase = await getTsCase('native-ts-throw.ts')
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       babelParserOptions: {
         // @ts-ignore
         plugins: ['@babel/plugin-syntax-typescript'],
@@ -780,7 +780,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const { code } = await jsHandler(testCase, set)
@@ -792,7 +792,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({})
+    const { jsHandler } = getCompilerContext({})
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -802,7 +802,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const { code } = await jsHandler(testCase, set)
@@ -814,7 +814,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({})
+    const { jsHandler } = getCompilerContext({})
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -824,7 +824,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({})
+    const { jsHandler } = getCompilerContext({})
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -839,7 +839,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({})
+    const { jsHandler } = getCompilerContext({})
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -849,7 +849,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({})
+    const { jsHandler } = getCompilerContext({})
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -859,7 +859,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getOptions({
+    const { jsHandler } = getCompilerContext({
       jsAstTool: 'ast-grep',
     })
     const { code } = await jsHandler(testCase, set)

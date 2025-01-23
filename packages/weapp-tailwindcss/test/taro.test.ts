@@ -3,7 +3,7 @@ import { createJsHandler } from '@/js/index'
 import { SimpleMappingChars2String } from '@weapp-core/escape'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
-// import { getOptions } from '@/options'
+// import { getCompilerContext } from '@/context'
 const getCase = createGetCase(jsCasePath)
 
 function getClassCacheSet() {
@@ -46,7 +46,7 @@ describe('taro app', () => {
     //   }
     // })
 
-    // const { jsHandler } = getOptions()
+    // const { jsHandler } = getCompilerContext()
     // defaultJsHandler = jsHandler
   })
 

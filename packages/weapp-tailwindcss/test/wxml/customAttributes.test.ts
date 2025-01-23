@@ -1,9 +1,9 @@
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 import { MappingChars2String } from '@weapp-core/escape'
 
 describe('customAttributes', () => {
   it('van-image case 0', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         'van-image': ['image-class', 'loading-class', 'error-class'],
       },
@@ -14,7 +14,7 @@ describe('customAttributes', () => {
   })
 
   it('van-image case 1', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         'van-image': ['other-attr'],
       },
@@ -25,7 +25,7 @@ describe('customAttributes', () => {
   })
 
   it('view tag case', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         view: ['aa', 'bb'],
       },
@@ -36,7 +36,7 @@ describe('customAttributes', () => {
   })
 
   it('wild card case', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         '*': ['aa', 'bb'],
       },
@@ -47,7 +47,7 @@ describe('customAttributes', () => {
   })
 
   it('wild card case 0', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         '*': ['group-hover-class'],
       },
@@ -57,7 +57,7 @@ describe('customAttributes', () => {
   })
 
   it('wild card via normal case', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         '*': ['aa', 'bb'],
         'cc': ['dd', 'ee'],
@@ -75,7 +75,7 @@ describe('customAttributes', () => {
   it('map case', async () => {
     const map = new Map<string | RegExp, string | RegExp | (string | RegExp)[]>()
     map.set(/(?:van|el|ant)-\w+/g, ['custom-attrs', /shit/])
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: map,
       customReplaceDictionary: MappingChars2String,
     })
@@ -95,7 +95,7 @@ describe('customAttributes', () => {
   it('simple map case', async () => {
     const map = new Map<string | RegExp, string | RegExp | (string | RegExp)[]>()
     map.set(/(?:van|el|ant)-\w+/, ['custom-attrs', /shit/])
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: map,
       customReplaceDictionary: MappingChars2String,
     })

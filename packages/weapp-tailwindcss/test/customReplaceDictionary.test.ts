@@ -1,10 +1,10 @@
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 import { MappingChars2String } from '@weapp-core/escape'
 import defu from 'defu'
 
 describe('customReplaceDictionary', () => {
   it('templateHandler custom map', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         'van-image': ['other-attr'],
       },
@@ -21,7 +21,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('templateHandler complex mode', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         'van-image': ['other-attr'],
       },
@@ -32,7 +32,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('templateHandler default(complex) mode', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         'van-image': ['other-attr'],
       },
@@ -43,7 +43,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('templateHandler simple mode', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         'van-image': ['other-attr'],
       },
@@ -53,7 +53,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('styleHandler custom map', async () => {
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       customReplaceDictionary: defu(
         {
           '[': '-',
@@ -69,7 +69,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('styleHandler complex mode', async () => {
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       customReplaceDictionary: MappingChars2String,
     })
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
@@ -79,7 +79,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('styleHandler default(complex) mode', async () => {
-    const { styleHandler } = getOptions({
+    const { styleHandler } = getCompilerContext({
       customReplaceDictionary: MappingChars2String,
     })
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
@@ -89,7 +89,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('styleHandler simple mode', async () => {
-    const { styleHandler } = getOptions({})
+    const { styleHandler } = getCompilerContext({})
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
@@ -97,7 +97,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('all prop with testClass', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         '*': ['testClass'],
       },
@@ -107,7 +107,7 @@ describe('customReplaceDictionary', () => {
   })
 
   it('all prop with [Cc]lass', async () => {
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       customAttributes: {
         '*': [/[A-Za-z-]*[Cc]lass/],
       },

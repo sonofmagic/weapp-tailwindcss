@@ -1,6 +1,6 @@
 import { getCss } from '#test/helpers/getTwCss'
 import { createGetCase, wxsCasePath } from '#test/util'
-import { getOptions } from '@/options'
+import { getCompilerContext } from '@/context'
 // import { createTemplateHandler } from '@/wxml/index'
 import { wxsTagRegexp } from '@weapp-core/regex'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
@@ -51,7 +51,7 @@ describe('wxs', () => {
     const str = await getCase('inline.wxml')
     const res = [...str.matchAll(wxsTagRegexp)]
     expect(res.length).toEqual(2)
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const set = new Set<string>()
     const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
@@ -65,7 +65,7 @@ describe('wxs', () => {
     let str = await getCase('inline.wxml')
     const res = extractSource(str, wxsTagRegexp) // [...str.matchAll(wxsTagRegexp)]
     expect(res.length).toEqual(2)
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const set = new Set<string>()
     const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
@@ -84,7 +84,7 @@ describe('wxs', () => {
     const str = await getCase('outside.wxml')
     const res = [...str.matchAll(wxsTagRegexp)]
     expect(res.length).toEqual(1)
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const set = new Set<string>()
     const arr = ['after:content-[\'我来自inline-wxs\']', 'after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
@@ -95,7 +95,7 @@ describe('wxs', () => {
 
   it('simple.wxs content extract and escape', async () => {
     const str = await getCase('simple.wxs')
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const set = new Set<string>()
     const arr = ['after:content-[\'我来自outside-wxs\']']
     for (const cls of arr) {
@@ -107,7 +107,7 @@ describe('wxs', () => {
 
   it('inline.wxml use templateHandler', async () => {
     const str = await getCase('inline.wxml')
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       inlineWxs: true,
     })
     const set = new Set<string>()
@@ -124,7 +124,7 @@ describe('wxs', () => {
 
   it('outside.wxml use templateHandler', async () => {
     const str = await getCase('outside.wxml')
-    const { templateHandler } = getOptions({
+    const { templateHandler } = getCompilerContext({
       inlineWxs: true,
     })
     const set = new Set<string>()
@@ -143,7 +143,7 @@ describe('wxs', () => {
     const raw = `\n\n\tvar className = 'after:content-[\\'我来自inline-wxs\\']'\n  module.exports = {\n    className: className\n  }\n\n`
     getCss(raw)
     const set = getClassCacheSet()
-    const { jsHandler } = getOptions()
+    const { jsHandler } = getCompilerContext()
     const code = await jsHandler(raw, set)
     expect(code).toMatchSnapshot()
     // 一转义就有问题
