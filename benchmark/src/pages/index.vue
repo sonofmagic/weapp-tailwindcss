@@ -3,12 +3,10 @@
 </script>
 
 <template>
-  <div>
-    <model-viewer
-      class="h-screen w-screen"
-      src="blender.glb" ar
-      shadow-intensity="1" camera-controls touch-action="pan-y"
-    />
+  <div class="container mx-auto p-[12.34px]">
+    <div class="m-[3.45rpx] bg-[#377a6c90]">
+      2
+    </div>
   </div>
 </template>
 
