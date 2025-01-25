@@ -116,7 +116,7 @@
     "sass-loader": "14.2.1",
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "3",
     "tailwindcss-patch": "^5.0.2",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.4.2",

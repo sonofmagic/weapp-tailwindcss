@@ -61,7 +61,7 @@
     "@tarojs/plugin-platform-h5": "3.6.35",
     "@tarojs/runtime": "3.6.35",
     "@tarojs/taro": "3.6.35",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "3",
     "vue": "^3.5.13"
   },
   "devDependencies": {

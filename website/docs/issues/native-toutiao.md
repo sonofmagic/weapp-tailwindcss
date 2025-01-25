@@ -41,7 +41,7 @@ npm i -D gulp gulp-postcss gulp-plumber del@^6
 - 安装 tailwindcss
 
 ```sh
-npm i -D tailwindcss postcss autoprefixer
+npm i -D tailwindcss@3 postcss autoprefixer
 ```
 
 - 初始化 tailwindcss 配置文件
