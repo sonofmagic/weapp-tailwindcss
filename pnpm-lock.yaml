@@ -40,7 +40,7 @@ importers:
         version: 1.0.0(eslint@9.19.0(jiti@2.4.2))
       '@icebreakers/eslint-config':
         specifier: ^0.7.13
-        version: 0.7.13(@typescript-eslint/utils@8.21.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint@9.19.0(jiti@2.4.2))(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))(ts-api-utils@2.0.0(typescript@5.7.3))(typescript@5.7.3)(vitest@3.0.4)
+        version: 0.7.13(@typescript-eslint/utils@8.21.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint@9.19.0(jiti@2.4.2))(tailwindcss@4.0.1)(ts-api-utils@2.0.0(typescript@5.7.3))(typescript@5.7.3)(vitest@3.0.4)
       '@icebreakers/monorepo':
         specifier: ^0.6.22
         version: 0.6.22(@types/node@22.10.10)
@@ -369,8 +369,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.97.1(esbuild@0.24.2))
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       terser-webpack-plugin:
         specifier: ^5.3.11
         version: 5.3.11(esbuild@0.24.2)(webpack@5.97.1(esbuild@0.24.2))
@@ -421,7 +421,7 @@ importers:
         version: link:packages/weapp-tailwindcss
       weapp-tailwindcss-children:
         specifier: ^0.1.0
-        version: 0.1.0(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))
+        version: 0.1.0(tailwindcss@4.0.1)
       webpack:
         specifier: ^5.97.1
         version: 5.97.1(esbuild@0.24.2)
@@ -469,8 +469,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       tailwindcss-injector:
         specifier: workspace:*
         version: link:../../packages/tailwindcss-injector
@@ -493,8 +493,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -521,8 +521,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -545,8 +545,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -598,8 +598,8 @@ importers:
         specifier: ^5.2.1
         version: 5.2.1(vite@6.0.11(@types/node@22.10.10)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))
       tailwindcss:
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 4.0.1
+        version: 4.0.1
       unplugin-vue-router:
         specifier: ^0.11.1
         version: 0.11.1(rollup@4.32.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
@@ -718,8 +718,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       tailwindcss-config:
         specifier: workspace:*
         version: link:../tailwindcss-config
@@ -787,7 +787,7 @@ importers:
         version: 7.6.3
       tailwindcss-patch:
         specifier: ~5.0.2
-        version: 5.0.2(magicast@0.3.5)(tailwindcss@4.0.0)
+        version: 5.0.2(magicast@0.3.5)(tailwindcss@4.0.1)
       webpack-sources:
         specifier: 3.2.3
         version: 3.2.3
@@ -862,8 +862,8 @@ importers:
         version: link:../../packages/weapp-tailwindcss
     devDependencies:
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
 
   plugins/typography:
     dependencies:
@@ -927,7 +927,7 @@ importers:
         version: 0.1.6(encoding@0.1.13)
       '@tailwindcss/typography':
         specifier: ^0.5.16
-        version: 0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))
+        version: 0.5.16(tailwindcss@4.0.1)
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
@@ -959,8 +959,8 @@ importers:
         specifier: ^16.0.4
         version: 16.0.4(sass-embedded@1.83.4)(sass@1.83.4)(webpack@5.97.1(esbuild@0.24.2))
       tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+        specifier: ^4.0.0
+        version: 4.0.1
       theme-transition:
         specifier: workspace:*
         version: link:../packages/theme-transition
@@ -1056,10 +1056,6 @@ packages:
   '@algolia/requester-node-http@5.18.0':
     resolution: {integrity: sha512-tZCqDrqJ2YE2I5ukCQrYN8oiF6u3JIdCxrtKq+eniuLkjkO78TKRnXrVcKZTmfFJyyDK8q47SfDcHzAA3nHi6w==}
     engines: {node: '>= 14.0.0'}
-
-  '@alloc/quick-lru@5.2.0':
-    resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
-    engines: {node: '>=10'}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -10998,12 +10994,6 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  postcss-import@15.1.0:
-    resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      postcss: ^8.0.0
-
   postcss-import@16.1.0:
     resolution: {integrity: sha512-7hsAZ4xGXl4MW+OKEWCnF6T5jqBw80/EE9aXg1r2yyn1RsVEU8EtKXbijEODa+rg7iih4bKf7vlvTGYR4CnPNg==}
     engines: {node: '>=18.0.0'}
@@ -11028,18 +11018,6 @@ packages:
   postcss-load-config@3.1.4:
     resolution: {integrity: sha512-6DiM4E7v4coTE4uzA8U//WhtPwyhiim3eyjEMFCnUpzbrkK9wJHgKDT2mR+HbtSrd/NubVaYTOpSpjUl8NQeRg==}
     engines: {node: '>= 10'}
-    peerDependencies:
-      postcss: '>=8.0.9'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
-      ts-node:
-        optional: true
-
-  postcss-load-config@4.0.2:
-    resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
-    engines: {node: '>= 14'}
     peerDependencies:
       postcss: '>=8.0.9'
       ts-node: '>=9.0.0'
@@ -11227,12 +11205,6 @@ packages:
 
   postcss-nested@4.2.3:
     resolution: {integrity: sha512-rOv0W1HquRCamWy2kFl3QazJMMe1ku6rCFoAAH+9AcxdbpDeBr6k968MLWuLjvjMcGEip01ak09hKOEgpK9hvw==}
-
-  postcss-nested@6.2.0:
-    resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
-    engines: {node: '>=12.0'}
-    peerDependencies:
-      postcss: ^8.2.14
 
   postcss-nested@7.0.2:
     resolution: {integrity: sha512-5osppouFc0VR9/VYzYxO03VaDa3e8F23Kfd6/9qcZTUI8P58GIYlArOET2Wq0ywSl2o2PjELhYOFI4W7l5QHKw==}
@@ -13133,13 +13105,11 @@ packages:
       tailwindcss:
         optional: true
 
-  tailwindcss@3.4.17:
-    resolution: {integrity: sha512-w33E2aCvSDP0tW9RZuNXadXlkHXqFzSkQew/aIa2i/Sj8fThxwovwlXHSPXTbAHwEIhBFXAedUhP2tueAKP8Og==}
-    engines: {node: '>=14.0.0'}
-    hasBin: true
-
   tailwindcss@4.0.0:
     resolution: {integrity: sha512-ULRPI3A+e39T7pSaf1xoi58AqqJxVCLg8F/uM5A3FadUbnyDTgltVnXJvdkTjwCOGA6NazqHVcwPJC5h2vRYVQ==}
+
+  tailwindcss@4.0.1:
+    resolution: {integrity: sha512-UK5Biiit/e+r3i0O223bisoS5+y7ZT1PM8Ojn0MxRHzXN1VPZ2KY6Lo6fhu1dOfCfyUAlK7Lt6wSxowRabATBw==}
 
   tapable@1.1.3:
     resolution: {integrity: sha512-4WK/bYZmj8xLr+HUCODHGF1ZFzsYffasLUgEiMBY4fgtltdO6B4WJtlSbPaDTLpYTcGVwM2qLnFTICEcNxs3kA==}
@@ -14591,8 +14561,6 @@ snapshots:
   '@algolia/requester-node-http@5.18.0':
     dependencies:
       '@algolia/client-common': 5.18.0
-
-  '@alloc/quick-lru@5.2.0': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
@@ -17985,7 +17953,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@icebreakers/eslint-config@0.7.13(@typescript-eslint/utils@8.21.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint@9.19.0(jiti@2.4.2))(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))(ts-api-utils@2.0.0(typescript@5.7.3))(typescript@5.7.3)(vitest@3.0.4)':
+  '@icebreakers/eslint-config@0.7.13(@typescript-eslint/utils@8.21.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint@9.19.0(jiti@2.4.2))(tailwindcss@4.0.1)(ts-api-utils@2.0.0(typescript@5.7.3))(typescript@5.7.3)(vitest@3.0.4)':
     dependencies:
       '@antfu/eslint-config': 3.15.0(@eslint-react/eslint-plugin@1.24.0(eslint@9.19.0(jiti@2.4.2))(ts-api-utils@2.0.0(typescript@5.7.3))(typescript@5.7.3))(@typescript-eslint/utils@8.21.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@unocss/eslint-plugin@65.4.2(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.19.0(jiti@2.4.2)))(eslint-plugin-react-hooks@5.1.0(eslint@9.19.0(jiti@2.4.2)))(eslint-plugin-react-refresh@0.4.18(eslint@9.19.0(jiti@2.4.2)))(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)(vitest@3.0.4)
       '@eslint-react/eslint-plugin': 1.24.0(eslint@9.19.0(jiti@2.4.2))(ts-api-utils@2.0.0(typescript@5.7.3))(typescript@5.7.3)
@@ -17993,7 +17961,7 @@ snapshots:
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.19.0(jiti@2.4.2))
       eslint-plugin-react-hooks: 5.1.0(eslint@9.19.0(jiti@2.4.2))
       eslint-plugin-react-refresh: 0.4.18(eslint@9.19.0(jiti@2.4.2))
-      eslint-plugin-tailwindcss: 3.18.0(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))
+      eslint-plugin-tailwindcss: 3.18.0(tailwindcss@4.0.1)
       eslint-plugin-vuejs-accessibility: 2.4.1(eslint@9.19.0(jiti@2.4.2))
     optionalDependencies:
       '@unocss/eslint-plugin': 65.4.2(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
@@ -19349,13 +19317,13 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
-  '@tailwindcss/typography@0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))':
+  '@tailwindcss/typography@0.5.16(tailwindcss@4.0.1)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+      tailwindcss: 4.0.1
 
   '@tailwindcss/vite@4.0.0(vite@6.0.11(@types/node@22.10.10)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))':
     dependencies:
@@ -22911,11 +22879,11 @@ snapshots:
       regexp-ast-analysis: 0.7.1
       scslre: 0.3.0
 
-  eslint-plugin-tailwindcss@3.18.0(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))):
+  eslint-plugin-tailwindcss@3.18.0(tailwindcss@4.0.1):
     dependencies:
       fast-glob: 3.3.3
       postcss: 8.5.1
-      tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+      tailwindcss: 4.0.1
 
   eslint-plugin-toml@0.12.0(eslint@9.19.0(jiti@2.4.2)):
     dependencies:
@@ -27440,13 +27408,6 @@ snapshots:
       postcss: 8.5.1
       postcss-value-parser: 4.2.0
 
-  postcss-import@15.1.0(postcss@8.5.1):
-    dependencies:
-      postcss: 8.5.1
-      postcss-value-parser: 4.2.0
-      read-cache: 1.0.0
-      resolve: 1.22.10
-
   postcss-import@16.1.0(postcss@8.5.1):
     dependencies:
       postcss: 8.5.1
@@ -27479,14 +27440,6 @@ snapshots:
       yaml: 1.10.2
     optionalDependencies:
       postcss: 7.0.39
-      ts-node: 10.9.2(@types/node@22.10.10)(typescript@5.7.3)
-
-  postcss-load-config@4.0.2(postcss@8.5.1)(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)):
-    dependencies:
-      lilconfig: 3.1.3
-      yaml: 2.7.0
-    optionalDependencies:
-      postcss: 8.5.1
       ts-node: 10.9.2(@types/node@22.10.10)(typescript@5.7.3)
 
   postcss-load-config@5.1.0(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2):
@@ -27654,11 +27607,6 @@ snapshots:
   postcss-nested@4.2.3:
     dependencies:
       postcss: 7.0.39
-      postcss-selector-parser: 6.1.2
-
-  postcss-nested@6.2.0(postcss@8.5.1):
-    dependencies:
-      postcss: 8.5.1
       postcss-selector-parser: 6.1.2
 
   postcss-nested@7.0.2(postcss@8.5.1):
@@ -29858,7 +29806,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@5.0.2(magicast@0.3.5)(tailwindcss@4.0.0):
+  tailwindcss-patch@5.0.2(magicast@0.3.5)(tailwindcss@4.0.1):
     dependencies:
       '@babel/generator': 7.26.2
       '@babel/parser': 7.26.2
@@ -29875,39 +29823,14 @@ snapshots:
       resolve: 1.22.8
       semver: 7.6.3
     optionalDependencies:
-      tailwindcss: 4.0.0
+      tailwindcss: 4.0.1
     transitivePeerDependencies:
       - magicast
       - supports-color
 
-  tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)):
-    dependencies:
-      '@alloc/quick-lru': 5.2.0
-      arg: 5.0.2
-      chokidar: 3.6.0
-      didyoumean: 1.2.2
-      dlv: 1.1.3
-      fast-glob: 3.3.2
-      glob-parent: 6.0.2
-      is-glob: 4.0.3
-      jiti: 1.21.7
-      lilconfig: 3.1.3
-      micromatch: 4.0.8
-      normalize-path: 3.0.0
-      object-hash: 3.0.0
-      picocolors: 1.1.1
-      postcss: 8.5.1
-      postcss-import: 15.1.0(postcss@8.5.1)
-      postcss-js: 4.0.1(postcss@8.5.1)
-      postcss-load-config: 4.0.2(postcss@8.5.1)(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
-      postcss-nested: 6.2.0(postcss@8.5.1)
-      postcss-selector-parser: 6.1.2
-      resolve: 1.22.10
-      sucrase: 3.35.0
-    transitivePeerDependencies:
-      - ts-node
-
   tailwindcss@4.0.0: {}
+
+  tailwindcss@4.0.1: {}
 
   tapable@1.1.3: {}
 
@@ -31077,9 +31000,9 @@ snapshots:
       fs-extra: 11.2.0
       pathe: 2.0.2
 
-  weapp-tailwindcss-children@0.1.0(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))):
+  weapp-tailwindcss-children@0.1.0(tailwindcss@4.0.1):
     dependencies:
-      tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
+      tailwindcss: 4.0.1
 
   weapp-vite@2.1.1(@types/node@22.10.10)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0):
     dependencies:

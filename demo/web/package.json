@@ -12,7 +12,7 @@
   "dependencies": {
     "defu": "^6.1.4",
     "postcss": "^8.4.38",
-    "tailwindcss": "3"
+    "tailwindcss": "4"
   },
   "devDependencies": {
     "@weapp-tailwindcss/cli": "^3.0.0",
