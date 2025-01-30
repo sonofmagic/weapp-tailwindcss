@@ -283,9 +283,9 @@
   integrity sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA==
 
 "@iconify-json/mdi@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.npmmirror.com/@iconify-json/mdi/-/mdi-1.2.2.tgz#757d5780470c9e539dca9dd97b94f0bb4c8dbfb8"
-  integrity sha512-84aznJXzfGdbOXGe8xB7E5uNAb7Yo5IABwTgq2X3kczb819qZeS9eL31bTVn7wJdCLK5ieaoUc2GTS3QYIkJ6g==
+  version "1.2.3"
+  resolved "https://registry.npmmirror.com/@iconify-json/mdi/-/mdi-1.2.3.tgz#5e4ee9d8c8aaad04381c8cc6c6edbe3327f031b5"
+  integrity sha512-O3cLwbDOK7NNDf2ihaQOH5F9JglnulNDFV7WprU2dSoZu3h3cWH//h74uQAB87brHmvFVxIOkuBX2sZSzYhScg==
   dependencies:
     "@iconify/types" "*"
 
