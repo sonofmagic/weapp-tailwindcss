@@ -10,7 +10,7 @@ describe('customAttributes', () => {
       customReplaceDictionary: MappingChars2String,
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-_bl_0_d_5px_br_" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toMatchSnapshot()
   })
 
   it('van-image case 1', async () => {
@@ -21,7 +21,7 @@ describe('customAttributes', () => {
       customReplaceDictionary: MappingChars2String,
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
+    expect(res).toMatchSnapshot()
   })
 
   it('view tag case', async () => {
@@ -32,7 +32,7 @@ describe('customAttributes', () => {
       customReplaceDictionary: MappingChars2String,
     })
     const res = await templateHandler('<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" cc=="w-[0.5px]"></view>')
-    expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
+    expect(res).toMatchSnapshot()
   })
 
   it('wild card case', async () => {
@@ -43,7 +43,7 @@ describe('customAttributes', () => {
       customReplaceDictionary: MappingChars2String,
     })
     const res = await templateHandler('<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" cc=="w-[0.5px]"></view>')
-    expect(res).toBe('<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" cc=="w-[0.5px]"></view>')
+    expect(res).toMatchSnapshot()
   })
 
   it('wild card case 0', async () => {
@@ -53,7 +53,7 @@ describe('customAttributes', () => {
       },
     })
     const res = await templateHandler('<view class="w-0.5 group" group-hover-class="!bg-indigo-500 !text-red"></view>')
-    expect(res).toBe('<view class="w-0d5 group" group-hover-class="ibg-indigo-500 itext-red"></view>')
+    expect(res).toMatchSnapshot()
   })
 
   it('wild card via normal case', async () => {
@@ -67,9 +67,7 @@ describe('customAttributes', () => {
     const res = await templateHandler(
       '<view class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" dd="w-[0.5px]" ee="w-[0.5px]"></view><cc class="w-[0.5px]" aa="w-[0.5px]" bb="w-[0.5px]" dd="w-[0.5px]" ee="w-[0.5px]"></cc>',
     )
-    expect(res).toBe(
-      '<view class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" dd="w-[0.5px]" ee="w-[0.5px]"></view><cc class="w-_bl_0_d_5px_br_" aa="w-_bl_0_d_5px_br_" bb="w-_bl_0_d_5px_br_" dd="w-_bl_0_d_5px_br_" ee="w-_bl_0_d_5px_br_"></cc>',
-    )
+    expect(res).toMatchSnapshot()
   })
 
   it('map case', async () => {
@@ -87,9 +85,7 @@ describe('customAttributes', () => {
         })
         .join('\n'),
     )
-    expect(res).toBe(
-      '<van-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></van-a>\n<el-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></el-a>\n<ant-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></ant-a>',
-    )
+    expect(res).toMatchSnapshot()
   })
 
   it('simple map case', async () => {
@@ -107,8 +103,6 @@ describe('customAttributes', () => {
         })
         .join('\n'),
     )
-    expect(res).toBe(
-      '<van-a class="w-_bl_0_d_5px_br_" hover-class="w-_bl_0_d_5px_br_" custom-attrs="w-_bl_0_d_5px_br_" shit="w-_bl_0_d_5px_br_" play-with-shit="w-_bl_0_d_5px_br_"></van-a>',
-    )
+    expect(res).toMatchSnapshot()
   })
 })

@@ -677,8 +677,8 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1(postcss@8.5.1)
       '@weapp-core/escape':
-        specifier: ~3.0.2
-        version: 3.0.2
+        specifier: ~4.0.0
+        version: 4.0.0
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
@@ -750,8 +750,8 @@ importers:
         specifier: ~7.26.7
         version: 7.26.7
       '@weapp-core/escape':
-        specifier: ~3.0.2
-        version: 3.0.2
+        specifier: ~4.0.0
+        version: 4.0.0
       '@weapp-core/regex':
         specifier: ~1.0.1
         version: 1.0.1
@@ -1784,10 +1784,6 @@ packages:
 
   '@babel/runtime-corejs3@7.26.0':
     resolution: {integrity: sha512-YXHu5lN8kJCb1LOb9PgV6pvak43X2h4HvRApcN5SdWeaItQOzfn1hgP6jasD6KWQyJDBxrVmA9o9OivlnNJK/w==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/runtime@7.26.0':
-    resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.26.7':
@@ -4842,8 +4838,8 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
-  '@weapp-core/escape@3.0.2':
-    resolution: {integrity: sha512-/r6eqRgkTdAkn5uNQxKc4Gm3IQ3LL+3ej8/z72cXP59QTaC6t97YMGzu6CZRcOW+LVpCXT6RhetMRfS+zNe4Pg==}
+  '@weapp-core/escape@4.0.0':
+    resolution: {integrity: sha512-jByUEVNAWatSV4uWxS6OMhFvTVP5TvAW2mbLVrxW8fd4xAiiSWNhokbT2h6xIYby0cGQ2h4mVfowmf/e0Gar9w==}
 
   '@weapp-core/init@1.1.15':
     resolution: {integrity: sha512-TaJtg8JHVQqvaBtfZd5r3Ckhn0tlUJovJ5ErccWZdSolN9ok9ot+/0n48I3J4hZh0VDa/26etsGRhOQ6e3TtSg==}
@@ -15992,10 +15988,6 @@ snapshots:
       core-js-pure: 3.39.0
       regenerator-runtime: 0.14.1
 
-  '@babel/runtime@7.26.0':
-    dependencies:
-      regenerator-runtime: 0.14.1
-
   '@babel/runtime@7.26.7':
     dependencies:
       regenerator-runtime: 0.14.1
@@ -16645,7 +16637,7 @@ snapshots:
       '@babel/preset-env': 7.26.0(@babel/core@7.26.7)
       '@babel/preset-react': 7.26.3(@babel/core@7.26.7)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.7)
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.26.7
       '@babel/runtime-corejs3': 7.26.0
       '@babel/traverse': 7.26.7
       '@docusaurus/logger': 3.7.0
@@ -17191,7 +17183,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.8
+      '@types/react': 19.0.2
       react: 19.0.0
 
   '@docusaurus/theme-classic@3.7.0(@types/react@19.0.8)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.2)(eslint@9.19.0(jiti@2.4.2))(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(vue-template-compiler@2.7.16)':
@@ -20062,7 +20054,7 @@ snapshots:
 
   '@vue/shared@3.5.13': {}
 
-  '@weapp-core/escape@3.0.2': {}
+  '@weapp-core/escape@4.0.0': {}
 
   '@weapp-core/init@1.1.15':
     dependencies:
@@ -28149,19 +28141,19 @@ snapshots:
 
   react-loadable-ssr-addon-v5-slorber@1.0.1(@docusaurus/react-loadable@6.0.0(react@19.0.0))(webpack@5.97.1(esbuild@0.24.2)):
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.26.7
       react-loadable: '@docusaurus/react-loadable@6.0.0(react@19.0.0)'
       webpack: 5.97.1(esbuild@0.24.2)
 
   react-router-config@5.1.1(react-router@5.3.4(react@19.0.0))(react@19.0.0):
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.26.7
       react: 19.0.0
       react-router: 5.3.4(react@19.0.0)
 
   react-router-dom@5.3.4(react@19.0.0):
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.26.7
       history: 4.10.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
@@ -28172,7 +28164,7 @@ snapshots:
 
   react-router@5.3.4(react@19.0.0):
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.26.7
       history: 4.10.1
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0

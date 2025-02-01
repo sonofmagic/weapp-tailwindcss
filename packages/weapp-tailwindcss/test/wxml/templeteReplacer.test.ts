@@ -1,16 +1,11 @@
 import { templateReplacer } from '@/wxml/utils'
-import { MappingChars2String, SimpleMappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-core/escape'
 
 const testTable = [[{}]]
 
-function complexReplacer(str: string) {
-  return templateReplacer(str, {
-    escapeMap: MappingChars2String,
-  })
-}
 function simpleReplacer(str: string) {
   return templateReplacer(str, {
-    escapeMap: SimpleMappingChars2String,
+    escapeMap: MappingChars2String,
   })
 }
 
@@ -18,16 +13,15 @@ describe('templateReplacer', () => {
   it.each(testTable)('$label isStringLiteral', () => {
     const testCase = '{{[\'som-node__label\',\'data-v-59229c4a\',\'som-org__text-\'+(node.align||\'\'),node.active||collapsed?\'som-node__label-active\':\'\',d]}}'
 
-    const result = complexReplacer(testCase)
+    const result = simpleReplacer(testCase)
 
-    expect(result).toBe('{{[\'som-node__label\',\'data-v-59229c4a\',\'som-org__text-\'+(node.align||\'\'),node.active||collapsed?\'som-node__label-active\':\'\',d]}}')
     expect(result).toMatchSnapshot()
   })
 
   it('isConditionalExpression', () => {
     const testCase = '{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}'
-    const result = complexReplacer(testCase)
-    expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\']}}')
+    const result = simpleReplacer(testCase)
+
     expect(result).toMatchSnapshot()
   })
 
@@ -35,17 +29,15 @@ describe('templateReplacer', () => {
     const testCase
       = '{{[flag?\'bg-red-900\':\'bg-[#fafa00]\',classObject,[(flag===true)?\'bg-[#fafa00]\':\'\',(true)?\'text-sm\':\'\'],flag?flag===false?\'bg-red-900\':\'bg-[#000]\':\'bg-[#fafa00]\']}}'
 
-    const result = complexReplacer(testCase)
-    expect(result).toBe(
-      '{{[flag?\'bg-red-900\':\'bg-_bl__h_fafa00_br_\',classObject,[(flag===true)?\'bg-_bl__h_fafa00_br_\':\'\',(true)?\'text-sm\':\'\'],flag?flag===false?\'bg-red-900\':\'bg-_bl__h_000_br_\':\'bg-_bl__h_fafa00_br_\']}}',
-    )
+    const result = simpleReplacer(testCase)
+
     expect(result).toMatchSnapshot()
   })
 
   it('sm:text-3xl dark:text-sky-400', () => {
     const testCase = 'sm:text-3xl dark:text-slate-200 bg-[#ffffaa]'
-    const result = complexReplacer(testCase)
-    expect(result).toBe('sm_c_text-3xl dark_c_text-slate-200 bg-_bl__h_ffffaa_br_')
+    const result = simpleReplacer(testCase)
+
     expect(result).toMatchSnapshot()
   })
 
@@ -60,7 +52,7 @@ describe('templateReplacer', () => {
     items-center
     pointer-events-auto
   `
-    const result = complexReplacer(testCase)
+    const result = simpleReplacer(testCase)
     expect(result).toBe('    bg-white    rounded-full    w-10    h-10    flex    justify-center    items-center    pointer-events-auto  ')
   })
 
@@ -98,48 +90,42 @@ describe('templateReplacer', () => {
 
   it('variables with multiple literal', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}} h-[20px]`
-    const result = complexReplacer(testCase)
-    expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active==\'home\'? \'icon-home-selected\' : \'icon-home\'}} {{}} {{ }} w-_bl_20px_br_ {{flag==\'p-[20px]\'? \'p-_bl_20px_br_\' : \'m-_bl_20px_br_\'}} h-_bl_20px_br_',
-    )
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   it.each(testTable)('variables with multiple literal(2)', () => {
     const testCase = `border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-[20px] {{flag=='p-[20px]'? 'p-[20px]' : 'm-[20px]'}}`
-    const result = complexReplacer(testCase)
-    expect(result).toBe(
-      'border-0 icon h-10 w-10 mx-auto {{active==\'home\'? \'icon-home-selected\' : \'icon-home\'}} {{b}} {{ a===\'cc\' }} w-_bl_20px_br_ {{flag==\'p-[20px]\'? \'p-_bl_20px_br_\' : \'m-_bl_20px_br_\'}}',
-    )
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   it.each(testTable)('%label for toutiao str add not array', () => {
     const testCase = '{{(\'!font-bold\') + \' \' + \'!text-[#990000]\' + \' \' + \'data-v-1badc801\' + \' \' + \'text-2xl\' + \' \' + b}}' // '{{\'font-bold\'+\'\'+\'text-blue-500\'+\'\'+\'data-v-1badc801\'+\'\'+\'text-2xl\'+\'\'+b}}'
 
-    const result = complexReplacer(testCase)
-    expect(result).toBe('{{(\'_i_font-bold\') + \' \' + \'_i_text-_bl__h_990000_br_\' + \' \' + \'data-v-1badc801\' + \' \' + \'text-2xl\' + \' \' + b}}')
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   it.each(testTable)('%label utils.bem()', () => {
     const testCase
       = 'custom-class {{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? \'van-hairline--surround\' : \'\' }}'
 
-    const result = complexReplacer(testCase)
-    expect(result).toBe(
-      'custom-class {{ utils.bem(\'button\', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? \'van-hairline--surround\' : \'\' }}',
-    )
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   // it.each(testTable)('%label class with string var', ({ mangle }) => {
   //   const testCase = 'btn a{{num}}'
-  //   const str = complexReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
+  //   const str = simpleReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
   //   expect(str).toBe(testCase)
   // })
 
   it('classGenerator class with string var', () => {
     const testCase = 'btn-%1 a[p-1]{{num}}'
     // classGenerator
-    const str = complexReplacer(testCase)
-    expect(str).toBe('btn-_p_1 a_bl_p-1_br_{{num}}')
+    const str = simpleReplacer(testCase)
+    expect(str).toMatchSnapshot()
   })
 
   it('classGenerator class with string var case 0', () => {
@@ -168,27 +154,27 @@ describe('templateReplacer', () => {
     // 逗号 comma 的原因
     const testCase = 'shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)]'
 
-    const result = complexReplacer(testCase)
-    expect(result).toBe('shadow-_bl_0px_2px_11px_0px_rgba_pl_0_co_0_co_0_co_0_d_4_qr__br_')
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   // .shadow-\[0px_2px_11px_0px_\#0000000a\]
   it('arbitrary shadow values 1', () => {
     const testCase = 'shadow-[0px_2px_11px_0px_#00000a]'
-    const result = complexReplacer(testCase)
-    expect(result).toBe('shadow-_bl_0px_2px_11px_0px__h_00000a_br_')
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   it('arbitrary before:content-[\'hello\']', () => {
     const testCase = 'before:content-[\'hello\']'
-    const result = complexReplacer(testCase)
-    expect(result).toBe('before_c_content-_bl__q_hello_q__br_')
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   it('two ConditionalExpression', () => {
     const testCase = 'btn a{{num >=\'p-[1]\'?num===\'q-[2]\'?\'x-[0]\':\'y-[1]\':\'z-[2]\'}}'
-    const result = complexReplacer(testCase)
-    expect(result).toBe('btn a{{num >=\'p-[1]\'?num===\'q-[2]\'?\'x-_bl_0_br_\':\'y-_bl_1_br_\':\'z-_bl_2_br_\'}}')
+    const result = simpleReplacer(testCase)
+    expect(result).toMatchSnapshot()
   })
 
   it.skip('start up with num case', () => {

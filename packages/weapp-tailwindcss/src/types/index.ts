@@ -148,7 +148,7 @@ const customAttributes = {
 - 默认模式: 把小程序中不允许的字符串，转义为**相等长度**的代替字符串，这种情况不追求转化目标字符串的一比一绝对等价，即无法从生成结果，反推原先的`class`
 
 当然，你也可以自定义，传一个 `Record<string, string>` 类型，只需保证转化后 css 中的 `class` 选择器，不会和自己定义的 `class` 产生冲突即可，示例见[dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)
-   * @default SimpleMappingChars2String
+   * @default MappingChars2String
    */
   customReplaceDictionary?: Record<string, string>
 

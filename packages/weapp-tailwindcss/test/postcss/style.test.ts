@@ -204,7 +204,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(css).toBe('.after_c_content-_bl__dq__a__dq__br_::after{}')
+    expect(css).toBe('.afterccontent-_xmx_::after{}')
   })
 
   it('should pseudo element new case', async () => {
@@ -339,7 +339,7 @@ describe('styleHandler', () => {
       escapeMap: MappingChars2String,
     })
     expect(normalizeEol(css)).toBe(
-      '._bl__am__c_nth-child_pl_3_qr__br__c_underline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n',
+      '._ncnth-childy3y_cunderline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n',
     )
   })
 
@@ -371,9 +371,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe(
-      '.lg_c__bl__am__c_nth-child_pl_3_qr__br__c_first-letter_c_underline:nth-child(3):first-letter {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n',
-    )
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('arbitrary values case 3', async () => {
@@ -388,7 +386,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe('._bl__am__p_br__c_mt-4 p {\n  margin-top: 1rem;\n}\n')
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('arbitrary values case 4', async () => {
@@ -403,7 +401,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe('@supports (display: grid) {\n  ._bl__at_supports_pl_display_c_grid_qr__br__c_grid {\n    text-decoration-style: underline;\n  }\n}\n')
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('arbitrary values case 5', async () => {
@@ -418,9 +416,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe(
-      '@media (any-hover: hover) {\n  ._bl__at_media_pl_any-hover_c_hover_qr__bal__am__c_hover_bar__br__c_opacity-100:focus {\n    opacity: 1;\n  }\n}\n',
-    )
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('arbitrary values case 6', async () => {
@@ -435,9 +431,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe(
-      '._bl__am___d_u-count-down_bs___bs__text_br__c__i_text-red-400 .u-count-down__text {\n  --tw-text-opacity: 1 !important;\n  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;\n}\n',
-    )
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('global variables scope matched case', async () => {
@@ -550,7 +544,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe('.before_c_content-_bl__q__plus__q__br_::before {\n    --tw-content: \'+\';\n    content: var(--tw-content)\n}')
+    expect(normalizeEol(css)).toBe('.beforeccontent-_qaq_::before {\n    --tw-content: \'+\';\n    content: var(--tw-content)\n}')
   })
 
   it('@apply space-y/x css selector', async () => {

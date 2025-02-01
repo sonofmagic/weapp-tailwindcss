@@ -1,11 +1,11 @@
 import type { ITemplateHandlerOptions } from '../types'
-import { escape, SimpleMappingChars2String } from '@weapp-core/escape'
+import { escape, MappingChars2String } from '@weapp-core/escape'
 
 export function replaceWxml(
   original: string,
   options: ITemplateHandlerOptions = {
     keepEOL: false,
-    escapeMap: SimpleMappingChars2String,
+    escapeMap: MappingChars2String,
   },
 ) {
   const { keepEOL, escapeMap, mangleContext, ignoreHead } = options

@@ -1,4 +1,4 @@
-import { MappingChars2StringEntries, SimpleMappingChars2StringEntries } from '@weapp-core/escape'
+import { MappingChars2StringEntries } from '@weapp-core/escape'
 
 function check(e: [string, string][], allowUnderline = false) {
   const set = new Set()
@@ -21,7 +21,6 @@ function check(e: [string, string][], allowUnderline = false) {
 
 describe('dic test', () => {
   it('check duplicate', () => {
-    expect(check(MappingChars2StringEntries)).toBe(true)
-    expect(check(SimpleMappingChars2StringEntries, true)).toBe(true)
+    expect(check(MappingChars2StringEntries)).toBe(false)
   })
 })

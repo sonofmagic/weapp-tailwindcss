@@ -114,10 +114,10 @@ view,text,::before,::after {
     --tw-contain-paint:  ;
     --tw-contain-style:  
 }
-.-m-_bl_20px_br_ {
+.-m-_20px_ {
     margin: -20px
 }
-.m-_bl_20px_br_ {
+.m-_20px_ {
     margin: 20px
 }
 .mx-auto {
@@ -127,7 +127,7 @@ view,text,::before,::after {
 .-mt-2 {
     margin-top: -0.5rem
 }
-.mb-_bl_-20px_br_ {
+.mb-_-20px_ {
     margin-bottom: -20px
 }
 .flex {
@@ -139,19 +139,19 @@ view,text,::before,::after {
 .h-10 {
     height: 2.5rem
 }
-.h-_bl_100px_br_ {
+.h-_100px_ {
     height: 100px
 }
-.h-_bl_200_p__br_ {
+.h-_200p_ {
     height: 200%
 }
-.h-_bl_99px_br_ {
+.h-_99px_ {
     height: 99px
 }
-.max-h-_bl_100px_br_ {
+.max-h-_100px_ {
     max-height: 100px
 }
-.min-h-_bl_100px_br_ {
+.min-h-_100px_ {
     min-height: 100px
 }
 .w-10 {
@@ -160,22 +160,22 @@ view,text,::before,::after {
 .w-32 {
     width: 8rem
 }
-.w-_bl_100px_br_ {
+.w-_100px_ {
     width: 100px
 }
-.w-_bl_20px_br_ {
+.w-_20px_ {
     width: 20px
 }
-.w-_bl_300rpx_br_ {
+.w-_300rpx_ {
     width: 300rpx
 }
-.w-_bl_99px_br_ {
+.w-_99px_ {
     width: 99px
 }
-.min-w-_bl_300rpx_br_ {
+.min-w-_300rpx_ {
     min-width: 300rpx
 }
-.max-w-_bl_300rpx_br_ {
+.max-w-_300rpx_ {
     max-width: 300rpx
 }
 .grid-cols-3 {
@@ -187,12 +187,12 @@ view,text,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_bl_1_d_6rem_br_>view+view,.space-y-_bl_1_d_6rem_br_>view+text,.space-y-_bl_1_d_6rem_br_>text+view,.space-y-_bl_1_d_6rem_br_>text+text {
+.space-y-_1d6rem_>view+view,.space-y-_1d6rem_>view+text,.space-y-_1d6rem_>text+view,.space-y-_1d6rem_>text+text {
     --tw-space-y-reverse: 0;
     margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
 }
-.divide-x-_bl_10px_br_>view+view,.divide-x-_bl_10px_br_>view+text,.divide-x-_bl_10px_br_>text+view,.divide-x-_bl_10px_br_>text+text {
+.divide-x-_10px_>view+view,.divide-x-_10px_>view+text,.divide-x-_10px_>text+view,.divide-x-_10px_>text+text {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
@@ -200,11 +200,11 @@ view,text,::before,::after {
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
 }
-.divide-_bl__h_010101_br_>view+view,.divide-_bl__h_010101_br_>view+text,.divide-_bl__h_010101_br_>text+view,.divide-_bl__h_010101_br_>text+text {
+.divide-_h010101_>view+view,.divide-_h010101_>view+text,.divide-_h010101_>text+view,.divide-_h010101_>text+text {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity, 1))
 }
-.rounded-_bl_40px_br_ {
+.rounded-_40px_ {
     border-radius: 40px
 }
 .rounded-md {
@@ -213,20 +213,20 @@ view,text,::before,::after {
 .border-0 {
     border-width: 0px
 }
-.border-_bl_10px_br_ {
+.border-_10px_ {
     border-width: 10px
 }
 .border-solid {
     border-style: solid
 }
-.border-_bl__h_098765_br_ {
+.border-_h098765_ {
     --tw-border-opacity: 1;
     border-color: rgb(9 135 101 / var(--tw-border-opacity, 1))
 }
-.border-opacity-_bl_0_d_44_br_ {
+.border-opacity-_0d44_ {
     --tw-border-opacity: 0.44
 }
-.bg-_bl__h_123456_br_ {
+.bg-_h123456_ {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity, 1))
 }
@@ -238,16 +238,16 @@ view,text,::before,::after {
     --tw-bg-opacity: 1;
     background-color: rgb(3 105 161 / var(--tw-bg-opacity, 1))
 }
-.bg-opacity-_bl_0_d_54_br_ {
+.bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
-.p-_bl_20px_br_ {
+.p-_20px_ {
     padding: 20px
 }
 .px-4 {
@@ -258,20 +258,20 @@ view,text,::before,::after {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem
 }
-.text-_bl_20px_br_ {
+.text-_20px_ {
     font-size: 20px
 }
 .font-semibold {
     font-weight: 600
 }
-.leading-_bl_0_d_9_br_ {
+.leading-_0d9_ {
     line-height: 0.9
 }
-.text-_bl__h_dddddd_br_ {
+.text-_hdddddd_ {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity, 1))
 }
-.text-_bl__h_ffffff_br_ {
+.text-_hffffff_ {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
@@ -283,7 +283,7 @@ view,text,::before,::after {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
-.text-opacity-_bl_0_d_19_br_ {
+.text-opacity-_0d19_ {
     --tw-text-opacity: 0.19
 }
 .ring-4 {
@@ -296,11 +296,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -314,29 +314,29 @@ view,text,::before,::after {
   <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="powered h-_bl_200_p__br_">
+  <view class="powered h-_200p_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+  <view class="-mt-2 mb-_-20px_ p-_20px_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="space-y-_bl_1_d_6rem_br_">
-    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">
       Hello
     </view>
-    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -346,9 +346,9 @@ view,text,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -366,7 +366,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -501,10 +501,10 @@ view,text,::before,::after {
     --tw-contain-paint:  ;
     --tw-contain-style:  
 }
-.-m-_bl_20px_br_ {
+.-m-_20px_ {
     margin: -20px
 }
-.m-_bl_20px_br_ {
+.m-_20px_ {
     margin: 20px
 }
 .mx-auto {
@@ -514,7 +514,7 @@ view,text,::before,::after {
 .-mt-2 {
     margin-top: -0.5rem
 }
-.mb-_bl_-20px_br_ {
+.mb-_-20px_ {
     margin-bottom: -20px
 }
 .flex {
@@ -526,19 +526,19 @@ view,text,::before,::after {
 .h-10 {
     height: 2.5rem
 }
-.h-_bl_100px_br_ {
+.h-_100px_ {
     height: 100px
 }
-.h-_bl_200_p__br_ {
+.h-_200p_ {
     height: 200%
 }
-.h-_bl_99px_br_ {
+.h-_99px_ {
     height: 99px
 }
-.max-h-_bl_100px_br_ {
+.max-h-_100px_ {
     max-height: 100px
 }
-.min-h-_bl_100px_br_ {
+.min-h-_100px_ {
     min-height: 100px
 }
 .w-10 {
@@ -547,22 +547,22 @@ view,text,::before,::after {
 .w-32 {
     width: 8rem
 }
-.w-_bl_100px_br_ {
+.w-_100px_ {
     width: 100px
 }
-.w-_bl_20px_br_ {
+.w-_20px_ {
     width: 20px
 }
-.w-_bl_300rpx_br_ {
+.w-_300rpx_ {
     width: 300rpx
 }
-.w-_bl_99px_br_ {
+.w-_99px_ {
     width: 99px
 }
-.min-w-_bl_300rpx_br_ {
+.min-w-_300rpx_ {
     min-width: 300rpx
 }
-.max-w-_bl_300rpx_br_ {
+.max-w-_300rpx_ {
     max-width: 300rpx
 }
 .grid-cols-3 {
@@ -574,12 +574,12 @@ view,text,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_bl_1_d_6rem_br_>view+view,.space-y-_bl_1_d_6rem_br_>view+text,.space-y-_bl_1_d_6rem_br_>text+view,.space-y-_bl_1_d_6rem_br_>text+text {
+.space-y-_1d6rem_>view+view,.space-y-_1d6rem_>view+text,.space-y-_1d6rem_>text+view,.space-y-_1d6rem_>text+text {
     --tw-space-y-reverse: 0;
     margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
 }
-.divide-x-_bl_10px_br_>view+view,.divide-x-_bl_10px_br_>view+text,.divide-x-_bl_10px_br_>text+view,.divide-x-_bl_10px_br_>text+text {
+.divide-x-_10px_>view+view,.divide-x-_10px_>view+text,.divide-x-_10px_>text+view,.divide-x-_10px_>text+text {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
@@ -587,11 +587,11 @@ view,text,::before,::after {
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
 }
-.divide-_bl__h_010101_br_>view+view,.divide-_bl__h_010101_br_>view+text,.divide-_bl__h_010101_br_>text+view,.divide-_bl__h_010101_br_>text+text {
+.divide-_h010101_>view+view,.divide-_h010101_>view+text,.divide-_h010101_>text+view,.divide-_h010101_>text+text {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity, 1))
 }
-.rounded-_bl_40px_br_ {
+.rounded-_40px_ {
     border-radius: 40px
 }
 .rounded-md {
@@ -600,20 +600,20 @@ view,text,::before,::after {
 .border-0 {
     border-width: 0px
 }
-.border-_bl_10px_br_ {
+.border-_10px_ {
     border-width: 10px
 }
 .border-solid {
     border-style: solid
 }
-.border-_bl__h_098765_br_ {
+.border-_h098765_ {
     --tw-border-opacity: 1;
     border-color: rgb(9 135 101 / var(--tw-border-opacity, 1))
 }
-.border-opacity-_bl_0_d_44_br_ {
+.border-opacity-_0d44_ {
     --tw-border-opacity: 0.44
 }
-.bg-_bl__h_123456_br_ {
+.bg-_h123456_ {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity, 1))
 }
@@ -625,16 +625,16 @@ view,text,::before,::after {
     --tw-bg-opacity: 1;
     background-color: rgb(3 105 161 / var(--tw-bg-opacity, 1))
 }
-.bg-opacity-_bl_0_d_54_br_ {
+.bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
-.p-_bl_20px_br_ {
+.p-_20px_ {
     padding: 20px
 }
 .px-4 {
@@ -645,20 +645,20 @@ view,text,::before,::after {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem
 }
-.text-_bl_20px_br_ {
+.text-_20px_ {
     font-size: 20px
 }
 .font-semibold {
     font-weight: 600
 }
-.leading-_bl_0_d_9_br_ {
+.leading-_0d9_ {
     line-height: 0.9
 }
-.text-_bl__h_dddddd_br_ {
+.text-_hdddddd_ {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity, 1))
 }
-.text-_bl__h_ffffff_br_ {
+.text-_hffffff_ {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
@@ -670,7 +670,7 @@ view,text,::before,::after {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
-.text-opacity-_bl_0_d_19_br_ {
+.text-opacity-_0d19_ {
     --tw-text-opacity: 0.19
 }
 .ring-4 {
@@ -683,11 +683,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -701,29 +701,29 @@ view,text,::before,::after {
   <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="powered h-_bl_200_p__br_">
+  <view class="powered h-_200p_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+  <view class="-mt-2 mb-_-20px_ p-_20px_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="space-y-_bl_1_d_6rem_br_">
-    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">
       Hello
     </view>
-    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -733,9 +733,9 @@ view,text,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -753,7 +753,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -888,10 +888,10 @@ view,text,::before,::after {
     --tw-contain-paint:  ;
     --tw-contain-style:  
 }
-.-m-_bl_20px_br_ {
+.-m-_20px_ {
     margin: -20px
 }
-.m-_bl_20px_br_ {
+.m-_20px_ {
     margin: 20px
 }
 .mx-auto {
@@ -901,7 +901,7 @@ view,text,::before,::after {
 .-mt-2 {
     margin-top: -0.5rem
 }
-.mb-_bl_-20px_br_ {
+.mb-_-20px_ {
     margin-bottom: -20px
 }
 .flex {
@@ -913,19 +913,19 @@ view,text,::before,::after {
 .h-10 {
     height: 2.5rem
 }
-.h-_bl_100px_br_ {
+.h-_100px_ {
     height: 100px
 }
-.h-_bl_200_p__br_ {
+.h-_200p_ {
     height: 200%
 }
-.h-_bl_99px_br_ {
+.h-_99px_ {
     height: 99px
 }
-.max-h-_bl_100px_br_ {
+.max-h-_100px_ {
     max-height: 100px
 }
-.min-h-_bl_100px_br_ {
+.min-h-_100px_ {
     min-height: 100px
 }
 .w-10 {
@@ -934,22 +934,22 @@ view,text,::before,::after {
 .w-32 {
     width: 8rem
 }
-.w-_bl_100px_br_ {
+.w-_100px_ {
     width: 100px
 }
-.w-_bl_20px_br_ {
+.w-_20px_ {
     width: 20px
 }
-.w-_bl_300rpx_br_ {
+.w-_300rpx_ {
     width: 300rpx
 }
-.w-_bl_99px_br_ {
+.w-_99px_ {
     width: 99px
 }
-.min-w-_bl_300rpx_br_ {
+.min-w-_300rpx_ {
     min-width: 300rpx
 }
-.max-w-_bl_300rpx_br_ {
+.max-w-_300rpx_ {
     max-width: 300rpx
 }
 .grid-cols-3 {
@@ -961,12 +961,12 @@ view,text,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_bl_1_d_6rem_br_>view+view,.space-y-_bl_1_d_6rem_br_>view+text,.space-y-_bl_1_d_6rem_br_>text+view,.space-y-_bl_1_d_6rem_br_>text+text {
+.space-y-_1d6rem_>view+view,.space-y-_1d6rem_>view+text,.space-y-_1d6rem_>text+view,.space-y-_1d6rem_>text+text {
     --tw-space-y-reverse: 0;
     margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
 }
-.divide-x-_bl_10px_br_>view+view,.divide-x-_bl_10px_br_>view+text,.divide-x-_bl_10px_br_>text+view,.divide-x-_bl_10px_br_>text+text {
+.divide-x-_10px_>view+view,.divide-x-_10px_>view+text,.divide-x-_10px_>text+view,.divide-x-_10px_>text+text {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
@@ -974,11 +974,11 @@ view,text,::before,::after {
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
 }
-.divide-_bl__h_010101_br_>view+view,.divide-_bl__h_010101_br_>view+text,.divide-_bl__h_010101_br_>text+view,.divide-_bl__h_010101_br_>text+text {
+.divide-_h010101_>view+view,.divide-_h010101_>view+text,.divide-_h010101_>text+view,.divide-_h010101_>text+text {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity, 1))
 }
-.rounded-_bl_40px_br_ {
+.rounded-_40px_ {
     border-radius: 40px
 }
 .rounded-md {
@@ -987,20 +987,20 @@ view,text,::before,::after {
 .border-0 {
     border-width: 0px
 }
-.border-_bl_10px_br_ {
+.border-_10px_ {
     border-width: 10px
 }
 .border-solid {
     border-style: solid
 }
-.border-_bl__h_098765_br_ {
+.border-_h098765_ {
     --tw-border-opacity: 1;
     border-color: rgb(9 135 101 / var(--tw-border-opacity, 1))
 }
-.border-opacity-_bl_0_d_44_br_ {
+.border-opacity-_0d44_ {
     --tw-border-opacity: 0.44
 }
-.bg-_bl__h_123456_br_ {
+.bg-_h123456_ {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity, 1))
 }
@@ -1012,16 +1012,16 @@ view,text,::before,::after {
     --tw-bg-opacity: 1;
     background-color: rgb(3 105 161 / var(--tw-bg-opacity, 1))
 }
-.bg-opacity-_bl_0_d_54_br_ {
+.bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
-.p-_bl_20px_br_ {
+.p-_20px_ {
     padding: 20px
 }
 .px-4 {
@@ -1032,20 +1032,20 @@ view,text,::before,::after {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem
 }
-.text-_bl_20px_br_ {
+.text-_20px_ {
     font-size: 20px
 }
 .font-semibold {
     font-weight: 600
 }
-.leading-_bl_0_d_9_br_ {
+.leading-_0d9_ {
     line-height: 0.9
 }
-.text-_bl__h_dddddd_br_ {
+.text-_hdddddd_ {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity, 1))
 }
-.text-_bl__h_ffffff_br_ {
+.text-_hffffff_ {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
@@ -1057,7 +1057,7 @@ view,text,::before,::after {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
-.text-opacity-_bl_0_d_19_br_ {
+.text-opacity-_0d19_ {
     --tw-text-opacity: 0.19
 }
 .ring-4 {
@@ -1070,11 +1070,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -1088,29 +1088,29 @@ view,text,::before,::after {
   <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="powered h-_bl_200_p__br_">
+  <view class="powered h-_200p_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+  <view class="-mt-2 mb-_-20px_ p-_20px_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="space-y-_bl_1_d_6rem_br_">
-    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">
       Hello
     </view>
-    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -1120,9 +1120,9 @@ view,text,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1140,7 +1140,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -1271,10 +1271,10 @@ view,text,::before,::after {
     --tw-contain-paint:  ;
     --tw-contain-style:  
 }
-.-m-_bl_20px_br_ {
+.-m-_20px_ {
     margin: -20px
 }
-.m-_bl_20px_br_ {
+.m-_20px_ {
     margin: 20px
 }
 .mx-auto {
@@ -1284,7 +1284,7 @@ view,text,::before,::after {
 .-mt-2 {
     margin-top: -0.5rem
 }
-.mb-_bl_-20px_br_ {
+.mb-_-20px_ {
     margin-bottom: -20px
 }
 .flex {
@@ -1296,19 +1296,19 @@ view,text,::before,::after {
 .h-10 {
     height: 2.5rem
 }
-.h-_bl_100px_br_ {
+.h-_100px_ {
     height: 100px
 }
-.h-_bl_200_p__br_ {
+.h-_200p_ {
     height: 200%
 }
-.h-_bl_99px_br_ {
+.h-_99px_ {
     height: 99px
 }
-.max-h-_bl_100px_br_ {
+.max-h-_100px_ {
     max-height: 100px
 }
-.min-h-_bl_100px_br_ {
+.min-h-_100px_ {
     min-height: 100px
 }
 .w-10 {
@@ -1317,22 +1317,22 @@ view,text,::before,::after {
 .w-32 {
     width: 8rem
 }
-.w-_bl_100px_br_ {
+.w-_100px_ {
     width: 100px
 }
-.w-_bl_20px_br_ {
+.w-_20px_ {
     width: 20px
 }
-.w-_bl_300rpx_br_ {
+.w-_300rpx_ {
     width: 300rpx
 }
-.w-_bl_99px_br_ {
+.w-_99px_ {
     width: 99px
 }
-.min-w-_bl_300rpx_br_ {
+.min-w-_300rpx_ {
     min-width: 300rpx
 }
-.max-w-_bl_300rpx_br_ {
+.max-w-_300rpx_ {
     max-width: 300rpx
 }
 .grid-cols-3 {
@@ -1344,12 +1344,12 @@ view,text,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_bl_1_d_6rem_br_>view+view,.space-y-_bl_1_d_6rem_br_>view+text,.space-y-_bl_1_d_6rem_br_>text+view,.space-y-_bl_1_d_6rem_br_>text+text {
+.space-y-_1d6rem_>view+view,.space-y-_1d6rem_>view+text,.space-y-_1d6rem_>text+view,.space-y-_1d6rem_>text+text {
     --tw-space-y-reverse: 0;
     margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1.6rem * var(--tw-space-y-reverse))
 }
-.divide-x-_bl_10px_br_>view+view,.divide-x-_bl_10px_br_>view+text,.divide-x-_bl_10px_br_>text+view,.divide-x-_bl_10px_br_>text+text {
+.divide-x-_10px_>view+view,.divide-x-_10px_>view+text,.divide-x-_10px_>text+view,.divide-x-_10px_>text+text {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
@@ -1357,11 +1357,11 @@ view,text,::before,::after {
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
 }
-.divide-_bl__h_010101_br_>view+view,.divide-_bl__h_010101_br_>view+text,.divide-_bl__h_010101_br_>text+view,.divide-_bl__h_010101_br_>text+text {
+.divide-_h010101_>view+view,.divide-_h010101_>view+text,.divide-_h010101_>text+view,.divide-_h010101_>text+text {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity, 1))
 }
-.rounded-_bl_40px_br_ {
+.rounded-_40px_ {
     border-radius: 40px
 }
 .rounded-md {
@@ -1370,20 +1370,20 @@ view,text,::before,::after {
 .border-0 {
     border-width: 0px
 }
-.border-_bl_10px_br_ {
+.border-_10px_ {
     border-width: 10px
 }
 .border-solid {
     border-style: solid
 }
-.border-_bl__h_098765_br_ {
+.border-_h098765_ {
     --tw-border-opacity: 1;
     border-color: rgb(9 135 101 / var(--tw-border-opacity, 1))
 }
-.border-opacity-_bl_0_d_44_br_ {
+.border-opacity-_0d44_ {
     --tw-border-opacity: 0.44
 }
-.bg-_bl__h_123456_br_ {
+.bg-_h123456_ {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity, 1))
 }
@@ -1395,16 +1395,16 @@ view,text,::before,::after {
     --tw-bg-opacity: 1;
     background-color: rgb(3 105 161 / var(--tw-bg-opacity, 1))
 }
-.bg-opacity-_bl_0_d_54_br_ {
+.bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
-.p-_bl_20px_br_ {
+.p-_20px_ {
     padding: 20px
 }
 .px-4 {
@@ -1415,20 +1415,20 @@ view,text,::before,::after {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem
 }
-.text-_bl_20px_br_ {
+.text-_20px_ {
     font-size: 20px
 }
 .font-semibold {
     font-weight: 600
 }
-.leading-_bl_0_d_9_br_ {
+.leading-_0d9_ {
     line-height: 0.9
 }
-.text-_bl__h_dddddd_br_ {
+.text-_hdddddd_ {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity, 1))
 }
-.text-_bl__h_ffffff_br_ {
+.text-_hffffff_ {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
@@ -1440,7 +1440,7 @@ view,text,::before,::after {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
-.text-opacity-_bl_0_d_19_br_ {
+.text-opacity-_0d19_ {
     --tw-text-opacity: 0.19
 }
 .ring-4 {
@@ -1453,11 +1453,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 2rem;
         padding-right: 2rem
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem
     }
@@ -1471,29 +1471,29 @@ view,text,::before,::after {
   <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="powered h-_bl_200_p__br_">
+  <view class="powered h-_200p_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+  <view class="-mt-2 mb-_-20px_ p-_20px_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="space-y-_bl_1_d_6rem_br_">
-    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">
       Hello
     </view>
-    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -1503,9 +1503,9 @@ view,text,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1523,7 +1523,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -1789,10 +1789,10 @@ view,text,::before,::after {
 .bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
 .p-_20px_ {
@@ -1914,7 +1914,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -2049,10 +2049,10 @@ view,text,::before,::after {
     --tw-contain-paint:  ;
     --tw-contain-style:  
 }
-.-m-_bl_20px_br_ {
+.-m-_20px_ {
     margin: -20px
 }
-.m-_bl_20px_br_ {
+.m-_20px_ {
     margin: 20px
 }
 .mx-auto {
@@ -2062,7 +2062,7 @@ view,text,::before,::after {
 .-mt-2 {
     margin-top: -16rpx
 }
-.mb-_bl_-20px_br_ {
+.mb-_-20px_ {
     margin-bottom: -20px
 }
 .flex {
@@ -2074,19 +2074,19 @@ view,text,::before,::after {
 .h-10 {
     height: 80rpx
 }
-.h-_bl_100px_br_ {
+.h-_100px_ {
     height: 100px
 }
-.h-_bl_200_p__br_ {
+.h-_200p_ {
     height: 200%
 }
-.h-_bl_99px_br_ {
+.h-_99px_ {
     height: 99px
 }
-.max-h-_bl_100px_br_ {
+.max-h-_100px_ {
     max-height: 100px
 }
-.min-h-_bl_100px_br_ {
+.min-h-_100px_ {
     min-height: 100px
 }
 .w-10 {
@@ -2095,22 +2095,22 @@ view,text,::before,::after {
 .w-32 {
     width: 256rpx
 }
-.w-_bl_100px_br_ {
+.w-_100px_ {
     width: 100px
 }
-.w-_bl_20px_br_ {
+.w-_20px_ {
     width: 20px
 }
-.w-_bl_300rpx_br_ {
+.w-_300rpx_ {
     width: 300rpx
 }
-.w-_bl_99px_br_ {
+.w-_99px_ {
     width: 99px
 }
-.min-w-_bl_300rpx_br_ {
+.min-w-_300rpx_ {
     min-width: 300rpx
 }
-.max-w-_bl_300rpx_br_ {
+.max-w-_300rpx_ {
     max-width: 300rpx
 }
 .grid-cols-3 {
@@ -2122,12 +2122,12 @@ view,text,::before,::after {
 .justify-center {
     justify-content: center
 }
-.space-y-_bl_1_d_6rem_br_>view+view,.space-y-_bl_1_d_6rem_br_>view+text,.space-y-_bl_1_d_6rem_br_>text+view,.space-y-_bl_1_d_6rem_br_>text+text {
+.space-y-_1d6rem_>view+view,.space-y-_1d6rem_>view+text,.space-y-_1d6rem_>text+view,.space-y-_1d6rem_>text+text {
     --tw-space-y-reverse: 0;
     margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse))
 }
-.divide-x-_bl_10px_br_>view+view,.divide-x-_bl_10px_br_>view+text,.divide-x-_bl_10px_br_>text+view,.divide-x-_bl_10px_br_>text+text {
+.divide-x-_10px_>view+view,.divide-x-_10px_>view+text,.divide-x-_10px_>text+view,.divide-x-_10px_>text+text {
     --tw-divide-x-reverse: 0;
     border-right-width: calc(10px * var(--tw-divide-x-reverse));
     border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)))
@@ -2135,11 +2135,11 @@ view,text,::before,::after {
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
 }
-.divide-_bl__h_010101_br_>view+view,.divide-_bl__h_010101_br_>view+text,.divide-_bl__h_010101_br_>text+view,.divide-_bl__h_010101_br_>text+text {
+.divide-_h010101_>view+view,.divide-_h010101_>view+text,.divide-_h010101_>text+view,.divide-_h010101_>text+text {
     --tw-divide-opacity: 1;
     border-color: rgb(1 1 1 / var(--tw-divide-opacity, 1))
 }
-.rounded-_bl_40px_br_ {
+.rounded-_40px_ {
     border-radius: 40px
 }
 .rounded-md {
@@ -2148,20 +2148,20 @@ view,text,::before,::after {
 .border-0 {
     border-width: 0px
 }
-.border-_bl_10px_br_ {
+.border-_10px_ {
     border-width: 10px
 }
 .border-solid {
     border-style: solid
 }
-.border-_bl__h_098765_br_ {
+.border-_h098765_ {
     --tw-border-opacity: 1;
     border-color: rgb(9 135 101 / var(--tw-border-opacity, 1))
 }
-.border-opacity-_bl_0_d_44_br_ {
+.border-opacity-_0d44_ {
     --tw-border-opacity: 0.44
 }
-.bg-_bl__h_123456_br_ {
+.bg-_h123456_ {
     --tw-bg-opacity: 1;
     background-color: rgb(18 52 86 / var(--tw-bg-opacity, 1))
 }
@@ -2173,16 +2173,16 @@ view,text,::before,::after {
     --tw-bg-opacity: 1;
     background-color: rgb(3 105 161 / var(--tw-bg-opacity, 1))
 }
-.bg-opacity-_bl_0_d_54_br_ {
+.bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
-.p-_bl_20px_br_ {
+.p-_20px_ {
     padding: 20px
 }
 .px-4 {
@@ -2193,20 +2193,20 @@ view,text,::before,::after {
     padding-top: 16rpx;
     padding-bottom: 16rpx
 }
-.text-_bl_20px_br_ {
+.text-_20px_ {
     font-size: 20px
 }
 .font-semibold {
     font-weight: 600
 }
-.leading-_bl_0_d_9_br_ {
+.leading-_0d9_ {
     line-height: 0.9
 }
-.text-_bl__h_dddddd_br_ {
+.text-_hdddddd_ {
     --tw-text-opacity: 1;
     color: rgb(221 221 221 / var(--tw-text-opacity, 1))
 }
-.text-_bl__h_ffffff_br_ {
+.text-_hffffff_ {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
@@ -2218,7 +2218,7 @@ view,text,::before,::after {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
 }
-.text-opacity-_bl_0_d_19_br_ {
+.text-opacity-_0d19_ {
     --tw-text-opacity: 0.19
 }
 .ring-4 {
@@ -2231,11 +2231,11 @@ view,text,::before,::after {
     --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1))
 }
 @media (min-width: 640px) {
-    .sm_c_px-8 {
+    .smcpx-8 {
         padding-left: 64rpx;
         padding-right: 64rpx
     }
-    .sm_c_py-3 {
+    .smcpy-3 {
         padding-top: 24rpx;
         padding-bottom: 24rpx
     }
@@ -2249,29 +2249,29 @@ view,text,::before,::after {
   <view class="motto">
     <template is="motto" data="{{motto:motto}}" />
   </view>
-  <view class="powered h-_bl_200_p__br_">
+  <view class="powered h-_200p_">
     <text>{{powered.by}}</text>
   </view>
-  <view class="-mt-2 mb-_bl_-20px_br_ p-_bl_20px_br_">
+  <view class="-mt-2 mb-_-20px_ p-_20px_">
     p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
   </view>
-  <view class="space-y-_bl_1_d_6rem_br_">
-    <view class="w-_bl_300rpx_br_ text-black text-opacity-_bl_0_d_19_br_">
+  <view class="space-y-_1d6rem_">
+    <view class="w-_300rpx_ text-black text-opacity-_0d19_">
       w-[300rpx] text-black text-opacity-[0.19]
     </view>
-    <view class="max-h-_bl_100px_br_ min-w-_bl_300rpx_br_ text-_bl_20px_br_ leading-_bl_0_d_9_br_">
+    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="min-h-_bl_100px_br_ max-w-_bl_300rpx_br_ text-_bl__h_dddddd_br_">
+    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">
       max-w-[300rpx] min-h-[100px] text-[#dddddd]
     </view>
-    <view class="flex h-_bl_100px_br_ w-_bl_100px_br_ items-center justify-center rounded-_bl_40px_br_ bg-_bl__h_123456_br_ bg-opacity-_bl_0_d_54_br_ text-_bl__h_ffffff_br_">
+    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">
       Hello
     </view>
-    <view class="border-_bl_10px_br_ border-solid border-_bl__h_098765_br_ border-opacity-_bl_0_d_44_br_">
+    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid-cols-3 divide-x-_bl_10px_br_ divide-solid divide-_bl__h_010101_br_">
+    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -2281,9 +2281,9 @@ view,text,::before,::after {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'?'p-_bl_20px_br_':'m-_bl_20px_br_'}}"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hover_c_bg-sky-800 sm_c_px-8 sm_c_py-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_bl_20px_br_ {{flag=='p-_bl_20px_br_'? 'p-_bl_20px_br_' : 'm-_bl_20px_br_'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_20px_ {{flag=='p-_20px_'?'p-_20px_':'m-_20px_'}}"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -2301,7 +2301,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_bl_100px_br_ h-_bl_100px_br_ \\' + \\"bg-_bl_url_pl__q_https_c__s__s_xxx_d_com_s_xx_d_webp_q__qr__br_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_bl_99px_br_\\', \`h-_bl_99px_br_\`, \\"bg-_bl_url_pl__q_https_c__s__s_yyy_d_com_s_xx_d_webp_q__qr__br_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -4766,10 +4766,10 @@ view,text,::before,::after {
 .bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
 .p-_20px_ {
@@ -4891,7 +4891,7 @@ view,text,::before,::after {
   \\******************************************************/
 /***/ (() => {
 
-eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_url_qhttpscssxxxdcomsxxdwebpq__\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_url_qhttpscssyyydcomsxxdwebpq__\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
+eval("// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_100px_ h-_100px_ \\' + \\"bg-_urlyqhttpscssxxxdcomsxxdwebpqy_\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_99px_\\', \`h-_99px_\`, \\"bg-_urlyqhttpscssyyydcomsxxdwebpqy_\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?");
 
 /***/ })
 
@@ -5153,10 +5153,10 @@ view,text,::before,::after {
 .bg-opacity-_0d54_ {
     --tw-bg-opacity: 0.54
 }
-.bg-_url_qhttpscssxxxdcomsxxdwebpq__ {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
     background-image: url('https://xxx.com/xx.webp')
 }
-.bg-_url_qhttpscssyyydcomsxxdwebpq__ {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
     background-image: url('https://yyy.com/xx.webp')
 }
 .p-_20px_ {
@@ -5262,7 +5262,7 @@ view,text,::before,::after {
   <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3">...</button>
   <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-_20px_'? 'p-_20px_' : 'm-_20px_'}}"></view>
 </view>",
-  "wxml.js": "const className="w-_100px_ h-_100px_ bg-_url_qhttpscssxxxdcomsxxdwebpq__";document.body.append(\`<div class="\${className}">className</div>\`);const el=document.createElement();el.classList.add("w-_99px_","h-_99px_","bg-_url_qhttpscssyyydcomsxxdwebpq__"),document.body.appendChild(el);",
+  "wxml.js": "const className="w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${className}">className</div>\`);const el=document.createElement();el.classList.add("w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_"),document.body.appendChild(el);",
 }
 `;
 

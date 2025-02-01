@@ -17,7 +17,7 @@ describe('customReplaceDictionary', () => {
       ),
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image class="w--0_d_5px-" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w--0_d_5px-"></van-image>')
+    expect(res).toMatchSnapshot()
   })
 
   it('templateHandler complex mode', async () => {
@@ -28,7 +28,7 @@ describe('customReplaceDictionary', () => {
       customReplaceDictionary: MappingChars2String,
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
+    expect(res).toMatchSnapshot()
   })
 
   it('templateHandler default(complex) mode', async () => {
@@ -39,7 +39,7 @@ describe('customReplaceDictionary', () => {
       customReplaceDictionary: MappingChars2String,
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image class="w-_bl_0_d_5px_br_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_bl_0_d_5px_br_"></van-image>')
+    expect(res).toMatchSnapshot()
   })
 
   it('templateHandler simple mode', async () => {
@@ -65,7 +65,7 @@ describe('customReplaceDictionary', () => {
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(css).toBe('.w--0_d_5px-{--tw-border-opacity: 1;}')
+    expect(css).toMatchSnapshot()
   })
 
   it('styleHandler complex mode', async () => {
@@ -75,7 +75,7 @@ describe('customReplaceDictionary', () => {
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(css).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
+    expect(css).toMatchSnapshot()
   })
 
   it('styleHandler default(complex) mode', async () => {
@@ -85,7 +85,7 @@ describe('customReplaceDictionary', () => {
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(css).toBe('.w-_bl_0_d_5px_br_{--tw-border-opacity: 1;}')
+    expect(css).toMatchSnapshot()
   })
 
   it('styleHandler simple mode', async () => {

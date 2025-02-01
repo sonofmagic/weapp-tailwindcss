@@ -134,34 +134,75 @@ view,text,::before,::after {
   "
 `;
 
+exports[`styleHandler > arbitrary values case 2 1`] = `
+".lgc_ncnth-childy3y_cfirst-lettercunderline:nth-child(3):first-letter {
+  -webkit-text-decoration-line: underline;
+  text-decoration-line: underline;
+}
+"
+`;
+
+exports[`styleHandler > arbitrary values case 3 1`] = `
+"._n_p_cmt-4 p {
+  margin-top: 1rem;
+}
+"
+`;
+
+exports[`styleHandler > arbitrary values case 4 1`] = `
+"@supports (display: grid) {
+  ._jsupportsydisplaycgridy_cgrid {
+    text-decoration-style: underline;
+  }
+}
+"
+`;
+
+exports[`styleHandler > arbitrary values case 5 1`] = `
+"@media (any-hover: hover) {
+  ._jmediayany-hoverchoveryznchoverz_copacity-100:focus {
+    opacity: 1;
+  }
+}
+"
+`;
+
+exports[`styleHandler > arbitrary values case 6 1`] = `
+"._n_du-count-downw_w_text_citext-red-400 .u-count-down__text {
+  --tw-text-opacity: 1 !important;
+  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;
+}
+"
+`;
+
 exports[`styleHandler > before,after content case 1`] = `
-".after_c_ml-0_d_5::after {
+".aftercml-0d5::after {
   content: var(--tw-content);
   margin-left: 0.125rem;
 }
-.after_c_ml-0::after {
+.aftercml-0::after {
   content: var(--tw-content);
   margin-left: 0;
 }
-.after_c_text-red-500::after {
+.afterctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
 }
-.after_c_content-_bl__dq__a__dq__br_::after {
+.afterccontent-_xmx_::after {
   --tw-content: "*";
   content: var(--tw-content);
 }
-.after_c_content-_bl__a__br_::after {
+.afterccontent-_m_::after {
   --tw-content: *;
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
-  .after_c_bg-zinc-800 {
+  .aftercbg-zinc-800 {
     --tw-bg-opacity: 1;
     background-color: rgb(39 39 42 / var(--tw-bg-opacity));
   }
-  .after_c_bg-green-500 {
+  .aftercbg-green-500 {
     --tw-bg-opacity: 1;
     background-color: rgb(34 197 94 / var(--tw-bg-opacity));
   }
@@ -994,7 +1035,7 @@ view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-siz
 exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > utf8 charset 1`] = `
-".after_c_content-_bl__q_u6211u662fu4f2au5143u7d20_q__br_::after {
+".afterccontent-_qu6211u662fu4f2au5143u7d20q_::after {
     --tw-content: '我是伪元素';
     content: var(--tw-content)
 }"

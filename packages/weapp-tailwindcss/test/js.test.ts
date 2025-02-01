@@ -5,7 +5,7 @@ import { getCompilerContext } from '@/context'
 import { getDefaultOptions } from '@/defaults'
 import { createJsHandler } from '@/js/index'
 import { decodeUnicode } from '@/utils/decode'
-import { SimpleMappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-core/escape'
 // import punycode from 'node:punycode'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 // swc 在解析中文的时候，会导致 span 增加，从而无法精确定位，不知道是不是bug
@@ -36,11 +36,11 @@ describe('jsHandler', () => {
   let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
     h = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
     })
 
     dh = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
       // minifiedJs: true,
       arbitraryValues: {
         allowDoubleQuotes: true,
@@ -48,7 +48,7 @@ describe('jsHandler', () => {
     })
 
     astGreph = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
       jsAstTool: 'ast-grep',
     })
 
@@ -266,7 +266,7 @@ describe('jsHandler', () => {
     set.add('bg-[red]')
 
     const { code } = await h('const p = \'text-[12px]\';const n = `bg-[url(\'天气好\')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] \'`', set)
-    expect(code).toBe('const p = \'text-_12px_\';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ \'`')
+    expect(code).toMatchSnapshot()
   })
 
   it('astGrep TemplateElement case 0', async () => {
@@ -279,7 +279,7 @@ describe('jsHandler', () => {
     set.add('leading-[24px]')
     const s = 'const p = \'text-[12px] leading-[24px]\';const n = `bg-[url(\'天气好\')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] \'`'
     const { code } = await astGreph(s, set)
-    expect(code).toBe('const p = \'text-_12px_ leading-_24px_\';const n = `bg-_url_qu5929u6c14u597dq__${p}text-_199px_ \\n\\n  flex  \\n\\n  bg-_red_ \'`')
+    expect(code).toMatchSnapshot()
   })
 
   it.each(testTable)('$name mpx jit classNames', async () => {
@@ -339,7 +339,7 @@ describe('jsHandler', () => {
     set.add('*')
     set.add('w-[100px]')
     const myCustomJsHandler = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
       jsPreserveClass(keyword) {
         if (getDefaultOptions().jsPreserveClass?.(keyword)) {
           return true
@@ -359,7 +359,7 @@ describe('jsHandler', () => {
     set.add('*')
     set.add('w-[100px]')
     const myCustomJsHandler = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
       jsPreserveClass(keyword) {
         if (getDefaultOptions().jsPreserveClass?.(keyword)) {
           return true
@@ -378,7 +378,7 @@ describe('jsHandler', () => {
     set.add('*')
     set.add('w-[100px]')
     const myCustomJsHandler = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
       jsPreserveClass(keyword) {
         if (getDefaultOptions().jsPreserveClass?.(keyword)) {
           return true

@@ -1,6 +1,6 @@
 import { getCss } from '#test/helpers/getTwCss'
 import { createJsHandler } from '@/js/index'
-import { SimpleMappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-core/escape'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { createGetCase, jsCasePath } from './util'
 // import { getCompilerContext } from '@/context'
@@ -29,17 +29,17 @@ describe('taro app', () => {
   // let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
     h = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
     })
     rh = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
     })
     mh = createJsHandler({
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
     })
 
     // dh = createJsHandler({
-    //   escapeMap: SimpleMappingChars2String,
+    //   escapeMap: MappingChars2String,
     //   minifiedJs: true,
     //   arbitraryValues: {
     //     allowDoubleQuotes: true

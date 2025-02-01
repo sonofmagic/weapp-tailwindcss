@@ -1,9 +1,27 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`templateReplacer > isConditionalExpression 1`] = `"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_bl__h_fafa00_br_']}}"`;
+exports[`templateReplacer > %label for toutiao str add not array {} 1`] = `"{{('ifont-bold') + ' ' + 'itext-_h990000_' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}"`;
 
-exports[`templateReplacer > nest  1`] = `"{{[flag?'bg-red-900':'bg-_bl__h_fafa00_br_',classObject,[(flag===true)?'bg-_bl__h_fafa00_br_':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_bl__h_000_br_':'bg-_bl__h_fafa00_br_']}}"`;
+exports[`templateReplacer > %label utils.bem() {} 1`] = `"custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"`;
 
-exports[`templateReplacer > sm:text-3xl dark:text-sky-400 1`] = `"sm_c_text-3xl dark_c_text-slate-200 bg-_bl__h_ffffaa_br_"`;
+exports[`templateReplacer > arbitrary before:content-['hello'] 1`] = `"beforeccontent-_qhelloq_"`;
+
+exports[`templateReplacer > arbitrary shadow values 0 1`] = `"shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_"`;
+
+exports[`templateReplacer > arbitrary shadow values 1 1`] = `"shadow-_0px_2px_11px_0px_h00000a_"`;
+
+exports[`templateReplacer > classGenerator class with string var 1`] = `"btn-p1 a_p-1_{{num}}"`;
+
+exports[`templateReplacer > isConditionalExpression 1`] = `"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_hfafa00_']}}"`;
+
+exports[`templateReplacer > nest  1`] = `"{{[flag?'bg-red-900':'bg-_hfafa00_',classObject,[(flag===true)?'bg-_hfafa00_':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_h000_':'bg-_hfafa00_']}}"`;
+
+exports[`templateReplacer > sm:text-3xl dark:text-sky-400 1`] = `"smctext-3xl darkctext-slate-200 bg-_hffffaa_"`;
+
+exports[`templateReplacer > two ConditionalExpression 1`] = `"btn a{{num >='p-[1]'?num==='q-[2]'?'x-_0_':'y-_1_':'z-_2_'}}"`;
 
 exports[`templateReplacer > undefined isStringLiteral 1`] = `"{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"`;
+
+exports[`templateReplacer > variables with multiple literal 1`] = `"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}} h-_20px_"`;
+
+exports[`templateReplacer > variables with multiple literal(2) 1`] = `"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}}"`;

@@ -1,5 +1,5 @@
 import type { UserDefinedOptions } from './types'
-import { SimpleMappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-core/escape'
 import { isPackageExists } from 'local-pkg'
 import { noop } from './utils'
 
@@ -86,7 +86,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     onUpdate: noop,
 
     customAttributes: {},
-    customReplaceDictionary: SimpleMappingChars2String,
+    customReplaceDictionary: MappingChars2String,
     appType: undefined,
     arbitraryValues: {
       allowDoubleQuotes: false,

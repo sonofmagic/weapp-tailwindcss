@@ -1,18 +1,18 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 1`] = `"_ncnth-child_3__cunderline"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 1`] = `"_ncnth-childy3y_cunderline"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 2`] = `"lgc_ncnth-child_3__chovercunderline"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 2`] = `"lgc_ncnth-childy3y_chovercunderline"`;
 
 exports[`all arbitrary values usages > ArbitraryVariants > Selectors 3`] = `"_n_p_cmt-4"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 4`] = `"_jsupports_displaycgrid__cgrid"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 4`] = `"_jsupportsydisplaycgridy_cgrid"`;
 
-exports[`all arbitrary values usages > ArbitraryVariants > Selectors 5`] = `"_jmedia_any-hoverchover__nchover__copacity-100"`;
+exports[`all arbitrary values usages > ArbitraryVariants > Selectors 5`] = `"_jmediayany-hoverchoveryznchoverz_copacity-100"`;
 
 exports[`all arbitrary values usages > Backgrounds > Background Color 1`] = `"bg-_h50d71e_"`;
 
-exports[`all arbitrary values usages > Backgrounds > Background Image 1`] = `"bg-_url_qsimgshero-patterndsvgq__"`;
+exports[`all arbitrary values usages > Backgrounds > Background Image 1`] = `"bg-_urlyqsimgshero-patterndsvgqy_"`;
 
 exports[`all arbitrary values usages > Backgrounds > Background Position 1`] = `"bg-_center_top_1rem_"`;
 
@@ -46,7 +46,7 @@ exports[`all arbitrary values usages > Borders > Ring Width 1`] = `"ring-_10px_"
 
 exports[`all arbitrary values usages > Effects > Box Shadow 1`] = `"shadow-_inset_0_0_0_0_h50d71e_"`;
 
-exports[`all arbitrary values usages > Effects > Box Shadow 2`] = `"shadow-_0_35px_60px_-15px_rgba_0b0b0b0d3__"`;
+exports[`all arbitrary values usages > Effects > Box Shadow 2`] = `"shadow-_0_35px_60px_-15px_rgbay0b0b0b0d3y_"`;
 
 exports[`all arbitrary values usages > Effects > Box Shadow Color 1`] = `"shadow-_h50d71e_"`;
 
@@ -116,7 +116,7 @@ exports[`all arbitrary values usages > Filters > Contrast 3`] = `"contrast-_d25_
 
 exports[`all arbitrary values usages > Filters > Drop Shadow 1`] = `"drop-shadow-_0_0_0_0_h50d71e_"`;
 
-exports[`all arbitrary values usages > Filters > Drop Shadow 2`] = `"drop-shadow-_0_35px_35px_rgba_0b0b0b0d25__"`;
+exports[`all arbitrary values usages > Filters > Drop Shadow 2`] = `"drop-shadow-_0_35px_35px_rgbay0b0b0b0d25y_"`;
 
 exports[`all arbitrary values usages > Filters > Grayscale 1`] = `"grayscale-_50p_"`;
 
@@ -156,17 +156,17 @@ exports[`all arbitrary values usages > Flexbox & Grid > Flex Shrink 1`] = `"shri
 
 exports[`all arbitrary values usages > Flexbox & Grid > Gap 1`] = `"gap-_2d75rem_"`;
 
-exports[`all arbitrary values usages > Flexbox & Grid > Grid Auto Columns 1`] = `"auto-cols-_minmax_0b_2fr__"`;
+exports[`all arbitrary values usages > Flexbox & Grid > Grid Auto Columns 1`] = `"auto-cols-_minmaxy0b_2fry_"`;
 
-exports[`all arbitrary values usages > Flexbox & Grid > Grid Auto Rows 1`] = `"auto-rows-_minmax_0b_2fr__"`;
+exports[`all arbitrary values usages > Flexbox & Grid > Grid Auto Rows 1`] = `"auto-rows-_minmaxy0b_2fry_"`;
 
 exports[`all arbitrary values usages > Flexbox & Grid > Grid Column Start / End 1`] = `"col-_16_s_span_16_"`;
 
 exports[`all arbitrary values usages > Flexbox & Grid > Grid Row Start / End 1`] = `"row-_span_16_s_span_16_"`;
 
-exports[`all arbitrary values usages > Flexbox & Grid > Grid Template Columns 1`] = `"grid-cols-_200px_minmax_900pxb_1fr__100px_"`;
+exports[`all arbitrary values usages > Flexbox & Grid > Grid Template Columns 1`] = `"grid-cols-_200px_minmaxy900pxb_1fry_100px_"`;
 
-exports[`all arbitrary values usages > Flexbox & Grid > Grid Template Rows 1`] = `"grid-rows-_200px_minmax_900pxb_1fr__100px_"`;
+exports[`all arbitrary values usages > Flexbox & Grid > Grid Template Rows 1`] = `"grid-rows-_200px_minmaxy900pxb_1fry_100px_"`;
 
 exports[`all arbitrary values usages > Flexbox & Grid > Order 1`] = `"order-_13_"`;
 
@@ -194,7 +194,7 @@ exports[`all arbitrary values usages > Interactivity > Caret Size 9`] = `"caret-
 
 exports[`all arbitrary values usages > Interactivity > Caret Size 10`] = `"caret-_100px_"`;
 
-exports[`all arbitrary values usages > Interactivity > Cursor 1`] = `"cursor-_url_handdcur_b_pointer_"`;
+exports[`all arbitrary values usages > Interactivity > Cursor 1`] = `"cursor-_urlyhanddcuryb_pointer_"`;
 
 exports[`all arbitrary values usages > Interactivity > Cursor 2`] = `"cursor-_pointer_"`;
 
@@ -392,7 +392,7 @@ exports[`all arbitrary values usages > Transitions & Animation > Transition Prop
 
 exports[`all arbitrary values usages > Transitions & Animation > Transition Property 3`] = `"transition-_height_"`;
 
-exports[`all arbitrary values usages > Transitions & Animation > Transition Timing Function 1`] = `"ease-_cubic-bezier_0d95b0d05b0d795b0d035__"`;
+exports[`all arbitrary values usages > Transitions & Animation > Transition Timing Function 1`] = `"ease-_cubic-beziery0d95b0d05b0d795b0d035y_"`;
 
 exports[`all arbitrary values usages > Typography > Content 1`] = `"beforeccontent-_qHello_Worldq_"`;
 

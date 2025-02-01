@@ -7,7 +7,7 @@ exports[`handling whitespace > before:content-['hello_world'] 1`] = `
 `;
 
 exports[`handling whitespace > bg-[url('/what_a_rush.png')] 1`] = `
-"<div class="bg-_url_qswhat_a_rushdpngq__">
+"<div class="bg-_urlyqswhat_a_rushdpngqy_">
       <!-- ... -->
     </div>"
 `;

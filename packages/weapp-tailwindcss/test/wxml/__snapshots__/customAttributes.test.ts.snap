@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`customAttributes > map case 1`] = `
+"<van-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></van-a>
+<el-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></el-a>
+<ant-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></ant-a>"
+`;
+
+exports[`customAttributes > simple map case 1`] = `"<van-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></van-a>"`;
+
+exports[`customAttributes > van-image case 0 1`] = `"<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-_0d5px_" other-attr="w-[0.5px]"></van-image>"`;
+
+exports[`customAttributes > van-image case 1 1`] = `"<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>"`;
+
+exports[`customAttributes > view tag case 1`] = `"<view class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" cc=="w-[0.5px]"></view>"`;
+
+exports[`customAttributes > wild card case 0 1`] = `"<view class="w-0d5 group" group-hover-class="ibg-indigo-500 itext-red"></view>"`;
+
+exports[`customAttributes > wild card case 1`] = `"<view class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" cc=="w-[0.5px]"></view>"`;
+
+exports[`customAttributes > wild card via normal case 1`] = `"<view class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" dd="w-[0.5px]" ee="w-[0.5px]"></view><cc class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" dd="w-_0d5px_" ee="w-_0d5px_"></cc>"`;

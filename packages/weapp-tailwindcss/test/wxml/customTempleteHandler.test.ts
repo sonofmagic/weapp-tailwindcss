@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { SimpleMappingChars2String } from '@/escape'
+import { MappingChars2String } from '@/escape'
 import { customTemplateHandler } from '@/wxml/utils'
 import { createGetCase, format, wxmlCasePath } from '../util'
 
@@ -8,7 +8,7 @@ describe('customTemplateHandler', () => {
   it('invalid customAttributesEntities options', async () => {
     const res = await customTemplateHandler('<view class="p-[20px]"></view>', {
       customAttributesEntities: [],
-      escapeMap: SimpleMappingChars2String,
+      escapeMap: MappingChars2String,
     })
     expect(res).toBe('<view class="p-_20px_"></view>')
   })

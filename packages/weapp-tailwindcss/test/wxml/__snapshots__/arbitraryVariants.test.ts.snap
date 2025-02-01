@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arbitrary variants > [&:nth-child(3)]:underline 1`] = `"<li class="_ncnth-childy3y_cunderline">{item}</li>"`;
+
+exports[`arbitrary variants > [&_.u-count-down__text]:!text-red-400 1`] = `"<view class="aftercborder-none afterccontent-_qHello_Worldq_">after:border-none</view>"`;
+
+exports[`arbitrary variants > [&_p]:mt-4 1`] = `"<div class="_n_p_cmt-4"></div>"`;
+
+exports[`arbitrary variants > [@media(any-hover:hover){&:hover}]:opacity-100 1`] = `"<button type="button" class="_jmediayany-hoverchoveryznchoverz_copacity-100"></button>"`;
+
+exports[`arbitrary variants > [@supports(display:grid)]:grid 1`] = `"<div class="flex _jsupportsydisplaycgridy_cgrid"></div>"`;
+
+exports[`arbitrary variants > lg:[&:nth-child(3)]:hover:underline 1`] = `"<li class="lgc_ncnth-childy3y_chovercunderline">{item}</li>"`;
+
+exports[`simpleHandler > [&:nth-child(3)]:underline 1`] = `"<li class="_ncnth-childy3y_cunderline">{item}</li>"`;
+
+exports[`simpleHandler > [@media(any-hover:hover){&:hover}]:opacity-100 1`] = `"<button type="button" class="_jmediayany-hoverchoveryznchoverz_copacity-100"></button>"`;
+
+exports[`simpleHandler > [@supports(display:grid)]:grid 1`] = `"<div class="flex _jsupportsydisplaycgridy_cgrid"></div>"`;
+
+exports[`simpleHandler > lg:[&:nth-child(3)]:hover:underline 1`] = `"<li class="lgc_ncnth-childy3y_chovercunderline">{item}</li>"`;
