@@ -67,6 +67,7 @@
     "postcss-selector-parser": "~7.0.0"
   },
   "devDependencies": {
+    "@csstools/postcss-cascade-layers": "^5.0.1",
     "@weapp-tailwindcss/mangle": "workspace:*"
   }
 }

@@ -16,7 +16,8 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "gen": "tsx ./scripts/index.ts"
+    "gen:postcss": "tsx ./scripts/postcss.ts",
+    "gen:vite": "tsx ./scripts/vite.ts"
   },
   "dependencies": {
     "vue": "^3.5.13",
