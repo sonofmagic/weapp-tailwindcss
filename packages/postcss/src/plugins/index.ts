@@ -1,11 +1,11 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
+import postcssCascadeLayers from '@csstools/postcss-cascade-layers'
 import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { createContext } from './ctx'
 import { postcssWeappTailwindcssPostPlugin } from './post'
 import { postcssWeappTailwindcssPrePlugin } from './pre'
-
 /**
  * 根据提供的选项生成一组 PostCSS 插件。
  * @param options - 样式处理器选项，包含 PostCSS 插件和其他配置。
@@ -15,6 +15,7 @@ export function getPlugins(options: IStyleHandlerOptions) {
   const ctx = createContext()
   options.ctx = ctx
   const plugins: AcceptedPlugin[] = [
+    postcssCascadeLayers(),
     ...(options.postcssOptions?.plugins ?? []),
     postcssWeappTailwindcssPrePlugin(options),
     postcssIsPseudoClass({

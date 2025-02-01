@@ -2,10 +2,8 @@
 
 exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
-@layer theme, base, components, utilities;
 
-@layer theme {
-  :root,:host {
+:root,:host {
     --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
@@ -382,17 +380,15 @@ exports[`v4 > postcss 1`] = `
       --font-mono--font-variation-settings
     );
   }
-}
 
-@layer base {
-  ::after,::before,::backdrop,::file-selector-button {
+:not(n)::after,:not(n)::before,:not(n)::backdrop,:not(n)::file-selector-button {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
 
-  html,:host {
+html:not(n),:host:not(n) {
     font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
     font-variation-settings: var( --default-font-variation-settings, normal );
     font-feature-settings: var(--default-font-feature-settings, normal);
@@ -402,93 +398,93 @@ exports[`v4 > postcss 1`] = `
     -webkit-tap-highlight-color: transparent;
   }
 
-  body {
+body:not(n) {
     line-height: inherit;
   }
 
-  hr {
+hr:not(n) {
     height: 0;
     color: inherit;
     border-top-width: 1px;
   }
 
-  abbr:where([title]) {
+abbr:not(n) {
     text-decoration: underline dotted;
   }
 
-  h1,h2,h3,h4,h5,h6 {
+h1:not(n),h2:not(n),h3:not(n),h4:not(n),h5:not(n),h6:not(n) {
     font-size: inherit;
     font-weight: inherit;
   }
 
-  a {
+a:not(n) {
     color: inherit;
     text-decoration: inherit;
   }
 
-  b,strong {
+b:not(n),strong:not(n) {
     font-weight: bolder;
   }
 
-  code,kbd,samp,pre {
+code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
 
-  small {
+small:not(n) {
     font-size: 80%;
   }
 
-  sub,sup {
+sub:not(n),sup:not(n) {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline;
   }
 
-  sub {
+sub:not(n) {
     bottom: -0.25em;
   }
 
-  sup {
+sup:not(n) {
     top: -0.5em;
   }
 
-  table {
+table:not(n) {
     text-indent: 0;
     border-collapse: collapse;
     border-color: inherit;
   }
 
-  :-moz-focusring {
+:-moz-focusring:not(n) {
     outline: auto;
   }
 
-  progress {
+progress:not(n) {
     vertical-align: baseline;
   }
 
-  summary {
+summary:not(n) {
     display: list-item;
   }
 
-  ol,ul,menu {
+ol:not(n),ul:not(n),menu:not(n) {
     list-style: none;
   }
 
-  img,svg,video,canvas,audio,iframe,embed,object {
+img:not(n),svg:not(n),video:not(n),canvas:not(n),audio:not(n),iframe:not(n),embed:not(n),object:not(n) {
     display: block;
     vertical-align: middle;
   }
 
-  img,video {
+img:not(n),video:not(n) {
     max-width: 100%;
     height: auto;
   }
 
-  button,input,select,optgroup,textarea,::file-selector-button {
+button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n),:not(n)::file-selector-button {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -499,114 +495,87 @@ exports[`v4 > postcss 1`] = `
     opacity: 1;
   }
 
-  :where(select[multiple]) optgroup {
+:where(select):not(n) optgroup {
     font-weight: bolder;
   }
 
-  :where(select[size]) optgroup {
+:where(select):not(n) optgroup {
     font-weight: bolder;
   }
 
-  :where(select[multiple]) optgroup option {
+:where(select):not(n) optgroup option {
     padding-inline-start: 20px;
   }
 
-  :where(select[size]) optgroup option {
+:where(select):not(n) optgroup option {
     padding-inline-start: 20px;
   }
 
-  ::file-selector-button {
+:not(n)::file-selector-button {
     margin-inline-end: 4px;
   }
 
-  ::placeholder {
+:not(n)::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
   }
 
-  textarea {
+textarea:not(n) {
     resize: vertical;
   }
 
-  ::-webkit-search-decoration {
+:not(n)::-webkit-search-decoration {
     appearance: none;
   }
 
-  ::-webkit-date-and-time-value {
+:not(n)::-webkit-date-and-time-value {
     min-height: 1lh;
     text-align: inherit;
   }
 
-  ::-webkit-datetime-edit {
+:not(n)::-webkit-datetime-edit {
     display: inline-flex;
   }
 
-  ::-webkit-datetime-edit-fields-wrapper {
+:not(n)::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
 
-  ::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field {
+:not(n)::-webkit-datetime-edit,:not(n)::-webkit-datetime-edit-year-field,:not(n)::-webkit-datetime-edit-month-field,:not(n)::-webkit-datetime-edit-day-field,:not(n)::-webkit-datetime-edit-hour-field,:not(n)::-webkit-datetime-edit-minute-field,:not(n)::-webkit-datetime-edit-second-field,:not(n)::-webkit-datetime-edit-millisecond-field,:not(n)::-webkit-datetime-edit-meridiem-field {
     padding-block: 0;
   }
 
-  :-moz-ui-invalid {
+:-moz-ui-invalid:not(n) {
     box-shadow: none;
   }
 
-  button,input:where([type="button"],[type="reset"],[type="submit"]),::file-selector-button {
+button:not(n),input:not(n),:not(n)::file-selector-button {
     appearance: button;
   }
 
-  ::-webkit-inner-spin-button,::-webkit-outer-spin-button {
+:not(n)::-webkit-inner-spin-button,:not(n)::-webkit-outer-spin-button {
     height: auto;
   }
 
-  [hidden]:where(:not([hidden="until-found"])) {
-    display: none !important;
-  }
-}
-
-@layer utilities {
-  .container {
-    width: 100%;
-
-    @media (width >= 40rem) {
-      max-width: 40rem;
-    }
-
-    @media (width >= 48rem) {
-      max-width: 48rem;
-    }
-
-    @media (width >= 64rem) {
-      max-width: 64rem;
-    }
-
-    @media (width >= 80rem) {
-      max-width: 80rem;
-    }
-
-    @media (width >= 96rem) {
-      max-width: 96rem;
-    }
+.container:not(n):not(n):not(n) {
+    width: 100%
   }
 
-  .m-_3d45rpx_ {
+.m-_3d45rpx_:not(n):not(n):not(n) {
     margin: 3.45rpx;
   }
 
-  .mx-auto {
+.mx-auto:not(n):not(n):not(n) {
     margin-inline: auto;
   }
 
-  .bg-_h377a6c90_ {
+.bg-_h377a6c90_:not(n):not(n):not(n) {
     background-color: #377a6c90;
   }
 
-  .p-_12d34px_ {
+.p-_12d34px_:not(n):not(n):not(n) {
     padding: 12.34px;
   }
-}
 
 @keyframes spin {
   to {
@@ -642,8 +611,7 @@ exports[`v4 > postcss 1`] = `
 
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
-@layer theme {
-  :root,:host {
+:root,:host {
     --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
     --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
@@ -1009,24 +977,22 @@ exports[`v4 > vite 1`] = `
     --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
-}
 
-@layer base {
-  ::after,::before,::backdrop {
+:not(n)::after,:not(n)::before,:not(n)::backdrop {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
 
-  ::file-selector-button {
+:not(n)::file-selector-button {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
 
-  html,:host {
+html:not(n),:host:not(n) {
     font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
     font-variation-settings: var(--default-font-variation-settings, normal);
     font-feature-settings: var(--default-font-feature-settings, normal);
@@ -1036,95 +1002,95 @@ exports[`v4 > vite 1`] = `
     -webkit-tap-highlight-color: transparent;
   }
 
-  body {
+body:not(n) {
     line-height: inherit;
   }
 
-  hr {
+hr:not(n) {
     height: 0;
     color: inherit;
     border-top-width: 1px;
   }
 
-  abbr:where([title]) {
+abbr:not(n) {
     text-decoration: underline dotted;
     text-decoration: underline dotted;
   }
 
-  h1,h2,h3,h4,h5,h6 {
+h1:not(n),h2:not(n),h3:not(n),h4:not(n),h5:not(n),h6:not(n) {
     font-size: inherit;
     font-weight: inherit;
   }
 
-  a {
+a:not(n) {
     color: inherit;
     text-decoration: inherit;
     text-decoration: inherit;
   }
 
-  b,strong {
+b:not(n),strong:not(n) {
     font-weight: bolder;
   }
 
-  code,kbd,samp,pre {
+code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
     font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
     font-size: 1em;
     font-variation-settings: var(--default-mono-font-variation-settings, normal);
     font-feature-settings: var(--default-mono-font-feature-settings, normal);
   }
 
-  small {
+small:not(n) {
     font-size: 80%;
   }
 
-  sub,sup {
+sub:not(n),sup:not(n) {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline;
   }
 
-  sub {
+sub:not(n) {
     bottom: -.25em;
   }
 
-  sup {
+sup:not(n) {
     top: -.5em;
   }
 
-  table {
+table:not(n) {
     text-indent: 0;
     border-collapse: collapse;
     border-color: inherit;
   }
 
-  :-moz-focusring {
+:-moz-focusring:not(n) {
     outline: auto;
   }
 
-  progress {
+progress:not(n) {
     vertical-align: baseline;
   }
 
-  summary {
+summary:not(n) {
     display: list-item;
   }
 
-  ol,ul,menu {
+ol:not(n),ul:not(n),menu:not(n) {
     list-style: none;
   }
 
-  img,svg,video,canvas,audio,iframe,embed,object {
+img:not(n),svg:not(n),video:not(n),canvas:not(n),audio:not(n),iframe:not(n),embed:not(n),object:not(n) {
     display: block;
     vertical-align: middle;
   }
 
-  img,video {
+img:not(n),video:not(n) {
     max-width: 100%;
     height: auto;
   }
 
-  button,input,select,optgroup,textarea {
+button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -1135,7 +1101,7 @@ exports[`v4 > vite 1`] = `
     opacity: 1;
   }
 
-  ::file-selector-button {
+:not(n)::file-selector-button {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -1146,114 +1112,107 @@ exports[`v4 > vite 1`] = `
     opacity: 1;
   }
 
-  :where(select[multiple]) optgroup {
+:where(select):not(n) optgroup {
     font-weight: bolder;
   }
 
-  :where(select[size]) optgroup {
+:where(select):not(n) optgroup {
     font-weight: bolder;
   }
 
-  :where(select[multiple]) optgroup option {
+:where(select):not(n) optgroup option {
     padding-inline-start: 20px;
   }
 
-  :where(select[size]) optgroup option {
+:where(select):not(n) optgroup option {
     padding-inline-start: 20px;
   }
 
-  ::file-selector-button {
+:not(n)::file-selector-button {
     margin-inline-end: 4px;
   }
 
-  ::placeholder {
+:not(n)::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
   }
 
-  textarea {
+textarea:not(n) {
     resize: vertical;
   }
 
-  ::-webkit-search-decoration {
+:not(n)::-webkit-search-decoration {
     appearance: none;
   }
 
-  ::-webkit-date-and-time-value {
+:not(n)::-webkit-date-and-time-value {
     min-height: 1lh;
     text-align: inherit;
   }
 
-  ::-webkit-datetime-edit {
+:not(n)::-webkit-datetime-edit {
     display: inline-flex;
   }
 
-  ::-webkit-datetime-edit-fields-wrapper {
+:not(n)::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
 
-  ::-webkit-datetime-edit {
+:not(n)::-webkit-datetime-edit {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-year-field {
+:not(n)::-webkit-datetime-edit-year-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-month-field {
+:not(n)::-webkit-datetime-edit-month-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-day-field {
+:not(n)::-webkit-datetime-edit-day-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-hour-field {
+:not(n)::-webkit-datetime-edit-hour-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-minute-field {
+:not(n)::-webkit-datetime-edit-minute-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-second-field {
+:not(n)::-webkit-datetime-edit-second-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-millisecond-field {
+:not(n)::-webkit-datetime-edit-millisecond-field {
     padding-block: 0;
   }
 
-  ::-webkit-datetime-edit-meridiem-field {
+:not(n)::-webkit-datetime-edit-meridiem-field {
     padding-block: 0;
   }
 
-  :-moz-ui-invalid {
+:-moz-ui-invalid:not(n) {
     box-shadow: none;
   }
 
-  button,input:where([type="button"],[type="reset"],[type="submit"]) {
+button:not(n),input:not(n) {
     appearance: button;
   }
 
-  ::file-selector-button {
+:not(n)::file-selector-button {
     appearance: button;
   }
 
-  ::-webkit-inner-spin-button {
+:not(n)::-webkit-inner-spin-button {
     height: auto;
   }
 
-  ::-webkit-outer-spin-button {
+:not(n)::-webkit-outer-spin-button {
     height: auto;
   }
-
-  [hidden]:where(:not([hidden="until-found"])) {
-    display: none !important;
-  }
-}
-
-@layer components, utilities;
 
 @keyframes spin {
   to {

@@ -3,3 +3,9 @@
 exports[`selectorParser > fallbackRemove case 0 1`] = `"#app-provider .space-x-4>view+view"`;
 
 exports[`selectorParser > fallbackRemove case 1 1`] = `"#app .space-x-0>view+view"`;
+
+exports[`selectorParser > fallbackRemove case 2 1`] = `"button:not(n),input:not(n)"`;
+
+exports[`selectorParser > fallbackRemove case 3 1`] = `"[hidden]:where(:not([hidden="until-found"])):not(n):not(n):not(n)"`;
+
+exports[`selectorParser > fallbackRemove case 4 1`] = `"button:not(n),input:not(n)"`;

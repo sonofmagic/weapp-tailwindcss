@@ -1,7 +1,7 @@
 import type { Rule } from 'postcss'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
-import selectorParser from 'postcss-selector-parser'
+import selectorParser, { tag } from 'postcss-selector-parser'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
@@ -44,12 +44,8 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
   return transform
 }
 
-function getRuleTransformer(rule: Rule, options: IStyleHandlerOptions) {
-  return selectorParser(createRuleTransform(rule, options))
-}
-
 export function ruleTransformSync(rule: Rule, options: IStyleHandlerOptions) {
-  const transformer = getRuleTransformer(rule, options)
+  const transformer = selectorParser(createRuleTransform(rule, options))
 
   return transformer.transformSync(rule, {
     lossless: false,
@@ -77,22 +73,68 @@ export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
   return b && a
 }
 
-export const fallbackRemove = selectorParser((selectors) => {
-  let maybeImportantId = false
-  selectors.walk((selector, idx) => {
-    if (idx === 0 && (selector.type === 'id' || selector.type === 'class' || selector.type === 'attribute')) {
-      maybeImportantId = true
-    }
-    if (selector.type === 'universal') {
-      selector.parent?.remove()
-    }
-    if (selector.type === 'pseudo' && selector.value === ':is') {
-      if (maybeImportantId && selector.nodes[0]?.type === 'selector') {
-        selector.replaceWith(selector.nodes[0])
+export function getFallbackRemove(rule?: Rule) {
+  const fallbackRemove = selectorParser((selectors) => {
+    let maybeImportantId = false
+    selectors.walk((selector, idx) => {
+      if (idx === 0 && (selector.type === 'id' || selector.type === 'class' || selector.type === 'attribute')) {
+        maybeImportantId = true
       }
-      else {
+      if (selector.type === 'universal') {
         selector.parent?.remove()
       }
-    }
+      if (selector.type === 'pseudo') {
+        if (selector.value === ':is') {
+          if (maybeImportantId && selector.nodes[0]?.type === 'selector') {
+            selector.replaceWith(selector.nodes[0])
+          }
+          else {
+            selector.parent?.remove()
+          }
+        }
+        else if (selector.value === ':not') {
+          for (const x of selector.nodes) {
+            if (
+              x.nodes.length === 1
+              && x.nodes[0].type === 'id'
+              && x.nodes[0].value === '#'
+            ) {
+              // if (removeNegationPseudoClass) {
+              //   selector.remove()
+              // }
+              x.nodes = [
+                tag({
+                  value: 'n',
+                }),
+              ]
+            }
+          }
+        }
+      }
+      if (selector.type === 'attribute') {
+        if (selector.attribute === 'hidden') {
+          rule?.remove()
+        }
+        else {
+          selector.remove()
+        }
+      }
+    })
+    selectors.walk((selector) => {
+      if (selector.type === 'pseudo') {
+        if (selector.value === ':where') {
+          const res = selector.nodes.every(x => x.nodes.length === 0)
+          if (res) {
+            selector.remove()
+          }
+          // for (const x of selector.nodes) {
+          //   if (x.nodes.length === 0) {
+          //     x.remove()
+          //   }
+          // }
+        }
+      }
+    })
   })
-})
+  return fallbackRemove
+}

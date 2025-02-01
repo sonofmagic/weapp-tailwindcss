@@ -59,6 +59,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "@csstools/postcss-cascade-layers": "^5.0.1",
     "@csstools/postcss-is-pseudo-class": "^5.0.1",
     "@weapp-core/escape": "~3.0.2",
     "@weapp-tailwindcss/shared": "workspace:*",
@@ -67,7 +68,6 @@
     "postcss-selector-parser": "~7.0.0"
   },
   "devDependencies": {
-    "@csstools/postcss-cascade-layers": "^5.0.1",
     "@weapp-tailwindcss/mangle": "workspace:*"
   }
 }

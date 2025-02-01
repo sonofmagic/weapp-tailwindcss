@@ -670,6 +670,9 @@ importers:
 
   packages/postcss:
     dependencies:
+      '@csstools/postcss-cascade-layers':
+        specifier: ^5.0.1
+        version: 5.0.1(postcss@8.5.1)
       '@csstools/postcss-is-pseudo-class':
         specifier: ^5.0.1
         version: 5.0.1(postcss@8.5.1)
@@ -689,9 +692,6 @@ importers:
         specifier: ~7.0.0
         version: 7.0.0
     devDependencies:
-      '@csstools/postcss-cascade-layers':
-        specifier: ^5.0.1
-        version: 5.0.1(postcss@8.5.1)
       '@weapp-tailwindcss/mangle':
         specifier: workspace:*
         version: link:../mangle
