@@ -50,7 +50,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
     "weapp-tailwindcss": "workspace:*"
