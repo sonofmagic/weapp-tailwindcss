@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.0-alpha.7
+
+### Patch Changes
+
+- [`d4bfcc7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d4bfcc7a25776eb9869bd934c05e3b49a3f4cc8b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: remove attribute in :where pseudo
+
 ## 1.0.0-alpha.6
 
 ### Patch Changes
