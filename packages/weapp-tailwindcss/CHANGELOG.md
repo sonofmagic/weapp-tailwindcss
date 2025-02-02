@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.0-alpha.11
+
+### Patch Changes
+
+- [`3da8643`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3da864338de73a304346fd47b4a91fa18d9f3163) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: loaderUtils.getOptions
+
 ## 4.0.0-alpha.10
 
 ### Patch Changes
