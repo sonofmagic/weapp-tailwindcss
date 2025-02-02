@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.0-alpha.5
+
+### Patch Changes
+
+- [`6d20f1f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6d20f1f9a799cf350dcbbd861907f0ff70a68dfd) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: perfer postcss-preset-env instead of @csstools
+
 ## 1.0.0-alpha.4
 
 ### Patch Changes
