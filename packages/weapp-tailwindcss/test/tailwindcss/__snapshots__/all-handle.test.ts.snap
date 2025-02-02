@@ -242,6 +242,11 @@ progress {
   height: auto;
 }
 
+[type='search'] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
 ::-webkit-search-decoration {
   -webkit-appearance: none;
 }
@@ -291,7 +296,7 @@ input::placeholder,textarea::placeholder {
   color: #9ca3af;
 }
 
-button, {
+button,[role="button"] {
   cursor: pointer;
 }
 :disabled {
