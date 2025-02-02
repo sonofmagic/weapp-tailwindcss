@@ -1,9 +1,11 @@
 [
   "bg-[#7d7ac2]",
+  "bg-blue-400/40",
   "block",
   "h-[30px]",
   "h-[45px]",
   "text-[#123456]",
   "text-[100px]",
+  "text-red-800",
   "w-[323px]"
 ]
