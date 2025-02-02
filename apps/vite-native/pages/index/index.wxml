@@ -1,6 +1,6 @@
 <!-- index.wxml -->
 <template name="staffName">
-  <view>FirstName: {{firstName}}, LastName: {{lastName}}</view>
+  <view class="text-red-800 bg-blue-400/40">FirstName: {{firstName}}, LastName: {{lastName}}</view>
 </template>
 <navigation-bar></navigation-bar>
 <scroll-view scroll-y type="list">

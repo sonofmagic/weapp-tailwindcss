@@ -1,10 +1,10 @@
-import { register } from 'tsx/cjs/api'
+// import { register } from 'tsx/cjs/api'
 
-register()
+// register()
 export default {
   plugins: {
     // 'tailwindcss-injector/postcss': {},
-    tailwindcss: {},
-    autoprefixer: {},
+    // tailwindcss: {},
+    // autoprefixer: {},
   },
 }

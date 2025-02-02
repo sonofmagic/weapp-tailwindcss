@@ -294,11 +294,7 @@ view,text,::before,::after {
       border-color: currentColor}"
 `;
 
-exports[`styleHandler > https://github.com/tailwindlabs/tailwindcss/pull/14625/files 1`] = `
-"[hidden]:where(:not([hidden="until-found"])) {
-  display: none;
-}"
-`;
+exports[`styleHandler > https://github.com/tailwindlabs/tailwindcss/pull/14625/files 1`] = `""`;
 
 exports[`styleHandler > injectAdditionalCssVarScope option true 1`] = `
 "view,text,::after,::before {

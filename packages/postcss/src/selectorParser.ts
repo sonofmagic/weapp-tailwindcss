@@ -1,7 +1,7 @@
 import type { Rule } from 'postcss'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
-import selectorParser, { tag } from 'postcss-selector-parser'
+import selectorParser from 'postcss-selector-parser'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
@@ -103,7 +103,7 @@ export function getFallbackRemove(rule?: Rule) {
               //   selector.remove()
               // }
               x.nodes = [
-                tag({
+                selectorParser.tag({
                   value: 'n',
                 }),
               ]

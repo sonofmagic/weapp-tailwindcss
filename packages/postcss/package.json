@@ -60,7 +60,9 @@
   },
   "dependencies": {
     "@csstools/postcss-cascade-layers": "^5.0.1",
+    "@csstools/postcss-color-mix-function": "^3.0.7",
     "@csstools/postcss-is-pseudo-class": "^5.0.1",
+    "@csstools/postcss-oklab-function": "^4.0.7",
     "@weapp-core/escape": "~4.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
     "postcss": "~8.5.1",
