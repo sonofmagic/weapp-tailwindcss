@@ -338,9 +338,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe(
-      '._ncnth-childy3y_cunderline:nth-child(3),.underline {\n  -webkit-text-decoration-line: underline;\n  text-decoration-line: underline;\n}\n',
-    )
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('arbitrary values case 1', async () => {
@@ -544,7 +542,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(normalizeEol(css)).toBe('.beforeccontent-_qaq_::before {\n    --tw-content: \'+\';\n    content: var(--tw-content)\n}')
+    expect(normalizeEol(css)).toMatchSnapshot()
   })
 
   it('@apply space-y/x css selector', async () => {

@@ -4,7 +4,7 @@ exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 
 :root,:host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
     --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
@@ -326,25 +326,25 @@ exports[`v4 > postcss 1`] = `
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --radius-4xl: 2rem;
-    --shadow-2xs: 0 1px rgb(0 0 0 / 5%);
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 5%);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 10%),
-      0 2px 4px -2px rgb(0 0 0 / 10%);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 10%),
-      0 4px 6px -4px rgb(0 0 0 / 10%);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 10%),
-      0 8px 10px -6px rgb(0 0 0 / 10%);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 25%);
-    --inset-shadow-2xs: inset 0 1px rgb(0 0 0 / 5%);
-    --inset-shadow-xs: inset 0 1px 1px rgb(0 0 0 / 5%);
-    --inset-shadow-sm: inset 0 2px 4px rgb(0 0 0 / 5%);
-    --drop-shadow-xs: 0 1px 1px rgb(0 0 0 / 5%);
-    --drop-shadow-sm: 0 1px 2px rgb(0 0 0 / 15%);
-    --drop-shadow-md: 0 3px 3px rgb(0 0 0 / 12%);
-    --drop-shadow-lg: 0 4px 4px rgb(0 0 0 / 15%);
-    --drop-shadow-xl: 0 9px 7px rgb(0 0 0 / 10%);
-    --drop-shadow-2xl: 0 25px 25px rgb(0 0 0 / 15%);
+    --shadow-2xs: 0 1px rgba(0, 0, 0, 0.05);
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --inset-shadow-2xs: inset 0 1px rgba(0, 0, 0, 0.05);
+    --inset-shadow-xs: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    --inset-shadow-sm: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    --drop-shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.05);
+    --drop-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+    --drop-shadow-md: 0 3px 3px rgba(0, 0, 0, 0.12);
+    --drop-shadow-lg: 0 4px 4px rgba(0, 0, 0, 0.15);
+    --drop-shadow-xl: 0 9px 7px rgba(0, 0, 0, 0.1);
+    --drop-shadow-2xl: 0 25px 25px rgba(0, 0, 0, 0.15);
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -382,6 +382,105 @@ exports[`v4 > postcss 1`] = `
   }
 
 @supports (color: color(display-p3 0 0 0%)) {
+:root,:host {
+    --color-red-200: rgb(255, 202, 202);
+    --color-red-300: rgb(255, 163, 164);
+    --color-red-400: rgb(255, 101, 104);
+    --color-red-600: rgb(228, 0, 22);
+    --color-red-700: rgb(191, 0, 16);
+    --color-orange-50: rgb(255, 247, 237);
+    --color-orange-100: rgb(255, 237, 213);
+    --color-orange-200: rgb(255, 215, 168);
+    --color-orange-300: rgb(255, 185, 112);
+    --color-orange-400: rgb(255, 139, 31);
+    --color-orange-500: rgb(252, 113, 0);
+    --color-orange-600: rgb(236, 86, 0);
+    --color-orange-700: rgb(196, 62, 0);
+    --color-orange-800: rgb(159, 45, 0);
+    --color-amber-50: rgb(255, 251, 235);
+    --color-amber-300: rgb(255, 210, 55);
+    --color-amber-400: rgb(250, 188, 0);
+    --color-amber-500: rgb(246, 158, 0);
+    --color-amber-600: rgb(218, 119, 0);
+    --color-amber-700: rgb(181, 82, 0);
+    --color-amber-800: rgb(149, 61, 0);
+    --color-yellow-300: rgb(255, 224, 46);
+    --color-yellow-400: rgb(247, 201, 0);
+    --color-yellow-500: rgb(234, 179, 0);
+    --color-yellow-600: rgb(202, 138, 0);
+    --color-yellow-700: rgb(162, 98, 0);
+    --color-yellow-800: rgb(135, 76, 0);
+    --color-lime-400: rgb(157, 229, 0);
+    --color-lime-500: rgb(131, 204, 0);
+    --color-lime-600: rgb(100, 163, 0);
+    --color-lime-700: rgb(75, 124, 0);
+    --color-lime-800: rgb(61, 99, 0);
+    --color-green-500: rgb(0, 198, 90);
+    --color-green-600: rgb(0, 164, 71);
+    --color-green-700: rgb(0, 129, 58);
+    --color-emerald-400: rgb(0, 210, 148);
+    --color-emerald-500: rgb(0, 185, 129);
+    --color-emerald-600: rgb(0, 150, 105);
+    --color-emerald-700: rgb(0, 120, 87);
+    --color-emerald-800: rgb(0, 95, 70);
+    --color-emerald-900: rgb(0, 78, 59);
+    --color-emerald-950: rgb(0, 44, 34);
+    --color-teal-400: rgb(0, 211, 189);
+    --color-teal-500: rgb(0, 185, 166);
+    --color-teal-600: rgb(0, 148, 136);
+    --color-teal-700: rgb(0, 119, 110);
+    --color-teal-800: rgb(0, 95, 90);
+    --color-cyan-400: rgb(0, 209, 236);
+    --color-cyan-500: rgb(0, 182, 212);
+    --color-cyan-600: rgb(0, 145, 179);
+    --color-cyan-700: rgb(0, 116, 145);
+    --color-cyan-800: rgb(0, 95, 120);
+    --color-sky-50: rgb(240, 249, 255);
+    --color-sky-300: rgb(120, 212, 255);
+    --color-sky-400: rgb(0, 187, 253);
+    --color-sky-500: rgb(0, 165, 234);
+    --color-sky-600: rgb(0, 132, 199);
+    --color-sky-700: rgb(0, 105, 162);
+    --color-sky-800: rgb(0, 89, 134);
+    --color-blue-200: rgb(190, 219, 255);
+    --color-blue-300: rgb(145, 197, 255);
+    --color-blue-400: rgb(86, 162, 255);
+    --color-blue-500: rgb(50, 128, 255);
+    --color-indigo-50: rgb(238, 242, 255);
+    --color-indigo-100: rgb(224, 231, 255);
+    --color-indigo-200: rgb(199, 210, 255);
+    --color-indigo-300: rgb(164, 180, 255);
+    --color-indigo-400: rgb(125, 135, 255);
+    --color-indigo-500: rgb(98, 96, 255);
+    --color-violet-200: rgb(221, 214, 255);
+    --color-violet-300: rgb(196, 180, 255);
+    --color-violet-400: rgb(166, 134, 255);
+    --color-violet-500: rgb(141, 86, 255);
+    --color-purple-200: rgb(233, 213, 255);
+    --color-purple-300: rgb(216, 180, 255);
+    --color-purple-400: rgb(191, 126, 255);
+    --color-purple-500: rgb(171, 78, 255);
+    --color-purple-700: rgb(130, 0, 217);
+    --color-fuchsia-100: rgb(250, 232, 255);
+    --color-fuchsia-200: rgb(246, 207, 255);
+    --color-fuchsia-300: rgb(242, 169, 255);
+    --color-fuchsia-400: rgb(236, 109, 255);
+    --color-fuchsia-600: rgb(197, 0, 218);
+    --color-fuchsia-700: rgb(166, 0, 180);
+    --color-pink-600: rgb(227, 0, 118);
+    --color-pink-700: rgb(194, 0, 92);
+    --color-pink-800: rgb(162, 0, 76);
+    --color-rose-100: rgb(255, 228, 230);
+    --color-rose-200: rgb(255, 204, 211);
+    --color-rose-300: rgb(255, 163, 174);
+    --color-rose-400: rgb(255, 104, 128);
+    --color-rose-500: rgb(255, 35, 87);
+    --color-rose-600: rgb(230, 0, 69);
+    --color-rose-700: rgb(193, 0, 58);
+    --color-rose-800: rgb(163, 0, 55);
+  }
+
+@media (color-gamut: p3) {
 :root,:host {
     --color-red-200: color(display-p3 0.96956 0.79815 0.7943);
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
@@ -480,6 +579,7 @@ exports[`v4 > postcss 1`] = `
     --color-rose-800: color(display-p3 0.59125 0.09291 0.2201);
   }
 }
+}
 
 :not(n)::after,:not(n)::before,:not(n)::backdrop,:not(n)::file-selector-button {
     box-sizing: border-box;
@@ -489,12 +589,22 @@ exports[`v4 > postcss 1`] = `
   }
 
 html:not(n),:host:not(n) {
-    font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: var( --default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-variation-settings: normal;
     font-variation-settings: var( --default-font-variation-settings, normal );
+    font-feature-settings: normal;
     font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
-    tab-size: 4;
-    text-size-adjust: 100%;
+    -moz-tab-size: 4;
+      -o-tab-size: 4;
+         tab-size: 4;
+    -webkit-text-size-adjust: 100%;
+       -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -509,7 +619,9 @@ hr:not(n) {
   }
 
 abbr:not(n) {
-    text-decoration: underline dotted;
+    text-decoration: underline;
+    -webkit-text-decoration: underline dotted;
+            text-decoration: underline dotted;
   }
 
 h1:not(n),h2:not(n),h3:not(n),h4:not(n),h5:not(n),h6:not(n) {
@@ -527,9 +639,13 @@ b:not(n),strong:not(n) {
   }
 
 code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
+    font-family: ui-monospace, sfmono-regular, menlo, monaco, consolas,
+      "Liberation Mono", "Courier New", monospace;
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
+    font-variation-settings: normal;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
+    font-feature-settings: normal;
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
 
@@ -604,15 +720,20 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n),:not(n)
   }
 
 :where(select):not(n) optgroup option {
-    padding-inline-start: 20px;
+    padding-left: 20px;
   }
 
 :where(select):not(n) optgroup option {
-    padding-inline-start: 20px;
+    padding-left: 20px;
   }
 
 :not(n)::file-selector-button {
-    margin-inline-end: 4px;
+    margin-right: 4px;
+  }
+
+:not(n)::-moz-placeholder {
+    color: color-mix(in oklab, currentcolor 50%, transparent);
+    opacity: 1;
   }
 
 :not(n)::placeholder {
@@ -625,7 +746,8 @@ textarea:not(n) {
   }
 
 :not(n)::-webkit-search-decoration {
-    appearance: none;
+    -webkit-appearance: none;
+            appearance: none;
   }
 
 :not(n)::-webkit-date-and-time-value {
@@ -642,7 +764,8 @@ textarea:not(n) {
   }
 
 :not(n)::-webkit-datetime-edit,:not(n)::-webkit-datetime-edit-year-field,:not(n)::-webkit-datetime-edit-month-field,:not(n)::-webkit-datetime-edit-day-field,:not(n)::-webkit-datetime-edit-hour-field,:not(n)::-webkit-datetime-edit-minute-field,:not(n)::-webkit-datetime-edit-second-field,:not(n)::-webkit-datetime-edit-millisecond-field,:not(n)::-webkit-datetime-edit-meridiem-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :-moz-ui-invalid:not(n) {
@@ -650,7 +773,9 @@ textarea:not(n) {
   }
 
 button:not(n),input:not(n),:not(n)::file-selector-button {
-    appearance: button;
+    -webkit-appearance: button;
+       -moz-appearance: button;
+            appearance: button;
   }
 
 :not(n)::-webkit-inner-spin-button,:not(n)::-webkit-outer-spin-button {
@@ -658,19 +783,50 @@ button:not(n),input:not(n),:not(n)::file-selector-button {
   }
 
 .container:not(n):not(n):not(n) {
-    width: 100%
+    width: 100%;
   }
+
+@media (min-width: 40rem) {
+  .container:not(n):not(n):not(n) {
+      max-width: 40rem;
+  }
+    }
+
+@media (min-width: 48rem) {
+  .container:not(n):not(n):not(n) {
+      max-width: 48rem;
+  }
+    }
+
+@media (min-width: 64rem) {
+  .container:not(n):not(n):not(n) {
+      max-width: 64rem;
+  }
+    }
+
+@media (min-width: 80rem) {
+  .container:not(n):not(n):not(n) {
+      max-width: 80rem;
+  }
+    }
+
+@media (min-width: 96rem) {
+  .container:not(n):not(n):not(n) {
+      max-width: 96rem;
+  }
+    }
 
 .m-_3d45rpx_:not(n):not(n):not(n) {
     margin: 3.45rpx;
   }
 
 .mx-auto:not(n):not(n):not(n) {
-    margin-inline: auto;
+    margin-left: auto;
+    margin-right: auto;
   }
 
 .bg-_h377a6c90_:not(n):not(n):not(n) {
-    background-color: #377a6c90;
+    background-color: rgba(55,122,108,0.56471);
   }
 
 .p-_12d34px_:not(n):not(n):not(n) {
@@ -712,7 +868,7 @@ button:not(n),input:not(n),:not(n)::file-selector-button {
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 :root,:host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
     --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
@@ -1032,22 +1188,22 @@ exports[`v4 > vite 1`] = `
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --radius-4xl: 2rem;
-    --shadow-2xs: 0 1px #0000000d;
-    --shadow-xs: 0 1px 2px 0 #0000000d;
-    --shadow-sm: 0 1px 3px 0 #0000001a, 0 1px 2px -1px #0000001a;
-    --shadow-md: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
-    --shadow-lg: 0 10px 15px -3px #0000001a, 0 4px 6px -4px #0000001a;
-    --shadow-xl: 0 20px 25px -5px #0000001a, 0 8px 10px -6px #0000001a;
-    --shadow-2xl: 0 25px 50px -12px #00000040;
-    --inset-shadow-2xs: inset 0 1px #0000000d;
-    --inset-shadow-xs: inset 0 1px 1px #0000000d;
-    --inset-shadow-sm: inset 0 2px 4px #0000000d;
-    --drop-shadow-xs: 0 1px 1px #0000000d;
-    --drop-shadow-sm: 0 1px 2px #00000026;
-    --drop-shadow-md: 0 3px 3px #0000001f;
-    --drop-shadow-lg: 0 4px 4px #00000026;
-    --drop-shadow-xl: 0 9px 7px #0000001a;
-    --drop-shadow-2xl: 0 25px 25px #00000026;
+    --shadow-2xs: 0 1px rgba(0,0,0,0.05098);
+    --shadow-xs: 0 1px 2px 0 rgba(0,0,0,0.05098);
+    --shadow-sm: 0 1px 3px 0 rgba(0,0,0,0.10196), 0 1px 2px -1px rgba(0,0,0,0.10196);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.10196), 0 2px 4px -2px rgba(0,0,0,0.10196);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.10196), 0 4px 6px -4px rgba(0,0,0,0.10196);
+    --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.10196), 0 8px 10px -6px rgba(0,0,0,0.10196);
+    --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,0.25098);
+    --inset-shadow-2xs: inset 0 1px rgba(0,0,0,0.05098);
+    --inset-shadow-xs: inset 0 1px 1px rgba(0,0,0,0.05098);
+    --inset-shadow-sm: inset 0 2px 4px rgba(0,0,0,0.05098);
+    --drop-shadow-xs: 0 1px 1px rgba(0,0,0,0.05098);
+    --drop-shadow-sm: 0 1px 2px rgba(0,0,0,0.14902);
+    --drop-shadow-md: 0 3px 3px rgba(0,0,0,0.12157);
+    --drop-shadow-lg: 0 4px 4px rgba(0,0,0,0.14902);
+    --drop-shadow-xl: 0 9px 7px rgba(0,0,0,0.10196);
+    --drop-shadow-2xl: 0 25px 25px rgba(0,0,0,0.14902);
     --ease-in: cubic-bezier(.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, .2, 1);
     --ease-in-out: cubic-bezier(.4, 0, .2, 1);
@@ -1078,6 +1234,106 @@ exports[`v4 > vite 1`] = `
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 @supports (color: color(display-p3 0 0 0%)) {
+:root,:host {
+    --color-red-100: rgb(255, 228, 228);
+    --color-red-200: rgb(255, 204, 204);
+    --color-red-300: rgb(255, 164, 165);
+    --color-red-600: rgb(229, 0, 23);
+    --color-red-700: rgb(193, 0, 16);
+    --color-orange-50: rgb(255, 247, 237);
+    --color-orange-300: rgb(255, 187, 115);
+    --color-orange-400: rgb(255, 139, 31);
+    --color-orange-500: rgb(254, 114, 0);
+    --color-orange-600: rgb(238, 87, 0);
+    --color-orange-700: rgb(195, 61, 0);
+    --color-orange-800: rgb(159, 45, 0);
+    --color-amber-50: rgb(255, 252, 240);
+    --color-amber-300: rgb(255, 211, 58);
+    --color-amber-400: rgb(250, 188, 0);
+    --color-amber-500: rgb(246, 158, 0);
+    --color-amber-600: rgb(219, 120, 0);
+    --color-amber-700: rgb(183, 83, 0);
+    --color-amber-800: rgb(148, 61, 0);
+    --color-yellow-200: rgb(255, 242, 144);
+    --color-yellow-300: rgb(255, 226, 67);
+    --color-yellow-400: rgb(247, 200, 0);
+    --color-yellow-500: rgb(236, 180, 0);
+    --color-yellow-600: rgb(202, 138, 0);
+    --color-yellow-700: rgb(160, 97, 0);
+    --color-yellow-800: rgb(137, 77, 0);
+    --color-lime-50: rgb(249, 255, 235);
+    --color-lime-400: rgb(157, 228, 0);
+    --color-lime-500: rgb(131, 205, 0);
+    --color-lime-600: rgb(100, 164, 0);
+    --color-lime-700: rgb(75, 124, 0);
+    --color-lime-800: rgb(60, 98, 0);
+    --color-green-500: rgb(0, 197, 89);
+    --color-green-600: rgb(0, 165, 72);
+    --color-green-700: rgb(0, 130, 58);
+    --color-emerald-400: rgb(0, 212, 150);
+    --color-emerald-500: rgb(0, 187, 130);
+    --color-emerald-600: rgb(0, 152, 106);
+    --color-emerald-700: rgb(0, 121, 87);
+    --color-emerald-800: rgb(0, 95, 69);
+    --color-emerald-900: rgb(0, 79, 59);
+    --color-emerald-950: rgb(0, 44, 33);
+    --color-teal-400: rgb(0, 212, 190);
+    --color-teal-500: rgb(0, 183, 165);
+    --color-teal-600: rgb(0, 148, 136);
+    --color-teal-700: rgb(0, 118, 110);
+    --color-teal-800: rgb(0, 96, 90);
+    --color-cyan-100: rgb(209, 251, 255);
+    --color-cyan-400: rgb(0, 209, 237);
+    --color-cyan-500: rgb(0, 184, 214);
+    --color-cyan-600: rgb(0, 145, 179);
+    --color-cyan-700: rgb(0, 116, 145);
+    --color-cyan-800: rgb(0, 95, 120);
+    --color-sky-50: rgb(242, 250, 255);
+    --color-sky-300: rgb(122, 212, 255);
+    --color-sky-400: rgb(0, 189, 255);
+    --color-sky-500: rgb(0, 167, 237);
+    --color-sky-600: rgb(0, 133, 200);
+    --color-sky-700: rgb(0, 105, 162);
+    --color-sky-800: rgb(0, 88, 133);
+    --color-blue-300: rgb(146, 197, 255);
+    --color-blue-400: rgb(88, 163, 255);
+    --color-blue-500: rgb(48, 127, 255);
+    --color-indigo-100: rgb(224, 231, 255);
+    --color-indigo-200: rgb(199, 210, 255);
+    --color-indigo-300: rgb(166, 181, 255);
+    --color-indigo-400: rgb(124, 134, 255);
+    --color-indigo-500: rgb(99, 98, 255);
+    --color-violet-50: rgb(245, 243, 255);
+    --color-violet-300: rgb(196, 180, 255);
+    --color-violet-400: rgb(165, 133, 255);
+    --color-violet-500: rgb(141, 89, 255);
+    --color-purple-50: rgb(251, 246, 255);
+    --color-purple-100: rgb(244, 234, 255);
+    --color-purple-200: rgb(232, 212, 255);
+    --color-purple-300: rgb(217, 181, 255);
+    --color-purple-400: rgb(191, 124, 255);
+    --color-purple-500: rgb(171, 80, 255);
+    --color-purple-700: rgb(131, 0, 220);
+    --color-fuchsia-50: rgb(253, 245, 255);
+    --color-fuchsia-300: rgb(242, 167, 255);
+    --color-fuchsia-400: rgb(236, 109, 255);
+    --color-fuchsia-600: rgb(196, 0, 217);
+    --color-fuchsia-700: rgb(167, 0, 181);
+    --color-fuchsia-800: rgb(137, 0, 148);
+    --color-fuchsia-950: rgb(74, 0, 78);
+    --color-pink-600: rgb(226, 0, 118);
+    --color-pink-700: rgb(197, 0, 94);
+    --color-pink-800: rgb(163, 0, 76);
+    --color-rose-50: rgb(255, 241, 242);
+    --color-rose-300: rgb(255, 163, 174);
+    --color-rose-400: rgb(255, 102, 127);
+    --color-rose-500: rgb(255, 44, 90);
+    --color-rose-600: rgb(232, 0, 69);
+    --color-rose-700: rgb(191, 0, 57);
+    --color-rose-800: rgb(165, 0, 56);
+  }
+
+@media (color-gamut: p3) {
 :root,:host {
     --color-red-100: color(display-p3 0.98565 0.89489 0.89294);
     --color-red-200: color(display-p3 0.97617 0.8045 0.80062);
@@ -1177,6 +1433,7 @@ exports[`v4 > vite 1`] = `
     --color-rose-800: color(display-p3 0.59777 0.10205 0.22531);
   }
 }
+}
 
 :not(n)::after,:not(n)::before,:not(n)::backdrop {
     box-sizing: border-box;
@@ -1193,12 +1450,20 @@ exports[`v4 > vite 1`] = `
   }
 
 html:not(n),:host:not(n) {
-    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-variation-settings: normal;
     font-variation-settings: var(--default-font-variation-settings, normal);
+    font-feature-settings: normal;
     font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
-    tab-size: 4;
-    text-size-adjust: 100%;
+    -moz-tab-size: 4;
+      -o-tab-size: 4;
+         tab-size: 4;
+    -webkit-text-size-adjust: 100%;
+       -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -1213,7 +1478,9 @@ hr:not(n) {
   }
 
 abbr:not(n) {
-    text-decoration: underline dotted;
+    text-decoration: underline;
+    -webkit-text-decoration: underline dotted;
+            text-decoration: underline dotted;
     text-decoration: underline dotted;
   }
 
@@ -1233,9 +1500,12 @@ b:not(n),strong:not(n) {
   }
 
 code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
+    font-family: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
     font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
     font-size: 1em;
+    font-variation-settings: normal;
     font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-feature-settings: normal;
     font-feature-settings: var(--default-mono-font-feature-settings, normal);
   }
 
@@ -1296,7 +1566,7 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
     font-feature-settings: inherit;
     color: inherit;
     letter-spacing: inherit;
-    background-color: #0000;
+    background-color: rgba(0,0,0,0);
     border-radius: 0;
     opacity: 1;
   }
@@ -1307,7 +1577,7 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
     font-feature-settings: inherit;
     color: inherit;
     letter-spacing: inherit;
-    background-color: #0000;
+    background-color: rgba(0,0,0,0);
     border-radius: 0;
     opacity: 1;
   }
@@ -1321,15 +1591,20 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
   }
 
 :where(select):not(n) optgroup option {
-    padding-inline-start: 20px;
+    padding-left: 20px;
   }
 
 :where(select):not(n) optgroup option {
-    padding-inline-start: 20px;
+    padding-left: 20px;
   }
 
 :not(n)::file-selector-button {
-    margin-inline-end: 4px;
+    margin-right: 4px;
+  }
+
+:not(n)::-moz-placeholder {
+    color: color-mix(in oklab, currentcolor 50%, transparent);
+    opacity: 1;
   }
 
 :not(n)::placeholder {
@@ -1342,7 +1617,8 @@ textarea:not(n) {
   }
 
 :not(n)::-webkit-search-decoration {
-    appearance: none;
+    -webkit-appearance: none;
+            appearance: none;
   }
 
 :not(n)::-webkit-date-and-time-value {
@@ -1359,39 +1635,48 @@ textarea:not(n) {
   }
 
 :not(n)::-webkit-datetime-edit {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-year-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-month-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-day-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-hour-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-minute-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-second-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-millisecond-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :not(n)::-webkit-datetime-edit-meridiem-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
 :-moz-ui-invalid:not(n) {
@@ -1399,11 +1684,15 @@ textarea:not(n) {
   }
 
 button:not(n),input:not(n) {
-    appearance: button;
+    -webkit-appearance: button;
+       -moz-appearance: button;
+            appearance: button;
   }
 
 :not(n)::file-selector-button {
-    appearance: button;
+    -webkit-appearance: button;
+       -moz-appearance: button;
+            appearance: button;
   }
 
 :not(n)::-webkit-inner-spin-button {

@@ -676,18 +676,6 @@ importers:
 
   packages/postcss:
     dependencies:
-      '@csstools/postcss-cascade-layers':
-        specifier: ^5.0.1
-        version: 5.0.1(postcss@8.5.1)
-      '@csstools/postcss-color-mix-function':
-        specifier: ^3.0.7
-        version: 3.0.7(postcss@8.5.1)
-      '@csstools/postcss-is-pseudo-class':
-        specifier: ^5.0.1
-        version: 5.0.1(postcss@8.5.1)
-      '@csstools/postcss-oklab-function':
-        specifier: ^4.0.7
-        version: 4.0.7(postcss@8.5.1)
       '@weapp-core/escape':
         specifier: ~4.0.0
         version: 4.0.0
@@ -697,6 +685,9 @@ importers:
       postcss:
         specifier: ~8.5.1
         version: 8.5.1
+      postcss-preset-env:
+        specifier: ^10.1.3
+        version: 10.1.3(postcss@8.5.1)
       postcss-rem-to-responsive-pixel:
         specifier: ~6.0.2
         version: 6.0.2
@@ -5360,11 +5351,6 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  browserslist@4.24.3:
-    resolution: {integrity: sha512-1CPmv8iobE2fyRMV97dAcMVegvvWKxmq94hkLiAkUGwKVTyDLw33K+ZxiFrREKmmps4rIw6grcCFCnTMSZ/YiA==}
-    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
-
   browserslist@4.24.4:
     resolution: {integrity: sha512-KDi1Ny1gSePi1vm0q4oxSF8b4DR44GF4BbmS2YdhPLOEqd8pDviZOGH/GsmRwoWJ2+5Lr085X7naowMwKHDG1A==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -5506,9 +5492,6 @@ packages:
 
   caniuse-lite@1.0.30001669:
     resolution: {integrity: sha512-DlWzFDJqstqtIVx1zeSpIMLjunf5SmwOw0N2Ck/QSQdS8PLS4+9HrLaYei4w8BIAL7IB/UEDu889d8vhCTPA0w==}
-
-  caniuse-lite@1.0.30001688:
-    resolution: {integrity: sha512-Nmqpru91cuABu/DTCXbM2NSRHzM2uVHfPnhJ/1zEAJx/ILBRVmz3pzH4N7DZqbdG0gWClsCC05Oj0mJ/1AWMbA==}
 
   caniuse-lite@1.0.30001692:
     resolution: {integrity: sha512-A95VKan0kdtrsnMubMKxEKUKImOPSuCpYgxSQBo036P5YYgVIcOYJEgt/txJWqObiRQeISNCfef9nvlQ0vbV7A==}
@@ -6610,9 +6593,6 @@ packages:
 
   electron-to-chromium@1.5.43:
     resolution: {integrity: sha512-NxnmFBHDl5Sachd2P46O7UJiMaMHMLSofoIWVJq3mj8NJgG0umiSeljAVP9lGzjI0UDLJJ5jjoGjcrB8RSbjLQ==}
-
-  electron-to-chromium@1.5.73:
-    resolution: {integrity: sha512-8wGNxG9tAG5KhGd3eeA0o6ixhiNdgr0DcHWm85XPCphwZgD1lIEoi6t3VERayWao7SF7AAZTw6oARGJeVjH8Kg==}
 
   electron-to-chromium@1.5.79:
     resolution: {integrity: sha512-nYOxJNxQ9Om4EC88BE4pPoNI8xwSFf8pU/BAeOl4Hh/b/i6V4biTAzwV7pXi3ARKeoYO5JZKMIXTryXSVer5RA==}
@@ -20063,13 +20043,6 @@ snapshots:
       node-releases: 2.0.18
       update-browserslist-db: 1.1.1(browserslist@4.24.2)
 
-  browserslist@4.24.3:
-    dependencies:
-      caniuse-lite: 1.0.30001688
-      electron-to-chromium: 1.5.73
-      node-releases: 2.0.19
-      update-browserslist-db: 1.1.1(browserslist@4.24.3)
-
   browserslist@4.24.4:
     dependencies:
       caniuse-lite: 1.0.30001692
@@ -20231,16 +20204,14 @@ snapshots:
 
   caniuse-api@3.0.0:
     dependencies:
-      browserslist: 4.24.2
-      caniuse-lite: 1.0.30001669
+      browserslist: 4.24.4
+      caniuse-lite: 1.0.30001692
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
 
   caniuse-lite@1.0.30001667: {}
 
   caniuse-lite@1.0.30001669: {}
-
-  caniuse-lite@1.0.30001688: {}
 
   caniuse-lite@1.0.30001692: {}
 
@@ -20714,7 +20685,7 @@ snapshots:
 
   core-js-compat@3.39.0:
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
 
   core-js-compat@3.40.0:
     dependencies:
@@ -20930,7 +20901,7 @@ snapshots:
   cssnano-preset-advanced@6.1.2(postcss@8.5.1):
     dependencies:
       autoprefixer: 10.4.20(postcss@8.5.1)
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       cssnano-preset-default: 6.1.2(postcss@8.5.1)
       postcss: 8.5.1
       postcss-discard-unused: 6.0.5(postcss@8.5.1)
@@ -20940,7 +20911,7 @@ snapshots:
 
   cssnano-preset-default@6.1.2(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       css-declaration-sorter: 7.2.0(postcss@8.5.1)
       cssnano-utils: 4.0.2(postcss@8.5.1)
       postcss: 8.5.1
@@ -21396,8 +21367,6 @@ snapshots:
   electron-to-chromium@1.5.32: {}
 
   electron-to-chromium@1.5.43: {}
-
-  electron-to-chromium@1.5.73: {}
 
   electron-to-chromium@1.5.79: {}
 
@@ -26441,7 +26410,7 @@ snapshots:
 
   postcss-colormin@6.1.0(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       caniuse-api: 3.0.0
       colord: 2.9.3
       postcss: 8.5.1
@@ -26457,7 +26426,7 @@ snapshots:
 
   postcss-convert-values@6.1.0(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       postcss: 8.5.1
       postcss-value-parser: 4.2.0
 
@@ -26695,7 +26664,7 @@ snapshots:
 
   postcss-merge-rules@6.1.1(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       caniuse-api: 3.0.0
       cssnano-utils: 4.0.2(postcss@8.5.1)
       postcss: 8.5.1
@@ -26735,7 +26704,7 @@ snapshots:
 
   postcss-minify-params@6.1.0(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       cssnano-utils: 4.0.2(postcss@8.5.1)
       postcss: 8.5.1
       postcss-value-parser: 4.2.0
@@ -26873,7 +26842,7 @@ snapshots:
 
   postcss-normalize-unicode@6.1.0(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       postcss: 8.5.1
       postcss-value-parser: 4.2.0
 
@@ -26968,7 +26937,7 @@ snapshots:
       '@csstools/postcss-trigonometric-functions': 4.0.6(postcss@8.5.1)
       '@csstools/postcss-unset-value': 4.0.0(postcss@8.5.1)
       autoprefixer: 10.4.20(postcss@8.5.1)
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       css-blank-pseudo: 7.0.1(postcss@8.5.1)
       css-has-pseudo: 7.0.2(postcss@8.5.1)
       css-prefers-color-scheme: 10.0.0(postcss@8.5.1)
@@ -27012,7 +26981,7 @@ snapshots:
 
   postcss-reduce-initial@6.1.0(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       caniuse-api: 3.0.0
       postcss: 8.5.1
 
@@ -27311,7 +27280,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       address: 1.2.2
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       chalk: 4.1.2
       cross-spawn: 7.0.6
       detect-port-alt: 1.1.6
@@ -28757,7 +28726,7 @@ snapshots:
 
   stylehacks@6.1.1(postcss@8.5.1):
     dependencies:
-      browserslist: 4.24.3
+      browserslist: 4.24.4
       postcss: 8.5.1
       postcss-selector-parser: 6.1.2
 
@@ -29769,12 +29738,6 @@ snapshots:
   update-browserslist-db@1.1.1(browserslist@4.24.2):
     dependencies:
       browserslist: 4.24.2
-      escalade: 3.2.0
-      picocolors: 1.1.0
-
-  update-browserslist-db@1.1.1(browserslist@4.24.3):
-    dependencies:
-      browserslist: 4.24.3
       escalade: 3.2.0
       picocolors: 1.1.0
 

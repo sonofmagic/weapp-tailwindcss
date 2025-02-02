@@ -493,18 +493,21 @@ exports[`postcss plugin > before:content-['+'] 1`] = `
 `;
 
 exports[`postcss plugin > dark mode class > css 1`] = `
-".tbody {
-  .tr {
+"
+  .tbody .tr {
     border-bottom-width: 1px
   }
-  .tr {
+.tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
+    border-color: rgba(241, 245, 249, 1);
+    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
-  .dark view.tr,.dark text.tr {
-    border-color: rgb(148 163 184 / 0.1)
+.tbody .tr.dark view {
+    border-color: rgba(148, 163, 184, 0.1)
   }
-}"
+.tbody .tr.dark text {
+    border-color: rgba(148, 163, 184, 0.1)
+  }"
 `;
 
 exports[`postcss plugin > dark mode class 1`] = `
@@ -523,20 +526,20 @@ exports[`postcss plugin > dark mode class 1`] = `
 `;
 
 exports[`postcss plugin > dark mode media > css 1`] = `
-".tbody {
-  .tr {
+"
+  .tbody .tr {
     border-bottom-width: 1px
   }
-  .tr {
+.tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
+    border-color: rgba(241, 245, 249, 1);
+    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
-  @media (prefers-color-scheme: dark) {
-    .tr {
-      border-color: rgb(148 163 184 / 0.1)
+@media (prefers-color-scheme: dark) {
+    .tbody .tr {
+      border-color: rgba(148, 163, 184, 0.1)
     }
-  }
-}"
+  }"
 `;
 
 exports[`postcss plugin > dark mode media 1`] = `
@@ -557,21 +560,21 @@ exports[`postcss plugin > dark mode media 1`] = `
 `;
 
 exports[`postcss plugin > dark mode selector > css 1`] = `
-".tbody {
-  .tr {
+"
+  .tbody .tr {
     border-bottom-width: 1px
   }
-  .tr {
+.tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
+    border-color: rgba(241, 245, 249, 1);
+    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
-  .tr:where(.dark,.dark view) {
-    border-color: rgb(148 163 184 / 0.1)
+.tbody .tr:where(.dark,.dark view) {
+    border-color: rgba(148, 163, 184, 0.1)
   }
-  .tr:where(.dark,.dark text) {
-    border-color: rgb(148 163 184 / 0.1)
-  }
-}"
+.tbody .tr:where(.dark,.dark text) {
+    border-color: rgba(148, 163, 184, 0.1)
+  }"
 `;
 
 exports[`postcss plugin > dark mode selector 1`] = `
@@ -590,18 +593,18 @@ exports[`postcss plugin > dark mode selector 1`] = `
 `;
 
 exports[`postcss plugin > dark mode variant 1 > css 1`] = `
-".tbody {
-  .tr {
+"
+  .tbody .tr {
     border-bottom-width: 1px
   }
-  .tr {
+.tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
+    border-color: rgba(241, 245, 249, 1);
+    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
-  .tr:not(view,text) {
-    border-color: rgb(148 163 184 / 0.1)
-  }
-}"
+.tbody .tr:not(view):not(text) {
+    border-color: rgba(148, 163, 184, 0.1)
+  }"
 `;
 
 exports[`postcss plugin > dark mode variant 1 1`] = `
@@ -620,23 +623,26 @@ exports[`postcss plugin > dark mode variant 1 1`] = `
 `;
 
 exports[`postcss plugin > dark mode variant 2 > css 1`] = `
-".tbody {
-  .tr {
+"
+  .tbody .tr {
     border-bottom-width: 1px
   }
-  .tr {
+.tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
+    border-color: rgba(241, 245, 249, 1);
+    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
-  .dark view.tr,.dark text.tr {
-    border-color: rgb(148 163 184 / 0.1)
+.tbody .tr.dark view {
+    border-color: rgba(148, 163, 184, 0.1)
   }
-  @media (prefers-color-scheme: dark) {
-    .tr:not(view,text) {
-      border-color: rgb(148 163 184 / 0.1)
+.tbody .tr.dark text {
+    border-color: rgba(148, 163, 184, 0.1)
+  }
+@media (prefers-color-scheme: dark) {
+    .tbody .tr:not(view):not(text) {
+      border-color: rgba(148, 163, 184, 0.1)
     }
-  }
-}"
+  }"
 `;
 
 exports[`postcss plugin > dark mode variant 2 1`] = `

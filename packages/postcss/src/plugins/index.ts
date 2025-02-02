@@ -1,9 +1,6 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
-import postcssCascadeLayers from '@csstools/postcss-cascade-layers'
-import postcssColorMixFunction from '@csstools/postcss-color-mix-function'
-import postcssIsPseudoClass from '@csstools/postcss-is-pseudo-class'
-import postcssOKLabFunction from '@csstools/postcss-oklab-function'
+import postcssPresetEnv from 'postcss-preset-env'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { createContext } from './ctx'
 import { postcssWeappTailwindcssPostPlugin } from './post'
@@ -17,14 +14,18 @@ export function getPlugins(options: IStyleHandlerOptions) {
   const ctx = createContext()
   options.ctx = ctx
   const plugins: AcceptedPlugin[] = [
-    postcssCascadeLayers(),
     ...(options.postcssOptions?.plugins ?? []),
     postcssWeappTailwindcssPrePlugin(options),
-    postcssIsPseudoClass({
-      specificityMatchingName: 'weapp-tw-ig',
+    postcssPresetEnv({
+      features: {
+        'cascade-layers': true,
+        'is-pseudo-class': {
+          specificityMatchingName: 'weapp-tw-ig',
+        },
+        'oklab-function': true,
+        'color-mix': true,
+      },
     }),
-    postcssOKLabFunction(),
-    postcssColorMixFunction(),
   ]
   if (options.rem2rpx) {
     plugins.push(

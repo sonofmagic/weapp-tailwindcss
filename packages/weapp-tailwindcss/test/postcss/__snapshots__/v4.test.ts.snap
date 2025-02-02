@@ -3,7 +3,7 @@
 exports[`tailwindcss v4 > v4-default.css 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 page,:host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -325,25 +325,25 @@ page,:host {
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --radius-4xl: 2rem;
-    --shadow-2xs: 0 1px rgb(0 0 0 / 0.05);
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-      0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-      0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-      0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-    --inset-shadow-2xs: inset 0 1px rgb(0 0 0 / 0.05);
-    --inset-shadow-xs: inset 0 1px 1px rgb(0 0 0 / 0.05);
-    --inset-shadow-sm: inset 0 2px 4px rgb(0 0 0 / 0.05);
-    --drop-shadow-xs: 0 1px 1px rgb(0 0 0 / 0.05);
-    --drop-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.15);
-    --drop-shadow-md: 0 3px 3px rgb(0 0 0 / 0.12);
-    --drop-shadow-lg: 0 4px 4px rgb(0 0 0 / 0.15);
-    --drop-shadow-xl: 0 9px 7px rgb(0 0 0 / 0.1);
-    --drop-shadow-2xl: 0 25px 25px rgb(0 0 0 / 0.15);
+    --shadow-2xs: 0 1px rgba(0, 0, 0, 0.05);
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --inset-shadow-2xs: inset 0 1px rgba(0, 0, 0, 0.05);
+    --inset-shadow-xs: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    --inset-shadow-sm: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    --drop-shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.05);
+    --drop-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+    --drop-shadow-md: 0 3px 3px rgba(0, 0, 0, 0.12);
+    --drop-shadow-lg: 0 4px 4px rgba(0, 0, 0, 0.15);
+    --drop-shadow-xl: 0 9px 7px rgba(0, 0, 0, 0.1);
+    --drop-shadow-2xl: 0 25px 25px rgba(0, 0, 0, 0.15);
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -380,6 +380,105 @@ page,:host {
     );
   }
 @supports (color: color(display-p3 0 0 0%)) {
+page,:host {
+    --color-red-200: rgb(255, 202, 202);
+    --color-red-300: rgb(255, 163, 164);
+    --color-red-400: rgb(255, 101, 104);
+    --color-red-600: rgb(228, 0, 22);
+    --color-red-700: rgb(191, 0, 16);
+    --color-orange-50: rgb(255, 247, 237);
+    --color-orange-100: rgb(255, 237, 213);
+    --color-orange-200: rgb(255, 215, 168);
+    --color-orange-300: rgb(255, 185, 112);
+    --color-orange-400: rgb(255, 139, 31);
+    --color-orange-500: rgb(252, 113, 0);
+    --color-orange-600: rgb(236, 86, 0);
+    --color-orange-700: rgb(196, 62, 0);
+    --color-orange-800: rgb(159, 45, 0);
+    --color-amber-50: rgb(255, 251, 235);
+    --color-amber-300: rgb(255, 210, 55);
+    --color-amber-400: rgb(250, 188, 0);
+    --color-amber-500: rgb(246, 158, 0);
+    --color-amber-600: rgb(218, 119, 0);
+    --color-amber-700: rgb(181, 82, 0);
+    --color-amber-800: rgb(149, 61, 0);
+    --color-yellow-300: rgb(255, 224, 46);
+    --color-yellow-400: rgb(247, 201, 0);
+    --color-yellow-500: rgb(234, 179, 0);
+    --color-yellow-600: rgb(202, 138, 0);
+    --color-yellow-700: rgb(162, 98, 0);
+    --color-yellow-800: rgb(135, 76, 0);
+    --color-lime-400: rgb(157, 229, 0);
+    --color-lime-500: rgb(131, 204, 0);
+    --color-lime-600: rgb(100, 163, 0);
+    --color-lime-700: rgb(75, 124, 0);
+    --color-lime-800: rgb(61, 99, 0);
+    --color-green-500: rgb(0, 198, 90);
+    --color-green-600: rgb(0, 164, 71);
+    --color-green-700: rgb(0, 129, 58);
+    --color-emerald-400: rgb(0, 210, 148);
+    --color-emerald-500: rgb(0, 185, 129);
+    --color-emerald-600: rgb(0, 150, 105);
+    --color-emerald-700: rgb(0, 120, 87);
+    --color-emerald-800: rgb(0, 95, 70);
+    --color-emerald-900: rgb(0, 78, 59);
+    --color-emerald-950: rgb(0, 44, 34);
+    --color-teal-400: rgb(0, 211, 189);
+    --color-teal-500: rgb(0, 185, 166);
+    --color-teal-600: rgb(0, 148, 136);
+    --color-teal-700: rgb(0, 119, 110);
+    --color-teal-800: rgb(0, 95, 90);
+    --color-cyan-400: rgb(0, 209, 236);
+    --color-cyan-500: rgb(0, 182, 212);
+    --color-cyan-600: rgb(0, 145, 179);
+    --color-cyan-700: rgb(0, 116, 145);
+    --color-cyan-800: rgb(0, 95, 120);
+    --color-sky-50: rgb(240, 249, 255);
+    --color-sky-300: rgb(120, 212, 255);
+    --color-sky-400: rgb(0, 187, 253);
+    --color-sky-500: rgb(0, 165, 234);
+    --color-sky-600: rgb(0, 132, 199);
+    --color-sky-700: rgb(0, 105, 162);
+    --color-sky-800: rgb(0, 89, 134);
+    --color-blue-200: rgb(190, 219, 255);
+    --color-blue-300: rgb(145, 197, 255);
+    --color-blue-400: rgb(86, 162, 255);
+    --color-blue-500: rgb(50, 128, 255);
+    --color-indigo-50: rgb(238, 242, 255);
+    --color-indigo-100: rgb(224, 231, 255);
+    --color-indigo-200: rgb(199, 210, 255);
+    --color-indigo-300: rgb(164, 180, 255);
+    --color-indigo-400: rgb(125, 135, 255);
+    --color-indigo-500: rgb(98, 96, 255);
+    --color-violet-200: rgb(221, 214, 255);
+    --color-violet-300: rgb(196, 180, 255);
+    --color-violet-400: rgb(166, 134, 255);
+    --color-violet-500: rgb(141, 86, 255);
+    --color-purple-200: rgb(233, 213, 255);
+    --color-purple-300: rgb(216, 180, 255);
+    --color-purple-400: rgb(191, 126, 255);
+    --color-purple-500: rgb(171, 78, 255);
+    --color-purple-700: rgb(130, 0, 217);
+    --color-fuchsia-100: rgb(250, 232, 255);
+    --color-fuchsia-200: rgb(246, 207, 255);
+    --color-fuchsia-300: rgb(242, 169, 255);
+    --color-fuchsia-400: rgb(236, 109, 255);
+    --color-fuchsia-600: rgb(197, 0, 218);
+    --color-fuchsia-700: rgb(166, 0, 180);
+    --color-pink-600: rgb(227, 0, 118);
+    --color-pink-700: rgb(194, 0, 92);
+    --color-pink-800: rgb(162, 0, 76);
+    --color-rose-100: rgb(255, 228, 230);
+    --color-rose-200: rgb(255, 204, 211);
+    --color-rose-300: rgb(255, 163, 174);
+    --color-rose-400: rgb(255, 104, 128);
+    --color-rose-500: rgb(255, 35, 87);
+    --color-rose-600: rgb(230, 0, 69);
+    --color-rose-700: rgb(193, 0, 58);
+    --color-rose-800: rgb(163, 0, 55);
+  }
+
+@media (color-gamut: p3) {
 page,:host {
     --color-red-200: color(display-p3 0.96956 0.79815 0.7943);
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
@@ -478,6 +577,7 @@ page,:host {
     --color-rose-800: color(display-p3 0.59125 0.09291 0.2201);
   }
 }
+}
 view:not(#\\#),text:not(#\\#),:not(#\\#)::after,:not(#\\#)::before,:not(#\\#)::backdrop,:not(#\\#)::file-selector-button {
     box-sizing: border-box;
     margin: 0;
@@ -487,9 +587,17 @@ view:not(#\\#),text:not(#\\#),:not(#\\#)::after,:not(#\\#)::before,:not(#\\#)::b
 html:not(#\\#),:host:not(#\\#) {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
-    tab-size: 4;
-    font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    -moz-tab-size: 4;
+      -o-tab-size: 4;
+         tab-size: 4;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: var( --default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-feature-settings: normal;
     font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: normal;
     font-variation-settings: var( --default-font-variation-settings, normal );
     -webkit-tap-highlight-color: transparent;
   }
@@ -503,6 +611,7 @@ hr:not(#\\#) {
   }
 abbr:where([title]):not(#\\#) {
     -webkit-text-decoration: underline dotted;
+    text-decoration: underline;
     text-decoration: underline dotted;
   }
 h1:not(#\\#),h2:not(#\\#),h3:not(#\\#),h4:not(#\\#),h5:not(#\\#),h6:not(#\\#) {
@@ -518,8 +627,12 @@ b:not(#\\#),strong:not(#\\#) {
     font-weight: bolder;
   }
 code:not(#\\#),kbd:not(#\\#),samp:not(#\\#),pre:not(#\\#) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
+    font-feature-settings: normal;
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
+    font-variation-settings: normal;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
     font-size: 1em;
   }
@@ -580,13 +693,17 @@ button:not(#\\#),input:not(#\\#),select:not(#\\#),optgroup:not(#\\#),textarea:no
     font-weight: bolder;
   }
 :where(select[multiple]):not(#\\#) optgroup option {
-    padding-inline-start: 20px;
+    padding-left: 20px;
   }
 :where(select[size]):not(#\\#) optgroup option {
-    padding-inline-start: 20px;
+    padding-left: 20px;
   }
 :not(#\\#)::file-selector-button {
-    margin-inline-end: 4px;
+    margin-right: 4px;
+  }
+:not(#\\#)::-moz-placeholder {
+    opacity: 1;
+    color: color-mix(in oklab, currentColor 50%, transparent);
   }
 :not(#\\#)::placeholder {
     opacity: 1;
@@ -609,13 +726,16 @@ textarea:not(#\\#) {
     padding: 0;
   }
 :not(#\\#)::-webkit-datetime-edit,:not(#\\#)::-webkit-datetime-edit-year-field,:not(#\\#)::-webkit-datetime-edit-month-field,:not(#\\#)::-webkit-datetime-edit-day-field,:not(#\\#)::-webkit-datetime-edit-hour-field,:not(#\\#)::-webkit-datetime-edit-minute-field,:not(#\\#)::-webkit-datetime-edit-second-field,:not(#\\#)::-webkit-datetime-edit-millisecond-field,:not(#\\#)::-webkit-datetime-edit-meridiem-field {
-    padding-block: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 :-moz-ui-invalid:not(#\\#) {
     box-shadow: none;
   }
 button:not(#\\#),input:where([type="button"],[type="reset"],[type="submit"]):not(#\\#),:not(#\\#)::file-selector-button {
-    appearance: button;
+    -webkit-appearance: button;
+       -moz-appearance: button;
+            appearance: button;
   }
 :not(#\\#)::-webkit-inner-spin-button,:not(#\\#)::-webkit-outer-spin-button {
     height: auto;
@@ -624,16 +744,42 @@ button:not(#\\#),input:where([type="button"],[type="reset"],[type="submit"]):not
     display: none !important;
   }
 .container:not(#\\#):not(#\\#):not(#\\#) {
-    width: 100%
+    width: 100%;
   }
+@media (min-width: 40rem) {
+  .container:not(#\\#):not(#\\#):not(#\\#) {
+      max-width: 40rem;
+  }
+    }
+@media (min-width: 48rem) {
+  .container:not(#\\#):not(#\\#):not(#\\#) {
+      max-width: 48rem;
+  }
+    }
+@media (min-width: 64rem) {
+  .container:not(#\\#):not(#\\#):not(#\\#) {
+      max-width: 64rem;
+  }
+    }
+@media (min-width: 80rem) {
+  .container:not(#\\#):not(#\\#):not(#\\#) {
+      max-width: 80rem;
+  }
+    }
+@media (min-width: 96rem) {
+  .container:not(#\\#):not(#\\#):not(#\\#) {
+      max-width: 96rem;
+  }
+    }
 .m-_3d45rpx_:not(#\\#):not(#\\#):not(#\\#) {
     margin: 3.45rpx;
   }
 .mx-auto:not(#\\#):not(#\\#):not(#\\#) {
-    margin-inline: auto;
+    margin-left: auto;
+    margin-right: auto;
   }
 .bg-_h377a6c90_:not(#\\#):not(#\\#):not(#\\#) {
-    background-color: #377a6c90;
+    background-color: rgba(55,122,108,0.56471);
   }
 .p-_12d34px_:not(#\\#):not(#\\#):not(#\\#) {
     padding: 12.34px;
