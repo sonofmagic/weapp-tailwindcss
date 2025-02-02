@@ -675,58 +675,58 @@
     postcss-load-config "^6.0.1"
     postcss-scss "^4.0.9"
 
-"@weapp-tailwindcss/init@1.0.0-alpha.4":
-  version "1.0.0-alpha.4"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/init/-/init-1.0.0-alpha.4.tgz#ba342ef42c00c0d15a3e9226da9711b965f00fdb"
-  integrity sha512-/4yZp9Ha9SyGzfl8DpNWXwM9kaLPApEHQRYhSXAIl59p2hr6hkBcZgM2rv5pzZU5eUagVjTLVgoaDoCWOIST+g==
+"@weapp-tailwindcss/init@1.0.0-alpha.5":
+  version "1.0.0-alpha.5"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/init/-/init-1.0.0-alpha.5.tgz#1349be31933d8cae0cd0a6631aed199a5de51cb4"
+  integrity sha512-F5ptFHY//EB+SAo6LMBQC6p4eU+yfbo3BeKm4SAhbtr1UxA6wVGRDRARRuMKe1OhumK0mWjaUNXqN8FqxDhR9A==
   dependencies:
-    "@weapp-tailwindcss/logger" "1.0.0-alpha.2"
-    "@weapp-tailwindcss/shared" "1.0.0-alpha.3"
+    "@weapp-tailwindcss/logger" "1.0.0-alpha.3"
+    "@weapp-tailwindcss/shared" "1.0.0-alpha.4"
     fs-extra "^11.3.0"
     npm-registry-fetch "^18.0.2"
     pathe "^2.0.2"
 
-"@weapp-tailwindcss/logger@1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/logger/-/logger-1.0.0-alpha.2.tgz#8f91cf8578c9daac2803c89ca299cc9f4c25f3f0"
-  integrity sha512-jfmWQ3rcFYnvFdouqlNrcL2ImlApAzW+nPL2rUjdOhVAK00CDHhxSyFc//rBWGNVueH/BH8HfFEd8KgmtZX4Ug==
+"@weapp-tailwindcss/logger@1.0.0-alpha.3":
+  version "1.0.0-alpha.3"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/logger/-/logger-1.0.0-alpha.3.tgz#68b019a6fc04e54e557930ea61daa97ff805829f"
+  integrity sha512-tCRZvWjFw7Z4lfa2X4xksTFKIJb6IWa6i9Z/MIz/X6DQdqgYS2nsWEZCivsHjB3vIi8T+QB2qlt7pWilGovVJQ==
   dependencies:
     consola "^3.4.0"
 
-"@weapp-tailwindcss/mangle@1.0.0-alpha.4":
-  version "1.0.0-alpha.4"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/mangle/-/mangle-1.0.0-alpha.4.tgz#81b0616e09b86ab686b38732257eca1cc8c49456"
-  integrity sha512-kvTVRV7z0dGNH6U8tEbirHALqU3iCnY1dGyB4msD9R5U5rvFBUVxwGy2u/OE16GIHV5XGYBJ8l0rqPhPt9ziRA==
+"@weapp-tailwindcss/mangle@1.0.0-alpha.5":
+  version "1.0.0-alpha.5"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/mangle/-/mangle-1.0.0-alpha.5.tgz#09c2f3485d6546b34cac8ea780d039279248b87d"
+  integrity sha512-JBfPNri02nygewS2az7JeUNB7pmb/RKLeeki3Vf3CMxvMg26NpA70NWi5ILtbIBiwlQULC9jbXO+5x35zSiz1g==
   dependencies:
     "@tailwindcss-mangle/shared" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
-    "@weapp-tailwindcss/shared" "1.0.0-alpha.3"
+    "@weapp-tailwindcss/shared" "1.0.0-alpha.4"
 
-"@weapp-tailwindcss/merge@^1.0.0-alpha.4":
-  version "1.0.0-alpha.4"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0-alpha.4.tgz#07dfbd1fd0b7ba5654bb792cd4a2e9d6057827e1"
-  integrity sha512-YGuJWjNaZi+Ja+zEwFG2PslDTqrgNPq31yVSXY3DKxmkrJibkCbbPMVDT+IMgnW5L1/4StQ9qnXVekDx28xSrg==
+"@weapp-tailwindcss/merge@^1.0.0-alpha.5":
+  version "1.0.0-alpha.5"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0-alpha.5.tgz#7c8b512fd1d32341520f45b34519886db005d8ca"
+  integrity sha512-ByO+V3raqI8QZjVsqQbsAknHaWdP3d2n9b0XlblKDSJsmrpl12nnBQWKCEeaoQTaDAPpGFa9tepmXxqAZQz/iQ==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
-    tailwind-merge "^2.6.0"
+    tailwind-merge "^3.0.1"
 
-"@weapp-tailwindcss/postcss@1.0.0-alpha.5":
-  version "1.0.0-alpha.5"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.0-alpha.5.tgz#6c0b7cc712ca5b677266fdfe980c65cc1a95b5e2"
-  integrity sha512-sNdYKevHoUU4SzXVaxuFJ2JJFzpBjPRIKpLnO7i7u4/B1cOTJdtYCZkItfcx3AQGlYARPYKUtZGXJkqCTjaLxQ==
+"@weapp-tailwindcss/postcss@1.0.0-alpha.6":
+  version "1.0.0-alpha.6"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.0-alpha.6.tgz#62259d7786070a130a14fa04ca23842e78f1a795"
+  integrity sha512-IEzysSqQN4aZFNwVHN6lQokC+gCDMbLJYhgDkBojUK32EKL0xyxYSAad93xGgS3iDjDPQ798ezTmhniktMGdhQ==
   dependencies:
     "@weapp-core/escape" "~4.0.0"
-    "@weapp-tailwindcss/shared" "1.0.0-alpha.3"
+    "@weapp-tailwindcss/shared" "1.0.0-alpha.4"
     postcss "~8.5.1"
     postcss-preset-env "^10.1.3"
     postcss-rem-to-responsive-pixel "~6.0.2"
     postcss-selector-parser "~7.0.0"
 
-"@weapp-tailwindcss/shared@1.0.0-alpha.3":
-  version "1.0.0-alpha.3"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/shared/-/shared-1.0.0-alpha.3.tgz#2c9699ea0e3717c741816cd8a3d6a5a09113218c"
-  integrity sha512-60A64i43bePj5Blj/ENdprdecz44Ma0PK6u3jtzsZJtEVDv0gKVCK+7olQwrrx/m41ZywZZEEQMzjKdHE58abQ==
+"@weapp-tailwindcss/shared@1.0.0-alpha.4":
+  version "1.0.0-alpha.4"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/shared/-/shared-1.0.0-alpha.4.tgz#8b662420234231154354d4128f50da68c87262c4"
+  integrity sha512-ourAhJePJ2oNM3h908FFtekTADgzvSbXoClnzpOn+5k8VxHwJTaEFjadUrF6LNwmyfQuNbC6msrbYbaIMLnxWw==
 
 acorn@^8.11.3:
   version "8.11.3"
@@ -5096,10 +5096,10 @@ tailwind-css-variables-theme-generator@^0.4.0:
   resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
   integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
 
-tailwind-merge@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-2.6.0.tgz#ac5fb7e227910c038d458f396b7400d93a3142d5"
-  integrity sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==
+tailwind-merge@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-3.0.1.tgz#0f0189966511ebcd63ef98d9eaf5607beb0d59d3"
+  integrity sha512-AvzE8FmSoXC7nC+oU5GlQJbip2UO7tmOhOfQyOmPhrStOGXHU08j8mZEHZ4BmCqY5dWTCo4ClWkNyRNx1wpT0g==
 
 tailwindcss-patch@^5.0.2, tailwindcss-patch@~5.0.2:
   version "5.0.2"
@@ -5518,10 +5518,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.0-alpha.9:
-  version "4.0.0-alpha.9"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.0-alpha.9.tgz#b04cc7aa31a34818cea93acf6e938c14b1926d94"
-  integrity sha512-JIkEGhTQaHD0GvgI3Ql5cTbRxibRN1bOQBIlF7LBmOY8VTRvveuHWyZVOlxNGuAbAESJflqG/VHeEvIXnClA0Q==
+weapp-tailwindcss@^4.0.0-alpha.10:
+  version "4.0.0-alpha.10"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.0-alpha.10.tgz#53c53e736b5f31a7eae2d1bc2811ee2be0d6cf18"
+  integrity sha512-aQ/N8GptEO5J+1Jhj2agicBdr04FO+H2zwmpIrS9cwRIQJMRxwxd1YBS/B5YwpoEG6o2UhPMH7Y19YDWT5PBuQ==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.26.7"
@@ -5529,11 +5529,11 @@ weapp-tailwindcss@^4.0.0-alpha.9:
     "@babel/types" "~7.26.7"
     "@weapp-core/escape" "~4.0.0"
     "@weapp-core/regex" "~1.0.1"
-    "@weapp-tailwindcss/init" "1.0.0-alpha.4"
-    "@weapp-tailwindcss/logger" "1.0.0-alpha.2"
-    "@weapp-tailwindcss/mangle" "1.0.0-alpha.4"
-    "@weapp-tailwindcss/postcss" "1.0.0-alpha.5"
-    "@weapp-tailwindcss/shared" "1.0.0-alpha.3"
+    "@weapp-tailwindcss/init" "1.0.0-alpha.5"
+    "@weapp-tailwindcss/logger" "1.0.0-alpha.3"
+    "@weapp-tailwindcss/mangle" "1.0.0-alpha.5"
+    "@weapp-tailwindcss/postcss" "1.0.0-alpha.6"
+    "@weapp-tailwindcss/shared" "1.0.0-alpha.4"
     debug "~4.4.0"
     htmlparser2 "10.0.0"
     loader-utils "2.0.4"
