@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/logger
 
+## 1.0.0-alpha.3
+
+### Patch Changes
+
+- [`e745ba5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e745ba5cd9e232c0b5b7053538beb0772240eab8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: bump version
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes

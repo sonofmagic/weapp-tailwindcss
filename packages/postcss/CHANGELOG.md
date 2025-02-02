@@ -1,5 +1,14 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- [`e745ba5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e745ba5cd9e232c0b5b7053538beb0772240eab8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: bump version
+
+- Updated dependencies [[`e745ba5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e745ba5cd9e232c0b5b7053538beb0772240eab8)]:
+  - @weapp-tailwindcss/shared@1.0.0-alpha.4
+
 ## 1.0.0-alpha.5
 
 ### Patch Changes
