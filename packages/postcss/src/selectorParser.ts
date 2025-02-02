@@ -110,13 +110,19 @@ export function getFallbackRemove(rule?: Rule) {
             }
           }
         }
+        else if (selector.value === ':where') {
+          for (const n of selector.nodes) {
+            for (const node of n.nodes) {
+              if (node.type === 'attribute') {
+                node.remove()
+              }
+            }
+          }
+        }
       }
       if (selector.type === 'attribute') {
         if (selector.attribute === 'hidden') {
           rule?.remove()
-        }
-        else {
-          selector.remove()
         }
       }
     })

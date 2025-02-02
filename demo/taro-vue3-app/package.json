@@ -95,7 +95,7 @@
     "unplugin-vue-components": "^28.0.0",
     "vue-loader": "^17.2.2",
     "weapp-ide-cli": "^2.0.9",
-    "weapp-tailwindcss": "^4.0.0-alpha.10",
+    "weapp-tailwindcss": "^4.0.0-alpha.11",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.97.1"
   }
