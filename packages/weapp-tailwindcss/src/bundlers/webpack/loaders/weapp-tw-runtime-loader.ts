@@ -1,6 +1,9 @@
 // @ts-nocheck
 import type webpack from 'webpack'
-import loaderUtils from 'loader-utils'
+
+// eslint-disable-next-line ts/no-require-imports
+const loaderUtils = require('loader-utils')
+// import loaderUtils from 'loader-utils'
 
 const WeappTwRuntimeAopLoader: webpack.LoaderDefinitionFunction<{
   getClassSet: () => void
