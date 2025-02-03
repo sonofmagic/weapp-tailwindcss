@@ -212,7 +212,7 @@
     "prettier": "^3.4.2",
     "promisify-loader-runner": "^1.0.1",
     "rimraf": "^6.0.1",
-    "rollup": "^4.34.0",
+    "rollup": "^4.34.1",
     "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.83.4",
     "sass-embedded": "^1.83.4",
