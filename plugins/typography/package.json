@@ -60,7 +60,7 @@
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",
     "magic-string": "^0.30.17",
-    "postcss-selector-parser": "^7.0.0"
+    "postcss-selector-parser": "^7.1.0"
   },
   "publishConfig": {
     "access": "public",
