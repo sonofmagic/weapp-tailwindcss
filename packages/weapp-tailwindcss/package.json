@@ -43,7 +43,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "style": "./index.css"
     },
     "./escape": {
       "types": "./dist/escape.d.ts",
@@ -95,11 +96,21 @@
       "import": "./dist/types.mjs",
       "require": "./dist/types.js"
     },
+    "./package.json": "./package.json",
+    "./index.css": "./index.css",
+    "./index": "./index.css",
+    "./preflight.css": "./preflight.css",
+    "./preflight": "./preflight.css",
+    "./theme.css": "./theme.css",
+    "./theme": "./theme.css",
+    "./utilities.css": "./utilities.css",
+    "./utilities": "./utilities.css",
     "./*": "./*"
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "style": "index.css",
   "typesVersions": {
     "*": {
       "*": [
@@ -115,7 +126,11 @@
   },
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "index.css",
+    "preflight.css",
+    "theme.css",
+    "utilities.css"
   ],
   "engines": {
     "node": "^18.17.0 || >=20.5.0"
