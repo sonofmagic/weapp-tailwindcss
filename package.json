@@ -209,7 +209,7 @@
     "postcss-load-config": "^6.0.1",
     "postcss-loader": "^8.1.1",
     "postcss-scss": "^4.0.9",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.0",
     "promisify-loader-runner": "^1.0.1",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.6",
