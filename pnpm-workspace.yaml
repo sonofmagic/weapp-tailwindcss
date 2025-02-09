@@ -7,3 +7,10 @@ packages:
   - '!tailwindcss-weapp'
   - '!**/test/**'
   # - "demo-linked/*"
+
+catalogs:
+  tailwindcss3:
+    tailwindcss: ^3.4.17
+
+  tailwindcss4:
+    tailwindcss: ^4.0.5

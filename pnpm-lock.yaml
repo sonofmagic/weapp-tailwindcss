@@ -4,6 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  tailwindcss3:
+    tailwindcss:
+      specifier: ^3.4.17
+      version: 3.4.17
+  tailwindcss4:
+    tailwindcss:
+      specifier: ^4.0.5
+      version: 4.0.5
+
 importers:
 
   .:
@@ -369,7 +379,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.97.1(esbuild@0.24.2))
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: catalog:tailwindcss3
         version: 3.4.17(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.7.3))
       terser-webpack-plugin:
         specifier: ^5.3.11
@@ -467,7 +477,7 @@ importers:
         version: 4.0.5
       '@tailwindcss/vite':
         specifier: ^4.0.5
-        version: 4.0.5(vite@6.1.0(@types/node@22.13.1)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.84.0)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))
+        version: 4.0.5(vite@5.4.14(@types/node@22.13.1)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.84.0)(stylus@0.63.0)(terser@5.37.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.1)
@@ -475,8 +485,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^4.0.4
-        version: 4.0.4
+        specifier: catalog:tailwindcss4
+        version: 4.0.5
       tailwindcss-injector:
         specifier: workspace:*
         version: link:../../packages/tailwindcss-injector
@@ -499,7 +509,7 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: catalog:tailwindcss3
         version: 3.4.17(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.7.3))
       typescript:
         specifier: ^5.7.3
@@ -527,7 +537,7 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: catalog:tailwindcss3
         version: 3.4.17(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.7.3))
       typescript:
         specifier: ^5.7.3
@@ -551,7 +561,7 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: catalog:tailwindcss3
         version: 3.4.17(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.7.3))
       typescript:
         specifier: ^5.7.3
@@ -610,8 +620,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: catalog:tailwindcss4
+        version: 4.0.5
       unplugin-vue-router:
         specifier: ^0.11.2
         version: 0.11.2(rollup@4.34.6)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
@@ -12153,10 +12163,6 @@ packages:
     resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
     hasBin: true
 
-  resolve@1.22.9:
-    resolution: {integrity: sha512-QxrmX1DzraFIi9PxdG5VkRfRwIgjwyud+z/iBwfRRrVmHc+P9Q7u2lSSpQ6bjr2gy5lrqIiU9vb6iAeGf2400A==}
-    hasBin: true
-
   responselike@3.0.0:
     resolution: {integrity: sha512-40yHxbNcl2+rzXvZuVkrYohathsSJlMTXKryG5y8uciHv1+xDLHQpgjG64JUO9nrEq2jGLH6IZ8BcZyw3wrweg==}
     engines: {node: '>=14.16'}
@@ -13199,12 +13205,6 @@ packages:
     resolution: {integrity: sha512-w33E2aCvSDP0tW9RZuNXadXlkHXqFzSkQew/aIa2i/Sj8fThxwovwlXHSPXTbAHwEIhBFXAedUhP2tueAKP8Og==}
     engines: {node: '>=14.0.0'}
     hasBin: true
-
-  tailwindcss@4.0.3:
-    resolution: {integrity: sha512-ImmZF0Lon5RrQpsEAKGxRvHwCvMgSC4XVlFRqmbzTEDb/3wvin9zfEZrMwgsa3yqBbPqahYcVI6lulM2S7IZAA==}
-
-  tailwindcss@4.0.4:
-    resolution: {integrity: sha512-/ezDLEkOLf1lXkr9F2iI5BHJbexJpty5zkV2B8bGHCqAdbc9vk85Jgdkq+ZOvNkNPa3yAaqJ8DjRt584Bc84kw==}
 
   tailwindcss@4.0.5:
     resolution: {integrity: sha512-DZZIKX3tA23LGTjHdnwlJOTxfICD1cPeykLLsYF1RQBI9QsCR3i0szohJfJDVjr6aNRAIio5WVO7FGB77fRHwg==}
@@ -14852,7 +14852,7 @@ snapshots:
       '@babel/helper-plugin-utils': 7.25.9
       debug: 4.4.0
       lodash.debounce: 4.0.8
-      resolve: 1.22.9
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
 
@@ -16797,7 +16797,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.2
+      '@types/react': 19.0.8
       react: 19.0.0
 
   '@docusaurus/theme-classic@3.7.0(@types/react@19.0.8)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.2)(eslint@9.20.0(jiti@2.4.2))(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(vue-template-compiler@2.7.16)':
@@ -18936,6 +18936,14 @@ snapshots:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.7.3))
+
+  '@tailwindcss/vite@4.0.5(vite@5.4.14(@types/node@22.13.1)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.84.0)(stylus@0.63.0)(terser@5.37.0))':
+    dependencies:
+      '@tailwindcss/node': 4.0.5
+      '@tailwindcss/oxide': 4.0.5
+      lightningcss: 1.29.1
+      tailwindcss: 4.0.5
+      vite: 5.4.14(@types/node@22.13.1)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.84.0)(stylus@0.63.0)(terser@5.37.0)
 
   '@tailwindcss/vite@4.0.5(vite@6.1.0(@types/node@22.13.1)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.84.0)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))':
     dependencies:
@@ -24897,7 +24905,7 @@ snapshots:
       is-plain-object: 2.0.4
       object.map: 1.0.1
       rechoir: 0.6.2
-      resolve: 1.22.8
+      resolve: 1.22.10
     transitivePeerDependencies:
       - supports-color
 
@@ -25228,7 +25236,7 @@ snapshots:
     dependencies:
       findup-sync: 2.0.0
       micromatch: 3.1.10
-      resolve: 1.22.8
+      resolve: 1.22.10
       stack-trace: 0.0.10
     transitivePeerDependencies:
       - supports-color
@@ -26170,7 +26178,7 @@ snapshots:
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.8
+      resolve: 1.22.10
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
 
@@ -27913,7 +27921,7 @@ snapshots:
 
   rechoir@0.6.2:
     dependencies:
-      resolve: 1.22.8
+      resolve: 1.22.10
 
   rechoir@0.8.0:
     dependencies:
@@ -28229,12 +28237,6 @@ snapshots:
   resolve@1.22.8:
     dependencies:
       is-core-module: 2.15.1
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
-
-  resolve@1.22.9:
-    dependencies:
-      is-core-module: 2.16.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
@@ -29459,7 +29461,7 @@ snapshots:
       chokidar: 3.6.0
       didyoumean: 1.2.2
       dlv: 1.1.3
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       glob-parent: 6.0.2
       is-glob: 4.0.3
       jiti: 1.21.7
@@ -29478,10 +29480,6 @@ snapshots:
       sucrase: 3.35.0
     transitivePeerDependencies:
       - ts-node
-
-  tailwindcss@4.0.3: {}
-
-  tailwindcss@4.0.4: {}
 
   tailwindcss@4.0.5: {}
 
@@ -30196,13 +30194,13 @@ snapshots:
     dependencies:
       browserslist: 4.24.0
       escalade: 3.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   update-browserslist-db@1.1.1(browserslist@4.24.2):
     dependencies:
       browserslist: 4.24.2
       escalade: 3.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   update-browserslist-db@1.1.2(browserslist@4.24.4):
     dependencies:

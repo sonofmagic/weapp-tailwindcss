@@ -31,7 +31,7 @@
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^4.0.5",
     "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "catalog:tailwindcss3",
     "typescript": "^5.7.3",
     "weapp-tailwindcss": "workspace:*",
     "weapp-vite": "^2.1.3"
