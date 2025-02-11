@@ -2,7 +2,7 @@ import type postcss from 'postcss'
 import { getCompilerContext } from '@/context'
 import { transformCss } from '@/lightningcss'
 import { MappingChars2String } from '@weapp-core/escape'
-import { createInjectPreflight, styleHandler } from '@weapp-tailwindcss/postcss'
+import { createInjectPreflight, createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { normalizeEol } from '../helpers/normalizeEol'
 import { createGetCase, cssCasePath } from '../util'
 
@@ -10,7 +10,7 @@ const getCase = createGetCase(cssCasePath)
 // @ts-ignore
 
 // const putCase = createPutCase(cssCasePath)
-
+const styleHandler = createStyleHandler()
 export function cssUnescape(str: string) {
   return str.replaceAll(/\\([\dA-F]{1,6}[\t\n\f\r ]?|[\s\S])/gi, (match) => {
     return match.length > 2 ? String.fromCodePoint(Number.parseInt(match.slice(1).trim(), 16)) : match[1]

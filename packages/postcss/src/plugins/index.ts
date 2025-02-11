@@ -16,20 +16,7 @@ export function getPlugins(options: IStyleHandlerOptions) {
   const plugins: AcceptedPlugin[] = [
     ...(options.postcssOptions?.plugins ?? []),
     postcssWeappTailwindcssPrePlugin(options),
-    postcssPresetEnv({
-      features: {
-        'cascade-layers': true,
-        'is-pseudo-class': {
-          specificityMatchingName: 'weapp-tw-ig',
-        },
-        'oklab-function': true,
-        'color-mix': true,
-        'custom-properties': false,
-      },
-      autoprefixer: {
-        add: false,
-      },
-    }),
+    postcssPresetEnv(options.cssPresetEnv),
   ]
   if (options.rem2rpx) {
     plugins.push(

@@ -153,12 +153,10 @@ view,text,::before,::after {
 }
 .bg-red-100 {
     --tw-bg-opacity: 1;
-    background-color: rgba(254, 226, 226, 1);
     background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1))
 }
 .bg-yellow-600 {
     --tw-bg-opacity: 1;
-    background-color: rgba(202, 138, 4, 1);
     background-color: rgba(202, 138, 4, var(--tw-bg-opacity, 1))
 }
 .p-10 {
@@ -172,7 +170,6 @@ view,text,::before,::after {
 }
 .text-_h123456_ {
     --tw-text-opacity: 1;
-    color: rgba(18, 52, 86, 1);
     color: rgba(18, 52, 86, var(--tw-text-opacity, 1))
 }
 .text-blacks90 {
