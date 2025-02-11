@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 0.1.6-alpha.5
+
+### Patch Changes
+
+- [`1d689ef`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1d689efca6cf0de7e476b03b2be8d09284beae68) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: change postcssPresetEnv default value
+
 ## 0.1.6-alpha.4
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 ## 1.0.3 (2024-06-01)
 
+## 4.0.0-alpha.13
+
+### Patch Changes
+
+- [`1d689ef`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1d689efca6cf0de7e476b03b2be8d09284beae68) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: change postcssPresetEnv default value
+
+- Updated dependencies [[`1d689ef`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1d689efca6cf0de7e476b03b2be8d09284beae68)]:
+  - weapp-tailwindcss@4.0.0-alpha.13
+
 ## 4.0.0-alpha.12
 
 ### Patch Changes
