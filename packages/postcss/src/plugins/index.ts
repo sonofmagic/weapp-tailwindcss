@@ -24,6 +24,10 @@ export function getPlugins(options: IStyleHandlerOptions) {
         },
         'oklab-function': true,
         'color-mix': true,
+        'custom-properties': false,
+      },
+      autoprefixer: {
+        add: false,
       },
     }),
   ]

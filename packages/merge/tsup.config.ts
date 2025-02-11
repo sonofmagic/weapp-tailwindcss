@@ -4,7 +4,9 @@ export default defineConfig({
   entry: [
     'src/index.ts',
     'src/cva.ts',
-  ], // , 'src/cli.ts'],
+    'src/v3.ts',
+    'src/v4.ts',
+  ],
   shims: true,
   format: ['cjs', 'esm'],
   clean: true,

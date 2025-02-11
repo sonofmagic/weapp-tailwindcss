@@ -589,22 +589,12 @@ exports[`v4 > postcss 1`] = `
   }
 
 html:not(n),:host:not(n) {
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-family: var( --default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
-    font-variation-settings: normal;
     font-variation-settings: var( --default-font-variation-settings, normal );
-    font-feature-settings: normal;
     font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
-    -moz-tab-size: 4;
-      -o-tab-size: 4;
-         tab-size: 4;
-    -webkit-text-size-adjust: 100%;
-       -moz-text-size-adjust: 100%;
-            text-size-adjust: 100%;
+    tab-size: 4;
+    text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -620,8 +610,7 @@ hr:not(n) {
 
 abbr:not(n) {
     text-decoration: underline;
-    -webkit-text-decoration: underline dotted;
-            text-decoration: underline dotted;
+    text-decoration: underline dotted;
   }
 
 h1:not(n),h2:not(n),h3:not(n),h4:not(n),h5:not(n),h6:not(n) {
@@ -639,13 +628,9 @@ b:not(n),strong:not(n) {
   }
 
 code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
-    font-family: ui-monospace, sfmono-regular, menlo, monaco, consolas,
-      "Liberation Mono", "Courier New", monospace;
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
-    font-variation-settings: normal;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
-    font-feature-settings: normal;
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
 
@@ -731,11 +716,6 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n),:not(n)
     margin-right: 4px;
   }
 
-:not(n)::-moz-placeholder {
-    color: color-mix(in oklab, currentcolor 50%, transparent);
-    opacity: 1;
-  }
-
 :not(n)::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
@@ -746,8 +726,7 @@ textarea:not(n) {
   }
 
 :not(n)::-webkit-search-decoration {
-    -webkit-appearance: none;
-            appearance: none;
+    appearance: none;
   }
 
 :not(n)::-webkit-date-and-time-value {
@@ -773,9 +752,7 @@ textarea:not(n) {
   }
 
 button:not(n),input:not(n),:not(n)::file-selector-button {
-    -webkit-appearance: button;
-       -moz-appearance: button;
-            appearance: button;
+    appearance: button;
   }
 
 :not(n)::-webkit-inner-spin-button,:not(n)::-webkit-outer-spin-button {
@@ -1450,20 +1427,12 @@ exports[`v4 > vite 1`] = `
   }
 
 html:not(n),:host:not(n) {
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-family: var(--default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
-    font-variation-settings: normal;
     font-variation-settings: var(--default-font-variation-settings, normal);
-    font-feature-settings: normal;
     font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
-    -moz-tab-size: 4;
-      -o-tab-size: 4;
-         tab-size: 4;
-    -webkit-text-size-adjust: 100%;
-       -moz-text-size-adjust: 100%;
-            text-size-adjust: 100%;
+    tab-size: 4;
+    text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -1479,8 +1448,7 @@ hr:not(n) {
 
 abbr:not(n) {
     text-decoration: underline;
-    -webkit-text-decoration: underline dotted;
-            text-decoration: underline dotted;
+    text-decoration: underline dotted;
     text-decoration: underline dotted;
   }
 
@@ -1500,12 +1468,9 @@ b:not(n),strong:not(n) {
   }
 
 code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
-    font-family: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
     font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
     font-size: 1em;
-    font-variation-settings: normal;
     font-variation-settings: var(--default-mono-font-variation-settings, normal);
-    font-feature-settings: normal;
     font-feature-settings: var(--default-mono-font-feature-settings, normal);
   }
 
@@ -1602,11 +1567,6 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
     margin-right: 4px;
   }
 
-:not(n)::-moz-placeholder {
-    color: color-mix(in oklab, currentcolor 50%, transparent);
-    opacity: 1;
-  }
-
 :not(n)::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
@@ -1617,8 +1577,7 @@ textarea:not(n) {
   }
 
 :not(n)::-webkit-search-decoration {
-    -webkit-appearance: none;
-            appearance: none;
+    appearance: none;
   }
 
 :not(n)::-webkit-date-and-time-value {
@@ -1684,15 +1643,11 @@ textarea:not(n) {
   }
 
 button:not(n),input:not(n) {
-    -webkit-appearance: button;
-       -moz-appearance: button;
-            appearance: button;
+    appearance: button;
   }
 
 :not(n)::file-selector-button {
-    -webkit-appearance: button;
-       -moz-appearance: button;
-            appearance: button;
+    appearance: button;
   }
 
 :not(n)::-webkit-inner-spin-button {

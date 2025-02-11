@@ -41,6 +41,16 @@
         "types": "./dist/cva.d.ts",
         "import": "./dist/cva.js",
         "require": "./dist/cva.cjs"
+      },
+      "./v3": {
+        "types": "./dist/v3.d.ts",
+        "import": "./dist/v3.js",
+        "require": "./dist/v3.cjs"
+      },
+      "./v4": {
+        "types": "./dist/v4.d.ts",
+        "import": "./dist/v4.js",
+        "require": "./dist/v4.cjs"
       }
     },
     "main": "./dist/index.cjs",
@@ -50,7 +60,8 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^3.0.1"
+    "tailwind-merge": "^3.0.1",
+    "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0"
   },
   "devDependencies": {
     "weapp-tailwindcss": "workspace:*"

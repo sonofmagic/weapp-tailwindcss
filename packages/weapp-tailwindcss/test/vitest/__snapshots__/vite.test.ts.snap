@@ -195,12 +195,10 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
@@ -401,12 +399,10 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
@@ -607,12 +603,10 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
@@ -813,12 +807,10 @@ text,
 }
 .d {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .b {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .e {
@@ -1019,12 +1011,10 @@ text,
 }
 .tw-d {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .tw-b {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .tw-e {
@@ -1225,12 +1215,10 @@ text,
 }
 .tw-m {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .tw-n {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .tw-b {
@@ -1431,12 +1419,10 @@ text,
 }
 .tw-d {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .tw-b {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
@@ -1637,12 +1623,10 @@ text,
 }
 .tw-d {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .tw-b {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .tw-e {
@@ -1843,12 +1827,10 @@ text,
 }
 .bg-_h929292_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, 1);
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
 .bg-_red_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, 1);
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {

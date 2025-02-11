@@ -30,10 +30,10 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.5",
-    "@tailwindcss/vite": "^4.0.5",
+    "@tailwindcss/postcss": "^4.0.6",
+    "@tailwindcss/vite": "^4.0.6",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.1",
+    "postcss": "^8.5.2",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",

@@ -584,17 +584,9 @@ view:not(#\#),text:not(#\#),:not(#\#)::after,:not(#\#)::before,:not(#\#)::backdr
 html:not(#\#),:host:not(#\#) {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
-    -moz-tab-size: 4;
-      -o-tab-size: 4;
-         tab-size: 4;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    tab-size: 4;
     font-family: var( --default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
-    font-feature-settings: normal;
     font-feature-settings: var(--default-font-feature-settings, normal);
-    font-variation-settings: normal;
     font-variation-settings: var( --default-font-variation-settings, normal );
     -webkit-tap-highlight-color: transparent;
   }
@@ -624,12 +616,8 @@ b:not(#\#),strong:not(#\#) {
     font-weight: bolder;
   }
 code:not(#\#),kbd:not(#\#),samp:not(#\#),pre:not(#\#) {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
-    font-feature-settings: normal;
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
-    font-variation-settings: normal;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
     font-size: 1em;
   }
@@ -698,10 +686,6 @@ button:not(#\#),input:not(#\#),select:not(#\#),optgroup:not(#\#),textarea:not(#\
 :not(#\#)::file-selector-button {
     margin-right: 4px;
   }
-:not(#\#)::-moz-placeholder {
-    opacity: 1;
-    color: color-mix(in oklab, currentColor 50%, transparent);
-  }
 :not(#\#)::placeholder {
     opacity: 1;
     color: color-mix(in oklab, currentColor 50%, transparent);
@@ -730,9 +714,7 @@ textarea:not(#\#) {
     box-shadow: none;
   }
 button:not(#\#),input:where([type="button"],[type="reset"],[type="submit"]):not(#\#),:not(#\#)::file-selector-button {
-    -webkit-appearance: button;
-       -moz-appearance: button;
-            appearance: button;
+    appearance: button;
   }
 :not(#\#)::-webkit-inner-spin-button,:not(#\#)::-webkit-outer-spin-button {
     height: auto;

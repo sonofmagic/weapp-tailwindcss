@@ -499,7 +499,6 @@ exports[`postcss plugin > dark mode class > css 1`] = `
   }
 .tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, 1);
     border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
 .tbody .tr.dark view {
@@ -532,7 +531,6 @@ exports[`postcss plugin > dark mode media > css 1`] = `
   }
 .tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, 1);
     border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
 @media (prefers-color-scheme: dark) {
@@ -566,7 +564,6 @@ exports[`postcss plugin > dark mode selector > css 1`] = `
   }
 .tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, 1);
     border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
 .tbody .tr:where(.dark,.dark view) {
@@ -599,7 +596,6 @@ exports[`postcss plugin > dark mode variant 1 > css 1`] = `
   }
 .tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, 1);
     border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
 .tbody .tr:not(view):not(text) {
@@ -629,7 +625,6 @@ exports[`postcss plugin > dark mode variant 2 > css 1`] = `
   }
 .tbody .tr {
     --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, 1);
     border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
 .tbody .tr.dark view {

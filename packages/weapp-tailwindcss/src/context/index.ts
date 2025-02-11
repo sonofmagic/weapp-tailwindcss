@@ -55,8 +55,6 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     ignoreTaggedTemplateExpressionIdentifiers,
   } = ctx
 
-  const cssInjectPreflight = createInjectPreflight(cssPreflight)
-
   const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
     ? [...(customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()]
     : Object.entries(customAttributes)
@@ -65,7 +63,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   initMangle(mangle)
 
   const styleHandler = createStyleHandler({
-    cssInjectPreflight,
+    cssInjectPreflight: createInjectPreflight(cssPreflight),
     customRuleCallback,
     cssPreflightRange,
     escapeMap,

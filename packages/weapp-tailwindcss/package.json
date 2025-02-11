@@ -41,10 +41,10 @@
   ],
   "exports": {
     ".": {
+      "style": "./index.css",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "style": "./index.css"
+      "require": "./dist/index.js"
     },
     "./escape": {
       "types": "./dist/escape.d.ts",
