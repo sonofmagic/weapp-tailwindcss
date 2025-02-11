@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- [`1d689ef`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1d689efca6cf0de7e476b03b2be8d09284beae68) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: change postcssPresetEnv default value
+
 ## 1.0.0-alpha.7
 
 ### Patch Changes
