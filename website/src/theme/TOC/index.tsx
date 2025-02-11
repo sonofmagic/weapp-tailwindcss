@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import AdsContainer from '@site/src/components/AdsContainer'
 import TOCItems from '@theme-original/TOCItems'
 import clsx from 'clsx'
