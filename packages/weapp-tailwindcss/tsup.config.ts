@@ -22,7 +22,7 @@ export default defineConfig(
       cjsInterop: true,
       splitting: true,
       format: ['cjs', 'esm'],
-      external: ['webpack', 'tailwindcss/plugin', '@ast-grep/napi', '@weapp-tailwindcss/cli'],
+      external: ['webpack', 'tailwindcss/plugin', '@ast-grep/napi'],
     },
     {
       entry: {

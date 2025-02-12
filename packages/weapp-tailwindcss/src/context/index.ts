@@ -12,7 +12,7 @@ import { createTailwindcssPatcher } from '@/tailwindcss'
 import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml'
 import { useMangleStore } from '@weapp-tailwindcss/mangle'
-import { createInjectPreflight, createStyleHandler } from '@weapp-tailwindcss/postcss'
+import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 
 /**
  * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
@@ -63,7 +63,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   initMangle(mangle)
 
   const styleHandler = createStyleHandler({
-    cssInjectPreflight: createInjectPreflight(cssPreflight),
+    cssPreflight,
     customRuleCallback,
     cssPreflightRange,
     escapeMap,
