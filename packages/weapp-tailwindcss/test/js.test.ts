@@ -865,4 +865,32 @@ describe('jsHandler', () => {
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
+
+  it('twMerge case 0', async () => {
+    const testCase = `twMerge('bg-[#434332] px-[32px]', 'bg-[#123324] px-[35px]')`
+    const set: Set<string> = new Set()
+    set.add('bg-[#434332]')
+    set.add('px-[32px]')
+    set.add('bg-[#123324]')
+    set.add('px-[35px]')
+    const { jsHandler } = getCompilerContext()
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it('twMerge case 1', async () => {
+    const testCase = `twMerge('bg-[#434332] px-[32px]', 'bg-[#123324] px-[35px]')`
+    const set: Set<string> = new Set()
+    set.add('bg-[#434332]')
+    set.add('px-[32px]')
+    set.add('bg-[#123324]')
+    set.add('px-[35px]')
+    const { jsHandler } = getCompilerContext(
+      {
+        ignoreCallExpressionIdentifiers: [],
+      },
+    )
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
 })

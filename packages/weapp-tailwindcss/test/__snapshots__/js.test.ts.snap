@@ -88,6 +88,10 @@ App<IAppOption>({
 })"
 `;
 
+exports[`jsHandler > twMerge case 0 1`] = `"twMerge('bg-[#434332] px-[32px]', 'bg-[#123324] px-[35px]')"`;
+
+exports[`jsHandler > twMerge case 1 1`] = `"twMerge('bg-_h434332_ px-_32px_', 'bg-_h123324_ px-_35px_')"`;
+
 exports[`jsHandler > unicode case 0 1`] = `
 "var replaceCharMap = {
   "'": '%27',

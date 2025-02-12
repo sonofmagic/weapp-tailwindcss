@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "cross-env DEBUG=weapp-tw uni -p mp-weixin",
+    "dev": "cross-env DEBUG=weapp-tw BABEL=1 uni -p mp-weixin",
     "dev:local": "cross-env LOCAL=1 uni -p mp-weixin",
     "build": "uni build -p mp-weixin",
     "build:babel": "cross-env BABEL=1 uni build -p mp-weixin",
