@@ -19,8 +19,8 @@ const version = isAlpha ? '@alpha' : isBeta ? '@beta' : isRc ? '@rc' : ''
   // ${version}
   await run(
     demoPath,
-    `add -D weapp-tailwindcss${version} @weapp-tailwindcss/cli tailwindcss-patch${isRc ? '@rc' : ''
-    } tailwindcss-rem2px-preset@latest @weapp-tailwindcss/merge${version} postcss-rem-to-responsive-pixel@latest weapp-ide-cli@latest postcss-rpx-transform weapp-tailwindcss-children tailwind-css-variables-theme-generator tailwindcss@3 --ignore-engines`,
+    `add -D weapp-tailwindcss${version} tailwindcss-patch${isRc ? '@rc' : ''
+    } @weapp-tailwindcss/merge${version} weapp-ide-cli@latest tailwindcss@3 --ignore-engines`,
   )
 
   // await install(demoPath, '-D @icebreakers/weapp-tailwindcss-test-components', true)

@@ -1,3 +1,5 @@
+const tsx = require('tsx/cjs/api')
+tsx.register()
 import type { Transform } from 'node:stream'
 import path from 'node:path'
 import process from 'node:process'

@@ -20,5 +20,10 @@
         "./miniprogram_npm/@vant/weapp/dist/*"
       ]
     }
+  },
+  "ts-node": {
+    "moduleTypes": {
+      "gulpfile.ts": "cjs"
+    }
   }
 }

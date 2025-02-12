@@ -60,7 +60,6 @@
   },
   "author": "ice breaker <1324318532@qq.com>",
   "devDependencies": {
-    "@weapp-tailwindcss/cli": "^3.0.0",
     "@weapp-tailwindcss/merge": "^1.0.0-alpha.6",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",

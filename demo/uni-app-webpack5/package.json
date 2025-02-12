@@ -100,7 +100,6 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.8",
     "@vue/cli-service": "~5.0.0",
-    "@weapp-tailwindcss/cli": "^3.0.0",
     "@weapp-tailwindcss/merge": "^1.0.0-alpha.6",
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",

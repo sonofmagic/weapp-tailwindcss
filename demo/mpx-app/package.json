@@ -55,7 +55,6 @@
     "@mpxjs/vue-cli-plugin-mpx-unit-test": "^2.1.21",
     "@mpxjs/webpack-plugin": "^2.9.71",
     "@vue/cli-service": "~5.0.0",
-    "@weapp-tailwindcss/cli": "^3.0.0",
     "@weapp-tailwindcss/merge": "^1.0.0-alpha.6",
     "autoprefixer": "^10.4.20",
     "babel-jest": "^29.7.0",

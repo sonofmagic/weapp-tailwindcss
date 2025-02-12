@@ -16,7 +16,6 @@
   "license": "",
   "dependencies": {},
   "devDependencies": {
-    "@weapp-tailwindcss/cli": "^3.0.0",
     "@weapp-tailwindcss/merge": "^1.0.0-alpha.6",
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^4.0.1",

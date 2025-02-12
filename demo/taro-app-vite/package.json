@@ -75,7 +75,6 @@
     "@tarojs/vite-runner": "4.0.9",
     "@types/react": "^18.3.11",
     "@vitejs/plugin-react": "^4.3.4",
-    "@weapp-tailwindcss/cli": "^3.0.0",
     "@weapp-tailwindcss/merge": "^1.0.0-alpha.6",
     "autoprefixer": "^10.4.20",
     "babel-preset-taro": "4.0.9",

@@ -1,10 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`e2e native > 'vite-native' > css 1`] = `
-"/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.6 | MIT License | https://tailwindcss.com */
 page,
 :host {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
@@ -587,279 +588,6 @@ text:not(n),
   margin: 0;
   padding: 0;
 }
-html:not(n),
-:host:not(n) {
-  -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-  line-height: 1.5;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Ubuntu,
-    Cantarell,
-    Noto Sans,
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji';
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Ubuntu,
-    Cantarell,
-    Noto Sans,
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji';
-  font-family: var(
-    --default-font-family,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Ubuntu,
-    Cantarell,
-    Noto Sans,
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji'
-  );
-  font-feature-settings: normal;
-  font-feature-settings: var(--default-font-feature-settings, normal);
-  font-variation-settings: normal;
-  font-variation-settings: var(--default-font-variation-settings, normal);
-  -webkit-tap-highlight-color: transparent;
-}
-body:not(n) {
-  line-height: inherit;
-}
-hr:not(n) {
-  height: 0;
-  color: inherit;
-  border-top-width: 1px;
-}
-abbr:not(n) {
-  -webkit-text-decoration: underline dotted;
-  text-decoration: underline;
-  text-decoration: underline dotted;
-}
-h1:not(n),
-h2:not(n),
-h3:not(n),
-h4:not(n),
-h5:not(n),
-h6:not(n) {
-  font-size: inherit;
-  font-weight: inherit;
-}
-a:not(n) {
-  color: inherit;
-  -webkit-text-decoration: inherit;
-  text-decoration: inherit;
-}
-b:not(n),
-strong:not(n) {
-  font-weight: bolder;
-}
-code:not(n),
-kbd:not(n),
-samp:not(n),
-pre:not(n) {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
-  font-feature-settings: normal;
-  font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-variation-settings: normal;
-  font-variation-settings: var(--default-mono-font-variation-settings, normal);
-  font-size: 1em;
-}
-small:not(n) {
-  font-size: 80%;
-}
-sub:not(n),
-sup:not(n) {
-  vertical-align: baseline;
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-}
-sub:not(n) {
-  bottom: -0.25em;
-}
-sup:not(n) {
-  top: -0.5em;
-}
-table:not(n) {
-  text-indent: 0;
-  border-color: inherit;
-  border-collapse: collapse;
-}
-:-moz-focusring:not(n) {
-  outline: auto;
-}
-progress:not(n) {
-  vertical-align: baseline;
-}
-summary:not(n) {
-  display: list-item;
-}
-ol:not(n),
-ul:not(n),
-menu:not(n) {
-  list-style: none;
-}
-img:not(n),
-svg:not(n),
-video:not(n),
-canvas:not(n),
-audio:not(n),
-iframe:not(n),
-embed:not(n),
-object:not(n) {
-  vertical-align: middle;
-  display: block;
-}
-img:not(n),
-video:not(n) {
-  max-width: 100%;
-  height: auto;
-}
-button:not(n),
-input:not(n),
-select:not(n),
-optgroup:not(n),
-textarea:not(n) {
-  font: inherit;
-  font-feature-settings: inherit;
-  font-variation-settings: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  opacity: 1;
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 0;
-}
-:not(n)::file-selector-button {
-  font: inherit;
-  font-feature-settings: inherit;
-  font-variation-settings: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  opacity: 1;
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 0;
-}
-:where(select):not(n) optgroup {
-  font-weight: bolder;
-}
-:where(select):not(n) optgroup {
-  font-weight: bolder;
-}
-:where(select):not(n) optgroup option {
-  padding-left: 20px;
-}
-:where(select):not(n) optgroup option {
-  padding-left: 20px;
-}
-:not(n)::file-selector-button {
-  margin-right: 4px;
-}
-:not(n)::-moz-placeholder {
-  opacity: 1;
-  color: color-mix(in oklab, currentColor 50%, transparent);
-}
-:not(n)::placeholder {
-  opacity: 1;
-  color: color-mix(in oklab, currentColor 50%, transparent);
-}
-textarea:not(n) {
-  resize: vertical;
-}
-:not(n)::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-:not(n)::-webkit-date-and-time-value {
-  min-height: 1lh;
-  text-align: inherit;
-}
-:not(n)::-webkit-datetime-edit {
-  display: inline-flex;
-}
-:not(n)::-webkit-datetime-edit-fields-wrapper {
-  padding: 0;
-}
-:not(n)::-webkit-datetime-edit {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-year-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-month-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-day-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-hour-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-minute-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-second-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-millisecond-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:not(n)::-webkit-datetime-edit-meridiem-field {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-:-moz-ui-invalid:not(n) {
-  box-shadow: none;
-}
-button:not(n),
-input:not(n) {
-  -webkit-appearance: button;
-  -moz-appearance: button;
-  appearance: button;
-}
-:not(n)::file-selector-button {
-  -webkit-appearance: button;
-  -moz-appearance: button;
-  appearance: button;
-}
-:not(n)::-webkit-inner-spin-button {
-  height: auto;
-}
-:not(n)::-webkit-outer-spin-button {
-  height: auto;
-}
-.block:not(n):not(n):not(n) {
-  display: block;
-}
 .h-_30px_:not(n):not(n):not(n) {
   height: 30px;
 }
@@ -869,13 +597,11 @@ input:not(n) {
 .w-_323px_:not(n):not(n):not(n) {
   width: 323px;
 }
+.bg-_h3a32d1_:not(n):not(n):not(n) {
+  background-color: #3a32d1;
+}
 .bg-_h7d7ac2_:not(n):not(n):not(n) {
   background-color: #7d7ac2;
-}
-.bg-blue-400s40:not(n):not(n):not(n) {
-  background-color: rgba(86, 162, 255, 0.4);
-  background-color: color(display-p3 0.39744 0.62813 0.99212 / 0.4);
-  background-color: color-mix(in oklab, var(--color-blue-400) 40%, transparent);
 }
 .text-_100px_:not(n):not(n):not(n) {
   font-size: 100px;
@@ -883,9 +609,11 @@ input:not(n) {
 .text-_h123456_:not(n):not(n):not(n) {
   color: #123456;
 }
-.text-red-800:not(n):not(n):not(n) {
-  color: rgb(159, 7, 18);
-  color: var(--color-red-800);
+.text-_100rpx_:not(n):not(n):not(n) {
+  color: 100rpx;
+}
+.text-red-700:not(n):not(n):not(n) {
+  color: var(--color-red-700);
 }
 @keyframes spin {
   to {
@@ -921,64 +649,24 @@ input:not(n) {
 
 exports[`e2e native > 'vite-native' > json 1`] = `
 "[
+  "bg-[#3a32d1]",
   "bg-[#7d7ac2]",
-  "bg-blue-400/40",
-  "block",
   "h-[30px]",
   "h-[45px]",
   "text-[#123456]",
   "text-[100px]",
-  "text-red-800",
+  "text-[100rpx]",
+  "text-red-700",
   "w-[323px]"
 ]
 "
 `;
 
 exports[`e2e native > 'vite-native' > wxml 1`] = `
-"<navigation-bar is="components/navigation-bar/navigation-bar">
-  <view class="weui-navigation-bar bar--weui-navigation-bar">
-    <view
-      class="bg-_h232323_ bar--bg-_h232323_ weui-navigation-bar__inner bar--weui-navigation-bar__inner ios bar--ios"
-      style="color:; background:; padding-right: 94px; height: calc(var(--height) + 47px); padding-top: 47px">
-      1111
-      <view class="weui-navigation-bar__left bar--weui-navigation-bar__left" style="width: 94px">
-        <view class="weui-navigation-bar__buttons bar--weui-navigation-bar__buttons weui-navigation-bar__buttons_goback bar--weui-navigation-bar__buttons_goback">
-          <view
-            aria-label="返回"
-            aria-role="button"
-            role="button"
-            class="weui-navigation-bar__btn_goback_wrapper bar--weui-navigation-bar__btn_goback_wrapper"
-            hover-class="weui-active"
-            hover-stay-time="100">
-            <view class="weui-navigation-bar__button bar--weui-navigation-bar__button weui-navigation-bar__btn_goback bar--weui-navigation-bar__btn_goback"></view>
-          </view>
-        </view>
-      </view>
-      <view class="weui-navigation-bar__center bar--weui-navigation-bar__center"></view>
-      <view class="weui-navigation-bar__right bar--weui-navigation-bar__right"></view>
-    </view>
-  </view>
-</navigation-bar>
-<scroll-view scroll-y="" type="list">
-  { "BASE_URL": "/", "DEV": false, "MODE": "production", "MP_PLATFORM": "weapp", "PROD": true, "SSR": false, "VITE_ENV": ".env"}
+"<scroll-view scroll-y="" type="list">
   <view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
-  <view>Hello MINA!</view>
-  <view>1</view>
-  <view>2</view>
-  <view>3</view>
-  <view>4</view>
-  <view>5</view>
-  <view class="text-red-800 bg-blue-400s40">FirstName: Hulk, LastName: Hu</view>
-  <view class="text-red-800 bg-blue-400s40">FirstName: Shang, LastName: You</view>
-  <view class="text-red-800 bg-blue-400s40">FirstName: Gideon, LastName: Lin</view>
-  <view>hello world</view>
-  <view data-hi="Weixin">Click me!</view>
+  <view class="bg-_h3a32d1_ text-_100rpx_ text-red-700 w-_323px_ h-_45px_">222</view>
 </scroll-view>
-<view>odd</view>
-<view>even</view>
-<view>odd</view>
-<view>even</view>
-<view>odd</view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
 UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
@@ -1142,11 +830,8 @@ text,
 .divide-x > text + view,
 .divide-x > text + text {
   --tw-divide-x-reverse: 0;
-  border-right-width: calc(1px * 0);
   border-right-width: calc(1px * var(--tw-divide-x-reverse));
-  border-left-width: calc(1px * (1 - 0));
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1px * calc(1 - 0));
   border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
 }
 .overflow-hidden {
@@ -1160,32 +845,26 @@ text,
 }
 .bg-_h123456_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, 1);
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
 .bg-_hd72929_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(215, 41, 41, 1);
   background-color: rgba(215, 41, 41, var(--tw-bg-opacity, 1));
 }
 .bg-_green_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(0, 128, 0, 1);
   background-color: rgba(0, 128, 0, var(--tw-bg-opacity, 1));
 }
 .bg-_orange_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 165, 0, 1);
   background-color: rgba(255, 165, 0, var(--tw-bg-opacity, 1));
 }
 .bg-_pink_ {
   --tw-bg-opacity: 1;
-  background-color: rgba(255, 192, 203, 1);
   background-color: rgba(255, 192, 203, var(--tw-bg-opacity, 1));
 }
 .bg-blue-600 {
   --tw-bg-opacity: 1;
-  background-color: rgba(37, 99, 235, 1);
   background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
 }
 .p-4 {
@@ -1222,12 +901,10 @@ text,
 }
 .text-gray-600 {
   --tw-text-opacity: 1;
-  color: rgba(75, 85, 99, 1);
   color: rgba(75, 85, 99, var(--tw-text-opacity, 1));
 }
 .text-white {
   --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, 1);
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 .transition-colors {
@@ -1248,10 +925,6 @@ text,
 .focuscring:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow:
-    var(--tw-ring-offset-shadow),
-    var(--tw-ring-shadow),
-    0 0 rgba(0, 0, 0, 0);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
 }
 .focuscring-blue-300:focus {
@@ -1277,22 +950,18 @@ text,
   .darkcdivide-gray-700 > text + view,
   .darkcdivide-gray-700 > text + text {
     --tw-divide-opacity: 1;
-    border-color: rgba(55, 65, 81, 1);
     border-color: rgba(55, 65, 81, var(--tw-divide-opacity, 1));
   }
   .darkcborder-gray-700 {
     --tw-border-opacity: 1;
-    border-color: rgba(55, 65, 81, 1);
     border-color: rgba(55, 65, 81, var(--tw-border-opacity, 1));
   }
   .darkcbg-gray-900 {
     --tw-bg-opacity: 1;
-    background-color: rgba(17, 24, 39, 1);
     background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
   }
   .darkctext-gray-300 {
     --tw-text-opacity: 1;
-    color: rgba(209, 213, 219, 1);
     color: rgba(209, 213, 219, var(--tw-text-opacity, 1));
   }
 }
