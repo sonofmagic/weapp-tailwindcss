@@ -1,5 +1,7 @@
 # vite-native-ts-skyline
 
+## 1.0.1
+
 ## 1.0.1-alpha.0
 
 ### Patch Changes
