@@ -1,5 +1,16 @@
 # tailwindcss-injector
 
+## 1.0.0-alpha.6
+
+### Major Changes
+
+- [`88a84db`](https://github.com/sonofmagic/weapp-tailwindcss/commit/88a84dba8211a1facfb7e5f58133286b3d64ea16) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps)!: upgrade tailwindcss-config to 1.x
+
+### Patch Changes
+
+- Updated dependencies [[`406a9a6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/406a9a646051d497ae7ee5d50334a0a22bf8bbfe)]:
+  - tailwindcss-config@1.0.0-alpha.0
+
 ## 0.1.6-alpha.5
 
 ### Patch Changes
