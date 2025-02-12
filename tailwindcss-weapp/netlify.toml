@@ -7,7 +7,7 @@ publish = "dist/build/h5"
 command = "pnpm run build:h5"
 
 [build.environment]
-NODE_VERSION = "20"
+NODE_VERSION = "22"
 
 [[redirects]]
 from = "/*"
