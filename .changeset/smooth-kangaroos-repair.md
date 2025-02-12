@@ -7,7 +7,6 @@
 "vite-native": patch
 "@weapp-tailwindcss/postcss": patch
 "@weapp-tailwindcss/merge": patch
-"@weapp-tailwindcss/cli": patch
 "benchmark": patch
 "website": patch
 ---

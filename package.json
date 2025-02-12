@@ -51,7 +51,6 @@
     "build:apps": "turbo run build --filter=./apps/*",
     "test": "vitest run",
     "test:plugins": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/*",
-    "test:cli": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/cli",
     "test:typography": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/typography",
     "test:core": "vitest run --coverage.enabled --coverage.all=false --project=weapp-tailwindcss",
     "test:dev": "vitest",
