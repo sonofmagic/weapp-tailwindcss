@@ -53,6 +53,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     appType,
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
+    cssPresetEnv,
   } = ctx
 
   const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
@@ -74,6 +75,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     rem2rpx,
     postcssOptions,
     cssRemoveHoverPseudoClass,
+    cssPresetEnv,
   })
 
   const jsHandler = createJsHandler({
