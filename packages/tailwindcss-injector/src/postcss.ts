@@ -48,10 +48,13 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
             const cfg = typeof config === 'function' ? config(root.source?.input) : config
             let tailwindcssConfig: Config | undefined
             if (typeof cfg === 'string') {
-              tailwindcssConfig = await loadConfig({
+              const result = await loadConfig({
                 cwd,
                 config: cfg,
               })
+              if (result) {
+                tailwindcssConfig = result.config
+              }
             }
             else {
               tailwindcssConfig = (cfg ?? {

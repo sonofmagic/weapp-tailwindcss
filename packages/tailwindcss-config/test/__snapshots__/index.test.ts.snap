@@ -2,87 +2,7 @@
 
 exports[`index > cjs 1`] = `
 {
-  "content": [
-    "./src/**/*.{html,js}",
-  ],
-  "theme": {
-    "colors": {
-      "blue": "#1fb6ff",
-      "gray": "#8492a6",
-      "gray-dark": "#273444",
-      "gray-light": "#d3dce6",
-      "green": "#13ce66",
-      "orange": "#ff7849",
-      "pink": "#ff49db",
-      "purple": "#7e5bef",
-      "yellow": "#ffc82c",
-    },
-    "extend": {
-      "borderRadius": {
-        "4xl": "2rem",
-      },
-      "spacing": {
-        "8xl": "96rem",
-        "9xl": "128rem",
-      },
-    },
-    "fontFamily": {
-      "sans": [
-        "Graphik",
-        "sans-serif",
-      ],
-      "serif": [
-        "Merriweather",
-        "serif",
-      ],
-    },
-  },
-}
-`;
-
-exports[`index > cwd 1`] = `
-{
-  "content": [
-    "./src/**/*.{html,js}",
-  ],
-  "theme": {
-    "colors": {
-      "blue": "#1fb6ff",
-      "gray": "#8492a6",
-      "gray-dark": "#273444",
-      "gray-light": "#d3dce6",
-      "green": "#13ce66",
-      "orange": "#ff7849",
-      "pink": "#ff49db",
-      "purple": "#7e5bef",
-      "yellow": "#ffc82c",
-    },
-    "extend": {
-      "borderRadius": {
-        "4xl": "2rem",
-      },
-      "spacing": {
-        "8xl": "96rem",
-        "9xl": "128rem",
-      },
-    },
-    "fontFamily": {
-      "sans": [
-        "Graphik",
-        "sans-serif",
-      ],
-      "serif": [
-        "Merriweather",
-        "serif",
-      ],
-    },
-  },
-}
-`;
-
-exports[`index > js 1`] = `
-{
-  "default": {
+  "config": {
     "content": [
       "./src/**/*.{html,js}",
     ],
@@ -116,6 +36,92 @@ exports[`index > js 1`] = `
           "Merriweather",
           "serif",
         ],
+      },
+    },
+  },
+}
+`;
+
+exports[`index > cwd 1`] = `
+{
+  "config": {
+    "content": [
+      "./src/**/*.{html,js}",
+    ],
+    "theme": {
+      "colors": {
+        "blue": "#1fb6ff",
+        "gray": "#8492a6",
+        "gray-dark": "#273444",
+        "gray-light": "#d3dce6",
+        "green": "#13ce66",
+        "orange": "#ff7849",
+        "pink": "#ff49db",
+        "purple": "#7e5bef",
+        "yellow": "#ffc82c",
+      },
+      "extend": {
+        "borderRadius": {
+          "4xl": "2rem",
+        },
+        "spacing": {
+          "8xl": "96rem",
+          "9xl": "128rem",
+        },
+      },
+      "fontFamily": {
+        "sans": [
+          "Graphik",
+          "sans-serif",
+        ],
+        "serif": [
+          "Merriweather",
+          "serif",
+        ],
+      },
+    },
+  },
+}
+`;
+
+exports[`index > js 1`] = `
+{
+  "config": {
+    "default": {
+      "content": [
+        "./src/**/*.{html,js}",
+      ],
+      "theme": {
+        "colors": {
+          "blue": "#1fb6ff",
+          "gray": "#8492a6",
+          "gray-dark": "#273444",
+          "gray-light": "#d3dce6",
+          "green": "#13ce66",
+          "orange": "#ff7849",
+          "pink": "#ff49db",
+          "purple": "#7e5bef",
+          "yellow": "#ffc82c",
+        },
+        "extend": {
+          "borderRadius": {
+            "4xl": "2rem",
+          },
+          "spacing": {
+            "8xl": "96rem",
+            "9xl": "128rem",
+          },
+        },
+        "fontFamily": {
+          "sans": [
+            "Graphik",
+            "sans-serif",
+          ],
+          "serif": [
+            "Merriweather",
+            "serif",
+          ],
+        },
       },
     },
   },
@@ -124,40 +130,42 @@ exports[`index > js 1`] = `
 
 exports[`index > mjs 1`] = `
 {
-  "default": {
-    "content": [
-      "./src/**/*.{html,js}",
-    ],
-    "theme": {
-      "colors": {
-        "blue": "#1fb6ff",
-        "gray": "#8492a6",
-        "gray-dark": "#273444",
-        "gray-light": "#d3dce6",
-        "green": "#13ce66",
-        "orange": "#ff7849",
-        "pink": "#ff49db",
-        "purple": "#7e5bef",
-        "yellow": "#ffc82c",
-      },
-      "extend": {
-        "borderRadius": {
-          "4xl": "2rem",
+  "config": {
+    "default": {
+      "content": [
+        "./src/**/*.{html,js}",
+      ],
+      "theme": {
+        "colors": {
+          "blue": "#1fb6ff",
+          "gray": "#8492a6",
+          "gray-dark": "#273444",
+          "gray-light": "#d3dce6",
+          "green": "#13ce66",
+          "orange": "#ff7849",
+          "pink": "#ff49db",
+          "purple": "#7e5bef",
+          "yellow": "#ffc82c",
         },
-        "spacing": {
-          "8xl": "96rem",
-          "9xl": "128rem",
+        "extend": {
+          "borderRadius": {
+            "4xl": "2rem",
+          },
+          "spacing": {
+            "8xl": "96rem",
+            "9xl": "128rem",
+          },
         },
-      },
-      "fontFamily": {
-        "sans": [
-          "Graphik",
-          "sans-serif",
-        ],
-        "serif": [
-          "Merriweather",
-          "serif",
-        ],
+        "fontFamily": {
+          "sans": [
+            "Graphik",
+            "sans-serif",
+          ],
+          "serif": [
+            "Merriweather",
+            "serif",
+          ],
+        },
       },
     },
   },
@@ -166,40 +174,42 @@ exports[`index > mjs 1`] = `
 
 exports[`index > ts 1`] = `
 {
-  "default": {
-    "content": [
-      "./src/**/*.{html,js}",
-    ],
-    "theme": {
-      "colors": {
-        "blue": "#1fb6ff",
-        "gray": "#8492a6",
-        "gray-dark": "#273444",
-        "gray-light": "#d3dce6",
-        "green": "#13ce66",
-        "orange": "#ff7849",
-        "pink": "#ff49db",
-        "purple": "#7e5bef",
-        "yellow": "#ffc82c",
-      },
-      "extend": {
-        "borderRadius": {
-          "4xl": "2rem",
+  "config": {
+    "default": {
+      "content": [
+        "./src/**/*.{html,js}",
+      ],
+      "theme": {
+        "colors": {
+          "blue": "#1fb6ff",
+          "gray": "#8492a6",
+          "gray-dark": "#273444",
+          "gray-light": "#d3dce6",
+          "green": "#13ce66",
+          "orange": "#ff7849",
+          "pink": "#ff49db",
+          "purple": "#7e5bef",
+          "yellow": "#ffc82c",
         },
-        "spacing": {
-          "8xl": "96rem",
-          "9xl": "128rem",
+        "extend": {
+          "borderRadius": {
+            "4xl": "2rem",
+          },
+          "spacing": {
+            "8xl": "96rem",
+            "9xl": "128rem",
+          },
         },
-      },
-      "fontFamily": {
-        "sans": [
-          "Graphik",
-          "sans-serif",
-        ],
-        "serif": [
-          "Merriweather",
-          "serif",
-        ],
+        "fontFamily": {
+          "sans": [
+            "Graphik",
+            "sans-serif",
+          ],
+          "serif": [
+            "Merriweather",
+            "serif",
+          ],
+        },
       },
     },
   },

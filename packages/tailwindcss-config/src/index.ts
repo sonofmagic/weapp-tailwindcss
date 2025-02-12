@@ -10,14 +10,23 @@ const jiti = createJiti(import.meta.url)
 export interface LoadConfigOptions {
   cwd: string
   config: string
+  moduleName: string
 }
 
-const moduleName = 'tailwind'
+export type LoadConfigResult = null | {
+  filepath: string
+  config: Config
+  isEmpty?: boolean
+}
 
-export async function loadConfig(options?: Partial<LoadConfigOptions>) {
-  const { config, cwd } = defuOverrideArray<LoadConfigOptions, Partial<LoadConfigOptions>[]>(options as LoadConfigOptions, {
-    cwd: process.cwd(),
-  })
+export async function loadConfig(options?: Partial<LoadConfigOptions>): Promise<LoadConfigResult> {
+  const { config, cwd, moduleName } = defuOverrideArray<LoadConfigOptions, Partial<LoadConfigOptions>[]>(
+    options as LoadConfigOptions,
+    {
+      cwd: process.cwd(),
+      moduleName: 'tailwind',
+    },
+  )
 
   const searcher = lilconfig('tailwindcss', {
     searchPlaces: [
@@ -40,11 +49,9 @@ export async function loadConfig(options?: Partial<LoadConfigOptions>) {
 
   if (typeof config === 'string' && config) {
     const configPath = path.isAbsolute(config) ? config : path.resolve(cwd, config)
-    const result = await searcher.load(configPath)
-    return result?.config as Config | undefined
+    return await searcher.load(configPath)
   }
   else {
-    const result = await searcher.search(cwd)
-    return result?.config as Config | undefined
+    return await searcher.search(cwd)
   }
 }
