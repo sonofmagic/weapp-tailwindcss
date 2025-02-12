@@ -101,7 +101,7 @@
     "@vue/cli-plugin-typescript": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "@weapp-tailwindcss/cli": "^3.0.0",
-    "@weapp-tailwindcss/merge": "^1.0.0-alpha.5",
+    "@weapp-tailwindcss/merge": "^1.0.0-alpha.6",
     "autoprefixer": "10.4.18",
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",
@@ -121,8 +121,8 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.4.2",
     "vue-template-compiler": "^2.7.16",
-    "weapp-ide-cli": "^2.0.9",
-    "weapp-tailwindcss": "^4.0.0-alpha.12",
+    "weapp-ide-cli": "^2.0.10",
+    "weapp-tailwindcss": "^4.0.0-alpha.13",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "browserslist": [
