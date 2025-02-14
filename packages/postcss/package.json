@@ -62,7 +62,7 @@
     "@weapp-core/escape": "~4.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
     "postcss": "~8.5.2",
-    "postcss-preset-env": "^10.1.3",
+    "postcss-preset-env": "^10.1.4",
     "postcss-rem-to-responsive-pixel": "~6.0.2",
     "postcss-selector-parser": "~7.1.0"
   },
