@@ -12,6 +12,22 @@ export interface UserDefinedOptions {
   /**
    * @group 0.重要配置
    * @description 是否禁用此插件，一般用于构建到多平台时使用，比如小程序时不传，非小程序环境(h5,app)传入一个 `true`
+   * ```ts
+   * // 比如 uni-app vue3 vite
+   * import process from 'node:process'
+
+const isH5 = process.env.UNI_PLATFORM === 'h5'
+const isApp = process.env.UNI_PLATFORM === 'app'
+const WeappTailwindcssDisabled = isH5 || isApp
+
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+// 注册插件
+// highlight-start
+    uvtw({
+      disabled: WeappTailwindcssDisabled,
+    }),
+// highlight-end
+   * ```
    */
   disabled?: boolean
 
@@ -54,13 +70,6 @@ const customAttributes = {
    * @default MappingChars2String
    */
   customReplaceDictionary?: Record<string, string>
-
-  /**
-   * @version `^3.1.0`
-   * @group 0.重要配置
-   * @description 对解析 js 使用的 ast 工具，默认情况使用 `babel`，可以通过安装 `@ast-grep/napi`，同时启用 `ast-grep` 配置项，来启用 `ast-grep` 来处理 `js`，速度会是 `babel` 的 `2` 倍左右
-   */
-  jsAstTool?: 'babel' | 'ast-grep'
 
   /**
    * @version `^4.0.0`
@@ -166,6 +175,14 @@ const customAttributes = {
    * @version `^3.0.0`
    * @group 0.重要配置
    * @description rem 转 rpx 配置，默认为 `undefined` 不开启，可传入 `true` 启用默认配置项，也可传入自定义配置项，配置项列表见 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
+   * ```ts
+   * // 默认值
+   * {
+   *  rootValue: 32,
+   *  propList: ['*'],
+   *  transformUnit: 'rpx',
+   * }
+   * ```
    */
   rem2rpx?: boolean | UserDefinedOptions
 
@@ -262,6 +279,7 @@ export interface UserDefinedOptions {
   onEnd?: () => void
 }
 
+// 3.一般配置
 export interface UserDefinedOptions {
 
   /**
@@ -285,13 +303,6 @@ export interface UserDefinedOptions {
    * @description 使用的框架类型(uni-app,taro...)，用于找到主要的 `css bundle` 进行转化，这个配置会影响默认方法 `mainCssChunkMatcher` 的行为，不传会去猜测 `tailwindcss css var inject scope` (tailwindcss 变量注入的位置) 的位置
    */
   appType?: AppType
-
-  /**
-   * @group 3.一般配置
-   * @description 是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
-   * @url https://github.com/sonofmagic/tailwindcss-mangle
-   */
-  mangle?: boolean | IMangleOptions
 
   /**
    * @group 3.一般配置
@@ -393,4 +404,34 @@ export interface UserDefinedOptions {
    * @description 用于自定义处理 css 的回调函数，可根据 Postcss walk 方法自由定制处理方案的 callback 方法
    */
   customRuleCallback?: CustomRuleCallback
+}
+
+// 4.即将废弃配置
+
+export interface UserDefinedOptions {
+  /**
+   * @group 4.即将废弃配置
+   * @description 对解析 js 使用的 ast 工具，默认情况使用 `babel`，可以通过安装 `@ast-grep/napi`，同时启用 `ast-grep` 配置项，来启用 `ast-grep` 来处理 `js`，速度会是 `babel` 的 `2` 倍左右
+   * :::danger
+   * 此配置即将在 `5.x` 被弃用
+   *
+   * 废弃原因:
+   *
+   * 虽然 `@ast-grep/napi` 提供了更快的速度，但是 `babel` 有更强的静态分析 `js` 能力，使得后续一些新功能的开发无法使用 `@ast-grep/napi` 实现，所以废弃只保留 `babel` 的方式
+   * :::
+   */
+  jsAstTool?: 'babel' | 'ast-grep'
+
+  /**
+   * @group 4.即将废弃配置
+   * @description 是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
+   * :::danger
+   * 此配置即将在 `5.x` 被弃用
+   *
+   * 废弃原因:
+   *
+   * mangle 相关的功能会被迁移到另外一个项目： [`tailwindcss-mangle`](https://github.com/sonofmagic/tailwindcss-mangle) 中去，还想要这个功能可以2个插件结合使用
+   * :::
+   */
+  mangle?: boolean | IMangleOptions
 }
