@@ -1,5 +1,20 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`v4 > --tw-gradient-position 1`] = `
+".bg-gradient-to-b:not(n):not(n):not(n) {
+    --tw-gradient-position: to bottom ;
+    background-image: linear-gradient(var(--tw-gradient-stops));
+  }
+.bg-gradient-to-t:not(n):not(n):not(n) {
+    --tw-gradient-position: to top ;
+    background-image: linear-gradient(var(--tw-gradient-stops));
+  }
+.bg-gradient-to-tr:not(n):not(n):not(n) {
+    --tw-gradient-position: to top right ;
+    background-image: linear-gradient(var(--tw-gradient-stops));
+  }"
+`;
+
 exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 

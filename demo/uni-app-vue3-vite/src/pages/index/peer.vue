@@ -2,6 +2,9 @@
   <view>
     <view class="w-20 h-20 peer bg-gray-300" hover-class="tapped" />
     <view class="w-20 h-20 peer-[.tapped]:bg-red-400 bg-blue-400"></view>
+    <view class="bg-gradient-to-b from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="bg-gradient-to-t from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="bg-gradient-to-tr from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
   </view>
 </template>
 
