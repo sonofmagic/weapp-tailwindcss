@@ -1,3 +1,4 @@
+import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
@@ -19,6 +20,14 @@ export default defineConfig({
     // @ts-ignore
     uvwt({
       rem2rpx: true,
+      tailwindcss: {
+        version: 4,
+        v4: {
+          cssEntries: [
+            path.resolve(import.meta.dirname, './app.css'),
+          ],
+        },
+      },
     }),
   ],
   css: {

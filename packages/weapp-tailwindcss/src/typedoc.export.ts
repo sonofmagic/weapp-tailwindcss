@@ -2,7 +2,7 @@ import type { ParserOptions } from '@babel/parser'
 import type { IMangleOptions } from '@weapp-tailwindcss/mangle'
 import type { CssPreflightOptions, CustomRuleCallback, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
-import type { ILengthUnitsPatchOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, PatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from './cache'
 import type { AppType, IArbitraryValues, ICustomAttributes } from './types'
 
@@ -192,6 +192,13 @@ const customAttributes = {
    * @description postcss-preset-env 的入参数
    */
   cssPresetEnv?: PresetEnvOptions
+
+  /**
+   * @version `^4.0.0`
+   * @group 0.重要配置
+   * @description 配置不同版本 tailwindcss 的行为
+   */
+  tailwindcss?: PatchOptions['tailwindcss']
 }
 
 // 1.文件匹配

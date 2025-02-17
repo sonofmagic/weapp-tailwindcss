@@ -1,9 +1,17 @@
-import type { CacheOptions, ILengthUnitsPatchOptions } from 'tailwindcss-patch'
+import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import path from 'node:path'
 import process from 'node:process'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 
-export function createTailwindcssPatcher(basedir?: string, cacheDir?: string, supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions) {
+export interface CreateTailwindcssPatcherOptions {
+  basedir?: string
+  cacheDir?: string
+  supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
+  tailwindcss?: TailwindcssUserConfig
+}
+
+export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions) {
+  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss } = options || {}
   const cache: CacheOptions = {}
 
   if (cacheDir) {
@@ -26,6 +34,7 @@ export function createTailwindcssPatcher(basedir?: string, cacheDir?: string, su
         exportContext: true,
         extendLengthUnits: supportCustomLengthUnitsPatch,
       },
+      tailwindcss,
     },
   })
 }
