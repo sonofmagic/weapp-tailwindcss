@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.1
+
+### Patch Changes
+
+- [`ee34fb3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ee34fb34688a2bd11018ce5e4ea6d07a062b0b55) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: bg-gradient --tw-gradient-position in oklab
+
 ## 1.0.0
 
 ### Major Changes
