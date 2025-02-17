@@ -47,7 +47,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
       const entries = Object.entries(bundle)
       const groupedEntries = getGroupedEntries(entries, opts)
-      const runtimeSet = twPatcher.getClassSet()
+      const runtimeSet = await twPatcher.getClassSet()
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       if (Array.isArray(groupedEntries.html)) {

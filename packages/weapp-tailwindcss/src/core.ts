@@ -20,13 +20,13 @@ export function createContext(options: UserDefinedOptions = {}) {
     }))
   }
 
-  function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
+  async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
-        : twPatcher.getClassSet()
+        : await twPatcher.getClassSet()
 
-    return jsHandler(rawJs, runtimeSet, options)
+    return await jsHandler(rawJs, runtimeSet, options)
   }
 
   function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {

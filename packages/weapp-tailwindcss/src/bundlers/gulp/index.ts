@@ -26,7 +26,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return new Transform({
       objectMode: true,
       async transform(file: File, _encoding, callback) {
-        runtimeSet = twPatcher.getClassSet()
+        runtimeSet = await twPatcher.getClassSet()
         setMangleRuntimeSet(runtimeSet)
         const error = null
 

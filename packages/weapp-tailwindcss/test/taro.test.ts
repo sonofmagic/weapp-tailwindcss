@@ -71,7 +71,7 @@ describe('taro app', () => {
   it.each(testTable)('$name vue3SaticNodeStr case', async ({ strategy }) => {
     const testCase = await getCase('taro-vue-static-node.js')
     await getCss(testCase)
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
     const xxx = strategy === 'replace' ? rh : h
     const { code } = await xxx(testCase, set)
     expect(code).toMatchSnapshot()
@@ -80,7 +80,7 @@ describe('taro app', () => {
   it.each(testTable)('$name vue3SaticNodeStr short case', async ({ strategy }) => {
     const testCase = await getCase('taro-vue-static-node-short.js')
     await getCss(testCase)
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
     const xxx = strategy === 'replace' ? rh : h
     const { code } = await xxx(testCase, set)
     expect(code).toMatchSnapshot()

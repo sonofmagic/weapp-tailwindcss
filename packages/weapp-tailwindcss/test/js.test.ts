@@ -311,7 +311,7 @@ describe('jsHandler', () => {
   it('"after:content-["对酒当歌，人生几何"]"', async () => {
     const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
     await getCss(testCase)
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
     const { code } = await dh(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -319,7 +319,7 @@ describe('jsHandler', () => {
   it.each(testTable)('$name "after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'
     await getCss(testCase)
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
 
     const { code } = await h(testCase, set)
     expect(code).toMatchSnapshot()

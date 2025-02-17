@@ -56,7 +56,7 @@ describe('postcss plugin', () => {
   it('double quote after class', async () => {
     // after:content-[\"*\"]
     const res = await getCss('<view class="after:content-["对酒当歌，人生几何"]"></view>')
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
     expect(set.has('after:content-["对酒当歌，人生几何"]')).toBe(true)
     // const y =
     expect(res.css.toString()).toMatchSnapshot()
@@ -65,7 +65,7 @@ describe('postcss plugin', () => {
   it('single quote after class', async () => {
     // after:content-[\"*\"]
     const res = await getCss('<view class="after:content-[\'对酒当歌，人生几何\']"></view>')
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
     expect(set.has('after:content-[\'对酒当歌，人生几何\']')).toBe(true)
 
     expect(res.css.toString()).toMatchSnapshot()
