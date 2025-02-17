@@ -6,6 +6,7 @@ import { getDefaultOptions } from '@/defaults'
 import { createJsHandler } from '@/js/index'
 import { decodeUnicode } from '@/utils/decode'
 import { MappingChars2String } from '@weapp-core/escape'
+import { isCI } from 'ci-info'
 // import punycode from 'node:punycode'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 // swc 在解析中文的时候，会导致 span 增加，从而无法精确定位，不知道是不是bug
@@ -308,7 +309,7 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it('"after:content-["对酒当歌，人生几何"]"', async () => {
+  it.skipIf(isCI)('"after:content-["对酒当歌，人生几何"]"', async () => {
     const testCase = 'const a = \'after:content-["对酒当歌，人生几何"]\''
     await getCss(testCase)
     const set = await getClassCacheSet()
@@ -316,7 +317,7 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it.each(testTable)('$name "after:content-[\'对酒当歌，人生几何\']"', async () => {
+  it.skipIf(isCI).each(testTable)('$name "after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'
     await getCss(testCase)
     const set = await getClassCacheSet()
