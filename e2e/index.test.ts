@@ -117,7 +117,7 @@ describe('e2e', () => {
         expect(wxml).toMatchSnapshot('wxml')
       }
 
-      await page.waitFor(3000)
+      await page.waitFor(1000)
     }
 
     await miniProgram.close()

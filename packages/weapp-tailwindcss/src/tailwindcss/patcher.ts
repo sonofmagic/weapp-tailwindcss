@@ -3,6 +3,7 @@ import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssUserConfig } fr
 import path from 'node:path'
 import process from 'node:process'
 import { isAllowedClassName } from '@weapp-core/escape'
+import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 
 export interface CreateTailwindcssPatcherOptions {
@@ -38,7 +39,11 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
         extendLengthUnits: supportCustomLengthUnitsPatch,
       },
       tailwindcss,
-      resolve,
+      resolve: defuOverrideArray(resolve!, {
+        paths: [
+          import.meta.url,
+        ],
+      }),
       filter: (x) => {
         return !isAllowedClassName(x)
       },

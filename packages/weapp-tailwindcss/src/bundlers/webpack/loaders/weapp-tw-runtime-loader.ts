@@ -4,9 +4,9 @@ import loaderUtils from 'loader-utils'
 
 const WeappTwRuntimeAopLoader: webpack.LoaderDefinitionFunction<{
   getClassSet: () => void
-}> = function (this: webpack.LoaderContext<any>, source: string) {
+}> = async function (this: webpack.LoaderContext<any>, source: string) {
   const opt = loaderUtils.getOptions(this) // this.getCompilerContext()
-  opt?.getClassSet?.()
+  await opt?.getClassSet?.()
   return source
 }
 
