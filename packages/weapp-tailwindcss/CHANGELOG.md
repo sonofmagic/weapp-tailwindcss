@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 4.0.2
+
+### Patch Changes
+
+- [`64c0189`](https://github.com/sonofmagic/weapp-tailwindcss/commit/64c018935732481ebe2f366e4136b4d3574dde57) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: improve `isAllowedClassName` preflight
+
+- [`13b72d8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/13b72d8fbd3aad6fb49a772fd09c36c70e5eda56) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add `resolve` option
+
+- Updated dependencies [[`64c0189`](https://github.com/sonofmagic/weapp-tailwindcss/commit/64c018935732481ebe2f366e4136b4d3574dde57)]:
+  - @weapp-tailwindcss/postcss@1.0.2
+
 ## 4.0.1
 
 ### Patch Changes
