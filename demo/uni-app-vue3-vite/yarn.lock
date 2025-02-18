@@ -3251,10 +3251,10 @@
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/shared" "1.0.0"
 
-"@weapp-tailwindcss/merge@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0.tgz#ff24116bf83e0570b47f9a29b90bfed4d12f2ff1"
-  integrity sha512-Dnx9EqOm9P9lC8z+sW/wJ3YVTNNK89vJdF/hGWgloSSx8HjKopaFrxXlTL5iRha/1BpebWSOzvVxlUd7HkCofg==
+"@weapp-tailwindcss/merge@^1.0.0-alpha.6":
+  version "1.0.0-alpha.6"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0-alpha.6.tgz#06975ef320831c66a9d261d5802a57102249ffa4"
+  integrity sha512-wEkkle3j3Suc/tuYtCQ3/jvoWd341xu2IJk7jnVWDliE/l2bODeSgv46fWhXe2jfqWrr8iMinetA4F1wKSVgSg==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
@@ -6675,7 +6675,7 @@ tailwindcss-config@^1.0.0:
     jiti "^2.4.2"
     lilconfig "^3.1.3"
 
-tailwindcss-patch@^6.0.6, tailwindcss-patch@~6.0.5:
+tailwindcss-patch@^6.0.6, tailwindcss-patch@~6.0.6:
   version "6.0.6"
   resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-6.0.6.tgz#d9c8b0c652f06c0f2e54b49c9fbcbbf99b64fcca"
   integrity sha512-nO19qKDPn004EKeD92YIs5FrVoXr3c2a311jn8ds71/s6KRMOYvceqvROxUeAsjga/zjali7k/5dHcgvuchSDQ==
@@ -7063,10 +7063,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.2.tgz#390ba20c30c697d83dcffaf859d7e58766209e78"
-  integrity sha512-axFwApZkLjKzOJk+20nxvEdIxG43TNNMW6VWZOTxznipctsO9IzJpsg+Mrax6D/y9JR6wGhws4lVbTiAdT1trw==
+weapp-tailwindcss@^4.0.3-alpha.0:
+  version "4.0.3-alpha.0"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.3-alpha.0.tgz#1f9a523fedb063d308e735f27b4ddf16d81dde73"
+  integrity sha512-VOsZX0RD6BErdkszFHmgVGkNbNl/YtF92cYm/yYaGF8E71rFHwl/DmwLBg7OwUpmiTsSiedZSRnE1Ug/u0UHig==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.26.9"
@@ -7087,7 +7087,7 @@ weapp-tailwindcss@^4.0.2:
     magic-string "0.30.17"
     md5 "2.3.0"
     semver "~7.7.1"
-    tailwindcss-patch "~6.0.5"
+    tailwindcss-patch "~6.0.6"
     webpack-sources "3.2.3"
 
 webpack-sources@3.2.3:

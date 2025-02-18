@@ -2,7 +2,6 @@ import type { PackageResolvingOptions } from 'local-pkg'
 import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import path from 'node:path'
 import process from 'node:process'
-import { isAllowedClassName } from '@weapp-core/escape'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 
@@ -44,9 +43,9 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
           import.meta.url,
         ],
       }),
-      filter: (x) => {
-        return !isAllowedClassName(x)
-      },
+      // filter: (x) => {
+      //   return !isAllowedClassName(x)
+      // },
       // for example
       // resolve: {
       //   paths: [
