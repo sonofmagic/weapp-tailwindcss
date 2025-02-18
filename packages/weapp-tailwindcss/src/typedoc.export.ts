@@ -1,6 +1,7 @@
 import type { ParserOptions } from '@babel/parser'
 import type { IMangleOptions } from '@weapp-tailwindcss/mangle'
 import type { CssPreflightOptions, CustomRuleCallback, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
+import type { PackageResolvingOptions } from 'local-pkg'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { ILengthUnitsPatchOptions, PatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from './cache'
@@ -411,6 +412,12 @@ export interface UserDefinedOptions {
    * @description 用于自定义处理 css 的回调函数，可根据 Postcss walk 方法自由定制处理方案的 callback 方法
    */
   customRuleCallback?: CustomRuleCallback
+
+  /**
+   * @group 3.一般配置
+   * @description 用于自定义 tailwindcss 包的寻找方法
+   */
+  resolve?: PackageResolvingOptions
 }
 
 // 4.即将废弃配置

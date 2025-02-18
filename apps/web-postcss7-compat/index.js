@@ -5,7 +5,16 @@ const tailwindcss = require('tailwindcss')
 const { TailwindcssPatcher } = require('tailwindcss-patch')
 
 async function main() {
-  const twPatcher = new TailwindcssPatcher()
+  const twPatcher = new TailwindcssPatcher({
+    patch: {
+      resolve: {
+        paths: [
+          __filename,
+          // import.meta.url
+        ],
+      },
+    },
+  })
   twPatcher.patch()
 
   const tw = tailwindcss({
@@ -28,7 +37,7 @@ async function main() {
   // const ctx = require('tailwindcss/lib/jit/index')
   // console.log(ctx)
 
-  const ctx = twPatcher.getClassSet()
+  const ctx = await twPatcher.getClassSet()
   fs.writeFileSync(path.join(__dirname, 'result.json'), JSON.stringify(Array.from(ctx), null, 2), 'utf8')
 }
 

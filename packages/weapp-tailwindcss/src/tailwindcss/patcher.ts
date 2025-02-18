@@ -1,3 +1,4 @@
+import type { PackageResolvingOptions } from 'local-pkg'
 import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import path from 'node:path'
 import process from 'node:process'
@@ -8,10 +9,11 @@ export interface CreateTailwindcssPatcherOptions {
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindcssUserConfig
+  resolve?: PackageResolvingOptions
 }
 
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions) {
-  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss } = options || {}
+  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, resolve } = options || {}
   const cache: CacheOptions = {}
 
   if (cacheDir) {
@@ -35,6 +37,13 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
         extendLengthUnits: supportCustomLengthUnitsPatch,
       },
       tailwindcss,
+      resolve,
+      // for example
+      // resolve: {
+      //   paths: [
+      //     import.meta.url,
+      //   ],
+      // },
     },
   })
 }
