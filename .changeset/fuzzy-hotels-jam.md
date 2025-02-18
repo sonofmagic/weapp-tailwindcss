@@ -2,4 +2,5 @@
 "weapp-tailwindcss": patch
 ---
 
-feat: add resolve option
+feat: add `resolve` option
+

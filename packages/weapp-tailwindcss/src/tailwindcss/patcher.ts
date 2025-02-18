@@ -2,6 +2,7 @@ import type { PackageResolvingOptions } from 'local-pkg'
 import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import path from 'node:path'
 import process from 'node:process'
+import { isAllowedClassName } from '@weapp-core/escape'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 
 export interface CreateTailwindcssPatcherOptions {
@@ -38,6 +39,9 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
       },
       tailwindcss,
       resolve,
+      filter: (x) => {
+        return !isAllowedClassName(x)
+      },
       // for example
       // resolve: {
       //   paths: [
