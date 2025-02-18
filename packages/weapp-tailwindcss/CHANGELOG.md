@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.3-alpha.0
+
+### Patch Changes
+
+- [`6a2f78d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6a2f78d72d795d578cdcb1876310eef57fe463ca) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: get class set error
+
 ## 4.0.2
 
 ### Patch Changes
