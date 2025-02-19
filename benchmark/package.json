@@ -30,7 +30,7 @@
     "postcss": "^8.5.2",
     "tailwindcss": "catalog:tailwindcss4",
     "unplugin-vue-router": "^0.11.2",
-    "vite": "^6.1.0",
+    "vite": "^6.1.1",
     "vue-tsc": "^2.2.2"
   }
 }
