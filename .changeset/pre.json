@@ -25,6 +25,7 @@
     "website": "0.0.1"
   },
   "changesets": [
+    "early-worms-worry",
     "lucky-peas-beg"
   ]
 }
