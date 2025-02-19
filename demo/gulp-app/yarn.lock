@@ -1198,10 +1198,10 @@
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/shared" "1.0.0"
 
-"@weapp-tailwindcss/merge@^1.0.0-alpha.6":
-  version "1.0.0-alpha.6"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0-alpha.6.tgz#06975ef320831c66a9d261d5802a57102249ffa4"
-  integrity sha512-wEkkle3j3Suc/tuYtCQ3/jvoWd341xu2IJk7jnVWDliE/l2bODeSgv46fWhXe2jfqWrr8iMinetA4F1wKSVgSg==
+"@weapp-tailwindcss/merge@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0.tgz#ff24116bf83e0570b47f9a29b90bfed4d12f2ff1"
+  integrity sha512-Dnx9EqOm9P9lC8z+sW/wJ3YVTNNK89vJdF/hGWgloSSx8HjKopaFrxXlTL5iRha/1BpebWSOzvVxlUd7HkCofg==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
@@ -6145,10 +6145,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.3-alpha.3:
-  version "4.0.3-alpha.3"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.3-alpha.3.tgz#618a2d5dd4d996ea7ed270ac197216f6f4ff8cb4"
-  integrity sha512-06zx6CaK2Aycimzty8UHUmfKnV2/UZHfUDtXWXsHgYGvYRXcH918n/pEwoMal+FEvqvCA4ehOWMxVOgbmzmctA==
+weapp-tailwindcss@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.3.tgz#46e081aaf1439f6416cb3440c519d9d5018babe1"
+  integrity sha512-YcuqKPIBsLul47A+Im3cO5zL7EvIJDG4bcxeMj8HCl/uKzlcLiY5blzEuFRgdrfiylNayayxEstJ6naT3p44Mw==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.26.9"
