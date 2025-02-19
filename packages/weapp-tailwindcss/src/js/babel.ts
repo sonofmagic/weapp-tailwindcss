@@ -15,6 +15,26 @@ export function isEvalPath(p: NodePath<Node>) {
   return false
 }
 
+// function replaceStringLiteralsInBinaryExpr(binaryNode: BinaryExpression, ms: MagicString) {
+//   if (t.isStringLiteral(binaryNode.left)) {
+//     const leftStringLiteral = binaryNode.left
+//     leftStringLiteral.value = 'bg-[#654321]' // 替换
+//     ms.update(leftStringLiteral.start, leftStringLiteral.end, `'${leftStringLiteral.value}'`)
+//   }
+//   else if (t.isBinaryExpression(binaryNode.left)) {
+//     replaceStringLiteralsInBinaryExpr(binaryNode.left, ms) // 递归
+//   }
+
+//   if (t.isStringLiteral(binaryNode.right)) {
+//     const rightStringLiteral = binaryNode.right
+//     rightStringLiteral.value = 'text-[#222222]' // 替换
+//     ms.update(rightStringLiteral.start, rightStringLiteral.end, `'${rightStringLiteral.value}'`)
+//   }
+//   else if (t.isBinaryExpression(binaryNode.right)) {
+//     replaceStringLiteralsInBinaryExpr(binaryNode.right, ms) // 递归
+//   }
+// }
+
 const ignoreFlagMap = new WeakMap()
 
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
@@ -127,8 +147,23 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
               },
             },
           })
+          return
         }
-        else if (p.get('callee').isIdentifier() && (options.ignoreCallExpressionIdentifiers?.includes((p.get('callee').node as Identifier).name))) {
+        const callee = p
+          .get('callee')
+        if (
+          callee
+            .isIdentifier()
+            && (
+              options
+                .ignoreCallExpressionIdentifiers
+                ?.includes(
+                  callee
+                    .node
+                    .name,
+                )
+            )
+        ) {
           ignoreFlag = true
           ignoreFlagMap.set(p, true)
         }
