@@ -88,13 +88,13 @@
     "postcss-rpx-transform": "^1.0.1",
     "stylelint": "16.12.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
-    "tailwindcss-patch": "^6.0.6",
+    "tailwindcss-patch": "^6.0.7",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.7.3",
     "unplugin-vue-components": "^28.0.0",
     "vue-loader": "^17.2.2",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.0.3-alpha.0",
+    "weapp-tailwindcss": "^4.0.3-alpha.1",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.97.1"
   }
