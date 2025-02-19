@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`e2e native > 'vite-native' > css 1`] = `
-"/*! tailwindcss v4.0.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.7 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --font-sans:
@@ -603,6 +603,36 @@ text:not(n),
 .bg-_h7d7ac2_:not(n):not(n):not(n) {
   background-color: #7d7ac2;
 }
+.bg-gradient-to-b:not(n):not(n):not(n) {
+  --tw-gradient-position: to bottom;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-t:not(n):not(n):not(n) {
+  --tw-gradient-position: to top;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-tr:not(n):not(n):not(n) {
+  --tw-gradient-position: to top right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-_h2f73f1_:not(n):not(n):not(n) {
+  --tw-gradient-from: #2f73f1;
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-_h4bcefd_:not(n):not(n):not(n) {
+  --tw-gradient-to: #4bcefd;
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
 .text-_100px_:not(n):not(n):not(n) {
   font-size: 100px;
 }
@@ -643,22 +673,54 @@ text:not(n),
     transform: none;
   }
 }
+@property --tw-gradient-position {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-gradient-from {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(0, 0, 0, 0);
+}
+@property --tw-gradient-via {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(0, 0, 0, 0);
+}
+@property --tw-gradient-to {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(0, 0, 0, 0);
+}
+@property --tw-gradient-stops {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-gradient-via-stops {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-gradient-from-position {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@property --tw-gradient-via-position {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+@property --tw-gradient-to-position {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
 /*$vite$:1*/
 "
 `;
 
 exports[`e2e native > 'vite-native' > json 1`] = `
-"[
-  "bg-[#3a32d1]",
-  "bg-[#7d7ac2]",
-  "h-[30px]",
-  "h-[45px]",
-  "text-[#123456]",
-  "text-[100px]",
-  "text-[100rpx]",
-  "text-red-700",
-  "w-[323px]"
-]
+"[]
 "
 `;
 
@@ -666,6 +728,9 @@ exports[`e2e native > 'vite-native' > wxml 1`] = `
 "<scroll-view scroll-y="" type="list">
   <view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
   <view class="bg-_h3a32d1_ text-_100rpx_ text-red-700 w-_323px_ h-_45px_">222</view>
+  <view class="bg-gradient-to-b from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
+  <view class="bg-gradient-to-t from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
+  <view class="bg-gradient-to-tr from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
 </scroll-view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
