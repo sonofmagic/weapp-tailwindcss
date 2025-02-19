@@ -1,6 +1,7 @@
 import type { ItemOrItemArray } from '@weapp-core/regex'
 import type { ITemplateHandlerOptions } from '../types'
 import type { Token } from './Tokenizer'
+import { JsTokenUpdater } from '@/js/JsTokenUpdater'
 import * as t from '@babel/types'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
@@ -20,6 +21,7 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
     else {
       const ms = new MagicString(match)
       const ast = parseExpression(match)
+      const jsTokenUpdater = new JsTokenUpdater()
 
       traverse(ast, {
         StringLiteral(path) {
@@ -33,24 +35,27 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
             return
           }
           const n = path.node
+          jsTokenUpdater.add(
+            replaceHandleValue(
+              n.value,
+              n,
+              {
+                mangleContext: options.mangleContext,
+                escapeMap: options.escapeMap,
+                classNameSet: options.runtimeSet,
+                needEscaped: true,
+                alwaysEscape: true,
+              },
 
-          replaceHandleValue(
-            n.value,
-            n,
-            {
-              mangleContext: options.mangleContext,
-              escapeMap: options.escapeMap,
-              classNameSet: options.runtimeSet,
-              needEscaped: true,
-              alwaysEscape: true,
-            },
-            ms,
-            1,
+              1,
+            ),
           )
+
           // path.node.value = replaceWxml(path.node.value, options)
         },
         noScope: true,
       })
+      jsTokenUpdater.updateMagicString(ms)
 
       return ms.toString()
     }

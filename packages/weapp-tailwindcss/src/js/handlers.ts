@@ -1,11 +1,11 @@
-import type MagicString from 'magic-string'
 import type { IJsHandlerOptions } from '../types'
+// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
+import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
 import { escapeStringRegexp } from '@weapp-core/regex'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
-// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 
 export interface ReplaceNode {
   leadingComments?: { value: string }[] | null
@@ -17,9 +17,8 @@ export function replaceHandleValue(
   str: string,
   node: ReplaceNode,
   options: IJsHandlerOptions,
-  ms: MagicString,
   offset = 0,
-) {
+): JsToken | undefined {
   const {
     classNameSet,
     escapeMap,
@@ -68,10 +67,13 @@ export function replaceHandleValue(
     const end = node.end - offset
 
     if (start < end && str !== rawStr) {
-      const content = needEscaped ? jsStringEscape(rawStr) : rawStr
-      ms.update(start, end, content)
+      const value = needEscaped ? jsStringEscape(rawStr) : rawStr
+
+      return {
+        start,
+        end,
+        value,
+      }
     }
   }
-
-  return rawStr
 }

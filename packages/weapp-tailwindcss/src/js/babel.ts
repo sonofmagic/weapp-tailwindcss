@@ -6,6 +6,7 @@ import { jsStringEscape } from '@ast-core/escape'
 import MagicString from 'magic-string'
 import { parse, traverse } from '../babel'
 import { replaceHandleValue } from './handlers'
+import { JsTokenUpdater } from './JsTokenUpdater'
 
 export function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
@@ -51,6 +52,8 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     } as JsHandlerResult
   }
   let ignoreFlag = false
+  const jsTokenUpdater = new JsTokenUpdater()
+
   const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
       enter(p) {
@@ -62,15 +65,17 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
         }
 
         const n = p.node
-        replaceHandleValue(
-          n.value,
-          n,
-          {
-            ...options,
-            needEscaped: options.needEscaped ?? true,
-          },
-          ms,
-          1,
+
+        jsTokenUpdater.add(
+          replaceHandleValue(
+            n.value,
+            n,
+            {
+              ...options,
+              needEscaped: options.needEscaped ?? true,
+            },
+            1,
+          ),
         )
       },
     },
@@ -90,15 +95,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           }
         }
         const n = p.node
-        replaceHandleValue(
-          n.value.raw,
-          n,
-          {
-            ...options,
-            needEscaped: false,
-          },
-          ms,
-          0,
+        jsTokenUpdater.add(
+          replaceHandleValue(
+            n.value.raw,
+            n,
+            {
+              ...options,
+              needEscaped: false,
+            },
+            0,
+          ),
         )
       },
     },
@@ -120,8 +126,13 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                     const start = node.start + 1
                     const end = node.end - 1
                     if (start < end && s.node.value !== res.code) {
-                      ms.update(start, end, jsStringEscape(res.code))
-                      node.value = res.code
+                      jsTokenUpdater.add(
+                        {
+                          start,
+                          end,
+                          value: jsStringEscape(res.code),
+                        },
+                      )
                     }
                   }
                 }
@@ -139,8 +150,13 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                     const start = node.start
                     const end = node.end
                     if (start < end && s.node.value.raw !== res.code) {
-                      ms.update(start, end, res.code)
-                      s.node.value.raw = res.code
+                      jsTokenUpdater.add(
+                        {
+                          start,
+                          end,
+                          value: res.code,
+                        },
+                      )
                     }
                   }
                 }
@@ -179,6 +195,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
   }
 
   traverse(ast, traverseOptions)
+  jsTokenUpdater.updateMagicString(ms)
 
   return {
     code: ms.toString(),

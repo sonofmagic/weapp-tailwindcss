@@ -3,6 +3,7 @@ import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import MagicString from 'magic-string'
 import { logger } from '../logger'
 import { replaceHandleValue } from './handlers'
+import { JsTokenUpdater } from './JsTokenUpdater'
 
 export async function getAstGrep() {
   try {
@@ -23,10 +24,12 @@ export function isRangeWithinArray(ranges: Range[], targetRange: Range): boolean
     return start.index <= targetStart.index && end.index >= targetEnd.index
   })
 }
-export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions, ms: MagicString) {
+export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOptions) {
   const { Lang, kind } = await getAstGrep()
 
   const callExpressionNodes = ast.findAll(kind(Lang.JavaScript, 'call_expression'))
+
+  const jsTokenUpdater = new JsTokenUpdater()
 
   let chooseNodeRanges: Range[] = []
 
@@ -47,8 +50,7 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
       continue
     }
     const text = node.text()
-
-    replaceHandleValue(
+    jsTokenUpdater.add(replaceHandleValue(
       text.slice(1, -1),
       {
         end: range.end.index - 1,
@@ -58,9 +60,8 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
         ...options,
         unescapeUnicode: true,
       },
-      ms,
       0,
-    )
+    ))
   }
 
   const templateNodes = ast.findAll(kind(Lang.JavaScript, 'template_string'))
@@ -79,21 +80,24 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
         continue
       }
       const text = fragment.text()
-      replaceHandleValue(
-        text,
-        {
-          end: range.end.index,
-          start: range.start.index,
-        },
-        {
-          ...options,
-          unescapeUnicode: true,
-        },
-        ms,
-        0,
+
+      jsTokenUpdater.add(
+        replaceHandleValue(
+          text,
+          {
+            end: range.end.index,
+            start: range.start.index,
+          },
+          {
+            ...options,
+            unescapeUnicode: true,
+          },
+          0,
+        ),
       )
     }
   }
+  return jsTokenUpdater
 }
 
 export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptions): Promise<JsHandlerResult> {
@@ -109,8 +113,8 @@ export async function jsHandlerAsync(rawSource: string, options: IJsHandlerOptio
       code: rawSource,
     } as JsHandlerResult
   }
-  await astGrepUpdateString(ast, options, ms)
-
+  const jsTokenUpdater = await astGrepUpdateString(ast, options)
+  jsTokenUpdater.updateMagicString(ms)
   return {
     code: ms.toString(),
   }
