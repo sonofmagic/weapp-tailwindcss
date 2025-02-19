@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.3-alpha.1
+
+### Patch Changes
+
+- [`ffbf93d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ffbf93d0897a0921f8085c2c14621d706e92989a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: release
+
 ## 4.0.3-alpha.0
 
 ### Patch Changes
