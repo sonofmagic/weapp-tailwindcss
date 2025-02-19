@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.0.3
+
+### Patch Changes
+
+- [`5b4f9cd`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5b4f9cdcfc3a6b0d5e9fdf8eb6e7ac27f3cb1cc9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: bump version
+
+- [`ffbf93d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ffbf93d0897a0921f8085c2c14621d706e92989a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: release
+
+- [`c647204`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c6472045bcdbbaa84c85be642c1f42ab53b11486) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: bump version
+
+- [`6a2f78d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6a2f78d72d795d578cdcb1876310eef57fe463ca) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: get class set error
+
 ## 4.0.3-alpha.3
 
 ### Patch Changes
