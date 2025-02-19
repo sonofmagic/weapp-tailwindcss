@@ -24,6 +24,8 @@ export default defineConfig(
       shims: true,
       format: ['cjs', 'esm'],
       external: ['webpack', 'tailwindcss/plugin', '@ast-grep/napi'],
+      target: ['es2020'],
+
     },
     {
       entry: {
