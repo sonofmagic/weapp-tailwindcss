@@ -1,0 +1,1 @@
+const b = 'after:xx';const a = `${b} text-[#123456]`;cn(a,"xx","yy")

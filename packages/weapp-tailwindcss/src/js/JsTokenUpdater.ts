@@ -1,4 +1,4 @@
-import type { BinaryExpression, StringLiteral, TemplateLiteral } from '@babel/types'
+import type { BinaryExpression, StringLiteral, TemplateLiteral, VariableDeclarator } from '@babel/types'
 import type MagicString from 'magic-string'
 import type { JsToken, JsTokenMeta } from './types'
 import t from '@babel/types'
@@ -15,6 +15,19 @@ export class JsTokenUpdater {
     }
   }
 
+  walkVariableDeclarator(node: VariableDeclarator) {
+    const init = node.init
+    if (t.isStringLiteral(init)) {
+      this.addStringLiteral(init)
+    }
+    else if (t.isBinaryExpression(init)) {
+      this.addBinaryExpression(init)
+    }
+    else if (t.isTemplateLiteral(init)) {
+      this.addTemplateLiteral(init)
+    }
+  }
+
   addTemplateLiteral(node: TemplateLiteral, meta?: JsTokenMeta) {
     for (const quasis of node.quasis) {
       if (quasis.start && quasis.end && quasis.value.cooked) {
@@ -24,6 +37,7 @@ export class JsTokenUpdater {
           value: quasis.value.cooked,
           type: 'TemplateElement',
           meta,
+          ast: quasis,
         })
       }
     }
@@ -37,6 +51,7 @@ export class JsTokenUpdater {
         value: node.value,
         type: 'StringLiteral',
         meta,
+        ast: node,
       })
     }
   }

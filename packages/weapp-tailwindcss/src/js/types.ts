@@ -1,11 +1,23 @@
+import type { StringLiteral, TemplateElement } from '@babel/types'
+
 export interface JsTokenMeta {
   ignore?: boolean
 }
 
-export interface JsToken {
+interface JsTokenTemplateElement {
+  type: 'TemplateElement'
+  ast: TemplateElement
+}
+
+interface JsTokenStringLiteral {
+  type: 'StringLiteral'
+  ast: StringLiteral
+}
+
+export type JsToken = (JsTokenTemplateElement | JsTokenStringLiteral) & {
   start: number
   end: number
   value: string
-  type?: 'TemplateElement' | 'StringLiteral'
+  type?: (string & {})
   meta?: JsTokenMeta
 }

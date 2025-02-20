@@ -1,0 +1,1 @@
+const a = ` text-[#123456]`;cn(a,"xx","yy")
