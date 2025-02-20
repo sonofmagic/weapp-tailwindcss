@@ -632,6 +632,18 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.7.3)
 
+  packages/babel:
+    dependencies:
+      '@babel/parser':
+        specifier: ~7.26.9
+        version: 7.26.9
+      '@babel/traverse':
+        specifier: ~7.26.9
+        version: 7.26.9
+      '@babel/types':
+        specifier: ~7.26.9
+        version: 7.26.9
+
   packages/init:
     dependencies:
       '@weapp-tailwindcss/logger':
@@ -14243,7 +14255,7 @@ snapshots:
       '@babel/parser': 7.26.9
       '@babel/template': 7.26.8
       '@babel/traverse': 7.26.9
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
       '@types/gensync': 1.0.4
       convert-source-map: 2.0.0
       debug: 4.4.0
@@ -14283,7 +14295,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.25.9':
     dependencies:
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
 
   '@babel/helper-compilation-targets@7.26.5':
     dependencies:
@@ -14358,7 +14370,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.25.9':
     dependencies:
       '@babel/traverse': 7.26.9
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
     transitivePeerDependencies:
       - supports-color
 
@@ -14389,7 +14401,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.25.9':
     dependencies:
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
 
   '@babel/helper-plugin-utils@7.25.9': {}
 
@@ -14434,7 +14446,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.25.9':
     dependencies:
       '@babel/traverse': 7.26.9
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
     transitivePeerDependencies:
       - supports-color
 
@@ -14448,14 +14460,14 @@ snapshots:
     dependencies:
       '@babel/template': 7.26.9
       '@babel/traverse': 7.26.9
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helpers@7.26.7':
     dependencies:
       '@babel/template': 7.26.8
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
 
   '@babel/helpers@7.26.9':
     dependencies:
@@ -15555,14 +15567,14 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.8
       '@babel/helper-plugin-utils': 7.26.5
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
       esutils: 2.0.3
 
   '@babel/preset-modules@0.1.6-no-external-plugins(@babel/core@7.26.9)':
     dependencies:
       '@babel/core': 7.26.9
       '@babel/helper-plugin-utils': 7.26.5
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
       esutils: 2.0.3
 
   '@babel/preset-react@7.26.3(@babel/core@7.26.9)':
@@ -15614,7 +15626,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       '@babel/parser': 7.26.9
-      '@babel/types': 7.26.8
+      '@babel/types': 7.26.9
 
   '@babel/template@7.26.9':
     dependencies:
@@ -16793,7 +16805,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.2
+      '@types/react': 19.0.10
       react: 19.0.0
 
   '@docusaurus/theme-classic@3.7.0(@types/react@19.0.10)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.2)(eslint@9.20.1(jiti@2.4.2))(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(vue-template-compiler@2.7.16)':
@@ -19172,7 +19184,7 @@ snapshots:
   '@types/react-router@5.1.20':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.0.2
+      '@types/react': 19.0.10
 
   '@types/react@19.0.10':
     dependencies:
