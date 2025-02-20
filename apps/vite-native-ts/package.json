@@ -30,7 +30,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^4.0.5",
-    "postcss": "^8.5.2",
+    "postcss": "^8.5.3",
     "tailwindcss": "catalog:tailwindcss3",
     "typescript": "^5.7.3",
     "weapp-tailwindcss": "workspace:*",
