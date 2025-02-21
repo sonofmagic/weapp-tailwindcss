@@ -40,7 +40,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     {
       ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
       callback(path) {
-        ignoreFlagMap.set(path.node, true)
+        ignoreFlagMap.set(path, true)
       },
     },
   )
@@ -82,25 +82,25 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
         if (isEvalPath(p)) {
           p.traverse({
             StringLiteral: {
-              enter(s) {
+              enter(path) {
                 // ___CSS_LOADER_EXPORT___
-                const res = jsHandler(s.node.value, {
+                const { code } = jsHandler(path.node.value, {
                   ...options,
                   needEscaped: false,
                   generateMap: false,
                 })
-                if (res.code) {
-                  const node = s.node
+                if (code) {
+                  const node = path.node
                   if (typeof node.start === 'number' && typeof node.end === 'number') {
                     const start = node.start + 1
                     const end = node.end - 1
-                    if (start < end && s.node.value !== res.code) {
+                    if (start < end && path.node.value !== code) {
                       jsTokenUpdater.addToken(
                         {
                           start,
                           end,
-                          value: jsStringEscape(res.code),
-                          path: s,
+                          value: jsStringEscape(code),
+                          path,
                         },
                       )
                     }
@@ -109,23 +109,23 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
               },
             },
             TemplateElement: {
-              enter(s) {
-                const res = jsHandler(s.node.value.raw, {
+              enter(path) {
+                const { code } = jsHandler(path.node.value.raw, {
                   ...options,
                   generateMap: false,
                 })
-                if (res.code) {
-                  const node = s.node
+                if (code) {
+                  const node = path.node
                   if (typeof node.start === 'number' && typeof node.end === 'number') {
                     const start = node.start
                     const end = node.end
-                    if (start < end && s.node.value.raw !== res.code) {
+                    if (start < end && path.node.value.raw !== code) {
                       jsTokenUpdater.addToken(
                         {
                           start,
                           end,
-                          value: res.code,
-                          path: s,
+                          value: code,
+                          path,
                         },
                       )
                     }
@@ -168,10 +168,13 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     },
   ).filter(Boolean) as JsToken[]
 
-  jsTokenUpdater.value.push(...tokens)
-  jsTokenUpdater.filter((x) => {
-    return !ignoreFlagMap.get(x.path.node)
-  }).updateMagicString(ms)
+  jsTokenUpdater.push(
+    ...tokens,
+  ).filter(
+    (x) => {
+      return !ignoreFlagMap.get(x.path)
+    },
+  ).updateMagicString(ms)
 
   return {
     code: ms.toString(),

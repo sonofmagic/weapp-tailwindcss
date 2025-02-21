@@ -17,6 +17,11 @@ export class JsTokenUpdater {
     }
   }
 
+  push(...args: JsToken[]) {
+    this.value.push(...args)
+    return this
+  }
+
   map(callbackfn: (value: JsToken, index: number, array: JsToken[]) => JsToken) {
     this.value = this.value.map(callbackfn)
     return this
