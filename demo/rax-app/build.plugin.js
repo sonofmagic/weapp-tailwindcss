@@ -9,7 +9,6 @@ module.exports = ({ context, onGetWebpackConfig }) => {
       {
         appType: 'rax',
         rem2rpx: true,
-        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
         onStart() {
           bench.start()
         },

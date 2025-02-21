@@ -1,4 +1,5 @@
-// import type { StringLiteral, TemplateElement } from '@babel/types'
+import type { NodePath } from '@babel/traverse'
+import type { StringLiteral, TemplateElement } from '@babel/types'
 
 export interface JsTokenMeta {
   ignore?: boolean
@@ -20,7 +21,6 @@ export interface JsToken {
   start: number
   end: number
   value: string
-  type?: (string & {})
-  ast?: any
-  meta?: JsTokenMeta
+  // type?: (string & {})
+  path: NodePath<StringLiteral | TemplateElement>
 }

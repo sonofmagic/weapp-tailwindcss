@@ -28,7 +28,6 @@ const config = {
           bench.dump()
         },
         rem2rpx: true,
-        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
       })
     )
     // config.plugins.push(new MiniCssExtractPlugin())

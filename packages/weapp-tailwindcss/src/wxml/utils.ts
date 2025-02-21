@@ -14,8 +14,8 @@ import { Tokenizer } from './Tokenizer'
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
     const { jsHandler, runtimeSet } = options
-    if (jsHandler?.sync && runtimeSet) {
-      const { code } = jsHandler.sync(match, runtimeSet)
+    if (jsHandler && runtimeSet) {
+      const { code } = jsHandler(match, runtimeSet)
       return code
     }
     else {
@@ -34,11 +34,9 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
           if (t.isBinaryExpression(path.parent) && (t.isConditionalExpression(path.parentPath?.parent) || t.isLogicalExpression(path.parentPath?.parent))) {
             return
           }
-          const n = path.node
           jsTokenUpdater.addToken(
             replaceHandleValue(
-              n.value,
-              n,
+              path,
               {
                 mangleContext: options.mangleContext,
                 escapeMap: options.escapeMap,
@@ -46,8 +44,6 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
                 needEscaped: true,
                 alwaysEscape: true,
               },
-
-              1,
             ),
           )
 

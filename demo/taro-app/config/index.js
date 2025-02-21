@@ -103,7 +103,6 @@ const config = {
                     bench.dump();
                   },
                   rem2rpx: true,
-                  jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
                 }
               ]
               // args: [opt, 'taro']

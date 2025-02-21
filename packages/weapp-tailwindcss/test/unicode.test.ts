@@ -1,4 +1,4 @@
-import { jsHandler, jsHandlerAsync } from '@/js'
+import { jsHandler } from '@/js'
 import { decodeUnicode } from '@/utils/decode'
 import { createGetCase, unicodeCasePath } from './util'
 
@@ -14,8 +14,8 @@ describe('unicode', () => {
   it('unicode case 0 fs', async () => {
     const testCase = await getCase('case0.js')
 
-    const { code } = await jsHandlerAsync(testCase, {
-      jsAstTool: 'ast-grep',
+    const { code } = await jsHandler(testCase, {
+
     })
     expect(code).toMatchSnapshot()
   })
@@ -35,7 +35,7 @@ describe('unicode', () => {
     // set.add('after:content-[\'我知道我心,永恒12we_ds\']')
     // const x = 'after:content-[\'我知道我心,永恒12we_ds\']'
     // const y = 'after:content-[\'\\u6211\\u77e5\\u9053\\u6211\\u5fc3,\\u6c38\\u605212we_ds\']'
-    const { code } = await jsHandlerAsync(testCase, {
+    const { code } = await jsHandler(testCase, {
       classNameSet: set,
     })
     expect(code).toMatchSnapshot()
@@ -46,7 +46,7 @@ describe('unicode', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { code } = await jsHandlerAsync(testCase, {
+    const { code } = await jsHandler(testCase, {
       classNameSet: set,
     })
     expect(code).toMatchSnapshot()

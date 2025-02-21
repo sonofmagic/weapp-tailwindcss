@@ -1,9 +1,9 @@
 import type { Range, SgNode } from '@ast-grep/napi'
-import type { IJsHandlerOptions, JsHandlerResult } from '../types'
+import type { IJsHandlerOptions, JsHandlerResult } from '../../src/types'
 import MagicString from 'magic-string'
-import { logger } from '../logger'
-import { replaceHandleValue } from './handlers'
-import { JsTokenUpdater } from './JsTokenUpdater'
+import { replaceHandleValue } from '../../src/js/handlers'
+import { JsTokenUpdater } from '../../src/js/JsTokenUpdater'
+import { logger } from '../../src/logger'
 
 export async function getAstGrep() {
   try {
@@ -29,7 +29,7 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
 
   const callExpressionNodes = ast.findAll(kind(Lang.JavaScript, 'call_expression'))
 
-  const jsTokenUpdater = new JsTokenUpdater({ ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers })
+  const jsTokenUpdater = new JsTokenUpdater()
 
   let chooseNodeRanges: Range[] = []
 

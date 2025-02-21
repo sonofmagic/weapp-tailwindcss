@@ -39,7 +39,6 @@ export interface IJsHandlerOptions {
   needEscaped?: boolean
   generateMap?: boolean
   alwaysEscape?: boolean
-  jsAstTool?: 'babel' | 'ast-grep'
   unescapeUnicode?: boolean
   babelParserOptions?: ParserOptions
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
@@ -69,13 +68,7 @@ export interface JsHandler {
     rawSource: string,
     set: Set<string>,
     options?: CreateJsHandlerOptions
-  ): JsHandlerResult | Promise<JsHandlerResult>
-
-  sync: (
-    rawSource: string,
-    set: Set<string>,
-    options?: CreateJsHandlerOptions
-  ) => JsHandlerResult
+  ): JsHandlerResult
 }
 
 export interface ICommonReplaceOptions {

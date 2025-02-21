@@ -38,7 +38,6 @@ module.exports = defineConfig({
         // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
       },
       rem2rpx: true,
-      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
     }))
   },
 })

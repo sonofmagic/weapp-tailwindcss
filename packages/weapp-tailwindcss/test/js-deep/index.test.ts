@@ -2,6 +2,7 @@ import type { ParseResult } from '@babel/parser'
 import type t from '@babel/types'
 import { parse, traverse } from '@/babel'
 import { JsTokenUpdater } from '@/js/JsTokenUpdater'
+import { NodePathWalker } from '@/js/NodePathWalker'
 import { escape, isAllowedClassName } from '@weapp-core/escape'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
@@ -10,13 +11,41 @@ import path from 'pathe'
 const ignoreCallExpressionIdentifiers = ['cn']
 
 function handle(ast: ParseResult<t.File>): JsTokenUpdater {
-  const jsTokenUpdater = new JsTokenUpdater({ ignoreCallExpressionIdentifiers })
-
+  const jsTokenUpdater = new JsTokenUpdater()
+  const walker = new NodePathWalker({
+    ignoreCallExpressionIdentifiers,
+    callback(path) {
+      if (path.isStringLiteral()) {
+        const { node } = path
+        if (node.start && node.end) {
+          jsTokenUpdater.addToken({
+            start: node.start + 1,
+            end: node.end - 1,
+            value: node.value,
+            type: 'StringLiteral',
+            ast: node,
+          })
+        }
+      }
+      else if (path.isTemplateElement()) {
+        const { node } = path
+        if (node.start && node.end && node.value.cooked) {
+          jsTokenUpdater.addToken({
+            start: node.start,
+            end: node.end,
+            value: node.value.cooked,
+            type: 'TemplateElement',
+            ast: node,
+          })
+        }
+      }
+    },
+  })
   traverse(ast, {
     // StringLiteral
     CallExpression(path) {
       // 检查是否是 cn 函数调用
-      jsTokenUpdater.walkCallExpression(path)
+      walker.walkCallExpression(path)
     },
   })
   return jsTokenUpdater

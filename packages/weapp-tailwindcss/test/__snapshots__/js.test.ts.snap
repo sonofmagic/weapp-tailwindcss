@@ -23,6 +23,16 @@ exports[`jsHandler > astGrep TemplateElement case 0 1`] = `"const p = 'text-_12p
 exports[`jsHandler > empty case 0 1`] = `
 {
   "code": "const a = ''",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
@@ -47,6 +57,16 @@ eval('const b = \\'w-_99px_\\';\\nconsole.log(b)');"
 exports[`jsHandler > short case 0 1`] = `
 {
   "code": "const a = '1'",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
@@ -105,6 +125,16 @@ exports[`jsHandler > 中文字符 case 0 1`] = `"const a ={ className: "aftercco
 exports[`jsHandler > 中文字符 case 1 1`] = `
 {
   "code": "const a ={ className: "afterccontent-_qu7684u6492u7684u6492q_", children: "事实上" }",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA,uBAAuB,sCAAsB",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
@@ -113,6 +143,16 @@ exports[`jsHandler > 中文字符 case 2 1`] = `""use strict";(wx["webpackJsonp"
 exports[`jsHandler > 中文字符 case 3 1`] = `
 {
   "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"beforeccontent-_qmoduleA_u666eu901au5206u5305q_",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA,0KAA0K,+CAA+B",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
@@ -557,6 +597,16 @@ var inst = Page((0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__.createPageConfig
 ]);
 //# sourceMappingURL=index.js.map'
 ",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;;;AAIA;AACA;AACA;AACA;;;AAGA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;;;AAIA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;AAEA;AACA,UAAU,qFAAyD;AACnE;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;;AAGA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;;;AAGA;;;AAGA;;;AAGA;;;AAGA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
@@ -677,18 +727,48 @@ var inst = Page((0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__.createPageConfig
 /******/ }
 ]);
 //# sourceMappingURL=test.js.map",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;;;AAIA;AACA;AACA;AACA;;;AAGA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA,UAAU,sGAA0E;AACpF;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;;;AAGA;;;AAGA;;;AAGA;;;AAGA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
 exports[`jsHandler > 中文字符产物 case 3 1`] = `
 {
   "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[603],{422:function(n,e,t){var a=t(818),r=t(61),c={class:"w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"};function o(n,e,t,a,o,s){return(0,r.uX)(),(0,r.CE)("div",c,"123")}var s={},u=t(306);const f=(0,u.A)(s,[["render",o]]);var i=f,p={};Page((0,a.createPageConfig)(i,"pages/index/test",{root:{cn:[]}},p||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(422)}));n.O()}]);",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA,yHAAyH,sGAA6G",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
 exports[`jsHandler > 中文字符产物 case 4 1`] = `
 {
   "code": "const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_"",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA,WAAW,sGAA6G",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
 }
 `;
 
@@ -711,6 +791,6 @@ exports[`jsHandler > 注释忽略 case 0 1`] = `"const a = 'ihidden'"`;
 
 exports[`jsHandler > 注释忽略 case 1 1`] = `"const a = 'ihidden'"`;
 
-exports[`jsHandler > 注释忽略 case 2 1`] = `"const a = /*weapp-tw ignore*/ 'ihidden'"`;
+exports[`jsHandler > 注释忽略 case 2 1`] = `"const a = /*weapp-tw ignore*/ '!hidden'"`;
 
 exports[`jsHandler > 注释忽略 case 3 1`] = `"const a = /*@weapp-tw ignore*/ '!hidden'"`;

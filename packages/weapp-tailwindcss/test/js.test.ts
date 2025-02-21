@@ -33,7 +33,6 @@ const testTable = [
 describe('jsHandler', () => {
   let h: ReturnType<typeof createJsHandler>
   let dh: ReturnType<typeof createJsHandler>
-  let astGreph: ReturnType<typeof createJsHandler>
   let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
     h = createJsHandler({
@@ -46,11 +45,6 @@ describe('jsHandler', () => {
       arbitraryValues: {
         allowDoubleQuotes: true,
       },
-    })
-
-    astGreph = createJsHandler({
-      escapeMap: MappingChars2String,
-      jsAstTool: 'ast-grep',
     })
 
     const { jsHandler } = getCompilerContext()
@@ -137,7 +131,7 @@ describe('jsHandler', () => {
     set.add('flex')
     set.add('w-2.5')
 
-    const { code } = await astGreph(`const n = cn('text-[12px] flex bg-[red] w-2.5')`, set, {
+    const { code } = await defaultJsHandler(`const n = cn('text-[12px] flex bg-[red] w-2.5')`, set, {
       ignoreCallExpressionIdentifiers: ['cn'],
     })
     expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5')`)
@@ -150,7 +144,7 @@ describe('jsHandler', () => {
     set.add('w-2.5')
     set.add('p-1.5')
     const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
-    const { code } = await astGreph(testCase, set, {
+    const { code } = await defaultJsHandler(testCase, set, {
       ignoreCallExpressionIdentifiers: ['cn'],
     })
     expect(code).toBe(testCase)
@@ -163,7 +157,7 @@ describe('jsHandler', () => {
     set.add('w-2.5')
     set.add('p-1.5')
     const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
-    const { code } = await astGreph(testCase, set, {
+    const { code } = await defaultJsHandler(testCase, set, {
       ignoreCallExpressionIdentifiers: ['cva'],
     })
     expect(code).toBe('const n = cn(\'text-_12px_ flex bg-[red] w-2d5 \' + cn(\'p-1d5\') )')
@@ -175,7 +169,7 @@ describe('jsHandler', () => {
     set.add('flex')
     set.add('w-2.5')
 
-    const { code } = await astGreph(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set)
+    const { code } = await defaultJsHandler(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set)
     expect(code).toBe('const n = \'text-_12px_ flex bg-[red] w-2d5\'')
   })
 
@@ -195,7 +189,7 @@ describe('jsHandler', () => {
   //   set.add('flex')
   //   set.add('w-2.5')
 
-  //   const code = astGreph(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
+  //   const code = defaultJsHandler(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
   //   expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
   // })
 
@@ -216,7 +210,7 @@ describe('jsHandler', () => {
     set.add('flex')
     set.add('w-2.5')
 
-    const { code } = await astGreph('const n = \'text-[12px] flex \\n bg-[red] w-2.5\'', set)
+    const { code } = await defaultJsHandler('const n = \'text-[12px] flex \\n bg-[red] w-2.5\'', set)
     expect(code).toBe('const n = \'text-_12px_ flex \\n bg-[red] w-2d5\'')
   })
 
@@ -234,7 +228,7 @@ describe('jsHandler', () => {
     set.add('text-[12px]')
     set.add('flex')
 
-    const { code } = await astGreph('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set)
+    const { code } = await defaultJsHandler('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set)
     expect(code).toBe('const n = `text-_12px_ \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
@@ -254,7 +248,7 @@ describe('jsHandler', () => {
     set.add('flex')
     set.add('bg-[red]')
 
-    const { code } = await astGreph('const p = \'text-[12px]\';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] \'`', set)
+    const { code } = await defaultJsHandler('const p = \'text-[12px]\';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] \'`', set)
     expect(code).toBe('const p = \'text-_12px_\';const n = `${p} \\n\\n  flex  \\n\\n  bg-_red_ \'`')
   })
 
@@ -279,7 +273,7 @@ describe('jsHandler', () => {
     set.add('bg-[red]')
     set.add('leading-[24px]')
     const s = 'const p = \'text-[12px] leading-[24px]\';const n = `bg-[url(\'天气好\')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] \'`'
-    const { code } = await astGreph(s, set)
+    const { code } = await defaultJsHandler(s, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -575,7 +569,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'的撒的撒\']')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -597,7 +591,7 @@ describe('jsHandler', () => {
     set.add('before:content-[\'moduleA_普通分包\']')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -619,7 +613,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -631,7 +625,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -643,7 +637,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -655,7 +649,7 @@ describe('jsHandler', () => {
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -691,7 +685,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -702,7 +696,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -782,7 +776,7 @@ describe('jsHandler', () => {
     set.add('!hidden')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -804,7 +798,7 @@ describe('jsHandler', () => {
     set.add('!hidden')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -861,7 +855,7 @@ describe('jsHandler', () => {
     set.add('!hidden')
 
     const { jsHandler } = getCompilerContext({
-      jsAstTool: 'ast-grep',
+      jsAstTool: 'babel',
     })
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
@@ -874,7 +868,11 @@ describe('jsHandler', () => {
     set.add('px-[32px]')
     set.add('bg-[#123324]')
     set.add('px-[35px]')
-    const { jsHandler } = getCompilerContext()
+    const { jsHandler } = getCompilerContext(
+      {
+        ignoreCallExpressionIdentifiers: ['twMerge'],
+      },
+    )
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })

@@ -1,3 +1,5 @@
+import type { NodePath } from '@babel/traverse'
+import type { StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions } from '../types'
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 import type { JsToken } from './types'
@@ -7,17 +9,9 @@ import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
 
-export interface ReplaceNode {
-  leadingComments?: { value: string }[] | null
-  start?: number | null
-  end?: number | null
-}
-
 export function replaceHandleValue(
-  str: string,
-  node: ReplaceNode,
+  path: NodePath<StringLiteral | TemplateElement>,
   options: IJsHandlerOptions,
-  offset = 0,
 ): JsToken | undefined {
   const {
     classNameSet,
@@ -31,12 +25,14 @@ export function replaceHandleValue(
   } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
-
+  const offset = path.isStringLiteral() ? 1 : 0
+  const str = path.isStringLiteral() ? path.node.value : path.isTemplateElement() ? path.node.value.raw : ''
   let rawStr = str
   let needUpdate = false
   if (unescapeUnicode && rawStr.includes('\\u')) {
     rawStr = decodeUnicode2(rawStr)
   }
+  const node = path.node
   const arr = splitCode(rawStr, allowDoubleQuotes)
   for (const v of arr) {
     if (alwaysEscape || (classNameSet && classNameSet.has(v) && !jsPreserveClass?.(v))) {
@@ -73,6 +69,7 @@ export function replaceHandleValue(
         start,
         end,
         value,
+        path,
       }
     }
   }

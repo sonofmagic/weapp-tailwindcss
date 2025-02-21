@@ -1,13 +1,15 @@
 import type { ParseError, ParseResult } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
-import type { File, Node } from '@babel/types'
+import type { File, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
+import type { JsToken } from './types'
 import { regExpTest } from '@/utils'
 import { jsStringEscape } from '@ast-core/escape'
 import MagicString from 'magic-string'
 import { parse, traverse } from '../babel'
 import { replaceHandleValue } from './handlers'
 import { JsTokenUpdater } from './JsTokenUpdater'
+import { NodePathWalker } from './NodePathWalker'
 
 export function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
@@ -16,26 +18,6 @@ export function isEvalPath(p: NodePath<Node>) {
   }
   return false
 }
-
-// function replaceStringLiteralsInBinaryExpr(binaryNode: BinaryExpression, ms: MagicString) {
-//   if (t.isStringLiteral(binaryNode.left)) {
-//     const leftStringLiteral = binaryNode.left
-//     leftStringLiteral.value = 'bg-[#654321]' // 替换
-//     ms.update(leftStringLiteral.start, leftStringLiteral.end, `'${leftStringLiteral.value}'`)
-//   }
-//   else if (t.isBinaryExpression(binaryNode.left)) {
-//     replaceStringLiteralsInBinaryExpr(binaryNode.left, ms) // 递归
-//   }
-
-//   if (t.isStringLiteral(binaryNode.right)) {
-//     const rightStringLiteral = binaryNode.right
-//     rightStringLiteral.value = 'text-[#222222]' // 替换
-//     ms.update(rightStringLiteral.start, rightStringLiteral.end, `'${rightStringLiteral.value}'`)
-//   }
-//   else if (t.isBinaryExpression(binaryNode.right)) {
-//     replaceStringLiteralsInBinaryExpr(binaryNode.right, ms) // 递归
-//   }
-// }
 
 const ignoreFlagMap = new WeakMap()
 
@@ -52,39 +34,29 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-  let ignoreFlag = false
-  const jsTokenUpdater = new JsTokenUpdater({ ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers })
 
+  const jsTokenUpdater = new JsTokenUpdater()
+  const walker = new NodePathWalker(
+    {
+      ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
+      callback(path) {
+        ignoreFlagMap.set(path.node, true)
+      },
+    },
+  )
+
+  const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
   const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
       enter(p) {
-        if (ignoreFlag) {
-          return
-        }
         if (isEvalPath(p.parentPath)) {
           return
         }
-
-        const n = p.node
-
-        jsTokenUpdater.addToken(
-          replaceHandleValue(
-            n.value,
-            n,
-            {
-              ...options,
-              needEscaped: options.needEscaped ?? true,
-            },
-            1,
-          ),
-        )
+        targetPaths.push(p)
       },
     },
     TemplateElement: {
       enter(p) {
-        if (ignoreFlag) {
-          return
-        }
         const pp = p.parentPath
         if (pp.isTemplateLiteral()) {
           const ppp = pp.parentPath
@@ -102,18 +74,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
             }
           }
         }
-        const n = p.node
-        jsTokenUpdater.addToken(
-          replaceHandleValue(
-            n.value.raw,
-            n,
-            {
-              ...options,
-              needEscaped: false,
-            },
-            0,
-          ),
-        )
+        targetPaths.push(p)
       },
     },
     CallExpression: {
@@ -139,6 +100,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                           start,
                           end,
                           value: jsStringEscape(res.code),
+                          path: s,
                         },
                       )
                     }
@@ -163,6 +125,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                           start,
                           end,
                           value: res.code,
+                          path: s,
                         },
                       )
                     }
@@ -173,38 +136,42 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           })
           return
         }
-        const callee = p
-          .get('callee')
-        if (
-          callee
-            .isIdentifier()
-            && (
-              regExpTest(
-                options
-                  .ignoreCallExpressionIdentifiers ?? [],
-                callee
-                  .node
-                  .name,
-              )
 
-            )
-        ) {
-          ignoreFlag = true
-          ignoreFlagMap.set(p, true)
-        }
-      },
-      exit(p) {
-        const flag = ignoreFlagMap.get(p)
-        if (flag) {
-          ignoreFlag = false
-          ignoreFlagMap.delete(p)
-        }
+        walker.walkCallExpression(p)
       },
     },
   }
 
   traverse(ast, traverseOptions)
-  jsTokenUpdater.updateMagicString(ms)
+
+  const tokens = targetPaths.map(
+    (p) => {
+      if (p.isStringLiteral()) {
+        return replaceHandleValue(
+          p,
+          {
+            ...options,
+            needEscaped: options.needEscaped ?? true,
+          },
+        )
+      }
+      else if (p.isTemplateElement()) {
+        return replaceHandleValue(
+          p,
+          {
+            ...options,
+            needEscaped: false,
+          },
+        )
+      }
+      return undefined
+    },
+  ).filter(Boolean) as JsToken[]
+
+  jsTokenUpdater.value.push(...tokens)
+  jsTokenUpdater.filter((x) => {
+    return !ignoreFlagMap.get(x.path.node)
+  }).updateMagicString(ms)
 
   return {
     code: ms.toString(),

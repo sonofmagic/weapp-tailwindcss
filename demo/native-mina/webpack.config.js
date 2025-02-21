@@ -84,7 +84,6 @@ module.exports = {
     new UnifiedWebpackPluginV5({
       appType: 'native',
       rem2rpx: true,
-      jsAstTool: bench.useBabel ? 'babel' : 'ast-grep',
       onStart() {
         bench.start()
       },

@@ -85,7 +85,6 @@ const config = {
           bench.dump()
         },
         rem2rpx: true,
-        jsAstTool: bench.useBabel ? 'babel' : 'ast-grep'
       }
       // if (isWrite) {
       //   opt.loaderOptions = {
