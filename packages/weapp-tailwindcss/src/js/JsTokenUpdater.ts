@@ -15,7 +15,7 @@ export class JsTokenUpdater {
     this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? []
   }
 
-  add(token?: JsToken) {
+  addToken(token?: JsToken) {
     if (token) {
       this.value.push(token)
     }
@@ -48,7 +48,7 @@ export class JsTokenUpdater {
     }
     for (const quasis of node.quasis) {
       if (quasis.start && quasis.end && quasis.value.cooked) {
-        this.add({
+        this.addToken({
           start: quasis.start,
           end: quasis.end,
           value: quasis.value.cooked,
@@ -63,7 +63,7 @@ export class JsTokenUpdater {
   walkStringLiteral(path: NodePath<StringLiteral>, meta?: JsTokenMeta) {
     const { node } = path
     if (node.start && node.end) {
-      this.add({
+      this.addToken({
         start: node.start + 1,
         end: node.end - 1,
         value: node.value,

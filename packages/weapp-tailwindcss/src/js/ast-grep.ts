@@ -50,7 +50,7 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
       continue
     }
     const text = node.text()
-    jsTokenUpdater.add(replaceHandleValue(
+    jsTokenUpdater.addToken(replaceHandleValue(
       text.slice(1, -1),
       {
         end: range.end.index - 1,
@@ -81,7 +81,7 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
       }
       const text = fragment.text()
 
-      jsTokenUpdater.add(
+      jsTokenUpdater.addToken(
         replaceHandleValue(
           text,
           {

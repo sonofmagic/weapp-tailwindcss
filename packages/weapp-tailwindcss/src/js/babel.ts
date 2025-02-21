@@ -67,7 +67,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
         const n = p.node
 
-        jsTokenUpdater.add(
+        jsTokenUpdater.addToken(
           replaceHandleValue(
             n.value,
             n,
@@ -103,7 +103,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           }
         }
         const n = p.node
-        jsTokenUpdater.add(
+        jsTokenUpdater.addToken(
           replaceHandleValue(
             n.value.raw,
             n,
@@ -134,7 +134,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                     const start = node.start + 1
                     const end = node.end - 1
                     if (start < end && s.node.value !== res.code) {
-                      jsTokenUpdater.add(
+                      jsTokenUpdater.addToken(
                         {
                           start,
                           end,
@@ -158,7 +158,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
                     const start = node.start
                     const end = node.end
                     if (start < end && s.node.value.raw !== res.code) {
-                      jsTokenUpdater.add(
+                      jsTokenUpdater.addToken(
                         {
                           start,
                           end,

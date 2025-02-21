@@ -35,7 +35,7 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
             return
           }
           const n = path.node
-          jsTokenUpdater.add(
+          jsTokenUpdater.addToken(
             replaceHandleValue(
               n.value,
               n,
@@ -175,7 +175,7 @@ export async function customTemplateHandler(rawSource: string, options: Required
               }),
             )
           }
-          // add 'virtualHostClass' toLowerCase
+          // addToken 'virtualHostClass' toLowerCase
           if (
             !disabledDefaultTemplateHandler
             && (['class', 'hover-class', 'virtualhostclass'].includes(name.toLocaleLowerCase()))
