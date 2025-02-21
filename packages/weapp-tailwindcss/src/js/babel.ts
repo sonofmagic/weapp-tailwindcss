@@ -1,7 +1,8 @@
 import type { ParseError, ParseResult } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
-import type { File, Identifier, Node } from '@babel/types'
+import type { File, Node } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
+import { regExpTest } from '@/utils'
 import { jsStringEscape } from '@ast-core/escape'
 import MagicString from 'magic-string'
 import { parse, traverse } from '../babel'
@@ -52,7 +53,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     } as JsHandlerResult
   }
   let ignoreFlag = false
-  const jsTokenUpdater = new JsTokenUpdater()
+  const jsTokenUpdater = new JsTokenUpdater({ ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers })
 
   const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
@@ -84,14 +85,21 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
         if (ignoreFlag) {
           return
         }
-        if (p.parentPath.isTemplateLiteral()) {
-          if (
-            (p.parentPath.parentPath.isTaggedTemplateExpression()
-              && p.parentPath.parentPath.get('tag').isIdentifier()
-              && options.ignoreTaggedTemplateExpressionIdentifiers?.includes((p.parentPath.parentPath.get('tag').node as Identifier).name)
-            )
-            || isEvalPath(p.parentPath.parentPath)) {
+        const pp = p.parentPath
+        if (pp.isTemplateLiteral()) {
+          const ppp = pp.parentPath
+          if (isEvalPath(ppp)) {
             return
+          }
+          if (ppp.isTaggedTemplateExpression()) {
+            const tagPath = ppp.get('tag')
+            if (
+              (tagPath.isIdentifier()
+                && regExpTest(options.ignoreTaggedTemplateExpressionIdentifiers ?? [], tagPath.node.name)
+              )
+            ) {
+              return
+            }
           }
         }
         const n = p.node
@@ -171,13 +179,14 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
           callee
             .isIdentifier()
             && (
-              options
-                .ignoreCallExpressionIdentifiers
-                ?.includes(
-                  callee
-                    .node
-                    .name,
-                )
+              regExpTest(
+                options
+                  .ignoreCallExpressionIdentifiers ?? [],
+                callee
+                  .node
+                  .name,
+              )
+
             )
         ) {
           ignoreFlag = true

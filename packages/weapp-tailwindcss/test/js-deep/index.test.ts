@@ -60,20 +60,20 @@ describe('js-deep', () => {
     const ms = new MagicString(getCase('3.js'))
     doEscape(ms)
     // eslint-disable-next-line no-template-curly-in-string
-    expect(ms.toString()).toBe('const b = \'after:xx\';const a = \'bg-_h123456_\' + \' bb\' + `${b} text-_h123456_`;cn(a,"xx","yy")')
+    expect(ms.toString()).toBe('const b = \'aftercxx\';const a = \'bg-_h123456_\' + \' bb\' + `${b} text-_h123456_`;cn(a,"xx","yy")')
   })
 
   it('parse js case 4', () => {
     const ms = new MagicString(getCase('4.js'))
     doEscape(ms)
     // eslint-disable-next-line no-template-curly-in-string
-    expect(ms.toString()).toBe('const b = \'after:xx\';const a = `${b} text-_h123456_`;cn(a,"xx","yy")')
+    expect(ms.toString()).toBe('const b = \'aftercxx\';const a = `${b} text-_h123456_`;cn(a,"xx","yy")')
   })
 
   it('parse js case 5', () => {
     const ms = new MagicString(getCase('5.js'))
     doEscape(ms)
     // eslint-disable-next-line no-template-curly-in-string
-    expect(ms.toString()).toBe('const b = \'_h3232_\';const a = `${b} text-_h123456_`;cn(a,`${b} bg-[#123]`,"yy")')
+    expect(ms.toString()).toBe('const b = \'_h3232_\';const a = `${b} text-_h123456_`;cn(a,`${b} bg-_h123_`,"yy")')
   })
 })

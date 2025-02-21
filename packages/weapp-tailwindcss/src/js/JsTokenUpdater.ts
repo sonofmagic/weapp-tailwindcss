@@ -36,6 +36,16 @@ export class JsTokenUpdater {
 
   walkTemplateLiteral(path: NodePath<TemplateLiteral>, meta?: JsTokenMeta) {
     const { node } = path
+    for (const exp of path.get('expressions')) {
+      if (exp.isIdentifier()) {
+        const binding = path.scope.getBinding(exp.node.name)
+        if (binding) {
+          if (binding.path.isVariableDeclarator()) {
+            this.walkVariableDeclarator(binding.path)
+          }
+        }
+      }
+    }
     for (const quasis of node.quasis) {
       if (quasis.start && quasis.end && quasis.value.cooked) {
         this.add({
@@ -102,16 +112,10 @@ export class JsTokenUpdater {
           }
         }
         else if (arg.isTemplateLiteral()) {
-          for (const exp of arg.get('expressions')) {
-            if (exp.isIdentifier()) {
-              const binding = arg.scope.getBinding(exp.node.name)
-              if (binding) {
-                if (binding.path.isVariableDeclarator()) {
-                  this.walkVariableDeclarator(binding.path)
-                }
-              }
-            }
-          }
+          this.walkTemplateLiteral(arg)
+        }
+        else if (arg.isStringLiteral()) {
+          this.walkStringLiteral(arg)
         }
       }
     }
