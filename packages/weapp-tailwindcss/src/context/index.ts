@@ -55,7 +55,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     ignoreTaggedTemplateExpressionIdentifiers,
     cssPresetEnv,
     tailwindcss,
-    resolve,
+    patch,
   } = ctx
 
   const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
@@ -111,7 +111,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
       cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
       supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
       tailwindcss,
-      resolve,
+      patch,
     },
   )
   ctx.setMangleRuntimeSet = setMangleRuntimeSet

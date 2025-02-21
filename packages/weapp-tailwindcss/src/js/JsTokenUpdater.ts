@@ -1,12 +1,18 @@
-import type { BinaryExpression, StringLiteral, TemplateLiteral, VariableDeclarator } from '@babel/types'
+import type { NodePath } from '@babel/traverse'
+import type { BinaryExpression, CallExpression, StringLiteral, TemplateLiteral, VariableDeclarator } from '@babel/types'
 import type MagicString from 'magic-string'
 import type { JsToken, JsTokenMeta } from './types'
-import t from '@babel/types'
+import { regExpTest } from '@/utils'
 
 export class JsTokenUpdater {
   public value: JsToken[]
-  constructor(value?: JsToken[]) {
+  public ignoreCallExpressionIdentifiers: (string | RegExp)[]
+  constructor(
+    { value, ignoreCallExpressionIdentifiers }:
+    { value?: JsToken[], ignoreCallExpressionIdentifiers?: (string | RegExp)[] } = {},
+  ) {
     this.value = value ?? []
+    this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? []
   }
 
   add(token?: JsToken) {
@@ -15,20 +21,21 @@ export class JsTokenUpdater {
     }
   }
 
-  walkVariableDeclarator(node: VariableDeclarator) {
-    const init = node.init
-    if (t.isStringLiteral(init)) {
-      this.addStringLiteral(init)
+  walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
+    const init = path.get('init')
+    if (init.isStringLiteral()) {
+      this.walkStringLiteral(init)
     }
-    else if (t.isBinaryExpression(init)) {
-      this.addBinaryExpression(init)
+    else if (init.isBinaryExpression()) {
+      this.walkBinaryExpression(init)
     }
-    else if (t.isTemplateLiteral(init)) {
-      this.addTemplateLiteral(init)
+    else if (init.isTemplateLiteral()) {
+      this.walkTemplateLiteral(init)
     }
   }
 
-  addTemplateLiteral(node: TemplateLiteral, meta?: JsTokenMeta) {
+  walkTemplateLiteral(path: NodePath<TemplateLiteral>, meta?: JsTokenMeta) {
+    const { node } = path
     for (const quasis of node.quasis) {
       if (quasis.start && quasis.end && quasis.value.cooked) {
         this.add({
@@ -43,7 +50,8 @@ export class JsTokenUpdater {
     }
   }
 
-  addStringLiteral(node: StringLiteral, meta?: JsTokenMeta) {
+  walkStringLiteral(path: NodePath<StringLiteral>, meta?: JsTokenMeta) {
+    const { node } = path
     if (node.start && node.end) {
       this.add({
         start: node.start + 1,
@@ -56,25 +64,56 @@ export class JsTokenUpdater {
     }
   }
 
-  addBinaryExpression(binaryNode: BinaryExpression) {
-    if (t.isStringLiteral(binaryNode.left)) {
-      this.addStringLiteral(binaryNode.left)
+  walkBinaryExpression(path: NodePath<BinaryExpression>) {
+    const left = path.get('left')
+    if (left.isStringLiteral()) {
+      this.walkStringLiteral(left)
     }
-    else if (t.isBinaryExpression(binaryNode.left)) {
-      this.addBinaryExpression(binaryNode.left) // 递归
+    else if (left.isBinaryExpression()) {
+      this.walkBinaryExpression(left) // 递归
     }
-    else if (t.isTemplateLiteral(binaryNode.left)) {
-      this.addTemplateLiteral(binaryNode.left)
+    else if (left.isTemplateLiteral()) {
+      this.walkTemplateLiteral(left)
     }
+    const right = path.get('right')
+    if (right.isStringLiteral()) {
+      this.walkStringLiteral(right)
+    }
+    else if (right.isBinaryExpression(right)) {
+      this.walkBinaryExpression(right) // 递归
+    }
+    else if (right.isTemplateLiteral()) {
+      this.walkTemplateLiteral(right)
+    }
+  }
 
-    if (t.isStringLiteral(binaryNode.right)) {
-      this.addStringLiteral(binaryNode.right)
-    }
-    else if (t.isBinaryExpression(binaryNode.right)) {
-      this.addBinaryExpression(binaryNode.right) // 递归
-    }
-    else if (t.isTemplateLiteral(binaryNode.right)) {
-      this.addTemplateLiteral(binaryNode.right)
+  walkCallExpression(path: NodePath<CallExpression>) {
+    const calleePath = path.get('callee')
+    if (
+      calleePath.isIdentifier()
+      && regExpTest(this.ignoreCallExpressionIdentifiers, calleePath.node.name)) {
+      for (const arg of path.get('arguments')) {
+        if (arg.isIdentifier()) {
+          const binding = arg.scope.getBinding(arg.node.name)
+          if (binding) {
+            if (binding.path.isVariableDeclarator()) {
+              this.walkVariableDeclarator(binding.path)
+            }
+          }
+        }
+        else if (arg.isTemplateLiteral()) {
+          for (const exp of arg.get('expressions')) {
+            if (exp.isIdentifier()) {
+              const binding = arg.scope.getBinding(exp.node.name)
+              if (binding) {
+                if (binding.path.isVariableDeclarator()) {
+                  this.walkVariableDeclarator(binding.path)
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 

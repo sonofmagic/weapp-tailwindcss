@@ -1,5 +1,4 @@
-import type { PackageResolvingOptions } from 'local-pkg'
-import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
+import type { CacheOptions, ILengthUnitsPatchOptions, PatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import path from 'node:path'
 import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -10,11 +9,11 @@ export interface CreateTailwindcssPatcherOptions {
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindcssUserConfig
-  resolve?: PackageResolvingOptions
+  patch?: PatchOptions
 }
 
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions) {
-  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, resolve } = options || {}
+  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, patch } = options || {}
   const cache: CacheOptions = {}
 
   if (cacheDir) {
@@ -31,27 +30,21 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
 
   return new TailwindcssPatcher({
     cache,
-    patch: {
+    patch: defuOverrideArray<PatchOptions, PatchOptions[]>(patch!, {
       basedir,
       applyPatches: {
         exportContext: true,
         extendLengthUnits: supportCustomLengthUnitsPatch,
       },
       tailwindcss,
-      resolve: defuOverrideArray(resolve!, {
+      resolve: {
         paths: [
           import.meta.url,
         ],
-      }),
+      },
       // filter: (x) => {
       //   return !isAllowedClassName(x)
       // },
-      // for example
-      // resolve: {
-      //   paths: [
-      //     import.meta.url,
-      //   ],
-      // },
-    },
+    }),
   })
 }

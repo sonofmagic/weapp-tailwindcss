@@ -29,7 +29,7 @@ export async function astGrepUpdateString(ast: SgNode, options: IJsHandlerOption
 
   const callExpressionNodes = ast.findAll(kind(Lang.JavaScript, 'call_expression'))
 
-  const jsTokenUpdater = new JsTokenUpdater()
+  const jsTokenUpdater = new JsTokenUpdater({ ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers })
 
   let chooseNodeRanges: Range[] = []
 

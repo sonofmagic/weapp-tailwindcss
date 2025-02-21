@@ -1,7 +1,7 @@
 import type { ParseResult } from '@babel/parser'
+import type t from '@babel/types'
 import { parse, traverse } from '@/babel'
 import { JsTokenUpdater } from '@/js/JsTokenUpdater'
-import t from '@babel/types'
 import { escape, isAllowedClassName } from '@weapp-core/escape'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
@@ -10,44 +10,13 @@ import path from 'pathe'
 const ignoreCallExpressionIdentifiers = ['cn']
 
 function handle(ast: ParseResult<t.File>): JsTokenUpdater {
-  const jsTokenUpdater = new JsTokenUpdater()
+  const jsTokenUpdater = new JsTokenUpdater({ ignoreCallExpressionIdentifiers })
 
   traverse(ast, {
     // StringLiteral
     CallExpression(path) {
       // 检查是否是 cn 函数调用
-
-      if (
-        t.isIdentifier(path.node.callee)
-        && ignoreCallExpressionIdentifiers
-          .includes(path.node.callee.name)) {
-        for (const arg of path.node.arguments) {
-          if (t.isIdentifier(arg)) {
-            const binding = path.scope.getBinding(arg.name)
-            if (binding) {
-              const bindingNode = binding.path.node
-
-              if (t.isVariableDeclarator(bindingNode)) {
-                jsTokenUpdater.walkVariableDeclarator(bindingNode)
-              }
-            }
-          }
-          else if (t.isTemplateLiteral(arg)) {
-            for (const exp of arg.expressions) {
-              if (t.isIdentifier(exp)) {
-                const binding = path.scope.getBinding(exp.name)
-                if (binding) {
-                  const bindingNode = binding.path.node
-
-                  if (t.isVariableDeclarator(bindingNode)) {
-                    jsTokenUpdater.walkVariableDeclarator(bindingNode)
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      jsTokenUpdater.walkCallExpression(path)
     },
   })
   return jsTokenUpdater
