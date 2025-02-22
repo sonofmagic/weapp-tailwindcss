@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.0.5
+
+### Patch Changes
+
+- [`11bae23`](https://github.com/sonofmagic/weapp-tailwindcss/commit/11bae23fd3de7332fd06a980b6a418f4795f6bc9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: bump deps
+
+- Updated dependencies [[`11bae23`](https://github.com/sonofmagic/weapp-tailwindcss/commit/11bae23fd3de7332fd06a980b6a418f4795f6bc9)]:
+  - @weapp-tailwindcss/mangle@1.0.2
+  - @weapp-tailwindcss/postcss@1.0.3
+
 ## 4.0.4
 
 ### Patch Changes
