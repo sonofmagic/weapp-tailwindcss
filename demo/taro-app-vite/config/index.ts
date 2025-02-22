@@ -1,5 +1,5 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
-import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
+// import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 import type { Plugin } from 'vite'
@@ -41,6 +41,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           config(config) {
             // 加载 tailwindcss
             if (typeof config.css?.postcss === 'object') {
+              // @ts-ignore
               config.css?.postcss.plugins?.unshift(tailwindcss())
             }
           },
