@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.0.4-alpha.0
+
+### Patch Changes
+
+- [`bdbca26`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bdbca268738ef033a5789e8a6713608c4d599b61) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 去除 ast-grep 支持，添加字符串字面量和模板字符串作用域扫描功能
+
+- Updated dependencies [[`bdbca26`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bdbca268738ef033a5789e8a6713608c4d599b61)]:
+  - @weapp-tailwindcss/shared@1.0.1-alpha.0
+  - @weapp-tailwindcss/init@1.0.1-alpha.0
+  - @weapp-tailwindcss/mangle@1.0.1-alpha.0
+  - @weapp-tailwindcss/postcss@1.0.3-alpha.0
+
 ## 4.0.3
 
 ### Patch Changes

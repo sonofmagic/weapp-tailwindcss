@@ -25,5 +25,7 @@
     "@weapp-tailwindcss/typography": "0.2.4",
     "website": "0.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "early-groups-turn"
+  ]
 }
