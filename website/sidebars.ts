@@ -17,48 +17,81 @@ const sidebars: SidebarsConfig = {
     'intro',
     {
       type: 'category',
-      label: '🔥快速开始(框架类)',
+      label: '🔥Tailwind CSS @3.x',
+      collapsed: false,
       items: [
         {
-          type: 'doc',
-          id: 'quick-start/install',
-        },
-
-        {
-          type: 'doc',
-          id: 'quick-start/this-plugin',
-        },
-        {
-          items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
-          label: '3. 各个框架的注册方式',
           type: 'category',
+          label: '🔥快速开始(框架类)',
+          items: [
+            {
+              type: 'doc',
+              id: 'quick-start/install',
+            },
+
+            {
+              type: 'doc',
+              id: 'quick-start/this-plugin',
+            },
+            {
+              items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
+              label: '3. 各个框架的注册方式',
+              type: 'category',
+              collapsed: false,
+            },
+            {
+              type: 'doc',
+              id: 'quick-start/rem2rpx',
+            },
+          ],
           collapsed: false,
         },
         {
-          type: 'doc',
-          id: 'quick-start/rem2rpx',
+          type: 'category',
+          label: '🔥快速开始(纯原生)',
+          items: [
+            {
+              type: 'doc',
+              id: 'quick-start/native/install',
+            },
+            {
+              type: 'doc',
+              id: 'quick-start/native/install-plugin',
+            },
+            // {
+            //   type: 'doc',
+            //   id: 'quick-start/native/principle',
+            // },
+          ],
+          collapsed: false,
         },
       ],
-      collapsed: false,
     },
     {
       type: 'category',
-      label: '🔥快速开始(纯原生)',
+      label: '🧪Tailwind CSS @4.x(实验性)',
       items: [
         {
           type: 'doc',
-          id: 'quick-start/native/install',
+          id: 'quick-start/v4/readme',
         },
         {
           type: 'doc',
-          id: 'quick-start/native/install-plugin',
+          id: 'quick-start/v4/uni-app-vite',
         },
         // {
         //   type: 'doc',
-        //   id: 'quick-start/native/principle',
+        //   id: 'quick-start/v4/uni-app-webpack',
+        // },
+        // {
+        //   type: 'doc',
+        //   id: 'quick-start/v4/taro-webpack',
+        // },
+        // {
+        //   type: 'doc',
+        //   id: 'quick-start/v4/taro-vite',
         // },
       ],
-      collapsed: false,
     },
     {
       type: 'doc',

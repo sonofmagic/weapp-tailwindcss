@@ -1,0 +1,55 @@
+# uni-app cli vue3 vite
+
+## 1. 安装
+
+```bash npm2yarn
+npm install tailwindcss @tailwindcss/vite weapp-tailwindcss
+```
+
+## 2. 配置 `vite.config.ts`
+
+```ts title="vite.config.ts"
+import { defineConfig } from "vite";
+import uni from "@dcloudio/vite-plugin-uni";
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig(async () => {
+  // 这里必须这样引用，因为 uni 只提供了 cjs 的版本且 uni-app 默认 cjs，而 @tailwindcss/vite 只提供了 esm 版本
+  const { default: tailwindcss } = await import('@tailwindcss/vite')
+  return {
+    plugins: [
+      uni(),
+      tailwindcss(),
+      UnifiedViteWeappTailwindcssPlugin(
+        {
+          rem2rpx: true
+        }
+      )
+    ],
+  }
+});
+```
+
+## 3. 添加样式
+
+在项目目录下，创建一个 `main.css`，然后添加以下内容：
+
+```css title="main.css"
+@import "tailwindcss";
+```
+
+然后直接运行 `npm run dev:mp-weixin` 即可看到效果
+
+:::warning
+这里必须创建一个额外的 `css` 文件，而不是直接在 `App.vue` 里的 `style` 标签下直接写，
+
+这是因为 `@tailwindcss/vite` 目前只转化 `.css` 文件。后续可能会支持更多格式的文件，比如 `vue` 编译的中间文件
+
+详见 http://github.com/tailwindlabs/tailwindcss/blob/main/packages/%40tailwindcss-vite/src/index.ts#L122 中的 `isCssFile` 判断
+:::
+
+
+
+## 参考模板
+
+[uni-app-tailwindcss-v4](https://github.com/icebreaker-template/uni-app-tailwindcss-v4) 

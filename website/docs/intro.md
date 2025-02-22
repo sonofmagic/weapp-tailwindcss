@@ -33,13 +33,19 @@
 
 ## 快速开始 :rocket:
 
+### 🔥 Tailwind CSS @3.x
+
 `weapp-tailwindcss` 主要提供了 `3` 种使用方式:
 
-### 👉 [1. 框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)
+#### 👉 [1. 框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)
 
-### 👉 [2. 原生小程序开发的快速开始](/docs/quick-start/native/install)
+#### 👉 [2. 原生小程序开发的快速开始](/docs/quick-start/native/install)
 
-### 👉 [3. 可直接使用的各个框架的小程序模板](/docs/community/templates)
+#### 👉 [3. 可直接使用的各个框架的小程序模板](/docs/community/templates)
+
+### 🧪 Tailwind CSS @4.x(实现性)
+
+#### 👉 [Tailwindcss@4.x 快速开始](/docs/quick-start/v4)
 
 ## 演示视频
 

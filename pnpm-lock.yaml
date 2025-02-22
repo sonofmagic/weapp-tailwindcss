@@ -480,7 +480,7 @@ importers:
         version: 4.0.8
       '@tailwindcss/vite':
         specifier: ^4.0.8
-        version: 4.0.8(vite@6.1.1(@types/node@22.13.5)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.0)(sass@1.85.0)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))
+        version: 4.0.8(vite@5.4.14(@types/node@22.13.5)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.0)(sass@1.85.0)(stylus@0.63.0)(terser@5.37.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.3)
@@ -585,8 +585,8 @@ importers:
   apps/web-postcss7-compat:
     dependencies:
       tailwindcss-patch:
-        specifier: ^6.0.8
-        version: 6.0.8(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.5)(typescript@5.7.3)))(magicast@0.3.5)
+        specifier: ^6.0.9
+        version: 6.0.9(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.5)(typescript@5.7.3)))(magicast@0.3.5)
     devDependencies:
       autoprefixer:
         specifier: ^9.8.8
@@ -674,8 +674,8 @@ importers:
   packages/mangle:
     dependencies:
       '@tailwindcss-mangle/shared':
-        specifier: ~4.0.1
-        version: 4.0.1
+        specifier: ~4.0.2
+        version: 4.0.2
       '@weapp-core/regex':
         specifier: ~1.0.1
         version: 1.0.1
@@ -692,8 +692,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       tailwind-merge:
-        specifier: ^3.0.1
-        version: 3.0.1
+        specifier: ^3.0.2
+        version: 3.0.2
       tailwind-merge-v2:
         specifier: npm:tailwind-merge@^2.6.0
         version: tailwind-merge@2.6.0
@@ -826,8 +826,8 @@ importers:
         specifier: ~7.7.1
         version: 7.7.1
       tailwindcss-patch:
-        specifier: ~6.0.8
-        version: 6.0.8(magicast@0.3.5)(tailwindcss@4.0.8)
+        specifier: ~6.0.9
+        version: 6.0.9(magicast@0.3.5)(tailwindcss@4.0.8)
       webpack-sources:
         specifier: 3.2.3
         version: 3.2.3
@@ -883,6 +883,9 @@ importers:
       '@docusaurus/module-type-aliases':
         specifier: 3.7.0
         version: 3.7.0(acorn@8.14.0)(esbuild@0.24.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@docusaurus/remark-plugin-npm2yarn':
+        specifier: ^3.7.0
+        version: 3.7.0
       '@docusaurus/tsconfig':
         specifier: 3.7.0
         version: 3.7.0
@@ -2335,6 +2338,10 @@ packages:
     resolution: {integrity: sha512-YMMxTUQV/QFSnbgrP3tjDzLHRg7vsbMn8e9HAa8o/1iXoiomo48b7sk/kkmWEuWNDPJVlKSJRB6Y2fHqdJk+SQ==}
     peerDependencies:
       react: '*'
+
+  '@docusaurus/remark-plugin-npm2yarn@3.7.0':
+    resolution: {integrity: sha512-2QkZh75vZzPefW5Ljt8gwc1i0ERuS0MRZTEwHsSXSi6vc2NpLVbcmfIuHhwR8o0PcGVTxmBEhQRP0NN1vHdOAA==}
+    engines: {node: '>=18.0'}
 
   '@docusaurus/theme-classic@3.7.0':
     resolution: {integrity: sha512-MnLxG39WcvLCl4eUzHr0gNcpHQfWoGqzADCly54aqCofQX6UozOS9Th4RK3ARbM9m7zIRv3qbhggI53dQtx/hQ==}
@@ -3941,11 +3948,11 @@ packages:
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
 
-  '@tailwindcss-mangle/config@5.0.3':
-    resolution: {integrity: sha512-8ppayn1RDCdr004dYuDPcqBswvhHcxcgR1mgbmPK3MbUt5lD5xP1KhUle16F2kjtMOERJUASg6F+2wicRWqHiQ==}
+  '@tailwindcss-mangle/config@5.0.4':
+    resolution: {integrity: sha512-NYif1v6BMWqNIf3FRqArddcwIVxlxCEadnD55tQJH438s+Iqb66gw41MaPXJkjH5QvK6WpnPmVFxVVKs2l0VCQ==}
 
-  '@tailwindcss-mangle/shared@4.0.1':
-    resolution: {integrity: sha512-3xn1SVlHuyybCx0sO+hq2IqPC/Y4qq9/TwUE+qFcQ9hKVw4RhNm0AsNNiOuYiR1j/cTVxqvtkJphLGNOe8sBng==}
+  '@tailwindcss-mangle/shared@4.0.2':
+    resolution: {integrity: sha512-gteSOKjrr2b6ifFix4fdSAhgw8knq0R1o4NVRJt+mAEMgTSpIkar9gRb9n9DD3xH55MWgyBJ5hw08vtutkq59w==}
 
   '@tailwindcss/node@4.0.8':
     resolution: {integrity: sha512-FKArQpbrbwv08TNT0k7ejYXpF+R8knZFAatNc0acOxbgeqLzwb86r+P3LGOjIeI3Idqe9CVkZrh4GlsJLJKkkw==}
@@ -5325,8 +5332,8 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
-  c12@2.0.2:
-    resolution: {integrity: sha512-NkvlL5CHZt9kPswJYDCUYtTaMt7JOfcpsnNncfj7sWsc13x6Wz+GiTpBtqZOojFlzyTHui8+OAfR6praV6PYaQ==}
+  c12@2.0.4:
+    resolution: {integrity: sha512-3DbbhnFt0fKJHxU4tEUPmD1ahWE4PWPMomqfYsTJdrhpmEnRKJi3qSC4rO5U6E6zN1+pjBY7+z8fUmNRMaVKLw==}
     peerDependencies:
       magicast: ^0.3.5
     peerDependenciesMeta:
@@ -7525,8 +7532,8 @@ packages:
   getpass@0.1.7:
     resolution: {integrity: sha512-0fzj9JxOLfJ+XGLhR8ze3unN0KZCgZwiSSDz168VERjK8Wl8kVSdcu2kspd4s4wtAa1y/qrVRiAA0WclVsu0ng==}
 
-  giget@1.2.4:
-    resolution: {integrity: sha512-Wv+daGyispVoA31TrWAVR+aAdP7roubTPEM/8JzRnqXhLbdJH0T9eQyXVFF8fjk3WKTsctII6QcyxILYgNp2DA==}
+  giget@1.2.5:
+    resolution: {integrity: sha512-r1ekGw/Bgpi3HLV3h1MRBIlSAdHoIMklpaQ3OQLFcRw9PwAj2rqigvIbg+dBUI51OxVI2jsEtDywDBjSiuf7Ug==}
     hasBin: true
 
   git-raw-commits@4.0.0:
@@ -9860,6 +9867,10 @@ packages:
     resolution: {integrity: sha512-9qny7Z9DsQU8Ou39ERsPU4OZQlSTP47ShQzuKZ6PRXpYLtIFgl/DEBYEXKlvcEa+9tHVcK8CF81Y2V72qaZhWA==}
     engines: {node: '>=18'}
 
+  npm-to-yarn@3.0.1:
+    resolution: {integrity: sha512-tt6PvKu4WyzPwWUzy/hvPFqn+uwXO0K1ZHka8az3NnrhWJDmSqI8ncWq0fkL0k/lmmi5tAC11FXwXuh0rFbt1A==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
   nprogress@0.2.0:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
 
@@ -9882,8 +9893,8 @@ packages:
   nwsapi@2.2.16:
     resolution: {integrity: sha512-F1I/bimDpj3ncaNDhfyMWuFqmQDBwDB0Fogc2qpL3BWvkQteFD/8BzWuIRl83rq0DXfm8SGt/HFhLXZyljTXcQ==}
 
-  nypm@0.5.2:
-    resolution: {integrity: sha512-AHzvnyUJYSrrphPhRWWZNcoZfArGNp3Vrc4pm/ZurO74tYNTgAPrEyBQEKy+qioqmWlPXwvMZCG2wOaHlPG0Pw==}
+  nypm@0.5.4:
+    resolution: {integrity: sha512-X0SNNrZiGU8/e/zAB7sCTtdxWTMSIO73q+xuKgglm2Yvzwlo8UoC5FNySQFCvl84uPaeADkqHUZUkWy4aH4xOA==}
     engines: {node: ^14.16.0 || >=16.10.0}
     hasBin: true
 
@@ -9951,6 +9962,9 @@ packages:
 
   ohash@1.1.4:
     resolution: {integrity: sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==}
+
+  ohash@2.0.4:
+    resolution: {integrity: sha512-ac+SFwzhdHb0hp48/dbR7Jta39qfbuj7t3hApd9uyHS8bisHTfVzSEvjOVgV0L3zG7VR2/7JjkSGimP75D+hOQ==}
 
   omggif@1.0.10:
     resolution: {integrity: sha512-LMJTtvgc/nugXj0Vcrrs68Mn2D1r0zf630VNtqtpI1FEO7e+O9FP4gqs9AcnBaSEeoHIPm28u6qgPR0oyEpGSw==}
@@ -10123,9 +10137,6 @@ packages:
 
   parse-entities@2.0.0:
     resolution: {integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==}
-
-  parse-entities@4.0.1:
-    resolution: {integrity: sha512-SWzvYcSJh4d/SGLIOQfZ/CoNv6BTlI6YEQ7Nj82oDVnRpwe/Z/F1EMx42x3JAOwGBlCjeCH0BRJQbQ/opHL17w==}
 
   parse-entities@4.0.2:
     resolution: {integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==}
@@ -12701,14 +12712,14 @@ packages:
   tailwind-merge@2.6.0:
     resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
 
-  tailwind-merge@3.0.1:
-    resolution: {integrity: sha512-AvzE8FmSoXC7nC+oU5GlQJbip2UO7tmOhOfQyOmPhrStOGXHU08j8mZEHZ4BmCqY5dWTCo4ClWkNyRNx1wpT0g==}
+  tailwind-merge@3.0.2:
+    resolution: {integrity: sha512-l7z+OYZ7mu3DTqrL88RiKrKIqO3NcpEO8V/Od04bNpvk0kiIFndGEoqfuzvj4yuhRkHKjRkII2z+KS2HfPcSxw==}
 
   tailwindcss-config@1.0.0:
     resolution: {integrity: sha512-YAsRjdnVVx4A0sj3OSOTWdeIzm67lPlHLHc0v5Cs8gCNB04ObqeLc8+PoyNl9gThmQ6mper76/WD3f4zYHRgLg==}
 
-  tailwindcss-patch@6.0.8:
-    resolution: {integrity: sha512-I3xzylrYGfbAlJfnRcRe8Qq4bHMyhTzePn/i3Q3qJDLHjDiGDtqEWofE2rJhFDckKo5Z4DzWAmNpBQtDseAu5Q==}
+  tailwindcss-patch@6.0.9:
+    resolution: {integrity: sha512-jwFAGbA05FyDkWs4idei9M9k7woW2REPBt5imM9PfvffjmvZFyvFvNOFCFfnicsaRrn/H35bCXROl9a+f2eJ9g==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -16849,8 +16860,18 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.2
+      '@types/react': 19.0.10
       react: 19.0.0
+
+  '@docusaurus/remark-plugin-npm2yarn@3.7.0':
+    dependencies:
+      mdast-util-mdx: 3.0.0
+      npm-to-yarn: 3.0.1
+      tslib: 2.8.1
+      unified: 11.0.5
+      unist-util-visit: 5.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@docusaurus/theme-classic@3.7.0(@types/react@19.0.10)(acorn@8.14.0)(debug@4.4.0)(esbuild@0.24.2)(eslint@9.21.0(jiti@2.4.2))(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(vue-template-compiler@2.7.16)':
     dependencies:
@@ -18732,17 +18753,17 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@tailwindcss-mangle/config@5.0.3(magicast@0.3.5)':
+  '@tailwindcss-mangle/config@5.0.4(magicast@0.3.5)':
     dependencies:
-      '@tailwindcss-mangle/shared': 4.0.1
-      c12: 2.0.2(magicast@0.3.5)
+      '@tailwindcss-mangle/shared': 4.0.2
+      c12: 2.0.4(magicast@0.3.5)
       fs-extra: 11.3.0
       is-css-request: 1.0.1
       pathe: 2.0.3
     transitivePeerDependencies:
       - magicast
 
-  '@tailwindcss-mangle/shared@4.0.1': {}
+  '@tailwindcss-mangle/shared@4.0.2': {}
 
   '@tailwindcss/node@4.0.8':
     dependencies:
@@ -18853,6 +18874,14 @@ snapshots:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.13.5)(typescript@5.7.3))
+
+  '@tailwindcss/vite@4.0.8(vite@5.4.14(@types/node@22.13.5)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.0)(sass@1.85.0)(stylus@0.63.0)(terser@5.37.0))':
+    dependencies:
+      '@tailwindcss/node': 4.0.8
+      '@tailwindcss/oxide': 4.0.8
+      lightningcss: 1.29.1
+      tailwindcss: 4.0.8
+      vite: 5.4.14(@types/node@22.13.5)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.0)(sass@1.85.0)(stylus@0.63.0)(terser@5.37.0)
 
   '@tailwindcss/vite@4.0.8(vite@6.1.1(@types/node@22.13.5)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.0)(sass@1.85.0)(stylus@0.63.0)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
@@ -20446,16 +20475,16 @@ snapshots:
 
   bytes@3.1.2: {}
 
-  c12@2.0.2(magicast@0.3.5):
+  c12@2.0.4(magicast@0.3.5):
     dependencies:
       chokidar: 4.0.3
       confbox: 0.1.8
       defu: 6.1.4
       dotenv: 16.4.7
-      giget: 1.2.4
+      giget: 1.2.5
       jiti: 2.4.2
       mlly: 1.7.4
-      ohash: 1.1.4
+      ohash: 2.0.4
       pathe: 2.0.3
       perfect-debounce: 1.0.0
       pkg-types: 1.3.1
@@ -23172,14 +23201,13 @@ snapshots:
     dependencies:
       assert-plus: 1.0.0
 
-  giget@1.2.4:
+  giget@1.2.5:
     dependencies:
       citty: 0.1.6
       consola: 3.4.0
       defu: 6.1.4
       node-fetch-native: 1.6.6
-      nypm: 0.5.2
-      ohash: 1.1.4
+      nypm: 0.5.4
       pathe: 2.0.3
       tar: 6.2.1
 
@@ -25166,7 +25194,7 @@ snapshots:
       devlop: 1.1.0
       mdast-util-from-markdown: 2.0.2
       mdast-util-to-markdown: 2.1.2
-      parse-entities: 4.0.1
+      parse-entities: 4.0.2
       stringify-entities: 4.0.4
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
@@ -26046,6 +26074,8 @@ snapshots:
       path-key: 4.0.0
       unicorn-magic: 0.3.0
 
+  npm-to-yarn@3.0.1: {}
+
   nprogress@0.2.0: {}
 
   nth-check@2.1.1:
@@ -26064,7 +26094,7 @@ snapshots:
 
   nwsapi@2.2.16: {}
 
-  nypm@0.5.2:
+  nypm@0.5.4:
     dependencies:
       citty: 0.1.6
       consola: 3.4.0
@@ -26142,6 +26172,8 @@ snapshots:
   obuf@1.1.2: {}
 
   ohash@1.1.4: {}
+
+  ohash@2.0.4: {}
 
   omggif@1.0.10: {}
 
@@ -26327,17 +26359,6 @@ snapshots:
       is-decimal: 1.0.4
       is-hexadecimal: 1.0.4
     optional: true
-
-  parse-entities@4.0.1:
-    dependencies:
-      '@types/unist': 2.0.11
-      character-entities: 2.0.2
-      character-entities-legacy: 3.0.0
-      character-reference-invalid: 2.0.1
-      decode-named-character-reference: 1.0.2
-      is-alphanumerical: 2.0.1
-      is-decimal: 2.0.1
-      is-hexadecimal: 2.0.1
 
   parse-entities@4.0.2:
     dependencies:
@@ -29127,20 +29148,20 @@ snapshots:
 
   tailwind-merge@2.6.0: {}
 
-  tailwind-merge@3.0.1: {}
+  tailwind-merge@3.0.2: {}
 
   tailwindcss-config@1.0.0:
     dependencies:
       jiti: 2.4.2
       lilconfig: 3.1.3
 
-  tailwindcss-patch@6.0.8(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.5)(typescript@5.7.3)))(magicast@0.3.5):
+  tailwindcss-patch@6.0.9(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.5)(typescript@5.7.3)))(magicast@0.3.5):
     dependencies:
       '@babel/generator': 7.26.9
       '@babel/parser': 7.26.9
       '@babel/traverse': 7.26.9
       '@babel/types': 7.26.9
-      '@tailwindcss-mangle/config': 5.0.3(magicast@0.3.5)
+      '@tailwindcss-mangle/config': 5.0.4(magicast@0.3.5)
       cac: 6.7.14
       consola: 3.4.0
       fs-extra: 11.3.0
@@ -29155,13 +29176,13 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@6.0.8(magicast@0.3.5)(tailwindcss@4.0.8):
+  tailwindcss-patch@6.0.9(magicast@0.3.5)(tailwindcss@4.0.8):
     dependencies:
       '@babel/generator': 7.26.9
       '@babel/parser': 7.26.9
       '@babel/traverse': 7.26.9
       '@babel/types': 7.26.9
-      '@tailwindcss-mangle/config': 5.0.3(magicast@0.3.5)
+      '@tailwindcss-mangle/config': 5.0.4(magicast@0.3.5)
       cac: 6.7.14
       consola: 3.4.0
       fs-extra: 11.3.0

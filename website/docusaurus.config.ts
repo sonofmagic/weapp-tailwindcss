@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-require-imports */
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 import process from 'node:process'
@@ -89,6 +90,21 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website',
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+          ],
+        },
+        pages: {
+          remarkPlugins: [require('@docusaurus/remark-plugin-npm2yarn')],
+        },
+        blog: {
+          remarkPlugins: [
+            [
+              require('@docusaurus/remark-plugin-npm2yarn'),
+              { converters: ['pnpm'] },
+            ],
+          ],
+          // ...
         },
         // blog: {
         //   showReadingTime: true,
@@ -127,9 +143,9 @@ const config = {
         name: 'docusaurus-tailwindcss',
         configurePostCss(postcssOptions) {
           // Appends TailwindCSS and AutoPrefixer.
-          // eslint-disable-next-line ts/no-require-imports
+
           postcssOptions.plugins.push(require('tailwindcss'))
-          // eslint-disable-next-line ts/no-require-imports
+
           postcssOptions.plugins.push(require('autoprefixer'))
           return postcssOptions
         },

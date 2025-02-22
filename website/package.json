@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.7.0",
+    "@docusaurus/remark-plugin-npm2yarn": "^3.7.0",
     "@docusaurus/tsconfig": "3.7.0",
     "@docusaurus/types": "3.7.0",
     "@icebreakers/deploy": "^0.1.6",
