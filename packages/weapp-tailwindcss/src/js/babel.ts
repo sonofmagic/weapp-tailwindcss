@@ -67,7 +67,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
             const tagPath = ppp.get('tag')
             if (
               (tagPath.isIdentifier()
-                && regExpTest(options.ignoreTaggedTemplateExpressionIdentifiers ?? [], tagPath.node.name)
+                && regExpTest(options.ignoreTaggedTemplateExpressionIdentifiers ?? [], tagPath.node.name, { exact: true })
               )
             ) {
               return

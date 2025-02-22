@@ -13,14 +13,19 @@ export function isRegexp(value: unknown) {
 export function isMap(value: unknown) {
   return Object.prototype.toString.call(value) === '[object Map]'
 }
-export function regExpTest(arr: (string | RegExp)[], str: string) {
+export function regExpTest(arr: (string | RegExp)[], str: string, options?: { exact?: boolean }) {
   if (!Array.isArray(arr)) {
     throw new TypeError('paramater \'arr\' should be an Array of Regexp | String')
   }
 
   for (const item of arr) {
     if (typeof item === 'string') {
-      if (str.includes(item)) {
+      if (options?.exact) {
+        if (str === item) {
+          return true
+        }
+      }
+      else if (str.includes(item)) {
         return true
       }
     }

@@ -76,7 +76,9 @@ export class NodePathWalker {
     const calleePath = path.get('callee')
     if (
       calleePath.isIdentifier()
-      && regExpTest(this.ignoreCallExpressionIdentifiers, calleePath.node.name)) {
+      && regExpTest(this.ignoreCallExpressionIdentifiers, calleePath.node.name, {
+        exact: true,
+      })) {
       for (const arg of path.get('arguments')) {
         if (arg.isIdentifier()) {
           const binding = arg.scope.getBinding(arg.node.name)

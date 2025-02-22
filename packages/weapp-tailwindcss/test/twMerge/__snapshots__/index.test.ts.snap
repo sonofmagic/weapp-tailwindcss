@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`twMerge > twMerge case 0.js 1`] = `"twMerge('bg-[#434332] px-[32px]', 'bg-[#123324] px-[35px]')"`;
+
+exports[`twMerge > twMerge case 0.js 2`] = `"twMerge('bg-_h434332_ px-_32px_', 'bg-_h123324_ px-_35px_')"`;
+
+exports[`twMerge > twMerge case 1.js 1`] = `
+"const a = 'bg-[#434332] px-[32px]'
+
+twMerge(a, 'bg-[#123324] px-[35px]')"
+`;
+
+exports[`twMerge > twMerge case 1.js 2`] = `
+"const a = 'bg-_h434332_ px-_32px_'
+
+twMerge(a, 'bg-_h123324_ px-_35px_')"
+`;
+
+exports[`twMerge > twMerge case 2.js 1`] = `
+"const a = 'bg-[#434332]'
+
+twMerge(\`px-[32px] \${a}\`, 'bg-[#123324] px-[35px]')
+
+twMerge0(\`px-_32px_ \${a}\`, 'bg-_h123324_ px-_35px_')"
+`;
+
+exports[`twMerge > twMerge case 2.js 2`] = `
+"const a = 'bg-_h434332_'
+
+twMerge(\`px-_32px_ \${a}\`, 'bg-_h123324_ px-_35px_')
+
+twMerge0(\`px-_32px_ \${a}\`, 'bg-_h123324_ px-_35px_')"
+`;
