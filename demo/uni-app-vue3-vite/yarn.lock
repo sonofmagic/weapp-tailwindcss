@@ -2946,21 +2946,21 @@
   resolved "https://registry.npmmirror.com/@sindresorhus/merge-streams/-/merge-streams-4.0.0.tgz#abb11d99aeb6d27f1b563c38147a72d50058e339"
   integrity sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==
 
-"@tailwindcss-mangle/config@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/config/-/config-5.0.3.tgz#d3f80feead23dc3e75ea0a04ac953984e76efdf6"
-  integrity sha512-8ppayn1RDCdr004dYuDPcqBswvhHcxcgR1mgbmPK3MbUt5lD5xP1KhUle16F2kjtMOERJUASg6F+2wicRWqHiQ==
+"@tailwindcss-mangle/config@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/config/-/config-5.0.4.tgz#62113501e81df989efab9d9032ed5ce8bb0f3917"
+  integrity sha512-NYif1v6BMWqNIf3FRqArddcwIVxlxCEadnD55tQJH438s+Iqb66gw41MaPXJkjH5QvK6WpnPmVFxVVKs2l0VCQ==
   dependencies:
-    "@tailwindcss-mangle/shared" "^4.0.1"
-    c12 "^2.0.2"
+    "@tailwindcss-mangle/shared" "^4.0.2"
+    c12 "^2.0.4"
     fs-extra "^11.3.0"
     is-css-request "^1.0.1"
     pathe "^2.0.3"
 
-"@tailwindcss-mangle/shared@^4.0.1", "@tailwindcss-mangle/shared@~4.0.1":
-  version "4.0.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-4.0.1.tgz#ce9772d4b74fbe5e94339487c75b4a1c6f7c016a"
-  integrity sha512-3xn1SVlHuyybCx0sO+hq2IqPC/Y4qq9/TwUE+qFcQ9hKVw4RhNm0AsNNiOuYiR1j/cTVxqvtkJphLGNOe8sBng==
+"@tailwindcss-mangle/shared@^4.0.2", "@tailwindcss-mangle/shared@~4.0.2":
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-4.0.2.tgz#a27b6b6780939f89e7599d69f3333a6e0a9e991f"
+  integrity sha512-gteSOKjrr2b6ifFix4fdSAhgw8knq0R1o4NVRJt+mAEMgTSpIkar9gRb9n9DD3xH55MWgyBJ5hw08vtutkq59w==
 
 "@tailwindcss/aspect-ratio@^0.4.2":
   version "0.4.2"
@@ -3242,23 +3242,23 @@
   dependencies:
     consola "^3.4.0"
 
-"@weapp-tailwindcss/mangle@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/mangle/-/mangle-1.0.1.tgz#5d3f56656606f93fb83eaf24e6b70d6940c36236"
-  integrity sha512-u2UwPD0UYr6MPKntErxDL7D0M8NwbYyoElptqZX9FF/fDjWRr2GFeKFxNZs9IDGmdBtIl3TDgRfsIsgnU8n0Gg==
+"@weapp-tailwindcss/mangle@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/mangle/-/mangle-1.0.2.tgz#188b062f2523976cf347433e44ae4cfda317c791"
+  integrity sha512-HpDvFGj5yUVcRo3NikfH+pXlB/WwXT9yqBXXs7QtKM71SzA+eQp8kY5DJxZJqyWxZ95SnQrtSHNXFLc6xxAs5w==
   dependencies:
-    "@tailwindcss-mangle/shared" "~4.0.1"
+    "@tailwindcss-mangle/shared" "~4.0.2"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/shared" "1.0.1"
 
-"@weapp-tailwindcss/merge@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.0.tgz#ff24116bf83e0570b47f9a29b90bfed4d12f2ff1"
-  integrity sha512-Dnx9EqOm9P9lC8z+sW/wJ3YVTNNK89vJdF/hGWgloSSx8HjKopaFrxXlTL5iRha/1BpebWSOzvVxlUd7HkCofg==
+"@weapp-tailwindcss/merge@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.0.1.tgz#1038871d4112fd836539bde68b103d619ef8a088"
+  integrity sha512-NSb/CHVt2x5IlcZVP9iNV7m4Ck4ung5rE2Bl5u+UCd3g/mA7ztdG2KTettq1eSbbC60wQUC3gqOZnibEXukKUw==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
-    tailwind-merge "^3.0.1"
+    tailwind-merge "^3.0.2"
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
 
 "@weapp-tailwindcss/postcss@1.0.3":
@@ -3569,10 +3569,10 @@ bytes@3.1.2:
   resolved "https://registry.npmmirror.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
 
-c12@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npmmirror.com/c12/-/c12-2.0.2.tgz#cab2cbcc6ed0f2f12a5e1142ef84d213f00db355"
-  integrity sha512-NkvlL5CHZt9kPswJYDCUYtTaMt7JOfcpsnNncfj7sWsc13x6Wz+GiTpBtqZOojFlzyTHui8+OAfR6praV6PYaQ==
+c12@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.npmmirror.com/c12/-/c12-2.0.4.tgz#d991001713a6d6304ac928eb644d2b4bbeb60922"
+  integrity sha512-3DbbhnFt0fKJHxU4tEUPmD1ahWE4PWPMomqfYsTJdrhpmEnRKJi3qSC4rO5U6E6zN1+pjBY7+z8fUmNRMaVKLw==
   dependencies:
     chokidar "^4.0.3"
     confbox "^0.1.8"
@@ -3581,8 +3581,8 @@ c12@^2.0.2:
     giget "^1.2.4"
     jiti "^2.4.2"
     mlly "^1.7.4"
-    ohash "^1.1.4"
-    pathe "^2.0.2"
+    ohash "^2.0.4"
+    pathe "^2.0.3"
     perfect-debounce "^1.0.0"
     pkg-types "^1.3.1"
     rc9 "^2.1.2"
@@ -5453,6 +5453,11 @@ ohash@^1.1.4:
   resolved "https://registry.npmmirror.com/ohash/-/ohash-1.1.4.tgz#ae8d83014ab81157d2c285abf7792e2995fadd72"
   integrity sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==
 
+ohash@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.npmmirror.com/ohash/-/ohash-2.0.4.tgz#ca6be3cc32fac3bfa0147f3c4fefa36a4a067825"
+  integrity sha512-ac+SFwzhdHb0hp48/dbR7Jta39qfbuj7t3hApd9uyHS8bisHTfVzSEvjOVgV0L3zG7VR2/7JjkSGimP75D+hOQ==
+
 omggif@^1.0.9:
   version "1.0.10"
   resolved "https://registry.npmmirror.com/omggif/-/omggif-1.0.10.tgz#ddaaf90d4a42f532e9e7cb3a95ecdd47f17c7b19"
@@ -6101,16 +6106,7 @@ postcss@^8.4.38:
     picocolors "^1.0.0"
     source-map-js "^1.2.0"
 
-postcss@^8.5.2:
-  version "8.5.2"
-  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.5.2.tgz#e7b99cb9d2ec3e8dd424002e7c16517cb2b846bd"
-  integrity sha512-MjOadfU3Ys9KYoX0AdkBlFEF1Vx37uCCeN4ZHnmwm9FfpbsGWMZeBLMmmpY+6Ocqod7mkdZ0DT31OlbsFrLlkA==
-  dependencies:
-    nanoid "^3.3.8"
-    picocolors "^1.1.1"
-    source-map-js "^1.2.1"
-
-postcss@~8.5.3:
+postcss@^8.5.3, postcss@~8.5.3:
   version "8.5.3"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.5.3.tgz#1463b6f1c7fb16fe258736cba29a2de35237eafb"
   integrity sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==
@@ -6671,10 +6667,10 @@ tailwind-merge@^2.6.0:
   resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-2.6.0.tgz#ac5fb7e227910c038d458f396b7400d93a3142d5"
   integrity sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==
 
-tailwind-merge@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-3.0.1.tgz#0f0189966511ebcd63ef98d9eaf5607beb0d59d3"
-  integrity sha512-AvzE8FmSoXC7nC+oU5GlQJbip2UO7tmOhOfQyOmPhrStOGXHU08j8mZEHZ4BmCqY5dWTCo4ClWkNyRNx1wpT0g==
+tailwind-merge@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-3.0.2.tgz#567eff76de12211e24dd909da0f5ed6f4f422b0c"
+  integrity sha512-l7z+OYZ7mu3DTqrL88RiKrKIqO3NcpEO8V/Od04bNpvk0kiIFndGEoqfuzvj4yuhRkHKjRkII2z+KS2HfPcSxw==
 
 tailwindcss-config@^1.0.0:
   version "1.0.0"
@@ -6684,22 +6680,22 @@ tailwindcss-config@^1.0.0:
     jiti "^2.4.2"
     lilconfig "^3.1.3"
 
-tailwindcss-patch@^6.0.8, tailwindcss-patch@~6.0.8:
-  version "6.0.8"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-6.0.8.tgz#7ffa3de4f6af0dd04900f5c3eb65fd9b8ad2c532"
-  integrity sha512-I3xzylrYGfbAlJfnRcRe8Qq4bHMyhTzePn/i3Q3qJDLHjDiGDtqEWofE2rJhFDckKo5Z4DzWAmNpBQtDseAu5Q==
+tailwindcss-patch@^6.0.9, tailwindcss-patch@~6.0.9:
+  version "6.0.9"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-6.0.9.tgz#e377a323ce3bcf9fc4ded5130c57b799e7b93ee0"
+  integrity sha512-jwFAGbA05FyDkWs4idei9M9k7woW2REPBt5imM9PfvffjmvZFyvFvNOFCFfnicsaRrn/H35bCXROl9a+f2eJ9g==
   dependencies:
     "@babel/generator" "^7.26.9"
     "@babel/parser" "^7.26.9"
     "@babel/traverse" "^7.26.9"
     "@babel/types" "^7.26.9"
-    "@tailwindcss-mangle/config" "^5.0.3"
+    "@tailwindcss-mangle/config" "^5.0.4"
     cac "^6.7.14"
     consola "^3.4.0"
     fs-extra "^11.3.0"
     local-pkg "^1.0.0"
     pathe "^2.0.3"
-    postcss "^8.5.2"
+    postcss "^8.5.3"
     semver "^7.7.1"
     tailwindcss-config "^1.0.0"
 
@@ -7072,10 +7068,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.4.tgz#ce6308b0710c728e76a5cd0d156220b4671ba2a5"
-  integrity sha512-0/Td/rR99vP6PRieiinN9UF7EXd/e2mCSY7ByY93peebXnDetb/6CNMbmAzBNwUNdpvWe0xTDKqb6G0uPfZxCQ==
+weapp-tailwindcss@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.5.tgz#13b7f4f663ba0ed1f1d712f3b80b3cc667a90412"
+  integrity sha512-rd9OzkIUG9R3RFnYM67fGWeJih2hordiAHxyoAFkYemaSh6kvmNXWvwut0eAk7+iJbZwkMiqxO8sJp37Za5rPg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.26.9"
@@ -7085,7 +7081,7 @@ weapp-tailwindcss@^4.0.4:
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/init" "1.0.1"
     "@weapp-tailwindcss/logger" "1.0.0"
-    "@weapp-tailwindcss/mangle" "1.0.1"
+    "@weapp-tailwindcss/mangle" "1.0.2"
     "@weapp-tailwindcss/postcss" "1.0.3"
     "@weapp-tailwindcss/shared" "1.0.1"
     debug "~4.4.0"
@@ -7096,7 +7092,7 @@ weapp-tailwindcss@^4.0.4:
     magic-string "0.30.17"
     md5 "2.3.0"
     semver "~7.7.1"
-    tailwindcss-patch "~6.0.8"
+    tailwindcss-patch "~6.0.9"
     webpack-sources "3.2.3"
 
 webpack-sources@3.2.3:
