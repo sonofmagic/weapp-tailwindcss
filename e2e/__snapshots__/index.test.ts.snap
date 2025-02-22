@@ -2601,6 +2601,7 @@ exports[`e2e > 'taro-app-vite' > json 1`] = `
   "before:content-[\\"11111\\"]",
   "before:content-[\\"222\\"]",
   "bg-[#89ab8d]",
+  "bg-[#e24826]",
   "dark:text-[#ec4f4f]",
   "divide-[#60d256]",
   "divide-solid",
@@ -2608,7 +2609,8 @@ exports[`e2e > 'taro-app-vite' > json 1`] = `
   "flex",
   "flex-col",
   "text-[#3d31a4]",
-  "text-[#438821]"
+  "text-[#438821]",
+  "text-[66rpx]"
 ]
 "
 `;
