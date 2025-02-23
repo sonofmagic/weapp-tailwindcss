@@ -1,0 +1,75 @@
+# Mpx
+
+## 安装
+
+```bash npm2yarn
+npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
+```
+
+## 配置
+
+更改 `mpx.config.js` 注册 `weapp-tailwindcss`
+
+```js title="mpx.config.js"
+const { defineConfig } = require('@vue/cli-service')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+module.exports = defineConfig({
+  outputDir: `dist/${process.env.MPX_CURRENT_TARGET_MODE}`,
+  pluginOptions: {
+    mpx: {
+      plugin: {
+        srcMode: 'wx',
+        hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
+          const path = require('path')
+          const packageJSONPath = path.resolve('package.json')
+          if (files.has(packageJSONPath)) files.delete(packageJSONPath)
+          if (resolveDependencies.files.has(packageJSONPath)) {
+            resolveDependencies.files.delete(packageJSONPath)
+          }
+        }
+      },
+      loader: {}
+    }
+  },
+  configureWebpack(config) {
+    // 添加的代码在这里
+    // highlight-start
+    config.plugins.push(
+      new UnifiedWebpackPluginV5({
+        rem2rpx: true,
+        appType: 'mpx'
+      })
+    )
+    // highlight-end
+  }
+})
+```
+
+添加 `postcss.config.js` 注册 `@tailwindcss/postcss`
+
+```js title="postcss.config.js"
+module.exports = {
+  plugins: [
+    require('@tailwindcss/postcss')()
+  ]
+}
+```
+
+
+## 添加样式
+
+在项目目录下，小程序全局的 `app.mpx` 中，添加以下内容：
+
+```vue title="app.mpx"
+<style>
+@import "weapp-tailwindcss";
+</style>
+```
+
+
+更改好配置之后，直接启动即可
+
+
+## 参考模版
+
+https://github.com/icebreaker-template/mpx-tailwindcss-v4
