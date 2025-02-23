@@ -37,7 +37,7 @@ const sidebars: SidebarsConfig = {
               items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
               label: '3. 各个框架的注册方式',
               type: 'category',
-              collapsed: false,
+              collapsed: true,
             },
             {
               type: 'doc',
@@ -70,6 +70,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: '🧪Tailwind CSS @4.x(实验性)',
+      collapsed: false,
       items: [
         {
           type: 'doc',
@@ -79,10 +80,10 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'quick-start/v4/uni-app-vite',
         },
-        // {
-        //   type: 'doc',
-        //   id: 'quick-start/v4/uni-app-webpack',
-        // },
+        {
+          type: 'doc',
+          id: 'quick-start/v4/uni-app-webpack',
+        },
         {
           type: 'doc',
           id: 'quick-start/v4/taro-webpack',

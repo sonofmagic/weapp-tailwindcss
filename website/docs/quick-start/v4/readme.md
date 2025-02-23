@@ -1,10 +1,10 @@
-# 开发前注意(必须阅读！)
+# 开发前注意(推荐阅读！)
 
 :::warning
 由于 `tailwindcss@4.x` 本身还在快速的开发迭代中，以下内容可能会经常变更，如果发现已经过时，请提 `issue` 或者直接修复提 `pr`
 :::
 
-## 定位: 样式预处理器
+## 定位的变化: 样式预处理器
 
 相对于 `tailwindcss@3` 版本， `tailwindcss@4` 存在定位的重大变更
 
@@ -18,9 +18,9 @@
 
 ### 从兼容性角度出发
 
-`@tailwindcss/postcss` 兼容性更好，开发打包器使用 `vite` 和 `webpack` 的都能用
+`@tailwindcss/postcss` 兼容性更好，开发打包器使用 `vite` 和 `webpack` 的都能用，而 `@tailwindcss/vite` 这里只有 `vite` 能用。
 
-而 `@tailwindcss/vite` 这里只有 `vite` 能用。
+而且 `uni-app`/`taro` 这种框架，默认都是 `cjs` 加载的，而 `@tailwindcss/vite` 只提供了 `esm` 的版本，所以集成上可能会遇到问题
 
 ### 从编译速度出发
 
@@ -28,7 +28,7 @@
 
 ### 本教程的原则
 
-本教程的原则是，能用 `@tailwindcss/vite` 的尽量使用，否则就使用 `@tailwindcss/postcss`
+本教程的原则是，能用 `@tailwindcss/vite` 的尽量使用，否则就使用 `@tailwindcss/postcss`(大部分项目)
 
 当然，你也完全可以使用 `uni-app vite vue3` + `@tailwindcss/postcss` 这种组合的。
 
@@ -57,3 +57,25 @@ shamefully-hoist=true
 ```
 
 然后重新执行 `pnpm i` 安装包即可运行
+
+## 包含太多 h5 的样式，小程序用不到?
+
+假如你只需要小程序的样式，不需要 `h5`，那么可以把 `@import "tailwindcss"` 替换为 `@import "weapp-tailwindcss"`
+
+```diff
+- @import "tailwindcss";
++ @import "weapp-tailwindcss";
+```
+
+假如你需要进行多端的开发，那么可以使用对应框架的样式条件编译写法，比如 `uni-app`:
+
+```css
+/*  #ifdef  H5  */
+@import "tailwindcss";
+/*  #endif  */
+/*  #ifndef  H5  */
+@import "weapp-tailwindcss";
+/*  #endif  */
+```
+
+详见 https://uniapp.dcloud.net.cn/tutorial/platform.html

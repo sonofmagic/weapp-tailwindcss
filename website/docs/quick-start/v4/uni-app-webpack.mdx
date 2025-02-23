@@ -1,5 +1,72 @@
 # uni-app cli vue2 webpack
 
+## 安装
+
 ```bash npm2yarn
-tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
+npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 ```
+
+## 配置
+
+### 创建 `vue.config.js`
+
+```js title="vue.config.js"
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+/**
+ * @type {import('@vue/cli-service').ProjectOptions}
+ */
+const config = {
+  // some option...
+  configureWebpack: (config) => {
+    config.plugins.push(
+      new UnifiedWebpackPluginV5({
+        rem2rpx: true,
+      })
+    )
+  }
+  // other option...
+}
+
+module.exports = config
+```
+
+## 配置 `postcss.config.js`
+
+```js title="postcss.config.js"
+const path = require('path')
+const webpack = require('webpack')
+const config = {
+  parser: require('postcss-comment'),
+  plugins: [
+    // highlight-next-line
+    require('@tailwindcss/postcss')(), // 只添加这一行
+    require('postcss-import')({
+      resolve (id, basedir, importOptions) {
+        if (id.startsWith('~@/')) {
+          return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
+        } else if (id.startsWith('@/')) {
+          return path.resolve(process.env.UNI_INPUT_DIR, id.substr(2))
+        } else if (id.startsWith('/') && !id.startsWith('//')) {
+          return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
+        }
+        return id
+      }
+    }),
+
+    require('autoprefixer')({
+      remove: process.env.UNI_PLATFORM !== 'h5'
+    }),
+    require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
+  ]
+}
+if (webpack.version[0] > 4) {
+  delete config.parser
+}
+module.exports = config
+```
+
+然后直接运行到小程序即可
+
+## 参考模板
+
+https://github.com/icebreaker-template/uni-app-webpack-tailwindcss-v4
