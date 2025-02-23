@@ -108,6 +108,10 @@ const sidebars: SidebarsConfig = {
             },
           ],
         },
+        {
+          type: 'doc',
+          id: 'quick-start/v4/weapp-vite',
+        },
       ],
     },
     {

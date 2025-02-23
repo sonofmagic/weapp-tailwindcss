@@ -1,4 +1,4 @@
-# 开发前注意(推荐阅读！)
+# 开发前注意!
 
 :::warning
 由于 `tailwindcss@4.x` 本身还在快速的开发迭代中，以下内容可能会经常变更，如果发现已经过时，请提 `issue` 或者直接修复提 `pr`
@@ -22,15 +22,11 @@
 
 而且 `uni-app`/`taro` 这种框架，默认都是 `cjs` 加载的，而 `@tailwindcss/vite` 只提供了 `esm` 的版本，所以集成上可能会遇到问题
 
-### 从编译速度出发
+> 从编译速度出发, 应该是 `@tailwindcss/vite` 更快一些
 
-应该是 `@tailwindcss/vite` 更快一些
+本教程的原则是，大部分项目使用 `@tailwindcss/postcss`, 因为这个兼容性更好，更适合从原先的 `tailwindcss@3.x` 版本升级上来
 
-### 本教程的原则
-
-本教程的原则是，能用 `@tailwindcss/vite` 的尽量使用，否则就使用 `@tailwindcss/postcss`(大部分项目)
-
-当然，你也完全可以使用 `uni-app vite vue3` + `@tailwindcss/postcss` 这种组合的。
+当然，你也完全可以使用 `uni-app vite vue3` + `@tailwindcss/vite` 这种组合， 但是可能需要一些额外的配置。
 
 ## 开发 h5
 

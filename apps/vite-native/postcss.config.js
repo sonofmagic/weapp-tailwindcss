@@ -6,5 +6,6 @@ export default {
     // 'tailwindcss-injector/postcss': {},
     // tailwindcss: {},
     // autoprefixer: {},
+    '@tailwindcss/postcss': {},
   },
 }

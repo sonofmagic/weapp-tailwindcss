@@ -16,18 +16,18 @@ export default defineConfig({
   //   // srcRoot: 'src',
   // },
   plugins: [
-    tailwindcss(),
+    // tailwindcss(),
     // @ts-ignore
     uvwt({
       rem2rpx: true,
-      tailwindcss: {
-        version: 4,
-        v4: {
-          cssEntries: [
-            path.resolve(import.meta.dirname, './app.css'),
-          ],
-        },
-      },
+      // tailwindcss: {
+      //   version: 4,
+      //   v4: {
+      //     cssEntries: [
+      //       path.resolve(import.meta.dirname, './app.css'),
+      //     ],
+      //   },
+      // },
     }),
   ],
   css: {
