@@ -1,3 +1,0 @@
-{
-  "url": "@image('200x100', '@hex', '@hex', 'png', '@name')"
-}
