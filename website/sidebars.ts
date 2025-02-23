@@ -77,21 +77,33 @@ const sidebars: SidebarsConfig = {
           id: 'quick-start/v4/readme',
         },
         {
-          type: 'doc',
-          id: 'quick-start/v4/uni-app-vite',
+          type: 'category',
+          label: 'uni-app',
+          items: [
+            {
+              type: 'doc',
+              id: 'quick-start/v4/uni-app-vite',
+            },
+            {
+              type: 'doc',
+              id: 'quick-start/v4/uni-app-webpack',
+            },
+          ],
         },
         {
-          type: 'doc',
-          id: 'quick-start/v4/uni-app-webpack',
+          type: 'category',
+          label: 'Taro',
+          items: [
+            {
+              type: 'doc',
+              id: 'quick-start/v4/taro-webpack',
+            },
+            {
+              type: 'doc',
+              id: 'quick-start/v4/taro-vite',
+            },
+          ],
         },
-        {
-          type: 'doc',
-          id: 'quick-start/v4/taro-webpack',
-        },
-        // {
-        //   type: 'doc',
-        //   id: 'quick-start/v4/taro-vite',
-        // },
       ],
     },
     {

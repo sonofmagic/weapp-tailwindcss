@@ -1,8 +1,53 @@
 # Taro vite
 
-## 1. 安装
+## 安装
 
 ```bash npm2yarn
-npm install -D tailwindcss @tailwindcss/vite weapp-tailwindcss
+npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 ```
 
+> 这里不使用 `@tailwindcss/vite` 是由于 `taro` 配置没法加载纯 `esm` 不是 `cjs` 的包, 会爆错误 `No "exports" main defined`
+
+## 配置
+
+```js titl="config/index.ts"
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import tailwindcss from '@tailwindcss/postcss'
+
+{
+  compiler: {
+    type: 'vite',
+    vitePlugins: [
+      {
+        name: 'postcss-config-loader-plugin',
+        config(config) {
+          // 加载 tailwindcss
+          if (typeof config.css?.postcss === 'object') {
+            config.css?.postcss.plugins?.unshift(tailwindcss())
+          }
+        },
+      },
+      UnifiedViteWeappTailwindcssPlugin({
+        rem2rpx: true,
+      })
+    ]
+  },
+}
+```
+
+> 这里使用 `vite` 插件直接去加载 `tailwindcss`，这是由于 `taro4 vite` 不会自动去加载项目下的 `postcss.config.js`，所以只能定义这个 `postcss-config-loader-plugin`
+
+## 添加样式
+
+在项目目录下，创建一个 `index.css`，然后添加以下内容：
+
+```css title="index.css"
+@import "tailwindcss";
+```
+
+
+更改好配置之后，直接启动即可
+
+## 参考模板
+
+https://github.com/icebreaker-template/taro-vite-tailwindcss-v4
