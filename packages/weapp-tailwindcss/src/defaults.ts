@@ -1,5 +1,5 @@
 import type { UserDefinedOptions } from './types'
-import { MappingChars2String } from '@weapp-core/escape'
+import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
 import { isPackageExists } from 'local-pkg'
 import { noop } from './utils'
 
@@ -115,5 +115,10 @@ export function getDefaultOptions(): UserDefinedOptions {
     cssRemoveHoverPseudoClass: true,
     ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
+    patch: {
+      filter(className) {
+        return !isAllowedClassName(className)
+      },
+    },
   }
 }
