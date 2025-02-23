@@ -82,10 +82,12 @@ const sidebars: SidebarsConfig = {
           items: [
             {
               type: 'doc',
+              label: 'Vite Vue3 CLI',
               id: 'quick-start/v4/uni-app-vite',
             },
             {
               type: 'doc',
+              label: 'Webpack Vue2 CLI',
               id: 'quick-start/v4/uni-app-webpack',
             },
           ],
@@ -96,10 +98,12 @@ const sidebars: SidebarsConfig = {
           items: [
             {
               type: 'doc',
+              label: 'Webpack',
               id: 'quick-start/v4/taro-webpack',
             },
             {
               type: 'doc',
+              label: 'Vite',
               id: 'quick-start/v4/taro-vite',
             },
           ],
