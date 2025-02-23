@@ -1,5 +1,71 @@
 # Taro webpack
 
+## 安装
+
 ```bash npm2yarn
-npm install tailwindcss @tailwindcss/postcss
+npm install tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 ```
+
+## 配置
+
+### 在你的根目录创建 `postcss.config.mjs`
+
+```js title="postcss.config.mjs"
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  }
+}
+```
+
+### 在你的 `app.css` 里面添加
+
+```css
+@import "tailwindcss";
+```
+
+### 注册插件
+
+在项目的配置文件 `config/index` 中注册:
+
+```js title="config/index.[jt]s"
+import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+// 假如你使用 js 配置，则使用下方 require 的写法
+// const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+
+{
+  // 找到 mini 这个配置
+  mini: {
+    // postcss: { /*...*/ },
+    // 中的 webpackChain, 通常紧挨着 postcss 
+    webpackChain(chain, webpack) {
+      // 复制这块区域到你的配置代码中 region start
+      // highlight-start
+      chain.merge({
+        plugin: {
+          install: {
+            plugin: UnifiedWebpackPluginV5,
+            args: [{
+              appType: 'taro'
+            }]
+          }
+        }
+      })
+      // highlight-end
+      // region end
+    }
+  }
+}
+```
+
+## 运行
+
+然后执行命令发布到微信小程序吧
+
+```bash npm2yarn
+npm run dev:weapp
+```
+
+## 参考模板
+
+https://github.com/icebreaker-template/taro-webpack-tailwindcss-v4

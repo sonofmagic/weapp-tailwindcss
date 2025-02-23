@@ -46,3 +46,14 @@
 
 这种情况，你就非常需要兼容性降级方案，即使用 [`postcss-preset-env`](https://www.npmjs.com/package/postcss-preset-env)
 
+## 使用 pnpm
+
+默认使用 `pnpm` 的时候，由于 `pnpm` 是无法使用幽灵依赖的
+
+但是 `uni-app`/`taro` 出于一些历史原因，是需要幽灵依赖的，这时候可以在项目下创建 `.npmrc` 添加内容如下
+
+```txt title=".npmrc"
+shamefully-hoist=true
+```
+
+然后重新执行 `pnpm i` 安装包即可运行

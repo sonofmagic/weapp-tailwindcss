@@ -83,10 +83,10 @@ const sidebars: SidebarsConfig = {
         //   type: 'doc',
         //   id: 'quick-start/v4/uni-app-webpack',
         // },
-        // {
-        //   type: 'doc',
-        //   id: 'quick-start/v4/taro-webpack',
-        // },
+        {
+          type: 'doc',
+          id: 'quick-start/v4/taro-webpack',
+        },
         // {
         //   type: 'doc',
         //   id: 'quick-start/v4/taro-vite',
