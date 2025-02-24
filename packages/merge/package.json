@@ -19,7 +19,8 @@
     ".": "./src/index.ts"
   },
   "files": [
-    "dist"
+    "dist",
+    "scripts"
   ],
   "scripts": {
     "dev": "tsup --watch --sourcemap",
@@ -28,7 +29,8 @@
     "test:dev": "vitest",
     "release": "pnpm publish",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "postinstall": "node scripts/postinstall.js"
   },
   "publishConfig": {
     "exports": {
@@ -60,6 +62,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "semver": "^7.7.1",
     "tailwind-merge": "^3.0.2",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0"
   },
