@@ -3,5 +3,6 @@
   "projectname": "vite-native-ts",
   "setting": {
     "compileHotReLoad": true
-  }
+  },
+  "libVersion": "3.7.9"
 }

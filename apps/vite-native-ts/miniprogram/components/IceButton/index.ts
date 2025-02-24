@@ -1,6 +1,8 @@
 import { twMerge } from '@weapp-tailwindcss/merge'
 
-const defaultClass = 'weapp-reset-button px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80'
+const textColor = 'text-[#0000ff]'
+
+const defaultClass = `weapp-reset-button ${textColor} px-6 py-2 font-medium tracking-wide capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80`
 
 Component({
   options: {
@@ -42,7 +44,8 @@ Component({
   },
   lifetimes: {
     ready() {
-      console.log(this.properties, this.data)
+      console.log(this.properties.mergedClass)
+      console.log(this.data.mergedClass)
     },
   },
   // externalClasses: ['class'],

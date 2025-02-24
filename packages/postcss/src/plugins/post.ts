@@ -28,6 +28,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
         if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
           rule.remove()
         }
+        // tailwindcss v4
         rule.walkDecls((decl) => {
           if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OklabSuffix)) {
             decl.value = decl.value.slice(0, decl.value.length - OklabSuffix.length)
