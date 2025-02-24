@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.6
+
+### Patch Changes
+
+- [`d856f81`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d856f81dbe1de4e67feba4f8e76d0a5275e007f1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - perf: add patcher default filter
+
 ## 4.0.6-alpha.0
 
 ### Patch Changes

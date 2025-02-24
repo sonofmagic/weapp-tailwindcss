@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.0.2
+
+### Patch Changes
+
+- [`0ddc049`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0ddc0498c8d6ab5da298ab2f426e6b2c7e2de242) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: add auto switch postinstall script
+
 ## 1.0.1
 
 ### Patch Changes
