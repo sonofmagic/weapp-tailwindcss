@@ -10847,7 +10847,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
   <image
     mode="widthFix"
     src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
-    style="width: 374px; height: 155.833px"
+    style="width: 499px; height: 207.917px"
     class="mt-_96d3px_ Issue228--mt-_96d3px_ w-_61d1px_ Issue228--w-_61d1px_ h-_50d99px_ Issue228--h-_50d99px_"
     role="img"></image>
   <view>*******</view>

@@ -170,28 +170,7 @@ text:not(n),
 `;
 
 exports[`e2e native > 'vite-native' > json 1`] = `
-"[
-  "-m",
-  "bg-[#3a32d1]",
-  "bg-[#7d7ac2]",
-  "bg-gradient-to-b",
-  "bg-gradient-to-t",
-  "bg-gradient-to-tr",
-  "container",
-  "content",
-  "from",
-  "from-[#2f73f1]",
-  "h-[29.292px]",
-  "h-[30px]",
-  "h-[45px]",
-  "list",
-  "text-[#123456]",
-  "text-[100px]",
-  "text-[100rpx]",
-  "text-red-700",
-  "to-[#4bcefd]",
-  "w-[323px]"
-]
+"[]
 "
 `;
 
@@ -435,13 +414,13 @@ text,
 .tracking-wide {
   letter-spacing: 0.025em;
 }
+.text-_h0000ff_ {
+  --tw-text-opacity: 1;
+  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+}
 .text-gray-600 {
   --tw-text-opacity: 1;
   color: rgba(75, 85, 99, var(--tw-text-opacity, 1));
-}
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 .transition-colors {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
@@ -556,7 +535,7 @@ exports[`e2e native > 'vite-native-ts' > wxml 1`] = `
 "<view class="p-4">
   <view>
     <button
-      class="weapp-reset-button index--weapp-reset-button px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide text-white index--text-white capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hovercbg-blue-500 index--hovercbg-blue-500 focuscoutline-none index--focuscoutline-none focuscring index--focuscring focuscring-blue-300 index--focuscring-blue-300 focuscring-opacity-80 index--focuscring-opacity-80 bg-_orange_ index--bg-_orange_"
+      class="weapp-reset-button index--weapp-reset-button text-_h0000ff_ index--text-_h0000ff_ px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hovercbg-blue-500 index--hovercbg-blue-500 focuscoutline-none index--focuscoutline-none focuscring index--focuscring focuscring-blue-300 index--focuscring-blue-300 focuscring-opacity-80 index--focuscring-opacity-80 bg-_orange_ index--bg-_orange_"
       hover-class="bg-_h123456_"
       role="button"
       aria-disabled="false">
