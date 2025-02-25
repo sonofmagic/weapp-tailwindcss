@@ -23,3 +23,10 @@ docs/api
 docs/api-cli
 !docs
 scripts/docx
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
