@@ -30,7 +30,8 @@
     "deploy:cos": "pnpm build && ice-deploy -c --dir=build",
     "build:docs": "node scripts/index.js",
     "e2e": "playwright test",
-    "e2e:u": "playwright test -u"
+    "e2e:u": "playwright test -u",
+    "exportRoutes": "tsx scripts/exportRoutes.ts"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",

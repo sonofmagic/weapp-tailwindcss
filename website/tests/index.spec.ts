@@ -1,13 +1,14 @@
+import { URL } from 'node:url'
 import { expect, test } from '@playwright/test'
+import routes from '../routes.json'
 
-test('Has title', async ({ page }) => {
-  await page.goto('https://tw.icebreaker.top/')
+for (const route of routes) {
+  test(`${route} Screenshot`, async ({ page }) => {
+    const url = new URL(route, 'https://tw.icebreaker.top/')
+    await page.goto(url.toString())
 
-  await expect(page).toHaveTitle(/weapp-tailwindcss/)
-})
-
-test('HomePage Screenshot', async ({ page }) => {
-  await page.goto('https://tw.icebreaker.top/')
-
-  await expect(page).toHaveScreenshot()
-})
+    await expect(page).toHaveScreenshot({
+      fullPage: true,
+    })
+  })
+}
