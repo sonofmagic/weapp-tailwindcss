@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.0.3
+
+### Patch Changes
+
+- [`9e65534`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9e65534f035ee4e17a2dc0b891278cacb92d5a0b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: @layer as :not(#n) and @weapp-tailwindcss/merge switcher
+
 ## 1.0.2
 
 ### Patch Changes
