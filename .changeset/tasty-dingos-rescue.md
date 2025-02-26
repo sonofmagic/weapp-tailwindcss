@@ -3,4 +3,4 @@
 "@weapp-tailwindcss/merge": patch
 ---
 
-fix: @layer and @weapp-tailwindcss/merge switcher
+fix: @layer as :not(#n) and @weapp-tailwindcss/merge switcher
