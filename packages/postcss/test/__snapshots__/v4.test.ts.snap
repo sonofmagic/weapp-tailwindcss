@@ -596,14 +596,14 @@ exports[`v4 > postcss 1`] = `
 }
 }
 
-:not(n)::after,:not(n)::before,:not(n)::backdrop,:not(n)::file-selector-button {
+:not(#n)::after,:not(#n)::before,:not(#n)::backdrop,:not(#n)::file-selector-button {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
 
-html:not(n),:host:not(n) {
+html:not(#n),:host:not(#n) {
     font-family: var( --default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
     font-variation-settings: var( --default-font-variation-settings, normal );
     font-feature-settings: var(--default-font-feature-settings, normal);
@@ -613,94 +613,94 @@ html:not(n),:host:not(n) {
     -webkit-tap-highlight-color: transparent;
   }
 
-body:not(n) {
+body:not(#n) {
     line-height: inherit;
   }
 
-hr:not(n) {
+hr:not(#n) {
     height: 0;
     color: inherit;
     border-top-width: 1px;
   }
 
-abbr:not(n) {
+abbr:not(#n) {
     text-decoration: underline;
     text-decoration: underline dotted;
   }
 
-h1:not(n),h2:not(n),h3:not(n),h4:not(n),h5:not(n),h6:not(n) {
+h1:not(#n),h2:not(#n),h3:not(#n),h4:not(#n),h5:not(#n),h6:not(#n) {
     font-size: inherit;
     font-weight: inherit;
   }
 
-a:not(n) {
+a:not(#n) {
     color: inherit;
     text-decoration: inherit;
   }
 
-b:not(n),strong:not(n) {
+b:not(#n),strong:not(#n) {
     font-weight: bolder;
   }
 
-code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
+code:not(#n),kbd:not(#n),samp:not(#n),pre:not(#n) {
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
 
-small:not(n) {
+small:not(#n) {
     font-size: 80%;
   }
 
-sub:not(n),sup:not(n) {
+sub:not(#n),sup:not(#n) {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline;
   }
 
-sub:not(n) {
+sub:not(#n) {
     bottom: -0.25em;
   }
 
-sup:not(n) {
+sup:not(#n) {
     top: -0.5em;
   }
 
-table:not(n) {
+table:not(#n) {
     text-indent: 0;
     border-collapse: collapse;
     border-color: inherit;
   }
 
-:-moz-focusring:not(n) {
+:-moz-focusring:not(#n) {
     outline: auto;
   }
 
-progress:not(n) {
+progress:not(#n) {
     vertical-align: baseline;
   }
 
-summary:not(n) {
+summary:not(#n) {
     display: list-item;
   }
 
-ol:not(n),ul:not(n),menu:not(n) {
+ol:not(#n),ul:not(#n),menu:not(#n) {
     list-style: none;
   }
 
-img:not(n),svg:not(n),video:not(n),canvas:not(n),audio:not(n),iframe:not(n),embed:not(n),object:not(n) {
+img:not(#n),svg:not(#n),video:not(#n),canvas:not(#n),audio:not(#n),iframe:not(#n),embed:not(#n),object:not(#n) {
     display: block;
     vertical-align: middle;
   }
 
-img:not(n),video:not(n) {
+img:not(#n),video:not(#n) {
     max-width: 100%;
     height: auto;
   }
 
-button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n),:not(n)::file-selector-button {
+button:not(#n),input:not(#n),select:not(#n),optgroup:not(#n),textarea:not(#n),:not(#n)::file-selector-button {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -711,117 +711,117 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n),:not(n)
     opacity: 1;
   }
 
-:where(select):not(n) optgroup {
+:where(select):not(#n) optgroup {
     font-weight: bolder;
   }
 
-:where(select):not(n) optgroup {
+:where(select):not(#n) optgroup {
     font-weight: bolder;
   }
 
-:where(select):not(n) optgroup option {
+:where(select):not(#n) optgroup option {
     padding-left: 20px;
   }
 
-:where(select):not(n) optgroup option {
+:where(select):not(#n) optgroup option {
     padding-left: 20px;
   }
 
-:not(n)::file-selector-button {
+:not(#n)::file-selector-button {
     margin-right: 4px;
   }
 
-:not(n)::placeholder {
+:not(#n)::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
   }
 
-textarea:not(n) {
+textarea:not(#n) {
     resize: vertical;
   }
 
-:not(n)::-webkit-search-decoration {
+:not(#n)::-webkit-search-decoration {
     appearance: none;
   }
 
-:not(n)::-webkit-date-and-time-value {
+:not(#n)::-webkit-date-and-time-value {
     min-height: 1lh;
     text-align: inherit;
   }
 
-:not(n)::-webkit-datetime-edit {
+:not(#n)::-webkit-datetime-edit {
     display: inline-flex;
   }
 
-:not(n)::-webkit-datetime-edit-fields-wrapper {
+:not(#n)::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
 
-:not(n)::-webkit-datetime-edit,:not(n)::-webkit-datetime-edit-year-field,:not(n)::-webkit-datetime-edit-month-field,:not(n)::-webkit-datetime-edit-day-field,:not(n)::-webkit-datetime-edit-hour-field,:not(n)::-webkit-datetime-edit-minute-field,:not(n)::-webkit-datetime-edit-second-field,:not(n)::-webkit-datetime-edit-millisecond-field,:not(n)::-webkit-datetime-edit-meridiem-field {
+:not(#n)::-webkit-datetime-edit,:not(#n)::-webkit-datetime-edit-year-field,:not(#n)::-webkit-datetime-edit-month-field,:not(#n)::-webkit-datetime-edit-day-field,:not(#n)::-webkit-datetime-edit-hour-field,:not(#n)::-webkit-datetime-edit-minute-field,:not(#n)::-webkit-datetime-edit-second-field,:not(#n)::-webkit-datetime-edit-millisecond-field,:not(#n)::-webkit-datetime-edit-meridiem-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:-moz-ui-invalid:not(n) {
+:-moz-ui-invalid:not(#n) {
     box-shadow: none;
   }
 
-button:not(n),input:not(n),:not(n)::file-selector-button {
+button:not(#n),input:not(#n),:not(#n)::file-selector-button {
     appearance: button;
   }
 
-:not(n)::-webkit-inner-spin-button,:not(n)::-webkit-outer-spin-button {
+:not(#n)::-webkit-inner-spin-button,:not(#n)::-webkit-outer-spin-button {
     height: auto;
   }
 
-.container:not(n):not(n):not(n) {
+.container:not(#n):not(#n):not(#n) {
     width: 100%;
   }
 
 @media (min-width: 40rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
       max-width: 40rem;
   }
     }
 
 @media (min-width: 48rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
       max-width: 48rem;
   }
     }
 
 @media (min-width: 64rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
       max-width: 64rem;
   }
     }
 
 @media (min-width: 80rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
       max-width: 80rem;
   }
     }
 
 @media (min-width: 96rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
       max-width: 96rem;
   }
     }
 
-.m-_3d45rpx_:not(n):not(n):not(n) {
+.m-_3d45rpx_:not(#n):not(#n):not(#n) {
     margin: 3.45rpx;
   }
 
-.mx-auto:not(n):not(n):not(n) {
+.mx-auto:not(#n):not(#n):not(#n) {
     margin-left: auto;
     margin-right: auto;
   }
 
-.bg-_h377a6c90_:not(n):not(n):not(n) {
+.bg-_h377a6c90_:not(#n):not(#n):not(#n) {
     background-color: rgba(55,122,108,0.56471);
   }
 
-.p-_12d34px_:not(n):not(n):not(n) {
+.p-_12d34px_:not(#n):not(#n):not(#n) {
     padding: 12.34px;
   }
 
@@ -1427,21 +1427,21 @@ exports[`v4 > vite 1`] = `
 }
 }
 
-:not(n)::after,:not(n)::before,:not(n)::backdrop {
+:not(#n)::after,:not(#n)::before,:not(#n)::backdrop {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
 
-:not(n)::file-selector-button {
+:not(#n)::file-selector-button {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
 
-html:not(n),:host:not(n) {
+html:not(#n),:host:not(#n) {
     font-family: var(--default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
     font-variation-settings: var(--default-font-variation-settings, normal);
     font-feature-settings: var(--default-font-feature-settings, normal);
@@ -1451,96 +1451,96 @@ html:not(n),:host:not(n) {
     -webkit-tap-highlight-color: transparent;
   }
 
-body:not(n) {
+body:not(#n) {
     line-height: inherit;
   }
 
-hr:not(n) {
+hr:not(#n) {
     height: 0;
     color: inherit;
     border-top-width: 1px;
   }
 
-abbr:not(n) {
+abbr:not(#n) {
     text-decoration: underline;
     text-decoration: underline dotted;
     text-decoration: underline dotted;
   }
 
-h1:not(n),h2:not(n),h3:not(n),h4:not(n),h5:not(n),h6:not(n) {
+h1:not(#n),h2:not(#n),h3:not(#n),h4:not(#n),h5:not(#n),h6:not(#n) {
     font-size: inherit;
     font-weight: inherit;
   }
 
-a:not(n) {
+a:not(#n) {
     color: inherit;
     text-decoration: inherit;
     text-decoration: inherit;
   }
 
-b:not(n),strong:not(n) {
+b:not(#n),strong:not(#n) {
     font-weight: bolder;
   }
 
-code:not(n),kbd:not(n),samp:not(n),pre:not(n) {
+code:not(#n),kbd:not(#n),samp:not(#n),pre:not(#n) {
     font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
     font-size: 1em;
     font-variation-settings: var(--default-mono-font-variation-settings, normal);
     font-feature-settings: var(--default-mono-font-feature-settings, normal);
   }
 
-small:not(n) {
+small:not(#n) {
     font-size: 80%;
   }
 
-sub:not(n),sup:not(n) {
+sub:not(#n),sup:not(#n) {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline;
   }
 
-sub:not(n) {
+sub:not(#n) {
     bottom: -.25em;
   }
 
-sup:not(n) {
+sup:not(#n) {
     top: -.5em;
   }
 
-table:not(n) {
+table:not(#n) {
     text-indent: 0;
     border-collapse: collapse;
     border-color: inherit;
   }
 
-:-moz-focusring:not(n) {
+:-moz-focusring:not(#n) {
     outline: auto;
   }
 
-progress:not(n) {
+progress:not(#n) {
     vertical-align: baseline;
   }
 
-summary:not(n) {
+summary:not(#n) {
     display: list-item;
   }
 
-ol:not(n),ul:not(n),menu:not(n) {
+ol:not(#n),ul:not(#n),menu:not(#n) {
     list-style: none;
   }
 
-img:not(n),svg:not(n),video:not(n),canvas:not(n),audio:not(n),iframe:not(n),embed:not(n),object:not(n) {
+img:not(#n),svg:not(#n),video:not(#n),canvas:not(#n),audio:not(#n),iframe:not(#n),embed:not(#n),object:not(#n) {
     display: block;
     vertical-align: middle;
   }
 
-img:not(n),video:not(n) {
+img:not(#n),video:not(#n) {
     max-width: 100%;
     height: auto;
   }
 
-button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
+button:not(#n),input:not(#n),select:not(#n),optgroup:not(#n),textarea:not(#n) {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -1551,7 +1551,7 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
     opacity: 1;
   }
 
-:not(n)::file-selector-button {
+:not(#n)::file-selector-button {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -1562,114 +1562,114 @@ button:not(n),input:not(n),select:not(n),optgroup:not(n),textarea:not(n) {
     opacity: 1;
   }
 
-:where(select):not(n) optgroup {
+:where(select):not(#n) optgroup {
     font-weight: bolder;
   }
 
-:where(select):not(n) optgroup {
+:where(select):not(#n) optgroup {
     font-weight: bolder;
   }
 
-:where(select):not(n) optgroup option {
+:where(select):not(#n) optgroup option {
     padding-left: 20px;
   }
 
-:where(select):not(n) optgroup option {
+:where(select):not(#n) optgroup option {
     padding-left: 20px;
   }
 
-:not(n)::file-selector-button {
+:not(#n)::file-selector-button {
     margin-right: 4px;
   }
 
-:not(n)::placeholder {
+:not(#n)::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
   }
 
-textarea:not(n) {
+textarea:not(#n) {
     resize: vertical;
   }
 
-:not(n)::-webkit-search-decoration {
+:not(#n)::-webkit-search-decoration {
     appearance: none;
   }
 
-:not(n)::-webkit-date-and-time-value {
+:not(#n)::-webkit-date-and-time-value {
     min-height: 1lh;
     text-align: inherit;
   }
 
-:not(n)::-webkit-datetime-edit {
+:not(#n)::-webkit-datetime-edit {
     display: inline-flex;
   }
 
-:not(n)::-webkit-datetime-edit-fields-wrapper {
+:not(#n)::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
 
-:not(n)::-webkit-datetime-edit {
+:not(#n)::-webkit-datetime-edit {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-year-field {
+:not(#n)::-webkit-datetime-edit-year-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-month-field {
+:not(#n)::-webkit-datetime-edit-month-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-day-field {
+:not(#n)::-webkit-datetime-edit-day-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-hour-field {
+:not(#n)::-webkit-datetime-edit-hour-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-minute-field {
+:not(#n)::-webkit-datetime-edit-minute-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-second-field {
+:not(#n)::-webkit-datetime-edit-second-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-millisecond-field {
+:not(#n)::-webkit-datetime-edit-millisecond-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:not(n)::-webkit-datetime-edit-meridiem-field {
+:not(#n)::-webkit-datetime-edit-meridiem-field {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-:-moz-ui-invalid:not(n) {
+:-moz-ui-invalid:not(#n) {
     box-shadow: none;
   }
 
-button:not(n),input:not(n) {
+button:not(#n),input:not(#n) {
     appearance: button;
   }
 
-:not(n)::file-selector-button {
+:not(#n)::file-selector-button {
     appearance: button;
   }
 
-:not(n)::-webkit-inner-spin-button {
+:not(#n)::-webkit-inner-spin-button {
     height: auto;
   }
 
-:not(n)::-webkit-outer-spin-button {
+:not(#n)::-webkit-outer-spin-button {
     height: auto;
   }
 

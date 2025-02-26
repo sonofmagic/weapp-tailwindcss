@@ -60,11 +60,11 @@
     "dotenv": "^16.4.7",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
-    "sass": "^1.85.0",
+    "sass": "^1.85.1",
     "sass-loader": "^16.0.5",
     "tailwindcss": "^3.4.17",
     "theme-transition": "workspace:*",
-    "typedoc": "^0.27.8",
+    "typedoc": "^0.27.9",
     "typedoc-plugin-markdown": "4.4.2",
     "webpack-node-externals": "^3.0.0"
   },

@@ -104,7 +104,7 @@ export function getFallbackRemove(rule?: Rule) {
               // }
               x.nodes = [
                 selectorParser.tag({
-                  value: 'n',
+                  value: '#n',
                 }),
               ]
             }
