@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`e2e native > 'vite-native' > css 1`] = `
-"/*! tailwindcss v4.0.8 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --color-red-700: rgb(191, 0, 15);
@@ -19,81 +19,81 @@ page,
     }
   }
 }
-view:not(n),
-text:not(n),
-:not(n):after,
-:not(n):before,
-:not(n)::backdrop {
+view:not(#n),
+text:not(#n),
+:not(#n):after,
+:not(#n):before,
+:not(#n)::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
   padding: 0;
 }
-:not(n)::file-selector-button {
+:not(#n)::file-selector-button {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
   padding: 0;
 }
-.container:not(n):not(n):not(n) {
+.container:not(#n):not(#n):not(#n) {
   width: 100%;
 }
 @media (min-width: 40rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
     max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
     max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
     max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
     max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
-  .container:not(n):not(n):not(n) {
+  .container:not(#n):not(#n):not(#n) {
     max-width: 3072rpx;
   }
 }
-.h-_29d292px_:not(n):not(n):not(n) {
+.h-_29d292px_:not(#n):not(#n):not(#n) {
   height: 29.292px;
 }
-.h-_30px_:not(n):not(n):not(n) {
+.h-_30px_:not(#n):not(#n):not(#n) {
   height: 30px;
 }
-.h-_45px_:not(n):not(n):not(n) {
+.h-_45px_:not(#n):not(#n):not(#n) {
   height: 45px;
 }
-.w-_323px_:not(n):not(n):not(n) {
+.w-_323px_:not(#n):not(#n):not(#n) {
   width: 323px;
 }
-.bg-_h3a32d1_:not(n):not(n):not(n) {
+.bg-_h3a32d1_:not(#n):not(#n):not(#n) {
   background-color: #3a32d1;
 }
-.bg-_h7d7ac2_:not(n):not(n):not(n) {
+.bg-_h7d7ac2_:not(#n):not(#n):not(#n) {
   background-color: #7d7ac2;
 }
-.bg-gradient-to-b:not(n):not(n):not(n) {
+.bg-gradient-to-b:not(#n):not(#n):not(#n) {
   --tw-gradient-position: to bottom;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
-.bg-gradient-to-t:not(n):not(n):not(n) {
+.bg-gradient-to-t:not(#n):not(#n):not(#n) {
   --tw-gradient-position: to top;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
-.bg-gradient-to-tr:not(n):not(n):not(n) {
+.bg-gradient-to-tr:not(#n):not(#n):not(#n) {
   --tw-gradient-position: to top right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
-.from-_h2f73f1_:not(n):not(n):not(n) {
+.from-_h2f73f1_:not(#n):not(#n):not(#n) {
   --tw-gradient-from: #2f73f1;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
@@ -102,7 +102,7 @@ text:not(n),
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-.to-_h4bcefd_:not(n):not(n):not(n) {
+.to-_h4bcefd_:not(#n):not(#n):not(#n) {
   --tw-gradient-to: #4bcefd;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
@@ -111,16 +111,16 @@ text:not(n),
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-.text-_100px_:not(n):not(n):not(n) {
+.text-_100px_:not(#n):not(#n):not(#n) {
   font-size: 100px;
 }
-.text-_h123456_:not(n):not(n):not(n) {
+.text-_h123456_:not(#n):not(#n):not(#n) {
   color: #123456;
 }
-.text-_100rpx_:not(n):not(n):not(n) {
+.text-_100rpx_:not(#n):not(#n):not(#n) {
   color: 100rpx;
 }
-.text-red-700:not(n):not(n):not(n) {
+.text-red-700:not(#n):not(#n):not(#n) {
   color: var(--color-red-700);
 }
 @property --tw-gradient-position {
