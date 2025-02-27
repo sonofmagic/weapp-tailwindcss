@@ -3,8 +3,8 @@ import type { IStyleHandlerOptions } from '../types'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { createContext } from './ctx'
-import { postcssWeappTailwindcssPostPlugin } from './post'
-import { postcssWeappTailwindcssPrePlugin } from './pre'
+import { postcssWeappTailwindcssPostPlugin as post } from './post'
+import { postcssWeappTailwindcssPrePlugin as pre } from './pre'
 /**
  * 根据提供的选项生成一组 PostCSS 插件。
  * @param options - 样式处理器选项，包含 PostCSS 插件和其他配置。
@@ -15,7 +15,7 @@ export function getPlugins(options: IStyleHandlerOptions) {
   options.ctx = ctx
   const plugins: AcceptedPlugin[] = [
     ...(options.postcssOptions?.plugins ?? []),
-    postcssWeappTailwindcssPrePlugin(options),
+    pre(options),
     postcssPresetEnv(options.cssPresetEnv),
   ]
   if (options.rem2rpx) {
@@ -31,7 +31,7 @@ export function getPlugins(options: IStyleHandlerOptions) {
       ),
     )
   }
-  plugins.push(postcssWeappTailwindcssPostPlugin(options))
+  plugins.push(post(options))
   return plugins
 }
 

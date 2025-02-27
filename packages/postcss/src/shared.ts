@@ -23,54 +23,35 @@ export function internalCssSelectorReplacer(
   })
 }
 
-export function composeIsPseudoAst(strs: string | string[]): Node[] {
-  if (typeof strs === 'string') {
-    return [
-      psp.tag({
-        value: strs,
-      }),
-      psp.combinator({
-        value: '+',
-      }),
-      psp.tag({
-        value: strs,
-      }),
-    ]
-  }
-  if (strs.length > 1) {
-    return [
-      psp.pseudo({
-        value: ':is',
-        nodes: strs.map(str =>
-          psp.tag({
-            value: str,
-          }),
-        ),
-      }),
-      psp.combinator({
-        value: '+',
-      }),
-      psp.pseudo({
-        value: ':is',
-        nodes: strs.map(str =>
-          psp.tag({
-            value: str,
-          }),
-        ),
-      }),
-    ]
-  }
+export function mklist(node: Node): Node[] {
   return [
-    psp.tag({
-      value: strs[0],
-    }),
+    node,
     psp.combinator({
       value: '+',
     }),
-    psp.tag({
-      value: strs[0],
-    }),
+    node.clone(),
   ]
+}
+
+export function composeIsPseudoAst(strs: string | string[]): Node[] {
+  if (typeof strs === 'string') {
+    return mklist(psp.tag({
+      value: strs,
+    }))
+  }
+  if (strs.length > 1) {
+    return mklist(psp.pseudo({
+      value: ':is',
+      nodes: strs.map(str =>
+        psp.tag({
+          value: str,
+        }),
+      ),
+    }))
+  }
+  return mklist(psp.tag({
+    value: strs[0],
+  }))
 }
 
 export function composeIsPseudo(strs: string | string[]) {

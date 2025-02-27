@@ -5,6 +5,7 @@ exports[`e2e native > 'vite-native' > css 1`] = `
 page,
 :host {
   --color-red-700: rgb(191, 0, 15);
+  --spacing: 8rpx;
 }
 @supports (color: color(display-p3 0 0 0%)) {
   page,
@@ -75,6 +76,16 @@ text:not(#n),
 .w-_323px_:not(#n):not(#n):not(#n) {
   width: 323px;
 }
+.space-y-2d5:not(#n):not(#n):not(#n) > view + view,
+.space-y-2d5:not(#n):not(#n):not(#n) > view + text,
+.space-y-2d5:not(#n):not(#n):not(#n) > text + view,
+.space-y-2d5:not(#n):not(#n):not(#n) > text + text {
+  --tw-space-y-reverse: 0;
+  margin-top: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+  margin-top: calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+  margin-bottom: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)));
+}
 .bg-_h3a32d1_:not(#n):not(#n):not(#n) {
   background-color: #3a32d1;
 }
@@ -122,6 +133,11 @@ text:not(#n),
 }
 .text-red-700:not(#n):not(#n):not(#n) {
   color: var(--color-red-700);
+}
+@property --tw-space-y-reverse {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0;
 }
 @property --tw-gradient-position {
   syntax: '*';
@@ -176,11 +192,13 @@ exports[`e2e native > 'vite-native' > json 1`] = `
 
 exports[`e2e native > 'vite-native' > wxml 1`] = `
 "<scroll-view scroll-y="" type="list">
-  <view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
-  <view class="bg-_h3a32d1_ text-_100rpx_ text-red-700 w-_323px_ h-_45px_">222</view>
-  <view class="bg-gradient-to-b from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
-  <view class="bg-gradient-to-t from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
-  <view class="bg-gradient-to-tr from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
+  <view class="space-y-2d5">
+    <view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
+    <view class="bg-_h3a32d1_ text-_100rpx_ text-red-700 w-_323px_ h-_45px_">222</view>
+    <view class="bg-gradient-to-b from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
+    <view class="bg-gradient-to-t from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
+    <view class="bg-gradient-to-tr from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
+  </view>
 </scroll-view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe

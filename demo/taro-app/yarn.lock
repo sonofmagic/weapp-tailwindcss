@@ -4927,10 +4927,10 @@
     tailwind-merge "^3.0.2"
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
 
-"@weapp-tailwindcss/postcss@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.4.tgz#57658c82aefb527b6c45efa03a3d5d3f68b5f20d"
-  integrity sha512-3reCqXTCR5vwKMsBSPFbG+WSjL1CcoheJTVk49BHMoWAb+a1GBLLdD8SBv8C3L+qviVixD+lavP1gJSU+SCGLw==
+"@weapp-tailwindcss/postcss@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.5.tgz#3be52ef716cc5fbd8be0b5c1ca0916ba029f3f9f"
+  integrity sha512-4k8nyTRpbg+LdNR1M0ijuL2p2jAv8BGp2lqNXOWTDLGMWNhfjkNpgtMFFvZ9h7hIC/2hQCBaCGmZvtJJq5EE+Q==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/shared" "1.0.1"
@@ -18200,10 +18200,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.7.tgz#259e5576d719de82d792631ec02adef0f525da6e"
-  integrity sha512-pHBis0kQXWrI3tEHGwuse9ZHLMooUMPckKBH+4tkkLenGbNLTwWPtGkKSaFrVylWJnmpIwfvVLytaM3Ool3RqQ==
+weapp-tailwindcss@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.8.tgz#faaa47f228cd86e21d4831eaafb87757706de205"
+  integrity sha512-VqbrQWyL4E/RFRXg0+XtZ97c3Uuj5xU9d5cGs9BV41HsiVbk4ReFMu21wl24uqrhEaDaxRrRB3+Zenf11QfOFQ==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.26.9"
@@ -18214,7 +18214,7 @@ weapp-tailwindcss@^4.0.7:
     "@weapp-tailwindcss/init" "1.0.1"
     "@weapp-tailwindcss/logger" "1.0.0"
     "@weapp-tailwindcss/mangle" "1.0.2"
-    "@weapp-tailwindcss/postcss" "1.0.4"
+    "@weapp-tailwindcss/postcss" "1.0.5"
     "@weapp-tailwindcss/shared" "1.0.1"
     debug "~4.4.0"
     htmlparser2 "10.0.0"

@@ -4,7 +4,7 @@ import { Declaration, Rule } from 'postcss'
 import psp from 'postcss-selector-parser'
 import cssVars from './cssVars'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
-import { composeIsPseudo, composeIsPseudoAst } from './shared'
+import { composeIsPseudoAst, mklist } from './shared'
 
 const initialNodes = cssVars.map((x) => {
   return new Declaration({
@@ -38,14 +38,6 @@ const initialNodes = cssVars.map((x) => {
  * .divide-y-4>:not(hidden) + :not(hidden)
  * 会语法错误
  */
-
-const PATTERNS = [
-
-  /:not\(template\)\s*[~+]\s*:not\(template\)/.source,
-
-  /:not\(\[hidden\]\)\s*[~+]\s*:not\(\[hidden\]\)/.source,
-].join('|')
-const BROAD_MATCH_GLOBAL_REGEXP = new RegExp(PATTERNS, 'g')
 
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
   if (isOnlyBeforeAndAfterPseudoElement(node)) {
@@ -127,39 +119,14 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
 }
 
 export function getCombinatorSelectorAst(options: IStyleHandlerOptions) {
-  let childCombinatorReplaceValue: Node[] = [
-    psp.tag({ value: 'view' }),
-    psp.combinator({ value: '+' }),
-    psp.tag({ value: 'view' }),
-  ]
+  let childCombinatorReplaceValue: Node[] = mklist(psp.tag({ value: 'view' }))
   const { cssChildCombinatorReplaceValue } = options
-  if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {
-    childCombinatorReplaceValue = composeIsPseudoAst(cssChildCombinatorReplaceValue)
-  }
-  else if (typeof cssChildCombinatorReplaceValue === 'string') {
+  if (
+    typeof cssChildCombinatorReplaceValue === 'string'
+    || (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0)) {
     childCombinatorReplaceValue = composeIsPseudoAst(cssChildCombinatorReplaceValue)
   }
   return childCombinatorReplaceValue
-}
-
-export function getCombinatorSelector(options: IStyleHandlerOptions) {
-  let childCombinatorReplaceValue = 'view + view'
-  const { cssChildCombinatorReplaceValue } = options
-  if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {
-    const x = composeIsPseudo(cssChildCombinatorReplaceValue)
-    childCombinatorReplaceValue = `${x} + ${x}`
-  }
-  else if (typeof cssChildCombinatorReplaceValue === 'string') {
-    childCombinatorReplaceValue = cssChildCombinatorReplaceValue
-  }
-  return childCombinatorReplaceValue
-}
-
-export function remakeCombinatorSelector(
-  selector: string,
-  options: IStyleHandlerOptions,
-) {
-  return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, getCombinatorSelector(options))
 }
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {

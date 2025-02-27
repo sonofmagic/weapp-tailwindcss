@@ -174,7 +174,7 @@
     "debug": "~4.4.0",
     "htmlparser2": "10.0.0",
     "loader-utils": "2.0.4",
-    "local-pkg": "^1.0.0",
+    "local-pkg": "^1.1.0",
     "lru-cache": "10.4.3",
     "magic-string": "0.30.17",
     "md5": "2.3.0",

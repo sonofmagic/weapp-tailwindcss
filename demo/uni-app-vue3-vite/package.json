@@ -98,7 +98,7 @@
     "typescript": "~5.4.2",
     "vite": "5.2.8",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.0.7",
+    "weapp-tailwindcss": "^4.0.8",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "packageManager": "yarn@1.22.22",

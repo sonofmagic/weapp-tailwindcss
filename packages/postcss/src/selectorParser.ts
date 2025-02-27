@@ -25,14 +25,14 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
           }
         }
       }
-      else if (selector.type === 'pseudo'
-      ) {
+      else if (selector.type === 'pseudo') {
         if (
           selector.value === ':root'
           && cssSelectorReplacement?.root) {
           selector.value = composeIsPseudo(cssSelectorReplacement.root)
         }
         else if (selector.value === ':where') {
+          // :where(.space-y-1 > :not(:last-child))
           if (index === 0 && selector.length === 1) {
             selector.walk((node, idx) => {
               if (idx === 0 && node.type === 'class') {
@@ -64,6 +64,7 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
         })
       }
       else if (selector.type === 'combinator') {
+        // .space-x-4 > :not([hidden]) ~ :not([hidden])
         if (selector.value === '>') {
           const nodes = selector.parent?.nodes
           if (nodes) {
