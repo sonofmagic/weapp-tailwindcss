@@ -2,13 +2,14 @@ import type { Rule } from 'postcss'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
 import selectorParser from 'postcss-selector-parser'
+// import { getCombinatorSelector } from './mp'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
-  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options
+  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass, cssChildCombinatorReplaceValue } = options
 
   const transform: SyncProcessor = (selectors) => {
-    selectors.walk((selector) => {
+    selectors.walk((selector, index) => {
       // do something with the selector
       // node.selector.replace(/\*/g, 'view')
       if (selector.type === 'universal' && cssSelectorReplacement?.universal) {
@@ -24,10 +25,35 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
 
       if (
         selector.type === 'pseudo'
-        && selector.value === ':root'
-        && cssSelectorReplacement?.root
+
       ) {
-        selector.value = composeIsPseudo(cssSelectorReplacement.root)
+        if (
+          selector.value === ':root'
+          && cssSelectorReplacement?.root) {
+          selector.value = composeIsPseudo(cssSelectorReplacement.root)
+        }
+        else if (selector.value === ':where') {
+          if (index === 0 && selector.length === 1) {
+            selector.walk((node, idx) => {
+              if (node.type === 'class') {
+                if (node.value.startsWith('space-')) {
+                  if (node.parent?.nodes[idx + 1].value === '>') {
+                    const n = node.parent?.nodes[idx + 2]
+                    if (n && n.type === 'pseudo' && n.value === ':not') {
+                      n.replaceWith(
+                        selectorParser.tag({ value: 'view' }),
+                        selectorParser.combinator({ value: '+' }),
+                        selectorParser.tag({ value: 'view' }),
+                      )
+                    }
+                  }
+                }
+              }
+            })
+
+            selector.replaceWith(...selector.nodes)
+          }
+        }
       }
 
       if (selector.type === 'class') {

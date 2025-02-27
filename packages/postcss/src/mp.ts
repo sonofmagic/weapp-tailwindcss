@@ -124,12 +124,9 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
   return selectors
 }
 
-export function remakeCombinatorSelector(
-  selector: string,
-  cssChildCombinatorReplaceValue: IStyleHandlerOptions['cssChildCombinatorReplaceValue'],
-) {
+export function getCombinatorSelector(options: IStyleHandlerOptions) {
   let childCombinatorReplaceValue = 'view + view'
-
+  const { cssChildCombinatorReplaceValue } = options
   if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {
     const x = composeIsPseudo(cssChildCombinatorReplaceValue)
     childCombinatorReplaceValue = `${x} + ${x}`
@@ -137,13 +134,20 @@ export function remakeCombinatorSelector(
   else if (typeof cssChildCombinatorReplaceValue === 'string') {
     childCombinatorReplaceValue = cssChildCombinatorReplaceValue
   }
-  return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, childCombinatorReplaceValue)
+  return childCombinatorReplaceValue
+}
+
+export function remakeCombinatorSelector(
+  selector: string,
+  options: IStyleHandlerOptions,
+) {
+  return selector.replaceAll(BROAD_MATCH_GLOBAL_REGEXP, getCombinatorSelector(options))
 }
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
-  const { ctx, cssChildCombinatorReplaceValue, cssInjectPreflight, injectAdditionalCssVarScope } = options
+  const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
   // css vars scope
-  node.selector = remakeCombinatorSelector(node.selector, cssChildCombinatorReplaceValue)
+  // node.selector = remakeCombinatorSelector(node.selector, options)
 
   // 变量注入和 preflight
   if (testIfVariablesScope(node)) {
