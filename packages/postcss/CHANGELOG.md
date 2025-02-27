@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.5
+
+### Patch Changes
+
+- [`a4532ab`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a4532ab34de62556e57ed350e15ca14e602b7f93) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 使用space-y-2后编译报错 #595
+
 ## 1.0.4
 
 ### Patch Changes
