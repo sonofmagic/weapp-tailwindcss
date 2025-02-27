@@ -2543,6 +2543,12 @@ exports[`v4 > v4 space-y-* 1`] = `
     "
 `;
 
+exports[`v4 > v4 space-y-* case 2 1`] = `
+"
+.space-y-0>view+view,.space-y-0>view+text,.space-y-0>text+view,.space-y-0>text+text {}
+    "
+`;
+
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 :root,:host {

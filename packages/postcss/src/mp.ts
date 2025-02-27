@@ -1,8 +1,10 @@
+import type { Node } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
+import psp from 'postcss-selector-parser'
 import cssVars from './cssVars'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
-import { composeIsPseudo } from './shared'
+import { composeIsPseudo, composeIsPseudoAst } from './shared'
 
 const initialNodes = cssVars.map((x) => {
   return new Declaration({
@@ -122,6 +124,22 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
   }
 
   return selectors
+}
+
+export function getCombinatorSelectorAst(options: IStyleHandlerOptions) {
+  let childCombinatorReplaceValue: Node[] = [
+    psp.tag({ value: 'view' }),
+    psp.combinator({ value: '+' }),
+    psp.tag({ value: 'view' }),
+  ]
+  const { cssChildCombinatorReplaceValue } = options
+  if (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0) {
+    childCombinatorReplaceValue = composeIsPseudoAst(cssChildCombinatorReplaceValue)
+  }
+  else if (typeof cssChildCombinatorReplaceValue === 'string') {
+    childCombinatorReplaceValue = composeIsPseudoAst(cssChildCombinatorReplaceValue)
+  }
+  return childCombinatorReplaceValue
 }
 
 export function getCombinatorSelector(options: IStyleHandlerOptions) {

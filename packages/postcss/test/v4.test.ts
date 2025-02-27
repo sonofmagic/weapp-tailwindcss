@@ -52,6 +52,20 @@ describe('v4', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('v4 space-y-* case 2', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    })
+    const code = `
+:where(.space-y-0 > :not(:last-child)) {}
+    `
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
   it('--tw-gradient-position', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

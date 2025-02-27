@@ -44,7 +44,7 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string typ
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string type 2`] = `
-".space-y-4>view,text,button,input~view,text,button,input {
+".space-y-4>view,text,button,input~view,text,button,input+view,text,button,input~view,text,button,input {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));

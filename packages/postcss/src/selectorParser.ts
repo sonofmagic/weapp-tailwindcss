@@ -1,31 +1,31 @@
 import type { Rule } from 'postcss'
 import type { SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
-import selectorParser from 'postcss-selector-parser'
-// import { getCombinatorSelector } from './mp'
+import psp from 'postcss-selector-parser'
+import { getCombinatorSelectorAst } from './mp'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
-  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass, cssChildCombinatorReplaceValue } = options
+  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options
 
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector, index) => {
       // do something with the selector
       // node.selector.replace(/\*/g, 'view')
-      if (selector.type === 'universal' && cssSelectorReplacement?.universal) {
-        selector.value = composeIsPseudo(cssSelectorReplacement.universal)
-      }
-
-      if (cssRemoveHoverPseudoClass && selector.type === 'selector') {
-        const node = selector.nodes.find(x => x.type === 'pseudo' && x.value === ':hover')
-        if (node) {
-          selector.remove()
+      if (selector.type === 'universal') {
+        if (cssSelectorReplacement?.universal) {
+          selector.value = composeIsPseudo(cssSelectorReplacement.universal)
         }
       }
-
-      if (
-        selector.type === 'pseudo'
-
+      else if (selector.type === 'selector') {
+        if (cssRemoveHoverPseudoClass) {
+          const node = selector.nodes.find(x => x.type === 'pseudo' && x.value === ':hover')
+          if (node) {
+            selector.remove()
+          }
+        }
+      }
+      else if (selector.type === 'pseudo'
       ) {
         if (
           selector.value === ':root'
@@ -35,15 +35,17 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
         else if (selector.value === ':where') {
           if (index === 0 && selector.length === 1) {
             selector.walk((node, idx) => {
-              if (node.type === 'class') {
-                if (node.value.startsWith('space-')) {
-                  if (node.parent?.nodes[idx + 1].value === '>') {
-                    const n = node.parent?.nodes[idx + 2]
-                    if (n && n.type === 'pseudo' && n.value === ':not') {
-                      n.replaceWith(
-                        selectorParser.tag({ value: 'view' }),
-                        selectorParser.combinator({ value: '+' }),
-                        selectorParser.tag({ value: 'view' }),
+              if (idx === 0 && node.type === 'class') {
+                const nodes = node.parent?.nodes
+                if (nodes) {
+                  const first = nodes[idx + 1]
+                  if (first && first.type === 'combinator' && first.value === '>') {
+                    const second = nodes[idx + 2]
+                    if (second && second.type === 'pseudo' && second.value === ':not' && second.first.first.type === 'pseudo' && second.first.first.value === ':last-child') {
+                      const ast = getCombinatorSelectorAst(options)
+
+                      second.replaceWith(
+                        ...ast,
                       )
                     }
                   }
@@ -55,12 +57,40 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
           }
         }
       }
-
-      if (selector.type === 'class') {
+      else if (selector.type === 'class') {
         selector.value = internalCssSelectorReplacer(selector.value, {
           escapeMap,
           mangleContext,
         })
+      }
+      else if (selector.type === 'combinator') {
+        if (selector.value === '>') {
+          const nodes = selector.parent?.nodes
+          if (nodes) {
+            const first = nodes[index + 1]
+            if (first && first.type === 'pseudo' && first.value === ':not'
+              && (
+                (first.first.first.type === 'attribute' && first.first.first.attribute === 'hidden')
+                || (first.first.first.type === 'tag' && first.first.first.value === 'template')
+              )) {
+              const second = nodes[index + 2]
+              if (second && second.type === 'combinator' && (second.value === '~' || second.value === '+')) {
+                const third = nodes[index + 3]
+                if (third && third.type === 'pseudo' && third.value === ':not' && (
+                  (third.first.first.type === 'attribute' && third.first.first.attribute === 'hidden')
+                  || (third.first.first.type === 'tag' && third.first.first.value === 'template')
+                )) {
+                  const ast = getCombinatorSelectorAst(options)
+                  selector.parent?.nodes.splice(
+                    index + 1,
+                    3,
+                    ...ast,
+                  )
+                }
+              }
+            }
+          }
+        }
       }
     })
     if (selectors.length === 0) {
@@ -71,7 +101,7 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
 }
 
 export function ruleTransformSync(rule: Rule, options: IStyleHandlerOptions) {
-  const transformer = selectorParser(createRuleTransform(rule, options))
+  const transformer = psp(createRuleTransform(rule, options))
 
   return transformer.transformSync(rule, {
     lossless: false,
@@ -83,7 +113,7 @@ export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
   let b = false
   let a = false
 
-  selectorParser((selectors) => {
+  psp((selectors) => {
     selectors.walkPseudos((s) => {
       if (s.parent?.length === 1) {
         if (/^:?:before$/.test(s.value)) {
@@ -100,7 +130,7 @@ export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
 }
 
 export function getFallbackRemove(rule?: Rule) {
-  const fallbackRemove = selectorParser((selectors) => {
+  const fallbackRemove = psp((selectors) => {
     let maybeImportantId = false
     selectors.walk((selector, idx) => {
       if (idx === 0 && (selector.type === 'id' || selector.type === 'class' || selector.type === 'attribute')) {
@@ -129,7 +159,7 @@ export function getFallbackRemove(rule?: Rule) {
               //   selector.remove()
               // }
               x.nodes = [
-                selectorParser.tag({
+                psp.tag({
                   value: '#n',
                 }),
               ]

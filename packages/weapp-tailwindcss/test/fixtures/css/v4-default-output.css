@@ -671,16 +671,10 @@ button:not(#\#),input:not(#\#),select:not(#\#),optgroup:not(#\#),textarea:not(#\
     background-color: transparent;
     opacity: 1;
   }
-:where(select[multiple]):not(#\#) optgroup {
+select[multiple]:not(#\#) optgroup,select[size]:not(#\#) optgroup {
     font-weight: bolder;
   }
-:where(select[size]):not(#\#) optgroup {
-    font-weight: bolder;
-  }
-:where(select[multiple]):not(#\#) optgroup option {
-    padding-left: 20px;
-  }
-:where(select[size]):not(#\#) optgroup option {
+select[multiple]:not(#\#) optgroup option,select[size]:not(#\#) optgroup option {
     padding-left: 20px;
   }
 :not(#\#)::file-selector-button {
