@@ -11,8 +11,8 @@ catalogs:
       version: 3.4.17
   tailwindcss4:
     tailwindcss:
-      specifier: ^4.0.5
-      version: 4.0.6
+      specifier: ^4.0.9
+      version: 4.0.9
 
 importers:
 
@@ -465,7 +465,7 @@ importers:
         version: 8.5.3
       tailwindcss:
         specifier: catalog:tailwindcss4
-        version: 4.0.6
+        version: 4.0.9
       tailwindcss-injector:
         specifier: workspace:*
         version: link:../../packages/tailwindcss-injector
@@ -600,7 +600,7 @@ importers:
         version: 8.5.3
       tailwindcss:
         specifier: catalog:tailwindcss4
-        version: 4.0.6
+        version: 4.0.9
       unplugin-vue-router:
         specifier: ^0.11.2
         version: 0.11.2(rollup@4.34.8)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
@@ -12065,9 +12065,6 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  tailwindcss@4.0.6:
-    resolution: {integrity: sha512-mysewHYJKaXgNOW6pp5xon/emCsfAMnO8WMaGKZZ35fomnR/T5gYnRg2/yRTTrtXiEl1tiVkeRt0eMO6HxEZqw==}
-
   tailwindcss@4.0.9:
     resolution: {integrity: sha512-12laZu+fv1ONDRoNR9ipTOpUD7RN9essRVkX36sjxuRUInpN7hIiHN4lBd/SIFjbISvnXzp8h/hXzmU8SQQYhw==}
 
@@ -16140,7 +16137,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.2
+      '@types/react': 19.0.10
       react: 19.0.0
 
   '@docusaurus/remark-plugin-npm2yarn@3.7.0':
@@ -27626,8 +27623,6 @@ snapshots:
       sucrase: 3.35.0
     transitivePeerDependencies:
       - ts-node
-
-  tailwindcss@4.0.6: {}
 
   tailwindcss@4.0.9: {}
 

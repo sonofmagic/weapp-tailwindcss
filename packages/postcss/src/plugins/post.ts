@@ -4,7 +4,7 @@ import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
-
+// tailwindcss@4
 const OklabSuffix = 'in oklab'
 
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (

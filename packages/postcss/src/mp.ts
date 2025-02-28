@@ -1,10 +1,7 @@
-import type { Node } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
-import psp from 'postcss-selector-parser'
 import cssVars from './cssVars'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
-import { composeIsPseudoAst, mklist } from './shared'
 
 const initialNodes = cssVars.map((x) => {
   return new Declaration({
@@ -116,17 +113,6 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
   }
 
   return selectors
-}
-
-export function getCombinatorSelectorAst(options: IStyleHandlerOptions) {
-  let childCombinatorReplaceValue: Node[] = mklist(psp.tag({ value: 'view' }))
-  const { cssChildCombinatorReplaceValue } = options
-  if (
-    typeof cssChildCombinatorReplaceValue === 'string'
-    || (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0)) {
-    childCombinatorReplaceValue = composeIsPseudoAst(cssChildCombinatorReplaceValue)
-  }
-  return childCombinatorReplaceValue
 }
 
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {

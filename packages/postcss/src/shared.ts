@@ -1,7 +1,5 @@
-import type { Node } from 'postcss-selector-parser'
 import type { InternalCssSelectorReplacerOptions } from './types'
 import { escape, MappingChars2String } from '@weapp-core/escape'
-import psp from 'postcss-selector-parser'
 // css 中，要多加一个 '\' 来转义
 // for raw css selector
 // export function cssSelectorReplacer(selector: string, escapeEntries = MappingChars2StringEntries) {
@@ -21,37 +19,6 @@ export function internalCssSelectorReplacer(
   return escape(selectors, {
     map: escapeMap,
   })
-}
-
-export function mklist(node: Node): Node[] {
-  return [
-    node,
-    psp.combinator({
-      value: '+',
-    }),
-    node.clone(),
-  ]
-}
-
-export function composeIsPseudoAst(strs: string | string[]): Node[] {
-  if (typeof strs === 'string') {
-    return mklist(psp.tag({
-      value: strs,
-    }))
-  }
-  if (strs.length > 1) {
-    return mklist(psp.pseudo({
-      value: ':is',
-      nodes: strs.map(str =>
-        psp.tag({
-          value: str,
-        }),
-      ),
-    }))
-  }
-  return mklist(psp.tag({
-    value: strs[0],
-  }))
 }
 
 export function composeIsPseudo(strs: string | string[]) {
