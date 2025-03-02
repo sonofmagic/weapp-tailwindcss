@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.9
+
+### Patch Changes
+
+- [`a6765b3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a6765b38addd14eaa346a76069cc7c7ba2143a8e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: upgrade to tailwindcss-patch and support rpx unit
+
 ## 4.0.8
 
 ### Patch Changes
