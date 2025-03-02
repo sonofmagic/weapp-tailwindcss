@@ -17,6 +17,8 @@
   "before:border-[#0000ff]",
   "before:border-[#4bd650]",
   "before:content-['moduleA_普通分包']",
+  "before:content-['moduleB_独立分包']",
+  "before:content-['moduleC_独立分包']",
   "before:inset-0",
   "before:rounded-[20rpx]",
   "bg-[#123456]",

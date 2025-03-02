@@ -2321,6 +2321,14 @@ text,
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
+.beforeccontent-_qmoduleB_u72ecu7acbu5206u5305q_::before {
+  --tw-content: 'moduleB 独立分包';
+  content: var(--tw-content);
+}
+.beforeccontent-_qmoduleC_u72ecu7acbu5206u5305q_::before {
+  --tw-content: 'moduleC 独立分包';
+  content: var(--tw-content);
+}
 .aftercml-0d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
@@ -2400,6 +2408,8 @@ exports[`e2e > 'taro-app' > json 1`] = `
   "before:border-[#0000ff]",
   "before:border-[#4bd650]",
   "before:content-['moduleA_普通分包']",
+  "before:content-['moduleB_独立分包']",
+  "before:content-['moduleC_独立分包']",
   "before:inset-0",
   "before:rounded-[20rpx]",
   "bg-[#123456]",
@@ -10847,7 +10857,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
   <image
     mode="widthFix"
     src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
-    style="width: 374px; height: 155.833px"
+    style="width: 499px; height: 207.917px"
     class="mt-_96d3px_ Issue228--mt-_96d3px_ w-_61d1px_ Issue228--w-_61d1px_ h-_50d99px_ Issue228--h-_50d99px_"
     role="img"></image>
   <view>*******</view>

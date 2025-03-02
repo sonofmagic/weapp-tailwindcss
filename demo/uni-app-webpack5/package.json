@@ -114,12 +114,12 @@
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "3",
-    "tailwindcss-patch": "^6.0.9",
+    "tailwindcss-patch": "^7.0.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.4.2",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.0.8",
+    "weapp-tailwindcss": "^4.0.9",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "browserslist": [

@@ -2338,13 +2338,13 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@tailwindcss-mangle/config@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/config/-/config-5.0.4.tgz#62113501e81df989efab9d9032ed5ce8bb0f3917"
-  integrity sha512-NYif1v6BMWqNIf3FRqArddcwIVxlxCEadnD55tQJH438s+Iqb66gw41MaPXJkjH5QvK6WpnPmVFxVVKs2l0VCQ==
+"@tailwindcss-mangle/config@^5.0.5":
+  version "5.0.5"
+  resolved "https://registry.npmmirror.com/@tailwindcss-mangle/config/-/config-5.0.5.tgz#51cb061de7fc8481929103f1e96c3368f6b72ee9"
+  integrity sha512-kOSztrYlW77rOeKZwa524GtU9nO55GSRPgkEFE5Ca8jOwaQww24MXLfQRCJIGBasuSLvuWLQ05D1Y5O2cWXNQA==
   dependencies:
     "@tailwindcss-mangle/shared" "^4.0.2"
-    c12 "^2.0.4"
+    c12 "^3.0.2"
     fs-extra "^11.3.0"
     is-css-request "^1.0.1"
     pathe "^2.0.3"
@@ -4919,22 +4919,22 @@ bytes@3.1.2:
   resolved "https://registry.npmmirror.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
 
-c12@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/c12/-/c12-2.0.4.tgz#d991001713a6d6304ac928eb644d2b4bbeb60922"
-  integrity sha512-3DbbhnFt0fKJHxU4tEUPmD1ahWE4PWPMomqfYsTJdrhpmEnRKJi3qSC4rO5U6E6zN1+pjBY7+z8fUmNRMaVKLw==
+c12@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmmirror.com/c12/-/c12-3.0.2.tgz#5ceba55cf081ff4cf95b22c593c80b34cf1f3d2e"
+  integrity sha512-6Tzk1/TNeI3WBPpK0j/Ss4+gPj3PUJYbWl/MWDJBThFvwNGNkXtd7Cz8BJtD4aRwoGHtzQD0SnxamgUiBH0/Nw==
   dependencies:
     chokidar "^4.0.3"
     confbox "^0.1.8"
     defu "^6.1.4"
     dotenv "^16.4.7"
-    giget "^1.2.4"
+    exsolve "^1.0.0"
+    giget "^2.0.0"
     jiti "^2.4.2"
-    mlly "^1.7.4"
-    ohash "^2.0.4"
+    ohash "^2.0.5"
     pathe "^2.0.3"
     perfect-debounce "^1.0.0"
-    pkg-types "^1.3.1"
+    pkg-types "^2.0.0"
     rc9 "^2.1.2"
 
 cac@^6.7.14:
@@ -7583,6 +7583,11 @@ express@^4.17.3:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
+exsolve@^1.0.0, exsolve@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/exsolve/-/exsolve-1.0.1.tgz#67ba83ed65fa1657d5e010a25782c78dbc3e8a42"
+  integrity sha512-Smf0iQtkQVJLaph8r/qS8C8SWfQkaq9Q/dFcD44MLbJj6DNhlWefVuaS21SjfqOsBbjVlKtbCj6L9ekXK6EZUg==
+
 ext-list@^2.0.0:
   version "2.2.2"
   resolved "https://registry.npmmirror.com/ext-list/-/ext-list-2.2.2.tgz#0b98e64ed82f5acf0f2931babf69212ef52ddd37"
@@ -8194,19 +8199,17 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-giget@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.npmmirror.com/giget/-/giget-1.2.4.tgz#9866800ec046eea7097f36e491aa2c4752a0660d"
-  integrity sha512-Wv+daGyispVoA31TrWAVR+aAdP7roubTPEM/8JzRnqXhLbdJH0T9eQyXVFF8fjk3WKTsctII6QcyxILYgNp2DA==
+giget@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/giget/-/giget-2.0.0.tgz#395fc934a43f9a7a29a29d55b99f23e30c14f195"
+  integrity sha512-L5bGsVkxJbJgdnwyuheIunkGatUF/zssUoxxjACCseZYAVbaqdh9Tsmmlkl8vYan09H7sbvKt4pS8GqKLBrEzA==
   dependencies:
     citty "^0.1.6"
     consola "^3.4.0"
     defu "^6.1.4"
     node-fetch-native "^1.6.6"
-    nypm "^0.5.1"
-    ohash "^1.1.4"
-    pathe "^2.0.2"
-    tar "^6.2.1"
+    nypm "^0.6.0"
+    pathe "^2.0.3"
 
 git-clone@^0.1.0:
   version "0.1.0"
@@ -10130,6 +10133,15 @@ local-pkg@^1.0.0:
     mlly "^1.7.3"
     pkg-types "^1.3.0"
 
+local-pkg@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/local-pkg/-/local-pkg-1.1.0.tgz#b24ea31ae10529b83f015180e3d2e6a16246188b"
+  integrity sha512-xbZBuX6gYIWrlLmZG43aAVer4ocntYO09vPy9lxd6Ns8DnR4U7N+IIeDkubinqFOHHzoMlPxTxwo0jhE7oYjAw==
+  dependencies:
+    mlly "^1.7.4"
+    pkg-types "^1.3.1"
+    quansync "^0.2.1"
+
 locate-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmmirror.com/locate-path/-/locate-path-3.0.0.tgz#dbec3b3ab759758071b58fe59fc41871af21400e"
@@ -10747,11 +10759,6 @@ minipass@^3.0.0, minipass@^3.1.1:
   dependencies:
     yallist "^4.0.0"
 
-minipass@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmmirror.com/minipass/-/minipass-5.0.0.tgz#3e9788ffb90b694a5d0ec94479a45b5d8738133d"
-  integrity sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==
-
 "minipass@^5.0.0 || ^6.0.2":
   version "6.0.2"
   resolved "https://registry.npmmirror.com/minipass/-/minipass-6.0.2.tgz#542844b6c4ce95b202c0995b0a471f1229de4c81"
@@ -11288,17 +11295,16 @@ nwsapi@^2.2.2:
   resolved "https://registry.npmmirror.com/nwsapi/-/nwsapi-2.2.2.tgz#e5418863e7905df67d51ec95938d67bf801f0bb0"
   integrity sha512-90yv+6538zuvUMnN+zCr8LuV6bPFdq50304114vJYJ8RDyK8D5O9Phpbd6SZWgI7PwzmmfN1upeOJlvybDSgCw==
 
-nypm@^0.5.1:
-  version "0.5.2"
-  resolved "https://registry.npmmirror.com/nypm/-/nypm-0.5.2.tgz#6aa4d009ec159ad0c5ba63219690a88ecfe22b43"
-  integrity sha512-AHzvnyUJYSrrphPhRWWZNcoZfArGNp3Vrc4pm/ZurO74tYNTgAPrEyBQEKy+qioqmWlPXwvMZCG2wOaHlPG0Pw==
+nypm@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmmirror.com/nypm/-/nypm-0.6.0.tgz#3a04623d1c358a93fc4b3cb9cfb6a11af080feca"
+  integrity sha512-mn8wBFV9G9+UFHIrq+pZ2r2zL4aPau/by3kJb3cM7+5tQHMt6HGQB8FDIeKFYp8o0D2pnH6nVsO88N4AmUxIWg==
   dependencies:
     citty "^0.1.6"
     consola "^3.4.0"
-    pathe "^2.0.2"
-    pkg-types "^1.3.1"
+    pathe "^2.0.3"
+    pkg-types "^2.0.0"
     tinyexec "^0.3.2"
-    ufo "^1.5.4"
 
 oauth-sign@~0.9.0:
   version "0.9.0"
@@ -11381,15 +11387,10 @@ obuf@^1.0.0, obuf@^1.1.2:
   resolved "https://registry.npmmirror.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
 
-ohash@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.npmmirror.com/ohash/-/ohash-1.1.4.tgz#ae8d83014ab81157d2c285abf7792e2995fadd72"
-  integrity sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==
-
-ohash@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/ohash/-/ohash-2.0.4.tgz#ca6be3cc32fac3bfa0147f3c4fefa36a4a067825"
-  integrity sha512-ac+SFwzhdHb0hp48/dbR7Jta39qfbuj7t3hApd9uyHS8bisHTfVzSEvjOVgV0L3zG7VR2/7JjkSGimP75D+hOQ==
+ohash@^2.0.5:
+  version "2.0.9"
+  resolved "https://registry.npmmirror.com/ohash/-/ohash-2.0.9.tgz#0e579dfcbf16172c2ddf33a3d3c6b2c945ccdc48"
+  integrity sha512-ljz2sybhXrRpBW9LleuJPP9uxbMKW8qxFz9lLOHW2QEel78rJ1sUgaX2cBNDt49w+JleNSkhYkVOCx6RgkKn0Q==
 
 on-finished@2.4.1:
   version "2.4.1"
@@ -11951,6 +11952,15 @@ pkg-types@^1.3.1:
     confbox "^0.1.8"
     mlly "^1.7.4"
     pathe "^2.0.1"
+
+pkg-types@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/pkg-types/-/pkg-types-2.0.1.tgz#d71dc33f103e564440fd375da11549b0af275d86"
+  integrity sha512-LdDk/hlFeVBoEZqlkJ2bsxwq5fjKQg7i422zu78IC16CSR2XBe7kYxxBx0mkU8kLX6nh50Zp80lZHveKnsHTpQ==
+  dependencies:
+    confbox "^0.1.8"
+    exsolve "^1.0.1"
+    pathe "^2.0.3"
 
 platform@^1.3.6:
   version "1.3.6"
@@ -12947,6 +12957,11 @@ qs@~6.5.2:
   version "6.5.3"
   resolved "https://registry.npmmirror.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
   integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
+
+quansync@^0.2.1:
+  version "0.2.7"
+  resolved "https://registry.npmmirror.com/quansync/-/quansync-0.2.7.tgz#d6f6249ab52e4a61e78ebf0e195e5836aaf9e7dd"
+  integrity sha512-KZDFlN9/Si3CgKHZsIfLBsrjWKFjqu9KA0zDGJEQoQzPm5HWNDEFc2mkLeYUBBOwEJtxNBSMaNLE/GlvArIEfQ==
 
 query-ast@^1.0.3:
   version "1.0.5"
@@ -14738,20 +14753,20 @@ tailwindcss-config@^1.0.0:
     jiti "^2.4.2"
     lilconfig "^3.1.3"
 
-tailwindcss-patch@^6.0.9, tailwindcss-patch@~6.0.9:
-  version "6.0.9"
-  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-6.0.9.tgz#e377a323ce3bcf9fc4ded5130c57b799e7b93ee0"
-  integrity sha512-jwFAGbA05FyDkWs4idei9M9k7woW2REPBt5imM9PfvffjmvZFyvFvNOFCFfnicsaRrn/H35bCXROl9a+f2eJ9g==
+tailwindcss-patch@^7.0.0, tailwindcss-patch@~7.0.0:
+  version "7.0.0"
+  resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-7.0.0.tgz#d0687737c93e3e1cef57fd8694a9e1596ed80966"
+  integrity sha512-rMWZr0TA/mgzf3MG9qJRq+GDeMjIm1LuZDwYJY3XXYnCTJWInKnJcVmoa1gg+FsSDOjDbUq05cC4LERfmhB++A==
   dependencies:
     "@babel/generator" "^7.26.9"
     "@babel/parser" "^7.26.9"
     "@babel/traverse" "^7.26.9"
     "@babel/types" "^7.26.9"
-    "@tailwindcss-mangle/config" "^5.0.4"
+    "@tailwindcss-mangle/config" "^5.0.5"
     cac "^6.7.14"
     consola "^3.4.0"
     fs-extra "^11.3.0"
-    local-pkg "^1.0.0"
+    local-pkg "^1.1.0"
     pathe "^2.0.3"
     postcss "^8.5.3"
     semver "^7.7.1"
@@ -14821,18 +14836,6 @@ tar@^6.0.2:
     chownr "^2.0.0"
     fs-minipass "^2.0.0"
     minipass "^3.0.0"
-    minizlib "^2.1.1"
-    mkdirp "^1.0.3"
-    yallist "^4.0.0"
-
-tar@^6.2.1:
-  version "6.2.1"
-  resolved "https://registry.npmmirror.com/tar/-/tar-6.2.1.tgz#717549c541bc3c2af15751bea94b1dd068d4b03a"
-  integrity sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==
-  dependencies:
-    chownr "^2.0.0"
-    fs-minipass "^2.0.0"
-    minipass "^5.0.0"
     minizlib "^2.1.1"
     mkdirp "^1.0.3"
     yallist "^4.0.0"
@@ -15713,10 +15716,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.8.tgz#faaa47f228cd86e21d4831eaafb87757706de205"
-  integrity sha512-VqbrQWyL4E/RFRXg0+XtZ97c3Uuj5xU9d5cGs9BV41HsiVbk4ReFMu21wl24uqrhEaDaxRrRB3+Zenf11QfOFQ==
+weapp-tailwindcss@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.0.9.tgz#7cab642c03202df6fc730dfb15fd14b353f735ae"
+  integrity sha512-zw+uBl3D12eQARbjBoi+W5lGy7RemvBEzyiLI3IjvO6Wxws6l15dnBBCTuT8+praszhDXABCzvx/SVxq1fXszg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.26.9"
@@ -15732,12 +15735,12 @@ weapp-tailwindcss@^4.0.8:
     debug "~4.4.0"
     htmlparser2 "10.0.0"
     loader-utils "2.0.4"
-    local-pkg "^1.0.0"
+    local-pkg "^1.1.0"
     lru-cache "10.4.3"
     magic-string "0.30.17"
     md5 "2.3.0"
     semver "~7.7.1"
-    tailwindcss-patch "~6.0.9"
+    tailwindcss-patch "~7.0.0"
     webpack-sources "3.2.3"
 
 webidl-conversions@^7.0.0:

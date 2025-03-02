@@ -4,8 +4,8 @@ module.exports = {
   content: [
     "./src/**/*.{html,js,ts,jsx,tsx}",
     // 独立分包
-    "!./src/moduleB/**/*.{html,js,ts,jsx,tsx}",
-    "!./src/moduleC/**/*.{html,js,ts,jsx,tsx}"
+    // "!./src/moduleB/**/*.{html,js,ts,jsx,tsx}",
+    // "!./src/moduleC/**/*.{html,js,ts,jsx,tsx}"
   ],
   darkMode: 'class',
   theme: {
