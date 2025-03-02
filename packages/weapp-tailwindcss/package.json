@@ -179,7 +179,7 @@
     "magic-string": "0.30.17",
     "md5": "2.3.0",
     "semver": "~7.7.1",
-    "tailwindcss-patch": "~6.0.9",
+    "tailwindcss-patch": "~7.0.0",
     "webpack-sources": "3.2.3"
   }
 }

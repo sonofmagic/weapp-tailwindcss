@@ -1,0 +1,10 @@
+然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
+
+```json title="package.json"
+ "scripts": {
+    // highlight-next-line
+   "postinstall": "weapp-tw patch"
+ }
+```
+
+这是为了给 `tailwindcss@4` 打上支持 `rpx` 单位的补丁，否则它会把 `rpx` 认为是一种颜色
