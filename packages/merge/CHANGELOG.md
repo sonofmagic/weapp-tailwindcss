@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.0.4
+
+### Patch Changes
+
+- [`5618019`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5618019c36bfabdef0cd4512f779127b83273db9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 升级相关的依赖
+
 ## 1.0.3
 
 ### Patch Changes

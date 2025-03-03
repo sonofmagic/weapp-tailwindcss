@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.0.10
+
+### Patch Changes
+
+- [`5618019`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5618019c36bfabdef0cd4512f779127b83273db9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 添加 TailwindcssPatcherOptions 给更高程度的自定义策略
+
 ## 4.0.9
 
 ### Patch Changes
