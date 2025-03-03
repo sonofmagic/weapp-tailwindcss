@@ -2,7 +2,7 @@ import type { ParserOptions } from '@babel/parser'
 import type { IMangleOptions } from '@weapp-tailwindcss/mangle'
 import type { CssPreflightOptions, CustomRuleCallback, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
-import type { ILengthUnitsPatchOptions, PatchOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, PatchOptions, TailwindcssPatcherOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from './cache'
 import type { AppType, IArbitraryValues, ICustomAttributes } from './types'
 
@@ -416,7 +416,7 @@ export interface UserDefinedOptions {
    * @group 3.一般配置
    * @description 自定义 patcher 参数
    */
-  patch?: PatchOptions
+  tailwindcssPatcherOptions?: TailwindcssPatcherOptions
 }
 
 // 4.即将废弃配置

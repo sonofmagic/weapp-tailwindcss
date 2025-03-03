@@ -349,8 +349,8 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9(postcss@8.5.3)
       prettier:
-        specifier: ^3.5.2
-        version: 3.5.2
+        specifier: ^3.5.3
+        version: 3.5.3
       promisify-loader-runner:
         specifier: ^1.0.1
         version: 1.0.1
@@ -456,7 +456,7 @@ importers:
         version: 4.0.9
       '@tailwindcss/vite':
         specifier: ^4.0.9
-        version: 4.0.9(vite@5.4.14(@types/node@22.13.8)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(stylus@0.63.0)(terser@5.39.0))
+        version: 4.0.9(vite@6.2.0(@types/node@22.13.8)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(stylus@0.63.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.3)
@@ -561,8 +561,8 @@ importers:
   apps/web-postcss7-compat:
     dependencies:
       tailwindcss-patch:
-        specifier: ^7.0.1
-        version: 7.0.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.8.2)))(magicast@0.3.5)
+        specifier: ^7.0.2
+        version: 7.0.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.8.2)))(magicast@0.3.5)
     devDependencies:
       autoprefixer:
         specifier: ^9.8.8
@@ -668,8 +668,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       local-pkg:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.1
+        version: 1.1.1
       semver:
         specifier: ^7.7.1
         version: 7.7.1
@@ -793,8 +793,8 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       local-pkg:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.1
+        version: 1.1.1
       lru-cache:
         specifier: 10.4.3
         version: 10.4.3
@@ -808,8 +808,8 @@ importers:
         specifier: ~7.7.1
         version: 7.7.1
       tailwindcss-patch:
-        specifier: ~7.0.1
-        version: 7.0.1(magicast@0.3.5)(tailwindcss@4.0.9)
+        specifier: ~7.0.2
+        version: 7.0.2(magicast@0.3.5)(tailwindcss@4.0.9)
       webpack-sources:
         specifier: 3.2.3
         version: 3.2.3
@@ -4060,8 +4060,8 @@ packages:
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
 
-  '@tailwindcss-mangle/config@5.0.5':
-    resolution: {integrity: sha512-kOSztrYlW77rOeKZwa524GtU9nO55GSRPgkEFE5Ca8jOwaQww24MXLfQRCJIGBasuSLvuWLQ05D1Y5O2cWXNQA==}
+  '@tailwindcss-mangle/config@5.0.6':
+    resolution: {integrity: sha512-Krg4W+dV3MesYi9ovbyvqWDXk8nNIHizTL/TzTK3JSF9yhvQ6Zz0v5zhIJ8IrHDIR0qzeMSJ9agM5LqS6lPfzg==}
 
   '@tailwindcss-mangle/shared@4.0.2':
     resolution: {integrity: sha512-gteSOKjrr2b6ifFix4fdSAhgw8knq0R1o4NVRJt+mAEMgTSpIkar9gRb9n9DD3xH55MWgyBJ5hw08vtutkq59w==}
@@ -5349,8 +5349,8 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
-  c12@3.0.2:
-    resolution: {integrity: sha512-6Tzk1/TNeI3WBPpK0j/Ss4+gPj3PUJYbWl/MWDJBThFvwNGNkXtd7Cz8BJtD4aRwoGHtzQD0SnxamgUiBH0/Nw==}
+  c12@2.0.4:
+    resolution: {integrity: sha512-3DbbhnFt0fKJHxU4tEUPmD1ahWE4PWPMomqfYsTJdrhpmEnRKJi3qSC4rO5U6E6zN1+pjBY7+z8fUmNRMaVKLw==}
     peerDependencies:
       magicast: ^0.3.5
     peerDependenciesMeta:
@@ -5510,6 +5510,10 @@ packages:
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
+
+  chownr@2.0.0:
+    resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
+    engines: {node: '>=10'}
 
   chownr@3.0.0:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
@@ -7273,6 +7277,10 @@ packages:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
     engines: {node: '>=10'}
 
+  fs-minipass@2.1.0:
+    resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
+    engines: {node: '>= 8'}
+
   fs-minipass@3.0.3:
     resolution: {integrity: sha512-XUBA9XClHbnJWSfBzjkm6RvPsyg3sryZt06BEQoXcF7EK/xpGaQYJgQKDJSUH5SGZ76Y7pFx1QBnXz09rU5Fbw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -7365,8 +7373,8 @@ packages:
   getpass@0.1.7:
     resolution: {integrity: sha512-0fzj9JxOLfJ+XGLhR8ze3unN0KZCgZwiSSDz168VERjK8Wl8kVSdcu2kspd4s4wtAa1y/qrVRiAA0WclVsu0ng==}
 
-  giget@2.0.0:
-    resolution: {integrity: sha512-L5bGsVkxJbJgdnwyuheIunkGatUF/zssUoxxjACCseZYAVbaqdh9Tsmmlkl8vYan09H7sbvKt4pS8GqKLBrEzA==}
+  giget@1.2.5:
+    resolution: {integrity: sha512-r1ekGw/Bgpi3HLV3h1MRBIlSAdHoIMklpaQ3OQLFcRw9PwAj2rqigvIbg+dBUI51OxVI2jsEtDywDBjSiuf7Ug==}
     hasBin: true
 
   git-raw-commits@4.0.0:
@@ -8688,6 +8696,10 @@ packages:
     resolution: {integrity: sha512-xbZBuX6gYIWrlLmZG43aAVer4ocntYO09vPy9lxd6Ns8DnR4U7N+IIeDkubinqFOHHzoMlPxTxwo0jhE7oYjAw==}
     engines: {node: '>=14'}
 
+  local-pkg@1.1.1:
+    resolution: {integrity: sha512-WunYko2W1NcdfAFpuLUoucsgULmgDBRkdxHxWQ7mK0cQqwPiy8E1enjuRBrhLtZkB5iScJ1XIPdhVEFK8aOLSg==}
+    engines: {node: '>=14'}
+
   locate-path@3.0.0:
     resolution: {integrity: sha512-7AO748wWnIhNqAuaty2ZWHkQHRSNfPVIsPIfwEOWO22AmaoVrWavlOcMR5nzTLNYvp36X220/maaRsrec1G65A==}
     engines: {node: '>=6'}
@@ -9244,6 +9256,10 @@ packages:
     resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
     engines: {node: '>=8'}
 
+  minipass@5.0.0:
+    resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
+    engines: {node: '>=8'}
+
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -9254,6 +9270,10 @@ packages:
   miniprogram-automator@0.12.1:
     resolution: {integrity: sha512-HIzpx9FuDJZjRCi8dx39E2IWNiSD6mAPEnZ3yC8ahl31o+2uphPINWhWSGN03CReb9ZvcNBuBGNjnwRBhVm4NQ==}
 
+  minizlib@2.1.2:
+    resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
+    engines: {node: '>= 8'}
+
   minizlib@3.0.1:
     resolution: {integrity: sha512-umcy022ILvb5/3Djuu8LWeqUa8D68JaBzlttKeMWen48SjabqS3iY5w/vzeMzMUNhLDifyhbOwKDSznB1vvrwg==}
     engines: {node: '>= 18'}
@@ -9261,6 +9281,11 @@ packages:
   mkdirp@0.5.1:
     resolution: {integrity: sha512-SknJC52obPfGQPnjIkXbmA6+5H15E+fR+E4iR2oQ3zzCLbd7/ONua69R/Gw7AgkTLsRG+r5fzksYwWe1AgTyWA==}
     deprecated: Legacy versions of mkdirp are no longer supported. Please update to mkdirp 1.x. (Note that the API surface has changed to use Promises in 1.x.)
+    hasBin: true
+
+  mkdirp@1.0.4:
+    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
+    engines: {node: '>=10'}
     hasBin: true
 
   mkdirp@3.0.1:
@@ -9503,8 +9528,8 @@ packages:
   nwsapi@2.2.16:
     resolution: {integrity: sha512-F1I/bimDpj3ncaNDhfyMWuFqmQDBwDB0Fogc2qpL3BWvkQteFD/8BzWuIRl83rq0DXfm8SGt/HFhLXZyljTXcQ==}
 
-  nypm@0.6.0:
-    resolution: {integrity: sha512-mn8wBFV9G9+UFHIrq+pZ2r2zL4aPau/by3kJb3cM7+5tQHMt6HGQB8FDIeKFYp8o0D2pnH6nVsO88N4AmUxIWg==}
+  nypm@0.5.4:
+    resolution: {integrity: sha512-X0SNNrZiGU8/e/zAB7sCTtdxWTMSIO73q+xuKgglm2Yvzwlo8UoC5FNySQFCvl84uPaeADkqHUZUkWy4aH4xOA==}
     engines: {node: ^14.16.0 || >=16.10.0}
     hasBin: true
 
@@ -10718,8 +10743,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.5.2:
-    resolution: {integrity: sha512-lc6npv5PH7hVqozBR7lkBNOGXV9vMwROAPlumdBkX0wTbbzPu/U1hk5yL8p2pt4Xoc+2mkT8t/sow2YrV/M5qg==}
+  prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -10855,6 +10880,9 @@ packages:
 
   quansync@0.2.2:
     resolution: {integrity: sha512-PrJjqc5Sn6Jv3vlIA9LQs0XdyhCTWrFddMgNP8mGyh3OiMh6ofOES4PRIApcfOZ0wLE2jJN+5/2eyOvzTv9tqw==}
+
+  quansync@0.2.8:
+    resolution: {integrity: sha512-4+saucphJMazjt7iOM27mbFCk+D9dd/zmgMDCzRZ8MEoBfYp7lAvoN38et/phRQF6wOPMy/OROBGgoWeSKyluA==}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -12153,8 +12181,8 @@ packages:
   tailwindcss-config@1.0.0:
     resolution: {integrity: sha512-YAsRjdnVVx4A0sj3OSOTWdeIzm67lPlHLHc0v5Cs8gCNB04ObqeLc8+PoyNl9gThmQ6mper76/WD3f4zYHRgLg==}
 
-  tailwindcss-patch@7.0.1:
-    resolution: {integrity: sha512-i0JsFAKwrbHvSVFWWc3aKeOuBJhNSObKla9Ju7Rv8fFJb3bnEn3EZrPiPXGOfEOgmmKP+OUSKhAcmWz+UVejVw==}
+  tailwindcss-patch@7.0.2:
+    resolution: {integrity: sha512-p7STei3OkrBgveFZAFQTi9tECt/I5Vngpc7ccXINzn0KiPp3umE0W9jmCcOgBWl20Kvh9YiVALrw6SYaGx3gWQ==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -12177,6 +12205,10 @@ packages:
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
+
+  tar@6.2.1:
+    resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
+    engines: {node: '>=10'}
 
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
@@ -13576,7 +13608,7 @@ snapshots:
       eslint-processor-vue-blocks: 2.0.0(@vue/compiler-sfc@3.5.13)(eslint@9.21.0(jiti@2.4.2))
       globals: 15.15.0
       jsonc-eslint-parser: 2.4.0
-      local-pkg: 1.1.0
+      local-pkg: 1.1.1
       parse-gitignore: 2.0.0
       toml-eslint-parser: 0.10.0
       vue-eslint-parser: 9.4.3(eslint@9.21.0(jiti@2.4.2))
@@ -16235,7 +16267,7 @@ snapshots:
 
   '@docusaurus/react-loadable@6.0.0(react@19.0.0)':
     dependencies:
-      '@types/react': 19.0.2
+      '@types/react': 19.0.10
       react: 19.0.0
 
   '@docusaurus/remark-plugin-npm2yarn@3.7.0':
@@ -18189,10 +18221,10 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@tailwindcss-mangle/config@5.0.5(magicast@0.3.5)':
+  '@tailwindcss-mangle/config@5.0.6(magicast@0.3.5)':
     dependencies:
       '@tailwindcss-mangle/shared': 4.0.2
-      c12: 3.0.2(magicast@0.3.5)
+      c12: 2.0.4(magicast@0.3.5)
       fs-extra: 11.3.0
       is-css-request: 1.0.1
       pathe: 2.0.3
@@ -18310,14 +18342,6 @@ snapshots:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.8.2))
-
-  '@tailwindcss/vite@4.0.9(vite@5.4.14(@types/node@22.13.8)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(stylus@0.63.0)(terser@5.39.0))':
-    dependencies:
-      '@tailwindcss/node': 4.0.9
-      '@tailwindcss/oxide': 4.0.9
-      lightningcss: 1.29.1
-      tailwindcss: 4.0.9
-      vite: 5.4.14(@types/node@22.13.8)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(stylus@0.63.0)(terser@5.39.0)
 
   '@tailwindcss/vite@4.0.9(vite@6.2.0(@types/node@22.13.8)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(stylus@0.63.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
@@ -19802,19 +19826,19 @@ snapshots:
 
   bytes@3.1.2: {}
 
-  c12@3.0.2(magicast@0.3.5):
+  c12@2.0.4(magicast@0.3.5):
     dependencies:
       chokidar: 4.0.3
       confbox: 0.1.8
       defu: 6.1.4
       dotenv: 16.4.7
-      exsolve: 1.0.1
-      giget: 2.0.0
+      giget: 1.2.5
       jiti: 2.4.2
+      mlly: 1.7.4
       ohash: 2.0.9
       pathe: 2.0.3
       perfect-debounce: 1.0.0
-      pkg-types: 2.0.1
+      pkg-types: 1.3.1
       rc9: 2.1.2
     optionalDependencies:
       magicast: 0.3.5
@@ -20000,6 +20024,8 @@ snapshots:
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.0.2
+
+  chownr@2.0.0: {}
 
   chownr@3.0.0: {}
 
@@ -21289,7 +21315,7 @@ snapshots:
       eslint: 9.21.0(jiti@2.4.2)
       eslint-formatting-reporter: 0.0.0(eslint@9.21.0(jiti@2.4.2))
       eslint-parser-plain: 0.1.1
-      prettier: 3.5.2
+      prettier: 3.5.3
       synckit: 0.9.2
 
   eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2):
@@ -22164,6 +22190,10 @@ snapshots:
       jsonfile: 6.1.0
       universalify: 2.0.1
 
+  fs-minipass@2.1.0:
+    dependencies:
+      minipass: 3.3.6
+
   fs-minipass@3.0.3:
     dependencies:
       minipass: 7.1.2
@@ -22262,14 +22292,15 @@ snapshots:
     dependencies:
       assert-plus: 1.0.0
 
-  giget@2.0.0:
+  giget@1.2.5:
     dependencies:
       citty: 0.1.6
       consola: 3.4.0
       defu: 6.1.4
       node-fetch-native: 1.6.6
-      nypm: 0.6.0
+      nypm: 0.5.4
       pathe: 2.0.3
+      tar: 6.2.1
 
   git-raw-commits@4.0.0:
     dependencies:
@@ -23701,6 +23732,12 @@ snapshots:
       pkg-types: 1.3.1
       quansync: 0.2.2
 
+  local-pkg@1.1.1:
+    dependencies:
+      mlly: 1.7.4
+      pkg-types: 2.0.1
+      quansync: 0.2.8
+
   locate-path@3.0.0:
     dependencies:
       p-locate: 3.0.0
@@ -24578,6 +24615,8 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
+  minipass@5.0.0: {}
+
   minipass@7.1.2: {}
 
   miniprogram-api-typings@4.0.5: {}
@@ -24595,6 +24634,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  minizlib@2.1.2:
+    dependencies:
+      minipass: 3.3.6
+      yallist: 4.0.0
+
   minizlib@3.0.1:
     dependencies:
       minipass: 7.1.2
@@ -24603,6 +24647,8 @@ snapshots:
   mkdirp@0.5.1:
     dependencies:
       minimist: 0.0.8
+
+  mkdirp@1.0.4: {}
 
   mkdirp@3.0.1: {}
 
@@ -24844,13 +24890,14 @@ snapshots:
 
   nwsapi@2.2.16: {}
 
-  nypm@0.6.0:
+  nypm@0.5.4:
     dependencies:
       citty: 0.1.6
       consola: 3.4.0
       pathe: 2.0.3
-      pkg-types: 2.0.1
+      pkg-types: 1.3.1
       tinyexec: 0.3.2
+      ufo: 1.5.4
 
   oauth-sign@0.9.0: {}
 
@@ -26044,7 +26091,7 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  prettier@3.5.2: {}
+  prettier@3.5.3: {}
 
   pretty-bytes@5.6.0: {}
 
@@ -26158,6 +26205,8 @@ snapshots:
   qs@6.5.3: {}
 
   quansync@0.2.2: {}
+
+  quansync@0.2.8: {}
 
   queue-microtask@1.2.3: {}
 
@@ -27722,13 +27771,13 @@ snapshots:
       jiti: 2.4.2
       lilconfig: 3.1.3
 
-  tailwindcss-patch@7.0.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.8.2)))(magicast@0.3.5):
+  tailwindcss-patch@7.0.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.8.2)))(magicast@0.3.5):
     dependencies:
       '@babel/generator': 7.26.9
       '@babel/parser': 7.26.9
       '@babel/traverse': 7.26.9
       '@babel/types': 7.26.9
-      '@tailwindcss-mangle/config': 5.0.5(magicast@0.3.5)
+      '@tailwindcss-mangle/config': 5.0.6(magicast@0.3.5)
       cac: 6.7.14
       consola: 3.4.0
       fs-extra: 11.3.0
@@ -27743,13 +27792,13 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@7.0.1(magicast@0.3.5)(tailwindcss@4.0.9):
+  tailwindcss-patch@7.0.2(magicast@0.3.5)(tailwindcss@4.0.9):
     dependencies:
       '@babel/generator': 7.26.9
       '@babel/parser': 7.26.9
       '@babel/traverse': 7.26.9
       '@babel/types': 7.26.9
-      '@tailwindcss-mangle/config': 5.0.5(magicast@0.3.5)
+      '@tailwindcss-mangle/config': 5.0.6(magicast@0.3.5)
       cac: 6.7.14
       consola: 3.4.0
       fs-extra: 11.3.0
@@ -27796,6 +27845,15 @@ snapshots:
   tapable@1.1.3: {}
 
   tapable@2.2.1: {}
+
+  tar@6.2.1:
+    dependencies:
+      chownr: 2.0.0
+      fs-minipass: 2.1.0
+      minipass: 5.0.0
+      minizlib: 2.1.2
+      mkdirp: 1.0.4
+      yallist: 4.0.0
 
   tar@7.4.3:
     dependencies:

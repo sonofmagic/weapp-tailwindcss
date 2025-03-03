@@ -1,4 +1,4 @@
-import type { CacheOptions, ILengthUnitsPatchOptions, PatchOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
+import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssPatcherOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import path from 'node:path'
 import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -9,11 +9,11 @@ export interface CreateTailwindcssPatcherOptions {
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindcssUserConfig
-  patch?: PatchOptions
+  tailwindcssPatcherOptions?: TailwindcssPatcherOptions
 }
 
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions) {
-  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, patch } = options || {}
+  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
   const cache: CacheOptions = {}
 
   if (cacheDir) {
@@ -28,23 +28,23 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
-  return new TailwindcssPatcher({
-    cache,
-    patch: defuOverrideArray<PatchOptions, PatchOptions[]>(patch!, {
-      basedir,
-      applyPatches: {
-        exportContext: true,
-        extendLengthUnits: supportCustomLengthUnitsPatch,
+  return new TailwindcssPatcher(defuOverrideArray<TailwindcssPatcherOptions, TailwindcssPatcherOptions[]>(
+    tailwindcssPatcherOptions!,
+    {
+      cache,
+      patch: {
+        basedir,
+        applyPatches: {
+          exportContext: true,
+          extendLengthUnits: supportCustomLengthUnitsPatch,
+        },
+        tailwindcss,
+        resolve: {
+          paths: [
+            import.meta.url,
+          ],
+        },
       },
-      tailwindcss,
-      resolve: {
-        paths: [
-          import.meta.url,
-        ],
-      },
-      // filter: (x) => {
-      //   return !isAllowedClassName(x)
-      // },
-    }),
-  })
+    },
+  ))
 }

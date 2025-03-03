@@ -174,12 +174,12 @@
     "debug": "~4.4.0",
     "htmlparser2": "10.0.0",
     "loader-utils": "2.0.4",
-    "local-pkg": "^1.1.0",
+    "local-pkg": "^1.1.1",
     "lru-cache": "10.4.3",
     "magic-string": "0.30.17",
     "md5": "2.3.0",
     "semver": "~7.7.1",
-    "tailwindcss-patch": "~7.0.1",
+    "tailwindcss-patch": "~7.0.2",
     "webpack-sources": "3.2.3"
   }
 }

@@ -115,9 +115,11 @@ export function getDefaultOptions(): UserDefinedOptions {
     cssRemoveHoverPseudoClass: true,
     ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
-    patch: {
-      filter(className) {
-        return !isAllowedClassName(className)
+    tailwindcssPatcherOptions: {
+      patch: {
+        filter(className) {
+          return !isAllowedClassName(className)
+        },
       },
     },
   }

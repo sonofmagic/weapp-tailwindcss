@@ -144,12 +144,14 @@ exports[`get options > default options 1`] = `
   "onLoad": [Function],
   "onStart": [Function],
   "onUpdate": [Function],
-  "patch": {
-    "filter": [Function],
-  },
   "postcssOptions": {},
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
+  "tailwindcssPatcherOptions": {
+    "patch": {
+      "filter": [Function],
+    },
+  },
   "templateHandler": [Function],
   "wxsMatcher": [Function],
 }
