@@ -41,7 +41,8 @@
     "file-saver": "^2.0.5",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-github-btn": "^1.4.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.7.0",

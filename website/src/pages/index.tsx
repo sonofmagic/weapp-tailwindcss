@@ -5,6 +5,7 @@ import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'
 import HomeLogo from '@site/src/components/HomeLogo'
 import Layout from '@theme/Layout'
 import React from 'react'
+import GitHubButton from 'react-github-btn'
 import GulpLogo from '../assets/gulp.svg'
 import NodejsLogo from '../assets/nodejs.svg'
 import TailwindcssLogo from '../assets/tw-logo.svg'
@@ -48,7 +49,7 @@ function HomepageHeader() {
           </div>
 
           <div className="mb-2 flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5">
-            <iframe
+            {/* <iframe
               src="https://ghbtns.com/github-btn.html?user=sonofmagic&repo=weapp-tailwindcss&type=star&count=true"
               frameborder="0"
               scrolling="0"
@@ -56,10 +57,11 @@ function HomepageHeader() {
               height="20"
               title="GitHub"
             >
-            </iframe>
-            <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
+            </iframe> */}
+            <GitHubButton href="https://github.com/sonofmagic/weapp-tailwindcss" data-color-scheme="light" data-show-count="true" aria-label="Star sonofmagic/weapp-tailwindcss on GitHub">Star</GitHubButton>
+            {/* <a href="https://github.com/sonofmagic/weapp-tailwindcss/issues/270" target="_blank" rel="nofollow">
               谁在使用？
-            </a>
+            </a> */}
           </div>
 
           <div>

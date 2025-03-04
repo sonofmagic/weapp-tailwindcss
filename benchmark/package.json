@@ -29,7 +29,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "postcss": "^8.5.3",
     "tailwindcss": "catalog:tailwindcss4",
-    "unplugin-vue-router": "^0.11.2",
+    "unplugin-vue-router": "^0.12.0",
     "vite": "^6.2.0",
     "vue-tsc": "^2.2.8"
   }
