@@ -1,4 +1,6 @@
 /* eslint-disable ts/no-require-imports */
+import type { Options as ClassicOptions, ThemeConfig } from '@docusaurus/preset-classic'
+
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 import process from 'node:process'
@@ -83,7 +85,6 @@ const config = {
   presets: [
     [
       'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
       {
         docs: {
           sidebarPath: 'sidebars.ts',
@@ -125,7 +126,12 @@ const config = {
           ignorePatterns: ['/tags/**'],
           filename: 'sitemap.xml',
         },
-      },
+        svgr: {
+          svgrConfig: {
+
+          },
+        },
+      } satisfies ClassicOptions,
     ],
   ],
   plugins: [
@@ -165,173 +171,172 @@ const config = {
     ],
   ],
   themeConfig:
-  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-  {
-    // https://docusaurus.io/zh-CN/docs/markdown-features/toc#table-of-contents-heading-level
-    tableOfContents: {
-      minHeadingLevel: 2,
-      maxHeadingLevel: 3,
-    },
-    colorMode: {
-      defaultMode: 'dark',
-    },
-    metadata: [
-      {
-        name: 'keywords',
-        content: 'weapp,小程序,tailwindcss,原子类,uni-app,taro,rax,mpx,native,remax,原生,webpack,plugin,vite,gulp,wxss,wxml',
+    {
+      // https://docusaurus.io/zh-CN/docs/markdown-features/toc#table-of-contents-heading-level
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 3,
       },
-      // {
-      //   name: 'description',
-      //   content:
-      //     '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站'
-      // }
-    ],
-    algolia: {
-      apiKey: '614e6b4532a0b92d440e4676381cc600',
-      appId: '9Y7BJULSEW',
-      indexName: 'weapp-tw-icebreaker',
-      contextualSearch: true,
-    },
-    // Replace with your project's social card
-    image: 'img/logo.png',
-    navbar: {
-      title: 'weapp-tailwindcss',
-      logo: {
-        alt: 'weapp tailwindcss Logo',
-        src: 'img/logo.png',
+      colorMode: {
+        defaultMode: 'dark',
       },
-      items: [
+      metadata: [
         {
-          type: 'doc',
-          docId: 'intro',
-          position: 'left',
-          label: '指南',
-        },
-
-        {
-          type: 'doc',
-          label: '生态及解决方案',
-          docId: 'community/templates',
-        },
-        {
-          type: 'doc',
-          label: '常见问题',
-          docId: 'issues/index',
-        },
-        {
-          type: 'doc',
-          label: '优秀案例展示',
-          docId: 'showcase/index',
-        },
-
-        {
-          type: 'doc',
-          label: '更新与迁移',
-          docId: 'migrations/v3',
-        },
-        {
-          type: 'doc',
-          docId: 'api/interfaces/UserDefinedOptions',
-          position: 'left',
-          label: '配置项',
+          name: 'keywords',
+          content: 'weapp,小程序,tailwindcss,原子类,uni-app,taro,rax,mpx,native,remax,原生,webpack,plugin,vite,gulp,wxss,wxml',
         },
         // {
-        //   to: 'docs/api/', // 'api' is the 'out' directory
-        //   label: 'Types',
-        //   position: 'left',
-        // },
-        // {
-        //   to: 'docs/api-cli/', // 'api' is the 'out' directory
-        //   label: 'Types-CLI',
-        //   position: 'left',
-        // },
-        {
-          href: 'https://vite.icebreaker.top/',
-          position: 'left',
-          label: '🔥Weapp-vite',
-        },
-        {
-          href: 'https://icebreaker.top/',
-          position: 'left',
-          label: '博客',
-        },
-        // { to: '/blog', label: 'Blog', position: 'left' },
-        {
-          href: 'https://github.com/sonofmagic/weapp-tailwindcss',
-          label: 'GitHub',
-          position: 'right',
-        },
+        //   name: 'description',
+        //   content:
+        //     '用tailwindcss来开发小程序吧！这是一个 webpack / vite 插件，兼容了各种用这类打包的框架，比如 uni-app, uni-app vite, taro, rax, mpx, native, remax, 原生等等. 伟大的 icebreaker 部署了这个文档网站'
+        // }
       ],
-    },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: '文档',
-          items: [
-            {
-              label: '指南',
-              to: '/docs/intro',
-            },
-            {
-              label: '配置项',
-              to: '/docs/options/',
-            },
-            {
-              label: '常见问题',
-              to: '/docs/issues/',
-            },
-          ],
+      algolia: {
+        apiKey: '614e6b4532a0b92d440e4676381cc600',
+        appId: '9Y7BJULSEW',
+        indexName: 'weapp-tw-icebreaker',
+        contextualSearch: true,
+      },
+      // Replace with your project's social card
+      image: 'img/logo.png',
+      navbar: {
+        title: 'weapp-tailwindcss',
+        logo: {
+          alt: 'weapp tailwindcss Logo',
+          src: 'img/logo.png',
         },
-        // {
-        //   title: 'Community',
-        //   items: [
-        //     {
-        //       label: 'Stack Overflow',
-        //       href: 'https://stackoverflow.com/questions/tagged/docusaurus'
-        //     },
-        //     {
-        //       label: 'Discord',
-        //       href: 'https://discordapp.com/invite/docusaurus'
-        //     },
-        //     {
-        //       label: 'Twitter',
-        //       href: 'https://twitter.com/docusaurus'
-        //     }
-        //   ]
-        // },
-        {
-          title: '更多',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/sonofmagic/weapp-tailwindcss',
-            },
-            {
-              label: 'Code of Conduct',
-              href: 'https://github.com/sonofmagic/weapp-tailwindcss/blob/main/CODE_OF_CONDUCT.md',
-            },
-            {
-              label: 'weapp-vite',
-              href: 'https://vite.icebreaker.top',
-            },
-            {
-              label: '博客',
-              href: 'https://icebreaker.top',
-            },
-            {
-              label: 'IceStack',
-              href: 'https://ui.icebreaker.top/zh-CN',
-            },
-            {
-              label: 'weapp-pandacss',
-              href: 'https://github.com/sonofmagic/weapp-pandacss',
-            },
-          ],
-        },
-      ],
-      // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
-      copyright: `<div class="flex flex-col items-center justify-center space-y-2">
+        items: [
+          {
+            type: 'doc',
+            docId: 'intro',
+            position: 'left',
+            label: '指南',
+          },
+
+          {
+            type: 'doc',
+            label: '生态及解决方案',
+            docId: 'community/templates',
+          },
+          {
+            type: 'doc',
+            label: '常见问题',
+            docId: 'issues/index',
+          },
+          {
+            type: 'doc',
+            label: '优秀案例展示',
+            docId: 'showcase/index',
+          },
+
+          {
+            type: 'doc',
+            label: '更新与迁移',
+            docId: 'migrations/v3',
+          },
+          {
+            type: 'doc',
+            docId: 'api/interfaces/UserDefinedOptions',
+            position: 'left',
+            label: '配置项',
+          },
+          // {
+          //   to: 'docs/api/', // 'api' is the 'out' directory
+          //   label: 'Types',
+          //   position: 'left',
+          // },
+          // {
+          //   to: 'docs/api-cli/', // 'api' is the 'out' directory
+          //   label: 'Types-CLI',
+          //   position: 'left',
+          // },
+          {
+            href: 'https://vite.icebreaker.top/',
+            position: 'left',
+            label: '🔥Weapp-vite',
+          },
+          {
+            href: 'https://icebreaker.top/',
+            position: 'left',
+            label: '博客',
+          },
+          // { to: '/blog', label: 'Blog', position: 'left' },
+          {
+            href: 'https://github.com/sonofmagic/weapp-tailwindcss',
+            label: 'GitHub',
+            position: 'right',
+          },
+        ],
+      },
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: '文档',
+            items: [
+              {
+                label: '指南',
+                to: '/docs/intro',
+              },
+              {
+                label: '配置项',
+                to: '/docs/options/',
+              },
+              {
+                label: '常见问题',
+                to: '/docs/issues/',
+              },
+            ],
+          },
+          // {
+          //   title: 'Community',
+          //   items: [
+          //     {
+          //       label: 'Stack Overflow',
+          //       href: 'https://stackoverflow.com/questions/tagged/docusaurus'
+          //     },
+          //     {
+          //       label: 'Discord',
+          //       href: 'https://discordapp.com/invite/docusaurus'
+          //     },
+          //     {
+          //       label: 'Twitter',
+          //       href: 'https://twitter.com/docusaurus'
+          //     }
+          //   ]
+          // },
+          {
+            title: '更多',
+            items: [
+              {
+                label: 'GitHub',
+                href: 'https://github.com/sonofmagic/weapp-tailwindcss',
+              },
+              {
+                label: 'Code of Conduct',
+                href: 'https://github.com/sonofmagic/weapp-tailwindcss/blob/main/CODE_OF_CONDUCT.md',
+              },
+              {
+                label: 'weapp-vite',
+                href: 'https://vite.icebreaker.top',
+              },
+              {
+                label: '博客',
+                href: 'https://icebreaker.top',
+              },
+              {
+                label: 'IceStack',
+                href: 'https://ui.icebreaker.top/zh-CN',
+              },
+              {
+                label: 'weapp-pandacss',
+                href: 'https://github.com/sonofmagic/weapp-pandacss',
+              },
+            ],
+          },
+        ],
+        // `<a target="_blank" rel="nofollow" href="http://beian.miit.gov.cn">苏ICP备19002675号-2</a>`
+        copyright: `<div class="flex flex-col items-center justify-center space-y-2">
         <span>${createLink({
           href: '/docs/copyright',
           textContent: 'Copyright',
@@ -345,14 +350,18 @@ const config = {
           textContent: '<img class="w-10 ml-2" src="/img/logo-netlify.png" alt="Netlify badge" />',
         })}</span>
         </div>`,
-    },
-    prism: {
-      theme: PrismLight,
-      darkTheme: PrismDark,
-      // https://github.com/FormidableLabs/prism-react-renderer/blob/master/packages/generate-prism-languages/index.ts#L9-L23
-      additionalLanguages: ['json', 'javascript', 'css', 'clike', 'bash', 'scss', 'yaml', 'typescript', 'diff'],
-    },
-  },
+      },
+      prism: {
+        theme: PrismLight,
+        darkTheme: PrismDark,
+        // https://github.com/FormidableLabs/prism-react-renderer/blob/master/packages/generate-prism-languages/index.ts#L9-L23
+        additionalLanguages: ['json', 'javascript', 'css', 'clike', 'bash', 'scss', 'yaml', 'typescript', 'diff'],
+      },
+      // announcementBar: {
+      //   isCloseable: true,
+      //   content: `<a href="">weapp-tailwindcss 现已经支持 tailwindcss 4!</a>`,
+      // },
+    } satisfies ThemeConfig,
   markdown: {
     format: 'detect',
   },

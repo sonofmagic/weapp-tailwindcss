@@ -2,12 +2,14 @@ import type { JSX } from 'react'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'
-import PluginsImg from '@site/../assets/weapp-tw-plugins.png'
 import HomeLogo from '@site/src/components/HomeLogo'
 import Layout from '@theme/Layout'
 import React from 'react'
-// import Plugins from '@site/src/components/Plugins'
-// import Frameworks from '@site/src/components/Frameworks'
+import GulpLogo from '../assets/gulp.svg'
+import NodejsLogo from '../assets/nodejs.svg'
+import TailwindcssLogo from '../assets/tw-logo.svg'
+import ViteLogo from '../assets/vite.svg'
+import WebpackLogo from '../assets/webpack.svg'
 // mask-image: linear-gradient(rgba(0, 0, 0, 1), transparent);
 function HomepageHeader() {
   // const { siteConfig } = useDocusaurusContext()
@@ -67,14 +69,82 @@ function HomepageHeader() {
         </div>
 
         <div className="mt-8 flex flex-col justify-around space-y-8 md:flex-row md:space-y-0">
-          <div className="text-center">
-            <h3>不仅仅是 webpack/vite</h3>
-            <img src={PluginsImg}></img>
-            {/* <Plugins></Plugins> */}
+          <div className="flex flex-col items-center text-center">
+            <h3 className="mb-6">多构建工具适配</h3>
+            <div className="relative grid max-w-[500px] grid-cols-2 place-items-center gap-x-10 gap-y-5 p-6">
+              {/* eslint-disable-next-line tailwindcss/no-contradicting-classname */}
+              <div className="absolute inset-0 rounded-lg border bg-[image:repeating-linear-gradient(315deg,currentColor_0,currentColor_1px,transparent_0,transparent_50%)] bg-[size:8px_8px] bg-left-top opacity-10"></div>
+              <div>
+                <WebpackLogo height={64} width={64}></WebpackLogo>
+              </div>
+              <div>
+                <ViteLogo height={64} width={64}></ViteLogo>
+              </div>
+              <div>
+                <GulpLogo height={64} width={64}></GulpLogo>
+              </div>
+              <div>
+                <NodejsLogo height={64} width={64}></NodejsLogo>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <h3>Tailwindcss 多版本支持</h3>
+            <div className="flex flex-col">
+              <div className="relative">
+                <TailwindcssLogo className="w-[250px]"></TailwindcssLogo>
+                {/* <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div> */}
+              </div>
+
+              <div className="relative p-1.5 text-xl font-medium tracking-tight text-gray-950 dark:text-white">
+                <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                支持版本列表
+              </div>
+              <div className="text-sm">
+                <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
+                  <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                  <div className="relative flex justify-center">
+                    <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
+                      <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
+                      <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
+                      <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
+                    </svg>
+                    v4.x
+                  </div>
+
+                </div>
+                <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
+                  <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                  <div className="relative flex justify-center">
+                    <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
+                      <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
+                      <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
+                      <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
+                    </svg>
+                    v3.x
+                  </div>
+                </div>
+                <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
+                  <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                  <div className="relative flex justify-center">
+                    <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
+                      <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
+                      <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
+                      <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
+                    </svg>
+                    v2.x (jit mode)
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
           <div className="text-center">
             <h3>主流框架与原生开发支持</h3>
-            <img src={FrameworksImg}></img>
+            {/* <div>
+              <WeappLogo></WeappLogo>
+            </div> */}
+            <img height={220} src={FrameworksImg}></img>
             {/* <Frameworks></Frameworks> */}
           </div>
         </div>
