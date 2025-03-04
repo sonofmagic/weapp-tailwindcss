@@ -91,42 +91,45 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       if (Array.isArray(groupedEntries.js)) {
         let noCachedCount = 0
         for (const element of groupedEntries.js) {
-          const [file, originalSource] = element as [string, OutputChunk]
-          const rawSource = originalSource.code
+          const [file, originalSource] = element as [string, OutputChunk | OutputAsset]
+          // js maybe asset
+          if (originalSource.type === 'chunk') {
+            const rawSource = originalSource.code
 
-          const hash = cache.computeHash(rawSource)
-          cache.calcHashValueChanged(file, hash)
-          await cache.process(
-            file,
-            () => {
-              const source = cache.get<string>(file)
-              if (source) {
-                originalSource.code = source
-                debug('js cache hit: %s', file)
-              }
-              else {
-                return false
-              }
-            },
-            async () => {
-              const mapFilename = `${file}.map`
-              const hasMap = Boolean(bundle[mapFilename])
-              const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                generateMap: hasMap,
-              })
-              originalSource.code = code
-              onUpdate(file, rawSource, code)
-              debug('js handle: %s', file)
-              noCachedCount++
-              if (hasMap && map) {
-                ;(bundle[mapFilename] as OutputAsset).source = map.toString()
-              }
-              return {
-                key: file,
-                source: code,
-              }
-            },
-          )
+            const hash = cache.computeHash(rawSource)
+            cache.calcHashValueChanged(file, hash)
+            await cache.process(
+              file,
+              () => {
+                const source = cache.get<string>(file)
+                if (source) {
+                  originalSource.code = source
+                  debug('js cache hit: %s', file)
+                }
+                else {
+                  return false
+                }
+              },
+              async () => {
+                const mapFilename = `${file}.map`
+                const hasMap = Boolean(bundle[mapFilename])
+                const { code, map } = await jsHandler(rawSource, runtimeSet, {
+                  generateMap: hasMap,
+                })
+                originalSource.code = code
+                onUpdate(file, rawSource, code)
+                debug('js handle: %s', file)
+                noCachedCount++
+                if (hasMap && map) {
+                  ;(bundle[mapFilename] as OutputAsset).source = map.toString()
+                }
+                return {
+                  key: file,
+                  source: code,
+                }
+              },
+            )
+          }
         }
         debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
       }
