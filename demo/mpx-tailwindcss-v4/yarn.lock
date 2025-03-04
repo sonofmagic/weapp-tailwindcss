@@ -1470,13 +1470,6 @@
   resolved "https://registry.npmmirror.com/@mpxjs/utils/-/utils-2.9.73.tgz#6aa9b72b5c2d18b4a640958ce858d30add9e2e0a"
   integrity sha512-ZdPMB9wLJde+FosLziGTzyUOv0+rVFkJtivS7rCsc95+WJ8vDa90NNwH/b1a/8XiNEHvLOhQ5aKcKp1koHFBZg==
 
-"@mpxjs/vue-cli-plugin-mpx-eslint@^2.0.0":
-  version "2.1.23"
-  resolved "https://registry.npmmirror.com/@mpxjs/vue-cli-plugin-mpx-eslint/-/vue-cli-plugin-mpx-eslint-2.1.23.tgz#8197c680006bc4cce78807be264b0eeb55bb75f5"
-  integrity sha512-iiBGsS0AmlGASg99MtPu1+TfOZeHwF3M1cV2uxrHixmeXUusD9UgGgoToTKIVylJORRSGbNIWYrO6cGBuFvbGg==
-  dependencies:
-    eslint-webpack-plugin "^3.1.1"
-
 "@mpxjs/vue-cli-plugin-mpx-typescript@^2.0.0":
   version "2.1.23"
   resolved "https://registry.npmmirror.com/@mpxjs/vue-cli-plugin-mpx-typescript/-/vue-cli-plugin-mpx-typescript-2.1.23.tgz#c8c74691ac6d6f8a4999a8cf9f19565dae04a298"
@@ -1823,14 +1816,6 @@
   version "9.6.1"
   resolved "https://registry.npmmirror.com/@types/eslint/-/eslint-9.6.1.tgz#d5795ad732ce81715f27f75da913004a56751584"
   integrity sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==
-  dependencies:
-    "@types/estree" "*"
-    "@types/json-schema" "*"
-
-"@types/eslint@^7.29.0 || ^8.4.1":
-  version "8.56.12"
-  resolved "https://registry.npmmirror.com/@types/eslint/-/eslint-8.56.12.tgz#1657c814ffeba4d2f84c0d4ba0f44ca7ea1ca53a"
-  integrity sha512-03ruubjWyOHlmljCVoxSuNDdmfZDzsrrz0P2LeJsOXr+ZwFQ+0yQIwNCwt/GYhV7Z31fgtXJTAEs+FYlEL851g==
   dependencies:
     "@types/estree" "*"
     "@types/json-schema" "*"
@@ -4221,17 +4206,6 @@ eslint-visitor-keys@^3.3.0, eslint-visitor-keys@^3.4.3:
   resolved "https://registry.npmmirror.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz#0cd72fe8550e3c2eae156a96a4dddcd1c8ac5800"
   integrity sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==
 
-eslint-webpack-plugin@^3.1.1:
-  version "3.2.0"
-  resolved "https://registry.npmmirror.com/eslint-webpack-plugin/-/eslint-webpack-plugin-3.2.0.tgz#1978cdb9edc461e4b0195a20da950cf57988347c"
-  integrity sha512-avrKcGncpPbPSUHX6B3stNGzkKFto3eL+DKM4+VyMrVnhPc3vRczVlCq3uhuFOdRvDHTVXuzwk1ZKUrqDQHQ9w==
-  dependencies:
-    "@types/eslint" "^7.29.0 || ^8.4.1"
-    jest-worker "^28.0.2"
-    micromatch "^4.0.5"
-    normalize-path "^3.0.0"
-    schema-utils "^4.0.0"
-
 eslint@^7.0.0:
   version "7.32.0"
   resolved "https://registry.npmmirror.com/eslint/-/eslint-7.32.0.tgz#c6d328a14be3fb08c8d1d21e12c02fdb7a2a812d"
@@ -5536,15 +5510,6 @@ jest-worker@^27.0.2, jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-jest-worker@^28.0.2:
-  version "28.1.3"
-  resolved "https://registry.npmmirror.com/jest-worker/-/jest-worker-28.1.3.tgz#7e3c4ce3fa23d1bb6accb169e7f396f98ed4bb98"
-  integrity sha512-CqRA220YV/6jCo8VWvAt1KKx6eek1VIHMPeLEbpcfSfkEeWyBNppynM/o6q+Wmw+sOhos2ml34wZbSX3G13//g==
-  dependencies:
-    "@types/node" "*"
-    merge-stream "^2.0.0"
-    supports-color "^8.0.0"
-
 jiti@^2.4.2:
   version "2.4.2"
   resolved "https://registry.npmmirror.com/jiti/-/jiti-2.4.2.tgz#d19b7732ebb6116b06e2038da74a55366faef560"
@@ -6009,7 +5974,7 @@ methods@~1.1.2:
   resolved "https://registry.npmmirror.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==
 
-micromatch@^4.0.0, micromatch@^4.0.2, micromatch@^4.0.5, micromatch@^4.0.8:
+micromatch@^4.0.0, micromatch@^4.0.2, micromatch@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmmirror.com/micromatch/-/micromatch-4.0.8.tgz#d66fa18f3a47076789320b9b1af32bd86d9fa202"
   integrity sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==

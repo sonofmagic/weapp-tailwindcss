@@ -13,7 +13,7 @@
   "native": true,
   "native-ts": true,
   "taro-app-vite": true,
-  "mpx-tailwindcss-v4": false,
+  "mpx-tailwindcss-v4": true,
   "taro-vite-tailwindcss-v4": true,
   "taro-webpack-tailwindcss-v4": true,
   "uni-app-tailwindcss-v4": true,

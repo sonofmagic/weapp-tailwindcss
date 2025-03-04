@@ -29,5 +29,8 @@ module.exports = defineConfig({
         appType: 'mpx'
       })
     )
+  },
+  chainWebpack(config) {
+    config.plugins.delete('fork-ts-checker')
   }
 })

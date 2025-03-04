@@ -7,8 +7,7 @@
 *,
 ::after,
 ::before,
-::backdrop,
-::file-selector-button {
+::backdrop {
   box-sizing: border-box; /* 1 */
   margin: 0; /* 2 */
   padding: 0; /* 2 */

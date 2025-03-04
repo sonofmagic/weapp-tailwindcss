@@ -30,12 +30,6 @@ text:not(#n),
   margin: 0;
   padding: 0;
 }
-:not(#n)::file-selector-button {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
 .container:not(#n):not(#n):not(#n) {
   width: 100%;
 }

@@ -10,6 +10,9 @@ const config = {
                 rem2rpx: true
             })
         )
+    },
+    chainWebpack(config) {
+      config.plugins.delete('fork-ts-checker')
     }
     // other option...
 }
