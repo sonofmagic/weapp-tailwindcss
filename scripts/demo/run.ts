@@ -1,8 +1,11 @@
+import type { PackageJson } from 'pkg-types'
 import process from 'node:process'
+import { execaCommand } from 'execa'
 import fs from 'fs-extra'
+import { getPackageInfo } from 'local-pkg'
 import path from 'pathe'
 
-async function setJson(p, key, flag) {
+async function setJson(p: string, key: string, flag: any) {
   const json = (await fs.exists(p)) ? JSON.parse(await fs.readFile(p, 'utf8')) : {}
   json[key] = flag
   await fs.writeFile(p, JSON.stringify(json, null, 2), 'utf8')
@@ -10,12 +13,38 @@ async function setJson(p, key, flag) {
 
 const divideString = '-'.repeat(process.stdout.columns)
 
-async function run(dirPath, command) {
-  const { execaCommand } = await import('execa')
-  await execaCommand(`yarn ${command}`, {
-    cwd: dirPath,
+type PackageInfo = {
+  name: string
+  version: string | undefined
+  rootPath: string
+  packageJsonPath: string
+  packageJson: PackageJson
+} | undefined
+
+type CommandCallback = string | ((pkgInfo: PackageInfo) => string)
+
+async function execa(opts: {
+  command: CommandCallback
+  cwd: string
+}) {
+  const { command, cwd } = opts
+  let cmd = typeof command === 'string' ? command : ''
+  if (typeof command === 'function') {
+    const pkgInfo = await getPackageInfo(cwd)
+    cmd = command(pkgInfo)
+  }
+  return await execaCommand(cmd, {
+    cwd,
     stdio: 'inherit',
   })
+}
+
+async function run(dirPath: string, command: CommandCallback) {
+  await execa({
+    command,
+    cwd: dirPath,
+  })
+
   const filenames = await fs.readdir(dirPath)
   for (const filename of filenames) {
     const baseDir = path.resolve(dirPath, filename)
@@ -27,11 +56,10 @@ async function run(dirPath, command) {
         console.log(`[${filename}]:${baseDir}`)
         console.log(divideString)
         try {
-          await execaCommand(`yarn ${command}`, {
+          await execa({
+            command,
             cwd: baseDir,
-            stdio: 'inherit',
           })
-          // .pipeStdout(process.stdout)
           await setJson(path.resolve(dirPath, 'result.json'), filename, true)
         }
         catch {
