@@ -1,10 +1,10 @@
 <template>
-  <view class="flex">
+  <view class="flex flex-col">
     <image class="w-20 h-20" src="/static/logo.png" />
-    <view class="text-area">
+    <view class="text-area aspect-(--my-aspect-ratio)">
       <text class="text-[#00f285] text-[88rpx] font-bold underline">{{ title }}</text>
     </view>
-    <view :class="className">
+    <view :class="className" class="aspect-[calc(4*3+1)/3]">
       {{ className }}
     </view>
   </view>
@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const title = ref('Hello')
-const className = ref('bg-[#0000ff]')
+const className = ref('bg-[#0000ff] text-[45rpx] text-white')
 </script>
 
 

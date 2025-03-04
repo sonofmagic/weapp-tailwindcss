@@ -5410,6 +5410,7 @@ exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
 "/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,
 :host {
+  --color-white: #fff;
   --spacing: 8rpx;
   --font-weight-bold: 700;
 }
@@ -5432,14 +5433,26 @@ text:not(#n),
 .flex:not(#n):not(#n):not(#n) {
   display: flex;
 }
+.aspect-y--my-aspect-ratioy:not(#n):not(#n):not(#n) {
+  aspect-ratio: var(--my-aspect-ratio);
+}
+.aspect-_calcy4m3a1ys3_:not(#n):not(#n):not(#n) {
+  aspect-ratio: 13/3;
+}
 .h-20:not(#n):not(#n):not(#n) {
   height: calc(var(--spacing) * 20);
 }
 .w-20:not(#n):not(#n):not(#n) {
   width: calc(var(--spacing) * 20);
 }
+.flex-col:not(#n):not(#n):not(#n) {
+  flex-direction: column;
+}
 .bg-_h0000ff_:not(#n):not(#n):not(#n) {
   background-color: #00f;
+}
+.text-_45rpx_:not(#n):not(#n):not(#n) {
+  font-size: 45rpx;
 }
 .text-_88rpx_:not(#n):not(#n):not(#n) {
   font-size: 88rpx;
@@ -5450,6 +5463,9 @@ text:not(#n),
 }
 .text-_h00f285_:not(#n):not(#n):not(#n) {
   color: #00f285;
+}
+.text-white:not(#n):not(#n):not(#n) {
+  color: var(--color-white);
 }
 .underline:not(#n):not(#n):not(#n) {
   text-decoration-line: underline;
@@ -5493,17 +5509,22 @@ page:not(#n):not(#n):not(#n):not(#n) {
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > json 1`] = `
 "[
+  "aspect-(--my-aspect-ratio)",
+  "aspect-[calc(4*3+1)/3]",
   "bg-[#0000ff]",
   "content",
   "delay",
   "flex",
+  "flex-col",
   "font-bold",
   "from",
   "h-20",
   "text",
   "text-[#00f285]",
+  "text-[45rpx]",
   "text-[88rpx]",
   "text-area",
+  "text-white",
   "to",
   "top",
   "underline",
@@ -5513,10 +5534,12 @@ exports[`e2e > 'uni-app-tailwindcss-v4' > json 1`] = `
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > wxml 1`] = `
-"<view class="flex flex">
+"<view class="flex flex flex-col flex-col">
   <image class="w-20 w-20 h-20 h-20" src="/static/logo.png" role="img"></image>
-  <view class="text-area text-area"><text class="text-_h00f285_ text-_h00f285_ text-_88rpx_ text-_88rpx_ font-bold font-bold underline underline"></text></view>
-  <view class="bg-_h0000ff_ bg-_h0000ff_">bg-_h0000ff_</view>
+  <view class="text-area text-area aspect-y--my-aspect-ratioy aspect-y--my-aspect-ratioy">
+    <text class="text-_h00f285_ text-_h00f285_ text-_88rpx_ text-_88rpx_ font-bold font-bold underline underline"></text>
+  </view>
+  <view class="bg-_h0000ff_ bg-_h0000ff_ text-_45rpx_ text-_45rpx_ text-white text-white aspect-_calcy4m3a1ys3_ aspect-_calcy4m3a1ys3_">bg-_h0000ff_ text-_45rpx_ text-white</view>
 </view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
@@ -11203,7 +11226,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     class="mt-_96d3px_ NHostImage--mt-_96d3px_ w-_61d1px_ NHostImage--w-_61d1px_ h-_50d99px_ NHostImage--h-_50d99px_"
     role="img"></image>
   <view class="_2xlctext-base _2xlctext-base">2xl:text-base</view>
-  <view class="_2xlctext-_red_ _2xlctext-_red_">2xl:text-[red]</view>
+  <view class="2xl 2xl text- text- red red">2xl:text-[red]</view>
   <view class="space-y-4 space-y-4 flex flex flex-col flex-col bg-red-400 bg-red-400">
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
@@ -11216,11 +11239,9 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <text class="bg-sky-500 bg-sky-500"></text>
   </view>
-  <view class="bg-_h3482f2_ bg-_h3482f2_">bgbgbgbg</view>
-  <view class="text-_30rpx_ text-_30rpx_ text-_hfafafa_ text-_hfafafa_ font-bold font-bold bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">
-    classArray
-  </view>
-  <view class="text-sm text-sm text-_hfafafa_ text-_hfafafa_">:class="['text-sm', classObj]</view>
+  <view class="bg- bg- 3482f2 3482f2">bgbgbgbg</view>
+  <view class="text- text- 30rpx 30rpx text- text- fafafa fafafa font-bold font-bold bg- bg- url url https https xxx xxx com com xx xx webp webp">classArray</view>
+  <view class="text-sm text-sm text- text- fafafa fafafa">:class="['text-sm', classObj]</view>
   <view class="rotate-_10deg_ rotate-_10deg_">rotate1111111</view>
   <view class="td td highlight highlight">你好</view>
   <view class="td td">1</view>
@@ -11266,17 +11287,17 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
   <view class="text-_hbada55_ text-_hbada55_">text-[#bada55]</view>
   <view class="text-_lengthcvary--my-var-lengthy_ text-_lengthcvary--my-var-lengthy_">text-[length:var(--my-var-length)]</view>
   <view class="text-_colorcvary--my-vary_ text-_colorcvary--my-vary_">text-[color:var(--my-var)]</view>
-  <button class="ibg-green-500 ibg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
+  <button class="bg-green-500 bg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
   <view class="test test">test</view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-_h4268EA_ bg-_h4268EA_ shadow-indigo-100 shadow-indigo-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-_h123456_ bg-_h123456_ shadow-blue-100 shadow-blue-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
+  <view class="h- h- 20px 20px w- w- 20px 20px bg- bg- 4268EA 4268EA shadow-indigo-100 shadow-indigo-100"></view>
+  <view class="h- h- 20px 20px w- w- 20px 20px bg- bg- 123456 123456 shadow-blue-100 shadow-blue-100"></view>
+  <view class="h- h- 20px 20px w- w- 20px 20px bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
+  <view class="h- h- 20px 20px w- w- 20px 20px bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
+  <view class="h- h- 20px 20px w- w- 20px 20px bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
   <view class="w-2 w-2 h-2 h-2 bg-_h123456_ bg-_h123456_"></view>
   <view class="w-2 w-2 h-2 h-2 bg-blue-500s50 bg-blue-500s50"></view>
   <view class="flex flex items-center items-center justify-center justify-center w-screen w-screen h-screen h-screen">
-    <view class="ifont-bold ifont-bold itext-_h990000_ itext-_h990000_ text-2xl text-2xl underline underline">测试标题</view>
+    <view class="font-bold font-bold text- text- 990000 990000 text-2xl text-2xl underline underline">测试标题</view>
   </view>
   <image class="logo logo h-10 h-10 w-10 w-10" src="/static/logo.png" role="img"></image>
   <view class="text-area text-area"><text class="title title h-_200p_ h-_200p_"></text></view>
@@ -11288,7 +11309,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     </view>
     <view class="max-w-_300rpx_ max-w-_300rpx_ min-h-_100px_ min-h-_100px_ text-_hdddddd_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
     <view
-      class="flex flex items-center items-center justify-center justify-center h-_100px_ h-_100px_ w-_100px_ w-_100px_ rounded-_40px_ rounded-_40px_ bg-_h123456_ bg-_h123456_ bg-opacity-_0d54_ bg-opacity-_0d54_ text-_hffffff_ text-_hffffff_ text-_h123456_ text-_h123456_ bg-_h666600_ bg-_h666600_">
+      class="flex flex items-center items-center justify-center justify-center h- h- 100px 100px w- w- 100px 100px rounded- rounded- 40px 40px bg- bg- 123456 123456 bg-opacity- bg-opacity- 0 0 54 54 text- text- ffffff ffffff text- text- 123456 123456 bg- bg- 666600 666600">
       Hello
     </view>
     <view class="border-_10px_ border-_10px_ border-_h098765_ border-_h098765_ border-solid border-solid border-opacity-_0d44_ border-opacity-_0d44_">
