@@ -1,13 +1,22 @@
 import path from 'node:path'
 import process from 'node:process'
-// import { gte } from 'semver'
+import boxen from 'boxen'
+import { trimStart } from 'es-toolkit'
+import { gte } from 'semver'
 import { run } from './run'
 
 const argvs = new Set(process.argv.slice(2))
 const isBeta = argvs.has('--beta')
 const isAlpha = argvs.has('--alpha')
 const isRc = argvs.has('--rc')
-const version = isAlpha ? '@alpha' : isBeta ? '@beta' : isRc ? '@rc' : ''
+
+function getArgs(map: Record<string, string>) {
+  return Object.entries(map).map(([name, version]) => {
+    return `${name}${version ? `@${version}` : ''}`
+  }).join(' ')
+}
+
+const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
 
   ; (async () => {
   const demoPath = path.resolve(import.meta.dirname, '../../demo')
@@ -16,14 +25,36 @@ const version = isAlpha ? '@alpha' : isBeta ? '@beta' : isRc ? '@rc' : ''
   await run(
     demoPath,
     (pkgInfo) => {
-      if (pkgInfo) {
-        console.log(pkgInfo.rootPath, pkgInfo.packageJson.devDependencies?.tailwindcss)
+      const pkgMap: Record<string, string> = {
+        'weapp-tailwindcss': version,
+        '@weapp-tailwindcss/merge': version,
+        'weapp-ide-cli': 'latest',
+        'tailwindcss': '',
+        'tailwindcss-patch': isRc ? 'rc' : '',
       }
 
-      return `yarn add -D weapp-tailwindcss${version} tailwindcss-patch${isRc ? '@rc' : ''
-      } @weapp-tailwindcss/merge${version} weapp-ide-cli@latest tailwindcss@3 --ignore-engines`
+      if (pkgInfo) {
+        if (pkgInfo.packageJson.devDependencies) {
+          let tailwindcssVersion = pkgInfo.packageJson.devDependencies?.tailwindcss
+          if (tailwindcssVersion) {
+            if (tailwindcssVersion.length === 1) {
+              tailwindcssVersion = `${tailwindcssVersion}.0.0`
+            }
+            if (!gte(trimStart(tailwindcssVersion, '^'), '4.0.0')) {
+              pkgMap.tailwindcss = '3'
+            }
+          }
+          if (Reflect.has(pkgInfo.packageJson.devDependencies, '@tailwindcss/postcss')) {
+            pkgMap['@tailwindcss/postcss'] = ''
+          }
+          if (Reflect.has(pkgInfo.packageJson.devDependencies, '@tailwindcss/vite')) {
+            pkgMap['@tailwindcss/vite'] = ''
+          }
+        }
+      }
+      const args = getArgs(pkgMap)
+      console.log(boxen(`${path.relative(demoPath, pkgInfo!.rootPath!)}\n${args}`))
+      return `yarn add -D ${args} --ignore-engines`
     },
   )
-
-  // await install(demoPath, '-D @icebreakers/weapp-tailwindcss-test-components', true)
 })()

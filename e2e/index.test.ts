@@ -22,8 +22,22 @@ const TestProjectsEntries: ProjectEntry[] = [
     },
   },
   {
+    name: 'uni-app-webpack-tailwindcss-v4',
+    projectPath: 'uni-app-webpack-tailwindcss-v4/dist/build/mp-weixin',
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'common/main.wxss'))).toMatchSnapshot('css')
+    },
+  },
+  {
     name: 'uni-app-vue3-vite',
     projectPath: 'uni-app-vue3-vite/dist/build/mp-weixin',
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'app.wxss'))).toMatchSnapshot('css')
+    },
+  },
+  {
+    name: 'uni-app-tailwindcss-v4',
+    projectPath: 'uni-app-tailwindcss-v4/dist/build/mp-weixin',
     testMethod: async (_, projectPath) => {
       expect(await loadCss(path.resolve(projectPath, 'app.wxss'))).toMatchSnapshot('css')
     },
@@ -36,8 +50,22 @@ const TestProjectsEntries: ProjectEntry[] = [
     },
   },
   {
+    name: 'taro-webpack-tailwindcss-v4',
+    projectPath: 'taro-webpack-tailwindcss-v4',
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    },
+  },
+  {
     name: 'taro-app-vite',
     projectPath: 'taro-app-vite',
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
+    },
+  },
+  {
+    name: 'taro-vite-tailwindcss-v4',
+    projectPath: 'taro-vite-tailwindcss-v4',
     testMethod: async (_, projectPath) => {
       expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
     },
@@ -66,6 +94,14 @@ const TestProjectsEntries: ProjectEntry[] = [
   {
     name: 'mpx-app',
     projectPath: 'mpx-app/dist/wx',
+    testMethod: async (_, projectPath) => {
+      expect(await loadCss(path.resolve(projectPath, 'app.wxss'))).toMatchSnapshot('css')
+    },
+    url: '/pages/index',
+  },
+  {
+    name: 'mpx-tailwindcss-v4',
+    projectPath: 'mpx-tailwindcss-v4/dist/wx',
     testMethod: async (_, projectPath) => {
       expect(await loadCss(path.resolve(projectPath, 'app.wxss'))).toMatchSnapshot('css')
     },

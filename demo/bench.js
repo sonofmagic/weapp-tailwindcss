@@ -25,7 +25,7 @@ class Bench {
     return Boolean(useBabel)
   }
 
-  dump(key = this.useBabel ? 'babel' : 'ast-grep') {
+  dump(key = 'babel') {
     const ts = this.timeSpan()
     // if (ts < 20) {
     //   return

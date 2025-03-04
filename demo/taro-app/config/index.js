@@ -14,7 +14,7 @@ const config = {
   cache: {
     enable: false
   },
-  projectName: 'myApp',
+  projectName: 'taro-app',
   date: '2022-2-5',
   designWidth: 750,
   deviceRatio: {

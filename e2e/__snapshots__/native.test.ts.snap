@@ -186,7 +186,29 @@ text:not(#n),
 `;
 
 exports[`e2e native > 'vite-native' > json 1`] = `
-"[]
+"[
+  "-m",
+  "bg-[#3a32d1]",
+  "bg-[#7d7ac2]",
+  "bg-gradient-to-b",
+  "bg-gradient-to-t",
+  "bg-gradient-to-tr",
+  "container",
+  "content",
+  "from",
+  "from-[#2f73f1]",
+  "h-[29.292px]",
+  "h-[30px]",
+  "h-[45px]",
+  "list",
+  "space-y-2.5",
+  "text-[#123456]",
+  "text-[100px]",
+  "text-[100rpx]",
+  "text-red-700",
+  "to-[#4bcefd]",
+  "w-[323px]"
+]
 "
 `;
 

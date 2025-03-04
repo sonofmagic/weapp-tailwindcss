@@ -11440,7 +11440,7 @@ postcss@^7.0.23, postcss@^7.0.32, postcss@^7.0.35, postcss@^7.0.36:
     picocolors "^0.2.1"
     source-map "^0.6.1"
 
-postcss@^8.2.14, postcss@^8.2.15, postcss@^8.3.5, postcss@^8.4.18, postcss@^8.4.33, postcss@^8.4.47, postcss@^8.4.48, postcss@^8.4.49:
+postcss@^8.2.14, postcss@^8.2.15, postcss@^8.3.5, postcss@^8.4.18, postcss@^8.4.33, postcss@^8.4.48, postcss@^8.4.49:
   version "8.4.49"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.49.tgz#4ea479048ab059ab3ae61d082190fabfd994fe19"
   integrity sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==
@@ -11449,7 +11449,7 @@ postcss@^8.2.14, postcss@^8.2.15, postcss@^8.3.5, postcss@^8.4.18, postcss@^8.4.
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
-postcss@^8.5.3, postcss@~8.5.3:
+postcss@^8.4.47, postcss@^8.5.3, postcss@~8.5.3:
   version "8.5.3"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.5.3.tgz#1463b6f1c7fb16fe258736cba29a2de35237eafb"
   integrity sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==

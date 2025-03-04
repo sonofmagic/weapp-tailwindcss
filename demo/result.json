@@ -12,5 +12,10 @@
   "web": true,
   "native": true,
   "native-ts": true,
-  "taro-app-vite": true
+  "taro-app-vite": true,
+  "mpx-tailwindcss-v4": false,
+  "taro-vite-tailwindcss-v4": true,
+  "taro-webpack-tailwindcss-v4": true,
+  "uni-app-tailwindcss-v4": true,
+  "uni-app-webpack-tailwindcss-v4": true
 }

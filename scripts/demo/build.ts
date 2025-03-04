@@ -1,15 +1,13 @@
 import path from 'node:path'
-import process from 'node:process'
 import { run } from './run'
 
-const argvs = process.argv.slice(2)
-const useBabel = argvs.includes('--babel')
+;
 
-  ; (async () => {
+(async () => {
   const demoPath = path.resolve(import.meta.dirname, '../../demo')
   const result = []
   try {
-    await run(demoPath, `yarn build${useBabel ? ':babel' : ''}`)
+    await run(demoPath, `yarn build`)
   }
   catch (error) {
     result.push(error)

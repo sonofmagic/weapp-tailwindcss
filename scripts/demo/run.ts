@@ -1,5 +1,6 @@
 import type { PackageJson } from 'pkg-types'
-import process from 'node:process'
+// import process from 'node:process'
+import consola from 'consola'
 import { execaCommand } from 'execa'
 import fs from 'fs-extra'
 import { getPackageInfo } from 'local-pkg'
@@ -11,7 +12,7 @@ async function setJson(p: string, key: string, flag: any) {
   await fs.writeFile(p, JSON.stringify(json, null, 2), 'utf8')
 }
 
-const divideString = '-'.repeat(process.stdout.columns)
+// const divideString = '-'.repeat(process.stdout.columns)
 
 type PackageInfo = {
   name: string
@@ -52,9 +53,9 @@ async function run(dirPath: string, command: CommandCallback) {
     if (stat.isDirectory()) {
       const pkgPath = path.resolve(baseDir, 'package.json')
       if (await fs.exists(pkgPath)) {
-        console.log(divideString)
-        console.log(`[${filename}]:${baseDir}`)
-        console.log(divideString)
+        // console.log(divideString)
+        // console.log(`[${filename}]:${baseDir}`)
+        // console.log(divideString)
         try {
           await execa({
             command,
@@ -62,7 +63,8 @@ async function run(dirPath: string, command: CommandCallback) {
           })
           await setJson(path.resolve(dirPath, 'result.json'), filename, true)
         }
-        catch {
+        catch (e) {
+          consola.error(e)
           await setJson(path.resolve(dirPath, 'result.json'), filename, false)
         }
       }
