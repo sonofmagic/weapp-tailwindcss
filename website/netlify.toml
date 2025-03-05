@@ -1,8 +1,8 @@
 # https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
-base = "website/"
-publish = "build"
+# base = "website/"
+publish = "website/build"
 command = "pnpm run build"
 
 [build.environment]
