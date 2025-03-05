@@ -3,7 +3,7 @@ publish = "website/build"
 command = "pnpm run build:docs"
 
 [build.environment]
-NODE_VERSION = "22"
+NODE_VERSION = "23"
 
 [[redirects]]
 from = "/*"
