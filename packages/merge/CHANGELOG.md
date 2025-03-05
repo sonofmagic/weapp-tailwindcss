@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.0.5
+
+### Patch Changes
+
+- [`fd38cfc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fd38cfce64ee3edc7d454928367d76ff0e0c829a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat(merge): add create function
+
 ## 1.0.4
 
 ### Patch Changes
