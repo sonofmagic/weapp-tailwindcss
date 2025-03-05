@@ -39,10 +39,14 @@ export default defineConfig(async () => {
 在项目目录下，创建一个 `main.css`，然后添加以下内容：
 
 ```css title="main.css"
-@import "tailwindcss";
+@import "weapp-tailwindcss";
 ```
 
-然后直接运行 `npm run dev:mp-weixin` 即可看到效果
+然后在项目中的 `main.js` 中引入 `main.css`
+
+接着直接运行 `npm run dev:mp-weixin`，
+
+微信开发者工具导入这个项目，即可看到效果
 
 :::warning
 这里必须创建一个额外的 `css` 文件，而不是直接在 `App.vue` 里的 `style` 标签下直接写，
