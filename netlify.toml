@@ -1,6 +1,6 @@
 [build]
-publish = "dist"
-command = "pnpm run build"
+publish = "website/build"
+command = "pnpm run build:docs"
 
 [build.environment]
 NODE_VERSION = "22"
