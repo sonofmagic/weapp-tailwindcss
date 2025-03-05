@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'
 import HomeLogo from '@site/src/components/HomeLogo'
 import Layout from '@theme/Layout'
+// import { create } from '@weapp-tailwindcss/merge'
 import React from 'react'
 import GitHubButton from 'react-github-btn'
 import GulpLogo from '../assets/gulp.svg'
@@ -11,6 +12,15 @@ import NodejsLogo from '../assets/nodejs.svg'
 import TailwindcssLogo from '../assets/tw-logo.svg'
 import ViteLogo from '../assets/vite.svg'
 import WebpackLogo from '../assets/webpack.svg'
+
+// const { twMerge } = create(
+//   {
+//     disableEscape: false,
+//   },
+// )
+
+// console.log(twMerge('px-2 py-1 bg-red hover:bg-dark-red', 'p-3 bg-[#B91C1C]'))
+
 // mask-image: linear-gradient(rgba(0, 0, 0, 1), transparent);
 function HomepageHeader() {
   // const { siteConfig } = useDocusaurusContext()

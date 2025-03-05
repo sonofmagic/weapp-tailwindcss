@@ -1,4 +1,4 @@
-# 开箱即用的小程序icon解决方案
+# 小程序 `icon` 解决方案
 
 这里介绍一种在小程序里，开箱即用的 icon 解决方案：[`iconify`](https://iconify.design/)
 

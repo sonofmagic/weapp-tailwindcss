@@ -1,4 +1,15 @@
 // app.ts
+import { create } from '@weapp-tailwindcss/merge'
+
+const { twMerge } = create(
+  // {
+  //   disableEscape: import.meta.env.isH5
+  // }
+)
+
+const x = twMerge('px-2 py-1 bg-red hover:bg-dark-red', 'p-3 bg-[#B91C1C]')
+
+console.log(x)
 App({
   globalData: {},
   onLaunch() {

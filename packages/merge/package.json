@@ -15,9 +15,34 @@
   },
   "keywords": [],
   "sideEffects": false,
-  "exports": {
+  "_exports": {
     ".": "./src/index.ts"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./cva": {
+      "types": "./dist/cva.d.ts",
+      "import": "./dist/cva.js",
+      "require": "./dist/cva.cjs"
+    },
+    "./v3": {
+      "types": "./dist/v3.d.ts",
+      "import": "./dist/v3.js",
+      "require": "./dist/v3.cjs"
+    },
+    "./v4": {
+      "types": "./dist/v4.d.ts",
+      "import": "./dist/v4.js",
+      "require": "./dist/v4.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "scripts"

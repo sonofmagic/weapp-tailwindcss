@@ -1,5 +1,4 @@
 import type { ClassValue } from 'clsx'
-import { clsx } from 'clsx'
 import {
   createTailwindMerge as _createTailwindMerge,
   extendTailwindMerge as _extendTailwindMerge,
@@ -8,33 +7,27 @@ import {
   getDefaultConfig,
   mergeConfigs,
 } from 'tailwind-merge-v2'
-import { escape, weappTwIgnore } from 'weapp-tailwindcss/escape'
+import { weappTwIgnore } from 'weapp-tailwindcss/escape'
+import { createFactory } from './utils'
 
-export function twMerge(...inputs: ClassValue[]) {
-  return escape(_twMerge(clsx(inputs)))
-}
+const create = createFactory({
+  createTailwindMerge: _createTailwindMerge,
+  extendTailwindMerge: _extendTailwindMerge,
+  twJoin: _twJoin,
+  twMerge: _twMerge,
+  version: 2,
+})
 
-export function twJoin(...inputs: ClassValue[]) {
-  return escape(_twJoin(clsx(inputs)))
-}
-
-export const extendTailwindMerge: typeof _extendTailwindMerge = (...args) => {
-  const customTwMerge = _extendTailwindMerge(...args)
-  return function cn(...inputs: ClassValue[]) {
-    return escape(customTwMerge(clsx(inputs)))
-  }
-}
-
-export const createTailwindMerge: typeof _createTailwindMerge = (...args) => {
-  const customTwMerge = _createTailwindMerge(...args)
-  return function cn(...inputs: ClassValue[]) {
-    return escape(customTwMerge(clsx(inputs)))
-  }
-}
+const { twMerge, twJoin, extendTailwindMerge, createTailwindMerge } = create()
 
 export {
+  create,
+  createTailwindMerge,
+  extendTailwindMerge,
   getDefaultConfig,
   mergeConfigs,
+  twJoin,
+  twMerge,
   weappTwIgnore,
 }
 

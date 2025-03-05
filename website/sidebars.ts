@@ -270,6 +270,10 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
+      id: 'community/merge',
+    },
+    {
+      type: 'doc',
       id: 'quick-start/apply-themes',
     },
     {

@@ -1,5 +1,6 @@
 /* eslint-disable ts/no-require-imports */
 import type { Options as ClassicOptions, ThemeConfig } from '@docusaurus/preset-classic'
+import type { Config } from '@docusaurus/types'
 
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
@@ -27,8 +28,7 @@ function createLink(params: { target?: string, rel?: string, href?: string, text
   return `<a ${target ? `target="${target}"` : ''} ${rel ? `rel="${rel}"` : ''} ${href ? `href="${href}"` : ''}">${textContent}</a>`
 }
 
-/** @type {import('@docusaurus/types').Config} */
-const config = {
+const config: Config = {
   title: 'weapp-tailwindcss 把tailwindcss带给小程序开发者们',
   tagline: '用tailwindcss来开发小程序吧!这是一个webpack/vite/gulp插件集合,兼容了各种用这类打包的框架,比如uni-app,tarojs,rax,mpx,remax,原生等等.伟大的icebreaker部署了这个文档网站',
   favicon: 'img/favicon.ico',
@@ -365,6 +365,7 @@ const config = {
   markdown: {
     format: 'detect',
   },
+  themes: ['@docusaurus/theme-live-codeblock'],
 }
 
 module.exports = config
