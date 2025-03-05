@@ -225,7 +225,7 @@ const config: Config = {
           },
           {
             type: 'doc',
-            label: '优秀案例展示',
+            label: '案例展示',
             docId: 'showcase/index',
           },
 

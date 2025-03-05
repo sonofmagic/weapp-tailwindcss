@@ -45,8 +45,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "turbo run build --filter=./packages/* && turbo run build --filter=./plugins/*",
-    "build:vite-docs": "turbo run build --filter=./website-weapp-vite/",
+    "build": "turbo run build",
     "build:tw-docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
     "test": "vitest run",
