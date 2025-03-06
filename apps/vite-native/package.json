@@ -27,6 +27,7 @@
     "npm": "weapp-vite npm"
   },
   "dependencies": {
+    "@weapp-tailwindcss/merge": "workspace:*",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

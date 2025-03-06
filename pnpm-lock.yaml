@@ -456,6 +456,9 @@ importers:
 
   apps/vite-native:
     dependencies:
+      '@weapp-tailwindcss/merge':
+        specifier: workspace:*
+        version: link:../../packages/merge
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
