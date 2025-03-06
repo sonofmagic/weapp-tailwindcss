@@ -8,7 +8,7 @@ export interface UseToggleDarkOptions {
    * isDark.value
    * @returns
    */
-  getDarkValue: () => any
+  isCurrentDark: () => any
   viewTransition?: {
     before?: () => any
     /**
@@ -29,8 +29,8 @@ export function useToggleDark(options: UseToggleDarkOptions) {
     // @ts-expect-error: Transition API
     && document.startViewTransition
     && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const { toggle, viewTransition, getDarkValue, duration = 400, easing = 'ease-in' } = Object.assign({}, options)
-  async function toggleDark(event?: MouseEvent) {
+  const { toggle, viewTransition, isCurrentDark, duration = 400, easing = 'ease-in' } = Object.assign({}, options)
+  async function toggleDark(event?: { clientX: number, clientY: number }) {
     if (!isAppearanceTransition || !event) {
       await toggle?.()
       return
@@ -56,7 +56,7 @@ export function useToggleDark(options: UseToggleDarkOptions) {
         `circle(0px at ${x}px ${y}px)`,
         `circle(${endRadius}px at ${x}px ${y}px)`,
       ]
-      const isDark = getDarkValue?.()
+      const isDark = isCurrentDark?.()
 
       document.documentElement.animate(
         {

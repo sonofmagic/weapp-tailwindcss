@@ -12,7 +12,7 @@ pnpm add theme-transition
 import { useToggleDark } from 'theme-transition'
 
 const { toggleDark } = useToggleDark({
-  getDarkValue: () => {
+  isCurrentDark: () => {
     return isDark.value
   },
   toggle: () => {

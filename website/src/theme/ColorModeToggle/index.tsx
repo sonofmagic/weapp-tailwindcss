@@ -2,10 +2,12 @@ import type { Props } from '@theme/ColorModeToggle'
 import OriginalToggle from '@theme-original/ColorModeToggle'
 import { useToggleDark } from 'theme-transition'
 
+// light -> dark, props.value === light
+// dark -> light, props.value === dark
 function Toggler(props: Props) {
   const { toggleDark } = useToggleDark({
-    getDarkValue() {
-      return props.value === 'dark'
+    isCurrentDark() {
+      return props.value !== 'dark'
     },
     toggle() {
       if (props.value === 'dark') {
@@ -15,28 +17,15 @@ function Toggler(props: Props) {
         props.onChange('dark')
       }
     },
-    viewTransition: {
-      after() {
-        return new Promise((r) => {
-          setTimeout(() => {
-            r(undefined)
-          }, 0)
-        })
-      },
-    },
-    duration: 4000,
   })
   return (
     <div onClick={(e) => {
-      toggleDark(e as unknown as MouseEvent)
+      toggleDark(e)
     }}
     >
       <OriginalToggle
         {...props}
-        onChange={() => {
-          // props.onChange(colorMode)
-          // toggleDark()
-        }}
+        onChange={() => {}}
       >
       </OriginalToggle>
     </div>
