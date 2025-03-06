@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.6
+
+### Patch Changes
+
+- [`ff9933a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ff9933ad06de7bf3333c1c63016920639a56b87a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: tailwindcss@4 space-x-_ and space-y-_
+
 ## 1.0.5
 
 ### Patch Changes

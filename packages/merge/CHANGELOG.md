@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.0.6
+
+### Patch Changes
+
+- [`f5fc571`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f5fc5713732fd093fb17991117862ef87aa0dd2f) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: cva dts error
+
 ## 1.0.5
 
 ### Patch Changes

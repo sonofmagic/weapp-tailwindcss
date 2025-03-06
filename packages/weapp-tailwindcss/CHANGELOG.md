@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.0.11
+
+### Patch Changes
+
+- [`ffa5bb0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ffa5bb0b5d349e5985aec36996a43bbbe9f0eae0) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: node walk improve
+
+- Updated dependencies [[`ff9933a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ff9933ad06de7bf3333c1c63016920639a56b87a)]:
+  - @weapp-tailwindcss/postcss@1.0.6
+
 ## 4.0.10
 
 ### Patch Changes
