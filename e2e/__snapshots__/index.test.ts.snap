@@ -650,18 +650,12 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'mpx-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
 view:not(#n),
 text:not(#n),
 :not(#n)::backdrop,
 :not(#n):after,
 :not(#n):before {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-:not(#n)::file-selector-button {
   border: 0 solid;
   box-sizing: border-box;
   margin: 0;
@@ -4019,7 +4013,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'taro-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
 :not(#n)::-webkit-backdrop {
   border: 0 solid;
   -webkit-box-sizing: border-box;
@@ -4038,20 +4032,6 @@ text:not(#n),
 :not(#n)::backdrop,
 :not(#n):after,
 :not(#n):before {
-  border: 0 solid;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-:not(#n)::-webkit-file-upload-button {
-  border: 0 solid;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-:not(#n)::file-selector-button {
   border: 0 solid;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -5407,7 +5387,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --color-white: #fff;
@@ -5419,12 +5399,6 @@ text:not(#n),
 :not(#n):after,
 :not(#n):before,
 :not(#n)::backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-:not(#n)::file-selector-button {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -5711,6 +5685,9 @@ text,
 .block {
   display: block;
 }
+.inline-block {
+  display: inline-block;
+}
 .inline {
   display: inline;
 }
@@ -5859,6 +5836,9 @@ text,
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y));
 }
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -5870,6 +5850,15 @@ text,
 }
 .justify-center {
   justify-content: center;
+}
+.space-x-2d5 > view + view,
+.space-x-2d5 > view + text,
+.space-x-2d5 > text + view,
+.space-x-2d5 > text + text {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(20rpx * var(--tw-space-x-reverse));
+  margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
+  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -5989,6 +5978,13 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(255, 0, 0, var(--tw-border-opacity, 1));
 }
+.border-gray-400 {
+  --tw-border-opacity: 1;
+  border-color: rgba(156, 163, 175, var(--tw-border-opacity, 1));
+}
+.border-transparent {
+  border-color: transparent;
+}
 .border-opacity-_0d44_ {
   --tw-border-opacity: 0.44;
 }
@@ -6051,6 +6047,10 @@ text,
 .bg-_yellow_ {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 0, var(--tw-bg-opacity, 1));
+}
+.bg-amber-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(252, 211, 77, var(--tw-bg-opacity, 1));
 }
 .bg-amber-500 {
   --tw-bg-opacity: 1;
@@ -6149,6 +6149,10 @@ text,
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
 .px-_32px_ {
   padding-left: 32px;
   padding-right: 32px;
@@ -6205,6 +6209,10 @@ text,
 .text-_lengthcvary--my-var-lengthy_ {
   font-size: var(--my-var-length);
 }
+.text-base {
+  font-size: 32rpx;
+  line-height: 48rpx;
+}
 .text-sm {
   font-size: 28rpx;
   line-height: 40rpx;
@@ -6217,6 +6225,9 @@ text,
 }
 .font-semibold {
   font-weight: 600;
+}
+.uppercase {
+  text-transform: uppercase;
 }
 .leading-_0d9_ {
   line-height: 0.9;
@@ -6279,6 +6290,10 @@ text,
 .text-black {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 0, var(--tw-text-opacity, 1));
+}
+.text-gray-800 {
+  --tw-text-opacity: 1;
+  color: rgba(31, 41, 55, var(--tw-text-opacity, 1));
 }
 .text-red-400 {
   --tw-text-opacity: 1;
@@ -10997,6 +11012,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "bg-[#e6e6e6]",
   "bg-[url('https://xxx.com/xx.webp')]",
   "bg-[yellow]",
+  "bg-amber-300",
   "bg-amber-500",
   "bg-blue-300",
   "bg-blue-400",
@@ -11026,17 +11042,20 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "border-[7rpx]",
   "border-[red]",
   "border-b-[4rpx]",
+  "border-gray-400",
   "border-none",
   "border-opacity-[0.44]",
   "border-solid",
   "border-t-[3rpx]",
   "border-t-[4px]",
+  "border-transparent",
   "child-['.child']:text-red-500",
   "child-text:mr-2",
   "child-text:text-red-500",
   "child:inline-block",
   "child:mr-2",
   "child:text-red-500",
+  "cursor-not-allowed",
   "dark:bg-green-500",
   "dark:bg-zinc-800",
   "dark:text-yellow-400",
@@ -11074,6 +11093,8 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "heir-text:text-green-500",
   "heir:mr-2",
   "heir:text-red-500",
+  "hover:bg-blue-600",
+  "hover:bg-gray-100",
   "hover:twin:shadow",
   "ifdef-[H5_||_MP-WEIXIN]:bg-blue-300",
   "ifdef-[H5||MP-WEIXIN]:bg-blue-400",
@@ -11082,6 +11103,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "ifndef-[MP-WEIXIN]:bg-red-500",
   "indent-[11rpx]",
   "inline",
+  "inline-block",
   "items-center",
   "justify-center",
   "leading-[0.9]",
@@ -11111,6 +11133,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "p-[5rpx]",
   "peer-[.tapped]:bg-red-400",
   "px-2",
+  "px-4",
   "px-[32px]",
   "px-[35px]",
   "py-1",
@@ -11132,6 +11155,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "shadow-cyan-100",
   "shadow-green-100",
   "shadow-indigo-100",
+  "space-x-2.5",
   "space-y-4",
   "space-y-[1.6rem]",
   "space-y-[11rpx]",
@@ -11160,7 +11184,9 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "text-[var(--my-var)]",
   "text-[var(--text\\\\_sec\\\\_light)]",
   "text-[var(--text_sec_light)]",
+  "text-base",
   "text-black",
+  "text-gray-800",
   "text-opacity-[0.19]",
   "text-red-400",
   "text-red-500",
@@ -11174,6 +11200,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "twin:text-red-500",
   "underline",
   "underline-offset-[3rpx]",
+  "uppercase",
   "visible",
   "w-10",
   "w-2",
@@ -11226,7 +11253,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     class="mt-_96d3px_ NHostImage--mt-_96d3px_ w-_61d1px_ NHostImage--w-_61d1px_ h-_50d99px_ NHostImage--h-_50d99px_"
     role="img"></image>
   <view class="_2xlctext-base _2xlctext-base">2xl:text-base</view>
-  <view class="2xl 2xl text- text- red red">2xl:text-[red]</view>
+  <view class="_2xlctext-_red_ _2xlctext-_red_">2xl:text-[red]</view>
   <view class="space-y-4 space-y-4 flex flex flex-col flex-col bg-red-400 bg-red-400">
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
@@ -11239,9 +11266,11 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <text class="bg-sky-500 bg-sky-500"></text>
   </view>
-  <view class="bg- bg- 3482f2 3482f2">bgbgbgbg</view>
-  <view class="text- text- 30rpx 30rpx text- text- fafafa fafafa font-bold font-bold bg- bg- url url https https xxx xxx com com xx xx webp webp">classArray</view>
-  <view class="text-sm text-sm text- text- fafafa fafafa">:class="['text-sm', classObj]</view>
+  <view class="bg-_h3482f2_ bg-_h3482f2_">bgbgbgbg</view>
+  <view class="text-_30rpx_ text-_30rpx_ text-_hfafafa_ text-_hfafafa_ font-bold font-bold bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">
+    classArray
+  </view>
+  <view class="text-sm text-sm text-_hfafafa_ text-_hfafafa_">:class="['text-sm', classObj]</view>
   <view class="rotate-_10deg_ rotate-_10deg_">rotate1111111</view>
   <view class="td td highlight highlight">你好</view>
   <view class="td td">1</view>
@@ -11287,17 +11316,17 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
   <view class="text-_hbada55_ text-_hbada55_">text-[#bada55]</view>
   <view class="text-_lengthcvary--my-var-lengthy_ text-_lengthcvary--my-var-lengthy_">text-[length:var(--my-var-length)]</view>
   <view class="text-_colorcvary--my-vary_ text-_colorcvary--my-vary_">text-[color:var(--my-var)]</view>
-  <button class="bg-green-500 bg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
+  <button class="ibg-green-500 ibg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
   <view class="test test">test</view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg- bg- 4268EA 4268EA shadow-indigo-100 shadow-indigo-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg- bg- 123456 123456 shadow-blue-100 shadow-blue-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
+  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-_h4268EA_ bg-_h4268EA_ shadow-indigo-100 shadow-indigo-100"></view>
+  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-_h123456_ bg-_h123456_ shadow-blue-100 shadow-blue-100"></view>
+  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
+  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
+  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
   <view class="w-2 w-2 h-2 h-2 bg-_h123456_ bg-_h123456_"></view>
   <view class="w-2 w-2 h-2 h-2 bg-blue-500s50 bg-blue-500s50"></view>
   <view class="flex flex items-center items-center justify-center justify-center w-screen w-screen h-screen h-screen">
-    <view class="font-bold font-bold text- text- 990000 990000 text-2xl text-2xl underline underline">测试标题</view>
+    <view class="ifont-bold ifont-bold itext-_h990000_ itext-_h990000_ text-2xl text-2xl underline underline">测试标题</view>
   </view>
   <image class="logo logo h-10 h-10 w-10 w-10" src="/static/logo.png" role="img"></image>
   <view class="text-area text-area"><text class="title title h-_200p_ h-_200p_"></text></view>
@@ -11309,7 +11338,7 @@ exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
     </view>
     <view class="max-w-_300rpx_ max-w-_300rpx_ min-h-_100px_ min-h-_100px_ text-_hdddddd_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
     <view
-      class="flex flex items-center items-center justify-center justify-center h- h- 100px 100px w- w- 100px 100px rounded- rounded- 40px 40px bg- bg- 123456 123456 bg-opacity- bg-opacity- 0 0 54 54 text- text- ffffff ffffff text- text- 123456 123456 bg- bg- 666600 666600">
+      class="flex flex items-center items-center justify-center justify-center h-_100px_ h-_100px_ w-_100px_ w-_100px_ rounded-_40px_ rounded-_40px_ bg-_h123456_ bg-_h123456_ bg-opacity-_0d54_ bg-opacity-_0d54_ text-_hffffff_ text-_hffffff_ text-_h123456_ text-_h123456_ bg-_h666600_ bg-_h666600_">
       Hello
     </view>
     <view class="border-_10px_ border-_10px_ border-_h098765_ border-_h098765_ border-solid border-solid border-opacity-_0d44_ border-opacity-_0d44_">
@@ -11345,7 +11374,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
 :host,
 page {
   --spacing: 8rpx;
@@ -11359,18 +11388,6 @@ page {
 :not(#n)::backdrop,
 :not(#n):after,
 :not(#n):before {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-:not(#n)::-webkit-file-upload-button {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-:not(#n)::file-selector-button {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
