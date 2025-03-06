@@ -8,7 +8,7 @@ function getCase(name: string) {
 
 const testCases = [
   {
-    ignoreCallExpressionIdentifiers: ['twMerge'],
+    ignoreCallExpressionIdentifiers: ['twMerge', 'clsx'],
   },
   {
     ignoreCallExpressionIdentifiers: [],
@@ -48,6 +48,17 @@ describe('twMerge', () => {
 
   it.each(testCases)('twMerge case 2.js', async ({ ignoreCallExpressionIdentifiers }) => {
     const testCase = getCase('2.js')
+    const { jsHandler } = getCompilerContext(
+      {
+        ignoreCallExpressionIdentifiers,
+      },
+    )
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it.each(testCases)('twMerge case 3.js', async ({ ignoreCallExpressionIdentifiers }) => {
+    const testCase = getCase('3.js')
     const { jsHandler } = getCompilerContext(
       {
         ignoreCallExpressionIdentifiers,

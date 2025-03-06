@@ -1,5 +1,5 @@
 import type { NodePath } from '@babel/traverse'
-import type { BinaryExpression, CallExpression, StringLiteral, TemplateElement, TemplateLiteral, VariableDeclarator } from '@babel/types'
+import type { ArgumentPlaceholder, ArrayExpression, BinaryExpression, CallExpression, Expression, LogicalExpression, ObjectExpression, SpreadElement, StringLiteral, TemplateElement, TemplateLiteral, VariableDeclarator } from '@babel/types'
 import { regExpTest } from '@/utils'
 
 export class NodePathWalker {
@@ -72,6 +72,89 @@ export class NodePathWalker {
     }
   }
 
+  walkLogicalExpression(path: NodePath<LogicalExpression>) {
+    const left = path.get('left')
+    if (left.isStringLiteral()) {
+      this.walkStringLiteral(left)
+    }
+    else if (left.isBinaryExpression()) {
+      this.walkBinaryExpression(left) // 递归
+    }
+    else if (left.isTemplateLiteral()) {
+      this.walkTemplateLiteral(left)
+    }
+    else if (left.isLogicalExpression()) {
+      this.walkLogicalExpression(left)
+    }
+    const right = path.get('right')
+    if (right.isStringLiteral()) {
+      this.walkStringLiteral(right)
+    }
+    else if (right.isBinaryExpression(right)) {
+      this.walkBinaryExpression(right) // 递归
+    }
+    else if (right.isTemplateLiteral()) {
+      this.walkTemplateLiteral(right)
+    }
+    else if (right.isLogicalExpression()) {
+      this.walkLogicalExpression(right)
+    }
+  }
+
+  walkObjectExpression(path: NodePath<ObjectExpression>) {
+    const props = path.get('properties')
+
+    for (const prop of props) {
+      if (prop.isObjectProperty()) {
+        const key = prop.get('key')
+        if (key) {
+          if (key.isStringLiteral()) {
+            this.walkStringLiteral(key)
+          }
+          else if (key.isTemplateLiteral()) {
+            this.walkTemplateLiteral(key)
+          }
+        }
+      }
+    }
+  }
+
+  walkArrayExpression(path: NodePath<ArrayExpression>) {
+    const elements = path.get('elements')
+    for (const element of elements) {
+      this.composeWalk(element)
+    }
+  }
+
+  composeWalk(arg: NodePath<ArgumentPlaceholder | SpreadElement | Expression | null>) {
+    if (arg.isIdentifier()) {
+      const binding = arg.scope.getBinding(arg.node.name)
+      if (binding) {
+        if (binding.path.isVariableDeclarator()) {
+          this.walkVariableDeclarator(binding.path)
+        }
+      }
+    }
+    else if (arg.isTemplateLiteral()) {
+      this.walkTemplateLiteral(arg)
+    }
+    else if (arg.isStringLiteral()) {
+      this.walkStringLiteral(arg)
+    }
+    else if (arg.isBinaryExpression()) {
+      this.walkBinaryExpression(arg)
+    }
+    else if (arg.isLogicalExpression()) {
+      this.walkLogicalExpression(arg)
+    }
+    else if (arg.isObjectExpression()) {
+      this.walkObjectExpression(arg)
+    }
+    else if (arg.isArrayExpression()) {
+      this.walkArrayExpression(arg)
+    }
+  }
+
   walkCallExpression(path: NodePath<CallExpression>) {
     const calleePath = path.get('callee')
     if (
@@ -80,23 +163,7 @@ export class NodePathWalker {
         exact: true,
       })) {
       for (const arg of path.get('arguments')) {
-        if (arg.isIdentifier()) {
-          const binding = arg.scope.getBinding(arg.node.name)
-          if (binding) {
-            if (binding.path.isVariableDeclarator()) {
-              this.walkVariableDeclarator(binding.path)
-            }
-          }
-        }
-        else if (arg.isTemplateLiteral()) {
-          this.walkTemplateLiteral(arg)
-        }
-        else if (arg.isStringLiteral()) {
-          this.walkStringLiteral(arg)
-        }
-        else if (arg.isBinaryExpression()) {
-          this.walkBinaryExpression(arg)
-        }
+        this.composeWalk(arg)
       }
     }
   }

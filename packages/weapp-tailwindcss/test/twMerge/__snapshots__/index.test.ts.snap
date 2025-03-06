@@ -31,3 +31,55 @@ twMerge(\`px-_32px_ \${a}\`, 'bg-_h123324_ px-_35px_')
 
 twMerge0(\`px-_32px_ \${a}\`, 'bg-_h123324_ px-_35px_')"
 `;
+
+exports[`twMerge > twMerge case 3.js 1`] = `
+"// Strings (variadic)
+clsx('px-[35px]', true && true && 'px-[35px]' , 'px-[35px]');
+//=> 'foo bar baz'
+const cc = \`px-[35px]\`
+// Objects
+clsx({ 'px-[35px]': true, 'px-[35px]': false, [\`px-[35px] \${cc}\`]: isTrue() });
+//=> 'foo baz'
+
+// Objects (variadic)
+clsx({ 'px-[35px]': true }, { 'px-[35px]': false }, null, { 'px-[35px]': 'hello' });
+//=> 'foo --foobar'
+
+// Arrays
+clsx(['px-[35px]', 0, false && 'px-[35px]', 'px-[35px]']);
+//=> 'foo bar'
+
+// Arrays (variadic)
+clsx(['px-[35px]'], ['', 0, false, 'px-[35px]'], [['px-[35px]', [['px-[35px]'], 'px-[35px]']]]);
+//=> 'foo bar baz hello there'
+
+// Kitchen sink (with nesting)
+clsx('px-[35px]', [1 && 'px-[35px]', { 'px-[35px]': false, 'px-[35px]': null }, ['px-[35px]', ['px-[35px]']]], 'px-[35px]');
+//=> 'foo bar hello world cya'"
+`;
+
+exports[`twMerge > twMerge case 3.js 2`] = `
+"// Strings (variadic)
+clsx('px-_35px_', true && true && 'px-_35px_' , 'px-_35px_');
+//=> 'foo bar baz'
+const cc = \`px-_35px_\`
+// Objects
+clsx({ 'px-_35px_': true, 'px-_35px_': false, [\`px-_35px_ \${cc}\`]: isTrue() });
+//=> 'foo baz'
+
+// Objects (variadic)
+clsx({ 'px-_35px_': true }, { 'px-_35px_': false }, null, { 'px-_35px_': 'hello' });
+//=> 'foo --foobar'
+
+// Arrays
+clsx(['px-_35px_', 0, false && 'px-_35px_', 'px-_35px_']);
+//=> 'foo bar'
+
+// Arrays (variadic)
+clsx(['px-_35px_'], ['', 0, false, 'px-_35px_'], [['px-_35px_', [['px-_35px_'], 'px-_35px_']]]);
+//=> 'foo bar baz hello there'
+
+// Kitchen sink (with nesting)
+clsx('px-_35px_', [1 && 'px-_35px_', { 'px-_35px_': false, 'px-_35px_': null }, ['px-_35px_', ['px-_35px_']]], 'px-_35px_');
+//=> 'foo bar hello world cya'"
+`;
