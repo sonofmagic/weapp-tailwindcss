@@ -74,6 +74,8 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
         }
         else if (selector.value === ':where') {
           // :where(.space-y-1 > :not(:last-child))
+          // https://tailwindcss.com/docs/upgrade-guide#space-between-selector
+          // only for tailwindcss@4
           if (index === 0 && selector.length === 1) {
             selector.walk((node, idx) => {
               if (idx === 0 && node.type === 'class') {
@@ -95,6 +97,34 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
             })
 
             selector.replaceWith(...selector.nodes)
+            for (const node of rule.nodes) {
+              if (node.type === 'decl') {
+                if (node.prop === 'margin-block-start') {
+                  node.prop = 'margin-block-end'
+                }
+                else if (node.prop === 'margin-block-end') {
+                  node.prop = 'margin-block-start'
+                }
+                else if (node.prop === 'margin-inline-start') {
+                  node.prop = 'margin-inline-end'
+                }
+                else if (node.prop === 'margin-inline-end') {
+                  node.prop = 'margin-inline-start'
+                }
+                else if (node.prop === 'margin-top') {
+                  node.prop = 'margin-bottom'
+                }
+                else if (node.prop === 'margin-bottom') {
+                  node.prop = 'margin-top'
+                }
+                else if (node.prop === 'margin-left') {
+                  node.prop = 'margin-right'
+                }
+                else if (node.prop === 'margin-right') {
+                  node.prop = 'margin-left'
+                }
+              }
+            }
           }
         }
       }

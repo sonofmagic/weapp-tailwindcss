@@ -39,6 +39,12 @@ describe('v4', () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
+    // .space-x-2d5>view+view,.space-x-2d5>view+text,.space-x-2d5>text+view,.space-x-2d5>text+text {
+    //   --tw-space-x-reverse: 0;
+    //   margin-right: calc(20rpx * var(--tw-space-x-reverse));
+    //   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
+    //   margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
+    // }
     const code = `
       :where(.space-y-0 > :not(:last-child)) {
     --tw-space-y-reverse: 0;

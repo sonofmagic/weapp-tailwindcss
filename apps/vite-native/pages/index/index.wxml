@@ -9,5 +9,11 @@
     <view class="bg-gradient-to-b from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
     <view class="bg-gradient-to-t from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
     <view class="bg-gradient-to-tr from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="space-x-2.5">
+      <view class="inline-block h-10 w-10 bg-amber-300"></view>
+      <view class="inline-block h-10 w-10 bg-amber-300"></view>
+      <view class="inline-block h-10 w-10 bg-amber-300"></view>
+      <view class="inline-block h-10 w-10 bg-amber-300"></view>
+    </view>
   </view>
 </scroll-view>
