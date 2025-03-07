@@ -1,12 +1,16 @@
 # theme-transition
 
+<video src="https://cdn.jsdelivr.net/gh/sonofmagic/static/v1/theme.mp4"></video>
+
 ## Usage
 
 ```bash
+npm i theme-transition
+yarn add theme-transition
 pnpm add theme-transition
 ```
 
-## Import Js
+### 1. Import Js
 
 ```js
 import { usetoggleTheme } from 'theme-transition'
@@ -28,9 +32,9 @@ const { toggleTheme } = usetoggleTheme({
 toggleTheme(MouseEvent)
 ```
 
-## Import Style
+### 2. Import Style
 
-### Scss
+#### Scss
 
 ```scss
 @use 'theme-transition/scss/mixins.scss' as M;
@@ -38,7 +42,7 @@ toggleTheme(MouseEvent)
 @include M.theme-transition('[data-theme="dark"]');
 ```
 
-### Tailwindcss Plugin
+#### Tailwindcss Plugin
 
 ```ts
 import type { Config } from 'tailwindcss'
@@ -49,7 +53,7 @@ export default <Config> {
 }
 ```
 
-### Css
+#### Css
 
 ```css
 @import 'theme-transition/css';
@@ -60,3 +64,11 @@ import 'theme-transition/css'
 ```
 
 > css only `.dark` selector, so use scss or tailwindcss plugin
+
+## ShowCases
+
+https://icebreaker.top/
+
+https://tw.icebreaker.top/
+
+https://vite.icebreaker.top/
