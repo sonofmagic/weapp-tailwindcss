@@ -1,21 +1,21 @@
-import { useToggleDark } from '@/index'
+import { usetoggleTheme } from '@/index'
 
 describe('index', () => {
   // it('isAppearanceTransition', () => {
   //   expect(isAppearanceTransition).toBe(true)
   // })
 
-  it('createToggleDark', () => {
+  it('createtoggleTheme', () => {
     let dark = false
-    const { toggleDark } = useToggleDark({
-      getDarkValue() {
+    const { toggleTheme } = usetoggleTheme({
+      isCurrentDark() {
         return dark
       },
       toggle() {
         dark = !dark
       },
     })
-    expect(toggleDark).toBeTypeOf('function')
+    expect(toggleTheme).toBeTypeOf('function')
     // expect(isAppearanceTransition).toBeTypeOf('boolean')
   })
 })

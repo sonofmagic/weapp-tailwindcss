@@ -1,21 +1,21 @@
-export interface UseToggleDarkOptions {
+export interface UseToggleThemeOptions {
   /**
    * isDark.value = !isDark.value
    * @returns
    */
-  toggle: () => any
+  toggle: () => void | Promise<void>
   /**
    * isDark.value
    * @returns
    */
-  isCurrentDark: () => any
+  isCurrentDark: () => boolean
   viewTransition?: {
-    before?: () => any
+    before?: () => void | Promise<void>
     /**
      * await nextTick()
      * @returns
      */
-    after?: () => any
+    after?: () => void | Promise<void>
     callback?: () => any
   }
   duration?: number
@@ -24,13 +24,13 @@ export interface UseToggleDarkOptions {
 
 }
 
-export function useToggleDark(options: UseToggleDarkOptions) {
+export function usetoggleTheme(options: UseToggleThemeOptions) {
   const isAppearanceTransition = typeof document !== 'undefined'
     // @ts-expect-error: Transition API
     && document.startViewTransition
     && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const { toggle, viewTransition, isCurrentDark, duration = 400, easing = 'ease-in' } = Object.assign({}, options)
-  async function toggleDark(event?: { clientX: number, clientY: number }) {
+  async function toggleTheme(event?: { clientX: number, clientY: number }) {
     if (!isAppearanceTransition || !event) {
       await toggle?.()
       return
@@ -75,7 +75,7 @@ export function useToggleDark(options: UseToggleDarkOptions) {
     })
   }
   return {
-    toggleDark,
+    toggleTheme,
     isAppearanceTransition,
   }
 }

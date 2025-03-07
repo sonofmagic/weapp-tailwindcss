@@ -1,11 +1,11 @@
 import type { Props } from '@theme/ColorModeToggle'
 import OriginalToggle from '@theme-original/ColorModeToggle'
-import { useToggleDark } from 'theme-transition'
+import { usetoggleTheme } from 'theme-transition'
 
 // light -> dark, props.value === light
 // dark -> light, props.value === dark
 function Toggler(props: Props) {
-  const { toggleDark } = useToggleDark({
+  const { toggleTheme } = usetoggleTheme({
     isCurrentDark() {
       return props.value !== 'dark'
     },
@@ -20,7 +20,7 @@ function Toggler(props: Props) {
   })
   return (
     <div onClick={(e) => {
-      toggleDark(e)
+      toggleTheme(e)
     }}
     >
       <OriginalToggle

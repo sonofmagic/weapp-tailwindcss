@@ -9,9 +9,9 @@ pnpm add theme-transition
 ## Import Js
 
 ```js
-import { useToggleDark } from 'theme-transition'
+import { usetoggleTheme } from 'theme-transition'
 
-const { toggleDark } = useToggleDark({
+const { toggleTheme } = usetoggleTheme({
   isCurrentDark: () => {
     return isDark.value
   },
@@ -25,7 +25,7 @@ const { toggleDark } = useToggleDark({
   // },
 })
 
-toggleDark(MouseEvent)
+toggleTheme(MouseEvent)
 ```
 
 ## Import Style
