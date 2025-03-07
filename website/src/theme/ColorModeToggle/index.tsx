@@ -1,11 +1,11 @@
 import type { Props } from '@theme/ColorModeToggle'
 import OriginalToggle from '@theme-original/ColorModeToggle'
-import { usetoggleTheme } from 'theme-transition'
+import { useToggleTheme } from 'theme-transition'
 
 // light -> dark, props.value === light
 // dark -> light, props.value === dark
 function Toggler(props: Props) {
-  const { toggleTheme } = usetoggleTheme({
+  const { toggleTheme } = useToggleTheme({
     isCurrentDark() {
       return props.value !== 'dark'
     },

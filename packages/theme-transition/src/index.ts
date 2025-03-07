@@ -21,10 +21,9 @@ export interface UseToggleThemeOptions {
   duration?: number
 
   easing?: string
-
 }
 
-export function usetoggleTheme(options: UseToggleThemeOptions) {
+export function useToggleTheme(options: UseToggleThemeOptions) {
   const isAppearanceTransition = typeof document !== 'undefined'
     // @ts-expect-error: Transition API
     && document.startViewTransition

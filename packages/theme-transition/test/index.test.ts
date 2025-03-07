@@ -1,4 +1,4 @@
-import { usetoggleTheme } from '@/index'
+import { useToggleTheme } from '@/index'
 
 describe('index', () => {
   // it('isAppearanceTransition', () => {
@@ -7,7 +7,7 @@ describe('index', () => {
 
   it('createtoggleTheme', () => {
     let dark = false
-    const { toggleTheme } = usetoggleTheme({
+    const { toggleTheme } = useToggleTheme({
       isCurrentDark() {
         return dark
       },

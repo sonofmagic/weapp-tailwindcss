@@ -52,9 +52,9 @@ import 'theme-transition/css'
 ### 2. Import Js
 
 ```js
-import { usetoggleTheme } from 'theme-transition'
+import { useToggleTheme } from 'theme-transition'
 
-const { toggleTheme } = usetoggleTheme({
+const { toggleTheme } = useToggleTheme({
   isCurrentDark: () => {
     return isDark.value
   },
