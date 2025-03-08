@@ -34,6 +34,16 @@
             >
             </iframe>
 
+[monorepo-uniapp-template](https://github.com/sukbearai/monorepo-uniapp-template) <iframe
+              src="https://ghbtns.com/github-btn.html?user=sukbearai&repo=monorepo-uniapp-template&type=star&count=true"
+              frameborder="0"
+              scrolling="0"
+              width="110"
+              height="20"
+              title="GitHub"
+            >
+            </iframe>
+
 ### 若依移动端 (`hbuilderx` 集成 `tailwindcss`)
 
 🔥 [若依移动端 (Gitee 地址)](https://gitee.com/sonofmagic/RuoYi-App)
