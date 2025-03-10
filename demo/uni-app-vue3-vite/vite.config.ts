@@ -3,6 +3,7 @@ import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss/vite';
 const bench = require('../bench')('uni-app-vite-vue3');
 
+
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === 'h5';
 const isApp = process.env.UNI_PLATFORM === 'app-plus';
@@ -27,52 +28,59 @@ if (!WeappTailwindcssDisabled) {
 }
 let start: number;
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    uni(),
-    vwt({
-      wxsMatcher() {
-        return false;
+export default defineConfig(async () => {
+  const { default: Inspect } = await import('vite-plugin-inspect');
+  return {
+    plugins: [
+      uni(),
+      vwt({
+        wxsMatcher() {
+          return false;
+        },
+        inlineWxs: true,
+        // jsEscapeStrategy: 'replace', // 'regenerate'
+        onStart() {
+          bench.start();
+          start = performance.now();
+        },
+        onEnd() {
+          bench.end();
+          bench.dump();
+          console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
+        },
+        rem2rpx: true,
+        // cssSelectorReplacement: {
+        //   universal: ['view', 'text', 'button'],
+        // },
+        disabled: WeappTailwindcssDisabled,
+        // appType: 'uni-app'
+        // customReplaceDictionary: {
+        //   '[': '_',
+        //   ']': '_',
+        //   '(': '_',
+        //   ')': '-',
+        // },
+      }),
+      Inspect({
+        build: true,
+        outputDir: '.vite-inspect'
+      })
+    ],
+    // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
+    css: {
+      postcss: {
+        plugins: postcssPlugins,
       },
-      inlineWxs: true,
-      // jsEscapeStrategy: 'replace', // 'regenerate'
-      onStart() {
-        bench.start();
-        start = performance.now();
-      },
-      onEnd() {
-        bench.end();
-        bench.dump();
-        console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
-      },
-      rem2rpx: true,
-      // cssSelectorReplacement: {
-      //   universal: ['view', 'text', 'button'],
-      // },
-      disabled: WeappTailwindcssDisabled,
-      // appType: 'uni-app'
-      // customReplaceDictionary: {
-      //   '[': '_',
-      //   ']': '_',
-      //   '(': '_',
-      //   ')': '-',
-      // },
-    }),
-  ],
-  // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
-  css: {
-    postcss: {
-      plugins: postcssPlugins,
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['legacy-js-api', 'import'],
+        },
+      }
     },
-    preprocessorOptions:{
-      scss: {
-        silenceDeprecations: ['legacy-js-api', 'import'],
-      },
-    }
-  },
 
-  build: {
-    minify: false,
-    sourcemap: true,
-  },
+    build: {
+      minify: false,
+      sourcemap: true,
+    },
+  }
 });
