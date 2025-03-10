@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`twMerge import > twMerge case 0.js 1`] = `
+"import a from './shared'
+
+clsx({ 'px-[35px]': true, 'px-[35px]': false, [\`px-[35px] \${a}\`]: isTrue() });"
+`;
+
+exports[`twMerge import > twMerge case 0.js 2`] = `
+"import a from './shared'
+
+clsx({ 'px-_35px_': true, 'px-_35px_': false, [\`px-_35px_ \${a}\`]: isTrue() });"
+`;

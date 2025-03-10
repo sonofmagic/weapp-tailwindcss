@@ -222,6 +222,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                 async () => {
                   const { css } = await styleHandler(rawSource, {
                     isMainChunk: mainCssChunkMatcher(file, this.appType),
+                    postcssOptions: {
+                      options: {
+                        from: file,
+                      },
+                    },
                   })
                   const source = new ConcatSource(css)
                   compilation.updateAsset(file, source)

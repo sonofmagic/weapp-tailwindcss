@@ -158,6 +158,11 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             async () => {
               const { css } = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
+                postcssOptions: {
+                  options: {
+                    from: file,
+                  },
+                },
               })
               originalSource.source = css
               onUpdate(file, rawSource, css)

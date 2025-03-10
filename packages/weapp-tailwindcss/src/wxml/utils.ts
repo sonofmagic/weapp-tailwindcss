@@ -19,6 +19,9 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
       return code
     }
     else {
+      /**
+       * @deprecated
+       */
       const ms = new MagicString(match)
       const ast = parseExpression(match)
       const jsTokenUpdater = new JsTokenUpdater()
