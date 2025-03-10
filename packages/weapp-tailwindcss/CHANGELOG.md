@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.1.0-alpha.0
+
+### Minor Changes
+
+- [`3cc8835`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3cc88359d6ff68f7234b9316b9df554d188474df) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: support js ast cache
+
 ## 4.0.11
 
 ### Patch Changes
