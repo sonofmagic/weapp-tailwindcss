@@ -1,20 +1,49 @@
-import type { ParseError, ParseResult } from '@babel/parser'
+import type { ParseError, ParseResult, ParserOptions } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import type { File, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { JsToken } from './types'
+import { parse, traverse } from '@/babel'
 import { regExpTest } from '@/utils'
 import { jsStringEscape } from '@ast-core/escape'
+import { LRUCache } from 'lru-cache'
 import MagicString from 'magic-string'
-import { parse, traverse } from '../babel'
 import { replaceHandleValue } from './handlers'
 import { JsTokenUpdater } from './JsTokenUpdater'
 import { NodePathWalker } from './NodePathWalker'
 
+export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<string, ParseResult<File>>(
+  {
+    max: 512,
+  },
+)
+
+export function babelParse(
+  code: string,
+  { cache, ...options }: ParserOptions & { cache?: boolean } = {},
+) {
+  let result: ParseResult<File> | undefined
+  if (cache) {
+    result = parseCache.get(code)
+  }
+
+  if (!result) {
+    result = parse(code, options)
+    if (cache) {
+      parseCache.set(code, result)
+    }
+  }
+
+  return result
+}
 export function isEvalPath(p: NodePath<Node>) {
   if (p.isCallExpression()) {
     const calleePath = p.get('callee')
-    return calleePath.isIdentifier() && calleePath.node.name === 'eval'
+    return calleePath.isIdentifier(
+      {
+        name: 'eval',
+      },
+    )
   }
   return false
 }
@@ -22,11 +51,9 @@ export function isEvalPath(p: NodePath<Node>) {
 const ignoreFlagMap = new WeakMap()
 
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
-  const ms = new MagicString(rawSource)
-
   let ast: ParseResult<File>
   try {
-    ast = parse(rawSource, options.babelParserOptions)
+    ast = babelParse(rawSource, options.babelParserOptions)
   }
   catch (error) {
     return {
@@ -34,7 +61,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-
+  const ms = new MagicString(rawSource)
   const jsTokenUpdater = new JsTokenUpdater()
   const walker = new NodePathWalker(
     {

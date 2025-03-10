@@ -360,7 +360,7 @@ export interface UserDefinedOptions {
    * @group 3.一般配置
    * @description 对解析 js 使用的 `@babel/parser` 工具的配置
    */
-  babelParserOptions?: ParserOptions
+  babelParserOptions?: ParserOptions & { cache?: boolean }
 
   /**
    * @group 3.一般配置

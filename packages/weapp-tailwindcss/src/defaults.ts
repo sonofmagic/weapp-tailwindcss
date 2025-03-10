@@ -110,6 +110,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     },
     babelParserOptions: {
       sourceType: 'unambiguous',
+      cache: true,
     },
     postcssOptions: {},
     cssRemoveHoverPseudoClass: true,

@@ -3,6 +3,7 @@ import { getCss } from '#test/helpers/getTwCss'
 
 import { getCompilerContext } from '@/context'
 import { getDefaultOptions } from '@/defaults'
+import { parseCache } from '@/js/babel'
 import { createJsHandler } from '@/js/index'
 import { decodeUnicode } from '@/utils/decode'
 import { MappingChars2String } from '@weapp-core/escape'
@@ -35,6 +36,7 @@ describe('jsHandler', () => {
   let dh: ReturnType<typeof createJsHandler>
   let defaultJsHandler: ReturnType<typeof createJsHandler>
   beforeEach(() => {
+    parseCache.clear()
     h = createJsHandler({
       escapeMap: MappingChars2String,
     })

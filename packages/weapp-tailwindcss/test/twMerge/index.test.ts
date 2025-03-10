@@ -1,4 +1,5 @@
 import { getCompilerContext } from '@/context'
+import { parseCache } from '@/js/babel'
 import fs from 'fs-extra'
 import path from 'pathe'
 
@@ -18,6 +19,7 @@ const testCases = [
 describe('twMerge', () => {
   let set: Set<string>
   beforeEach(() => {
+    parseCache.clear()
     set = new Set()
     set.add('bg-[#434332]')
     set.add('px-[32px]')

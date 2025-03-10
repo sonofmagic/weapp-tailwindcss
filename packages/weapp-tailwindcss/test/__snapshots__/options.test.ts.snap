@@ -6,6 +6,7 @@ exports[`get options > default options 1`] = `
     "allowDoubleQuotes": false,
   },
   "babelParserOptions": {
+    "cache": true,
     "sourceType": "unambiguous",
   },
   "cache": {

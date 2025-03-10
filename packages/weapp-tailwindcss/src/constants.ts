@@ -7,6 +7,6 @@ export const WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks
 
 export const pluginName = 'weapp-tailwindcss-webpack-plugin'
 
-export const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor'
+export const vitePluginName = 'weapp-tailwindcss:adaptor'
 
 export const WEAPP_TW_REQUIRED_NODE_VERSION = '18.17.0'
