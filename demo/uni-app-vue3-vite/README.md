@@ -69,3 +69,34 @@ const defaultMiniProgramRpx2Unit = {
 顺着代码找到 `plugins/uniapp`
 
 walkDecls 可以看到 rpx 被转换成了 rem
+
+```js
+// manifest-json-js 为空
+import './manifest-json-js'
+if(!Math){
+import('uniPage://cGFnZXMvaW5kZXgvaW5kZXgudnVl')
+import('uniPage://cGFnZXMvaW5kZXgvZGFpc3l1aS52dWU')
+import('uniPage://cGFnZXMvaW5kZXgvcGVlci52dWU')
+import('uniPage://cGFnZXMvaXNzdWUvY2FzZTU1LnZ1ZQ')
+import('uniPage://cGFnZXMvaXNzdWUvdGFpbHdpbmQtY2hpbGRyZW4udnVl')
+import('uniPage://cGFnZXMvaXNzdWUvY2FzZS1keW5hbWljLWNsYXNzLnZ1ZQ')
+import('uniPage://cGFnZXMvaXNzdWUvY2FzZS1zdXBwb3J0LXJweC52dWU')
+import('uniPage://cGFnZXMvaXNzdWUvdHlwb2dyYXBoeS52dWU')
+import('uniPage://c3Vicy9kZW1vL3BhZ2VzL2luZGV4LnZ1ZQ')
+import('uniPage://bW9kdWxlQS9wYWdlcy9pbmRleC52dWU')
+import('uniPage://bW9kdWxlQS9wYWdlcy9hLnZ1ZQ')
+import('uniPage://bW9kdWxlQS9wYWdlcy9iLnZ1ZQ')
+}
+```
+
+```js
+// uniPage
+import MiniProgramPage from 'xxxx'
+wx.createPage(MiniProgramPage)
+```
+
+https://github.com/dcloudio/uni-app/blob/4a5b1aa6cf964636e77d7ccd1a62998265462a82/packages/uni-mp-core/src/runtime/page.ts#L80
+
+https://github.com/dcloudio/uni-app/blob/4a5b1aa6cf964636e77d7ccd1a62998265462a82/packages/uni-mp-vite/README.md?plain=1#L16
+
+https://github.com/dcloudio/uni-app/blob/4a5b1aa6cf964636e77d7ccd1a62998265462a82/packages/uni-mp-vite/src/plugins/entry.ts
