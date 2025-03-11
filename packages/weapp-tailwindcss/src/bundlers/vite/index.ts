@@ -50,6 +50,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       const runtimeSet = await twPatcher.getClassSet()
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
+      const promises: (void | Promise<void>)[] = []
       if (Array.isArray(groupedEntries.html)) {
         let noCachedCount = 0
         for (const element of groupedEntries.html) {
@@ -59,35 +60,37 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
           const hash = cache.computeHash(oldVal)
           cache.calcHashValueChanged(file, hash)
-
-          await cache.process(
-            file,
-            () => {
-              const source = cache.get<string>(file)
-              if (source) {
-                originalSource.source = source
-                debug('html cache hit: %s', file)
-              }
-              else {
-                return false
-              }
-            },
-            async () => {
-              originalSource.source = await templateHandler(oldVal, {
-                runtimeSet,
-              })
-              onUpdate(file, oldVal, originalSource.source)
-              debug('html handle: %s', file)
-              noCachedCount++
-              return {
-                key: file,
-                source: originalSource.source,
-              }
-            },
+          promises.push(
+            cache.process(
+              file,
+              () => {
+                const source = cache.get<string>(file)
+                if (source) {
+                  originalSource.source = source
+                  debug('html cache hit: %s', file)
+                }
+                else {
+                  return false
+                }
+              },
+              async () => {
+                originalSource.source = await templateHandler(oldVal, {
+                  runtimeSet,
+                })
+                onUpdate(file, oldVal, originalSource.source)
+                debug('html handle: %s', file)
+                noCachedCount++
+                return {
+                  key: file,
+                  source: originalSource.source,
+                }
+              },
+            ),
           )
         }
         debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
       }
+
       if (Array.isArray(groupedEntries.js)) {
         let noCachedCount = 0
         for (const element of groupedEntries.js) {
@@ -98,36 +101,38 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
             const hash = cache.computeHash(rawSource)
             cache.calcHashValueChanged(file, hash)
-            await cache.process(
-              file,
-              () => {
-                const source = cache.get<string>(file)
-                if (source) {
-                  originalSource.code = source
-                  debug('js cache hit: %s', file)
-                }
-                else {
-                  return false
-                }
-              },
-              async () => {
-                const mapFilename = `${file}.map`
-                const hasMap = Boolean(bundle[mapFilename])
-                const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                  generateMap: hasMap,
-                })
-                originalSource.code = code
-                onUpdate(file, rawSource, code)
-                debug('js handle: %s', file)
-                noCachedCount++
-                if (hasMap && map) {
-                  ;(bundle[mapFilename] as OutputAsset).source = map.toString()
-                }
-                return {
-                  key: file,
-                  source: code,
-                }
-              },
+            promises.push(
+              cache.process(
+                file,
+                () => {
+                  const source = cache.get<string>(file)
+                  if (source) {
+                    originalSource.code = source
+                    debug('js cache hit: %s', file)
+                  }
+                  else {
+                    return false
+                  }
+                },
+                async () => {
+                  const mapFilename = `${file}.map`
+                  const hasSourceMap = Boolean(bundle[mapFilename])
+                  const { code, map } = await jsHandler(rawSource, runtimeSet, {
+                    generateMap: hasSourceMap,
+                  })
+                  originalSource.code = code
+                  onUpdate(file, rawSource, code)
+                  debug('js handle: %s', file)
+                  noCachedCount++
+                  if (hasSourceMap && map) {
+                    ;(bundle[mapFilename] as OutputAsset).source = map.toString()
+                  }
+                  return {
+                    key: file,
+                    source: code,
+                  }
+                },
+              ),
             )
           }
         }
@@ -143,41 +148,43 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
           const hash = cache.computeHash(rawSource)
           cache.calcHashValueChanged(file, hash)
-          await cache.process(
-            file,
-            () => {
-              const source = cache.get<string>(file)
-              if (source) {
-                originalSource.source = source
-                debug('css cache hit: %s', file)
-              }
-              else {
-                return false
-              }
-            },
-            async () => {
-              const { css } = await styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
-                postcssOptions: {
-                  options: {
-                    from: file,
+          promises.push(
+            cache.process(
+              file,
+              () => {
+                const source = cache.get<string>(file)
+                if (source) {
+                  originalSource.source = source
+                  debug('css cache hit: %s', file)
+                }
+                else {
+                  return false
+                }
+              },
+              async () => {
+                const { css } = await styleHandler(rawSource, {
+                  isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
+                  postcssOptions: {
+                    options: {
+                      from: file,
+                    },
                   },
-                },
-              })
-              originalSource.source = css
-              onUpdate(file, rawSource, css)
-              debug('css handle: %s', file)
-              noCachedCount++
-              return {
-                key: file,
-                source: css,
-              }
-            },
+                })
+                originalSource.source = css
+                onUpdate(file, rawSource, css)
+                debug('css handle: %s', file)
+                noCachedCount++
+                return {
+                  key: file,
+                  source: css,
+                }
+              },
+            ),
           )
         }
         debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
       }
-
+      await Promise.all(promises)
       onEnd()
       debug('end')
     },

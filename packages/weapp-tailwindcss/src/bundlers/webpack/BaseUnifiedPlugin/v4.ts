@@ -97,7 +97,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       const runtimeSet = await twPatcher.getClassSet()
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
-
+      const promises: (void | Promise<void>)[] = []
       if (Array.isArray(groupedEntries.html)) {
         let noCachedCount = 0
         for (const element of groupedEntries.html) {
@@ -108,35 +108,37 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           const hash = cache.computeHash(rawSource)
           const cacheKey = file
           cache.calcHashValueChanged(cacheKey, hash)
-          await cache.process(
-            cacheKey,
-            () => {
-              const source = cache.get(cacheKey)
-              if (source) {
-                compilation.updateAsset(file, source)
-                debug('html cache hit: %s', file)
-              }
-              else {
-                return false
-              }
-            },
-            // @ts-ignore
-            async () => {
-              const wxml = await templateHandler(rawSource, {
-                runtimeSet,
-              })
-              const source = new ConcatSource(wxml)
+          promises.push(
+            cache.process(
+              cacheKey,
+              () => {
+                const source = cache.get(cacheKey)
+                if (source) {
+                  compilation.updateAsset(file, source)
+                  debug('html cache hit: %s', file)
+                }
+                else {
+                  return false
+                }
+              },
               // @ts-ignore
-              compilation.updateAsset(file, source)
+              async () => {
+                const wxml = await templateHandler(rawSource, {
+                  runtimeSet,
+                })
+                const source = new ConcatSource(wxml)
+                // @ts-ignore
+                compilation.updateAsset(file, source)
 
-              onUpdate(file, rawSource, wxml)
-              debug('html handle: %s', file)
-              noCachedCount++
-              return {
-                key: cacheKey,
-                source,
-              }
-            },
+                onUpdate(file, rawSource, wxml)
+                debug('html handle: %s', file)
+                noCachedCount++
+                return {
+                  key: cacheKey,
+                  source,
+                }
+              },
+            ),
           )
         }
         debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
@@ -147,44 +149,45 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         for (const element of groupedEntries.js) {
           const [file, originalSource] = element
           const cacheKey = removeExt(file)
-
-          await cache.process(
-            cacheKey,
-            () => {
-              const source = cache.get(cacheKey)
-              if (source) {
-                compilation.updateAsset(file, source)
-                debug('js cache hit: %s', file)
-              }
-              else {
-                return false
-              }
-            },
-            // @ts-ignore
-            async () => {
-              const rawSource = originalSource.source().toString()
-              const mapFilename = `${file}.map`
-              const hasMap = Boolean(assets[mapFilename])
-              const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                generateMap: hasMap,
-              })
-              const source = new ConcatSource(code)
+          promises.push(
+            cache.process(
+              cacheKey,
+              () => {
+                const source = cache.get(cacheKey)
+                if (source) {
+                  compilation.updateAsset(file, source)
+                  debug('js cache hit: %s', file)
+                }
+                else {
+                  return false
+                }
+              },
               // @ts-ignore
-              compilation.updateAsset(file, source)
-              onUpdate(file, rawSource, code)
-              debug('js handle: %s', file)
-              noCachedCount++
-
-              if (hasMap && map) {
-                const source = new RawSource(map.toString())
+              async () => {
+                const rawSource = originalSource.source().toString()
+                const mapFilename = `${file}.map`
+                const hasMap = Boolean(assets[mapFilename])
+                const { code, map } = await jsHandler(rawSource, runtimeSet, {
+                  generateMap: hasMap,
+                })
+                const source = new ConcatSource(code)
                 // @ts-ignore
-                compilation.updateAsset(mapFilename, source)
-              }
-              return {
-                key: cacheKey,
-                source,
-              }
-            },
+                compilation.updateAsset(file, source)
+                onUpdate(file, rawSource, code)
+                debug('js handle: %s', file)
+                noCachedCount++
+
+                if (hasMap && map) {
+                  const source = new RawSource(map.toString())
+                  // @ts-ignore
+                  compilation.updateAsset(mapFilename, source)
+                }
+                return {
+                  key: cacheKey,
+                  source,
+                }
+              },
+            ),
           )
         }
         debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
@@ -198,46 +201,47 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           const hash = cache.computeHash(rawSource)
           const cacheKey = file
           cache.calcHashValueChanged(cacheKey, hash)
-
-          await cache.process(
-            cacheKey,
-            () => {
-              const source = cache.get(cacheKey)
-              if (source) {
-                compilation.updateAsset(file, source)
-                debug('css cache hit: %s', file)
-              }
-              else {
-                return false
-              }
-            },
-            // @ts-ignore
-            async () => {
-              const { css } = await styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(file, this.appType),
-                postcssOptions: {
-                  options: {
-                    from: file,
-                  },
-                },
-              })
-              const source = new ConcatSource(css)
+          promises.push(
+            cache.process(
+              cacheKey,
+              () => {
+                const source = cache.get(cacheKey)
+                if (source) {
+                  compilation.updateAsset(file, source)
+                  debug('css cache hit: %s', file)
+                }
+                else {
+                  return false
+                }
+              },
               // @ts-ignore
-              compilation.updateAsset(file, source)
+              async () => {
+                const { css } = await styleHandler(rawSource, {
+                  isMainChunk: mainCssChunkMatcher(file, this.appType),
+                  postcssOptions: {
+                    options: {
+                      from: file,
+                    },
+                  },
+                })
+                const source = new ConcatSource(css)
+                // @ts-ignore
+                compilation.updateAsset(file, source)
 
-              onUpdate(file, rawSource, css)
-              debug('css handle: %s', file)
-              noCachedCount++
-              return {
-                key: cacheKey,
-                source,
-              }
-            },
+                onUpdate(file, rawSource, css)
+                debug('css handle: %s', file)
+                noCachedCount++
+                return {
+                  key: cacheKey,
+                  source,
+                }
+              },
+            ),
           )
         }
         debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
       }
-
+      await Promise.all(promises)
       debug('end')
       onEnd()
     })
