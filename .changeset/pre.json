@@ -25,6 +25,7 @@
     "website": "0.0.3"
   },
   "changesets": [
+    "late-hats-win",
     "many-bees-add"
   ]
 }
