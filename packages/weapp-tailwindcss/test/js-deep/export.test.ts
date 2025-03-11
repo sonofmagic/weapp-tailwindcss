@@ -41,9 +41,12 @@ function handle(ast: ParseResult<t.File>) {
   })
   traverse(ast, {
     // StringLiteral
-    CallExpression(path) {
-      // 检查是否是 cn 函数调用
-      walker.walkCallExpression(path)
+    // CallExpression(path) {
+    //   // 检查是否是 cn 函数调用
+    //   walker.walkCallExpression(path)
+    // },
+    ExportDeclaration(path) {
+      walker.walkExportDeclaration(path)
     },
   })
   return {
@@ -93,51 +96,19 @@ function getCase(name: string) {
   return fs.readFileSync(path.resolve(import.meta.dirname, './fixtures', name), 'utf8')
 }
 
-describe('js-deep', () => {
-  it('parse js StringLiteral case 0', () => {
-    const ms = new MagicString(getCase('0.js'))
-    doEscape(ms)
-    expect(ms.toString()).toBe('const a = \'bg-_h123456_\';cn(a,"xx","yy")')
-  })
-
-  it('parse js TemplateLiteral case 1', () => {
-    const ms = new MagicString(getCase('1.js'))
-    doEscape(ms)
-    expect(ms.toString()).toBe('const a = ` text-_h123456_`;cn(a,"xx","yy")')
-  })
-
-  it('parse js case 2', () => {
-    const ms = new MagicString(getCase('2.js'))
-    doEscape(ms)
-    expect(ms.toString()).toBe('const a = \'bg-_h123456_\' + \' bb\' + ` text-_h123456_`;cn(a,"xx","yy")')
-  })
-
-  it('parse js case 3', () => {
-    const ms = new MagicString(getCase('3.js'))
-    doEscape(ms)
-    // eslint-disable-next-line no-template-curly-in-string
-    expect(ms.toString()).toBe('const b = \'aftercxx\';const a = \'bg-_h123456_\' + \' bb\' + `${b} text-_h123456_`;cn(a,"xx","yy")')
-  })
-
-  it('parse js case 4', () => {
-    const ms = new MagicString(getCase('4.js'))
-    doEscape(ms)
-    // eslint-disable-next-line no-template-curly-in-string
-    expect(ms.toString()).toBe('const b = \'aftercxx\';const a = `${b} text-_h123456_`;cn(a,"xx","yy")')
-  })
-
-  it('parse js case 5', () => {
-    const ms = new MagicString(getCase('5.js'))
-    doEscape(ms)
-    // eslint-disable-next-line no-template-curly-in-string
-    expect(ms.toString()).toBe('const b = \'_h3232_\';const a = `${b} text-_h123456_`;cn(a,`${b} bg-_h123_`,"yy")')
-  })
-
-  it('import case 0', () => {
-    const ms = new MagicString(getCase('import/a.js'))
+describe('js-deep export', () => {
+  it('export case 0', () => {
+    const ms = new MagicString(getCase('import/shared.js'))
     const { walker } = doEscape(ms)
 
-    // expect(ms.toString()).toBe(`import { a as bb } from './shared'\n\ncn(bb, "__", "yy")`)
-    expect(walker.imports.size).toBe(3)
+    expect(ms.toString()).toMatchSnapshot()
+    expect(walker.imports.size).toBe(1)
+  })
+
+  it('export case 1', () => {
+    const ms = new MagicString(getCase('import/shared2.js'))
+    doEscape(ms)
+
+    expect(ms.toString()).toMatchSnapshot()
   })
 })

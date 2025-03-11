@@ -1,10 +1,49 @@
 import type { NodePath } from '@babel/traverse'
-import type { ArgumentPlaceholder, ArrayExpression, BinaryExpression, CallExpression, Expression, LogicalExpression, ObjectExpression, SpreadElement, StringLiteral, TemplateElement, TemplateLiteral, VariableDeclarator } from '@babel/types'
+import type {
+  ArrayExpression,
+  BinaryExpression,
+  CallExpression,
+  ExportAllDeclaration,
+  ExportDeclaration,
+  ExportDefaultDeclaration,
+  ExportNamedDeclaration,
+  ImportDeclaration,
+  ImportDefaultSpecifier,
+  ImportSpecifier,
+  LogicalExpression,
+  Node,
+  ObjectExpression,
+  StringLiteral,
+  TemplateElement,
+  TemplateLiteral,
+  VariableDeclarator,
+} from '@babel/types'
 import { regExpTest } from '@/utils'
+
+export interface ImportToken {
+  declaration: NodePath<ImportDeclaration | ExportAllDeclaration>
+  specifier?: NodePath<ImportSpecifier | ImportDefaultSpecifier>
+  imported?: string
+  source: string
+}
+
+// export interface ExportToken {
+
+// }
+// | {
+//   declaration: NodePath<ImportDefaultSpecifier>
+//   specifier: NodePath<ImportSpecifier>
+//   source: string
+// }
+// NodePath<Node>
+export const walkedBindingWeakMap = new WeakMap<NodePath<Node | null | undefined>, boolean>()
 
 export class NodePathWalker {
   public ignoreCallExpressionIdentifiers: (string | RegExp)[]
   public callback: (path: NodePath<StringLiteral | TemplateElement>) => void
+  public imports: Set<ImportToken>
+  // public exports: ExportToken[]
+
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
     {
@@ -13,32 +52,18 @@ export class NodePathWalker {
     } = {},
   ) {
     this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? []
-    this.callback = callback ?? (() => {})
+    this.callback = callback ?? (() => { })
+    this.imports = new Set()
   }
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
     const init = path.get('init')
-    if (init.isStringLiteral()) {
-      this.walkStringLiteral(init)
-    }
-    else if (init.isBinaryExpression()) {
-      this.walkBinaryExpression(init)
-    }
-    else if (init.isTemplateLiteral()) {
-      this.walkTemplateLiteral(init)
-    }
+    this.composeWalk(init)
   }
 
   walkTemplateLiteral(path: NodePath<TemplateLiteral>) {
     for (const exp of path.get('expressions')) {
-      if (exp.isIdentifier()) {
-        const binding = path.scope.getBinding(exp.node.name)
-        if (binding) {
-          if (binding.path.isVariableDeclarator()) {
-            this.walkVariableDeclarator(binding.path)
-          }
-        }
-      }
+      this.composeWalk(exp)
     }
     for (const quasis of path.get('quasis')) {
       this.callback(quasis)
@@ -115,6 +140,8 @@ export class NodePathWalker {
             this.walkTemplateLiteral(key)
           }
         }
+        const value = prop.get('value')
+        this.composeWalk(value)
       }
     }
   }
@@ -126,12 +153,25 @@ export class NodePathWalker {
     }
   }
 
-  composeWalk(arg: NodePath<ArgumentPlaceholder | SpreadElement | Expression | null>) {
+  composeWalk(arg: NodePath<Node | null | undefined>) {
+    if (walkedBindingWeakMap.get(arg)) {
+      return
+    }
+    walkedBindingWeakMap.set(arg, true)
     if (arg.isIdentifier()) {
       const binding = arg.scope.getBinding(arg.node.name)
       if (binding) {
-        if (binding.path.isVariableDeclarator()) {
-          this.walkVariableDeclarator(binding.path)
+        this.composeWalk(binding.path)
+      }
+    }
+    else if (arg.isMemberExpression()) {
+      const objectPath = arg.get('object')
+      if (objectPath.isIdentifier()) {
+        const binding = arg.scope.getBinding(objectPath.node.name)
+        if (binding) {
+          if (binding.path.isVariableDeclarator()) {
+            this.walkVariableDeclarator(binding.path)
+          }
         }
       }
     }
@@ -153,6 +193,39 @@ export class NodePathWalker {
     else if (arg.isArrayExpression()) {
       this.walkArrayExpression(arg)
     }
+    else if (arg.isVariableDeclarator()) {
+      this.walkVariableDeclarator(arg)
+    }
+    else if (
+      (arg.isImportSpecifier() && arg.node.importKind !== 'type')
+      || arg.isImportDefaultSpecifier()
+    ) {
+      const importDeclaration = arg.parentPath
+      if (importDeclaration.isImportDeclaration() && importDeclaration.node.importKind !== 'type') {
+        if (arg.isImportSpecifier()) {
+          const imported = arg.get('imported')
+          if (imported.isIdentifier()) {
+            this.imports.add(
+              {
+                declaration: importDeclaration,
+                specifier: arg,
+                imported: imported.node.name,
+                source: importDeclaration.node.source.value,
+              },
+            )
+          }
+        }
+        else if (arg.isImportDefaultSpecifier()) {
+          this.imports.add(
+            {
+              declaration: importDeclaration,
+              specifier: arg,
+              source: importDeclaration.node.source.value,
+            },
+          )
+        }
+      }
+    }
   }
 
   walkCallExpression(path: NodePath<CallExpression>) {
@@ -165,6 +238,57 @@ export class NodePathWalker {
       for (const arg of path.get('arguments')) {
         this.composeWalk(arg)
       }
+    }
+  }
+
+  walkExportDeclaration(path: NodePath<ExportDeclaration>) {
+    if (path.isExportDeclaration()) {
+      if (path.isExportNamedDeclaration()) {
+        this.walkExportNamedDeclaration(path)
+      }
+      else if (path.isExportDefaultDeclaration()) {
+        this.walkExportDefaultDeclaration(path)
+      }
+      else if (path.isExportAllDeclaration()) {
+        this.walkExportAllDeclaration(path)
+      }
+    }
+  }
+
+  walkExportNamedDeclaration(path: NodePath<ExportNamedDeclaration>) {
+    const declaration = path.get('declaration')
+    if (declaration.isVariableDeclaration()) {
+      for (const decl of declaration.get('declarations')) {
+        this.composeWalk(decl)
+      }
+    }
+    const specifiers = path.get('specifiers')
+    for (const spec of specifiers) {
+      if (spec.isExportSpecifier()) {
+        const local = spec.get('local')
+        if (local.isIdentifier()) {
+          this.composeWalk(local)
+        }
+      }
+    }
+  }
+
+  walkExportDefaultDeclaration(path: NodePath<ExportDefaultDeclaration>) {
+    const decl = path.get('declaration')
+    if (decl.isIdentifier()) {
+      this.composeWalk(decl)
+    }
+  }
+
+  walkExportAllDeclaration(path: NodePath<ExportAllDeclaration>) {
+    const source = path.get('source')
+    if (source.isStringLiteral()) {
+      this.imports.add(
+        {
+          declaration: path,
+          source: source.node.value,
+        },
+      )
     }
   }
 }

@@ -1,6 +1,6 @@
 import type { ParseError, ParseResult, ParserOptions } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
-import type { File, Node, StringLiteral, TemplateElement } from '@babel/types'
+import type { ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { JsToken } from './types'
 import { parse, traverse } from '@/babel'
@@ -50,29 +50,24 @@ export function isEvalPath(p: NodePath<Node>) {
 
 const ignoreFlagMap = new WeakMap()
 
-export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
-  let ast: ParseResult<File>
-  try {
-    ast = babelParse(rawSource, options.babelParserOptions)
-  }
-  catch (error) {
-    return {
-      code: rawSource,
-      error: error as ParseError,
-    } as JsHandlerResult
-  }
-  const ms = new MagicString(rawSource)
+export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions) {
+  // const jsTokens: JsToken[] = []
   const jsTokenUpdater = new JsTokenUpdater()
   const walker = new NodePathWalker(
     {
       ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
       callback(path) {
-        ignoreFlagMap.set(path, true)
+        if (path.isStringLiteral() || path.isTemplateElement()) {
+          ignoreFlagMap.set(path, true)
+        }
       },
     },
   )
 
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
+  const importDeclarations = new Set<NodePath<ImportDeclaration>>()
+  const exportDeclarations = new Set<NodePath<ExportDeclaration>>()
+
   const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
       enter(p) {
@@ -167,10 +162,44 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
         walker.walkCallExpression(p)
       },
     },
+    ImportDeclaration: {
+      enter(p) {
+        importDeclarations.add(p)
+      },
+    },
+    ExportDeclaration: {
+      enter(p) {
+        exportDeclarations.add(p)
+      },
+    },
   }
 
   traverse(ast, traverseOptions)
 
+  return {
+    walker,
+    jsTokenUpdater,
+    ast,
+    targetPaths,
+    importDeclarations,
+    exportDeclarations,
+    // jsTokens,
+  }
+}
+
+export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
+  let ast: ParseResult<File>
+  try {
+    ast = babelParse(rawSource, options.babelParserOptions)
+  }
+  catch (error) {
+    return {
+      code: rawSource,
+      error: error as ParseError,
+    } as JsHandlerResult
+  }
+  const { targetPaths, jsTokenUpdater } = analyzeSource(ast, options)
+  const ms = new MagicString(rawSource)
   const tokens = targetPaths.map(
     (p) => {
       if (p.isStringLiteral()) {

@@ -69,4 +69,26 @@ describe('twMerge', () => {
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
+
+  it.each(testCases)('twMerge case 4.js', async ({ ignoreCallExpressionIdentifiers }) => {
+    const testCase = getCase('4.js')
+    const { jsHandler } = getCompilerContext(
+      {
+        ignoreCallExpressionIdentifiers,
+      },
+    )
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
+
+  it.each(testCases)('twMerge case 5.js', async ({ ignoreCallExpressionIdentifiers }) => {
+    const testCase = getCase('5.js')
+    const { jsHandler } = getCompilerContext(
+      {
+        ignoreCallExpressionIdentifiers,
+      },
+    )
+    const { code } = await jsHandler(testCase, set)
+    expect(code).toMatchSnapshot()
+  })
 })
