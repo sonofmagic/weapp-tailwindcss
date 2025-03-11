@@ -187,6 +187,54 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
   }
 }
 
+export function processUpdatedSource(
+  rawSource: string,
+  options: IJsHandlerOptions,
+  analysis: ReturnType<typeof analyzeSource>,
+) {
+  const ms = new MagicString(rawSource)
+  const { targetPaths, jsTokenUpdater } = analysis
+  const tokens = targetPaths
+    .filter(
+      (x) => {
+        return !ignoreFlagMap.get(x)
+      },
+    )
+    .map(
+      (p) => {
+        if (p.isStringLiteral()) {
+          return replaceHandleValue(
+            p,
+            {
+              ...options,
+              needEscaped: options.needEscaped ?? true,
+            },
+          )
+        }
+        else if (p.isTemplateElement()) {
+          return replaceHandleValue(
+            p,
+            {
+              ...options,
+              needEscaped: false,
+            },
+          )
+        }
+        return undefined
+      },
+    )
+    .filter(Boolean) as JsToken[]
+
+  jsTokenUpdater.push(
+    ...tokens,
+  ).filter(
+    (x) => {
+      return !ignoreFlagMap.get(x.path)
+    },
+  ).updateMagicString(ms)
+  return ms
+}
+
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   let ast: ParseResult<File>
   try {
@@ -198,39 +246,8 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-  const { targetPaths, jsTokenUpdater } = analyzeSource(ast, options)
-  const ms = new MagicString(rawSource)
-  const tokens = targetPaths.map(
-    (p) => {
-      if (p.isStringLiteral()) {
-        return replaceHandleValue(
-          p,
-          {
-            ...options,
-            needEscaped: options.needEscaped ?? true,
-          },
-        )
-      }
-      else if (p.isTemplateElement()) {
-        return replaceHandleValue(
-          p,
-          {
-            ...options,
-            needEscaped: false,
-          },
-        )
-      }
-      return undefined
-    },
-  ).filter(Boolean) as JsToken[]
-
-  jsTokenUpdater.push(
-    ...tokens,
-  ).filter(
-    (x) => {
-      return !ignoreFlagMap.get(x.path)
-    },
-  ).updateMagicString(ms)
+  const analysis = analyzeSource(ast, options)
+  const ms = processUpdatedSource(rawSource, options, analysis)
 
   return {
     code: ms.toString(),
