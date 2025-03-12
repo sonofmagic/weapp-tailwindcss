@@ -99,7 +99,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       const promises: (void | Promise<void>)[] = []
       if (Array.isArray(groupedEntries.html)) {
-        let noCachedCount = 0
         for (const element of groupedEntries.html) {
           const [file, originalSource] = element
 
@@ -141,11 +140,9 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             ),
           )
         }
-        debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
       }
 
       if (Array.isArray(groupedEntries.js)) {
-        let noCachedCount = 0
         for (const element of groupedEntries.js) {
           const [file, originalSource] = element
           const cacheKey = removeExt(file)
@@ -175,7 +172,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 compilation.updateAsset(file, source)
                 onUpdate(file, rawSource, code)
                 debug('js handle: %s', file)
-                noCachedCount++
 
                 if (hasMap && map) {
                   const source = new RawSource(map.toString())
@@ -190,11 +186,9 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             ),
           )
         }
-        debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
       }
 
       if (Array.isArray(groupedEntries.css)) {
-        let noCachedCount = 0
         for (const element of groupedEntries.css) {
           const [file, originalSource] = element
           const rawSource = originalSource.source().toString()
@@ -230,7 +224,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
                 onUpdate(file, rawSource, css)
                 debug('css handle: %s', file)
-                noCachedCount++
+
                 return {
                   key: cacheKey,
                   source,
@@ -239,7 +233,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             ),
           )
         }
-        debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
       }
       await Promise.all(promises)
       debug('end')

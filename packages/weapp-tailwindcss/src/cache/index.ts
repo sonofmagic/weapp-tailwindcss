@@ -1,7 +1,7 @@
 import type { Buffer } from 'node:buffer'
 import type { sources } from 'webpack'
 import { LRUCache } from 'lru-cache'
-import md5 from 'md5'
+import { md5Hash } from './md5'
 
 export interface HashMapValue {
   hash: string
@@ -64,7 +64,7 @@ function createCache(options?: boolean): ICreateCacheReturnType {
       return instance.set(key, value)
     },
     computeHash(message) {
-      return md5(message)
+      return md5Hash(message)
     },
     calcHashValueChanged(key, hash) {
       const hit = this.getHashValue(key)

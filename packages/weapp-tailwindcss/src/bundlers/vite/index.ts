@@ -52,7 +52,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       const promises: (void | Promise<void>)[] = []
       if (Array.isArray(groupedEntries.html)) {
-        // let noCachedCount = 0
         for (const element of groupedEntries.html) {
           const [file, originalSource] = element as [string, OutputAsset]
 
@@ -88,11 +87,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             ),
           )
         }
-        // debug('html handle finish, total: %d, no-cached: %d', groupedEntries.html.length, noCachedCount)
       }
 
       if (Array.isArray(groupedEntries.js)) {
-        // let noCachedCount = 0
         for (const element of groupedEntries.js.filter(x => x[1].type === 'chunk')) {
           const [file, originalSource] = element as [string, OutputChunk]
           // js maybe asset
@@ -134,11 +131,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             ),
           )
         }
-        // debug('js handle finish, total: %d, no-cached: %d', groupedEntries.js.length, noCachedCount)
       }
 
       if (Array.isArray(groupedEntries.css)) {
-        // let noCachedCount = 0
         for (const element of groupedEntries.css) {
           const [file, originalSource] = element as [string, OutputAsset]
 
@@ -180,7 +175,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             ),
           )
         }
-        // debug('css handle finish, total: %d, no-cached: %d', groupedEntries.css.length, noCachedCount)
       }
       await Promise.all(promises)
       onEnd()

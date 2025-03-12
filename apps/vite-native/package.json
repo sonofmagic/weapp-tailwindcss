@@ -31,8 +31,8 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.12",
-    "@tailwindcss/vite": "^4.0.12",
+    "@tailwindcss/postcss": "^4.0.13",
+    "@tailwindcss/vite": "^4.0.13",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
     "tailwindcss": "catalog:tailwindcss4",
