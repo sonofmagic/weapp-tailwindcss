@@ -27,7 +27,7 @@ const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
     (pkgInfo) => {
       const pkgMap: Record<string, string> = {
         'weapp-tailwindcss': version,
-        '@weapp-tailwindcss/merge': version,
+        '@weapp-tailwindcss/merge': 'latest', // version,
         'weapp-ide-cli': 'latest',
         'tailwindcss': '',
         'tailwindcss-patch': isRc ? 'rc' : '',

@@ -1,5 +1,6 @@
 {
   "name": "uni-preset-vue",
+  "private": true,
   "version": "0.0.0",
   "scripts": {
     "build": "npm run build:mp-weixin",
@@ -66,17 +67,17 @@
     "@dcloudio/uni-cli-shared": "3.0.0-4040520250104002",
     "@dcloudio/uni-stacktracey": "3.0.0-4040520250104002",
     "@dcloudio/vite-plugin-uni": "3.0.0-4040520250104002",
-    "@tailwindcss/vite": "^4.0.11",
+    "@tailwindcss/vite": "^4.0.13",
     "@vue/runtime-core": "^3.5.13",
     "@vue/tsconfig": "^0.7.0",
     "@weapp-tailwindcss/merge": "^1.0.6",
-    "tailwindcss": "^4.0.11",
+    "tailwindcss": "^4.0.13",
     "tailwindcss-patch": "^7.0.2",
     "typescript": "^5.8.2",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.8",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.0.11"
+    "weapp-tailwindcss": "^4.1.0-alpha.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

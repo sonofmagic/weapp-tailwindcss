@@ -5,10 +5,11 @@
     <view class="bg-gradient-to-b from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
     <view class="bg-gradient-to-t from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
     <view class="bg-gradient-to-tr from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="inline-block h-10 w-[50px] bg-amber-300">11223</view>
     <view class="space-x-2.5">
-      <view class="inline-block h-10 w-[50px] bg-amber-300 border-4"></view>
-      <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
-      <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
+      <view class="inline-block h-10 w-[50px] bg-amber-800 border-4"></view>
+      <view class="inline-block h-10 w-[50px] bg-amber-700"></view>
+      <view class="inline-block h-10 w-[50px] bg-amber-600"></view>
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
     </view>
   </view>

@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`e2e native > 'vite-native' > css 1`] = `
-"/*! tailwindcss v4.0.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --color-red-700: rgb(191, 0, 15);
@@ -25,13 +25,13 @@ page,
 }
 view:not(#n),
 text:not(#n),
-:not(#n)::after,
-:not(#n)::before,
+:not(#n):after,
+:not(#n):before,
 :not(#n)::backdrop {
   box-sizing: border-box;
+  border: 0 solid;
   margin: 0;
   padding: 0;
-  border: 0 solid;
 }
 .container:not(#n):not(#n):not(#n) {
   width: 100%;
@@ -76,8 +76,8 @@ text:not(#n),
 .h-_45px_:not(#n):not(#n):not(#n) {
   height: 45px;
 }
-.w-10:not(#n):not(#n):not(#n) {
-  width: calc(var(--spacing) * 10);
+.w-_50px_:not(#n):not(#n):not(#n) {
+  width: 50px;
 }
 .w-_323px_:not(#n):not(#n):not(#n) {
   width: 323px;
@@ -101,6 +101,10 @@ text:not(#n),
   margin-right: calc(calc(var(--spacing) * 2.5) * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-x-reverse)));
+}
+.border-4:not(#n):not(#n):not(#n) {
+  border-style: var(--tw-border-style);
+  border-width: 4px;
 }
 .bg-_h3a32d1_:not(#n):not(#n):not(#n) {
   background-color: #3a32d1;
@@ -163,6 +167,11 @@ text:not(#n),
   inherits: false;
   initial-value: 0;
 }
+@property --tw-border-style {
+  syntax: '*';
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-gradient-position {
   syntax: '*';
   inherits: false;
@@ -223,10 +232,10 @@ exports[`e2e native > 'vite-native' > wxml 1`] = `
     <view class="bg-gradient-to-t from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
     <view class="bg-gradient-to-tr from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
     <view class="space-x-2d5">
-      <view class="inline-block h-10 w-10 bg-amber-300"></view>
-      <view class="inline-block h-10 w-10 bg-amber-300"></view>
-      <view class="inline-block h-10 w-10 bg-amber-300"></view>
-      <view class="inline-block h-10 w-10 bg-amber-300"></view>
+      <view class="inline-block h-10 w-_50px_ bg-amber-300 border-4"></view>
+      <view class="inline-block h-10 w-_50px_ bg-amber-300"></view>
+      <view class="inline-block h-10 w-_50px_ bg-amber-300"></view>
+      <view class="inline-block h-10 w-_50px_ bg-amber-300"></view>
     </view>
   </view>
 </scroll-view>

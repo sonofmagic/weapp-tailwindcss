@@ -650,7 +650,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'mpx-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
 view:not(#n),
 text:not(#n),
 :not(#n)::backdrop,
@@ -4013,7 +4013,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'taro-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
 :not(#n)::-webkit-backdrop {
   border: 0 solid;
   -webkit-box-sizing: border-box;
@@ -5387,7 +5387,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --color-white: #fff;
@@ -5805,6 +5805,9 @@ text,
 .w-_43d1px_ {
   width: 43.1px;
 }
+.w-_50px_ {
+  width: 50px;
+}
 .w-_52px_ {
   width: 52px;
 }
@@ -5941,6 +5944,9 @@ text,
 }
 .border {
   border-width: 1px;
+}
+.border-4 {
+  border-width: 4px;
 }
 .border-_10px_ {
   border-width: 10px;
@@ -11036,6 +11042,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "blur",
   "blur-[2rpx]",
   "border",
+  "border-4",
   "border-[#098765]",
   "border-[10px]",
   "border-[10rpx]",
@@ -11216,6 +11223,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "w-[323px]",
   "w-[33.33px]",
   "w-[43.1px]",
+  "w-[50px]",
   "w-[52px]",
   "w-[61.1px]",
   "w-[77rpx]",
@@ -11369,12 +11377,12 @@ solid
 1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
 solid #000;padding:0
 1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
-(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}
+(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}view.content.content390×3705.2Background#000000AccessibilityNameRolegenericKeyboard-focusable
 "
 `;
 
 exports[`e2e > 'uni-app-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
 :host,
 page {
   --spacing: 8rpx;
