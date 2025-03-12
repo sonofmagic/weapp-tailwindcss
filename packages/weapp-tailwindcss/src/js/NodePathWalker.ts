@@ -20,21 +20,29 @@ import type {
 } from '@babel/types'
 import { regExpTest } from '@/utils'
 
-export interface ImportToken {
-  declaration: NodePath<ImportDeclaration | ExportAllDeclaration>
-  specifier?: NodePath<ImportSpecifier | ImportDefaultSpecifier>
-  imported?: string
+export interface ImportSpecifierImportToken {
+  declaration: NodePath<ImportDeclaration>
+  specifier: NodePath<ImportSpecifier>
+  imported: string
   source: string
+  type: 'ImportSpecifier'
 }
 
-// export interface ExportToken {
+export interface ImportDefaultSpecifierImportToken {
+  declaration: NodePath<ImportDeclaration>
+  specifier: NodePath<ImportDefaultSpecifier>
+  source: string
+  type: 'ImportDefaultSpecifier'
+}
 
-// }
-// | {
-//   declaration: NodePath<ImportDefaultSpecifier>
-//   specifier: NodePath<ImportSpecifier>
-//   source: string
-// }
+export interface ExportAllDeclarationImportToken {
+  declaration: NodePath<ExportAllDeclaration>
+  source: string
+  type: 'ExportAllDeclaration'
+}
+
+export type ImportToken = ImportSpecifierImportToken | ImportDefaultSpecifierImportToken | ExportAllDeclarationImportToken
+
 // NodePath<Node>
 export const walkedBindingWeakMap = new WeakMap<NodePath<Node | null | undefined>, boolean>()
 
@@ -42,7 +50,6 @@ export class NodePathWalker {
   public ignoreCallExpressionIdentifiers: (string | RegExp)[]
   public callback: (path: NodePath<StringLiteral | TemplateElement>) => void
   public imports: Set<ImportToken>
-  // public exports: ExportToken[]
 
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
@@ -58,12 +65,12 @@ export class NodePathWalker {
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
     const init = path.get('init')
-    this.composeWalk(init)
+    this.walkNode(init)
   }
 
   walkTemplateLiteral(path: NodePath<TemplateLiteral>) {
     for (const exp of path.get('expressions')) {
-      this.composeWalk(exp)
+      this.walkNode(exp)
     }
     for (const quasis of path.get('quasis')) {
       this.callback(quasis)
@@ -76,54 +83,16 @@ export class NodePathWalker {
 
   walkBinaryExpression(path: NodePath<BinaryExpression>) {
     const left = path.get('left')
-    if (left.isStringLiteral()) {
-      this.walkStringLiteral(left)
-    }
-    else if (left.isBinaryExpression()) {
-      this.walkBinaryExpression(left) // 递归
-    }
-    else if (left.isTemplateLiteral()) {
-      this.walkTemplateLiteral(left)
-    }
+    this.walkNode(left)
     const right = path.get('right')
-    if (right.isStringLiteral()) {
-      this.walkStringLiteral(right)
-    }
-    else if (right.isBinaryExpression(right)) {
-      this.walkBinaryExpression(right) // 递归
-    }
-    else if (right.isTemplateLiteral()) {
-      this.walkTemplateLiteral(right)
-    }
+    this.walkNode(right)
   }
 
   walkLogicalExpression(path: NodePath<LogicalExpression>) {
     const left = path.get('left')
-    if (left.isStringLiteral()) {
-      this.walkStringLiteral(left)
-    }
-    else if (left.isBinaryExpression()) {
-      this.walkBinaryExpression(left) // 递归
-    }
-    else if (left.isTemplateLiteral()) {
-      this.walkTemplateLiteral(left)
-    }
-    else if (left.isLogicalExpression()) {
-      this.walkLogicalExpression(left)
-    }
+    this.walkNode(left)
     const right = path.get('right')
-    if (right.isStringLiteral()) {
-      this.walkStringLiteral(right)
-    }
-    else if (right.isBinaryExpression(right)) {
-      this.walkBinaryExpression(right) // 递归
-    }
-    else if (right.isTemplateLiteral()) {
-      this.walkTemplateLiteral(right)
-    }
-    else if (right.isLogicalExpression()) {
-      this.walkLogicalExpression(right)
-    }
+    this.walkNode(right)
   }
 
   walkObjectExpression(path: NodePath<ObjectExpression>) {
@@ -132,16 +101,9 @@ export class NodePathWalker {
     for (const prop of props) {
       if (prop.isObjectProperty()) {
         const key = prop.get('key')
-        if (key) {
-          if (key.isStringLiteral()) {
-            this.walkStringLiteral(key)
-          }
-          else if (key.isTemplateLiteral()) {
-            this.walkTemplateLiteral(key)
-          }
-        }
+        this.walkNode(key)
         const value = prop.get('value')
-        this.composeWalk(value)
+        this.walkNode(value)
       }
     }
   }
@@ -149,11 +111,11 @@ export class NodePathWalker {
   walkArrayExpression(path: NodePath<ArrayExpression>) {
     const elements = path.get('elements')
     for (const element of elements) {
-      this.composeWalk(element)
+      this.walkNode(element)
     }
   }
 
-  composeWalk(arg: NodePath<Node | null | undefined>) {
+  walkNode(arg: NodePath<Node | null | undefined>) {
     if (walkedBindingWeakMap.get(arg)) {
       return
     }
@@ -161,7 +123,7 @@ export class NodePathWalker {
     if (arg.isIdentifier()) {
       const binding = arg.scope.getBinding(arg.node.name)
       if (binding) {
-        this.composeWalk(binding.path)
+        this.walkNode(binding.path)
       }
     }
     else if (arg.isMemberExpression()) {
@@ -211,7 +173,8 @@ export class NodePathWalker {
                 specifier: arg,
                 imported: imported.node.name,
                 source: importDeclaration.node.source.value,
-              },
+                type: 'ImportSpecifier',
+              } satisfies ImportSpecifierImportToken,
             )
           }
         }
@@ -221,13 +184,18 @@ export class NodePathWalker {
               declaration: importDeclaration,
               specifier: arg,
               source: importDeclaration.node.source.value,
-            },
+              type: 'ImportDefaultSpecifier',
+            } satisfies ImportDefaultSpecifierImportToken,
           )
         }
       }
     }
   }
 
+  /**
+   * @description main 方法
+   * @param path
+   */
   walkCallExpression(path: NodePath<CallExpression>) {
     const calleePath = path.get('callee')
     if (
@@ -236,7 +204,7 @@ export class NodePathWalker {
         exact: true,
       })) {
       for (const arg of path.get('arguments')) {
-        this.composeWalk(arg)
+        this.walkNode(arg)
       }
     }
   }
@@ -259,7 +227,7 @@ export class NodePathWalker {
     const declaration = path.get('declaration')
     if (declaration.isVariableDeclaration()) {
       for (const decl of declaration.get('declarations')) {
-        this.composeWalk(decl)
+        this.walkNode(decl)
       }
     }
     const specifiers = path.get('specifiers')
@@ -267,7 +235,7 @@ export class NodePathWalker {
       if (spec.isExportSpecifier()) {
         const local = spec.get('local')
         if (local.isIdentifier()) {
-          this.composeWalk(local)
+          this.walkNode(local)
         }
       }
     }
@@ -276,7 +244,7 @@ export class NodePathWalker {
   walkExportDefaultDeclaration(path: NodePath<ExportDefaultDeclaration>) {
     const decl = path.get('declaration')
     if (decl.isIdentifier()) {
-      this.composeWalk(decl)
+      this.walkNode(decl)
     }
   }
 
@@ -287,7 +255,8 @@ export class NodePathWalker {
         {
           declaration: path,
           source: source.node.value,
-        },
+          type: 'ExportAllDeclaration',
+        } satisfies ExportAllDeclarationImportToken,
       )
     }
   }
