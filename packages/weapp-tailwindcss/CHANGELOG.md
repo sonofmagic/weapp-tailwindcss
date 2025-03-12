@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.1.0-alpha.2
+
+### Patch Changes
+
+- [`a6ebf16`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a6ebf16d67a23c8c919f2742d836bd50976171a7) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: NodePathWalker walkNode impl
+
 ## 4.1.0-alpha.1
 
 ### Patch Changes
