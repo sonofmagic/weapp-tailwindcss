@@ -1,43 +1,13 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # 2. 安装这个插件
 
 在项目目录下，执行:
 
-<Tabs>
-  <TabItem label="npm" value="npm">
-  
-```bash
+```bash npm2yarn
 npm i -D weapp-tailwindcss
 
 # 假如 tailwindcss 在 weapp-tailwindcss 之后安装，可以手动执行一下 patch 方法
 # npx weapp-tw patch
 ```
-
-  </TabItem>
-  <TabItem label="yarn" value="yarn">
-  
-```bash
-yarn add -D weapp-tailwindcss
-
-# 假如 tailwindcss 在 weapp-tailwindcss 之后安装，可以手动执行一下 patch 方法
-# npx weapp-tw patch
-```
-
-  </TabItem>
-  <TabItem label="pnpm" value="pnpm">
-  
-```bash
-pnpm i -D weapp-tailwindcss
-
-# 假如 tailwindcss 在 weapp-tailwindcss 之后安装，可以手动执行一下 patch 方法
-# npx weapp-tw patch
-```
-
-  </TabItem>
-</Tabs>
-
 
 
 然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:

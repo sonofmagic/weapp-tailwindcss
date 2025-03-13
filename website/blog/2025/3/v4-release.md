@@ -1,3 +1,5 @@
+<!-- truncate -->
+
 ![4.0 release](https://cdn.jsdelivr.net/gh/sonofmagic/static/mbpv4-release.png)
 
 # weapp-tailwindcss v4.0 发布了！
@@ -75,7 +77,7 @@ export default defineConfig(async () => {
 
 接着在 `main.js` 里引用这个文件作为全局样式，然后直接运行：
 
-```bash
+```bash npm2yarn
 npm run dev:mp-weixin
 ```
 

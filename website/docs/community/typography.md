@@ -22,7 +22,7 @@
 
 ### 安装
 
-```sh
+```sh npm2yarn
 npm i -D @weapp-tailwindcss/typography
 ```
 

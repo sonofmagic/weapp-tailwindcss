@@ -8,8 +8,8 @@
 
 首先，在已经安装和配置完本插件之后，安装 [`@egoist/tailwindcss-icons`](https://www.npmjs.com/package/@egoist/tailwindcss-icons)
 
-```sh
-<npm|yarn|pnpm> i -D @egoist/tailwindcss-icons
+```sh npm2yarn
+npm i -D @egoist/tailwindcss-icons
 ```
 
 :::tip

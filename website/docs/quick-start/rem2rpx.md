@@ -68,7 +68,7 @@ new UnifiedWebpackPluginV5({
 
 首先我们安装 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
 
-```bash
+```bash npm2yarn
 npm i -D postcss-rem-to-responsive-pixel
 ```
 
@@ -112,7 +112,7 @@ module.exports = {
 
 同样我们安装它：
 
-```bash
+```bash npm2yarn
 npm i -D tailwindcss-rem2px-preset
 ```
 

@@ -16,7 +16,7 @@
 
 在项目根目录，执行:
 
-```bash
+```bash npm2yarn
 npx @dcloudio/uvm alpha
 ```
 

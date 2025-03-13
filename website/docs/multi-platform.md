@@ -35,8 +35,7 @@ const vitePlugins = [
 
 ### 安装 `postcss-preset-env`
 
-```bash
-# npm / yarn / pnpm
+```bash npm2yarn
 npm i -D postcss-preset-env
 ```
 

@@ -1,6 +1,3 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # 1. 安装与配置 tailwindcss
 
 > 请确保你的 `nodejs` 版本 `^18.17.0 || >=20.5.0`。目前低于 `18` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)。
@@ -13,35 +10,11 @@ import TabItem from '@theme/TabItem';
 
 ## 1. 使用包管理器安装 `tailwindcss`
 
-<Tabs>
-  <TabItem label="npm" value="npm">
-  
-```bash
+```bash npm2yarn
 npm i -D tailwindcss@3 postcss autoprefixer
 # 初始化 tailwind.config.js 文件
 npx tailwindcss init
 ```
-
-  </TabItem>
-  <TabItem label="yarn" value="yarn">
-  
-```bash
-yarn add -D tailwindcss@3 postcss autoprefixer
-# 初始化 tailwind.config.js 文件
-npx tailwindcss init
-```
-
-  </TabItem>
-  <TabItem label="pnpm" value="pnpm">
-  
-```bash
-pnpm i -D tailwindcss@3 postcss autoprefixer
-# 初始化 tailwind.config.js 文件
-npx tailwindcss init
-```
-
-  </TabItem>
-</Tabs>
 
 :::info
 `tailwindcss` 最新版本(`3.x`)对应的 `postcss` 大版本为 `8`，假如你使用像 `uni-app` 或 `taro` 这样的跨端框架，大概率已经内置了 `postcss` 和 `autoprefixer`

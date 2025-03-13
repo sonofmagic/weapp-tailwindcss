@@ -71,8 +71,8 @@ return <div className={clsName}></div>
 
 1. 安装 `clsx`:
 
-```bash
-<npm|yarn|pnpm> i clsx
+```bash npm2yarn
+npm i clsx
 ```
 
 2. 进入你的 `vscode` 设置的 [`settings.json`](https://code.visualstudio.com/docs/getstarted/settings)
