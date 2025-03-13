@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <view class="odd:mb-24 text-[var(--text_sec_light)]"></view>
+    <view class="odd:mb-2 text-[var(--text_sec_light)]"></view>
     <view class="ifdef-[MP-WEIXIN]:bg-blue-500 text-[var(--text\_sec\_light)]">bg-blue-500</view>
     <view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-300">bg-blue-300</view>
     <view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">bg-blue-400</view>
