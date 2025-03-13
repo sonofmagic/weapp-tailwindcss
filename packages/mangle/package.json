@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/mangle",
-  "version": "1.0.2",
+  "version": "1.0.3-alpha.0",
   "description": "@weapp-tailwindcss/mangle",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
