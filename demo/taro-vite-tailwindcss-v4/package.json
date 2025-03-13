@@ -69,8 +69,8 @@
     "@babel/core": "^7.24.4",
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/preset-react": "^7.24.1",
-    "@tailwindcss/postcss": "^4.0.13",
-    "@tailwindcss/vite": "^4.0.13",
+    "@tailwindcss/postcss": "^4.0.14",
+    "@tailwindcss/vite": "^4.0.14",
     "@tarojs/cli": "4.0.9",
     "@tarojs/vite-runner": "4.0.9",
     "@types/react": "^18.0.0",
@@ -84,13 +84,13 @@
     "postcss": "^8.5.3",
     "react-refresh": "^0.16.0",
     "stylelint": "^16.15.0",
-    "tailwindcss": "^4.0.13",
+    "tailwindcss": "^4.0.14",
     "tailwindcss-patch": "^7.0.2",
     "terser": "^5.30.4",
     "typescript": "^5.8.2",
     "vite": "^4.2.0",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.0-alpha.2"
+    "weapp-tailwindcss": "^4.1.0-alpha.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

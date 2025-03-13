@@ -650,7 +650,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'mpx-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
 view:not(#n),
 text:not(#n),
 :not(#n)::backdrop,
@@ -2150,16 +2150,16 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(50, 50, 255, var(--tw-bg-opacity, 1));
 }
-.bg-_h444400_ {
-  --tw-bg-opacity: 1;
-  background-color: rgba(68, 68, 0, var(--tw-bg-opacity, 1));
-}
 .bg-_h654321_ {
   --tw-bg-opacity: 1;
   background-color: rgba(101, 67, 33, var(--tw-bg-opacity, 1));
 }
 .bg-_h91ba306d_ {
   background-color: rgba(145, 186, 48, 0.42745);
+}
+.bg-_hd6d66b_ {
+  --tw-bg-opacity: 1;
+  background-color: rgba(214, 214, 107, var(--tw-bg-opacity, 1));
 }
 .bg-_hfaf_ {
   --tw-bg-opacity: 1;
@@ -2470,9 +2470,9 @@ exports[`e2e > 'taro-app' > json 1`] = `
   "bg-[#123456]",
   "bg-[#123]",
   "bg-[#3232ff]",
-  "bg-[#444400]",
   "bg-[#654321]",
   "bg-[#91ba306d]",
+  "bg-[#d6d66b]",
   "bg-[#faf]",
   "bg-[#fff]",
   "bg-[url('https://xxx.com/xx.webp')]",
@@ -4013,7 +4013,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'taro-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
 :not(#n)::-webkit-backdrop {
   border: 0 solid;
   -webkit-box-sizing: border-box;
@@ -5387,7 +5387,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --color-white: #fff;
@@ -5403,6 +5403,19 @@ text:not(#n),
   border: 0 solid;
   margin: 0;
   padding: 0;
+}
+.i-mdi-home:not(#n):not(#n):not(#n) {
+  width: 1em;
+  height: 1em;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  display: inline-block;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 .flex:not(#n):not(#n):not(#n) {
   display: flex;
@@ -5514,6 +5527,7 @@ exports[`e2e > 'uni-app-tailwindcss-v4' > wxml 1`] = `
     <text class="text-_h00f285_ text-_h00f285_ text-_88rpx_ text-_88rpx_ font-bold font-bold underline underline"></text>
   </view>
   <view class="bg-_h0000ff_ bg-_h0000ff_ text-_45rpx_ text-_45rpx_ text-white text-white aspect-_calcy4m3a1ys3_ aspect-_calcy4m3a1ys3_">bg-_h0000ff_ text-_45rpx_ text-white</view>
+  <view class="i-mdi-home i-mdi-home"></view>
 </view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
@@ -6061,6 +6075,18 @@ text,
 .bg-amber-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(245, 158, 11, var(--tw-bg-opacity, 1));
+}
+.bg-amber-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(217, 119, 6, var(--tw-bg-opacity, 1));
+}
+.bg-amber-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(180, 83, 9, var(--tw-bg-opacity, 1));
+}
+.bg-amber-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(146, 64, 14, var(--tw-bg-opacity, 1));
 }
 .bg-blue-300 {
   --tw-bg-opacity: 1;
@@ -11020,6 +11046,9 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "bg-[yellow]",
   "bg-amber-300",
   "bg-amber-500",
+  "bg-amber-600",
+  "bg-amber-700",
+  "bg-amber-800",
   "bg-blue-300",
   "bg-blue-400",
   "bg-blue-500",
@@ -11377,12 +11406,12 @@ solid
 1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
 solid #000;padding:0
 1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
-(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}view.content.content390×3705.2Background#000000AccessibilityNameRolegenericKeyboard-focusable
+(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}
 "
 `;
 
 exports[`e2e > 'uni-app-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
 :host,
 page {
   --spacing: 8rpx;
