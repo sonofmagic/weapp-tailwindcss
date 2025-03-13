@@ -16,7 +16,7 @@
 **Iconify for Tailwind CSS** 其实给我们提供了两种选择：
 `@iconify/tailwind` 和 `@egoist/tailwindcss-icons`
 
-个人用下来，感觉 `@egoist/tailwindcss-icons` 更好用一点，智能提示也更好，但是带来的问题就是开销更大，不过我不在乎。
+个人用下来，感觉 `@egoist/tailwindcss-icons` 更好用一点，智能提示也更好一些。
 
 因为它是直接把全部的 `icon` 生成在 `components` 里, 然后再交给 `Tailwind CSS` 从里面进行挑选再输出到我们的 `css` 文件中的。
 
@@ -50,11 +50,27 @@ module.exports = {
 
 `<view class="i-mdi-home text-3xl text-red-600"></view>`
 
-> 假如不起作用，请检查你的 `@tailwind components;` / `@import 'tailwindcss/components';`(scss) 是否在入口 `css/scss` 中引入
+> 假如不起作用，`Tailwindcss@3` 的话，请检查你的 `@tailwind components;` / `@import 'tailwindcss/components';`(scss) 是否在入口 `css/scss` 中引入
+
+## Tailwindcss v4
+
+在 `Tailwindcss@4` 中，不会自动读取 `tailwind.config.js` 文件，所以你需要使用 [@config](https://tailwindcss.com/docs/functions-and-directives#config-directive) 指令，手动 引入 `tailwindcss` 的配置文件。
+
+```css
+@import "weapp-tailwindcss";
+/* 添加下面这一行，路径为你创建的 tailwind.config.js 文件路径 */
+/* highlight-next-line */
+@config "../tailwind.config.js";
+```
+
+这样在 `tailwindcss@4` 中才能起效果
 
 ## icon预览挑选网站
 
+https://icon-sets.iconify.design/
+
 <https://icones.js.org>
+
 
 ## 生成结果
 

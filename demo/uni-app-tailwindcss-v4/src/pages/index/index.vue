@@ -7,6 +7,7 @@
     <view :class="className" class="aspect-[calc(4*3+1)/3]">
       {{ className }}
     </view>
+    <view class="i-mdi-home"></view>
   </view>
 </template>
 

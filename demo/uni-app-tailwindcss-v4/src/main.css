@@ -1,2 +1,3 @@
 @import "weapp-tailwindcss";
+@config "../tailwind.config.js";
 /* @source "../node_modules/tailwindcss-core-plugins-extractor/dist"; */

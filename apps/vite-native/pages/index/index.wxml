@@ -15,5 +15,6 @@
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
     </view>
+    <view class="i-mdi-home"></view>
   </view>
 </scroll-view>
