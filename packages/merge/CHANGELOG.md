@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.0.7
+
+### Patch Changes
+
+- [`e0c37f5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e0c37f5f546b143341a75701a1907f876df38fa9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
 ## 1.0.7-alpha.0
 
 ### Patch Changes

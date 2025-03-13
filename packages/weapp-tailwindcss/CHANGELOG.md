@@ -1,5 +1,26 @@
 # weapp-tailwindcss
 
+## 4.1.0
+
+### Minor Changes
+
+- [`3cc8835`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3cc88359d6ff68f7234b9316b9df554d188474df) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: support js ast cache
+
+### Patch Changes
+
+- [`d52a324`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d52a32406ff3945c5b0a11cc0131baf6b99aee5a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: improve NodePathWalker
+
+- [`e0c37f5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e0c37f5f546b143341a75701a1907f876df38fa9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
+- [`a6ebf16`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a6ebf16d67a23c8c919f2742d836bd50976171a7) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: NodePathWalker walkNode impl
+
+- Updated dependencies [[`e0c37f5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e0c37f5f546b143341a75701a1907f876df38fa9)]:
+  - @weapp-tailwindcss/init@1.0.2
+  - @weapp-tailwindcss/logger@1.0.1
+  - @weapp-tailwindcss/mangle@1.0.3
+  - @weapp-tailwindcss/postcss@1.0.7
+  - @weapp-tailwindcss/shared@1.0.2
+
 ## 4.1.0-alpha.3
 
 ### Patch Changes
