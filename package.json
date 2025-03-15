@@ -181,7 +181,7 @@
     "js-beautify": "^1.15.4",
     "jsdom": "^26.0.0",
     "klaw": "^4.1.0",
-    "lightningcss": "^1.29.2",
+    "lightningcss": "^1.29.3",
     "lint-staged": "^15.5.0",
     "local-pkg": "^1.1.1",
     "lodash": "^4.17.21",

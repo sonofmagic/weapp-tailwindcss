@@ -45,7 +45,7 @@ new UnifiedWebpackPluginV5({
 
 ```js
 {
-  // 32 意味着 1rem = 32rpx
+  // 32 意味着 1rem = 16px = 32rpx
   rootValue: 32,
   // 默认所有属性都转化
   propList: ['*'],
@@ -53,6 +53,16 @@ new UnifiedWebpackPluginV5({
   transformUnit: 'rpx'
 }
 ```
+
+:::tip
+为什么 `rootValue` 默认值是 `32`?
+
+这是因为开发微信小程序时, 设计师基本都使用 `iPhone6` 作为视觉稿的标准，此时 `1px = 2rpx`。
+
+然后默认情况下 `1rem = 16px`，所以 `1rem = 16px = 32rpx`。
+
+详见 [WXSS 尺寸单位](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxss.html#%E5%B0%BA%E5%AF%B8%E5%8D%95%E4%BD%8D) 章节，
+:::
 
 当然你也可以自行传入一个 `object` 来进行更多配置，具体的配置项见 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel)
 
