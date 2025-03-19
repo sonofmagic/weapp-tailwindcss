@@ -38,6 +38,6 @@
   },
   "publishConfig": {},
   "dependencies": {
-    "consola": "^3.4.0"
+    "consola": "^3.4.2"
   }
 }
