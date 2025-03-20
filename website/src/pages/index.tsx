@@ -80,7 +80,7 @@ function HomepageHeader() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-around space-y-8 md:flex-row md:space-y-0">
+        <div className="mt-8 flex flex-col items-center justify-around space-y-8 md:flex-row md:items-start md:space-y-0">
           <div className="flex w-[350px] flex-col items-center text-center">
             <h3 className="mb-6">多构建工具适配</h3>
             <div className="relative grid max-w-[500px] grid-cols-2 place-items-center gap-x-10 gap-y-5 p-6">
