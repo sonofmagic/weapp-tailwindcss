@@ -76,8 +76,8 @@ importers:
         specifier: ^1.1.5
         version: 1.1.5
       '@types/express':
-        specifier: ^5.0.0
-        version: 5.0.0
+        specifier: ^5.0.1
+        version: 5.0.1
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
@@ -906,7 +906,7 @@ importers:
         version: 0.2.6(@docusaurus/core@3.7.0(@mdx-js/react@3.1.0(@types/react@19.0.10)(react@19.0.0))(acorn@6.4.2)(debug@4.4.0)(esbuild@0.25.0)(eslint@9.22.0(jiti@2.4.2))(lightningcss@1.29.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)(vue-template-compiler@2.7.16))(sass-embedded@1.86.0)(sass@1.86.0)(webpack@5.97.1(esbuild@0.25.0))
       docusaurus-plugin-typedoc:
         specifier: 1.2.3
-        version: 1.2.3(typedoc-plugin-markdown@4.5.1(typedoc@0.28.0(typescript@5.8.2)))
+        version: 1.2.3(typedoc-plugin-markdown@4.5.2(typedoc@0.28.1(typescript@5.8.2)))
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -929,11 +929,11 @@ importers:
         specifier: workspace:*
         version: link:../packages/theme-transition
       typedoc:
-        specifier: ^0.28.0
-        version: 0.28.0(typescript@5.8.2)
+        specifier: ^0.28.1
+        version: 0.28.1(typescript@5.8.2)
       typedoc-plugin-markdown:
-        specifier: 4.5.1
-        version: 4.5.1(typedoc@0.28.0(typescript@5.8.2))
+        specifier: 4.5.2
+        version: 4.5.2(typedoc@0.28.1(typescript@5.8.2))
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -4236,17 +4236,14 @@ packages:
   '@types/express-serve-static-core@4.19.6':
     resolution: {integrity: sha512-N4LZ2xG7DatVqhCZzOGb1Yi5lMbXSZcmdLDe9EzSndPV2HpWYWzRbaerl2n27irrm94EPpprqa8KpskPT085+A==}
 
-  '@types/express-serve-static-core@5.0.0':
-    resolution: {integrity: sha512-AbXMTZGt40T+KON9/Fdxx0B2WK5hsgxcfXJLr5bFpZ7b4JCex2WyQPTEKdXqfHiY5nKKBScZ7yCoO6Pvgxfvnw==}
-
-  '@types/express-serve-static-core@5.0.3':
-    resolution: {integrity: sha512-JEhMNwUJt7bw728CydvYzntD0XJeTmDnvwLlbfbAhE7Tbslm/ax6bdIiUwTgeVlZTsJQPwZwKpAkyDtIjsvx3g==}
+  '@types/express-serve-static-core@5.0.6':
+    resolution: {integrity: sha512-3xhRnjJPkULekpSzgtoNYYcTWgEZkp4myc+Saevii5JPnHNvHMRlBSHDbs7Bh1iPPoVTERHEZXyhyLbMEsExsA==}
 
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
 
-  '@types/express@5.0.0':
-    resolution: {integrity: sha512-DvZriSMehGHL1ZNLzi6MidnsDhUZM/x2pRdDIKdwbUNqqwHxMlRdkxtn6/EPKyqKpHqTl/4nRZsRNLpZxZRpPQ==}
+  '@types/express@5.0.1':
+    resolution: {integrity: sha512-UZUw8vjpWFXuDnjFTh7/5c2TWDlQqeXHi6hcN7F2XSVT5P+WmUnnbFS3KA6Jnc6IsEqI2qCVu2bK0R0J4A8ZQQ==}
 
   '@types/file-saver@2.0.7':
     resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
@@ -4419,11 +4416,11 @@ packages:
   '@types/prismjs@1.26.5':
     resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
 
-  '@types/qs@6.9.16':
-    resolution: {integrity: sha512-7i+zxXdPD0T4cKDuxCUXJ4wHcsJLwENa6Z3dCu8cfCK743OGy5Nu1RmAGqDPsoTDINVEcdXKRvR/zre+P2Ku1A==}
-
   '@types/qs@6.9.17':
     resolution: {integrity: sha512-rX4/bPcfmvxHDv0XjfJELTTr+iB+tn032nPILqHm5wbthUUUuVtNGGqzhya9XUxjTP8Fpr0qYgSZZKxGY++svQ==}
+
+  '@types/qs@6.9.18':
+    resolution: {integrity: sha512-kK7dgTYDyGqS+e2Q4aK9X3D7q234CIZ1Bv0q/7Z5IwRDoADNU81xXJK/YVyLbLTZCoIwUoDoffFeF+p/eIklAA==}
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
@@ -12712,14 +12709,14 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  typedoc-plugin-markdown@4.5.1:
-    resolution: {integrity: sha512-W1M6sjjVNITSOT5bjJvy8EUL/Q9v7bqSPu5k+7M/a8eXAxUFubb7SbN4Q7ATAqE4GxZ0bbSK1RfLNNSmjE+v2A==}
+  typedoc-plugin-markdown@4.5.2:
+    resolution: {integrity: sha512-n0wfkCQU4nts13v8RSWMzIGNMbDo4P+oumHW6JudriknJLJSzx7p19OKJP8rKXvBkA+SFFuT7mW8lkMZZROz4g==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.28.x
 
-  typedoc@0.28.0:
-    resolution: {integrity: sha512-UU+xxZXrpnUhEulBYRwY2afoYFC24J2fTFovOs3llj2foGShCoKVQL6cQCfQ+sBAOdiFn2dETpZ9xhah+CL3RQ==}
+  typedoc@0.28.1:
+    resolution: {integrity: sha512-Mn2VPNMaxoe/hlBiLriG4U55oyAa3Xo+8HbtEwV7F5WEOPXqtxzGuMZhJYHaqFJpajeQ6ZDUC2c990NAtTbdgw==}
     engines: {node: '>= 18', pnpm: '>= 10'}
     hasBin: true
     peerDependencies:
@@ -18009,7 +18006,7 @@ snapshots:
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
-      '@types/express-serve-static-core': 5.0.3
+      '@types/express-serve-static-core': 5.0.6
       '@types/node': 22.13.10
 
   '@types/connect@3.4.38':
@@ -18060,17 +18057,10 @@ snapshots:
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
 
-  '@types/express-serve-static-core@5.0.0':
+  '@types/express-serve-static-core@5.0.6':
     dependencies:
       '@types/node': 22.13.10
-      '@types/qs': 6.9.16
-      '@types/range-parser': 1.2.7
-      '@types/send': 0.17.4
-
-  '@types/express-serve-static-core@5.0.3':
-    dependencies:
-      '@types/node': 22.13.10
-      '@types/qs': 6.9.17
+      '@types/qs': 6.9.18
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
 
@@ -18081,11 +18071,10 @@ snapshots:
       '@types/qs': 6.9.17
       '@types/serve-static': 1.15.7
 
-  '@types/express@5.0.0':
+  '@types/express@5.0.1':
     dependencies:
       '@types/body-parser': 1.19.5
-      '@types/express-serve-static-core': 5.0.0
-      '@types/qs': 6.9.16
+      '@types/express-serve-static-core': 5.0.6
       '@types/serve-static': 1.15.7
 
   '@types/file-saver@2.0.7': {}
@@ -18283,9 +18272,9 @@ snapshots:
 
   '@types/prismjs@1.26.5': {}
 
-  '@types/qs@6.9.16': {}
-
   '@types/qs@6.9.17': {}
+
+  '@types/qs@6.9.18': {}
 
   '@types/range-parser@1.2.7': {}
 
@@ -20495,9 +20484,9 @@ snapshots:
       - sass-embedded
       - webpack
 
-  docusaurus-plugin-typedoc@1.2.3(typedoc-plugin-markdown@4.5.1(typedoc@0.28.0(typescript@5.8.2))):
+  docusaurus-plugin-typedoc@1.2.3(typedoc-plugin-markdown@4.5.2(typedoc@0.28.1(typescript@5.8.2))):
     dependencies:
-      typedoc-plugin-markdown: 4.5.1(typedoc@0.28.0(typescript@5.8.2))
+      typedoc-plugin-markdown: 4.5.2(typedoc@0.28.1(typescript@5.8.2))
 
   dom-converter@0.2.0:
     dependencies:
@@ -27906,11 +27895,11 @@ snapshots:
   typedarray@0.0.6:
     optional: true
 
-  typedoc-plugin-markdown@4.5.1(typedoc@0.28.0(typescript@5.8.2)):
+  typedoc-plugin-markdown@4.5.2(typedoc@0.28.1(typescript@5.8.2)):
     dependencies:
-      typedoc: 0.28.0(typescript@5.8.2)
+      typedoc: 0.28.1(typescript@5.8.2)
 
-  typedoc@0.28.0(typescript@5.8.2):
+  typedoc@0.28.1(typescript@5.8.2):
     dependencies:
       '@gerrit0/mini-shiki': 3.2.1
       lunr: 2.3.9

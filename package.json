@@ -115,7 +115,7 @@
     "@types/debug": "^4.1.12",
     "@types/diff": "^7.0.1",
     "@types/dlv": "^1.1.5",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/get-value": "^3.0.5",
     "@types/gulp": "^4.0.17",

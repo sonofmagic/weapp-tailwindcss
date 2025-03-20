@@ -80,8 +80,8 @@ function HomepageHeader() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col justify-around space-y-8 md:flex-row md:space-y-0">
-          <div className="flex flex-col items-center text-center">
+        <div className="mt-8 flex flex-col items-center justify-around space-y-8 md:flex-row md:space-y-0">
+          <div className="flex w-[350px] flex-col items-center text-center">
             <h3 className="mb-6">多构建工具适配</h3>
             <div className="relative grid max-w-[500px] grid-cols-2 place-items-center gap-x-10 gap-y-5 p-6">
               {/* eslint-disable-next-line tailwindcss/no-contradicting-classname */}
@@ -100,7 +100,7 @@ function HomepageHeader() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center text-center">
+          <div className="flex w-[350px] flex-col items-center text-center">
             <h3>Tailwindcss 多版本支持</h3>
             <div className="flex flex-col">
               <div className="relative">
@@ -151,7 +151,7 @@ function HomepageHeader() {
               </div>
             </div>
           </div>
-          <div className="text-center">
+          <div className="w-[350px] text-center">
             <h3>主流框架与原生开发支持</h3>
             {/* <div>
               <WeappLogo></WeappLogo>
