@@ -18,19 +18,28 @@ export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<stri
   },
 )
 
+export function genCacheKey(source: string, options: any): string {
+  return (
+    source
+    + JSON.stringify(options, (_, val) =>
+      typeof val === 'function' ? val.toString() : val)
+  )
+}
+
 export function babelParse(
   code: string,
   { cache, ...options }: ParserOptions & { cache?: boolean } = {},
 ) {
+  const cacheKey = genCacheKey(code, options)
   let result: ParseResult<File> | undefined
   if (cache) {
-    result = parseCache.get(code)
+    result = parseCache.get(cacheKey)
   }
 
   if (!result) {
     result = parse(code, options)
     if (cache) {
-      parseCache.set(code, result)
+      parseCache.set(cacheKey, result)
     }
   }
 
