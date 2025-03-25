@@ -31,9 +31,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@babel/parser": "~7.26.10",
-    "@babel/traverse": "~7.26.10",
-    "@babel/types": "~7.26.10"
+    "@babel/parser": "~7.27.0",
+    "@babel/traverse": "~7.27.0",
+    "@babel/types": "~7.27.0"
   },
   "publishConfig": {
     "exports": {

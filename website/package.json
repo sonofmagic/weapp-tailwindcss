@@ -55,7 +55,7 @@
     "@playwright/test": "^1.51.1",
     "@tailwindcss/typography": "^0.5.16",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.13.13",
     "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.3",
     "docusaurus-plugin-sass": "^0.2.6",
@@ -68,7 +68,7 @@
     "tailwindcss": "^3.4.17",
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.1",
-    "typedoc-plugin-markdown": "4.5.2",
+    "typedoc-plugin-markdown": "4.6.0",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {
