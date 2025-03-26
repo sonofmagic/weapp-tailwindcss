@@ -5,7 +5,7 @@
 :::caution
 假如你写了 `tailwindcss` 工具类不生效，可能是由于微信开发者工具默认开启了 `代码自动热重载` 功能，关闭它即可生效。
 
-假如你和 `NutUI` 一起使用，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)!
+假如你和 `NutUI` 一起使用，或者启用了 `@tarojs/plugin-html` 插件，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)!
 
 <!-- 有群友遇到了转义特殊字符失败，之后变成了空格的文件，结果 `node_modules` 删了重新安装就好了。 -->
 :::

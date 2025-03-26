@@ -30,6 +30,6 @@
     "tailwindcss": "catalog:tailwindcss3",
     "typescript": "^5.8.2",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^3.0.2"
+    "weapp-vite": "^3.1.0"
   }
 }

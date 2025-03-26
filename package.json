@@ -114,7 +114,7 @@
     "@tsconfig/recommended": "^1.0.8",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.6.8",
-    "@types/babel__traverse": "^7.20.6",
+    "@types/babel__traverse": "^7.20.7",
     "@types/debug": "^4.1.12",
     "@types/diff": "^7.0.2",
     "@types/dlv": "^1.1.5",
