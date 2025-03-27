@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.1.1
+
+### Patch Changes
+
+- [`b6de60f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b6de60f2bb7eb752435e9f9ca2f074276f9d0467) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: webpack4 插件编译错误问题
+
 ## 4.1.0
 
 ### Minor Changes
