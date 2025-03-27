@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 // webpack 4
 import type { Compiler } from 'webpack4'
@@ -70,9 +69,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module) => {
         if (isExisted) {
+          // @ts-ignore
           const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
 
           if (idx > -1) {
+            // @ts-ignore
             module.loaders.unshift(WeappTwRuntimeAopLoader)
           }
         }
@@ -101,7 +102,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       if (Array.isArray(groupedEntries.html)) {
         for (const element of groupedEntries.html) {
           const [file, originalSource] = element
-
+          // @ts-ignore
           const rawSource = originalSource.source().toString()
 
           const hash = cache.computeHash(rawSource)
@@ -113,6 +114,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               () => {
                 const source = cache.get(cacheKey)
                 if (source) {
+                  // @ts-ignore
                   compilation.updateAsset(file, source)
                   debug('html cache hit: %s', file)
                 }
@@ -131,7 +133,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
                 onUpdate(file, rawSource, wxml)
                 debug('html handle: %s', file)
-                noCachedCount++
+
                 return {
                   key: cacheKey,
                   source,
@@ -152,6 +154,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               () => {
                 const source = cache.get(cacheKey)
                 if (source) {
+                  // @ts-ignore
                   compilation.updateAsset(file, source)
                   debug('js cache hit: %s', file)
                 }
@@ -161,6 +164,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               },
               // @ts-ignore
               async () => {
+                // @ts-ignore
                 const rawSource = originalSource.source().toString()
                 const mapFilename = `${file}.map`
                 const hasMap = Boolean(assets[mapFilename])
@@ -191,6 +195,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       if (Array.isArray(groupedEntries.css)) {
         for (const element of groupedEntries.css) {
           const [file, originalSource] = element
+          // @ts-ignore
           const rawSource = originalSource.source().toString()
           const hash = cache.computeHash(rawSource)
           const cacheKey = file
@@ -201,6 +206,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               () => {
                 const source = cache.get(cacheKey)
                 if (source) {
+                  // @ts-ignore
                   compilation.updateAsset(file, source)
                   debug('css cache hit: %s', file)
                 }
