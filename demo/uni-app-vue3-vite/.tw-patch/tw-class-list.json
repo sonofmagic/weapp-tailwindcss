@@ -148,7 +148,7 @@
   "next-text:text-red-500",
   "next-view:text-yellow-500",
   "next:text-green-500",
-  "odd:mb-24",
+  "odd:mb-2",
   "opacity-50",
   "origin-[100rpx_111rpx]",
   "outline-[5rpx]",

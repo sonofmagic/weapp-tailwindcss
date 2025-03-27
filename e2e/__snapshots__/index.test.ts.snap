@@ -650,7 +650,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'mpx-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.17 | MIT License | https://tailwindcss.com */
 view:not(#n),
 text:not(#n),
 :not(#n)::backdrop,
@@ -4013,7 +4013,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'taro-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.17 | MIT License | https://tailwindcss.com */
 :not(#n)::-webkit-backdrop {
   border: 0 solid;
   -webkit-box-sizing: border-box;
@@ -5387,7 +5387,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.17 | MIT License | https://tailwindcss.com */
 page,
 :host {
   --color-white: #fff;
@@ -10824,8 +10824,8 @@ text,
   --tw-content: \\'我来自inline-wxs\\';
   content: var(--tw-content);
 }
-.oddcmb-24:nth-child(odd) {
-  margin-bottom: 192rpx;
+.oddcmb-2:nth-child(odd) {
+  margin-bottom: 16rpx;
 }
 .peer.tapped ~ .peer-_dtapped_cbg-red-400 {
   --tw-bg-opacity: 1;
@@ -11157,7 +11157,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
   "next-text:text-red-500",
   "next-view:text-yellow-500",
   "next:text-green-500",
-  "odd:mb-24",
+  "odd:mb-2",
   "opacity-50",
   "origin-[100rpx_111rpx]",
   "outline-[5rpx]",
@@ -11264,7 +11264,7 @@ exports[`e2e > 'uni-app-vue3-vite' > json 1`] = `
 
 exports[`e2e > 'uni-app-vue3-vite' > wxml 1`] = `
 "<view class="content content" style="">
-  <view class="oddcmb-24 oddcmb-24 text-_vary--text_sec_lighty_ text-_vary--text_sec_lighty_"></view>
+  <view class="oddcmb-2 oddcmb-2 text-_vary--text_sec_lighty_ text-_vary--text_sec_lighty_"></view>
   <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifdef-_MP-WEIXIN_cbg-blue-500 text-_vary--textw_secw_lighty_ text-_vary--textw_secw_lighty_">bg-blue-500</view>
   <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300 ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
   <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400 ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
@@ -11411,7 +11411,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.0.17 | MIT License | https://tailwindcss.com */
 :host,
 page {
   --spacing: 8rpx;
