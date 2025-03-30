@@ -1,5 +1,30 @@
 # weapp-tailwindcss
 
+## 4.1.2
+
+### Patch Changes
+
+- [`e8c4534`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e8c4534ab588eae1115dac15b529b7a122141316) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 添加 `cssRemoveProperty` 选项，默认值为 `true`，这是为了在 `tailwindcss` 中移除这种 css 节点:
+
+  ```css
+  @property --tw-content {
+    syntax: "*";
+    initial-value: "";
+    inherits: false;
+  }
+  ```
+
+  这种样式在小程序中，没有任何的意义。
+
+- [`0b0bc70`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0b0bc70f4773f2225eb48d9956cbe63d0858ca48) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 修复在 tailwindcss@4 中由于 @layer 导致选择器优先级升高,高于就近编写的样式的问题
+
+  更改 `weapp-tailwindcss/index.css` 的默认行为，以后小程序默认引入 `weapp-tailwindcss` 就不会产生 `@layer` ，假如开发者在小程序中使用 `@layer` 会导致当前文件的样式层级整体提升 `(n,0,0)`
+
+  添加 `weapp-tailwindcss/with-layer.css` 用来和 `tailwindcss@4` 保持一致
+
+- Updated dependencies [[`e8c4534`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e8c4534ab588eae1115dac15b529b7a122141316)]:
+  - @weapp-tailwindcss/postcss@1.0.8
+
 ## 4.1.1
 
 ### Patch Changes
