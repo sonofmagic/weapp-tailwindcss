@@ -25,7 +25,7 @@
 >
 > 小程序原生工具链 `weapp-vite` 已经发布，使用它改善你的原生小程序开发体验吧，更多详见 [官方文档](https://vite.icebreaker.top/)
 
-\[[文档地址](https://tw.icebreaker.top)\] \| \[[加入技术交流群](https://tw.icebreaker.top/docs/community/group)\]
+\[[文档地址](https://tw.icebreaker.top)\] \| \[[备用文档地址](https://ice-tw.netlify.app/)\] \| \[[加入技术交流群](https://tw.icebreaker.top/docs/community/group)\]
 
 - [特性](#特性)
 - [版本对应](#版本对应)
@@ -56,7 +56,10 @@
 
 ## 版本对应
 
-目前，`weapp-tailwindcss` 的 `2.x` 和 `3.x` 支持最新版本的 `tailwindcss v3.x.x` 版本和 `webpack5`，`webpack4`, `vite` 和 `gulp`。从 `3.2.0` 开始，`weapp-tailwindcss` 支持最原生的小程序开发方式。
+目前，`weapp-tailwindcss` 的 `4.x` 版本
+
+- 支持最新版本的 `tailwindcss v4` 和 `v3` 还有 `v2 jit` 版本。
+- 支持 `webpack5`，`webpack4`, `vite` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
 
 > 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
