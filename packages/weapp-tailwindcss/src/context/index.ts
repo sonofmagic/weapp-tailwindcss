@@ -45,6 +45,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cache,
     babelParserOptions,
     postcssOptions,
+    cssRemoveProperty,
     cssRemoveHoverPseudoClass,
     escapeMap,
     mangle,
@@ -75,6 +76,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cssSelectorReplacement,
     rem2rpx,
     postcssOptions,
+    cssRemoveProperty,
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
   })

@@ -48,6 +48,7 @@ export type IStyleHandlerOptions = {
   mangleContext?: IMangleScopeContext
   ctx?: PostcssContext
   postcssOptions?: LoadedPostcssOptions
+  cssRemoveProperty?: boolean
   cssRemoveHoverPseudoClass?: boolean
   cssPresetEnv?: PresetEnvOptions
 } & RequiredStyleHandlerOptions
@@ -65,5 +66,6 @@ export interface UserDefinedPostcssOptions {
   rem2rpx?: boolean | rem2rpxOptions
   postcssOptions?: LoadedPostcssOptions
   cssRemoveHoverPseudoClass?: boolean
+  cssRemoveProperty?: boolean
   customRuleCallback?: CustomRuleCallback
 }

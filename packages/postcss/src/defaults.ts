@@ -16,5 +16,6 @@ export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
         add: false,
       },
     },
+    cssRemoveProperty: true,
   }
 }

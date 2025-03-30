@@ -113,6 +113,7 @@ export function getDefaultOptions(): UserDefinedOptions {
       cache: true,
     },
     postcssOptions: {},
+    cssRemoveProperty: true,
     cssRemoveHoverPseudoClass: true,
     ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],

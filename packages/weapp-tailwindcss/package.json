@@ -105,6 +105,8 @@
     "./theme": "./theme.css",
     "./utilities.css": "./utilities.css",
     "./utilities": "./utilities.css",
+    "./with-layer.css": "./with-layer.css",
+    "./with-layer": "./with-layer.css",
     "./*": "./*"
   },
   "main": "dist/index.js",
@@ -130,7 +132,8 @@
     "index.css",
     "preflight.css",
     "theme.css",
-    "utilities.css"
+    "utilities.css",
+    "with-layer.css"
   ],
   "engines": {
     "node": "^18.17.0 || >=20.5.0"

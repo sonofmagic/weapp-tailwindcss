@@ -1,5 +1,6 @@
 import type { AtRule, Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
+import { defu } from '@weapp-tailwindcss/shared'
 import { postcssPlugin } from '../constants'
 import { commonChunkPreflight } from '../mp'
 import { ruleTransformSync } from '../selectorParser'
@@ -14,15 +15,14 @@ function isAtMediaHover(atRule: AtRule) {
 }
 
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
-  options: IStyleHandlerOptions = {
-    isMainChunk: true,
-  },
+  options,
 ) => {
-  const { isMainChunk } = options
+  const opts = defu(options, { isMainChunk: true })
+
   const p: Plugin = {
     postcssPlugin,
     Rule(rule) {
-      ruleTransformSync(rule, options)
+      ruleTransformSync(rule, opts)
     },
     AtRule(atRule) {
       if (isAtMediaHover(atRule)) {
@@ -35,10 +35,10 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
       }
     },
   }
-  if (isMainChunk) {
+  if (opts.isMainChunk) {
     p.Once = (root) => {
       root.walkRules((rule) => {
-        commonChunkPreflight(rule, options)
+        commonChunkPreflight(rule, opts)
       })
     }
   }

@@ -51,6 +51,7 @@ exports[`get options > default options 1`] = `
     "box-sizing": "border-box",
   },
   "cssRemoveHoverPseudoClass": true,
+  "cssRemoveProperty": true,
   "cssSelectorReplacement": {
     "root": "page",
     "universal": [

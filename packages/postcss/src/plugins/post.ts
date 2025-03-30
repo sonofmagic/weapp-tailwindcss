@@ -1,5 +1,6 @@
 import type { Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
+import { defu } from '@weapp-tailwindcss/shared'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 
@@ -8,16 +9,16 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 const OklabSuffix = 'in oklab'
 
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
-  options: IStyleHandlerOptions = {
-    isMainChunk: true,
-  },
+  options,
 ) => {
-  const { customRuleCallback, isMainChunk } = options
+  const opts = defu(options, {
+    isMainChunk: true,
+  })
   const p: Plugin = {
     postcssPlugin,
   }
 
-  if (isMainChunk) {
+  if (opts.isMainChunk) {
     p.OnceExit = (root) => {
       root.walkRules((rule) => {
         getFallbackRemove(rule).transformSync(rule, {
@@ -35,11 +36,15 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
           }
         })
       })
+
+      opts.cssRemoveProperty && root.walkAtRules('property', (rule) => {
+        rule.remove()
+      })
     }
   }
-  if (typeof customRuleCallback === 'function') {
+  if (typeof opts.customRuleCallback === 'function') {
     p.Rule = (rule) => {
-      customRuleCallback(rule, options)
+      opts.customRuleCallback?.(rule, opts)
     }
   }
   return p

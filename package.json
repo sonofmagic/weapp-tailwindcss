@@ -111,6 +111,8 @@
     "@icebreakers/eslint-config": "^1.0.4",
     "@icebreakers/monorepo": "^0.7.9",
     "@icebreakers/stylelint-config": "^1.0.0",
+    "@tailwindcss/postcss": "^4.0.17",
+    "@tailwindcss/vite": "^4.0.17",
     "@tsconfig/recommended": "^1.0.8",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.6.8",
