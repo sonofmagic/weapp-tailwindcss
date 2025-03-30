@@ -1,5 +1,21 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.8
+
+### Patch Changes
+
+- [`e8c4534`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e8c4534ab588eae1115dac15b529b7a122141316) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 添加 `cssRemoveProperty` 选项，默认值为 `true`，这是为了在 `tailwindcss` 中移除这种 css 节点:
+
+  ```css
+  @property --tw-content {
+    syntax: "*";
+    initial-value: "";
+    inherits: false;
+  }
+  ```
+
+  这种样式在小程序中，没有任何的意义。
+
 ## 1.0.7
 
 ### Patch Changes
