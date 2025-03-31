@@ -84,6 +84,8 @@
 
 🔥 [weapp-vite-tailwindcss-template (weapp-vite 打包)](https://vite.icebreaker.top/guide/)
 
+🔥 [vue-mini-tailwindcss-v4 (weapp-vite 打包)](https://github.com/buduan/Vue-mini_tailwindcss_v4)
+
 [native-weapp-tailwindcss-template (cli 打包)](https://github.com/sonofmagic/native-weapp-tailwindcss-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=native-weapp-tailwindcss-template&type=star&count=true"
               frameborder="0"
