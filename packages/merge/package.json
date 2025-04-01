@@ -89,7 +89,7 @@
     "clsx": "^2.1.1",
     "local-pkg": "^1.1.1",
     "semver": "^7.7.1",
-    "tailwind-merge": "^3.0.2",
+    "tailwind-merge": "^3.1.0",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0"
   },
   "devDependencies": {
