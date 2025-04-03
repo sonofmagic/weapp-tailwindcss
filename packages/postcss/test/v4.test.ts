@@ -35,6 +35,18 @@ describe('v4', () => {
     fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.out.css'), css, 'utf8')
   })
 
+  it('v4.1.1', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/v4.1.1.css'), 'utf8')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1.out.css'), css, 'utf8')
+  })
+
   it('v4 space-y-*', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

@@ -14,6 +14,10 @@ function isAtMediaHover(atRule: AtRule) {
   )
 }
 
+function isTailwindcssV4ModerCheck(atRule: AtRule) {
+  return atRule.name === 'supports' && atRule.params === '((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b))))'
+}
+
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
 ) => {
@@ -32,6 +36,14 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
         else {
           atRule.remove()
         }
+      }
+      // Tailwindcss V4.1.1
+      else if (isTailwindcssV4ModerCheck(atRule)) {
+        if (atRule.first?.type === 'atrule' && atRule.first.name === 'layer') {
+          atRule.replaceWith(atRule.first.nodes)
+        }
+        //
+        // atRule.remove()
       }
     },
   }

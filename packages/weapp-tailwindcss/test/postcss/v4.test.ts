@@ -28,6 +28,8 @@ describe('tailwindcss v4', () => {
     )]).process(rawCss, {
       from: filepath,
     })
+    expect(hahaCss).toMatchSnapshot('tailwindcss')
+    await putCase('v4-weapp-tailwindcss-default-output.before.css', hahaCss)
     const { css } = await styleHandler(hahaCss)
     await putCase('v4-weapp-tailwindcss-default-output.css', css)
     expect(css).toMatchSnapshot()
@@ -44,6 +46,8 @@ describe('tailwindcss v4', () => {
     )]).process(rawCss, {
       from: filepath,
     })
+    expect(hahaCss).toMatchSnapshot('tailwindcss')
+    await putCase('v4-weapp-tailwindcss-default-with-layer-output.before.css', hahaCss)
     const { css } = await styleHandler(hahaCss)
     await putCase('v4-weapp-tailwindcss-default-with-layer-output.css', css)
     expect(css).toMatchSnapshot()

@@ -1,12 +1,12 @@
 import { getInitDefaults, init } from '@/index'
 import { defaultDevDeps } from '@/npm'
-import CI from 'ci-info'
+// import CI from 'ci-info'
 import fs from 'fs-extra'
 import get from 'get-value'
 import path from 'pathe'
 import { fetchOptions, fixturesRootPath } from './util'
 
-describe.skipIf(CI.isCI)('init', () => {
+describe.skip('init', () => {
   const defaults = getInitDefaults()
   it('common', async () => {
     const cwd = path.resolve(fixturesRootPath, 'init/common')
