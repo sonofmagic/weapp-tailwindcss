@@ -1,6 +1,7 @@
 import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import tailwindcss from '@tailwindcss/postcss'
 import twv from '@tailwindcss/vite'
+import fs from 'fs-extra'
 import path from 'pathe'
 import { build } from 'vite'
 import { fixturesRootPath } from './util'
@@ -24,6 +25,8 @@ describe('vite', () => {
         },
       },
     })
+    expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.css'), 'utf-8')).toMatchSnapshot('css')
+    expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
   })
 
   it('v4-vite-postcss', async () => {
@@ -55,5 +58,7 @@ describe('vite', () => {
         },
       },
     })
+    expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.css'), 'utf-8')).toMatchSnapshot('css')
+    expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
   })
 })

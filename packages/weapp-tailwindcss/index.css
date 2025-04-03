@@ -383,7 +383,7 @@
   --perspective-normal: 500px;
   --perspective-midrange: 800px;
   --perspective-distant: 1200px;
-  --aspect-video: 16 / 9;
+  --aspect-video: 16/9;
   --default-transition-duration: 0.15s;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
@@ -393,7 +393,6 @@
   --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
   --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
 }
-
 @theme default inline reference {
   --blur: 8px;
   --shadow: 0 1px 3px 0 #0000001a, 0 1px 2px -1px #0000001a;
@@ -402,7 +401,6 @@
   --radius: 0.25rem;
   --max-width-prose: 65ch;
 }
-
 *,
 :after,
 :before,
@@ -412,5 +410,4 @@
   margin: 0;
   padding: 0;
 }
-
 @tailwind utilities;

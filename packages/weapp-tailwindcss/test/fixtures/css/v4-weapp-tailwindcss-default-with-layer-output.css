@@ -37,16 +37,16 @@ view:not(#n):not(#n):not(#n):not(#n),text:not(#n):not(#n):not(#n):not(#n),:not(#
       border-color: currentColor;
     }
 page,:host {
-    --color-zinc-800: rgb(39, 39, 42);
+    --color-zinc-800: rgb(39, 39, 42) ;
   }
-view:not(#n),text:not(#n),:not(#n)::after,:not(#n)::before,:not(#n)::backdrop {
+view:not(#n),text:not(#n),:not(#n):after,:not(#n):before,:not(#n)::backdrop {
     box-sizing: border-box;
+    border: 0 solid;
     margin: 0;
     padding: 0;
-    border: 0 solid;
   }
 .shadow:not(#n):not(#n):not(#n) {
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 .invert:not(#n):not(#n):not(#n) {

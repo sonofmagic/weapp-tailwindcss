@@ -1,0 +1,139 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`vite > v4-vite-plugin > css 1`] = `
+"/*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+
+.bg-_h123456_ {
+  background-color: #123456;
+}
+
+.text-_h123456_ {
+  color: #123456;
+}
+"
+`;
+
+exports[`vite > v4-vite-plugin > js 1`] = `
+"(function polyfill() {
+  const relList = document.createElement("link").relList;
+  if (relList && relList.supports && relList.supports("modulepreload")) {
+    return;
+  }
+  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
+    processPreload(link);
+  }
+  new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type !== "childList") {
+        continue;
+      }
+      for (const node of mutation.addedNodes) {
+        if (node.tagName === "LINK" && node.rel === "modulepreload")
+          processPreload(node);
+      }
+    }
+  }).observe(document, { childList: true, subtree: true });
+  function getFetchOpts(link) {
+    const fetchOpts = {};
+    if (link.integrity) fetchOpts.integrity = link.integrity;
+    if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
+    if (link.crossOrigin === "use-credentials")
+      fetchOpts.credentials = "include";
+    else if (link.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
+    else fetchOpts.credentials = "same-origin";
+    return fetchOpts;
+  }
+  function processPreload(link) {
+    if (link.ep)
+      return;
+    link.ep = true;
+    const fetchOpts = getFetchOpts(link);
+    fetch(link.href, fetchOpts);
+  }
+})();
+console.log("bg-_h123456_ text-_h123456_ first-letter:marker:text-clip");
+"
+`;
+
+exports[`vite > v4-vite-postcss > css 1`] = `
+"/*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.bg-_h123456_ {
+  background-color: #123456;
+}
+.text-_h123456_ {
+  color: #123456;
+}
+.first-lettercmarkerctext-clip::-csstools-invalid-first-letter view::marker {
+      text-overflow: clip;
+    }
+.first-lettercmarkerctext-clip::-csstools-invalid-first-letter text::marker {
+      text-overflow: clip;
+    }
+.first-lettercmarkerctext-clip::-csstools-invalid-first-letter::marker {
+      text-overflow: clip;
+    }
+.first-lettercmarkerctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
+      text-overflow: clip;
+    }
+.first-lettercmarkerctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
+      text-overflow: clip;
+    }
+.first-lettercmarkerctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
+      text-overflow: clip;
+    }
+"
+`;
+
+exports[`vite > v4-vite-postcss > js 1`] = `
+"(function polyfill() {
+  const relList = document.createElement("link").relList;
+  if (relList && relList.supports && relList.supports("modulepreload")) {
+    return;
+  }
+  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
+    processPreload(link);
+  }
+  new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type !== "childList") {
+        continue;
+      }
+      for (const node of mutation.addedNodes) {
+        if (node.tagName === "LINK" && node.rel === "modulepreload")
+          processPreload(node);
+      }
+    }
+  }).observe(document, { childList: true, subtree: true });
+  function getFetchOpts(link) {
+    const fetchOpts = {};
+    if (link.integrity) fetchOpts.integrity = link.integrity;
+    if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
+    if (link.crossOrigin === "use-credentials")
+      fetchOpts.credentials = "include";
+    else if (link.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
+    else fetchOpts.credentials = "same-origin";
+    return fetchOpts;
+  }
+  function processPreload(link) {
+    if (link.ep)
+      return;
+    link.ep = true;
+    const fetchOpts = getFetchOpts(link);
+    fetch(link.href, fetchOpts);
+  }
+})();
+console.log("bg-_h123456_ text-_h123456_");
+"
+`;

@@ -1,25 +1,19 @@
+// import browserslist from 'browserslist'
 import fs from 'fs-extra'
 import { bundleAsync } from 'lightningcss'
 import path from 'pathe'
-
+// Features
+// const targets = browserslistToTargets(browserslist('>= 0.25%'))
 async function main() {
-  const targets = ['index.css', 'preflight.css', 'theme.css', 'utilities.css', 'with-layer.css']
+  const files = ['index.css', 'preflight.css', 'theme.css', 'utilities.css', 'with-layer.css']
 
   await Promise.all(
-    targets.map(async (x) => {
+    files.map(async (x) => {
       const { code } = await bundleAsync(
         {
           filename: `css/${x}`,
-          minify: false,
-
-          // resolver: {
-          //   read(filePath) {
-          //     return fs.readFileSync(filePath, 'utf8')
-          //   },
-          //   resolve(specifier, from) {
-          //     return path.resolve(path.dirname(from), specifier)
-          //   },
-          // },
+          minify: true,
+          projectRoot: path.resolve(__dirname, '../'),
         },
       )
       await fs.outputFile(path.resolve(__dirname, `../${x}`), code, 'utf8')

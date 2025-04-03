@@ -1,16 +1,15 @@
 packages:
-  - 'packages/*'
-  - 'plugins/*'
-  - 'apps/*'
+  - packages/*
+  - plugins/*
+  - apps/*
   - website
   - benchmark
   - '!tailwindcss-weapp'
   - '!**/test/**'
-  # - "demo-linked/*"
-
 catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.17
-
   tailwindcss4:
-    tailwindcss: ^4.0.15
+    tailwindcss: ^4.1.1
+onlyBuiltDependencies:
+  - esbuild

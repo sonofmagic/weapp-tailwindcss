@@ -34,16 +34,16 @@
   }
 }
 :root, :host {
-  --color-zinc-800: oklch(0.274 0.006 286.033);
+  --color-zinc-800: oklch(.274 .006 286.033) ;
 }
-*, ::after, ::before, ::backdrop {
+*, :after, :before, ::backdrop {
   box-sizing: border-box;
+  border: 0 solid;
   margin: 0;
   padding: 0;
-  border: 0 solid;
 }
 .shadow {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .invert {
