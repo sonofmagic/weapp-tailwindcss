@@ -119,6 +119,15 @@ describe('v4', () => {
   }
 }
 
+@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))) {
+
+  ::before,
+  ::after {
+    --tw-content: ""
+  }
+
+}
+
 :root, :host {
   --color-white: #fff;
   --spacing: .25rem;
@@ -214,5 +223,22 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     })
     expect(css).toMatchSnapshot()
     fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1-uniapp-vue3.out.css'), css, 'utf8')
+  })
+
+  it('regex', () => {
+    function t(str: string) {
+      return [
+        /-webkit-hyphens\s*:\s*none/,
+        /margin-trim\s*:\s*inline/,
+        /-moz-orient\s*:\s*inline/,
+        /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/,
+      ].every(regex => regex.test(str))
+    }
+    expect(
+      t('(((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b))))'),
+    ).toBe(true)
+    expect(
+      t('((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b))))'),
+    ).toBe(true)
   })
 })

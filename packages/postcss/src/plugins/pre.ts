@@ -21,11 +21,16 @@ function isAtMediaHover(atRule: AtRule) {
 //     }
 //   }
 // }
+// (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b))))
+// const TAILWIND_V4_MODERN_REGEX = //
 
-const TAILWIND_V4_MODERN_REGEX = /^\(\(-webkit-hyphens:\s*none\)\s+and\s+\(not\s+\(margin-trim:\s*inline\)\)\)\s+or\s+\(\(-moz-orient:\s*inline\)\s+and\s+\(not\s+\(color:\s*rgb\(from\s+red\s+r\s+g\s+b\)\)\)\)$/
-
-function isTailwindcssV4ModernCheck(atRule: AtRule) {
-  return atRule.name === 'supports' && TAILWIND_V4_MODERN_REGEX.test(atRule.params)
+export function isTailwindcssV4ModernCheck(atRule: AtRule) {
+  return atRule.name === 'supports' && [
+    /-webkit-hyphens\s*:\s*none/,
+    /margin-trim\s*:\s*inline/,
+    /-moz-orient\s*:\s*inline/,
+    /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/,
+  ].every(regex => regex.test(atRule.params))
 }
 
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (

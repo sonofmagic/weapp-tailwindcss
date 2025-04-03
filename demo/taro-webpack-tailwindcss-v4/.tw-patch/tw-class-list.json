@@ -2,11 +2,13 @@
   "[chunkhash:8]",
   "[hash:8]",
   "bg-[#534312]",
+  "bg-purple-800",
   "content",
   "from",
   "leading",
   "static",
   "text-[#fff]",
   "text-[100rpx]",
+  "text-pink-200",
   "text/html"
 ]
