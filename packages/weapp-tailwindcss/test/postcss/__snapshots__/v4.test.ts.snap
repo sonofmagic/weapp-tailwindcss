@@ -822,9 +822,12 @@ exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
   }
 }
 :root, :host {
-  --color-zinc-800: oklch(.274 .006 286.033) ;
+  --color-zinc-800: oklch(0.274 0.006 286.033);
 }
-*, :after, :before, ::backdrop {
+*,
+:after,
+:before,
+::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -1023,7 +1026,7 @@ view,text,::before,::after,::backdrop {
       border-color: currentColor;
     }
 page,:host {
-  --color-zinc-800: rgb(39, 39, 42) ;
+  --color-zinc-800: rgb(39, 39, 42);
 }
 view,text,:after,:before,::backdrop {
   box-sizing: border-box;
@@ -1095,11 +1098,14 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`]
 }
 @layer theme {
   :root, :host {
-    --color-zinc-800: oklch(.274 .006 286.033) ;
+    --color-zinc-800: oklch(0.274 0.006 286.033);
   }
 }
 @layer base {
-  *, :after, :before, ::backdrop {
+  *,
+  :after,
+  :before,
+  ::backdrop {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
@@ -1302,7 +1308,7 @@ view:not(#n):not(#n):not(#n):not(#n),text:not(#n):not(#n):not(#n):not(#n),:not(#
       border-color: currentColor;
     }
 page,:host {
-    --color-zinc-800: rgb(39, 39, 42) ;
+    --color-zinc-800: rgb(39, 39, 42);
   }
 view:not(#n),text:not(#n),:not(#n):after,:not(#n):before,:not(#n)::backdrop {
     box-sizing: border-box;

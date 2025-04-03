@@ -37,7 +37,7 @@ view,text,::before,::after,::backdrop {
       border-color: currentColor;
     }
 page,:host {
-  --color-zinc-800: rgb(39, 39, 42) ;
+  --color-zinc-800: rgb(39, 39, 42);
 }
 view,text,:after,:before,::backdrop {
   box-sizing: border-box;

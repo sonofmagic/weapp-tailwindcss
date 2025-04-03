@@ -35,11 +35,14 @@
 }
 @layer theme {
   :root, :host {
-    --color-zinc-800: oklch(.274 .006 286.033) ;
+    --color-zinc-800: oklch(0.274 0.006 286.033);
   }
 }
 @layer base {
-  *, :after, :before, ::backdrop {
+  *,
+  :after,
+  :before,
+  ::backdrop {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
