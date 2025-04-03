@@ -24,7 +24,7 @@ body:
     validations:
       required: true
   - type: input
-    id: version
+    id: tailwindcss-version
     attributes:
       label: tailwindcss 版本
     validations:
