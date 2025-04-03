@@ -1,9 +1,12 @@
 /*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */
 @layer properties;
 :root, :host {
-  --color-zinc-800: oklch(27.4% .006 286.033);
+  --color-zinc-800: oklch(27.4% 0.006 286.033);
 }
-*,:after,:before,::backdrop {
+*,
+:after,
+:before,
+::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
