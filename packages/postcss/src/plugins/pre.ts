@@ -101,8 +101,10 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
             layerProperties = atRule// .remove()
           }
           else if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
-            layerProperties.replaceWith(atRule.first.nodes)
-            atRule.remove()
+            if (layerProperties) {
+              layerProperties.replaceWith(atRule.first.nodes)
+              atRule.remove()
+            }
           }
         }
         // Tailwindcss V4.1.1
