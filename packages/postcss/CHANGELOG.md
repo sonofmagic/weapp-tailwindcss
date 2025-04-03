@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.10-alpha.0
+
+### Patch Changes
+
+- [`0d6564a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0d6564aaaea588289dac5b1b784b1902105b297a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 优化 isTailwindcssV4ModernCheck 判断
+
 ## 1.0.9
 
 ### Patch Changes
