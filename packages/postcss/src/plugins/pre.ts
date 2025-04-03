@@ -14,8 +14,18 @@ function isAtMediaHover(atRule: AtRule) {
   )
 }
 
-function isTailwindcssV4ModerCheck(atRule: AtRule) {
-  return atRule.name === 'supports' && atRule.params === '((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b))))'
+// @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+//   @layer base {
+//     *, :before, :after, ::backdrop {
+//       --tw-font-weight: initial;
+//     }
+//   }
+// }
+
+const TAILWIND_V4_MODERN_REGEX = /^\(\(-webkit-hyphens:\s*none\)\s+and\s+\(not\s+\(margin-trim:\s*inline\)\)\)\s+or\s+\(\(-moz-orient:\s*inline\)\s+and\s+\(not\s+\(color:\s*rgb\(from\s+red\s+r\s+g\s+b\)\)\)\)$/
+
+function isTailwindcssV4ModernCheck(atRule: AtRule) {
+  return atRule.name === 'supports' && TAILWIND_V4_MODERN_REGEX.test(atRule.params)
 }
 
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
@@ -38,7 +48,7 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
         }
       }
       // Tailwindcss V4.1.1
-      else if (isTailwindcssV4ModerCheck(atRule)) {
+      else if (isTailwindcssV4ModernCheck(atRule)) {
         if (atRule.first?.type === 'atrule' && atRule.first.name === 'layer') {
           atRule.replaceWith(atRule.first.nodes)
         }

@@ -105,4 +105,114 @@ describe('v4', () => {
     })
     expect(css).toMatchSnapshot()
   })
+
+  it('v4.1.1 uni-app vue 3', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `/*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  @layer base {
+    *, :before, :after, ::backdrop {
+      --tw-font-weight: initial;
+    }
+  }
+}
+
+:root, :host {
+  --color-white: #fff;
+  --spacing: .25rem;
+  --font-weight-bold: 700;
+}
+
+*, :after, :before, ::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+
+.i-mdi-home {
+  width: 1em;
+  height: 1em;
+  -webkit-mask-image: var(--svg);
+  -webkit-mask-image: var(--svg);
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  display: inline-block;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.flex {
+  display: flex;
+}
+
+.aspect-\\(--my-aspect-ratio\\) {
+  aspect-ratio: var(--my-aspect-ratio);
+}
+
+.aspect-\\[calc\\(4\\*3\\+1\\)\\/3\\] {
+  aspect-ratio: 13 / 3;
+}
+
+.h-20 {
+  height: calc(var(--spacing) * 20);
+}
+
+.w-20 {
+  width: calc(var(--spacing) * 20);
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.bg-\\[\\#0000ff\\] {
+  background-color: #00f;
+}
+
+.text-\\[45rpx\\] {
+  font-size: 45rpx;
+}
+
+.text-\\[88rpx\\] {
+  font-size: 88rpx;
+}
+
+.font-bold {
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+
+.text-\\[\\#00f285\\] {
+  color: #00f285;
+}
+
+.text-white {
+  color: var(--color-white);
+}
+
+.underline {
+  text-decoration-line: underline;
+}
+
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false
+}
+
+
+/* @import 'tailwindcss'; */
+page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}[data-c-h="true"]{display: none !important;}`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1-uniapp-vue3.out.css'), css, 'utf8')
+  })
 })

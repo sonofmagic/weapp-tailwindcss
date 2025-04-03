@@ -3,5 +3,6 @@
   "projectname": "taro-vite-tailwindcss-v4",
   "setting": {
     "compileHotReLoad": true
-  }
+  },
+  "libVersion": "3.7.12"
 }
