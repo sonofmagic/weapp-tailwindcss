@@ -107,6 +107,7 @@
     "./utilities": "./utilities.css",
     "./with-layer.css": "./with-layer.css",
     "./with-layer": "./with-layer.css",
+    "./css": "./css/index.css",
     "./*": "./*"
   },
   "main": "dist/index.js",
@@ -128,6 +129,7 @@
   },
   "files": [
     "bin",
+    "css",
     "dist",
     "index.css",
     "preflight.css",
@@ -143,6 +145,7 @@
     "build": "tsup",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
+    "build:css": "tsx scripts/build-css.ts",
     "test": "npm run postinstall && vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
