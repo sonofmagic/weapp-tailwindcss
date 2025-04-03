@@ -2570,6 +2570,76 @@ exports[`v4 > v4.1.1 uni-app vue 3 1`] = `
 page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}[data-c-h="true"]{display: none !important;}"
 `;
 
+exports[`v4 > v4.1.2 1`] = `
+"/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */
+::before,::after {
+      --tw-content: "";
+}
+::before,::after,::backdrop {
+      --tw-shadow: 0 0 rgba(0,0,0,0);
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 rgba(0,0,0,0);
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 rgba(0,0,0,0);
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 rgba(0,0,0,0);
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 rgba(0,0,0,0);
+      --tw-blur: initial;
+      --tw-brightness: initial;
+      --tw-contrast: initial;
+      --tw-grayscale: initial;
+      --tw-hue-rotate: initial;
+      --tw-invert: initial;
+      --tw-opacity: initial;
+      --tw-saturate: initial;
+      --tw-sepia: initial;
+      --tw-drop-shadow: initial;
+      --tw-drop-shadow-color: initial;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: initial;
+      --tw-content: "";
+    }
+:root,:host {
+  --color-zinc-800: rgb(39, 39, 42);
+}
+:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.invert {
+  --tw-invert: invert(100%);
+  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+}
+.beforeccontent-_wqawq_::before {
+    content: var(--tw-content);
+    --tw-content: \\'+\\';
+    content: var(--tw-content);
+  }
+.beforeccontent-_wqhellowq_::before {
+    content: var(--tw-content);
+    --tw-content: \\'hello\\';
+    content: var(--tw-content);
+  }
+@media (prefers-color-scheme: dark) {
+.darkcbg-zinc-800 {
+    background-color: var(--color-zinc-800);
+}
+  }
+"
+`;
+
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 :root,:host {

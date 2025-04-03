@@ -24,6 +24,40 @@ function isAtMediaHover(atRule: AtRule) {
 // (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b))))
 // const TAILWIND_V4_MODERN_REGEX = //
 
+// @layer properties {
+//   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+//     *, ::before, ::after, ::backdrop {
+//       --tw-shadow: 0 0 #0000;
+//       --tw-shadow-color: initial;
+//       --tw-shadow-alpha: 100%;
+//       --tw-inset-shadow: 0 0 #0000;
+//       --tw-inset-shadow-color: initial;
+//       --tw-inset-shadow-alpha: 100%;
+//       --tw-ring-color: initial;
+//       --tw-ring-shadow: 0 0 #0000;
+//       --tw-inset-ring-color: initial;
+//       --tw-inset-ring-shadow: 0 0 #0000;
+//       --tw-ring-inset: initial;
+//       --tw-ring-offset-width: 0px;
+//       --tw-ring-offset-color: #fff;
+//       --tw-ring-offset-shadow: 0 0 #0000;
+//       --tw-blur: initial;
+//       --tw-brightness: initial;
+//       --tw-contrast: initial;
+//       --tw-grayscale: initial;
+//       --tw-hue-rotate: initial;
+//       --tw-invert: initial;
+//       --tw-opacity: initial;
+//       --tw-saturate: initial;
+//       --tw-sepia: initial;
+//       --tw-drop-shadow: initial;
+//       --tw-drop-shadow-color: initial;
+//       --tw-drop-shadow-alpha: 100%;
+//       --tw-drop-shadow-size: initial;
+//       --tw-content: "";
+//     }
+//   }
+// }
 export function isTailwindcssV4ModernCheck(atRule: AtRule) {
   return atRule.name === 'supports' && [
     /-webkit-hyphens\s*:\s*none/,
@@ -52,20 +86,31 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
           atRule.remove()
         }
       }
-      // Tailwindcss V4.1.1
-      else if (isTailwindcssV4ModernCheck(atRule)) {
-        if (atRule.first?.type === 'atrule' && atRule.first.name === 'layer') {
-          atRule.replaceWith(atRule.first.nodes)
-        }
-        //
-        // atRule.remove()
-      }
     },
   }
   if (opts.isMainChunk) {
+    let layerProperties: AtRule
     p.Once = (root) => {
       root.walkRules((rule) => {
         commonChunkPreflight(rule, opts)
+      })
+      root.walkAtRules((atRule) => {
+        // Tailwindcss V4.1.2
+        if (atRule.name === 'layer' && atRule.params === 'properties') {
+          if (atRule.nodes === undefined || atRule.nodes?.length === 0) {
+            layerProperties = atRule// .remove()
+          }
+          else if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
+            layerProperties.replaceWith(atRule.first.nodes)
+            atRule.remove()
+          }
+        }
+        // Tailwindcss V4.1.1
+        else if (isTailwindcssV4ModernCheck(atRule)) {
+          if (atRule.first?.type === 'atrule' && atRule.first.name === 'layer') {
+            atRule.replaceWith(atRule.first.nodes)
+          }
+        }
       })
     }
   }

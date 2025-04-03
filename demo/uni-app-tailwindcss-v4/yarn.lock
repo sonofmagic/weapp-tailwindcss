@@ -2481,96 +2481,96 @@
   resolved "https://registry.npmmirror.com/@tailwindcss-mangle/shared/-/shared-4.1.0.tgz#47f00502472613e3ad3413d2cca9cf46790e2c73"
   integrity sha512-HJN3yFDaG9D4bXlVLhPBcUpy6ddKET35LewWsqUR1RcjeTmHfcmbiQKjIN4p82Yl9GzsfrM1TsyEc+PCjO/TcQ==
 
-"@tailwindcss/node@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/node/-/node-4.1.1.tgz#56c7696717810f66231660313765a18dfca75acc"
-  integrity sha512-xvlh4pvfG/bkv0fEtJDABAm1tjtSmSyi2QmS4zyj1EKNI1UiOYiUq1IphSwDsNJ5vJ9cWEGs4rJXpUdCN2kujQ==
+"@tailwindcss/node@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/node/-/node-4.1.2.tgz#ce9867c25ad10a426d2f2c5812d9aa9d475a7305"
+  integrity sha512-ZwFnxH+1z8Ehh8bNTMX3YFrYdzAv7JLY5X5X7XSFY+G9QGJVce/P9xb2mh+j5hKt8NceuHmdtllJvAHWKtsNrQ==
   dependencies:
     enhanced-resolve "^5.18.1"
     jiti "^2.4.2"
     lightningcss "1.29.2"
-    tailwindcss "4.1.1"
+    tailwindcss "4.1.2"
 
-"@tailwindcss/oxide-android-arm64@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-android-arm64/-/oxide-android-arm64-4.1.1.tgz#3af3ab6299c9cc7dfecace3097a2ffafde862056"
-  integrity sha512-gTyRzfdParpoCU1yyUC/iN6XK6T0Ra4bDlF8Aeul5NP9cLzKEZDogdNVNGv5WZmCDkVol7qlex7TMmcfytMmmw==
+"@tailwindcss/oxide-android-arm64@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-android-arm64/-/oxide-android-arm64-4.1.2.tgz#2b75b2ea65a6abe7f87a12f964eaefcf71687075"
+  integrity sha512-IxkXbntHX8lwGmwURUj4xTr6nezHhLYqeiJeqa179eihGv99pRlKV1W69WByPJDQgSf4qfmwx904H6MkQqTA8w==
 
-"@tailwindcss/oxide-darwin-arm64@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-darwin-arm64/-/oxide-darwin-arm64-4.1.1.tgz#3cc5aa691a543e97953036abbb2c18579b4d8029"
-  integrity sha512-dI0QbdMWBvLB3MtaTKetzUKG9CUUQow8JSP4Nm+OxVokeZ+N+f1OmZW/hW1LzMxpx9RQCBgSRL+IIvKRat5Wdg==
+"@tailwindcss/oxide-darwin-arm64@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-darwin-arm64/-/oxide-darwin-arm64-4.1.2.tgz#766af3159a475b50c85c3563cfc1d3eed3383d36"
+  integrity sha512-ZRtiHSnFYHb4jHKIdzxlFm6EDfijTCOT4qwUhJ3GWxfDoW2yT3z/y8xg0nE7e72unsmSj6dtfZ9Y5r75FIrlpA==
 
-"@tailwindcss/oxide-darwin-x64@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-darwin-x64/-/oxide-darwin-x64-4.1.1.tgz#025b1f2f407613b0aa02a2b6546e9476170999ac"
-  integrity sha512-2Y+NPQOTRBCItshPgY/CWg4bKi7E9evMg4bgdb6h9iZObCZLOe3doPcuSxGS3DB0dKyMFKE8pTdWtFUbxZBMSA==
+"@tailwindcss/oxide-darwin-x64@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-darwin-x64/-/oxide-darwin-x64-4.1.2.tgz#f5d048ea1256e5bf5e6b674b5717b37d12617bcd"
+  integrity sha512-BiKUNZf1A0pBNzndBvnPnBxonCY49mgbOsPfILhcCE5RM7pQlRoOgN7QnwNhY284bDbfQSEOWnFR0zbPo6IDTw==
 
-"@tailwindcss/oxide-freebsd-x64@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-freebsd-x64/-/oxide-freebsd-x64-4.1.1.tgz#52284a907af6dbf9541dd5481dc25b60d708bc6a"
-  integrity sha512-N97NGMsB/7CHShbc5ube4dcsW/bYENkBrg8yWi8ieN9boYVRdw3cZviVryV/Nfu9bKbBV9kUvduFF2qBI7rEqg==
+"@tailwindcss/oxide-freebsd-x64@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-freebsd-x64/-/oxide-freebsd-x64-4.1.2.tgz#ffa5e6645ba9b2a129783bef8ef2f9a8092427e3"
+  integrity sha512-Z30VcpUfRGkiddj4l5NRCpzbSGjhmmklVoqkVQdkEC0MOelpY+fJrVhzSaXHmWrmSvnX8yiaEqAbdDScjVujYQ==
 
-"@tailwindcss/oxide-linux-arm-gnueabihf@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-arm-gnueabihf/-/oxide-linux-arm-gnueabihf-4.1.1.tgz#2ac5583c0b3d662e25d18fea66c0cb159181b2b3"
-  integrity sha512-33Lk6KbHnUZbXqza6RWNFo9wqPQ4+H5BAn1CkUUfC1RZ1vYbyDN6+iJPj53wmnWJ3mhRI8jWt3Jt1fO02IVdUQ==
+"@tailwindcss/oxide-linux-arm-gnueabihf@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-arm-gnueabihf/-/oxide-linux-arm-gnueabihf-4.1.2.tgz#366ad62fac2c62effb6582ff420fadfe90783677"
+  integrity sha512-w3wsK1ChOLeQ3gFOiwabtWU5e8fY3P1Ss8jR3IFIn/V0va3ir//hZ8AwURveS4oK1Pu6b8i+yxesT4qWnLVUow==
 
-"@tailwindcss/oxide-linux-arm64-gnu@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-arm64-gnu/-/oxide-linux-arm64-gnu-4.1.1.tgz#a34cbbdff31afa59f92f90048865953ba1d3877e"
-  integrity sha512-LyW35RzSUy+80WYScv03HKasAUmMFDaSbNpWfk1gG5gEE9kuRGnDzSrqMoLAmY/kzMCYP/1kqmUiAx8EFLkI2A==
+"@tailwindcss/oxide-linux-arm64-gnu@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-arm64-gnu/-/oxide-linux-arm64-gnu-4.1.2.tgz#ba0a2b838e69a2d000f52537c29b5ff354a62991"
+  integrity sha512-oY/u+xJHpndTj7B5XwtmXGk8mQ1KALMfhjWMMpE8pdVAznjJsF5KkCceJ4Fmn5lS1nHMCwZum5M3/KzdmwDMdw==
 
-"@tailwindcss/oxide-linux-arm64-musl@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-arm64-musl/-/oxide-linux-arm64-musl-4.1.1.tgz#4e3a81be4b01b000b3e7e661ff52d52538865cc9"
-  integrity sha512-1KPnDMlHdqjPTUSFjx55pafvs8RZXRgxfeRgUrukwDKkuj7gFk28vW3Mx65YdiugAc9NWs3VgueZWaM1Po6uGw==
+"@tailwindcss/oxide-linux-arm64-musl@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-arm64-musl/-/oxide-linux-arm64-musl-4.1.2.tgz#04527d6d5d1345d2f4798a85baf7134b8d15a53c"
+  integrity sha512-k7G6vcRK/D+JOWqnKzKN/yQq1q4dCkI49fMoLcfs2pVcaUAXEqCP9NmA8Jv+XahBv5DtDjSAY3HJbjosEdKczg==
 
-"@tailwindcss/oxide-linux-x64-gnu@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-x64-gnu/-/oxide-linux-x64-gnu-4.1.1.tgz#b1582a7c19a8f5334bdffd13c97d665fd4639d32"
-  integrity sha512-4WdzA+MRlsinEEE6yxNMLJxpw0kE9XVipbAKdTL8BeUpyC2TdA3TL46lBulXzKp3BIxh3nqyR/UCqzl5o+3waQ==
+"@tailwindcss/oxide-linux-x64-gnu@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-x64-gnu/-/oxide-linux-x64-gnu-4.1.2.tgz#049dbcca9f4db426b6a488fba5e457d59f54cd69"
+  integrity sha512-fLL+c678TkYKgkDLLNxSjPPK/SzTec7q/E5pTwvpTqrth867dftV4ezRyhPM5PaiCqX651Y8Yk0wRQMcWUGnmQ==
 
-"@tailwindcss/oxide-linux-x64-musl@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-x64-musl/-/oxide-linux-x64-musl-4.1.1.tgz#24573d8dc5c7aea978aa2c738fc70bc66556f09c"
-  integrity sha512-q7Ugbw3ARcjCW2VMUYrcMbJ6aMQuWPArBBE2EqC/swPZTdGADvMQSlvR0VKusUM4HoSsO7ZbvcZ53YwR57+AKw==
+"@tailwindcss/oxide-linux-x64-musl@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-linux-x64-musl/-/oxide-linux-x64-musl-4.1.2.tgz#cd4c74efd4be14ff8787ae5b5bf04182b43245fb"
+  integrity sha512-0tU1Vjd1WucZ2ooq6y4nI9xyTSaH2g338bhrqk+2yzkMHskBm+pMsOCfY7nEIvALkA1PKPOycR4YVdlV7Czo+A==
 
-"@tailwindcss/oxide-win32-arm64-msvc@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-win32-arm64-msvc/-/oxide-win32-arm64-msvc-4.1.1.tgz#b938ac42d05643c37fb588aa23aeea621d864d59"
-  integrity sha512-0KpqsovgHcIzm7eAGzzEZsEs0/nPYXnRBv+aPq/GehpNQuE/NAQu+YgZXIIof+VflDFuyXOEnaFr7T5MZ1INhA==
+"@tailwindcss/oxide-win32-arm64-msvc@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-win32-arm64-msvc/-/oxide-win32-arm64-msvc-4.1.2.tgz#c85f836280c95fbeba2e5f4ff70df6d309000f6d"
+  integrity sha512-r8QaMo3QKiHqUcn+vXYCypCEha+R0sfYxmaZSgZshx9NfkY+CHz91aS2xwNV/E4dmUDkTPUag7sSdiCHPzFVTg==
 
-"@tailwindcss/oxide-win32-x64-msvc@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.1.1.tgz#f821ff0d51e1649b13de35a085d3929c09c734e6"
-  integrity sha512-B1mjeXNS26kBOHv5sXARf6Wd0PWHV9x1TDlW0ummrBUOUAxAy5wcy4Nii1wzNvCdvC448hgiL06ylhwAbNthmg==
+"@tailwindcss/oxide-win32-x64-msvc@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.1.2.tgz#17a83637ae6a415eb147041e60efc6c87f64b816"
+  integrity sha512-lYCdkPxh9JRHXoBsPE8Pu/mppUsC2xihYArNAESub41PKhHTnvn6++5RpmFM+GLSt3ewyS8fwCVvht7ulWm6cw==
 
-"@tailwindcss/oxide@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/oxide/-/oxide-4.1.1.tgz#2b0f44e1291d9013e2c1b888a7238c44aae378b1"
-  integrity sha512-7+YBgnPQ4+jv6B6WVOerJ6WOzDzNJXrRKDts674v6TKAqFqYRr9+EBtSziO7nNcwQ8JtoZNMeqA+WJDjtCM/7w==
+"@tailwindcss/oxide@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/oxide/-/oxide-4.1.2.tgz#81bee3303c5152bb886df68c42d0d956da0de4c2"
+  integrity sha512-Zwz//1QKo6+KqnCKMT7lA4bspGfwEgcPAHlSthmahtgrpKDfwRGk8PKQrW8Zg/ofCDIlg6EtjSTKSxxSufC+CQ==
   optionalDependencies:
-    "@tailwindcss/oxide-android-arm64" "4.1.1"
-    "@tailwindcss/oxide-darwin-arm64" "4.1.1"
-    "@tailwindcss/oxide-darwin-x64" "4.1.1"
-    "@tailwindcss/oxide-freebsd-x64" "4.1.1"
-    "@tailwindcss/oxide-linux-arm-gnueabihf" "4.1.1"
-    "@tailwindcss/oxide-linux-arm64-gnu" "4.1.1"
-    "@tailwindcss/oxide-linux-arm64-musl" "4.1.1"
-    "@tailwindcss/oxide-linux-x64-gnu" "4.1.1"
-    "@tailwindcss/oxide-linux-x64-musl" "4.1.1"
-    "@tailwindcss/oxide-win32-arm64-msvc" "4.1.1"
-    "@tailwindcss/oxide-win32-x64-msvc" "4.1.1"
+    "@tailwindcss/oxide-android-arm64" "4.1.2"
+    "@tailwindcss/oxide-darwin-arm64" "4.1.2"
+    "@tailwindcss/oxide-darwin-x64" "4.1.2"
+    "@tailwindcss/oxide-freebsd-x64" "4.1.2"
+    "@tailwindcss/oxide-linux-arm-gnueabihf" "4.1.2"
+    "@tailwindcss/oxide-linux-arm64-gnu" "4.1.2"
+    "@tailwindcss/oxide-linux-arm64-musl" "4.1.2"
+    "@tailwindcss/oxide-linux-x64-gnu" "4.1.2"
+    "@tailwindcss/oxide-linux-x64-musl" "4.1.2"
+    "@tailwindcss/oxide-win32-arm64-msvc" "4.1.2"
+    "@tailwindcss/oxide-win32-x64-msvc" "4.1.2"
 
-"@tailwindcss/vite@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/@tailwindcss/vite/-/vite-4.1.1.tgz#508dcb9dd91e0fb036f63b5164257ed8467a704c"
-  integrity sha512-tFTkRZwXq4XKr3S2dUZBxy80wbWYHdDSsu4QOB1yE1HJFKjfxKVpXtup4dyTVdQcLInoHC9lZXFPHnjoBP774g==
+"@tailwindcss/vite@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/@tailwindcss/vite/-/vite-4.1.2.tgz#85c4bb2dd9857b734e55f551af166c312f499299"
+  integrity sha512-3r/ZdMW0gxY8uOx1To0lpYa4coq4CzINcCX4laM1rS340Kcn0ac4A/MMFfHN8qba51aorZMYwMcOxYk4wJ9FYg==
   dependencies:
-    "@tailwindcss/node" "4.1.1"
-    "@tailwindcss/oxide" "4.1.1"
-    tailwindcss "4.1.1"
+    "@tailwindcss/node" "4.1.2"
+    "@tailwindcss/oxide" "4.1.2"
+    tailwindcss "4.1.2"
 
 "@types/estree@1.0.6", "@types/estree@^1.0.0":
   version "1.0.6"
@@ -2886,10 +2886,10 @@
     tailwind-merge "^3.1.0"
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
 
-"@weapp-tailwindcss/postcss@1.0.10-alpha.0":
-  version "1.0.10-alpha.0"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.10-alpha.0.tgz#4d950e911d1637a17f18e5dd38f1c9b58c5dc3df"
-  integrity sha512-TFqbi5T0Eqt822ikXufBus8Pny1SN5hQ0SrbN2HVdy7b6N4C62sPrS7woPhhhdGdnlA+nCKQEtIFQk/x8JVVqQ==
+"@weapp-tailwindcss/postcss@1.0.10-alpha.1":
+  version "1.0.10-alpha.1"
+  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.10-alpha.1.tgz#75ec494b91de218ab27072bd36925f1cee8a1d35"
+  integrity sha512-JDNjszC+eeiKhDM+Z24Eei0H6isN3pY35IGT5Gd1DdfNozcb9s88XnHNz8BsnMNvzZrLOpgD3o5ib9llgHCnKg==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/shared" "1.0.2"
@@ -5856,10 +5856,10 @@ tailwindcss-patch@^7.1.0, tailwindcss-patch@~7.1.0:
     semver "^7.7.1"
     tailwindcss-config "^1.0.0"
 
-tailwindcss@4.1.1, tailwindcss@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-4.1.1.tgz#f2bae12b32687e63afa37c4f638b89520104e83f"
-  integrity sha512-QNbdmeS979Efzim2g/bEvfuh+fTcIdp1y7gA+sb6OYSW74rt7Cr7M78AKdf6HqWT3d5AiTb7SwTT3sLQxr4/qw==
+tailwindcss@4.1.2, tailwindcss@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-4.1.2.tgz#5f1e4b1e336e8433c6e275bd3e6dd4f0f9ea6c47"
+  integrity sha512-VCsK+fitIbQF7JlxXaibFhxrPq4E2hDcG8apzHUdWFMCQWD8uLdlHg4iSkZ53cgLCCcZ+FZK7vG8VjvLcnBgKw==
 
 tapable@^2.2.0:
   version "2.2.1"
@@ -6140,10 +6140,10 @@ weapp-ide-cli@^2.0.10:
     fs-extra "^11.3.0"
     pathe "^2.0.2"
 
-weapp-tailwindcss@^4.1.4-alpha.1:
-  version "4.1.4-alpha.1"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.4-alpha.1.tgz#cbd92a34f4e16131f5b2855d0bbe928117f8298a"
-  integrity sha512-EoKZYA7DbbGkJf/PH3M5Cs+39CFcgDvFCfdl+R9RLempwY6ti7BYRKoKM3l6+JazbJRdVuYAkMiVkz175Cn7UQ==
+weapp-tailwindcss@^4.1.4-alpha.2:
+  version "4.1.4-alpha.2"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.4-alpha.2.tgz#70d1beafcfb9eb783b56c0ff6efdd97c11a6242d"
+  integrity sha512-QbcfFaYepMXF6jM9PQ5AzzeYkN6zknFcip6CZm7Hciw25onApRM0uvHEkcip9H9qt/Hl14U20ZFTuxbhZl0MDQ==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.27.0"
@@ -6154,7 +6154,7 @@ weapp-tailwindcss@^4.1.4-alpha.1:
     "@weapp-tailwindcss/init" "1.0.2"
     "@weapp-tailwindcss/logger" "1.0.1"
     "@weapp-tailwindcss/mangle" "1.0.4"
-    "@weapp-tailwindcss/postcss" "1.0.10-alpha.0"
+    "@weapp-tailwindcss/postcss" "1.0.10-alpha.1"
     "@weapp-tailwindcss/shared" "1.0.2"
     debug "~4.4.0"
     htmlparser2 "10.0.0"

@@ -8,6 +8,7 @@
   "-mt-2",
   "2xl:text-[red]",
   "2xl:text-base",
+  "[&_.u-count-down\\\\_\\\\_text]:!text-red-400",
   "[&_.u-count-down\\_\\_text]:!text-red-400",
   "active:bg-[#543210]",
   "active:bg-[#989898]",
