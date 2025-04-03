@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.1.4-alpha.0
+
+### Patch Changes
+
+- [`10aebb1`](https://github.com/sonofmagic/weapp-tailwindcss/commit/10aebb1a5ed73bac76c1370e44ea93cd820ed60c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add minify css
+
+- [`899226d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/899226d71c5fd022e0f374192766a5ed4e9fa5d4) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: build resolved css
+
 ## 4.1.3
 
 ### Patch Changes
