@@ -24,6 +24,12 @@ body:
     validations:
       required: true
   - type: input
+    id: version
+    attributes:
+      label: tailwindcss 版本
+    validations:
+      required: true
+  - type: input
     id: platform
     attributes:
       label: 框架 & 小程序平台

@@ -75,7 +75,7 @@
     "@tarojs/vite-runner": "4.0.9",
     "@types/react": "^18.3.11",
     "@vitejs/plugin-react": "^4.3.4",
-    "@weapp-tailwindcss/merge": "^1.0.7",
+    "@weapp-tailwindcss/merge": "^1.1.0",
     "autoprefixer": "^10.4.20",
     "babel-preset-taro": "4.0.9",
     "eslint": "^9.21.0",
@@ -89,12 +89,12 @@
     "sass": "^1.85.0",
     "stylelint": "^16.14.1",
     "tailwindcss": "3",
-    "tailwindcss-patch": "^7.0.2",
+    "tailwindcss-patch": "^7.1.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "terser": "^5.39.0",
     "typescript": "^5.7.3",
     "vite": "^6.1.1",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.2"
+    "weapp-tailwindcss": "^4.1.3"
   }
 }
