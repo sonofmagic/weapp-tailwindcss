@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.1.0
+
+### Minor Changes
+
+- [`6811f23`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6811f231932925cf1f34ef45eda5b233d792d54f) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: upgrade tailwind-merge to `3.1.0`
+
 ## 1.0.7
 
 ### Patch Changes
