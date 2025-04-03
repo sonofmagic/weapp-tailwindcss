@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.9
+
+### Patch Changes
+
+- [`3113053`](https://github.com/sonofmagic/weapp-tailwindcss/commit/31130538a13098e2a1d29bbd331dc67a195689cf) Thanks [@sonofmagic](https://github.com/sonofmagic)! - Fix: Support `Tailwindcss@4.1.1` and fix [#619](https://github.com/sonofmagic/weapp-tailwindcss/issues/619)
+
 ## 1.0.8
 
 ### Patch Changes
