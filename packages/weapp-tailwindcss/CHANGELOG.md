@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.1.4-alpha.5
+
+### Patch Changes
+
+- [`865d8c2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/865d8c2a1bcb56765cf06d9a918c88e16051f17c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: minify exports css
+
 ## 4.1.4-alpha.4
 
 ### Patch Changes
