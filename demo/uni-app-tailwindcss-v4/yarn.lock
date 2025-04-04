@@ -6140,10 +6140,10 @@ weapp-ide-cli@^2.0.10:
     fs-extra "^11.3.0"
     pathe "^2.0.2"
 
-weapp-tailwindcss@^4.1.4-alpha.4:
-  version "4.1.4-alpha.4"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.4-alpha.4.tgz#ab666d6832f9198a684c825bc53fddbed054c1a5"
-  integrity sha512-cVMQMpn0K5hm2u+EJvtwdpoQObiWLvEJJYMycrmnMCz5x/1ervvdfPnXnwzaBy5eTwuY0lJZilEBgq+RLfdjJA==
+weapp-tailwindcss@^4.1.4-alpha.5:
+  version "4.1.4-alpha.5"
+  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.4-alpha.5.tgz#da1d213ae4091d0210a656d582368136a9371ef8"
+  integrity sha512-yfrxrZ+4iRVz8DJSiFF6Qmp8rZ5Je5npKTO4u/xB3jbkYQiYh3ydP4TUswsWGReSO2wH1UxGfAW6KvZ6H+UFjg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.27.0"
