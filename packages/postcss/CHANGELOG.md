@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.10-alpha.3
+
+### Patch Changes
+
+- [`8b45542`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8b4554295e9671fd740fa18a9f9a25a17613597b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: tailwindcss v4.1.2 vite plugin
+
 ## 1.0.10-alpha.2
 
 ### Patch Changes
