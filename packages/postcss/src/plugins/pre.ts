@@ -91,9 +91,6 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
   if (opts.isMainChunk) {
     let layerProperties: AtRule
     p.Once = (root) => {
-      root.walkRules((rule) => {
-        commonChunkPreflight(rule, opts)
-      })
       root.walkAtRules((atRule) => {
         // Tailwindcss V4.1.2
         if (atRule.name === 'layer' && atRule.params === 'properties') {
@@ -105,6 +102,9 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
               layerProperties.replaceWith(atRule.first.nodes)
               atRule.remove()
             }
+            else {
+              atRule.replaceWith(atRule.first.nodes)
+            }
           }
         }
         // Tailwindcss V4.1.1
@@ -113,6 +113,9 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
             atRule.replaceWith(atRule.first.nodes)
           }
         }
+      })
+      root.walkRules((rule) => {
+        commonChunkPreflight(rule, opts)
       })
     }
   }

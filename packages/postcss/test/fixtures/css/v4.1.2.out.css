@@ -2,7 +2,7 @@
 ::before,::after {
       --tw-content: "";
 }
-::before,::after,::backdrop {
+view,text,::before,::after,::backdrop {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -32,10 +32,10 @@
       --tw-drop-shadow-size: initial;
       --tw-content: "";
     }
-:root,:host {
+page,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-:after,:before,::backdrop {
+view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

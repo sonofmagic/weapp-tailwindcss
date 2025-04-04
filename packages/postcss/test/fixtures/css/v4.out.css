@@ -1,5 +1,5 @@
 /*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
-:root,:host {
+page,:host {
     --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
       "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -39,21 +39,21 @@
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 @supports (color: color(display-p3 0 0 0%)) {
-:root,:host {
+page,:host {
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
     --color-red-600: rgb(228, 0, 22);
   }
 
 @media (color-gamut: p3) {
-:root,:host {
+page,:host {
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
     --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
     --color-red-600: color(display-p3 0.83032 0.14038 0.1332);
   }
 }
 }
-:not(#n):after,:not(#n):before,:not(#n)::backdrop {
+view:not(#n),text:not(#n),:not(#n):after,:not(#n):before,:not(#n)::backdrop {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
@@ -268,7 +268,7 @@ button:not(#n),input:not(#n) {
 :not(#n)::-webkit-outer-spin-button {
     height: auto;
   }
-:root:not(#n) {
+page:not(#n) {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
@@ -310,6 +310,9 @@ button:not(#n),input:not(#n) {
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --ring: 212.7 26.8% 83.9%;
+  }
+view:not(#n),text:not(#n) {
+    border-color: hsl(var(--border));
   }
 body:not(#n) {
     background-color: hsl(var(--background));
@@ -1076,19 +1079,25 @@ body:not(#n) {
 .ease-out:not(#n):not(#n):not(#n) {
     animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
-.group:hover:not(#n):not(#n):not(#n) .group-hovercopacity-100 {
+.group:hover:not(#n):not(#n):not(#n) view.group-hovercopacity-100,.group:hover:not(#n):not(#n):not(#n) text.group-hovercopacity-100 {
       opacity: 1;
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cborder-muteds40 {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cborder-muteds40,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cborder-muteds40 {
     border-color: color-mix(in oklab, hsl(var(--muted)) 40%, transparent);
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_ctext-red-300 {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_ctext-red-300,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_ctext-red-300 {
     color: var(--color-red-300);
   }
-.peer:disabled:not(#n):not(#n):not(#n)~.peer-disabledccursor-not-allowed {
+.peer:disabled:not(#n):not(#n):not(#n)~view.peer-disabledccursor-not-allowed {
     cursor: not-allowed;
   }
-.peer:disabled:not(#n):not(#n):not(#n)~.peer-disabledcopacity-70 {
+.peer:disabled:not(#n):not(#n):not(#n)~text.peer-disabledccursor-not-allowed {
+    cursor: not-allowed;
+  }
+.peer:disabled:not(#n):not(#n):not(#n)~view.peer-disabledcopacity-70 {
+    opacity: 0.7;
+  }
+.peer:disabled:not(#n):not(#n):not(#n)~text.peer-disabledcopacity-70 {
     opacity: 0.7;
   }
 .filecborder-0:not(#n):not(#n):not(#n)::file-selector-button {
@@ -1142,16 +1151,16 @@ body:not(#n) {
 .hovercopacity-100:hover:not(#n):not(#n):not(#n) {
       opacity: 1;
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_chovercborder-destructives30:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_chovercborder-destructives30:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_chovercborder-destructives30:hover {
       border-color: color-mix(in oklab, hsl(var(--destructive)) 30%, transparent);
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_chovercbg-destructive:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_chovercbg-destructive:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_chovercbg-destructive:hover {
       background-color: hsl(var(--destructive));
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_choverctext-destructive-foreground:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_choverctext-destructive-foreground:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_choverctext-destructive-foreground:hover {
       color: hsl(var(--destructive-foreground));
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_choverctext-red-50:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_choverctext-red-50:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_choverctext-red-50:hover {
       color: var(--color-red-50);
     }
 .focuscbg-accent:focus:not(#n):not(#n):not(#n) {
@@ -1180,13 +1189,13 @@ body:not(#n) {
     --tw-outline-style: none;
     outline-style: none;
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cfocuscring-destructive:focus {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cfocuscring-destructive:focus,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cfocuscring-destructive:focus {
     --tw-ring-color: hsl(var(--destructive));
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cfocuscring-red-400:focus {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cfocuscring-red-400:focus,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cfocuscring-red-400:focus {
     --tw-ring-color: var(--color-red-400);
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cfocuscring-offset-red-600:focus {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cfocuscring-offset-red-600:focus,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cfocuscring-offset-red-600:focus {
     --tw-ring-offset-color: var(--color-red-600);
   }
 .focus-visiblecring-2:focus-visible:not(#n):not(#n):not(#n) {

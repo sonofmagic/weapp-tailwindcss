@@ -18,7 +18,7 @@ exports[`v4 > --tw-gradient-position 1`] = `
 exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 
-:root,:host {
+page,:host {
     --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
@@ -397,7 +397,7 @@ exports[`v4 > postcss 1`] = `
   }
 
 @supports (color: color(display-p3 0 0 0%)) {
-:root,:host {
+page,:host {
     --color-red-200: rgb(255, 202, 202);
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
@@ -496,7 +496,7 @@ exports[`v4 > postcss 1`] = `
   }
 
 @media (color-gamut: p3) {
-:root,:host {
+page,:host {
     --color-red-200: color(display-p3 0.96956 0.79815 0.7943);
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
     --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
@@ -596,7 +596,7 @@ exports[`v4 > postcss 1`] = `
 }
 }
 
-:not(#n)::after,:not(#n)::before,:not(#n)::backdrop,:not(#n)::file-selector-button {
+view:not(#n),text:not(#n),:not(#n)::after,:not(#n)::before,:not(#n)::backdrop,:not(#n)::file-selector-button {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -851,7 +851,7 @@ button:not(#n),input:not(#n),:not(#n)::file-selector-button {
 
 exports[`v4 > v4 1`] = `
 "/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
-:root,:host {
+page,:host {
     --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
       "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -891,21 +891,21 @@ exports[`v4 > v4 1`] = `
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 @supports (color: color(display-p3 0 0 0%)) {
-:root,:host {
+page,:host {
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
     --color-red-600: rgb(228, 0, 22);
   }
 
 @media (color-gamut: p3) {
-:root,:host {
+page,:host {
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
     --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
     --color-red-600: color(display-p3 0.83032 0.14038 0.1332);
   }
 }
 }
-:not(#n):after,:not(#n):before,:not(#n)::backdrop {
+view:not(#n),text:not(#n),:not(#n):after,:not(#n):before,:not(#n)::backdrop {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
@@ -1120,7 +1120,7 @@ button:not(#n),input:not(#n) {
 :not(#n)::-webkit-outer-spin-button {
     height: auto;
   }
-:root:not(#n) {
+page:not(#n) {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
@@ -1162,6 +1162,9 @@ button:not(#n),input:not(#n) {
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --ring: 212.7 26.8% 83.9%;
+  }
+view:not(#n),text:not(#n) {
+    border-color: hsl(var(--border));
   }
 body:not(#n) {
     background-color: hsl(var(--background));
@@ -1928,19 +1931,25 @@ body:not(#n) {
 .ease-out:not(#n):not(#n):not(#n) {
     animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
-.group:hover:not(#n):not(#n):not(#n) .group-hovercopacity-100 {
+.group:hover:not(#n):not(#n):not(#n) view.group-hovercopacity-100,.group:hover:not(#n):not(#n):not(#n) text.group-hovercopacity-100 {
       opacity: 1;
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cborder-muteds40 {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cborder-muteds40,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cborder-muteds40 {
     border-color: color-mix(in oklab, hsl(var(--muted)) 40%, transparent);
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_ctext-red-300 {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_ctext-red-300,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_ctext-red-300 {
     color: var(--color-red-300);
   }
-.peer:disabled:not(#n):not(#n):not(#n)~.peer-disabledccursor-not-allowed {
+.peer:disabled:not(#n):not(#n):not(#n)~view.peer-disabledccursor-not-allowed {
     cursor: not-allowed;
   }
-.peer:disabled:not(#n):not(#n):not(#n)~.peer-disabledcopacity-70 {
+.peer:disabled:not(#n):not(#n):not(#n)~text.peer-disabledccursor-not-allowed {
+    cursor: not-allowed;
+  }
+.peer:disabled:not(#n):not(#n):not(#n)~view.peer-disabledcopacity-70 {
+    opacity: 0.7;
+  }
+.peer:disabled:not(#n):not(#n):not(#n)~text.peer-disabledcopacity-70 {
     opacity: 0.7;
   }
 .filecborder-0:not(#n):not(#n):not(#n)::file-selector-button {
@@ -1994,16 +2003,16 @@ body:not(#n) {
 .hovercopacity-100:hover:not(#n):not(#n):not(#n) {
       opacity: 1;
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_chovercborder-destructives30:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_chovercborder-destructives30:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_chovercborder-destructives30:hover {
       border-color: color-mix(in oklab, hsl(var(--destructive)) 30%, transparent);
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_chovercbg-destructive:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_chovercbg-destructive:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_chovercbg-destructive:hover {
       background-color: hsl(var(--destructive));
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_choverctext-destructive-foreground:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_choverctext-destructive-foreground:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_choverctext-destructive-foreground:hover {
       color: hsl(var(--destructive-foreground));
     }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_choverctext-red-50:hover {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_choverctext-red-50:hover,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_choverctext-red-50:hover {
       color: var(--color-red-50);
     }
 .focuscbg-accent:focus:not(#n):not(#n):not(#n) {
@@ -2032,13 +2041,13 @@ body:not(#n) {
     --tw-outline-style: none;
     outline-style: none;
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cfocuscring-destructive:focus {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cfocuscring-destructive:focus,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cfocuscring-destructive:focus {
     --tw-ring-color: hsl(var(--destructive));
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cfocuscring-red-400:focus {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cfocuscring-red-400:focus,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cfocuscring-red-400:focus {
     --tw-ring-color: var(--color-red-400);
   }
-.group.destructive:not(#n):not(#n):not(#n) .group-_ddestructive_cfocuscring-offset-red-600:focus {
+.group.destructive:not(#n):not(#n):not(#n) view.group-_ddestructive_cfocuscring-offset-red-600:focus,.group.destructive:not(#n):not(#n):not(#n) text.group-_ddestructive_cfocuscring-offset-red-600:focus {
     --tw-ring-offset-color: var(--color-red-600);
   }
 .focus-visiblecring-2:focus-visible:not(#n):not(#n):not(#n) {
@@ -2404,7 +2413,7 @@ exports[`v4 > v4.1.1 1`] = `
 ::before,::after {
       --tw-content: "";
 }
-::before,::after,::backdrop {
+view,text,::before,::after,::backdrop {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -2434,10 +2443,10 @@ exports[`v4 > v4.1.1 1`] = `
       --tw-drop-shadow-size: initial;
       --tw-content: "";
     }
-:root,:host {
+page,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-::after,::before,::backdrop {
+view,text,::after,::before,::backdrop {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -2471,7 +2480,7 @@ exports[`v4 > v4.1.1 1`] = `
 
 exports[`v4 > v4.1.1 uni-app vue 3 1`] = `
 "/*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
-:before,:after,::backdrop {
+view,text,:before,:after,::backdrop {
       --tw-font-weight: initial;
     }
 
@@ -2483,13 +2492,13 @@ exports[`v4 > v4.1.1 uni-app vue 3 1`] = `
 
 }
 
-:root,:host {
+page,:host {
   --color-white: #fff;
   --spacing: .25rem;
   --font-weight-bold: 700;
 }
 
-:after,:before,::backdrop {
+view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -2575,7 +2584,7 @@ exports[`v4 > v4.1.2 1`] = `
 ::before,::after {
       --tw-content: "";
 }
-::before,::after,::backdrop {
+view,text,::before,::after,::backdrop {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -2605,10 +2614,10 @@ exports[`v4 > v4.1.2 1`] = `
       --tw-drop-shadow-size: initial;
       --tw-content: "";
     }
-:root,:host {
+page,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-:after,:before,::backdrop {
+view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -2640,9 +2649,217 @@ exports[`v4 > v4.1.2 1`] = `
 "
 `;
 
+exports[`v4 > v4.1.2 vite plugin case 0 1`] = `
+"/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */::before,::after{--tw-content:""}view,text,:before,:after,::backdrop{--tw-space-y-reverse:0;--tw-space-x-reverse:0;--tw-border-style:solid;--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-via:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-stops:initial;--tw-gradient-via-stops:initial;--tw-gradient-from-position:0%;--tw-gradient-via-position:50%;--tw-gradient-to-position:100%}page,:host{--color-red-700:rgb(191, 0, 15);--color-amber-300:rgb(255, 210, 55);--spacing:.25rem}@supports (color: color(display-p3 0 0 0%)){
+page,:host{--color-red-700:rgb(191, 0, 16);--color-amber-300:rgb(255, 210, 55)}
+
+@media (color-gamut: p3){
+page,:host{--color-red-700:color(display-p3 0.69274 0.11623 0.10468);--color-amber-300:color(display-p3 0.97433 0.83063 0.33298)}
+}
+}view,text,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}.container{width:100%}@media (min-width:40rem){.container{max-width:40rem}}@media (min-width:48rem){.container{max-width:48rem}}@media (min-width:64rem){.container{max-width:64rem}}@media (min-width:80rem){.container{max-width:80rem}}@media (min-width:96rem){.container{max-width:96rem}}.i-mdi-home{width:1em;height:1em;-webkit-mask-image:var(--svg);mask-image:var(--svg);--svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");background-color:currentColor;display:inline-block;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}.inline-block{display:inline-block}.h-10{height:calc(var(--spacing)*10)}.h-_29d292px_{height:29.292px}.h-_30px_{height:30px}.h-_45px_{height:45px}.w-_50px_{width:50px}.w-_323px_{width:323px}.space-y-2d5>view+view{--tw-space-y-reverse:0;margin-bottom:calc((var(--spacing)*2.5)*var(--tw-space-y-reverse));margin-bottom:calc(calc(var(--spacing)*2.5)*var(--tw-space-y-reverse));margin-top:calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)));margin-top:calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-y-reverse)))}.space-x-2d5>view+view{--tw-space-x-reverse:0;margin-right:calc((var(--spacing)*2.5)*var(--tw-space-x-reverse));margin-right:calc(calc(var(--spacing)*2.5)*var(--tw-space-x-reverse));margin-left:calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)));margin-left:calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-x-reverse)))}.border-4{border-style:var(--tw-border-style);border-width:4px}.bg-_h3a32d1_{background-color:#3a32d1}.bg-_h7d7ac2_{background-color:#7d7ac2}.bg-amber-300{background-color:var(--color-amber-300)}.bg-gradient-to-b{--tw-gradient-position:to bottom ;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-t{--tw-gradient-position:to top ;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-tr{--tw-gradient-position:to top right ;background-image:linear-gradient(var(--tw-gradient-stops))}.from-_h2f73f1_{--tw-gradient-from:#2f73f1;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.to-_h4bcefd_{--tw-gradient-to:#4bcefd;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.text-_100px_{font-size:100px}.text-_h123456_{color:#123456}.text-_100rpx_{color:100rpx}.text-red-700{color:var(--color-red-700)}
+/*$vite$:1*/"
+`;
+
+exports[`v4 > v4.1.2 vite plugin case 1 1`] = `
+"/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */
+::before,::after {
+      --tw-content: ""}
+view,text,:before,:after,::backdrop {
+      --tw-space-y-reverse: 0;
+      --tw-space-x-reverse: 0;
+      --tw-border-style: solid;
+      --tw-gradient-position: initial;
+      --tw-gradient-from: rgba(0,0,0,0);
+      --tw-gradient-via: rgba(0,0,0,0);
+      --tw-gradient-to: rgba(0,0,0,0);
+      --tw-gradient-stops: initial;
+      --tw-gradient-via-stops: initial;
+      --tw-gradient-from-position: 0%;
+      --tw-gradient-via-position: 50%;
+      --tw-gradient-to-position: 100%
+    }
+
+page,:host {
+  --color-red-700: rgb(191, 0, 15);
+  --color-amber-300: rgb(255, 210, 55);
+  --spacing: .25rem
+}
+
+@supports (color: color(display-p3 0 0 0%)) {
+page,:host {
+  --color-red-700: rgb(191, 0, 16);
+  --color-amber-300: rgb(255, 210, 55)}
+
+@media (color-gamut: p3) {
+page,:host {
+  --color-red-700: color(display-p3 0.69274 0.11623 0.10468);
+  --color-amber-300: color(display-p3 0.97433 0.83063 0.33298)}
+}
+}
+
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0
+}
+
+.container {
+  width: 100%
+}
+
+@media (min-width:40rem) {
+  .container {
+    max-width: 40rem
+  }
+}
+
+@media (min-width:48rem) {
+  .container {
+    max-width: 48rem
+  }
+}
+
+@media (min-width:64rem) {
+  .container {
+    max-width: 64rem
+  }
+}
+
+@media (min-width:80rem) {
+  .container {
+    max-width: 80rem
+  }
+}
+
+@media (min-width:96rem) {
+  .container {
+    max-width: 96rem
+  }
+}
+
+.i-mdi-home {
+  width: 1em;
+  height: 1em;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  display: inline-block;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat
+}
+
+.inline-block {
+  display: inline-block
+}
+
+.h-10 {
+  height: calc(var(--spacing)*10)
+}
+
+.h-_29d292px_ {
+  height: 29.292px
+}
+
+.h-_30px_ {
+  height: 30px
+}
+
+.h-_45px_ {
+  height: 45px
+}
+
+.w-_50px_ {
+  width: 50px
+}
+
+.w-_323px_ {
+  width: 323px
+}
+
+.space-y-2d5>view+view {
+  --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing)*2.5)*var(--tw-space-y-reverse));
+  margin-bottom: calc(calc(var(--spacing)*2.5)*var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)));
+  margin-top: calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-y-reverse)))
+}
+
+.space-x-2d5>view+view {
+  --tw-space-x-reverse: 0;
+  margin-right: calc((var(--spacing)*2.5)*var(--tw-space-x-reverse));
+  margin-right: calc(calc(var(--spacing)*2.5)*var(--tw-space-x-reverse));
+  margin-left: calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)));
+  margin-left: calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-x-reverse)))
+}
+
+.border-4 {
+  border-style: var(--tw-border-style);
+  border-width: 4px
+}
+
+.bg-_h3a32d1_ {
+  background-color: #3a32d1
+}
+
+.bg-_h7d7ac2_ {
+  background-color: #7d7ac2
+}
+
+.bg-amber-300 {
+  background-color: var(--color-amber-300)
+}
+
+.bg-gradient-to-b {
+  --tw-gradient-position: to bottom ;
+  background-image: linear-gradient(var(--tw-gradient-stops))
+}
+
+.bg-gradient-to-t {
+  --tw-gradient-position: to top ;
+  background-image: linear-gradient(var(--tw-gradient-stops))
+}
+
+.bg-gradient-to-tr {
+  --tw-gradient-position: to top right ;
+  background-image: linear-gradient(var(--tw-gradient-stops))
+}
+
+.from-_h2f73f1_ {
+  --tw-gradient-from: #2f73f1;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)var(--tw-gradient-from-position), var(--tw-gradient-to)var(--tw-gradient-to-position))
+}
+
+.to-_h4bcefd_ {
+  --tw-gradient-to: #4bcefd;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)var(--tw-gradient-from-position), var(--tw-gradient-to)var(--tw-gradient-to-position))
+}
+
+.text-_100px_ {
+  font-size: 100px
+}
+
+.text-_h123456_ {
+  color: #123456
+}
+
+.text-_100rpx_ {
+  color: 100rpx
+}
+
+.text-red-700 {
+  color: var(--color-red-700)
+}
+
+/*$vite$:1*/"
+`;
+
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
-:root,:host {
+page,:host {
     --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
     --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
@@ -3009,7 +3226,7 @@ exports[`v4 > vite 1`] = `
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 @supports (color: color(display-p3 0 0 0%)) {
-:root,:host {
+page,:host {
     --color-red-100: rgb(255, 228, 228);
     --color-red-200: rgb(255, 204, 204);
     --color-red-300: rgb(255, 164, 165);
@@ -3109,7 +3326,7 @@ exports[`v4 > vite 1`] = `
   }
 
 @media (color-gamut: p3) {
-:root,:host {
+page,:host {
     --color-red-100: color(display-p3 0.98565 0.89489 0.89294);
     --color-red-200: color(display-p3 0.97617 0.8045 0.80062);
     --color-red-300: color(display-p3 0.95959 0.65437 0.64756);
@@ -3210,7 +3427,7 @@ exports[`v4 > vite 1`] = `
 }
 }
 
-:not(#n)::after,:not(#n)::before,:not(#n)::backdrop {
+view:not(#n),text:not(#n),:not(#n)::after,:not(#n)::before,:not(#n)::backdrop {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
