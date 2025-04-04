@@ -53,7 +53,7 @@
     "tailwindcss-patch": "^7.1.0",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.4-alpha.3",
+    "weapp-tailwindcss": "^4.1.4-alpha.4",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "originTemplate": "@rax-materials/scaffolds-app-ts"
