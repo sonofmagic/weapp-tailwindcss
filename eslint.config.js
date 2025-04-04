@@ -14,6 +14,7 @@ export default icebreaker(
       // tmp 添加
       'apps/weapp-library',
       'packages/tailwindcss-injector/*.md',
+      'packages/weapp-tailwindcss/*.css',
     ],
   },
   {
