@@ -74,9 +74,10 @@ function HomepageHeader() {
             </a> */}
           </div>
 
-          <div>
+          <div className="flex space-x-4">
             {/* <Link to="/docs/tailwindcss-maintenance-book">进阶阅读：如何降低维护成本 ?</Link> */}
-            <Link to="/docs/community/group">🚀🚀🚀 加入技术交流群</Link>
+            <Link to="/docs/quick-start/v4/uni-app-x">🔥 已支持 uni-app x</Link>
+            <Link to="/docs/community/group">🚀 加入技术交流群</Link>
           </div>
         </div>
 
