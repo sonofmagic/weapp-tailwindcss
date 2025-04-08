@@ -1,0 +1,71 @@
+import Patch from './patch.mdx'
+
+# uni-app x
+
+:::tip
+请使用 HBuilderX `4.61` 以上版本 (下载 `alpha` 版本) 
+
+目前最新稳定版本的 HBuilderX `4.57` 版本会报错 `Cannot find module '../lightningcss.darwin-x64.node'`
+
+详见 [uni-app/issues/5386](https://github.com/dcloudio/uni-app/issues/5386)
+:::
+
+## 1. 安装
+
+```bash npm2yarn
+npm install -D tailwindcss @tailwindcss/vite weapp-tailwindcss
+```
+
+<Patch />
+
+## 2. 添加 `vite.config.ts`
+
+```ts title="vite.config.ts"
+import { defineConfig } from "vite";
+import uni from "@dcloudio/vite-plugin-uni";
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig(async () => {
+  // 这里必须这样引用，因为 uni 只提供了 cjs 的版本且 uni-app 默认 cjs，而 @tailwindcss/vite 只提供了 esm 版本
+  const { default: tailwindcss } = await import('@tailwindcss/vite')
+  return {
+    plugins: [
+      uni(),
+      tailwindcss(),
+      UnifiedViteWeappTailwindcssPlugin(
+        {
+          rem2rpx: true,
+          tailwindcssPatcherOptions: {
+            patch: {
+              tailwindcss: {
+                v4: {
+                  base: __dirname
+                }
+              }
+            }
+          }
+        }
+      ),
+    ],
+  }
+});
+```
+
+## 3. 添加样式
+
+在项目目录下的 `App.uvue` 然后添加以下内容：
+
+```css title="App.uvue"
+<style>
+	@import "weapp-tailwindcss";
+	@source not "unpackage";
+</style>
+```
+
+> 添加 `@source not "unpackage";` 是为了避免差量编译死循环
+
+然后运行到微信开发者工具即可
+
+## 参考模板
+
+[uni-app-x-hbuilderx](https://github.com/icebreaker-template/uni-app-x-hbuilderx) 

@@ -71,6 +71,7 @@ const tutorialSidebar: SidebarConfig = [
       {
         type: 'category',
         label: 'uni-app',
+        collapsed: false,
         items: [
           {
             type: 'doc',
@@ -81,6 +82,16 @@ const tutorialSidebar: SidebarConfig = [
             type: 'doc',
             label: 'Webpack Vue2 CLI',
             id: 'quick-start/v4/uni-app-webpack',
+          },
+          {
+            type: 'doc',
+            label: 'HBuilderX',
+            id: 'quick-start/v4/uni-app-vite-hbuilder',
+          },
+          {
+            type: 'doc',
+            label: 'uni-app x',
+            id: 'quick-start/v4/uni-app-x',
           },
         ],
       },
