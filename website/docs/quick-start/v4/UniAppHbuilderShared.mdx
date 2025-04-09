@@ -1,0 +1,70 @@
+import Patch from './patch.mdx'
+
+## 1. 安装
+
+```bash npm2yarn
+# 初始化 package.json
+npm init
+# 安装包
+npm install -D tailwindcss @tailwindcss/postcss weapp-tailwindcss
+```
+
+<Patch />
+
+## 2. 添加 `vite.config.ts`
+
+```ts title="vite.config.ts"
+import { defineConfig } from "vite";
+import uni from "@dcloudio/vite-plugin-uni";
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import tailwindcss from '@tailwindcss/postcss'
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    UnifiedViteWeappTailwindcssPlugin(
+      {
+        rem2rpx: true,
+        tailwindcssPatcherOptions: {
+          patch: {
+            tailwindcss: {
+              v4: {
+                base: __dirname
+              }
+            }
+          }
+        }
+      }
+    )
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss()
+      ]
+    }
+  }
+});
+```
+
+## 3. 添加样式
+
+在项目目录下的 `App.vue` / `App.uvue`(uni-app x 项目) 然后添加以下内容：
+
+```css title="App.vue"
+<style>
+	@import "weapp-tailwindcss/css";
+	@source not "unpackage";
+</style>
+```
+
+> 添加 `@source not "unpackage";` 是为了避免 `HBuilderX` 差量编译死循环问题
+
+现在，在你的页面里面去随意的编写样式，比如 `bg-[#123456] text-[#654321]`, 然后运行到微信开发者工具即可
+
+## 参考模板
+
+- [uni-app-x-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-x-hbuilderx) 
+
+- [uni-app-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-hbuilderx-tailwindcss-v4) 
+
