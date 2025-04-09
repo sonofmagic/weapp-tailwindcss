@@ -40,7 +40,9 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        tailwindcss()
+        tailwindcss({
+          base: __dirname
+        })
       ]
     }
   }
