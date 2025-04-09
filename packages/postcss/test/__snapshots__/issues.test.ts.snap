@@ -1,0 +1,101 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`] = `
+"/*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+:root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.size-12 {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
+}
+.bg-blue-500\\/30 {
+  background-color: color-mix(in srgb, oklch(62.3% .214 259.815) 30%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+  }
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 2`] = `
+"/*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+page,:host {
+  --color-blue-500: rgb(50, 128, 255);
+  --spacing: .25rem;
+}
+@supports (color: color(display-p3 0 0 0%)) {
+page,:host {
+  --color-blue-500: rgb(50, 128, 255);
+}
+
+@media (color-gamut: p3) {
+page,:host {
+  --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+}
+}
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.size-12 {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
+}
+.bg-blue-500s30 {
+  background-color: rgba(50, 128, 255, 0.3);
+}
+@media (color-gamut: p3) {
+.bg-blue-500s30 {
+  background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.3);
+}
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`] = `
+"/*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+:root, :host {
+  --color-blue-100: oklch(93.2% .032 255.585);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.hover\\:border-blue-100\\/20 {
+  &:hover {
+    @media (hover: hover) {
+      border-color: color-mix(in srgb, oklch(93.2% .032 255.585) 20%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--color-blue-100) 20%, transparent);
+      }
+    }
+  }
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 2`] = `
+"/*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+page,:host {
+  --color-blue-100: rgb(219, 234, 254);
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.hovercborder-blue-100s20:hover {
+      border-color: rgba(219, 234, 254, 0.2);
+  }"
+`;

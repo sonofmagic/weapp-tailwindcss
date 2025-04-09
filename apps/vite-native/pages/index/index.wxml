@@ -16,5 +16,7 @@
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
     </view>
     <view class="i-mdi-home"></view>
+    <view class="hover:border-blue-200/20">111</view>
+    <view class='size-12 bg-blue-500/30 text-pink-300'>BLUE BLOCK</view>
   </view>
 </scroll-view>

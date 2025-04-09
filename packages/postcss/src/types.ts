@@ -51,6 +51,13 @@ export type IStyleHandlerOptions = {
   cssRemoveProperty?: boolean
   cssRemoveHoverPseudoClass?: boolean
   cssPresetEnv?: PresetEnvOptions
+  atRules?: {
+    property?: boolean
+    // A 新增 wxss 支持 @supports 反馈详情
+    // https://developers.weixin.qq.com/miniprogram/dev/devtools/uplog.html#2018.11.14
+    supports?: boolean
+    media?: boolean
+  }
 } & RequiredStyleHandlerOptions
 
 export interface UserDefinedPostcssOptions {

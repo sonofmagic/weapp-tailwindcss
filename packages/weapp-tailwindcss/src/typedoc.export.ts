@@ -456,3 +456,7 @@ export interface UserDefinedOptions {
    */
   mangle?: boolean | IMangleOptions
 }
+
+export type {
+  TailwindcssPatcherOptions,
+}

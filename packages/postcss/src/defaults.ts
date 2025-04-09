@@ -17,6 +17,8 @@ export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
       },
     },
     cssRemoveProperty: true,
+    // cssRemoveAtSupports: true,
+    // cssRemoveAtMedia: true,
     cssSelectorReplacement: {
       root: 'page',
       universal: ['view', 'text'],

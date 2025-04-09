@@ -86,6 +86,14 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
           atRule.remove()
         }
       }
+      // https://github.com/sonofmagic/weapp-tailwindcss/issues/631
+      // https://github.com/sonofmagic/weapp-tailwindcss/issues/632
+      // https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value/color-mix
+      else if (atRule.name === 'supports') {
+        if (/color-mix/.test(atRule.params)) {
+          atRule.remove()
+        }
+      }
     },
   }
   if (opts.isMainChunk) {

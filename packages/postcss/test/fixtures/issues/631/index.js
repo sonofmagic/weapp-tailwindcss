@@ -1,0 +1,1 @@
+<View className='size-12 bg-blue-500/30'>BLUE BLOCK</View>
