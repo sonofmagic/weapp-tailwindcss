@@ -68,7 +68,7 @@
     "tailwindcss": "^3.4.17",
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.2",
-    "typedoc-plugin-markdown": "4.6.1",
+    "typedoc-plugin-markdown": "4.6.2",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {
