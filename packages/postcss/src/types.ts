@@ -58,6 +58,7 @@ export type IStyleHandlerOptions = {
     supports?: boolean
     media?: boolean
   }
+  uniAppX?: boolean
 } & RequiredStyleHandlerOptions
 
 export interface UserDefinedPostcssOptions {
@@ -75,4 +76,5 @@ export interface UserDefinedPostcssOptions {
   cssRemoveHoverPseudoClass?: boolean
   cssRemoveProperty?: boolean
   customRuleCallback?: CustomRuleCallback
+  uniAppX?: boolean
 }

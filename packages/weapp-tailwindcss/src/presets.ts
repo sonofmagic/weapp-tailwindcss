@@ -14,6 +14,7 @@ export function uniAppX(options: UniAppXOptions) {
   >(
     options.rawOptions!,
     {
+      uniAppX: true,
       rem2rpx: options.rem2rpx,
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {

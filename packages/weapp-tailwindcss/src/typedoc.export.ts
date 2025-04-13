@@ -200,6 +200,13 @@ const customAttributes = {
    * @description 配置不同版本 tailwindcss 的行为
    */
   tailwindcss?: PatchOptions['tailwindcss']
+  /**
+   * @version `^4.2.0`
+   * @group 0.重要配置
+   * @ignore
+   * @description uni-app x 的配置
+   */
+  uniAppX?: boolean
 }
 
 // 1.文件匹配

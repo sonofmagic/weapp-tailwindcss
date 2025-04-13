@@ -23,6 +23,18 @@ describe('v4', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('postcss uni-app x', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      uniAppX: true,
+    })
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/v4-postcss.css'), 'utf8')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
   it('v4', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

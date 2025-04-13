@@ -849,6 +849,22 @@ button:not(#n),input:not(#n),:not(#n)::file-selector-button {
 }"
 `;
 
+exports[`v4 > postcss uni-app x 1`] = `
+"/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
+
+@keyframes spin {
+}
+
+@keyframes ping {
+}
+
+@keyframes pulse {
+}
+
+@keyframes bounce {
+}"
+`;
+
 exports[`v4 > v4 1`] = `
 "/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,:host {

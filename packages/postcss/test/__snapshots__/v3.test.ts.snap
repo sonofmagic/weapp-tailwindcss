@@ -23,3 +23,8 @@ exports[`v3 > v3 bbb 1`] = `
 
     "
 `;
+
+exports[`v3 > v3 uni-app x 1`] = `
+"
+"
+`;

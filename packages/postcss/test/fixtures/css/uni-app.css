@@ -1,0 +1,6 @@
+/* #ifdef MP-WEIXIN */
+.wx-color {
+  color: aliceblue;
+}
+
+/* #endif */
