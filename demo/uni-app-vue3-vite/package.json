@@ -83,7 +83,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.10",
     "@vue/runtime-core": "^3.4.21",
-    "@weapp-tailwindcss/merge": "^1.1.0",
+    "@weapp-tailwindcss/merge": "^1.1.1",
     "@weapp-tailwindcss/typography": "^0.2.4",
     "autoprefixer": "^10.4.18",
     "miniprogram-api-typings": "^3.12.2",
@@ -99,7 +99,7 @@
     "vite": "5.2.8",
     "vite-plugin-inspect": "^0.8.9",
     "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.4",
+    "weapp-tailwindcss": "^4.1.5",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "packageManager": "yarn@1.22.22",
