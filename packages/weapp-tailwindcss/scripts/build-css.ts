@@ -5,7 +5,7 @@ import path from 'pathe'
 // Features
 // const targets = browserslistToTargets(browserslist('>= 0.25%'))
 async function main() {
-  const files = ['index.css', 'preflight.css', 'theme.css', 'utilities.css', 'with-layer.css']
+  const files = ['index.css', 'preflight.css', 'theme.css', 'utilities.css', 'with-layer.css', 'uni-app-x.css']
 
   await Promise.all(
     files.map(async (x) => {

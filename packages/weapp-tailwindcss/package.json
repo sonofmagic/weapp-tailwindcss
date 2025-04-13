@@ -81,6 +81,11 @@
       "import": "./dist/defaults.mjs",
       "require": "./dist/defaults.js"
     },
+    "./presets": {
+      "types": "./dist/presets.d.ts",
+      "import": "./dist/presets.mjs",
+      "require": "./dist/presets.js"
+    },
     "./css-macro/postcss": {
       "types": "./dist/css-macro/postcss.d.ts",
       "import": "./dist/css-macro/postcss.mjs",
@@ -107,6 +112,8 @@
     "./utilities": "./utilities.css",
     "./with-layer.css": "./with-layer.css",
     "./with-layer": "./with-layer.css",
+    "./uni-app-x": "./uni-app-x.css",
+    "./uni-app-x.css": "./uni-app-x.css",
     "./css": "./css/index.css",
     "./*": "./*"
   },
@@ -134,6 +141,7 @@
     "index.css",
     "preflight.css",
     "theme.css",
+    "uni-app-x.css",
     "utilities.css",
     "with-layer.css"
   ],
