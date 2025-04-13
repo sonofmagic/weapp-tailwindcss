@@ -82,7 +82,6 @@ module.exports = {
       BUILD_TYPE: 'debug',
     }),
     new UnifiedWebpackPluginV5({
-      appType: 'native',
       rem2rpx: true,
       onStart() {
         bench.start()

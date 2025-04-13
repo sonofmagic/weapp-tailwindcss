@@ -53,7 +53,6 @@ export default defineConfig(async () => {
         //   universal: ['view', 'text', 'button'],
         // },
         disabled: WeappTailwindcssDisabled,
-        // appType: 'uni-app'
         // customReplaceDictionary: {
         //   '[': '_',
         //   ']': '_',

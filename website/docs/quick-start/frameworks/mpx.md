@@ -9,9 +9,11 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 module.exports = defineConfig({
   // other options
   configureWebpack(config) {
-    config.plugins.push(new UnifiedWebpackPluginV5({
-      appType: 'mpx'
-    }))
+    config.plugins.push(
+      new UnifiedWebpackPluginV5({
+        rem2rpx: true,
+      })
+    )
   }
 })
 

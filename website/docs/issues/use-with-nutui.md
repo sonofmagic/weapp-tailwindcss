@@ -21,7 +21,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
           install: {
             plugin: UnifiedWebpackPluginV5,
             args: [{
-              appType: 'taro',
+              rem2rpx: true,
 +             injectAdditionalCssVarScope: true
             }]
           }

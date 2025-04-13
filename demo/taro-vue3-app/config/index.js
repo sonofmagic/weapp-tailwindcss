@@ -73,7 +73,6 @@ const config = {
       }))
       let start
       const opt = {
-        appType: 'taro',
         injectAdditionalCssVarScope: true,
         onStart() {
           start = performance.now()

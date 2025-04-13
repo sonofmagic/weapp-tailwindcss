@@ -13,7 +13,6 @@ const config = {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         disabled: WeappTailwindcssDisabled,
-        appType: 'uni-app',
         wxsMatcher() {
           return false
         },

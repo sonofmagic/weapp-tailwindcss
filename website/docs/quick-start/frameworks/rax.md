@@ -18,7 +18,7 @@ module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
     config.plugin('UnifiedWebpackPluginV5').use(UnifiedWebpackPluginV5, [
       {
-        appType: 'rax',
+        rem2rpx: true,
       },
     ]);
   });

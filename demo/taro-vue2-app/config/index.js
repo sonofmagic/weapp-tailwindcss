@@ -50,7 +50,6 @@ const config = {
     webpackChain(chain, webpack) {
       let start
       const opt = {
-        appType: 'taro',
         onStart() {
           start = performance.now()
           bench.start()

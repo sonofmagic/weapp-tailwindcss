@@ -21,7 +21,7 @@ const config = {
   configureWebpack: (config) => {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
-        appType: 'uni-app'
+        rem2rpx: true,
       })
     )
   }

@@ -37,7 +37,8 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
           install: {
             plugin: UnifiedWebpackPluginV5,
             args: [{
-              appType: 'taro'
+              // 这里可以传参数
+              rem2rpx: true,
             }]
           }
         }
