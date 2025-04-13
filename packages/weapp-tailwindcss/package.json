@@ -154,6 +154,7 @@
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "build:css": "tsx scripts/build-css.ts",
+    "build:weapp-theme": "tsx scripts/build-weapp-theme.ts",
     "test": "npm run postinstall && vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
