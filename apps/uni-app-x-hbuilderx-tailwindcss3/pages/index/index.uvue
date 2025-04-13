@@ -1,0 +1,27 @@
+<template>
+	<view class="px-4">
+		<view class="mt-[32.43rpx] bg-[#322323]">
+			<text class="text-[#844343]">{{title}}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				title: 'Hello'
+			}
+		},
+		onLoad() {
+
+		},
+		methods: {
+
+		}
+	}
+</script>
+
+<style>
+
+</style>

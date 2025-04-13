@@ -457,7 +457,16 @@ importers:
         specifier: ^2.7.1
         version: 2.7.1
 
-  apps/uni-app-x-hbuilderx:
+  apps/uni-app-x-hbuilderx-tailwindcss3:
+    devDependencies:
+      tailwindcss:
+        specifier: ^3.4.17
+        version: 3.4.17(ts-node@10.9.2(@types/node@22.14.1)(typescript@5.8.3))
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+
+  apps/uni-app-x-hbuilderx-tailwindcss4:
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.1.3
