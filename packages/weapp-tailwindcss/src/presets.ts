@@ -14,7 +14,7 @@ export function uniAppX(options: UniAppXOptions) {
   >(
     options.rawOptions!,
     {
-      // uniAppX: true,
+      uniAppX: true,
       // 安卓
       // ios
       rem2rpx: options.rem2rpx,
@@ -33,6 +33,13 @@ export function uniAppX(options: UniAppXOptions) {
       },
       cssPreflight: {
         'border-style': false,
+      },
+      cssPresetEnv: {
+        features: {
+          'custom-properties': {
+            preserve: false,
+          },
+        },
       },
     },
   )

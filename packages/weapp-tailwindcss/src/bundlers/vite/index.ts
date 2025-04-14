@@ -201,7 +201,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         name: 'weapp-tailwindcss:uni-app-x',
         enforce: 'pre',
         async transform(code, id) {
-          logger.success(id)
           if (isCSSRequest(id)) {
             // uvue only support classname selector
             const { css } = await styleHandler(code, {
@@ -211,6 +210,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                   from: id,
                 },
               },
+              uniAppX: true,
             })
             return {
               code: css,

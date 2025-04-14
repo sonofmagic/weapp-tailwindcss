@@ -1,3 +1,4 @@
 @import './theme.css';
-@import './uni-app-x/preflight.css';
+@import './rgb.css';
+/* @import './uni-app-x/preflight.css'; */
 @import './utilities.css';

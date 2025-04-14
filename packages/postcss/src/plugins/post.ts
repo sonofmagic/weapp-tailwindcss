@@ -32,14 +32,21 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
         }
         // tailwindcss v4
         rule.walkDecls((decl) => {
-          // valueParser(decl.value)
-          if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OklabSuffix)) {
+          if (opts.uniAppX && decl.prop.startsWith('--')) {
+            decl.remove()
+          }
+          else if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OklabSuffix)) {
             decl.value = decl.value.slice(0, decl.value.length - OklabSuffix.length)
           }
           else if (/calc\(\s*infinity\s*\*\s*1px/.test(decl.value)) {
             decl.value = '9999px'
           }
         })
+        if (opts.uniAppX) {
+          if (rule.nodes.length === 0) {
+            rule.remove()
+          }
+        }
       })
 
       opts.cssRemoveProperty && root.walkAtRules('property', (rule) => {
