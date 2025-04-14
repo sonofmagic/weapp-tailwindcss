@@ -1,7 +1,7 @@
 {
   "name": "uni-app-x-hbuilderx-tailwindcss4",
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.3",
+    "@tailwindcss/postcss": "^4.1.4",
     "tailwindcss": "^4.1.3",
     "weapp-tailwindcss": "workspace:*"
   },
