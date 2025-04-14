@@ -67,6 +67,7 @@
     "postcss-selector-parser": "~7.1.0"
   },
   "devDependencies": {
-    "@weapp-tailwindcss/mangle": "workspace:*"
+    "@weapp-tailwindcss/mangle": "workspace:*",
+    "postcss-value-parser": "^4.2.0"
   }
 }

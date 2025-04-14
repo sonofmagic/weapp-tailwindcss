@@ -2,6 +2,7 @@ import type { IStyleHandlerOptions } from './types'
 
 export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
   return {
+    // https://github.com/postcss/postcss-calc
     cssPresetEnv: {
       features: {
         'cascade-layers': true,

@@ -1,0 +1,77 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`index > only utilities 1`] = `
+"/*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+:root, :host {
+  --color-red-500: oklch(63.7% .237 25.331);
+  --color-blue-500: oklch(62.3% .214 259.815);
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.size-12 {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
+}
+.rounded-full {
+  border-radius: calc(infinity * 1px);
+}
+.rounded-se-full {
+  border-start-end-radius: calc(infinity * 1px);
+}
+.bg-blue-500 {
+  background-color: var(--color-blue-500);
+}
+.text-red-500\\/20 {
+  color: color-mix(in srgb, oklch(63.7% .237 25.331) 20%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
+  }
+}"
+`;
+
+exports[`index > only utilities 2`] = `
+"/*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+page,:host {
+  --color-red-500: rgb(251, 44, 54);
+  --color-blue-500: rgb(50, 128, 255);
+  --spacing: .25rem;
+}
+@supports (color: color(display-p3 0 0 0%)) {
+page,:host {
+  --color-blue-500: rgb(50, 128, 255);
+}
+
+@media (color-gamut: p3) {
+page,:host {
+  --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+}
+}
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.size-12 {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.rounded-se-full {
+  border-top-right-radius: 9999px;
+}
+.bg-blue-500 {
+  background-color: var(--color-blue-500);
+}
+.text-red-500s20 {
+  color: rgba(251, 44, 54, 0.2);
+}"
+`;
