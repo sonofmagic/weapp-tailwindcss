@@ -332,6 +332,11 @@ const communitySidebar: SidebarConfig = [
     type: 'doc',
     id: 'community/typography',
   },
+  {
+    type: 'doc',
+    id: 'quick-start/v2/index',
+    label: '🗑️Tailwind CSS @2.x',
+  },
 ]
 
 /**

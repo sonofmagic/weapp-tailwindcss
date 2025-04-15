@@ -114,41 +114,48 @@ function HomepageHeader() {
                 支持版本列表
               </div>
               <div className="text-sm">
-                <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
-                  <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
-                  <div className="relative flex justify-center">
-                    <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
-                      <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
-                      <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
-                      <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
-                    </svg>
-                    v4.x
-                  </div>
+                <Link href="/docs/quick-start/v4">
+                  <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
+                    <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                    <div className="relative flex justify-center">
+                      <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
+                        <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
+                        <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
+                        <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
+                      </svg>
+                      v4.x
+                    </div>
 
-                </div>
-                <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
-                  <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
-                  <div className="relative flex justify-center">
-                    <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
-                      <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
-                      <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
-                      <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
-                    </svg>
-                    v3.x
                   </div>
-                </div>
-                <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
-                  <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
-                  <div className="relative flex justify-center">
-                    <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
-                      <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
-                      <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
-                      <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
-                    </svg>
-                    v2.x (jit mode)
+                </Link>
+                <Link href="/docs/quick-start/install">
+                  <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
+                    <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                    <div className="relative flex justify-center">
+                      <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
+                        <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
+                        <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
+                        <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
+                      </svg>
+                      v3.x
+                    </div>
                   </div>
+                </Link>
+                <Link href="/docs/quick-start/v2">
+                  <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
+                    <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
+                    <div className="relative flex justify-center">
+                      <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
+                        <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
+                        <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
+                        <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
+                      </svg>
+                      v2.x (jit mode)
+                    </div>
 
-                </div>
+                  </div>
+                </Link>
+
               </div>
             </div>
           </div>
