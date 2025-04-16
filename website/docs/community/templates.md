@@ -60,6 +60,16 @@
             >
             </iframe>
 
+[uni-app-vue2-tailwind-hbuilder-template (架构太过老旧，只能作为集成参考，新项目请勿使用)](https://github.com/icebreaker-trash/uni-app-vue2-tailwind-hbuilder-template) <iframe
+              src="https://ghbtns.com/github-btn.html?user=icebreaker-trash&repo=uni-app-vue2-tailwind-hbuilder-template&type=star&count=true"
+              frameborder="0"
+              scrolling="0"
+              width="110"
+              height="20"
+              title="GitHub"
+            >
+            </iframe>
+
 ## tarojs
 
 ---

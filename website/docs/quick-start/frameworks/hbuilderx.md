@@ -75,6 +75,26 @@ export default defineConfig({
 
 <!-- 另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。 -->
 
+## Hbuilderx 与 uni-app cli 环境汇总
+
+首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
+
+|                  | webpack  | vite | postcss  |
+| ---------------- | -------- | ---- | -------- |
+| hbuilderx vue2   | webpack4 | x    | postcss7 |
+| uni-app cli vue2 | webpack5 | x    | postcss8 |
+| hbuilderx vue3   | x        | √    | postcss8 |
+| uni-app cli vue3 | x        | √    | postcss8 |
+
+也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
+
+
+## hbuilderx vue2 webpack4 postcss7 版本模板
+
+如果你实在必须在 `hbuilderx vue2` 的项目中使用 `tailwindcss`，那么你可以使用下面的方法来使用 `tailwindcss`
+
+详见 [uni-app-vue2-tailwind-hbuilder-template](https://github.com/icebreaker-trash/uni-app-vue2-tailwind-hbuilder-template)
+
 ## Hack hbuilderx vue2 Way
 
 :::caution
@@ -103,15 +123,3 @@ export default defineConfig({
 
 <iframe src="//player.bilibili.com/player.html?aid=411561123&bvid=BV1EV41197Ps&cid=1413438914&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
-## Hbuilderx 与 uni-app cli 环境汇总
-
-首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
-
-|                  | webpack  | vite | postcss  |
-| ---------------- | -------- | ---- | -------- |
-| hbuilderx vue2   | webpack4 | x    | postcss7 |
-| uni-app cli vue2 | webpack5 | x    | postcss8 |
-| hbuilderx vue3   | x        | √    | postcss8 |
-| uni-app cli vue3 | x        | √    | postcss8 |
-
-也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。

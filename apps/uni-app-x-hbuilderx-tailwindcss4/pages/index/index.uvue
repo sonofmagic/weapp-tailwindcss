@@ -3,6 +3,7 @@
 		<view class="mt-[32.43rpx] bg-[#322323]">
 			<text class="text-[#844343]">{{title}}</text>
 		</view>
+    <text class="icebreaker">icebreaker</text>
 	</view>
 </template>
 
@@ -23,5 +24,7 @@
 </script>
 
 <style>
-
+.icebreaker{
+  color: #844343;
+}
 </style>
