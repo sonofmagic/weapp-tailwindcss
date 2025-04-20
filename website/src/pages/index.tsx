@@ -76,7 +76,7 @@ function HomepageHeader() {
 
           <div className="flex flex-col space-x-4 sm:flex-row">
             {/* <Link to="/docs/tailwindcss-maintenance-book">进阶阅读：如何降低维护成本 ?</Link> */}
-            <Link to="/docs/quick-start/v4/uni-app-x">🔥 已支持 uni-app x 小程序平台</Link>
+            {/* <Link to="/docs/quick-start/v4/uni-app-x">🔥 已支持 uni-app x 小程序平台</Link> */}
             <Link to="/docs/community/group">🚀 加入技术交流群</Link>
           </div>
         </div>
