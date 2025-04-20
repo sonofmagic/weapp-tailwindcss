@@ -1,5 +1,7 @@
 import type { UserDefinedOptions } from './types'
+import process from 'node:process'
 import { defuOverrideArray } from '@/utils'
+import { logger } from './logger'
 
 export interface UniAppXOptions {
   base: string
@@ -8,13 +10,15 @@ export interface UniAppXOptions {
 }
 
 export function uniAppX(options: UniAppXOptions) {
+  logger.info(`UNI_PLATFORM: ${process.env.UNI_PLATFORM}`)
+  const isApp = process.env.UNI_PLATFORM === 'app' || process.env.UNI_PLATFORM === 'app-plus'
   return defuOverrideArray<
     Partial<UserDefinedOptions>,
     Partial<UserDefinedOptions>[]
   >(
     options.rawOptions!,
     {
-      uniAppX: true,
+      uniAppX: isApp,
       // 安卓
       // ios
       rem2rpx: options.rem2rpx,

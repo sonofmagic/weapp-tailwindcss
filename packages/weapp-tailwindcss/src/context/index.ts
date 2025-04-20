@@ -56,6 +56,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cssPresetEnv,
     tailwindcss,
     tailwindcssPatcherOptions,
+    uniAppX,
   } = ctx
 
   const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
@@ -79,6 +80,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cssRemoveProperty,
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
+    uniAppX,
   })
 
   const jsHandler = createJsHandler({
@@ -90,6 +92,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     babelParserOptions,
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
+    uniAppX,
   })
 
   const templateHandler = createTemplateHandler({

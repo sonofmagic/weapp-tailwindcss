@@ -16,6 +16,7 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
     babelParserOptions,
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
+    uniAppX,
   } = options
 
   function handler(rawSource: string, classNameSet: Set<string>, options?: CreateJsHandlerOptions) {
@@ -29,6 +30,7 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
       babelParserOptions,
       ignoreCallExpressionIdentifiers,
       ignoreTaggedTemplateExpressionIdentifiers,
+      uniAppX,
     })
 
     return jsHandler(rawSource, opts)

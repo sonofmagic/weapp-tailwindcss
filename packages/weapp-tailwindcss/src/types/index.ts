@@ -43,6 +43,7 @@ export interface IJsHandlerOptions {
   babelParserOptions?: ParserOptions
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
+  uniAppX?: boolean
 }
 
 export interface IArbitraryValues {

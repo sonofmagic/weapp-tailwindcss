@@ -4,7 +4,6 @@ import type { Plugin } from 'vite'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { logger } from '@/logger'
 import { getGroupedEntries } from '@/utils'
 
 const debug = createDebug()
@@ -139,6 +138,58 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               ),
             )
           }
+
+          if (uniAppX) {
+            // uni-app-x
+            for (const element of groupedEntries.js.filter(x => x[1].type === 'asset')) {
+              const [file, originalSource] = element as [string, OutputAsset]
+              // js maybe asset
+              const rawSource = originalSource.source.toString()
+
+              const hash = cache.computeHash(rawSource)
+              cache.calcHashValueChanged(file, hash)
+              promises.push(
+                cache.process(
+                  file,
+                  () => {
+                    const source = cache.get<string>(file)
+                    if (source) {
+                      originalSource.source = source
+                      debug('js cache hit: %s', file)
+                    }
+                    else {
+                      return false
+                    }
+                  },
+                  async () => {
+                    const mapFilename = `${file}.map`
+                    const hasSourceMap = Boolean(bundle[mapFilename])
+                    const { code, map } = await jsHandler(rawSource, runtimeSet, {
+                      generateMap: hasSourceMap,
+                      uniAppX,
+                      babelParserOptions: {
+                        plugins: [
+                          'typescript',
+                        ],
+                        sourceType: 'unambiguous',
+                      },
+                    })
+                    originalSource.source = code
+                    onUpdate(file, rawSource, code)
+                    debug('js handle: %s', file)
+                    // noCachedCount++
+                    if (hasSourceMap && map) {
+                      ; (bundle[mapFilename] as OutputAsset).source = map.toString()
+                    }
+                    return {
+                      key: file,
+                      source: code,
+                    }
+                  },
+                ),
+              )
+            }
+          }
         }
 
         if (Array.isArray(groupedEntries.css)) {
@@ -192,13 +243,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   ]
   if (uniAppX) {
     // https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/js/css.ts#L40
-  // https://github.com/dcloudio/uni-app/tree/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-nvue-styler
-  // https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/android/css.ts#L31
-  // @dcloudio/uni-nvue-styler
-    logger.success('uni-app-x')
+    // https://github.com/dcloudio/uni-app/tree/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-nvue-styler
+    // https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/android/css.ts#L31
+    // @dcloudio/uni-nvue-styler
+    // logger.success('uni-app-x')
     plugins.push(
       {
-        name: 'weapp-tailwindcss:uni-app-x',
+        name: 'weapp-tailwindcss:uni-app-x:css',
         enforce: 'pre',
         async transform(code, id) {
           if (isCSSRequest(id)) {
@@ -210,7 +261,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                   from: id,
                 },
               },
-              uniAppX: true,
             })
             return {
               code: css,

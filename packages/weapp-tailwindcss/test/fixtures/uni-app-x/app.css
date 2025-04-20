@@ -1,0 +1,16 @@
+/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
+:root, :host {
+  --spacing: .25rem;
+}
+.mt-\[32\.43rpx\] {
+  margin-top: 32.43rpx;
+}
+.bg-\[\#322323\] {
+  background-color: #322323;
+}
+.px-4 {
+  padding-inline: calc(var(--spacing) * 4);
+}
+.text-\[\#844343\] {
+  color: #844343;
+}
