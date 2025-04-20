@@ -1,0 +1,39 @@
+{
+  "name": "@weapp-talwindcss/debug-uni-app-x",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.6.5",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build:watch": "unbuild --watch --sourcemap",
+    "build": "unbuild",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "defu": "6.1.4",
+    "fs-extra": "11.3.0",
+    "pathe": "2.0.3",
+    "vite": "6.3.2"
+  },
+  "devDependencies": {
+    "unbuild": "^3.5.0"
+  }
+}

@@ -250,7 +250,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     plugins.push(
       {
         name: 'weapp-tailwindcss:uni-app-x:css',
-        enforce: 'pre',
         async transform(code, id) {
           if (isCSSRequest(id)) {
             // uvue only support classname selector

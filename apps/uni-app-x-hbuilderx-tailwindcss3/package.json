@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
+    "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "^3.4.17",
     "weapp-tailwindcss": "workspace:*"
   },
