@@ -1,0 +1,16 @@
+单独创建一个 `main.css` 文件，并引入 `weapp-tailwindcss/css`。
+
+> 这是为了 `IDE` 智能提示, 目前 `Vscode` `tailwindcss` 插件不会扫描 `vue` 文件里引入的样式。
+
+```css title="main.css"
+@import "weapp-tailwindcss/css";
+@source not "unpackage";
+```
+
+在项目目录下的 `App.vue` / `App.uvue`(uni-app x 项目) 然后添加以下内容：
+
+```html title="App.vue"
+<style src="./main.css"></style>
+```
+
+> 添加 `@source not "unpackage";` 是为了避免 `HBuilderX` 差量编译死循环问题

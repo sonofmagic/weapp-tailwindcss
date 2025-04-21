@@ -34,7 +34,4 @@
 	}
 </script>
 
-<style>
-	@import "weapp-tailwindcss/uni-app-x";
-	@source not "unpackage";
-</style>
+<style src="./main.css"></style>

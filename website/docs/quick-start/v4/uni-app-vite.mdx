@@ -1,4 +1,5 @@
 import Patch from './patch.mdx'
+import UniappCliStyle from './UniappCliStyle.mdx'
 
 # uni-app cli vue3 vite
 
@@ -40,12 +41,7 @@ export default defineConfig({
 
 ## 3. 添加样式
 
-在项目目录下的 `App.vue` 中，添加以下内容：
-
-```css title="App.vue"
-@import "weapp-tailwindcss/css";
-@source not "dist";
-```
+<UniappCliStyle/>
 
 接着直接运行 `npm run dev:mp-weixin`，
 

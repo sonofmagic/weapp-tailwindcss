@@ -1,4 +1,5 @@
 import Patch from './patch.mdx'
+import UniappHbuilderStyle from './UniappHbuilderStyle.mdx'
 
 ## 1. 安装
 
@@ -51,16 +52,7 @@ export default defineConfig({
 
 ## 3. 添加样式
 
-在项目目录下的 `App.vue` / `App.uvue`(uni-app x 项目) 然后添加以下内容：
-
-```css title="App.vue"
-<style>
-	@import "weapp-tailwindcss/css";
-	@source not "unpackage";
-</style>
-```
-
-> 添加 `@source not "unpackage";` 是为了避免 `HBuilderX` 差量编译死循环问题
+<UniappHbuilderStyle/>
 
 现在，在你的页面里面去随意的编写样式，比如 `bg-[#123456] text-[#654321]`, 然后运行到微信开发者工具即可
 

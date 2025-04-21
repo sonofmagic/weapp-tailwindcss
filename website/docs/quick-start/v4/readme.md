@@ -86,3 +86,20 @@ shamefully-hoist=true
 
 然后重新执行 `pnpm i` 安装包即可运行
 
+
+## 智能提示
+
+目前 `tailwindcss@4` 的 `vscode` 插件，会扫描目录下的 `css` 来获取 `tailwindcss` 的配置。
+
+但是这里有个非常坑的点是，它不会去自动的扫描 `.vue` 文件里面的 `tailwindcss` 引入
+
+这就导致，我们假如想在 `vue` 项目(比如 `uni-app`) 中获得智能提示，必须再随便创建一个 `main.css`，然后通过 `App.vue` 文件引入它
+
+```css title="main.css"
+@import "weapp-tailwindcss/css";
+@source not "dist";
+```
+
+```html title="App.vue"
+<style src="./main.css"></style>
+```
