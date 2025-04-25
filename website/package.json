@@ -52,6 +52,8 @@
     "@docusaurus/tsconfig": "3.7.0",
     "@docusaurus/types": "3.7.0",
     "@icebreakers/deploy": "^0.1.6",
+    "@iconify-json/line-md": "^1.2.7",
+    "@iconify/tailwind": "^1.2.0",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/file-saver": "^2.0.7",

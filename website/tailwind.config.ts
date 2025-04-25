@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { addIconSelectors } from '@iconify/tailwind'
 import typography from '@tailwindcss/typography'
 import svgToDataUri from 'mini-svg-data-uri'
 import defaultTheme from 'tailwindcss/defaultTheme'
@@ -261,7 +262,15 @@ export default <Config> {
       }),
     },
   },
-  plugins: [themeTransitionPlugin(), typography],
+  plugins: [
+    themeTransitionPlugin(),
+    typography,
+    addIconSelectors({
+      prefixes: [
+        'line-md',
+      ],
+    }),
+  ],
   corePlugins: {
     preflight: false,
   },

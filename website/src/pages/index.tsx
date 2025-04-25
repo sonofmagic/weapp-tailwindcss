@@ -118,25 +118,18 @@ function HomepageHeader() {
                   <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
                     <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
                     <div className="relative flex justify-center">
-                      <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
-                        <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
-                        <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
-                        <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
-                      </svg>
+                      <div className="iconify line-md--confirm-circle-twotone absolute left-0 shrink-0 text-2xl text-sky-300/90"></div>
                       v4.x
                     </div>
 
                   </div>
+
                 </Link>
                 <Link href="/docs/quick-start/install">
                   <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
                     <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
                     <div className="relative flex justify-center">
-                      <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
-                        <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
-                        <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
-                        <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
-                      </svg>
+                      <div className="iconify line-md--confirm-circle-twotone absolute left-0 shrink-0 text-2xl text-sky-300/90"></div>
                       v3.x
                     </div>
                   </div>
@@ -145,11 +138,7 @@ function HomepageHeader() {
                   <div className="relative p-1.5 font-mono font-medium uppercase tracking-widest text-sky-800 dark:text-sky-300">
                     <div className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></div>
                     <div className="relative flex justify-center">
-                      <svg className="w-5.5 absolute left-0 h-[1lh] shrink-0" viewBox="0 0 22 22" fill="none" stroke-linecap="square">
-                        <circle cx="11" cy="11" r="11" className="fill-sky-400/25" />
-                        <circle cx="11" cy="11" r="10.5" className="stroke-sky-400/25" />
-                        <path d="M8 11.5L10.5 14L14 8" className="stroke-sky-800 dark:stroke-sky-300" />
-                      </svg>
+                      <div className="iconify line-md--confirm-circle-twotone absolute left-0 shrink-0 text-2xl text-sky-300/90"></div>
                       v2.x (jit mode)
                     </div>
 
