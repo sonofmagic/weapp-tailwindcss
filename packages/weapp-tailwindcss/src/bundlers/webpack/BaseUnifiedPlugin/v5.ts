@@ -52,7 +52,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     // react
     function getClassSetInLoader() {
       if (twPatcher.majorVersion !== 4) {
-        return twPatcher.getClassSet()
+        return twPatcher.getClassSetV3()
       }
     }
 

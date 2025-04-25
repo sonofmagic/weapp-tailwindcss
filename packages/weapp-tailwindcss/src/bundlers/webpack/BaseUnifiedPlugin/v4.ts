@@ -50,7 +50,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
     function getClassSetInLoader() {
       if (twPatcher.majorVersion !== 4) {
-        return twPatcher.getClassSet()
+        return twPatcher.getClassSetV3()
       }
     }
 
