@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.1.6-alpha.0
+
+### Patch Changes
+
+- [`23d35ac`](https://github.com/sonofmagic/weapp-tailwindcss/commit/23d35aceddb9924d60a7afc5459f518b2e356f30) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: taro vue3 的上下文获取
+
 ## 4.1.5
 
 ### Patch Changes
