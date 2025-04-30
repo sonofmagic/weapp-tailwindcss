@@ -313,6 +313,10 @@ const communitySidebar: SidebarConfig = [
   },
   {
     type: 'doc',
+    id: 'community/load-font',
+  },
+  {
+    type: 'doc',
     label: 'wxs 的转义与处理',
     id: 'quick-start/wxs',
   },
