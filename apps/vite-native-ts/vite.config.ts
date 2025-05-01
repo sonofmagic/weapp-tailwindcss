@@ -10,7 +10,7 @@ export default defineConfig({
   weapp: {
     enhance: {
       autoImportComponents: {
-        globs: ['miniprogram/components/**/*'],
+        globs: ['components/**/*'],
       },
     },
     // weapp-vite options
