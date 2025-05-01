@@ -24,8 +24,8 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.4",
-    "@tailwindcss/vite": "4.1.4",
+    "@tailwindcss/postcss": "^4.1.5",
+    "@tailwindcss/vite": "4.1.5",
     "@vitejs/plugin-vue": "^5.2.3",
     "postcss": "^8.5.3",
     "tailwindcss": "catalog:tailwindcss4",

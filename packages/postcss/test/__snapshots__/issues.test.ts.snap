@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`] = `
-"/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-blue-500: oklch(62.3% .214 259.815);
   --spacing: .25rem;
@@ -25,7 +25,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 2`] = `
-"/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
@@ -62,7 +62,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`] = `
-"/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-blue-100: oklch(93.2% .032 255.585);
 }
@@ -85,7 +85,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 2`] = `
-"/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-blue-100: rgb(219, 234, 254);
 }
