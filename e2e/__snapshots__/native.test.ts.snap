@@ -8,8 +8,8 @@ exports[`e2e native > 'vite-native' > css 1`] = `
 }
 view,
 text,
-:before,
-:after,
+::before,
+::after,
 ::backdrop {
   --tw-space-y-reverse: 0;
   --tw-space-x-reverse: 0;
@@ -32,9 +32,12 @@ page,
 :host {
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
+  --color-green-300: rgb(123, 241, 168);
   --color-blue-200: rgb(190, 219, 255);
   --color-blue-500: rgb(50, 128, 255);
   --color-pink-300: rgb(253, 165, 213);
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
   --spacing: 8rpx;
 }
 @supports (color: color(display-p3 0 0 0%)) {
@@ -95,17 +98,20 @@ text,
   }
 }
 .i-mdi-home {
+  display: inline-block;
   width: 1em;
   height: 1em;
+  background-color: currentColor;
   -webkit-mask-image: var(--svg);
   mask-image: var(--svg);
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-  background-color: currentColor;
-  display: inline-block;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+}
+.flex {
+  display: flex;
 }
 .inline-block {
   display: inline-block;
@@ -126,11 +132,17 @@ text,
 .h-_45px_ {
   height: 45px;
 }
+.min-h-screen {
+  min-height: 100vh;
+}
 .w-_50px_ {
   width: 50px;
 }
 .w-_323px_ {
   width: 323px;
+}
+.flex-col {
+  flex-direction: column;
 }
 .space-y-2d5 > view + view,
 .space-y-2d5 > view + text,
@@ -166,7 +178,15 @@ text,
   background-color: var(--color-amber-300);
 }
 .bg-blue-500s30 {
-  background-color: rgba(48, 128, 255, 0.30196);
+  background-color: rgba(50, 128, 255, 0.3);
+}
+@media (color-gamut: p3) {
+  .bg-blue-500s30 {
+    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.3);
+  }
+}
+.bg-zinc-50 {
+  background-color: var(--color-zinc-50);
 }
 .bg-gradient-to-b {
   --tw-gradient-position: to bottom;
@@ -198,6 +218,9 @@ text,
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
 .text-_100px_ {
   font-size: 100px;
 }
@@ -213,6 +236,11 @@ text,
 .text-red-700 {
   color: var(--color-red-700);
 }
+@media (prefers-color-scheme: dark) {
+  .darkcbg-zinc-900 {
+    background-color: var(--color-zinc-900);
+  }
+}
 /*$vite$:1*/
 "
 `;
@@ -223,7 +251,7 @@ exports[`e2e native > 'vite-native' > json 1`] = `
 `;
 
 exports[`e2e native > 'vite-native' > wxml 1`] = `
-"<scroll-view scroll-y="" type="list">
+"<scroll-view scroll-y="" type="list" enable-back-to-top="">
   <view class="space-y-2d5">
     <view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
     <view class="bg-_h3a32d1_ text-_100rpx_ text-red-700 w-_323px_ h-_45px_">222</view>
@@ -239,6 +267,7 @@ exports[`e2e native > 'vite-native' > wxml 1`] = `
     <view class="i-mdi-home"></view>
     <view class="hovercborder-blue-200s20">111</view>
     <view class="size-12 bg-blue-500s30 text-pink-300">BLUE BLOCK</view>
+    <view class="min-h-screen flex flex-col p-4 bg-zinc-50 darkcbg-zinc-900"><view class="darkchovercbg-green-300">Test</view></view>
   </view>
 </scroll-view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
@@ -679,6 +708,7 @@ exports[`e2e native > 'vite-native-ts' > wxml 1`] = `
       </button>
     </view>
   </view>
+  <view class="darkchovercborder-green-300 darkchovercbg-gray-600">111222</view>
 </view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
