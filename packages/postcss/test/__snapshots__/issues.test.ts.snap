@@ -155,3 +155,89 @@ view,text,:after,:before,::backdrop {
     }
   }"
 `;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 case 0 1`] = `
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+:root, :host {
+  --color-green-300: oklch(87.1% .15 154.449);
+  --color-zinc-50: oklch(98.5% 0 0);
+  --color-zinc-900: oklch(21% .006 285.885);
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.flex {
+  display: flex;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.flex-col {
+  flex-direction: column;
+}
+.bg-zinc-50 {
+  background-color: var(--color-zinc-50);
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
+.dark\\:bg-zinc-900 {
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-zinc-900);
+  }
+}
+.dark\\:hover\\:bg-green-300 {
+  @media (prefers-color-scheme: dark) {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-green-300);
+      }
+    }
+  }
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 case 0 2`] = `
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+page,:host {
+  --color-green-300: rgb(123, 241, 168);
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
+  --spacing: .25rem;
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.flex {
+  display: flex;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.flex-col {
+  flex-direction: column;
+}
+.bg-zinc-50 {
+  background-color: var(--color-zinc-50);
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
+@media (prefers-color-scheme: dark) {
+.darkcbg-zinc-900 {
+    background-color: var(--color-zinc-900);
+}
+  }
+@media (prefers-color-scheme: dark) {
+    .darkchovercbg-green-300:hover {
+        background-color: var(--color-green-300);
+    }
+  }"
+`;

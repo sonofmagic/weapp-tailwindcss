@@ -48,9 +48,11 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
           }
         }
       })
-
-      opts.cssRemoveProperty && root.walkAtRules('property', (rule) => {
-        rule.remove()
+      root.walkAtRules((atRule) => {
+        if (opts.cssRemoveProperty && atRule.name === 'property') {
+          atRule.remove()
+        }
+        atRule.nodes?.length === 0 && atRule.remove()
       })
     }
   }

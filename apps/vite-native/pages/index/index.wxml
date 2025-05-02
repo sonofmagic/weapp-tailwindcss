@@ -18,5 +18,8 @@
     <view class="i-mdi-home"></view>
     <view class="hover:border-blue-200/20">111</view>
     <view class='size-12 bg-blue-500/30 text-pink-300'>BLUE BLOCK</view>
+    <view class="min-h-screen flex flex-col p-4 bg-zinc-50 dark:bg-zinc-900">
+      <view class="dark:hover:bg-green-300">Test</view>
+    </view>
   </view>
 </scroll-view>
