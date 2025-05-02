@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.12
+
+### Patch Changes
+
+- [`5d27de5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5d27de5a509da6984e77036da8a176e0570ba5c1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 检测生成空的 atRule 节点时，移除空节点
+
 ## 1.0.11
 
 ### Patch Changes
