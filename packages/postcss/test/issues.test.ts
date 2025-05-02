@@ -38,4 +38,16 @@ describe('issues', () => {
     })
     expect(css).toMatchSnapshot()
   })
+
+  it('https://github.com/sonofmagic/weapp-tailwindcss/issues/638', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/638'))
+    expect(code.css).toMatchSnapshot()
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code.css, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
 })

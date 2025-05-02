@@ -99,3 +99,59 @@ view,text,:after,:before,::backdrop {
       border-color: rgba(219, 234, 254, 0.2);
   }"
 `;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 1`] = `
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+:root, :host {
+  --color-green-300: oklch(87.1% .15 154.449);
+  --color-gray-600: oklch(44.6% .03 256.802);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.dark\\:hover\\:border-green-300 {
+  @media (prefers-color-scheme: dark) {
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--color-green-300);
+      }
+    }
+  }
+}
+.dark\\:hover\\:bg-gray-600 {
+  @media (prefers-color-scheme: dark) {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-600);
+      }
+    }
+  }
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 2`] = `
+"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+page,:host {
+  --color-green-300: rgb(123, 241, 168);
+  --color-gray-600: rgb(74, 85, 101);
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+@media (prefers-color-scheme: dark) {
+    .darkchovercborder-green-300:hover {
+        border-color: var(--color-green-300);
+    }
+  }
+@media (prefers-color-scheme: dark) {
+    .darkchovercbg-gray-600:hover {
+        background-color: var(--color-gray-600);
+    }
+  }"
+`;
