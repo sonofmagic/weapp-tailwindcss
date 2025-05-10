@@ -31,7 +31,7 @@
     "defu": "6.1.4",
     "fs-extra": "11.3.0",
     "pathe": "2.0.3",
-    "vite": "6.3.4"
+    "vite": "6.3.5"
   },
   "devDependencies": {
     "unbuild": "^3.5.0"

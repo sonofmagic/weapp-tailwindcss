@@ -786,7 +786,7 @@ button:not(#n),input:not(#n),:not(#n)::file-selector-button {
 `;
 
 exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
-"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
 @layer properties;
 :root, :host {
   --color-zinc-800: oklch(27.4% .006 286.033);
@@ -984,7 +984,7 @@ exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
 `;
 
 exports[`tailwindcss v4 > weapp-tailwindcss default 1`] = `
-"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
 ::before,::after {
       --tw-content: "";
 }
@@ -1057,7 +1057,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`] = `
-"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme {
   :root, :host {
@@ -1262,7 +1262,7 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`]
 `;
 
 exports[`tailwindcss v4 > weapp-tailwindcss default with layer 1`] = `
-"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
 :not(#n):not(#n):not(#n):not(#n)::before,:not(#n):not(#n):not(#n):not(#n)::after {
       --tw-content: "";
 }
