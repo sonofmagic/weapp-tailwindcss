@@ -14,9 +14,9 @@ export default defineConfig({
         rem2rpx: true,
       }),
     ),
-    debugX({
-      cwd: __dirname,
-    }),
+    // debugX({
+    //   cwd: __dirname,
+    // }),
   ],
   css: {
     postcss: {

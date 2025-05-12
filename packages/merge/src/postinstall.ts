@@ -4,7 +4,7 @@ import { getPackageInfoSync } from 'local-pkg'
 import satisfies from 'semver/functions/satisfies.js'
 
 function main() {
-  const distDir = path.resolve(import.meta.dirname, '../dist')
+  const distDir = path.resolve(__dirname, '../dist')
 
   if (!fs.existsSync(distDir)) {
     return
@@ -16,7 +16,7 @@ function main() {
     return
   }
 
-  const tailwindVersion = packageInfo.version
+  const tailwindVersion = packageInfo.version!
 
   let targetVersion = 3
 
