@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.2.0
+
+### Minor Changes
+
+- [`e13d072`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e13d072524100b0ff7292e2e316b40d5cdadedb5) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 更新 tailwindcss-merge 版本
+
 ## 1.1.1
 
 ### Patch Changes
