@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "catalog:tailwindcss3",
     "weapp-tailwindcss": "workspace:*"
   },
   "pnpm": {

@@ -185,13 +185,13 @@
     "@weapp-tailwindcss/mangle": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "debug": "~4.4.0",
+    "debug": "~4.4.1",
     "htmlparser2": "10.0.0",
     "loader-utils": "2.0.4",
     "local-pkg": "^1.1.1",
     "lru-cache": "10.4.3",
     "magic-string": "0.30.17",
-    "semver": "~7.7.1",
+    "semver": "~7.7.2",
     "tailwindcss-patch": "~7.1.1",
     "webpack-sources": "3.2.3"
   }
