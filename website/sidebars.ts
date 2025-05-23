@@ -214,6 +214,11 @@ const issuesSidebar: SidebarConfig = [
     type: 'doc',
     id: 'issues/rpx-ambiguities',
   },
+  // 写在 js 中的 tailwindcss 任意值
+  {
+    type: 'doc',
+    id: 'issues/js-string-invalid',
+  },
   {
     type: 'doc',
     id: 'options/comments',

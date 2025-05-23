@@ -1,15 +1,15 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`utilities > only theme 1`] = `"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */"`;
+exports[`utilities > only theme 1`] = `"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */"`;
 
-exports[`utilities > only theme 2`] = `"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */"`;
+exports[`utilities > only theme 2`] = `"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */"`;
 
-exports[`utilities > only utilities 1`] = `"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */"`;
+exports[`utilities > only utilities 1`] = `"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */"`;
 
-exports[`utilities > only utilities 2`] = `"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */"`;
+exports[`utilities > only utilities 2`] = `"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */"`;
 
 exports[`utilities > utilities + custom theme 1`] = `
-"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
 :root, :host {
   --spacing: 0.25rem;
 }
@@ -20,7 +20,7 @@ exports[`utilities > utilities + custom theme 1`] = `
 `;
 
 exports[`utilities > utilities + custom theme 2`] = `
-"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
 page,:host {
   --spacing: 0.25rem;
 }
@@ -31,7 +31,7 @@ page,:host {
 `;
 
 exports[`utilities > utilities + theme + rgb 1`] = `
-"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-red-500: rgb(251, 44, 54);
   --color-blue-500: rgb(43, 127, 255);
@@ -53,7 +53,7 @@ exports[`utilities > utilities + theme + rgb 1`] = `
 `;
 
 exports[`utilities > utilities + theme + rgb 2`] = `
-"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-red-500: rgb(251, 44, 54);
   --color-blue-500: rgb(43, 127, 255);
@@ -72,7 +72,7 @@ page,:host {
 `;
 
 exports[`utilities > utilities + theme 1`] = `
-"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-red-500: oklch(63.7% .237 25.331);
   --color-blue-500: oklch(62.3% .214 259.815);
@@ -94,7 +94,7 @@ exports[`utilities > utilities + theme 1`] = `
 `;
 
 exports[`utilities > utilities + theme 2`] = `
-"/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-red-500: rgb(251, 44, 54);
   --color-blue-500: rgb(50, 128, 255);
