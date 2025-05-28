@@ -6,9 +6,13 @@
 
 然而在 `h5` 和 `app` 中，它们本来就是 `tailwindcss` 支持的环境，所以是没有必要开启本插件的。
 
-所以你可以这样传入 `disabled` 选项, 这里我们以 `uni-app` 为例:
+所以你可以这样传入 `disabled` 选项。
 
-```js
+### uni-app 示例
+
+比如 `uni-app`:
+
+```js title="vite.config.[jt]s"
 const isH5 = process.env.UNI_PLATFORM === "h5";
 // uni-app v2
 // const isApp = process.env.UNI_PLATFORM === "app-plus";
@@ -26,6 +30,34 @@ const vitePlugins = [
   })
 ];
 ```
+
+### Taro 示例
+
+```js title="config/index.ts"
+const isH5 = process.env.TARO_ENV === "h5";
+const isApp = process.env.TARO_ENV === "rn";
+// highlight-next-line
+const WeappTailwindcssDisabled = isH5 || isApp;
+
+webpackChain(chain) {
+  chain.merge({
+    plugin: {
+      install: {
+        plugin: UnifiedWebpackPluginV5,
+        args: [
+          {
+            // highlight-next-line
+            disabled: WeappTailwindcssDisabled,
+            rem2rpx: true
+          }
+        ]
+      }
+    }
+  });
+},
+```
+
+其他的框架，请自行在对应的文档中，发掘不同目标平台的环境变量判断方式。
 
 ## uni-app 打包安卓 `rgb()` 颜色失效问题
 
