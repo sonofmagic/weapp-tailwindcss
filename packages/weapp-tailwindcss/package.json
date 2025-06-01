@@ -175,8 +175,8 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/parser": "~7.27.3",
-    "@babel/traverse": "~7.27.3",
+    "@babel/parser": "~7.27.4",
+    "@babel/traverse": "~7.27.4",
     "@babel/types": "~7.27.3",
     "@weapp-core/escape": "~4.0.1",
     "@weapp-core/regex": "~1.0.1",

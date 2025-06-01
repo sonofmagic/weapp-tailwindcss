@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
+    "@tailwindcss/postcss": "^4.1.8",
     "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "catalog:tailwindcss4",
     "weapp-tailwindcss": "workspace:*"

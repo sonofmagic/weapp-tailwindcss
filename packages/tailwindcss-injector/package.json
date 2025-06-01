@@ -57,7 +57,7 @@
     "fs-extra": "^11.3.0",
     "htmlparser2": "^10.0.0",
     "magic-string": "^0.30.17",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.4",
     "tailwindcss": "^3.4.17",
     "tailwindcss-config": "workspace:*"
   }

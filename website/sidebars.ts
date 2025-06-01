@@ -26,7 +26,14 @@ const tutorialSidebar: SidebarConfig = [
             id: 'quick-start/this-plugin',
           },
           {
-            items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
+            items: [
+              {
+                type: 'category',
+                label: 'uni-app',
+                items: ['uni-app', 'uni-app-vite', 'hbuilderx'].map(x => `quick-start/frameworks/${x}`),
+              },
+              ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
+            ],
             label: '3. 各个框架的注册方式',
             type: 'category',
             collapsed: true,
@@ -70,54 +77,60 @@ const tutorialSidebar: SidebarConfig = [
       },
       {
         type: 'category',
-        label: 'uni-app',
-        collapsed: false,
+        label: '各个框架的注册方式',
         items: [
           {
-            type: 'doc',
-            label: 'Vite Vue3 CLI',
-            id: 'quick-start/v4/uni-app-vite',
+            type: 'category',
+            label: 'uni-app',
+            collapsed: true,
+            items: [
+              {
+                type: 'doc',
+                label: 'Vite Vue3 CLI',
+                id: 'quick-start/v4/uni-app-vite',
+              },
+              {
+                type: 'doc',
+                label: 'Webpack Vue2 CLI',
+                id: 'quick-start/v4/uni-app-webpack',
+              },
+              {
+                type: 'doc',
+                label: 'HBuilderX',
+                id: 'quick-start/v4/uni-app-vite-hbuilder',
+              },
+              {
+                type: 'doc',
+                label: 'uni-app x',
+                id: 'quick-start/v4/uni-app-x',
+              },
+            ],
+          },
+          {
+            type: 'category',
+            label: 'Taro',
+            items: [
+              {
+                type: 'doc',
+                label: 'Webpack',
+                id: 'quick-start/v4/taro-webpack',
+              },
+              {
+                type: 'doc',
+                label: 'Vite',
+                id: 'quick-start/v4/taro-vite',
+              },
+            ],
           },
           {
             type: 'doc',
-            label: 'Webpack Vue2 CLI',
-            id: 'quick-start/v4/uni-app-webpack',
+            id: 'quick-start/v4/weapp-vite',
           },
           {
             type: 'doc',
-            label: 'HBuilderX',
-            id: 'quick-start/v4/uni-app-vite-hbuilder',
-          },
-          {
-            type: 'doc',
-            label: 'uni-app x',
-            id: 'quick-start/v4/uni-app-x',
+            id: 'quick-start/v4/mpx',
           },
         ],
-      },
-      {
-        type: 'category',
-        label: 'Taro',
-        items: [
-          {
-            type: 'doc',
-            label: 'Webpack',
-            id: 'quick-start/v4/taro-webpack',
-          },
-          {
-            type: 'doc',
-            label: 'Vite',
-            id: 'quick-start/v4/taro-vite',
-          },
-        ],
-      },
-      {
-        type: 'doc',
-        id: 'quick-start/v4/weapp-vite',
-      },
-      {
-        type: 'doc',
-        id: 'quick-start/v4/mpx',
       },
     ],
   },

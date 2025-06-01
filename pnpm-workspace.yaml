@@ -10,8 +10,8 @@ catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.17
   tailwindcss4:
-    tailwindcss: ^4.1.7
-    tailwindcss4: npm:tailwindcss@^4.1.7
+    tailwindcss: ^4.1.8
+    tailwindcss4: npm:tailwindcss@^4.1.8
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild

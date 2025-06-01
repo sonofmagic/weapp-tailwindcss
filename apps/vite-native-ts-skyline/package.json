@@ -28,7 +28,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "autoprefixer": "^10.4.21",
     "miniprogram-api-typings": "^4.0.7",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.4",
     "tailwindcss": "catalog:tailwindcss3",
     "typescript": "^5.8.3",
     "weapp-tailwindcss": "workspace:*",
