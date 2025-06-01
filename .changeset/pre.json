@@ -1,0 +1,32 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@weapp-talwindcss/debug-uni-app-x": "0.0.0",
+    "uni-app-x-hbuilderx-tailwindcss3": "0.0.0",
+    "uni-app-x-hbuilderx-tailwindcss4": "0.0.0",
+    "vite-native": "1.0.6",
+    "vite-native-skyline": "1.0.1",
+    "vite-native-ts": "1.0.11",
+    "vite-native-ts-skyline": "1.0.1",
+    "vue-app": "0.0.0",
+    "weapp-wechat-zhihu": "1.0.0",
+    "@native-app/postcss7-compat": "1.0.1",
+    "benchmark": "0.0.1",
+    "@weapp-tailwindcss/babel": "0.0.1",
+    "@weapp-tailwindcss/init": "1.0.2",
+    "@weapp-tailwindcss/logger": "1.0.1",
+    "@weapp-tailwindcss/mangle": "1.0.4",
+    "@weapp-tailwindcss/merge": "1.2.0",
+    "@weapp-tailwindcss/postcss": "1.0.12",
+    "@weapp-tailwindcss/shared": "1.0.2",
+    "tailwindcss-config": "1.0.0",
+    "tailwindcss-core-plugins-extractor": "0.2.0",
+    "tailwindcss-injector": "1.0.2",
+    "theme-transition": "1.0.1",
+    "weapp-tailwindcss": "4.1.7",
+    "@weapp-tailwindcss/typography": "0.2.4",
+    "website": "0.0.7"
+  },
+  "changesets": []
+}

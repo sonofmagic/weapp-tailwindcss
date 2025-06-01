@@ -1,6 +1,6 @@
-import type { UserDefinedOptions } from '@/types'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
+import type { UserDefinedOptions } from '@/types'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -221,6 +221,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                         from: file,
                       },
                     },
+                    majorVersion: twPatcher.majorVersion,
                   })
                   originalSource.source = css
                   onUpdate(file, rawSource, css)

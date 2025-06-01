@@ -1,13 +1,13 @@
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 // webpack 4
 import type { Compiler } from 'webpack4'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
+import { ConcatSource, RawSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { getGroupedEntries, removeExt } from '@/utils'
-import { ConcatSource, RawSource } from 'webpack-sources'
 
 const debug = createDebug()
 
@@ -223,6 +223,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                       from: file,
                     },
                   },
+                  majorVersion: twPatcher.majorVersion,
                 })
                 const source = new ConcatSource(css)
                 // @ts-ignore

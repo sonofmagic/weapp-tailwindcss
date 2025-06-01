@@ -59,6 +59,7 @@ export type IStyleHandlerOptions = {
     media?: boolean
   }
   uniAppX?: boolean
+  majorVersion?: number
 } & RequiredStyleHandlerOptions
 
 export interface UserDefinedPostcssOptions {

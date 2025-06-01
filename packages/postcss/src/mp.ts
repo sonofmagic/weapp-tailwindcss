@@ -1,9 +1,17 @@
 import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
-import cssVars from './cssVars'
+import cssVarsV3 from './cssVarsV3'
+import cssVarsV4 from './cssVarsV4'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 
-const initialNodes = cssVars.map((x) => {
+const cssVarsV3Nodes = cssVarsV3.map((x) => {
+  return new Declaration({
+    prop: x.prop,
+    value: x.value,
+  })
+})
+
+export const cssVarsV4Nodes = cssVarsV4.map((x) => {
   return new Declaration({
     prop: x.prop,
     value: x.value,
@@ -70,6 +78,10 @@ export function testIfTwBackdrop(node: Rule, count = 2) {
   return false
 }
 
+export function testIfRootHostForV4(node: Rule) {
+  return node.type === 'rule' && node.selector.includes(':root') && node.selector.includes(':host')
+}
+
 export function makePseudoVarRule() {
   const pseudoVarRule = new Rule({
     // selectors: ['::before', '::after'],
@@ -129,10 +141,11 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
       node.append(...cssInjectPreflight())
     }
   }
-  if (injectAdditionalCssVarScope && testIfTwBackdrop(node)) {
+  const isTailwindcss4 = options.majorVersion === 4
+  if (injectAdditionalCssVarScope && (isTailwindcss4 ? testIfRootHostForV4(node) : testIfTwBackdrop(node))) {
     const syntheticRule = new Rule({
       selectors: ['*', '::after', '::before'],
-      nodes: initialNodes,
+      nodes: isTailwindcss4 ? cssVarsV4Nodes : cssVarsV3Nodes,
     })
     syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
     node.before(syntheticRule)

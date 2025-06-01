@@ -1,4 +1,4 @@
-import cssVars from '@/cssVars'
+import cssVars from '@/cssVarsV3'
 
 describe('cssVars', () => {
   it('snap', () => {

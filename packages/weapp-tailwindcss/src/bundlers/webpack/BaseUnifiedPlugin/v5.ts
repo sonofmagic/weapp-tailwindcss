@@ -1,6 +1,6 @@
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 // webpack 5
 import type { Compiler } from 'webpack'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
 import { pluginName } from '@/constants'
@@ -220,6 +220,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                           from: file,
                         },
                       },
+                      majorVersion: twPatcher.majorVersion,
                     })
                     const source = new ConcatSource(css)
                     compilation.updateAsset(file, source)

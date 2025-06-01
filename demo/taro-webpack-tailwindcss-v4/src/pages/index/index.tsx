@@ -15,6 +15,7 @@ export default function Index() {
       <View className='bg-purple-800 text-pink-200'>
         11
       </View>
+      <View className='h-14 bg-gradient-to-r from-cyan-500 to-blue-500'></View>
     </>
 
   )

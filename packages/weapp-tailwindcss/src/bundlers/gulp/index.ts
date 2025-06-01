@@ -1,5 +1,5 @@
-import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
 import type File from 'vinyl'
+import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
@@ -49,6 +49,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
             async () => {
               const { css } = await styleHandler(rawSource, {
                 isMainChunk: true,
+                majorVersion: twPatcher.majorVersion,
                 ...options,
               })
               file.contents = Buffer.from(css)

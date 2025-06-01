@@ -66,6 +66,14 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
             namingPattern: 'module', // 转换模式，取值为 global/module
             generateScopedName: '[name]__[local]___[hash:base64:5]'
           }
+        },
+        // 最简单解决变量的方式，把 enable 设置为 false
+        htmltransform: {
+          enable: true,
+          // config:{
+          //   // https://github.com/NervJS/taro/blob/0eddaa86c8115bd99db073c98aca9b3af6031cc7/packages/postcss-html-transform/src/index.ts#L44
+          //   removeCursorStyle
+          // }
         }
       },
     },
