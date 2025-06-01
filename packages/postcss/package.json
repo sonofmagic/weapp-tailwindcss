@@ -24,7 +24,13 @@
       "types": "./dist/types.d.ts",
       "import": "./dist/types.mjs",
       "require": "./dist/types.js"
-    }
+    },
+    "./html-transform": {
+      "types": "./dist/html-transform.d.ts",
+      "import": "./dist/html-transform.mjs",
+      "require": "./dist/html-transform.js"
+    },
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
