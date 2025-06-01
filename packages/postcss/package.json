@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/postcss",
-  "version": "1.0.12",
+  "version": "1.0.13-beta.0",
   "description": "@weapp-tailwindcss/postcss",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

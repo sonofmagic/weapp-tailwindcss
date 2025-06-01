@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.1.8-beta.0
+
+### Patch Changes
+
+- [`ddae06d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ddae06d0c3004234526c2b98f092d76f76c829df) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: injectAdditionalCssVarScope for tailwindcss@4
+
+- Updated dependencies [[`ddae06d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ddae06d0c3004234526c2b98f092d76f76c829df)]:
+  - @weapp-tailwindcss/postcss@1.0.13-beta.0
+
 ## 4.1.7
 
 ### Patch Changes
