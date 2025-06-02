@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.1.8-beta.2
+
+### Patch Changes
+
+- [`5d89878`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5d89878854e1b707ed4afafffee096ec19976bae) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: default remove postcss-html-transform
+
 ## 4.1.8-beta.1
 
 ### Patch Changes
