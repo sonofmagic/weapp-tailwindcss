@@ -1,5 +1,18 @@
 # weapp-tailwindcss
 
+## 4.1.8
+
+### Patch Changes
+
+- [`5d89878`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5d89878854e1b707ed4afafffee096ec19976bae) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: default remove postcss-html-transform
+
+- [`32f3b12`](https://github.com/sonofmagic/weapp-tailwindcss/commit/32f3b12eac220094e8cdcc5eba2a7dc0469a3e22) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add postcss-html-transform plugin
+
+- [`ddae06d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ddae06d0c3004234526c2b98f092d76f76c829df) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: injectAdditionalCssVarScope for tailwindcss@4
+
+- Updated dependencies [[`32f3b12`](https://github.com/sonofmagic/weapp-tailwindcss/commit/32f3b12eac220094e8cdcc5eba2a7dc0469a3e22), [`ddae06d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ddae06d0c3004234526c2b98f092d76f76c829df)]:
+  - @weapp-tailwindcss/postcss@1.0.13
+
 ## 4.1.8-beta.2
 
 ### Patch Changes
