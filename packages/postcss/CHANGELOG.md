@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.13-beta.1
+
+### Patch Changes
+
+- [`32f3b12`](https://github.com/sonofmagic/weapp-tailwindcss/commit/32f3b12eac220094e8cdcc5eba2a7dc0469a3e22) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: add postcss-html-transform plugin
+
 ## 1.0.13-beta.0
 
 ### Patch Changes
