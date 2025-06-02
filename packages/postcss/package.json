@@ -47,23 +47,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
-      },
-      "./types": {
-        "types": "./dist/types.d.ts",
-        "import": "./dist/types.mjs",
-        "require": "./dist/types.js"
-      }
-    },
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts"
-  },
   "dependencies": {
     "@weapp-core/escape": "~4.0.1",
     "@weapp-tailwindcss/shared": "workspace:*",

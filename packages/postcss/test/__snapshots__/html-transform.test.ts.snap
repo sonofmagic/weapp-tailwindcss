@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`html-transform > should  1`] = `
+"*{}
+      * .h5-div{}
+      * > .h5-p{}
+      * + .h5-span{}
+      * ~ .h5-a{}
+      * .class{}
+      * #id{}
+      *[attr]{}
+      *:not(.class){}
+      *:not(#id){}
+      *:not([attr]){}
+      #app * .h5-span{}
+      #app > * + .h5-span{}
+      #app ~ * > .h5-a{}
+      #app > * + .h5-span{}
+      #app > * + .h5-span > .h5-a{}
+      #app > * + .h5-span > .h5-a + .h5-b{}"
+`;

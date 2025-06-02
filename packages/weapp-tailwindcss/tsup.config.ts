@@ -17,6 +17,7 @@ export default defineConfig(
         'escape': 'src/escape.ts',
         'presets': 'src/presets.ts',
         'types': 'src/types/index.ts',
+        'postcss-html-transform': 'src/postcss-html-transform.ts',
       },
       dts: true,
       clean: true,

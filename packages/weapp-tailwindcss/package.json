@@ -101,6 +101,11 @@
       "import": "./dist/types.mjs",
       "require": "./dist/types.js"
     },
+    "./postcss-html-transform": {
+      "types": "./dist/postcss-html-transform.d.ts",
+      "import": "./dist/postcss-html-transform.mjs",
+      "require": "./dist/postcss-html-transform.js"
+    },
     "./package.json": "./package.json",
     "./index.css": "./index.css",
     "./index": "./index.css",
