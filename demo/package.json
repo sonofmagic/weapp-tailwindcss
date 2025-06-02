@@ -60,15 +60,15 @@
   },
   "author": "ice breaker <1324318532@qq.com>",
   "devDependencies": {
-    "@weapp-tailwindcss/merge": "^1.1.1",
+    "@weapp-tailwindcss/merge": "^1.2.0",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "3",
     "tailwindcss-patch": "^7.1.1",
     "tailwindcss-rem2px-preset": "^1.0.3",
-    "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.7",
+    "weapp-ide-cli": "^2.0.12",
+    "weapp-tailwindcss": "^4.1.8",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }

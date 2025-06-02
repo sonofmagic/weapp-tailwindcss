@@ -74,7 +74,7 @@
     "@typescript-eslint/parser": "^8.19.1",
     "@vue/babel-plugin-jsx": "^1.1.5",
     "@vue/compiler-sfc": "^3.5.13",
-    "@weapp-tailwindcss/merge": "^1.1.1",
+    "@weapp-tailwindcss/merge": "^1.2.0",
     "autoprefixer": "^10.4.19",
     "babel-preset-taro": "3.6.35",
     "cross-env": "^7.0.3",
@@ -93,8 +93,8 @@
     "typescript": "~5.7.3",
     "unplugin-vue-components": "^28.0.0",
     "vue-loader": "^17.2.2",
-    "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.7",
+    "weapp-ide-cli": "^2.0.12",
+    "weapp-tailwindcss": "^4.1.8",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.97.1"
   }

@@ -70,17 +70,17 @@
     "@egoist/tailwindcss-icons": "^1.9.0",
     "@iconify-json/lucide": "^1.2.29",
     "@iconify-json/mdi": "^1.2.3",
-    "@tailwindcss/vite": "^4.1.5",
+    "@tailwindcss/vite": "^4.1.8",
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.7.0",
-    "@weapp-tailwindcss/merge": "^1.1.1",
-    "tailwindcss": "^4.1.5",
+    "@weapp-tailwindcss/merge": "^1.2.0",
+    "tailwindcss": "^4.1.8",
     "tailwindcss-patch": "^7.1.1",
     "typescript": "^5.8.2",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.8",
-    "weapp-ide-cli": "^2.0.10",
-    "weapp-tailwindcss": "^4.1.7"
+    "weapp-ide-cli": "^2.0.12",
+    "weapp-tailwindcss": "^4.1.8"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
