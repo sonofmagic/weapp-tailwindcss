@@ -29,6 +29,7 @@
     "website": "0.0.7"
   },
   "changesets": [
+    "nasty-pandas-write",
     "real-nails-tell"
   ]
 }
