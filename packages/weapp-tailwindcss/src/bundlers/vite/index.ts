@@ -45,9 +45,24 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   onLoad()
   // 要在 vite:css 处理之前运行
   const plugins: Plugin[] = [
+    // {
+    //   name: `${vitePluginName}:pre`,
+    //   enforce: 'pre',
+    // },
     {
-      name: vitePluginName,
+      name: `${vitePluginName}:post`,
       enforce: 'post',
+      configResolved(config) {
+        if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
+          const idx = config.css.postcss.plugins.findIndex(x =>
+            // @ts-ignore
+            x.postcssPlugin === 'postcss-html-transform')
+          if (idx !== -1) {
+            config.css.postcss.plugins.splice(idx, 1)
+            debug('remove postcss-html-transform plugin from vite config')
+          }
+        }
+      },
       async generateBundle(_opt, bundle) {
         debug('start')
         onStart()
