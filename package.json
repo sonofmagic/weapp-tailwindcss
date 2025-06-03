@@ -152,7 +152,7 @@
     "@types/webpack": "^5.28.5",
     "@types/webpack-sources": "^3.2.3",
     "@types/webpack4": "npm:@types/webpack@^4.41.39",
-    "@vitest/coverage-v8": "~3.1.4",
+    "@vitest/coverage-v8": "~3.2.0",
     "@vitest/ui": "~3.1.4",
     "@weapp-tailwindcss/shared": "workspace:*",
     "anymatch": "^3.1.3",
