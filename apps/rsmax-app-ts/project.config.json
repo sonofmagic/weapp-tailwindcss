@@ -1,0 +1,12 @@
+{
+  "miniprogramRoot": "dist/xhs",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true
+  },
+  "appid": "testAppId",
+  "projectname": "Rsmax xhs Template"
+}
