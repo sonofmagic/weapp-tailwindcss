@@ -1,15 +1,15 @@
 import { Image, Text, View } from 'rsmax/one'
-import styles from './index.css'
 
 export default () => {
   return (
-    <View className={styles.app}>
-      <View className={styles.header}>
+    <View className="px-6 text-center">
+      <View className="flex h-screen flex-col items-center justify-center">
         <Image
           src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*OGyZSI087zkAAAAAAAAAAABkARQnAQ"
-          className={styles.logo}
+          className="mx-auto size-24 animate-spin"
+          mode="aspectFit"
         />
-        <View className={styles.text}>
+        <View className="mt-4 text-2xl font-bold text-[#e4d4e0] ">
           编辑
           {' '}
           <Text>src/pages/index/index.js</Text>

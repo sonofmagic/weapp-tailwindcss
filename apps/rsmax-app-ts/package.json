@@ -8,10 +8,11 @@
   "keywords": [],
   "main": "index.js",
   "scripts": {
-    "dev": "rsmax build -w -t",
-    "build": "cross-env NODE_ENV=production rsmax build -t",
+    "dev": "rsmax build -w -t wechat",
+    "build": "cross-env NODE_ENV=production rsmax build -t wechat",
     "analyze": "rsmax build -t -a",
-    "open": "weapp open -p"
+    "open": "weapp open -p",
+    "postinstall": "weapp-tw patch"
   },
   "dependencies": {
     "react": "^18.3",
@@ -20,7 +21,11 @@
   },
   "devDependencies": {
     "@types/react": "^18.3",
+    "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.2",
-    "typescript": "^5.8.3"
+    "postcss": "^8.5.4",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3",
+    "weapp-tailwindcss": "workspace:*"
   }
 }
