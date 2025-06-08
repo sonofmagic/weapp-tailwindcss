@@ -1,0 +1,3 @@
+<view>hello weapp-vite!</view>
+<view class="{{mergedClass}}">from miniprogram/pages/index/merge/index</view>
+<view class="{{mergedClassV4}}">from miniprogram/pages/index/merge/index</view>

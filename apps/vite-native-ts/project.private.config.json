@@ -4,5 +4,18 @@
   "setting": {
     "compileHotReLoad": true
   },
-  "libVersion": "3.8.2"
+  "libVersion": "3.8.2",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/index/merge/index",
+          "pathName": "pages/index/merge/index",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  }
 }

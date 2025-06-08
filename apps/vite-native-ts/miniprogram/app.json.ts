@@ -4,6 +4,7 @@ export default defineAppJson(
   {
     pages: [
       'pages/index/index',
+      'pages/index/merge/index',
     ],
     window: {
       navigationBarTextStyle: 'black',
