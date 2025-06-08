@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.2.1
+
+### Patch Changes
+
+- [`5ba8992`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5ba89920b01517ccb90598660cd0d5f9a4b4f623) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 不默认执行 postinstall 脚本，默认使用 tailwind-merge@3 对于 tailwindcss@4
+
 ## 1.2.0
 
 ### Minor Changes
