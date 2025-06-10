@@ -100,7 +100,7 @@
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-typescript": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "autoprefixer": "10.4.18",
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",

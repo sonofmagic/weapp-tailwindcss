@@ -80,7 +80,7 @@
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
     "@vue/babel-preset-jsx": "^1.2.4",
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "autoprefixer": "^10.4.19",
     "babel-preset-taro": "3.6.35",
     "cross-env": "^7.0.3",

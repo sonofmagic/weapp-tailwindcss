@@ -16,7 +16,7 @@
   "license": "",
   "dependencies": {},
   "devDependencies": {
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "autoprefixer": "^10.4.20",
     "miniprogram-api-typings": "^4.0.1",
     "postcss": "^8.4.49",

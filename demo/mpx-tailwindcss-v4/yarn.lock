@@ -2009,7 +2009,7 @@
 
 "@tailwindcss/postcss@^4.1.8":
   version "4.1.8"
-  resolved "https://registry.npmmirror.com/@tailwindcss/postcss/-/postcss-4.1.8.tgz#b12374b49f3accd9bd902a4324d124e67803350f"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/postcss/-/postcss-4.1.8.tgz#b12374b49f3accd9bd902a4324d124e67803350f"
   integrity sha512-vB/vlf7rIky+w94aWMw34bWW1ka6g6C3xIOdICKX2GC0VcLtL6fhlLiafF0DVIwa9V6EHz8kbWMkS2s2QvvNlw==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
@@ -2512,15 +2512,15 @@
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/shared" "1.0.2"
 
-"@weapp-tailwindcss/merge@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/merge/-/merge-1.2.0.tgz#fc0114d6fc3f69099164ae7fce25b123ca8264ee"
-  integrity sha512-MhJjPJBka6nmOhv0HPZjaHI/ggwMwX7pw1wgBr1QDKsKIVVxTjy0K3uP7nobrCI8/GxHifj+iZDZXGyo1gRoiw==
+"@weapp-tailwindcss/merge@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/merge/-/merge-1.2.1.tgz#c8c047b3d4151174a89f928efc243d02791c505b"
+  integrity sha512-jr7Mr75K4vXtRtCe6WwcCCIi1JB/D/O88MFR7CKoOuf11A+cFCoPfsxr7C4bubnNj+nc+O/jUWHqZdCay8QYgw==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
     local-pkg "^1.1.1"
-    semver "^7.7.1"
+    semver "^7.7.2"
     tailwind-merge "^3.3.0"
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
 
@@ -8074,7 +8074,7 @@ semver@^7.0.0, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semve
   resolved "https://registry.npmmirror.com/semver/-/semver-7.7.1.tgz#abd5098d82b18c6c81f6074ff2647fd3e7220c9f"
   integrity sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==
 
-semver@~7.7.2:
+semver@^7.7.2, semver@~7.7.2:
   version "7.7.2"
   resolved "https://registry.npmmirror.com/semver/-/semver-7.7.2.tgz#67d99fdcd35cec21e6f8b87a7fd515a33f982b58"
   integrity sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==
@@ -8701,7 +8701,26 @@ tailwindcss-config@^1.0.0:
     jiti "^2.4.2"
     lilconfig "^3.1.3"
 
-tailwindcss-patch@^7.1.1, tailwindcss-patch@~7.1.1:
+tailwindcss-patch@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-7.1.1.tgz#69616090f7af4ab1d06ce82c15d038140bf5697f"
+  integrity sha512-es9a+hBmcjacpPZtLeQPlNoP4aceFe+HoK7GzLeD1w9NtoUbd5QxKzPG2qHSprQk6G5rqI+wL/fiTOGaDQ8NTA==
+  dependencies:
+    "@babel/generator" "^7.27.0"
+    "@babel/parser" "^7.27.0"
+    "@babel/traverse" "^7.27.0"
+    "@babel/types" "^7.27.0"
+    "@tailwindcss-mangle/config" "^5.1.0"
+    cac "^6.7.14"
+    consola "^3.4.2"
+    fs-extra "^11.3.0"
+    local-pkg "^1.1.1"
+    pathe "^2.0.3"
+    postcss "^8.5.3"
+    semver "^7.7.1"
+    tailwindcss-config "^1.0.0"
+
+tailwindcss-patch@~7.1.1:
   version "7.1.1"
   resolved "https://registry.npmmirror.com/tailwindcss-patch/-/tailwindcss-patch-7.1.1.tgz#69616090f7af4ab1d06ce82c15d038140bf5697f"
   integrity sha512-es9a+hBmcjacpPZtLeQPlNoP4aceFe+HoK7GzLeD1w9NtoUbd5QxKzPG2qHSprQk6G5rqI+wL/fiTOGaDQ8NTA==
@@ -8722,7 +8741,7 @@ tailwindcss-patch@^7.1.1, tailwindcss-patch@~7.1.1:
 
 tailwindcss@4.1.8, tailwindcss@^4.1.8:
   version "4.1.8"
-  resolved "https://registry.npmmirror.com/tailwindcss/-/tailwindcss-4.1.8.tgz#5d66d095ee7d82f03d6dbc6158bc248e064a5c05"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.1.8.tgz#5d66d095ee7d82f03d6dbc6158bc248e064a5c05"
   integrity sha512-kjeW8gjdxasbmFKpVGrGd5T4i40mV5J2Rasw48QARfYeQ8YS9x02ON9SFWax3Qf616rt4Cp3nVNIj6Hd1mP3og==
 
 tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0, tapable@^2.2.1:
@@ -9214,7 +9233,7 @@ wcwidth@^1.0.1:
 
 weapp-ide-cli@^2.0.12:
   version "2.0.12"
-  resolved "https://registry.npmmirror.com/weapp-ide-cli/-/weapp-ide-cli-2.0.12.tgz#a8eebe7095f6e00838ed45b358bd4495ac5f1e92"
+  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-2.0.12.tgz#a8eebe7095f6e00838ed45b358bd4495ac5f1e92"
   integrity sha512-+XqR+MzXqjbUvTJthjk1w9a+e7QwlxIXCqIwGwyWGS5PGkheyj2T0k+CoB3E0iah+Huka0hOGiyh+WPKlgfIKg==
   dependencies:
     "@weapp-core/logger" "^1.0.4"
@@ -9224,7 +9243,7 @@ weapp-ide-cli@^2.0.12:
 
 weapp-tailwindcss@^4.1.8:
   version "4.1.8"
-  resolved "https://registry.npmmirror.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.8.tgz#44c582c38bbee65e611eff44fd689f8edb00f594"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.8.tgz#44c582c38bbee65e611eff44fd689f8edb00f594"
   integrity sha512-1nNQ2PMauUNhzfSDBCiX9Z3Sc3MH/Lcev+/f0fcc+G2e73sUsN61/IM9VRyouJQbaq4AWnCQrm6xVHP95I4VRg==
   dependencies:
     "@ast-core/escape" "~1.0.1"

@@ -83,7 +83,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.10",
     "@vue/runtime-core": "^3.4.21",
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "@weapp-tailwindcss/typography": "^0.2.4",
     "autoprefixer": "^10.4.18",
     "miniprogram-api-typings": "^3.12.2",

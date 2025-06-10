@@ -73,7 +73,7 @@
     "@tailwindcss/vite": "^4.1.8",
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.7.0",
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "tailwindcss": "^4.1.8",
     "tailwindcss-patch": "^7.1.1",
     "typescript": "^5.8.2",

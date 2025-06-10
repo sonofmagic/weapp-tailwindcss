@@ -74,7 +74,7 @@
     "@typescript-eslint/parser": "^8.33.0",
     "@vue/babel-plugin-jsx": "^1.4.0",
     "@vue/compiler-sfc": "^3.5.16",
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "autoprefixer": "^10.4.21",
     "babel-preset-taro": "4.1.1",
     "cross-env": "^7.0.3",

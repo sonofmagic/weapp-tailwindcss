@@ -11,7 +11,7 @@
   "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
   "devDependencies": {
-    "@weapp-tailwindcss/merge": "^1.2.0",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "tailwind-css-variables-theme-generator": "^0.4.0",
