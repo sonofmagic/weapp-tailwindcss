@@ -55,6 +55,6 @@ module.exports = {
 
 这样就能进行转化了，此时假如你写 `w-[20px]` 这种 `class` 它最终生效的样式会经过 `postcss-pxtransform` 转化，转变为 `width: 20rpx`, 当然这取决于你传入插件的配置，比如设计稿宽度 (`designWidth`)
 
-你可以在 [taro 官网的设计稿及尺寸单位章节内](https://taro-docs.jd.com/docs/size) 查看这个插件的所有用法。
+你可以在 [taro 官网的设计稿及尺寸单位章节内](https://docs.taro.zone/docs/size) 查看这个插件的所有用法。
 
 另外，假如你要禁止单个文件 `px` 转 `rpx`，可以在样式表文件内头部，添加 `/*postcss-pxtransform disable*/` 这样的注视，禁用该文件 `px` 转 `rpx`。

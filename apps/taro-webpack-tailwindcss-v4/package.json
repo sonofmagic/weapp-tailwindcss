@@ -1,0 +1,92 @@
+{
+  "name": "taro-webpack-tailwindcss-v4",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "templateInfo": {
+    "name": "default",
+    "typescript": true,
+    "css": "None",
+    "framework": "React"
+  },
+  "author": "",
+  "scripts": {
+    "build": "yarn build:weapp",
+    "build:weapp": "taro build --type weapp",
+    "build:swan": "taro build --type swan",
+    "build:alipay": "taro build --type alipay",
+    "build:tt": "taro build --type tt",
+    "build:h5": "taro build --type h5",
+    "build:rn": "taro build --type rn",
+    "build:qq": "taro build --type qq",
+    "build:jd": "taro build --type jd",
+    "build:harmony-hybrid": "taro build --type harmony-hybrid",
+    "dev:weapp": "npm run build:weapp -- --watch",
+    "dev:swan": "npm run build:swan -- --watch",
+    "dev:alipay": "npm run build:alipay -- --watch",
+    "dev:tt": "npm run build:tt -- --watch",
+    "dev:h5": "npm run build:h5 -- --watch",
+    "dev:rn": "npm run build:rn -- --watch",
+    "dev:qq": "npm run build:qq -- --watch",
+    "dev:jd": "npm run build:jd -- --watch",
+    "dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
+    "open": "weapp open -p",
+    "postinstall": "weapp-tw patch"
+  },
+  "browserslist": {
+    "development": [
+      "defaults and fully supports es6-module",
+      "maintained node versions"
+    ],
+    "production": [
+      "last 3 versions",
+      "Android >= 4.1",
+      "ios >= 8"
+    ]
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.27.4",
+    "@tarojs/components": "4.1.1",
+    "@tarojs/helper": "4.1.1",
+    "@tarojs/plugin-framework-react": "4.1.1",
+    "@tarojs/plugin-html": "^4.1.1",
+    "@tarojs/plugin-platform-alipay": "4.1.1",
+    "@tarojs/plugin-platform-h5": "4.1.1",
+    "@tarojs/plugin-platform-harmony-hybrid": "4.1.1",
+    "@tarojs/plugin-platform-jd": "4.1.1",
+    "@tarojs/plugin-platform-qq": "4.1.1",
+    "@tarojs/plugin-platform-swan": "4.1.1",
+    "@tarojs/plugin-platform-tt": "4.1.1",
+    "@tarojs/plugin-platform-weapp": "4.1.1",
+    "@tarojs/react": "4.1.1",
+    "@tarojs/runtime": "4.1.1",
+    "@tarojs/shared": "4.1.1",
+    "@tarojs/taro": "4.1.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/plugin-proposal-class-properties": "7.18.6",
+    "@babel/preset-react": "^7.27.1",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.0",
+    "@tailwindcss/postcss": "^4.1.8",
+    "@tarojs/cli": "4.1.1",
+    "@tarojs/taro-loader": "4.1.1",
+    "@tarojs/webpack5-runner": "4.1.1",
+    "@types/node": "^18",
+    "@types/react": "^18.0.0",
+    "@types/webpack-env": "^1.13.6",
+    "@weapp-tailwindcss/merge": "^1.2.1",
+    "babel-preset-taro": "4.1.1",
+    "postcss": "^8.5.5",
+    "react-refresh": "^0.17.0",
+    "tailwindcss": "catalog:tailwindcss4",
+    "tailwindcss-patch": "^7.1.1",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^5.8.3",
+    "weapp-ide-cli": "^3.0.0",
+    "weapp-tailwindcss": "workspace:*",
+    "webpack": "5.99.9"
+  }
+}

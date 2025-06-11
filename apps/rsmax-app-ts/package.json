@@ -23,7 +23,7 @@
     "@types/react": "^18.3",
     "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.2",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "weapp-tailwindcss": "workspace:*"

@@ -15,7 +15,7 @@
     "@tailwindcss/postcss": "^4.1.9",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.5",
     "tailwindcss": "^4.1.8",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",

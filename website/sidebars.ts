@@ -234,6 +234,14 @@ const issuesSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
+    id: 'issues/monorepo',
+  },
+  {
+    type: 'doc',
+    id: 'issues/taro-terser',
+  },
+  {
+    type: 'doc',
     id: 'options/comments',
   },
   {

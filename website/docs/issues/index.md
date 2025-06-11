@@ -74,7 +74,7 @@ module.exports = {
 
 请压缩代码并不要使用[链接](https://docs.taro.zone/docs/config-detail/#terserenable)中的方法，太老旧了。
 
-使用 `taro` 配置项里的的 `terser` 配置项，参见 [`terser` 配置项](https://taro-docs.jd.com/docs/config-detail#terser)。
+使用 `taro` 配置项里的的 `terser` 配置项，参见 [`terser` 配置项](https://docs.taro.zone/docs/config-detail#terser)。
 
 > `terser` 配置只在生产模式下生效。如果你正在使用 `watch` 模式，又希望启用 `terser`，那么则需要设置 `process.env.NODE_ENV` 为 `production`。
 

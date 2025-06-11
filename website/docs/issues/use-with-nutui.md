@@ -60,5 +60,5 @@ config = {
 
 ## 参见
 
-- [taro 官方文档](https://taro-docs.jd.com/docs/use-h5#插件-postcss-配置项)
+- [taro 官方文档](https://docs.taro.zone/docs/use-h5#插件-postcss-配置项)
 - 相关 Issue：[#155](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/155)

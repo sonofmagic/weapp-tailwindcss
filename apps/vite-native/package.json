@@ -37,10 +37,10 @@
     "@tailwindcss/postcss": "^4.1.9",
     "@tailwindcss/vite": "^4.1.9",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.5",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^5.0.0"
+    "weapp-vite": "^5.0.2"
   }
 }
