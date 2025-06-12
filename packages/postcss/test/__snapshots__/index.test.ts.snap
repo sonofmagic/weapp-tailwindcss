@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`index > only utilities 1`] = `
-"/*! tailwindcss v4.1.9 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-red-500: oklch(63.7% .237 25.331);
   --color-blue-500: oklch(62.3% .214 259.815);
@@ -35,7 +35,7 @@ exports[`index > only utilities 1`] = `
 `;
 
 exports[`index > only utilities 2`] = `
-"/*! tailwindcss v4.1.9 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-red-500: rgb(251, 44, 54);
   --color-blue-500: rgb(50, 128, 255);
