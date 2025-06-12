@@ -6,10 +6,5 @@
     "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "catalog:tailwindcss3",
     "weapp-tailwindcss": "workspace:*"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "weapp-tailwindcss"
-    ]
   }
 }
