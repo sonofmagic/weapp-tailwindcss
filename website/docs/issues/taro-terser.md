@@ -1,4 +1,4 @@
-# `Tarojs` 中使用 `terser-webpack-plugin` 
+# `Tarojs` 中使用 `terser` 压缩代码 
 
 在 `taro` `webpack5` 环境下，这个插件和外置额外安装的 `terser-webpack-plugin` 一起使用，会导致插件转义功能失效
 
@@ -19,3 +19,28 @@
 也就是说，直接在开发 `watch` 模式的时候，设置环境变量 `NODE_ENV` 为 `production` 就行。
 
 另外也可以不利用 `webpack` 插件压缩代码，去使用微信开发者工具内部的压缩代码选项。
+
+## 配置参考
+
+```ts title="config/index.ts"
+{
+  terser: {
+    enable: true,
+    config: {
+      // 相关配置项
+    },
+  },
+}
+```
+
+然后你想要在开发时，就生效，那就需要传入 `NODE_ENV=production` 环境变量，例如:
+
+```json title="package.json"
+{
+  "scripts":{
+    "dev:weapp": "cross-env NODE_ENV=production npm run build:weapp -- --watch",
+  }
+}
+```
+
+`cross-env` 没有安装的可以安装一下
