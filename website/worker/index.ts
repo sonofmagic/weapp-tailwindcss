@@ -1,5 +1,6 @@
 export default {
-  fetch() {
-    return new Response('Hello World!')
+  async fetch(request, env) {
+    const file = await env.ASSETS.fetch(request)
+    return file
   },
-} satisfies ExportedHandler<unknown>
+} satisfies ExportedHandler<CloudflareBindings>

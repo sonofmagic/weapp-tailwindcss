@@ -32,7 +32,8 @@
     "e2e": "playwright test",
     "e2e:u": "playwright test -u",
     "exportRoutes": "tsx scripts/exportRoutes.ts",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",

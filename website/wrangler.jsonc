@@ -1,4 +1,5 @@
 {
+  // https://developers.cloudflare.com/workers/wrangler/commands
   "$schema": "../node_modules/wrangler/config-schema.json",
   "name": "weapp-tailwindcss-website",
   "compatibility_date": "2025-06-13",
