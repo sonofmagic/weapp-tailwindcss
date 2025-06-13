@@ -12,6 +12,14 @@
     {
       "pattern": "backup.tw.icebreaker.top",
       "custom_domain": true
+    },
+    {
+      "pattern": "tw.icebreaker.top",
+      "custom_domain": true
+    },
+    {
+      "pattern": "weapp-tw.icebreaker.top",
+      "custom_domain": true
     }
   ],
   "observability": {

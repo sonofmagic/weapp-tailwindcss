@@ -1,11 +1,11 @@
 name: Deploy Docs
 
 on:
-  push:
-    paths:
-      - 'website/**'
-    branches:
-      - main
+  # push:
+  #   paths:
+  #     - 'website/**'
+  #   branches:
+  #     - main
   workflow_dispatch:
   # repository_dispatch:
   #   types: [deploy_docs]
@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: pnpm run build
+        run: pnpm run build:docs
       - name: Deploy
         run: pnpm run deploy
         working-directory: ./website
