@@ -27,7 +27,6 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
-    "deploy:cos": "pnpm build && ice-deploy -c --dir=build",
     "build:docs": "node scripts/index.js",
     "e2e": "playwright test",
     "e2e:u": "playwright test -u",
