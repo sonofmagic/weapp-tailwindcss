@@ -116,3 +116,4 @@ miniprogram_npm
 .turbo
 .vite-inspect
 vite.config.ts.timestamp-*.mjs
+.wrangler

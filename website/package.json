@@ -31,7 +31,8 @@
     "build:docs": "node scripts/index.js",
     "e2e": "playwright test",
     "e2e:u": "playwright test -u",
-    "exportRoutes": "tsx scripts/exportRoutes.ts"
+    "exportRoutes": "tsx scripts/exportRoutes.ts",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",

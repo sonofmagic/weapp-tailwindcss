@@ -100,6 +100,7 @@
     "@babel/generator": "~7.27.5",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.4",
+    "@cloudflare/workers-types": "^4.20250612.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/prompt-cli": "^19.8.1",
@@ -239,6 +240,7 @@
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.99.9",
     "webpack-build-utils": "^0.0.7",
+    "wrangler": "^4.20.0",
     "yaml": "^2.8.0"
   }
 }
