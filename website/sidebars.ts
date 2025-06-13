@@ -134,6 +134,7 @@ const tutorialSidebar: SidebarConfig = [
       },
     ],
   },
+
   {
     type: 'doc',
     id: 'community/templates',
@@ -141,12 +142,13 @@ const tutorialSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
-    id: 'community',
+    id: 'multi-platform',
   },
   {
     type: 'doc',
-    id: 'multi-platform',
+    id: 'community',
   },
+
   {
     type: 'doc',
     id: 'quick-start/intelliSense',
