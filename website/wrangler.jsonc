@@ -23,6 +23,7 @@
       "custom_domain": true
     }
   ],
+  "workers_dev": false,
   "observability": {
     "enabled": true
   }
