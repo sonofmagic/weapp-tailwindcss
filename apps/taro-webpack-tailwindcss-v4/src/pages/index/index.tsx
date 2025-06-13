@@ -16,6 +16,15 @@ export default function Index() {
         11
       </View>
       <View className="h-14 bg-gradient-to-r from-cyan-500 to-blue-500"></View>
+      <View className="bg-purple-800 text-pink-200 invert">
+        invert
+      </View>
+      <View className="bg-purple-800 text-pink-200 backdrop-blur-2xl">
+        backdrop-blur-2xl
+      </View>
+      <View className="skew-x-0 bg-purple-800 text-pink-200">
+        skew-x-0
+      </View>
     </>
 
   )
