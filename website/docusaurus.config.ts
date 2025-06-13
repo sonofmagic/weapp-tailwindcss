@@ -31,7 +31,7 @@ function createLink(params: { target?: string, rel?: string, href?: string, text
 const config: Config = {
   title: 'weapp-tailwindcss 把tailwindcss带给小程序开发者们',
   tagline: '用tailwindcss来开发小程序吧!这是一个webpack/vite/gulp插件集合,兼容了各种用这类打包的框架,比如uni-app,tarojs,rax,mpx,remax,原生等等.伟大的icebreaker部署了这个文档网站',
-  favicon: 'img/favicon.ico',
+  favicon: 'favicon.ico',
 
   // Set the production url of your site here
   url: 'https://tw.icebreaker.top',
