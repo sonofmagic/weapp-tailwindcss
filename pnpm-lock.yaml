@@ -34,8 +34,8 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       '@cloudflare/workers-types':
-        specifier: ^4.20250612.0
-        version: 4.20250612.0
+        specifier: ^4.20250613.0
+        version: 4.20250613.0
       '@commitlint/cli':
         specifier: ^19.8.1
         version: 19.8.1(@types/node@22.15.30)(typescript@5.8.3)
@@ -455,7 +455,7 @@ importers:
         version: 0.0.7
       wrangler:
         specifier: ^4.20.0
-        version: 4.20.0(@cloudflare/workers-types@4.20250612.0)
+        version: 4.20.0(@cloudflare/workers-types@4.20250613.0)
       yaml:
         specifier: ^2.8.0
         version: 2.8.0
@@ -690,7 +690,7 @@ importers:
         version: 4.1.10
       '@tailwindcss/vite':
         specifier: ^4.1.10
-        version: 4.1.10(vite@6.3.5(@types/node@24.0.0)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.2)(yaml@2.8.0))
+        version: 4.1.10(rolldown-vite@6.3.19(@types/node@24.0.0)(esbuild@0.25.5)(jiti@2.4.2)(less@4.2.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.2)(yaml@2.8.0))
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.5)
@@ -811,8 +811,8 @@ importers:
         specifier: ^8.5.5
         version: 8.5.5
       tailwindcss:
-        specifier: ^4.1.8
-        version: 4.1.8
+        specifier: catalog:tailwindcss4
+        version: 4.1.10
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -2130,8 +2130,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@4.20250612.0':
-    resolution: {integrity: sha512-3VsbEh0nqOWWH+jsJ2W41Ty6qlN1jQ+4R3lBA3gPor0U6LB3e4OA04jg7wyCyJmikBN6KsBcPRp3kj0es/9q2w==}
+  '@cloudflare/workers-types@4.20250613.0':
+    resolution: {integrity: sha512-upH6pxh43ph9293aXVgEp/0ODhyT3deRdlL0NEe4eJJdgoSAJxWj0c2ASZHs3awOaItRTxTxo7GZk1d6wolPKQ==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -16005,9 +16005,6 @@ packages:
   tailwindcss@4.1.10:
     resolution: {integrity: sha512-P3nr6WkvKV/ONsTzj6Gb57sWPMX29EPNPopo7+FcpkQaNsrNpZ1pv8QmrYI2RqEKD7mlGqLnGovlcYnBK0IqUA==}
 
-  tailwindcss@4.1.8:
-    resolution: {integrity: sha512-kjeW8gjdxasbmFKpVGrGd5T4i40mV5J2Rasw48QARfYeQ8YS9x02ON9SFWax3Qf616rt4Cp3nVNIj6Hd1mP3og==}
-
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
@@ -18749,7 +18746,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20250604.0':
     optional: true
 
-  '@cloudflare/workers-types@4.20250612.0': {}
+  '@cloudflare/workers-types@4.20250613.0': {}
 
   '@colors/colors@1.5.0':
     optional: true
@@ -23638,6 +23635,13 @@ snapshots:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17(ts-node@10.9.2(@swc/core@1.11.31)(@types/node@22.15.30)(typescript@5.8.3))
+
+  '@tailwindcss/vite@4.1.10(rolldown-vite@6.3.19(@types/node@24.0.0)(esbuild@0.25.5)(jiti@2.4.2)(less@4.2.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.2)(yaml@2.8.0))':
+    dependencies:
+      '@tailwindcss/node': 4.1.10
+      '@tailwindcss/oxide': 4.1.10
+      tailwindcss: 4.1.10
+      vite: rolldown-vite@6.3.19(@types/node@24.0.0)(esbuild@0.25.5)(jiti@2.4.2)(less@4.2.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.2)(yaml@2.8.0)
 
   '@tailwindcss/vite@4.1.10(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.2)(yaml@2.8.0))':
     dependencies:
@@ -35918,8 +35922,6 @@ snapshots:
 
   tailwindcss@4.1.10: {}
 
-  tailwindcss@4.1.8: {}
-
   tapable@2.2.1: {}
 
   tapable@2.2.2: {}
@@ -37700,7 +37702,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250604.0
       '@cloudflare/workerd-windows-64': 1.20250604.0
 
-  wrangler@4.20.0(@cloudflare/workers-types@4.20250612.0):
+  wrangler@4.20.0(@cloudflare/workers-types@4.20250613.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.3.2(unenv@2.0.0-rc.17)(workerd@1.20250604.0)
@@ -37711,7 +37713,7 @@ snapshots:
       unenv: 2.0.0-rc.17
       workerd: 1.20250604.0
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20250612.0
+      '@cloudflare/workers-types': 4.20250613.0
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil
