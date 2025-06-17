@@ -645,10 +645,10 @@
   resolved "https://registry.npmmirror.com/@weapp-core/escape/-/escape-4.0.1.tgz#00f80bbdc5ac32456a4f180b8c6b2449854f292a"
   integrity sha512-FuO9zTs/8VMhoZ+sZkMEMipcHd9FZhxstdhg9+Z3JlTgxMFAIvhBFOuFjM2bUyjDJ7O21nr9podHDjVjcVYu4Q==
 
-"@weapp-core/logger@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/@weapp-core/logger/-/logger-1.0.4.tgz#6cdf091b837d229e44807ffabc73245ddf238f2d"
-  integrity sha512-t9EImBverx26V3mA93/BaLUxYqbM9I6Z/3dpMxrqrgV6Q4HEKLdS/6oTSPt3EsbimYWQ4JKXjFQ8lfwNa4LJAA==
+"@weapp-core/logger@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@weapp-core/logger/-/logger-2.0.0.tgz#4fede381ddc809d5e6c05f4e923701ebeb47a9f4"
+  integrity sha512-HRqVUdvj8sk2YFHWRWoMsUVNVFqTRP3bMmJPZFvPQs8tF/GyoCSY+La+apGV5yXSoPv0O1dYt5xuSI0f8APgfg==
   dependencies:
     consola "^3.4.2"
 
@@ -973,7 +973,7 @@ consola@^3.4.2:
   resolved "https://registry.npmmirror.com/consola/-/consola-3.4.2.tgz#5af110145397bb67afdab77013fdc34cae590ea7"
   integrity sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==
 
-cross-spawn@^7.0.0, cross-spawn@^7.0.3:
+cross-spawn@^7.0.0, cross-spawn@^7.0.6:
   version "7.0.6"
   resolved "https://registry.npmmirror.com/cross-spawn/-/cross-spawn-7.0.6.tgz#8a58fe78f00dcd70c370451759dfbfaf03e8ee9f"
   integrity sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==
@@ -1144,23 +1144,23 @@ escalade@^3.2.0:
   resolved "https://registry.npmmirror.com/escalade/-/escalade-3.2.0.tgz#011a3f69856ba189dffa7dc8fcce99d2a87903e5"
   integrity sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==
 
-execa@9.5.3:
-  version "9.5.3"
-  resolved "https://registry.npmmirror.com/execa/-/execa-9.5.3.tgz#aa9b6e92ea6692b88a240efc260ca30489b33e2a"
-  integrity sha512-QFNnTvU3UjgWFy8Ef9iDHvIdcgZ344ebkwYx4/KLbR+CKQA4xBaHzv+iRpp86QfMHP8faFQLh8iOc57215y4Rg==
+execa@9.6.0:
+  version "9.6.0"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-9.6.0.tgz#38665530e54e2e018384108322f37f35ae74f3bc"
+  integrity sha512-jpWzZ1ZhwUmeWRhS7Qv3mhpOhLfwI+uAX4e5fOcXqwMR7EcJ0pj2kV1CVzHVMX/LphnKWD3LObjZCoJ71lKpHw==
   dependencies:
     "@sindresorhus/merge-streams" "^4.0.0"
-    cross-spawn "^7.0.3"
+    cross-spawn "^7.0.6"
     figures "^6.1.0"
     get-stream "^9.0.0"
-    human-signals "^8.0.0"
+    human-signals "^8.0.1"
     is-plain-obj "^4.1.0"
     is-stream "^4.0.1"
     npm-run-path "^6.0.0"
-    pretty-ms "^9.0.0"
+    pretty-ms "^9.2.0"
     signal-exit "^4.1.0"
     strip-final-newline "^4.0.0"
-    yoctocolors "^2.0.0"
+    yoctocolors "^2.1.1"
 
 exsolve@^1.0.1:
   version "1.0.1"
@@ -1356,10 +1356,10 @@ https-proxy-agent@^7.0.1:
     agent-base "^7.1.2"
     debug "4"
 
-human-signals@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.npmmirror.com/human-signals/-/human-signals-8.0.0.tgz#2d3d63481c7c2319f0373428b01ffe30da6df852"
-  integrity sha512-/1/GPCpDUCCYwlERiYjxoczfP0zfvZMU/OWgQPMya9AbAE24vseigFdhAMObpc8Q4lc/kjutPfUddDYyAmejnA==
+human-signals@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-8.0.1.tgz#f08bb593b6d1db353933d06156cedec90abe51fb"
+  integrity sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==
 
 iconv-lite@^0.6.2:
   version "0.6.3"
@@ -2244,9 +2244,9 @@ postcss@~8.5.4:
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
-pretty-ms@^9.0.0:
+pretty-ms@^9.2.0:
   version "9.2.0"
-  resolved "https://registry.npmmirror.com/pretty-ms/-/pretty-ms-9.2.0.tgz#e14c0aad6493b69ed63114442a84133d7e560ef0"
+  resolved "https://registry.yarnpkg.com/pretty-ms/-/pretty-ms-9.2.0.tgz#e14c0aad6493b69ed63114442a84133d7e560ef0"
   integrity sha512-4yf0QO/sllf/1zbZWYnvWw3NxCQwLXKzIj0G849LSufP15BXKM0rbD2Z3wVnkMfjdn/CB0Dpp444gYAACdsplg==
   dependencies:
     parse-ms "^4.0.0"
@@ -2690,13 +2690,13 @@ validate-npm-package-name@^6.0.0:
   resolved "https://registry.npmmirror.com/validate-npm-package-name/-/validate-npm-package-name-6.0.0.tgz#3add966c853cfe36e0e8e6a762edd72ae6f1d6ac"
   integrity sha512-d7KLgL1LD3U3fgnvWEY1cQXoO/q6EQ1BSz48Sa149V/5zVTAbgmZIpyI8TRi6U9/JNyeYLlTKsEMPtLC27RFUg==
 
-weapp-ide-cli@^2.0.12:
-  version "2.0.12"
-  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-2.0.12.tgz#a8eebe7095f6e00838ed45b358bd4495ac5f1e92"
-  integrity sha512-+XqR+MzXqjbUvTJthjk1w9a+e7QwlxIXCqIwGwyWGS5PGkheyj2T0k+CoB3E0iah+Huka0hOGiyh+WPKlgfIKg==
+weapp-ide-cli@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-3.0.0.tgz#4434a5446a76ce9822adf8a867567483fe072284"
+  integrity sha512-xjz7YKiy9Vb9QE1f66WGlqoqrSys/zp/3LiV1fNiWiCUF7Zn86ZTSrgL/DISIqsXZvcaOYMAxKs2JQA7veB5Nw==
   dependencies:
-    "@weapp-core/logger" "^1.0.4"
-    execa "9.5.3"
+    "@weapp-core/logger" "^2.0.0"
+    execa "9.6.0"
     fs-extra "^11.3.0"
     pathe "^2.0.3"
 
@@ -2776,7 +2776,7 @@ yaml@^2.3.4:
   resolved "https://registry.npmmirror.com/yaml/-/yaml-2.7.0.tgz#aef9bb617a64c937a9a748803786ad8d3ffe1e98"
   integrity sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==
 
-yoctocolors@^2.0.0:
+yoctocolors@^2.1.1:
   version "2.1.1"
-  resolved "https://registry.npmmirror.com/yoctocolors/-/yoctocolors-2.1.1.tgz#e0167474e9fbb9e8b3ecca738deaa61dd12e56fc"
+  resolved "https://registry.yarnpkg.com/yoctocolors/-/yoctocolors-2.1.1.tgz#e0167474e9fbb9e8b3ecca738deaa61dd12e56fc"
   integrity sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==

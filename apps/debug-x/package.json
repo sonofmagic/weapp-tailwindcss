@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "unbuild --stub",
     "build:watch": "unbuild --watch --sourcemap",
-    "build": "unbuild",
+    "_build": "unbuild",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",

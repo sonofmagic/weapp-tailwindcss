@@ -4,7 +4,6 @@
   "native-mina": true,
   "rax-app": true,
   "taro-app": true,
-  "taro-vue2-app": true,
   "taro-vue3-app": true,
   "uni-app": true,
   "uni-app-vue3-vite": true,

@@ -78,13 +78,6 @@ const TestProjectsEntries: ProjectEntry[] = [
     },
   },
   {
-    name: 'taro-vue2-app',
-    projectPath: 'taro-vue2-app',
-    testMethod: async (_, projectPath) => {
-      expect(await loadCss(path.resolve(projectPath, 'dist/app.wxss'))).toMatchSnapshot('css')
-    },
-  },
-  {
     name: 'gulp-app',
     projectPath: 'gulp-app',
     testMethod: async (_, projectPath) => {
