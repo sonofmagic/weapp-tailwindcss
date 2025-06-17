@@ -37,7 +37,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     mainCssChunkMatcher: (file, appType) => {
       switch (appType) {
         case 'uni-app': {
-          return file.startsWith('common/main')
+          return file.startsWith('common/main') || file.startsWith('app')
         }
         case 'uni-app-vite': {
           // vite 旧版本和新版本对应的样式文件
