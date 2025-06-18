@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.14
+
+### Patch Changes
+
+- [`bf7e53c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bf7e53cfcd69c49c5cd99f7bf21ad0999a31b1d6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 优化 tailwindcss@4.1.10 的生成样式规则
+
 ## 1.0.13
 
 ### Patch Changes

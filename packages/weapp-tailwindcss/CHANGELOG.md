@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.1.9
+
+### Patch Changes
+
+- [`b090e69`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b090e699d279bfba680ecf208772500ea3689122) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 同步 uni-app 和 uni-app-vite 的配置
+
+- Updated dependencies [[`bf7e53c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bf7e53cfcd69c49c5cd99f7bf21ad0999a31b1d6)]:
+  - @weapp-tailwindcss/postcss@1.0.14
+
 ## 4.1.8
 
 ### Patch Changes
