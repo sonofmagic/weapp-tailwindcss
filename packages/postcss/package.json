@@ -50,7 +50,7 @@
   "dependencies": {
     "@weapp-core/escape": "~4.0.1",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "postcss": "~8.5.5",
+    "postcss": "~8.5.6",
     "postcss-preset-env": "^10.2.3",
     "postcss-rem-to-responsive-pixel": "~6.0.2",
     "postcss-selector-parser": "~7.1.0"

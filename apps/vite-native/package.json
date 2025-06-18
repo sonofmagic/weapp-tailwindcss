@@ -32,15 +32,15 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.9.0",
-    "@iconify-json/lucide": "^1.2.48",
+    "@iconify-json/lucide": "^1.2.50",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/postcss": "^4.1.10",
     "@tailwindcss/vite": "^4.1.10",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.5",
+    "postcss": "^8.5.6",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^5.0.3"
+    "weapp-vite": "^5.0.4"
   }
 }

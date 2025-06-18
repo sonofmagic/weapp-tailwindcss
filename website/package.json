@@ -30,9 +30,7 @@
     "build:docs": "node scripts/index.js",
     "e2e": "playwright test",
     "e2e:u": "playwright test -u",
-    "exportRoutes": "tsx scripts/exportRoutes.ts",
-    "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "exportRoutes": "tsx scripts/exportRoutes.ts"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",
@@ -42,7 +40,6 @@
     "@weapp-tailwindcss/merge": "workspace:*",
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",
-    "hono": "^4.7.11",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -59,7 +56,7 @@
     "@playwright/test": "^1.53.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.3",
     "docusaurus-plugin-sass": "^0.2.6",
