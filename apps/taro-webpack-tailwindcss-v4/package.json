@@ -77,7 +77,7 @@
     "@types/node": "^24.0.3",
     "@types/react": "^18.0.0",
     "@types/webpack-env": "^1.13.6",
-    "@weapp-tailwindcss/merge": "^1.2.2",
+    "@weapp-tailwindcss/merge": "^1.2.1",
     "babel-preset-taro": "4.1.1",
     "postcss": "^8.5.6",
     "react-refresh": "^0.17.0",
