@@ -713,45 +713,45 @@ button:not(#n),input:not(#n),:not(#n)::file-selector-button {
 :not(#n)::-webkit-inner-spin-button,:not(#n)::-webkit-outer-spin-button {
     height: auto;
   }
-.container:not(#n):not(#n):not(#n) {
+.container:not(#n):not(#n) {
     width: 100%;
   }
 @media (min-width: 40rem) {
-  .container:not(#n):not(#n):not(#n) {
+  .container:not(#n):not(#n) {
       max-width: 40rem;
   }
     }
 @media (min-width: 48rem) {
-  .container:not(#n):not(#n):not(#n) {
+  .container:not(#n):not(#n) {
       max-width: 48rem;
   }
     }
 @media (min-width: 64rem) {
-  .container:not(#n):not(#n):not(#n) {
+  .container:not(#n):not(#n) {
       max-width: 64rem;
   }
     }
 @media (min-width: 80rem) {
-  .container:not(#n):not(#n):not(#n) {
+  .container:not(#n):not(#n) {
       max-width: 80rem;
   }
     }
 @media (min-width: 96rem) {
-  .container:not(#n):not(#n):not(#n) {
+  .container:not(#n):not(#n) {
       max-width: 96rem;
   }
     }
-.m-_3d45rpx_:not(#n):not(#n):not(#n) {
+.m-_3d45rpx_:not(#n):not(#n) {
     margin: 3.45rpx;
   }
-.mx-auto:not(#n):not(#n):not(#n) {
+.mx-auto:not(#n):not(#n) {
     margin-left: auto;
     margin-right: auto;
   }
-.bg-_h377a6c90_:not(#n):not(#n):not(#n) {
+.bg-_h377a6c90_:not(#n):not(#n) {
     background-color: rgba(55,122,108,0.56471);
   }
-.p-_12d34px_:not(#n):not(#n):not(#n) {
+.p-_12d34px_:not(#n):not(#n) {
     padding: 12.34px;
   }
 @keyframes spin {
