@@ -608,10 +608,17 @@
   dependencies:
     "@babel/types" "^7.27.1"
 
-"@babel/parser@^7.27.2", "@babel/parser@^7.27.3", "@babel/parser@^7.27.4", "@babel/parser@~7.27.4":
+"@babel/parser@^7.27.2", "@babel/parser@^7.27.3", "@babel/parser@^7.27.4":
   version "7.27.4"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.27.4.tgz#f92e89e4f51847be05427285836fc88341c956df"
   integrity sha512-BRmLHGwpUqLFR2jzx9orBuX/ABDkj2jLKOXrHDTN2aOKL+jFDDKaRNo9nyYsIl9h/UE/7lMKdDjKQQyxKKDZ7g==
+  dependencies:
+    "@babel/types" "^7.27.3"
+
+"@babel/parser@~7.27.5":
+  version "7.27.5"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.27.5.tgz#ed22f871f110aa285a6fd934a0efed621d118826"
+  integrity sha512-OsQd175SxWkGlzbny8J3K8TnnDD0N3lrIUtB92xwyRpzaenGZhxDvxN/JgU00U3CDZNj9tPuDJ5H0WS4Nt3vKg==
   dependencies:
     "@babel/types" "^7.27.3"
 
@@ -1614,10 +1621,18 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
-"@babel/types@^7.27.3", "@babel/types@~7.27.3":
+"@babel/types@^7.27.3":
   version "7.27.3"
   resolved "https://registry.npmmirror.com/@babel/types/-/types-7.27.3.tgz#c0257bedf33aad6aad1f406d35c44758321eb3ec"
   integrity sha512-Y1GkI4ktrtvmawoSq+4FCVHNryea6uR+qUQy0AGxLSsjCX0nVmkYQMBLHDkXZuo5hGx7eYdnIaslsdBFm7zbUw==
+  dependencies:
+    "@babel/helper-string-parser" "^7.27.1"
+    "@babel/helper-validator-identifier" "^7.27.1"
+
+"@babel/types@~7.27.6":
+  version "7.27.6"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.27.6.tgz#a434ca7add514d4e646c80f7375c0aa2befc5535"
+  integrity sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==
   dependencies:
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
@@ -1803,10 +1818,10 @@
   resolved "https://registry.npmmirror.com/@csstools/postcss-initial/-/postcss-initial-2.0.1.tgz#c385bd9d8ad31ad159edd7992069e97ceea4d09a"
   integrity sha512-L1wLVMSAZ4wovznquK0xmC7QSctzO4D0Is590bxpGqhqjboLXYA16dWZpfwImkdOgACdQ9PqXsuRroW6qPlEsg==
 
-"@csstools/postcss-is-pseudo-class@^5.0.1":
-  version "5.0.1"
-  resolved "https://registry.npmmirror.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-5.0.1.tgz#12041448fedf01090dd4626022c28b7f7623f58e"
-  integrity sha512-JLp3POui4S1auhDR0n8wHd/zTOWmMsmK3nQd3hhL6FhWPaox5W7j1se6zXOG/aP07wV2ww0lxbKYGwbBszOtfQ==
+"@csstools/postcss-is-pseudo-class@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-5.0.3.tgz#d34e850bcad4013c2ed7abe948bfa0448aa8eb74"
+  integrity sha512-jS/TY4SpG4gszAtIg7Qnf3AS2pjcUM5SzxpApOrlndMeGhIbaTzWBzzP/IApXoNWEW7OhcjkRT48jnAUIFXhAQ==
   dependencies:
     "@csstools/selector-specificity" "^5.0.0"
     postcss-selector-parser "^7.0.0"
@@ -1970,10 +1985,10 @@
   resolved "https://registry.npmmirror.com/@csstools/postcss-unset-value/-/postcss-unset-value-4.0.0.tgz#7caa981a34196d06a737754864baf77d64de4bba"
   integrity sha512-cBz3tOCI5Fw6NIFEwU3RiwK6mn3nKegjpJuzCndoGq3BZPkUjnsq7uQmIeMNeMbMk7YD2MfKcgCpZwX5jyXqCA==
 
-"@csstools/selector-resolve-nested@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmmirror.com/@csstools/selector-resolve-nested/-/selector-resolve-nested-3.0.0.tgz#704a9b637975680e025e069a4c58b3beb3e2752a"
-  integrity sha512-ZoK24Yku6VJU1gS79a5PFmC8yn3wIapiKmPgun0hZgEI5AOqgH2kiPRsPz1qkGv4HL+wuDLH83yQyk6inMYrJQ==
+"@csstools/selector-resolve-nested@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@csstools/selector-resolve-nested/-/selector-resolve-nested-3.1.0.tgz#848c6f44cb65e3733e478319b9342b7aa436fac7"
+  integrity sha512-mf1LEW0tJLKfWyvn5KdDrhpxHyuxpbNwTIwOYLIvsTffeyOf85j5oIzfG0yosxDgx/sswlqBnESYUcQH0vgZ0g==
 
 "@csstools/selector-specificity@^3.1.1":
   version "3.1.1"
@@ -3670,27 +3685,27 @@
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/shared" "1.0.2"
 
-"@weapp-tailwindcss/merge@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/merge/-/merge-1.2.1.tgz#c8c047b3d4151174a89f928efc243d02791c505b"
-  integrity sha512-jr7Mr75K4vXtRtCe6WwcCCIi1JB/D/O88MFR7CKoOuf11A+cFCoPfsxr7C4bubnNj+nc+O/jUWHqZdCay8QYgw==
+"@weapp-tailwindcss/merge@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/merge/-/merge-1.2.2.tgz#b4456dd5898e49c790843af91a201244326cf2ab"
+  integrity sha512-eSQGksyv18Tf+vIxDOHEegbPoKh8GodELl3T6RlSSyTfOLbOR/lk8NBhlmHyv9b5Z4GxtKxXiRnbaLq8L8sqPA==
   dependencies:
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
     local-pkg "^1.1.1"
     semver "^7.7.2"
-    tailwind-merge "^3.3.0"
+    tailwind-merge "^3.3.1"
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
 
-"@weapp-tailwindcss/postcss@1.0.13":
-  version "1.0.13"
-  resolved "https://registry.npmmirror.com/@weapp-tailwindcss/postcss/-/postcss-1.0.13.tgz#44e47a70a632e571ee2f82841e8faf12118c3119"
-  integrity sha512-oH2b3CKMEH1wRC1HBsXrk8tiDM8W/Vw42pu36rgq7wKteG1eDfclW6VzXE4UTbg+QyjYt26Qm/7ffB1NE13XlA==
+"@weapp-tailwindcss/postcss@1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.0.14.tgz#743875f1bdf6c2a244a361738f0562d3f5d948d6"
+  integrity sha512-oEjEVv9xH2WZVv6r4Vzw0JobLaEb1BYhtOy559VimdpthaVP/6aqqw2qS8otnkrW8pRZKTW5ElWmE+ulC/cXzA==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/shared" "1.0.2"
-    postcss "~8.5.4"
-    postcss-preset-env "^10.2.0"
+    postcss "~8.5.6"
+    postcss-preset-env "^10.2.3"
     postcss-rem-to-responsive-pixel "~6.0.2"
     postcss-selector-parser "~7.1.0"
 
@@ -4186,9 +4201,9 @@ browserslist@^4.24.4:
     node-releases "^2.0.19"
     update-browserslist-db "^1.1.1"
 
-browserslist@^4.24.5:
+browserslist@^4.25.0:
   version "4.25.0"
-  resolved "https://registry.npmmirror.com/browserslist/-/browserslist-4.25.0.tgz#986aa9c6d87916885da2b50d8eb577ac8d133b2c"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.25.0.tgz#986aa9c6d87916885da2b50d8eb577ac8d133b2c"
   integrity sha512-PJ8gYKeS5e/whHBh8xrwYK+dAvEj7JXtz6uTucnMRB8OiGTsKccFekoRrjajPBHV8oOY+2tI4uxeceSimKwMFA==
   dependencies:
     caniuse-lite "^1.0.30001718"
@@ -8541,10 +8556,10 @@ postcss-custom-media@^11.0.6:
     "@csstools/css-tokenizer" "^3.0.4"
     "@csstools/media-query-list-parser" "^4.0.3"
 
-postcss-custom-properties@^14.0.5:
-  version "14.0.5"
-  resolved "https://registry.npmmirror.com/postcss-custom-properties/-/postcss-custom-properties-14.0.5.tgz#a180444de695f6e11ee2390be93ff6537663e86c"
-  integrity sha512-UWf/vhMapZatv+zOuqlfLmYXeOhhHLh8U8HAKGI2VJ00xLRYoAJh4xv8iX6FB6+TLXeDnm0DBLMi00E0hodbQw==
+postcss-custom-properties@^14.0.6:
+  version "14.0.6"
+  resolved "https://registry.yarnpkg.com/postcss-custom-properties/-/postcss-custom-properties-14.0.6.tgz#1af73a650bf115ba052cf915287c9982825fc90e"
+  integrity sha512-fTYSp3xuk4BUeVhxCSJdIPhDLpJfNakZKoiTDx7yRGCdlZrSJR7mWKVOBS4sBF+5poPQFMj2YdXx1VHItBGihQ==
   dependencies:
     "@csstools/cascade-layer-name-parser" "^2.0.5"
     "@csstools/css-parser-algorithms" "^3.0.5"
@@ -8723,12 +8738,12 @@ postcss-nested@^6.2.0:
   dependencies:
     postcss-selector-parser "^6.1.1"
 
-postcss-nesting@^13.0.1:
-  version "13.0.1"
-  resolved "https://registry.npmmirror.com/postcss-nesting/-/postcss-nesting-13.0.1.tgz#c405796d7245a3e4c267a9956cacfe9670b5d43e"
-  integrity sha512-VbqqHkOBOt4Uu3G8Dm8n6lU5+9cJFxiuty9+4rcoyRPO9zZS1JIs6td49VIoix3qYqELHlJIn46Oih9SAKo+yQ==
+postcss-nesting@^13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/postcss-nesting/-/postcss-nesting-13.0.2.tgz#fde0d4df772b76d03b52eccc84372e8d1ca1402e"
+  integrity sha512-1YCI290TX+VP0U/K/aFxzHzQWHWURL+CtHMSbex1lCdpXD1SoR2sYuxDu5aNI9lPoXpKTCggFZiDJbwylU0LEQ==
   dependencies:
-    "@csstools/selector-resolve-nested" "^3.0.0"
+    "@csstools/selector-resolve-nested" "^3.1.0"
     "@csstools/selector-specificity" "^5.0.0"
     postcss-selector-parser "^7.0.0"
 
@@ -8761,10 +8776,10 @@ postcss-plugin-constparse@4.0.12:
   resolved "https://registry.npmmirror.com/postcss-plugin-constparse/-/postcss-plugin-constparse-4.0.12.tgz#4d572cb82f17e5ef89a2d048b20b70e00da65ba8"
   integrity sha512-mCrSPdzPUdDBtGCe4Vym46iSPDSEeKN2IftKe/EbdYw1BpsibqmI4ILofzlbgYzhIcT+6bMd8zicO9O7eb7GkQ==
 
-postcss-preset-env@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.npmmirror.com/postcss-preset-env/-/postcss-preset-env-10.2.0.tgz#ea95a6fc70efb1a26f81e5cf0ccdb321a3439b6e"
-  integrity sha512-cl13sPBbSqo1Q7Ryb19oT5NZO5IHFolRbIMdgDq4f9w1MHYiL6uZS7uSsjXJ1KzRIcX5BMjEeyxmAevVXENa3Q==
+postcss-preset-env@^10.2.3:
+  version "10.2.3"
+  resolved "https://registry.yarnpkg.com/postcss-preset-env/-/postcss-preset-env-10.2.3.tgz#3a84bde7205b48f1304a656b25841bd3f40fb3cb"
+  integrity sha512-zlQN1yYmA7lFeM1wzQI14z97mKoM8qGng+198w1+h6sCud/XxOjcKtApY9jWr7pXNS3yHDEafPlClSsWnkY8ow==
   dependencies:
     "@csstools/postcss-cascade-layers" "^5.0.1"
     "@csstools/postcss-color-function" "^4.0.10"
@@ -8778,7 +8793,7 @@ postcss-preset-env@^10.2.0:
     "@csstools/postcss-hwb-function" "^4.0.10"
     "@csstools/postcss-ic-unit" "^4.0.2"
     "@csstools/postcss-initial" "^2.0.1"
-    "@csstools/postcss-is-pseudo-class" "^5.0.1"
+    "@csstools/postcss-is-pseudo-class" "^5.0.3"
     "@csstools/postcss-light-dark-function" "^2.0.9"
     "@csstools/postcss-logical-float-and-clear" "^3.0.0"
     "@csstools/postcss-logical-overflow" "^2.0.0"
@@ -8800,7 +8815,7 @@ postcss-preset-env@^10.2.0:
     "@csstools/postcss-trigonometric-functions" "^4.0.9"
     "@csstools/postcss-unset-value" "^4.0.0"
     autoprefixer "^10.4.21"
-    browserslist "^4.24.5"
+    browserslist "^4.25.0"
     css-blank-pseudo "^7.0.1"
     css-has-pseudo "^7.0.2"
     css-prefers-color-scheme "^10.0.0"
@@ -8811,7 +8826,7 @@ postcss-preset-env@^10.2.0:
     postcss-color-hex-alpha "^10.0.0"
     postcss-color-rebeccapurple "^10.0.0"
     postcss-custom-media "^11.0.6"
-    postcss-custom-properties "^14.0.5"
+    postcss-custom-properties "^14.0.6"
     postcss-custom-selectors "^8.0.5"
     postcss-dir-pseudo-class "^9.0.1"
     postcss-double-position-gradients "^6.0.2"
@@ -8822,7 +8837,7 @@ postcss-preset-env@^10.2.0:
     postcss-image-set-function "^7.0.0"
     postcss-lab-function "^7.0.10"
     postcss-logical "^8.1.0"
-    postcss-nesting "^13.0.1"
+    postcss-nesting "^13.0.2"
     postcss-opacity-percentage "^3.0.0"
     postcss-overflow-shorthand "^6.0.0"
     postcss-page-break "^3.0.4"
@@ -8936,10 +8951,10 @@ postcss@^8.5.3:
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
-postcss@~8.5.4:
-  version "8.5.4"
-  resolved "https://registry.npmmirror.com/postcss/-/postcss-8.5.4.tgz#d61014ac00e11d5f58458ed7247d899bd65f99c0"
-  integrity sha512-QSa9EBe+uwlGTFmHsPKokv3B/oEMQZxfqW0QqNCyhpa6mB1afzulwn8hihglqAb2pOw+BJgNlmXQ8la2VeHB7w==
+postcss@~8.5.6:
+  version "8.5.6"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.6.tgz#2825006615a619b4f62a9e7426cc120b349a8f3c"
+  integrity sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==
   dependencies:
     nanoid "^3.3.11"
     picocolors "^1.1.1"
@@ -10148,10 +10163,10 @@ table@^6.9.0:
   resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-2.6.0.tgz#ac5fb7e227910c038d458f396b7400d93a3142d5"
   integrity sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==
 
-tailwind-merge@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-3.3.0.tgz#d9bb4f298801ef6232ced4f97e830fc79bc3d3e7"
-  integrity sha512-fyW/pEfcQSiigd5SNn0nApUOxx0zB/dm6UDU/rEwc2c3sX2smWUNbapHv+QRqLGVp9GWX3THIa7MUGPo+YkDzQ==
+tailwind-merge@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-3.3.1.tgz#a7e7db7c714f6020319e626ecfb7e7dac8393a4b"
+  integrity sha512-gBXpgUm/3rp1lMZZrM/w7D8GKqshif0zAymAhbCyIt8KMe+0v9DQ7cdYLR4FHH/cKpdTXb+A/tKKU3eolfsI+g==
 
 tailwindcss-config@^1.0.0:
   version "1.0.0"
@@ -10752,21 +10767,21 @@ weapp-ide-cli@^3.0.0:
     fs-extra "^11.3.0"
     pathe "^2.0.3"
 
-weapp-tailwindcss@^4.1.8:
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.8.tgz#44c582c38bbee65e611eff44fd689f8edb00f594"
-  integrity sha512-1nNQ2PMauUNhzfSDBCiX9Z3Sc3MH/Lcev+/f0fcc+G2e73sUsN61/IM9VRyouJQbaq4AWnCQrm6xVHP95I4VRg==
+weapp-tailwindcss@^4.1.9:
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.1.9.tgz#793586028768eb2b8b936a87ff99e04517b9b462"
+  integrity sha512-KbwqhSOgUnGT52X6RD1MI2/Rn/HZb7Ga6ittH99CfRvbjNDLo0vc8a/sOgwISQGAAKV6ETpFStn49tNMif31QA==
   dependencies:
     "@ast-core/escape" "~1.0.1"
-    "@babel/parser" "~7.27.4"
+    "@babel/parser" "~7.27.5"
     "@babel/traverse" "~7.27.4"
-    "@babel/types" "~7.27.3"
+    "@babel/types" "~7.27.6"
     "@weapp-core/escape" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/init" "1.0.2"
     "@weapp-tailwindcss/logger" "1.0.1"
     "@weapp-tailwindcss/mangle" "1.0.4"
-    "@weapp-tailwindcss/postcss" "1.0.13"
+    "@weapp-tailwindcss/postcss" "1.0.14"
     "@weapp-tailwindcss/shared" "1.0.2"
     debug "~4.4.1"
     htmlparser2 "10.0.0"
@@ -10776,7 +10791,7 @@ weapp-tailwindcss@^4.1.8:
     magic-string "0.30.17"
     semver "~7.7.2"
     tailwindcss-patch "~7.1.1"
-    webpack-sources "3.3.0"
+    webpack-sources "3.3.2"
 
 webpack-merge@^5.10.0:
   version "5.10.0"
@@ -10787,10 +10802,10 @@ webpack-merge@^5.10.0:
     flat "^5.0.2"
     wildcard "^2.0.0"
 
-webpack-sources@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npmmirror.com/webpack-sources/-/webpack-sources-3.3.0.tgz#8d3449f1ed3f254e722a529a0a344a37d2d17048"
-  integrity sha512-77R0RDmJfj9dyv5p3bM5pOHa+X8/ZkO9c7kpDstigkC4nIDobadsfSGCwB4bKhMVxqAok8tajaoR8rirM7+VFQ==
+webpack-sources@3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.3.2.tgz#0ab55ab0b380ce53c45ca40cb7b33bab3149ea85"
+  integrity sha512-ykKKus8lqlgXX/1WjudpIEjqsafjOTcOJqxnAbMLAu/KCsDCJ6GBtvscewvTkrn24HsnvFwrSCbenFrhtcCsAA==
 
 webpack-sources@^3.2.3:
   version "3.2.3"

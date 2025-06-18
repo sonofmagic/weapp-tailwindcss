@@ -75,7 +75,7 @@
     "@tarojs/vite-runner": "4.1.1",
     "@types/react": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.0",
-    "@weapp-tailwindcss/merge": "^1.2.1",
+    "@weapp-tailwindcss/merge": "^1.2.2",
     "babel-preset-taro": "4.1.1",
     "eslint": "^9.28.0",
     "eslint-config-taro": "4.1.1",
@@ -90,7 +90,7 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.1.8"
+    "weapp-tailwindcss": "^4.1.9"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
