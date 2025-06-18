@@ -94,6 +94,11 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
           atRule.remove()
         }
       }
+      else if (atRule.name === 'layer') {
+        if (atRule.nodes === undefined || (Array.isArray(atRule.nodes) && atRule.nodes.length === 0)) {
+          atRule.remove()
+        }
+      }
     },
   }
   if (opts.isMainChunk) {

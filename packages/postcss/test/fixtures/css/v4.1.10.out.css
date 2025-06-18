@@ -1,0 +1,99 @@
+.dialog_btns {
+  display: flexbox;
+  display: flex;
+  align-items: center;
+  padding: 0 100rpx;
+  margin-bottom: 52rpx;
+  -ms-flex-align: center;
+}
+
+.dialog_btns .nut-button {
+  flex: 1;
+  margin-right: 24px;
+}
+
+.dialog_btns .nut-button:last-child {
+  margin-right: 0;
+}
+
+.dialog_btns_2 {
+  padding: 0 68rpx;
+}
+
+page {
+  height: 100%;
+  background: #fafafa;
+}
+
+page scroll-view,page swiper,page swiper-item,page text,page view {
+  box-sizing: border-box;
+}
+
+page image {
+  display: block;
+  width: auto;
+  height: auto;
+}
+
+/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+
+:host,page {
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 1.11111;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.static {
+  position: static;
+}
+
+.container {
+  width: 100%;
+}
+
+@media (min-width: 40rem) {
+  .container {
+    max-width: 40rem;
+  }
+}
+
+@media (min-width: 48rem) {
+  .container {
+    max-width: 48rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .container {
+    max-width: 64rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  .container {
+    max-width: 80rem;
+  }
+}
+
+@media (min-width: 96rem) {
+  .container {
+    max-width: 96rem;
+  }
+}
+
+.text-4xl {
+  font-size: var(--text-4xl);
+  line-height: var(--tw-leading, var(--text-4xl--line-height));
+}
+
+.outline {
+  outline-width: 2rpx;
+  outline-style: var(--tw-outline-style);
+}

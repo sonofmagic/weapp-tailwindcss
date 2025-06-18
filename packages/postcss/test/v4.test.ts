@@ -292,4 +292,17 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toMatchSnapshot()
     fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.format.out.css'), css, 'utf8')
   })
+
+  it('v4.1.10 case 0', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/v4.1.10.css'), 'utf8')
+
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.10.out.css'), css, 'utf8')
+  })
 })
