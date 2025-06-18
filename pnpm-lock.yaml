@@ -732,11 +732,10 @@ importers:
         version: 5.0.3(@types/node@24.0.1)(esbuild@0.25.5)(jiti@2.4.2)(less@4.2.0)(oxc-parser@0.72.3)(rollup@4.41.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.3)(typescript@5.8.3)(vue-tsc@2.2.10(typescript@5.8.3))(yaml@2.8.0)
 
   apps/vite-native-ts:
-    dependencies:
+    devDependencies:
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
         version: link:../../packages/merge
-    devDependencies:
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.5)

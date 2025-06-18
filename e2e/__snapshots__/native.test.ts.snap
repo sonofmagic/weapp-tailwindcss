@@ -1,16 +1,15 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`e2e native > 'vite-native' > css 1`] = `
-"/*! tailwindcss v4.1.5 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 ::before,
 ::after {
   --tw-content: '';
 }
 view,
 text,
-::before,
-::after,
-::backdrop {
+:before,
+:after {
   --tw-space-y-reverse: 0;
   --tw-space-x-reverse: 0;
   --tw-border-style: solid;
@@ -28,41 +27,87 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+::backdrop {
+  --tw-space-y-reverse: 0;
+  --tw-space-x-reverse: 0;
+  --tw-border-style: solid;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+}
 page,
 :host {
-  --color-red-700: rgb(191, 0, 15);
-  --color-amber-300: rgb(255, 210, 55);
-  --color-green-300: rgb(123, 241, 168);
-  --color-blue-200: rgb(190, 219, 255);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-pink-300: rgb(253, 165, 213);
-  --color-zinc-50: rgb(250, 250, 250);
-  --color-zinc-900: rgb(24, 24, 27);
+  --color-red-700: #bf000f;
+  --color-amber-300: #ffd236;
+  --color-green-300: #7bf1a8;
+  --color-blue-200: #bedbff;
+  --color-blue-500: #3080ff;
+  --color-pink-300: #fda5d5;
+  --color-zinc-50: #fafafa;
+  --color-zinc-900: #18181b;
   --spacing: 8rpx;
 }
-@supports (color: color(display-p3 0 0 0%)) {
+@supports (color: color(display-p3 0 0 0)) {
   page,
   :host {
-    --color-red-700: rgb(191, 0, 16);
+    --color-red-700: rgb(191, 0, 15);
     --color-amber-300: rgb(255, 210, 55);
+    --color-green-300: color(display-p3 0.600292 0.935514 0.68114);
     --color-blue-200: rgb(190, 219, 255);
     --color-blue-500: rgb(50, 128, 255);
+    --color-pink-300: color(display-p3 0.944378 0.662026 0.8283);
+    --color-zinc-50: color(display-p3 0.980256 0.980256 0.980256);
+    --color-zinc-900: color(display-p3 0.0937957 0.093793 0.104806);
   }
 
   @media (color-gamut: p3) {
     page,
     :host {
-      --color-red-700: color(display-p3 0.69274 0.11623 0.10468);
-      --color-amber-300: color(display-p3 0.97433 0.83063 0.33298);
-      --color-blue-200: color(display-p3 0.76688 0.85521 0.98748);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+      --color-red-700: color(display-p3 0.692737 0.116232 0.104679);
+      --color-amber-300: color(display-p3 0.974327 0.83063 0.33298);
+      --color-blue-200: color(display-p3 0.76688 0.855207 0.987483);
+      --color-blue-500: color(display-p3 0.266422 0.491219 0.988624);
+    }
+  }
+}
+@supports (color: lab(0% 0 0)) {
+  page,
+  :host {
+    --color-red-700: rgb(191, 0, 15);
+    --color-amber-300: rgb(255, 210, 55);
+    --color-green-300: lab(86.9953% -47.2691 25.0054);
+    --color-blue-200: rgb(190, 219, 255);
+    --color-blue-500: rgb(50, 128, 255);
+    --color-pink-300: lab(77.8308% 38.525 -10.5394);
+    --color-zinc-50: lab(98.26% 0 0);
+    --color-zinc-900: lab(8.30603% 0.618205 -2.16572);
+  }
+
+  @media (color-gamut: p3) {
+    page,
+    :host {
+      --color-red-700: lab(40.4273% 67.2623 53.7441);
+      --color-amber-300: lab(86.4156% 6.13147 78.3961);
+      --color-blue-200: lab(86.15% -4.04379 -21.0797);
+      --color-blue-500: lab(54.1736% 13.3369 -74.6839);
     }
   }
 }
 view,
 text,
 :after,
-:before,
+:before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
 ::backdrop {
   box-sizing: border-box;
   border: 0 solid;
@@ -98,17 +143,20 @@ text,
   }
 }
 .i-mdi-home {
-  display: inline-block;
   width: 1em;
   height: 1em;
-  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  -webkit-mask-image: var(--svg);
+  -webkit-mask-image: var(--svg);
   -webkit-mask-image: var(--svg);
   mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  display: inline-block;
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 .flex {
   display: flex;
@@ -171,19 +219,14 @@ text,
 .bg-_h3a32d1_ {
   background-color: #3a32d1;
 }
-.bg-_h7d7ac2_ {
-  background-color: #7d7ac2;
+.bg-_h68c828_ {
+  background-color: #68c828;
 }
 .bg-amber-300 {
   background-color: var(--color-amber-300);
 }
 .bg-blue-500s30 {
-  background-color: rgba(50, 128, 255, 0.3);
-}
-@media (color-gamut: p3) {
-  .bg-blue-500s30 {
-    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.3);
-  }
+  background-color: rgba(48, 128, 255, 0.30196);
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -246,14 +289,53 @@ text,
 `;
 
 exports[`e2e native > 'vite-native' > json 1`] = `
-"[]
+"[
+  "-m",
+  "bg-[#3a32d1]",
+  "bg-[#68c828]",
+  "bg-amber-300",
+  "bg-blue-500/30",
+  "bg-gradient-to-b",
+  "bg-gradient-to-t",
+  "bg-gradient-to-tr",
+  "bg-zinc-50",
+  "border-4",
+  "container",
+  "content",
+  "dark:bg-zinc-900",
+  "dark:hover:bg-green-300",
+  "flex",
+  "flex-col",
+  "from",
+  "from-[#2f73f1]",
+  "h-10",
+  "h-[29.292px]",
+  "h-[30px]",
+  "h-[45px]",
+  "hover:border-blue-200/20",
+  "inline-block",
+  "list",
+  "min-h-screen",
+  "p-4",
+  "size-12",
+  "space-x-2.5",
+  "space-y-2.5",
+  "text-[#123456]",
+  "text-[100px]",
+  "text-[100rpx]",
+  "text-pink-300",
+  "text-red-700",
+  "to-[#4bcefd]",
+  "w-[323px]",
+  "w-[50px]"
+]
 "
 `;
 
 exports[`e2e native > 'vite-native' > wxml 1`] = `
 "<scroll-view scroll-y="" type="list" enable-back-to-top="">
   <view class="space-y-2d5">
-    <view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
+    <view class="bg-_h68c828_ text-_100px_ text-_h123456_ w-_323px_ h-_30px_">111</view>
     <view class="bg-_h3a32d1_ text-_100rpx_ text-red-700 w-_323px_ h-_45px_">222</view>
     <view class="bg-gradient-to-b from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
     <view class="bg-gradient-to-t from-_h2f73f1_ to-_h4bcefd_ w-_323px_ h-_30px_"></view>
@@ -322,7 +404,7 @@ text,
   --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-color: rgba(59, 130, 246, 0.50196);
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
@@ -379,7 +461,7 @@ text,
   --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-color: rgba(59, 130, 246, 0.50196);
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
@@ -408,12 +490,12 @@ text,
   --tw-contain-style: ;
 }
 .weapp-reset-button {
-  padding: 0;
   background-color: transparent;
   background-color: initial;
   font-size: inherit;
   line-height: inherit;
   color: inherit;
+  padding: 0;
 }
 .weapp-reset-button:after {
   border: none;
@@ -425,7 +507,7 @@ text,
   display: flex;
 }
 .transform {
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y));
 }
 .cursor-not-allowed {
@@ -457,7 +539,7 @@ text,
   border-color: rgba(156, 163, 175, var(--tw-border-opacity, 1));
 }
 .border-transparent {
-  border-color: transparent;
+  border-color: rgba(0, 0, 0, 0);
 }
 .bg-_h123456_ {
   --tw-bg-opacity: 1;
@@ -495,6 +577,15 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
 }
+.p-0d5 {
+  padding: 4rpx;
+}
+.p-1 {
+  padding: 8rpx;
+}
+.p-2 {
+  padding: 16rpx;
+}
 .p-3 {
   padding: 24rpx;
 }
@@ -525,6 +616,9 @@ text,
   padding-top: 48rpx;
   padding-bottom: 48rpx;
 }
+.text-_34px_ {
+  font-size: 34px;
+}
 .text-base {
   font-size: 32rpx;
   line-height: 48rpx;
@@ -552,6 +646,10 @@ text,
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
 }
+.text-_hececec_ {
+  --tw-text-opacity: 1;
+  color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
+}
 .text-gray-600 {
   --tw-text-opacity: 1;
   color: rgba(75, 85, 99, var(--tw-text-opacity, 1));
@@ -569,8 +667,8 @@ text,
 }
 .transition-colors {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 0.15s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 .duration-200 {
   transition-duration: 0.2s;
@@ -579,8 +677,8 @@ text,
   transition-duration: 0.3s;
 }
 .focuscoutline-none:focus {
-  outline: 2px solid transparent;
   outline-offset: 2px;
+  outline: 2px solid rgba(0, 0, 0, 0);
 }
 .focuscring:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);

@@ -1,8 +1,11 @@
 [
   "bg-[#123456]",
+  "bg-gradient-to-r",
   "bg-purple-300",
   "content",
   "from",
+  "from-cyan-500",
+  "h-14",
   "h-[300px]",
   "leading",
   "object",
@@ -10,5 +13,6 @@
   "text-[#c31d6b]",
   "text-[#fff]",
   "text-[55rpx]",
-  "text/html"
+  "text/html",
+  "to-blue-500"
 ]

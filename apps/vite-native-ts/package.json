@@ -25,9 +25,10 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "@weapp-tailwindcss/merge": "workspace:*"
+
   },
   "devDependencies": {
+    "@weapp-tailwindcss/merge": "workspace:*",
     "autoprefixer": "^10.4.21",
     "miniprogram-api-typings": "^4.0.7",
     "postcss": "^8.5.5",
