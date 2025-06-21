@@ -60,7 +60,20 @@
 
 详见 https://uniapp.dcloud.net.cn/tutorial/platform.html
 
-## 开发 h5
+## 使用 @apply 
+
+如果你想在 页面或者组件独立的 `CSS` 模块中使用 `@apply` 或 `@variant`，你需要使用 `@reference` 指令，来导入主题变量、自定义工具和自定义变体，以使这些值在该上下文中可用。
+
+```css
+/* 到你引入 weapp-tailwindcss 的 css 相对路径 */
+@reference "../../app.css";
+/* 如果你只使用默认主题，没有自定义，你可以直接 reference weapp-tailwindcss */
+@reference "weapp-tailwindcss";
+```
+
+详见: https://tailwindcss.com/docs/functions-and-directives#reference-directive
+
+## @layer 在小程序的降级方案
 
 `tailwindcss@4` 使用原生的 `@layer` 去控制样式的优先级
 
@@ -72,7 +85,9 @@
 
 ![](./tailwindcss-v4-uniapp-layer.png)
 
-这种情况，你就非常需要兼容性降级方案，即使用 [`postcss-preset-env`](https://www.npmjs.com/package/postcss-preset-env)
+这种情况，你就非常需要兼容性降级方案，即使用 [`postcss-preset-env`](https://www.npmjs.com/package/postcss-preset-env) (`weapp-tailwindcss` 已经内置了这个插件了，你可以直接使用它的配置，详见 [cssPresetEnv](/docs/api/interfaces/UserDefinedOptions#csspresetenv))
+
+这在开发需要兼容低版本移动端 h5 的时候很重要。
 
 ## 使用 pnpm
 

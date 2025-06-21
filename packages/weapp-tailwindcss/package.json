@@ -198,6 +198,6 @@
     "magic-string": "0.30.17",
     "semver": "~7.7.2",
     "tailwindcss-patch": "~7.1.1",
-    "webpack-sources": "3.3.2"
+    "webpack-sources": "3.3.3"
   }
 }

@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lightningcss > base 1`] = `
+"@layer base {
+  h1 {
+    font-size: var(--text-2xl);
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+  }
+}
+"
+`;
+
+exports[`lightningcss > components 1`] = `
+"@layer components {
+  .card {
+    background-color: var(--color-white);
+    -webkit-border-radius: var(--rounded-lg);
+    border-radius: var(--rounded-lg);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-xl);
+  }
+}
+"
+`;
