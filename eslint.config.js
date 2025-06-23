@@ -1,7 +1,7 @@
 import { icebreaker } from '@icebreakers/eslint-config';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
-const config = icebreaker(
+export default icebreaker(
   {
     tailwindcss: true,
     markdown: true,
@@ -26,6 +26,7 @@ const config = icebreaker(
     },
   },
   { files: ['packages/merge/**/*.test.ts'], rules: {} },
-);
 
-export default [config, eslintConfigPrettier];
+  // 必须放最后，以 prettier 代码风格配置 esling
+  eslintConfigPrettier,
+);
