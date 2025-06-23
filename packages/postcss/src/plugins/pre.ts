@@ -106,18 +106,23 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
     p.Once = (root) => {
       root.walkAtRules((atRule) => {
         // Tailwindcss V4.1.2
-        if (atRule.name === 'layer' && atRule.params === 'properties') {
-          if (atRule.nodes === undefined || atRule.nodes?.length === 0) {
-            layerProperties = atRule// .remove()
+        if (atRule.name === 'layer') {
+          if (atRule.params === 'properties') {
+            if (atRule.nodes === undefined || atRule.nodes?.length === 0) {
+              layerProperties = atRule// .remove()
+            }
+            else if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
+              if (layerProperties) {
+                layerProperties.replaceWith(atRule.first.nodes)
+                atRule.remove()
+              }
+              else {
+                atRule.replaceWith(atRule.first.nodes)
+              }
+            }
           }
-          else if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
-            if (layerProperties) {
-              layerProperties.replaceWith(atRule.first.nodes)
-              atRule.remove()
-            }
-            else {
-              atRule.replaceWith(atRule.first.nodes)
-            }
+          else {
+            atRule.replaceWith(atRule.nodes)
           }
         }
         // Tailwindcss V4.1.1

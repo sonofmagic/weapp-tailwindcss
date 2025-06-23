@@ -1,0 +1,11 @@
+@import "weapp-tailwindcss";
+
+@layer components {
+  .btn-primary {
+    @apply py-4 text-white font-sans font-medium rounded-sm text-center;
+  }
+
+  /* .btn-primary-deep {
+    @apply btn-primary hover:bg-slate-300;
+  } */
+}

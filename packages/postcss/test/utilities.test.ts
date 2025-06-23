@@ -1,8 +1,8 @@
-import { createStyleHandler } from '@/index'
 import tailwindcss from '@tailwindcss/postcss'
 // import fs from 'fs-extra'
 import path from 'pathe'
 import postcss from 'postcss'
+import { createStyleHandler } from '@/index'
 
 function generateCss(css: string, base: string) {
   return postcss([

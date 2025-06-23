@@ -1,8 +1,8 @@
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
-:not(#n):not(#n):not(#n)::before,:not(#n):not(#n):not(#n)::after {
+::before,::after {
       --tw-content: "";
 }
-view:not(#n):not(#n):not(#n),text:not(#n):not(#n):not(#n),:not(#n):not(#n):not(#n)::before,:not(#n):not(#n):not(#n)::after,:not(#n):not(#n):not(#n)::backdrop {
+view,text,::before,::after,::backdrop {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -39,32 +39,32 @@ view:not(#n):not(#n):not(#n),text:not(#n):not(#n):not(#n),:not(#n):not(#n):not(#
 page,:host {
     --color-zinc-800: rgb(39, 39, 42);
   }
-view:not(#n),text:not(#n),:not(#n):after,:not(#n):before,:not(#n)::backdrop {
+view,text,:after,:before,::backdrop {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
     padding: 0;
   }
-.shadow:not(#n):not(#n) {
+.shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
-.invert:not(#n):not(#n) {
+.invert {
     --tw-invert: invert(100%);
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
   }
-.beforeccontent-_wqawq_:not(#n):not(#n)::before {
+.beforeccontent-_wqawq_::before {
       content: var(--tw-content);
       --tw-content: \'+\';
       content: var(--tw-content);
     }
-.beforeccontent-_wqhellowq_:not(#n):not(#n)::before {
+.beforeccontent-_wqhellowq_::before {
       content: var(--tw-content);
       --tw-content: \'hello\';
       content: var(--tw-content);
     }
 @media (prefers-color-scheme: dark) {
-  .darkcbg-zinc-800:not(#n):not(#n) {
+.darkcbg-zinc-800 {
       background-color: var(--color-zinc-800);
   }
     }

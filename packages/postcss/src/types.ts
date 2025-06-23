@@ -15,8 +15,8 @@ export interface IPropValue {
   value: string
 }
 
-export type CssPreflightOptions =
-  | {
+export type CssPreflightOptions
+  = | {
     [key: string]: string | number | boolean
   }
   | false

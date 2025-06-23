@@ -1,6 +1,6 @@
-import { createStyleHandler } from '@/index'
 import fs from 'fs-extra'
 import path from 'pathe'
+import { createStyleHandler } from '@/index'
 
 describe('uni-app', () => {
   it('postcss', async () => {
