@@ -270,6 +270,9 @@ importers:
       eslint:
         specifier: ^9.29.0
         version: 9.29.0(jiti@2.4.2)
+      eslint-config-prettier:
+        specifier: ^10.1.5
+        version: 10.1.5(eslint@9.29.0(jiti@2.4.2))
       execa:
         specifier: ^9.6.0
         version: 9.6.0
@@ -8976,6 +8979,12 @@ packages:
     resolution: {integrity: sha512-cJzNJ7L+psWp5mXM7jBX+fjHtBvvh06RBlcweMhKD8jWqQw0G78hOW5tpVALGHGFPsBV+ot2H+pdDGJy6CV8pA==}
     peerDependencies:
       eslint: ^9.5.0
+
+  eslint-config-prettier@10.1.5:
+    resolution: {integrity: sha512-zc1UmCpNltmVY34vuLRV61r1K27sWuX39E+uyUnY8xS2Bex88VV9cugG+UZbRSRGtGyFboj+D8JODyme1plMpw==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
 
   eslint-flat-config-utils@2.1.0:
     resolution: {integrity: sha512-6fjOJ9tS0k28ketkUcQ+kKptB4dBZY2VijMZ9rGn8Cwnn1SH0cZBoPXT8AHBFHxmHcLFQK9zbELDinZ2Mr1rng==}
@@ -27371,6 +27380,10 @@ snapshots:
   eslint-config-flat-gitignore@2.1.0(eslint@9.29.0(jiti@2.4.2)):
     dependencies:
       '@eslint/compat': 1.3.0(eslint@9.29.0(jiti@2.4.2))
+      eslint: 9.29.0(jiti@2.4.2)
+
+  eslint-config-prettier@10.1.5(eslint@9.29.0(jiti@2.4.2)):
+    dependencies:
       eslint: 9.29.0(jiti@2.4.2)
 
   eslint-flat-config-utils@2.1.0:
