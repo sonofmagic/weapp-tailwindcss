@@ -65,7 +65,7 @@
     "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw @weapp-tailwindcss/cli @weapp-tailwindcss/typography",
     "sync:all": "turbo run sync",
     "generate:readme": "tsx scripts/readme/write.ts",
-    "format": "prettier write .",
+    "format": "prettier --write .",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
     "ls:pack": "npm pack --dry-run",
     "cli:patch": "node bin/weapp-tailwindcss.js patch",
