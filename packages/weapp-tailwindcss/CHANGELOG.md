@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.1.10
+
+### Patch Changes
+
+- [`2b0a754`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2b0a75493506d219d1b49474f3ce684d107fcbd1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: [#655](https://github.com/sonofmagic/weapp-tailwindcss/issues/655) 默认自动去除 `@layer` 在 `postcss-env-preset` 处理之前
+
+- Updated dependencies [[`2b0a754`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2b0a75493506d219d1b49474f3ce684d107fcbd1)]:
+  - @weapp-tailwindcss/postcss@1.0.15
+
 ## 4.1.9
 
 ### Patch Changes
@@ -70,7 +79,6 @@
 ### Patch Changes
 
 - [`3cecfdc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3cecfdccfcdfacd262fee571b0209e095b33838e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 移除带有 `@supports` `color-mix` 的 css 节点, 修复
-
   - [#632](https://github.com/sonofmagic/weapp-tailwindcss/issues/632)
   - [#631](https://github.com/sonofmagic/weapp-tailwindcss/issues/631)
 
@@ -379,7 +387,6 @@
   增加 `@weapp-tailwindcss/merge` 支持，这是 `weapp-tailwindcss` 版本的 `tailwindcss-merge` 和 `cva` 方法
 
   ## Breaking Changes
-
   1. 去除 `weapp-tailwindcss/postcss` (可直接安装使用 `@weapp-tailwindcss/postcss`)
   2. 增加 `weapp-tailwindcss/escape` 来取代 `weapp-tailwindcss/replace`
   3. 项目 monorepo 区分包
@@ -590,7 +597,6 @@
 ### Minor Changes
 
 - [`0955492`](https://github.com/sonofmagic/weapp-tailwindcss/commit/095549299cefce15559578f28a6b1624b43fb1c9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - <br/>
-
   - feat: 升级依赖项，去除了 `nodejs@16` 的支持，需求的 `nodejs` 版本，升级到了 `^18.17.0 || >=20.5.0`
   - feat: 从 `weapp-tailwindcss@3.6.0` 版本开始移除 `@weapp-tailwindcss/cli` ，原先 `@weapp-tailwindcss/cli` 的项目，可以几乎 **0成本** 的迁移到 `weapp-vite`
 
@@ -606,7 +612,6 @@
 ### Patch Changes
 
 - [`9890f09`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9890f09a990682e10aabab7b8dc685a58d977fca) Thanks [@sonofmagic](https://github.com/sonofmagic)! - Date: 2024-09-01
-
   - 重构 `wxml` 模板替换相关的实现
 
 ## 3.4.1-alpha.0
