@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.15
+
+### Patch Changes
+
+- [`2b0a754`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2b0a75493506d219d1b49474f3ce684d107fcbd1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: [#655](https://github.com/sonofmagic/weapp-tailwindcss/issues/655) 默认自动去除 `@layer` 在 `postcss-env-preset` 处理之前
+
 ## 1.0.14
 
 ### Patch Changes
@@ -37,7 +43,6 @@
 ### Patch Changes
 
 - [`3cecfdc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3cecfdccfcdfacd262fee571b0209e095b33838e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 移除带有 `@supports` `color-mix` 的 css 节点, 修复
-
   - [#632](https://github.com/sonofmagic/weapp-tailwindcss/issues/632)
   - [#631](https://github.com/sonofmagic/weapp-tailwindcss/issues/631)
 
@@ -172,7 +177,6 @@
   增加 `@weapp-tailwindcss/merge` 支持，这是 `weapp-tailwindcss` 版本的 `tailwindcss-merge` 和 `cva` 方法
 
   ## Breaking Changes
-
   1. 去除 `weapp-tailwindcss/postcss` (可直接安装使用 `@weapp-tailwindcss/postcss`)
   2. 增加 `weapp-tailwindcss/escape` 来取代 `weapp-tailwindcss/replace`
   3. 项目 monorepo 区分包
