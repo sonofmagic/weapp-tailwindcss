@@ -8,6 +8,12 @@
       {{ className }}
     </view>
     <view class="i-mdi-home"></view>
+    <view class="bg-midnight text-tahiti fill-bermuda">
+      bg-midnight text-tahiti fill-bermuda
+    </view>
+    <view class="bg-neutral-1B">
+      12345
+    </view>
   </view>
 </template>
 
