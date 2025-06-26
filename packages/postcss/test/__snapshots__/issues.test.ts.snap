@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-blue-500: oklch(62.3% .214 259.815);
   --spacing: .25rem;
@@ -25,7 +25,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
@@ -62,7 +62,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-blue-100: oklch(93.2% .032 255.585);
 }
@@ -85,7 +85,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-blue-100: rgb(219, 234, 254);
 }
@@ -101,7 +101,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-green-300: oklch(87.1% .15 154.449);
   --color-gray-600: oklch(44.6% .03 256.802);
@@ -133,7 +133,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-green-300: rgb(123, 241, 168);
   --color-gray-600: rgb(74, 85, 101);
@@ -157,7 +157,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 case 0 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 :root, :host {
   --color-green-300: oklch(87.1% .15 154.449);
   --color-zinc-50: oklch(98.5% 0 0);
@@ -202,7 +202,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 cas
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 case 0 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 page,:host {
   --color-green-300: rgb(123, 241, 168);
   --color-zinc-50: rgb(250, 250, 250);
@@ -243,7 +243,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 @layer properties;
 :root, :host {
   --color-cyan-500: oklch(71.5% .143 215.221);
@@ -331,7 +331,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 ::before,::after {
       --tw-content: "";
 }
@@ -388,7 +388,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 @layer properties;
 :root, :host {
   --blur-2xl: 40px;
@@ -557,7 +557,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 ::before,::after {
       --tw-content: "";
 }

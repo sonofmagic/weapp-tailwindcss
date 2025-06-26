@@ -12,13 +12,13 @@
     "vue": "^3.5.17"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.10",
-    "@vitejs/plugin-vue": "^5.2.3",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
     "postcss": "^8.5.6",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5",
+    "vite": "^7.0.0",
     "vue-tsc": "^2.2.8"
   }
 }

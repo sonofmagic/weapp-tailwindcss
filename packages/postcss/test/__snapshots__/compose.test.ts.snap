@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`compose > components 0 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 @layer properties;
 :root, :host {
   --font-sans: ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
@@ -42,7 +42,7 @@ exports[`compose > components 0 1`] = `
 `;
 
 exports[`compose > components 0 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 view,text,::before,::after,::backdrop {
       --tw-font-weight: initial;
     }
@@ -73,7 +73,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`compose > no components 0 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 @layer properties;
 :root, :host {
   --font-sans: ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
@@ -112,7 +112,7 @@ exports[`compose > no components 0 1`] = `
 `;
 
 exports[`compose > no components 0 2`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 view,text,::before,::after,::backdrop {
       --tw-font-weight: initial;
     }
