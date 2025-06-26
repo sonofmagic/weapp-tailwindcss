@@ -1,4 +1,5 @@
-import { icebreaker } from '@icebreakers/eslint-config'
+import { icebreaker } from '@icebreakers/eslint-config';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
 export default icebreaker(
   {
@@ -17,27 +18,15 @@ export default icebreaker(
       'packages/weapp-tailwindcss/*.css',
     ],
   },
-  {
-    rules: {
-      'ts/no-require-imports': 'warn',
-    },
-  },
+  { rules: { 'ts/no-require-imports': 'warn' } },
   {
     files: ['apps/**/*.{ts,js}', 'demo/**/*.{ts,js}'],
     languageOptions: {
-      globals: {
-        wx: true,
-        App: true,
-        Page: true,
-        getApp: true,
-        Component: true,
-      },
+      globals: { wx: true, App: true, Page: true, getApp: true, Component: true },
     },
   },
-  {
-    files: ['packages/merge/**/*.test.ts'],
-    rules: {
+  { files: ['packages/merge/**/*.test.ts'], rules: {} },
 
-    },
-  },
-)
+  // 必须放最后，以 prettier 代码风格配置 esling
+  eslintConfigPrettier,
+);

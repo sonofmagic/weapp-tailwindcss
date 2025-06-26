@@ -1,0 +1,6 @@
+*.patch
+bun.lock
+pnpm-lock.yaml
+
+dist
+node_modules
