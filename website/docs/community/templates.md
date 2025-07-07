@@ -128,7 +128,13 @@
             >
             </iframe>
 
-### 更多
+## `tailwindcss@4`
+
+所有的 `tailwindcss@4` 模板都维护在下方的地址，标志为标题带有 `tailwindcss-v4` 字样:
+
+https://github.com/icebreaker-template
+
+## 更多模板
 
 你还可以在项目的根目录的 `demo` 文件夹中，找到各个框架的注册方式。
 

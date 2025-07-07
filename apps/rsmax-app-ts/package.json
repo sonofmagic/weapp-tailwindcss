@@ -9,18 +9,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "rsmax build -w -t wechat",
-    "build": "cross-env NODE_ENV=production rsmax build -t wechat",
+    "_build": "cross-env NODE_ENV=production rsmax build -t wechat",
     "analyze": "rsmax build -t -a",
     "open": "weapp open -p",
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "react": "^18.3",
-    "react-dom": "^18.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "rsmax": "^1.3.13"
   },
   "devDependencies": {
-    "@types/react": "^18.3",
+    "@types/react": "^19.1.8",
     "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.2",
     "postcss": "^8.5.6",
