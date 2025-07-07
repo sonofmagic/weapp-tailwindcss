@@ -163,7 +163,11 @@ const tutorialSidebar: SidebarConfig = [
   //   label: '从 v1 迁移到 v2',
   //   id: 'migrations/v1'
   // },
-
+  {
+    type: 'doc',
+    id: 'quick-start/v2/index',
+    label: '🗑️Tailwind CSS @2.x',
+  },
   {
     type: 'doc',
     label: '如何贡献',
@@ -364,11 +368,7 @@ const communitySidebar: SidebarConfig = [
     type: 'doc',
     id: 'community/typography',
   },
-  {
-    type: 'doc',
-    id: 'quick-start/v2/index',
-    label: '🗑️Tailwind CSS @2.x',
-  },
+
 ]
 
 /**
