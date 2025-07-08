@@ -61,7 +61,7 @@
     "cross-env": "^7.0.3",
     "docusaurus-plugin-sass": "^0.2.6",
     "docusaurus-plugin-typedoc": "1.4.0",
-    "dotenv": "^17.0.1",
+    "dotenv": "^17.1.0",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
     "sass": "^1.89.2",
