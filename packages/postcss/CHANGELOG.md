@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.16
+
+### Patch Changes
+
+- [`f2c69d5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f2c69d5bd8e1dc3d39eced8ff62b75e0c4ef3591) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 修复 `tailwindcss@4` 中，在和 `taro` 一起使用时，`space-x-<number>` 类名生成 `css` 不正确的问题
+
 ## 1.0.15
 
 ### Patch Changes
