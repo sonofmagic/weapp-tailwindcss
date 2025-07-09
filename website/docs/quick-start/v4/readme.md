@@ -118,3 +118,40 @@ shamefully-hoist=true
 ```html title="App.vue"
 <style src="./main.css"></style>
 ```
+
+## 如何去除 preflight 样式
+
+在引入 `@import "weapp-tailwindcss"` 时，默认会引入 `preflight` 样式。
+
+### 什么是 preflight 样式
+
+一些全局的 `reset` 样式，用来让一些标签行为统一的，比如你在你的样式中，看到的:
+
+```css
+view,text,::before,::after,::backdrop {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+```
+
+类似这样的就是 `weapp-tailwindcss` 给你的应用注入的 `preflight` 样式
+
+### 解决方案
+
+`@import "weapp-tailwindcss"` 本质上由三个部分组成:
+
+```css
+@import 'weapp-tailwindcss/theme.css';
+@import 'weapp-tailwindcss/preflight.css';
+@import 'weapp-tailwindcss/utilities.css';
+```
+
+所以想要去除 `preflight` 样式，只需像下面一样写即可
+
+```diff
+- @import "weapp-tailwindcss";
++ @import 'weapp-tailwindcss/theme.css';
++ @import 'weapp-tailwindcss/utilities.css';
+```
