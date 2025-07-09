@@ -115,7 +115,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     postcssOptions: {},
     cssRemoveProperty: true,
     cssRemoveHoverPseudoClass: true,
-    ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva'] : [],
+    ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva', 'tv'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     tailwindcssPatcherOptions: {
       patch: {

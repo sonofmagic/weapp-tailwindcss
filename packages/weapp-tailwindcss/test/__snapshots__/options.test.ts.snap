@@ -132,6 +132,7 @@ exports[`get options > default options 1`] = `
     "twMerge",
     "twJoin",
     "cva",
+    "tv",
   ],
   "ignoreTaggedTemplateExpressionIdentifiers": [
     "weappTwIgnore",

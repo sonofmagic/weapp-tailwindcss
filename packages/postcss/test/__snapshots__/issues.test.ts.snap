@@ -613,3 +613,59 @@ view,text,:after,:before,::backdrop {
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 }"
 `;
+
+exports[`issues > space-x-number 1`] = `
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+@layer properties;
+:root, :host {
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.space-x-2 {
+  :where(& > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+  }
+}
+@property --tw-space-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-space-x-reverse: 0;
+    }
+  }
+}"
+`;
+
+exports[`issues > space-x-number 2`] = `
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+view,text,::before,::after,::backdrop {
+      --tw-space-x-reverse: 0;
+    }
+page,:host {
+  --spacing: .25rem;
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.space-x-2>view+view {
+    --tw-space-x-reverse: 0;
+    margin-right: calc((var(--spacing) * 2) * var(--tw-space-x-reverse));
+    margin-right: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+    margin-left: calc((var(--spacing) * 2) * (1 - var(--tw-space-x-reverse)));
+    margin-left: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+  }"
+`;

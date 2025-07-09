@@ -131,6 +131,9 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
                   else if (node.prop === 'margin-right') {
                     node.prop = 'margin-left'
                   }
+                  else if (node.prop === '-webkit-margin-start' || node.prop === '-webkit-margin-end' || node.prop === '-webkit-margin-before' || node.prop === '-webkit-margin-after') {
+                    node.remove()
+                  }
                 }
               }
             }

@@ -62,8 +62,8 @@
     "@tarojs/runtime": "4.1.3",
     "@tarojs/shared": "4.1.3",
     "@tarojs/taro": "4.1.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
@@ -75,7 +75,7 @@
     "@tarojs/taro-loader": "4.1.3",
     "@tarojs/webpack5-runner": "4.1.3",
     "@types/node": "^24.0.10",
-    "@types/react": "^19.1.8",
+    "@types/react": "^18.3.23",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "^1.2.2",
     "babel-preset-taro": "4.1.3",
@@ -87,6 +87,6 @@
     "typescript": "^5.8.3",
     "weapp-ide-cli": "^3.0.0",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.99.9"
+    "webpack": "5.100.0"
   }
 }
