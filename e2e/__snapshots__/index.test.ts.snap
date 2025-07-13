@@ -650,7 +650,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'mpx-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 ::before,
 ::after {
   --tw-content: '';
@@ -1775,22 +1775,6 @@ exports[`e2e > 'native-mina' > wxml 1`] = `
   <view class="MANGLE__qwertyuiopasdfghjklzxcvbnm">MANGLE__qwertyuiopasdfghjklzxcvbnm</view>
   <view class="MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM">MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM</view>
 </view>
-.luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
-Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
-UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
-8px;border:1px solid #fff;border-radius:3px;box-sizing:border-box;min-width:100px;max-width:min(300px,100% -
-4px);z-index:2;background-clip:padding-box;will-change:transform;text-rendering:optimizeLegibility;pointer-events:none;filter:drop-shadow(0 2px 4px
-rgba(0,0,0,.35))}.luna-dom-highlighter-tooltip-content
-.luna-dom-highlighter-tooltip-arrow{background:#fff;width:15px;height:8px;position:absolute}.luna-dom-highlighter-element-info-section{margin-top:12px;margin-bottom:6px}.luna-dom-highlighter-section-name{color:#333;font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.05em;line-height:12px}.luna-dom-highlighter-element-info{display:flex;flex-direction:column}.luna-dom-highlighter-element-info-header{display:flex;align-items:center}.luna-dom-highlighter-element-info-body{display:flex;flex-direction:column;padding-top:2px;margin-top:2px}.luna-dom-highlighter-element-info-row{display:flex;line-height:19px}.luna-dom-highlighter-separator-container{display:flex;align-items:center;flex:auto;margin-left:7px}.luna-dom-highlighter-separator{border-top:1px
-solid
-#ddd;width:100%}.luna-dom-highlighter-element-info-name{flex-shrink:0;color:#666}.luna-dom-highlighter-element-info-gap{flex:auto}.luna-dom-highlighter-element-info-value-color{display:flex;color:#303942;margin-left:10px;align-items:baseline}.luna-dom-highlighter-a11y-icon{width:16px;height:16px;background-repeat:no-repeat;display:inline-block}.luna-dom-highlighter-element-info-value-contrast{display:flex;align-items:center;text-align:right;color:#303942;margin-left:10px}.luna-dom-highlighter-element-info-value-contrast
-.luna-dom-highlighter-a11y-icon{margin-left:8px}.luna-dom-highlighter-element-info-value-icon{display:flex;align-items:center}.luna-dom-highlighter-element-info-value-text{text-align:right;color:#303942;margin-left:10px;align-items:baseline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.luna-dom-highlighter-color-swatch{display:flex;margin-right:2px;width:10px;height:10px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);line-height:10px}.luna-dom-highlighter-color-swatch-inner{flex:auto;border:1px
-solid
-#808002}.luna-dom-highlighter-element-layout-type{margin-right:10px;width:16px;height:16px}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-grid{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-flex{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-description{flex:1
-1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
-solid #000;padding:0
-1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
-(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}
 "
 `;
 
@@ -4029,7 +4013,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'taro-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 ::-webkit-backdrop {
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
@@ -5512,7 +5496,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 view,
 text,
 :before,
@@ -5525,6 +5509,10 @@ page,
   --color-white: #fff;
   --spacing: 8rpx;
   --font-weight-bold: 700;
+  --color-neutral-1B: #1b1b1b;
+  --color-midnight: #121063;
+  --color-tahiti: #3ab7bf;
+  --color-bermuda: #78dcca;
 }
 view,
 text,
@@ -5570,6 +5558,15 @@ text,
 .bg-_h0000ff_ {
   background-color: #00f;
 }
+.bg-midnight {
+  background-color: var(--color-midnight);
+}
+.bg-neutral-1B {
+  background-color: var(--color-neutral-1B);
+}
+.fill-bermuda {
+  fill: var(--color-bermuda);
+}
 .text-_45rpx_ {
   font-size: 45rpx;
 }
@@ -5582,6 +5579,9 @@ text,
 }
 .text-_h00f285_ {
   color: #00f285;
+}
+.text-tahiti {
+  color: var(--color-tahiti);
 }
 .text-white {
   color: var(--color-white);
@@ -5627,8 +5627,11 @@ exports[`e2e > 'uni-app-tailwindcss-v4' > json 1`] = `
   "aspect-(--my-aspect-ratio)",
   "aspect-[calc(4*3+1)/3]",
   "bg-[#0000ff]",
+  "bg-midnight",
+  "bg-neutral-1B",
   "content",
   "delay",
+  "fill-bermuda",
   "flex",
   "flex-col",
   "font-bold",
@@ -5639,6 +5642,7 @@ exports[`e2e > 'uni-app-tailwindcss-v4' > json 1`] = `
   "text-[45rpx]",
   "text-[88rpx]",
   "text-area",
+  "text-tahiti",
   "text-white",
   "to",
   "top",
@@ -5656,6 +5660,8 @@ exports[`e2e > 'uni-app-tailwindcss-v4' > wxml 1`] = `
   </view>
   <view class="bg-_h0000ff_ bg-_h0000ff_ text-_45rpx_ text-_45rpx_ text-white text-white aspect-_calcy4m3a1ys3_ aspect-_calcy4m3a1ys3_">bg-_h0000ff_ text-_45rpx_ text-white</view>
   <view class="i-mdi-home i-mdi-home"></view>
+  <view class="bg-midnight bg-midnight text-tahiti text-tahiti fill-bermuda fill-bermuda">bg-midnight text-tahiti fill-bermuda</view>
+  <view class="bg-neutral-1B bg-neutral-1B">12345</view>
 </view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
@@ -11539,7 +11545,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 :host,
 page {
   --spacing: 8rpx;
