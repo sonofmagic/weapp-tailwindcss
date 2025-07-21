@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
-    "miniprogram-api-typings": "^4.0.7",
+    "miniprogram-api-typings": "^4.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "catalog:tailwindcss3",
     "typescript": "^5.8.3",
