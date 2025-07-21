@@ -6,9 +6,19 @@
   "author": "",
   "license": "ISC",
   "keywords": [],
-  "exports": {
+  "_exports": {
     ".": "./src/index.ts"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "unbuild --stub",
     "build:watch": "unbuild --watch --sourcemap",
