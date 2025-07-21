@@ -58,4 +58,35 @@ describe('uni-app-x', () => {
     )
     expect(css).toMatchSnapshot('css')
   })
+
+  it('tailwindcss3 index.uvue.ts case 1', async () => {
+    const { jsHandler, styleHandler } = getCompilerContext({
+      uniAppX: true,
+    })
+    const set = new Set<string>()
+    set.add('mt-[32.43rpx]')
+    set.add('bg-[#322323]')
+    set.add('text-[#844343]')
+    const { code } = jsHandler(
+      await getCase('uni-app-x/tw3-index.uvue.ts'),
+      set,
+      {
+        babelParserOptions: {
+          sourceType: 'unambiguous',
+          plugins: [
+            'typescript',
+          ],
+        },
+      },
+    )
+    expect(code).toMatchSnapshot()
+
+    const { css } = await styleHandler(
+      await getCase('uni-app-x/App.uvue?vue&type=style&index=0&lang.css'),
+      {
+        uniAppX: true,
+      },
+    )
+    expect(css).toMatchSnapshot('css')
+  })
 })

@@ -1,9 +1,9 @@
 import type { ImportToken } from '@/js/NodePathWalker'
-import { parse } from '@/babel'
-import { analyzeSource } from '@/js/babel'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
 import path from 'pathe'
+import { parse } from '@/babel'
+import { analyzeSource } from '@/js/babel'
 
 function getCase(name: string) {
   return fs.readFileSync(path.resolve(import.meta.dirname, './fixtures', name), 'utf8')

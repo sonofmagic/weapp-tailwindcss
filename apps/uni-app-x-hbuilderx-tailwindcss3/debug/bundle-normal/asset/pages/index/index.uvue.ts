@@ -19,9 +19,9 @@ const _ctx = this
 const _cache = this.$.renderCache
   return _cE("view", _uM({ class: "px-4" }), [
     _cE("view", _uM({ class: "mt-[32.43rpx] bg-[#322323]" }), [
-      _cE("text", _uM({ class: "text-[#844343]" }), _tD(_ctx.title), 1 /* TEXT */)
+      _cE("text", _uM({ class: "text-[#258f27]" }), _tD(_ctx.title), 1 /* TEXT */)
     ]),
-    _cE("text", _uM({ class: "icebreaker" }), "icebreaker")
+    _cE("text", _uM({ class: "icebreaker" }), "icebreaker111111")
   ])
 }
 const GenPagesIndexIndexStyles = [_uM([["icebreaker", _pS(_uM([["color", "#844343"]]))]])]

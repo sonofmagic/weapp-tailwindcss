@@ -1,4 +1,6 @@
-*, ::before, ::after {
+::before,::after {
+    --tw-content: ""}
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -23,7 +25,7 @@
     --tw-ring-inset:  ;
     --tw-ring-offset-width: 0px;
     --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-color: rgba(59, 130, 246, 0.5);
     --tw-ring-offset-shadow: 0 0 #0000;
     --tw-ring-shadow: 0 0 #0000;
     --tw-shadow: 0 0 #0000;
@@ -50,7 +52,10 @@
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:  
-}
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-color: currentColor}
 ::backdrop {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
@@ -76,7 +81,7 @@
     --tw-ring-inset:  ;
     --tw-ring-offset-width: 0px;
     --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / 0.5);
+    --tw-ring-color: rgba(59, 130, 246, 0.5);
     --tw-ring-offset-shadow: 0 0 #0000;
     --tw-ring-shadow: 0 0 #0000;
     --tw-shadow: 0 0 #0000;
@@ -104,18 +109,18 @@
     --tw-contain-paint:  ;
     --tw-contain-style:  
 }
-.mt-\[32\.43rpx\] {
+.mt-_32d43rpx_ {
     margin-top: 32.43rpx
 }
-.bg-\[\#322323\] {
+.bg-_h322323_ {
     --tw-bg-opacity: 1;
-    background-color: rgb(50 35 35 / var(--tw-bg-opacity, 1))
+    background-color: rgba(50, 35, 35, 1)
 }
 .px-4 {
-    padding-left: 1rem;
-    padding-right: 1rem
+    padding-left: 32rpx;
+    padding-right: 32rpx
 }
-.text-\[\#844343\] {
+.text-_h258f27_ {
     --tw-text-opacity: 1;
-    color: rgb(132 67 67 / var(--tw-text-opacity, 1))
+    color: rgba(37, 143, 39, 1)
 }
