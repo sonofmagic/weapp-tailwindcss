@@ -34,4 +34,4 @@
 	})
 
 export default __sfc__
-const GenAppStyles = [_uM([["px-4", _pS(_uM([["paddingInline", calc(var(--spacing) * 4)]]))]])]
+const GenAppStyles = [_uM([["mt-_32d43rpx_", _pS(_uM([["marginTop", "32.43rpx"]]))], ["mt-_100px_", _pS(_uM([["marginTop", 100]]))], ["bg-_red_", _pS(_uM([["backgroundColor", "#FF0000"]]))], ["text-_90px_", _pS(_uM([["fontSize", 90]]))], ["text-_100px_", _pS(_uM([["fontSize", 100]]))], ["text-_h844343_", _pS(_uM([["color", "#844343"]]))]])]

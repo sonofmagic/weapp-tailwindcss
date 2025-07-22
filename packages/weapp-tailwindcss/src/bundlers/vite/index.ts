@@ -4,7 +4,7 @@ import type { UserDefinedOptions } from '@/types'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { transformNVue } from '@/uni-app-x'
+import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 
 const debug = createDebug()
@@ -42,7 +42,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
 
   twPatcher.patch()
-
+  let runtimeSet: Set<string> | undefined
   onLoad()
   // 要在 vite:css 处理之前运行
   const plugins: Plugin[] = [
@@ -70,7 +70,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
         const entries = Object.entries(bundle)
         const groupedEntries = getGroupedEntries(entries, opts)
-        const runtimeSet = await twPatcher.getClassSet()
+        runtimeSet = await twPatcher.getClassSet()
         setMangleRuntimeSet(runtimeSet)
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const promises: (void | Promise<void>)[] = []
@@ -291,9 +291,12 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       {
         name: 'weapp-tailwindcss:uni-app-x:nvue',
         enforce: 'pre',
-        async transform(code, id) {
+        async buildStart() {
+          runtimeSet = await twPatcher.getClassSet()
+        },
+        transform(code, id) {
           // const runtimeSet = await twPatcher.getClassSet()
-          return transformNVue(code, id, jsHandler) // , runtimeSet)
+          return transformUVue(code, id, jsHandler, runtimeSet) // , runtimeSet)
         },
       },
     )

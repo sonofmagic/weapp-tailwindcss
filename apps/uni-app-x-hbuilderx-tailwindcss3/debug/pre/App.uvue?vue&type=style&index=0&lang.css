@@ -120,6 +120,15 @@ view,text,::before,::after {
     padding-left: 32rpx;
     padding-right: 32rpx
 }
+.text-_100px_ {
+    font-size: 100px
+}
+.text-_40px_ {
+    font-size: 40px
+}
+.text-_50px_ {
+    font-size: 50px
+}
 .text-_h258f27_ {
     --tw-text-opacity: 1;
     color: rgba(37, 143, 39, 1)

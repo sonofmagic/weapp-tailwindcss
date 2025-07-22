@@ -35,7 +35,7 @@ export function debugX(options?: { cwd: string }): Plugin[] {
         const bundleKeys = Object.keys(bundle)
         console.log('generateBundle\n', bundleKeys)
         const dir = `bundle-${prefix}`
-        fs.outputFileSync(path.join(cwd, targetDir, dir, '_keys.txt'), bundleKeys.join('\n'), 'utf8')
+        fs.outputFileSync(path.join(cwd, targetDir, dir, '_keys.txt'), bundleKeys.sort().join('\n'), 'utf8')
         for (const file of bundleKeys) {
           const item = bundle[file]
           if (item.type === 'asset') {

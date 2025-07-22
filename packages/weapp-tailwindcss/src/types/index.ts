@@ -67,7 +67,7 @@ export interface IArbitraryValues {
 export interface JsHandler {
   (
     rawSource: string,
-    set: Set<string>,
+    set?: Set<string>,
     options?: CreateJsHandlerOptions
   ): JsHandlerResult
 }

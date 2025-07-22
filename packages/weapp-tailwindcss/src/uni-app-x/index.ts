@@ -12,8 +12,8 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
-export function transformNVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>) {
-  if (!id.endsWith('.nvue')) {
+export function transformUVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>) {
+  if (!id.endsWith('.uvue')) {
     return
   }
   const ms = new MagicString(code)
@@ -42,7 +42,15 @@ export function transformNVue(code: string, id: string, jsHandler: JsHandler, ru
         }
       }
       traverse(descriptor.template.ast!, extractClassNames)
-      return ms.toString()
+    }
+    if (descriptor.script) {
+      const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), {})
+      ms.update(descriptor.script.loc.start.offset, descriptor.script.loc.end.offset, code)
+    }
+    if (descriptor.scriptSetup) {
+      const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), {})
+      ms.update(descriptor.scriptSetup.loc.start.offset, descriptor.scriptSetup.loc.end.offset, code)
     }
   }
+  return ms.toString()
 }

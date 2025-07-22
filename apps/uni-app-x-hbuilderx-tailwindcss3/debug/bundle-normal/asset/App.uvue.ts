@@ -34,4 +34,4 @@
 	})
 
 export default __sfc__
-const GenAppStyles = [_uM([["mt-_32d43rpx_", _pS(_uM([["marginTop", "32.43rpx"]]))], ["bg-_h322323_", _pS(_uM([["--tw-bg-opacity", "1"], ["backgroundColor", "rgba(50,35,35,1)"]]))], ["px-4", _pS(_uM([["paddingLeft", "32rpx"], ["paddingRight", "32rpx"]]))], ["text-_h258f27_", _pS(_uM([["--tw-text-opacity", "1"], ["color", "rgba(37,143,39,1)"]]))]])]
+const GenAppStyles = [_uM([["mt-_32d43rpx_", _pS(_uM([["marginTop", "32.43rpx"]]))], ["bg-_h322323_", _pS(_uM([["--tw-bg-opacity", "1"], ["backgroundColor", "rgba(50,35,35,1)"]]))], ["px-4", _pS(_uM([["paddingLeft", "32rpx"], ["paddingRight", "32rpx"]]))], ["text-_100px_", _pS(_uM([["fontSize", 100]]))], ["text-_40px_", _pS(_uM([["fontSize", 40]]))], ["text-_50px_", _pS(_uM([["fontSize", 50]]))], ["text-_h258f27_", _pS(_uM([["--tw-text-opacity", "1"], ["color", "rgba(37,143,39,1)"]]))]])]

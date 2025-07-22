@@ -15,7 +15,7 @@ exports[`uni-app-x > should  1`] = `
 		data() {
 			return {
 				title: 'Hello',
-        aaa: 'py-[22.32px]'
+        aaa: 'py-_22d32px_'
 			}
 		},
 		onLoad() {
