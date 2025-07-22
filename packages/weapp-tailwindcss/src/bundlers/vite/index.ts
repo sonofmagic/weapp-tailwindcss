@@ -4,6 +4,7 @@ import type { UserDefinedOptions } from '@/types'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { transformNVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 
 const debug = createDebug()
@@ -283,6 +284,16 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               // map,
             }
           }
+        },
+      },
+    )
+    plugins.push(
+      {
+        name: 'weapp-tailwindcss:uni-app-x:nvue',
+        enforce: 'pre',
+        async transform(code, id) {
+          // const runtimeSet = await twPatcher.getClassSet()
+          return transformNVue(code, id, jsHandler) // , runtimeSet)
         },
       },
     )

@@ -24,9 +24,9 @@ export interface InternalCssSelectorReplacerOptions {
 
 export interface JsHandlerResult { code: string, map?: SourceMap, error?: ParseError }
 
-export type ICustomAttributes =
-  | Record<string, ItemOrItemArray<string | RegExp>>
-  | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
+export type ICustomAttributes
+  = | Record<string, ItemOrItemArray<string | RegExp>>
+    | Map<string | RegExp, ItemOrItemArray<string | RegExp>>
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
 
