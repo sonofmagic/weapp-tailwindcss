@@ -1,5 +1,5 @@
 import uni from '@dcloudio/vite-plugin-uni'
-import { debugX } from '@weapp-talwindcss/debug-uni-app-x'
+import { debugX } from '@weapp-tailwindcss/debug-uni-app-x'
 import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'

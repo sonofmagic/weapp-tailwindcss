@@ -460,25 +460,6 @@ importers:
         specifier: ^2.8.0
         version: 2.8.0
 
-  apps/debug-uni-app-x:
-    dependencies:
-      defu:
-        specifier: 6.1.4
-        version: 6.1.4
-      fs-extra:
-        specifier: 11.3.0
-        version: 11.3.0
-      pathe:
-        specifier: 2.0.3
-        version: 2.0.3
-    devDependencies:
-      unbuild:
-        specifier: ^3.5.0
-        version: 3.5.0(sass@1.89.2)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
-      vite:
-        specifier: 7.0.5
-        version: 7.0.5(@types/node@24.1.0)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0)
-
   apps/rsmax-app-ts:
     dependencies:
       react:
@@ -642,9 +623,9 @@ importers:
 
   apps/uni-app-x-hbuilderx-tailwindcss3:
     devDependencies:
-      '@weapp-talwindcss/debug-uni-app-x':
+      '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
-        version: link:../debug-uni-app-x
+        version: link:../../packages/debug-uni-app-x
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
@@ -660,9 +641,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
-      '@weapp-talwindcss/debug-uni-app-x':
+      '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
-        version: link:../debug-uni-app-x
+        version: link:../../packages/debug-uni-app-x
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
@@ -904,6 +885,25 @@ importers:
       '@babel/types':
         specifier: ~7.28.1
         version: 7.28.1
+
+  packages/debug-uni-app-x:
+    dependencies:
+      defu:
+        specifier: 6.1.4
+        version: 6.1.4
+      fs-extra:
+        specifier: 11.3.0
+        version: 11.3.0
+      pathe:
+        specifier: 2.0.3
+        version: 2.0.3
+    devDependencies:
+      unbuild:
+        specifier: ^3.5.0
+        version: 3.5.0(sass@1.89.2)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
+      vite:
+        specifier: 7.0.5
+        version: 7.0.5(@types/node@24.1.0)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0)
 
   packages/experimental: {}
 

@@ -2,7 +2,7 @@
   "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@weapp-talwindcss/debug-uni-app-x": "0.0.0",
+    "@weapp-tailwindcss/debug-uni-app-x": "0.0.0",
     "rsmax-app-ts": "1.0.0",
     "taro-webpack-tailwindcss-v4": "1.0.0",
     "uni-app-x-hbuilderx-tailwindcss3": "0.0.0",
