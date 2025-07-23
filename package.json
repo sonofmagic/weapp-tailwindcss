@@ -201,7 +201,6 @@
     "normalize-newline": "^4.1.0",
     "npm-registry-fetch": "^18.0.2",
     "only-allow": "^1.2.1",
-    "oxc-parser": "^0.77.3",
     "pathe": "^2.0.3",
     "pkg-types": "^2.2.0",
     "postcss": "^8.5.6",
