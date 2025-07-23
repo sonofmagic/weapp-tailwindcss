@@ -32,6 +32,7 @@
     "@weapp-tailwindcss/website": "1.0.1"
   },
   "changesets": [
-    "eight-news-read"
+    "eight-news-read",
+    "lucky-pots-camp"
   ]
 }

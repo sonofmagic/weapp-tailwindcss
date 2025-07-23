@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.0-alpha.1
+
+### Patch Changes
+
+- [`0d8d68a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0d8d68ad70b9c308ba5c3aa42db5d543246ee1c5) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: pkg resolve issue
+
 ## 4.2.0-alpha.0
 
 ### Minor Changes
