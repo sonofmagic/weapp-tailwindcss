@@ -1,9 +1,8 @@
 {
-  "name": "@weapp-talwindcss/debug-uni-app-x",
+  "name": "@weapp-tailwindcss/debug-uni-app-x",
   "version": "0.0.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
   "keywords": [],
   "_exports": {
     ".": "./src/index.ts"
@@ -21,7 +20,7 @@
   "scripts": {
     "dev": "unbuild --stub",
     "build:watch": "unbuild --watch --sourcemap",
-    "_build": "unbuild",
+    "build": "unbuild",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
@@ -47,6 +46,8 @@
     },
     "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts"
+    "types": "./dist/index.d.ts",
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }
