@@ -645,6 +645,9 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss3
         version: 3.4.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3))
+      tailwindcss-patch:
+        specifier: ^7.1.1
+        version: 7.1.1(magicast@0.3.5)(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3)))
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -660,6 +663,9 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.1.11
+      tailwindcss-patch:
+        specifier: ^7.1.1
+        version: 7.1.1(magicast@0.3.5)(tailwindcss@4.1.11)
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -687,7 +693,7 @@ importers:
         version: 4.1.11
       '@tailwindcss/vite':
         specifier: ^4.1.11
-        version: 4.1.11(rolldown-vite@7.0.10(@types/node@24.0.15)(esbuild@0.25.8)(jiti@2.4.2)(less@4.2.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 4.1.11(vite@7.0.5(@types/node@24.0.15)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
@@ -1405,10 +1411,6 @@ packages:
     resolution: {integrity: sha512-UlLAnTPrFdNGoFtbSXwcGFQBtQZJCNjaN6hQNP3UPvuNXT1i82N26KL3dZeIpNalWywr9IuQuncaAfUaS1g6sQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/generator@7.27.0':
-    resolution: {integrity: sha512-VybsKvpiN1gU1sdMZIp7FcqphVVKEwcuj02x73uvcHE0PTihx1nlBcowYWhDwjpoAXRv43+gDzyggGnn1XZhVw==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/generator@7.28.0':
     resolution: {integrity: sha512-lJjzvrbEeWrhB4P3QBsH7tey117PjLZnDbLiQEKjQ/fNJTjuq4HSqgFA+UNSwZT8D7dxxbnuSBMsa1lrWzKlQg==}
     engines: {node: '>=6.9.0'}
@@ -1484,16 +1486,8 @@ packages:
     resolution: {integrity: sha512-Tub4ZKEXqbPjXgWLl2+3JpQAYBJ8+ikpQ2Ocj/q/r0LwE3UhENh7EUabyHjz2kCEsrRY83ew2DQdHluuiDQFzg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-string-parser@7.25.9':
-    resolution: {integrity: sha512-4A/SCr/2KLd5jrtOMFzaKjVtAei3+2r/NChoBNoZ3EyP/+GlhoaEGoWOZUmFmoITP7zOJyHIMm+DYRd8o3PvHA==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/helper-string-parser@7.27.1':
     resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/helper-validator-identifier@7.25.9':
-    resolution: {integrity: sha512-Ed61U6XJc3CVRfkERJWDz4dJwKe7iLmmJsbOGu9wSloNSFttHV0I8g6UAgb7qnK5ly5bGLPd4oXZlxCdANBOWQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-identifier@7.27.1':
@@ -1511,11 +1505,6 @@ packages:
   '@babel/helpers@7.27.6':
     resolution: {integrity: sha512-muE8Tt8M22638HU31A3CgfSUciwz1fhATfoVai05aPXGor//CdWDCbnlY1yvBPo07njuVOCNGCSp/GTt12lIug==}
     engines: {node: '>=6.9.0'}
-
-  '@babel/parser@7.27.0':
-    resolution: {integrity: sha512-iaepho73/2Pz7w2eMS0Q5f83+0RKI7i4xmiYeBmDzfRVbQtTOG7Ts0S4HzJVsTMGI9keU8rNfuZr8DKfSt7Yyg==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
 
   '@babel/parser@7.28.0':
     resolution: {integrity: sha512-jVZGvOxOuNSsuQuLRTh13nU0AogFlw32w/MT+LV6D3sP5WdbW61E77RnkbaO2dUvmPAYrBDJXGn5gGS6tH4j8g==}
@@ -1997,24 +1986,12 @@ packages:
     resolution: {integrity: sha512-vbavdySgbTTrmFE+EsiqUTzlOr5bzlnJtUv9PynGCAKvfQqjIXbvFdumPM/GxMDfyuGMJaJAU6TO4zc1Jf1i8Q==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/template@7.27.0':
-    resolution: {integrity: sha512-2ncevenBqXI6qRMukPlXwHKHchC7RyMuu4xv5JBXRfOGVcTy1mXCD12qrp7Jsoxll1EV3+9sE4GugBVRjT2jFA==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/template@7.27.2':
     resolution: {integrity: sha512-LPDZ85aEJyYSd18/DkjNh4/y1ntkE5KwUHWTiqgRxruuZL2F1yuHligVHLvcHY2vMHXttKFpJn6LwfI7cw7ODw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/traverse@7.27.0':
-    resolution: {integrity: sha512-19lYZFzYVQkkHkl4Cy4WrAVcqBkgvV2YM2TU3xG6DIwO7O3ecbDPfW3yM3bjAGcqcQHi+CCtjMR3dIEHxsd6bA==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/traverse@7.28.0':
     resolution: {integrity: sha512-mGe7UK5wWyh0bKRfupsUchrQGqvDbZDbKJw+kcRGSmdHVYrv+ltd0pnpDTVpiTqnaBru9iEvA8pz8W46v0Amwg==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/types@7.27.0':
-    resolution: {integrity: sha512-H45s8fVLYjbhFH62dIJ3WtmJ6RSPt/3DRO0ZcT2SUiYiQyz3BLVb9ADEnLl91m74aQPS3AzzeajZHYOalWe3bg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.28.0':
@@ -10276,10 +10253,6 @@ packages:
   global@4.4.0:
     resolution: {integrity: sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==}
 
-  globals@11.12.0:
-    resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
-    engines: {node: '>=4'}
-
   globals@13.24.0:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
     engines: {node: '>=8'}
@@ -15230,11 +15203,6 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.7.1:
-    resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.7.2:
     resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
     engines: {node: '>=10'}
@@ -17719,14 +17687,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/generator@7.27.0':
-    dependencies:
-      '@babel/parser': 7.27.0
-      '@babel/types': 7.27.0
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
-      jsesc: 3.1.0
-
   '@babel/generator@7.28.0':
     dependencies:
       '@babel/parser': 7.28.0
@@ -17838,11 +17798,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-string-parser@7.25.9': {}
-
   '@babel/helper-string-parser@7.27.1': {}
-
-  '@babel/helper-validator-identifier@7.25.9': {}
 
   '@babel/helper-validator-identifier@7.27.1': {}
 
@@ -17860,10 +17816,6 @@ snapshots:
     dependencies:
       '@babel/template': 7.27.2
       '@babel/types': 7.28.0
-
-  '@babel/parser@7.27.0':
-    dependencies:
-      '@babel/types': 7.27.0
 
   '@babel/parser@7.28.0':
     dependencies:
@@ -18468,29 +18420,11 @@ snapshots:
 
   '@babel/runtime@7.27.6': {}
 
-  '@babel/template@7.27.0':
-    dependencies:
-      '@babel/code-frame': 7.26.2
-      '@babel/parser': 7.28.0
-      '@babel/types': 7.27.0
-
   '@babel/template@7.27.2':
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/parser': 7.28.0
       '@babel/types': 7.28.0
-
-  '@babel/traverse@7.27.0':
-    dependencies:
-      '@babel/code-frame': 7.26.2
-      '@babel/generator': 7.27.0
-      '@babel/parser': 7.27.0
-      '@babel/template': 7.27.0
-      '@babel/types': 7.27.0
-      debug: 4.4.1
-      globals: 11.12.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@babel/traverse@7.28.0':
     dependencies:
@@ -18503,11 +18437,6 @@ snapshots:
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
-
-  '@babel/types@7.27.0':
-    dependencies:
-      '@babel/helper-string-parser': 7.25.9
-      '@babel/helper-validator-identifier': 7.25.9
 
   '@babel/types@7.28.0':
     dependencies:
@@ -23568,13 +23497,6 @@ snapshots:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3))
-
-  '@tailwindcss/vite@4.1.11(rolldown-vite@7.0.10(@types/node@24.0.15)(esbuild@0.25.8)(jiti@2.4.2)(less@4.2.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))':
-    dependencies:
-      '@tailwindcss/node': 4.1.11
-      '@tailwindcss/oxide': 4.1.11
-      tailwindcss: 4.1.11
-      vite: rolldown-vite@7.0.10(@types/node@24.0.15)(esbuild@0.25.8)(jiti@2.4.2)(less@4.2.0)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0)
 
   '@tailwindcss/vite@4.1.11(vite@7.0.5(@types/node@24.0.15)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(stylus@0.63.0)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))':
     dependencies:
@@ -29195,8 +29117,6 @@ snapshots:
     dependencies:
       min-document: 2.19.0
       process: 0.11.10
-
-  globals@11.12.0: {}
 
   globals@13.24.0:
     dependencies:
@@ -34837,8 +34757,6 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.7.1: {}
-
   semver@7.7.2: {}
 
   send@0.19.0:
@@ -35725,10 +35643,10 @@ snapshots:
 
   tailwindcss-patch@7.1.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3)))(magicast@0.3.5):
     dependencies:
-      '@babel/generator': 7.27.0
-      '@babel/parser': 7.27.0
-      '@babel/traverse': 7.27.0
-      '@babel/types': 7.27.0
+      '@babel/generator': 7.28.0
+      '@babel/parser': 7.28.0
+      '@babel/traverse': 7.28.0
+      '@babel/types': 7.28.1
       '@tailwindcss-mangle/config': 5.1.0(magicast@0.3.5)
       cac: 6.7.14
       consola: 3.4.2
@@ -35736,7 +35654,7 @@ snapshots:
       local-pkg: 1.1.1
       pathe: 2.0.3
       postcss: 8.5.6
-      semver: 7.7.1
+      semver: 7.7.2
       tailwindcss-config: 1.0.0
     optionalDependencies:
       tailwindcss: '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3))'
@@ -35744,12 +35662,12 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@7.1.1(magicast@0.3.5)(tailwindcss@4.1.11):
+  tailwindcss-patch@7.1.1(magicast@0.3.5)(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3))):
     dependencies:
-      '@babel/generator': 7.27.0
-      '@babel/parser': 7.27.0
-      '@babel/traverse': 7.27.0
-      '@babel/types': 7.27.0
+      '@babel/generator': 7.28.0
+      '@babel/parser': 7.28.0
+      '@babel/traverse': 7.28.0
+      '@babel/types': 7.28.1
       '@tailwindcss-mangle/config': 5.1.0(magicast@0.3.5)
       cac: 6.7.14
       consola: 3.4.2
@@ -35757,7 +35675,28 @@ snapshots:
       local-pkg: 1.1.1
       pathe: 2.0.3
       postcss: 8.5.6
-      semver: 7.7.1
+      semver: 7.7.2
+      tailwindcss-config: 1.0.0
+    optionalDependencies:
+      tailwindcss: 3.4.17(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@24.0.15)(typescript@5.8.3))
+    transitivePeerDependencies:
+      - magicast
+      - supports-color
+
+  tailwindcss-patch@7.1.1(magicast@0.3.5)(tailwindcss@4.1.11):
+    dependencies:
+      '@babel/generator': 7.28.0
+      '@babel/parser': 7.28.0
+      '@babel/traverse': 7.28.0
+      '@babel/types': 7.28.1
+      '@tailwindcss-mangle/config': 5.1.0(magicast@0.3.5)
+      cac: 6.7.14
+      consola: 3.4.2
+      fs-extra: 11.3.0
+      local-pkg: 1.1.1
+      pathe: 2.0.3
+      postcss: 8.5.6
+      semver: 7.7.2
       tailwindcss-config: 1.0.0
     optionalDependencies:
       tailwindcss: 4.1.11

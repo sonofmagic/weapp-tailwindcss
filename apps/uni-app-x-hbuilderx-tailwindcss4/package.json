@@ -2,10 +2,14 @@
   "name": "uni-app-x-hbuilderx-tailwindcss4",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "extract": "tw-patch extract"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
     "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "catalog:tailwindcss4",
+    "tailwindcss-patch": "^7.1.1",
     "weapp-tailwindcss": "workspace:*"
   }
 }

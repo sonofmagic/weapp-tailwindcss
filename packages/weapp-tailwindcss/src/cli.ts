@@ -1,7 +1,7 @@
 import process from 'node:process'
-import { getCompilerContext } from '@/context'
 import { init } from '@weapp-tailwindcss/init'
 import semver from 'semver'
+import { getCompilerContext } from '@/context'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 import { logger } from './logger'
 

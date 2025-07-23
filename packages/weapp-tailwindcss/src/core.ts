@@ -1,6 +1,6 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
-import { getCompilerContext } from '@/context'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import { getCompilerContext } from '@/context'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。

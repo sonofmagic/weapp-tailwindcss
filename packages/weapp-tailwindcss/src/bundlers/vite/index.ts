@@ -292,7 +292,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         name: 'weapp-tailwindcss:uni-app-x:nvue',
         enforce: 'pre',
         async buildStart() {
-          runtimeSet = await twPatcher.getClassSet()
+          const res = await twPatcher.extract()
+          if (res) {
+            runtimeSet = new Set(res.classList)
+          }
         },
         transform(code, id) {
           // const runtimeSet = await twPatcher.getClassSet()

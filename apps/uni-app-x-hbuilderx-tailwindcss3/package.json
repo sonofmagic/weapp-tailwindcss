@@ -2,9 +2,13 @@
   "name": "uni-app-x-hbuilderx-tailwindcss3",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "extract": "tw-patch extract"
+  },
   "devDependencies": {
     "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss-patch": "^7.1.1",
     "weapp-tailwindcss": "workspace:*"
   }
 }
