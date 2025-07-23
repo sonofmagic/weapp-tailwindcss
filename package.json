@@ -218,7 +218,6 @@
     "semver": "7.7.2",
     "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
-    "stylus": "github:stylus/stylus#0.64.0",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss4": "catalog:tailwindcss4",
     "terser-webpack-plugin": "^5.3.14",
