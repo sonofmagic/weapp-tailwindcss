@@ -1,0 +1,31 @@
+<template>
+	<view class="px-4">
+		<view class="mt-[32.43rpx] bg-[red]">
+			<text class="text-[#844343] text-[100px]">{{title}}</text>
+		</view>
+    <text class="icebreaker mt-[100px]" :class="aaa">icebreaker</text>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				title: 'Hello',
+				aaa:'text-[90px]'
+			}
+		},
+		onLoad() {
+
+		},
+		methods: {
+
+		}
+	}
+</script>
+
+<style>
+.icebreaker{
+  color: #844343;
+}
+</style>

@@ -1,0 +1,14 @@
+{
+  "name": "uni-app-x-hbuilderx-tailwindcss3",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "extract": "tw-patch extract"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-patch": "^7.1.3",
+    "weapp-tailwindcss": "4.2.0-alpha.1"
+  }
+}
