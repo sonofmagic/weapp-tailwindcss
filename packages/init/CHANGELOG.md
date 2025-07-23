@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/init
 
+## 1.0.3-alpha.0
+
+### Patch Changes
+
+- [`47f4813`](https://github.com/sonofmagic/weapp-tailwindcss/commit/47f4813c7f901e35d844f1935e14de89eeeb32a1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
+- Updated dependencies [[`47f4813`](https://github.com/sonofmagic/weapp-tailwindcss/commit/47f4813c7f901e35d844f1935e14de89eeeb32a1)]:
+  - @weapp-tailwindcss/logger@1.0.2-alpha.0
+  - @weapp-tailwindcss/shared@1.0.3-alpha.0
+
 ## 1.0.2
 
 ### Patch Changes
@@ -43,7 +53,6 @@
   增加 `@weapp-tailwindcss/merge` 支持，这是 `weapp-tailwindcss` 版本的 `tailwindcss-merge` 和 `cva` 方法
 
   ## Breaking Changes
-
   1. 去除 `weapp-tailwindcss/postcss` (可直接安装使用 `@weapp-tailwindcss/postcss`)
   2. 增加 `weapp-tailwindcss/escape` 来取代 `weapp-tailwindcss/replace`
   3. 项目 monorepo 区分包
