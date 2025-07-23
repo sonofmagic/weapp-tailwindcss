@@ -8,7 +8,7 @@
   "devDependencies": {
     "@weapp-talwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^7.1.1",
+    "tailwindcss-patch": "^7.1.2",
     "weapp-tailwindcss": "workspace:*"
   }
 }

@@ -25,6 +25,9 @@ export function uniAppX(options: UniAppXOptions) {
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         patch: {
+          resolve: {
+            paths: [import.meta.url],
+          },
           tailwindcss: {
             v3: {
               cwd: options.base,
