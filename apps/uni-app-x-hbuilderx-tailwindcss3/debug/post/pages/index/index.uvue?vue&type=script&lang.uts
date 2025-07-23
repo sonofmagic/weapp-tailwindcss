@@ -4,7 +4,8 @@ import { onLoad } from '@dcloudio/uni-app';
 export default defineComponent({
     data() {
         return {
-            title: 'Hello'
+            title: 'Hello',
+            aaa: 'text-[50px]'
         };
     },
     onLoad() {

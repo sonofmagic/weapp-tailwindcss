@@ -1,3 +1,4 @@
+import type { PackageResolvingOptions } from 'local-pkg'
 import type { UserDefinedOptions } from './types'
 import process from 'node:process'
 import { defuOverrideArray } from '@/utils'
@@ -5,8 +6,10 @@ import { logger } from './logger'
 
 export interface UniAppXOptions {
   base: string
+  cssEntries?: string[]
   rem2rpx?: UserDefinedOptions['rem2rpx']
   rawOptions?: UserDefinedOptions
+  resolve?: PackageResolvingOptions
 }
 
 export function uniAppX(options: UniAppXOptions) {
@@ -25,15 +28,18 @@ export function uniAppX(options: UniAppXOptions) {
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         patch: {
-          resolve: {
-            paths: [import.meta.url],
-          },
+          // @ts-ignore
+          cwd: options.base,
+          resolve: options.resolve,
           tailwindcss: {
+            // @ts-ignore
+            cwd: options.base,
             v3: {
               cwd: options.base,
             },
             v4: {
               base: options.base,
+              cssEntries: options.cssEntries,
             },
           },
         },
