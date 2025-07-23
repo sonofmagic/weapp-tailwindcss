@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/babel",
-  "version": "0.0.1",
+  "version": "0.0.2-alpha.0",
   "private": true,
   "description": "weapp-tailwindcss babel package",
   "author": "ice breaker <1324318532@qq.com>",
