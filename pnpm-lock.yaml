@@ -588,8 +588,8 @@ importers:
         specifier: ^1.13.6
         version: 1.18.8
       '@weapp-tailwindcss/merge':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: workspace:*
+        version: link:../../packages/merge
       babel-preset-taro:
         specifier: 4.1.4
         version: 4.1.4(@babel/core@7.28.0)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.0))(@babel/preset-react@7.27.1(@babel/core@7.28.0))(react-refresh@0.17.0)
@@ -6751,9 +6751,6 @@ packages:
 
   '@weapp-core/shared@2.0.1':
     resolution: {integrity: sha512-L/YUXp/lU0LlB5kLlYIsvfDtCWlajiFmB1AZvDLcQeDnlCiuFZkBG1Lql9TmtWaU2mhn5cJRnmEjRO6l5Tyo+A==}
-
-  '@weapp-tailwindcss/merge@1.2.2':
-    resolution: {integrity: sha512-eSQGksyv18Tf+vIxDOHEegbPoKh8GodELl3T6RlSSyTfOLbOR/lk8NBhlmHyv9b5Z4GxtKxXiRnbaLq8L8sqPA==}
 
   '@weapp-vite/volar@0.0.1':
     resolution: {integrity: sha512-seECs+/INLROmK5CJPKwpCmGK+xHZQLgp+LtOtwIfqqX4rPOVH5nzT1YdioB6TwR7VhTKcOZUCO/ItlvmB1pYg==}
@@ -24523,15 +24520,6 @@ snapshots:
   '@weapp-core/shared@2.0.1':
     dependencies:
       object-hash: 3.0.0
-
-  '@weapp-tailwindcss/merge@1.2.2':
-    dependencies:
-      class-variance-authority: 0.7.1
-      clsx: 2.1.1
-      local-pkg: 1.1.1
-      semver: 7.7.2
-      tailwind-merge: 3.3.1
-      tailwind-merge-v2: tailwind-merge@2.6.0
 
   '@weapp-vite/volar@0.0.1': {}
 
