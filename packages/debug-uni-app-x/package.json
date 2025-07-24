@@ -33,8 +33,8 @@
     "pathe": "2.0.3"
   },
   "devDependencies": {
-    "unbuild": "^3.5.0",
-    "vite": "7.0.5"
+    "unbuild": "^3.6.0",
+    "vite": "7.0.6"
   },
   "publishConfig": {
     "exports": {

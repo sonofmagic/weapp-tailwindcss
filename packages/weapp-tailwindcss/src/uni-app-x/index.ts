@@ -13,7 +13,7 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
 }
 
 export function transformUVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>) {
-  if (!id.endsWith('.uvue')) {
+  if (!/\.uvue(?:\?.*)?$/.test(id)) {
     return
   }
   const ms = new MagicString(code)
