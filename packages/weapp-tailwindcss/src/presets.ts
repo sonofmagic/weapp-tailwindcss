@@ -28,7 +28,6 @@ export function uniAppX(options: UniAppXOptions) {
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         patch: {
-          // @ts-ignore
           cwd: options.base,
           resolve: options.resolve,
           tailwindcss: {
