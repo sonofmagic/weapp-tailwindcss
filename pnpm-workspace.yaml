@@ -15,4 +15,3 @@ catalogs:
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
-autoInstallPeers: false

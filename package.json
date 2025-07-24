@@ -241,10 +241,5 @@
     "webpack": "^5.100.2",
     "webpack-build-utils": "^0.0.7",
     "yaml": "^2.8.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "stylus": "git+https://github.com/stylus/stylus.git"
-    }
   }
 }
