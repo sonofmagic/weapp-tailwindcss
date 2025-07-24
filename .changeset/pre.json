@@ -32,6 +32,7 @@
     "@weapp-tailwindcss/website": "1.0.1"
   },
   "changesets": [
+    "blue-carrots-pick",
     "calm-seals-do",
     "eight-news-read",
     "fast-walls-hammer",
