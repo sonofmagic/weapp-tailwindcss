@@ -1,5 +1,11 @@
 # tailwindcss-config
 
+## 1.0.1-alpha.0
+
+### Patch Changes
+
+- [`3248d34`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3248d342d07372e0627e21dcdd528ad44d2b52be) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
 ## 1.0.0
 
 ### Major Changes

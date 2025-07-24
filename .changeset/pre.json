@@ -32,7 +32,9 @@
     "@weapp-tailwindcss/website": "1.0.1"
   },
   "changesets": [
+    "calm-seals-do",
     "eight-news-read",
+    "fast-walls-hammer",
     "lucky-pots-camp",
     "twenty-spoons-study"
   ]
