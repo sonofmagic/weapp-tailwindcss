@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.0-alpha.3
+
+### Patch Changes
+
+- [`3248d34`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3248d342d07372e0627e21dcdd528ad44d2b52be) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 支持 `index.uvue?type=page` 路径的兼容匹配
+
 ## 4.2.0-alpha.2
 
 ### Patch Changes
