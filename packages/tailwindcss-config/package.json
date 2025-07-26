@@ -47,7 +47,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
-    "jiti": "^2.5.0",
+    "jiti": "^2.5.1",
     "lilconfig": "^3.1.3"
   }
 }
