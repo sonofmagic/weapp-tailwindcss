@@ -78,7 +78,7 @@
     "@types/node": "^18",
     "@types/react": "^18.0.0",
     "@types/webpack-env": "^1.13.6",
-    "@weapp-tailwindcss/merge": "^1.2.2",
+    "@weapp-tailwindcss/merge": "^1.2.3",
     "babel-preset-taro": "4.1.1",
     "eslint": "^8.57.0",
     "eslint-config-taro": "4.1.1",
@@ -88,11 +88,11 @@
     "react-refresh": "^0.17.0",
     "stylelint": "^16.20.0",
     "tailwindcss": "^4.1.11",
-    "tailwindcss-patch": "^7.1.1",
+    "tailwindcss-patch": "^7.1.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.8.3",
     "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.1.11",
+    "weapp-tailwindcss": "^4.2.0",
     "webpack": "5.99.9"
   }
 }

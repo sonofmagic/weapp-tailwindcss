@@ -16,5 +16,7 @@
   "taro-vite-tailwindcss-v4": true,
   "taro-webpack-tailwindcss-v4": true,
   "uni-app-tailwindcss-v4": true,
-  "uni-app-webpack-tailwindcss-v4": true
+  "uni-app-webpack-tailwindcss-v4": true,
+  "uni-app-x-hbuilderx-tailwindcss3": true,
+  "uni-app-x-hbuilderx-tailwindcss4": true
 }

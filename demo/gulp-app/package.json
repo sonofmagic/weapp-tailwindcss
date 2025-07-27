@@ -54,7 +54,7 @@
     "@types/gulp-sass": "^5.0.4",
     "@types/gulp-util": "^3.0.41",
     "@types/node": "^22.10.7",
-    "@weapp-tailwindcss/merge": "^1.2.2",
+    "@weapp-tailwindcss/merge": "^1.2.3",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "del": "^6.1.1",
@@ -82,13 +82,13 @@
     "sass": "^1.83.4",
     "tailwind-css-variables-theme-generator": "^0.4.0",
     "tailwindcss": "3",
-    "tailwindcss-patch": "^7.1.1",
+    "tailwindcss-patch": "^7.1.4",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.1.11",
+    "weapp-tailwindcss": "^4.2.0",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }

@@ -73,14 +73,14 @@
     "@tailwindcss/vite": "^4.1.11",
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.7.0",
-    "@weapp-tailwindcss/merge": "^1.2.2",
+    "@weapp-tailwindcss/merge": "^1.2.3",
     "tailwindcss": "^4.1.11",
-    "tailwindcss-patch": "^7.1.1",
+    "tailwindcss-patch": "^7.1.4",
     "typescript": "^5.8.2",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.8",
     "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.1.11"
+    "weapp-tailwindcss": "^4.2.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
