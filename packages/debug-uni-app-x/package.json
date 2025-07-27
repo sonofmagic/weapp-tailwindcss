@@ -3,6 +3,14 @@
   "version": "0.0.0",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/debug-uni-app-x"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
   "keywords": [],
   "_exports": {
     ".": "./src/index.ts"
