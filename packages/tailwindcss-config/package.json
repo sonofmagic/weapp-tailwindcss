@@ -1,7 +1,7 @@
 {
   "name": "tailwindcss-config",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "load tailwindcss config function",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
