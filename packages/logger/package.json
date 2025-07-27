@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/logger",
-  "version": "1.0.2-alpha.0",
+  "version": "1.0.2",
   "description": "@weapp-tailwindcss/logger",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
