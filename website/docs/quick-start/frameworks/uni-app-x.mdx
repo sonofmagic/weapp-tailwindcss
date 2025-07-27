@@ -1,0 +1,80 @@
+# uni-app-x
+
+目前 `weapp-tailwindcss` 从 `4.2.0` 版本开始，插件已经支持 `uni-app-x` 同时构建包括 `web`, `小程序`, `原生` 三端项目
+
+## 创建工具类
+
+在项目中创建 `shared.js` 文件，用于存放一些工具函数：
+
+```js title="shared.js"
+const path = require('node:path')
+
+function r(...args) {
+  return path.resolve(__dirname, ...args)
+}
+
+module.exports = {
+  r,
+}
+```
+
+## 注册插件
+
+创建 `vite.config.ts` 文件，注册插件：
+
+> 这里特别注意 `uniAppX` 是从 `weapp-tailwindcss/presets` 这个预设中导出的
+
+```js title="vite.config.[jt]s"
+import { defineConfig } from "vite";
+import uni from "@dcloudio/vite-plugin-uni";
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { r } from './shared'
+import { uniAppX } from 'weapp-tailwindcss/presets'
+import tailwindcss from 'tailwindcss'
+
+export default defineConfig({
+    plugins: [
+        uni(),
+        UnifiedViteWeappTailwindcssPlugin(
+            uniAppX({
+                base: __dirname,
+                rem2rpx: true,
+            }),
+        ),
+    ],
+    css: {
+        postcss: {
+            plugins: [
+                tailwindcss({
+                    config: r('./tailwind.config.js'),
+                }),
+            ]
+        }
+    }
+});
+```
+
+## 更改 tailwindcss 配置
+
+使用绝对路径，包括所有的提取文件
+
+```js title="tailwind.config.js"
+const { r } = require('./shared')
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    r('./pages/**/*.{uts,uvue}'),
+    // r('./components/**/*.{uts,uvue}') 
+  ],
+  corePlugins: {
+    preflight: false,
+  },
+}
+
+```
+
+## 现成模板
+
+https://github.com/icebreaker-template/uni-app-x-hbuilderx
+

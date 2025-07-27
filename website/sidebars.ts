@@ -30,7 +30,7 @@ const tutorialSidebar: SidebarConfig = [
               {
                 type: 'category',
                 label: 'uni-app',
-                items: ['uni-app', 'uni-app-vite', 'hbuilderx'].map(x => `quick-start/frameworks/${x}`),
+                items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'uni-app-x'].map(x => `quick-start/frameworks/${x}`),
               },
               ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
             ],
