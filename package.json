@@ -234,7 +234,7 @@
     "vinyl": "^3.0.1",
     "vinyl-fs": "^4.0.2",
     "vite": "^7.0.6",
-    "vite-plugin-inspect": "^11.3.0",
+    "vite-plugin-inspect": "^11.3.2",
     "vitest": "~3.2.4",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "^0.1.0",
