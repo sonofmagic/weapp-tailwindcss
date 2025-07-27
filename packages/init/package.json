@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/init",
-  "version": "1.0.3-alpha.0",
+  "version": "1.0.3",
   "description": "@weapp-tailwindcss/init",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

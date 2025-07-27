@@ -1,5 +1,26 @@
 # weapp-tailwindcss
 
+## 4.2.0
+
+### Minor Changes
+
+- [`c001984`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c001984ca82324f71353d8419f13e50c0e89f0e3) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 支持 uni-app-x 构建 app 原生的方式
+
+### Patch Changes
+
+- [`77c0a47`](https://github.com/sonofmagic/weapp-tailwindcss/commit/77c0a4743c778ad6bf8a1d046c9966a3e016c1b6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: upgrade tailwindcss-patch
+
+- [`3248d34`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3248d342d07372e0627e21dcdd528ad44d2b52be) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 支持 `index.uvue?type=page` 路径的兼容匹配
+
+- [`0d8d68a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0d8d68ad70b9c308ba5c3aa42db5d543246ee1c5) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: pkg resolve issue
+
+- Updated dependencies [[`47f4813`](https://github.com/sonofmagic/weapp-tailwindcss/commit/47f4813c7f901e35d844f1935e14de89eeeb32a1)]:
+  - @weapp-tailwindcss/init@1.0.3
+  - @weapp-tailwindcss/logger@1.0.2
+  - @weapp-tailwindcss/mangle@1.0.5
+  - @weapp-tailwindcss/postcss@1.0.17
+  - @weapp-tailwindcss/shared@1.0.3
+
 ## 4.2.0-alpha.4
 
 ### Patch Changes
