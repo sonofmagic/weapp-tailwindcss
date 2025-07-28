@@ -721,7 +721,7 @@
 
 "@weapp-tailwindcss/merge@^1.2.3":
   version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/merge/-/merge-1.2.3.tgz#9fcee5c76da08c6d9d85c293ef48ce529b2cffa9"
+  resolved "https://registry.npmjs.org/@weapp-tailwindcss/merge/-/merge-1.2.3.tgz#9fcee5c76da08c6d9d85c293ef48ce529b2cffa9"
   integrity sha512-d5msj9MdguDvxd9OaskbRubppSbHRptyz0V3auzu4Uc6o1O2v1vuKbXSyoG3T+UUnNx9gUQ8kVkXDjr/QRWrDQ==
   dependencies:
     class-variance-authority "^0.7.1"
@@ -2589,11 +2589,6 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmmirror.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tailwind-css-variables-theme-generator@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
-  integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
-
 "tailwind-merge-v2@npm:tailwind-merge@^2.6.0":
   version "2.6.0"
   resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-2.6.0.tgz#ac5fb7e227910c038d458f396b7400d93a3142d5"
@@ -2626,7 +2621,7 @@ tailwindcss-config@^1.0.0:
 
 tailwindcss-patch@^7.1.4, tailwindcss-patch@~7.1.4:
   version "7.1.4"
-  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-7.1.4.tgz#a23a3b6a36eef47d31e5603bb6bebbf7dec2c55c"
+  resolved "https://registry.npmjs.org/tailwindcss-patch/-/tailwindcss-patch-7.1.4.tgz#a23a3b6a36eef47d31e5603bb6bebbf7dec2c55c"
   integrity sha512-hlX9cupmZDXdtzQgZ7zVcMZIVLYPOS1QTFtSr1yvjVPcUw2YZMDTL8mWh3FRBVbUIA8IqQGhsr6aaZxz3w71nQ==
   dependencies:
     "@babel/generator" "^7.28.0"
@@ -2799,7 +2794,7 @@ vue@^3.5.18:
 
 weapp-ide-cli@^3.0.0:
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-3.0.0.tgz#4434a5446a76ce9822adf8a867567483fe072284"
+  resolved "https://registry.npmjs.org/weapp-ide-cli/-/weapp-ide-cli-3.0.0.tgz#4434a5446a76ce9822adf8a867567483fe072284"
   integrity sha512-xjz7YKiy9Vb9QE1f66WGlqoqrSys/zp/3LiV1fNiWiCUF7Zn86ZTSrgL/DISIqsXZvcaOYMAxKs2JQA7veB5Nw==
   dependencies:
     "@weapp-core/logger" "^2.0.0"
@@ -2814,7 +2809,7 @@ weapp-tailwindcss-children@^0.1.0:
 
 weapp-tailwindcss@^4.2.0:
   version "4.2.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.0.tgz#06452cbb12deb1a069d7b7f0a73fda3a531dd8e4"
+  resolved "https://registry.npmjs.org/weapp-tailwindcss/-/weapp-tailwindcss-4.2.0.tgz#06452cbb12deb1a069d7b7f0a73fda3a531dd8e4"
   integrity sha512-XxnN/RqmOZJQHgwMmPVq0gzLZMuLpKwF5mfWTmAoGxuUrP1+DNZBHsc6r/Kth/OS86m47CV8+lP+oM/zWiALsw==
   dependencies:
     "@ast-core/escape" "~1.0.1"

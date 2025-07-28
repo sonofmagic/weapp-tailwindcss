@@ -17374,11 +17374,6 @@ table@^6.9.0:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
-tailwind-css-variables-theme-generator@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.npmmirror.com/tailwind-css-variables-theme-generator/-/tailwind-css-variables-theme-generator-0.4.0.tgz#09ed0804d14bb089a5cbe8f7eb5380d6fae2a875"
-  integrity sha512-CN1smaAE6/NChjrx5Z2dPGoHRlz3PE6MjHc8okch23yDgqgTlcTrAE6kdXvHfqMSnzrgIOxcXH2B2RAtZ/WHyQ==
-
 "tailwind-merge-v2@npm:tailwind-merge@^2.6.0":
   version "2.6.0"
   resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-2.6.0.tgz#ac5fb7e227910c038d458f396b7400d93a3142d5"
