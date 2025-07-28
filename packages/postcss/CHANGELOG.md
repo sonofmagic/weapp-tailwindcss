@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.18
+
+### Patch Changes
+
+- [`7927bf2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7927bf25cfac2f8df90e91eaa2379ba45079499b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: css always generate map for uni-app x
+
 ## 1.0.18-alpha.0
 
 ### Patch Changes
