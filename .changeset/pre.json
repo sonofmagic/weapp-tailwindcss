@@ -32,6 +32,7 @@
     "@weapp-tailwindcss/website": "1.0.2"
   },
   "changesets": [
+    "eager-bikes-call",
     "eleven-mugs-stare"
   ]
 }
