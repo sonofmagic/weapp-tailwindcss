@@ -1,4 +1,4 @@
-// import uni from '@dcloudio/vite-plugin-uni'
+import uni from '@dcloudio/vite-plugin-uni'
 import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'
@@ -7,14 +7,11 @@ import { r } from './shared'
 
 export default defineConfig({
   plugins: [
-    // uni(),
+    uni(),
     UnifiedViteWeappTailwindcssPlugin(
       uniAppX({
         base: __dirname,
         rem2rpx: true,
-        resolve: {
-          paths: [import.meta.url],
-        },
       }),
     ),
     // debugX({

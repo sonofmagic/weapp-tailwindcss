@@ -13,14 +13,6 @@ export default defineConfig({
         base: __dirname,
         rem2rpx: true,
         cssEntries: [path.resolve(__dirname, 'main.css')],
-        resolve: {
-          paths: [import.meta.url],
-        },
-        rawOptions: {
-          tailwindcss: {
-            version: 4,
-          },
-        },
       }),
     ),
   ],
