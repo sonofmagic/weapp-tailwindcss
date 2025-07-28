@@ -321,8 +321,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           }
         },
         transform(code, id) {
-          // const runtimeSet = await twPatcher.getClassSet()
-          return transformUVue(code, id, jsHandler, runtimeSet) // , runtimeSet)
+          return transformUVue(code, id, jsHandler, runtimeSet)
         },
       },
     )

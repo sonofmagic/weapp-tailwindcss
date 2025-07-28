@@ -238,7 +238,7 @@
     "vitest": "~3.2.4",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "^0.1.0",
-    "webpack": "^5.101.0",
+    "webpack": "5.101.0",
     "webpack-build-utils": "^0.0.7",
     "yaml": "^2.8.0"
   }

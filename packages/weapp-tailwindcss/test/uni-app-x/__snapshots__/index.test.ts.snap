@@ -1,7 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`uni-app-x > should  1`] = `
-"<template>
+{
+  "code": "<template>
 	<view class="px-4">
 		<view class="mt-_32d43rpx_ bg-_h322323_" :class="['text-_h258f27_', aaa]">
 			<text class="text-_h258f27_">{{title}}</text>
@@ -31,5 +32,16 @@ exports[`uni-app-x > should  1`] = `
 .icebreaker{
   color: #844343;
 }
-</style>"
+</style>",
+  "map": SourceMap {
+    "file": undefined,
+    "mappings": "AAAA;AACA,cAAc,IAAI;AAClB,eAAe,0BAA0B,UAAU,uBAAuB;AAC1E,gBAAgB,cAAc;AAC9B;AACA,iBAAiB,UAAU;AAC3B;AACA;;AAEA,QAAQ;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAeR;;AAEA;AACA;AACA;AACA;AACA",
+    "names": [],
+    "sources": [
+      "",
+    ],
+    "sourcesContent": undefined,
+    "version": 3,
+  },
+}
 `;

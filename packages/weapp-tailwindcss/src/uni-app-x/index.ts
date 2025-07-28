@@ -1,4 +1,5 @@
 import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
+import type { TransformResult } from 'vite'
 import type { JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
 import MagicString from 'magic-string'
@@ -12,7 +13,7 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
-export function transformUVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>) {
+export function transformUVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>): undefined | TransformResult {
   if (!/\.uvue(?:\?.*)?$/.test(id)) {
     return
   }
@@ -23,7 +24,7 @@ export function transformUVue(code: string, id: string, jsHandler: JsHandler, ru
       function extractClassNames(node: ParentNode): void {
         if (node.type === NodeTypes.ELEMENT) {
           node.props.forEach((prop: AttributeNode | DirectiveNode) => {
-          // 静态 class
+            // 静态 class
             if (prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class' && prop.value) {
               ms.update(prop.value.loc.start.offset + 1, prop.value.loc.end.offset - 1, replaceWxml(prop.value.content))
             }
@@ -52,5 +53,10 @@ export function transformUVue(code: string, id: string, jsHandler: JsHandler, ru
       ms.update(descriptor.scriptSetup.loc.start.offset, descriptor.scriptSetup.loc.end.offset, code)
     }
   }
-  return ms.toString()
+  return {
+    code: ms.toString(),
+    get map() {
+      return ms.generateMap()
+    },
+  }
 }
