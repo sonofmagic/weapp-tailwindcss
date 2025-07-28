@@ -271,7 +271,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         async transform(code, id) {
           if (isCSSRequest(id)) {
             // uvue only support classname selector
-            const { css } = await styleHandler(code, {
+            const { css, map } = await styleHandler(code, {
               isMainChunk: mainCssChunkMatcher(id, appType),
               postcssOptions: {
                 options: {
@@ -281,7 +281,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             })
             return {
               code: css,
-              // map,
+              map: map.toString(),
             }
           }
         },
@@ -294,7 +294,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         async transform(code, id) {
           if (isCSSRequest(id)) {
             // uvue only support classname selector
-            const { css } = await styleHandler(code, {
+            const { css, map } = await styleHandler(code, {
               isMainChunk: mainCssChunkMatcher(id, appType),
               postcssOptions: {
                 options: {
@@ -304,7 +304,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             })
             return {
               code: css,
-              // map,
+              map: map.toString(),
             }
           }
         },
