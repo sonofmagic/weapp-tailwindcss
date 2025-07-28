@@ -87,6 +87,6 @@
     "typescript": "^5.8.3",
     "weapp-ide-cli": "^3.0.0",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.100.2"
+    "webpack": "5.101.0"
   }
 }

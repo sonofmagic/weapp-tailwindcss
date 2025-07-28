@@ -266,8 +266,31 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     // logger.success('uni-app-x')
     plugins.push(
       {
-        name: 'weapp-tailwindcss:uni-app-x:css',
+        name: 'weapp-tailwindcss:uni-app-x:css:pre',
         enforce: 'pre',
+        async transform(code, id) {
+          if (isCSSRequest(id)) {
+            // uvue only support classname selector
+            const { css } = await styleHandler(code, {
+              isMainChunk: mainCssChunkMatcher(id, appType),
+              postcssOptions: {
+                options: {
+                  from: id,
+                },
+              },
+            })
+            return {
+              code: css,
+              // map,
+            }
+          }
+        },
+      },
+    )
+
+    plugins.push(
+      {
+        name: 'weapp-tailwindcss:uni-app-x:css',
         async transform(code, id) {
           if (isCSSRequest(id)) {
             // uvue only support classname selector
