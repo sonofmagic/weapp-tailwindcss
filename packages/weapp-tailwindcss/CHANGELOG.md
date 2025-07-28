@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.1-alpha.2
+
+### Patch Changes
+
+- [`1c81e7b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1c81e7b21747494c61bae264fe4da7a9c2344435) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: add uni-app x css sourcemap
+
 ## 4.2.1-alpha.1
 
 ### Patch Changes
