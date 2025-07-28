@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from './types'
-import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import { defu, defuOverrideArray } from '@weapp-tailwindcss/shared'
 import postcss from 'postcss'
 import { getDefaultOptions } from './defaults'
 import { getPlugins } from './plugins'
@@ -11,9 +11,9 @@ function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
   )
     .process(
       rawSource,
-      options.postcssOptions?.options ?? {
+      defu(options.postcssOptions?.options, {
         from: undefined,
-      },
+      }),
     )
     .async()
 }

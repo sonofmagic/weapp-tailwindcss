@@ -276,12 +276,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               postcssOptions: {
                 options: {
                   from: id,
+                  map: true,
                 },
               },
             })
             return {
               code: css,
-              map: map.toString(),
+              map: map?.toString(),
             }
           }
         },
@@ -299,12 +300,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               postcssOptions: {
                 options: {
                   from: id,
+                  map: true,
                 },
               },
             })
             return {
               code: css,
-              map: map.toString(),
+              map: map?.toString(),
             }
           }
         },
