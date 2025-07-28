@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.1-alpha.0
+
+### Patch Changes
+
+- [`05d9725`](https://github.com/sonofmagic/weapp-tailwindcss/commit/05d9725fa83496e72ce5386230a344ac30aa41fa) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: uni-app x ios build
+
 ## 4.2.0
 
 ### Minor Changes
