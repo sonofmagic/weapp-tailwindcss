@@ -268,6 +268,7 @@ export default <Config> {
     addIconSelectors({
       prefixes: [
         'line-md',
+        'logos',
       ],
     }),
   ],

@@ -52,6 +52,7 @@
     "@docusaurus/types": "3.8.1",
     "@icebreakers/deploy": "^0.1.6",
     "@iconify-json/line-md": "^1.2.8",
+    "@iconify-json/logos": "^1.2.5",
     "@iconify/tailwind": "^1.2.0",
     "@playwright/test": "^1.54.1",
     "@tailwindcss/typography": "^0.5.16",

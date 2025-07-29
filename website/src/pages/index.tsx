@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import type { FC, JSX, PropsWithChildren } from 'react'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import FrameworksImg from '@site/../assets/weapp-tw-frameworks.png'
@@ -20,6 +20,19 @@ import WebpackLogo from '../assets/webpack.svg'
 // )
 
 // console.log(twMerge('px-2 py-1 bg-red hover:bg-dark-red', 'p-3 bg-[#B91C1C]'))
+
+const CoolTag: FC<PropsWithChildren> = ({ children }) => {
+  return (
+    <div className="group relative px-1.5 text-sm/6 text-sky-800 dark:text-sky-300">
+      <span className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 group-hover:bg-sky-400/15 dark:border-sky-300/30"></span>
+      {children}
+      <svg width="5" height="5" viewBox="0 0 5 5" className="absolute left-[-2px] top-[-2px] fill-sky-300 dark:fill-sky-300/50"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="absolute right-[-2px] top-[-2px] fill-sky-300 dark:fill-sky-300/50"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="absolute bottom-[-2px] left-[-2px] fill-sky-300 dark:fill-sky-300/50"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="absolute bottom-[-2px] right-[-2px] fill-sky-300 dark:fill-sky-300/50"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg>
+    </div>
+  )
+}
 
 // mask-image: linear-gradient(rgba(0, 0, 0, 1), transparent);
 function HomepageHeader() {
@@ -73,12 +86,51 @@ function HomepageHeader() {
               谁在使用？
             </a> */}
           </div>
-
           <div className="flex flex-col space-x-4 sm:flex-row">
             {/* <Link to="/docs/tailwindcss-maintenance-book">进阶阅读：如何降低维护成本 ?</Link> */}
-            {/* <Link to="/docs/quick-start/v4/uni-app-x">🔥 已支持 uni-app x 小程序平台</Link> */}
             <Link to="/docs/community/group">🚀 加入技术交流群</Link>
           </div>
+          <div className="mb-2 flex items-center">
+            🔥 最新版本已支持 uni-app x 同时构建
+          </div>
+          <div className="flex items-center space-x-2">
+            <CoolTag>
+              <div className="flex items-center">
+                <span>
+                  Web
+                </span>
+                <i className="iconify-color logos--chrome"></i>
+              </div>
+            </CoolTag>
+
+            <CoolTag><span>小程序</span></CoolTag>
+
+            <CoolTag>
+              <div className="flex items-center">
+                <span>
+                  安卓
+                </span>
+                <i className="iconify-color logos--android-icon"></i>
+              </div>
+
+            </CoolTag>
+
+            <CoolTag>
+              <div className="flex items-center">
+                <span>
+                  IOS
+                </span>
+                <i className="iconify  logos--apple"></i>
+              </div>
+
+            </CoolTag>
+
+            <CoolTag>
+              <span>鸿蒙</span>
+            </CoolTag>
+
+          </div>
+
         </div>
 
         <div className="mt-8 flex flex-col items-center justify-around space-y-8 md:flex-row md:items-start md:space-y-0">

@@ -55,6 +55,7 @@ export function transformUVue(code: string, id: string, jsHandler: JsHandler, ru
   }
   return {
     code: ms.toString(),
+    // @ts-ignore
     get map() {
       return ms.generateMap()
     },
