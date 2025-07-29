@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.19
+
+### Patch Changes
+
+- [`8e4f8ad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8e4f8ad3a5e7e5ba4fa4b0ef7d365e412d1d881e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: css sourcemap
+
 ## 1.0.19-alpha.0
 
 ### Patch Changes
