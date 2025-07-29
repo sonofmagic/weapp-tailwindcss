@@ -31,5 +31,7 @@
     "@weapp-tailwindcss/typography": "0.2.4",
     "@weapp-tailwindcss/website": "1.0.2"
   },
-  "changesets": []
+  "changesets": [
+    "lazy-parrots-hug"
+  ]
 }
