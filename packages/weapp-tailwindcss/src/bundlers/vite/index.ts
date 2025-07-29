@@ -6,6 +6,7 @@ import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
+import { parseVueRequest } from './query'
 
 const debug = createDebug()
 
@@ -269,7 +270,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         name: 'weapp-tailwindcss:uni-app-x:css:pre',
         enforce: 'pre',
         async transform(code, id) {
-          if (isCSSRequest(id)) {
+          const { query } = parseVueRequest(id)
+          if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
             // uvue only support classname selector
             const { css, map } = await styleHandler(code, {
               isMainChunk: mainCssChunkMatcher(id, appType),
@@ -293,7 +295,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       {
         name: 'weapp-tailwindcss:uni-app-x:css',
         async transform(code, id) {
-          if (isCSSRequest(id)) {
+          const { query } = parseVueRequest(id)
+          if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
+            // App.uvue?vue&type=style&index=0&inline&lang.css
             // uvue only support classname selector
             const { css, map } = await styleHandler(code, {
               isMainChunk: mainCssChunkMatcher(id, appType),
