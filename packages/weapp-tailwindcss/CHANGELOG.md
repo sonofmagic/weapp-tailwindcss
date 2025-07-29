@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.2-alpha.1
+
+### Patch Changes
+
+- [`57527cf`](https://github.com/sonofmagic/weapp-tailwindcss/commit/57527cfb93f997fc6de4a168a8dfca70f1c94d0c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 添加 UNI_PLATFORM harmony 的判断
+
 ## 4.2.2-alpha.0
 
 ### Patch Changes
