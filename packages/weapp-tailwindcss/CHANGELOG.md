@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.2-alpha.0
+
+### Patch Changes
+
+- [`e17ca06`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e17ca06eb46c5c877dc328ee3937705f8f86ab71) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 支持鸿蒙系统
+
 ## 4.2.1
 
 ### Patch Changes
