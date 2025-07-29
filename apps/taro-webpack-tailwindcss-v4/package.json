@@ -75,7 +75,7 @@
     "@tarojs/taro-loader": "4.1.4",
     "@tarojs/webpack5-runner": "4.1.4",
     "@types/node": "^24.1.0",
-    "@types/react": "^18.3.23",
+    "@types/react": "^19.1.9",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "workspace:*",
     "babel-preset-taro": "4.1.4",

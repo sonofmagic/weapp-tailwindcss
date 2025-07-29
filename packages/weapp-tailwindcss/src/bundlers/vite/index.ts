@@ -1,5 +1,6 @@
-import type { OutputAsset, OutputChunk } from 'rollup'
-import type { Plugin } from 'vite'
+import type { RawSourceMap } from '@ampproject/remapping'
+import type { ExistingRawSourceMap, OutputAsset, OutputChunk, SourceMap } from 'rollup'
+import type { Plugin, TransformResult } from 'vite'
 import type { UserDefinedOptions } from '@/types'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -7,14 +8,10 @@ import { createDebug } from '@/debug'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { parseVueRequest } from './query'
+import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from './utils'
 
 const debug = createDebug()
 
-const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
-export const cssLangRE = new RegExp(cssLangs)
-export function isCSSRequest(request: string): boolean {
-  return cssLangRE.test(request)
-}
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
  * @description uni-app vite vue3 版本插件
@@ -265,57 +262,56 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     // https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/android/css.ts#L31
     // @dcloudio/uni-nvue-styler
     // logger.success('uni-app-x')
-    plugins.push(
-      {
-        name: 'weapp-tailwindcss:uni-app-x:css:pre',
-        enforce: 'pre',
-        async transform(code, id) {
-          const { query } = parseVueRequest(id)
-          if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
-            // uvue only support classname selector
-            const { css, map } = await styleHandler(code, {
-              isMainChunk: mainCssChunkMatcher(id, appType),
-              postcssOptions: {
-                options: {
-                  from: id,
-                  map: true,
-                },
-              },
-            })
-            return {
-              code: css,
-              map: map?.toString(),
-            }
-          }
-        },
-      },
-    )
+    //   if (!enableSourcemap) {
+    //   return {
+    //     code: postcssResult.css,
+    //     map: { mappings: '' as const },
+    //   }
+    // }
 
-    plugins.push(
-      {
-        name: 'weapp-tailwindcss:uni-app-x:css',
-        async transform(code, id) {
-          const { query } = parseVueRequest(id)
-          if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
-            // App.uvue?vue&type=style&index=0&inline&lang.css
+    ;([undefined, 'pre'] as ('pre' | 'post' | undefined)[]).forEach((enforce) => {
+      plugins.push(
+        {
+          name: `weapp-tailwindcss:uni-app-x:css${enforce ? `:${enforce}` : ''}`,
+          enforce,
+          async transform(code, id) {
+            const { query } = parseVueRequest(id)
+            if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
             // uvue only support classname selector
-            const { css, map } = await styleHandler(code, {
-              isMainChunk: mainCssChunkMatcher(id, appType),
-              postcssOptions: {
-                options: {
-                  from: id,
-                  map: true,
+              const postcssResult = await styleHandler(code, {
+                isMainChunk: mainCssChunkMatcher(id, appType),
+                postcssOptions: {
+                  options: {
+                    from: id,
+                    map: {
+                      inline: false,
+                      annotation: false,
+                      // postcss may return virtual files
+                      // we cannot obtain content of them, so this needs to be enabled
+                      sourcesContent: true,
+                    // when "prev: preprocessorMap", the result map may include duplicate filename in `postcssResult.map.sources`
+                    // prev: preprocessorMap,
+                    },
+                  },
                 },
-              },
-            })
-            return {
-              code: css,
-              map: map?.toString(),
+              })
+              const rawPostcssMap = postcssResult.map.toJSON()
+              const postcssMap = await formatPostcssSourceMap(
+              // version property of rawPostcssMap is declared as string
+              // but actually it is a number
+                rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
+                cleanUrl(id),
+              )
+              return {
+                code: postcssResult.css,
+                map: postcssMap as SourceMap,
+              } as TransformResult
             }
-          }
+          },
         },
-      },
-    )
+      )
+    })
+
     plugins.push(
       {
         name: 'weapp-tailwindcss:uni-app-x:nvue',

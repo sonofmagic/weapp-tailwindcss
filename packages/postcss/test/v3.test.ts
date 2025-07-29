@@ -15,6 +15,28 @@ describe('v3', () => {
     fs.writeFile(path.resolve(__dirname, './fixtures/css/v3.out.css'), css, 'utf8')
   })
 
+  it('v3 case 0', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/v3.css'), 'utf8')
+    const res = await styleHandler(code, {
+      isMainChunk: true,
+      postcssOptions: {
+        options: {
+          map: {
+            inline: false,
+            from: 'xxx.css',
+          },
+
+        },
+      },
+    })
+    expect(res.css).toMatchSnapshot()
+    // expect(res.map.toString().includes('sourceMappingURL=data:application/json;base64')).toBe(true)
+    expect(res.map).toMatchSnapshot()
+  })
+
   it('v3 uni-app x', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
