@@ -14,7 +14,9 @@ export interface UniAppXOptions {
 
 export function uniAppX(options: UniAppXOptions) {
   logger.info(`UNI_PLATFORM: ${process.env.UNI_PLATFORM}`)
-  const isApp = process.env.UNI_PLATFORM === 'app' || process.env.UNI_PLATFORM === 'app-plus'
+  const isApp = process.env.UNI_PLATFORM === 'app'
+    || process.env.UNI_PLATFORM === 'app-plus'
+    || process.env.UNI_PLATFORM === 'app-harmony'
   return defuOverrideArray<
     Partial<UserDefinedOptions>,
     Partial<UserDefinedOptions>[]
