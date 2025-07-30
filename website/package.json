@@ -61,7 +61,7 @@
     "autoprefixer": "^10.4.21",
     "cross-env": "^10.0.0",
     "docusaurus-plugin-sass": "^0.2.6",
-    "docusaurus-plugin-typedoc": "1.4.0",
+    "docusaurus-plugin-typedoc": "1.4.1",
     "dotenv": "^17.2.1",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
@@ -70,7 +70,7 @@
     "tailwindcss": "^3.4.17",
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.8",
-    "typedoc-plugin-markdown": "4.7.1",
+    "typedoc-plugin-markdown": "4.8.0",
     "webpack": "5.101.0",
     "webpack-node-externals": "^3.0.0"
   },
