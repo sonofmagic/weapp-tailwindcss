@@ -1,4 +1,4 @@
-# 2. 安装这个插件
+# 2. 安装 weapp-tailwindcss
 
 在项目目录下，执行:
 
@@ -22,8 +22,19 @@ npm i -D weapp-tailwindcss
 :::info
 执行 `weapp-tw patch` 主要是做2件事情
 
-1. 给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁 (小程序特有单位，非 `web` 标准)
-2. 用来暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。
+### 1. 给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁 (小程序特有单位，非 `web` 标准)。
+
+否则你一旦使用像 `text-[14.43rpx]` 这样的任意值写法，生成出来的 `css` 样式就是 `color: 14.43rpx;`，显然是错误的。
+
+它会被 `tailwindcss` 认为是一种颜色，从而导致生成错误，样式不生效。
+
+详见 [rpx 任意值颜色或长度单位二义性与解决方案](/docs/issues/rpx-ambiguities)
+
+### 2. 暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。
+
+这样就能够在 `js` 中，和 `postcss` 插件进行通信，从而达到共享上下文的效果。
+
+---
 
 而添加上面一段 `npm scripts` 的用途是，利用 `npm hook`, 每次安装包后，都会自动执行一遍 `weapp-tw patch` 这个脚本。
 
