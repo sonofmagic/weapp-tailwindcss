@@ -226,11 +226,11 @@ text,
 .text-_100px_ {
   font-size: 100px;
 }
+.text-_100rpx_ {
+  font-size: 100rpx;
+}
 .text-_h123456_ {
   color: #123456;
-}
-.text-_100rpx_ {
-  color: 100rpx;
 }
 .text-pink-300 {
   color: var(--color-pink-300);
@@ -249,7 +249,6 @@ text,
 
 exports[`e2e native > 'vite-native' > json 1`] = `
 "[
-  "-m",
   "bg-[#3a32d1]",
   "bg-[#68c828]",
   "bg-amber-300",
@@ -259,21 +258,17 @@ exports[`e2e native > 'vite-native' > json 1`] = `
   "bg-gradient-to-tr",
   "bg-zinc-50",
   "border-4",
-  "container",
-  "content",
   "dark:bg-zinc-900",
   "dark:hover:bg-green-300",
   "flex",
   "flex-col",
-  "from",
   "from-[#2f73f1]",
   "h-10",
-  "h-[29.292px]",
   "h-[30px]",
   "h-[45px]",
   "hover:border-blue-200/20",
+  "i-mdi-home",
   "inline-block",
-  "list",
   "min-h-screen",
   "p-4",
   "size-12",
@@ -637,17 +632,25 @@ text,
 exports[`e2e native > 'vite-native-ts' > json 1`] = `
 "[
   "bg-[#123456]",
+  "bg-[#B91C1C]",
   "bg-[#d72929]",
   "bg-[green]",
   "bg-[orange]",
   "bg-[pink]",
+  "bg-blue-500",
   "bg-blue-600",
+  "bg-white",
   "border",
+  "border-gray-400",
+  "border-transparent",
   "capitalize",
+  "cursor-not-allowed",
   "dark:bg-gray-900",
   "dark:border-gray-700",
   "dark:divide-gray-700",
+  "dark:hover:bg-gray-600",
   "dark:hover:bg-gray-800",
+  "dark:hover:border-green-300",
   "dark:text-gray-300",
   "divide-x",
   "duration-200",
@@ -658,24 +661,40 @@ exports[`e2e native > 'vite-native-ts' > json 1`] = `
   "focus:ring-blue-300",
   "focus:ring-opacity-80",
   "font-medium",
+  "font-semibold",
   "hover:bg-blue-500",
+  "hover:bg-blue-600",
   "hover:bg-gray-100",
   "mt-4",
+  "opacity-50",
   "overflow-hidden",
+  "p-0.5",
+  "p-1",
+  "p-2",
+  "p-3",
   "p-4",
+  "px-2",
   "px-4",
   "px-6",
+  "py-1",
   "py-2",
   "py-6",
+  "rounded",
   "rounded-lg",
   "sm:px-6",
   "sm:text-base",
+  "text-[#0000ff]",
+  "text-[#ececec]",
+  "text-[34px]",
+  "text-base",
   "text-gray-600",
+  "text-gray-800",
   "text-sm",
   "text-white",
   "tracking-wide",
   "transform",
   "transition-colors",
+  "uppercase",
   "weapp-reset-button"
 ]
 "

@@ -118,7 +118,7 @@
     "typescript": "~5.4.2",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.2",
+    "weapp-tailwindcss": "^4.2.4",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "browserslist": [

@@ -3854,10 +3854,10 @@
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
     tailwind-variants "^1.0.0"
 
-"@weapp-tailwindcss/postcss@1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.0.19.tgz#50215518eb9b73d2f9652b9c9306513b55610ff9"
-  integrity sha512-vY1ZdKkqX2g+4x/h9c0OV1oRcvFAo9u6SXC5XzSIy5RBY6wo1VLaiNHCEohFtlf07wLxk2nm0ktK9e/4FP1VmQ==
+"@weapp-tailwindcss/postcss@1.0.20":
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.0.20.tgz#e4ea0f76de53ed69a896c23e3f44c03fb4a47a18"
+  integrity sha512-R8r/R+Fjl5DBlOrndc7/dQ+O2VKa6XEjbZtggWtS9zCuxtwTpBghiRMYJ7hEBpiokZcgyX7zSlESpgT7VzZvXw==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/shared" "1.0.3"
@@ -14034,10 +14034,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.2.tgz#18326ba3853ccf8984b3e4f09f58b37429d7e77c"
-  integrity sha512-pJB/tx+DlceZZTSqdKCkj36tjifIIIMuOuV3y+VMSatB/XUtgZh41SUGZZlHmrI/VMU3r1PhlCiMWE2PqqQx7g==
+weapp-tailwindcss@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.4.tgz#1108d0f44435b115aac4f46e85c035ba2e51894a"
+  integrity sha512-Uc+G92tmWnyZUZfLlnn+UovCY7A8T/SsaAJMR4KWS+WpZIjCy5ibL7utQw9ZdWmRlthdhFcxQ/Ym4Ksyb4/R4w==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.0"
@@ -14049,7 +14049,7 @@ weapp-tailwindcss@^4.2.2:
     "@weapp-tailwindcss/init" "1.0.3"
     "@weapp-tailwindcss/logger" "1.0.2"
     "@weapp-tailwindcss/mangle" "1.0.5"
-    "@weapp-tailwindcss/postcss" "1.0.19"
+    "@weapp-tailwindcss/postcss" "1.0.20"
     "@weapp-tailwindcss/shared" "1.0.3"
     debug "~4.4.1"
     htmlparser2 "10.0.0"
