@@ -1,6 +1,6 @@
 import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
 import type { TransformResult } from 'vite'
-import type { JsHandler } from '@/types'
+import type { CreateJsHandlerOptions, JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
 import MagicString from 'magic-string'
 import { parse } from 'vue/compiler-sfc'
@@ -13,6 +13,13 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
+const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
+  babelParserOptions: {
+    plugins: [
+      'typescript',
+    ],
+  },
+}
 export function transformUVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>): undefined | TransformResult {
   if (!/\.uvue(?:\?.*)?$/.test(id)) {
     return
@@ -44,12 +51,13 @@ export function transformUVue(code: string, id: string, jsHandler: JsHandler, ru
       }
       traverse(descriptor.template.ast!, extractClassNames)
     }
+
     if (descriptor.script) {
-      const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), {})
+      const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(descriptor.script.loc.start.offset, descriptor.script.loc.end.offset, code)
     }
     if (descriptor.scriptSetup) {
-      const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), {})
+      const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(descriptor.scriptSetup.loc.start.offset, descriptor.scriptSetup.loc.end.offset, code)
     }
   }

@@ -84,7 +84,7 @@
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "^7.1.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "weapp-ide-cli": "^3.0.0",
     "weapp-tailwindcss": "workspace:*",
     "webpack": "5.101.0"

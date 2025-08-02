@@ -5,7 +5,7 @@ import { transformUVue } from '@/uni-app-x'
 const getCase = createGetCase(fixturesRootPath)
 
 describe('uni-app-x', () => {
-  it('should ', async () => {
+  it('index.uvue', async () => {
     const { jsHandler } = getCompilerContext()
     const vueRawCode = await getCase('uni-app-x/index.uvue')
     const classNameSet = new Set<string>()
@@ -14,5 +14,30 @@ describe('uni-app-x', () => {
     classNameSet.add('py-[22.32px]')
 
     expect(transformUVue(vueRawCode, 'index.uvue', jsHandler, classNameSet)).toMatchSnapshot()
+  })
+
+  it('app.uvue', async () => {
+    const { jsHandler } = getCompilerContext()
+    const vueRawCode = await getCase('uni-app-x/App.uvue')
+    const classNameSet = new Set<string>()
+    classNameSet.add('text-[#258f27]')
+    classNameSet.add('text-[100px]')
+    classNameSet.add('py-[22.32px]')
+
+    expect(transformUVue(vueRawCode, 'App.uvue', jsHandler, classNameSet)).toMatchSnapshot()
+  })
+
+  it('setup-lang-uts.uvue', async () => {
+    const { jsHandler } = getCompilerContext()
+    const vueRawCode = await getCase('uni-app-x/setup-lang-uts.uvue')
+    const classNameSet = new Set<string>()
+    classNameSet.add('text-[#258f27]')
+    classNameSet.add('text-[100px]')
+    classNameSet.add('py-[22.32px]')
+    classNameSet.add('bg-[#000]')
+    classNameSet.add('bg-[#111]')
+    classNameSet.add('bg-[#222]')
+
+    expect(transformUVue(vueRawCode, 'setup-lang-uts.uvue', jsHandler, classNameSet)).toMatchSnapshot()
   })
 })
