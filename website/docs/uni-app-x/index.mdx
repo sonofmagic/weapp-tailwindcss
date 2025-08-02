@@ -14,7 +14,11 @@ import TailwindcssLogo from '../../../assets/logo.png'
 
 ## 前言
 
-很荣幸在 `weapp-tailwindcss@4.2.x` 版本中，支持了 `uni-app x` 的构建，使得原子化样式方案，可以同时构建包括 `Web`, `小程序`, `安卓`,`IOS`, `鸿蒙` 五端。
+[`uni-app x`](https://doc.dcloud.net.cn/uni-app-x/) 是一个非常强大的跨多端解决方案，可以说是国内跨平台编译技术的天花板了，`DCloud` 公司出品。
+
+我很荣幸在 `weapp-tailwindcss@4.2.x` 版本中，适配了 `uni-app x` 的多端构建。
+
+并借助 `uni-app x` 的能力，把 `tailwindcss` 原子化样式方案，同时带入到 `Web`, `小程序`, `安卓`,`IOS`, `鸿蒙` 五端。
 
 :::warning
 目前只支持 `tailwindcss@3.x`，不兼容 `tailwindcss@4.x` 去进行跨多段，  
@@ -47,13 +51,13 @@ import run from './assets/run.png'
 
 一般来说，`CSS` 平台的兼容程度，是 `Web` > `小程序` > `App`(安卓/IOS/鸿蒙)
 
-所以，假如你有跨多端的需求，建议你一开始使用 `安卓` 模拟器来进行开发和调试。
+所以，假如你有跨多端的需求，建议你一开始使用 `安卓模拟器` 来进行开发和调试，这是综合考虑下来 **成本最低** 的方案。
 
 #### 🧐为什么?
 
-因为 uni-app x 开发原生 app 是有一些限制的，
+因为 `uni-app x` 开发原生 `app` 是有一些限制的，
 
-1. 比如文字必须包括在 `<text>` 标签中，文字的样式也必须设置在这个元素上，设置在 `<view>` 上是没有效果的
+1. 比如文字必须包括在 `<text>` 标签中，文字的样式(比如 `text-2xl text-center text-red-400`) 也必须设置在这个元素上，设置在 `<view>` 上是没有效果的。而 `Web` 和 `小程序` 都是兼容的。
 
 2. 还有很多 `css` 的样式，目前 `uni-app x` 暂时是不兼容的，强行使用 `Hbuilderx` 的控制台会爆出警告，要求你进行更改。
 
