@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.20
+
+### Patch Changes
+
+- [`6cae2c1`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6cae2c1471bfb7fdc182815ba95b566ad6f51dfa) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 优化 uni-app x 场景下的样式生成
+
 ## 1.0.19
 
 ### Patch Changes
