@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.2.3
+
+### Patch Changes
+
+- [`f0d225e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f0d225e95eb3c8e0c97af4abf9c32b4abb57cd72) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 修复 uvue lang 设置为 uts 的解析问题
+
 ## 4.2.2
 
 ### Patch Changes
