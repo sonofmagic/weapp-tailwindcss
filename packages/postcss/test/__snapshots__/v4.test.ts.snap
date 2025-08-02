@@ -1435,7 +1435,7 @@ page,:host {
 }
 }
 
-view,text,::after,::before,::backdrop,::file-selector-button {
+view,text {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -1539,7 +1539,7 @@ img,video {
     height: auto;
   }
 
-button,input,select,optgroup,textarea,::file-selector-button {
+button,input,select,optgroup,textarea {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -1556,10 +1556,6 @@ select[multiple] optgroup,select[size] optgroup {
 
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-
-::file-selector-button {
-    margin-right: 4px;
   }
 
 ::placeholder {
@@ -1597,7 +1593,7 @@ textarea {
     box-shadow: none;
   }
 
-button,input,::file-selector-button {
+button,input {
     appearance: button;
   }
 

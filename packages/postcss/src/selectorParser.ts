@@ -47,7 +47,7 @@ export function getCombinatorSelectorAst(options: IStyleHandlerOptions) {
 }
 
 function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
-  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass } = options
+  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass, uniAppX } = options
 
   const transform: SyncProcessor = (selectors) => {
     selectors.walk((selector, index) => {
@@ -138,6 +138,11 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
             }
           }
         }
+        if (uniAppX) {
+          if (selector.value === '::before' || selector.value === '::after' || selector.value === '::backdrop' || selector.value === '::file-selector-button') {
+            selector.remove()
+          }
+        }
       }
       else if (selector.type === 'combinator') {
         // .space-x-4 > :not([hidden]) ~ :not([hidden])
@@ -182,6 +187,12 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
       //   // }
       // }
     })
+    // clean
+    selectors.walk((selector) => {
+      if (selector.type === 'selector') {
+        selector.length === 0 && selector.remove()
+      }
+    })
     if (selectors.length === 0) {
       rule.remove()
     }
@@ -218,6 +229,11 @@ export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
   return b && a
 }
 
+/**
+ * enforce post
+ * @param rule
+ * @returns
+ */
 export function getFallbackRemove(rule?: Rule) {
   const fallbackRemove = psp((selectors) => {
     let maybeImportantId = false
@@ -228,7 +244,7 @@ export function getFallbackRemove(rule?: Rule) {
       if (selector.type === 'universal') {
         selector.parent?.remove()
       }
-      if (selector.type === 'pseudo') {
+      else if (selector.type === 'pseudo') {
         if (selector.value === ':is') {
           if (maybeImportantId && selector.nodes[0]?.type === 'selector') {
             selector.replaceWith(selector.nodes[0])
@@ -265,11 +281,14 @@ export function getFallbackRemove(rule?: Rule) {
           }
         }
       }
-      if (selector.type === 'attribute') {
+      else if (selector.type === 'attribute') {
         if (selector.attribute === 'hidden') {
           rule?.remove()
         }
       }
+      // else if (selector.type === 'selector') {
+      //   selector.length === 0 && selector.remove()
+      // }
     })
     selectors.walk((selector) => {
       if (selector.type === 'pseudo') {

@@ -15,8 +15,8 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "rsmax": "^1.3.13"
   },
   "devDependencies": {

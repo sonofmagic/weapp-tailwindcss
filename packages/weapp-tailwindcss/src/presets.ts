@@ -59,6 +59,11 @@ export function uniAppX(options: UniAppXOptions) {
   )
 }
 
+// export interface TaroOptions {
+//   rem2rpx?: UserDefinedOptions['rem2rpx']
+//   rawOptions?: UserDefinedOptions
+// }
+
 // export function taro() {
 
 // }
