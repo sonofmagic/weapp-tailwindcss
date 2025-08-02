@@ -269,6 +269,7 @@ export default <Config> {
       prefixes: [
         'line-md',
         'logos',
+        'mdi',
       ],
     }),
   ],

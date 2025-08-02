@@ -53,6 +53,7 @@
     "@icebreakers/deploy": "^0.1.6",
     "@iconify-json/line-md": "^1.2.8",
     "@iconify-json/logos": "^1.2.5",
+    "@iconify-json/mdi": "^1.2.3",
     "@iconify/tailwind": "^1.2.0",
     "@playwright/test": "^1.54.2",
     "@tailwindcss/typography": "^0.5.16",

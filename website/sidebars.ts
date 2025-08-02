@@ -134,11 +134,15 @@ const tutorialSidebar: SidebarConfig = [
       },
     ],
   },
-
+  {
+    type: 'doc',
+    id: 'uni-app-x/index',
+    label: '🔥uni-app x 专题',
+  },
   {
     type: 'doc',
     id: 'community/templates',
-    label: '🔥快速开始(配置好的模板项目)',
+    label: '🔥快速开始(模板项目)',
   },
   {
     type: 'doc',
