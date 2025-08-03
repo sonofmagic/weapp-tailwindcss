@@ -8,7 +8,7 @@
 
 并借助 `uni-app x` 的能力，把 `tailwindcss` 原子化样式方案，同时带入到 `Web`,`小程序`, `安卓`,`IOS`, `鸿蒙` 等多端开发中!
 
-## 如何使用
+## 快速集成
 
 ### 0. 创建项目
 
@@ -20,7 +20,7 @@ npm init -y
 
 初始化一个 `package.json` 文件 (当然你也可以手动创建)
 
-### 1. [安装并引入 tailwindcss3](/docs/quick-start/install)
+### 1. 安装并引入 tailwindcss3
 
 
 ```bash npm2yarn
@@ -43,7 +43,7 @@ npx tailwindcss init
 </style>
 ```
 
-### 2. [安装 weapp-tailwindcss](/docs/quick-start/this-plugin)
+### 2. 安装 weapp-tailwindcss
 
 在项目目录下，执行:
 
@@ -62,7 +62,7 @@ npm i -D weapp-tailwindcss
 
 想知道原因的同学可以查看 [**这个链接**](https://tw.icebreaker.top/docs/quick-start/this-plugin)
 
-### 3. [uni-app-x 注册 weapp-tailwindcss](/docs/quick-start/frameworks/uni-app-x)
+### 3. uni-app-x 注册 weapp-tailwindcss
 
 #### 0. 创建工具类
 
@@ -118,7 +118,7 @@ export default defineConfig({
 
 #### 2. 更改 tailwindcss 配置
 
-使用绝对路径，包括所有的提取文件
+你需要在 `tailwind.config.js` 的 `content` 配置中，使用绝对路径去包括所有的提取文件
 
 ```js title="tailwind.config.js"
 const { r } = require('./shared')
@@ -136,13 +136,13 @@ module.exports = {
 
 ```
 
-假如你需要从更多的目录中提取 `CSS Token`，你需要添加更多的 `glob` 表达式在 `content` 配置中。
+> 假如你需要从更多的目录/文件中提取 `CSS Token`，你需要添加更多的 `glob` 表达式在 `content` 配置中。
 
 ---
 
-在完成这 3 步之后， `uni-app x` 就集成 `tailwindcss` 原子化样式解决方案。
+在完成这些步骤之后， `uni-app x` 就集成 `tailwindcss` 原子化样式解决方案。
 
-## 如何开发
+## 如何运行
 
 目前 `uni-app x` 并没有提供任何 `cli` 的方式去使用它，所以目前我们使用 `Hbuilderx` 去进行开发和构建的。
 
@@ -201,13 +201,15 @@ IOS 模拟器，需要你有 Mac 才能运行，IOS 调试需要你有苹果手�
 
 当然，你直接全局修改你的 `vscode Tailwindcss` 插件配置肯定也是可以的。
 
+## 尾言
+
+`uni-app x` 是一个 **庞大的工程**, `DCloud` 团队能做出这样的技术解决方案，令人倾佩。
+
 ## 配置好的模板
 
 https://github.com/icebreaker-template/uni-app-x-hbuilderx
 
 使用方式见这个项目中的 `README.md`
-
-## 结尾
 
 ## 参考文档
 

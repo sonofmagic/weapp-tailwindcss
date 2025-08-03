@@ -134,10 +134,23 @@ const tutorialSidebar: SidebarConfig = [
       },
     ],
   },
+
   {
-    type: 'doc',
-    id: 'uni-app-x/index',
+    type: 'category',
     label: '🔥uni-app x 专题',
+    collapsed: false,
+    items: [
+      {
+        type: 'doc',
+        id: 'uni-app-x/index',
+        label: '前言',
+      },
+      {
+        type: 'doc',
+        id: 'uni-app-x/install',
+        label: '快速集成',
+      },
+    ],
   },
   {
     type: 'doc',
