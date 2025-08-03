@@ -1,34 +1,32 @@
+{/* truncate */}
+
 # weapp-tailwindcss 已支持 uni-app x 多端构建
 
 ## 前言
 
-[`uni-app x`](https://doc.dcloud.net.cn/uni-app-x/) 是一个非常强大的跨多端解决方案，可以说是国内跨平台编译技术的天花板了。
+[`uni-app x`](https://doc.dcloud.net.cn/uni-app-x/) 是 `DCloud` 团队开发的跨平台编译方案，可将同一份代码编译到 Web、小程序、Android、iOS、鸿蒙等多端。
 
-最近，我很荣幸在 `weapp-tailwindcss@4.2.x` 版本中，适配了 `uni-app x` 的多端构建。
+最近，我很荣幸在 `weapp-tailwindcss@4.2.x` 版本中，适配了 `uni-app x` 的多端构建，使 `Tailwind CSS` 的原子化样式能够无缝应用于多端项目。
 
-并借助 `uni-app x` 的能力，把 `tailwindcss` 原子化样式方案，同时带入到 `Web`,`小程序`, `安卓`,`IOS`, `鸿蒙` 等多端开发中!
+所以就有了这篇文章，给大家介绍(**秀**)一下怎么在 `uni-app x` 项目中，集成 `weapp-tailwindcss` 这个样式解决方案。
 
 ## 快速集成
 
 ### 0. 创建项目
 
-使用最新版本 `Hbuilderx` 创建一个 `uni-app x` 项目，然后执行
+使用最新版本 `Hbuilderx` 创建一个 `uni-app x` 项目，然后在项目根目录执行
 
-```bash npm2yarn
+```bash
 npm init -y
 ```
 
 初始化一个 `package.json` 文件 (当然你也可以手动创建)
 
-### 1. 安装并引入 tailwindcss3
+### 1. 安装并引入 tailwindcss@3
 
-
-```bash npm2yarn
+```bash
 # 安装 tailwindcss@3 版本的依赖
 npm i -D tailwindcss@3 postcss autoprefixer
-```
-
-```bash npm2yarn
 # 初始化一个 tailwind.config.js 文件
 npx tailwindcss init
 ```
@@ -47,7 +45,7 @@ npx tailwindcss init
 
 在项目目录下，执行:
 
-```bash npm2yarn
+```bash
 npm i -D weapp-tailwindcss
 ```
 
@@ -62,15 +60,15 @@ npm i -D weapp-tailwindcss
 
 想知道原因的同学可以查看 [**这个链接**](https://tw.icebreaker.top/docs/quick-start/this-plugin)
 
-### 3. uni-app-x 注册 weapp-tailwindcss
+### 3. uni-app x 中注册 weapp-tailwindcss
 
-#### 0. 创建工具类
+#### 3.0. 创建辅助函数
 
 在项目中创建 `shared.js` 文件，用于存放一些工具函数：
 
 ```js title="shared.js"
 const path = require('node:path')
-
+// 绝对路径处理
 function r(...args) {
   return path.resolve(__dirname, ...args)
 }
@@ -80,7 +78,7 @@ module.exports = {
 }
 ```
 
-#### 1. 注册插件
+#### 3.1. 配置 `Vite`
 
 创建 `vite.config.ts` 文件，注册插件：
 
@@ -116,7 +114,7 @@ export default defineConfig({
 });
 ```
 
-#### 2. 更改 tailwindcss 配置
+#### 3.2. 更改 `tailwindcss` 配置
 
 你需要在 `tailwind.config.js` 的 `content` 配置中，使用绝对路径去包括所有的提取文件
 
@@ -136,7 +134,7 @@ module.exports = {
 
 ```
 
-> 假如你需要从更多的目录/文件中提取 `CSS Token`，你需要添加更多的 `glob` 表达式在 `content` 配置中。
+> 如需从更多目录提取样式 `token`，可按需扩展 `content`。
 
 ---
 
@@ -205,6 +203,8 @@ IOS 模拟器，需要你有 Mac 才能运行，IOS 调试需要你有苹果手�
 
 `uni-app x` 是一个 **庞大的工程**, `DCloud` 团队能做出这样的技术解决方案，令人倾佩。
 
+假如你遇到什么问题，可以在 [weapp-tailwindcss](https://github.com/sonofmagic/weapp-tailwindcss) 的 `issue/disscussions` 中提出。
+
 ## 配置好的模板
 
 https://github.com/icebreaker-template/uni-app-x-hbuilderx
@@ -215,6 +215,6 @@ https://github.com/icebreaker-template/uni-app-x-hbuilderx
 
 [uni-app x 官方文档](https://doc.dcloud.net.cn/uni-app-x/)
 
-[weapp-tailwindcss官网](https://tw.icebreaker.top/)
+[weapp-tailwindcss 官网](https://tw.icebreaker.top/)
 
 [weapp-tailwindcss 的 uni-app x 专题](https://tw.icebreaker.top/docs/uni-app-x)

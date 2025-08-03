@@ -6,12 +6,16 @@ packages:
   - benchmark
   - '!tailwindcss-weapp'
   - '!**/test/**'
+
 catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.17
   tailwindcss4:
     tailwindcss: ^4.1.11
     tailwindcss4: npm:tailwindcss@^4.1.11
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
+  - '@tarojs/binding'
+  - '@tarojs/cli'
   - esbuild
