@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.0.21
+
+### Patch Changes
+
+- [`c7892d6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c7892d699d798abe27c63d1345423a5ac147cc76) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 优化 css 生成
+
 ## 1.0.20
 
 ### Patch Changes
