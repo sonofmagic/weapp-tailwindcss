@@ -118,4 +118,14 @@ describe('issues', () => {
     const { css } = await styleHandler(code.css)
     expect(css).toMatchSnapshot()
   })
+
+  it('custom case 0', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/custom'))
+    expect(code.css).toMatchSnapshot()
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code.css)
+    expect(css).toMatchSnapshot()
+  })
 })

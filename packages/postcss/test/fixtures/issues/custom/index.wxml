@@ -1,0 +1,4 @@
+<view class="[&>*]:nth-[n+3]:hidden">
+  <view></view>
+  <view></view>
+</view>

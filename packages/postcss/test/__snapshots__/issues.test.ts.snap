@@ -56,6 +56,39 @@ view,text,:after,:before,::backdrop {
   }"
 `;
 
+exports[`issues > custom case 0 1`] = `
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.\\[\\&\\>\\*\\]\\:nth-\\[n\\+3\\]\\:hidden {
+  &>* {
+    &:nth-child(n+3) {
+      display: none;
+    }
+  }
+}"
+`;
+
+exports[`issues > custom case 0 2`] = `
+"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+._ngm_cnth-_na3_chidden>view:nth-child(n+3) {
+      display: none;
+    }
+._ngm_cnth-_na3_chidden>text:nth-child(n+3) {
+      display: none;
+    }"
+`;
+
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`] = `
 "/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 :root, :host {
