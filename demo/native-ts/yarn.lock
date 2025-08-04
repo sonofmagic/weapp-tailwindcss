@@ -1903,10 +1903,10 @@
   dependencies:
     object-hash "^3.0.0"
 
-"@weapp-tailwindcss/init@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/init/-/init-1.0.3.tgz#cf2f72450dfb91aad22f6c01b30e7b4ca020f442"
-  integrity sha512-zEplYcy8qQu5ukl6VAfZVC4zeJe409t8f1CPuDvUNekhPUmoH37t1l1pHIlwf7W2eBn5Sics9w2iGIqWSN3hqw==
+"@weapp-tailwindcss/init@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/init/-/init-1.0.4.tgz#3c6e3a4ca5bea8a5bb47b14604e1b942f92a8976"
+  integrity sha512-5wXlSnmeBEjnXDyNfZXb0IVQGO/EnEpIIKr549jZkjM+d83lqW535Xzwodl7LaApo+tETj90rh7DWcLgHBkC/Q==
   dependencies:
     "@weapp-tailwindcss/logger" "1.0.2"
     "@weapp-tailwindcss/shared" "1.0.3"
@@ -1943,10 +1943,10 @@
     tailwind-merge-v2 "npm:tailwind-merge@^2.6.0"
     tailwind-variants "^1.0.0"
 
-"@weapp-tailwindcss/postcss@1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.0.20.tgz#e4ea0f76de53ed69a896c23e3f44c03fb4a47a18"
-  integrity sha512-R8r/R+Fjl5DBlOrndc7/dQ+O2VKa6XEjbZtggWtS9zCuxtwTpBghiRMYJ7hEBpiokZcgyX7zSlESpgT7VzZvXw==
+"@weapp-tailwindcss/postcss@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.0.21.tgz#f3254d15a597fee1dbc7701d4721c720048dadf0"
+  integrity sha512-EMSaBcKKEKZTy6EaDz4oPI+nJwzlgItJ6jmN8F1sbu3DS/LeVUMg+oJD29sTOtoaJkotpummDuZM35nixVZU0Q==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/shared" "1.0.3"
@@ -4583,10 +4583,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.4.tgz#1108d0f44435b115aac4f46e85c035ba2e51894a"
-  integrity sha512-Uc+G92tmWnyZUZfLlnn+UovCY7A8T/SsaAJMR4KWS+WpZIjCy5ibL7utQw9ZdWmRlthdhFcxQ/Ym4Ksyb4/R4w==
+weapp-tailwindcss@^4.2.5:
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.5.tgz#5ac9105cdcd97c01875cceb1733b0814aa441c14"
+  integrity sha512-7bqSIgi7IM37BuHbFmqQ4J0Jb4An/vj57UXHv69oIMPup64K/vNpRJz0URbNkRjZJYYyjroBNHxQxaPpyjbrXg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.0"
@@ -4595,10 +4595,10 @@ weapp-tailwindcss@^4.2.4:
     "@vue/compiler-dom" "^3.5.18"
     "@weapp-core/escape" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
-    "@weapp-tailwindcss/init" "1.0.3"
+    "@weapp-tailwindcss/init" "1.0.4"
     "@weapp-tailwindcss/logger" "1.0.2"
     "@weapp-tailwindcss/mangle" "1.0.5"
-    "@weapp-tailwindcss/postcss" "1.0.20"
+    "@weapp-tailwindcss/postcss" "1.0.21"
     "@weapp-tailwindcss/shared" "1.0.3"
     debug "~4.4.1"
     htmlparser2 "10.0.0"

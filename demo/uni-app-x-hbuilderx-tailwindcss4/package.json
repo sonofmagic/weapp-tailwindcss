@@ -13,6 +13,6 @@
     "tailwindcss": "^4.1.11",
     "tailwindcss-patch": "^7.1.4",
     "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.4"
+    "weapp-tailwindcss": "^4.2.5"
   }
 }
