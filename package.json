@@ -139,7 +139,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/md5": "^2.3.5",
     "@types/micromatch": "^4.0.9",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.2.0",
     "@types/npm-registry-fetch": "^8.0.8",
     "@types/postcss-js": "^4.0.4",
     "@types/semver": "^7.7.0",
