@@ -1,6 +1,6 @@
-import { getDepFiles, processWxml } from '@/wxml'
 import fs from 'fs-extra'
 import path from 'pathe'
+import { getDepFiles, processWxml } from '@/wxml'
 
 const fixturesDir = path.resolve(
   import.meta.dirname,

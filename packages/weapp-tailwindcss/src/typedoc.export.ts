@@ -163,6 +163,7 @@ const customAttributes = {
     /**
      * @default `'page'` <br/>
      * @description 把`css`中的全局选择器 **`:root`** 替换为指定值，默认替换为 `'page'`，设置为 `false` 时不进行替换
+     * @example 假如你使用微信小程序的 RootPortal 组件，你需要把此项设置为 ['page','wx-root-content']
      */
     root?: string | string[] | false
     /**

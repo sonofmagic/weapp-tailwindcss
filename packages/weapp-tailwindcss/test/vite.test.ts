@@ -1,9 +1,9 @@
-import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import tailwindcss from '@tailwindcss/postcss'
 import twv from '@tailwindcss/vite'
 import fs from 'fs-extra'
 import path from 'pathe'
 import { build } from 'vite'
+import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import { fixturesRootPath } from './util'
 
 describe('vite', () => {

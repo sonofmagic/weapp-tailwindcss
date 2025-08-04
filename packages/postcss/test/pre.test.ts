@@ -1,5 +1,5 @@
-import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
 import postcss from 'postcss'
+import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
 
 describe('pre plugin', () => {
   it('isAtMediaHover case 0', async () => {

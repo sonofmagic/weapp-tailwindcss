@@ -1,5 +1,5 @@
-import { postcssWeappTailwindcssPostPlugin } from '@/plugins/post'
 import postcss from 'postcss'
+import { postcssWeappTailwindcssPostPlugin } from '@/plugins/post'
 
 describe('postcss post plugin', () => {
   it('postcss process', () => {

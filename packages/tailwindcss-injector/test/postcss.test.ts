@@ -1,8 +1,8 @@
-import creator from '@/postcss'
 import path from 'pathe'
 import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
 import plugin from 'tailwindcss/plugin'
+import creator from '@/postcss'
 
 describe('postcss', () => {
   it('process case 0', async () => {

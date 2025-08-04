@@ -1,9 +1,9 @@
 import type internal from 'node:stream'
 import path from 'node:path'
 import { gulpCasePath } from '#test/util'
-import { createPlugins } from '@/gulp'
 import gulp from 'gulp'
 import postcss from 'gulp-postcss'
+import { createPlugins } from '@/gulp'
 
 function promisify(task: internal.Transform) {
   return new Promise((resolve, reject) => {

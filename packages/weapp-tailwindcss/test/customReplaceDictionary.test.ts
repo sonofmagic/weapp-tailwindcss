@@ -1,6 +1,6 @@
-import { getCompilerContext } from '@/context'
 import { MappingChars2String } from '@weapp-core/escape'
 import defu from 'defu'
+import { getCompilerContext } from '@/context'
 
 describe('customReplaceDictionary', () => {
   it('templateHandler custom map', async () => {

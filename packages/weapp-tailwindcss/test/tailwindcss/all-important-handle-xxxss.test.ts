@@ -1,5 +1,5 @@
-import { getCompilerContext } from '@/context'
 import path from 'pathe'
+import { getCompilerContext } from '@/context'
 import { getCss } from '../helpers/getTwCss'
 
 describe('all', () => {

@@ -1,6 +1,6 @@
 import type { Token } from '@/wxml/Tokenizer'
-import { Tokenizer } from '@/wxml/Tokenizer'
 import MagicString from 'magic-string'
+import { Tokenizer } from '@/wxml/Tokenizer'
 
 describe('tokenizer', () => {
   it('should tokenize a string with spaces and text correctly', () => {

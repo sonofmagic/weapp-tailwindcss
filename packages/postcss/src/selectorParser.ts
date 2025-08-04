@@ -139,9 +139,11 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
           }
         }
         if (uniAppX) {
-          if (selector.value === '::before' || selector.value === '::after' || selector.value === '::backdrop' || selector.value === '::file-selector-button') {
-            selector.remove()
-          }
+          // if (selector.value === '::before' || selector.value === '::after' || selector.value === '::backdrop' || selector.value === '::file-selector-button') {
+          //   selector.remove()
+          // }
+          // https://doc.dcloud.net.cn/uni-app-x/css/
+          selector.remove()
         }
       }
       else if (selector.type === 'combinator') {
@@ -172,6 +174,18 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
               }
             }
           }
+        }
+      }
+      else if (selector.type === 'tag') {
+        if (uniAppX) {
+          // https://doc.dcloud.net.cn/uni-app-x/css/
+          selector.remove()
+        }
+      }
+      else if (selector.type === 'attribute') {
+        if (uniAppX) {
+          // https://doc.dcloud.net.cn/uni-app-x/css/
+          selector.remove()
         }
       }
       // }

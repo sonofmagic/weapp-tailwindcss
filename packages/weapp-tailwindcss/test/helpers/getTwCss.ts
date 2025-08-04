@@ -1,6 +1,7 @@
+import type { Config } from 'tailwindcss'
 import defu from 'defu'
 import postcss from 'postcss'
-import tailwindcss, { type Config } from 'tailwindcss'
+import tailwindcss from 'tailwindcss'
 // @tailwind components;
 export interface IGetCssOptions {
   twConfig?: Partial<Config>
@@ -23,10 +24,10 @@ export async function getCss(content: string | string[], options: IGetCssOptions
       content: isContentGlob
         ? content
         : content.map((x) => {
-          return {
-            raw: x,
-          }
-        }),
+            return {
+              raw: x,
+            }
+          }),
       ...twConfig,
     }) as postcss.Plugin,
     {

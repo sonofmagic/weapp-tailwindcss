@@ -1,6 +1,6 @@
 import type { Rule } from 'postcss'
-import { testIfTwBackdrop, testIfVariablesScope } from '@/mp'
 import postcss from 'postcss'
+import { testIfTwBackdrop, testIfVariablesScope } from '@/mp'
 
 describe('variablesScope', () => {
   it('::before,::after{} with single var', () => {

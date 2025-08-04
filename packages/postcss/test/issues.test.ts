@@ -105,4 +105,17 @@ describe('issues', () => {
     })
     expect(css).toMatchSnapshot()
   })
+
+  it('cssSelectorReplacement case 0', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/space-x-number'))
+    expect(code.css).toMatchSnapshot()
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssSelectorReplacement: {
+        root: ['page', 'wx-root-content'],
+      },
+    })
+    const { css } = await styleHandler(code.css)
+    expect(css).toMatchSnapshot()
+  })
 })

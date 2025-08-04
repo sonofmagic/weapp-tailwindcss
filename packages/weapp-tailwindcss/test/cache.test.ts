@@ -1,6 +1,6 @@
-import { createCache } from '@/cache'
 import { LRUCache } from 'lru-cache'
 import { sources } from 'webpack'
+import { createCache } from '@/cache'
 
 describe('cache', () => {
   let ctx: ReturnType<typeof createCache>

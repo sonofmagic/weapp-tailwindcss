@@ -1,5 +1,5 @@
-import { getCompilerContext } from '@/context'
 import { MappingChars2String } from '@weapp-core/escape'
+import { getCompilerContext } from '@/context'
 
 describe('customAttributes', () => {
   it('van-image case 0', async () => {

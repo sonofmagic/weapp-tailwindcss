@@ -1,6 +1,6 @@
-import { themeTransitionPlugin } from '@/tailwindcss'
 import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
+import { themeTransitionPlugin } from '@/tailwindcss'
 
 describe('tailwindcss', () => {
   it('themeTransitionPlugin', async () => {

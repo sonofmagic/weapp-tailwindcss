@@ -1,7 +1,7 @@
-import { getCompilerContext } from '@/context'
-import { parseCache } from '@/js/babel'
 import fs from 'fs-extra'
 import path from 'pathe'
+import { getCompilerContext } from '@/context'
+import { parseCache } from '@/js/babel'
 
 function getCase(name: string) {
   return fs.readFileSync(path.resolve(import.meta.dirname, '../fixtures/twMerge', name), 'utf8')

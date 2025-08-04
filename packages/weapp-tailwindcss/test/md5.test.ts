@@ -1,5 +1,5 @@
-import { md5Hash } from '@/cache/md5'
 import md5 from 'md5'
+import { md5Hash } from '@/cache/md5'
 
 describe('md5', () => {
   it('two', () => {

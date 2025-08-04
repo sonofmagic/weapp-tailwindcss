@@ -1,9 +1,9 @@
 import { getCss } from '#test/helpers/getTwCss'
 import { createGetCase, wxsCasePath } from '#test/util'
-import { getCompilerContext } from '@/context'
 // import { createTemplateHandler } from '@/wxml/index'
 import { wxsTagRegexp } from '@weapp-core/regex'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
+import { getCompilerContext } from '@/context'
 
 interface ExtractSourceToken {
   start: number

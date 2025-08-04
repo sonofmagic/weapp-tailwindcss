@@ -1,9 +1,9 @@
-import { getInitDefaults, init } from '@/index'
-import { defaultDevDeps } from '@/npm'
 // import CI from 'ci-info'
 import fs from 'fs-extra'
 import get from 'get-value'
 import path from 'pathe'
+import { getInitDefaults, init } from '@/index'
+import { defaultDevDeps } from '@/npm'
 import { fetchOptions, fixturesRootPath } from './util'
 
 describe.skip('init', () => {

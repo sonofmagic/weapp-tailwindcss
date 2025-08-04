@@ -4,16 +4,16 @@ import fss from 'node:fs'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { UnifiedWebpackPluginV5 } from '@/index'
 import { MappingChars2String } from '@weapp-core/escape'
 import ci from 'ci-info'
 import { copySync, mkdirSync } from 'fs-extra'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import normalizeNewline from 'normalize-newline'
-
 import postcss from 'postcss'
+
 import { runLoaders } from 'promisify-loader-runner'
 import webpack from 'webpack'
+import { UnifiedWebpackPluginV5 } from '@/index'
 // @ts-ignore
 import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'

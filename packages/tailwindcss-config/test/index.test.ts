@@ -1,5 +1,5 @@
-import { loadConfig } from '@/index'
 import path from 'pathe'
+import { loadConfig } from '@/index'
 
 const fixturesDir = path.resolve(import.meta.dirname, './fixtures')
 

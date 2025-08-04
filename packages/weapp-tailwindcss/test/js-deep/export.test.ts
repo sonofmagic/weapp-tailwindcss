@@ -1,12 +1,12 @@
 import type { ParseResult } from '@babel/parser'
 import type t from '@babel/types'
-import { parse, traverse } from '@/babel'
-import { JsTokenUpdater } from '@/js/JsTokenUpdater'
-import { NodePathWalker } from '@/js/NodePathWalker'
 import { escape, isAllowedClassName } from '@weapp-core/escape'
 import fs from 'fs-extra'
 import MagicString from 'magic-string'
 import path from 'pathe'
+import { parse, traverse } from '@/babel'
+import { JsTokenUpdater } from '@/js/JsTokenUpdater'
+import { NodePathWalker } from '@/js/NodePathWalker'
 
 const ignoreCallExpressionIdentifiers = ['cn']
 

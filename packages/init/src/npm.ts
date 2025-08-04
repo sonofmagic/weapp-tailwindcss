@@ -15,11 +15,11 @@ export function fetchPackage(packageName: string, options?: FetchOptions) {
     .then(({ json }) => {
       return json(`/${packageName}`, opts)
     }) as Promise<{
-    'dist-tags': {
-      latest: string
-    }
-    'versions': Record<string, unknown>
-  }>
+      'dist-tags': {
+        latest: string
+      }
+      'versions': Record<string, unknown>
+    }>
 }
 
 export async function getLatestVersion(packageName: string, options?: FetchOptions) {
