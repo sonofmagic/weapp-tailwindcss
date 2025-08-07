@@ -9,7 +9,9 @@ async function compose(base: string) {
   })
   const { css: code } = await generateCss(
     path.resolve(__dirname, base),
-    await fs.readFile(path.resolve(__dirname, base, './index.css'), 'utf8'),
+    {
+      css: await fs.readFile(path.resolve(__dirname, base, './index.css'), 'utf8'),
+    },
   )
   expect(code).toMatchSnapshot()
   const { css } = await styleHandler(code)

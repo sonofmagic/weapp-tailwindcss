@@ -2697,7 +2697,7 @@
 
 "@tailwindcss/vite@^4.1.11":
   version "4.1.11"
-  resolved "https://registry.yarnpkg.com/@tailwindcss/vite/-/vite-4.1.11.tgz#9af1c9d328b31e67c6a0657500bcaa78be6df9f7"
+  resolved "https://registry.npmjs.org/@tailwindcss/vite/-/vite-4.1.11.tgz#9af1c9d328b31e67c6a0657500bcaa78be6df9f7"
   integrity sha512-RHYhrR3hku0MJFRV+fN2gNbDNEh3dwKvY8XJvTxCSXeMOsCRSr+uKvDWQcbizrHgjML6ZmTE5OwMrl5wKcujCw==
   dependencies:
     "@tailwindcss/node" "4.1.11"
@@ -3095,7 +3095,7 @@
 
 "@weapp-tailwindcss/merge@^1.2.3":
   version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/merge/-/merge-1.2.3.tgz#9fcee5c76da08c6d9d85c293ef48ce529b2cffa9"
+  resolved "https://registry.npmjs.org/@weapp-tailwindcss/merge/-/merge-1.2.3.tgz#9fcee5c76da08c6d9d85c293ef48ce529b2cffa9"
   integrity sha512-d5msj9MdguDvxd9OaskbRubppSbHRptyz0V3auzu4Uc6o1O2v1vuKbXSyoG3T+UUnNx9gUQ8kVkXDjr/QRWrDQ==
   dependencies:
     class-variance-authority "^0.7.1"
@@ -6140,7 +6140,7 @@ tailwindcss-core-plugins-extractor@^0.2.0:
 
 tailwindcss-patch@^7.1.4:
   version "7.1.4"
-  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-7.1.4.tgz#a23a3b6a36eef47d31e5603bb6bebbf7dec2c55c"
+  resolved "https://registry.npmjs.org/tailwindcss-patch/-/tailwindcss-patch-7.1.4.tgz#a23a3b6a36eef47d31e5603bb6bebbf7dec2c55c"
   integrity sha512-hlX9cupmZDXdtzQgZ7zVcMZIVLYPOS1QTFtSr1yvjVPcUw2YZMDTL8mWh3FRBVbUIA8IqQGhsr6aaZxz3w71nQ==
   dependencies:
     "@babel/generator" "^7.28.0"
@@ -6159,7 +6159,7 @@ tailwindcss-patch@^7.1.4:
 
 tailwindcss-patch@~7.1.4:
   version "7.1.4"
-  resolved "https://registry.npmjs.org/tailwindcss-patch/-/tailwindcss-patch-7.1.4.tgz#a23a3b6a36eef47d31e5603bb6bebbf7dec2c55c"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-7.1.4.tgz#a23a3b6a36eef47d31e5603bb6bebbf7dec2c55c"
   integrity sha512-hlX9cupmZDXdtzQgZ7zVcMZIVLYPOS1QTFtSr1yvjVPcUw2YZMDTL8mWh3FRBVbUIA8IqQGhsr6aaZxz3w71nQ==
   dependencies:
     "@babel/generator" "^7.28.0"
@@ -6178,7 +6178,7 @@ tailwindcss-patch@~7.1.4:
 
 tailwindcss@4.1.11, tailwindcss@^4.1.11:
   version "4.1.11"
-  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.1.11.tgz#799af3e98c19c5baaefafc6e0c16304a0e684854"
+  resolved "https://registry.npmjs.org/tailwindcss/-/tailwindcss-4.1.11.tgz#799af3e98c19c5baaefafc6e0c16304a0e684854"
   integrity sha512-2E9TBm6MDD/xKYe+dvJZAmg3yxIEDNRc0jwlNyDg/4Fil2QcSLjFKGVff0lAf1jjeaArlG/M75Ey/EYr/OJtBA==
 
 tapable@^2.2.0:
@@ -6468,7 +6468,7 @@ vue@^3.5.18:
 
 weapp-ide-cli@^3.0.0:
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/weapp-ide-cli/-/weapp-ide-cli-3.0.0.tgz#4434a5446a76ce9822adf8a867567483fe072284"
+  resolved "https://registry.npmjs.org/weapp-ide-cli/-/weapp-ide-cli-3.0.0.tgz#4434a5446a76ce9822adf8a867567483fe072284"
   integrity sha512-xjz7YKiy9Vb9QE1f66WGlqoqrSys/zp/3LiV1fNiWiCUF7Zn86ZTSrgL/DISIqsXZvcaOYMAxKs2JQA7veB5Nw==
   dependencies:
     "@weapp-core/logger" "^2.0.0"
@@ -6478,7 +6478,7 @@ weapp-ide-cli@^3.0.0:
 
 weapp-tailwindcss@^4.2.5:
   version "4.2.5"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.5.tgz#5ac9105cdcd97c01875cceb1733b0814aa441c14"
+  resolved "https://registry.npmjs.org/weapp-tailwindcss/-/weapp-tailwindcss-4.2.5.tgz#5ac9105cdcd97c01875cceb1733b0814aa441c14"
   integrity sha512-7bqSIgi7IM37BuHbFmqQ4J0Jb4An/vj57UXHv69oIMPup64K/vNpRJz0URbNkRjZJYYyjroBNHxQxaPpyjbrXg==
   dependencies:
     "@ast-core/escape" "~1.0.1"

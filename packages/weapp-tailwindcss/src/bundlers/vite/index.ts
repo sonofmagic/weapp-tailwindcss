@@ -2,6 +2,7 @@ import type { RawSourceMap } from '@ampproject/remapping'
 import type { ExistingRawSourceMap, OutputAsset, OutputChunk, SourceMap } from 'rollup'
 import type { Plugin, TransformResult } from 'vite'
 import type { UserDefinedOptions } from '@/types'
+import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -56,8 +57,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           const idx = config.css.postcss.plugins.findIndex(x =>
             // @ts-ignore
             x.postcssPlugin === 'postcss-html-transform')
-          if (idx !== -1) {
-            config.css.postcss.plugins.splice(idx, 1)
+          if (idx > -1) {
+            // const target = config.css.postcss.plugins[idx]
+            config.css.postcss.plugins.splice(idx, 1, postcssHtmlTransform())
             debug('remove postcss-html-transform plugin from vite config')
           }
         }

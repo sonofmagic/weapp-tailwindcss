@@ -51,7 +51,14 @@ const postcssHtmlTransform: PluginCreator<IOptions> = (opts: IOptions = {}) => {
   return {
     postcssPlugin: 'postcss-html-transform',
     Rule(rule) {
-      walkRules?.(rule)
+      if (typeof walkRules === 'function') {
+        if (selectorFilter && selectorFilter.test(rule.selector)) {
+          walkRules(rule)
+        }
+        else {
+          walkRules(rule)
+        }
+      }
     },
     Declaration(decl) {
       if (options?.removeCursorStyle) {
