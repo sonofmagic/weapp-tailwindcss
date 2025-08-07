@@ -1,6 +1,7 @@
+import type { UserConfigExport } from '@tarojs/cli'
 import path from 'node:path'
 import process from 'node:process'
-import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import { defineConfig } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
 import devConfig from './dev'

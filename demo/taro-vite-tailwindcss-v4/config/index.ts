@@ -20,6 +20,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
+    // plugins: ['@tarojs/plugin-html'],
     sourceRoot: 'src',
     outputRoot: 'dist',
     // plugins: ['@tarojs/plugin-html'],
