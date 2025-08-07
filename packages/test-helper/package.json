@@ -2,7 +2,6 @@
   "name": "@weapp-tailwindcss/test-helper",
   "type": "module",
   "version": "0.0.0",
-  "private": true,
   "description": "tsup package template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
