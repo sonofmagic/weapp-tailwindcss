@@ -23,7 +23,7 @@
 > [!NOTE]
 > 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
 >
-> 小程序原生工具链 `weapp-vite` 已经发布，使用它改善你的原生小程序开发体验吧，更多详见 [官方文档](https://vite.icebreaker.top/)
+> `weapp-tailwindcss@4.2.x` 现已支持 `uni-app x` 同时构建 `Web`,`小程序`,`安卓`,`IOS`,`鸿蒙`，详见 [**uni-app x 专题**](https://tw.icebreaker.top/docs/uni-app-x)
 
 \[[文档地址](https://tw.icebreaker.top)\] \| \[[备用文档地址](https://ice-tw.netlify.app/)\] \| \[[加入技术交流群](https://tw.icebreaker.top/docs/community/group)\]
 
@@ -35,7 +35,6 @@
 - [各个框架的模板](#各个框架的模板)
 - [旧版本迁移指南](#旧版本迁移指南)
 - [配置项参考](#配置项参考)
-- [变更日志](#变更日志)
 - [Contribute](#contribute)
 - [License](#license)
 - [Star History](#star-history)
@@ -48,9 +47,9 @@
 | --------------------------------------------------- | ----------------------------------------------- |
 | ![wepback+vite+gulp](./assets/weapp-tw-plugins.png) | ![frameworks](./assets/weapp-tw-frameworks.png) |
 
-核心插件支持 `webpack`/`vite`/`gulp` 为基底的框架类小程序开发，涵盖了市面上几乎所有的主流的开发框架。
+核心插件支持 `webpack`/`vite`/`rspack`/`rollup`/`rolldown`/`gulp` 为基底的框架类小程序开发，涵盖了市面上几乎所有的主流的开发框架。
 
-同时也支持最原生的开发者工具创建的原生小程序应用。
+也支持直接从各个开发者工具中，直接创建的原生小程序应用。
 
 这些插件能够自动识别并精确处理所有 `tailwindcss` 的工具类来适配小程序环境。
 
@@ -74,8 +73,6 @@
 ## [旧版本迁移指南](https://tw.icebreaker.top/docs/migrations/v2)
 
 ## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
-
-## [变更日志](./CHANGELOG.md)
 
 ## Contribute
 

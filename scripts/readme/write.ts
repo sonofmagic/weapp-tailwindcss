@@ -17,6 +17,9 @@ for (const p of [
     'postcss',
     'shared',
     'weapp-tailwindcss',
+    'test-helper',
+    'debug-uni-app-x',
+    'experimental',
   ].map((x) => {
     return `../../packages/${x}/README.md`
   })),
