@@ -51,8 +51,8 @@
     "@docusaurus/tsconfig": "3.8.1",
     "@docusaurus/types": "3.8.1",
     "@icebreakers/deploy": "^0.1.6",
-    "@iconify-json/line-md": "^1.2.8",
-    "@iconify-json/logos": "^1.2.5",
+    "@iconify-json/line-md": "^1.2.11",
+    "@iconify-json/logos": "^1.2.9",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify/tailwind": "^1.2.0",
     "@playwright/test": "^1.54.2",
@@ -70,9 +70,9 @@
     "sass-loader": "^16.0.5",
     "tailwindcss": "^3.4.17",
     "theme-transition": "workspace:*",
-    "typedoc": "^0.28.9",
-    "typedoc-plugin-markdown": "4.8.0",
-    "webpack": "5.101.0",
+    "typedoc": "^0.28.10",
+    "typedoc-plugin-markdown": "4.8.1",
+    "webpack": "5.101.1",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {
