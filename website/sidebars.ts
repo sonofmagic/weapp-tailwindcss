@@ -240,6 +240,10 @@ const issuesSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
+    id: 'issues/use-with-taroify',
+  },
+  {
+    type: 'doc',
     id: 'issues/externalClasses',
   },
   {
