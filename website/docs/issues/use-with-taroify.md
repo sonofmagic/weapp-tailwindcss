@@ -10,9 +10,9 @@
 
 按照[Taroify](https://taroify.github.io/taroify.com/) 修改引入方式，将 `taroify` 引入方式改成按需引入
 
-```bash
+```bash npm2yarn
 # 安装插件
-yarn add babel-plugin-import
+npm i babel-plugin-import
 ```
 
 修改Babel配置文件，修改组件和图标样式的引入方式为手动引入
@@ -62,7 +62,7 @@ import '@taroify/icons/index.scss'
 import '@taroify/core/index.scss'
 import './app.scss'
 
-...
+// ...
 
 ```
 
