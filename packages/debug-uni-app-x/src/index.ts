@@ -17,7 +17,7 @@ export function debugX(options?: { cwd: string }): Plugin[] {
 
   function createPlugin(options?: { enforce?: 'pre' | 'post', targetDir?: string }): Plugin {
     const { enforce, targetDir } = defu(options, {
-      targetDir: 'debug',
+      targetDir: '.debug',
     })
     const prefix = enforce === undefined ? 'normal' : enforce
 

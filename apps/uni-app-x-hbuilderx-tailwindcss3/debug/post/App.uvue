@@ -1,4 +1,0 @@
-import _sfc_main from "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/uni-app-x-hbuilderx-tailwindcss3/App.uvue?vue&type=script&lang.uts";
-export * from "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/uni-app-x-hbuilderx-tailwindcss3/App.uvue?vue&type=script&lang.uts";
-import "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/uni-app-x-hbuilderx-tailwindcss3/App.uvue?vue&type=style&index=0&lang.css";
-export default _sfc_main;

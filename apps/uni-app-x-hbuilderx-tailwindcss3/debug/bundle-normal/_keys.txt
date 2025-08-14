@@ -1,8 +1,0 @@
-main.uts.ts
-pages/index/index.uvue.ts.map
-pages/index/index.uvue.ts
-App.uvue.ts.map
-App.uvue.ts
-node-modules/@dcloudio/uni-console/src/runtime/app/index.ts
-node-modules/@dcloudio/uni-console/src/runtime/app/socket.ts
-output.js
