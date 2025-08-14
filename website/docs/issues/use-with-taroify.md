@@ -53,7 +53,7 @@ module.exports = {
 
 修改根目录下的样式引入顺序，优先引入[Taroify](https://taroify.github.io/taroify.com/) 的样式，再引入Tailwindcss的样式
 
-```tsc
+```tsx
 // src/app.tsx
 
 import Taro from '@tarojs/taro'
