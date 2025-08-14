@@ -97,18 +97,11 @@ module.exports = {
 // @tailwind base;
 // @tailwind components;
 // @tailwind utilities;
-```
 
-#### Taro 4.x
-
-环境：Taro 4.x、Sass 1.23+
-
-Taro 4.x 默认使用 `scss` 语法，因此 `app.scss` 文件如下:
-
-```scss title="app.scss"
-@use 'tailwindcss/base' as *;
-@use 'tailwindcss/components' as *;
-@use 'tailwindcss/utilities' as *;
+// sass 版本1.25+ 
+// @use 'tailwindcss/base';
+// @use 'tailwindcss/components';
+// @use 'tailwindcss/utilities';
 ```
 
 然后在 `app.ts` 里引入这个样式文件即可。
