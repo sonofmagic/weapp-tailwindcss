@@ -1,3 +1,4 @@
+import { postcssRemoveComment } from '@weapp-tailwindcss/test-helper'
 import autoprefixer from 'autoprefixer'
 // import tailwindcss from '@tailwindcss/postcss'
 // import fs from 'fs-extra'
@@ -12,6 +13,7 @@ async function generateCss(base: string, plugins: readonly postcss.AcceptedPlugi
     tailwindcss({
       base,
     }),
+    postcssRemoveComment,
 
   ])
     .process('@import "weapp-tailwindcss";', {

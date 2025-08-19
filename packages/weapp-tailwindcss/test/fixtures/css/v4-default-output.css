@@ -1,4 +1,3 @@
-/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 page,:host {
     --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -376,6 +375,7 @@ page,:host {
       --font-mono--font-variation-settings
     );
   }
+
 @supports (color: color(display-p3 0 0 0%)) {
 page,:host {
     --color-red-200: rgb(255, 202, 202);

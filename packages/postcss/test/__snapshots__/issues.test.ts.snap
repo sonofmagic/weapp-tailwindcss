@@ -1,8 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`issues > cssSelectorReplacement case 0 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-@layer properties;
+"@layer properties;
 :root, :host {
   --spacing: .25rem;
 }
@@ -34,8 +33,8 @@ exports[`issues > cssSelectorReplacement case 0 1`] = `
 `;
 
 exports[`issues > cssSelectorReplacement case 0 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-view,text,::before,::after,::backdrop {
+"
+    view,text,::before,::after,::backdrop {
       --tw-space-x-reverse: 0;
     }
 page,wx-root-content,:host {
@@ -57,8 +56,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > custom case 0 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-*,:after,:before,::backdrop {
+"*,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -74,8 +72,7 @@ exports[`issues > custom case 0 1`] = `
 `;
 
 exports[`issues > custom case 0 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-view,text,:after,:before,::backdrop {
+"view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -90,8 +87,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-:root, :host {
+":root, :host {
   --color-blue-500: oklch(62.3% .214 259.815);
   --spacing: .25rem;
 }
@@ -114,11 +110,11 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-page,:host {
+"page,:host {
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 page,:host {
   --color-blue-500: rgb(50, 128, 255);
@@ -151,8 +147,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-:root, :host {
+":root, :host {
   --color-blue-100: oklch(93.2% .032 255.585);
 }
 *,:after,:before,::backdrop {
@@ -174,8 +169,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-page,:host {
+"page,:host {
   --color-blue-100: rgb(219, 234, 254);
 }
 view,text,:after,:before,::backdrop {
@@ -190,8 +184,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-:root, :host {
+":root, :host {
   --color-green-300: oklch(87.1% .15 154.449);
   --color-gray-600: oklch(44.6% .03 256.802);
 }
@@ -222,8 +215,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-page,:host {
+"page,:host {
   --color-green-300: rgb(123, 241, 168);
   --color-gray-600: rgb(74, 85, 101);
 }
@@ -246,8 +238,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 case 0 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-:root, :host {
+":root, :host {
   --color-green-300: oklch(87.1% .15 154.449);
   --color-zinc-50: oklch(98.5% 0 0);
   --color-zinc-900: oklch(21% .006 285.885);
@@ -291,8 +282,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 cas
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 case 0 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-page,:host {
+"page,:host {
   --color-green-300: rgb(123, 241, 168);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
@@ -332,8 +322,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-@layer properties;
+"@layer properties;
 :root, :host {
   --color-cyan-500: oklch(71.5% .143 215.221);
   --color-blue-500: oklch(62.3% .214 259.815);
@@ -420,8 +409,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-::before,::after {
+"::before,::after {
       --tw-content: "";
 }
 view,text,::before,::after,::backdrop {
@@ -477,8 +465,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-@layer properties;
+"@layer properties;
 :root, :host {
   --blur-2xl: 40px;
 }
@@ -646,8 +633,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-::before,::after {
+"::before,::after {
       --tw-content: "";
 }
 view,text,::before,::after,::backdrop {
@@ -704,8 +690,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`issues > space-x-number 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-@layer properties;
+"@layer properties;
 :root, :host {
   --spacing: .25rem;
 }
@@ -737,8 +722,8 @@ exports[`issues > space-x-number 1`] = `
 `;
 
 exports[`issues > space-x-number 2`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
-view,text,::before,::after,::backdrop {
+"
+    view,text,::before,::after,::backdrop {
       --tw-space-x-reverse: 0;
     }
 page,:host {

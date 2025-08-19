@@ -201,6 +201,13 @@ const customAttributes = {
    * @description 配置不同版本 tailwindcss 的行为
    */
   tailwindcss?: PatchOptions['tailwindcss']
+
+  /**
+   * @version `^4.2.6`
+   * @group 0.重要配置
+   * @description tailwindcss@4 的入口 css 的位置，假如不配置这个选项, 就无法加载自定义插件
+   */
+  cssEntries?: string[]
   /**
    * @version `^4.2.0`
    * @group 0.重要配置

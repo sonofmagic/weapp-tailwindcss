@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/postcss'
+import { postcssRemoveComment } from '@weapp-tailwindcss/test-helper'
 // import fs from 'fs-extra'
 import path from 'pathe'
 import postcss from 'postcss'
@@ -9,6 +10,7 @@ function generateCss(css: string, base: string) {
     tailwindcss({
       base,
     }),
+    postcssRemoveComment,
   ])
     .process(css, {
       from: './index.ts',

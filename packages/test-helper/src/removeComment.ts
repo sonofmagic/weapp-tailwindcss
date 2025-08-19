@@ -1,6 +1,6 @@
-import type { AcceptedPlugin } from 'postcss'
+import type { Plugin } from 'postcss'
 
-export const postcssRemoveComment: AcceptedPlugin = {
+export const postcssRemoveComment: Plugin = {
   Comment(comment, _helper) {
     comment.remove()
   },
