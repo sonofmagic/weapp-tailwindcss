@@ -33,6 +33,14 @@ import tailwindcss from '@tailwindcss/postcss'
       },
       UnifiedViteWeappTailwindcssPlugin({
         rem2rpx: true,
+        tailwindcss: {
+          v4: {
+            cssEntries: [
+              // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+              path.resolve(__dirname, '../src/app.css')
+            ]
+          }
+        }
       })
     ]
   },

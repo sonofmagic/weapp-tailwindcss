@@ -51,6 +51,15 @@ import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
             plugin: UnifiedWebpackPluginV5,
             args: [{
               // 这里可以传参数
+              rem2rpx: true,
+              tailwindcss: {
+                v4: {
+                  cssEntries: [
+                    // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+                    path.resolve(__dirname, '../src/app.css')
+                  ]
+                }
+              }
             }]
           }
         }

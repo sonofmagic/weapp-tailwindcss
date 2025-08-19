@@ -60,6 +60,33 @@
 
 详见 https://uniapp.dcloud.net.cn/tutorial/platform.html
 
+## css 作为配置文件
+
+由于在 `tailwindcss@4` 中，配置文件默认为一个 `css` 文件，所以你需要显式的告诉 `weapp-tailwindcss` 你的入口 `css` 文件的绝对路径。
+
+来让 `weapp-tailwindcss` 和 `tailwindcss` 保持一致的处理模式
+
+> `cssEntries` 为一个数组，就是你 @import "weapp-tailwindcss"; 那些文件，可以有多个
+
+```ts
+{
+  tailwindcss: {
+    v4: {
+      cssEntries: [
+        // 就是你 @import "weapp-tailwindcss"; 那个文件
+        // 比如 tarojs
+        path.resolve(__dirname, '../src/app.css')
+        // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
+        // path.resolve(__dirname, './src/app.css')
+      ]
+    }
+  }
+}
+```
+
+假如不添加这个，会造成 `tailwindcss` 插件生成的样式，转义不了的问题。
+
+
 ## 使用 @apply 
 
 如果你想在 页面或者组件独立的 `CSS` 模块中使用 `@apply` 或 `@variant`，你需要使用 `@reference` 指令，来导入主题变量、自定义工具和自定义变体，以使这些值在该上下文中可用。
