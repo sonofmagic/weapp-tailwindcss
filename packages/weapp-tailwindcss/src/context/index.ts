@@ -1,4 +1,4 @@
-import type { TailwindcssPatcherOptions } from 'tailwindcss-patch'
+import type { TailwindcssUserConfig } from 'tailwindcss-patch'
 import type {
   ICustomAttributes,
   ICustomAttributesEntities,
@@ -115,26 +115,16 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
       basedir: tailwindcssBasedir,
       cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
       supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
-      tailwindcss,
-      tailwindcssPatcherOptions: defuOverrideArray<TailwindcssPatcherOptions, TailwindcssPatcherOptions[]>(
-        tailwindcssPatcherOptions,
+      tailwindcss: defuOverrideArray<TailwindcssUserConfig, TailwindcssUserConfig[]>(
+        tailwindcss,
         {
-          patch: {
-            // cwd: tailwindcssBasedir,
-            tailwindcss: {
-              // @ts-ignore
-              // cwd: tailwindcssBasedir,
-              // v3: {
-              //   cwd: tailwindcssBasedir,
-              // },
-              v4: {
-                base: tailwindcssBasedir,
-                cssEntries,
-              },
-            },
+          v4: {
+            base: tailwindcssBasedir,
+            cssEntries,
           },
         },
       ),
+      tailwindcssPatcherOptions,
     },
   )
   ctx.setMangleRuntimeSet = setMangleRuntimeSet

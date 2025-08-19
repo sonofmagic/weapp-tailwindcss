@@ -205,7 +205,7 @@ const customAttributes = {
   /**
    * @version `^4.2.6`
    * @group 0.重要配置
-   * @description tailwindcss@4 的入口 css 的位置，假如不配置这个选项, 就无法加载自定义插件
+   * @description tailwindcss@4 的入口 css 的位置，假如不配置这个选项, 就无法加载自定义插件。等价于传入 tailwindcss.v4.cssEntries
    */
   cssEntries?: string[]
   /**
