@@ -1,4 +1,4 @@
-import type { CreateJsHandlerOptions, IJsHandlerOptions } from '../types'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandler } from '../types'
 import { defuOverrideArray } from '../utils'
 import { jsHandler } from './babel'
 
@@ -6,7 +6,7 @@ export {
   jsHandler,
 }
 
-export function createJsHandler(options: CreateJsHandlerOptions) {
+export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   const {
     mangleContext,
     arbitraryValues,
@@ -19,7 +19,7 @@ export function createJsHandler(options: CreateJsHandlerOptions) {
     uniAppX,
   } = options
 
-  function handler(rawSource: string, classNameSet: Set<string>, options?: CreateJsHandlerOptions) {
+  function handler(rawSource: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) {
     const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
       classNameSet,
       escapeMap,
