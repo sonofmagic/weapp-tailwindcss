@@ -87,7 +87,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "local-pkg": "^1.1.1",
+    "local-pkg": "^1.1.2",
     "semver": "^7.7.2",
     "tailwind-merge": "^3.3.1",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0",
