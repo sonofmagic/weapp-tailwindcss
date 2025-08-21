@@ -182,3 +182,21 @@ view,text,::before,::after,::backdrop {
 + @import 'weapp-tailwindcss/theme.css';
 + @import 'weapp-tailwindcss/utilities.css';
 ```
+
+## 使用大写单位 (h-[100PX]) 无效问题
+
+默认情况下，在 `process.env.NODE_ENV === 'production'` 的时候， `tailwindcss` 会自动进入优化模式
+
+它会进行 `CSS` 单位的校准，比如把大写的 `PX` 转化为小写的 `px`，你要禁用这个行为可以这样传入。
+
+```js
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {
+      optimize: false
+    },
+  }
+}
+```
+
+详见: [@tailwindcss/postcss](https://github.com/tailwindlabs/tailwindcss/blob/7779d3d080cae568c097e87b50e4a730f4f9592b/packages/%40tailwindcss-postcss/src/index.ts#L73C35-L73C72)
