@@ -33,6 +33,7 @@
     "@weapp-tailwindcss/website": "1.0.2"
   },
   "changesets": [
+    "heavy-lemons-grab",
     "khaki-news-drum",
     "tame-gifts-tease",
     "wise-results-shout"
