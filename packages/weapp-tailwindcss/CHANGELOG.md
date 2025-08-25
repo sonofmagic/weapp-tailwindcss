@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 4.2.6
+
+### Patch Changes
+
+- [`a8857e6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a8857e6e8cf196c273e5e56e5745e2de97cd308a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 依赖更新
+
+- [`39e8e57`](https://github.com/sonofmagic/weapp-tailwindcss/commit/39e8e57cf8d54a0f1662b016a7cdb260326985f6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 添加 cssEntries 作为 tailwindcss@4 的入口 css 的位置
+
+- [`7419618`](https://github.com/sonofmagic/weapp-tailwindcss/commit/741961839510edafc39f2cebf91b8e8dc1cd8bd3) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 对 postcss-html-transform 进行二次封装
+
+- Updated dependencies [[`7419618`](https://github.com/sonofmagic/weapp-tailwindcss/commit/741961839510edafc39f2cebf91b8e8dc1cd8bd3), [`a5d198f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a5d198ff0e8af52f218df98f3ce76a5dbfd8c691)]:
+  - @weapp-tailwindcss/postcss@1.1.0
+  - @weapp-tailwindcss/init@1.0.5
+
 ## 4.2.6-alpha.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/typography",
-  "version": "0.2.5-alpha.0",
+  "version": "0.2.5",
   "description": "The tailwindcss typography plugin for weapp",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
