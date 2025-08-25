@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`darkMode > darkMode: 'class', 1`] = `
+".dark view.darkcbg-black,.dark text.darkcbg-black {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: 'class', uni-app x 1`] = `
+".darkcbg-black {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: 'selector', 1`] = `
+".darkcbg-black:where(.dark,.dark view) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}
+.darkcbg-black:where(.dark,.dark text) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: 'selector', uni-app x 1`] = `
+".darkcbg-black {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `
+".darkcbg-black:where(, view) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}
+.darkcbg-black:where(, text) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], uni-app x 1`] = `
+".darkcbg-black {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: ['variant', '&:not(.light *)'], 1`] = `
+".darkcbg-black:not(view):not(text) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: ['variant', '&:not(.light *)'], uni-app x 1`] = `
+".darkcbg-black:not(view):not(text) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;

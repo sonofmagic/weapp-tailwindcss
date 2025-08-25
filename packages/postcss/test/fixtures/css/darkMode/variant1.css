@@ -1,0 +1,10 @@
+@media (prefers-color-scheme: dark) {
+    .dark\:bg-black:not(.light *) {
+        --tw-bg-opacity: 1;
+        background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1)) /* #000000 */;
+    }
+}
+.dark\:bg-black:is(.dark *) {
+    --tw-bg-opacity: 1;
+    background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1)) /* #000000 */;
+}
