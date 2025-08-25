@@ -59,6 +59,7 @@
     "e2e": "vitest run -c ./e2e/vitest.e2e.config.ts",
     "e2e:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
     "e2e:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
+    "e2e:u:index": "vitest run -u -c ./e2e/vitest.e2e.config.ts --exclude ./e2e/native.test.ts",
     "e2e:u:native": "vitest run -u -c ./e2e/vitest.e2e.config.ts --exclude ./e2e/index.test.ts",
     "demo:build": "tsx scripts/demo/build.ts --babel && pnpm run build:apps",
     "demo:install": "tsx scripts/demo/install.ts",

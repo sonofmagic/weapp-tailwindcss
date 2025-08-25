@@ -50,5 +50,6 @@
         "type": "file"
       }
     ]
-  }
+  },
+  "libVersion": "3.9.2"
 }

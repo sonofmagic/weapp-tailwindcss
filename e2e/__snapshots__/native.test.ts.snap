@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`e2e native > 'vite-native' > css 1`] = `
-"/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */
 ::before,
 ::after {
   --tw-content: '';
@@ -226,11 +226,11 @@ text,
 .text-_100px_ {
   font-size: 100px;
 }
-.text-_100rpx_ {
-  font-size: 100rpx;
-}
 .text-_h123456_ {
   color: #123456;
+}
+.text-_100rpx_ {
+  color: 100rpx;
 }
 .text-pink-300 {
   color: var(--color-pink-300);

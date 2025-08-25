@@ -38,7 +38,9 @@
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "open:dev": "weapp open -p dist/dev/mp-weixin",
     "open:build": "weapp open -p dist/build/mp-weixin",
-    "postinstall": "weapp-tw patch"
+    "postinstall": "weapp-tw patch",
+    "up:pkg": "pnpm up -rLi \"!@dcloudio/*\"",
+    "up:uniapp": "npx @dcloudio/uvm@latest"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4050620250312001",
@@ -97,8 +99,8 @@
     "typescript": "~5.4.2",
     "vite": "5.2.8",
     "vite-plugin-inspect": "^0.8.9",
-    "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.5",
+    "weapp-ide-cli": "^3.1.0",
+    "weapp-tailwindcss": "^4.2.6",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "packageManager": "yarn@1.22.22",

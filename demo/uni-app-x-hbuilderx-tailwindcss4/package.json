@@ -8,11 +8,11 @@
     "build": "echo uni-app-x-hbuilderx-tailwindcss4"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.12",
     "@weapp-tailwindcss/merge": "^1.2.3",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^4.1.12",
     "tailwindcss-patch": "^7.1.4",
-    "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.5"
+    "weapp-ide-cli": "^3.1.0",
+    "weapp-tailwindcss": "^4.2.6"
   }
 }

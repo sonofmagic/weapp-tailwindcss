@@ -25,8 +25,8 @@
     "tailwindcss": "3",
     "tailwindcss-patch": "^7.1.4",
     "tailwindcss-rem2px-preset": "^1.0.3",
-    "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.5",
+    "weapp-ide-cli": "^3.1.0",
+    "weapp-tailwindcss": "^4.2.6",
     "weapp-tailwindcss-children": "^0.1.0",
     "weapp-vite": "^2.0.1"
   },

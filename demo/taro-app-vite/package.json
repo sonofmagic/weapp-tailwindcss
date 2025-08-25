@@ -94,7 +94,7 @@
     "terser": "^5.39.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.4",
-    "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.5"
+    "weapp-ide-cli": "^3.1.0",
+    "weapp-tailwindcss": "^4.2.6"
   }
 }

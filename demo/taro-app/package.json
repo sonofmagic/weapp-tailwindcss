@@ -85,8 +85,8 @@
     "tailwindcss-rem2px-preset": "^1.0.3",
     "terser-webpack-plugin": "^5.3.14",
     "typescript": "~5.8.3",
-    "weapp-ide-cli": "^3.0.0",
-    "weapp-tailwindcss": "^4.2.5",
+    "weapp-ide-cli": "^3.1.0",
+    "weapp-tailwindcss": "^4.2.6",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.99.7",
     "webpack-chain": "^6.5.1"
