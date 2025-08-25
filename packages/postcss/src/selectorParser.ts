@@ -82,6 +82,9 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
           selector.value = composeIsPseudo(cssSelectorReplacement.root)
         }
         else if (selector.value === ':where') {
+          if (uniAppX) {
+            selector.value = ':is'
+          }
           // :where(.space-y-1 > :not(:last-child))
           // https://tailwindcss.com/docs/upgrade-guide#space-between-selector
           // only for tailwindcss@4
