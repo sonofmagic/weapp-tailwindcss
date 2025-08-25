@@ -1,6 +1,7 @@
 import type { Rule } from 'postcss'
 import type { Node, SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from './types'
+import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import psp from 'postcss-selector-parser'
 import { composeIsPseudo, internalCssSelectorReplacer } from './shared'
 
@@ -138,13 +139,6 @@ function createRuleTransform(rule: Rule, options: IStyleHandlerOptions) {
             }
           }
         }
-        if (uniAppX) {
-          // if (selector.value === '::before' || selector.value === '::after' || selector.value === '::backdrop' || selector.value === '::file-selector-button') {
-          //   selector.remove()
-          // }
-          // https://doc.dcloud.net.cn/uni-app-x/css/
-          selector.remove()
-        }
       }
       else if (selector.type === 'combinator') {
         // .space-x-4 > :not([hidden]) ~ :not([hidden])
@@ -248,7 +242,8 @@ export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
  * @param rule
  * @returns
  */
-export function getFallbackRemove(rule?: Rule) {
+export function getFallbackRemove(rule?: Rule, options?: IStyleHandlerOptions) {
+  const { uniAppX } = defuOverrideArray(options!, {})
   const fallbackRemove = psp((selectors) => {
     let maybeImportantId = false
     selectors.walk((selector, idx) => {
@@ -316,6 +311,12 @@ export function getFallbackRemove(rule?: Rule) {
           //     x.remove()
           //   }
           // }
+        }
+        else if (selector.type === 'pseudo') {
+          if (uniAppX) {
+            // https://doc.dcloud.net.cn/uni-app-x/css/
+            selector.remove()
+          }
         }
       }
     })

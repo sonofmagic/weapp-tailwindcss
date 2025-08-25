@@ -20,41 +20,50 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   }
 
   if (opts.isMainChunk) {
-    p.OnceExit = (root) => {
-      root.walkRules((rule) => {
-        getFallbackRemove(rule).transformSync(rule, {
-          updateSelector: true,
-          lossless: false,
-        })
+    p.RuleExit = (rule) => {
+      getFallbackRemove(rule, opts).transformSync(rule, {
+        updateSelector: true,
+        lossless: false,
+      })
 
-        if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
+      if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
+        rule.remove()
+      }
+
+      if (opts.uniAppX) {
+        if (rule.nodes.length === 0) {
           rule.remove()
         }
-        // tailwindcss v4
-        rule.walkDecls((decl) => {
-          // if (opts.uniAppX && decl.prop.startsWith('--')) {
-          //   decl.remove()
-          // }
-          // else
-          if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OklabSuffix)) {
-            decl.value = decl.value.slice(0, decl.value.length - OklabSuffix.length)
-          }
-          else if (/calc\(\s*infinity\s*\*\s*1px/.test(decl.value)) {
-            decl.value = '9999px'
-          }
-        })
-        if (opts.uniAppX) {
-          if (rule.nodes.length === 0) {
-            rule.remove()
-          }
-        }
-      })
-      root.walkAtRules((atRule) => {
-        if (opts.cssRemoveProperty && atRule.name === 'property') {
-          atRule.remove()
-        }
-        atRule.nodes?.length === 0 && atRule.remove()
-      })
+      }
+    }
+
+    p.DeclarationExit = (decl) => {
+      // tailwindcss v4
+      /**
+       * @description oklab 处理
+       */
+      if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OklabSuffix)) {
+        decl.value = decl.value.slice(0, decl.value.length - OklabSuffix.length)
+      }
+      /**
+       * @description 移除 calc(infinity * 1px)
+       */
+      else if (/calc\(\s*infinity\s*\*\s*1px/.test(decl.value)) {
+        decl.value = '9999px'
+      }
+    }
+
+    p.AtRuleExit = (atRule) => {
+      /**
+       * @description 移除 property
+       */
+      if (opts.cssRemoveProperty && atRule.name === 'property') {
+        atRule.remove()
+      }
+      /**
+       * 清除空节点
+       */
+      atRule.nodes?.length === 0 && atRule.remove()
     }
   }
   if (typeof opts.customRuleCallback === 'function') {

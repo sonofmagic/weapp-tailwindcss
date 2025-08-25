@@ -9,3 +9,5 @@ exports[`selectorParser > fallbackRemove case 2 1`] = `"button:not(n),input:not(
 exports[`selectorParser > fallbackRemove case 3 1`] = `"[hidden]:where(:not([hidden="until-found"])):not(n):not(n):not(n)"`;
 
 exports[`selectorParser > fallbackRemove case 4 1`] = `"button:not(n),input:not(n)"`;
+
+exports[`selectorParser > ruleTransformSync case 0 1`] = `".dark .darkcbg-black,.dark .darkcbg-black"`;

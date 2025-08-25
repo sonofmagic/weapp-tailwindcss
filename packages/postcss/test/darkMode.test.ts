@@ -7,6 +7,25 @@ function getCase(name: string) {
 }
 
 describe('darkMode', () => {
+  it(`darkMode default`, async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await getCase('default.css')
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
+
+  it(`darkMode: default uni-app x`, async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      uniAppX: true,
+    })
+    const code = await getCase('default.css')
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
+
   it(`darkMode: 'class',`, async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

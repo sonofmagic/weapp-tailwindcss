@@ -1,3 +1,4 @@
+import psp from 'postcss-selector-parser'
 import { getFallbackRemove } from '@/selectorParser'
 
 describe('selectorParser', () => {
@@ -24,5 +25,15 @@ describe('selectorParser', () => {
   it('fallbackRemove case 4', async () => {
     const x = await getFallbackRemove().process('button:not(n),input:where():not(n)')
     expect(x).toMatchSnapshot()
+  })
+
+  it('ruleTransformSync case 0', async () => {
+    const target = psp((selectors) => {
+      selectors.walkTags((tag) => {
+        tag.remove()
+      })
+    })
+    const normalized = await target.process('.dark view.darkcbg-black,.dark text.darkcbg-black', { updateSelector: true })
+    expect(normalized).toMatchSnapshot()
   })
 })
