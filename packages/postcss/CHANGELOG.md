@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.1.0-alpha.1
+
+### Minor Changes
+
+- [`a5d198f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a5d198ff0e8af52f218df98f3ce76a5dbfd8c691) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 支持 uni-app x 暗黑模式
+
 ## 1.0.22-alpha.0
 
 ### Patch Changes
