@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`compat > styleHandler calc 1`] = `
+"
+page{
+--spacing: 8rpx;
+--radius-3xl: 48rpx;
+--radius-4xl: calc(var(--spacing) * 8);
+}"
+`;
