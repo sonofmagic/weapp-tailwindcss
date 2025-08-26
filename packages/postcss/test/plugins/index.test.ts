@@ -1,5 +1,5 @@
 import postcss from 'postcss'
-
+import { createPlugins } from './utils'
 // 不动态添加
 // 1 Once
 // 2 Once
@@ -41,31 +41,23 @@ import postcss from 'postcss'
 // 1 OnceExit
 // 2 OnceExit
 describe('plugins', () => {
-  const weakMap = new WeakMap()
-  it('enforce', async () => {
+  it('enforce default', async () => {
     const { css } = await postcss(
-      [
-        {
-          postcssPlugin: '1',
-          Once() {
-            console.log('1 Once')
-          },
-          OnceExit() {
-            console.log('1 OnceExit')
-          },
-          Root() {
-            console.log('1 Root')
-          },
-          RootExit() {
-            console.log('1 RootExit')
-          },
-          Rule() {
-            console.log('1 Rule')
-          },
-          RuleExit() {
-            console.log('1 RuleExit')
-          },
-        },
+      createPlugins([
+        '1',
+        '2',
+      ]),
+    ).process('.red { color: red; }', {
+      from: undefined,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('enforce append rule case', async () => {
+    const weakMap = new WeakMap()
+    const { css } = await postcss(
+      createPlugins([
+        '1',
         {
           postcssPlugin: '2',
           Rule(node, { rule, decl }) {
@@ -75,24 +67,33 @@ describe('plugins', () => {
               weakMap.set(rule, true)
             }
           },
-          RuleExit() {
-            console.log('2 RuleExit')
-          },
-          Root() {
-            console.log('2 Root')
-          },
-          RootExit() {
-            console.log('2 RootExit')
-          },
-          Once() {
-            console.log('2 Once')
-          },
-          OnceExit(_root) {
-            console.log('2 OnceExit')
-            // root.append(rule({ selector: '.blue', nodes: [decl({ prop: 'color', value: 'blue' })] }))
+        },
+      ]),
+    ).process('.red { color: red; }', {
+      from: undefined,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
+  it('enforce remove rule case', async () => {
+    const { css } = await postcss(
+      createPlugins([
+        {
+          postcssPlugin: '1',
+          Rule(node) {
+            console.log('1 Rule')
+            node.remove()
           },
         },
-      ],
+        {
+          postcssPlugin: '2',
+          Rule(node) {
+            // 不会命中
+            console.log('2 Rule -----------')
+            node.remove()
+          },
+        },
+      ]),
     ).process('.red { color: red; }', {
       from: undefined,
     })

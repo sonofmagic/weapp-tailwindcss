@@ -66,7 +66,7 @@
     "dotenv": "^17.2.1",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
-    "sass": "^1.90.0",
+    "sass": "^1.91.0",
     "sass-loader": "^16.0.5",
     "tailwindcss": "^3.4.17",
     "theme-transition": "workspace:*",

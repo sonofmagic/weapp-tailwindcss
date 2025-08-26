@@ -1,3 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`plugins > enforce 1`] = `".red { color: red; .blue { color: blue } }"`;
+exports[`plugins > enforce append rule case 1`] = `".red { color: red; .blue { color: blue } }"`;
+
+exports[`plugins > enforce default 1`] = `".red { color: red; }"`;
+
+exports[`plugins > enforce remove rule case 1`] = `""`;
