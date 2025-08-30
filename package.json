@@ -201,6 +201,7 @@
     "md5": "2.3.0",
     "micromatch": "^4.0.8",
     "mini-css-extract-plugin": "^2.9.4",
+    "minimatch": "^10.0.3",
     "miniprogram-automator": "^0.12.1",
     "normalize-newline": "^4.1.0",
     "npm-registry-fetch": "^18.0.2",

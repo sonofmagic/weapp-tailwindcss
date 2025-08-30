@@ -36,7 +36,7 @@
     "@docusaurus/core": "3.8.1",
     "@docusaurus/preset-classic": "3.8.1",
     "@docusaurus/theme-live-codeblock": "^3.8.1",
-    "@mdx-js/react": "^3.1.0",
+    "@mdx-js/react": "^3.1.1",
     "@weapp-tailwindcss/merge": "workspace:*",
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",

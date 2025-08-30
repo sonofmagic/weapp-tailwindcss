@@ -226,11 +226,11 @@ text,
 .text-_100px_ {
   font-size: 100px;
 }
+.text-_100rpx_ {
+  font-size: 100rpx;
+}
 .text-_h123456_ {
   color: #123456;
-}
-.text-_100rpx_ {
-  color: 100rpx;
 }
 .text-pink-300 {
   color: var(--color-pink-300);

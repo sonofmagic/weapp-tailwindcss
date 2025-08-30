@@ -5589,24 +5589,6 @@ text,
 .underline {
   text-decoration-line: underline;
 }
-page::after {
-  position: fixed;
-  content: '';
-  left: -1000px;
-  top: -1000px;
-  -webkit-animation: shadow-preload 0.1s;
-  -webkit-animation-delay: 3s;
-  animation: shadow-preload 0.1s;
-  animation-delay: 3s;
-}
-@keyframes shadow-preload {
-  0% {
-    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
-  }
-  100% {
-    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
-  }
-}
 page {
   --status-bar-height: 25px;
   --top-window-height: 0px;
@@ -11106,24 +11088,6 @@ text,
 ._n_du-count-downw_w_text_citext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
-}
-page::after {
-  position: fixed;
-  content: '';
-  left: -1000px;
-  top: -1000px;
-  -webkit-animation: shadow-preload 0.1s;
-  -webkit-animation-delay: 3s;
-  animation: shadow-preload 0.1s;
-  animation-delay: 3s;
-}
-@keyframes shadow-preload {
-  0% {
-    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
-  }
-  100% {
-    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
-  }
 }
 page {
   --status-bar-height: 25px;
