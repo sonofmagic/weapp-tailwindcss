@@ -113,7 +113,9 @@ export function getDefaultOptions(): UserDefinedOptions {
       cache: true,
     },
     postcssOptions: {},
-    cssRemoveProperty: true,
+    // 开发版本微信小程序工具和小米13手机上 @property 是有效果的
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/@property
+    cssRemoveProperty: false,
     cssRemoveHoverPseudoClass: true,
     ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva', 'tv'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],

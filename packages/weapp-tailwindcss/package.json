@@ -183,7 +183,7 @@
     "@babel/parser": "~7.28.3",
     "@babel/traverse": "~7.28.3",
     "@babel/types": "~7.28.2",
-    "@vue/compiler-dom": "^3.5.20",
+    "@vue/compiler-dom": "^3.5.21",
     "@weapp-core/escape": "~4.0.1",
     "@weapp-core/regex": "~1.0.1",
     "@weapp-tailwindcss/init": "workspace:*",
@@ -199,7 +199,7 @@
     "magic-string": "0.30.18",
     "semver": "~7.7.2",
     "tailwindcss-patch": "~7.1.4",
-    "vue": "^3.5.20",
+    "vue": "^3.5.21",
     "webpack-sources": "3.3.3"
   }
 }
