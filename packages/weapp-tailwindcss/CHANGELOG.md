@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.2.7
+
+### Patch Changes
+
+- [`88e4b4d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/88e4b4def9025f50d262df35b8163cbaa73f4b36) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 设置 `cssRemoveProperty` 默认为 `false`
+
+  这是因为在部分小程序的真机，还有微信开发者工具中 `@property` 已经生效
+
+- [`88a1d3d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/88a1d3d4b2ede7b62801fde85186afbbd620f7f4) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 跳过不正确的 `sourcemap` 处理覆盖
+
 ## 4.2.6
 
 ### Patch Changes
