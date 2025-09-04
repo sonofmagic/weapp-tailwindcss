@@ -134,18 +134,18 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                   }
                 },
                 async () => {
-                  const mapFilename = `${file}.map`
-                  const hasSourceMap = Boolean(bundle[mapFilename])
-                  const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                    generateMap: hasSourceMap,
+                  // const mapFilename = `${file}.map`
+                  // const hasSourceMap = Boolean(bundle[mapFilename])
+                  const { code } = await jsHandler(rawSource, runtimeSet, {
+                    // generateMap: hasSourceMap,
                   })
                   originalSource.code = code
                   onUpdate(file, rawSource, code)
                   debug('js handle: %s', file)
                   // noCachedCount++
-                  if (hasSourceMap && map) {
-                    ; (bundle[mapFilename] as OutputAsset).source = map.toString()
-                  }
+                  // if (hasSourceMap && map) {
+                  //   ; (bundle[mapFilename] as OutputAsset).source = map.toString()
+                  // }
                   return {
                     key: file,
                     source: code,
@@ -178,10 +178,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                     }
                   },
                   async () => {
-                    const mapFilename = `${file}.map`
-                    const hasSourceMap = Boolean(bundle[mapFilename])
-                    const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                      generateMap: hasSourceMap,
+                    // const mapFilename = `${file}.map`
+                    // const hasSourceMap = Boolean(bundle[mapFilename])
+                    const { code } = await jsHandler(rawSource, runtimeSet, {
+                      // generateMap: hasSourceMap,
                       uniAppX,
                       babelParserOptions: {
                         plugins: [
@@ -194,9 +194,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                     onUpdate(file, rawSource, code)
                     debug('js handle: %s', file)
                     // noCachedCount++
-                    if (hasSourceMap && map) {
-                      ; (bundle[mapFilename] as OutputAsset).source = map.toString()
-                    }
+                    // if (hasSourceMap && map) {
+                    //   ; (bundle[mapFilename] as OutputAsset).source = map.toString()
+                    // }
                     return {
                       key: file,
                       source: code,

@@ -3,7 +3,7 @@ import type { Compiler } from 'webpack4'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
-import { ConcatSource, RawSource } from 'webpack-sources'
+import { ConcatSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -166,10 +166,10 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               async () => {
                 // @ts-ignore
                 const rawSource = originalSource.source().toString()
-                const mapFilename = `${file}.map`
-                const hasMap = Boolean(assets[mapFilename])
-                const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                  generateMap: hasMap,
+                // const mapFilename = `${file}.map`
+                // const hasMap = Boolean(assets[mapFilename])
+                const { code } = await jsHandler(rawSource, runtimeSet, {
+                  // generateMap: hasMap,
                 })
                 const source = new ConcatSource(code)
                 // @ts-ignore
@@ -177,11 +177,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 onUpdate(file, rawSource, code)
                 debug('js handle: %s', file)
 
-                if (hasMap && map) {
-                  const source = new RawSource(map.toString())
-                  // @ts-ignore
-                  compilation.updateAsset(mapFilename, source)
-                }
+                // if (hasMap && map) {
+                //   const source = new RawSource(map.toString())
+                //   // @ts-ignore
+                //   compilation.updateAsset(mapFilename, source)
+                // }
                 return {
                   key: cacheKey,
                   source,

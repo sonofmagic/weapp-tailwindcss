@@ -48,7 +48,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     twPatcher.patch()
     // NormalModule,
     const { Compilation, sources, NormalModule } = compiler.webpack
-    const { ConcatSource, RawSource } = sources
+    const { ConcatSource } = sources
     // react
     function getClassSetInLoader() {
       if (twPatcher.majorVersion !== 4) {
@@ -167,20 +167,20 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   },
                   async () => {
                     const rawSource = originalSource.source().toString()
-                    const mapFilename = `${file}.map`
-                    const hasMap = Boolean(assets[mapFilename])
-                    const { code, map } = await jsHandler(rawSource, runtimeSet, {
-                      generateMap: hasMap,
+                    // const mapFilename = `${file}.map`
+                    // const hasMap = Boolean(assets[mapFilename])
+                    const { code } = await jsHandler(rawSource, runtimeSet, {
+                      // generateMap: hasMap,
                     })
                     const source = new ConcatSource(code)
                     compilation.updateAsset(file, source)
                     onUpdate(file, rawSource, code)
                     debug('js handle: %s', file)
 
-                    if (hasMap && map) {
-                      const source = new RawSource(map.toString())
-                      compilation.updateAsset(mapFilename, source)
-                    }
+                    // if (hasMap && map) {
+                    //   const source = new RawSource(map.toString())
+                    //   compilation.updateAsset(mapFilename, source)
+                    // }
                     return {
                       key: cacheKey,
                       source,
