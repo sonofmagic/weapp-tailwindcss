@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "taro-app-vite",
   "description": "",
-  "appid": "touristappid",
+  "appid": "wxb3d842a4a7e3440d",
   "setting": {
     "urlCheck": true,
     "es6": false,
@@ -14,7 +14,8 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.5.3",
