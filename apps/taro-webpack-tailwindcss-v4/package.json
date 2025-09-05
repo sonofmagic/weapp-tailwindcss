@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.3",
+    "@babel/runtime": "^7.28.4",
     "@tarojs/components": "4.1.6",
     "@tarojs/helper": "4.1.6",
     "@tarojs/plugin-framework-react": "4.1.6",
@@ -67,10 +67,10 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.3",
+    "@babel/core": "^7.28.4",
     "@babel/preset-react": "^7.27.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
-    "@tailwindcss/postcss": "^4.1.12",
+    "@tailwindcss/postcss": "^4.1.13",
     "@tarojs/cli": "4.1.6",
     "@tarojs/taro-loader": "4.1.6",
     "@tarojs/webpack5-runner": "4.1.6",

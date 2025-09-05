@@ -11,10 +11,11 @@ catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.17
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.1.12
-    '@tailwindcss/vite': ^4.1.12
-    tailwindcss: ^4.1.12
-    tailwindcss4: npm:tailwindcss@^4.1.12
+    '@tailwindcss/postcss': ^4.1.13
+    '@tailwindcss/vite': ^4.1.13
+    tailwindcss: ^4.1.13
+    tailwindcss4: npm:tailwindcss@^4.1.13
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - '@tarojs/binding'

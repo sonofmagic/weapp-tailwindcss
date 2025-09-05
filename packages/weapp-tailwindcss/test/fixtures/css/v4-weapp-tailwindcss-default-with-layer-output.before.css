@@ -24,14 +24,12 @@
   }
   .before\:content-\[\\\'\+\\\'\] {
     &::before {
-      content: var(--tw-content);
       --tw-content: \'+\';
       content: var(--tw-content);
     }
   }
   .before\:content-\[\\\'hello\\\'\] {
     &::before {
-      content: var(--tw-content);
       --tw-content: \'hello\';
       content: var(--tw-content);
     }

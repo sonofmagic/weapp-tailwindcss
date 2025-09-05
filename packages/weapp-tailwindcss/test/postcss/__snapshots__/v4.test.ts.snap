@@ -806,14 +806,12 @@ exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
 }
 .before\\:content-\\[\\\\\\'\\+\\\\\\'\\] {
   &::before {
-    content: var(--tw-content);
     --tw-content: \\'+\\';
     content: var(--tw-content);
   }
 }
 .before\\:content-\\[\\\\\\'hello\\\\\\'\\] {
   &::before {
-    content: var(--tw-content);
     --tw-content: \\'hello\\';
     content: var(--tw-content);
   }
@@ -1038,12 +1036,10 @@ view,text,:after,:before,::backdrop {
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
 }
 .beforeccontent-_wqawq_::before {
-    content: var(--tw-content);
     --tw-content: \\'+\\';
     content: var(--tw-content);
   }
 .beforeccontent-_wqhellowq_::before {
-    content: var(--tw-content);
     --tw-content: \\'hello\\';
     content: var(--tw-content);
   }
@@ -1204,14 +1200,12 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`]
   }
   .before\\:content-\\[\\\\\\'\\+\\\\\\'\\] {
     &::before {
-      content: var(--tw-content);
       --tw-content: \\'+\\';
       content: var(--tw-content);
     }
   }
   .before\\:content-\\[\\\\\\'hello\\\\\\'\\] {
     &::before {
-      content: var(--tw-content);
       --tw-content: \\'hello\\';
       content: var(--tw-content);
     }
@@ -1437,12 +1431,10 @@ view,text,:after,:before,::backdrop {
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
   }
 .beforeccontent-_wqawq_::before {
-      content: var(--tw-content);
       --tw-content: \\'+\\';
       content: var(--tw-content);
     }
 .beforeccontent-_wqhellowq_::before {
-      content: var(--tw-content);
       --tw-content: \\'hello\\';
       content: var(--tw-content);
     }

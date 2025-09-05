@@ -7,6 +7,9 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
+  "eslint.options": {
+    "flags": ["v10_config_lookup_from_file"]
+  },
   // https://github.com/tailwindlabs/tailwindcss/discussions/5258
   "css.customData": [
     ".vscode/tailwind.json"
