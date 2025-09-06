@@ -1,5 +1,12 @@
 # weapp-tailwindcss
 
+## 4.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`7a33c9a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7a33c9afc8dfe1c32c76d0598e30753970a57146)]:
+  - @weapp-tailwindcss/postcss@1.1.1
+
 ## 4.2.7
 
 ### Patch Changes
