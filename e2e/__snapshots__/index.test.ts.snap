@@ -650,7 +650,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'mpx-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 ::before,
 ::after {
   --tw-content: '';
@@ -4106,7 +4106,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'taro-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 ::-webkit-backdrop {
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
@@ -5631,7 +5631,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 view,
 text,
 :before,
@@ -11648,7 +11648,7 @@ solid #000;padding:0
 `;
 
 exports[`e2e > 'uni-app-webpack-tailwindcss-v4' > css 1`] = `
-"/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 :host,
 page {
   --spacing: 8rpx;
