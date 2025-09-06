@@ -93,6 +93,33 @@ describe('issues', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('https://github.com/sonofmagic/weapp-tailwindcss/issues/695', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/695'))
+    expect(code.css).toMatchSnapshot()
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code.css, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/calc-keyword
+  it('https://github.com/sonofmagic/weapp-tailwindcss/issues/695 taro rpx case', async () => {
+    const code = `.rounded-full {
+  border-radius: calc(infinity * 1rpx);
+}
+`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
   it('space-x-number', async () => {
     const code = await generateCss(path.resolve(__dirname, './fixtures/issues/space-x-number'), [autoprefixer({
       add: true,

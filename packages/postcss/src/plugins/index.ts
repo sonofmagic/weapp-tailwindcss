@@ -1,5 +1,6 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
+// import calc from 'postcss-calc'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { createContext } from './ctx'
@@ -17,6 +18,7 @@ export function getPlugins(options: IStyleHandlerOptions) {
   const plugins: AcceptedPlugin[] = [
     ...(options.postcssOptions?.plugins ?? []),
     pre(options),
+    // calc({ }),
     postcssPresetEnv(options.cssPresetEnv),
   ]
   if (options.rem2rpx) {

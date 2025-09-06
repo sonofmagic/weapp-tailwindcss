@@ -689,6 +689,133 @@ view,text,:after,:before,::backdrop {
 }"
 `;
 
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 1`] = `
+"*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.rounded-full {
+  border-radius: calc(infinity * 1px);
+}
+.rounded-s-full {
+  border-start-start-radius: calc(infinity * 1px);
+  border-end-start-radius: calc(infinity * 1px);
+}
+.rounded-ss-full {
+  border-start-start-radius: calc(infinity * 1px);
+}
+.rounded-e-full {
+  border-start-end-radius: calc(infinity * 1px);
+  border-end-end-radius: calc(infinity * 1px);
+}
+.rounded-se-full {
+  border-start-end-radius: calc(infinity * 1px);
+}
+.rounded-ee-full {
+  border-end-end-radius: calc(infinity * 1px);
+}
+.rounded-es-full {
+  border-end-start-radius: calc(infinity * 1px);
+}
+.rounded-t-full {
+  border-top-left-radius: calc(infinity * 1px);
+  border-top-right-radius: calc(infinity * 1px);
+}
+.rounded-l-full {
+  border-top-left-radius: calc(infinity * 1px);
+  border-bottom-left-radius: calc(infinity * 1px);
+}
+.rounded-tl-full {
+  border-top-left-radius: calc(infinity * 1px);
+}
+.rounded-r-full {
+  border-top-right-radius: calc(infinity * 1px);
+  border-bottom-right-radius: calc(infinity * 1px);
+}
+.rounded-tr-full {
+  border-top-right-radius: calc(infinity * 1px);
+}
+.rounded-b-full {
+  border-bottom-right-radius: calc(infinity * 1px);
+  border-bottom-left-radius: calc(infinity * 1px);
+}
+.rounded-br-full {
+  border-bottom-right-radius: calc(infinity * 1px);
+}
+.rounded-bl-full {
+  border-bottom-left-radius: calc(infinity * 1px);
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 2`] = `
+"view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.rounded-s-full {
+  border-top-left-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+}
+.rounded-ss-full {
+  border-top-left-radius: 9999px;
+}
+.rounded-e-full {
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+}
+.rounded-se-full {
+  border-top-right-radius: 9999px;
+}
+.rounded-ee-full {
+  border-bottom-right-radius: 9999px;
+}
+.rounded-es-full {
+  border-bottom-left-radius: 9999px;
+}
+.rounded-t-full {
+  border-top-left-radius: 9999px;
+  border-top-right-radius: 9999px;
+}
+.rounded-l-full {
+  border-top-left-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+}
+.rounded-tl-full {
+  border-top-left-radius: 9999px;
+}
+.rounded-r-full {
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+}
+.rounded-tr-full {
+  border-top-right-radius: 9999px;
+}
+.rounded-b-full {
+  border-bottom-right-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+}
+.rounded-br-full {
+  border-bottom-right-radius: 9999px;
+}
+.rounded-bl-full {
+  border-bottom-left-radius: 9999px;
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 taro rpx case 1`] = `
+".rounded-full {
+  border-radius: 9999px;
+}
+"
+`;
+
 exports[`issues > space-x-number 1`] = `
 "@layer properties;
 :root, :host {

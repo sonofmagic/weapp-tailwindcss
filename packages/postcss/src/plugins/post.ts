@@ -47,8 +47,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       }
       /**
        * @description 移除 calc(infinity * 1px)
+       * https://github.com/tailwindlabs/tailwindcss/blob/77b3cb5318840925d8a75a11cc90552a93507ddc/packages/tailwindcss/src/utilities.ts#L2128
        */
-      else if (/calc\(\s*infinity\s*\*\s*1px/.test(decl.value)) {
+      else if (/calc\(\s*infinity\s*\*\s*1r?px/.test(decl.value)) {
         decl.value = '9999px'
       }
     }
