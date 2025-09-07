@@ -812,6 +812,11 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 2`]
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 taro rpx case 1`] = `
 ".rounded-full {
   border-radius: 9999px;
+  border-radius: 9999px;
+  border-radius: 9999px;
+  border-radius: 9999px;
+  border-radius: 9999px;
+  border-radius: 9999px;
 }
 "
 `;

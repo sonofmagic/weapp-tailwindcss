@@ -108,6 +108,11 @@ describe('issues', () => {
   it('https://github.com/sonofmagic/weapp-tailwindcss/issues/695 taro rpx case', async () => {
     const code = `.rounded-full {
   border-radius: calc(infinity * 1rpx);
+  border-radius: calc(infinity * 5px);
+  border-radius: calc(infinity * 3.14rpx);
+  border-radius: calc(infinity * .6px);
+  border-radius: calc(infinity * 100.px);
+  border-radius: calc(infinity * 100.1px);
 }
 `
 
