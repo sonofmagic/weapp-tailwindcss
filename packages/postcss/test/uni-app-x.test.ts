@@ -19,13 +19,13 @@ describe('uni-app-x', () => {
     expect(css).toMatchSnapshot('css')
   })
 
-  it('app.uvue?vue&type=style&index=0&lang.css', async () => {
+  it('app.uvue.css', async () => {
     const styleHandler = createStyleHandler({
       uniAppX: true,
     })
     const { css } = await styleHandler(
       await fs.readFile(
-        path.resolve(__dirname, './fixtures/css/App.uvue?vue&type=style&index=0&lang.css'),
+        path.resolve(__dirname, './fixtures/css/App.uvue.css'),
         'utf8',
       ),
       {

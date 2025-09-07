@@ -82,7 +82,7 @@ describe('uni-app-x', () => {
     expect(code).toMatchSnapshot()
 
     const { css } = await styleHandler(
-      await getCase('uni-app-x/App.uvue?vue&type=style&index=0&lang.css'),
+      await getCase('uni-app-x/App.uvue.css'),
       {
         uniAppX: true,
       },

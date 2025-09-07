@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`uni-app-x > app.uvue?vue&type=style&index=0&lang.css > css 1`] = `
+exports[`uni-app-x > app.uvue.css > css 1`] = `
 ".mt-_32d43rpx_ {
     margin-top: 32.43rpx
 }
