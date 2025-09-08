@@ -196,7 +196,7 @@
     "loader-utils": "2.0.4",
     "local-pkg": "^1.1.2",
     "lru-cache": "10.4.3",
-    "magic-string": "0.30.18",
+    "magic-string": "0.30.19",
     "semver": "~7.7.2",
     "tailwindcss-patch": "~7.1.4",
     "vue": "^3.5.21",
