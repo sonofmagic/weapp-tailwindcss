@@ -17,6 +17,7 @@ export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
         add: false,
       },
     },
+    // 支付宝小程序不支持，所以默认关闭
     cssRemoveProperty: true,
     // cssRemoveAtSupports: true,
     // cssRemoveAtMedia: true,

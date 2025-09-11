@@ -426,7 +426,7 @@ export interface UserDefinedOptions {
    * @version `^4.1.2`
    * @group 3.一般配置
    * @default `true`
-   * @description 是否删除 `@property` 选择器节点，默认为 `false`, 原因在于，现在部分小程序的 `@property` 是生效的，即使不生效生成后也不会有什么影响。
+   * @description 是否删除 `@property` 选择器节点，默认为 `true`, 原因在于，现在微信小程序的 `@property` 是生效的，但是支付宝小程序遇到这个会直接挂掉
    */
   cssRemoveProperty?: boolean
   /**

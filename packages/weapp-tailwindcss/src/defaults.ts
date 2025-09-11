@@ -114,8 +114,9 @@ export function getDefaultOptions(): UserDefinedOptions {
     },
     postcssOptions: {},
     // 开发版本微信小程序工具和小米13手机上 @property 是有效果的
+    // 支付宝小程序会直接挂掉
     // https://developer.mozilla.org/en-US/docs/Web/CSS/@property
-    cssRemoveProperty: false,
+    cssRemoveProperty: true,
     cssRemoveHoverPseudoClass: true,
     ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva', 'tv'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
