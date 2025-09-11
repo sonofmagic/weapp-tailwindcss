@@ -18,7 +18,7 @@ function styleHandler(rawSource: string, options: IStyleHandlerOptions) {
     .async()
 }
 
-export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
+export function createStyleHandler(options?: Partial<IStyleHandlerOptions>) {
   const cachedOptions = defuOverrideArray<
     IStyleHandlerOptions,
     Partial<IStyleHandlerOptions>[]

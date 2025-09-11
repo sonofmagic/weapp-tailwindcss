@@ -11,7 +11,7 @@ view,text,:after,:before,::backdrop {
   padding: 0;
 }
 .w-1 {
-  width: 0.25rem;
+  width: 8rpx;
 }"
 `;
 
@@ -30,6 +30,8 @@ view,text,:after,:before,::backdrop {
   width: calc(var(--spacing) * 1);
 }"
 `;
+
+exports[`calc > px 转化 + root 变量运算去除 1`] = `"page{--ch:2}; .a{ width: 2rpx;}"`;
 
 exports[`calc > rpx + root 变量运算 1`] = `"page{--ch:2}; .a{ width: 2rpx; width: calc(var(--ch)*1rpx);}"`;
 

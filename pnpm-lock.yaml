@@ -992,8 +992,8 @@ importers:
         specifier: ^4.1.6
         version: 4.1.6(postcss@8.5.6)
       postcss-rem-to-responsive-pixel:
-        specifier: ~6.0.2
-        version: 6.0.2
+        specifier: ~6.1.0
+        version: 6.1.0
       postcss-selector-parser:
         specifier: ~7.1.0
         version: 7.1.0
@@ -13947,8 +13947,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.32
 
-  postcss-rem-to-responsive-pixel@6.0.2:
-    resolution: {integrity: sha512-Qseol4vPNC+WJIzwU7AWXGc7pjcw+7c2YRh6bwpwz/4akmtL9Zu/mZ87yeaiGuqQaBgQy45266uxIBQY+BMUfQ==}
+  postcss-rem-to-responsive-pixel@6.1.0:
+    resolution: {integrity: sha512-rttz/ThJWKpmhS134NcQCZQBE4CUJIAJAMx9DB0YudIeTH4fNp/hhhjxo14RnGF/OGdBpX9PQw1bnPZ56H0E1Q==}
     engines: {node: '>=16.6.0'}
 
   postcss-replace-overflow-wrap@4.0.0:
@@ -33499,7 +33499,7 @@ snapshots:
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-rem-to-responsive-pixel@6.0.2: {}
+  postcss-rem-to-responsive-pixel@6.1.0: {}
 
   postcss-replace-overflow-wrap@4.0.0(postcss@8.5.6):
     dependencies:

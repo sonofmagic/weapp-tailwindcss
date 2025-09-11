@@ -1,5 +1,6 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { PxtransformOptions } from 'postcss-pxtransform'
+import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { IStyleHandlerOptions } from '../types'
 import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -61,13 +62,19 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
   if (options.rem2rpx) {
     plugins.push(
       postcssRem2rpx(
-        typeof options.rem2rpx === 'object'
-          ? options.rem2rpx
-          : {
-              rootValue: 32,
-              propList: ['*'],
-              transformUnit: 'rpx',
-            },
+        defuOverrideArray<Rem2rpxOptions, Rem2rpxOptions[]>(
+          typeof options.rem2rpx === 'object'
+            ? options.rem2rpx
+            : {
+                rootValue: 32,
+                propList: ['*'],
+                transformUnit: 'rpx',
+              },
+          {
+            processorStage: 'OnceExit',
+          },
+        ),
+
       ),
     )
   }

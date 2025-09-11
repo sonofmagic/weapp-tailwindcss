@@ -128,4 +128,16 @@ describe('calc', () => {
     const { css } = await styleHandler(code)
     expect(css).toMatchSnapshot()
   })
+
+  it('px 转化 + root 变量运算去除', async () => {
+    const code = `:root{--ch:2}; .a{ width: calc(var(--ch) * 1px);}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: true,
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
 })
