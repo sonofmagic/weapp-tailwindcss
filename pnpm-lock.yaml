@@ -667,8 +667,8 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0(tailwindcss@4.1.13)
       '@iconify-json/lucide':
-        specifier: ^1.2.66
-        version: 1.2.66
+        specifier: ^1.2.67
+        version: 1.2.67
       '@iconify-json/mdi':
         specifier: ^1.2.3
         version: 1.2.3
@@ -982,9 +982,15 @@ importers:
       postcss:
         specifier: ~8.5.6
         version: 8.5.6
+      postcss-calc:
+        specifier: ^10.1.1
+        version: 10.1.1(postcss@8.5.6)
       postcss-preset-env:
         specifier: ^10.3.1
         version: 10.3.1(postcss@8.5.6)
+      postcss-pxtransform:
+        specifier: ^4.1.6
+        version: 4.1.6(postcss@8.5.6)
       postcss-rem-to-responsive-pixel:
         specifier: ~6.0.2
         version: 6.0.2
@@ -995,9 +1001,6 @@ importers:
       '@weapp-tailwindcss/mangle':
         specifier: workspace:*
         version: link:../mangle
-      postcss-calc:
-        specifier: ^10.1.1
-        version: 10.1.1(postcss@8.5.6)
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
@@ -3213,8 +3216,8 @@ packages:
   '@iconify-json/logos@1.2.9':
     resolution: {integrity: sha512-G6VCdFnwZcrT6Eveq3m43oJfLw/CX8plwFcE+2jgv3fiGB64pTmnU7Yd1MNZ/eA+/Re2iEDhuCfSNOWTHwwK8w==}
 
-  '@iconify-json/lucide@1.2.66':
-    resolution: {integrity: sha512-TrhmfThWY2FHJIckjz7g34gUx3+cmja61DcHNdmu0rVDBQHIjPMYO1O8mMjoDSqIXEllz9wDZxCqT3lFuI+f/A==}
+  '@iconify-json/lucide@1.2.67':
+    resolution: {integrity: sha512-YVLDYbFbX0cPxl6p9l55igm+UljlOCj0CQKwN3BoEbD3KOmDMtQumw2TGuWAE9JWURL5U6v/1oFXyKgEZDGSkQ==}
 
   '@iconify-json/mdi@1.2.3':
     resolution: {integrity: sha512-O3cLwbDOK7NNDf2ihaQOH5F9JglnulNDFV7WprU2dSoZu3h3cWH//h74uQAB87brHmvFVxIOkuBX2sZSzYhScg==}
@@ -3630,6 +3633,9 @@ packages:
 
   '@napi-rs/wasm-runtime@1.0.3':
     resolution: {integrity: sha512-rZxtMsLwjdXkMUGC3WwsPwLNVqVqnTJT6MNIB6e+5fhMcSCPP0AOsNWuMQ5mdCq6HNjs/ZeWAEchpqeprqBD2Q==}
+
+  '@napi-rs/wasm-runtime@1.0.4':
+    resolution: {integrity: sha512-+ZEtJPp8EF8h4kN6rLQECRor00H7jtDgBVtttIUoxuDkXLiQMaSBqju3LV/IEsMvqVG5pviUvR4jYhIA1xNm8w==}
 
   '@next/eslint-plugin-next@15.5.2':
     resolution: {integrity: sha512-lkLrRVxcftuOsJNhWatf1P2hNVfh98k/omQHrCEPPriUypR6RcS13IvLdIrEvkm9AH2Nu2YpR5vLqBuy6twH3Q==}
@@ -20536,7 +20542,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/lucide@1.2.66':
+  '@iconify-json/lucide@1.2.67':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -21087,6 +21093,13 @@ snapshots:
   '@napi-rs/triples@1.2.0': {}
 
   '@napi-rs/wasm-runtime@1.0.3':
+    dependencies:
+      '@emnapi/core': 1.5.0
+      '@emnapi/runtime': 1.5.0
+      '@tybys/wasm-util': 0.10.0
+    optional: true
+
+  '@napi-rs/wasm-runtime@1.0.4':
     dependencies:
       '@emnapi/core': 1.5.0
       '@emnapi/runtime': 1.5.0
@@ -22476,7 +22489,7 @@ snapshots:
 
   '@rolldown/binding-wasm32-wasi@1.0.0-beta.37':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.3
+      '@napi-rs/wasm-runtime': 1.0.4
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.36':

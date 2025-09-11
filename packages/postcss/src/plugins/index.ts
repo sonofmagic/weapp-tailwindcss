@@ -1,7 +1,10 @@
 import type { AcceptedPlugin } from 'postcss'
+import type { PxtransformOptions } from 'postcss-pxtransform'
 import type { IStyleHandlerOptions } from '../types'
-// import calc from 'postcss-calc'
+import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import postcssCalc from 'postcss-calc'
 import postcssPresetEnv from 'postcss-preset-env'
+import postcssPxtransform from 'postcss-pxtransform'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
 import { createContext } from './ctx'
 import { postcssWeappTailwindcssPostPlugin as post } from './post'
@@ -12,15 +15,14 @@ import { postcssWeappTailwindcssPrePlugin as pre } from './pre'
  * @param options - 样式处理器选项，包含 PostCSS 插件和其他配置。
  * @returns AcceptedPlugin[] - 生成的 PostCSS 插件数组。
  */
-export function getPlugins(options: IStyleHandlerOptions) {
+export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
   const ctx = createContext()
   options.ctx = ctx
-  const plugins: AcceptedPlugin[] = [
+  const plugins = [
     ...(options.postcssOptions?.plugins ?? []),
     pre(options),
-    // calc({ }),
     postcssPresetEnv(options.cssPresetEnv),
-  ]
+  ].filter(x => Boolean(x)) as AcceptedPlugin[]
   if (options.rem2rpx) {
     plugins.push(
       postcssRem2rpx(
@@ -34,6 +36,43 @@ export function getPlugins(options: IStyleHandlerOptions) {
       ),
     )
   }
+  if (options.cssCalc) {
+    plugins.push(
+      postcssCalc(
+        options.cssCalc,
+      ),
+    )
+  }
+
+  if (options.px2rpx) {
+    plugins.push(
+      postcssPxtransform(
+        defuOverrideArray<PxtransformOptions, PxtransformOptions[]>(
+          typeof options.px2rpx === 'object'
+            ? options.px2rpx
+            : {},
+          {
+            platform: 'weapp',
+            unitPrecision: 5,
+            propList: ['*'],
+            selectorBlackList: [],
+            replace: true,
+            mediaQuery: false,
+            minPixelValue: 0,
+            designWidth: 750,
+            deviceRatio: {
+              375: 2,
+              640: 2.34 / 2,
+              750: 1,
+              828: 1.81 / 2,
+            },
+          },
+        ),
+
+      ),
+    )
+  }
+
   plugins.push(post(options))
   return plugins
 }

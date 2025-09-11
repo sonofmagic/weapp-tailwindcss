@@ -51,13 +51,14 @@
     "@weapp-core/escape": "~4.0.1",
     "@weapp-tailwindcss/shared": "workspace:*",
     "postcss": "~8.5.6",
+    "postcss-calc": "^10.1.1",
     "postcss-preset-env": "^10.3.1",
+    "postcss-pxtransform": "^4.1.6",
     "postcss-rem-to-responsive-pixel": "~6.0.2",
     "postcss-selector-parser": "~7.1.0"
   },
   "devDependencies": {
     "@weapp-tailwindcss/mangle": "workspace:*",
-    "postcss-calc": "^10.1.1",
     "postcss-value-parser": "^4.2.0"
   }
 }

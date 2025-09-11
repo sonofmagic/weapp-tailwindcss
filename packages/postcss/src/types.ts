@@ -1,8 +1,10 @@
 import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
 import type { Rule } from 'postcss'
+import type { PostCssCalcOptions } from 'postcss-calc'
 import type { Result } from 'postcss-load-config'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
-import type { UserDefinedOptions as rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
+import type { PxtransformOptions as Px2rpxOptions } from 'postcss-pxtransform'
+import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
 
@@ -36,6 +38,7 @@ export type RequiredStyleHandlerOptions = {
   | 'injectAdditionalCssVarScope'
   | 'cssSelectorReplacement'
   | 'rem2rpx'
+  | 'px2rpx'
 >
 
 export interface InternalCssSelectorReplacerOptions {
@@ -51,6 +54,7 @@ export type IStyleHandlerOptions = {
   cssRemoveProperty?: boolean
   cssRemoveHoverPseudoClass?: boolean
   cssPresetEnv?: PresetEnvOptions
+  cssCalc?: PostCssCalcOptions
   atRules?: {
     property?: boolean
     // A 新增 wxss 支持 @supports 反馈详情
@@ -72,7 +76,8 @@ export interface UserDefinedPostcssOptions {
     root?: string | string[] | false
     universal?: string | string[] | false
   }
-  rem2rpx?: boolean | rem2rpxOptions
+  rem2rpx?: boolean | Rem2rpxOptions
+  px2rpx?: boolean | Px2rpxOptions
   postcssOptions?: LoadedPostcssOptions
   cssRemoveHoverPseudoClass?: boolean
   cssRemoveProperty?: boolean
