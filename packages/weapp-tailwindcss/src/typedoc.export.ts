@@ -1,8 +1,15 @@
 /* eslint-disable style/no-trailing-spaces */
 import type { ParserOptions } from '@babel/parser'
 import type { IMangleOptions } from '@weapp-tailwindcss/mangle'
-import type { CssPreflightOptions, CustomRuleCallback, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
-import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
+import type { 
+  CssCalcOptions, 
+  CssPreflightOptions, 
+  CustomRuleCallback, 
+  LoadedPostcssOptions, 
+  PresetEnvOptions, 
+  Px2rpxOptions, 
+  Rem2rpxOptions,
+} from '@weapp-tailwindcss/postcss'
 import type { ILengthUnitsPatchOptions, PatchOptions, TailwindcssPatcherOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from './cache'
 import type { AppType, IArbitraryValues, ICustomAttributes } from './types'
@@ -140,6 +147,12 @@ const customAttributes = {
    * @description 全局`dom`选择器，只有在这个选择器作用范围内的`dom`会被注入 `cssPreflight` 的变量和默认样式。只对所有的 `view`,`text` 和伪元素生效，想要对所有的元素生效，可切换为 `'all'`,此时需要自行处理和客户端默认样式的冲突
    */
   cssPreflightRange?: 'all'
+  /**
+   * @group 0.重要配置
+   * @version `^4.3.0`
+   * @description css calc 配置项， 用于直接计算 css 变量的结果值，通常用于手机兼容性处理，这个是为了解决 css 中的 calc 函数的表现，在不同手机机型上不一致的问题
+   */
+  cssCalc?: boolean | CssCalcOptions
 
   /**
    * @group 0.重要配置
@@ -186,7 +199,13 @@ const customAttributes = {
    * }
    * ```
    */
-  rem2rpx?: boolean | UserDefinedOptions
+  rem2rpx?: boolean | Rem2rpxOptions
+  /**
+   * @group 0.重要配置
+   * @version `^4.3.0`
+   * @description rem 转 rpx 配置，默认为 `undefined` 不开启，可传入 `true` 启用默认配置项 1px = 1rpx
+   */
+  px2rpx?: boolean | Px2rpxOptions
 
   /**
    * @version `^4.0.0`

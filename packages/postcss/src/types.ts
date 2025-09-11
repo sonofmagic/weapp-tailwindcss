@@ -1,5 +1,5 @@
 import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
-import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
+import type { PostCssCalcOptions as CssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
 import type { Rule } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
@@ -54,7 +54,7 @@ export type IStyleHandlerOptions = {
   cssRemoveProperty?: boolean
   cssRemoveHoverPseudoClass?: boolean
   cssPresetEnv?: PresetEnvOptions
-  cssCalc?: boolean | PostCssCalcOptions
+  cssCalc?: boolean | CssCalcOptions
   atRules?: {
     property?: boolean
     // A 新增 wxss 支持 @supports 反馈详情
@@ -83,4 +83,11 @@ export interface UserDefinedPostcssOptions {
   cssRemoveProperty?: boolean
   customRuleCallback?: CustomRuleCallback
   uniAppX?: boolean
+}
+
+export type {
+  CssCalcOptions,
+  PresetEnvOptions,
+  Px2rpxOptions,
+  Rem2rpxOptions,
 }

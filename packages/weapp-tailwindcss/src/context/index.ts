@@ -59,6 +59,9 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     tailwindcssPatcherOptions,
     uniAppX,
     cssEntries,
+    cssCalc,
+    px2rpx,
+
   } = ctx
 
   const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
@@ -83,6 +86,8 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
     uniAppX,
+    cssCalc,
+    px2rpx,
   })
 
   const jsHandler = createJsHandler({
