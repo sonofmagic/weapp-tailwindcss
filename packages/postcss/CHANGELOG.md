@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/postcss
 
+## 1.2.0
+
+### Minor Changes
+
+- [`ce1150c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ce1150cd87f22736e59f17e5d8a7b61a1354d4cd) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 添加 postcss calc 和 pxtransform 支持
+
+### Patch Changes
+
+- [`59bdd20`](https://github.com/sonofmagic/weapp-tailwindcss/commit/59bdd205dcfc2d30a097c63d9451d08a3cfb1e73) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 默认开启 cssRemoveProperty, 因为 `@property` 会导致支付宝小程序直接挂掉
+
 ## 1.1.1
 
 ### Patch Changes
