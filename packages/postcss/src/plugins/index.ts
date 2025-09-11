@@ -1,5 +1,4 @@
 import type { AcceptedPlugin } from 'postcss'
-import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxtransformOptions } from 'postcss-pxtransform'
 import type { IStyleHandlerOptions } from '../types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -26,21 +25,13 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
 
   plugins.push(
     postcssPresetEnv(
-      defuOverrideArray<PresetEnvOptions, PresetEnvOptions[]>(
-        {
-          features: {
-            // 在 calc 模式下，需要默认开启
-            'custom-properties': Boolean(options.cssCalc), // options.cssPresetEnv?.features?.['custom-selectors'] ??
-          },
-        },
-        options.cssPresetEnv!,
-
-      ),
+      options.cssPresetEnv!,
     ),
   )
 
   if (options.cssCalc) {
     plugins.push(
+      // 核心在 OnceExit 的时候去执行的
       postcssCalc(
         typeof options.cssCalc === 'object' ? options.cssCalc : {},
       ),

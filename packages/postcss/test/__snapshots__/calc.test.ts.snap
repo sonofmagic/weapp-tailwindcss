@@ -1,69 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`calc > case 0 1`] = `
-":root, :host {
-  --spacing: .25rem;
-}
-*,:after,:before,::backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-.w-1 {
-  width: calc(var(--spacing) * 1);
-}"
-`;
-
-exports[`calc > case 0 2`] = `
-"page,:host {
-  --spacing: .25rem;
-}
-view,text,:after,:before,::backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-.w-1 {
-  width: 0.25rem;
-  width: calc(var(--spacing)*1);
-}"
-`;
-
-exports[`calc > case 1 1`] = `
-"page,:host {
-  --spacing: .25rem;
-}
-view,text,:after,:before,::backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-.w-1 {
-  width: 0.25rem;
-  width: calc(var(--spacing)*1);
-}"
-`;
-
-exports[`calc > case 2 1`] = `
-"page,:host {
-  --spacing: .25rem;
-}
-view,text,:after,:before,::backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-.w-1 {
-  width: 0.25rem;
-  width: calc(var(--spacing)*1);
-}"
-`;
-
-exports[`calc > case 3 1`] = `
+exports[`calc > cssCalc 和 rem2rpx 同时开启 1`] = `
 "page,:host {
   --spacing: 8rpx;
 }
@@ -76,5 +13,84 @@ view,text,:after,:before,::backdrop {
 .w-1 {
   width: 0.25rem;
   width: calc(var(--spacing)*1);
+}"
+`;
+
+exports[`calc > custom-properties 设置 preserve 为 true 1`] = `
+"page,:host {
+  --spacing: .25rem;
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-1 {
+  width: calc(.25rem * 1);
+  width: calc(var(--spacing) * 1);
+}"
+`;
+
+exports[`calc > 传入 cssCalc 配置 1`] = `
+"page,:host {
+  --spacing: .25rem;
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-1 {
+  width: 0.25rem;
+  width: calc(var(--spacing)*1);
+}"
+`;
+
+exports[`calc > 同时确保 custom-properties 也开启 1`] = `
+"page,:host {
+  --spacing: .25rem;
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-1 {
+  width: 0.25rem;
+  width: calc(var(--spacing)*1);
+}"
+`;
+
+exports[`calc > 设置 cssCalc true 1`] = `
+"page,:host {
+  --spacing: .25rem;
+}
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-1 {
+  width: 0.25rem;
+  width: calc(var(--spacing)*1);
+}"
+`;
+
+exports[`calc > 默认的情况 1`] = `
+":root, :host {
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-1 {
+  width: calc(var(--spacing) * 1);
 }"
 `;

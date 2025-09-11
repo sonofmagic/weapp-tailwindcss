@@ -24,10 +24,11 @@ export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
     Partial<IStyleHandlerOptions>[]
   >(
     options as IStyleHandlerOptions,
-    getDefaultOptions(),
+    getDefaultOptions(options),
   )
 
   cachedOptions.cssInjectPreflight = createInjectPreflight(cachedOptions.cssPreflight)
+
   return (rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     return styleHandler(
       rawSource,

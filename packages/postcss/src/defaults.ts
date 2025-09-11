@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions } from './types'
 
-export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
+export function getDefaultOptions(options: Partial<IStyleHandlerOptions>): Partial<IStyleHandlerOptions> {
   return {
     // https://github.com/postcss/postcss-calc
     cssPresetEnv: {
@@ -12,7 +12,9 @@ export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
         'oklab-function': true,
         'color-mix': true,
         // 在 calc 下，这个需要开启
-        'custom-properties': false,
+        'custom-properties': options.cssCalc
+          ? true
+          : options.cssPresetEnv?.features?.['custom-properties'] ?? false,
       },
       autoprefixer: {
         add: false,
