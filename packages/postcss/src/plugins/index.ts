@@ -1,4 +1,5 @@
 import type { AcceptedPlugin } from 'postcss'
+import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxtransformOptions } from 'postcss-pxtransform'
 import type { IStyleHandlerOptions } from '../types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -21,25 +22,27 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
   const plugins = [
     ...(options.postcssOptions?.plugins ?? []),
     pre(options),
-    postcssPresetEnv(options.cssPresetEnv),
   ].filter(x => Boolean(x)) as AcceptedPlugin[]
-  if (options.rem2rpx) {
-    plugins.push(
-      postcssRem2rpx(
-        typeof options.rem2rpx === 'object'
-          ? options.rem2rpx
-          : {
-              rootValue: 32,
-              propList: ['*'],
-              transformUnit: 'rpx',
-            },
+
+  plugins.push(
+    postcssPresetEnv(
+      defuOverrideArray<PresetEnvOptions, PresetEnvOptions[]>(
+        {
+          features: {
+            // 在 calc 模式下，需要默认开启
+            'custom-properties': Boolean(options.cssCalc), // options.cssPresetEnv?.features?.['custom-selectors'] ??
+          },
+        },
+        options.cssPresetEnv!,
+
       ),
-    )
-  }
+    ),
+  )
+
   if (options.cssCalc) {
     plugins.push(
       postcssCalc(
-        options.cssCalc,
+        typeof options.cssCalc === 'object' ? options.cssCalc : {},
       ),
     )
   }
@@ -69,6 +72,20 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
           },
         ),
 
+      ),
+    )
+  }
+
+  if (options.rem2rpx) {
+    plugins.push(
+      postcssRem2rpx(
+        typeof options.rem2rpx === 'object'
+          ? options.rem2rpx
+          : {
+              rootValue: 32,
+              propList: ['*'],
+              transformUnit: 'rpx',
+            },
       ),
     )
   }

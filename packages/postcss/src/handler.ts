@@ -26,6 +26,7 @@ export function createStyleHandler(options: Partial<IStyleHandlerOptions>) {
     options as IStyleHandlerOptions,
     getDefaultOptions(),
   )
+
   cachedOptions.cssInjectPreflight = createInjectPreflight(cachedOptions.cssPreflight)
   return (rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     return styleHandler(

@@ -4,5 +4,6 @@ export default icebreaker({
   ignoreFiles: [
     'packages/weapp-tailwindcss/test/fixtures/css/**',
     'packages/weapp-tailwindcss/*.css',
+    'packages/postcss/**/*.wxss',
   ],
 })

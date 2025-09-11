@@ -54,7 +54,7 @@ export type IStyleHandlerOptions = {
   cssRemoveProperty?: boolean
   cssRemoveHoverPseudoClass?: boolean
   cssPresetEnv?: PresetEnvOptions
-  cssCalc?: PostCssCalcOptions
+  cssCalc?: boolean | PostCssCalcOptions
   atRules?: {
     property?: boolean
     // A 新增 wxss 支持 @supports 反馈详情

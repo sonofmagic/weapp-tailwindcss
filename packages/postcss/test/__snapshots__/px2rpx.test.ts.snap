@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`px2rpx > case 0 1`] = `
+"*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-\\[10\\.21px\\] {
+  width: 10.21px;
+}"
+`;
+
+exports[`px2rpx > case 0 2`] = `
+"view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-_10d21px_ {
+  width: 10.21rpx;
+}"
+`;
+
+exports[`px2rpx > case 1 1`] = `
+"view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-_10d21px_ {
+  width: 20.42rpx;
+}"
+`;

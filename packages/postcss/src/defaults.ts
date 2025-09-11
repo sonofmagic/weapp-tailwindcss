@@ -11,6 +11,7 @@ export function getDefaultOptions(): Partial<IStyleHandlerOptions> {
         },
         'oklab-function': true,
         'color-mix': true,
+        // 在 calc 下，这个需要开启
         'custom-properties': false,
       },
       autoprefixer: {
