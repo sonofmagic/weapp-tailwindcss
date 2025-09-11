@@ -91,7 +91,7 @@
     "semver": "^7.7.2",
     "tailwind-merge": "^3.3.1",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0",
-    "tailwind-variants": "^2.1.0"
+    "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
     "weapp-tailwindcss": "workspace:*"
