@@ -13,7 +13,7 @@ export function getDefaultOptions(options: Partial<IStyleHandlerOptions>): Parti
         'color-mix': true,
         // 在 calc 下，这个需要开启
         'custom-properties': options.cssCalc
-          ? true
+          ? { preserve: false }
           : options.cssPresetEnv?.features?.['custom-properties'] ?? false,
       },
       autoprefixer: {

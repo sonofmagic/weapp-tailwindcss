@@ -74,4 +74,58 @@ describe('calc', () => {
     const { css } = await styleHandler(code.css)
     expect(css).toMatchSnapshot()
   })
+
+  it('rpx 运算', async () => {
+    const code = `.a{ width: calc(100rpx + 100rpx); height: calc(100 * 100rpx);width: calc(68rpx * 4);height: calc(4 * 17rpx);width: calc(68 * 4rpx);height: calc(4rpx * 17);}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: true,
+      // cssPresetEnv: {
+      //   features: {
+      //     'custom-properties': {
+      //       preserve: true,
+      //     },
+      //   },
+      // },
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
+
+  it('rpx + root 变量运算', async () => {
+    const code = `:root{--ch:2}; .a{ width: calc(var(--ch) * 1rpx);}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: true,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': {
+            preserve: true,
+          },
+        },
+      },
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
+
+  it('rpx + root 变量运算去除', async () => {
+    const code = `:root{--ch:2}; .a{ width: calc(var(--ch) * 1rpx);}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: true,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': {
+            preserve: false,
+          },
+        },
+      },
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
 })

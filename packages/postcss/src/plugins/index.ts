@@ -1,8 +1,8 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { PxtransformOptions } from 'postcss-pxtransform'
 import type { IStyleHandlerOptions } from '../types'
+import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
-import postcssCalc from 'postcss-calc'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssPxtransform from 'postcss-pxtransform'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
@@ -28,15 +28,6 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
       options.cssPresetEnv!,
     ),
   )
-
-  if (options.cssCalc) {
-    plugins.push(
-      // 核心在 OnceExit 的时候去执行的
-      postcssCalc(
-        typeof options.cssCalc === 'object' ? options.cssCalc : {},
-      ),
-    )
-  }
 
   if (options.px2rpx) {
     plugins.push(
@@ -77,6 +68,15 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
               propList: ['*'],
               transformUnit: 'rpx',
             },
+      ),
+    )
+  }
+
+  if (options.cssCalc) {
+    plugins.push(
+      // 核心在 OnceExit 的时候去执行的
+      postcssCalc(
+        typeof options.cssCalc === 'object' ? options.cssCalc : {},
       ),
     )
   }

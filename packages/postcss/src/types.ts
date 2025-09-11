@@ -1,6 +1,6 @@
 import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
+import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
 import type { Rule } from 'postcss'
-import type { PostCssCalcOptions } from 'postcss-calc'
 import type { Result } from 'postcss-load-config'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxtransformOptions as Px2rpxOptions } from 'postcss-pxtransform'

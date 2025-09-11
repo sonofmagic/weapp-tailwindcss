@@ -12,7 +12,6 @@ view,text,:after,:before,::backdrop {
 }
 .w-1 {
   width: 0.25rem;
-  width: calc(var(--spacing)*1);
 }"
 `;
 
@@ -32,6 +31,12 @@ view,text,:after,:before,::backdrop {
 }"
 `;
 
+exports[`calc > rpx + root 变量运算 1`] = `"page{--ch:2}; .a{ width: 2rpx; width: calc(var(--ch)*1rpx);}"`;
+
+exports[`calc > rpx + root 变量运算去除 1`] = `"page{--ch:2}; .a{ width: 2rpx;}"`;
+
+exports[`calc > rpx 运算 1`] = `".a{ width: 200rpx; height: 10000rpx;width: 272rpx;height: 68rpx;width: 272rpx;height: 68rpx;}"`;
+
 exports[`calc > 传入 cssCalc 配置 1`] = `
 "page,:host {
   --spacing: .25rem;
@@ -44,7 +49,6 @@ view,text,:after,:before,::backdrop {
 }
 .w-1 {
   width: 0.25rem;
-  width: calc(var(--spacing)*1);
 }"
 `;
 
@@ -60,7 +64,6 @@ view,text,:after,:before,::backdrop {
 }
 .w-1 {
   width: 0.25rem;
-  width: calc(var(--spacing)*1);
 }"
 `;
 
@@ -76,7 +79,6 @@ view,text,:after,:before,::backdrop {
 }
 .w-1 {
   width: 0.25rem;
-  width: calc(var(--spacing)*1);
 }"
 `;
 

@@ -976,15 +976,15 @@ importers:
       '@weapp-core/escape':
         specifier: ~4.0.1
         version: 4.0.1
+      '@weapp-tailwindcss/postcss-calc':
+        specifier: ^1.0.0
+        version: 1.0.0(postcss@8.5.6)
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
       postcss:
         specifier: ~8.5.6
         version: 8.5.6
-      postcss-calc:
-        specifier: ^10.1.1
-        version: 10.1.1(postcss@8.5.6)
       postcss-preset-env:
         specifier: ^10.3.1
         version: 10.3.1(postcss@8.5.6)
@@ -1001,6 +1001,9 @@ importers:
       '@weapp-tailwindcss/mangle':
         specifier: workspace:*
         version: link:../mangle
+      postcss-calc:
+        specifier: ^10.1.1
+        version: 10.1.1(postcss@8.5.6)
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
@@ -6754,6 +6757,12 @@ packages:
 
   '@weapp-core/shared@2.0.1':
     resolution: {integrity: sha512-L/YUXp/lU0LlB5kLlYIsvfDtCWlajiFmB1AZvDLcQeDnlCiuFZkBG1Lql9TmtWaU2mhn5cJRnmEjRO6l5Tyo+A==}
+
+  '@weapp-tailwindcss/postcss-calc@1.0.0':
+    resolution: {integrity: sha512-dPqVfhVsj48ii0AGhkIDh9ox1KusYx4UBGe82TNxUJYc3uIJXziOZt2RWw0VeYB29+GmHOb5WwJX2dVLNoab6A==}
+    engines: {node: ^18.12 || ^20.9 || >=22.0}
+    peerDependencies:
+      postcss: ^8.4.38
 
   '@weapp-vite/volar@0.0.1':
     resolution: {integrity: sha512-seECs+/INLROmK5CJPKwpCmGK+xHZQLgp+LtOtwIfqqX4rPOVH5nzT1YdioB6TwR7VhTKcOZUCO/ItlvmB1pYg==}
@@ -23117,7 +23126,7 @@ snapshots:
 
   '@rspack/binding-wasm32-wasi@1.5.3':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.3
+      '@napi-rs/wasm-runtime': 1.0.4
     optional: true
 
   '@rspack/binding-win32-arm64-msvc@1.5.3':
@@ -25047,6 +25056,12 @@ snapshots:
   '@weapp-core/shared@2.0.1':
     dependencies:
       object-hash: 3.0.0
+
+  '@weapp-tailwindcss/postcss-calc@1.0.0(postcss@8.5.6)':
+    dependencies:
+      postcss: 8.5.6
+      postcss-selector-parser: 7.1.0
+      postcss-value-parser: 4.2.0
 
   '@weapp-vite/volar@0.0.1': {}
 
