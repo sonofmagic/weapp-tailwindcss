@@ -63,10 +63,10 @@
     "postcss-rem-to-responsive-pixel": "^6.0.2",
     "postcss-rpx-transform": "^1.0.1",
     "tailwindcss": "3",
-    "tailwindcss-patch": "^7.1.4",
+    "tailwindcss-patch": "^7.1.5",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "weapp-ide-cli": "^3.1.0",
-    "weapp-tailwindcss": "^4.2.8",
+    "weapp-tailwindcss": "^4.2.9",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }
