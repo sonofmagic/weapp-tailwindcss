@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/init
 
+## 1.0.6-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [[`6e9cbc4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6e9cbc46cc954a02cb45542fbebf10d313fc16ea)]:
+  - @weapp-tailwindcss/logger@1.1.0-alpha.0
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/logger
 
+## 1.1.0-alpha.0
+
+### Minor Changes
+
+- [`6e9cbc4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6e9cbc46cc954a02cb45542fbebf10d313fc16ea) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 添加 picocolors 作为依赖
+
 ## 1.0.2
 
 ### Patch Changes
