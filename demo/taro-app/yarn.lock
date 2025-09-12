@@ -5091,21 +5091,21 @@
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/init@1.0.6-alpha.0":
-  version "1.0.6-alpha.0"
-  resolved "https://registry.npmjs.org/@weapp-tailwindcss/init/-/init-1.0.6-alpha.0.tgz#3796f67e9d985f622b975ff75dcd10ae594632cd"
-  integrity sha512-9ZSitIQe0pbmfZfigTQ5eAzP73gc2OX0TLVEvxFCQDYgOz3QPDS3/v6P4YWe39+CGkqKWJRbbOluhUSRpRmhEQ==
+"@weapp-tailwindcss/init@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/@weapp-tailwindcss/init/-/init-1.0.6.tgz#4aa15347dcd52c7f944b3d149d756c7d8f4c8e98"
+  integrity sha512-5IddG7MMJyS024CG8p88HeHFiOMU5r26UDhpkqn23sIu+JQb18u8zxie8ir8mY6fjJ6GJBW6w1xDT1kafTQZRg==
   dependencies:
-    "@weapp-tailwindcss/logger" "1.1.0-alpha.0"
+    "@weapp-tailwindcss/logger" "1.1.0"
     "@weapp-tailwindcss/shared" "1.0.3"
     fs-extra "^11.3.1"
     npm-registry-fetch "^18.0.2"
     pathe "^2.0.3"
 
-"@weapp-tailwindcss/logger@1.1.0-alpha.0":
-  version "1.1.0-alpha.0"
-  resolved "https://registry.npmjs.org/@weapp-tailwindcss/logger/-/logger-1.1.0-alpha.0.tgz#73356e07ee872e9eeb4233ad8677b834fd86ed14"
-  integrity sha512-JIDFLtIOjfBKqogmzRBY6ZlAyPFFWwfENgrgWYuCr3W0Y0+r10XCFPqP8yjKl8mk5TnSibnc1rPlYX4epiOIQg==
+"@weapp-tailwindcss/logger@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/@weapp-tailwindcss/logger/-/logger-1.1.0.tgz#4e7d2bc40952dde9010637e6b45dce1a215c27ae"
+  integrity sha512-zBkMZG19rIa2slcGIplJFzwiFSvdt+3YIjaCMeU8ePNHPDbVb9f/s4ZMHRXfIOL3OI+1bb01j6dYxef5VdWbkg==
   dependencies:
     consola "^3.4.2"
     picocolors "^1.1.1"
@@ -5140,10 +5140,10 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@1.2.1-alpha.0":
-  version "1.2.1-alpha.0"
-  resolved "https://registry.npmjs.org/@weapp-tailwindcss/postcss/-/postcss-1.2.1-alpha.0.tgz#92887c9fde12299cf380712f6430f8f4cb067d58"
-  integrity sha512-98ZUbr5O72SatY//AKXWr1+V7j2k3sciytIV1zDQzttfEIpxpsYxLCqmC9HKNcRZtHWK0WE1ejfxm/MvTvX0yg==
+"@weapp-tailwindcss/postcss@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/@weapp-tailwindcss/postcss/-/postcss-1.2.1.tgz#76e6842c7f6cb33d0913e0017e4ab97bc5385ae4"
+  integrity sha512-xb/IIkXUyuMdhf0uyAbmPX/Vuxv3gn2UyjwU1wAnyriZR2xVbAfv1pKbUH7DrwlsiOsRJ4LQNKGlfQUVsqLotQ==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
@@ -18739,10 +18739,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.3.0-alpha.0:
-  version "4.3.0-alpha.0"
-  resolved "https://registry.npmjs.org/weapp-tailwindcss/-/weapp-tailwindcss-4.3.0-alpha.0.tgz#f91a944a4902471556baa18ef09a324c23beb912"
-  integrity sha512-9Bh72IypZalc04BsIoiNzSq0HbjvvsSladiMnCRGGaWSUTQMC4e0KcGyWrjJZmSOUHgjiXHUB1kJ39w5JCnsIw==
+weapp-tailwindcss@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmjs.org/weapp-tailwindcss/-/weapp-tailwindcss-4.3.0.tgz#045bbf01bf6773a4f2a94dfaa623e12fcf8c651d"
+  integrity sha512-2iaRUgITS55h8aTd0wsCAhPkrBLnGiZiuJw11jVrWDDtYV4ZjwFoFzE8TB2UcS4t9n0Uj/uSEe70B7TEF1udmg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.4"
@@ -18751,10 +18751,10 @@ weapp-tailwindcss@^4.3.0-alpha.0:
     "@vue/compiler-dom" "^3.5.21"
     "@weapp-core/escape" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
-    "@weapp-tailwindcss/init" "1.0.6-alpha.0"
-    "@weapp-tailwindcss/logger" "1.1.0-alpha.0"
+    "@weapp-tailwindcss/init" "1.0.6"
+    "@weapp-tailwindcss/logger" "1.1.0"
     "@weapp-tailwindcss/mangle" "1.0.5"
-    "@weapp-tailwindcss/postcss" "1.2.1-alpha.0"
+    "@weapp-tailwindcss/postcss" "1.2.1"
     "@weapp-tailwindcss/shared" "1.0.3"
     debug "~4.4.1"
     htmlparser2 "10.0.0"

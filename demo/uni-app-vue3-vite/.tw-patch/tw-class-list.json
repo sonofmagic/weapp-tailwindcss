@@ -206,6 +206,7 @@
   "text-[56.5rpx]",
   "text-[77rpx]",
   "text-[color:var(--my-var)]",
+  "text-[length:calc(2*9.43px)]",
   "text-[length:var(--my-var-length)]",
   "text-[red]",
   "text-[var(--my-var)]",
