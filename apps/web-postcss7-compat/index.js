@@ -21,7 +21,7 @@ async function main() {
     mode: 'jit',
     purge: {
       content: [{
-        raw: 'w-[99px] h-[121px]',
+        raw: 'w-[99px] h-[121px] !p-[1.1px]',
       }],
     },
     corePlugins: {
