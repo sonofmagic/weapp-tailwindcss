@@ -25,6 +25,8 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
   ].filter(x => Boolean(x)) as AcceptedPlugin[]
 
   plugins.push(
+    // https://preset-env.cssdb.org/
+    // https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
     postcssPresetEnv(
       options.cssPresetEnv!,
     ),

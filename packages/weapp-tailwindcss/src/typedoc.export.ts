@@ -211,6 +211,9 @@ const customAttributes = {
    * @version `^4.0.0`
    * @group 0.重要配置
    * @description postcss-preset-env 的入参数
+   * 参考文档
+   * https://preset-env.cssdb.org/
+   * https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
    */
   cssPresetEnv?: PresetEnvOptions
 
