@@ -8,6 +8,13 @@ const { createContext } = require('weapp-tailwindcss/core')
 const { transformWxss } = createContext(
   {
     rem2rpx: true,
+    tailwindcssPatcherOptions: {
+      patch: {
+        resolve: {
+          paths: [path.resolve(__dirname, './node_modules')],
+        },
+      },
+    },
   },
 )
 
