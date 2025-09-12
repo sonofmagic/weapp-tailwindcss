@@ -451,11 +451,6 @@ export interface UserDefinedOptions {
    * @description 是否删除 `@property` 选择器节点，默认为 `true`, 原因在于，现在微信小程序的 `@property` 是生效的，但是支付宝小程序遇到这个会直接挂掉
    */
   cssRemoveProperty?: boolean
-  /**
-   * @group 3.一般配置
-   * @description 用于自定义处理 css 的回调函数，可根据 Postcss walk 方法自由定制处理方案的 callback 方法
-   */
-  customRuleCallback?: CustomRuleCallback
 
   /**
    * @group 3.一般配置
@@ -464,7 +459,7 @@ export interface UserDefinedOptions {
   tailwindcssPatcherOptions?: TailwindcssPatcherOptions
   /**
    * @group 3.一般配置
-   * @description 控制命令行日志的输出，默认为 `info`，可以设置成 'silent' 来禁止输出
+   * @description 控制命令行日志的输出，默认为 `info`，可以设置成 `silent` 来禁止所有的命令行输出
    */
   logLevel?: 'info' | 'warn' | 'error' | 'silent'
 }
@@ -497,6 +492,12 @@ export interface UserDefinedOptions {
    * :::
    */
   mangle?: boolean | IMangleOptions
+
+  /**
+   * @group 4.即将废弃配置
+   * @description 用于自定义处理 css 的回调函数，可根据 Postcss walk 方法自由定制处理方案的 callback 方法
+   */
+  customRuleCallback?: CustomRuleCallback
 }
 
 export type {
