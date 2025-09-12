@@ -748,23 +748,24 @@
   resolved "https://registry.npmmirror.com/@weapp-core/regex/-/regex-1.0.1.tgz#3b74f4b8fff86d70a31b1e2e89f20b5119978d54"
   integrity sha512-gRIHHAb1MoTmM1lzfaKldwNXgsScaVu9/bnZDKT0A1CgUkaHAouxvZta3yQgev91V3ZAHQ+tdwA8WGhpkstzUw==
 
-"@weapp-tailwindcss/init@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/init/-/init-1.0.5.tgz#cdca0688455dc9f172c0d18b4134a251cd9cc24e"
-  integrity sha512-WAoRiQCLW8aE3hN7TimryLcgfxAFFDen92iuB6Dr2Rh+5sh+tarDKMfeCYKN6mKTPqlYT44gwVtkde5nIcYURQ==
+"@weapp-tailwindcss/init@1.0.6-alpha.0":
+  version "1.0.6-alpha.0"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/init/-/init-1.0.6-alpha.0.tgz#3796f67e9d985f622b975ff75dcd10ae594632cd"
+  integrity sha512-9ZSitIQe0pbmfZfigTQ5eAzP73gc2OX0TLVEvxFCQDYgOz3QPDS3/v6P4YWe39+CGkqKWJRbbOluhUSRpRmhEQ==
   dependencies:
-    "@weapp-tailwindcss/logger" "1.0.2"
+    "@weapp-tailwindcss/logger" "1.1.0-alpha.0"
     "@weapp-tailwindcss/shared" "1.0.3"
     fs-extra "^11.3.1"
     npm-registry-fetch "^18.0.2"
     pathe "^2.0.3"
 
-"@weapp-tailwindcss/logger@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/logger/-/logger-1.0.2.tgz#687e6488ea8ff5436f0ad46b61dd9f24ffe9a832"
-  integrity sha512-1G2AW8vshJH/Qh3iGNlwkJPH1K7Zyf7DznxEsTU89CuQWRvJ20l4838Mu1E5oDTTKQlBsl6XnaA1FNHfH2oecw==
+"@weapp-tailwindcss/logger@1.1.0-alpha.0":
+  version "1.1.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/logger/-/logger-1.1.0-alpha.0.tgz#73356e07ee872e9eeb4233ad8677b834fd86ed14"
+  integrity sha512-JIDFLtIOjfBKqogmzRBY6ZlAyPFFWwfENgrgWYuCr3W0Y0+r10XCFPqP8yjKl8mk5TnSibnc1rPlYX4epiOIQg==
   dependencies:
     consola "^3.4.2"
+    picocolors "^1.1.1"
 
 "@weapp-tailwindcss/mangle@1.0.5":
   version "1.0.5"
@@ -796,10 +797,10 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.2.0.tgz#9a9215406e54abbda0135eb9a1677d92e8eb1505"
-  integrity sha512-GXni+NqJhPYaNAd5MMtwivEGUOLx19Zi4wrkmne//0Swi0aEIn2jyNcUZmglnvp5WF0lBFjx2DYY+cwX2w2ZJA==
+"@weapp-tailwindcss/postcss@1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.2.1-alpha.0.tgz#92887c9fde12299cf380712f6430f8f4cb067d58"
+  integrity sha512-98ZUbr5O72SatY//AKXWr1+V7j2k3sciytIV1zDQzttfEIpxpsYxLCqmC9HKNcRZtHWK0WE1ejfxm/MvTvX0yg==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
@@ -2863,10 +2864,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.2.9:
-  version "4.2.9"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.2.9.tgz#778662c8a3f17819eb03fd7b4070c34f10574630"
-  integrity sha512-VQomHIqxOXJM1JOQ3yaM++PnGy8va7rYyHNgt4COEaLTzfE4yUH3b2q78AZZvyqSsRdeI68egV3y9LwBq5cDvA==
+weapp-tailwindcss@^4.3.0-alpha.0:
+  version "4.3.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.3.0-alpha.0.tgz#f91a944a4902471556baa18ef09a324c23beb912"
+  integrity sha512-9Bh72IypZalc04BsIoiNzSq0HbjvvsSladiMnCRGGaWSUTQMC4e0KcGyWrjJZmSOUHgjiXHUB1kJ39w5JCnsIw==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.4"
@@ -2875,10 +2876,10 @@ weapp-tailwindcss@^4.2.9:
     "@vue/compiler-dom" "^3.5.21"
     "@weapp-core/escape" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
-    "@weapp-tailwindcss/init" "1.0.5"
-    "@weapp-tailwindcss/logger" "1.0.2"
+    "@weapp-tailwindcss/init" "1.0.6-alpha.0"
+    "@weapp-tailwindcss/logger" "1.1.0-alpha.0"
     "@weapp-tailwindcss/mangle" "1.0.5"
-    "@weapp-tailwindcss/postcss" "1.2.0"
+    "@weapp-tailwindcss/postcss" "1.2.1-alpha.0"
     "@weapp-tailwindcss/shared" "1.0.3"
     debug "~4.4.1"
     htmlparser2 "10.0.0"
