@@ -6,6 +6,7 @@ import type {
   ItemOrItemArray,
   UserDefinedOptions,
 } from '@/types'
+import { logger, pc } from '@weapp-tailwindcss/logger'
 import { useMangleStore } from '@weapp-tailwindcss/mangle'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { initializeCache } from '@/cache'
@@ -14,6 +15,14 @@ import { createJsHandler } from '@/js'
 import { createTailwindcssPatcher } from '@/tailwindcss'
 import { defuOverrideArray, isMap } from '@/utils'
 import { createTemplateHandler } from '@/wxml'
+
+// https://www.npmjs.com/package/consola
+const loggerLevelMap: Record<'info' | 'warn' | 'error' | 'silent', number> = {
+  error: 0,
+  warn: 1,
+  info: 3,
+  silent: -999,
+}
 
 /**
  * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
@@ -61,8 +70,32 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cssEntries,
     cssCalc,
     px2rpx,
-
+    logLevel,
   } = ctx
+
+  logger.level = loggerLevelMap[logLevel] ?? loggerLevelMap.info
+
+  const twPatcher = createTailwindcssPatcher(
+    {
+      basedir: tailwindcssBasedir,
+      cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
+      supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
+      tailwindcss: defuOverrideArray<TailwindcssUserConfig, TailwindcssUserConfig[]>(
+        tailwindcss,
+        {
+          v4: {
+            base: tailwindcssBasedir,
+            cssEntries,
+          },
+        },
+      ),
+      tailwindcssPatcherOptions,
+    },
+  )
+
+  logger.success(`当前使用 ${pc.cyanBright('Tailwind CSS')} 版本为: ${pc.underline(pc.bold(pc.green(twPatcher.packageInfo.version)))}`)
+
+  const cssCalcOptions = cssCalc ?? twPatcher.majorVersion === 4
 
   const customAttributesEntities: ICustomAttributesEntities = isMap(customAttributes)
     ? [...(customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries()]
@@ -86,7 +119,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
     uniAppX,
-    cssCalc,
+    cssCalc: cssCalcOptions,
     px2rpx,
   })
 
@@ -115,23 +148,6 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   ctx.jsHandler = jsHandler
   ctx.templateHandler = templateHandler
 
-  const twPatcher = createTailwindcssPatcher(
-    {
-      basedir: tailwindcssBasedir,
-      cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
-      supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
-      tailwindcss: defuOverrideArray<TailwindcssUserConfig, TailwindcssUserConfig[]>(
-        tailwindcss,
-        {
-          v4: {
-            base: tailwindcssBasedir,
-            cssEntries,
-          },
-        },
-      ),
-      tailwindcssPatcherOptions,
-    },
-  )
   ctx.setMangleRuntimeSet = setMangleRuntimeSet
   ctx.cache = initializeCache(cache)
   ctx.twPatcher = twPatcher

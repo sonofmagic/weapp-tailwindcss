@@ -930,6 +930,9 @@ importers:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
 
   packages/mangle:
     dependencies:
@@ -965,7 +968,7 @@ importers:
         version: tailwind-merge@2.6.0
       tailwind-variants:
         specifier: ^3.1.1
-        version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.13)
+        version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@3.4.17)
     devDependencies:
       weapp-tailwindcss:
         specifier: workspace:*
@@ -21292,7 +21295,7 @@ snapshots:
 
   '@oxc-resolver/binding-wasm32-wasi@11.7.1':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.3
+      '@napi-rs/wasm-runtime': 1.0.4
     optional: true
 
   '@oxc-resolver/binding-win32-arm64-msvc@11.7.1':
@@ -35839,9 +35842,9 @@ snapshots:
 
   tailwind-merge@3.3.1: {}
 
-  tailwind-variants@3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.13):
+  tailwind-variants@3.1.1(tailwind-merge@3.3.1)(tailwindcss@3.4.17):
     dependencies:
-      tailwindcss: 4.1.13
+      tailwindcss: 3.4.17
     optionalDependencies:
       tailwind-merge: 3.3.1
 

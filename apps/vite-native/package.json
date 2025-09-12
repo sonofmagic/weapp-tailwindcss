@@ -17,7 +17,7 @@
   "keywords": [],
   "main": "index.js",
   "scripts": {
-    "dev": "weapp-vite dev -o",
+    "dev": "weapp-vite dev",
     "dev:0": "weapp-vite dev -m x",
     "dev:1": "weapp-vite dev --mode xx",
     "dev:open": "weapp-vite dev -o",

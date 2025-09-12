@@ -459,6 +459,11 @@ export interface UserDefinedOptions {
    * @description 自定义 patcher 参数
    */
   tailwindcssPatcherOptions?: TailwindcssPatcherOptions
+  /**
+   * @group 3.一般配置
+   * @description 控制命令行日志的输出，默认为 `info`，可以设置成 'silent' 来禁止输出
+   */
+  logLevel?: 'info' | 'warn' | 'error' | 'silent'
 }
 
 // 4.即将废弃配置

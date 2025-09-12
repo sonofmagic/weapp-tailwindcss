@@ -38,6 +38,7 @@
   },
   "publishConfig": {},
   "dependencies": {
-    "consola": "^3.4.2"
+    "consola": "^3.4.2",
+    "picocolors": "^1.1.1"
   }
 }

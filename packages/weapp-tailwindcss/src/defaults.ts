@@ -127,5 +127,6 @@ export function getDefaultOptions(): UserDefinedOptions {
         },
       },
     },
+    logLevel: 'info',
   }
 }
