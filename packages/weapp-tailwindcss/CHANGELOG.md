@@ -1,5 +1,18 @@
 # weapp-tailwindcss
 
+## 4.3.0-alpha.0
+
+### Minor Changes
+
+- [`a56705e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a56705e28b9d8a9ad00d28a4b23450000d7920ac) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 在 tailwindcss@4 下默认启用计算模式
+
+### Patch Changes
+
+- Updated dependencies [[`0d76388`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0d763881fad85d20a926db89bc29ec9113cfc0b3), [`6e9cbc4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6e9cbc46cc954a02cb45542fbebf10d313fc16ea)]:
+  - @weapp-tailwindcss/postcss@1.2.1-alpha.0
+  - @weapp-tailwindcss/logger@1.1.0-alpha.0
+  - @weapp-tailwindcss/init@1.0.6-alpha.0
+
 ## 4.2.9
 
 ### Patch Changes

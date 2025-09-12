@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.2.1-alpha.0
+
+### Patch Changes
+
+- [`0d76388`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0d763881fad85d20a926db89bc29ec9113cfc0b3) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat(postcss): deps remove @csstools/postcss-is-pseudo-class
+
 ## 1.2.0
 
 ### Minor Changes

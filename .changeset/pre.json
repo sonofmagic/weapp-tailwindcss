@@ -32,5 +32,9 @@
     "@weapp-tailwindcss/typography": "0.2.5",
     "@weapp-tailwindcss/website": "1.0.3"
   },
-  "changesets": []
+  "changesets": [
+    "brave-toys-go",
+    "fuzzy-dragons-carry",
+    "upset-carpets-wait"
+  ]
 }
