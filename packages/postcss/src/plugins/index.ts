@@ -95,5 +95,4 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
 export { postcssWeappTailwindcssPostPlugin } from './post'
 export { postcssWeappTailwindcssPrePlugin } from './pre'
 
-export { default as postcssIsPseudoClass } from '@csstools/postcss-is-pseudo-class'
 export { default as postcssRem2rpx } from 'postcss-rem-to-responsive-pixel'

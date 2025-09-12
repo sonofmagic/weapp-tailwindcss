@@ -1,6 +1,4 @@
 import { getCompilerContext } from '@/context'
-// @ts-ignore
-// import isPseudoClass from '@csstools/postcss-is-pseudo-class'
 import { getCss } from '../helpers/getTwCss'
 
 describe('important', () => {

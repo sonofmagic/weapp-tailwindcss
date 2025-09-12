@@ -49,6 +49,7 @@
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
     "build:pkg": "turbo run build --filter=./packages/*",
+    "build:analyze": "tsx scripts/check-build-size.ts",
     "test": "vitest run",
     "test:bench": "vitest bench",
     "test:plugins": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/*",

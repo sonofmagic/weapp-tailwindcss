@@ -128,12 +128,7 @@ exports[`get options > default options 1`] = `
     "~": "t",
   },
   "htmlMatcher": [Function],
-  "ignoreCallExpressionIdentifiers": [
-    "twMerge",
-    "twJoin",
-    "cva",
-    "tv",
-  ],
+  "ignoreCallExpressionIdentifiers": [],
   "ignoreTaggedTemplateExpressionIdentifiers": [
     "weappTwIgnore",
   ],

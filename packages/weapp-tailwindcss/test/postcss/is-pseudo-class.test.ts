@@ -1,5 +1,4 @@
 /* eslint-disable style/no-tabs */
-// @ts-ignore
 import isPseudoClass from '@csstools/postcss-is-pseudo-class'
 import postcss from 'postcss'
 
