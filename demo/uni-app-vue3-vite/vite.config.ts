@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin as vwt } from 'weapp-tailwindcss/vite';
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
 const bench = require('../bench')('uni-app-vite-vue3');
 
 
@@ -33,7 +33,8 @@ export default defineConfig(async () => {
   return {
     plugins: [
       uni(),
-      vwt({
+      UnifiedViteWeappTailwindcssPlugin({
+        px2rpx: true,
         wxsMatcher() {
           return false;
         },

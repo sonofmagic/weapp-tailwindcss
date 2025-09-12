@@ -62,6 +62,7 @@
     <view class="text-[#bada55]">text-[#bada55]</view>
     <!-- <view class="text-[var(--my-var)]">text-[var(--my-var)]</view> -->
     <div class="text-[length:var(--my-var-length)]">text-[length:var(--my-var-length)]</div>
+    <div class="text-[length:calc(2*9.43px)]">text-[length:calc(2*9.43px)]</div>
     <div class="text-[color:var(--my-var)]">text-[color:var(--my-var)]</div>
     <button class="!bg-green-500 !sr-onlytext-white" :class="{
       'opacity-50': disabled,
