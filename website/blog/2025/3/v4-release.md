@@ -1,3 +1,7 @@
+---
+title: 4.0.0 🚀
+---
+
 <!-- truncate -->
 
 ![4.0 release](https://cdn.jsdelivr.net/gh/sonofmagic/static/mbpv4-release.png)

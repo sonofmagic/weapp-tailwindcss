@@ -240,6 +240,11 @@ const config: Config = {
             position: 'left',
             label: '配置项',
           },
+          {
+            href: 'blog',
+            position: 'left',
+            label: '博客',
+          },
           // {
           //   to: 'docs/api/', // 'api' is the 'out' directory
           //   label: 'Types',
@@ -255,11 +260,7 @@ const config: Config = {
             position: 'left',
             label: '🔥Weapp-vite',
           },
-          {
-            href: 'https://icebreaker.top/',
-            position: 'left',
-            label: '博客',
-          },
+
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
             href: 'https://github.com/sonofmagic/weapp-tailwindcss',
@@ -285,6 +286,10 @@ const config: Config = {
               {
                 label: '常见问题',
                 to: '/docs/issues/',
+              },
+              {
+                label: '博客',
+                href: 'blog',
               },
             ],
           },
@@ -320,18 +325,15 @@ const config: Config = {
                 label: 'weapp-vite',
                 href: 'https://vite.icebreaker.top',
               },
-              {
-                label: '博客',
-                href: 'https://icebreaker.top',
-              },
-              {
-                label: 'IceStack',
-                href: 'https://ui.icebreaker.top/zh-CN',
-              },
-              {
-                label: 'weapp-pandacss',
-                href: 'https://github.com/sonofmagic/weapp-pandacss',
-              },
+
+              // {
+              //   label: 'IceStack',
+              //   href: 'https://ui.icebreaker.top/zh-CN',
+              // },
+              // {
+              //   label: 'weapp-pandacss',
+              //   href: 'https://github.com/sonofmagic/weapp-pandacss',
+              // },
             ],
           },
         ],
