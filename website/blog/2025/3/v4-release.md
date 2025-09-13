@@ -1,5 +1,7 @@
 ---
 title: 4.0.0 🚀
+date: 2025-03-01
+authors: sonofmagic
 ---
 
 <!-- truncate -->
