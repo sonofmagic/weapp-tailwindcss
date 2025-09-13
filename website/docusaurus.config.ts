@@ -241,7 +241,7 @@ const config: Config = {
             label: '配置项',
           },
           {
-            href: 'blog',
+            href: '/blog',
             position: 'left',
             label: '博客',
           },
@@ -289,7 +289,7 @@ const config: Config = {
               },
               {
                 label: '博客',
-                href: 'blog',
+                href: '/blog',
               },
             ],
           },
