@@ -1,6 +1,7 @@
 import { View, Text } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
 import './index.css'
+import { Button } from '@nutui/nutui-react-taro'
 
 export default function Index() {
   useLoad(() => {
@@ -16,6 +17,7 @@ export default function Index() {
         11
       </View>
       <View className='h-14 bg-gradient-to-r from-cyan-500 to-blue-500'></View>
+      <Button>Share</Button>
     </>
 
   )

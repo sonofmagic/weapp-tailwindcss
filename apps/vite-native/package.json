@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.9.0",
-    "@iconify-json/lucide": "^1.2.67",
+    "@iconify-json/lucide": "^1.2.68",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.13",
@@ -41,6 +41,6 @@
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^5.1.5"
+    "weapp-vite": "^5.1.6"
   }
 }

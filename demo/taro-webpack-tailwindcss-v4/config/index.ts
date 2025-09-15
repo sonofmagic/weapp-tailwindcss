@@ -2,20 +2,31 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
-import {UnifiedWebpackPluginV5} from 'weapp-tailwindcss/webpack'
+import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'webpack5'> = {
     projectName: 'taro-webpack-tailwindcss-v4',
     date: '2025-2-23',
-    designWidth: 750,
+    designWidth(input) {
+      // 配置 NutUI 375 尺寸
+      // @ts-ignore
+      if (input?.file?.replace(/\\+/g, '/').indexOf('@nutui') > -1) {
+        return 375
+      }
+      // 全局使用 Taro 默认的 750 尺寸
+      return 750
+    },
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,
       375: 2,
       828: 1.81 / 2
     },
+    plugins: [
+      // 'weapp-tailwindcss/postcss-html-transform'
+    ],
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {
@@ -27,10 +38,16 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       }
     },
     framework: 'react',
-    compiler: 'webpack5',
+    compiler: {
+      type: 'webpack5',
+      prebundle: {
+        exclude: ['@nutui/nutui-react-taro', '@nutui/icons-react-taro'],
+      },
+    },
     cache: {
       enable: false // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
     },
+
     mini: {
       postcss: {
         pxtransform: {

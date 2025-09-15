@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@nutui/nutui-react-taro > should  1`] = `
+".a{
+background:linear-gradient(90deg,var(--nutui-color-primary-stop-1,#ff475d) 0,var(--nutui-color-primary-stop-2,#ff0f23) 100%);
+    }"
+`;
