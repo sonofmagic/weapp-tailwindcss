@@ -4802,10 +4802,10 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.2.1.tgz#76e6842c7f6cb33d0913e0017e4ab97bc5385ae4"
-  integrity sha512-xb/IIkXUyuMdhf0uyAbmPX/Vuxv3gn2UyjwU1wAnyriZR2xVbAfv1pKbUH7DrwlsiOsRJ4LQNKGlfQUVsqLotQ==
+"@weapp-tailwindcss/postcss@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.2.2.tgz#5ee8b857957a89d8d33caf61b6dca2d02ed4aba7"
+  integrity sha512-R0cOsdwU24OMagYK8s2kkrBOhHW/J1lGi2yHPQr17WH0/8MaQZdE5SBmky34D0WjQFjLtdB1FTOE9LBUgccryQ==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
@@ -7194,7 +7194,7 @@ debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.4.1, debug@~4.4.1:
+debug@^4.4.1:
   version "4.4.1"
   resolved "https://registry.npmmirror.com/debug/-/debug-4.4.1.tgz#e5a8bc6cbc4c6cd3e64308b0693a3d4fa550189b"
   integrity sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==
@@ -7207,6 +7207,13 @@ debug@~3.1.0:
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
   dependencies:
     ms "2.0.0"
+
+debug@~4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.4.3.tgz#c6ae432d9bd9662582fce08709b038c58e9e3d6a"
+  integrity sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==
+  dependencies:
+    ms "^2.1.3"
 
 decimal.js@^10.4.3:
   version "10.4.3"
@@ -15755,10 +15762,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.3.0.tgz#045bbf01bf6773a4f2a94dfaa623e12fcf8c651d"
-  integrity sha512-2iaRUgITS55h8aTd0wsCAhPkrBLnGiZiuJw11jVrWDDtYV4ZjwFoFzE8TB2UcS4t9n0Uj/uSEe70B7TEF1udmg==
+weapp-tailwindcss@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.3.1.tgz#1c94c0d004623e77fe59cb6947682e641ac27884"
+  integrity sha512-P6V8OxJOsGCjJIGIksBUEK+5BVSKIJ0Tlc96v1fsCjxBUegtMqLUWQx969FUitzOr7aeXV4Ql/LrtUhWPAQwSA==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.4"
@@ -15770,9 +15777,9 @@ weapp-tailwindcss@^4.3.0:
     "@weapp-tailwindcss/init" "1.0.6"
     "@weapp-tailwindcss/logger" "1.1.0"
     "@weapp-tailwindcss/mangle" "1.0.5"
-    "@weapp-tailwindcss/postcss" "1.2.1"
+    "@weapp-tailwindcss/postcss" "1.2.2"
     "@weapp-tailwindcss/shared" "1.0.3"
-    debug "~4.4.1"
+    debug "~4.4.3"
     htmlparser2 "10.0.0"
     loader-utils "2.0.4"
     local-pkg "^1.1.2"
