@@ -1,0 +1,47 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`custom-properties > should case 0 1`] = `
+":root {
+--color-blue-dark: rgb(0, 61, 184);
+--color-blue-light: rgb(0, 217, 255);
+--color-pink: rgb(255, 192, 211);
+--text-color: var(--color-pink);
+}
+
+.element {
+/* custom props */
+--border-color: var(--color-blue-light);
+/* props */
+border: 1px solid rgb(0, 217, 255);
+border: 1px solid var(--border-color);
+color: rgb(255, 192, 211);
+color: var(--text-color);
+}
+
+.element--dark {
+--border-color: var(--color-blue-dark);
+}"
+`;
+
+exports[`custom-properties > should case 1 1`] = `
+":root {
+--color-blue-dark: rgb(0, 61, 184);
+--color-blue-light: rgb(0, 217, 255);
+--color-pink: rgb(255, 192, 211);
+--text-color: var(--color-pink);
+}
+
+.element {
+/* custom props */
+--border-color: var(--color-blue-light);
+/* props */
+border: 1px solid rgb(0, 217, 255);
+border: 1px solid var(--border-color);
+color: rgb(255, 192, 211);
+color: var(--text-color);
+}
+
+.element--dark {
+--border-color: var(--color-blue-dark);
+}"
+`;
