@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 1.2.2
+
+### Patch Changes
+
+- [`d9db976`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d9db9766f428147b01ba4e381549c54083f4fd5a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 在 cssCalc 计算模式下，默认不打开 custom-properties 功能
+
+  > 此功能需要添加筛选 -- 项来精确赋予
+
 ## 1.2.1
 
 ### Patch Changes
