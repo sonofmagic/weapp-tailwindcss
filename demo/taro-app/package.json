@@ -86,7 +86,7 @@
     "terser-webpack-plugin": "^5.3.14",
     "typescript": "~5.9.2",
     "weapp-ide-cli": "^3.1.0",
-    "weapp-tailwindcss": "^4.3.1",
+    "weapp-tailwindcss": "^4.3.2",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.101.3",
     "webpack-chain": "^6.5.1"

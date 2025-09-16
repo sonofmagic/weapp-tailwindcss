@@ -2,6 +2,7 @@ import path from 'node:path'
 import process from 'node:process'
 import boxen from 'boxen'
 import { trimStart } from 'es-toolkit'
+import pc from 'picocolors'
 import { gte } from 'semver'
 import { run } from './run'
 
@@ -53,7 +54,21 @@ const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
         }
       }
       const args = getArgs(pkgMap)
-      console.log(boxen(`${path.relative(demoPath, pkgInfo!.rootPath!)}\n${args}`))
+      console.log(
+        boxen(
+          `${pc.bold(
+            pc.greenBright(
+              path.relative(
+                demoPath,
+                pkgInfo!.rootPath!,
+              ),
+            ),
+          )}\n\n${args}`,
+          {
+            padding: 1,
+          },
+        ),
+      )
       return `yarn add -D ${args} --ignore-engines`
     },
   )

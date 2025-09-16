@@ -2,6 +2,7 @@ import process from 'node:process'
 import { getWorkspacePackages } from '@icebreakers/monorepo'
 import fs from 'fs-extra'
 import path from 'pathe'
+import pc from 'picocolors'
 
 interface FileInfo {
   file: string
@@ -46,13 +47,16 @@ function scan({ buildDir, name }: { buildDir: string, name?: string }) {
   }
 
   const files = walk(buildDir, buildDir).sort((a, b) => b.size - a.size)
+  const total = files.reduce((acc, cur) => {
+    return acc + cur.size
+  }, 0)
+  console.log(`📦 ${name} Build artifacts size: ${pc.greenBright(formatSize(total))}`)
 
-  console.log(`📦 ${name} Build artifacts size:\n`)
-  for (const f of files) {
-    console.log(
-      `${f.file.padEnd(40)} ${formatSize(f.size).padStart(10)}`,
-    )
-  }
+  // for (const f of files) {
+  //   console.log(
+  //     `${f.file.padEnd(40)} ${formatSize(f.size).padStart(10)}`,
+  //   )
+  // }
 }
 
 async function main() {

@@ -208,6 +208,7 @@
     "npm-registry-fetch": "^18.0.2",
     "only-allow": "^1.2.1",
     "pathe": "^2.0.3",
+    "picocolors": "^1.1.1",
     "pkg-types": "^2.3.0",
     "postcss": "^8.5.6",
     "postcss-js": "^5.0.0",
