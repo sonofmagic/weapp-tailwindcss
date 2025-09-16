@@ -140,4 +140,16 @@ describe('calc', () => {
     const { css } = await styleHandler(code)
     expect(css).toMatchSnapshot()
   })
+
+  it('cssCalc 传入数组', async () => {
+    const code = `:root{--ch:2}; .a{ width: calc(var(--ch) * 1px);}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: ['--ch'],
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
 })

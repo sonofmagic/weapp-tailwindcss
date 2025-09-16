@@ -152,7 +152,7 @@ const customAttributes = {
    * @version `^4.3.0`
    * @description css calc 配置项， 用于直接计算 css 变量的结果值，通常用于手机兼容性处理，这个是为了解决 css 中的 calc 函数的表现，在不同手机机型上不一致的问题
    */
-  cssCalc?: boolean | CssCalcOptions
+  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[]
 
   /**
    * @group 0.重要配置

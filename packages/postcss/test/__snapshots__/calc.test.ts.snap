@@ -1,5 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`calc > cssCalc 传入数组 1`] = `"page{--ch:2}; .a{ width: 2rpx;}"`;
+
 exports[`calc > cssCalc 和 rem2rpx 同时开启 1`] = `
 "page,:host {
   --spacing: 8rpx;

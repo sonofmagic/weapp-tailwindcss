@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "defu": "6.1.4",
-    "fs-extra": "11.3.1",
+    "fs-extra": "11.3.2",
     "pathe": "2.0.3"
   },
   "devDependencies": {

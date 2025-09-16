@@ -1,12 +1,14 @@
-import type { AcceptedPlugin } from 'postcss'
+import type { AcceptedPlugin, Declaration } from 'postcss'
 import type { PxtransformOptions } from 'postcss-pxtransform'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { IStyleHandlerOptions } from '../types'
 import postcssCalc from '@weapp-tailwindcss/postcss-calc'
-import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import { defuOverrideArray, regExpTest } from '@weapp-tailwindcss/shared'
+import { omit } from 'es-toolkit'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssPxtransform from 'postcss-pxtransform'
 import postcssRem2rpx from 'postcss-rem-to-responsive-pixel'
+import valueParser from 'postcss-value-parser'
 import { createContext } from './ctx'
 import { postcssWeappTailwindcssPostPlugin as post } from './post'
 import { postcssWeappTailwindcssPrePlugin as pre } from './pre'
@@ -80,17 +82,54 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
       ),
     )
   }
-
+  const includeCustomProperties = Array.isArray(options.cssCalc)
+    ? options.cssCalc
+    : typeof options.cssCalc === 'object'
+      ? options.cssCalc.includeCustomProperties
+      : []
   if (options.cssCalc) {
     plugins.push(
       // 核心在 OnceExit 的时候去执行的
       postcssCalc(
-        typeof options.cssCalc === 'object' ? options.cssCalc : {},
+        Array.isArray(options.cssCalc)
+          ? {}
+          : typeof options.cssCalc === 'object'
+            ? omit(options.cssCalc, ['includeCustomProperties'])
+            : {},
       ),
     )
   }
 
   plugins.push(post(options))
+
+  if (includeCustomProperties) {
+    plugins.push({
+      postcssPlugin: 'postcss-remove-include-custom-properties',
+      OnceExit(root) {
+        root.walkDecls((decl, idx) => {
+          // not first
+          if (idx > 0 && regExpTest(includeCustomProperties, decl.value)) {
+            // decl.remove()
+            const prevNode = decl.parent?.nodes[idx - 1] as Declaration | undefined
+            if (prevNode && prevNode.prop === decl.prop) {
+              const parsed = valueParser(decl.value)
+              parsed.walk((node) => {
+                if (node.type === 'function' && node.value === 'var') {
+                  const item = node.nodes.find((x) => {
+                    return x.type === 'word' && regExpTest(includeCustomProperties, x.value)
+                  })
+                  if (item) {
+                    decl.remove()
+                  }
+                }
+              })
+            }
+          }
+        })
+      },
+    })
+  }
+
   return plugins
 }
 
