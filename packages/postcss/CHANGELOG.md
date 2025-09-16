@@ -1,5 +1,23 @@
 # @weapp-tailwindcss/postcss
 
+## 1.3.0
+
+### Minor Changes
+
+- [`4ffb90b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4ffb90bc754459d93929d2de3a843d46edc48f53) Thanks [@sonofmagic](https://github.com/sonofmagic)! - <br/>
+
+  ## Features
+
+  feat(postcss): 添加 `postcss-value-parser` 作为依赖，添加新的 `postcss` 插件 `postcss-remove-include-custom-properties`
+
+  feat(weapp-tailwindcss): 计算模式增强，允许只限定某些特殊的 `custom-properties` 被计算，这样只在遇到不兼容的情况下，才需要开启这个配置
+
+  比如 cssCalc: 设置为 `['--spacing']`, 那么就会把 `tailwindcss` 中的 `--spacing` 值进行计算，其他值则不进行计算
+
+  ## Chore
+
+  chore(deps): upgrade
+
 ## 1.2.2
 
 ### Patch Changes
