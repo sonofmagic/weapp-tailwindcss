@@ -12,7 +12,7 @@
     "@weapp-tailwindcss/merge": "^1.2.3",
     "tailwindcss": "^4.1.13",
     "tailwindcss-patch": "^7.1.5",
-    "weapp-ide-cli": "^3.1.0",
+    "weapp-ide-cli": "^3.1.1",
     "weapp-tailwindcss": "^4.3.2"
   }
 }

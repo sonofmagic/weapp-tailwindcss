@@ -58,7 +58,7 @@
     "@playwright/test": "^1.55.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^24.5.0",
+    "@types/node": "^24.5.1",
     "autoprefixer": "^10.4.21",
     "cross-env": "^10.0.0",
     "docusaurus-plugin-sass": "^0.2.6",

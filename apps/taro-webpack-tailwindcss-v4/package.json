@@ -74,7 +74,7 @@
     "@tarojs/cli": "4.1.6",
     "@tarojs/taro-loader": "4.1.6",
     "@tarojs/webpack5-runner": "4.1.6",
-    "@types/node": "^24.5.0",
+    "@types/node": "^24.5.1",
     "@types/react": "^19.1.13",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "workspace:*",
@@ -85,7 +85,7 @@
     "tailwindcss-patch": "^7.1.5",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.9.2",
-    "weapp-ide-cli": "^3.1.0",
+    "weapp-ide-cli": "^3.1.1",
     "weapp-tailwindcss": "workspace:*",
     "webpack": "5.101.3"
   }
