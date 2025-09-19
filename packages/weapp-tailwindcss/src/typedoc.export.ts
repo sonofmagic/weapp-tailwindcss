@@ -151,6 +151,59 @@ const customAttributes = {
    * @group 0.重要配置
    * @version `^4.3.0`
    * @description css calc 配置项， 用于直接计算 css 变量的结果值，通常用于手机兼容性处理，这个是为了解决 css 中的 calc 函数的表现，在不同手机机型上不一致的问题
+   * @example
+   * 比如 `tailwindcss@4` 下原先生成的样式为:
+   
+```css
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: calc(var(--spacing) * 2);
+}
+```
+   
+在CSS变量计算模式启动，进行预编译之后，现在的结果为:
+   
+```css
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+  height: calc(var(--spacing) * 2);
+}
+```
+   
+假如这时候你需要去除 CSS 变量的声明，你可以传入
+   
+```js
+{
+  cssCalc: ['--spacing']
+}
+// 或者更精确的
+{
+  cssCalc: {
+    includeCustomProperties: ['--spacing']
+  }
+}
+```
+   
+> 你也可以传入正则表达式
+   
+这样生成的结果就是:
+   
+```css
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+}
+```
    */
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[]
 
@@ -227,7 +280,7 @@ const customAttributes = {
   /**
    * @version `^4.2.6`
    * @group 0.重要配置
-   * @description tailwindcss@4 的入口 css 的位置，假如不配置这个选项, 就无法加载自定义插件。等价于传入 tailwindcss.v4.cssEntries
+   * @description tailwindcss@4 的入口 css 的位置，假如不配置这个选项, 就无法加载自定义插件。等价于传入 `tailwindcss.v4.cssEntries`
    */
   cssEntries?: string[]
   /**

@@ -1,5 +1,33 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`calc > cssCalc 传入 --spacing 示例 1`] = `
+"page,page {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+}"
+`;
+
+exports[`calc > cssCalc 传入 --spacing 示例 2 1`] = `
+"page,page {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+}"
+`;
+
+exports[`calc > cssCalc 传入 true 示例 1`] = `
+"page,page {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+  height: calc(var(--spacing)*2);
+}"
+`;
+
 exports[`calc > cssCalc 传入数组 1`] = `"page{--ch:2}; .a{ width: 2rpx;}"`;
 
 exports[`calc > cssCalc 和 rem2rpx 同时开启 1`] = `

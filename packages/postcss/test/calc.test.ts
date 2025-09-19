@@ -152,4 +152,62 @@ describe('calc', () => {
     const { css } = await styleHandler(code)
     expect(css).toMatchSnapshot()
   })
+
+  it('cssCalc 传入 true 示例', async () => {
+    const code = `page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: calc(var(--spacing) * 2);
+}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: true,
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
+
+  it('cssCalc 传入 --spacing 示例', async () => {
+    const code = `page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: calc(var(--spacing) * 2);
+}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: [
+        /--spacing/,
+      ],
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
+
+  it('cssCalc 传入 --spacing 示例 2', async () => {
+    const code = `page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: calc(var(--spacing) * 2);
+}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: [
+        /^--spacing$/,
+      ],
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
 })

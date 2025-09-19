@@ -1,4 +1,4 @@
-# 💨跨多端应用开发注意事项
+# 💨跨多端开发CSS兼容
 
 ## 何时开启插件
 
@@ -105,3 +105,71 @@ module.exports = {
 这样，所有的 `rgb` 和 `/` 写法就被转化成兼容写法了。
 
 相关issue详见:<https://github.com/tailwindlabs/tailwindcss/issues/7618#issuecomment-1140693288>
+
+## CSS变量计算模式
+
+在 `tailwindcss@4` 下，默认启用 CSS 变量计算模式。`tailwindcss@3` 默认不启用。
+
+此模式下会去预编译所有的 `css` 变量和 `calc` 计算表达式。
+
+比如 `tailwindcss@4` 下原先生成的样式为:
+
+```css
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: calc(var(--spacing) * 2);
+}
+```
+
+在CSS变量计算模式启动，进行预编译之后，现在的结果为:
+
+```css
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+  height: calc(var(--spacing) * 2);
+}
+```
+
+这个模式可以解决很多手机机型 `calc` `rpx` 单位的兼容问题
+
+> 可通过给插件，传入 `cssCalc` 配置项 `false` 来手动关闭这个功能
+
+假如这时候你需要去除 CSS 变量的声明，你可以传入 
+
+```js
+{
+  cssCalc: ['--spacing']
+}
+// 或者更精确的
+{
+  cssCalc: {
+    includeCustomProperties: ['--spacing']
+  }
+}
+```
+
+> 你也可以传入正则表达式
+
+这样生成的结果就是:
+
+```css
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: 16rpx;
+}
+```
+
+通过这种方式可以解决手机机型 `calc` `rpx` 单位的兼容问题
+
+
+详见: https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#csscalc

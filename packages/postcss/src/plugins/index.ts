@@ -108,9 +108,10 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
       OnceExit(root) {
         root.walkDecls((decl, idx) => {
           // not first
-          if (idx > 0 && regExpTest(includeCustomProperties, decl.value)) {
+          if (idx > 0) {
             // decl.remove()
             const prevNode = decl.parent?.nodes[idx - 1] as Declaration | undefined
+            // 前一个属性等于这一个属性
             if (prevNode && prevNode.prop === decl.prop) {
               const parsed = valueParser(decl.value)
               parsed.walk((node) => {
