@@ -108,7 +108,7 @@ export function getPlugins(options: IStyleHandlerOptions): AcceptedPlugin[] {
       OnceExit(root) {
         root.walkDecls((decl, idx) => {
           // not first
-          if (idx > 0) {
+          if (idx > 0 && /--/.test(decl.value)) {
             // decl.remove()
             const prevNode = decl.parent?.nodes[idx - 1] as Declaration | undefined
             // 前一个属性等于这一个属性
