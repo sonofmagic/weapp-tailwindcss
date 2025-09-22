@@ -49,7 +49,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "jiti": "^2.5.1",
+    "jiti": "^2.6.0",
     "lilconfig": "^3.1.3"
   }
 }
