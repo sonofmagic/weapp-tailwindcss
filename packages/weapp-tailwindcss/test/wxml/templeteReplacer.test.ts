@@ -248,6 +248,18 @@ describe('templateReplacer', () => {
     expect(result).toBe('{{n.attrs.href?\'_a \':\'\'}}{{n.attrs.class}}')
   })
 
+  it('normalizes whitespace-only fragments between tokens', () => {
+    const input = '{{foo}}\n  {{bar}}'
+    const result = simpleReplacer(input)
+    expect(result).toBe('{{foo}}  {{bar}}')
+  })
+
+  it('strips trailing newlines in whitespace fragments', () => {
+    const input = '{{foo}}  \n'
+    const result = simpleReplacer(input)
+    expect(result).toBe('{{foo}}  ')
+  })
+
   // it('handleEachClassFragment case 0', () => {
   //   expect(handleEachClassFragment(`rd-tag-{{type}}-{{theme}}`)).toBe(
   //     `rd-tag-{{type}}-{{theme}}`,

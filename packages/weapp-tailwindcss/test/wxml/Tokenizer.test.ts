@@ -300,6 +300,25 @@ describe('tokenizer1', () => {
     expect(tokenizer.run(input)).toEqual(expected)
   })
 
+  it('treats tabs and newlines as whitespace boundaries', () => {
+    const input = 'foo\tbar\nbaz'
+    const expected: Token[] = [
+      { start: 0, end: 3, value: 'foo', expressions: [] },
+      { start: 4, end: 7, value: 'bar', expressions: [] },
+      { start: 8, end: 11, value: 'baz', expressions: [] },
+    ]
+
+    expect(tokenizer.run(input)).toEqual(expected)
+  })
+
+  it('resets internal state between runs automatically', () => {
+    const first = tokenizer.run('foo bar')
+    const second = tokenizer.run('baz qux')
+
+    expect(first.map(token => token.value)).toEqual(['foo', 'bar'])
+    expect(second.map(token => token.value)).toEqual(['baz', 'qux'])
+  })
+
   it('should handle empty input', () => {
     const input = ''
     const expected: Token[] = []

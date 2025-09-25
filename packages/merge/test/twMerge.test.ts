@@ -1,4 +1,5 @@
-import { twMerge } from '@/v3'
+import { vi } from 'vitest'
+import { create as createV3, twMerge } from '@/v3'
 import { twMerge as twMergeV4 } from '@/v4'
 
 describe('v3', () => {
@@ -9,5 +10,21 @@ describe('v3', () => {
     expect(twMergeV4('text-[34px]', 'text-[#ECECEC]')).toBe('text-_34px_ text-_hECECEC_')
     expect(twMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')).toBe('p-0d5 text-_34px_ text-_hececec_')
     expect(twMergeV4('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')).toBe('p-0d5 text-_34px_ text-_hececec_')
+  })
+})
+
+describe('factory options', () => {
+  it('honours custom escapeFn when provided', () => {
+    const escapeFn = vi.fn((value: string) => `__${value}__`)
+    const { twMerge: customTwMerge } = createV3({ escapeFn })
+
+    expect(customTwMerge('text-[#ececec]')).toBe('__text-[#ececec]__')
+    expect(escapeFn).toHaveBeenCalledWith('text-[#ececec]')
+  })
+
+  it('skips escaping when disableEscape is true', () => {
+    const { twMerge: rawMerge } = createV3({ disableEscape: true })
+
+    expect(rawMerge('text-[#ECECEC]')).toBe('text-[#ECECEC]')
   })
 })
