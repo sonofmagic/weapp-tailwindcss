@@ -4,8 +4,13 @@ import defu from 'defu'
 import fs from 'fs-extra'
 import path from 'pathe'
 
-export function debugX(options?: { cwd: string }): Plugin[] {
-  const { cwd = process.cwd() } = options ?? {}
+interface DebugOptions {
+  cwd?: string
+  log?: boolean
+}
+
+export function debugX(options?: DebugOptions): Plugin[] {
+  const { cwd = process.cwd(), log = process.env.DEBUG_UNI_APP_X_LOG === 'true' } = options ?? {}
 
   function n(id: string) {
     const idx = id.indexOf('node_modules')
@@ -24,35 +29,43 @@ export function debugX(options?: { cwd: string }): Plugin[] {
     return {
       name: `weapp-tailwindcss:debug:${prefix}`,
       enforce,
-      transform(code, id) {
-        fs.outputFileSync(
+      async transform(code, id) {
+        await fs.outputFile(
           path.join(cwd, targetDir, prefix, n(id)),
           code,
           'utf8',
         )
       },
-      generateBundle(_options, bundle) {
+      async generateBundle(_options, bundle) {
         const bundleKeys = Object.keys(bundle)
-        console.log('generateBundle\n', bundleKeys)
+        if (log) {
+          console.log('generateBundle\n', bundleKeys)
+        }
         const dir = `bundle-${prefix}`
-        fs.outputFileSync(path.join(cwd, targetDir, dir, '_keys.txt'), bundleKeys.sort().join('\n'), 'utf8')
+        await fs.outputFile(path.join(cwd, targetDir, dir, '_keys.txt'), bundleKeys.sort().join('\n'), 'utf8')
+        const tasks: Promise<unknown>[] = []
         for (const file of bundleKeys) {
           const item = bundle[file]
           if (item.type === 'asset') {
-            fs.outputFileSync(
-              path.join(cwd, targetDir, dir, 'asset', file),
-              item.source,
-              'utf8',
+            tasks.push(
+              fs.outputFile(
+                path.join(cwd, targetDir, dir, 'asset', file),
+                item.source,
+                'utf8',
+              ),
             )
           }
           else if (item.type === 'chunk') {
-            fs.outputFileSync(
-              path.join(cwd, targetDir, dir, 'chunk', file),
-              item.code,
-              'utf8',
+            tasks.push(
+              fs.outputFile(
+                path.join(cwd, targetDir, dir, 'chunk', file),
+                item.code,
+                'utf8',
+              ),
             )
           }
         }
+        await Promise.all(tasks)
       },
     }
   }

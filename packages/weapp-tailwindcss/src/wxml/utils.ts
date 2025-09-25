@@ -67,7 +67,19 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
 }
 
 export function handleEachClassFragment(ms: MagicString, tokens: Token[], options: ITemplateHandlerOptions = {}) {
+  let previousEnd = 0
   for (const token of tokens) {
+    if (token.start > previousEnd) {
+      const gap = ms.slice(previousEnd, token.start)
+      if (gap.trim() === '') {
+        ms.update(previousEnd, token.start, replaceWxml(gap, {
+          keepEOL: false,
+          escapeMap: options.escapeMap,
+          mangleContext: options.mangleContext,
+          ignoreHead: true,
+        }))
+      }
+    }
     let p = token.start
     if (token.expressions.length > 0) {
       for (const exp of token.expressions) {
@@ -101,6 +113,22 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
         mangleContext: options.mangleContext,
         ignoreHead: false,
       }))
+    }
+    previousEnd = token.end
+  }
+
+  if (tokens.length > 0) {
+    const lastToken = tokens[tokens.length - 1]
+    if (lastToken.end < ms.original.length) {
+      const gap = ms.slice(lastToken.end, ms.original.length)
+      if (gap.trim() === '') {
+        ms.update(lastToken.end, ms.original.length, replaceWxml(gap, {
+          keepEOL: false,
+          escapeMap: options.escapeMap,
+          mangleContext: options.mangleContext,
+          ignoreHead: true,
+        }))
+      }
     }
   }
 }

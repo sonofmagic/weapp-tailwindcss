@@ -38,7 +38,7 @@ export class Tokenizer {
   private processChar(char: string, index: number) {
     switch (this.state) {
       case State.START:
-        if (char === ' ') {
+        if (this.isWhitespace(char)) {
           // Ignore leading spaces
         }
         else if (char === '{') {
@@ -56,7 +56,7 @@ export class Tokenizer {
         break
 
       case State.TEXT:
-        if (char === ' ') {
+        if (this.isWhitespace(char)) {
           this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer, expressions: this.expressions })
           this.buffer = ''
           this.expressions = []
@@ -105,7 +105,7 @@ export class Tokenizer {
         break
 
       case State.BRACES_COMPLETE:
-        if (char === ' ') {
+        if (this.isWhitespace(char)) {
           this.tokens.push({
             start: this.bufferStartIndex,
             end: index,
@@ -134,6 +134,8 @@ export class Tokenizer {
   }
 
   public run(input: string): Token[] {
+    this.reset()
+
     for (let i = 0; i < input.length; i++) {
       const char = input[i]
       this.processChar(char, i)
@@ -147,7 +149,10 @@ export class Tokenizer {
         expressions: this.expressions,
       })
     }
-    return this.tokens
+    const result = this.tokens.slice()
+    // reset internal state to make tokenizer reusable
+    this.reset()
+    return result
   }
 
   public reset() {
@@ -158,5 +163,9 @@ export class Tokenizer {
     this.expressionBuffer = ''
     this.expressionStartIndex = 0
     this.expressions = []
+  }
+
+  private isWhitespace(char: string) {
+    return /\s/.test(char)
   }
 }

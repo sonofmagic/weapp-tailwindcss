@@ -38,14 +38,15 @@ export function createFactory<V extends TailwindMergeVersion>(opts: CreateFactor
   } = opts
 
   return function create(options?: CreateOptions) {
-    const e = options?.disableEscape ? noop : escape
+    const escapeFn = options?.escapeFn ?? escape
+    const e = options?.disableEscape ? noop : escapeFn
 
     function twMerge(...inputs: ClassValue[]): string {
-      return e(_twMerge(clsx(inputs)))
+      return e(_twMerge(clsx(...inputs)))
     }
 
     function twJoin(...inputs: ClassValue[]): string {
-      return e(_twJoin(clsx(inputs)))
+      return e(_twJoin(clsx(...inputs)))
     }
 
     // 版本安全的 extendTailwindMerge
@@ -53,7 +54,7 @@ export function createFactory<V extends TailwindMergeVersion>(opts: CreateFactor
       // @ts-ignore
       const customTwMerge = _extendTailwindMerge(...args)
       return function cn(...inputs: ClassValue[]): string {
-        return e(customTwMerge(clsx(inputs)))
+        return e(customTwMerge(clsx(...inputs)))
       }
     }
 
@@ -62,7 +63,7 @@ export function createFactory<V extends TailwindMergeVersion>(opts: CreateFactor
       // @ts-ignore
       const customTwMerge = _createTailwindMerge(...args)
       return function cn(...inputs: ClassValue[]): string {
-        return e(customTwMerge(clsx(inputs)))
+        return e(customTwMerge(clsx(...inputs)))
       }
     }
 

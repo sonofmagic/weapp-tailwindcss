@@ -7,31 +7,43 @@ function getSelf(x: string) {
   return x
 }
 
-export const defaultMangleContext: IMangleScopeContext = {
-  rawOptions: false,
-  runtimeSet: new Set<string>(),
-  classGenerator: new ClassGenerator(),
-  filter: defaultMangleClassFilter,
-  cssHandler: getSelf,
-  jsHandler: getSelf,
-  wxmlHandler: getSelf,
-} // as default
+export function createMangleContextState(): IMangleScopeContext {
+  return {
+    rawOptions: false,
+    runtimeSet: new Set<string>(),
+    runtimePatterns: new Map<string, RegExp>(),
+    generatedNameCache: new Map<string, string>(),
+    classGenerator: new ClassGenerator(),
+    filter: defaultMangleClassFilter,
+    cssHandler: getSelf,
+    jsHandler: getSelf,
+    wxmlHandler: getSelf,
+  }
+}
+
+export const defaultMangleContext: IMangleScopeContext = createMangleContextState() // as default
 
 export function useMangleStore() {
-  const ctx = Object.assign({}, defaultMangleContext)
+  const ctx = createMangleContextState()
 
   function resetMangle() {
-    return Object.assign(ctx, defaultMangleContext)
+    const next = createMangleContextState()
+    return Object.assign(ctx, next)
   }
 
   function handleValue(rawSource: string) {
+    let result = rawSource
     const arr = splitCode(rawSource)
-    for (const x of arr) {
-      if (ctx.runtimeSet.has(x)) {
-        rawSource = rawSource.replace(new RegExp(escapeStringRegexp(x)), ctx.classGenerator.generateClassName(x).name)
+    for (const className of arr) {
+      if (!ctx.runtimeSet.has(className)) {
+        continue
       }
+
+      const pattern = getRuntimePattern(className)
+      const replacement = getGeneratedName(className)
+      result = result.replace(pattern, replacement)
     }
-    return rawSource
+    return result
   }
 
   function initMangle(options?: boolean | IMangleOptions) {
@@ -69,6 +81,33 @@ export function useMangleStore() {
       }
     }
     ctx.runtimeSet = newSet
+    ctx.runtimePatterns = new Map<string, RegExp>()
+    for (const className of newSet) {
+      ctx.runtimePatterns.set(className, new RegExp(escapeStringRegexp(className), 'g'))
+    }
+    for (const cached of ctx.generatedNameCache.keys()) {
+      if (!newSet.has(cached)) {
+        ctx.generatedNameCache.delete(cached)
+      }
+    }
+  }
+
+  function getRuntimePattern(className: string) {
+    let pattern = ctx.runtimePatterns.get(className)
+    if (!pattern) {
+      pattern = new RegExp(escapeStringRegexp(className), 'g')
+      ctx.runtimePatterns.set(className, pattern)
+    }
+    return pattern
+  }
+
+  function getGeneratedName(className: string) {
+    let replacement = ctx.generatedNameCache.get(className)
+    if (!replacement) {
+      replacement = ctx.classGenerator.generateClassName(className).name
+      ctx.generatedNameCache.set(className, replacement)
+    }
+    return replacement
   }
 
   return {

@@ -8,6 +8,8 @@ export interface IMangleOptions {
 export interface IMangleScopeContext {
   rawOptions: boolean | IMangleOptions | undefined
   runtimeSet: Set<string>
+  runtimePatterns: Map<string, RegExp>
+  generatedNameCache: Map<string, string>
   classGenerator: ClassGenerator
   filter: (className: string) => boolean
   cssHandler: (rawSource: string) => string

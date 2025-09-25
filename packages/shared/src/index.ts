@@ -6,12 +6,12 @@ export { getValue, setValue }
 
 export { defu } from 'defu'
 
-export function isRegexp(value: unknown) {
-  return Object.prototype.toString.call(value) === '[object RegExp]'
+export function isRegexp(value: unknown): value is RegExp {
+  return value instanceof RegExp
 }
 
-export function isMap(value: unknown) {
-  return Object.prototype.toString.call(value) === '[object Map]'
+export function isMap<T = unknown, K = unknown>(value: unknown): value is Map<T, K> {
+  return value instanceof Map
 }
 export function regExpTest(arr: (string | RegExp)[], str: string, options?: { exact?: boolean }) {
   if (!Array.isArray(arr)) {
@@ -59,7 +59,7 @@ export function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]
     throw new TypeError('expected a function for second argument')
   }
 
-  const result: Record<string, T[]> = {}
+  const result = Object.create(null) as Record<string, T[]>
   for (const item of arr) {
     const bucketCategory = cb(item)
     const bucket = result[bucketCategory]

@@ -1,4 +1,4 @@
-import type { PluginCreator } from 'postcss'
+import type { Input, PluginCreator } from 'postcss'
 import type { Config } from 'tailwindcss'
 import type { Options } from './types'
 import postcss from 'postcss'
@@ -9,6 +9,46 @@ import { getConfig } from './config'
 import { postcssPlugin } from './constants'
 import { regExpTest, removeFileExtension } from './utils'
 import { getDepFiles } from './wxml'
+
+const configCache = new Map<string, Promise<Config | undefined>>()
+
+async function loadTailwindConfigOnce(cwd: string, configPath: string) {
+  const cacheKey = `${cwd}::${configPath}`
+  let cached = configCache.get(cacheKey)
+  if (!cached) {
+    cached = loadConfig({
+      cwd,
+      config: configPath,
+    }).then(result => result?.config as Config | undefined)
+    configCache.set(cacheKey, cached)
+  }
+  return cached
+}
+
+function cloneConfig(config: Config | undefined): Config | undefined {
+  if (!config) {
+    return config
+  }
+
+  return {
+    ...config,
+  }
+}
+
+async function resolveTailwindConfig(config: Options['config'], cwd: string, sourceInput: Input | undefined) {
+  if (!config) {
+    return undefined
+  }
+
+  const resolved = typeof config === 'function' ? config(sourceInput) : config
+
+  if (typeof resolved === 'string') {
+    const loaded = await loadTailwindConfigOnce(cwd, resolved)
+    return cloneConfig(loaded)
+  }
+
+  return cloneConfig(resolved as Config)
+}
 
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
@@ -28,58 +68,63 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
       {
         postcssPlugin: `${postcssPlugin}:post`,
         async Once(root, helpers) {
-          if (filter(root.source?.input)) {
-            const atruleLastIndex = root.nodes.findLastIndex(x => x.type === 'atrule' && insertAfterAtRulesNames.includes(x.name))
-            const commentLastIndex = root.nodes.findLastIndex(x => x.type === 'comment' && regExpTest(insertAfterComments, x.text))
-            const lastIndex = Math.max(atruleLastIndex, commentLastIndex)
+          const sourceInput = root.source?.input
+          if (filter(sourceInput)) {
+            const nodes = root.nodes ?? []
+            let atruleAnchorIndex = -1
+            let commentAnchorIndex = -1
+            const directivePresence = new Set<string>()
+
+            nodes.forEach((node, index) => {
+              if (node.type === 'atrule') {
+                const nameMatches = insertAfterAtRulesNames.includes(node.name)
+                if (nameMatches) {
+                  atruleAnchorIndex = Math.max(atruleAnchorIndex, index)
+                }
+                if (typeof node.params === 'string') {
+                  directivePresence.add(node.params)
+                }
+              }
+              else if (node.type === 'comment' && regExpTest(insertAfterComments, node.text)) {
+                commentAnchorIndex = Math.max(commentAnchorIndex, index)
+              }
+            })
+
+            const anchorIndex = Math.max(atruleAnchorIndex, commentAnchorIndex)
+            const anchorNode = anchorIndex >= 0 ? nodes[anchorIndex] : undefined
+            let lastInserted = anchorNode
+
             for (const params of directiveParams) {
-              const node = root.nodes.find(x => x.type === 'atrule' && x.params === params)
-              if (!node) {
+              if (!directivePresence.has(params)) {
                 const atRule = helpers.atRule({ name: 'tailwind', params })
-                if (lastIndex < 0) {
-                  root.prepend(atRule)
+                if (lastInserted) {
+                  root.insertAfter(lastInserted, atRule)
                 }
                 else {
-                  root.insertAfter(lastIndex, atRule)
+                  root.prepend(atRule)
                 }
+                lastInserted = atRule
+                directivePresence.add(params)
               }
             }
 
-            const cfg = typeof config === 'function' ? config(root.source?.input) : config
-            let tailwindcssConfig: Config | undefined
-            if (typeof cfg === 'string') {
-              const result = await loadConfig({
-                cwd,
-                config: cfg,
-              })
-              if (result) {
-                tailwindcssConfig = result.config
-              }
-            }
-            else {
-              tailwindcssConfig = (cfg ?? {
-                content: [],
-              }) as Config
-            }
+            if (sourceInput?.file) {
+              const tailwindcssConfig = (await resolveTailwindConfig(config, cwd, sourceInput)) ?? { content: [] }
 
-            if (tailwindcssConfig && root.source?.input && root.source.input.file) {
-              const basename = removeFileExtension(root.source.input.file)
-              set(tailwindcssConfig, 'content', [
-                `${basename}.${extensionsGlob}`,
-              ])
+              const basename = removeFileExtension(sourceInput.file)
+              const contentEntries = [`${basename}.${extensionsGlob}`]
 
-              // 分析模板
               const deps = await getDepFiles(`${basename}.wxml`)
               for (const dep of deps) {
-                if (Array.isArray(tailwindcssConfig.content)) {
-                  tailwindcssConfig.content.push(`${removeFileExtension(dep)}.${extensionsGlob}`)
-                }
+                contentEntries.push(`${removeFileExtension(dep)}.${extensionsGlob}`)
               }
+
+              set(tailwindcssConfig, 'content', contentEntries)
 
               await postcss([
                 tailwindcss(tailwindcssConfig),
               ]).process(root, {
-                from: root.source.input.file,
+                from: sourceInput.file,
               }).async()
             }
           }
