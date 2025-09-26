@@ -33,9 +33,9 @@
     "exportRoutes": "tsx scripts/exportRoutes.ts"
   },
   "dependencies": {
-    "@docusaurus/core": "3.8.1",
-    "@docusaurus/preset-classic": "3.8.1",
-    "@docusaurus/theme-live-codeblock": "^3.8.1",
+    "@docusaurus/core": "3.9.0",
+    "@docusaurus/preset-classic": "3.9.0",
+    "@docusaurus/theme-live-codeblock": "^3.9.0",
     "@mdx-js/react": "^3.1.1",
     "@weapp-tailwindcss/merge": "workspace:*",
     "clsx": "^2.1.1",
@@ -46,10 +46,10 @@
     "react-github-btn": "^1.4.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.8.1",
-    "@docusaurus/remark-plugin-npm2yarn": "^3.8.1",
-    "@docusaurus/tsconfig": "3.8.1",
-    "@docusaurus/types": "3.8.1",
+    "@docusaurus/module-type-aliases": "3.9.0",
+    "@docusaurus/remark-plugin-npm2yarn": "^3.9.0",
+    "@docusaurus/tsconfig": "3.9.0",
+    "@docusaurus/types": "3.9.0",
     "@icebreakers/deploy": "^0.1.6",
     "@iconify-json/line-md": "^1.2.11",
     "@iconify-json/logos": "^1.2.9",
