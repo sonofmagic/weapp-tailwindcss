@@ -114,7 +114,7 @@
     "@csstools/css-tokenizer": "^3.0.4",
     "@eslint/config-inspector": "^1.3.0",
     "@icebreakers/eslint-config": "^1.4.4",
-    "@icebreakers/monorepo": "^1.2.4",
+    "@icebreakers/monorepo": "^2.0.0",
     "@icebreakers/stylelint-config": "^1.1.4",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.13",

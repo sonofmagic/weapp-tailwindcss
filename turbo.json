@@ -10,6 +10,9 @@
       ]
     },
     "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
       "outputs": []
     },
     "dev": {
@@ -17,10 +20,15 @@
     },
     "test": {
       "dependsOn": [
-        "^build"
+        "^test"
+      ],
+      "outputs": [
+        "coverage/**"
       ]
     },
     "release": {},
-    "sync": {}
+    "sync": {
+      "cache": false
+    }
   }
 }
