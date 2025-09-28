@@ -36,48 +36,30 @@
   --tw-gradient-stop-3: rgba(99, 102, 241, 0.18);
 }
 
-body {
-  position: relative;
-  min-height: 100vh;
+html {
+  min-height: 100%;
   background:
     linear-gradient(
       180deg,
-      rgba(248, 250, 252, 0.95) 0%,
-      rgba(226, 248, 255, 0.8) 45%,
-      rgba(209, 250, 229, 0.55) 72%,
-      rgba(236, 252, 255, 0.15) 100%
+      rgba(248, 250, 252, 0.99) 0%,
+      rgba(232, 248, 255, 0.9) 45%,
+      rgba(213, 250, 232, 0.7) 78%,
+      rgba(236, 252, 255, 0.4) 100%
     ),
-    radial-gradient(120% 120% at 0% 0%, var(--tw-gradient-stop-1), transparent 60%),
-    radial-gradient(120% 140% at 100% 10%, var(--tw-gradient-stop-2), transparent 55%),
-    radial-gradient(100% 120% at 50% 100%, var(--tw-gradient-stop-3), transparent 60%), var(--ifm-background-color);
+    radial-gradient(160% 180% at 15% -20%, rgba(14, 165, 233, 0.22), transparent 65%),
+    radial-gradient(160% 180% at 90% -30%, rgba(56, 189, 248, 0.14), transparent 60%),
+    radial-gradient(140% 160% at 50% 120%, rgba(7, 193, 96, 0.12), transparent 75%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #f5fbff;
   transition: background 0.6s ease;
 }
 
-body::before,
-body::after {
-  content: '';
-  position: fixed;
-  inset: -20vh -30vw auto;
-  height: 60vh;
-  max-width: 720px;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.55;
-  filter: blur(120px);
-  background: conic-gradient(
-    from 90deg,
-    rgba(14, 165, 233, 0.28),
-    rgba(6, 182, 212, 0.15),
-    rgba(124, 58, 237, 0.3),
-    rgba(14, 165, 233, 0.28)
-  );
-  animation: aurora-spin 22s linear infinite;
-}
-
-body::after {
-  inset: auto -25vw -30vh;
-  animation-direction: reverse;
-  animation-duration: 28s;
+body {
+  position: relative;
+  min-height: 100%;
+  background: transparent;
+  transition: background 0.6s ease;
 }
 
 *,
@@ -85,6 +67,16 @@ body::after {
 ::before {
   box-sizing: border-box;
   border: 0 solid #e5e7eb;
+}
+
+a,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
 }
 
 html[data-theme='dark'] {
@@ -107,7 +99,7 @@ html[data-theme='dark'] {
   --tw-gradient-stop-3: rgba(45, 212, 191, 0.22);
 }
 
-html[data-theme='dark'] body {
+html[data-theme='dark'] {
   background:
     linear-gradient(
       180deg,
@@ -121,12 +113,21 @@ html[data-theme='dark'] body {
     radial-gradient(120% 160% at 50% 100%, rgba(129, 140, 248, 0.18), transparent 65%), #0f1729;
 }
 
+html[data-theme='dark'] body {
+  background: transparent;
+}
+
 .navbar {
   @apply lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06];
   backdrop-filter: blur(18px);
   transition:
     background 0.4s ease,
     box-shadow 0.4s ease;
+}
+
+.main-wrapper,
+.main-wrapper main {
+  background: transparent;
 }
 
 [data-theme='light'] .navbar {
@@ -343,6 +344,115 @@ html[data-theme='dark'] body {
 .home-hero__aurora::after {
   top: 80%;
   animation-direction: reverse;
+  animation-duration: 22s;
+}
+
+.home-hero__particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.home-hero__particles span {
+  position: absolute;
+  display: block;
+  width: clamp(8px, 1vw, 12px);
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), rgba(14, 165, 233, 0.35) 55%, transparent 80%);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+  opacity: 0;
+  --spark-x: 36px;
+  --spark-y: -120px;
+  --spark-duration: 12s;
+  animation: hero-sparkle var(--spark-duration) linear infinite;
+}
+
+.home-hero__particles span:nth-child(1) {
+  top: 18%;
+  left: 14%;
+  --spark-x: 42px;
+  --spark-y: -130px;
+  --spark-duration: 13s;
+  animation-delay: -3s;
+}
+
+.home-hero__particles span:nth-child(2) {
+  top: 34%;
+  left: 72%;
+  --spark-x: -50px;
+  --spark-y: -140px;
+  --spark-duration: 11s;
+  animation-delay: -6s;
+}
+
+.home-hero__particles span:nth-child(3) {
+  top: 58%;
+  left: 28%;
+  --spark-x: 38px;
+  --spark-y: -90px;
+  --spark-duration: 14s;
+  animation-delay: -1s;
+}
+
+.home-hero__particles span:nth-child(4) {
+  top: 64%;
+  left: 82%;
+  --spark-x: -46px;
+  --spark-y: -110px;
+  --spark-duration: 12.5s;
+  animation-delay: -4.5s;
+}
+
+.home-hero__particles span:nth-child(5) {
+  top: 22%;
+  left: 52%;
+  --spark-x: 30px;
+  --spark-y: -150px;
+  --spark-duration: 15s;
+  animation-delay: -8s;
+}
+
+.home-hero__particles span:nth-child(6) {
+  top: 78%;
+  left: 46%;
+  --spark-x: -32px;
+  --spark-y: -100px;
+  --spark-duration: 13.5s;
+  animation-delay: -10s;
+}
+
+.home-hero__orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: lighten;
+}
+
+.home-hero__orb {
+  position: absolute;
+  width: clamp(180px, 28vw, 280px);
+  height: clamp(180px, 28vw, 280px);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 65%);
+  filter: blur(35px);
+  opacity: 0.55;
+  animation: hero-orb-float 18s ease-in-out infinite;
+}
+
+.home-hero__orbs .home-hero__orb:nth-child(1) {
+  top: -12%;
+  right: 12%;
+  animation-delay: -3s;
+}
+
+.home-hero__orbs .home-hero__orb:nth-child(2) {
+  bottom: -18%;
+  left: 10%;
+  background: radial-gradient(circle, rgba(7, 193, 96, 0.32), transparent 65%);
+  filter: blur(40px);
   animation-duration: 22s;
 }
 
@@ -1102,6 +1212,40 @@ html[data-theme='dark'] body {
   }
 }
 
+@keyframes hero-sparkle {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  45% {
+    transform: translate3d(calc(var(--spark-x) * 0.55), calc(var(--spark-y) * 0.55), 0) scale(1);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translate3d(var(--spark-x), var(--spark-y), 0) scale(1.25);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: translate3d(0, -24px, 0) scale(1.08);
+    opacity: 0.85;
+  }
+}
+
 // .glow {
 //   width: 500px;
 //   height: 300px;
@@ -1248,6 +1392,7 @@ html[data-theme='dark'] body {
   .tool-orbit {
     width: clamp(140px, 44vw, 170px);
     height: clamp(140px, 44vw, 170px);
+    --tool-orbit-item-width: clamp(60px, 20vw, 76px);
   }
 
   .tool-orbit__item {

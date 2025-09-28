@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import React, { useEffect, useState } from 'react'
 
 const GITHUB_REPO = 'sonofmagic/weapp-tailwindcss'
@@ -82,17 +83,20 @@ export default function HeroGithubBadge(): JSX.Element {
 
   return (
     <a
-      className="hero-github-badge"
+      className="group inline-flex items-center gap-2.5 rounded-full border border-transparent bg-[linear-gradient(135deg,rgba(255,255,255,0.9),rgba(236,249,255,0.72))] px-3.5 py-2 text-sm font-semibold tracking-[0.03em] text-slate-800 shadow-[0_18px_36px_rgba(14,165,233,0.22),inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-[14px] transition-all duration-[400ms] hover:-translate-y-0.5 hover:shadow-[0_22px_48px_rgba(14,165,233,0.3),inset_0_1px_0_rgba(255,255,255,0.7)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.86),rgba(30,41,59,0.64))] dark:text-slate-200 dark:shadow-[0_18px_36px_rgba(15,23,42,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] dark:hover:text-slate-100 dark:hover:shadow-[0_24px_52px_rgba(56,189,248,0.35),inset_0_1px_0_rgba(255,255,255,0.16)]"
       href="https://github.com/sonofmagic/weapp-tailwindcss"
       target="_blank"
       rel="noreferrer"
       aria-label="Star sonofmagic/weapp-tailwindcss on GitHub"
     >
-      <span className="hero-github-badge__icon" aria-hidden="true">
+      <span
+        aria-hidden="true"
+        className="inline-flex size-7 items-center justify-center rounded-full bg-amber-400/20 text-amber-500 transition-[background,color] duration-300 group-hover:bg-amber-400/35 group-hover:text-amber-600 dark:bg-amber-400/25 dark:text-amber-200 dark:group-hover:bg-amber-400/40"
+      >
         ★
       </span>
-      <span className="hero-github-badge__label">GitHub</span>
-      <span className="hero-github-badge__count">
+      <span className="hidden text-xs font-semibold uppercase tracking-[0.12em] sm:inline">GitHub</span>
+      <span className="min-w-0 text-right text-sm font-semibold tabular-nums sm:min-w-10">
         {stars != null ? stars.toLocaleString() : '—'}
       </span>
     </a>
