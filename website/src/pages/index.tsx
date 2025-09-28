@@ -95,7 +95,7 @@ const toolOrbitItems: ToolOrbitItemConfig[] = [
 const versionLinks: VersionLink[] = [
   { href: '/docs/quick-start/v4', label: 'Tailwind CSS 4.x', cta: '新特性预览' },
   { href: '/docs/quick-start/install', label: 'Tailwind CSS 3.x', cta: '生产首选' },
-  { href: '/docs/quick-start/v2', label: 'Tailwind CSS 2.x (JIT)', cta: '兼容保留' },
+  { href: '/docs/quick-start/v2', label: 'Tailwind CSS 2.x', cta: '兼容保留' },
 ]
 
 const frameworkSupportItems: FrameworkSupportItem[] = [
@@ -231,7 +231,12 @@ function HomepageHeader() {
               <ToolOrbit items={toolOrbitItems} />
             </FeatureCard>
             <FeatureCard eyebrow="Version Matrix" subtitle="3.x 正式版、4.x 预览版及 2.x JIT 模式" title="Tailwind 多版本无缝支持" variant="versions">
-              <VersionsStack Logo={TailwindcssLogo} links={versionLinks} />
+              <div className="flex w-full flex-col gap-3 sm:gap-4">
+                <p className="text-sm text-slate-600 sm:text-left dark:text-slate-300">
+                  覆盖稳定、预览与 JIT 管道，升级与回滚都能一键切换。
+                </p>
+                <VersionsStack Logo={TailwindcssLogo} links={versionLinks} />
+              </div>
             </FeatureCard>
             <FeatureCard eyebrow="Ecosystem" subtitle="taro、uni-app、原生小程序、Vite 多生态落地" title="主流框架与原生开发支持" variant="frameworks">
               <FrameworkSupport items={frameworkSupportItems} />

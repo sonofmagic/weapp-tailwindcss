@@ -55,7 +55,7 @@ export const featureCard = tv({
   base: [
     'group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200/35',
     'bg-[linear-gradient(135deg,rgba(255,255,255,0.78),rgba(241,245,249,0.66))]',
-    'p-[clamp(1.5rem,2.5vw,2.1rem)]',
+    'p-[clamp(1.25rem,2.2vw,2rem)]',
     'shadow-[0_18px_40px_rgba(15,23,42,0.16)] backdrop-blur-[18px]',
     'transition-all duration-[600ms] ease-[cubic-bezier(0.21,0.72,0.28,0.99)]',
     'hover:-translate-y-1.5 hover:scale-[1.01]',
@@ -65,18 +65,18 @@ export const featureCard = tv({
   ].join(' '),
   variants: {
     variant: {
-      tools: 'items-center p-[clamp(1.7rem,2.4vw,2.2rem)] text-center',
-      versions: 'justify-between gap-6',
-      frameworks: 'gap-6',
+      tools: 'items-center gap-5 text-center',
+      versions: 'justify-between gap-4',
+      frameworks: 'gap-5',
     },
   },
 })
 
 export const featureCardHeader = tv({
-  base: 'mb-7 flex flex-col gap-2 text-left',
+  base: 'mb-5 flex flex-col gap-1.5 text-left',
   variants: {
     variant: {
-      centered: 'mb-6 items-center text-center',
+      centered: 'mb-5 items-center text-center',
     },
   },
 })
@@ -133,10 +133,10 @@ export const toolOrbitItem = tv({
   ].join(' '),
   variants: {
     placement: {
-      webpack: 'left-1/2 top-0 -translate-x-1/2 -translate-y-[68%] sm:-translate-y-[62%]',
-      vite: 'right-[-5%] top-1/2 -translate-y-1/2 translate-x-[62%] sm:right-[-3%] sm:translate-x-[56%]',
-      gulp: 'bottom-[-5%] left-1/2 -translate-x-1/2 translate-y-[60%] sm:bottom-[-3%] sm:translate-y-[50%]',
-      node: 'left-[-5%] top-1/2 -translate-x-[62%] -translate-y-1/2 sm:left-[-3%] sm:-translate-x-[56%]',
+      webpack: 'left-1/2 top-0 -translate-x-1/2 -translate-y-[58%] sm:-translate-y-[52%]',
+      vite: 'right-[-4%] top-1/2 -translate-y-1/2 translate-x-[52%] sm:right-[-2%] sm:translate-x-[48%]',
+      gulp: 'bottom-[-4%] left-1/2 -translate-x-1/2 translate-y-[50%] sm:bottom-[-2%] sm:translate-y-[44%]',
+      node: 'left-[-4%] top-1/2 -translate-x-[52%] -translate-y-1/2 sm:left-[-2%] sm:-translate-x-[48%]',
     },
   },
 })
@@ -146,7 +146,7 @@ export const toolOrbitLabel = tv({
 })
 
 export const versionsStack = tv({
-  base: 'relative flex flex-col items-center gap-6',
+  base: 'relative flex flex-col items-center gap-5',
 })
 
 export const versionsStackHalo = tv({
@@ -168,7 +168,7 @@ export const versionsStackTimeline = tv({
 
 export const versionsPill = tv({
   base: [
-    'flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-sky-300/25 px-4 py-3',
+    'flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-sky-300/25 px-4 py-3 sm:flex-nowrap sm:gap-6',
     'bg-[linear-gradient(135deg,rgba(244,250,255,0.75),rgba(186,230,253,0.4))]',
     'shadow-[0_12px_26px_rgba(14,165,233,0.12),inset_0_1px_0_rgba(255,255,255,0.5)]',
     'backdrop-blur-[12px]',
@@ -183,7 +183,7 @@ export const versionsPill = tv({
 })
 
 export const versionsPillLabel = tv({
-  base: 'min-w-56 flex-1 text-[0.95rem] font-semibold text-slate-800 sm:text-base dark:text-slate-100',
+  base: 'flex-1 text-left text-[0.95rem] font-semibold text-slate-800 sm:text-base dark:text-slate-100',
 })
 
 export const versionsPillCta = tv({

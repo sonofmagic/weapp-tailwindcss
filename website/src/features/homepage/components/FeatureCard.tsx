@@ -38,7 +38,7 @@ export const FeatureCard: FC<FeatureCardProps> = ({ variant, eyebrow, title, sub
       <div
         className={
           variant === 'tools'
-            ? 'relative z-10 flex w-full flex-1 items-center justify-center py-4 sm:py-6'
+            ? 'relative z-10 flex w-full flex-1 items-center justify-center py-5 pb-8 sm:py-6'
             : 'relative z-10 flex w-full'
         }
       >
