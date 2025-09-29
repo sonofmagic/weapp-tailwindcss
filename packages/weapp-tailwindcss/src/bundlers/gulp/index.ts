@@ -64,10 +64,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
         callback(error, file)
       },
-      // construct(callback) {
-      //   debug('transformWxss start')
-      //   callback()
-      // }
     })
   }
 

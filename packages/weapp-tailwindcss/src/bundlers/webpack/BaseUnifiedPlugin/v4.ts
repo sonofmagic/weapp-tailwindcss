@@ -7,7 +7,8 @@ import { ConcatSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { getGroupedEntries, removeExt } from '@/utils'
+import { getGroupedEntries } from '@/utils'
+import { getCacheKey } from './shared'
 
 const debug = createDebug()
 
@@ -147,7 +148,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       if (Array.isArray(groupedEntries.js)) {
         for (const element of groupedEntries.js) {
           const [file, originalSource] = element
-          const cacheKey = removeExt(file)
+          const cacheKey = getCacheKey(file)
           promises.push(
             cache.process(
               cacheKey,
@@ -166,22 +167,12 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
               async () => {
                 // @ts-ignore
                 const rawSource = originalSource.source().toString()
-                // const mapFilename = `${file}.map`
-                // const hasMap = Boolean(assets[mapFilename])
-                const { code } = await jsHandler(rawSource, runtimeSet, {
-                  // generateMap: hasMap,
-                })
+                const { code } = await jsHandler(rawSource, runtimeSet)
                 const source = new ConcatSource(code)
                 // @ts-ignore
                 compilation.updateAsset(file, source)
                 onUpdate(file, rawSource, code)
                 debug('js handle: %s', file)
-
-                // if (hasMap && map) {
-                //   const source = new RawSource(map.toString())
-                //   // @ts-ignore
-                //   compilation.updateAsset(mapFilename, source)
-                // }
                 return {
                   key: cacheKey,
                   source,

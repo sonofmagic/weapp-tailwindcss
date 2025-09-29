@@ -2,7 +2,6 @@ import type { Input, PluginCreator } from 'postcss'
 import type { Config } from 'tailwindcss'
 import type { Options } from './types'
 import postcss from 'postcss'
-import set from 'set-value'
 import tailwindcss from 'tailwindcss'
 import { loadConfig } from 'tailwindcss-config'
 import { getConfig } from './config'
@@ -119,7 +118,26 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
                 contentEntries.push(`${removeFileExtension(dep)}.${extensionsGlob}`)
               }
 
-              set(tailwindcssConfig, 'content', contentEntries)
+              const uniqueEntries = Array.from(new Set(contentEntries))
+              const { content: existingContent } = tailwindcssConfig as { content?: Config['content'] }
+
+              if (!existingContent || Array.isArray(existingContent)) {
+                tailwindcssConfig.content = uniqueEntries
+              }
+              else if (typeof existingContent === 'object' && existingContent !== null) {
+                const normalizedContent = { ...existingContent }
+                const currentFiles = normalizedContent.files
+                const normalizedFiles = Array.isArray(currentFiles)
+                  ? currentFiles
+                  : typeof currentFiles === 'string'
+                    ? [currentFiles]
+                    : []
+                normalizedContent.files = Array.from(new Set([...normalizedFiles, ...uniqueEntries]))
+                tailwindcssConfig.content = normalizedContent
+              }
+              else {
+                tailwindcssConfig.content = uniqueEntries
+              }
 
               await postcss([
                 tailwindcss(tailwindcssConfig),

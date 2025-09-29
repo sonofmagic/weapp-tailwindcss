@@ -167,7 +167,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.cache.has('index')).toBe(true)
+    expect(currentContext.cache.has('index.wxml')).toBe(true)
+    expect(currentContext.cache.has('index.js')).toBe(true)
+    expect(currentContext.cache.has('index.css')).toBe(true)
 
     const updateCalls = updateAsset.mock.calls
     expect(updateCalls[0][0]).toBe('index.wxml')
@@ -194,5 +196,91 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(4)
+  })
+
+  it('keeps separate cache entries for js and wxs assets', async () => {
+    currentContext = createContext({
+      wxsMatcher: (file: string) => file.endsWith('.wxs'),
+    })
+    getCompilerContextMock.mockReturnValue(currentContext)
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        compilation: {
+          tap: (_name: string, handler: (compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+      },
+    }
+
+    const updateAsset = vi.fn()
+    const compilation = {
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options, handler) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset,
+    }
+
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const html = '<view class="foo"></view>'
+    const js = 'const foo = 1'
+    const wxs = 'module.exports = {}'
+    const css = '.foo { color: red; }'
+
+    const assetsRun = {
+      'index.wxml': { source: () => html },
+      'index.js': { source: () => js },
+      'index.wxs': { source: () => wxs },
+      'index.css': { source: () => css },
+    }
+
+    await processAssetsCallbacks[0](assetsRun)
+
+    expect(currentContext.cache.has('index.js')).toBe(true)
+    expect(currentContext.cache.has('index.wxs')).toBe(true)
+
+    const assetsSecondRun = {
+      'index.wxml': { source: () => html },
+      'index.js': { source: () => js },
+      'index.wxs': { source: () => wxs },
+      'index.css': { source: () => css },
+    }
+
+    await processAssetsCallbacks[0](assetsSecondRun)
+
+    const jsUpdates = updateAsset.mock.calls.filter(call => call[0] === 'index.js')
+    const wxsUpdates = updateAsset.mock.calls.filter(call => call[0] === 'index.wxs')
+
+    expect(jsUpdates).toHaveLength(2)
+    expect(wxsUpdates).toHaveLength(2)
+    expect(jsUpdates[0][1].toString()).toBe(`js:${js}`)
+    expect(jsUpdates[1][1].toString()).toBe(`js:${js}`)
+    expect(wxsUpdates[0][1].toString()).toBe(`js:${wxs}`)
+    expect(wxsUpdates[1][1].toString()).toBe(`js:${wxs}`)
   })
 })

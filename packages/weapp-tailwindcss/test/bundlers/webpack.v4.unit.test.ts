@@ -3,11 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedWebpackPluginV4 } from '@/bundlers/webpack/BaseUnifiedPlugin/v4'
 import { createCache } from '@/cache'
 
-const getCompilerContextMock = vi.fn(() => currentContext)
-vi.mock('@/context', () => ({
-  getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
-}))
-
 interface LoaderModule {
   loaders: Array<{ loader: string }>
 }
@@ -37,7 +32,16 @@ interface TestContext {
 }
 
 let currentContext: TestContext
-let existsSyncSpy: ReturnType<typeof vi.spyOn>
+const getCompilerContextMock = vi.fn((_opts: any) => currentContext)
+vi.mock('@/context', () => ({
+  getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
+}))
+
+let existsSyncSpy: ReturnType<typeof vi.spyOn<
+typeof fs,
+// @ts-ignore
+'existsSync'
+>>
 
 function createContext(overrides: Partial<TestContext> = {}): TestContext {
   const cache = createCache()
@@ -72,8 +76,10 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
 describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
   beforeEach(() => {
     currentContext = createContext()
-    getCompilerContextMock.mockClear()
-    existsSyncSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(true)
+    getCompilerContextMock.mockReset()
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    existsSyncSpy = vi.spyOn(fs, 'existsSync')
+    existsSyncSpy.mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -84,25 +90,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     const emitHandlers: Array<(compilation: any) => Promise<void>> = []
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
 
-    const compiler = {
-      hooks: {
-        compilation: {
-          tap: (_name: string, handler: (compilation: any) => void) => {
-            handler(compilation)
-          },
-        },
-        emit: {
-          tapPromise: (_name: string, handler: (compilation: any) => Promise<void>) => {
-            emitHandlers.push(handler)
-          },
-        },
-      },
-    }
-
-    const updateAsset = vi.fn((file: string, source: any) => {
-      compilation.assets[file] = source
-    })
-
+    const assets: Record<string, any> = {}
     const compilation = {
       chunks: [{ id: 'main', hash: 'hash-1' }],
       hooks: {
@@ -112,8 +100,25 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
           },
         },
       },
-      assets: {} as Record<string, any>,
-      updateAsset,
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        assets[file] = source
+      }),
+    }
+
+    const compiler = {
+      hooks: {
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
     }
 
     const plugin = new UnifiedWebpackPluginV4()
@@ -148,9 +153,11 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.cache.has('index')).toBe(true)
+    expect(currentContext.cache.has('index.wxml')).toBe(true)
+    expect(currentContext.cache.has('index.js')).toBe(true)
+    expect(currentContext.cache.has('index.css')).toBe(true)
 
-    const updateCalls = updateAsset.mock.calls
+    const updateCalls = compilation.updateAsset.mock.calls
     expect(updateCalls[0][0]).toBe('index.wxml')
     expect(updateCalls[1][0]).toBe('index.js')
     expect(updateCalls[2][0]).toBe('index.css')
@@ -175,5 +182,90 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(4)
+  })
+
+  it('keeps distinct cache entries for js and wxs assets', async () => {
+    currentContext = createContext({
+      wxsMatcher: (file: string) => file.endsWith('.wxs'),
+    })
+    getCompilerContextMock.mockImplementation(() => currentContext)
+
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+
+    const assets: Record<string, any> = {}
+    const compilation: any = {
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        normalModuleLoader: {
+          tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+            loaderHandler = handler
+          },
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        assets[file] = source
+      }),
+    }
+
+    const compiler = {
+      hooks: {
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    loaderHandler?.({}, module)
+
+    const html = '<view class="foo"></view>'
+    const js = 'const foo = 1'
+    const wxs = 'module.exports = {}'
+    const css = '.foo { color: red; }'
+
+    compilation.assets = {
+      'index.wxml': { source: () => html },
+      'index.js': { source: () => js },
+      'index.wxs': { source: () => wxs },
+      'index.css': { source: () => css },
+    }
+
+    await emitHandlers[0](compilation)
+
+    expect(currentContext.cache.has('index.js')).toBe(true)
+    expect(currentContext.cache.has('index.wxs')).toBe(true)
+
+    compilation.assets = {
+      'index.wxml': { source: () => html },
+      'index.js': { source: () => js },
+      'index.wxs': { source: () => wxs },
+      'index.css': { source: () => css },
+    }
+
+    await emitHandlers[0](compilation)
+
+    const jsUpdates = compilation.updateAsset.mock.calls.filter((call: [string, any]) => call[0] === 'index.js')
+    const wxsUpdates = compilation.updateAsset.mock.calls.filter((call: [string, any]) => call[0] === 'index.wxs')
+
+    expect(jsUpdates).toHaveLength(2)
+    expect(wxsUpdates).toHaveLength(2)
+    expect(jsUpdates[0][1].source()).toBe(`js:${js}`)
+    expect(jsUpdates[1][1].source()).toBe(`js:${js}`)
+    expect(wxsUpdates[0][1].source()).toBe(`js:${wxs}`)
+    expect(wxsUpdates[1][1].source()).toBe(`js:${wxs}`)
   })
 })

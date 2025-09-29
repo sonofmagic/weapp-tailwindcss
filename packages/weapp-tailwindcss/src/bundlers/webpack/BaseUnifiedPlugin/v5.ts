@@ -6,7 +6,8 @@ import path from 'node:path'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { getGroupedEntries, removeExt } from '@/utils'
+import { getGroupedEntries } from '@/utils'
+import { getCacheKey } from './shared'
 
 const debug = createDebug()
 
@@ -46,10 +47,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       return
     }
     twPatcher.patch()
-    // NormalModule,
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
-    // react
     function getClassSetInLoader() {
       if (twPatcher.majorVersion !== 4) {
         return twPatcher.getClassSetV3()
@@ -75,7 +74,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
         if (isExisted) {
           const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
-          // // css
           if (idx > -1) {
             module.loaders.unshift(WeappTwRuntimeAopLoader)
           }
@@ -151,7 +149,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           if (Array.isArray(groupedEntries.js)) {
             for (const element of groupedEntries.js) {
               const [file, originalSource] = element
-              const cacheKey = removeExt(file)
+              const cacheKey = getCacheKey(file)
               promises.push(
                 cache.process(
                   cacheKey,
@@ -167,20 +165,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                   },
                   async () => {
                     const rawSource = originalSource.source().toString()
-                    // const mapFilename = `${file}.map`
-                    // const hasMap = Boolean(assets[mapFilename])
-                    const { code } = await jsHandler(rawSource, runtimeSet, {
-                      // generateMap: hasMap,
-                    })
+                    const { code } = await jsHandler(rawSource, runtimeSet)
                     const source = new ConcatSource(code)
                     compilation.updateAsset(file, source)
                     onUpdate(file, rawSource, code)
                     debug('js handle: %s', file)
-
-                    // if (hasMap && map) {
-                    //   const source = new RawSource(map.toString())
-                    //   compilation.updateAsset(mapFilename, source)
-                    // }
                     return {
                       key: cacheKey,
                       source,
