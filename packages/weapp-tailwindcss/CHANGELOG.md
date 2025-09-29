@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 4.3.3
+
+### Patch Changes
+
+- [`a247218`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a24721839b36531bc047b86165ecec1938fe0814) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 升级 `tailwindcss-patch` 把 `@tailwindcss/node` 作为依赖，修复 [Bug]: Cannot find module '@tailwindcss/node'
+
+- [`125d067`](https://github.com/sonofmagic/weapp-tailwindcss/commit/125d0678f701d5279cb1c86236420be9544ac53a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 优化 webpack 插件缓存 key 的计算方式
+
+- Updated dependencies [[`d028fb3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d028fb33297cfac6f2f9c233510f84c7850a8ae9)]:
+  - @weapp-tailwindcss/postcss@1.3.1
+
 ## 4.3.2
 
 ### Patch Changes
