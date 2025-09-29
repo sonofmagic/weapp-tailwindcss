@@ -3,11 +3,13 @@ import { tv } from 'tailwind-variants'
 export const ctaButton = tv({
   base: [
     'relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3',
-    'font-semibold text-slate-900',
+    'font-semibold text-slate-900 dark:text-slate-900',
     'bg-[linear-gradient(120deg,#7dd3fc_0%,#34d399_100%)]',
     'shadow-[0_16px_30px_rgba(14,165,233,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]',
     'transition-all duration-[400ms] ease-out',
     'hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(14,165,233,0.4),inset_0_1px_0_rgba(255,255,255,0.45)]',
+    'no-underline hover:no-underline focus-visible:no-underline visited:text-slate-900 dark:visited:text-slate-900',
+    'hover:text-slate-900 dark:hover:text-slate-900',
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400',
   ].join(' '),
 })

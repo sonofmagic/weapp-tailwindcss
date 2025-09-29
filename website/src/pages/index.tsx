@@ -4,7 +4,6 @@ import type {
   ToolOrbitItemConfig,
   VersionLink,
 } from '../features/homepage/components'
-import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import HomeLogo from '@site/src/components/HomeLogo'
 import Layout from '@theme/Layout'
@@ -14,6 +13,7 @@ import TailwindcssLogo from '../assets/tw-logo.svg'
 import ViteLogo from '../assets/vite.svg'
 import WebpackLogo from '../assets/webpack.svg'
 import HeroGithubBadge from '../components/HeroGithubBadge'
+import HeroVersionBadge from '../components/HeroVersionBadge'
 import {
   FeatureCard,
   FrameworkSupport,
@@ -184,7 +184,7 @@ function HomepageHeader() {
               一站式解决方案
             </h3>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
-              <Link className={ctaButton()} to="/docs/intro">
+              <a className={`${ctaButton()} home-cta`} href="/docs/intro">
                 <span className="inline-flex items-center gap-1 text-[0.95rem] tracking-[0.02em]">
                   立即开始体验
                   <svg
@@ -197,15 +197,12 @@ function HomepageHeader() {
                     <path d="M6 12h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
-              </Link>
+              </a>
               <InteractionPill href="/docs/community/group" icon="🚀" label="加入技术交流群" />
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
               <HeroGithubBadge />
-              <span className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,rgba(255,255,255,0.7),rgba(226,232,240,0.55))] px-3 py-2 text-[0.82rem] font-medium text-slate-600 shadow-[0_16px_28px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-md dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.7),rgba(30,41,59,0.55))] dark:text-slate-200 dark:shadow-[0_16px_28px_rgba(15,23,42,0.32),inset_0_1px_0_rgba(255,255,255,0.08)]">
-                <span className="inline-flex size-2 rounded-full bg-[linear-gradient(120deg,rgb(56_189_248),rgb(14_165_233))] shadow-[0_0_10px_rgba(56,189,248,0.6)]"></span>
-                开源社区持续更新
-              </span>
+              <HeroVersionBadge className="mr-1.5" />
             </div>
 
             <PlatformHighlight
@@ -251,7 +248,7 @@ function HomepageHeader() {
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext()
   return (
-    <Layout title={`${siteConfig.title} ${siteConfig.tagline}`} description={siteConfig.tagline}>
+    <Layout wrapperClassName="homepage" title={`${siteConfig.title} ${siteConfig.tagline}`} description={siteConfig.tagline}>
       <HomepageHeader />
     </Layout>
   )
