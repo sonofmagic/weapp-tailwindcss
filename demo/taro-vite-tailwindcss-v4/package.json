@@ -85,12 +85,12 @@
     "react-refresh": "^0.17.0",
     "stylelint": "^16.24.0",
     "tailwindcss": "^4.1.13",
-    "tailwindcss-patch": "^7.1.5",
+    "tailwindcss-patch": "^7.1.6",
     "terser": "^5.44.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.5",
     "weapp-ide-cli": "^3.1.1",
-    "weapp-tailwindcss": "^4.3.2"
+    "weapp-tailwindcss": "^4.3.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -81,13 +81,13 @@
     "prettier": "^3.4.2",
     "sass": "^1.83.4",
     "tailwindcss": "3",
-    "tailwindcss-patch": "^7.1.5",
+    "tailwindcss-patch": "^7.1.6",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "weapp-ide-cli": "^3.1.1",
-    "weapp-tailwindcss": "^4.3.2",
+    "weapp-tailwindcss": "^4.3.3",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }
