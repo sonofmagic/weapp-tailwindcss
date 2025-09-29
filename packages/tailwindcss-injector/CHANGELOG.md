@@ -1,5 +1,11 @@
 # tailwindcss-injector
 
+## 1.0.7
+
+### Patch Changes
+
+- [`125d067`](https://github.com/sonofmagic/weapp-tailwindcss/commit/125d0678f701d5279cb1c86236420be9544ac53a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 优化 webpack 插件缓存 key 的计算方式
+
 ## 1.0.6
 
 ### Patch Changes

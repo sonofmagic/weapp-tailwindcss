@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.3.1
+
+### Patch Changes
+
+- [`d028fb3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d028fb33297cfac6f2f9c233510f84c7850a8ae9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - fix: 优化 CSS 变量计算模式下的正则精确匹配
+
 ## 1.3.0
 
 ### Minor Changes
