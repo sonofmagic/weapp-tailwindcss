@@ -105,4 +105,28 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformWxml(), cachedHtmlFile)
     expect(templateHandler).toHaveBeenCalledTimes(1)
   })
+
+  it('re-runs handlers when cache is disabled', async () => {
+    currentContext.cache = createCache(false)
+
+    const plugins = createPlugins()
+
+    const cssFile = createFile('/src/app.wxss', '.foo { color: blue; }')
+    await runTransform(plugins.transformWxss(), cssFile)
+    const cssFileSecond = createFile('/src/app.wxss', '.foo { color: blue; }')
+    await runTransform(plugins.transformWxss(), cssFileSecond)
+    expect(styleHandler).toHaveBeenCalledTimes(2)
+
+    const jsFile = createFile('/src/app.js', 'console.log("cache-off")')
+    await runTransform(plugins.transformJs(), jsFile)
+    const jsFileSecond = createFile('/src/app.js', 'console.log("cache-off")')
+    await runTransform(plugins.transformJs(), jsFileSecond)
+    expect(jsHandler).toHaveBeenCalledTimes(2)
+
+    const htmlFile = createFile('/src/app.wxml', '<view>cache</view>')
+    await runTransform(plugins.transformWxml(), htmlFile)
+    const htmlFileSecond = createFile('/src/app.wxml', '<view>cache</view>')
+    await runTransform(plugins.transformWxml(), htmlFileSecond)
+    expect(templateHandler).toHaveBeenCalledTimes(2)
+  })
 })

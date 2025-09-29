@@ -78,4 +78,15 @@ describe('tailwindcss helpers', () => {
     const callArgs = tailwindcssPatcherMock.mock.calls.at(-1)?.[0] as any
     expect(callArgs.cache).toEqual({ dir: '/global/cache' })
   })
+
+  it('falls back to cwd when basedir is not provided', async () => {
+    const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue('/workspace')
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    createTailwindcssPatcher({ cacheDir: '.cache' })
+
+    const callArgs = tailwindcssPatcherMock.mock.calls.at(-1)?.[0] as any
+    expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache') })
+    cwdSpy.mockRestore()
+  })
 })

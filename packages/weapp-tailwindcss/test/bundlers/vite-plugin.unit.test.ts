@@ -210,6 +210,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
     const cssPrePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css:pre') as Plugin
     const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
 
     expect(cssPlugin?.transform).toBeTypeOf('function')
     expect(cssPrePlugin?.transform).toBeTypeOf('function')
@@ -223,5 +224,29 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     const nvueResult = nvuePlugin.transform?.('console.log("x")', 'App.nvue')
     expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
     expect(nvueResult).toEqual({ code: 'uvue:App.nvue:console.log("x")' })
+
+    const bundle = {
+      'index.js': createRollupChunk('const answer = 42'),
+      'index.asset.js': {
+        type: 'asset',
+        fileName: 'index.js',
+        source: 'console.log("asset")',
+        name: undefined,
+        needsCodeReference: false,
+      } satisfies OutputAsset,
+    }
+
+    await postPlugin.generateBundle?.({} as any, bundle)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledWith('const answer = 42', runtimeSet)
+    expect((bundle['index.js'] as OutputChunk).code).toBe('js:const answer = 42')
+    expect(currentContext.jsHandler).toHaveBeenCalledWith('console.log("asset")', runtimeSet, {
+      babelParserOptions: {
+        plugins: ['typescript'],
+        sourceType: 'unambiguous',
+      },
+      uniAppX: currentContext.uniAppX,
+    })
+    expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("asset")')
   })
 })

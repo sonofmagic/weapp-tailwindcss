@@ -1,7 +1,34 @@
-import type { UserDefinedOptions } from './types'
+import type { AppType, UserDefinedOptions } from './types'
 import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
 import { isPackageExists } from 'local-pkg'
 import { noop } from './utils'
+
+const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
+const HTML_FILE_PATTERN = /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/
+const JS_FILE_PATTERN = /.+\.[cm]?js?$/
+
+const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean>> = {
+  'uni-app': file => file.startsWith('common/main') || file.startsWith('app'),
+  'uni-app-vite': file => file.startsWith('app') || file.startsWith('common/main'),
+  'mpx': file => file.startsWith('app'),
+  'taro': file => file.startsWith('app'),
+  'remax': file => file.startsWith('app'),
+  'rax': file => file.startsWith('bundle'),
+  'native': file => file.startsWith('app'),
+  'kbone': file => /^(?:common\/)?miniprogram-app/.test(file),
+}
+
+const alwaysFalse = () => false
+
+function createMainCssChunkMatcher() {
+  return (file: string, appType?: AppType) => {
+    if (!appType) {
+      return true
+    }
+    const matcher = MAIN_CSS_CHUNK_MATCHERS[appType]
+    return matcher ? matcher(file) : true
+  }
+}
 
 export function getDefaultOptions(): UserDefinedOptions {
   return {
@@ -14,7 +41,7 @@ export function getDefaultOptions(): UserDefinedOptions {
      * css 最正常的样式文件
      * tyss 涂鸦小程序
      */
-    cssMatcher: file => /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(file),
+    cssMatcher: file => CSS_FILE_PATTERN.test(file),
     /**
      * wxml 微信小程序
      * axml 支付宝小程序
@@ -26,50 +53,16 @@ export function getDefaultOptions(): UserDefinedOptions {
      * xhsml 小红书小程序
      * swan 百度小程序
      */
-    htmlMatcher: file => /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/.test(file),
+    htmlMatcher: file => HTML_FILE_PATTERN.test(file),
     jsMatcher: (file) => {
       if (file.includes('node_modules')) {
         return false
       }
       // remove jsx tsx ts case
-      return /.+\.[cm]?js?$/.test(file)
+      return JS_FILE_PATTERN.test(file)
     },
-    mainCssChunkMatcher: (file, appType) => {
-      switch (appType) {
-        case 'uni-app': {
-          return file.startsWith('common/main') || file.startsWith('app')
-        }
-        case 'uni-app-vite': {
-          // vite 旧版本和新版本对应的样式文件
-          return file.startsWith('app') || file.startsWith('common/main')
-        }
-        case 'mpx': {
-          return file.startsWith('app')
-        }
-        case 'taro': {
-          // app.wxss & app-origin.wxss
-          return file.startsWith('app')
-        }
-        case 'remax': {
-          return file.startsWith('app')
-        }
-        case 'rax': {
-          return file.startsWith('bundle')
-        }
-        case 'native': {
-          return file.startsWith('app')
-        }
-        case 'kbone': {
-          return /^(?:common\/)?miniprogram-app/.test(file)
-        }
-        default: {
-          return true
-        }
-      }
-    },
-    wxsMatcher: () => {
-      return false
-    },
+    mainCssChunkMatcher: createMainCssChunkMatcher(),
+    wxsMatcher: alwaysFalse,
     // https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
     cssPreflight: {
       'box-sizing': 'border-box',

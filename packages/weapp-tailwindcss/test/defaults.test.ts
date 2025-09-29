@@ -1,55 +1,90 @@
-import { getDefaultOptions } from '@/defaults'
-import { isWebpackPlugin } from './util'
+import { describe, expect, it, vi } from 'vitest'
 
-const { mainCssChunkMatcher } = getDefaultOptions()
-
-describe('defaults function test group', () => {
-  it('mainCssChunkMatcher', () => {
-    const case1 = 'dsd/sdsd.wxss'
-
-    const uniappWxss = 'common/main.wxss'
-
-    const taroWxss = 'app.wxss'
-    if (typeof mainCssChunkMatcher === 'function') {
-      expect(mainCssChunkMatcher(case1, undefined)).toBe(true)
-
-      expect(mainCssChunkMatcher(case1, 'taro')).toBe(false)
-
-      expect(mainCssChunkMatcher(case1, 'uni-app')).toBe(false)
-
-      expect(mainCssChunkMatcher(uniappWxss, 'uni-app')).toBe(true)
-
-      expect(mainCssChunkMatcher(uniappWxss, 'uni-app-vite')).toBe(true)
-
-      expect(mainCssChunkMatcher('app.wxss', 'mpx')).toBe(true)
-
-      expect(mainCssChunkMatcher('app.wxss', 'remax')).toBe(true)
-
-      expect(mainCssChunkMatcher('bundle.wxss', 'rax')).toBe(true)
-
-      expect(mainCssChunkMatcher('miniprogram-app.wxss', 'kbone')).toBe(true)
-
-      expect(mainCssChunkMatcher(taroWxss, 'taro')).toBe(true)
-    }
-    else {
-      expect(true).toBe(false)
-    }
+describe('defaults getDefaultOptions', () => {
+  afterEach(() => {
+    vi.resetModules()
+    vi.doUnmock('local-pkg')
+    vi.restoreAllMocks()
   })
 
-  it.skip('should export', () => {
-    const { UnifiedWebpackPluginV5 } = require('../')
-    const plugins = [UnifiedWebpackPluginV5]
-    for (const plugin of plugins) {
-      expect(isWebpackPlugin(plugin)).toBe(true)
-    }
+  it('includes twMerge helpers when merge package exists', async () => {
+    vi.doMock('local-pkg', () => ({
+      isPackageExists: () => true,
+    }))
+
+    const { getDefaultOptions } = await import('@/defaults')
+    const options = getDefaultOptions()
+
+    expect(options.ignoreCallExpressionIdentifiers).toEqual(['twMerge', 'twJoin', 'cva', 'tv'])
   })
 
-  // it('should replace export', () => {
-  //   const { replaceJs } = require('../dist/replace') // await import('../replace')
+  it('falls back to empty helpers when merge package is absent', async () => {
+    vi.doMock('local-pkg', () => ({
+      isPackageExists: () => false,
+    }))
 
-  //   // expect(replaceCss).toBeTruthy()
-  //   expect(replaceJs).toBeTruthy()
-  //   // expect(typeof replaceCss).toBe('function')
-  //   expect(typeof replaceJs).toBe('function')
-  // })
+    const { getDefaultOptions } = await import('@/defaults')
+    const options = getDefaultOptions()
+
+    expect(options.ignoreCallExpressionIdentifiers).toEqual([])
+  })
+
+  it('matches main css chunks based on app type', async () => {
+    const { getDefaultOptions } = await import('@/defaults')
+    const options = getDefaultOptions()
+
+    const matcher = options.mainCssChunkMatcher!
+
+    expect(matcher('common/main.css', 'uni-app')).toBe(true)
+    expect(matcher('app.css', 'uni-app')).toBe(true)
+    expect(matcher('other.css', 'uni-app')).toBe(false)
+
+    expect(matcher('app.css', 'uni-app-vite')).toBe(true)
+    expect(matcher('common/main.css', 'uni-app-vite')).toBe(true)
+    expect(matcher('main.css', 'uni-app-vite')).toBe(false)
+
+    expect(matcher('app.css', 'taro')).toBe(true)
+    expect(matcher('main.css', 'taro')).toBe(false)
+
+    expect(matcher('app.css', 'mpx')).toBe(true)
+    expect(matcher('main.css', 'mpx')).toBe(false)
+
+    expect(matcher('bundle.css', 'rax')).toBe(true)
+    expect(matcher('app.css', 'rax')).toBe(false)
+
+    expect(matcher('app.css', 'remax')).toBe(true)
+    expect(matcher('main.css', 'remax')).toBe(false)
+
+    expect(matcher('app.css', 'native')).toBe(true)
+    expect(matcher('main.css', 'native')).toBe(false)
+
+    expect(matcher('miniprogram-app.css', 'kbone')).toBe(true)
+    expect(matcher('common/miniprogram-app.css', 'kbone')).toBe(true)
+    expect(matcher('app.css', 'kbone')).toBe(false)
+
+    expect(matcher(
+      'anything.css',
+      // @ts-ignore
+      'unknown-type',
+    )).toBe(true)
+  })
+
+  it('filters css and html and js files correctly', async () => {
+    const { getDefaultOptions } = await import('@/defaults')
+    const options = getDefaultOptions()
+
+    expect(typeof options.cssMatcher === 'function' && options.cssMatcher('foo.wxss')).toBe(true)
+    expect(typeof options.cssMatcher === 'function' && options.cssMatcher('foo.css')).toBe(true)
+    expect(typeof options.cssMatcher === 'function' && options.cssMatcher('foo.scss')).toBe(false)
+
+    expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.wxml')).toBe(true)
+    expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.axml')).toBe(true)
+    expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.html')).toBe(false)
+
+    expect(typeof options.jsMatcher === 'function' && options.jsMatcher('foo.js')).toBe(true)
+    expect(typeof options.jsMatcher === 'function' && options.jsMatcher('foo.mjs')).toBe(true)
+    expect(typeof options.jsMatcher === 'function' && options.jsMatcher('foo.jsx')).toBe(false)
+    expect(typeof options.jsMatcher === 'function' && options.jsMatcher('node_modules/foo.js')).toBe(false)
+    expect(typeof options.wxsMatcher === 'function' && options.wxsMatcher('foo.wxs')).toBe(false)
+  })
 })
