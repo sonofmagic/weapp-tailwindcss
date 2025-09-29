@@ -24,7 +24,7 @@ export const PlatformHighlight: FC<PlatformHighlightProps> = ({ title, tags, lin
       </h4>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
         {tags.map(({ id, content }) => (
-          <CoolTag className="min-w-[5.25rem]" key={id}>
+          <CoolTag className="min-w-[4.25rem]" key={id}>
             {content}
           </CoolTag>
         ))}

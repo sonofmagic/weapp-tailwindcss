@@ -28,7 +28,7 @@ const platformTags: Array<{ id: string, content: ReactNode }> = [
   {
     id: 'web',
     content: (
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-center gap-1">
         <span>Web</span>
         <i className="iconify-color logos--chrome"></i>
       </div>
@@ -37,7 +37,7 @@ const platformTags: Array<{ id: string, content: ReactNode }> = [
   {
     id: 'miniapp',
     content: (
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-center gap-1">
         <span>小程序</span>
         <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em">
           <path
@@ -52,7 +52,7 @@ const platformTags: Array<{ id: string, content: ReactNode }> = [
   {
     id: 'android',
     content: (
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-center gap-1">
         <span>安卓</span>
         <i className="iconify-color logos--android-icon"></i>
       </div>
@@ -61,7 +61,7 @@ const platformTags: Array<{ id: string, content: ReactNode }> = [
   {
     id: 'ios',
     content: (
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-center gap-1">
         <span>IOS</span>
         <i className="iconify logos--apple text-black/80 dark:text-white"></i>
       </div>
@@ -70,7 +70,7 @@ const platformTags: Array<{ id: string, content: ReactNode }> = [
   {
     id: 'harmony',
     content: (
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-center gap-1">
         <span>鸿蒙</span>
         <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em">
           <path d="M227.556 0h568.888Q1024 0 1024 227.556v568.888Q1024 1024 796.444 1024H227.556Q0 1024 0 796.444V227.556Q0 0 227.556 0z" fill="#FFEEF1"></path>
