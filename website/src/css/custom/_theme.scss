@@ -1,0 +1,35 @@
+html[data-theme='dark'] {
+  --docusaurus-highlighted-code-line-bg: rgb(66 66 66 / 35%);
+  --ifm-background-color: theme('colors.slate.900');
+  --ifm-navbar-background-color: theme('colors.slate.900');
+
+  /* --ifm-navbar-background-color: initial; */
+
+  --ifm-toc-border-color: theme('colors.slate.50' / 6%);
+
+  /* --ifm-navbar-background-color: rgb(15 23 42); */
+
+  /* background-color: rgb(15 23 42 / var(--tw-bg-opacity)); */
+  --ifm-navbar-link-color: theme('colors.slate.200');
+  --docsearch-text-color: theme('colors.slate.200');
+  --ifm-font-color-base: theme('colors.slate.200');
+  --tw-gradient-stop-1: rgba(14, 165, 233, 0.35);
+  --tw-gradient-stop-2: rgba(7, 193, 96, 0.28);
+  --tw-gradient-stop-3: rgba(45, 212, 191, 0.22);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.98) 0%,
+      rgba(15, 23, 42, 0.9) 40%,
+      rgba(15, 23, 42, 0.82) 70%,
+      rgba(15, 23, 42, 0.92) 100%
+    ),
+    radial-gradient(120% 120% at 0% 0%, rgba(56, 189, 248, 0.12), transparent 65%),
+    radial-gradient(160% 120% at 100% 0%, rgba(7, 193, 96, 0.16), transparent 65%),
+    radial-gradient(120% 160% at 50% 100%, rgba(129, 140, 248, 0.18), transparent 65%), #0f1729;
+}
+
+html[data-theme='dark'] body {
+  background: transparent;
+}

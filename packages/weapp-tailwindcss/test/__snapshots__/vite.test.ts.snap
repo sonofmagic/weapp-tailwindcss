@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`vite > v4-vite-plugin > css 1`] = `
-"/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.14 | MIT License | https://tailwindcss.com */
 view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
@@ -54,7 +54,7 @@ console.log("bg-_h123456_ text-_h123456_ first-letter:marker:text-clip");
 `;
 
 exports[`vite > v4-vite-postcss > css 1`] = `
-"/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.14 | MIT License | https://tailwindcss.com */
 view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;

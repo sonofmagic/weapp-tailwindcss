@@ -1,0 +1,57 @@
+:root {
+  --ifm-color-primary: #0ea5e9;
+  --ifm-color-primary-dark: #0d95d2;
+  --ifm-color-primary-darker: #0c8cc6;
+  --ifm-color-primary-darkest: #0a74a3;
+  --ifm-color-primary-light: #1eb0f1;
+  --ifm-color-primary-lighter: #2ab4f2;
+  --ifm-color-primary-lightest: #4dc0f4;
+  --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 10%);
+  --ifm-toc-border-color: theme('colors.slate.900' / 10%);
+  --tw-gradient-stop-1: rgba(14, 165, 233, 0.22);
+  --tw-gradient-stop-2: rgba(7, 193, 96, 0.18);
+  --tw-gradient-stop-3: rgba(99, 102, 241, 0.18);
+}
+
+html {
+  min-height: 100%;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(248, 250, 252, 0.99) 0%,
+      rgba(232, 248, 255, 0.9) 45%,
+      rgba(213, 250, 232, 0.7) 78%,
+      rgba(236, 252, 255, 0.4) 100%
+    ),
+    radial-gradient(160% 180% at 15% -20%, rgba(14, 165, 233, 0.22), transparent 65%),
+    radial-gradient(160% 180% at 90% -30%, rgba(56, 189, 248, 0.14), transparent 60%),
+    radial-gradient(140% 160% at 50% 120%, rgba(7, 193, 96, 0.12), transparent 75%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #f5fbff;
+  transition: background 0.6s ease;
+}
+
+body {
+  position: relative;
+  min-height: 100%;
+  background: transparent;
+  transition: background 0.6s ease;
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+  border: 0 solid #e5e7eb;
+}
+
+a,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
