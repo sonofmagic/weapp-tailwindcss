@@ -1,67 +1,149 @@
+import type {
+  AnimationTarget,
+  DocumentWithViewTransition,
+  FallbackCoordinatesResolver,
+  Logger,
+  ToggleEventLike,
+  ToggleThemeCapabilities,
+  ToggleThemeEnvironment,
+} from './utils/types'
+import {
+  bindViewTransition,
+  detectReducedMotion,
+  resolveAnimationTarget,
+  resolveGlobalDocument,
+  resolveGlobalWindow,
+  supportsElementAnimate,
+} from './utils/environment'
+import {
+  createClipPathKeyframes,
+  resolveCoordinates,
+  resolveViewport,
+} from './utils/geometry'
+import { invokeMaybePromise } from './utils/promise'
+
+export type { FallbackCoordinatesResolver, ToggleThemeCapabilities, ToggleThemeEnvironment } from './utils/types'
+
 export interface UseToggleThemeOptions {
   /**
    * isDark.value = !isDark.value
-   * @returns
    */
-  toggle: () => void | Promise<void>
+  toggle?: () => void | Promise<void>
   /**
    * isDark.value
-   * @returns
    */
-  isCurrentDark: () => boolean
+  isCurrentDark?: () => boolean
   viewTransition?: {
     before?: () => void | Promise<void>
     /**
      * await nextTick()
-     * @returns
      */
     after?: () => void | Promise<void>
-    callback?: () => any
+    callback?: () => void | Promise<void>
   }
   duration?: number
 
   easing?: string
+  document?: DocumentWithViewTransition
+  window?: Window & typeof globalThis
+  animationTarget?: AnimationTarget
+  fallbackCoordinates?: FallbackCoordinatesResolver
+  logger?: Logger
 }
 
-export function useToggleTheme(options: UseToggleThemeOptions) {
-  const isAppearanceTransition = typeof document !== 'undefined'
-    // @ts-expect-error: Transition API
-    && document.startViewTransition
-    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const { toggle, viewTransition, isCurrentDark, duration = 400, easing = 'ease-in' } = Object.assign({}, options)
-  async function toggleTheme(event?: { clientX: number, clientY: number }) {
-    if (!isAppearanceTransition || !event) {
-      await toggle?.()
+export interface UseToggleThemeResult {
+  toggleTheme: (event?: ToggleEventLike) => Promise<void>
+  isAppearanceTransition: boolean
+  capabilities: ToggleThemeCapabilities
+  environment: ToggleThemeEnvironment
+}
+
+export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeResult {
+  const {
+    toggle,
+    viewTransition,
+    isCurrentDark,
+    duration = 400,
+    easing = 'ease-in',
+    document: documentLike,
+    window: windowLike,
+    animationTarget,
+    fallbackCoordinates,
+    logger = console,
+  } = Object.assign({}, options)
+
+  const resolvedDocument = resolveGlobalDocument(documentLike)
+  const resolvedWindow = resolveGlobalWindow(windowLike)
+  const target = resolveAnimationTarget(animationTarget, resolvedDocument)
+
+  const startViewTransition = bindViewTransition(resolvedDocument)
+  const prefersReducedMotion = detectReducedMotion(resolvedWindow)
+  const supportsAnimate = supportsElementAnimate(target)
+  const hasViewTransition = Boolean(startViewTransition)
+  const isAppearanceTransition = Boolean(hasViewTransition && !prefersReducedMotion && supportsAnimate)
+  const capabilities: ToggleThemeCapabilities = {
+    hasViewTransition,
+    prefersReducedMotion,
+    supportsAnimate,
+  }
+  const environment: ToggleThemeEnvironment = {
+    document: resolvedDocument,
+    window: resolvedWindow,
+    target,
+  }
+
+  async function runTransitionWork() {
+    if (viewTransition?.callback) {
+      await invokeMaybePromise(viewTransition.callback)
+      return
+    }
+    await invokeMaybePromise(viewTransition?.before)
+    await invokeMaybePromise(toggle)
+    await invokeMaybePromise(viewTransition?.after)
+  }
+
+  async function runWithoutViewTransition() {
+    if (viewTransition?.callback) {
+      await invokeMaybePromise(viewTransition.callback)
+      return
+    }
+    await invokeMaybePromise(toggle)
+  }
+
+  async function toggleTheme(event?: ToggleEventLike) {
+    if (!isAppearanceTransition || !environment.target) {
+      await runWithoutViewTransition()
       return
     }
 
-    const x = event.clientX
-    const y = event.clientY
+    const viewport = resolveViewport(environment.window, environment.target)
+    const coordinates = resolveCoordinates(event, fallbackCoordinates, viewport, environment.target)
 
+    if (!coordinates) {
+      await runWithoutViewTransition()
+      return
+    }
+
+    const { x, y } = coordinates
     const endRadius = Math.hypot(
-      Math.max(x, innerWidth - x),
-      Math.max(y, innerHeight - y),
+      Math.max(x, viewport.viewportWidth - x),
+      Math.max(y, viewport.viewportHeight - y),
     )
-    const transition = document.startViewTransition(viewTransition?.callback
-      ? viewTransition.callback()
-      : async () => {
-        await viewTransition?.before?.()
-        await toggle?.()
-        await viewTransition?.after?.()
+    const { clipPath, reverseClipPath } = createClipPathKeyframes({ x, y, endRadius })
+
+    let transitionWorkExecuted = false
+    try {
+      const transition = startViewTransition!(async () => {
+        transitionWorkExecuted = true
+        await runTransitionWork()
       })
 
-    transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`,
-      ]
-      const isDark = isCurrentDark?.()
+      await transition.ready
 
-      document.documentElement.animate(
+      const isDark = Boolean(isCurrentDark?.())
+      const animation = environment.target.animate?.(
         {
-          clipPath: isDark
-            ? [...clipPath].reverse()
-            : clipPath,
+          clipPath: isDark ? reverseClipPath : clipPath,
         },
         {
           duration,
@@ -71,11 +153,21 @@ export function useToggleTheme(options: UseToggleThemeOptions) {
             : '::view-transition-new(root)',
         },
       )
-    })
+
+      await animation?.finished.catch(() => {})
+    }
+    catch (error) {
+      logger?.warn?.('[theme-transition] Falling back to simple toggle because view transition failed.', error)
+      if (!transitionWorkExecuted) {
+        await runWithoutViewTransition()
+      }
+    }
   }
   return {
     toggleTheme,
     isAppearanceTransition,
+    capabilities,
+    environment,
   }
 }
 // https://github.com/antfu-collective/icones/blob/0869721765eeae895cc583b3a2d07fc4a35d70c8/src/components/DarkSwitcher.vue#L27

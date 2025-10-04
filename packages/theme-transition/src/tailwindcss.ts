@@ -109,3 +109,5 @@ export function themeTransitionPlugin(themeTransitionPluginOptions?: ThemeTransi
     )
   })
 }
+
+export default themeTransitionPlugin

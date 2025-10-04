@@ -24,14 +24,55 @@ pnpm add theme-transition
 
 #### Tailwindcss Plugin
 
-```ts
-import type { Config } from 'tailwindcss'
-import { themeTransitionPlugin } from 'theme-transition/tailwindcss'
+##### Tailwind CSS v3
 
-export default <Config> {
+```ts
+// tailwind.config.cjs
+const { themeTransitionPlugin } = require('theme-transition/tailwindcss')
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   plugins: [themeTransitionPlugin()],
 }
 ```
+
+or with ESM syntax:
+
+```ts
+// tailwind.config.ts
+import type { Config } from 'tailwindcss'
+import { themeTransitionPlugin } from 'theme-transition/tailwindcss'
+
+export default {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  plugins: [themeTransitionPlugin()],
+} satisfies Config
+```
+
+##### Tailwind CSS v4
+
+With the new Tailwind CSS v4 tooling, plugins are registered directly from your CSS entry file via the `@plugin` directive:
+
+```css
+/* tailwind.css */
+@import 'tailwindcss';
+@plugin 'theme-transition/tailwindcss';
+```
+
+To customise the plugin you can pass an options object to `@plugin`:
+
+```css
+@import 'tailwindcss';
+
+@plugin 'theme-transition/tailwindcss' ({
+  zIndex: {
+    ceiling: 9999,
+  },
+});
+```
+
+This works out of the box with any of the official v4 runners such as `@tailwindcss/postcss` or `@tailwindcss/vite`.
 
 #### Css
 
@@ -54,7 +95,7 @@ import 'theme-transition/css'
 ```js
 import { useToggleTheme } from 'theme-transition'
 
-const { toggleTheme } = useToggleTheme({
+const { toggleTheme, capabilities, environment } = useToggleTheme({
   isCurrentDark: () => {
     return isDark.value
   },
@@ -64,6 +105,12 @@ const { toggleTheme } = useToggleTheme({
 })
 
 toggleTheme(MouseEvent)
+
+if (!capabilities.hasViewTransition) {
+  // gracefully handle browsers that do not support the API
+}
+
+console.log(environment.target)
 ```
 
 ## API
@@ -74,12 +121,12 @@ export interface UseToggleThemeOptions {
    * isDark.value = !isDark.value
    * @returns
    */
-  toggle: () => void | Promise<void>
+  toggle?: () => void | Promise<void>
   /**
    * isDark.value
    * @returns
    */
-  isCurrentDark: () => boolean
+  isCurrentDark?: () => boolean
   viewTransition?: {
     before?: () => void | Promise<void>
     /**
@@ -87,13 +134,37 @@ export interface UseToggleThemeOptions {
      * @returns
      */
     after?: () => void | Promise<void>
-    callback?: () => any
+    callback?: () => void | Promise<void>
   }
   duration?: number
 
   easing?: string
+  document?: Document
+  window?: Window & typeof globalThis
+  animationTarget?: Element | (() => Element | null)
+  fallbackCoordinates?: { x: number, y: number } | ((context: { viewportWidth: number, viewportHeight: number, target: Element | null }) => { x: number, y: number } | null | undefined)
+  logger?: Pick<Console, 'warn'>
+}
+
+export interface UseToggleThemeResult {
+  toggleTheme: (event?: { clientX: number, clientY: number }) => Promise<void>
+  isAppearanceTransition: boolean
+  capabilities: {
+    hasViewTransition: boolean
+    prefersReducedMotion: boolean
+    supportsAnimate: boolean
+  }
+  environment: {
+    document: Document | undefined
+    window: (Window & typeof globalThis) | undefined
+    target: Element | null
+  }
 }
 ```
+
+`fallbackCoordinates` lets you define a focal point for keyboard-triggered toggles, ensuring the transition still animates even without a pointer event. Supply either a static point or a function that receives the viewport size.
+
+`capabilities` exposes the detected browser support flags so you can degrade gracefully, while `environment` surfaces the resolved DOM handles used internally if you need to customise behaviour further.
 
 ## ShowCases
 

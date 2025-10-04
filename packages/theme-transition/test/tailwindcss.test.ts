@@ -1,8 +1,13 @@
 import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
-import { themeTransitionPlugin } from '@/tailwindcss'
+import pluginDefault, { themeTransitionPlugin } from '@/tailwindcss'
 
 describe('tailwindcss', () => {
+  it('exports matching default and named plugins', () => {
+    expect(typeof pluginDefault).toBe('function')
+    expect(pluginDefault).toBe(themeTransitionPlugin)
+  })
+
   it('themeTransitionPlugin', async () => {
     const { css } = await postcss([tailwindcss({
       config: {
