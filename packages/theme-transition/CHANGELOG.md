@@ -1,5 +1,13 @@
 # theme-transition
 
+## 2.0.0
+
+### Major Changes
+
+- [`5699ec0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5699ec003b37eb742e2e57a9748f4ebedc91b300) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - restructure `useToggleTheme` to expose `capabilities`/`environment` metadata alongside `toggleTheme`, replacing the previous return signature
+  - add a default export for the Tailwind plugin to align with Tailwind CSS v4 `@plugin` usage while keeping the named export for Tailwind CSS v3
+  - document the new API surface and widen tests to cover the additional behaviour
+
 ## 1.0.2
 
 ### Patch Changes
