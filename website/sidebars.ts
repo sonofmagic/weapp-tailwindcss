@@ -68,7 +68,7 @@ const tutorialSidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '🧪Tailwind CSS @4.x(实验性)',
+    label: '🧪Tailwind CSS @4.x',
     collapsed: false,
     items: [
       {
