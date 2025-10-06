@@ -1,16 +1,5 @@
 # Tailwindcss 原子类维护指南
 
-- [Tailwindcss 原子类维护指南](#tailwindcss-原子类维护指南)
-  - [前言](#前言)
-  - [语义化 CSS](#语义化-css)
-  - [本质](#本质)
-  - [类名冗余问题](#类名冗余问题)
-  - [最简单方式: `@apply` 提取](#最简单方式-apply-提取)
-  - [提炼成 Tailwindcss 插件](#提炼成-tailwindcss-插件)
-  - [postcss 预生成产物](#postcss-预生成产物)
-  - [`Unocss` 对比 `Tailwindcss`](#unocss-对比-tailwindcss)
-  - [More](#more)
-
 ## 前言
 
 很多开发者，看到 `Tailwindcss` 的写法，或者初步使用它的时候，第一感觉可能就是 `写是真的爽，维护火葬场`。
