@@ -994,6 +994,8 @@ importers:
         specifier: workspace:*
         version: link:../weapp-tailwindcss
 
+  packages/minify-preserve: {}
+
   packages/postcss:
     dependencies:
       '@weapp-core/escape':

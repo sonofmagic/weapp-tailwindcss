@@ -1,0 +1,17 @@
+{
+  "name": "@weapp-tailwindcss/minify-preserve",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Examples for keeping weapp-tailwindcss helper names during minification.",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "keywords": [
+    "weapp-tailwindcss",
+    "minify",
+    "preserve-names"
+  ],
+  "files": [
+    "README.md",
+    "examples"
+  ]
+}
