@@ -1,5 +1,4 @@
 import process from 'node:process'
-import { init } from '@weapp-tailwindcss/init'
 import semver from 'semver'
 import { getCompilerContext } from '@/context'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
@@ -18,7 +17,4 @@ const command = args[0]
 if (command === 'patch') {
   const ctx = getCompilerContext()
   ctx.twPatcher.patch()
-}
-else if (command === 'init') {
-  init()
 }

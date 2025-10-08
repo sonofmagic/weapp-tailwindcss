@@ -24,6 +24,6 @@
   },
   "devDependencies": {
     "miniprogram-api-typings": "^4.1.0",
-    "weapp-vite": "^5.2.0"
+    "weapp-vite": "^5.2.1"
   }
 }
