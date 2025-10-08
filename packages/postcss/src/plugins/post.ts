@@ -20,11 +20,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   }
 
   if (opts.isMainChunk) {
+    const fallbackRemove = getFallbackRemove(undefined, opts)
+
     p.RuleExit = (rule) => {
-      getFallbackRemove(rule, opts).transformSync(rule, {
-        updateSelector: true,
-        lossless: false,
-      })
+      fallbackRemove.transformSync(rule)
 
       if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
         rule.remove()

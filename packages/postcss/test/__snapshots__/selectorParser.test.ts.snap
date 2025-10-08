@@ -10,4 +10,10 @@ exports[`selectorParser > fallbackRemove case 3 1`] = `"[hidden]:where(:not([hid
 
 exports[`selectorParser > fallbackRemove case 4 1`] = `"button:not(n),input:not(n)"`;
 
+exports[`selectorParser > fallbackRemove transformSync normalizes options for rule input 1`] = `"#app .space-x-4>view+view{}"`;
+
+exports[`selectorParser > ruleTransformSync caches parser per options instance 1`] = `".foo :is(view,text){}"`;
+
+exports[`selectorParser > ruleTransformSync caches parser per options instance 2`] = `".bar :where(.buzz>:not(:last-child)){}"`;
+
 exports[`selectorParser > ruleTransformSync case 0 1`] = `".dark .darkcbg-black,.dark .darkcbg-black"`;

@@ -1,5 +1,8 @@
+import type { Rule } from 'postcss'
+import type { IStyleHandlerOptions } from '@/types'
+import postcss from 'postcss'
 import psp from 'postcss-selector-parser'
-import { getFallbackRemove } from '@/selectorParser'
+import { getFallbackRemove, ruleTransformSync } from '@/selectorParser'
 
 describe('selectorParser', () => {
   it('fallbackRemove case 0', async () => {
@@ -35,5 +38,30 @@ describe('selectorParser', () => {
     })
     const normalized = await target.process('.dark view.darkcbg-black,.dark text.darkcbg-black', { updateSelector: true })
     expect(normalized).toMatchSnapshot()
+  })
+
+  it('fallbackRemove transformSync normalizes options for rule input', () => {
+    const fallback = getFallbackRemove(undefined, {} as IStyleHandlerOptions)
+    const root = postcss.parse('#app :is(.space-x-4>view+view){}')
+    const rule = root.first as Rule
+    fallback.transformSync(rule)
+    expect(rule.toString()).toMatchSnapshot()
+  })
+
+  it('ruleTransformSync caches parser per options instance', () => {
+    const options: IStyleHandlerOptions = {
+      cssSelectorReplacement: {
+        universal: ['view', 'text'],
+      },
+    }
+    const firstRoot = postcss.parse('.foo *{}')
+    const firstRule = firstRoot.first as Rule
+    ruleTransformSync(firstRule, options)
+    expect(firstRule.toString()).toMatchSnapshot()
+
+    const secondRoot = postcss.parse('.bar :where(.buzz > :not(:last-child)){}')
+    const secondRule = secondRoot.first as Rule
+    ruleTransformSync(secondRule, options)
+    expect(secondRule.toString()).toMatchSnapshot()
   })
 })
