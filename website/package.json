@@ -74,7 +74,7 @@
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.13",
     "typedoc-plugin-markdown": "4.9.0",
-    "webpack": "5.102.0",
+    "webpack": "5.102.1",
     "webpack-node-externals": "^3.0.0"
   },
   "browserslist": {

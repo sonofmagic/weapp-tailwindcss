@@ -1,5 +1,3 @@
-import type { UserConfig } from '@commitlint/types'
+import { icebreaker } from '@icebreakers/commitlint-config'
 
-export default <UserConfig>{
-  extends: ['@commitlint/config-conventional'],
-}
+export default icebreaker()
