@@ -1,6 +1,6 @@
 import type { ParseError, ParseResult, ParserOptions } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
-import type { ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
+import type { CallExpression, ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
@@ -11,6 +11,20 @@ import { regExpTest } from '@/utils'
 import { replaceHandleValue } from './handlers'
 import { JsTokenUpdater } from './JsTokenUpdater'
 import { NodePathWalker } from './NodePathWalker'
+
+/**
+ * Describes the data collected during AST traversal that is required for the
+ * subsequent source transformation phase.
+ */
+interface SourceAnalysis {
+  ast: ParseResult<File>
+  walker: NodePathWalker
+  jsTokenUpdater: JsTokenUpdater
+  targetPaths: NodePath<StringLiteral | TemplateElement>[]
+  importDeclarations: Set<NodePath<ImportDeclaration>>
+  exportDeclarations: Set<NodePath<ExportDeclaration>>
+  ignoredPaths: WeakSet<NodePath<StringLiteral | TemplateElement>>
+}
 
 export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<string, ParseResult<File>>(
   {
@@ -57,17 +71,109 @@ export function isEvalPath(p: NodePath<Node>) {
   return false
 }
 
-const ignoreFlagMap = new WeakMap()
+/**
+ * Normalises replacement metadata for literals discovered inside `eval` calls.
+ */
+function createEvalReplacementToken(
+  path: NodePath<StringLiteral | TemplateElement>,
+  updated: string,
+): JsToken | undefined {
+  const node = path.node
 
-export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions) {
-  // const jsTokens: JsToken[] = []
+  let offset = 0
+  let original: string
+  if (path.isStringLiteral()) {
+    offset = 1
+    original = path.node.value
+  }
+  else if (path.isTemplateElement()) {
+    original = path.node.value.raw
+  }
+  else {
+    original = ''
+  }
+
+  if (typeof node.start !== 'number' || typeof node.end !== 'number') {
+    return undefined
+  }
+
+  const start = node.start + offset
+  const end = node.end - offset
+  if (start >= end) {
+    return undefined
+  }
+
+  if (original === updated) {
+    return undefined
+  }
+
+  const value = path.isStringLiteral() ? jsStringEscape(updated) : updated
+
+  return {
+    start,
+    end,
+    value,
+    path,
+  }
+}
+
+function handleEvalStringLiteral(path: NodePath<StringLiteral>, options: IJsHandlerOptions, updater: JsTokenUpdater) {
+  const { code } = jsHandler(path.node.value, {
+    ...options,
+    needEscaped: false,
+    generateMap: false,
+  })
+
+  if (!code) {
+    return
+  }
+
+  const token = createEvalReplacementToken(path, code)
+  if (token) {
+    updater.addToken(token)
+  }
+}
+
+function handleEvalTemplateElement(path: NodePath<TemplateElement>, options: IJsHandlerOptions, updater: JsTokenUpdater) {
+  const { code } = jsHandler(path.node.value.raw, {
+    ...options,
+    generateMap: false,
+  })
+
+  if (!code) {
+    return
+  }
+
+  const token = createEvalReplacementToken(path, code)
+  if (token) {
+    updater.addToken(token)
+  }
+}
+
+/**
+ * Recursively analyse string-like nodes that sit inside `eval` calls so that we
+ * can rewrite them while keeping their offsets intact.
+ */
+function walkEvalExpression(path: NodePath<CallExpression>, options: IJsHandlerOptions, updater: JsTokenUpdater) {
+  path.traverse({
+    StringLiteral(innerPath) {
+      handleEvalStringLiteral(innerPath, options, updater)
+    },
+    TemplateElement(innerPath) {
+      handleEvalTemplateElement(innerPath, options, updater)
+    },
+  })
+}
+
+export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions): SourceAnalysis {
   const jsTokenUpdater = new JsTokenUpdater()
+  const ignoredPaths = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
   const walker = new NodePathWalker(
     {
       ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
       callback(path) {
         if (path.isStringLiteral() || path.isTemplateElement()) {
-          ignoreFlagMap.set(path, true)
+          ignoredPaths.add(path)
         }
       },
     },
@@ -111,60 +217,7 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
     CallExpression: {
       enter(p) {
         if (isEvalPath(p)) {
-          p.traverse({
-            StringLiteral: {
-              enter(path) {
-                // ___CSS_LOADER_EXPORT___
-                const { code } = jsHandler(path.node.value, {
-                  ...options,
-                  needEscaped: false,
-                  generateMap: false,
-                })
-                if (code) {
-                  const node = path.node
-                  if (typeof node.start === 'number' && typeof node.end === 'number') {
-                    const start = node.start + 1
-                    const end = node.end - 1
-                    if (start < end && path.node.value !== code) {
-                      jsTokenUpdater.addToken(
-                        {
-                          start,
-                          end,
-                          value: jsStringEscape(code),
-                          path,
-                        },
-                      )
-                    }
-                  }
-                }
-              },
-            },
-            TemplateElement: {
-              enter(path) {
-                const { code } = jsHandler(path.node.value.raw, {
-                  ...options,
-                  generateMap: false,
-                })
-                if (code) {
-                  const node = path.node
-                  if (typeof node.start === 'number' && typeof node.end === 'number') {
-                    const start = node.start
-                    const end = node.end
-                    if (start < end && path.node.value.raw !== code) {
-                      jsTokenUpdater.addToken(
-                        {
-                          start,
-                          end,
-                          value: code,
-                          path,
-                        },
-                      )
-                    }
-                  }
-                }
-              },
-            },
-          })
+          walkEvalExpression(p, options, jsTokenUpdater)
           return
         }
 
@@ -192,55 +245,42 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
     targetPaths,
     importDeclarations,
     exportDeclarations,
-    // jsTokens,
+    ignoredPaths,
   }
 }
 
 export function processUpdatedSource(
   rawSource: string,
   options: IJsHandlerOptions,
-  analysis: ReturnType<typeof analyzeSource>,
+  analysis: SourceAnalysis,
 ) {
   const ms = new MagicString(rawSource)
-  const { targetPaths, jsTokenUpdater } = analysis
-  const tokens = targetPaths
-    .filter(
-      (x) => {
-        return !ignoreFlagMap.get(x)
-      },
-    )
-    .map(
-      (p) => {
-        if (p.isStringLiteral()) {
-          return replaceHandleValue(
-            p,
-            {
-              ...options,
-              needEscaped: options.needEscaped ?? true,
-            },
-          )
-        }
-        else if (p.isTemplateElement()) {
-          return replaceHandleValue(
-            p,
-            {
-              ...options,
-              needEscaped: false,
-            },
-          )
-        }
-        return undefined
-      },
-    )
-    .filter(Boolean) as JsToken[]
+  const { targetPaths, jsTokenUpdater, ignoredPaths } = analysis
 
-  jsTokenUpdater.push(
-    ...tokens,
-  ).filter(
-    (x) => {
-      return !ignoreFlagMap.get(x.path)
-    },
-  ).updateMagicString(ms)
+  // Build replacement tokens for every string-like node collected earlier.
+  const replacementTokens: JsToken[] = []
+  for (const path of targetPaths) {
+    if (ignoredPaths.has(path)) {
+      continue
+    }
+
+    const token = replaceHandleValue(
+      path,
+      {
+        ...options,
+        needEscaped: path.isStringLiteral() ? options.needEscaped ?? true : false,
+      },
+    )
+
+    if (token) {
+      replacementTokens.push(token)
+    }
+  }
+
+  jsTokenUpdater
+    .push(...replacementTokens)
+    .filter(token => !ignoredPaths.has(token.path))
+    .updateMagicString(ms)
   return ms
 }
 

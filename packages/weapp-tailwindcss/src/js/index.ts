@@ -7,6 +7,7 @@ export {
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
+  // Persist immutable options so repeated invocations only supply per-call overrides.
   const {
     mangleContext,
     arbitraryValues,
@@ -20,20 +21,27 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   } = options
 
   function handler(rawSource: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) {
-    const opts = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(options as IJsHandlerOptions, {
-      classNameSet,
-      escapeMap,
-      arbitraryValues,
-      mangleContext,
-      jsPreserveClass,
-      generateMap,
-      babelParserOptions,
-      ignoreCallExpressionIdentifiers,
-      ignoreTaggedTemplateExpressionIdentifiers,
-      uniAppX,
-    })
+    const overrideOptions = (options ?? {}) as IJsHandlerOptions
+    const resolvedOptions = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(
+      {
+        ...overrideOptions,
+        classNameSet,
+      },
+      {
+        classNameSet,
+        escapeMap,
+        arbitraryValues,
+        mangleContext,
+        jsPreserveClass,
+        generateMap,
+        babelParserOptions,
+        ignoreCallExpressionIdentifiers,
+        ignoreTaggedTemplateExpressionIdentifiers,
+        uniAppX,
+      },
+    )
 
-    return jsHandler(rawSource, opts)
+    return jsHandler(rawSource, resolvedOptions)
   }
 
   return handler

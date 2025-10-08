@@ -1,39 +1,41 @@
 import type MagicString from 'magic-string'
 import type { JsToken } from './types'
 
+/**
+ * Lightweight helper that batches updates to {@link MagicString}.
+ * It keeps the transformation logic out of the traversal code and makes
+ * it easier to reason about the order in which tokens are written back.
+ */
 export class JsTokenUpdater {
-  public value: JsToken[]
+  private tokens: JsToken[]
 
-  constructor(
-    { value }:
-    { value?: JsToken[] } = {},
-  ) {
-    this.value = value ?? []
+  constructor({ value }: { value?: JsToken[] } = {}) {
+    this.tokens = value ? [...value] : []
   }
 
   addToken(token?: JsToken) {
     if (token) {
-      this.value.push(token)
+      this.tokens.push(token)
     }
   }
 
   push(...args: JsToken[]) {
-    this.value.push(...args)
+    this.tokens.push(...args)
     return this
   }
 
   map(callbackfn: (value: JsToken, index: number, array: JsToken[]) => JsToken) {
-    this.value = this.value.map(callbackfn)
+    this.tokens = this.tokens.map(callbackfn)
     return this
   }
 
   filter(callbackfn: (value: JsToken, index: number, array: JsToken[]) => unknown) {
-    this.value = this.value.filter(callbackfn)
+    this.tokens = this.tokens.filter(callbackfn)
     return this
   }
 
   updateMagicString(ms: MagicString) {
-    for (const { start, end, value } of this.value) {
+    for (const { start, end, value } of this.tokens) {
       ms.update(start, end, value)
     }
     return ms

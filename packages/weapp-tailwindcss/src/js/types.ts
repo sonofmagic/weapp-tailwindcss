@@ -17,6 +17,10 @@ export interface JsTokenMeta {
 
 //  (JsTokenTemplateElement | JsTokenStringLiteral) &
 
+/**
+ * Represents a slice of the original source that must be updated while keeping
+ * track of the owning AST path for later filtering.
+ */
 export interface JsToken {
   start: number
   end: number

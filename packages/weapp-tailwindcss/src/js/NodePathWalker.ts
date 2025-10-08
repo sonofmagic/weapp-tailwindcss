@@ -43,13 +43,15 @@ export interface ExportAllDeclarationImportToken {
 
 export type ImportToken = ImportSpecifierImportToken | ImportDefaultSpecifierImportToken | ExportAllDeclarationImportToken
 
-// NodePath<Node>
-export const walkedBindingWeakMap = new WeakMap<NodePath<Node | null | undefined>, boolean>()
-
+/**
+ * Walks bindings that originate from call expressions we care about, collecting
+ * any string-like values that must be transformed later on.
+ */
 export class NodePathWalker {
   public ignoreCallExpressionIdentifiers: (string | RegExp)[]
   public callback: (path: NodePath<StringLiteral | TemplateElement>) => void
   public imports: Set<ImportToken>
+  private visited: WeakSet<NodePath<Node | null | undefined>>
 
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
@@ -61,6 +63,7 @@ export class NodePathWalker {
     this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? []
     this.callback = callback ?? (() => { })
     this.imports = new Set()
+    this.visited = new WeakSet()
   }
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
@@ -116,10 +119,11 @@ export class NodePathWalker {
   }
 
   walkNode(arg: NodePath<Node | null | undefined>) {
-    if (walkedBindingWeakMap.get(arg)) {
+    if (this.visited.has(arg)) {
       return
     }
-    walkedBindingWeakMap.set(arg, true)
+    this.visited.add(arg)
+    // Resolve identifiers back to their bindings so we can discover nested templates.
     if (arg.isIdentifier()) {
       const binding = arg.scope.getBinding(arg.node.name)
       if (binding) {
@@ -193,8 +197,7 @@ export class NodePathWalker {
   }
 
   /**
-   * @description main 方法
-   * @param path
+   * Walk the arguments of a desired call expression so their bindings can be analysed.
    */
   walkCallExpression(path: NodePath<CallExpression>) {
     const calleePath = path.get('callee')
@@ -203,6 +206,7 @@ export class NodePathWalker {
       && regExpTest(this.ignoreCallExpressionIdentifiers, calleePath.node.name, {
         exact: true,
       })) {
+      // We only follow arguments for call expressions that match the allow list.
       for (const arg of path.get('arguments')) {
         this.walkNode(arg)
       }
@@ -251,6 +255,7 @@ export class NodePathWalker {
   walkExportAllDeclaration(path: NodePath<ExportAllDeclaration>) {
     const source = path.get('source')
     if (source.isStringLiteral()) {
+      // Capture re-export paths so that the caller can decide how to process them.
       this.imports.add(
         {
           declaration: path,
