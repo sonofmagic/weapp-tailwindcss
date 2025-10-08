@@ -15,12 +15,12 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
     "rsmax": "^1.3.14"
   },
   "devDependencies": {
-    "@types/react": "^19.2.2",
+    "@types/react": "catalog:react18",
     "autoprefixer": "^10.4.21",
     "cross-env": "^10.1.0",
     "postcss": "^8.5.6",

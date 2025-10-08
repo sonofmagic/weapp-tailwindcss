@@ -8,14 +8,24 @@ packages:
   - '!**/test/**'
 
 catalogs:
+  react18:
+    '@types/react': 18.2.15
+    '@types/react-dom': 18.2.7
+    react: 18.3.1
+    react-dom: 18.3.1
+  react19:
+    '@types/react': 19.2.2
+    '@types/react-dom': 19.1.13
+    react: 19.1.1
+    react-dom: 19.1.1
+
   tailwindcss3:
     tailwindcss: ^3.4.17
   tailwindcss4:
     '@tailwindcss/postcss': ^4.1.14
-    '@tailwindcss/vite': ^4.1.13
-    tailwindcss: ^4.1.13
-    tailwindcss4: npm:tailwindcss@^4.1.13
-
+    '@tailwindcss/vite': ^4.1.14
+    tailwindcss: ^4.1.14
+    tailwindcss4: npm:tailwindcss@^4.1.14
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - '@tarojs/binding'

@@ -41,8 +41,8 @@
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19",
     "react-github-btn": "^1.4.0",
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^3.1.1"
