@@ -10,6 +10,7 @@ import { replaceHandleValue } from '../js/handlers'
 import { defuOverrideArray } from '../utils'
 import { replaceWxml } from './shared'
 import { Tokenizer } from './Tokenizer'
+import { isAllWhitespace } from './whitespace'
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
@@ -71,7 +72,7 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
   for (const token of tokens) {
     if (token.start > previousEnd) {
       const gap = ms.slice(previousEnd, token.start)
-      if (gap.trim() === '') {
+      if (isAllWhitespace(gap)) {
         ms.update(previousEnd, token.start, replaceWxml(gap, {
           keepEOL: false,
           escapeMap: options.escapeMap,
@@ -121,7 +122,7 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
     const lastToken = tokens[tokens.length - 1]
     if (lastToken.end < ms.original.length) {
       const gap = ms.slice(lastToken.end, ms.original.length)
-      if (gap.trim() === '') {
+      if (isAllWhitespace(gap)) {
         ms.update(lastToken.end, ms.original.length, replaceWxml(gap, {
           keepEOL: false,
           escapeMap: options.escapeMap,
@@ -148,10 +149,16 @@ function regTest(reg: RegExp, str: string) {
 
 export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: string) {
   if (Array.isArray(props)) {
+    let lowerAttr: string | undefined
     for (const prop of props) {
-      const res = typeof prop === 'string' ? prop.toLowerCase() === attr.toLowerCase() : regTest(prop, attr)
-      if (res) {
-        return res
+      if (typeof prop === 'string') {
+        lowerAttr ??= attr.toLowerCase()
+        if (prop.toLowerCase() === lowerAttr) {
+          return true
+        }
+      }
+      else if (regTest(prop, attr)) {
+        return true
       }
     }
     return false
@@ -172,6 +179,28 @@ export async function customTemplateHandler(rawSource: string, options: Required
     runtimeSet,
     jsHandler,
   } = options ?? {}
+  const wildcardAttributeRules: ItemOrItemArray<string | RegExp>[] = []
+  const tagAttributeRuleMap = new Map<string, ItemOrItemArray<string | RegExp>[]>()
+  const regexpAttributeRules: Array<[RegExp, ItemOrItemArray<string | RegExp>]> = []
+
+  for (const [selector, props] of customAttributesEntities) {
+    if (selector === '*') {
+      wildcardAttributeRules.push(props)
+    }
+    else if (typeof selector === 'string') {
+      const list = tagAttributeRuleMap.get(selector)
+      if (list) {
+        list.push(props)
+      }
+      else {
+        tagAttributeRuleMap.set(selector, [props])
+      }
+    }
+    else {
+      regexpAttributeRules.push([selector, props])
+    }
+  }
+
   const s = new MagicString(rawSource)
   let tag = ''
   const wxsArray: {
@@ -187,8 +216,14 @@ export async function customTemplateHandler(rawSource: string, options: Required
 
       onattribute(name, value, quote) {
         if (value) {
+          const lowerName = name.toLowerCase()
+          let updated = false
           // https://github.com/fb55/htmlparser2/blob/5eea942451c1b836999d4557ed98470678c789b9/src/Parser.ts#L431
-          function update() {
+          const update = () => {
+            if (updated) {
+              return
+            }
+            updated = true
             s.update(
               parser.startIndex + name.length + 2,
               // !important
@@ -205,23 +240,35 @@ export async function customTemplateHandler(rawSource: string, options: Required
           // addToken 'virtualHostClass' toLowerCase
           if (
             !disabledDefaultTemplateHandler
-            && (['class', 'hover-class', 'virtualhostclass'].includes(name.toLocaleLowerCase()))
+            && (lowerName === 'class' || lowerName === 'hover-class' || lowerName === 'virtualhostclass')
           ) {
             update()
           }
-          for (const [t, props] of customAttributesEntities) {
-            if (t === '*') {
+          if (!updated) {
+            for (const props of wildcardAttributeRules) {
               if (isPropsMatch(props, name)) {
                 update()
+                break
               }
             }
-            else if (typeof t === 'string') {
-              if (t === tag && isPropsMatch(props, name)) {
+          }
+          if (!updated) {
+            const tagRules = tagAttributeRuleMap.get(tag)
+            if (tagRules) {
+              for (const props of tagRules) {
+                if (isPropsMatch(props, name)) {
+                  update()
+                  break
+                }
+              }
+            }
+          }
+          if (!updated) {
+            for (const [selector, props] of regexpAttributeRules) {
+              if (regTest(selector, tag) && isPropsMatch(props, name)) {
                 update()
+                break
               }
-            }
-            else if (regTest(t, tag) && isPropsMatch(props, name)) {
-              update()
             }
           }
         }

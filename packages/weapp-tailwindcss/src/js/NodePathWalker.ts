@@ -18,7 +18,8 @@ import type {
   TemplateLiteral,
   VariableDeclarator,
 } from '@babel/types'
-import { regExpTest } from '@/utils'
+import type { NameMatcher } from '@/utils/nameMatcher'
+import { createNameMatcher } from '@/utils/nameMatcher'
 
 export interface ImportSpecifierImportToken {
   declaration: NodePath<ImportDeclaration>
@@ -52,6 +53,7 @@ export class NodePathWalker {
   public callback: (path: NodePath<StringLiteral | TemplateElement>) => void
   public imports: Set<ImportToken>
   private visited: WeakSet<NodePath<Node | null | undefined>>
+  private isIgnoredCallIdentifier: NameMatcher
 
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
@@ -64,6 +66,7 @@ export class NodePathWalker {
     this.callback = callback ?? (() => { })
     this.imports = new Set()
     this.visited = new WeakSet()
+    this.isIgnoredCallIdentifier = createNameMatcher(this.ignoreCallExpressionIdentifiers, { exact: true })
   }
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
@@ -203,9 +206,7 @@ export class NodePathWalker {
     const calleePath = path.get('callee')
     if (
       calleePath.isIdentifier()
-      && regExpTest(this.ignoreCallExpressionIdentifiers, calleePath.node.name, {
-        exact: true,
-      })) {
+      && this.isIgnoredCallIdentifier(calleePath.node.name)) {
       // We only follow arguments for call expressions that match the allow list.
       for (const arg of path.get('arguments')) {
         this.walkNode(arg)

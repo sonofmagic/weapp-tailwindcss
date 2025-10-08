@@ -1,6 +1,8 @@
 // 针对微信的属性表达式进行切词
 // https://github.com/sonofmagic/weapp-tailwindcss/issues/319
 // all state
+import { isWhitespace } from './whitespace'
+
 export enum State {
   START,
   TEXT,
@@ -38,7 +40,7 @@ export class Tokenizer {
   private processChar(char: string, index: number) {
     switch (this.state) {
       case State.START:
-        if (this.isWhitespace(char)) {
+        if (isWhitespace(char)) {
           // Ignore leading spaces
         }
         else if (char === '{') {
@@ -56,7 +58,7 @@ export class Tokenizer {
         break
 
       case State.TEXT:
-        if (this.isWhitespace(char)) {
+        if (isWhitespace(char)) {
           this.tokens.push({ start: this.bufferStartIndex, end: index, value: this.buffer, expressions: this.expressions })
           this.buffer = ''
           this.expressions = []
@@ -105,7 +107,7 @@ export class Tokenizer {
         break
 
       case State.BRACES_COMPLETE:
-        if (this.isWhitespace(char)) {
+        if (isWhitespace(char)) {
           this.tokens.push({
             start: this.bufferStartIndex,
             end: index,
@@ -149,10 +151,10 @@ export class Tokenizer {
         expressions: this.expressions,
       })
     }
-    const result = this.tokens.slice()
+    const tokens = this.tokens
     // reset internal state to make tokenizer reusable
     this.reset()
-    return result
+    return tokens
   }
 
   public reset() {
@@ -163,9 +165,5 @@ export class Tokenizer {
     this.expressionBuffer = ''
     this.expressionStartIndex = 0
     this.expressions = []
-  }
-
-  private isWhitespace(char: string) {
-    return /\s/.test(char)
   }
 }

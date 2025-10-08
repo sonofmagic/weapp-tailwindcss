@@ -96,6 +96,8 @@ export function replaceHandleValue(
   let transformed = literal
   let mutated = false
 
+  const replacementCache = new Map<string, { pattern: RegExp, replacement: string }>()
+
   for (const candidate of candidates) {
     if (!shouldTransformClassName(candidate, options)) {
       continue
@@ -110,8 +112,19 @@ export function replaceHandleValue(
       }
     }
 
-    const replacement = replaceWxml(candidate, { escapeMap })
-    const pattern = new RegExp(escapeStringRegexp(candidate))
+    if (!transformed.includes(candidate)) {
+      continue
+    }
+
+    let cached = replacementCache.get(candidate)
+    if (!cached) {
+      cached = {
+        pattern: new RegExp(escapeStringRegexp(candidate)),
+        replacement: replaceWxml(candidate, { escapeMap }),
+      }
+      replacementCache.set(candidate, cached)
+    }
+    const { pattern, replacement } = cached
     const replaced = transformed.replace(pattern, replacement)
 
     if (replaced !== transformed) {

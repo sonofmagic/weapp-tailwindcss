@@ -7,7 +7,7 @@ import { jsStringEscape } from '@ast-core/escape'
 import { LRUCache } from 'lru-cache'
 import MagicString from 'magic-string'
 import { parse, traverse } from '@/babel'
-import { regExpTest } from '@/utils'
+import { createNameMatcher } from '@/utils/nameMatcher'
 import { replaceHandleValue } from './handlers'
 import { JsTokenUpdater } from './JsTokenUpdater'
 import { NodePathWalker } from './NodePathWalker'
@@ -179,6 +179,8 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
     },
   )
 
+  const isIgnoredTaggedTemplate = createNameMatcher(options.ignoreTaggedTemplateExpressionIdentifiers, { exact: true })
+
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
   const importDeclarations = new Set<NodePath<ImportDeclaration>>()
   const exportDeclarations = new Set<NodePath<ExportDeclaration>>()
@@ -204,7 +206,7 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
             const tagPath = ppp.get('tag')
             if (
               (tagPath.isIdentifier()
-                && regExpTest(options.ignoreTaggedTemplateExpressionIdentifiers ?? [], tagPath.node.name, { exact: true })
+                && isIgnoredTaggedTemplate(tagPath.node.name)
               )
             ) {
               return

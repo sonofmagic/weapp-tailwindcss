@@ -168,6 +168,17 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
+  it('replaces all repeated occurrences in a single pass', () => {
+    const literal = getLiteralPath('const repeated = \'w-[100px] w-[100px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_100px_ w-_100px_')
+  })
+
   it('evaluates unicode decoding guard when no escape is present', () => {
     const literal = getLiteralPath('const plain = \'flex\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
