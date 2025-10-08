@@ -1,6 +1,14 @@
 import { vi } from 'vitest'
-import { create as createV3, twMerge } from '@/v3'
-import { twMerge as twMergeV4 } from '@/v4'
+import { create as createCva, cva } from '@/cva'
+import {
+  create as createV3,
+  tailwindMergeVersion as tailwindMergeV3Version,
+  twMerge,
+} from '@/v3'
+import {
+  tailwindMergeVersion as tailwindMergeV4Version,
+  twMerge as twMergeV4,
+} from '@/v4'
 
 describe('v3', () => {
   it('should ', () => {
@@ -26,5 +34,36 @@ describe('factory options', () => {
     const { twMerge: rawMerge } = createV3({ disableEscape: true })
 
     expect(rawMerge('text-[#ECECEC]')).toBe('text-[#ECECEC]')
+  })
+})
+
+describe('version metadata', () => {
+  it('exposes tailwind-merge major version numbers', () => {
+    expect(tailwindMergeV3Version).toBe(2)
+    expect(tailwindMergeV4Version).toBe(3)
+  })
+})
+
+describe('cva integration', () => {
+  it('applies escaping by default', () => {
+    const button = cva('text-[#ECECEC]')
+
+    expect(button()).toBe('text-_hECECEC_')
+  })
+
+  it('supports custom escapeFn', () => {
+    const escapeFn = vi.fn((value: string) => `__${value}__`)
+    const { cva: customCva } = createCva({ escapeFn })
+    const badge = customCva('text-[#ECECEC]')
+
+    expect(badge()).toBe('__text-[#ECECEC]__')
+    expect(escapeFn).toHaveBeenCalledWith('text-[#ECECEC]')
+  })
+
+  it('can disable escaping entirely', () => {
+    const { cva: plainCva } = createCva({ disableEscape: true })
+    const tag = plainCva('text-[#ECECEC]')
+
+    expect(tag()).toBe('text-[#ECECEC]')
   })
 })

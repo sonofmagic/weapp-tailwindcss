@@ -8,9 +8,9 @@ import {
   mergeConfigs,
 } from 'tailwind-merge-v2'
 import { weappTwIgnore } from 'weapp-tailwindcss/escape'
-import { createFactory } from './utils'
+import { createRuntimeFactory } from './core/create-runtime'
 
-const create = createFactory({
+const create = createRuntimeFactory({
   createTailwindMerge: _createTailwindMerge,
   extendTailwindMerge: _extendTailwindMerge,
   twJoin: _twJoin,
@@ -18,7 +18,13 @@ const create = createFactory({
   version: 2,
 })
 
-const { twMerge, twJoin, extendTailwindMerge, createTailwindMerge } = create()
+const {
+  version: tailwindMergeVersion,
+  twMerge,
+  twJoin,
+  extendTailwindMerge,
+  createTailwindMerge,
+} = create()
 
 export {
   create,
@@ -26,6 +32,7 @@ export {
   extendTailwindMerge,
   getDefaultConfig,
   mergeConfigs,
+  tailwindMergeVersion,
   twJoin,
   twMerge,
   weappTwIgnore,
