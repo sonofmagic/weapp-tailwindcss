@@ -51,4 +51,11 @@ describe('index', () => {
       cwd: path.resolve(fixturesDir, './mjs'),
     })).toMatchSnapshot()
   })
+
+  it('config option resolves explicit file path', async () => {
+    expect(await loadConfig({
+      cwd: fixturesDir,
+      config: './mjs/tailwind.config.mjs',
+    })).toMatchSnapshot()
+  })
 })
