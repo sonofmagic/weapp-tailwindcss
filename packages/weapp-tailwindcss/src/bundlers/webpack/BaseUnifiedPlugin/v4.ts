@@ -8,6 +8,7 @@ import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { getGroupedEntries } from '@/utils'
+import { processCachedTask } from '../../shared/cache'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -99,48 +100,40 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       const runtimeSet = await twPatcher.getClassSet()
       setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
-      const promises: (void | Promise<void>)[] = []
+      const tasks: Promise<void>[] = []
       if (Array.isArray(groupedEntries.html)) {
         for (const element of groupedEntries.html) {
           const [file, originalSource] = element
           // @ts-ignore
           const rawSource = originalSource.source().toString()
 
-          const hash = cache.computeHash(rawSource)
           const cacheKey = file
-          cache.calcHashValueChanged(cacheKey, hash)
-          promises.push(
-            cache.process(
+          tasks.push(
+            processCachedTask({
+              cache,
               cacheKey,
-              () => {
-                const source = cache.get(cacheKey)
-                if (source) {
-                  // @ts-ignore
-                  compilation.updateAsset(file, source)
-                  debug('html cache hit: %s', file)
-                }
-                else {
-                  return false
-                }
+              rawSource,
+              applyResult(source) {
+                // @ts-ignore
+                compilation.updateAsset(file, source)
               },
-              // @ts-ignore
-              async () => {
+              onCacheHit() {
+                debug('html cache hit: %s', file)
+              },
+              transform: async () => {
                 const wxml = await templateHandler(rawSource, {
                   runtimeSet,
                 })
                 const source = new ConcatSource(wxml)
-                // @ts-ignore
-                compilation.updateAsset(file, source)
 
                 onUpdate(file, rawSource, wxml)
                 debug('html handle: %s', file)
 
                 return {
-                  key: cacheKey,
-                  source,
+                  result: source,
                 }
               },
-            ),
+            }),
           )
         }
       }
@@ -149,36 +142,30 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         for (const element of groupedEntries.js) {
           const [file, originalSource] = element
           const cacheKey = getCacheKey(file)
-          promises.push(
-            cache.process(
+          // @ts-ignore
+          const rawSource = originalSource.source().toString()
+          tasks.push(
+            processCachedTask({
+              cache,
               cacheKey,
-              () => {
-                const source = cache.get(cacheKey)
-                if (source) {
-                  // @ts-ignore
-                  compilation.updateAsset(file, source)
-                  debug('js cache hit: %s', file)
-                }
-                else {
-                  return false
-                }
-              },
-              // @ts-ignore
-              async () => {
-                // @ts-ignore
-                const rawSource = originalSource.source().toString()
-                const { code } = await jsHandler(rawSource, runtimeSet)
-                const source = new ConcatSource(code)
+              rawSource,
+              applyResult(source) {
                 // @ts-ignore
                 compilation.updateAsset(file, source)
+              },
+              onCacheHit() {
+                debug('js cache hit: %s', file)
+              },
+              transform: async () => {
+                const { code } = await jsHandler(rawSource, runtimeSet)
+                const source = new ConcatSource(code)
                 onUpdate(file, rawSource, code)
                 debug('js handle: %s', file)
                 return {
-                  key: cacheKey,
-                  source,
+                  result: source,
                 }
               },
-            ),
+            }),
           )
         }
       }
@@ -188,25 +175,20 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           const [file, originalSource] = element
           // @ts-ignore
           const rawSource = originalSource.source().toString()
-          const hash = cache.computeHash(rawSource)
           const cacheKey = file
-          cache.calcHashValueChanged(cacheKey, hash)
-          promises.push(
-            cache.process(
+          tasks.push(
+            processCachedTask({
+              cache,
               cacheKey,
-              () => {
-                const source = cache.get(cacheKey)
-                if (source) {
-                  // @ts-ignore
-                  compilation.updateAsset(file, source)
-                  debug('css cache hit: %s', file)
-                }
-                else {
-                  return false
-                }
+              rawSource,
+              applyResult(source) {
+                // @ts-ignore
+                compilation.updateAsset(file, source)
               },
-              // @ts-ignore
-              async () => {
+              onCacheHit() {
+                debug('css cache hit: %s', file)
+              },
+              transform: async () => {
                 const { css } = await styleHandler(rawSource, {
                   isMainChunk: mainCssChunkMatcher(file, this.appType),
                   postcssOptions: {
@@ -217,22 +199,19 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                   majorVersion: twPatcher.majorVersion,
                 })
                 const source = new ConcatSource(css)
-                // @ts-ignore
-                compilation.updateAsset(file, source)
 
                 onUpdate(file, rawSource, css)
                 debug('css handle: %s', file)
 
                 return {
-                  key: cacheKey,
-                  source,
+                  result: source,
                 }
               },
-            ),
+            }),
           )
         }
       }
-      await Promise.all(promises)
+      await Promise.all(tasks)
       debug('end')
       onEnd()
     })

@@ -8,6 +8,7 @@ import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
+import { processCachedTask } from '../shared/cache'
 import { parseVueRequest } from './query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from './utils'
 
@@ -67,144 +68,117 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         runtimeSet = await twPatcher.getClassSet()
         setMangleRuntimeSet(runtimeSet)
         debug('get runtimeSet, class count: %d', runtimeSet.size)
-        const promises: (void | Promise<void>)[] = []
+        const tasks: Promise<void>[] = []
         if (Array.isArray(groupedEntries.html)) {
-          for (const element of groupedEntries.html) {
-            const [file, originalSource] = element as [string, OutputAsset]
-
-            const oldVal = originalSource.source.toString()
-
-            const hash = cache.computeHash(oldVal)
-            cache.calcHashValueChanged(file, hash)
-            promises.push(
-              cache.process(
-                file,
-                () => {
-                  const source = cache.get<string>(file)
-                  if (source) {
-                    originalSource.source = source
-                    debug('html cache hit: %s', file)
-                  }
-                  else {
-                    return false
-                  }
+          for (const [file, originalSource] of groupedEntries.html as [string, OutputAsset][]) {
+            const rawSource = originalSource.source.toString()
+            tasks.push(
+              processCachedTask<string>({
+                cache,
+                cacheKey: file,
+                rawSource,
+                applyResult(source) {
+                  originalSource.source = source
                 },
-                async () => {
-                  originalSource.source = await templateHandler(oldVal, {
+                onCacheHit() {
+                  debug('html cache hit: %s', file)
+                },
+                async transform() {
+                  const transformed = await templateHandler(rawSource, {
                     runtimeSet,
                   })
-                  onUpdate(file, oldVal, originalSource.source)
+                  onUpdate(file, rawSource, transformed)
                   debug('html handle: %s', file)
                   return {
-                    key: file,
-                    source: originalSource.source,
+                    result: transformed,
                   }
                 },
-              ),
+              }),
             )
           }
         }
 
         if (Array.isArray(groupedEntries.js)) {
-          for (const element of groupedEntries.js.filter(x => x[1].type === 'chunk')) {
-            const [file, originalSource] = element as [string, OutputChunk]
-            const rawSource = originalSource.code
-
-            const hash = cache.computeHash(rawSource)
-            cache.calcHashValueChanged(file, hash)
-            promises.push(
-              cache.process(
-                file,
-                () => {
-                  const source = cache.get<string>(file)
-                  if (source) {
+          for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
+            if (originalSource.type === 'chunk') {
+              const rawSource = originalSource.code
+              tasks.push(
+                processCachedTask<string>({
+                  cache,
+                  cacheKey: file,
+                  rawSource,
+                  applyResult(source) {
                     originalSource.code = source
-                    debug('js cache hit: %s', file)
-                  }
-                  else {
-                    return false
-                  }
-                },
-                async () => {
-                  const { code } = await jsHandler(rawSource, runtimeSet)
-                  originalSource.code = code
-                  onUpdate(file, rawSource, code)
-                  debug('js handle: %s', file)
-                  return {
-                    key: file,
-                    source: code,
-                  }
-                },
-              ),
-            )
-          }
-
-          if (uniAppX) {
-            for (const element of groupedEntries.js.filter(x => x[1].type === 'asset')) {
-              const [file, originalSource] = element as [string, OutputAsset]
-              const rawSource = originalSource.source.toString()
-
-              const hash = cache.computeHash(rawSource)
-              cache.calcHashValueChanged(file, hash)
-              promises.push(
-                cache.process(
-                  file,
-                  () => {
-                    const source = cache.get<string>(file)
-                    if (source) {
-                      originalSource.source = source
-                      debug('js cache hit: %s', file)
-                    }
-                    else {
-                      return false
-                    }
                   },
-                  async () => {
-                    const { code } = await jsHandler(rawSource, runtimeSet, {
-                      uniAppX,
-                      babelParserOptions: {
-                        plugins: [
-                          'typescript',
-                        ],
-                        sourceType: 'unambiguous',
-                      },
-                    })
-                    originalSource.source = code
+                  onCacheHit() {
+                    debug('js cache hit: %s', file)
+                  },
+                  async transform() {
+                    const { code } = await jsHandler(rawSource, runtimeSet)
                     onUpdate(file, rawSource, code)
                     debug('js handle: %s', file)
                     return {
-                      key: file,
-                      source: code,
+                      result: code,
                     }
                   },
-                ),
+                }),
               )
+            }
+          }
+
+          if (uniAppX) {
+            for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
+              if (originalSource.type === 'asset') {
+                const rawSource = originalSource.source.toString()
+                tasks.push(
+                  processCachedTask<string>({
+                    cache,
+                    cacheKey: file,
+                    rawSource,
+                    applyResult(source) {
+                      originalSource.source = source
+                    },
+                    onCacheHit() {
+                      debug('js cache hit: %s', file)
+                    },
+                    async transform() {
+                      const { code } = await jsHandler(rawSource, runtimeSet, {
+                        uniAppX,
+                        babelParserOptions: {
+                          plugins: [
+                            'typescript',
+                          ],
+                          sourceType: 'unambiguous',
+                        },
+                      })
+                      onUpdate(file, rawSource, code)
+                      debug('js handle: %s', file)
+                      return {
+                        result: code,
+                      }
+                    },
+                  }),
+                )
+              }
             }
           }
         }
 
         if (Array.isArray(groupedEntries.css)) {
-          for (const element of groupedEntries.css) {
-            const [file, originalSource] = element as [string, OutputAsset]
-
+          for (const [file, originalSource] of groupedEntries.css as [string, OutputAsset][]) {
             const rawSource = originalSource.source.toString()
-
-            const hash = cache.computeHash(rawSource)
-            cache.calcHashValueChanged(file, hash)
-            promises.push(
-              cache.process(
-                file,
-                () => {
-                  const source = cache.get<string>(file)
-                  if (source) {
-                    originalSource.source = source
-                    debug('css cache hit: %s', file)
-                  }
-                  else {
-                    return false
-                  }
+            tasks.push(
+              processCachedTask<string>({
+                cache,
+                cacheKey: file,
+                rawSource,
+                applyResult(source) {
+                  originalSource.source = source
                 },
-                async () => {
+                onCacheHit() {
+                  debug('css cache hit: %s', file)
+                },
+                async transform() {
                   const { css } = await styleHandler(rawSource, {
                     isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
                     postcssOptions: {
@@ -214,19 +188,17 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                     },
                     majorVersion: twPatcher.majorVersion,
                   })
-                  originalSource.source = css
                   onUpdate(file, rawSource, css)
                   debug('css handle: %s', file)
                   return {
-                    key: file,
-                    source: css,
+                    result: css,
                   }
                 },
-              ),
+              }),
             )
           }
         }
-        await Promise.all(promises)
+        await Promise.all(tasks)
         onEnd()
         debug('end')
       },

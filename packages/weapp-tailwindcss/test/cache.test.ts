@@ -8,25 +8,15 @@ describe('cache', () => {
     ctx = createCache()
   })
 
-  it('toBeDefined', () => {
+  it('exposes basic utils', () => {
     expect(ctx).toBeDefined()
-    expect(ctx.calcHashValueChanged).toBeDefined()
-    expect(ctx.computeHash).toBeDefined()
-    expect(ctx.get).toBeDefined()
-    expect(ctx.getHashValue).toBeDefined()
-    expect(ctx.has).toBeDefined()
-    expect(ctx.hasHashKey).toBeDefined()
-    expect(ctx.hashMap).toBeDefined()
     expect(ctx.hashMap instanceof Map).toBe(true)
-    expect(ctx.instance).toBeDefined()
     expect(ctx.instance instanceof LRUCache).toBe(true)
-    expect(ctx.process).toBeDefined()
-    expect(ctx.set).toBeDefined()
-    expect(ctx.setHashValue).toBeDefined()
+    expect(typeof ctx.process).toBe('function')
   })
 
-  it('hash map hasHashKey, getHashValue and setHashValues', () => {
-    expect(ctx.hashMap.size === 0).toBe(true)
+  it('hash map hasHashKey, getHashValue and setHashValue', () => {
+    expect(ctx.hashMap.size).toBe(0)
     const a = {
       changed: false,
       hash: '1',
@@ -37,8 +27,8 @@ describe('cache', () => {
       hash: '2',
     }
     ctx.setHashValue('2', b)
-    expect(ctx.hashMap.size === 2).toBe(true)
-    expect(ctx.getHashValue('0')).toBe(undefined)
+    expect(ctx.hashMap.size).toBe(2)
+    expect(ctx.getHashValue('0')).toBeUndefined()
     expect(ctx.getHashValue(1)).toEqual(a)
     expect(ctx.getHashValue('2')).toEqual(b)
     expect(ctx.hasHashKey('cc')).toBe(false)
@@ -46,13 +36,12 @@ describe('cache', () => {
     expect(ctx.hasHashKey('2')).toBe(true)
   })
 
-  it('cache instance', () => {
-    expect(ctx.instance.size === 0).toBe(true)
-
-    expect(ctx.get('1')).toBe(undefined)
+  it('cache instance basic accessors', () => {
+    expect(ctx.instance.size).toBe(0)
+    expect(ctx.get('1')).toBeUndefined()
     expect(ctx.has('1')).toBe(false)
-    expect(ctx.set('2', '2') instanceof LRUCache).toBe(true)
-    expect(ctx.instance.size === 1).toBe(true)
+    ctx.set('2', '2')
+    expect(ctx.instance.size).toBe(1)
     expect(ctx.has('2')).toBe(true)
     expect(ctx.get('2')).toBe('2')
     ctx.set('3', new sources.ConcatSource('3'))
@@ -61,10 +50,9 @@ describe('cache', () => {
     expect(s?.source().toString()).toBe('3')
   })
 
-  it('cache calcHashValueChanged', () => {
+  it('cache calcHashValueChanged updates change flag', () => {
     ctx.calcHashValueChanged('1', '1')
     let v = ctx.getHashValue('1')
-    expect(v).toBeDefined()
     expect(v).toEqual({
       hash: '1',
       changed: true,
@@ -72,7 +60,6 @@ describe('cache', () => {
 
     ctx.calcHashValueChanged('1', '1')
     v = ctx.getHashValue('1')
-    expect(v).toBeDefined()
     expect(v).toEqual({
       hash: '1',
       changed: false,
@@ -80,111 +67,81 @@ describe('cache', () => {
 
     ctx.calcHashValueChanged('1', '2')
     v = ctx.getHashValue('1')
-    expect(v).toBeDefined()
     expect(v).toEqual({
       hash: '2',
       changed: true,
     })
   })
 
-  it('cache process case 0', () => {
-    const arr: number[] = []
-    ctx.process(
-      '1',
-      () => {
-        arr.push(0)
+  it('process executes transform and caches result when no hit', async () => {
+    const calls: string[] = []
+    const result = await ctx.process<string>({
+      key: 'a',
+      rawSource: 'source',
+      async transform() {
+        calls.push('transform')
+        return 'handled'
       },
-      () => {
-        arr.push(1)
-      },
-    )
-    expect(arr.length).toBe(1)
-    expect(arr).toEqual([1])
+    })
+    expect(result).toBe('handled')
+    expect(calls).toEqual(['transform'])
+    expect(ctx.get('a')).toBe('handled')
   })
 
-  it('cache process case 1', () => {
-    const arr: number[] = []
-    ctx.process(
-      '1',
-      () => {
-        arr.push(0)
-        return false
-      },
-      () => {
-        arr.push(1)
-      },
-    )
-    expect(arr.length).toBe(1)
-    expect(arr).toEqual([1])
-  })
+  it('process reuses cached value when hash unchanged', async () => {
+    const calls: string[] = []
 
-  it('cache process case 2', () => {
-    const arr: number[] = []
-
-    ctx.setHashValue('1', {
-      changed: false,
-      hash: '2',
+    await ctx.process<string>({
+      key: 'a',
+      rawSource: 'same',
+      async transform() {
+        calls.push('first')
+        return 'value'
+      },
     })
 
-    ctx.process(
-      '1',
-      () => {
-        arr.push(0)
+    const result = await ctx.process<string>({
+      key: 'a',
+      rawSource: 'same',
+      async onCacheHit(value) {
+        calls.push(`hit:${value}`)
       },
-      () => {
-        arr.push(1)
+      async transform() {
+        calls.push('second')
+        return 'should-not-run'
       },
-    )
-    expect(arr.length).toBe(1)
-    expect(arr).toEqual([0])
-  })
-
-  it('cache process case 3', async () => {
-    const arr: number[] = []
-
-    ctx.setHashValue('1', {
-      changed: false,
-      hash: '2',
     })
 
-    await ctx.process(
-      '1',
-      () => {
-        arr.push(0)
-        return false
-      },
-      () => {
-        arr.push(1)
-      },
-    )
-    expect(arr.length).toBe(2)
-    expect(arr).toEqual([0, 1])
+    expect(result).toBe('value')
+    expect(calls).toEqual(['first', 'hit:value'])
   })
 
-  it('cache process case 4', async () => {
-    const arr: number[] = []
-
-    ctx.setHashValue('1', {
-      changed: false,
-      hash: '2',
-    })
-
-    await ctx.process(
-      '1',
-      () => {
-        arr.push(0)
-        return false
-      },
-      () => {
-        arr.push(1)
+  it('process supports custom cacheValue', async () => {
+    const raw = 'css'
+    const cacheValue = new sources.ConcatSource(raw)
+    await ctx.process<string>({
+      key: 'style',
+      rawSource: raw,
+      async transform() {
         return {
-          key: '2',
-          source: '2',
+          result: raw,
+          cacheValue,
         }
       },
-    )
-    expect(arr.length).toBe(2)
-    expect(arr).toEqual([0, 1])
-    expect(ctx.instance.size).toBe(1)
+    })
+    expect(ctx.get('style')).toBe(cacheValue)
+  })
+
+  it('disabled cache skips storing and behaves as pass-through', async () => {
+    const disabled = createCache(false)
+    const result = await disabled.process<string>({
+      key: 'noop',
+      rawSource: 'no-cache',
+      async transform() {
+        return 'value'
+      },
+    })
+    expect(result).toBe('value')
+    expect(disabled.has('noop')).toBe(false)
   })
 })

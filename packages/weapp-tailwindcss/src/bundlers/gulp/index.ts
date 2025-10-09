@@ -4,6 +4,7 @@ import { Buffer } from 'node:buffer'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { processCachedTask } from '../shared/cache'
 
 const debug = createDebug()
 
@@ -22,129 +23,107 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let runtimeSet = new Set<string>()
   twPatcher.patch()
 
-  function transformWxss(options: Partial<IStyleHandlerOptions> = {}) {
+  function createVinylTransform(handler: (file: File) => Promise<void>) {
     return new Transform({
       objectMode: true,
       async transform(file: File, _encoding, callback) {
-        runtimeSet = await twPatcher.getClassSet()
-        setMangleRuntimeSet(runtimeSet)
-        const error = null
-
-        if (file.contents) {
-          const rawSource = file.contents.toString()
-          const hash = cache.computeHash(rawSource)
-          cache.calcHashValueChanged(file.path, hash)
-          await cache.process(
-            file.path,
-            () => {
-              const source = cache.get<string>(file.path)
-              if (source) {
-                file.contents = Buffer.from(source)
-                debug('css cache hit: %s', file.path)
-              }
-              else {
-                return false
-              }
-            },
-            async () => {
-              const { css } = await styleHandler(rawSource, {
-                isMainChunk: true,
-                majorVersion: twPatcher.majorVersion,
-                ...options,
-              })
-              file.contents = Buffer.from(css)
-              debug('css handle: %s', file.path)
-              return {
-                key: file.path,
-                source: css,
-              }
-            },
-          )
+        try {
+          await handler(file)
+          callback(null, file)
         }
-
-        callback(error, file)
+        catch (error) {
+          callback(error as Error, file)
+        }
       },
     })
   }
 
-  function transformJs(options: Partial<CreateJsHandlerOptions> = {}) {
-    return new Transform({
-      objectMode: true,
-      async transform(file: File, _encoding, callback) {
-        const error = null
-        if (file.contents) {
-          const rawSource = file.contents.toString()
-          const hash = cache.computeHash(rawSource)
-          cache.calcHashValueChanged(file.path, hash)
-          await cache.process(
-            file.path,
-            () => {
-              const source = cache.get<string>(file.path)
-              if (source) {
-                file.contents = Buffer.from(source)
-                debug('js cache hit: %s', file.path)
-              }
-              else {
-                return false
-              }
-            },
-            async () => {
-              const { code } = await jsHandler(rawSource, runtimeSet, options)
-              file.contents = Buffer.from(code)
-              debug('js handle: %s', file.path)
-              return {
-                key: file.path,
-                source: code,
-              }
-            },
-          )
-        }
-        callback(error, file)
-      },
+  const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
+    createVinylTransform(async (file) => {
+      if (!file.contents) {
+        return
+      }
+      runtimeSet = await twPatcher.getClassSet()
+      setMangleRuntimeSet(runtimeSet)
+      const rawSource = file.contents.toString()
+      await processCachedTask<string>({
+        cache,
+        cacheKey: file.path,
+        rawSource,
+        applyResult(source) {
+          file.contents = Buffer.from(source)
+        },
+        onCacheHit() {
+          debug('css cache hit: %s', file.path)
+        },
+        async transform() {
+          const { css } = await styleHandler(rawSource, {
+            isMainChunk: true,
+            majorVersion: twPatcher.majorVersion,
+            ...options,
+          })
+          debug('css handle: %s', file.path)
+          return {
+            result: css,
+          }
+        },
+      })
     })
-  }
 
-  function transformWxml(options: Partial<ITemplateHandlerOptions> = {}) {
-    return new Transform({
-      objectMode: true,
-      async transform(file: File, _encoding, callback) {
-        const error = null
-
-        if (file.contents) {
-          const rawSource = file.contents.toString()
-          const hash = cache.computeHash(rawSource)
-          cache.calcHashValueChanged(file.path, hash)
-
-          await cache.process(
-            file.path,
-            () => {
-              const source = cache.get<string>(file.path)
-              if (source) {
-                file.contents = Buffer.from(source)
-                debug('html cache hit: %s', file.path)
-              }
-              else {
-                return false
-              }
-            },
-            async () => {
-              const code = await templateHandler(rawSource, {
-                runtimeSet,
-                ...options,
-              })
-              file.contents = Buffer.from(code)
-              debug('html handle: %s', file.path)
-              return {
-                key: file.path,
-                source: code,
-              }
-            },
-          )
-        }
-        callback(error, file)
-      },
+  const transformJs = (options: Partial<CreateJsHandlerOptions> = {}) =>
+    createVinylTransform(async (file) => {
+      if (!file.contents) {
+        return
+      }
+      const rawSource = file.contents.toString()
+      await processCachedTask<string>({
+        cache,
+        cacheKey: file.path,
+        rawSource,
+        applyResult(source) {
+          file.contents = Buffer.from(source)
+        },
+        onCacheHit() {
+          debug('js cache hit: %s', file.path)
+        },
+        async transform() {
+          const { code } = await jsHandler(rawSource, runtimeSet, options)
+          debug('js handle: %s', file.path)
+          return {
+            result: code,
+          }
+        },
+      })
     })
-  }
+
+  const transformWxml = (options: Partial<ITemplateHandlerOptions> = {}) =>
+    createVinylTransform(async (file) => {
+      if (!file.contents) {
+        return
+      }
+      const rawSource = file.contents.toString()
+      await processCachedTask<string>({
+        cache,
+        cacheKey: file.path,
+        rawSource,
+        applyResult(source) {
+          file.contents = Buffer.from(source)
+        },
+        onCacheHit() {
+          debug('html cache hit: %s', file.path)
+        },
+        async transform() {
+          const code = await templateHandler(rawSource, {
+            runtimeSet,
+            ...options,
+          })
+          debug('html handle: %s', file.path)
+          return {
+            result: code,
+          }
+        },
+      })
+    })
 
   return {
     transformWxss,

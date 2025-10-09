@@ -12,28 +12,37 @@ export type HashMapKey = string | number
 
 export type CacheValue = sources.Source | string
 
+export interface CacheProcessResult<T extends CacheValue> {
+  result: T
+  cacheValue?: CacheValue
+}
+
+export interface CacheProcessOptions<T extends CacheValue> {
+  key: string
+  hashKey?: HashMapKey
+  rawSource?: string | Buffer
+  hash?: string
+  resolveCache?: () => T | undefined
+  transform: () => Promise<CacheProcessResult<T> | T>
+  onCacheHit?: (value: T) => void | Promise<void>
+}
+
 export interface ICreateCacheReturnType {
-  // id:hash instance
-  hashMap: Map<HashMapKey, HashMapValue>
-  instance: LRUCache<string, CacheValue>
-  // map
+  readonly hashMap: Map<HashMapKey, HashMapValue>
+  readonly instance: LRUCache<string, CacheValue>
   hasHashKey: (key: HashMapKey) => boolean
   getHashValue: (key: HashMapKey) => HashMapValue | undefined
-  setHashValue: (key: HashMapKey, value: HashMapValue) => this['hashMap']
-  // util
-  // removeExt: (file: string) => string
+  setHashValue: (key: HashMapKey, value: HashMapValue) => Map<HashMapKey, HashMapValue>
   computeHash: (message: string | Buffer) => string
-  // cache
   get: <V extends CacheValue = sources.Source>(key: string) => V | undefined
-  set: <V extends CacheValue = sources.Source>(key: string, value: V) => this['instance']
+  set: <V extends CacheValue = sources.Source>(key: string, value: V) => LRUCache<string, CacheValue>
   has: (key: string) => boolean
-  // flow
-  calcHashValueChanged: (key: HashMapKey, hash: string) => this
-  process: (
-    key: string,
-    callback: () => void | false | Promise<void | false>,
-    fallback: () => void | { key: string, source: CacheValue } | Promise<void | { key: string, source: CacheValue }>
-  ) => void | Promise<void>
+  calcHashValueChanged: (key: HashMapKey, hash: string) => ICreateCacheReturnType
+  process: <T extends CacheValue>(options: CacheProcessOptions<T>) => Promise<T>
+}
+
+function isProcessResult<T extends CacheValue>(value: CacheProcessResult<T> | T): value is CacheProcessResult<T> {
+  return typeof value === 'object' && value !== null && 'result' in value
 }
 
 function createCache(options?: boolean): ICreateCacheReturnType {
@@ -45,7 +54,8 @@ function createCache(options?: boolean): ICreateCacheReturnType {
     ttl: 0,
     ttlAutopurge: false,
   })
-  return {
+
+  const cache: ICreateCacheReturnType = {
     hashMap,
     instance,
     hasHashKey(key) {
@@ -67,58 +77,67 @@ function createCache(options?: boolean): ICreateCacheReturnType {
       return md5Hash(message)
     },
     calcHashValueChanged(key, hash) {
-      const hit = this.getHashValue(key)
+      const hit = hashMap.get(key)
       if (hit) {
-        // 文件内容没有改变
-        // 改变了，就给新的哈希值
-        this.setHashValue(key, {
-          // new file should be changed
+        hashMap.set(key, {
           changed: hash !== hit.hash,
-          // new hash
           hash,
         })
       }
       else {
-        // add to hashmap
-        this.setHashValue(key, {
-          // new file should be changed
+        hashMap.set(key, {
           changed: true,
           hash,
         })
       }
-      return this
+      return cache
     },
     has(key) {
       return instance.has(key)
     },
-    async process(key, callback, fallback) {
+    async process({
+      key,
+      hashKey,
+      rawSource,
+      hash,
+      resolveCache,
+      transform,
+      onCacheHit,
+    }) {
       if (disabled) {
-        // 默认处理
-        const res = await fallback()
-        if (res) {
-          this.set(res.key, res.source)
+        const value = await transform()
+        return isProcessResult(value) ? value.result : value
+      }
+
+      const cacheHashKey = hashKey ?? key
+      let hasChanged = true
+
+      if (hash != null || rawSource != null) {
+        const nextHash = hash ?? cache.computeHash(rawSource as string | Buffer)
+        cache.calcHashValueChanged(cacheHashKey, nextHash)
+        const entry = cache.getHashValue(cacheHashKey)
+        hasChanged = entry?.changed ?? true
+      }
+
+      const readCache = resolveCache ?? (() => cache.get(key))
+
+      if (!hasChanged) {
+        const cached = readCache()
+        if (cached !== undefined) {
+          await onCacheHit?.(cached)
+          return cached
         }
       }
-      else {
-        const hit = this.getHashValue(key)
-        // 文件没有改变
-        if (hit && !hit.changed) {
-          // 命中缓存
-          const returnFlag = await callback()
-          // 返回 false 则继续走 fallback
-          // 否则直接返回
-          if (returnFlag !== false) {
-            return
-          }
-        }
-        // 默认处理
-        const res = await fallback()
-        if (res) {
-          this.set(res.key, res.source)
-        }
-      }
+
+      const value = await transform()
+      const normalized = isProcessResult(value) ? value : { result: value }
+      const stored = (normalized.cacheValue ?? normalized.result) as CacheValue
+      cache.set(key, stored)
+      return normalized.result
     },
   }
+
+  return cache
 }
 
 function initializeCache(cacheConfig?: boolean | ICreateCacheReturnType): ICreateCacheReturnType {
