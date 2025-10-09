@@ -1,6 +1,9 @@
+import type { JsHandler } from '@/types'
 import { createGetCase, fixturesRootPath } from '#test/util'
+import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { transformUVue } from '@/uni-app-x'
+import { replaceWxml } from '@/wxml'
 
 const getCase = createGetCase(fixturesRootPath)
 
@@ -39,5 +42,32 @@ describe('uni-app-x', () => {
     classNameSet.add('bg-[#222]')
 
     expect(transformUVue(vueRawCode, 'setup-lang-uts.uvue', jsHandler, classNameSet)).toMatchSnapshot()
+  })
+
+  it('transforms static and dynamic class bindings', () => {
+    const runtimeSet = new Set<string>()
+    const jsHandler: JsHandler = vi.fn((source: string) => ({ code: `handled(${source})` }))
+    const code = `
+<template>
+  <view class="text-[#123]" :class="dynamicCls">
+    <text>{{ label }}</text>
+  </view>
+</template>
+<script lang="ts">
+const label = 'hi'
+</script>
+`
+    const result = transformUVue(code, 'sample.uvue', jsHandler, runtimeSet)
+    expect(result?.code).toContain(`class="${replaceWxml('text-[#123]')}"`)
+    expect(result?.code).toContain('handled(dynamicCls)')
+    expect(result?.code).toContain('handled(\nconst label = \'hi\'\n)')
+    expect(jsHandler).toHaveBeenCalled()
+  })
+
+  it('ignores non-uvue files', () => {
+    const jsHandler: JsHandler = vi.fn((source: string) => ({ code: source }))
+    const result = transformUVue('<template><view/></template>', 'App.vue', jsHandler, new Set())
+    expect(result).toBeUndefined()
+    expect(jsHandler).not.toHaveBeenCalled()
   })
 })
