@@ -176,12 +176,12 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     await emitHandlers[0](compilation)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
-    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(2)
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
-    expect(currentContext.onUpdate).toHaveBeenCalledTimes(4)
+    expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
   })
 
   it('keeps distinct cache entries for js and wxs assets', async () => {
