@@ -1,0 +1,61 @@
+/*! tailwindcss v4.1.14 | MIT License | https://tailwindcss.com */
+:host,
+page {
+  --spacing: 8rpx;
+}
+::-webkit-backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+::backdrop,
+:after,
+:before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.relative {
+  position: relative;
+}
+.flex {
+  display: flex;
+}
+.h-21 {
+  height: 168rpx;
+  height: calc(var(--spacing) * 21);
+}
+.bg-_h123456_ {
+  background-color: #123456;
+}
+.bg-_h877878_ {
+  background-color: #877878;
+}
+page:after {
+  position: fixed;
+  content: '';
+  left: -1000px;
+  top: -1000px;
+  -webkit-animation: shadow-preload 0.1s;
+  -webkit-animation-delay: 3s;
+  animation: shadow-preload 0.1s;
+  animation-delay: 3s;
+}
+@-webkit-keyframes shadow-preload {
+  0% {
+    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
+  }
+  to {
+    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
+  }
+}
+@keyframes shadow-preload {
+  0% {
+    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
+  }
+  to {
+    background-image: url(https://cdn1.dcloud.net.cn/4a5356336547497a5a4467304d6d45305954646c4d7a51304d47513d/img/shadow-grey.png);
+  }
+}

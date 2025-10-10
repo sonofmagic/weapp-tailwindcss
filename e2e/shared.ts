@@ -1,6 +1,6 @@
-import type Page from 'miniprogram-automator/out/Page'
 import fs from 'node:fs/promises'
 import { execa } from 'execa'
+import path from 'pathe'
 import prettier from 'prettier'
 import { removeWxmlId } from '../packages/weapp-tailwindcss/test/util'
 
@@ -28,7 +28,7 @@ export async function loadCss(p: string) {
 export interface ProjectEntry {
   name: string
   projectPath: string
-  testMethod: (page: Page | null, b: string) => void
+  cssFile: string
   url?: string
   skipOpenAutomator?: boolean
 }
@@ -64,4 +64,10 @@ export function twExtract(root: string) {
   return execa('npx', ['tw-patch', 'extract'], {
     cwd: root,
   })
+}
+
+export async function resolveSnapshotFile(testDir: string, suite: string, projectName: string, fileName: string) {
+  const snapshotDir = path.resolve(testDir, '__snapshots__', suite, projectName)
+  await fs.mkdir(snapshotDir, { recursive: true })
+  return path.resolve(snapshotDir, fileName)
 }

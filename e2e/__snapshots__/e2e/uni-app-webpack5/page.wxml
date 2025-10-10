@@ -1,0 +1,71 @@
+<view class="beforeccontent-_qhelloq_ beforeccontent-_qhelloq_ beforecblock beforecblock _div _div">
+  <view>
+    <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifdef-_MP-WEIXIN_cbg-blue-500 ifndef-_MP-WEIXIN_cbg-red-500 ifndef-_MP-WEIXIN_cbg-red-500">
+      样式的条件编译:微信小程序为蓝色，不是微信小程序为红色
+    </view>
+    <view class="wxcbg-blue-500 wxcbg-blue-500 -wxcbg-red-500 -wxcbg-red-500">
+      <view>自定义配置的方式进行样式条件编译</view>
+      <view>相关配置见根目录下的tailwind.config.js</view>
+    </view>
+    <view class="apply-class-0 apply-class-0">@apply 条件编译方式0</view>
+    <view class="apply-class-1 apply-class-1">@apply 条件编译方式1</view>
+  </view>
+  <view>********</view>
+  <view class="block block"></view>
+  <view class="inline-block inline-block"></view>
+  <view class="list-item list-item"></view>
+  <view class="flex flex"></view>
+  <view class="bg-_h00ff00_ bg-_h00ff00_">bbb</view>
+  <view
+    class="afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ text-_30rpx_ text-_30rpx_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_h00ff00_ bg-_h00ff00_">
+    classArray
+  </view>
+  <view class="text-_20px_ text-_20px_ text-_h898989_ text-_h898989_ bg-_hff0000_ bg-_hff0000_">:class="['text-sm', classObj]</view>
+  <view class="text-_22px_ text-_22px_">对酒当歌，人生几何</view>
+  <view class="ih-5 ih-5 w-5 w-5 shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_ shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_"></view>
+  <view class="h-5 h-5 w-5 w-5 shadow-_0px_2px_11px_0px_h00000a_ shadow-_0px_2px_11px_0px_h00000a_"></view>
+  <view class="text-_20px_ text-_20px_ bg-_h000000_ bg-_h000000_">classObject</view>
+  <view class="bg-_hfafa00_ bg-_hfafa00_">Toggle</view>
+  <view>Toggle</view>
+  <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
+  <view class="p-_20px_ p-_20px_ -mt-2 -mt-2 mb-_-20px_ mb-_-20px_ h-_200p_ h-_200p_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_1d6rem_ space-y-_1d6rem_">
+    <view class="w-_300rpx_ w-_300rpx_ text-black text-black text-opacity-_0d19_ text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="min-w-_300rpx_ min-w-_300rpx_ max-h-_100px_ max-h-_100px_ text-_20px_ text-_20px_ leading-_0d9_ leading-_0d9_">
+      min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+    </view>
+    <view class="max-w-_300rpx_ max-w-_300rpx_ min-h-_100px_ min-h-_100px_ text-_hdddddd_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view
+      class="flex flex items-center items-center justify-center justify-center h-_100px_ h-_100px_ w-_100px_ w-_100px_ rounded-_40px_ rounded-_40px_ bg-_h123456_ bg-_h123456_ bg-opacity-_0d54_ bg-opacity-_0d54_ text-_hffffff_ text-_hffffff_">
+      Hello
+    </view>
+    <view class="border-_10px_ border-_10px_ border-_h098765_ border-_h098765_ border-solid border-solid border-opacity-_0d44_ border-opacity-_0d44_">
+      border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+    </view>
+    <view class="grid grid grid-cols-3 grid-cols-3 divide-x-_10px_ divide-x-_10px_ divide-_h010101_ divide-_h010101_ divide-solid divide-solid">
+      <view class="_div _div">1</view>
+      <view class="_div _div">2</view>
+      <view class="_div _div">3</view>
+    </view>
+    <view class="w-32 w-32 py-2 py-2 rounded-md rounded-md font-semibold font-semibold text-white text-white bg-pink-500 bg-pink-500 ring-4 ring-4 ring-pink-300 ring-pink-300">
+      Default
+    </view>
+  </view>
+  <view class="test test">test</view>
+</view>
+.luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
+Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
+UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
+8px;border:1px solid #fff;border-radius:3px;box-sizing:border-box;min-width:100px;max-width:min(300px,100% -
+4px);z-index:2;background-clip:padding-box;will-change:transform;text-rendering:optimizeLegibility;pointer-events:none;filter:drop-shadow(0 2px 4px
+rgba(0,0,0,.35))}.luna-dom-highlighter-tooltip-content
+.luna-dom-highlighter-tooltip-arrow{background:#fff;width:15px;height:8px;position:absolute}.luna-dom-highlighter-element-info-section{margin-top:12px;margin-bottom:6px}.luna-dom-highlighter-section-name{color:#333;font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.05em;line-height:12px}.luna-dom-highlighter-element-info{display:flex;flex-direction:column}.luna-dom-highlighter-element-info-header{display:flex;align-items:center}.luna-dom-highlighter-element-info-body{display:flex;flex-direction:column;padding-top:2px;margin-top:2px}.luna-dom-highlighter-element-info-row{display:flex;line-height:19px}.luna-dom-highlighter-separator-container{display:flex;align-items:center;flex:auto;margin-left:7px}.luna-dom-highlighter-separator{border-top:1px
+solid
+#ddd;width:100%}.luna-dom-highlighter-element-info-name{flex-shrink:0;color:#666}.luna-dom-highlighter-element-info-gap{flex:auto}.luna-dom-highlighter-element-info-value-color{display:flex;color:#303942;margin-left:10px;align-items:baseline}.luna-dom-highlighter-a11y-icon{width:16px;height:16px;background-repeat:no-repeat;display:inline-block}.luna-dom-highlighter-element-info-value-contrast{display:flex;align-items:center;text-align:right;color:#303942;margin-left:10px}.luna-dom-highlighter-element-info-value-contrast
+.luna-dom-highlighter-a11y-icon{margin-left:8px}.luna-dom-highlighter-element-info-value-icon{display:flex;align-items:center}.luna-dom-highlighter-element-info-value-text{text-align:right;color:#303942;margin-left:10px;align-items:baseline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.luna-dom-highlighter-color-swatch{display:flex;margin-right:2px;width:10px;height:10px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);line-height:10px}.luna-dom-highlighter-color-swatch-inner{flex:auto;border:1px
+solid
+#808002}.luna-dom-highlighter-element-layout-type{margin-right:10px;width:16px;height:16px}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-grid{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-flex{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-description{flex:1
+1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
+solid #000;padding:0
+1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
+(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}

@@ -1,0 +1,91 @@
+<view class="index container bg-_hdbdada_ text-_haaaaaa_" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
+  <view class="text-amber-300" style="">
+    <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">components ui</view>
+  </view>
+  <view class="text-amber-300" style="">
+    <view class="text-center text-_50px_ text-red-400 mt-_22px_" style="">aaa</view>
+    <button
+      app-parameter=""
+      business-id=""
+      class="h5-button"
+      form-type=""
+      hover-class="button-hover"
+      hover-start-time="20"
+      hover-stay-time="70"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      size="default"
+      style=""
+      type="primary"
+      role="button"
+      aria-disabled="false">
+      first
+    </button>
+  </view>
+  <view style="">******</view>
+  <view class="bg-_h543254_ h-_100px_ w-_300px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_" style="">classArray</view>
+  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-_h487512_" hover-start-time="50" hover-stay-time="400" style=""></view>
+  <view class="bg-red-900" style="">bg-_hfafa00_</view>
+  <view class="bg-_h098765_" style="">bg-_h098765_</view>
+  <view class="h5-view p-_20px_ -mt-2 mb-_-20px_" style="">p-[20px] -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
+  <view class="h5-view space-y-_1d6rem_" style="">
+    <view class="h5-view w-_300rpx_ text-black text-opacity-_0d19_" style="">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-[300rpx] max-h-_100px_ text-_20px_ leading-[0.9]</view>
+    <view class="h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-[300rpx] min-h-_100px_ text-[#dddddd]</view>
+    <view class="h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
+    <view class="h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-[10px] border-_h098765_ border-solid border-opacity-[0.44]</view>
+    <view class="h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
+      <view class="h5-view" style="">1</view>
+      <view class="h5-view" style="">2</view>
+      <view class="h5-view" style="">3</view>
+    </view>
+    <view class="h5-view w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
+  </view>
+  <view class="h5-view test" style="">test</view>
+  <view class="flex justify-between" style="">
+    <view class="text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_" style="">对酒当歌</view>
+    <view class="text-_red_" style="">人生几何</view>
+  </view>
+  <view class="bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full" style=""></view>
+  <button
+    app-parameter=""
+    business-id=""
+    class="h5-button nut-button nut-button--default nut-button--normal nut-button--round"
+    form-type=""
+    hover-class="button-hover"
+    hover-start-time="20"
+    hover-stay-time="70"
+    lang=""
+    open-type=""
+    send-message-img=""
+    send-message-path=""
+    send-message-title=""
+    session-from=""
+    size="default"
+    style=""
+    type=""
+    role="button"
+    aria-disabled="false">
+    <view class="nut-button__wrap" style=""><view style="">nut-button</view></view>
+  </button>
+</view>
+.luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
+Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
+UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
+8px;border:1px solid #fff;border-radius:3px;box-sizing:border-box;min-width:100px;max-width:min(300px,100% -
+4px);z-index:2;background-clip:padding-box;will-change:transform;text-rendering:optimizeLegibility;pointer-events:none;filter:drop-shadow(0 2px 4px
+rgba(0,0,0,.35))}.luna-dom-highlighter-tooltip-content
+.luna-dom-highlighter-tooltip-arrow{background:#fff;width:15px;height:8px;position:absolute}.luna-dom-highlighter-element-info-section{margin-top:12px;margin-bottom:6px}.luna-dom-highlighter-section-name{color:#333;font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.05em;line-height:12px}.luna-dom-highlighter-element-info{display:flex;flex-direction:column}.luna-dom-highlighter-element-info-header{display:flex;align-items:center}.luna-dom-highlighter-element-info-body{display:flex;flex-direction:column;padding-top:2px;margin-top:2px}.luna-dom-highlighter-element-info-row{display:flex;line-height:19px}.luna-dom-highlighter-separator-container{display:flex;align-items:center;flex:auto;margin-left:7px}.luna-dom-highlighter-separator{border-top:1px
+solid
+#ddd;width:100%}.luna-dom-highlighter-element-info-name{flex-shrink:0;color:#666}.luna-dom-highlighter-element-info-gap{flex:auto}.luna-dom-highlighter-element-info-value-color{display:flex;color:#303942;margin-left:10px;align-items:baseline}.luna-dom-highlighter-a11y-icon{width:16px;height:16px;background-repeat:no-repeat;display:inline-block}.luna-dom-highlighter-element-info-value-contrast{display:flex;align-items:center;text-align:right;color:#303942;margin-left:10px}.luna-dom-highlighter-element-info-value-contrast
+.luna-dom-highlighter-a11y-icon{margin-left:8px}.luna-dom-highlighter-element-info-value-icon{display:flex;align-items:center}.luna-dom-highlighter-element-info-value-text{text-align:right;color:#303942;margin-left:10px;align-items:baseline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.luna-dom-highlighter-color-swatch{display:flex;margin-right:2px;width:10px;height:10px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);line-height:10px}.luna-dom-highlighter-color-swatch-inner{flex:auto;border:1px
+solid
+#808002}.luna-dom-highlighter-element-layout-type{margin-right:10px;width:16px;height:16px}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-grid{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-flex{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-description{flex:1
+1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
+solid #000;padding:0
+1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
+(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}

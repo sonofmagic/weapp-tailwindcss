@@ -18858,10 +18858,10 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weapp-ide-cli@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.npmjs.org/weapp-ide-cli/-/weapp-ide-cli-3.1.1.tgz#2f77f670046d8f8f182c2f4d9f071da27fc6a08e"
-  integrity sha512-W3pmfq3jhGf95H1RjGxj6nZjCf6HHZrQLF2NRO/LZtFZAeIas2wRate0Dyv6+4PUZL0Zq+gERMF6lYNi9TvaWw==
+weapp-ide-cli@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/weapp-ide-cli/-/weapp-ide-cli-4.0.0.tgz#1a0551e7437d81b45781845bee5e33603aa5b04e"
+  integrity sha512-gq/ffX97Wuv+hNDX0vbHB04S2nQV2IZ6tACM5nq7xECWcQ2zS2TLp5gQr+TXntGE4dFUrpHlWrw85A2YSA/qFw==
   dependencies:
     "@weapp-core/logger" "^2.0.0"
     execa "9.6.0"

@@ -1,0 +1,71 @@
+<view>
+  <view class="text-_h123456_ text-_50px_ bg-_hfff_">对酒当歌，人生几何</view>
+  <view class="bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">bgUrl</view>
+  <view class="after_c_content-_bl__dq_ _dq__br_ aftercml-0d5 afterctext-red-500"></view>
+  <view class="afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500"></view>
+  <view>*****</view>
+  <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_h929292_" style="color: blue; font-size: 14px">111112222</view></view>
+  <view style="color: blue; font-size: 14px; background-color: red">222222</view>
+  <list is="components/listb85648da/index">
+    <view class="flex listb85648da-index--flex flex-col listb85648da-index--flex-col" style="">
+      <view class="text-_blue_ listb85648da-index--text-_blue_">手机</view>
+      <view class="text-_he67240_ listb85648da-index--text-_he67240_">电视</view>
+      <view class="text-_blue_ listb85648da-index--text-_blue_">电脑</view>
+    </view>
+  </list>
+  <button
+    app-parameter=""
+    data-custom="null"
+    form-type=""
+    hover-class="t-button--hover"
+    hover-start-time="20"
+    hover-stay-time="70"
+    lang=""
+    open-type=""
+    send-message-img="截图"
+    send-message-path="当前分享路径"
+    send-message-title="当前标题"
+    session-from=""
+    style=""
+    role="button"
+    aria-disabled="false"
+    class="t-button button--t-button t-button--base button--t-button--base t-button--default button--t-button--default t-button--rectangle button--t-button--rectangle t-button--size-medium button--t-button--size-medium">
+    <view class="t-button__content button--t-button__content">111</view>
+  </button>
+  <van-button is="components/vant/weappadd1b1b4/button/index">
+    <button
+      app-parameter=""
+      business-id=""
+      class="van-button button-index--van-button van-button--default button-index--van-button--default van-button--normal button-index--van-button--normal"
+      data-detail="null"
+      form-type=""
+      hover-class="van-button--active hover-class"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      style=""
+      role="button"
+      aria-disabled="false">
+      <view class="van-button__text button-index--van-button__text">默认按钮</view>
+    </button>
+  </van-button>
+</view>
+.luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
+Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
+UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
+8px;border:1px solid #fff;border-radius:3px;box-sizing:border-box;min-width:100px;max-width:min(300px,100% -
+4px);z-index:2;background-clip:padding-box;will-change:transform;text-rendering:optimizeLegibility;pointer-events:none;filter:drop-shadow(0 2px 4px
+rgba(0,0,0,.35))}.luna-dom-highlighter-tooltip-content
+.luna-dom-highlighter-tooltip-arrow{background:#fff;width:15px;height:8px;position:absolute}.luna-dom-highlighter-element-info-section{margin-top:12px;margin-bottom:6px}.luna-dom-highlighter-section-name{color:#333;font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.05em;line-height:12px}.luna-dom-highlighter-element-info{display:flex;flex-direction:column}.luna-dom-highlighter-element-info-header{display:flex;align-items:center}.luna-dom-highlighter-element-info-body{display:flex;flex-direction:column;padding-top:2px;margin-top:2px}.luna-dom-highlighter-element-info-row{display:flex;line-height:19px}.luna-dom-highlighter-separator-container{display:flex;align-items:center;flex:auto;margin-left:7px}.luna-dom-highlighter-separator{border-top:1px
+solid
+#ddd;width:100%}.luna-dom-highlighter-element-info-name{flex-shrink:0;color:#666}.luna-dom-highlighter-element-info-gap{flex:auto}.luna-dom-highlighter-element-info-value-color{display:flex;color:#303942;margin-left:10px;align-items:baseline}.luna-dom-highlighter-a11y-icon{width:16px;height:16px;background-repeat:no-repeat;display:inline-block}.luna-dom-highlighter-element-info-value-contrast{display:flex;align-items:center;text-align:right;color:#303942;margin-left:10px}.luna-dom-highlighter-element-info-value-contrast
+.luna-dom-highlighter-a11y-icon{margin-left:8px}.luna-dom-highlighter-element-info-value-icon{display:flex;align-items:center}.luna-dom-highlighter-element-info-value-text{text-align:right;color:#303942;margin-left:10px;align-items:baseline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.luna-dom-highlighter-color-swatch{display:flex;margin-right:2px;width:10px;height:10px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);line-height:10px}.luna-dom-highlighter-color-swatch-inner{flex:auto;border:1px
+solid
+#808002}.luna-dom-highlighter-element-layout-type{margin-right:10px;width:16px;height:16px}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-grid{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-flex{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-description{flex:1
+1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
+solid #000;padding:0
+1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
+(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}

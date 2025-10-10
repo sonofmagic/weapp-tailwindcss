@@ -1,0 +1,115 @@
+/*! tailwindcss v4.1.14 | MIT License | https://tailwindcss.com */
+view,
+text,
+:before,
+:after,
+::backdrop {
+  --tw-font-weight: initial;
+}
+page,
+:host {
+  --color-white: #fff;
+  --spacing: 8rpx;
+  --font-weight-bold: 700;
+  --color-neutral-1B: #1b1b1b;
+  --color-midnight: #121063;
+  --color-tahiti: #3ab7bf;
+  --color-bermuda: #78dcca;
+}
+view,
+text,
+:after,
+:before,
+::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.i-mdi-home {
+  width: 1em;
+  height: 1em;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  mask-image: var(--svg);
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  display: inline-block;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.flex {
+  display: flex;
+}
+.aspect-y--my-aspect-ratioy {
+  aspect-ratio: var(--my-aspect-ratio);
+}
+.aspect-_calcy4m3a1ys3_ {
+  aspect-ratio: 13/3;
+}
+.h-20 {
+  height: 160rpx;
+  height: calc(var(--spacing) * 20);
+}
+.w-20 {
+  width: 160rpx;
+  width: calc(var(--spacing) * 20);
+}
+.flex-col {
+  flex-direction: column;
+}
+.bg-_h0000ff_ {
+  background-color: #00f;
+}
+.bg-midnight {
+  background-color: #121063;
+  background-color: var(--color-midnight);
+}
+.bg-neutral-1B {
+  background-color: #1b1b1b;
+  background-color: var(--color-neutral-1B);
+}
+.fill-bermuda {
+  fill: #78dcca;
+  fill: var(--color-bermuda);
+}
+.text-_45rpx_ {
+  font-size: 45rpx;
+}
+.text-_88rpx_ {
+  font-size: 88rpx;
+}
+.font-bold {
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+}
+.text-_h00f285_ {
+  color: #00f285;
+}
+.text-tahiti {
+  color: #3ab7bf;
+  color: var(--color-tahiti);
+}
+.text-white {
+  color: #fff;
+  color: var(--color-white);
+}
+.underline {
+  text-decoration-line: underline;
+}
+page {
+  --status-bar-height: 25px;
+  --top-window-height: 0px;
+  --window-top: 0px;
+  --window-bottom: 0px;
+  --window-left: 0px;
+  --window-right: 0px;
+  --window-magin: 0px;
+}
+[data-c-h='true'] {
+  display: none !important;
+}

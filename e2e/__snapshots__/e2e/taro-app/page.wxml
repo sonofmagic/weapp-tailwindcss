@@ -1,0 +1,85 @@
+<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-_h4bd650_ rounded-_20rpx_ beforecrounded-_20rpx_" style=""></view>
+<view class="relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-_h0000ff_ beforecrounded-_20rpx_ rounded-_20rpx_" style=""></view>
+<navigator
+  app-id=""
+  delta="1"
+  extra-data="null"
+  hover-class="navigator-hover"
+  hover-start-time="50"
+  hover-stay-time="600"
+  open-type="navigate"
+  path=""
+  style=""
+  target="self"
+  url="/moduleA/pages/index"
+  version="version"
+  role="link">
+  普通分包
+</navigator>
+<navigator
+  app-id=""
+  delta="1"
+  extra-data="null"
+  hover-class="navigator-hover"
+  hover-start-time="50"
+  hover-stay-time="600"
+  open-type="navigate"
+  path=""
+  style=""
+  target="self"
+  url="/moduleB/pages/index"
+  version="version"
+  role="link">
+  独立分包
+</navigator>
+<view style="">****</view>
+<view class="w-full bg-indigo-400 bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-bottom bg-contain bg-no-repeat" style="">bg-_url_</view>
+<view class="text-_50px_ bg-_h3232ff_ h-_10px_ w-_20px_ text-_hfa00aa_ text-_hfa0000_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssyyydcomsxxdwebpqy_" style="">11</view>
+<view class="shadow-md" style="">shadow-md</view>
+<view class="form-box py-_62px_ rotate-45 px-_95px_ bg-sky-500s80 darkcbg-_h123456_" style="">py-_62px_ px-_95px_</view>
+<view hover-class="none" hover-start-time="50" hover-stay-time="400" style=""></view>
+<view class="bg-_h654321_ w-_100px_ h-_20px_" style="">123</view>
+<view class="text-_h564564_" style="">emptyImageClass</view>
+<view class="text-_h66ffff_" style="">btnClassName</view>
+<view class="aftercborder-none afterccontent-_qHello_Worldq_ a" style="">aftercborder-none</view>
+<view class="after content- aftercml-0d5 afterctext-red-500 b" style="">yellow</view>
+<view class="after content- aftercml-0d5 afterctext-red-500" style="">事实上</view>
+<view class="afterccontent-_qu7684u6492u7684u6492q_ aftercml-0d5 afterctext-red-500" style="">事实上</view>
+<view class="afterccontent-_m_ aftercml-0d5 afterctext-red-500 aspect-w-16" style="">
+  <view class="itext-_h555_" style="">aspect</view>
+  <view class="bg-_hfaf_" style="">w</view>
+  <view class="bg-_h123_" style="">16</view>
+</view>
+<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500" hover-start-time="50" hover-stay-time="400" style=""></view>
+<view class="bg-_h123456_" style="">className</view>
+<view class="p-_20px_ -mt-2 mb-_-20px_" style="">p-_20px_ -mt-2 mb-_-20px_ margin的jit 可不能这么写 -m-_20px_</view>
+<view class="space-y-_1d6rem_ text-_16px_ w-_200p_" style="">
+  <view class="w-_300rpx_ text-black text-opacity-_0d19_" style="">w-_300rpx_ text-black text-opacity-_0d19_</view>
+  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_</view>
+  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-_300rpx_ min-h-_100px_ text-_hdddddd_</view>
+  <view class="flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
+  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_</view>
+  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
+    <view style="">1</view>
+    <view style="">2</view>
+    <view style="">3</view>
+  </view>
+  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
+</view>
+<view class="test" style="">test</view>
+.luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
+Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
+UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
+8px;border:1px solid #fff;border-radius:3px;box-sizing:border-box;min-width:100px;max-width:min(300px,100% -
+4px);z-index:2;background-clip:padding-box;will-change:transform;text-rendering:optimizeLegibility;pointer-events:none;filter:drop-shadow(0 2px 4px
+rgba(0,0,0,.35))}.luna-dom-highlighter-tooltip-content
+.luna-dom-highlighter-tooltip-arrow{background:#fff;width:15px;height:8px;position:absolute}.luna-dom-highlighter-element-info-section{margin-top:12px;margin-bottom:6px}.luna-dom-highlighter-section-name{color:#333;font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.05em;line-height:12px}.luna-dom-highlighter-element-info{display:flex;flex-direction:column}.luna-dom-highlighter-element-info-header{display:flex;align-items:center}.luna-dom-highlighter-element-info-body{display:flex;flex-direction:column;padding-top:2px;margin-top:2px}.luna-dom-highlighter-element-info-row{display:flex;line-height:19px}.luna-dom-highlighter-separator-container{display:flex;align-items:center;flex:auto;margin-left:7px}.luna-dom-highlighter-separator{border-top:1px
+solid
+#ddd;width:100%}.luna-dom-highlighter-element-info-name{flex-shrink:0;color:#666}.luna-dom-highlighter-element-info-gap{flex:auto}.luna-dom-highlighter-element-info-value-color{display:flex;color:#303942;margin-left:10px;align-items:baseline}.luna-dom-highlighter-a11y-icon{width:16px;height:16px;background-repeat:no-repeat;display:inline-block}.luna-dom-highlighter-element-info-value-contrast{display:flex;align-items:center;text-align:right;color:#303942;margin-left:10px}.luna-dom-highlighter-element-info-value-contrast
+.luna-dom-highlighter-a11y-icon{margin-left:8px}.luna-dom-highlighter-element-info-value-icon{display:flex;align-items:center}.luna-dom-highlighter-element-info-value-text{text-align:right;color:#303942;margin-left:10px;align-items:baseline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.luna-dom-highlighter-color-swatch{display:flex;margin-right:2px;width:10px;height:10px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);line-height:10px}.luna-dom-highlighter-color-swatch-inner{flex:auto;border:1px
+solid
+#808002}.luna-dom-highlighter-element-layout-type{margin-right:10px;width:16px;height:16px}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-grid{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-layout-type.luna-dom-highlighter-flex{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-element-description{flex:1
+1;font-weight:700;word-wrap:break-word;word-break:break-all}.luna-dom-highlighter-dimensions{color:#737373;text-align:right;margin-left:10px}.luna-dom-highlighter-material-node-width{margin-right:2px}.luna-dom-highlighter-material-node-height{margin-left:2px}.luna-dom-highlighter-material-tag-name{color:#881280}.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id{color:#1a1aa6}.luna-dom-highlighter-contrast-text{width:16px;height:16px;text-align:center;line-height:16px;margin-right:8px;border:1px
+solid #000;padding:0
+1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
+(forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}
