@@ -12,23 +12,38 @@ export {
   removeExt,
 }
 
+export type EntryGroup = 'css' | 'html' | 'js' | 'other'
+
+function classifyEntry(filename: string, options: InternalUserDefinedOptions): EntryGroup {
+  if (options.cssMatcher(filename)) {
+    return 'css'
+  }
+  if (options.htmlMatcher(filename)) {
+    return 'html'
+  }
+  if (options.jsMatcher(filename) || options.wxsMatcher(filename)) {
+    return 'js'
+  }
+  return 'other'
+}
+
+function createEmptyGroups<T>(): Record<EntryGroup, [string, T][]> {
+  return {
+    css: [],
+    html: [],
+    js: [],
+    other: [],
+  }
+}
+
 export function getGroupedEntries<T>(entries: [string, T][], options: InternalUserDefinedOptions) {
-  const { cssMatcher, htmlMatcher, jsMatcher, wxsMatcher } = options
-  const groupedEntries = groupBy(entries, ([file]) => {
-    if (cssMatcher(file)) {
-      return 'css'
-    }
-    else if (htmlMatcher(file)) {
-      return 'html'
-    }
-    else if (jsMatcher(file) || wxsMatcher(file)) {
-      return 'js'
-    }
-    else {
-      return 'other'
-    }
-  })
-  return groupedEntries as Record<'css' | 'html' | 'js' | 'other', [string, T][]>
+  const groups = createEmptyGroups<T>()
+  for (const entry of entries) {
+    const [filename] = entry
+    const group = classifyEntry(filename, options)
+    groups[group].push(entry)
+  }
+  return groups
 }
 
 // const MAX_ASCII_CHAR_CODE = 127

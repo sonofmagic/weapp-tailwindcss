@@ -1,5 +1,6 @@
+import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
-import { groupBy, regExpTest } from '@/utils'
+import { getGroupedEntries, groupBy, regExpTest } from '@/utils'
 import { switch2relative } from './util'
 
 function xxx(fn: any) {
@@ -122,6 +123,48 @@ describe('test util', () => {
           price: 30,
         },
       ],
+    })
+  })
+
+  describe('getGroupedEntries', () => {
+    const matchers = {
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      htmlMatcher: (file: string) => file.endsWith('.wxml'),
+      jsMatcher: (file: string) => file.endsWith('.js'),
+      wxsMatcher: (file: string) => file.endsWith('.wxs'),
+    } as Pick<InternalUserDefinedOptions, 'cssMatcher' | 'htmlMatcher' | 'jsMatcher' | 'wxsMatcher'>
+
+    const options = matchers as unknown as InternalUserDefinedOptions
+
+    it('groups entries by matcher priority', () => {
+      const entries: [string, number][] = [
+        ['app.wxss', 1],
+        ['index.wxml', 2],
+        ['logic.js', 3],
+        ['helper.wxs', 4],
+        ['README.md', 5],
+      ]
+
+      expect(getGroupedEntries(entries, options)).toEqual({
+        css: [['app.wxss', 1]],
+        html: [['index.wxml', 2]],
+        js: [
+          ['logic.js', 3],
+          ['helper.wxs', 4],
+        ],
+        other: [['README.md', 5]],
+      })
+    })
+
+    it('returns empty arrays for missing groups', () => {
+      const entries: [string, number][] = []
+
+      expect(getGroupedEntries(entries, options)).toEqual({
+        css: [],
+        html: [],
+        js: [],
+        other: [],
+      })
     })
   })
 })
