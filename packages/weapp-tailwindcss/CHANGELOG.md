@@ -1,5 +1,29 @@
 # weapp-tailwindcss
 
+## 4.4.0-alpha.0
+
+### Minor Changes
+
+- [`ebb1059`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ebb1059ff7c13fec90003e6c018bd229ad3c1db8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 重构缓存子系统与各 bundler 辅助逻辑：统一在缓存层处理哈希与写入流程，简化 `process` API，同时补充针对新行为的测试覆盖。
+
+- [`d56fca5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d56fca539d7c964b558f0434f069674bc832ed2a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 重构编译上下文模块，将日志、Tailwind 补丁、模板属性转换、处理器构建拆分为独立单元并补充 100% 覆盖率的单元测试，确保模块化结构更清晰且行为可验证。新增 Lightning CSS 版本的样式处理器，覆盖类名转义、选择器兼容、`:hover` 清理与子选择器替换等关键能力，并提供针对性单测。同步优化工具方法：为文件分组逻辑提供固定分组输出，替换已废弃的 `unescape` Unicode 解码实现，并补充对应的单元测试。
+
+### Patch Changes
+
+- [`8dca274`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8dca274fc94abb7a094a0089ddee9aa0ea9073ca) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 优化 uni-app-x 模板遍历与 class 处理逻辑，抽离更新函数并补充静态/动态 class 的单元测试保障。
+
+- [`ff74426`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ff744264e95a1d32f8bcc64de864292ddc8ff432) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - refactor: js ast 的转译处理
+  - perf: 缓存 JS 类名替换时的正则与转义结果，避免重复计算
+  - perf: WXML Tokenizer 采用字符码判断空白并复用 token 缓存，降低解析开销
+  - perf: 自定义属性匹配按标签分类预处理，避免在解析阶段重复遍历与覆写
+  - perf: WXML 片段空白检测改为轻量遍历，减少 `trim` 带来的额外字符串分配
+  - perf: 提炼空白检测工具，供 Tokenizer 与模板处理器共享，减少重复逻辑
+
+- [`8b20e71`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8b20e716da890c9709122f09810c9a9b51a705ae) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: remove @weapp-tailwindcss/init
+
+- Updated dependencies [[`b766f00`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b766f007d65d3383530452c1860907fa3dcfb00e)]:
+  - @weapp-tailwindcss/postcss@1.3.2-alpha.0
+
 ## 4.3.3
 
 ### Patch Changes

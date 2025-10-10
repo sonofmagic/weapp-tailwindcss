@@ -33,5 +33,13 @@
     "@weapp-tailwindcss/typography": "0.2.5",
     "@weapp-tailwindcss/website": "1.0.3"
   },
-  "changesets": []
+  "changesets": [
+    "cache-api-overhaul",
+    "cache-postcss-parser",
+    "chang-e-set",
+    "heavy-yaks-merge",
+    "js-tests-coverage",
+    "ripe-peas-bet",
+    "zh-context-refactor-tests"
+  ]
 }
