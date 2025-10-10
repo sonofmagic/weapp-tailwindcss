@@ -293,7 +293,7 @@ export const ruleTransformSync = (rule: Rule, options: IStyleHandlerOptions) => 
 这点其实就要说到 `unocss/windicss` 它们的优点了。目前 `tailwindcss postcss plugin` 实际上只有**读**的能力，它来读取我们写的代码，生成原子类。而 `windicss`/`unocss` 它们大多作为一个 `webpack/vite/rollup plugin` 来使用的，所以它们不但拥有读的能力，还拥有**修改**的能力。所以它们能写出这样的代码:
 
 ```html
-<button 
+<button
   bg="blue-400 hover:blue-500 dark:blue-500 dark:hover:blue-600"
   text="sm white"
   font="mono light"
@@ -527,7 +527,7 @@ import { getOptions } from 'loader-utils'
 
 笔者的方案肯定也会有许多的局限性，本篇文章也不可避免的会出现许多的勘误。
 
-欢迎大佬们指出，也欢迎大家的建议和指点 ^_^
+欢迎大佬们指出，也欢迎大家的建议和指点 ^\_^
 
 作者: [ice breaker](https://github.com/sonofmagic)
 

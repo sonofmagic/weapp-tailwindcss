@@ -63,7 +63,12 @@ const platformTags: Array<{ id: string, content: ReactNode }> = [
     content: (
       <div className="flex items-center justify-center gap-1">
         <span>IOS</span>
-        <i className="iconify logos--apple text-black/80 dark:text-white"></i>
+        <i className={`
+          iconify text-black/80 logos--apple
+          dark:text-white
+        `}
+        >
+        </i>
       </div>
     ),
   },
@@ -133,11 +138,30 @@ function HomepageHeader() {
   return (
     <header className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 size-[420px] -translate-x-1/2 rounded-full bg-sky-400/10 blur-3xl"></div>
-        <div className="absolute right-[-20%] top-[20%] size-[520px] rounded-full bg-emerald-400/10 blur-3xl"></div>
-        <div className="absolute bottom-[-20%] left-[-15%] size-[540px] rounded-full bg-sky-500/10 blur-3xl"></div>
+        <div className={`
+          absolute left-1/2 top-0 size-[420px] -translate-x-1/2 rounded-full
+          bg-sky-400/10 blur-3xl
+        `}
+        >
+        </div>
+        <div className={`
+          absolute right-[-20%] top-[20%] size-[520px] rounded-full
+          bg-emerald-400/10 blur-3xl
+        `}
+        >
+        </div>
+        <div className={`
+          absolute bottom-[-20%] left-[-15%] size-[540px] rounded-full
+          bg-sky-500/10 blur-3xl
+        `}
+        >
+        </div>
       </div>
-      <div className="container relative z-[1] flex min-h-svh flex-col justify-center gap-12 py-12">
+      <div className={`
+        container relative z-[1] flex min-h-svh flex-col justify-center gap-12
+        py-12
+      `}
+      >
         <div className="home-hero mx-auto w-full max-w-[min(1200px,94vw)]">
           <div className="home-hero__mesh"></div>
           <div className="home-hero__aurora"></div>
@@ -158,23 +182,50 @@ function HomepageHeader() {
               <div className="relative inline-flex items-center justify-center">
                 <HomeLogo></HomeLogo>
               </div>
-              <span className="inline-flex items-center gap-2 rounded-[18px] border border-slate-300/25 bg-[linear-gradient(140deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04))] px-4 py-2 text-[0.85rem] font-semibold uppercase tracking-[0.08em] text-sky-500 transition-transform duration-500 hover:-translate-y-1 dark:border-slate-600/40 dark:bg-[linear-gradient(140deg,rgba(14,165,233,0.18),rgba(14,165,233,0.08))] dark:text-sky-300">
+              <span className={`
+                inline-flex items-center gap-2 rounded-[18px] border
+                border-slate-300/25
+                bg-[linear-gradient(140deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04))]
+                px-4 py-2 text-[0.85rem] font-semibold uppercase
+                tracking-[0.08em] text-sky-500 transition-transform duration-500
+                hover:-translate-y-1
+                dark:border-slate-600/40
+                dark:bg-[linear-gradient(140deg,rgba(14,165,233,0.18),rgba(14,165,233,0.08))]
+                dark:text-sky-300
+              `}
+              >
                 <i className="iconify mdi--sparkles"></i>
                 小程序 · Tailwind 精准适配
               </span>
             </div>
-            <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl dark:text-slate-50">
+            <h1 className={`
+              text-4xl font-semibold tracking-tight text-slate-900
+              sm:text-5xl
+              lg:text-6xl
+              dark:text-slate-50
+            `}
+            >
               <span className="text-[#07c160]">weapp</span>
               <span className="from-weapp-to-tailwindcss">-</span>
               <span className="text-sky-500">tailwindcss</span>
             </h1>
-            <h3 className="mt-5 text-xl font-medium text-slate-700 sm:text-2xl dark:text-slate-200">
+            <h3 className={`
+              mt-5 text-xl font-medium text-slate-700
+              sm:text-2xl
+              dark:text-slate-200
+            `}
+            >
               <b className="text-[#07c160]">降低</b>
               团队维护成本，
               <b className="text-sky-500">加速</b>
               交付节奏的
             </h3>
-            <h3 className="text-lg text-slate-600 sm:text-xl dark:text-slate-200">
+            <h3 className={`
+              text-lg text-slate-600
+              sm:text-xl
+              dark:text-slate-200
+            `}
+            >
               <span className="text-[#07c160]">小程序</span>
               {' '}
               使用
@@ -183,9 +234,23 @@ function HomepageHeader() {
               {' '}
               一站式解决方案
             </h3>
-            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
-              <a className={`${ctaButton()} home-cta`} href="/docs/intro">
-                <span className="inline-flex items-center gap-1 text-[0.95rem] tracking-[0.02em]">
+            <div className={`
+              mt-8 flex flex-col items-center gap-4
+              sm:flex-row
+            `}
+            >
+              <a
+                className={`
+                  ${ctaButton()}
+                  home-cta
+                `}
+                href="/docs/intro"
+              >
+                <span className={`
+                  inline-flex items-center gap-1 text-[0.95rem]
+                  tracking-[0.02em]
+                `}
+                >
                   立即开始体验
                   <svg
                     aria-hidden="true"
@@ -200,7 +265,10 @@ function HomepageHeader() {
               </a>
               <InteractionPill href="/docs/community/group" icon="🚀" label="加入技术交流群" />
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+            <div className={`
+              mt-6 flex flex-wrap items-center justify-center gap-2.5
+            `}
+            >
               <HeroGithubBadge />
               <HeroVersionBadge className="mr-1.5" />
             </div>
@@ -223,13 +291,27 @@ function HomepageHeader() {
             />
           </div>
 
-          <div className="grid w-full gap-7 md:grid-cols-2 md:items-stretch lg:grid-cols-3">
+          <div className={`
+            grid w-full gap-7
+            md:grid-cols-2 md:items-stretch
+            lg:grid-cols-3
+          `}
+          >
             <FeatureCard eyebrow="Build Flow" subtitle="Webpack、Vite、Gulp 等多场景集成" title="多构建工具适配" variant="tools">
               <ToolOrbit items={toolOrbitItems} />
             </FeatureCard>
             <FeatureCard eyebrow="Version Matrix" subtitle="3.x 正式版、4.x 预览版及 2.x JIT 模式" title="Tailwind 多版本无缝支持" variant="versions">
-              <div className="flex w-full flex-col gap-3 sm:gap-4">
-                <p className="text-sm text-slate-600 sm:text-left dark:text-slate-300">
+              <div className={`
+                flex w-full flex-col gap-3
+                sm:gap-4
+              `}
+              >
+                <p className={`
+                  text-sm text-slate-600
+                  sm:text-left
+                  dark:text-slate-300
+                `}
+                >
                   覆盖稳定、预览与 JIT 管道，升级与回滚都能一键切换。
                 </p>
                 <VersionsStack Logo={TailwindcssLogo} links={versionLinks} />

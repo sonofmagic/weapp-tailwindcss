@@ -16,7 +16,7 @@ custom_edit_url: null
 
 [types.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L13)
 
-___
+---
 
 ### value
 

@@ -16,7 +16,7 @@ custom_edit_url: null
 
 [types.ts:67](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L67)
 
-___
+---
 
 ### raw
 
@@ -26,7 +26,7 @@ ___
 
 [types.ts:68](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L68)
 
-___
+---
 
 ### source
 
@@ -36,7 +36,7 @@ ___
 
 [types.ts:70](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L70)
 
-___
+---
 
 ### start
 

@@ -27,7 +27,6 @@ const isH5 = process.env.UNI_PLATFORM === "h5";
 const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
 
-
 // 然后在 h5 和 app 环境下把 webpack plugin 和 postcss for weapp 给禁用掉
 // 我们以 uni-app-vue3-vite 这个 demo为例
 // vite.config.ts
@@ -146,4 +145,4 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 
 - 配置 [tailwindcssBasedir](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#tailwindcssbasedir)
 
-- 禁止 `tailwindcss` 包被提升，具体配置方法可以去查阅各包管理器的说明文档 
+- 禁止 `tailwindcss` 包被提升，具体配置方法可以去查阅各包管理器的说明文档

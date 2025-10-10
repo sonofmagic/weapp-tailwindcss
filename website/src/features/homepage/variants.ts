@@ -84,15 +84,24 @@ export const featureCardHeader = tv({
 })
 
 export const featureCardEyebrow = tv({
-  base: 'text-xs font-semibold uppercase tracking-[0.3em] text-sky-400 dark:text-sky-300',
+  base: `
+    text-xs font-semibold uppercase tracking-[0.3em] text-sky-400
+    dark:text-sky-300
+  `,
 })
 
 export const featureCardTitle = tv({
-  base: 'text-[clamp(1.2rem,1.4vw,1.45rem)] font-semibold text-slate-800 dark:text-slate-100',
+  base: `
+    text-[clamp(1.2rem,1.4vw,1.45rem)] font-semibold text-slate-800
+    dark:text-slate-100
+  `,
 })
 
 export const featureCardSubtitle = tv({
-  base: 'text-sm text-slate-600 dark:text-slate-300',
+  base: `
+    text-sm text-slate-600
+    dark:text-slate-300
+  `,
 })
 
 export const toolOrbit = tv({
@@ -105,10 +114,17 @@ export const toolOrbit = tv({
 })
 
 export const toolOrbitRing = tv({
-  base: 'absolute inset-0 rounded-full border border-dashed border-slate-300/35 shadow-[inset_0_0_30px_rgba(148,163,184,0.12)]',
+  base: `
+    absolute inset-0 rounded-full border border-dashed border-slate-300/35
+    shadow-[inset_0_0_30px_rgba(148,163,184,0.12)]
+  `,
   variants: {
     variant: {
-      inner: 'inset-[30%] border-solid border-sky-300/35 shadow-[inset_0_0_40px_rgba(14,165,233,0.14)] md:inset-[24%]',
+      inner: `
+        inset-[30%] border-solid border-sky-300/35
+        shadow-[inset_0_0_40px_rgba(14,165,233,0.14)]
+        md:inset-[24%]
+      `,
     },
   },
 })
@@ -135,16 +151,31 @@ export const toolOrbitItem = tv({
   ].join(' '),
   variants: {
     placement: {
-      webpack: 'left-1/2 top-0 -translate-x-1/2 -translate-y-[58%] sm:-translate-y-[52%]',
-      vite: 'right-[-4%] top-1/2 -translate-y-1/2 translate-x-[52%] sm:right-[-2%] sm:translate-x-[48%]',
-      gulp: 'bottom-[-4%] left-1/2 -translate-x-1/2 translate-y-[50%] sm:bottom-[-2%] sm:translate-y-[44%]',
-      node: 'left-[-4%] top-1/2 -translate-x-[52%] -translate-y-1/2 sm:left-[-2%] sm:-translate-x-[48%]',
+      webpack: `
+        left-1/2 top-0 -translate-x-1/2 -translate-y-[58%]
+        sm:-translate-y-[52%]
+      `,
+      vite: `
+        right-[-4%] top-1/2 -translate-y-1/2 translate-x-[52%]
+        sm:right-[-2%] sm:translate-x-[48%]
+      `,
+      gulp: `
+        bottom-[-4%] left-1/2 -translate-x-1/2 translate-y-[50%]
+        sm:bottom-[-2%] sm:translate-y-[44%]
+      `,
+      node: `
+        left-[-4%] top-1/2 -translate-x-[52%] -translate-y-1/2
+        sm:left-[-2%] sm:-translate-x-[48%]
+      `,
     },
   },
 })
 
 export const toolOrbitLabel = tv({
-  base: 'text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-700 dark:text-slate-200',
+  base: `
+    text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-700
+    dark:text-slate-200
+  `,
 })
 
 export const versionsStack = tv({
@@ -161,7 +192,9 @@ export const versionsStackHalo = tv({
 })
 
 export const versionsStackLogo = tv({
-  base: 'w-[clamp(180px,26vw,220px)] drop-shadow-[0_16px_32px_rgba(56,189,248,0.18)]',
+  base: `
+    w-[clamp(180px,26vw,220px)] drop-shadow-[0_16px_32px_rgba(56,189,248,0.18)]
+  `,
 })
 
 export const versionsStackTimeline = tv({
@@ -185,15 +218,27 @@ export const versionsPill = tv({
 })
 
 export const versionsPillLabel = tv({
-  base: 'flex-1 text-left text-[0.95rem] font-semibold text-slate-800 sm:text-base dark:text-slate-100',
+  base: `
+    flex-1 text-left text-[0.95rem] font-semibold text-slate-800
+    sm:text-base
+    dark:text-slate-100
+  `,
 })
 
 export const versionsPillCta = tv({
-  base: 'text-[0.8rem] font-medium uppercase tracking-[0.12em] text-sky-400 sm:text-xs dark:text-sky-300',
+  base: `
+    text-[0.8rem] font-medium uppercase tracking-[0.12em] text-sky-400
+    sm:text-xs
+    dark:text-sky-300
+  `,
 })
 
 export const frameworkGrid = tv({
-  base: 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2 lg:gap-6',
+  base: `
+    grid grid-cols-1 gap-3
+    sm:grid-cols-2 sm:gap-4
+    lg:grid-cols-2 lg:gap-6
+  `,
 })
 
 export const frameworkCard = tv({
@@ -214,13 +259,22 @@ export const frameworkIcon = tv({
 })
 
 export const frameworkIconImage = tv({
-  base: 'size-8 object-contain sm:size-10',
+  base: `
+    size-8 object-contain
+    sm:size-10
+  `,
 })
 
 export const frameworkLabel = tv({
-  base: 'text-sm font-semibold uppercase tracking-[0.08em] text-slate-800 dark:text-slate-100',
+  base: `
+    text-sm font-semibold uppercase tracking-[0.08em] text-slate-800
+    dark:text-slate-100
+  `,
 })
 
 export const frameworkDescription = tv({
-  base: 'text-xs text-slate-500 dark:text-slate-300',
+  base: `
+    text-xs text-slate-500
+    dark:text-slate-300
+  `,
 })

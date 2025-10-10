@@ -1,4 +1,5 @@
-import { type PrismTheme, themes } from 'prism-react-renderer'
+import type { PrismTheme } from 'prism-react-renderer'
+import { themes } from 'prism-react-renderer'
 
 const baseTheme = themes.vsDark
 

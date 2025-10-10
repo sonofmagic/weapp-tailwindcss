@@ -15,9 +15,9 @@
 独立分包属于分包的一种。普通分包的所有限制都对独立分包有效。独立分包中插件、自定义组件的处理方式同普通分包。此外，使用独立分包时要注意：
 
 1. 独立分包中不能依赖主包和其他分包中的内容，包括 js 文件、template、wxss、自定义组件、插件等（使用 分包异步化 时 js 文件、自定义组件、插件不受此条限制）
-0. 主包中的 `app.wxss` 对独立分包无效，应避免在独立分包页面中使用 `app.wxss` 中的样式；
-0. App 只能在主包内定义，独立分包中不能定义 App，会造成无法预期的行为；
-0. 独立分包中暂时不支持使用插件。
+2. 主包中的 `app.wxss` 对独立分包无效，应避免在独立分包页面中使用 `app.wxss` 中的样式；
+3. App 只能在主包内定义，独立分包中不能定义 App，会造成无法预期的行为；
+4. 独立分包中暂时不支持使用插件。
 
 > 更多信息详见 [微信独立分包官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html)
 
@@ -147,7 +147,7 @@ module.exports = {
   // 这里需要限定范围，不去提取 moduleA 这个独立分包下的文件内容
   // 所以后面跟了一个 `!` 开头的路径
   content: [
-    "./src/**/*.{html,js,ts,jsx,tsx}", 
+    "./src/**/*.{html,js,ts,jsx,tsx}",
     // 不提取独立分包里的 class
     "!./src/moduleA/**/*.{html,js,ts,jsx,tsx}"],
   // ....
@@ -182,7 +182,7 @@ module.exports = function config(loaderContext) {
       }
     }
   }
-  
+
   return {
     plugins: {
       // 不传默认取 tailwind.config.js

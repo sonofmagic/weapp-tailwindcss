@@ -59,7 +59,7 @@ module.exports = config
 
 主要是依靠 `@weapp-tailwindcss/cli`
 
-`@weapp-tailwindcss/cli`  是一个利用 `gulp` 构建最小化的一个微信小程序原生开发的工具链
+`@weapp-tailwindcss/cli` 是一个利用 `gulp` 构建最小化的一个微信小程序原生开发的工具链
 
 ## 为什么不是 `webpack`/`vite`
 

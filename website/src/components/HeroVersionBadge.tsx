@@ -127,20 +127,56 @@ export default function HeroVersionBadge({ className }: HeroVersionBadgeProps = 
       className={[baseClass, 'hover:-translate-y-0.3 hover:scale-[1.01] active:translate-y-0 focus-visible:ring focus-visible:ring-emerald-200/60 dark:hover:scale-[1.005] dark:hover:-translate-y-0.2', className ?? ''].filter(Boolean).join(' ')}
       aria-label="查看 weapp-tailwindcss 在 npm 的最新版本"
     >
-      <span className="relative inline-flex size-[1.9rem] shrink-0 translate-x-0 items-center justify-center">
-        <span className="bg-emerald-400/18 absolute inset-0 rounded-full opacity-50 blur transition-opacity duration-300 group-hover:opacity-75" aria-hidden="true"></span>
-        <span className="relative inline-flex size-[1.9rem] items-center justify-center rounded-full border border-transparent bg-[radial-gradient(circle,rgba(16,185,129,0.2),rgba(134,239,172,0.16))] text-[0.72rem] font-semibold text-emerald-600 shadow-[0_2px_7px_rgba(16,185,129,0.14)] dark:bg-[radial-gradient(circle,rgba(16,185,129,0.22),rgba(6,95,70,0.22))] dark:text-emerald-100">
+      <span className={`
+        relative inline-flex size-[1.9rem] shrink-0 translate-x-0 items-center
+        justify-center
+      `}
+      >
+        <span
+          className={`
+            bg-emerald-400/18 absolute inset-0 rounded-full opacity-50 blur
+            transition-opacity duration-300
+            group-hover:opacity-75
+          `}
+          aria-hidden="true"
+        >
+        </span>
+        <span className={`
+          relative inline-flex size-[1.9rem] items-center justify-center
+          rounded-full border border-transparent
+          bg-[radial-gradient(circle,rgba(16,185,129,0.2),rgba(134,239,172,0.16))]
+          text-[0.72rem] font-semibold text-emerald-600
+          shadow-[0_2px_7px_rgba(16,185,129,0.14)]
+          dark:bg-[radial-gradient(circle,rgba(16,185,129,0.22),rgba(6,95,70,0.22))]
+          dark:text-emerald-100
+        `}
+        >
           ●
         </span>
       </span>
-      <span className="hidden text-xs font-semibold uppercase tracking-[0.11em] text-emerald-500/85 sm:inline dark:text-emerald-200/80">
+      <span className={`
+        hidden text-xs font-semibold uppercase tracking-[0.11em]
+        text-emerald-500/85
+        sm:inline
+        dark:text-emerald-200/80
+      `}
+      >
         Latest
       </span>
-      <span className="ml-1.5 text-sm font-semibold tabular-nums text-emerald-700 dark:text-emerald-100">
+      <span className={`
+        ml-1.5 text-sm font-semibold tabular-nums text-emerald-700
+        dark:text-emerald-100
+      `}
+      >
         {versionLabel}
       </span>
       {published && (
-        <span className="text-[0.7rem] font-medium uppercase tracking-[0.15em] text-emerald-500/65 dark:text-emerald-200/60">
+        <span className={`
+          text-[0.7rem] font-medium uppercase tracking-[0.15em]
+          text-emerald-500/65
+          dark:text-emerald-200/60
+        `}
+        >
           {published}
         </span>
       )}

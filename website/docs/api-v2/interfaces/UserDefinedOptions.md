@@ -20,7 +20,7 @@ custom_edit_url: null
 
 [types.ts:284](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L284)
 
-___
+---
 
 ### arbitraryValues
 
@@ -34,7 +34,7 @@ ___
 
 [types.ts:301](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L301)
 
-___
+---
 
 ### cssChildCombinatorReplaceValue
 
@@ -84,7 +84,7 @@ ___
 
 [types.ts:329](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L329)
 
-___
+---
 
 ### cssMatcher
 
@@ -98,7 +98,7 @@ ___
 
 [types.ts:125](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L125)
 
-___
+---
 
 ### cssPreflight
 
@@ -156,11 +156,11 @@ cssPreflight: {
 
 [types.ts:178](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L178)
 
-___
+---
 
 ### cssPreflightRange
 
-• `Optional` **cssPreflightRange**: ``"view"`` \| ``"all"``
+• `Optional` **cssPreflightRange**: `"view"` \| `"all"`
 
 **`Issue`**
 
@@ -174,7 +174,7 @@ ___
 
 [types.ts:184](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L184)
 
-___
+---
 
 ### cssSelectorReplacement
 
@@ -182,16 +182,16 @@ ___
 
 #### Type declaration
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `root?` | `string` \| ``false`` | **`Default`** ```ts 'page'``` |
-| `universal?` | `string` \| ``false`` | **`Default`** ```ts 'view'``` |
+| Name         | Type                | Description               |
+| :----------- | :------------------ | :------------------------ |
+| `root?`      | `string` \| `false` | **`Default`** `ts 'page'` |
+| `universal?` | `string` \| `false` | **`Default`** `ts 'view'` |
 
 #### Defined in
 
 [types.ts:410](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L410)
 
-___
+---
 
 ### customAttributes
 
@@ -229,11 +229,11 @@ const customAttributes = {
 
 [types.ts:251](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L251)
 
-___
+---
 
 ### customReplaceDictionary
 
-• `Optional` **customReplaceDictionary**: `Record`<`string`, `string`\> \| ``"simple"`` \| ``"complex"``
+• `Optional` **customReplaceDictionary**: `Record`<`string`, `string`\> \| `"simple"` \| `"complex"`
 
 **`Description`**
 
@@ -256,7 +256,7 @@ ___
 
 [types.ts:263](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L263)
 
-___
+---
 
 ### customRuleCallback
 
@@ -270,7 +270,7 @@ ___
 
 [types.ts:201](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L201)
 
-___
+---
 
 ### disabled
 
@@ -284,7 +284,7 @@ ___
 
 [types.ts:196](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L196)
 
-___
+---
 
 ### disabledDefaultTemplateHandler
 
@@ -310,7 +310,7 @@ false
 
 [types.ts:389](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L389)
 
-___
+---
 
 ### htmlMatcher
 
@@ -324,7 +324,7 @@ ___
 
 [types.ts:121](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L121)
 
-___
+---
 
 ### injectAdditionalCssVarScope
 
@@ -354,7 +354,7 @@ false
 
 [types.ts:373](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L373)
 
-___
+---
 
 ### inlineWxs
 
@@ -367,6 +367,7 @@ ___
 **`Description`**
 
 是否转义 `wxml` 中内联的 `wxs`
+
 > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
 
 **`Example`**
@@ -395,11 +396,11 @@ false
 
 [types.ts:359](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L359)
 
-___
+---
 
 ### jsEscapeStrategy
 
-• `Optional` **jsEscapeStrategy**: ``"regenerate"`` \| ``"replace"``
+• `Optional` **jsEscapeStrategy**: `"regenerate"` \| `"replace"`
 
 **`Version`**
 
@@ -426,7 +427,7 @@ js 字面量以及模板字符串的转义替换模式
 
 [types.ts:402](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L402)
 
-___
+---
 
 ### jsMatcher
 
@@ -440,7 +441,7 @@ ___
 
 [types.ts:129](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L129)
 
-___
+---
 
 ### jsPreserveClass
 
@@ -452,8 +453,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name      | Type     |
+| :-------- | :------- |
 | `keyword` | `string` |
 
 ##### Returns
@@ -476,7 +477,7 @@ ___
 
 [types.ts:380](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L380)
 
-___
+---
 
 ### mainCssChunkMatcher
 
@@ -490,7 +491,7 @@ ___
 
 [types.ts:134](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L134)
 
-___
+---
 
 ### mangle
 
@@ -508,7 +509,7 @@ ___
 
 [types.ts:296](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L296)
 
-___
+---
 
 ### minifiedJs
 
@@ -528,7 +529,7 @@ process.env.NODE_ENV === 'production'
 
 [types.ts:290](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L290)
 
-___
+---
 
 ### onEnd
 
@@ -550,7 +551,7 @@ ___
 
 [types.ts:222](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L222)
 
-___
+---
 
 ### onLoad
 
@@ -572,7 +573,7 @@ plugin apply 初调用
 
 [types.ts:206](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L206)
 
-___
+---
 
 ### onStart
 
@@ -594,7 +595,7 @@ ___
 
 [types.ts:210](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L210)
 
-___
+---
 
 ### onUpdate
 
@@ -606,11 +607,11 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name       | Type     |
+| :--------- | :------- |
 | `filename` | `string` |
-| `oldVal` | `string` |
-| `newVal` | `string` |
+| `oldVal`   | `string` |
+| `newVal`   | `string` |
 
 ##### Returns
 
@@ -624,11 +625,11 @@ ___
 
 [types.ts:218](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L218)
 
-___
+---
 
 ### replaceUniversalSelectorWith
 
-• `Optional` **replaceUniversalSelectorWith**: `string` \| ``false``
+• `Optional` **replaceUniversalSelectorWith**: `string` \| `false`
 
 **`Issue`**
 
@@ -648,7 +649,7 @@ ___
 
 [types.ts:191](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L191)
 
-___
+---
 
 ### supportCustomLengthUnitsPatch
 
@@ -663,6 +664,7 @@ ___
 **`Description`**
 
 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
+
 > 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
 
 ```diff
@@ -677,7 +679,7 @@ ___
 
 [types.ts:279](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L279)
 
-___
+---
 
 ### tailwindcssBasedir
 
@@ -695,7 +697,7 @@ ___
 
 [types.ts:425](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L425)
 
-___
+---
 
 ### wxsMatcher
 
@@ -708,6 +710,7 @@ ___
 **`Description`**
 
 各个平台 `wxs` 文件的匹配方法,可以设置为包括微信的 .wxs,支付宝的 .sjs 和 百度小程序的 .filter.js
+
 > tip: 记得在 `tailwind.config.js` 中，把 `wxs` 这个格式加入 `content` 配置项，不然不会生效
 
 **`Default`**

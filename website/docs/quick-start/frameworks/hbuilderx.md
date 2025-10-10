@@ -47,7 +47,7 @@ const resolve = (p) => {
 
 export default defineConfig({
   plugins: [
-    uni(), 
+    uni(),
     uvwt({
       rem2rpx: true,
       disabled: WeappTailwindcssDisabled,
@@ -88,7 +88,6 @@ export default defineConfig({
 
 也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
 
-
 ## hbuilderx vue2 webpack4 postcss7 版本模板
 
 如果你实在必须在 `hbuilderx vue2` 的项目中使用 `tailwindcss`，那么你可以使用下面的方法来使用 `tailwindcss`
@@ -105,7 +104,7 @@ export default defineConfig({
 
 当然这并不意味着 `hbuilderx` 创建的 `vue2` 项目无法使用最新的这个插件，我们可以强行升级 `HBuilderX/plugins/uniapp-cli` 中的依赖，使得它适配 `webpack5`
 
-> Macos uniapp-cli 路径在  /Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli
+> Macos uniapp-cli 路径在 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli
 >
 > Windows 的路径应该也在类似的地方，记得要先下载 vue2 的编译器，这个文件夹才有
 
@@ -122,4 +121,3 @@ export default defineConfig({
 ## 视频演示
 
 <iframe src="//player.bilibili.com/player.html?aid=411561123&bvid=BV1EV41197Ps&cid=1413438914&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-

@@ -34,7 +34,6 @@ toc_max_heading_level: 4
 
 ![智能提示](./frameworks/img/wxml-i.png)
 
-
 #### 工作区设置
 
 在你的打开的工作区目录的根目录里，创建 `.vscode` 文件夹，然后添加 `settings.json` 内容如下:
@@ -109,7 +108,6 @@ const btn = AAA('')
 ```
 
 另外，你可以依据这个特性，修改/添加 `"tailwindCSS.experimental.classRegex"` 里的正则，然后自行封装一个方法，用来进行 `tailwindcss` 的智能提示。
-
 
 ## WebStorm
 

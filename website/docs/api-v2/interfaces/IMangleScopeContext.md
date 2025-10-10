@@ -16,7 +16,7 @@ custom_edit_url: null
 
 [types.ts:433](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L433)
 
-___
+---
 
 ### cssHandler
 
@@ -28,8 +28,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name        | Type     |
+| :---------- | :------- |
 | `rawSource` | `string` |
 
 ##### Returns
@@ -40,7 +40,7 @@ ___
 
 [types.ts:435](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L435)
 
-___
+---
 
 ### filter
 
@@ -52,8 +52,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name        | Type     |
+| :---------- | :------- |
 | `className` | `string` |
 
 ##### Returns
@@ -64,7 +64,7 @@ ___
 
 [types.ts:434](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L434)
 
-___
+---
 
 ### jsHandler
 
@@ -76,8 +76,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name        | Type     |
+| :---------- | :------- |
 | `rawSource` | `string` |
 
 ##### Returns
@@ -88,7 +88,7 @@ ___
 
 [types.ts:436](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L436)
 
-___
+---
 
 ### rawOptions
 
@@ -98,7 +98,7 @@ ___
 
 [types.ts:431](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L431)
 
-___
+---
 
 ### runtimeSet
 
@@ -108,7 +108,7 @@ ___
 
 [types.ts:432](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L432)
 
-___
+---
 
 ### wxmlHandler
 
@@ -120,8 +120,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name        | Type     |
+| :---------- | :------- |
 | `rawSource` | `string` |
 
 ##### Returns

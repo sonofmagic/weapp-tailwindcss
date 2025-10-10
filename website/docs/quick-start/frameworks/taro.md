@@ -8,10 +8,10 @@
 假如你和 `NutUI` 一起使用，或者启用了 `@tarojs/plugin-html` 插件，请一定要查看这个[注意事项](/docs/issues/use-with-nutui)!
 
 <!-- 有群友遇到了转义特殊字符失败，之后变成了空格的文件，结果 `node_modules` 删了重新安装就好了。 -->
+
 :::
 
 下列配置同时支持 `taro` 的 `react` / `preact` / `vue2` / `vue3` 所有框架
-
 
 ## 使用 Webpack 作为打包工具
 
@@ -28,7 +28,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
   // 找到 mini 这个配置
   mini: {
     // postcss: { /*...*/ },
-    // 中的 webpackChain, 通常紧挨着 postcss 
+    // 中的 webpackChain, 通常紧挨着 postcss
     webpackChain(chain, webpack) {
       // 复制这块区域到你的配置代码中 region start
       // highlight-start
@@ -64,7 +64,8 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 <!-- 还有不要和 `terser-webpack-plugin` 一起注册使用，这会导致转义功能失效 详见 [**常见问题**](/docs/issues#taro-webpack5-环境下这个插件和-terser-webpack-plugin-一起使用会导致插件转义功能失效) 和 [issues/142](https://github.com/sonofmagic/weapp-tailwindcss/issues/142) -->
 
 还有 `taro` 的 `prebundle` 功能老是出错，最近更新之后，由于 `prebundle` 默认开启，有时候连 `taro cli` 初始化的模板项目都跑不起来，假如遇到问题找不到原因，可以尝试关闭这个配置。
-<!-- 
+
+<!--
 **另外不要开启二次编译缓存!**
 
 ```js
@@ -83,7 +84,7 @@ cache: {
 ## 使用 Vite 作为打包工具
 
 <!-- :::danger
-Taro Vite 目前存在一些 bug 还没有修复，不推荐使用! 
+Taro Vite 目前存在一些 bug 还没有修复，不推荐使用!
 
 下方注册方式会存在部分样式丢失的情况
 ::: -->
@@ -133,7 +134,6 @@ const baseConfig: UserConfigExport<'vite'> = {
 这段代码的意思为，在 `vite` 里注册 `postcss` 插件和 `vite` 插件
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
-
 
 ## 视频演示
 

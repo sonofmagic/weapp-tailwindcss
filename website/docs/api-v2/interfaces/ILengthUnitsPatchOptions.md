@@ -18,7 +18,7 @@ custom_edit_url: null
 
 [types.ts:91](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L91)
 
-___
+---
 
 ### dangerousOptions
 
@@ -28,7 +28,7 @@ ___
 
 [types.ts:90](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L90)
 
-___
+---
 
 ### paths
 
@@ -38,7 +38,7 @@ ___
 
 [types.ts:89](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L89)
 
-___
+---
 
 ### units
 

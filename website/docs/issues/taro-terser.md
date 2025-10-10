@@ -1,4 +1,4 @@
-# `Tarojs` 中使用 `terser` 压缩代码 
+# `Tarojs` 中使用 `terser` 压缩代码
 
 在 `taro` `webpack5` 环境下，这个插件和外置额外安装的 `terser-webpack-plugin` 一起使用，会导致插件转义功能失效
 

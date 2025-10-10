@@ -24,7 +24,7 @@ object {
 
 这导致了 `svg` 变成了 `display: block;` 的状态
 
-解决方案也非常的简单, 在 `app.wxss` 使用样式进行覆盖: 
+解决方案也非常的简单, 在 `app.wxss` 使用样式进行覆盖:
 
 ```scss
 .uni-toast{

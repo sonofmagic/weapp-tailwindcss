@@ -16,7 +16,7 @@ custom_edit_url: null
 
 [types.ts:95](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L95)
 
-___
+---
 
 ### mangleClassFilter
 
@@ -28,8 +28,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name        | Type     |
+| :---------- | :------- |
 | `className` | `string` |
 
 ##### Returns

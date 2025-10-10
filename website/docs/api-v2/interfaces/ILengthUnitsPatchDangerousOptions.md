@@ -16,7 +16,7 @@ custom_edit_url: null
 
 [types.ts:81](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L81)
 
-___
+---
 
 ### gteVersion
 
@@ -26,7 +26,7 @@ ___
 
 [types.ts:77](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L77)
 
-___
+---
 
 ### lengthUnitsFilePath
 
@@ -36,7 +36,7 @@ ___
 
 [types.ts:78](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L78)
 
-___
+---
 
 ### overwrite
 
@@ -46,7 +46,7 @@ ___
 
 [types.ts:80](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L80)
 
-___
+---
 
 ### packageName
 
@@ -56,7 +56,7 @@ ___
 
 [types.ts:76](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L76)
 
-___
+---
 
 ### variableName
 

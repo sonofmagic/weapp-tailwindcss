@@ -9,7 +9,3 @@
 这个配置可以通过 `cssSelectorReplacement.universal` 进行更改，从而适配更多标签。
 
 详见 [cssSelectorReplacement.universal 文档](/docs/api/interfaces/UserDefinedOptions#universal)
-
-
-
-

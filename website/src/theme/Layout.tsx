@@ -14,7 +14,12 @@ export default function LayoutWrapper(props) {
       )} */}
       <Layout {...props} />
       <div className="pointer-events-none absolute inset-0 z-[202] flex-none">
-        <div className="size-full rounded-none bg-[url(/img/framer.png)] bg-[length:128px] bg-repeat opacity-5">
+        <div className={`
+          size-full rounded-none bg-[url(/img/framer.png)]
+          bg-[length:128px]
+          bg-repeat opacity-5
+        `}
+        >
         </div>
       </div>
     </div>

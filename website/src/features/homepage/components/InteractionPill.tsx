@@ -16,7 +16,10 @@ export const InteractionPill: FC<InteractionPillProps> = ({ href, label, icon = 
         <span className={interactionPillLabel()}>{label}</span>
         <svg
           aria-hidden="true"
-          className="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+          className={`
+            size-4 transition-transform duration-300
+            group-hover:translate-x-0.5
+          `}
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

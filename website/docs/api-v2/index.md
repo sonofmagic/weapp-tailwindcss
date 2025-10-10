@@ -30,33 +30,33 @@ custom_edit_url: null
 
 ### AppType
 
-Ƭ **AppType**: ``"uni-app"`` \| ``"uni-app-vite"`` \| ``"taro"`` \| ``"remax"`` \| ``"rax"`` \| ``"native"`` \| ``"kbone"`` \| ``"mpx"``
+Ƭ **AppType**: `"uni-app"` \| `"uni-app-vite"` \| `"taro"` \| `"remax"` \| `"rax"` \| `"native"` \| `"kbone"` \| `"mpx"`
 
 #### Defined in
 
 [types.ts:10](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L10)
 
-___
+---
 
 ### CreateJsHandlerOptions
 
-Ƭ **CreateJsHandlerOptions**: `Omit`<[`IJsHandlerOptions`](#ijshandleroptions), ``"classNameSet"``\>
+Ƭ **CreateJsHandlerOptions**: `Omit`<[`IJsHandlerOptions`](#ijshandleroptions), `"classNameSet"`\>
 
 #### Defined in
 
 [types.ts:502](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L502)
 
-___
+---
 
 ### CssPreflightOptions
 
-Ƭ **CssPreflightOptions**: \{ `[key: CssPresetProps]`: `string` \| `number` \| `boolean`;  } \| ``false``
+Ƭ **CssPreflightOptions**: \{ `[key: CssPresetProps]`: `string` \| `number` \| `boolean`; } \| `false`
 
 #### Defined in
 
 [types.ts:19](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L19)
 
-___
+---
 
 ### CssPresetProps
 
@@ -66,7 +66,7 @@ ___
 
 [types.ts:17](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L17)
 
-___
+---
 
 ### CustomRuleCallback
 
@@ -78,9 +78,9 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `node` | `Rule` |
+| Name      | Type                                                                       |
+| :-------- | :------------------------------------------------------------------------- |
+| `node`    | `Rule`                                                                     |
 | `options` | `Readonly`<[`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)\> |
 
 ##### Returns
@@ -91,17 +91,17 @@ ___
 
 [types.ts:34](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L34)
 
-___
+---
 
 ### GlobOrFunctionMatchers
 
-Ƭ **GlobOrFunctionMatchers**: ``"htmlMatcher"`` \| ``"cssMatcher"`` \| ``"jsMatcher"`` \| ``"mainCssChunkMatcher"`` \| ``"wxsMatcher"``
+Ƭ **GlobOrFunctionMatchers**: `"htmlMatcher"` \| `"cssMatcher"` \| `"jsMatcher"` \| `"mainCssChunkMatcher"` \| `"wxsMatcher"`
 
 #### Defined in
 
 [types.ts:460](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L460)
 
-___
+---
 
 ### ICustomAttributes
 
@@ -111,7 +111,7 @@ ___
 
 [types.ts:50](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L50)
 
-___
+---
 
 ### ICustomAttributesEntities
 
@@ -121,7 +121,7 @@ ___
 
 [types.ts:52](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L52)
 
-___
+---
 
 ### IJsHandlerOptions
 
@@ -129,53 +129,53 @@ ___
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `arbitraryValues?` | [`IArbitraryValues`](interfaces/IArbitraryValues.md) |
-| `classNameSet` | `Set`<`string`\> |
-| `escapeMap?` | `Record`<`string`, `string`\> |
-| `generateMap?` | `boolean` |
-| `jsPreserveClass?` | (`keyword`: `string`) => `boolean` \| `undefined` |
-| `mangleContext?` | [`IMangleScopeContext`](interfaces/IMangleScopeContext.md) |
-| `minifiedJs?` | `boolean` |
-| `needEscaped?` | `boolean` |
-| `strategy?` | [`UserDefinedOptions`](interfaces/UserDefinedOptions.md)[``"jsEscapeStrategy"``] |
+| Name               | Type                                                                             |
+| :----------------- | :------------------------------------------------------------------------------- |
+| `arbitraryValues?` | [`IArbitraryValues`](interfaces/IArbitraryValues.md)                             |
+| `classNameSet`     | `Set`<`string`\>                                                                 |
+| `escapeMap?`       | `Record`<`string`, `string`\>                                                    |
+| `generateMap?`     | `boolean`                                                                        |
+| `jsPreserveClass?` | (`keyword`: `string`) => `boolean` \| `undefined`                                |
+| `mangleContext?`   | [`IMangleScopeContext`](interfaces/IMangleScopeContext.md)                       |
+| `minifiedJs?`      | `boolean`                                                                        |
+| `needEscaped?`     | `boolean`                                                                        |
+| `strategy?`        | [`UserDefinedOptions`](interfaces/UserDefinedOptions.md)[``"jsEscapeStrategy"``] |
 
 #### Defined in
 
 [types.ts:54](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L54)
 
-___
+---
 
 ### IStyleHandlerOptions
 
-Ƭ **IStyleHandlerOptions**: \{ `customRuleCallback?`: [`CustomRuleCallback`](#customrulecallback) ; `mangleContext?`: [`IMangleScopeContext`](interfaces/IMangleScopeContext.md)  } & [`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)
+Ƭ **IStyleHandlerOptions**: \{ `customRuleCallback?`: [`CustomRuleCallback`](#customrulecallback) ; `mangleContext?`: [`IMangleScopeContext`](interfaces/IMangleScopeContext.md) } & [`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)
 
 #### Defined in
 
 [types.ts:41](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L41)
 
-___
+---
 
 ### InternalPostcssOptions
 
-Ƭ **InternalPostcssOptions**: `Pick`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), ``"cssMatcher"`` \| ``"mainCssChunkMatcher"`` \| ``"cssPreflight"`` \| ``"replaceUniversalSelectorWith"`` \| ``"cssPreflightRange"`` \| ``"customRuleCallback"`` \| ``"disabled"``\>
+Ƭ **InternalPostcssOptions**: `Pick`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), `"cssMatcher"` \| `"mainCssChunkMatcher"` \| `"cssPreflight"` \| `"replaceUniversalSelectorWith"` \| `"cssPreflightRange"` \| `"customRuleCallback"` \| `"disabled"`\>
 
 #### Defined in
 
 [types.ts:479](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L479)
 
-___
+---
 
 ### InternalUserDefinedOptions
 
-Ƭ **InternalUserDefinedOptions**: `Required`<`Omit`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), [`GlobOrFunctionMatchers`](#globorfunctionmatchers) \| ``"supportCustomLengthUnitsPatch"`` \| ``"customReplaceDictionary"``\> & \{ [K in GlobOrFunctionMatchers]: K extends "mainCssChunkMatcher" ? Function : Function } & \{ `cache`: `ICreateCacheReturnType` ; `customReplaceDictionary`: `Record`<`string`, `string`\> ; `escapeMap`: `Record`<`string`, `string`\> ; `jsHandler`: [`JsHandler`](#jshandler) ; `patch`: () => `void` ; `setMangleRuntimeSet`: (`runtimeSet`: `Set`<`string`\>) => `void` ; `styleHandler`: (`rawSource`: `string`, `options`: [`IStyleHandlerOptions`](#istylehandleroptions)) => `Promise`<`string`\> ; `supportCustomLengthUnitsPatch`: [`ILengthUnitsPatchOptions`](interfaces/ILengthUnitsPatchOptions.md) \| ``false`` ; `templateHandler`: (`rawSource`: `string`, `options?`: [`ITemplateHandlerOptions`](interfaces/ITemplateHandlerOptions.md)) => `string`  }\>
+Ƭ **InternalUserDefinedOptions**: `Required`<`Omit`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), [`GlobOrFunctionMatchers`](#globorfunctionmatchers) \| `"supportCustomLengthUnitsPatch"` \| `"customReplaceDictionary"`\> & \{ [K in GlobOrFunctionMatchers]: K extends "mainCssChunkMatcher" ? Function : Function } & \{ `cache`: `ICreateCacheReturnType` ; `customReplaceDictionary`: `Record`<`string`, `string`\> ; `escapeMap`: `Record`<`string`, `string`\> ; `jsHandler`: [`JsHandler`](#jshandler) ; `patch`: () => `void` ; `setMangleRuntimeSet`: (`runtimeSet`: `Set`<`string`\>) => `void` ; `styleHandler`: (`rawSource`: `string`, `options`: [`IStyleHandlerOptions`](#istylehandleroptions)) => `Promise`<`string`\> ; `supportCustomLengthUnitsPatch`: [`ILengthUnitsPatchOptions`](interfaces/ILengthUnitsPatchOptions.md) \| `false` ; `templateHandler`: (`rawSource`: `string`, `options?`: [`ITemplateHandlerOptions`](interfaces/ITemplateHandlerOptions.md)) => `string` }\>
 
 #### Defined in
 
 [types.ts:462](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L462)
 
-___
+---
 
 ### ItemOrItemArray
 
@@ -184,14 +184,14 @@ ___
 #### Type parameters
 
 | Name |
-| :------ |
-| `T` |
+| :--- |
+| `T`  |
 
 #### Defined in
 
 [types.ts:8](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L8)
 
-___
+---
 
 ### JsHandler
 
@@ -203,11 +203,11 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `rawSource` | `string` |
-| `set` | `Set`<`string`\> |
-| `options?` | [`CreateJsHandlerOptions`](#createjshandleroptions) |
+| Name        | Type                                                |
+| :---------- | :-------------------------------------------------- |
+| `rawSource` | `string`                                            |
+| `set`       | `Set`<`string`\>                                    |
+| `options?`  | [`CreateJsHandlerOptions`](#createjshandleroptions) |
 
 ##### Returns
 
@@ -217,7 +217,7 @@ ___
 
 [types.ts:428](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L428)
 
-___
+---
 
 ### JsHandlerReplaceResult
 
@@ -225,16 +225,16 @@ ___
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `code` | `string` |
+| Name   | Type        |
+| :----- | :---------- |
+| `code` | `string`    |
 | `map?` | `SourceMap` |
 
 #### Defined in
 
 [types.ts:46](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L46)
 
-___
+---
 
 ### JsHandlerResult
 
@@ -244,11 +244,11 @@ ___
 
 [types.ts:48](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L48)
 
-___
+---
 
 ### RequiredStyleHandlerOptions
 
-Ƭ **RequiredStyleHandlerOptions**: \{ `cssInjectPreflight?`: `InjectPreflight` ; `escapeMap?`: `Record`<`string`, `string`\> ; `isMainChunk`: `boolean`  } & `Pick`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), ``"cssPreflightRange"`` \| ``"cssChildCombinatorReplaceValue"`` \| ``"replaceUniversalSelectorWith"`` \| ``"injectAdditionalCssVarScope"`` \| ``"cssSelectorReplacement"``\>
+Ƭ **RequiredStyleHandlerOptions**: \{ `cssInjectPreflight?`: `InjectPreflight` ; `escapeMap?`: `Record`<`string`, `string`\> ; `isMainChunk`: `boolean` } & `Pick`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), `"cssPreflightRange"` \| `"cssChildCombinatorReplaceValue"` \| `"replaceUniversalSelectorWith"` \| `"injectAdditionalCssVarScope"` \| `"cssSelectorReplacement"`\>
 
 #### Defined in
 
@@ -262,8 +262,8 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name      | Type                                                     |
+| :-------- | :------------------------------------------------------- |
 | `options` | [`UserDefinedOptions`](interfaces/UserDefinedOptions.md) |
 
 #### Returns
@@ -286,7 +286,7 @@ https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
 
 [vite/index.ts:17](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/vite/index.ts#L17)
 
-___
+---
 
 ### createPlugins
 
@@ -294,17 +294,17 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name      | Type                                                     |
+| :-------- | :------------------------------------------------------- |
 | `options` | [`UserDefinedOptions`](interfaces/UserDefinedOptions.md) |
 
 #### Returns
 
 `Object`
 
-| Name | Type |
-| :------ | :------ |
-| `transformJs` | () => `Transform` |
+| Name            | Type              |
+| :-------------- | :---------------- |
+| `transformJs`   | () => `Transform` |
 | `transformWxml` | () => `Transform` |
 | `transformWxss` | () => `Transform` |
 

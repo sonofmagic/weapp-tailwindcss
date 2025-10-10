@@ -14,7 +14,7 @@
 
 ### 使用 `uni-app cli` 进行构建 `vscode` 开发
 
-🔥  [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template) <iframe
+🔥 [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=sonofmagic&repo=uni-app-vite-vue3-tailwind-vscode-template&type=star&count=true"
               frameborder="0"
               scrolling="0"
@@ -22,7 +22,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=uni-app-vue2-tailwind-vscode-template&type=star&count=true"
@@ -32,7 +33,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 [monorepo-uniapp-template](https://github.com/sukbearai/monorepo-uniapp-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=sukbearai&repo=monorepo-uniapp-template&type=star&count=true"
@@ -42,7 +44,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 ### 若依移动端 (`hbuilderx` 集成 `tailwindcss`)
 
@@ -58,7 +61,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 [uni-app-vue2-tailwind-hbuilder-template (架构太过老旧，只能作为集成参考，新项目请勿使用)](https://github.com/icebreaker-trash/uni-app-vue2-tailwind-hbuilder-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-trash&repo=uni-app-vue2-tailwind-hbuilder-template&type=star&count=true"
@@ -68,7 +72,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 ## tarojs
 
@@ -84,7 +89,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 ## native
 
@@ -104,7 +110,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 [weapp-tailwindcss-gulp-template (gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
 
@@ -116,7 +123,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 [vue-mini-tailwindcss-template(实验性 vue-mini 支持)](https://github.com/sonofmagic/vue-mini-tailwindcss-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=vue-mini-tailwindcss-template&type=star&count=true"
@@ -126,7 +134,8 @@
               height="20"
               title="GitHub"
             >
-            </iframe>
+
+</iframe>
 
 ## `tailwindcss@4`
 

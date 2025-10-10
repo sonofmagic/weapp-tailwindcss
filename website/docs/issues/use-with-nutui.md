@@ -32,7 +32,6 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 }
 ```
 
-
 ## 可能有用但是过时的方案（部分 taro 版本有用）
 
 ~~需要去配置一下 `postcss-html-transform` 这个插件~~（实在找不到方法可以尝试一下）

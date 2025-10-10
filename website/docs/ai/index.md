@@ -11,7 +11,7 @@
 ### 前置环境
 
 1. `nodejs@22`
-2. `pnpm@10` 
+2. `pnpm@10`
 3. `Github` 账号
 
 ### 开始
@@ -28,7 +28,7 @@
 `http://localhost:4000/docs/ai/{your_doc_name}` 路径中去
 
 > 比如你创建一个 `v0.md`，你的路由就是 `http://localhost:4000/docs/ai/v0`
-> 
+>
 > 假如你创建一个 `index.md`，比如这个页面就是一个 `index.md` 这个页面访问路径为 http://localhost:4000/docs/ai
 
 假如你有素材，可以放在 `website/docs/ai/assets/{your_doc_name}` 目录下，然后在 `md` 文件中，进行引用

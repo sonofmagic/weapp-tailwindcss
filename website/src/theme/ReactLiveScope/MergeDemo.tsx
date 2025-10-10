@@ -8,7 +8,10 @@ export function MergeDemo() {
       disableEscape,
     },
   )
-  const x = twMerge('px-2 py-1 bg-red hover:bg-dark-red', 'p-3 bg-[#B91C1C]')
+  const x = twMerge(`
+    bg-red px-2 py-1
+    hover:bg-dark-red
+  `, 'bg-[#B91C1C] p-3')
 
   return (
     <div>

@@ -20,7 +20,7 @@ custom_edit_url: null
 
 [types.ts:488](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L488)
 
-___
+---
 
 ### apply
 
@@ -32,8 +32,8 @@ ___
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name       | Type  |
+| :--------- | :---- |
 | `compiler` | `any` |
 
 ##### Returns
@@ -44,11 +44,11 @@ ___
 
 [types.ts:490](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L490)
 
-___
+---
 
 ### options
 
-• **options**: `Required`<`Omit`<[`UserDefinedOptions`](UserDefinedOptions.md), ``"customReplaceDictionary"`` \| ``"supportCustomLengthUnitsPatch"`` \| [`GlobOrFunctionMatchers`](../#globorfunctionmatchers)\> & \{ `cssMatcher`: (`name`: `string`) => `boolean` ; `htmlMatcher`: (`name`: `string`) => `boolean` ; `jsMatcher`: (`name`: `string`) => `boolean` ; `mainCssChunkMatcher`: (`name`: `string`, `appType?`: [`AppType`](../#apptype)) => `boolean` ; `wxsMatcher`: (`name`: `string`) => `boolean`  } & \{ `cache`: `ICreateCacheReturnType` ; `customReplaceDictionary`: `Record`<`string`, `string`\> ; `escapeMap`: `Record`<`string`, `string`\> ; `jsHandler`: [`JsHandler`](../#jshandler) ; `patch`: () => `void` ; `setMangleRuntimeSet`: (`runtimeSet`: `Set`<`string`\>) => `void` ; `styleHandler`: (`rawSource`: `string`, `options`: [`IStyleHandlerOptions`](../#istylehandleroptions)) => `Promise`<`string`\> ; `supportCustomLengthUnitsPatch`: ``false`` \| [`ILengthUnitsPatchOptions`](ILengthUnitsPatchOptions.md) ; `templateHandler`: (`rawSource`: `string`, `options?`: [`ITemplateHandlerOptions`](ITemplateHandlerOptions.md)) => `string`  }\>
+• **options**: `Required`<`Omit`<[`UserDefinedOptions`](UserDefinedOptions.md), `"customReplaceDictionary"` \| `"supportCustomLengthUnitsPatch"` \| [`GlobOrFunctionMatchers`](../#globorfunctionmatchers)\> & \{ `cssMatcher`: (`name`: `string`) => `boolean` ; `htmlMatcher`: (`name`: `string`) => `boolean` ; `jsMatcher`: (`name`: `string`) => `boolean` ; `mainCssChunkMatcher`: (`name`: `string`, `appType?`: [`AppType`](../#apptype)) => `boolean` ; `wxsMatcher`: (`name`: `string`) => `boolean` } & \{ `cache`: `ICreateCacheReturnType` ; `customReplaceDictionary`: `Record`<`string`, `string`\> ; `escapeMap`: `Record`<`string`, `string`\> ; `jsHandler`: [`JsHandler`](../#jshandler) ; `patch`: () => `void` ; `setMangleRuntimeSet`: (`runtimeSet`: `Set`<`string`\>) => `void` ; `styleHandler`: (`rawSource`: `string`, `options`: [`IStyleHandlerOptions`](../#istylehandleroptions)) => `Promise`<`string`\> ; `supportCustomLengthUnitsPatch`: `false` \| [`ILengthUnitsPatchOptions`](ILengthUnitsPatchOptions.md) ; `templateHandler`: (`rawSource`: `string`, `options?`: [`ITemplateHandlerOptions`](ITemplateHandlerOptions.md)) => `string` }\>
 
 #### Defined in
 

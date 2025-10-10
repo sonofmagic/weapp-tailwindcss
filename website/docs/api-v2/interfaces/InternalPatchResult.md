@@ -20,7 +20,7 @@ InternalPatchResult
 
 [types.ts:497](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L497)
 
-___
+---
 
 ### plugin
 
@@ -30,7 +30,7 @@ ___
 
 [types.ts:499](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L499)
 
-___
+---
 
 ### processTailwindFeatures
 

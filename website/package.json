@@ -60,7 +60,7 @@
     "@playwright/test": "^1.56.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^24.7.0",
+    "@types/node": "^24.7.1",
     "autoprefixer": "^10.4.21",
     "cross-env": "^10.1.0",
     "docusaurus-plugin-sass": "^0.2.6",

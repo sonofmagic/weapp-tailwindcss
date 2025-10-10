@@ -22,7 +22,7 @@ custom_edit_url: null
 
 [types.ts:447](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L447)
 
-___
+---
 
 ### disabledDefaultTemplateHandler
 
@@ -32,7 +32,7 @@ ___
 
 [types.ts:456](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L456)
 
-___
+---
 
 ### escapeMap
 
@@ -46,7 +46,7 @@ ___
 
 [types.ts:451](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L451)
 
-___
+---
 
 ### inlineWxs
 
@@ -56,7 +56,7 @@ ___
 
 [types.ts:453](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L453)
 
-___
+---
 
 ### jsHandler
 
@@ -66,7 +66,7 @@ ___
 
 [types.ts:454](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L454)
 
-___
+---
 
 ### keepEOL
 
@@ -80,7 +80,7 @@ ___
 
 [types.ts:441](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L441)
 
-___
+---
 
 ### mangleContext
 
@@ -90,17 +90,17 @@ ___
 
 [types.ts:452](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L452)
 
-___
+---
 
 ### quote
 
-• `Optional` **quote**: ``null`` \| `string`
+• `Optional` **quote**: `null` \| `string`
 
 #### Defined in
 
 [types.ts:457](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L457)
 
-___
+---
 
 ### runtimeSet
 

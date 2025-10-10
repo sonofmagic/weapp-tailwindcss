@@ -42,7 +42,7 @@ npm i -D @weapp-tailwindcss/typography
 <script lang="ts" setup>
 // getHtml 为你获取 html 的方法
 import transform from '@weapp-tailwindcss/typography/transform'
-const nodes = transform(getHtml()) 
+const nodes = transform(getHtml())
 </script>
 
 <style>

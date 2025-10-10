@@ -152,8 +152,6 @@
 <button class="btn-pink">btn-pink</button>
 </div>
 
-
-
 这样，通过提取和组合，我们可以对原子类进行更高程度上的封装，值得一提的是 `Tailwindcss` 中最流行的 UI 框架: `daisyUI` 原理上也是类似的，不过它进行了进一步的处理和预提取，并最终把它们封装成了一个 `Tailwindcss` 插件罢了。
 
 最终，我们把大量的原子化类，进行提取组合，并最终提炼出了原子化的CSS组件 `card`,`label`,`btn`,`input`组件，那么上面的 `HTML` 就被改造成了:
@@ -367,9 +365,9 @@ module.exports = {
 
 `Tailwindcss` 功能简单到，它只是从我们的源代码 `(content)` 中，提取到字符串，然后去生成 `CSS` 节点。
 
-而 `Unocss` 更多时候作为一个打包插件去使用，它可以复用我们打包的产物，并从里面进行提取字符生成  `CSS` 节点，甚至它有能力去修改我们的代码 `(transformer)`。这样的能力 `Tailwindcss` 是不具备的，这也是 `Unocss` 快且功能丰富的原因。
+而 `Unocss` 更多时候作为一个打包插件去使用，它可以复用我们打包的产物，并从里面进行提取字符生成 `CSS` 节点，甚至它有能力去修改我们的代码 `(transformer)`。这样的能力 `Tailwindcss` 是不具备的，这也是 `Unocss` 快且功能丰富的原因。
 
-不过单纯这样比较是没有意义的，就像名义上 `Unocss` 快是因为它不用解析 `AST`，但是你一旦想用到 `@apply` 这样的  `directives` 功能，`Unocss` 也不可避免的去使用 `css-tree` 去解析和操纵 `AST`。而这个功能是作为 `postcss` 插件的 `Tailwindcss` 内置的，而 `Unocss` 需要额外的包去实现。
+不过单纯这样比较是没有意义的，就像名义上 `Unocss` 快是因为它不用解析 `AST`，但是你一旦想用到 `@apply` 这样的 `directives` 功能，`Unocss` 也不可避免的去使用 `css-tree` 去解析和操纵 `AST`。而这个功能是作为 `postcss` 插件的 `Tailwindcss` 内置的，而 `Unocss` 需要额外的包去实现。
 
 所以比较公平的比较方式，应该是用 `Unocss` 的 `postcss` 插件来和 `Tailwindcss` 做比较。
 

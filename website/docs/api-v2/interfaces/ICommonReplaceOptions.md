@@ -22,7 +22,7 @@ custom_edit_url: null
 
 [types.ts:442](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L442)
 
-___
+---
 
 ### keepEOL
 

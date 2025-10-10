@@ -18,7 +18,7 @@
 
 3. 修改 `tailwind.json`
 
-```json
+````json
 {
   "version": 1.1,
   "atDirectives": [
@@ -74,7 +74,7 @@
     }
   ]
 }
-```
+````
 
 这样 `@apply` 就不会报错了。
 

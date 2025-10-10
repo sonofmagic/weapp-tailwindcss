@@ -7,19 +7,42 @@ function AdsContainerElement() {
 
   return (
     <div ref={containerRef} className="space-y-4 px-4">
-      <div className="flex w-full items-center dark:px-2">
+      <div className={`
+        flex w-full items-center
+        dark:px-2
+      `}
+      >
         <div className="group relative">
-          <div className="
-          absolute -inset-1 hidden rounded-lg bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 opacity-75 blur transition duration-500 group-hover:opacity-100 dark:block"
+          <div className={`
+            absolute -inset-1 hidden rounded-lg bg-gradient-to-r from-rose-400
+            via-fuchsia-500 to-indigo-500 opacity-75 blur transition
+            duration-500
+            group-hover:opacity-100
+            dark:block
+          `}
           >
           </div>
-          <button className="relative rounded-lg bg-[#f6f6f7] px-4 py-2 font-semibold text-white dark:bg-black">
+          <button className={`
+            relative rounded-lg bg-[#f6f6f7] px-4 py-2 font-semibold text-white
+            dark:bg-black
+          `}
+          >
             <Link to="/docs/sponsor">成为赞助商</Link>
           </button>
         </div>
       </div>
 
-      <a className="relative flex justify-between rounded-xl bg-[#f6f6f7] p-4 shadow-[inset_0_0_0_1px_#ffffff1a] hover:no-underline dark:bg-[#1e293b]" target="_blank" href="https://aizex.cn/0LcJ7G" rel="noopener sponsored nofollow">
+      <a
+        className={`
+          relative flex justify-between rounded-xl bg-[#f6f6f7] p-4
+          shadow-[inset_0_0_0_1px_#ffffff1a]
+          hover:no-underline
+          dark:bg-[#1e293b]
+        `}
+        target="_blank"
+        href="https://aizex.cn/0LcJ7G"
+        rel="noopener sponsored nofollow"
+      >
         <div className="mr-2 flex shrink-0 items-center">
           <img className="h-14" src={Aizex} alt="aizex"></img>
         </div>
@@ -32,7 +55,12 @@ function AdsContainerElement() {
           </div>
 
         </div>
-        <div className="absolute right-0 top-0 rounded-bl-md rounded-tr-xl bg-[#7dd3fc1a] p-1 text-xs dark:text-[rgb(125,211,252)]">
+        <div className={`
+          absolute right-0 top-0 rounded-bl-md rounded-tr-xl bg-[#7dd3fc1a] p-1
+          text-xs
+          dark:text-[rgb(125,211,252)]
+        `}
+        >
           亲测推荐
         </div>
       </a>

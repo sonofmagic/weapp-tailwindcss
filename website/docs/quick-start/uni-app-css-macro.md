@@ -161,7 +161,7 @@ module.exports = {
         // 有了这个配置，你就可以使用 wx:bg-red-300
         wx: 'MP-WEIXIN',
         // -wx，语义上为非微信
-        // 那就传入一个 obj 把 negative 设置为 true 
+        // 那就传入一个 obj 把 negative 设置为 true
         // 就会编译出 ifndef 的指令
         // 有了这个配置，你就可以使用 -wx:bg-red-300
         '-wx': {

@@ -23,7 +23,7 @@ const isApp = process.env.UNI_PLATFORM === "app";
 const WeappTailwindcssDisabled = isH5 || isApp;
 
 const vitePlugins = [
-  uni(), 
+  uni(),
   uvwt({
     // highlight-next-line
     disabled: WeappTailwindcssDisabled
@@ -141,7 +141,7 @@ page,
 
 > 可通过给插件，传入 `cssCalc` 配置项 `false` 来手动关闭这个功能
 
-假如这时候你需要去除 CSS 变量的声明，你可以传入 
+假如这时候你需要去除 CSS 变量的声明，你可以传入
 
 ```js
 {
@@ -170,6 +170,5 @@ page,
 ```
 
 通过这种方式可以解决手机机型 `calc` `rpx` 单位的兼容问题
-
 
 详见: https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#csscalc

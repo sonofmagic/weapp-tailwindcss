@@ -27,7 +27,12 @@ export const FeatureCard: FC<FeatureCardProps> = ({ variant, eyebrow, title, sub
     <div className={featureCard({ variant, className })}>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-[-40%] -z-10 rotate-6 bg-[radial-gradient(circle,rgba(14,165,233,0.5),transparent_70%)] opacity-45 transition-opacity duration-500 group-hover:opacity-70"
+        className={`
+          pointer-events-none absolute inset-[-40%] -z-10 rotate-6
+          bg-[radial-gradient(circle,rgba(14,165,233,0.5),transparent_70%)]
+          opacity-45 transition-opacity duration-500
+          group-hover:opacity-70
+        `}
       >
       </div>
       <header className={headerClass}>
@@ -38,7 +43,11 @@ export const FeatureCard: FC<FeatureCardProps> = ({ variant, eyebrow, title, sub
       <div
         className={
           variant === 'tools'
-            ? 'relative z-10 flex w-full flex-1 items-center justify-center py-5 pb-8 sm:py-6'
+            ? `
+              relative z-10 flex w-full flex-1 items-center justify-center py-5
+              pb-8
+              sm:py-6
+            `
             : 'relative z-10 flex w-full'
         }
       >
