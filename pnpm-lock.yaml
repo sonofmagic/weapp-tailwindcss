@@ -711,8 +711,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.2.3
-        version: 5.2.3(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.3.0
+        version: 5.3.0(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vite-native-skyline:
     devDependencies:
@@ -735,8 +735,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.2.3
-        version: 5.2.3(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.3.0
+        version: 5.3.0(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vite-native-ts:
     devDependencies:
@@ -762,8 +762,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.2.3
-        version: 5.2.3(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.3.0
+        version: 5.3.0(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vite-native-ts-skyline:
     devDependencies:
@@ -792,8 +792,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.2.3
-        version: 5.2.3(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.3.0
+        version: 5.3.0(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vue-app:
     dependencies:
@@ -832,8 +832,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       weapp-vite:
-        specifier: ^5.2.3
-        version: 5.2.3(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.3.0
+        version: 5.3.0(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1)
 
   apps/web-postcss7-compat:
     dependencies:
@@ -3803,6 +3803,9 @@ packages:
 
   '@napi-rs/wasm-runtime@1.0.6':
     resolution: {integrity: sha512-DXj75ewm11LIWUk198QSKUTxjyRjsBwk09MuMk5DGK+GDUtyPhhEHOGP/Xwwj3DjQXXkivoBirmOnKrLfc0+9g==}
+
+  '@napi-rs/wasm-runtime@1.0.7':
+    resolution: {integrity: sha512-SeDnOO0Tk7Okiq6DbXmmBODgOAb9dp9gjlphokTUxmt8U3liIP1ZsozBahH69j/RJv+Rfs6IwUKHTgQYJ/HBAw==}
 
   '@next/eslint-plugin-next@15.5.4':
     resolution: {integrity: sha512-SR1vhXNNg16T4zffhJ4TS7Xn7eq4NfKfcOsRwea7RIAHrjRpI9ALYbamqIJqkAhowLlERffiwk0FMvTLNdnVtw==}
@@ -16870,8 +16873,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-vite@5.2.3:
-    resolution: {integrity: sha512-m7aMLfvq1Aq8bu4OS2v4VyENZ3kMVEaWXBsDM5hlLcNBRAzv/ett7pSdSmTR4CPwtPbM+BUD2Lj8IIJchghLLQ==}
+  weapp-vite@5.3.0:
+    resolution: {integrity: sha512-WyTVUtG+78JxdnJaF4xa1OaUgLBRUPbWbw5sJq/YOPBsDW5si7JgXnmgWa6ZAfiefCcqFOyLeJ6MtHumQy/AtA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -20908,6 +20911,13 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
+  '@napi-rs/wasm-runtime@1.0.7':
+    dependencies:
+      '@emnapi/core': 1.5.0
+      '@emnapi/runtime': 1.5.0
+      '@tybys/wasm-util': 0.10.1
+    optional: true
+
   '@next/eslint-plugin-next@15.5.4':
     dependencies:
       fast-glob: 3.3.1
@@ -21062,7 +21072,7 @@ snapshots:
 
   '@oxc-parser/binding-wasm32-wasi@0.94.0':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.6
+      '@napi-rs/wasm-runtime': 1.0.7
     optional: true
 
   '@oxc-parser/binding-win32-arm64-msvc@0.94.0':
@@ -22281,7 +22291,7 @@ snapshots:
 
   '@rolldown/binding-wasm32-wasi@1.0.0-beta.42':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.6
+      '@napi-rs/wasm-runtime': 1.0.7
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.42':
@@ -36697,7 +36707,7 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.17
 
-  weapp-vite@5.2.3(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1):
+  weapp-vite@5.3.0(@types/node@24.7.1)(esbuild@0.25.10)(jiti@2.6.1)(oxc-resolver@11.7.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.1(typescript@5.9.3))(yaml@2.8.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/parser': 7.28.4
