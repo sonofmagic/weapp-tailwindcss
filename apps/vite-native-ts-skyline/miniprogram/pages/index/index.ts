@@ -10,6 +10,12 @@ Component({
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
+    skylineNav: {
+      title: 'Skyline Market',
+      location: '深圳 · 夜景塔群',
+      weather: '晴 · 26°C',
+      trend: [48, 76, 58, 102, 96, 132, 118],
+    },
   },
   methods: {
     // 事件处理函数
@@ -32,6 +38,12 @@ Component({
       this.setData({
         'userInfo.nickName': nickName,
         'hasUserInfo': nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+      })
+    },
+    handleNavAction() {
+      wx.showToast({
+        title: '更多趋势即将上线',
+        icon: 'none',
       })
     },
     getUserProfile() {

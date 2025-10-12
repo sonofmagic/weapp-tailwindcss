@@ -1,10 +1,17 @@
 <!-- index.wxml -->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<view class="min-h-screen bg-slate-950">
-  <view class="p-8">
-    <view class="i-mdi-home bg-[#43ffff] text-[200px]"></view>
-    <view class="usermotto">
-      <text class="user-motto text-[#234fff] bg-[#43ffff]">{{motto}}</text>
+<view class="min-h-screen bg-slate-950 px-[40rpx] pt-[72rpx] pb-[48rpx] text-white">
+  <skyline-navbar
+    title="{{skylineNav.title}}"
+    location="{{skylineNav.location}}"
+    weather="{{skylineNav.weather}}"
+    trend="{{skylineNav.trend}}"
+    bind:primarytap="handleNavAction"
+  ></skyline-navbar>
+
+  <view class="mt-[48rpx] rounded-[40rpx] border border-white/15 bg-white/8 p-[40rpx] text-slate-100 backdrop-blur-[24rpx]">
+    <view class="text-[36rpx] font-semibold text-white">欢迎来到 Skyline 体验场景</view>
+    <view class="mt-[16rpx] text-[26rpx] leading-[42rpx] text-slate-100">
+      Tailwind CSS 渲染的趋势线让导航条具备强烈的科技感，向下滑动探索更多组件示例。
     </view>
   </view>
 </view>

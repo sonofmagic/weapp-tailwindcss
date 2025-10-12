@@ -36,8 +36,9 @@
     }
   ],
   "include": [
-    "**/*.ts",
-    "**/*.js"
+    "miniprogram/**/*.ts",
+    "miniprogram/**/*.js",
+    "miniprogram/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"

@@ -1,0 +1,70 @@
+<view class="skyline-navbar relative overflow-hidden rounded-[48rpx] border border-white/10 bg-[#040616]/95 px-[48rpx] pt-[64rpx] pb-[48rpx] text-white">
+  <view class="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-20%,rgba(56,189,248,0.35),transparent_65%)] opacity-80"></view>
+  <view class="absolute inset-0 bg-[linear-gradient(140deg,rgba(10,17,40,0.8),rgba(0,0,0,0.2))]"></view>
+
+  <view class="relative z-[1] flex flex-col gap-[32rpx]">
+    <view class="flex items-center justify-between">
+      <view class="flex items-center gap-[24rpx]">
+        <view class="flex h-[96rpx] w-[96rpx] items-center justify-center rounded-[28rpx] border border-white/10 bg-white/10 backdrop-blur-[32rpx]">
+          <view class="i-mdi-city-variant-outline text-[48rpx] text-sky-200"></view>
+        </view>
+        <view class="flex flex-col">
+          <text class="text-[22rpx] uppercase tracking-[12rpx] text-slate-100">Skyline</text>
+          <text class="mt-[8rpx] text-[44rpx] font-semibold">{{title}}</text>
+          <text class="mt-[6rpx] text-[24rpx] text-slate-200">{{location}}</text>
+        </view>
+      </view>
+
+      <view class="flex items-center gap-[28rpx] text-[44rpx]">
+        <view class="i-mdi-magnify text-sky-200"></view>
+        <view class="relative">
+          <view class="i-mdi-bell-badge-outline"></view>
+          <view class="absolute -top-[8rpx] -right-[6rpx] h-[18rpx] w-[18rpx] rounded-full bg-rose-500 shadow-[0_0_18rpx_rgba(244,63,94,0.65)]"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="flex items-center justify-between text-[24rpx] text-slate-100">
+      <view class="flex items-center gap-[16rpx]">
+        <view class="relative h-[18rpx] w-[18rpx]">
+          <view class="absolute inset-0 rounded-full bg-emerald-400 opacity-80"></view>
+          <view class="absolute inset-0 rounded-full bg-emerald-400 opacity-40 animate-ping"></view>
+        </view>
+        <text class="font-mono tracking-[6rpx] text-white">{{currentTime}}</text>
+        <view class="h-[8rpx] w-[8rpx] rounded-full bg-slate-500"></view>
+        <text class="text-slate-100">{{weather}}</text>
+      </view>
+
+      <view class="flex items-center gap-[12rpx]">
+        <text class="uppercase tracking-[12rpx] text-sky-200">Live</text>
+        <view class="h-[4rpx] w-[96rpx] rounded-full bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400"></view>
+      </view>
+    </view>
+
+    <view class="relative overflow-hidden rounded-[36rpx] border border-white/10 bg-white/5 px-[32rpx] pb-[40rpx] pt-[48rpx]">
+      <view class="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,7,18,0.6),rgba(2,6,23,0.2))]"></view>
+      <view class="relative z-[1]">
+        <view class="absolute inset-x-[12rpx] bottom-[32rpx] h-[2rpx] bg-gradient-to-r from-transparent via-slate-500/40 to-transparent"></view>
+        <view class="absolute inset-x-[32rpx] bottom-[32rpx] h-[4rpx] rounded-full bg-gradient-to-r from-sky-500 via-cyan-300 to-amber-200 shadow-[0_0_24rpx_rgba(56,189,248,0.45)]"></view>
+        <view class="flex items-end justify-between">
+          <block wx:for="{{trendBars}}" wx:key="label">
+            <view class="flex flex-col items-center gap-[16rpx] text-slate-100">
+              <view class="w-[20rpx] rounded-t-[20rpx] bg-gradient-to-t from-sky-500/20 via-sky-400/70 to-white/90" style="height: {{item.height}}%;"></view>
+              <text class="text-[20rpx]">{{item.label}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="flex items-center justify-between text-slate-100">
+      <view class="flex items-center gap-[16rpx] text-[24rpx]">
+        <view class="i-mdi-compass-outline text-[36rpx] text-sky-200"></view>
+        <text class="text-white">探索 Skyline 趋势</text>
+      </view>
+      <view class="rounded-full bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 px-[32rpx] py-[12rpx] text-[24rpx] font-semibold text-slate-100 shadow-[0_0_32rpx_rgba(56,189,248,0.45)] active:scale-95" bindtap="handlePrimaryTap">
+        快速进入
+      </view>
+    </view>
+  </view>
+</view>

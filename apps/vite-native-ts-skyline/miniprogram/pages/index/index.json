@@ -1,5 +1,5 @@
 {
   "usingComponents": {
-    "navigation-bar": "/components/navigation-bar/navigation-bar"
+    "skyline-navbar": "/components/skyline-navbar/index"
   }
 }
