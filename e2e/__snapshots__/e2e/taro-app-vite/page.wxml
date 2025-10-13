@@ -1,3 +1,13 @@
+<view style="">
+  <view class="bg-_h89ab8d_ flex flex-col" style="">
+    <view class="text-_h438821_ darkctext-_hec4f4f_ before content- 11111" style="">Hello world!</view>
+    <view class="text-_h3d31a4_ before content- 222" style="">Hello world!</view>
+  </view>
+  <view class="bg-_h89ab8d_ flex divide-x-8 divide-solid divide-_h60d256_" style="">
+    <view class="text-_h438821_ darkctext-_hec4f4f_ before content- 11111" style="">Hello world!</view>
+    <view class="text-_h3d31a4_ before content- 222" style="">Hello world!</view>
+  </view>
+</view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica
 Neue','Lucida Grande',sans-serif}.luna-dom-highlighter-platform-windows{font-family:'Segoe
 UI',Tahoma,sans-serif}.luna-dom-highlighter-px{color:gray}#luna-dom-highlighter-element-title{position:absolute;z-index:10}.luna-dom-highlighter-tooltip-content{position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;background-color:#fff;padding:5px
@@ -14,13 +24,3 @@ solid
 solid #000;padding:0
 1px}.luna-dom-highlighter-a11y-icon-not-ok{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-warning{background-image:url('data:image/svg+xml,')}.luna-dom-highlighter-a11y-icon-ok{background-image:url('data:image/svg+xml,')}@media
 (forced-colors:active){:root,body{background-color:transparent;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content{border-color:Highlight;background-color:canvas;color:text;forced-color-adjust:none}.luna-dom-highlighter-tooltip-content::after{background-color:Highlight}.luna-dom-highlighter-color-swatch-inner,.luna-dom-highlighter-contrast-text,.luna-dom-highlighter-separator{border-color:Highlight}.luna-dom-highlighter-section-name{color:Highlight}.luna-dom-highlighter-dimensions,.luna-dom-highlighter-element-info-name,.luna-dom-highlighter-element-info-value-color,.luna-dom-highlighter-element-info-value-contrast,.luna-dom-highlighter-element-info-value-icon,.luna-dom-highlighter-element-info-value-text,.luna-dom-highlighter-material-class-name,.luna-dom-highlighter-material-node-id,.luna-dom-highlighter-material-tag-name{color:canvastext}}.luna-dom-highlighter{z-index:2147483647;}
-<view style="">
-  <view class="bg-_h89ab8d_ flex flex-col" style="">
-    <view class="text-_h438821_ darkctext-_hec4f4f_ before content- 11111" style="">Hello world!</view>
-    <view class="text-_h3d31a4_ before content- 222" style="">Hello world!</view>
-  </view>
-  <view class="bg-_h89ab8d_ flex divide-x-8 divide-solid divide-_h60d256_" style="">
-    <view class="text-_h438821_ darkctext-_hec4f4f_ before content- 11111" style="">Hello world!</view>
-    <view class="text-_h3d31a4_ before content- 222" style="">Hello world!</view>
-  </view>
-</view>
