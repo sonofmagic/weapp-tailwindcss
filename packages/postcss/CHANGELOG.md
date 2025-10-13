@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.3.2
+
+### Patch Changes
+
+- [`b766f00`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b766f007d65d3383530452c1860907fa3dcfb00e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 通过缓存选择器解析器实例并复用兜底清理流程，优化 PostCSS 管线的运行性能。
+
 ## 1.3.2-alpha.0
 
 ### Patch Changes

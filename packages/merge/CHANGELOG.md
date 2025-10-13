@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 1.3.0
+
+### Minor Changes
+
+- [`9cb2bd4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9cb2bd4616326dd3431175a6848834da9d5c210b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 重构内部运行时工厂，统一 escape 处理并新增 tailwind-merge 版本元数据导出，提升不同 Tailwind CSS 版本下的适配能力。
+
 ## 1.3.0-alpha.0
 
 ### Minor Changes
