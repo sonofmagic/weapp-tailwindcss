@@ -1,7 +1,7 @@
 {
   "name": "vite-native",
   "type": "module",
-  "version": "1.0.10-alpha.0",
+  "version": "1.0.10",
   "private": true,
   "description": "",
   "author": "ice breaker <1324318532@qq.com>",
