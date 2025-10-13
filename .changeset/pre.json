@@ -1,12 +1,12 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
     "rsmax-app-ts": "1.0.0",
     "taro-webpack-tailwindcss-v4": "1.0.0",
     "uni-app-x-hbuilderx-tailwindcss3": "0.0.0",
     "uni-app-x-hbuilderx-tailwindcss4": "0.0.0",
-    "vite-native": "1.0.9",
+    "vite-native": "1.0.10-alpha.0",
     "vite-native-skyline": "1.0.1",
     "vite-native-ts": "1.0.12",
     "vite-native-ts-skyline": "1.0.1",
@@ -20,18 +20,18 @@
     "@weapp-tailwindcss/init": "1.0.7",
     "@weapp-tailwindcss/logger": "1.1.0",
     "@weapp-tailwindcss/mangle": "1.0.5",
-    "@weapp-tailwindcss/merge": "1.2.3",
+    "@weapp-tailwindcss/merge": "1.3.0-alpha.0",
     "@weapp-tailwindcss/minify-preserve": "0.0.0",
-    "@weapp-tailwindcss/postcss": "1.3.1",
+    "@weapp-tailwindcss/postcss": "1.3.2-alpha.0",
     "@weapp-tailwindcss/shared": "1.0.3",
     "tailwindcss-config": "1.1.1",
     "tailwindcss-core-plugins-extractor": "0.2.0",
     "tailwindcss-injector": "1.0.7",
     "@weapp-tailwindcss/test-helper": "0.0.1",
     "theme-transition": "2.0.0",
-    "weapp-tailwindcss": "4.3.3",
+    "weapp-tailwindcss": "4.4.0-alpha.0",
     "@weapp-tailwindcss/typography": "0.2.5",
-    "@weapp-tailwindcss/website": "1.0.3"
+    "@weapp-tailwindcss/website": "1.0.4-alpha.0"
   },
   "changesets": [
     "cache-api-overhaul",
