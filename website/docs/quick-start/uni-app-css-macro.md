@@ -49,6 +49,8 @@
 
 首先在你的 `tailwind.config.js` 注册插件 `cssMacro`:
 
+#### Tailwind CSS 3.x 配置
+
 ```js
 const cssMacro = require('weapp-tailwindcss/css-macro');
 /** @type {import('tailwindcss').Config} */
@@ -60,6 +62,44 @@ module.exports = {
   ],
 };
 ```
+
+#### Tailwind CSS 4.x 配置
+
+> v4 推荐直接在入口 CSS 中通过 `@plugin` 引入。
+
+```css
+/* tailwind.css */
+@import "tailwindcss";
+@plugin "weapp-tailwindcss/css-macro";
+
+/* 可选：为常用平台创建语义别名 */
+@utility platform-weixin:(value) {
+  @apply ifdef-[MP-WEIXIN]:$(value);
+}
+@utility not-alipay:(value) {
+  @apply ifndef-[MP-ALIPAY]:$(value);
+}
+```
+
+若需要自定义更多静态变体，可额外保留一个 `tailwind.config.ts` 以传入参数：
+
+```ts
+import cssMacro from 'weapp-tailwindcss/css-macro'
+
+export default {
+  plugins: {
+    cssMacro: cssMacro({
+      variantsMap: {
+        wx: 'MP-WEIXIN',
+        '-wx': { value: 'MP-WEIXIN', negative: true },
+      },
+    }),
+  },
+}
+```
+
+> [!TIP]
+> `cssMacro` 的动态变体（`ifdef:` / `ifndef:`）依赖 Tailwind 内置的 `matchVariant`，请确保 Tailwind 版本 ≥ 3.2；在 v4 中该 API 同样可用。
 
 ### postcss 插件注册
 

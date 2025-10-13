@@ -7,27 +7,49 @@ export interface Options {
   dynamic?: boolean
 }
 
-const cssMacro = plugin.withOptions((options: Options) => {
-  const { dynamic: dynamicMode, variantsMap } = defu<Required<Options>, Options[]>(options, {
-    dynamic: true,
-    variantsMap: {},
+interface NormalizedVariant {
+  name: string
+  negative: boolean
+  value: string
+}
+
+const defaultOptions: Required<Options> = {
+  dynamic: true,
+  variantsMap: {},
+}
+
+const cssMacro = plugin.withOptions((options?: Options) => {
+  const { dynamic, variantsMap } = defu<Required<Options>, Options[]>(options ?? {}, defaultOptions)
+
+  const staticVariants: NormalizedVariant[] = Object.entries(variantsMap).map(([name, config]) => {
+    if (typeof config === 'string') {
+      return {
+        name,
+        negative: false,
+        value: config,
+      }
+    }
+    return {
+      name,
+      negative: Boolean(config.negative),
+      value: config.value,
+    }
   })
-  return ({ matchVariant, addVariant }) => {
-    if (dynamicMode) {
-      matchVariant('ifdef', (value) => {
-        return createMediaQuery(value)
-      })
-      matchVariant('ifndef', (value) => {
-        return createNegativeMediaQuery(value)
-      })
+
+  return (api) => {
+    const { matchVariant, addVariant } = api
+    const supportsDynamic = typeof matchVariant === 'function'
+    if (dynamic && supportsDynamic) {
+      matchVariant('ifdef', value => createMediaQuery(value))
+      matchVariant('ifndef', value => createNegativeMediaQuery(value))
     }
 
-    for (const [name, obj] of Object.entries(variantsMap)) {
-      if (typeof obj === 'string') {
-        addVariant(name, createMediaQuery(obj))
-      }
-      else {
-        addVariant(name, obj.negative ? createNegativeMediaQuery(obj.value) : createMediaQuery(obj.value))
+    if (typeof addVariant === 'function') {
+      for (const variant of staticVariants) {
+        const query = variant.negative
+          ? createNegativeMediaQuery(variant.value)
+          : createMediaQuery(variant.value)
+        addVariant(variant.name, query)
       }
     }
   }
