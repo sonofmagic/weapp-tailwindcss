@@ -133,6 +133,23 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token?.value).toBe('w-_100px_')
   })
 
+  it('normalises through mangle context only once for multiple candidates', () => {
+    const literal = getLiteralPath('const multi = \'w-[100px] flex\'', 'StringLiteral')
+    const ctx = {
+      jsHandler: vi.fn((raw: string) => raw),
+    } as any
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]', 'flex']),
+      mangleContext: ctx,
+      needEscaped: true,
+    })
+
+    expect(ctx.jsHandler).toHaveBeenCalledTimes(1)
+    expect(token?.value).toBe('w-_100px_ flex')
+  })
+
   it('decodes unicode escape sequences before processing', () => {
     const literal = getLiteralPath('const unicodeCls = \'\\\\u0077-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
