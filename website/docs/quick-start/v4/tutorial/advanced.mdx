@@ -1,0 +1,100 @@
+---
+sidebar_label: 高阶篇
+sidebar_position: 3
+toc_max_heading_level: 4
+---
+
+# 高阶篇：性能、兼容与团队协作
+
+Tailwind CSS 4 带来了更强大的原生语法，但在小程序环境中仍需平衡兼容性与团队协作。本篇从工程化视角出发，帮助你在真实项目中稳定地落地、优化与维护。
+
+## 1. 处理 `@layer` 与兼容性
+
+小程序运行时目前对 CSS Cascade Layers 支持有限，当你引用第三方组件或自定义样式时可能出现覆盖关系错乱。`weapp-tailwindcss` 内置的 `postcss-preset-env` 可将 `@layer` 转译成传统写法来提升兼容性。
+
+```ts title="vite.config.ts"
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    UnifiedViteWeappTailwindcssPlugin({
+      tailwindcss: {
+        version: 4,
+        v4: { cssEntries: [/* ... */] },
+      },
+      cssPresetEnv: {
+        stage: 1,
+        features: {
+          'cascade-layers': true,
+        },
+      },
+    }),
+  ],
+})
+```
+
+> 如果你只在微信小程序调试，可使用开发者工具的「自定义编译」观察处理前后的差异；若仍存在覆盖问题，可结合传统的 `!important` 或布局拆分策略。
+
+额外提示：
+
+- `cssSelectorReplacement.root` 默认为 `'page'`，当项目使用 `RootPortal` 等容器时需要调整为 `['page','wx-root-content']`
+- `cssPresetEnv` 会参与最终构建，请在发布前执行一次 `pnpm build:apps` 或对应的 `pnpm build` 命令确认产物
+
+## 2. 多端共存与按需构建
+
+团队常同时维护小程序与 H5 版本，此时可以通过多个 `@source` 区分模板范围，并结合条件编译实现按需打包：
+
+```css title="src/app.css"
+@source "../src/**/*.{vue,wxml}";
+@source not "../src/**/*.h5.*"; /* 排除只用于 H5 的模板 */
+
+/* H5 用 Tailwind 官方包，小程序继续用 weapp-tailwindcss */
+/*  #ifdef  H5  */
+@import "tailwindcss";
+/*  #endif  */
+/*  #ifndef  H5  */
+@import "weapp-tailwindcss";
+/*  #endif  */
+```
+
+当需要拆分体积时，可以把不同业务域的样式写到各自的 `entry.css`，再将路径加入 `cssEntries`：
+
+```ts
+UnifiedViteWeappTailwindcssPlugin({
+  tailwindcss: {
+    version: 4,
+    v4: {
+      cssEntries: [
+        path.resolve(import.meta.dirname, './src/app.css'),
+        path.resolve(import.meta.dirname, './src/features/order/app.css'),
+      ],
+    },
+  },
+})
+```
+
+这样 Tailwind 只会为实际引用的模板生成原子类，避免冗余。
+
+## 3. 产物体积与性能优化
+
+- **控制扫描范围**：`@source` 支持 `not` 语法，排除 `dist`、`node_modules` 等目录能显著加快增量编译
+- **合理使用自定义工具类**：把相同组合提炼成 `@utility`，既减少模板体积，也方便统一调整
+- **按需开启 `rem2rpx` / `px2rpx`**：在仅小程序端需要 rpx 的情况下，可以在多端构建中动态开启
+- **缓存管理**：Tailwind 会在 `.tailwind` 写入缓存。CI 环境可缓存该目录以提升构建速度，发布前若需彻底清理运行 `pnpm exec tailwindcss --config tailwind.config.js --clean` 或直接删除缓存目录
+
+## 4. 调试与质量保障
+
+- **可视化定位**：使用 `outline` 类临时标记组件边界，例如在调试时加上 `outline outline-1 outline-dashed outline-brand/60`
+- **断言样式存在**：核心组件可引入快照测试或 DOM 断言，结合 Vitest + @testing-library 验证关键类名
+- **lint 约束**：在 `eslint-plugin-tailwindcss` 或团队约定的 lint 规则中，限制自定义类名必须通过 `@utility`
+- **回归验证**：Tailwind 升级时执行 `pnpm test`, `pnpm e2e` 确认核心链路稳定，同时在主流机型（尤其是低版本安卓）上真机预览
+
+## 5. 升级与维护策略
+
+1. **版本对齐**：Tailwind 4 迭代频繁，升级前先在 `CHANGELOG` 与 GitHub Release 查 Breaking Change，再在测试分支试跑。
+2. **切分 Changeset**：对外发布库时遵循 [Changesets](https://github.com/changesets/changesets) 约定，确保依赖者知道何时需要手动介入。
+3. **文档同步**：团队内部记录 `@utility`、`@theme` 的设计规范，推荐把核心样式写进 Storybook 或内部组件示例库。
+4. **遇到问题及时回馈**：`weapp-tailwindcss` 社区对 Tailwind 4 的需求反馈快速，遇到兼容问题可通过 Issue 或 PR 参与共建。
+
+至此，你已经掌握了 Tailwind CSS 4 在小程序中的完整落地思路：从环境搭建、组件实践到性能与协同。结合现有的框架集成文档，就能为新成员提供一套体系化的学习路径。
+

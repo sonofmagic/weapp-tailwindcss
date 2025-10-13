@@ -1,0 +1,138 @@
+---
+sidebar_label: 入门篇
+sidebar_position: 1
+toc_max_heading_level: 4
+---
+
+# 入门篇：快速认识 Tailwind CSS 4 与 weapp-tailwindcss
+
+Tailwind CSS 4 重新定义了“原子化”样式的组织方式：配置文件换成了 `CSS`，主题变量与自定义工具也变成了原生语法。这一变化对小程序生态同样生效，`weapp-tailwindcss` 已经适配了新的编译流程。本篇入门指南帮助你在 30 分钟内从零搭好一套 `tailwindcss@4` + `weapp-tailwindcss` 的基础开发环境，并理解最核心的概念。
+
+## 本篇能学到什么
+
+- 搭建一套可运行的 Tailwind CSS 4 + 小程序项目骨架
+- 分清核心配置（`cssEntries`、`@source`、`@reference` 等）各自负责的事情
+- 理解 `@tailwindcss/postcss`、`@tailwindcss/vite` 与编译插件的差异
+- 掌握验证样式是否生效的最小闭环，避免“写了没生效”的常见坑
+
+如果你还未接触过 `weapp-tailwindcss`，建议先浏览 [新手快速上手（Tailwind CSS 3.x）](/docs/quick-start/install) 了解插件能解决的问题，再回来完成 4.x 的配置。
+
+## 环境准备
+
+| 名称 | 说明 |
+| --- | --- |
+| Node.js ≥ 18 | Tailwind CSS 4 要求更高的 Node 版本，建议使用 LTS 20 |
+| pnpm ≥ 8 | Monorepo 与文档项目统一使用 `pnpm` |
+| 小程序框架 | 任选 `weapp-vite`、`uni-app`、`taro` 等，推荐使用现成模板 |
+| 代码编辑器 | VS Code 并安装 `Tailwind CSS IntelliSense` 插件 |
+
+初始化项目后，执行一次 `pnpm install` 以及框架 CLI 的初始化命令（如 `pnpm create @tarojs/cli`）。随后即可进入 Tailwind CSS 配置步骤。
+
+## 步骤一：安装依赖
+
+在项目根目录执行：
+
+```bash
+pnpm add -D tailwindcss@latest @tailwindcss/postcss postcss weapp-tailwindcss
+```
+
+> `@tailwindcss/postcss` 兼容 Vite、Webpack、Rspack 等大多数构建链路；对于纯 Vite 项目也可以酌情改用 `@tailwindcss/vite`，但在小程序场景下 `postcss` 方案更稳定。
+
+## 步骤二：注册 weapp-tailwindcss 插件
+
+以 `weapp-vite` 为例（不同框架请对照对应的 [集成指南](/docs/quick-start/v4)）：
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'weapp-vite/config'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    UnifiedViteWeappTailwindcssPlugin({
+      // 常用内置能力：开启 px 自动转换
+      rem2rpx: true,
+      tailwindcss: {
+        version: 4,
+        v4: {
+          cssEntries: [
+            // 声明 Tailwind 的入口 CSS，必须是绝对路径
+            path.resolve(import.meta.dirname, './src/app.css'),
+          ],
+        },
+      },
+    }),
+  ],
+})
+```
+
+`cssEntries` 对 `tailwindcss@4` 至关重要，它告诉 `weapp-tailwindcss` 哪些 CSS 需要参与编译与转义。漏掉该配置将导致产物中缺失样式。
+
+## 步骤三：配置 PostCSS
+
+```js title="postcss.config.js"
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+}
+```
+
+Tailwind CSS 4 已内置 Autoprefixer，无需手动补充。若项目仍需其他 PostCSS 插件，保持旧的写法即可。
+
+## 步骤四：创建入口 CSS
+
+在 `src/app.css` 中写入：
+
+```css title="src/app.css"
+@import "weapp-tailwindcss";
+
+/* 声明模板扫描路径，确保原子类能被收集 */
+@source "../src/**/*.{vue,tsx,jsx,svelte,wxml}";
+
+/* 需要自定义设计令牌时可在此编写 */
+@theme {
+  --color-brand: oklch(67% 0.2 264);
+  --spacing-safe: clamp(12px, 1.2vw + 8px, 24px);
+}
+```
+
+`@source` 是 Tailwind 4 的新写法，用于替代旧版本的 `content` 配置。路径请根据项目结构调整。若你需要在局部样式文件使用 `@apply`，在对应文件顶部添加 `@reference "./app.css";`。
+
+## 步骤五：验证类名是否生效
+
+创建一个最小页面（以 `src/pages/index/index.vue` 为例）：
+
+```vue title="src/pages/index/index.vue"
+<template>
+  <view class="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-6 py-safe">
+    <view class="w-full max-w-md rounded-3xl bg-white p-6 shadow-lg shadow-slate-200">
+      <text class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Tailwind CSS 4</text>
+      <text class="mt-3 text-2xl font-bold text-slate-900">欢迎来到 weapp-tailwindcss</text>
+      <text class="mt-2 text-sm leading-6 text-slate-600">
+        现在可以尝试修改 <text class="font-medium text-brand">bg-brand</text> 或自定义 <text class="font-medium">utility</text>。
+      </text>
+      <button class="mt-6 inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-brand/90 active:scale-95">
+        开始实践
+      </button>
+    </view>
+  </view>
+</template>
+```
+
+> `py-safe` 是我们在上文 `@theme` 中声明的自定义变量（通过 `--spacing-safe` 导出），可验证主题自定义是否生效。
+
+运行框架命令（如 `pnpm dev:weapp` 或 `pnpm run build -- --watch`），查看开发者工具中的页面是否渲染出预期样式。如果没有：
+
+- 检查 `cssEntries` 是否指向了正确路径
+- 确认 `@source` 是否包含当前文件扩展名
+- 若在单文件组件内使用 `@apply`，确保添加了 `@reference`
+
+## 常见下一步
+
+- 阅读 [Tailwind CSS 4 官方文档](https://tailwindcss.com/docs/installation) 了解更多原生指令
+- 针对不同框架的集成细节，请查阅「🧪Tailwind CSS @4.x」分类中的各篇文档
+- 想理解 `@layer` 在小程序下的降级方案，可继续阅读本教程的 [进阶篇](/docs/quick-start/v4/tutorial/workflow) 与 [高阶篇](/docs/quick-start/v4/tutorial/advanced)
+
+完成本篇后，你已经拥有了稳定的基础开发环境。接着让我们通过真实业务组件把 Tailwind CSS 4 的能力串联起来。
+

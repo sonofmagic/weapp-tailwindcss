@@ -1,0 +1,178 @@
+---
+sidebar_label: 进阶篇
+sidebar_position: 2
+toc_max_heading_level: 4
+---
+
+# 进阶篇：用 Tailwind CSS 4 构建真实页面
+
+基础环境搭建完成后，真正的挑战来自“如何把抽象的原子类应用到真实业务”。本篇精选小程序常见的页面模块，结合 `tailwindcss@4` 的新指令，总结出一套从设计拆解到代码落地的流程。
+
+## 工具优先的心智模型
+
+Tailwind CSS 的核心不在于背公式，而是把 UI 拆成「布局」「排版」「状态」三个维度，然后使用类名组合快速拼装。Tailwind 4 进一步引入 `@theme`、`@utility` 等指令，让自定义能力与项目约束保持同步：
+
+- `@theme` 管理设计令牌：颜色、间距、字号、阴影等
+- `@utility` 声明可复用的工具类，代替传统的 `.btn { ... }`
+- `@variant` / `@custom-variant` 管理状态类（如 `active:`、`dark:`）
+
+掌握这些指令后，就可以在不离开 CSS 语法的前提下扩展 Tailwind。
+
+## 1. 拆解一个卡片组件
+
+以「订单卡片」为例，先在 `src/components/order-card/index.vue` 写出骨架：
+
+```vue title="src/components/order-card/index.vue"
+<template>
+  <view class="order-card">
+    <view class="order-card__header">
+      <text class="order-card__title">{{ title }}</text>
+      <text class="order-card__status" :class="statusClass">{{ statusText }}</text>
+    </view>
+    <view class="order-card__meta">
+      <text>{{ createdAt }}</text>
+      <text>{{ amount }}</text>
+    </view>
+    <slot />
+  </view>
+</template>
+```
+
+接下来在 `src/components/order-card/index.css` 中使用 Tailwind 原子类重构：
+
+```css title="src/components/order-card/index.css"
+@reference "../../app.css";
+
+/* 使用 @utility 提升可读性 */
+@utility order-card {
+  @apply block rounded-3xl bg-white shadow-lg shadow-slate-200/70 p-5 space-y-4;
+}
+
+@utility order-card__header {
+  @apply flex items-center justify-between gap-3;
+}
+
+@utility order-card__title {
+  @apply text-base font-semibold text-slate-900;
+}
+
+@utility order-card__meta {
+  @apply flex items-center justify-between text-sm text-slate-500;
+}
+
+@utility order-card__status {
+  @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium uppercase tracking-[0.28em];
+}
+
+/* 通过 @variant 声明业务状态 */
+@custom-variant status-pending (&[data-status="pending"]);
+@custom-variant status-finished (&[data-status="finished"]);
+@custom-variant status-failed (&[data-status="failed"]);
+
+.order-card__status {
+  @apply status-pending:bg-amber-100 status-pending:text-amber-600;
+  @apply status-finished:bg-emerald-100 status-finished:text-emerald-600;
+  @apply status-failed:bg-rose-100 status-failed:text-rose-600;
+}
+```
+
+关键点：
+
+- 使用 `@reference` 让局部样式文件继承入口 CSS 中的主题与工具
+- `@utility` 让类名语义化，同时还能继续 `@apply` 原子类
+- `@custom-variant`（Tailwind 4 新增）能让业务状态转换成语义化前缀
+
+最后在组件实例上应用：
+
+```vue title="src/pages/index/index.vue"
+<template>
+  <order-card
+    class="order-card"
+    data-status="pending"
+    title="小程序尊享套餐"
+    status-text="待支付"
+    created-at="2024-06-03"
+    amount="¥199"
+  >
+    <view class="flex items-center gap-2 rounded-2xl bg-slate-50 px-4 py-3">
+      <text class="text-xs font-medium text-slate-500">自动续费:</text>
+      <switch class="scale-90" :checked="false" />
+    </view>
+  </order-card>
+</template>
+```
+
+## 2. 构建可复用的设计令牌
+
+Tailwind 4 把主题抽象为原生 CSS 变量。你可以在 `app.css` 中集中维护令牌，再通过 `@theme` 输出：
+
+```css title="src/app.css" {2-7}
+@import "weapp-tailwindcss";
+
+@theme {
+  --color-brand: oklch(66% 0.21 268);
+  --color-brand-muted: oklch(80% 0.04 268);
+  --radius-xl: 24px;
+  --shadow-elevated: 0 18px 40px -20px rgb(99 102 241 / 45%);
+}
+```
+
+然后在业务样式中直接引用这些变量，或结合 Tailwind 的 `bg-[...]` 写法：
+
+```css
+.order-card {
+  @apply shadow-[var(--shadow-elevated)];
+}
+
+.order-card__status {
+  @apply status-finished:bg-[var(--color-brand-muted)] status-finished:text-[var(--color-brand)];
+}
+```
+
+得益于 CSS 变量特性，你还可以在不同页面覆写 `:root` 或对应容器的变量，以实现主题切换。
+
+## 3. 管理复杂布局与响应式
+
+小程序虽然没有传统意义上的宽度断点，但我们仍可以借助媒体查询、`min()` / `max()` 等函数实现容错布局：
+
+```css
+@layer utilities {
+  @responsive {
+    @media (min-width: 560px) {
+      .md\\:card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(16px, 4vw, 36px);
+      }
+    }
+  }
+}
+```
+
+在页面中配合默认的原子类即可：
+
+```html
+<view class="space-y-4 md:card-grid">
+  <slot />
+</view>
+```
+
+对于需要横向滚动的卡片，Tailwind 4 提供的 `snap-x`, `snap-mandatory`, `snap-center` 等类仍旧适用，不同端的处理逻辑交给 `weapp-tailwindcss`。
+
+## 4. 多文件协作与团队约定
+
+当项目迎来多人协作时，建议遵循以下约定：
+
+1. **入口 CSS 只做聚合**：集中维护 `@import`、`@source` 与 `@theme`，其余逻辑拆到独立文件。
+2. **组件目录内固定 `index.css`**：组件内声明 `@utility`、`@apply`，并写在组件同名文件夹下，便于按需引用。
+3. **公共工具抽成包**：例如 `src/styles/utilities/forms.css`，内部声明所有表单相关的 `@utility`。
+4. **lint 与提示配置**：确保团队成员的 VS Code `tailwindCSS.experimental.classRegex` 包含 `.wxml`、`.vue` 等模板。
+
+## 5. 调试与性能提示
+
+- Tailwind 4 的编译沿用增量模式，`pnpm run:watch` 时生成的原子类会写入缓存。需要彻底清理时删除 `.tailwind`、`node_modules/.cache/tailwind`。
+- 小程序开发者工具不支持 `@layer`，若遇到覆盖问题，可以开启 `cssPresetEnv` 的降级行为，详情见 [高阶篇](/docs/quick-start/v4/tutorial/advanced)。
+- 借助 `pnpm dev:h5`（部分框架提供）可快速在浏览器预览，调试完后再回到真机验证。
+
+完成本篇后，你应该可以把 Tailwind 应用到实际业务模块，并形成一套可复用的组件写法。接下来，我们会关注性能优化、跨端适配与团队协作等更高阶的话题。
+
