@@ -24,6 +24,7 @@ import { createNameMatcher } from '@/utils/nameMatcher'
 export interface ImportSpecifierImportToken {
   declaration: NodePath<ImportDeclaration>
   specifier: NodePath<ImportSpecifier>
+  local: string
   imported: string
   source: string
   type: 'ImportSpecifier'
@@ -32,6 +33,7 @@ export interface ImportSpecifierImportToken {
 export interface ImportDefaultSpecifierImportToken {
   declaration: NodePath<ImportDeclaration>
   specifier: NodePath<ImportDefaultSpecifier>
+  local: string
   source: string
   type: 'ImportDefaultSpecifier'
 }
@@ -179,6 +181,7 @@ export class NodePathWalker {
                 declaration: importDeclaration,
                 specifier: arg,
                 imported: imported.node.name,
+                local: arg.node.local.name,
                 source: importDeclaration.node.source.value,
                 type: 'ImportSpecifier',
               } satisfies ImportSpecifierImportToken,
@@ -190,6 +193,7 @@ export class NodePathWalker {
             {
               declaration: importDeclaration,
               specifier: arg,
+              local: arg.node.local.name,
               source: importDeclaration.node.source.value,
               type: 'ImportDefaultSpecifier',
             } satisfies ImportDefaultSpecifierImportToken,
@@ -250,6 +254,9 @@ export class NodePathWalker {
     const decl = path.get('declaration')
     if (decl.isIdentifier()) {
       this.walkNode(decl)
+    }
+    else {
+      this.walkNode(decl as unknown as NodePath<Node | null | undefined>)
     }
   }
 

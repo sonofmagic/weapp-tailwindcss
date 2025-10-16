@@ -1,0 +1,34 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`twMerge cross file ignore > hashes inline twMerge arguments when ignoreCallExpressionIdentifiers is empty > hashed-entry-code 1`] = `
+"import { twMerge } from '@weapp-tailwindcss/merge'
+import base, { buttonBase } from './shared'
+
+const inline = 'bg-_h123456_'
+
+export function render() {
+  return twMerge(buttonBase, base, inline)
+}
+"
+`;
+
+exports[`twMerge cross file ignore > skips dependency exports when twMerge is ignored > ignored-entry-code 1`] = `
+"import { twMerge } from '@weapp-tailwindcss/merge'
+import base, { buttonBase } from './shared'
+
+const inline = 'bg-[#123456]'
+
+export function render() {
+  return twMerge(buttonBase, base, inline)
+}
+"
+`;
+
+exports[`twMerge cross file ignore > skips dependency exports when twMerge is ignored > ignored-shared-code 1`] = `
+"export const buttonBase = 'bg-[#123456]'
+
+const base = 'px-[35px]'
+
+export default base
+"
+`;
