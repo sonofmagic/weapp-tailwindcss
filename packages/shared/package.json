@@ -24,6 +24,11 @@
       "types": "./dist/extractors.d.ts",
       "import": "./dist/extractors.mjs",
       "require": "./dist/extractors.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.mjs",
+      "require": "./dist/node.js"
     }
   },
   "main": "./dist/index.js",
@@ -42,5 +47,7 @@
     "lint:fix": "eslint . --fix"
   },
   "publishConfig": {},
-  "dependencies": {}
+  "dependencies": {
+    "pathe": "^2.0.3"
+  }
 }
