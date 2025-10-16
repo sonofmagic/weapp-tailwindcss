@@ -22,7 +22,20 @@ export interface InternalCssSelectorReplacerOptions {
   escapeMap?: Record<string, string>
 }
 
-export interface JsHandlerResult { code: string, map?: SourceMap, error?: ParseError }
+export interface LinkedJsModuleResult {
+  code: string
+}
+
+export interface JsHandlerResult {
+  code: string
+  map?: SourceMap
+  error?: ParseError
+  /**
+   * Additional modules transformed because of cross-file analysis.
+   * Keyed by absolute filename.
+   */
+  linked?: Record<string, LinkedJsModuleResult>
+}
 
 export type ICustomAttributes
   = | Record<string, ItemOrItemArray<string | RegExp>>
@@ -44,6 +57,15 @@ export interface IJsHandlerOptions {
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
   uniAppX?: boolean
+  /**
+   * Absolute path of the module currently being transformed.
+   * Required when enabling cross-file analysis.
+   */
+  filename?: string
+  /**
+   * Configure cross-file module graph analysis.
+   */
+  moduleGraph?: JsModuleGraphOptions
 }
 
 export interface IArbitraryValues {
@@ -128,3 +150,22 @@ export interface InternalPatchResult {
 }
 
 export type CreateJsHandlerOptions = Omit<IJsHandlerOptions, 'classNameSet'>
+
+export interface JsModuleGraphOptions {
+  /**
+   * Resolve an import specifier to an absolute file path.
+   */
+  resolve: (specifier: string, importer: string) => string | undefined
+  /**
+   * Load module source synchronously.
+   */
+  load: (id: string) => string | undefined
+  /**
+   * Optional filter to skip modules.
+   */
+  filter?: (id: string, specifier: string, importer: string) => boolean
+  /**
+   * Maximum traversal depth. Defaults to `Infinity`.
+   */
+  maxDepth?: number
+}

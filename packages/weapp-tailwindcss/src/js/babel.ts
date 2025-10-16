@@ -10,13 +10,14 @@ import { parse, traverse } from '@/babel'
 import { createNameMatcher } from '@/utils/nameMatcher'
 import { replaceHandleValue } from './handlers'
 import { JsTokenUpdater } from './JsTokenUpdater'
+import { JsModuleGraph } from './ModuleGraph'
 import { NodePathWalker } from './NodePathWalker'
 
 /**
  * Describes the data collected during AST traversal that is required for the
  * subsequent source transformation phase.
  */
-interface SourceAnalysis {
+export interface SourceAnalysis {
   ast: ParseResult<File>
   walker: NodePathWalker
   jsTokenUpdater: JsTokenUpdater
@@ -300,10 +301,29 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
   const analysis = analyzeSource(ast, options)
   const ms = processUpdatedSource(rawSource, options, analysis)
 
-  return {
+  const result: JsHandlerResult = {
     code: ms.toString(),
     get map() {
       return ms.generateMap()
     },
   }
+
+  if (options.moduleGraph && options.filename) {
+    const graph = new JsModuleGraph(
+      {
+        filename: options.filename,
+        source: rawSource,
+        analysis,
+        handlerOptions: options,
+      },
+      options.moduleGraph,
+    )
+
+    const linked = graph.build()
+    if (Object.keys(linked).length > 0) {
+      result.linked = linked
+    }
+  }
+
+  return result
 }

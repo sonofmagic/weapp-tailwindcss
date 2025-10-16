@@ -1,4 +1,4 @@
-import type { Buffer } from 'node:buffer'
+import { Buffer } from 'node:buffer'
 import { createLightningcssStyleHandler } from './style-handler'
 
 const defaultHandler = createLightningcssStyleHandler(undefined, {

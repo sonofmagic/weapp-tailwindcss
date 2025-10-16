@@ -104,7 +104,21 @@ function normalizeNestedSelectors(
   if (!selectors) {
     return undefined
   }
-  return Array.isArray(selectors) ? selectors : [selectors]
+
+  if (Array.isArray(selectors)) {
+    if (selectors.length === 0) {
+      return []
+    }
+
+    const first = selectors[0]
+    if (Array.isArray(first)) {
+      return selectors as Selector[]
+    }
+
+    return [selectors as Selector]
+  }
+
+  return [selectors]
 }
 
 function assignNestedSelectors(
@@ -275,7 +289,7 @@ function transformSelectorComponent(
     }
 
     if (cloned.kind === 'where' && options.uniAppX) {
-      cloned.kind = 'is'
+      (cloned as SelectorComponent & { kind: typeof cloned.kind | 'is' }).kind = 'is'
     }
 
     return [cloned]
@@ -366,7 +380,8 @@ function createVisitor(ctx: SelectorTransformContext) {
       const selectors = styleRule.selectors ?? []
       const hasValidSelectors = selectors.some(selector => selector.length > 0)
 
-      if (!hasValidSelectors || (ctx.options.uniAppX && styleRule.declarations.length === 0)) {
+      const declarationCount = styleRule.declarations?.declarations?.length ?? 0
+      if (!hasValidSelectors || (ctx.options.uniAppX && declarationCount === 0)) {
         return []
       }
       return rule
@@ -382,7 +397,7 @@ export function createLightningcssStyleHandler(
 ): LightningcssStyleHandler {
   const cachedOptions = prepareStyleOptions(options)
   const { transformOptions, filename } = config
-  const { visitor: _ignoredVisitor, ...restTransformOptions } = transformOptions ?? {}
+  const transformOverrides = transformOptions ?? {}
 
   return async (rawSource, overrideOptions) => {
     const resolvedOptions = prepareStyleOptions(
@@ -403,7 +418,7 @@ export function createLightningcssStyleHandler(
       code: Buffer.from(rawSource),
       visitor,
       minify: false,
-      ...restTransformOptions,
+      ...transformOverrides,
     })
 
     return {

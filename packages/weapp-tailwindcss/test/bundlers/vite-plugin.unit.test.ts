@@ -4,26 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
 import { createCache } from '@/cache'
 
-const postcssHtmlTransformMock = vi.hoisted(() => vi.fn(() => ({ postcssPlugin: 'mocked-html-transform' }))) as ReturnType<typeof vi.fn>
-vi.mock('@weapp-tailwindcss/postcss/html-transform', () => ({
-  default: postcssHtmlTransformMock,
-}))
-
-const transformUVueMock = vi.hoisted(() => vi.fn((code: string, id: string) => ({ code: `uvue:${id}:${code}` }))) as ReturnType<typeof vi.fn>
-vi.mock('@/uni-app-x', () => ({
-  transformUVue: transformUVueMock,
-}))
-
-const getCompilerContextMock = vi.fn(() => currentContext)
-vi.mock('@/context', () => ({
-  getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
-}))
-
-type InternalContext = ReturnType<typeof createContext>
-
-let currentContext: InternalContext
-
-function createContext(overrides: Partial<InternalContext> = {}) {
+function createContext(overrides: Record<string, unknown> = {}) {
   const cache = createCache()
   const runtimeSet = new Set(['alpha'])
 
@@ -71,6 +52,25 @@ function createContext(overrides: Partial<InternalContext> = {}) {
   }
 }
 
+type InternalContext = ReturnType<typeof createContext>
+
+let currentContext: InternalContext
+
+const postcssHtmlTransformMock = vi.hoisted(() => vi.fn(() => ({ postcssPlugin: 'mocked-html-transform' })))
+vi.mock('@weapp-tailwindcss/postcss/html-transform', () => ({
+  default: postcssHtmlTransformMock,
+}))
+
+const transformUVueMock = vi.hoisted(() => vi.fn((code: string, id: string) => ({ code: `uvue:${id}:${code}` })))
+vi.mock('@/uni-app-x', () => ({
+  transformUVue: transformUVueMock,
+}))
+
+const getCompilerContextMock = vi.fn(() => currentContext)
+vi.mock('@/context', () => ({
+  getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
+}))
+
 function createRollupAsset(source: string): OutputAsset {
   return {
     type: 'asset',
@@ -78,7 +78,10 @@ function createRollupAsset(source: string): OutputAsset {
     name: undefined,
     source,
     needsCodeReference: false,
-  }
+    names: [],
+    originalFileName: undefined,
+    originalFileNames: [],
+  } as OutputAsset
 }
 
 function createRollupChunk(code: string): OutputChunk {
@@ -99,7 +102,10 @@ function createRollupChunk(code: string): OutputChunk {
     isEntry: true,
     isDynamicEntry: false,
     referencedFiles: [],
-  }
+    sourcemapFileName: undefined,
+    preliminaryFileName: undefined,
+    isImplicitEntry: false,
+  } as OutputChunk
 }
 
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
@@ -129,9 +135,11 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
       },
     } as unknown as ResolvedConfig
 
-    postPlugin.configResolved?.(config)
+    const configResolved = postPlugin.configResolved as any
+    await configResolved?.call(postPlugin, config)
     expect(postcssHtmlTransformMock).toHaveBeenCalledTimes(1)
-    expect(config.css?.postcss?.plugins?.[0]).toEqual({ postcssPlugin: 'mocked-html-transform' })
+    const postcssPlugins = (config.css?.postcss as any)?.plugins
+    expect(postcssPlugins?.[0]).toEqual({ postcssPlugin: 'mocked-html-transform' })
 
     const html = '<view class="foo">bar</view>'
     const js = 'const demo = 1'
@@ -146,7 +154,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
       },
     }
 
-    await postPlugin.generateBundle?.({} as any, bundle)
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
@@ -173,7 +182,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
       },
     }
 
-    await postPlugin.generateBundle?.({} as any, bundleSecondRun)
+    await generateBundle?.call(postPlugin, {} as any, bundleSecondRun)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
@@ -216,12 +225,15 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(cssPrePlugin?.transform).toBeTypeOf('function')
     expect(nvuePlugin?.transform).toBeTypeOf('function')
 
-    const cssResult = await cssPlugin.transform?.('.foo { color: red; }', 'App.uvue?vue&type=style&index=0') as TransformResult
+    const cssTransform = cssPlugin.transform as any
+    const cssResult = await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0') as TransformResult
     expect(cssResult?.code).toBe('css:.foo { color: red; }')
     expect(cssResult?.map).toBeTruthy()
 
-    await nvuePlugin.buildStart?.()
-    const nvueResult = nvuePlugin.transform?.('console.log("x")', 'App.nvue')
+    const nvueBuildStart = nvuePlugin.buildStart as any
+    await nvueBuildStart?.call(nvuePlugin)
+    const nvueTransform = nvuePlugin.transform as any
+    const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
     expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
     expect(nvueResult).toEqual({ code: 'uvue:App.nvue:console.log("x")' })
 
@@ -233,10 +245,14 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
         source: 'console.log("asset")',
         name: undefined,
         needsCodeReference: false,
+        names: [],
+        originalFileName: undefined,
+        originalFileNames: [],
       } satisfies OutputAsset,
     }
 
-    await postPlugin.generateBundle?.({} as any, bundle)
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith('const answer = 42', runtimeSet)
     expect((bundle['index.js'] as OutputChunk).code).toBe('js:const answer = 42')
