@@ -43,6 +43,18 @@ export type ICustomAttributes
 
 export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string | RegExp>][]
 
+export interface TailwindcssPatcherLike {
+  packageInfo: TailwindcssPatcher['packageInfo']
+  majorVersion?: number
+  patch: TailwindcssPatcher['patch']
+  getClassSet: TailwindcssPatcher['getClassSet']
+  getClassSetV3: TailwindcssPatcher['getClassSetV3']
+  extract: TailwindcssPatcher['extract']
+  cacheOptions?: TailwindcssPatcher['cacheOptions']
+  patchOptions?: TailwindcssPatcher['patchOptions']
+  rawOptions?: TailwindcssPatcher['rawOptions']
+}
+
 export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
@@ -122,7 +134,7 @@ export type InternalUserDefinedOptions = Required<
     customReplaceDictionary: Record<string, string>
     setMangleRuntimeSet: (runtimeSet: Set<string>) => void
     cache: ICreateCacheReturnType
-    twPatcher: TailwindcssPatcher
+    twPatcher: TailwindcssPatcherLike
   }
 >
 

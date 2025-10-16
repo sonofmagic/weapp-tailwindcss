@@ -14,11 +14,19 @@ function getLiteralPath(code: string, kind: LiteralKind) {
   let result: NodePath<StringLiteral | TemplateElement> | undefined
 
   traverse(ast, {
-    [kind](path) {
-      if (!result) {
-        result = path as NodePath<StringLiteral | TemplateElement>
-        path.stop()
+    StringLiteral(path: NodePath<StringLiteral>) {
+      if (kind !== 'StringLiteral' || result) {
+        return
       }
+      result = path as NodePath<StringLiteral | TemplateElement>
+      path.stop()
+    },
+    TemplateElement(path: NodePath<TemplateElement>) {
+      if (kind !== 'TemplateElement' || result) {
+        return
+      }
+      result = path
+      path.stop()
     },
   })
 
@@ -36,7 +44,7 @@ function getNumericLiteralPath(code: string) {
   let result: NodePath<NumericLiteral> | undefined
 
   traverse(ast, {
-    NumericLiteral(path) {
+    NumericLiteral(path: NodePath<NumericLiteral>) {
       if (!result) {
         result = path
         path.stop()

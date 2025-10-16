@@ -5,13 +5,27 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
 import { createCache } from '@/cache'
 
-const getCompilerContextMock = vi.fn((_options?: unknown) => currentContext)
+interface InternalContext {
+  templateHandler: ReturnType<typeof vi.fn>
+  styleHandler: ReturnType<typeof vi.fn>
+  jsHandler: ReturnType<typeof vi.fn>
+  setMangleRuntimeSet: ReturnType<typeof vi.fn>
+  cache: ReturnType<typeof createCache>
+  twPatcher: {
+    patch: ReturnType<typeof vi.fn>
+    getClassSet: ReturnType<typeof vi.fn>
+    getClassSetV3: ReturnType<typeof vi.fn>
+    majorVersion: number
+  }
+}
+
+const getCompilerContextMock = vi.fn<(options?: unknown) => InternalContext>(() => currentContext)
 
 vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
 
-let currentContext: any
+let currentContext: InternalContext
 
 function createFile(path: string, contents: string) {
   return new Vinyl({

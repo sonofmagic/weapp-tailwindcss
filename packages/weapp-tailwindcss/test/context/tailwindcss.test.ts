@@ -63,12 +63,13 @@ describe('createTailwindcssPatcherFromContext', () => {
     } as unknown as import('@/types').InternalUserDefinedOptions
 
     createTailwindcssPatcherFromContext(ctx)
+    const lastMerged = defuOverrideArrayStub.mock.results[defuOverrideArrayStub.mock.results.length - 1]?.value
 
     expect(createTailwindcssPatcherStub).toHaveBeenCalledWith({
       basedir: ctx.tailwindcssBasedir,
       cacheDir: undefined,
       supportCustomLengthUnitsPatch: ctx.supportCustomLengthUnitsPatch,
-      tailwindcss: defuOverrideArrayStub.mock.results.at(-1)?.value,
+      tailwindcss: lastMerged,
       tailwindcssPatcherOptions: ctx.tailwindcssPatcherOptions,
     })
   })

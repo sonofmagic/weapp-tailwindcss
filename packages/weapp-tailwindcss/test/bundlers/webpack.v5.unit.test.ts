@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedWebpackPluginV5 } from '@/bundlers/webpack/BaseUnifiedPlugin/v5'
 import { createCache } from '@/cache'
 
-const getCompilerContextMock = vi.fn(() => currentContext)
+const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => currentContext)
 vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
@@ -84,7 +84,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
   beforeEach(() => {
     currentContext = createContext()
     getCompilerContextMock.mockClear()
-    existsSyncSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(true)
+    existsSyncSpy = vi.spyOn(fs as unknown as Record<string, unknown>, 'existsSync')
+    existsSyncSpy.mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -106,7 +107,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
         NormalModule: {
           getCompilationHooks: vi.fn(() => ({
             loader: {
-              tap: (_name: string, handler: typeof loaderHandler) => {
+              tap: (_name: string, handler: (loaderContext: unknown, module: LoaderModule) => void) => {
                 loaderHandler = handler
               },
             },
@@ -127,7 +128,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       chunks: [{ id: 'main', hash: 'hash-1' }],
       hooks: {
         processAssets: {
-          tapPromise: (_options, handler) => {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
             processAssetsCallbacks.push(handler)
           },
         },

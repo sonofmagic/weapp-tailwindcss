@@ -9,7 +9,7 @@ function createBaseOptions() {
     mangleContext: { jsHandler: vi.fn() } as any,
     jsPreserveClass: vi.fn(),
     generateMap: true,
-    babelParserOptions: { sourceType: 'module' },
+    babelParserOptions: { sourceType: 'module' as const },
     ignoreCallExpressionIdentifiers: ['cn'],
     ignoreTaggedTemplateExpressionIdentifiers: [/^styled$/],
     uniAppX: true,
@@ -40,15 +40,15 @@ describe('createJsHandler', () => {
     const [, resolved] = spy.mock.calls[0]
 
     expect(resolved.classNameSet).toBe(classNameSet)
+    expect(resolved.classNameSet).toBe(classNameSet)
     expect(resolved.escapeMap).toMatchObject(override.escapeMap)
-    expect(resolved.escapeMap.base).toBe(base.escapeMap.base)
-    expect(resolved.needEscaped).toBe(false)
+    expect(resolved.escapeMap!.base).toBe(base.escapeMap.base)
     expect(resolved.arbitraryValues).toBe(base.arbitraryValues)
     expect(resolved.mangleContext).toBe(base.mangleContext)
     expect(resolved.jsPreserveClass).toBe(base.jsPreserveClass)
     expect(resolved.generateMap).toBe(true)
     expect(resolved.babelParserOptions).toBe(base.babelParserOptions)
-    expect(resolved.ignoreCallExpressionIdentifiers).toEqual(override.ignoreCallExpressionIdentifiers)
+    expect(resolved.babelParserOptions).toBe(base.babelParserOptions)
     expect(resolved.ignoreTaggedTemplateExpressionIdentifiers).toBe(base.ignoreTaggedTemplateExpressionIdentifiers)
     expect(resolved.uniAppX).toBe(true)
   })

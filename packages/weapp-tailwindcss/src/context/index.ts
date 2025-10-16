@@ -27,7 +27,12 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
 
   const twPatcher = createTailwindcssPatcherFromContext(ctx)
 
-  logger.success(`当前使用 ${pc.cyanBright('Tailwind CSS')} 版本为: ${pc.underline(pc.bold(pc.green(twPatcher.packageInfo.version)))}`)
+  if (twPatcher.packageInfo?.version) {
+    logger.success(`当前使用 ${pc.cyanBright('Tailwind CSS')} 版本为: ${pc.underline(pc.bold(pc.green(twPatcher.packageInfo.version)))}`)
+  }
+  else {
+    logger.warn(`${pc.cyanBright('Tailwind CSS')} 未安装，已跳过版本检测与补丁应用。`)
+  }
 
   const cssCalcOptions = ctx.cssCalc ?? twPatcher.majorVersion === 4
 

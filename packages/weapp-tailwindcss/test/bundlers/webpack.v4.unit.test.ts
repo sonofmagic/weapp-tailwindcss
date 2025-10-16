@@ -32,16 +32,12 @@ interface TestContext {
 }
 
 let currentContext: TestContext
-const getCompilerContextMock = vi.fn((_opts: any) => currentContext)
+const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => currentContext)
 vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
 
-let existsSyncSpy: ReturnType<typeof vi.spyOn<
-typeof fs,
-// @ts-ignore
-'existsSync'
->>
+let existsSyncSpy: ReturnType<typeof vi.spyOn>
 
 function createContext(overrides: Partial<TestContext> = {}): TestContext {
   const cache = createCache()
@@ -78,7 +74,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     currentContext = createContext()
     getCompilerContextMock.mockReset()
     getCompilerContextMock.mockImplementation(() => currentContext)
-    existsSyncSpy = vi.spyOn(fs, 'existsSync')
+    existsSyncSpy = vi.spyOn(fs as unknown as Record<string, unknown>, 'existsSync')
     existsSyncSpy.mockReturnValue(true)
   })
 

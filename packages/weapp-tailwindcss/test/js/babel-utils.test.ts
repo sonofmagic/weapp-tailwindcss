@@ -15,15 +15,16 @@ describe('babel helpers additional coverage', () => {
   it('memoises parsed ASTs when parser caching is enabled', () => {
     const code = 'const value = 1'
     const spy = vi.spyOn(parser, 'parse')
-    const first = babel.babelParse(code, { sourceType: 'module', cache: true })
-    const second = babel.babelParse(code, { sourceType: 'module', cache: true })
+    const parserOptions = { sourceType: 'module' as const, cache: true }
+    const first = babel.babelParse(code, parserOptions)
+    const second = babel.babelParse(code, parserOptions)
 
     expect(spy).toHaveBeenCalledTimes(1)
     expect(second).toBe(first)
   })
 
   it('detects eval call expressions', () => {
-    const ast = parse('eval("a"); other("b")', { sourceType: 'module' })
+    const ast = parse('eval("a"); other("b")', { sourceType: 'module' as const })
     const calls: NodePath<CallExpression>[] = []
 
     traverse(ast, {
@@ -45,7 +46,7 @@ describe('babel helpers additional coverage', () => {
       ignoreCallExpressionIdentifiers: ['cn'],
       alwaysEscape: true,
     }
-    const ast = parse(code, { sourceType: 'module' })
+    const ast = parse(code, { sourceType: 'module' as const })
     const analysis = babel.analyzeSource(ast, options)
     const [firstTarget] = analysis.targetPaths
 
@@ -79,13 +80,13 @@ describe('babel helpers additional coverage', () => {
       export * from './utils'
       const cls = "w-[100px]"
     `
-    const ast = parse(code, { sourceType: 'module' })
+    const ast = parse(code, { sourceType: 'module' as const })
     const options = {
       classNameSet: new Set(['w-[100px]']),
       escapeMap: MappingChars2String,
       alwaysEscape: true,
       babelParserOptions: {
-        sourceType: 'module',
+        sourceType: 'module' as const,
       },
     }
 

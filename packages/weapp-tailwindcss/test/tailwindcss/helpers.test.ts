@@ -2,11 +2,30 @@ import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const getPackageInfoMock = vi.fn()
-const tailwindcssPatcherMock = vi.fn().mockImplementation(function TailwindcssPatcher(options) {
+const tailwindcssPatcherMock = vi.fn(function TailwindcssPatcher(this: any, options: any) {
   this.options = options
   this.packageInfo = { version: '3.4.17' }
   this.majorVersion = 4
 })
+const loggerWarnMock = vi.fn()
+
+vi.mock('@weapp-tailwindcss/logger', () => ({
+  logger: {
+    warn: loggerWarnMock,
+    success: vi.fn(),
+    info: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+  pc: new Proxy(() => '', {
+    apply() {
+      return ''
+    },
+    get() {
+      return () => ''
+    },
+  }),
+}))
 
 vi.mock('local-pkg', () => ({
   getPackageInfoSync: getPackageInfoMock,
@@ -20,6 +39,7 @@ describe('tailwindcss helpers', () => {
   beforeEach(() => {
     getPackageInfoMock.mockReset()
     tailwindcssPatcherMock.mockClear()
+    loggerWarnMock.mockClear()
     vi.resetModules()
   })
 
@@ -75,7 +95,8 @@ describe('tailwindcss helpers', () => {
       cacheDir: '/global/cache',
     })
 
-    const callArgs = tailwindcssPatcherMock.mock.calls.at(-1)?.[0] as any
+    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const callArgs = lastCall?.[0] as any
     expect(callArgs.cache).toEqual({ dir: '/global/cache' })
   })
 
@@ -85,8 +106,28 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher({ cacheDir: '.cache' })
 
-    const callArgs = tailwindcssPatcherMock.mock.calls.at(-1)?.[0] as any
+    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const callArgs = lastCall?.[0] as any
     expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache') })
     cwdSpy.mockRestore()
+  })
+
+  it('gracefully falls back when tailwindcss is missing', async () => {
+    tailwindcssPatcherMock.mockImplementationOnce(() => {
+      throw new Error('tailwindcss not found')
+    })
+
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    const patcher = createTailwindcssPatcher()
+
+    expect(loggerWarnMock).toHaveBeenCalled()
+    expect(patcher.packageInfo.version).toBeUndefined()
+    await expect(patcher.getClassSet()).resolves.toEqual(new Set())
+    expect(patcher.getClassSetV3().size).toBe(0)
+    await expect(patcher.extract()).resolves.toEqual({
+      classList: [],
+      classSet: new Set<string>(),
+    })
   })
 })

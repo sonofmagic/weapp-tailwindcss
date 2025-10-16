@@ -1,8 +1,13 @@
 import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssPatcherOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
+import type { TailwindcssPatcherLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { logger } from '@weapp-tailwindcss/logger'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
+
+type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
+type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
 
 export interface CreateTailwindcssPatcherOptions {
   basedir?: string
@@ -12,7 +17,38 @@ export interface CreateTailwindcssPatcherOptions {
   tailwindcssPatcherOptions?: TailwindcssPatcherOptions
 }
 
-export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions) {
+function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
+  const packageInfo = {
+    name: 'tailwindcss',
+    version: undefined as unknown as string,
+    rootPath: '',
+    packageJsonPath: '',
+    packageJson: {},
+  } as TailwindcssPatcherLike['packageInfo']
+
+  return {
+    packageInfo,
+    majorVersion: 0,
+    patch() {},
+    async getClassSet() {
+      return new Set<string>()
+    },
+    getClassSetV3() {
+      return new Set<string>()
+    },
+    async extract(_options?: TailwindcssExtractOptions): TailwindcssExtractResult {
+      const classSet = new Set<string>()
+      return {
+        classList: [],
+        classSet,
+      } as Awaited<TailwindcssExtractResult>
+    },
+  }
+}
+
+let hasLoggedMissingTailwind = false
+
+export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
   const cache: CacheOptions = {}
 
@@ -28,7 +64,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
-  return new TailwindcssPatcher(defuOverrideArray<TailwindcssPatcherOptions, TailwindcssPatcherOptions[]>(
+  const resolvedOptions = defuOverrideArray<TailwindcssPatcherOptions, TailwindcssPatcherOptions[]>(
     tailwindcssPatcherOptions!,
     {
       cache,
@@ -46,5 +82,19 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
         },
       },
     },
-  ))
+  )
+
+  try {
+    return new TailwindcssPatcher(resolvedOptions)
+  }
+  catch (error) {
+    if (error instanceof Error && /tailwindcss not found/i.test(error.message)) {
+      if (!hasLoggedMissingTailwind) {
+        logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 相关补丁。若需使用 Tailwind 能力，请安装 tailwindcss。')
+        hasLoggedMissingTailwind = true
+      }
+      return createFallbackTailwindcssPatcher()
+    }
+    throw error
+  }
 }

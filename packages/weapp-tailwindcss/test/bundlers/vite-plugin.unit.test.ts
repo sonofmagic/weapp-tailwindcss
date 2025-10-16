@@ -66,7 +66,7 @@ vi.mock('@/uni-app-x', () => ({
   transformUVue: transformUVueMock,
 }))
 
-const getCompilerContextMock = vi.fn(() => currentContext)
+const getCompilerContextMock = vi.fn<(options?: unknown) => InternalContext>(() => currentContext)
 vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
@@ -78,9 +78,9 @@ function createRollupAsset(source: string): OutputAsset {
     name: undefined,
     source,
     needsCodeReference: false,
-    names: [],
-    originalFileName: undefined,
-    originalFileNames: [],
+    names: [] as string[],
+    originalFileName: null,
+    originalFileNames: [] as string[],
   } as OutputAsset
 }
 
@@ -102,8 +102,6 @@ function createRollupChunk(code: string): OutputChunk {
     isEntry: true,
     isDynamicEntry: false,
     referencedFiles: [],
-    sourcemapFileName: undefined,
-    preliminaryFileName: undefined,
     isImplicitEntry: false,
   } as OutputChunk
 }
@@ -245,9 +243,9 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
         source: 'console.log("asset")',
         name: undefined,
         needsCodeReference: false,
-        names: [],
-        originalFileName: undefined,
-        originalFileNames: [],
+        names: [] as string[],
+        originalFileName: null,
+        originalFileNames: [] as string[],
       } satisfies OutputAsset,
     }
 
