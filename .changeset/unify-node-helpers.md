@@ -4,4 +4,4 @@ tailwindcss-injector: patch
 weapp-tailwindcss: patch
 ---
 
-Expose shared Node helpers for md5 hashing and extension stripping, and refactor dependent packages to consume them.
+暴露用于 md5 哈希与拓展名裁剪的 Node 侧工具函数，并重构依赖这些能力的包以统一复用共享实现。

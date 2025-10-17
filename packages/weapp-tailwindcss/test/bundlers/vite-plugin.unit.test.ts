@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
+import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
 import { createCache } from '@/cache'
@@ -252,15 +253,84 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     const generateBundle = postPlugin.generateBundle as any
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect(currentContext.jsHandler).toHaveBeenCalledWith('const answer = 42', runtimeSet)
+    expect(currentContext.jsHandler).toHaveBeenCalledWith(
+      'const answer = 42',
+      runtimeSet,
+      expect.objectContaining({
+        filename: expect.stringContaining('index.js'),
+        moduleGraph: expect.objectContaining({
+          resolve: expect.any(Function),
+          load: expect.any(Function),
+        }),
+        babelParserOptions: expect.objectContaining({
+          sourceFilename: expect.stringContaining('index.js'),
+        }),
+      }),
+    )
     expect((bundle['index.js'] as OutputChunk).code).toBe('js:const answer = 42')
-    expect(currentContext.jsHandler).toHaveBeenCalledWith('console.log("asset")', runtimeSet, {
-      babelParserOptions: {
-        plugins: ['typescript'],
-        sourceType: 'unambiguous',
-      },
-      uniAppX: currentContext.uniAppX,
-    })
+    expect(currentContext.jsHandler).toHaveBeenCalledWith(
+      'console.log("asset")',
+      runtimeSet,
+      expect.objectContaining({
+        filename: expect.stringContaining('index.asset.js'),
+        moduleGraph: expect.objectContaining({
+          resolve: expect.any(Function),
+          load: expect.any(Function),
+        }),
+        babelParserOptions: expect.objectContaining({
+          plugins: ['typescript'],
+          sourceType: 'unambiguous',
+          sourceFilename: expect.stringContaining('index.asset.js'),
+        }),
+        uniAppX: currentContext.uniAppX,
+      }),
+    )
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("asset")')
+  })
+
+  it('propagates linked js module updates', async () => {
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'chunk.js')
+    currentContext = createContext({
+      jsHandler: vi.fn(async (code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code }
+      }),
+    })
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    const bundle = {
+      'index.js': createRollupChunk('import "./chunk.js";'),
+      'chunk.js': createRollupChunk('export const foo = 1;'),
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['chunk.js'] as OutputChunk).code).toBe('linked:chunk')
+    const chunkUpdates = currentContext.onUpdate.mock.calls.filter(([file]) => file === 'chunk.js')
+    expect(chunkUpdates.length).toBeGreaterThan(0)
+    expect(chunkUpdates.some(([, , updated]) => updated === 'linked:chunk')).toBe(true)
+
+    const [firstCall] = currentContext.jsHandler.mock.calls
+    const linkedOptions = firstCall?.[2]
+    expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
   })
 })

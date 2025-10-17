@@ -1,7 +1,10 @@
 import type { RawSourceMap } from '@ampproject/remapping'
 import type { ExistingRawSourceMap, OutputAsset, OutputChunk, SourceMap } from 'rollup'
-import type { Plugin, TransformResult } from 'vite'
-import type { UserDefinedOptions } from '@/types'
+import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
+import type { CreateJsHandlerOptions, LinkedJsModuleResult, UserDefinedOptions } from '@/types'
+import { Buffer } from 'node:buffer'
+import path from 'node:path'
+import process from 'node:process'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -9,10 +12,88 @@ import { createDebug } from '@/debug'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../shared/cache'
+import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
 import { parseVueRequest } from './query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from './utils'
 
 const debug = createDebug()
+
+interface OutputEntry {
+  fileName: string
+  output: OutputAsset | OutputChunk
+}
+
+function readOutputEntry(entry: OutputEntry): string | undefined {
+  if (entry.output.type === 'chunk') {
+    return entry.output.code
+  }
+  const source = entry.output.source
+  if (typeof source === 'string') {
+    return source
+  }
+  if (source instanceof Uint8Array) {
+    return Buffer.from(source).toString()
+  }
+  return source?.toString()
+}
+
+function isJavaScriptEntry(entry: OutputEntry): boolean {
+  if (entry.output.type === 'chunk') {
+    return true
+  }
+  return entry.fileName.endsWith('.js')
+}
+
+function createBundleModuleGraphOptions(
+  outputDir: string,
+  entries: Map<string, OutputEntry>,
+) {
+  return {
+    resolve(specifier: string, importer: string) {
+      return resolveOutputSpecifier(specifier, importer, outputDir, candidate => entries.has(candidate))
+    },
+    load(id: string) {
+      const entry = entries.get(id)
+      if (!entry) {
+        return undefined
+      }
+      return readOutputEntry(entry)
+    },
+    filter(id: string) {
+      return entries.has(id)
+    },
+  }
+}
+
+function applyLinkedResults(
+  linked: Record<string, LinkedJsModuleResult> | undefined,
+  entries: Map<string, OutputEntry>,
+  onLinkedUpdate: (fileName: string, previous: string, next: string) => void,
+) {
+  if (!linked) {
+    return
+  }
+
+  for (const [id, { code }] of Object.entries(linked)) {
+    const entry = entries.get(id)
+    if (!entry) {
+      continue
+    }
+    const previous = readOutputEntry(entry)
+    if (previous == null || previous === code) {
+      continue
+    }
+
+    if (entry.output.type === 'chunk') {
+      entry.output.code = code
+    }
+    else {
+      entry.output.source = code
+    }
+
+    onLinkedUpdate(entry.fileName, previous, code)
+  }
+}
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
@@ -43,12 +124,14 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   twPatcher.patch()
   let runtimeSet: Set<string> | undefined
+  let resolvedConfig: ResolvedConfig | undefined
   onLoad()
   const plugins: Plugin[] = [
     {
       name: `${vitePluginName}:post`,
       enforce: 'post',
       configResolved(config) {
+        resolvedConfig = config
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
           const idx = config.css.postcss.plugins.findIndex(x =>
             // @ts-ignore
@@ -64,10 +147,36 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         onStart()
 
         const entries = Object.entries(bundle)
+        const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+        const outDir = resolvedConfig?.build?.outDir
+          ? path.resolve(rootDir, resolvedConfig.build.outDir)
+          : rootDir
+        const jsEntries = new Map<string, OutputEntry>()
+        for (const [fileName, output] of entries) {
+          const entry: OutputEntry = { fileName, output }
+          if (isJavaScriptEntry(entry)) {
+            const absolute = toAbsoluteOutputPath(fileName, outDir)
+            jsEntries.set(absolute, entry)
+          }
+        }
+        const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
         const groupedEntries = getGroupedEntries(entries, opts)
         runtimeSet = await twPatcher.getClassSet()
         setMangleRuntimeSet(runtimeSet)
         debug('get runtimeSet, class count: %d', runtimeSet.size)
+        const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
+          onUpdate(fileName, previous, next)
+          debug('js linked handle: %s', fileName)
+        }
+        const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
+          ...extra,
+          filename: absoluteFilename,
+          moduleGraph: moduleGraphOptions,
+          babelParserOptions: {
+            ...(extra?.babelParserOptions ?? {}),
+            sourceFilename: absoluteFilename,
+          },
+        })
         const tasks: Promise<void>[] = []
         if (Array.isArray(groupedEntries.html)) {
           for (const [file, originalSource] of groupedEntries.html as [string, OutputAsset][]) {
@@ -100,66 +209,70 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
         if (Array.isArray(groupedEntries.js)) {
           for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
-            if (originalSource.type === 'chunk') {
-              const rawSource = originalSource.code
-              tasks.push(
-                processCachedTask<string>({
-                  cache,
-                  cacheKey: file,
-                  rawSource,
-                  applyResult(source) {
-                    originalSource.code = source
-                  },
-                  onCacheHit() {
-                    debug('js cache hit: %s', file)
-                  },
-                  async transform() {
-                    const { code } = await jsHandler(rawSource, runtimeSet)
-                    onUpdate(file, rawSource, code)
-                    debug('js handle: %s', file)
-                    return {
-                      result: code,
-                    }
-                  },
-                }),
-              )
+            if (originalSource.type !== 'chunk') {
+              continue
             }
+            const absoluteFile = toAbsoluteOutputPath(file, outDir)
+            const initialRawSource = originalSource.code
+            await processCachedTask<string>({
+              cache,
+              cacheKey: file,
+              rawSource: initialRawSource,
+              applyResult(source) {
+                originalSource.code = source
+              },
+              onCacheHit() {
+                debug('js cache hit: %s', file)
+              },
+              async transform() {
+                const rawSource = originalSource.code
+                const { code, linked } = await jsHandler(rawSource, runtimeSet, createHandlerOptions(absoluteFile))
+                onUpdate(file, rawSource, code)
+                debug('js handle: %s', file)
+                applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
+                return {
+                  result: code,
+                }
+              },
+            })
           }
 
           if (uniAppX) {
             for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
-              if (originalSource.type === 'asset') {
-                const rawSource = originalSource.source.toString()
-                tasks.push(
-                  processCachedTask<string>({
-                    cache,
-                    cacheKey: file,
-                    rawSource,
-                    applyResult(source) {
-                      originalSource.source = source
-                    },
-                    onCacheHit() {
-                      debug('js cache hit: %s', file)
-                    },
-                    async transform() {
-                      const { code } = await jsHandler(rawSource, runtimeSet, {
-                        uniAppX,
-                        babelParserOptions: {
-                          plugins: [
-                            'typescript',
-                          ],
-                          sourceType: 'unambiguous',
-                        },
-                      })
-                      onUpdate(file, rawSource, code)
-                      debug('js handle: %s', file)
-                      return {
-                        result: code,
-                      }
-                    },
-                  }),
-                )
+              if (originalSource.type !== 'asset') {
+                continue
               }
+              const absoluteFile = toAbsoluteOutputPath(file, outDir)
+              const rawSource = originalSource.source.toString()
+              await processCachedTask<string>({
+                cache,
+                cacheKey: file,
+                rawSource,
+                applyResult(source) {
+                  originalSource.source = source
+                },
+                onCacheHit() {
+                  debug('js cache hit: %s', file)
+                },
+                async transform() {
+                  const currentSource = originalSource.source.toString()
+                  const { code, linked } = await jsHandler(currentSource, runtimeSet, createHandlerOptions(absoluteFile, {
+                    uniAppX,
+                    babelParserOptions: {
+                      plugins: [
+                        'typescript',
+                      ],
+                      sourceType: 'unambiguous',
+                    },
+                  }))
+                  onUpdate(file, currentSource, code)
+                  debug('js handle: %s', file)
+                  applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
+                  return {
+                    result: code,
+                  }
+                },
+              })
             }
           }
         }

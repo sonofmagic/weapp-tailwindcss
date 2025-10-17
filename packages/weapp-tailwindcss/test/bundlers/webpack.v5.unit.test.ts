@@ -1,8 +1,10 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedWebpackPluginV5 } from '@/bundlers/webpack/BaseUnifiedPlugin/v5'
 import { createCache } from '@/cache'
 
+let currentContext: TestContext
 const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => currentContext)
 vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
@@ -46,9 +48,18 @@ interface TestContext {
   wxsMatcher: (file: string) => boolean
   runtimeLoaderPath: string
 }
-
-let currentContext: TestContext
 let existsSyncSpy: ReturnType<typeof vi.spyOn>
+
+function createAssetsFromStore(store: Record<string, string>) {
+  return Object.fromEntries(
+    Object.keys(store).map(file => [
+      file,
+      {
+        source: () => store[file],
+      },
+    ]),
+  )
+}
 
 function createContext(overrides: Partial<TestContext> = {}): TestContext {
   const cache = createCache()
@@ -95,7 +106,33 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
   it('wires runtime loader, processes assets and caches results', async () => {
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
-
+    let currentAssetStore: Record<string, string> = {}
+    const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+      currentAssetStore[file] = source.toString()
+    })
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset,
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
     const compiler = {
       webpack: {
         Compilation: {
@@ -116,24 +153,11 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
       hooks: {
         compilation: {
-          tap: (_name: string, handler: (compilation: any) => void) => {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
             handler(compilation)
           },
         },
       },
-    }
-
-    const updateAsset = vi.fn()
-    const compilation = {
-      chunks: [{ id: 'main', hash: 'hash-1' }],
-      hooks: {
-        processAssets: {
-          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
-            processAssetsCallbacks.push(handler)
-          },
-        },
-      },
-      updateAsset,
     }
 
     const plugin = new UnifiedWebpackPluginV5()
@@ -153,12 +177,13 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const js = 'const foo = 1'
     const css = '.foo { color: red; }'
 
-    const assetsRun = {
-      'index.wxml': { source: () => html },
-      'index.js': { source: () => js },
-      'index.css': { source: () => css },
+    const assetStore = {
+      'index.wxml': html,
+      'index.js': js,
+      'index.css': css,
     }
-
+    currentAssetStore = assetStore
+    const assetsRun = createAssetsFromStore(assetStore)
     await processAssetsCallbacks[0](assetsRun)
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
@@ -182,12 +207,13 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
 
-    const assetsSecondRun = {
-      'index.wxml': { source: () => html },
-      'index.js': { source: () => js },
-      'index.css': { source: () => css },
+    const secondAssetStore = {
+      'index.wxml': html,
+      'index.js': js,
+      'index.css': css,
     }
-
+    currentAssetStore = secondAssetStore
+    const assetsSecondRun = createAssetsFromStore(secondAssetStore)
     await processAssetsCallbacks[0](assetsSecondRun)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
@@ -206,7 +232,33 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     getCompilerContextMock.mockReturnValue(currentContext)
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
-
+    let currentAssetStore: Record<string, string> = {}
+    const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+      currentAssetStore[file] = source.toString()
+    })
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options, handler) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset,
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
     const compiler = {
       webpack: {
         Compilation: {
@@ -225,24 +277,11 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
       hooks: {
         compilation: {
-          tap: (_name: string, handler: (compilation: any) => void) => {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
             handler(compilation)
           },
         },
       },
-    }
-
-    const updateAsset = vi.fn()
-    const compilation = {
-      chunks: [{ id: 'main', hash: 'hash-1' }],
-      hooks: {
-        processAssets: {
-          tapPromise: (_options, handler) => {
-            processAssetsCallbacks.push(handler)
-          },
-        },
-      },
-      updateAsset,
     }
 
     const plugin = new UnifiedWebpackPluginV5()
@@ -253,25 +292,27 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const wxs = 'module.exports = {}'
     const css = '.foo { color: red; }'
 
-    const assetsRun = {
-      'index.wxml': { source: () => html },
-      'index.js': { source: () => js },
-      'index.wxs': { source: () => wxs },
-      'index.css': { source: () => css },
+    const assetStore = {
+      'index.wxml': html,
+      'index.js': js,
+      'index.wxs': wxs,
+      'index.css': css,
     }
-
+    currentAssetStore = assetStore
+    const assetsRun = createAssetsFromStore(assetStore)
     await processAssetsCallbacks[0](assetsRun)
 
     expect(currentContext.cache.has('index.js')).toBe(true)
     expect(currentContext.cache.has('index.wxs')).toBe(true)
 
-    const assetsSecondRun = {
-      'index.wxml': { source: () => html },
-      'index.js': { source: () => js },
-      'index.wxs': { source: () => wxs },
-      'index.css': { source: () => css },
+    const assetStoreSecond = {
+      'index.wxml': html,
+      'index.js': js,
+      'index.wxs': wxs,
+      'index.css': css,
     }
-
+    currentAssetStore = assetStoreSecond
+    const assetsSecondRun = createAssetsFromStore(assetStoreSecond)
     await processAssetsCallbacks[0](assetsSecondRun)
 
     const jsUpdates = updateAsset.mock.calls.filter(call => call[0] === 'index.js')
@@ -283,5 +324,97 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(jsUpdates[1][1].toString()).toBe(`js:${js}`)
     expect(wxsUpdates[0][1].toString()).toBe(`js:${wxs}`)
     expect(wxsUpdates[1][1].toString()).toBe(`js:${wxs}`)
+  })
+
+  it('propagates linked js asset updates', async () => {
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    const outDir = path.resolve(process.cwd(), 'dist')
+    let currentAssetStore: Record<string, string> = {}
+    const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+      currentAssetStore[file] = source.toString()
+    })
+    const compilation = {
+      compiler: { outputPath: outDir },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset,
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        compilation: {
+          tap: (_name: string, handler: (compilationParam: any) => void) => {
+            handler(compilation)
+          },
+        },
+      },
+    }
+
+    currentContext = createContext({
+      jsHandler: vi.fn(async (code: string, _runtime: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [path.resolve(outDir, 'chunk.js')]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code }
+      }),
+    })
+    getCompilerContextMock.mockReturnValue(currentContext)
+
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const assetStore = {
+      'index.js': 'import "./chunk.js";',
+      'chunk.js': 'export const foo = 1;',
+    }
+    currentAssetStore = assetStore
+    const assetsRun = createAssetsFromStore(assetStore)
+    await processAssetsCallbacks[0](assetsRun)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+    const chunkUpdate = updateAsset.mock.calls.find(([file]) => file === 'chunk.js')
+    expect(chunkUpdate?.[1].toString()).toBe('linked:chunk')
+    const onUpdateCalls = currentContext.onUpdate.mock.calls.filter(([file]) => file === 'chunk.js')
+    expect(onUpdateCalls.some(([, , updated]) => updated === 'linked:chunk')).toBe(true)
+
+    const [firstCall] = currentContext.jsHandler.mock.calls
+    const options = firstCall?.[2]
+    expect(options?.moduleGraph?.resolve?.('./chunk.js', options.filename ?? '')).toBe(path.resolve(outDir, 'chunk.js'))
   })
 })

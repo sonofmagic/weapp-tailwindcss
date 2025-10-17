@@ -1,5 +1,7 @@
 import type { Transform } from 'node:stream'
 import { Buffer } from 'node:buffer'
+import fs from 'node:fs'
+import path from 'node:path'
 import Vinyl from 'vinyl'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
@@ -19,13 +21,12 @@ interface InternalContext {
   }
 }
 
+let currentContext: InternalContext
 const getCompilerContextMock = vi.fn<(options?: unknown) => InternalContext>(() => currentContext)
 
 vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
-
-let currentContext: InternalContext
 
 function createFile(path: string, contents: string) {
   return new Vinyl({
@@ -103,7 +104,20 @@ describe('bundlers/gulp createPlugins', () => {
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
     const runtimeSetFromCss = setMangleRuntimeSet.mock.calls[0][0]
-    expect(jsHandler).toHaveBeenCalledWith('console.log("hi")', runtimeSetFromCss, {})
+    expect(jsHandler).toHaveBeenCalledWith(
+      'console.log("hi")',
+      runtimeSetFromCss,
+      expect.objectContaining({
+        filename: expect.stringContaining('app.js'),
+        moduleGraph: expect.objectContaining({
+          resolve: expect.any(Function),
+          load: expect.any(Function),
+        }),
+        babelParserOptions: expect.objectContaining({
+          sourceFilename: expect.stringContaining('app.js'),
+        }),
+      }),
+    )
     expect(processedJs.contents?.toString()).toBe('js:console.log("hi")')
 
     const cachedJsFile = createFile('/src/app.js', 'console.log("hi")')
@@ -142,5 +156,50 @@ describe('bundlers/gulp createPlugins', () => {
     const htmlFileSecond = createFile('/src/app.wxml', '<view>cache</view>')
     await runTransform(plugins.transformWxml(), htmlFileSecond)
     expect(templateHandler).toHaveBeenCalledTimes(2)
+  })
+
+  it('resolves directory index files when building module graph', async () => {
+    const plugins = createPlugins()
+
+    const jsFile = createFile('/src/app.js', 'console.log("graph")')
+    await runTransform(plugins.transformJs(), jsFile)
+
+    const handlerOptions = jsHandler.mock.calls.at(-1)?.[2]
+    expect(handlerOptions?.moduleGraph).toBeDefined()
+    const moduleGraph = handlerOptions?.moduleGraph
+    const importer = handlerOptions?.filename
+    expect(importer).toBeTruthy()
+
+    const moduleDir = path.resolve(path.dirname(importer!), './utils')
+    const indexTs = path.join(moduleDir, 'index.ts')
+    const statSpy = vi.spyOn(fs, 'statSync')
+    const directoryStats = {
+      isFile: () => false,
+      isDirectory: () => true,
+    } as unknown as fs.Stats
+    const fileStats = {
+      isFile: () => true,
+      isDirectory: () => false,
+    } as unknown as fs.Stats
+
+    statSpy.mockImplementation((target: fs.PathLike) => {
+      if (target === moduleDir) {
+        return directoryStats
+      }
+      if (target === indexTs) {
+        return fileStats
+      }
+      const error = new Error(`ENOENT: no such file or directory, stat '${target.toString()}'`) as NodeJS.ErrnoException
+      error.code = 'ENOENT'
+      throw error
+    })
+
+    try {
+      const resolved = moduleGraph?.resolve?.('./utils', importer!)
+      expect(resolved).toBe(indexTs)
+    }
+    finally {
+      statSpy.mockRestore()
+    }
   })
 })

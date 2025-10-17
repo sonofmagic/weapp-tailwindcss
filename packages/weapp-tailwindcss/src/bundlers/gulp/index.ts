@@ -1,6 +1,9 @@
 import type File from 'vinyl'
-import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from '@/types'
+import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -22,6 +25,72 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   let runtimeSet = new Set<string>()
   twPatcher.patch()
+
+  const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
+  function resolveWithExtensions(base: string): string | undefined {
+    for (const ext of MODULE_EXTENSIONS) {
+      const candidate = `${base}${ext}`
+      try {
+        if (fs.statSync(candidate).isFile()) {
+          return candidate
+        }
+      }
+      catch {
+        continue
+      }
+    }
+    return undefined
+  }
+
+  function resolveLocalModuleCandidate(base: string): string | undefined {
+    try {
+      const stat = fs.statSync(base)
+      if (stat.isFile()) {
+        return base
+      }
+      if (stat.isDirectory()) {
+        const resolvedIndex = resolveWithExtensions(path.join(base, 'index'))
+        if (resolvedIndex) {
+          return resolvedIndex
+        }
+      }
+    }
+    catch {
+      // fall through to extension-based lookup
+    }
+
+    if (!path.extname(base)) {
+      return resolveWithExtensions(base)
+    }
+    return undefined
+  }
+
+  function createModuleGraphOptionsFor(): JsModuleGraphOptions {
+    return {
+      resolve(specifier, importer) {
+        if (!specifier) {
+          return undefined
+        }
+        if (!specifier.startsWith('.') && !path.isAbsolute(specifier)) {
+          return undefined
+        }
+        const normalized = path.resolve(path.dirname(importer), specifier)
+        return resolveLocalModuleCandidate(normalized)
+      },
+      load(id) {
+        try {
+          return fs.readFileSync(id, 'utf8')
+        }
+        catch {
+          return undefined
+        }
+      },
+      filter(id) {
+        const relative = path.relative(process.cwd(), id)
+        return opts.jsMatcher(relative) || opts.wxsMatcher(relative)
+      },
+    }
+  }
 
   function createVinylTransform(handler: (file: File) => Promise<void>) {
     return new Transform({
@@ -75,6 +144,17 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
+      const filename = path.resolve(file.path)
+      const moduleGraph = options.moduleGraph ?? createModuleGraphOptionsFor()
+      const handlerOptions: CreateJsHandlerOptions = {
+        ...options,
+        filename,
+        moduleGraph,
+        babelParserOptions: {
+          ...(options?.babelParserOptions ?? {}),
+          sourceFilename: filename,
+        },
+      }
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -87,7 +167,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('js cache hit: %s', file.path)
         },
         async transform() {
-          const { code } = await jsHandler(rawSource, runtimeSet, options)
+          const currentSource = file.contents?.toString() ?? rawSource
+          const { code } = await jsHandler(currentSource, runtimeSet, handlerOptions)
           debug('js handle: %s', file.path)
           return {
             result: code,
