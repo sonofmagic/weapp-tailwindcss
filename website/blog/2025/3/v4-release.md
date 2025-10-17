@@ -4,6 +4,8 @@ date: 2025-03-01
 authors: sonofmagic
 ---
 
+weapp-tailwindcss v4.0 正式发布，核心亮点是兼容 `tailwindcss@4` 并引入 `tailwind-merge` 运行时整合能力。文章总结了升级背后的思路，并提供 uni-app 示例帮助你快速落地。
+
 <!-- truncate -->
 
 ![4.0 release](https://cdn.jsdelivr.net/gh/sonofmagic/static/mbpv4-release.png)
