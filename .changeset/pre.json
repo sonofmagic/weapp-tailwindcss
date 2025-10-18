@@ -35,6 +35,7 @@
     "@weapp-tailwindcss/website": "1.0.4"
   },
   "changesets": [
+    "auto-spacing-calc",
     "cross-file-js-refactor",
     "gulp-module-graph-index",
     "unify-node-helpers"
