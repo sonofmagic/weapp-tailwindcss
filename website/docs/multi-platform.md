@@ -133,11 +133,12 @@ page,
 }
 .h-2 {
   height: 16rpx;
-  height: calc(var(--spacing) * 2);
+ height: calc(var(--spacing) * 2);
 }
 ```
 
-这个模式可以解决很多手机机型 `calc` `rpx` 单位的兼容问题
+这个模式可以解决很多手机机型 `calc` `rpx` 单位的兼容问题。\
+当处于 Tailwind CSS 模式（`tailwindcss@4` 及以上）时，插件会默认把 `--spacing` 注入到 `includeCustomProperties`，因此常见的 `space-x`/`space-y` 等工具类会被稳定计算。
 
 > 可通过给插件，传入 `cssCalc` 配置项 `false` 来手动关闭这个功能
 
@@ -172,3 +173,142 @@ page,
 通过这种方式可以解决手机机型 `calc` `rpx` 单位的兼容问题
 
 详见: https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#csscalc
+
+### `includeCustomProperties` 进阶用法
+
+`cssCalc` 提供多种写法来控制需要参与计算的自定义属性。下面结合「执行前 / 执行后」的示例说明差异。
+
+**数组写法**
+
+```ts
+cssCalc: ['--spacing', '--gap']
+```
+
+- 执行前：
+
+  ```css
+  :root {
+    --gap: 6rpx;
+    --spacing: 8rpx;
+  }
+  .space-x-2>view+view {
+    margin-left: calc(var(--gap) * (1 - var(--tw-space-x-reverse)));
+    margin-right: calc(var(--spacing) * var(--tw-space-x-reverse));
+  }
+  ```
+
+- 执行后：
+
+  ```css
+  .space-x-2>view+view {
+    margin-left: 6rpx;
+    margin-right: 8rpx;
+  }
+  ```
+
+**对象写法**
+
+```ts
+cssCalc: {
+  includeCustomProperties: ['--gap'],
+  precision: 6,
+  preserve: true,
+}
+```
+
+- 执行前：
+
+  ```css
+  :root {
+    --gap: 12rpx;
+  }
+  .btn {
+    margin-bottom: calc(var(--gap) * 2);
+  }
+  ```
+
+- 执行后：
+
+  ```css
+  :root {
+    --gap: 12rpx;
+  }
+  .btn {
+    margin-bottom: 24rpx;
+    margin-bottom: calc(var(--gap) * 2);
+  }
+  ```
+
+**正则写法**
+
+```ts
+cssCalc: [/^--(gap|spacing)$/]
+```
+
+- 执行前：
+
+  ```css
+  :root {
+    --gap: 4rpx;
+    --spacing: 10rpx;
+  }
+  .card + .card {
+    margin-top: calc(var(--spacing) * 2);
+    margin-left: calc(var(--gap) * 3);
+  }
+  ```
+
+- 执行后：
+
+  ```css
+  .card + .card {
+    margin-top: 20rpx;
+    margin-top: calc(var(--spacing) * 2);
+    margin-left: 12rpx;
+    margin-left: calc(var(--gap) * 3);
+  }
+  ```
+
+**Tailwind 统一变量写法**
+
+```ts
+cssCalc: {
+  includeCustomProperties: [/^--tw-/],
+  preserve: true,
+}
+```
+
+- 执行前：
+
+  ```css
+  :root {
+    --tw-space-y-reverse: 0;
+    --tw-gradient-from: #38bdf8;
+    --tw-gradient-stops: var(--tw-gradient-from), rgba(56,189,248,0);
+  }
+  .space-y-3>view+view {
+    margin-top: calc(var(--spacing) * 3 * (1 - var(--tw-space-y-reverse)));
+  }
+  .from-sky-400 {
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  }
+  ```
+
+- 执行后：
+
+  ```css
+  :root {
+    --tw-space-y-reverse: 0;
+    --tw-gradient-from: #38bdf8;
+    --tw-gradient-stops: var(--tw-gradient-from), rgba(56,189,248,0);
+  }
+  .space-y-3>view+view {
+    margin-top: 24rpx;
+    margin-top: calc(var(--spacing) * 3 * (1 - var(--tw-space-y-reverse)));
+  }
+  .from-sky-400 {
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  }
+  ```
+
+以上示例可以自由组合使用，帮助你根据业务场景精确控制 `calc` 与自定义属性的计算范围。
