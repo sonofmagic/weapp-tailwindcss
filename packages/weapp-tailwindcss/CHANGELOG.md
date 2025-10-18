@@ -1,5 +1,24 @@
 # weapp-tailwindcss
 
+## 4.5.0
+
+### Minor Changes
+
+- [`1be5402`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1be5402e56f68cf024d0a3eee1a6fdfa827767c6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 新增跨文件 JS 模块图，沿着 import 与 re-export 链路收集并转译类名，实现一次处理整条依赖链，同时允许调用方通过新增的 handler 选项主动开启。`tailwindcss-config` 也改为复用共享工具以保持一致。当本地未安装 `tailwindcss` 时，将提示一次警告并使用空实现兜底，避免直接抛错。
+
+### Patch Changes
+
+- [`b63ced9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b63ced990c5e3aa8a20e79057391a3928b7e976c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - Tailwind 模式下默认为 `@weapp-tailwindcss/postcss-calc` 注入 `includeCustomProperties: ['--spacing']`，确保间距变量自动参与计算。\*\*\*
+
+- [`2c67b1d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2c67b1ded66992a3308baf0c37fd314bd582ca00) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 Gulp 打包流程在解析本地模块时漏掉目录形式的 `index.*` 文件，确保跨文件模块图能够正确跟进依赖，并补充对应单测验证行为。
+
+- [`9291bad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9291bad1821c72f05e64b010ea3da94293a34d42) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 暴露用于 md5 哈希与拓展名裁剪的 Node 侧工具函数，并重构依赖这些能力的包以统一复用共享实现。
+
+- Updated dependencies [[`9291bad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9291bad1821c72f05e64b010ea3da94293a34d42)]:
+  - @weapp-tailwindcss/shared@1.1.0
+  - @weapp-tailwindcss/mangle@1.0.6
+  - @weapp-tailwindcss/postcss@1.3.3
+
 ## 4.5.0-alpha.1
 
 ### Patch Changes
