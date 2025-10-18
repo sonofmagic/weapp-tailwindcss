@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.5.0-alpha.1
+
+### Patch Changes
+
+- [`b63ced9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b63ced990c5e3aa8a20e79057391a3928b7e976c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - Tailwind 模式下默认为 `@weapp-tailwindcss/postcss-calc` 注入 `includeCustomProperties: ['--spacing']`，确保间距变量自动参与计算。\*\*\*
+
 ## 4.5.0-alpha.0
 
 ### Minor Changes
