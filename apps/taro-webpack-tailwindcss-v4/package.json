@@ -74,7 +74,7 @@
     "@tarojs/cli": "4.1.7",
     "@tarojs/taro-loader": "4.1.7",
     "@tarojs/webpack5-runner": "4.1.7",
-    "@types/node": "^24.7.2",
+    "@types/node": "^24.8.1",
     "@types/react": "catalog:react18",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "workspace:*",
