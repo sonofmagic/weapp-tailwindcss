@@ -204,6 +204,6 @@
     "@ampproject/remapping": "^2.3.0",
     "@csstools/postcss-is-pseudo-class": "^5.0.3",
     "clsx": "^2.1.1",
-    "rollup": "^4.52.4"
+    "rollup": "^4.52.5"
   }
 }
