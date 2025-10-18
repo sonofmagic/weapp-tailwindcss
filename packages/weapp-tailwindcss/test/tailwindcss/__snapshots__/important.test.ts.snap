@@ -12,8 +12,7 @@ exports[`important > https://github.com/sonofmagic/weapp-tailwindcss/issues/470 
 "#app-provider .space-x-4>view+view {
     --tw-space-x-reverse: 0;
     margin-right: calc(1rem * var(--tw-space-x-reverse));
-    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)));
-    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)))
+    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)))
 }"
 `;
 
@@ -29,8 +28,7 @@ exports[`important > https://github.com/sonofmagic/weapp-tailwindcss/issues/470 
 ".app-provider .space-x-4>view+view {
     --tw-space-x-reverse: 0;
     margin-right: calc(1rem * var(--tw-space-x-reverse));
-    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)));
-    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)))
+    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)))
 }"
 `;
 
@@ -46,8 +44,7 @@ exports[`important > https://github.com/sonofmagic/weapp-tailwindcss/issues/470 
 ".app-provider[data-v-hash] .space-x-4>view+view {
     --tw-space-x-reverse: 0;
     margin-right: calc(1rem * var(--tw-space-x-reverse));
-    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)));
-    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)))
+    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)))
 }"
 `;
 
@@ -63,7 +60,6 @@ exports[`important > normal 2`] = `
 ".space-x-4>view+view {
     --tw-space-x-reverse: 0;
     margin-right: calc(1rem * var(--tw-space-x-reverse));
-    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)));
-    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)))
+    margin-left: calc(1rem * (1 - var(--tw-space-x-reverse)))
 }"
 `;

@@ -640,10 +640,6 @@ view,text,::before,::after {
   border-width: 0;
   border-style: solid;
   border-color: currentColor;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 
 .-m-_l_20px_r_ {
@@ -717,7 +713,6 @@ view,text,::before,::after {
 .space-y-_l_1-dot-6rem_r_>view+view {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
 
@@ -725,7 +720,6 @@ view,text,::before,::after {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 
 .divide-solid>view+view {
@@ -1012,30 +1006,30 @@ exports[`styleHandler > tailwindcss v2 jit should append view selector 1`] = `":
 
 exports[`styleHandler > use with weapp-pandacss case 0  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 1  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 2  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 2.1  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 3  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
 `;
 
-exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > utf8 charset 1`] = `
 ".afterccontent-_qu6211u662fu4f2au5143u7d20q_::after {

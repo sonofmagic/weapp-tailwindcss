@@ -34,7 +34,14 @@ function readOutputEntry(entry: OutputEntry): string | undefined {
   if (source instanceof Uint8Array) {
     return Buffer.from(source).toString()
   }
-  return source?.toString()
+  const fallbackSource = source as unknown
+  if (fallbackSource == null) {
+    return undefined
+  }
+  if (typeof (fallbackSource as { toString?: unknown }).toString === 'function') {
+    return (fallbackSource as { toString: () => string }).toString()
+  }
+  return undefined
 }
 
 function isJavaScriptEntry(entry: OutputEntry): boolean {
