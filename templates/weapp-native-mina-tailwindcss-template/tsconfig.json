@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "target": "es5",
+    "lib": [
+      "ES2016"
+    ],
+    "module": "es6",
+    "strict": true,
+    "moduleResolution": "node",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/miniprogram-api-typings"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "types": [
+      "miniprogram-api-typings",
+      "@types/node"
+    ],
+    "paths": {
+      "@vant/weapp/*": [
+        "./node_modules/@vant/weapp/dist/*"
+      ],
+      "tdesign-miniprogram/*": [
+        "./dist/miniprogram_npm/tdesign-miniprogram/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "webpack.config.js",
+    "jest.config.js"
+  ]
+}

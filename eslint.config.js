@@ -15,6 +15,7 @@ export default icebreaker(
       'packages/tailwindcss-injector/*.md',
       'packages/weapp-tailwindcss/*.css',
       'e2e/__snapshots__/**/*',
+      'templates/**',
     ],
   },
   {

@@ -1,0 +1,4 @@
+<view class="h-screen w-screen flex items-center justify-center">
+  <image class="w-24 h-24" src="/images/vue-mini.png"></image>
+  <view class="text-lg">{{ greeting }}</view>
+</view>

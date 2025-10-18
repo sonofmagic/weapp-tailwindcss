@@ -1,0 +1,34 @@
+{
+  "name": "uni-app-vue2-tailwind-hbuilder-template",
+  "version": "1.0.0",
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "main.js",
+  "scripts": {},
+  "devDependencies": {
+    "@dcloudio/uni-cli-i18n": "2.0.2-4050720250324001",
+    "@dcloudio/uni-cli-shared": "2.0.2-4050720250324001",
+    "@dcloudio/vue-cli-plugin-uni": "2.0.2-4050720250324001",
+    "dotenv": "^16.5.0",
+    "postcss": "7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "weapp-tailwindcss": "^4.5.1",
+    "webpack": "npm:webpack@webpack-4"
+  },
+  "uni-app": {
+    "scripts": {
+      "dev": {
+        "title": "开发微信小程序",
+        "browser": "",
+        "env": {
+          "UNI_PLATFORM": "mp-weixin",
+          "TAILWIND_MODE": "watch"
+        },
+        "define": {}
+      }
+    }
+  }
+}

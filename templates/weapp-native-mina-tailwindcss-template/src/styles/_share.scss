@@ -1,0 +1,39 @@
+@import 'mixins';
+
+%clearfix {
+  @include clearfix();
+}
+
+%ellipsis {
+  @include ellipsis();
+}
+
+%word-break {
+  @include word-break();
+}
+
+%full-100 {
+  @include full-100();
+}
+
+%full {
+  @include full();
+}
+
+%full-fixed {
+  @include full(fixed);
+}
+
+%center-transform {
+  @include center-transform();
+}
+
+%center-flex {
+  @include center-flex();
+}
+
+%ui-bg {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}

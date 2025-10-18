@@ -1,0 +1,38 @@
+{
+  "darkmode": true,
+  "themeLocation": "theme.json",
+  "pages": [
+    "pages/home/index",
+    "pages/mine/index"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "@bgColor",
+    "navigationBarTextStyle": "@style",
+    "navigationBarTitleText": "vue-mini-project",
+    "backgroundColor": "@bgColor",
+    "backgroundColorTop": "@bgColor",
+    "backgroundColorBottom": "@bgColor"
+  },
+  "tabBar": {
+    "color": "@color",
+    "selectedColor": "@color",
+    "backgroundColor": "@bgColor",
+    "borderStyle": "@style",
+    "list": [
+      {
+        "text": "主页",
+        "pagePath": "pages/home/index",
+        "iconPath": "@homeIcon",
+        "selectedIconPath": "@homeSelectedIcon"
+      },
+      {
+        "text": "我",
+        "pagePath": "pages/mine/index",
+        "iconPath": "@mineIcon",
+        "selectedIconPath": "@mineSelectedIcon"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

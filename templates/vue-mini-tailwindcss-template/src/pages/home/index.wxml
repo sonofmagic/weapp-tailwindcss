@@ -1,0 +1,16 @@
+<view class="p-4 space-y-4">
+  <view class="aspect-[100/16.1] bg-[url(https://pic4.zhimg.com/80/v2-63755eaa318858e33445862d72581207.png)] bg-[length:100%_100%] bg-no-repeat"></view>
+  <view class="flex justify-center">
+    <image class="w-24 h-24" src="/images/vue-mini.png"></image>
+  </view>
+  <view class="text-sm flex justify-center">
+    <view class="text-green-400">{{ greeting }}</view>
+    <view class="text-sky-400">+ weapp-tailwindcss</view>
+  </view>
+  <view class="{{bg}}">纯动态的背景颜色</view>
+  <view class="flex justify-center my-4">
+    <t-button theme="primary" @tap="onClick">点击召唤 message 按钮</t-button>
+    <t-message id="t-message" />
+  </view>
+
+</view>

@@ -1,0 +1,92 @@
+{
+  "name": "taro-webpack-tailwindcss-v4",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "templateInfo": {
+    "name": "default",
+    "typescript": true,
+    "css": "None",
+    "framework": "React"
+  },
+  "browserslist": {
+    "development": [
+      "defaults and fully supports es6-module",
+      "maintained node versions"
+    ],
+    "production": [
+      "last 3 versions",
+      "Android >= 4.1",
+      "ios >= 8"
+    ]
+  },
+  "author": "",
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "build:swan": "taro build --type swan",
+    "build:alipay": "taro build --type alipay",
+    "build:tt": "taro build --type tt",
+    "build:h5": "taro build --type h5",
+    "build:rn": "taro build --type rn",
+    "build:qq": "taro build --type qq",
+    "build:jd": "taro build --type jd",
+    "build:harmony-hybrid": "taro build --type harmony-hybrid",
+    "dev:weapp": "npm run build:weapp -- --watch",
+    "dev:swan": "npm run build:swan -- --watch",
+    "dev:alipay": "npm run build:alipay -- --watch",
+    "dev:tt": "npm run build:tt -- --watch",
+    "dev:h5": "npm run build:h5 -- --watch",
+    "dev:rn": "npm run build:rn -- --watch",
+    "dev:qq": "npm run build:qq -- --watch",
+    "dev:jd": "npm run build:jd -- --watch",
+    "dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
+    "open": "weapp open -p",
+    "postinstall": "weapp-tw patch"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4",
+    "@tarojs/components": "4.1.6",
+    "@tarojs/helper": "4.1.6",
+    "@tarojs/plugin-framework-react": "4.1.6",
+    "@tarojs/plugin-platform-alipay": "4.1.6",
+    "@tarojs/plugin-platform-h5": "4.1.6",
+    "@tarojs/plugin-platform-harmony-hybrid": "4.1.6",
+    "@tarojs/plugin-platform-jd": "4.1.6",
+    "@tarojs/plugin-platform-qq": "4.1.6",
+    "@tarojs/plugin-platform-swan": "4.1.6",
+    "@tarojs/plugin-platform-tt": "4.1.6",
+    "@tarojs/plugin-platform-weapp": "4.1.6",
+    "@tarojs/react": "4.1.6",
+    "@tarojs/runtime": "4.1.6",
+    "@tarojs/shared": "4.1.6",
+    "@tarojs/taro": "4.1.6",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-react": "^7.27.1",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@tarojs/cli": "4.1.6",
+    "@tarojs/taro-loader": "4.1.6",
+    "@tarojs/webpack5-runner": "4.1.6",
+    "@types/node": "^18",
+    "@types/react": "^18.0.0",
+    "@types/webpack-env": "^1.13.6",
+    "babel-preset-taro": "4.1.6",
+    "eslint": "^8.57.0",
+    "eslint-config-taro": "4.1.6",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "postcss": "^8.5.6",
+    "react-refresh": "^0.17.0",
+    "stylelint": "^16.23.1",
+    "tailwindcss": "^4.1.14",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^5.9.2",
+    "weapp-ide-cli": "^4.0.0",
+    "weapp-tailwindcss": "^4.5.1",
+    "webpack": "5.101.3"
+  }
+}

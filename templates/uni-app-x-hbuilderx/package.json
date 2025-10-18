@@ -1,0 +1,15 @@
+{
+  "name": "uni-app-x-weapp-tailwindcss-template",
+  "scripts": {
+    "postinstall": "weapp-tw patch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.18",
+    "weapp-tailwindcss": "^4.5.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss"
+    ]
+  }
+}

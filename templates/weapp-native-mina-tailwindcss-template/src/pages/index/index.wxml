@@ -1,0 +1,63 @@
+<!-- index.wxml -->
+<import src="../../wxml/motto/motto.wxml" />
+<view class="container">
+  <view class="{{bgUrl}}"></view>
+  <view class="{{mottoClass}}">{{motto}}</view>
+  <view class="w-full">
+    <view class="px-4 py-1">vant weapp 组件</view>
+    <van-cell-group>
+      <van-cell title="单元格" value="内容" />
+      <van-cell title="单元格" value="内容" label="描述信息" border="{{ false }}" />
+    </van-cell-group>
+    <van-button type="default">默认按钮</van-button>
+  </view>
+  <view>
+    <view class="px-4 py-1 bg-gradient-to-b from-blue-500">tdesign-miniprogram 组件</view>
+    <t-button t-class="!bg-pink-700 !w-[300rpx]" theme="primary" bind:tap="showTextMessage">按钮</t-button>
+    <view class="my-[3.2px]"></view>
+    <t-input class="my-[3.34px] py-2" label="标签文字" placeholder="请输入文字"></t-input>
+  </view>
+  <view>
+    <view>以下是 tailwindcss jit 写法参考</view>
+    <view class="bg-[#543214] w-10 h-10" hover-class="bg-[#888888]"></view>
+    <view class="p-[20px] -mt-2 mb-[-20px]">
+      p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]
+    </view>
+    <view class="space-y-[1.6rem]">
+      <view class="w-[300rpx] text-black text-opacity-[0.19]">
+        w-[300rpx] text-black text-opacity-[0.19]
+      </view>
+      <view class="min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]">
+        min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
+      </view>
+      <view class="max-w-[300rpx] min-h-[100px] text-[#dddddd]">
+        max-w-[300rpx] min-h-[100px] text-[#dddddd]
+      </view>
+      <view class="flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff]">
+        Hello
+      </view>
+      <view class="border-[10px] border-[#098765] border-solid border-opacity-[0.44]">
+        border-[10px] border-[#098765] border-solid border-opacity-[0.44]
+      </view>
+      <view class="grid grid-cols-3 divide-x-[10px] divide-[#010101] divide-solid">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </view>
+      <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">
+        Default
+      </view>
+    </view>
+    <view class="test">test</view>
+    <view bindtap="bindViewTap">
+      <user avatarUrl="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}"></user>
+    </view>
+    <view class="powered">
+      <text>{{powered.by}}</text>
+    </view>
+    <view class="motto">
+      <template is="motto" data="{{motto:motto}}" />
+    </view>
+  </view>
+  <t-message id="t-message" />
+</view>

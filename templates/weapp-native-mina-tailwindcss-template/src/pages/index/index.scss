@@ -1,0 +1,31 @@
+@import 'share';
+
+.motto {
+  @extend %center-flex;
+
+  margin-top: 200px;
+  align-items: center;
+}
+
+.face {
+  $r: 24px;
+
+  width: $r;
+  height: $r;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.powered {
+  margin-top: 30px;
+  font-size: 11px;
+  color: gray;
+}
+
+.test {
+  @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+}
+
+// .xxxxxxx{
+//   @apply bg-purple-800 #{!important};
+// }

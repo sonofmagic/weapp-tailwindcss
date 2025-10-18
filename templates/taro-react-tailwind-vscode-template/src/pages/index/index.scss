@@ -1,0 +1,4 @@
+.test {
+  @apply flex items-center justify-center h-[300px] w-[300px] rounded-[40px] bg-[#123456] bg-opacity-[0.54];
+  @apply text-[#ffffff] after:content-['@apply_classes'] #{!important};
+}
