@@ -52,12 +52,10 @@ view,text,::after,::before,::backdrop {
 .beforeccontent-_wqawq_::before {
     content: var(--tw-content);
     --tw-content: \'+\';
-    content: var(--tw-content);
   }
 .beforeccontent-_wqhellowq_::before {
     content: var(--tw-content);
     --tw-content: \'hello\';
-    content: var(--tw-content);
   }
 @media (prefers-color-scheme: dark) {
 .darkcbg-zinc-800 {

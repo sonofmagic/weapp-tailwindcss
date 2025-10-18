@@ -120,17 +120,13 @@ view,text,:after,:before,::backdrop {
 .space-y-2d5>view+view {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing)*2.5)*var(--tw-space-y-reverse));
-  margin-bottom: calc(calc(var(--spacing)*2.5)*var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)));
-  margin-top: calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-y-reverse)))
+  margin-top: calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)))
 }
 
 .space-x-2d5>view+view {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing)*2.5)*var(--tw-space-x-reverse));
-  margin-right: calc(calc(var(--spacing)*2.5)*var(--tw-space-x-reverse));
-  margin-left: calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)));
-  margin-left: calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-x-reverse)))
+  margin-left: calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)))
 }
 
 .border-4 {

@@ -1,4 +1,4 @@
-import type { Plugin, PluginCreator } from 'postcss'
+import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { postcssPlugin } from '../constants'
@@ -8,6 +8,87 @@ import { getFallbackRemove } from '../selectorParser'
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 // tailwindcss@4
 const OklabSuffix = 'in oklab'
+
+const logicalPropMap = new Map<string, string>([
+  ['margin-inline-start', 'margin-left'],
+  ['margin-inline-end', 'margin-right'],
+  ['margin-block-start', 'margin-top'],
+  ['margin-block-end', 'margin-bottom'],
+  ['padding-inline-start', 'padding-left'],
+  ['padding-inline-end', 'padding-right'],
+  ['padding-block-start', 'padding-top'],
+  ['padding-block-end', 'padding-bottom'],
+])
+
+function getCanonicalProp(prop: string) {
+  return logicalPropMap.get(prop) ?? prop
+}
+
+function normalizeCalcValue(value: string) {
+  if (!value.includes('calc')) {
+    return value
+  }
+
+  let next = value
+  let prev: string
+
+  do {
+    prev = next
+    next = prev.replace(/calc\(\s*calc\(/gi, 'calc((')
+  } while (next !== prev)
+
+  return next.replace(/calc\(\s*(1\s*-\s*var\([^()]+\))\s*\)/gi, '($1)')
+}
+
+interface DedupeEntry {
+  decl: Declaration
+  normalizedValue: string
+  canonicalProp: string
+  importantKey: string
+  isLogical: boolean
+}
+
+function dedupeDeclarations(rule: Rule) {
+  const entries: DedupeEntry[] = []
+
+  for (const node of [...rule.nodes]) {
+    if (node.type !== 'decl') {
+      continue
+    }
+    const decl = node
+    const normalizedValue = normalizeCalcValue(decl.value)
+    if (normalizedValue !== decl.value) {
+      decl.value = normalizedValue
+    }
+    const canonicalProp = getCanonicalProp(decl.prop)
+    entries.push({
+      decl,
+      normalizedValue,
+      canonicalProp,
+      importantKey: decl.important ? '!important' : '',
+      isLogical: canonicalProp !== decl.prop,
+    })
+  }
+
+  const seen = new Map<string, DedupeEntry>()
+
+  for (const entry of entries) {
+    const key = `${entry.canonicalProp}${entry.importantKey}@@${entry.normalizedValue}`
+    const existing = seen.get(key)
+    if (!existing) {
+      seen.set(key, entry)
+      continue
+    }
+
+    if (existing.isLogical && !entry.isLogical) {
+      existing.decl.remove()
+      seen.set(key, entry)
+    }
+    else {
+      entry.decl.remove()
+    }
+  }
+}
 
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
@@ -24,6 +105,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
 
     p.RuleExit = (rule) => {
       fallbackRemove.transformSync(rule)
+      dedupeDeclarations(rule)
 
       if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
         rule.remove()
