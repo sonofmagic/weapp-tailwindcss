@@ -199,7 +199,6 @@ text,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
 }
 .space-y-4 > view + view,
@@ -208,7 +207,6 @@ text,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .border-b {

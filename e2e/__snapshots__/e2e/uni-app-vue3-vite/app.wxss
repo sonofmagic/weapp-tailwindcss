@@ -324,7 +324,6 @@ text,
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -332,7 +331,6 @@ text,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .space-y-_1d6rem_ > view + view,
@@ -341,7 +339,6 @@ text,
 .space-y-_1d6rem_ > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .space-y-_11rpx_ > view + view,
@@ -350,7 +347,6 @@ text,
 .space-y-_11rpx_ > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
 .divide-x-_10px_ > view + view,
@@ -359,8 +355,8 @@ text,
 .divide-x-_10px_ > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
+  border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_3px_ > view + view,
 .divide-x-_3px_ > view + text,
@@ -368,8 +364,8 @@ text,
 .divide-x-_3px_ > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
+  border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,

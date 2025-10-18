@@ -31,6 +31,7 @@ page,
   --color-amber-300: #ffd236;
   --color-green-300: #7bf1a8;
   --color-blue-200: #bedbff;
+  --color-blue-300: #90c5ff;
   --color-blue-500: #3080ff;
   --color-pink-300: #fda5d5;
   --color-zinc-50: #fafafa;
@@ -44,6 +45,7 @@ page,
     --color-amber-300: rgb(255, 210, 55);
     --color-green-300: lab(86.9953% -47.2691 25.0054);
     --color-blue-200: rgb(190, 219, 255);
+    --color-blue-300: rgb(145, 197, 255);
     --color-blue-500: rgb(50, 128, 255);
     --color-pink-300: lab(77.8308% 38.525 -10.5394);
     --color-zinc-50: lab(98.26% 0 0);
@@ -56,6 +58,7 @@ page,
       --color-red-700: lab(40.4273% 67.2623 53.7441);
       --color-amber-300: lab(86.4156% 6.13147 78.3961);
       --color-blue-200: lab(86.15% -4.04379 -21.0797);
+      --color-blue-300: lab(77.5052% -6.4629 -36.42);
       --color-blue-500: lab(54.1736% 13.3369 -74.6839);
     }
   }
@@ -101,12 +104,7 @@ text,
 .i-mdi-home {
   width: 1em;
   height: 1em;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   -webkit-mask-image: var(--svg);
-  -webkit-mask-image: var(--svg);
-  -webkit-mask-image: var(--svg);
-  -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   mask-image: var(--svg);
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   background-color: currentColor;
@@ -123,13 +121,10 @@ text,
   display: inline-block;
 }
 .size-12 {
-  width: 96rpx;
   width: calc(var(--spacing) * 12);
-  height: 96rpx;
   height: calc(var(--spacing) * 12);
 }
 .h-10 {
-  height: 80rpx;
   height: calc(var(--spacing) * 10);
 }
 .h-_29d292px_ {
@@ -158,28 +153,16 @@ text,
 .space-y-2d5 > text + view,
 .space-y-2d5 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: 0rpx;
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
-  margin-bottom: 0rpx;
-  margin-bottom: calc(var(--spacing) * 2.5 * var(--tw-space-y-reverse));
-  margin-top: 20rpx;
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
-  margin-top: 20rpx;
-  margin-top: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-y-reverse)));
 }
 .space-x-2d5 > view + view,
 .space-x-2d5 > view + text,
 .space-x-2d5 > text + view,
 .space-x-2d5 > text + text {
   --tw-space-x-reverse: 0;
-  margin-right: 0rpx;
   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
-  margin-right: 0rpx;
-  margin-right: calc(var(--spacing) * 2.5 * var(--tw-space-x-reverse));
-  margin-left: 20rpx;
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
-  margin-left: 20rpx;
-  margin-left: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-x-reverse)));
 }
 .border-4 {
   border-style: var(--tw-border-style);
@@ -192,14 +175,12 @@ text,
   background-color: #68c828;
 }
 .bg-amber-300 {
-  background-color: #ffd236;
   background-color: var(--color-amber-300);
 }
 .bg-blue-500s30 {
   background-color: rgba(48, 128, 255, 0.30196);
 }
 .bg-zinc-50 {
-  background-color: #fafafa;
   background-color: var(--color-zinc-50);
 }
 .bg-gradient-to-b {
@@ -233,11 +214,13 @@ text,
   );
 }
 .p-4 {
-  padding: 32rpx;
   padding: calc(var(--spacing) * 4);
 }
 .text-_100px_ {
   font-size: 100px;
+}
+.text-_h123322_ {
+  color: #123322;
 }
 .text-_h123456_ {
   color: #123456;
@@ -245,17 +228,17 @@ text,
 .text-_100rpx_ {
   color: 100rpx;
 }
+.text-blue-300 {
+  color: var(--color-blue-300);
+}
 .text-pink-300 {
-  color: #fda5d5;
   color: var(--color-pink-300);
 }
 .text-red-700 {
-  color: #bf000f;
   color: var(--color-red-700);
 }
 @media (prefers-color-scheme: dark) {
   .darkcbg-zinc-900 {
-    background-color: #18181b;
     background-color: var(--color-zinc-900);
   }
 }
