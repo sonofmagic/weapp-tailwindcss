@@ -1,0 +1,21 @@
+import React from 'react';
+import Admonition from '@theme/Admonition';
+
+export default function ExternalClassesReminder({ framework }) {
+  const prefix = framework ? `${framework} ` : '';
+  return (
+    <Admonition type="tip" title="externalClasses 提醒">
+      <p>
+        {prefix}自定义组件如果声明了 <code>externalClasses</code>，请在插件配置的 <code>customAttributes</code> 中列出这些属性。否则像{' '}
+        <code>my-class="bg-[#fafa00] text-[40px]"</code> 这样的写法会被微信开发者工具拆成无效片段，导致样式失效。
+      </p>
+      <p>
+        详细说明与更多示例请查阅{' '}
+        <strong>
+          <a href="/docs/issues/externalClasses">👉 《组件外部样式类（externalClasses）的支持》</a>
+        </strong>
+        。
+      </p>
+    </Admonition>
+  );
+}

@@ -1,44 +1,60 @@
-# 组件外部样式类（externalClasses）的支持
+---
+title: 组件外部样式类（externalClasses）的支持
+sidebar_label: externalClasses 支持
+description: 自定义组件使用 externalClasses 时 tailwindcss 样式拆分的问题与解决方案。
+keywords:
+  - externalClasses
+  - tailwindcss
+  - 微信小程序
+---
 
-在封装原生自定义组件的时候，我们经常会使用外部样式类（`externalClasses`），相关使用方式请参阅微信开发者文档的[外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#外部样式类)
+:::warning 快速结论
+如果在自定义组件里写了 `my-class="bg-[#fafa00] text-[40px]"`，但调试器里看到变成了 `my-class="bg- #fafa00  text- 40px"` 并导致样式失效，请在插件配置中为 `customAttributes` 显式声明 `my-class`。
+:::
 
-我们以一个例子来介绍，一个原生组件定义一个或多个外部样式类：
+## 典型现象
+
+在封装原生自定义组件时经常会用到外部样式类（`externalClasses`）。例如：
 
 ```js
-/* 组件 custom-component.js */
+/* custom-component.js */
 Component({
-  externalClasses: ['my-class']
+  externalClasses: ['my-class'],
 })
 ```
 
-然后你传入 `tailwindcss` 样式，去使用下方的写法：
+在页面里直接使用 `tailwindcss` 工具类：
 
 ```html
 <custom-component my-class="bg-[#fafa00] text-[40px]" />
 ```
 
-你会发现，在自定义组件中的 `my-class="bg-[#fafa00] text-[40px]"` 样式在微信开发者工具的调试窗口中，格式变成了 `my-class="bg- #fafa00  text- 40px`。
+小程序开发者工具会把 `my-class` 中的样式拆开成 `bg- #fafa00  text- 40px`，最终导致样式全部失效。
 
-这样直接导致了样式不生效了！
+## 根本原因
+
+插件默认只会转译 `class` 和 `hover-class`。外部样式类属于自定义属性，如果没有配置 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes)，就不会被识别处理。
 
 ## 解决方案
 
-这是因为，你没有配置插件的 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 配置项导致的。
-
-这个配置，可以用来额外转译一些 `wxml` 上的额外标签属性，否则默认只会转译 `class` 和 `hover-class`。
-
-它可以传入一个 `Object` 或者 `Map`，可以自定义匹配的标签，和任意匹配的属性。
-
-比如上面一个 `case` 就只需给插件的 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 传入:
+在插件选项里增加自定义属性的映射即可：
 
 ```js
 customAttributes: {
-  '*': ['my-class']
+  '*': ['my-class'],
 }
 ```
 
-就能够进行 `my-class` 的转译，当然这里使用 `*` 代表所有标签都匹配，你可以使用正则自定义匹配的标签，和匹配的属性。
+- `*` 代表匹配所有标签，你也可以改成具体的标签名或正则表达式。
+- 支持传入 `Object` 或 `Map`，用于灵活地映射标签与属性的关系。
 
-> 使用正则进行自定义匹配标签时，需要传入一个 `Map`，其中正则作为 `key`, 数组作为 `value`。
+:::tip 多个外部样式类
+如果组件同时暴露 `['my-class', 'title-class']`，直接把它们都写进同一个数组即可。
+:::
 
-你可以在 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 看到它的具体配置方法。
+## 扩展阅读
+
+- 微信官方文档：[外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#外部样式类)
+- 插件配置项说明：[customAttributes](/docs/api/interfaces/UserDefinedOptions#customattributes)
+
+> 使用正则进行自定义匹配标签时，需要传入一个 `Map`，其中正则作为 `key`，数组作为 `value`。
