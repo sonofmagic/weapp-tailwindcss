@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/shared
 
+## 1.1.0-alpha.0
+
+### Minor Changes
+
+- [`9291bad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9291bad1821c72f05e64b010ea3da94293a34d42) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 暴露用于 md5 哈希与拓展名裁剪的 Node 侧工具函数，并重构依赖这些能力的包以统一复用共享实现。
+
 ## 1.0.3
 
 ### Patch Changes
