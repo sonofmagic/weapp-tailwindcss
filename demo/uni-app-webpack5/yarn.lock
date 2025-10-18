@@ -3529,14 +3529,14 @@
     consola "^3.4.2"
     picocolors "^1.1.1"
 
-"@weapp-tailwindcss/mangle@1.0.6-alpha.0":
-  version "1.0.6-alpha.0"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/mangle/-/mangle-1.0.6-alpha.0.tgz#e9e1c86211afca2b9645c23e85521529835b4f6a"
-  integrity sha512-Lo2dNb0P9baP3/r3PMIUzfFLJ+hA0UJ31o6eiyzYKm4i6lh36sj9CCF2P+aMR80M6ix8xYT2plUTJxJ0FFcC+Q==
+"@weapp-tailwindcss/mangle@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/mangle/-/mangle-1.0.6.tgz#5d2cf77de92bc1c51a43d9a36703673dcb48480b"
+  integrity sha512-0QyP8UmrSVgGTVtqvPfWIosRFHT+RSm/I1y37cZlrMI5phPcSIYTpX60lhMBSvYh/cudeEAKR7jtul6vo74BUQ==
   dependencies:
     "@tailwindcss-mangle/shared" "~4.1.1"
     "@weapp-core/regex" "~1.0.1"
-    "@weapp-tailwindcss/shared" "1.1.0-alpha.0"
+    "@weapp-tailwindcss/shared" "1.1.0"
 
 "@weapp-tailwindcss/merge@^1.3.0":
   version "1.3.0"
@@ -3559,14 +3559,14 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@1.3.3-alpha.0":
-  version "1.3.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.3.3-alpha.0.tgz#a25f9dc6aecc53e5b55e4432cf160653620cecae"
-  integrity sha512-KlXwumKR4wqF7cGgP4udz5np/QG6nwXHnOH5B3aeAxuNb2jJI7DC1hp4bdSh/M04Oqn8WkLPz7+3RLYCEhRTww==
+"@weapp-tailwindcss/postcss@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.3.3.tgz#de0c116dbf6213b40050471e89c70bb070ab631a"
+  integrity sha512-L3Td9eW4KD2ozYDV3GRwXu4lVJ8vBdOb9/SNCmkDrgo0qbX/oCRGfaeEBwEidD8RwCZMKuC1HNe6vZTZ08Kz1A==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
-    "@weapp-tailwindcss/shared" "1.1.0-alpha.0"
+    "@weapp-tailwindcss/shared" "1.1.0"
     postcss "~8.5.6"
     postcss-preset-env "^10.4.0"
     postcss-pxtransform "^4.1.7"
@@ -3574,10 +3574,10 @@
     postcss-selector-parser "~7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/shared@1.1.0-alpha.0":
-  version "1.1.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/shared/-/shared-1.1.0-alpha.0.tgz#9bc2aa0f99c36e532ce4546e47ee886fcf4e3856"
-  integrity sha512-4ntySVzuMfd8C+5NeQj1z0pI8FNAPglFOIpVssOCtibwEVQILLD8NlZn5KP8Ee2JopxzcyAzSaD7vVEBcLIbog==
+"@weapp-tailwindcss/shared@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/shared/-/shared-1.1.0.tgz#5036c2b012a854ed87befc9c8b4fdd64350f9342"
+  integrity sha512-rKPNwAch2tVYpQ7j796B/wkI7Yjn6YWleUcv/gcjvRD7jtSCzKzTsLBeEGnzFX7Kkz3Z7zKfJDFvBmJ8tKhGTA==
   dependencies:
     pathe "^2.0.3"
 
@@ -13349,10 +13349,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.5.0-alpha.1:
-  version "4.5.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.5.0-alpha.1.tgz#15eff61c417cc60affad33f44d5c96b9512e754d"
-  integrity sha512-sKwabV8lUBkmthkT47OA8XfP+bp5kYE0l52xvZnjSs5OislGfvq/KXXEvpvUMoh2pdFQ8Zt7chWjRqdVFtcoJQ==
+weapp-tailwindcss@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.5.0.tgz#95ef43516026a755aa3786a0e20499d36aa9c11d"
+  integrity sha512-zNxvAWEQrI1L72/LpTeet+3cUNItxSMa3l/hKXNjERA+GBnrDPO5VOP3+6Tk8yBY4F2Zax5a30xpdBQ73f09+A==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.4"
@@ -13362,9 +13362,9 @@ weapp-tailwindcss@^4.5.0-alpha.1:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/logger" "1.1.0"
-    "@weapp-tailwindcss/mangle" "1.0.6-alpha.0"
-    "@weapp-tailwindcss/postcss" "1.3.3-alpha.0"
-    "@weapp-tailwindcss/shared" "1.1.0-alpha.0"
+    "@weapp-tailwindcss/mangle" "1.0.6"
+    "@weapp-tailwindcss/postcss" "1.3.3"
+    "@weapp-tailwindcss/shared" "1.1.0"
     debug "~4.4.3"
     htmlparser2 "10.0.0"
     loader-utils "2.0.4"
