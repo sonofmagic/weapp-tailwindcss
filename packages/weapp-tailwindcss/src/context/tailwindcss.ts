@@ -13,6 +13,17 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     appType,
   } = ctx
 
+  const defaultTailwindcssConfig: TailwindcssUserConfig = {
+    v4: {
+      base: tailwindcssBasedir,
+      cssEntries,
+    },
+  }
+
+  if (cssEntries?.length && (tailwindcss == null || tailwindcss.version == null)) {
+    defaultTailwindcssConfig.version = 4
+  }
+
   return createTailwindcssPatcher(
     {
       basedir: tailwindcssBasedir,
@@ -20,12 +31,7 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
       supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
       tailwindcss: defuOverrideArray<TailwindcssUserConfig, TailwindcssUserConfig[]>(
         tailwindcss,
-        {
-          v4: {
-            base: tailwindcssBasedir,
-            cssEntries,
-          },
-        },
+        defaultTailwindcssConfig,
       ),
       tailwindcssPatcherOptions,
     },

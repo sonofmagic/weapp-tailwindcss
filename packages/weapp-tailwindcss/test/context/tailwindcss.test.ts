@@ -32,15 +32,13 @@ describe('createTailwindcssPatcherFromContext', () => {
     const result = createTailwindcssPatcherFromContext(ctx)
 
     expect(result).toEqual(createTailwindcssPatcherStub.mock.results[0]?.value)
-    expect(defuOverrideArrayStub).toHaveBeenCalledWith(
-      ctx.tailwindcss,
-      {
-        v4: {
-          base: ctx.tailwindcssBasedir,
-          cssEntries: ctx.cssEntries,
-        },
+    expect(defuOverrideArrayStub).toHaveBeenCalledWith(ctx.tailwindcss, {
+      v4: {
+        base: ctx.tailwindcssBasedir,
+        cssEntries: ctx.cssEntries,
       },
-    )
+      version: 4,
+    })
     expect(createTailwindcssPatcherStub).toHaveBeenCalledWith({
       basedir: ctx.tailwindcssBasedir,
       cacheDir: 'node_modules/tailwindcss-patch/.cache',
@@ -71,6 +69,28 @@ describe('createTailwindcssPatcherFromContext', () => {
       supportCustomLengthUnitsPatch: ctx.supportCustomLengthUnitsPatch,
       tailwindcss: lastMerged,
       tailwindcssPatcherOptions: ctx.tailwindcssPatcherOptions,
+    })
+  })
+
+  it('respects explicitly provided tailwindcss version', async () => {
+    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+
+    const ctx = {
+      tailwindcssBasedir: '/root/project',
+      supportCustomLengthUnitsPatch: undefined,
+      tailwindcss: { version: 3, content: [] },
+      tailwindcssPatcherOptions: {},
+      cssEntries: ['src/index.css'],
+      appType: 'mpx',
+    } as unknown as import('@/types').InternalUserDefinedOptions
+
+    createTailwindcssPatcherFromContext(ctx)
+
+    expect(defuOverrideArrayStub).toHaveBeenCalledWith(ctx.tailwindcss, {
+      v4: {
+        base: ctx.tailwindcssBasedir,
+        cssEntries: ctx.cssEntries,
+      },
     })
   })
 })
