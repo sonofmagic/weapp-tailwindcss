@@ -52,11 +52,9 @@ text,
 }
 .h-20 {
   height: 160rpx;
-  height: calc(var(--spacing) * 20);
 }
 .w-20 {
   width: 160rpx;
-  width: calc(var(--spacing) * 20);
 }
 .flex-col {
   flex-direction: column;

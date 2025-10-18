@@ -13349,10 +13349,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.5.0-alpha.0:
-  version "4.5.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.5.0-alpha.0.tgz#3c6aa0922453f13deb01c403a9edd40bacf51ef0"
-  integrity sha512-sC3TisQUD/sjemRnIiAYpmWET88fliwcAKzv6coibUzYrW+0cjJ4OGrXW30G9GUPZ82ExO0EaysnuHQrV0revA==
+weapp-tailwindcss@^4.5.0-alpha.1:
+  version "4.5.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.5.0-alpha.1.tgz#15eff61c417cc60affad33f44d5c96b9512e754d"
+  integrity sha512-sKwabV8lUBkmthkT47OA8XfP+bp5kYE0l52xvZnjSs5OislGfvq/KXXEvpvUMoh2pdFQ8Zt7chWjRqdVFtcoJQ==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.4"
