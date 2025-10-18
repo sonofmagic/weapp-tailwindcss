@@ -1,14 +1,19 @@
 {
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "tailwind-merge": [
+        "../merge/node_modules/tailwind-merge"
+      ]
     },
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.test.json"
-    }
-  ],
-  "files": []
+    "types": [
+      "vitest/globals"
+    ],
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "tailwind.config.ts"
+  ]
 }

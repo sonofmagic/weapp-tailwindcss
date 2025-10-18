@@ -1,13 +1,16 @@
-import type { UserConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
-import { mergeConfig } from 'vitest/config'
-import { sharedConfig } from './vite.shared.config'
+import { resolve } from 'node:path'
+import { defineConfig } from 'vitest/config'
 
-export default mergeConfig(sharedConfig, {
+export default defineConfig({
   test: {
     globals: true,
+    include: ['test/**/*.test.ts'],
     testTimeout: 60_000,
-    environment: 'jsdom',
+    environment: 'node',
   },
-  plugins: [Vue()],
-} satisfies UserConfig)
+  resolve: {
+    alias: {
+      'tailwind-merge': resolve(__dirname, '../merge/node_modules/tailwind-merge'),
+    },
+  },
+})

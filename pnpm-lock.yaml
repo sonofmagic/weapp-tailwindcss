@@ -1089,46 +1089,28 @@ importers:
 
   packages/ui:
     dependencies:
-      '@weapp-tailwindcss/merge':
-        specifier: workspace:*
-        version: link:../merge
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
+      tailwind-variants:
+        specifier: ^3.1.1
+        version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.14)
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.1.14
         version: 4.1.14(vite@7.1.10(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
-      '@vitejs/plugin-vue':
-        specifier: ^6.0.1
-        version: 6.0.1(vite@7.1.10(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
-      '@vue/test-utils':
-        specifier: ^2.4.6
-        version: 2.4.6
-      '@vue/tsconfig':
-        specifier: ^0.8.1
-        version: 0.8.1(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
-      jsdom:
-        specifier: ^27.0.0
-        version: 27.0.1(postcss@8.5.6)
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
-      unplugin-vue-router:
-        specifier: ^0.16.0
-        version: 0.16.0(@vue/compiler-sfc@3.5.22)(typescript@5.9.3)(vue-router@4.6.3(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3))
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
       vite:
         specifier: ^7.1.10
         version: 7.1.10(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vite-plugin-dts:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@24.8.1)(rollup@4.52.5)(typescript@5.9.3)(vite@7.1.10(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
-      vue:
-        specifier: ^3.5.22
-        version: 3.5.22(typescript@5.9.3)
-      vue-router:
-        specifier: ^4.6.3
-        version: 4.6.3(vue@3.5.22(typescript@5.9.3))
-      vue-tsc:
-        specifier: ^3.1.1
-        version: 3.1.1(typescript@5.9.3)
 
   packages/weapp-tailwindcss:
     dependencies:
@@ -6904,9 +6886,6 @@ packages:
 
   '@vue/shared@3.5.22':
     resolution: {integrity: sha512-F4yc6palwq3TT0u+FYf0Ns4Tfl9GRFURDN2gWG7L1ecIaS/4fCIuFOjMTnCyjsu/OK6vaDKLCrGAa+KvvH+h4w==}
-
-  '@vue/test-utils@2.4.6':
-    resolution: {integrity: sha512-FMxEjOpYNYiFe0GkaHsnJPXFHxQ6m4t8vI/ElPGpMWxZKpmRvQ33OIrvRXemy6yha03RxhOlQuy+gZMC3CQSow==}
 
   '@vue/tsconfig@0.8.1':
     resolution: {integrity: sha512-aK7feIWPXFSUhsCP9PFqPyFOcz4ENkb8hZ2pneL6m2UjCkccvaOhC/5KCKluuBufvp2KzkbdA2W2pk20vLzu3g==}
@@ -17068,9 +17047,6 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-component-type-helpers@2.2.12:
-    resolution: {integrity: sha512-YbGqHZ5/eW4SnkPNR44mKVc6ZKQoRs/Rux1sxC6rdwXb4qpbOSYfDr9DsTHolOTGmIKgM9j141mZbBeg05R1pw==}
-
   vue-eslint-parser@10.2.0:
     resolution: {integrity: sha512-CydUvFOQKD928UzZhTp4pr2vWz1L+H99t7Pkln2QSPdvmURT0MoC4wUccfCnuEaihNsu9aYYyk+bep8rlfkUXw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -25111,11 +25087,6 @@ snapshots:
       vue: 3.5.22(typescript@5.9.3)
 
   '@vue/shared@3.5.22': {}
-
-  '@vue/test-utils@2.4.6':
-    dependencies:
-      js-beautify: 1.15.4
-      vue-component-type-helpers: 2.2.12
 
   '@vue/tsconfig@0.8.1(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))':
     optionalDependencies:
@@ -37063,8 +37034,6 @@ snapshots:
       acorn-walk: 8.3.4
 
   vscode-uri@3.1.0: {}
-
-  vue-component-type-helpers@2.2.12: {}
 
   vue-eslint-parser@10.2.0(eslint@9.38.0(jiti@2.6.1)):
     dependencies:

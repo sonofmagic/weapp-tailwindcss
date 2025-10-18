@@ -2,63 +2,67 @@
   "name": "@weapp-tailwindcss/ui",
   "type": "module",
   "version": "0.0.0",
-  "description": "vue lib vite lib mode template",
+  "description": "Atomic utility-first CSS component library for WeChat mini programs.",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/monorepo-template.git",
-    "directory": "packages/vue-lib-template"
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/ui"
   },
   "bugs": {
-    "url": "https://github.com/sonofmagic/monorepo-template/issues"
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "keywords": [],
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/index.css",
+    "./dist/index.wxss"
+  ],
   "exports": {
-    ".": "./lib/index.ts"
+    ".": "./dist/index.css",
+    "./css": "./dist/index.css",
+    "./index.css": "./dist/index.css",
+    "./index.wxss": "./dist/index.wxss",
+    "./variants": {
+      "types": "./dist/variants.d.ts",
+      "import": "./dist/variants.js",
+      "require": "./dist/variants.cjs"
+    }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
     "test": "vitest run",
     "test:dev": "vitest",
-    "release": "pnpm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "publishConfig": {
     "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js",
-        "require": "./dist/index.umd.cjs"
-      },
-      "./style.css": "./dist/index.css"
+      ".": "./dist/index.css",
+      "./css": "./dist/index.css",
+      "./index.css": "./dist/index.css",
+      "./index.wxss": "./dist/index.wxss",
+      "./variants": {
+        "types": "./dist/variants.d.ts",
+        "import": "./dist/variants.js",
+        "require": "./dist/variants.cjs"
+      }
     },
-    "main": "./dist/index.umd.cjs",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts"
+    "main": "./dist/index.css"
   },
   "dependencies": {
-    "@weapp-tailwindcss/merge": "workspace:*"
+    "tailwind-merge": "^3.3.1",
+    "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.8.1",
-    "jsdom": "^27.0.0",
     "tailwindcss": "^4.1.14",
-    "unplugin-vue-router": "^0.16.0",
+    "typescript": "^5.9.3",
     "vite": "^7.1.10",
-    "vite-plugin-dts": "^4.5.4",
-    "vue": "^3.5.22",
-    "vue-router": "^4.6.3",
-    "vue-tsc": "^3.1.1"
+    "vite-plugin-dts": "^4.5.4"
   }
 }

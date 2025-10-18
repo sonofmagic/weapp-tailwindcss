@@ -2,10 +2,10 @@ import { icebreaker } from '@icebreakers/eslint-config'
 
 export default icebreaker(
   {
-    vue: true,
+    vue: false,
     typescript: true,
     tailwindcss: {
-      entryPoint: 'src/style.css',
+      entryPoint: 'src/index.css',
     },
     ignores: ['**/fixtures/**'],
   },

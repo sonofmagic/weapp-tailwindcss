@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "tailwind-merge": [
+        "../merge/node_modules/tailwind-merge"
+      ]
+    },
+    "types": [],
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "stripInternal": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}
