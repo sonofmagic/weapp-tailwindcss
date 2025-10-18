@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.5.1
+
+### Patch Changes
+
+- [`a162bb9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a162bb92f5bcb88307dbe6c3df0a6828159f6056) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复仅传入 `cssEntries` 时无法自动启用 Tailwind v4 补丁的问题，恢复与显式配置 `tailwindcss.v4.cssEntries` 的等价行为。
+
 ## 4.5.0
 
 ### Minor Changes
