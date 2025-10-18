@@ -1,10 +1,14 @@
 import UniAppUniScss from '../_UniAppUniScss.mdx'
 
-单独创建一个 `main.css` 文件，并引入 `weapp-tailwindcss/css`。
+在 `src/app.css` 中引入 `weapp-tailwindcss`，这个文件会作为 `cssEntries` 的入口：
 
-> 这是为了 `IDE` 智能提示, 目前 `Vscode` `tailwindcss` 插件不会扫描 `vue` 文件里引入的样式。
+```css title="src/app.css"
+@import "weapp-tailwindcss";
+```
 
-```css title="main.css"
+为了解决 IDE 智能提示问题，再额外创建一个 `main.css` 并引入 `weapp-tailwindcss/css`。
+
+```css title="src/main.css"
 @import "weapp-tailwindcss/css";
 @source not "dist";
 ```

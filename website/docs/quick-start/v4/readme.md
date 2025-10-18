@@ -78,21 +78,19 @@
 
 ```ts
 {
-  tailwindcss: {
-    v4: {
-      cssEntries: [
-        // 就是你 @import "weapp-tailwindcss"; 那个文件
-        // 比如 tarojs
-        path.resolve(__dirname, '../src/app.css')
-        // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
-        // path.resolve(__dirname, './src/app.css')
-      ]
-    }
-  }
+  cssEntries: [
+    // 就是你 @import "weapp-tailwindcss"; 那个文件
+    // 比如 tarojs
+    path.resolve(__dirname, '../src/app.css')
+    // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
+    // path.resolve(__dirname, './src/app.css')
+  ],
 }
 ```
 
 假如不添加这个，会造成 `tailwindcss` 插件生成的样式，转义不了的问题。
+
+> 插件会自动根据已安装的 Tailwind 版本开启 v4 模式。只有在调试自定义 `tailwindcss` 目录或多版本共存时，才需要在 `tailwindcss` 配置里手动指定 `version`。
 
 ## 使用 @apply
 

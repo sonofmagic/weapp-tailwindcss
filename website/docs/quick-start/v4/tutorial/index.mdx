@@ -52,15 +52,10 @@ export default defineConfig({
     UnifiedViteWeappTailwindcssPlugin({
       // 常用内置能力：开启 px 自动转换
       rem2rpx: true,
-      tailwindcss: {
-        version: 4,
-        v4: {
-          cssEntries: [
-            // 声明 Tailwind 的入口 CSS，必须是绝对路径
-            path.resolve(import.meta.dirname, './src/app.css'),
-          ],
-        },
-      },
+      cssEntries: [
+        // 声明 Tailwind 的入口 CSS，必须是绝对路径
+        path.resolve(import.meta.dirname, './src/app.css'),
+      ],
     }),
   ],
 })
@@ -135,4 +130,3 @@ Tailwind CSS 4 已内置 Autoprefixer，无需手动补充。若项目仍需其�
 - 想理解 `@layer` 在小程序下的降级方案，可继续阅读本教程的 [进阶篇](/docs/quick-start/v4/tutorial/workflow) 与 [高阶篇](/docs/quick-start/v4/tutorial/advanced)
 
 完成本篇后，你已经拥有了稳定的基础开发环境。接着让我们通过真实业务组件把 Tailwind CSS 4 的能力串联起来。
-

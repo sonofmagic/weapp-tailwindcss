@@ -40,16 +40,10 @@ const config = {
             {
               rem2rpx: true,
               // highlight-next-line
-              tailwindcss: {
-                // 显示声明用的是 tailwindcss v4
-                version: 4,
-                v4: {
-                  cssEntries: [
-                    // app.css 的路径
-                    path.resolve(__dirname, '../src/app.css'),
-                  ],
-                },
-              },
+              cssEntries: [
+                // app.css 的路径
+                path.resolve(__dirname, '../src/app.css'),
+              ],
             },
           ],
         },

@@ -34,8 +34,10 @@ export default {
 
 ```js title="config/index.[jt]s"
 import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+import path from 'node:path'
 // 假如你使用 js 配置，则使用下方 require 的写法
 // const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+// const path = require('node:path')
 
 {
   // 找到 mini 这个配置
@@ -52,17 +54,13 @@ import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
             args: [{
               // 这里可以传参数
               rem2rpx: true,
-              tailwindcss: {
-                v4: {
-                  cssEntries: [
-                    // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
-                    path.resolve(__dirname, '../src/app.css')
-                  ]
-                }
-              }
-            }]
-          }
-        }
+              cssEntries: [
+                // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+                path.resolve(__dirname, '../src/app.css'),
+              ],
+            }],
+          },
+        },
       })
       // highlight-end
       // region end
@@ -70,6 +68,8 @@ import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
   }
 }
 ```
+
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
 
 ## 运行
 

@@ -17,6 +17,7 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 ```js title="config/index.ts"
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 import tailwindcss from '@tailwindcss/postcss'
+import path from 'node:path'
 
 {
   compiler: {
@@ -33,27 +34,25 @@ import tailwindcss from '@tailwindcss/postcss'
       },
       UnifiedViteWeappTailwindcssPlugin({
         rem2rpx: true,
-        tailwindcss: {
-          v4: {
-            cssEntries: [
-              // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
-              path.resolve(__dirname, '../src/app.css')
-            ]
-          }
-        }
-      })
+        cssEntries: [
+          // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+          path.resolve(__dirname, '../src/app.css'),
+        ],
+      }),
     ]
   },
 }
 ```
 
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+
 > 这里使用 `vite` 插件直接去加载 `tailwindcss`，这是由于 `taro4 vite` 不会自动去加载项目下的 `postcss.config.js`，所以只能定义这个 `postcss-config-loader-plugin`
 
 ## 添加样式
 
-在项目目录下，创建一个 `index.css`，然后添加以下内容：
+在项目目录下的 `src/app.css` 中，添加以下内容：
 
-```css title="index.css"
+```css title="src/app.css"
 @import "weapp-tailwindcss";
 ```
 

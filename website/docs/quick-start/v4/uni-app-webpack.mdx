@@ -17,6 +17,7 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 
 ```js title="vue.config.js"
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
@@ -26,6 +27,10 @@ const config = {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
+        cssEntries: [
+          // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+          path.resolve(__dirname, './src/app.css'),
+        ],
       })
     )
   }
@@ -34,6 +39,8 @@ const config = {
 
 module.exports = config
 ```
+
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
 
 ## 配置 `postcss.config.js`
 

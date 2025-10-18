@@ -18,10 +18,9 @@ import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 export default defineConfig({
   plugins: [
     UnifiedViteWeappTailwindcssPlugin({
-      tailwindcss: {
-        version: 4,
-        v4: { cssEntries: [/* ... */] },
-      },
+      cssEntries: [
+        /* ... */
+      ],
       cssPresetEnv: {
         stage: 1,
         features: {
@@ -61,15 +60,10 @@ export default defineConfig({
 
 ```ts
 UnifiedViteWeappTailwindcssPlugin({
-  tailwindcss: {
-    version: 4,
-    v4: {
-      cssEntries: [
-        path.resolve(import.meta.dirname, './src/app.css'),
-        path.resolve(import.meta.dirname, './src/features/order/app.css'),
-      ],
-    },
-  },
+  cssEntries: [
+    path.resolve(import.meta.dirname, './src/app.css'),
+    path.resolve(import.meta.dirname, './src/features/order/app.css'),
+  ],
 })
 ```
 
@@ -97,4 +91,3 @@ UnifiedViteWeappTailwindcssPlugin({
 4. **遇到问题及时回馈**：`weapp-tailwindcss` 社区对 Tailwind 4 的需求反馈快速，遇到兼容问题可通过 Issue 或 PR 参与共建。
 
 至此，你已经掌握了 Tailwind CSS 4 在小程序中的完整落地思路：从环境搭建、组件实践到性能与协同。结合现有的框架集成文档，就能为新成员提供一套体系化的学习路径。
-

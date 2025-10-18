@@ -19,20 +19,19 @@ import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 import tailwindcss from '@tailwindcss/postcss'
+import path from 'node:path'
 
 export default defineConfig({
   plugins: [
     uni(),
-    UnifiedViteWeappTailwindcssPlugin(
-      {
-        rem2rpx: true,
-        tailwindcss: {
-          v4: {
-            base: __dirname
-          }
-        }
-      }
-    )
+    UnifiedViteWeappTailwindcssPlugin({
+      rem2rpx: true,
+      tailwindcssBasedir: __dirname,
+      cssEntries: [
+        // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+        path.resolve(__dirname, './src/app.css'),
+      ],
+    }),
   ],
   css: {
     postcss: {
@@ -46,6 +45,8 @@ export default defineConfig({
 });
 ```
 
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+
 ## 3. 添加样式
 
 <UniappHbuilderStyle/>
@@ -57,4 +58,3 @@ export default defineConfig({
 - [uni-app-x-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-x-hbuilderx) 
 
 - [uni-app-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-hbuilderx-tailwindcss-v4) 
-
