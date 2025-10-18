@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/mangle
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`9291bad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9291bad1821c72f05e64b010ea3da94293a34d42)]:
+  - @weapp-tailwindcss/shared@1.1.0
+
 ## 1.0.6-alpha.0
 
 ### Patch Changes
