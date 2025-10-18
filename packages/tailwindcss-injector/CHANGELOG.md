@@ -1,5 +1,15 @@
 # tailwindcss-injector
 
+## 1.0.8-alpha.0
+
+### Patch Changes
+
+- [`9291bad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9291bad1821c72f05e64b010ea3da94293a34d42) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 暴露用于 md5 哈希与拓展名裁剪的 Node 侧工具函数，并重构依赖这些能力的包以统一复用共享实现。
+
+- Updated dependencies [[`1be5402`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1be5402e56f68cf024d0a3eee1a6fdfa827767c6), [`9291bad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9291bad1821c72f05e64b010ea3da94293a34d42)]:
+  - tailwindcss-config@1.1.2-alpha.0
+  - @weapp-tailwindcss/shared@1.1.0-alpha.0
+
 ## 1.0.7
 
 ### Patch Changes

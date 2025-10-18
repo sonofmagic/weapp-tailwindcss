@@ -34,5 +34,9 @@
     "@weapp-tailwindcss/typography": "0.2.5",
     "@weapp-tailwindcss/website": "1.0.4"
   },
-  "changesets": []
+  "changesets": [
+    "cross-file-js-refactor",
+    "gulp-module-graph-index",
+    "unify-node-helpers"
+  ]
 }
