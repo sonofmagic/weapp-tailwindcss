@@ -105,6 +105,9 @@ const config: Config = {
   ],
   plugins: [
     [
+      'docusaurus-plugin-llms',
+    ],
+    [
       'docusaurus-plugin-sass',
       {
         sassOptions: {
