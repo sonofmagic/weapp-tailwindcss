@@ -3,25 +3,60 @@ import process from 'node:process'
 import boxen from 'boxen'
 import { trimStart } from 'es-toolkit'
 import pc from 'picocolors'
-import { gte } from 'semver'
-import { run } from './run'
+import { coerce, gte } from 'semver'
+import { detectPackageManager, run } from './run'
 
 const argvs = new Set(process.argv.slice(2))
 const isBeta = argvs.has('--beta')
 const isAlpha = argvs.has('--alpha')
 const isRc = argvs.has('--rc')
 
-function getArgs(map: Record<string, string>) {
-  return Object.entries(map).map(([name, version]) => {
+function formatArgs(entries: Array<[string, string]>) {
+  return entries.map(([name, version]) => {
     return `${name}${version ? `@${version}` : ''}`
   }).join(' ')
+}
+
+function shouldInstallDependency(opts: {
+  current?: string
+  wanted: string
+}): boolean {
+  const { current, wanted } = opts
+  if (!current) {
+    return true
+  }
+  if (!wanted || wanted === 'latest') {
+    return false
+  }
+  if (wanted === 'rc' || wanted === 'beta' || wanted === 'alpha') {
+    return !current.includes(wanted)
+  }
+  if (/^\d+$/.test(wanted)) {
+    const desiredMajor = Number.parseInt(wanted, 10)
+    const cleaned = current
+      .replace(/^workspace:/, '')
+      .replace(/^[~^><=]*/, '')
+    const currentVersion = coerce(cleaned)
+    if (!Number.isFinite(desiredMajor) || desiredMajor < 0) {
+      return false
+    }
+    if (!currentVersion) {
+      return true
+    }
+    return currentVersion.major !== desiredMajor
+  }
+  return !current.includes(wanted)
 }
 
 const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
 
   ; (async () => {
   const demoPath = path.resolve(import.meta.dirname, '../../demo')
-  await run(demoPath, 'yarn --ignore-engines')
+  const packageManager = await detectPackageManager(demoPath)
+
+  if (packageManager === 'yarn') {
+    await run(demoPath, 'yarn --ignore-engines')
+  }
   // ${version}
   await run(
     demoPath,
@@ -53,7 +88,39 @@ const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
           }
         }
       }
-      const args = getArgs(pkgMap)
+      const dependencies: Record<string, string | undefined> = {
+        ...(pkgInfo?.packageJson.dependencies ?? {}),
+        ...(pkgInfo?.packageJson.devDependencies ?? {}),
+        ...(pkgInfo?.packageJson.optionalDependencies ?? {}),
+      }
+      const entries = Object.entries(pkgMap).filter(([name, wanted]) => {
+        const current = dependencies[name]
+        return shouldInstallDependency({
+          current,
+          wanted,
+        })
+      })
+
+      if (entries.length === 0) {
+        console.log(
+          boxen(
+            `${pc.bold(
+              pc.greenBright(
+                path.relative(
+                  demoPath,
+                  pkgInfo!.rootPath!,
+                ),
+              ),
+            )}\n\n${pc.dim('dependencies already up to date')}`,
+            {
+              padding: 1,
+            },
+          ),
+        )
+        return null
+      }
+
+      const args = formatArgs(entries)
       console.log(
         boxen(
           `${pc.bold(

@@ -49,6 +49,7 @@
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
     "build:pkg": "turbo run build --filter=./packages/*",
+    "build:demo": "turbo run build --filter=./demo/* --filter=!@weapp-tailwindcss-demo/taro-app --filter=!@weapp-tailwindcss-demo/uni-app-tailwindcss-v4 --filter=!@weapp-tailwindcss-demo/uni-app-vue3-vite --filter=!@weapp-tailwindcss-demo/uni-app-vue3-vite",
     "build:analyze": "tsx scripts/check-build-size.ts",
     "test": "vitest run",
     "test:bench": "vitest bench",
@@ -62,7 +63,7 @@
     "e2e:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
     "e2e:u:index": "vitest run -u -c ./e2e/vitest.e2e.config.ts --exclude ./e2e/native.test.ts",
     "e2e:u:native": "vitest run -u -c ./e2e/vitest.e2e.config.ts --exclude ./e2e/index.test.ts",
-    "demo:build": "tsx scripts/demo/build.ts --babel && pnpm run build:apps",
+    "demo:build": "pnpm run build:demo && pnpm run build:apps",
     "demo:install": "tsx scripts/demo/install.ts",
     "demo:install:beta": "tsx scripts/demo/install.ts --beta",
     "demo:install:alpha": "tsx scripts/demo/install.ts --alpha",
@@ -97,7 +98,9 @@
     "script:sync": "monorepo sync",
     "script:clean": "monorepo clean",
     "script:mirror": "monorepo mirror",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "up:pkg": "pnpm up -rLi \"!@dcloudio/*\"",
+    "up:uniapp": "pnpx @dcloudio/uvm@latest"
   },
   "publishConfig": {
     "access": "public",
@@ -135,7 +138,7 @@
     "@types/gulp-plumber": "^0.0.37",
     "@types/gulp-postcss": "^8.0.6",
     "@types/gulp-rename": "^2.0.6",
-    "@types/gulp-sass": "^5.0.4",
+    "@types/gulp-sass": "^6.0.0",
     "@types/js-beautify": "^1.14.3",
     "@types/jsdom": "^27.0.0",
     "@types/klaw": "^3.0.7",

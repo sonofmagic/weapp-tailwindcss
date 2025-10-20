@@ -1,5 +1,5 @@
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const bench = require('../bench')('uni-app-webpack-vue2')
+const bench = require('../bench.cjs')('uni-app-webpack-vue2')
 const { WeappTailwindcssDisabled } = require('./platform')
 
 /**

@@ -24,7 +24,7 @@ type PackageInfo = {
 
 type PackageManager = 'pnpm' | 'yarn' | 'npm'
 
-type CommandCallback = string | ((pkgInfo: PackageInfo, packageManager: PackageManager) => string)
+type CommandCallback = string | null | undefined | ((pkgInfo: PackageInfo, packageManager: PackageManager) => string | null | undefined)
 
 function parsePackageManagerFromUserAgent(userAgent?: string): PackageManager | undefined {
   if (!userAgent) {
@@ -120,51 +120,56 @@ function normalizeCommand(command: string, packageManager: PackageManager): stri
   }
 
   const rest = trimmed.slice('yarn'.length).trim()
+  const tokens = rest.split(/\s+/).filter(Boolean)
+  const filteredTokens = tokens.filter(token => token !== '--ignore-engines')
 
   if (packageManager === 'yarn') {
     return rest ? `yarn ${rest}` : 'yarn'
   }
 
   if (packageManager === 'pnpm') {
-    if (!rest) {
+    if (filteredTokens.length === 0) {
       return 'pnpm install'
     }
-    if (rest.startsWith('add ')) {
-      return `pnpm add ${rest.slice('add '.length).trim()}`
+    if (filteredTokens[0] === 'add') {
+      const args = filteredTokens.slice(1).join(' ')
+      return args ? `pnpm add ${args}` : 'pnpm add'
     }
-    if (rest.startsWith('--') || rest.startsWith('-')) {
-      return `pnpm install ${rest}`
+    if (filteredTokens[0].startsWith('--') || filteredTokens[0].startsWith('-')) {
+      const args = filteredTokens.join(' ')
+      return args ? `pnpm install ${args}` : 'pnpm install'
     }
-    const tokens = rest.split(/\s+/)
-    if (tokens[0] === 'run') {
-      return `pnpm run ${tokens.slice(1).join(' ')}`
+    if (filteredTokens[0] === 'run') {
+      const scriptArgs = filteredTokens.slice(1).join(' ')
+      return scriptArgs ? `pnpm run ${scriptArgs}` : 'pnpm run'
     }
-    const [script, ...scriptArgs] = tokens
+    const [script, ...scriptArgs] = filteredTokens
     return `pnpm run ${[script, ...scriptArgs].join(' ')}`
   }
 
   if (packageManager === 'npm') {
-    if (!rest) {
+    if (filteredTokens.length === 0) {
       return 'npm install'
     }
-    if (rest.startsWith('add ')) {
-      const npmArgs = rest.slice('add '.length).trim()
-      const tokens = npmArgs.split(/\s+/).map((token) => {
+    if (filteredTokens[0] === 'add') {
+      const npmTokens = filteredTokens.slice(1).map((token) => {
         if (token === '-D') {
           return '--save-dev'
         }
         return token
       })
-      return `npm install ${tokens.join(' ')}`
+      const args = npmTokens.join(' ')
+      return args ? `npm install ${args}` : 'npm install'
     }
-    if (rest.startsWith('--') || rest.startsWith('-')) {
-      return `npm install ${rest}`
+    if (filteredTokens[0].startsWith('--') || filteredTokens[0].startsWith('-')) {
+      const args = filteredTokens.join(' ')
+      return args ? `npm install ${args}` : 'npm install'
     }
-    const tokens = rest.split(/\s+/)
-    if (tokens[0] === 'run') {
-      return `npm run ${tokens.slice(1).join(' ')}`
+    if (filteredTokens[0] === 'run') {
+      const scriptArgs = filteredTokens.slice(1).join(' ')
+      return scriptArgs ? `npm run ${scriptArgs}` : 'npm run'
     }
-    return `npm run ${tokens.join(' ')}`
+    return `npm run ${filteredTokens.join(' ')}`
   }
 
   return trimmed
@@ -174,27 +179,32 @@ async function execa(opts: {
   command: CommandCallback
   cwd: string
   packageManager: PackageManager
-}) {
+}): Promise<boolean> {
   const { command, cwd, packageManager } = opts
-  let cmd = typeof command === 'string' ? command : ''
-  if (typeof command === 'function') {
-    const pkgInfo = await getPackageInfo(cwd)
-    cmd = command(pkgInfo, packageManager)
+  let rawCommand: string | null | undefined
+  if (typeof command === 'string' || command === null || command === undefined) {
+    rawCommand = command
   }
-  cmd = normalizeCommand(cmd, packageManager)
-  return await execaCommand(cmd, {
+  else {
+    const pkgInfo = await getPackageInfo(cwd)
+    rawCommand = command(pkgInfo, packageManager)
+  }
+  if (!rawCommand) {
+    return false
+  }
+  const cmd = normalizeCommand(rawCommand, packageManager)
+  if (!cmd) {
+    return false
+  }
+  await execaCommand(cmd, {
     cwd,
     stdio: 'inherit',
   })
+  return true
 }
 
 async function run(dirPath: string, command: CommandCallback) {
   const packageManager = await detectPackageManager(dirPath)
-  await execa({
-    command,
-    cwd: dirPath,
-    packageManager,
-  })
 
   const filenames = await fs.readdir(dirPath)
   for (const filename of filenames) {
@@ -224,5 +234,6 @@ async function run(dirPath: string, command: CommandCallback) {
 }
 
 export {
+  detectPackageManager,
   run,
 }

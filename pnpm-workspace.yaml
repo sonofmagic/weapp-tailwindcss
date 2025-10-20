@@ -6,6 +6,7 @@ packages:
   - benchmark
   - '!tailwindcss-weapp'
   - '!**/test/**'
+  - demo/*
 
 catalogs:
   react18:

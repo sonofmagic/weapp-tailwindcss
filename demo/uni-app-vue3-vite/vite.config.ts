@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
-const bench = require('../bench')('uni-app-vite-vue3');
+const bench = require('../bench.cjs')('uni-app-vite-vue3');
 
 
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
@@ -29,7 +29,7 @@ if (!WeappTailwindcssDisabled) {
 let start: number;
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
-  const { default: Inspect } = await import('vite-plugin-inspect');
+  // const { default: Inspect } = await import('vite-plugin-inspect');
   return {
     plugins: [
       uni(),
@@ -78,6 +78,15 @@ export default defineConfig(async () => {
       //   }
       // }
     ],
+    resolve: {
+      alias: {
+        path: 'path-browserify',
+        'entities/decode': 'entities/lib/decode.js',
+      },
+    },
+    optimizeDeps: {
+      include: ['path-browserify', 'entities/lib/decode.js'],
+    },
     // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
     css: {
       postcss: {

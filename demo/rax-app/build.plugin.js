@@ -1,5 +1,5 @@
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const bench = require('../bench')('rax')
+const bench = require('../bench.cjs')('rax')
 
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {

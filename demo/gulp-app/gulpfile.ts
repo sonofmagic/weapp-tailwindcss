@@ -1,10 +1,10 @@
 const tsx = require('tsx/cjs/api')
 tsx.register()
-import type { Transform } from 'node:stream'
 import path from 'node:path'
 import process from 'node:process'
-import del from 'del'
+import { deleteAsync } from 'del'
 import gulp from 'gulp'
+import type { TaskFunction, TaskFunctionCallback } from 'gulp'
 import debug from 'gulp-debug'
 import gulpif from 'gulp-if'
 import plumber from 'gulp-plumber'
@@ -51,13 +51,30 @@ const { transformJs, transformWxml, transformWxss } = createPlugins({
 //   mangle: true
 // }
 
-function promisify(task: Transform) {
-  return new Promise((resolve, reject) => {
+type StreamTask = NodeJS.ReadWriteStream & { destroyed?: boolean }
+
+function promisify(task: StreamTask) {
+  return new Promise<void>((resolve, reject) => {
     if (task.destroyed) {
-      resolve(undefined)
+      resolve()
       return
     }
-    task.on('finish', resolve).on('error', reject)
+    const cleanup = () => {
+      task.removeListener('finish', onResolve)
+      task.removeListener('end', onResolve)
+      task.removeListener('error', onError)
+    }
+    const onResolve = () => {
+      cleanup()
+      resolve()
+    }
+    const onError = (error: unknown) => {
+      cleanup()
+      reject(error)
+    }
+    task.once('finish', onResolve)
+    task.once('end', onResolve)
+    task.once('error', onError)
   })
 }
 
@@ -89,8 +106,8 @@ const paths = {
 }
 
 // Log for output msg.
-function log(...args: any[]) {
-  gutil.log.apply(false, args)
+function log(...args: unknown[]) {
+  gutil.log(...args)
 }
 
 // Sass 编译
@@ -98,8 +115,7 @@ function sassCompile() {
   return gulp
     .src(paths.src.scssFiles)
     .pipe(sass({
-      errLogToConsole: true,
-      outputStyle: 'expanded',
+      style: 'expanded',
       silenceDeprecations: ['legacy-js-api'],
     }).on('error', sass.logError))
     .pipe(gulpif(isDebug, debug({ title: '`sassCompile` Debug:' })))
@@ -130,12 +146,12 @@ function copyWXML() {
 
 // clean 任务, dist 目录
 function cleanDist() {
-  return del(paths.dist.baseDir)
+  return deleteAsync([paths.dist.baseDir])
 }
 
 // clean tmp 目录
 function cleanTmp() {
-  return del(paths.tmp.baseDir)
+  return deleteAsync([paths.tmp.baseDir])
 }
 
 const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: string) {
@@ -144,20 +160,20 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   if (extname === '.scss') {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/').replace(extname, `.${platformHit.css}`)
-      del([tmp])
+      await deleteAsync([tmp])
     }
     else {
-      sassCompile()
+      await promisify(sassCompile())
     }
   }
   // 图片文件
   else if (extname === '.png' || extname === '.jpg' || extname === '.jpeg' || extname === '.svg' || extname === '.gif') {
     if (type === 'removed') {
       if (file.includes('assets')) {
-        del([file.replace('src/', 'tmp/')])
+        await deleteAsync([file.replace('src/', 'tmp/')])
       }
       else {
-        del([file.replace('src/', 'dist/')])
+        await deleteAsync([file.replace('src/', 'dist/')])
       }
     }
     else {
@@ -169,24 +185,20 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   else if (extname === `.${platformHit.template}`) {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
-      del([tmp])
+      await deleteAsync([tmp])
     }
     else {
-      // @ts-ignore
       await promisify(sassCompile())
-      // @ts-ignore
       await promisify(copyWXML())
     }
   }
   else if (extname === '.js' || extname === '.ts') {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
-      del([tmp])
+      await deleteAsync([tmp])
     }
     else {
-      // @ts-ignore
       await promisify(sassCompile())
-      // @ts-ignore
       await promisify(compileTsFiles())
     }
   }
@@ -195,39 +207,49 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   else {
     if (type === 'removed') {
       const tmp = file.replace('src/', 'dist/')
-      del([tmp])
+      await deleteAsync([tmp])
     }
     else {
-      copyBasicFiles()
+      await promisify(copyBasicFiles())
     }
   }
 }
 
 // 监听文件
-function watch() {
+function watchFiles() {
   const watcher = gulp.watch([paths.src.baseDir, paths.tmp.imgDir], { ignored: /[/\\]\./ })
   watcher
     .on('change', (file) => {
       log(`${gutil.colors.yellow(file)} is changed`)
-      watchHandler('changed', file)
+      void watchHandler('changed', file)
     })
     .on('add', (file) => {
       log(`${gutil.colors.yellow(file)} is added`)
-      watchHandler('add', file)
+      void watchHandler('add', file)
     })
     .on('unlink', (file) => {
       log(`${gutil.colors.yellow(file)} is deleted`)
-      watchHandler('removed', file)
+      void watchHandler('removed', file)
     })
 }
 
-const buildTasks = [cleanTmp, copyBasicFiles, sassCompile, copyWXML, compileTsFiles]
+const buildTasks: TaskFunction[] = [
+  cleanTmp as TaskFunction,
+  copyBasicFiles as TaskFunction,
+  sassCompile as TaskFunction,
+  copyWXML as TaskFunction,
+  compileTsFiles as TaskFunction,
+]
+
 if (isWatch) {
-  // @ts-ignore
-  buildTasks.push(watch)
+  const watchTask: TaskFunction = (done: TaskFunctionCallback) => {
+    watchFiles()
+    done()
+  }
+  buildTasks.push(watchTask)
 }
 // 注册默认任务
-gulp.task('default', gulp.series(buildTasks))
+gulp.task('default', gulp.series(...buildTasks))
 
 // 删除任务
 gulp.task('clean', gulp.parallel(cleanTmp, cleanDist))

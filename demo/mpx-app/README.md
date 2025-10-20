@@ -18,13 +18,13 @@
 
 ```bash
 # 全局安装 cli
-yarn global add @mpxjs/cli
+pnpm add -g @mpxjs/cli
 # cli 创建项目
 mpx create mpx-project
 # 切换到新的 mpx-project 中
 cd mpx-project
 # 安装包
-yarn
+pnpm install
 ```
 
 这里的相关初始化文档详见[官网](https://mpxjs.cn/guide/basic/start.html)
@@ -34,7 +34,7 @@ yarn
 执行:
 
 ```bash
-yarn add -D tailwindcss weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel
+pnpm add -D tailwindcss weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel
 ```
 
 由于 `postcss 8` 和 `autoprefixer` 已经内置，我们无需额外安装，其中:

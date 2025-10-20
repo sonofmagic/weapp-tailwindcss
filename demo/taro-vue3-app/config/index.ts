@@ -1,7 +1,7 @@
 import { defineConfig, UserConfigExport } from '@tarojs/cli'
 
 const path = require('path')
-const bench = require('../../bench')('taro-vue3')
+const bench = require('../../bench.cjs')('taro-vue3')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 import ComponentsPlugin from 'unplugin-vue-components/webpack'
@@ -141,7 +141,6 @@ export default defineConfig<'webpack5'>((merge) => {
   }
   return merge({}, config, require('./prod'))
 })
-
 
 
 

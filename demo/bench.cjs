@@ -2,11 +2,16 @@ const path = require('node:path')
 const fs = require('fs-extra')
 const dayjs = require('dayjs')
 const { set, get } = require('lodash')
+
 const useBabel = process.env.BABEL
+
 console.log('useBabel:', Boolean(useBabel))
+
 class Bench {
   constructor(name) {
     this.name = name
+    this.startTs = 0
+    this.endTs = 0
   }
 
   start() {
@@ -27,26 +32,26 @@ class Bench {
 
   dump(key = 'babel') {
     const ts = this.timeSpan()
-    // if (ts < 20) {
-    //   return
-    // }
     const filename = dayjs().format('YYYY-MM-DD') + '.json'
     const targetDataFile = path.resolve(__dirname, '../benchmark/data', filename)
+    const targetDir = path.dirname(targetDataFile)
+    fs.ensureDirSync(targetDir)
     if (fs.existsSync(targetDataFile)) {
       const json = fs.readJsonSync(targetDataFile)
       const arr = get(json, [this.name, key], [])
       arr.push(ts)
       set(json, [this.name, key], arr)
       fs.writeJSONSync(targetDataFile, json, { spaces: 2 })
-    } else {
+    }
+    else {
       fs.writeJSONSync(
         targetDataFile,
         {
           [this.name]: {
-            [key]: [ts]
-          }
+            [key]: [ts],
+          },
         },
-        { spaces: 2 }
+        { spaces: 2 },
       )
     }
   }
@@ -54,16 +59,4 @@ class Bench {
 
 module.exports = function createBench(name) {
   return new Bench(name)
-  // const bench = new Bench(name)
-  // return {
-  //   start() {
-  //     bench.start()
-  //   },
-  //   end() {
-  //     bench.end()
-  //   },
-  //   dump(key) {
-  //     bench.dump(key)
-  //   }
-  // }
 }

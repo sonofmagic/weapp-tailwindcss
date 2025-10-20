@@ -1,5 +1,5 @@
 const path = require('path')
-const bench = require('../../bench')('taro-react')
+const bench = require('../../bench.cjs')('taro-react')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 

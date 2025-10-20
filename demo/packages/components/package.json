@@ -39,7 +39,6 @@
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "homepage": "https://github.com/sonofmagic/weapp-tailwindcss#readme",
-  "packageManager": "yarn@1.22.22",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

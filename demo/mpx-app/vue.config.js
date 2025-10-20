@@ -1,6 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const bench = require('../bench')('mpx')
+const bench = require('../bench.cjs')('mpx')
 
 module.exports = defineConfig({
   pluginOptions: {

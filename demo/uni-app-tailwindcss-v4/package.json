@@ -1,5 +1,5 @@
 {
-  "name": "uni-preset-vue",
+  "name": "@weapp-tailwindcss-demo/uni-app-tailwindcss-v4",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -59,7 +59,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-4070620250821001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4070620250821001",
     "tailwindcss-core-plugins-extractor": "^0.2.0",
-    "vue": "^3.4.21",
+    "vue": "3.4.21",
     "vue-i18n": "^9.1.9"
   },
   "devDependencies": {
@@ -72,14 +72,14 @@
     "@iconify-json/lucide": "^1.2.29",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/vite": "^4.1.14",
-    "@vue/runtime-core": "^3.4.21",
-    "@vue/tsconfig": "^0.7.0",
+    "@vue/runtime-core": "3.4.21",
+    "@vue/tsconfig": "^0.8.1",
     "@weapp-tailwindcss/merge": "^1.3.0",
     "tailwindcss": "^4.1.14",
     "tailwindcss-patch": "^7.1.6",
-    "typescript": "^5.8.2",
-    "vite": "5.2.8",
-    "vue-tsc": "^2.2.8",
+    "typescript": "^5.9.3",
+    "vite": "7.1.10",
+    "vue-tsc": "^3.1.1",
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "^4.5.1"
   },
