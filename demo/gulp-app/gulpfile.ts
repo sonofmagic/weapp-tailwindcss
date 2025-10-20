@@ -1,8 +1,6 @@
-const tsx = require('tsx/cjs/api')
-tsx.register()
 import path from 'node:path'
 import process from 'node:process'
-import { deleteAsync } from 'del'
+import { rm } from 'node:fs/promises'
 import gulp from 'gulp'
 import type { TaskFunction, TaskFunctionCallback } from 'gulp'
 import debug from 'gulp-debug'
@@ -108,6 +106,13 @@ const paths = {
 // Log for output msg.
 function log(...args: unknown[]) {
   gutil.log(...args)
+}
+
+async function deleteAsync(paths: string | string[]) {
+  const targets = Array.isArray(paths) ? paths : [paths]
+  await Promise.all(
+    targets.map(async target => rm(target, { force: true, recursive: true })),
+  )
 }
 
 // Sass 编译
