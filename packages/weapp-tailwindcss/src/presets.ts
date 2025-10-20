@@ -1,6 +1,7 @@
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { UserDefinedOptions } from './types'
 import process from 'node:process'
+import { resolveTailwindcssBasedir } from '@/context/tailwindcss'
 import { defuOverrideArray } from '@/utils'
 import { logger } from './logger'
 
@@ -56,6 +57,79 @@ export function uniAppX(options: UniAppXOptions) {
         },
       },
     },
+  )
+}
+
+export interface HBuilderXOptions {
+  base?: string
+  cssEntries?: string | string[]
+  rem2rpx?: UserDefinedOptions['rem2rpx']
+  rawOptions?: UserDefinedOptions
+  resolve?: PackageResolvingOptions
+}
+
+function toCssEntries(entries?: string | string[]) {
+  if (!entries) {
+    return undefined
+  }
+  return Array.isArray(entries) ? entries : [entries]
+}
+
+export function hbuilderx(options: HBuilderXOptions = {}) {
+  const baseDir = resolveTailwindcssBasedir(options.base)
+  const cssEntries = toCssEntries(options.cssEntries)
+  const tailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = {
+    v2: {
+      cwd: baseDir,
+    },
+    v3: {
+      cwd: baseDir,
+    },
+    v4: {
+      base: baseDir,
+      cssEntries,
+    },
+  }
+  const patchTailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = {
+    v2: { cwd: baseDir },
+    v3: { cwd: baseDir },
+    v4: {
+      base: baseDir,
+      cssEntries,
+    },
+  }
+  if (cssEntries && cssEntries.length > 0) {
+    tailwindConfig.version = 4
+    patchTailwindConfig.version = 4
+  }
+  const patchOptions: NonNullable<UserDefinedOptions['tailwindcssPatcherOptions']>['patch'] = {
+    basedir: baseDir,
+    cwd: baseDir,
+    tailwindcss: patchTailwindConfig,
+  }
+
+  if (options.resolve) {
+    patchOptions.resolve = options.resolve
+  }
+
+  const preset: Partial<UserDefinedOptions> = {
+    tailwindcssBasedir: baseDir,
+    tailwindcss: tailwindConfig,
+    tailwindcssPatcherOptions: {
+      patch: patchOptions,
+    },
+  }
+
+  if (options.rem2rpx !== undefined) {
+    preset.rem2rpx = options.rem2rpx
+  }
+
+  return defuOverrideArray<
+    Partial<UserDefinedOptions>,
+    Partial<UserDefinedOptions>[]
+  >(
+    options.rawOptions ?? {},
+    preset,
   )
 }
 

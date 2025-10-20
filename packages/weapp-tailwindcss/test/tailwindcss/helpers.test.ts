@@ -81,7 +81,7 @@ describe('tailwindcss helpers', () => {
 
     expect(tailwindcssPatcherMock).toHaveBeenCalledTimes(1)
     const callArgs = tailwindcssPatcherMock.mock.calls[0][0] as any
-    expect(callArgs.cache).toEqual({ dir: path.resolve('/repo', 'cache') })
+    expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
     expect(callArgs.patch.applyPatches.extendLengthUnits).toBe(false)
     expect(callArgs.patch.basedir).toBe('/repo')
     expect(Array.isArray(callArgs.patch.resolve.paths)).toBe(true)

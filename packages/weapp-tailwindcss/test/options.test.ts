@@ -1,9 +1,17 @@
 import { getCompilerContext } from '@/context'
 import { defu } from '@/utils'
 
+function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>) {
+  const cwd = process.cwd()
+  if (typeof options.tailwindcssBasedir === 'string') {
+    options.tailwindcssBasedir = options.tailwindcssBasedir.replace(cwd, '<cwd>')
+  }
+  return options
+}
+
 describe('get options', () => {
   it('default options', () => {
-    const options = getCompilerContext({})
+    const options = sanitizeSnapshotOptions(getCompilerContext({}))
     // @ts-ignore
     delete options.twPatcher
     expect(options).toMatchSnapshot()
@@ -117,12 +125,14 @@ describe('get options', () => {
     let config = getCompilerContext({
 
     })
-    expect(config.twPatcher.cacheOptions).toEqual({ enable: true })
-    expect(config.twPatcher.cacheOptions.dir).not.toBeTruthy()
+    let cacheOptions = config.twPatcher.cacheOptions
+    expect(cacheOptions?.enable).toBe(true)
+    expect(cacheOptions?.dir).not.toBeTruthy()
     config = getCompilerContext({
       appType: 'mpx',
     })
-    expect(config.twPatcher.cacheOptions.dir).toBeTruthy()
+    cacheOptions = config.twPatcher.cacheOptions
+    expect(cacheOptions?.dir).toBeTruthy()
   })
 
   // it('customAttributes map defu merge', () => {

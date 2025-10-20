@@ -147,6 +147,7 @@ exports[`get options > default options 1`] = `
   "postcssOptions": {},
   "setMangleRuntimeSet": [Function],
   "styleHandler": [Function],
+  "tailwindcssBasedir": "<cwd>",
   "tailwindcssPatcherOptions": {
     "patch": {
       "filter": [Function],

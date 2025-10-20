@@ -64,12 +64,17 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
+  if (basedir) {
+    cache.cwd = basedir
+  }
+
   const resolvedOptions = defuOverrideArray<TailwindcssPatcherOptions, TailwindcssPatcherOptions[]>(
     tailwindcssPatcherOptions!,
     {
       cache,
       patch: {
         basedir,
+        cwd: basedir,
         applyPatches: {
           exportContext: true,
           extendLengthUnits: supportCustomLengthUnitsPatch,
