@@ -50,6 +50,7 @@
     "open:build": "weapp open -p dist/build/mp-weixin"
   },
   "dependencies": {
+    "@babel/runtime": "^7.28.4",
     "@dcloudio/uni-app": "2.0.2-4070620250821001",
     "@dcloudio/uni-app-plus": "2.0.2-4070620250821001",
     "@dcloudio/uni-h5": "2.0.2-4070620250821001",
