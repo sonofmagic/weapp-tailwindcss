@@ -53,7 +53,7 @@
 *.tsx             text
 *.xml             text
 *.xhtml           text diff=html
-templates/**     -text
+templates/**      text eol=lf
 
 # Docker
 Dockerfile        text
