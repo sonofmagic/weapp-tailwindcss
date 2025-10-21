@@ -1,0 +1,15 @@
+{
+  "name": "@weapp-tailwindcss/e2e",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "@tailwindcss-mangle/config": "^5.1.2",
+    "prettier": "^3.6.2",
+    "tailwindcss-patch": "^7.1.6"
+  }
+}
