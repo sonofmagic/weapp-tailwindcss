@@ -1,0 +1,25 @@
+diff --git a/keywords/_formatLimit.js b/keywords/_formatLimit.js
+--- a/keywords/_formatLimit.js
++++ b/keywords/_formatLimit.js
+@@
+ function extendFormats(ajv) {
+   var formats = ajv._formats;
++  if (!formats) {
++    // ajv v8 stores formats on `ajv.formats` instead of the private `_formats`
++    if (ajv.formats) {
++      if (ajv.formats instanceof Map) {
++        formats = {};
++        ajv.formats.forEach(function(format, name) {
++          formats[name] = format;
++        });
++      } else {
++        formats = ajv.formats;
++      }
++    } else {
++      formats = {};
++    }
++    ajv._formats = formats;
++  }
+   for (var name in COMPARE_FORMATS) {
+     var format = formats[name];
+     // the last condition is needed if it's RegExp from another window
