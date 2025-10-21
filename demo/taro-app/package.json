@@ -43,6 +43,7 @@
     "@tarojs/components": "4.1.7",
     "@tarojs/react": "4.1.7",
     "@tarojs/runtime": "4.1.7",
+    "@tarojs/shared": "4.1.7",
     "@tarojs/taro": "4.1.7",
     "antd-mobile": "^5.39.0",
     "classnames": "^2.5.1",

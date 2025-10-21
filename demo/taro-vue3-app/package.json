@@ -59,6 +59,7 @@
     "@tarojs/plugin-html": "4.1.7",
     "@tarojs/plugin-platform-h5": "4.1.7",
     "@tarojs/runtime": "4.1.7",
+    "@tarojs/shared": "4.1.7",
     "@tarojs/taro": "4.1.7",
     "vue": "^3.5.21"
   },
