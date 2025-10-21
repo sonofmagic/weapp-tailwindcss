@@ -1,7 +1,7 @@
 diff --git a/keywords/_formatLimit.js b/keywords/_formatLimit.js
 --- a/keywords/_formatLimit.js
 +++ b/keywords/_formatLimit.js
-@@
+@@ -19,5 +19,21 @@
  function extendFormats(ajv) {
    var formats = ajv._formats;
 +  if (!formats) {

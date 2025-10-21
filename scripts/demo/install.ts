@@ -60,7 +60,7 @@ const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
   // ${version}
   await run(
     demoPath,
-    (pkgInfo) => {
+    (pkgInfo, packageManager) => {
       const pkgMap: Record<string, string> = {
         'weapp-tailwindcss': version,
         '@weapp-tailwindcss/merge': 'latest', // version,
@@ -136,6 +136,12 @@ const version = isAlpha ? 'alpha' : isBeta ? 'beta' : isRc ? 'rc' : ''
           },
         ),
       )
+      if (packageManager === 'pnpm') {
+        return `pnpm add -D ${args}`
+      }
+      if (packageManager === 'npm') {
+        return `npm install --save-dev ${args}`
+      }
       return `yarn add -D ${args} --ignore-engines`
     },
   )

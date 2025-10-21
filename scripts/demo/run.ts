@@ -1,5 +1,6 @@
 import type { PackageJson } from 'pkg-types'
 import process from 'node:process'
+import { getWorkspacePackages } from '@icebreakers/monorepo'
 import consola from 'consola'
 import { execaCommand } from 'execa'
 import fs from 'fs-extra'
@@ -25,6 +26,11 @@ type PackageInfo = {
 type PackageManager = 'pnpm' | 'yarn' | 'npm'
 
 type CommandCallback = string | null | undefined | ((pkgInfo: PackageInfo, packageManager: PackageManager) => string | null | undefined)
+
+interface PackageEntry {
+  dir: string
+  key: string
+}
 
 function parsePackageManagerFromUserAgent(userAgent?: string): PackageManager | undefined {
   if (!userAgent) {
@@ -175,6 +181,59 @@ function normalizeCommand(command: string, packageManager: PackageManager): stri
   return trimmed
 }
 
+function isSubpath(parent: string, child: string): boolean {
+  const relative = path.relative(parent, child)
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+}
+
+async function collectPackageEntries(dirPath: string): Promise<PackageEntry[]> {
+  const results: PackageEntry[] = []
+  const workspaceDir = process.cwd()
+
+  try {
+    const workspacePackages = await getWorkspacePackages(workspaceDir, {
+      ignoreRootPackage: true,
+    })
+    for (const pkg of workspacePackages) {
+      const realDir = pkg.rootDirRealPath ?? path.resolve(workspaceDir, pkg.rootDir)
+      if (!isSubpath(dirPath, realDir)) {
+        continue
+      }
+      const key = path.relative(dirPath, realDir) || path.basename(realDir)
+      results.push({
+        dir: realDir,
+        key,
+      })
+    }
+    if (results.length > 0) {
+      results.sort((a, b) => a.key.localeCompare(b.key))
+      return results
+    }
+  }
+  catch {
+    // fall back to legacy directory scanning below
+  }
+
+  const filenames = await fs.readdir(dirPath)
+  for (const filename of filenames) {
+    const baseDir = path.resolve(dirPath, filename)
+    const stat = await fs.stat(baseDir)
+    if (!stat.isDirectory()) {
+      continue
+    }
+    const pkgPath = path.resolve(baseDir, 'package.json')
+    if (!(await fs.exists(pkgPath))) {
+      continue
+    }
+    results.push({
+      dir: baseDir,
+      key: filename,
+    })
+  }
+
+  return results
+}
+
 async function execa(opts: {
   command: CommandCallback
   cwd: string
@@ -205,30 +264,20 @@ async function execa(opts: {
 
 async function run(dirPath: string, command: CommandCallback) {
   const packageManager = await detectPackageManager(dirPath)
+  const packageEntries = await collectPackageEntries(dirPath)
 
-  const filenames = await fs.readdir(dirPath)
-  for (const filename of filenames) {
-    const baseDir = path.resolve(dirPath, filename)
-    const stat = await fs.stat(baseDir)
-    if (stat.isDirectory()) {
-      const pkgPath = path.resolve(baseDir, 'package.json')
-      if (await fs.exists(pkgPath)) {
-        // console.log(divideString)
-        // console.log(`[${filename}]:${baseDir}`)
-        // console.log(divideString)
-        try {
-          await execa({
-            command,
-            cwd: baseDir,
-            packageManager,
-          })
-          await setJson(path.resolve(dirPath, 'result.json'), filename, true)
-        }
-        catch (e) {
-          consola.error(e)
-          await setJson(path.resolve(dirPath, 'result.json'), filename, false)
-        }
-      }
+  for (const { dir, key } of packageEntries) {
+    try {
+      await execa({
+        command,
+        cwd: dir,
+        packageManager,
+      })
+      await setJson(path.resolve(dirPath, 'result.json'), key, true)
+    }
+    catch (e) {
+      consola.error(e)
+      await setJson(path.resolve(dirPath, 'result.json'), key, false)
     }
   }
 }
