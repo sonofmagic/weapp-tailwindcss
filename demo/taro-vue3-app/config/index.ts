@@ -110,6 +110,14 @@ export default defineConfig<'webpack5'>((merge) => {
             }
           }
         })
+        chain.merge({
+          resolve: {
+            alias: {
+              // Avoid a null alias emitted by upstream config when running under CI
+              '@tarojs/shared': false,
+            },
+          },
+        })
       }
     },
     h5: {
@@ -132,6 +140,14 @@ export default defineConfig<'webpack5'>((merge) => {
         chain.plugin('unplugin-vue-components').use(ComponentsPlugin({
           resolvers: [NutUIResolver({ taro: true })]
         }))
+        chain.merge({
+          resolve: {
+            alias: {
+              // Avoid a null alias emitted by upstream config when running under CI
+              '@tarojs/shared': false,
+            },
+          },
+        })
       },
     }
   }
@@ -141,6 +157,3 @@ export default defineConfig<'webpack5'>((merge) => {
   }
   return merge({}, config, require('./prod'))
 })
-
-
-
