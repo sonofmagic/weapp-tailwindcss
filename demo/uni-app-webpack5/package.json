@@ -126,9 +126,6 @@
     "Android >= 4.4",
     "ios >= 9"
   ],
-  "resolutions": {
-    "@babel/runtime": "~7.25.0"
-  },
   "uni-app": {
     "scripts": {}
   },

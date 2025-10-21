@@ -55,6 +55,7 @@
     "@dcloudio/uni-mp-lark": "3.0.0-4070620250821001",
     "@dcloudio/uni-mp-qq": "3.0.0-4070620250821001",
     "@dcloudio/uni-mp-toutiao": "3.0.0-4070620250821001",
+    "@dcloudio/uni-mp-vue": "3.0.0-4070620250821001",
     "@dcloudio/uni-mp-weixin": "3.0.0-4070620250821001",
     "@dcloudio/uni-mp-xhs": "3.0.0-4070620250821001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4070620250821001",
@@ -82,10 +83,5 @@
     "vue-tsc": "^3.1.1",
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "^4.5.2"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "weapp-tailwindcss"
-    ]
   }
 }
