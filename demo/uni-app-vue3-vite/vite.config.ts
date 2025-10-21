@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
-const bench = require('../bench.cjs')('uni-app-vite-vue3');
+const bench =
+  process.env.WEAPP_TW_ENABLE_BENCH === '1'
+    ? require('../bench.cjs')('uni-app-vite-vue3')
+    : {
+        start() {},
+        end() {},
+        dump() {},
+      };
 
 
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
@@ -82,6 +89,7 @@ export default defineConfig(async () => {
       alias: {
         path: 'path-browserify',
         'entities/decode': 'entities/lib/decode.js',
+        url: 'node:url',
       },
     },
     optimizeDeps: {

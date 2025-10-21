@@ -1,11 +1,7 @@
 {
   "name": "@weapp-tailwindcss/e2e",
-  "version": "1.0.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
-  "keywords": [],
-  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {},
   "dependencies": {
     "@tailwindcss-mangle/config": "^5.1.2",
