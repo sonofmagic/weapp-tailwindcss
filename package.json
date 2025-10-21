@@ -253,10 +253,5 @@
     "webpack": "5.102.1",
     "webpack-build-utils": "^0.0.7",
     "yaml": "^2.8.1"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "ajv-keywords@3.5.2": "demo/uni-app-webpack5/patches/ajv-keywords@3.5.2.patch"
-    }
   }
 }
