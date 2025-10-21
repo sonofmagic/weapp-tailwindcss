@@ -72,10 +72,6 @@ const tutorialSidebar: SidebarConfig = [
     collapsed: false,
     items: [
       {
-        type: 'doc',
-        id: 'quick-start/v4/readme',
-      },
-      {
         type: 'category',
         label: '各个框架的注册方式',
         items: [
@@ -131,6 +127,10 @@ const tutorialSidebar: SidebarConfig = [
             id: 'quick-start/v4/mpx',
           },
         ],
+      },
+      {
+        type: 'doc',
+        id: 'quick-start/v4/readme',
       },
     ],
   },
