@@ -1,5 +1,6 @@
 import type { TailwindcssPatcherOptions } from 'tailwindcss-patch'
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import process from 'node:process'
 import { getConfig } from '@tailwindcss-mangle/config'
 import path from 'pathe'
@@ -80,17 +81,36 @@ export async function resolveSnapshotFile(testDir: string, suite: string, projec
 
 type NormalizedPatchOptions = NonNullable<TailwindcssPatcherOptions['patch']>
 
-const extractionTasks = new Map<string, Promise<void>>()
+interface ExtractionResult {
+  classList?: string[]
+  output?: {
+    filename?: string
+    loose?: boolean
+  }
+}
 
-async function runTwExtract(root: string) {
+const extractionTasks = new Map<string, Promise<ExtractionResult | undefined>>()
+
+async function runTwExtract(root: string): Promise<ExtractionResult | undefined> {
   const { config } = await getConfig(root)
   if (!config) {
-    return
+    return undefined
   }
 
   const patchOptions = normalizePatchOptions(root, config.patch)
+  const outputOptions = patchOptions.output
+    ? {
+        filename: patchOptions.output.filename,
+        loose: patchOptions.output.loose,
+      }
+    : undefined
+
   if (await shouldSkipExtraction(patchOptions)) {
-    return
+    const classList = await readClassListFromFile(outputOptions?.filename)
+    return {
+      classList,
+      output: outputOptions,
+    }
   }
 
   const twPatcher = new TailwindcssPatcher({
@@ -102,12 +122,19 @@ async function runTwExtract(root: string) {
     if (originalCwd !== root) {
       process.chdir(root)
     }
-    await twPatcher.extract()
+    const result = await twPatcher.extract({ write: false })
+    return {
+      classList: result?.classList,
+      output: outputOptions,
+    }
   }
   finally {
     if (process.cwd() !== originalCwd) {
       process.chdir(originalCwd)
     }
+  }
+  return {
+    output: outputOptions,
   }
 }
 
@@ -147,9 +174,9 @@ function normalizePatchOptions(root: string, patchOptions: NormalizedPatchOption
     }
   }
 
-  if (resolved.tailwindcss) {
-    const tw = { ...resolved.tailwindcss }
+  let tw = resolved.tailwindcss ? { ...resolved.tailwindcss } : undefined
 
+  if (tw) {
     if (typeof tw.config === 'string') {
       tw.config = normalizePath(root, tw.config)
     }
@@ -178,15 +205,81 @@ function normalizePatchOptions(root: string, patchOptions: NormalizedPatchOption
       }
       tw.v4 = v4
     }
+  }
 
+  const tailwindInfo = resolveTailwindInfo(root, resolved)
+  if (tailwindInfo) {
+    tw = tw ? { ...tw } : {}
+    if (tw.version === undefined) {
+      tw.version = tailwindInfo.major
+    }
+    if (tw.postcssPlugin === undefined) {
+      tw.postcssPlugin = tailwindInfo.pluginPath ?? (tailwindInfo.major >= 4 ? '@tailwindcss/postcss' : 'tailwindcss')
+    }
+    resolved.tailwindcss = tw
+  }
+  else if (tw) {
     resolved.tailwindcss = tw
   }
 
   return resolved
 }
 
+async function readClassListFromFile(filename: string | undefined) {
+  if (!filename) {
+    return undefined
+  }
+  try {
+    const content = await fs.readFile(filename, 'utf8')
+    const parsed = JSON.parse(content)
+    return Array.isArray(parsed) ? parsed : undefined
+  }
+  catch (error: any) {
+    if (error?.code && (error.code === 'ENOENT' || error.code === 'EPERM')) {
+      return undefined
+    }
+    throw error
+  }
+}
+
 function normalizePath(root: string, target: string) {
   return path.isAbsolute(target) ? target : path.resolve(root, target)
+}
+
+interface TailwindInfo {
+  major: number
+  pluginPath?: string
+}
+
+function resolveTailwindInfo(root: string, options: NormalizedPatchOptions): TailwindInfo | null {
+  const packageName = typeof options.packageName === 'string' && options.packageName.length > 0 ? options.packageName : 'tailwindcss'
+  const requireFromRoot = createRequire(path.join(root, 'package.json'))
+  try {
+    const pkgJson = requireFromRoot(`${packageName}/package.json`) as { version?: string }
+    const version = pkgJson?.version
+    if (!version) {
+      return null
+    }
+    const major = Number.parseInt(version.split('.')[0] ?? '', 10)
+    if (Number.isNaN(major)) {
+      return null
+    }
+    const pluginName = major >= 4 ? '@tailwindcss/postcss' : packageName
+    let pluginPath: string | undefined
+    try {
+      pluginPath = requireFromRoot.resolve(pluginName)
+    }
+    catch {
+      pluginPath = undefined
+    }
+    return {
+      major,
+      pluginPath,
+    }
+  }
+  catch {
+    return null
+  }
 }
 
 async function shouldSkipExtraction(patchOptions: NormalizedPatchOptions) {
