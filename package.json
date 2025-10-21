@@ -45,7 +45,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter=!./demo/*",
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
     "build:pkg": "turbo run build --filter=./packages/*",
