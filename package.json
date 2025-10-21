@@ -49,7 +49,7 @@
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
     "build:pkg": "turbo run build --filter=./packages/*",
-    "build:demo": "turbo run build --filter=./demo/* --filter=!@weapp-tailwindcss-demo/taro-app --filter=!@weapp-tailwindcss-demo/uni-app-tailwindcss-v4 --filter=!@weapp-tailwindcss-demo/uni-app-vue3-vite --filter=!@weapp-tailwindcss-demo/uni-app-vue3-vite",
+    "build:demo": "turbo run build --filter=./demo/*",
     "build:analyze": "tsx scripts/check-build-size.ts",
     "test": "vitest run",
     "test:bench": "vitest bench",
