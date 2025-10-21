@@ -115,13 +115,13 @@
     "sass": "^1.71.1",
     "sass-loader": "16.0.5",
     "speed-measure-webpack-plugin": "^1.5.0",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^3.4.18",
     "tailwindcss-patch": "^7.1.6",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.9.3",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.5.1",
+    "weapp-tailwindcss": "^4.5.2",
     "weapp-tailwindcss-children": "^0.1.0"
   },
   "browserslist": [

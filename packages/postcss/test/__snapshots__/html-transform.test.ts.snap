@@ -1054,7 +1054,9 @@ exports[`html-transform > tailwindcss v4 1`] = `
 .bg-blue-500\\/30 {
   background-color: color-mix(in srgb, oklch(62.3% .214 259.815) 30%, transparent);
   @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    & {
+      background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    }
   }
 }"
 `;
@@ -1077,7 +1079,9 @@ exports[`html-transform > tailwindcss v4 with htmlTransform 1`] = `
 .bg-blue-500\\/30 {
   background-color: color-mix(in srgb, oklch(62.3% .214 259.815) 30%, transparent);
   @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    & {
+      background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    }
   }
 }"
 `;
@@ -1094,7 +1098,9 @@ exports[`html-transform > tailwindcss v4 with htmlTransform with removeUniversal
 .bg-blue-500\\/30 {
   background-color: color-mix(in srgb, oklch(62.3% .214 259.815) 30%, transparent);
   @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    & {
+      background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    }
   }
 }"
 `;

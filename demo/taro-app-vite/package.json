@@ -88,14 +88,14 @@
     "react-refresh": "^0.18.0",
     "sass": "^1.92.1",
     "stylelint": "^16.25.0",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^3.4.18",
     "tailwindcss-patch": "^7.1.6",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "terser": "^5.44.0",
     "to-fast-properties": "3.0.1",
     "typescript": "^5.9.3",
-    "vite": "^7.1.10",
+    "vite": "^7.1.11",
     "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.5.1"
+    "weapp-tailwindcss": "^4.5.2"
   }
 }

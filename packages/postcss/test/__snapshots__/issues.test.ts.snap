@@ -102,7 +102,9 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 1`]
 .bg-blue-500\\/30 {
   background-color: color-mix(in srgb, oklch(62.3% .214 259.815) 30%, transparent);
   @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    & {
+      background-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    }
   }
 }"
 `;
@@ -159,7 +161,9 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 1`]
     @media (hover: hover) {
       border-color: color-mix(in srgb, oklch(93.2% .032 255.585) 20%, transparent);
       @supports (color: color-mix(in lab, red, red)) {
-        border-color: color-mix(in oklab, var(--color-blue-100) 20%, transparent);
+        & {
+          border-color: color-mix(in oklab, var(--color-blue-100) 20%, transparent);
+        }
       }
     }
   }
