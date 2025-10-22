@@ -49,7 +49,7 @@
     "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i",
     "open:dev": "weapp open -p dist/dev/mp-weixin",
     "open:build": "weapp open -p dist/build/mp-weixin",
-    "postinstall": "weapp-tw patch"
+    "postinstall": "weapp-tw patch && node ./scripts/patch-ajv-keywords.js"
   },
   "dependencies": {
     "@dcloudio/uni-app": "2.0.2-4070620250821001",

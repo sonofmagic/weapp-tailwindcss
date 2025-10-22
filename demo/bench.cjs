@@ -12,6 +12,7 @@ class Bench {
     this.name = name
     this.startTs = 0
     this.endTs = 0
+    this.warned = false
   }
 
   start() {
@@ -35,24 +36,32 @@ class Bench {
     const filename = dayjs().format('YYYY-MM-DD') + '.json'
     const targetDataFile = path.resolve(__dirname, '../benchmark/data', filename)
     const targetDir = path.dirname(targetDataFile)
-    fs.ensureDirSync(targetDir)
-    if (fs.existsSync(targetDataFile)) {
-      const json = fs.readJsonSync(targetDataFile)
-      const arr = get(json, [this.name, key], [])
-      arr.push(ts)
-      set(json, [this.name, key], arr)
-      fs.writeJSONSync(targetDataFile, json, { spaces: 2 })
-    }
-    else {
-      fs.writeJSONSync(
-        targetDataFile,
-        {
-          [this.name]: {
-            [key]: [ts],
+    try {
+      fs.ensureDirSync(targetDir)
+      if (fs.existsSync(targetDataFile)) {
+        const json = fs.readJsonSync(targetDataFile)
+        const arr = get(json, [this.name, key], [])
+        arr.push(ts)
+        set(json, [this.name, key], arr)
+        fs.writeJSONSync(targetDataFile, json, { spaces: 2 })
+      }
+      else {
+        fs.writeJSONSync(
+          targetDataFile,
+          {
+            [this.name]: {
+              [key]: [ts],
+            },
           },
-        },
-        { spaces: 2 },
-      )
+          { spaces: 2 },
+        )
+      }
+    }
+    catch (error) {
+      if (!this.warned) {
+        this.warned = true
+        console.warn('[bench] skip writing metrics:', error.message)
+      }
     }
   }
 }
