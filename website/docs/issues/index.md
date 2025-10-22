@@ -14,6 +14,16 @@
 
 这是由于微信小程序 `wxss` 选择器的原生限制，无法突破。参见 [issue#33](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/33)。
 
+## `background-image` 为什么不能使用本地路径？
+
+微信小程序在 `wxss` 中禁止 `background-image` 引用本地文件，解析时会直接报 `do-not-use-local-path` 错误。因此像 `bg-[url('/images/homebg.png')]` 这样的写法无法生效。请改用以下任一方式：
+
+- 使用线上可访问的远程图片地址，例如 `bg-[url('https://example.com/bg.png')]`
+- 将资源转成 `base64` 后内联到 `background-image`
+- 改用 `<image>` 组件渲染背景效果
+
+选择合适方案后再通过 `tailwindcss` 编写样式，即可避免编译报错。
+
 ## 和原生组件一起使用注意事项
 
 假如出现原生组件引入报错的情况，可以参阅 [issue#35](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/35)，忽略指定目录下的文件，跳过插件处理，例如 `uni-app` 中的 `wxcomponents`。
