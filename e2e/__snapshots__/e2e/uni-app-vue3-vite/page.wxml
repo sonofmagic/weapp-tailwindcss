@@ -62,7 +62,7 @@
   </view>
   <button
     app-parameter=""
-    class="u-button button--u-button u-reset-button button--u-reset-button data-v-aa49867e button--data-v-aa49867e u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
+    class="u-button button--u-button u-reset-button button--u-reset-button data-v-c88d9977 button--data-v-c88d9977 u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
     data-name=""
     form-type=""
     hover-class="u-button--active"
