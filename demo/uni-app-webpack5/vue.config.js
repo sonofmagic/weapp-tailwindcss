@@ -1,3 +1,4 @@
+require('./scripts/patch-ajv-keywords')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const { WeappTailwindcssDisabled } = require('./platform')
 const bench = require('../bench.cjs')('uni-app-webpack5-vue2')
