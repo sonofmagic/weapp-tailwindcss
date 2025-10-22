@@ -103,6 +103,7 @@
     "jest": "^25.5.4",
     "postcss": "^8.5.3",
     "postcss-comment": "^2.0.0",
+    "regenerator-transform": "^0.15.1",
     "tailwindcss": "^4.1.14",
     "tailwindcss-patch": "^7.1.6",
     "typescript": "~5.9.3",
