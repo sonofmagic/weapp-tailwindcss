@@ -16,7 +16,7 @@
 
 ## `background-image` 为什么不能使用本地路径？
 
-微信小程序在 `wxss` 中禁止 `background-image` 引用本地文件，解析时会直接报 `do-not-use-local-path` 错误。因此像 `bg-[url('/images/homebg.png')]` 这样的写法无法生效。请改用以下任一方式：
+微信小程序在 `wxss` 中禁止 `background-image` 引用本地文件，解析时会直接报 `do-not-use-local-path` 错误。因此像 <code>bg-&#91;url('/images/homebg.png')&#93;</code> 这样的写法无法生效。请改用以下任一方式：
 
 - 使用线上可访问的远程图片地址，例如 `bg-[url('https://example.com/bg.png')]`
 - 将资源转成 `base64` 后内联到 `background-image`
