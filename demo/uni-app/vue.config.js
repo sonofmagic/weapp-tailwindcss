@@ -7,6 +7,14 @@ const { WeappTailwindcssDisabled } = require('./platform')
  */
 const config = {
   transpileDependencies: ['uview-ui'],
+  chainWebpack: (chain) => {
+    chain.module
+      .rule('vue')
+      .use('vue-loader')
+      .tap((options = {}) => {
+        return Object.assign({}, options, { prettify: false })
+      })
+  },
   configureWebpack: (config) => {
     // let now
     let start
@@ -38,6 +46,7 @@ const config = {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
         },
         rem2rpx: true,
+        tailwindcssBasedir: __dirname,
       })
     )
     // smp.wrap(config)

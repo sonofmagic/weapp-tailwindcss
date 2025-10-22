@@ -7,7 +7,8 @@ const config = {
     configureWebpack: (config) => {
         config.plugins.push(
             new UnifiedWebpackPluginV5({
-                rem2rpx: true
+                rem2rpx: true,
+                tailwindcssBasedir: __dirname
             })
         )
     },

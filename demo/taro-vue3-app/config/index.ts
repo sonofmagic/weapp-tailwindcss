@@ -94,6 +94,7 @@ export default defineConfig<'webpack5'>((merge) => {
             bench.dump()
           },
           rem2rpx: true,
+          tailwindcssBasedir: __dirname,
         }
         // if (isWrite) {
         //   opt.loaderOptions = {

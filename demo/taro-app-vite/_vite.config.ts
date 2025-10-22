@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [
     // @ts-ignore
     UnifiedViteWeappTailwindcssPlugin({
-      rem2rpx: true
+      rem2rpx: true,
+      tailwindcssBasedir: __dirname,
     })
   ],
   css: {

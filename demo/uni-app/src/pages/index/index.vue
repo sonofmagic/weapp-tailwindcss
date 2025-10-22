@@ -14,7 +14,6 @@
     <view>****</view>
     <div class="ab text-left">111</div>
     <span class="pp text-xs" :class="flag ? 'text-right' : 'text-left'">222</span>
-    <u-button text="月落"></u-button>
     <view class="bg-inherit after:border-none after:content-['Hello_World']">after:border-none</view>
     <view class="text-[#999999] dark:text-white" hover-class="text-[#444444]">dark mode</view>
     <view class="bg-[#123456] text-[#fff123]">bg-[#123456]</view>

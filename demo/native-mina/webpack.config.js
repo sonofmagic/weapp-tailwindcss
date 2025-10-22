@@ -89,7 +89,8 @@ module.exports = {
       onEnd() {
         bench.end()
         bench.dump()
-      }
+      },
+      tailwindcssBasedir: __dirname
       // mangle: true,
       // cssPreflight: {
       //   "border-color": false

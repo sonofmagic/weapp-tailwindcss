@@ -23,7 +23,8 @@ export default defineConfig(async () => {
       tailwindcss(),
       UnifiedViteWeappTailwindcssPlugin(
         {
-          rem2rpx: true
+          rem2rpx: true,
+          tailwindcssBasedir: __dirname,
         }
       )
     ],

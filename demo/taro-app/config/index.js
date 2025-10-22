@@ -102,6 +102,7 @@ const config = {
                     bench.dump();
                   },
                   rem2rpx: true,
+                  tailwindcssBasedir: __dirname,
                 }
               ]
               // args: [opt, 'taro']

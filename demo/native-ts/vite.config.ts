@@ -6,7 +6,8 @@ export default defineConfig({
     srcRoot: './miniprogram'
   },
   plugins: [UnifiedViteWeappTailwindcssPlugin({
-    rem2rpx: true
+    rem2rpx: true,
+    tailwindcssBasedir: __dirname,
   })],
   css: {
     preprocessorOptions: {

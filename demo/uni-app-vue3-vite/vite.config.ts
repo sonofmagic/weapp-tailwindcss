@@ -42,6 +42,7 @@ export default defineConfig(async () => {
       uni(),
       UnifiedViteWeappTailwindcssPlugin({
         px2rpx: true,
+        tailwindcssBasedir: __dirname,
         wxsMatcher() {
           return false;
         },

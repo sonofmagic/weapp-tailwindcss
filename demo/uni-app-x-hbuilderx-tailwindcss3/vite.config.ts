@@ -11,6 +11,7 @@ export default defineConfig({
     UnifiedViteWeappTailwindcssPlugin(
       uniAppX({
         base: __dirname,
+        tailwindcssBasedir: __dirname,
         rem2rpx: true,
       }),
     ),

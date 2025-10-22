@@ -7,7 +7,7 @@
   <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_h929292_" style="color: blue; font-size: 14px">111112222</view></view>
   <view style="color: blue; font-size: 14px; background-color: red">222222</view>
   <list is="components/listb85648da/index">
-    <view class="flex listb85648da-index--flex flex-col listb85648da-index--flex-col" style="">
+    <view class="flex listb85648da-index--flex flex-col listb85648da-index--flex-col">
       <view class="text-_blue_ listb85648da-index--text-_blue_">手机</view>
       <view class="text-_he67240_ listb85648da-index--text-_he67240_">电视</view>
       <view class="text-_blue_ listb85648da-index--text-_blue_">电脑</view>
@@ -32,7 +32,7 @@
     class="t-button button--t-button t-button--base button--t-button--base t-button--default button--t-button--default t-button--rectangle button--t-button--rectangle t-button--size-medium button--t-button--size-medium">
     <view class="t-button__content button--t-button__content">111</view>
   </button>
-  <van-button is="components/vant/weappadd1b1b4/button/index">
+  <van-button is="components/vant/weapp0735eb19/lib/button/index">
     <button
       app-parameter=""
       business-id=""
