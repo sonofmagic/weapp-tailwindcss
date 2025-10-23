@@ -1,5 +1,6 @@
 import type { CacheOptions, ILengthUnitsPatchOptions, TailwindcssPatcherOptions, TailwindcssUserConfig } from 'tailwindcss-patch'
 import type { TailwindcssPatcherLike } from '@/types'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
@@ -48,6 +49,43 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 
 let hasLoggedMissingTailwind = false
 
+function findNearestPackageRoot(startDir?: string) {
+  if (!startDir) {
+    return undefined
+  }
+
+  let current = path.resolve(startDir)
+  while (true) {
+    const pkgPath = path.join(current, 'package.json')
+    if (existsSync(pkgPath)) {
+      return current
+    }
+    const parent = path.dirname(current)
+    if (parent === current) {
+      return undefined
+    }
+    current = parent
+  }
+}
+
+function createDefaultResolvePaths(basedir?: string) {
+  const paths = new Set<string>()
+  if (basedir) {
+    const packageRoot = findNearestPackageRoot(basedir)
+    if (packageRoot) {
+      const nodeModulesDir = path.join(packageRoot, 'node_modules')
+      if (existsSync(nodeModulesDir)) {
+        paths.add(nodeModulesDir)
+      }
+      else {
+        paths.add(packageRoot)
+      }
+    }
+  }
+  paths.add(import.meta.url)
+  return [...paths]
+}
+
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
   const cache: CacheOptions = {}
@@ -68,6 +106,8 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     cache.cwd = basedir
   }
 
+  const resolvePaths = createDefaultResolvePaths(cache.cwd ?? basedir ?? process.cwd())
+
   const resolvedOptions = defuOverrideArray<TailwindcssPatcherOptions, TailwindcssPatcherOptions[]>(
     tailwindcssPatcherOptions!,
     {
@@ -81,9 +121,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
         },
         tailwindcss,
         resolve: {
-          paths: [
-            import.meta.url,
-          ],
+          paths: resolvePaths,
         },
       },
     },

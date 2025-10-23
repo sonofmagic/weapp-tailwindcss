@@ -73,7 +73,7 @@
     "typescript": "^5.9.3",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.5.2",
+    "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.102.1"
   },

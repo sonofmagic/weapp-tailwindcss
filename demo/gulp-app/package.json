@@ -83,7 +83,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.5.2",
+    "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "^0.1.0"
   }
 }
