@@ -101,7 +101,7 @@
     "tailwindcss-patch": "^7.1.6",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "~5.9.3",
-    "vite": "5.2.8",
+    "vite": "7.1.12",
     "vite-plugin-inspect": "^11.3.3",
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "workspace:*",

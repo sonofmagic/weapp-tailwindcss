@@ -27,7 +27,7 @@
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "^0.1.0",
-    "weapp-vite": "^5.4.0"
+    "weapp-vite": "^5.5.1"
   },
   "type": "module",
   "bugs": {

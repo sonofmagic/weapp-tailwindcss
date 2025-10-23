@@ -70,7 +70,7 @@
     "@babel/core": "^7.28.4",
     "@babel/preset-react": "^7.27.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
-    "@tailwindcss/postcss": "^4.1.15",
+    "@tailwindcss/postcss": "^4.1.16",
     "@tarojs/cli": "4.1.7",
     "@tarojs/taro-loader": "4.1.7",
     "@tarojs/webpack5-runner": "4.1.7",
