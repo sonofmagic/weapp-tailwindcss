@@ -25,7 +25,7 @@
   "projectname": "weapp-wf",
   "condition": {},
   "compileType": "miniprogram",
-  "libVersion": "2.31.0",
+  "libVersion": "3.10.3",
   "packOptions": {
     "ignore": [],
     "include": []

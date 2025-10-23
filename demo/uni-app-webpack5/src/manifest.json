@@ -43,6 +43,7 @@
   "mp-weixin": { /* 小程序特有相关 */
     "usingComponents": true,
     "appid": "wxb3d842a4a7e3440d",
+    "libVersion": "3.10.3",
     "setting": {
       "urlCheck": false,
       "es6": false

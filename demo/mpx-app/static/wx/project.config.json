@@ -28,7 +28,7 @@
     "tabSize": 2
   },
   "projectname": "mpx-project",
-  "libVersion": "2.25.2",
+  "libVersion": "3.10.3",
   "packOptions": {
     "ignore": [],
     "include": []

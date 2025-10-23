@@ -43,7 +43,7 @@
     "condition": false
   },
   "compileType": "miniprogram",
-  "libVersion": "2.24.4",
+  "libVersion": "3.10.3",
   "srcMiniprogramRoot": "dist/",
   "packOptions": {
     "ignore": [],

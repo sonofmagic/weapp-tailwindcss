@@ -51,7 +51,7 @@
   },
   "miniprogramRoot": "dist/",
   "compileType": "miniprogram",
-  "libVersion": "2.24.1",
+  "libVersion": "3.10.3",
   "appid": "wxb3d842a4a7e3440d",
   "projectname": "native-mina",
   "simulatorType": "wechat",

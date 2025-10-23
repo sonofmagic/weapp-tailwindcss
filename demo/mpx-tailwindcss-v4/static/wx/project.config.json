@@ -18,7 +18,7 @@
   "description": "A mpx project",
   "condition": {},
   "compileType": "miniprogram",
-  "libVersion": "3.7.8",
+  "libVersion": "3.10.3",
   "packOptions": {
     "ignore": [],
     "include": []
