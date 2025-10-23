@@ -1,5 +1,5 @@
 <view class="index" style="">
-  <text class="text-_55rpx_ text-_hfff_ bg-purple-300" space="" style=""></text>
+  <text class="text- 55rpx text- fff bg-purple-300" space="" style=""></text>
   <view class="h-14 bg-gradient-to-r from-cyan-500 to-blue-500" style=""></view>
 </view>
 .luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;pointer-events:none;font-size:13px}.luna-dom-highlighter-fill{position:absolute;top:0;right:0;bottom:0;left:0}.luna-dom-highlighter-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-dom-highlighter-platform-mac{color:#303942;font-family:'.SFNSDisplay-Regular','Helvetica

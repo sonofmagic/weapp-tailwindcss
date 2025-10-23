@@ -1,10 +1,11 @@
 <view>
-  <view class="text-_h123456_ text-_50px_ bg-_hfff_">对酒当歌，人生几何</view>
-  <view class="bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">bgUrl</view>
-  <view class="after_c_content-_bl__dq_ _dq__br_ aftercml-0d5 afterctext-red-500"></view>
-  <view class="afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 afterctext-red-500"></view>
+  <view class="text-_h123456_ text-_h123456_ text-_50px_ text-_50px_ bg-_hfff_ bg-_hfff_">对酒当歌，人生几何</view>
+  <view class="bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">bgUrl</view>
+  <view class="after_c_content-_bl__dq_ after_c_content-_bl__dq_ _dq__br_ _dq__br_ aftercml-0d5 aftercml-0d5 afterctext-red-500 afterctext-red-500"></view>
+  <view
+    class="afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ afterccontent-_qu4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32q_ aftercml-0d5 aftercml-0d5 afterctext-red-500 afterctext-red-500"></view>
   <view>*****</view>
-  <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_h929292_" style="color: blue; font-size: 14px">111112222</view></view>
+  <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_h929292_ bg-_h929292_" style="color: blue; font-size: 14px">111112222</view></view>
   <view style="color: blue; font-size: 14px; background-color: red">222222</view>
   <list is="components/listb85648da/index">
     <view class="flex listb85648da-index--flex flex-col listb85648da-index--flex-col">
@@ -35,7 +36,7 @@
   <van-button is="components/vant/weapp0735eb19/lib/button/index">
     <button
       app-parameter=""
-      business-id=""
+      business-id="0"
       class="van-button button-index--van-button van-button--default button-index--van-button--default van-button--normal button-index--van-button--normal"
       data-detail="null"
       form-type=""

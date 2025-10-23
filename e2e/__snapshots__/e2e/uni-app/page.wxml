@@ -12,27 +12,6 @@
   <view>****</view>
   <view class="ab ab text-left text-left _div _div">111</view>
   <label class="pp pp text-xs text-xs _span _span text-left text-left">222</label>
-  <button
-    app-parameter=""
-    class="u-button button--u-button u-reset-button button--u-reset-button data-v-30da201b button--data-v-30da201b u-button--info button--u-button--info u-button--square button--u-button--square u-button--normal button--u-button--normal"
-    data-event-opts="getphonenumber,getphonenumber,$event,getuserinfo,getuserinfo,$event,error,error,$event,opensetting,opensetting,$event,launchapp,launchapp,$event,agreeprivacyauthorization,agreeprivacyauthorization,$event,tap,clickHandler,$event"
-    data-name=""
-    form-type=""
-    hover-class="u-button--active"
-    hover-start-time="0"
-    hover-stay-time="200"
-    hover-stop-propagation=""
-    lang="en"
-    open-type=""
-    send-message-img=""
-    send-message-path=""
-    send-message-title=""
-    session-from=""
-    style=""
-    role="button"
-    aria-disabled="false">
-    <text class="u-button__text button--u-button__text data-v-30da201b button--data-v-30da201b" style="font-size: 14px"></text>
-  </button>
   <view class="bg-inherit bg-inherit aftercborder-none aftercborder-none afterccontent-_qHello_Worldq_ afterccontent-_qHello_Worldq_">after:border-none</view>
   <view class="text-_h999999_ text-_h999999_ darkctext-white darkctext-white" hover-class="text-_h444444_">dark mode</view>
   <view class="bg-_h123456_ bg-_h123456_ text-_hfff123_ text-_hfff123_">bg-[#123456]</view>
@@ -43,7 +22,7 @@
       <view class="text-_22px_ Layout--text-_22px_">对酒当歌，人生几何</view>
       <view class="ih-5 Layout--ih-5 w-5 Layout--w-5 shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_ Layout--shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_"></view>
       <view class="h-5 Layout--h-5 w-5 Layout--w-5 shadow-_0px_2px_11px_0px_h00000a_ Layout--shadow-_0px_2px_11px_0px_h00000a_"></view>
-      <view class="text-_20px_ Layout--text-_20px_ bg-_h000000_ Layout--bg-_h000000_">classObject</view>
+      <view>classObject</view>
       <view class="bg-_hfafa00_ Layout--bg-_hfafa00_">Toggle</view>
       <view>Toggle</view>
       <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
