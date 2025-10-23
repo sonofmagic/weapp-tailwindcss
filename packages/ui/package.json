@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.16",
-    "tailwindcss": "^4.1.14",
+    "tailwindcss": "^4.1.16",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vite-plugin-dts": "^4.5.4"

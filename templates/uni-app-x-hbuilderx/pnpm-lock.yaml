@@ -12,8 +12,8 @@ importers:
         specifier: ^3.4.18
         version: 3.4.18
       weapp-tailwindcss:
-        specifier: ^4.5.1
-        version: 4.5.1(tailwindcss@3.4.18)
+        specifier: ^4.5.2
+        version: 4.5.2(tailwindcss@3.4.18)
 
 packages:
 
@@ -515,9 +515,6 @@ packages:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
     engines: {node: '>= 6'}
 
-  caniuse-lite@1.0.30001737:
-    resolution: {integrity: sha512-BiloLiXtQNrY5UyF0+1nSJLXUENuhka2pzy2Fx5pGxqavdrxSCW4U6Pn/PoG3Efspi2frRbHpBV2XsrPE6EDlw==}
-
   caniuse-lite@1.0.30001751:
     resolution: {integrity: sha512-A0QJhug0Ly64Ii3eIqHu5X51ebln3k4yTUkY1j8drqpWHVreg/VLijN48cZ1bYPiqOQuqpkIKnzr/Ul8V+p6Cw==}
 
@@ -765,10 +762,6 @@ packages:
 
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
-    hasBin: true
-
-  jiti@2.5.1:
-    resolution: {integrity: sha512-twQoecYPiVA5K/h6SxtORw/Bs3ar+mLUtoPSc7iMXzQzK8d7eJ/R09wmTwAjiamETn1cXYPGfNnu7DMoHgu12w==}
     hasBin: true
 
   jiti@2.6.1:
@@ -1349,8 +1342,8 @@ packages:
       typescript:
         optional: true
 
-  weapp-tailwindcss@4.5.1:
-    resolution: {integrity: sha512-P+KMFwsQcS1UbQvXfK4rNBey1IrVHVLCRY60dlUrso0axqvOrIQFkpheC5J3cUCI+proUoAjKh8ZaIl7c3Ga5w==}
+  weapp-tailwindcss@4.5.2:
+    resolution: {integrity: sha512-ZIKMGkC1jnHzl7CujW5jgdkjyatgKY4/yfBOoo70lMmRKGMvVXk4Lo+V5JEoIXzuJ54zUxL1Bju/zLPm51f4dw==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -1900,7 +1893,7 @@ snapshots:
   autoprefixer@10.4.21(postcss@8.5.6):
     dependencies:
       browserslist: 4.26.3
-      caniuse-lite: 1.0.30001737
+      caniuse-lite: 1.0.30001751
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
@@ -1938,7 +1931,7 @@ snapshots:
       defu: 6.1.4
       dotenv: 16.6.1
       giget: 1.2.5
-      jiti: 2.5.1
+      jiti: 2.6.1
       mlly: 1.8.0
       ohash: 2.0.11
       pathe: 2.0.3
@@ -1949,8 +1942,6 @@ snapshots:
   cac@6.7.14: {}
 
   camelcase-css@2.0.1: {}
-
-  caniuse-lite@1.0.30001737: {}
 
   caniuse-lite@1.0.30001751: {}
 
@@ -2184,8 +2175,6 @@ snapshots:
       '@pkgjs/parseargs': 0.11.0
 
   jiti@1.21.7: {}
-
-  jiti@2.5.1: {}
 
   jiti@2.6.1: {}
 
@@ -2710,7 +2699,7 @@ snapshots:
 
   tailwindcss-config@1.1.1:
     dependencies:
-      jiti: 2.5.1
+      jiti: 2.6.1
       lilconfig: 3.1.3
 
   tailwindcss-patch@7.1.6(tailwindcss@3.4.18):
@@ -2811,7 +2800,7 @@ snapshots:
       '@vue/server-renderer': 3.5.22(vue@3.5.22)
       '@vue/shared': 3.5.22
 
-  weapp-tailwindcss@4.5.1(tailwindcss@3.4.18):
+  weapp-tailwindcss@4.5.2(tailwindcss@3.4.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.4
