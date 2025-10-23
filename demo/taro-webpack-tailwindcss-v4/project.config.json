@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "dist/",
-  "projectname": "taro-webpack-tailwindcss-v4",
+  "projectname": "taro-webpack-tailwindcss-v4-weapp",
   "description": "",
   "setting": {
     "urlCheck": true,

@@ -53,7 +53,7 @@
   "compileType": "miniprogram",
   "libVersion": "3.10.3",
   "appid": "wxb3d842a4a7e3440d",
-  "projectname": "native-mina",
+  "projectname": "native-mina-weapp",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
   "srcMiniprogramRoot": "dist/",

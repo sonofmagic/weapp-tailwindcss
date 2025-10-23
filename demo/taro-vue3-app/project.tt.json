@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "./",
-  "projectname": "taro-vue3-app",
+  "projectname": "taro-vue3-app-tt",
   "appid": "testAppId",
   "setting": {
     "es6": false,

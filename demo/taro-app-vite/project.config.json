@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "dist/",
-  "projectname": "taro-app-vite",
+  "projectname": "taro-app-vite-weapp",
   "description": "",
   "appid": "wxb3d842a4a7e3440d",
   "setting": {

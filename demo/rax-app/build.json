@@ -13,7 +13,7 @@
   "wechat-miniprogram": {
     "nativeConfig": {
       "appid": "wxb3d842a4a7e3440d",
-      "projectname": "rax-app"
+      "projectname": "rax-app-weapp"
     }
   },
   "postcssrc": true

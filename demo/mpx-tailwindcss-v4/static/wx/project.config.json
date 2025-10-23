@@ -13,8 +13,8 @@
       "outputPath": ""
     }
   },
-  "appid": "touristappid",
-  "projectname": "mpx-project",
+  "appid": "wx6ffee4673b257014",
+  "projectname": "mpx-tailwindcss-v4-weapp",
   "description": "A mpx project",
   "condition": {},
   "compileType": "miniprogram",

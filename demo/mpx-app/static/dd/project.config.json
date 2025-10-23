@@ -9,7 +9,7 @@
     "autoAudits": false
   },
   "appid": "touristappid",
-  "projectname": "mpx-project",
+  "projectname": "mpx-app-dd",
   "description": "A mpx project",
   "condition": {}
 }

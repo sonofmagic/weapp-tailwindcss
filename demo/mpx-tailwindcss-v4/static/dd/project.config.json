@@ -9,7 +9,7 @@
     "autoAudits": false
   },
   "appid": "touristappid",
-  "projectname": "mpx-project",
+  "projectname": "mpx-tailwindcss-v4-dd",
   "description": "A mpx project",
   "condition": {}
 }

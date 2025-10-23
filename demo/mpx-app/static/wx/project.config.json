@@ -27,7 +27,7 @@
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "projectname": "mpx-project",
+  "projectname": "mpx-app-weapp",
   "libVersion": "3.10.3",
   "packOptions": {
     "ignore": [],

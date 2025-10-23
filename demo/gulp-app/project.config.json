@@ -22,7 +22,7 @@
     ]
   },
   "appid": "wx6ffee4673b257014",
-  "projectname": "weapp-wf",
+  "projectname": "gulp-app-weapp",
   "condition": {},
   "compileType": "miniprogram",
   "libVersion": "3.10.3",
