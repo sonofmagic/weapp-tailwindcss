@@ -44,9 +44,7 @@ exports[`utilities > utilities + theme + rgb 1`] = `
 .text-red-500\\/20 {
   color: color-mix(in srgb, rgb(251, 44, 54) 20%, transparent);
   @supports (color: color-mix(in lab, red, red)) {
-    & {
-      color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
-    }
+    color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
   }
 }"
 `;
@@ -85,9 +83,7 @@ exports[`utilities > utilities + theme 1`] = `
 .text-red-500\\/20 {
   color: color-mix(in srgb, oklch(63.7% .237 25.331) 20%, transparent);
   @supports (color: color-mix(in lab, red, red)) {
-    & {
-      color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
-    }
+    color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
   }
 }"
 `;
