@@ -6,7 +6,7 @@ import { createGetCase, jsCasePath } from './util'
 // import { getCompilerContext } from '@/context'
 const getCase = createGetCase(jsCasePath)
 
-function getClassCacheSet() {
+async function getClassCacheSet() {
   const twPatcher = new TailwindcssPatcher()
   return twPatcher.getClassCacheSet()
 }

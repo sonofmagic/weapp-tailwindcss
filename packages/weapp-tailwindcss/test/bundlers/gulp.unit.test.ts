@@ -17,6 +17,7 @@ interface InternalContext {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
     getClassSetV3: ReturnType<typeof vi.fn>
+    extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
 }
@@ -67,6 +68,7 @@ describe('bundlers/gulp createPlugins', () => {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetV3: vi.fn(async () => runtimeSet),
+      extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     }
 
@@ -93,11 +95,13 @@ describe('bundlers/gulp createPlugins', () => {
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(setMangleRuntimeSet).toHaveBeenCalledTimes(1)
     expect([...setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['foo'])
+    expect(twPatcher.extract).toHaveBeenCalledTimes(1)
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
+    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'console.log("hi")')
@@ -164,7 +168,8 @@ describe('bundlers/gulp createPlugins', () => {
     const jsFile = createFile('/src/app.js', 'console.log("graph")')
     await runTransform(plugins.transformJs(), jsFile)
 
-    const handlerOptions = jsHandler.mock.calls.at(-1)?.[2]
+    const handlerCalls = jsHandler.mock.calls
+    const handlerOptions = handlerCalls[handlerCalls.length - 1]?.[2]
     expect(handlerOptions?.moduleGraph).toBeDefined()
     const moduleGraph = handlerOptions?.moduleGraph
     const importer = handlerOptions?.filename

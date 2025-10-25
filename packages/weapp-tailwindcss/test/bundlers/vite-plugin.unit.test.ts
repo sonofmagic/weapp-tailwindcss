@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
+import type { CreateJsHandlerOptions } from '@/types'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
@@ -104,7 +105,9 @@ function createRollupChunk(code: string): OutputChunk {
     isDynamicEntry: false,
     referencedFiles: [],
     isImplicitEntry: false,
-  } as OutputChunk
+    sourcemapFileName: null,
+    preliminaryFileName: null,
+  } as unknown as OutputChunk
 }
 
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
@@ -160,6 +163,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
     expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(1)
     expect([...currentContext.setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['alpha'])
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
@@ -190,6 +194,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   })
 
   it('returns undefined when disabled', () => {
@@ -231,6 +236,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     const nvueBuildStart = nvuePlugin.buildStart as any
     await nvueBuildStart?.call(nvuePlugin)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     const nvueTransform = nvuePlugin.transform as any
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
     expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
@@ -252,6 +258,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     const generateBundle = postPlugin.generateBundle as any
     await generateBundle?.call(postPlugin, {} as any, bundle)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
       'const answer = 42',
@@ -329,7 +336,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(chunkUpdates.length).toBeGreaterThan(0)
     expect(chunkUpdates.some(([, , updated]) => updated === 'linked:chunk')).toBe(true)
 
-    const [firstCall] = currentContext.jsHandler.mock.calls
+    const firstCall = currentContext.jsHandler.mock.calls[0] as unknown as [string, Set<string>, CreateJsHandlerOptions] | undefined
     const linkedOptions = firstCall?.[2]
     expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
   })

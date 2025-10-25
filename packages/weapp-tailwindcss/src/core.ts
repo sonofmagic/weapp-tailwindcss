@@ -1,6 +1,7 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
+import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
@@ -14,22 +15,27 @@ export function createContext(options: UserDefinedOptions = {}) {
   let runtimeSet = new Set<string>()
   twPatcher.patch()
 
-  function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
-    return styleHandler(rawCss, defuOverrideArray(options!, {
+  async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
+    const result = await styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
     }))
+    runtimeSet = await collectRuntimeClassSet(twPatcher)
+    return result
   }
 
   async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
-        : await twPatcher.getClassSet()
+        : await collectRuntimeClassSet(twPatcher)
 
     return await jsHandler(rawJs, runtimeSet, options)
   }
 
-  function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
+  async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
+    if (!options?.runtimeSet && runtimeSet.size === 0) {
+      runtimeSet = await collectRuntimeClassSet(twPatcher)
+    }
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
     }))

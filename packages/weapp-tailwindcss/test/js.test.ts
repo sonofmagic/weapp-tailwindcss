@@ -17,7 +17,7 @@ const getCase = createGetCase(jsCasePath)
 const getTsCase = createGetCase(tsCasePath)
 const putCase = createPutCase(jsCasePath)
 
-function getClassCacheSet() {
+async function getClassCacheSet() {
   const twPatcher = new TailwindcssPatcher()
   return twPatcher.getClassCacheSet()
 }

@@ -14,7 +14,7 @@ interface ExtractSourceToken {
   // prevConcatenated: boolean
   // nextConcatenated: boolean
 }
-function getClassCacheSet() {
+async function getClassCacheSet() {
   const twPatcher = new TailwindcssPatcher()
   return twPatcher.getClassCacheSet()
 }
@@ -142,7 +142,7 @@ describe('wxs', () => {
   it.skip('wxs fail case0', async () => {
     const raw = `\n\n\tvar className = 'after:content-[\\'我来自inline-wxs\\']'\n  module.exports = {\n    className: className\n  }\n\n`
     getCss(raw)
-    const set = getClassCacheSet()
+    const set = await getClassCacheSet()
     const { jsHandler } = getCompilerContext()
     const code = await jsHandler(raw, set)
     expect(code).toMatchSnapshot()

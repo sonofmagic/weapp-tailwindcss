@@ -22,6 +22,7 @@ interface TestContext {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
     getClassSetV3: ReturnType<typeof vi.fn>
+    extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
   mainCssChunkMatcher: ReturnType<typeof vi.fn>
@@ -59,6 +60,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetV3: vi.fn(async () => runtimeSet),
+      extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     },
     mainCssChunkMatcher: vi.fn(() => true),
@@ -76,7 +78,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     currentContext = createContext()
     getCompilerContextMock.mockReset()
     getCompilerContextMock.mockImplementation(() => currentContext)
-    existsSyncSpy = vi.spyOn(fs as unknown as Record<string, unknown>, 'existsSync')
+    existsSyncSpy = vi.spyOn(fs as any, 'existsSync')
     existsSyncSpy.mockReturnValue(true)
   })
 
@@ -145,6 +147,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     await emitHandlers[0](compilation)
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(1)
     expect([...currentContext.setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['gamma'])
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
@@ -180,6 +183,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   })
 
   it('keeps distinct cache entries for js and wxs assets', async () => {

@@ -4,6 +4,7 @@ import path from 'node:path'
 import { defu } from 'defu'
 import * as Diff from 'diff'
 import prettier from 'prettier'
+import tailwindcss from 'tailwindcss'
 import { build } from 'vite'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
@@ -13,16 +14,20 @@ import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index
 // postcss 插件配置
 const postcssPlugins = [
   // require('autoprefixer')(),
-  require('tailwindcss')({
+  tailwindcss({
     config: path.resolve(__dirname, '../fixtures/vite/tailwind.config.js'),
   }),
 ]
 
-async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result: RollupOutput) => void) {
+async function assertSnap(
+  plugin?: Plugin | Plugin[] | undefined,
+  options?: InlineConfig,
+  fn?: (result: RollupOutput) => void,
+) {
   // if (plugin === undefined) {
   //   return
   // }
-  const vitePlugins: (Plugin | undefined)[] = []
+  const vitePlugins: Plugin[] = []
   // {
   //   name: 'emit-wxml',
   //   transform(code, id) {
@@ -41,7 +46,12 @@ async function assertSnap(plugin?: Plugin, options?: InlineConfig, fn?: (result:
   //   // }
   // }
 
-  vitePlugins.push(plugin)
+  if (Array.isArray(plugin)) {
+    vitePlugins.push(...plugin.filter(Boolean) as Plugin[])
+  }
+  else if (plugin) {
+    vitePlugins.push(plugin)
+  }
   const opts = defu<InlineConfig, InlineConfig[]>(options, {
     root: path.resolve(__dirname, '../fixtures/vite/src'),
     plugins: vitePlugins,
@@ -100,7 +110,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -118,7 +128,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
         rem2rpx: true,
       }),
@@ -137,7 +147,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -150,7 +160,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -169,7 +179,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -188,7 +198,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -211,7 +221,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -233,7 +243,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -256,7 +266,7 @@ describe('vite test', () => {
         onEnd() {
           timeTaken = performance.now() - timeStart
           // 不会执行
-          console.log(`[vite common build] generate executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )
@@ -279,8 +289,7 @@ describe('vite test', () => {
         },
         onEnd() {
           timeTaken = performance.now() - timeStart
-
-          console.log(`[vite disabled build] common case processAssets executed in ${timeTaken}ms`)
+          void timeTaken
         },
       }),
     )

@@ -9,6 +9,7 @@ import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../shared/cache'
@@ -168,7 +169,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
         const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
         const groupedEntries = getGroupedEntries(entries, opts)
-        runtimeSet = await twPatcher.getClassSet()
+        runtimeSet = await collectRuntimeClassSet(twPatcher)
         setMangleRuntimeSet(runtimeSet)
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
@@ -377,10 +378,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         name: 'weapp-tailwindcss:uni-app-x:nvue',
         enforce: 'pre',
         async buildStart() {
-          const res = await twPatcher.extract({ write: false })
-          if (res) {
-            runtimeSet = res.classSet
-          }
+          runtimeSet = await collectRuntimeClassSet(twPatcher)
         },
         transform(code, id) {
           return transformUVue(code, id, jsHandler, runtimeSet)

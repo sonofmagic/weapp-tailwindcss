@@ -117,11 +117,12 @@ describe('createTailwindcssPatcherFromContext', () => {
         cssEntries: ctx.cssEntries,
       },
     })
+    const lastResult = defuOverrideArrayStub.mock.results[defuOverrideArrayStub.mock.results.length - 1] as any
     expect(createTailwindcssPatcherStub).toHaveBeenCalledWith({
       basedir: ctx.tailwindcssBasedir,
       cacheDir: 'node_modules/tailwindcss-patch/.cache',
       supportCustomLengthUnitsPatch: true,
-      tailwindcss: defuOverrideArrayStub.mock.results[defuOverrideArrayStub.mock.results.length - 1]?.value,
+      tailwindcss: lastResult?.value,
       tailwindcssPatcherOptions: ctx.tailwindcssPatcherOptions,
     })
   })
@@ -141,7 +142,8 @@ describe('createTailwindcssPatcherFromContext', () => {
     } as unknown as import('@/types').InternalUserDefinedOptions
 
     createTailwindcssPatcherFromContext(ctx)
-    const [, defaultConfig] = defuOverrideArrayStub.mock.calls[defuOverrideArrayStub.mock.calls.length - 1]!
+    const lastCall = defuOverrideArrayStub.mock.calls[defuOverrideArrayStub.mock.calls.length - 1] as any
+    const [, defaultConfig] = lastCall
 
     expect(ctx.tailwindcssBasedir).toBe('/Users/foo/uni-project')
     expect(defaultConfig).toMatchObject({

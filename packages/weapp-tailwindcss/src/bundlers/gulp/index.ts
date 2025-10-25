@@ -7,6 +7,7 @@ import process from 'node:process'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
 
 const debug = createDebug()
@@ -27,6 +28,17 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   twPatcher.patch()
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
+  let runtimeSetInitialized = false
+
+  async function refreshRuntimeSet(force = false) {
+    if (!force && runtimeSetInitialized && runtimeSet.size > 0) {
+      return runtimeSet
+    }
+    runtimeSet = await collectRuntimeClassSet(twPatcher)
+    runtimeSetInitialized = true
+    setMangleRuntimeSet(runtimeSet)
+    return runtimeSet
+  }
   function resolveWithExtensions(base: string): string | undefined {
     for (const ext of MODULE_EXTENSIONS) {
       const candidate = `${base}${ext}`
@@ -112,8 +124,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      runtimeSet = await twPatcher.getClassSet()
-      setMangleRuntimeSet(runtimeSet)
+      await refreshRuntimeSet(true)
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -144,6 +155,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
+      await refreshRuntimeSet(runtimeSet.size === 0)
       const filename = path.resolve(file.path)
       const moduleGraph = options.moduleGraph ?? createModuleGraphOptionsFor()
       const handlerOptions: CreateJsHandlerOptions = {
@@ -182,6 +194,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
+      await refreshRuntimeSet(runtimeSet.size === 0)
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,

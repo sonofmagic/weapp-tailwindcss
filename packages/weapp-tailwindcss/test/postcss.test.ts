@@ -5,7 +5,7 @@ import { getCss } from './helpers/getTwCss'
 // import tailwindcss318 from 'tailwindcss318'
 // import fs from 'fs'
 
-function getClassCacheSet() {
+async function getClassCacheSet() {
   const tw = new TailwindcssPatcher()
   return tw.getClassCacheSet()
 }

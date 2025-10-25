@@ -40,6 +40,7 @@ interface TestContext {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
     getClassSetV3: ReturnType<typeof vi.fn>
+    extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
   mainCssChunkMatcher: ReturnType<typeof vi.fn>
@@ -81,6 +82,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetV3: vi.fn(async () => runtimeSet),
+      extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     },
     mainCssChunkMatcher: vi.fn(() => true),
@@ -97,7 +99,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
   beforeEach(() => {
     currentContext = createContext()
     getCompilerContextMock.mockClear()
-    existsSyncSpy = vi.spyOn(fs as unknown as Record<string, unknown>, 'existsSync')
+    existsSyncSpy = vi.spyOn(fs as any, 'existsSync')
     existsSyncSpy.mockReturnValue(true)
   })
 
@@ -189,6 +191,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     await processAssetsCallbacks[0](assetsRun)
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(1)
     expect([...currentContext.setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['beta'])
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
@@ -225,6 +228,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   })
 
   it('keeps separate cache entries for js and wxs assets', async () => {
@@ -243,7 +247,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       chunks: [{ id: 'main', hash: 'hash-1' }],
       hooks: {
         processAssets: {
-          tapPromise: (_options, handler) => {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
             processAssetsCallbacks.push(handler)
           },
         },

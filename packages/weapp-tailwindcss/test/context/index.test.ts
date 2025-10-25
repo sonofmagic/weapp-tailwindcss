@@ -72,7 +72,7 @@ describe('getCompilerContext', () => {
     const { getCompilerContext } = await import('@/context')
     const ctx = getCompilerContext()
 
-    const forwardedCalcOptions = createHandlersFromContext.mock.calls[0]?.[3]
+    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[3]
 
     expect(forwardedCalcOptions).toEqual({
       includeCustomProperties: ['--spacing'],
@@ -93,7 +93,7 @@ describe('getCompilerContext', () => {
       cssCalc: ['--gap'],
     })
 
-    const forwardedCalcOptions = createHandlersFromContext.mock.calls[0]?.[3]
+    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[3]
 
     expect(forwardedCalcOptions).toEqual(['--gap', '--spacing'])
     expect(ctx.cssCalc).toEqual(['--gap', '--spacing'])
@@ -116,7 +116,7 @@ describe('getCompilerContext', () => {
       cssCalc: originalOptions,
     })
 
-    const forwardedCalcOptions = createHandlersFromContext.mock.calls[0]?.[3]
+    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[3]
 
     expect(forwardedCalcOptions).toBe(originalOptions)
     expect(ctx.cssCalc).toBe(originalOptions)

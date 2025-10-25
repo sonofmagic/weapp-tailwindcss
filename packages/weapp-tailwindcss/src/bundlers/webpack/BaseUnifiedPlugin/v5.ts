@@ -7,6 +7,7 @@ import process from 'node:process'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
@@ -158,7 +159,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           const groupedEntries = getGroupedEntries(entries, this.options)
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-          const runtimeSet = await twPatcher.getClassSet()
+          const runtimeSet = await collectRuntimeClassSet(twPatcher)
           setMangleRuntimeSet(runtimeSet)
           debug('get runtimeSet, class count: %d', runtimeSet.size)
           const tasks: Promise<void>[] = []
