@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.6.0
+
+### Minor Changes
+
+- [`10fd23d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/10fd23de83adb895fc39907c9e159b2c62df56a6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 异步化 tailwind patcher 的类名集合获取方法，并统一通过 extract 收集最新 runtime 集合，提升多构建器在缓存命中场景下的准确性
+
 ## 4.5.2
 
 ### Patch Changes
