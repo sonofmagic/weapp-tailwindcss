@@ -179,9 +179,9 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/parser": "~7.28.4",
-    "@babel/traverse": "~7.28.4",
-    "@babel/types": "~7.28.4",
+    "@babel/parser": "~7.28.5",
+    "@babel/traverse": "~7.28.5",
+    "@babel/types": "~7.28.5",
     "@vue/compiler-dom": "^3.5.22",
     "@weapp-core/escape": "~4.0.1",
     "@weapp-core/regex": "~1.0.1",

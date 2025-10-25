@@ -70,7 +70,7 @@
     "@dcloudio/uni-stacktracey": "3.0.0-4070620250821001",
     "@dcloudio/vite-plugin-uni": "3.0.0-4070620250821001",
     "@egoist/tailwindcss-icons": "^1.9.0",
-    "@iconify-json/lucide": "^1.2.29",
+    "@iconify-json/lucide": "^1.2.71",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/vite": "^4.1.16",
     "@vue/runtime-core": "3.4.21",
@@ -80,7 +80,7 @@
     "tailwindcss-patch": "^7.1.6",
     "typescript": "^5.9.3",
     "vite": "7.1.12",
-    "vue-tsc": "^3.1.1",
+    "vue-tsc": "^3.1.2",
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "workspace:*"
   }

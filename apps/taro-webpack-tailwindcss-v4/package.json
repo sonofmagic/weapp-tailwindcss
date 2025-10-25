@@ -67,8 +67,8 @@
     "react-dom": "catalog:react18"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/preset-react": "^7.27.1",
+    "@babel/core": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
     "@tailwindcss/postcss": "^4.1.16",
     "@tarojs/cli": "4.1.7",
