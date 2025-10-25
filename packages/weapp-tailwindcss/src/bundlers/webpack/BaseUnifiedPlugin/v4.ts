@@ -52,9 +52,9 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     }
     twPatcher.patch()
 
-    function getClassSetInLoader() {
+    async function getClassSetInLoader() {
       if (twPatcher.majorVersion !== 4) {
-        return twPatcher.getClassSetV3()
+        await twPatcher.getClassSetV3()
       }
     }
 

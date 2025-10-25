@@ -52,9 +52,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     twPatcher.patch()
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
-    function getClassSetInLoader() {
+    async function getClassSetInLoader() {
       if (twPatcher.majorVersion !== 4) {
-        return twPatcher.getClassSetV3()
+        await twPatcher.getClassSetV3()
       }
     }
 

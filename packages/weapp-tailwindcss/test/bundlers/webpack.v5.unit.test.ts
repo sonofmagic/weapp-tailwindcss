@@ -39,6 +39,7 @@ interface TestContext {
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
+    getClassSetV3: ReturnType<typeof vi.fn>
     majorVersion: number
   }
   mainCssChunkMatcher: ReturnType<typeof vi.fn>
@@ -79,6 +80,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     twPatcher: {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetV3: vi.fn(async () => runtimeSet),
       majorVersion: 3,
     },
     mainCssChunkMatcher: vi.fn(() => true),

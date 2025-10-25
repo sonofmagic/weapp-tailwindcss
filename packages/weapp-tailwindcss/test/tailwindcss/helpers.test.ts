@@ -124,7 +124,7 @@ describe('tailwindcss helpers', () => {
     expect(loggerWarnMock).toHaveBeenCalled()
     expect(patcher.packageInfo.version).toBeUndefined()
     await expect(patcher.getClassSet()).resolves.toEqual(new Set())
-    expect(patcher.getClassSetV3().size).toBe(0)
+    await expect(patcher.getClassSetV3()).resolves.toEqual(new Set())
     await expect(patcher.extract()).resolves.toEqual({
       classList: [],
       classSet: new Set<string>(),

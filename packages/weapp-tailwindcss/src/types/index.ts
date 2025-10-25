@@ -8,6 +8,10 @@ import type { ICreateCacheReturnType } from '../cache'
 import type { UserDefinedOptions } from '../typedoc.export'
 import type { ItemOrItemArray } from './base'
 
+type AsyncableMethod<T> = T extends (...args: infer A) => infer R
+  ? (...args: A) => Promise<Awaited<R>> | Awaited<R>
+  : never
+
 export type {
   UserDefinedOptions,
 }
@@ -47,8 +51,8 @@ export interface TailwindcssPatcherLike {
   packageInfo: TailwindcssPatcher['packageInfo']
   majorVersion?: number
   patch: TailwindcssPatcher['patch']
-  getClassSet: TailwindcssPatcher['getClassSet']
-  getClassSetV3: TailwindcssPatcher['getClassSetV3']
+  getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
+  getClassSetV3: AsyncableMethod<TailwindcssPatcher['getClassSetV3']>
   extract: TailwindcssPatcher['extract']
   cacheOptions?: TailwindcssPatcher['cacheOptions']
   patchOptions?: TailwindcssPatcher['patchOptions']

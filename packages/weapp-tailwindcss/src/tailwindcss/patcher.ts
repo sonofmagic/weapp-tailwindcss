@@ -34,7 +34,7 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
     async getClassSet() {
       return new Set<string>()
     },
-    getClassSetV3() {
+    async getClassSetV3() {
       return new Set<string>()
     },
     async extract(_options?: TailwindcssExtractOptions): TailwindcssExtractResult {
