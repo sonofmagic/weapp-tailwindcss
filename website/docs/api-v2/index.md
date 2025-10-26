@@ -17,8 +17,6 @@ custom_edit_url: null
 - [ICommonReplaceOptions](interfaces/ICommonReplaceOptions.md)
 - [ILengthUnitsPatchDangerousOptions](interfaces/ILengthUnitsPatchDangerousOptions.md)
 - [ILengthUnitsPatchOptions](interfaces/ILengthUnitsPatchOptions.md)
-- [IMangleOptions](interfaces/IMangleOptions.md)
-- [IMangleScopeContext](interfaces/IMangleScopeContext.md)
 - [IPropValue](interfaces/IPropValue.md)
 - [ITemplateHandlerOptions](interfaces/ITemplateHandlerOptions.md)
 - [InternalCssSelectorReplacerOptions](interfaces/InternalCssSelectorReplacerOptions.md)
