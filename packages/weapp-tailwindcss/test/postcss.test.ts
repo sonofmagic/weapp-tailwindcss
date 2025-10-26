@@ -7,7 +7,8 @@ import { getCss } from './helpers/getTwCss'
 
 async function getClassCacheSet() {
   const tw = new TailwindcssPatcher()
-  return tw.getClassCacheSet()
+  await tw.patch()
+  return tw.getClassSet()
 }
 
 describe('postcss plugin', () => {

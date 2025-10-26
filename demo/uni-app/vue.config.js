@@ -46,7 +46,6 @@ const config = {
           console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
         },
         rem2rpx: true,
-        tailwindcssBasedir: __dirname,
       })
     )
     // smp.wrap(config)

@@ -25,12 +25,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const { templateHandler, styleHandler, jsHandler, setMangleRuntimeSet, cache, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
-  twPatcher.patch()
+  const patchPromise = Promise.resolve(twPatcher.patch())
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
 
   async function refreshRuntimeSet(force = false) {
+    await patchPromise
     if (!force && runtimeSetInitialized && runtimeSet.size > 0) {
       return runtimeSet
     }
@@ -125,6 +126,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(true)
+      await patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -137,6 +139,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('css cache hit: %s', file.path)
         },
         async transform() {
+          await patchPromise
           const { css } = await styleHandler(rawSource, {
             isMainChunk: true,
             majorVersion: twPatcher.majorVersion,
@@ -156,6 +159,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(runtimeSet.size === 0)
+      await patchPromise
       const filename = path.resolve(file.path)
       const moduleGraph = options.moduleGraph ?? createModuleGraphOptionsFor()
       const handlerOptions: CreateJsHandlerOptions = {
@@ -179,6 +183,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('js cache hit: %s', file.path)
         },
         async transform() {
+          await patchPromise
           const currentSource = file.contents?.toString() ?? rawSource
           const { code } = await jsHandler(currentSource, runtimeSet, handlerOptions)
           debug('js handle: %s', file.path)
@@ -195,6 +200,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(runtimeSet.size === 0)
+      await patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -207,6 +213,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('html cache hit: %s', file.path)
         },
         async transform() {
+          await patchPromise
           const code = await templateHandler(rawSource, {
             runtimeSet,
             ...options,

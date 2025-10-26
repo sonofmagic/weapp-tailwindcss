@@ -14,7 +14,6 @@ const config = {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         disabled: WeappTailwindcssDisabled,
-        tailwindcssBasedir: __dirname,
         wxsMatcher() {
           return false
         },

@@ -73,7 +73,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   rem2rpx: true,
-                  tailwindcssBasedir: __dirname,
                   // before 2248
                   // after 309
                   // cssCalc: ['--nutui']

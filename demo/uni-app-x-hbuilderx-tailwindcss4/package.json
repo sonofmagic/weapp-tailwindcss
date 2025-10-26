@@ -11,7 +11,7 @@
     "@tailwindcss/postcss": "^4.1.16",
     "@weapp-tailwindcss/merge": "^1.3.0",
     "tailwindcss": "^4.1.16",
-    "tailwindcss-patch": "^7.1.6",
+    "tailwindcss-patch": "^8.0.0",
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "workspace:*"
   }

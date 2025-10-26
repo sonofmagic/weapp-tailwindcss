@@ -13,9 +13,10 @@ export function createContext(options: UserDefinedOptions = {}) {
   const { templateHandler, styleHandler, jsHandler, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
-  twPatcher.patch()
+  const patchPromise = Promise.resolve(twPatcher.patch())
 
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
+    await patchPromise
     const result = await styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
     }))
@@ -24,6 +25,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
+    await patchPromise
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
@@ -33,6 +35,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
+    await patchPromise
     if (!options?.runtimeSet && runtimeSet.size === 0) {
       runtimeSet = await collectRuntimeClassSet(twPatcher)
     }

@@ -7,7 +7,6 @@ export default defineConfig({
   },
   plugins: [UnifiedViteWeappTailwindcssPlugin({
     rem2rpx: true,
-    tailwindcssBasedir: __dirname,
   })],
   css: {
     preprocessorOptions: {

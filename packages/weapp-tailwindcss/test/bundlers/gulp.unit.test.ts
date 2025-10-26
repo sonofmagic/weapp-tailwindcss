@@ -16,7 +16,6 @@ interface InternalContext {
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
-    getClassSetV3: ReturnType<typeof vi.fn>
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
@@ -67,7 +66,6 @@ describe('bundlers/gulp createPlugins', () => {
     twPatcher = {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
-      getClassSetV3: vi.fn(async () => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     }

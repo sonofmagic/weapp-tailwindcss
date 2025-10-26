@@ -125,13 +125,13 @@ describe('get options', () => {
     let config = getCompilerContext({
 
     })
-    let cacheOptions = config.twPatcher.cacheOptions
-    expect(cacheOptions?.enable).toBe(true)
+    let cacheOptions = config.twPatcher.options?.cache
+    expect(cacheOptions?.enabled).toBe(true)
     expect(cacheOptions?.dir).not.toBeTruthy()
     config = getCompilerContext({
       appType: 'mpx',
     })
-    cacheOptions = config.twPatcher.cacheOptions
+    cacheOptions = config.twPatcher.options?.cache
     expect(cacheOptions?.dir).toBeTruthy()
   })
 

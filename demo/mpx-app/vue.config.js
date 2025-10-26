@@ -26,7 +26,6 @@ module.exports = defineConfig({
   configureWebpack(config) {
     let start
     config.plugins.push(new UnifiedWebpackPluginV5({
-      tailwindcssBasedir: __dirname,
       onStart() {
         // start = performance.now()
         bench.start()

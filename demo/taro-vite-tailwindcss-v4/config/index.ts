@@ -50,7 +50,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         UnifiedViteWeappTailwindcssPlugin({
           rem2rpx: true,
-          tailwindcssBasedir: __dirname,
           // injectAdditionalCssVarScope: true,
         })
       ]

@@ -130,7 +130,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     return
   }
 
-  twPatcher.patch()
+  const patchPromise = Promise.resolve(twPatcher.patch())
   let runtimeSet: Set<string> | undefined
   let resolvedConfig: ResolvedConfig | undefined
   onLoad()
@@ -151,6 +151,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
       },
       async generateBundle(_opt, bundle) {
+        await patchPromise
         debug('start')
         onStart()
 
@@ -300,6 +301,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                   debug('css cache hit: %s', file)
                 },
                 async transform() {
+                  await patchPromise
                   const { css } = await styleHandler(rawSource, {
                     isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
                     postcssOptions: {
@@ -337,6 +339,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           name: `weapp-tailwindcss:uni-app-x:css${enforce ? `:${enforce}` : ''}`,
           enforce,
           async transform(code, id) {
+            await patchPromise
             const { query } = parseVueRequest(id)
             if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
             // uvue only support classname selector
@@ -378,6 +381,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         name: 'weapp-tailwindcss:uni-app-x:nvue',
         enforce: 'pre',
         async buildStart() {
+          await patchPromise
           runtimeSet = await collectRuntimeClassSet(twPatcher)
         },
         transform(code, id) {

@@ -49,14 +49,11 @@ export type ICustomAttributesEntities = [string | RegExp, ItemOrItemArray<string
 
 export interface TailwindcssPatcherLike {
   packageInfo: TailwindcssPatcher['packageInfo']
-  majorVersion?: number
+  majorVersion?: TailwindcssPatcher['majorVersion']
   patch: TailwindcssPatcher['patch']
   getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
-  getClassSetV3: AsyncableMethod<TailwindcssPatcher['getClassSetV3']>
   extract: TailwindcssPatcher['extract']
-  cacheOptions?: TailwindcssPatcher['cacheOptions']
-  patchOptions?: TailwindcssPatcher['patchOptions']
-  rawOptions?: TailwindcssPatcher['rawOptions']
+  options?: TailwindcssPatcher['options']
 }
 
 export interface IJsHandlerOptions {

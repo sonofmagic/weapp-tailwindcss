@@ -50,13 +50,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    twPatcher.patch()
+    const patchPromise = Promise.resolve(twPatcher.patch())
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
     async function getClassSetInLoader() {
-      if (twPatcher.majorVersion !== 4) {
-        await twPatcher.getClassSetV3()
-      }
+      await patchPromise
+      await collectRuntimeClassSet(twPatcher)
     }
 
     onLoad()
@@ -92,6 +91,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         async (assets) => {
           onStart()
           debug('start')
+          await patchPromise
 
           // 第一次进来的时候为 init
           for (const chunk of compilation.chunks) {
@@ -262,6 +262,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
                     debug('css cache hit: %s', file)
                   },
                   transform: async () => {
+                    await patchPromise
                     const { css } = await styleHandler(rawSource, {
                       isMainChunk: mainCssChunkMatcher(file, this.appType),
                       postcssOptions: {

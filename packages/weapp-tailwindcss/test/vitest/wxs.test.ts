@@ -16,7 +16,8 @@ interface ExtractSourceToken {
 }
 async function getClassCacheSet() {
   const twPatcher = new TailwindcssPatcher()
-  return twPatcher.getClassCacheSet()
+  await twPatcher.patch()
+  return twPatcher.getClassSet()
 }
 const getCase = createGetCase(wxsCasePath)
 

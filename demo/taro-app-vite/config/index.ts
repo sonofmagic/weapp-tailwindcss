@@ -48,7 +48,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         uvtw({
           rem2rpx: true,
-          tailwindcssBasedir: __dirname,
           // 除了小程序这些，其他平台都 disabled
           disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
           injectAdditionalCssVarScope: true,

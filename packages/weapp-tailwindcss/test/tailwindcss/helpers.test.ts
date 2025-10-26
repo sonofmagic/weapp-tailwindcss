@@ -1,3 +1,5 @@
+import { mkdtemp, rm } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -82,9 +84,9 @@ describe('tailwindcss helpers', () => {
     expect(tailwindcssPatcherMock).toHaveBeenCalledTimes(1)
     const callArgs = tailwindcssPatcherMock.mock.calls[0][0] as any
     expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
-    expect(callArgs.patch.applyPatches.extendLengthUnits).toBe(false)
-    expect(callArgs.patch.basedir).toBe('/repo')
-    expect(Array.isArray(callArgs.patch.resolve.paths)).toBe(true)
+    expect(callArgs.features?.extendLengthUnits).toBe(false)
+    expect(callArgs.cwd).toBe('/repo')
+    expect(Array.isArray(callArgs.tailwind?.resolve?.paths)).toBe(true)
     expect(patcher.packageInfo.version).toBe('3.4.17')
   })
 
@@ -124,10 +126,43 @@ describe('tailwindcss helpers', () => {
     expect(loggerWarnMock).toHaveBeenCalled()
     expect(patcher.packageInfo.version).toBeUndefined()
     await expect(patcher.getClassSet()).resolves.toEqual(new Set())
-    await expect(patcher.getClassSetV3()).resolves.toEqual(new Set())
     await expect(patcher.extract()).resolves.toEqual({
       classList: [],
       classSet: new Set<string>(),
     })
+  })
+
+  it('resolves tailwindcss postcss plugin from basedir node_modules', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const repoRoot = path.resolve(__dirname, '../../../..')
+
+    createTailwindcssPatcher({
+      basedir: repoRoot,
+    })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const callArgs = lastCall?.[0] as any
+    expect(callArgs.tailwind?.postcssPlugin).toBeDefined()
+    expect(typeof callArgs.tailwind?.postcssPlugin).toBe('string')
+    expect(path.isAbsolute(callArgs.tailwind?.postcssPlugin)).toBe(true)
+  })
+
+  it('falls back to default tailwind config when project has none', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-no-config-'))
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    try {
+      createTailwindcssPatcher({
+        basedir: tempDir,
+      })
+      const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+      const callArgs = lastCall?.[0] as any
+      expect(callArgs.tailwind?.config).toBeDefined()
+      expect(typeof callArgs.tailwind?.config).toBe('string')
+      expect(path.isAbsolute(callArgs.tailwind?.config)).toBe(true)
+    }
+    finally {
+      await rm(tempDir, { recursive: true, force: true })
+    }
   })
 })

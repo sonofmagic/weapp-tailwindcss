@@ -42,7 +42,7 @@
     "postcss": "^8.5.3",
     "process": "^0.11.10",
     "tailwindcss": "^4.1.15",
-    "tailwindcss-patch": "^7.1.6",
+    "tailwindcss-patch": "^8.0.0",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.0.0",
     "weapp-tailwindcss": "workspace:*",

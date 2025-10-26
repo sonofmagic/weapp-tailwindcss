@@ -10,7 +10,7 @@ import type {
   Px2rpxOptions, 
   Rem2rpxOptions,
 } from '@weapp-tailwindcss/postcss'
-import type { ILengthUnitsPatchOptions, PatchOptions, TailwindcssPatcherOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from './cache'
 import type { AppType, IArbitraryValues, ICustomAttributes } from './types'
 
@@ -240,7 +240,7 @@ export interface UserDefinedOptions {
    * @version `^4.0.0`
    * @group 0.重要配置
    */
-  tailwindcss?: PatchOptions['tailwindcss']
+  tailwindcss?: TailwindcssPatchOptions['tailwind']
 
   /**
    * 指定 tailwindcss@4 的入口 CSS。
@@ -501,7 +501,7 @@ export interface UserDefinedOptions {
    *
    * @group 3.一般配置
    */
-  tailwindcssPatcherOptions?: TailwindcssPatcherOptions
+  tailwindcssPatcherOptions?: TailwindcssPatchOptions
   /**
    * 控制命令行日志输出级别。
    *
@@ -548,5 +548,5 @@ export interface UserDefinedOptions {
 }
 
 export type {
-  TailwindcssPatcherOptions,
+  TailwindcssPatchOptions,
 }

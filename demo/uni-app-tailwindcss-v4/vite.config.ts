@@ -24,7 +24,6 @@ export default defineConfig(async () => {
       UnifiedViteWeappTailwindcssPlugin(
         {
           rem2rpx: true,
-          // tailwindcssBasedir: __dirname,
           cssEntries:[
             path.resolve(__dirname, 'src/main.css')
           ]

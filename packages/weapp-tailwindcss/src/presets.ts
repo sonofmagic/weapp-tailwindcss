@@ -30,19 +30,16 @@ export function uniAppX(options: UniAppXOptions) {
       rem2rpx: options.rem2rpx,
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
-        patch: {
+        cwd: options.base,
+        tailwind: {
           cwd: options.base,
           resolve: options.resolve,
-          tailwindcss: {
-            // @ts-ignore
+          v3: {
             cwd: options.base,
-            v3: {
-              cwd: options.base,
-            },
-            v4: {
-              base: options.base,
-              cssEntries: options.cssEntries,
-            },
+          },
+          v4: {
+            base: options.base,
+            cssEntries: options.cssEntries,
           },
         },
       },
@@ -102,21 +99,20 @@ export function hbuilderx(options: HBuilderXOptions = {}) {
     tailwindConfig.version = 4
     patchTailwindConfig.version = 4
   }
-  const patchOptions: NonNullable<UserDefinedOptions['tailwindcssPatcherOptions']>['patch'] = {
-    basedir: baseDir,
-    cwd: baseDir,
-    tailwindcss: patchTailwindConfig,
-  }
 
-  if (options.resolve) {
-    patchOptions.resolve = options.resolve
-  }
+  const resolvedTailwind = options.resolve
+    ? {
+        ...patchTailwindConfig,
+        resolve: options.resolve,
+      }
+    : patchTailwindConfig
 
   const preset: Partial<UserDefinedOptions> = {
     tailwindcssBasedir: baseDir,
     tailwindcss: tailwindConfig,
     tailwindcssPatcherOptions: {
-      patch: patchOptions,
+      cwd: baseDir,
+      tailwind: resolvedTailwind,
     },
   }
 

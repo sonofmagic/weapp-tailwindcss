@@ -8,7 +8,6 @@ module.exports = ({ context, onGetWebpackConfig }) => {
     config.plugin('RaxTailwindcssWebpackPluginV5').use(UnifiedWebpackPluginV5, [
       {
         rem2rpx: true,
-        tailwindcssBasedir: __dirname,
         onStart() {
           bench.start()
         },

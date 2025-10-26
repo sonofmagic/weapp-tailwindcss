@@ -85,7 +85,7 @@
     "react-refresh": "^0.18.0",
     "stylelint": "^16.25.0",
     "tailwindcss": "^4.1.16",
-    "tailwindcss-patch": "^7.1.6",
+    "tailwindcss-patch": "^8.0.0",
     "terser": "^5.44.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",

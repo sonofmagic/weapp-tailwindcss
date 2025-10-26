@@ -1,33 +1,40 @@
 const fs = require('node:fs')
+const { createRequire } = require('node:module')
 const path = require('node:path')
 const postcss = require('postcss7')
-const tailwindcss = require('tailwindcss')
+
+const tailwindcssRequire = createRequire(require.resolve('tailwindcss/package.json', { paths: [__dirname] }))
+const tailwindcss = tailwindcssRequire('tailwindcss')
 const { TailwindcssPatcher } = require('tailwindcss-patch')
 const { createContext } = require('weapp-tailwindcss/core')
+
+function createTailwindCompatOptions() {
+  const tailwindEntry = require.resolve('tailwindcss', { paths: [__dirname] })
+  return {
+    version: 2,
+    packageName: 'tailwindcss',
+    cwd: __dirname,
+    postcssPlugin: tailwindEntry,
+    v2: {
+      cwd: __dirname,
+      postcssPlugin: tailwindEntry,
+    },
+  }
+}
 
 const { transformWxss } = createContext(
   {
     rem2rpx: true,
     tailwindcssPatcherOptions: {
-      patch: {
-        resolve: {
-          paths: [path.resolve(__dirname, './node_modules')],
-        },
-      },
+      cwd: __dirname,
+      tailwind: createTailwindCompatOptions(),
     },
   },
 )
 
 async function main() {
   const twPatcher = new TailwindcssPatcher({
-    patch: {
-      resolve: {
-        paths: [
-          __filename,
-          // import.meta.url
-        ],
-      },
-    },
+    tailwind: createTailwindCompatOptions(),
   })
   twPatcher.patch()
 
@@ -42,10 +49,9 @@ async function main() {
       preflight: false,
     },
   })
-  const result = postcss([tw]).process(`@tailwind base;
+  const result = await postcss([tw]).process(`@tailwind base;
   @tailwind components;
-  @tailwind utilities;`)
-  // console.log(result.css)
+  @tailwind utilities;`, { from: undefined })
   fs.writeFileSync(path.join(__dirname, 'result.css'), result.css, 'utf8')
   fs.writeFileSync(path.join(__dirname, 'transformed.css'), (await transformWxss(result.css)).css, 'utf8')
 

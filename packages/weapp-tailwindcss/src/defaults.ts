@@ -114,10 +114,8 @@ export function getDefaultOptions(): UserDefinedOptions {
     ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva', 'tv'] : [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     tailwindcssPatcherOptions: {
-      patch: {
-        filter(className) {
-          return !isAllowedClassName(className)
-        },
+      filter(className: string) {
+        return !isAllowedClassName(className)
       },
     },
     logLevel: 'info',

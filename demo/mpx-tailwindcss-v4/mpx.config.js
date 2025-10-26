@@ -26,7 +26,6 @@ module.exports = defineConfig({
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
-        tailwindcssBasedir: __dirname
       })
     )
   },

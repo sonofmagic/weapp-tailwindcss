@@ -70,7 +70,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   rem2rpx: true,
-                  // tailwindcssBasedir: path.resolve(__dirname, '../'),
                   tailwindcss: {
                     // 显示声明用的是 tailwindcss v4
                     version: 4,
