@@ -11,7 +11,6 @@ interface InternalContext {
   templateHandler: ReturnType<typeof vi.fn>
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
-  setMangleRuntimeSet: ReturnType<typeof vi.fn>
   cache: ReturnType<typeof createCache>
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
@@ -50,19 +49,18 @@ describe('bundlers/gulp createPlugins', () => {
   let styleHandler: ReturnType<typeof vi.fn>
   let templateHandler: ReturnType<typeof vi.fn>
   let jsHandler: ReturnType<typeof vi.fn>
-  let setMangleRuntimeSet: ReturnType<typeof vi.fn>
+  let runtimeSet: Set<string>
   let twPatcher: any
 
   beforeEach(() => {
     const cache = createCache()
-    const runtimeSet = new Set(['foo'])
+    runtimeSet = new Set(['foo'])
 
     styleHandler = vi.fn(async (source: string) => ({
       css: `css:${source}`,
     }))
     templateHandler = vi.fn(async (source: string) => `tpl:${source}`)
     jsHandler = vi.fn(async (source: string) => ({ code: `js:${source}` }))
-    setMangleRuntimeSet = vi.fn()
     twPatcher = {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
@@ -74,7 +72,6 @@ describe('bundlers/gulp createPlugins', () => {
       templateHandler,
       styleHandler,
       jsHandler,
-      setMangleRuntimeSet,
       cache,
       twPatcher,
     }
@@ -91,8 +88,6 @@ describe('bundlers/gulp createPlugins', () => {
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(setMangleRuntimeSet).toHaveBeenCalledTimes(1)
-    expect([...setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['foo'])
     expect(twPatcher.extract).toHaveBeenCalledTimes(1)
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
@@ -105,10 +100,9 @@ describe('bundlers/gulp createPlugins', () => {
     const jsFile = createFile('/src/app.js', 'console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
-    const runtimeSetFromCss = setMangleRuntimeSet.mock.calls[0][0]
     expect(jsHandler).toHaveBeenCalledWith(
       'console.log("hi")',
-      runtimeSetFromCss,
+      runtimeSet,
       expect.objectContaining({
         filename: expect.stringContaining('app.js'),
         moduleGraph: expect.objectContaining({

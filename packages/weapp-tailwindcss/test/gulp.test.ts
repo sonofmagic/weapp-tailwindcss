@@ -69,37 +69,4 @@ describe('gulp', () => {
   it('common build', async () => {
     await matchSnap(createPlugins())
   })
-
-  it('common build with mangle true', async () => {
-    await matchSnap(
-      createPlugins({
-        mangle: true,
-      }),
-    )
-  })
-
-  it('common build with mangle options prefix', async () => {
-    await matchSnap(
-      createPlugins({
-        mangle: {
-          classGenerator: {
-            classPrefix: '',
-          },
-        },
-      }),
-    )
-  })
-
-  it('common build with mangle options mangleClassFilter always true', async () => {
-    await matchSnap(
-      createPlugins({
-        mangle: {
-          classGenerator: {
-            classPrefix: '',
-          },
-          mangleClassFilter: () => true,
-        },
-      }),
-    )
-  })
 })

@@ -33,7 +33,6 @@ function createContext(overrides: Record<string, unknown> = {}) {
     jsHandler: vi.fn(async (code: string) => ({ code: `js:${code}` })),
     mainCssChunkMatcher: vi.fn(() => true),
     appType: 'uni-app',
-    setMangleRuntimeSet: vi.fn(),
     cache,
     cssMatcher: (file: string) => file.endsWith('.css'),
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
@@ -161,8 +160,6 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
-    expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(1)
-    expect([...currentContext.setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['alpha'])
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
@@ -190,7 +187,6 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
-    expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(2)
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
@@ -214,7 +210,6 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
     }
-    currentContext.setMangleRuntimeSet = vi.fn()
     currentContext.onStart = vi.fn()
     currentContext.onEnd = vi.fn()
 

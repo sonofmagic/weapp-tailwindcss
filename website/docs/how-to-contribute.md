@@ -103,7 +103,6 @@ Why？
 - `debug`: `debug` 调试用
 - `extractors`: 提取器，用于分割字符串
 - `js`: 用于处理转译 `js` 结果的地方
-- `mangle`: `mangle` 上下文
 - `postcss`: 和 `postcss` 相关，用于处理所有 `wxss` 结果的地方
 - `tailwindcss`: 用于 `hack` `tailwindcss`，给它打补丁，强制让它支持小程序的一些特性
 - `wxml`: 处理 `wxml` 的地方

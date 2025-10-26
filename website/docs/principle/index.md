@@ -119,8 +119,6 @@ Page({
 
 那么，我们是否有什么方式，去获取到 `tailwindcss` 的上下文，再从里面把它所有的类名提取出来，再和我们应用程序里面的字符串进行匹配，从而做到精确转义呢？可是 `tailwindcss` 只是一个 `postcss` 插件啊，怎么从 `webpack` / `vite` 插件里，把一个 `postcss` 插件里的内容取出来呢？
 
-很开心的是我办到了，这就是 [tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle) 做的事情。
-
 通过这种方式，我们可以在 `postcss` / `postcss-loader` 执行之后，把 `tailwindcss` 执行时的 1 或者多个上下文给取出来，交给插件进行使用，从而达到所有 `js` 字符串字面量筛选的效果，简单实用 `babel` 实现的代码如下:
 
 ```js

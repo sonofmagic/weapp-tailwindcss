@@ -402,23 +402,9 @@ describe('jsHandler', () => {
     // ";
   })
 
-  it('mangleContext case', async () => {
-    const set: Set<string> = new Set()
-    // set.add('*')
-    set.add('w-[100px]')
-    const { jsHandler, setMangleRuntimeSet } = getCompilerContext({
-      mangle: true,
-    })
-    setMangleRuntimeSet(set)
-    const { code } = await jsHandler('const n = \'* 1 * 2 w-[100px]\'', set)
-    expect(code).toBe('const n = \'* 1 * 2 tw-a\'')
-  })
-
   // it('source map case 0', () => {
   //   const set: Set<string> = new Set()
   //   set.add('w-[100px]')
-  //   const { jsHandler, setMangleRuntimeSet } = getCompilerContext()
-  //   setMangleRuntimeSet(set)
   //   const { code, map } = jsHandler("const n = '* 1 * 2 w-[100px]'", set)
   //   expect(code).toBe("const n = '* 1 * 2 w-_100px_'")
   //   expect(map).toBeTruthy()

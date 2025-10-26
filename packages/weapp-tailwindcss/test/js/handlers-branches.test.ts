@@ -1,7 +1,7 @@
 import type { NodePath } from '@babel/traverse'
 import type { NumericLiteral, StringLiteral, TemplateElement } from '@babel/types'
 import { MappingChars2String } from '@weapp-core/escape'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { parse, traverse } from '@/babel'
 import { replaceHandleValue } from '@/js/handlers'
 
@@ -105,57 +105,6 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token).toBeUndefined()
-  })
-
-  it('updates content when the mangle context changes the source', () => {
-    const literal = getLiteralPath('const mangled = \'w-[100px]\'', 'StringLiteral')
-    const ctx = {
-      jsHandler: vi.fn(() => 'tw-a'),
-    } as any
-
-    const token = replaceHandleValue(literal, {
-      escapeMap: MappingChars2String,
-      classNameSet: new Set(['w-[100px]']),
-      mangleContext: ctx,
-      needEscaped: true,
-    })
-
-    expect(ctx.jsHandler).toHaveBeenCalledTimes(1)
-    expect(token?.value).toBe('tw-a')
-  })
-
-  it('ignores mangle results that keep the original value', () => {
-    const literal = getLiteralPath('const noop = \'w-[100px]\'', 'StringLiteral')
-    const ctx = {
-      jsHandler: vi.fn((raw: string) => raw),
-    } as any
-
-    const token = replaceHandleValue(literal, {
-      escapeMap: MappingChars2String,
-      classNameSet: new Set(['w-[100px]']),
-      mangleContext: ctx,
-      needEscaped: true,
-    })
-
-    expect(ctx.jsHandler).toHaveBeenCalledTimes(1)
-    expect(token?.value).toBe('w-_100px_')
-  })
-
-  it('normalises through mangle context only once for multiple candidates', () => {
-    const literal = getLiteralPath('const multi = \'w-[100px] flex\'', 'StringLiteral')
-    const ctx = {
-      jsHandler: vi.fn((raw: string) => raw),
-    } as any
-
-    const token = replaceHandleValue(literal, {
-      escapeMap: MappingChars2String,
-      classNameSet: new Set(['w-[100px]', 'flex']),
-      mangleContext: ctx,
-      needEscaped: true,
-    })
-
-    expect(ctx.jsHandler).toHaveBeenCalledTimes(1)
-    expect(token?.value).toBe('w-_100px_ flex')
   })
 
   it('decodes unicode escape sequences before processing', () => {

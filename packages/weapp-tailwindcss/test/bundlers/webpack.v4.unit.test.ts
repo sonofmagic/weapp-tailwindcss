@@ -16,7 +16,6 @@ interface TestContext {
   templateHandler: ReturnType<typeof vi.fn>
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
-  setMangleRuntimeSet: ReturnType<typeof vi.fn>
   cache: ReturnType<typeof createCache>
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
@@ -53,7 +52,6 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
     styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
     jsHandler: vi.fn(async (code: string) => ({ code: `js:${code}` })),
-    setMangleRuntimeSet: vi.fn(),
     cache,
     twPatcher: {
       patch: vi.fn(),
@@ -146,8 +144,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(1)
-    expect([...currentContext.setMangleRuntimeSet.mock.calls[0][0]]).toEqual(['gamma'])
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
@@ -177,7 +173,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
-    expect(currentContext.setMangleRuntimeSet).toHaveBeenCalledTimes(2)
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)

@@ -20,8 +20,6 @@
 
 ### [tailwindcss 多上下文与独立分包](./quick-start/independent-pkg)
 
-### [类名的压缩与混淆](./mangle)
-
 ### [wxs的转义与处理](./quick-start/wxs)
 
 ## 社群

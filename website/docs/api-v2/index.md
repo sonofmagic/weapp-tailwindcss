@@ -136,7 +136,6 @@ custom_edit_url: null
 | `escapeMap?`       | `Record`<`string`, `string`\>                                                    |
 | `generateMap?`     | `boolean`                                                                        |
 | `jsPreserveClass?` | (`keyword`: `string`) => `boolean` \| `undefined`                                |
-| `mangleContext?`   | [`IMangleScopeContext`](interfaces/IMangleScopeContext.md)                       |
 | `minifiedJs?`      | `boolean`                                                                        |
 | `needEscaped?`     | `boolean`                                                                        |
 | `strategy?`        | [`UserDefinedOptions`](interfaces/UserDefinedOptions.md)[``"jsEscapeStrategy"``] |
@@ -149,7 +148,7 @@ custom_edit_url: null
 
 ### IStyleHandlerOptions
 
-Ƭ **IStyleHandlerOptions**: \{ `customRuleCallback?`: [`CustomRuleCallback`](#customrulecallback) ; `mangleContext?`: [`IMangleScopeContext`](interfaces/IMangleScopeContext.md) } & [`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)
+Ƭ **IStyleHandlerOptions**: \{ `customRuleCallback?`: [`CustomRuleCallback`](#customrulecallback) } & [`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)
 
 #### Defined in
 

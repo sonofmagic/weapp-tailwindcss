@@ -33,7 +33,7 @@ function decodeUnicode(s: string) {
 }
 
 export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsHandlerOptions, ms: MagicString, offset = 0) {
-  const { classNameSet: set, escapeMap, mangleContext: ctx, needEscaped = false, jsPreserveClass, arbitraryValues, always, unescapeUnicode } = options
+  const { classNameSet: set, escapeMap, needEscaped = false, jsPreserveClass, arbitraryValues, always, unescapeUnicode } = options
 
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
 
@@ -55,10 +55,6 @@ export function replaceHandleValue(str: string, node: ReplaceNode, options: IJsH
       }
 
       if (!ignoreFlag) {
-        if (ctx) {
-          rawStr = ctx.jsHandler(rawStr)
-        }
-
         rawStr = rawStr.replace(
           new RegExp(escapeStringRegexp(v)),
           replaceWxml(v, {

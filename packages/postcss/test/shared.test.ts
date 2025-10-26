@@ -1,4 +1,3 @@
-import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
 import { composeIsPseudo, internalCssSelectorReplacer } from '@/shared'
 
 describe('internalCssSelectorReplacer', () => {
@@ -15,18 +14,6 @@ describe('internalCssSelectorReplacer', () => {
     })
 
     expect(value).toBe('viewGTtextDOTbtn')
-  })
-
-  it('runs the mangle css handler before escaping', () => {
-    const mangleContext = {
-      cssHandler: (raw: string) => raw.replace('primary', 'p'),
-    } as unknown as IMangleScopeContext
-
-    const value = internalCssSelectorReplacer('.primary:hover', {
-      mangleContext,
-    })
-
-    expect(value).toBe('dpchover')
   })
 })
 

@@ -80,18 +80,6 @@ custom_edit_url: null
 
 [types.ts:441](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L441)
 
----
-
-### mangleContext
-
-• `Optional` **mangleContext**: [`IMangleScopeContext`](IMangleScopeContext.md)
-
-#### Defined in
-
-[types.ts:452](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L452)
-
----
-
 ### quote
 
 • `Optional` **quote**: `null` \| `string`

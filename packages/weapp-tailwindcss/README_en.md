@@ -51,7 +51,7 @@
 | --------------------------------------------------- | --------------------------------------------------- |
 | ![wepback+vite+gulp](./assets/weapp-tw-plugins.png) | ![frameworks](./assets/weapp-tw-frameworks.png)     |
 
-This plugin allows you to use tailwindcss in `weapp`. At the same time, it provides the functions of tailwindcss class name escape and mangle.
+This plugin allows you to use tailwindcss in `weapp`. At the same time, it provides the functions of tailwindcss class name escape.
 
 > What's [`weapp`](https://mp.weixin.qq.com/cgi-bin/wx) ?
 > it is a program running in [`WeChat`](https://en.wikipedia.org/wiki/WeChat),[Alipay](https://en.wikipedia.org/wiki/Alipay) or other third-party applications.

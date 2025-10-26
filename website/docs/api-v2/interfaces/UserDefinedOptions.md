@@ -491,26 +491,6 @@ js 字面量以及模板字符串的转义替换模式
 
 [types.ts:134](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L134)
 
----
-
-### mangle
-
-• `Optional` **mangle**: `boolean` \| [`IMangleOptions`](IMangleOptions.md)
-
-**`Description`**
-
-是否压缩混淆 `wxml`,`js` 和 `wxss` 中指定范围的 `class` 以避免选择器过长问题，默认为`false`不开启，详细配置见 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle)
-
-**`Url`**
-
-<https://github.com/sonofmagic/tailwindcss-mangle>
-
-#### Defined in
-
-[types.ts:296](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L296)
-
----
-
 ### minifiedJs
 
 • `Optional` **minifiedJs**: `boolean`

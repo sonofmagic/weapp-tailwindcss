@@ -15,13 +15,3 @@ custom_edit_url: null
 #### Defined in
 
 [types.ts:38](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L38)
-
----
-
-### mangleContext
-
-• `Optional` **mangleContext**: [`IMangleScopeContext`](IMangleScopeContext.md)
-
-#### Defined in
-
-[types.ts:37](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L37)
