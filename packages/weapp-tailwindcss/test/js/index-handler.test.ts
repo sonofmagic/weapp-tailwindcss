@@ -1,3 +1,4 @@
+import { MappingChars2String } from '@weapp-core/escape'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
 import * as babel from '@/js/babel'
@@ -8,6 +9,9 @@ function createBaseOptions() {
     arbitraryValues: { allowDoubleQuotes: true },
     jsPreserveClass: vi.fn(),
     generateMap: true,
+    needEscaped: true,
+    alwaysEscape: true,
+    unescapeUnicode: true,
     babelParserOptions: { sourceType: 'module' as const },
     ignoreCallExpressionIdentifiers: ['cn'],
     ignoreTaggedTemplateExpressionIdentifiers: [/^styled$/],
@@ -45,6 +49,9 @@ describe('createJsHandler', () => {
     expect(resolved.arbitraryValues).toBe(base.arbitraryValues)
     expect(resolved.jsPreserveClass).toBe(base.jsPreserveClass)
     expect(resolved.generateMap).toBe(true)
+    expect(resolved.needEscaped).toBe(override.needEscaped)
+    expect(resolved.alwaysEscape).toBe(true)
+    expect(resolved.unescapeUnicode).toBe(true)
     expect(resolved.babelParserOptions).toBe(base.babelParserOptions)
     expect(resolved.babelParserOptions).toBe(base.babelParserOptions)
     expect(resolved.ignoreTaggedTemplateExpressionIdentifiers).toBe(base.ignoreTaggedTemplateExpressionIdentifiers)
@@ -65,5 +72,18 @@ describe('createJsHandler', () => {
     expect(resolved.classNameSet).toBeUndefined()
     expect(resolved.escapeMap).toBe(base.escapeMap)
     expect(resolved.ignoreCallExpressionIdentifiers).toBe(base.ignoreCallExpressionIdentifiers)
+    expect(resolved.needEscaped).toBe(true)
+    expect(resolved.alwaysEscape).toBe(true)
+    expect(resolved.unescapeUnicode).toBe(true)
+  })
+
+  it('escapes class names when alwaysEscape is provided at creation time', () => {
+    const handler = createJsHandler({
+      escapeMap: MappingChars2String,
+      alwaysEscape: true,
+    })
+
+    const { code } = handler('const cls = "w-[100px]"', new Set())
+    expect(code).toContain('w-_100px_')
   })
 })

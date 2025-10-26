@@ -54,7 +54,10 @@ exports[`get options > default options 1`] = `
   "cssRemoveHoverPseudoClass": true,
   "cssRemoveProperty": true,
   "cssSelectorReplacement": {
-    "root": "page",
+    "root": [
+      "page",
+      ".tw-root",
+    ],
     "universal": [
       "view",
       "text",
@@ -148,9 +151,7 @@ exports[`get options > default options 1`] = `
   "styleHandler": [Function],
   "tailwindcssBasedir": "<cwd>",
   "tailwindcssPatcherOptions": {
-    "patch": {
-      "filter": [Function],
-    },
+    "filter": [Function],
   },
   "templateHandler": [Function],
   "wxsMatcher": [Function],

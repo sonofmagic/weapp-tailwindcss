@@ -83,6 +83,9 @@ const GenPagesIndexIndexStyles = [utsMapOf([["icebreaker", padStyleMapOf(utsMapO
 
 exports[`uni-app-x > uvue.ts case 1 > css 1`] = `
 "/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
+.tw-root, {
+  --spacing: .25rem;
+}
 .mt-_32d43rpx_ {
   margin-top: 32.43rpx;
 }
