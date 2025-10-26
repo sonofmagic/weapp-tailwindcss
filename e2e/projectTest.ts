@@ -1,5 +1,7 @@
 import type { ProjectEntry } from './shared'
 import fs from 'node:fs/promises'
+import process from 'node:process'
+import { execa } from 'execa'
 import automator from 'miniprogram-automator'
 import path from 'pathe'
 import { describe, it } from 'vitest'
@@ -29,6 +31,8 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const projectBase = path.resolve(__dirname, options.fixturesDir)
   const projectPath = path.resolve(projectBase, entry.projectPath)
   const root = path.resolve(projectBase, entry.name)
+
+  await ensureProjectBuilt(root)
 
   try {
     await fs.rm(path.resolve(root, 'node_modules/.cache'), { recursive: true, force: true })
@@ -124,4 +128,59 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
   await expect(content).toMatchFileSnapshot(snapshotPath)
+}
+
+const buildTasks = new Map<string, Promise<void>>()
+
+async function ensureProjectBuilt(root: string) {
+  const existing = buildTasks.get(root)
+  if (existing) {
+    return existing
+  }
+
+  const task = (async () => {
+    let pkg: { name?: string, scripts?: Record<string, string> } | undefined
+    const pkgPath = path.resolve(root, 'package.json')
+    try {
+      const content = await fs.readFile(pkgPath, 'utf8')
+      pkg = JSON.parse(content)
+    }
+    catch {
+      return
+    }
+
+    const buildScript = pkg?.scripts?.build
+    if (!buildScript) {
+      return
+    }
+
+    const stdio = process.env.E2E_DEBUG_BUILD === '1' ? 'inherit' : 'pipe'
+    try {
+      await execa('pnpm', ['run', 'build'], {
+        cwd: root,
+        env: {
+          ...process.env,
+          npm_package_json: pkgPath,
+          PNPM_PACKAGE_NAME: pkg?.name ?? process.env.PNPM_PACKAGE_NAME,
+          INIT_CWD: root,
+        },
+        stdio,
+      })
+    }
+    catch (error) {
+      if (stdio !== 'inherit') {
+        console.error(`[e2e] build failed in ${root}`, error)
+      }
+      throw error
+    }
+  })()
+
+  buildTasks.set(root, task)
+  try {
+    await task
+  }
+  catch (error) {
+    buildTasks.delete(root)
+    throw error
+  }
 }

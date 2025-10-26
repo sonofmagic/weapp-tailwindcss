@@ -105,17 +105,56 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
       }
     : undefined
 
-  if (await shouldSkipExtraction(patchOptions)) {
-    const classList = await readClassListFromFile(outputOptions?.filename)
-    return {
-      classList,
-      output: outputOptions,
+  const fallbackOutputFilename = path.resolve(root, '.tw-patch/tw-class-list.json')
+  const effectiveOutput = outputOptions ?? { filename: fallbackOutputFilename }
+
+  if (process.env.E2E_FORCE_EXTRACT !== 'true') {
+    const cachedClassList = await readClassListFromFile(effectiveOutput?.filename)
+    if (cachedClassList) {
+      return {
+        classList: cachedClassList,
+        output: effectiveOutput,
+      }
     }
   }
+
+  const packageJsonPath = path.resolve(root, 'package.json')
+  let packageName: string | undefined
+  try {
+    const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf8')) as { name?: string } | undefined
+    packageName = typeof pkg?.name === 'string' && pkg.name.length > 0 ? pkg.name : undefined
+  }
+  catch {
+    packageName = undefined
+  }
+
+  const previousEnv = {
+    npm_package_json: process.env.npm_package_json,
+    PNPM_PACKAGE_NAME: process.env.PNPM_PACKAGE_NAME,
+    INIT_CWD: process.env.INIT_CWD,
+  }
+
+  if (await exists(packageJsonPath)) {
+    process.env.npm_package_json = packageJsonPath
+  }
+  else {
+    delete process.env.npm_package_json
+  }
+  if (packageName) {
+    process.env.PNPM_PACKAGE_NAME = packageName
+  }
+  else {
+    delete process.env.PNPM_PACKAGE_NAME
+  }
+  process.env.INIT_CWD = root
 
   const twPatcher = new TailwindcssPatcher({
     patch: patchOptions,
   })
+
+  if (process.env.E2E_DEBUG_PATCH === '1') {
+    console.log('[e2e] Tailwind patch options for %s: %o', root, patchOptions.tailwindcss)
+  }
 
   const originalCwd = process.cwd()
   try {
@@ -125,16 +164,31 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
     const result = await twPatcher.extract({ write: false })
     return {
       classList: result?.classList,
-      output: outputOptions,
+      output: effectiveOutput,
     }
   }
   finally {
+    if (previousEnv.npm_package_json !== undefined) {
+      process.env.npm_package_json = previousEnv.npm_package_json
+    }
+    else {
+      delete process.env.npm_package_json
+    }
+    if (previousEnv.PNPM_PACKAGE_NAME !== undefined) {
+      process.env.PNPM_PACKAGE_NAME = previousEnv.PNPM_PACKAGE_NAME
+    }
+    else {
+      delete process.env.PNPM_PACKAGE_NAME
+    }
+    if (previousEnv.INIT_CWD !== undefined) {
+      process.env.INIT_CWD = previousEnv.INIT_CWD
+    }
+    else {
+      delete process.env.INIT_CWD
+    }
     if (process.cwd() !== originalCwd) {
       process.chdir(originalCwd)
     }
-  }
-  return {
-    output: outputOptions,
   }
 }
 
@@ -217,9 +271,14 @@ function normalizePatchOptions(root: string, patchOptions: NormalizedPatchOption
       tw.postcssPlugin = tailwindInfo.pluginPath ?? (tailwindInfo.major >= 4 ? '@tailwindcss/postcss' : 'tailwindcss')
     }
     resolved.tailwindcss = tw
+    resolved.tailwind = { ...tw }
   }
   else if (tw) {
     resolved.tailwindcss = tw
+    resolved.tailwind = { ...tw }
+  }
+  else {
+    delete (resolved as any).tailwind
   }
 
   return resolved
@@ -244,6 +303,16 @@ async function readClassListFromFile(filename: string | undefined) {
 
 function normalizePath(root: string, target: string) {
   return path.isAbsolute(target) ? target : path.resolve(root, target)
+}
+
+async function exists(target: string) {
+  try {
+    await fs.access(target)
+    return true
+  }
+  catch {
+    return false
+  }
 }
 
 interface TailwindInfo {
@@ -280,88 +349,4 @@ function resolveTailwindInfo(root: string, options: NormalizedPatchOptions): Tai
   catch {
     return null
   }
-}
-
-async function shouldSkipExtraction(patchOptions: NormalizedPatchOptions) {
-  if (process.env.E2E_FORCE_EXTRACT === 'true') {
-    return false
-  }
-
-  const output = patchOptions.output?.filename
-  if (!output) {
-    return false
-  }
-
-  let outputStat
-  try {
-    outputStat = await fs.stat(output)
-  }
-  catch (error: any) {
-    if (error?.code === 'ENOENT') {
-      return false
-    }
-    throw error
-  }
-
-  if (!outputStat.isFile()) {
-    return false
-  }
-
-  const latestInputTime = await resolveLatestInputMtime(patchOptions)
-  if (latestInputTime === null) {
-    return false
-  }
-
-  return latestInputTime <= outputStat.mtimeMs
-}
-
-async function resolveLatestInputMtime(patchOptions: NormalizedPatchOptions) {
-  const inputs = new Set<string>()
-  const { tailwindcss } = patchOptions
-
-  if (typeof tailwindcss?.config === 'string') {
-    inputs.add(tailwindcss.config)
-  }
-
-  if (tailwindcss?.v4) {
-    const { v4 } = tailwindcss
-    if (Array.isArray(v4.cssEntries)) {
-      v4.cssEntries.forEach(entry => inputs.add(entry))
-    }
-    if (typeof v4.css === 'string') {
-      inputs.add(v4.css)
-    }
-    if (typeof v4.base === 'string') {
-      inputs.add(v4.base)
-    }
-    if (Array.isArray(v4.sources)) {
-      for (const source of v4.sources) {
-        if (source && typeof source.base === 'string') {
-          inputs.add(source.base)
-        }
-      }
-    }
-  }
-
-  if (inputs.size === 0) {
-    return null
-  }
-
-  let latest = 0
-  for (const input of inputs) {
-    try {
-      const stat = await fs.stat(input)
-      if (!(stat.isFile() || stat.isSymbolicLink())) {
-        return null
-      }
-      latest = Math.max(latest, stat.mtimeMs)
-    }
-    catch (error: any) {
-      if (error?.code === 'ENOENT') {
-        return null
-      }
-      throw error
-    }
-  }
-  return latest
 }

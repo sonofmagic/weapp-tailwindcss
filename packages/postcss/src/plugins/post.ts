@@ -3,6 +3,66 @@ import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
+
+function normalizeSelectorList(value?: string | string[] | false) {
+  if (value === undefined || value === false) {
+    return []
+  }
+  return Array.isArray(value) ? value.filter(Boolean) : [value]
+}
+
+function getSpecificityMatchingName(options: IStyleHandlerOptions) {
+  const feature = options.cssPresetEnv?.features?.['is-pseudo-class']
+  if (feature && typeof feature === 'object' && 'specificityMatchingName' in feature) {
+    const specificityName = (feature as { specificityMatchingName?: string }).specificityMatchingName
+    return typeof specificityName === 'string' && specificityName.length > 0 ? specificityName : undefined
+  }
+  return undefined
+}
+
+function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
+  const specificityMatchingName = getSpecificityMatchingName(options)
+  const selectors = normalizeSelectorList(options.cssSelectorReplacement?.root)
+
+  if (!specificityMatchingName || selectors.length === 0) {
+    return undefined
+  }
+
+  const suffix = `:not(.${specificityMatchingName})`
+  const targets = selectors
+    .map(selector => selector?.trim())
+    .filter((selector): selector is string => Boolean(selector?.length))
+    .map(selector => ({
+      match: `${selector}${suffix}`,
+      spacedMatch: `${selector} ${suffix}`,
+      replacement: selector,
+    }))
+
+  if (!targets.length) {
+    return undefined
+  }
+
+  return (rule: Rule) => {
+    if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+
+    const next = rule.selectors.map((selector) => {
+      let updated = selector
+      for (const target of targets) {
+        if (updated.includes(target.match)) {
+          updated = updated.split(target.match).join(target.replacement)
+        }
+        if (updated.includes(target.spacedMatch)) {
+          updated = updated.split(target.spacedMatch).join(target.replacement)
+        }
+      }
+      return updated
+    })
+
+    rule.selectors = next
+  }
+}
 // import valueParser from 'postcss-value-parser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
@@ -99,25 +159,33 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   const p: Plugin = {
     postcssPlugin,
   }
+  const cleanRootSpecificity = createRootSpecificityCleaner(opts)
 
-  if (opts.isMainChunk) {
-    const fallbackRemove = getFallbackRemove(undefined, opts)
+  const enableMainChunkTransforms = opts.isMainChunk !== false
+  if (enableMainChunkTransforms || cleanRootSpecificity) {
+    const fallbackRemove = enableMainChunkTransforms ? getFallbackRemove(undefined, opts) : undefined
 
     p.RuleExit = (rule) => {
-      fallbackRemove.transformSync(rule)
-      dedupeDeclarations(rule)
-
-      if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
-        rule.remove()
+      if (enableMainChunkTransforms) {
+        fallbackRemove?.transformSync(rule)
       }
+      cleanRootSpecificity?.(rule)
 
-      if (opts.uniAppX) {
-        if (rule.nodes.length === 0) {
+      if (enableMainChunkTransforms) {
+        dedupeDeclarations(rule)
+
+        if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {
+          rule.remove()
+        }
+
+        if (opts.uniAppX && rule.nodes.length === 0) {
           rule.remove()
         }
       }
     }
+  }
 
+  if (enableMainChunkTransforms) {
     p.DeclarationExit = (decl) => {
       // tailwindcss v4
       /**

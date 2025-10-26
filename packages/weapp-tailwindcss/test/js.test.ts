@@ -4,7 +4,6 @@ import { getCss } from '#test/helpers/getTwCss'
 import { MappingChars2String } from '@weapp-core/escape'
 import { isCI } from 'ci-info'
 // import punycode from 'node:punycode'
-import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCompilerContext } from '@/context'
 import { getDefaultOptions } from '@/defaults'
 import { parseCache } from '@/js/babel'
@@ -18,9 +17,9 @@ const getTsCase = createGetCase(tsCasePath)
 const putCase = createPutCase(jsCasePath)
 
 async function getClassCacheSet() {
-  const twPatcher = new TailwindcssPatcher()
-  await twPatcher.patch()
-  return twPatcher.getClassSet()
+  const ctx = getCompilerContext()
+  await ctx.twPatcher.patch()
+  return ctx.twPatcher.getClassSet()
 }
 
 const testTable = [

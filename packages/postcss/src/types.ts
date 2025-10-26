@@ -1,4 +1,3 @@
-import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
 import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
 import type { Rule } from 'postcss'
 import type { Result } from 'postcss-load-config'
@@ -42,7 +41,6 @@ export type RequiredStyleHandlerOptions = {
 >
 
 export interface InternalCssSelectorReplacerOptions {
-  mangleContext?: IMangleScopeContext
   escapeMap?: Record<string, string>
 }
 
@@ -52,7 +50,6 @@ interface CssCalcOptions extends PostCssCalcOptions {
 
 export type IStyleHandlerOptions = {
   customRuleCallback?: CustomRuleCallback
-  mangleContext?: IMangleScopeContext
   ctx?: PostcssContext
   postcssOptions?: LoadedPostcssOptions
   cssRemoveProperty?: boolean

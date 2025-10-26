@@ -632,7 +632,7 @@ describe('styleHandler', () => {
     const { styleHandler } = getCompilerContext()
     const rawCode = `:root{}`
     const { css } = await styleHandler(rawCode, { isMainChunk: false })
-    expect(css).toBe('page{}')
+    expect(css).toBe('page,.tw-root{}')
   })
 
   it(':root pseudo case 0 invert', async () => {
@@ -651,7 +651,7 @@ describe('styleHandler', () => {
     const { styleHandler } = getCompilerContext()
     const rawCode = `:root,[data-theme]{}`
     const { css } = await styleHandler(rawCode, { isMainChunk: false })
-    expect(css).toBe('page,[data-theme]{}')
+    expect(css).toBe('page,.tw-root,[data-theme]{}')
   })
 
   it(':root pseudo case 1 invert', async () => {

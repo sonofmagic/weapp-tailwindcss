@@ -127,12 +127,12 @@ describe('get options', () => {
     })
     let cacheOptions = config.twPatcher.options?.cache
     expect(cacheOptions?.enabled).toBe(true)
-    expect(cacheOptions?.dir).not.toBeTruthy()
+    expect(cacheOptions?.dir?.includes('node_modules/.cache/tailwindcss-patch')).toBe(true)
     config = getCompilerContext({
       appType: 'mpx',
     })
     cacheOptions = config.twPatcher.options?.cache
-    expect(cacheOptions?.dir).toBeTruthy()
+    expect(cacheOptions?.dir?.includes('node_modules/tailwindcss-patch/.cache')).toBe(true)
   })
 
   // it('customAttributes map defu merge', () => {

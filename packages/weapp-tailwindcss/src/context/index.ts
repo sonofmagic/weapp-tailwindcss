@@ -1,6 +1,5 @@
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { logger, pc } from '@weapp-tailwindcss/logger'
-import { useMangleStore } from '@weapp-tailwindcss/mangle'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions } from '@/defaults'
 import { defuOverrideArray } from '@/utils'
@@ -92,12 +91,8 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
 
   const customAttributesEntities = toCustomAttributesEntities(ctx.customAttributes)
 
-  const { initMangle, mangleContext, setMangleRuntimeSet } = useMangleStore()
-  initMangle(ctx.mangle)
-
   const { styleHandler, jsHandler, templateHandler } = createHandlersFromContext(
     ctx,
-    mangleContext,
     customAttributesEntities,
     cssCalcOptions,
   )
@@ -106,7 +101,6 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   ctx.jsHandler = jsHandler
   ctx.templateHandler = templateHandler
 
-  ctx.setMangleRuntimeSet = setMangleRuntimeSet
   ctx.cache = initializeCache(ctx.cache)
   ctx.twPatcher = twPatcher
   return ctx

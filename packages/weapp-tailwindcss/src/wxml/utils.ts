@@ -42,7 +42,6 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
             replaceHandleValue(
               path,
               {
-                mangleContext: options.mangleContext,
                 escapeMap: options.escapeMap,
                 classNameSet: options.runtimeSet,
                 needEscaped: true,
@@ -76,7 +75,6 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
         ms.update(previousEnd, token.start, replaceWxml(gap, {
           keepEOL: false,
           escapeMap: options.escapeMap,
-          mangleContext: options.mangleContext,
           ignoreHead: true,
         }))
       }
@@ -88,7 +86,6 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
           ms.update(p, exp.start, replaceWxml(ms.slice(p, exp.start), {
             keepEOL: true,
             escapeMap: options.escapeMap,
-            mangleContext: options.mangleContext,
             // 首的str才会被转译
             // example: 2xl:xx 2x{{y}}
             ignoreHead: p > 0,
@@ -102,7 +99,6 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
         ms.update(p, token.end, replaceWxml(ms.slice(p, token.end), {
           keepEOL: false,
           escapeMap: options.escapeMap,
-          mangleContext: options.mangleContext,
           ignoreHead: true,
         }))
       }
@@ -111,7 +107,6 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
       ms.update(token.start, token.end, replaceWxml(token.value, {
         keepEOL: false,
         escapeMap: options.escapeMap,
-        mangleContext: options.mangleContext,
         ignoreHead: false,
       }))
     }
@@ -126,7 +121,6 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
         ms.update(lastToken.end, ms.original.length, replaceWxml(gap, {
           keepEOL: false,
           escapeMap: options.escapeMap,
-          mangleContext: options.mangleContext,
           ignoreHead: true,
         }))
       }

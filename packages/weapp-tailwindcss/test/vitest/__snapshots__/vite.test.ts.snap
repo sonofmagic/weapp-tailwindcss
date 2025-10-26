@@ -47,7 +47,7 @@ exports[`vite test > source map case 0 4`] = `
 exports[`vite test > source map compare case 0 1`] = `"{\\"version\\":3,\\"file\\":\\"index-12baa5df.js\\",\\"sources\\":[\\"../../index.js\\"],\\"sourcesContent\\":[\\"import './index.css'\\\\n\\\\nconst className = 'flex bg-yellow-300/30 w-[100px] h-[100px] ' + \\\\\\"bg-[url('https://xxx.com/xx.webp')]\\\\\\"\\\\n\\\\ndocument.body.append(\`<div class=\\\\\\"\${className}\\\\\\">className</div>\`)\\\\n\\\\nconst el = document.createElement()\\\\n\\\\nel.classList.add('grid text-red-300/30 w-[99px]', \`h-[99px]\`, \\\\\\"bg-[url('https://yyy.com/xx.webp')]\\\\\\")\\\\n\\\\ndocument.body.appendChild(el)\\"],\\"names\\":[\\"className\\",\\"el\\"],\\"mappings\\":\\"ssBAEA,MAAMA,EAAY,gFAElB,SAAS,KAAK,OAAO,eAAeA,CAAS,mBAAmB,EAEhE,MAAMC,EAAK,SAAS,cAAe,EAEnCA,EAAG,UAAU,IAAI,gCAAiC,WAAY,qCAAqC,EAEnG,SAAS,KAAK,YAAYA,CAAE\\"}"`;
 
 exports[`vite test > vite common build 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -251,7 +251,7 @@ exports[`vite test > vite common build 3`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -455,7 +455,7 @@ exports[`vite test > vite common build twice for cache 3`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 4`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -659,7 +659,7 @@ exports[`vite test > vite common build twice for cache 6`] = `
 `;
 
 exports[`vite test > vite common build with mangle options 0 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex e f g h";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid i j","k","l");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -787,42 +787,42 @@ text,
 .grid {
   display: grid;
 }
-.g {
+.h-_100px_ {
   height: 100px;
 }
-.k {
+.h-_99px_ {
   height: 99px;
 }
-.c {
+.w-_1d5rem_ {
   width: 1.5rem;
 }
-.f {
+.w-_100px_ {
   width: 100px;
 }
-.a {
+.w-_55px_ {
   width: 55px;
 }
-.j {
+.w-_99px_ {
   width: 99px;
 }
-.d {
+.bg-_h929292_ {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.b {
+.bg-_red_ {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.e {
+.bg-yellow-300s30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.h {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.l {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
   background-image: url(https://yyy.com/xx.webp);
 }
-.i {
+.text-red-300s30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -855,15 +855,15 @@ exports[`vite test > vite common build with mangle options 0 3`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="a b">hello</div>
-    <div class="c d">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle options 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex tw-e tw-f tw-g tw-h";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid tw-i tw-j","tw-k","tw-l");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -991,42 +991,42 @@ text,
 .grid {
   display: grid;
 }
-.tw-g {
+.h-_100px_ {
   height: 100px;
 }
-.tw-k {
+.h-_99px_ {
   height: 99px;
 }
-.tw-c {
+.w-_1d5rem_ {
   width: 1.5rem;
 }
-.tw-f {
+.w-_100px_ {
   width: 100px;
 }
-.tw-a {
+.w-_55px_ {
   width: 55px;
 }
-.tw-j {
+.w-_99px_ {
   width: 99px;
 }
-.tw-d {
+.bg-_h929292_ {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.tw-b {
+.bg-_red_ {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.tw-e {
+.bg-yellow-300s30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.tw-h {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.tw-l {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
   background-image: url(https://yyy.com/xx.webp);
 }
-.tw-i {
+.text-red-300s30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -1059,15 +1059,15 @@ exports[`vite test > vite common build with mangle options 3`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="tw-a tw-b">hello</div>
-    <div class="tw-c tw-d">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter all true 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="tw-a tw-b tw-c tw-d tw-e";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("tw-f tw-g tw-h","tw-i","tw-j");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -1189,48 +1189,48 @@ text,
   --tw-contain-paint: ;
   --tw-contain-style: ;
 }
-.tw-a {
+.flex {
   display: flex;
 }
-.tw-f {
+.grid {
   display: grid;
 }
-.tw-d {
+.h-_100px_ {
   height: 100px;
 }
-.tw-i {
+.h-_99px_ {
   height: 99px;
 }
-.tw-k {
+.w-_1d5rem_ {
   width: 1.5rem;
 }
-.tw-c {
+.w-_100px_ {
   width: 100px;
 }
-.tw-l {
+.w-_55px_ {
   width: 55px;
 }
-.tw-h {
+.w-_99px_ {
   width: 99px;
 }
-.tw-m {
+.bg-_h929292_ {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.tw-n {
+.bg-_red_ {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.tw-b {
+.bg-yellow-300s30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.tw-e {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.tw-j {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
   background-image: url(https://yyy.com/xx.webp);
 }
-.tw-g {
+.text-red-300s30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -1271,7 +1271,7 @@ exports[`vite test > vite common build with mangle options mangleClassFilter all
 `;
 
 exports[`vite test > vite common build with mangle options mangleClassFilter variables 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 tw-e tw-f tw-g";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 tw-h","tw-i","tw-j");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -1399,39 +1399,39 @@ text,
 .grid {
   display: grid;
 }
-.tw-f {
+.h-_100px_ {
   height: 100px;
 }
-.tw-i {
+.h-_99px_ {
   height: 99px;
 }
-.tw-c {
+.w-_1d5rem_ {
   width: 1.5rem;
 }
-.tw-e {
+.w-_100px_ {
   width: 100px;
 }
-.tw-a {
+.w-_55px_ {
   width: 55px;
 }
-.tw-h {
+.w-_99px_ {
   width: 99px;
 }
-.tw-d {
+.bg-_h929292_ {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.tw-b {
+.bg-_red_ {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
 .bg-yellow-300s30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.tw-g {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.tw-j {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
   background-image: url(https://yyy.com/xx.webp);
 }
 .text-red-300s30 {
@@ -1467,15 +1467,15 @@ exports[`vite test > vite common build with mangle options mangleClassFilter var
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="tw-a tw-b">hello</div>
-    <div class="tw-c tw-d">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with mangle true 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex tw-e tw-f tw-g tw-h";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid tw-i tw-j","tw-k","tw-l");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 
@@ -1603,42 +1603,42 @@ text,
 .grid {
   display: grid;
 }
-.tw-g {
+.h-_100px_ {
   height: 100px;
 }
-.tw-k {
+.h-_99px_ {
   height: 99px;
 }
-.tw-c {
+.w-_1d5rem_ {
   width: 1.5rem;
 }
-.tw-f {
+.w-_100px_ {
   width: 100px;
 }
-.tw-a {
+.w-_55px_ {
   width: 55px;
 }
-.tw-j {
+.w-_99px_ {
   width: 99px;
 }
-.tw-d {
+.bg-_h929292_ {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.tw-b {
+.bg-_red_ {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.tw-e {
+.bg-yellow-300s30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.tw-h {
+.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
   background-image: url(https://xxx.com/xx.webp);
 }
-.tw-l {
+.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
   background-image: url(https://yyy.com/xx.webp);
 }
-.tw-i {
+.text-red-300s30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -1671,15 +1671,15 @@ exports[`vite test > vite common build with mangle true 3`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="tw-a tw-b">hello</div>
-    <div class="tw-c tw-d">world</div>
+    <div class="w-_55px_ bg-_red_">hello</div>
+    <div class="w-_1d5rem_ bg-_h929292_">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build with rem2rpx 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300/30 w-[100px] h-[100px] bg-[url('https://xxx.com/xx.webp')]";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300/30 w-[99px]","h-[99px]","bg-[url('https://yyy.com/xx.webp')]");document.body.appendChild(c);
 "
 `;
 

@@ -1,5 +1,4 @@
 import type { ParseError, ParserOptions } from '@babel/parser'
-import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
 import type { CssPreflightOptions, IStyleHandlerOptions } from '@weapp-tailwindcss/postcss'
 import type { SourceMap } from 'magic-string'
 import type { Document, Result as PostcssResult, Root } from 'postcss'
@@ -17,14 +16,9 @@ export type {
 }
 
 // UserDefinedPostcssOptions
-export type { CssPreflightOptions, IMangleScopeContext, IStyleHandlerOptions, ItemOrItemArray }
+export type { CssPreflightOptions, IStyleHandlerOptions, ItemOrItemArray }
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | 'weapp-vite'
-
-export interface InternalCssSelectorReplacerOptions {
-  mangleContext?: IMangleScopeContext
-  escapeMap?: Record<string, string>
-}
 
 export interface LinkedJsModuleResult {
   code: string
@@ -60,7 +54,6 @@ export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
   arbitraryValues?: IArbitraryValues
-  mangleContext?: IMangleScopeContext
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean
   generateMap?: boolean
@@ -115,7 +108,6 @@ export interface ICommonReplaceOptions {
 export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   customAttributesEntities?: ICustomAttributesEntities
   escapeMap?: Record<string, string>
-  mangleContext?: IMangleScopeContext
   inlineWxs?: boolean
   jsHandler?: JsHandler
   runtimeSet?: Set<string>
@@ -133,7 +125,6 @@ export type InternalUserDefinedOptions = Required<
     jsHandler: JsHandler
     escapeMap: Record<string, string>
     customReplaceDictionary: Record<string, string>
-    setMangleRuntimeSet: (runtimeSet: Set<string>) => void
     cache: ICreateCacheReturnType
     twPatcher: TailwindcssPatcherLike
   }

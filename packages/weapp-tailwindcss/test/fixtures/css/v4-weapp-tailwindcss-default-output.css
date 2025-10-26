@@ -35,7 +35,7 @@ view,text,::before,::after,::backdrop {
       border-style: solid;
       border-color: currentColor;
     }
-page,:host {
+page,.tw-root,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
 view,text,:after,:before,::backdrop {

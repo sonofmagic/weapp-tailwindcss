@@ -21,7 +21,7 @@ describe('core', () => {
     await getCss(content)
 
     const { code, map } = await ctx.transformJs(content)
-    expect(code).toBe(`const classNames = ['mb-_1d5rem_']`)
+    expect(code).toBe(`const classNames = ['mb-[1.5rem]']`)
     expect(map).toMatchSnapshot()
   })
 

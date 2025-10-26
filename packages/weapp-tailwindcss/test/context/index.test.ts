@@ -21,14 +21,6 @@ vi.mock('@weapp-tailwindcss/logger', () => ({
   },
 }))
 
-vi.mock('@weapp-tailwindcss/mangle', () => ({
-  useMangleStore: () => ({
-    initMangle: vi.fn(),
-    mangleContext: Symbol('mangleContext'),
-    setMangleRuntimeSet: vi.fn(),
-  }),
-}))
-
 vi.mock('@/cache', () => ({
   initializeCache: vi.fn(() => Symbol('cache')),
 }))
@@ -39,7 +31,6 @@ vi.mock('@/defaults', () => ({
     logLevel: 'silent',
     cssCalc: undefined,
     customAttributes: {},
-    mangle: undefined,
     cache: undefined,
   }),
 }))
@@ -72,7 +63,7 @@ describe('getCompilerContext', () => {
     const { getCompilerContext } = await import('@/context')
     const ctx = getCompilerContext()
 
-    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[3]
+    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
     expect(forwardedCalcOptions).toEqual({
       includeCustomProperties: ['--spacing'],
@@ -93,7 +84,7 @@ describe('getCompilerContext', () => {
       cssCalc: ['--gap'],
     })
 
-    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[3]
+    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
     expect(forwardedCalcOptions).toEqual(['--gap', '--spacing'])
     expect(ctx.cssCalc).toEqual(['--gap', '--spacing'])
@@ -116,7 +107,7 @@ describe('getCompilerContext', () => {
       cssCalc: originalOptions,
     })
 
-    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[3]
+    const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
     expect(forwardedCalcOptions).toBe(originalOptions)
     expect(ctx.cssCalc).toBe(originalOptions)

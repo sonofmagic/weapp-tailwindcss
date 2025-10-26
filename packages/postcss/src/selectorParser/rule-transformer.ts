@@ -15,7 +15,7 @@ const ruleTransformCache = new WeakMap<IStyleHandlerOptions, RuleTransformer>()
 function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
   let currentRule: Rule | undefined
 
-  const { escapeMap, mangleContext, cssSelectorReplacement, cssRemoveHoverPseudoClass, uniAppX } = options
+  const { escapeMap, cssSelectorReplacement, cssRemoveHoverPseudoClass, uniAppX } = options
 
   const transform: SyncProcessor = (selectors) => {
     const rule = currentRule
@@ -27,7 +27,6 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
       if (selector.type === 'class') {
         selector.value = internalCssSelectorReplacer(selector.value, {
           escapeMap,
-          mangleContext,
         })
       }
       else if (selector.type === 'universal') {

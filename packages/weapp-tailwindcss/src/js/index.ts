@@ -9,7 +9,6 @@ export {
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   // Persist immutable options so repeated invocations only supply per-call overrides.
   const {
-    mangleContext,
     arbitraryValues,
     escapeMap,
     jsPreserveClass,
@@ -31,7 +30,6 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
         classNameSet,
         escapeMap,
         arbitraryValues,
-        mangleContext,
         jsPreserveClass,
         generateMap,
         babelParserOptions,

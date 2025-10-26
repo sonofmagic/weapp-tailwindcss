@@ -41,6 +41,6 @@
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^5.5.1"
+    "weapp-vite": "^5.6.0"
   }
 }

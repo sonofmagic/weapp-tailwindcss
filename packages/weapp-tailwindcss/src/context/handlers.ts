@@ -1,4 +1,3 @@
-import type { IMangleScopeContext } from '@weapp-tailwindcss/mangle'
 import type { ICustomAttributesEntities, InternalUserDefinedOptions } from '@/types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { createJsHandler } from '@/js'
@@ -6,7 +5,6 @@ import { createTemplateHandler } from '@/wxml'
 
 export function createHandlersFromContext(
   ctx: InternalUserDefinedOptions,
-  mangleContext: IMangleScopeContext,
   customAttributesEntities: ICustomAttributesEntities,
   cssCalcOptions: InternalUserDefinedOptions['cssCalc'],
 ) {
@@ -39,7 +37,6 @@ export function createHandlersFromContext(
     customRuleCallback,
     cssPreflightRange,
     escapeMap,
-    mangleContext,
     cssChildCombinatorReplaceValue,
     injectAdditionalCssVarScope,
     cssSelectorReplacement,
@@ -55,7 +52,6 @@ export function createHandlersFromContext(
 
   const jsHandler = createJsHandler({
     escapeMap,
-    mangleContext,
     arbitraryValues,
     jsPreserveClass,
     generateMap: true,
@@ -68,7 +64,6 @@ export function createHandlersFromContext(
   const templateHandler = createTemplateHandler({
     customAttributesEntities,
     escapeMap,
-    mangleContext,
     inlineWxs,
     jsHandler,
     disabledDefaultTemplateHandler,

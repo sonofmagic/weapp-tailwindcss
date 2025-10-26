@@ -105,7 +105,7 @@ export function resolveTailwindcssBasedir(basedir?: string) {
   const packageEnvBasedir = pickPackageEnvBasedir()
   const shouldDetectCaller = !envBasedir || envBasedirIsGeneric
   const callerBasedir = shouldDetectCaller ? detectCallerBasedir() : undefined
-  const anchor = packageEnvBasedir ?? envBasedir ?? callerBasedir ?? process.cwd()
+  const anchor = envBasedir ?? packageEnvBasedir ?? callerBasedir ?? process.cwd()
   if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
     logger.debug('resolveTailwindcssBasedir anchor %O', {
       basedir,
@@ -136,7 +136,11 @@ export function resolveTailwindcssBasedir(basedir?: string) {
   }
 
   if (callerBasedir) {
-    return path.normalize(callerBasedir)
+    const normalizedCaller = path.normalize(callerBasedir)
+    const librarySegment = `${path.sep}weapp-tailwindcss${path.sep}`
+    if (!normalizedCaller.includes(librarySegment)) {
+      return normalizedCaller
+    }
   }
 
   if (envBasedir) {

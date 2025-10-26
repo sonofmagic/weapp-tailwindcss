@@ -15,6 +15,57 @@ type SelectorListTransformer = (
 const textDecoder = new TextDecoder()
 const defaultLightningFilename = 'inline.css'
 
+function normalizeSelectorList(value?: string | string[] | false) {
+  if (value === undefined || value === false) {
+    return []
+  }
+  return Array.isArray(value) ? value.filter(Boolean) : [value]
+}
+
+function getSpecificityMatchingName(options: IStyleHandlerOptions) {
+  const feature = options.cssPresetEnv?.features?.['is-pseudo-class']
+  if (feature && typeof feature === 'object' && 'specificityMatchingName' in feature) {
+    const specificityName = (feature as { specificityMatchingName?: string }).specificityMatchingName
+    return typeof specificityName === 'string' && specificityName.length > 0 ? specificityName : undefined
+  }
+  return undefined
+}
+
+function createRootSpecificityReplacer(options: IStyleHandlerOptions) {
+  const specificityMatchingName = getSpecificityMatchingName(options)
+  const selectors = normalizeSelectorList(options.cssSelectorReplacement?.root)
+  if (!specificityMatchingName || selectors.length === 0) {
+    return undefined
+  }
+
+  const suffix = `:not(.${specificityMatchingName})`
+  const targets = selectors
+    .map(selector => selector?.trim())
+    .filter((selector): selector is string => Boolean(selector?.length))
+    .map(selector => ({
+      match: `${selector}${suffix}`,
+      spacedMatch: `${selector} ${suffix}`,
+      replacement: selector,
+    }))
+
+  if (!targets.length) {
+    return undefined
+  }
+
+  return (code: string) => {
+    let output = code
+    for (const target of targets) {
+      if (output.includes(target.match)) {
+        output = output.split(target.match).join(target.replacement)
+      }
+      if (output.includes(target.spacedMatch)) {
+        output = output.split(target.spacedMatch).join(target.replacement)
+      }
+    }
+    return output
+  }
+}
+
 export interface LightningcssStyleHandlerResult {
   code: string
   map?: string
@@ -230,7 +281,6 @@ function transformSelectorComponent(
     const cloned = cloneComponent(component)
     cloned.name = internalCssSelectorReplacer(component.name, {
       escapeMap: options.escapeMap,
-      mangleContext: options.mangleContext,
     })
     return [cloned]
   }
@@ -421,8 +471,12 @@ export function createLightningcssStyleHandler(
       ...transformOverrides,
     })
 
+    const replaceSpecificity = createRootSpecificityReplacer(resolvedOptions)
+    const decodedCode = textDecoder.decode(lightningResult.code)
+    const code = replaceSpecificity ? replaceSpecificity(decodedCode) : decodedCode
+
     return {
-      code: textDecoder.decode(lightningResult.code),
+      code,
       map: lightningResult.map ? textDecoder.decode(lightningResult.map) : undefined,
       warnings: lightningResult.warnings,
     }

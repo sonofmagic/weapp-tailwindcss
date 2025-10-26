@@ -267,8 +267,8 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3
       es-toolkit:
-        specifier: ^1.40.0
-        version: 1.40.0
+        specifier: ^1.41.0
+        version: 1.41.0
       esbuild:
         specifier: ^0.25.11
         version: 0.25.11
@@ -609,7 +609,7 @@ importers:
         version: link:../../packages/merge
       babel-preset-taro:
         specifier: 4.1.7
-        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
+        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -711,8 +711,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.5.1
-        version: 5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.6.0
+        version: 5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vite-native-skyline:
     devDependencies:
@@ -735,8 +735,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.5.1
-        version: 5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.6.0
+        version: 5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vite-native-ts:
     devDependencies:
@@ -762,8 +762,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.5.1
-        version: 5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.6.0
+        version: 5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vite-native-ts-skyline:
     devDependencies:
@@ -792,8 +792,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: ^5.5.1
-        version: 5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.6.0
+        version: 5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
 
   apps/vue-app:
     dependencies:
@@ -832,8 +832,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       weapp-vite:
-        specifier: ^5.5.1
-        version: 5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.6.0
+        version: 5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
 
   apps/web-postcss7-compat:
     dependencies:
@@ -1284,7 +1284,7 @@ importers:
         specifier: ^0.11.10
         version: 0.11.10
       tailwindcss:
-        specifier: ^4.1.15
+        specifier: ^4.1.16
         version: 4.1.16
       tailwindcss-patch:
         specifier: ^8.0.0
@@ -1492,8 +1492,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       weapp-vite:
-        specifier: ^5.5.1
-        version: 5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
+        specifier: ^5.6.0
+        version: 5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1)
 
   demo/rax-app:
     dependencies:
@@ -1678,7 +1678,7 @@ importers:
         version: 1.13.8
       babel-preset-taro:
         specifier: 4.1.7
-        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
+        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
       create-functional-loader:
         specifier: ^0.1.4
         version: 0.1.4
@@ -1832,7 +1832,7 @@ importers:
         version: 10.4.21(postcss@8.5.6)
       babel-preset-taro:
         specifier: 4.1.7
-        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
+        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
       eslint:
         specifier: ^9.38.0
         version: 9.38.0(jiti@2.6.1)
@@ -1983,7 +1983,7 @@ importers:
         version: 1.3.0(tailwindcss@4.1.16)
       babel-preset-taro:
         specifier: 4.1.7
-        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
+        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
       eslint:
         specifier: ^9.38.0
         version: 9.38.0(jiti@2.6.1)
@@ -2101,7 +2101,7 @@ importers:
         version: 10.4.21(postcss@8.5.6)
       babel-preset-taro:
         specifier: 4.1.7
-        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@2.0.1(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))
+        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@2.0.1(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -2261,7 +2261,7 @@ importers:
         version: 1.3.0(tailwindcss@4.1.16)
       babel-preset-taro:
         specifier: 4.1.7
-        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
+        version: 4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
       eslint:
         specifier: ^9.38.0
         version: 9.38.0(jiti@2.6.1)
@@ -2706,8 +2706,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       magic-string:
-        specifier: ^0.30.8
-        version: 0.30.19
+        specifier: ^0.30.21
+        version: 0.30.21
       miniprogram-computed:
         specifier: ^7.1.0
         version: 7.1.0(miniprogram-api-typings@4.1.0)
@@ -3352,18 +3352,6 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
 
-  packages/mangle:
-    dependencies:
-      '@tailwindcss-mangle/shared':
-        specifier: ~4.1.1
-        version: 4.1.1
-      '@weapp-core/regex':
-        specifier: ~1.0.1
-        version: 1.0.1
-      '@weapp-tailwindcss/shared':
-        specifier: workspace:*
-        version: link:../shared
-
   packages/merge:
     dependencies:
       class-variance-authority:
@@ -3427,9 +3415,6 @@ importers:
       '@csstools/postcss-is-pseudo-class':
         specifier: ^5.0.3
         version: 5.0.3(postcss@8.5.6)
-      '@weapp-tailwindcss/mangle':
-        specifier: workspace:*
-        version: link:../mangle
       postcss-calc:
         specifier: ^10.1.1
         version: 10.1.1(postcss@8.5.6)
@@ -3469,8 +3454,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       magic-string:
-        specifier: ^0.30.19
-        version: 0.30.19
+        specifier: ^0.30.21
+        version: 0.30.21
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -3536,9 +3521,6 @@ importers:
       '@weapp-tailwindcss/logger':
         specifier: workspace:*
         version: link:../logger
-      '@weapp-tailwindcss/mangle':
-        specifier: workspace:*
-        version: link:../mangle
       '@weapp-tailwindcss/postcss':
         specifier: workspace:*
         version: link:../postcss
@@ -3561,8 +3543,8 @@ importers:
         specifier: 10.4.3
         version: 10.4.3
       magic-string:
-        specifier: 0.30.19
-        version: 0.30.19
+        specifier: 0.30.21
+        version: 0.30.21
       semver:
         specifier: ~7.7.3
         version: 7.7.3
@@ -3604,8 +3586,8 @@ importers:
         specifier: ^4.6.2
         version: 4.6.2
       magic-string:
-        specifier: ^0.30.19
-        version: 0.30.19
+        specifier: ^0.30.21
+        version: 0.30.21
       postcss-selector-parser:
         specifier: ^7.1.0
         version: 7.1.0
@@ -3987,6 +3969,12 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
 
+  '@babel/helper-create-class-features-plugin@7.28.5':
+    resolution: {integrity: sha512-q3WC4JfdODypvxArsJQROfupPBq9+lMwjKq7C33GhbFYJsufD0yd/ziwD+hJucLeWsnFPWZjsU2DNFqBPE7jwQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0
+
   '@babel/helper-create-regexp-features-plugin@7.27.1':
     resolution: {integrity: sha512-uVDC72XVf8UbrH5qQTc18Agb8emwjTiZrQE11Nv3CuBEZmVvTwwE9CBUEvHku06gQCAyYf8Nv6ja1IN+6LMbxQ==}
     engines: {node: '>=6.9.0'}
@@ -4008,6 +3996,10 @@ packages:
 
   '@babel/helper-member-expression-to-functions@7.27.1':
     resolution: {integrity: sha512-E5chM8eWjTp/aNoVpcbfM7mLxu9XGLWYise2eBKGQomAk/Mb4XoxyqXTZbuTohbsl8EKqdlMhnDI2CCLfcs9wA==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-member-expression-to-functions@7.28.5':
+    resolution: {integrity: sha512-cwM7SBRZcPCLgl8a7cY0soT1SptSzAlMH39vwiRpOQkJlh53r5hdHwLSCZpQdVLT39sZt+CRpNwYG4Y2v77atg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-module-imports@7.18.6':
@@ -4692,6 +4684,12 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
+  '@babel/plugin-transform-typescript@7.28.5':
+    resolution: {integrity: sha512-x2Qa+v/CuEoX7Dr31iAfr0IhInrVOWZU/2vJMJ00FOR/2nM0BcBEclpaf9sWCDc+v5e9dMrhSH8/atq/kX7+bA==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+
   '@babel/plugin-transform-unicode-escapes@7.27.1':
     resolution: {integrity: sha512-Ysg4v6AmF26k9vpfFuTZg8HRfVWzsh1kVfowA23y9j/Gu6dOuahdUVhkLqpObp3JIv27MLSii6noRnuKN8H0Mg==}
     engines: {node: '>=6.9.0'}
@@ -4741,6 +4739,12 @@ packages:
 
   '@babel/preset-typescript@7.27.1':
     resolution: {integrity: sha512-l7WfQfX0WK4M0v2RudjuQK4u99BS6yLHYEmdtVPP7lKV013zr9DygFuWNlnbvQ9LR+LS0Egz/XAvGx5U9MX0fQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+
+  '@babel/preset-typescript@7.28.5':
+    resolution: {integrity: sha512-+bQy5WOI2V6LJZpPVxY+yp66XdZ2yifu0Mc1aP5CQKgjn4QM5IN2i5fAZ4xKop47pr8rpVhiAeu+nDQa12C8+g==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -11737,8 +11741,8 @@ packages:
   '@weapp-core/escape@4.0.1':
     resolution: {integrity: sha512-FuO9zTs/8VMhoZ+sZkMEMipcHd9FZhxstdhg9+Z3JlTgxMFAIvhBFOuFjM2bUyjDJ7O21nr9podHDjVjcVYu4Q==}
 
-  '@weapp-core/init@3.0.1':
-    resolution: {integrity: sha512-ELKdDjC0PUAFEgy9Ezt8ggQk4jnbNh0U5r4ZZDP8H/VcwqZ58MEM06epo6Hxn+ZXiyszbsVIXUHpRkH9tzj5dg==}
+  '@weapp-core/init@3.0.2':
+    resolution: {integrity: sha512-5jLCfswYybzzDyuiBfr8RwAR2Aw7M8DJXkRtKXhzJydcGG1uloOOu/tgZX0Lnoh2HHhRPEytoASurcFJsuhZtA==}
 
   '@weapp-core/logger@2.0.0':
     resolution: {integrity: sha512-HRqVUdvj8sk2YFHWRWoMsUVNVFqTRP3bMmJPZFvPQs8tF/GyoCSY+La+apGV5yXSoPv0O1dYt5xuSI0f8APgfg==}
@@ -15776,8 +15780,8 @@ packages:
     resolution: {integrity: sha512-w+5mJ3GuFL+NjVtJlvydShqE1eN3h3PbI7/5LAsYJP/2qtuMXjfL2LpHSRqo4b4eSF5K/DH1JXKUAHSB2UW50g==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.40.0:
-    resolution: {integrity: sha512-8o6w0KFmU0CiIl0/Q/BCEOabF2IJaELM1T2PWj6e8KqzHv1gdx+7JtFnDwOx1kJH/isJ5NwlDG1nCr1HrRF94Q==}
+  es-toolkit@1.41.0:
+    resolution: {integrity: sha512-bDd3oRmbVgqZCJS6WmeQieOrzpl3URcWBUVDXxOELlUW2FuW+0glPOz1n0KnRie+PdyvUZcXz2sOn00c6pPRIA==}
 
   es5-ext@0.10.64:
     resolution: {integrity: sha512-p2snDhiLaXe6dahss1LddxqEm+SkuDvV8dnIQG0MWjyHpcMNfXKPE+/Cc0y+PhxJX3A4xGNeFCj5oc0BUh6deg==}
@@ -24517,13 +24521,13 @@ packages:
   rmc-pull-to-refresh@1.0.13:
     resolution: {integrity: sha512-iYLsURiR7G/sKmRA6p2kq6ZXicn7Hyeo6VQFljssV1eMW+fzDgihhaz0kv5mza0f88vphGJvjOihT9E6+xGb6Q==}
 
-  rolldown-plugin-dts@0.16.12:
-    resolution: {integrity: sha512-9dGjm5oqtKcbZNhpzyBgb8KrYiU616A7IqcFWG7Msp1RKAXQ/hapjivRg+g5IYWSiFhnk3OKYV5T4Ft1t8Cczg==}
+  rolldown-plugin-dts@0.17.1:
+    resolution: {integrity: sha512-dQfoYD9kwSau7UQPg0UubprCDcwWeEKYd9SU9O2MpOdKy3VHy3/DaDF+x6w9+KE/w6J8qxkHVjwG1K2QmmQAFA==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       '@ts-macro/tsc': ^0.3.6
       '@typescript/native-preview': '>=7.0.0-dev.20250601.1'
-      rolldown: ^1.0.0-beta.9
+      rolldown: ^1.0.0-beta.44
       typescript: ^5.0.0
       vue-tsc: ~3.1.0
     peerDependenciesMeta:
@@ -26672,8 +26676,8 @@ packages:
     engines: {node: '>=14.16'}
     hasBin: true
 
-  tsdown@0.15.9:
-    resolution: {integrity: sha512-C0EJYpXIYdlJokTumIL4lmv/wEiB20oa6iiYsXFE7Q0VKF3Ju6TQ7XAn4JQdm+2iQGEfl8cnEKcX5DB7iVR5Dw==}
+  tsdown@0.15.10:
+    resolution: {integrity: sha512-8zbSN4GW7ZzhjIYl/rWrruGzl1cJiDtAjb8l5XVF2cVme1+aDLVcExw+Ph4gNcfdGg6ZfYPh5kmcpIfh5xHisw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -27175,6 +27179,11 @@ packages:
 
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
+
+  unrun@0.2.0:
+    resolution: {integrity: sha512-iaCxWG/6kmjP3wUTBheowjFm6LuI8fd/A3Uz7DbMoz8HvQsJThh7tWZKWJfVltOSK3LuIJFzepr7g6fbuhUasw==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
 
   unset-value@1.0.0:
     resolution: {integrity: sha512-PcA2tsuGSF9cnySLHTLSh2qrQiJ70mn+r+Glzxv2TWZblxsxCC52BDlZoPCsz7STd9pN7EZetkWZBAvk4cgZdQ==}
@@ -27834,8 +27843,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-vite@5.5.1:
-    resolution: {integrity: sha512-Azf9ppU3WYHSItXXH32VlyWbQgPy4aJjrbH4YYxAekQmU6qdvTsjKDm8O8YGwaSr6qi20ksReRcBthiGRTtJYg==}
+  weapp-vite@5.6.0:
+    resolution: {integrity: sha512-bpqfbP0oEC9sBB2ByMkBCMNV9oAtpXdHQjCMUWpuvZszQXyJoaHFhfw1noQJfdgLJPnAuotMZzfnoCAT2q13IQ==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -28845,6 +28854,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@babel/helper-create-class-features-plugin@7.28.5(@babel/core@7.28.5)':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/helper-annotate-as-pure': 7.27.3
+      '@babel/helper-member-expression-to-functions': 7.28.5
+      '@babel/helper-optimise-call-expression': 7.27.1
+      '@babel/helper-replace-supers': 7.27.1(@babel/core@7.28.5)
+      '@babel/helper-skip-transparent-expression-wrappers': 7.27.1
+      '@babel/traverse': 7.28.5
+      semver: 6.3.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@babel/helper-create-regexp-features-plugin@7.27.1(@babel/core@7.28.5)':
     dependencies:
       '@babel/core': 7.28.5
@@ -28870,6 +28892,13 @@ snapshots:
   '@babel/helper-globals@7.28.0': {}
 
   '@babel/helper-member-expression-to-functions@7.27.1':
+    dependencies:
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@babel/helper-member-expression-to-functions@7.28.5':
     dependencies:
       '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
@@ -29624,6 +29653,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5)':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/helper-annotate-as-pure': 7.27.3
+      '@babel/helper-create-class-features-plugin': 7.28.5(@babel/core@7.28.5)
+      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-skip-transparent-expression-wrappers': 7.27.1
+      '@babel/plugin-syntax-typescript': 7.27.1(@babel/core@7.28.5)
+    transitivePeerDependencies:
+      - supports-color
+
   '@babel/plugin-transform-unicode-escapes@7.27.1(@babel/core@7.28.5)':
     dependencies:
       '@babel/core': 7.28.5
@@ -29826,6 +29866,17 @@ snapshots:
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-modules-commonjs': 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-typescript': 7.28.0(@babel/core@7.28.5)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@babel/preset-typescript@7.28.5(@babel/core@7.28.5)':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-validator-option': 7.27.1
+      '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.28.5)
+      '@babel/plugin-transform-modules-commonjs': 7.27.1(@babel/core@7.28.5)
+      '@babel/plugin-transform-typescript': 7.28.5(@babel/core@7.28.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -30808,7 +30859,7 @@ snapshots:
       estree-walker: 2.0.2
       fast-glob: 3.3.3
       fs-extra: 10.1.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       picocolors: 1.1.1
       source-map-js: 1.2.1
       unimport: 4.1.1
@@ -30843,7 +30894,7 @@ snapshots:
       estree-walker: 2.0.2
       fast-glob: 3.3.3
       fs-extra: 10.1.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       picocolors: 1.1.1
       source-map-js: 1.2.1
       unimport: 4.1.1
@@ -31081,7 +31132,7 @@ snapshots:
       isbinaryfile: 5.0.6
       jsonc-parser: 3.3.1
       lines-and-columns: 2.0.4
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       merge: 2.1.1
       mime: 3.0.0
       module-alias: 2.2.3
@@ -31141,7 +31192,7 @@ snapshots:
       isbinaryfile: 5.0.6
       jsonc-parser: 3.3.1
       lines-and-columns: 2.0.4
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       merge: 2.1.1
       mime: 3.0.0
       module-alias: 2.2.3
@@ -32088,7 +32139,7 @@ snapshots:
       fs-extra: 10.1.0
       hash-sum: 2.0.0
       jsonc-parser: 3.3.1
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       picocolors: 1.1.1
       terser: 5.44.0
       unplugin-auto-import: 19.1.0
@@ -32125,7 +32176,7 @@ snapshots:
       fs-extra: 10.1.0
       hash-sum: 2.0.0
       jsonc-parser: 3.3.1
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       picocolors: 1.1.1
       terser: 5.44.0
       unplugin-auto-import: 19.1.0
@@ -37413,14 +37464,14 @@ snapshots:
 
   '@remix-run/router@1.23.0': {}
 
-  '@rnx-kit/babel-preset-metro-react-native@1.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/runtime@7.28.4)(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))':
+  '@rnx-kit/babel-preset-metro-react-native@1.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/runtime@7.28.4)(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/runtime': 7.28.4
       '@rnx-kit/console': 1.1.0
       babel-plugin-const-enum: 1.2.0(@babel/core@7.28.5)
     optionalDependencies:
-      '@babel/plugin-transform-typescript': 7.28.0(@babel/core@7.28.5)
+      '@babel/plugin-transform-typescript': 7.28.5(@babel/core@7.28.5)
       metro-react-native-babel-preset: 0.72.4(@babel/core@7.28.5)
     transitivePeerDependencies:
       - supports-color
@@ -38576,7 +38627,7 @@ snapshots:
       enhanced-resolve: 5.18.3
       jiti: 2.6.1
       lightningcss: 1.30.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       source-map-js: 1.2.1
       tailwindcss: 4.1.16
 
@@ -39204,7 +39255,7 @@ snapshots:
       copy-webpack-plugin: 5.1.2(webpack@4.46.0)
       css-loader: 5.2.7(webpack@4.46.0)
       csso-webpack-plugin: 2.0.0-beta.1
-      file-loader: 6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
+      file-loader: 6.2.0(webpack@4.46.0)
       html-minifier: 4.0.0
       jsdom: 21.1.2
       less: 4.4.2
@@ -39232,7 +39283,7 @@ snapshots:
       stylus: 0.55.0
       stylus-loader: 3.0.2(stylus@0.55.0)
       terser-webpack-plugin: 3.1.0(webpack@4.46.0)
-      url-loader: 4.1.1(file-loader@6.2.0(webpack@4.46.0))(webpack@4.46.0)
+      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)))(webpack@4.46.0)
       vm2: 3.9.19
       webpack: 4.46.0
       webpack-chain: 4.9.0
@@ -40271,7 +40322,7 @@ snapshots:
       stylus: 0.55.0
       stylus-loader: 3.0.2(stylus@0.55.0)
       terser-webpack-plugin: 3.1.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
-      url-loader: 4.1.1(file-loader@6.2.0(webpack@4.46.0))(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
+      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)))(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
       webpack: 5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)
       webpack-chain: 4.9.0
       webpack-dev-server: 3.11.3(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
@@ -41511,7 +41562,7 @@ snapshots:
       '@unocss/config': 66.5.4
       '@unocss/core': 66.5.4
       '@unocss/rule-utils': 66.5.4
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       synckit: 0.11.11
     transitivePeerDependencies:
       - eslint
@@ -41522,7 +41573,7 @@ snapshots:
   '@unocss/rule-utils@66.5.4':
     dependencies:
       '@unocss/core': 66.5.4
-      magic-string: 0.30.19
+      magic-string: 0.30.21
     optional: true
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
@@ -41632,7 +41683,7 @@ snapshots:
       browserslist: 4.27.0
       browserslist-to-esbuild: 2.1.1(browserslist@4.27.0)
       core-js: 3.46.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       regenerator-runtime: 0.14.1
       systemjs: 6.15.1
       terser: 5.44.0
@@ -41711,7 +41762,7 @@ snapshots:
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
       istanbul-reports: 3.2.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       magicast: 0.3.5
       std-env: 3.9.0
       test-exclude: 7.0.1
@@ -41743,7 +41794,7 @@ snapshots:
     dependencies:
       '@vitest/spy': 3.2.4
       estree-walker: 3.0.3
-      magic-string: 0.30.19
+      magic-string: 0.30.21
     optionalDependencies:
       vite: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(less@4.4.2)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
@@ -41760,7 +41811,7 @@ snapshots:
   '@vitest/snapshot@3.2.4':
     dependencies:
       '@vitest/pretty-format': 3.2.4
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       pathe: 2.0.3
 
   '@vitest/spy@3.2.4':
@@ -42570,7 +42621,7 @@ snapshots:
       '@vue/compiler-ssr': 3.4.21
       '@vue/shared': 3.4.21
       estree-walker: 2.0.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       postcss: 8.5.6
       source-map-js: 1.2.1
 
@@ -42582,7 +42633,7 @@ snapshots:
       '@vue/compiler-ssr': 3.5.22
       '@vue/shared': 3.5.22
       estree-walker: 2.0.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       postcss: 8.5.6
       source-map-js: 1.2.1
 
@@ -42784,7 +42835,7 @@ snapshots:
 
   '@weapp-core/escape@4.0.1': {}
 
-  '@weapp-core/init@3.0.1':
+  '@weapp-core/init@3.0.2':
     dependencies:
       '@weapp-core/logger': 2.0.0
       '@weapp-core/shared': 2.0.1
@@ -42842,18 +42893,18 @@ snapshots:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       postcss-selector-parser: 7.1.0
 
   '@weapp-vite/volar@0.0.1': {}
 
   '@weapp-vite/web@0.0.2':
     dependencies:
-      '@babel/parser': 7.28.4
-      '@babel/traverse': 7.28.4
+      '@babel/parser': 7.28.5
+      '@babel/traverse': 7.28.5
       fs-extra: 11.3.2
       htmlparser2: 10.0.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       pathe: 2.0.3
     transitivePeerDependencies:
       - supports-color
@@ -44314,7 +44365,7 @@ snapshots:
       - '@swc/helpers'
       - supports-color
 
-  babel-preset-taro@4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0):
+  babel-preset-taro@4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/helper-plugin-utils': 7.27.1
@@ -44325,7 +44376,7 @@ snapshots:
       '@babel/preset-typescript': 7.27.1(@babel/core@7.28.5)
       '@babel/runtime': 7.28.4
       '@babel/runtime-corejs3': 7.28.4
-      '@rnx-kit/babel-preset-metro-react-native': 1.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/runtime@7.28.4)(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))
+      '@rnx-kit/babel-preset-metro-react-native': 1.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/runtime@7.28.4)(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))
       '@tarojs/helper': 4.1.7(@swc/helpers@0.5.17)
       babel-plugin-dynamic-import-node: 2.3.3
       babel-plugin-transform-imports-api: 1.0.0
@@ -44342,7 +44393,7 @@ snapshots:
       - metro-react-native-babel-preset
       - supports-color
 
-  babel-preset-taro@4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@2.0.1(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5)):
+  babel-preset-taro@4.1.7(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@2.0.1(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5)):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/helper-plugin-utils': 7.27.1
@@ -44353,7 +44404,7 @@ snapshots:
       '@babel/preset-typescript': 7.27.1(@babel/core@7.28.5)
       '@babel/runtime': 7.28.4
       '@babel/runtime-corejs3': 7.28.4
-      '@rnx-kit/babel-preset-metro-react-native': 1.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.5))(@babel/runtime@7.28.4)(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))
+      '@rnx-kit/babel-preset-metro-react-native': 1.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/runtime@7.28.4)(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))
       '@tarojs/helper': 4.1.7(@swc/helpers@0.5.17)
       babel-plugin-dynamic-import-node: 2.3.3
       babel-plugin-transform-imports-api: 1.0.0
@@ -47871,7 +47922,7 @@ snapshots:
       is-date-object: 1.1.0
       is-symbol: 1.1.1
 
-  es-toolkit@1.40.0: {}
+  es-toolkit@1.41.0: {}
 
   es5-ext@0.10.64:
     dependencies:
@@ -54200,7 +54251,7 @@ snapshots:
   magic-regexp@0.10.0:
     dependencies:
       estree-walker: 3.0.3
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       mlly: 1.8.0
       regexp-tree: 0.1.27
       type-level-regexp: 0.1.17
@@ -59479,17 +59530,17 @@ snapshots:
       babel-runtime: 6.26.0
       classnames: 2.5.1
 
-  rolldown-plugin-dts@0.16.12(oxc-resolver@11.7.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3)):
+  rolldown-plugin-dts@0.17.1(oxc-resolver@11.7.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3)):
     dependencies:
       '@babel/generator': 7.28.5
-      '@babel/parser': 7.28.4
-      '@babel/types': 7.28.4
+      '@babel/parser': 7.28.5
+      '@babel/types': 7.28.5
       ast-kit: 2.1.3
       birpc: 2.6.1
       debug: 4.4.3(supports-color@6.1.0)
       dts-resolver: 2.1.2(oxc-resolver@11.7.1)
       get-tsconfig: 4.13.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       rolldown: 1.0.0-beta.44
     optionalDependencies:
       typescript: 5.9.3
@@ -62264,7 +62315,7 @@ snapshots:
       path-exists: 4.0.0
       read-pkg-up: 7.0.1
 
-  tsdown@0.15.9(oxc-resolver@11.7.1)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3)):
+  tsdown@0.15.10(oxc-resolver@11.7.1)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3)):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -62274,12 +62325,13 @@ snapshots:
       empathic: 2.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.44
-      rolldown-plugin-dts: 0.16.12(oxc-resolver@11.7.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+      rolldown-plugin-dts: 0.17.1(oxc-resolver@11.7.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
       semver: 7.7.3
       tinyexec: 1.0.1
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
       unconfig: 7.3.3
+      unrun: 0.2.0
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -62661,7 +62713,7 @@ snapshots:
       estree-walker: 3.0.3
       fast-glob: 3.3.3
       local-pkg: 1.1.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       mlly: 1.8.0
       pathe: 2.0.3
       picomatch: 4.0.3
@@ -62777,7 +62829,7 @@ snapshots:
   unplugin-auto-import@19.1.0:
     dependencies:
       local-pkg: 1.1.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       picomatch: 4.0.3
       unimport: 4.1.1
       unplugin: 2.3.10
@@ -62867,6 +62919,12 @@ snapshots:
       '@unrs/resolver-binding-win32-arm64-msvc': 1.11.1
       '@unrs/resolver-binding-win32-ia32-msvc': 1.11.1
       '@unrs/resolver-binding-win32-x64-msvc': 1.11.1
+
+  unrun@0.2.0:
+    dependencies:
+      '@oxc-project/runtime': 0.95.0
+      rolldown: 1.0.0-beta.44
+      synckit: 0.11.11
 
   unset-value@1.0.0:
     dependencies:
@@ -62981,16 +63039,7 @@ snapshots:
       schema-utils: 3.3.0
       webpack: 4.46.0
     optionalDependencies:
-      file-loader: 6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
-
-  url-loader@4.1.1(file-loader@6.2.0(webpack@4.46.0))(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)):
-    dependencies:
-      loader-utils: 2.0.4
-      mime-types: 2.1.35
-      schema-utils: 3.3.0
-      webpack: 5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)
-    optionalDependencies:
-      file-loader: 6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
+      file-loader: 6.2.0(webpack@4.46.0)
 
   url-loader@4.1.1(file-loader@6.2.0(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))(esbuild@0.25.11)))(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))(esbuild@0.25.11)):
     dependencies:
@@ -63000,6 +63049,24 @@ snapshots:
       webpack: 5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))(esbuild@0.25.11)
     optionalDependencies:
       file-loader: 6.2.0(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))(esbuild@0.25.11))
+
+  url-loader@4.1.1(file-loader@6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)))(webpack@4.46.0):
+    dependencies:
+      loader-utils: 2.0.4
+      mime-types: 2.1.35
+      schema-utils: 3.3.0
+      webpack: 4.46.0
+    optionalDependencies:
+      file-loader: 6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
+
+  url-loader@4.1.1(file-loader@6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)))(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)):
+    dependencies:
+      loader-utils: 2.0.4
+      mime-types: 2.1.35
+      schema-utils: 3.3.0
+      webpack: 5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11)
+    optionalDependencies:
+      file-loader: 6.2.0(webpack@5.102.1(@swc/core@1.3.96(@swc/helpers@0.5.17))(esbuild@0.25.11))
 
   url-parse-lax@1.0.0:
     dependencies:
@@ -63322,7 +63389,7 @@ snapshots:
       debug: 4.4.3(supports-color@6.1.0)
       kolorist: 1.8.0
       local-pkg: 1.1.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       typescript: 5.9.3
     optionalDependencies:
       vite: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(less@4.4.2)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
@@ -63424,7 +63491,7 @@ snapshots:
       chai: 5.3.3
       debug: 4.4.3(supports-color@6.1.0)
       expect-type: 1.2.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       pathe: 2.0.3
       picomatch: 4.0.3
       std-env: 3.9.0
@@ -63932,15 +63999,15 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
 
-  weapp-vite@5.5.1(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1):
+  weapp-vite@5.6.0(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(oxc-resolver@11.7.1)(rollup@4.52.5)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))(yaml@2.8.1):
     dependencies:
       '@babel/core': 7.28.5
-      '@babel/parser': 7.28.4
-      '@babel/preset-env': 7.28.3(@babel/core@7.28.5)
-      '@babel/preset-typescript': 7.27.1(@babel/core@7.28.5)
-      '@babel/traverse': 7.28.4
-      '@babel/types': 7.28.4
-      '@weapp-core/init': 3.0.1
+      '@babel/parser': 7.28.5
+      '@babel/preset-env': 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-typescript': 7.28.5(@babel/core@7.28.5)
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
+      '@weapp-core/init': 3.0.2
       '@weapp-core/logger': 2.0.0
       '@weapp-core/schematics': 4.0.0
       '@weapp-core/shared': 2.0.1
@@ -63957,7 +64024,7 @@ snapshots:
       postcss: 8.5.6
       rolldown: 1.0.0-beta.44
       rolldown-require: 1.0.4(rolldown@1.0.0-beta.44)(rollup@4.52.5)
-      tsdown: 0.15.9(oxc-resolver@11.7.1)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+      tsdown: 0.15.10(oxc-resolver@11.7.1)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
       vite: rolldown-vite@7.1.19(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vite-plugin-performance: 1.0.0
       vite-tsconfig-paths: 5.1.4(rolldown-vite@7.1.19(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.93.2)(sass@1.93.2)(stylus@0.64.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(typescript@5.9.3)

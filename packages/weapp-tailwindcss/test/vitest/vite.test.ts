@@ -166,112 +166,6 @@ describe('vite test', () => {
     )
   })
 
-  it('vite common build with mangle true', async () => {
-    let timeStart: number
-    let timeTaken: number
-    await assertSnap(
-      uvwt({
-        mangle: true,
-        htmlMatcher,
-        onStart() {
-          timeStart = performance.now()
-        },
-        onEnd() {
-          timeTaken = performance.now() - timeStart
-          // 不会执行
-          void timeTaken
-        },
-      }),
-    )
-  })
-
-  it('vite common build with mangle options', async () => {
-    let timeStart: number
-    let timeTaken: number
-    await assertSnap(
-      uvwt({
-        mangle: {},
-        htmlMatcher,
-        onStart() {
-          timeStart = performance.now()
-        },
-        onEnd() {
-          timeTaken = performance.now() - timeStart
-          // 不会执行
-          void timeTaken
-        },
-      }),
-    )
-  })
-
-  it('vite common build with mangle options 0', async () => {
-    let timeStart: number
-    let timeTaken: number
-    await assertSnap(
-      uvwt({
-        mangle: {
-          classGenerator: {
-            classPrefix: '',
-          },
-        },
-        htmlMatcher,
-        onStart() {
-          timeStart = performance.now()
-        },
-        onEnd() {
-          timeTaken = performance.now() - timeStart
-          // 不会执行
-          void timeTaken
-        },
-      }),
-    )
-  })
-
-  it('vite common build with mangle options mangleClassFilter all true', async () => {
-    let timeStart: number
-    let timeTaken: number
-    await assertSnap(
-      uvwt({
-        mangle: {
-          mangleClassFilter() {
-            return true
-          },
-        },
-        onStart() {
-          timeStart = performance.now()
-        },
-        onEnd() {
-          timeTaken = performance.now() - timeStart
-          // 不会执行
-          void timeTaken
-        },
-      }),
-    )
-  })
-
-  it('vite common build with mangle options mangleClassFilter variables', async () => {
-    let timeStart: number
-    let timeTaken: number
-    await assertSnap(
-      uvwt({
-        mangle: {
-          mangleClassFilter(className) {
-            return /[[\]]/.test(className)
-          },
-        },
-        htmlMatcher,
-        onStart() {
-          timeStart = performance.now()
-        },
-        onEnd() {
-          timeTaken = performance.now() - timeStart
-          // 不会执行
-          void timeTaken
-        },
-      }),
-    )
-  })
-
   it('vite disabled build', async () => {
     let timeStart: number
     let timeTaken: number
@@ -279,11 +173,6 @@ describe('vite test', () => {
       uvwt({
         disabled: true,
         htmlMatcher,
-        mangle: {
-          mangleClassFilter() {
-            return true
-          },
-        },
         onStart() {
           timeStart = performance.now()
         },

@@ -98,7 +98,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     },
     disabledDefaultTemplateHandler: false,
     cssSelectorReplacement: {
-      root: 'page',
+      root: ['page', '.tw-root'],
       universal: ['view', 'text'],
     },
     babelParserOptions: {

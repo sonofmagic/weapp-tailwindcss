@@ -121,7 +121,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     jsHandler,
     mainCssChunkMatcher,
     appType,
-    setMangleRuntimeSet,
     cache,
     twPatcher,
     uniAppX,
@@ -171,7 +170,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
         const groupedEntries = getGroupedEntries(entries, opts)
         runtimeSet = await collectRuntimeClassSet(twPatcher)
-        setMangleRuntimeSet(runtimeSet)
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
           onUpdate(fileName, previous, next)

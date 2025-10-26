@@ -26,6 +26,9 @@ module.exports = defineConfig({
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
+        cssSelectorReplacement: {
+          root: ['page', '.tw-root']
+        }
       })
     )
   },

@@ -22,7 +22,7 @@ const Transform = stream.Transform
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
 
-  const { templateHandler, styleHandler, jsHandler, setMangleRuntimeSet, cache, twPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, cache, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
   const patchPromise = Promise.resolve(twPatcher.patch())
@@ -37,7 +37,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
     runtimeSet = await collectRuntimeClassSet(twPatcher)
     runtimeSetInitialized = true
-    setMangleRuntimeSet(runtimeSet)
     return runtimeSet
   }
   function resolveWithExtensions(base: string): string | undefined {

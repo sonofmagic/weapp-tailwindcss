@@ -6,7 +6,6 @@ function createBaseOptions() {
   return {
     escapeMap: { base: '_' },
     arbitraryValues: { allowDoubleQuotes: true },
-    mangleContext: { jsHandler: vi.fn() } as any,
     jsPreserveClass: vi.fn(),
     generateMap: true,
     babelParserOptions: { sourceType: 'module' as const },
@@ -44,7 +43,6 @@ describe('createJsHandler', () => {
     expect(resolved.escapeMap).toMatchObject(override.escapeMap)
     expect(resolved.escapeMap!.base).toBe(base.escapeMap.base)
     expect(resolved.arbitraryValues).toBe(base.arbitraryValues)
-    expect(resolved.mangleContext).toBe(base.mangleContext)
     expect(resolved.jsPreserveClass).toBe(base.jsPreserveClass)
     expect(resolved.generateMap).toBe(true)
     expect(resolved.babelParserOptions).toBe(base.babelParserOptions)

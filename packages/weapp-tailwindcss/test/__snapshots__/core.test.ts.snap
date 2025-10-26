@@ -5,7 +5,7 @@ exports[`core > common usage case 0 1`] = `undefined`;
 exports[`core > common usage case 0 2`] = `
 SourceMap {
   "file": undefined,
-  "mappings": "AAAA,qBAAqB,WAAW",
+  "mappings": "AAAA",
   "names": [],
   "sources": [
     "",

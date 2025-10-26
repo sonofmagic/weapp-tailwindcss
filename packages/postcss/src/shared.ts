@@ -12,10 +12,7 @@ export function internalCssSelectorReplacer(
     escapeMap: MappingChars2String,
   },
 ) {
-  const { mangleContext, escapeMap } = options
-  if (mangleContext) {
-    selectors = mangleContext.cssHandler(selectors)
-  }
+  const { escapeMap } = options
   return escape(selectors, {
     map: escapeMap,
   })

@@ -118,7 +118,6 @@ export function replaceHandleValue(
 ): JsToken | undefined {
   const {
     escapeMap,
-    mangleContext,
     needEscaped = false,
   } = options
   const { classNameSet, alwaysEscape } = options
@@ -140,21 +139,9 @@ export function replaceHandleValue(
   let transformed = literal
   let mutated = false
 
-  let normalised = false
-
   for (const candidate of candidates) {
     if (!shouldTransformClassName(candidate, options)) {
       continue
-    }
-
-    if (mangleContext && !normalised) {
-      // Ensure mangle context can normalise class names before replacement.
-      const mangled = mangleContext.jsHandler(transformed)
-      if (mangled !== transformed) {
-        transformed = mangled
-        mutated = true
-      }
-      normalised = true
     }
 
     if (!transformed.includes(candidate)) {

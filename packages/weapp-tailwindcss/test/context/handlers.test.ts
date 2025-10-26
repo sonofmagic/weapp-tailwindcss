@@ -58,21 +58,18 @@ describe('createHandlersFromContext', () => {
       disabledDefaultTemplateHandler: true,
     } as unknown as import('@/types').InternalUserDefinedOptions
 
-    const mangleContext = {} as import('@weapp-tailwindcss/mangle').IMangleScopeContext
     const customAttributesEntities: import('@/types').ICustomAttributesEntities = [
       ['view', ['class']],
     ]
 
     const result = createHandlersFromContext(
       ctx,
-      mangleContext,
       customAttributesEntities,
       true,
     )
 
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       cssCalc: true,
-      mangleContext,
       px2rpx: ctx.px2rpx,
       cssPresetEnv: ctx.cssPresetEnv,
     }))
@@ -80,7 +77,6 @@ describe('createHandlersFromContext', () => {
     expect(jsHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       escapeMap: ctx.escapeMap,
       arbitraryValues: ctx.arbitraryValues,
-      mangleContext,
     }))
 
     expect(templateHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({

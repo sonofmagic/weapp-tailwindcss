@@ -42,7 +42,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       styleHandler,
       templateHandler,
       jsHandler,
-      setMangleRuntimeSet,
       runtimeLoaderPath,
       cache,
       twPatcher,
@@ -156,7 +155,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       // 再次 build 不转化的原因是此时 set.size 为0
       // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
       const runtimeSet = await collectRuntimeClassSet(twPatcher)
-      setMangleRuntimeSet(runtimeSet)
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       const tasks: Promise<void>[] = []
       if (Array.isArray(groupedEntries.html)) {

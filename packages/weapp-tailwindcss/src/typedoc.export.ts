@@ -1,13 +1,11 @@
-/* eslint-disable style/no-trailing-spaces */
 import type { ParserOptions } from '@babel/parser'
-import type { IMangleOptions } from '@weapp-tailwindcss/mangle'
-import type { 
-  CssCalcOptions, 
-  CssPreflightOptions, 
-  CustomRuleCallback, 
-  LoadedPostcssOptions, 
-  PresetEnvOptions, 
-  Px2rpxOptions, 
+import type {
+  CssCalcOptions,
+  CssPreflightOptions,
+  CustomRuleCallback,
+  LoadedPostcssOptions,
+  PresetEnvOptions,
+  Px2rpxOptions,
   Rem2rpxOptions,
 } from '@weapp-tailwindcss/postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
@@ -526,18 +524,6 @@ export interface UserDefinedOptions {
    * :::
    */
   jsAstTool?: 'babel' | 'ast-grep'
-
-  /**
-   * 是否对指定范围的类名执行压缩混淆。
-   *
-   * @group 4.即将废弃配置
-   * @remarks
-   * 默认关闭，可参考 [unplugin-tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/main/packages/unplugin-tailwindcss-mangle) 获取完整配置。
-   * :::danger
-   * 此配置将在 `5.x` 中移除，功能已迁移至 [`tailwindcss-mangle`](https://github.com/sonofmagic/tailwindcss-mangle)。
-   * :::
-   */
-  mangle?: boolean | IMangleOptions
 
   /**
    * 自定义 PostCSS 规则的处理回调。

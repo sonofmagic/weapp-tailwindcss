@@ -2,7 +2,6 @@ import { getCss } from '#test/helpers/getTwCss'
 import { createGetCase, wxsCasePath } from '#test/util'
 // import { createTemplateHandler } from '@/wxml/index'
 import { wxsTagRegexp } from '@weapp-core/regex'
-import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { getCompilerContext } from '@/context'
 
 interface ExtractSourceToken {
@@ -15,9 +14,9 @@ interface ExtractSourceToken {
   // nextConcatenated: boolean
 }
 async function getClassCacheSet() {
-  const twPatcher = new TailwindcssPatcher()
-  await twPatcher.patch()
-  return twPatcher.getClassSet()
+  const ctx = getCompilerContext()
+  await ctx.twPatcher.patch()
+  return ctx.twPatcher.getClassSet()
 }
 const getCase = createGetCase(wxsCasePath)
 
