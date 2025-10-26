@@ -362,10 +362,6 @@ const communitySidebar: SidebarConfig = [
 
   {
     type: 'doc',
-    id: 'mangle/index',
-  },
-  {
-    type: 'doc',
     id: 'community/load-font',
   },
   {
