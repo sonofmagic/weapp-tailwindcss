@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss",
-  "version": "4.6.1",
+  "version": "4.6.2",
   "description": "把 tailwindcss 原子化样式思想，带给小程序开发者们! bring tailwindcss to miniprogram developers!",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
