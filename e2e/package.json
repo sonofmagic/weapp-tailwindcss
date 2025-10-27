@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@tailwindcss-mangle/config": "^5.1.2",
+    "@tailwindcss-mangle/config": "^6.0.0",
     "prettier": "^3.6.2",
     "tailwindcss-patch": "catalog:tailwindcssPatch"
   }
