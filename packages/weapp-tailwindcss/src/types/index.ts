@@ -46,6 +46,7 @@ export interface TailwindcssPatcherLike {
   majorVersion?: TailwindcssPatcher['majorVersion']
   patch: TailwindcssPatcher['patch']
   getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
+  getClassSetSync?: TailwindcssPatcher['getClassSetSync']
   extract: TailwindcssPatcher['extract']
   options?: TailwindcssPatcher['options']
 }

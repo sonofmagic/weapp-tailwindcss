@@ -41,6 +41,7 @@ function createContext(overrides: Record<string, unknown> = {}) {
     twPatcher: {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetSync: vi.fn(() => runtimeSet),
       majorVersion: 3,
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
     },
@@ -160,7 +161,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
@@ -190,7 +192,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
   })
 
   it('returns undefined when disabled', () => {
@@ -207,6 +210,9 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     currentContext.twPatcher = {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetSync: vi.fn(() => {
+        throw new Error('getClassSetSync is not supported for Tailwind CSS v4 projects. Use getClassSet instead.')
+      }),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
     }
@@ -231,6 +237,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     const nvueBuildStart = nvuePlugin.buildStart as any
     await nvueBuildStart?.call(nvuePlugin)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     const nvueTransform = nvuePlugin.transform as any
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
@@ -253,6 +260,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     const generateBundle = postPlugin.generateBundle as any
     await generateBundle?.call(postPlugin, {} as any, bundle)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(

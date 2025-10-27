@@ -15,6 +15,7 @@ interface InternalContext {
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
+    getClassSetSync: ReturnType<typeof vi.fn>
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
@@ -64,6 +65,7 @@ describe('bundlers/gulp createPlugins', () => {
     twPatcher = {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     }
@@ -88,13 +90,15 @@ describe('bundlers/gulp createPlugins', () => {
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.extract).not.toHaveBeenCalled()
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
-    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(twPatcher.extract).not.toHaveBeenCalled()
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'console.log("hi")')

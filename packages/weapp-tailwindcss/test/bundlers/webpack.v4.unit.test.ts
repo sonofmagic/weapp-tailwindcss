@@ -20,6 +20,7 @@ interface TestContext {
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
+    getClassSetSync: ReturnType<typeof vi.fn>
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
@@ -56,6 +57,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     twPatcher: {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     },
@@ -143,7 +145,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     await emitHandlers[0](compilation)
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
@@ -176,7 +179,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
   })
 
   it('keeps distinct cache entries for js and wxs assets', async () => {
