@@ -7,8 +7,8 @@ import { build } from 'vite'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import { fixturesRootPath } from './util'
 
-describe('vite', () => {
-  it.skipIf(isCI)('v4-vite-plugin', async () => {
+describe.skipIf(isCI)('vite', () => {
+  it('v4-vite-plugin', async () => {
     await build({
       root: path.resolve(fixturesRootPath, 'v4-vite-plugin'),
       plugins: [
