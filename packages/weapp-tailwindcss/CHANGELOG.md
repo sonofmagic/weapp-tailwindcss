@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.6.0
+
+### Minor Changes
+
+- [`10fd23d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/10fd23de83adb895fc39907c9e159b2c62df56a6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 异步化 tailwind patcher 的类名集合获取方法，并统一通过 extract 收集最新 runtime 集合，提升多构建器在缓存命中场景下的准确性
+
+### Patch Changes
+
+- [`54669fe`](https://github.com/sonofmagic/weapp-tailwindcss/commit/54669fef15f964756cb428bd566926d7ef9226cd) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 适配 `tailwindcss-patch@8` 新接口，补充解析路径与包名配置，保障 PostCSS7 兼容项目与各构建器在升级后仍可正确加载补丁；默认从当前子项目的 `node_modules` 中解析 Tailwind 依赖，并同步移除示例工程里冗余的 `tailwindcssBasedir` 设置
+
 ## 4.5.2
 
 ### Patch Changes
