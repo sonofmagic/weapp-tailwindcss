@@ -1,5 +1,5 @@
 /* stylelint-disable custom-property-pattern */
-@import "weapp-tailwindcss";
+@import "weapp-tailwindcss/css";
 @config "../tailwind.config.js";
 
 @theme {

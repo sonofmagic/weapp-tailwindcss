@@ -14,6 +14,12 @@
     <view class="bg-neutral-1B">
       12345
     </view>
+    <view
+      class="mt-6 rounded-xl bg-emerald-500 py-3 text-center text-white shadow-sm active:bg-emerald-600"
+      @tap="goOrder"
+    >
+      打开订单分包
+    </view>
   </view>
 </template>
 
@@ -21,6 +27,9 @@
 import { ref } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')
+const goOrder = () => {
+  uni.navigateTo({
+    url: '/pages-order/pages/home/home'
+  })
+}
 </script>
-
-

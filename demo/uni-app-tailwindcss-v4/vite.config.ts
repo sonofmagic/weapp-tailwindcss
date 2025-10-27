@@ -21,14 +21,13 @@ export default defineConfig(async () => {
       // 以默认的 cjs 方式加载，报错
       // Failed to resolve "@tailwindcss/vite". This package is ESM only but it was tried to load by `require`
       tailwindcss(),
-      UnifiedViteWeappTailwindcssPlugin(
-        {
-          rem2rpx: true,
-          cssEntries:[
-            path.resolve(__dirname, 'src/main.css')
-          ]
-        }
-      )
+      UnifiedViteWeappTailwindcssPlugin({
+        rem2rpx: true,
+        cssEntries: [
+          path.resolve(__dirname, "src/main.css"),
+          path.resolve(__dirname, "src/common.css"),
+        ],
+      }),
     ],
     resolve: {
       alias: {

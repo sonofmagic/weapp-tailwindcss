@@ -1,16 +1,87 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	}
+  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "uni-app"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages-order",
+      "pages": [
+        {
+          "path": "pages/home/home",
+          "style": {
+            "navigationBarTitleText": "订单首页"
+          }
+        },
+        {
+          "path": "pages/user/user",
+          "style": {
+            "navigationBarTitleText": "订单用户"
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "condition": {
+    "current": 0,
+    "list": [
+      {
+        "path": "pages/issue/issue470",
+        "name": "issue470"
+      },
+      {
+        "path": "pages/index/peer",
+        "name": "peer"
+      },
+      {
+        "name": "daisyui",
+        "path": "pages/index/daisyui"
+      },
+      {
+        "name": "case55",
+        "path": "pages/issue/case55",
+        "query": ""
+      },
+      {
+        "name": "case-dynamic-class",
+        "path": "pages/issue/case-dynamic-class",
+        "query": ""
+      },
+      {
+        "name": "tailwind-children",
+        "path": "pages/issue/tailwind-children",
+        "query": ""
+      },
+      {
+        "name": "case-support-rpx",
+        "path": "pages/issue/case-support-rpx",
+        "query": ""
+      },
+      {
+        "name": "subPackages",
+        "path": "subs/demo/pages/index",
+        "query": ""
+      },
+      {
+        "name": "independent subPackages",
+        "path": "moduleA/pages/index",
+        "query": ""
+      },
+      {
+        "name": "typography",
+        "path": "pages/issue/typography",
+        "query": ""
+      }
+    ]
+  }
 }
