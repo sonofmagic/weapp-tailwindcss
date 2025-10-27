@@ -6,6 +6,6 @@
   "dependencies": {
     "@tailwindcss-mangle/config": "^5.1.2",
     "prettier": "^3.6.2",
-    "tailwindcss-patch": "^8.0.0"
+    "tailwindcss-patch": "^8.1.0"
   }
 }
