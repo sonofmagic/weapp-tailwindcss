@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.6.2
+
+### Patch Changes
+
+- [`9e08c57`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9e08c5718d707e06dbf25657fc20f7a8213ea7c8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 升级 tailwindcss-patch 允许 cjs 加载以兼容 hbuilderx
+
 ## 4.6.1
 
 ### Patch Changes
