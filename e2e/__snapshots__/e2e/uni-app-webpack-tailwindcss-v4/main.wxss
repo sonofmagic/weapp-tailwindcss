@@ -1,6 +1,7 @@
 /*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
 :host,
-page {
+page,
+.tw-root {
   --spacing: 8rpx;
 }
 ::-webkit-backdrop {

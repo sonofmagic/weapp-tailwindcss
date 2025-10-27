@@ -7,6 +7,7 @@ text,
   --tw-font-weight: initial;
 }
 page,
+.tw-root,
 :host {
   --color-white: #fff;
   --spacing: 8rpx;
@@ -74,6 +75,12 @@ text,
   fill: #78dcca;
   fill: var(--color-bermuda);
 }
+.text-_45rpx_ {
+  font-size: 45rpx;
+}
+.text-_88rpx_ {
+  font-size: 88rpx;
+}
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: 700;
@@ -81,12 +88,6 @@ text,
 }
 .text-_h00f285_ {
   color: #00f285;
-}
-.text-_45rpx_ {
-  color: 45rpx;
-}
-.text-_88rpx_ {
-  color: 88rpx;
 }
 .text-tahiti {
   color: #3ab7bf;

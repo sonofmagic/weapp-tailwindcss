@@ -16,7 +16,17 @@ export function removeWxmlId(html: string) {
   })
   parser.write(html)
   parser.end()
-  return ms.toString()
+  return stripLunaDomHighlighter(ms.toString())
+}
+
+function stripLunaDomHighlighter(html: string) {
+  const index = html.indexOf('.luna-dom-highlighter')
+  if (index === -1) {
+    return html
+  }
+
+  const head = html.slice(0, index)
+  return head.trimEnd()
 }
 
 export function resolve(...args: string[]) {

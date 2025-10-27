@@ -34,4 +34,12 @@ describe('utils', () => {
     const res = removeWxmlId(html)
     expect(res).toMatchSnapshot()
   })
+
+  it('strip luna dom highlighter snippet', () => {
+    const html = `<view>test</view>
+.luna-dom-highlighter{position:fixed;left:0;top:0;width:100%;height:100%;z-index:100000;}
+.luna-dom-highlighter-fill{position:absolute;}`
+    const res = removeWxmlId(html)
+    expect(res).toBe('<view>test</view>')
+  })
 })

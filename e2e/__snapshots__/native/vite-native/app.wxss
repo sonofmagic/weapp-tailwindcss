@@ -26,6 +26,7 @@ text,
   border-color: currentColor;
 }
 page,
+.tw-root,
 :host {
   --color-red-700: #bf000f;
   --color-amber-300: #ffd236;
@@ -40,6 +41,7 @@ page,
 }
 @supports (color: lab(0% 0 0)) {
   page,
+  .tw-root,
   :host {
     --color-red-700: rgb(191, 0, 15);
     --color-amber-300: rgb(255, 210, 55);
@@ -54,6 +56,7 @@ page,
 
   @media (color-gamut: p3) {
     page,
+    .tw-root,
     :host {
       --color-red-700: lab(40.4273% 67.2623 53.7441);
       --color-amber-300: lab(86.4156% 6.13147 78.3961);
@@ -225,14 +228,14 @@ text,
 .text-_100px_ {
   font-size: 100px;
 }
+.text-_100rpx_ {
+  font-size: 100rpx;
+}
 .text-_h123322_ {
   color: #123322;
 }
 .text-_h123456_ {
   color: #123456;
-}
-.text-_100rpx_ {
-  color: 100rpx;
 }
 .text-blue-300 {
   color: #90c5ff;
