@@ -32,7 +32,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const projectPath = path.resolve(projectBase, entry.projectPath)
   const root = path.resolve(projectBase, entry.name)
 
-  await ensureProjectBuilt(root)
+  // await ensureProjectBuilt(root)
 
   try {
     await fs.rm(path.resolve(root, 'node_modules/.cache'), { recursive: true, force: true })
@@ -132,7 +132,7 @@ async function expectProjectSnapshot(suite: string, projectName: string, fileNam
 
 const buildTasks = new Map<string, Promise<void>>()
 
-async function ensureProjectBuilt(root: string) {
+export async function ensureProjectBuilt(root: string) {
   const existing = buildTasks.get(root)
   if (existing) {
     return existing

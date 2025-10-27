@@ -51,4 +51,25 @@
     <view class="text-_red_" style="">人生几何</view>
   </view>
   <view class="bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full" style=""></view>
+  <button
+    app-parameter=""
+    business-id=""
+    class="h5-button nut-button nut-button--default nut-button--normal nut-button--round"
+    form-type=""
+    hover-class="button-hover"
+    hover-start-time="20"
+    hover-stay-time="70"
+    lang=""
+    open-type=""
+    send-message-img=""
+    send-message-path=""
+    send-message-title=""
+    session-from=""
+    size="default"
+    style=""
+    type=""
+    role="button"
+    aria-disabled="false">
+    <view class="nut-button__wrap" style=""><view style="">nut-button</view></view>
+  </button>
 </view>
