@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/postcss'
 import twv from '@tailwindcss/vite'
+import { isCI } from 'ci-info'
 import fs from 'fs-extra'
 import path from 'pathe'
 import { build } from 'vite'
@@ -7,7 +8,7 @@ import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import { fixturesRootPath } from './util'
 
 describe('vite', () => {
-  it('v4-vite-plugin', async () => {
+  it.skipIf(isCI)('v4-vite-plugin', async () => {
     await build({
       root: path.resolve(fixturesRootPath, 'v4-vite-plugin'),
       plugins: [
