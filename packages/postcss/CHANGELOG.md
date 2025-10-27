@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 1.3.4
+
+### Patch Changes
+
+- [`cb7d4ed`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cb7d4ed16826159bfaabbad1ae7571d94e9d5257) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore(deps): upgrade
+
 ## 1.3.3
 
 ### Patch Changes
