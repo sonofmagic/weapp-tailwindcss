@@ -38,7 +38,7 @@ catalogs:
       version: 4.1.16
     tailwindcss4:
       specifier: npm:tailwindcss@^4.1.16
-      version: 4.1.15
+      version: 4.1.16
   tailwindcssPatch:
     tailwindcss-patch:
       specifier: ^8.2.0

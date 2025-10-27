@@ -1,5 +1,6 @@
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
-import type { InternalUserDefinedOptions } from '@/types'
+import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
+import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
@@ -29,6 +30,8 @@ interface EnvBasedirResult {
   key: EnvBasedirKey
   value: string
 }
+
+type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
 
 function pickEnvBasedir(): EnvBasedirResult | undefined {
   for (const key of ENV_BASEDIR_KEYS) {
@@ -168,32 +171,125 @@ export function resolveTailwindcssBasedir(basedir?: string) {
   return path.normalize(process.cwd())
 }
 
-export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOptions) {
+function normalizeCssEntries(entries: string[] | undefined, anchor: string): string[] | undefined {
+  if (!entries || entries.length === 0) {
+    return undefined
+  }
+
+  const normalized = new Set<string>()
+  for (const entry of entries) {
+    if (typeof entry !== 'string') {
+      continue
+    }
+    const trimmed = entry.trim()
+    if (trimmed.length === 0) {
+      continue
+    }
+    const resolved = path.isAbsolute(trimmed)
+      ? path.normalize(trimmed)
+      : path.normalize(path.resolve(anchor, trimmed))
+    normalized.add(resolved)
+  }
+
+  return normalized.size > 0 ? [...normalized] : undefined
+}
+
+function groupCssEntriesByBase(entries: string[]) {
+  const groups = new Map<string, string[]>()
+  for (const entry of entries) {
+    const baseDir = path.normalize(path.dirname(entry))
+    const bucket = groups.get(baseDir)
+    if (bucket) {
+      bucket.push(entry)
+    }
+    else {
+      groups.set(baseDir, [entry])
+    }
+  }
+  return groups
+}
+
+function overrideTailwindcssPatcherOptionsForBase(
+  options: CreateTailwindcssPatcherOptions['tailwindcssPatcherOptions'],
+  baseDir: string,
+  cssEntries: string[],
+) {
+  if (!options) {
+    return options
+  }
+
+  if ('patch' in options) {
+    const patchOptions = options.patch
+    if (!patchOptions) {
+      return options
+    }
+    const nextPatch = {
+      ...patchOptions,
+      basedir: baseDir,
+      cwd: patchOptions.cwd ?? baseDir,
+    }
+    if (patchOptions.tailwindcss) {
+      nextPatch.tailwindcss = {
+        ...patchOptions.tailwindcss,
+        v4: {
+          ...(patchOptions.tailwindcss.v4 ?? {}),
+          base: baseDir,
+          cssEntries,
+        },
+      }
+    }
+    return {
+      ...options,
+      patch: nextPatch,
+    }
+  }
+
+  if (!options.tailwind) {
+    return options
+  }
+
+  return {
+    ...options,
+    tailwind: {
+      ...options.tailwind,
+      v4: {
+        ...(options.tailwind.v4 ?? {}),
+        base: baseDir,
+        cssEntries,
+      },
+    },
+  }
+}
+
+interface TailwindcssPatcherFactoryOptions {
+  tailwindcss?: TailwindUserOptions
+  tailwindcssPatcherOptions?: CreateTailwindcssPatcherOptions['tailwindcssPatcherOptions']
+  supportCustomLengthUnitsPatch: InternalUserDefinedOptions['supportCustomLengthUnitsPatch']
+  appType: InternalUserDefinedOptions['appType']
+}
+
+function createPatcherForBase(
+  baseDir: string,
+  cssEntries: string[] | undefined,
+  options: TailwindcssPatcherFactoryOptions,
+) {
   const {
-    tailwindcssBasedir,
-    supportCustomLengthUnitsPatch,
     tailwindcss,
     tailwindcssPatcherOptions,
-    cssEntries,
+    supportCustomLengthUnitsPatch,
     appType,
-  } = ctx
-
-  const resolvedTailwindcssBasedir = resolveTailwindcssBasedir(tailwindcssBasedir)
-  ctx.tailwindcssBasedir = resolvedTailwindcssBasedir
-  logger.debug('tailwindcss basedir resolved: %s', resolvedTailwindcssBasedir)
-
-  type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
+  } = options
 
   const defaultTailwindcssConfig: TailwindUserOptions = {
-    cwd: resolvedTailwindcssBasedir,
+    cwd: baseDir,
     v2: {
-      cwd: resolvedTailwindcssBasedir,
+      cwd: baseDir,
     },
     v3: {
-      cwd: resolvedTailwindcssBasedir,
+      cwd: baseDir,
     },
     v4: {
-      base: resolvedTailwindcssBasedir,
+      base: baseDir,
       cssEntries,
     },
   }
@@ -202,16 +298,191 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     defaultTailwindcssConfig.version = 4
   }
 
-  return createTailwindcssPatcher(
+  const mergedTailwindOptions = defuOverrideArray<TailwindUserOptions, TailwindUserOptions[]>(
+    (tailwindcss ?? {}) as TailwindUserOptions,
+    defaultTailwindcssConfig,
+  )
+
+  if (!mergedTailwindOptions.v4) {
+    mergedTailwindOptions.v4 = {
+      base: baseDir,
+      cssEntries: cssEntries ?? [],
+    }
+  }
+  else {
+    mergedTailwindOptions.v4.base = baseDir
+    if (cssEntries?.length) {
+      mergedTailwindOptions.v4.cssEntries = cssEntries
+    }
+    else if (!mergedTailwindOptions.v4.cssEntries) {
+      mergedTailwindOptions.v4.cssEntries = []
+    }
+  }
+
+  const patchedOptions = overrideTailwindcssPatcherOptionsForBase(
+    tailwindcssPatcherOptions,
+    baseDir,
+    cssEntries ?? [],
+  )
+
+  return createTailwindcssPatcher({
+    basedir: baseDir,
+    cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
+    supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
+    tailwindcss: mergedTailwindOptions,
+    tailwindcssPatcherOptions: patchedOptions,
+  })
+}
+
+function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): TailwindcssPatcherLike {
+  if (patchers.length <= 1) {
+    return patchers[0]
+  }
+
+  const [first] = patchers
+  const multiPatcher: TailwindcssPatcherLike = {
+    packageInfo: first?.packageInfo,
+    majorVersion: first?.majorVersion,
+    options: first?.options,
+    async patch() {
+      let exposeContext: unknown
+      let extendLengthUnits: unknown
+      for (const patcher of patchers) {
+        const result = await patcher.patch()
+        if (result?.exposeContext && exposeContext == null) {
+          exposeContext = result.exposeContext
+        }
+        if (result?.extendLengthUnits && extendLengthUnits == null) {
+          extendLengthUnits = result.extendLengthUnits
+        }
+      }
+      return {
+        exposeContext,
+        extendLengthUnits,
+      }
+    },
+    async getClassSet() {
+      const aggregated = new Set<string>()
+      for (const patcher of patchers) {
+        const current = await patcher.getClassSet()
+        for (const className of current) {
+          aggregated.add(className)
+        }
+      }
+      return aggregated
+    },
+    async extract(options) {
+      const aggregatedSet = new Set<string>()
+      const aggregatedList: string[] = []
+      let filename: string | undefined
+      for (const patcher of patchers) {
+        const result = await patcher.extract(options)
+        if (!result) {
+          continue
+        }
+        if (filename === undefined && result.filename) {
+          filename = result.filename
+        }
+        if (result.classList) {
+          for (const className of result.classList) {
+            if (!aggregatedSet.has(className)) {
+              aggregatedList.push(className)
+            }
+            aggregatedSet.add(className)
+          }
+        }
+        if (result.classSet) {
+          for (const className of result.classSet) {
+            aggregatedSet.add(className)
+          }
+        }
+      }
+      return {
+        classList: aggregatedList,
+        classSet: aggregatedSet,
+        filename,
+      }
+    },
+  }
+
+  if (patchers.every(patcher => typeof patcher.getClassSetSync === 'function')) {
+    multiPatcher.getClassSetSync = () => {
+      const aggregated = new Set<string>()
+      for (const patcher of patchers) {
+        const current = patcher.getClassSetSync?.()
+        if (!current) {
+          continue
+        }
+        for (const className of current) {
+          aggregated.add(className)
+        }
+      }
+      return aggregated
+    }
+  }
+
+  return multiPatcher
+}
+
+function tryCreateMultiTailwindcssPatcher(
+  cssEntries: string[],
+  options: TailwindcssPatcherFactoryOptions,
+) {
+  const groups = groupCssEntriesByBase(cssEntries)
+  if (groups.size <= 1) {
+    return undefined
+  }
+
+  logger.debug('detected multiple Tailwind CSS entry bases: %O', [...groups.keys()])
+  const patchers: TailwindcssPatcherLike[] = []
+  for (const [baseDir, entries] of groups) {
+    patchers.push(createPatcherForBase(baseDir, entries, options))
+  }
+  return createMultiTailwindcssPatcher(patchers)
+}
+
+export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOptions) {
+  const {
+    tailwindcssBasedir,
+    supportCustomLengthUnitsPatch,
+    tailwindcss,
+    tailwindcssPatcherOptions,
+    cssEntries: rawCssEntries,
+    appType,
+  } = ctx
+
+  const resolvedTailwindcssBasedir = resolveTailwindcssBasedir(tailwindcssBasedir)
+  ctx.tailwindcssBasedir = resolvedTailwindcssBasedir
+  logger.debug('tailwindcss basedir resolved: %s', resolvedTailwindcssBasedir)
+
+  const normalizedCssEntries = normalizeCssEntries(rawCssEntries, resolvedTailwindcssBasedir)
+  if (normalizedCssEntries) {
+    ctx.cssEntries = normalizedCssEntries
+  }
+
+  const multiPatcher = normalizedCssEntries
+    ? tryCreateMultiTailwindcssPatcher(normalizedCssEntries, {
+        tailwindcss,
+        tailwindcssPatcherOptions,
+        supportCustomLengthUnitsPatch,
+        appType,
+      })
+    : undefined
+
+  if (multiPatcher) {
+    return multiPatcher
+  }
+
+  const effectiveCssEntries = normalizedCssEntries ?? rawCssEntries
+
+  return createPatcherForBase(
+    resolvedTailwindcssBasedir,
+    effectiveCssEntries,
     {
-      basedir: resolvedTailwindcssBasedir,
-      cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
-      supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
-      tailwindcss: defuOverrideArray<TailwindUserOptions, TailwindUserOptions[]>(
-        (tailwindcss ?? {}) as TailwindUserOptions,
-        defaultTailwindcssConfig,
-      ),
+      tailwindcss,
       tailwindcssPatcherOptions,
+      supportCustomLengthUnitsPatch,
+      appType,
     },
   )
 }
