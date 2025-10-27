@@ -130,8 +130,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       weapp-tailwindcss:
-        specifier: ^4.6.1
-        version: 4.6.1(tailwindcss@4.1.16)(typescript@5.9.2)
+        specifier: ^4.6.2
+        version: 4.6.2(tailwindcss@4.1.16)(typescript@5.9.2)
       webpack:
         specifier: 5.101.3
         version: 5.101.3(@swc/core@1.3.96)
@@ -1740,8 +1740,8 @@ packages:
     resolution: {integrity: sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==}
     engines: {node: '>=6'}
 
-  '@tailwindcss-mangle/config@6.0.0':
-    resolution: {integrity: sha512-wdEomVxxGG90bIybzxvdojX2jvNCFthN4pgsWs1XdT5GRkye7p0MhDUo8ZhuuMGwJX6gzXjEUitBhV0LBL1kQw==}
+  '@tailwindcss-mangle/config@6.0.1':
+    resolution: {integrity: sha512-DuiemlUmyJprioV5EmPT/ITSQBWk6bE7exMk2tTrPuEWCe9iDSCnartrudhBOeTBv7CC2Lz/zpo8tJfsfb85RA==}
 
   '@tailwindcss-mangle/shared@4.1.1':
     resolution: {integrity: sha512-bVRIDBJlo+ysYySVgP1GWC+uHQzlZi6w9Gsvm/UOUA9SXwzwUBlR+25YLJJ9MIT4oaHTK4a/w1kWKHRZnQDbhQ==}
@@ -6522,8 +6522,8 @@ packages:
   tailwindcss-config@1.1.2:
     resolution: {integrity: sha512-5vpQ7+B2pQAw4q8p4rXrHMMAhJ6sJ02C8lU8FRYCSUTVp7xDV+Ocz1IJGfWxTnyMW18GN2Elc/QefHfqiKVEQw==}
 
-  tailwindcss-patch@8.2.0:
-    resolution: {integrity: sha512-9mxfkdlKnUB7MyUULCGrPzNpV34nQIOMj4kh4Lz3DnCjgOJ7HrwO4F+atiO6v4YloDN9156mpBJfbwhranWaRw==}
+  tailwindcss-patch@8.2.1:
+    resolution: {integrity: sha512-EzmSSscvY2BgaUx3COVpUhBq3DhItFNAq3+lyPwQyo3Mhbv+EqjmzWOEuQiCDdeemOb1GqAtaQtPQJ0Jw0GWGQ==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -6837,8 +6837,8 @@ packages:
     resolution: {integrity: sha512-gq/ffX97Wuv+hNDX0vbHB04S2nQV2IZ6tACM5nq7xECWcQ2zS2TLp5gQr+TXntGE4dFUrpHlWrw85A2YSA/qFw==}
     hasBin: true
 
-  weapp-tailwindcss@4.6.1:
-    resolution: {integrity: sha512-01ist9tUB3LZT1FWqDDjw2nqtW53YVA+jbuHjV5MjpVL7Lc0nUH/cV06Qk/hk5h/XbBu7d8rU6PvQC9ST4xS+g==}
+  weapp-tailwindcss@4.6.2:
+    resolution: {integrity: sha512-Qjqk1Y9IqT4cWQDaGBaY15XU5GheSx/eSZOIZlUkrROeJlnOGXABXGjcdOij+CvAD2lfvpqbvR/oLUPpNKy5Zg==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -8666,7 +8666,7 @@ snapshots:
     dependencies:
       defer-to-connect: 1.1.3
 
-  '@tailwindcss-mangle/config@6.0.0':
+  '@tailwindcss-mangle/config@6.0.1':
     dependencies:
       '@tailwindcss-mangle/shared': 4.1.1
       c12: 3.3.1
@@ -14288,13 +14288,13 @@ snapshots:
       jiti: 2.6.1
       lilconfig: 3.1.3
 
-  tailwindcss-patch@8.2.0(tailwindcss@4.1.16):
+  tailwindcss-patch@8.2.1(tailwindcss@4.1.16):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
-      '@tailwindcss-mangle/config': 6.0.0
+      '@tailwindcss-mangle/config': 6.0.1
       '@tailwindcss/node': 4.1.16
       cac: 6.7.14
       consola: 3.4.2
@@ -14615,7 +14615,7 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.6.1(tailwindcss@4.1.16)(typescript@5.9.2):
+  weapp-tailwindcss@4.6.2(tailwindcss@4.1.16)(typescript@5.9.2):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
@@ -14634,7 +14634,7 @@ snapshots:
       lru-cache: 10.4.3
       magic-string: 0.30.21
       semver: 7.7.3
-      tailwindcss-patch: 8.2.0(tailwindcss@4.1.16)
+      tailwindcss-patch: 8.2.1(tailwindcss@4.1.16)
       vue: 3.5.22(typescript@5.9.2)
       webpack-sources: 3.3.3
     transitivePeerDependencies:
