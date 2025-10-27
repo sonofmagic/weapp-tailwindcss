@@ -44,7 +44,7 @@
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-github-btn": "^1.4.0",
-    "tailwind-merge": "^3.3.1",
+    "tailwind-merge": "catalog:tailwindMerge",
     "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
@@ -61,8 +61,8 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^24.9.1",
-    "autoprefixer": "^10.4.21",
-    "cross-env": "^10.1.0",
+    "autoprefixer": "catalog:autoprefixer10",
+    "cross-env": "catalog:crossEnv",
     "docusaurus-plugin-llms": "^0.2.2",
     "docusaurus-plugin-sass": "^0.2.6",
     "docusaurus-plugin-typedoc": "1.4.2",
@@ -71,7 +71,7 @@
     "node-loader": "^2.1.0",
     "sass": "^1.93.2",
     "sass-loader": "^16.0.6",
-    "tailwindcss": "^3.4.18",
+    "tailwindcss": "catalog:tailwindcss3",
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "4.9.0",

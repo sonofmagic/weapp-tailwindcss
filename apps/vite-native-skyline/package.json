@@ -25,12 +25,12 @@
     "postinstall": "weapp-tw patch"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "miniprogram-api-typings": "^4.1.0",
-    "postcss": "^8.5.6",
+    "autoprefixer": "catalog:autoprefixer10",
+    "miniprogram-api-typings": "catalog:miniApiTypings",
+    "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss3",
-    "typescript": "^5.9.3",
+    "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^5.6.0"
+    "weapp-vite": "catalog:weappVite"
   }
 }

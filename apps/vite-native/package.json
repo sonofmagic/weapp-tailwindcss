@@ -34,13 +34,13 @@
     "@egoist/tailwindcss-icons": "^1.9.0",
     "@iconify-json/lucide": "^1.2.71",
     "@iconify-json/mdi": "^1.2.3",
-    "@tailwindcss/postcss": "^4.1.16",
-    "@tailwindcss/vite": "^4.1.16",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
+    "@tailwindcss/vite": "catalog:tailwindcss4",
+    "autoprefixer": "catalog:autoprefixer10",
+    "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "^5.6.0"
+    "weapp-vite": "catalog:weappVite"
   }
 }
