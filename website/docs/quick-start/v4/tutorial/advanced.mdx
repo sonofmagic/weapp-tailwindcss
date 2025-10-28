@@ -36,7 +36,18 @@ export default defineConfig({
 
 额外提示：
 
-- `cssSelectorReplacement.root` 默认为 `'page'`，当项目使用 `RootPortal` 等容器时需要调整为 `['page','wx-root-content']`
+- `cssSelectorReplacement.root` 默认包含 `['page', '.tw-root']`。当页面外的容器（例如自定义 tab bar、弹出层根节点等）需要承载 Tailwind 注入的 `--tw-*` 变量时，只需在容器上加上 `class="tw-root"` 即可复用整套预设，无需额外配置。下面是一个在自定义 tab bar 中注入主题变量的示例：
+
+  ```xml title="custom-tab-bar/index.mpx"
+  <template>
+    <view class="tw-root bg-[var(--tab-bar-bg)] text-[var(--tab-bar-color)]">
+      <!-- 这里仍然可以继续使用 Tailwind 原子类 -->
+    </view>
+  </template>
+  ```
+
+  搭配 `cssPreflight` 注入的变量或自定义 `@theme`，可以把 tab bar 的主题色、渐变背景等统一交给 Tailwind 管理。若你需要覆盖其他容器名称，仍可以通过配置把 `cssSelectorReplacement.root` 扩展为更多选择器。
+
 - `cssPresetEnv` 会参与最终构建，请在发布前执行一次 `pnpm build:apps` 或对应的 `pnpm build` 命令确认产物
 
 ## 2. 多端共存与按需构建

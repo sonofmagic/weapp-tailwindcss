@@ -132,6 +132,25 @@ const tutorialSidebar: SidebarConfig = [
         type: 'doc',
         id: 'quick-start/v4/readme',
       },
+      {
+        type: 'category',
+        label: '进阶攻略',
+        collapsed: false,
+        items: [
+          {
+            type: 'doc',
+            id: 'quick-start/v4/tutorial/index',
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/v4/tutorial/workflow',
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/v4/tutorial/advanced',
+          },
+        ],
+      },
     ],
   },
 
