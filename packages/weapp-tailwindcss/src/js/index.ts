@@ -20,6 +20,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
     uniAppX,
+    moduleSpecifierReplacements,
   } = options
 
   function handler(rawSource: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) {
@@ -42,6 +43,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
         ignoreCallExpressionIdentifiers,
         ignoreTaggedTemplateExpressionIdentifiers,
         uniAppX,
+        moduleSpecifierReplacements,
       },
     )
 

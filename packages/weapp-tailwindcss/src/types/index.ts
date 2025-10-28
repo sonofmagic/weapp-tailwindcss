@@ -64,6 +64,7 @@ export interface IJsHandlerOptions {
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
   uniAppX?: boolean
+  moduleSpecifierReplacements?: Record<string, string>
   /**
    * Absolute path of the module currently being transformed.
    * Required when enabling cross-file analysis.

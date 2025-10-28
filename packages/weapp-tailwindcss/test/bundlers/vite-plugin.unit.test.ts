@@ -5,6 +5,7 @@ import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
 import { createCache } from '@/cache'
+import { createJsHandler } from '@/js'
 
 function createContext(overrides: Record<string, unknown> = {}) {
   const cache = createCache()
@@ -194,6 +195,55 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+  })
+
+  it('transforms inlined tailwind-merge output within bundle stage', async () => {
+    const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])
+    const realJsHandler = createJsHandler({
+      ignoreCallExpressionIdentifiers: [],
+    })
+    const jsHandlerMock = vi.fn((code: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) =>
+      realJsHandler(code, classNameSet, options),
+    )
+    const patchMock = vi.fn(async () => {})
+    const getClassSetMock = vi.fn(async () => runtimeSet)
+    const getClassSetSyncMock = vi.fn(() => runtimeSet)
+    const extractMock = vi.fn(async () => ({ classSet: runtimeSet }))
+
+    currentContext.jsHandler = jsHandlerMock as InternalContext['jsHandler']
+    currentContext.twPatcher = {
+      patch: patchMock,
+      getClassSet: getClassSetMock,
+      getClassSetSync: getClassSetSyncMock,
+      extract: extractMock,
+      majorVersion: 4,
+    }
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const bundle = {
+      'index.js': createRollupChunk(`
+const merged = "bg-[#123324] px-[35px]"
+const fallback = "bg-[#434332] px-[32px]"
+`),
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(patchMock).toHaveBeenCalledTimes(1)
+    expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
+    expect(getClassSetMock).not.toHaveBeenCalled()
+    expect(extractMock).not.toHaveBeenCalled()
+    expect(jsHandlerMock).toHaveBeenCalledTimes(1)
+
+    const code = (bundle['index.js'] as OutputChunk).code
+    expect(code).toContain('bg-_h123324_ px-_35px_')
+    expect(code).toContain('bg-_h434332_ px-_32px_')
+    expect(code).not.toContain('bg-[#123324]')
+    expect(code).not.toContain('bg-[#434332]')
   })
 
   it('returns undefined when disabled', () => {

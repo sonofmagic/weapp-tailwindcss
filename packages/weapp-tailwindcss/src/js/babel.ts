@@ -24,8 +24,11 @@ export interface SourceAnalysis {
   targetPaths: NodePath<StringLiteral | TemplateElement>[]
   importDeclarations: Set<NodePath<ImportDeclaration>>
   exportDeclarations: Set<NodePath<ExportDeclaration>>
+  requireCallPaths: NodePath<StringLiteral>[]
   ignoredPaths: WeakSet<NodePath<StringLiteral | TemplateElement>>
 }
+
+type EvalHandler = (source: string, opts: IJsHandlerOptions) => JsHandlerResult
 
 export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<string, ParseResult<File>>(
   {
@@ -118,8 +121,87 @@ function createEvalReplacementToken(
   }
 }
 
-function handleEvalStringLiteral(path: NodePath<StringLiteral>, options: IJsHandlerOptions, updater: JsTokenUpdater) {
-  const { code } = jsHandler(path.node.value, {
+function createModuleSpecifierReplacementToken(
+  path: NodePath<StringLiteral>,
+  replacement: string,
+): JsToken | undefined {
+  const node = path.node
+  if (node.value === replacement) {
+    return undefined
+  }
+
+  if (typeof node.start !== 'number' || typeof node.end !== 'number') {
+    return undefined
+  }
+
+  const start = node.start + 1
+  const end = node.end - 1
+  if (start >= end) {
+    return undefined
+  }
+
+  return {
+    start,
+    end,
+    value: replacement,
+    path,
+  }
+}
+
+function collectModuleSpecifierReplacementTokens(
+  analysis: SourceAnalysis,
+  replacements: Record<string, string>,
+) {
+  const tokens: JsToken[] = []
+
+  const applyReplacement = (path: NodePath<StringLiteral>) => {
+    const replacement = replacements[path.node.value]
+    if (!replacement) {
+      return
+    }
+    const token = createModuleSpecifierReplacementToken(path, replacement)
+    if (token) {
+      tokens.push(token)
+    }
+  }
+
+  for (const importPath of analysis.importDeclarations) {
+    const source = importPath.get('source')
+    if (source.isStringLiteral()) {
+      applyReplacement(source)
+    }
+  }
+
+  for (const exportPath of analysis.exportDeclarations) {
+    if (exportPath.isExportNamedDeclaration() || exportPath.isExportAllDeclaration()) {
+      const source = exportPath.get('source')
+      if (source && !Array.isArray(source) && source.isStringLiteral()) {
+        applyReplacement(source)
+      }
+    }
+  }
+
+  for (const literalPath of analysis.requireCallPaths) {
+    applyReplacement(literalPath)
+  }
+
+  for (const token of analysis.walker.imports) {
+    const replacement = replacements[token.source]
+    if (replacement) {
+      token.source = replacement
+    }
+  }
+
+  return tokens
+}
+
+function handleEvalStringLiteral(
+  path: NodePath<StringLiteral>,
+  options: IJsHandlerOptions,
+  updater: JsTokenUpdater,
+  handler: EvalHandler,
+) {
+  const { code } = handler(path.node.value, {
     ...options,
     needEscaped: false,
     generateMap: false,
@@ -135,8 +217,13 @@ function handleEvalStringLiteral(path: NodePath<StringLiteral>, options: IJsHand
   }
 }
 
-function handleEvalTemplateElement(path: NodePath<TemplateElement>, options: IJsHandlerOptions, updater: JsTokenUpdater) {
-  const { code } = jsHandler(path.node.value.raw, {
+function handleEvalTemplateElement(
+  path: NodePath<TemplateElement>,
+  options: IJsHandlerOptions,
+  updater: JsTokenUpdater,
+  handler: EvalHandler,
+) {
+  const { code } = handler(path.node.value.raw, {
     ...options,
     generateMap: false,
   })
@@ -155,18 +242,27 @@ function handleEvalTemplateElement(path: NodePath<TemplateElement>, options: IJs
  * Recursively analyse string-like nodes that sit inside `eval` calls so that we
  * can rewrite them while keeping their offsets intact.
  */
-function walkEvalExpression(path: NodePath<CallExpression>, options: IJsHandlerOptions, updater: JsTokenUpdater) {
+function walkEvalExpression(
+  path: NodePath<CallExpression>,
+  options: IJsHandlerOptions,
+  updater: JsTokenUpdater,
+  handler: EvalHandler,
+) {
   path.traverse({
     StringLiteral(innerPath) {
-      handleEvalStringLiteral(innerPath, options, updater)
+      handleEvalStringLiteral(innerPath, options, updater, handler)
     },
     TemplateElement(innerPath) {
-      handleEvalTemplateElement(innerPath, options, updater)
+      handleEvalTemplateElement(innerPath, options, updater, handler)
     },
   })
 }
 
-export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions): SourceAnalysis {
+export function analyzeSource(
+  ast: ParseResult<File>,
+  options: IJsHandlerOptions,
+  handler?: EvalHandler,
+): SourceAnalysis {
   const jsTokenUpdater = new JsTokenUpdater()
   const ignoredPaths = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
   const walker = new NodePathWalker(
@@ -185,6 +281,9 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
   const importDeclarations = new Set<NodePath<ImportDeclaration>>()
   const exportDeclarations = new Set<NodePath<ExportDeclaration>>()
+  const requireCallPaths: NodePath<StringLiteral>[] = []
+  // eslint-disable-next-line ts/no-use-before-define -- default handler references exported jsHandler defined later
+  const evalHandler = handler ?? jsHandler
 
   const traverseOptions: TraverseOptions<Node> = {
     StringLiteral: {
@@ -220,8 +319,22 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
     CallExpression: {
       enter(p) {
         if (isEvalPath(p)) {
-          walkEvalExpression(p, options, jsTokenUpdater)
+          walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
           return
+        }
+
+        const calleePath = p.get('callee')
+        if (
+          calleePath.isIdentifier({ name: 'require' })
+          && !p.scope.hasBinding('require')
+        ) {
+          const args = p.get('arguments')
+          if (Array.isArray(args) && args.length > 0) {
+            const first = args[0]
+            if (first?.isStringLiteral()) {
+              requireCallPaths.push(first)
+            }
+          }
         }
 
         walker.walkCallExpression(p)
@@ -248,6 +361,7 @@ export function analyzeSource(ast: ParseResult<File>, options: IJsHandlerOptions
     targetPaths,
     importDeclarations,
     exportDeclarations,
+    requireCallPaths,
     ignoredPaths,
   }
 }
@@ -280,6 +394,12 @@ export function processUpdatedSource(
     }
   }
 
+  if (options.moduleSpecifierReplacements) {
+    replacementTokens.push(
+      ...collectModuleSpecifierReplacementTokens(analysis, options.moduleSpecifierReplacements),
+    )
+  }
+
   jsTokenUpdater
     .push(...replacementTokens)
     .filter(token => !ignoredPaths.has(token.path))
@@ -298,7 +418,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-  const analysis = analyzeSource(ast, options)
+  const analysis = analyzeSource(ast, options, jsHandler)
   const ms = processUpdatedSource(rawSource, options, analysis)
 
   const result: JsHandlerResult = {

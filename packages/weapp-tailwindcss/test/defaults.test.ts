@@ -87,4 +87,11 @@ describe('defaults getDefaultOptions', () => {
     expect(typeof options.jsMatcher === 'function' && options.jsMatcher('node_modules/foo.js')).toBe(false)
     expect(typeof options.wxsMatcher === 'function' && options.wxsMatcher('foo.wxs')).toBe(false)
   })
+
+  it('disables runtime package replacement by default', async () => {
+    const { getDefaultOptions } = await import('@/defaults')
+    const options = getDefaultOptions()
+
+    expect(options.replaceRuntimePackages).toBe(false)
+  })
 })
