@@ -117,6 +117,71 @@ interface DedupeEntry {
   isLogical: boolean
 }
 
+function hasVariableReference(value: string) {
+  return value.includes('var(')
+}
+
+export function reorderVariableDeclarations(rule: Rule) {
+  const groupedByProp = new Map<string, Declaration[]>()
+
+  for (const node of rule.nodes) {
+    if (node.type !== 'decl') {
+      continue
+    }
+    if (node.prop.startsWith('--')) {
+      continue
+    }
+    const existing = groupedByProp.get(node.prop)
+    if (existing) {
+      existing.push(node)
+    }
+    else {
+      groupedByProp.set(node.prop, [node])
+    }
+  }
+
+  for (const declarations of groupedByProp.values()) {
+    if (declarations.length <= 1) {
+      continue
+    }
+
+    const literalDecls = declarations.filter(decl => !hasVariableReference(decl.value))
+    const variableDecls = declarations.filter(decl => hasVariableReference(decl.value))
+
+    if (literalDecls.length === 0 || variableDecls.length === 0) {
+      continue
+    }
+
+    const desiredOrder = [...literalDecls, ...variableDecls]
+    let needsReorder = false
+
+    for (let index = 0; index < declarations.length && !needsReorder; index++) {
+      if (declarations[index] !== desiredOrder[index]) {
+        needsReorder = true
+      }
+    }
+
+    if (!needsReorder) {
+      continue
+    }
+
+    const anchor = declarations[declarations.length - 1].next() ?? undefined
+
+    for (const decl of declarations) {
+      decl.remove()
+    }
+
+    for (const decl of desiredOrder) {
+      if (anchor) {
+        rule.insertBefore(anchor, decl)
+      }
+      else {
+        rule.append(decl)
+      }
+    }
+  }
+}
+
 function dedupeDeclarations(rule: Rule) {
   const entries: DedupeEntry[] = []
 
@@ -157,6 +222,8 @@ function dedupeDeclarations(rule: Rule) {
       entry.decl.remove()
     }
   }
+
+  // reorderVariableDeclarations(rule)
 }
 
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (

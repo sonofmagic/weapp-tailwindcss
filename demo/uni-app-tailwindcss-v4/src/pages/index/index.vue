@@ -18,12 +18,16 @@
       @tap="goOrder">
       打开订单分包
     </view>
-    <div class="flex space-x-4 border">
+    <div class="flex space-x-4 border" :class="{
+      'space-x-reverse': reverseFlag
+    }">
       <div>01</div>
       <div>02</div>
       <div>03</div>
     </div>
-    <div class="flex flex-col space-y-4 border">
+    <div class="flex flex-col space-y-4 border" :class="{
+      'space-y-reverse': reverseFlag
+    }">
       <div>01</div>
       <div>02</div>
       <div>03</div>
