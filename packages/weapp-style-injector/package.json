@@ -38,5 +38,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "dependencies": {
+    "micromatch": "^4.0.8"
+  },
   "publishConfig": {}
 }
