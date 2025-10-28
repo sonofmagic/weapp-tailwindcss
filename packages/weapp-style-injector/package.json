@@ -1,0 +1,42 @@
+{
+  "name": "weapp-style-injector",
+  "version": "0.0.0",
+  "private": true,
+  "description": "weapp-style-injector",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/weapp-style-injector"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "stub": "unbuild --stub",
+    "dev": "tsup --watch --sourcemap",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "pnpm publish",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "publishConfig": {}
+}
