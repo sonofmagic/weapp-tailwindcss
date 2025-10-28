@@ -70,14 +70,23 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 const OklabSuffix = 'in oklab'
 
 const logicalPropMap = new Map<string, string>([
+  // margin
   ['margin-inline-start', 'margin-left'],
   ['margin-inline-end', 'margin-right'],
   ['margin-block-start', 'margin-top'],
   ['margin-block-end', 'margin-bottom'],
+  // padding
   ['padding-inline-start', 'padding-left'],
   ['padding-inline-end', 'padding-right'],
   ['padding-block-start', 'padding-top'],
   ['padding-block-end', 'padding-bottom'],
+  // border
+  ['border-inline-start', 'border-left'],
+  ['border-inline-end', 'border-right'],
+  ['border-block-start', 'border-top'],
+  ['border-block-end', 'border-bottom'],
+  ['border-inline-start-width', 'border-left-width'],
+  ['border-inline-end-width', 'border-right-width'],
 ])
 
 function getCanonicalProp(prop: string) {

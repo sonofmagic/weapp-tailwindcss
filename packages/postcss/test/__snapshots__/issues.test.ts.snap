@@ -866,6 +866,88 @@ view,text,:after,:before,::backdrop {
   }"
 `;
 
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/726 1`] = `
+"@layer properties;
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.divide-x-4 {
+  :where(& > :not(:last-child)) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(4px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(4px * calc(1 - var(--tw-divide-x-reverse)));
+  }
+}
+.divide-y-4 {
+  :where(& > :not(:last-child)) {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-top-width: calc(4px * var(--tw-divide-y-reverse));
+    border-bottom-width: calc(4px * calc(1 - var(--tw-divide-y-reverse)));
+  }
+}
+@property --tw-divide-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-divide-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-divide-x-reverse: 0;
+      --tw-border-style: solid;
+      --tw-divide-y-reverse: 0;
+    }
+  }
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/726 2`] = `
+"::before,::after {
+      --tw-content: "";
+}
+view,text,::before,::after,::backdrop {
+      --tw-divide-x-reverse: 0;
+      --tw-border-style: solid;
+      --tw-divide-y-reverse: 0;
+    }
+view,text,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.divide-x-4>view+view {
+    --tw-divide-x-reverse: 0;
+    border-left-style: var(--tw-border-style);
+    border-right-style: var(--tw-border-style);
+    border-right-width: calc(4px * var(--tw-divide-x-reverse));
+    border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
+  }
+.divide-y-4>view+view {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
+    border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
+  }"
+`;
+
 exports[`issues > space-x-number 1`] = `
 "@layer properties;
 :root, :host {

@@ -99,6 +99,24 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
                 else if (node.prop === 'margin-right') {
                   node.prop = 'margin-left'
                 }
+                else if (node.prop === 'border-inline-start-width') {
+                  node.prop = 'border-right-width'
+                }
+                else if (node.prop === 'border-inline-end-width') {
+                  node.prop = 'border-left-width'
+                }
+                else if (node.prop === 'border-top-width') {
+                  node.prop = 'border-bottom-width'
+                }
+                else if (node.prop === 'border-bottom-width') {
+                  node.prop = 'border-top-width'
+                }
+                else if (node.prop === 'border-left-width') {
+                  node.prop = 'border-right-width'
+                }
+                else if (node.prop === 'border-right-width') {
+                  node.prop = 'border-left-width'
+                }
                 else if (node.prop === '-webkit-margin-start' || node.prop === '-webkit-margin-end' || node.prop === '-webkit-margin-before' || node.prop === '-webkit-margin-after') {
                   node.remove()
                 }

@@ -14,12 +14,38 @@
     <view class="bg-neutral-1B">
       12345
     </view>
-    <view
-      class="mt-6 rounded-xl bg-emerald-500 py-3 text-center text-white shadow-sm active:bg-emerald-600"
-      @tap="goOrder"
-    >
+    <view class="mt-6 rounded-xl bg-emerald-500 py-3 text-center text-white shadow-sm active:bg-emerald-600"
+      @tap="goOrder">
       打开订单分包
     </view>
+    <div class="flex space-x-4 border">
+      <div>01</div>
+      <div>02</div>
+      <div>03</div>
+    </div>
+    <div class="flex flex-col space-y-4 border">
+      <div>01</div>
+      <div>02</div>
+      <div>03</div>
+    </div>
+    <div class="flex divide-x-4 border p-2" :class="{
+      'divide-x-reverse': reverseFlag
+    }">
+      <div>01</div>
+      <div>02</div>
+      <div>03</div>
+    </div>
+
+    <div class="flex flex-col divide-y-4 border p-2" :class="{
+      'divide-y-reverse': reverseFlag
+    }">
+      <div>01</div>
+      <div>02</div>
+      <div>03</div>
+    </div>
+    <button @click="reverseFlag = !reverseFlag">reverseFlag</button>
+    
+
   </view>
 </template>
 
@@ -27,6 +53,7 @@
 import { ref } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')
+const reverseFlag = ref(false)
 const goOrder = () => {
   uni.navigateTo({
     url: '/pages-order/pages/home/home'
