@@ -21,7 +21,7 @@ function resolveDefaultPagesJsonPaths(): string[] {
   ]
 }
 
-export function weappStyleInjectorWebpackUniApp(options: WebpackUniAppStyleInjectorOptions = {}) {
+export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}) {
   const {
     pagesJsonPath,
     subPackages,
@@ -53,5 +53,3 @@ export function weappStyleInjectorWebpackUniApp(options: WebpackUniAppStyleInjec
     uniAppSubPackages: configs.size > 0 ? Array.from(configs.values()) : undefined,
   })
 }
-
-export default weappStyleInjectorWebpackUniApp

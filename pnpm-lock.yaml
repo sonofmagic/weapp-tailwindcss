@@ -2694,6 +2694,9 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.0.0
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -2818,6 +2821,9 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.0.0
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -3002,6 +3008,9 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.0.0
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -3183,6 +3192,9 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.0.0
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -3379,6 +3391,9 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.0.0
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss

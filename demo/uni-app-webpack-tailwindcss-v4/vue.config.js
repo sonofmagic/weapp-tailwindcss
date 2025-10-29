@@ -1,4 +1,5 @@
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { StyleInjector } = require('weapp-style-injector/webpack/uni-app')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
@@ -9,6 +10,9 @@ const config = {
             new UnifiedWebpackPluginV5({
                 rem2rpx: true,
             })
+        )
+        config.plugins.push(
+            StyleInjector()
         )
     },
     chainWebpack(config) {

@@ -1,4 +1,5 @@
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { StyleInjector } = require('weapp-style-injector/webpack/uni-app')
 const bench = require('../bench.cjs')('uni-app-webpack-vue2')
 const { WeappTailwindcssDisabled } = require('./platform')
 
@@ -47,6 +48,9 @@ const config = {
         },
         rem2rpx: true,
       })
+    )
+    config.plugins.push(
+      StyleInjector()
     )
     // smp.wrap(config)
   }

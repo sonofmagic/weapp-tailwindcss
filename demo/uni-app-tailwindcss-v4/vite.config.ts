@@ -5,6 +5,7 @@ import path, { dirname } from "node:path";
 // const uni = require("@dcloudio/vite-plugin-uni");
 import uni from "@dcloudio/vite-plugin-uni";
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { StyleInjector } from 'weapp-style-injector/vite/uni-app'
 // import tailwindcss from '@tailwindcss/vite'
 
 const require = createRequire(import.meta.url);
@@ -28,6 +29,7 @@ export default defineConfig(async () => {
           path.resolve(__dirname, "src/common.css"),
         ],
       }),
+      StyleInjector(),
     ],
     resolve: {
       alias: {

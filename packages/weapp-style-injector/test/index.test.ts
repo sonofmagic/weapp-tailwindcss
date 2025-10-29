@@ -4,11 +4,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createTaroSubPackageImportResolver } from '@/taro'
 import weappStyleInjector from '@/vite'
-import weappStyleInjectorTaro from '@/vite/taro'
-import weappStyleInjectorUniApp from '@/vite/uni-app'
+import { StyleInjector as TaroStyleInjector } from '@/vite/taro'
+import { StyleInjector as UniAppStyleInjector } from '@/vite/uni-app'
 import { weappStyleInjectorWebpack } from '@/webpack'
-import { weappStyleInjectorWebpackTaro } from '@/webpack/taro'
-import { weappStyleInjectorWebpackUniApp } from '@/webpack/uni-app'
+import { StyleInjector as TaroStyleInjectorWebpack } from '@/webpack/taro'
+import { StyleInjector as UniAppStyleInjectorWebpack } from '@/webpack/uni-app'
 
 const uniAppFixturesRoot = fileURLToPath(new URL('./fixtures/uni-app', import.meta.url))
 const taroFixturesRoot = fileURLToPath(new URL('./fixtures/taro', import.meta.url))
@@ -170,7 +170,7 @@ describe('vite presets', () => {
       'sub-packages/index.css': createAsset('.root {}', 'sub-packages/index.css'),
     }
 
-    const plugin = weappStyleInjectorUniApp({
+    const plugin = UniAppStyleInjector({
       pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
       indexFileName: 'index.css',
     })
@@ -197,7 +197,7 @@ describe('vite presets', () => {
 
     expect(resolver?.('taro-sub/pages/home.css')).toEqual(['../index.scss'])
 
-    const plugin = weappStyleInjectorTaro({
+    const plugin = TaroStyleInjector({
       appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
     })
 
@@ -347,7 +347,7 @@ describe('weapp-style-injector webpack plugin', () => {
       'sub-packages/index.css': '.root {}',
     })
 
-    const plugin = weappStyleInjectorWebpackUniApp({
+    const plugin = UniAppStyleInjectorWebpack({
       pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
       indexFileName: 'index.css',
     })
@@ -368,7 +368,7 @@ describe('weapp-style-injector webpack plugin', () => {
       'legacy-sub/index.css': '.legacy-root {}',
     })
 
-    const plugin = weappStyleInjectorWebpackTaro({
+    const plugin = TaroStyleInjectorWebpack({
       appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
     })
 

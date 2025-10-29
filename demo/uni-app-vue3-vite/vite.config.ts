@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
+import { StyleInjector } from 'weapp-style-injector/vite/uni-app';
 const bench =
   process.env.WEAPP_TW_ENABLE_BENCH === '1'
     ? require('../bench.cjs')('uni-app-vite-vue3')
@@ -68,6 +69,7 @@ export default defineConfig(async () => {
         //   ')': '-',
         // },
       }),
+      StyleInjector(),
       // Inspect({
       //   build: true,
       //   outputDir: '.vite-inspect'

@@ -26,7 +26,7 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
-export function weappStyleInjectorWebpackTaro(options: WebpackTaroStyleInjectorOptions = {}) {
+export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}) {
   const {
     appConfigPath,
     subPackages,
@@ -57,5 +57,3 @@ export function weappStyleInjectorWebpackTaro(options: WebpackTaroStyleInjectorO
     perFileImports: mergePerFileResolvers([perFileImports, taroResolver]),
   })
 }
-
-export default weappStyleInjectorWebpackTaro

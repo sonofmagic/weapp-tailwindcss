@@ -1,5 +1,6 @@
 require('./scripts/patch-ajv-keywords')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { StyleInjector } = require('weapp-style-injector/webpack/uni-app')
 const { WeappTailwindcssDisabled } = require('./platform')
 const bench = require('../bench.cjs')('uni-app-webpack5-vue2')
 
@@ -29,6 +30,9 @@ const config = {
         },
         rem2rpx: true,
       })
+    )
+    config.plugins.push(
+      StyleInjector()
     )
     // config.plugins.push(new MiniCssExtractPlugin())
     // smp.wrap(config)

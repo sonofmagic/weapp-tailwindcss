@@ -21,7 +21,7 @@ function resolveDefaultPagesJsonPaths(): string[] {
   ]
 }
 
-export function weappStyleInjectorUniApp(options: ViteUniAppStyleInjectorOptions = {}) {
+export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
   const {
     pagesJsonPath,
     subPackages,
@@ -53,5 +53,3 @@ export function weappStyleInjectorUniApp(options: ViteUniAppStyleInjectorOptions
     uniAppSubPackages: configs.size > 0 ? Array.from(configs.values()) : undefined,
   })
 }
-
-export default weappStyleInjectorUniApp

@@ -26,7 +26,7 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
-export function weappStyleInjectorTaro(options: ViteTaroStyleInjectorOptions = {}) {
+export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
   const {
     appConfigPath,
     subPackages,
@@ -57,5 +57,3 @@ export function weappStyleInjectorTaro(options: ViteTaroStyleInjectorOptions = {
     perFileImports: mergePerFileResolvers([perFileImports, taroResolver]),
   })
 }
-
-export default weappStyleInjectorTaro

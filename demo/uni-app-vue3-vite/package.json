@@ -104,6 +104,7 @@
     "vite": "7.1.12",
     "vite-plugin-inspect": "^11.3.3",
     "weapp-ide-cli": "catalog:weappIdeCli",
+    "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren"
   },
