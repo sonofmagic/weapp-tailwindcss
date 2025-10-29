@@ -26,6 +26,7 @@ page,
 }
 .h-21 {
   height: 168rpx;
+  height: calc(var(--spacing) * 21);
 }
 .bg-_h123456_ {
   background-color: #123456;

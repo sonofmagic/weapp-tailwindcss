@@ -99,6 +99,7 @@ text,
 }
 .h-14 {
   height: 112rpx;
+  height: calc(var(--spacing) * 14);
 }
 .bg-_h534312_ {
   background-color: #534312;

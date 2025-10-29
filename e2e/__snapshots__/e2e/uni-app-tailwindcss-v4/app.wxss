@@ -1,14 +1,43 @@
 /*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
 :before,
 :after,
 ::backdrop {
+  --tw-space-y-reverse: 0;
+  --tw-space-x-reverse: 0;
+  --tw-divide-x-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-y-reverse: 0;
   --tw-font-weight: initial;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: initial;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-ring-color: initial;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-inset: initial;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 page,
 .tw-root,
 :host {
+  --color-emerald-500: rgb(0, 185, 129);
+  --color-emerald-600: rgb(0, 150, 105);
   --color-white: #fff;
   --spacing: 8rpx;
   --font-weight-bold: 700;
@@ -16,6 +45,23 @@ page,
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
+}
+@supports (color: color(display-p3 0 0 0%)) {
+  page,
+  .tw-root,
+  :host {
+    --color-emerald-500: rgb(0, 185, 129);
+    --color-emerald-600: rgb(0, 150, 105);
+  }
+
+  @media (color-gamut: p3) {
+    page,
+    .tw-root,
+    :host {
+      --color-emerald-500: color(display-p3 0.26711 0.72685 0.5084);
+      --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);
+    }
+  }
 }
 view,
 text,
@@ -26,6 +72,38 @@ text,
   border: 0 solid;
   margin: 0;
   padding: 0;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
+.mt-6 {
+  margin-top: 48rpx;
+  margin-top: calc(var(--spacing) * 6);
 }
 .i-mdi-home {
   width: 1em;
@@ -53,15 +131,123 @@ text,
 }
 .h-20 {
   height: 160rpx;
+  height: calc(var(--spacing) * 20);
 }
 .w-20 {
   width: 160rpx;
+  width: calc(var(--spacing) * 20);
 }
 .flex-col {
   flex-direction: column;
 }
+.flex-col-reverse {
+  flex-direction: column-reverse;
+}
+.flex-row-reverse {
+  flex-direction: row-reverse;
+}
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-bottom: 0rpx;
+  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-top: 32rpx;
+  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+}
+.space-y-reverse > view + view,
+.space-y-reverse > view + text,
+.space-y-reverse > text + view,
+.space-y-reverse > text + text {
+  --tw-space-y-reverse: 1;
+}
+.space-x-4 > view + view,
+.space-x-4 > view + text,
+.space-x-4 > text + view,
+.space-x-4 > text + text {
+  --tw-space-x-reverse: 0;
+  margin-right: 0rpx;
+  margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+  margin-left: 32rpx;
+  margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
+}
+.space-x-reverse > view + view,
+.space-x-reverse > view + text,
+.space-x-reverse > text + view,
+.space-x-reverse > text + text {
+  --tw-space-x-reverse: 1;
+}
+.divide-x-4 > view + view,
+.divide-x-4 > view + text,
+.divide-x-4 > text + view,
+.divide-x-4 > text + text {
+  --tw-divide-x-reverse: 0;
+  border-left-style: var(--tw-border-style);
+  border-right-style: var(--tw-border-style);
+  border-right-width: 0px;
+  border-right-width: calc(4px * var(--tw-divide-x-reverse));
+  border-left-width: 4px;
+  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
+}
+.divide-y-4 > view + view,
+.divide-y-4 > view + text,
+.divide-y-4 > text + view,
+.divide-y-4 > text + text {
+  --tw-divide-y-reverse: 0;
+  border-bottom-style: var(--tw-border-style);
+  border-top-style: var(--tw-border-style);
+  border-bottom-width: 0px;
+  border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
+  border-top-width: 4px;
+  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
+}
+.divide-y-reverse > view + view,
+.divide-y-reverse > view + text,
+.divide-y-reverse > text + view,
+.divide-y-reverse > text + text {
+  --tw-divide-y-reverse: 1;
+}
+.divide-dotted > view + view,
+.divide-dotted > view + text,
+.divide-dotted > text + view,
+.divide-dotted > text + text {
+  --tw-border-style: dotted;
+  border-style: dotted;
+}
+.divide-double > view + view,
+.divide-double > view + text,
+.divide-double > text + view,
+.divide-double > text + text {
+  --tw-border-style: double;
+  border-style: double;
+}
+.divide-_h41eb04_ > view + view,
+.divide-_h41eb04_ > view + text,
+.divide-_h41eb04_ > text + view,
+.divide-_h41eb04_ > text + text {
+  border-color: #41eb04;
+}
+.divide-_hd80c0c_ > view + view,
+.divide-_hd80c0c_ > view + text,
+.divide-_hd80c0c_ > text + view,
+.divide-_hd80c0c_ > text + text {
+  border-color: #d80c0c;
+}
+.rounded-xl {
+  border-radius: 16rpx;
+}
+.border {
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+}
 .bg-_h0000ff_ {
   background-color: #00f;
+}
+.bg-emerald-500 {
+  background-color: rgb(0, 185, 129);
+  background-color: color(display-p3 0.26711 0.72685 0.5084);
+  background-color: var(--color-emerald-500);
 }
 .bg-midnight {
   background-color: #121063;
@@ -74,6 +260,19 @@ text,
 .fill-bermuda {
   fill: #78dcca;
   fill: var(--color-bermuda);
+}
+.p-2 {
+  padding: 16rpx;
+  padding: calc(var(--spacing) * 2);
+}
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
+  padding-top: calc(var(--spacing) * 3);
+  padding-bottom: calc(var(--spacing) * 3);
+}
+.text-center {
+  text-align: center;
 }
 .text-_45rpx_ {
   font-size: 45rpx;
@@ -99,6 +298,28 @@ text,
 }
 .underline {
   text-decoration-line: underline;
+}
+.shadow-sm {
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  box-shadow:
+    var(--tw-inset-shadow),
+    var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow),
+    var(--tw-ring-shadow),
+    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
+    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.divide-x-reverse > view + view,
+.divide-x-reverse > view + text,
+.divide-x-reverse > text + view,
+.divide-x-reverse > text + text {
+  --tw-divide-x-reverse: 1;
+}
+.activecbg-emerald-600:active {
+  background-color: rgb(0, 150, 105);
+  background-color: color(display-p3 0.20656 0.58906 0.41396);
+  background-color: var(--color-emerald-600);
 }
 page {
   --status-bar-height: 25px;

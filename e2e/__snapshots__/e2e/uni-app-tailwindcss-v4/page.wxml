@@ -7,4 +7,29 @@
   <view class="i-mdi-home i-mdi-home"></view>
   <view class="bg-midnight bg-midnight text-tahiti text-tahiti fill-bermuda fill-bermuda">bg-midnight text-tahiti fill-bermuda</view>
   <view class="bg-neutral-1B bg-neutral-1B">12345</view>
+  <view
+    class="mt-6 mt-6 rounded-xl rounded-xl bg-emerald-500 bg-emerald-500 py-3 py-3 text-center text-center text-white text-white shadow-sm shadow-sm activecbg-emerald-600 activecbg-emerald-600">
+    打开订单分包
+  </view>
+  <view class="flex flex space-x-4 space-x-4 border border">
+    <view>01</view>
+    <view>02</view>
+    <view>03</view>
+  </view>
+  <view class="flex flex flex-col flex-col space-y-4 space-y-4 border border">
+    <view>01</view>
+    <view>02</view>
+    <view>03</view>
+  </view>
+  <view class="flex flex divide-x-4 divide-x-4 border border p-2 p-2 divide-_hd80c0c_ divide-_hd80c0c_ divide-double divide-double">
+    <view>01</view>
+    <view>02</view>
+    <view>03</view>
+  </view>
+  <view class="flex flex flex-col flex-col divide-y-4 divide-y-4 border border p-2 p-2 divide-_h41eb04_ divide-_h41eb04_ divide-dotted divide-dotted">
+    <view>01</view>
+    <view>02</view>
+    <view>03</view>
+  </view>
+  <button role="button" aria-disabled="false">reverseFlag</button>
 </view>
