@@ -1,24 +1,26 @@
 import type { Plugin } from 'vite'
 import type { WeappStyleInjectorOptions } from './core'
-import type { UniAppSubPackageConfig } from './uni-app'
+import type { UniAppManualStyleConfig, UniAppSubPackageConfig } from './uni-app'
 import { createStyleInjector, PLUGIN_NAME } from './core'
 import { createUniAppSubPackageImportResolver } from './uni-app'
 import { mergePerFileResolvers } from './utils'
 
 export interface ViteWeappStyleInjectorOptions extends WeappStyleInjectorOptions {
   uniAppSubPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
+  uniAppStyleScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[]
 }
 
 export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}): Plugin {
   const {
     uniAppSubPackages,
+    uniAppStyleScopes,
     perFileImports,
     ...restOptions
   } = options
 
   const perFileResolver = mergePerFileResolvers([
     typeof perFileImports === 'function' ? perFileImports : undefined,
-    createUniAppSubPackageImportResolver(uniAppSubPackages),
+    createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
   ])
 
   const injector = createStyleInjector({

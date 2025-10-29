@@ -1,16 +1,18 @@
-import type { UniAppSubPackageConfig } from '../uni-app'
+import type { UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 import type { WebpackWeappStyleInjectorOptions } from '../webpack'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { splitUniAppStyleScopes } from '../uni-app'
 import { toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
 export interface WebpackUniAppStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'uniAppSubPackages'> {
   pagesJsonPath?: string | string[]
   subPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
-  indexFileName?: string
+  indexFileName?: string | string[]
+  styleScopes?: UniAppStyleScopeInput | UniAppStyleScopeInput[]
 }
 
 function resolveDefaultPagesJsonPaths(): string[] {
@@ -26,12 +28,14 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}) {
     pagesJsonPath,
     subPackages,
     indexFileName,
+    styleScopes,
     ...rest
   } = options
 
   const configs = new Map<string, UniAppSubPackageConfig>()
+  const { subPackages: scopedSubPackages, manual: manualStyleScopes } = splitUniAppStyleScopes(styleScopes)
 
-  for (const entry of toArray(subPackages)) {
+  for (const entry of [...toArray(subPackages), ...scopedSubPackages]) {
     configs.set(path.resolve(entry.pagesJsonPath), entry)
   }
 
@@ -48,8 +52,12 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}) {
     }
   }
 
+  const entries = configs.size > 0 ? Array.from(configs.values()) : undefined
+  const manualEntries = manualStyleScopes.length > 0 ? manualStyleScopes : undefined
+
   return weappStyleInjectorWebpack({
     ...rest,
-    uniAppSubPackages: configs.size > 0 ? Array.from(configs.values()) : undefined,
+    uniAppSubPackages: entries,
+    uniAppStyleScopes: manualEntries,
   })
 }

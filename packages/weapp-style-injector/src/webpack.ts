@@ -1,6 +1,6 @@
 import type { Compiler, sources, WebpackPluginInstance } from 'webpack'
 import type { WeappStyleInjectorOptions } from './core'
-import type { UniAppSubPackageConfig } from './uni-app'
+import type { UniAppManualStyleConfig, UniAppSubPackageConfig } from './uni-app'
 import { Buffer } from 'node:buffer'
 import { createStyleInjector, PLUGIN_NAME } from './core'
 import { createUniAppSubPackageImportResolver } from './uni-app'
@@ -12,6 +12,7 @@ type WebpackSource = sources.Source
 
 export interface WebpackWeappStyleInjectorOptions extends WeappStyleInjectorOptions {
   uniAppSubPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
+  uniAppStyleScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[]
 }
 
 function createRawSource(compiler: Compiler, content: string): WebpackSource {
@@ -38,13 +39,14 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackPluginInstance {
   apply(compiler: Compiler) {
     const {
       uniAppSubPackages,
+      uniAppStyleScopes,
       perFileImports,
       ...restOptions
     } = this.options
 
     const perFileResolver = mergePerFileResolvers([
       typeof perFileImports === 'function' ? perFileImports : undefined,
-      createUniAppSubPackageImportResolver(uniAppSubPackages),
+      createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
     ])
 
     const injector = createStyleInjector({

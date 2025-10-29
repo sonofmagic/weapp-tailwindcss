@@ -2,6 +2,7 @@ import type { PerFileImportResolver } from './core'
 
 import fs from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 import {
   ensurePosix,
   normalizeRelativeImport,
@@ -11,12 +12,28 @@ import {
 
 export interface UniAppSubPackageConfig {
   pagesJsonPath: string
-  indexFileName?: string
+  indexFileName?: string | string[]
+  preprocess?: boolean
 }
 
-interface ResolvedSubPackage {
+export interface UniAppManualStyleConfig {
+  style: string
+  scope: string | string[]
+  output?: string
+  preprocess?: boolean
+}
+
+export type UniAppStyleScopeInput
+  = | UniAppSubPackageConfig
+    | (UniAppManualStyleConfig & { type?: 'manual' })
+    | (UniAppSubPackageConfig & { type?: 'sub-packages' })
+
+export interface ResolvedSubPackage {
   root: string
   indexRelativePath: string
+  sourceRelativePath: string
+  sourceAbsolutePath: string
+  preprocess: boolean
 }
 
 function stripJsonComments(input: string): string {
@@ -80,6 +97,35 @@ function safeReadJsonFile(filePath: string): Record<string, unknown> | null {
   }
 }
 
+const FALLBACK_INDEX_FILE_NAMES = [
+  'index.wxss',
+  'index.css',
+  'index.scss',
+  'index.sass',
+  'index.less',
+  'index.styl',
+  'index.stylus',
+]
+
+function normalizeCandidateList(candidate: UniAppSubPackageConfig['indexFileName']): string[] {
+  const list = candidate
+    ? toArray(candidate)
+    : FALLBACK_INDEX_FILE_NAMES
+
+  return list
+    .map(entry => entry?.trim())
+    .filter((entry): entry is string => Boolean(entry && entry.length > 0))
+}
+
+function resolveOutputFileName(fileName: string): string {
+  const ext = path.extname(fileName).toLowerCase()
+  if (ext === '.wxss' || ext === '.css' || ext === '.acss') {
+    return fileName
+  }
+  const baseName = fileName.slice(0, -ext.length)
+  return `${baseName}.wxss`
+}
+
 function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[] {
   const pagesJsonPath = path.resolve(config.pagesJsonPath)
 
@@ -97,7 +143,7 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
     : []
 
   const baseDir = path.dirname(pagesJsonPath)
-  const indexFileName = config.indexFileName ?? 'index.css'
+  const candidates = normalizeCandidateList(config.indexFileName)
 
   const resolved: ResolvedSubPackage[] = []
 
@@ -111,14 +157,31 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
       continue
     }
 
-    const indexAbsolutePath = path.resolve(baseDir, normalizedRoot, indexFileName)
-    if (!fs.existsSync(indexAbsolutePath)) {
+    let matchedFileName: string | undefined
+    let matchedAbsolutePath: string | undefined
+
+    for (const candidate of candidates) {
+      const indexAbsolutePath = path.resolve(baseDir, normalizedRoot, candidate)
+      if (fs.existsSync(indexAbsolutePath) && fs.statSync(indexAbsolutePath).isFile()) {
+        matchedFileName = candidate
+        matchedAbsolutePath = indexAbsolutePath
+        break
+      }
+    }
+
+    if (!matchedFileName || !matchedAbsolutePath) {
       continue
     }
 
+    const outputFileName = resolveOutputFileName(matchedFileName)
+    const sourceRelativePath = ensurePosix(path.join(normalizedRoot, matchedFileName))
+
     resolved.push({
       root: ensurePosix(normalizedRoot),
-      indexRelativePath: ensurePosix(path.join(normalizedRoot, indexFileName)),
+      indexRelativePath: ensurePosix(path.join(normalizedRoot, outputFileName)),
+      sourceRelativePath,
+      sourceAbsolutePath: matchedAbsolutePath,
+      preprocess: config.preprocess !== false,
     })
   }
 
@@ -127,13 +190,9 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
 
 export function createUniAppSubPackageImportResolver(
   configs: UniAppSubPackageConfig | UniAppSubPackageConfig[] | null | undefined,
+  manualScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[] | null | undefined,
 ): PerFileImportResolver | undefined {
-  const list = toArray(configs)
-  if (list.length === 0) {
-    return undefined
-  }
-
-  const subPackages = list.flatMap(resolveSubPackages)
+  const subPackages = resolveUniAppStyleScopes(configs, manualScopes)
   if (subPackages.length === 0) {
     return undefined
   }
@@ -162,5 +221,125 @@ export function createUniAppSubPackageImportResolver(
     }
 
     return imports
+  }
+}
+
+function normalizeScopeRoot(root: string): string {
+  return normalizeRoot(root)
+}
+
+function resolveManualStyleScopes(
+  configs: UniAppManualStyleConfig | UniAppManualStyleConfig[] | null | undefined,
+): ResolvedSubPackage[] {
+  const cwd = process.cwd()
+  const list = toArray(configs)
+  if (list.length === 0) {
+    return []
+  }
+
+  const resolved: ResolvedSubPackage[] = []
+
+  for (const entry of list) {
+    if (!entry?.style || !entry.scope) {
+      continue
+    }
+
+    const scopeList = toArray(entry.scope)
+      .map(scope => (typeof scope === 'string' ? normalizeScopeRoot(scope) : ''))
+      .filter((scope): scope is string => Boolean(scope && scope.length > 0))
+
+    if (scopeList.length === 0) {
+      continue
+    }
+
+    const sourceAbsolutePath = path.resolve(cwd, entry.style)
+    if (!fs.existsSync(sourceAbsolutePath) || !fs.statSync(sourceAbsolutePath).isFile()) {
+      continue
+    }
+
+    const sourceRelativePath = ensurePosix(path.relative(cwd, sourceAbsolutePath))
+    const normalizedBaseFileName = resolveOutputFileName(path.basename(entry.output ?? entry.style))
+    const trimmedOutput = entry.output ? ensurePosix(entry.output.replace(/^[./\\]+/, '')) : null
+    const preprocess = entry.preprocess !== false
+
+    for (const scope of scopeList) {
+      const outputRelativePath = trimmedOutput ?? ensurePosix(path.posix.join(scope, normalizedBaseFileName))
+
+      resolved.push({
+        root: ensurePosix(scope),
+        indexRelativePath: ensurePosix(outputRelativePath),
+        sourceRelativePath,
+        sourceAbsolutePath,
+        preprocess,
+      })
+    }
+  }
+
+  return resolved
+}
+
+export function resolveUniAppStyleScopes(
+  subPackageConfigs: UniAppSubPackageConfig | UniAppSubPackageConfig[] | null | undefined,
+  manualConfigs: UniAppManualStyleConfig | UniAppManualStyleConfig[] | null | undefined,
+): ResolvedSubPackage[] {
+  const resolvedSubPackages = toArray(subPackageConfigs).flatMap(resolveSubPackages)
+  const resolvedManual = resolveManualStyleScopes(manualConfigs)
+
+  if (resolvedSubPackages.length === 0 && resolvedManual.length === 0) {
+    return []
+  }
+
+  const merged: ResolvedSubPackage[] = []
+  const seen = new Set<string>()
+
+  for (const entry of [...resolvedSubPackages, ...resolvedManual]) {
+    const key = `${entry.root}||${entry.indexRelativePath}`
+    if (seen.has(key)) {
+      continue
+    }
+    seen.add(key)
+    merged.push(entry)
+  }
+
+  return merged
+}
+
+export function splitUniAppStyleScopes(
+  scopes: UniAppStyleScopeInput | UniAppStyleScopeInput[] | null | undefined,
+): {
+  subPackages: UniAppSubPackageConfig[]
+  manual: UniAppManualStyleConfig[]
+} {
+  const list = toArray(scopes)
+  const subPackages: UniAppSubPackageConfig[] = []
+  const manual: UniAppManualStyleConfig[] = []
+
+  for (const entry of list) {
+    if (!entry || typeof entry !== 'object') {
+      continue
+    }
+
+    if ('style' in entry) {
+      manual.push({
+        style: entry.style,
+        scope: entry.scope,
+        output: entry.output,
+        preprocess: entry.preprocess,
+      })
+      continue
+    }
+
+    if ('pagesJsonPath' in entry) {
+      subPackages.push({
+        pagesJsonPath: entry.pagesJsonPath,
+        indexFileName: entry.indexFileName,
+        preprocess: entry.preprocess,
+      })
+    }
+  }
+
+  return {
+    subPackages,
+    manual,
   }
 }

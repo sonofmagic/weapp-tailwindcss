@@ -1,0 +1,8 @@
+{
+  "subPackages": [
+    {
+      "root": "sub-packages-scss",
+      "pages": []
+    }
+  ]
+}

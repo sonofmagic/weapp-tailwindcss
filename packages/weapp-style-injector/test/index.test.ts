@@ -1,7 +1,9 @@
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { Compiler } from 'webpack'
+import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { resolveConfig } from 'vite'
 import { createTaroSubPackageImportResolver } from '@/taro'
 import weappStyleInjector from '@/vite'
 import { StyleInjector as TaroStyleInjector } from '@/vite/taro'
@@ -33,29 +35,60 @@ function createAsset(source: AssetSource, fileName: string): TestOutputAsset {
   }
 }
 
-async function invokeGenerateBundle(plugin: Plugin, bundle: TestBundle) {
-  const hook = plugin.generateBundle as unknown
+let cachedResolvedConfig: ResolvedConfig | null = null
 
-  if (!hook) {
-    return
+async function getResolvedViteConfig(): Promise<ResolvedConfig> {
+  if (cachedResolvedConfig) {
+    return cachedResolvedConfig
   }
 
-  type GenerateBundleHandler = (this: unknown, options: unknown, bundle: TestBundle, isWrite: boolean) => unknown
+  cachedResolvedConfig = await resolveConfig({
+    root: fileURLToPath(new URL('../', import.meta.url)),
+    logLevel: 'silent',
+  }, 'build')
 
-  let handler: GenerateBundleHandler | undefined
+  return cachedResolvedConfig
+}
 
-  if (typeof hook === 'function') {
-    handler = hook as GenerateBundleHandler
+async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[], bundle: TestBundle) {
+  const plugins = (Array.isArray(pluginOrPlugins) ? pluginOrPlugins : [pluginOrPlugins]).filter(Boolean)
+
+  let resolvedConfig: ResolvedConfig | null = null
+
+  for (const plugin of plugins) {
+    if (plugin && typeof plugin.configResolved === 'function') {
+      resolvedConfig ??= await getResolvedViteConfig()
+      await plugin.configResolved.call(plugin as unknown, resolvedConfig)
+    }
   }
-  else if (hook && typeof hook === 'object' && 'handler' in hook && typeof (hook as { handler?: unknown }).handler === 'function') {
-    handler = (hook as { handler: GenerateBundleHandler }).handler
-  }
 
-  if (!handler) {
-    return
-  }
+  for (const plugin of plugins) {
+    if (!plugin) {
+      continue
+    }
 
-  await handler.call({} as unknown, {} as unknown, bundle, false)
+    const hook = plugin.generateBundle as unknown
+    if (!hook) {
+      continue
+    }
+
+    type GenerateBundleHandler = (this: unknown, options: unknown, bundle: TestBundle, isWrite: boolean) => unknown
+
+    let handler: GenerateBundleHandler | undefined
+
+    if (typeof hook === 'function') {
+      handler = hook as GenerateBundleHandler
+    }
+    else if (hook && typeof hook === 'object' && 'handler' in hook && typeof (hook as { handler?: unknown }).handler === 'function') {
+      handler = (hook as { handler: GenerateBundleHandler }).handler
+    }
+
+    if (!handler) {
+      continue
+    }
+
+    await handler.call({} as unknown, {} as unknown, bundle, false)
+  }
 }
 
 describe('weapp-style-injector plugin', () => {
@@ -143,6 +176,26 @@ describe('weapp-style-injector plugin', () => {
     const bundle = {
       'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
       'sub-packages/pages/detail/item.wxss': createAsset('.item {}', 'sub-packages/pages/detail/item.wxss'),
+      'sub-packages/index.wxss': createAsset('.root {}', 'sub-packages/index.wxss'),
+    }
+
+    const plugin = weappStyleInjector({
+      uniAppSubPackages: {
+        pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/pages/detail/item.wxss'].source).toBe(`@import "../../index.wxss";\n.item {}`)
+    // the index file should not import itself
+    expect(bundle['sub-packages/index.wxss'].source).toBe('.root {}')
+  })
+
+  it('supports custom uni-app sub-package index file names', async () => {
+    const bundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
       'sub-packages/index.css': createAsset('.root {}', 'sub-packages/index.css'),
     }
 
@@ -156,8 +209,6 @@ describe('weapp-style-injector plugin', () => {
     await invokeGenerateBundle(plugin, bundle)
 
     expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.css";\n.home {}`)
-    expect(bundle['sub-packages/pages/detail/item.wxss'].source).toBe(`@import "../../index.css";\n.item {}`)
-    // the index file should not import itself
     expect(bundle['sub-packages/index.css'].source).toBe('.root {}')
   })
 })
@@ -167,7 +218,27 @@ describe('vite presets', () => {
     const bundle = {
       'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
       'sub-packages/pages/detail/item.wxss': createAsset('.item {}', 'sub-packages/pages/detail/item.wxss'),
-      'sub-packages/index.css': createAsset('.root {}', 'sub-packages/index.css'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    const generatedIndex = bundle['sub-packages/index.wxss']
+
+    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/pages/detail/item.wxss'].source).toBe(`@import "../../index.wxss";\n.item {}`)
+    expect(generatedIndex).toBeDefined()
+    expect(generatedIndex?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.wxss'), 'utf8'),
+    )
+  })
+
+  it('supports custom index file names via uni-app preset', async () => {
+    const bundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
     }
 
     const plugin = UniAppStyleInjector({
@@ -177,9 +248,55 @@ describe('vite presets', () => {
 
     await invokeGenerateBundle(plugin, bundle)
 
+    const generatedIndex = bundle['sub-packages/index.css']
+
     expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.css";\n.home {}`)
-    expect(bundle['sub-packages/pages/detail/item.wxss'].source).toBe(`@import "../../index.css";\n.item {}`)
-    expect(bundle['sub-packages/index.css'].source).toBe('.root {}')
+    expect(generatedIndex).toBeDefined()
+    expect(generatedIndex?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.css'), 'utf8'),
+    )
+  })
+
+  it('injects manual style scopes via uni-app preset', async () => {
+    const bundle = {
+      'custom/pages/home.wxss': createAsset('.home {}', 'custom/pages/home.wxss'),
+      'custom/pages/detail.wxss': createAsset('.detail {}', 'custom/pages/detail.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      styleScopes: {
+        type: 'manual',
+        style: path.join(uniAppFixturesRoot, 'custom/global.scss'),
+        scope: 'custom',
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    const generatedIndex = bundle['custom/global.wxss']
+
+    expect(bundle['custom/pages/home.wxss'].source).toBe(`@import "../global.wxss";\n.home {}`)
+    expect(bundle['custom/pages/detail.wxss'].source).toBe(`@import "../global.wxss";\n.detail {}`)
+    expect(generatedIndex).toBeDefined()
+    expect(generatedIndex?.source).toBe('.global {\n  color: #10b981;\n}')
+  })
+
+  it('compiles sass sub-package indexes via uni-app preset', async () => {
+    const bundle = {
+      'sub-packages-scss/pages/home.wxss': createAsset('.home {}', 'sub-packages-scss/pages/home.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages-scss.json'),
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    const generatedIndex = bundle['sub-packages-scss/index.wxss']
+
+    expect(bundle['sub-packages-scss/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(generatedIndex).toBeDefined()
+    expect(generatedIndex?.source).toBe('.root {\n  color: #1c64f2;\n}')
   })
 
   it('injects sub-package imports via taro preset', async () => {
@@ -323,6 +440,25 @@ describe('weapp-style-injector webpack plugin', () => {
     const { compiler, getAsset } = createCompiler({
       'sub-packages/pages/home.wxss': '.home {}',
       'sub-packages/pages/detail/item.wxss': '.item {}',
+      'sub-packages/index.wxss': '.root {}',
+    })
+
+    const plugin = weappStyleInjectorWebpack({
+      uniAppSubPackages: {
+        pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      },
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(getAsset('sub-packages/pages/detail/item.wxss')).toBe(`@import "../../index.wxss";\n.item {}`)
+    expect(getAsset('sub-packages/index.wxss')).toBe('.root {}')
+  })
+
+  it('supports custom uni-app sub-package index file names in webpack plugin', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-packages/pages/home.wxss': '.home {}',
       'sub-packages/index.css': '.root {}',
     })
 
@@ -336,7 +472,6 @@ describe('weapp-style-injector webpack plugin', () => {
     plugin.apply(compiler)
 
     expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.css";\n.home {}`)
-    expect(getAsset('sub-packages/pages/detail/item.wxss')).toBe(`@import "../../index.css";\n.item {}`)
     expect(getAsset('sub-packages/index.css')).toBe('.root {}')
   })
 
@@ -344,6 +479,23 @@ describe('weapp-style-injector webpack plugin', () => {
     const { compiler, getAsset } = createCompiler({
       'sub-packages/pages/home.wxss': '.home {}',
       'sub-packages/pages/detail/item.wxss': '.item {}',
+      'sub-packages/index.wxss': '.root {}',
+    })
+
+    const plugin = UniAppStyleInjectorWebpack({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(getAsset('sub-packages/pages/detail/item.wxss')).toBe(`@import "../../index.wxss";\n.item {}`)
+    expect(getAsset('sub-packages/index.wxss')).toBe('.root {}')
+  })
+
+  it('supports custom index file names via uni-app webpack preset', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-packages/pages/home.wxss': '.home {}',
       'sub-packages/index.css': '.root {}',
     })
 
@@ -355,7 +507,6 @@ describe('weapp-style-injector webpack plugin', () => {
     plugin.apply(compiler)
 
     expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.css";\n.home {}`)
-    expect(getAsset('sub-packages/pages/detail/item.wxss')).toBe(`@import "../../index.css";\n.item {}`)
     expect(getAsset('sub-packages/index.css')).toBe('.root {}')
   })
 
