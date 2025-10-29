@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.0.0
+
+### Major Changes
+
+- [`dea2ecb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/dea2ecba1a7232d10b60701664424dbde8a58141) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 优化处理流程, 重构 @weapp-tailwindcss/postcss
+
 ## 1.3.4
 
 ### Patch Changes

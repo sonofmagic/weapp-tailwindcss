@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.6.3
+
+### Patch Changes
+
+- [`c273d73`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c273d733c3aecc98ab600867e994fb48ef3e25d9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 去除 cssClac.includeCustomProperties 里面 --spacing 默认值，为了 tailwindcss@4 space-reverse 的场景
+
+- Updated dependencies [[`dea2ecb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/dea2ecba1a7232d10b60701664424dbde8a58141)]:
+  - @weapp-tailwindcss/postcss@2.0.0
+
 ## 4.6.2
 
 ### Patch Changes
