@@ -1,5 +1,7 @@
+// Tailwind CSS v4 默认 CSS 变量映射，参考官方 utilities 定义
 // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts
 
+// property 函数用于快速构建变量描述对象，便于后续批量注入
 function property(ident: string, initialValue?: string, _syntax?: string) {
   return {
     prop: ident,
@@ -132,6 +134,7 @@ const nodes = [
   property('--tw-ring-offset-shadow', nullShadow),
 ]
 
+// 针对四个方向的 Mask 变量做统一补全，减少重复书写
 for (const edge of ['top', 'right', 'bottom', 'left'] as const) {
   nodes.push(
     property(`--tw-mask-${edge}-from-position`, '0%'),

@@ -1,9 +1,11 @@
+// 核心类型定义，描述样式处理流程所需的选项与工具类型
 import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
-import type { Rule } from 'postcss'
+import type { Result as PostcssResult, Rule } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxtransformOptions as Px2rpxOptions } from 'postcss-pxtransform'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
+import type { StyleProcessingPipeline } from './pipeline'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
 
@@ -91,4 +93,10 @@ export type {
   PresetEnvOptions,
   Px2rpxOptions,
   Rem2rpxOptions,
+}
+
+export interface StyleHandler {
+  (rawSource: string, opt?: Partial<IStyleHandlerOptions>): Promise<PostcssResult>
+  // getPipeline 允许外部在不同配置下获取预组装的流水线信息
+  getPipeline: (opt?: Partial<IStyleHandlerOptions>) => StyleProcessingPipeline
 }

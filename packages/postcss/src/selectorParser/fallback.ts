@@ -1,3 +1,4 @@
+// 针对小程序不支持的选择器语法提供兜底清理能力
 import type { Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import type { RuleTransformer } from './rule-transformer'

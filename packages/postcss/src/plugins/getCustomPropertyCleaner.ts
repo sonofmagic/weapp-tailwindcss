@@ -1,3 +1,4 @@
+// 移除冗余的 CSS 自定义属性声明，避免重复覆盖
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { regExpTest } from '@weapp-tailwindcss/shared'

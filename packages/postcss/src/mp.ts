@@ -1,9 +1,11 @@
+// 小程序端预处理逻辑，负责变量注入与选择器修正
 import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
 import cssVarsV3 from './cssVarsV3'
 import cssVarsV4 from './cssVarsV4'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 
+// v3 变量集合在运行时转换为 Declaration 以便快速插入
 const cssVarsV3Nodes = cssVarsV3.map((x) => {
   return new Declaration({
     prop: x.prop,
@@ -11,6 +13,7 @@ const cssVarsV3Nodes = cssVarsV3.map((x) => {
   })
 })
 
+// v4 变量集合在运行时以 PostCSS Declaration 形式复用
 export const cssVarsV4Nodes = cssVarsV4.map((x) => {
   return new Declaration({
     prop: x.prop,
@@ -44,6 +47,7 @@ export const cssVarsV4Nodes = cssVarsV4.map((x) => {
  * 会语法错误
  */
 
+// 判断当前规则是否仅包含 before/after 的变量声明，用于标记变量作用域
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
   if (isOnlyBeforeAndAfterPseudoElement(node)) {
     const nodes = node.nodes
@@ -61,6 +65,7 @@ export function testIfVariablesScope(node: Rule, count = 2): boolean {
   return false
 }
 
+// Tailwind backdrop 相关规则也需要被视为变量作用域
 export function testIfTwBackdrop(node: Rule, count = 2) {
   if (node.type === 'rule' && node.selector === '::backdrop') {
     const nodes = node.nodes
@@ -78,10 +83,12 @@ export function testIfTwBackdrop(node: Rule, count = 2) {
   return false
 }
 
+// Tailwind v4 会把 :root 与 :host 组合在一起，这里单独识别
 export function testIfRootHostForV4(node: Rule) {
   return node.type === 'rule' && node.selector.includes(':root') && node.selector.includes(':host')
 }
 
+// 构造 ::before/::after 的占位规则，为变量注入腾出空间
 export function makePseudoVarRule() {
   const pseudoVarRule = new Rule({
     // selectors: ['::before', '::after'],
@@ -96,6 +103,7 @@ export function makePseudoVarRule() {
   return pseudoVarRule
 }
 
+// 根据配置补全变量作用域的选择器（例如 * 或 :not(not)）
 export function remakeCssVarSelector(selectors: string[], options: IStyleHandlerOptions) {
   const { cssPreflightRange, cssSelectorReplacement } = options
   if (
@@ -127,6 +135,7 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
   return selectors
 }
 
+// 在通用预处理节点中注入变量、预设声明，并标记上下文状态
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
   // css vars scope

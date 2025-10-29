@@ -1,3 +1,4 @@
+// 预处理阶段插件：重写选择器、清理不兼容规则并注入变量
 import type { AtRule, Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
@@ -7,6 +8,7 @@ import { ruleTransformSync } from '../selectorParser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
+// isAtMediaHover 用于识别 hover 媒体查询并将其展开
 function isAtMediaHover(atRule: AtRule) {
   return (
     /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name)
@@ -58,6 +60,7 @@ function isAtMediaHover(atRule: AtRule) {
 //     }
 //   }
 // }
+// Tailwind v4 的现代检查语句需要特殊处理以恢复具体规则
 export function isTailwindcssV4ModernCheck(atRule: AtRule) {
   return atRule.name === 'supports' && [
     /-webkit-hyphens\s*:\s*none/,
@@ -75,6 +78,7 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
   const p: Plugin = {
     postcssPlugin,
     Rule(rule) {
+      // 统一通过 selectorParser 做兼容性替换
       ruleTransformSync(rule, opts)
     },
     AtRule(atRule) {

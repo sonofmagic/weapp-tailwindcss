@@ -1,3 +1,4 @@
+// Tailwind CSS v3 版本默认 CSS 变量集，保持与官方预设一致
 export default [
   {
     prop: '--tw-border-spacing-x',

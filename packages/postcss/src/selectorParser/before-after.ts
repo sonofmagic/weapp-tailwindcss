@@ -1,3 +1,4 @@
+// 检测选择器是否仅包含 ::before / ::after 伪元素
 import type { Rule } from 'postcss'
 import psp from 'postcss-selector-parser'
 
@@ -8,6 +9,7 @@ interface BeforeAfterState {
 
 let beforeAfterStateRef: BeforeAfterState | null = null
 
+// 复用 parser 遍历伪元素节点，记录是否存在 before/after
 const beforeAfterParser = psp((selectors) => {
   const state = beforeAfterStateRef
   if (!state) {
@@ -25,6 +27,7 @@ const beforeAfterParser = psp((selectors) => {
   })
 })
 
+// isOnlyBeforeAndAfterPseudoElement 判断规则是否同时拥有 before 和 after
 export function isOnlyBeforeAndAfterPseudoElement(node: Rule) {
   const state: BeforeAfterState = {
     before: false,

@@ -1,9 +1,11 @@
+// 后处理阶段插件：负责选择器兜底、声明去重与变量排序
 import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 
+// normalizeSelectorList 将 root/universal 替换配置规范化为数组
 function normalizeSelectorList(value?: string | string[] | false) {
   if (value === undefined || value === false) {
     return []
@@ -11,6 +13,7 @@ function normalizeSelectorList(value?: string | string[] | false) {
   return Array.isArray(value) ? value.filter(Boolean) : [value]
 }
 
+// 读取 preset-env 设置的 specificityMatchingName，供后续清理使用
 function getSpecificityMatchingName(options: IStyleHandlerOptions) {
   const feature = options.cssPresetEnv?.features?.['is-pseudo-class']
   if (feature && typeof feature === 'object' && 'specificityMatchingName' in feature) {
@@ -20,6 +23,7 @@ function getSpecificityMatchingName(options: IStyleHandlerOptions) {
   return undefined
 }
 
+// createRootSpecificityCleaner 用于删除 root 选择器上多余的 :not() 包裹
 function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
   const specificityMatchingName = getSpecificityMatchingName(options)
   const selectors = normalizeSelectorList(options.cssSelectorReplacement?.root)
@@ -104,6 +108,7 @@ function getCanonicalProp(prop: string) {
   return logicalPropMap.get(prop) ?? prop
 }
 
+// normalizeCalcValue 消除嵌套 calc 带来的冗余括号，兼容小程序解析器
 function normalizeCalcValue(value: string) {
   if (!value.includes('calc')) {
     return value
@@ -132,6 +137,7 @@ function hasVariableReference(value: string) {
   return value.includes('var(')
 }
 
+// reorderVariableDeclarations 确保普通声明在变量声明之前，避免被变量覆盖
 export function reorderVariableDeclarations(rule: Rule) {
   const groupedByProp = new Map<string, Declaration[]>()
 
@@ -193,6 +199,7 @@ export function reorderVariableDeclarations(rule: Rule) {
   }
 }
 
+// dedupeDeclarations 去除逻辑属性与变量重复定义，保留最优组合
 function dedupeDeclarations(rule: Rule) {
   const entries: DedupeEntry[] = []
 
@@ -323,6 +330,7 @@ function dedupeDeclarations(rule: Rule) {
   // reorderVariableDeclarations(rule)
 }
 
+// 后处理插件收敛所有规则，在退出阶段执行去重与兜底
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
 ) => {
@@ -338,6 +346,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   if (enableMainChunkTransforms || cleanRootSpecificity) {
     const fallbackRemove = enableMainChunkTransforms ? getFallbackRemove(undefined, opts) : undefined
 
+    // RuleExit 阶段执行选择器兜底、声明清理等操作
     p.RuleExit = (rule) => {
       if (enableMainChunkTransforms) {
         fallbackRemove?.transformSync(rule)
@@ -390,6 +399,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     }
   }
   if (typeof opts.customRuleCallback === 'function') {
+    // 保留用户自定义回调增强处理灵活性
     p.Rule = (rule) => {
       opts.customRuleCallback?.(rule, opts)
     }

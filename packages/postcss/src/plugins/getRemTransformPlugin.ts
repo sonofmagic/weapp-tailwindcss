@@ -1,3 +1,4 @@
+// 生成 rem 转 rpx 的 PostCSS 插件，确保在 OnceExit 阶段执行
 import type { AcceptedPlugin } from 'postcss'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { IStyleHandlerOptions } from '../types'

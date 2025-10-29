@@ -1,3 +1,4 @@
+// 构建像素到 rpx 的转换插件，默认贴合小程序设计稿尺寸
 import type { AcceptedPlugin } from 'postcss'
 import type { PxtransformOptions } from 'postcss-pxtransform'
 import type { IStyleHandlerOptions } from '../types'

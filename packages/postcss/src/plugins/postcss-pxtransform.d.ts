@@ -1,3 +1,4 @@
+// 为 postcss-pxtransform 提供最小化的类型声明，方便在 TS 中获得提示
 declare module 'postcss-pxtransform' {
   import type { PluginCreator } from 'postcss'
 
