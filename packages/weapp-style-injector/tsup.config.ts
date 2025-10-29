@@ -1,7 +1,17 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts'], // , 'src/cli.ts'],
+  entry: [
+    'src/index.ts',
+    'src/taro.ts',
+    'src/uni-app.ts',
+    'src/vite.ts',
+    'src/vite/uni-app.ts',
+    'src/vite/taro.ts',
+    'src/webpack.ts',
+    'src/webpack/uni-app.ts',
+    'src/webpack/taro.ts',
+  ],
   shims: true,
   format: ['cjs', 'esm'],
   clean: true,

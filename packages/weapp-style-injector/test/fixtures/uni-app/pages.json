@@ -1,0 +1,13 @@
+{
+  // comment to ensure stripping works
+  "subPackages": [
+    {
+      "root": "sub-packages",
+      "pages": []
+    },
+    {
+      "root": "sub-packages-missing",
+      "pages": []
+    }
+  ]
+}

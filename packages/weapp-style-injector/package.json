@@ -20,6 +20,46 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./uni-app": {
+      "types": "./dist/uni-app.d.ts",
+      "import": "./dist/uni-app.mjs",
+      "require": "./dist/uni-app.cjs"
+    },
+    "./taro": {
+      "types": "./dist/taro.d.ts",
+      "import": "./dist/taro.mjs",
+      "require": "./dist/taro.cjs"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.mjs",
+      "require": "./dist/vite.cjs"
+    },
+    "./vite/uni-app": {
+      "types": "./dist/vite/uni-app.d.ts",
+      "import": "./dist/vite/uni-app.mjs",
+      "require": "./dist/vite/uni-app.cjs"
+    },
+    "./vite/taro": {
+      "types": "./dist/vite/taro.d.ts",
+      "import": "./dist/vite/taro.mjs",
+      "require": "./dist/vite/taro.cjs"
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "import": "./dist/webpack.mjs",
+      "require": "./dist/webpack.cjs"
+    },
+    "./webpack/uni-app": {
+      "types": "./dist/webpack/uni-app.d.ts",
+      "import": "./dist/webpack/uni-app.mjs",
+      "require": "./dist/webpack/uni-app.cjs"
+    },
+    "./webpack/taro": {
+      "types": "./dist/webpack/taro.d.ts",
+      "import": "./dist/webpack/taro.mjs",
+      "require": "./dist/webpack/taro.cjs"
     }
   },
   "main": "./dist/index.cjs",
