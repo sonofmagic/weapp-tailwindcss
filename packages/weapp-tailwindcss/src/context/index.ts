@@ -8,49 +8,69 @@ import { createHandlersFromContext } from './handlers'
 import { applyLoggerLevel } from './logger'
 import { createTailwindcssPatcherFromContext } from './tailwindcss'
 
-const DEFAULT_SPACING_VARIABLE = '--spacing'
+// 默认保留列表暂为空，后续若有新增默认变量再补充到该数组
+const DEFAULT_CSS_CALC_CUSTOM_PROPERTIES: (string | RegExp)[] = []
 
-function matchesSpacingToken(token: string | RegExp) {
-  if (typeof token === 'string') {
-    return token === DEFAULT_SPACING_VARIABLE
-  }
+function includesToken(list: (string | RegExp)[], token: string | RegExp) {
+  return list.some((candidate) => {
+    if (typeof token === 'string') {
+      if (typeof candidate === 'string') {
+        return candidate === token
+      }
+      candidate.lastIndex = 0
+      return candidate.test(token)
+    }
 
-  token.lastIndex = 0
-  return token.test(DEFAULT_SPACING_VARIABLE)
+    if (typeof candidate === 'string') {
+      token.lastIndex = 0
+      return token.test(candidate)
+    }
+
+    return candidate.source === token.source && candidate.flags === token.flags
+  })
 }
 
-function ensureSpacingIncluded(
+function ensureDefaultsIncluded(
   value: InternalUserDefinedOptions['cssCalc'],
 ): InternalUserDefinedOptions['cssCalc'] {
   if (value === true) {
     return {
-      includeCustomProperties: [DEFAULT_SPACING_VARIABLE],
+      includeCustomProperties: [...DEFAULT_CSS_CALC_CUSTOM_PROPERTIES],
     }
   }
 
   if (Array.isArray(value)) {
-    return value.some(matchesSpacingToken)
-      ? value
-      : [...value, DEFAULT_SPACING_VARIABLE]
+    if (!DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.length) {
+      return value
+    }
+
+    const missing = DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.filter(token => !includesToken(value, token))
+    return missing.length > 0
+      ? [...value, ...missing]
+      : value
   }
 
   if (value && typeof value === 'object') {
     const include = value.includeCustomProperties
-    if (!Array.isArray(include) || include.length === 0) {
+    if (!Array.isArray(include)) {
       return {
         ...value,
-        includeCustomProperties: [DEFAULT_SPACING_VARIABLE],
+        includeCustomProperties: [...DEFAULT_CSS_CALC_CUSTOM_PROPERTIES],
       }
     }
 
-    if (include.some(matchesSpacingToken)) {
+    if (!DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.length) {
       return value
     }
 
-    return {
-      ...value,
-      includeCustomProperties: [...include, DEFAULT_SPACING_VARIABLE],
-    }
+    const missing = DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.filter(token => !includesToken(include, token))
+
+    return missing.length > 0
+      ? {
+          ...value,
+          includeCustomProperties: [...include, ...missing],
+        }
+      : value
   }
 
   return value
@@ -84,7 +104,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   let cssCalcOptions = ctx.cssCalc ?? twPatcher.majorVersion === 4
 
   if (twPatcher.majorVersion === 4 && cssCalcOptions) {
-    cssCalcOptions = ensureSpacingIncluded(cssCalcOptions)
+    cssCalcOptions = ensureDefaultsIncluded(cssCalcOptions)
   }
 
   ctx.cssCalc = cssCalcOptions

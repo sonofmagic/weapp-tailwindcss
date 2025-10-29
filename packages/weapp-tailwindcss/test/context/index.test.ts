@@ -54,7 +54,7 @@ describe('getCompilerContext', () => {
     createTailwindcssPatcherFromContext.mockReset()
   })
 
-  it('injects --spacing into includeCustomProperties when tailwindcss v4 auto enables cssCalc', async () => {
+  it('provides empty includeCustomProperties when tailwindcss v4 auto enables cssCalc', async () => {
     createTailwindcssPatcherFromContext.mockReturnValue({
       packageInfo: { version: '4.0.0' },
       majorVersion: 4,
@@ -66,14 +66,14 @@ describe('getCompilerContext', () => {
     const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
     expect(forwardedCalcOptions).toEqual({
-      includeCustomProperties: ['--spacing'],
+      includeCustomProperties: [],
     })
     expect(ctx.cssCalc).toEqual({
-      includeCustomProperties: ['--spacing'],
+      includeCustomProperties: [],
     })
   })
 
-  it('appends --spacing to user provided arrays', async () => {
+  it('keeps user provided arrays intact when no defaults defined', async () => {
     createTailwindcssPatcherFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
@@ -86,8 +86,8 @@ describe('getCompilerContext', () => {
 
     const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
-    expect(forwardedCalcOptions).toEqual(['--gap', '--spacing'])
-    expect(ctx.cssCalc).toEqual(['--gap', '--spacing'])
+    expect(forwardedCalcOptions).toEqual(['--gap'])
+    expect(ctx.cssCalc).toEqual(['--gap'])
   })
 
   it('keeps user objects intact when spacing is already covered', async () => {
