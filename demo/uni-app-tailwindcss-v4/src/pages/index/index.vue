@@ -19,29 +19,33 @@
       打开订单分包
     </view>
     <div class="flex space-x-4 border" :class="{
-      'space-x-reverse': reverseFlag
+      'space-x-reverse': reverseFlag,
+      'flex-row-reverse': reverseFlag
     }">
       <div>01</div>
       <div>02</div>
       <div>03</div>
     </div>
     <div class="flex flex-col space-y-4 border" :class="{
-      'space-y-reverse': reverseFlag
+      'space-y-reverse': reverseFlag,
+      'flex-col-reverse': reverseFlag
     }">
       <div>01</div>
       <div>02</div>
       <div>03</div>
     </div>
-    <div class="flex divide-x-4 border p-2" :class="{
-      'divide-x-reverse': reverseFlag
+    <div class="flex divide-x-4 border p-2 divide-[#d80c0c] divide-double" :class="{
+      'divide-x-reverse': reverseFlag,
+      'flex-row-reverse': reverseFlag
     }">
       <div>01</div>
       <div>02</div>
       <div>03</div>
     </div>
 
-    <div class="flex flex-col divide-y-4 border p-2" :class="{
-      'divide-y-reverse': reverseFlag
+    <div class="flex flex-col divide-y-4 border p-2 divide-[#41eb04] divide-dotted" :class="{
+      'divide-y-reverse': reverseFlag,
+      'flex-col-reverse': reverseFlag
     }">
       <div>01</div>
       <div>02</div>
