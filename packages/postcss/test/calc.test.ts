@@ -171,6 +171,27 @@ describe('calc', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('deduplicates fallback declarations when original output already contains them', async () => {
+    const code = `page,
+:root {
+  --spacing: 8rpx;
+}
+.space-x-4>view+view {
+  margin-left: 32rpx;
+  margin-left: calc(var(--spacing) * 4);
+}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: true,
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+    const fallbackCount = css.match(/margin-left: 32rpx;/g)?.length ?? 0
+    expect(fallbackCount).toBe(1)
+    expect(css).toContain('margin-left: calc(var(--spacing)*4);')
+  })
+
   it('cssCalc 传入 --spacing 示例', async () => {
     const code = `page,
 :root {

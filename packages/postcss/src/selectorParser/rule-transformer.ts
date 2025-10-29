@@ -1,4 +1,4 @@
-import type { Rule } from 'postcss'
+import type { Declaration, Rule } from 'postcss'
 import type { Node, Pseudo, Selector, SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../types'
 import psp from 'postcss-selector-parser'
@@ -11,6 +11,120 @@ import {
 export type RuleTransformer = (rule: Rule) => void
 
 const ruleTransformCache = new WeakMap<IStyleHandlerOptions, RuleTransformer>()
+
+const spacingPropSet = new Set([
+  'margin-top',
+  'margin-bottom',
+  'margin-left',
+  'margin-right',
+  'margin-inline-start',
+  'margin-inline-end',
+  'margin-block-start',
+  'margin-block-end',
+  'border-top-width',
+  'border-bottom-width',
+  'border-left-width',
+  'border-right-width',
+  'border-inline-start-width',
+  'border-inline-end-width',
+  'border-block-start-width',
+  'border-block-end-width',
+])
+
+function includesVariableReference(value: string) {
+  return value.includes('var(')
+}
+
+function dedupeSpacingProps(rule: Rule) {
+  const grouped = new Map<string, Declaration[]>()
+
+  for (const node of rule.nodes) {
+    if (node.type !== 'decl') {
+      continue
+    }
+    if (!spacingPropSet.has(node.prop)) {
+      continue
+    }
+    const list = grouped.get(node.prop)
+    if (list) {
+      list.push(node)
+    }
+    else {
+      grouped.set(node.prop, [node])
+    }
+  }
+
+  for (const [, declarations] of grouped) {
+    if (declarations.length <= 1) {
+      continue
+    }
+
+    const unique: Declaration[] = []
+    const seenValues = new Set<string>()
+
+    for (const decl of declarations) {
+      if (decl.parent !== rule) {
+        continue
+      }
+      const key = `${decl.important ? '!important@@' : ''}${decl.value}`
+      if (seenValues.has(key)) {
+        decl.remove()
+        continue
+      }
+      seenValues.add(key)
+      unique.push(decl)
+    }
+
+    if (unique.length <= 1) {
+      continue
+    }
+
+    const literals: Declaration[] = []
+    const variables: Declaration[] = []
+
+    for (const decl of unique) {
+      if (includesVariableReference(decl.value)) {
+        variables.push(decl)
+      }
+      else {
+        literals.push(decl)
+      }
+    }
+
+    if (variables.length === 0 || literals.length === 0) {
+      continue
+    }
+
+    const ordered = [...literals, ...variables]
+
+    let needReorder = false
+    for (let index = 0; index < ordered.length; index++) {
+      if (ordered[index] !== unique[index]) {
+        needReorder = true
+        break
+      }
+    }
+
+    if (!needReorder) {
+      continue
+    }
+
+    const anchor = unique[unique.length - 1]?.next() ?? undefined
+
+    for (const decl of unique) {
+      decl.remove()
+    }
+
+    for (const decl of ordered) {
+      if (anchor) {
+        rule.insertBefore(anchor, decl)
+      }
+      else {
+        rule.append(decl)
+      }
+    }
+  }
+}
 
 function isNotLastChildPseudo(node?: Node | null): node is Pseudo {
   if (!node || node.type !== 'pseudo' || node.value !== ':not') {
@@ -119,6 +233,8 @@ function normalizeSpacingDeclarations(rule: Rule) {
         break
     }
   }
+
+  dedupeSpacingProps(rule)
 }
 
 function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {

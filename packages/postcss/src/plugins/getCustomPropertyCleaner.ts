@@ -1,4 +1,4 @@
-import type { AcceptedPlugin, Declaration } from 'postcss'
+import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { regExpTest } from '@weapp-tailwindcss/shared'
 import valueParser from 'postcss-value-parser'
@@ -10,35 +10,49 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
       ? options.cssCalc.includeCustomProperties
       : []
 
-  if (!includeCustomProperties || includeCustomProperties.length === 0) {
+  const shouldMatchCustomProperties = Array.isArray(includeCustomProperties)
+    && includeCustomProperties.length > 0
+
+  if (!shouldMatchCustomProperties) {
     return null
   }
 
   return {
     postcssPlugin: 'postcss-remove-include-custom-properties',
     OnceExit(root) {
-      root.walkDecls((decl, idx) => {
-        if (idx === 0 || !/--/.test(decl.value)) {
+      root.walkDecls((decl) => {
+        const prevNode = decl.prev()
+        if (!prevNode || prevNode.type !== 'decl' || prevNode.prop !== decl.prop) {
           return
         }
 
-        const prevNode = decl.parent?.nodes[idx - 1] as Declaration | undefined
-        if (!prevNode || prevNode.prop !== decl.prop) {
+        if (prevNode.value === decl.value) {
+          decl.remove()
+          return
+        }
+
+        if (!shouldMatchCustomProperties || !/--/.test(decl.value)) {
           return
         }
 
         const parsed = valueParser(decl.value)
+        let containsIncludedCustomProperty = false
+
         parsed.walk((node) => {
-          if (node.type !== 'function' || node.value !== 'var') {
+          if (node.type !== 'function' || node.value !== 'var' || containsIncludedCustomProperty) {
             return
           }
           const match = node.nodes.find((x) => {
             return x.type === 'word' && regExpTest(includeCustomProperties, x.value)
           })
           if (match) {
-            decl.remove()
+            containsIncludedCustomProperty = true
           }
         })
+
+        if (containsIncludedCustomProperty) {
+          decl.remove()
+        }
       })
     },
   }

@@ -89,6 +89,17 @@ const logicalPropMap = new Map<string, string>([
   ['border-inline-end-width', 'border-right-width'],
 ])
 
+const variablePriorityProps = new Set([
+  'margin-left',
+  'margin-right',
+  'margin-top',
+  'margin-bottom',
+  'border-left-width',
+  'border-right-width',
+  'border-top-width',
+  'border-bottom-width',
+])
+
 function getCanonicalProp(prop: string) {
   return logicalPropMap.get(prop) ?? prop
 }
@@ -220,6 +231,92 @@ function dedupeDeclarations(rule: Rule) {
     }
     else {
       entry.decl.remove()
+    }
+  }
+
+  const reorderGroups = new Map<string, Declaration[]>()
+
+  for (const node of rule.nodes) {
+    if (node.type !== 'decl') {
+      continue
+    }
+    const canonical = getCanonicalProp(node.prop)
+    if (!variablePriorityProps.has(canonical)) {
+      continue
+    }
+    const existing = reorderGroups.get(canonical)
+    if (existing) {
+      existing.push(node)
+    }
+    else {
+      reorderGroups.set(canonical, [node])
+    }
+  }
+
+  for (const declarations of reorderGroups.values()) {
+    if (declarations.length <= 1) {
+      continue
+    }
+
+    const literals = declarations.filter(decl => !hasVariableReference(decl.value))
+    const variables = declarations.filter(decl => hasVariableReference(decl.value))
+
+    if (literals.length === 0 || variables.length === 0) {
+      continue
+    }
+
+    const ordered = [...literals, ...variables]
+
+    let needReorder = false
+    for (let index = 0; index < ordered.length; index++) {
+      if (ordered[index] !== declarations[index]) {
+        needReorder = true
+        break
+      }
+    }
+
+    if (!needReorder) {
+      continue
+    }
+
+    const anchor = declarations[declarations.length - 1]?.next() ?? undefined
+
+    for (const decl of declarations) {
+      decl.remove()
+    }
+
+    for (const decl of ordered) {
+      if (anchor) {
+        rule.insertBefore(anchor, decl)
+      }
+      else {
+        rule.append(decl)
+      }
+    }
+  }
+
+  const literalSeen = new Map<string, Declaration>()
+
+  for (const node of [...rule.nodes]) {
+    if (node.type !== 'decl') {
+      continue
+    }
+
+    const canonical = getCanonicalProp(node.prop)
+    if (!variablePriorityProps.has(canonical)) {
+      continue
+    }
+
+    if (hasVariableReference(node.value)) {
+      continue
+    }
+
+    const existing = literalSeen.get(canonical)
+    if (existing) {
+      node.remove()
+    }
+    else {
+      literalSeen.set(canonical, node)
     }
   }
 

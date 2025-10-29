@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npm run build:mp-weixin",
     "dev:custom": "uni -p",
+    "dev": "npm run dev:mp-weixin",
     "dev:h5": "uni",
     "dev:h5:ssr": "uni --ssr",
     "dev:mp-alipay": "uni -p mp-alipay",

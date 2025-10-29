@@ -2,6 +2,63 @@ import fs from 'fs-extra'
 import path from 'pathe'
 import { createStyleHandler } from '@/index'
 
+function getPropertyDeclarations(css: string, prop: string) {
+  const regex = new RegExp(`${prop}:\\s*([^;]+);`, 'g')
+  const declarations: Array<{ value: string, index: number }> = []
+  let match: RegExpExecArray | null = regex.exec(css)
+  while (match !== null) {
+    declarations.push({
+      value: match[1].trim(),
+      index: match.index,
+    })
+    match = regex.exec(css)
+  }
+  return declarations
+}
+
+function assertNoDuplicateLiteral(css: string, prop: string) {
+  const declarations = getPropertyDeclarations(css, prop)
+  const counts = new Map<string, number>()
+
+  for (const decl of declarations) {
+    if (decl.value.includes('var(')) {
+      continue
+    }
+    const key = decl.value
+    const next = (counts.get(key) ?? 0) + 1
+    counts.set(key, next)
+  }
+
+  for (const count of counts.values()) {
+    expect(count).toBeLessThanOrEqual(1)
+  }
+}
+
+function assertLiteralBeforeVariable(css: string, prop: string) {
+  const declarations = getPropertyDeclarations(css, prop)
+  if (declarations.length <= 1) {
+    return
+  }
+
+  let literalIndex = -1
+  let variableIndex = -1
+
+  for (const decl of declarations) {
+    if (decl.value.includes('var(')) {
+      if (variableIndex === -1) {
+        variableIndex = decl.index
+      }
+    }
+    else if (literalIndex === -1) {
+      literalIndex = decl.index
+    }
+  }
+
+  if (literalIndex >= 0 && variableIndex >= 0) {
+    expect(literalIndex).toBeLessThan(variableIndex)
+  }
+}
+
 describe('v4', () => {
   it('vite', async () => {
     const styleHandler = createStyleHandler({
@@ -44,7 +101,7 @@ describe('v4', () => {
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.out.css'), css, 'utf8')
   })
 
   it('v4.1.1', async () => {
@@ -56,7 +113,7 @@ describe('v4', () => {
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1.out.css'), css, 'utf8')
   })
 
   it('v4.1.2', async () => {
@@ -68,7 +125,7 @@ describe('v4', () => {
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2.out.css'), css, 'utf8')
   })
 
   it('v4 space-y-*', async () => {
@@ -111,6 +168,64 @@ describe('v4', () => {
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
+  })
+
+  it('v4 space-x-* fallback dedupe', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    })
+
+    const code = `
+:where(.space-x-4 > :not(:last-child)) {
+  --tw-space-x-reverse: 0;
+  margin-inline-start: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+  margin-inline-end: calc((var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
+  margin-inline-start: 32rpx;
+  margin-inline-end: 0rpx;
+  margin-left: 32rpx;
+  margin-right: 0rpx;
+}
+`
+
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    })
+
+    assertNoDuplicateLiteral(css, 'margin-left')
+    assertNoDuplicateLiteral(css, 'margin-right')
+    assertLiteralBeforeVariable(css, 'margin-left')
+    assertLiteralBeforeVariable(css, 'margin-right')
+  })
+
+  it('v4 divide-x-* fallback dedupe', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    })
+
+    const code = `
+:where(.divide-x-4 > :not(:last-child)) {
+  --tw-divide-x-reverse: 0;
+  border-inline-end-width: calc(4px * var(--tw-divide-x-reverse));
+  border-inline-start-width: calc(4px * calc(1 - var(--tw-divide-x-reverse)));
+  border-inline-end-width: 4px;
+  border-inline-start-width: 4px;
+  border-right-width: 0px;
+  border-left-width: 4px;
+}
+`
+
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    })
+
+    assertNoDuplicateLiteral(css, 'border-left-width')
+    assertNoDuplicateLiteral(css, 'border-right-width')
+    assertLiteralBeforeVariable(css, 'border-left-width')
+    assertLiteralBeforeVariable(css, 'border-right-width')
   })
 
   it('v4 space-y-* case 2', async () => {
@@ -265,7 +380,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1-uniapp-vue3.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.1-uniapp-vue3.out.css'), css, 'utf8')
   })
 
   it('regex', () => {
@@ -291,12 +406,12 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     })
     const code = `/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-space-y-reverse:0;--tw-space-x-reverse:0;--tw-border-style:solid;--tw-gradient-position:initial;--tw-gradient-from:#0000;--tw-gradient-via:#0000;--tw-gradient-to:#0000;--tw-gradient-stops:initial;--tw-gradient-via-stops:initial;--tw-gradient-from-position:0%;--tw-gradient-via-position:50%;--tw-gradient-to-position:100%}}}:root,:host{--color-red-700:oklch(50.5% .213 27.518);--color-amber-300:oklch(87.9% .169 91.605);--spacing:.25rem}*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}.container{width:100%}@media (min-width:40rem){.container{max-width:40rem}}@media (min-width:48rem){.container{max-width:48rem}}@media (min-width:64rem){.container{max-width:64rem}}@media (min-width:80rem){.container{max-width:80rem}}@media (min-width:96rem){.container{max-width:96rem}}.i-mdi-home{width:1em;height:1em;-webkit-mask-image:var(--svg);mask-image:var(--svg);--svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");background-color:currentColor;display:inline-block;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}.inline-block{display:inline-block}.h-10{height:calc(var(--spacing)*10)}.h-\\[29\\.292px\\]{height:29.292px}.h-\\[30px\\]{height:30px}.h-\\[45px\\]{height:45px}.w-\\[50px\\]{width:50px}.w-\\[323px\\]{width:323px}:where(.space-y-2\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing)*2.5)*var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-y-reverse)))}:where(.space-x-2\\.5>:not(:last-child)){--tw-space-x-reverse:0;margin-inline-start:calc(calc(var(--spacing)*2.5)*var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing)*2.5)*calc(1 - var(--tw-space-x-reverse)))}.border-4{border-style:var(--tw-border-style);border-width:4px}.bg-\\[\\#3a32d1\\]{background-color:#3a32d1}.bg-\\[\\#7d7ac2\\]{background-color:#7d7ac2}.bg-amber-300{background-color:var(--color-amber-300)}.bg-gradient-to-b{--tw-gradient-position:to bottom in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-t{--tw-gradient-position:to top in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-tr{--tw-gradient-position:to top right in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}.from-\\[\\#2f73f1\\]{--tw-gradient-from:#2f73f1;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.to-\\[\\#4bcefd\\]{--tw-gradient-to:#4bcefd;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.text-\\[100px\\]{font-size:100px}.text-\\[\\#123456\\]{color:#123456}.text-\\[100rpx\\]{color:100rpx}.text-red-700{color:var(--color-red-700)}@property --tw-space-y-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-space-x-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-gradient-position{syntax:"*";inherits:false}@property --tw-gradient-from{syntax:"<color>";inherits:false;initial-value:#0000}@property --tw-gradient-via{syntax:"<color>";inherits:false;initial-value:#0000}@property --tw-gradient-to{syntax:"<color>";inherits:false;initial-value:#0000}@property --tw-gradient-stops{syntax:"*";inherits:false}@property --tw-gradient-via-stops{syntax:"*";inherits:false}@property --tw-gradient-from-position{syntax:"<length-percentage>";inherits:false;initial-value:0%}@property --tw-gradient-via-position{syntax:"<length-percentage>";inherits:false;initial-value:50%}@property --tw-gradient-to-position{syntax:"<length-percentage>";inherits:false;initial-value:100%}
 /*$vite$:1*/`
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.css'), code, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.css'), code, 'utf8')
     const { css } = await styleHandler(code, {
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.out.css'), css, 'utf8')
   })
 
   it('v4.1.2 vite plugin case 1', async () => {
@@ -309,7 +424,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.format.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2-vite-plugin.format.out.css'), css, 'utf8')
   })
 
   it('v4.1.10 case 0', async () => {
@@ -322,6 +437,6 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       isMainChunk: true,
     })
     expect(css).toMatchSnapshot()
-    fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.10.out.css'), css, 'utf8')
+    await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.10.out.css'), css, 'utf8')
   })
 })
