@@ -7,7 +7,10 @@
       ],
       "outputs": [
         "dist/**",
-        "build/**"
+        "build/**",
+        "result.css",
+        "result.json",
+        "transformed.css"
       ]
     },
     "lint": {
