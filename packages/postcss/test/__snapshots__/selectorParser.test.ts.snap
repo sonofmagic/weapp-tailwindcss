@@ -14,6 +14,6 @@ exports[`selectorParser > fallbackRemove transformSync normalizes options for ru
 
 exports[`selectorParser > ruleTransformSync caches parser per options instance 1`] = `".foo :is(view,text){}"`;
 
-exports[`selectorParser > ruleTransformSync caches parser per options instance 2`] = `".bar :where(.buzz>:not(:last-child)){}"`;
+exports[`selectorParser > ruleTransformSync caches parser per options instance 2`] = `".bar :where(.buzz>view+view){}"`;
 
 exports[`selectorParser > ruleTransformSync case 0 1`] = `".dark .darkcbg-black,.dark .darkcbg-black"`;

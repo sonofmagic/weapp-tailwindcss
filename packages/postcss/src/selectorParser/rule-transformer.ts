@@ -1,5 +1,5 @@
 import type { Rule } from 'postcss'
-import type { SyncProcessor } from 'postcss-selector-parser'
+import type { Node, Pseudo, Selector, SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../types'
 import psp from 'postcss-selector-parser'
 import { composeIsPseudo, internalCssSelectorReplacer } from '../shared'
@@ -12,6 +12,115 @@ export type RuleTransformer = (rule: Rule) => void
 
 const ruleTransformCache = new WeakMap<IStyleHandlerOptions, RuleTransformer>()
 
+function isNotLastChildPseudo(node?: Node | null): node is Pseudo {
+  if (!node || node.type !== 'pseudo' || node.value !== ':not') {
+    return false
+  }
+
+  const selectors = node.nodes
+  if (!selectors || selectors.length !== 1) {
+    return false
+  }
+
+  const firstSelector = selectors[0]
+  if (firstSelector.type !== 'selector') {
+    return false
+  }
+
+  const target = firstSelector.nodes?.[0]
+  return Boolean(target && target.type === 'pseudo' && target.value === ':last-child')
+}
+
+function transformSpacingSelector(nodes: Node[] | undefined, options: IStyleHandlerOptions): boolean {
+  if (!nodes || nodes.length === 0) {
+    return false
+  }
+
+  for (let idx = 0; idx < nodes.length; idx++) {
+    const current = nodes[idx]
+    if (current.type !== 'class' && current.type !== 'nesting') {
+      continue
+    }
+
+    const combinator = nodes[idx + 1]
+    if (!combinator || combinator.type !== 'combinator' || combinator.value !== '>') {
+      continue
+    }
+
+    const candidate = nodes[idx + 2]
+    if (!isNotLastChildPseudo(candidate)) {
+      continue
+    }
+
+    const ast = getCombinatorSelectorAst(options)
+    candidate.replaceWith(...ast)
+    return true
+  }
+
+  return false
+}
+
+function normalizeSpacingDeclarations(rule: Rule) {
+  for (const node of [...rule.nodes]) {
+    if (node.type !== 'decl') {
+      continue
+    }
+
+    switch (node.prop) {
+      case 'margin-block-start':
+        node.prop = 'margin-block-end'
+        break
+      case 'margin-block-end':
+        node.prop = 'margin-block-start'
+        break
+      case 'margin-inline-start':
+        node.prop = 'margin-inline-end'
+        break
+      case 'margin-inline-end':
+        node.prop = 'margin-inline-start'
+        break
+      case 'margin-top':
+        node.prop = 'margin-bottom'
+        break
+      case 'margin-bottom':
+        node.prop = 'margin-top'
+        break
+      case 'margin-left':
+        node.prop = 'margin-right'
+        break
+      case 'margin-right':
+        node.prop = 'margin-left'
+        break
+      case 'border-inline-start-width':
+        node.prop = 'border-right-width'
+        break
+      case 'border-inline-end-width':
+        node.prop = 'border-left-width'
+        break
+      case 'border-top-width':
+        node.prop = 'border-bottom-width'
+        break
+      case 'border-bottom-width':
+        node.prop = 'border-top-width'
+        break
+      case 'border-left-width':
+        node.prop = 'border-right-width'
+        break
+      case 'border-right-width':
+        node.prop = 'border-left-width'
+        break
+      case '-webkit-margin-start':
+      case '-webkit-margin-end':
+      case '-webkit-margin-before':
+      case '-webkit-margin-after':
+        node.remove()
+        break
+      default:
+        break
+    }
+  }
+}
+
 function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
   let currentRule: Rule | undefined
 
@@ -22,6 +131,8 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
     if (!rule) {
       return
     }
+
+    let requiresSpacingNormalization = false
 
     selectors.walk((selector, index) => {
       if (selector.type === 'class') {
@@ -39,7 +150,12 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
           const node = selector.nodes.find(x => x.type === 'pseudo' && x.value === ':hover')
           if (node) {
             selector.remove()
+            return
           }
+        }
+
+        if (transformSpacingSelector(selector.nodes, options)) {
+          requiresSpacingNormalization = true
         }
       }
       else if (selector.type === 'pseudo') {
@@ -53,75 +169,13 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
             selector.value = ':is'
           }
           if (index === 0 && selector.length === 1) {
-            selector.walk((node, idx) => {
-              if (idx === 0 && node.type === 'class') {
-                const nodes = node.parent?.nodes
-                if (nodes) {
-                  const first = nodes[idx + 1]
-                  if (first && first.type === 'combinator' && first.value === '>') {
-                    const second = nodes[idx + 2]
-                    if (second && second.type === 'pseudo' && second.value === ':not' && second.first.first.type === 'pseudo' && second.first.first.value === ':last-child') {
-                      const ast = getCombinatorSelectorAst(options)
-
-                      second.replaceWith(
-                        ...ast,
-                      )
-                    }
-                  }
-                }
-              }
-            })
-
-            selector.replaceWith(...selector.nodes)
-            for (const node of rule.nodes) {
-              if (node.type === 'decl') {
-                if (node.prop === 'margin-block-start') {
-                  node.prop = 'margin-block-end'
-                }
-                else if (node.prop === 'margin-block-end') {
-                  node.prop = 'margin-block-start'
-                }
-                else if (node.prop === 'margin-inline-start') {
-                  node.prop = 'margin-inline-end'
-                }
-                else if (node.prop === 'margin-inline-end') {
-                  node.prop = 'margin-inline-start'
-                }
-                else if (node.prop === 'margin-top') {
-                  node.prop = 'margin-bottom'
-                }
-                else if (node.prop === 'margin-bottom') {
-                  node.prop = 'margin-top'
-                }
-                else if (node.prop === 'margin-left') {
-                  node.prop = 'margin-right'
-                }
-                else if (node.prop === 'margin-right') {
-                  node.prop = 'margin-left'
-                }
-                else if (node.prop === 'border-inline-start-width') {
-                  node.prop = 'border-right-width'
-                }
-                else if (node.prop === 'border-inline-end-width') {
-                  node.prop = 'border-left-width'
-                }
-                else if (node.prop === 'border-top-width') {
-                  node.prop = 'border-bottom-width'
-                }
-                else if (node.prop === 'border-bottom-width') {
-                  node.prop = 'border-top-width'
-                }
-                else if (node.prop === 'border-left-width') {
-                  node.prop = 'border-right-width'
-                }
-                else if (node.prop === 'border-right-width') {
-                  node.prop = 'border-left-width'
-                }
-                else if (node.prop === '-webkit-margin-start' || node.prop === '-webkit-margin-end' || node.prop === '-webkit-margin-before' || node.prop === '-webkit-margin-after') {
-                  node.remove()
-                }
+            const targetSelector = selector.nodes?.[0] as Selector | undefined
+            if (targetSelector && targetSelector.type === 'selector') {
+              if (transformSpacingSelector(targetSelector.nodes, options)) {
+                requiresSpacingNormalization = true
               }
             }
+            selector.replaceWith(...selector.nodes)
           }
         }
       }
@@ -165,6 +219,11 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
         }
       }
     })
+
+    if (requiresSpacingNormalization) {
+      normalizeSpacingDeclarations(rule)
+    }
+
     selectors.walk((selector) => {
       if (selector.type === 'selector') {
         selector.length === 0 && selector.remove()

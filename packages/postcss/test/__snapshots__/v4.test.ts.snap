@@ -2457,6 +2457,16 @@ exports[`v4 > v4 space-y-* case 2 1`] = `
     "
 `;
 
+exports[`v4 > v4 space-y-* nesting 1`] = `
+"
+  .space-y-0>view+view {
+    --tw-space-y-reverse: 0;
+    margin-bottom: calc((var(--spacing) * 0) * var(--tw-space-y-reverse));
+    margin-top: calc((var(--spacing) * 0) * (1 - var(--tw-space-y-reverse)));
+  }
+"
+`;
+
 exports[`v4 > v4.1.1 1`] = `
 "/*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
 ::before,::after {

@@ -94,6 +94,25 @@ describe('v4', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('v4 space-y-* nesting', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+.space-y-0 {
+  & > :not(:last-child) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 0) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 0) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
   it('v4 space-y-* case 2', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
