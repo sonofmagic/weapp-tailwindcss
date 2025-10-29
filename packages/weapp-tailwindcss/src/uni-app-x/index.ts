@@ -2,8 +2,8 @@ import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
+import { parse } from '@vue/compiler-sfc'
 import MagicString from 'magic-string'
-import { parse } from 'vue/compiler-sfc'
 import { generateCode, replaceWxml } from '@/wxml'
 
 function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {

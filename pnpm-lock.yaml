@@ -3700,6 +3700,9 @@ importers:
       '@vue/compiler-dom':
         specifier: ^3.5.22
         version: 3.5.22
+      '@vue/compiler-sfc':
+        specifier: ^3.5.22
+        version: 3.5.22
       '@weapp-core/escape':
         specifier: ~4.0.1
         version: 4.0.1
@@ -3739,9 +3742,6 @@ importers:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
         version: 8.2.1(magicast@0.3.5)(tailwindcss@4.1.16)
-      vue:
-        specifier: ^3.5.22
-        version: 3.5.22(typescript@5.9.3)
       webpack-sources:
         specifier: 3.3.3
         version: 3.3.3
@@ -19900,7 +19900,7 @@ packages:
   koa-router@7.4.0:
     resolution: {integrity: sha512-IWhaDXeAnfDBEpWS6hkGdZ1ablgr6Q6pGdXCyK38RbzuH4LkUOpPqPw+3f8l8aTDrQmBQ7xJc0bs2yV4dzcO+g==}
     engines: {node: '>= 4'}
-    deprecated: '**IMPORTANT 10x+ PERFORMANCE UPGRADE**: Please upgrade to v12.0.1+ as we have fixed an issue with debuglog causing 10x slower router benchmark performance, see https://github.com/koajs/router/pull/173'
+    deprecated: 'Please use @koa/router instead, starting from v9! '
 
   koa-send@5.0.1:
     resolution: {integrity: sha512-tmcyQ/wXXuxpDxyNXv5yNNkdAMdFRqwtegBXUaowiQzUKqJehttS0x2j0eOZDQAyloAth5w6wwBImnFzkUz3pQ==}
@@ -28979,7 +28979,7 @@ snapshots:
 
   '@babel/generator@7.28.3':
     dependencies:
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@babel/types': 7.28.4
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
@@ -30072,7 +30072,7 @@ snapshots:
       '@babel/code-frame': 7.27.1
       '@babel/generator': 7.28.3
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
       '@babel/types': 7.28.4
       debug: 4.4.1
@@ -37709,7 +37709,7 @@ snapshots:
       estree-walker: 2.0.2
       fdir: 6.5.0(picomatch@4.0.3)
       is-reference: 1.2.1
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       picomatch: 4.0.3
     optionalDependencies:
       rollup: 4.50.1
@@ -37718,7 +37718,7 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@3.29.5)
       estree-walker: 2.0.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
     optionalDependencies:
       rollup: 3.29.5
 
@@ -37741,7 +37741,7 @@ snapshots:
   '@rollup/plugin-replace@6.0.2(rollup@4.50.1)':
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.50.1)
-      magic-string: 0.30.19
+      magic-string: 0.30.21
     optionalDependencies:
       rollup: 4.50.1
 
@@ -41819,7 +41819,7 @@ snapshots:
       '@babel/preset-env': 7.28.5(@babel/core@7.28.5)
       browserslist: 4.27.0
       core-js: 3.46.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       regenerator-runtime: 0.13.11
       systemjs: 6.15.1
       terser: 5.44.0
@@ -49855,7 +49855,7 @@ snapshots:
 
   fix-dts-default-cjs-exports@1.0.1:
     dependencies:
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       mlly: 1.8.0
       rollup: 4.52.5
 
@@ -54387,7 +54387,7 @@ snapshots:
 
   magic-string-ast@1.0.3:
     dependencies:
-      magic-string: 0.30.19
+      magic-string: 0.30.21
 
   magic-string@0.25.9:
     dependencies:
@@ -59719,7 +59719,7 @@ snapshots:
 
   rollup-plugin-dts@6.2.3(rollup@4.50.1)(typescript@5.9.3):
     dependencies:
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       rollup: 4.50.1
       typescript: 5.9.3
     optionalDependencies:
