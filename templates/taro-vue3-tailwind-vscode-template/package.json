@@ -81,6 +81,6 @@
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.5",
     "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.6.2"
+    "weapp-tailwindcss": "^4.6.3"
   }
 }

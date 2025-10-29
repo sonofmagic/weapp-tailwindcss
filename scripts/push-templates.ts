@@ -1,6 +1,4 @@
-import { existsSync, mkdtempSync } from 'node:fs'
-import { rm, stat } from 'node:fs/promises'
-import os from 'node:os'
+import { existsSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
@@ -33,45 +31,52 @@ async function syncTemplate(url: string): Promise<void> {
   }
 
   const sshUrl = toSshUrl(url)
-  const tmpDir = mkdtempSync(path.join(os.tmpdir(), `template-sync-${repoName}-`))
+  const cacheRoot = path.join(ROOT, '.cache', 'template-repos')
+  if (!existsSync(cacheRoot)) {
+    mkdirSync(cacheRoot, { recursive: true })
+  }
 
-  console.log(`\n>>> 克隆 ${sshUrl}`)
-  await execa('git', ['clone', sshUrl, tmpDir], { stdio: 'inherit' })
+  const repoDir = path.join(cacheRoot, repoName)
+  if (!existsSync(repoDir)) {
+    console.log(`\n>>> 首次克隆 ${sshUrl} 到 ${repoDir}`)
+    await execa('git', ['clone', sshUrl, repoDir], { stdio: 'inherit' })
+  }
+  else {
+    console.log(`\n>>> 使用缓存仓库 ${repoDir}`)
+    try {
+      const { stdout: remoteUrl } = await execa('git', ['remote', 'get-url', 'origin'], { cwd: repoDir })
+      if (remoteUrl.trim() !== sshUrl) {
+        console.warn(`缓存仓库的 origin 与配置不符，更新为 ${sshUrl}`)
+        await execa('git', ['remote', 'set-url', 'origin', sshUrl], { cwd: repoDir, stdio: 'inherit' })
+      }
+    }
+    catch {
+      await execa('git', ['remote', 'add', 'origin', sshUrl], { cwd: repoDir, stdio: 'inherit' })
+    }
+  }
 
-  const branch = await getCurrentBranch(tmpDir)
-  await execa('git', ['reset', '--hard', `origin/${branch}`], { cwd: tmpDir, stdio: 'inherit' })
-  await execa('git', ['clean', '-fdx'], { cwd: tmpDir, stdio: 'inherit' })
+  await execa('git', ['fetch', 'origin'], { cwd: repoDir, stdio: 'inherit' })
 
-  console.log(`同步 ${localDir} -> ${tmpDir}`)
+  const branch = await getCurrentBranch(repoDir)
+  await execa('git', ['reset', '--hard', `origin/${branch}`], { cwd: repoDir, stdio: 'inherit' })
+  await execa('git', ['clean', '-fdx'], { cwd: repoDir, stdio: 'inherit' })
+
+  console.log(`同步 ${localDir} -> ${repoDir}`)
   await execa(
     'rsync',
-    ['-a', '--delete', '--exclude', '.git', `${localDir}/`, `${tmpDir}/`],
+    ['-a', '--delete', '--exclude', '.git', `${localDir}/`, `${repoDir}/`],
     { stdio: 'inherit' },
   )
 
-  const { stdout } = await execa('git', ['status', '--porcelain'], { cwd: tmpDir })
+  const { stdout } = await execa('git', ['status', '--porcelain'], { cwd: repoDir })
   if (!stdout.trim()) {
     console.log('无变化，跳过推送。')
-    await safeRemove(tmpDir)
     return
   }
 
-  await execa('git', ['add', '.'], { cwd: tmpDir, stdio: 'inherit' })
-  await execa('git', ['commit', '-m', 'chore: sync from monorepo'], { cwd: tmpDir, stdio: 'inherit' })
-  await execa('git', ['push', 'origin', branch], { cwd: tmpDir, stdio: 'inherit' })
-  await safeRemove(tmpDir)
-}
-
-async function safeRemove(dir: string): Promise<void> {
-  try {
-    const stats = await stat(dir)
-    if (stats.isDirectory()) {
-      await rm(dir, { recursive: true, force: true })
-    }
-  }
-  catch {
-    // ignore
-  }
+  await execa('git', ['add', '.'], { cwd: repoDir, stdio: 'inherit' })
+  await execa('git', ['commit', '-m', 'chore: sync from monorepo'], { cwd: repoDir, stdio: 'inherit' })
+  await execa('git', ['push', 'origin', branch], { cwd: repoDir, stdio: 'inherit' })
 }
 
 async function main(): Promise<void> {

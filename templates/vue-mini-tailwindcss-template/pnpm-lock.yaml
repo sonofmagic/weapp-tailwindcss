@@ -43,8 +43,8 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
       weapp-tailwindcss:
-        specifier: ^4.6.2
-        version: 4.6.2(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1))(typescript@5.8.3)
+        specifier: ^4.6.3
+        version: 4.6.3(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1))
       weapp-vite:
         specifier: ^4.1.0
         version: 4.1.0(@types/node@22.15.17)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.88.0)(terser@5.36.0)(tsx@4.19.2)(typescript@5.8.3)(yaml@2.7.1)
@@ -1857,20 +1857,6 @@ packages:
   '@vue/reactivity@3.5.13':
     resolution: {integrity: sha512-NaCwtw8o48B9I6L1zl2p41OHo/2Z4wqYGGIK1Khu5T7yxrn+ATOixn/Udn2m+6kZKB/J7cuT9DbWWhRxqixACg==}
 
-  '@vue/reactivity@3.5.22':
-    resolution: {integrity: sha512-f2Wux4v/Z2pqc9+4SmgZC1p73Z53fyD90NFWXiX9AKVnVBEvLFOWCEgJD3GdGnlxPZt01PSlfmLqbLYzY/Fw4A==}
-
-  '@vue/runtime-core@3.5.22':
-    resolution: {integrity: sha512-EHo4W/eiYeAzRTN5PCextDUZ0dMs9I8mQ2Fy+OkzvRPUYQEyK9yAjbasrMCXbLNhF7P0OUyivLjIy0yc6VrLJQ==}
-
-  '@vue/runtime-dom@3.5.22':
-    resolution: {integrity: sha512-Av60jsryAkI023PlN7LsqrfPvwfxOd2yAwtReCjeuugTJTkgrksYJJstg1e12qle0NarkfhfFu1ox2D+cQotww==}
-
-  '@vue/server-renderer@3.5.22':
-    resolution: {integrity: sha512-gXjo+ao0oHYTSswF+a3KRHZ1WszxIqO7u6XwNHqcqb9JfyIL/pbWrrh/xLv7jeDqla9u+LK7yfZKHih1e1RKAQ==}
-    peerDependencies:
-      vue: 3.5.22
-
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
@@ -1904,8 +1890,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@1.3.4':
-    resolution: {integrity: sha512-ub6Tuj5TfamlwWpcti3FwbufHLIG5B46hh+Ifj+qWqfCDbTZ2UptGrI2RsvQXuvgsMjL1mA6wMRjx0TXfmqoiA==}
+  '@weapp-tailwindcss/postcss@2.0.0':
+    resolution: {integrity: sha512-Xg+5wGW0ds5c30aID8sGO3r79iwrCz9LekixWK99N24NzHZzm7PTks8YnO/ULCwwyCo8vswDZXASDrlLg13+Fw==}
 
   '@weapp-tailwindcss/shared@1.1.0':
     resolution: {integrity: sha512-rKPNwAch2tVYpQ7j796B/wkI7Yjn6YWleUcv/gcjvRD7jtSCzKzTsLBeEGnzFX7Kkz3Z7zKfJDFvBmJ8tKhGTA==}
@@ -2321,9 +2307,6 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
-
-  csstype@3.1.3:
-    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
@@ -5187,14 +5170,6 @@ packages:
     peerDependencies:
       eslint: '>=6.0.0'
 
-  vue@3.5.22:
-    resolution: {integrity: sha512-toaZjQ3a/G/mYaLSbV+QsQhIdMo9x5rrqIpYRObsJ6T/J+RyCSFwN2LHNVH9v8uIcljDNa3QzPVdv3Y6b9hAJQ==}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   walk-up-path@3.0.1:
     resolution: {integrity: sha512-9YlCL/ynK3CTlrSRrDxZvUauLzAswPCrsaCgilqFevUYpeEW0/3ScEjaa3kbW/T0ghhkEr7mv+fpjqn1Y1YuTA==}
 
@@ -5202,8 +5177,8 @@ packages:
     resolution: {integrity: sha512-+XqR+MzXqjbUvTJthjk1w9a+e7QwlxIXCqIwGwyWGS5PGkheyj2T0k+CoB3E0iah+Huka0hOGiyh+WPKlgfIKg==}
     hasBin: true
 
-  weapp-tailwindcss@4.6.2:
-    resolution: {integrity: sha512-Qjqk1Y9IqT4cWQDaGBaY15XU5GheSx/eSZOIZlUkrROeJlnOGXABXGjcdOij+CvAD2lfvpqbvR/oLUPpNKy5Zg==}
+  weapp-tailwindcss@4.6.3:
+    resolution: {integrity: sha512-hNx+UH5EJuFA+jtrqq3K6QIwQZ64wwRh1T9G8oD/7lclq6dC1d4ddeflXrfpmWz8J2D4wuFHEGGK/YxUJsH74g==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -7360,28 +7335,6 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.13
 
-  '@vue/reactivity@3.5.22':
-    dependencies:
-      '@vue/shared': 3.5.22
-
-  '@vue/runtime-core@3.5.22':
-    dependencies:
-      '@vue/reactivity': 3.5.22
-      '@vue/shared': 3.5.22
-
-  '@vue/runtime-dom@3.5.22':
-    dependencies:
-      '@vue/reactivity': 3.5.22
-      '@vue/runtime-core': 3.5.22
-      '@vue/shared': 3.5.22
-      csstype: 3.1.3
-
-  '@vue/server-renderer@3.5.22(vue@3.5.22(typescript@5.8.3))':
-    dependencies:
-      '@vue/compiler-ssr': 3.5.22
-      '@vue/shared': 3.5.22
-      vue: 3.5.22(typescript@5.8.3)
-
   '@vue/shared@3.5.13': {}
 
   '@vue/shared@3.5.22': {}
@@ -7417,7 +7370,7 @@ snapshots:
       postcss-selector-parser: 7.1.0
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@1.3.4':
+  '@weapp-tailwindcss/postcss@2.0.0':
     dependencies:
       '@weapp-core/escape': 4.0.1
       '@weapp-tailwindcss/postcss-calc': 1.0.0(postcss@8.5.6)
@@ -7865,8 +7818,6 @@ snapshots:
   cssdb@8.4.2: {}
 
   cssesc@3.0.0: {}
-
-  csstype@3.1.3: {}
 
   damerau-levenshtein@1.0.8: {}
 
@@ -11582,16 +11533,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vue@3.5.22(typescript@5.8.3):
-    dependencies:
-      '@vue/compiler-dom': 3.5.22
-      '@vue/compiler-sfc': 3.5.22
-      '@vue/runtime-dom': 3.5.22
-      '@vue/server-renderer': 3.5.22(vue@3.5.22(typescript@5.8.3))
-      '@vue/shared': 3.5.22
-    optionalDependencies:
-      typescript: 5.8.3
-
   walk-up-path@3.0.1:
     optional: true
 
@@ -11602,17 +11543,18 @@ snapshots:
       fs-extra: 11.3.0
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.6.2(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1))(typescript@5.8.3):
+  weapp-tailwindcss@4.6.3(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1)):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
       '@vue/compiler-dom': 3.5.22
+      '@vue/compiler-sfc': 3.5.22
       '@weapp-core/escape': 4.0.1
       '@weapp-core/regex': 1.0.1
       '@weapp-tailwindcss/logger': 1.1.0
-      '@weapp-tailwindcss/postcss': 1.3.4
+      '@weapp-tailwindcss/postcss': 2.0.0
       '@weapp-tailwindcss/shared': 1.1.0
       debug: 4.4.3
       htmlparser2: 10.0.0
@@ -11622,13 +11564,11 @@ snapshots:
       magic-string: 0.30.21
       semver: 7.7.3
       tailwindcss-patch: 8.2.1(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1))
-      vue: 3.5.22(typescript@5.8.3)
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - magicast
       - supports-color
       - tailwindcss
-      - typescript
 
   weapp-vite@4.1.0(@types/node@22.15.17)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.88.0)(terser@5.36.0)(tsx@4.19.2)(typescript@5.8.3)(yaml@2.7.1):
     dependencies:

@@ -2916,7 +2916,7 @@
     "@vue/compiler-core" "3.5.22"
     "@vue/shared" "3.5.22"
 
-"@vue/compiler-sfc@3.5.22":
+"@vue/compiler-sfc@^3.5.22":
   version "3.5.22"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.5.22.tgz#663a8483b1dda8de83b6fa1aab38a52bf73dd965"
   integrity sha512-tbTR1zKGce4Lj+JLzFXDq36K4vcSZbJ1RBu8FxcDv1IGRz//Dh2EBqksyGVypz3kXpshIfWKGOCcqpSbyGWRJQ==
@@ -2937,39 +2937,6 @@
   integrity sha512-GdgyLvg4R+7T8Nk2Mlighx7XGxq/fJf9jaVofc3IL0EPesTE86cP/8DD1lT3h1JeZr2ySBvyqKQJgbS54IX1Ww==
   dependencies:
     "@vue/compiler-dom" "3.5.22"
-    "@vue/shared" "3.5.22"
-
-"@vue/reactivity@3.5.22":
-  version "3.5.22"
-  resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.5.22.tgz#9b26f8557c96df46c9a859914a2229f3ca5b8f4f"
-  integrity sha512-f2Wux4v/Z2pqc9+4SmgZC1p73Z53fyD90NFWXiX9AKVnVBEvLFOWCEgJD3GdGnlxPZt01PSlfmLqbLYzY/Fw4A==
-  dependencies:
-    "@vue/shared" "3.5.22"
-
-"@vue/runtime-core@3.5.22":
-  version "3.5.22"
-  resolved "https://registry.yarnpkg.com/@vue/runtime-core/-/runtime-core-3.5.22.tgz#e004c1e35f423555a0e4c10646ef3e9d380643d1"
-  integrity sha512-EHo4W/eiYeAzRTN5PCextDUZ0dMs9I8mQ2Fy+OkzvRPUYQEyK9yAjbasrMCXbLNhF7P0OUyivLjIy0yc6VrLJQ==
-  dependencies:
-    "@vue/reactivity" "3.5.22"
-    "@vue/shared" "3.5.22"
-
-"@vue/runtime-dom@3.5.22":
-  version "3.5.22"
-  resolved "https://registry.yarnpkg.com/@vue/runtime-dom/-/runtime-dom-3.5.22.tgz#01276cea7cb9ac2b9aba046adfb5903b494e2e7e"
-  integrity sha512-Av60jsryAkI023PlN7LsqrfPvwfxOd2yAwtReCjeuugTJTkgrksYJJstg1e12qle0NarkfhfFu1ox2D+cQotww==
-  dependencies:
-    "@vue/reactivity" "3.5.22"
-    "@vue/runtime-core" "3.5.22"
-    "@vue/shared" "3.5.22"
-    csstype "^3.1.3"
-
-"@vue/server-renderer@3.5.22":
-  version "3.5.22"
-  resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.5.22.tgz#d134e3409094044bd066d9803714677457756157"
-  integrity sha512-gXjo+ao0oHYTSswF+a3KRHZ1WszxIqO7u6XwNHqcqb9JfyIL/pbWrrh/xLv7jeDqla9u+LK7yfZKHih1e1RKAQ==
-  dependencies:
-    "@vue/compiler-ssr" "3.5.22"
     "@vue/shared" "3.5.22"
 
 "@vue/shared@3.5.22":
@@ -3010,10 +2977,10 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-1.3.4.tgz#1fa11f9105d09125b27b3d1cc54ad5adc373abbe"
-  integrity sha512-ub6Tuj5TfamlwWpcti3FwbufHLIG5B46hh+Ifj+qWqfCDbTZ2UptGrI2RsvQXuvgsMjL1mA6wMRjx0TXfmqoiA==
+"@weapp-tailwindcss/postcss@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.0.0.tgz#b2935c459a67fad24e9729afba8481d05a10c107"
+  integrity sha512-Xg+5wGW0ds5c30aID8sGO3r79iwrCz9LekixWK99N24NzHZzm7PTks8YnO/ULCwwyCo8vswDZXASDrlLg13+Fw==
   dependencies:
     "@weapp-core/escape" "~4.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
@@ -4106,11 +4073,6 @@ cssesc@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmmirror.com/cssesc/-/cssesc-3.0.0.tgz#37741919903b868565e1c09ea747445cd18983ee"
   integrity sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==
-
-csstype@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
-  integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
 
 data-view-buffer@^1.0.1:
   version "1.0.1"
@@ -8843,17 +8805,6 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vue@^3.5.22:
-  version "3.5.22"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-3.5.22.tgz#2b8ddb94ee4b640ef12fe7f6efe1cf16f3b582e7"
-  integrity sha512-toaZjQ3a/G/mYaLSbV+QsQhIdMo9x5rrqIpYRObsJ6T/J+RyCSFwN2LHNVH9v8uIcljDNa3QzPVdv3Y6b9hAJQ==
-  dependencies:
-    "@vue/compiler-dom" "3.5.22"
-    "@vue/compiler-sfc" "3.5.22"
-    "@vue/runtime-dom" "3.5.22"
-    "@vue/server-renderer" "3.5.22"
-    "@vue/shared" "3.5.22"
-
 walker@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.8.tgz#bd498db477afe573dc04185f011d3ab8a8d7653f"
@@ -8884,20 +8835,21 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.6.2.tgz#68c99dfdd4d87e30c7476f9c140834de40d02107"
-  integrity sha512-Qjqk1Y9IqT4cWQDaGBaY15XU5GheSx/eSZOIZlUkrROeJlnOGXABXGjcdOij+CvAD2lfvpqbvR/oLUPpNKy5Zg==
+weapp-tailwindcss@^4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.6.3.tgz#3946818bdad2dfe78397232cd2eeb5548d5385d3"
+  integrity sha512-hNx+UH5EJuFA+jtrqq3K6QIwQZ64wwRh1T9G8oD/7lclq6dC1d4ddeflXrfpmWz8J2D4wuFHEGGK/YxUJsH74g==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
     "@babel/traverse" "~7.28.5"
     "@babel/types" "~7.28.5"
     "@vue/compiler-dom" "^3.5.22"
+    "@vue/compiler-sfc" "^3.5.22"
     "@weapp-core/escape" "~4.0.1"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/logger" "1.1.0"
-    "@weapp-tailwindcss/postcss" "1.3.4"
+    "@weapp-tailwindcss/postcss" "2.0.0"
     "@weapp-tailwindcss/shared" "1.1.0"
     debug "~4.4.3"
     htmlparser2 "10.0.0"
@@ -8907,7 +8859,6 @@ weapp-tailwindcss@^4.6.2:
     magic-string "0.30.21"
     semver "~7.7.3"
     tailwindcss-patch "^8.2.1"
-    vue "^3.5.22"
     webpack-sources "3.3.3"
 
 webpack-cli@^5.1.4:
