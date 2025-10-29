@@ -198,11 +198,5 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "vue": "^3.5.22",
     "webpack-sources": "3.3.3"
-  },
-  "devDependencies": {
-    "@ampproject/remapping": "^2.3.0",
-    "@csstools/postcss-is-pseudo-class": "^5.0.3",
-    "clsx": "^2.1.1",
-    "rollup": "^4.52.5"
   }
 }
