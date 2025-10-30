@@ -119,7 +119,7 @@ function normalizeCandidateList(candidate: UniAppSubPackageConfig['indexFileName
 
 function resolveOutputFileName(fileName: string): string {
   const ext = path.extname(fileName).toLowerCase()
-  if (ext === '.wxss' || ext === '.css' || ext === '.acss') {
+  if (ext === '.wxss') {
     return fileName
   }
   const baseName = fileName.slice(0, -ext.length)
@@ -259,11 +259,14 @@ function resolveManualStyleScopes(
 
     const sourceRelativePath = ensurePosix(path.relative(cwd, sourceAbsolutePath))
     const normalizedBaseFileName = resolveOutputFileName(path.basename(entry.output ?? entry.style))
-    const trimmedOutput = entry.output ? ensurePosix(entry.output.replace(/^[./\\]+/, '')) : null
+    const trimmedOutput = entry.output
+      ? ensurePosix(entry.output.replace(/^[./\\]+/, ''))
+      : null
+    const normalizedOutput = trimmedOutput ? resolveOutputFileName(trimmedOutput) : null
     const preprocess = entry.preprocess !== false
 
     for (const scope of scopeList) {
-      const outputRelativePath = trimmedOutput ?? ensurePosix(path.posix.join(scope, normalizedBaseFileName))
+      const outputRelativePath = normalizedOutput ?? ensurePosix(path.posix.join(scope, normalizedBaseFileName))
 
       resolved.push({
         root: ensurePosix(scope),

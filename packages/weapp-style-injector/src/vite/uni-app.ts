@@ -1,4 +1,5 @@
-import type { ResolvedConfig } from 'vite'
+import type { OutputAsset, OutputBundle, OutputOptions } from 'rollup'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 
 import type { ViteWeappStyleInjectorOptions } from '../vite'
@@ -74,12 +75,12 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
   return plugins.length === 1 ? plugins[0] : plugins
 }
 
-function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]) {
+function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): Plugin {
   const existing = [...subPackages]
   if (existing.length === 0) {
     return {
       name: 'weapp-style-injector:uni-app-sub-packages',
-      apply: 'build',
+      apply: 'build' as const,
     }
   }
 
@@ -90,10 +91,10 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]) {
   return {
     name: 'weapp-style-injector:uni-app-sub-packages',
     apply: 'build' as const,
-    configResolved(config) {
+    configResolved(config: ResolvedConfig) {
       resolvedConfig = config
     },
-    async generateBundle(_, bundle) {
+    async generateBundle(_: OutputOptions, bundle: OutputBundle) {
       for (const entry of existing) {
         const sourcePath = entry.sourceAbsolutePath
         if (!fs.existsSync(sourcePath)) {
@@ -149,7 +150,7 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]) {
           name: fileName,
           fileName,
           source: processedSource,
-        }
+        } as OutputAsset
       }
     },
   }

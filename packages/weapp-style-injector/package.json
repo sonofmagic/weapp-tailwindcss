@@ -70,7 +70,7 @@
   "scripts": {
     "stub": "unbuild --stub",
     "dev": "tsup --watch --sourcemap",
-    "_build": "tsup",
+    "build": "tsup",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
