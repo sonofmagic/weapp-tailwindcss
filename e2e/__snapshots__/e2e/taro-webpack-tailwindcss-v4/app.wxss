@@ -101,7 +101,7 @@ text,
   height: 112rpx;
   height: calc(var(--spacing) * 14);
 }
-.bg-_h534312_ {
+.bg-_b_h534312_B {
   background-color: #534312;
 }
 .bg-purple-800 {
@@ -132,20 +132,20 @@ text,
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-.text-_100rpx_ {
+.text-_b100rpx_B {
   font-size: 100rpx;
 }
-.text-_hfff_ {
+.text-_b_hfff_B {
   color: #fff;
 }
 .text-pink-200 {
   color: rgb(252, 206, 232);
   color: var(--color-pink-200);
 }
-._chunkhashc8_ {
+._bchunkhash_c8_B {
   chunkhash: 8;
 }
-._hashc8_ {
+._bhash_c8_B {
   hash: 8;
 }
 @font-face {

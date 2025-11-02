@@ -1,10 +1,10 @@
 <view style="">
-  <view class="bg-_h89ab8d_ flex flex-col" style="">
-    <view class="text-_h438821_ darkctext-_hec4f4f_ before content- 11111" style="">Hello world!</view>
-    <view class="text-_h3d31a4_ before content- 222" style="">Hello world!</view>
+  <view class="bg-_b_h89ab8d_B flex flex-col" style="">
+    <view class="text-_b_h438821_B dark_ctext-_b_hec4f4f_B before content- 11111" style="">Hello world!</view>
+    <view class="text-_b_h3d31a4_B before content- 222" style="">Hello world!</view>
   </view>
-  <view class="bg-_h89ab8d_ flex divide-x-8 divide-solid divide-_h60d256_" style="">
-    <view class="text-_h438821_ darkctext-_hec4f4f_ before content- 11111" style="">Hello world!</view>
-    <view class="text-_h3d31a4_ before content- 222" style="">Hello world!</view>
+  <view class="bg-_b_h89ab8d_B flex divide-x-8 divide-solid divide-_b_h60d256_B" style="">
+    <view class="text-_b_h438821_B dark_ctext-_b_hec4f4f_B before content- 11111" style="">Hello world!</view>
+    <view class="text-_b_h3d31a4_B before content- 222" style="">Hello world!</view>
   </view>
 </view>

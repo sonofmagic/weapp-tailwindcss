@@ -1,9 +1,9 @@
-<view class="beforeccontent-_qhelloq_ beforeccontent-_qhelloq_ beforecblock beforecblock _div _div">
+<view class="before_ccontent-_b_ahello_a_B before_ccontent-_b_ahello_a_B before_cblock before_cblock _div _div">
   <view>
-    <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifdef-_MP-WEIXIN_cbg-blue-500 ifndef-_MP-WEIXIN_cbg-red-500 ifndef-_MP-WEIXIN_cbg-red-500">
+    <view class="ifdef-_bMP-WEIXIN_B_cbg-blue-500 ifdef-_bMP-WEIXIN_B_cbg-blue-500 ifndef-_bMP-WEIXIN_B_cbg-red-500 ifndef-_bMP-WEIXIN_B_cbg-red-500">
       样式的条件编译:微信小程序为蓝色，不是微信小程序为红色
     </view>
-    <view class="wxcbg-blue-500 wxcbg-blue-500 -wxcbg-red-500 -wxcbg-red-500">
+    <view class="wx_cbg-blue-500 wx_cbg-blue-500 -wx_cbg-red-500 -wx_cbg-red-500">
       <view>自定义配置的方式进行样式条件编译</view>
       <view>相关配置见根目录下的tailwind.config.js</view>
     </view>
@@ -15,34 +15,34 @@
   <view class="inline-block inline-block"></view>
   <view class="list-item list-item"></view>
   <view class="flex flex"></view>
-  <view class="bg-_h00ff00_ bg-_h00ff00_">bbb</view>
+  <view class="bg-_b_h00ff00_B bg-_b_h00ff00_B">bbb</view>
   <view
-    class="afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ afterccontent-_qu8fd9u662fclassArraybu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclassq_ text-_30rpx_ text-_30rpx_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_h00ff00_ bg-_h00ff00_">
+    class="after_ccontent-_b_au8fd9u662fclassArray_mu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclass_a_B after_ccontent-_b_au8fd9u662fclassArray_mu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclass_a_B text-_b30rpx_B text-_b30rpx_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B bg-_b_h00ff00_B bg-_b_h00ff00_B">
     classArray
   </view>
-  <view class="text-_20px_ text-_20px_ text-_h898989_ text-_h898989_ bg-_hff0000_ bg-_hff0000_">:class="['text-sm', classObj]</view>
-  <view class="text-_22px_ text-_22px_">对酒当歌，人生几何</view>
-  <view class="ih-5 ih-5 w-5 w-5 shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_ shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_"></view>
-  <view class="h-5 h-5 w-5 w-5 shadow-_0px_2px_11px_0px_h00000a_ shadow-_0px_2px_11px_0px_h00000a_"></view>
-  <view class="text-_20px_ text-_20px_ bg-_h000000_ bg-_h000000_">classObject</view>
-  <view class="bg-_hfafa00_ bg-_hfafa00_">Toggle</view>
+  <view class="text-_b20px_B text-_b20px_B text-_b_h898989_B text-_b_h898989_B bg-_b_hff0000_B bg-_b_hff0000_B">:class="['text-sm', classObj]</view>
+  <view class="text-_b22px_B text-_b22px_B">对酒当歌，人生几何</view>
+  <view class="_eh-5 _eh-5 w-5 w-5 shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B"></view>
+  <view class="h-5 h-5 w-5 w-5 shadow-_b0px_2px_11px_0px__h00000a_B shadow-_b0px_2px_11px_0px__h00000a_B"></view>
+  <view class="text-_b20px_B text-_b20px_B bg-_b_h000000_B bg-_b_h000000_B">classObject</view>
+  <view class="bg-_b_hfafa00_B bg-_b_hfafa00_B">Toggle</view>
   <view>Toggle</view>
   <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
-  <view class="p-_20px_ p-_20px_ -mt-2 -mt-2 mb-_-20px_ mb-_-20px_ h-_200p_ h-_200p_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-  <view class="space-y-_1d6rem_ space-y-_1d6rem_">
-    <view class="w-_300rpx_ w-_300rpx_ text-black text-black text-opacity-_0d19_ text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="min-w-_300rpx_ min-w-_300rpx_ max-h-_100px_ max-h-_100px_ text-_20px_ text-_20px_ leading-_0d9_ leading-_0d9_">
+  <view class="p-_b20px_B p-_b20px_B -mt-2 -mt-2 mb-_b-20px_B mb-_b-20px_B h-_b200_v_B h-_b200_v_B">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_b1_d6rem_B space-y-_b1_d6rem_B">
+    <view class="w-_b300rpx_B w-_b300rpx_B text-black text-black text-opacity-_b0_d19_B text-opacity-_b0_d19_B">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="min-w-_b300rpx_B min-w-_b300rpx_B max-h-_b100px_B max-h-_b100px_B text-_b20px_B text-_b20px_B leading-_b0_d9_B leading-_b0_d9_B">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="max-w-_300rpx_ max-w-_300rpx_ min-h-_100px_ min-h-_100px_ text-_hdddddd_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view class="max-w-_b300rpx_B max-w-_b300rpx_B min-h-_b100px_B min-h-_b100px_B text-_b_hdddddd_B text-_b_hdddddd_B">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
     <view
-      class="flex flex items-center items-center justify-center justify-center h-_100px_ h-_100px_ w-_100px_ w-_100px_ rounded-_40px_ rounded-_40px_ bg-_h123456_ bg-_h123456_ bg-opacity-_0d54_ bg-opacity-_0d54_ text-_hffffff_ text-_hffffff_">
+      class="flex flex items-center items-center justify-center justify-center h-_b100px_B h-_b100px_B w-_b100px_B w-_b100px_B rounded-_b40px_B rounded-_b40px_B bg-_b_h123456_B bg-_b_h123456_B bg-opacity-_b0_d54_B bg-opacity-_b0_d54_B text-_b_hffffff_B text-_b_hffffff_B">
       Hello
     </view>
-    <view class="border-_10px_ border-_10px_ border-_h098765_ border-_h098765_ border-solid border-solid border-opacity-_0d44_ border-opacity-_0d44_">
+    <view class="border-_b10px_B border-_b10px_B border-_b_h098765_B border-_b_h098765_B border-solid border-solid border-opacity-_b0_d44_B border-opacity-_b0_d44_B">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid grid-cols-3 grid-cols-3 divide-x-_10px_ divide-x-_10px_ divide-_h010101_ divide-_h010101_ divide-solid divide-solid">
+    <view class="grid grid grid-cols-3 grid-cols-3 divide-x-_b10px_B divide-x-_b10px_B divide-_b_h010101_B divide-_b_h010101_B divide-solid divide-solid">
       <view class="_div _div">1</view>
       <view class="_div _div">2</view>
       <view class="_div _div">3</view>

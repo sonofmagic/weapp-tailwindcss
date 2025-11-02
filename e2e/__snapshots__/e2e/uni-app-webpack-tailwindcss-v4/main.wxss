@@ -28,10 +28,10 @@ page,
   height: 168rpx;
   height: calc(var(--spacing) * 21);
 }
-.bg-_h123456_ {
+.bg-_b_h123456_B {
   background-color: #123456;
 }
-.bg-_h877878_ {
+.bg-_b_h877878_B {
   background-color: #877878;
 }
 page:after {

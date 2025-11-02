@@ -1,33 +1,33 @@
 <view class="p-4">
   <view>
     <button
-      class="weapp-reset-button index--weapp-reset-button text-_h0000ff_ index--text-_h0000ff_ px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hovercbg-blue-500 index--hovercbg-blue-500 focuscoutline-none index--focuscoutline-none focuscring index--focuscring focuscring-blue-300 index--focuscring-blue-300 focuscring-opacity-80 index--focuscring-opacity-80 bg-_orange_ index--bg-_orange_"
-      hover-class="bg-_h123456_"
+      class="weapp-reset-button index--weapp-reset-button text-_b_h0000ff_B index--text-_b_h0000ff_B px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hover_cbg-blue-500 index--hover_cbg-blue-500 focus_coutline-none index--focus_coutline-none focus_cring index--focus_cring focus_cring-blue-300 index--focus_cring-blue-300 focus_cring-opacity-80 index--focus_cring-opacity-80 bg-_borange_B index--bg-_borange_B"
+      hover-class="bg-_b_h123456_B"
       role="button"
       aria-disabled="false">
       Primary
     </button>
     <view
-      class="mt-4 index--mt-4 flex index--flex overflow-hidden index--overflow-hidden border index--border divide-x index--divide-x rounded-lg index--rounded-lg darkcbg-gray-900 index--darkcbg-gray-900 darkcborder-gray-700 index--darkcborder-gray-700 darkcdivide-gray-700 index--darkcdivide-gray-700 py-6 index--py-6">
+      class="mt-4 index--mt-4 flex index--flex overflow-hidden index--overflow-hidden border index--border divide-x index--divide-x rounded-lg index--rounded-lg dark_cbg-gray-900 index--dark_cbg-gray-900 dark_cborder-gray-700 index--dark_cborder-gray-700 dark_cdivide-gray-700 index--dark_cdivide-gray-700 py-6 index--py-6">
       <button
-        class="weapp-reset-button index--weapp-reset-button px-4 index--px-4 py-2 index--py-2 text-sm index--text-sm font-medium index--font-medium text-gray-600 index--text-gray-600 transition-colors index--transition-colors duration-200 index--duration-200 smctext-base index--smctext-base smcpx-6 index--smcpx-6 darkchovercbg-gray-800 index--darkchovercbg-gray-800 darkctext-gray-300 index--darkctext-gray-300 hovercbg-gray-100 index--hovercbg-gray-100"
+        class="weapp-reset-button index--weapp-reset-button px-4 index--px-4 py-2 index--py-2 text-sm index--text-sm font-medium index--font-medium text-gray-600 index--text-gray-600 transition-colors index--transition-colors duration-200 index--duration-200 sm_ctext-base index--sm_ctext-base sm_cpx-6 index--sm_cpx-6 dark_chover_cbg-gray-800 index--dark_chover_cbg-gray-800 dark_ctext-gray-300 index--dark_ctext-gray-300 hover_cbg-gray-100 index--hover_cbg-gray-100"
         role="button"
         aria-disabled="false">
         Upload
       </button>
       <button
-        class="weapp-reset-button index--weapp-reset-button px-4 index--px-4 py-2 index--py-2 text-sm index--text-sm font-medium index--font-medium text-gray-600 index--text-gray-600 transition-colors index--transition-colors duration-200 index--duration-200 smctext-base index--smctext-base smcpx-6 index--smcpx-6 darkchovercbg-gray-800 index--darkchovercbg-gray-800 darkctext-gray-300 index--darkctext-gray-300 hovercbg-gray-100 index--hovercbg-gray-100"
+        class="weapp-reset-button index--weapp-reset-button px-4 index--px-4 py-2 index--py-2 text-sm index--text-sm font-medium index--font-medium text-gray-600 index--text-gray-600 transition-colors index--transition-colors duration-200 index--duration-200 sm_ctext-base index--sm_ctext-base sm_cpx-6 index--sm_cpx-6 dark_chover_cbg-gray-800 index--dark_chover_cbg-gray-800 dark_ctext-gray-300 index--dark_ctext-gray-300 hover_cbg-gray-100 index--hover_cbg-gray-100"
         role="button"
         aria-disabled="false">
         Drift
       </button>
       <button
-        class="weapp-reset-button index--weapp-reset-button px-4 index--px-4 py-2 index--py-2 text-sm index--text-sm font-medium index--font-medium text-gray-600 index--text-gray-600 transition-colors index--transition-colors duration-200 index--duration-200 smctext-base index--smctext-base smcpx-6 index--smcpx-6 darkchovercbg-gray-800 index--darkchovercbg-gray-800 darkctext-gray-300 index--darkctext-gray-300 hovercbg-gray-100 index--hovercbg-gray-100"
+        class="weapp-reset-button index--weapp-reset-button px-4 index--px-4 py-2 index--py-2 text-sm index--text-sm font-medium index--font-medium text-gray-600 index--text-gray-600 transition-colors index--transition-colors duration-200 index--duration-200 sm_ctext-base index--sm_ctext-base sm_cpx-6 index--sm_cpx-6 dark_chover_cbg-gray-800 index--dark_chover_cbg-gray-800 dark_ctext-gray-300 index--dark_ctext-gray-300 hover_cbg-gray-100 index--hover_cbg-gray-100"
         role="button"
         aria-disabled="false">
         View
       </button>
     </view>
   </view>
-  <view class="darkchovercborder-green-300 darkchovercbg-gray-600">111222</view>
+  <view class="dark_chover_cborder-green-300 dark_chover_cbg-gray-600">111222</view>
 </view>

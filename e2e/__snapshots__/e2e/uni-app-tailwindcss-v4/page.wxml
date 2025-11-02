@@ -1,14 +1,16 @@
 <view class="flex flex flex-col flex-col">
   <image class="w-20 w-20 h-20 h-20" src="/static/logo.png" role="img"></image>
-  <view class="text-area text-area aspect-y--my-aspect-ratioy aspect-y--my-aspect-ratioy">
-    <text class="text-_h00f285_ text-_h00f285_ text-_88rpx_ text-_88rpx_ font-bold font-bold underline underline"></text>
+  <view class="text-area text-area aspect-_p--my-aspect-ratio_P aspect-_p--my-aspect-ratio_P">
+    <text class="text-_b_h00f285_B text-_b_h00f285_B text-_b88rpx_B text-_b88rpx_B font-bold font-bold underline underline"></text>
   </view>
-  <view class="bg-_h0000ff_ bg-_h0000ff_ text-_45rpx_ text-_45rpx_ text-white text-white aspect-_calcy4m3a1ys3_ aspect-_calcy4m3a1ys3_">bg-_h0000ff_ text-_45rpx_ text-white</view>
+  <view class="bg-_b_h0000ff_B bg-_b_h0000ff_B text-_b45rpx_B text-_b45rpx_B text-white text-white aspect-_bcalc_p4_x3_u1_P_f3_B aspect-_bcalc_p4_x3_u1_P_f3_B">
+    bg-_b_h0000ff_B text-_b45rpx_B text-white
+  </view>
   <view class="i-mdi-home i-mdi-home"></view>
   <view class="bg-midnight bg-midnight text-tahiti text-tahiti fill-bermuda fill-bermuda">bg-midnight text-tahiti fill-bermuda</view>
   <view class="bg-neutral-1B bg-neutral-1B">12345</view>
   <view
-    class="mt-6 mt-6 rounded-xl rounded-xl bg-emerald-500 bg-emerald-500 py-3 py-3 text-center text-center text-white text-white shadow-sm shadow-sm activecbg-emerald-600 activecbg-emerald-600">
+    class="mt-6 mt-6 rounded-xl rounded-xl bg-emerald-500 bg-emerald-500 py-3 py-3 text-center text-center text-white text-white shadow-sm shadow-sm active_cbg-emerald-600 active_cbg-emerald-600">
     打开订单分包
   </view>
   <view class="flex flex space-x-4 space-x-4 border border">
@@ -21,12 +23,12 @@
     <view>02</view>
     <view>03</view>
   </view>
-  <view class="flex flex divide-x-4 divide-x-4 border border p-2 p-2 divide-_hd80c0c_ divide-_hd80c0c_ divide-double divide-double">
+  <view class="flex flex divide-x-4 divide-x-4 border border p-2 p-2 divide-_b_hd80c0c_B divide-_b_hd80c0c_B divide-double divide-double">
     <view>01</view>
     <view>02</view>
     <view>03</view>
   </view>
-  <view class="flex flex flex-col flex-col divide-y-4 divide-y-4 border border p-2 p-2 divide-_h41eb04_ divide-_h41eb04_ divide-dotted divide-dotted">
+  <view class="flex flex flex-col flex-col divide-y-4 divide-y-4 border border p-2 p-2 divide-_b_h41eb04_B divide-_b_h41eb04_B divide-dotted divide-dotted">
     <view>01</view>
     <view>02</view>
     <view>03</view>

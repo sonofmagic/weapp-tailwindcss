@@ -1,31 +1,31 @@
 <view class="content content" style="">
-  <view class="oddcmb-2 oddcmb-2 text-_vary--text_sec_lighty_ text-_vary--text_sec_lighty_"></view>
-  <view class="ifdef-_MP-WEIXIN_cbg-blue-500 ifdef-_MP-WEIXIN_cbg-blue-500 text-_vary--textw_secw_lighty_ text-_vary--textw_secw_lighty_">bg-blue-500</view>
-  <view class="ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300 ifdef-_H5_uu_MP-WEIXIN_cbg-blue-300">bg-blue-300</view>
-  <view class="ifdef-_H5uuMP-WEIXIN_cbg-blue-400 ifdef-_H5uuMP-WEIXIN_cbg-blue-400">bg-blue-400</view>
-  <view class="ifndef-_MP-WEIXIN_cbg-red-500 ifndef-_MP-WEIXIN_cbg-red-500">not bg-red-500</view>
-  <view class="ifndef-_H5uuMP-WEIXIN_cbg-red-400 ifndef-_H5uuMP-WEIXIN_cbg-red-400">bg-red-400</view>
-  <view class="wxcbg-blue-400 wxcbg-blue-400">wx:bg-blue-400</view>
-  <view class="-wxcbg-red-400 -wxcbg-red-400">-wx:bg-red-400</view>
-  <view class="mvcbg-blue-400 mvcbg-blue-400">mv:bg-blue-400</view>
-  <view class="-mvcbg-red-400 -mvcbg-red-400">-mv:bg-red-400</view>
+  <view class="odd_cmb-2 odd_cmb-2 text-_bvar_p--text_sec_light_P_B text-_bvar_p--text_sec_light_P_B"></view>
+  <view class="ifdef-_bMP-WEIXIN_B_cbg-blue-500 ifdef-_bMP-WEIXIN_B_cbg-blue-500 text-_bvar_p--text_r_sec_r_light_P_B text-_bvar_p--text_r_sec_r_light_P_B">bg-blue-500</view>
+  <view class="ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300 ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300">bg-blue-300</view>
+  <view class="ifdef-_bH5_o_oMP-WEIXIN_B_cbg-blue-400 ifdef-_bH5_o_oMP-WEIXIN_B_cbg-blue-400">bg-blue-400</view>
+  <view class="ifndef-_bMP-WEIXIN_B_cbg-red-500 ifndef-_bMP-WEIXIN_B_cbg-red-500">not bg-red-500</view>
+  <view class="ifndef-_bH5_o_oMP-WEIXIN_B_cbg-red-400 ifndef-_bH5_o_oMP-WEIXIN_B_cbg-red-400">bg-red-400</view>
+  <view class="wx_cbg-blue-400 wx_cbg-blue-400">wx:bg-blue-400</view>
+  <view class="-wx_cbg-red-400 -wx_cbg-red-400">-wx:bg-red-400</view>
+  <view class="mv_cbg-blue-400 mv_cbg-blue-400">mv:bg-blue-400</view>
+  <view class="-mv_cbg-red-400 -mv_cbg-red-400">-mv:bg-red-400</view>
   <image
     mode="widthFix"
     src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
     style="width: 374px; height: 155.833px"
-    class="mt-_96d3px_ Issue228--mt-_96d3px_ w-_61d1px_ Issue228--w-_61d1px_ h-_50d99px_ Issue228--h-_50d99px_"
+    class="mt-_b96_d3px_B Issue228--mt-_b96_d3px_B w-_b61_d1px_B Issue228--w-_b61_d1px_B h-_b50_d99px_B Issue228--h-_b50_d99px_B"
     role="img"></image>
   <view>*******</view>
-  <n-image is="components/NImage" class="mt-_26d2px_ mt-_26d2px_ w-_43d1px_ w-_43d1px_ h-_42d99px_ h-_42d99px_">
+  <n-image is="components/NImage" class="mt-_b26_d2px_B mt-_b26_d2px_B w-_b43_d1px_B w-_b43_d1px_B h-_b42_d99px_B h-_b42_d99px_B">
     <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img"></image>
   </n-image>
   <image
     src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
     style=""
-    class="mt-_96d3px_ NHostImage--mt-_96d3px_ w-_61d1px_ NHostImage--w-_61d1px_ h-_50d99px_ NHostImage--h-_50d99px_"
+    class="mt-_b96_d3px_B NHostImage--mt-_b96_d3px_B w-_b61_d1px_B NHostImage--w-_b61_d1px_B h-_b50_d99px_B NHostImage--h-_b50_d99px_B"
     role="img"></image>
-  <view class="_2xlctext-base _2xlctext-base">2xl:text-base</view>
-  <view class="_2xlctext-_red_ _2xlctext-_red_">2xl:text-[red]</view>
+  <view class="_2xl_ctext-base _2xl_ctext-base">2xl:text-base</view>
+  <view class="_2xl_ctext-_bred_B _2xl_ctext-_bred_B">2xl:text-[red]</view>
   <view class="space-y-4 space-y-4 flex flex flex-col flex-col bg-red-400 bg-red-400">
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
@@ -38,22 +38,23 @@
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <text class="bg-sky-500 bg-sky-500"></text>
   </view>
-  <view class="bg-_h3482f2_ bg-_h3482f2_">bgbgbgbg</view>
-  <view class="text-_30rpx_ text-_30rpx_ text-_hfafafa_ text-_hfafafa_ font-bold font-bold bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">
+  <view class="bg-_b_h3482f2_B bg-_b_h3482f2_B">bgbgbgbg</view>
+  <view
+    class="text-_b30rpx_B text-_b30rpx_B text-_b_hfafafa_B text-_b_hfafafa_B font-bold font-bold bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B">
     classArray
   </view>
-  <view class="text-sm text-sm text-_hfafafa_ text-_hfafafa_">:class="['text-sm', classObj]</view>
-  <view class="rotate-_10deg_ rotate-_10deg_">rotate1111111</view>
+  <view class="text-sm text-sm text-_b_hfafafa_B text-_b_hfafafa_B">:class="['text-sm', classObj]</view>
+  <view class="rotate-_b10deg_B rotate-_b10deg_B">rotate1111111</view>
   <view class="td td highlight highlight">你好</view>
   <view class="td td">1</view>
   <view class="td td">2</view>
-  <view class="text-_32rpx_ text-_32rpx_ border-_10rpx_ border-_10rpx_">rpx</view>
-  <view class="text-_32px_ text-_32px_ border-_10px_ border-_10px_">px</view>
+  <view class="text-_b32rpx_B text-_b32rpx_B border-_b10rpx_B border-_b10rpx_B">rpx</view>
+  <view class="text-_b32px_B text-_b32px_B border-_b10px_B border-_b10px_B">px</view>
   <button role="button" aria-disabled="false">显示Tabbar</button>
   <button role="button" aria-disabled="false">隐藏Tabbar</button>
-  <view class="itext-primary itext-primary iborder-primary iborder-primary text-_32px_ text-_32px_">1111</view>
-  <view class="border-b-_4rpx_ border-b-_4rpx_ border-t-_4px_ border-t-_4px_ border border w-screen w-screen h-3 h-3 border-_red_ border-_red_"></view>
-  <view class="_n_du-count-downw_w_text_citext-red-400 _n_du-count-downw_w_text_citext-red-400">
+  <view class="_etext-primary _etext-primary _eborder-primary _eborder-primary text-_b32px_B text-_b32px_B">1111</view>
+  <view class="border-b-_b4rpx_B border-b-_b4rpx_B border-t-_b4px_B border-t-_b4px_B border border w-screen w-screen h-3 h-3 border-_bred_B border-_bred_B"></view>
+  <view class="_b_n__du-count-down_r__r_text_B_c_etext-red-400 _b_n__du-count-down_r__r_text_B_c_etext-red-400">
     <view></view>
     <view></view>
     <view></view>
@@ -80,44 +81,45 @@
     hover-stop-propagation="">
     主要按钮
   </button>
-  <view class="aftercborder-none aftercborder-none">当前系统主题:light</view>
-  <view class="bg-gray-100 bg-gray-100 darkcbg-zinc-800 darkcbg-zinc-800 h-10 h-10 w-10 w-10" hover-class="bg-red-500 darkcbg-green-500"></view>
-  <view class="h-5 h-5 w-5 w-5 shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_ shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_ beforeccontent-_qFestivusq_ beforeccontent-_qFestivusq_"></view>
-  <view class="h-5 h-5 w-5 w-5 shadow-_0px_2px_11px_0px_h00000a_ shadow-_0px_2px_11px_0px_h00000a_"></view>
-  <view class="text-_22px_ text-_22px_ darkctext-yellow-400 darkctext-yellow-400">text-[22px]</view>
-  <view class="text-_hbada55_ text-_hbada55_">text-[#bada55]</view>
-  <view class="text-_lengthcvary--my-var-lengthy_ text-_lengthcvary--my-var-lengthy_">text-[length:var(--my-var-length)]</view>
-  <view class="text-_lengthccalcy2m9d43pxy_ text-_lengthccalcy2m9d43pxy_">text-[length:calc(2*9.43px)]</view>
-  <view class="text-_colorcvary--my-vary_ text-_colorcvary--my-vary_">text-[color:var(--my-var)]</view>
-  <button class="ibg-green-500 ibg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
+  <view class="after_cborder-none after_cborder-none">当前系统主题:light</view>
+  <view class="bg-gray-100 bg-gray-100 dark_cbg-zinc-800 dark_cbg-zinc-800 h-10 h-10 w-10 w-10" hover-class="bg-red-500 dark_cbg-green-500"></view>
+  <view
+    class="h-5 h-5 w-5 w-5 shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B before_ccontent-_b_aFestivus_a_B before_ccontent-_b_aFestivus_a_B"></view>
+  <view class="h-5 h-5 w-5 w-5 shadow-_b0px_2px_11px_0px__h00000a_B shadow-_b0px_2px_11px_0px__h00000a_B"></view>
+  <view class="text-_b22px_B text-_b22px_B dark_ctext-yellow-400 dark_ctext-yellow-400">text-[22px]</view>
+  <view class="text-_b_hbada55_B text-_b_hbada55_B">text-[#bada55]</view>
+  <view class="text-_blength_cvar_p--my-var-length_P_B text-_blength_cvar_p--my-var-length_P_B">text-[length:var(--my-var-length)]</view>
+  <view class="text-_blength_ccalc_p2_x9_d43px_P_B text-_blength_ccalc_p2_x9_d43px_P_B">text-[length:calc(2*9.43px)]</view>
+  <view class="text-_bcolor_cvar_p--my-var_P_B text-_bcolor_cvar_p--my-var_P_B">text-[color:var(--my-var)]</view>
+  <button class="_ebg-green-500 _ebg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
   <view class="test test">test</view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-_h4268EA_ bg-_h4268EA_ shadow-indigo-100 shadow-indigo-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-_h123456_ bg-_h123456_ shadow-blue-100 shadow-blue-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
-  <view class="h-_20px_ h-_20px_ w-_20px_ w-_20px_ bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
-  <view class="w-2 w-2 h-2 h-2 bg-_h123456_ bg-_h123456_"></view>
-  <view class="w-2 w-2 h-2 h-2 bg-blue-500s50 bg-blue-500s50"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h4268EA_B bg-_b_h4268EA_B shadow-indigo-100 shadow-indigo-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h123456_B bg-_b_h123456_B shadow-blue-100 shadow-blue-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
+  <view class="w-2 w-2 h-2 h-2 bg-_b_h123456_B bg-_b_h123456_B"></view>
+  <view class="w-2 w-2 h-2 h-2 bg-blue-500_f50 bg-blue-500_f50"></view>
   <view class="flex flex items-center items-center justify-center justify-center w-screen w-screen h-screen h-screen">
-    <view class="ifont-bold ifont-bold itext-_h990000_ itext-_h990000_ text-2xl text-2xl underline underline">测试标题</view>
+    <view class="_efont-bold _efont-bold _etext-_b_h990000_B _etext-_b_h990000_B text-2xl text-2xl underline underline">测试标题</view>
   </view>
   <image class="logo logo h-10 h-10 w-10 w-10" src="/static/logo.png" role="img"></image>
-  <view class="text-area text-area"><text class="title title h-_200p_ h-_200p_"></text></view>
-  <view class="p-_20px_ p-_20px_ -mt-2 -mt-2 mb-_-20px_ mb-_-20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-  <view class="space-y-_1d6rem_ space-y-_1d6rem_">
-    <view class="w-_300rpx_ w-_300rpx_ text-black text-black text-opacity-_0d19_ text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="min-w-_300rpx_ min-w-_300rpx_ max-h-_100px_ max-h-_100px_ text-_20px_ text-_20px_ leading-_0d9_ leading-_0d9_">
+  <view class="text-area text-area"><text class="title title h-_b200_v_B h-_b200_v_B"></text></view>
+  <view class="p-_b20px_B p-_b20px_B -mt-2 -mt-2 mb-_b-20px_B mb-_b-20px_B">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_b1_d6rem_B space-y-_b1_d6rem_B">
+    <view class="w-_b300rpx_B w-_b300rpx_B text-black text-black text-opacity-_b0_d19_B text-opacity-_b0_d19_B">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="min-w-_b300rpx_B min-w-_b300rpx_B max-h-_b100px_B max-h-_b100px_B text-_b20px_B text-_b20px_B leading-_b0_d9_B leading-_b0_d9_B">
       min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]
     </view>
-    <view class="max-w-_300rpx_ max-w-_300rpx_ min-h-_100px_ min-h-_100px_ text-_hdddddd_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view class="max-w-_b300rpx_B max-w-_b300rpx_B min-h-_b100px_B min-h-_b100px_B text-_b_hdddddd_B text-_b_hdddddd_B">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
     <view
-      class="flex flex items-center items-center justify-center justify-center h-_100px_ h-_100px_ w-_100px_ w-_100px_ rounded-_40px_ rounded-_40px_ bg-_h123456_ bg-_h123456_ bg-opacity-_0d54_ bg-opacity-_0d54_ text-_hffffff_ text-_hffffff_ text-_h123456_ text-_h123456_ bg-_h666600_ bg-_h666600_">
+      class="flex flex items-center items-center justify-center justify-center h-_b100px_B h-_b100px_B w-_b100px_B w-_b100px_B rounded-_b40px_B rounded-_b40px_B bg-_b_h123456_B bg-_b_h123456_B bg-opacity-_b0_d54_B bg-opacity-_b0_d54_B text-_b_hffffff_B text-_b_hffffff_B text-_b_h123456_B text-_b_h123456_B bg-_b_h666600_B bg-_b_h666600_B">
       Hello
     </view>
-    <view class="border-_10px_ border-_10px_ border-_h098765_ border-_h098765_ border-solid border-solid border-opacity-_0d44_ border-opacity-_0d44_">
+    <view class="border-_b10px_B border-_b10px_B border-_b_h098765_B border-_b_h098765_B border-solid border-solid border-opacity-_b0_d44_B border-opacity-_b0_d44_B">
       border-[10px] border-[#098765] border-solid border-opacity-[0.44]
     </view>
-    <view class="grid grid grid-cols-3 grid-cols-3 divide-x-_10px_ divide-x-_10px_ divide-_h010101_ divide-_h010101_ divide-solid divide-solid">
+    <view class="grid grid grid-cols-3 grid-cols-3 divide-x-_b10px_B divide-x-_b10px_B divide-_b_h010101_B divide-_b_h010101_B divide-solid divide-solid">
       <view>1</view>
       <view>2</view>
       <view>3</view>

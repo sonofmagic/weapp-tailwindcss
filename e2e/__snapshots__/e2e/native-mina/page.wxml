@@ -1,8 +1,8 @@
 <view class="container">
-  <ice-avatar is="components/avatar/avatar"><view class="inner avatar--inner w-_20rpx_ avatar--w-_20rpx_">default value</view></ice-avatar>
+  <ice-avatar is="components/avatar/avatar"><view class="inner avatar--inner w-_b20rpx_B avatar--w-_b20rpx_B">default value</view></ice-avatar>
   <view>*****</view>
-  <view class="bg-_urlyqhttpscssxxxdcomsxxdwebpqy_">bgUrl</view>
-  <view class="bg-_h123456_ text-_50px_ text-_h654321_">icebreaker</view>
+  <view class="bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B">bgUrl</view>
+  <view class="bg-_b_h123456_B text-_b50px_B text-_b_h654321_B">icebreaker</view>
   <user is="components/user/user">
     <view class="container user--container">
       <text
@@ -12,7 +12,7 @@
   <button role="button" aria-disabled="false">go2Demo</button>
   <button class="btn a0" role="button" aria-disabled="false">0</button>
   <button class="btn azzz" role="button" aria-disabled="false">0</button>
-  <van-button is="miniprogram_npm/@vant/weapp/button/index" class="w-_200rpx_ h-_50rpx_">
+  <van-button is="miniprogram_npm/@vant/weapp/button/index" class="w-_b200rpx_B h-_b50rpx_B">
     <button
       app-parameter=""
       business-id="0"
@@ -29,20 +29,20 @@
       style=""
       role="button"
       aria-disabled="false">
-      <view class="van-button__text button-index--van-button__text"><view class="w-_100rpx_ h-_25rpx_ bg-_rgbay255b255b255b1y_">按钮</view></view>
+      <view class="van-button__text button-index--van-button__text"><view class="w-_b100rpx_B h-_b25rpx_B bg-_brgba_p255_m255_m255_m1_P_B">按钮</view></view>
     </button>
   </van-button>
-  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 darkcbg-_h487512_"></view>
-  <view class="motto bg-_h123456_"><text class="user-motto"></text></view>
-  <view class="powered h-_200p_"><text></text></view>
-  <view class="-mt-2 mb-_-20px_ p-_20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-  <view class="space-y-_1d6rem_">
-    <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="max-h-_100px_ min-w-_300rpx_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
-    <view class="min-h-_100px_ max-w-_300rpx_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
-    <view class="flex h-_100px_ w-_100px_ items-center justify-center rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_">Hello</view>
-    <view class="border-_10px_ border-solid border-_h098765_ border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
-    <view class="grid grid-cols-3 divide-x-_10px_ divide-solid divide-_h010101_">
+  <view class="bg-gray-100 dark_cbg-zinc-800 h-10 w-10" data-id="bg-[#654123] dark:bg-[#abcdef]" hover-class="bg-red-500 dark_cbg-_b_h487512_B"></view>
+  <view class="motto bg-_b_h123456_B"><text class="user-motto"></text></view>
+  <view class="powered h-_b200_v_B"><text></text></view>
+  <view class="-mt-2 mb-_b-20px_B p-_b20px_B">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+  <view class="space-y-_b1_d6rem_B">
+    <view class="w-_b300rpx_B text-black text-opacity-_b0_d19_B">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="max-h-_b100px_B min-w-_b300rpx_B text-_b20px_B leading-_b0_d9_B">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+    <view class="min-h-_b100px_B max-w-_b300rpx_B text-_b_hdddddd_B">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+    <view class="flex h-_b100px_B w-_b100px_B items-center justify-center rounded-_b40px_B bg-_b_h123456_B bg-opacity-_b0_d54_B text-_b_hffffff_B">Hello</view>
+    <view class="border-_b10px_B border-solid border-_b_h098765_B border-opacity-_b0_d44_B">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+    <view class="grid grid-cols-3 divide-x-_b10px_B divide-solid divide-_b_h010101_B">
       <div>1</div>
       <div>2</div>
       <div>3</div>
@@ -50,8 +50,8 @@
     <view class="w-32 rounded-md bg-pink-500 py-2 font-semibold text-white ring-4 ring-pink-300">Default</view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto icon-home-selected ctx true w-_20px_ m-_20px_"></view>
-  <button class="bg-sky-700 px-4 py-2 text-white hovercbg-sky-800 smcpx-8 smcpy-3" role="button" aria-disabled="false">...</button>
+  <view class="border-0 icon h-10 w-10 mx-auto icon-home-selected ctx true w-_b20px_B m-_b20px_B"></view>
+  <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3" role="button" aria-disabled="false">...</button>
   <view class="MANGLE__1234567890">MANGLE__1234567890</view>
   <view class="MANGLE__qwertyuiopasdfghjklzxcvbnm">MANGLE__qwertyuiopasdfghjklzxcvbnm</view>
   <view class="MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM">MANGLE__QWERTYUIOPASDFGHJKLZXCVBNM</view>

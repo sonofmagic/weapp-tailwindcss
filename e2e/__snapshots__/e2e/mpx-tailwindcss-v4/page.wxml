@@ -1,4 +1,4 @@
-<view class="_2xlctext-base">2xl:text-base</view>
+<view class="_2xl_ctext-base">2xl:text-base</view>
 <view>2xl:text-[red]</view>
 <view class="space-y-4 flex flex-col bg-red-400">
   <view class="bg-sky-500">view space-y-4</view>
@@ -10,11 +10,11 @@
   <view class="bg-sky-500">view space-y-4</view>
   <text class="bg-sky-500"></text>
 </view>
-<view class="rotate-_10deg_">rotate1111111</view>
-<view class="text-_32rpx_ border-_10rpx_">rpx</view>
-<view class="text-_32px_ border-_10px_">px</view>
-<view class="itext-primary iborder-primary text-_32px_">1111</view>
-<view class="border-b-_4rpx_ border-t-_4px_ border w-screen h-3 border-_red_"></view>
+<view class="rotate-_b10deg_B">rotate1111111</view>
+<view class="text-_b32rpx_B border-_b10rpx_B">rpx</view>
+<view class="text-_b32px_B border-_b10px_B">px</view>
+<view class="_etext-primary _eborder-primary text-_b32px_B">1111</view>
+<view class="border-b-_b4rpx_B border-t-_b4px_B border w-screen h-3 border-_bred_B"></view>
 <view>
   <view></view>
   <view></view>
@@ -23,37 +23,37 @@
   <view><view class="u-count-down__text">u-count-down__text</view></view>
 </view>
 <u-button>主要按钮</u-button>
-<view class="aftercborder-none">当前系统主题:</view>
-<view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-green-500"></view>
-<view class="h-5 w-5 shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_ beforeccontent-_qFestivusq_"></view>
-<view class="h-5 w-5 shadow-_0px_2px_11px_0px_h00000a_"></view>
-<view class="text-_22px_ darkctext-yellow-400">text-[22px]</view>
-<view class="text-_hbada55_">text-[#bada55]</view>
-<div class="text-_lengthcvary--my-var-lengthy_">text-[length:var(--my-var-length)]</div>
-<div class="text-_colorcvary--my-vary_">text-[color:var(--my-var)]</div>
-<button class="ibg-green-500 isr-onlytext-white" role="button" aria-disabled="false">disable</button>
+<view class="after_cborder-none">当前系统主题:</view>
+<view class="bg-gray-100 dark_cbg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark_cbg-green-500"></view>
+<view class="h-5 w-5 shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B before_ccontent-_b_aFestivus_a_B"></view>
+<view class="h-5 w-5 shadow-_b0px_2px_11px_0px__h00000a_B"></view>
+<view class="text-_b22px_B dark_ctext-yellow-400">text-[22px]</view>
+<view class="text-_b_hbada55_B">text-[#bada55]</view>
+<div class="text-_blength_cvar_p--my-var-length_P_B">text-[length:var(--my-var-length)]</div>
+<div class="text-_bcolor_cvar_p--my-var_P_B">text-[color:var(--my-var)]</div>
+<button class="_ebg-green-500 _esr-onlytext-white" role="button" aria-disabled="false">disable</button>
 <view class="test">test</view>
-<view class="w-2 h-2 bg-_h123456_"></view>
-<view class="w-2 h-2 bg-blue-500s50"></view>
-<view class="flex items-center justify-center w-screen h-screen"><view class="ifont-bold itext-_h990000_"></view></view>
-<view class="text-area"><text class="title h-_200p_"></text></view>
-<view class="p-_20px_ -mt-2 mb-_-20px_">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
-<view class="space-y-_1d6rem_">
-  <view class="w-_300rpx_ text-black text-opacity-_0d19_">w-[300rpx] text-black text-opacity-[0.19]</view>
-  <view class="min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
-  <view class="max-w-_300rpx_ min-h-_100px_ text-_hdddddd_">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
-  <view class="border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
-  <view class="grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid">
+<view class="w-2 h-2 bg-_b_h123456_B"></view>
+<view class="w-2 h-2 bg-blue-500_f50"></view>
+<view class="flex items-center justify-center w-screen h-screen"><view class="_efont-bold _etext-_b_h990000_B"></view></view>
+<view class="text-area"><text class="title h-_b200_v_B"></text></view>
+<view class="p-_b20px_B -mt-2 mb-_b-20px_B">p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view>
+<view class="space-y-_b1_d6rem_B">
+  <view class="w-_b300rpx_B text-black text-opacity-_b0_d19_B">w-[300rpx] text-black text-opacity-[0.19]</view>
+  <view class="min-w-_b300rpx_B max-h-_b100px_B text-_b20px_B leading-_b0_d9_B">min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view>
+  <view class="max-w-_b300rpx_B min-h-_b100px_B text-_b_hdddddd_B">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
+  <view class="border-_b10px_B border-_b_h098765_B border-solid border-opacity-_b0_d44_B">border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view>
+  <view class="grid grid-cols-3 divide-x-_b10px_B divide-_b_h010101_B divide-solid">
     <div>1</div>
     <div>2</div>
     <div>3</div>
   </view>
   <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300">Default</view>
 </view>
-<view class="px-_34d54rpx_ text-_32d4rpx_ text-_h5cdc34_">
+<view class="px-_b34_d54rpx_B text-_b32_d4rpx_B text-_b_h5cdc34_B">
   Hello World
   <list is="components/listbdfaa494/index">
-    <view class="bg-_h434344_ index--bg-_h434344_ activecbg-_h543210_ index--activecbg-_h543210_">
+    <view class="bg-_b_h434344_B index--bg-_b_h434344_B active_cbg-_b_h543210_B index--active_cbg-_b_h543210_B">
       <view>手机</view>
       <view>电视</view>
       <view>电脑</view>

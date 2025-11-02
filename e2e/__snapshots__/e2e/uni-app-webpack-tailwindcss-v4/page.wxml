@@ -1,4 +1,4 @@
 <view class="content content">
-  <image class="bg-_h123456_ bg-_h123456_" src="../../static/logo.png" role="img"></image>
-  <view><view class="h-21 h-21 bg-_h877878_ bg-_h877878_">Hello</view></view>
+  <image class="bg-_b_h123456_B bg-_b_h123456_B" src="../../static/logo.png" role="img"></image>
+  <view><view class="h-21 h-21 bg-_b_h877878_B bg-_b_h877878_B">Hello</view></view>
 </view>

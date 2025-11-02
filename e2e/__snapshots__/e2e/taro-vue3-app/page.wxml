@@ -1,9 +1,9 @@
-<view class="index container bg-_hdbdada_ text-_haaaaaa_" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
+<view class="index container bg-_b_hdbdada_B text-_b_haaaaaa_B" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
   <view class="text-amber-300" style="">
-    <view class="text-center text-_50px_ text-_h123456_ mt-_22px_" hover-class="bg-_h654321_" hover-start-time="50" hover-stay-time="400" style="">components ui</view>
+    <view class="text-center text-_b50px_B text-_b_h123456_B mt-_b22px_B" hover-class="bg-_b_h654321_B" hover-start-time="50" hover-stay-time="400" style="">components ui</view>
   </view>
   <view class="text-amber-300" style="">
-    <view class="text-center text-_50px_ text-red-400 mt-_22px_" style="">aaa</view>
+    <view class="text-center text-_b50px_B text-red-400 mt-_b22px_B" style="">aaa</view>
     <button
       app-parameter=""
       business-id=""
@@ -27,18 +27,20 @@
     </button>
   </view>
   <view style="">******</view>
-  <view class="bg-_h543254_ h-_100px_ w-_300px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_" style="">classArray</view>
-  <view class="bg-gray-100 darkcbg-zinc-800 h-10 w-10" hover-class="bg-red-500 darkcbg-_h487512_" hover-start-time="50" hover-stay-time="400" style=""></view>
-  <view class="bg-red-900" style="">bg-_hfafa00_</view>
-  <view class="bg-_h098765_" style="">bg-_h098765_</view>
-  <view class="h5-view p-_20px_ -mt-2 mb-_-20px_" style="">p-[20px] -mt-2 mb-_-20px_ margin的jit 不能这么写 -m-[20px]</view>
-  <view class="h5-view space-y-_1d6rem_" style="">
-    <view class="h5-view w-_300rpx_ text-black text-opacity-_0d19_" style="">w-[300rpx] text-black text-opacity-[0.19]</view>
-    <view class="h5-view min-w-_300rpx_ max-h-_100px_ text-_20px_ leading-_0d9_" style="">min-w-[300rpx] max-h-_100px_ text-_20px_ leading-[0.9]</view>
-    <view class="h5-view max-w-_300rpx_ min-h-_100px_ text-_hdddddd_" style="">max-w-[300rpx] min-h-_100px_ text-[#dddddd]</view>
-    <view class="h5-view flex items-center justify-center h-_100px_ w-_100px_ rounded-_40px_ bg-_h123456_ bg-opacity-_0d54_ text-_hffffff_" style="">Hello</view>
-    <view class="h5-view border-_10px_ border-_h098765_ border-solid border-opacity-_0d44_" style="">border-[10px] border-_h098765_ border-solid border-opacity-[0.44]</view>
-    <view class="h5-view grid grid-cols-3 divide-x-_10px_ divide-_h010101_ divide-solid" style="">
+  <view class="bg-_b_h543254_B h-_b100px_B w-_b300px_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B" style="">classArray</view>
+  <view class="bg-gray-100 dark_cbg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark_cbg-_b_h487512_B" hover-start-time="50" hover-stay-time="400" style=""></view>
+  <view class="bg-red-900" style="">bg-_b_hfafa00_B</view>
+  <view class="bg-_b_h098765_B" style="">bg-_b_h098765_B</view>
+  <view class="h5-view p-_b20px_B -mt-2 mb-_b-20px_B" style="">p-[20px] -mt-2 mb-_b-20px_B margin的jit 不能这么写 -m-[20px]</view>
+  <view class="h5-view space-y-_b1_d6rem_B" style="">
+    <view class="h5-view w-_b300rpx_B text-black text-opacity-_b0_d19_B" style="">w-[300rpx] text-black text-opacity-[0.19]</view>
+    <view class="h5-view min-w-_b300rpx_B max-h-_b100px_B text-_b20px_B leading-_b0_d9_B" style="">min-w-[300rpx] max-h-_b100px_B text-_b20px_B leading-[0.9]</view>
+    <view class="h5-view max-w-_b300rpx_B min-h-_b100px_B text-_b_hdddddd_B" style="">max-w-[300rpx] min-h-_b100px_B text-[#dddddd]</view>
+    <view class="h5-view flex items-center justify-center h-_b100px_B w-_b100px_B rounded-_b40px_B bg-_b_h123456_B bg-opacity-_b0_d54_B text-_b_hffffff_B" style="">Hello</view>
+    <view class="h5-view border-_b10px_B border-_b_h098765_B border-solid border-opacity-_b0_d44_B" style="">
+      border-[10px] border-_b_h098765_B border-solid border-opacity-[0.44]
+    </view>
+    <view class="h5-view grid grid-cols-3 divide-x-_b10px_B divide-_b_h010101_B divide-solid" style="">
       <view class="h5-view" style="">1</view>
       <view class="h5-view" style="">2</view>
       <view class="h5-view" style="">3</view>
@@ -47,10 +49,10 @@
   </view>
   <view class="h5-view test" style="">test</view>
   <view class="flex justify-between" style="">
-    <view class="text-_20px_ text-_blue_ afterccontent-_qu6211u77e5u9053u6211u5fc3bu6c38u605212we_dsq_" style="">对酒当歌</view>
-    <view class="text-_red_" style="">人生几何</view>
+    <view class="text-_b20px_B text-_bblue_B after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B" style="">对酒当歌</view>
+    <view class="text-_bred_B" style="">人生几何</view>
   </view>
-  <view class="bg-gradient-to-r from-_h123456_ to-_h654321_ h-10 w-full" style=""></view>
+  <view class="bg-gradient-to-r from-_b_h123456_B to-_b_h654321_B h-10 w-full" style=""></view>
   <button
     app-parameter=""
     business-id=""
