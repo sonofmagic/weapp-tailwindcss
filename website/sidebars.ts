@@ -200,7 +200,7 @@ const tutorialSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
-    id: 'api/exports',
+    id: 'options/exports',
     label: '包导出总览',
   },
 

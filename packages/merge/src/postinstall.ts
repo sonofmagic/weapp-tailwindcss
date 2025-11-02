@@ -2,6 +2,7 @@ import type { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import { getPackageInfoSync } from 'local-pkg'
 import satisfies from 'semver/functions/satisfies.js'
 
@@ -209,7 +210,7 @@ function ensureVariant(distDir: string, variant: RuntimeVariant): {
 }
 
 function main() {
-  const distDir = path.resolve(__dirname, '../dist')
+  const distDir = fileURLToPath(new URL('../dist/', import.meta.url))
 
   if (!fs.existsSync(distDir)) {
     warn('dist directory not found. Skipping runtime switch.')

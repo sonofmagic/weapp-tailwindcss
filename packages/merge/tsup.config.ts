@@ -10,7 +10,6 @@ export default defineConfig([
       'src/variants.ts',
       'src/postinstall.ts',
     ],
-    shims: true,
     format: ['cjs', 'esm'],
     clean: true,
     dts: true,
