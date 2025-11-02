@@ -56,7 +56,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-4070620250821001",
     "@dcloudio/uni-mp-xhs": "3.0.0-4070620250821001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4070620250821001",
-    "@weapp-tailwindcss/merge": "^1.2.3",
+    "@weapp-tailwindcss/merge": "^2.0.1",
     "vue": "^3.5.16",
     "vue-i18n": "^9.14.2"
   },

@@ -30,5 +30,8 @@
         "define": {}
       }
     }
+  },
+  "dependencies": {
+    "@weapp-tailwindcss/merge": "^2.0.1"
   }
 }

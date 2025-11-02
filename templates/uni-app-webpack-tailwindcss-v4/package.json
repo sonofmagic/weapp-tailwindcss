@@ -76,7 +76,8 @@
     "vue": ">= 2.6.14 < 2.7",
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^8.0.0",
-    "vuex": "^3.2.0"
+    "vuex": "^3.2.0",
+    "@weapp-tailwindcss/merge": "^2.0.1"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.27.1",

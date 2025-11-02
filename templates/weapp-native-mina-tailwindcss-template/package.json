@@ -23,7 +23,8 @@
   "dependencies": {
     "@vant/weapp": "^1.11.6",
     "dayjs": "^1.11.11",
-    "tdesign-miniprogram": "^1.4.2"
+    "tdesign-miniprogram": "^1.4.2",
+    "@weapp-tailwindcss/merge": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",

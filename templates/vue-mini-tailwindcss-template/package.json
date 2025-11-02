@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@vue-mini/core": "^1.2.2",
-    "tdesign-miniprogram": "^1.9.1"
+    "tdesign-miniprogram": "^1.9.1",
+    "@weapp-tailwindcss/merge": "^2.0.1"
   },
   "devDependencies": {
     "@icebreakers/eslint-config": "^1.1.3",

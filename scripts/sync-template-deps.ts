@@ -28,14 +28,16 @@ interface TargetPackage {
   name: string
   version: string
   range: string
+  addIfMissing?: 'dependencies' | 'devDependencies'
+  forceInclude?: boolean
 }
 
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
 const WORKSPACE_MANIFEST = path.join(ROOT, 'pnpm-workspace.yaml')
 const tailwindVersionCache = new Map<string, string>()
 
-function readRootWeappTailwindcssVersion(): string {
-  const pkgPath = path.join(ROOT, 'packages', 'weapp-tailwindcss', 'package.json')
+function readWorkspacePackageVersion(relativeDir: string): string {
+  const pkgPath = path.join(ROOT, relativeDir, 'package.json')
   const pkgRaw = readFileSync(pkgPath, 'utf8')
   const pkg = JSON.parse(pkgRaw) as { version: string }
   return pkg.version
@@ -78,13 +80,22 @@ async function fetchTailwindVersion(pkgName: string, major: number): Promise<str
 }
 
 async function resolveBaseTargets(): Promise<TargetPackage[]> {
-  const weappTailwindcssVersion = readRootWeappTailwindcssVersion()
+  const weappTailwindcssVersion = readWorkspacePackageVersion(path.join('packages', 'weapp-tailwindcss'))
+  const mergeVersion = readWorkspacePackageVersion(path.join('packages', 'merge'))
   const weappIdeCliVersion = await fetchLatestVersion('weapp-ide-cli')
   return [
     {
       name: 'weapp-tailwindcss',
       version: weappTailwindcssVersion,
       range: `^${weappTailwindcssVersion}`,
+      addIfMissing: 'devDependencies',
+    },
+    {
+      name: '@weapp-tailwindcss/merge',
+      version: mergeVersion,
+      range: `^${mergeVersion}`,
+      addIfMissing: 'dependencies',
+      forceInclude: true,
     },
     {
       name: 'weapp-ide-cli',
@@ -144,6 +155,22 @@ function buildVersionRange(current: string | undefined, target: TargetPackage): 
   return `${prefix || ''}${targetVersion}`
 }
 
+function hasPackageReference(pkg: PackageJson, name: string): boolean {
+  const deps = pkg.dependencies ?? {}
+  const devDeps = pkg.devDependencies ?? {}
+  return Boolean((deps as Record<string, string>)[name] ?? (devDeps as Record<string, string>)[name])
+}
+
+function ensureSection(pkg: PackageJson, field: 'dependencies' | 'devDependencies'): Record<string, string> {
+  const section = pkg[field]
+  if (section && typeof section === 'object') {
+    return section as Record<string, string>
+  }
+  const created: Record<string, string> = {}
+  pkg[field] = created
+  return created
+}
+
 function updateDependencyRange(pkg: PackageJson, targets: TargetPackage[]): boolean {
   let updated = false
   for (const field of ['dependencies', 'devDependencies'] as const) {
@@ -151,14 +178,30 @@ function updateDependencyRange(pkg: PackageJson, targets: TargetPackage[]): bool
     if (!section || typeof section !== 'object') {
       continue
     }
+    const typedSection = section as Record<string, string>
     for (const target of targets) {
-      if (target.name in section) {
-        const current = section[target.name]
-        const next = buildVersionRange(current, target)
-        if (current !== next) {
-          section[target.name] = next
-          updated = true
-        }
+      if (!(target.name in typedSection)) {
+        continue
+      }
+      const current = typedSection[target.name]
+      const next = buildVersionRange(current, target)
+      if (current !== next) {
+        typedSection[target.name] = next
+        updated = true
+      }
+    }
+  }
+
+  for (const target of targets) {
+    const existsInDeps = hasPackageReference(pkg, target.name)
+    if (existsInDeps) {
+      continue
+    }
+    if (target.addIfMissing) {
+      const newSection = ensureSection(pkg, target.addIfMissing)
+      if (newSection[target.name] !== target.range) {
+        newSection[target.name] = target.range
+        updated = true
       }
     }
   }
@@ -243,14 +286,8 @@ function lockNeedsUpdate(templateDir: string, manager: ManagerInfo, targets: Tar
   }
 }
 
-function hasPackageReference(pkg: PackageJson, name: string): boolean {
-  const deps = pkg.dependencies ?? {}
-  const devDeps = pkg.devDependencies ?? {}
-  return Boolean((deps as Record<string, string>)[name] ?? (devDeps as Record<string, string>)[name])
-}
-
 function filterTargetsForPackage(pkg: PackageJson, targets: TargetPackage[]): TargetPackage[] {
-  return targets.filter(target => hasPackageReference(pkg, target.name))
+  return targets.filter(target => target.forceInclude || hasPackageReference(pkg, target.name))
 }
 
 function dedupeTargets(targets: TargetPackage[]): TargetPackage[] {
