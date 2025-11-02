@@ -83,4 +83,40 @@
     color: #2563eb;
     word-break: break-all;
   }
+
+  &__preview {
+    border-top: 1rpx dashed #e2e8f0;
+    padding-top: 16rpx;
+  }
+
+  &__preview-target {
+    min-height: 120rpx;
+    padding: 16rpx 20rpx;
+    border-radius: 18rpx;
+    border: 1rpx dashed rgba(148, 163, 184, 0.6);
+    background: rgba(226, 232, 240, 0.4);
+    color: #0f172a;
+    transition: all 0.2s ease;
+  }
+
+  &__preview-target--flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12rpx;
+  }
+
+  &__preview-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10rpx 16rpx;
+    border-radius: 14rpx;
+    background: rgba(255, 255, 255, 0.92);
+    color: inherit;
+    font-size: 24rpx;
+    font-weight: 600;
+    letter-spacing: 0.8rpx;
+    box-shadow: 0 8rpx 20rpx -12rpx rgba(15, 23, 42, 0.5);
+  }
 }

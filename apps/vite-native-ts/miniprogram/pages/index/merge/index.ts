@@ -9,6 +9,8 @@ const { twMerge: mergeWithoutEscape } = createRuntime({ escape: false })
 const { twMerge: mergeWithoutUnescape } = createRuntime({ unescape: false })
 const { twMerge: mergePassthrough } = createRuntime({ escape: false, unescape: false })
 
+const basePreviewItems = ['A', 'B', 'C']
+
 const versionComparison = [
   {
     label: 'twMerge v3 (Tailwind CSS v3)',
@@ -323,16 +325,19 @@ const cvaSamples = [
     label: '默认',
     code: 'button()',
     result: button(),
+    previewItems: ['主要按钮'],
   },
   {
     label: '副按钮',
     code: "button({ intent: 'secondary', size: 'small' })",
     result: button({ intent: 'secondary', size: 'small' }),
+    previewItems: ['副按钮'],
   },
   {
     label: '禁用状态',
     code: "button({ disabled: true })",
     result: button({ disabled: true }),
+    previewItems: ['禁用按钮'],
   },
 ]
 
@@ -377,25 +382,63 @@ const variantsSamples = [
     label: '默认徽章',
     code: 'badge()',
     result: badge(),
+    previewItems: ['Primary'],
   },
   {
     label: '描边成功态',
     code: "badge({ tone: 'success', outline: true })",
     result: badge({ tone: 'success', outline: true }),
+    previewItems: ['Success'],
   },
   {
     label: '危险小号',
     code: "badge({ tone: 'danger', size: 'sm' })",
     result: badge({ tone: 'danger', size: 'sm' }),
+    previewItems: ['Danger'],
   },
 ]
 
+const withPreview = (className: string, previewItems?: string[], previewBaseClass?: string) => ({
+  previewClass: className,
+  previewItems: previewItems ?? basePreviewItems,
+  previewBaseClass: previewBaseClass ?? 'sample__preview-target--flow',
+})
+
+const versionComparisonWithPreview = versionComparison.map((item) => ({
+  ...item,
+  ...withPreview(item.result, item.previewItems, item.previewBaseClass),
+}))
+
+const mergingExamplesWithPreview = mergingExamples.map(({ samples, ...rest }) => ({
+  ...rest,
+  samples: samples.map((sample) => ({
+    ...sample,
+    ...withPreview(sample.result, sample.previewItems, sample.previewBaseClass),
+  })),
+}))
+
+const runtimeExamplesWithPreview = runtimeExamples.map((item) => ({
+  ...item,
+  ...withPreview(item.result, item.previewItems, item.previewBaseClass),
+}))
+
+const cvaSamplesWithPreview = cvaSamples.map((item) => ({
+  ...item,
+  ...withPreview(item.result, item.previewItems, item.previewBaseClass),
+}))
+
+const variantsSamplesWithPreview = variantsSamples.map((item) => ({
+  ...item,
+  ...withPreview(item.result, item.previewItems, item.previewBaseClass),
+}))
+
 Page({
   data: {
-    versionComparison,
-    mergingExamples,
-    runtimeExamples,
-    cvaSamples,
-    variantsSamples,
+    basePreviewItems,
+    versionComparison: versionComparisonWithPreview,
+    mergingExamples: mergingExamplesWithPreview,
+    runtimeExamples: runtimeExamplesWithPreview,
+    cvaSamples: cvaSamplesWithPreview,
+    variantsSamples: variantsSamplesWithPreview,
   },
 })

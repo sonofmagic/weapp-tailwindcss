@@ -13,6 +13,18 @@
         <view class="sample__label">{{item.label}}</view>
         <view class="sample__code">{{item.code}}</view>
         <view class="sample__result">{{item.result}}</view>
+        <view class="sample__preview">
+          <view class="sample__preview-target {{item.previewBaseClass}} {{item.previewClass}}">
+            <view
+              class="sample__preview-item"
+              wx:for="{{item.previewItems || basePreviewItems}}"
+              wx:for-item="preview"
+              wx:key="*this"
+            >
+              {{preview}}
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -22,10 +34,22 @@
       <view class="section__title">{{item.title}}</view>
       <view class="section__desc">{{item.description}}</view>
       <view class="section__list">
-      <view class="sample" wx:for="{{item.samples}}" wx:for-item="sample" wx:key="label">
+        <view class="sample" wx:for="{{item.samples}}" wx:for-item="sample" wx:key="label">
           <view class="sample__label">{{sample.label}}</view>
           <view class="sample__code">{{sample.code}}</view>
           <view class="sample__result">{{sample.result}}</view>
+          <view class="sample__preview">
+            <view class="sample__preview-target {{sample.previewBaseClass}} {{sample.previewClass}}">
+              <view
+                class="sample__preview-item"
+                wx:for="{{sample.previewItems || basePreviewItems}}"
+                wx:for-item="preview"
+                wx:key="*this"
+              >
+                {{preview}}
+              </view>
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -39,6 +63,18 @@
         <view class="sample__label">{{item.label}}</view>
         <view class="sample__code">{{item.code}}</view>
         <view class="sample__result">{{item.result}}</view>
+        <view class="sample__preview">
+          <view class="sample__preview-target {{item.previewBaseClass}} {{item.previewClass}}">
+            <view
+              class="sample__preview-item"
+              wx:for="{{item.previewItems || basePreviewItems}}"
+              wx:for-item="preview"
+              wx:key="*this"
+            >
+              {{preview}}
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -51,6 +87,18 @@
         <view class="sample__label">{{item.label}}</view>
         <view class="sample__code">{{item.code}}</view>
         <view class="sample__result">{{item.result}}</view>
+        <view class="sample__preview">
+          <view class="sample__preview-target {{item.previewBaseClass}} {{item.previewClass}}">
+            <view
+              class="sample__preview-item"
+              wx:for="{{item.previewItems || basePreviewItems}}"
+              wx:for-item="preview"
+              wx:key="*this"
+            >
+              {{preview}}
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -63,6 +111,18 @@
         <view class="sample__label">{{item.label}}</view>
         <view class="sample__code">{{item.code}}</view>
         <view class="sample__result">{{item.result}}</view>
+        <view class="sample__preview">
+          <view class="sample__preview-target {{item.previewBaseClass}} {{item.previewClass}}">
+            <view
+              class="sample__preview-item"
+              wx:for="{{item.previewItems || basePreviewItems}}"
+              wx:for-item="preview"
+              wx:key="*this"
+            >
+              {{preview}}
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
