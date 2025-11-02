@@ -1,0 +1,106 @@
+---
+title: 4.7.0：运行时重构的 weapp-tailwindcss/merge
+date: 2025-11-02
+authors: sonofmagic
+description: 从编译期黑名单到运行时自管理，weapp-tailwindcss/merge 的重构思路与未来规划。
+tags:
+  - merge
+  - runtime
+  - tailwindcss
+---
+
+这篇文章算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。新的实现不仅兼容 Tailwind CSS v4，也顺手解决了“编译期黑名单 + 手动逃逸”的历史包袱。
+
+
+## 为什么要重写 merge？
+
+早期的 `@weapp-tailwindcss/merge` 主要目标是“把 tailwind-merge 的结果变成小程序合法类名”。我们采取的策略是：
+
+- 继续使用 `tailwind-merge` 做冲突解析；
+- 在编译阶段通过 `ignoreCallExpressionIdentifiers` 跳过对 `twMerge` / `twJoin` / `cva` 等调用的转义；
+- 把责任交给开发者：运行时得到的类名包含非法字符，需要手动再 escape。
+
+这种模式在 Tailwind CSS v3 勉强能用，但一到 v4 就崩溃了：
+
+1. **编译期豁免并不等于安全**  
+   `twMerge('text-[#ececec]', 'text-[#654321]')` 最终仍然输出原始字符串。稍微复杂一点的条件拼接、链式调用、动态导入，编译器根本判断不出来该不该跳过。
+2. **函数名黑名单无法覆盖新的 API**  
+   新版本开始导出 `create()`、variants（`tv`）等工厂，调用形式千奇百怪，编译阶段根本匹配不到。
+3. **任意值语法越来越灵活**  
+   Tailwind v4 的任意值可以是 `text-[theme(my.scale.foo)]` 这种无法静态推断类型的写法。靠黑名单永远落后，反而让用户更困惑。
+
+这些问题其实在 Tailwind CSS v3 时代就已经存在，只是 v4 的任意值和语法开放程度把它们放大到了“不可忽视”的级别。结论很直接：与其不断弥补编译期的漏洞，不如把逃逸控制权彻底收回运行时。
+
+## 新版 merge 的核心思路
+
+这次重构把所有入口（`twMerge` / `twJoin` / `createTailwindMerge` / `extendTailwindMerge` / `cva` / `variants`）全部挂到同一套 transformer 上：
+
+```ts
+const transformers = resolveTransformers(options)
+
+const aggregators = {
+  escape: transformers.escape,
+  unescape: transformers.unescape,
+}
+```
+
+### 双向处理链
+
+每一次 merge 都会经历 `unescape -> tailwind-merge -> escape` 三段式：
+
+```ts
+const normalized = transformers.unescape(clsx(...inputs))
+return transformers.escape(fn(normalized))
+```
+
+这样即使调用链前端已经做过一次 escape，我们也能先还原再处理，避免输出重复的 `_b` / `_c` 前缀。
+
+### 运行时配置
+
+新的 `create()` 支持关闭任意环节：
+
+```ts
+const { twMerge: passthrough } = create({ escape: false, unescape: false })
+```
+
+配合 SSR、老数据兼容场景时就不用再写额外工具函数了。
+
+同时我们开放 `map` 字段，让团队可以统一使用自定义字符映射表，满足“类名要和现有规范保持一致”的需求。
+
+### 全家桶一致
+
+`@weapp-tailwindcss/merge/variants` 是这次同步升级的亮点：我们直接复用了 tailwind-variants 的工厂，把自定义 `cn` 换成套上 escape/unescape 的版本。这样构建复杂组件状态时，合并结果天然符合小程序规范。
+
+## 为什么不再依赖 ignoreCallExpressionIdentifiers？
+
+`ignoreCallExpressionIdentifiers` 从诞生那天起就只是“不得已”的补丁。它最多做到下面几件事：
+
+- 标记“这个函数返回的类名先别动”，却无法保证运行时会再逃逸；
+- 无法识别链式调用、解构赋值、动态导入等写法；
+- **压缩阶段会把黑名单完全破坏**：一旦交给 `terser` / `esbuild` / `rolldown` 之类的压缩器，函数名会被改写成 `e()`、`r()`，AST 名称自然对不上。除非逐个工具配置 `mangle.reserved`（告诉它们不要改 `twMerge` 这些名字），否则黑名单形同虚设，维护成本和副作用非常大。
+- 需要和插件边际合作（例如 Babel、SWC、JITI 各有一套实现，维护成本巨大）。
+
+在我们开始支持 variants、运行时工厂和更开放的 Tailwind v4 语法后，这个黑名单变得意义不大，甚至会误导开发者：
+
+> “为什么编译时给我放行了，但页面还是报 `invalid selector`？”
+
+升级到运行时方案之后，上面的问题就迎刃而解：因为最终的 escape 都由 merge 内部做，我们可以保证**任何入口调用**都只会输出合法类名。编译阶段完全不需要额外逻辑。
+
+## 4.7.0 版本的实际成果
+
+- `resolveTransformers` 统一管理 escape/unescape，支持 toggle、自定义 mapping；
+- `twMerge` / `twJoin` / `createTailwindMerge` / `extendTailwindMerge` / `cva` / `variants` 共享同一套转换；
+- 覆盖 tailwind-merge 功能列表的单测，同时新增大量小程序专属场景（`rpx`、任意变体、重要修饰符等）；
+- `apps/vite-native-ts` 提供全景 Demo：页面上实时展示不同版本 merge 行为、运行时选项、CVA/variants 输出，方便开发者对照理解；
+- 新增中文 Changeset，宣布这是一次 breaking change。
+
+## 展望
+
+把逃逸逻辑收回运行时后，我们已经具备以下能力：
+
+- **跨端一致**：无论在 weapp-vite、uni-app 还是其他自定义构建中，只要用 runtime 工厂就能保证输出安全；
+- **更丰富的 DSL**：variants 的案例证明我们可以继续封装更高级的组合 API，而不用担心“最终类名不符合规则”；
+- **插件负担更小**：Babel/SWC 只负责常规替换任务，再也不用维护黑名单补丁；
+- **面向未来的扩展**：下一步我们计划扩展 mapping 插件化，支持按平台、按团队切换 escape 字典。
+
+4.7.0 是 weapp-tailwindcss “运行时时代” 的起点。欢迎大家在实际项目里试用新版 `@weapp-tailwindcss/merge`，也欢迎在社区继续提出想法，我们会持续让 Tailwind CSS 在小程序生态里保持“开箱即用”的体验。
