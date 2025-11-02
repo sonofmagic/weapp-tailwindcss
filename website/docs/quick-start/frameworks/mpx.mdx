@@ -23,6 +23,34 @@ module.exports = defineConfig({
 
 ```
 
+## 引入 Tailwind CSS 样式
+
+Tailwind 的底层样式需要显式导入。不同主版本的包结构略有差异：
+
+### Tailwind CSS v3.x
+
+仍然可以直接引用 Tailwind 提供的底层样式文件（带 `.css` 扩展名）：
+
+```vue title="src/app.mpx"
+<style lang="scss">
+  @import 'tailwindcss/base.css';
+  @import 'tailwindcss/components.css';
+  @import 'tailwindcss/utilities.css';
+</style>
+```
+
+### Tailwind CSS v4.x
+
+v4 官方改用了全新的 CSS 包结构，推荐直接引入 `weapp-tailwindcss` 提供的聚合样式文件：
+
+```vue title="src/app.mpx"
+<style lang="scss">
+  @import 'weapp-tailwindcss/index.css';
+</style>
+```
+
+这样即可获得预置的 base / components / utilities，同时避免 `postcss-import` 误解析到 JS 入口导致构建报错。
+
 ## mpx 中的 vscode tailwindcss 智能提示缺失设置
 
 我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。

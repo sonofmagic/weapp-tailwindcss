@@ -7,9 +7,9 @@ createApp({})
 </script>
 
 <style lang="scss">
-  @import 'tailwindcss/base';
-  @import 'tailwindcss/components';
-  @import 'tailwindcss/utilities';
+  @import 'tailwindcss/base.css';
+  @import 'tailwindcss/components.css';
+  @import 'tailwindcss/utilities.css';
 </style>
 <script type="application/json">
   {

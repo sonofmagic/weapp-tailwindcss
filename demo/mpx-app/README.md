@@ -116,9 +116,9 @@ module.exports = defineConfig({
 @tailwind utilities;
 @tailwind components;
     /* 如果你使用 scss，你可以在 style标签上加上 lang="scss" 然后使用@import */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import 'tailwindcss/base.css';
+@import 'tailwindcss/components.css';
+@import 'tailwindcss/utilities.css';
 </style>
 ```
 

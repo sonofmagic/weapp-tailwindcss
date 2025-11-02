@@ -1,1 +1,1 @@
-const classNames = ['bg-_lengthc200rpx_100rpx_']
+const classNames = ['bg-_blength_c200rpx_100rpx_B']

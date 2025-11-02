@@ -76,6 +76,19 @@ module.exports = {
 
 > 💡 如果你希望在任意样式文件中直接引用包内样式，请使用 `@import "weapp-tailwindcss/index.css";`。这样可以确保 `postcss-import` 解析到的是真实的 CSS 资源，避免出现 “Unknown word "use strict"” 这一类由于误解析到 JS 文件导致的构建报错。
 
+### Tailwind CSS 样式引用指引
+
+- **Tailwind CSS v3.x**：沿用旧模块名即可（例如 `@import 'tailwindcss/base.css'`、`@import 'tailwindcss/components.css'`、`@import 'tailwindcss/utilities.css'`）。
+- **Tailwind CSS v4.x**：推荐直接引入 `weapp-tailwindcss` 提供的聚合样式：
+
+```vue title="src/app.mpx"
+<style lang="scss">
+  @import 'weapp-tailwindcss/index.css';
+</style>
+```
+
+这样可以一次性获得 base / components / utilities，并规避 `postcss-import` 误解析 JS 入口的报错。如果你是从 v3 升级，只需将原来的三个 `@import` 换成这条语句即可。
+
 然后在项目目录下，小程序全局的 `app.mpx` 中，通过 `@import` 引入该文件：
 
 ```vue title="app.mpx"
