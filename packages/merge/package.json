@@ -38,6 +38,11 @@
       "types": "./dist/v4.d.ts",
       "import": "./dist/v4.js",
       "require": "./dist/v4.cjs"
+    },
+    "./variants": {
+      "types": "./dist/variants.d.ts",
+      "import": "./dist/variants.js",
+      "require": "./dist/variants.cjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -78,6 +83,11 @@
         "types": "./dist/v4.d.ts",
         "import": "./dist/v4.js",
         "require": "./dist/v4.cjs"
+      },
+      "./variants": {
+        "types": "./dist/variants.d.ts",
+        "import": "./dist/variants.js",
+        "require": "./dist/variants.cjs"
       }
     },
     "main": "./dist/index.cjs",
@@ -85,6 +95,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "@weapp-core/escape": "^5.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "local-pkg": "^1.1.2",

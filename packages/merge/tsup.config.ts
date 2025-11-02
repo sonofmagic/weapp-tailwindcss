@@ -7,6 +7,7 @@ export default defineConfig([
       'src/cva.ts',
       'src/v3.ts',
       'src/v4.ts',
+      'src/variants.ts',
       'src/postinstall.ts',
     ],
     shims: true,

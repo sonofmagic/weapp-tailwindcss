@@ -41,3 +41,9 @@ export {
 export type {
   ClassValue,
 }
+
+export type {
+  CreateOptions,
+  EscapeConfig,
+  UnescapeConfig,
+} from './types'
