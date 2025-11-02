@@ -2949,6 +2949,11 @@
   resolved "https://registry.yarnpkg.com/@weapp-core/escape/-/escape-4.0.1.tgz#00f80bbdc5ac32456a4f180b8c6b2449854f292a"
   integrity sha512-FuO9zTs/8VMhoZ+sZkMEMipcHd9FZhxstdhg9+Z3JlTgxMFAIvhBFOuFjM2bUyjDJ7O21nr9podHDjVjcVYu4Q==
 
+"@weapp-core/escape@~5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@weapp-core/escape/-/escape-5.0.1.tgz#b4b42ff03a552fce0fb7cdf0f998bcf639469ddb"
+  integrity sha512-BIHEQvlqWU+ofCdh+w08wzV9GjS+5Nw5Rf6XGxni5/15srShdcRPbSWpDAw00toTJkJDG4+UNjzOB+rHdcxCdg==
+
 "@weapp-core/logger@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@weapp-core/logger/-/logger-2.0.0.tgz#4fede381ddc809d5e6c05f4e923701ebeb47a9f4"
@@ -8835,10 +8840,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.6.3:
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.6.3.tgz#3946818bdad2dfe78397232cd2eeb5548d5385d3"
-  integrity sha512-hNx+UH5EJuFA+jtrqq3K6QIwQZ64wwRh1T9G8oD/7lclq6dC1d4ddeflXrfpmWz8J2D4wuFHEGGK/YxUJsH74g==
+weapp-tailwindcss@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.7.0.tgz#d6bc4ccf57dc73a180d3b7a0e424488cceedfb45"
+  integrity sha512-kMKmQb3U4bnXpO/P92C0X2A9ctyukwO9PSNCAMQiZrjEudu/ECet1vUHrMOmnSVX/KrpIqVD/P81dYradm9dog==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
@@ -8846,7 +8851,7 @@ weapp-tailwindcss@^4.6.3:
     "@babel/types" "~7.28.5"
     "@vue/compiler-dom" "^3.5.22"
     "@vue/compiler-sfc" "^3.5.22"
-    "@weapp-core/escape" "~4.0.1"
+    "@weapp-core/escape" "~5.0.1"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/logger" "1.1.0"
     "@weapp-tailwindcss/postcss" "2.0.0"

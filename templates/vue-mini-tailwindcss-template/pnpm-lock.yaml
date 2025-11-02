@@ -43,8 +43,8 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
       weapp-tailwindcss:
-        specifier: ^4.6.3
-        version: 4.6.3(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1))
+        specifier: ^4.7.0
+        version: 4.7.0(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1))
       weapp-vite:
         specifier: ^4.1.0
         version: 4.1.0(@types/node@22.15.17)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.88.0)(terser@5.36.0)(tsx@4.19.2)(typescript@5.8.3)(yaml@2.7.1)
@@ -1865,6 +1865,9 @@ packages:
 
   '@weapp-core/escape@4.0.1':
     resolution: {integrity: sha512-FuO9zTs/8VMhoZ+sZkMEMipcHd9FZhxstdhg9+Z3JlTgxMFAIvhBFOuFjM2bUyjDJ7O21nr9podHDjVjcVYu4Q==}
+
+  '@weapp-core/escape@5.0.1':
+    resolution: {integrity: sha512-BIHEQvlqWU+ofCdh+w08wzV9GjS+5Nw5Rf6XGxni5/15srShdcRPbSWpDAw00toTJkJDG4+UNjzOB+rHdcxCdg==}
 
   '@weapp-core/init@1.2.0':
     resolution: {integrity: sha512-/I8Zt+IFafpPm//GlOAJBI/cNiDII/YAELGQzLmhRo6t36gAbb5STnLaoW/bIDo0a/QRbQDZZUYgDGfZieOo+A==}
@@ -5177,8 +5180,8 @@ packages:
     resolution: {integrity: sha512-+XqR+MzXqjbUvTJthjk1w9a+e7QwlxIXCqIwGwyWGS5PGkheyj2T0k+CoB3E0iah+Huka0hOGiyh+WPKlgfIKg==}
     hasBin: true
 
-  weapp-tailwindcss@4.6.3:
-    resolution: {integrity: sha512-hNx+UH5EJuFA+jtrqq3K6QIwQZ64wwRh1T9G8oD/7lclq6dC1d4ddeflXrfpmWz8J2D4wuFHEGGK/YxUJsH74g==}
+  weapp-tailwindcss@4.7.0:
+    resolution: {integrity: sha512-kMKmQb3U4bnXpO/P92C0X2A9ctyukwO9PSNCAMQiZrjEudu/ECet1vUHrMOmnSVX/KrpIqVD/P81dYradm9dog==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -7340,6 +7343,8 @@ snapshots:
   '@vue/shared@3.5.22': {}
 
   '@weapp-core/escape@4.0.1': {}
+
+  '@weapp-core/escape@5.0.1': {}
 
   '@weapp-core/init@1.2.0':
     dependencies:
@@ -11543,7 +11548,7 @@ snapshots:
       fs-extra: 11.3.0
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.6.3(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1)):
+  weapp-tailwindcss@4.7.0(tailwindcss@3.4.18(tsx@4.19.2)(yaml@2.7.1)):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
@@ -11551,7 +11556,7 @@ snapshots:
       '@babel/types': 7.28.5
       '@vue/compiler-dom': 3.5.22
       '@vue/compiler-sfc': 3.5.22
-      '@weapp-core/escape': 4.0.1
+      '@weapp-core/escape': 5.0.1
       '@weapp-core/regex': 1.0.1
       '@weapp-tailwindcss/logger': 1.1.0
       '@weapp-tailwindcss/postcss': 2.0.0
