@@ -130,8 +130,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       weapp-tailwindcss:
-        specifier: ^4.7.0
-        version: 4.7.0(tailwindcss@4.1.16)
+        specifier: ^4.7.1
+        version: 4.7.1(tailwindcss@4.1.16)
 
 packages:
 
@@ -774,10 +774,6 @@ packages:
 
   '@babel/traverse@7.28.3':
     resolution: {integrity: sha512-7w4kZYHneL3A6NP2nxzHvT3HCZ7puDZZjFMqDpBPECub79sTtSO5CGXDkKrTQq8ksAwfD/XI2MRFX23njdDaIQ==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/traverse@7.28.4':
-    resolution: {integrity: sha512-YEzuboP2qvQavAcjgQNVgsvHIDv6ZpwXvcvjmyySP2DIMuByS/6ioU5G9pYrWHM6T2YDfc7xga9iNzYOs12CFQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/traverse@7.28.5':
@@ -5691,8 +5687,8 @@ packages:
     resolution: {integrity: sha512-gq/ffX97Wuv+hNDX0vbHB04S2nQV2IZ6tACM5nq7xECWcQ2zS2TLp5gQr+TXntGE4dFUrpHlWrw85A2YSA/qFw==}
     hasBin: true
 
-  weapp-tailwindcss@4.7.0:
-    resolution: {integrity: sha512-kMKmQb3U4bnXpO/P92C0X2A9ctyukwO9PSNCAMQiZrjEudu/ECet1vUHrMOmnSVX/KrpIqVD/P81dYradm9dog==}
+  weapp-tailwindcss@4.7.1:
+    resolution: {integrity: sha512-RbDJETEO32IeFfewNymi5XI1zGtPDV7PTbJHtejZnnx80OtSfgZ9uuzFIMKCLIcEILHTHqpPZVGywz4TV7fzZQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -5985,8 +5981,8 @@ snapshots:
   '@babel/helper-wrap-function@7.28.3':
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/traverse': 7.28.4
-      '@babel/types': 7.28.4
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
@@ -6628,18 +6624,6 @@ snapshots:
       '@babel/template': 7.27.2
       '@babel/types': 7.28.2
       debug: 4.4.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@babel/traverse@7.28.4':
-    dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.3
-      '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.5
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
-      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -12054,7 +12038,7 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.7.0(tailwindcss@4.1.16):
+  weapp-tailwindcss@4.7.1(tailwindcss@4.1.16):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5

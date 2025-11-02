@@ -136,8 +136,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       weapp-tailwindcss:
-        specifier: ^4.7.0
-        version: 4.7.0(tailwindcss@3.4.18)
+        specifier: ^4.7.1
+        version: 4.7.1(tailwindcss@3.4.18)
 
 packages:
 
@@ -6590,8 +6590,8 @@ packages:
     resolution: {integrity: sha512-gq/ffX97Wuv+hNDX0vbHB04S2nQV2IZ6tACM5nq7xECWcQ2zS2TLp5gQr+TXntGE4dFUrpHlWrw85A2YSA/qFw==}
     hasBin: true
 
-  weapp-tailwindcss@4.7.0:
-    resolution: {integrity: sha512-kMKmQb3U4bnXpO/P92C0X2A9ctyukwO9PSNCAMQiZrjEudu/ECet1vUHrMOmnSVX/KrpIqVD/P81dYradm9dog==}
+  weapp-tailwindcss@4.7.1:
+    resolution: {integrity: sha512-RbDJETEO32IeFfewNymi5XI1zGtPDV7PTbJHtejZnnx80OtSfgZ9uuzFIMKCLIcEILHTHqpPZVGywz4TV7fzZQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -6950,12 +6950,12 @@ snapshots:
 
   '@babel/helper-environment-visitor@7.24.7':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.5
 
   '@babel/helper-function-name@7.24.7':
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.5
 
   '@babel/helper-globals@7.28.0': {}
 
@@ -6965,19 +6965,19 @@ snapshots:
 
   '@babel/helper-member-expression-to-functions@7.24.8':
     dependencies:
-      '@babel/traverse': 7.28.4
-      '@babel/types': 7.28.4
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-module-imports@7.22.15':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.5
 
   '@babel/helper-module-imports@7.24.7':
     dependencies:
-      '@babel/traverse': 7.28.4
-      '@babel/types': 7.28.4
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
@@ -7002,14 +7002,14 @@ snapshots:
     dependencies:
       '@babel/core': 7.28.4
       '@babel/helper-module-imports': 7.27.1
-      '@babel/helper-validator-identifier': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
       '@babel/traverse': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-optimise-call-expression@7.24.7':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.5
 
   '@babel/helper-plugin-utils@7.27.1': {}
 
@@ -7033,21 +7033,21 @@ snapshots:
 
   '@babel/helper-simple-access@7.24.7':
     dependencies:
-      '@babel/traverse': 7.28.4
-      '@babel/types': 7.28.4
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-skip-transparent-expression-wrappers@7.24.7':
     dependencies:
-      '@babel/traverse': 7.28.4
-      '@babel/types': 7.28.4
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-split-export-declaration@7.24.7':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.5
 
   '@babel/helper-string-parser@7.27.1': {}
 
@@ -7473,7 +7473,7 @@ snapshots:
       '@babel/helper-hoist-variables': 7.24.7
       '@babel/helper-module-transforms': 7.25.2(@babel/core@7.25.2)
       '@babel/helper-plugin-utils': 7.27.1
-      '@babel/helper-validator-identifier': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
@@ -7730,7 +7730,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.27.1
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.5
       esutils: 2.0.3
 
   '@babel/regjsgen@0.8.0': {}
@@ -7772,7 +7772,7 @@ snapshots:
   '@babel/types@7.28.1':
     dependencies:
       '@babel/helper-string-parser': 7.27.1
-      '@babel/helper-validator-identifier': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
 
   '@babel/types@7.28.4':
     dependencies:
@@ -10146,7 +10146,7 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-module-imports': 7.22.15
       '@babel/helper-plugin-utils': 7.27.1
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@vue/compiler-sfc': 3.5.22
 
   '@vue/compiler-core@3.4.21':
@@ -15432,7 +15432,7 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.7.0(tailwindcss@3.4.18):
+  weapp-tailwindcss@4.7.1(tailwindcss@3.4.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
