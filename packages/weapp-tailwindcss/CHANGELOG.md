@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.7.1
+
+### Patch Changes
+
+- [`27d198e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/27d198eb48b0080076a480a6ab39d3cb93ae14a0) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 `tailwindcss-patch` 默认缓存目录，确保其写入包级 `node_modules/.cache/tailwindcss-patch`。
+
 ## 4.7.0
 
 ### Minor Changes
