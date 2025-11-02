@@ -211,15 +211,14 @@ function ensureVariant(distDir: string, variant: RuntimeVariant): {
 
 function main() {
   const resolveDistDir = (): string => {
-    // When executed via the CJS bundle (loaded through the bootstrap script), __dirname is available
     if (typeof __dirname === 'string') {
-      return __dirname
+      return path.resolve(__dirname, '../dist')
     }
 
-    // Fallback for the ESM bundle evaluated directly
+    // Fallback for the ESM bundle or direct TS execution
     // eslint-disable-next-line no-new-func
     const getImportMetaUrl = new Function('return import.meta.url') as () => string
-    return fileURLToPath(new URL('./', getImportMetaUrl()))
+    return fileURLToPath(new URL('../dist/', getImportMetaUrl()))
   }
 
   const distDir = resolveDistDir()
