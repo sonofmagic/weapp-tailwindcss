@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-require-imports */
 const fs = require('node:fs')
 const path = require('node:path')
 

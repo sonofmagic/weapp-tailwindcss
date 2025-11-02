@@ -1,28 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('defaults getDefaultOptions', () => {
-  afterEach(() => {
-    vi.resetModules()
-    vi.doUnmock('local-pkg')
-    vi.restoreAllMocks()
-  })
-
-  it('includes twMerge helpers when merge package exists', async () => {
-    vi.doMock('local-pkg', () => ({
-      isPackageExists: () => true,
-    }))
-
-    const { getDefaultOptions } = await import('@/defaults')
-    const options = getDefaultOptions()
-
-    expect(options.ignoreCallExpressionIdentifiers).toEqual(['twMerge', 'twJoin', 'cva', 'tv'])
-  })
-
-  it('falls back to empty helpers when merge package is absent', async () => {
-    vi.doMock('local-pkg', () => ({
-      isPackageExists: () => false,
-    }))
-
+  it('ignores call expression identifiers by default', async () => {
     const { getDefaultOptions } = await import('@/defaults')
     const options = getDefaultOptions()
 

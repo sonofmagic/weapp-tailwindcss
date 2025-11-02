@@ -1,6 +1,5 @@
 import type { AppType, UserDefinedOptions } from './types'
 import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
-import { isPackageExists } from 'local-pkg'
 import { noop } from './utils'
 
 const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
@@ -111,7 +110,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     // https://developer.mozilla.org/en-US/docs/Web/CSS/@property
     cssRemoveProperty: true,
     cssRemoveHoverPseudoClass: true,
-    ignoreCallExpressionIdentifiers: isPackageExists('@weapp-tailwindcss/merge') ? ['twMerge', 'twJoin', 'cva', 'tv'] : [],
+    ignoreCallExpressionIdentifiers: [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,
     tailwindcssPatcherOptions: {

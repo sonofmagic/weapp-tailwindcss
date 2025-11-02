@@ -55,7 +55,7 @@
     "release": "pnpm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "_postinstall": "node scripts/postinstall.cjs"
+    "postinstall": "node scripts/postinstall.cjs"
   },
   "publishConfig": {
     "exports": {
