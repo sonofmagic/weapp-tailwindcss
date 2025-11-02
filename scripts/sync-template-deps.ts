@@ -11,10 +11,15 @@ import { execa } from 'execa'
 import { minVersion } from 'semver'
 import { ROOT } from './template-utils'
 
+type PnpmConfig = Record<string, unknown> & {
+  onlyBuiltDependencies?: unknown
+}
+
 type PackageJson = Record<string, unknown> & {
   dependencies?: Record<string, string>
   devDependencies?: Record<string, string>
   packageManager?: string
+  pnpm?: PnpmConfig
 }
 
 type Manager = 'pnpm' | 'yarn' | 'npm'
@@ -30,6 +35,7 @@ interface TargetPackage {
   range: string
   addIfMissing?: 'dependencies' | 'devDependencies'
   forceInclude?: boolean
+  ensurePnpmOnlyBuilt?: boolean
 }
 
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
@@ -96,6 +102,7 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
       range: `^${mergeVersion}`,
       addIfMissing: 'dependencies',
       forceInclude: true,
+      ensurePnpmOnlyBuilt: true,
     },
     {
       name: 'weapp-ide-cli',
@@ -169,6 +176,70 @@ function ensureSection(pkg: PackageJson, field: 'dependencies' | 'devDependencie
   const created: Record<string, string> = {}
   pkg[field] = created
   return created
+}
+
+function ensurePnpmOnlyBuiltDependencies(
+  pkg: PackageJson,
+  targets: TargetPackage[],
+  manager: ManagerInfo,
+): boolean {
+  if (manager.name !== 'pnpm') {
+    return false
+  }
+
+  const required = Array.from(
+    new Set(
+      targets
+        .filter(target => target.ensurePnpmOnlyBuilt)
+        .map(target => target.name),
+    ),
+  )
+
+  if (required.length === 0) {
+    return false
+  }
+
+  let changed = false
+  let pnpmConfig = pkg.pnpm
+  if (!pnpmConfig || typeof pnpmConfig !== 'object') {
+    pnpmConfig = {} as PnpmConfig
+    pkg.pnpm = pnpmConfig
+    changed = true
+  }
+
+  const config = pnpmConfig as PnpmConfig
+  const rawOnlyBuilt = config.onlyBuiltDependencies
+
+  let onlyBuilt: string[]
+  if (Array.isArray(rawOnlyBuilt)) {
+    const allStrings = rawOnlyBuilt.every(item => typeof item === 'string')
+    if (allStrings) {
+      onlyBuilt = rawOnlyBuilt as string[]
+    }
+    else {
+      onlyBuilt = rawOnlyBuilt.filter((item): item is string => typeof item === 'string')
+      changed = true
+    }
+  }
+  else {
+    onlyBuilt = []
+    if (rawOnlyBuilt !== undefined) {
+      changed = true
+    }
+  }
+
+  for (const name of required) {
+    if (!onlyBuilt.includes(name)) {
+      onlyBuilt.push(name)
+      changed = true
+    }
+  }
+
+  if (changed) {
+    config.onlyBuiltDependencies = onlyBuilt
+  }
+
+  return changed
 }
 
 function updateDependencyRange(pkg: PackageJson, targets: TargetPackage[]): boolean {
@@ -483,14 +554,15 @@ async function processTemplate(
   const tailwindTargets = await resolveTailwindTargets(pkg)
   const relevantTargets = dedupeTargets([...filterTargetsForPackage(pkg, baseTargets), ...tailwindTargets])
   const manager = detectManager(templateDir, pkg)
-  const changed = updateDependencyRange(pkg, relevantTargets)
+  const depsChanged = updateDependencyRange(pkg, relevantTargets)
+  const pnpmChanged = ensurePnpmOnlyBuiltDependencies(pkg, relevantTargets, manager)
   const needLock = lockNeedsUpdate(templateDir, manager, relevantTargets)
 
-  if (!changed && !needLock) {
+  if (!depsChanged && !pnpmChanged && !needLock) {
     return false
   }
 
-  if (changed) {
+  if (depsChanged || pnpmChanged) {
     writeFileSync(pkgPath, `${JSON.stringify(pkg, null, indent)}\n`)
   }
 

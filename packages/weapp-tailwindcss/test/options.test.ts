@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { getCompilerContext } from '@/context'
 import { defu } from '@/utils'
 
@@ -127,12 +128,15 @@ describe('get options', () => {
     })
     let cacheOptions = config.twPatcher.options?.cache
     expect(cacheOptions?.enabled).toBe(true)
-    expect(cacheOptions?.dir?.includes('node_modules/.cache/tailwindcss-patch')).toBe(true)
+    const expectedDefaultCacheDir = path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch')
+    expect(cacheOptions?.dir).toBe(expectedDefaultCacheDir)
     config = getCompilerContext({
       appType: 'mpx',
     })
     cacheOptions = config.twPatcher.options?.cache
-    expect(cacheOptions?.dir?.includes('node_modules/tailwindcss-patch/.cache')).toBe(true)
+    expect(
+      cacheOptions?.dir?.endsWith(path.normalize('node_modules/tailwindcss-patch/.cache')),
+    ).toBe(true)
   })
 
   // it('customAttributes map defu merge', () => {

@@ -114,6 +114,20 @@ describe('tailwindcss helpers', () => {
     cwdSpy.mockRestore()
   })
 
+  it('defaults cache directory to package root node_modules cache', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const repoRoot = path.resolve(__dirname, '../../../..')
+    const basedir = path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'src')
+
+    createTailwindcssPatcher({ basedir })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const callArgs = lastCall?.[0] as any
+    expect(callArgs.cache?.dir).toBe(
+      path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'node_modules', '.cache', 'tailwindcss-patch'),
+    )
+  })
+
   it('gracefully falls back when tailwindcss is missing', async () => {
     tailwindcssPatcherMock.mockImplementationOnce(() => {
       throw new Error('tailwindcss not found')

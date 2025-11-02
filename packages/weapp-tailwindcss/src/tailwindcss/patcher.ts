@@ -312,24 +312,29 @@ function normalizeTailwindcssPatcherOptions(
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
   const cache: TailwindCacheOptions = {}
+  const normalizedBasedir = basedir ? path.resolve(basedir) : undefined
+  const cacheRoot = findNearestPackageRoot(normalizedBasedir) ?? normalizedBasedir ?? process.cwd()
 
   if (cacheDir) {
     if (path.isAbsolute(cacheDir)) {
       cache.dir = cacheDir
     }
-    else if (basedir) {
-      cache.dir = path.resolve(basedir, cacheDir)
+    else if (normalizedBasedir) {
+      cache.dir = path.resolve(normalizedBasedir, cacheDir)
     }
     else {
       cache.dir = path.resolve(process.cwd(), cacheDir)
     }
   }
-
-  if (basedir) {
-    cache.cwd = basedir
+  else {
+    cache.dir = path.join(cacheRoot, 'node_modules', '.cache', 'tailwindcss-patch')
   }
 
-  const resolvePaths = createDefaultResolvePaths(cache.cwd ?? basedir ?? process.cwd())
+  if (normalizedBasedir) {
+    cache.cwd = normalizedBasedir
+  }
+
+  const resolvePaths = createDefaultResolvePaths(cache.cwd ?? normalizedBasedir ?? process.cwd())
 
   const normalizedUserOptions = normalizeTailwindcssPatcherOptions(tailwindcssPatcherOptions)
 
@@ -338,7 +343,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   const baseTailwindOptions = defuOverrideArray<TailwindUserOptions, Partial<TailwindUserOptions>[]>(
     (tailwindcss ?? {}) as TailwindUserOptions,
     {
-      cwd: basedir,
+      cwd: normalizedBasedir,
       resolve: {
         paths: resolvePaths,
       },
@@ -371,7 +376,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   }
 
   const baseOptions: TailwindcssPatchOptions = {
-    cwd: basedir,
+    cwd: normalizedBasedir,
     cache,
     tailwind: baseTailwindOptions,
     features: {
