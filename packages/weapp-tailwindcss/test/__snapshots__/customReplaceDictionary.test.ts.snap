@@ -1,13 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`customReplaceDictionary > styleHandler complex mode 1`] = `".w-_0d5px_{--tw-border-opacity: 1;}"`;
+exports[`customReplaceDictionary > styleHandler complex mode 1`] = `".w-_b0_d5px_B{--tw-border-opacity: 1;}"`;
 
-exports[`customReplaceDictionary > styleHandler custom map 1`] = `".w--0d5px-{--tw-border-opacity: 1;}"`;
+exports[`customReplaceDictionary > styleHandler custom map 1`] = `".w--0_d5px-{--tw-border-opacity: 1;}"`;
 
-exports[`customReplaceDictionary > styleHandler default(complex) mode 1`] = `".w-_0d5px_{--tw-border-opacity: 1;}"`;
+exports[`customReplaceDictionary > styleHandler default(complex) mode 1`] = `".w-_b0_d5px_B{--tw-border-opacity: 1;}"`;
 
-exports[`customReplaceDictionary > templateHandler complex mode 1`] = `"<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>"`;
+exports[`customReplaceDictionary > templateHandler complex mode 1`] = `"<van-image class="w-_b0_d5px_B" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_b0_d5px_B"></van-image>"`;
 
-exports[`customReplaceDictionary > templateHandler custom map 1`] = `"<van-image class="w--0d5px-" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w--0d5px-"></van-image>"`;
+exports[`customReplaceDictionary > templateHandler custom map 1`] = `"<van-image class="w--0_d5px-" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w--0_d5px-"></van-image>"`;
 
-exports[`customReplaceDictionary > templateHandler default(complex) mode 1`] = `"<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>"`;
+exports[`customReplaceDictionary > templateHandler default(complex) mode 1`] = `"<van-image class="w-_b0_d5px_B" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_b0_d5px_B"></van-image>"`;

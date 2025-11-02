@@ -21,6 +21,6 @@ function check(e: [string, string][], allowUnderline = false) {
 
 describe('dic test', () => {
   it('check duplicate', () => {
-    expect(check(MappingChars2StringEntries)).toBe(false)
+    expect(check(MappingChars2StringEntries)).toBe(true)
   })
 })

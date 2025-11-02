@@ -240,8 +240,8 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(jsHandlerMock).toHaveBeenCalledTimes(1)
 
     const code = (bundle['index.js'] as OutputChunk).code
-    expect(code).toContain('bg-_h123324_ px-_35px_')
-    expect(code).toContain('bg-_h434332_ px-_32px_')
+    expect(code).toContain('bg-_b_h123324_B px-_b35px_B')
+    expect(code).toContain('bg-_b_h434332_B px-_b32px_B')
     expect(code).not.toContain('bg-[#123324]')
     expect(code).not.toContain('bg-[#434332]')
   })

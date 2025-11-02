@@ -25,7 +25,7 @@
   "sideEffects": false,
   "dependencies": {
     "@vant/weapp": "^1.11.6",
-    "dayjs": "^1.11.18",
+    "dayjs": "^1.11.19",
     "eventemitter3": "^5.0.1",
     "lodash": "^4.17.21",
     "rxjs": "^7.8.1"
@@ -53,7 +53,7 @@
     "replace-ext": "^2.0.0",
     "required-path": "^1.0.1",
     "run-script-os": "^1.1.6",
-    "sass": "^1.83.1",
+    "sass": "^1.93.3",
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",

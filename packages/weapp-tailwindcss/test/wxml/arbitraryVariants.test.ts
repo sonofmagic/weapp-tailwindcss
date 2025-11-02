@@ -52,7 +52,7 @@ describe('simpleHandler', () => {
 
   it('[&_p]:mt-4', () => {
     const res = simpleHandler('<div class="[&_p]:mt-4"></div>')
-    expect(res).toBe('<div class="_n_p_cmt-4"></div>')
+    expect(res).toBe('<div class="_b_n_p_B_cmt-4"></div>')
   })
 
   it('[@supports(display:grid)]:grid', () => {
@@ -67,6 +67,6 @@ describe('simpleHandler', () => {
 
   it('[&_.u-count-down__text]:!text-red-400', () => {
     const res = simpleHandler('<view class="after:border-none after:content-[\'Hello_World\']">after:border-none</view>')
-    expect(res).toBe('<view class="aftercborder-none afterccontent-_qHello_Worldq_">after:border-none</view>')
+    expect(res).toBe('<view class="after_cborder-none after_ccontent-_b_aHello_World_a_B">after:border-none</view>')
   })
 })

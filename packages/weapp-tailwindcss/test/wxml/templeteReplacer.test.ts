@@ -76,14 +76,14 @@ describe('templateReplacer', () => {
       'flex',
       'items-center',
       'justify-center',
-      'h-_100px_',
-      'w-_100px_',
-      'rounded-_40px_',
-      'bg-_h123456_',
-      'bg-opacity-_0d54_',
-      'text-_hffffff_',
+      'h-_b100px_B',
+      'w-_b100px_B',
+      'rounded-_b40px_B',
+      'bg-_b_h123456_B',
+      'bg-opacity-_b0_d54_B',
+      'text-_b_hffffff_B',
       'data-v-1badc801',
-      'text-_h123456_',
+      'text-_b_h123456_B',
       b]}}`,
     )
   })
@@ -132,21 +132,21 @@ describe('templateReplacer', () => {
     const testCase = 'btn-%1 a[p-1]{{num}}'
     // classGenerator
     const str = simpleReplacer(testCase)
-    expect(str).toBe('btn-p1 a_p-1_{{num}}')
+    expect(str).toBe('btn-_v1 a_bp-1_B{{num}}')
   })
 
   it('classGenerator class with string var case 1', () => {
     const testCase = 'btn-%1 a[p-1]{{num}}b[b-2]'
     // classGenerator
     const str = simpleReplacer(testCase)
-    expect(str).toBe('btn-p1 a_p-1_{{num}}b_b-2_')
+    expect(str).toBe('btn-_v1 a_bp-1_B{{num}}b_bb-2_B')
   })
 
   it('classGenerator class with string var case 2', () => {
     const testCase = 'a[p-1]{{num}}b[b-2]{{p}}'
     // classGenerator
     const str = simpleReplacer(testCase)
-    expect(str).toBe('a_p-1_{{num}}b_b-2_{{p}}')
+    expect(str).toBe('a_bp-1_B{{num}}b_bb-2_B{{p}}')
   })
 
   // .shadow-\[0px_2px_11px_0px_rgba\(0\2c 0\2c 0\2c 0\.4\)\]
@@ -201,11 +201,11 @@ describe('templateReplacer', () => {
   it('font-size#setting-the-line-height', () => {
     let testCase = 'text-sm/[17px]'
 
-    expect(simpleReplacer(testCase)).toBe('text-sms_17px_')
+    expect(simpleReplacer(testCase)).toBe('text-sm_f_b17px_B')
     testCase = 'text-base/loose'
-    expect(simpleReplacer(testCase)).toBe('text-basesloose')
+    expect(simpleReplacer(testCase)).toBe('text-base_floose')
     testCase = 'text-[64rpx]/[72rpx]'
-    expect(simpleReplacer(testCase)).toBe('text-_64rpx_s_72rpx_')
+    expect(simpleReplacer(testCase)).toBe('text-_b64rpx_B_f_b72rpx_B')
   })
 
   it('issues/274 {{class}}', () => {
@@ -214,13 +214,13 @@ describe('templateReplacer', () => {
 
   it('issues/276 case 0', () => {
     expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 rounded-[20rpx] before:rounded-[20rpx]`)).toBe(
-      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 rounded-_20rpx_ beforecrounded-_20rpx_',
+      'relative h-12 w-12 before_cabsolute before_cinset-0 before_cborder-2 before_cborder-red-500 rounded-_b20rpx_B before_crounded-_b20rpx_B',
     )
   })
 
   it('issues/276 case 1', () => {
     expect(simpleReplacer(`relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-red-500 before:rounded-[20rpx] rounded-[20rpx]`)).toBe(
-      'relative h-12 w-12 beforecabsolute beforecinset-0 beforecborder-2 beforecborder-red-500 beforecrounded-_20rpx_ rounded-_20rpx_',
+      'relative h-12 w-12 before_cabsolute before_cinset-0 before_cborder-2 before_cborder-red-500 before_crounded-_b20rpx_B rounded-_b20rpx_B',
     )
   })
   // https://github.com/sonofmagic/weapp-tailwindcss/issues/316
@@ -239,7 +239,7 @@ describe('templateReplacer', () => {
   it('isConditionalExpression case 0', () => {
     const testCase = '{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}'
     const result = templateReplacer(testCase)
-    expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_hfafa00_\']}}')
+    expect(result).toBe('{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_b_hfafa00_B\']}}')
   })
 
   it('变量连起来 case 0', () => {

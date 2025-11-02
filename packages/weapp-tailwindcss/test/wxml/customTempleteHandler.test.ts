@@ -10,7 +10,7 @@ describe('customTemplateHandler', () => {
       customAttributesEntities: [],
       escapeMap: MappingChars2String,
     })
-    expect(res).toBe('<view class="p-_20px_"></view>')
+    expect(res).toBe('<view class="p-_b20px_B"></view>')
   })
 
   it('disabledDefaultTemplateHandler case 0', async () => {
@@ -29,7 +29,7 @@ describe('customTemplateHandler', () => {
       customAttributesEntities: [['*', /[A-Za-z-]*[Cc]lass/]],
       disabledDefaultTemplateHandler: true,
     })
-    expect(res).toBe('<view class="p-_20px_" hover-class="w-_99px_"></view>')
+    expect(res).toBe('<view class="p-_b20px_B" hover-class="w-_b99px_B"></view>')
   })
 
   it('{{}} case 0', async () => {
@@ -38,14 +38,14 @@ describe('customTemplateHandler', () => {
     const res = await customTemplateHandler(testCase, {
       disabledDefaultTemplateHandler: false,
     })
-    expect(res).toBe('<view class="p-_20px_{{a>0}}" hover-class="w-_99px_{{a>0}}"  ccc sdsd="" sadf="{{fd<3||0>1}}">{{fd<3||0>1}}</view>')
+    expect(res).toBe('<view class="p-_b20px_B{{a>0}}" hover-class="w-_b99px_B{{a>0}}"  ccc sdsd="" sadf="{{fd<3||0>1}}">{{fd<3||0>1}}</view>')
   })
 
   it('wildcard char', async () => {
     const testCase = '<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}">*****</view>'
 
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_hfafa00_\']}}">*****</view>')
+    expect(str).toBe('<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_b_hfafa00_B\']}}">*****</view>')
   })
 
   it('only wildcard char', async () => {
@@ -58,13 +58,13 @@ describe('customTemplateHandler', () => {
     const testCase = '<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-[#fafa00]\']}}"></view>'
 
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_hfafa00_\']}}"></view>')
+    expect(str).toBe('<view class="{{[\'flex\',\'flex-col\',\'items-center\',flag===1?\'bg-red-900\':\'bg-_b_hfafa00_B\']}}"></view>')
   })
 
   it('dark mode and hover-class', async () => {
     const testCase = '<view class="bg-gray-100 dark:bg-zinc-800" hover-class="bg-red-500 dark:bg-green-500"></view>'
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view class="bg-gray-100 darkcbg-zinc-800" hover-class="bg-red-500 darkcbg-green-500"></view>')
+    expect(str).toBe('<view class="bg-gray-100 dark_cbg-zinc-800" hover-class="bg-red-500 dark_cbg-green-500"></view>')
   })
 
   it('wxs should be ignored ', async () => {
@@ -110,7 +110,7 @@ describe('customTemplateHandler', () => {
   it('with var 3', async () => {
     const testCase = '<view class="{{[flag<2?\'a\':\'b\',flag>=1?\'bg-red-900\':\'bg-[#fafa00]\']}}"></view>'
     const res = await customTemplateHandler(testCase)
-    expect(res).toBe('<view class="{{[flag<2?\'a\':\'b\',flag>=1?\'bg-red-900\':\'bg-_hfafa00_\']}}"></view>')
+    expect(res).toBe('<view class="{{[flag<2?\'a\':\'b\',flag>=1?\'bg-red-900\':\'bg-_b_hfafa00_B\']}}"></view>')
   })
 
   it('with var 4', async () => {
@@ -174,24 +174,24 @@ describe('customTemplateHandler', () => {
   it('after wx:if <view wx:if="{{xxx}}" class="ml-[16px]">', async () => {
     const testCase = '<view wx:if="{{xxx}}" class="ml-[16px]">'
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view wx:if="{{xxx}}" class="ml-_16px_">')
+    expect(str).toBe('<view wx:if="{{xxx}}" class="ml-_b16px_B">')
   })
 
   it('before wx:if <view  class="ml-[16px]" wx:if="{{xxx}}">', async () => {
     const testCase = '<view class="ml-[16px]" wx:if="{{xxx}}">'
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view class="ml-_16px_" wx:if="{{xxx}}">')
+    expect(str).toBe('<view class="ml-_b16px_B" wx:if="{{xxx}}">')
   })
 
   it('wx:if > before', async () => {
     const testCase = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    expect(str).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
   })
   it('wx:if > after', async () => {
     const testCase = '<view wx:if="{{ xxx.length > 0 }}" class="mt-[8px]">'
     const str = await customTemplateHandler(testCase)
-    expect(str).toBe('<view wx:if="{{ xxx.length > 0 }}" class="mt-_8px_">')
+    expect(str).toBe('<view wx:if="{{ xxx.length > 0 }}" class="mt-_b8px_B">')
   })
 
   it('mpx-wxs case', async () => {
@@ -208,7 +208,7 @@ describe('customTemplateHandler', () => {
       </xxx>`)
 
     expect(code).toBe(`<xxx>
-        <yyy class="__">
+        <yyy class="_b_B">
           <zzz></zzz>
         </yyy>
       </xxx>`)

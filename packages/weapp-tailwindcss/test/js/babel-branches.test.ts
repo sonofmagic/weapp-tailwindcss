@@ -73,7 +73,7 @@ describe('babel helpers branch coverage', () => {
     const analysis = babel.analyzeSource(ast, options)
     const result = babel.processUpdatedSource(rawSource, options, analysis)
 
-    expect(result.toString()).toContain('w-_100px_')
+    expect(result.toString()).toContain('w-_b100px_B')
   })
 
   it('ignores eval string tokens when the handler produces empty output', () => {

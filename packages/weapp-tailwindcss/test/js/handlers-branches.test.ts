@@ -79,7 +79,7 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('w-_100px_')
+    expect(token?.value).toBe('w-_b100px_B')
     expect(token?.start).toBe(literal.node.start! + 1)
     expect(token?.end).toBe(literal.node.end! - 1)
   })
@@ -116,7 +116,7 @@ describe('replaceHandleValue branch coverage', () => {
       unescapeUnicode: true,
     })
 
-    expect(token?.value).toBe('w-_100px_')
+    expect(token?.value).toBe('w-_b100px_B')
   })
 
   it('transforms template elements without shifting offsets', () => {
@@ -127,7 +127,7 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: false,
     })
 
-    expect(token?.value).toBe('w-_100px_')
+    expect(token?.value).toBe('w-_b100px_B')
     expect(token?.start).toBe(quasi.node.start)
   })
 
@@ -150,7 +150,7 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('w-_100px_ w-_100px_')
+    expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
   })
 
   it('evaluates unicode decoding guard when no escape is present', () => {

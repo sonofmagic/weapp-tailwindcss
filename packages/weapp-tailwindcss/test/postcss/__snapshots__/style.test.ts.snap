@@ -135,21 +135,21 @@ view,text,::before,::after {
 `;
 
 exports[`styleHandler > arbitrary values case 0 1`] = `
-"._ncnth-childy3y_cunderline:nth-child(3),.underline {
+"._b_n_cnth-child_p3_P_B_cunderline:nth-child(3),.underline {
   text-decoration-line: underline;
 }
 "
 `;
 
 exports[`styleHandler > arbitrary values case 2 1`] = `
-".lgc_ncnth-childy3y_cfirst-lettercunderline:nth-child(3):first-letter {
+".lg_c_b_n_cnth-child_p3_P_B_cfirst-letter_cunderline:nth-child(3):first-letter {
   text-decoration-line: underline;
 }
 "
 `;
 
 exports[`styleHandler > arbitrary values case 3 1`] = `
-"._n_p_cmt-4 p {
+"._b_n_p_B_cmt-4 p {
   margin-top: 1rem;
 }
 "
@@ -157,7 +157,7 @@ exports[`styleHandler > arbitrary values case 3 1`] = `
 
 exports[`styleHandler > arbitrary values case 4 1`] = `
 "@supports (display: grid) {
-  ._jsupportsydisplaycgridy_cgrid {
+  ._b_tsupports_pdisplay_cgrid_P_B_cgrid {
     text-decoration-style: underline;
   }
 }
@@ -166,7 +166,7 @@ exports[`styleHandler > arbitrary values case 4 1`] = `
 
 exports[`styleHandler > arbitrary values case 5 1`] = `
 "@media (any-hover: hover) {
-  ._jmediayany-hoverchoveryznchoverz_copacity-100:focus {
+  ._b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100:focus {
     opacity: 1;
   }
 }
@@ -174,7 +174,7 @@ exports[`styleHandler > arbitrary values case 5 1`] = `
 `;
 
 exports[`styleHandler > arbitrary values case 6 1`] = `
-"._n_du-count-downw_w_text_citext-red-400 .u-count-down__text {
+"._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity)) !important;
 }
@@ -182,33 +182,33 @@ exports[`styleHandler > arbitrary values case 6 1`] = `
 `;
 
 exports[`styleHandler > before,after content case 1`] = `
-".aftercml-0d5::after {
+".after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 0.125rem;
 }
-.aftercml-0::after {
+.after_cml-0::after {
   content: var(--tw-content);
   margin-left: 0;
 }
-.afterctext-red-500::after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity));
 }
-.afterccontent-_xmx_::after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: "*";
   content: var(--tw-content);
 }
-.afterccontent-_m_::after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
-  .aftercbg-zinc-800 {
+  .after_cbg-zinc-800 {
     --tw-bg-opacity: 1;
     background-color: rgba(39, 39, 42, var(--tw-bg-opacity));
   }
-  .aftercbg-green-500 {
+  .after_cbg-green-500 {
     --tw-bg-opacity: 1;
     background-color: rgba(34, 197, 94, var(--tw-bg-opacity));
   }
@@ -217,7 +217,7 @@ exports[`styleHandler > before,after content case 1`] = `
 `;
 
 exports[`styleHandler > before:content-['+'] 1`] = `
-".beforeccontent-_qaq_::before {
+".before_ccontent-_b_a_u_a_B::before {
     --tw-content: '+';
     content: var(--tw-content)
 }"
@@ -225,7 +225,7 @@ exports[`styleHandler > before:content-['+'] 1`] = `
 
 exports[`styleHandler > css @media case 1`] = `
 "@media (min-width: 640px) {
-  .smctext-3xl {
+  .sm_ctext-3xl {
     font-size: 60rpx;
     line-height: 72rpx;
   }
@@ -1032,7 +1032,7 @@ view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-
 exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > utf8 charset 1`] = `
-".afterccontent-_qu6211u662fu4f2au5143u7d20q_::after {
+".after_ccontent-_b_au6211u662fu4f2au5143u7d20_a_B::after {
     --tw-content: '我是伪元素';
     content: var(--tw-content)
 }"

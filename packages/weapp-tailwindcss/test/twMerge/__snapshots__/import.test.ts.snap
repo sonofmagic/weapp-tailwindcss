@@ -9,5 +9,5 @@ clsx({ 'px-[35px]': true, 'px-[35px]': false, [\`px-[35px] \${a}\`]: isTrue() })
 exports[`twMerge import > twMerge case 0.js 2`] = `
 "import a from './shared'
 
-clsx({ 'px-_35px_': true, 'px-_35px_': false, [\`px-_35px_ \${a}\`]: isTrue() });"
+clsx({ 'px-_b35px_B': true, 'px-_b35px_B': false, [\`px-_b35px_B \${a}\`]: isTrue() });"
 `;

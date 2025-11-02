@@ -42,11 +42,11 @@ view,text,:after,:before,::backdrop {
   display: flex;
 }
 
-.aspect-y--my-aspect-ratioy {
+.aspect-_p--my-aspect-ratio_P {
   aspect-ratio: var(--my-aspect-ratio);
 }
 
-.aspect-_calcy4m3a1ys3_ {
+.aspect-_bcalc_p4_x3_u1_P_f3_B {
   aspect-ratio: 13 / 3;
 }
 
@@ -62,15 +62,15 @@ view,text,:after,:before,::backdrop {
   flex-direction: column;
 }
 
-.bg-_h0000ff_ {
+.bg-_b_h0000ff_B {
   background-color: #00f;
 }
 
-.text-_45rpx_ {
+.text-_b45rpx_B {
   font-size: 45rpx;
 }
 
-.text-_88rpx_ {
+.text-_b88rpx_B {
   font-size: 88rpx;
 }
 
@@ -79,7 +79,7 @@ view,text,:after,:before,::backdrop {
   font-weight: var(--font-weight-bold);
 }
 
-.text-_h00f285_ {
+.text-_b_h00f285_B {
   color: #00f285;
 }
 

@@ -2,7 +2,7 @@ import { composeIsPseudo, internalCssSelectorReplacer } from '@/shared'
 
 describe('internalCssSelectorReplacer', () => {
   it('applies the default escape mapping', () => {
-    expect(internalCssSelectorReplacer('.btn:hover>view+text')).toBe('dbtnchovergviewatext')
+    expect(internalCssSelectorReplacer('.btn:hover>view+text')).toBe('_dbtn_chover_gview_utext')
   })
 
   it('respects custom escape maps', () => {

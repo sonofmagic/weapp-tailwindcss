@@ -80,7 +80,7 @@
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "babel-preset-taro": "4.1.7",
-    "eslint": "^9.38.0",
+    "eslint": "^9.39.0",
     "eslint-config-taro": "4.1.7",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",

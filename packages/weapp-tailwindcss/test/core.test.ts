@@ -7,12 +7,12 @@ describe('core', () => {
   it('common usage case 0', async () => {
     const ctx = createContext()
     const wxml = await ctx.transformWxml('<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">')
-    expect(wxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    expect(wxml).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
     const { css: wxss, map: cssMap } = await ctx.transformWxss(`.after\\:ml-0\\.5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
-    expect(wxss).toBe(`.aftercml-0d5::after {
+    expect(wxss).toBe(`.after_cml-0_d5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
@@ -21,19 +21,19 @@ describe('core', () => {
     await getCss(content)
 
     const { code, map } = await ctx.transformJs(content)
-    expect(code).toBe(`const classNames = ['mb-_1d5rem_']`)
+    expect(code).toBe(`const classNames = ['mb-_b1_d5rem_B']`)
     expect(map).toMatchSnapshot()
   })
 
   it('common usage case 1', async () => {
     const ctx = createContext()
     const wxml = await ctx.transformWxml('<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">')
-    expect(wxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    expect(wxml).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
     const { css, map: cssMap } = await ctx.transformWxss(`.after\\:ml-0\\.5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
-    expect(css).toBe(`.aftercml-0d5::after {
+    expect(css).toBe(`.after_cml-0_d5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
     }`)
@@ -49,7 +49,7 @@ describe('core', () => {
   it('scss usage case 1', async () => {
     const ctx = createContext()
     const wxml = await ctx.transformWxml('<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">')
-    expect(wxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    expect(wxml).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
     const { css: wxss } = await ctx.transformWxss(`// xx`, {
       isMainChunk: true,
       postcssOptions: {
@@ -75,7 +75,7 @@ describe('core transform functions', () => {
     const runtimeSet = new Set(['mt-[8px]'])
     const options = { runtimeSet }
     const transformedWxml = await ctx.transformWxml(rawWxml, options)
-    expect(transformedWxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    expect(transformedWxml).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
   })
 
   it('should transform JS with runtimeSet', async () => {
@@ -84,7 +84,7 @@ describe('core transform functions', () => {
     const runtimeSet = new Set(['mb-[1.5rem]'])
     const options = { runtimeSet }
     const { code } = await ctx.transformJs(rawJs, options)
-    expect(code).toBe(`const classNames = ['mb-_1d5rem_']`)
+    expect(code).toBe(`const classNames = ['mb-_b1_d5rem_B']`)
   })
 
   it('should handle empty runtimeSet', async () => {
@@ -95,6 +95,6 @@ describe('core transform functions', () => {
     const transformedWxml = await ctx.transformWxml(rawWxml, {
       runtimeSet,
     })
-    expect(transformedWxml).toBe('<view class="mt-_8px_" wx:if="{{ xxx.length > 0 }}">')
+    expect(transformedWxml).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
   })
 })

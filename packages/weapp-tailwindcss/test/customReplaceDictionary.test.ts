@@ -49,7 +49,7 @@ describe('customReplaceDictionary', () => {
       },
     })
     const res = await templateHandler('<van-image class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>')
+    expect(res).toBe('<van-image class="w-_b0_d5px_B" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_b0_d5px_B"></van-image>')
   })
 
   it('styleHandler custom map', async () => {
@@ -93,7 +93,7 @@ describe('customReplaceDictionary', () => {
     const { css } = await styleHandler('.w-\\[0\\.5px\\]{--tw-border-opacity: 1;}', {
       isMainChunk: true,
     })
-    expect(css).toBe('.w-_0d5px_{--tw-border-opacity: 1;}')
+    expect(css).toBe('.w-_b0_d5px_B{--tw-border-opacity: 1;}')
   })
 
   it('all prop with testClass', async () => {
@@ -103,7 +103,7 @@ describe('customReplaceDictionary', () => {
       },
     })
     const res = await templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toBe('<van-image testClass="w-_b0_d5px_B" class="w-_b0_d5px_B" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
   })
 
   it('all prop with [Cc]lass', async () => {
@@ -113,6 +113,6 @@ describe('customReplaceDictionary', () => {
       },
     })
     const res = await templateHandler('<van-image testClass="w-[0.5px]" class="w-[0.5px]" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-[0.5px]"></van-image>')
-    expect(res).toBe('<van-image testClass="w-_0d5px_" class="w-_0d5px_" custom-class="w-_0d5px_" image-class="w-_0d5px_" other-attr="w-[0.5px]"></van-image>')
+    expect(res).toBe('<van-image testClass="w-_b0_d5px_B" class="w-_b0_d5px_B" custom-class="w-_b0_d5px_B" image-class="w-_b0_d5px_B" other-attr="w-[0.5px]"></van-image>')
   })
 })

@@ -2,30 +2,30 @@
 
 exports[`templateReplacer > %label for toutiao str add not array {} 1`] = `"{{('ifont-bold') + ' ' + 'itext-_h990000_' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}"`;
 
-exports[`templateReplacer > %label for toutiao str add not array 1`] = `"{{('ifont-bold') + ' ' + 'itext-_h990000_' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}"`;
+exports[`templateReplacer > %label for toutiao str add not array 1`] = `"{{('_efont-bold') + ' ' + '_etext-_b_h990000_B' + ' ' + 'data-v-1badc801' + ' ' + 'text-2xl' + ' ' + b}}"`;
 
 exports[`templateReplacer > %label utils.bem() {} 1`] = `"custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"`;
 
 exports[`templateReplacer > %label utils.bem() 1`] = `"custom-class {{ utils.bem('button', [type, size, { block, round, plain, square, loading, disabled, hairline, unclickable: disabled || loading }]) }} {{ hairline ? 'van-hairline--surround' : '' }}"`;
 
-exports[`templateReplacer > arbitrary before:content-['hello'] 1`] = `"beforeccontent-_qhelloq_"`;
+exports[`templateReplacer > arbitrary before:content-['hello'] 1`] = `"before_ccontent-_b_ahello_a_B"`;
 
-exports[`templateReplacer > arbitrary shadow values 0 1`] = `"shadow-_0px_2px_11px_0px_rgbay0b0b0b0d4y_"`;
+exports[`templateReplacer > arbitrary shadow values 0 1`] = `"shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B"`;
 
-exports[`templateReplacer > arbitrary shadow values 1 1`] = `"shadow-_0px_2px_11px_0px_h00000a_"`;
+exports[`templateReplacer > arbitrary shadow values 1 1`] = `"shadow-_b0px_2px_11px_0px__h00000a_B"`;
 
-exports[`templateReplacer > classGenerator class with string var 1`] = `"btn-p1 a_p-1_{{num}}"`;
+exports[`templateReplacer > classGenerator class with string var 1`] = `"btn-_v1 a_bp-1_B{{num}}"`;
 
-exports[`templateReplacer > isConditionalExpression 1`] = `"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_hfafa00_']}}"`;
+exports[`templateReplacer > isConditionalExpression 1`] = `"{{['flex','flex-col','items-center',flag===1?'bg-red-900':'bg-_b_hfafa00_B']}}"`;
 
-exports[`templateReplacer > nest  1`] = `"{{[flag?'bg-red-900':'bg-_hfafa00_',classObject,[(flag===true)?'bg-_hfafa00_':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_h000_':'bg-_hfafa00_']}}"`;
+exports[`templateReplacer > nest  1`] = `"{{[flag?'bg-red-900':'bg-_b_hfafa00_B',classObject,[(flag===true)?'bg-_b_hfafa00_B':'',(true)?'text-sm':''],flag?flag===false?'bg-red-900':'bg-_b_h000_B':'bg-_b_hfafa00_B']}}"`;
 
-exports[`templateReplacer > sm:text-3xl dark:text-sky-400 1`] = `"smctext-3xl darkctext-slate-200 bg-_hffffaa_"`;
+exports[`templateReplacer > sm:text-3xl dark:text-sky-400 1`] = `"sm_ctext-3xl dark_ctext-slate-200 bg-_b_hffffaa_B"`;
 
-exports[`templateReplacer > two ConditionalExpression 1`] = `"btn a{{num >='p-[1]'?num==='q-[2]'?'x-_0_':'y-_1_':'z-_2_'}}"`;
+exports[`templateReplacer > two ConditionalExpression 1`] = `"btn a{{num >='p-[1]'?num==='q-[2]'?'x-_b0_B':'y-_b1_B':'z-_b2_B'}}"`;
 
 exports[`templateReplacer > undefined isStringLiteral 1`] = `"{{['som-node__label','data-v-59229c4a','som-org__text-'+(node.align||''),node.active||collapsed?'som-node__label-active':'',d]}}"`;
 
-exports[`templateReplacer > variables with multiple literal 1`] = `"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}} h-_20px_"`;
+exports[`templateReplacer > variables with multiple literal 1`] = `"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{}} {{ }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}} h-_b20px_B"`;
 
-exports[`templateReplacer > variables with multiple literal(2) 1`] = `"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_20px_ {{flag=='p-[20px]'? 'p-_20px_' : 'm-_20px_'}}"`;
+exports[`templateReplacer > variables with multiple literal(2) 1`] = `"border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"`;

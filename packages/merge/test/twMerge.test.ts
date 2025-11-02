@@ -12,12 +12,12 @@ import {
 
 describe('v3', () => {
   it('should ', () => {
-    expect(twMerge('p-1 p-2 p-0.5')).toBe('p-0d5')
-    expect(twMerge('text-[34px]', 'text-[#ececec]')).toBe('text-_34px_ text-_hececec_')
-    expect(twMerge('text-[34px]', 'text-[#ECECEC]')).toBe('text-_34px_ text-_hECECEC_')
-    expect(twMergeV4('text-[34px]', 'text-[#ECECEC]')).toBe('text-_34px_ text-_hECECEC_')
-    expect(twMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')).toBe('p-0d5 text-_34px_ text-_hececec_')
-    expect(twMergeV4('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')).toBe('p-0d5 text-_34px_ text-_hececec_')
+    expect(twMerge('p-1 p-2 p-0.5')).toBe('p-0_d5')
+    expect(twMerge('text-[34px]', 'text-[#ececec]')).toBe('text-_b34px_B text-_b_hececec_B')
+    expect(twMerge('text-[34px]', 'text-[#ECECEC]')).toBe('text-_b34px_B text-_b_hECECEC_B')
+    expect(twMergeV4('text-[34px]', 'text-[#ECECEC]')).toBe('text-_b34px_B text-_b_hECECEC_B')
+    expect(twMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')).toBe('p-0_d5 text-_b34px_B text-_b_hececec_B')
+    expect(twMergeV4('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')).toBe('p-0_d5 text-_b34px_B text-_b_hececec_B')
   })
 })
 
@@ -48,7 +48,7 @@ describe('cva integration', () => {
   it('applies escaping by default', () => {
     const button = cva('text-[#ECECEC]')
 
-    expect(button()).toBe('text-_hECECEC_')
+    expect(button()).toBe('text-_b_hECECEC_B')
   })
 
   it('supports custom escapeFn', () => {

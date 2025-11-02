@@ -26,7 +26,7 @@ exports[`wxs > inline wxs content extract and escape 1`] = `
 [
   "
 
-	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
+	var className = 'after_ccontent-_b_au6211u6765u81eainline-wxs_a_B'
   module.exports = {
     className: className
   }
@@ -36,7 +36,7 @@ exports[`wxs > inline wxs content extract and escape 1`] = `
 /* eslint-disable */
 
 
-var className = 'afterccontent-_qu6211u6765u81eaoutside-wxsq_'
+var className = 'after_ccontent-_b_au6211u6765u81eaoutside-wxs_a_B'
 module.exports = {
   className: className
 }
@@ -47,7 +47,7 @@ module.exports = {
 exports[`wxs > inline wxs content extract and escape and replace 1`] = `
 "<wxs module="inline">
 
-	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
+	var className = 'after_ccontent-_b_au6211u6765u81eainline-wxs_a_B'
   module.exports = {
     className: className
   }
@@ -57,7 +57,7 @@ exports[`wxs > inline wxs content extract and escape and replace 1`] = `
 /* eslint-disable */
 
 
-var className = 'afterccontent-_qu6211u6765u81eaoutside-wxsq_'
+var className = 'after_ccontent-_b_au6211u6765u81eaoutside-wxs_a_B'
 module.exports = {
   className: className
 }
@@ -71,7 +71,7 @@ module.exports = {
 exports[`wxs > inline.wxml use templateHandler 1`] = `
 "<wxs module="inline">
 
-	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
+	var className = 'after_ccontent-_b_au6211u6765u81eainline-wxs_a_B'
   module.exports = {
     className: className
   }
@@ -81,7 +81,7 @@ exports[`wxs > inline.wxml use templateHandler 1`] = `
 /* eslint-disable */
 
 
-var className = 'afterccontent-_qu6211u6765u81eaoutside-wxsq_'
+var className = 'after_ccontent-_b_au6211u6765u81eaoutside-wxs_a_B'
 module.exports = {
   className: className
 }
@@ -96,7 +96,7 @@ exports[`wxs > outside wxs content extract and escape 1`] = `
 [
   "
 
-	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
+	var className = 'after_ccontent-_b_au6211u6765u81eainline-wxs_a_B'
   module.exports = {
     className: className
   }
@@ -108,7 +108,7 @@ exports[`wxs > outside wxs content extract and escape 1`] = `
 exports[`wxs > outside.wxml use templateHandler 1`] = `
 "<wxs module="inline">
 
-	var className = 'afterccontent-_qu6211u6765u81eainline-wxsq_'
+	var className = 'after_ccontent-_b_au6211u6765u81eainline-wxs_a_B'
   module.exports = {
     className: className
   }
@@ -122,7 +122,7 @@ exports[`wxs > simple.wxs content extract and escape 1`] = `
 "/* eslint-disable */
 
 
-var className = 'afterccontent-_qu6211u6765u81eaoutside-wxsq_'
+var className = 'after_ccontent-_b_au6211u6765u81eaoutside-wxs_a_B'
 module.exports = {
   className: className
 }"

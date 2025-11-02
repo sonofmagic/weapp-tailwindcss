@@ -1,19 +1,19 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`handling whitespace > before:content-['hello_world'] 1`] = `
-"<div class="beforeccontent-_qhello_worldq_">
+"<div class="before_ccontent-_b_ahello_world_a_B">
       <!-- ... -->
     </div>"
 `;
 
 exports[`handling whitespace > bg-[url('/what_a_rush.png')] 1`] = `
-"<div class="bg-_urlyqswhat_a_rushdpngqy_">
+"<div class="bg-_burl_p_a_fwhat_a_rush_dpng_a_P_B">
       <!-- ... -->
     </div>"
 `;
 
 exports[`handling whitespace > grid grid-cols-[1fr_500px_2fr] 1`] = `
-"<div class="grid grid-cols-_1fr_500px_2fr_">
+"<div class="grid grid-cols-_b1fr_500px_2fr_B">
       <!-- ... -->
     </div>"
 `;

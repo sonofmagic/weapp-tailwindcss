@@ -204,7 +204,7 @@ describe('styleHandler', () => {
       },
       escapeMap: MappingChars2String,
     })
-    expect(css).toBe('.afterccontent-_xmx_::after{}')
+    expect(css).toBe('.after_ccontent-_b_q_x_q_B::after{}')
   })
 
   it('should pseudo element new case', async () => {
@@ -218,9 +218,9 @@ describe('styleHandler', () => {
         universal: 'view',
       },
     })
-    expect(css).toBe('.afterccontent-_xmx_::after{color:red;}')
+    expect(css).toBe('.after_ccontent-_b_q_x_q_B::after{color:red;}')
     const res = await transformCss(testCase)
-    expect(res.code.toString()).toBe('.afterccontent-_xmx_:after{color:red}')
+    expect(res.code.toString()).toBe('.after_ccontent-_b_q_x_q_B:after{color:red}')
   })
 
   it('should * be replace as view etc', async () => {

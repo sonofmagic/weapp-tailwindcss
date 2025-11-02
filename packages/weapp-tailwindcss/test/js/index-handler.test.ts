@@ -84,6 +84,6 @@ describe('createJsHandler', () => {
     })
 
     const { code } = handler('const cls = "w-[100px]"', new Set())
-    expect(code).toContain('w-_100px_')
+    expect(code).toContain('w-_b100px_B')
   })
 })

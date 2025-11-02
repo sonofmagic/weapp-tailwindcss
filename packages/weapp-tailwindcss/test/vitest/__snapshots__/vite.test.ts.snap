@@ -47,7 +47,7 @@ exports[`vite test > source map case 0 4`] = `
 exports[`vite test > source map compare case 0 1`] = `"{\\"version\\":3,\\"file\\":\\"index-12baa5df.js\\",\\"sources\\":[\\"../../index.js\\"],\\"sourcesContent\\":[\\"import './index.css'\\\\n\\\\nconst className = 'flex bg-yellow-300/30 w-[100px] h-[100px] ' + \\\\\\"bg-[url('https://xxx.com/xx.webp')]\\\\\\"\\\\n\\\\ndocument.body.append(\`<div class=\\\\\\"\${className}\\\\\\">className</div>\`)\\\\n\\\\nconst el = document.createElement()\\\\n\\\\nel.classList.add('grid text-red-300/30 w-[99px]', \`h-[99px]\`, \\\\\\"bg-[url('https://yyy.com/xx.webp')]\\\\\\")\\\\n\\\\ndocument.body.appendChild(el)\\"],\\"names\\":[\\"className\\",\\"el\\"],\\"mappings\\":\\"ssBAEA,MAAMA,EAAY,gFAElB,SAAS,KAAK,OAAO,eAAeA,CAAS,mBAAmB,EAEhE,MAAMC,EAAK,SAAS,cAAe,EAEnCA,EAAG,UAAU,IAAI,gCAAiC,WAAY,qCAAqC,EAEnG,SAAS,KAAK,YAAYA,CAAE\\"}"`;
 
 exports[`vite test > vite common build 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300_f30 w-_b100px_B h-_b100px_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300_f30 w-_b99px_B","h-_b99px_B","bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B");document.body.appendChild(c);
 "
 `;
 
@@ -175,42 +175,42 @@ text,
 .grid {
   display: grid;
 }
-.h-_100px_ {
+.h-_b100px_B {
   height: 100px;
 }
-.h-_99px_ {
+.h-_b99px_B {
   height: 99px;
 }
-.w-_1d5rem_ {
+.w-_b1_d5rem_B {
   width: 1.5rem;
 }
-.w-_100px_ {
+.w-_b100px_B {
   width: 100px;
 }
-.w-_55px_ {
+.w-_b55px_B {
   width: 55px;
 }
-.w-_99px_ {
+.w-_b99px_B {
   width: 99px;
 }
-.bg-_h929292_ {
+.bg-_b_h929292_B {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.bg-_red_ {
+.bg-_bred_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.bg-yellow-300s30 {
+.bg-yellow-300_f30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
-.text-red-300s30 {
+.text-red-300_f30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -243,15 +243,15 @@ exports[`vite test > vite common build 3`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="w-_55px_ bg-_red_">hello</div>
-    <div class="w-_1d5rem_ bg-_h929292_">world</div>
+    <div class="w-_b55px_B bg-_bred_B">hello</div>
+    <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build twice for cache 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300_f30 w-_b100px_B h-_b100px_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300_f30 w-_b99px_B","h-_b99px_B","bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B");document.body.appendChild(c);
 "
 `;
 
@@ -379,42 +379,42 @@ text,
 .grid {
   display: grid;
 }
-.h-_100px_ {
+.h-_b100px_B {
   height: 100px;
 }
-.h-_99px_ {
+.h-_b99px_B {
   height: 99px;
 }
-.w-_1d5rem_ {
+.w-_b1_d5rem_B {
   width: 1.5rem;
 }
-.w-_100px_ {
+.w-_b100px_B {
   width: 100px;
 }
-.w-_55px_ {
+.w-_b55px_B {
   width: 55px;
 }
-.w-_99px_ {
+.w-_b99px_B {
   width: 99px;
 }
-.bg-_h929292_ {
+.bg-_b_h929292_B {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.bg-_red_ {
+.bg-_bred_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.bg-yellow-300s30 {
+.bg-yellow-300_f30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
-.text-red-300s30 {
+.text-red-300_f30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -447,15 +447,15 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="w-_55px_ bg-_red_">hello</div>
-    <div class="w-_1d5rem_ bg-_h929292_">world</div>
+    <div class="w-_b55px_B bg-_bred_B">hello</div>
+    <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
   </body>
 </html>
 "
 `;
 
 exports[`vite test > vite common build twice for cache 4`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300_f30 w-_b100px_B h-_b100px_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300_f30 w-_b99px_B","h-_b99px_B","bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B");document.body.appendChild(c);
 "
 `;
 
@@ -583,42 +583,42 @@ text,
 .grid {
   display: grid;
 }
-.h-_100px_ {
+.h-_b100px_B {
   height: 100px;
 }
-.h-_99px_ {
+.h-_b99px_B {
   height: 99px;
 }
-.w-_1d5rem_ {
+.w-_b1_d5rem_B {
   width: 1.5rem;
 }
-.w-_100px_ {
+.w-_b100px_B {
   width: 100px;
 }
-.w-_55px_ {
+.w-_b55px_B {
   width: 55px;
 }
-.w-_99px_ {
+.w-_b99px_B {
   width: 99px;
 }
-.bg-_h929292_ {
+.bg-_b_h929292_B {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.bg-_red_ {
+.bg-_bred_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.bg-yellow-300s30 {
+.bg-yellow-300_f30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
-.text-red-300s30 {
+.text-red-300_f30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -651,8 +651,8 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="w-_55px_ bg-_red_">hello</div>
-    <div class="w-_1d5rem_ bg-_h929292_">world</div>
+    <div class="w-_b55px_B bg-_bred_B">hello</div>
+    <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
   </body>
 </html>
 "
@@ -1679,7 +1679,7 @@ exports[`vite test > vite common build with mangle true 3`] = `
 `;
 
 exports[`vite test > vite common build with rem2rpx 1`] = `
-"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300s30 w-_100px_ h-_100px_ bg-_urlyqhttpscssxxxdcomsxxdwebpqy_";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300s30 w-_99px_","h-_99px_","bg-_urlyqhttpscssyyydcomsxxdwebpqy_");document.body.appendChild(c);
+"(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const n="flex bg-yellow-300_f30 w-_b100px_B h-_b100px_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B";document.body.append(\`<div class="\${n}">className</div>\`);const c=document.createElement();c.classList.add("grid text-red-300_f30 w-_b99px_B","h-_b99px_B","bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B");document.body.appendChild(c);
 "
 `;
 
@@ -1807,42 +1807,42 @@ text,
 .grid {
   display: grid;
 }
-.h-_100px_ {
+.h-_b100px_B {
   height: 100px;
 }
-.h-_99px_ {
+.h-_b99px_B {
   height: 99px;
 }
-.w-_1d5rem_ {
+.w-_b1_d5rem_B {
   width: 48rpx;
 }
-.w-_100px_ {
+.w-_b100px_B {
   width: 100px;
 }
-.w-_55px_ {
+.w-_b55px_B {
   width: 55px;
 }
-.w-_99px_ {
+.w-_b99px_B {
   width: 99px;
 }
-.bg-_h929292_ {
+.bg-_b_h929292_B {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.bg-_red_ {
+.bg-_bred_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.bg-yellow-300s30 {
+.bg-yellow-300_f30 {
   background-color: rgba(253, 224, 71, 0.30196);
 }
-.bg-_urlyqhttpscssxxxdcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://xxx.com/xx.webp);
 }
-.bg-_urlyqhttpscssyyydcomsxxdwebpqy_ {
+.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
-.text-red-300s30 {
+.text-red-300_f30 {
   color: rgba(252, 165, 165, 0.30196);
 }
 "
@@ -1875,8 +1875,8 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <div id="app">
       <!--app-html-->
     </div>
-    <div class="w-_55px_ bg-_red_">hello</div>
-    <div class="w-_1d5rem_ bg-_h929292_">world</div>
+    <div class="w-_b55px_B bg-_bred_B">hello</div>
+    <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
   </body>
 </html>
 "

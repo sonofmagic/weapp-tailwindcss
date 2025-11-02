@@ -9,11 +9,11 @@ view,text,:after,:before,::backdrop {
   padding: 0;
 }
 
-.bg-_h123456_ {
+.bg-_b_h123456_B {
   background-color: #123456;
 }
 
-.text-_h123456_ {
+.text-_b_h123456_B {
   color: #123456;
 }
 "
@@ -49,7 +49,7 @@ exports[`vite > v4-vite-plugin > js 1`] = `
     fetch(link.href, fetchOpts);
   }
 })();
-console.log("bg-_h123456_ text-_h123456_ first-letter:marker:text-clip");
+console.log("bg-_b_h123456_B text-_b_h123456_B first-letter:marker:text-clip");
 "
 `;
 
@@ -61,28 +61,28 @@ view,text,:after,:before,::backdrop {
   margin: 0;
   padding: 0;
 }
-.bg-_h123456_ {
+.bg-_b_h123456_B {
   background-color: #123456;
 }
-.text-_h123456_ {
+.text-_b_h123456_B {
   color: #123456;
 }
-.first-lettercmarkerctext-clip::-csstools-invalid-first-letter view::marker {
+.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
       text-overflow: clip;
     }
-.first-lettercmarkerctext-clip::-csstools-invalid-first-letter text::marker {
+.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
       text-overflow: clip;
     }
-.first-lettercmarkerctext-clip::-csstools-invalid-first-letter::marker {
+.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
       text-overflow: clip;
     }
-.first-lettercmarkerctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
+.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
       text-overflow: clip;
     }
-.first-lettercmarkerctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
+.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
       text-overflow: clip;
     }
-.first-lettercmarkerctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
+.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
       text-overflow: clip;
     }
 "
@@ -118,6 +118,6 @@ exports[`vite > v4-vite-postcss > js 1`] = `
     fetch(link.href, fetchOpts);
   }
 })();
-console.log("bg-_h123456_ text-_h123456_");
+console.log("bg-_b_h123456_B text-_b_h123456_B");
 "
 `;

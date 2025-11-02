@@ -97,33 +97,33 @@ view,text,:after,:before,::backdrop {
   height: calc(var(--spacing)*10)
 }
 
-.h-_29d292px_ {
+.h-_b29_d292px_B {
   height: 29.292px
 }
 
-.h-_30px_ {
+.h-_b30px_B {
   height: 30px
 }
 
-.h-_45px_ {
+.h-_b45px_B {
   height: 45px
 }
 
-.w-_50px_ {
+.w-_b50px_B {
   width: 50px
 }
 
-.w-_323px_ {
+.w-_b323px_B {
   width: 323px
 }
 
-.space-y-2d5>view+view {
+.space-y-2_d5>view+view {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing)*2.5)*var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)))
 }
 
-.space-x-2d5>view+view {
+.space-x-2_d5>view+view {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing)*2.5)*var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)))
@@ -134,11 +134,11 @@ view,text,:after,:before,::backdrop {
   border-width: 4px
 }
 
-.bg-_h3a32d1_ {
+.bg-_b_h3a32d1_B {
   background-color: #3a32d1
 }
 
-.bg-_h7d7ac2_ {
+.bg-_b_h7d7ac2_B {
   background-color: #7d7ac2
 }
 
@@ -161,25 +161,25 @@ view,text,:after,:before,::backdrop {
   background-image: linear-gradient(var(--tw-gradient-stops))
 }
 
-.from-_h2f73f1_ {
+.from-_b_h2f73f1_B {
   --tw-gradient-from: #2f73f1;
   --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)var(--tw-gradient-from-position), var(--tw-gradient-to)var(--tw-gradient-to-position))
 }
 
-.to-_h4bcefd_ {
+.to-_b_h4bcefd_B {
   --tw-gradient-to: #4bcefd;
   --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)var(--tw-gradient-from-position), var(--tw-gradient-to)var(--tw-gradient-to-position))
 }
 
-.text-_100px_ {
+.text-_b100px_B {
   font-size: 100px
 }
 
-.text-_h123456_ {
+.text-_b_h123456_B {
   color: #123456
 }
 
-.text-_100rpx_ {
+.text-_b100rpx_B {
   color: 100rpx
 }
 

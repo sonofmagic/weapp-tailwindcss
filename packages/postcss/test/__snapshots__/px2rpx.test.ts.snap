@@ -19,7 +19,7 @@ exports[`px2rpx > case 0 2`] = `
   margin: 0;
   padding: 0;
 }
-.w-_10d21px_ {
+.w-_b10_d21px_B {
   width: 10.21rpx;
 }"
 `;
@@ -31,7 +31,7 @@ exports[`px2rpx > case 1 1`] = `
   margin: 0;
   padding: 0;
 }
-.w-_10d21px_ {
+.w-_b10_d21px_B {
   width: 20.42rpx;
 }"
 `;

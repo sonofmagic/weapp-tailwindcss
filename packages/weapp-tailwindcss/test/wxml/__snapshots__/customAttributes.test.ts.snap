@@ -1,21 +1,21 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`customAttributes > map case 1`] = `
-"<van-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></van-a>
-<el-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></el-a>
-<ant-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></ant-a>"
+"<van-a class="w-_b0_d5px_B" hover-class="w-_b0_d5px_B" custom-attrs="w-_b0_d5px_B" shit="w-_b0_d5px_B" play-with-shit="w-_b0_d5px_B"></van-a>
+<el-a class="w-_b0_d5px_B" hover-class="w-_b0_d5px_B" custom-attrs="w-_b0_d5px_B" shit="w-_b0_d5px_B" play-with-shit="w-_b0_d5px_B"></el-a>
+<ant-a class="w-_b0_d5px_B" hover-class="w-_b0_d5px_B" custom-attrs="w-_b0_d5px_B" shit="w-_b0_d5px_B" play-with-shit="w-_b0_d5px_B"></ant-a>"
 `;
 
-exports[`customAttributes > simple map case 1`] = `"<van-a class="w-_0d5px_" hover-class="w-_0d5px_" custom-attrs="w-_0d5px_" shit="w-_0d5px_" play-with-shit="w-_0d5px_"></van-a>"`;
+exports[`customAttributes > simple map case 1`] = `"<van-a class="w-_b0_d5px_B" hover-class="w-_b0_d5px_B" custom-attrs="w-_b0_d5px_B" shit="w-_b0_d5px_B" play-with-shit="w-_b0_d5px_B"></van-a>"`;
 
-exports[`customAttributes > van-image case 0 1`] = `"<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-_0d5px_" other-attr="w-[0.5px]"></van-image>"`;
+exports[`customAttributes > van-image case 0 1`] = `"<van-image class="w-_b0_d5px_B" custom-class="w-[0.5px]" image-class="w-_b0_d5px_B" other-attr="w-[0.5px]"></van-image>"`;
 
-exports[`customAttributes > van-image case 1 1`] = `"<van-image class="w-_0d5px_" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_0d5px_"></van-image>"`;
+exports[`customAttributes > van-image case 1 1`] = `"<van-image class="w-_b0_d5px_B" custom-class="w-[0.5px]" image-class="w-[0.5px]" other-attr="w-_b0_d5px_B"></van-image>"`;
 
-exports[`customAttributes > view tag case 1`] = `"<view class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" cc=="w-[0.5px]"></view>"`;
+exports[`customAttributes > view tag case 1`] = `"<view class="w-_b0_d5px_B" aa="w-_b0_d5px_B" bb="w-_b0_d5px_B" cc=="w-[0.5px]"></view>"`;
 
-exports[`customAttributes > wild card case 0 1`] = `"<view class="w-0d5 group" group-hover-class="ibg-indigo-500 itext-red"></view>"`;
+exports[`customAttributes > wild card case 0 1`] = `"<view class="w-0_d5 group" group-hover-class="_ebg-indigo-500 _etext-red"></view>"`;
 
-exports[`customAttributes > wild card case 1`] = `"<view class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" cc=="w-[0.5px]"></view>"`;
+exports[`customAttributes > wild card case 1`] = `"<view class="w-_b0_d5px_B" aa="w-_b0_d5px_B" bb="w-_b0_d5px_B" cc=="w-[0.5px]"></view>"`;
 
-exports[`customAttributes > wild card via normal case 1`] = `"<view class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" dd="w-[0.5px]" ee="w-[0.5px]"></view><cc class="w-_0d5px_" aa="w-_0d5px_" bb="w-_0d5px_" dd="w-_0d5px_" ee="w-_0d5px_"></cc>"`;
+exports[`customAttributes > wild card via normal case 1`] = `"<view class="w-_b0_d5px_B" aa="w-_b0_d5px_B" bb="w-_b0_d5px_B" dd="w-[0.5px]" ee="w-[0.5px]"></view><cc class="w-_b0_d5px_B" aa="w-_b0_d5px_B" bb="w-_b0_d5px_B" dd="w-_b0_d5px_B" ee="w-_b0_d5px_B"></cc>"`;

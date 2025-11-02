@@ -208,8 +208,8 @@ describe('weapp-style-injector plugin', () => {
 
     await invokeGenerateBundle(plugin, bundle)
 
-    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.css";\n.home {}`)
-    expect(bundle['sub-packages/index.css'].source).toBe('.root {}')
+    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/index.css'].source).toBe(`@import "./index.wxss";\n.root {}`)
   })
 })
 
@@ -248,9 +248,9 @@ describe('vite presets', () => {
 
     await invokeGenerateBundle(plugin, bundle)
 
-    const generatedIndex = bundle['sub-packages/index.css']
+    const generatedIndex = bundle['sub-packages/index.wxss']
 
-    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.css";\n.home {}`)
+    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
     expect(generatedIndex).toBeDefined()
     expect(generatedIndex?.source).toBe(
       fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.css'), 'utf8'),
@@ -471,8 +471,8 @@ describe('weapp-style-injector webpack plugin', () => {
 
     plugin.apply(compiler)
 
-    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.css";\n.home {}`)
-    expect(getAsset('sub-packages/index.css')).toBe('.root {}')
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(getAsset('sub-packages/index.css')).toBe(`@import "./index.wxss";\n.root {}`)
   })
 
   it('injects sub-package imports via uni-app webpack preset', () => {
@@ -506,8 +506,8 @@ describe('weapp-style-injector webpack plugin', () => {
 
     plugin.apply(compiler)
 
-    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.css";\n.home {}`)
-    expect(getAsset('sub-packages/index.css')).toBe('.root {}')
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(getAsset('sub-packages/index.css')).toBe(`@import "./index.wxss";\n.root {}`)
   })
 
   it('injects sub-package imports via taro webpack preset', () => {

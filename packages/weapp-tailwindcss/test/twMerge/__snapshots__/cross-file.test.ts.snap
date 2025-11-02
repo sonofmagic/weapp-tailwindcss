@@ -4,7 +4,7 @@ exports[`twMerge cross file ignore > hashes inline twMerge arguments when ignore
 "import { twMerge } from '@weapp-tailwindcss/merge'
 import base, { buttonBase } from './shared'
 
-const inline = 'bg-_h123456_'
+const inline = 'bg-_b_h123456_B'
 
 export function render() {
   return twMerge(buttonBase, base, inline)

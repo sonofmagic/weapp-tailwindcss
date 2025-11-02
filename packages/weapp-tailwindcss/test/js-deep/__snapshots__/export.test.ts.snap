@@ -1,13 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`js-deep export > export case 0 1`] = `
-"export const a = 'bg-_h123456_';
+"export const a = 'bg-_b_h123456_B';
 
-const b = 'bg-_h123456_';
+const b = 'bg-_b_h123456_B';
 
-const c = 'bg-_h123456_';
+const c = 'bg-_b_h123456_B';
 
-const d = 'bg-_h123456_';
+const d = 'bg-_b_h123456_B';
 
 export default d
 
@@ -23,9 +23,9 @@ export * from './shared2'"
 `;
 
 exports[`js-deep export > export case 1 1`] = `
-"export const ddd = 'bg-_h123456_';
+"export const ddd = 'bg-_b_h123456_B';
 
-const a = 'bg-_h123456_';
+const a = 'bg-_b_h123456_B';
 
 export {
   a as default

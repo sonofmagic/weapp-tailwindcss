@@ -50,7 +50,7 @@ function runCase(ignore: string[]) {
 describe('twMerge cross file ignore', () => {
   it('hashes inline twMerge arguments when ignoreCallExpressionIdentifiers is empty', () => {
     const result = runCase([])
-    expect(result.code).toMatch(/bg-_h[0-9a-z]+_/)
+    expect(result.code).toContain('bg-_b_h123456_B')
     expect(result.code).not.toContain('bg-[#123456]')
     expect(result.code).toMatchSnapshot('hashed-entry-code')
     expect(result.linked).toBeUndefined()

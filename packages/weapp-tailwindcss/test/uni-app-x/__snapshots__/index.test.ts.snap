@@ -68,8 +68,8 @@ exports[`uni-app-x > index.uvue 1`] = `
 {
   "code": "<template>
 	<view class="px-4">
-		<view class="mt-_32d43rpx_ bg-_h322323_" :class="['text-_h258f27_', aaa]">
-			<text class="text-_h258f27_">{{title}}</text>
+		<view class="mt-_b32_d43rpx_B bg-_b_h322323_B" :class="['text-_b_h258f27_B', aaa]">
+			<text class="text-_b_h258f27_B">{{title}}</text>
 		</view>
     <text class="icebreaker">icebreaker111111</text>
 	</view>
@@ -80,7 +80,7 @@ exports[`uni-app-x > index.uvue 1`] = `
 		data() {
 			return {
 				title: 'Hello',
-        aaa: 'py-_22d32px_'
+        aaa: 'py-_b22_d32px_B'
 			}
 		},
 		onLoad() {
@@ -99,7 +99,7 @@ exports[`uni-app-x > index.uvue 1`] = `
 </style>",
   "map": SourceMap {
     "file": undefined,
-    "mappings": "AAAA;AACA,cAAc,IAAI;AAClB,eAAe,0BAA0B,UAAU,uBAAuB;AAC1E,gBAAgB,cAAc;AAC9B;AACA,iBAAiB,UAAU;AAC3B;AACA;;AAEA,QAAQ;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAeR;;AAEA;AACA;AACA;AACA;AACA",
+    "mappings": "AAAA;AACA,cAAc,IAAI;AAClB,eAAe,gCAA0B,UAAU,0BAAuB;AAC1E,gBAAgB,iBAAc;AAC9B;AACA,iBAAiB,UAAU;AAC3B;AACA;;AAEA,QAAQ;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAeR;;AAEA;AACA;AACA;AACA;AACA",
     "names": [],
     "sources": [
       "",
@@ -117,9 +117,9 @@ exports[`uni-app-x > setup-lang-uts.uvue 1`] = `
 	import { state, setGlobalNum } from '@/stores/counter'
 
 	const buttonColors = [
-		'bg-_h000_',
-		'bg-_h111_',
-		'bg-_h222_',
+		'bg-_b_h000_B',
+		'bg-_b_h111_B',
+		'bg-_b_h222_B',
 		'bg-[#333]',
 		'bg-[#444]',
 		'bg-[#555]',

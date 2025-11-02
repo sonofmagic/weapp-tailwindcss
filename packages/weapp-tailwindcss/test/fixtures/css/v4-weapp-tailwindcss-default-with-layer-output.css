@@ -52,16 +52,16 @@ view,text,:after,:before,::backdrop {
     --tw-invert: invert(100%);
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
   }
-.beforeccontent-_wqawq_::before {
+.before_ccontent-_b_r_a_u_r_a_B::before {
       --tw-content: \'+\';
       content: var(--tw-content);
     }
-.beforeccontent-_wqhellowq_::before {
+.before_ccontent-_b_r_ahello_r_a_B::before {
       --tw-content: \'hello\';
       content: var(--tw-content);
     }
 @media (prefers-color-scheme: dark) {
-.darkcbg-zinc-800 {
+.dark_cbg-zinc-800 {
       background-color: var(--color-zinc-800);
   }
     }

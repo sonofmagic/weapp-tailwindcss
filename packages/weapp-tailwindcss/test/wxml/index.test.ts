@@ -22,13 +22,13 @@ describe('wxml', () => {
     const code = await getCase('weapp-vite-case0.wxml')
     const { templateHandler } = getCompilerContext()
     const res = await templateHandler(code)
-    expect(res).toBe(`<view class="bg-_h7d7ac2_ text-_100px_ text-_h123456_ {{true?'h-_30px_':'h-_45px_'}}">111</view>`)
+    expect(res).toBe(`<view class="bg-_b_h7d7ac2_B text-_b100px_B text-_b_h123456_B {{true?'h-_b30px_B':'h-_b45px_B'}}">111</view>`)
   })
 
   it('https://github.com/sonofmagic/weapp-tailwindcss/issues/653', async () => {
     const code = await getCase('issue-653.wxml')
     const { templateHandler } = getCompilerContext()
     const res = await templateHandler(code)
-    expect(res).toBe(`<view class="relative darkcbg-red-500 items-center justify-center flex flex-1  h-screen w-screen "></view>`)
+    expect(res).toBe(`<view class="relative dark_cbg-red-500 items-center justify-center flex flex-1  h-screen w-screen "></view>`)
   })
 })
