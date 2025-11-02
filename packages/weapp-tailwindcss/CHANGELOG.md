@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.7.0
+
+### Minor Changes
+
+- [`c5a834c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c5a834c1d535b378371a94cb860f46d838979e32) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 重构 `@weapp-tailwindcss/merge` 的安装后脚本，自动识别 Tailwind CSS 版本、支持环境变量强制切换并提供安全的回退流程。同时将 `postinstall` 作为构建入口确保脚本始终打包输出。默认配置包移除对 `twMerge` 等辅助函数的自动忽略，交由用户按需配置。
+
+### Patch Changes
+
+- [`6d4c0f2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6d4c0f2b49ea6bf5d3c2507a3d9b9700ead81a89) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 对 core 相关用例的 WXML/JS 断言进行同步，适配升级后的 `@weapp-core/escape` 转义结果。
+
 ## 4.6.3
 
 ### Patch Changes
