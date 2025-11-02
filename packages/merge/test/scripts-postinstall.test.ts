@@ -1,68 +1,104 @@
-import fs from 'node:fs'
-import { createRequire } from 'node:module'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import vm from 'node:vm'
-import { describe, expect, it, vi } from 'vitest'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const requireFn = createRequire(import.meta.url)
 const testDir = path.dirname(fileURLToPath(import.meta.url))
-const scriptPath = path.resolve(testDir, '../scripts/postinstall.cjs')
-const builtScriptPath = path.resolve(testDir, '../dist/postinstall.cjs')
-const scriptSource = fs.readFileSync(scriptPath, 'utf8')
+const scriptPath = path.resolve(testDir, '../scripts/postinstall.mjs')
+const scriptUrl = pathToFileURL(scriptPath).href
+const esmBundlePath = path.resolve(testDir, '../dist/postinstall.js')
+const cjsBundlePath = path.resolve(testDir, '../dist/postinstall.cjs')
 
-function executeLegacyPostinstall(hasBuiltScript: boolean) {
-  const existsSync = vi.fn(() => hasBuiltScript)
-  let distModuleLoads = 0
-  const consoleLog = vi.fn()
-
-  const contextRequire = (specifier: string) => {
-    if (specifier === 'node:fs') {
-      return {
-        existsSync,
-      }
-    }
-    if (specifier === 'node:path') {
-      return requireFn('node:path')
-    }
-    if (specifier === builtScriptPath) {
-      distModuleLoads += 1
-      return {}
-    }
-    throw new Error(`Unexpected require: ${specifier}`)
-  }
-
-  const context = {
-    require: contextRequire,
-    module: { exports: {} },
-    exports: {},
-    __dirname: path.dirname(scriptPath),
-    console: { log: consoleLog },
-  }
-
-  vm.runInNewContext(scriptSource, context, { filename: scriptPath })
-
-  return {
-    existsSync,
-    consoleLog,
-    distModuleLoads,
-  }
+interface Logger {
+  log: (...args: unknown[]) => void
+  error: (...args: unknown[]) => void
 }
 
-describe('legacy postinstall entry', () => {
-  it('skips when built postinstall script is missing', () => {
-    const result = executeLegacyPostinstall(false)
+interface RunOptions {
+  existsSync?: (file: string) => boolean
+  loadEsm?: (file: string) => Promise<unknown>
+  loadCjs?: (file: string) => unknown | Promise<unknown>
+  logger?: Logger
+}
 
-    expect(result.existsSync).toHaveBeenCalledWith(builtScriptPath)
-    expect(result.consoleLog).toHaveBeenCalledWith('postinstall.cjs not found')
-    expect(result.distModuleLoads).toBe(0)
+const originalExitCode = process.exitCode
+
+async function runWithOptions(options?: RunOptions) {
+  const { run } = await import(scriptUrl) as { run: (options?: RunOptions) => Promise<void> }
+  await run(options)
+}
+
+beforeEach(() => {
+  process.exitCode = undefined
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
+  process.exitCode = originalExitCode
+})
+
+describe('postinstall bootstrap script', () => {
+  it('prefers the ESM bundle when available', async () => {
+    const existsSync = vi.fn((file: string) => file === esmBundlePath)
+    const loadEsm = vi.fn(async () => {})
+    const loadCjs = vi.fn()
+    const logger = { log: vi.fn(), error: vi.fn() }
+
+    await runWithOptions({ existsSync, loadEsm, loadCjs, logger })
+
+    expect(loadEsm).toHaveBeenCalledWith(esmBundlePath)
+    expect(loadCjs).not.toHaveBeenCalled()
+    expect(logger.log).not.toHaveBeenCalled()
+    expect(logger.error).not.toHaveBeenCalled()
   })
 
-  it('loads built postinstall script when present', () => {
-    const result = executeLegacyPostinstall(true)
+  it('falls back to the CJS bundle when ESM is unavailable', async () => {
+    const existsSync = vi.fn((file: string) => file === cjsBundlePath)
+    const loadEsm = vi.fn()
+    const loadCjs = vi.fn(async () => {})
+    const logger = { log: vi.fn(), error: vi.fn() }
 
-    expect(result.existsSync).toHaveBeenCalledWith(builtScriptPath)
-    expect(result.consoleLog).not.toHaveBeenCalled()
-    expect(result.distModuleLoads).toBe(1)
+    await runWithOptions({ existsSync, loadEsm, loadCjs, logger })
+
+    expect(loadEsm).not.toHaveBeenCalled()
+    expect(loadCjs).toHaveBeenCalledWith(cjsBundlePath)
+    expect(logger.log).not.toHaveBeenCalled()
+    expect(logger.error).not.toHaveBeenCalled()
+  })
+
+  it('logs when no bundle is present', async () => {
+    const existsSync = vi.fn(() => false)
+    const loadEsm = vi.fn()
+    const loadCjs = vi.fn()
+    const logger = { log: vi.fn(), error: vi.fn() }
+
+    await runWithOptions({ existsSync, loadEsm, loadCjs, logger })
+
+    expect(loadEsm).not.toHaveBeenCalled()
+    expect(loadCjs).not.toHaveBeenCalled()
+    expect(logger.log).toHaveBeenCalledWith('postinstall bundle not found')
+    expect(logger.error).not.toHaveBeenCalled()
+  })
+
+  it('reports errors when both bundle loads fail', async () => {
+    const existsSync = vi.fn((file: string) => file === esmBundlePath || file === cjsBundlePath)
+    const esmError = new Error('esm failed')
+    const cjsError = new Error('cjs failed')
+    const loadEsm = vi.fn(async () => {
+      throw esmError
+    })
+    const loadCjs = vi.fn(async () => {
+      throw cjsError
+    })
+    const logger = { log: vi.fn(), error: vi.fn() }
+
+    await runWithOptions({ existsSync, loadEsm, loadCjs, logger })
+
+    expect(loadEsm).toHaveBeenCalledWith(esmBundlePath)
+    expect(loadCjs).toHaveBeenCalledWith(cjsBundlePath)
+    expect(logger.error).toHaveBeenCalledWith('Failed to load postinstall bundle.')
+    expect(logger.error).toHaveBeenCalledWith(esmError)
+    expect(logger.error).toHaveBeenCalledWith(cjsError)
+    expect(process.exitCode).toBe(1)
+    expect(logger.log).not.toHaveBeenCalled()
   })
 })

@@ -210,7 +210,19 @@ function ensureVariant(distDir: string, variant: RuntimeVariant): {
 }
 
 function main() {
-  const distDir = fileURLToPath(new URL('../dist/', import.meta.url))
+  const resolveDistDir = (): string => {
+    // When executed via the CJS bundle (loaded through the bootstrap script), __dirname is available
+    if (typeof __dirname === 'string') {
+      return __dirname
+    }
+
+    // Fallback for the ESM bundle evaluated directly
+    // eslint-disable-next-line no-new-func
+    const getImportMetaUrl = new Function('return import.meta.url') as () => string
+    return fileURLToPath(new URL('./', getImportMetaUrl()))
+  }
+
+  const distDir = resolveDistDir()
 
   if (!fs.existsSync(distDir)) {
     warn('dist directory not found. Skipping runtime switch.')

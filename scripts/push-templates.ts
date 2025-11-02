@@ -59,7 +59,8 @@ async function syncTemplate(url: string): Promise<void> {
 
   const branch = await getCurrentBranch(repoDir)
   await execa('git', ['reset', '--hard', `origin/${branch}`], { cwd: repoDir, stdio: 'inherit' })
-  await execa('git', ['clean', '-fdx'], { cwd: repoDir, stdio: 'inherit' })
+  // 保留被 .gitignore 忽略的缓存目录，避免每次清理 node_modules/dist 时的额外开销
+  await execa('git', ['clean', '-fd'], { cwd: repoDir, stdio: 'inherit' })
 
   console.log(`同步 ${localDir} -> ${repoDir}`)
   await execa(
