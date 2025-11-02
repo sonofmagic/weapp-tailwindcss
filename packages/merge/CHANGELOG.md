@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 2.0.1
+
+### Patch Changes
+
+- [`0b9c30d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0b9c30da98e4dfd89319538c2928cb276c74a221) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - 调整 postinstall 引导脚本，优先加载 ESM 版本并补充回退与错误处理逻辑。
+
 ## 2.0.0
 
 ### Major Changes
