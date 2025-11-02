@@ -193,6 +193,16 @@ const tutorialSidebar: SidebarConfig = [
     type: 'doc',
     id: 'quick-start/css-unit-transform',
   },
+  {
+    type: 'doc',
+    id: 'options/exports',
+    label: '包导出总览',
+  },
+  {
+    type: 'doc',
+    id: 'api/exports',
+    label: '包导出总览',
+  },
 
   // {
   //   type: 'doc',

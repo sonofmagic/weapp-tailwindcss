@@ -7,7 +7,7 @@
 </script>
 
 <style>
-  @import 'weapp-tailwindcss';
+  @import 'weapp-tailwindcss/index.css';
   @source "../src";
 </style>
 

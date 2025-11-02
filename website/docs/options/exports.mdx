@@ -1,0 +1,50 @@
+# weapp-tailwindcss 导出总览
+
+> 本文根据 `packages/weapp-tailwindcss/package.json` 的 `exports` 字段整理，帮助你在不同框架/构建场景中快速定位合适的入口文件。
+
+weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级导出以适配 webpack、Vite、Gulp、Tailwind 宏等不同组合。下面按用途分类进行说明。
+
+## 核心插件入口
+
+| 导出路径 | 说明 | 典型用法 |
+| --- | --- | --- |
+| `weapp-tailwindcss` | 聚合入口：`createPlugins`、`UnifiedWebpackPluginV5`、`UnifiedViteWeappTailwindcssPlugin` 等常用工厂齐备 | `import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss'`
+| `weapp-tailwindcss/webpack` | webpack@5 适配入口（uni-app CLI、mpx、原生小程序等） | `const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')`
+| `weapp-tailwindcss/webpack4` | webpack@4 适配入口（旧版 Taro/uni-app 项目） | `import { UnifiedWebpackPluginV4 } from 'weapp-tailwindcss/webpack4'`
+| `weapp-tailwindcss/vite` | Vite 插件入口（Taro Vite、weapp-vite 等） | `import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'`
+| `weapp-tailwindcss/core` | 暴露 `createContext` 等底层 API，可自定义 transform 流程 | `import { createContext } from 'weapp-tailwindcss/core'`
+
+## 配置、工具与周边
+
+| 导出路径 | 说明 | 场景 |
+| --- | --- | --- |
+| `weapp-tailwindcss/defaults` | 默认插件配置、补丁行为等常量 | 查看/复用默认选项
+| `weapp-tailwindcss/presets` | 官方预设集合（差异化策略、Tailwind 配置等） | 扩展或组合默认行为
+| `weapp-tailwindcss/types` | TypeScript 类型定义便捷入口 | `import type { UserDefinedOptions } from 'weapp-tailwindcss/types'`
+| `weapp-tailwindcss/escape` | `replaceWxml`、`isAllowedClassName` 等字符串处理工具 | 单独处理模板/字符串时复用
+| `weapp-tailwindcss/postcss-html-transform` | 针对 HTML/WXML 的 PostCSS 转换器 | 自定义 PostCSS 流程
+| `weapp-tailwindcss/css-macro` | Tailwind CSS 宏工具（JS/TS） | 在代码中动态生成原子类
+| `weapp-tailwindcss/css-macro/postcss` | 宏工具的 PostCSS 版本 | 构建期宏替换
+| `weapp-tailwindcss/gulp` | Gulp 插件入口 | 传统 Gulp 构建链集成
+| `weapp-tailwindcss/package.json` | 包元数据 | 读取版本号等信息
+
+## 样式资源
+
+| 导出路径 | 说明 | 引用示例 |
+| --- | --- | --- |
+| `weapp-tailwindcss/index.css` (`weapp-tailwindcss/index`) | 默认 runtime 样式（==推荐直接引用==） | `@import 'weapp-tailwindcss/index.css';`
+| `weapp-tailwindcss/preflight.css` (`weapp-tailwindcss/preflight`) | 小程序专用 Preflight | `@import 'weapp-tailwindcss/preflight.css';`
+| `weapp-tailwindcss/theme.css` (`weapp-tailwindcss/theme`) | 主题变量定义 | `@import 'weapp-tailwindcss/theme.css';`
+| `weapp-tailwindcss/utilities.css` (`weapp-tailwindcss/utilities`) | 原子类集合 | `@import 'weapp-tailwindcss/utilities.css';`
+| `weapp-tailwindcss/with-layer.css` (`weapp-tailwindcss/with-layer`) | layer 版样式，适配 Tailwind v4 layer 写法 | `@import 'weapp-tailwindcss/with-layer.css';`
+| `weapp-tailwindcss/uni-app-x.css` (`weapp-tailwindcss/uni-app-x`) | uni-app x 定制样式 | `@import 'weapp-tailwindcss/uni-app-x.css';`
+| `weapp-tailwindcss/css` | 指向 `css/index.css`，兼容旧目录结构 | `@import 'weapp-tailwindcss/css';`
+
+> ⚠️ 注意：部分构建工具（例如 `postcss-import`、mpx CLI）在解析 `@import 'weapp-tailwindcss'` 时可能回退到 JS 入口（`dist/index.js`），并抛出 “Unknown word "use strict"”。请显式写出 `index.css`，或在本地创建中转 `app.css` 后再导入。
+
+## 其他导出
+
+- `weapp-tailwindcss/*`：保留通配符路径，兼容历史文件结构；建议优先使用上表列出的稳定入口。
+- 所有 JS 模块同时提供 `import` 与 `require` 两种格式，TS 项目结合 `types` 入口即可获得完整声明。
+
+想进一步了解各模块暴露的 API，可以查阅 [`weapp-tailwindcss` API 总览](../api/index.md) 或直接阅读对应类型定义与源码。
