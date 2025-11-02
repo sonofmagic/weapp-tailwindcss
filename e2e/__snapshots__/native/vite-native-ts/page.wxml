@@ -1,7 +1,7 @@
 <view class="p-4">
   <view>
     <button
-      class="weapp-reset-button index--weapp-reset-button text-_b_h0000ff_B index--text-_b_h0000ff_B px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hover_cbg-blue-500 index--hover_cbg-blue-500 focus_coutline-none index--focus_coutline-none focus_cring index--focus_cring focus_cring-blue-300 index--focus_cring-blue-300 focus_cring-opacity-80 index--focus_cring-opacity-80 bg-_borange_B index--bg-_borange_B"
+      class="weapp-reset-button index--weapp-reset-button text-_b_h0000ff_B index--text-_b_h0000ff_B px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hover_cbg-blue-500 index--hover_cbg-blue-500 focus_coutline-none index--focus_coutline-none focus_cring index--focus_cring focus_cring-opacity-80 index--focus_cring-opacity-80 bg-_borange_B index--bg-_borange_B"
       hover-class="bg-_b_h123456_B"
       role="button"
       aria-disabled="false">

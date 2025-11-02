@@ -1,0 +1,86 @@
+.merge-page {
+  min-height: 100vh;
+  padding: 32rpx;
+  background: #f4f5f9;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.intro {
+  background: #ffffff;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 12rpx 24rpx -16rpx rgba(15, 23, 42, 0.2);
+
+  &__title {
+    font-size: 34rpx;
+    font-weight: 600;
+    margin-bottom: 16rpx;
+    color: #0f172a;
+  }
+
+  &__desc {
+    font-size: 26rpx;
+    line-height: 1.6;
+    color: #475569;
+  }
+}
+
+.section {
+  background: #ffffff;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 12rpx 24rpx -16rpx rgba(15, 23, 42, 0.16);
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 12rpx;
+  }
+
+  &__desc {
+    font-size: 26rpx;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 20rpx;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+  }
+}
+
+.sample {
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: #f8fafc;
+  border: 1rpx solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+
+  &__label {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  &__code {
+    font-family: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+    font-size: 24rpx;
+    color: #0f172a;
+    word-break: break-all;
+  }
+
+  &__result {
+    font-family: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+    font-size: 24rpx;
+    color: #2563eb;
+    word-break: break-all;
+  }
+}

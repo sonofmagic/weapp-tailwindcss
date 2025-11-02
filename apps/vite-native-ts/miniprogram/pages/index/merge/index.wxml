@@ -1,3 +1,69 @@
-<view>hello weapp-vite!</view>
-<view class="{{mergedClass}}">from miniprogram/pages/index/merge/index</view>
-<view class="{{mergedClassV4}}">from miniprogram/pages/index/merge/index</view>
+<scroll-view scroll-y="true" class="merge-page">
+  <view class="intro">
+    <view class="intro__title">@weapp-tailwindcss/merge 示例</view>
+    <view class="intro__desc">
+      下方示例涵盖了冲突解析、任意值、运行时选项、CVA/Variants 等常见用法，帮助在小程序场景中快速掌握小程序安全转义之后的结果。
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section__title">不同 tailwind-merge 版本</view>
+    <view class="section__list">
+      <view class="sample" wx:for="{{versionComparison}}" wx:key="label">
+        <view class="sample__label">{{item.label}}</view>
+        <view class="sample__code">{{item.code}}</view>
+        <view class="sample__result">{{item.result}}</view>
+      </view>
+    </view>
+  </view>
+
+  <block wx:for="{{mergingExamples}}" wx:key="title">
+    <view class="section">
+      <view class="section__title">{{item.title}}</view>
+      <view class="section__desc">{{item.description}}</view>
+      <view class="section__list">
+      <view class="sample" wx:for="{{item.samples}}" wx:for-item="sample" wx:key="label">
+          <view class="sample__label">{{sample.label}}</view>
+          <view class="sample__code">{{sample.code}}</view>
+          <view class="sample__result">{{sample.result}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="section">
+    <view class="section__title">运行时选项（create）</view>
+    <view class="section__desc">通过 create 自定义 escape/unescape，可兼容服务端渲染或历史存量数据。</view>
+    <view class="section__list">
+      <view class="sample" wx:for="{{runtimeExamples}}" wx:key="label">
+        <view class="sample__label">{{item.label}}</view>
+        <view class="sample__code">{{item.code}}</view>
+        <view class="sample__result">{{item.result}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section__title">CVA 组合示例</view>
+    <view class="section__desc">与 class-variance-authority 套件一致的 API，输出仍经过小程序安全转义。</view>
+    <view class="section__list">
+      <view class="sample" wx:for="{{cvaSamples}}" wx:key="label">
+        <view class="sample__label">{{item.label}}</view>
+        <view class="sample__code">{{item.code}}</view>
+        <view class="sample__result">{{item.result}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section__title">Variants 运行时示例</view>
+    <view class="section__desc">`@weapp-tailwindcss/merge/variants` 内置合并和转义，适合做组件样式模式切换。</view>
+    <view class="section__list">
+      <view class="sample" wx:for="{{variantsSamples}}" wx:key="label">
+        <view class="sample__label">{{item.label}}</view>
+        <view class="sample__code">{{item.code}}</view>
+        <view class="sample__result">{{item.result}}</view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

@@ -6,7 +6,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 type MockedFiles = Map<string, Buffer>
 
 function normalizePath(value: string): string {
-  return path.normalize(value).replace(/\\+/g, '/')
+  const normalized = path.normalize(value).replace(/\\+/g, '/')
+  if (normalized.length > 1 && normalized.endsWith('/')) {
+    return normalized.slice(0, -1)
+  }
+  return normalized
 }
 
 const directories = new Set<string>()
@@ -57,7 +61,7 @@ async function runPostinstall() {
   await import('@/postinstall')
 }
 
-const distDir = normalizePath(path.resolve(__dirname, '../dist'))
+const distDir = normalizePath(path.resolve(__dirname, '../dist/'))
 
 function setFile(relativePath: string, content: string) {
   files.set(normalizePath(path.join(distDir, relativePath)), Buffer.from(content))
