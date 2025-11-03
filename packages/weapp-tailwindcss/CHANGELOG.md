@@ -1,5 +1,20 @@
 # weapp-tailwindcss
 
+## 4.7.2
+
+### Patch Changes
+
+- [`79a7041`](https://github.com/sonofmagic/weapp-tailwindcss/commit/79a70412d6d3992b6e82ee79703f8db2e1f8d0c8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - 抽取 `tailwind` patch 与并发任务的公共工具，统一在各打包插件中复用，降低重复代码并简化后续维护。
+  - 强制刷新运行时类集，修复多次构建时的缓存偏差，并确保 Vite 并发链式处理能正确落盘联动产物。
+
+- [`a35766d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a35766dec66b8d078c5795cfcc262e5a9b21e4f2) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - 彻底移除 `jsAstTool` 相关配置、类型与测试，正式结束对 `ast-grep` 解析器的兼容。
+  - 移除 `customRuleCallback` 配置与对应类型、默认值和测试，内置 PostCSS 处理逻辑不再暴露该扩展点。
+
+- [`69a8201`](https://github.com/sonofmagic/weapp-tailwindcss/commit/69a820120fbefb14afce653a9a5b3007414453d1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 收紧 JS 标记模板的忽略范围：默认仅认得 `weappTwIgnore` 及其导入别名，普通 `String.raw` 别名会继续转译。顺便把 `eval`、模块替换等逻辑拆分到独立模块，后续维护更清晰。
+
+- Updated dependencies [[`a35766d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a35766dec66b8d078c5795cfcc262e5a9b21e4f2)]:
+  - @weapp-tailwindcss/postcss@2.0.1
+
 ## 4.7.1
 
 ### Patch Changes
