@@ -127,54 +127,6 @@ describe('jsHandler', () => {
     expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`)
   })
 
-  it('astgrep ignoreCallExpressionIdentifiers common case', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-    set.add('w-2.5')
-
-    const { code } = await defaultJsHandler(`const n = cn('text-[12px] flex bg-[red] w-2.5')`, set, {
-      ignoreCallExpressionIdentifiers: ['cn'],
-    })
-    expect(code).toBe(`const n = cn('text-[12px] flex bg-[red] w-2.5')`)
-  })
-
-  it('astgrep ignoreCallExpressionIdentifiers common case 1', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-    set.add('w-2.5')
-    set.add('p-1.5')
-    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
-    const { code } = await defaultJsHandler(testCase, set, {
-      ignoreCallExpressionIdentifiers: ['cn'],
-    })
-    expect(code).toBe(testCase)
-  })
-
-  it('astgrep ignoreCallExpressionIdentifiers common case 2', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-    set.add('w-2.5')
-    set.add('p-1.5')
-    const testCase = `const n = cn('text-[12px] flex bg-[red] w-2.5 ' + cn('p-1.5') )`
-    const { code } = await defaultJsHandler(testCase, set, {
-      ignoreCallExpressionIdentifiers: ['cva'],
-    })
-    expect(code).toBe('const n = cn(\'text-_b12px_B flex bg-[red] w-2_d5 \' + cn(\'p-1_d5\') )')
-  })
-
-  it('astGrep common case', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-    set.add('w-2.5')
-
-    const { code } = await defaultJsHandler(`const n = 'text-[12px] flex bg-[red] w-2.5'`, set)
-    expect(code).toBe('const n = \'text-_b12px_B flex bg-[red] w-2_d5\'')
-  })
-
   it.each(testTable)('$name common case with ignore comment', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
@@ -184,16 +136,6 @@ describe('jsHandler', () => {
     const { code } = await h(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set)
     expect(code).toBe('const n = /*weapp-tw ignore*/ \'text-[12px] flex bg-[red] w-2.5\'')
   })
-
-  // it('astGrep common case with ignore comment', () => {
-  //   const set: Set<string> = new Set()
-  //   set.add('text-[12px]')
-  //   set.add('flex')
-  //   set.add('w-2.5')
-
-  //   const code = defaultJsHandler(`const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'`, set).code
-  //   expect(code).toBe("const n = /*weapp-tw ignore*/ 'text-[12px] flex bg-[red] w-2.5'")
-  // })
 
   it.each(testTable)('$name preserve space', async () => {
     const set: Set<string> = new Set()
@@ -206,31 +148,12 @@ describe('jsHandler', () => {
     expect(code).toBe('const n = \'text-_b12px_B flex \\n bg-[red] w-2_d5\'')
   })
 
-  it('astGrep preserve space', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-    set.add('w-2.5')
-
-    const { code } = await defaultJsHandler('const n = \'text-[12px] flex \\n bg-[red] w-2.5\'', set)
-    expect(code).toBe('const n = \'text-_b12px_B flex \\n bg-[red] w-2_d5\'')
-  })
-
   it.each(testTable)('$name preserve space case2', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('flex')
 
     const { code } = await h('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set)
-    expect(code).toBe('const n = `text-_b12px_B \\n\\n  flex  \\n\\n  bg-[red]`')
-  })
-
-  it('astGrep preserve space case2', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-
-    const { code } = await defaultJsHandler('const n = `text-[12px] \\n\\n  flex  \\n\\n  bg-[red]`', set)
     expect(code).toBe('const n = `text-_b12px_B \\n\\n  flex  \\n\\n  bg-[red]`')
   })
 
@@ -244,16 +167,6 @@ describe('jsHandler', () => {
     expect(code).toBe('const p = \'text-_b12px_B\';const n = `${p} \\n\\n  flex  \\n\\n  bg-_bred_B \'`')
   })
 
-  it('astGrep TemplateElement case', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('flex')
-    set.add('bg-[red]')
-
-    const { code } = await defaultJsHandler('const p = \'text-[12px]\';const n = `${p} \\n\\n  flex  \\n\\n  bg-[red] \'`', set)
-    expect(code).toBe('const p = \'text-_b12px_B\';const n = `${p} \\n\\n  flex  \\n\\n  bg-_bred_B \'`')
-  })
-
   it.each(testTable)('$name TemplateElement case 0', async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
@@ -263,19 +176,6 @@ describe('jsHandler', () => {
     set.add('bg-[red]')
 
     const { code } = await h('const p = \'text-[12px]\';const n = `bg-[url(\'天气好\')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] \'`', set)
-    expect(code).toMatchSnapshot()
-  })
-
-  it('astGrep TemplateElement case 0', async () => {
-    const set: Set<string> = new Set()
-    set.add('text-[12px]')
-    set.add('text-[199px]')
-    set.add('flex')
-    set.add('bg-[url(\'天气好\')]')
-    set.add('bg-[red]')
-    set.add('leading-[24px]')
-    const s = 'const p = \'text-[12px] leading-[24px]\';const n = `bg-[url(\'天气好\')]${p}text-[199px] \\n\\n  flex  \\n\\n  bg-[red] \'`'
-    const { code } = await defaultJsHandler(s, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -551,18 +451,6 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it('中文字符 case 1', async () => {
-    const testCase = `const a ={ className: "after:content-['\u7684\u6492\u7684\u6492']", children: "\u4E8B\u5B9E\u4E0A" }`
-    const set: Set<string> = new Set()
-    set.add('after:content-[\'的撒的撒\']')
-
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
-    const code = await jsHandler(testCase, set)
-    expect(code).toMatchSnapshot()
-  })
-
   it('中文字符 case 2', async () => {
     const testCase = `"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before:content-['moduleA_\u666E\u901A\u5206\u5305']",children:"moduleA \u666E\u901A\u5206\u5305"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);`
     const set: Set<string> = new Set()
@@ -570,18 +458,6 @@ describe('jsHandler', () => {
 
     const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
-    expect(code).toMatchSnapshot()
-  })
-
-  it('中文字符 case 3', async () => {
-    const testCase = `"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before:content-['moduleA_\u666E\u901A\u5206\u5305']",children:"moduleA \u666E\u901A\u5206\u5305"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);`
-    const set: Set<string> = new Set()
-    set.add('before:content-[\'moduleA_普通分包\']')
-
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
-    const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
 
@@ -595,26 +471,12 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it('中文字符产物 case 1', async () => {
-    const testCase = await getCase('taro-vue-rust-zh.js')
-    const set: Set<string> = new Set()
-    set.add('after:content-[\'我知道我心,永恒12we_ds\']')
-
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
-    const code = await jsHandler(testCase, set)
-    expect(code).toMatchSnapshot()
-  })
-
   it('中文字符产物 case 2', async () => {
     const testCase = await getCase('taro-vue3-test-dist.js')
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -624,9 +486,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -636,9 +496,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('after:content-[\'我知道我心,永恒12we_ds\']')
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -672,9 +530,7 @@ describe('jsHandler', () => {
     const testCase = `const a = ''`
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -683,9 +539,7 @@ describe('jsHandler', () => {
     const testCase = `const a = '1'`
     const set: Set<string> = new Set()
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const code = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -758,36 +612,12 @@ describe('jsHandler', () => {
     expect(error).toBeTruthy()
   })
 
-  it('注释忽略 case 0', async () => {
-    const testCase = `const a = '!hidden'`
-    const set: Set<string> = new Set()
-    set.add('!hidden')
-
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
-    const { code } = await jsHandler(testCase, set)
-    expect(code).toMatchSnapshot()
-  })
-
   it('注释忽略 case 1', async () => {
     const testCase = `const a = '!hidden'`
     const set: Set<string> = new Set()
     set.add('!hidden')
 
     const { jsHandler } = getCompilerContext({})
-    const { code } = await jsHandler(testCase, set)
-    expect(code).toMatchSnapshot()
-  })
-
-  it('注释忽略 case 2', async () => {
-    const testCase = `const a = /*weapp-tw ignore*/ '!hidden'`
-    const set: Set<string> = new Set()
-    set.add('!hidden')
-
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
     const { code } = await jsHandler(testCase, set)
     expect(code).toMatchSnapshot()
   })
@@ -837,26 +667,12 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it('标识符忽略 case 7', async () => {
-    const testCase = `console.log(weappTwIgnore\`!hidden\`);`
-    const set: Set<string> = new Set()
-    set.add('!hidden')
-
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
-    const { code } = await jsHandler(testCase, set)
-    expect(code).toMatchSnapshot()
-  })
-
   it('ignoreTaggedTemplateIdentifiers transforms String.raw alias by default', async () => {
     const testCase = `const a = String.raw;console.log(a\`!hidden\`);`
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).not.toBe(testCase)
     expect(code).not.toContain('!hidden')
@@ -867,9 +683,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).not.toBe(testCase)
     expect(code).not.toContain('!hidden')
@@ -880,9 +694,7 @@ describe('jsHandler', () => {
     const set: Set<string> = new Set()
     set.add('!hidden')
 
-    const { jsHandler } = getCompilerContext({
-      jsAstTool: 'babel',
-    })
+    const { jsHandler } = getCompilerContext()
     const { code } = await jsHandler(testCase, set)
     expect(code).not.toBe(testCase)
     expect(code).not.toContain('!hidden')

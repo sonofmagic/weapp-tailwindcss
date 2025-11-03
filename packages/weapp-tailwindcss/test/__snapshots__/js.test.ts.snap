@@ -18,8 +18,6 @@ exports[`jsHandler > 'common' mpx jit classNames 1`] = `
     }"
 `;
 
-exports[`jsHandler > astGrep TemplateElement case 0 1`] = `"const p = 'text-_b12px_B leading-_b24px_B';const n = \`bg-_burl_p_au5929u6c14u597d_a_P_B\${p}text-_b199px_B \\n\\n  flex  \\n\\n  bg-_bred_B '\`"`;
-
 exports[`jsHandler > empty case 0 1`] = `
 {
   "code": "const a = ''",

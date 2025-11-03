@@ -519,18 +519,6 @@ export interface UserDefinedOptions {
 
 export interface UserDefinedOptions {
   /**
-   * 选择用于解析 JS 的 AST 工具。
-   *
-   * @group 4.即将废弃配置
-   * @remarks
-   * 默认使用 `babel`，安装 `@ast-grep/napi` 并设置为 `ast-grep` 可获得更快速度。
-   * :::danger
-   * 此配置将在 `5.x` 版本移除，后续仅保留 `babel` 实现。
-   * :::
-   */
-  jsAstTool?: 'babel' | 'ast-grep'
-
-  /**
    * 自定义 PostCSS 规则的处理回调。
    *
    * @group 4.即将废弃配置

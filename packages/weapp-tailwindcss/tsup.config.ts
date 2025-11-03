@@ -25,7 +25,7 @@ export default defineConfig(
       splitting: true,
       shims: true,
       format: ['cjs', 'esm'],
-      external: ['webpack', 'tailwindcss/plugin', '@ast-grep/napi'],
+      external: ['webpack', 'tailwindcss/plugin'],
       target: ['es2020'],
 
     },
