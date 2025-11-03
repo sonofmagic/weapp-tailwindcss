@@ -35,7 +35,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     if (!force && runtimeSetInitialized && runtimeSet.size > 0) {
       return runtimeSet
     }
-    runtimeSet = await collectRuntimeClassSet(twPatcher)
+    runtimeSet = await collectRuntimeClassSet(twPatcher, { force })
     runtimeSetInitialized = true
     return runtimeSet
   }

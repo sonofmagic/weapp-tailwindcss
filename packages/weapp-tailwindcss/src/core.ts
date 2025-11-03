@@ -20,7 +20,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     const result = await styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
     }))
-    runtimeSet = await collectRuntimeClassSet(twPatcher)
+    runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
     return result
   }
 
@@ -29,7 +29,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     runtimeSet
       = options && options.runtimeSet
         ? options.runtimeSet
-        : await collectRuntimeClassSet(twPatcher)
+        : await collectRuntimeClassSet(twPatcher, { force: true })
 
     return await jsHandler(rawJs, runtimeSet, options)
   }
@@ -37,7 +37,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
     await patchPromise
     if (!options?.runtimeSet && runtimeSet.size === 0) {
-      runtimeSet = await collectRuntimeClassSet(twPatcher)
+      runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
     }
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,

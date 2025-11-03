@@ -55,7 +55,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
     async function getClassSetInLoader() {
       await patchPromise
-      await collectRuntimeClassSet(twPatcher)
+      await collectRuntimeClassSet(twPatcher, { force: true })
     }
 
     onLoad()
@@ -155,7 +155,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       const groupedEntries = getGroupedEntries(entries, this.options)
       // 再次 build 不转化的原因是此时 set.size 为0
       // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-      const runtimeSet = await collectRuntimeClassSet(twPatcher)
+      const runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       const tasks: Promise<void>[] = []
       if (Array.isArray(groupedEntries.html)) {

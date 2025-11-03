@@ -78,6 +78,7 @@ function applyLinkedResults(
   linked: Record<string, LinkedJsModuleResult> | undefined,
   entries: Map<string, OutputEntry>,
   onLinkedUpdate: (fileName: string, previous: string, next: string) => void,
+  onApplied?: (entry: OutputEntry, code: string) => void,
 ) {
   if (!linked) {
     return
@@ -100,6 +101,7 @@ function applyLinkedResults(
       entry.output.source = code
     }
 
+    onApplied?.(entry, code)
     onLinkedUpdate(entry.fileName, previous, code)
   }
 }
@@ -170,11 +172,22 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
         const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
         const groupedEntries = getGroupedEntries(entries, opts)
-        runtimeSet = await collectRuntimeClassSet(twPatcher)
+        runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
           onUpdate(fileName, previous, next)
           debug('js linked handle: %s', fileName)
+        }
+        const pendingLinkedUpdates: Array<() => void> = []
+        const scheduleLinkedApply = (entry: OutputEntry, code: string) => {
+          pendingLinkedUpdates.push(() => {
+            if (entry.output.type === 'chunk') {
+              entry.output.code = code
+            }
+            else {
+              entry.output.source = code
+            }
+          })
         }
         const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
           ...extra,
@@ -238,7 +251,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                     const { code, linked } = await jsHandler(rawSource, runtimeSet, createHandlerOptions(absoluteFile))
                     onUpdate(file, rawSource, code)
                     debug('js handle: %s', file)
-                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
+                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
                     return {
                       result: code,
                     }
@@ -273,7 +286,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                     }))
                     onUpdate(file, currentSource, code)
                     debug('js handle: %s', file)
-                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
+                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
                     return {
                       result: code,
                     }
@@ -322,6 +335,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
         await Promise.all(tasks)
+        for (const apply of pendingLinkedUpdates) {
+          apply()
+        }
         onEnd()
         debug('end')
       },
@@ -382,7 +398,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         enforce: 'pre',
         async buildStart() {
           await patchPromise
-          runtimeSet = await collectRuntimeClassSet(twPatcher)
+          runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
         },
         transform(code, id) {
           return transformUVue(code, id, jsHandler, runtimeSet)
