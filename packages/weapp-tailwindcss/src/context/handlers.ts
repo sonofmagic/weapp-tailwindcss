@@ -33,7 +33,6 @@ export function createHandlersFromContext(
 ) {
   const {
     cssPreflight,
-    customRuleCallback,
     cssPreflightRange,
     escapeMap,
     cssChildCombinatorReplaceValue,
@@ -60,7 +59,6 @@ export function createHandlersFromContext(
 
   const styleHandler = createStyleHandler({
     cssPreflight,
-    customRuleCallback,
     cssPreflightRange,
     escapeMap,
     cssChildCombinatorReplaceValue,

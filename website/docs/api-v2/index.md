@@ -64,33 +64,6 @@ custom_edit_url: null
 
 [types.ts:17](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L17)
 
----
-
-### CustomRuleCallback
-
-Ƭ **CustomRuleCallback**: (`node`: `Rule`, `options`: `Readonly`<[`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)\>) => `void`
-
-#### Type declaration
-
-▸ (`node`, `options`): `void`
-
-##### Parameters
-
-| Name      | Type                                                                       |
-| :-------- | :------------------------------------------------------------------------- |
-| `node`    | `Rule`                                                                     |
-| `options` | `Readonly`<[`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)\> |
-
-##### Returns
-
-`void`
-
-#### Defined in
-
-[types.ts:34](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L34)
-
----
-
 ### GlobOrFunctionMatchers
 
 Ƭ **GlobOrFunctionMatchers**: `"htmlMatcher"` \| `"cssMatcher"` \| `"jsMatcher"` \| `"mainCssChunkMatcher"` \| `"wxsMatcher"`
@@ -146,7 +119,7 @@ custom_edit_url: null
 
 ### IStyleHandlerOptions
 
-Ƭ **IStyleHandlerOptions**: \{ `customRuleCallback?`: [`CustomRuleCallback`](#customrulecallback) } & [`RequiredStyleHandlerOptions`](#requiredstylehandleroptions)
+Ƭ **IStyleHandlerOptions**: [`RequiredStyleHandlerOptions`](#requiredstylehandleroptions) & \{ `ctx?`: `IContext` ; `postcssOptions?`: [`LoadedPostcssOptions`](#loadedpostcssoptions) ; `cssRemoveProperty?`: `boolean` ; `cssRemoveHoverPseudoClass?`: `boolean` ; `cssPresetEnv?`: [`PresetEnvOptions`](#presetenvoptions) ; `cssCalc?`: `boolean` \| [`CssCalcOptions`](#csscalcoptions) \| (`string` \| `RegExp`)[] ; `atRules?`: \{ `property?`: `boolean` ; `supports?`: `boolean` ; `media?`: `boolean`  } ; `uniAppX?`: `boolean` ; `majorVersion?`: `number`  }
 
 #### Defined in
 
@@ -156,7 +129,7 @@ custom_edit_url: null
 
 ### InternalPostcssOptions
 
-Ƭ **InternalPostcssOptions**: `Pick`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), `"cssMatcher"` \| `"mainCssChunkMatcher"` \| `"cssPreflight"` \| `"replaceUniversalSelectorWith"` \| `"cssPreflightRange"` \| `"customRuleCallback"` \| `"disabled"`\>
+Ƭ **InternalPostcssOptions**: `Pick`<[`UserDefinedOptions`](interfaces/UserDefinedOptions.md), `"cssMatcher"` \| `"mainCssChunkMatcher"` \| `"cssPreflight"` \| `"replaceUniversalSelectorWith"` \| `"cssPreflightRange"` \| `"disabled"`\>
 
 #### Defined in
 

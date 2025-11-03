@@ -96,7 +96,6 @@ exports[`get options > default options 1`] = `
     "}": "_K",
     "~": "_w",
   },
-  "customRuleCallback": [Function],
   "disabled": false,
   "disabledDefaultTemplateHandler": false,
   "escapeMap": {

@@ -1386,7 +1386,6 @@ const defaultOptions = {
     cssPreflightRange: 'view',
     replaceUniversalSelectorWith: 'view',
     disabled: false,
-    customRuleCallback: shared.noop,
     onLoad: shared.noop,
     onStart: shared.noop,
     onEnd: shared.noop,
@@ -1706,7 +1705,7 @@ function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']
     const result = defu(options, defaultOptions, {
         minifiedJs: isProd()
     });
-    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
+    const { cssPreflight, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
     result.escapeMap = customReplaceDictionary;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     const customAttributesEntities = shared.isMap(options.customAttributes) ? [...options.customAttributes.entries()] : Object.entries(customAttributes);
@@ -1720,7 +1719,6 @@ function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']
     if (registerModules.style) {
         result.styleHandler = createStyleHandler({
             cssInjectPreflight,
-            customRuleCallback,
             cssPreflightRange,
             replaceUniversalSelectorWith,
             escapeMap
@@ -1927,15 +1925,13 @@ const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor';
 const postcssWeappTailwindcss = (options = {
     isMainChunk: true
 }) => {
-    const { customRuleCallback, isMainChunk } = options;
-    const flag = typeof customRuleCallback === 'function';
+    const { isMainChunk } = options;
     return {
         postcssPlugin,
         Once(css) {
             css.walkRules((rule) => {
                 transformSync(rule, options);
                 isMainChunk && commonChunkPreflight(rule, options);
-                flag && customRuleCallback(rule, options);
             });
         }
     };
@@ -3268,7 +3264,6 @@ const defaultOptions = {
     cssPreflightRange: 'view',
     replaceUniversalSelectorWith: 'view',
     disabled: false,
-    customRuleCallback: noop,
     onLoad: noop,
     onStart: noop,
     onEnd: noop,
@@ -3588,7 +3583,7 @@ function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']
     const result = defu(options, defaultOptions, {
         minifiedJs: isProd()
     });
-    const { cssPreflight, customRuleCallback, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
+    const { cssPreflight, cssPreflightRange, replaceUniversalSelectorWith, customAttributes, customReplaceDictionary, supportCustomLengthUnitsPatch } = result;
     result.escapeMap = customReplaceDictionary;
     const cssInjectPreflight = createInjectPreflight(cssPreflight);
     const customAttributesEntities = isMap(options.customAttributes) ? [...options.customAttributes.entries()] : Object.entries(customAttributes);
@@ -3602,7 +3597,6 @@ function getOptions(options = {}, modules = ['style', 'template', 'patch', 'js']
     if (registerModules.style) {
         result.styleHandler = createStyleHandler({
             cssInjectPreflight,
-            customRuleCallback,
             cssPreflightRange,
             replaceUniversalSelectorWith,
             escapeMap
@@ -3801,15 +3795,13 @@ const vitePluginName = 'vite-plugin-uni-app-weapp-tailwindcss-adaptor';
 const postcssWeappTailwindcss = (options = {
     isMainChunk: true
 }) => {
-    const { customRuleCallback, isMainChunk } = options;
-    const flag = typeof customRuleCallback === 'function';
+    const { isMainChunk } = options;
     return {
         postcssPlugin,
         Once(css) {
             css.walkRules((rule) => {
                 transformSync(rule, options);
                 isMainChunk && commonChunkPreflight(rule, options);
-                flag && customRuleCallback(rule, options);
             });
         }
     };

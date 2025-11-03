@@ -256,22 +256,6 @@ const customAttributes = {
 
 [types.ts:263](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L263)
 
----
-
-### customRuleCallback
-
-• `Optional` **customRuleCallback**: [`CustomRuleCallback`](../#customrulecallback)
-
-**`Description`**
-
-用于自定义处理 css 的回调函数，可根据 Postcss walk 方法自由定制处理方案的 callback 方法
-
-#### Defined in
-
-[types.ts:201](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L201)
-
----
-
 ### disabled
 
 • `Optional` **disabled**: `boolean`

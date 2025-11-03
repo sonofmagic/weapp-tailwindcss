@@ -27,7 +27,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
-      customRuleCallback: opt.customRuleCallback,
       cssSelectorReplacement: opt.cssSelectorReplacement,
     })
     // const expected = await getCase('media1.result.css')
@@ -87,7 +86,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: opt.cssPreflightRange,
-      customRuleCallback: opt.customRuleCallback,
       cssSelectorReplacement: opt.cssSelectorReplacement,
     })
     // const expected = await getCase('taro.build.result.css')
@@ -103,45 +101,11 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
       escapeMap: MappingChars2String,
     })
-    expect(css).toMatchSnapshot()
-  })
-
-  it('new option for customRuleCallback kbone', async () => {
-    const opt = getCompilerContext({
-      customReplaceDictionary: MappingChars2String,
-    })
-    const cssInjectPreflight = createInjectPreflight(opt.cssPreflight)
-
-    const testCase = await getCase('kbone1.css')
-    const { css } = await styleHandler(testCase, {
-      isMainChunk: true,
-      cssInjectPreflight,
-      customRuleCallback: (_node, _opt) => {
-        // if (opt.isMainChunk) {
-        //   if (node.selector.includes('page,::after,::before')) {
-        //     // page,::after,::before
-        //     node.selector = node.selector
-        //       .replace(/page/, 'view')
-        //       .replace(/::after/, 'view::after')
-        //       .replace(/::before/, 'view::before') // 'view,view::before,view::after'
-        //   }
-        // },
-      },
-      cssPreflightRange: opt.cssPreflightRange,
-      cssSelectorReplacement: {
-        universal: 'view',
-      },
-      escapeMap: MappingChars2String,
-    })
-    // const expected = await getCase('kbone1.result.css')
-    // await putCase('kbone1.result.css', result)
-    // expect(result).toBe(expected)
     expect(css).toMatchSnapshot()
   })
 
@@ -151,7 +115,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
@@ -168,7 +131,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
@@ -183,7 +145,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
       cssPreflightRange: 'all',
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
@@ -198,7 +159,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
@@ -213,7 +173,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
@@ -229,7 +188,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: 'view',
       },
@@ -244,7 +202,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: '.happy',
       },
@@ -260,7 +217,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -300,7 +256,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -316,7 +271,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -332,7 +286,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -347,7 +300,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -363,7 +315,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -378,7 +329,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -393,7 +343,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -408,7 +357,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -423,7 +371,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -438,7 +385,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -455,7 +401,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight,
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -472,7 +417,6 @@ describe('styleHandler', () => {
       isMainChunk: false,
       cssInjectPreflight,
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -489,7 +433,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight,
       cssPreflightRange: 'all',
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -506,7 +449,6 @@ describe('styleHandler', () => {
       isMainChunk: false,
       cssInjectPreflight,
       cssPreflightRange: 'all',
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -521,7 +463,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -536,7 +477,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -551,7 +491,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -566,7 +505,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },
@@ -581,7 +519,6 @@ describe('styleHandler', () => {
       isMainChunk: true,
       cssInjectPreflight: () => [],
 
-      customRuleCallback: () => {},
       cssSelectorReplacement: {
         universal: false,
       },

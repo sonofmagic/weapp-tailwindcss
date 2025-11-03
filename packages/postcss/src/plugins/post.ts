@@ -398,12 +398,6 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       atRule.nodes?.length === 0 && atRule.remove()
     }
   }
-  if (typeof opts.customRuleCallback === 'function') {
-    // 保留用户自定义回调增强处理灵活性
-    p.Rule = (rule) => {
-      opts.customRuleCallback?.(rule, opts)
-    }
-  }
   return p
 }
 

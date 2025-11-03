@@ -134,7 +134,7 @@ export type InternalUserDefinedOptions = Required<
 
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,
-  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'customRuleCallback' | 'disabled'
+  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'disabled'
 >
 
 export interface IBaseWebpackPlugin {

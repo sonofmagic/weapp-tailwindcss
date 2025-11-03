@@ -71,7 +71,6 @@ export function getDefaultOptions(): UserDefinedOptions {
     },
 
     disabled: false,
-    customRuleCallback: noop,
     onLoad: noop,
     onStart: noop,
     onEnd: noop,

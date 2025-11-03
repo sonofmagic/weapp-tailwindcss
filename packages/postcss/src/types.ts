@@ -1,6 +1,6 @@
 // 核心类型定义，描述样式处理流程所需的选项与工具类型
 import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
-import type { Result as PostcssResult, Rule } from 'postcss'
+import type { Result as PostcssResult } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxtransformOptions as Px2rpxOptions } from 'postcss-pxtransform'
@@ -10,8 +10,6 @@ import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
 
 export type LoadedPostcssOptions = Partial<Omit<Result, 'file'>>
-
-export type CustomRuleCallback = (node: Rule, options: Readonly<UserDefinedPostcssOptions>) => void
 
 export interface IPropValue {
   prop: string
@@ -51,7 +49,6 @@ interface CssCalcOptions extends PostCssCalcOptions {
 }
 
 export type IStyleHandlerOptions = {
-  customRuleCallback?: CustomRuleCallback
   ctx?: PostcssContext
   postcssOptions?: LoadedPostcssOptions
   cssRemoveProperty?: boolean
@@ -84,7 +81,6 @@ export interface UserDefinedPostcssOptions {
   postcssOptions?: LoadedPostcssOptions
   cssRemoveHoverPseudoClass?: boolean
   cssRemoveProperty?: boolean
-  customRuleCallback?: CustomRuleCallback
   uniAppX?: boolean
 }
 

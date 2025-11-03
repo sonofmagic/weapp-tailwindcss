@@ -36,7 +36,6 @@ describe('createHandlersFromContext', () => {
 
     const ctx = {
       cssPreflight: {},
-      customRuleCallback: vi.fn(),
       cssPreflightRange: 'all' as const,
       escapeMap: { '&': '_amp' },
       cssChildCombinatorReplaceValue: 'view + view',

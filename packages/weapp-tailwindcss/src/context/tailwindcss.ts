@@ -33,6 +33,35 @@ interface EnvBasedirResult {
 
 type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
 
+interface LegacyTailwindcssPatcherOptionsLike {
+  patch?: {
+    basedir?: string
+    cwd?: string
+    tailwindcss?: TailwindUserOptions & {
+      v4?: {
+        base?: string
+        cssEntries?: string[]
+      }
+    }
+    [key: string]: unknown
+  }
+  [key: string]: unknown
+}
+
+type ModernTailwindcssPatchOptionsLike = TailwindcssPatchOptions
+
+function isLegacyTailwindcssPatcherOptions(
+  options: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined,
+): options is LegacyTailwindcssPatcherOptionsLike {
+  return typeof options === 'object' && options !== null && 'patch' in options
+}
+
+function isModernTailwindcssPatchOptions(
+  options: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined,
+): options is ModernTailwindcssPatchOptionsLike {
+  return typeof options === 'object' && options !== null && !('patch' in options)
+}
+
 function pickEnvBasedir(): EnvBasedirResult | undefined {
   for (const key of ENV_BASEDIR_KEYS) {
     const value = process.env[key]
@@ -210,7 +239,7 @@ function groupCssEntriesByBase(entries: string[]) {
 }
 
 function overrideTailwindcssPatcherOptionsForBase(
-  options: CreateTailwindcssPatcherOptions['tailwindcssPatcherOptions'],
+  options: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined,
   baseDir: string,
   cssEntries: string[],
 ) {
@@ -218,7 +247,7 @@ function overrideTailwindcssPatcherOptionsForBase(
     return options
   }
 
-  if ('patch' in options) {
+  if (isLegacyTailwindcssPatcherOptions(options)) {
     const patchOptions = options.patch
     if (!patchOptions) {
       return options
@@ -242,6 +271,10 @@ function overrideTailwindcssPatcherOptionsForBase(
       ...options,
       patch: nextPatch,
     }
+  }
+
+  if (!isModernTailwindcssPatchOptions(options)) {
+    return options
   }
 
   if (!options.tailwind) {
@@ -339,14 +372,16 @@ function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): Tail
     return patchers[0]
   }
 
+  type PatchResult = Awaited<ReturnType<TailwindcssPatcherLike['patch']>>
+
   const [first] = patchers
   const multiPatcher: TailwindcssPatcherLike = {
     packageInfo: first?.packageInfo,
     majorVersion: first?.majorVersion,
     options: first?.options,
     async patch() {
-      let exposeContext: unknown
-      let extendLengthUnits: unknown
+      let exposeContext: PatchResult['exposeContext']
+      let extendLengthUnits: PatchResult['extendLengthUnits']
       for (const patcher of patchers) {
         const result = await patcher.patch()
         if (result?.exposeContext && exposeContext == null) {

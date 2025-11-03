@@ -2,7 +2,6 @@ import type { ParserOptions } from '@babel/parser'
 import type {
   CssCalcOptions,
   CssPreflightOptions,
-  CustomRuleCallback,
   LoadedPostcssOptions,
   PresetEnvOptions,
   Px2rpxOptions,
@@ -513,17 +512,6 @@ export interface UserDefinedOptions {
    * 默认 `info`，可设置为 `silent` 屏蔽全部输出。
    */
   logLevel?: 'info' | 'warn' | 'error' | 'silent'
-}
-
-// 4.即将废弃配置
-
-export interface UserDefinedOptions {
-  /**
-   * 自定义 PostCSS 规则的处理回调。
-   *
-   * @group 4.即将废弃配置
-   */
-  customRuleCallback?: CustomRuleCallback
 }
 
 export type {
