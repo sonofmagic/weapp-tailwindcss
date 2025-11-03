@@ -849,6 +849,45 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
+  it('ignoreTaggedTemplateIdentifiers transforms String.raw alias by default', async () => {
+    const testCase = `const a = String.raw;console.log(a\`!hidden\`);`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getCompilerContext({
+      jsAstTool: 'babel',
+    })
+    const { code } = await jsHandler(testCase, set)
+    expect(code).not.toBe(testCase)
+    expect(code).not.toContain('!hidden')
+  })
+
+  it('ignoreTaggedTemplateIdentifiers transforms chained aliases to String.raw', async () => {
+    const testCase = `const rawAlias = String.raw;const anotherAlias = rawAlias;anotherAlias\`!hidden\`;`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getCompilerContext({
+      jsAstTool: 'babel',
+    })
+    const { code } = await jsHandler(testCase, set)
+    expect(code).not.toBe(testCase)
+    expect(code).not.toContain('!hidden')
+  })
+
+  it('ignoreTaggedTemplateIdentifiers ignores explicit alias markers on plain String.raw', async () => {
+    const testCase = `const alias = String.raw;alias.__weapp_tw_ignore__ = true;alias\`!hidden\`;`
+    const set: Set<string> = new Set()
+    set.add('!hidden')
+
+    const { jsHandler } = getCompilerContext({
+      jsAstTool: 'babel',
+    })
+    const { code } = await jsHandler(testCase, set)
+    expect(code).not.toBe(testCase)
+    expect(code).not.toContain('!hidden')
+  })
+
   it('twMerge case 0', async () => {
     const testCase = `twMerge('bg-[#434332] px-[32px]', 'bg-[#123324] px-[35px]')`
     const set: Set<string> = new Set()

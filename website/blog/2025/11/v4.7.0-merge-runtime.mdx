@@ -1,5 +1,5 @@
 ---
-title: 4.7.0：运行时重构的 weapp-tailwindcss/merge
+title: 重新思考 weapp-tailwindcss 的未来
 date: 2025-11-02
 authors: sonofmagic
 description: 从编译期黑名单到运行时自管理，weapp-tailwindcss/merge 的重构思路与未来规划。
@@ -8,6 +8,8 @@ tags:
   - runtime
   - tailwindcss
 ---
+
+大家好，我是 weapp-tailwindcss , weapp-vite 的作者，icebreaker
 
 这篇文章算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。新的实现不仅兼容 Tailwind CSS v4，也顺手解决了“编译期黑名单 + 手动逃逸”的历史包袱。
 
@@ -49,11 +51,55 @@ const aggregators = {
 每一次 merge 都会经历 `unescape -> tailwind-merge -> escape` 三段式：
 
 ```ts
-const normalized = transformers.unescape(clsx(...inputs))
-return transformers.escape(fn(normalized))
+ const normalized = transformers.unescape(clsx(...inputs))
+ return transformers.escape(fn(normalized))
 ```
 
 这样即使调用链前端已经做过一次 escape，我们也能先还原再处理，避免输出重复的 `_b` / `_c` 前缀。
+
+### 重写 @weapp-core/escape
+
+过去的转义工具来自 `@weapp-core/escape`，它使用“多对一”的映射把非法字符替换成占位符。示例代码如下：
+
+```ts
+export const MappingChars2String: MappingStringDictionary = {
+  '[': '_',
+  ']': '_',
+  // for tailwindcss v4
+  '(': 'y',
+  ')': 'y',
+  '{': 'z',
+  '}': 'z',
+  '+': 'a',
+  ',': 'b',
+  ':': 'c',
+  '.': 'd',
+  '=': 'e',
+  ';': 'f',
+  '>': 'g',
+  '#': 'h',
+  '!': 'i',
+  '@': 'j',
+  '^': 'k',
+  '<': 'l',
+  '*': 'm',
+  '&': 'n',
+  '?': 'o',
+  '%': 'p',
+  '\'': 'q',
+  '$': 'r',
+  '/': 's',
+  '~': 't',
+  '|': 'u',
+  '`': 'v',
+  '\\': 'w',
+  '"': 'x',
+}
+```
+
+这套映射无法实现配对的 `unescape`：`[` 和 `]` 都被转成 `_`，`(` / `)`、`{` / `}` 也指向同一个字符，运行时根本推不回去。比如旧版输出 `escape('[bg:red]') === '__bg_red_'`，你无法得知首尾的 `_` 应该还原成 `[` 还是 `]`。在运行时要做“先 unescape 再 merge”几乎是不可能完成的任务。
+
+因此我们把 `@weapp-core/escape` 完全重写成可逆的状态机：每个非法字符都映射到独一无二的转义片段，同时保留长度前缀确保还原安全。现在的实现可以稳定地做 `unescape(escape(input)) === input`，也就为上面的“先解码再运行 tailwind-merge”策略打通了最后一公里。
 
 ### 运行时配置
 
