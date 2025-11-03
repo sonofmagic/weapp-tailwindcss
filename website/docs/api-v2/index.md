@@ -224,6 +224,50 @@ custom_edit_url: null
 
 [types.ts:25](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/src/types.ts#L25)
 
+### LoadedPostcssOptions
+
+`LoadedPostcssOptions` 是 `postcss-load-config` 导出的 `Result` 类型去掉 `file` 字段后再取 `Partial`。在插件内部用于接收已经过 `postcss-load-config` 解析的运行时配置，例如自定义插件、语法语义等设置。
+
+#### 定义
+
+```ts
+type LoadedPostcssOptions = Partial<Omit<Result, 'file'>>
+```
+
+#### 定义于
+
+[packages/postcss/src/types.ts:14](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/packages/postcss/src/types.ts#L14)
+
+### PresetEnvOptions
+
+`PresetEnvOptions` 直接复用自 `postcss-preset-env` 的 `pluginOptions`，用于控制 `stage`、`browsers`、`features` 等行为。传入该类型可以在保持 Docusaurus 生成文档一致的同时，自由扩展 CSS 预处理特性。
+
+#### 定义
+
+```ts
+import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
+```
+
+#### 定义于
+
+[packages/postcss/src/types.ts:8](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/packages/postcss/src/types.ts#L8)
+
+### CssCalcOptions
+
+`CssCalcOptions` 基于 `@weapp-tailwindcss/postcss-calc` 的 `PostCssCalcOptions` 扩展而来，并额外提供 `includeCustomProperties`，用于声明哪些自定义属性需要参与 `calc` 计算或在输出中保留。
+
+#### 定义
+
+```ts
+interface CssCalcOptions extends PostCssCalcOptions {
+  includeCustomProperties?: (string | RegExp)[]
+}
+```
+
+#### 定义于
+
+[packages/postcss/src/types.ts:45](https://github.com/sonofmagic/weapp-tailwindcss/blob/54db673b/packages/postcss/src/types.ts#L45)
+
 ## Functions
 
 ### UnifiedViteWeappTailwindcssPlugin
