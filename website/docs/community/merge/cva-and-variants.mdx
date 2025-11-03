@@ -1,0 +1,142 @@
+---
+id: cva-and-variants
+title: cva 与 tailwind-variants 支持
+description: '使用 @weapp-tailwindcss/merge 内置的 cva()、tv() 等工具，快速封装跨端组件。'
+---
+
+`@weapp-tailwindcss/merge` 内置了 `class-variance-authority`（简称 `cva`）与 `tailwind-variants` 的运行时封装，帮你在定义组件变体时自动处理类名冲突和小程序转义。
+
+## cva()
+
+```ts
+import { cva } from '@weapp-tailwindcss/merge/cva'
+
+const button = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors',
+  {
+    variants: {
+      tone: {
+        primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+        outline: 'border border-border/60 bg-transparent',
+      },
+      size: {
+        sm: 'h-8 px-3',
+        md: 'h-9 px-4',
+        lg: 'h-10 px-6',
+      },
+    },
+    defaultVariants: {
+      tone: 'primary',
+      size: 'md',
+    },
+  },
+)
+
+button({ tone: 'outline', size: 'sm' })
+// => 'inline-flex items-center ... border border-border_f60 bg-transparent h-8 px-3'
+```
+
+- 返回结果已经完成小程序转义，可直接用在 `class` 属性中；
+- 与原版 `cva` 的 API、推导出的 `VariantProps` 类型完全一致；
+- 如果需要自定义转义行为，可通过 `create` 获取隔离实例：
+
+  ```ts
+  import { create } from '@weapp-tailwindcss/merge/cva'
+
+  const { cva: cvaForWeb } = create({ escape: false, unescape: false })
+  ```
+
+### Live Demo
+
+```jsx live
+function () {
+  return <CvaDemo/>
+}
+```
+
+可以动态切换 tone、size 以及是否关闭 escape/unescape，对比运行时返回的不同字符串。
+
+## tailwind-variants
+
+直接从 `@weapp-tailwindcss/merge/variants` 导入 `tv`/`cn`/`createTV` 等工具，即可在运行时获得与小程序兼容的类名字符串。封装会自动把合并结果转义，保持与编译期一致。
+
+该包还提供了对 [`tailwind-variants`](https://tailwind-variants.org/) 的封装，导出项包括：
+
+| 导出 | 说明 |
+| --- | --- |
+| `tv` | 等价于默认的 `tailwind-variants` 工厂，但会自动执行小程序转义与合并。 |
+| `createTV` | 返回一个「预配置」的 `tv` 工厂，常用于库内定制。 |
+| `cn` | 将多个类名组合并（默认开启 `twMerge`），再进行小程序转义。 |
+| `cnBase` | 纯拼接工具，不做合并，仅处理转义。 |
+| `defaultConfig` | 直接透传上游默认配置。 |
+| `create` | 工厂函数，允许为 `tv` / `cn` 自定义转义行为。 |
+
+### 示例：组合变体
+
+```ts
+import { tv } from '@weapp-tailwindcss/merge/variants'
+
+const badge = tv({
+  base: 'inline-flex items-center rounded-full px-2 text-xs font-semibold',
+  variants: {
+    tone: {
+      neutral: 'bg-[#F4F4F5] text-[#18181B]',
+      success: 'bg-[#DCFCE7] text-[#166534]',
+      danger: 'bg-[#FEE2E2] text-[#B91C1C]',
+    },
+    soft: {
+      true: 'bg-opacity-75',
+    },
+  },
+  compoundVariants: [
+    {
+      tone: 'danger',
+      soft: true,
+      class: 'bg-[#F87171] text-white',
+    },
+  ],
+  defaultVariants: {
+    tone: 'neutral',
+  },
+})
+
+badge({ tone: 'success' })
+// => 'inline-flex ... bg-_b_hDCFCE7_B text-_b_h166534_B'
+```
+
+### 自定义合并策略
+
+`cn` 默认会调用 `twMerge` 去重。如果想关闭合并或覆盖其配置，可以使用第二个参数：
+
+```ts
+import { cn } from '@weapp-tailwindcss/merge/variants'
+
+const mergeLater = cn('text-[#ececec]', 'text-[#ECECEC]')
+mergeLater() // => 'text-_b_hECECEC_B'
+
+mergeLater({ twMerge: false })
+// => 'text-_b_hececec_B text-_b_hECECEC_B'
+```
+
+当需要精细化控制转义（例如 SSR 或混合应用中），同样可以结合 `create`：
+
+```ts
+import { create } from '@weapp-tailwindcss/merge/variants'
+
+const { tv: tvForWeb, cn: cnForWeb } = create({
+  escape: false,
+  unescape: false,
+})
+```
+
+这样生成的类名就会保持原样，方便在 Web 渲染时与已有代码复用。
+
+### Live Demo
+
+```jsx live
+function () {
+  return <VariantsDemo/>
+}
+```
+
+示例中可切换 tone、soft、twMerge 以及 escape/unescape，观察 `tv` 与 `cn` 输出的差异。

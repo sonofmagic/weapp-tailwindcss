@@ -1,0 +1,87 @@
+---
+id: integration
+title: 集成与排障指南
+description: '在真实项目中集成 @weapp-tailwindcss/merge 的注意事项，以及针对不同打包器的调试技巧。'
+---
+
+## 与构建工具协作
+
+### 保留关键函数名
+
+`weapp-tailwindcss` 会在编译阶段扫描源码中的 `twMerge`、`twJoin`、`cva`、`cn`、`tv`、`weappTwIgnore` 等标识符。当打包器在压缩环节改写了函数名（如将 `twMerge` 压成 `a`），扫描就会失败，导致运行时字符串无法还原。
+
+- **esbuild / Vite**
+
+  ```ts title="vite.config.ts"
+  export default defineConfig({
+    build: {
+      minify: 'esbuild',
+      terserOptions: undefined,
+      rollupOptions: {},
+    },
+    esbuild: {
+      keepNames: true,
+    },
+  })
+  ```
+
+- **Terser / Webpack**
+
+  ```js title="webpack.config.js"
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          mangle: {
+            keep_classnames: true,
+            keep_fnames: true,
+          },
+        },
+      }),
+    ],
+  },
+  ```
+
+完整的配置示例可以参考仓库里的 [`packages/minify-preserve`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/packages/minify-preserve)。
+
+### 手动切换运行时版本
+
+在极少数情况下（例如 Mono Repo 子包共享依赖，或需要跨多个 Tailwind 主版本构建），你可能想跳过 `postinstall` 的自动切换，直接根据目标平台引入不同版本：
+
+```ts
+// tailwindcss v3 项目
+import { twMerge } from '@weapp-tailwindcss/merge/v3'
+
+// tailwindcss v4 项目
+import { twMerge } from '@weapp-tailwindcss/merge/v4'
+```
+
+或是通过环境变量在安装阶段指定：
+
+```bash
+WEAPP_TW_MERGE_TARGET_VERSION=3 pnpm install
+```
+
+若你希望完全禁止脚本覆盖 `dist/index.*`，可以设置 `WEAPP_TW_MERGE_DISABLE_FALLBACK=1`，随后自行根据需要显式导入 `v3`/`v4`。
+
+## 与 weapp-tailwindcss 插件联动
+
+1. **同步依赖版本**：确保项目使用的 `weapp-tailwindcss` 主版本与文档中的说明一致，避免编译期和运行时的转义映射不匹配。
+2. **配置忽略列表**：如果封装了新的工具函数来代理 `twMerge`/`cva` 等 API，请把这些名称添加到 [`ignoreCallExpressionIdentifiers`](../../api/interfaces/UserDefinedOptions.md#ignorecallexpressionidentifiers) 或 [`ignoreTaggedTemplateExpressionIdentifiers`](../../api/interfaces/UserDefinedOptions.md#ignoretaggedtemplateexpressionidentifiers)。
+3. **联调第三方库**：当需要把类名传给第三方运行时代码（而不是直接渲染到模板上）时，可以结合 `weappTwIgnore` 手动控制是否保留原始字符串。
+
+## 调试建议
+
+- **验证运行时版本**：在构建日志或控制台输出 `tailwindMergeVersion`，确认当前入口是否匹配预期。
+- **确认转义链路**：可以在本地执行下面的脚本，检查 `twMerge` 是否正确完成「还原 ➜ 合并 ➜ 重新转义」：
+
+  ```bash
+  node - <<'NODE'
+  const { twMerge } = require('@weapp-tailwindcss/merge')
+  console.log(twMerge('text-[#ececec]', 'text-[#ECECEC]'))
+  NODE
+  ```
+
+- **排查压缩产物**：打包后搜索产物中是否仍然存在 `twMerge`、`weappTwIgnore` 等关键字；若已经被替换，复查压缩配置。
+- **生成快照**：对于依赖大量运行时字符串的项目，建议编写 Vitest 快照测试，记录 `twMerge`/`tv` 的输出，方便升级 Tailwind CSS 或迁移到 v4 时比对差异。

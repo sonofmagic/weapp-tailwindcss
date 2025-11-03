@@ -1,0 +1,130 @@
+---
+id: overview
+title: 概览
+slug: /community/merge
+description: '@weapp-tailwindcss/merge 的定位、安装方式、快速上手示例以及多端项目的常见用法。'
+---
+
+`@weapp-tailwindcss/merge` 是面向小程序生态的 [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) 运行时封装。它在保留原库全部 API 的基础上，对类名做了小程序合法化转义，并与 `weapp-tailwindcss` 编译期插件联动，提供稳定的跨端开发体验。
+
+## 为什么要使用 merge 运行时
+
+- **动态类名更安全**：在组件里根据状态拼接类名时，`twMerge` 会自动剔除冲突项，确保最终样式一致。
+- **小程序专属转义**：运行时会把诸如 `[#ececec]`、`[length:24rpx]` 等非法字符转成小程序可识别的占位符，并在编译期再还原。
+- **自动匹配 Tailwind CSS 主版本**：包内同时内置 `tailwind-merge@2`（对应 `tailwindcss@3`）与 `tailwind-merge@3`（对应 `tailwindcss@4`），安装时会根据项目里的 `tailwindcss` 版本自动切换入口。
+- **保留原生 API**：`twMerge`、`twJoin`、`extendTailwindMerge`、`createTailwindMerge` 等函数与原版完全一致，迁移成本低。
+
+:::info 与原库的差异
+为了适配小程序，`@weapp-tailwindcss/merge` 会在运行时做两件事：
+
+1. 先调用 `@weapp-core/escape` 对字符串「去转义」，把已经被编译期处理过的值还原为标准 Tailwind 类名；
+2. 调用原始的 `tailwind-merge` 完成合并后，再重新转义一次，交给小程序端运行。
+
+如果你在纯 Web 项目中使用，请参考下方的「多端项目」章节配置。
+:::
+
+## 安装
+
+```bash npm2yarn
+npm i @weapp-tailwindcss/merge
+```
+
+安装脚本会尝试解析项目根目录里 `tailwindcss` 的版本，并把 `dist/index.*` 指向对应的运行时：
+
+- `tailwindcss@^4` ➜ 使用 `@weapp-tailwindcss/merge/v4`（基于 `tailwind-merge@3`）
+- 其他情况 ➜ 使用 `@weapp-tailwindcss/merge/v3`（基于 `tailwind-merge@2`）
+
+若检测失败，会回退到 `v4` 版本并打印提示。你也可以通过环境变量显式控制：
+
+| 环境变量 | 作用 |
+| --- | --- |
+| `WEAPP_TW_MERGE_TARGET_VERSION` / `WEAPP_TW_MERGE_FORCE_VERSION` | 强制运行时版本（支持 `3`/`v3`/`4`/`v4`） |
+| `WEAPP_TW_MERGE_DISABLE_FALLBACK` / `WEAPP_TW_MERGE_NO_FALLBACK` | 检测失败时不要覆盖入口，手动按需引入 `v3`/`v4` |
+| `WEAPP_TW_MERGE_STRICT` | 切换失败时让脚本返回非零退出码 |
+| `WEAPP_TW_MERGE_RESOLVE_ROOT` | 指定解析 `tailwindcss` 的额外搜索目录 |
+
+## 快速上手
+
+```ts
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+const buttonClass = twMerge(
+  'px-2 py-1 bg-red hover:bg-dark-red',
+  'p-3 bg-[#B91C1C]'
+)
+
+// => 'hovercbg-dark-red p-3 bg-_hB91C1C_'
+```
+
+同样的写法在 Web 端会得到 `hover:bg-dark-red p-3 bg-[#B91C1C]`。在小程序里之所以出现 `_h`、`_` 等占位符，是因为运行时完成了转义。`weapp-tailwindcss` 插件会在编译阶段把这些占位符还原成合法类名。
+
+### 与 weapp-tailwindcss 的编译期配合
+
+- `weapp-tailwindcss` 默认把 `twMerge`、`twJoin`、`cva` 标记为「无需再次转义」的调用点，如果你自定义了函数名（例如把 `twMerge` 重命名为 `cn`），需要在配置里补充 [`ignoreCallExpressionIdentifiers`](../../api/interfaces/UserDefinedOptions.md#ignorecallexpressionidentifiers)。
+- 对于模板字符串，可以使用 `weappTwIgnore` 标签跳过编译期处理：
+
+  ```ts
+  import { weappTwIgnore } from '@weapp-tailwindcss/merge'
+
+  const raw = weappTwIgnore`text-[#123456]`
+  ```
+
+  这个 helper 实际上就是 `String.raw`，但它可以让插件准确识别并跳过转义。
+
+### tailwind-variants 快速体验
+
+`@weapp-tailwindcss/merge` 也封装了 [`tailwind-variants`](https://tailwind-variants.org/)，在小程序环境中同样可以使用 `tv`/`cn` 输出带转义的类名：
+
+```ts
+import { tv } from '@weapp-tailwindcss/merge/variants'
+
+const badge = tv({
+  base: 'inline-flex items-center rounded-full px-2 text-xs font-semibold',
+  variants: {
+    tone: {
+      neutral: 'bg-[#F4F4F5] text-[#18181B]',
+      success: 'bg-[#DCFCE7] text-[#166534]',
+      danger: 'bg-[#FEE2E2] text-[#B91C1C]',
+    },
+  },
+  defaultVariants: {
+    tone: 'neutral',
+  },
+})
+
+badge({ tone: 'success' })
+// => 'inline-flex ... bg-_b_hDCFCE7_B text-_b_h166534_B'
+```
+
+更多组合用法、`cn` 聚合器以及逃逸策略见后文的 [`cva 与 tailwind-variants 支持`](./cva-and-variants) 章节。
+
+### 多端项目：按需控制转义
+
+`create` 工厂允许你为不同运行时定制 escape 策略：
+
+```ts
+import { create } from '@weapp-tailwindcss/merge'
+
+const { twMerge: mergeForMiniProgram } = create()
+const { twMerge: mergeForWeb } = create({
+  escape: false,
+  unescape: false,
+})
+
+mergeForMiniProgram('text-[#ececec]', 'text-[#ECECEC]') // → 'text-_b_hECECEC_B'
+mergeForWeb('text-[#ececec]', 'text-[#ECECEC]')         // → 'text-[#ECECEC]'
+```
+
+- `escape: false` 表示结果保持原样（适合 Web 或同构渲染）。
+- `unescape: false` 可跳过运行前的「反转义」，用于确保输入不会被改写。
+- 如果只想自定义映射表，传入 `escape: { map: { '#': '__hash__' } }` 即可；运行时会把自定义映射与默认映射合并，保证编译期和运行时的行为一致。
+
+### 在线体验
+
+```jsx live
+function () {
+  return <MergeDemo/>
+}
+```
+
+上方示例允许切换「禁用 escape/unescape」，用来对比运行时转义前后的差异。

@@ -1,0 +1,151 @@
+---
+id: runtime-api
+title: 运行时 API
+description: '完整梳理 @weapp-tailwindcss/merge 暴露的函数，以及定制运行时行为的方式。'
+---
+
+所有 API 都与 `tailwind-merge` 原版保持一致，只是在调用前后包裹了转义逻辑。你可以继续使用熟悉的导入路径：
+
+```ts
+import {
+  twMerge,
+  twJoin,
+  createTailwindMerge,
+  extendTailwindMerge,
+  getDefaultConfig,
+  mergeConfigs,
+  tailwindMergeVersion,
+  weappTwIgnore,
+  create,
+} from '@weapp-tailwindcss/merge'
+```
+
+> 如果你明确知道项目使用的 `tailwindcss` 主版本，也可以直接从 `@weapp-tailwindcss/merge/v3` 或 `@weapp-tailwindcss/merge/v4` 导入，以跳过自动检测。
+
+## twMerge(...classValues)
+
+合并 Tailwind 工具类并移除冲突项，返回一个经过小程序转义的字符串。支持布尔值、数字、数组、嵌套数组等所有 `tailwind-merge` 支持的参数类型。
+
+```ts
+twMerge('px-2 py-1', ['px-6', { 'py-5': shouldExpand }])
+// => 'px-6 py-5'
+
+twMerge('text-[#ececec]', flag && 'text-[#ECECEC]')
+// => 'text-_b_hECECEC_B'
+```
+
+### 常见问题
+
+- 如果输入已经是转义过的占位符（例如 `text-_b_hececec_B`），运行时会先调用 `unescape` 还原，再进行合并，因此不会出现重复。
+- 返回结果永远是字符串；若想在 Web 端保持原样，需要使用下文的 `create` 禁用转义。
+
+## twJoin(...classValues)
+
+单纯把类名拼接成一个字符串，不做冲突判断，但仍会执行「先 unescape、后 escape」的流程，保证多端结果一致。适合用于低成本地去除 `undefined` / `false`。
+
+```ts
+twJoin('text-[#ececec]', condition && 'bg-[#010101]')
+// => 'text-_b_hececec_B bg-_b_h010101_B'
+```
+
+## createTailwindMerge(config)
+
+与原版一致，可以基于自定义配置创建一个新的 `twMerge` 实例。区别在于返回值会自动带上小程序转义。
+
+```ts
+const mergeCard = createTailwindMerge({
+  classGroups: {
+    card: ['card-default', 'card-primary'],
+  },
+})
+
+mergeCard('card-default card-primary') // => 'card-primary'
+```
+
+同一个实例在调用过程中仍然执行转义，因此你可以安全地混用转义前后的字符串。
+
+## extendTailwindMerge(config)
+
+基于默认配置扩展新的合并规则，返回一个新的 `twMerge` 运行时。
+
+```ts
+const mergeWithCustomSpacing = extendTailwindMerge({
+  classGroups: {
+    spacing: ['gap-safe', 'gap-huge'],
+  },
+})
+
+mergeWithCustomSpacing('gap-huge gap-safe') // => 'gap-safe'
+```
+
+## getDefaultConfig() 与 mergeConfigs(a, b)
+
+两者直接透传自 `tailwind-merge`：
+
+- `getDefaultConfig()` 返回内部使用的原始配置对象；
+- `mergeConfigs(a, b)` 用于把两个配置合并成一个新的配置，常见于库内部复用。
+
+## tailwindMergeVersion
+
+表示当前入口绑定的 `tailwind-merge` 主版本：
+
+- `2` ➜ 运行时基于 `tailwind-merge@2`，适配 `tailwindcss@3`
+- `3` ➜ 运行时基于 `tailwind-merge@3`，适配 `tailwindcss@4`
+
+该值可用于调试或在运行时判断最终行为。
+
+## weappTwIgnore
+
+模板字符串标签函数，本质是 `String.raw`。与 `weapp-tailwindcss` 的 `ignoreTaggedTemplateExpressionIdentifiers` 配置联动，用来标记「不要转义」的代码片段。
+
+```ts
+import { weappTwIgnore } from '@weapp-tailwindcss/merge'
+
+const raw = weappTwIgnore`
+  bg-[#123456]
+  before:content-['>']
+`
+```
+
+当小程序端确实需要原始类名（例如传递给第三方库）时，可借助该标签避免被编译期改写。
+
+## create(options?)
+
+`create` 会根据传入的 `options` 返回一组隔离的运行时函数（`twMerge`、`twJoin`、`createTailwindMerge`、`extendTailwindMerge`），用于控制转义行为：
+
+```ts
+const { twMerge: mergeForWeb } = create({ escape: false, unescape: false })
+const { twMerge: mergeForMiniProgram } = create()
+```
+
+### CreateOptions
+
+| 选项 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `escape` | `false` \| `EscapeOptions` | `{ map: 默认映射 }` | 控制输出时是否转义；传入对象可自定义映射表。 |
+| `unescape` | `false` \| `UnescapeOptions` | `{ map: 默认映射 }` | 控制在合并前是否还原占位符。 |
+
+- 传入 `false` 会彻底关闭对应阶段；
+- 当 `escape`/`unescape` 同时提供自定义 `map` 时，运行时会自动与默认映射 `MappingChars2String` 合并，确保和编译期保持一致；
+- 该工厂返回的实例不会影响默认导出的全局实例，可在多端方案里自由组合。
+- `EscapeOptions`/`UnescapeOptions` 类型来自 `@weapp-core/escape` 包，与编译期所使用的转义逻辑保持一致。
+
+```ts
+import { create } from '@weapp-tailwindcss/merge'
+
+const custom = create({
+  escape: {
+    map: {
+      '#': '__hash__',
+    },
+  },
+  unescape: {
+    map: {
+      '#': '__hash__',
+    },
+  },
+})
+
+custom.twMerge('text-[#ececec]')        // => 'text-_b__hash__ececec_B'
+custom.twMerge('text-_b__hash__ececec_B') // => 'text-_b__hash__ececec_B'
+```

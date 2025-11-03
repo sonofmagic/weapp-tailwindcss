@@ -368,8 +368,15 @@ const communitySidebar: SidebarConfig = [
     id: 'icons/index',
   },
   {
-    type: 'doc',
-    id: 'community/merge',
+    type: 'category',
+    label: '@weapp-tailwindcss/merge',
+    collapsed: false,
+    items: [
+      'community/merge/overview',
+      'community/merge/runtime-api',
+      'community/merge/cva-and-variants',
+      'community/merge/integration',
+    ],
   },
   {
     type: 'doc',
