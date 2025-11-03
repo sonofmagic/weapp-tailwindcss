@@ -11,7 +11,31 @@ tags:
 
 大家好，我是 weapp-tailwindcss , weapp-vite 的作者，icebreaker
 
-这篇文章算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。新的实现不仅兼容 Tailwind CSS v4，也顺手解决了“编译期黑名单 + 手动逃逸”的历史包袱。
+最近我一直在思考 weapp-tailwindcss 的未来，以至于彻夜难眠
+
+为什么? 因为之前有一个问题，`tailwind-merge` / `class-variance-authority` / `tailwind-variants` 没有什么很好的办法在小程序里使用。
+
+因为 `weapp-tailwindcss` 在编译时，就已经把 `wxml` / `js` / `wxss` 中提取到的 tailwindcss 字符串 token 给转译了
+
+而 `tailwind-merge` / `class-variance-authority` / `tailwind-variants` 这一些工具的合并操作，都在运行时进行。
+
+完全兼容不了啊!
+
+## 思路一
+
+编写 `tailwind-merge` 插件，或者 create 一个新的 `tailwind-merge`
+
+失败了
+
+## 思路二
+
+也就是之前的方案，在编译时忽略 `twMerge` / `twJoin` / `cva` 等函数内部的转义，然后在第一次运行时，进来的时候，是完整的 tw 类名
+
+于是我编写了 `@weapp-tailwindcss/merge` 的 v1 版本。
+
+看上去有用，但是实际操作的时候出现了大问题，因为这种方式是依赖于 ast 节点的解析的，但是我编写的插件，是无法保证运行时得到的类名是完整的，中间经历的步骤非常有可能会把，函数名，或者模板字符串的标识符名称给压缩重命名了
+
+这篇文章算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。也顺手解决了“编译期黑名单 + 手动逃逸”的历史包袱。
 
 
 ## 为什么要重写 merge？
