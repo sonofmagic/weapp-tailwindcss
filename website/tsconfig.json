@@ -3,5 +3,24 @@
   "extends": "@docusaurus/tsconfig/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "."
-  }
+  },
+  "include": [
+    "src",
+    "config",
+    "scripts",
+    "tests",
+    "docusaurus.config.ts",
+    "sidebars.ts",
+    "tailwind.config.ts",
+    "playwright.config.ts",
+    "env.d.ts"
+  ],
+  "exclude": [
+    "build",
+    ".docusaurus",
+    ".turbo",
+    "node_modules",
+    "playwright-report",
+    "test-results"
+  ]
 }
