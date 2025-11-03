@@ -3,10 +3,5 @@
   "extends": "@docusaurus/tsconfig/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "."
-  },
-  "references": [
-    {
-      "path": "./tsconfig.worker.json"
-    }
-  ]
+  }
 }
