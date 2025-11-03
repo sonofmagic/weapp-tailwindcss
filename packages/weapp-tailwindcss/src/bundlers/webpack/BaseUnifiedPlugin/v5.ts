@@ -7,11 +7,11 @@ import process from 'node:process'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, invalidateRuntimeClassSet } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
-import { runWithConcurrency } from '../../shared/run-tasks'
+import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -50,10 +50,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    const patchPromise = Promise.resolve(twPatcher.patch()).then((result) => {
-      invalidateRuntimeClassSet(twPatcher)
-      return result
-    })
+    const patchPromise = createTailwindPatchPromise(twPatcher)
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
     async function getClassSetInLoader() {
@@ -291,10 +288,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               )
             }
           }
-          if (jsTaskFactories.length > 0) {
-            const jsTasksPromise = runWithConcurrency(jsTaskFactories, Math.min(jsTaskFactories.length, 4)).then(() => undefined)
-            tasks.push(jsTasksPromise)
-          }
+          pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
           await Promise.all(tasks)
           debug('end')

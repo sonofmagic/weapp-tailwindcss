@@ -9,12 +9,12 @@ import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, invalidateRuntimeClassSet } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
-import { runWithConcurrency } from '../shared/run-tasks'
+import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { parseVueRequest } from './query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from './utils'
 
@@ -130,10 +130,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     return
   }
 
-  const patchPromise = Promise.resolve(twPatcher.patch()).then((result) => {
-    invalidateRuntimeClassSet(twPatcher)
-    return result
-  })
+  const patchPromise = createTailwindPatchPromise(twPatcher)
   let runtimeSet: Set<string> | undefined
   let resolvedConfig: ResolvedConfig | undefined
   onLoad()
@@ -322,10 +319,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             )
           }
         }
-        if (jsTaskFactories.length > 0) {
-          const jsTasksPromise = runWithConcurrency(jsTaskFactories, Math.min(jsTaskFactories.length, 4)).then(() => undefined)
-          tasks.push(jsTasksPromise)
-        }
+        pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
         await Promise.all(tasks)
         onEnd()

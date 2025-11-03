@@ -36,3 +36,16 @@ export async function runWithConcurrency<T>(
   await Promise.all(executing)
   return results
 }
+
+export function pushConcurrentTaskFactories(
+  queue: Array<Promise<void>>,
+  factories: Array<() => Promise<unknown>>,
+  limit?: number,
+) {
+  if (factories.length === 0) {
+    return
+  }
+  queue.push(
+    runWithConcurrency(factories, limit).then(() => undefined),
+  )
+}

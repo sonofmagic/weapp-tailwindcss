@@ -46,6 +46,13 @@ export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
   runtimeClassSetCache.delete(twPatcher)
 }
 
+export function createTailwindPatchPromise(twPatcher: TailwindcssPatcherLike): Promise<unknown> {
+  return Promise.resolve(twPatcher.patch()).then((result) => {
+    invalidateRuntimeClassSet(twPatcher)
+    return result
+  })
+}
+
 function shouldPreferSync(majorVersion: number | undefined) {
   if (majorVersion == null) {
     return true

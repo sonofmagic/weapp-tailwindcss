@@ -7,7 +7,7 @@ import process from 'node:process'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, invalidateRuntimeClassSet } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
 
 const debug = createDebug()
@@ -25,10 +25,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
-  const patchPromise = Promise.resolve(twPatcher.patch()).then((result) => {
-    invalidateRuntimeClassSet(twPatcher)
-    return result
-  })
+  const patchPromise = createTailwindPatchPromise(twPatcher)
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
