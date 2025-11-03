@@ -9,11 +9,12 @@ import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, invalidateRuntimeClassSet } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
+import { runWithConcurrency } from '../shared/run-tasks'
 import { parseVueRequest } from './query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from './utils'
 
@@ -129,7 +130,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     return
   }
 
-  const patchPromise = Promise.resolve(twPatcher.patch())
+  const patchPromise = Promise.resolve(twPatcher.patch()).then((result) => {
+    invalidateRuntimeClassSet(twPatcher)
+    return result
+  })
   let runtimeSet: Set<string> | undefined
   let resolvedConfig: ResolvedConfig | undefined
   onLoad()
@@ -214,71 +218,70 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           }
         }
 
+        const jsTaskFactories: Array<() => Promise<void>> = []
+
         if (Array.isArray(groupedEntries.js)) {
           for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
-            if (originalSource.type !== 'chunk') {
-              continue
+            if (originalSource.type === 'chunk') {
+              const absoluteFile = toAbsoluteOutputPath(file, outDir)
+              const initialRawSource = originalSource.code
+              jsTaskFactories.push(async () => {
+                await processCachedTask<string>({
+                  cache,
+                  cacheKey: file,
+                  rawSource: initialRawSource,
+                  applyResult(source) {
+                    originalSource.code = source
+                  },
+                  onCacheHit() {
+                    debug('js cache hit: %s', file)
+                  },
+                  async transform() {
+                    const rawSource = originalSource.code
+                    const { code, linked } = await jsHandler(rawSource, runtimeSet, createHandlerOptions(absoluteFile))
+                    onUpdate(file, rawSource, code)
+                    debug('js handle: %s', file)
+                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
+                    return {
+                      result: code,
+                    }
+                  },
+                })
+              })
             }
-            const absoluteFile = toAbsoluteOutputPath(file, outDir)
-            const initialRawSource = originalSource.code
-            await processCachedTask<string>({
-              cache,
-              cacheKey: file,
-              rawSource: initialRawSource,
-              applyResult(source) {
-                originalSource.code = source
-              },
-              onCacheHit() {
-                debug('js cache hit: %s', file)
-              },
-              async transform() {
-                const rawSource = originalSource.code
-                const { code, linked } = await jsHandler(rawSource, runtimeSet, createHandlerOptions(absoluteFile))
-                onUpdate(file, rawSource, code)
-                debug('js handle: %s', file)
-                applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
-                return {
-                  result: code,
-                }
-              },
-            })
-          }
-
-          if (uniAppX) {
-            for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
-              if (originalSource.type !== 'asset') {
-                continue
-              }
+            else if (uniAppX && originalSource.type === 'asset') {
               const absoluteFile = toAbsoluteOutputPath(file, outDir)
               const rawSource = originalSource.source.toString()
-              await processCachedTask<string>({
-                cache,
-                cacheKey: file,
-                rawSource,
-                applyResult(source) {
-                  originalSource.source = source
-                },
-                onCacheHit() {
-                  debug('js cache hit: %s', file)
-                },
-                async transform() {
-                  const currentSource = originalSource.source.toString()
-                  const { code, linked } = await jsHandler(currentSource, runtimeSet, createHandlerOptions(absoluteFile, {
-                    uniAppX,
-                    babelParserOptions: {
-                      plugins: [
-                        'typescript',
-                      ],
-                      sourceType: 'unambiguous',
-                    },
-                  }))
-                  onUpdate(file, currentSource, code)
-                  debug('js handle: %s', file)
-                  applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
-                  return {
-                    result: code,
-                  }
-                },
+              jsTaskFactories.push(async () => {
+                await processCachedTask<string>({
+                  cache,
+                  cacheKey: file,
+                  rawSource,
+                  applyResult(source) {
+                    originalSource.source = source
+                  },
+                  onCacheHit() {
+                    debug('js cache hit: %s', file)
+                  },
+                  async transform() {
+                    const currentSource = originalSource.source.toString()
+                    const { code, linked } = await jsHandler(currentSource, runtimeSet, createHandlerOptions(absoluteFile, {
+                      uniAppX,
+                      babelParserOptions: {
+                        plugins: [
+                          'typescript',
+                        ],
+                        sourceType: 'unambiguous',
+                      },
+                    }))
+                    onUpdate(file, currentSource, code)
+                    debug('js handle: %s', file)
+                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate)
+                    return {
+                      result: code,
+                    }
+                  },
+                })
               })
             }
           }
@@ -319,6 +322,11 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             )
           }
         }
+        if (jsTaskFactories.length > 0) {
+          const jsTasksPromise = runWithConcurrency(jsTaskFactories, Math.min(jsTaskFactories.length, 4)).then(() => undefined)
+          tasks.push(jsTasksPromise)
+        }
+
         await Promise.all(tasks)
         onEnd()
         debug('end')

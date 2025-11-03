@@ -1,7 +1,50 @@
 import type { TailwindcssPatcherLike } from '@/types'
+import { statSync } from 'node:fs'
 import { createDebug } from '@/debug'
 
 const debug = createDebug('[tailwindcss:runtime] ')
+
+interface RuntimeClassSetCacheEntry {
+  value?: Set<string>
+  promise?: Promise<Set<string>>
+  signature?: string
+}
+
+const runtimeClassSetCache = new WeakMap<TailwindcssPatcherLike, RuntimeClassSetCacheEntry>()
+
+export interface CollectRuntimeClassSetOptions {
+  force?: boolean
+}
+
+function getCacheEntry(twPatcher: TailwindcssPatcherLike) {
+  let entry = runtimeClassSetCache.get(twPatcher)
+  if (!entry) {
+    entry = {}
+    runtimeClassSetCache.set(twPatcher, entry)
+  }
+  return entry
+}
+
+function getTailwindConfigSignature(twPatcher: TailwindcssPatcherLike): string | undefined {
+  const configPath = twPatcher.options?.tailwind?.config
+  if (typeof configPath !== 'string' || configPath.length === 0) {
+    return undefined
+  }
+  try {
+    const stats = statSync(configPath)
+    return `${configPath}:${stats.size}:${stats.mtimeMs}`
+  }
+  catch {
+    return `${configPath}:missing`
+  }
+}
+
+export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
+  if (!twPatcher) {
+    return
+  }
+  runtimeClassSetCache.delete(twPatcher)
+}
 
 function shouldPreferSync(majorVersion: number | undefined) {
   if (majorVersion == null) {
@@ -39,33 +82,68 @@ function tryGetRuntimeClassSetSync(twPatcher: TailwindcssPatcherLike) {
   }
 }
 
-async function collectRuntimeClassSet(twPatcher: TailwindcssPatcherLike): Promise<Set<string>> {
-  const syncSet = tryGetRuntimeClassSetSync(twPatcher)
-  if (syncSet) {
-    return syncSet
-  }
+async function collectRuntimeClassSet(
+  twPatcher: TailwindcssPatcherLike,
+  options: CollectRuntimeClassSetOptions = {},
+): Promise<Set<string>> {
+  const entry = getCacheEntry(twPatcher)
+  const signature = getTailwindConfigSignature(twPatcher)
 
-  try {
-    const result = await twPatcher.extract({ write: false })
-    if (result?.classSet) {
-      return result.classSet
+  if (!options.force) {
+    if (entry.value && entry.signature === signature) {
+      return entry.value
+    }
+    if (entry.promise) {
+      return entry.promise
     }
   }
-  catch (error) {
-    debug('extract() failed, fallback to getClassSet(): %O', error)
+  else {
+    entry.value = undefined
   }
+
+  const task = (async () => {
+    const syncSet = tryGetRuntimeClassSetSync(twPatcher)
+    if (syncSet) {
+      return syncSet
+    }
+
+    try {
+      const result = await twPatcher.extract({ write: false })
+      if (result?.classSet) {
+        return result.classSet
+      }
+    }
+    catch (error) {
+      debug('extract() failed, fallback to getClassSet(): %O', error)
+    }
+
+    try {
+      const fallbackSet = await Promise.resolve(twPatcher.getClassSet())
+      if (fallbackSet) {
+        return fallbackSet
+      }
+    }
+    catch (error) {
+      debug('getClassSet() failed, returning empty set: %O', error)
+    }
+
+    return new Set<string>()
+  })()
+
+  entry.promise = task
+  entry.signature = signature
 
   try {
-    const fallbackSet = await Promise.resolve(twPatcher.getClassSet())
-    if (fallbackSet) {
-      return fallbackSet
-    }
+    const resolved = await task
+    entry.value = resolved
+    entry.promise = undefined
+    entry.signature = signature
+    return resolved
   }
   catch (error) {
-    debug('getClassSet() failed, returning empty set: %O', error)
+    entry.promise = undefined
+    throw error
   }
-
-  return new Set<string>()
 }
 
 export { collectRuntimeClassSet }

@@ -1,7 +1,7 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
-import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, invalidateRuntimeClassSet } from '@/tailwindcss/runtime'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
@@ -13,7 +13,10 @@ export function createContext(options: UserDefinedOptions = {}) {
   const { templateHandler, styleHandler, jsHandler, twPatcher } = opts
 
   let runtimeSet = new Set<string>()
-  const patchPromise = Promise.resolve(twPatcher.patch())
+  const patchPromise = Promise.resolve(twPatcher.patch()).then((result) => {
+    invalidateRuntimeClassSet(twPatcher)
+    return result
+  })
 
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await patchPromise

@@ -7,10 +7,11 @@ import process from 'node:process'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, invalidateRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
+import { runWithConcurrency } from '../../shared/run-tasks'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -49,7 +50,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    const patchPromise = Promise.resolve(twPatcher.patch())
+    const patchPromise = Promise.resolve(twPatcher.patch()).then((result) => {
+      invalidateRuntimeClassSet(twPatcher)
+      return result
+    })
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
     async function getClassSetInLoader() {
@@ -197,6 +201,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
             }
           }
 
+          const jsTaskFactories: Array<() => Promise<void>> = []
+
           if (Array.isArray(groupedEntries.js)) {
             for (const [file] of groupedEntries.js) {
               const cacheKey = getCacheKey(file)
@@ -207,37 +213,39 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               const absoluteFile = toAbsoluteOutputPath(file, outputDir)
               const initialSource = asset.source.source()
               const initialRawSource = typeof initialSource === 'string' ? initialSource : initialSource.toString()
-              await processCachedTask({
-                cache,
-                cacheKey,
-                rawSource: initialRawSource,
-                applyResult(source) {
-                  compilation.updateAsset(file, source)
-                },
-                onCacheHit() {
-                  debug('js cache hit: %s', file)
-                },
-                transform: async () => {
-                  const currentAsset = compilation.getAsset(file)
-                  const currentSourceValue = currentAsset?.source.source()
-                  const currentSource = typeof currentSourceValue === 'string'
-                    ? currentSourceValue
-                    : currentSourceValue?.toString() ?? ''
-                  const { code, linked } = await jsHandler(currentSource, runtimeSet, {
-                    filename: absoluteFile,
-                    moduleGraph: moduleGraphOptions,
-                    babelParserOptions: {
-                      sourceFilename: absoluteFile,
-                    },
-                  })
-                  const source = new ConcatSource(code)
-                  onUpdate(file, currentSource, code)
-                  debug('js handle: %s', file)
-                  applyLinkedResults(linked)
-                  return {
-                    result: source,
-                  }
-                },
+              jsTaskFactories.push(async () => {
+                await processCachedTask({
+                  cache,
+                  cacheKey,
+                  rawSource: initialRawSource,
+                  applyResult(source) {
+                    compilation.updateAsset(file, source)
+                  },
+                  onCacheHit() {
+                    debug('js cache hit: %s', file)
+                  },
+                  transform: async () => {
+                    const currentAsset = compilation.getAsset(file)
+                    const currentSourceValue = currentAsset?.source.source()
+                    const currentSource = typeof currentSourceValue === 'string'
+                      ? currentSourceValue
+                      : currentSourceValue?.toString() ?? ''
+                    const { code, linked } = await jsHandler(currentSource, runtimeSet, {
+                      filename: absoluteFile,
+                      moduleGraph: moduleGraphOptions,
+                      babelParserOptions: {
+                        sourceFilename: absoluteFile,
+                      },
+                    })
+                    const source = new ConcatSource(code)
+                    onUpdate(file, currentSource, code)
+                    debug('js handle: %s', file)
+                    applyLinkedResults(linked)
+                    return {
+                      result: source,
+                    }
+                  },
+                })
               })
             }
           }
@@ -283,6 +291,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
               )
             }
           }
+          if (jsTaskFactories.length > 0) {
+            const jsTasksPromise = runWithConcurrency(jsTaskFactories, Math.min(jsTaskFactories.length, 4)).then(() => undefined)
+            tasks.push(jsTasksPromise)
+          }
+
           await Promise.all(tasks)
           debug('end')
           onEnd()
