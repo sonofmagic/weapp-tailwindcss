@@ -5,6 +5,8 @@ slug: /community/merge
 description: '@weapp-tailwindcss/merge 的定位、安装方式、快速上手示例以及多端项目的常见用法。'
 ---
 
+import Link from '@docusaurus/Link'
+
 `@weapp-tailwindcss/merge` 是面向小程序生态的 [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) 运行时封装。它在保留原库全部 API 的基础上，对类名做了小程序合法化转义，并与 `weapp-tailwindcss` 编译期插件联动，提供稳定的跨端开发体验。
 
 ## 为什么要使用 merge 运行时
@@ -96,7 +98,7 @@ badge({ tone: 'success' })
 // => 'inline-flex ... bg-_b_hDCFCE7_B text-_b_h166534_B'
 ```
 
-更多组合用法、`cn` 聚合器以及逃逸策略见后文的 [`cva 与 tailwind-variants 支持`](./cva-and-variants) 章节。
+更多组合用法、`cn` 聚合器以及逃逸策略见后文的 <Link to="/docs/community/merge/cva-and-variants"><code>cva 与 tailwind-variants 支持</code></Link> 章节。
 
 ### 多端项目：按需控制转义
 
