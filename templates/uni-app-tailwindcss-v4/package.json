@@ -74,7 +74,7 @@
     "vite": "5.2.8",
     "vue-tsc": "^2.2.10",
     "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.7.1"
+    "weapp-tailwindcss": "^4.7.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
