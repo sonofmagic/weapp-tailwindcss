@@ -13,6 +13,7 @@
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "weapp-ide-cli": "catalog:weappIdeCli",
-    "weapp-tailwindcss": "workspace:*"
+    "weapp-tailwindcss": "workspace:*",
+    "@weapp-tailwindcss/debug-uni-app-x": "workspace:*"
   }
 }

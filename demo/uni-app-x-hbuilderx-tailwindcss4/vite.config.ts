@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/postcss'
 import { defineConfig } from 'vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { debugX } from '@weapp-tailwindcss/debug-uni-app-x'
 
 export default defineConfig({
   plugins: [
@@ -15,6 +16,7 @@ export default defineConfig({
         cssEntries: [path.resolve(__dirname, 'main.css')],
       }),
     ),
+    debugX()
   ],
   css: {
     postcss: {

@@ -12,6 +12,7 @@
       <view class="inline-block h-10 w-[50px] bg-amber-600"></view>
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
     </view>
+    <button :class="button()">button</button>
   </view>
 </template>
 
@@ -22,7 +23,7 @@ import { cva } from '@weapp-tailwindcss/merge/cva'
 const button = cva(["font-semibold", "border", "rounded"], {
   variants: {
     intent: {
-      primary: ["bg-blue-500", "text-white", "border-transparent"],
+      primary: ["bg-[#e43007]", "text-white", "border-transparent"],
       // **or**
       // primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
       secondary: ["bg-white", "text-gray-800", "border-gray-400"],
@@ -62,6 +63,8 @@ const button = cva(["font-semibold", "border", "rounded"], {
     disabled: false,
   },
 });
+
+
 
 console.log(button())
 
