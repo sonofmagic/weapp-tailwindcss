@@ -91,7 +91,7 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
-    "unplugin-vue-components": "^30.0.0",
+    "unplugin-vue-components": "^29.2.0",
     "vue-loader": "^17.2.2",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
