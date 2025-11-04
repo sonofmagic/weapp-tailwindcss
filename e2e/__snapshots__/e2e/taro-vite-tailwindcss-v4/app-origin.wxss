@@ -102,10 +102,10 @@ text,
   height: 112rpx;
   height: calc(var(--spacing) * 14);
 }
-.h-_300px_ {
+.h-_b300px_B {
   height: 300rpx;
 }
-.bg-_h123456_ {
+.bg-_b_h123456_B {
   background-color: #123456;
 }
 .bg-purple-300 {
@@ -137,13 +137,13 @@ text,
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-.text-_55rpx_ {
+.text-_b55rpx_B {
   font-size: 55rpx;
 }
-.text-_hc31d6b_ {
+.text-_b_hc31d6b_B {
   color: #c31d6b;
 }
-.text-_hfff_ {
+.text-_b_hfff_B {
   color: #fff;
 }
 /*$vite$:1*/

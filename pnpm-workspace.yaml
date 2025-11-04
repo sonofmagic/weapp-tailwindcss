@@ -101,7 +101,7 @@ catalogs:
   weappMerge:
     '@weapp-tailwindcss/merge': ^2.0.1
   weappVite:
-    weapp-vite: ^5.7.1
+    weapp-vite: ^5.7.2
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

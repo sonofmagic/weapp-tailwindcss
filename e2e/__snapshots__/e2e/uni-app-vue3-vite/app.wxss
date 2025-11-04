@@ -505,6 +505,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(185, 28, 28, var(--tw-bg-opacity, 1));
 }
+.bg-_b_he43007_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(228, 48, 7, var(--tw-bg-opacity, 1));
+}
 .bg-_b_he6e6e6_B {
   --tw-bg-opacity: 1;
   background-color: rgba(230, 230, 230, var(--tw-bg-opacity, 1));
