@@ -1,0 +1,17 @@
+<template>
+  <text :class="[
+      flag ? 'bg-[#123456]' : 'bg-[#654321]',
+      extra,
+      { 'text-[#ff0000] font-bold': toggled },
+      'border-[#111111] border-solid'
+    ]">
+    complex
+  </text>
+  <text :class="condition ? 'bg-[#999999] text-[#00ffff]' : ''">fallback</text>
+</template>
+<script setup lang="ts">
+const flag = true
+const extra = 'font-bold'
+const toggled = true
+const condition = true
+</script>

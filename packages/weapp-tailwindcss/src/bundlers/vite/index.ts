@@ -134,7 +134,31 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const patchPromise = createTailwindPatchPromise(twPatcher)
   let runtimeSet: Set<string> | undefined
+  let runtimeSetPromise: Promise<Set<string>> | undefined
   let resolvedConfig: ResolvedConfig | undefined
+
+  async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
+    await patchPromise
+    if (!force && runtimeSet) {
+      return runtimeSet
+    }
+
+    if (force || !runtimeSetPromise) {
+      const task = collectRuntimeClassSet(twPatcher, { force: force || !runtimeSet })
+      runtimeSetPromise = task
+    }
+
+    const task = runtimeSetPromise!
+    try {
+      runtimeSet = await task
+      return runtimeSet
+    }
+    finally {
+      if (runtimeSetPromise === task) {
+        runtimeSetPromise = undefined
+      }
+    }
+  }
   onLoad()
   const plugins: Plugin[] = [
     {
@@ -172,8 +196,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
         const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
         const groupedEntries = getGroupedEntries(entries, opts)
-        runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
-        debug('get runtimeSet, class count: %d', runtimeSet.size)
+        const runtime = await ensureRuntimeClassSet(true)
+        debug('get runtimeSet, class count: %d', runtime.size)
         const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
           onUpdate(fileName, previous, next)
           debug('js linked handle: %s', fileName)
@@ -397,11 +421,14 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         name: 'weapp-tailwindcss:uni-app-x:nvue',
         enforce: 'pre',
         async buildStart() {
-          await patchPromise
-          runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
+          await ensureRuntimeClassSet(true)
         },
-        transform(code, id) {
-          return transformUVue(code, id, jsHandler, runtimeSet)
+        async transform(code, id) {
+          if (!/\.uvue(?:\?.*)?$/.test(id)) {
+            return
+          }
+          const currentRuntimeSet = await ensureRuntimeClassSet()
+          return transformUVue(code, id, jsHandler, currentRuntimeSet)
         },
       },
     )

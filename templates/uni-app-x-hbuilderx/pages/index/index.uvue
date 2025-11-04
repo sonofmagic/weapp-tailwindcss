@@ -1,5 +1,6 @@
 <script setup lang="uts">
 	import WeappTailwindcss from '@/components/WeappTailwindcss.uvue'
+	import BindClass from '@/components/BindClass.uvue'
 	import { state, setGlobalNum } from '@/stores/counter'
 
 	const buttonColors = [
@@ -75,6 +76,7 @@
 				</text>
 			</view>
 		</view>
+		<BindClass />
 	</view>
 </template>
 

@@ -47,7 +47,7 @@ async function syncTemplate(url: string): Promise<void> {
   }
 
   const sshUrl = toSshUrl(url)
-  const { repoDir, branch } = await prepareTemplateCacheRepo(repoName, sshUrl)
+  const { repoDir, branch } = await prepareTemplateCacheRepo(repoName, sshUrl, { cleanIgnored: true })
   const targetDir = path.join(TEMPLATES_DIR, repoName)
   if (!existsSync(targetDir)) {
     mkdirSync(targetDir, { recursive: true })

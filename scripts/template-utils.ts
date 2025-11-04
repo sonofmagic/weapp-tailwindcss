@@ -63,7 +63,7 @@ async function ensureCacheRepoRemote(repoDir: string, sshUrl: string): Promise<v
   }
 }
 
-export async function prepareTemplateCacheRepo(repoName: string, sshUrl: string): Promise<{ repoDir: string, branch: string }> {
+export async function prepareTemplateCacheRepo(repoName: string, sshUrl: string, options: { cleanIgnored?: boolean } = {}): Promise<{ repoDir: string, branch: string }> {
   const branch = await resolveDefaultBranch(sshUrl)
 
   if (!existsSync(TEMPLATE_CACHE_ROOT)) {
@@ -90,8 +90,8 @@ export async function prepareTemplateCacheRepo(repoName: string, sshUrl: string)
   }
 
   await execa('git', ['reset', '--hard', `origin/${branch}`], { cwd: repoDir, stdio: 'inherit' })
-  // 保留被 .gitignore 忽略的缓存目录，避免每次清理 node_modules/dist 时的额外开销
-  await execa('git', ['clean', '-fd'], { cwd: repoDir, stdio: 'inherit' })
+  const cleanArgs = options.cleanIgnored ? ['clean', '-fdx'] : ['clean', '-fd']
+  await execa('git', cleanArgs, { cwd: repoDir, stdio: 'inherit' })
 
   return { repoDir, branch }
 }
