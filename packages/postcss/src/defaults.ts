@@ -13,6 +13,8 @@ export function getDefaultOptions(options?: Partial<IStyleHandlerOptions>): Part
         },
         'oklab-function': true,
         'color-mix': true,
+        'color-functional-notation': options?.cssPresetEnv?.features?.['color-functional-notation']
+          ?? { preserve: false },
         // 在 calc 下，这个需要开启
         'custom-properties': options?.cssPresetEnv?.features?.['custom-properties'] ?? options?.cssCalc
           ? { preserve: true }

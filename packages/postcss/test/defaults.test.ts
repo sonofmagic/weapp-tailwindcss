@@ -9,6 +9,7 @@ describe('getDefaultOptions', () => {
     expect(defaults.cssPresetEnv?.features?.['custom-properties']).toBe(false)
     expect(defaults.cssPresetEnv?.features?.['color-mix']).toBe(true)
     expect(defaults.cssPresetEnv?.features?.['oklab-function']).toBe(true)
+    expect(defaults.cssPresetEnv?.features?.['color-functional-notation']).toEqual({ preserve: false })
     expect(defaults.cssPresetEnv?.autoprefixer?.add).toBe(false)
     expect(defaults.cssSelectorReplacement).toEqual({ root: 'page', universal: ['view', 'text'] })
     expect(defaults.cssRemoveProperty).toBe(true)
@@ -30,5 +31,17 @@ describe('getDefaultOptions', () => {
     })
 
     expect(defaults.cssPresetEnv?.features?.['custom-properties']).toBe(false)
+  })
+
+  it('respects color-functional-notation overrides', () => {
+    const defaults = getDefaultOptions({
+      cssPresetEnv: {
+        features: {
+          'color-functional-notation': true,
+        },
+      },
+    })
+
+    expect(defaults.cssPresetEnv?.features?.['color-functional-notation']).toBe(true)
   })
 })

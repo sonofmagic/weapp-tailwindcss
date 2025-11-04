@@ -21,4 +21,18 @@ describe('compat', () => {
     )
     expect(css).toMatchSnapshot()
   })
+
+  it('downgrades modern rgb syntax via preset env defaults', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(`
+.a{
+  color: rgb(245 247 255 / var(--tw-bg-opacity));
+  background: rgb(59 130 246 / 0.5);
+}
+`)
+    expect(css).toContain('color: rgba(245, 247, 255, var(--tw-bg-opacity));')
+    expect(css).toContain('background: rgba(59, 130, 246, 0.5);')
+  })
 })
