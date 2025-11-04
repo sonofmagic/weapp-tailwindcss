@@ -2549,7 +2549,7 @@
   dependencies:
     "@sinonjs/commons" "^2.0.0"
 
-"@tailwindcss-mangle/config@6.0.1":
+"@tailwindcss-mangle/config@6.0.1", "@tailwindcss-mangle/config@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@tailwindcss-mangle/config/-/config-6.0.1.tgz#3b65db67c09a75829aef8916954d6124b5645692"
   integrity sha512-DuiemlUmyJprioV5EmPT/ITSQBWk6bE7exMk2tTrPuEWCe9iDSCnartrudhBOeTBv7CC2Lz/zpo8tJfsfb85RA==
@@ -2991,10 +2991,10 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.0.1.tgz#5560d6ccfee10f8601e15f1fc0cced4d3eded0b2"
-  integrity sha512-1uoruixdiSS8bOlfn18It55r5hheNFsk2DHAxnRaoua2j4Huq8OnTxRtZMjhc61DF1mQjtEl5/tMyakuSpq2ag==
+"@weapp-tailwindcss/postcss@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.0.2.tgz#b12e767a0a9368e4995467a07a01799930363d11"
+  integrity sha512-q6KK0YdeS+YrpTYkyg+88VbarfT9uYn6Kjdal4uCse1IW9gGjlLGQxTMcSwLk2y3yThA6aOdf1/mHzSeUIO5Gg==
   dependencies:
     "@weapp-core/escape" "~5.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
@@ -8876,22 +8876,24 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.7.2:
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.7.2.tgz#a9d55651eb6204d51756d5bc303a733f649a00ab"
-  integrity sha512-hIbqRy40IHLju7KzVXJ9iiECnPOJvU+sGZvw7QT1rwNXIs5Iumk0pzIQiwGc6AHnH/M4KE5ju6E+QFtn59NVEg==
+weapp-tailwindcss@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.7.4.tgz#ae8a5b9c93320183a208a5777c4e223155271019"
+  integrity sha512-3QwwF9kr1byT6OfUkIL+vY1Ehehr/1JIkmUDChYRRfyTLC2OU2a6KNXR+/ty8UjPvf5FljZM3MyQcXEp+6SJDg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
     "@babel/traverse" "~7.28.5"
     "@babel/types" "~7.28.5"
+    "@tailwindcss-mangle/config" "^6.0.1"
     "@vue/compiler-dom" "^3.5.22"
     "@vue/compiler-sfc" "^3.5.22"
     "@weapp-core/escape" "~5.0.1"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/logger" "1.1.0"
-    "@weapp-tailwindcss/postcss" "2.0.1"
+    "@weapp-tailwindcss/postcss" "2.0.2"
     "@weapp-tailwindcss/shared" "1.1.0"
+    cac "^6.7.14"
     debug "~4.4.3"
     htmlparser2 "10.0.0"
     loader-utils "2.0.4"

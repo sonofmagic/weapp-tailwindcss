@@ -139,8 +139,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       weapp-tailwindcss:
-        specifier: ^4.7.2
-        version: 4.7.2(tailwindcss@3.4.18)
+        specifier: ^4.7.4
+        version: 4.7.4(tailwindcss@3.4.18)
 
 packages:
 
@@ -820,10 +820,6 @@ packages:
 
   '@babel/traverse@7.25.6':
     resolution: {integrity: sha512-9Vrcx5ZW6UwK5tvqsj0nGpp/XzqthkT0dqIc9g1AdtygFToNtTF67XzYS//dm+SAK9cp3B9R4ZO/46p63SCjlQ==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/traverse@7.28.4':
-    resolution: {integrity: sha512-YEzuboP2qvQavAcjgQNVgsvHIDv6ZpwXvcvjmyySP2DIMuByS/6ioU5G9pYrWHM6T2YDfc7xga9iNzYOs12CFQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/traverse@7.28.5':
@@ -2434,8 +2430,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@2.0.1':
-    resolution: {integrity: sha512-1uoruixdiSS8bOlfn18It55r5hheNFsk2DHAxnRaoua2j4Huq8OnTxRtZMjhc61DF1mQjtEl5/tMyakuSpq2ag==}
+  '@weapp-tailwindcss/postcss@2.0.2':
+    resolution: {integrity: sha512-q6KK0YdeS+YrpTYkyg+88VbarfT9uYn6Kjdal4uCse1IW9gGjlLGQxTMcSwLk2y3yThA6aOdf1/mHzSeUIO5Gg==}
 
   '@weapp-tailwindcss/shared@1.1.0':
     resolution: {integrity: sha512-rKPNwAch2tVYpQ7j796B/wkI7Yjn6YWleUcv/gcjvRD7jtSCzKzTsLBeEGnzFX7Kkz3Z7zKfJDFvBmJ8tKhGTA==}
@@ -7136,8 +7132,8 @@ packages:
     resolution: {integrity: sha512-gq/ffX97Wuv+hNDX0vbHB04S2nQV2IZ6tACM5nq7xECWcQ2zS2TLp5gQr+TXntGE4dFUrpHlWrw85A2YSA/qFw==}
     hasBin: true
 
-  weapp-tailwindcss@4.7.2:
-    resolution: {integrity: sha512-hIbqRy40IHLju7KzVXJ9iiECnPOJvU+sGZvw7QT1rwNXIs5Iumk0pzIQiwGc6AHnH/M4KE5ju6E+QFtn59NVEg==}
+  weapp-tailwindcss@4.7.4:
+    resolution: {integrity: sha512-3QwwF9kr1byT6OfUkIL+vY1Ehehr/1JIkmUDChYRRfyTLC2OU2a6KNXR+/ty8UjPvf5FljZM3MyQcXEp+6SJDg==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -7505,7 +7501,7 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-annotate-as-pure': 7.24.7
       '@babel/helper-wrap-function': 7.25.0
-      '@babel/traverse': 7.28.4
+      '@babel/traverse': 7.28.5
     transitivePeerDependencies:
       - supports-color
 
@@ -8223,18 +8219,6 @@ snapshots:
       '@babel/types': 7.25.6
       debug: 4.3.7
       globals: 11.12.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@babel/traverse@7.28.4':
-    dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.5
-      '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.5
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
-      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10050,7 +10034,7 @@ snapshots:
       postcss-selector-parser: 7.1.0
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@2.0.1':
+  '@weapp-tailwindcss/postcss@2.0.2':
     dependencies:
       '@weapp-core/escape': 5.0.1
       '@weapp-tailwindcss/postcss-calc': 1.0.0(postcss@8.5.6)
@@ -10180,7 +10164,7 @@ snapshots:
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -14498,7 +14482,7 @@ snapshots:
 
   spdy-transport@3.0.0:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.3
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -15240,19 +15224,21 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.7.2(tailwindcss@3.4.18):
+  weapp-tailwindcss@4.7.4(tailwindcss@3.4.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
+      '@tailwindcss-mangle/config': 6.0.1
       '@vue/compiler-dom': 3.5.22
       '@vue/compiler-sfc': 3.5.22
       '@weapp-core/escape': 5.0.1
       '@weapp-core/regex': 1.0.1
       '@weapp-tailwindcss/logger': 1.1.0
-      '@weapp-tailwindcss/postcss': 2.0.1
+      '@weapp-tailwindcss/postcss': 2.0.2
       '@weapp-tailwindcss/shared': 1.1.0
+      cac: 6.7.14
       debug: 4.4.3
       htmlparser2: 10.0.0
       loader-utils: 2.0.4
