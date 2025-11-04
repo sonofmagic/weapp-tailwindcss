@@ -107,4 +107,5 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - '@tarojs/binding'
   - '@tarojs/cli'
+  - '@weapp-tailwindcss/merge'
   - esbuild
