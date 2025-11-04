@@ -64,6 +64,59 @@ const label = 'hi'
     expect(jsHandler).toHaveBeenCalled()
   })
 
+  it('transforms object literal class bindings with whitespace', () => {
+    const { jsHandler } = getCompilerContext()
+    const runtimeSet = new Set<string>([
+      'border-[#ff0000]',
+      'bg-blue-600/50',
+    ])
+    const code = `
+<template>
+  <view :class="{ 'border-[#ff0000] bg-blue-600/50': isActive }">hello</view>
+</template>
+`
+    const result = transformUVue(code, 'literal.uvue', jsHandler, runtimeSet)
+    expect(result?.code).toContain(replaceWxml('border-[#ff0000] bg-blue-600/50'))
+  })
+
+  it('transforms array and ternary based vue bindings', () => {
+    const { jsHandler } = getCompilerContext()
+    const runtimeSet = new Set<string>([
+      'bg-[#123456]',
+      'bg-[#654321]',
+      'text-[#ff0000]',
+      'font-bold',
+      'border-[#111111]',
+      'border-solid',
+      'bg-[#999999]',
+    ])
+    const code = `
+<template>
+  <view :class="[
+      flag ? 'bg-[#123456]' : 'bg-[#654321]',
+      extra,
+      { 'text-[#ff0000] font-bold': toggled },
+      condition && 'border-[#111111] border-solid'
+    ]">
+    complex
+  </view>
+  <view :class="condition ? 'bg-[#999999]' : ''">fallback</view>
+</template>
+<script setup lang="ts">
+const flag = true
+const extra = 'font-bold'
+const toggled = true
+const condition = true
+</script>
+`
+    const result = transformUVue(code, 'complex.uvue', jsHandler, runtimeSet)
+    expect(result?.code).toContain(`'${replaceWxml('bg-[#123456]')}'`)
+    expect(result?.code).toContain(`'${replaceWxml('bg-[#654321]')}'`)
+    expect(result?.code).toContain(`'${replaceWxml('text-[#ff0000] font-bold')}'`)
+    expect(result?.code).toContain(`'${replaceWxml('border-[#111111] border-solid')}'`)
+    expect(result?.code).toContain(`'${replaceWxml('bg-[#999999]')}'`)
+  })
+
   it('ignores non-uvue files', () => {
     const jsHandler: JsHandler = vi.fn((source: string) => ({ code: source }))
     const result = transformUVue('<template><view/></template>', 'App.vue', jsHandler, new Set())

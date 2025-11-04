@@ -17,6 +17,9 @@ import { NodePathWalker } from './NodePathWalker'
 import { collectModuleSpecifierReplacementTokens } from './sourceAnalysis'
 import { createTaggedTemplateIgnore } from './taggedTemplateIgnore'
 
+const EXPRESSION_WRAPPER_PREFIX = '(\n'
+const EXPRESSION_WRAPPER_SUFFIX = '\n)'
+
 export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<string, ParseResult<File>>(
   {
     max: 512,
@@ -201,9 +204,13 @@ export function processUpdatedSource(
 }
 
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
+  const shouldWrapExpression = Boolean(options.wrapExpression)
+  const source = shouldWrapExpression
+    ? `${EXPRESSION_WRAPPER_PREFIX}${rawSource}${EXPRESSION_WRAPPER_SUFFIX}`
+    : rawSource
   let ast: ParseResult<File>
   try {
-    ast = babelParse(rawSource, options.babelParserOptions)
+    ast = babelParse(source, options.babelParserOptions)
   }
   catch (error) {
     return {
@@ -212,7 +219,15 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     } as JsHandlerResult
   }
   const analysis = analyzeSource(ast, options, jsHandler)
-  const ms = processUpdatedSource(rawSource, options, analysis)
+  const ms = processUpdatedSource(source, options, analysis)
+  if (shouldWrapExpression) {
+    const start = 0
+    const end = source.length
+    const prefixLength = EXPRESSION_WRAPPER_PREFIX.length
+    const suffixLength = EXPRESSION_WRAPPER_SUFFIX.length
+    ms.remove(start, start + prefixLength)
+    ms.remove(end - suffixLength, end)
+  }
 
   const result: JsHandlerResult = {
     code: ms.toString(),

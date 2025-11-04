@@ -66,6 +66,11 @@ export interface IJsHandlerOptions {
   uniAppX?: boolean
   moduleSpecifierReplacements?: Record<string, string>
   /**
+   * When true, the handler treats the input as a standalone expression instead of a full program.
+   * Useful for template bindings such as `:class="{ 'foo bar': cond }"`.
+   */
+  wrapExpression?: boolean
+  /**
    * Absolute path of the module currently being transformed.
    * Required when enabling cross-file analysis.
    */
@@ -117,6 +122,7 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   quote?: string | null
   // 是否转译首字母，默认转译，传入 true 不转
   ignoreHead?: boolean
+  wrapExpression?: boolean
 }
 
 export type InternalUserDefinedOptions = Required<

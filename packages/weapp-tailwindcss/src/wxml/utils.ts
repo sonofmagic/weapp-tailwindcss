@@ -16,8 +16,13 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
   try {
     const { jsHandler, runtimeSet } = options
     if (jsHandler && runtimeSet) {
-      const { code } = jsHandler(match, runtimeSet)
-      return code
+      const runHandler = (wrap?: boolean) => jsHandler(match, runtimeSet, wrap ? { wrapExpression: true } : undefined)
+      const initial = runHandler(options.wrapExpression)
+      if (!initial.error || options.wrapExpression) {
+        return initial.code
+      }
+      const fallback = runHandler(true)
+      return fallback.code
     }
     else {
       /**

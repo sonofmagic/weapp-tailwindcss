@@ -1,4 +1,6 @@
-import { isPropsMatch } from '@/wxml/utils'
+import { getCompilerContext } from '@/context'
+import { replaceWxml } from '@/wxml'
+import { generateCode, isPropsMatch } from '@/wxml/utils'
 import { removeWxmlId } from '../util'
 
 describe('utils', () => {
@@ -41,5 +43,15 @@ describe('utils', () => {
 .luna-dom-highlighter-fill{position:absolute;}`
     const res = removeWxmlId(html)
     expect(res).toBe('<view>test</view>')
+  })
+
+  it('wraps expressions automatically when template bindings start with objects', () => {
+    const { jsHandler } = getCompilerContext()
+    const runtimeSet = new Set<string>(['border-[#ff0000]', 'bg-blue-600/50'])
+    const code = generateCode(`{'border-[#ff0000] bg-blue-600/50': flag}`, {
+      jsHandler,
+      runtimeSet,
+    })
+    expect(code).toContain(replaceWxml('border-[#ff0000] bg-blue-600/50'))
   })
 })

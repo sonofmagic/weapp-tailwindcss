@@ -31,6 +31,7 @@ function createClassDirectiveUpdater(ms: MagicString, jsHandler: JsHandler, runt
       const generated = generateCode(prop.exp.content, {
         jsHandler,
         runtimeSet,
+        wrapExpression: true,
       })
       ms.update(prop.exp.loc.start.offset, prop.exp.loc.end.offset, generated)
     }

@@ -4,7 +4,7 @@
 			<text class="text-[#258f27] text-[40px]">{{title}}</text>
 		</view>
     <text class="icebreaker" :class="[aaa]">icebreaker111111</text>
-    <view :class="{'border-blue-600 bg-blue-600/50': true }">hello</view>
+    <view :class="{'border-[#ff0000] bg-blue-600/50': true }">hello</view>
 	</view>
 </template>
 
