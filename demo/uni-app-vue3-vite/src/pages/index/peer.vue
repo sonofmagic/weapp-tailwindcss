@@ -23,7 +23,7 @@ import { cva } from '@weapp-tailwindcss/merge/cva'
 const button = cva(["font-semibold", "border", "rounded"], {
   variants: {
     intent: {
-      primary: ["bg-[#e43007]", "text-white", "border-transparent"],
+      primary: ["bg-[#c65ece]", "text-[#0b138f]", "border-transparent"],
       // **or**
       // primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
       secondary: ["bg-white", "text-gray-800", "border-gray-400"],
