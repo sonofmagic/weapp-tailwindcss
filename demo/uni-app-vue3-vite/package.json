@@ -88,7 +88,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@vue/runtime-core": "^3.5.22",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
-    "@weapp-tailwindcss/typography": "^0.2.6",
+    "@weapp-tailwindcss/typography": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "domelementtype": "^2.3.0",
     "miniprogram-api-typings": "catalog:miniApiTypings",
