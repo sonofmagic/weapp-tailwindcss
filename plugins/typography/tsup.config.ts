@@ -2,7 +2,8 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: ['src/index.js', 'src/transform.ts'],
-  shims: true,
+  // Disable Node.js shims so the ESM build stays browser-friendly
+  shims: false,
   format: ['cjs', 'esm'],
   clean: true,
   dts: true,
