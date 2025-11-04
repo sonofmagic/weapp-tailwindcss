@@ -5,7 +5,7 @@ import { execa } from 'execa'
 import automator from 'miniprogram-automator'
 import path from 'pathe'
 import { describe, it } from 'vitest'
-import { formatWxml, loadCss, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
+import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 
 interface ProjectTestOptions {
   suite: string
@@ -14,17 +14,9 @@ interface ProjectTestOptions {
   allowExtractionFailure?: boolean
 }
 
-export function defineProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
-  const filtered = projectFilter([entry])
-  const activeEntry = filtered[0] ?? entry
-  const register = filtered.length > 0 ? it : it.skip
-  const describeTitle = options.describeTitle ?? options.suite
-
-  describe(describeTitle, () => {
-    register(activeEntry.name, async () => {
-      await runProjectTest(activeEntry, options)
-    })
-  })
+async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
+  const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
+  await expect(content).toMatchFileSnapshot(snapshotPath)
 }
 
 async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
@@ -74,8 +66,10 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
 
-  const css = await loadCss(path.resolve(projectPath, entry.cssFile))
-  await expectProjectSnapshot(options.suite, entry.name, path.basename(entry.cssFile), css)
+  const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile)
+  for (const snapshot of cssSnapshots) {
+    await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
+  }
 
   if (entry.skipOpenAutomator) {
     await wait()
@@ -109,7 +103,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
           wxml = await formatWxml(wxml)
         }
         catch {
-          console.error(`parse error: ${entry.projectPath}`)
+          logE2EError('Failed to format WXML for %s', entry.projectPath)
         }
 
         await expectProjectSnapshot(options.suite, entry.name, 'page.wxml', wxml)
@@ -123,11 +117,6 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   await wait()
-}
-
-async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
-  const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  await expect(content).toMatchFileSnapshot(snapshotPath)
 }
 
 const buildTasks = new Map<string, Promise<void>>()
@@ -169,7 +158,7 @@ export async function ensureProjectBuilt(root: string) {
     }
     catch (error) {
       if (stdio !== 'inherit') {
-        console.error(`[e2e] build failed in ${root}`, error)
+        logE2EError('[e2e] build failed in %s: %o', root, error)
       }
       throw error
     }
@@ -183,4 +172,17 @@ export async function ensureProjectBuilt(root: string) {
     buildTasks.delete(root)
     throw error
   }
+}
+
+export function defineProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
+  const filtered = projectFilter([entry])
+  const activeEntry = filtered[0] ?? entry
+  const register = filtered.length > 0 ? it : it.skip
+  const describeTitle = options.describeTitle ?? options.suite
+
+  describe(describeTitle, () => {
+    register(activeEntry.name, async () => {
+      await runProjectTest(activeEntry, options)
+    })
+  })
 }

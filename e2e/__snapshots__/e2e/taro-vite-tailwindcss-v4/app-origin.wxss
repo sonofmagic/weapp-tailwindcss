@@ -1,0 +1,149 @@
+/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
+::-webkit-backdrop {
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+}
+::-ms-backdrop {
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+}
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+:before,
+:after,
+::backdrop {
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+page,
+.tw-root,
+:host {
+  --color-cyan-500: rgb(0, 182, 212);
+  --color-blue-500: rgb(50, 128, 255);
+  --color-purple-300: rgb(216, 180, 255);
+  --spacing: 8rpx;
+}
+@supports (color: color(display-p3 0 0 0%)) {
+  page,
+  .tw-root,
+  :host {
+    --color-cyan-500: rgb(0, 182, 212);
+    --color-blue-500: rgb(50, 128, 255);
+    --color-purple-300: rgb(216, 180, 255);
+  }
+
+  @media (color-gamut: p3) {
+    page,
+    .tw-root,
+    :host {
+      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
+      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+      --color-purple-300: color(display-p3 0.82939 0.70374 0.99608);
+    }
+  }
+}
+::-webkit-backdrop {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+::-ms-backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+view,
+text,
+:after,
+:before,
+::backdrop {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.static {
+  position: static;
+}
+.h-14 {
+  height: 112rpx;
+  height: calc(var(--spacing) * 14);
+}
+.h-_300px_ {
+  height: 300rpx;
+}
+.bg-_h123456_ {
+  background-color: #123456;
+}
+.bg-purple-300 {
+  background-color: rgb(216, 180, 255);
+  background-color: color(display-p3 0.82939 0.70374 0.99608);
+  background-color: var(--color-purple-300);
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(var(--tw-gradient-stops)));
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.text-_55rpx_ {
+  font-size: 55rpx;
+}
+.text-_hc31d6b_ {
+  color: #c31d6b;
+}
+.text-_hfff_ {
+  color: #fff;
+}
+/*$vite$:1*/

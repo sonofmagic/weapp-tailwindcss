@@ -40,8 +40,14 @@ describe('postcss plugin', () => {
     const css = res.css.toString()
     const ctx = getCompilerContext()
     const { css: processed } = await ctx.styleHandler(css, { isMainChunk: true })
-    expect(processed).toContain('rgba(37, 99, 235, var(--tw-border-opacity))')
-    expect(processed).not.toContain('rgb(37 99 235 / var(--tw-border-opacity))')
+    // Tailwind v3 会直接计算出 0.1，因此这里只需确保 slash 写法被降级
+    expect(processed).toContain('rgba(37, 99, 235, 0.1)')
+    expect(processed).not.toContain('rgb(37 99 235 / 0.1)')
+
+    const { css: manual } = await ctx.styleHandler('.custom{border-color: rgb(37 99 235 / var(--tw-border-opacity));}', {
+      isMainChunk: true,
+    })
+    expect(manual).toContain('rgba(37, 99, 235, var(--tw-border-opacity))')
   })
 
   it('before:content-[\'+\']', async () => {

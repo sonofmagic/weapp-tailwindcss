@@ -1,0 +1,25 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2021"
+    ],
+    "moduleResolution": "Bundler",
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "**/__snapshots__/**",
+    "**/dist/**",
+    "node_modules"
+  ]
+}

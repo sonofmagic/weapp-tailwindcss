@@ -1,0 +1,93 @@
+import { mkdir } from 'node:fs/promises'
+import path from 'node:path'
+import process from 'node:process'
+import { logger } from '@/logger'
+
+export function readStringOption(flag: string, value: unknown): string | undefined {
+  if (value == null) {
+    return undefined
+  }
+  if (typeof value !== 'string') {
+    throw new TypeError(`Option "--${flag}" expects a string value.`)
+  }
+  const trimmed = value.trim()
+  if (trimmed.length === 0) {
+    throw new TypeError(`Option "--${flag}" expects a non-empty value.`)
+  }
+  return trimmed
+}
+
+export function normalizeTokenFormat(format: string) {
+  switch (format) {
+    case 'json':
+    case 'lines':
+    case 'grouped-json':
+      return format
+    default:
+      return 'json'
+  }
+}
+
+export function normalizeExtractFormat(format: string | undefined): 'json' | 'lines' | undefined {
+  if (!format) {
+    return undefined
+  }
+  if (format === 'json' || format === 'lines') {
+    return format
+  }
+  return undefined
+}
+
+export function toBoolean(value: unknown, fallback: boolean) {
+  if (typeof value === 'boolean') {
+    return value
+  }
+  if (typeof value === 'string') {
+    if (value === 'true') {
+      return true
+    }
+    if (value === 'false') {
+      return false
+    }
+  }
+  if (value == null) {
+    return fallback
+  }
+  return Boolean(value)
+}
+
+export function resolveCliCwd(value: unknown): string | undefined {
+  const raw = readStringOption('cwd', value)
+  if (!raw) {
+    return undefined
+  }
+  return path.isAbsolute(raw) ? path.normalize(raw) : path.resolve(process.cwd(), raw)
+}
+
+export async function ensureDir(dir: string) {
+  await mkdir(dir, { recursive: true })
+}
+
+function handleCliError(error: unknown) {
+  if (error instanceof Error) {
+    logger.error(error.message)
+    if (error.stack && process.env.WEAPP_TW_DEBUG === '1') {
+      logger.error(error.stack)
+    }
+  }
+  else {
+    logger.error(String(error))
+  }
+}
+
+export function commandAction<T extends unknown[]>(handler: (...args: T) => Promise<void>) {
+  return async (...args: T) => {
+    try {
+      await handler(...args)
+    }
+    catch (error) {
+      handleCliError(error)
+      process.exitCode = 1
+    }
+  }
+}

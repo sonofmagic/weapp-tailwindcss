@@ -1,25 +1,178 @@
+import type { CommonCommandOptions, ExtractCommandOptions, TokensCommandOptions } from './cli/types'
+import type { UserDefinedOptions } from '@/types'
+import { writeFile } from 'node:fs/promises'
+import path from 'node:path'
 import process from 'node:process'
+import cac from 'cac'
 import semver from 'semver'
-import { getCompilerContext } from '@/context'
+import { groupTokensByFile } from 'tailwindcss-patch'
+import { loadTailwindcssMangleConfig } from './cli/config'
+import {
+  buildTailwindcssPatcherOptions,
+  createCliContext,
+  formatOutputPath,
+  resolveEntry,
+} from './cli/context'
+import {
+  commandAction,
+  ensureDir,
+  normalizeExtractFormat,
+  normalizeTokenFormat,
+  readStringOption,
+  resolveCliCwd,
+  toBoolean,
+} from './cli/helpers'
+import { collectTailwindTokens, formatTokenLine, logTokenPreview } from './cli/tokens'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 import { logger } from './logger'
 
 process.title = 'node (weapp-tailwindcss)'
-const args = process.argv.slice(2)
 
 if (semver.lt(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION)) {
   logger.warn(
     `You are using Node.js ${process.versions.node}. For weapp-tailwindcss, Node.js version >= v${WEAPP_TW_REQUIRED_NODE_VERSION} is required.`,
   )
 }
-// nodejs 最低版本 '16.6.0' , init 需要 '18.17.0'
-const command = args[0]
 
-async function run() {
-  if (command === 'patch') {
-    const ctx = getCompilerContext()
-    await ctx.twPatcher.patch()
-  }
-}
+const cli = cac('weapp-tailwindcss')
 
-void run()
+cli
+  .command('patch', 'Apply Tailwind CSS runtime patches')
+  .alias('install')
+  .option('--cwd <dir>', 'Working directory')
+  .action(
+    commandAction(async (options: CommonCommandOptions) => {
+      const resolvedCwd = resolveCliCwd(options.cwd)
+      const ctx = createCliContext(undefined, resolvedCwd)
+      await ctx.twPatcher.patch()
+      logger.success('Tailwind CSS runtime patched successfully.')
+    }),
+  )
+
+cli
+  .command('extract', 'Collect generated class names into a cache file')
+  .option('--cwd <dir>', 'Working directory')
+  .option('--output <file>', 'Override output file path')
+  .option('--format <format>', 'Output format (json|lines)')
+  .option('--css <file>', 'Tailwind CSS entry CSS when using v4')
+  .option('--no-write', 'Skip writing to disk')
+  .action(
+    commandAction(async (options: ExtractCommandOptions) => {
+      const resolvedCwd = resolveCliCwd(options.cwd)
+      const outputPath = readStringOption('output', options.output)
+      const formatOption = readStringOption('format', options.format)
+      const cssOption = readStringOption('css', options.css)
+
+      const overrides: Partial<UserDefinedOptions> = {}
+      if (cssOption) {
+        overrides.cssEntries = [resolveEntry(cssOption, resolvedCwd)]
+      }
+
+      const normalizedFormat = normalizeExtractFormat(formatOption)
+      const outputOverrides = buildTailwindcssPatcherOptions(
+        normalizedFormat || outputPath
+          ? {
+              output: {
+                file: outputPath,
+                format: normalizedFormat,
+              },
+            }
+          : undefined,
+      )
+
+      if (outputOverrides) {
+        overrides.tailwindcssPatcherOptions = outputOverrides
+      }
+
+      const ctx = createCliContext(overrides, resolvedCwd)
+      const write = toBoolean(options.write, true)
+      const result = await ctx.twPatcher.extract({ write })
+      const classCount = result?.classList?.length ?? result?.classSet?.size ?? 0
+
+      if (result?.filename) {
+        logger.success(`Collected ${classCount} classes -> ${formatOutputPath(result.filename, resolvedCwd)}`)
+      }
+      else {
+        logger.success(`Collected ${classCount} classes.`)
+      }
+    }),
+  )
+
+cli
+  .command('tokens', 'Extract Tailwind tokens with location metadata')
+  .option('--cwd <dir>', 'Working directory')
+  .option('--output <file>', 'Override output file path')
+  .option('--format <format>', 'Output format (json|lines|grouped-json)')
+  .option('--group-key <key>', 'Grouping key for grouped-json output (relative|absolute)')
+  .option('--no-write', 'Skip writing to disk')
+  .action(
+    commandAction(async (options: TokensCommandOptions) => {
+      const resolvedCwd = resolveCliCwd(options.cwd)
+      const outputPath = readStringOption('output', options.output)
+      const formatInput = readStringOption('format', options.format)
+      const groupKeyInput = readStringOption('group-key', options.groupKey)
+
+      const format = normalizeTokenFormat(formatInput ?? 'json')
+      const groupKey = groupKeyInput === 'absolute' ? 'absolute' : 'relative'
+      const write = toBoolean(options.write, true)
+      const ctx = createCliContext(undefined, resolvedCwd)
+      const report = await collectTailwindTokens(ctx.twPatcher)
+      const baseDir = resolvedCwd ?? process.cwd()
+
+      if (write) {
+        const targetRelative = outputPath ?? '.tw-patch/tw-token-report.json'
+        const target = path.resolve(baseDir, targetRelative)
+        await ensureDir(path.dirname(target))
+        if (format === 'json') {
+          await writeFile(target, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+        }
+        else if (format === 'grouped-json') {
+          const grouped = groupTokensByFile(report, {
+            key: groupKey,
+            stripAbsolutePaths: groupKey !== 'absolute',
+          })
+          await writeFile(target, `${JSON.stringify(grouped, null, 2)}\n`, 'utf8')
+        }
+        else {
+          const lines = report.entries.map(formatTokenLine)
+          await writeFile(target, `${lines.join('\n')}\n`, 'utf8')
+        }
+        logger.success(
+          `Collected ${report.entries.length} tokens (${format}) -> ${formatOutputPath(target, resolvedCwd)}`,
+        )
+      }
+      else {
+        logger.success(`Collected ${report.entries.length} tokens from ${report.filesScanned} files.`)
+        logTokenPreview(report, format, groupKey)
+      }
+
+      if (report.skippedFiles.length > 0) {
+        logger.warn('Skipped files:')
+        for (const skipped of report.skippedFiles) {
+          logger.warn(`  - ${skipped.file} (${skipped.reason})`)
+        }
+      }
+    }),
+  )
+
+cli
+  .command('init', 'Generate a tailwindcss-patch config file')
+  .option('--cwd <dir>', 'Working directory')
+  .action(
+    commandAction(async (options: CommonCommandOptions) => {
+      const resolvedCwd = resolveCliCwd(options.cwd)
+      const moduleResult = await loadTailwindcssMangleConfig()
+      if (!moduleResult) {
+        logger.error('Unable to load @tailwindcss-mangle/config. Please install tailwindcss-patch >= 8.2.0.')
+        process.exitCode = 1
+        return
+      }
+      const cwd = resolvedCwd ?? process.cwd()
+      await moduleResult.initConfig(cwd)
+      logger.success(`${moduleResult.CONFIG_NAME}.config.ts initialized.`)
+    }),
+  )
+
+cli.help()
+cli.version(process.env.npm_package_version ?? '0.0.0')
+cli.parse()

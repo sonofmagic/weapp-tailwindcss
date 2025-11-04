@@ -45,7 +45,7 @@
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^9.39.0",
+    "eslint": "^9.39.1",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",

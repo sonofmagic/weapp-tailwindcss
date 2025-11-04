@@ -99,9 +99,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.0.0
   weappMerge:
-    '@weapp-tailwindcss/merge': ^1.3.0
+    '@weapp-tailwindcss/merge': ^2.0.1
   weappVite:
-    weapp-vite: ^5.6.3
+    weapp-vite: ^5.7.1
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

@@ -120,14 +120,6 @@ export const NATIVE_PROJECTS = [
   // },
 ] satisfies ProjectEntry[]
 
-export function getE2EProject(name: string): ProjectEntry {
-  return cloneProject(E2E_PROJECTS, name)
-}
-
-export function getNativeProject(name: string): ProjectEntry {
-  return cloneProject(NATIVE_PROJECTS, name)
-}
-
 function cloneProject(projects: ProjectEntry[], name: string): ProjectEntry {
   const project = projects.find(entry => entry.name === name)
   if (!project) {
@@ -136,4 +128,12 @@ function cloneProject(projects: ProjectEntry[], name: string): ProjectEntry {
   return {
     ...project,
   }
+}
+
+export function getE2EProject(name: string): ProjectEntry {
+  return cloneProject(E2E_PROJECTS, name)
+}
+
+export function getNativeProject(name: string): ProjectEntry {
+  return cloneProject(NATIVE_PROJECTS, name)
 }
