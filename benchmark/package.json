@@ -17,7 +17,8 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "gen:postcss": "tsx ./scripts/postcss.ts",
-    "gen:vite": "tsx ./scripts/vite.ts"
+    "gen:vite": "tsx ./scripts/vite.ts",
+    "sync:projects": "node ./scripts/sync-projects.mjs"
   },
   "dependencies": {
     "vue": "^3.5.22",

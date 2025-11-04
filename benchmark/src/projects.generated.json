@@ -1,0 +1,316 @@
+{
+  "generatedAt": "2025-11-04T04:53:42.109Z",
+  "projectCount": 31,
+  "projects": [
+    {
+      "id": "apps/web-postcss7-compat",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "@native-app/postcss7-compat",
+      "displayName": "postcss7-compat",
+      "benchmarkKey": "postcss7-compat",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/rsmax-app-ts",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "rsmax-app-ts",
+      "displayName": "rsmax-app-ts",
+      "benchmarkKey": "rsmax-app-ts",
+      "buildScript": "_build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/taro-webpack-tailwindcss-v4",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "taro-webpack-tailwindcss-v4",
+      "displayName": "taro-webpack-tailwindcss-v4",
+      "benchmarkKey": "taro-webpack-tailwindcss-v4",
+      "buildScript": "build:weapp",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/uni-app-x-hbuilderx-tailwindcss3",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "uni-app-x-hbuilderx-tailwindcss3",
+      "displayName": "uni-app-x-hbuilderx-tailwindcss3",
+      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss3",
+      "buildScript": null,
+      "hasBuildScript": false
+    },
+    {
+      "id": "apps/uni-app-x-hbuilderx-tailwindcss4",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "uni-app-x-hbuilderx-tailwindcss4",
+      "displayName": "uni-app-x-hbuilderx-tailwindcss4",
+      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss4",
+      "buildScript": null,
+      "hasBuildScript": false
+    },
+    {
+      "id": "apps/vite-native",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "vite-native",
+      "displayName": "vite-native",
+      "benchmarkKey": "vite-native",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/vite-native-skyline",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "vite-native-skyline",
+      "displayName": "vite-native-skyline",
+      "benchmarkKey": "vite-native-skyline",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/vite-native-ts",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "vite-native-ts",
+      "displayName": "vite-native-ts",
+      "benchmarkKey": "vite-native-ts",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/vite-native-ts-skyline",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "vite-native-ts-skyline",
+      "displayName": "vite-native-ts-skyline",
+      "benchmarkKey": "vite-native-ts-skyline",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/vue-app",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "vue-app",
+      "displayName": "vue-app",
+      "benchmarkKey": "vue-app",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/weapp-wechat-zhihu",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "weapp-wechat-zhihu",
+      "displayName": "weapp-wechat-zhihu",
+      "benchmarkKey": "weapp-wechat-zhihu",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/gulp-app",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/gulp-app",
+      "displayName": "gulp-app",
+      "benchmarkKey": "gulp-app",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/mpx-app",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/mpx-app",
+      "displayName": "mpx-app",
+      "benchmarkKey": "mpx",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/mpx-tailwindcss-v4",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/mpx-tailwindcss-v4",
+      "displayName": "mpx-tailwindcss-v4",
+      "benchmarkKey": "mpx-tailwindcss-v4",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/native",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/native",
+      "displayName": "native",
+      "benchmarkKey": "native",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/native-mina",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/native-mina",
+      "displayName": "native-mina",
+      "benchmarkKey": "native-webpack",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/native-ts",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/native-ts",
+      "displayName": "native-ts",
+      "benchmarkKey": "native-ts",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/rax-app",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/rax-app",
+      "displayName": "rax-app",
+      "benchmarkKey": "rax",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/taro-app",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/taro-app",
+      "displayName": "taro-app",
+      "benchmarkKey": "taro-react",
+      "buildScript": "build:weapp",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/taro-app-vite",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/taro-app-vite",
+      "displayName": "taro-app-vite",
+      "benchmarkKey": "taro-app-vite",
+      "buildScript": "build:weapp",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/taro-vite-tailwindcss-v4",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/taro-vite-tailwindcss-v4",
+      "displayName": "taro-vite-tailwindcss-v4",
+      "benchmarkKey": "taro-vite-tailwindcss-v4",
+      "buildScript": "build:weapp",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/taro-vue3-app",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/taro-vue3-app",
+      "displayName": "taro-vue3-app",
+      "benchmarkKey": "taro-vue3",
+      "buildScript": "build:weapp",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/taro-webpack-tailwindcss-v4",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/taro-webpack-tailwindcss-v4",
+      "displayName": "taro-webpack-tailwindcss-v4",
+      "benchmarkKey": "taro-webpack-tailwindcss-v4",
+      "buildScript": "build:weapp",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app",
+      "displayName": "uni-app",
+      "benchmarkKey": "uni-app-webpack-vue2",
+      "buildScript": "build:h5",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app-tailwindcss-v4",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app-tailwindcss-v4",
+      "displayName": "uni-app-tailwindcss-v4",
+      "benchmarkKey": "uni-app-tailwindcss-v4",
+      "buildScript": "build:h5",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app-vue3-vite",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app-vue3-vite",
+      "displayName": "uni-app-vue3-vite",
+      "benchmarkKey": "uni-app-vite-vue3",
+      "buildScript": "build:h5",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app-webpack-tailwindcss-v4",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app-webpack-tailwindcss-v4",
+      "displayName": "uni-app-webpack-tailwindcss-v4",
+      "benchmarkKey": "uni-app-webpack-tailwindcss-v4",
+      "buildScript": "build:h5",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app-webpack5",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app-webpack5",
+      "displayName": "uni-app-webpack5",
+      "benchmarkKey": "uni-app-webpack5-vue2",
+      "buildScript": "build:h5",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app-x-hbuilderx-tailwindcss3",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss3",
+      "displayName": "uni-app-x-hbuilderx-tailwindcss3",
+      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss3",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/uni-app-x-hbuilderx-tailwindcss4",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss4",
+      "displayName": "uni-app-x-hbuilderx-tailwindcss4",
+      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss4",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "demo/web",
+      "type": "demo",
+      "typeLabel": "示例",
+      "packageName": "@weapp-tailwindcss-demo/web",
+      "displayName": "web",
+      "benchmarkKey": "web",
+      "buildScript": "build",
+      "hasBuildScript": true
+    }
+  ]
+}
