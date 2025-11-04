@@ -20,7 +20,11 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
 function createClassAttributeUpdater(ms: MagicString) {
   return (prop: AttributeNode) => {
     if (prop.value) {
-      ms.update(prop.value.loc.start.offset + 1, prop.value.loc.end.offset - 1, replaceWxml(prop.value.content))
+      const start = prop.value.loc.start.offset + 1
+      const end = prop.value.loc.end.offset - 1
+      if (start < end) {
+        ms.update(start, end, replaceWxml(prop.value.content))
+      }
     }
   }
 }
@@ -33,7 +37,11 @@ function createClassDirectiveUpdater(ms: MagicString, jsHandler: JsHandler, runt
         runtimeSet,
         wrapExpression: true,
       })
-      ms.update(prop.exp.loc.start.offset, prop.exp.loc.end.offset, generated)
+      const start = prop.exp.loc.start.offset
+      const end = prop.exp.loc.end.offset
+      if (start < end) {
+        ms.update(start, end, generated)
+      }
     }
   }
 }

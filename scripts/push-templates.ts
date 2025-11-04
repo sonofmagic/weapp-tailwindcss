@@ -1,22 +1,16 @@
-import { existsSync, mkdirSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 import {
   ensureConfigExists,
+  prepareTemplateCacheRepo,
   readTemplateUrls,
   repoFolderName,
   resolveConfigPath,
   ROOT,
   toSshUrl,
 } from './template-utils'
-
-async function getCurrentBranch(dir: string): Promise<string> {
-  const { stdout } = await execa('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
-    cwd: dir,
-  })
-  return stdout.trim()
-}
 
 async function syncTemplate(url: string): Promise<void> {
   const repoName = repoFolderName(url)
@@ -31,36 +25,7 @@ async function syncTemplate(url: string): Promise<void> {
   }
 
   const sshUrl = toSshUrl(url)
-  const cacheRoot = path.join(ROOT, '.cache', 'template-repos')
-  if (!existsSync(cacheRoot)) {
-    mkdirSync(cacheRoot, { recursive: true })
-  }
-
-  const repoDir = path.join(cacheRoot, repoName)
-  if (!existsSync(repoDir)) {
-    console.log(`\n>>> 首次克隆 ${sshUrl} 到 ${repoDir}`)
-    await execa('git', ['clone', sshUrl, repoDir], { stdio: 'inherit' })
-  }
-  else {
-    console.log(`\n>>> 使用缓存仓库 ${repoDir}`)
-    try {
-      const { stdout: remoteUrl } = await execa('git', ['remote', 'get-url', 'origin'], { cwd: repoDir })
-      if (remoteUrl.trim() !== sshUrl) {
-        console.warn(`缓存仓库的 origin 与配置不符，更新为 ${sshUrl}`)
-        await execa('git', ['remote', 'set-url', 'origin', sshUrl], { cwd: repoDir, stdio: 'inherit' })
-      }
-    }
-    catch {
-      await execa('git', ['remote', 'add', 'origin', sshUrl], { cwd: repoDir, stdio: 'inherit' })
-    }
-  }
-
-  await execa('git', ['fetch', 'origin'], { cwd: repoDir, stdio: 'inherit' })
-
-  const branch = await getCurrentBranch(repoDir)
-  await execa('git', ['reset', '--hard', `origin/${branch}`], { cwd: repoDir, stdio: 'inherit' })
-  // 保留被 .gitignore 忽略的缓存目录，避免每次清理 node_modules/dist 时的额外开销
-  await execa('git', ['clean', '-fd'], { cwd: repoDir, stdio: 'inherit' })
+  const { repoDir, branch } = await prepareTemplateCacheRepo(repoName, sshUrl)
 
   console.log(`同步 ${localDir} -> ${repoDir}`)
   await execa(

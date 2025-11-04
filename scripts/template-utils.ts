@@ -1,10 +1,11 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 
 export const ROOT = process.cwd()
 export const DEFAULT_TEMPLATES_JSONC = path.join(ROOT, 'templates.jsonc')
+export const TEMPLATE_CACHE_ROOT = path.join(ROOT, '.cache', 'template-repos')
 
 function stripCommentLines(content: string): string {
   return content
@@ -49,6 +50,52 @@ export function repoFolderName(url: string): string {
   return segments.at(-1)?.replace(/\.git$/u, '') ?? ''
 }
 
+async function ensureCacheRepoRemote(repoDir: string, sshUrl: string): Promise<void> {
+  try {
+    const { stdout: remoteUrl } = await execa('git', ['remote', 'get-url', 'origin'], { cwd: repoDir })
+    if (remoteUrl.trim() !== sshUrl) {
+      console.warn(`缓存仓库 ${repoDir} 的 origin 与配置不符，更新为 ${sshUrl}`)
+      await execa('git', ['remote', 'set-url', 'origin', sshUrl], { cwd: repoDir, stdio: 'inherit' })
+    }
+  }
+  catch {
+    await execa('git', ['remote', 'add', 'origin', sshUrl], { cwd: repoDir, stdio: 'inherit' })
+  }
+}
+
+export async function prepareTemplateCacheRepo(repoName: string, sshUrl: string): Promise<{ repoDir: string, branch: string }> {
+  const branch = await resolveDefaultBranch(sshUrl)
+
+  if (!existsSync(TEMPLATE_CACHE_ROOT)) {
+    mkdirSync(TEMPLATE_CACHE_ROOT, { recursive: true })
+  }
+
+  const repoDir = path.join(TEMPLATE_CACHE_ROOT, repoName)
+  if (!existsSync(repoDir)) {
+    console.log(`\n>>> 首次克隆 ${sshUrl} 到 ${repoDir} (分支 ${branch})`)
+    await execa('git', ['clone', '--branch', branch, '--single-branch', sshUrl, repoDir], { stdio: 'inherit' })
+  }
+  else {
+    console.log(`\n>>> 使用缓存仓库 ${repoDir}`)
+    await ensureCacheRepoRemote(repoDir, sshUrl)
+  }
+
+  await execa('git', ['fetch', 'origin', branch], { cwd: repoDir, stdio: 'inherit' })
+
+  try {
+    await execa('git', ['checkout', branch], { cwd: repoDir, stdio: 'inherit' })
+  }
+  catch {
+    await execa('git', ['checkout', '-B', branch, `origin/${branch}`], { cwd: repoDir, stdio: 'inherit' })
+  }
+
+  await execa('git', ['reset', '--hard', `origin/${branch}`], { cwd: repoDir, stdio: 'inherit' })
+  // 保留被 .gitignore 忽略的缓存目录，避免每次清理 node_modules/dist 时的额外开销
+  await execa('git', ['clean', '-fd'], { cwd: repoDir, stdio: 'inherit' })
+
+  return { repoDir, branch }
+}
+
 export async function resolveDefaultBranch(repo: string): Promise<string> {
   const { stdout } = await execa('git', ['ls-remote', '--symref', repo, 'HEAD'], {
     cwd: ROOT,
@@ -75,11 +122,4 @@ export async function ensureCleanWorkingTree(message: string): Promise<void> {
     console.error(message)
     process.exit(1)
   }
-}
-
-export async function runGit(args: string[]): Promise<void> {
-  await execa('git', args, {
-    cwd: ROOT,
-    stdio: 'inherit',
-  })
 }

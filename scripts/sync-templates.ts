@@ -1,15 +1,15 @@
 import { existsSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { execa } from 'execa'
 import {
   ensureCleanWorkingTree,
   ensureConfigExists,
+  prepareTemplateCacheRepo,
   readTemplateUrls,
   repoFolderName,
   resolveConfigPath,
-  resolveDefaultBranch,
   ROOT,
-  runGit,
   toSshUrl,
 } from './template-utils'
 
@@ -46,21 +46,19 @@ async function syncTemplate(url: string): Promise<void> {
     throw new Error(`无法从 ${url} 解析仓库名。`)
   }
 
-  const prefix = path.posix.join('templates', repoName)
+  const sshUrl = toSshUrl(url)
+  const { repoDir, branch } = await prepareTemplateCacheRepo(repoName, sshUrl)
   const targetDir = path.join(TEMPLATES_DIR, repoName)
-  const repo = toSshUrl(url)
-  const branch = await resolveDefaultBranch(repo)
-  const action = existsSync(targetDir) ? 'pull' : 'add'
-  const args = ['subtree', action, '--prefix', prefix, repo, branch]
-
-  console.log(`\n>>> git ${args.join(' ')}`)
-
-  try {
-    await runGit(args)
+  if (!existsSync(targetDir)) {
+    mkdirSync(targetDir, { recursive: true })
   }
-  catch (error) {
-    throw new Error(`[${repoName}] git subtree ${action} 失败：${(error as Error).message}`)
-  }
+
+  console.log(`同步 ${repoDir} (${branch}) -> ${targetDir}`)
+  await execa(
+    'rsync',
+    ['-a', '--delete', '--exclude', '.git', `${repoDir}/`, `${targetDir}/`],
+    { stdio: 'inherit' },
+  )
 }
 
 main().catch((error) => {

@@ -89,6 +89,7 @@ const label = 'hi'
       'border-[#111111]',
       'border-solid',
       'bg-[#999999]',
+      'text-[#b01515]',
     ])
     const code = `
 <template>
@@ -100,7 +101,8 @@ const label = 'hi'
     ]">
     complex
   </view>
-  <view :class="condition ? 'bg-[#999999]' : ''">fallback</view>
+  <text class="" :class="condition ? 'bg-[#999999] text-[#b01515]' : ''">fallback</text>
+  <text :class="">empty</text>
 </template>
 <script setup lang="ts">
 const flag = true
@@ -114,7 +116,8 @@ const condition = true
     expect(result?.code).toContain(`'${replaceWxml('bg-[#654321]')}'`)
     expect(result?.code).toContain(`'${replaceWxml('text-[#ff0000] font-bold')}'`)
     expect(result?.code).toContain(`'${replaceWxml('border-[#111111] border-solid')}'`)
-    expect(result?.code).toContain(`'${replaceWxml('bg-[#999999]')}'`)
+    expect(result?.code).toContain(replaceWxml('bg-[#999999]'))
+    expect(result?.code).toContain(replaceWxml('text-[#b01515]'))
   })
 
   it('ignores non-uvue files', () => {
