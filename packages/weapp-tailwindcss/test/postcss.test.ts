@@ -35,6 +35,15 @@ describe('postcss plugin', () => {
     expect(res.css.toString()).toMatchSnapshot()
   })
 
+  it('downgrades rgb slash syntax for tailwind border colors', async () => {
+    const res = await getCss('<view class="border border-blue-600/10"></view>')
+    const css = res.css.toString()
+    const ctx = getCompilerContext()
+    const { css: processed } = await ctx.styleHandler(css, { isMainChunk: true })
+    expect(processed).toContain('rgba(37, 99, 235, var(--tw-border-opacity))')
+    expect(processed).not.toContain('rgb(37 99 235 / var(--tw-border-opacity))')
+  })
+
   it('before:content-[\'+\']', async () => {
     const res = await getCss('<view class="before:content-[\'+\']"></view>')
     expect(res.css.toString()).toMatchSnapshot()

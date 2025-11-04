@@ -2,6 +2,7 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from './types'
 import postcssPresetEnv from 'postcss-preset-env'
+import { createColorFunctionalFallback } from './plugins/colorFunctionalFallback'
 import { createContext } from './plugins/ctx'
 import { getCalcPlugin } from './plugins/getCalcPlugin'
 import { getCustomPropertyCleaner } from './plugins/getCustomPropertyCleaner'
@@ -125,6 +126,16 @@ function createPipelineDefinitions(options: IStyleHandlerOptions): PipelineNodeD
       id: 'normal:preset-env',
       stage: 'normal',
       createPlugin: () => postcssPresetEnv(options.cssPresetEnv),
+    }),
+  })
+
+  stages.normal.push({
+    id: 'normal:color-functional-fallback',
+    stage: 'normal',
+    prepare: () => ({
+      id: 'normal:color-functional-fallback',
+      stage: 'normal',
+      createPlugin: () => createColorFunctionalFallback(),
     }),
   })
 

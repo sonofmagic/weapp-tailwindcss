@@ -28,6 +28,7 @@ describe('style processing pipeline', () => {
     expect(ids).toEqual([
       'pre:core',
       'normal:preset-env',
+      'normal:color-functional-fallback',
       'normal:px-transform',
       'normal:rem-transform',
       'normal:calc',
@@ -70,6 +71,7 @@ describe('style processing pipeline', () => {
       'pre:user-0',
       'pre:core',
       'normal:preset-env',
+      'normal:color-functional-fallback',
       'post:core',
     ])
 

@@ -35,4 +35,21 @@ describe('compat', () => {
     expect(css).toContain('color: rgba(245, 247, 255, var(--tw-bg-opacity));')
     expect(css).toContain('background: rgba(59, 130, 246, 0.5);')
   })
+
+  it('still downgrades rgb() notation when color-functional-notation preserves modern syntax', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssPresetEnv: {
+        features: {
+          'color-functional-notation': { preserve: true },
+        },
+      },
+    })
+    const { css } = await styleHandler(`
+.b{
+  border-color: rgb(37 99 235 / var(--tw-border-opacity));
+}
+`)
+    expect(css).toContain('border-color: rgba(37, 99, 235, var(--tw-border-opacity));')
+  })
 })
