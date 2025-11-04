@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 4.7.3
+
+### Patch Changes
+
+- [`905e4d6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/905e4d6def6d87763836309b9d85ab32487c618f) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复在 uni-app x 与其它 Vue 模板中，`:class` 使用对象、数组或三元表达式时，`border-[#ff0000] bg-blue-600/50` 这类带空格/特殊字符的类名无法被 weapp-tailwindcss 转译的问题。现在会自动在需要时以表达式模式解析并转义这些原子类。
+
+- [`803fc79`](https://github.com/sonofmagic/weapp-tailwindcss/commit/803fc7979b5e42437ed701b9885afda02836677c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 重构 CLI 结构并改用惰性加载方式获取 `@tailwindcss-mangle/config`，修复 ESLint/TS 报错，保证在 Node.js 18 下同样可用。
+
+- Updated dependencies [[`aaff7b8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaff7b819b6aed74c473d677aeefcedd0fbd81be), [`ad1ee06`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ad1ee0642dd3bd22fffb2bc448b8850341729443)]:
+  - @weapp-tailwindcss/postcss@2.0.2
+
 ## 4.7.2
 
 ### Patch Changes

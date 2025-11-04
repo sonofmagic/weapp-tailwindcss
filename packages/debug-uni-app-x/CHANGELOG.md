@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/debug-uni-app-x
 
+## 0.0.3
+
+### Patch Changes
+
+- [`367904b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/367904baa9985509b830ac2e7e2db12841f6dd37) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 `HBuilderX` 构建安卓时插件调试输出包含空字节路径导致写入失败的问题。
+
 ## 0.0.2
 
 ### Patch Changes

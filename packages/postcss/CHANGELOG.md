@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 2.0.2
+
+### Patch Changes
+
+- [`aaff7b8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaff7b819b6aed74c473d677aeefcedd0fbd81be) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 默认启用 `color-functional-notation`，自动将 `rgb(... / ...)` 语法转换成兼容性更好的 `rgba(...)`。
+
+- [`ad1ee06`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ad1ee0642dd3bd22fffb2bc448b8850341729443) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 tailwindcss v3 `border-blue-600/10` 这类 rgb 斜杠透明度语法仍输出为 `rgb()`，导致安卓无法解析的问题，强制降级为传统 `rgba()`。
+
 ## 2.0.1
 
 ### Patch Changes
