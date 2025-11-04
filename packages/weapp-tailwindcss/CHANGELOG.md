@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.7.4
+
+### Patch Changes
+
+- [`ce5b4e6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ce5b4e65d3e8aa6eae437cdf804686162a093ca3) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 uni-app x 模板在处理空 `class` 或空 `:class` 属性时触发 MagicString “Cannot overwrite a zero-length range” 异常的问题。
+
+  同时为 uni-app x 模板管线补齐 `customAttributes` 配置支持，可在 Vue 模板中自定义需要转译的属性规则，并兼容 `disabledDefaultTemplateHandler` 行为。
+
+- [`040e6d6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/040e6d62dc7747b4cdf081ccf7e88c2a46248e51) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 确保 uni-app x 在 Vite 流程中等待运行时类名集合准备完成，修复频繁修改 `text-[#e73909]` 等类名时偶发的转译缺失问题。
+
+  允许在 uni-app x / HBuilderX 预设外层直接配置 `customAttributes`，无需再通过 `rawOptions` 透传。
+
 ## 4.7.3
 
 ### Patch Changes
