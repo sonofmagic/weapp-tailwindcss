@@ -1,4 +1,3 @@
-import type { ItemOrItemArray } from '@weapp-core/regex'
 import type { ITemplateHandlerOptions } from '../types'
 import type { Token } from './Tokenizer'
 import * as t from '@babel/types'
@@ -8,6 +7,7 @@ import { JsTokenUpdater } from '@/js/JsTokenUpdater'
 import { parseExpression, traverse } from '../babel'
 import { replaceHandleValue } from '../js/handlers'
 import { defuOverrideArray } from '../utils'
+import { createAttributeMatcher, isPropsMatch } from './custom-attributes'
 import { replaceWxml } from './shared'
 import { Tokenizer } from './Tokenizer'
 import { isAllWhitespace } from './whitespace'
@@ -141,35 +141,6 @@ export function templateReplacer(original: string, options: ITemplateHandlerOpti
   return ms.toString()
 }
 
-function regTest(reg: RegExp, str: string) {
-  reg.lastIndex = 0
-  return reg.test(str)
-}
-
-export function isPropsMatch(props: ItemOrItemArray<string | RegExp>, attr: string) {
-  if (Array.isArray(props)) {
-    let lowerAttr: string | undefined
-    for (const prop of props) {
-      if (typeof prop === 'string') {
-        lowerAttr ??= attr.toLowerCase()
-        if (prop.toLowerCase() === lowerAttr) {
-          return true
-        }
-      }
-      else if (regTest(prop, attr)) {
-        return true
-      }
-    }
-    return false
-  }
-  else if (typeof props === 'string') {
-    return props === attr
-  }
-  else {
-    return regTest(props, attr)
-  }
-}
-
 export async function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
   const {
     customAttributesEntities = [],
@@ -178,27 +149,7 @@ export async function customTemplateHandler(rawSource: string, options: Required
     runtimeSet,
     jsHandler,
   } = options ?? {}
-  const wildcardAttributeRules: ItemOrItemArray<string | RegExp>[] = []
-  const tagAttributeRuleMap = new Map<string, ItemOrItemArray<string | RegExp>[]>()
-  const regexpAttributeRules: Array<[RegExp, ItemOrItemArray<string | RegExp>]> = []
-
-  for (const [selector, props] of customAttributesEntities) {
-    if (selector === '*') {
-      wildcardAttributeRules.push(props)
-    }
-    else if (typeof selector === 'string') {
-      const list = tagAttributeRuleMap.get(selector)
-      if (list) {
-        list.push(props)
-      }
-      else {
-        tagAttributeRuleMap.set(selector, [props])
-      }
-    }
-    else {
-      regexpAttributeRules.push([selector, props])
-    }
-  }
+  const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
 
   const s = new MagicString(rawSource)
   let tag = ''
@@ -214,63 +165,28 @@ export async function customTemplateHandler(rawSource: string, options: Required
       },
 
       onattribute(name, value, quote) {
-        if (value) {
-          const lowerName = name.toLowerCase()
-          let updated = false
-          // https://github.com/fb55/htmlparser2/blob/5eea942451c1b836999d4557ed98470678c789b9/src/Parser.ts#L431
-          const update = () => {
-            if (updated) {
-              return
-            }
-            updated = true
-            s.update(
-              parser.startIndex + name.length + 2,
-              // !important
-              // htmlparser2 9.0.0: parser.endIndex
-              // htmlparser2 9.1.0: parser.endIndex - 1
-              // https://github.com/sonofmagic/weapp-tailwindcss/issues/269
-              parser.endIndex - 1,
-              templateReplacer(value, {
-                ...options,
-                quote,
-              }),
-            )
-          }
-          // addToken 'virtualHostClass' toLowerCase
-          if (
-            !disabledDefaultTemplateHandler
-            && (lowerName === 'class' || lowerName === 'hover-class' || lowerName === 'virtualhostclass')
-          ) {
-            update()
-          }
-          if (!updated) {
-            for (const props of wildcardAttributeRules) {
-              if (isPropsMatch(props, name)) {
-                update()
-                break
-              }
-            }
-          }
-          if (!updated) {
-            const tagRules = tagAttributeRuleMap.get(tag)
-            if (tagRules) {
-              for (const props of tagRules) {
-                if (isPropsMatch(props, name)) {
-                  update()
-                  break
-                }
-              }
-            }
-          }
-          if (!updated) {
-            for (const [selector, props] of regexpAttributeRules) {
-              if (regTest(selector, tag) && isPropsMatch(props, name)) {
-                update()
-                break
-              }
-            }
-          }
+        if (!value) {
+          return
         }
+        const lowerName = name.toLowerCase()
+        const shouldHandleDefault = !disabledDefaultTemplateHandler
+          && (lowerName === 'class' || lowerName === 'hover-class' || lowerName === 'virtualhostclass')
+        const shouldHandleCustom = matchCustomAttribute?.(tag, name) ?? false
+        if (!shouldHandleDefault && !shouldHandleCustom) {
+          return
+        }
+        s.update(
+          parser.startIndex + name.length + 2,
+          // !important
+          // htmlparser2 9.0.0: parser.endIndex
+          // htmlparser2 9.1.0: parser.endIndex - 1
+          // https://github.com/sonofmagic/weapp-tailwindcss/issues/269
+          parser.endIndex - 1,
+          templateReplacer(value, {
+            ...options,
+            quote,
+          }),
+        )
       },
       ontext(data) {
         if (inlineWxs && tag === 'wxs') {
@@ -298,6 +214,8 @@ export async function customTemplateHandler(rawSource: string, options: Required
 
   return s.toString()
 }
+
+export { isPropsMatch }
 
 export function createTemplateHandler(options: Omit<ITemplateHandlerOptions, 'runtimeSet'> = {}) {
   return (rawSource: string, opt: Pick<ITemplateHandlerOptions, 'runtimeSet'> = {}) => {

@@ -5,7 +5,11 @@ import type {
 } from '@/types'
 import { isMap } from '@/utils'
 
-export function toCustomAttributesEntities(customAttributes: ICustomAttributes): ICustomAttributesEntities {
+export function toCustomAttributesEntities(customAttributes?: ICustomAttributes): ICustomAttributesEntities {
+  if (!customAttributes) {
+    return []
+  }
+
   if (isMap(customAttributes)) {
     return [
       ...(customAttributes as Exclude<ICustomAttributes, Record<string, ItemOrItemArray<string | RegExp>>>).entries(),

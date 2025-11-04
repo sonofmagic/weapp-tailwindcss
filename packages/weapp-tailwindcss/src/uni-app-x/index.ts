@@ -1,10 +1,11 @@
 import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
 import type { TransformResult } from 'vite'
-import type { CreateJsHandlerOptions, JsHandler } from '@/types'
+import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
 import { parse } from '@vue/compiler-sfc'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
+import { createAttributeMatcher } from '@/wxml/custom-attributes'
 
 function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   visitor(node)
@@ -17,32 +18,52 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
-function createClassAttributeUpdater(ms: MagicString) {
-  return (prop: AttributeNode) => {
-    if (prop.value) {
-      const start = prop.value.loc.start.offset + 1
-      const end = prop.value.loc.end.offset - 1
-      if (start < end) {
-        ms.update(start, end, replaceWxml(prop.value.content))
-      }
-    }
+function updateStaticAttribute(ms: MagicString, prop: AttributeNode) {
+  if (!prop.value) {
+    return
+  }
+  const start = prop.value.loc.start.offset + 1
+  const end = prop.value.loc.end.offset - 1
+  if (start < end) {
+    ms.update(start, end, replaceWxml(prop.value.content))
   }
 }
 
-function createClassDirectiveUpdater(ms: MagicString, jsHandler: JsHandler, runtimeSet?: Set<string>) {
-  return (prop: DirectiveNode) => {
-    if (prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION && prop.arg.content === 'class' && prop.exp?.type === NodeTypes.SIMPLE_EXPRESSION) {
-      const generated = generateCode(prop.exp.content, {
-        jsHandler,
-        runtimeSet,
-        wrapExpression: true,
-      })
-      const start = prop.exp.loc.start.offset
-      const end = prop.exp.loc.end.offset
-      if (start < end) {
-        ms.update(start, end, generated)
-      }
-    }
+function updateDirectiveExpression(ms: MagicString, prop: DirectiveNode, jsHandler: JsHandler, runtimeSet?: Set<string>) {
+  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
+    return
+  }
+  const start = prop.exp.loc.start.offset
+  const end = prop.exp.loc.end.offset
+  if (start >= end) {
+    return
+  }
+  const generated = generateCode(prop.exp.content, {
+    jsHandler,
+    runtimeSet,
+    wrapExpression: true,
+  })
+  ms.update(start, end, generated)
+}
+
+interface TransformUVueOptions {
+  customAttributesEntities?: ICustomAttributesEntities
+  disabledDefaultTemplateHandler?: boolean
+}
+
+function shouldHandleAttribute(
+  tag: string,
+  attrName: string,
+  disabledDefaultTemplateHandler: boolean,
+  matchCustomAttribute?: ReturnType<typeof createAttributeMatcher>,
+) {
+  const lowerName = attrName.toLowerCase()
+  const shouldHandleDefault = !disabledDefaultTemplateHandler && lowerName === 'class'
+  const shouldHandleCustom = matchCustomAttribute?.(tag, attrName) ?? false
+  return {
+    shouldHandleDefault,
+    shouldHandleCustom,
+    shouldHandle: shouldHandleDefault || shouldHandleCustom,
   }
 }
 
@@ -53,26 +74,60 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
     ],
   },
 }
-export function transformUVue(code: string, id: string, jsHandler: JsHandler, runtimeSet?: Set<string>): undefined | TransformResult {
-  if (!/\.uvue(?:\?.*)?$/.test(id)) {
+export function transformUVue(
+  code: string,
+  id: string,
+  jsHandler: JsHandler,
+  runtimeSet?: Set<string>,
+  options: TransformUVueOptions = {},
+): undefined | TransformResult {
+  if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
     return
   }
+  const { customAttributesEntities, disabledDefaultTemplateHandler = false } = options
+  const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const { descriptor, errors } = parse(code)
   if (errors.length === 0) {
     if (descriptor.template?.ast) {
-      const updateStaticClass = createClassAttributeUpdater(ms)
-      const updateDynamicClass = createClassDirectiveUpdater(ms, jsHandler, runtimeSet)
       traverse(descriptor.template.ast, (node) => {
         if (node.type !== NodeTypes.ELEMENT) {
           return
         }
+        const tag = node.tag
         for (const prop of node.props) {
-          if (prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class') {
-            updateStaticClass(prop)
+          if (prop.type === NodeTypes.ATTRIBUTE) {
+            const { shouldHandle, shouldHandleDefault } = shouldHandleAttribute(
+              tag,
+              prop.name,
+              disabledDefaultTemplateHandler,
+              matchCustomAttribute,
+            )
+            if (!shouldHandle) {
+              continue
+            }
+            updateStaticAttribute(ms, prop)
+            if (shouldHandleDefault) {
+              continue
+            }
           }
-          else if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'bind') {
-            updateDynamicClass(prop)
+          else if (
+            prop.type === NodeTypes.DIRECTIVE
+            && prop.name === 'bind'
+            && prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION
+            && prop.arg.isStatic
+          ) {
+            const attrName = prop.arg.content
+            const { shouldHandle } = shouldHandleAttribute(
+              tag,
+              attrName,
+              disabledDefaultTemplateHandler,
+              matchCustomAttribute,
+            )
+            if (!shouldHandle) {
+              continue
+            }
+            updateDirectiveExpression(ms, prop, jsHandler, runtimeSet)
           }
         }
       })

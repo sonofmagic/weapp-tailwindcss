@@ -11,6 +11,7 @@ export interface UniAppXOptions {
   rem2rpx?: UserDefinedOptions['rem2rpx']
   rawOptions?: UserDefinedOptions
   resolve?: PackageResolvingOptions
+  customAttributes?: UserDefinedOptions['customAttributes']
 }
 
 export function uniAppX(options: UniAppXOptions) {
@@ -22,7 +23,7 @@ export function uniAppX(options: UniAppXOptions) {
     Partial<UserDefinedOptions>,
     Partial<UserDefinedOptions>[]
   >(
-    options.rawOptions!,
+    options.rawOptions ?? {},
     {
       uniAppX: isApp,
       // 安卓
@@ -53,6 +54,7 @@ export function uniAppX(options: UniAppXOptions) {
           },
         },
       },
+      ...(options.customAttributes ? { customAttributes: options.customAttributes } : {}),
     },
   )
 }
@@ -63,6 +65,7 @@ export interface HBuilderXOptions {
   rem2rpx?: UserDefinedOptions['rem2rpx']
   rawOptions?: UserDefinedOptions
   resolve?: PackageResolvingOptions
+  customAttributes?: UserDefinedOptions['customAttributes']
 }
 
 function toCssEntries(entries?: string | string[]) {
@@ -114,6 +117,10 @@ export function hbuilderx(options: HBuilderXOptions = {}) {
       cwd: baseDir,
       tailwind: resolvedTailwind,
     },
+  }
+
+  if (options.customAttributes) {
+    preset.customAttributes = options.customAttributes
   }
 
   if (options.rem2rpx !== undefined) {

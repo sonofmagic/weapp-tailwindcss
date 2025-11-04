@@ -8,6 +8,7 @@ import process from 'node:process'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
+import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
@@ -115,6 +116,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const opts = getCompilerContext(options)
   const {
     disabled,
+    customAttributes,
     onEnd,
     onLoad,
     onStart,
@@ -127,10 +129,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     cache,
     twPatcher,
     uniAppX,
+    disabledDefaultTemplateHandler,
   } = opts
   if (disabled) {
     return
   }
+
+  const customAttributesEntities = toCustomAttributesEntities(customAttributes)
 
   const patchPromise = createTailwindPatchPromise(twPatcher)
   let runtimeSet: Set<string> | undefined
@@ -424,10 +429,19 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           await ensureRuntimeClassSet(true)
         },
         async transform(code, id) {
-          if (!/\.uvue(?:\?.*)?$/.test(id)) {
+          if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
             return
           }
           const currentRuntimeSet = await ensureRuntimeClassSet()
+          const extraOptions = customAttributesEntities.length > 0 || disabledDefaultTemplateHandler
+            ? {
+                customAttributesEntities,
+                disabledDefaultTemplateHandler,
+              }
+            : undefined
+          if (extraOptions) {
+            return transformUVue(code, id, jsHandler, currentRuntimeSet, extraOptions)
+          }
           return transformUVue(code, id, jsHandler, currentRuntimeSet)
         },
       },

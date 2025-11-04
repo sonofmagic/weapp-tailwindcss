@@ -1,4 +1,4 @@
-import type { JsHandler } from '@/types'
+import type { ICustomAttributesEntities, JsHandler } from '@/types'
 import { createGetCase, fixturesRootPath } from '#test/util'
 import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
@@ -118,6 +118,57 @@ const condition = true
     expect(result?.code).toContain(`'${replaceWxml('border-[#111111] border-solid')}'`)
     expect(result?.code).toContain(replaceWxml('bg-[#999999]'))
     expect(result?.code).toContain(replaceWxml('text-[#b01515]'))
+  })
+
+  it('respects customAttributes for static and dynamic bindings', () => {
+    const { jsHandler } = getCompilerContext()
+    const runtimeSet = new Set<string>([
+      'bg-[#121212]',
+      'bg-[#343434]',
+      'text-[#565656]',
+    ])
+    const customAttributesEntities: ICustomAttributesEntities = [
+      ['*', ['foo-class']],
+      ['view', ['bar-class']],
+    ]
+    const code = `
+<template>
+  <view foo-class="bg-[#121212]" :foo-class="condition ? 'bg-[#343434]' : ''">
+    <view :bar-class="'text-[#565656]'">inner</view>
+  </view>
+</template>
+<script setup lang="ts">
+const condition = true
+</script>
+`
+    const result = transformUVue(code, 'custom.uvue', jsHandler, runtimeSet, {
+      customAttributesEntities,
+    })
+    expect(result?.code).toContain(`foo-class="${replaceWxml('bg-[#121212]')}"`)
+    expect(result?.code).toContain(replaceWxml('bg-[#343434]'))
+    expect(result?.code).toContain(replaceWxml('text-[#565656]'))
+  })
+
+  it('honors disabledDefaultTemplateHandler with custom class rules', () => {
+    const { jsHandler } = getCompilerContext()
+    const runtimeSet = new Set<string>([
+      'bg-[#abcdef]',
+      'bg-[#fedcba]',
+    ])
+    const customAttributesEntities: ICustomAttributesEntities = [
+      ['*', ['class']],
+    ]
+    const code = `
+<template>
+  <view class="bg-[#abcdef]" :class="'bg-[#fedcba]'">content</view>
+</template>
+`
+    const result = transformUVue(code, 'disabled-default.uvue', jsHandler, runtimeSet, {
+      customAttributesEntities,
+      disabledDefaultTemplateHandler: true,
+    })
+    expect(result?.code).toContain(replaceWxml('bg-[#abcdef]'))
+    expect(result?.code).toContain(replaceWxml('bg-[#fedcba]'))
   })
 
   it('ignores non-uvue files', () => {
