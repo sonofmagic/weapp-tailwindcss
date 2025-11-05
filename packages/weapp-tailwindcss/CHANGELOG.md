@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.7.5-alpha.0
+
+### Patch Changes
+
+- [`d69bb5a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d69bb5a6e18ddbd99ec3e62ee9a398fa8f8bf19a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: uni-app-x hmr 0
+
 ## 4.7.4
 
 ### Patch Changes
