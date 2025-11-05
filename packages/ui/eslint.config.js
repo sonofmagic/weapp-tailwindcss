@@ -9,4 +9,9 @@ export default icebreaker(
     },
     ignores: ['**/fixtures/**'],
   },
+  {
+    // rules: {
+    //   'better-tailwindcss/no-unregistered-classes': 'off'
+    // }
+  },
 )

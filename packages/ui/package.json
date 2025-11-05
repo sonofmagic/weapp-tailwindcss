@@ -16,17 +16,26 @@
   "keywords": [],
   "sideEffects": [
     "./dist/index.css",
-    "./dist/index.wxss"
+    "./dist/index.wxss",
+    "./dist/index.tailwind3.css",
+    "./dist/index.tailwind3.wxss"
   ],
   "exports": {
     ".": "./dist/index.css",
     "./css": "./dist/index.css",
     "./index.css": "./dist/index.css",
     "./index.wxss": "./dist/index.wxss",
+    "./tailwind3.css": "./dist/index.tailwind3.css",
+    "./tailwind3.wxss": "./dist/index.tailwind3.wxss",
     "./variants": {
       "types": "./dist/variants.d.ts",
       "import": "./dist/variants.js",
       "require": "./dist/variants.cjs"
+    },
+    "./preset": {
+      "types": "./dist/preset.d.ts",
+      "import": "./dist/preset.js",
+      "require": "./dist/preset.cjs"
     }
   },
   "files": [
@@ -46,10 +55,17 @@
       "./css": "./dist/index.css",
       "./index.css": "./dist/index.css",
       "./index.wxss": "./dist/index.wxss",
+      "./tailwind3.css": "./dist/index.tailwind3.css",
+      "./tailwind3.wxss": "./dist/index.tailwind3.wxss",
       "./variants": {
         "types": "./dist/variants.d.ts",
         "import": "./dist/variants.js",
         "require": "./dist/variants.cjs"
+      },
+      "./preset": {
+        "types": "./dist/preset.d.ts",
+        "import": "./dist/preset.js",
+        "require": "./dist/preset.cjs"
       }
     },
     "main": "./dist/index.css"

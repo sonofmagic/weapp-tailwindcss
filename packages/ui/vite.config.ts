@@ -1,8 +1,12 @@
+import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
+import postcss from 'postcss'
 import { defineConfig, build as viteBuild } from 'vite'
 import dts from 'vite-plugin-dts'
+import { loadTailwindcss3 } from './scripts/load-tailwindcss3'
+import { weappTailwindcssUIPreset } from './src/preset'
 
 const rootDir = fileURLToPath(new URL('.', import.meta.url))
 const srcDir = path.resolve(rootDir, 'src')
@@ -61,6 +65,20 @@ const cssBuildConfig = {
 export default defineConfig(async ({ command, mode }) => {
   if (command === 'build') {
     await viteBuild({ ...cssBuildConfig, mode })
+
+    const tailwindcss3 = await loadTailwindcss3(rootDir)
+    const cssSource = await readFile(path.resolve(srcDir, 'index.css'), 'utf8')
+    const tailwind3Result = await postcss([
+      tailwindcss3({
+        presets: [weappTailwindcssUIPreset],
+        corePlugins: { preflight: false },
+        content: [{ raw: '', extension: 'html' }],
+      }),
+    ]).process(cssSource, { from: path.resolve(srcDir, 'index.css') })
+
+    const css3Path = path.resolve(rootDir, 'dist/index.tailwind3.css')
+    await writeFile(css3Path, tailwind3Result.css, 'utf8')
+    await writeFile(css3Path.replace(/\.css$/, '.wxss'), tailwind3Result.css, 'utf8')
   }
 
   return {
@@ -71,7 +89,7 @@ export default defineConfig(async ({ command, mode }) => {
         entryRoot: srcDir,
         tsconfigPath: path.resolve(rootDir, 'tsconfig.build.json'),
         outDir: path.resolve(rootDir, 'dist'),
-        include: ['src/variants.ts'],
+        include: ['src/variants.ts', 'src/preset.ts'],
         copyDtsFiles: false,
         strictOutput: true,
       }),
@@ -81,12 +99,15 @@ export default defineConfig(async ({ command, mode }) => {
       emptyOutDir: false,
       assetsDir: '.',
       lib: {
-        entry: path.resolve(srcDir, 'variants.ts'),
+        entry: {
+          variants: path.resolve(srcDir, 'variants.ts'),
+          preset: path.resolve(srcDir, 'preset.ts'),
+        },
         formats: ['es', 'cjs'],
-        fileName: format => (format === 'es' ? 'variants.js' : 'variants.cjs'),
+        fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
       },
       rollupOptions: {
-        external: ['tailwind-merge', 'tailwind-variants'],
+        external: ['tailwind-merge', 'tailwind-variants', 'tailwindcss', 'tailwindcss/plugin'],
       },
     },
   }

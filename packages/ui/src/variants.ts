@@ -199,6 +199,38 @@ export const listItem = withMerge(
   }),
 )
 
+export const tag = withMerge(
+  tv({
+    base: 'wt-tag',
+    variants: {
+      tone: {
+        default: '',
+        active: 'wt-tag--active',
+        danger: 'wt-tag--danger',
+        ghost: 'wt-tag--ghost',
+      },
+    },
+    defaultVariants: {
+      tone: 'default',
+    },
+  }),
+)
+
+export const skeleton = withMerge(
+  tv({
+    base: 'wt-skeleton',
+    variants: {
+      tone: {
+        default: '',
+        dark: 'wt-skeleton--dark',
+      },
+    },
+    defaultVariants: {
+      tone: 'default',
+    },
+  }),
+)
+
 type ClassValue = Parameters<typeof twMerge>[number]
 
 export const mergeClassNames = (...values: ClassValue[]) => twMerge(...values)
@@ -212,3 +244,5 @@ export type AvatarVariants = VariantProps<typeof avatar>
 export type ToolbarVariants = VariantProps<typeof toolbar>
 export type ToastVariants = VariantProps<typeof toast>
 export type ListItemVariants = VariantProps<typeof listItem>
+export type TagVariants = VariantProps<typeof tag>
+export type SkeletonVariants = VariantProps<typeof skeleton>
