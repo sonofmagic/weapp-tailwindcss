@@ -91,10 +91,10 @@
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "terser": "^5.44.0",
+    "terser": "^5.44.1",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
-    "vite": "^7.1.12",
+    "vite": "^7.2.0",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

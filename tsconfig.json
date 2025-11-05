@@ -14,5 +14,17 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true
-  }
+  },
+  "exclude": [
+    "dist",
+    "coverage",
+    "tailwindcss-weapp",
+    "**/dist",
+    "**/build",
+    "**/node_modules",
+    "**/.turbo",
+    "**/.cache",
+    "website/playwright-report",
+    "website/test-results"
+  ]
 }

@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "unbuild": "^3.6.1",
-    "vite": "7.1.12"
+    "vite": "7.2.0"
   },
   "publishConfig": {
     "exports": {
