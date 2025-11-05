@@ -12,11 +12,18 @@ interface TailwindPluginAPI {
   theme: (path: string, defaultValue?: unknown) => unknown
 }
 
+interface TailwindPlugin {
+  (api: TailwindPluginAPI): void
+  handler: (api: TailwindPluginAPI) => void
+  config?: Record<string, unknown>
+}
+
 interface TailwindConfigLike {
   presets?: TailwindConfigLike[]
   theme?: Record<string, unknown>
-  plugins?: unknown[]
+  plugins?: TailwindPlugin[]
   corePlugins?: Record<string, boolean>
+  safelist?: Array<string | { pattern: RegExp }>
 }
 
 const spacingScale = {
@@ -661,7 +668,7 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
   }
 }
 
-export const weappTailwindcssUIPlugin = plugin((api: TailwindPluginAPI) => {
+function weappTailwindcssUIHandler(api: TailwindPluginAPI) {
   const utilities = {
     ...baseUtilities,
     ...makeSpacingUtilities(api.theme('spacing') as Record<string, string>),
@@ -707,7 +714,9 @@ export const weappTailwindcssUIPlugin = plugin((api: TailwindPluginAPI) => {
 
   api.addUtilities(utilities)
   api.addComponents(buildComponents(api))
-})
+}
+
+export const weappTailwindcssUIPlugin = plugin(weappTailwindcssUIHandler) as unknown as TailwindPlugin
 
 export const weappTailwindcssUIPreset: TailwindConfigLike = {
   theme: {
@@ -758,6 +767,9 @@ export const weappTailwindcssUIPreset: TailwindConfigLike = {
   corePlugins: {
     preflight: false,
   },
+  safelist: [
+    { pattern: /^wt-/ },
+  ],
   plugins: [weappTailwindcssUIPlugin],
 }
 

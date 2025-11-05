@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import postcss from 'postcss'
@@ -10,6 +11,10 @@ import { weappTailwindcssUIPreset } from './src/preset'
 
 const rootDir = fileURLToPath(new URL('.', import.meta.url))
 const srcDir = path.resolve(rootDir, 'src')
+
+if (!process.env.TAILWIND_CONFIG) {
+  process.env.TAILWIND_CONFIG = path.resolve(rootDir, 'tailwind.config.ts')
+}
 
 function wxssMirror() {
   return {

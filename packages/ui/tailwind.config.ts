@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import { weappTailwindcssUIPreset } from './src/preset'
+import { weappTailwindcssUIPreset } from './src/preset.ts'
 
 const config = {
   content: [
