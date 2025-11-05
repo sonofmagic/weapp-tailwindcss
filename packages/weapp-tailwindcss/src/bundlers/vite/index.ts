@@ -1,6 +1,6 @@
 import type { RawSourceMap } from '@ampproject/remapping'
 import type { ExistingRawSourceMap, OutputAsset, OutputChunk, SourceMap } from 'rollup'
-import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
+import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, LinkedJsModuleResult, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import path from 'node:path'
@@ -432,7 +432,17 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
             return
           }
-          const currentRuntimeSet = await ensureRuntimeClassSet()
+          const isServeCommand = resolvedConfig?.command === 'serve'
+          const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
+          const shouldForceRefresh = isServeCommand || isWatchBuild
+          let currentRuntimeSet: Set<string>
+          if (shouldForceRefresh) {
+            // Refresh runtime class set before each dev transform so hot-added classes hash correctly
+            currentRuntimeSet = await ensureRuntimeClassSet(true)
+          }
+          else {
+            currentRuntimeSet = await ensureRuntimeClassSet()
+          }
           const extraOptions = customAttributesEntities.length > 0 || disabledDefaultTemplateHandler
             ? {
                 customAttributesEntities,
@@ -443,6 +453,26 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             return transformUVue(code, id, jsHandler, currentRuntimeSet, extraOptions)
           }
           return transformUVue(code, id, jsHandler, currentRuntimeSet)
+        },
+        async handleHotUpdate(ctx: HmrContext) {
+          if (resolvedConfig?.command !== 'serve') {
+            return
+          }
+          if (!/\.(?:uvue|nvue)$/.test(ctx.file)) {
+            return
+          }
+          // Hot-reload newly introduced classes without waiting for full rebuild
+          await ensureRuntimeClassSet(true)
+        },
+        async watchChange(id) {
+          if (resolvedConfig?.command !== 'build' || !resolvedConfig.build?.watch) {
+            return
+          }
+          if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
+            return
+          }
+          // Refresh runtime class set for incremental rebuilds triggered by `vite build --watch`
+          await ensureRuntimeClassSet(true)
         },
       },
     )

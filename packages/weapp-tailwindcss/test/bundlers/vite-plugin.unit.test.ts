@@ -1,11 +1,12 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
-import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
+import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
 import { createCache } from '@/cache'
 import { createJsHandler } from '@/js'
+import { replaceWxml } from '@/wxml'
 
 function createContext(overrides: Record<string, unknown> = {}) {
   const cache = createCache()
@@ -346,6 +347,245 @@ const fallback = "bg-[#434332] px-[32px]"
       }),
     )
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("asset")')
+  })
+
+  it('refreshes runtime class set during serve transforms so new classes are hashed immediately', async () => {
+    const runtimeSets = [
+      new Set(['text-[#123456]']),
+      new Set(['text-[#123456]', 'text-[#234567]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    currentContext = createContext({
+      uniAppX: { enabled: true },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    })
+
+    const originalImplementation = transformUVueMock.getMockImplementation()
+    transformUVueMock.mockImplementation((code: string, _id: string, _jsHandler: unknown, runtimeSet: Set<string>) => {
+      let result = code
+      for (const className of runtimeSet) {
+        result = result.replaceAll(className, replaceWxml(className))
+      }
+      return { code: result }
+    })
+
+    try {
+      const plugins = UnifiedViteWeappTailwindcssPlugin()
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+      expect(postPlugin).toBeTruthy()
+      expect(nvuePlugin).toBeTruthy()
+
+      const config = {
+        command: 'serve',
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+        root: process.cwd(),
+      } as unknown as ResolvedConfig
+      await (postPlugin.configResolved as any)?.call(postPlugin, config)
+      await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
+
+      const hashedExisting = replaceWxml('text-[#123456]')
+      const hashedNew = replaceWxml('text-[#234567]')
+
+      const firstResult = await (nvuePlugin.transform as any)?.call(
+        nvuePlugin,
+        '<template><view class="text-[#123456]"/></template>',
+        'Component.uvue',
+      )
+      expect(firstResult?.code).toContain(hashedExisting)
+      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+
+      runtimeIndex = 1
+      const secondResult = await (nvuePlugin.transform as any)?.call(
+        nvuePlugin,
+        '<template><view class="text-[#234567]"/></template>',
+        'Component.uvue',
+      )
+      expect(secondResult?.code).toContain(hashedNew)
+      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+    }
+    finally {
+      transformUVueMock.mockImplementation(
+        originalImplementation ?? ((code: string, id: string) => ({ code: `uvue:${id}:${code}` })),
+      )
+    }
+  })
+
+  it('refreshes runtime class set during build watch transforms so new classes are hashed immediately', async () => {
+    const runtimeSets = [
+      new Set(['text-[#123456]']),
+      new Set(['text-[#123456]', 'text-[#345678]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    currentContext = createContext({
+      uniAppX: { enabled: true },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    })
+
+    const originalImplementation = transformUVueMock.getMockImplementation()
+    transformUVueMock.mockImplementation((code: string, _id: string, _jsHandler: unknown, runtimeSet: Set<string>) => {
+      let result = code
+      for (const className of runtimeSet) {
+        result = result.replaceAll(className, replaceWxml(className))
+      }
+      return { code: result }
+    })
+
+    try {
+      const plugins = UnifiedViteWeappTailwindcssPlugin()
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+      expect(postPlugin).toBeTruthy()
+      expect(nvuePlugin).toBeTruthy()
+
+      const config = {
+        command: 'build',
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist', watch: {} },
+        root: process.cwd(),
+      } as unknown as ResolvedConfig
+      await (postPlugin.configResolved as any)?.call(postPlugin, config)
+      await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
+
+      const hashedExisting = replaceWxml('text-[#123456]')
+      const hashedNew = replaceWxml('text-[#345678]')
+
+      const firstResult = await (nvuePlugin.transform as any)?.call(
+        nvuePlugin,
+        '<template><view class="text-[#123456]"/></template>',
+        'Component.uvue',
+      )
+      expect(firstResult?.code).toContain(hashedExisting)
+      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+
+      runtimeIndex = 1
+      const secondResult = await (nvuePlugin.transform as any)?.call(
+        nvuePlugin,
+        '<template><view class="text-[#345678]"/></template>',
+        'Component.uvue',
+      )
+      expect(secondResult?.code).toContain(hashedNew)
+      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+    }
+    finally {
+      transformUVueMock.mockImplementation(
+        originalImplementation ?? ((code: string, id: string) => ({ code: `uvue:${id}:${code}` })),
+      )
+    }
+  })
+
+  it('refreshes runtime class set on .uvue/.nvue hot updates in serve mode', async () => {
+    const runtimeSets = [
+      new Set(['text-[#123456]']),
+      new Set(['text-[#234567]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    currentContext = createContext({
+      uniAppX: { enabled: true },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    })
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+    expect(postPlugin).toBeTruthy()
+    expect(nvuePlugin).toBeTruthy()
+
+    const config = {
+      command: 'serve',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+      root: process.cwd(),
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+    await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
+
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    runtimeIndex = 1
+    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.uvue' } as HmrContext)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    runtimeIndex = 1
+    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.nvue' } as HmrContext)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.vue' } as HmrContext)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+  })
+
+  it('refreshes runtime class set on .uvue/.nvue watch changes in build watch mode', async () => {
+    const runtimeSets = [
+      new Set(['text-[#123456]']),
+      new Set(['text-[#654321]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    currentContext = createContext({
+      uniAppX: { enabled: true },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    })
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+    expect(postPlugin).toBeTruthy()
+    expect(nvuePlugin).toBeTruthy()
+
+    const config = {
+      command: 'build',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+      root: process.cwd(),
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+    await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
+
+    runtimeIndex = 1
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.uvue')
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.nvue')
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.vue')
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
   })
 
   it('propagates linked js module updates', async () => {
