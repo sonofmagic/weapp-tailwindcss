@@ -48,7 +48,17 @@ export interface TailwindcssPatcherLike {
   getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
   getClassSetSync?: TailwindcssPatcher['getClassSetSync']
   extract: TailwindcssPatcher['extract']
+  collectContentTokens?: TailwindcssPatcher['collectContentTokens']
   options?: TailwindcssPatcher['options']
+  cacheStore?: {
+    options?: {
+      path?: string
+    }
+  }
+}
+
+export interface RefreshTailwindcssPatcherOptions {
+  clearCache?: boolean
 }
 
 export interface IJsHandlerOptions {
@@ -135,6 +145,7 @@ export type InternalUserDefinedOptions = Required<
     customReplaceDictionary: Record<string, string>
     cache: ICreateCacheReturnType
     twPatcher: TailwindcssPatcherLike
+    refreshTailwindcssPatcher: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
   }
 >
 

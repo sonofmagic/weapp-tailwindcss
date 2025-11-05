@@ -10,34 +10,56 @@ import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcs
  */
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
-  const { templateHandler, styleHandler, jsHandler, twPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
+  let twPatcher = initialTwPatcher
   let runtimeSet = new Set<string>()
-  const patchPromise = createTailwindPatchPromise(twPatcher)
+  let patchPromise = createTailwindPatchPromise(twPatcher)
+
+  async function refreshRuntimeState(force: boolean) {
+    if (!force) {
+      return
+    }
+    await patchPromise
+    if (typeof refreshTailwindcssPatcher === 'function') {
+      const next = await refreshTailwindcssPatcher({ clearCache: true })
+      if (next !== twPatcher) {
+        twPatcher = next
+      }
+    }
+    patchPromise = createTailwindPatchPromise(twPatcher)
+  }
 
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await patchPromise
     const result = await styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
     }))
-    runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
+    await refreshRuntimeState(true)
+    await patchPromise
+    runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
     return result
   }
 
   async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
     await patchPromise
-    runtimeSet
-      = options && options.runtimeSet
-        ? options.runtimeSet
-        : await collectRuntimeClassSet(twPatcher, { force: true })
-
+    if (options?.runtimeSet) {
+      runtimeSet = options.runtimeSet
+    }
+    else {
+      await refreshRuntimeState(true)
+      await patchPromise
+      runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
+    }
     return await jsHandler(rawJs, runtimeSet, options)
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
     await patchPromise
     if (!options?.runtimeSet && runtimeSet.size === 0) {
-      runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
+      await refreshRuntimeState(true)
+      await patchPromise
+      runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
     }
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,

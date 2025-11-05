@@ -122,6 +122,14 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
         classSet,
       } as Awaited<TailwindcssExtractResult>
     },
+    async collectContentTokens() {
+      return {
+        entries: [],
+        filesScanned: 0,
+        sources: [],
+        skippedFiles: [],
+      }
+    },
   }
 }
 

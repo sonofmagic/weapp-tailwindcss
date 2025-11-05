@@ -44,18 +44,35 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       jsHandler,
       runtimeLoaderPath,
       cache,
-      twPatcher,
+      twPatcher: initialTwPatcher,
+      refreshTailwindcssPatcher,
     } = this.options
 
     if (disabled) {
       return
     }
-    const patchPromise = createTailwindPatchPromise(twPatcher)
+    let twPatcher = initialTwPatcher
+    let patchPromise = createTailwindPatchPromise(twPatcher)
+
+    const refreshRuntimeState = async (force: boolean) => {
+      if (!force) {
+        return
+      }
+      await patchPromise
+      if (typeof refreshTailwindcssPatcher === 'function') {
+        const next = await refreshTailwindcssPatcher({ clearCache: true })
+        if (next !== twPatcher) {
+          twPatcher = next
+        }
+      }
+      patchPromise = createTailwindPatchPromise(twPatcher)
+    }
     const { Compilation, sources, NormalModule } = compiler.webpack
     const { ConcatSource } = sources
     async function getClassSetInLoader() {
+      await refreshRuntimeState(true)
       await patchPromise
-      await collectRuntimeClassSet(twPatcher, { force: true })
+      await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
     }
 
     onLoad()
@@ -159,7 +176,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           const groupedEntries = getGroupedEntries(entries, this.options)
           // 再次 build 不转化的原因是此时 set.size 为0
           // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-          const runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true })
+          await refreshRuntimeState(true)
+          await patchPromise
+          const runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
           debug('get runtimeSet, class count: %d', runtimeSet.size)
           const tasks: Promise<void>[] = []
           if (Array.isArray(groupedEntries.html)) {

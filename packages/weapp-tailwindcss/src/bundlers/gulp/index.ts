@@ -22,20 +22,36 @@ const Transform = stream.Transform
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
 
-  const { templateHandler, styleHandler, jsHandler, cache, twPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
+  let twPatcher = initialTwPatcher
   let runtimeSet = new Set<string>()
-  const patchPromise = createTailwindPatchPromise(twPatcher)
+  let patchPromise = createTailwindPatchPromise(twPatcher)
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
 
+  async function refreshRuntimeState(force: boolean) {
+    if (!force) {
+      return
+    }
+    await patchPromise
+    if (typeof refreshTailwindcssPatcher === 'function') {
+      const next = await refreshTailwindcssPatcher({ clearCache: true })
+      if (next !== twPatcher) {
+        twPatcher = next
+      }
+    }
+    patchPromise = createTailwindPatchPromise(twPatcher)
+  }
+
   async function refreshRuntimeSet(force = false) {
+    await refreshRuntimeState(force)
     await patchPromise
     if (!force && runtimeSetInitialized && runtimeSet.size > 0) {
       return runtimeSet
     }
-    runtimeSet = await collectRuntimeClassSet(twPatcher, { force })
+    runtimeSet = await collectRuntimeClassSet(twPatcher, { force, skipRefresh: force })
     runtimeSetInitialized = true
     return runtimeSet
   }

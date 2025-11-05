@@ -1,7 +1,9 @@
-import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
+import { rm } from 'node:fs/promises'
 import { logger, pc } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions } from '@/defaults'
+import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
 import { defuOverrideArray } from '@/utils'
 import { toCustomAttributesEntities } from './custom-attributes'
 import { createHandlersFromContext } from './handlers'
@@ -76,6 +78,30 @@ function ensureDefaultsIncluded(
   return value
 }
 
+async function clearTailwindcssPatcherCache(patcher: TailwindcssPatcherLike | undefined) {
+  if (!patcher) {
+    return
+  }
+  const cacheOptions = patcher.options?.cache
+  if (!cacheOptions || cacheOptions.enabled === false) {
+    return
+  }
+  const cachePath = cacheOptions.path ?? patcher.cacheStore?.options?.path
+  if (!cachePath) {
+    return
+  }
+  try {
+    await rm(cachePath, { force: true })
+  }
+  catch (error) {
+    const err = error as NodeJS.ErrnoException
+    if (err?.code === 'ENOENT') {
+      return
+    }
+    logger.debug('failed to clear tailwindcss patcher cache: %s %O', cachePath, err)
+  }
+}
+
 /**
  * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
  * @param opts - 用户定义的选项，可选。
@@ -123,5 +149,21 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
 
   ctx.cache = initializeCache(ctx.cache)
   ctx.twPatcher = twPatcher
+  const refreshTailwindcssPatcher = async (options) => {
+    const previousPatcher = ctx.twPatcher
+    if (options?.clearCache !== false) {
+      await clearTailwindcssPatcherCache(previousPatcher)
+    }
+    invalidateRuntimeClassSet(previousPatcher)
+    const nextPatcher = createTailwindcssPatcherFromContext(ctx)
+    Object.assign(previousPatcher, nextPatcher)
+    ctx.twPatcher = previousPatcher
+    return previousPatcher
+  }
+  ctx.refreshTailwindcssPatcher = refreshTailwindcssPatcher
+  Object.defineProperty(ctx.twPatcher, refreshTailwindcssPatcherSymbol, {
+    value: refreshTailwindcssPatcher,
+    configurable: true,
+  })
   return ctx
 }

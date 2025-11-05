@@ -349,7 +349,7 @@ const fallback = "bg-[#434332] px-[32px]"
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("asset")')
   })
 
-  it('refreshes runtime class set during serve transforms so new classes are hashed immediately', async () => {
+  it('forces runtime refresh for every uni-app-x transform when serving', async () => {
     const runtimeSets = [
       new Set(['text-[#123456]']),
       new Set(['text-[#123456]', 'text-[#234567]']),
@@ -632,5 +632,46 @@ const fallback = "bg-[#434332] px-[32px]"
     const firstCall = currentContext.jsHandler.mock.calls[0] as unknown as [string, Set<string>, CreateJsHandlerOptions] | undefined
     const linkedOptions = firstCall?.[2]
     expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
+  })
+  it('forces runtime refresh for uni-app-x transform even for non-watch build runs', async () => {
+    const runtimeSets = [
+      new Set(['text-[#aaaaaa]']),
+      new Set(['text-[#aaaaaa]', 'text-[#bbbbbb]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    currentContext = createContext({
+      uniAppX: { enabled: true },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    })
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+    expect(postPlugin).toBeTruthy()
+    expect(nvuePlugin).toBeTruthy()
+
+    const config = {
+      command: 'build',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+      root: process.cwd(),
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+    await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
+
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    runtimeIndex = 1
+    await (nvuePlugin.transform as any)?.call(nvuePlugin, '<template></template>', 'App.uvue')
+    // ensureRuntimeClassSet(true) should have been used even though build watch is disabled
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(transformUVueMock).toHaveBeenCalledWith('<template></template>', 'App.uvue', currentContext.jsHandler, runtimeSets[1])
   })
 })

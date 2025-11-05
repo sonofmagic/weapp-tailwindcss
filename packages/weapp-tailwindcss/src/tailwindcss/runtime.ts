@@ -1,8 +1,10 @@
-import type { TailwindcssPatcherLike } from '@/types'
+import type { RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike } from '@/types'
 import { statSync } from 'node:fs'
 import { createDebug } from '@/debug'
 
 const debug = createDebug('[tailwindcss:runtime] ')
+
+export const refreshTailwindcssPatcherSymbol = Symbol.for('weapp-tailwindcss.refreshTailwindcssPatcher')
 
 interface RuntimeClassSetCacheEntry {
   value?: Set<string>
@@ -14,6 +16,7 @@ const runtimeClassSetCache = new WeakMap<TailwindcssPatcherLike, RuntimeClassSet
 
 export interface CollectRuntimeClassSetOptions {
   force?: boolean
+  skipRefresh?: boolean
 }
 
 function getCacheEntry(twPatcher: TailwindcssPatcherLike) {
@@ -89,12 +92,60 @@ function tryGetRuntimeClassSetSync(twPatcher: TailwindcssPatcherLike) {
   }
 }
 
+async function mergeContentTokensIntoSet(
+  twPatcher: TailwindcssPatcherLike,
+  target: Set<string>,
+) {
+  if (typeof twPatcher.collectContentTokens !== 'function') {
+    return
+  }
+
+  try {
+    const report = await twPatcher.collectContentTokens()
+    const entries = report?.entries
+    if (!Array.isArray(entries)) {
+      return
+    }
+    for (const entry of entries) {
+      const candidate = entry?.rawCandidate
+      if (typeof candidate === 'string' && candidate.length > 0) {
+        target.add(candidate)
+      }
+    }
+  }
+  catch (error) {
+    debug('collectContentTokens() failed, continuing without merged tokens: %O', error)
+  }
+}
+
 async function collectRuntimeClassSet(
   twPatcher: TailwindcssPatcherLike,
   options: CollectRuntimeClassSetOptions = {},
 ): Promise<Set<string>> {
-  const entry = getCacheEntry(twPatcher)
-  const signature = getTailwindConfigSignature(twPatcher)
+  type RefreshablePatcher = TailwindcssPatcherLike & {
+    [refreshTailwindcssPatcherSymbol]?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
+  }
+
+  let activePatcher = twPatcher as RefreshablePatcher
+
+  if (options.force && !options.skipRefresh) {
+    const refresh = activePatcher[refreshTailwindcssPatcherSymbol]
+    if (typeof refresh === 'function') {
+      try {
+        const refreshed = await refresh({ clearCache: true })
+        if (refreshed) {
+          activePatcher = refreshed as RefreshablePatcher
+        }
+      }
+      catch (error) {
+        debug('refreshTailwindcssPatcher failed, continuing with existing patcher: %O', error)
+      }
+    }
+  }
+
+  const entry = getCacheEntry(activePatcher)
+  const signature = getTailwindConfigSignature(activePatcher)
+  const shouldAugmentWithTokens = options.force || !entry.value
 
   if (!options.force) {
     if (entry.value && entry.signature === signature) {
@@ -109,13 +160,13 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
-    const syncSet = tryGetRuntimeClassSetSync(twPatcher)
+    const syncSet = tryGetRuntimeClassSetSync(activePatcher)
     if (syncSet) {
       return syncSet
     }
 
     try {
-      const result = await twPatcher.extract({ write: false })
+      const result = await activePatcher.extract({ write: false })
       if (result?.classSet) {
         return result.classSet
       }
@@ -125,7 +176,7 @@ async function collectRuntimeClassSet(
     }
 
     try {
-      const fallbackSet = await Promise.resolve(twPatcher.getClassSet())
+      const fallbackSet = await Promise.resolve(activePatcher.getClassSet())
       if (fallbackSet) {
         return fallbackSet
       }
@@ -142,6 +193,9 @@ async function collectRuntimeClassSet(
 
   try {
     const resolved = await task
+    if (shouldAugmentWithTokens) {
+      await mergeContentTokensIntoSet(activePatcher, resolved)
+    }
     entry.value = resolved
     entry.promise = undefined
     entry.signature = signature

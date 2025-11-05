@@ -127,7 +127,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     mainCssChunkMatcher,
     appType,
     cache,
-    twPatcher,
+    twPatcher: initialTwPatcher,
+    refreshTailwindcssPatcher,
     uniAppX,
     disabledDefaultTemplateHandler,
   } = opts
@@ -137,19 +138,40 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
 
-  const patchPromise = createTailwindPatchPromise(twPatcher)
+  let twPatcher = initialTwPatcher
+  let patchPromise = createTailwindPatchPromise(twPatcher)
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined
   let resolvedConfig: ResolvedConfig | undefined
 
+  async function refreshRuntimeState(force: boolean) {
+    if (!force) {
+      return
+    }
+    await patchPromise
+    if (typeof refreshTailwindcssPatcher === 'function') {
+      const next = await refreshTailwindcssPatcher({ clearCache: true })
+      if (next !== twPatcher) {
+        twPatcher = next
+      }
+    }
+    patchPromise = createTailwindPatchPromise(twPatcher)
+    runtimeSet = undefined
+    runtimeSetPromise = undefined
+  }
+
   async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
+    await refreshRuntimeState(force)
     await patchPromise
     if (!force && runtimeSet) {
       return runtimeSet
     }
 
     if (force || !runtimeSetPromise) {
-      const task = collectRuntimeClassSet(twPatcher, { force: force || !runtimeSet })
+      const task = collectRuntimeClassSet(twPatcher, {
+        force: force || !runtimeSet,
+        skipRefresh: force,
+      })
       runtimeSetPromise = task
     }
 
@@ -434,10 +456,11 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           }
           const isServeCommand = resolvedConfig?.command === 'serve'
           const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
-          const shouldForceRefresh = isServeCommand || isWatchBuild
+          const isNonWatchBuild = resolvedConfig?.command === 'build' && !resolvedConfig.build?.watch
+          const shouldForceRefresh = isServeCommand || isWatchBuild || isNonWatchBuild
           let currentRuntimeSet: Set<string>
           if (shouldForceRefresh) {
-            // Refresh runtime class set before each dev transform so hot-added classes hash correctly
+            // Refresh runtime class set whenever hot updates or repeated uni-app-x builds are running
             currentRuntimeSet = await ensureRuntimeClassSet(true)
           }
           else {
