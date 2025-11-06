@@ -133,8 +133,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       weapp-tailwindcss:
-        specifier: ^4.7.4
-        version: 4.7.4(tailwindcss@4.1.16)
+        specifier: ^4.7.5
+        version: 4.7.5(tailwindcss@4.1.16)
       webpack:
         specifier: 5.101.3
         version: 5.101.3(@swc/core@1.3.96)
@@ -6866,8 +6866,8 @@ packages:
     resolution: {integrity: sha512-gq/ffX97Wuv+hNDX0vbHB04S2nQV2IZ6tACM5nq7xECWcQ2zS2TLp5gQr+TXntGE4dFUrpHlWrw85A2YSA/qFw==}
     hasBin: true
 
-  weapp-tailwindcss@4.7.4:
-    resolution: {integrity: sha512-3QwwF9kr1byT6OfUkIL+vY1Ehehr/1JIkmUDChYRRfyTLC2OU2a6KNXR+/ty8UjPvf5FljZM3MyQcXEp+6SJDg==}
+  weapp-tailwindcss@4.7.5:
+    resolution: {integrity: sha512-b3NcnluAV8fsG3KxLgmuckPovl1+CsPw3n5jWKSTkjMwNqC6M1JiCA+PPqcwBqoSpkxwk+m0Sk80vCjVRw1qng==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -14678,7 +14678,7 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.7.4(tailwindcss@4.1.16):
+  weapp-tailwindcss@4.7.5(tailwindcss@4.1.16):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
