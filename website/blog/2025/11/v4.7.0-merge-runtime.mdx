@@ -15,31 +15,167 @@ tags:
 
 最近我一直在思考 weapp-tailwindcss 的未来，以至于彻夜难眠。
 
-为什么? 因为之前有一个问题，`tailwind-merge` / `class-variance-authority` / `tailwind-variants` 没有什么很好的办法在小程序里使用。它们代表着 tailwind 的“运行时表达力”，而我们多年来积累的方案几乎全部寄托在编译阶段。
+## 巨大的阻碍
 
-因为 `weapp-tailwindcss` 在编译时，就已经把 `wxml` / `js` / `wxss` 中提取到的 tailwindcss 字符串 token 给转译了，我们以“提前落盘、提前逃逸”来确保上线安全。
+为什么? 因为之前有一个很重要的问题，阻碍了 weapp-tailwindcss 发展的脚步
 
-而 `tailwind-merge` / `class-variance-authority` / `tailwind-variants` 这一些工具的合并操作，都在运行时进行。
+那就是 `tailwind-merge` / `class-variance-authority` / `tailwind-variants` 这些及其重要的原子化样式基础包，没有什么很好的办法在小程序里使用。
 
-完全兼容不了啊!
+为什么无法在小程序里使用 ?
 
-当社区开始越来越多地讨论“class-variance-authority 要怎么落地”时，我意识到问题已经不是“某个工具不支持”那么简单，而是整个生态在呼唤新的联动方式：编译期的确定性和运行时的灵活性必须重新组合。
+核心原因是，小程序 wxml 类名中，不允许很多特殊字符串，比如 !,[, ],# 等字符，
 
-## 思路一
+所以 weapp-tailwindcss 根据这个设计，在编译时，对 `tailwindcss` 类名进行转换，从而达到了兼容市面上众多小程序的编译插件。
 
-最直观的念头，是不是只要为 `tailwind-merge` 写一个 weapp-tailwindcss 专用插件就好了？我把 tailwind-merge 的内部冲突表导出，尝试用自定义 escape hook 覆盖那些非法字符；甚至写了一个半成品的 `createTailwindMerge` 变体，希望能在编译阶段就生成完全符合小程序命名规则的类名。
+比如用户写的是 `bg-[#123456]` 被 weapp-tailwindcss 捕获到了之后，在编译的时候，就会同时把 wxml,js,wxss 里面的这个类名转换成小程序可以接受的 `bg-_h123456_`
 
-可现实很快给了我当头棒喝：`tailwind-merge` 对运行时字符串的依赖极强，我们要么重写它的核心，要么就得 fork 一个全新的包。那段时间我对比了几个版本，也向社区里的朋友请教过“在 merge 之前做 escape 是否可行”，得到的答案都指向同一个结论——当工具的设计哲学不同（静态 vs 动态），单靠插件无法把它们揉成一个方案。
+而 `tailwind-merge` 它们都是在 运行时 进行计算的，那时候它们接收到的，已经是 `bg-_h123456_`这种转译之后的字符串，自然合并不了，导致到处出错。
 
-结束那周的实验记录时，我在 README 旁边写下了两个字：失败。
+{/* 编译阶段的时机早于 运行时，所以 `tailwind-merge` 接收到的都是一些转译过的字符串， */}
 
-## 思路二
+所以，当我的用户们一直在讨论 `tailwind-merge` 怎么落地时，我意识到问题已经不是“某个工具不支持”那么简单，而是整个生态在呼唤新的联动方式：编译期的确定性和运行时的灵活性必须重新组合
 
-第二条路看起来更务实：沿用我们熟悉的编译期管线，给 `twMerge` / `twJoin` / `cva` 等函数做“豁免处理”。只要在编译时忽略它们内部的转义，运行时拿到的就是完整的 class 字符串，那 tailwind-merge 不就能工作了吗？
+于是我做了非常多的尝试！所以给大家展示一下我的受苦之路吧！
 
-于是我编写了 `@weapp-tailwindcss/merge` 的 v1 版本。
+## 1. tailwind-merge plugin / createTailwindMerge
 
-表面上看这条路是可行的，我们甚至找到了几个 demo 可以跑通，还在内部文档里记录了“如何声明 ignoreCallExpressionIdentifiers”的操作指引。然而一旦项目规模变大，问题立刻浮现：这套方案高度依赖 AST 解析和构建工具的配合，我写的插件无法保证运行时得到的类名永远完整。构建链路上的任一环节——Terser、esbuild、rollup 插件甚至手写 Babel 宏——都可能把函数名或模板字符串的标识符压缩重命名，最后留给运行时的是一个残缺的字符串。
+[tailwind-merge 插件文档](https://github.com/dcastil/tailwind-merge/blob/v3.3.1/docs/writing-plugins.md)
+
+最直观的念头，就是给 `tailwind-merge` 写一个 weapp-tailwindcss 专用插件就好了？
+
+于是我开始阅读 `tailwind-merge` 源代码，并尝试使用 `extendTailwindMerge` 和 `createTailwindMerge` 完全创建出一个属于我自己的 `weapp-tailwind-merge` 来
+
+我把 tailwind-merge 的内部冲突表导出，尝试用自定义 escape hook 覆盖那些非法字符；甚至写了一个半成品的 `createTailwindMerge` 变体，希望能在编译阶段就生成完全符合小程序命名规则的类名。
+
+可现实很快给了我当头棒喝：`tailwind-merge` 对运行时字符串的依赖极强，部分字符是强依赖，根本无法替换
+
+```ts
+export const IMPORTANT_MODIFIER = '!' // 小程序不行
+const MODIFIER_SEPARATOR = ':' // 小程序不行
+const MODIFIER_SEPARATOR_LENGTH = MODIFIER_SEPARATOR.length
+```
+
+详见 https://github.com/dcastil/tailwind-merge/blob/v3.3.1/src/lib/parse-class-name.ts
+
+所以这已经不是 `extendTailwindMerge` 和 `createTailwindMerge` 能够解决的问题了，
+
+摆在我面前的，是一条看不到未来的路：我需要重写它的核心，fork 一个全新的包，这个成本是巨大的。
+
+## 2. 编译时转译白名单
+
+第二条路看起来更务实：沿用我们熟悉的编译期管线，给 `twMerge` / `twJoin` / `cva` 等函数做“豁免处理”。
+
+只要在编译时忽略它们内部的转义，运行时拿到的就是完整的 class 字符串，那 tailwind-merge 不就能工作了吗？
+
+然后我再包装一下 `twMerge` 函数，让它获取最后的结果的时候 escape 不就行了吗？
+
+大概长这样:
+
+```ts
+export function cn(...inputs: ClassValue[]) {
+  const result = twMerge(inputs)
+  return escape(result)
+}
+```
+
+然后我让 `cn` 里面的字面量和模板字符串跳过转义不就行了吗?
+
+```ts
+// 里面的不转译
+// 第一个是字符串，第二个是模板字符串，它们对应的 ast 类型不同，需要分开处理
+cn('bg-[#123456]',`bg-[#987654]`)
+```
+
+看上去运行良好，然而情况正在变得越来越复杂:
+
+变量引用来了
+
+```ts
+const a = 'bg-[#123456]';
+cn(a,"xx","yy")
+```
+
+变量引用 + 表达式来了
+
+```ts
+const a = 'bg-[#123456]' + ' bb' + ` text-[#123456]`;
+cn(a,"xx","yy")
+```
+
+变量引用链路 + 表达式 + 模板插值来了
+
+```ts
+const b = 'after:xx';const a = 'bg-[#123456]' + ' bb' + `${b} text-[#123456]`;
+cn(a,"xx","yy")
+```
+
+哈哈，这很简单，只是在考验我操作 ast 进行预编译的水平而已！
+
+吃我一拳: `NodePathWalker` + `scope.getBinding` + `WeakMap`， 哈哈轻松消灭！
+
+于是我以为这条思路可行，编写了 `@weapp-tailwindcss/merge` 的 v1 版本。
+
+直到用户提交了新的 case !
+
+### 新的挑战
+
+什么，怎么还有你们几个狗屎！
+
+```js
+// shared2.js
+export const ddd = 'bg-[#123456]';
+
+const a = 'bg-[#123456]';
+
+export {
+  a as default
+}
+```
+
+```js
+// shared.js
+export const a = 'bg-[#123456]';
+
+const b = 'bg-[#123456]';
+
+const c = 'bg-[#123456]';
+
+const d = 'bg-[#123456]';
+
+export default d
+
+export {
+  b
+}
+
+export {
+  c as xaxaxaxa,
+}
+
+export * from './shared2'
+```
+
+```js
+// main.js
+import cc, { a as bb, b as aa } from './shared'
+import * as shared from './shared'
+
+cn(bb, cc, aa, shared.default, shared.a, "[]", "()")
+```
+
+.... 我吐了，这是要我自己去实现一个 webpack / rollup 打包器嘛？ 有点搞不定啊！
+
+不过困难怕什么，我要迎男而上！于是我仿照了 `rollup` 的思路，收集了每个模块的 `import` / `export` 这里面大量的 ast 节点，并构建出了一个 `ModuleGraph`
+
+源代码见: 
+
+`https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/NodePathWalker.ts`
+
+`https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/ModuleGraph.ts`
+
+另外表面上看这条路是可行的，我们甚至找到了几个 demo 可以跑通，还在内部文档里记录了“如何声明 ignoreCallExpressionIdentifiers”的操作指引。然而一旦项目规模变大，问题立刻浮现：
+
+这套方案高度依赖 AST 解析和构建工具的配合，我写的插件无法保证运行时得到的类名永远完整。构建链路上的任一环节——Terser、esbuild、rollup 插件甚至手写 Babel 宏——都可能把函数名或模板字符串的标识符压缩重命名，最后留给运行时的是一个残缺的字符串。
 
 那一刻我意识到，编译期黑名单只是在延迟爆炸时间，而不是解除危机。
 
