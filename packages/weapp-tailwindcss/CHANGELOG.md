@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.7.5
+
+### Patch Changes
+
+- [`d69bb5a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d69bb5a6e18ddbd99ec3e62ee9a398fa8f8bf19a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: uni-app-x hmr 0
+
+- [`897c5e6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/897c5e653ddd4b1dceae4466cebc9d954ebd9f1a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 uni-app x 在 watch/hmr 场景下强制刷新 runtime class set 时仍沿用旧 Tailwind patcher 的问题，确保热更新能立即拾取新增的任意类名。
+
+- [`770661f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/770661f7b4fcf71331d558e6ce194ebc82f62fed) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 抽取并复用 Tailwind 运行时刷新逻辑，避免重复 patch 调用并修复热更新测试。
+
 ## 4.7.5-alpha.1
 
 ### Patch Changes
