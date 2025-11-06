@@ -15,7 +15,7 @@ export type {
   UserDefinedOptions,
 }
 
-// UserDefinedPostcssOptions
+// UserDefinedPostcssOptions：用户可配置的 PostCSS 选项
 export type { CssPreflightOptions, IStyleHandlerOptions, ItemOrItemArray }
 
 export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | 'weapp-vite'
@@ -29,8 +29,7 @@ export interface JsHandlerResult {
   map?: SourceMap
   error?: ParseError
   /**
-   * Additional modules transformed because of cross-file analysis.
-   * Keyed by absolute filename.
+   * 因跨文件分析而被转换的额外模块，使用绝对文件路径作为键。
    */
   linked?: Record<string, LinkedJsModuleResult>
 }
@@ -76,17 +75,17 @@ export interface IJsHandlerOptions {
   uniAppX?: boolean
   moduleSpecifierReplacements?: Record<string, string>
   /**
-   * When true, the handler treats the input as a standalone expression instead of a full program.
-   * Useful for template bindings such as `:class="{ 'foo bar': cond }"`.
+   * 为 `true` 时将输入视作独立表达式，而非完整的程序。
+   * 适用于 `:class="{ 'foo bar': cond }"` 等模板绑定场景。
    */
   wrapExpression?: boolean
   /**
-   * Absolute path of the module currently being transformed.
-   * Required when enabling cross-file analysis.
+   * 当前正在转换的模块绝对路径。
+   * 启用跨文件分析时必须提供。
    */
   filename?: string
   /**
-   * Configure cross-file module graph analysis.
+   * 配置跨文件模块图分析行为。
    */
   moduleGraph?: JsModuleGraphOptions
 }
@@ -155,8 +154,8 @@ export type InternalPostcssOptions = Pick<
 >
 
 export interface IBaseWebpackPlugin {
-  // new (options: UserDefinedOptions, appType: AppType): any
-  // constructor(options: UserDefinedOptions, appType: AppType): void
+  // 构造函数签名示例：new (options: UserDefinedOptions, appType: AppType): any
+  // 或 constructor(options: UserDefinedOptions, appType: AppType): void
   options: InternalUserDefinedOptions
   appType?: AppType
 
@@ -176,19 +175,19 @@ export type CreateJsHandlerOptions = Omit<IJsHandlerOptions, 'classNameSet'>
 
 export interface JsModuleGraphOptions {
   /**
-   * Resolve an import specifier to an absolute file path.
+   * 将导入的标识符解析为绝对文件路径。
    */
   resolve: (specifier: string, importer: string) => string | undefined
   /**
-   * Load module source synchronously.
+   * 同步加载模块源码。
    */
   load: (id: string) => string | undefined
   /**
-   * Optional filter to skip modules.
+   * 可选过滤器，用于跳过特定模块。
    */
   filter?: (id: string, specifier: string, importer: string) => boolean
   /**
-   * Maximum traversal depth. Defaults to `Infinity`.
+   * 最大遍历深度，默认无限制（`Infinity`）。
    */
   maxDepth?: number
 }

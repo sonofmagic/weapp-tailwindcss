@@ -49,6 +49,7 @@ async function resolveTailwindConfig(config: Options['config'], cwd: string, sou
   return cloneConfig(resolved as Config)
 }
 
+// 辅助函数 isObject（当前未启用）:
 // function isObject(obj: any): obj is object {
 //   return typeof obj === 'object' && obj !== null
 // }

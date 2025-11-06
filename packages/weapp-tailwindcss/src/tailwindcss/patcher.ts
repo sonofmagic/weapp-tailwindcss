@@ -208,7 +208,7 @@ function createDefaultResolvePaths(basedir?: string) {
     paths.add(candidate)
   }
   catch {
-    // Fallback for environments where fileURLToPath is not applicable
+    // 在无法使用 fileURLToPath 的环境下退回到原始 URL
     paths.add(import.meta.url)
   }
   if (paths.size === 0) {

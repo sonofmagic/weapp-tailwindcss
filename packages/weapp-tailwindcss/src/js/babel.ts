@@ -170,7 +170,7 @@ export function processUpdatedSource(
   const ms = new MagicString(rawSource)
   const { targetPaths, jsTokenUpdater, ignoredPaths } = analysis
 
-  // Build replacement tokens for every string-like node collected earlier.
+  // 为前面收集到的所有字符串节点生成替换 token。
   const replacementTokens: JsToken[] = []
   for (const path of targetPaths) {
     if (ignoredPaths.has(path)) {

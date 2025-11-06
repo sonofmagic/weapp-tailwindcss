@@ -136,11 +136,8 @@ export function hbuilderx(options: HBuilderXOptions = {}) {
   )
 }
 
-// export interface TaroOptions {
-//   rem2rpx?: UserDefinedOptions['rem2rpx']
-//   rawOptions?: UserDefinedOptions
-// }
+// 预留：TaroOptions 接口
+//  // rem2rpx?: UserDefinedOptions['rem2rpx']
+//  // rawOptions?: UserDefinedOptions
 
-// export function taro() {
-
-// }
+// 预留：taro 预设函数

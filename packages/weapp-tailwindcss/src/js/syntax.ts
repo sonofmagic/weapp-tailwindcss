@@ -6,25 +6,25 @@ const CJS_RE
 
 const COMMENT_RE = /\/\*.+?\*\/|\/\/.*(?=[nr])/g
 
-// const BUILTIN_EXTENSIONS = new Set(['.mjs', '.cjs', '.node', '.wasm'])
+// const BUILTIN_EXTENSIONS = new Set(['.mjs', '.cjs', '.node', '.wasm']) // 可能的内置扩展名
 
 /**
- * Options for detecting syntax within a code string.
+ * 检测代码字符串语法的可选项。
  */
 export interface DetectSyntaxOptions {
   /**
-   * Indicates whether comments should be stripped from the code before syntax checking.
+   * 是否在检测语法前移除代码中的注释。
    * @default false
    */
   stripComments?: boolean
 }
 
 /**
- * Determines if a given code string contains ECMAScript module syntax.
+ * 判断代码字符串是否包含 ECMAScript Module 语法。
  *
- * @param {string} code - The source code to analyse.
- * @param {DetectSyntaxOptions} opts - See {@link DetectSyntaxOptions}.
- * @returns {boolean} `true` if the code contains ESM syntax, otherwise `false`.
+ * @param {string} code - 需要分析的源代码。
+ * @param {DetectSyntaxOptions} opts - 详见 {@link DetectSyntaxOptions}。
+ * @returns {boolean} 如果包含 ESM 语法返回 `true`，否则返回 `false`。
  */
 export function hasESMSyntax(
   code: string,
@@ -37,11 +37,11 @@ export function hasESMSyntax(
 }
 
 /**
- * Determines if a given string of code contains CommonJS syntax.
+ * 判断代码字符串是否包含 CommonJS 语法。
  *
- * @param {string} code - The source code to analyse.
- * @param {DetectSyntaxOptions} opts - See {@link DetectSyntaxOptions}.
- * @returns {boolean} `true` if the code contains CommonJS syntax, `false` otherwise.
+ * @param {string} code - 需要分析的源代码。
+ * @param {DetectSyntaxOptions} opts - 详见 {@link DetectSyntaxOptions}。
+ * @returns {boolean} 如果包含 CommonJS 语法则返回 `true`，否则返回 `false`。
  */
 export function hasCJSSyntax(
   code: string,
@@ -54,17 +54,17 @@ export function hasCJSSyntax(
 }
 
 /**
- * Analyses the supplied code to determine if it contains ECMAScript module syntax, CommonJS syntax, or both.
+ * 分析给定代码是否包含 ECMAScript Module 语法、CommonJS 语法或同时包含两者。
  *
- * @param {string} code - The source code to analyse.
- * @param {DetectSyntaxOptions} opts - See {@link DetectSyntaxOptions}.
- * @returns {object} An object indicating the presence of ESM syntax (`hasESM`), CJS syntax (`hasCJS`) and whether both syntaxes are present (`isMixed`).
+ * @param {string} code - 需要分析的源代码。
+ * @param {DetectSyntaxOptions} opts - 详见 {@link DetectSyntaxOptions}。
+ * @returns {object} 返回对象包括 `hasESM`、`hasCJS` 与是否混用的 `isMixed`。
  */
 export function detectSyntax(code: string, opts: DetectSyntaxOptions = {}) {
   if (opts.stripComments) {
     code = code.replace(COMMENT_RE, '')
   }
-  // We strip comments once hence not passing opts down to hasESMSyntax and hasCJSSyntax
+  // 注释已提前去除，因此不再向 hasESMSyntax 和 hasCJSSyntax 传递 strip 配置
   const hasESM = hasESMSyntax(code, {})
   const hasCJS = hasCJSSyntax(code, {})
 

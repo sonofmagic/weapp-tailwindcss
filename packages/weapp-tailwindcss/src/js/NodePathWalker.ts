@@ -47,8 +47,7 @@ export interface ExportAllDeclarationImportToken {
 export type ImportToken = ImportSpecifierImportToken | ImportDefaultSpecifierImportToken | ExportAllDeclarationImportToken
 
 /**
- * Walks bindings that originate from call expressions we care about, collecting
- * any string-like values that must be transformed later on.
+ * 遍历我们关注的调用表达式所关联的绑定，收集后续需要转换的字符串节点。
  */
 export class NodePathWalker {
   public ignoreCallExpressionIdentifiers: (string | RegExp)[]
@@ -128,7 +127,7 @@ export class NodePathWalker {
       return
     }
     this.visited.add(arg)
-    // Resolve identifiers back to their bindings so we can discover nested templates.
+    // 回溯标识符绑定，便于发现嵌套模板
     if (arg.isIdentifier()) {
       const binding = arg.scope.getBinding(arg.node.name)
       if (binding) {

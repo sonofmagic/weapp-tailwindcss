@@ -12,9 +12,9 @@ const srcImportTagsMap: Record<string, string[]> = {
   // audio: ['src', 'poster'],
   // video: ['src', 'poster'],
   // image: ['src'],
-  // https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/01wxs-module.html
+  // 参考：https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/01wxs-module.html
   // wxs: ['src'],
-  // https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/import.html
+  // 参考：https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/import.html
   import: ['src'],
   include: ['src'],
 }
@@ -29,8 +29,8 @@ export interface WxmlDep {
   attrs: Record<string, string>
 }
 
-// https://github.com/fb55/htmlparser2/issues/1541
-// https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html
+// 参考：https://github.com/fb55/htmlparser2/issues/1541
+// 参考：https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html
 export function processWxml(wxml: string | Buffer) {
   const ms = new MagicString(wxml.toString())
   const deps: WxmlDep[] = []

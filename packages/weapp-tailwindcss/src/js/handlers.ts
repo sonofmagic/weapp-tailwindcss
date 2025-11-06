@@ -1,7 +1,7 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions } from '../types'
-// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
+// 参考：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
 import { escapeStringRegexp } from '@weapp-core/regex'
@@ -109,8 +109,8 @@ function extractLiteralValue(
 }
 
 /**
- * Computes the replacement token for a string literal or template element.
- * Returns `undefined` when no mutation is required.
+ * 计算字符串字面量或模板元素的替换 token。
+ * 若无需修改则返回 `undefined`。
  */
 export function replaceHandleValue(
   path: NodePath<StringLiteral | TemplateElement>,

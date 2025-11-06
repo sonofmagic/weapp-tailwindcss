@@ -41,7 +41,7 @@ export function regExpTest(arr: (string | RegExp)[], str: string, options?: { ex
 
 export function noop() { }
 
-// const MAX_ASCII_CHAR_CODE = 127
+// const MAX_ASCII_CHAR_CODE = 127 最大 ASCII 字符码
 
 // export function isAscii(str: string) {
 //   for (let i = 0, strLen = str.length; i < strLen; ++i) {

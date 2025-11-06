@@ -67,24 +67,24 @@ function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
     rule.selectors = next
   }
 }
-// import valueParser from 'postcss-value-parser'
+// 可选依赖：import valueParser from 'postcss-value-parser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
-// tailwindcss@4
+// tailwindcss@4 兼容标记
 const OklabSuffix = 'in oklab'
 
 const logicalPropMap = new Map<string, string>([
-  // margin
+  // margin 方向映射
   ['margin-inline-start', 'margin-left'],
   ['margin-inline-end', 'margin-right'],
   ['margin-block-start', 'margin-top'],
   ['margin-block-end', 'margin-bottom'],
-  // padding
+  // padding 方向映射
   ['padding-inline-start', 'padding-left'],
   ['padding-inline-end', 'padding-right'],
   ['padding-block-start', 'padding-top'],
   ['padding-block-end', 'padding-bottom'],
-  // border
+  // border 方向映射
   ['border-inline-start', 'border-left'],
   ['border-inline-end', 'border-right'],
   ['border-block-start', 'border-top'],

@@ -1,4 +1,4 @@
-// refers link: https://github.com/tailwindlabs/tailwindcss/blob/master/src/lib/regex.js
+// 参考链接：https://github.com/tailwindlabs/tailwindcss/blob/master/src/lib/regex.js
 // eslint-disable-next-line regexp/no-obscure-range
 export const validateFilterRE = /[\w\u00A0-\uFFFF%-?]/
 
@@ -6,14 +6,14 @@ export function isValidSelector(selector = ''): selector is string {
   return validateFilterRE.test(selector)
 }
 
-// export const splitCode = (code: string) => [...new Set(code.split(/\\?[\s'"`;={}]+/g))].filter(isValidSelector)
+// 可选实现：export const splitCode = (code: string) => [...new Set(code.split(/\\?[\s'"`;={}]+/g))].filter(isValidSelector)
 
 export function splitCode(code: string, allowDoubleQuotes = false) {
-  // , onlyWhiteSpace?: boolean
+  // 参数 onlyWhiteSpace?: boolean
   // const regex = onlyWhiteSpace ? /[\s]+/ : /"|[\s]+/
-  // default /\s+/
-  // for vue static node
-  // |class="
+  // 默认使用 /\s+/
+  // 用于处理 Vue 的静态节点
+  // 示例：|class="
   const splitter = allowDoubleQuotes ? /\s+/ : /\s+|"/
   return code.split(splitter).filter(element => isValidSelector(element))
 }

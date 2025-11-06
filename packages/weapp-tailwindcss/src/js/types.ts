@@ -18,8 +18,7 @@ export interface JsTokenMeta {
 //  (JsTokenTemplateElement | JsTokenStringLiteral) &
 
 /**
- * Represents a slice of the original source that must be updated while keeping
- * track of the owning AST path for later filtering.
+ * 表示源代码中需要替换的一段内容，并持有对应 AST Path 以便后续过滤。
  */
 export interface JsToken {
   start: number

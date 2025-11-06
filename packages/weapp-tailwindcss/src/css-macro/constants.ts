@@ -1,7 +1,7 @@
-// https://uniapp.dcloud.net.cn/tutorial/platform.html#%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91
-// %PLATFORM%
+// 参考：https://uniapp.dcloud.net.cn/tutorial/platform.html#%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91
+// %PLATFORM% 条件编译占位符
 export const uniAppPlatform = [
-  // 一般不会用到的
+  // 一般不会用到的枚举项
   'VUE3',
   'UNI-APP-X',
   'uniVersion',
@@ -28,7 +28,7 @@ export const uniAppPlatform = [
   'QUICKAPP-WEBVIEW-HUAWEI',
 ]
 
-// export const staticVariants = {}
+// 预留：staticVariants 配置占位
 export const queryKey = 'weapp-tw-platform'
 
 export function createMediaQuery(value: string) {
@@ -59,6 +59,7 @@ export function ifndef(text: string) {
     end: `#endif`,
   }
 }
+// 示例：
 // uniVersion > 3.9
 // H5 || MP-WEIXIN
 // not screen and (weapp-tw-platform:MP-WEIXIN)

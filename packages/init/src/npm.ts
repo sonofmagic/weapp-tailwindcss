@@ -15,11 +15,11 @@ export function fetchPackage(packageName: string, options?: FetchOptions) {
     .then(({ json }) => {
       return json(`/${packageName}`, opts)
     }) as Promise<{
-      'dist-tags': {
-        latest: string
-      }
-      'versions': Record<string, unknown>
-    }>
+    'dist-tags': {
+      latest: string
+    }
+    'versions': Record<string, unknown>
+  }>
 }
 
 export async function getLatestVersion(packageName: string, options?: FetchOptions) {
@@ -36,7 +36,7 @@ export async function getLatestVersionInRange(packageName: string, versionRange:
   return filteredVersions[filteredVersions.length - 1]
 }
 
-// tailwindcss postcss autoprefixer weapp-tailwindcss
+// 默认需要安装的开发依赖：tailwindcss、postcss、autoprefixer、weapp-tailwindcss
 export const defaultDevDeps = {
   'tailwindcss': '3',
   'postcss': '8',

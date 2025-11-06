@@ -4,7 +4,7 @@ import type { IStyleHandlerOptions } from './types'
 // getDefaultOptions 会根据用户传入的部分配置动态补全剩余字段
 export function getDefaultOptions(options?: Partial<IStyleHandlerOptions>): Partial<IStyleHandlerOptions> {
   return {
-    // https://github.com/postcss/postcss-calc
+    // 参考：https://github.com/postcss/postcss-calc
     cssPresetEnv: {
       features: {
         'cascade-layers': true,

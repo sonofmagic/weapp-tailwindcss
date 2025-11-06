@@ -10,7 +10,7 @@ function getDefaultConfig(): Options {
     directiveParams: ['utilities', 'components'],
     cwd: process.cwd(),
     extensions: ['wxml', 'js', 'ts'],
-    // @import and @use (scss)
+    // 处理 @import 与 @use（SCSS）
     insertAfterAtRulesNames: ['import', 'use'],
     insertAfterComments: ['@import'],
   }

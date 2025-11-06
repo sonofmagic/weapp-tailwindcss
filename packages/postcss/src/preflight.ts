@@ -6,7 +6,7 @@ export type InjectPreflight = () => IPropValue[]
 // createInjectPreflight 会在初始化阶段收集所有需要注入的声明，并返回懒执行函数以便复用结果
 export function createInjectPreflight(options?: CssPreflightOptions): InjectPreflight {
   const result: IPropValue[] = []
-  // if options false ,do no thing
+  // 若配置为 false 则保持原样，不进行处理
   if (options && typeof options === 'object') {
     // 仅当配置为对象时，才将其键值对转换为待注入的样式条目
     const entries = Object.entries(options)

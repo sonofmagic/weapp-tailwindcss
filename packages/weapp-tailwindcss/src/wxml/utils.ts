@@ -65,7 +65,7 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
     }
   }
   catch {
-    // https://github.com/sonofmagic/weapp-tailwindcss/issues/274
+    // 参考：https://github.com/sonofmagic/weapp-tailwindcss/issues/274
     // {{class}}
     return match
   }

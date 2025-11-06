@@ -29,17 +29,17 @@ export const cssVarsV4Nodes = cssVarsV4.map((x) => {
 
 /**
  * 带有子选择器的
- * https://tailwindcss.com/docs/space
+ * 参考：https://tailwindcss.com/docs/space
  * .space-x-4>:not([hidden])~:not([hidden])
  *
- * https://tailwindcss.com/docs/divide-width
+ * 参考：https://tailwindcss.com/docs/divide-width
  * .divide-x>:not([hidden])~:not([hidden])
  *
- * https://tailwindcss.com/docs/divide-color
+ * 参考：https://tailwindcss.com/docs/divide-color
  * .divide-blue-200>:not([hidden])~:not([hidden])
  * :is(.dark .dark\:divide-slate-700)>:not([hidden])~:not([hidden])
  *
- * https://tailwindcss.com/docs/divide-style
+ * 参考：https://tailwindcss.com/docs/divide-style
  * .divide-dashed>:not([hidden])~:not([hidden])
  *
  * 其中小程序里直接写
@@ -138,7 +138,7 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
 // 在通用预处理节点中注入变量、预设声明，并标记上下文状态
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
-  // css vars scope
+  // 标记 CSS 变量作用域
   // node.selector = remakeCombinatorSelector(node.selector, options)
 
   // 变量注入和 preflight

@@ -11,7 +11,7 @@ export interface IGenerateCssOptions {
 }
 
 export async function generateCss(content: string | string[], options: IGenerateCssOptions = {}) {
-  // @tailwind base;@tailwind components;@tailwind utilities;
+  // 默认执行顺序：@tailwind base;@tailwind components;@tailwind utilities;
   const { css, postcssPlugins, twConfig, isContentGlob } = defu(options, {
     css: '@tailwind utilities;',
     postcssPlugins: [],

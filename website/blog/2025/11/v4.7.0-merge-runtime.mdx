@@ -2,7 +2,7 @@
 title: 重新思考 weapp-tailwindcss 的未来
 date: 2025-11-02
 authors: sonofmagic
-description: 从编译期黑名单到运行时自管理，weapp-tailwindcss/merge 的重构思路与未来规划。
+description: 从编译时转译白名单到运行时自管理，weapp-tailwindcss/merge 的重构思路与未来规划。
 tags:
   - merge
   - runtime
@@ -177,11 +177,11 @@ cn(bb, cc, aa, shared.default, shared.a, "[]", "()")
 
 这套方案高度依赖 AST 解析和构建工具的配合，我写的插件无法保证运行时得到的类名永远完整。构建链路上的任一环节——Terser、esbuild、rollup 插件甚至手写 Babel 宏——都可能把函数名或模板字符串的标识符压缩重命名，最后留给运行时的是一个残缺的字符串。
 
-那一刻我意识到，编译期黑名单只是在延迟爆炸时间，而不是解除危机。
+那一刻我意识到，编译时转译白名单只是在延迟爆炸时间，而不是解除危机。
 
 在两条路都走到尽头之后，只剩下一个选择：彻底重构 merge，让逃逸逻辑回归运行时，让编译阶段恢复简单纯粹。
 
-这篇文章算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。也顺手解决了“编译期黑名单 + 手动逃逸”的历史包袱。
+这篇文章算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。也顺手解决了“编译时转译白名单 + 手动逃逸”的历史包袱。
 
 
 ## 为什么要重写 merge？

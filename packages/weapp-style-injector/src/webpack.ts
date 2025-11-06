@@ -100,7 +100,7 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackPluginInstance {
         return
       }
 
-      // webpack < 5 fallback
+      // webpack < 5 的兜底方案
       compilation.hooks.optimizeAssets.tap(WEBPACK_PLUGIN_NAME, (assets: Record<string, unknown>) => {
         for (const [name, assetSource] of Object.entries(assets)) {
           handleAsset(

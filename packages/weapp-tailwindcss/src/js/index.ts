@@ -7,7 +7,7 @@ export {
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
-  // Persist immutable options so repeated invocations only supply per-call overrides.
+  // 保留不可变的默认选项，重复调用时仅传入本次的覆盖项。
   const {
     arbitraryValues,
     escapeMap,

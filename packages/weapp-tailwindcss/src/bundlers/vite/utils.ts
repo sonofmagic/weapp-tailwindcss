@@ -32,7 +32,7 @@ export async function formatPostcssSourceMap(
   const sources = rawMap.sources.map((source) => {
     const cleanSource = cleanUrl(decodeURIComponent(source))
 
-    // postcss virtual files
+    // 处理 PostCSS 虚拟文件路径
     if (cleanSource[0] === '<' && cleanSource.endsWith('>')) {
       return `\0${cleanSource}`
     }

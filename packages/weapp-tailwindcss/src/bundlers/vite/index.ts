@@ -391,6 +391,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   ]
   if (uniAppX) {
     /**
+     * 参考：
      * https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/js/css.ts#L40
      * https://github.com/dcloudio/uni-app/tree/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-nvue-styler
      * https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/android/css.ts#L31
@@ -404,7 +405,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             await runtimeState.patchPromise
             const { query } = parseVueRequest(id)
             if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
-            // uvue only support classname selector
+            // uvue 仅支持 className 选择器
               const postcssResult = await styleHandler(code, {
                 isMainChunk: mainCssChunkMatcher(id, appType),
                 postcssOptions: {
@@ -413,18 +414,16 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                     map: {
                       inline: false,
                       annotation: false,
-                      // postcss may return virtual files
-                      // we cannot obtain content of them, so this needs to be enabled
+                      // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
                       sourcesContent: true,
-                    // when a previous preprocessor map is provided, duplicates may appear in `postcssResult.map.sources`
+                    // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
                     },
                   },
                 },
               })
               const rawPostcssMap = postcssResult.map.toJSON()
               const postcssMap = await formatPostcssSourceMap(
-              // version property of rawPostcssMap is declared as string
-              // but actually it is a number
+              // rawPostcssMap.version 类型声明为字符串，实际需要数值
                 rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
                 cleanUrl(id),
               )
@@ -453,14 +452,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
           const isNonWatchBuild = resolvedConfig?.command === 'build' && !resolvedConfig.build?.watch
           const shouldForceRefresh = isServeCommand || isWatchBuild || isNonWatchBuild
-          let currentRuntimeSet: Set<string>
-          if (shouldForceRefresh) {
-            // Refresh runtime class set whenever hot updates or repeated uni-app-x builds are running
-            currentRuntimeSet = await ensureRuntimeClassSet(true)
-          }
-          else {
-            currentRuntimeSet = await ensureRuntimeClassSet()
-          }
+          const currentRuntimeSet: Set<string> = shouldForceRefresh
+            ? await ensureRuntimeClassSet(true) // 热更新或循环构建时强制刷新运行时类集
+            : await ensureRuntimeClassSet()
           const extraOptions = customAttributesEntities.length > 0 || disabledDefaultTemplateHandler
             ? {
                 customAttributesEntities,
@@ -479,7 +473,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           if (!/\.(?:uvue|nvue)$/.test(ctx.file)) {
             return
           }
-          // Hot-reload newly introduced classes without waiting for full rebuild
+          // 热重载新增类名，无需等待完整重建
           await ensureRuntimeClassSet(true)
         },
         async watchChange(id) {
@@ -489,7 +483,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
             return
           }
-          // Refresh runtime class set for incremental rebuilds triggered by `vite build --watch`
+          // 针对 `vite build --watch` 的增量构建刷新运行时类集
           await ensureRuntimeClassSet(true)
         },
       },

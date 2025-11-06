@@ -8,7 +8,7 @@ export interface ThemeTransitionPluginOptions {
     ceiling?: string | number
     floor?: string | number
   }
-  // darkSelector?: string
+  // 暂留：darkSelector?: string
   baseCss?: CSSRuleObject
   darkMode?: Config['darkMode']
 }
@@ -17,10 +17,10 @@ type DeepRequired<T> = Required<{
   [K in keyof T]: T[K] extends Required<T[K]> ? T[K] : DeepRequired<T[K]>
 }>
 
-// https://github.com/tailwindlabs/tailwindcss/blob/557ed8ccecccf703296c186b6e996edf9933e1b7/packages/tailwindcss/src/compat/plugin-api.ts#L28
-// https://github.com/tailwindlabs/tailwindcss/blob/557ed8ccecccf703296c186b6e996edf9933e1b7/packages/tailwindcss/src/compat/plugin-api.ts#L92
-// https://github.com/tailwindlabs/tailwindcss/tree/main
-// https://github.com/tailwindlabs/tailwindcss/blob/557ed8ccecccf703296c186b6e996edf9933e1b7/packages/tailwindcss/src/compat/dark-mode.ts#L4
+// 参考：https://github.com/tailwindlabs/tailwindcss/blob/557ed8ccecccf703296c186b6e996edf9933e1b7/packages/tailwindcss/src/compat/plugin-api.ts#L28
+// 参考：https://github.com/tailwindlabs/tailwindcss/blob/557ed8ccecccf703296c186b6e996edf9933e1b7/packages/tailwindcss/src/compat/plugin-api.ts#L92
+// 参考：https://github.com/tailwindlabs/tailwindcss/tree/main
+// 参考：https://github.com/tailwindlabs/tailwindcss/blob/557ed8ccecccf703296c186b6e996edf9933e1b7/packages/tailwindcss/src/compat/dark-mode.ts#L4
 export function themeTransitionPlugin(themeTransitionPluginOptions?: ThemeTransitionPluginOptions) {
   const { baseCss, zIndex, darkMode: specDarkMode } = defu<
     DeepRequired<ThemeTransitionPluginOptions>,
@@ -102,7 +102,7 @@ export function themeTransitionPlugin(themeTransitionPluginOptions?: ThemeTransi
         },
       }
     }
-    // || mode === 'variant'
+    // 或者 mode === 'variant'
 
     addBase(
       rule,

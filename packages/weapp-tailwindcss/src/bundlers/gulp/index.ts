@@ -77,7 +77,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       }
     }
     catch {
-      // fall through to extension-based lookup
+      // 继续尝试按扩展名补全的逻辑
     }
 
     if (!path.extname(base)) {

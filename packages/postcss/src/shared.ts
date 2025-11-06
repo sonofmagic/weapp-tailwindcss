@@ -2,7 +2,7 @@
 import type { InternalCssSelectorReplacerOptions } from './types'
 import { escape, MappingChars2String } from '@weapp-core/escape'
 // css 中，要多加一个 '\' 来转义
-// for raw css selector
+// 用于原始 CSS 选择器的实现
 // export function cssSelectorReplacer(selector: string, escapeEntries = MappingChars2StringEntries) {
 //   return escape(selector, true, escapeEntries).replace(/\\2c /g, dic[','])
 // }

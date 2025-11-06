@@ -26,17 +26,17 @@ export type { FallbackCoordinatesResolver, ToggleThemeCapabilities, ToggleThemeE
 
 export interface UseToggleThemeOptions {
   /**
-   * isDark.value = !isDark.value
+   * 切换暗色状态：isDark.value = !isDark.value
    */
   toggle?: () => void | Promise<void>
   /**
-   * isDark.value
+   * 当前暗色状态：isDark.value
    */
   isCurrentDark?: () => boolean
   viewTransition?: {
     before?: () => void | Promise<void>
     /**
-     * await nextTick()
+     * 在下一帧执行：await nextTick()
      */
     after?: () => void | Promise<void>
     callback?: () => void | Promise<void>
@@ -170,4 +170,4 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
     environment,
   }
 }
-// https://github.com/antfu-collective/icones/blob/0869721765eeae895cc583b3a2d07fc4a35d70c8/src/components/DarkSwitcher.vue#L27
+// 参考实现：https://github.com/antfu-collective/icones/blob/0869721765eeae895cc583b3a2d07fc4a35d70c8/src/components/DarkSwitcher.vue#L27

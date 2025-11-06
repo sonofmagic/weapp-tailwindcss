@@ -110,7 +110,7 @@ function detectTailwindInfo(): TailwindInfo | undefined {
       }
     }
     catch {
-      // ignore resolution errors and continue with other roots
+      // 忽略解析失败，继续尝试其他路径
     }
   }
 
@@ -124,7 +124,7 @@ function detectTailwindInfo(): TailwindInfo | undefined {
     }
   }
   catch {
-    // ignore fallback failure
+    // 忽略兜底分支失败的情况
   }
 
   return undefined
@@ -179,7 +179,7 @@ function copyFileIfChanged(source: string, target: string): boolean {
       }
     }
     catch {
-      // if reading target fails we will attempt to overwrite it
+      // 如果读取目标文件失败则直接覆盖
     }
   }
 
@@ -215,7 +215,7 @@ function main() {
       return path.resolve(__dirname, '../dist')
     }
 
-    // Fallback for the ESM bundle or direct TS execution
+    // 针对 ESM 构建或直接执行 TS 的兜底方案
     // eslint-disable-next-line no-new-func
     const getImportMetaUrl = new Function('return import.meta.url') as () => string
     return fileURLToPath(new URL('../dist/', getImportMetaUrl()))

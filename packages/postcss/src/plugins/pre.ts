@@ -90,9 +90,9 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
           atRule.remove()
         }
       }
-      // https://github.com/sonofmagic/weapp-tailwindcss/issues/631
-      // https://github.com/sonofmagic/weapp-tailwindcss/issues/632
-      // https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value/color-mix
+      // 参考：https://github.com/sonofmagic/weapp-tailwindcss/issues/631
+      // 参考：https://github.com/sonofmagic/weapp-tailwindcss/issues/632
+      // 参考：https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value/color-mix
       else if (atRule.name === 'supports') {
         if (/color-mix/.test(atRule.params)) {
           atRule.remove()
@@ -109,11 +109,11 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
     let layerProperties: AtRule
     p.Once = (root) => {
       root.walkAtRules((atRule) => {
-        // Tailwindcss V4.1.2
+        // 针对 Tailwindcss V4.1.2 的处理
         if (atRule.name === 'layer') {
           if (atRule.params === 'properties') {
             if (atRule.nodes === undefined || atRule.nodes?.length === 0) {
-              layerProperties = atRule// .remove()
+              layerProperties = atRule // 暂存空 properties 节
             }
             else if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
               if (layerProperties) {
@@ -129,7 +129,7 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
             atRule.replaceWith(atRule.nodes)
           }
         }
-        // Tailwindcss V4.1.1
+        // 针对 Tailwindcss V4.1.1 的处理
         else if (isTailwindcssV4ModernCheck(atRule)) {
           if (atRule.first?.type === 'atrule' && atRule.first.name === 'layer') {
             atRule.replaceWith(atRule.first.nodes)

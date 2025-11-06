@@ -19,7 +19,7 @@ export interface IOptions {
 
 // postcssHtmlTransform 是按平台定制的选择器重写插件
 const postcssHtmlTransform: PluginCreator<IOptions> = (opts: IOptions = {}) => {
-  // https://docs.taro.zone/docs/envs#processenvtaro_env
+  // 参考：https://docs.taro.zone/docs/envs#processenvtaro_env
   const options = defu(opts, {
     platform: process.env.TARO_ENV,
   })
@@ -40,7 +40,7 @@ const postcssHtmlTransform: PluginCreator<IOptions> = (opts: IOptions = {}) => {
       break
     }
     default: {
-      // mini-program
+      // 小程序平台默认处理
       const selector = tags2Rgx(htmlTags)
       walkRules = (rule: Rule) => {
         if (options.removeUniversal && /(?:^| )\*(?![=/*])/.test(rule.selector)) {

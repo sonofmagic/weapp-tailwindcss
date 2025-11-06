@@ -193,7 +193,7 @@ export function resolveTailwindcssBasedir(basedir?: string) {
       if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
         logger.debug('failed to resolve package json for %s', packageName)
       }
-      // ignore
+      // 忽略解析失败，继续走兜底逻辑
     }
   }
 

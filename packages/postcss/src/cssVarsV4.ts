@@ -1,5 +1,5 @@
 // Tailwind CSS v4 默认 CSS 变量映射，参考官方 utilities 定义
-// https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts
+// 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts
 
 // property 函数用于快速构建变量描述对象，便于后续批量注入
 function property(ident: string, initialValue?: string, _syntax?: string) {
@@ -11,35 +11,35 @@ function property(ident: string, initialValue?: string, _syntax?: string) {
 
 const nullShadow = '0 0 #0000'
 
-// atRoot
+// atRoot 根级节点变量
 const nodes = [
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1137
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1137
   property('--tw-border-spacing-x', '0', '<length>'),
   property('--tw-border-spacing-y', '0', '<length>'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1205
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1205
   property('--tw-translate-x', '0'),
   property('--tw-translate-y', '0'),
   property('--tw-translate-z', '0'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1285
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1285
   property('--tw-scale-x', '1'),
   property('--tw-scale-y', '1'),
   property('--tw-scale-z', '1'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1424
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1424
   property('--tw-rotate-x'),
   property('--tw-rotate-y'),
   property('--tw-rotate-z'),
   property('--tw-skew-x'),
   property('--tw-skew-y'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1641C13-L1641C88
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1641C13-L1641C88
   property('--tw-pan-x'),
   property('--tw-pan-y'),
   property('--tw-pinch-zoom'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1688C38-L1688C95
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1688C38-L1688C95
   property('--tw-scroll-snap-strictness', 'proximity', '*'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1688C38-L1688C95
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1688C38-L1688C95
   property('--tw-space-x-reverse', '0'),
   property('--tw-space-y-reverse', '0'),
-  // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L2169C22-L2169C60
+  // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L2169C22-L2169C60
   property('--tw-border-style', 'solid'),
   property('--tw-divide-x-reverse', '0'),
   property('--tw-divide-y-reverse', '0'),
@@ -127,7 +127,7 @@ const nodes = [
   property('--tw-inset-ring-color'),
   property('--tw-inset-ring-shadow', nullShadow),
 
-  // Legacy
+  // Legacy 旧版变量兼容
   property('--tw-ring-inset'),
   property('--tw-ring-offset-width', '0px', '<length>'),
   property('--tw-ring-offset-color', '#fff'),

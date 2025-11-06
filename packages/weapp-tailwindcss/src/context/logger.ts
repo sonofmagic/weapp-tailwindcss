@@ -1,6 +1,6 @@
 import { logger } from '@weapp-tailwindcss/logger'
 
-// https://www.npmjs.com/package/consola
+// 参考：https://www.npmjs.com/package/consola
 const loggerLevelMap: Record<'info' | 'warn' | 'error' | 'silent', number> = {
   error: 0,
   warn: 1,

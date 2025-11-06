@@ -57,12 +57,12 @@ export function getDefaultOptions(): UserDefinedOptions {
       if (file.includes('node_modules')) {
         return false
       }
-      // remove jsx tsx ts case
+      // 排除 jsx、tsx、ts 等情况
       return JS_FILE_PATTERN.test(file)
     },
     mainCssChunkMatcher: createMainCssChunkMatcher(),
     wxsMatcher: alwaysFalse,
-    // https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
+    // 参考：https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
     cssPreflight: {
       'box-sizing': 'border-box',
       'border-width': '0',
