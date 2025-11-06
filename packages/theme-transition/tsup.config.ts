@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/tailwindcss.ts'], // , 'src/cli.ts'],
+  entry: ['src/index.ts', 'src/tailwindcss.ts'],
   shims: true,
   format: ['cjs', 'esm'],
   clean: true,

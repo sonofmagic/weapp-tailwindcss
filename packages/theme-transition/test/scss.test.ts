@@ -45,7 +45,7 @@ describe('scss', () => {
   // it('sassTrue', () => {
   //   const sassFile = path.join(__dirname, 'test.scss')
   //   sassTrue.runSass({ describe, it }, sassFile, {
-  //     silenceDeprecations: ['legacy-js-api'], // , 'color-4-api'],
+  //     silenceDeprecations: ['legacy-js-api'],
   //     importers: {
   //       findFileUrl(url: string) {
   //         const p = path.resolve(__dirname, url)

@@ -13,7 +13,6 @@ export default defineConfig({
         replacement: path.resolve(__dirname, './test'),
       },
     ],
-    // ,
     include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     coverage: {
       enabled: true,

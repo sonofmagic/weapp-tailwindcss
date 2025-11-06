@@ -5,7 +5,7 @@ export default defineConfig({
     index: 'src/index.ts',
     extractors: 'src/extractors/index.ts',
     node: 'src/node.ts',
-  }, // , 'src/cli.ts'],
+  },
   shims: true,
   format: ['cjs', 'esm'],
   clean: true,

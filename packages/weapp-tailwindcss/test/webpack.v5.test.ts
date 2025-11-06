@@ -474,7 +474,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
               //     }
               //   }
               // }
-            ], // , 'postcss-loader'] // 'style-loader', // , 'postcss-loader']
+            ],
           },
         ],
       },
@@ -578,7 +578,6 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
       },
       context,
       plugins: [new MiniCssExtractPlugin()],
-      //
       module: {
         rules: [
           {
@@ -603,7 +602,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
                   },
                 },
               },
-            ], // , 'css-loader', 'postcss-loader'],
+            ],
           },
         ],
       },

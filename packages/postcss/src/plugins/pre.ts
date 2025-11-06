@@ -24,7 +24,6 @@ function isAtMediaHover(atRule: AtRule) {
 //   }
 // }
 // (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b))))
-// const TAILWIND_V4_MODERN_REGEX = //
 
 // @layer properties {
 //   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {

@@ -41,8 +41,8 @@ describe('extractSource', () => {
     const sources = extractSource('a b {{c}} d {{e}} f')
     expect(sources.length).toBe(2)
     expect(sources).toEqual<ExtractSourceToken[]>([
-      { start: 4, end: 9, raw: 'c' }, // nextConcatenated: false, prevConcatenated: false },
-      { start: 12, end: 17, raw: 'e' }, // , nextConcatenated: false, prevConcatenated: false }
+      { start: 4, end: 9, raw: 'c' },
+      { start: 12, end: 17, raw: 'e' },
     ])
   })
 
@@ -50,8 +50,8 @@ describe('extractSource', () => {
     const sources = extractSource('a b{{c}}d{{e}}f')
     expect(sources.length).toBe(2)
     expect(sources).toEqual<ExtractSourceToken[]>([
-      { start: 3, end: 8, raw: 'c' }, // , nextConcatenated: true, prevConcatenated: true },
-      { start: 9, end: 14, raw: 'e' }, // , nextConcatenated: true, prevConcatenated: true }
+      { start: 3, end: 8, raw: 'c' },
+      { start: 9, end: 14, raw: 'e' },
     ])
   })
 })

@@ -2,7 +2,7 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig([
   {
-    entry: ['src/index.ts'], // , 'src/cli.ts'],
+    entry: ['src/index.ts'],
     shims: true,
     format: ['cjs', 'esm'],
     clean: true,
@@ -13,7 +13,7 @@ export default defineConfig([
     // splitting: true,
   },
   {
-    entry: ['src/postcss.ts'], // , 'src/cli.ts'],
+    entry: ['src/postcss.ts'],
     shims: true,
     format: ['cjs', 'esm'],
     clean: true,
