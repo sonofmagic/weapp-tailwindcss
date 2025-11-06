@@ -49,7 +49,7 @@ exports[`vite > v4-vite-plugin > js 1`] = `
     fetch(link.href, fetchOpts);
   }
 })();
-console.log("bg-_b_h123456_B text-_b_h123456_B first-letter:marker:text-clip");
+console.log("bg-_b_h123456_B text-_b_h123456_B first-letter_cmarker_ctext-clip");
 "
 `;
 

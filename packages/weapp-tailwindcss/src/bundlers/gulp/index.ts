@@ -7,7 +7,7 @@ import process from 'node:process'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
 
 const debug = createDebug()
@@ -24,34 +24,27 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
-  let twPatcher = initialTwPatcher
   let runtimeSet = new Set<string>()
-  let patchPromise = createTailwindPatchPromise(twPatcher)
+  const runtimeState = {
+    twPatcher: initialTwPatcher,
+    patchPromise: createTailwindPatchPromise(initialTwPatcher),
+    refreshTailwindcssPatcher,
+  }
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
 
   async function refreshRuntimeState(force: boolean) {
-    if (!force) {
-      return
-    }
-    await patchPromise
-    if (typeof refreshTailwindcssPatcher === 'function') {
-      const next = await refreshTailwindcssPatcher({ clearCache: true })
-      if (next !== twPatcher) {
-        twPatcher = next
-      }
-    }
-    patchPromise = createTailwindPatchPromise(twPatcher)
+    await refreshTailwindRuntimeState(runtimeState, force)
   }
 
   async function refreshRuntimeSet(force = false) {
     await refreshRuntimeState(force)
-    await patchPromise
+    await runtimeState.patchPromise
     if (!force && runtimeSetInitialized && runtimeSet.size > 0) {
       return runtimeSet
     }
-    runtimeSet = await collectRuntimeClassSet(twPatcher, { force, skipRefresh: force })
+    runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force, skipRefresh: force })
     runtimeSetInitialized = true
     return runtimeSet
   }
@@ -141,7 +134,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(true)
-      await patchPromise
+      await runtimeState.patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -154,10 +147,10 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('css cache hit: %s', file.path)
         },
         async transform() {
-          await patchPromise
+          await runtimeState.patchPromise
           const { css } = await styleHandler(rawSource, {
             isMainChunk: true,
-            majorVersion: twPatcher.majorVersion,
+            majorVersion: runtimeState.twPatcher.majorVersion,
             ...options,
           })
           debug('css handle: %s', file.path)
@@ -174,7 +167,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(runtimeSet.size === 0)
-      await patchPromise
+      await runtimeState.patchPromise
       const filename = path.resolve(file.path)
       const moduleGraph = options.moduleGraph ?? createModuleGraphOptionsFor()
       const handlerOptions: CreateJsHandlerOptions = {
@@ -198,7 +191,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('js cache hit: %s', file.path)
         },
         async transform() {
-          await patchPromise
+          await runtimeState.patchPromise
           const currentSource = file.contents?.toString() ?? rawSource
           const { code } = await jsHandler(currentSource, runtimeSet, handlerOptions)
           debug('js handle: %s', file.path)
@@ -215,7 +208,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(runtimeSet.size === 0)
-      await patchPromise
+      await runtimeState.patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -228,7 +221,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('html cache hit: %s', file.path)
         },
         async transform() {
-          await patchPromise
+          await runtimeState.patchPromise
           const code = await templateHandler(rawSource, {
             runtimeSet,
             ...options,

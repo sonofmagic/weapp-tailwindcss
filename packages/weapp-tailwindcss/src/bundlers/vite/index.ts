@@ -10,7 +10,7 @@ import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../shared/cache'
@@ -138,37 +138,32 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
 
-  let twPatcher = initialTwPatcher
-  let patchPromise = createTailwindPatchPromise(twPatcher)
+  const runtimeState = {
+    twPatcher: initialTwPatcher,
+    patchPromise: createTailwindPatchPromise(initialTwPatcher),
+    refreshTailwindcssPatcher,
+  }
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined
   let resolvedConfig: ResolvedConfig | undefined
 
   async function refreshRuntimeState(force: boolean) {
-    if (!force) {
-      return
+    const refreshed = await refreshTailwindRuntimeState(runtimeState, force)
+    if (refreshed) {
+      runtimeSet = undefined
+      runtimeSetPromise = undefined
     }
-    await patchPromise
-    if (typeof refreshTailwindcssPatcher === 'function') {
-      const next = await refreshTailwindcssPatcher({ clearCache: true })
-      if (next !== twPatcher) {
-        twPatcher = next
-      }
-    }
-    patchPromise = createTailwindPatchPromise(twPatcher)
-    runtimeSet = undefined
-    runtimeSetPromise = undefined
   }
 
   async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
     await refreshRuntimeState(force)
-    await patchPromise
+    await runtimeState.patchPromise
     if (!force && runtimeSet) {
       return runtimeSet
     }
 
     if (force || !runtimeSetPromise) {
-      const task = collectRuntimeClassSet(twPatcher, {
+      const task = collectRuntimeClassSet(runtimeState.twPatcher, {
         force: force || !runtimeSet,
         skipRefresh: force,
       })
@@ -204,7 +199,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
       },
       async generateBundle(_opt, bundle) {
-        await patchPromise
+        await runtimeState.patchPromise
         debug('start')
         onStart()
 
@@ -363,7 +358,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                   debug('css cache hit: %s', file)
                 },
                 async transform() {
-                  await patchPromise
+                  await runtimeState.patchPromise
                   const { css } = await styleHandler(rawSource, {
                     isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
                     postcssOptions: {
@@ -371,7 +366,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                         from: file,
                       },
                     },
-                    majorVersion: twPatcher.majorVersion,
+                    majorVersion: runtimeState.twPatcher.majorVersion,
                   })
                   onUpdate(file, rawSource, css)
                   debug('css handle: %s', file)
@@ -406,7 +401,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           name: `weapp-tailwindcss:uni-app-x:css${enforce ? `:${enforce}` : ''}`,
           enforce,
           async transform(code, id) {
-            await patchPromise
+            await runtimeState.patchPromise
             const { query } = parseVueRequest(id)
             if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
             // uvue only support classname selector

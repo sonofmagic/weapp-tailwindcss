@@ -56,6 +56,38 @@ export function createTailwindPatchPromise(twPatcher: TailwindcssPatcherLike): P
   })
 }
 
+export interface TailwindRuntimeState {
+  twPatcher: TailwindcssPatcherLike
+  patchPromise: Promise<unknown>
+  refreshTailwindcssPatcher?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
+}
+
+export async function refreshTailwindRuntimeState(
+  state: TailwindRuntimeState,
+  force: boolean,
+): Promise<boolean> {
+  if (!force) {
+    return false
+  }
+
+  await state.patchPromise
+
+  let refreshed = false
+  if (typeof state.refreshTailwindcssPatcher === 'function') {
+    const next = await state.refreshTailwindcssPatcher({ clearCache: true })
+    if (next !== state.twPatcher) {
+      state.twPatcher = next
+    }
+    refreshed = true
+  }
+
+  if (refreshed) {
+    state.patchPromise = createTailwindPatchPromise(state.twPatcher)
+  }
+
+  return refreshed
+}
+
 function shouldPreferSync(majorVersion: number | undefined) {
   if (majorVersion == null) {
     return true

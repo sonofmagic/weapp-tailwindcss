@@ -1,4 +1,4 @@
-import type { InternalUserDefinedOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
 import { rm } from 'node:fs/promises'
 import { logger, pc } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
@@ -149,7 +149,9 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
 
   ctx.cache = initializeCache(ctx.cache)
   ctx.twPatcher = twPatcher
-  const refreshTailwindcssPatcher = async (options) => {
+  const refreshTailwindcssPatcher = async (
+    options?: RefreshTailwindcssPatcherOptions,
+  ): Promise<TailwindcssPatcherLike> => {
     const previousPatcher = ctx.twPatcher
     if (options?.clearCache !== false) {
       await clearTailwindcssPatcherCache(previousPatcher)

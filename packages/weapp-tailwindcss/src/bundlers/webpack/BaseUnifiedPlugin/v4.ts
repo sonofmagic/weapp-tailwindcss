@@ -8,7 +8,7 @@ import { ConcatSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
@@ -52,27 +52,20 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    let twPatcher = initialTwPatcher
-    let patchPromise = createTailwindPatchPromise(twPatcher)
+    const runtimeState = {
+      twPatcher: initialTwPatcher,
+      patchPromise: createTailwindPatchPromise(initialTwPatcher),
+      refreshTailwindcssPatcher,
+    }
 
     const refreshRuntimeState = async (force: boolean) => {
-      if (!force) {
-        return
-      }
-      await patchPromise
-      if (typeof refreshTailwindcssPatcher === 'function') {
-        const next = await refreshTailwindcssPatcher({ clearCache: true })
-        if (next !== twPatcher) {
-          twPatcher = next
-        }
-      }
-      patchPromise = createTailwindPatchPromise(twPatcher)
+      await refreshTailwindRuntimeState(runtimeState, force)
     }
 
     async function getClassSetInLoader() {
       await refreshRuntimeState(true)
-      await patchPromise
-      await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
+      await runtimeState.patchPromise
+      await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     }
 
     onLoad()
@@ -102,7 +95,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     })
 
     compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-      await patchPromise
+      await runtimeState.patchPromise
       onStart()
       debug('start')
 
@@ -173,8 +166,8 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       // 再次 build 不转化的原因是此时 set.size 为0
       // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
       await refreshRuntimeState(true)
-      await patchPromise
-      const runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
+      await runtimeState.patchPromise
+      const runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
       debug('get runtimeSet, class count: %d', runtimeSet.size)
       const tasks: Promise<void>[] = []
       if (Array.isArray(groupedEntries.html)) {
@@ -283,7 +276,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                 debug('css cache hit: %s', file)
               },
               transform: async () => {
-                await patchPromise
+                await runtimeState.patchPromise
                 const { css } = await styleHandler(rawSource, {
                   isMainChunk: mainCssChunkMatcher(file, this.appType),
                   postcssOptions: {
@@ -291,7 +284,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
                       from: file,
                     },
                   },
-                  majorVersion: twPatcher.majorVersion,
+                  majorVersion: runtimeState.twPatcher.majorVersion,
                 })
                 const source = new ConcatSource(css)
 

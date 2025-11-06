@@ -1,7 +1,7 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
@@ -12,54 +12,47 @@ export function createContext(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
   const { templateHandler, styleHandler, jsHandler, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
-  let twPatcher = initialTwPatcher
   let runtimeSet = new Set<string>()
-  let patchPromise = createTailwindPatchPromise(twPatcher)
+  const runtimeState = {
+    twPatcher: initialTwPatcher,
+    patchPromise: createTailwindPatchPromise(initialTwPatcher),
+    refreshTailwindcssPatcher,
+  }
 
   async function refreshRuntimeState(force: boolean) {
-    if (!force) {
-      return
-    }
-    await patchPromise
-    if (typeof refreshTailwindcssPatcher === 'function') {
-      const next = await refreshTailwindcssPatcher({ clearCache: true })
-      if (next !== twPatcher) {
-        twPatcher = next
-      }
-    }
-    patchPromise = createTailwindPatchPromise(twPatcher)
+    await refreshTailwindRuntimeState(runtimeState, force)
   }
 
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
-    await patchPromise
+    await runtimeState.patchPromise
     const result = await styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
     }))
     await refreshRuntimeState(true)
-    await patchPromise
-    runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
+    await runtimeState.patchPromise
+    runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     return result
   }
 
   async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
-    await patchPromise
+    await runtimeState.patchPromise
     if (options?.runtimeSet) {
       runtimeSet = options.runtimeSet
     }
     else {
       await refreshRuntimeState(true)
-      await patchPromise
-      runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
+      await runtimeState.patchPromise
+      runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     }
     return await jsHandler(rawJs, runtimeSet, options)
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
-    await patchPromise
+    await runtimeState.patchPromise
     if (!options?.runtimeSet && runtimeSet.size === 0) {
       await refreshRuntimeState(true)
-      await patchPromise
-      runtimeSet = await collectRuntimeClassSet(twPatcher, { force: true, skipRefresh: true })
+      await runtimeState.patchPromise
+      runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     }
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
