@@ -56,6 +56,8 @@
     "@weapp-tailwindcss/website": "1.0.6"
   },
   "changesets": [
-    "eager-pets-turn"
+    "eager-pets-turn",
+    "restore-uni-appx-runtime",
+    "zh-refresh-runtime-state"
   ]
 }
