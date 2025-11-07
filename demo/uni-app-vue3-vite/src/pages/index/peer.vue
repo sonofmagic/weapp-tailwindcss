@@ -12,13 +12,15 @@
       <view class="inline-block h-10 w-[50px] bg-amber-600"></view>
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
     </view>
-    <button :class="button()">button</button>
+    <button :class="button()">{{ hello }}</button>
   </view>
 </template>
 
 <script setup lang="ts">
 import { twMerge } from '@weapp-tailwindcss/merge/v3'
 import { cva } from '@weapp-tailwindcss/merge/cva'
+
+const hello = 'hello! bg-[1 !! [] b:x' 
 
 const button = cva(["font-semibold", "border", "rounded"], {
   variants: {
