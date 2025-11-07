@@ -13,27 +13,25 @@ tags:
 
 大家好，我是 [weapp-tailwindcss](https://github.com/sonofmagic/weapp-tailwindcss)、[weapp-vite](https://github.com/weapp-vite/weapp-vite) 的作者 icebreaker。
 
-最近我一直在思考 weapp-tailwindcss 的未来，以至于玩国服回归的星际争霸2都不香了。
+最近我一直在思考 `weapp-tailwindcss` 的未来，以至于都没有怎么玩，最近回归的星际争霸2。
 
 ## 巨大的阻碍
 
-为什么？因为之前有一个很重要的问题，阻碍了 weapp-tailwindcss 发展的脚步。
+为什么？因为之前有一个很重要的问题，严重阻碍了 `weapp-tailwindcss` 发展的脚步。
 
 那就是 `tailwind-merge` / `class-variance-authority` / `tailwind-variants` 这些极其重要的原子化样式基础包，没有什么很好的办法在小程序里使用。
 
-**为什么无法在小程序里使用？**
+### 为什么无法在小程序里使用？
 
-简短一点说起来，核心原因是，小程序 wxml 类名中，不允许很多特殊字符串，比如 !、[、]、# 等字符。
+简短一点说起来，核心原因是，小程序 `wxml` 类名中，不允许很多特殊字符串，比如 !、[、]、# 等字符。
 
-所以 weapp-tailwindcss 根据这个设计，在编译时，对 `tailwindcss` 类名进行转换，从而达到了兼容市面上众多小程序的编译插件。
+所以 `weapp-tailwindcss` 根据这个设计，在编译时，就对 `tailwindcss` 类名进行转换，从而达到了兼容市面上众多小程序的编译插件。
 
 比如用户写的是 `bg-[#123456]`，被 weapp-tailwindcss 捕获到了之后，在编译的时候，就会同时把 wxml、js、wxss 里面的这个类名转换成小程序可以接受的 `bg-_h123456_`。
 
 而 `tailwind-merge` 它们都是在运行时进行计算的，那时候它们接收到的，已经是 `bg-_h123456_` 这种转译之后的字符串，自然合并不了，导致到处出错。
 
-所以，当我的用户们一直在讨论 `tailwind-merge` 怎么落地时，我意识到问题已经不是“某个工具不支持”那么简单，而是整个生态在呼唤新的联动方式：编译期的确定性和运行时的灵活性必须重新组合。
-
-于是我做了非常多的尝试！所以给大家展示一下我的受苦之路吧！
+为了兼容，我做了非常多的尝试！给大家展示一下我的受苦之路吧！
 
 ## 1. tailwind-merge plugin / createTailwindMerge
 
@@ -43,9 +41,11 @@ tags:
 
 于是我开始阅读 `tailwind-merge` 源代码，并尝试使用 `extendTailwindMerge` 和 `createTailwindMerge` 完全创建出一个属于我自己的 `weapp-tailwind-merge` 来。
 
-我把 tailwind-merge 的内部冲突表导出，尝试用自定义 escape hook 覆盖那些非法字符；甚至写了一个半成品的 `createTailwindMerge` 变体，希望能在编译阶段就生成完全符合小程序命名规则的类名。
+接着我把 tailwind-merge 的内部冲突表导出，尝试用自定义 escape hook 覆盖那些非法字符；甚至写了一个半成品的 `createTailwindMerge` 变体，希望能在编译阶段就生成完全符合小程序命名规则的类名。
 
-可现实很快给了我当头棒喝：`tailwind-merge` 对运行时字符串的依赖极强，部分字符是强依赖，根本无法替换。
+然而，现实很快给了我当头棒喝：`tailwind-merge` 对运行时字符串的依赖极强，部分字符是强依赖，根本无法替换。
+
+下面这几个字符串都是写在常量里的，无法通过配置更换
 
 ```ts
 export const IMPORTANT_MODIFIER = '!' // 小程序不行
@@ -57,11 +57,11 @@ const MODIFIER_SEPARATOR_LENGTH = MODIFIER_SEPARATOR.length
 
 所以这已经不是 `extendTailwindMerge` 和 `createTailwindMerge` 能够解决的问题了。
 
-摆在我面前的，是一条看不到未来的路：为了兼容，我需要重写它的核心，fork 一个全新的包，这个成本是巨大的。
+摆在我面前的，是一条看不到未来的路：为了强行兼容，我需要重写它的核心，fork 一个全新的包，这个成本是巨大的。
 
 ## 2. 编译期豁免
 
-第二条路看起来更务实：沿用我们熟悉的编译期管线，给 `twMerge` / `twJoin` / `cva` 等函数做“豁免处理”。
+第二条路看起来更务实：沿用我熟悉的编译期管线，给 `twMerge` / `twJoin` / `cva` 等函数做“豁免处理”。
 
 我当时是这样想的，只要在编译时忽略它们内部的转义，运行时拿到的就是完整的 class 字符串，那 tailwind-merge 不就能工作了吗？
 
@@ -120,7 +120,7 @@ cn(a,"xx","yy")
 
 ### 新的挑战
 
-什么，怎么还有你们相互依赖的狗屎！
+什么，怎么还有你们这种相互引用的情况！
 
 ```js
 // shared2.js
@@ -170,13 +170,14 @@ cn(bb, cc, aa, shared.default, shared.a, "[]", "()")
 
 源代码见：
 
-`https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/NodePathWalker.ts`
+- [NodePathWalker](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/NodePathWalker.ts)
 
-`https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/ModuleGraph.ts`
+- [ModuleGraph](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/ModuleGraph.ts)
 
-另外表面上看这条路是可行的，我们甚至找到了几个 demo 可以跑通，我还抽离出了 `ignoreCallExpressionIdentifiers` 配置项，以为自己解决了问题。
 
-然而理想很丰满，现实很骨感：
+另外表面上看这条路是可行的，我甚至找到了几个 demo 可以跑通，我还把豁免名单抽离出来，变成了 `ignoreCallExpressionIdentifiers` 配置项，以为自己解决了问题。
+
+### 但是然而理想很丰满，现实很骨感
 
 这套方案高度依赖 AST 解析和构建工具的配合，我写的插件无法保证运行时得到的类名永远完整。构建链路上的任一环节——Terser、esbuild、rollup 插件甚至手写 Babel 宏——都可能把函数名或模板字符串的标识符压缩重命名，导致最后留给运行时的是一个残缺的字符串。
 
@@ -186,11 +187,11 @@ cn(bb, cc, aa, shared.default, shared.a, "[]", "()")
 
 在两条路都走到尽头之后，只剩下一个选择：彻底重构 merge，让逃逸逻辑回归运行时，让编译阶段恢复简单纯粹。
 
-所以成功之后，写了这篇文章，算是给 `weapp-tailwindcss` 的未来定调：我们终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。也顺手解决了“编译期豁免 + 手动逃逸”的历史包袱。
+所以成功之后，写了这篇文章，算是给 `weapp-tailwindcss` 的未来定调：我终于和旧版 `@weapp-tailwindcss/merge` 告别，把全部逃逸逻辑搬到了运行时。也顺手解决了“编译期豁免 + 手动逃逸”的历史包袱。
 
 ## 为什么要重写 merge？
 
-复盘 1.x 旧版 merge，我发现我们当时的设计基于两个假设：一是 tailwind-merge 的输入输出始终可控，二是编译器可以精准标记所有“需要放行”的调用。随着生态摸索出更多组合式 API，这两个假设已经被现实击碎。
+复盘 1.x 旧版 merge，我发现我当时的设计基于两个假设：一是 tailwind-merge 的输入输出始终可控，二是编译器可以精准标记所有“需要放行”的调用。随着生态摸索出更多组合式 API，这两个假设已经被现实击碎。
 
 早期的 `@weapp-tailwindcss/merge` 主要目标是“把 tailwind-merge 的结果变成小程序合法类名”。我采取的策略是：
 
@@ -222,7 +223,9 @@ const aggregators = {
 }
 ```
 
-在实现里我刻意把 escape 和 unescape 拆成两个“齿轮”。不管是用户直接手点 `twMerge`，还是 variants 工厂兜一圈回来，都会先进统一的预处理，再丢给 tailwind-merge 啃。这等于在运行时补了一层“语义编译器”。
+在实现里我刻意把 escape 和 unescape 拆成两个“齿轮”。不管是用户直接手点 `twMerge`，还是 variants 工厂兜一圈回来，都会先进统一的预处理，再丢给 tailwind-merge。
+
+这等于在运行时补了一层“语义编译器”。
 
 ### 双向处理链
 
@@ -275,11 +278,11 @@ export const MappingChars2String: MappingStringDictionary = {
 }
 ```
 
-问题马上就来了：它完全做不到配对 `unescape`。`[` 和 `]` 被一起砸成 `_`，`(` / `)`、`{` / `}` 也全堆在同一个值上，运行时根本还原不回去。举个让人头疼的例子：`escape('[bg:red]') === '__bg_red_'`，你说首尾两个 `_` 到底是 `[` 还是 `]`？想指望它在运行时“先解码再 merge”，纯属自找麻烦。
+问题马上就来了：它完全做不到配对 `unescape`。`[` 和 `]` 被一起砸成 `_`，`(` / `)`、`{` / `}` 也全堆在同一个值上，运行时根本还原不回去。举个让人头疼的例子：`escape('[bg:red]') === '__bg_red_'`。
 
 所以我直接把 `@weapp-core/escape` 推倒重练，写成一个可逆的“状态机”。每个非法字符都分到独一无二的逃逸片段，还带长度前缀，跑完 `unescape(escape(input))` 就一定回到原样。为了防止它在极端输入上翻车，我拉了十几组 property-based 测试，emoji、空格、重复 escape 全安排上写了大量的单元测试，确保往返都符合预期。
 
-下面是当前版本的核心映射表，展示了我们如何为每个非法字符分配唯一的 escape 片段，便于和旧版多对一的写法做对比：
+下面是当前版本的核心映射表，展示了我如何为每个非法字符分配唯一的 escape 片段，便于和旧版多对一的写法做对比：
 
 ```ts
 export const MappingChars2String = {
@@ -328,48 +331,20 @@ const { twMerge: passthrough } = create({ escape: false, unescape: false })
 
 配合 SSR 或老数据兼容的时候，也不用再额外写工具函数：服务端直接把 escape 全关掉，只做 merge 校验；到小程序再开回完整逃逸步奏，迁移过程就能一步一步踩稳。
 
-另外还开放了 `map` 字段，队友如果想统一用自己的字符映射，照配即可，类名风格也能和现有规范保持一致。
+另外还开放了 `map` 字段，用于统一用自己的字符映射。
 
 ### 全家桶一致
 
 `@weapp-tailwindcss/merge/variants` 这波同步升级算是彩蛋。我直接复用 tailwind-variants 的工厂，把自定义 `cn` 换成带 escape/unescape 的版本。这样写复杂组件状态时，合并结果天生就符合小程序限制，设计系统层面的 DSL 也能继续用社区那套最佳实践。我还在 demo 里疯狂堆 `slots`、hooks、组件外传参这些场景，把所有奇怪组合都跑了一遍，确认行为完全一致才敢放出来。
 
-## 为什么不再依赖 ignoreCallExpressionIdentifiers？
+## 发布 4.7.x 版本
 
-既然逃逸已经搬回运行时，我脑海里的下一步就是：把那些黑名单、注入脚本全删了吧。不过要这么干，得把它的原罪摊开讲清楚——黑名单到底帮不上哪些忙？
+绕了这么多弯，所有成果最终都塞进了 `weapp-tailwindcss@4.7.x` 和 `@weapp-tailwindcss/merge@2.x` 中。算是 weapp-tailwindcss 运行时时代的第一声号角。
 
-`ignoreCallExpressionIdentifiers` 生下来就是补丁王，只能勉强做到：
+欢迎大家把新版 `@weapp-tailwindcss/merge` 用到真实项目里，更欢迎在社区继续砸想法，我会把这些反馈当作下一轮迭代的燃料，让 Tailwind CSS 在小程序世界里始终“开箱即用”。
 
-- 给某些函数贴个“别转义”标签，但压根保证不了运行时会再逃逸；
-- 遇到链式调用、解构、动态导入立刻迷路；
-- **压缩器一上来就把它摧毁**。交给 `terser` / `esbuild` / `rolldown` 后，函数名会被改成 `e()`、`r()`，AST 对不上名，除非你一遍遍去配置 `mangle.reserved` 告诉它“拜托别动 twMerge”，维护成本炸裂；
-- 与各种插件之间要保持“边际合作”，Babel/SWC/JITI 都得手写一份实现，谁来维护？
+有时候我也在想，为小程序这个逐渐感觉不怎么活跃的生态，花了这么多时间，感觉有点不值。但是转念一想，起码在我这个领域我已经通过不断的学习，真的掌握了很多东西。
 
-等我们开始支持 variants、运行时工厂、Tailwind v4 更多奇葩写法之后，这黑名单就彻底变成误导。每次 code review 看到 `ignoreCallExpressionIdentifiers`，我脑子里冒出来的都是“为啥要替它开绿灯”，而不是“这样真的安全吗”。难怪用户会问：
+起码，对 Tailwind CSS 进行符合中国小程序技术特色的改造方面，我也算是第一人了吧。每每想到这，就感觉自己好像还稍微有这么一点点自豪呢，哈哈哈。
 
-> “编译时不是放我过去了吗，怎么页面照样报 `invalid selector`？”
-
-升级到运行时方案以后，这些疑问直接消失。所有入口的 escape 都在 merge 里兜底，任何调用都只会吐出合法类名，编译阶段终于可以回归“安静做事”的状态。
-
-## 4.7.0 版本的实际成果
-
-绕了这么多弯，所有成果最终都塞进了 4.7.0。想法 -> PoC -> 实战，我们来回跑了三轮，才敢拍板放出来。交付物一股脑列在这里：
-
-- `resolveTransformers` 负责统一调度 escape/unescape，还能 toggle、换 mapping，想怎么玩都行；
-- `twMerge` / `twJoin` / `createTailwindMerge` / `extendTailwindMerge` / `cva` / `variants` 全家桶共用同一套转换逻辑，再也没有“谁忘了接管”的 bug；
-- 单测把 tailwind-merge 的功能列表扫了一遍，还额外加了小程序专属场景，例如 `rpx`、任意变体、强制修饰符等；
-- `apps/vite-native-ts` Demo 直接把不同版本的 merge 行为、运行时选项、CVA/variants 输出实时展示，谁来都能一眼看懂；
-- 写了中文 Changeset，清清楚楚告诉大家：这是一次 breaking change，升级请打起精神。
-
-## 展望
-
-把逃逸逻辑拉回运行时之后，roadmap 上那些问号终于能擦掉了。我们不用再在“性能”和“灵活”之间拔河，而是多了一条可持续迭代的中线。目前这些能力已经落袋：
-
-- **跨端一致**：[weapp-vite](https://github.com/weapp-vite/weapp-vite)、uni-app、甚至你自建的打包链，只要套 runtime 工厂就能保证输出安全；
-- **DSL 更放得开**：variants 案例已经证明，我们可以放心封装更高级的组合 API，类名合规这件事交给 merge；
-- **插件可以减负**：Babel/SWC 回到“老实做替换”的岗位，黑名单补丁统统退休；
-- **未来更好扩展**：下一步准备把 mapping 插件化，按平台或团队切换 escape 字典，想怎么拼就怎么拼。
-
-4.7.0 算是 weapp-tailwindcss 运行时时代的第一声号角。欢迎大家把新版 `@weapp-tailwindcss/merge` 用到真实项目里，更欢迎在社区继续砸想法，我会把这些反馈当作下一轮迭代的燃料，让 Tailwind CSS 在小程序世界里始终“开箱即用”。
-
-如果你也在思考“如何让运行时工具和小程序的限制和平共处”，希望这篇文章能给你一点启发：先接受复杂，再慢慢拆解它，让每一步都可验证、可复现。我们就是这样迈向 4.7.0 的。
+如果你也在思考“如何让运行时工具和小程序的限制和平共处”，希望这篇文章能给你一点启发。
