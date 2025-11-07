@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.7.6
+
+### Patch Changes
+
+- [`8cb5087`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8cb508736daa02f232a546a7c5909a62830c6c9a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复运行时类名集合包含内容扫描候选导致 JS 普通字符串被误转译的问题，并去掉仓库里对 tailwindcss-patch 的 catalog 固定，确保依赖行为与独立仓库一致。
+
 ## 4.7.5
 
 ### Patch Changes
