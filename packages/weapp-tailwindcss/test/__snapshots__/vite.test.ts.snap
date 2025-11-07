@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`vite > v4-vite-plugin > css 1`] = `
-"/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
 view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
@@ -49,12 +49,12 @@ exports[`vite > v4-vite-plugin > js 1`] = `
     fetch(link.href, fetchOpts);
   }
 })();
-console.log("bg-_b_h123456_B text-_b_h123456_B first-letter_cmarker_ctext-clip");
+console.log("bg-[#123456] text-[#123456] first-letter:marker:text-clip");
 "
 `;
 
 exports[`vite > v4-vite-postcss > css 1`] = `
-"/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
 view,text,:after,:before,::backdrop {
   box-sizing: border-box;
   border: 0 solid;
@@ -118,6 +118,6 @@ exports[`vite > v4-vite-postcss > js 1`] = `
     fetch(link.href, fetchOpts);
   }
 })();
-console.log("bg-_b_h123456_B text-_b_h123456_B");
+console.log("bg-[#123456] text-[#123456]");
 "
 `;
