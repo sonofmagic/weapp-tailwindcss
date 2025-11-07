@@ -61,7 +61,7 @@
     "@tarojs/runtime": "catalog:taro4",
     "@tarojs/shared": "catalog:taro4",
     "@tarojs/taro": "catalog:taro4",
-    "vue": "^3.5.21"
+    "vue": "^3.5.23"
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",
@@ -74,13 +74,13 @@
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
     "@vue/babel-plugin-jsx": "^2.0.1",
-    "@vue/compiler-sfc": "^3.5.21",
+    "@vue/compiler-sfc": "^3.5.23",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "autoprefixer": "catalog:autoprefixer10",
-    "babel-preset-taro": "4.1.7",
+    "babel-preset-taro": "4.1.8",
     "cross-env": "catalog:crossEnv",
     "eslint": "^9.39.1",
-    "eslint-config-taro": "4.1.7",
+    "eslint-config-taro": "4.1.8",
     "eslint-plugin-vue": "^10.4.0",
     "less": "^4.4.1",
     "postcss": "catalog:postcss85",

@@ -76,9 +76,9 @@
     "@types/react": "^19.1.13",
     "@vitejs/plugin-react": "^5.1.0",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
-    "babel-preset-taro": "4.1.7",
+    "babel-preset-taro": "4.1.8",
     "eslint": "^9.39.1",
-    "eslint-config-taro": "4.1.7",
+    "eslint-config-taro": "4.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "postcss": "catalog:postcss85",
@@ -88,7 +88,7 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "terser": "^5.44.1",
     "typescript": "catalog:typescript59",
-    "vite": "^7.2.0",
+    "vite": "^7.2.1",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }
