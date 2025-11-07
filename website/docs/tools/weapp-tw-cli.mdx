@@ -1,0 +1,74 @@
+---
+title: weapp-tw CLI 使用指南
+---
+
+`weapp-tailwindcss` 自带一个 `weapp-tw` 命令行工具，负责提前给 Tailwind CSS 打补丁、生成类名缓存以及收集 token。以下内容介绍常用命令及最佳实践。
+
+## 常见场景
+
+| 场景 | 命令 | 说明 |
+| --- | --- | --- |
+| 给 Tailwind CSS 打补丁、注入 `rpx` 支持 | `npx weapp-tw patch` | 运行一次即可，推荐写在 `postinstall`；支持 `--cwd` 指向子包目录。 |
+| 在 monorepo 里批量补丁 | `pnpm -r --filter ./demo/* exec weapp-tw patch --cwd "$PWD"` | 每个 demo 都在自身目录补丁，避免和 hoist 后的 `node_modules` 不一致。 |
+| 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 用于 v4 场景，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
+| 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
+
+## `patch` 子命令
+
+### 功能
+
+- 扫描当前工作目录所依赖的 `tailwindcss`，给其打上 `rpx` 单位补丁。
+- 暴露 Tailwind 运行时上下文，供 `webpack`/`vite`/`gulp` 插件复用。
+- 检测到未安装 Tailwind 时会输出中文警告。
+
+### 常用参数
+
+| 参数 | 默认值 | 含义 |
+| --- | --- | --- |
+| `--cwd <dir>` | 当前工作目录 | 指定要补丁的子包目录，等价于先 `cd`。 |
+| `--record-target` | `false` | 仅在需要时开启。记录本次打补丁对应的 `tailwindcss` 根路径到 `./.tw-patch/tailwindcss-target.json`，方便之后核对。 |
+
+开启 `--record-target` 后，运行日志类似：
+
+```bash
+$ pnpm --filter demo/native-mina weapp-tw patch --record-target
+weapp-tw patch 绑定 Tailwind CSS -> ./node_modules/tailwindcss (v3.4.18)
+记录 weapp-tw patch 目标 -> ./.tw-patch/tailwindcss-target.json
+Tailwind CSS 运行时补丁已完成。
+```
+
+随后每次启动构建工具，运行时会输出 `tailwindcss-patcher 绑定 Tailwind CSS -> ...`；若发现与 `tailwindcss-target.json` 不一致，会打印中文告警，提示你在对应子包重跑 `weapp-tw patch --cwd ...`。这样可避免 demo 被错误的 `node_modules` 污染，尤其是开启 `pnpm` hoist 或 `workspace:` 互相引用时。
+
+## `extract` 子命令
+
+```bash
+npx weapp-tw extract --css src/app.css --format lines
+```
+
+- `--css`：Tailwind v4 入口 CSS，必填才能正确收集类名。
+- `--output`：指定输出文件，默认写入 `.tw-patch/tw-class-cache.json`。
+- `--format`：`json`/`lines`，配合 `--no-write` 可仅打印到终端。
+- `--cwd` 与 `patch` 一致，也支持放在子包里执行。
+
+生成的缓存可以让构建器快速读取 `tailwindcss` 编译结果，减少重复启动的开销。
+
+## `tokens` 子命令
+
+```bash
+npx weapp-tw tokens --format grouped-json --group-key absolute
+```
+
+- `--format`：`json`、`lines` 或 `grouped-json`。后一种会按文件分组，便于排查 `content` 匹配不到的问题。
+- `--group-key`：`relative`(默认)/`absolute`，决定输出路径的基准。
+- `--no-write`：终端预览，不落盘；默认写入 `.tw-patch/tw-token-report.json`。
+
+输出的数据包含扫描到的文件、类名 token、出现位置（行列）、以及被跳过的文件列表。
+
+## 快速排查指引
+
+1. **始终在子包目录执行 `weapp-tw patch`**：`pnpm --filter my-demo weapp-tw patch --cwd demo/my-demo`。
+2. **需要追踪目标时才开启 `--record-target`**，否则不会生成 JSON，日志更加干净。
+3. **看到“目标不一致”告警**：按照提示在指定目录重跑 `weapp-tw patch --cwd ...`，直到日志里的 `weapp-tw patch/tailwindcss-patcher 绑定 Tailwind CSS` 输出相同路径。
+4. **类名缺失**： 用 `weapp-tw extract` 或 `weapp-tw tokens --no-write` 辅助定位是哪段代码没有被 Tailwind `content` 收录。
+
+配合这些命令，可以更直观地观察 Tailwind 依赖解析与补丁状态，减少“rpx 被当成颜色” 等由于上下游不一致导致的问题。

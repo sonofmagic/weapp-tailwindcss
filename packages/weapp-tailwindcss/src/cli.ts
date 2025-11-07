@@ -25,6 +25,7 @@ import {
 import { collectTailwindTokens, formatTokenLine, logTokenPreview } from './cli/tokens'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 import { logger } from './logger'
+import { logTailwindcssTarget, saveCliPatchTargetRecord } from './tailwindcss/targets'
 
 process.title = 'node (weapp-tailwindcss)'
 
@@ -40,12 +41,21 @@ cli
   .command('patch', 'Apply Tailwind CSS runtime patches')
   .alias('install')
   .option('--cwd <dir>', 'Working directory')
+  .option('--record-target', 'Write tailwindcss target metadata (.tw-patch/tailwindcss-target.json)')
   .action(
     commandAction(async (options: CommonCommandOptions) => {
       const resolvedCwd = resolveCliCwd(options.cwd)
       const ctx = createCliContext(undefined, resolvedCwd)
+      logTailwindcssTarget('cli', ctx.twPatcher, ctx.tailwindcssBasedir)
       await ctx.twPatcher.patch()
-      logger.success('Tailwind CSS runtime patched successfully.')
+      const shouldRecordTarget = toBoolean(options.recordTarget, false)
+      if (shouldRecordTarget) {
+        const recordPath = await saveCliPatchTargetRecord(ctx.tailwindcssBasedir, ctx.twPatcher)
+        if (recordPath) {
+          logger.info(`记录 weapp-tw patch 目标 -> ${formatOutputPath(recordPath, resolvedCwd)}`)
+        }
+      }
+      logger.success('Tailwind CSS 运行时补丁已完成。')
     }),
   )
 

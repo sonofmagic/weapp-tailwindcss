@@ -177,6 +177,17 @@ const tutorialSidebar: SidebarConfig = [
     label: '🔥快速开始(模板项目)',
   },
   {
+    type: 'category',
+    label: '🛠️ 工具与 CLI',
+    collapsed: false,
+    items: [
+      {
+        type: 'doc',
+        id: 'tools/weapp-tw-cli',
+      },
+    ],
+  },
+  {
     type: 'doc',
     id: 'multi-platform',
   },

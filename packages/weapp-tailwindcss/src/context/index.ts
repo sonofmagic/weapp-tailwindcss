@@ -4,6 +4,7 @@ import { logger, pc } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions } from '@/defaults'
 import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
+import { logTailwindcssTarget, warnIfCliPatchTargetMismatch } from '@/tailwindcss/targets'
 import { defuOverrideArray } from '@/utils'
 import { toCustomAttributesEntities } from './custom-attributes'
 import { createHandlersFromContext } from './handlers'
@@ -119,6 +120,7 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   applyLoggerLevel(ctx.logLevel)
 
   const twPatcher = createTailwindcssPatcherFromContext(ctx)
+  logTailwindcssTarget('runtime', twPatcher, ctx.tailwindcssBasedir)
 
   if (twPatcher.packageInfo?.version) {
     logger.success(`当前使用 ${pc.cyanBright('Tailwind CSS')} 版本为: ${pc.underline(pc.bold(pc.green(twPatcher.packageInfo.version)))}`)
@@ -126,6 +128,8 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
   else {
     logger.warn(`${pc.cyanBright('Tailwind CSS')} 未安装，已跳过版本检测与补丁应用。`)
   }
+
+  warnIfCliPatchTargetMismatch(ctx.tailwindcssBasedir, twPatcher)
 
   let cssCalcOptions = ctx.cssCalc ?? twPatcher.majorVersion === 4
 
