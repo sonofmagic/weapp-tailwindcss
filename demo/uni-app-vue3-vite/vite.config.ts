@@ -69,7 +69,7 @@ export default defineConfig(async () => {
         //   ')': '-',
         // },
       }),
-      StyleInjector(),
+      // StyleInjector(),
       // Inspect({
       //   build: true,
       //   outputDir: '.vite-inspect'

@@ -29,7 +29,7 @@ export default defineConfig(async () => {
           path.resolve(__dirname, "src/common.css"),
         ],
       }),
-      StyleInjector(),
+      // StyleInjector(),
     ],
     resolve: {
       alias: {

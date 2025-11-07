@@ -31,9 +31,9 @@ const config = {
         rem2rpx: true,
       })
     )
-    config.plugins.push(
-      StyleInjector()
-    )
+    // config.plugins.push(
+    //   StyleInjector()
+    // )
     // config.plugins.push(new MiniCssExtractPlugin())
     // smp.wrap(config)
   },

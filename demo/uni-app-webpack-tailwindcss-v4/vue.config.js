@@ -11,9 +11,9 @@ const config = {
                 rem2rpx: true,
             })
         )
-        config.plugins.push(
-            StyleInjector()
-        )
+        // config.plugins.push(
+        //     StyleInjector()
+        // )
     },
     chainWebpack(config) {
       config.plugins.delete('fork-ts-checker')
