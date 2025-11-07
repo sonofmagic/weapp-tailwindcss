@@ -182,9 +182,9 @@
     "@babel/parser": "~7.28.5",
     "@babel/traverse": "~7.28.5",
     "@babel/types": "~7.28.5",
-    "@tailwindcss-mangle/config": "^6.0.1",
-    "@vue/compiler-dom": "^3.5.22",
-    "@vue/compiler-sfc": "^3.5.22",
+    "@tailwindcss-mangle/config": "^6.1.0",
+    "@vue/compiler-dom": "^3.5.24",
+    "@vue/compiler-sfc": "^3.5.24",
     "@weapp-core/escape": "~5.0.1",
     "@weapp-core/regex": "~1.0.1",
     "@weapp-tailwindcss/logger": "workspace:*",
@@ -198,7 +198,7 @@
     "lru-cache": "10.4.3",
     "magic-string": "0.30.21",
     "semver": "~7.7.3",
-    "tailwindcss-patch": "^8.2.1",
+    "tailwindcss-patch": "^8.2.2",
     "webpack-sources": "3.3.3"
   }
 }

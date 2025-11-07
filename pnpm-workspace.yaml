@@ -53,8 +53,8 @@ catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.18
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.1.16
-    '@tailwindcss/vite': ^4.1.16
+    '@tailwindcss/postcss': ^4.1.17
+    '@tailwindcss/vite': ^4.1.17
     tailwindcss: ^4.1.16
     tailwindcss4: npm:tailwindcss@^4.1.16
   tailwindcssRem:
@@ -65,29 +65,29 @@ catalogs:
   taro36legacy:
     '@tarojs/components': 3.6.17
   taro4:
-    '@tarojs/cli': 4.1.7
-    '@tarojs/components': 4.1.7
-    '@tarojs/helper': 4.1.7
-    '@tarojs/plugin-framework-react': 4.1.7
-    '@tarojs/plugin-framework-vue3': 4.1.7
-    '@tarojs/plugin-html': 4.1.7
-    '@tarojs/plugin-platform-alipay': 4.1.7
-    '@tarojs/plugin-platform-h5': 4.1.7
-    '@tarojs/plugin-platform-harmony-hybrid': 4.1.7
-    '@tarojs/plugin-platform-jd': 4.1.7
-    '@tarojs/plugin-platform-qq': 4.1.7
-    '@tarojs/plugin-platform-swan': 4.1.7
-    '@tarojs/plugin-platform-tt': 4.1.7
-    '@tarojs/plugin-platform-weapp': 4.1.7
-    '@tarojs/react': 4.1.7
-    '@tarojs/runtime': 4.1.7
-    '@tarojs/shared': 4.1.7
-    '@tarojs/taro': 4.1.7
-    '@tarojs/taro-loader': 4.1.7
-    '@tarojs/vite-runner': 4.1.7
-    '@tarojs/webpack5-runner': 4.1.7
+    '@tarojs/cli': ^4.1.8
+    '@tarojs/components': ^4.1.8
+    '@tarojs/helper': ^4.1.8
+    '@tarojs/plugin-framework-react': ^4.1.8
+    '@tarojs/plugin-framework-vue3': ^4.1.8
+    '@tarojs/plugin-html': ^4.1.8
+    '@tarojs/plugin-platform-alipay': ^4.1.8
+    '@tarojs/plugin-platform-h5': ^4.1.8
+    '@tarojs/plugin-platform-harmony-hybrid': ^4.1.8
+    '@tarojs/plugin-platform-jd': ^4.1.8
+    '@tarojs/plugin-platform-qq': ^4.1.8
+    '@tarojs/plugin-platform-swan': ^4.1.8
+    '@tarojs/plugin-platform-tt': ^4.1.8
+    '@tarojs/plugin-platform-weapp': ^4.1.8
+    '@tarojs/react': ^4.1.8
+    '@tarojs/runtime': ^4.1.8
+    '@tarojs/shared': ^4.1.8
+    '@tarojs/taro': ^4.1.8
+    '@tarojs/taro-loader': ^4.1.8
+    '@tarojs/vite-runner': ^4.1.8
+    '@tarojs/webpack5-runner': ^4.1.8
   taroPxtransform:
-    postcss-pxtransform: ^4.1.7
+    postcss-pxtransform: ^4.1.8
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
@@ -95,11 +95,11 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^4.0.0
+    weapp-ide-cli: ^4.1.0
   weappMerge:
     '@weapp-tailwindcss/merge': ^2.0.1
   weappVite:
-    weapp-vite: ^5.8.0
+    weapp-vite: ^5.9.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

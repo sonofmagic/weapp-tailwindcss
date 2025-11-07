@@ -78,7 +78,7 @@
     "@vue/tsconfig": "^0.8.1",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "^8.2.1",
+    "tailwindcss-patch": "^8.2.2",
     "typescript": "catalog:typescript59",
     "vite": "5.2.8",
     "vue-tsc": "^3.1.3",
