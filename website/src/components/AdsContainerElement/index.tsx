@@ -1,9 +1,38 @@
 import Link from '@docusaurus/Link'
 import Aizex from '@site/static/img/ads/aizex-mini.png'
-import React, { useRef } from 'react'
+import clsx from 'clsx'
+import React, { useEffect, useRef, useState } from 'react'
 
 function AdsContainerElement() {
-  const containerRef = useRef<any>()
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [isCompact, setIsCompact] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.ResizeObserver === 'undefined') {
+      return
+    }
+
+    const element = containerRef.current
+    if (!element) {
+      return
+    }
+
+    const updateCompactState = (width: number) => {
+      setIsCompact(width < 300)
+    }
+
+    updateCompactState(element.getBoundingClientRect().width)
+
+    const observer = new window.ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry) {
+        updateCompactState(entry.contentRect.width)
+      }
+    })
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div ref={containerRef} className="space-y-4 px-4">
@@ -33,20 +62,31 @@ function AdsContainerElement() {
       </div>
 
       <a
-        className={`
-          relative flex justify-between rounded-xl bg-[#f6f6f7] p-4
+        className={clsx(
+          `
+          relative flex rounded-xl bg-[#f6f6f7] p-4
           shadow-[inset_0_0_0_1px_#ffffff1a]
           hover:no-underline
           dark:bg-[#1e293b]
-        `}
+        `,
+          isCompact ? 'flex-col gap-3' : 'items-center justify-between',
+        )}
         target="_blank"
         href="https://aizex.cn/0LcJ7G"
         rel="noopener sponsored nofollow"
       >
-        <div className="mr-2 flex shrink-0 items-center">
+        <div className={clsx(
+          'flex shrink-0 items-center',
+          isCompact ? 'mb-2 justify-center' : 'mr-2',
+        )}
+        >
           <img className="h-14" src={Aizex} alt="aizex"></img>
         </div>
-        <div className="flex flex-col justify-around self-stretch">
+        <div className={clsx(
+          'flex flex-col justify-around',
+          isCompact ? 'self-auto text-center' : 'self-stretch',
+        )}
+        >
           <div className="mb-0.5 text-base font-semibold">
             Aizex 合租面板
           </div>
