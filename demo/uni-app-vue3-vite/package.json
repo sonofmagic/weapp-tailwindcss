@@ -100,7 +100,7 @@
     "postcss-rpx-transform": "catalog:postcssRpx",
     "sass": "^1.93.3",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "tailwindcss-patch": "^8.2.1",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
     "vite": "5.2.8",

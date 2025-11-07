@@ -10,7 +10,7 @@
   "devDependencies": {
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "tailwindcss-patch": "^8.2.1",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "@weapp-tailwindcss/debug-uni-app-x": "workspace:*"

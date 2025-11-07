@@ -198,7 +198,7 @@
     "lru-cache": "10.4.3",
     "magic-string": "0.30.21",
     "semver": "~7.7.3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "tailwindcss-patch": "^8.2.1",
     "webpack-sources": "3.3.3"
   }
 }

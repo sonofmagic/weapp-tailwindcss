@@ -88,7 +88,7 @@
     "postcss-rpx-transform": "catalog:postcssRpx",
     "stylelint": "16.25.0",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "tailwindcss-patch": "^8.2.1",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
     "unplugin-vue-components": "^29.2.0",

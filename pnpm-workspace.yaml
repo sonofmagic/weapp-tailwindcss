@@ -57,8 +57,6 @@ catalogs:
     '@tailwindcss/vite': ^4.1.16
     tailwindcss: ^4.1.16
     tailwindcss4: npm:tailwindcss@^4.1.16
-  tailwindcssPatch:
-    tailwindcss-patch: ^8.2.1
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro36:

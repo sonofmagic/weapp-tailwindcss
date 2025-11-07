@@ -124,32 +124,6 @@ function tryGetRuntimeClassSetSync(twPatcher: TailwindcssPatcherLike) {
   }
 }
 
-async function mergeContentTokensIntoSet(
-  twPatcher: TailwindcssPatcherLike,
-  target: Set<string>,
-) {
-  if (typeof twPatcher.collectContentTokens !== 'function') {
-    return
-  }
-
-  try {
-    const report = await twPatcher.collectContentTokens()
-    const entries = report?.entries
-    if (!Array.isArray(entries)) {
-      return
-    }
-    for (const entry of entries) {
-      const candidate = entry?.rawCandidate
-      if (typeof candidate === 'string' && candidate.length > 0) {
-        target.add(candidate)
-      }
-    }
-  }
-  catch (error) {
-    debug('collectContentTokens() failed, continuing without merged tokens: %O', error)
-  }
-}
-
 async function collectRuntimeClassSet(
   twPatcher: TailwindcssPatcherLike,
   options: CollectRuntimeClassSetOptions = {},
@@ -177,7 +151,6 @@ async function collectRuntimeClassSet(
 
   const entry = getCacheEntry(activePatcher)
   const signature = getTailwindConfigSignature(activePatcher)
-  const shouldAugmentWithTokens = options.force || !entry.value
 
   if (!options.force) {
     if (entry.value && entry.signature === signature) {
@@ -225,9 +198,6 @@ async function collectRuntimeClassSet(
 
   try {
     const resolved = await task
-    if (shouldAugmentWithTokens) {
-      await mergeContentTokensIntoSet(activePatcher, resolved)
-    }
     entry.value = resolved
     entry.promise = undefined
     entry.signature = signature

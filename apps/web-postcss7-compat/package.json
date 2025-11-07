@@ -22,7 +22,7 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "tailwindcss-patch": "catalog:tailwindcssPatch"
+    "tailwindcss-patch": "^8.2.1"
   },
   "devDependencies": {
     "autoprefixer": "catalog:autoprefixer10",

@@ -43,16 +43,16 @@ function createFakePatcher(): TailwindcssPatcherLike & {
 }
 
 describe('collectRuntimeClassSet()', () => {
-  it('merges fresh content tokens when force refreshing', async () => {
+  it('relies solely on classSet from tailwindcss-patch for runtime tokens', async () => {
     const patcher = createFakePatcher()
 
     const first = await collectRuntimeClassSet(patcher, { force: true })
     expect(first.has('text-[#f50707]')).toBe(true)
-    expect(first.has('text-[#ff00ff]')).toBe(true)
-    expect(patcher.collectContentTokens).toHaveBeenCalledTimes(1)
+    expect(first.has('text-[#ff00ff]')).toBe(false)
+    expect(patcher.collectContentTokens).not.toHaveBeenCalled()
 
     const cached = await collectRuntimeClassSet(patcher)
     expect(cached).toBe(first)
-    expect(patcher.collectContentTokens).toHaveBeenCalledTimes(1)
+    expect(patcher.collectContentTokens).not.toHaveBeenCalled()
   })
 })
