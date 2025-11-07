@@ -112,8 +112,8 @@
     "tailwindcss-miniprogram-preset": "^2.0.0",
     "typescript": "^5.8.3",
     "vue-template-compiler": "^2.7.16",
-    "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.7.5"
+    "weapp-ide-cli": "^4.1.0",
+    "weapp-tailwindcss": "^4.7.6"
   },
   "browserslist": [
     "Android >= 4",

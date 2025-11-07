@@ -66,15 +66,15 @@
     "@dcloudio/uni-cli-shared": "3.0.0-4070620250821001",
     "@dcloudio/uni-stacktracey": "3.0.0-4070620250821001",
     "@dcloudio/vite-plugin-uni": "3.0.0-4070620250821001",
-    "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/postcss": "^4.1.17",
     "@vue/runtime-core": "^3.5.21",
     "@vue/tsconfig": "^0.8.1",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.17",
     "typescript": "^5.9.2",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.10",
-    "weapp-ide-cli": "^4.0.0",
-    "weapp-tailwindcss": "^4.7.5"
+    "weapp-ide-cli": "^4.1.0",
+    "weapp-tailwindcss": "^4.7.6"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
