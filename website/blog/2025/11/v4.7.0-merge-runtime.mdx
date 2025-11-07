@@ -35,8 +35,6 @@ tags:
 
 ## 1. tailwind-merge plugin / createTailwindMerge
 
-> [tailwind-merge 插件文档](https://github.com/dcastil/tailwind-merge/blob/v3.3.1/docs/writing-plugins.md)
-
 最直观的念头，就是给 `tailwind-merge` 写一个 weapp-tailwindcss 专用插件就好了!
 
 于是我开始阅读 `tailwind-merge` 源代码，并尝试使用 `extendTailwindMerge` 和 `createTailwindMerge` 完全创建出一个属于我自己的 `weapp-tailwind-merge` 来。
@@ -167,13 +165,6 @@ cn(bb, cc, aa, shared.default, shared.a, "[]", "()")
 ……我吐了，这是要我自己去实现一个 webpack / rollup 打包器嘛？有点搞不定啊！
 
 不过困难怕什么，我要迎难而上！于是我仿照了 `rollup` 的思路，收集了每个模块的 `import` / `export` 这里面大量的 ast 节点，并构建出了一个 `ModuleGraph`。
-
-源代码见：
-
-- [NodePathWalker](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/NodePathWalker.ts)
-
-- [ModuleGraph](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/ModuleGraph.ts)
-
 
 另外表面上看这条路是可行的，我甚至找到了几个 demo 可以跑通，我还把豁免名单抽离出来，变成了 `ignoreCallExpressionIdentifiers` 配置项，以为自己解决了问题。
 
@@ -333,10 +324,6 @@ const { twMerge: passthrough } = create({ escape: false, unescape: false })
 
 另外还开放了 `map` 字段，用于统一用自己的字符映射。
 
-### 全家桶一致
-
-`@weapp-tailwindcss/merge/variants` 这波同步升级算是彩蛋。我直接复用 tailwind-variants 的工厂，把自定义 `cn` 换成带 escape/unescape 的版本。这样写复杂组件状态时，合并结果天生就符合小程序限制，设计系统层面的 DSL 也能继续用社区那套最佳实践。我还在 demo 里疯狂堆 `slots`、hooks、组件外传参这些场景，把所有奇怪组合都跑了一遍，确认行为完全一致才敢放出来。
-
 ## 发布 4.7.x 版本
 
 绕了这么多弯，所有成果最终都塞进了 `weapp-tailwindcss@4.7.x` 和 `@weapp-tailwindcss/merge@2.x` 中。算是 weapp-tailwindcss 运行时时代的第一声号角。
@@ -347,4 +334,10 @@ const { twMerge: passthrough } = create({ escape: false, unescape: false })
 
 起码，对 Tailwind CSS 进行符合中国小程序技术特色的改造方面，我也算是第一人了吧。每每想到这，就感觉自己好像还稍微有这么一点点自豪呢，哈哈哈。
 
-如果你也在思考“如何让运行时工具和小程序的限制和平共处”，希望这篇文章能给你一点启发。
+如果你也在思考工具链，编译，AST 等等方面的问题，希望这篇文章能给你一点启发。
+
+## 源代码附录
+
+- [tailwind-merge 插件文档](https://github.com/dcastil/tailwind-merge/blob/v3.3.1/docs/writing-plugins.md)
+- [NodePathWalker](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/NodePathWalker.ts)
+- [ModuleGraph](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/weapp-tailwindcss/src/js/ModuleGraph.ts)
