@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.23"
+    "vue": "^3.5.22"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:tailwindcss4",
@@ -18,7 +18,7 @@
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59tilde",
-    "vite": "^7.2.1",
+    "vite": "^7.2.0",
     "vue-tsc": "^3.1.3"
   }
 }

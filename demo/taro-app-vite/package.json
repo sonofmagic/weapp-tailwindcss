@@ -77,9 +77,9 @@
     "@vitejs/plugin-react": "^5.1.0",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "autoprefixer": "catalog:autoprefixer10",
-    "babel-preset-taro": "4.1.8",
+    "babel-preset-taro": "4.1.7",
     "eslint": "^9.39.1",
-    "eslint-config-taro": "4.1.8",
+    "eslint-config-taro": "4.1.7",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "postcss": "catalog:postcss85",
@@ -94,7 +94,7 @@
     "terser": "^5.44.1",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
-    "vite": "^7.2.1",
+    "vite": "^7.2.0",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

@@ -71,7 +71,7 @@
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0",
     "uview-plus": "^3.6.10",
     "vk-uview-ui": "^1.5.2",
-    "vue": "^3.5.23",
+    "vue": "^3.5.22",
     "vue-i18n": "^9.14.5",
     "vuex": "^4.1.0"
   },
@@ -101,7 +101,7 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
-    "vite": "7.2.1",
+    "vite": "5.2.8",
     "vite-plugin-inspect": "^11.3.3",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-style-injector": "workspace:*",

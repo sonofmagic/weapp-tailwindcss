@@ -75,11 +75,11 @@
     "@dcloudio/uni-quickapp-webview": "2.0.2-4080420251103001",
     "@dcloudio/uni-stacktracey": "2.0.2-4080420251103001",
     "@dcloudio/uni-stat": "2.0.2-4080420251103001",
-    "@vue/shared": "^3.5.23",
+    "@vue/shared": "^3.5.22",
     "core-js": "^3.36.0",
     "flyio": "^0.6.14",
     "regenerator-runtime": "^0.14.1",
-    "vue": "^3.5.23",
+    "vue": ">= 2.6.14 < 2.7",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^9.1.2",
     "vuex": "^3.6.2"

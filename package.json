@@ -248,7 +248,7 @@
     "uuid": "^13.0.0",
     "vinyl": "^3.0.1",
     "vinyl-fs": "^4.0.2",
-    "vite": "^7.2.1",
+    "vite": "^7.2.0",
     "vite-plugin-inspect": "^11.3.3",
     "vitest": "~4.0.7",
     "weapp-tailwindcss": "workspace:*",
