@@ -67,7 +67,6 @@
     "@babel/core": "catalog:babelCore7285",
     "@babel/plugin-syntax-decorators": "^7.27.1",
     "@tarojs/cli": "catalog:taro4",
-    "@tarojs/mini-runner": "catalog:taro36",
     "@tarojs/plugin-platform-weapp": "catalog:taro4",
     "@tarojs/webpack5-runner": "catalog:taro4",
     "@types/webpack-env": "^1.18.8",

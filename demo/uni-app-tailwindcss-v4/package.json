@@ -76,7 +76,7 @@
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@vue/runtime-core": "3.4.21",
     "@vue/tsconfig": "^0.8.1",
-    "@weapp-tailwindcss/merge": "catalog:weappMerge",
+    "@weapp-tailwindcss/merge": "workspace:*",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "^8.2.3",
     "typescript": "catalog:typescript59",

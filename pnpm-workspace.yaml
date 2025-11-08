@@ -55,15 +55,10 @@ catalogs:
   tailwindcss4:
     '@tailwindcss/postcss': ^4.1.17
     '@tailwindcss/vite': ^4.1.17
-    tailwindcss: ^4.1.16
-    tailwindcss4: npm:tailwindcss@^4.1.16
+    tailwindcss: ^4.1.17
+    tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
-  taro36:
-    '@tarojs/mini-runner': 3.6.37
-    '@tarojs/webpack-runner': 3.6.37
-  taro36legacy:
-    '@tarojs/components': 3.6.17
   taro4:
     '@tarojs/cli': ^4.1.8
     '@tarojs/components': ^4.1.8
