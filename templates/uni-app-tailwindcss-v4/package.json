@@ -70,7 +70,7 @@
     "@vue/runtime-core": "^3.5.21",
     "@vue/tsconfig": "^0.8.1",
     "tailwindcss": "^4.1.17",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.10",
     "weapp-ide-cli": "^4.1.0",

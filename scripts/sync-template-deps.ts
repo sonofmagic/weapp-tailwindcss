@@ -89,6 +89,10 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
   const weappTailwindcssVersion = readWorkspacePackageVersion(path.join('packages', 'weapp-tailwindcss'))
   const mergeVersion = readWorkspacePackageVersion(path.join('packages', 'merge'))
   const weappIdeCliVersion = await fetchLatestVersion('weapp-ide-cli')
+  const weappViteVersion = await fetchLatestVersion('weapp-vite')
+  const sassVersion = await fetchLatestVersion('sass')
+  const sassEmbeddedVersion = await fetchLatestVersion('sass-embedded')
+  const typescriptVersion = await fetchLatestVersion('typescript')
   return [
     {
       name: 'weapp-tailwindcss',
@@ -108,6 +112,26 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
       name: 'weapp-ide-cli',
       version: weappIdeCliVersion,
       range: `^${weappIdeCliVersion}`,
+    },
+    {
+      name: 'weapp-vite',
+      version: weappViteVersion,
+      range: `^${weappViteVersion}`,
+    },
+    {
+      name: 'sass',
+      version: sassVersion,
+      range: `^${sassVersion}`,
+    },
+    {
+      name: 'sass-embedded',
+      version: sassEmbeddedVersion,
+      range: `^${sassEmbeddedVersion}`,
+    },
+    {
+      name: 'typescript',
+      version: typescriptVersion,
+      range: `^${typescriptVersion}`,
     },
   ]
 }

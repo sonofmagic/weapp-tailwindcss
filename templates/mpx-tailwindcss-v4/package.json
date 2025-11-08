@@ -45,7 +45,7 @@
     "stylus": "^0.64.0",
     "stylus-loader": "^8.1.2",
     "tailwindcss": "^4.1.17",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.1.0",
     "weapp-tailwindcss": "^4.7.6",
     "webpack": "^5.101.3"
