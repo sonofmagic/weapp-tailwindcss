@@ -505,9 +505,9 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(185, 28, 28, var(--tw-bg-opacity, 1));
 }
-.bg-_b_he43007_B {
+.bg-_b_hc65ece_B {
   --tw-bg-opacity: 1;
-  background-color: rgba(228, 48, 7, var(--tw-bg-opacity, 1));
+  background-color: rgba(198, 94, 206, var(--tw-bg-opacity, 1));
 }
 .bg-_b_he6e6e6_B {
   --tw-bg-opacity: 1;
@@ -726,6 +726,10 @@ text,
 ._etext-primary {
   --tw-text-opacity: 1 !important;
   color: rgba(69, 163, 250, var(--tw-text-opacity, 1)) !important;
+}
+.text-_b_h0b138f_B {
+  --tw-text-opacity: 1;
+  color: rgba(11, 19, 143, var(--tw-text-opacity, 1));
 }
 .text-_b_h123456_B {
   --tw-text-opacity: 1;

@@ -52,7 +52,7 @@
       <div>03</div>
     </div>
     <button @click="reverseFlag = !reverseFlag">reverseFlag</button>
-    <input v-model="aaa"></input>
+    <input v-model="aaa" />
     <HelloWorld v-model="aaa"></HelloWorld>
   </view>
 </template>
@@ -64,12 +64,12 @@ import { ref } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')
 const reverseFlag = ref(false)
-const weappTwIgnore = String.raw
+
 const aaa = ref('111')
 const world = {
   Accept: `text/event-stream`,
   CCC: `text` + `/evexstream`,
-  BBB: 'bg-[#123456]'
+  BBB: weappTwIgnore`bg-[#123498]`
 }
 console.log(world)
 const goOrder = () => {

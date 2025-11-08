@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
 ::before,
 ::after {
   --tw-content: '';
@@ -244,6 +244,9 @@ text,
 .bg-_b_h0000ff_B {
   background-color: #00f;
 }
+.bg-_b_h123498_B {
+  background-color: #123498;
+}
 .bg-emerald-500 {
   background-color: rgb(0, 185, 129);
   background-color: color(display-p3 0.26711 0.72685 0.5084);
@@ -274,12 +277,6 @@ text,
 .text-center {
   text-align: center;
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B {
-  font-size: 88rpx;
-}
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: 700;
@@ -287,6 +284,12 @@ text,
 }
 .text-_b_h00f285_B {
   color: #00f285;
+}
+.text-_b45rpx_B {
+  color: 45rpx;
+}
+.text-_b88rpx_B {
+  color: 88rpx;
 }
 .text-tahiti {
   color: #3ab7bf;

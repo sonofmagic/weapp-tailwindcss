@@ -155,7 +155,7 @@
   },
   "scripts": {
     "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "build": "tsup && node scripts/ensure-escape-dts.mjs",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "build:css": "tsx scripts/build-css.ts",
