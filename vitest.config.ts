@@ -5,7 +5,6 @@ export default defineConfig({
     projects: [
       'packages/*',
       'packages-runtime/*',
-      'plugins/*',
     ],
     coverage: {
       enabled: true,

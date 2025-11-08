@@ -3,6 +3,7 @@ const colors = require('tailwindcss/colors')
 function round(num) {
   return num
     .toFixed(7)
+    // eslint-disable-next-line regexp/no-super-linear-backtracking
     .replace(/(\.\d+?)0+$/, '$1')
     .replace(/\.0$/, '')
 }

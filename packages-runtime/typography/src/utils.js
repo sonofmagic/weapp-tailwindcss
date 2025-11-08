@@ -50,7 +50,9 @@ module.exports = {
         break
       }
 
-      for (const pseudo of pseudos) { pseudo.remove() }
+      for (const pseudo of pseudos) {
+        pseudo.remove()
+      }
       trailingPseudos.prepend(pseudos[0])
     }
 
