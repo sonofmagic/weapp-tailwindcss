@@ -36,7 +36,7 @@ export default icebreaker(
     },
   },
   {
-    files: ['packages/merge/**/*.test.ts'],
+    files: ['packages-runtime/merge/**/*.test.ts'],
     rules: {
 
     },

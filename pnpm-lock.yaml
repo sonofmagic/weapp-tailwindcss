@@ -787,7 +787,7 @@ importers:
         version: 1.18.8
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
-        version: link:../../packages/merge
+        version: link:../../packages-runtime/merge
       babel-preset-taro:
         specifier: 4.1.8
         version: 4.1.8(@babel/core@7.28.5)(@babel/plugin-transform-typescript@7.28.5(@babel/core@7.28.5))(@babel/preset-react@7.28.5(@babel/core@7.28.5))(@swc/helpers@0.5.17)(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.28.5))(metro-react-native-babel-preset@0.72.4(@babel/core@7.28.5))(react-refresh@0.18.0)
@@ -856,7 +856,7 @@ importers:
     dependencies:
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
-        version: link:../../packages/merge
+        version: link:../../packages-runtime/merge
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -923,7 +923,7 @@ importers:
     devDependencies:
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
-        version: link:../../packages/merge
+        version: link:../../packages-runtime/merge
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.4.21(postcss@8.5.6)
@@ -3560,7 +3560,7 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
 
-  packages/merge:
+  packages-runtime/merge:
     dependencies:
       '@weapp-core/escape':
         specifier: ^5.0.1
@@ -3683,9 +3683,9 @@ importers:
 
   packages/test-helper: {}
 
-  packages/theme-transition: {}
+  packages-runtime/theme-transition: {}
 
-  packages/ui:
+  packages-runtime/ui:
     dependencies:
       tailwind-merge:
         specifier: catalog:tailwindMerge
@@ -3822,7 +3822,7 @@ importers:
         version: 3.1.1(@types/react@19.2.2)(react@19.2.0)
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
-        version: link:../packages/merge
+        version: link:../packages-runtime/merge
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -3922,7 +3922,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       theme-transition:
         specifier: workspace:*
-        version: link:../packages/theme-transition
+        version: link:../packages-runtime/theme-transition
       typedoc:
         specifier: ^0.28.14
         version: 0.28.14(typescript@5.9.3)

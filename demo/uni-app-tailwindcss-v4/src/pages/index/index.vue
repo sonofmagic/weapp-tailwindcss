@@ -58,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+import { twMerge } from '@weapp-tailwindcss/merge'
 import { weappTwIgnore } from "weapp-tailwindcss/escape"
 import HelloWorld from "@/components/HelloWorld.vue"
 import { ref } from 'vue'
@@ -71,7 +72,7 @@ const world = {
   CCC: `text` + `/evexstream`,
   BBB: weappTwIgnore`bg-[#123498]`
 }
-console.log(world)
+console.log(world, twMerge)
 const goOrder = () => {
   uni.navigateTo({
     url: '/pages-order/pages/home/home'

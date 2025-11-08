@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
-    "directory": "packages/ui"
+    "directory": "packages-runtime/ui"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
