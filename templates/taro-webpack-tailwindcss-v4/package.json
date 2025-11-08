@@ -62,7 +62,7 @@
     "@tarojs/taro": "4.1.6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@weapp-tailwindcss/merge": "^2.0.1"
+    "@weapp-tailwindcss/merge": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
@@ -87,7 +87,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.1.0",
-    "weapp-tailwindcss": "^4.7.6",
+    "weapp-tailwindcss": "^4.7.7",
     "webpack": "5.101.3"
   },
   "pnpm": {

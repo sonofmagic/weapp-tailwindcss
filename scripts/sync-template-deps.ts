@@ -87,7 +87,7 @@ async function fetchTailwindVersion(pkgName: string, major: number): Promise<str
 
 async function resolveBaseTargets(): Promise<TargetPackage[]> {
   const weappTailwindcssVersion = readWorkspacePackageVersion(path.join('packages', 'weapp-tailwindcss'))
-  const mergeVersion = readWorkspacePackageVersion(path.join('packages', 'merge'))
+  const mergeVersion = readWorkspacePackageVersion(path.join('packages-runtime', 'merge'))
   const weappIdeCliVersion = await fetchLatestVersion('weapp-ide-cli')
   const weappViteVersion = await fetchLatestVersion('weapp-vite')
   const sassVersion = await fetchLatestVersion('sass')
@@ -497,6 +497,16 @@ async function runCommand(
   }
 }
 
+export async function formatTemplateCode(templateDir: string): Promise<void> {
+  const relative = path.relative(ROOT, templateDir) || '.'
+  const success = await runCommand('pnpm', ['exec', 'eslint', relative, '--fix'], ROOT, {
+    allowFailure: true,
+  })
+  if (!success) {
+    console.warn(`格式化 ${relative} 失败，可手动运行 pnpm exec eslint ${relative} --fix`)
+  }
+}
+
 async function withWorkspaceIsolation<T>(operation: () => Promise<T> | T): Promise<T> {
   if (!existsSync(WORKSPACE_MANIFEST)) {
     return await Promise.resolve(operation())
@@ -595,6 +605,8 @@ async function processTemplate(
     await updateLockfile(templateDir, manager)
     relevantTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
   }
+
+  // await formatTemplateCode(templateDir)
 
   return true
 }

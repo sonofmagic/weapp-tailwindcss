@@ -11,6 +11,7 @@
       <IceButton custom-class="bg-amber-600">
         按钮示例
       </IceButton>
+      <IceInput v-model="motto" />
     </view>
 
   </view>
@@ -18,9 +19,15 @@
 
 <script setup lang="ts">
 import IceButton from '@/components/IceButton.vue'
-import { ref } from 'vue'
+import IceInput from '@/components/IceInput.vue'
+import { ref, watch } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#00aa55] mb-[20rpx] p-[20rpx]')
+const motto = ref('Hello World!')
+
+watch(() => motto.value,()=>{
+  console.log(motto.value)
+})
 </script>
 
 <style>
