@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/merge-v3",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Tailwind Merge v2 的 weapp 运行时封装，适配 tailwindcss v3 项目。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/cva",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "class-variance-authority 的运行时封装，自动完成小程序 escape/unescape。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
