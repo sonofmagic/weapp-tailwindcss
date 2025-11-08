@@ -82,7 +82,7 @@
     "postcss": "catalog:postcss85",
     "react-refresh": "catalog:reactRefresh018",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "^8.2.2",
+    "tailwindcss-patch": "^8.2.3",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",

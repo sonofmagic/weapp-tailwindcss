@@ -6,6 +6,7 @@ import process from 'node:process'
 import cac from 'cac'
 import semver from 'semver'
 import { groupTokensByFile } from 'tailwindcss-patch'
+import { clearTailwindcssPatcherCache } from '@/context'
 import { loadTailwindcssMangleConfig } from './cli/config'
 import {
   buildTailwindcssPatcherOptions,
@@ -46,6 +47,7 @@ cli
     commandAction(async (options: CommonCommandOptions) => {
       const resolvedCwd = resolveCliCwd(options.cwd)
       const ctx = createCliContext(undefined, resolvedCwd)
+      await clearTailwindcssPatcherCache(ctx.twPatcher, { removeDirectory: true })
       logTailwindcssTarget('cli', ctx.twPatcher, ctx.tailwindcssBasedir)
       await ctx.twPatcher.patch()
       const shouldRecordTarget = toBoolean(options.recordTarget, false)

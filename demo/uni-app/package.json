@@ -117,7 +117,7 @@
     "sass-loader": "16.0.6",
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.2",
+    "tailwindcss-patch": "^8.2.3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
     "vue-template-compiler": "^2.7.16",

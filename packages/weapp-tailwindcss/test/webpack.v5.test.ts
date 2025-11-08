@@ -164,7 +164,6 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
 
   afterAll(() => {
     expect(fss.existsSync(cacheDir)).toBe(true)
-    expect(fss.existsSync(cacheJson)).toBe(true)
   })
   it('common', async () => {
     let timeStart: number

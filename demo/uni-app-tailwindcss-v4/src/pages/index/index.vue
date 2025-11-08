@@ -53,11 +53,12 @@
     </div>
     <button @click="reverseFlag = !reverseFlag">reverseFlag</button>
     <input v-model="aaa"></input>
-
+    <HelloWorld v-model="aaa"></HelloWorld>
   </view>
 </template>
 
 <script setup lang="ts">
+  import HelloWorld from "@/components/HelloWorld.vue"
 import { ref } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')

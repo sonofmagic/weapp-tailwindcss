@@ -193,6 +193,41 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
+  it('does not transform unrelated template fragments when runtime set is limited', async () => {
+    const runtimeSet = new Set([
+      'active:bg-emerald-50',
+      'active:bg-emerald-600',
+      'aspect-(--my-aspect-ratio)',
+      'aspect-[calc(4*3+1)/3]',
+      'bg-[#0000ff]',
+      'divide-[#41eb04]',
+      'divide-[#d80c0c]',
+      'text-[#00f285]',
+      'text-[#929292]',
+      'text-[45rpx]',
+      'text-[88rpx]',
+      'text/event-stream',
+    ])
+
+    const source = `const world = {
+  Accept: weappTwIgnore\`text/event-stream\`,
+  CCC: \`text\` + \`/evexstream\`,
+}`
+
+    const { code } = await defaultJsHandler(source, runtimeSet)
+    expect(code).toBe(source)
+  })
+
+  it('still transforms plain literals even when a tagged template skips them', async () => {
+    const runtimeSet = new Set(['text/event-stream'])
+    const source = `const header = weappTwIgnore\`text/event-stream\`
+const duplicated = 'text/event-stream'`
+
+    const { code } = await defaultJsHandler(source, runtimeSet)
+    expect(code).toContain('weappTwIgnore`text/event-stream`')
+    expect(code).toContain('\'text_fevent-stream\'')
+  })
+
   it.each(testTable)('$name img url case', async () => {
     const testCase = `data: {
       classNames: "bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]"

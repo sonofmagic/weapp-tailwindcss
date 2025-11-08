@@ -149,6 +149,18 @@ describe('issues', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('tailwindcss@4 text/* heuristics should not treat headers as classes', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/text-event-stream'))
+    expect(code.css).toMatchSnapshot()
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code.css, {
+      isMainChunk: true,
+    })
+    expect(css).toMatchSnapshot()
+  })
+
   it('space-x-number', async () => {
     const code = await generateCss(path.resolve(__dirname, './fixtures/issues/space-x-number'), [autoprefixer({
       add: true,

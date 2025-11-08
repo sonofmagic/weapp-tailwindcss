@@ -105,7 +105,7 @@
     "postcss-comment": "catalog:postcssComment2",
     "regenerator-transform": "^0.15.1",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "^8.2.2",
+    "tailwindcss-patch": "^8.2.3",
     "typescript": "catalog:typescript59tilde",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "catalog:weappIdeCli",

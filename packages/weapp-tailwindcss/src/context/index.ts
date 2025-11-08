@@ -79,27 +79,50 @@ function ensureDefaultsIncluded(
   return value
 }
 
-async function clearTailwindcssPatcherCache(patcher: TailwindcssPatcherLike | undefined) {
+interface ClearTailwindcssPatcherCacheOptions {
+  removeDirectory?: boolean
+}
+
+export async function clearTailwindcssPatcherCache(
+  patcher: TailwindcssPatcherLike | undefined,
+  options?: ClearTailwindcssPatcherCacheOptions,
+) {
   if (!patcher) {
     return
   }
   const cacheOptions = patcher.options?.cache
-  if (!cacheOptions || cacheOptions.enabled === false) {
+  if (
+    cacheOptions == null
+    || cacheOptions === false
+    || (typeof cacheOptions === 'object' && cacheOptions.enabled === false)
+  ) {
     return
   }
-  const cachePath = cacheOptions.path ?? patcher.cacheStore?.options?.path
-  if (!cachePath) {
+  const cachePaths = new Map<string, boolean>()
+  const normalizedCacheOptions = typeof cacheOptions === 'object' ? cacheOptions : undefined
+  if (normalizedCacheOptions?.path) {
+    cachePaths.set(normalizedCacheOptions.path, false)
+  }
+  if (patcher.cacheStore?.options?.path) {
+    cachePaths.set(patcher.cacheStore.options.path, false)
+  }
+  if (options?.removeDirectory && normalizedCacheOptions?.dir) {
+    cachePaths.set(normalizedCacheOptions.dir, true)
+  }
+  if (!cachePaths.size) {
     return
   }
-  try {
-    await rm(cachePath, { force: true })
-  }
-  catch (error) {
-    const err = error as NodeJS.ErrnoException
-    if (err?.code === 'ENOENT') {
-      return
+  for (const [cachePath, recursive] of cachePaths.entries()) {
+    try {
+      await rm(cachePath, { force: true, recursive })
     }
-    logger.debug('failed to clear tailwindcss patcher cache: %s %O', cachePath, err)
+    catch (error) {
+      const err = error as NodeJS.ErrnoException
+      if (err?.code === 'ENOENT') {
+        continue
+      }
+      logger.debug('failed to clear tailwindcss patcher cache: %s %O', cachePath, err)
+    }
   }
 }
 

@@ -22,7 +22,7 @@
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.2",
+    "tailwindcss-patch": "^8.2.3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",

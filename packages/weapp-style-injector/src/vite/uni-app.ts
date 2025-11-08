@@ -1,4 +1,4 @@
-import type { OutputAsset, OutputBundle, OutputOptions, PluginContext } from 'rollup'
+import type { OutputAsset, OutputBundle } from 'rollup'
 import type { Plugin, PluginContainer, ResolvedConfig } from 'vite'
 import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 
@@ -28,7 +28,7 @@ function resolveDefaultPagesJsonPaths(): string[] {
 }
 
 // 使用 Tailwind 插件的 transform 钩子时需要兼容多种写法，这里先抽象出统一的处理函数。
-type TransformHandler = (this: PluginContext, code: string, id: string) => unknown
+type TransformHandler = (this: unknown, code: string, id: string, options?: { ssr?: boolean } | undefined) => unknown
 
 function getTransformHandler(hook: Plugin['transform'] | undefined): TransformHandler | undefined {
   if (!hook) {
@@ -64,7 +64,7 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): 
 
   const transformContext = {
     addWatchFile() {},
-  } as unknown as PluginContext
+  }
 
   // Vite 配置里 plugins 可能是多层嵌套数组，统一拍平成线性列表便于检索
   const flattenPlugins = (plugins: ReadonlyArray<Plugin | Plugin[] | null | undefined | false>): Plugin[] => {
@@ -96,7 +96,7 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): 
         }
       }
     },
-    async generateBundle(_: OutputOptions, bundle: OutputBundle) {
+    async generateBundle(_: unknown, bundle: OutputBundle, _isWrite: boolean) {
       for (const entry of existing) {
         const sourcePath = entry.sourceAbsolutePath
         if (!fs.existsSync(sourcePath)) {

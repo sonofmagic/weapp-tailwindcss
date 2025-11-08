@@ -78,7 +78,7 @@
     "prettier": "^3.4.2",
     "sass": "^1.93.3",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.2",
+    "tailwindcss-patch": "^8.2.3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "tsx": "^4.19.2",
     "typescript": "catalog:typescript59",

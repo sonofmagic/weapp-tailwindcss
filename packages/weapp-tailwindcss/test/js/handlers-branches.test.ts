@@ -210,4 +210,6 @@ describe('replaceHandleValue branch coverage', () => {
 
     expect(token).toBeUndefined()
   })
+
+  // 留空以保持 branch 结构稳定，后续如需新增场景可在此处补充
 })
