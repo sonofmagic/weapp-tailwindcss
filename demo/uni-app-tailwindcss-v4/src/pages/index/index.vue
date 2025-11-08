@@ -52,7 +52,7 @@
       <div>03</div>
     </div>
     <button @click="reverseFlag = !reverseFlag">reverseFlag</button>
-    
+    <input v-model="aaa"></input>
 
   </view>
 </template>
@@ -62,6 +62,13 @@ import { ref } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')
 const reverseFlag = ref(false)
+const weappTwIgnore = String.raw
+const aaa = ref('111')
+const world = {
+  Accept: weappTwIgnore`text/event-stream`,
+  CCC: `text` + `/evexstream`
+}
+console.log(world)
 const goOrder = () => {
   uni.navigateTo({
     url: '/pages-order/pages/home/home'
