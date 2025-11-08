@@ -61,7 +61,7 @@
     "@tarojs/runtime": "catalog:taro4",
     "@tarojs/shared": "catalog:taro4",
     "@tarojs/taro": "catalog:taro4",
-    "vue": "^3.5.21"
+    "vue": "^3.5.24"
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",
