@@ -19,6 +19,10 @@ async function expectProjectSnapshot(suite: string, projectName: string, fileNam
   await expect(content).toMatchFileSnapshot(snapshotPath)
 }
 
+function formatClassListSnapshot(classList: string[]) {
+  return `${JSON.stringify(classList, null, 2)}\n`
+}
+
 async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
   const projectBase = path.resolve(__dirname, options.fixturesDir)
   const projectPath = path.resolve(projectBase, entry.projectPath)
@@ -50,17 +54,24 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   const outputFilename = extraction?.output?.filename ?? path.resolve(root, '.tw-patch/tw-class-list.json')
+  const classListSnapshot = extraction?.classList ? formatClassListSnapshot(extraction.classList) : undefined
+
   let json: string
-  try {
-    json = await fs.readFile(outputFilename, 'utf8')
+  if (classListSnapshot) {
+    json = classListSnapshot
   }
-  catch (error: any) {
-    const code = error?.code
-    if (code && ['ENOENT', 'EPERM'].includes(code)) {
-      json = '[]'
+  else {
+    try {
+      json = await fs.readFile(outputFilename, 'utf8')
     }
-    else {
-      throw error
+    catch (error: any) {
+      const code = error?.code
+      if (code && ['ENOENT', 'EPERM'].includes(code)) {
+        json = formatClassListSnapshot([])
+      }
+      else {
+        throw error
+      }
     }
   }
 

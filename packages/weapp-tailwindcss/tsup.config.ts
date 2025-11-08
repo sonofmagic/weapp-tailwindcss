@@ -14,7 +14,6 @@ export default defineConfig(
         'css-macro': 'src/css-macro/index.ts',
         'css-macro/postcss': 'src/css-macro/postcss.ts',
         'core': 'src/core.ts',
-        'escape': 'src/escape.ts',
         'presets': 'src/presets.ts',
         'types': 'src/types/index.ts',
         'postcss-html-transform': 'src/postcss-html-transform.ts',
@@ -31,10 +30,23 @@ export default defineConfig(
     },
     {
       entry: {
+        escape: 'src/escape.ts',
+      },
+      // Keep the escape runtime free of Node-only shims so bundlers can import it in-browser.
+      dts: true,
+      clean: false,
+      cjsInterop: true,
+      splitting: false,
+      shims: false,
+      format: ['cjs', 'esm'],
+      target: ['es2020'],
+    },
+    {
+      entry: {
         'weapp-tw-runtime-loader': 'src/bundlers/webpack/loaders/weapp-tw-runtime-loader.ts',
       },
       dts: true,
-      clean: true,
+      clean: false,
       cjsInterop: true,
       splitting: true,
       shims: true,
