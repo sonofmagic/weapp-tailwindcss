@@ -6,7 +6,7 @@ import {
   create as createVariants,
   defaultConfig,
   tv,
-} from '@/variants'
+} from '@/index'
 
 describe('variants runtime', () => {
   it('escapes tv output by default', () => {

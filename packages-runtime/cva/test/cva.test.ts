@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { create, cva } from '@/cva'
+import { create, cva } from '@/index'
 
 describe('cva runtime', () => {
   it('escapes the generated class list by default', () => {

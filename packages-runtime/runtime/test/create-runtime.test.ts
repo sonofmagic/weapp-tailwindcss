@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createRuntimeFactory } from '@/core/create-runtime'
+import { createRuntimeFactory } from '@/create-runtime'
 
 describe('createRuntimeFactory', () => {
   it('wraps library helpers with escape/unescape transformers', () => {

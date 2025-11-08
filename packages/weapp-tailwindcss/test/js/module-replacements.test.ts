@@ -33,8 +33,8 @@ describe('module specifier replacements', () => {
     const { code } = await jsHandler(SOURCE, new Set())
     expect(code).toContain(`from '@weapp-tailwindcss/merge'`)
     expect(code).toContain(`export { twJoin } from '@weapp-tailwindcss/merge'`)
-    expect(code).toContain(`require('@weapp-tailwindcss/merge/cva')`)
-    expect(code).toContain(`from '@weapp-tailwindcss/merge/variants'`)
+    expect(code).toContain(`require('@weapp-tailwindcss/cva')`)
+    expect(code).toContain(`from '@weapp-tailwindcss/variants'`)
   })
 
   it('supports custom mapping objects', async () => {

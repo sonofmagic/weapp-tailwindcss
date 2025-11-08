@@ -1,15 +1,15 @@
 ---
 id: cva-and-variants
 title: cva 与 tailwind-variants 支持
-description: '使用 @weapp-tailwindcss/merge 内置的 cva()、tv() 等工具，快速封装跨端组件。'
+description: '使用 weapp-tailwindcss runtime 系列（@weapp-tailwindcss/cva 与 @weapp-tailwindcss/variants）内置的 cva()、tv() 等工具，快速封装跨端组件。'
 ---
 
-`@weapp-tailwindcss/merge` 内置了 `class-variance-authority`（简称 `cva`）与 `tailwind-variants` 的运行时封装，帮你在定义组件变体时自动处理类名冲突和小程序转义。
+`@weapp-tailwindcss/cva` 与 `@weapp-tailwindcss/variants` 对 `class-variance-authority`（简称 `cva`）和 `tailwind-variants` 进行了运行时封装，帮你在定义组件变体时自动处理类名冲突和小程序转义。
 
 ## cva()
 
 ```ts
-import { cva } from '@weapp-tailwindcss/merge/cva'
+import { cva } from '@weapp-tailwindcss/cva'
 
 const button = cva(
   'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors',
@@ -41,7 +41,7 @@ button({ tone: 'outline', size: 'sm' })
 - 如果需要自定义转义行为，可通过 `create` 获取隔离实例：
 
   ```ts
-  import { create } from '@weapp-tailwindcss/merge/cva'
+  import { create } from '@weapp-tailwindcss/cva'
 
   const { cva: cvaForWeb } = create({ escape: false, unescape: false })
   ```
@@ -58,7 +58,7 @@ function () {
 
 ## tailwind-variants
 
-直接从 `@weapp-tailwindcss/merge/variants` 导入 `tv`/`cn`/`createTV` 等工具，即可在运行时获得与小程序兼容的类名字符串。封装会自动把合并结果转义，保持与编译期一致。
+直接从 `@weapp-tailwindcss/variants` 导入 `tv`/`cn`/`createTV` 等工具，即可在运行时获得与小程序兼容的类名字符串。封装会自动把合并结果转义，保持与编译期一致。
 
 该包还提供了对 [`tailwind-variants`](https://tailwind-variants.org/) 的封装，导出项包括：
 
@@ -74,7 +74,7 @@ function () {
 ### 示例：组合变体
 
 ```ts
-import { tv } from '@weapp-tailwindcss/merge/variants'
+import { tv } from '@weapp-tailwindcss/variants'
 
 const badge = tv({
   base: 'inline-flex items-center rounded-full px-2 text-xs font-semibold',
@@ -109,7 +109,7 @@ badge({ tone: 'success' })
 `cn` 默认会调用 `twMerge` 去重。如果想关闭合并或覆盖其配置，可以使用第二个参数：
 
 ```ts
-import { cn } from '@weapp-tailwindcss/merge/variants'
+import { cn } from '@weapp-tailwindcss/variants'
 
 const mergeLater = cn('text-[#ececec]', 'text-[#ECECEC]')
 mergeLater() // => 'text-_b_hECECEC_B'
@@ -121,7 +121,7 @@ mergeLater({ twMerge: false })
 当需要精细化控制转义（例如 SSR 或混合应用中），同样可以结合 `create`：
 
 ```ts
-import { create } from '@weapp-tailwindcss/merge/variants'
+import { create } from '@weapp-tailwindcss/variants'
 
 const { tv: tvForWeb, cn: cnForWeb } = create({
   escape: false,

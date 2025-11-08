@@ -4,9 +4,9 @@ import {
   tailwindMergeVersion,
   twMerge,
   weappTwIgnore,
-} from '@/v3'
+} from '@/index'
 
-describe('v3 runtime exports', () => {
+describe('merge-v3 runtime exports', () => {
   it('provides preconfigured twMerge for tailwind-merge v2', () => {
     expect(twMerge('text-[#ececec]', 'text-[#ECECEC]')).toBe('text-_b_hECECEC_B')
   })

@@ -23,34 +23,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./cva": {
-      "types": "./dist/cva.d.ts",
-      "import": "./dist/cva.js",
-      "require": "./dist/cva.cjs"
-    },
-    "./v3": {
-      "types": "./dist/v3.d.ts",
-      "import": "./dist/v3.js",
-      "require": "./dist/v3.cjs"
-    },
-    "./v4": {
-      "types": "./dist/v4.d.ts",
-      "import": "./dist/v4.js",
-      "require": "./dist/v4.cjs"
-    },
-    "./variants": {
-      "types": "./dist/variants.d.ts",
-      "import": "./dist/variants.js",
-      "require": "./dist/variants.cjs"
     }
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist",
-    "scripts"
+    "dist"
   ],
   "scripts": {
     "dev": "tsup --watch --sourcemap",
@@ -59,8 +38,7 @@
     "test:dev": "vitest",
     "release": "pnpm publish",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "postinstall": "node scripts/postinstall.mjs"
+    "lint:fix": "eslint . --fix"
   },
   "publishConfig": {
     "exports": {
@@ -68,26 +46,6 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js",
         "require": "./dist/index.cjs"
-      },
-      "./cva": {
-        "types": "./dist/cva.d.ts",
-        "import": "./dist/cva.js",
-        "require": "./dist/cva.cjs"
-      },
-      "./v3": {
-        "types": "./dist/v3.d.ts",
-        "import": "./dist/v3.js",
-        "require": "./dist/v3.cjs"
-      },
-      "./v4": {
-        "types": "./dist/v4.d.ts",
-        "import": "./dist/v4.js",
-        "require": "./dist/v4.cjs"
-      },
-      "./variants": {
-        "types": "./dist/variants.d.ts",
-        "import": "./dist/variants.js",
-        "require": "./dist/variants.cjs"
       }
     },
     "main": "./dist/index.cjs",
@@ -96,15 +54,7 @@
   },
   "dependencies": {
     "@weapp-core/escape": "^5.0.1",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "local-pkg": "^1.1.2",
-    "semver": "^7.7.3",
-    "tailwind-merge": "catalog:tailwindMerge",
-    "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0",
-    "tailwind-variants": "^3.1.1"
-  },
-  "devDependencies": {
-    "weapp-tailwindcss": "workspace:*"
+    "@weapp-tailwindcss/runtime": "workspace:*",
+    "tailwind-merge": "catalog:tailwindMerge"
   }
 }

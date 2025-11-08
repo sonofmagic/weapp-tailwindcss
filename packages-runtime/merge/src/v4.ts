@@ -1,4 +1,8 @@
-import type { ClassValue } from 'clsx'
+import type { ClassValue } from '@weapp-tailwindcss/runtime'
+import {
+  createRuntimeFactory,
+  weappTwIgnore,
+} from '@weapp-tailwindcss/runtime'
 import {
   createTailwindMerge as _createTailwindMerge,
   extendTailwindMerge as _extendTailwindMerge,
@@ -7,8 +11,6 @@ import {
   getDefaultConfig,
   mergeConfigs,
 } from 'tailwind-merge'
-import { weappTwIgnore } from 'weapp-tailwindcss/escape'
-import { createRuntimeFactory } from './core/create-runtime'
 
 const create = createRuntimeFactory({
   createTailwindMerge: _createTailwindMerge,
@@ -46,4 +48,4 @@ export type {
   CreateOptions,
   EscapeConfig,
   UnescapeConfig,
-} from './types'
+} from '@weapp-tailwindcss/runtime'

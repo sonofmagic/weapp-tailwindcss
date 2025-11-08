@@ -921,9 +921,18 @@ importers:
 
   apps/vite-native-ts:
     devDependencies:
+      '@weapp-tailwindcss/cva':
+        specifier: workspace:*
+        version: link:../../packages-runtime/cva
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
         version: link:../../packages-runtime/merge
+      '@weapp-tailwindcss/merge-v3':
+        specifier: workspace:*
+        version: link:../../packages-runtime/merge-v3
+      '@weapp-tailwindcss/variants':
+        specifier: workspace:*
+        version: link:../../packages-runtime/variants
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.4.21(postcss@8.5.6)
@@ -3500,42 +3509,44 @@ importers:
         specifier: ^8.2.3
         version: 8.2.3(magicast@0.3.5)(tailwindcss@4.1.17)
 
-  packages-runtime/cva: {}
+  packages-runtime/cva:
+    dependencies:
+      '@weapp-tailwindcss/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
 
   packages-runtime/merge:
     dependencies:
       '@weapp-core/escape':
         specifier: ^5.0.1
         version: 5.0.1
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      local-pkg:
-        specifier: ^1.1.2
-        version: 1.1.2
-      semver:
-        specifier: ^7.7.3
-        version: 7.7.3
+      '@weapp-tailwindcss/runtime':
+        specifier: workspace:*
+        version: link:../runtime
       tailwind-merge:
         specifier: catalog:tailwindMerge
         version: 3.3.1
-      tailwind-merge-v2:
-        specifier: npm:tailwind-merge@^2.6.0
-        version: tailwind-merge@2.6.0
-      tailwind-variants:
-        specifier: ^3.1.1
-        version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.17)
-    devDependencies:
-      weapp-tailwindcss:
+
+  packages-runtime/merge-v3:
+    dependencies:
+      '@weapp-tailwindcss/runtime':
         specifier: workspace:*
-        version: link:../../packages/weapp-tailwindcss
+        version: link:../runtime
+      tailwind-merge:
+        specifier: ^2.6.0
+        version: 2.6.0
 
-  packages-runtime/merge-v3: {}
-
-  packages-runtime/runtime: {}
+  packages-runtime/runtime:
+    dependencies:
+      '@weapp-core/escape':
+        specifier: ^5.0.1
+        version: 5.0.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
 
   packages-runtime/theme-transition: {}
 
@@ -3585,7 +3596,17 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@24.10.0)(rollup@4.53.1)(typescript@5.9.3)(vite@7.2.0(@types/node@24.10.0)(jiti@2.6.1)(less@4.4.2)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.64.0)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1))
 
-  packages-runtime/variants: {}
+  packages-runtime/variants:
+    dependencies:
+      '@weapp-tailwindcss/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      tailwind-merge:
+        specifier: catalog:tailwindMerge
+        version: 3.3.1
+      tailwind-variants:
+        specifier: ^3.1.1
+        version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.17)
 
   packages/babel:
     dependencies:
@@ -3828,9 +3849,15 @@ importers:
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.2)(react@19.2.0)
+      '@weapp-tailwindcss/cva':
+        specifier: workspace:*
+        version: link:../packages-runtime/cva
       '@weapp-tailwindcss/merge':
         specifier: workspace:*
         version: link:../packages-runtime/merge
+      '@weapp-tailwindcss/variants':
+        specifier: workspace:*
+        version: link:../packages-runtime/variants
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -53557,10 +53584,7 @@ snapshots:
       pretty-format: 25.5.0
       throat: 5.0.0
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - supports-color
-      - utf-8-validate
 
   jest-jasmine2@27.5.1:
     dependencies:

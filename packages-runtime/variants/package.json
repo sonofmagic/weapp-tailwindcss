@@ -37,5 +37,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {}
+  "publishConfig": {},
+  "dependencies": {
+    "@weapp-tailwindcss/runtime": "workspace:*",
+    "tailwind-merge": "catalog:tailwindMerge",
+    "tailwind-variants": "^3.1.1"
+  }
 }

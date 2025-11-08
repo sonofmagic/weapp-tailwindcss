@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { create } from '@weapp-tailwindcss/merge/cva'
+import { create } from '@weapp-tailwindcss/cva'
 import { useMemo, useState } from 'react'
 import { useHighlight } from './useHighlight'
 

@@ -4,11 +4,7 @@ export default defineConfig([
   {
     entry: [
       'src/index.ts',
-      'src/cva.ts',
-      'src/v3.ts',
       'src/v4.ts',
-      'src/variants.ts',
-      'src/postinstall.ts',
     ],
     format: ['cjs', 'esm'],
     clean: true,

@@ -1,4 +1,3 @@
-import type { ClassValue } from 'clsx'
 import type {
   CreateOptions,
   TailwindMergeFactory,
@@ -6,7 +5,7 @@ import type {
   TailwindMergeRuntime,
   TailwindMergeVersion,
   Transformers,
-} from '../types'
+} from './types'
 import { clsx } from 'clsx'
 import { resolveTransformers } from './transformers'
 
@@ -26,7 +25,7 @@ interface CreateRuntimeFactoryOptions<
 }
 
 function wrapClassAggregator(fn: TailwindMergeLibraryFn, transformers: Transformers): TailwindMergeRuntime {
-  return (...inputs: ClassValue[]) => {
+  return (...inputs: Parameters<typeof clsx>) => {
     const normalized = transformers.unescape(clsx(...inputs))
     return transformers.escape(fn(normalized))
   }
@@ -50,19 +49,19 @@ export function createRuntimeFactory<
 >(options: CreateRuntimeFactoryOptions<TTwMerge, TTwJoin, TExtendFactory, TCreateFactory>) {
   const {
     version,
-    twMerge: _twMerge,
-    twJoin: _twJoin,
-    extendTailwindMerge: _extendTailwindMerge,
-    createTailwindMerge: _createTailwindMerge,
+    twMerge: twMergeImpl,
+    twJoin: twJoinImpl,
+    extendTailwindMerge: extendFactory,
+    createTailwindMerge: createFactory,
   } = options
 
   return function createRuntime(createOptions?: CreateOptions) {
     const transformers = resolveTransformers(createOptions)
 
-    const twMerge: TailwindMergeRuntime = wrapClassAggregator(_twMerge, transformers)
-    const twJoin: TailwindMergeRuntime = wrapClassAggregator(_twJoin, transformers)
-    const extendTailwindMerge = wrapFactory(_extendTailwindMerge, transformers)
-    const createTailwindMerge = wrapFactory(_createTailwindMerge, transformers)
+    const twMerge: TailwindMergeRuntime = wrapClassAggregator(twMergeImpl, transformers)
+    const twJoin: TailwindMergeRuntime = wrapClassAggregator(twJoinImpl, transformers)
+    const extendTailwindMerge = wrapFactory(extendFactory, transformers)
+    const createTailwindMerge = wrapFactory(createFactory, transformers)
 
     return {
       version,

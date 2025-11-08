@@ -37,5 +37,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {}
+  "publishConfig": {},
+  "dependencies": {
+    "@weapp-tailwindcss/runtime": "workspace:*",
+    "class-variance-authority": "^0.7.1"
+  }
 }

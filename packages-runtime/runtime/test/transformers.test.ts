@@ -1,6 +1,6 @@
 import { MappingChars2String } from '@weapp-core/escape'
 import { describe, expect, it } from 'vitest'
-import { identity, resolveTransformers } from '@/core/transformers'
+import { identity, resolveTransformers } from '@/transformers'
 
 describe('resolveTransformers', () => {
   it('provides default escape and unescape behaviour', () => {

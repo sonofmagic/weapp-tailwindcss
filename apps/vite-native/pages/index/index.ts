@@ -1,7 +1,7 @@
 // index.js
 // import { formatTime } from '../../utils/util'
 
-// import { cva } from '@weapp-tailwindcss/merge/cva'
+// import { cva } from '@weapp-tailwindcss/cva'
 // const { formatTime } = require('../../utils/util')
 import { formatTime } from '../../utils/util'
 

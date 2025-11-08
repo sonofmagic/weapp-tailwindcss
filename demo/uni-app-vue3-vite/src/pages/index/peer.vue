@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { twMerge } from '@weapp-tailwindcss/merge/v3'
-import { cva } from '@weapp-tailwindcss/merge/cva'
+import { twMerge } from '@weapp-tailwindcss/merge-v3'
+import { cva } from '@weapp-tailwindcss/cva'
 
 const hello = 'hello! bg-[1 !! [] b:x' 
 

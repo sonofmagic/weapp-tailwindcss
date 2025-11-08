@@ -1,10 +1,10 @@
 import { create as createRuntime, twMerge } from '@weapp-tailwindcss/merge'
-import { cva } from '@weapp-tailwindcss/merge/cva'
-import { tv } from '@weapp-tailwindcss/merge/variants'
-import { twMerge as twMergeV3 } from '@weapp-tailwindcss/merge/v3'
-import { twMerge as twMergeV4 } from '@weapp-tailwindcss/merge/v4'
+import { cva } from '@weapp-tailwindcss/cva'
+import { tv } from '@weapp-tailwindcss/variants'
+import { twMerge as twMergeV3 } from '@weapp-tailwindcss/merge-v3'
 
 const defaultMerge = twMerge
+const twMergeV4 = twMerge
 const { twMerge: mergeWithoutEscape } = createRuntime({ escape: false })
 const { twMerge: mergeWithoutUnescape } = createRuntime({ unescape: false })
 const { twMerge: mergePassthrough } = createRuntime({ escape: false, unescape: false })
@@ -23,7 +23,7 @@ const versionComparison = [
     result: twMergeV4('p-1 p-2 p-0.5 text-[34px] text-[#ececec]'),
   },
   {
-    label: '默认入口 (自动选择)',
+    label: '默认入口 (tailwindcss v4)',
     code: "twMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')",
     result: defaultMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]'),
   },

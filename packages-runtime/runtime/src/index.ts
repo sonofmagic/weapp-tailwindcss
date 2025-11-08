@@ -1,5 +1,21 @@
-export function greet(name: string) {
-  return `hello ${name}`
-}
+import { clsx as clsxFn } from 'clsx'
 
-export const VERSION = '0.0.0'
+const weappTwIgnoreImpl = String.raw as typeof String.raw
+
+export { clsxFn as clsx }
+export const weappTwIgnore = weappTwIgnoreImpl
+export { createRuntimeFactory } from './create-runtime'
+export { identity, resolveTransformers } from './transformers'
+
+export type {
+  CreateOptions,
+  EscapeConfig,
+  TailwindMergeFactory,
+  TailwindMergeLibraryFn,
+  TailwindMergeRuntime,
+  TailwindMergeVersion,
+  Transformers,
+  UnescapeConfig,
+} from './types'
+export type { ClassValue } from 'clsx'
+export type ClsxFn = typeof clsxFn

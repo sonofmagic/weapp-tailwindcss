@@ -37,5 +37,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {}
+  "publishConfig": {},
+  "dependencies": {
+    "@weapp-core/escape": "^5.0.1",
+    "clsx": "^2.1.1"
+  }
 }

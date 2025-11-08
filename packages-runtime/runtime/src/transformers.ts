@@ -1,5 +1,5 @@
 import type { EscapeOptions, UnescapeOptions } from '@weapp-core/escape'
-import type { CreateOptions, Transformers } from '../types'
+import type { CreateOptions, Transformers } from './types'
 import {
   escape as escapeSelectors,
   MappingChars2String,
