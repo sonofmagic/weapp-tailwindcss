@@ -9,16 +9,8 @@ import type {
   TWMConfig,
   TWMergeConfig,
 } from 'tailwind-variants'
-import {
-  createRuntimeFactory,
-  resolveTransformers,
-} from '@weapp-tailwindcss/runtime'
-import {
-  createTailwindMerge as _createTailwindMerge,
-  extendTailwindMerge as _extendTailwindMerge,
-  twJoin as _twJoin,
-  twMerge as _twMerge,
-} from 'tailwind-merge'
+import { create as createMergeRuntime } from '@weapp-tailwindcss/merge'
+import { resolveTransformers } from '@weapp-tailwindcss/runtime'
 import { defaultConfig, cnBase as tailwindVariantsCnBase } from 'tailwind-variants'
 // @ts-expect-error upstream does not ship typed chunks.
 import { c as createTailwindVariantsFactory } from 'tailwind-variants/dist/chunk-IFWU2MEM.js'
@@ -32,17 +24,9 @@ type TailwindVariantsFactory = (
   createTV: typeof TailwindVariantsCreateTV
 }
 
-const createTailwindMergeRuntime = createRuntimeFactory({
-  createTailwindMerge: _createTailwindMerge,
-  extendTailwindMerge: _extendTailwindMerge,
-  twJoin: _twJoin,
-  twMerge: _twMerge,
-  version: 3,
-})
-
 function createVariantsRuntime(options?: CreateOptions) {
   const transformers = resolveTransformers(options)
-  const tailwindMergeRuntime = createTailwindMergeRuntime(options)
+  const tailwindMergeRuntime = createMergeRuntime(options)
 
   let cachedConfig: TWMConfig['twMergeConfig']
   let cachedMergeFn = tailwindMergeRuntime.twMerge

@@ -2,9 +2,10 @@
   "name": "@weapp-tailwindcss/merge-v3",
   "type": "module",
   "version": "0.0.0",
-  "description": "tsdown bundler template",
+  "description": "Tailwind Merge v2 的 weapp 运行时封装，适配 tailwindcss v3 项目。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.icebreaker.top/docs/community/merge/overview",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
@@ -13,7 +14,13 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "keywords": [],
+  "keywords": [
+    "tailwindcss",
+    "merge",
+    "mini-program",
+    "runtime",
+    "v3"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
@@ -37,7 +44,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@weapp-tailwindcss/runtime": "workspace:*",
     "tailwind-merge": "^2.6.0"

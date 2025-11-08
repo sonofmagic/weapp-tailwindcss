@@ -2,9 +2,10 @@
   "name": "theme-transition",
   "type": "module",
   "version": "2.0.0",
-  "description": "theme-transition css,scss and tailwindcss plugin",
+  "description": "提供 CSS/SCSS/Tailwind 插件的主题过渡能力，适配 weapp-tailwindcss。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.icebreaker.top/docs/community/theme-transition",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
@@ -15,7 +16,9 @@
   },
   "keywords": [
     "theme",
-    "transition"
+    "transition",
+    "tailwindcss",
+    "mini-program"
   ],
   "sideEffects": false,
   "exports": {

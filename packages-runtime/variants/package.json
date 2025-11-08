@@ -2,9 +2,10 @@
   "name": "@weapp-tailwindcss/variants",
   "type": "module",
   "version": "0.0.0",
-  "description": "tsdown bundler template",
+  "description": "tailwind-variants 的运行时封装，提供 tv/cn 等 API 的小程序增强版本。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.icebreaker.top/docs/community/merge/cva-and-variants",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
@@ -13,7 +14,13 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "keywords": [],
+  "keywords": [
+    "tailwindcss",
+    "variants",
+    "tv",
+    "mini-program",
+    "runtime"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
@@ -37,10 +44,12 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
+    "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/runtime": "workspace:*",
-    "tailwind-merge": "catalog:tailwindMerge",
     "tailwind-variants": "^3.1.1"
   }
 }

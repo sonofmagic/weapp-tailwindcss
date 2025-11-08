@@ -6,6 +6,15 @@ description: '使用 weapp-tailwindcss runtime 系列（@weapp-tailwindcss/cva �
 
 `@weapp-tailwindcss/cva` 与 `@weapp-tailwindcss/variants` 对 `class-variance-authority`（简称 `cva`）和 `tailwind-variants` 进行了运行时封装，帮你在定义组件变体时自动处理类名冲突和小程序转义。
 
+## 安装
+
+```bash npm2yarn
+pnpm add @weapp-tailwindcss/cva
+pnpm add @weapp-tailwindcss/variants
+```
+
+> 运行时已经内置 `class-variance-authority` / `tailwind-variants`，无需再安装上游依赖。
+
 ## cva()
 
 ```ts

@@ -3588,12 +3588,12 @@ importers:
 
   packages-runtime/variants:
     dependencies:
+      '@weapp-tailwindcss/merge':
+        specifier: workspace:*
+        version: link:../merge
       '@weapp-tailwindcss/runtime':
         specifier: workspace:*
         version: link:../runtime
-      tailwind-merge:
-        specifier: catalog:tailwindMerge
-        version: 3.3.1
       tailwind-variants:
         specifier: ^3.1.1
         version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.17)

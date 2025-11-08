@@ -5,6 +5,7 @@
   "description": "Atomic utility-first CSS component library for WeChat mini programs.",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
+  "homepage": "https://tw.icebreaker.top/docs/community/ui",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
@@ -13,7 +14,12 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "keywords": [],
+  "keywords": [
+    "tailwindcss",
+    "mini-program",
+    "ui",
+    "components"
+  ],
   "sideEffects": [
     "./dist/index.css",
     "./dist/index.wxss",

@@ -1,8 +1,36 @@
 ---
 id: runtime-api
 title: 运行时 API
-description: '完整梳理 @weapp-tailwindcss/merge 暴露的函数，以及定制运行时行为的方式。'
+description: 'shared runtime —— @weapp-tailwindcss/runtime 以及 merge 系列在小程序里的用法。'
 ---
+
+`@weapp-tailwindcss/runtime` 是所有运行时包的公共底座，统一提供 escape/unescape、`clsx` 封装、`weappTwIgnore` 以及 `createRuntimeFactory`。`@weapp-tailwindcss/merge`、`merge-v3`、`cva`、`variants` 都是基于它实现的。
+
+## 安装
+
+```ts
+pnpm add @weapp-tailwindcss/merge
+```
+
+如果项目仍在使用 Tailwind CSS v3，请改用 `@weapp-tailwindcss/merge-v3`；而 `@weapp-tailwindcss/runtime` 在大部分场景下会作为间接依赖被自动安装。
+
+## Runtime 基本面
+
+```ts
+import {
+  clsx,
+  weappTwIgnore,
+  resolveTransformers,
+  createRuntimeFactory,
+} from '@weapp-tailwindcss/runtime'
+```
+
+- `clsx` / `ClassValue`：统一的类名聚合工具，避免各包重复安装 `clsx`
+- `weappTwIgnore`：`String.raw` 的别名，用于跳过 weapp 转义
+- `resolveTransformers(createOptions)`：返回 `{ escape, unescape }`
+- `createRuntimeFactory(factoryOptions)`：将 `tailwind-merge`、`tailwind-variants` 等库注入 weapp 运行时
+
+## merge 运行时的标准导出
 
 所有 API 都与 `tailwind-merge` 原版保持一致，只是在调用前后包裹了转义逻辑。你可以继续使用熟悉的导入路径：
 
@@ -20,7 +48,10 @@ import {
 } from '@weapp-tailwindcss/merge'
 ```
 
-> 如果你明确知道项目使用的 `tailwindcss` 主版本，也可以直接使用 `@weapp-tailwindcss/merge-v3`（适配 v3）或 `@weapp-tailwindcss/merge`（适配 v4）。
+> - `@weapp-tailwindcss/merge` 适配 `tailwindcss@4`
+> - `@weapp-tailwindcss/merge-v3` 适配 `tailwindcss@3`
+>
+> 两个包内部均依赖 `@weapp-tailwindcss/runtime`，API 完全一致。
 
 ## twMerge(...classValues)
 
@@ -149,3 +180,11 @@ const custom = create({
 custom.twMerge('text-[#ececec]')        // => 'text-_b__hash__ececec_B'
 custom.twMerge('text-_b__hash__ececec_B') // => 'text-_b__hash__ececec_B'
 ```
+
+## 基于 runtime 的其他包
+
+- `@weapp-tailwindcss/cva`：封装 `class-variance-authority`，详见 [cva 支持](/docs/community/merge/cva-and-variants#cva)  
+- `@weapp-tailwindcss/variants`：封装 `tailwind-variants`，详见 [variants 支持](/docs/community/merge/cva-and-variants#tailwind-variants)  
+- `@weapp-tailwindcss/merge-v3`：面向 `tailwindcss@3` 的长期支持分支
+
+它们全部依赖 `@weapp-tailwindcss/runtime`，因此可以共享 escape 配置、`weappTwIgnore` 以及 `clsx`。

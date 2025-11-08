@@ -25,6 +25,16 @@ import Link from '@docusaurus/Link'
 如果你在纯 Web 项目中使用，请参考下方的「多端项目」章节配置。
 :::
 
+## 运行时矩阵
+
+| 包名 | 适用场景 | 说明 |
+| --- | --- | --- |
+| `@weapp-tailwindcss/runtime` | 共享依赖 | 封装 escape/unescape、`clsx`、`weappTwIgnore`，被下游包复用 |
+| `@weapp-tailwindcss/merge` | `tailwindcss@4` | 基于 `tailwind-merge@3`，默认入口 |
+| `@weapp-tailwindcss/merge-v3` | `tailwindcss@3` | 基于 `tailwind-merge@2`，专为老项目保留 |
+| `@weapp-tailwindcss/cva` | `class-variance-authority` | 自动 escape 的 `cva()` 运行时 |
+| `@weapp-tailwindcss/variants` | `tailwind-variants` | 提供 `tv`/`cn` 等扩展能力 |
+
 ## 安装
 
 ```bash npm2yarn
