@@ -10,7 +10,7 @@ title: weapp-tw CLI 使用指南
 | --- | --- | --- |
 | 给 Tailwind CSS 打补丁、注入 `rpx` 支持 | `npx weapp-tw patch` | 运行一次即可，推荐写在 `postinstall`；支持 `--cwd` 指向子包目录。 |
 | 在 monorepo 里批量补丁 | `pnpm -r --filter ./demo/* exec weapp-tw patch --cwd "$PWD"` | 每个 demo 都在自身目录补丁，避免和 hoist 后的 `node_modules` 不一致。 |
-| 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 用于 v4 场景，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
+| 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 适用于 Tailwind v3/v4，v4 需传入 `--css`，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
 | 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
 
 ## `patch` 子命令
@@ -45,7 +45,7 @@ Tailwind CSS 运行时补丁已完成。
 npx weapp-tw extract --css src/app.css --format lines
 ```
 
-- `--css`：Tailwind v4 入口 CSS，必填才能正确收集类名。
+- `--css`：Tailwind 入口 CSS。v4 必填；v3 可省略以沿用 Tailwind 默认入口。
 - `--output`：指定输出文件，默认写入 `.tw-patch/tw-class-cache.json`。
 - `--format`：`json`/`lines`，配合 `--no-write` 可仅打印到终端。
 - `--cwd` 与 `patch` 一致，也支持放在子包里执行。
