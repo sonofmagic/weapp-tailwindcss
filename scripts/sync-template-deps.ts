@@ -1,10 +1,4 @@
-import {
-  existsSync,
-  readdirSync,
-  readFileSync,
-  renameSync,
-  writeFileSync,
-} from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
@@ -39,7 +33,6 @@ interface TargetPackage {
 }
 
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
-const WORKSPACE_MANIFEST = path.join(ROOT, 'pnpm-workspace.yaml')
 const tailwindVersionCache = new Map<string, string>()
 
 function readWorkspacePackageVersion(relativeDir: string): string {
@@ -173,9 +166,6 @@ function buildVersionRange(current: string | undefined, target: TargetPackage): 
           : ''
 
   if (prefix === '>=' || prefix === '*') {
-    if (prefix === '' && target.range.startsWith('workspace:')) {
-      return target.range
-    }
     return `${prefix}${targetVersion}`
   }
 
@@ -465,6 +455,8 @@ async function resolveTailwindTargets(pkg: PackageJson): Promise<TargetPackage[]
   return []
 }
 
+type CommandEnv = Record<string, string | undefined>
+
 async function runCommand(
   command: string,
   args: string[],
@@ -472,7 +464,7 @@ async function runCommand(
   {
     allowFailure = false,
     env,
-  }: { allowFailure?: boolean, env?: NodeJS.ProcessEnv } = {},
+  }: { allowFailure?: boolean, env?: CommandEnv } = {},
 ): Promise<boolean> {
   try {
     await execa(command, args, {
@@ -507,23 +499,21 @@ export async function formatTemplateCode(templateDir: string): Promise<void> {
   }
 }
 
+// Older versions renamed pnpm-workspace.yaml so template installs wouldn't bleed into the workspace.
+// That rename makes git hooks/listeners hang, so keep the isolation purely via per-command envs.
 async function withWorkspaceIsolation<T>(operation: () => Promise<T> | T): Promise<T> {
-  if (!existsSync(WORKSPACE_MANIFEST)) {
-    return await Promise.resolve(operation())
-  }
-
-  const tempPath = `${WORKSPACE_MANIFEST}.bak.${Date.now()}.${Math.random().toString(16).slice(2)}`
-  renameSync(WORKSPACE_MANIFEST, tempPath)
-  try {
-    return await Promise.resolve(operation())
-  }
-  finally {
-    renameSync(tempPath, WORKSPACE_MANIFEST)
-  }
+  return await Promise.resolve(operation())
 }
 
 async function updateLockfile(templateDir: string, manager: ManagerInfo): Promise<void> {
-  const env = { PNPM_WORKSPACE_DIR: templateDir }
+  const env = {
+    PNPM_WORKSPACE_DIR: templateDir,
+    NPM_CONFIG_WORKSPACE_DIR: templateDir,
+    PNPM_PREFER_WORKSPACE_PACKAGES: 'false',
+    PNPM_LINK_WORKSPACE_PACKAGES: 'false',
+    NPM_CONFIG_PREFER_WORKSPACE_PACKAGES: 'false',
+    NPM_CONFIG_LINK_WORKSPACE_PACKAGES: 'false',
+  }
 
   if (manager.name === 'pnpm') {
     await withWorkspaceIsolation(() =>
