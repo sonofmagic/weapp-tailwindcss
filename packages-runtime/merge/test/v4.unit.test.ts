@@ -4,7 +4,7 @@ import {
   tailwindMergeVersion,
   twMerge,
   weappTwIgnore,
-} from '@/v4'
+} from '@/index'
 
 describe('v4 runtime exports', () => {
   it('provides preconfigured twMerge for tailwind-merge v3', () => {
