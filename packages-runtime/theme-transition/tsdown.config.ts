@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   entry: ['src/index.ts', 'src/tailwindcss.ts'],
@@ -8,8 +8,8 @@ export default defineConfig({
   dts: true,
   external: ['tailwindcss'],
   target: 'es6',
-  // https://github.com/egoist/tsup/pull/1056
-  // https://github.com/egoist/tsup/issues?q=cjsInterop
+  // https://github.com/egoist/tsdown/pull/1056
+  // https://github.com/egoist/tsdown/issues?q=cjsInterop
   // cjsInterop: true,
   // splitting: true,
 })
