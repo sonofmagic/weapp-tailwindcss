@@ -1,5 +1,13 @@
 # theme-transition
 
+## 2.0.1
+
+### Patch Changes
+
+- [`0a0c780`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0a0c7803d0ec9e1c67f555d12c074a6d3f33b1ac) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: use tsdown to bundle
+
+- [`7c7b732`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7c7b732c511f47a089e73ecfd7ace091532e170f) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: update package.json meta exports
+
 ## 2.0.0
 
 ### Major Changes
