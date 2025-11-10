@@ -1,7 +1,7 @@
 {
   "name": "theme-transition",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "提供 CSS/SCSS/Tailwind 插件的主题过渡能力，适配 weapp-tailwindcss。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

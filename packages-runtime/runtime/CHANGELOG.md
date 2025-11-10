@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/runtime
 
+## 0.1.1
+
+### Patch Changes
+
+- [`7c7b732`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7c7b732c511f47a089e73ecfd7ace091532e170f) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: update package.json meta exports
+
 ## 0.1.0
 
 ### Minor Changes
