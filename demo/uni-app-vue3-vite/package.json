@@ -100,7 +100,7 @@
     "postcss": "^8.4.35",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "sass": "^1.93.3",
+    "sass": "^1.94.0",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "^8.2.3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",

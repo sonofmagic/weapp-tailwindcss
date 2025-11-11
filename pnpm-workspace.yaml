@@ -11,7 +11,7 @@ packages:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.4.21
+    autoprefixer: ^10.4.22
   babelCore7285:
     '@babel/core': ^7.28.5
   babelPresetReact7285:
@@ -92,7 +92,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.1.0
   weappMerge:
-    '@weapp-tailwindcss/merge': ^2.1.0
+    '@weapp-tailwindcss/merge': ^2.1.1
   weappVite:
     weapp-vite: ^5.9.2
 
