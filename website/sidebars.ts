@@ -135,7 +135,7 @@ const tutorialSidebar: SidebarConfig = [
       {
         type: 'category',
         label: '进阶攻略',
-        collapsed: false,
+        collapsed: true,
         items: [
           {
             type: 'doc',
@@ -203,11 +203,6 @@ const tutorialSidebar: SidebarConfig = [
   {
     type: 'doc',
     id: 'quick-start/css-unit-transform',
-  },
-  {
-    type: 'doc',
-    id: 'options/exports',
-    label: '包导出总览',
   },
   {
     type: 'doc',
