@@ -52,7 +52,7 @@
     "@types/gulp-replace": "^1.1.0",
     "@types/gulp-sass": "^6.0.0",
     "@types/gulp-util": "^3.0.41",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",

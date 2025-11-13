@@ -74,7 +74,7 @@
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/vite-runner": "catalog:taro4",
     "@types/react": "^19.1.13",
-    "@vitejs/plugin-react": "^5.1.0",
+    "@vitejs/plugin-react": "^5.1.1",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "babel-preset-taro": "4.1.8",
     "eslint": "^9.39.1",

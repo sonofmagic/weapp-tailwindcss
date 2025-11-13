@@ -64,11 +64,11 @@ function AdsContainerElement() {
       <a
         className={clsx(
           `
-          relative flex rounded-xl bg-[#f6f6f7] p-4
-          shadow-[inset_0_0_0_1px_#ffffff1a]
-          hover:no-underline
-          dark:bg-[#1e293b]
-        `,
+            relative flex rounded-xl bg-[#f6f6f7] p-4
+            shadow-[inset_0_0_0_1px_#ffffff1a]
+            hover:no-underline
+            dark:bg-[#1e293b]
+          `,
           isCompact ? 'flex-col gap-3' : 'items-center justify-between',
         )}
         target="_blank"
@@ -91,7 +91,7 @@ function AdsContainerElement() {
             Aizex 合租面板
           </div>
           <div className="text-xs text-[rgb(95,181,221)]">
-            更好用的「GPT-4 x 克劳德」使用方式
+            更好用的「GPT-5 x Claude」使用方式
           </div>
 
         </div>

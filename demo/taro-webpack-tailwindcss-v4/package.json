@@ -75,7 +75,7 @@
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/taro-loader": "catalog:taro4",
     "@tarojs/webpack5-runner": "catalog:taro4",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.1.13",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
