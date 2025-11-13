@@ -1,9 +1,12 @@
 import useIsBrowser from '@docusaurus/useIsBrowser'
 import { useEffect, useState } from 'react'
 
-export const GITHUB_CACHE_TTL = 1000 * 60 * 30 // 30 minutes
+export const GITHUB_CACHE_TTL = 1000 * 60 * 60 * 2 // 2 hours per requirement
 const GITHUB_CACHE_PREFIX = 'weapp-tailwindcss:github-stars'
 const SHIELDS_ENDPOINT = 'https://img.shields.io/github/stars'
+const SHIELDS_DYNAMIC_ENDPOINT = 'https://img.shields.io/badge/dynamic/json'
+const SHIELDS_DYNAMIC_QUERY = '$.stargazers_count'
+const SHIELDS_DYNAMIC_CACHE_SECONDS = 60 * 60 * 2 // 2 hours
 
 export interface UseGitHubStarsOptions {
   enabled?: boolean
@@ -62,20 +65,55 @@ function parseStarMessage(message?: string): number | null {
   return Math.round(value * multiplier)
 }
 
-export async function fetchRepoStars(owner: string, repo: string): Promise<number | null> {
+function buildDynamicShieldsUrl(owner: string, repo: string): string {
+  const url = new URL(SHIELDS_DYNAMIC_ENDPOINT)
+  url.searchParams.set('label', 'stars')
+  url.searchParams.set('color', 'informational')
+  url.searchParams.set('cacheSeconds', String(SHIELDS_DYNAMIC_CACHE_SECONDS))
+  url.searchParams.set('query', SHIELDS_DYNAMIC_QUERY)
+  url.searchParams.set('url', `https://api.github.com/repos/${owner}/${repo}`)
+  return url.toString()
+}
+
+async function fetchRepoStarsViaShieldsDynamic(owner: string, repo: string): Promise<number | null> {
   try {
-    const response = await fetch(`${SHIELDS_ENDPOINT}/${owner}/${repo}.json`)
+    const response = await fetch(buildDynamicShieldsUrl(owner, repo))
     if (!response.ok) {
-      console.warn(`fetchRepoStars: shields.io responded with ${response.status} for ${owner}/${repo}`)
+      console.warn(`fetchRepoStarsViaShieldsDynamic: shields.io responded with ${response.status} for ${owner}/${repo}`)
       return null
     }
     const data = await response.json() as ShieldsResponse
     return parseStarMessage(data.message)
   }
   catch (error) {
-    console.warn(`fetchRepoStars: failed to fetch via shields.io for ${owner}/${repo}`, error)
+    console.warn(`fetchRepoStarsViaShieldsDynamic: failed to fetch for ${owner}/${repo}`, error)
     return null
   }
+}
+
+async function fetchRepoStarsViaShields(owner: string, repo: string): Promise<number | null> {
+  try {
+    const response = await fetch(`${SHIELDS_ENDPOINT}/${owner}/${repo}.json`)
+    if (!response.ok) {
+      console.warn(`fetchRepoStarsViaShields: shields.io responded with ${response.status} for ${owner}/${repo}`)
+      return null
+    }
+    const data = await response.json() as ShieldsResponse
+    return parseStarMessage(data.message)
+  }
+  catch (error) {
+    console.warn(`fetchRepoStarsViaShields: failed to fetch for ${owner}/${repo}`, error)
+    return null
+  }
+}
+
+export async function fetchRepoStars(owner: string, repo: string): Promise<number | null> {
+  const precise = await fetchRepoStarsViaShieldsDynamic(owner, repo)
+  if (precise != null) {
+    return precise
+  }
+
+  return fetchRepoStarsViaShields(owner, repo)
 }
 
 export function readStarCache(key: string): number | null {
