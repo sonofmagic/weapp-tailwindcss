@@ -1,6 +1,6 @@
 import type { JSX } from 'react'
 import React from 'react'
-import { useGitHubStars } from '../utils/github'
+import { formatGitHubStarCount, useGitHubStars } from '../utils/github'
 
 interface GitHubStarButtonProps {
   owner: string
@@ -13,7 +13,7 @@ export default function GitHubStarButton(props: GitHubStarButtonProps): JSX.Elem
   const { owner, repo, label = 'Star', className } = props
   const { stars, loading } = useGitHubStars(owner, repo)
 
-  const displayCount = stars != null ? stars.toLocaleString() : loading ? '...' : '—'
+  const displayCount = loading ? '...' : formatGitHubStarCount(stars)
   const repoLabel = `${owner}/${repo}`
 
   return (

@@ -240,8 +240,8 @@ importers:
         specifier: ^1.5.9
         version: 1.5.9(@vue/compiler-sfc@3.5.24)(eslint@9.39.1(jiti@2.6.1))(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))(typescript@5.9.3)(vitest@4.0.8)
       '@icebreakers/monorepo':
-        specifier: ^2.1.6
-        version: 2.1.6(@types/node@24.10.1)(magicast@0.5.1)(typanion@3.14.0)
+        specifier: ^2.2.0
+        version: 2.2.0(@types/node@24.10.1)(magicast@0.5.1)(typanion@3.14.0)
       '@icebreakers/stylelint-config':
         specifier: ^1.2.3
         version: 1.2.3(postcss@8.5.6)(stylelint-order@7.0.0(stylelint@16.25.0(typescript@5.9.3)))(stylelint@16.25.0(typescript@5.9.3))
@@ -6986,8 +6986,8 @@ packages:
   '@icebreakers/eslint-config@1.5.9':
     resolution: {integrity: sha512-m0lbJpjsjgTN60MxhmoFa8ovfNX7RC1IUxqTSe7+dDPQxBM2sWAl+bZ4xLCtNf7ilc8IchTGW90C7rr7P1yrbg==}
 
-  '@icebreakers/monorepo@2.1.6':
-    resolution: {integrity: sha512-cHBrw+WuPzCoKxwbBN8vEviAcn1/+qyZcPMon6ITB91UEm9lrwrYqHPDlfsPPVzDtfZE9cw9mkFM8cmfQZ7pTA==}
+  '@icebreakers/monorepo@2.2.0':
+    resolution: {integrity: sha512-aDo/YEQxCYX2z1t/ZlzuIVo06VIfiRtZ3wpYAdj5jDBewJop54G8Iggv8XwSL/+FUwMDRcQ23CeTCoI9MbGDSw==}
     hasBin: true
 
   '@icebreakers/stylelint-config@1.2.3':
@@ -34226,7 +34226,7 @@ snapshots:
       - typescript
       - vitest
 
-  '@icebreakers/monorepo@2.1.6(@types/node@24.10.1)(magicast@0.5.1)(typanion@3.14.0)':
+  '@icebreakers/monorepo@2.2.0(@types/node@24.10.1)(magicast@0.5.1)(typanion@3.14.0)':
     dependencies:
       '@inquirer/checkbox': 4.3.2(@types/node@24.10.1)
       '@inquirer/input': 4.3.1(@types/node@24.10.1)

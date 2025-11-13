@@ -1,12 +1,13 @@
 import type { JSX } from 'react'
 import React from 'react'
-import { useGitHubStars } from '../utils/github'
+import { formatGitHubStarCount, useGitHubStars } from '../utils/github'
 
 const GITHUB_OWNER = 'sonofmagic'
 const GITHUB_REPO = 'weapp-tailwindcss'
 
 export default function HeroGithubBadge(): JSX.Element {
   const { stars } = useGitHubStars(GITHUB_OWNER, GITHUB_REPO)
+  const displayStars = formatGitHubStarCount(stars)
 
   return (
     <a
@@ -76,7 +77,7 @@ export default function HeroGithubBadge(): JSX.Element {
         dark:text-slate-100
       `}
       >
-        {stars != null ? stars.toLocaleString() : '—'}
+        {displayStars}
       </span>
     </a>
   )

@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react'
 export const GITHUB_CACHE_TTL = 1000 * 60 * 60 * 2 // 2 hours per requirement
 const GITHUB_CACHE_PREFIX = 'weapp-tailwindcss:github-stars'
 const SHIELDS_ENDPOINT = 'https://img.shields.io/github/stars'
-const SHIELDS_DYNAMIC_ENDPOINT = 'https://img.shields.io/badge/dynamic/json'
-const SHIELDS_DYNAMIC_QUERY = '$.stargazers_count'
-const SHIELDS_DYNAMIC_CACHE_SECONDS = 60 * 60 * 2 // 2 hours
+const GITHUB_HTML_PROXY_ENDPOINT = 'https://r.jina.ai/https://github.com'
 
 export interface UseGitHubStarsOptions {
   enabled?: boolean
@@ -65,30 +63,22 @@ function parseStarMessage(message?: string): number | null {
   return Math.round(value * multiplier)
 }
 
-function buildDynamicShieldsUrl(owner: string, repo: string): string {
-  const url = new URL(SHIELDS_DYNAMIC_ENDPOINT)
-  url.searchParams.set('label', 'stars')
-  url.searchParams.set('color', 'informational')
-  url.searchParams.set('cacheSeconds', String(SHIELDS_DYNAMIC_CACHE_SECONDS))
-  url.searchParams.set('query', SHIELDS_DYNAMIC_QUERY)
-  url.searchParams.set('url', `https://api.github.com/repos/${owner}/${repo}`)
-  return url.toString()
+function escapeForRegex(value: string): string {
+  return value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-async function fetchRepoStarsViaShieldsDynamic(owner: string, repo: string): Promise<number | null> {
-  try {
-    const response = await fetch(buildDynamicShieldsUrl(owner, repo))
-    if (!response.ok) {
-      console.warn(`fetchRepoStarsViaShieldsDynamic: shields.io responded with ${response.status} for ${owner}/${repo}`)
-      return null
-    }
-    const data = await response.json() as ShieldsResponse
-    return parseStarMessage(data.message)
-  }
-  catch (error) {
-    console.warn(`fetchRepoStarsViaShieldsDynamic: failed to fetch for ${owner}/${repo}`, error)
+function parseStarsFromGitHubPage(markdown: string, owner: string, repo: string): number | null {
+  if (!markdown) {
     return null
   }
+  const ownerPattern = escapeForRegex(normalizeOwner(owner))
+  const repoPattern = escapeForRegex(normalizeRepo(repo))
+  const regex = new RegExp(String.raw`\[([^\]]+?)\s+stars]\(https://github\.com/${ownerPattern}/${repoPattern}/stargazers\)`, 'i')
+  const match = markdown.match(regex)
+  if (!match) {
+    return null
+  }
+  return parseStarMessage(match[1])
 }
 
 async function fetchRepoStarsViaShields(owner: string, repo: string): Promise<number | null> {
@@ -107,13 +97,29 @@ async function fetchRepoStarsViaShields(owner: string, repo: string): Promise<nu
   }
 }
 
+async function fetchRepoStarsViaGitHubPage(owner: string, repo: string): Promise<number | null> {
+  try {
+    const response = await fetch(`${GITHUB_HTML_PROXY_ENDPOINT}/${owner}/${repo}`)
+    if (!response.ok) {
+      console.warn(`fetchRepoStarsViaGitHubPage: proxy responded with ${response.status} for ${owner}/${repo}`)
+      return null
+    }
+    const markdown = await response.text()
+    return parseStarsFromGitHubPage(markdown, owner, repo)
+  }
+  catch (error) {
+    console.warn(`fetchRepoStarsViaGitHubPage: failed to fetch for ${owner}/${repo}`, error)
+    return null
+  }
+}
+
 export async function fetchRepoStars(owner: string, repo: string): Promise<number | null> {
-  const precise = await fetchRepoStarsViaShieldsDynamic(owner, repo)
-  if (precise != null) {
-    return precise
+  const primary = await fetchRepoStarsViaShields(owner, repo)
+  if (primary != null) {
+    return primary
   }
 
-  return fetchRepoStarsViaShields(owner, repo)
+  return fetchRepoStarsViaGitHubPage(owner, repo)
 }
 
 export function readStarCache(key: string): number | null {
@@ -153,6 +159,28 @@ export function writeStarCache(key: string, value: number): void {
   catch (error) {
     console.warn('writeStarCache: failed to cache GitHub stars', error)
   }
+}
+
+function formatWithSuffix(value: number, suffix: string): string {
+  const rounded = Number(value.toFixed(1))
+  const text = Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toString()
+  return `${text}${suffix}`
+}
+
+export function formatGitHubStarCount(count?: number | null): string {
+  if (count == null) {
+    return '—'
+  }
+  if (count < 1_000) {
+    return count.toLocaleString()
+  }
+  if (count >= 1_000_000_000) {
+    return formatWithSuffix(count / 1_000_000_000, 'B')
+  }
+  if (count >= 1_000_000) {
+    return formatWithSuffix(count / 1_000_000, 'M')
+  }
+  return formatWithSuffix(count / 1_000, 'k')
 }
 
 export function useGitHubStars(owner?: string, repo?: string, options?: UseGitHubStarsOptions): UseGitHubStarsResult {
