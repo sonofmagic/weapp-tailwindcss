@@ -36,8 +36,8 @@
 
 </iframe>
 
-[monorepo-uniapp-template](https://github.com/sukbearai/monorepo-uniapp-template) <iframe
-              src="https://ghbtns.com/github-btn.html?user=sukbearai&repo=monorepo-uniapp-template&type=star&count=true"
+[monorepo-uniapp-template](https://github.com/sukbearai/x-dev-uni) <iframe
+              src="https://ghbtns.com/github-btn.html?user=sukbearai&repo=x-dev-uni&type=star&count=true"
               frameborder="0"
               scrolling="0"
               width="110"
@@ -64,8 +64,8 @@
 
 </iframe>
 
-[uni-app-vue2-tailwind-hbuilder-template (架构太过老旧，只能作为集成参考，新项目请勿使用)](https://github.com/icebreaker-trash/uni-app-vue2-tailwind-hbuilder-template) <iframe
-              src="https://ghbtns.com/github-btn.html?user=icebreaker-trash&repo=uni-app-vue2-tailwind-hbuilder-template&type=star&count=true"
+[uni-app-vue2-tailwind-hbuilder-template (架构太过老旧，只能作为集成参考，新项目请勿使用)](https://github.com/icebreaker-template/uni-app-vue2-tailwind-hbuilder-template) <iframe
+              src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=uni-app-vue2-tailwind-hbuilder-template&type=star&count=true"
               frameborder="0"
               scrolling="0"
               width="110"
@@ -100,7 +100,20 @@
 
 🔥 [weapp-vite-tailwindcss-template (weapp-vite 打包)](https://vite.icebreaker.top/guide/)
 
-🔥 [vue-mini-tailwindcss-v4 (weapp-vite 打包)](https://github.com/buduan/Vue-mini_tailwindcss_v4)
+[vue-mini-tailwindcss-template(vue-mini 支持)](https://github.com/sonofmagic/vue-mini-tailwindcss-template) <iframe
+              src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=vue-mini-tailwindcss-template&type=star&count=true"
+              frameborder="0"
+              scrolling="0"
+              width="110"
+              height="20"
+              title="GitHub"
+            >
+
+</iframe>
+
+<!-- 🔥 [vue-mini-tailwindcss-v4 (weapp-vite 打包)](https://github.com/buduan/Vue-mini_tailwindcss_v4) -->
+
+#### 下方的技术架构过于老旧，不推荐
 
 [native-weapp-tailwindcss-template (cli 打包)](https://github.com/sonofmagic/native-weapp-tailwindcss-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=native-weapp-tailwindcss-template&type=star&count=true"
@@ -117,17 +130,6 @@
 
 [weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template) <iframe
               src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=weapp-native-mina-tailwindcss-template&type=star&count=true"
-              frameborder="0"
-              scrolling="0"
-              width="110"
-              height="20"
-              title="GitHub"
-            >
-
-</iframe>
-
-[vue-mini-tailwindcss-template(实验性 vue-mini 支持)](https://github.com/sonofmagic/vue-mini-tailwindcss-template) <iframe
-              src="https://ghbtns.com/github-btn.html?user=icebreaker-template&repo=vue-mini-tailwindcss-template&type=star&count=true"
               frameborder="0"
               scrolling="0"
               width="110"

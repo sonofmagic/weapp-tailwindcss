@@ -43,7 +43,7 @@
 
 #### 👉 [3. 可直接使用的各个框架的小程序模板](/docs/community/templates)
 
-### 🧪 Tailwind CSS @4.x(实现性)
+### 🧪 Tailwind CSS @4.x
 
 #### 👉 [Tailwindcss@4.x 快速开始](/docs/quick-start/v4)
 
