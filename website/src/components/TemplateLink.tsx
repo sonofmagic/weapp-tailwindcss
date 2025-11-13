@@ -8,6 +8,7 @@ interface TemplateLinkProps {
   repoOwner?: string
   repo?: string
   hot?: boolean
+  deprecated?: boolean
   badge?: ReactNode
   description?: ReactNode
   children?: ReactNode
@@ -21,25 +22,70 @@ export default function TemplateLink(props: TemplateLinkProps): JSX.Element {
     repoOwner,
     repo,
     hot,
+    deprecated,
     badge,
     description,
     children,
     className,
   } = props
   const detail = description ?? children
-  const badgeContent = badge ?? (hot ? '🔥 推荐' : null)
+  const variant = deprecated ? 'deprecated' : hot ? 'recommended' : 'default'
+  const badgeContent = badge
+    ?? (variant === 'deprecated'
+      ? '⚠️ 不推荐'
+      : variant === 'recommended'
+        ? '🔥 推荐'
+        : '✅ 可用')
+  const baseClass = `
+    mt-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl
+    p-4 transition duration-300
+    hover:-translate-y-0.5
+  `
+  const variantClass = {
+    deprecated: `
+      border border-rose-200/80 bg-gradient-to-br from-white via-rose-50/80
+      to-rose-100/80 shadow-[0_12px_32px_rgba(184,63,94,0.18)]
+      hover:border-rose-300/80 hover:shadow-[0_18px_44px_rgba(184,63,94,0.35)]
+      dark:border-rose-900/60 dark:from-rose-950/40 dark:via-rose-950/30
+      dark:to-rose-950/10
+      dark:shadow-[0_18px_40px_rgba(185,35,65,0.5)]
+    `,
+    recommended: `
+      border border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50
+      to-emerald-100 shadow-[0_12px_32px_rgba(16,185,129,0.18)]
+      hover:border-emerald-300/80 hover:shadow-[0_18px_44px_rgba(16,185,129,0.35)]
+      dark:border-emerald-900/60 dark:from-emerald-950/40 dark:via-emerald-950/30
+      dark:to-emerald-900/10
+      dark:shadow-[0_18px_40px_rgba(16,185,129,0.4)]
+    `,
+    default: `
+      border border-sky-200/80 bg-gradient-to-br from-white via-sky-50
+      to-slate-50 shadow-[0_12px_32px_rgba(14,165,233,0.15)]
+      hover:border-sky-300/80 hover:shadow-[0_18px_44px_rgba(14,165,233,0.28)]
+      dark:border-slate-700/60 dark:from-slate-800 dark:via-slate-800
+      dark:to-slate-900/40 dark:shadow-[0_18px_40px_rgba(0,0,0,0.6)]
+    `,
+  }[variant]
+  const badgeBgClass = {
+    deprecated: `
+      bg-rose-100 text-rose-700
+      dark:bg-rose-400/10 dark:text-rose-200
+    `,
+    recommended: `
+      bg-emerald-100 text-emerald-700
+      dark:bg-emerald-400/10 dark:text-emerald-200
+    `,
+    default: `
+      bg-sky-100 text-sky-700
+      dark:bg-sky-400/10 dark:text-sky-200
+    `,
+  }[variant]
 
   return (
     <div
       className={`
-        mt-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl
-        border border-slate-200/80 bg-gradient-to-br from-white via-white
-        to-slate-50/50 p-4 shadow-[0_12px_32px_rgba(15,23,42,0.08)] transition
-        duration-300
-        hover:-translate-y-0.5 hover:border-slate-200
-        hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)]
-        dark:border-slate-700/60 dark:from-slate-800 dark:via-slate-800
-        dark:to-slate-900/40 dark:shadow-[0_18px_40px_rgba(0,0,0,0.6)]
+        ${baseClass}
+        ${variantClass}
         ${className ?? ''}
       `}
     >
@@ -56,9 +102,9 @@ export default function TemplateLink(props: TemplateLinkProps): JSX.Element {
         >
           {badgeContent && (
             <span className={`
-              inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5
-              text-xs font-semibold text-amber-700
-              dark:bg-amber-400/10 dark:text-amber-200
+              inline-flex items-center rounded-full px-2 py-0.5
+              text-xs font-semibold
+              ${badgeBgClass}
             `}
             >
               {badgeContent}

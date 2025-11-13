@@ -1,85 +1,12 @@
 import type { JSX } from 'react'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useGitHubStars } from '../utils/github'
 
-const GITHUB_REPO = 'sonofmagic/weapp-tailwindcss'
-const CACHE_KEY = 'weapp-tailwindcss:github-stars'
-const CACHE_TTL = 1000 * 60 * 30 // 30 minutes
-
-async function fetchStars(): Promise<number | null> {
-  try {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`)
-    if (!response.ok) {
-      return null
-    }
-
-    const data = await response.json()
-    return typeof data.stargazers_count === 'number' ? data.stargazers_count : null
-  }
-  catch (error) {
-    console.error('Failed to fetch GitHub stars', error)
-    return null
-  }
-}
-
-function readCache(): number | null {
-  if (typeof window === 'undefined') {
-    return null
-  }
-
-  try {
-    const payload = window.sessionStorage.getItem(CACHE_KEY)
-    if (!payload) {
-      return null
-    }
-
-    const parsed = JSON.parse(payload) as { value: number, expires: number }
-    if (Date.now() > parsed.expires) {
-      return null
-    }
-
-    return parsed.value
-  }
-  catch (error) {
-    console.warn('Failed to read cached GitHub stars', error)
-    return null
-  }
-}
-
-function writeCache(value: number) {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  try {
-    const payload = JSON.stringify({ value, expires: Date.now() + CACHE_TTL })
-    window.sessionStorage.setItem(CACHE_KEY, payload)
-  }
-  catch (error) {
-    console.warn('Failed to cache GitHub stars', error)
-  }
-}
+const GITHUB_OWNER = 'sonofmagic'
+const GITHUB_REPO = 'weapp-tailwindcss'
 
 export default function HeroGithubBadge(): JSX.Element {
-  const [stars, setStars] = useState<number | null>(() => readCache())
-
-  useEffect(() => {
-    if (stars != null) {
-      return
-    }
-
-    let cancelled = false
-    fetchStars().then((value) => {
-      if (cancelled || value == null) {
-        return
-      }
-      writeCache(value)
-      setStars(value)
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [stars])
+  const { stars } = useGitHubStars(GITHUB_OWNER, GITHUB_REPO)
 
   return (
     <a
@@ -108,16 +35,16 @@ export default function HeroGithubBadge(): JSX.Element {
       <span
         aria-hidden="true"
         className={`
-          duration-400 relative inline-flex size-8 items-center justify-center
-          rounded-full text-amber-500 transition-[transform,color]
+          relative inline-flex size-8 items-center justify-center rounded-full
+          text-amber-500 transition-[transform,color] duration-300
           group-hover:text-amber-400
         `}
       >
         <span
           className={`
-            duration-400 absolute inset-0 rounded-full
+            absolute inset-0 rounded-full
             bg-[conic-gradient(from_160deg_at_50%_50%,rgba(250,204,21,0.5),rgba(253,224,71,0.28),rgba(245,158,11,0.48))]
-            opacity-75 blur-md transition-opacity
+            opacity-75 blur-md transition-opacity duration-300
             group-hover:opacity-95
           `}
           aria-hidden="true"
