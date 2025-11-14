@@ -129,7 +129,7 @@ export class NodePathWalker {
     this.visited.add(arg)
     // 回溯标识符绑定，便于发现嵌套模板
     if (arg.isIdentifier()) {
-      const binding = arg.scope.getBinding(arg.node.name)
+      const binding = (arg as any)?.scope?.getBinding?.(arg.node.name)
       if (binding) {
         this.walkNode(binding.path)
       }
@@ -137,7 +137,7 @@ export class NodePathWalker {
     else if (arg.isMemberExpression()) {
       const objectPath = arg.get('object')
       if (objectPath.isIdentifier()) {
-        const binding = arg.scope.getBinding(objectPath.node.name)
+        const binding = (arg as any)?.scope?.getBinding?.(objectPath.node.name)
         if (binding) {
           if (binding.path.isVariableDeclarator()) {
             this.walkVariableDeclarator(binding.path)

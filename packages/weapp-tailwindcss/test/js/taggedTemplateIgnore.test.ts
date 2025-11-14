@@ -1,21 +1,22 @@
 import type { ParserPlugin } from '@babel/parser'
 import type { NodePath } from '@babel/traverse'
+import type { Node as BabelNode } from '@babel/types'
 import { describe, expect, it } from 'vitest'
 import { parse, traverse } from '@/babel'
 import { createTaggedTemplateIgnore } from '@/js/taggedTemplateIgnore'
 
 type PluginList = ParserPlugin[]
 
-function getTagPaths(source: string, plugins: PluginList = []): NodePath<Node>[] {
+function getTagPaths(source: string, plugins: PluginList = []): NodePath<BabelNode>[] {
   const ast = parse(source, {
     sourceType: 'module',
     plugins,
   })
 
-  const paths: NodePath<Node>[] = []
+  const paths: NodePath<BabelNode>[] = []
   traverse(ast, {
     TaggedTemplateExpression(path) {
-      paths.push(path.get('tag') as NodePath<Node>)
+      paths.push(path.get('tag') as NodePath<BabelNode>)
     },
   })
 

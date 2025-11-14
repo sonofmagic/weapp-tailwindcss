@@ -102,6 +102,8 @@ export function getDefaultOptions(): UserDefinedOptions {
     babelParserOptions: {
       sourceType: 'unambiguous',
       cache: true,
+      // 预计算好的 cacheKey，避免重复对选项进行 JSON.stringify
+      cacheKey: 'st:unambiguous',
     },
     postcssOptions: {},
     // 开发版本微信小程序工具和小米13手机上 @property 是有效果的

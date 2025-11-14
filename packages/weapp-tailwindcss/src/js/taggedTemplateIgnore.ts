@@ -45,7 +45,9 @@ export function createTaggedTemplateIgnore(
 
     const objectPath = path.get('object')
     if (objectPath.isIdentifier()) {
-      const binding = objectPath.scope.getBinding(objectPath.node.name)
+      // noScope 下可能没有 scope，无法回溯绑定时返回 false
+      const scope = (objectPath as any)?.scope
+      const binding = scope?.getBinding?.(objectPath.node.name)
       if (binding) {
         return resolvesToWeappTwIgnore(binding, seen)
       }
@@ -81,7 +83,7 @@ export function createTaggedTemplateIgnore(
       const init = bindingPath.get('init')
       if (init && init.node) {
         if (init.isIdentifier()) {
-          const target = binding.scope.getBinding(init.node.name)
+          const target = (binding as any)?.scope?.getBinding?.(init.node.name)
           if (target) {
             result = resolvesToWeappTwIgnore(target, seen)
           }
@@ -144,7 +146,7 @@ export function createTaggedTemplateIgnore(
       if (matcher(tagPath.node.name)) {
         return true
       }
-      const binding = tagPath.scope.getBinding(tagPath.node.name)
+      const binding = (tagPath as any)?.scope?.getBinding?.(tagPath.node.name)
       if (binding) {
         return resolvesToWeappTwIgnore(binding, new Set())
       }

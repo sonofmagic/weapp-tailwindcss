@@ -32,7 +32,8 @@ function createContext(overrides: Record<string, unknown> = {}) {
         }),
       },
     })),
-    jsHandler: vi.fn(async (code: string) => ({ code: `js:${code}` })),
+    // 保持 jsHandler 为同步实现，以符合 JsHandler 的类型签名
+    jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
     mainCssChunkMatcher: vi.fn(() => true),
     appType: 'uni-app',
     cache,
@@ -65,7 +66,11 @@ vi.mock('@weapp-tailwindcss/postcss/html-transform', () => ({
   default: postcssHtmlTransformMock,
 }))
 
-const transformUVueMock = vi.hoisted(() => vi.fn((code: string, id: string) => ({ code: `uvue:${id}:${code}` })))
+const transformUVueMock = vi.hoisted(() =>
+  vi.fn((code: string, id: string, _jsHandler?: unknown, _runtimeSet?: Set<string>) => ({
+    code: `uvue:${id}:${code}`,
+  })),
+)
 vi.mock('@/uni-app-x', () => ({
   transformUVue: transformUVueMock,
 }))
@@ -369,9 +374,9 @@ const fallback = "bg-[#434332] px-[32px]"
     })
 
     const originalImplementation = transformUVueMock.getMockImplementation()
-    transformUVueMock.mockImplementation((code: string, _id: string, _jsHandler: unknown, runtimeSet: Set<string>) => {
+    transformUVueMock.mockImplementation((code: string, _id: string, _jsHandler?: unknown, runtimeSet?: Set<string>) => {
       let result = code
-      for (const className of runtimeSet) {
+      for (const className of (runtimeSet ?? new Set<string>())) {
         result = result.replaceAll(className, replaceWxml(className))
       }
       return { code: result }
@@ -440,9 +445,9 @@ const fallback = "bg-[#434332] px-[32px]"
     })
 
     const originalImplementation = transformUVueMock.getMockImplementation()
-    transformUVueMock.mockImplementation((code: string, _id: string, _jsHandler: unknown, runtimeSet: Set<string>) => {
+    transformUVueMock.mockImplementation((code: string, _id: string, _jsHandler?: unknown, runtimeSet?: Set<string>) => {
       let result = code
-      for (const className of runtimeSet) {
+      for (const className of (runtimeSet ?? new Set<string>())) {
         result = result.replaceAll(className, replaceWxml(className))
       }
       return { code: result }

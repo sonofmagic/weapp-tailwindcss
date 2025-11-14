@@ -29,14 +29,14 @@ function createFakePatcher(): TailwindcssPatcherLike & {
       classList: Array.from(baseClassSet),
     })),
     getClassSet: vi.fn(async () => new Set(baseClassSet)),
-    collectContentTokens: vi.fn(async () => ({
+    collectContentTokens: vi.fn(async (_options?: unknown) => ({
       entries: [
         { rawCandidate: 'text-[#ff00ff]' },
       ],
       filesScanned: 0,
       skippedFiles: [],
       sources: [],
-    })),
+    })) as any,
   }
 
   return patcher

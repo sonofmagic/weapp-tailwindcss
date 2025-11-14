@@ -93,7 +93,6 @@ export async function clearTailwindcssPatcherCache(
   const cacheOptions = patcher.options?.cache
   if (
     cacheOptions == null
-    || cacheOptions === false
     || (typeof cacheOptions === 'object' && cacheOptions.enabled === false)
   ) {
     return
@@ -103,8 +102,10 @@ export async function clearTailwindcssPatcherCache(
   if (normalizedCacheOptions?.path) {
     cachePaths.set(normalizedCacheOptions.path, false)
   }
-  if (patcher.cacheStore?.options?.path) {
-    cachePaths.set(patcher.cacheStore.options.path, false)
+  // 以非侵入方式访问私有的缓存目录路径，避免依赖 TailwindcssPatcher 内部类型。
+  const privateCachePath: string | undefined = (patcher as any)?.cacheStore?.options?.path
+  if (privateCachePath) {
+    cachePaths.set(privateCachePath, false)
   }
   if (options?.removeDirectory && normalizedCacheOptions?.dir) {
     cachePaths.set(normalizedCacheOptions.dir, true)

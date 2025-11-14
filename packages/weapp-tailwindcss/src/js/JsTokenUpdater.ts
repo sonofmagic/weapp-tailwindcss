@@ -24,6 +24,13 @@ export class JsTokenUpdater {
     return this
   }
 
+  /**
+   * 待写入的 token 数量。
+   */
+  get length() {
+    return this.tokens.length
+  }
+
   map(callbackfn: (value: JsToken, index: number, array: JsToken[]) => JsToken) {
     this.tokens = this.tokens.map(callbackfn)
     return this

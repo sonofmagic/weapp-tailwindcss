@@ -450,7 +450,7 @@ export interface UserDefinedOptions {
    * @version `^3.2.0`
    * @group 3.一般配置
    */
-  babelParserOptions?: ParserOptions & { cache?: boolean }
+  babelParserOptions?: ParserOptions & { cache?: boolean, cacheKey?: string }
 
   /**
    * 自定义 Tailwind 子组合器的替换值。

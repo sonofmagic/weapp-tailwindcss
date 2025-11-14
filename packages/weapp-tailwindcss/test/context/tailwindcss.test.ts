@@ -44,7 +44,8 @@ describe('createTailwindcssPatcherFromContext', () => {
           const stub: TailwindcssPatcherLike = {
             packageInfo: { version: '4.1.0' } as any,
             majorVersion: 4,
-            options,
+            // 测试仅校验结构传递，避免在此处施加过严的类型约束
+            options: options as any,
             patch: vi.fn(async () => ({})),
             getClassSet: vi.fn(async () => new Set(classes)),
             extract: vi.fn(async () => ({
@@ -99,7 +100,8 @@ describe('createTailwindcssPatcherFromContext', () => {
       const stub: TailwindcssPatcherLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
-        options,
+        // 测试仅校验结构传递，避免在此处施加过严的类型约束
+        options: options as any,
         patch: vi.fn(async () => ({})),
         getClassSet: vi.fn(async () => new Set(['foo'])),
         extract: vi.fn(async () => ({

@@ -49,11 +49,6 @@ export interface TailwindcssPatcherLike {
   extract: TailwindcssPatcher['extract']
   collectContentTokens?: TailwindcssPatcher['collectContentTokens']
   options?: TailwindcssPatcher['options']
-  cacheStore?: {
-    options?: {
-      path?: string
-    }
-  }
 }
 
 export interface RefreshTailwindcssPatcherOptions {

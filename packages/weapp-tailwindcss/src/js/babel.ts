@@ -22,32 +22,36 @@ const EXPRESSION_WRAPPER_SUFFIX = '\n)'
 
 export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<string, ParseResult<File>>(
   {
-    max: 512,
+    max: 1024,
   },
 )
 
 export function genCacheKey(source: string, options: any): string {
-  return (
-    source
-    + JSON.stringify(options, (_, val) =>
-      typeof val === 'function' ? val.toString() : val)
-  )
+  // 允许调用方传入预先计算好的 cacheKey 字符串，避免重复 JSON.stringify
+  if (typeof options === 'string') {
+    return source + options
+  }
+  return source + JSON.stringify(options, (_, val) => (typeof val === 'function' ? val.toString() : val))
 }
 
 export function babelParse(
   code: string,
-  { cache, ...options }: ParserOptions & { cache?: boolean } = {},
+  // 接受可选的 cacheKey，避免每次都对 options 做 JSON.stringify。
+  opts: (ParserOptions & { cache?: boolean, cacheKey?: string }) = {},
 ) {
-  const cacheKey = genCacheKey(code, options)
+  const { cache, cacheKey, ...rest } = opts as any
+  const cacheKeyString = genCacheKey(code, cacheKey ?? rest)
   let result: ParseResult<File> | undefined
   if (cache) {
-    result = parseCache.get(cacheKey)
+    result = parseCache.get(cacheKeyString)
   }
 
   if (!result) {
-    result = parse(code, options)
+    // 传给 @babel/parser 前剔除自定义字段，避免产生意外行为。
+    const { cache: _cache, cacheKey: _cacheKey, ...parseOptions } = opts as any
+    result = parse(code, parseOptions)
     if (cache) {
-      parseCache.set(cacheKey, result)
+      parseCache.set(cacheKeyString, result)
     }
   }
 
@@ -77,6 +81,9 @@ export function analyzeSource(
     matcher: isIgnoredTaggedTemplate,
     names: options.ignoreTaggedTemplateExpressionIdentifiers,
   })
+
+  // 仅在需要时才构建作用域信息（例如需要遍历调用表达式的实参）。
+  const needScope = Boolean(options.ignoreCallExpressionIdentifiers && options.ignoreCallExpressionIdentifiers.length > 0)
 
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
   const importDeclarations = new Set<NodePath<ImportDeclaration>>()
@@ -122,7 +129,8 @@ export function analyzeSource(
         const calleePath = p.get('callee')
         if (
           calleePath.isIdentifier({ name: 'require' })
-          && !p.scope.hasBinding('require')
+          // 若 scope 不存在或无法判断绑定，默认认为未被局部绑定，以便在 noScope 下也能收集 require 字面量。
+          && !((p as any)?.scope?.hasBinding?.('require'))
         ) {
           const args = p.get('arguments')
           if (Array.isArray(args) && args.length > 0) {
@@ -133,7 +141,10 @@ export function analyzeSource(
           }
         }
 
-        walker.walkCallExpression(p)
+        // 遍历调用表达式的实参需要作用域信息；快路径下跳过。
+        if (needScope) {
+          walker.walkCallExpression(p)
+        }
       },
     },
     ImportDeclaration: {
@@ -148,7 +159,9 @@ export function analyzeSource(
     },
   }
 
-  traverse(ast, traverseOptions)
+  // 使用 `noScope` 避免在常见路径上构建昂贵的作用域数据。
+  // 真正需要作用域（遍历调用实参）时，再在局部进行，保持整体遍历轻量。
+  traverse(ast, { ...traverseOptions, noScope: !needScope } as any)
 
   return {
     walker,
@@ -167,7 +180,6 @@ export function processUpdatedSource(
   options: IJsHandlerOptions,
   analysis: SourceAnalysis,
 ) {
-  const ms = new MagicString(rawSource)
   const { targetPaths, jsTokenUpdater, ignoredPaths } = analysis
 
   // 为前面收集到的所有字符串节点生成替换 token。
@@ -196,10 +208,13 @@ export function processUpdatedSource(
     )
   }
 
-  jsTokenUpdater
-    .push(...replacementTokens)
-    .filter(token => !ignoredPaths.has(token.path))
-    .updateMagicString(ms)
+  // 若没有任何待更新的 token，避免不必要的 MagicString 开销。
+  if ((jsTokenUpdater.length + replacementTokens.length) === 0) {
+    return new MagicString(rawSource)
+  }
+
+  const ms = new MagicString(rawSource)
+  jsTokenUpdater.push(...replacementTokens).filter(token => !ignoredPaths.has(token.path)).updateMagicString(ms)
   return ms
 }
 
