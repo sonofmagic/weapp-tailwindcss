@@ -1,4 +1,5 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
@@ -45,6 +46,8 @@ function readWorkspacePackageVersion(relativeDir: string): string {
 async function fetchLatestVersion(pkgName: string): Promise<string> {
   const { stdout } = await execa('pnpm', ['view', pkgName, 'version', '--json'], {
     cwd: ROOT,
+    timeout: 60_000,
+    killSignal: 'SIGTERM',
   })
   const data = JSON.parse(stdout) as string | string[]
   if (Array.isArray(data)) {
@@ -68,6 +71,8 @@ async function fetchTailwindVersion(pkgName: string, major: number): Promise<str
   }
   const { stdout } = await execa('pnpm', ['view', `${pkgName}@^${major}`, 'version', '--json'], {
     cwd: ROOT,
+    timeout: 60_000,
+    killSignal: 'SIGTERM',
   })
   const data = JSON.parse(stdout) as string | string[]
   const version = Array.isArray(data) ? data.at(-1) : data
@@ -464,7 +469,8 @@ async function runCommand(
   {
     allowFailure = false,
     env,
-  }: { allowFailure?: boolean, env?: CommandEnv } = {},
+    timeoutMs,
+  }: { allowFailure?: boolean, env?: CommandEnv, timeoutMs?: number } = {},
 ): Promise<boolean> {
   try {
     await execa(command, args, {
@@ -475,6 +481,9 @@ async function runCommand(
         CI: '1',
         ...env,
       },
+      // Avoid hanging forever when network is flaky or blocked.
+      timeout: timeoutMs,
+      killSignal: 'SIGTERM',
     })
     return true
   }
@@ -519,6 +528,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     await withWorkspaceIsolation(() =>
       runCommand('pnpm', ['install', '--lockfile-only', '--ignore-scripts'], templateDir, {
         env,
+        timeoutMs: 5 * 60_000,
       }),
     )
     return
@@ -528,13 +538,42 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     await withWorkspaceIsolation(() =>
       runCommand('npm', ['install', '--package-lock-only', '--ignore-scripts'], templateDir, {
         env,
+        timeoutMs: 5 * 60_000,
       }),
     )
     return
   }
 
   const yarnVersion = manager.version ?? '1.22.22'
-  const baseArgs = ['dlx', `yarn@${yarnVersion}`, 'install', '--ignore-scripts', '--non-interactive']
+  // Prefer to keep yarn fully isolated from the repo to prevent hooks/workspace bleed.
+  // Place yarn caches outside the git repo to avoid choking git on huge untracked files.
+  const baseName = path.basename(templateDir)
+  const tmpRoot = path.join(os.tmpdir(), 'weapp-tailwindcss-templates')
+  const yarnCacheDir = path.join(tmpRoot, baseName, '.yarn-cache')
+  const yarnGlobalDir = path.join(tmpRoot, baseName, '.yarn-global')
+
+  const yarnEnv: CommandEnv = {
+    ...env,
+    // Keep cache in temp dir to avoid polluting repo and triggering git watchers.
+    YARN_CACHE_FOLDER: yarnCacheDir,
+    YARN_GLOBAL_FOLDER: yarnGlobalDir,
+    // Reduce chances of "forever waiting" on slow/blocked registries.
+    YARN_NETWORK_TIMEOUT: '30000', // 30s per request
+    // Force https registry for yarn classic to avoid corporate proxies blocking http.
+    npm_config_registry: 'https://registry.npmjs.org/',
+    // Prefer IPv4 first to mitigate IPv6 DNS stalls on some networks.
+    NODE_OPTIONS: [process.env.NODE_OPTIONS, '--dns-result-order=ipv4first'].filter(Boolean).join(' '),
+  }
+  // Yarn classic flags
+  const baseArgs = [
+    'dlx',
+    `yarn@${yarnVersion}`,
+    'install',
+    '--ignore-scripts',
+    '--non-interactive',
+    '--prefer-offline',
+    '--no-progress',
+  ]
 
   const updated = await withWorkspaceIsolation(() =>
     runCommand(
@@ -543,20 +582,27 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
       templateDir,
       {
         allowFailure: true,
-        env,
+        env: yarnEnv,
+        timeoutMs: 3 * 60_000, // 3 minutes soft cap for lock-only update
       },
     ),
   )
 
   if (!updated) {
+    // Fallback to a normal install-like resolution, still isolated and bounded by timeout.
     const fallback = await withWorkspaceIsolation(() =>
       runCommand('pnpm', baseArgs, templateDir, {
-        allowFailure: false,
-        env,
+        allowFailure: true,
+        env: yarnEnv,
+        timeoutMs: 5 * 60_000, // 5 minutes cap
       }),
     )
+    // If we still fail (commonly due to blocked network), skip updating lock to avoid hanging the whole task.
     if (!fallback) {
-      throw new Error(`更新 ${templateDir} 的 yarn.lock 失败`)
+      console.warn(
+        `跳过为 ${templateDir} 生成 yarn.lock：yarn 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
+        + ` 已更新 package.json，后续可在联网环境中于该模板目录执行 "yarn install" 来刷新锁文件。`,
+      )
     }
   }
 }

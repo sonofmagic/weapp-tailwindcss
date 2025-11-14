@@ -15,7 +15,7 @@
     "dotenv": "^16.5.0",
     "postcss": "7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "weapp-tailwindcss": "^4.7.7",
+    "weapp-tailwindcss": "^4.7.8",
     "webpack": "npm:webpack@webpack-4"
   },
   "uni-app": {
@@ -32,6 +32,6 @@
     }
   },
   "dependencies": {
-    "@weapp-tailwindcss/merge": "^2.1.0"
+    "@weapp-tailwindcss/merge": "^2.1.1"
   }
 }

@@ -55,7 +55,7 @@
     "clsx": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@weapp-tailwindcss/merge": "^2.1.0"
+    "@weapp-tailwindcss/merge": "^2.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
@@ -83,7 +83,7 @@
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.1.0",
-    "weapp-tailwindcss": "^4.7.7",
+    "weapp-tailwindcss": "^4.7.8",
     "webpack": "5.101.2"
   },
   "pnpm": {

@@ -117,3 +117,7 @@ miniprogram_npm
 .vite-inspect
 vite.config.ts.timestamp-*.mjs
 .wrangler
+
+# Yarn classic caches (placed under templates by older scripts)
+**/.yarn-cache/
+**/.yarn-global/
