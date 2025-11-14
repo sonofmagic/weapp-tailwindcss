@@ -51,7 +51,7 @@
     "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i",
     "open:dev": "weapp open -p dist/dev/mp-weixin",
     "open:build": "weapp open -p dist/build/mp-weixin",
-    "postinstall": "weapp-tw patch"
+    "postinstall": "weapp-tw patch && node scripts/postinstall-patches.cjs"
   },
   "dependencies": {
     "@dcloudio/uni-app": "2.0.2-4080520251106001",
@@ -79,7 +79,7 @@
     "core-js": "^3.36.0",
     "flyio": "^0.6.14",
     "regenerator-runtime": "^0.14.1",
-    "vue": ">= 2.6.14 < 2.7",
+    "vue": "2.6.14",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^9.1.2",
     "vuex": "^3.6.2"
@@ -117,7 +117,7 @@
     "tailwindcss-patch": "^8.2.3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
-    "vue-template-compiler": "^2.7.16",
+    "vue-template-compiler": "2.6.14",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",

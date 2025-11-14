@@ -39,6 +39,19 @@ const config = {
   },
   chainWebpack(config) {
     config.plugins.delete('fork-ts-checker')
+    // Work around Promise return from vendor template compiler prettifier in Node 20/22
+    // Disable prettify so compiled template code stays synchronous
+    try {
+      config.module
+        .rule('vue')
+        .use('vue-loader')
+        .tap((options = {}) => {
+          options.prettify = false
+          return options
+        })
+    } catch (e) {
+      // noop
+    }
   }
 }
 

@@ -24,7 +24,7 @@
   <view class="text-_b22px_B text-_b22px_B">对酒当歌，人生几何</view>
   <view class="_eh-5 _eh-5 w-5 w-5 shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B"></view>
   <view class="h-5 h-5 w-5 w-5 shadow-_b0px_2px_11px_0px__h00000a_B shadow-_b0px_2px_11px_0px__h00000a_B"></view>
-  <view>classObject</view>
+  <view class="text-_b20px_B text-_b20px_B bg-_b_h000000_B bg-_b_h000000_B">classObject</view>
   <view class="bg-_b_hfafa00_B bg-_b_hfafa00_B">Toggle</view>
   <view>Toggle</view>
   <button data-event-opts="tap,e0,$event" role="button" aria-disabled="false">Toggle flag</button>
