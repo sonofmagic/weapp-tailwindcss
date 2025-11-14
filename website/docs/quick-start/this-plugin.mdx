@@ -38,6 +38,16 @@ npm i -D weapp-tailwindcss
 而添加上面一段 `npm scripts` 的用途是，利用 `npm hook`, 每次安装包后，都会自动执行一遍 `weapp-tw patch` 这个脚本。
 
 这样即使 `tailwindcss` 更新了版本导致了补丁失效，也会在重新下载后，第一时间被打上。
+
+如果你希望在补丁前“强制刷新 `tailwindcss-patch` 的缓存目录（如 `node_modules/.cache/tailwindcss-patch`）”，可以在命令后附加 `--clear-cache`：
+
+```json title="package.json"
+ "scripts": {
+   "postinstall": "weapp-tw patch --clear-cache"
+ }
+```
+
+默认不清理缓存，更加保守稳定；仅当怀疑缓存导致补丁未生效或版本不一致时再开启该参数。
 :::
 
 我们已经完成了这些步骤了，最后就是注册这个插件，到各个不同的框架里去，马上就好！

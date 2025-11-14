@@ -43,11 +43,15 @@ cli
   .alias('install')
   .option('--cwd <dir>', 'Working directory')
   .option('--record-target', 'Write tailwindcss target metadata (.tw-patch/tailwindcss-target.json)')
+  .option('--clear-cache', 'Clear tailwindcss-patch cache before patch (opt-in)')
   .action(
     commandAction(async (options: CommonCommandOptions) => {
       const resolvedCwd = resolveCliCwd(options.cwd)
       const ctx = createCliContext(undefined, resolvedCwd)
-      await clearTailwindcssPatcherCache(ctx.twPatcher, { removeDirectory: true })
+      const shouldClearCache = toBoolean((options as any).clearCache, false)
+      if (shouldClearCache) {
+        await clearTailwindcssPatcherCache(ctx.twPatcher, { removeDirectory: true })
+      }
       logTailwindcssTarget('cli', ctx.twPatcher, ctx.tailwindcssBasedir)
       await ctx.twPatcher.patch()
       const shouldRecordTarget = toBoolean(options.recordTarget, false)

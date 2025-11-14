@@ -8,3 +8,13 @@
 ```
 
 这是为了给 `tailwindcss@4` 打上支持 `rpx` 单位的补丁，否则它会把 `rpx` 认为是一种颜色
+
+如需在补丁前强制刷新 `tailwindcss-patch` 的缓存，可改为：
+
+```json title="package.json"
+ "scripts": {
+   "postinstall": "weapp-tw patch --clear-cache"
+ }
+```
+
+默认不清理缓存；只有当你怀疑缓存导致补丁未生效或目标不一致时，才需要添加 `--clear-cache`。***

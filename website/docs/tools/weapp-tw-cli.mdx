@@ -9,6 +9,7 @@ title: weapp-tw CLI 使用指南
 | 场景 | 命令 | 说明 |
 | --- | --- | --- |
 | 给 Tailwind CSS 打补丁、注入 `rpx` 支持 | `npx weapp-tw patch` | 运行一次即可，推荐写在 `postinstall`；支持 `--cwd` 指向子包目录。 |
+| 强制刷新补丁缓存后再打补丁 | `npx weapp-tw patch --clear-cache` | 默认不会清理缓存；仅在怀疑缓存导致补丁未生效或版本不一致时使用。 |
 | 在 monorepo 里批量补丁 | `pnpm -r --filter ./demo/* exec weapp-tw patch --cwd "$PWD"` | 每个 demo 都在自身目录补丁，避免和 hoist 后的 `node_modules` 不一致。 |
 | 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 适用于 Tailwind v3/v4，v4 需传入 `--css`，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
 | 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
@@ -27,6 +28,7 @@ title: weapp-tw CLI 使用指南
 | --- | --- | --- |
 | `--cwd <dir>` | 当前工作目录 | 指定要补丁的子包目录，等价于先 `cd`。 |
 | `--record-target` | `false` | 仅在需要时开启。记录本次打补丁对应的 `tailwindcss` 根路径到 `./.tw-patch/tailwindcss-target.json`，方便之后核对。 |
+| `--clear-cache` | `false` | 按需清理 `tailwindcss-patch` 缓存目录后再执行补丁。默认不清理，避免不必要的 IO 和 CI 侧效应。 |
 
 开启 `--record-target` 后，运行日志类似：
 
