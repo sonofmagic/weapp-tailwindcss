@@ -383,6 +383,34 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       else if (/calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px/.test(decl.value)) {
         decl.value = '9999px'
       }
+      /**
+       * @description 一些构建链路（如上游已将 infinity 计算为科学计数法的极大值）
+       * 会产生如 `3.40282e38px` 的半径，这不符合小程序规范。这里对 border-*-radius
+       * 类属性做兜底钳制，若出现极大像素值（含科学计数法或超过阈值），统一替换为 9999px。
+       */
+      else if (decl.prop.includes('radius')) {
+        // 钳制阈值，极大情况下统一回退为 9999px
+        const CLAMP_PX = 9999
+        const THRESHOLD = 100000 // 明显不合理的 px 数值阈值
+        // 仅对 px/rpx 的数值片段进行判断与替换，避免误伤其他语法
+        const next = decl.value.replace(
+          /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi,
+          (m, num) => {
+            const n = Number(num)
+            if (!Number.isFinite(n)) {
+              return `${CLAMP_PX}px`
+            }
+            // 科学计数法或超阈值都视为需要钳制
+            if (/e/i.test(String(num)) || n > THRESHOLD) {
+              return `${CLAMP_PX}px`
+            }
+            return m
+          },
+        )
+        if (next !== decl.value) {
+          decl.value = next
+        }
+      }
     }
 
     p.AtRuleExit = (atRule) => {
