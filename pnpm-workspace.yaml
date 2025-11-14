@@ -94,7 +94,7 @@ catalogs:
   weappMerge:
     '@weapp-tailwindcss/merge': ^2.1.1
   weappVite:
-    weapp-vite: ^5.9.2
+    weapp-vite: ^5.9.3
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
