@@ -234,14 +234,14 @@ text,
 .text-_b100px_B {
   font-size: 100px;
 }
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
 .text-_b_h123322_B {
   color: #123322;
 }
 .text-_b_h123456_B {
   color: #123456;
-}
-.text-_b100rpx_B {
-  color: 100rpx;
 }
 .text-blue-300 {
   color: #90c5ff;

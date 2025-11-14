@@ -132,11 +132,11 @@ text,
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
 .text-_b_hfff_B {
   color: #fff;
-}
-.text-_b100rpx_B {
-  color: 100rpx;
 }
 .text-pink-200 {
   color: rgb(252, 206, 232);

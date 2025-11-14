@@ -277,6 +277,12 @@ text,
 .text-center {
   text-align: center;
 }
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
+}
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: 700;
@@ -284,12 +290,6 @@ text,
 }
 .text-_b_h00f285_B {
   color: #00f285;
-}
-.text-_b45rpx_B {
-  color: 45rpx;
-}
-.text-_b88rpx_B {
-  color: 88rpx;
 }
 .text-tahiti {
   color: #3ab7bf;

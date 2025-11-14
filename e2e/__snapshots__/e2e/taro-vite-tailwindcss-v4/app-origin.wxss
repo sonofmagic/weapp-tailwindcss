@@ -137,13 +137,13 @@ text,
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+.text-_b55rpx_B {
+  font-size: 55rpx;
+}
 .text-_b_hc31d6b_B {
   color: #c31d6b;
 }
 .text-_b_hfff_B {
   color: #fff;
-}
-.text-_b55rpx_B {
-  color: 55rpx;
 }
 /*$vite$:1*/
