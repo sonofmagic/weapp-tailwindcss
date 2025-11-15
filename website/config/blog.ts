@@ -2,6 +2,8 @@ import type { Options as ClassicOptions } from '@docusaurus/preset-classic'
 
 function createBlogOptions(): NonNullable<ClassicOptions['blog']> {
   return {
+    // Suppress warning logs about missing truncation markers in blog previews during dev/build
+    onUntruncatedBlogPosts: 'ignore',
     remarkPlugins: [
       [
         require('@docusaurus/remark-plugin-npm2yarn'),

@@ -71,7 +71,7 @@ export interface UserDefinedOptions {
   /**
    * 忽略指定标签模板表达式中的标识符。
    *
-   * @version `^4.0.0`
+   * @since ^4.0.0
    * @group 0.重要配置
    * @remarks
    * 当模板字符串被这些标识符包裹时，将跳过转义处理。
@@ -81,7 +81,7 @@ export interface UserDefinedOptions {
   /**
    * 忽略指定调用表达式中的标识符。
    *
-   * @version `^4.0.0`
+   * @since ^4.0.0
    * @group 0.重要配置
    * @remarks
    * 使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
@@ -100,7 +100,7 @@ export interface UserDefinedOptions {
    * 控制在视图节点上注入的 CSS 预设。
    *
    * @group 0.重要配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/7
+   * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/7
    * @remarks
    * 默认会向所有 `view`/`text` 元素注入 Tailwind 风格的基础样式，可通过此配置禁用、调整或补充规则，受 `cssPreflightRange` 影响。
    * @example
@@ -125,7 +125,7 @@ export interface UserDefinedOptions {
    * 控制 `cssPreflight` 注入的 DOM 选择器范围。
    *
    * @group 0.重要配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss/pull/62
+   * @see https://github.com/sonofmagic/weapp-tailwindcss/pull/62
    * @remarks
    * 仅 `view`、`text` 及其伪元素会受影响。设置为 `'all'` 可以覆盖所有元素，此时需自行处理与宿主默认样式的冲突。
    */
@@ -134,7 +134,7 @@ export interface UserDefinedOptions {
    * 预计算 CSS 变量或 `calc` 表达式的结果。
    *
    * @group 0.重要配置
-   * @version `^4.3.0`
+   * @since ^4.3.0
    * @remarks
    * 解决部分机型对 `calc` 计算不一致的问题，可传入布尔值、选项对象或自定义匹配列表（支持正则）。在启用计算后，可通过 `includeCustomProperties` 指定需要保留的变量。
    * @example
@@ -168,7 +168,7 @@ export interface UserDefinedOptions {
    * 是否额外注入 `tailwindcss css var scope`。
    *
    * @group 0.重要配置
-   * @version `^2.6.0`
+   * @since ^2.6.0
    * @remarks
    * 当构建链路（例如 `@tarojs/plugin-html`）移除了包含 `*` 的选择器时，可启用该选项重新写入变量作用域，以避免渐变等功能失效。
    * @default false
@@ -193,7 +193,7 @@ export interface UserDefinedOptions {
     /**
      * 将全局选择器 `*` 替换为指定值。
      *
-     * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/81 <br/>
+     * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/81 <br/>
      * @default `['view','text']` <br/>
      * @remarks
      * 小程序环境不支持 `*`，因此默认转换为 `view`、`text`；设置为 `false` 会留下原始选择器。
@@ -203,7 +203,7 @@ export interface UserDefinedOptions {
   /**
    * rem 到 rpx 的转换配置。
    *
-   * @version `^3.0.0`
+   * @since ^3.0.0
    * @group 0.重要配置
    * @remarks
    * 传入 `true` 使用默认配置，或提供 [postcss-rem-to-responsive-pixel](https://www.npmjs.com/package/postcss-rem-to-responsive-pixel) 支持的完整选项。
@@ -220,7 +220,7 @@ export interface UserDefinedOptions {
    * px 到 rpx 的转换配置。
    *
    * @group 0.重要配置
-   * @version `^4.3.0`
+   * @since ^4.3.0
    * @remarks
    * 传入 `true` 启用默认映射（`1px = 1rpx`），或通过对象自定义更多行为。
    */
@@ -229,7 +229,7 @@ export interface UserDefinedOptions {
   /**
    * `postcss-preset-env` 的配置项。
    *
-   * @version `^4.0.0`
+   * @since ^4.0.0
    * @group 0.重要配置
    * @see https://preset-env.cssdb.org/
    * @see https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
@@ -239,7 +239,7 @@ export interface UserDefinedOptions {
   /**
    * 为不同版本的 Tailwind 配置行为。
    *
-   * @version `^4.0.0`
+   * @since ^4.0.0
    * @group 0.重要配置
    */
   tailwindcss?: TailwindcssPatchOptions['tailwind']
@@ -247,7 +247,7 @@ export interface UserDefinedOptions {
   /**
    * 指定 tailwindcss@4 的入口 CSS。
    *
-   * @version `^4.2.6`
+   * @since ^4.2.6
    * @group 0.重要配置
    * @remarks
    * 未配置时无法加载自定义插件，等价于设置 `tailwindcss.v4.cssEntries`。
@@ -256,7 +256,7 @@ export interface UserDefinedOptions {
   /**
    * 配置 uni-app x 场景的行为。
    *
-   * @version `^4.2.0`
+   * @since ^4.2.0
    * @group 0.重要配置
    * @ignore
    */
@@ -296,7 +296,7 @@ export interface UserDefinedOptions {
    * 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。
    *
    * @group 1.文件匹配
-   * @experiment 实验性质，有可能会改变
+   * @experimental 实验性质，有可能会改变
    * @remarks
    * 配置前请确保在 `tailwind.config.js` 的 `content` 中包含对应格式。
    * @default ()=>false
@@ -307,7 +307,7 @@ export interface UserDefinedOptions {
    * 是否转义 `wxml` 中的内联 `wxs`。
    *
    * @group 1.文件匹配
-   * @experiment 实验性质，有可能会改变
+   * @experimental 实验性质，有可能会改变
    * @remarks
    * 使用前同样需要在 `tailwind.config.js` 中声明 `wxs` 格式。
    * @example
@@ -370,7 +370,7 @@ export interface UserDefinedOptions {
    * 控制 Tailwind 自定义长度单位补丁。
    *
    * @group 3.一般配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/110
+   * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/110
    * @remarks
    * TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启以注入 `rpx` 支持。当 Node.js 在插件执行前已缓存 `tailwindcss` 模块时，首轮运行可能未生效，可通过在 `postinstall` 中执行 `weapp-tw patch` 提前打补丁。
    * ```diff
@@ -401,7 +401,7 @@ export interface UserDefinedOptions {
    * 控制 JS 字面量是否需要保留。
    *
    * @group 3.一般配置
-   * @version `^2.6.1`
+   * @since ^2.6.1
    * @remarks
    * 当 Tailwind 与 JS 字面量冲突时，可通过回调返回 `true` 保留当前值，返回 `false` 或 `undefined` 则继续转义。默认保留所有带 `*` 的字符串字面量。
    */
@@ -411,7 +411,7 @@ export interface UserDefinedOptions {
    * 禁用默认的 `wxml` 模板替换器。
    *
    * @group 3.一般配置
-   * @version `^2.6.2`
+   * @since ^2.6.2
    * @remarks
    * 启用后模板匹配完全交由 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
    * @default false
@@ -430,7 +430,7 @@ export interface UserDefinedOptions {
    * 指定用于获取 Tailwind 上下文的路径。
    *
    * @group 3.一般配置
-   * @version `^2.9.3`
+   * @since ^2.9.3
    * @remarks
    * 在 linked 或 monorepo 场景下可手动指向目标项目的 `package.json` 所在目录。
    */
@@ -440,14 +440,14 @@ export interface UserDefinedOptions {
    * 控制缓存策略。
    *
    * @group 3.一般配置
-   * @version `^3.0.11`
+   * @since ^3.0.11
    */
   cache?: boolean | ICreateCacheReturnType
 
   /**
    * `@babel/parser` 的配置选项。
    *
-   * @version `^3.2.0`
+   * @since ^3.2.0
    * @group 3.一般配置
    */
   babelParserOptions?: ParserOptions & { cache?: boolean, cacheKey?: string }
@@ -472,16 +472,16 @@ export interface UserDefinedOptions {
   /**
    * `postcss` 的配置选项。
    *
-   * @version `^3.2.0`
+   * @since ^3.2.0
    * @group 3.一般配置
    */
   postcssOptions?: LoadedPostcssOptions
   /**
    * 是否移除 CSS 中的 `:hover` 选择器。
    *
-   * @version `^3.2.1`
+   * @since ^3.2.1
    * @group 3.一般配置
-   * @issue https://github.com/sonofmagic/weapp-tailwindcss/issues/293
+   * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/293
    * @remarks
    * 小程序不支持 `:hover`，需要使用组件的 `hover-class`，因此默认删除相关节点。
    * @default `true`
@@ -490,7 +490,7 @@ export interface UserDefinedOptions {
   /**
    * 是否移除 `@property` 节点。
    *
-   * @version `^4.1.2`
+   * @since ^4.1.2
    * @group 3.一般配置
    * @remarks
    * 微信小程序可识别 `@property`，但支付宝暂不支持，默认移除以避免构建失败。
