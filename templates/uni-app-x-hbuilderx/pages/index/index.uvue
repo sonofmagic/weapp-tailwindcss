@@ -62,7 +62,7 @@
 			写法示例Start!
 		</text>
 		<view class="mt-[13.14758px] flex flex-col items-center">
-			<text class="w-32 rounded-md bg-pink-500 py-2 text-center text-white">
+			<text class="w-32 rounded-md bg-[#f21903] py-2 text-center text-white">
 				圆角+背景+文本
 			</text>
 			<view class="mt-3">
@@ -71,7 +71,7 @@
 				</button>
 			</view>
 			<view class="test">
-				<text class="text-[#ffffff] text-center">
+				<text class="text-[#da0e3c] text-center">
 					@apply 的用法，详见 `index.vue` 的 `style` 标签块
 				</text>
 			</view>
@@ -86,6 +86,6 @@
 	}
 
 	.test {
-		@apply flex mt-3 h-[100px] w-[222.222px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[0.54];
+		@apply flex mt-3 h-[100px] w-[222.222px] items-center justify-center rounded-[40px] bg-[#31edd8] bg-opacity-[0.54];
 	}
 </style>

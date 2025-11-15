@@ -16,6 +16,7 @@ import PrismLight from './src/utils/prismLight'
 
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
+const isProd = process.env.NODE_ENV === 'production'
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
 
 const config: Config = {
@@ -86,9 +87,12 @@ const config: Config = {
           // 升级到 docusaurus@3 之后 docusaurus-plugin-sass 似乎挂了
           customCss: ['./src/css/custom.scss'], // require.resolve('./src/css/custom.scss'),
         },
-        gtag: {
-          trackingID: 'G-S81Q4GRTPM',
-        },
+        // 在本地开发/局域网联调时关闭 gtag，避免外网脚本加载失败导致 window.gtag 未定义
+        gtag: isProd
+          ? {
+              trackingID: 'G-S81Q4GRTPM',
+            }
+          : undefined,
         sitemap: {
           changefreq: 'weekly',
           priority: 0.5,

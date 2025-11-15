@@ -159,6 +159,11 @@ const tutorialSidebar: SidebarConfig = [
     label: '🔥uni-app x 专题',
     collapsed: false,
     items: [
+      // {
+      //   type: 'link',
+      //   label: '模板项目（推荐）',
+      //   href: 'https://github.com/icebreaker-template/uni-app-x-hbuilderx',
+      // },
       {
         type: 'doc',
         id: 'uni-app-x/index',

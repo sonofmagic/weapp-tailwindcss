@@ -1,113 +1,105 @@
-# uni-app x 专题
+---
+title: uni-app x 专题
+description: 面向用户的实战手册，10 分钟完成 Tailwind CSS 在 uni-app x 的跨端集成与开发。
+---
 
+import Link from '@docusaurus/Link'
 import TailwindcssLogo from '../../../assets/logo.png'
 
-<div className='flex items-center'>
+# uni-app x 专题
 
-<img className='h-20' src={TailwindcssLogo} />
-
-<i className='iconify mdi--link dark:text-gray-200 text-4xl mr-4' />
-
-<img className='h-20' src="/img/uni-app-x-logo.ico" />
-
+<div
+  className="
+    not-prose relative mt-2 flex items-center gap-4 rounded-2xl border
+    border-emerald-200/70 bg-gradient-to-br from-white via-emerald-50 to-emerald-100
+    p-5 shadow-[0_14px_40px_rgba(16,185,129,0.18)]
+    dark:border-emerald-900/60 dark:from-emerald-950/50 dark:via-emerald-950/30 dark:to-emerald-900/20
+    dark:shadow-[0_18px_40px_rgba(16,185,129,0.3)]
+  "
+>
+  <img className="h-16 sm:h-20" src={TailwindcssLogo} alt="Tailwind CSS" />
+  <i className="iconify mdi--link text-3xl text-emerald-500 dark:text-emerald-300" />
+  <img className="h-16 sm:h-20" src="/img/uni-app-x-logo.ico" alt="uni-app x" />
+  <div className="ml-auto hidden text-right sm:block">
+    <div className="text-xs font-medium text-emerald-700/80 dark:text-emerald-200/80">跨端原子化样式方案</div>
+    <div className="text-base font-semibold text-emerald-800 dark:text-emerald-200">Tailwind CSS × uni-app x</div>
+  </div>
 </div>
 
-## 前言
+<div className="not-prose mt-4 grid grid-cols-1 gap-3 sm:auto-cols-max sm:grid-flow-col">
+  <a className="docs-cta-primary" href="https://github.com/icebreaker-template/uni-app-x-hbuilderx" target="_blank" rel="noopener noreferrer">
+    <i className="iconify mdi--rocket-launch text-xl" />
+    一键使用模板项目（推荐）
+  </a>
+  <a className="docs-cta-secondary" href="/docs/uni-app-x/install">
+    <i className="iconify mdi--playlist-check text-lg opacity-80" />
+    或者按步骤手动集成
+  </a>
+</div>
 
-[`uni-app x`](https://doc.dcloud.net.cn/uni-app-x/) 是一个非常强大的跨多端解决方案，可以说是国内跨平台编译技术的天花板了，`DCloud` 公司出品。
+## 这篇文档适合谁
 
-我很荣幸在 `weapp-tailwindcss@4.2.x` 版本中，适配了 `uni-app x` 的多端构建。
+- 想在 uni-app x 项目里使用 Tailwind CSS 的开发者
+- 需要一套能同时覆盖 Web/小程序/Android/iOS/鸿蒙 的原子化样式方案
+- 希望以最少的改动尽快起步，并有清晰的后续扩展路线
 
-并借助 `uni-app x` 的能力，把 `tailwindcss` 原子化样式方案，同时带入到 `Web`, `小程序`, `安卓`,`IOS`, `鸿蒙` 五端。
+## 你将收获什么
 
-:::warning
-目前只支持 `tailwindcss@3.x`，不兼容 `tailwindcss@4.x` 去进行跨多端，  
-原因在于 `tailwindcss@4.x` 中生成的 `css` 过于先进，基本只有现代的 `web` 浏览器可以兼容，  
-而 `uni-app x` 暂时并没有兼容如此之多的 `css` 现代特性，所以 `tailwindcss@4.x` 目前在 `uni-app x` 中无法使用。
+- 完整的从 0 到 1 集成流程（含运行与验证）
+- 可复用的模板项目与配置清单
+- 多端开发的实践建议与避坑说明
+
+:::info 支持范围
+当前跨端集成仅支持 `tailwindcss@3.x`。  
+`tailwindcss@4.x` 生成的 CSS 依赖诸多现代特性，`uni-app x` 暂未全部覆盖，故不建议在该场景使用 v4。
 :::
 
-## 如何使用
+## 最快开始
 
-### [🚀详见快速集成](/docs/uni-app-x/install)
+- 想最快跑起来：点击上方「一键使用模板项目」，按 README 步骤打开 HBuilderX 运行即可
+- 想了解每一步：前往「手动集成」教程 → <Link to="/docs/uni-app-x/install">快速集成</Link>
 
-{/* 在使用 `Hbuilderx` 创建一个 `uni-app x` 项目后，可以遵循:
+## 开发建议（从用户出发）
 
-### 1. [安装与配置 tailwindcss3](/docs/quick-start/install)
-### 2. [安装 weapp-tailwindcss](/docs/quick-start/this-plugin)
-### 3. [uni-app-x 注册 weapp-tailwindcss](/docs/quick-start/frameworks/uni-app-x)
-### 4. [rem 转 rpx (或 px)](/docs/quick-start/rem2rpx) */}
+- 推荐编辑器协作：用 VS Code 写代码，用 HBuilderX 负责运行与构建
+- 首选 Android 端调试：CSS 兼容度一般是 Web > 小程序 > App（Android/iOS/鸿蒙）。先用 Android 模拟器打通路径，跨端成本最低
+- 组件语义注意：原生 App 端文字需放在 `<text>` 标签，且文本样式需要直接作用在该元素上
+- 渐进增强：若某些样式在 App 端受限，优先保证 Android 端体验，再按需做条件编译适配小程序/Web
 
-{/* 这套的流程，集成 `tailwindcss` 原子化样式解决方案。 */}
+## 为什么推荐先用 Android
 
-## 如何开发
-
-目前 `uni-app x` 并没有提供任何 `cli` 的方式去使用它，所以是必须要去使用 `Hbuilderx` 去进行开发和构建的。
-
-这里可以使用 `Hbuilderx` 的运行，来运行到各个平台。
-
-import run from './assets/run.png'
-
-<img className='h-60' src={run} alt="运行" />
-
-另外出于开发者体验的角度，推荐使用 `Vscode` 进行开发，`Hbuilderx` 去进行构建
-
-在 `Vscode` 上有 `Tailwindcss` 官方的插件做智能提示支持，整体的开发体验比 `Hbuilderx` 高一些。
-
-### 优先使用安卓进行开发
-
-一般来说，`CSS` 平台的兼容程度，是 `Web` > `小程序` > `App`(安卓/IOS/鸿蒙)
-
-所以，假如你有跨多端的需求，建议你一开始使用 `安卓模拟器` 来进行开发和调试，这是综合考虑下来 **成本最低** 的方案。
-
-#### 🧐为什么?
-
-因为 `uni-app x` 开发原生 `app` 是有一些限制的，
-
-1. 比如文字必须包括在 `<text>` 标签中，文字的样式(比如 `text-2xl text-center text-red-400`) 也必须设置在这个元素上，设置在 `<view>` 上是没有效果的。而 `Web` 和 `小程序` 都是兼容的。
-
-2. 还有很多 `css` 的样式，目前 `uni-app x` 暂时是不兼容的，强行使用 `Hbuilderx` 的控制台会爆出警告，要求你进行更改。
-
-这就相当于，你写的代码，能够满足了 `安卓` 这一端，那就大概率能满足 `小程序` 端，甚至 `Web` 端了(当然实战中还需要很多条件编译处理)
-
-#### 🧐为什么不是 IOS 或者鸿蒙? 
-
-IOS 模拟器，需要你有 Mac 才能运行，IOS 调试需要你有苹果手机，考虑到大部分开发应该都是用的 Windows 机器，所以选择 Android 模拟器开发，相对成本低一些，你都有的话当我没说
-
-至于鸿蒙，uni-app x 官方文档上都写着:
-
-> 鸿蒙整体处于发展初期，能用，有坑，大部分坑有规避方案。但开发者应建议其领导、客户、质量部门降低期望，不能严格比照Android和iOS的验收标准要求鸿蒙。
-
-不如安卓/IOS 稳定的话，自然优先选择安卓平台
+1) 原生端样式约束更严格，例如文本必须使用 `<text>`，许多 CSS 特性仍在补齐中  
+2) 如果你的页面在 Android 端无告警、展示正确，迁移到小程序与 Web 的心智负担会小很多  
+3) iOS/鸿蒙的调试门槛更高（设备/系统要求），多数团队以 Android 作为优先目标更务实
 
 ## 常见问题
 
-### Vscode uvue/uts 代码染色
+### VS Code 对 uvue/uts 的高亮与跳转
 
-安装 `DCloud` 自己推出的 `uni-app x语言服务`, 插件市场一搜 `uni-app x` 就搜到了
-- ID: dcloud-ide.hbuilderx-language-services
-- 说明: 支持uni-app x项目的代码提示、悬浮、转到定义、查找引用、大纲、校验等
-- 发布者: DCloud
-- VS Marketplace 链接: https://marketplace.visualstudio.com/items?itemName=dcloud-ide.hbuilderx-language-services
+安装官方语言服务插件：  
+- ID: dcloud-ide.hbuilderx-language-services  
+- 说明: 支持 uni-app x 项目的提示、悬浮、转到定义、查找引用、校验等  
+- 链接: https://marketplace.visualstudio.com/items?itemName=dcloud-ide.hbuilderx-language-services
 
-### Tailwindcss 智能提示
+### Tailwind CSS 智能提示
 
-目前 `Tailwindcss` 智能提示最好的还是 `vscode`，但是 `vscode Tailwindcss` 肯定是不认识 `uvue/uts` 文件的，
+VS Code 原生不识别 `uvue/uts`，建议为 Tailwind 扩展加上语言映射。在项目根目录创建 `.vscode/settings.json`：
 
-要让插件认识，只需要在你的项目中添加 `.vscode/settings.json` 文件
-
-```json
+```json title=".vscode/settings.json"
 {
-    "tailwindCSS.includeLanguages": {
-        "uvue": "html",
-        "uts": "javascript"
-    }
+  "tailwindCSS.includeLanguages": {
+    "uvue": "html",
+    "uts": "javascript"
+  }
 }
 ```
 
-当然，你直接全局修改你的 `vscode Tailwindcss` 插件配置肯定也是可以的。
+### 运行方式
 
-## 配置好的模板
+目前 `uni-app x` 尚无 CLI，需通过 HBuilderX 进行运行与构建。  
+建议配合 Android 模拟器进行开发调试。
 
-https://github.com/icebreaker-template/uni-app-x-hbuilderx
+## 接下来
 
-使用方式见这个项目中的 `README.md`
+- 跟着步骤手动完成集成：<Link to="/docs/uni-app-x/install">快速集成</Link>  
+- 直接基于模板起步：<Link to="https://github.com/icebreaker-template/uni-app-x-hbuilderx">uni-app x + Tailwind 模板（HBuilderX）</Link>

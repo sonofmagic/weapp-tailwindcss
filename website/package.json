@@ -17,6 +17,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "dev": "docusaurus start --port 4000",
+    "dev:public": "node scripts/dev-public.mjs",
     "dev:type": "cross-env TYPEDOC_WATCH=true docusaurus start --port 4000",
     "build": "docusaurus build",
     "build:github": "cross-env PROVIDER=GITHUB docusaurus build",
@@ -24,6 +25,7 @@
     "deploy:github": "cross-env PROVIDER=GITHUB docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
+    "serve:public": "docusaurus serve --port 4000 --host 0.0.0.0",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",

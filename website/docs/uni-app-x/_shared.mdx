@@ -1,29 +1,56 @@
-## 如何使用
+## 最简单：直接用模板项目（推荐）
 
-### 0. 创建项目
+立即上手而不纠结配置细节，点击下面链接即可：
 
-使用最新版本 `Hbuilderx` 创建一个 `uni-app x` 项目，然后执行
+<div className="not-prose mt-2">
+  <a
+    className="docs-cta-primary"
+    href="https://github.com/icebreaker-template/uni-app-x-hbuilderx"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <i className="iconify mdi--rocket-launch text-lg" />
+    使用模板一键开始
+  </a>
+</div>
+
+打开后按 README 步骤，用 HBuilderX 运行到 Android 模拟器或真机即可看到效果。
+
+---
+
+## 手动集成（由浅入深）
+
+你也可以按下面步骤，从零开始完成配置。
+
+### 前置条件
+
+- 已安装最新 HBuilderX
+- 安装 Node.js（建议 ≥ 18）
+- 建议准备 Android 模拟器（或真机），便于快速验证
+
+### 1) 创建项目
+
+在 HBuilderX 中创建一个全新的 `uni-app x` 项目；随后在项目根目录初始化 `package.json`：
 
 ```bash npm2yarn
 npm init -y
 ```
 
-初始化一个 `package.json` 文件 (当然你也可以手动创建)
+> 也可以手动创建 `package.json` 文件。
 
-### 1. [安装并引入 tailwindcss3](/docs/quick-start/install)
-
+### 2) 安装并引入 Tailwind CSS 3
 
 ```bash npm2yarn
-# 安装 tailwindcss@3 版本的依赖
+# 安装 tailwindcss@3 所需依赖
 npm i -D tailwindcss@3 postcss autoprefixer
 ```
 
 ```bash npm2yarn
-# 初始化一个 tailwind.config.js 文件
+# 初始化 Tailwind 配置文件
 npx tailwindcss init
 ```
 
-然后，在你的根目录中的 `App.uvue` 中引入 `tailwindcss` 使它在应用全局生效
+在应用入口 `App.uvue` 中全局引入：
 
 ```html title="App.uvue"
 <style>
@@ -33,82 +60,72 @@ npx tailwindcss init
 </style>
 ```
 
-### 2. [安装 weapp-tailwindcss](/docs/quick-start/this-plugin)
-
-在项目目录下，执行:
+### 3) 安装 weapp-tailwindcss 并添加补丁脚本
 
 ```bash npm2yarn
 npm i -D weapp-tailwindcss
 ```
 
-然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
+在 `package.json` 中增加 `postinstall` 脚本：
 
 ```json title="package.json"
- "scripts": {
+{
+  "scripts": {
     // highlight-next-line
-   "postinstall": "weapp-tw patch"
- }
+    "postinstall": "weapp-tw patch"
+  }
+}
 ```
 
-想知道原因的同学可以查看 [**这个链接**](https://tw.icebreaker.top/docs/quick-start/this-plugin)
+> 了解原因可阅读：<a href="/docs/quick-start/this-plugin">weapp-tailwindcss 使用说明</a>
 
-### 3. [uni-app-x 注册 weapp-tailwindcss](/docs/quick-start/frameworks/uni-app-x)
+### 4) 在 uni-app x 中注册 weapp-tailwindcss
 
-#### 0. 创建工具类
-
-在项目中创建 `shared.js` 文件，用于存放一些工具函数：
+先创建一个简单的路径工具函数，方便在配置里引用绝对路径：
 
 ```js title="shared.js"
 const path = require('node:path')
-
 function r(...args) {
   return path.resolve(__dirname, ...args)
 }
-
-module.exports = {
-  r,
-}
+module.exports = { r }
 ```
 
-#### 1. 注册插件
-
-创建 `vite.config.ts` 文件，注册插件：
-
-> 这里特别注意 `uniAppX` 是从 `weapp-tailwindcss/presets` 这个预设中导出的
+创建 `vite.config.ts` 并注册插件（注意 `uniAppX` 预设来自 `weapp-tailwindcss/presets`）：
 
 ```js title="vite.config.ts"
-import { defineConfig } from 'vite';
-import uni from '@dcloudio/vite-plugin-uni';
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 import { r } from './shared'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 import tailwindcss from 'tailwindcss'
 
 export default defineConfig({
-    plugins: [
-        uni(),
-        UnifiedViteWeappTailwindcssPlugin(
-            uniAppX({
-                base: __dirname,
-                rem2rpx: true,
-            }),
-        ),
-    ],
-    css: {
-        postcss: {
-            plugins: [
-                tailwindcss({
-                    config: r('./tailwind.config.js'),
-                }),
-            ]
-        }
-    }
-});
+  plugins: [
+    uni(),
+    UnifiedViteWeappTailwindcssPlugin(
+      uniAppX({
+        base: __dirname,
+        rem2rpx: true,
+      }),
+    ),
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss({
+          config: r('./tailwind.config.js'),
+        }),
+      ],
+    },
+  },
+})
 ```
 
-#### 2. 更改 tailwindcss 配置
+### 5) 配置 Tailwind
 
-使用绝对路径，包括所有的提取文件
+使用绝对路径包含所有需要提取原子类的文件：
 
 ```js title="tailwind.config.js"
 const { r } = require('./shared')
@@ -117,17 +134,51 @@ const { r } = require('./shared')
 module.exports = {
   content: [
     r('./pages/**/*.{uts,uvue}'),
-    r('./components/**/*.{uts,uvue}') 
+    r('./components/**/*.{uts,uvue}'),
   ],
   corePlugins: {
+    // 由 uni-app x 提供基础样式，这里关闭 preflight 避免冲突
     preflight: false,
   },
 }
-
 ```
 
-假如你需要从更多的目录中提取 `CSS Token`，你需要添加更多的 `glob` 表达式在 `content` 配置中。
+如需从更多目录提取样式，按需扩展 `content` 的 glob。
+
+### 6) 运行与验证
+
+import run from './assets/run.png'
+
+- 在 HBuilderX 中点击「运行」并选择目标平台（推荐 Android 模拟器/真机）  
+- 新建/打开任意页面，写入示例类名验证：
+
+```html
+<view class="p-4">
+  <text class="text-xl text-red-500 font-medium">Hello Tailwind on uni-app x</text>
+</view>
+```
+
+<img className="h-60" src={run} alt="运行" />
+
+### 7) 编辑器智能提示（可选）
+
+VS Code 配合插件体验最佳。为 Tailwind 扩展增加语言映射，让其识别 `uvue/uts`：
+
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.includeLanguages": {
+    "uvue": "html",
+    "uts": "javascript"
+  }
+}
+```
+
+同时安装官方语言服务插件（ID: dcloud-ide.hbuilderx-language-services）以获得完整语法支持。
 
 ---
 
-在完成这 3 步之后， `uni-app x` 就集成 `tailwindcss` 原子化样式解决方案。
+## 重要说明与限制
+
+- 仅推荐在 `tailwindcss@3.x` 下跨端使用（v4 在该场景下暂不兼容）
+- 原生 App 端对文本与部分 CSS 特性有约束：文本使用 `<text>` 元素，且样式需直接作用其上
+- 如遇到 HBuilderX 控制台 CSS 警告，请按提示做兼容性调整或采用条件编译

@@ -1,0 +1,85 @@
+/* Docs page tweaks focused for uni-app x pages */
+
+/* Gentle typography rhythm only on uni-app x pages */
+.docs-doc-id-uni-app-x\/index .theme-doc-markdown,
+.docs-doc-id-uni-app-x\/install .theme-doc-markdown {
+  line-height: 1.75;
+}
+.docs-doc-id-uni-app-x\/index .theme-doc-markdown h2,
+.docs-doc-id-uni-app-x\/install .theme-doc-markdown h2 {
+  margin-top: 1.8rem;
+}
+.docs-doc-id-uni-app-x\/index .theme-doc-markdown h3,
+.docs-doc-id-uni-app-x\/install .theme-doc-markdown h3 {
+  margin-top: 1.2rem;
+}
+.docs-doc-id-uni-app-x\/index .theme-doc-markdown p,
+.docs-doc-id-uni-app-x\/install .theme-doc-markdown p {
+  margin: 0.65rem 0;
+}
+.docs-doc-id-uni-app-x\/index .theme-doc-markdown ul,
+.docs-doc-id-uni-app-x\/install .theme-doc-markdown ul {
+  margin: 0.5rem 0 0.75rem;
+  padding-left: 1.1rem;
+}
+
+/* CTA buttons presets (reusable across docs) */
+.docs-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background-image: linear-gradient(to right, #10b981, #14b8a6);
+  box-shadow: 0 10px 28px rgba(16, 185, 129, 0.35);
+  transition: all 300ms ease;
+}
+.docs-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.45);
+}
+.docs-cta-primary:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.docs-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgb(30 41 59);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(203, 213, 225, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 6px 20px rgba(2, 6, 23, 0.06);
+  backdrop-filter: blur(8px);
+  transition: all 300ms ease;
+}
+.docs-cta-secondary:hover {
+  transform: translateY(-2px);
+  border-color: rgba(203, 213, 225, 0.95);
+  background: rgba(255, 255, 255, 0.85);
+}
+.docs-cta-secondary:focus-visible {
+  outline: 2px solid rgba(203, 213, 225, 0.9);
+  outline-offset: 2px;
+}
+html[data-theme='dark'] .docs-cta-secondary {
+  color: rgb(241 245 249);
+  background: rgba(30, 41, 59, 0.4);
+  border-color: rgba(51, 65, 85, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.docs-cta-secondary:hover {
+  background: rgba(30, 41, 59, 0.55);
+}

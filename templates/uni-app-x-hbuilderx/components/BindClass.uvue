@@ -1,17 +1,22 @@
 <template>
-  <text :class="[
-      flag ? 'bg-[#123456]' : 'bg-[#654321]',
-      extra,
-      { 'text-[#ff0000] font-bold': toggled },
-      'border-[#111111] border-solid'
+  <view class="p-[20.32px] bg-[#87add3] border-[#111111] border-solid">
+    <text :class="flag ? 'bg-[#123456] mb-[12.32px]' : 'bg-[#d7700a]'">
+      simple
+    </text>
+    <text :class="[
+    extra,
+    { 'text-[#ff0000]': toggled }
     ]">
-    complex
-  </text>
-  <text :class="condition ? 'bg-[#999999] text-[#00ffff]' : ''">fallback</text>
+      complex
+    </text>
+    <text :class="condition ? 'bg-[#f205f6] text-[#70ed0a]' : ''">
+      fallback
+    </text>
+  </view>
 </template>
 <script setup lang="ts">
-const flag = true
-const extra = 'font-bold'
-const toggled = true
-const condition = true
+  const flag = true
+  const extra = 'text-[93.54rpx] bg-[#d2e252]'
+  const toggled = true
+  const condition = true
 </script>
