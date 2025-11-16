@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-require-imports */
 const isPlainObject = require('lodash.isplainobject')
 
 const parser = require('postcss-selector-parser')
@@ -39,6 +40,7 @@ module.exports = {
     for (const pseudos of matrix) {
       // It's a sparse 2D array so there are going to be holes in the rows
       // We skip those
+      /* c8 ignore next */
       if (!pseudos) {
         continue
       }

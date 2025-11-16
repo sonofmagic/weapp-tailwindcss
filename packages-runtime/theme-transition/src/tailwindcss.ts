@@ -60,12 +60,14 @@ export function themeTransitionPlugin(themeTransitionPluginOptions?: ThemeTransi
         for (const format of formats) {
           if (format === '.dark') {
             mode = undefined
+            // eslint-disable-next-line no-console
             console.warn(
               'When using `variant` for `darkMode`, you must provide a selector.\nExample: `darkMode: ["variant", ".your-selector &"]`',
             )
           }
           else if (!format.includes('&')) {
             mode = undefined
+            // eslint-disable-next-line no-console
             console.warn(
               'When using `variant` for `darkMode`, your selector must contain `&`.\nExample `darkMode: ["variant", ".your-selector &"]`',
             )

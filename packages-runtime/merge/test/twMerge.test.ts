@@ -4,7 +4,7 @@ import {
   create,
   tailwindMergeVersion,
   twMerge,
-} from '@/v4'
+} from '@/index'
 
 describe('merge behavior reference', () => {
   const merge = twMerge

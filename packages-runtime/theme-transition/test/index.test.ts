@@ -156,4 +156,97 @@ describe('useToggleTheme', () => {
     expect(dark).toBe(true)
     expect(capabilities.hasViewTransition).toBe(true)
   })
+
+  it('skips view transitions when coordinates cannot be resolved', async () => {
+    let dark = false
+    const toggle = vi.fn(() => {
+      dark = !dark
+    })
+    const { documentLike, startViewTransition, animate } = createDocumentMock()
+
+    const { toggleTheme } = useToggleTheme({
+      toggle,
+      isCurrentDark: () => dark,
+      document: documentLike,
+      window: windowMock,
+    })
+
+    await toggleTheme()
+
+    expect(startViewTransition).not.toHaveBeenCalled()
+    expect(animate).not.toHaveBeenCalled()
+    expect(toggle).toHaveBeenCalledOnce()
+    expect(dark).toBe(true)
+  })
+
+  it('executes viewTransition callback when appearance transitions are disabled', async () => {
+    const toggle = vi.fn()
+    const callback = vi.fn()
+
+    const { toggleTheme, isAppearanceTransition } = useToggleTheme({
+      toggle,
+      isCurrentDark: () => false,
+      viewTransition: {
+        callback,
+      },
+    })
+
+    expect(isAppearanceTransition).toBe(false)
+    await toggleTheme()
+
+    expect(callback).toHaveBeenCalledOnce()
+    expect(toggle).not.toHaveBeenCalled()
+  })
+
+  it('executes viewTransition callback inside view transitions when supported', async () => {
+    const callback = vi.fn()
+    const { documentLike } = createDocumentMock()
+
+    const { toggleTheme } = useToggleTheme({
+      toggle: vi.fn(),
+      isCurrentDark: () => false,
+      document: documentLike,
+      window: windowMock,
+      viewTransition: {
+        callback,
+      },
+    })
+
+    await toggleTheme({ clientX: 10, clientY: 10 })
+    expect(callback).toHaveBeenCalledOnce()
+  })
+
+  it('skips fallback when failures occur after transition work starts', async () => {
+    const warn = vi.fn()
+    const animate = vi.fn(() => {
+      throw new Error('animate failed')
+    })
+    const startViewTransition = vi.fn(async (cb: () => Promise<void>) => {
+      await cb()
+      return {
+        ready: Promise.resolve(),
+        finished: Promise.resolve(),
+      }
+    })
+
+    const documentLike = {
+      documentElement: {
+        animate,
+        getBoundingClientRect: () => ({ width: 100, height: 100, top: 0, left: 0, right: 100, bottom: 100 }),
+      },
+      startViewTransition,
+    } as any
+
+    const { toggleTheme } = useToggleTheme({
+      toggle: vi.fn(),
+      document: documentLike,
+      window: windowMock,
+      logger: { warn },
+    })
+
+    await toggleTheme({ clientX: 10, clientY: 10 })
+
+    expect(startViewTransition).toHaveBeenCalledOnce()
+    expect(warn).toHaveBeenCalledOnce()
+  })
 })

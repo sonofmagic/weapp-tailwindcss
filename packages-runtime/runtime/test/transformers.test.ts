@@ -50,6 +50,26 @@ describe('resolveTransformers', () => {
     expect(escaped).toBe('text-_b_hececec_B')
     expect(transformers.unescape(escaped)).toBe('text-[#ececec]')
   })
+
+  it('reuses the shared map when escape config omits map overrides', () => {
+    const transformers = resolveTransformers({
+      escape: {},
+    })
+
+    const escaped = transformers.escape('text-[#ececec]')
+    expect(escaped).toBe('text-_b_hececec_B')
+    expect(transformers.unescape(escaped)).toBe('text-[#ececec]')
+  })
+
+  it('applies shared map when unescape config omits map overrides', () => {
+    const transformers = resolveTransformers({
+      unescape: {},
+    })
+
+    const escaped = transformers.escape('text-[#ececec]')
+    expect(escaped).toBe('text-_b_hececec_B')
+    expect(transformers.unescape(escaped)).toBe('text-[#ececec]')
+  })
 })
 
 describe('identity helper', () => {

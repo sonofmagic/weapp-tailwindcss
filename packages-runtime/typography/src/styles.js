@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-require-imports */
 const colors = require('tailwindcss/colors')
 
 function round(num) {

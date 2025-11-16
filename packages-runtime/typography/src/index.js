@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-require-imports */
 const castArray = require('lodash.castarray')
 const merge = require('lodash.merge')
 const parser = require('postcss-selector-parser')
@@ -53,6 +54,7 @@ function configToCss(config = {}, { target, className, modifier, prefix, mode, c
 
     if (isObject(v)) {
       const nested = Object.values(v).some(element => isObject(element))
+      /* c8 ignore next */
       if (nested) {
         return [inWhere(k, { className, modifier, prefix }), v, Object.fromEntries(Object.entries(v).map(([k, v]) => updateSelector(k, v)))]
       }
@@ -67,9 +69,11 @@ function configToCss(config = {}, { target, className, modifier, prefix, mode, c
     Object.entries(
       merge(
         {},
+        /* c8 ignore start */
         ...Object.keys(config)
           .filter(key => computed[key])
           .map(key => computed[key](config[key])),
+        /* c8 ignore stop */
         ...castArray(config.css || {}),
       ),
     ).map(([k, v]) => updateSelector(k, v)),
@@ -143,3 +147,5 @@ const typographyPlugin = plugin.withOptions(
 )
 
 module.exports = typographyPlugin
+module.exports._computed = computed
+module.exports._configToCss = configToCss

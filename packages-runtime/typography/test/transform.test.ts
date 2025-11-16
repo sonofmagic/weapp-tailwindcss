@@ -69,4 +69,16 @@ describe('transform', () => {
     }
     </code></pre>`)
   })
+
+  it('applies the provided prefix to injected class names', () => {
+    expect(transform('<section><p></p></section>', { prefix: 'tw-' })).toBe('<section class="tw-section"><p class="tw-p"></p></section>')
+  })
+
+  it('falls back to default options when none are provided', () => {
+    expect(transform('<div></div>')).toBe('<div class="div"></div>')
+  })
+
+  it('ignores non-class attributes while parsing', () => {
+    expect(transform('<a href="#"></a>', { prefix: '' })).toBe('<a class="a" href="#"></a>')
+  })
 })

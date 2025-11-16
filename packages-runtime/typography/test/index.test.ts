@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-require-imports */
 import type { Config } from 'tailwindcss'
 import path from 'node:path'
 import postcss from 'postcss'
