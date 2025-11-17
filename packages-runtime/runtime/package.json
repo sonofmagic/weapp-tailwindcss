@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/runtime",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Shared runtime helpers (transformers, clsx wrappers, metadata) for weapp-tailwindcss 在小程序运行时的适配层。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
