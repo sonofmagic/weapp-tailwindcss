@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/runtime
 
+## 0.1.2
+
+### Patch Changes
+
+- [`db0d5b9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/db0d5b9ae3dc1af7cb293142b8da0cf5d6b2b657) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 提取并统一 rpx 任意值的长度处理逻辑，修复 `text|border|bg|outline|ring-[…rpx]` 被当作颜色合并的问题，并补充对应的运行时与快照单测。
+
 ## 0.1.1
 
 ### Patch Changes
