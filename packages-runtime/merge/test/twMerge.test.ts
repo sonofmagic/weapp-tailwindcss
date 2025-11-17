@@ -95,12 +95,14 @@ describe('merge behavior reference', () => {
   })
 
   it('supports conditional classes', () => {
+    const disabled = Boolean(0)
+    const enabled = Boolean(1)
     expect(merge('some-class', undefined, null, false, 0)).toBe('some-class')
     expect(
-      merge('my-class', false && 'not-this', null && 'also-not-this', true && 'but-this'),
+      merge('my-class', disabled ? 'not-this' : undefined, null, enabled ? 'but-this' : undefined),
     ).toBe('my-class but-this')
     expect(
-      merge('foo', false && 'w-[12rpx]', null && 'skip', true && 'w-[16rpx]'),
+      merge('foo', disabled ? 'w-[12rpx]' : undefined, null, enabled ? 'w-[16rpx]' : undefined),
     ).toBe(`foo ${esc('w-[16rpx]')}`)
   })
 
@@ -110,6 +112,28 @@ describe('merge behavior reference', () => {
     )
     expect(merge('hi', true && ['hello', ['hey', false]], false && ['bye'])).toBe('hi hello hey')
     expect(merge('hi', ['w-[12rpx]', ['w-[24rpx]']])).toBe(`hi ${esc('w-[24rpx]')}`)
+  })
+
+  it('treats rpx arbitrary values as lengths for color-like utilities', () => {
+    expect(merge('text-red', 'text-[80rpx]')).toBe(esc('text-red text-[80rpx]'))
+    expect(merge('border-red-500', 'border-[10rpx]')).toBe(esc('border-red-500 border-[10rpx]'))
+    expect(merge('bg-red-500', 'bg-[6rpx]')).toBe(esc('bg-red-500 bg-[6rpx]'))
+    expect(merge('outline-red-500', 'outline-[4rpx]')).toBe(esc('outline-red-500 outline-[4rpx]'))
+    expect(merge('ring-red-500', 'ring-[12rpx]')).toBe(esc('ring-red-500 ring-[12rpx]'))
+  })
+
+  it('handles multiple rpx overrides per prefix', () => {
+    expect(merge('text-red', 'text-[20rpx]', 'text-[5rpx]', 'text-[12rpx]')).toBe(
+      esc('text-red text-[12rpx]'),
+    )
+    expect(merge('border-[2rpx]', 'border-red-500', 'border-[10rpx]', 'border-[1rpx]')).toBe(
+      esc('border-red-500 border-[1rpx]'),
+    )
+    expect(merge('bg-[2rpx]', 'bg-[6rpx]', 'bg-red-500', 'bg-[4rpx]')).toBe(esc('bg-red-500 bg-[4rpx]'))
+    expect(merge('outline-[3rpx]', 'outline-[1rpx]', 'outline-[8rpx]')).toBe(esc('outline-[8rpx]'))
+    expect(merge('ring-[2rpx]', 'ring-[4rpx]', 'ring-[1rpx]', 'ring-red-500')).toBe(
+      esc('ring-[1rpx] ring-red-500'),
+    )
   })
 })
 

@@ -1,5 +1,6 @@
 import type { ClassValue } from '@weapp-tailwindcss/runtime'
 import {
+  createRpxLengthTransform,
   createRuntimeFactory,
   weappTwIgnore,
 } from '@weapp-tailwindcss/runtime'
@@ -12,12 +13,15 @@ import {
   mergeConfigs,
 } from 'tailwind-merge'
 
+const rpxTransform = createRpxLengthTransform()
+
 const create = createRuntimeFactory({
   createTailwindMerge: _createTailwindMerge,
   extendTailwindMerge: _extendTailwindMerge,
   twJoin: _twJoin,
   twMerge: _twMerge,
   version: 3,
+  ...rpxTransform,
 })
 
 const {

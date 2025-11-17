@@ -53,14 +53,15 @@ function createVariantsRuntime(options?: CreateOptions) {
         return aggregated
       }
 
+      const normalized = transformers.unescape(aggregated)
+
       const shouldMerge = config?.twMerge ?? true
       if (!shouldMerge) {
-        const normalized = transformers.unescape(aggregated)
         return transformers.escape(normalized)
       }
 
       const mergeFn = getMergeFn(config?.twMergeConfig)
-      return mergeFn(aggregated)
+      return mergeFn(normalized)
     }
   }
 
