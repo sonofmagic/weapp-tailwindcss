@@ -460,10 +460,9 @@ function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): Tail
 }
 
 function tryCreateMultiTailwindcssPatcher(
-  cssEntries: string[],
+  groups: Map<string, string[]>,
   options: TailwindcssPatcherFactoryOptions,
 ) {
-  const groups = groupCssEntriesByBase(cssEntries)
   if (groups.size <= 1) {
     return undefined
   }
@@ -495,17 +494,31 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     ctx.cssEntries = normalizedCssEntries
   }
 
-  const multiPatcher = normalizedCssEntries
-    ? tryCreateMultiTailwindcssPatcher(normalizedCssEntries, {
-        tailwindcss,
-        tailwindcssPatcherOptions,
-        supportCustomLengthUnitsPatch,
-        appType,
-      })
+  const patcherOptions: TailwindcssPatcherFactoryOptions = {
+    tailwindcss,
+    tailwindcssPatcherOptions,
+    supportCustomLengthUnitsPatch,
+    appType,
+  }
+
+  const groupedCssEntries = normalizedCssEntries
+    ? groupCssEntriesByBase(normalizedCssEntries)
+    : undefined
+
+  const multiPatcher = groupedCssEntries
+    ? tryCreateMultiTailwindcssPatcher(groupedCssEntries, patcherOptions)
     : undefined
 
   if (multiPatcher) {
     return multiPatcher
+  }
+
+  if (groupedCssEntries?.size === 1) {
+    const firstGroup = groupedCssEntries.entries().next().value
+    if (firstGroup) {
+      const [baseDir, entries] = firstGroup
+      return createPatcherForBase(baseDir, entries, patcherOptions)
+    }
   }
 
   const effectiveCssEntries = normalizedCssEntries ?? rawCssEntries
@@ -513,11 +526,6 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
   return createPatcherForBase(
     resolvedTailwindcssBasedir,
     effectiveCssEntries,
-    {
-      tailwindcss,
-      tailwindcssPatcherOptions,
-      supportCustomLengthUnitsPatch,
-      appType,
-    },
+    patcherOptions,
   )
 }
