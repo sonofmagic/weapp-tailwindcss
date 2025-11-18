@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.7.9
+
+### Patch Changes
+
+- [`06b189e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/06b189ec59ac0b6022466ae3cefcf81b77917698) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复仅有单个 CSS entry 时 v4 base 错指项目根目录，确保按 entry 所在目录生成 patcher 以避免 @config 解析错位。
+
 ## 4.7.8
 
 ### Patch Changes
