@@ -60,7 +60,7 @@
     "@tarojs/runtime": "4.1.8",
     "@tarojs/shared": "4.1.8",
     "@tarojs/taro": "4.1.8",
-    "@weapp-tailwindcss/merge": "^2.1.1",
+    "@weapp-tailwindcss/merge": "^2.1.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
@@ -88,7 +88,7 @@
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.1.0",
     "weapp-tailwindcss": "^4.7.8",
-    "webpack": "5.102.1"
+    "webpack": "5.103.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
