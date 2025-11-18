@@ -9,7 +9,7 @@
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@weapp-tailwindcss/debug-uni-app-x": "workspace:*",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "^8.2.3",
+    "tailwindcss-patch": "^8.2.4",
     "weapp-tailwindcss": "workspace:*"
   }
 }

@@ -56,7 +56,7 @@
     "sass": "^1.94.1",
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.3",
+    "tailwindcss-patch": "^8.2.4",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",

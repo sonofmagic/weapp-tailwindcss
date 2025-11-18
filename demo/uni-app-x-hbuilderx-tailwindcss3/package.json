@@ -11,7 +11,7 @@
     "@weapp-tailwindcss/debug-uni-app-x": "workspace:*",
     "@weapp-tailwindcss/merge": "catalog:weappMerge",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.3",
+    "tailwindcss-patch": "^8.2.4",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

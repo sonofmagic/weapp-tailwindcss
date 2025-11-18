@@ -803,8 +803,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -830,8 +830,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -848,8 +848,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -1030,8 +1030,8 @@ importers:
   apps/web-postcss7-compat:
     dependencies:
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1)
+        specifier: ^8.2.4
+        version: 8.2.4(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1)
     devDependencies:
       autoprefixer:
         specifier: catalog:autoprefixer10
@@ -1210,8 +1210,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1355,8 +1355,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1479,8 +1479,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -1509,8 +1509,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1618,8 +1618,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1669,8 +1669,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1766,8 +1766,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1905,8 +1905,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2053,8 +2053,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2195,8 +2195,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       terser:
         specifier: ^5.44.1
         version: 5.44.1
@@ -2316,8 +2316,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2470,8 +2470,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -2560,8 +2560,8 @@ importers:
         specifier: ^3.5.22
         version: 3.5.24
       core-js:
-        specifier: ^3.36.0
-        version: 3.46.0
+        specifier: ^3.47.0
+        version: 3.47.0
       flyio:
         specifier: ^0.6.14
         version: 0.6.14
@@ -2625,7 +2625,7 @@ importers:
         version: 1.2.3
       '@vue/cli-plugin-babel':
         specifier: ~5.0.8
-        version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.93.3)(sass@1.94.1)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3))(core-js@3.46.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.7.16)
+        version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.93.3)(sass@1.94.1)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3))(core-js@3.47.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.7.16)
       '@vue/cli-plugin-typescript':
         specifier: ~5.0.8
         version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.93.3)(sass@1.94.1)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3))(encoding@0.1.13)(esbuild@0.27.0)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vue-template-compiler@2.7.16)(vue@2.7.16)
@@ -2681,8 +2681,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2808,8 +2808,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -2904,8 +2904,8 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0(miniprogram-api-typings@4.1.0)
       p-queue:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       tailwind-merge:
         specifier: catalog:tailwindMerge
         version: 3.4.0
@@ -2913,8 +2913,8 @@ importers:
         specifier: npm:tailwind-merge@^2.6.0
         version: tailwind-merge@2.6.0
       uview-plus:
-        specifier: ^3.6.15
-        version: 3.6.15
+        specifier: ^3.6.17
+        version: 3.6.17
       vk-uview-ui:
         specifier: ^1.5.2
         version: 1.5.2
@@ -3004,8 +3004,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -3100,8 +3100,8 @@ importers:
         specifier: ^3.5.22
         version: 3.5.24
       core-js:
-        specifier: ^3.8.3
-        version: 3.46.0
+        specifier: ^3.47.0
+        version: 3.47.0
       flyio:
         specifier: ^0.6.14
         version: 0.6.14
@@ -3162,7 +3162,7 @@ importers:
         version: 4.1.17
       '@vue/cli-plugin-babel':
         specifier: ~5.0.0
-        version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.7.16)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.46.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)
+        version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.7.16)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.47.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)
       '@vue/cli-plugin-typescript':
         specifier: ~5.0.8
         version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.7.16)(vue@2.6.14)(webpack-sources@3.3.3))(encoding@0.1.13)(esbuild@0.27.0)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vue-template-compiler@2.7.16)(vue@2.6.14)
@@ -3194,8 +3194,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       typescript:
         specifier: catalog:typescript59tilde
         version: 5.9.3
@@ -3281,8 +3281,8 @@ importers:
         specifier: ^3.5.22
         version: 3.5.24
       core-js:
-        specifier: ^3.36.0
-        version: 3.46.0
+        specifier: ^3.47.0
+        version: 3.47.0
       flyio:
         specifier: ^0.6.14
         version: 0.6.14
@@ -3343,7 +3343,7 @@ importers:
         version: 2.0.2-4080520251106001
       '@vue/cli-plugin-babel':
         specifier: ~5.0.0
-        version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.6.14)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.46.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)
+        version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.6.14)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.47.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)
       '@vue/cli-plugin-typescript':
         specifier: ~5.0.8
         version: 5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.6.14)(vue@2.6.14)(webpack-sources@3.3.3))(encoding@0.1.13)(esbuild@0.27.0)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vue-template-compiler@2.6.14)(vue@2.6.14)
@@ -3390,8 +3390,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -3426,8 +3426,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.1.0
@@ -3450,8 +3450,8 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.1.17
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@4.1.17)
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.1.0
@@ -3481,8 +3481,8 @@ importers:
         specifier: catalog:tailwindcss3
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -3505,8 +3505,8 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.3.5)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.3.5)(tailwindcss@4.1.17)
 
   packages-runtime/cva:
     dependencies:
@@ -3828,8 +3828,8 @@ importers:
         specifier: ~7.7.3
         version: 7.7.3
       tailwindcss-patch:
-        specifier: ^8.2.3
-        version: 8.2.3(magicast@0.3.5)(tailwindcss@4.1.17)
+        specifier: ^8.2.4
+        version: 8.2.4(magicast@0.3.5)(tailwindcss@4.1.17)
       webpack-sources:
         specifier: 3.3.3
         version: 3.3.3
@@ -14638,6 +14638,9 @@ packages:
   core-js@3.46.0:
     resolution: {integrity: sha512-vDMm9B0xnqqZ8uSBpZ8sNtRtOdmfShrvT6h2TuQGLs0Is+cR0DYbj/KWP6ALVNbWPpqA/qPLoOuppJN07humpA==}
 
+  core-js@3.47.0:
+    resolution: {integrity: sha512-c3Q2VVkGAUyupsjRnaNX6u8Dq2vAdzm9iuPj5FW0fRxzlxgq9Q39MDq10IvmQSpLgHQNyQzQmOo6bgGHmH3NNg==}
+
   core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
 
@@ -21987,10 +21990,6 @@ packages:
     resolution: {integrity: sha512-RwFpb72c/BhQLEXIZ5K2e+AhgNVmIejGlTgiB9MzZ0e93GRvqZ7uSi0dvRF7/XIXDeNkra2fNHBxTyPDGySpjQ==}
     engines: {node: '>=8'}
 
-  p-queue@9.0.0:
-    resolution: {integrity: sha512-KO1RyxstL9g1mK76530TExamZC/S2Glm080Nx8PE5sTd7nlduDQsAfEl4uXX+qZjLiwvDauvzXavufy3+rJ9zQ==}
-    engines: {node: '>=20'}
-
   p-queue@9.0.1:
     resolution: {integrity: sha512-RhBdVhSwJb7Ocn3e8ULk4NMwBEuOxe+1zcgphUy9c2e5aR/xbEsdVXxHJ3lynw6Qiqu7OINEyHlZkiblEpaq7w==}
     engines: {node: '>=20'}
@@ -26241,8 +26240,8 @@ packages:
   tailwindcss-core-plugins-extractor@0.2.0:
     resolution: {integrity: sha512-idLHKZ2Mc0YXauIQ/1Hx2/0Hx5VH8z+N6E++O+W6GF0b6+nHQPv6A27ySlQt+HQdlnSZ2tx0Cpzpx+F2ez8YQg==}
 
-  tailwindcss-patch@8.2.3:
-    resolution: {integrity: sha512-fObamcGNXkPi5nciYd01tN8iLXvhZVWQW2KcoLsGJfxno3jW+EMV9wa0SUzD12t+5Idl4fDiqIbrZDZon6jz5Q==}
+  tailwindcss-patch@8.2.4:
+    resolution: {integrity: sha512-/nQg5iPkgKTOQ6KlGs100G3nbsXGv7VZAYX0f01ylibJlmu3TZRQ7u6gYoz76+ZuTG8m08cFQtnc0pFO0+Syxg==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -27466,8 +27465,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  uview-plus@3.6.15:
-    resolution: {integrity: sha512-HcwI5eJV3UhBnhogQ6UxelM7m5UhEWOK/vUVdtQDTkGWB2biMKu8ovpEo8JsLpSZpZ880ZgvHvMeeTJaiIYjEg==}
+  uview-plus@3.6.17:
+    resolution: {integrity: sha512-wO1zPIiBNSNBIiuRuiXYGhBO8Tw8TqTI6VtIIrwzqClChL8xAbAfpiRwyehW+YGlvLC7+cvW80Sq57Elma3aBA==}
     engines: {HBuilderX: ^3.1.0, uni-app: ^4.66, uni-app-x: ''}
 
   uview-ui@2.0.38:
@@ -30200,7 +30199,7 @@ snapshots:
       '@builder/swc-loader': 1.0.1
       '@builder/webpack-plugin-swc': 1.0.0
       '@swc/helpers': 0.2.14
-      core-js: 3.46.0
+      core-js: 3.47.0
       deepmerge: 4.3.1
       dotenv: 14.3.2
       dotenv-expand: 6.0.1
@@ -32475,7 +32474,7 @@ snapshots:
       cli-table3: 0.6.5
       combine-promises: 1.2.0
       commander: 5.1.0
-      core-js: 3.46.0
+      core-js: 3.47.0
       detect-port: 1.6.1
       escape-html: 1.0.3
       eta: 2.2.0
@@ -34916,7 +34915,7 @@ snapshots:
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
       bmp-js: 0.1.0
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/bmp@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -34931,7 +34930,7 @@ snapshots:
       '@jimp/utils': 0.10.3
       any-base: 1.1.0
       buffer: 5.7.1
-      core-js: 3.46.0
+      core-js: 3.47.0
       exif-parser: 0.1.12
       file-type: 9.0.0
       load-bmfont: 1.4.2(debug@4.4.3)
@@ -34962,7 +34961,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       '@jimp/core': 0.10.3(debug@4.4.3)
-      core-js: 3.46.0
+      core-js: 3.47.0
     transitivePeerDependencies:
       - debug
 
@@ -34978,7 +34977,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
       omggif: 1.0.10
 
   '@jimp/gif@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
@@ -34993,7 +34992,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
       jpeg-js: 0.3.7
 
   '@jimp/jpeg@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
@@ -35008,7 +35007,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-blit@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35021,7 +35020,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-blur@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35034,14 +35033,14 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-color@0.10.3(@jimp/custom@0.10.3(debug@4.4.3))':
     dependencies:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
       tinycolor2: 1.6.0
 
   '@jimp/plugin-color@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
@@ -35059,7 +35058,7 @@ snapshots:
       '@jimp/plugin-resize': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/plugin-scale': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-contain@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-blit@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-scale@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))))':
     dependencies:
@@ -35078,7 +35077,7 @@ snapshots:
       '@jimp/plugin-resize': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/plugin-scale': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-cover@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-crop@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-scale@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))))':
     dependencies:
@@ -35094,7 +35093,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-crop@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35107,7 +35106,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-displace@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35120,7 +35119,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-dither@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35133,7 +35132,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-flip@0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-rotate@0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-blit@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-crop@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3))))':
     dependencies:
@@ -35141,7 +35140,7 @@ snapshots:
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/plugin-rotate': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-blit@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-crop@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-flip@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-rotate@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-blit@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-crop@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))))':
     dependencies:
@@ -35155,7 +35154,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-gaussian@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35168,7 +35167,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-invert@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35181,7 +35180,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-mask@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35194,7 +35193,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-normalize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35208,7 +35207,7 @@ snapshots:
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/plugin-blit': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
       load-bmfont: 1.4.2(debug@4.4.3)
     transitivePeerDependencies:
       - debug
@@ -35228,7 +35227,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
     dependencies:
@@ -35244,7 +35243,7 @@ snapshots:
       '@jimp/plugin-crop': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/plugin-resize': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-rotate@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-blit@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-crop@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))':
     dependencies:
@@ -35261,7 +35260,7 @@ snapshots:
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/plugin-resize': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-scale@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))(@jimp/plugin-resize@0.6.8(@jimp/custom@0.6.8(debug@4.4.3)))':
     dependencies:
@@ -35277,7 +35276,7 @@ snapshots:
       '@jimp/plugin-blur': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/plugin-resize': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugin-threshold@0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-color@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))':
     dependencies:
@@ -35286,7 +35285,7 @@ snapshots:
       '@jimp/plugin-color': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/plugin-resize': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
 
   '@jimp/plugins@0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(debug@4.4.3)':
     dependencies:
@@ -35313,7 +35312,7 @@ snapshots:
       '@jimp/plugin-scale': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))
       '@jimp/plugin-shadow': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-blur@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))
       '@jimp/plugin-threshold': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(@jimp/plugin-color@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))(@jimp/plugin-resize@0.10.3(@jimp/custom@0.10.3(debug@4.4.3)))
-      core-js: 3.46.0
+      core-js: 3.47.0
       timm: 1.7.1
     transitivePeerDependencies:
       - debug
@@ -35348,7 +35347,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/utils': 0.10.3
-      core-js: 3.46.0
+      core-js: 3.47.0
       pngjs: 3.4.0
 
   '@jimp/png@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
@@ -35362,7 +35361,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       '@jimp/custom': 0.10.3(debug@4.4.3)
-      core-js: 3.46.0
+      core-js: 3.47.0
       utif: 2.0.1
 
   '@jimp/tiff@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
@@ -35380,7 +35379,7 @@ snapshots:
       '@jimp/jpeg': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/png': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
       '@jimp/tiff': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
-      core-js: 3.46.0
+      core-js: 3.47.0
       timm: 1.7.1
 
   '@jimp/types@0.6.8(@jimp/custom@0.6.8(debug@4.4.3))':
@@ -35397,7 +35396,7 @@ snapshots:
   '@jimp/utils@0.10.3':
     dependencies:
       '@babel/runtime': 7.28.4
-      core-js: 3.46.0
+      core-js: 3.47.0
       regenerator-runtime: 0.13.11
 
   '@jimp/utils@0.6.8':
@@ -41093,7 +41092,7 @@ snapshots:
   '@vitejs/plugin-legacy@1.8.2(vite@2.9.18(less@4.4.2)(sass@1.94.1)(stylus@0.64.0))':
     dependencies:
       '@babel/standalone': 7.28.4
-      core-js: 3.46.0
+      core-js: 3.47.0
       magic-string: 0.26.7
       regenerator-runtime: 0.13.11
       systemjs: 6.15.1
@@ -41104,7 +41103,7 @@ snapshots:
       '@babel/core': 7.28.5
       '@babel/preset-env': 7.28.5(@babel/core@7.28.5)
       browserslist: 4.28.0
-      core-js: 3.46.0
+      core-js: 3.47.0
       magic-string: 0.30.21
       regenerator-runtime: 0.13.11
       systemjs: 6.15.1
@@ -41119,7 +41118,7 @@ snapshots:
       '@babel/preset-env': 7.28.5(@babel/core@7.28.5)
       browserslist: 4.28.0
       browserslist-to-esbuild: 2.1.1(browserslist@4.28.0)
-      core-js: 3.46.0
+      core-js: 3.47.0
       magic-string: 0.30.21
       regenerator-runtime: 0.14.1
       systemjs: 6.15.1
@@ -41372,7 +41371,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vue/babel-preset-app@5.0.9(@babel/core@7.28.5)(core-js@3.46.0)(vue@2.6.14)':
+  '@vue/babel-preset-app@5.0.9(@babel/core@7.28.5)(core-js@3.47.0)(vue@2.6.14)':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/helper-compilation-targets': 7.27.2
@@ -41390,12 +41389,12 @@ snapshots:
       core-js-compat: 3.46.0
       semver: 7.7.3
     optionalDependencies:
-      core-js: 3.46.0
+      core-js: 3.47.0
       vue: 2.6.14
     transitivePeerDependencies:
       - supports-color
 
-  '@vue/babel-preset-app@5.0.9(@babel/core@7.28.5)(core-js@3.46.0)(vue@2.7.16)':
+  '@vue/babel-preset-app@5.0.9(@babel/core@7.28.5)(core-js@3.47.0)(vue@2.7.16)':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/helper-compilation-targets': 7.27.2
@@ -41413,7 +41412,7 @@ snapshots:
       core-js-compat: 3.46.0
       semver: 7.7.3
     optionalDependencies:
-      core-js: 3.46.0
+      core-js: 3.47.0
       vue: 2.7.16
     transitivePeerDependencies:
       - supports-color
@@ -41493,10 +41492,10 @@ snapshots:
 
   '@vue/cli-overlay@5.0.9': {}
 
-  '@vue/cli-plugin-babel@5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.93.3)(sass@1.94.1)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3))(core-js@3.46.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.7.16)':
+  '@vue/cli-plugin-babel@5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.93.3)(sass@1.94.1)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3))(core-js@3.47.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.7.16)':
     dependencies:
       '@babel/core': 7.28.5
-      '@vue/babel-preset-app': 5.0.9(@babel/core@7.28.5)(core-js@3.46.0)(vue@2.7.16)
+      '@vue/babel-preset-app': 5.0.9(@babel/core@7.28.5)(core-js@3.47.0)(vue@2.7.16)
       '@vue/cli-service': 5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.93.3)(sass@1.94.1)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3)
       '@vue/cli-shared-utils': 5.0.9(encoding@0.1.13)
       babel-loader: 8.4.1(@babel/core@7.28.5)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0))
@@ -41512,10 +41511,10 @@ snapshots:
       - vue
       - webpack-cli
 
-  '@vue/cli-plugin-babel@5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.6.14)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.46.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)':
+  '@vue/cli-plugin-babel@5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.6.14)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.47.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)':
     dependencies:
       '@babel/core': 7.28.5
-      '@vue/babel-preset-app': 5.0.9(@babel/core@7.28.5)(core-js@3.46.0)(vue@2.6.14)
+      '@vue/babel-preset-app': 5.0.9(@babel/core@7.28.5)(core-js@3.47.0)(vue@2.6.14)
       '@vue/cli-service': 5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.6.14)(vue@2.6.14)(webpack-sources@3.3.3)
       '@vue/cli-shared-utils': 5.0.9(encoding@0.1.13)
       babel-loader: 8.4.1(@babel/core@7.28.5)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0))
@@ -41531,10 +41530,10 @@ snapshots:
       - vue
       - webpack-cli
 
-  '@vue/cli-plugin-babel@5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.7.16)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.46.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)':
+  '@vue/cli-plugin-babel@5.0.9(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/cli-service@5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.7.16)(vue@2.6.14)(webpack-sources@3.3.3))(core-js@3.47.0)(encoding@0.1.13)(esbuild@0.27.0)(vue@2.6.14)':
     dependencies:
       '@babel/core': 7.28.5
-      '@vue/babel-preset-app': 5.0.9(@babel/core@7.28.5)(core-js@3.46.0)(vue@2.6.14)
+      '@vue/babel-preset-app': 5.0.9(@babel/core@7.28.5)(core-js@3.47.0)(vue@2.6.14)
       '@vue/cli-service': 5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.2(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.24)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.0)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.6.2)(vue-template-compiler@2.7.16)(vue@2.6.14)(webpack-sources@3.3.3)
       '@vue/cli-shared-utils': 5.0.9(encoding@0.1.13)
       babel-loader: 8.4.1(@babel/core@7.28.5)(webpack@5.102.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(esbuild@0.27.0))
@@ -45767,6 +45766,8 @@ snapshots:
   core-js@2.6.12: {}
 
   core-js@3.46.0: {}
+
+  core-js@3.47.0: {}
 
   core-util-is@1.0.2: {}
 
@@ -52669,7 +52670,7 @@ snapshots:
       '@jimp/custom': 0.10.3(debug@4.4.3)
       '@jimp/plugins': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))(debug@4.4.3)
       '@jimp/types': 0.10.3(@jimp/custom@0.10.3(debug@4.4.3))
-      core-js: 3.46.0
+      core-js: 3.47.0
       regenerator-runtime: 0.13.11
     transitivePeerDependencies:
       - debug
@@ -55813,11 +55814,6 @@ snapshots:
     dependencies:
       eventemitter3: 4.0.7
       p-timeout: 3.2.0
-
-  p-queue@9.0.0:
-    dependencies:
-      eventemitter3: 5.0.1
-      p-timeout: 7.0.1
 
   p-queue@9.0.1:
     dependencies:
@@ -60854,7 +60850,7 @@ snapshots:
 
   tailwindcss-core-plugins-extractor@0.2.0: {}
 
-  tailwindcss-patch@8.2.3(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1):
+  tailwindcss-patch@8.2.4(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -60876,7 +60872,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.2.3(magicast@0.3.5)(tailwindcss@4.1.17):
+  tailwindcss-patch@8.2.4(magicast@0.3.5)(tailwindcss@4.1.17):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -60898,7 +60894,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.2.3(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1)):
+  tailwindcss-patch@8.2.4(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1)):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -60920,7 +60916,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.2.3(magicast@0.5.1)(tailwindcss@4.1.17):
+  tailwindcss-patch@8.2.4(magicast@0.5.1)(tailwindcss@4.1.17):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -62419,7 +62415,7 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  uview-plus@3.6.15:
+  uview-plus@3.6.17:
     dependencies:
       clipboard: 2.0.11
       dayjs: 1.11.19

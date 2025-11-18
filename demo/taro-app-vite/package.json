@@ -89,7 +89,7 @@
     "sass": "^1.94.1",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.3",
+    "tailwindcss-patch": "^8.2.4",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "terser": "^5.44.1",
     "to-fast-properties": "3.0.1",
