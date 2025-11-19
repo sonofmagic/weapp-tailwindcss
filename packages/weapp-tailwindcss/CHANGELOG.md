@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.8.0
+
+### Minor Changes
+
+- [`445d0d5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/445d0d5353a1b98986bdf6c9064b1edfd7fab12c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - 新增 `rewriteCssImports`（默认开启），在 webpack/vite 处理 CSS 导入时把 `@import 'tailwindcss'` 透明映射到 `weapp-tailwindcss`（JS/TS 不受影响），也允许按需关闭。
+  - 提供 `vscode-entry` CLI 生成 VS Code 专用的根 CSS 文件，并在官网文档中补充完整说明。
+
+### Patch Changes
+
+- [`fe2c6e8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fe2c6e85dd84bcdb0094ee56bad36c29ff84a315) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 Taro 构建重复实例化 UnifiedWebpackPluginV5 时会创建多份 Tailwind 运行时的问题：
+  新增编译上下文缓存、复用 tailwindcss patcher，并保证相同配置只初始化一次以降低内存占用。
+
 ## 4.7.10-alpha.0
 
 ### Patch Changes
