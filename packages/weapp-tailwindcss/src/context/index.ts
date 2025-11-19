@@ -6,6 +6,7 @@ import { getDefaultOptions } from '@/defaults'
 import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
 import { logTailwindcssTarget, warnIfCliPatchTargetMismatch } from '@/tailwindcss/targets'
 import { defuOverrideArray } from '@/utils'
+import { withCompilerContextCache } from './compiler-context-cache'
 import { toCustomAttributesEntities } from './custom-attributes'
 import { createHandlersFromContext } from './handlers'
 import { applyLoggerLevel } from './logger'
@@ -127,12 +128,7 @@ export async function clearTailwindcssPatcherCache(
   }
 }
 
-/**
- * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
- * @param opts - 用户定义的选项，可选。
- * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
- */
-export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefinedOptions {
+function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   const ctx = defuOverrideArray<InternalUserDefinedOptions, Partial<InternalUserDefinedOptions>[]>(
     opts as InternalUserDefinedOptions,
     getDefaultOptions() as InternalUserDefinedOptions,
@@ -196,4 +192,13 @@ export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefin
     configurable: true,
   })
   return ctx
+}
+
+/**
+ * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
+ * @param opts - 用户定义的选项，可选。
+ * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
+ */
+export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefinedOptions {
+  return withCompilerContextCache(opts, () => createInternalCompilerContext(opts))
 }

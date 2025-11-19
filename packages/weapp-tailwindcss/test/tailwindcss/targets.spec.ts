@@ -11,9 +11,13 @@ describe('tailwindcss targets', () => {
 
   it('aligns tailwind v4 base with css entry directory when entry lives in a subfolder', async () => {
     const classList = ['text-green-500']
-    const patchResult = {
+    type PatchResult = Awaited<ReturnType<TailwindcssPatcherLike['patch']>>
+    const patchResult: PatchResult = {
       exposeContext: undefined,
-      extendLengthUnits: true,
+      extendLengthUnits: {
+        changed: false,
+        code: undefined,
+      },
     }
 
     const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
