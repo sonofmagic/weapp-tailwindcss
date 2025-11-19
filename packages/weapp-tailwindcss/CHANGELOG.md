@@ -1,5 +1,12 @@
 # weapp-tailwindcss
 
+## 4.7.10-alpha.0
+
+### Patch Changes
+
+- [`fe2c6e8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fe2c6e85dd84bcdb0094ee56bad36c29ff84a315) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 Taro 构建重复实例化 UnifiedWebpackPluginV5 时会创建多份 Tailwind 运行时的问题：
+  新增编译上下文缓存、复用 tailwindcss patcher，并保证相同配置只初始化一次以降低内存占用。
+
 ## 4.7.9
 
 ### Patch Changes

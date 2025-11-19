@@ -59,5 +59,7 @@
     "weapp-tailwindcss": "4.7.9",
     "@weapp-tailwindcss/website": "1.0.9"
   },
-  "changesets": []
+  "changesets": [
+    "taro-cache-ctx"
+  ]
 }
