@@ -35,6 +35,8 @@ interface TargetPackage {
 
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
 const tailwindVersionCache = new Map<string, string>()
+const INSTALL_CONCURRENCY = 1
+const NETWORK_CONCURRENCY_ARGS = ['--network-concurrency', String(INSTALL_CONCURRENCY)]
 
 function readWorkspacePackageVersion(relativeDir: string): string {
   const pkgPath = path.join(ROOT, relativeDir, 'package.json')
@@ -522,14 +524,20 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     PNPM_LINK_WORKSPACE_PACKAGES: 'false',
     NPM_CONFIG_PREFER_WORKSPACE_PACKAGES: 'false',
     NPM_CONFIG_LINK_WORKSPACE_PACKAGES: 'false',
+    NPM_CONFIG_FETCH_CONCURRENCY: String(INSTALL_CONCURRENCY),
   }
 
   if (manager.name === 'pnpm') {
     await withWorkspaceIsolation(() =>
-      runCommand('pnpm', ['install', '--lockfile-only', '--ignore-scripts'], templateDir, {
-        env,
-        timeoutMs: 5 * 60_000,
-      }),
+      runCommand(
+        'pnpm',
+        ['install', '--lockfile-only', '--ignore-scripts', ...NETWORK_CONCURRENCY_ARGS],
+        templateDir,
+        {
+          env,
+          timeoutMs: 5 * 60_000,
+        },
+      ),
     )
     return
   }
@@ -564,6 +572,8 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     // Prefer IPv4 first to mitigate IPv6 DNS stalls on some networks.
     NODE_OPTIONS: [process.env.NODE_OPTIONS, '--dns-result-order=ipv4first'].filter(Boolean).join(' '),
   }
+  const yarnMajor = Number.parseInt((yarnVersion.split('.')[0] ?? '1') as string, 10)
+  const supportsLockfileOnly = Number.isFinite(yarnMajor) && yarnMajor >= 2
   // Yarn classic flags
   const baseArgs = [
     'dlx',
@@ -573,22 +583,20 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     '--non-interactive',
     '--prefer-offline',
     '--no-progress',
+    ...NETWORK_CONCURRENCY_ARGS,
   ]
-
-  const updated = await withWorkspaceIsolation(() =>
-    runCommand(
-      'pnpm',
-      [...baseArgs.slice(0, -2), '--mode=update-lockfile', ...baseArgs.slice(-2)],
-      templateDir,
-      {
+  let updated = false
+  if (supportsLockfileOnly) {
+    updated = await withWorkspaceIsolation(() =>
+      runCommand('pnpm', [...baseArgs, '--mode=update-lockfile'], templateDir, {
         allowFailure: true,
         env: yarnEnv,
         timeoutMs: 3 * 60_000, // 3 minutes soft cap for lock-only update
-      },
-    ),
-  )
+      }),
+    )
+  }
 
-  if (!updated) {
+  if (!supportsLockfileOnly || !updated) {
     // Fallback to a normal install-like resolution, still isolated and bounded by timeout.
     const fallback = await withWorkspaceIsolation(() =>
       runCommand('pnpm', baseArgs, templateDir, {
