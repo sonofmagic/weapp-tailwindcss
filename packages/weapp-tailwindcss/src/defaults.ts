@@ -85,6 +85,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     inlineWxs: false,
     injectAdditionalCssVarScope: false,
+    rewriteCssImports: true,
     jsPreserveClass: (keyword) => {
       /**
        * 默认保留 keyword

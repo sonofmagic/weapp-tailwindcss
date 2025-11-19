@@ -106,6 +106,17 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
 
     const compiler = {
       hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
         compilation: {
           tap: (_name: string, handler: (_compilation: any) => void) => {
             handler(compilation)
@@ -210,6 +221,17 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
 
     const compiler = {
       hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
         compilation: {
           tap: (_name: string, handler: (_compilation: any) => void) => {
             handler(compilation)

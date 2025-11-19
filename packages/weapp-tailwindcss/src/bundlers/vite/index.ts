@@ -13,13 +13,38 @@ import { createDebug } from '@/debug'
 import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
+import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { parseVueRequest } from './query'
-import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from './utils'
+import { cleanUrl, formatPostcssSourceMap, isCSSRequest, slash } from './utils'
 
 const debug = createDebug()
+const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
+const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
+const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
+
+function resolveCssTailwindImport(id: string) {
+  if (!tailwindcssImportRE.test(id)) {
+    return null
+  }
+  if (id === 'tailwindcss' || id === 'tailwindcss$') {
+    return `${weappTailwindcssDirPosix}/index.css`
+  }
+  if (id.startsWith('tailwindcss/')) {
+    return `${weappTailwindcssDirPosix}/${id.slice('tailwindcss/'.length)}`
+  }
+  return null
+}
+
+function isCssLikeImporter(importer?: string | null) {
+  if (!importer) {
+    return false
+  }
+  const normalized = cleanUrl(importer)
+  return isCSSRequest(normalized)
+}
 
 interface OutputEntry {
   fileName: string
@@ -182,7 +207,27 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     }
   }
   onLoad()
+  const rewritePlugins: Plugin[] = opts.rewriteCssImports === false
+    ? []
+    : [
+        {
+          name: `${vitePluginName}:rewrite-css-imports`,
+          enforce: 'pre',
+          resolveId(id, importer) {
+            const replacement = resolveCssTailwindImport(id)
+            if (!replacement) {
+              return null
+            }
+            if (importer && !isCssLikeImporter(importer)) {
+              return null
+            }
+            return replacement
+          },
+        },
+      ]
+
   const plugins: Plugin[] = [
+    ...rewritePlugins,
     {
       name: `${vitePluginName}:post`,
       enforce: 'post',

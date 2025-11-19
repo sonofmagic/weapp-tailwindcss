@@ -175,6 +175,15 @@ export interface UserDefinedOptions {
    */
   injectAdditionalCssVarScope?: boolean
   /**
+   * 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。
+   *
+   * @group 0.重要配置
+   * @remarks
+   * 开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 weapp-tailwindcss 的样式。传入 `false` 可完全关闭该行为。
+   * @default true
+   */
+  rewriteCssImports?: boolean
+  /**
    * 控制 CSS 选择器的替换规则。
    *
    * @group 0.重要配置

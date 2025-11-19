@@ -10,12 +10,15 @@ import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
+import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
+import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
+const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 
 /**
  * @name UnifiedWebpackPluginV4
@@ -52,6 +55,10 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
+    applyTailwindcssCssImportRewrite(compiler, {
+      pkgDir: weappTailwindcssPackageDir,
+      enabled: this.options.rewriteCssImports !== false,
+    })
     const runtimeState = {
       twPatcher: initialTwPatcher,
       patchPromise: createTailwindPatchPromise(initialTwPatcher),
