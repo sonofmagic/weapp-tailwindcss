@@ -3,11 +3,12 @@ import { getCompilerContext } from '@/context'
 import { defu } from '@/utils'
 
 function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>) {
+  const clone = { ...options }
   const cwd = process.cwd()
-  if (typeof options.tailwindcssBasedir === 'string') {
-    options.tailwindcssBasedir = options.tailwindcssBasedir.replace(cwd, '<cwd>')
+  if (typeof clone.tailwindcssBasedir === 'string') {
+    clone.tailwindcssBasedir = clone.tailwindcssBasedir.replace(cwd, '<cwd>')
   }
-  return options
+  return clone
 }
 
 describe('get options', () => {
