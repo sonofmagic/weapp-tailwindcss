@@ -4,8 +4,11 @@ import type { CreateJsHandlerOptions } from '@/types'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
+import { slash } from '@/bundlers/vite/utils'
 import { createCache } from '@/cache'
+import { vitePluginName } from '@/constants'
 import { createJsHandler } from '@/js'
+import { resolvePackageDir } from '@/utils/resolve-package'
 import { replaceWxml } from '@/wxml'
 
 function createContext(overrides: Record<string, unknown> = {}) {
@@ -123,6 +126,38 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     getCompilerContextMock.mockClear()
     postcssHtmlTransformMock.mockClear()
     transformUVueMock.mockClear()
+  })
+
+  it('rewrites tailwindcss imports for css entry files by default', async () => {
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeTruthy()
+
+    const resolveId = rewritePlugin?.resolveId?.bind(rewritePlugin)
+    expect(resolveId).toBeTypeOf('function')
+
+    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
+    const cssImporter = '/src/app.css'
+    const subpathImporter = '/src/global.scss?inline'
+
+    const resolvedRoot = await resolveId?.('tailwindcss', cssImporter)
+    expect(resolvedRoot).toBe(`${pkgDir}/index.css`)
+
+    const resolvedBase = await resolveId?.('tailwindcss/base', subpathImporter)
+    expect(resolvedBase).toBe(`${pkgDir}/base`)
+
+    const ignoredJs = await resolveId?.('tailwindcss', '/src/main.ts')
+    expect(ignoredJs).toBeNull()
+
+    const ignoredPackage = await resolveId?.('tailwindcss-forms', cssImporter)
+    expect(ignoredPackage).toBeNull()
+  })
+
+  it('can disable css import rewriting through options', () => {
+    ;(currentContext as any).rewriteCssImports = false
+    const plugins = UnifiedViteWeappTailwindcssPlugin({ rewriteCssImports: false })
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeUndefined()
   })
 
   it('generates bundle assets and leverages cache', async () => {
