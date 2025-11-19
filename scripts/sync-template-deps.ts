@@ -19,6 +19,8 @@ type PackageJson = Record<string, unknown> & {
 
 type Manager = 'pnpm' | 'yarn' | 'npm'
 
+type CommandEnv = Record<string, string | undefined>
+
 interface ManagerInfo {
   name: Manager
   version?: string | null
@@ -35,8 +37,44 @@ interface TargetPackage {
 
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
 const tailwindVersionCache = new Map<string, string>()
-const INSTALL_CONCURRENCY = 1
+const INSTALL_CONCURRENCY = 2
 const NETWORK_CONCURRENCY_ARGS = ['--network-concurrency', String(INSTALL_CONCURRENCY)]
+const SCRIPT_ARGS = new Set(process.argv.slice(2))
+const DISABLE_PROXY
+  = SCRIPT_ARGS.has('--no-proxy')
+    || /^1|true$/iu.test(
+      process.env.SYNC_TEMPLATE_DISABLE_PROXY ?? process.env.SYNC_TEMPLATE_NO_PROXY ?? '',
+    )
+const PROXY_ENV_VARS = [
+  'HTTP_PROXY',
+  'http_proxy',
+  'HTTPS_PROXY',
+  'https_proxy',
+  'ALL_PROXY',
+  'all_proxy',
+  'NO_PROXY',
+  'no_proxy',
+  'npm_config_proxy',
+  'npm_config_https_proxy',
+  'npm_config_http_proxy',
+]
+function buildCommandEnv(overrides: CommandEnv = {}): NodeJS.ProcessEnv {
+  const baseEnv: NodeJS.ProcessEnv = { ...process.env }
+  if (DISABLE_PROXY) {
+    for (const key of PROXY_ENV_VARS) {
+      delete baseEnv[key]
+    }
+  }
+  for (const [key, value] of Object.entries(overrides)) {
+    if (value === undefined) {
+      delete baseEnv[key]
+    }
+    else {
+      baseEnv[key] = value
+    }
+  }
+  return baseEnv
+}
 
 function readWorkspacePackageVersion(relativeDir: string): string {
   const pkgPath = path.join(ROOT, relativeDir, 'package.json')
@@ -50,6 +88,7 @@ async function fetchLatestVersion(pkgName: string): Promise<string> {
     cwd: ROOT,
     timeout: 60_000,
     killSignal: 'SIGTERM',
+    env: buildCommandEnv(),
   })
   const data = JSON.parse(stdout) as string | string[]
   if (Array.isArray(data)) {
@@ -75,6 +114,7 @@ async function fetchTailwindVersion(pkgName: string, major: number): Promise<str
     cwd: ROOT,
     timeout: 60_000,
     killSignal: 'SIGTERM',
+    env: buildCommandEnv(),
   })
   const data = JSON.parse(stdout) as string | string[]
   const version = Array.isArray(data) ? data.at(-1) : data
@@ -462,8 +502,6 @@ async function resolveTailwindTargets(pkg: PackageJson): Promise<TargetPackage[]
   return []
 }
 
-type CommandEnv = Record<string, string | undefined>
-
 async function runCommand(
   command: string,
   args: string[],
@@ -478,11 +516,10 @@ async function runCommand(
     await execa(command, args, {
       cwd,
       stdio: 'inherit',
-      env: {
-        ...process.env,
+      env: buildCommandEnv({
         CI: '1',
-        ...env,
-      },
+        ...(env ?? {}),
+      }),
       // Avoid hanging forever when network is flaky or blocked.
       timeout: timeoutMs,
       killSignal: 'SIGTERM',
