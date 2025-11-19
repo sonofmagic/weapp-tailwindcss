@@ -10,6 +10,20 @@ toc_max_heading_level: 4
 
 > 首先，确保你已经安装 [`Tailwind CSS IntelliSense 插件`](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
+### 让 `Tailwind CSS IntelliSense` 识别 weapp-tailwindcss v4
+
+`tailwindcss-intellisense` 在 v4 中必须看到 `@import "tailwindcss"` 才会将工作区视为 Tailwind 根文件。由于我们在业务入口里写的是 `@import 'weapp-tailwindcss';`，可以使用 CLI 为 VS Code 生成一个仅供扩展使用的辅助 CSS：
+
+```bash npm2yarn
+npx weapp-tailwindcss vscode-entry --css src/app.css
+```
+
+- 默认输出在 `.vscode/weapp-tailwindcss.intellisense.css`，其中包含 `@import 'tailwindcss';`、常见的 `@source` globs 以及你传入的 CSS 入口（例如 `src/app.css`）。
+- 该文件只用于激活 IntelliSense，不需要、也不应该被打包流程引用。
+- 若需自定义文件名或额外的 `@source`，可通过 `--output`、`--source`、`--force` 等参数调整，运行 `npx weapp-tailwindcss vscode-entry --help` 查看全部选项。
+
+保存/重载任意文件后 VS Code 会检测到该辅助文件，从而让 `@import 'weapp-tailwindcss';` 的项目享受到完整的补全、悬浮和跳转体验。
+
 ### wxml 的智能提示
 
 我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。

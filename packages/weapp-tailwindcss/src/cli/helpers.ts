@@ -17,6 +17,32 @@ export function readStringOption(flag: string, value: unknown): string | undefin
   return trimmed
 }
 
+export function readStringArrayOption(flag: string, value: unknown): string[] | undefined {
+  if (value == null) {
+    return undefined
+  }
+
+  if (Array.isArray(value)) {
+    const normalized = value
+      .filter(entry => entry != null)
+      .map((entry) => {
+        if (typeof entry !== 'string') {
+          throw new TypeError(`Option "--${flag}" expects string values.`)
+        }
+        const trimmed = entry.trim()
+        if (!trimmed) {
+          throw new TypeError(`Option "--${flag}" expects non-empty values.`)
+        }
+        return trimmed
+      })
+
+    return normalized.length > 0 ? normalized : undefined
+  }
+
+  const normalized = readStringOption(flag, value)
+  return normalized ? [normalized] : undefined
+}
+
 export function normalizeTokenFormat(format: string) {
   switch (format) {
     case 'json':
