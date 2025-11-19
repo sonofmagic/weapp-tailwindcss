@@ -17,7 +17,7 @@ import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
-const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
+export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 
 /**
  * @name UnifiedWebpackPluginV5

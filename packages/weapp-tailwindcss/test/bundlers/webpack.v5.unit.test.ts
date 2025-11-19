@@ -135,6 +135,20 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
         }
       },
     }
+    // const ensureNormalModuleFactory = (compilerHooks: any) => {
+    //   compilerHooks.normalModuleFactory = {
+    //     tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+    //       handler({
+    //         hooks: {
+    //           beforeResolve: {
+    //             tap: vi.fn(),
+    //           },
+    //         },
+    //       })
+    //     }),
+    //   }
+    // }
+
     const compiler = {
       webpack: {
         Compilation: {
@@ -175,6 +189,10 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
     const plugin = new UnifiedWebpackPluginV5()
     plugin.apply(compiler as any)
+
+    compiler.hooks.normalModuleFactory = {
+      tap: vi.fn(() => {}),
+    }
 
     expect(getCompilerContextMock).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.patch).toHaveBeenCalledTimes(1)
@@ -398,6 +416,17 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
         },
       },
       hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
         compilation: {
           tap: (_name: string, handler: (compilationParam: any) => void) => {
             handler(compilation)
