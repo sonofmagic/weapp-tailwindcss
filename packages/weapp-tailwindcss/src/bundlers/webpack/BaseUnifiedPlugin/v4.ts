@@ -29,9 +29,11 @@ export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
+  private readonly userSpecifiedRewriteCssImports: boolean
 
   constructor(options: UserDefinedOptions = {}) {
     this.options = getCompilerContext(options)
+    this.userSpecifiedRewriteCssImports = Object.prototype.hasOwnProperty.call(options, 'rewriteCssImports')
     this.appType = this.options.appType
   }
 
@@ -55,7 +57,8 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    const shouldRewriteCssImports = this.options.rewriteCssImports !== false && (initialTwPatcher.majorVersion ?? 0) >= 4
+    const shouldRewriteCssImports = this.options.rewriteCssImports !== false
+      && (this.userSpecifiedRewriteCssImports || (initialTwPatcher.majorVersion ?? 0) >= 4)
     if (shouldRewriteCssImports) {
       applyTailwindcssCssImportRewrite(compiler, {
         pkgDir: weappTailwindcssPackageDir,

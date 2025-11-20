@@ -1,11 +1,29 @@
+import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/postcss'
 import twv from '@tailwindcss/vite'
 import { isCI } from 'ci-info'
 import fs from 'fs-extra'
 import path from 'pathe'
 import { build } from 'vite'
+import { afterAll } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import { fixturesRootPath } from './util'
+
+const require = createRequire(import.meta.url)
+const tailwindcss4Basedir = path.dirname(require.resolve('tailwindcss4/package.json'))
+const previousTailwindcssBasedir = process.env.WEAPP_TAILWINDCSS_BASEDIR
+if (previousTailwindcssBasedir === undefined) {
+  process.env.WEAPP_TAILWINDCSS_BASEDIR = tailwindcss4Basedir
+}
+
+afterAll(() => {
+  if (previousTailwindcssBasedir === undefined) {
+    delete process.env.WEAPP_TAILWINDCSS_BASEDIR
+  }
+  else {
+    process.env.WEAPP_TAILWINDCSS_BASEDIR = previousTailwindcssBasedir
+  }
+})
 
 describe.skipIf(isCI)('vite', () => {
   it('v4-vite-plugin', async () => {
@@ -13,8 +31,17 @@ describe.skipIf(isCI)('vite', () => {
       root: path.resolve(fixturesRootPath, 'v4-vite-plugin'),
       plugins: [
         twv(),
-        UnifiedViteWeappTailwindcssPlugin(),
+        UnifiedViteWeappTailwindcssPlugin({
+          tailwindcssBasedir: tailwindcss4Basedir,
+          rewriteCssImports: true,
+        }),
       ],
+      resolve: {
+        alias: [
+          { find: /^tailwindcss$/, replacement: path.join(tailwindcss4Basedir, 'index.css') },
+          { find: /^tailwindcss\//, replacement: `${tailwindcss4Basedir}/` },
+        ],
+      },
       build: {
         minify: false,
         rollupOptions: {
@@ -35,7 +62,10 @@ describe.skipIf(isCI)('vite', () => {
     await build({
       root,
       plugins: [
-        UnifiedViteWeappTailwindcssPlugin(),
+        UnifiedViteWeappTailwindcssPlugin({
+          tailwindcssBasedir: tailwindcss4Basedir,
+          rewriteCssImports: true,
+        }),
       ],
       build: {
         minify: false,

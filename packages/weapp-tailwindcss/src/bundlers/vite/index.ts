@@ -132,6 +132,7 @@ function applyLinkedResults(
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin[] | undefined {
+  const rewriteCssImportsSpecified = Object.prototype.hasOwnProperty.call(options, 'rewriteCssImports')
   const opts = getCompilerContext(options)
   const {
     disabled,
@@ -201,7 +202,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     }
   }
   onLoad()
-  const shouldRewriteCssImports = opts.rewriteCssImports !== false && (runtimeState.twPatcher.majorVersion ?? 0) >= 4
+  const shouldRewriteCssImports = opts.rewriteCssImports !== false
+    && (rewriteCssImportsSpecified || (runtimeState.twPatcher.majorVersion ?? 0) >= 4)
   const rewritePlugins: Plugin[] = !shouldRewriteCssImports
     ? []
     : [
