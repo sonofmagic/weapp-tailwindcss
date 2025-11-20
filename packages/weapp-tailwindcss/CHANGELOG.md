@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.8.1
+
+### Patch Changes
+
+- [`7da97f4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7da97f47623fb79e2a8b3bd612b618a8553460ad) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 提炼 Vite/webpack 共享的 `rewriteCssImports` 能力，只在 tailwindcss v4 且未关闭时生效：Vite 在 CSS transform 阶段重写 `@import 'tailwindcss'`，Webpack 则在模块解析阶段统一指向 `weapp-tailwindcss`，避免小程序产物残留 PC 预设或类型告警。
+
 ## 4.8.0
 
 ### Minor Changes
