@@ -73,7 +73,7 @@
     "eslint-config-taro": "4.0.5",
     "eslint-plugin-vue": "^9.28.0",
     "postcss": "^8.4.47",
-    "sass": "^1.94.1",
+    "sass": "^1.94.2",
     "stylelint": "^14.4.0",
     "tailwindcss": "^3.4.18",
     "terser": "^5.16.8",
@@ -82,7 +82,7 @@
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.5",
     "weapp-ide-cli": "^4.1.0",
-    "weapp-tailwindcss": "^4.7.9"
+    "weapp-tailwindcss": "^4.8.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
