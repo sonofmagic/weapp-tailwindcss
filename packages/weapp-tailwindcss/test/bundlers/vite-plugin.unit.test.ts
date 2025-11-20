@@ -153,6 +153,25 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(ignoredPackage).toBeNull()
   })
 
+  it('transforms css source to rewrite tailwindcss @import statements', async () => {
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeTruthy()
+
+    const transform = rewritePlugin?.transform?.bind(rewritePlugin)
+    expect(transform).toBeTypeOf('function')
+
+    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
+    const source = `
+@import 'tailwindcss' layer(base);
+@import url("tailwindcss/utilities");
+.foo { color: red; }
+`
+    const result = await transform?.(source, '/src/app.css') as TransformResult
+    expect(result?.code).toContain(`@import '${pkgDir}/index.css' layer(base);`)
+    expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
+  })
+
   it('can disable css import rewriting through options', () => {
     ;(currentContext as any).rewriteCssImports = false
     const plugins = UnifiedViteWeappTailwindcssPlugin({ rewriteCssImports: false })

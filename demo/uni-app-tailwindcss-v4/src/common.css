@@ -1,2 +1,2 @@
-@import "weapp-tailwindcss/css";
+@import "tailwindcss";
 @config "../tailwind.config.order.js";

@@ -24,6 +24,7 @@ const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
 const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
+const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwindcss(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
 
 function resolveCssTailwindImport(id: string) {
   if (!tailwindcssImportRE.test(id)) {
@@ -36,6 +37,22 @@ function resolveCssTailwindImport(id: string) {
     return `${weappTailwindcssDirPosix}/${id.slice('tailwindcss/'.length)}`
   }
   return null
+}
+
+function rewriteTailwindcssImportStatements(code: string) {
+  let hasReplacements = false
+  const rewritten = code.replace(
+    tailwindcssCssImportStatementRE,
+    (full, prefix: string, quote: string, specifier: string, suffix: string) => {
+      const replacement = resolveCssTailwindImport(specifier)
+      if (!replacement) {
+        return full
+      }
+      hasReplacements = true
+      return `${prefix}${quote}${replacement}${suffix}`
+    },
+  )
+  return hasReplacements ? rewritten : undefined
 }
 
 function isCssLikeImporter(importer?: string | null) {
@@ -222,6 +239,19 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               return null
             }
             return replacement
+          },
+          transform(code, id) {
+            if (!isCSSRequest(id)) {
+              return null
+            }
+            const rewritten = rewriteTailwindcssImportStatements(code)
+            if (!rewritten) {
+              return null
+            }
+            return {
+              code: rewritten,
+              map: null,
+            }
           },
         },
       ]

@@ -1,4 +1,4 @@
-@import "weapp-tailwindcss";
+@import "tailwindcss";
 
 @layer components {
   .btn-primary {
