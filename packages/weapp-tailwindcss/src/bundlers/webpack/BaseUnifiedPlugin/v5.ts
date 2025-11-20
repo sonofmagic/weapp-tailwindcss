@@ -54,10 +54,13 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    applyTailwindcssCssImportRewrite(compiler, {
-      pkgDir: weappTailwindcssPackageDir,
-      enabled: this.options.rewriteCssImports !== false,
-    })
+    const shouldRewriteCssImports = this.options.rewriteCssImports !== false && (initialTwPatcher.majorVersion ?? 0) >= 4
+    if (shouldRewriteCssImports) {
+      applyTailwindcssCssImportRewrite(compiler, {
+        pkgDir: weappTailwindcssPackageDir,
+        enabled: true,
+      })
+    }
     const runtimeState = {
       twPatcher: initialTwPatcher,
       patchPromise: createTailwindPatchPromise(initialTwPatcher),

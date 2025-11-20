@@ -15,6 +15,7 @@ import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../shared/cache'
+import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { parseVueRequest } from './query'
@@ -23,36 +24,12 @@ import { cleanUrl, formatPostcssSourceMap, isCSSRequest, slash } from './utils'
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
-const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
-const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwindcss(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
 
-function resolveCssTailwindImport(id: string) {
-  if (!tailwindcssImportRE.test(id)) {
-    return null
+function joinPosixPath(base: string, subpath: string) {
+  if (base.endsWith('/')) {
+    return `${base}${subpath}`
   }
-  if (id === 'tailwindcss' || id === 'tailwindcss$') {
-    return `${weappTailwindcssDirPosix}/index.css`
-  }
-  if (id.startsWith('tailwindcss/')) {
-    return `${weappTailwindcssDirPosix}/${id.slice('tailwindcss/'.length)}`
-  }
-  return null
-}
-
-function rewriteTailwindcssImportStatements(code: string) {
-  let hasReplacements = false
-  const rewritten = code.replace(
-    tailwindcssCssImportStatementRE,
-    (full, prefix: string, quote: string, specifier: string, suffix: string) => {
-      const replacement = resolveCssTailwindImport(specifier)
-      if (!replacement) {
-        return full
-      }
-      hasReplacements = true
-      return `${prefix}${quote}${replacement}${suffix}`
-    },
-  )
-  return hasReplacements ? rewritten : undefined
+  return `${base}/${subpath}`
 }
 
 function isCssLikeImporter(importer?: string | null) {
@@ -224,14 +201,15 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     }
   }
   onLoad()
-  const rewritePlugins: Plugin[] = opts.rewriteCssImports === false
+  const shouldRewriteCssImports = opts.rewriteCssImports !== false && (runtimeState.twPatcher.majorVersion ?? 0) >= 4
+  const rewritePlugins: Plugin[] = !shouldRewriteCssImports
     ? []
     : [
         {
           name: `${vitePluginName}:rewrite-css-imports`,
           enforce: 'pre',
           resolveId(id, importer) {
-            const replacement = resolveCssTailwindImport(id)
+            const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, { join: joinPosixPath })
             if (!replacement) {
               return null
             }
@@ -244,7 +222,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             if (!isCSSRequest(id)) {
               return null
             }
-            const rewritten = rewriteTailwindcssImportStatements(code)
+            const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, { join: joinPosixPath })
             if (!rewritten) {
               return null
             }

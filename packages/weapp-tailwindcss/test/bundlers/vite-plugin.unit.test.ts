@@ -129,6 +129,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
   })
 
   it('rewrites tailwindcss imports for css entry files by default', async () => {
+    currentContext.twPatcher.majorVersion = 4
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
@@ -154,6 +155,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
   })
 
   it('transforms css source to rewrite tailwindcss @import statements', async () => {
+    currentContext.twPatcher.majorVersion = 4
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
@@ -174,6 +176,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
   it('can disable css import rewriting through options', () => {
     ;(currentContext as any).rewriteCssImports = false
+    currentContext.twPatcher.majorVersion = 4
     const plugins = UnifiedViteWeappTailwindcssPlugin({ rewriteCssImports: false })
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeUndefined()
@@ -733,4 +736,10 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(transformUVueMock).toHaveBeenCalledWith('<template></template>', 'App.uvue', currentContext.jsHandler, runtimeSets[1])
   })
+})
+it('skips css import rewrite when tailwindcss major version is below 4', () => {
+  currentContext.twPatcher.majorVersion = 3
+  const plugins = UnifiedViteWeappTailwindcssPlugin()
+  const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+  expect(rewritePlugin).toBeUndefined()
 })

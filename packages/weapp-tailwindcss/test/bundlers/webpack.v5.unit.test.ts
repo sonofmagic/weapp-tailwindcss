@@ -471,4 +471,41 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const options = firstCall?.[2]
     expect(options?.moduleGraph?.resolve?.('./chunk.js', options.filename ?? '')).toBe(path.resolve(outDir, 'chunk.js'))
   })
+
+  it('only applies css import rewrite for tailwindcss v4 projects', () => {
+    const normalModuleFactoryTap = vi.fn()
+    const compiler = {
+      webpack: {
+        Compilation: { PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage') },
+        sources: { ConcatSource: FakeConcatSource },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: { tap: normalModuleFactoryTap },
+        compilation: { tap: vi.fn() },
+        emit: { tapPromise: vi.fn() },
+      },
+    }
+
+    const ctxV4 = createContext()
+    ctxV4.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementationOnce(() => ctxV4)
+    let plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+    expect(normalModuleFactoryTap).toHaveBeenCalledTimes(1)
+
+    normalModuleFactoryTap.mockClear()
+    const ctxV3 = createContext()
+    ctxV3.twPatcher.majorVersion = 3
+    getCompilerContextMock.mockImplementationOnce(() => ctxV3)
+    plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+    expect(normalModuleFactoryTap).not.toHaveBeenCalled()
+  })
 })

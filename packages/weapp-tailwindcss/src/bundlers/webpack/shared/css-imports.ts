@@ -1,5 +1,5 @@
-import path from 'node:path'
 import { pluginName } from '@/constants'
+import { resolveTailwindcssImport } from '../../shared/css-imports'
 
 const CSS_EXT_RE = /\.(?:css|scss|sass|less|styl|pcss)$/i
 
@@ -22,7 +22,7 @@ function rewriteTailwindcssRequestForCss(data: BeforeResolveData | undefined, pk
   if (!data) {
     return
   }
-  let request = data.request
+  const request = data.request
   if (!request) {
     return
   }
@@ -39,12 +39,11 @@ function rewriteTailwindcssRequestForCss(data: BeforeResolveData | undefined, pk
     return
   }
 
-  if (request === 'tailwindcss$') {
-    request = 'tailwindcss'
+  const resolved = resolveTailwindcssImport(request, pkgDir)
+  if (!resolved) {
+    return
   }
-
-  const subpath = request === 'tailwindcss' ? 'index.css' : request.slice('tailwindcss/'.length)
-  data.request = path.join(pkgDir, subpath)
+  data.request = resolved
 }
 
 export function applyTailwindcssCssImportRewrite(

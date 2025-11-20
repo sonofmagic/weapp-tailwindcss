@@ -289,4 +289,28 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(wxsUpdates[0][1].source()).toBe(`js:${wxs}`)
     expect(wxsUpdates[1][1].source()).toBe(`js:${wxs}`)
   })
+
+  it('only applies css import rewrite for tailwindcss v4 projects', () => {
+    const normalModuleFactoryTap = vi.fn()
+    const compiler = {
+      hooks: {
+        normalModuleFactory: { tap: normalModuleFactoryTap },
+        compilation: { tap: vi.fn() },
+        emit: { tapPromise: vi.fn() },
+      },
+    }
+
+    currentContext.twPatcher.majorVersion = 4
+    let plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+    expect(normalModuleFactoryTap).toHaveBeenCalledTimes(1)
+
+    normalModuleFactoryTap.mockClear()
+    currentContext = createContext()
+    currentContext.twPatcher.majorVersion = 3
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+    expect(normalModuleFactoryTap).not.toHaveBeenCalled()
+  })
 })
