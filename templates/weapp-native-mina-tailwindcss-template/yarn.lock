@@ -8941,10 +8941,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.8.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.0.tgz#27b8c6a4861fb4d651d4d8489deeae7c45cc02be"
-  integrity sha512-MxvJiCGngMlwYQzYAjA66wao+Ez+HI2JaPyZ9wDikSdbqYl3MlG+b/Hbas8STzdpas5lte/ndvE84BvL7oRmaw==
+weapp-tailwindcss@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.1.tgz#b25e9e258ab9b355fc85a3e1044c9f3ed6def687"
+  integrity sha512-MZLODjr0k8orOHgtCJTSCcYjnF7jnR50tHF9IWGTpcXVDdLhmvUiDWhgRRCEodZvceLZ+2tTc5x/1q4Kq8l/aQ==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
