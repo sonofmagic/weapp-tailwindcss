@@ -121,3 +121,4 @@ vite.config.ts.timestamp-*.mjs
 # Yarn classic caches (placed under templates by older scripts)
 **/.yarn-cache/
 **/.yarn-global/
+website/tests/index.spec.ts-snapshots
