@@ -76,7 +76,7 @@
 
 - [`a70e54b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a70e54bc540b63d204a71ef7369d32ec5f022a34) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 JS handler 在标记 weappTwIgnore 模板后仍会误转译后续相同字面量的问题，确保仅跳过被 weappTwIgnore 包裹的模板，其它位置仍按运行时类集正常转译。
 
-- [`0ceeef7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0ceeef7b0daf8be9f91eb5818cd6c013a669cfcc) Thanks [@sonofmagic](https://github.com/sonofmagic)! - CLI 与运行时新增中文提示的 Tailwind CSS 目标日志：`weapp-tw patch` 可通过 `--record-target` 生成 `.tw-patch/tailwindcss-target.json`，运行时若检测到补丁目标与实际加载不一致会给出中文告警，方便定位多包场景下的 patch 对齐问题。
+- [`0ceeef7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0ceeef7b0daf8be9f91eb5818cd6c013a669cfcc) Thanks [@sonofmagic](https://github.com/sonofmagic)! - CLI 与运行时新增中文提示的 Tailwind CSS 目标日志：`weapp-tw patch` 可通过 `--record-target` 生成 `node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json`（旧版本保留 `.tw-patch` 兼容），运行时若检测到补丁目标与实际加载不一致会给出中文告警，方便定位多包场景下的 patch 对齐问题。
 
 ## 4.7.6
 

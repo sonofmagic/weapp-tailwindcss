@@ -54,7 +54,7 @@ cli
   .command('patch', 'Apply Tailwind CSS runtime patches')
   .alias('install')
   .option('--cwd <dir>', 'Working directory')
-  .option('--record-target', 'Write tailwindcss target metadata (.tw-patch/tailwindcss-target.json)')
+  .option('--record-target', 'Write tailwindcss target metadata (node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json). Pass "--record-target false" to skip.')
   .option('--clear-cache', 'Clear tailwindcss-patch cache before patch (opt-in)')
   .action(
     commandAction(async (options: CommonCommandOptions) => {
@@ -66,7 +66,7 @@ cli
       }
       logTailwindcssTarget('cli', ctx.twPatcher, ctx.tailwindcssBasedir)
       await ctx.twPatcher.patch()
-      const shouldRecordTarget = toBoolean(options.recordTarget, false)
+      const shouldRecordTarget = toBoolean(options.recordTarget, true)
       if (shouldRecordTarget) {
         const recordPath = await saveCliPatchTargetRecord(ctx.tailwindcssBasedir, ctx.twPatcher)
         if (recordPath) {
