@@ -86,7 +86,7 @@
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "react-refresh": "catalog:reactRefresh018",
-    "sass": "^1.94.1",
+    "sass": "^1.94.2",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "^8.2.4",
@@ -94,7 +94,7 @@
     "terser": "^5.44.1",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
-    "vite": "^5.4.21",
+    "vite": "^7.2.4",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

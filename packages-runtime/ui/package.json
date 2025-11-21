@@ -84,7 +84,7 @@
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
-    "vite": "^7.2.2",
+    "vite": "^7.2.4",
     "vite-plugin-dts": "^4.5.4"
   }
 }

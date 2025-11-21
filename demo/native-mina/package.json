@@ -53,7 +53,7 @@
     "replace-ext": "^2.0.0",
     "required-path": "^1.0.1",
     "run-script-os": "^1.1.6",
-    "sass": "^1.94.1",
+    "sass": "^1.94.2",
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "^8.2.4",
@@ -62,7 +62,7 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "^5.102.1",
+    "webpack": "^5.103.0",
     "webpack-cli": "^6.0.1",
     "webpack-sources": "^3.2.3"
   },
