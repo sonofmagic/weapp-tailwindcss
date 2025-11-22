@@ -1,6 +1,7 @@
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
@@ -129,7 +130,7 @@ function detectCallerBasedir(): string | undefined {
   return undefined
 }
 
-export function resolveTailwindcssBasedir(basedir?: string) {
+export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
   const envBasedirResult = pickEnvBasedir()
   const envBasedir = envBasedirResult?.value
   const envBasedirKey = envBasedirResult?.key
@@ -137,7 +138,7 @@ export function resolveTailwindcssBasedir(basedir?: string) {
   const packageEnvBasedir = pickPackageEnvBasedir()
   const shouldDetectCaller = !envBasedir || envBasedirIsGeneric
   const callerBasedir = shouldDetectCaller ? detectCallerBasedir() : undefined
-  const anchor = envBasedir ?? packageEnvBasedir ?? callerBasedir ?? process.cwd()
+  const anchor = envBasedir ?? packageEnvBasedir ?? fallback ?? callerBasedir ?? process.cwd()
   if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
     logger.debug('resolveTailwindcssBasedir anchor %O', {
       basedir,
@@ -145,6 +146,7 @@ export function resolveTailwindcssBasedir(basedir?: string) {
       envBasedirKey,
       envBasedirIsGeneric,
       packageEnvBasedir,
+      fallback,
       callerBasedir,
       npm_package_json: process.env.npm_package_json,
       cwd: process.cwd(),
@@ -161,6 +163,13 @@ export function resolveTailwindcssBasedir(basedir?: string) {
 
   if (envBasedir && !envBasedirIsGeneric) {
     return path.normalize(envBasedir)
+  }
+
+  if (fallback && fallback.trim().length > 0) {
+    const resolvedFallback = path.isAbsolute(fallback)
+      ? fallback
+      : path.resolve(anchor, fallback)
+    return path.normalize(resolvedFallback)
   }
 
   if (packageEnvBasedir) {
@@ -198,6 +207,46 @@ export function resolveTailwindcssBasedir(basedir?: string) {
   }
 
   return path.normalize(process.cwd())
+}
+
+function findNearestPackageRootFromDir(startDir: string): string | undefined {
+  if (!startDir) {
+    return undefined
+  }
+
+  let current = path.resolve(startDir)
+  while (true) {
+    const pkgPath = path.join(current, 'package.json')
+    if (existsSync(pkgPath)) {
+      return current
+    }
+    const parent = path.dirname(current)
+    if (parent === current) {
+      return undefined
+    }
+    current = parent
+  }
+}
+
+function guessBasedirFromEntries(entries?: string[]) {
+  if (!entries) {
+    return undefined
+  }
+  for (const entry of entries) {
+    if (typeof entry !== 'string') {
+      continue
+    }
+    const trimmed = entry.trim()
+    if (!trimmed || !path.isAbsolute(trimmed)) {
+      continue
+    }
+    const entryDir = path.dirname(trimmed)
+    const resolved = findNearestPackageRootFromDir(entryDir) ?? entryDir
+    if (resolved) {
+      return resolved
+    }
+  }
+  return undefined
 }
 
 function normalizeCssEntries(entries: string[] | undefined, anchor: string): string[] | undefined {
@@ -485,7 +534,8 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     appType,
   } = ctx
 
-  const resolvedTailwindcssBasedir = resolveTailwindcssBasedir(tailwindcssBasedir)
+  const absoluteCssEntryBasedir = guessBasedirFromEntries(rawCssEntries)
+  const resolvedTailwindcssBasedir = resolveTailwindcssBasedir(tailwindcssBasedir, absoluteCssEntryBasedir)
   ctx.tailwindcssBasedir = resolvedTailwindcssBasedir
   logger.debug('tailwindcss basedir resolved: %s', resolvedTailwindcssBasedir)
 
