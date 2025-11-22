@@ -1,10 +1,10 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { Socket } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 import { minVersion } from 'semver'
+import { parse as parseYaml } from 'yaml'
 import { ROOT } from './template-utils'
 
 type PnpmConfig = Record<string, unknown> & {
@@ -36,120 +36,36 @@ interface TargetPackage {
   ensurePnpmOnlyBuilt?: boolean
 }
 
+type PnpmLockDependencyEntry = string | { specifier?: string, version?: string }
+
+interface PnpmLockImporter {
+  dependencies?: Record<string, PnpmLockDependencyEntry>
+  devDependencies?: Record<string, PnpmLockDependencyEntry>
+  optionalDependencies?: Record<string, PnpmLockDependencyEntry>
+}
+
+interface PnpmLockfile {
+  importers?: Record<string, PnpmLockImporter | undefined>
+  packages?: Record<string, { version?: string } | null | undefined>
+}
+
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
 const tailwindVersionCache = new Map<string, string>()
+const latestVersionCache = new Map<string, string>()
 const INSTALL_CONCURRENCY = 2
 const NETWORK_CONCURRENCY_ARGS = ['--network-concurrency', String(INSTALL_CONCURRENCY)]
-const SCRIPT_ARGS = new Set(process.argv.slice(2))
-const DISABLE_PROXY
-  = SCRIPT_ARGS.has('--no-proxy')
-    || /^1|true$/iu.test(
-      process.env.SYNC_TEMPLATE_DISABLE_PROXY ?? process.env.SYNC_TEMPLATE_NO_PROXY ?? '',
-    )
-const PROXY_ENV_VARS = [
-  'HTTP_PROXY',
-  'http_proxy',
-  'HTTPS_PROXY',
-  'https_proxy',
-  'ALL_PROXY',
-  'all_proxy',
-  'NO_PROXY',
-  'no_proxy',
-  'npm_config_proxy',
-  'npm_config_https_proxy',
-  'npm_config_http_proxy',
-]
-const PROXY_ASSIGNMENT_KEYS = [
-  'HTTP_PROXY',
-  'http_proxy',
-  'HTTPS_PROXY',
-  'https_proxy',
-  'ALL_PROXY',
-  'all_proxy',
-  'npm_config_proxy',
-  'npm_config_https_proxy',
-  'npm_config_http_proxy',
-]
-const LOCAL_PROXY_HOST = '127.0.0.1'
-const LOCAL_PROXY_PORT = 7890
-const LOCAL_PROXY_URL = `http://${LOCAL_PROXY_HOST}:${LOCAL_PROXY_PORT}`
-let detectedProxyEnv: CommandEnv | null = null
-let proxySetupDone = false
-
-function hasCustomProxyConfiguration(env: NodeJS.ProcessEnv): boolean {
-  return PROXY_ASSIGNMENT_KEYS.some((key) => {
-    const value = env[key]
-    return typeof value === 'string' && value.length > 0
-  })
-}
-
-function createProxyEnv(url: string): CommandEnv {
-  return PROXY_ASSIGNMENT_KEYS.reduce<CommandEnv>((acc, key) => {
-    acc[key] = url
-    return acc
-  }, {})
-}
-
-function probeLocalHttpProxy(host: string, port: number, timeoutMs = 1500): Promise<boolean> {
-  return new Promise((resolve) => {
-    const socket = new Socket()
-    const cleanup = (): void => {
-      socket.removeAllListeners()
-      socket.destroy()
-    }
-    const handleSuccess = (): void => {
-      cleanup()
-      resolve(true)
-    }
-    const handleFailure = (): void => {
-      cleanup()
-      resolve(false)
-    }
-    socket.setTimeout(timeoutMs)
-    socket.once('connect', handleSuccess)
-    socket.once('timeout', handleFailure)
-    socket.once('error', handleFailure)
-    try {
-      socket.connect(port, host)
-    }
-    catch {
-      handleFailure()
-    }
-  })
-}
-
-async function ensureDefaultProxyEnv(): Promise<void> {
-  if (proxySetupDone) {
-    return
+const CPU_COUNT = os.cpus()?.length ?? 2
+const DEFAULT_TEMPLATE_CONCURRENCY = Math.min(Math.max(CPU_COUNT - 1, 1), 4)
+const TEMPLATE_PROCESS_CONCURRENCY = (() => {
+  const raw = process.env.SYNC_TEMPLATE_CONCURRENCY
+  if (!raw) {
+    return DEFAULT_TEMPLATE_CONCURRENCY
   }
-  proxySetupDone = true
-  if (DISABLE_PROXY) {
-    return
-  }
-  if (hasCustomProxyConfiguration(process.env)) {
-    return
-  }
-  const available = await probeLocalHttpProxy(LOCAL_PROXY_HOST, LOCAL_PROXY_PORT)
-  if (available) {
-    detectedProxyEnv = createProxyEnv(LOCAL_PROXY_URL)
-    console.log(`检测到本地代理 ${LOCAL_PROXY_URL}，将优先通过该代理执行依赖安装。`)
-  }
-}
-
+  const parsed = Number.parseInt(raw, 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_TEMPLATE_CONCURRENCY
+})()
 function buildCommandEnv(overrides: CommandEnv = {}): NodeJS.ProcessEnv {
   const baseEnv: NodeJS.ProcessEnv = { ...process.env }
-  if (DISABLE_PROXY) {
-    for (const key of PROXY_ENV_VARS) {
-      delete baseEnv[key]
-    }
-  }
-  else if (detectedProxyEnv) {
-    for (const [key, value] of Object.entries(detectedProxyEnv)) {
-      if (baseEnv[key] === undefined) {
-        baseEnv[key] = value
-      }
-    }
-  }
   for (const [key, value] of Object.entries(overrides)) {
     if (value === undefined) {
       delete baseEnv[key]
@@ -169,6 +85,10 @@ function readWorkspacePackageVersion(relativeDir: string): string {
 }
 
 async function fetchLatestVersion(pkgName: string): Promise<string> {
+  const cached = latestVersionCache.get(pkgName)
+  if (cached) {
+    return cached
+  }
   const { stdout } = await execa('pnpm', ['view', pkgName, 'version', '--json'], {
     cwd: ROOT,
     timeout: 60_000,
@@ -176,17 +96,12 @@ async function fetchLatestVersion(pkgName: string): Promise<string> {
     env: buildCommandEnv(),
   })
   const data = JSON.parse(stdout) as string | string[]
-  if (Array.isArray(data)) {
-    const latest = data.at(-1)
-    if (!latest) {
-      throw new Error(`未获取到 ${pkgName} 的版本信息`)
-    }
-    return latest
+  const latest = Array.isArray(data) ? data.at(-1) : data
+  if (!latest) {
+    throw new Error(`未获取到 ${pkgName} 的版本信息`)
   }
-  if (data) {
-    return data
-  }
-  throw new Error(`未获取到 ${pkgName} 的版本信息`)
+  latestVersionCache.set(pkgName, latest)
+  return latest
 }
 
 async function fetchTailwindVersion(pkgName: string, major: number): Promise<string> {
@@ -213,11 +128,19 @@ async function fetchTailwindVersion(pkgName: string, major: number): Promise<str
 async function resolveBaseTargets(): Promise<TargetPackage[]> {
   const weappTailwindcssVersion = readWorkspacePackageVersion(path.join('packages', 'weapp-tailwindcss'))
   const mergeVersion = readWorkspacePackageVersion(path.join('packages-runtime', 'merge'))
-  const weappIdeCliVersion = await fetchLatestVersion('weapp-ide-cli')
-  const weappViteVersion = await fetchLatestVersion('weapp-vite')
-  const sassVersion = await fetchLatestVersion('sass')
-  const sassEmbeddedVersion = await fetchLatestVersion('sass-embedded')
-  const typescriptVersion = await fetchLatestVersion('typescript')
+  const [
+    weappIdeCliVersion,
+    weappViteVersion,
+    sassVersion,
+    sassEmbeddedVersion,
+    typescriptVersion,
+  ] = await Promise.all([
+    fetchLatestVersion('weapp-ide-cli'),
+    fetchLatestVersion('weapp-vite'),
+    fetchLatestVersion('sass'),
+    fetchLatestVersion('sass-embedded'),
+    fetchLatestVersion('typescript'),
+  ])
   return [
     {
       name: 'weapp-tailwindcss',
@@ -388,8 +311,12 @@ function ensurePnpmOnlyBuiltDependencies(
   return changed
 }
 
-function updateDependencyRange(pkg: PackageJson, targets: TargetPackage[]): boolean {
+function updateDependencyRange(
+  pkg: PackageJson,
+  targets: TargetPackage[],
+): { changed: boolean, touched: TargetPackage[] } {
   let updated = false
+  const touched = new Map<string, TargetPackage>()
   for (const field of ['dependencies', 'devDependencies'] as const) {
     const section = pkg[field]
     if (!section || typeof section !== 'object') {
@@ -405,6 +332,7 @@ function updateDependencyRange(pkg: PackageJson, targets: TargetPackage[]): bool
       if (current !== next) {
         typedSection[target.name] = next
         updated = true
+        touched.set(target.name, target)
       }
     }
   }
@@ -419,10 +347,14 @@ function updateDependencyRange(pkg: PackageJson, targets: TargetPackage[]): bool
       if (newSection[target.name] !== target.range) {
         newSection[target.name] = target.range
         updated = true
+        touched.set(target.name, target)
       }
     }
   }
-  return updated
+  return {
+    changed: updated,
+    touched: [...touched.values()],
+  }
 }
 
 function detectManager(templateDir: string, pkg: PackageJson): ManagerInfo {
@@ -456,16 +388,7 @@ function lockNeedsUpdate(templateDir: string, manager: ManagerInfo, targets: Tar
     return false
   }
   if (manager.name === 'pnpm') {
-    const lockPath = path.join(templateDir, 'pnpm-lock.yaml')
-    if (!existsSync(lockPath)) {
-      return false
-    }
-    const content = readFileSync(lockPath, 'utf8')
-    return targets.some(
-      target =>
-        !content.includes(`${target.name}@${target.version}`)
-        && !content.includes(`version: ${target.version}`),
-    )
+    return pnpmLockNeedsUpdate(templateDir, targets)
   }
   if (manager.name === 'yarn') {
     const lockPath = path.join(templateDir, 'yarn.lock')
@@ -513,6 +436,89 @@ function dedupeTargets(targets: TargetPackage[]): TargetPackage[] {
     map.set(target.name, target)
   })
   return [...map.values()]
+}
+
+function matchesPnpmResolvedVersion(resolved: string | undefined, version: string): boolean {
+  if (!resolved) {
+    return false
+  }
+  if (resolved === version) {
+    return true
+  }
+  return resolved.startsWith(`${version}(`)
+}
+
+function extractPnpmEntryVersion(entry: PnpmLockDependencyEntry | undefined): string | null {
+  if (!entry) {
+    return null
+  }
+  if (typeof entry === 'string') {
+    return entry
+  }
+  if (entry && typeof entry === 'object' && typeof entry.version === 'string') {
+    return entry.version
+  }
+  return null
+}
+
+function pnpmLockHasTarget(lock: PnpmLockfile | null, target: TargetPackage): boolean {
+  if (!lock || typeof lock !== 'object') {
+    return false
+  }
+  const importers = lock.importers
+  if (importers && typeof importers === 'object') {
+    for (const importer of Object.values(importers)) {
+      if (!importer || typeof importer !== 'object') {
+        continue
+      }
+      for (const field of ['dependencies', 'devDependencies', 'optionalDependencies'] as const) {
+        const section = importer[field]
+        if (!section || typeof section !== 'object') {
+          continue
+        }
+        const version = extractPnpmEntryVersion(section[target.name])
+        if (matchesPnpmResolvedVersion(version ?? undefined, target.version)) {
+          return true
+        }
+      }
+    }
+  }
+
+  const packages = lock.packages
+  if (packages && typeof packages === 'object') {
+    for (const [key, meta] of Object.entries(packages)) {
+      if (!key.startsWith(`${target.name}@`)) {
+        continue
+      }
+      const keyVersion = key.slice(target.name.length + 1)
+      if (matchesPnpmResolvedVersion(keyVersion, target.version)) {
+        return true
+      }
+      if (meta && typeof meta === 'object' && typeof meta.version === 'string') {
+        if (matchesPnpmResolvedVersion(meta.version, target.version)) {
+          return true
+        }
+      }
+    }
+  }
+
+  return false
+}
+
+function pnpmLockNeedsUpdate(templateDir: string, targets: TargetPackage[]): boolean {
+  const lockPath = path.join(templateDir, 'pnpm-lock.yaml')
+  if (!existsSync(lockPath)) {
+    return false
+  }
+  const content = readFileSync(lockPath, 'utf8')
+  try {
+    const parsed = parseYaml(content) as PnpmLockfile
+    return targets.some(target => !pnpmLockHasTarget(parsed, target))
+  }
+  catch (error) {
+    console.warn(`无法解析 ${lockPath}，将尝试重新生成锁文件。`, error)
+    return true
+  }
 }
 
 function getPackageRange(pkg: PackageJson, name: string): string | undefined {
@@ -653,7 +659,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     const success = await withWorkspaceIsolation(() =>
       runCommand(
         'pnpm',
-        ['install', '--lockfile-only', '--ignore-scripts', ...NETWORK_CONCURRENCY_ARGS],
+        ['install', '--lockfile-only', '--ignore-workspace', '--ignore-scripts', ...NETWORK_CONCURRENCY_ARGS],
         templateDir,
         {
           allowFailure: true,
@@ -665,7 +671,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     if (!success) {
       console.warn(
         `跳过为 ${templateDir} 生成 pnpm-lock.yaml：pnpm 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
-        + ' 已更新 package.json，后续可在联网环境中于该模板目录执行 "pnpm install --lockfile-only --ignore-scripts" 来刷新锁文件。',
+        + ' 已更新 package.json，后续可在联网环境中于该模板目录执行 "pnpm install --lockfile-only --ignore-scripts --ignore-workspace" 来刷新锁文件。',
       )
     }
     return
@@ -766,11 +772,16 @@ async function processTemplate(
   const indent = detectIndentation(raw)
   const pkg = JSON.parse(raw) as PackageJson
   const tailwindTargets = await resolveTailwindTargets(pkg)
-  const relevantTargets = dedupeTargets([...filterTargetsForPackage(pkg, baseTargets), ...tailwindTargets])
+  const relevantTargets = dedupeTargets([
+    ...filterTargetsForPackage(pkg, baseTargets),
+    ...tailwindTargets,
+  ])
+  const lockTargets = relevantTargets.filter(target => hasPackageReference(pkg, target.name))
   const manager = detectManager(templateDir, pkg)
-  const depsChanged = updateDependencyRange(pkg, relevantTargets)
+  const { changed: depsChanged, touched: changedTargets } = updateDependencyRange(pkg, relevantTargets)
   const pnpmChanged = ensurePnpmOnlyBuiltDependencies(pkg, relevantTargets, manager)
-  const needLock = lockNeedsUpdate(templateDir, manager, relevantTargets)
+  const needLock = lockTargets.length > 0 && lockNeedsUpdate(templateDir, manager, lockTargets)
+  const shouldUpdateLock = depsChanged || needLock
 
   if (!depsChanged && !pnpmChanged && !needLock) {
     return false
@@ -780,10 +791,11 @@ async function processTemplate(
     writeFileSync(pkgPath, `${JSON.stringify(pkg, null, indent)}\n`)
   }
 
-  if (relevantTargets.length > 0) {
+  if (shouldUpdateLock) {
     console.log(`更新 ${templateName} 使用 ${manager.name} 生成锁文件...`)
     await updateLockfile(templateDir, manager)
-    relevantTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
+    const summaryTargets = depsChanged ? changedTargets : lockTargets
+    summaryTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
   }
 
   // await formatTemplateCode(templateDir)
@@ -792,7 +804,6 @@ async function processTemplate(
 }
 
 async function main(): Promise<void> {
-  await ensureDefaultProxyEnv()
   if (!existsSync(TEMPLATES_DIR)) {
     console.error(`未找到 ${TEMPLATES_DIR} 目录。`)
     process.exit(1)
@@ -802,22 +813,33 @@ async function main(): Promise<void> {
   const entries = readdirSync(TEMPLATES_DIR, { withFileTypes: true })
   const updated: string[] = []
   const summary = new Set<string>()
-
-  for (const entry of entries) {
-    if (!entry.isDirectory()) {
-      continue
-    }
-    const name = entry.name
-    try {
-      if (await processTemplate(name, baseTargets, summary)) {
-        updated.push(name)
+  const templateNames = entries.filter(entry => entry.isDirectory()).map(entry => entry.name)
+  let cursor = 0
+  const workerCount = Math.min(TEMPLATE_PROCESS_CONCURRENCY, templateNames.length)
+  const workers = Array.from({ length: workerCount || 1 }, () =>
+    (async () => {
+      while (true) {
+        const index = cursor++
+        if (index >= templateNames.length) {
+          break
+        }
+        const name = templateNames[index]!
+        try {
+          if (await processTemplate(name, baseTargets, summary)) {
+            updated.push(name)
+          }
+        }
+        catch (error) {
+          if (error instanceof Error) {
+            error.message = `处理 ${name} 失败：${error.message}`
+            throw error
+          }
+          throw new Error(`处理 ${name} 失败：${String(error)}`)
+        }
       }
-    }
-    catch (error) {
-      console.error(`处理 ${name} 失败：`, error instanceof Error ? error.message : error)
-      process.exit(1)
-    }
-  }
+    })())
+
+  await Promise.all(workers)
 
   if (updated.length === 0) {
     console.log('所有模板已是最新版本，无需更新。')
