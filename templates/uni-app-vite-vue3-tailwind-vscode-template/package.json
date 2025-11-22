@@ -74,7 +74,7 @@
     "@dcloudio/uni-stacktracey": "3.0.0-4080520251106001",
     "@dcloudio/vite-plugin-uni": "3.0.0-4080520251106001",
     "@egoist/tailwindcss-icons": "^1.9.0",
-    "@icebreakers/eslint-config": "^1.5.9",
+    "@icebreakers/eslint-config": "^1.5.10",
     "@icebreakers/stylelint-config": "^1.2.3",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/svg-spinners": "^1.2.4",
