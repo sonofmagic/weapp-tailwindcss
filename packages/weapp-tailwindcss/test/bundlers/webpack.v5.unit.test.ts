@@ -22,7 +22,7 @@ class FakeConcatSource {
 }
 
 interface LoaderModule {
-  loaders: Array<{ loader: string }>
+  loaders: Array<{ loader: string, options?: Record<string, any> }>
 }
 
 interface TestContext {
@@ -202,7 +202,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       loaders: [{ loader: '/path/postcss-loader.js' }],
     }
     loaderHandler?.({}, module)
-    expect(module.loaders[0].loader).toBe(currentContext.runtimeLoaderPath)
+    const runtimeLoaderEntry = module.loaders.at(-1)
+    expect(runtimeLoaderEntry?.loader).toBe(currentContext.runtimeLoaderPath)
+    expect(runtimeLoaderEntry?.options?.rewriteCssImports).toBeUndefined()
 
     const html = '<view class="foo"></view>'
     const js = 'const foo = 1'
@@ -255,6 +257,68 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+  })
+
+  it('forwards rewriteCssImports options when tailwindcss v4 detected', () => {
+    let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [],
+      hooks: {
+        processAssets: {
+          tapPromise: vi.fn(),
+        },
+      },
+      updateAsset: vi.fn(),
+      getAsset: vi.fn(),
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+                loaderHandler = handler
+              },
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          }),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+    currentContext.twPatcher.majorVersion = 4
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    loaderHandler?.({}, module)
+    const runtimeLoaderEntry = module.loaders.at(-1)
+    expect(runtimeLoaderEntry?.loader).toBe(currentContext.runtimeLoaderPath)
+    expect(runtimeLoaderEntry?.options?.rewriteCssImports?.pkgDir).toEqual(expect.any(String))
   })
 
   it('keeps separate cache entries for js and wxs assets', async () => {

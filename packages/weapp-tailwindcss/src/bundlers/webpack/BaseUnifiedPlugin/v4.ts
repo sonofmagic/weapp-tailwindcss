@@ -84,14 +84,21 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     onLoad()
     const loader = runtimeLoaderPath ?? path.resolve(__dirname, './weapp-tw-runtime-loader.js')
     const isExisted = fs.existsSync(loader)
-    const WeappTwRuntimeAopLoader = {
+    const runtimeLoaderRewriteOptions = shouldRewriteCssImports
+      ? {
+          pkgDir: weappTailwindcssPackageDir,
+        }
+      : undefined
+    const runtimeLoaderOptions = {
+      getClassSet: getClassSetInLoader,
+      rewriteCssImports: runtimeLoaderRewriteOptions,
+    }
+    const createRuntimeLoaderEntry = () => ({
       loader,
-      options: {
-        getClassSet: getClassSetInLoader,
-      },
+      options: runtimeLoaderOptions,
       ident: null,
       type: null,
-    }
+    })
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module) => {
@@ -101,7 +108,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
           if (idx > -1) {
             // @ts-ignore
-            module.loaders.unshift(WeappTwRuntimeAopLoader)
+            module.loaders.splice(idx + 1, 0, createRuntimeLoaderEntry())
+          }
+          else {
+            // @ts-ignore
+            module.loaders.push(createRuntimeLoaderEntry())
           }
         }
       })

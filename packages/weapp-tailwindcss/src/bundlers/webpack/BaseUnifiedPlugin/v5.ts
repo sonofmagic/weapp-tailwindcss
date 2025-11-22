@@ -84,14 +84,21 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     onLoad()
     const loader = runtimeLoaderPath ?? path.resolve(__dirname, './weapp-tw-runtime-loader.js')
     const isExisted = fs.existsSync(loader)
-    const WeappTwRuntimeAopLoader = {
+    const runtimeLoaderRewriteOptions = shouldRewriteCssImports
+      ? {
+          pkgDir: weappTailwindcssPackageDir,
+        }
+      : undefined
+    const runtimeLoaderOptions = {
+      getClassSet: getClassSetInLoader,
+      rewriteCssImports: runtimeLoaderRewriteOptions,
+    }
+    const createRuntimeLoaderEntry = () => ({
       loader,
-      options: {
-        getClassSet: getClassSetInLoader,
-      },
+      options: runtimeLoaderOptions,
       ident: null,
       type: null,
-    }
+    })
 
     // https://github.com/dcloudio/uni-app/blob/dev/packages/webpack-uni-mp-loader/lib/plugin/index-new.js
     // PROCESS_ASSETS_STAGE_ADDITIONAL
@@ -100,8 +107,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
         if (isExisted) {
           const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
+          const runtimeLoaderEntry = createRuntimeLoaderEntry()
           if (idx > -1) {
-            module.loaders.unshift(WeappTwRuntimeAopLoader)
+            module.loaders.splice(idx + 1, 0, runtimeLoaderEntry)
+          }
+          else {
+            module.loaders.push(runtimeLoaderEntry)
           }
         }
       })
