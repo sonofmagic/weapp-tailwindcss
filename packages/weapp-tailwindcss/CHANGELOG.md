@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.8.3
+
+### Patch Changes
+
+- [`45aed93`](https://github.com/sonofmagic/weapp-tailwindcss/commit/45aed9338aae0181f873e7960b522a37b835af73) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - 重构 tailwindcss 上下文，提炼出 workspace 工具模块，解决 `PNPM_PACKAGE_NAME` 场景下的 workspace 目录解析问题，并补充对应单测，确保 `rewriteCssImports` 能在过滤构建时正确生效。
+
+- [`7a455f6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7a455f61a7f0bd8a08cf51fac00083a6daa99d12) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 webpack demos 在开启 `rewriteCssImports` 时未能把 `@import "tailwindcss"` 重写为 `weapp-tailwindcss` 的问题，确保运行时 loader 会在 PostCSS 之前插入并重写 CSS 导入。
+
 ## 4.8.2
 
 ### Patch Changes
