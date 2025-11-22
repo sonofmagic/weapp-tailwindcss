@@ -87,6 +87,12 @@ catalogs:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
+  vite5421:
+    vite: ^5.4.21
+  vite724:
+    vite: ^7.2.4
+  vite724exact:
+    vite: 7.2.4
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:

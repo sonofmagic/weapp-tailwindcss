@@ -105,7 +105,7 @@
     "tailwindcss-patch": "^8.2.4",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
-    "vite": "7.2.4",
+    "vite": "catalog:vite724exact",
     "vite-plugin-inspect": "^11.3.3",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-style-injector": "workspace:*",

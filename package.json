@@ -260,5 +260,14 @@
     "webpack": "5.103.0",
     "webpack-build-utils": "^0.0.7",
     "yaml": "^2.8.1"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@dcloudio/vue-cli-plugin-hbuilderx@*": {
+        "dependencies": {
+          "@dcloudio/uni-cli-shared": "2.0.2-4080520251106001"
+        }
+      }
+    }
   }
 }

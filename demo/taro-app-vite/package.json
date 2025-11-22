@@ -94,7 +94,7 @@
     "terser": "^5.44.1",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
-    "vite": "^7.2.4",
+    "vite": "catalog:vite5421",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

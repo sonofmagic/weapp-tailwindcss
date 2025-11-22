@@ -80,7 +80,7 @@
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "^8.2.4",
     "typescript": "catalog:typescript59",
-    "vite": "7.2.4",
+    "vite": "catalog:vite724exact",
     "vue-tsc": "^3.1.4",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-style-injector": "workspace:*",
