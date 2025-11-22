@@ -13,6 +13,7 @@ describe('resolveTailwindcssBasedir', () => {
 
   afterEach(() => {
     process.env = originalEnv
+    vi.doUnmock('@/context/workspace')
   })
 
   it('prefers npm_package_json directory when available', async () => {

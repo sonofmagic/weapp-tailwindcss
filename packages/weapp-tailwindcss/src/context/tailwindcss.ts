@@ -7,6 +7,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { logger } from '@weapp-tailwindcss/logger'
+import { findWorkspacePackageDir, findWorkspaceRoot } from '@/context/workspace'
 import { createTailwindcssPatcher } from '@/tailwindcss'
 import { defuOverrideArray } from '@/utils'
 
@@ -184,10 +185,6 @@ export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
     }
   }
 
-  if (envBasedir) {
-    return path.normalize(envBasedir)
-  }
-
   const packageName = process.env.PNPM_PACKAGE_NAME
   if (packageName) {
     try {
@@ -203,7 +200,18 @@ export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
         logger.debug('failed to resolve package json for %s', packageName)
       }
       // 忽略解析失败，继续走兜底逻辑
+      const workspaceRoot = findWorkspaceRoot(anchor)
+      if (workspaceRoot) {
+        const packageDir = findWorkspacePackageDir(workspaceRoot, packageName)
+        if (packageDir) {
+          return packageDir
+        }
+      }
     }
+  }
+
+  if (envBasedir) {
+    return path.normalize(envBasedir)
   }
 
   return path.normalize(process.cwd())
