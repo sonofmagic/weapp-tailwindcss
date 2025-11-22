@@ -79,7 +79,7 @@
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "stylelint": "16.25.0",
+    "stylelint": "16.26.0",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "^8.2.4",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",

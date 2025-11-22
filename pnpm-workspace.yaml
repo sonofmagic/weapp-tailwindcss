@@ -47,7 +47,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   stylelint1625:
-    stylelint: ^16.25.0
+    stylelint: ^16.26.0
   tailwindMerge:
     tailwind-merge: ^3.4.0
   tailwindcss3:
