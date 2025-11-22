@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.8.2
+
+### Patch Changes
+
+- [`af1133d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/af1133df2377e729d8ca0980e854a4c0b81d3ef8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 完善默认 basedir 推断逻辑，让 monorepo 子包无需额外配置即可正确绑定 Tailwind，并恢复运行时类名集合。
+
+- [`0872174`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0872174f3cbba12b69ace58e2192501e26ddd388) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 记录 weapp-tw patch 目标文件迁移到 node_modules 缓存并在损坏时给出修复提示，提升多包/hoist 下的 Tailwind 对齐体验。
+
 ## 4.8.1
 
 ### Patch Changes
