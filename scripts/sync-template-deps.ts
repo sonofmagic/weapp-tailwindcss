@@ -1,4 +1,5 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { Socket } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
@@ -58,11 +59,95 @@ const PROXY_ENV_VARS = [
   'npm_config_https_proxy',
   'npm_config_http_proxy',
 ]
+const PROXY_ASSIGNMENT_KEYS = [
+  'HTTP_PROXY',
+  'http_proxy',
+  'HTTPS_PROXY',
+  'https_proxy',
+  'ALL_PROXY',
+  'all_proxy',
+  'npm_config_proxy',
+  'npm_config_https_proxy',
+  'npm_config_http_proxy',
+]
+const LOCAL_PROXY_HOST = '127.0.0.1'
+const LOCAL_PROXY_PORT = 7890
+const LOCAL_PROXY_URL = `http://${LOCAL_PROXY_HOST}:${LOCAL_PROXY_PORT}`
+let detectedProxyEnv: CommandEnv | null = null
+let proxySetupDone = false
+
+function hasCustomProxyConfiguration(env: NodeJS.ProcessEnv): boolean {
+  return PROXY_ASSIGNMENT_KEYS.some((key) => {
+    const value = env[key]
+    return typeof value === 'string' && value.length > 0
+  })
+}
+
+function createProxyEnv(url: string): CommandEnv {
+  return PROXY_ASSIGNMENT_KEYS.reduce<CommandEnv>((acc, key) => {
+    acc[key] = url
+    return acc
+  }, {})
+}
+
+function probeLocalHttpProxy(host: string, port: number, timeoutMs = 1500): Promise<boolean> {
+  return new Promise((resolve) => {
+    const socket = new Socket()
+    const cleanup = (): void => {
+      socket.removeAllListeners()
+      socket.destroy()
+    }
+    const handleSuccess = (): void => {
+      cleanup()
+      resolve(true)
+    }
+    const handleFailure = (): void => {
+      cleanup()
+      resolve(false)
+    }
+    socket.setTimeout(timeoutMs)
+    socket.once('connect', handleSuccess)
+    socket.once('timeout', handleFailure)
+    socket.once('error', handleFailure)
+    try {
+      socket.connect(port, host)
+    }
+    catch {
+      handleFailure()
+    }
+  })
+}
+
+async function ensureDefaultProxyEnv(): Promise<void> {
+  if (proxySetupDone) {
+    return
+  }
+  proxySetupDone = true
+  if (DISABLE_PROXY) {
+    return
+  }
+  if (hasCustomProxyConfiguration(process.env)) {
+    return
+  }
+  const available = await probeLocalHttpProxy(LOCAL_PROXY_HOST, LOCAL_PROXY_PORT)
+  if (available) {
+    detectedProxyEnv = createProxyEnv(LOCAL_PROXY_URL)
+    console.log(`检测到本地代理 ${LOCAL_PROXY_URL}，将优先通过该代理执行依赖安装。`)
+  }
+}
+
 function buildCommandEnv(overrides: CommandEnv = {}): NodeJS.ProcessEnv {
   const baseEnv: NodeJS.ProcessEnv = { ...process.env }
   if (DISABLE_PROXY) {
     for (const key of PROXY_ENV_VARS) {
       delete baseEnv[key]
+    }
+  }
+  else if (detectedProxyEnv) {
+    for (const [key, value] of Object.entries(detectedProxyEnv)) {
+      if (baseEnv[key] === undefined) {
+        baseEnv[key] = value
+      }
     }
   }
   for (const [key, value] of Object.entries(overrides)) {
@@ -565,27 +650,41 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
   }
 
   if (manager.name === 'pnpm') {
-    await withWorkspaceIsolation(() =>
+    const success = await withWorkspaceIsolation(() =>
       runCommand(
         'pnpm',
         ['install', '--lockfile-only', '--ignore-scripts', ...NETWORK_CONCURRENCY_ARGS],
         templateDir,
         {
+          allowFailure: true,
           env,
           timeoutMs: 5 * 60_000,
         },
       ),
     )
+    if (!success) {
+      console.warn(
+        `跳过为 ${templateDir} 生成 pnpm-lock.yaml：pnpm 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
+        + ' 已更新 package.json，后续可在联网环境中于该模板目录执行 "pnpm install --lockfile-only --ignore-scripts" 来刷新锁文件。',
+      )
+    }
     return
   }
 
   if (manager.name === 'npm') {
-    await withWorkspaceIsolation(() =>
+    const success = await withWorkspaceIsolation(() =>
       runCommand('npm', ['install', '--package-lock-only', '--ignore-scripts'], templateDir, {
+        allowFailure: true,
         env,
         timeoutMs: 5 * 60_000,
       }),
     )
+    if (!success) {
+      console.warn(
+        `跳过为 ${templateDir} 生成 package-lock.json：npm 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
+        + ' 已更新 package.json，后续可在联网环境中于该模板目录执行 "npm install --package-lock-only --ignore-scripts" 来刷新锁文件。',
+      )
+    }
     return
   }
 
@@ -693,6 +792,7 @@ async function processTemplate(
 }
 
 async function main(): Promise<void> {
+  await ensureDefaultProxyEnv()
   if (!existsSync(TEMPLATES_DIR)) {
     console.error(`未找到 ${TEMPLATES_DIR} 目录。`)
     process.exit(1)
