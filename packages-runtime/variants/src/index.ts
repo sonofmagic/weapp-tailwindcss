@@ -2,8 +2,6 @@ import type { CreateOptions } from '@weapp-tailwindcss/runtime'
 import type {
   CnOptions,
   CnReturn,
-  createTV as TailwindVariantsCreateTV,
-  tv as TailwindVariantsTv,
   TV,
   TVConfig,
   TWMConfig,
@@ -11,17 +9,102 @@ import type {
 } from 'tailwind-variants'
 import { create as createMergeRuntime } from '@weapp-tailwindcss/merge'
 import { resolveTransformers } from '@weapp-tailwindcss/runtime'
-import { defaultConfig, cnBase as tailwindVariantsCnBase } from 'tailwind-variants'
-// @ts-expect-error upstream does not ship typed chunks.
-import { c as createTailwindVariantsFactory } from 'tailwind-variants/dist/chunk-IFWU2MEM.js'
+import {
+  defaultConfig,
+  createTV as tailwindVariantsCreateTV,
+  cx as tailwindVariantsCx,
+  tv as tailwindVariantsTv,
+} from 'tailwind-variants'
 
 type TailwindVariantsCn = <T extends CnOptions>(...classes: T) => (config?: TWMConfig) => CnReturn
 
-type TailwindVariantsFactory = (
-  cn: TailwindVariantsCn,
-) => {
-  tv: typeof TailwindVariantsTv
-  createTV: typeof TailwindVariantsCreateTV
+type TailwindVariantsComponent = ReturnType<typeof tailwindVariantsTv>
+
+type TailwindVariantsResult = ReturnType<TailwindVariantsComponent>
+
+function mergeConfigs(...configs: (TVConfig | undefined)[]): TVConfig {
+  const baseTwMergeConfig = defaultConfig.twMergeConfig
+    ? { ...defaultConfig.twMergeConfig }
+    : undefined
+
+  return configs.reduce<TVConfig>((acc, config) => {
+    if (!config) {
+      return acc
+    }
+
+    const nextTwMergeConfig = config.twMergeConfig
+      ? {
+          ...(acc.twMergeConfig ?? {}),
+          ...config.twMergeConfig,
+        }
+      : acc.twMergeConfig
+
+    return {
+      ...acc,
+      ...config,
+      twMergeConfig: nextTwMergeConfig,
+    }
+  }, {
+    ...defaultConfig,
+    twMergeConfig: baseTwMergeConfig,
+  })
+}
+
+function disableTailwindMerge(config?: TVConfig): TVConfig {
+  if (!config) {
+    return { twMerge: false }
+  }
+
+  const { twMergeConfig: _ignored, ...rest } = config
+  return {
+    ...rest,
+    twMerge: false,
+  }
+}
+
+function copyComponentMetadata(target: TailwindVariantsComponent, source: TailwindVariantsComponent) {
+  const descriptors = Object.getOwnPropertyDescriptors(source)
+
+  delete descriptors.length
+  delete descriptors.name
+  delete descriptors.prototype
+
+  Object.defineProperties(target, descriptors)
+}
+
+function wrapComponent(
+  component: TailwindVariantsComponent,
+  config: TVConfig,
+  mergeClassList: (value: CnReturn, config?: TWMConfig) => CnReturn,
+): TailwindVariantsComponent {
+  const wrapped = ((props?: unknown) => {
+    const result = component(props) as TailwindVariantsResult
+
+    if (result == null || typeof result === 'string') {
+      return mergeClassList(result as CnReturn, config)
+    }
+
+    const slotEntries = Reflect.ownKeys(result) as Array<keyof typeof result>
+    const slots: Record<PropertyKey, any> = {}
+
+    for (const key of slotEntries) {
+      const slotFn = (result as Record<PropertyKey, any>)[key]
+      if (typeof slotFn !== 'function') {
+        slots[key] = slotFn
+        continue
+      }
+
+      slots[key] = (...slotArgs: any[]) => {
+        return mergeClassList(slotFn(...slotArgs), config)
+      }
+    }
+
+    return slots as typeof result
+  }) as TailwindVariantsComponent
+
+  copyComponentMetadata(wrapped, component)
+
+  return wrapped
 }
 
 function createVariantsRuntime(options?: CreateOptions) {
@@ -45,30 +128,30 @@ function createVariantsRuntime(options?: CreateOptions) {
     return cachedMergeFn
   }
 
-  const cn: TailwindVariantsCn = (...classes) => {
-    const aggregated = tailwindVariantsCnBase(...classes)
-
-    return (config?: TWMConfig) => {
-      if (aggregated == null) {
-        return aggregated
-      }
-
-      const normalized = transformers.unescape(aggregated)
-
-      const shouldMerge = config?.twMerge ?? true
-      if (!shouldMerge) {
-        return transformers.escape(normalized)
-      }
-
-      const mergeFn = getMergeFn(config?.twMergeConfig)
-      return mergeFn(normalized)
+  const mergeClassList = (value: CnReturn, config?: TWMConfig) => {
+    if (value == null) {
+      return value
     }
+
+    const normalized = transformers.unescape(value)
+
+    const shouldMerge = config?.twMerge ?? true
+    if (!shouldMerge) {
+      return transformers.escape(normalized)
+    }
+
+    const mergeFn = getMergeFn(config?.twMergeConfig)
+    return mergeFn(normalized)
   }
 
-  const factory = (createTailwindVariantsFactory as TailwindVariantsFactory)(cn)
+  const cn: TailwindVariantsCn = (...classes) => {
+    const aggregated = tailwindVariantsCx(...classes)
 
-  const cnBase = (...classes: Parameters<typeof tailwindVariantsCnBase>) => {
-    const aggregated = tailwindVariantsCnBase(...classes)
+    return (config?: TWMConfig) => mergeClassList(aggregated, config)
+  }
+
+  const cnBase = (...classes: Parameters<typeof tailwindVariantsCx>) => {
+    const aggregated = tailwindVariantsCx(...classes)
     if (aggregated == null) {
       return aggregated
     }
@@ -77,11 +160,30 @@ function createVariantsRuntime(options?: CreateOptions) {
     return transformers.escape(normalized)
   }
 
+  const tv: TV = ((options, config) => {
+    const mergedConfig = mergeConfigs(config)
+    const upstreamConfig = disableTailwindMerge(config)
+    const component = tailwindVariantsTv(options, upstreamConfig)
+    return wrapComponent(component, mergedConfig, mergeClassList)
+  }) as TV
+
+  const createTVRuntime: typeof tailwindVariantsCreateTV = (configProp?: TVConfig) => {
+    const tailwindCreate = tailwindVariantsCreateTV(disableTailwindMerge(configProp))
+
+    return (options, config) => {
+      const mergedConfig = mergeConfigs(configProp, config)
+      const component = config
+        ? tailwindCreate(options, disableTailwindMerge(config))
+        : tailwindCreate(options)
+      return wrapComponent(component, mergedConfig, mergeClassList)
+    }
+  }
+
   return {
     cnBase,
     cn,
-    tv: factory.tv as TV,
-    createTV: factory.createTV,
+    tv,
+    createTV: createTVRuntime,
   }
 }
 

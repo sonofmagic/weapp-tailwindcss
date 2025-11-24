@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "tailwind-merge": "catalog:tailwindMerge",
-    "tailwind-variants": "^3.1.1"
+    "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:tailwindcss4",
