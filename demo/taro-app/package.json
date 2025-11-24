@@ -81,7 +81,7 @@
     "postcss-rpx-transform": "catalog:postcssRpx",
     "stylelint": "16.26.0",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "terser-webpack-plugin": "^5.3.14",
     "typescript": "catalog:typescript59tilde",

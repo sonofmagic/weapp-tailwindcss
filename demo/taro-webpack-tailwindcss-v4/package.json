@@ -88,7 +88,7 @@
     "react-refresh": "catalog:reactRefresh018",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "^8.2.4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",

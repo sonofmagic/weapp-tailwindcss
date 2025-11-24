@@ -53,7 +53,7 @@
     "rax-app": "3.8.22",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",

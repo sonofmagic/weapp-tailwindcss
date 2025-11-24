@@ -67,7 +67,7 @@
     "sass": "^1.94.2",
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "^8.2.4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "ts-jest": "^29.2.5",
     "typescript": "catalog:typescript59",
