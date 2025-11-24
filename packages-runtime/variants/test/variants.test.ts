@@ -36,11 +36,61 @@ describe('variants runtime', () => {
     expect(button({ tone: 'accent' })).toBe('text-_b_hececec_B')
   })
 
+  it('escapes rpx units and color literals inside tv output', () => {
+    const stack = tv({
+      base: 'text-[24rpx] bg-[#0f0]',
+      variants: {
+        tone: {
+          danger: 'text-[#FF0000] text-[32rpx]',
+        },
+      },
+    })
+
+    const baseOutput = stack()?.split(' ')
+    expect(new Set(baseOutput)).toEqual(new Set(['text-_b24rpx_B', 'bg-_b_h0f0_B']))
+
+    const variantOutput = stack({ tone: 'danger' })?.split(' ')
+    expect(new Set(variantOutput)).toEqual(new Set([
+      'text-_b32rpx_B',
+      'bg-_b_h0f0_B',
+      'text-_b_hFF0000_B',
+    ]))
+  })
+
   it('supports custom transformers through create', () => {
     const { tv: rawTv } = createVariants({ escape: false })
     const badge = rawTv({ base: 'text-[#ececec]' })
 
     expect(badge()).toBe('text-[#ececec]')
+  })
+
+  it('respects disabled escape/unescape options in runtime factory', () => {
+    const runtime = createVariants({ escape: false, unescape: false })
+    const badge = runtime.tv({
+      base: 'text-[#ECECEC]',
+      variants: {
+        tone: {
+          accent: 'text-[#101010]',
+        },
+      },
+    })
+
+    // Should bypass escape/unescape while still merging conflicting classes.
+    expect(badge({ tone: 'accent' })).toBe('text-[#101010]')
+
+    const aggregate = runtime.cn('text-[#ECECEC]', 'text-[#101010]')
+    expect(aggregate()).toBe('text-[#101010]')
+    expect(aggregate({ twMerge: false })).toBe('text-[#ECECEC] text-[#101010]')
+
+    const mergedTv = runtime.tv({
+      base: 'text-[#101010]',
+      variants: {
+        tone: {
+          accent: 'text-[#ECECEC]',
+        },
+      },
+    })
+    expect(mergedTv({ tone: 'accent' })).toBe('text-[#ECECEC]')
   })
 
   it('wraps cn aggregation with merge + escaping', () => {
@@ -73,5 +123,79 @@ describe('variants runtime', () => {
     const aggregate = cn()
     expect(aggregate()).toBeUndefined()
     expect(cnBase()).toBeUndefined()
+  })
+
+  it('aggregates rpx units and hex colors via cn helpers', () => {
+    const aggregate = cn('text-[16rpx]', 'bg-[#ff0000]', 'text-[#00FF00]')
+
+    expect(aggregate()).toBe('text-_b16rpx_B bg-_b_hff0000_B text-_b_h00FF00_B')
+    expect(cnBase('border-[2rpx]', 'text-[#123456]')).toBe('border-_b2rpx_B text-_b_h123456_B')
+  })
+
+  it('preserves tailwind-variants metadata when wrapping components', () => {
+    const badge = tv({
+      base: 'text-[#ececec]',
+      variants: {
+        size: {
+          sm: 'text-sm',
+        },
+      },
+      defaultVariants: {
+        size: 'sm',
+      },
+    })
+
+    expect(badge.variantKeys).toEqual(['size'])
+    expect(badge.defaultVariants).toEqual({ size: 'sm' })
+  })
+
+  it('wraps slot functions so per-slot output is escaped and merged', () => {
+    const alert = tv({
+      slots: {
+        base: 'text-[#101010]',
+        icon: 'text-[#202020]',
+      },
+      variants: {
+        tone: {
+          accent: {
+            base: 'text-[#ECECEC]',
+            icon: 'text-[#ECECEC]',
+          },
+        },
+      },
+    })
+
+    const slots = alert({ tone: 'accent' })
+    expect(typeof slots.base).toBe('function')
+    expect(slots.base()).toBe('text-_b_hECECEC_B')
+    expect(slots.icon()).toBe('text-_b_hECECEC_B')
+    expect(slots.icon({ class: 'text-[#303030]' })).toBe('text-_b_h303030_B')
+  })
+
+  it('merges config overrides from createTV invocations', () => {
+    const makeTv = createTV({ twMerge: false })
+    const badge = makeTv({
+      base: 'text-[#101010]',
+      variants: {
+        tone: {
+          accent: 'text-[#ECECEC]',
+        },
+      },
+    })
+
+    expect(badge({ tone: 'accent' })).toBe('text-_b_h101010_B text-_b_hECECEC_B')
+
+    const mergedBadge = makeTv(
+      {
+        base: 'text-[#101010]',
+        variants: {
+          tone: {
+            accent: 'text-[#ECECEC]',
+          },
+        },
+      },
+      { twMerge: true },
+    )
+    expect(mergedBadge({ tone: 'accent' })).toBe('text-_b_hECECEC_B')
   })
 })

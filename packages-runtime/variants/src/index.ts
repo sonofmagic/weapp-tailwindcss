@@ -18,9 +18,13 @@ import {
 
 type TailwindVariantsCn = <T extends CnOptions>(...classes: T) => (config?: TWMConfig) => CnReturn
 
-type TailwindVariantsComponent = ReturnType<typeof tailwindVariantsTv>
+type TailwindVariantsComponent = ((props?: unknown) => unknown) & Record<PropertyKey, unknown>
 
-type TailwindVariantsResult = ReturnType<TailwindVariantsComponent>
+type TailwindVariantsResult<TComponent extends TailwindVariantsComponent> = ReturnType<TComponent>
+
+type TailwindVariantsOptions = Parameters<typeof tailwindVariantsTv>[0]
+
+type TailwindVariantsConfig = Parameters<typeof tailwindVariantsTv>[1]
 
 function mergeConfigs(...configs: (TVConfig | undefined)[]): TVConfig {
   const baseTwMergeConfig = defaultConfig.twMergeConfig
@@ -72,19 +76,19 @@ function copyComponentMetadata(target: TailwindVariantsComponent, source: Tailwi
   Object.defineProperties(target, descriptors)
 }
 
-function wrapComponent(
-  component: TailwindVariantsComponent,
+function wrapComponent<TComponent extends TailwindVariantsComponent>(
+  component: TComponent,
   config: TVConfig,
   mergeClassList: (value: CnReturn, config?: TWMConfig) => CnReturn,
-): TailwindVariantsComponent {
+): TComponent {
   const wrapped = ((props?: unknown) => {
-    const result = component(props) as TailwindVariantsResult
+    const result = component(props) as TailwindVariantsResult<TComponent>
 
     if (result == null || typeof result === 'string') {
       return mergeClassList(result as CnReturn, config)
     }
 
-    const slotEntries = Reflect.ownKeys(result) as Array<keyof typeof result>
+    const slotEntries = Reflect.ownKeys(result) as Array<keyof TailwindVariantsResult<TComponent>>
     const slots: Record<PropertyKey, any> = {}
 
     for (const key of slotEntries) {
@@ -99,8 +103,8 @@ function wrapComponent(
       }
     }
 
-    return slots as typeof result
-  }) as TailwindVariantsComponent
+    return slots as TailwindVariantsResult<TComponent>
+  }) as TComponent
 
   copyComponentMetadata(wrapped, component)
 
@@ -160,23 +164,29 @@ function createVariantsRuntime(options?: CreateOptions) {
     return transformers.escape(normalized)
   }
 
-  const tv: TV = ((options, config) => {
+  const tv = ((options: TailwindVariantsOptions, config?: TailwindVariantsConfig) => {
     const mergedConfig = mergeConfigs(config)
     const upstreamConfig = disableTailwindMerge(config)
-    const component = tailwindVariantsTv(options, upstreamConfig)
+    const component = tailwindVariantsTv(
+      options as TailwindVariantsOptions,
+      upstreamConfig as TailwindVariantsConfig,
+    ) as unknown as TailwindVariantsComponent
     return wrapComponent(component, mergedConfig, mergeClassList)
-  }) as TV
+  }) as unknown as TV
 
   const createTVRuntime: typeof tailwindVariantsCreateTV = (configProp?: TVConfig) => {
     const tailwindCreate = tailwindVariantsCreateTV(disableTailwindMerge(configProp))
 
-    return (options, config) => {
+    return ((options: TailwindVariantsOptions, config?: TailwindVariantsConfig) => {
       const mergedConfig = mergeConfigs(configProp, config)
-      const component = config
-        ? tailwindCreate(options, disableTailwindMerge(config))
-        : tailwindCreate(options)
+      const component = (config
+        ? tailwindCreate(
+            options as TailwindVariantsOptions,
+            disableTailwindMerge(config) as TailwindVariantsConfig,
+          )
+        : tailwindCreate(options as TailwindVariantsOptions)) as unknown as TailwindVariantsComponent
       return wrapComponent(component, mergedConfig, mergeClassList)
-    }
+    }) as unknown as ReturnType<typeof tailwindVariantsCreateTV>
   }
 
   return {
