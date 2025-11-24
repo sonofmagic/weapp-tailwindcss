@@ -1,3 +1,5 @@
+require('./scripts/patch-ajv-keywords')
+require('./scripts/patch-chalk')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const { StyleInjector } = require('weapp-style-injector/webpack/uni-app')
 /**
