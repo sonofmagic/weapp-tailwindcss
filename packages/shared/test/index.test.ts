@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defuOverrideArray, groupBy, isMap, isRegexp, regExpTest, removeExt } from '@/index'
+import { defuOverrideArray, groupBy, isMap, isRegexp, noop, regExpTest, removeExt } from '@/index'
 
 describe('shared utils', () => {
   it('isRegexp correctly detects regular expressions', () => {
@@ -45,6 +45,8 @@ describe('shared utils', () => {
     expect(removeExt('archive.tar.gz')).toBe('archive.tar')
     expect(removeExt('noext')).toBe('noext')
     expect(removeExt('')).toBe('')
+    expect(removeExt('file.')).toBe('file')
+    expect(removeExt('.hidden/file')).toBe('.hidden/file')
   })
 
   it('defuOverrideArray replaces array values instead of merging them', () => {
@@ -70,5 +72,26 @@ describe('shared utils', () => {
     expect(withFallback.include).toEqual(['**/*.wxml', '**/*.wxss'])
     expect(withFallback.nested.matchers).toEqual(['**/*.js'])
     expect(withFallback.flag).toBe(true)
+
+    const mixedTypes = defuOverrideArray({ include: '**/*.swan' } as any, defaults)
+    expect(mixedTypes.include).toBe('**/*.swan')
+  })
+
+  it('groupBy validates inputs', () => {
+    expect(() => groupBy(null as unknown as string[], () => 'a')).toThrowError(/expected an array/i)
+    expect(() => groupBy([], null as any)).toThrowError(/expected a function/i)
+  })
+
+  it('regExpTest resets regex lastIndex and ignores unsupported entries', () => {
+    const regex = /foo/g
+    regex.lastIndex = 12
+    expect(regExpTest([regex], 'foo')).toBe(true)
+    expect(regex.lastIndex).not.toBe(12)
+
+    expect(regExpTest([123 as any, {} as any], 'foo')).toBe(false)
+  })
+
+  it('noop returns undefined without side effects', () => {
+    expect(noop()).toBeUndefined()
   })
 })
