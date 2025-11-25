@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/shared
 
+## 1.1.1
+
+### Patch Changes
+
+- [`1788e26`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1788e26153bafc865776d5a761c2e28dafff6918) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 splitCode 在压缩模板字符串中保留转义空白导致类名匹配遗漏的问题，保证 mp-alipay 等产物的类名替换正常工作。
+
 ## 1.1.0
 
 ### Minor Changes
