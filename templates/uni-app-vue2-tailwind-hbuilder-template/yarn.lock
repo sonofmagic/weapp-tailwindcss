@@ -741,14 +741,14 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.0.3.tgz#205a74b491b95aacee10085b132208398d8bb678"
-  integrity sha512-znzk2uG+CW6GwoEWwr4viMuqwpZ7GxupfTHteMLMtMwgl8cnRa67BoOI3kvEO6xhMsq+chIM0L8bUSRRkSbzBw==
+"@weapp-tailwindcss/postcss@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.0.4.tgz#ac9496a215d1a15d7525f48b12810116cc7dfbb1"
+  integrity sha512-MpyVrEfRdYaseYlYwvrixYKbMwos3eHfcHmmLV1sx+DDNgbRgboWCdMpX4Yji1S8wtUHwsjsD6RKq0l//T4FwA==
   dependencies:
     "@weapp-core/escape" "~5.0.1"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
-    "@weapp-tailwindcss/shared" "1.1.0"
+    "@weapp-tailwindcss/shared" "1.1.1"
     postcss "~8.5.6"
     postcss-preset-env "^10.4.0"
     postcss-pxtransform "^4.1.8"
@@ -768,6 +768,13 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/shared/-/shared-1.1.0.tgz#5036c2b012a854ed87befc9c8b4fdd64350f9342"
   integrity sha512-rKPNwAch2tVYpQ7j796B/wkI7Yjn6YWleUcv/gcjvRD7jtSCzKzTsLBeEGnzFX7Kkz3Z7zKfJDFvBmJ8tKhGTA==
+  dependencies:
+    pathe "^2.0.3"
+
+"@weapp-tailwindcss/shared@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/shared/-/shared-1.1.1.tgz#9969c72eb07a2091a29b1c1ecadd1bca52cbca37"
+  integrity sha512-xgh5n9gLJ5AWC5rr65aCSt+TvIL7DC3TLm8bo7/2i4hPgLOCJYYxu3RQQYz7LBIVhmM8YoohT8r9EAF5fnOzTw==
   dependencies:
     pathe "^2.0.3"
 
@@ -4647,10 +4654,10 @@ tailwindcss-config@^1.1.2:
     jiti "^2.6.1"
     lilconfig "^3.1.3"
 
-tailwindcss-patch@^8.2.4:
-  version "8.2.4"
-  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-8.2.4.tgz#89cf731aeab51eee755721ff2db2080a284737ba"
-  integrity sha512-/nQg5iPkgKTOQ6KlGs100G3nbsXGv7VZAYX0f01ylibJlmu3TZRQ7u6gYoz76+ZuTG8m08cFQtnc0pFO0+Syxg==
+tailwindcss-patch@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-8.4.0.tgz#ab81835c6886f8c180be408d3ce94d333e13874d"
+  integrity sha512-Vo/nKQ8bEKRjyqHWpIYood8mShJ+9B0LfAlRsTHufGRjd4o505VoMrrYoDSCwaGXYGoyR2MmDIa2n5XNjqsS8A==
   dependencies:
     "@babel/generator" "^7.28.5"
     "@babel/parser" "^7.28.5"
@@ -4969,10 +4976,10 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
-weapp-tailwindcss@^4.8.3:
-  version "4.8.3"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.3.tgz#3f39660b5b729ffdb1800720c15d382c4a4641b1"
-  integrity sha512-T9PQwRB4/+IScnMCAhNFjGQgS/z6iCp/R8D/1LsfEBwidEfqyX0A89rKyzWKCAB2SlxJNrkOGa9hkZUxGI94KA==
+weapp-tailwindcss@^4.8.4:
+  version "4.8.4"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.4.tgz#e5796c75bdac738d1cb6ef3f8f677308ab7f05d6"
+  integrity sha512-Tkz1RN9qv6CQVOzoaCLdAqQ2QsVfAta4OCOGI9Dr5SsfRxoPSFbCPSjNbc1fl45U4C80uoiKAk1NvYoAEncU/g==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
@@ -4984,8 +4991,8 @@ weapp-tailwindcss@^4.8.3:
     "@weapp-core/escape" "~5.0.1"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/logger" "1.1.0"
-    "@weapp-tailwindcss/postcss" "2.0.3"
-    "@weapp-tailwindcss/shared" "1.1.0"
+    "@weapp-tailwindcss/postcss" "2.0.4"
+    "@weapp-tailwindcss/shared" "1.1.1"
     cac "^6.7.14"
     debug "~4.4.3"
     htmlparser2 "10.0.0"
@@ -4994,7 +5001,7 @@ weapp-tailwindcss@^4.8.3:
     lru-cache "10.4.3"
     magic-string "0.30.21"
     semver "~7.7.3"
-    tailwindcss-patch "^8.2.4"
+    tailwindcss-patch "^8.4.0"
     webpack-sources "3.3.3"
 
 webpack-merge@^4.1.4:

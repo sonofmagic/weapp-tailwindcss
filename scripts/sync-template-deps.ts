@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
@@ -54,6 +54,13 @@ const tailwindVersionCache = new Map<string, string>()
 const latestVersionCache = new Map<string, string>()
 const INSTALL_CONCURRENCY = 2
 const NETWORK_CONCURRENCY_ARGS = ['--network-concurrency', String(INSTALL_CONCURRENCY)]
+// Allow up to 30 minutes for isolated lockfile installs to finish on slow networks.
+const LOCKFILE_UPDATE_TIMEOUT_MS = 30 * 60_000
+const TEMPLATE_INSTALL_CACHE_ROOT = path.join(os.tmpdir(), 'weapp-tailwindcss-template-installs')
+const PNPM_TEMPLATE_STORE = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'pnpm-store')
+const NPM_TEMPLATE_CACHE = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'npm-cache')
+const YARN_TEMPLATE_CACHE = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'yarn-cache')
+const YARN_TEMPLATE_GLOBAL = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'yarn-global')
 const CPU_COUNT = os.cpus()?.length ?? 2
 const DEFAULT_TEMPLATE_CONCURRENCY = Math.min(Math.max(CPU_COUNT - 1, 1), 4)
 const TEMPLATE_PROCESS_CONCURRENCY = (() => {
@@ -75,6 +82,12 @@ function buildCommandEnv(overrides: CommandEnv = {}): NodeJS.ProcessEnv {
     }
   }
   return baseEnv
+}
+
+function ensureDir(dir: string): void {
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true })
+  }
 }
 
 function readWorkspacePackageVersion(relativeDir: string): string {
@@ -182,6 +195,31 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
       range: `^${typescriptVersion}`,
     },
   ]
+}
+
+async function prefetchBaseTargets(targets: TargetPackage[]): Promise<void> {
+  if (targets.length === 0) {
+    return
+  }
+  ensureDir(TEMPLATE_INSTALL_CACHE_ROOT)
+  ensureDir(PNPM_TEMPLATE_STORE)
+  const specs = Array.from(new Set(targets.map(target => `${target.name}@${target.version}`))).filter(Boolean)
+  if (specs.length === 0) {
+    return
+  }
+  const success = await runCommand('pnpm', ['fetch', ...specs], ROOT, {
+    allowFailure: true,
+    env: buildCommandEnv({
+      PNPM_STORE_DIR: PNPM_TEMPLATE_STORE,
+      NPM_CONFIG_STORE_DIR: PNPM_TEMPLATE_STORE,
+      PNPM_PREFER_WORKSPACE_PACKAGES: 'false',
+      PNPM_LINK_WORKSPACE_PACKAGES: 'false',
+    }),
+    timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
+  })
+  if (!success) {
+    console.warn('预拉取依赖失败，将在每个模板内回退到常规安装。')
+  }
 }
 
 function detectIndentation(source: string): string | number {
@@ -645,6 +683,9 @@ async function withWorkspaceIsolation<T>(operation: () => Promise<T> | T): Promi
 }
 
 async function updateLockfile(templateDir: string, manager: ManagerInfo): Promise<void> {
+  ensureDir(TEMPLATE_INSTALL_CACHE_ROOT)
+  ensureDir(PNPM_TEMPLATE_STORE)
+  ensureDir(NPM_TEMPLATE_CACHE)
   const env = {
     PNPM_WORKSPACE_DIR: templateDir,
     NPM_CONFIG_WORKSPACE_DIR: templateDir,
@@ -653,6 +694,11 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
     NPM_CONFIG_PREFER_WORKSPACE_PACKAGES: 'false',
     NPM_CONFIG_LINK_WORKSPACE_PACKAGES: 'false',
     NPM_CONFIG_FETCH_CONCURRENCY: String(INSTALL_CONCURRENCY),
+    PNPM_STORE_DIR: PNPM_TEMPLATE_STORE,
+    NPM_CONFIG_STORE_DIR: PNPM_TEMPLATE_STORE,
+    npm_config_store_dir: PNPM_TEMPLATE_STORE,
+    NPM_CONFIG_CACHE: NPM_TEMPLATE_CACHE,
+    npm_config_cache: NPM_TEMPLATE_CACHE,
   }
 
   if (manager.name === 'pnpm') {
@@ -664,7 +710,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
         {
           allowFailure: true,
           env,
-          timeoutMs: 5 * 60_000,
+          timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
         },
       ),
     )
@@ -682,7 +728,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
       runCommand('npm', ['install', '--package-lock-only', '--ignore-scripts'], templateDir, {
         allowFailure: true,
         env,
-        timeoutMs: 5 * 60_000,
+        timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
       }),
     )
     if (!success) {
@@ -697,10 +743,10 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
   const yarnVersion = manager.version ?? '1.22.22'
   // Prefer to keep yarn fully isolated from the repo to prevent hooks/workspace bleed.
   // Place yarn caches outside the git repo to avoid choking git on huge untracked files.
-  const baseName = path.basename(templateDir)
-  const tmpRoot = path.join(os.tmpdir(), 'weapp-tailwindcss-templates')
-  const yarnCacheDir = path.join(tmpRoot, baseName, '.yarn-cache')
-  const yarnGlobalDir = path.join(tmpRoot, baseName, '.yarn-global')
+  ensureDir(YARN_TEMPLATE_CACHE)
+  ensureDir(YARN_TEMPLATE_GLOBAL)
+  const yarnCacheDir = YARN_TEMPLATE_CACHE
+  const yarnGlobalDir = YARN_TEMPLATE_GLOBAL
 
   const yarnEnv: CommandEnv = {
     ...env,
@@ -733,7 +779,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
       runCommand('pnpm', [...baseArgs, '--mode=update-lockfile'], templateDir, {
         allowFailure: true,
         env: yarnEnv,
-        timeoutMs: 3 * 60_000, // 3 minutes soft cap for lock-only update
+        timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
       }),
     )
   }
@@ -744,7 +790,7 @@ async function updateLockfile(templateDir: string, manager: ManagerInfo): Promis
       runCommand('pnpm', baseArgs, templateDir, {
         allowFailure: true,
         env: yarnEnv,
-        timeoutMs: 5 * 60_000, // 5 minutes cap
+        timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
       }),
     )
     // If we still fail (commonly due to blocked network), skip updating lock to avoid hanging the whole task.
@@ -810,6 +856,7 @@ async function main(): Promise<void> {
   }
 
   const baseTargets = await resolveBaseTargets()
+  await prefetchBaseTargets(baseTargets)
   const entries = readdirSync(TEMPLATES_DIR, { withFileTypes: true })
   const updated: string[] = []
   const summary = new Set<string>()
