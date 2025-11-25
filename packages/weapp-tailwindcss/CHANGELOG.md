@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.8.4
+
+### Patch Changes
+
+- [`68465d3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/68465d3b954ec2e658e9b139f50867a34460e853) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 对 CLI 接入 tailwindcss-patch 8.4 的挂载模型，统一错误处理并在补丁流程中支持清理缓存、记录目标版本，顺带同步类型与 ESLint 相关依赖到最新补丁。
+
+- [`1788e26`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1788e26153bafc865776d5a761c2e28dafff6918) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 splitCode 在压缩模板字符串中保留转义空白导致类名匹配遗漏的问题，保证 mp-alipay 等产物的类名替换正常工作。
+
+- Updated dependencies [[`1788e26`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1788e26153bafc865776d5a761c2e28dafff6918)]:
+  - @weapp-tailwindcss/shared@1.1.1
+  - @weapp-tailwindcss/postcss@2.0.4
+
 ## 4.8.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/variants
 
+## 0.1.3
+
+### Patch Changes
+
+- [`c9baaa5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c9baaa595f7f902243f4001c29a94340adb70f1a) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 tailwind-variants 升级后内部 chunk 入口失效的问题，改用官方导出的 tv/createTV/cx，并确保 cn/cnBase 继续执行小程序转义与合并逻辑。
+
 ## 0.1.2
 
 ### Patch Changes
