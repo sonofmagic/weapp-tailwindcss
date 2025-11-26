@@ -86,6 +86,11 @@
       "import": "./dist/presets.mjs",
       "require": "./dist/presets.js"
     },
+    "./reset": {
+      "types": "./dist/reset.d.ts",
+      "import": "./dist/reset.mjs",
+      "require": "./dist/reset.js"
+    },
     "./css-macro/postcss": {
       "types": "./dist/css-macro/postcss.d.ts",
       "import": "./dist/css-macro/postcss.mjs",

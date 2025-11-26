@@ -20,6 +20,7 @@ weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级�
 | --- | --- | --- |
 | `weapp-tailwindcss/defaults` | 默认插件配置、补丁行为等常量 | 查看/复用默认选项
 | `weapp-tailwindcss/presets` | 官方预设集合（差异化策略、Tailwind 配置等） | 扩展或组合默认行为
+| [`weapp-tailwindcss/reset`](./reset) | 内置默认 `button` reset，可通过 `buttonReset` 选项禁用或改写选择器 | `@plugin 'weapp-tailwindcss/reset';`
 | `weapp-tailwindcss/types` | TypeScript 类型定义便捷入口 | `import type { UserDefinedOptions } from 'weapp-tailwindcss/types'`
 | `weapp-tailwindcss/escape` | `replaceWxml`、`isAllowedClassName` 等字符串处理工具 | 单独处理模板/字符串时复用
 | `weapp-tailwindcss/postcss-html-transform` | 针对 HTML/WXML 的 PostCSS 转换器 | 自定义 PostCSS 流程

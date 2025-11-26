@@ -1,0 +1,109 @@
+# `weapp-tailwindcss/reset`
+
+`weapp-tailwindcss/reset` 内置了一组常用组件的 reset 规则，默认会：
+
+- 清除所有 `button` 的原生样式（padding / 颜色 / border 等），让它的表现和 `view` / `text` 一致；
+- 将 `<image>` / `<img>` 统一为 `display: block`，并限制为 `max-width: 100%`、`height: auto`。
+
+你可以通过选项控制是否注入这些规则、改写选择器 / 声明，甚至追加自定义 reset。
+
+> ℹ️ 当你传入 `.class` / `#id` 作为选择器时，插件会自动转换为 `[class~="class"]` / `[id="id"]`，确保它们仍属于 base layer，不会破坏其他层级。
+
+## 可用选项
+
+- `buttonReset?: false | ResetConfig`
+- `imageReset?: false | ResetConfig`
+- `extraResets?: ResetConfig[]`
+
+```ts
+interface ResetConfig {
+  selectors?: string[]        // 支持元素 / 类名 / ID
+  declarations?: Record<string, string | number | false>
+  pseudo?: Record<string, string | number | false> // 注入到 ::after
+}
+```
+
+设置为 `false` 即可关闭对应默认 reset；当提供类名 / ID 时会自动转换为 `[class~="foo"]` / `[id="bar"]`。
+
+## Tailwind CSS v3 用法
+
+```ts title="tailwind.config.ts"
+import reset from 'weapp-tailwindcss/reset'
+
+export default {
+  plugins: [
+    // 默认注入 button/image reset
+    reset(),
+
+    // 完全自定义
+    reset({
+      buttonReset: {
+        selectors: ['.wx-reset-btn', '#primary-btn'],
+        declarations: {
+          padding: '0',
+          backgroundColor: 'transparent',
+        },
+        pseudo: {
+          border: 'none',
+        },
+      },
+      imageReset: {
+        selectors: ['.wx-reset-image'],
+        declarations: {
+          display: 'inline-block',
+          borderWidth: '0',
+        },
+      },
+      extraResets: [
+        {
+          selectors: ['.wx-reset-view'],
+          declarations: {
+            display: 'block',
+            borderWidth: '0',
+          },
+          pseudo: {
+            borderColor: 'transparent',
+          },
+        },
+      ],
+    }),
+  ],
+}
+```
+
+关闭默认 reset：
+
+```ts
+reset({
+  buttonReset: false,
+  imageReset: false,
+})
+```
+
+## Tailwind CSS v4 用法
+
+在入口 CSS 中通过 `@plugin` 注册即可：
+
+```css title="app.css"
+@plugin 'weapp-tailwindcss/reset';
+
+@plugin 'weapp-tailwindcss/reset' ({
+  buttonReset: false,
+  imageReset: {
+    selectors: ['.wx-reset-image'],
+    declarations: {
+      display: 'inline-block',
+    },
+  },
+  extraResets: [
+    {
+      selectors: ['.list-reset'],
+      declarations: { listStyle: 'none', margin: '0', padding: '0' },
+    },
+  ],
+});
+
+@import 'tailwindcss/utilities';
+```
+
+同样可以通过 `buttonReset: false` / `imageReset: false` 精准控制需要的 reset。`extraResets` 允许你一次性追加多个自定义规则。***

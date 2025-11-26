@@ -16,6 +16,7 @@ export default defineConfig(
         'core': 'src/core.ts',
         'presets': 'src/presets.ts',
         'types': 'src/types/index.ts',
+        'reset': 'src/reset/index.ts',
         'postcss-html-transform': 'src/postcss-html-transform.ts',
       },
       dts: true,
