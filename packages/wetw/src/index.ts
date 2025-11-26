@@ -1,5 +1,10 @@
-export function greet(name: string) {
-  return `hello ${name}`
-}
-
-export const VERSION = '0.0.0'
+export { addComponents } from './add'
+export { defineConfig, loadWetwConfig } from './config'
+export { writeDefaultConfig } from './init'
+export { defaultRegistry, resolveRegistry } from './registry'
+export type {
+  ResolvedWetwConfig,
+  WetwConfig,
+  WetwRegistryFile,
+  WetwRegistryItem,
+} from './types'

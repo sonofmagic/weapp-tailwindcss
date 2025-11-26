@@ -1,0 +1,98 @@
+#!/usr/bin/env node
+import process from 'node:process'
+import { cac } from 'cac'
+import pkg from '../package.json' assert { type: 'json' }
+import { addComponents } from './add'
+import { loadWetwConfig } from './config'
+import { writeDefaultConfig } from './init'
+import { resolveRegistry } from './registry'
+
+const cli = cac('wetw')
+
+cli
+  .option('--config <path>', 'Path to wetw.config.(ts|js|json)')
+  .option('--cwd <path>', 'Working directory (defaults to process.cwd())')
+
+function handleError(error: unknown) {
+  console.error((error as Error).message)
+  process.exitCode = 1
+}
+
+cli
+  .command('init', 'Create a config file')
+  .option('--force', 'Overwrite existing config file')
+  .action(async (options) => {
+    try {
+      const file = await writeDefaultConfig({
+        cwd: options.cwd,
+        configFile: options.config,
+        force: options.force,
+      })
+      console.log(`Generated config at ${file}`)
+    }
+    catch (error) {
+      handleError(error)
+    }
+  })
+
+cli
+  .command('list', 'List registry components')
+  .option('--json', 'Emit list as JSON')
+  .action(async (options) => {
+    try {
+      const config = await loadWetwConfig({
+        cwd: options.cwd,
+        configFile: options.config,
+      })
+
+      const registry = await resolveRegistry(config)
+      if (options.json) {
+        console.log(JSON.stringify(registry, null, 2))
+        return
+      }
+
+      if (!registry.length) {
+        console.log('Registry is empty')
+        return
+      }
+
+      console.log('Available components:')
+      for (const item of registry) {
+        const description = item.description ? ` - ${item.description}` : ''
+        console.log(`- ${item.name}${description}`)
+      }
+    }
+    catch (error) {
+      handleError(error)
+    }
+  })
+
+cli
+  .command('add <names...>', 'Add components to the project')
+  .option('--force', 'Overwrite existing files')
+  .action(async (names: string[], options) => {
+    try {
+      if (!names?.length) {
+        throw new Error('wetw add <name...> expects at least one component')
+      }
+
+      await addComponents(names, {
+        cwd: options.cwd,
+        configFile: options.config,
+        force: options.force,
+      })
+      console.log(`Added: ${names.join(', ')}`)
+    }
+    catch (error) {
+      handleError(error)
+    }
+  })
+
+cli.help()
+cli.version(pkg.version ?? '0.0.0')
+
+if (process.argv.length <= 2) {
+  cli.outputHelp()
+}
+
+cli.parse()

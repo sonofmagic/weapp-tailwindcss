@@ -31,6 +31,9 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
+  "bin": {
+    "wetw": "./dist/cli.mjs"
+  },
   "files": [
     "dist"
   ],
@@ -43,5 +46,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {}
+  "publishConfig": {},
+  "dependencies": {
+    "c12": "^3.3.2",
+    "cac": "^6.7.14"
+  }
 }
