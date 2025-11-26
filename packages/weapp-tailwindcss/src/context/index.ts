@@ -80,6 +80,73 @@ function ensureDefaultsIncluded(
   return value
 }
 
+function normalizeCssEntriesConfig(entries: unknown) {
+  if (!entries) {
+    return undefined
+  }
+
+  if (typeof entries === 'string') {
+    const trimmed = entries.trim()
+    return trimmed ? [trimmed] : undefined
+  }
+
+  if (!Array.isArray(entries)) {
+    return undefined
+  }
+
+  const normalized = entries
+    .map(entry => (typeof entry === 'string' ? entry.trim() : ''))
+    .filter(entry => entry.length > 0)
+
+  return normalized.length > 0 ? normalized : undefined
+}
+
+function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
+  if (normalizeCssEntriesConfig(ctx.cssEntries)) {
+    return true
+  }
+
+  if (normalizeCssEntriesConfig(ctx.tailwindcss?.v4?.cssEntries)) {
+    return true
+  }
+
+  const patcherOptions = ctx.tailwindcssPatcherOptions as any
+  if (patcherOptions) {
+    if (normalizeCssEntriesConfig(patcherOptions.tailwind?.v4?.cssEntries)) {
+      return true
+    }
+    if (normalizeCssEntriesConfig(patcherOptions.patch?.tailwindcss?.v4?.cssEntries)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+let hasWarnedMissingCssEntries = false
+
+function warnMissingCssEntries(
+  ctx: InternalUserDefinedOptions,
+  patcher: TailwindcssPatcherLike | undefined,
+) {
+  if (hasWarnedMissingCssEntries) {
+    return
+  }
+
+  if (patcher?.majorVersion !== 4) {
+    return
+  }
+
+  if (hasConfiguredCssEntries(ctx)) {
+    return
+  }
+
+  hasWarnedMissingCssEntries = true
+  logger.warn(
+    '[tailwindcss@4] 未检测到 cssEntries 配置。请传入包含 tailwindcss 引用的 CSS 绝对路径，例如 cssEntries: ["/absolute/path/to/src/app.css"]，否则 tailwindcss 生成的类名不会参与转译。',
+  )
+}
+
 interface ClearTailwindcssPatcherCacheOptions {
   removeDirectory?: boolean
 }
@@ -150,6 +217,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   }
 
   warnIfCliPatchTargetMismatch(ctx.tailwindcssBasedir, twPatcher)
+  warnMissingCssEntries(ctx, twPatcher)
 
   let cssCalcOptions = ctx.cssCalc ?? twPatcher.majorVersion === 4
 

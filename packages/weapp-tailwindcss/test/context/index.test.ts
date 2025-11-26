@@ -10,6 +10,7 @@ const createTailwindcssPatcherFromContext = vi.fn()
 
 vi.mock('@weapp-tailwindcss/logger', () => ({
   logger: {
+    info: vi.fn(),
     success: vi.fn(),
     warn: vi.fn(),
   },
@@ -49,9 +50,12 @@ vi.mock('@/context/tailwindcss', () => ({
 
 describe('getCompilerContext', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     vi.resetModules()
     createHandlersFromContext.mockClear()
     createTailwindcssPatcherFromContext.mockReset()
+    const globalCacheHolder = globalThis as { __WEAPP_TW_COMPILER_CONTEXT_CACHE__?: Map<string, unknown> }
+    globalCacheHolder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__?.clear?.()
   })
 
   it('provides empty includeCustomProperties when tailwindcss v4 auto enables cssCalc', async () => {
@@ -113,5 +117,38 @@ describe('getCompilerContext', () => {
     expect(ctx.cssCalc).toBe(originalOptions)
     expect(includeCustomProperties).toHaveLength(1)
     expect(includeCustomProperties[0]).toBeInstanceOf(RegExp)
+  })
+
+  it('warns when tailwindcss v4 is used without cssEntries', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0', rootPath: '/workspace/tailwindcss' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const { logger } = await import('@weapp-tailwindcss/logger')
+
+    getCompilerContext()
+
+    const warn = vi.mocked(logger.warn)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn.mock.calls[0][0]).toContain('cssEntries')
+    expect(warn.mock.calls[0][0]).toContain('绝对路径')
+  })
+
+  it('does not warn when cssEntries are provided for tailwindcss v4', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0', rootPath: '/workspace/tailwindcss' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const { logger } = await import('@weapp-tailwindcss/logger')
+
+    getCompilerContext({
+      cssEntries: ['/absolute/path/to/app.css'],
+    })
+
+    expect(logger.warn).not.toHaveBeenCalled()
   })
 })
