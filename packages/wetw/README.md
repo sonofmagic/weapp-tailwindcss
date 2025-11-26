@@ -22,7 +22,7 @@ npx wetw --help
 wetw init
 ```
 
-会在当前目录写出 `wetw.config.ts`，默认输出目录是 `wetw/`。
+会在当前目录写出 `wetw.config.ts`，默认输出目录是 `wetw/`，同时可选择框架类型（mp-weixin / uni-app vue3 / taro react）。
 
 2. 查看可用组件：
 
@@ -36,7 +36,7 @@ wetw list
 wetw add counter
 ```
 
-生成的文件将落在配置的 `outDir` 下，例如 `wetw/counter/*`。如需覆盖已有文件，加上 `--force`。
+生成的文件将落在配置的 `outDir` 下，例如 `wetw/counter/*`。所有样式使用 Tailwind 工具类内联，不再附带自定义样式文件；如需覆盖已有文件，加上 `--force`。
 
 ## 配置示例
 
@@ -47,6 +47,7 @@ import { defineConfig } from 'wetw'
 
 export default defineConfig({
   outDir: 'wetw', // 生成目录，默认为 wetw
+  framework: 'mp-weixin', // 可选：mp-weixin | uni-app-vue3 | taro-react
   // registry 可以是本地/远程 JSON，或直接写数组
   // registry: 'https://example.com/wetw/registry.json',
   // templatesRoot: './templates', // 用于解析 registry 文件中的相对 src
@@ -93,7 +94,8 @@ export default defineConfig({
 ```ts
 export default defineConfig({
   registry: 'https://tw.icebreaker.top/wetw/registry.json',
+  framework: 'mp-weixin',
 })
 ```
 
-当前包含 `counter`、`tag` 两个示例组件，对应源码由网站静态资源提供。
+当前包含 `counter`、`tag` 两个示例组件，并为 mp-weixin / uni-app vue3 / taro react 分别提供模板。

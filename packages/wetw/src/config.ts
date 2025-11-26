@@ -1,4 +1,4 @@
-import type { ResolvedWetwConfig, WetwConfig } from './types'
+import type { ResolvedWetwConfig, WetwConfig, WetwFramework } from './types'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
@@ -6,6 +6,7 @@ import { loadConfig } from 'c12'
 import { defaultRegistry } from './registry'
 
 export const DEFAULT_OUT_DIR = 'wetw'
+export const DEFAULT_FRAMEWORK: WetwFramework = 'mp-weixin'
 
 export interface LoadWetwConfigOptions {
   cwd?: string
@@ -37,6 +38,7 @@ export async function loadWetwConfig(
     outDir: DEFAULT_OUT_DIR,
     templatesRoot: resolve(moduleDir, '../templates'),
     registry: defaultRegistry,
+    framework: DEFAULT_FRAMEWORK,
     ...rawConfig,
     ...overrides,
   }
@@ -53,5 +55,6 @@ export async function loadWetwConfig(
     outDir,
     templatesRoot,
     registry: merged.registry ?? defaultRegistry,
+    framework: merged.framework ?? DEFAULT_FRAMEWORK,
   }
 }

@@ -1,5 +1,0 @@
-<view class="wetw-counter">
-  <button class="wetw-counter__btn" bindtap="dec">-</button>
-  <text class="wetw-counter__value">{{count}}</text>
-  <button class="wetw-counter__btn" bindtap="inc">+</button>
-</view>

@@ -1,5 +1,9 @@
 import type { LoadWetwConfigOptions } from './config'
-import type { ResolvedWetwConfig, WetwRegistryFile, WetwRegistryItem } from './types'
+import type {
+  ResolvedWetwConfig,
+  WetwRegistryFile,
+  WetwRegistryItem,
+} from './types'
 import { constants } from 'node:fs'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, isAbsolute, resolve } from 'node:path'
@@ -23,6 +27,17 @@ async function pathExists(target: string) {
     }
     throw error
   }
+}
+
+function selectFilesForFramework(
+  item: WetwRegistryItem,
+  framework: ResolvedWetwConfig['framework'],
+) {
+  const candidate = item.frameworks?.[framework] ?? item.files
+  if (!candidate || !candidate.length) {
+    throw new Error(`Component "${item.name}" does not support framework "${framework}"`)
+  }
+  return candidate
 }
 
 async function getFileContent(file: WetwRegistryFile, config: ResolvedWetwConfig) {
@@ -76,7 +91,8 @@ export async function addComponents(names: string[], options: AddComponentsOptio
       throw new Error(`Component "${name}" not found in registry`)
     }
 
-    for (const file of item.files) {
+    const files = selectFilesForFramework(item, config.framework)
+    for (const file of files) {
       const content = await getFileContent(file, config)
       const target = resolve(config.outDir, file.path)
       await writeFileSafely(target, content, options.force ?? false)

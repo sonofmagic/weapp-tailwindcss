@@ -1,17 +1,43 @@
 #!/usr/bin/env node
+import type { WetwFramework } from './types'
 import process from 'node:process'
+import { select } from '@inquirer/prompts'
 import { cac } from 'cac'
 import pkg from '../package.json' assert { type: 'json' }
 import { addComponents } from './add'
-import { loadWetwConfig } from './config'
+import { DEFAULT_FRAMEWORK, loadWetwConfig } from './config'
 import { writeDefaultConfig } from './init'
 import { resolveRegistry } from './registry'
+
+const frameworkChoices: Array<{
+  title: string
+  value: WetwFramework
+  description: string
+}> = [
+  { title: 'mp-weixin', value: 'mp-weixin', description: '原生小程序' },
+  { title: 'uni-app vue3', value: 'uni-app-vue3', description: 'uni-app + Vue 3' },
+  { title: 'taro react', value: 'taro-react', description: 'Taro + React' },
+]
+
+async function askFramework(): Promise<WetwFramework> {
+  try {
+    return await select<WetwFramework>({
+      message: '选择要生成的框架类型',
+      choices: frameworkChoices,
+      default: DEFAULT_FRAMEWORK,
+    })
+  }
+  catch (_error) {
+    throw new Error('Cancelled')
+  }
+}
 
 const cli = cac('wetw')
 
 cli
   .option('--config <path>', 'Path to wetw.config.(ts|js|json)')
   .option('--cwd <path>', 'Working directory (defaults to process.cwd())')
+  .option('--framework <name>', 'Target framework (mp-weixin|uni-app-vue3|taro-react)')
 
 function handleError(error: unknown) {
   console.error((error as Error).message)
@@ -23,10 +49,12 @@ cli
   .option('--force', 'Overwrite existing config file')
   .action(async (options) => {
     try {
+      const framework = (options.framework as WetwFramework | undefined) ?? (await askFramework())
       const file = await writeDefaultConfig({
         cwd: options.cwd,
         configFile: options.config,
         force: options.force,
+        framework,
       })
       console.log(`Generated config at ${file}`)
     }
@@ -43,6 +71,9 @@ cli
       const config = await loadWetwConfig({
         cwd: options.cwd,
         configFile: options.config,
+        overrides: {
+          framework: options.framework,
+        },
       })
 
       const registry = await resolveRegistry(config)
@@ -57,6 +88,7 @@ cli
       }
 
       console.log('Available components:')
+      console.log(`Framework: ${config.framework}`)
       for (const item of registry) {
         const description = item.description ? ` - ${item.description}` : ''
         console.log(`- ${item.name}${description}`)
@@ -80,6 +112,9 @@ cli
         cwd: options.cwd,
         configFile: options.config,
         force: options.force,
+        overrides: {
+          framework: options.framework,
+        },
       })
       console.log(`Added: ${names.join(', ')}`)
     }

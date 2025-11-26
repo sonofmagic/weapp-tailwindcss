@@ -1,0 +1,5 @@
+<view class="flex items-center gap-2">
+  <button class="px-3 py-2 rounded-lg bg-slate-900 text-white" bindtap="dec">-</button>
+  <text class="min-w-[64rpx] text-center font-semibold">{{count}}</text>
+  <button class="px-3 py-2 rounded-lg bg-slate-900 text-white" bindtap="inc">+</button>
+</view>
