@@ -1,0 +1,3 @@
+<view class="wetw-tag wetw-tag--{{tone}}">
+  <text>{{text}}</text>
+</view>

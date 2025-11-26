@@ -1,0 +1,46 @@
+[
+  {
+    "name": "counter",
+    "description": "简单计数器组件，包含 ts/wxml/wxss/json 四个文件",
+    "files": [
+      {
+        "path": "counter/index.ts",
+        "src": "https://tw.icebreaker.top/wetw/templates/counter/index.ts"
+      },
+      {
+        "path": "counter/index.wxml",
+        "src": "https://tw.icebreaker.top/wetw/templates/counter/index.wxml"
+      },
+      {
+        "path": "counter/index.wxss",
+        "src": "https://tw.icebreaker.top/wetw/templates/counter/index.wxss"
+      },
+      {
+        "path": "counter/index.json",
+        "src": "https://tw.icebreaker.top/wetw/templates/counter/index.json"
+      }
+    ]
+  },
+  {
+    "name": "tag",
+    "description": "语义色标签组件，支持 tone 与文本",
+    "files": [
+      {
+        "path": "tag/index.ts",
+        "src": "https://tw.icebreaker.top/wetw/templates/tag/index.ts"
+      },
+      {
+        "path": "tag/index.wxml",
+        "src": "https://tw.icebreaker.top/wetw/templates/tag/index.wxml"
+      },
+      {
+        "path": "tag/index.wxss",
+        "src": "https://tw.icebreaker.top/wetw/templates/tag/index.wxss"
+      },
+      {
+        "path": "tag/index.json",
+        "src": "https://tw.icebreaker.top/wetw/templates/tag/index.json"
+      }
+    ]
+  }
+]

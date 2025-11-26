@@ -84,4 +84,16 @@ export default defineConfig({
 })
 ```
 
-随后执行 `wetw add button` 即可写入对应文件。\*\*\*
+随后执行 `wetw add button` 即可写入对应文件。
+
+### 使用官方线上 registry
+
+项目内置的线上清单可直接复用：
+
+```ts
+export default defineConfig({
+  registry: 'https://tw.icebreaker.top/wetw/registry.json',
+})
+```
+
+当前包含 `counter`、`tag` 两个示例组件，对应源码由网站静态资源提供。

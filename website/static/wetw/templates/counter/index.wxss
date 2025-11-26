@@ -1,0 +1,18 @@
+.wetw-counter {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.wetw-counter__btn {
+  padding: 12rpx 20rpx;
+  background: #111827;
+  border-radius: 12rpx;
+  color: #fff;
+}
+
+.wetw-counter__value {
+  min-width: 64rpx;
+  text-align: center;
+  font-weight: 600;
+}
