@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.8.6
+
+### Patch Changes
+
+- [`9b5a820`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9b5a820b6c8b865c723b663f51c9558075488a48) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 统一 Vue 3 编译器依赖到 catalog，确保 weapp-tailwindcss 的构建环境与仓库其他包保持一致。
+
 ## 4.8.5
 
 ### Patch Changes
