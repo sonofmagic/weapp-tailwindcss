@@ -8544,10 +8544,10 @@ tailwindcss-config@^1.1.2:
     jiti "^2.6.1"
     lilconfig "^3.1.3"
 
-tailwindcss-patch@^8.4.1:
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-8.4.1.tgz#af51ad6039777b78d1bff83e9f9a922e81ea3134"
-  integrity sha512-0nd3lMPgetDwdL+LQZdC78sGDe1du8xYdbAqTalFctWzEH87n2RmgMnqL/VMrMt7EO+eJBqxRzrjIGuUQMEmwQ==
+tailwindcss-patch@^8.4.2:
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-8.4.2.tgz#fa13dd7bee1afbd9351d5c21dc32f7509e961134"
+  integrity sha512-lfIF8g4LQtW/HGkmx3qYsZrwEY4H8vu7905s4vDm5V0/Uzv59vipgwSF1g0JIxmmERP1GpmgzuTW2Vwya3Zx/w==
   dependencies:
     "@babel/generator" "^7.28.5"
     "@babel/parser" "^7.28.5"
@@ -8959,10 +8959,10 @@ weapp-tailwindcss-children@^0.1.0:
   resolved "https://registry.npmmirror.com/weapp-tailwindcss-children/-/weapp-tailwindcss-children-0.1.0.tgz#0de102f04a89d77447ca3b984669bbe5ffa41aa1"
   integrity sha512-HuDT78u6RbXpJIHbJzw4zW98JByWCz4elhTAT9QR/JWJuQpiRNbnqa5tL+ZTVCcT4bHt9Ppf/E2MNTohPgBE3g==
 
-weapp-tailwindcss@^4.8.5:
-  version "4.8.5"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.5.tgz#acec0d3c8276356f42d57383c3c19683a0cd1e4b"
-  integrity sha512-cXeBHM33FvE4iuVRGbM4hR/FPCXmBmOXMJ187OaIVnQmzXTzelb3bd9xMxFAR4dwC3BsIPzkZw4rM0j8La4Qww==
+weapp-tailwindcss@^4.8.6:
+  version "4.8.6"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.6.tgz#0d7ec78510d84f3bd74e04971c1521f5e1cec7b4"
+  integrity sha512-JW/D2EZ7g+oiQG187N48DAJxBu6pOmc1yjvfWQc/3SLYoLzEUQaF4a4t1fO2h4ANFo/rkeFruLoanruf41Xayw==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
@@ -8985,7 +8985,7 @@ weapp-tailwindcss@^4.8.5:
     lru-cache "10.4.3"
     magic-string "0.30.21"
     semver "~7.7.3"
-    tailwindcss-patch "^8.4.1"
+    tailwindcss-patch "^8.4.2"
     webpack-sources "3.3.3"
     yaml "^2.8.1"
 
