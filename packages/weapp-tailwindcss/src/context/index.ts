@@ -4,7 +4,7 @@ import { logger, pc } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions } from '@/defaults'
 import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
-import { logTailwindcssTarget, warnIfCliPatchTargetMismatch } from '@/tailwindcss/targets'
+import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { defuOverrideArray } from '@/utils'
 import { withCompilerContextCache } from './compiler-context-cache'
 import { toCustomAttributesEntities } from './custom-attributes'
@@ -216,7 +216,6 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     logger.warn(`${pc.cyanBright('Tailwind CSS')} 未安装，已跳过版本检测与补丁应用。`)
   }
 
-  warnIfCliPatchTargetMismatch(ctx.tailwindcssBasedir, twPatcher)
   warnMissingCssEntries(ctx, twPatcher)
 
   let cssCalcOptions = ctx.cssCalc ?? twPatcher.majorVersion === 4

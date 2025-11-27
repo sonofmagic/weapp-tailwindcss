@@ -3918,6 +3918,9 @@ importers:
       debug:
         specifier: ~4.4.3
         version: 4.4.3(supports-color@6.1.0)
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       htmlparser2:
         specifier: 10.0.0
         version: 10.0.0
@@ -3942,6 +3945,9 @@ importers:
       webpack-sources:
         specifier: 3.3.3
         version: 3.3.3
+      yaml:
+        specifier: ^2.8.1
+        version: 2.8.1
 
   packages/weapp-tw: {}
 

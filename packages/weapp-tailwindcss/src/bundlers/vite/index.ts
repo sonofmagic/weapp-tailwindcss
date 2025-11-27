@@ -10,7 +10,8 @@ import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { setupPatchRecorder } from '@/tailwindcss/recorder'
+import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { transformUVue } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { resolvePackageDir } from '@/utils/resolve-package'
@@ -158,10 +159,16 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
 
+  const patchRecorderState = setupPatchRecorder(initialTwPatcher, opts.tailwindcssBasedir, {
+    source: 'runtime',
+    cwd: opts.tailwindcssBasedir ?? process.cwd(),
+  })
+
   const runtimeState = {
     twPatcher: initialTwPatcher,
-    patchPromise: createTailwindPatchPromise(initialTwPatcher),
+    patchPromise: patchRecorderState.patchPromise,
     refreshTailwindcssPatcher,
+    onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined

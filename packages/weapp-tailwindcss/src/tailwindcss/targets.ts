@@ -4,6 +4,9 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
+import { md5Hash } from '@/cache/md5'
+import { WEAPP_TW_VERSION } from '@/constants'
+import { findNearestPackageRoot } from '@/context/workspace'
 
 const PATCH_INFO_FILENAME = 'tailwindcss-target.json'
 const PATCH_INFO_CACHE_RELATIVE_PATH = path.join('node_modules', '.cache', 'weapp-tailwindcss', PATCH_INFO_FILENAME)
@@ -16,12 +19,24 @@ interface PatchTargetRecord {
   recordedAt: string
   source: 'cli' | 'runtime' | string
   tailwindcssBasedir?: string
+  cwd?: string
+  patchVersion?: string
+  packageJsonPath?: string
+  recordKey?: string
 }
 
 interface PatchTargetRecordResult {
   baseDir: string
   path: string
   record: PatchTargetRecord
+}
+
+export interface SavePatchTargetRecordOptions {
+  cwd?: string
+  source?: 'cli' | 'runtime' | string
+  recordPath?: string
+  recordKey?: string
+  packageJsonPath?: string
 }
 
 function formatRelativeToBase(targetPath: string, baseDir?: string) {
@@ -38,15 +53,34 @@ function formatRelativeToBase(targetPath: string, baseDir?: string) {
   return path.join('.', relative)
 }
 
-function getRecordFilePath(baseDir: string) {
-  return path.join(baseDir, PATCH_INFO_CACHE_RELATIVE_PATH)
+function resolveRecordLocation(baseDir: string) {
+  const normalizedBase = path.normalize(baseDir)
+  const packageRoot = findNearestPackageRoot(normalizedBase) ?? normalizedBase
+  const packageJsonPath = path.join(packageRoot, 'package.json')
+  const hasPackageJson = existsSync(packageJsonPath)
+  const recordKeySource = hasPackageJson ? packageJsonPath : normalizedBase
+  const recordKey = md5Hash(path.normalize(recordKeySource))
+  const recordDir = path.join(packageRoot, 'node_modules', '.cache', 'weapp-tailwindcss', recordKey)
+  const recordPath = path.join(recordDir, PATCH_INFO_FILENAME)
+  return {
+    normalizedBase,
+    packageRoot,
+    recordDir,
+    recordKey,
+    recordPath,
+    packageJsonPath: hasPackageJson ? packageJsonPath : undefined,
+  }
 }
 
 function getRecordFileCandidates(baseDir: string) {
-  return [
-    path.join(baseDir, PATCH_INFO_CACHE_RELATIVE_PATH),
-    path.join(baseDir, PATCH_INFO_LEGACY_RELATIVE_PATH),
-  ]
+  const { normalizedBase, packageRoot, recordPath } = resolveRecordLocation(baseDir)
+  const candidates = new Set<string>([
+    recordPath,
+    path.join(packageRoot, PATCH_INFO_CACHE_RELATIVE_PATH),
+    path.join(normalizedBase, PATCH_INFO_CACHE_RELATIVE_PATH),
+    path.join(normalizedBase, PATCH_INFO_LEGACY_RELATIVE_PATH),
+  ])
+  return [...candidates]
 }
 
 export function logTailwindcssTarget(
@@ -117,25 +151,37 @@ function readPatchTargetRecord(baseDir?: string): PatchTargetRecordResult | unde
 export async function saveCliPatchTargetRecord(
   baseDir: string | undefined,
   patcher: TailwindcssPatcherLike | undefined,
+  options?: SavePatchTargetRecordOptions,
 ) {
   if (!baseDir || !patcher?.packageInfo?.rootPath) {
     return undefined
   }
   const normalizedBase = path.normalize(baseDir)
+  const location = resolveRecordLocation(normalizedBase)
+  const recordPath = options?.recordPath ? path.normalize(options.recordPath) : location.recordPath
   const record: PatchTargetRecord = {
     tailwindPackagePath: path.normalize(patcher.packageInfo.rootPath),
     packageVersion: patcher.packageInfo.version,
     recordedAt: new Date().toISOString(),
-    source: 'cli',
+    source: options?.source ?? 'cli',
     tailwindcssBasedir: normalizedBase,
+    cwd: options?.cwd ? path.normalize(options.cwd) : normalizedBase,
+    patchVersion: WEAPP_TW_VERSION,
+    packageJsonPath: options?.packageJsonPath ?? location.packageJsonPath,
+    recordKey: options?.recordKey ?? location.recordKey,
   }
-  const recordPath = getRecordFilePath(normalizedBase)
   try {
     await mkdir(path.dirname(recordPath), { recursive: true })
     await writeFile(recordPath, `${JSON.stringify(record, null, 2)}\n`, 'utf8')
     return recordPath
   }
   catch (error) {
+    const baseDisplay = formatRelativeToBase(normalizedBase, process.cwd())
+    logger.warn(
+      '自动更新 Tailwind CSS 补丁记录失败，请在 %s 运行 "weapp-tw patch --cwd %s"。',
+      baseDisplay,
+      normalizedBase,
+    )
     logger.debug('failed to persist patch target record %s: %O', recordPath, error)
     return undefined
   }
@@ -160,31 +206,100 @@ function findPatchTargetRecord(baseDir?: string): PatchTargetRecordResult | unde
   return undefined
 }
 
-export function warnIfCliPatchTargetMismatch(
+export interface PatchTargetRecorder {
+  recordPath: string
+  message?: string
+  reason?: string
+  onPatched: () => Promise<string | undefined>
+}
+
+export interface PatchTargetRecorderOptions {
+  source?: 'cli' | 'runtime' | string
+  cwd?: string
+  recordTarget?: boolean
+  alwaysRecord?: boolean
+}
+
+export function createPatchTargetRecorder(
   baseDir: string | undefined,
   patcher: TailwindcssPatcherLike | undefined,
-) {
-  if (!baseDir || !patcher?.packageInfo?.rootPath) {
-    return
+  options?: PatchTargetRecorderOptions,
+): PatchTargetRecorder | undefined {
+  if (!baseDir || !patcher?.packageInfo?.rootPath || options?.recordTarget === false) {
+    return undefined
   }
-  const recorded = findPatchTargetRecord(baseDir)
+
+  const normalizedBase = path.normalize(baseDir)
+  const recorded = findPatchTargetRecord(normalizedBase)
+  const location = resolveRecordLocation(normalizedBase)
+  const expectedPath = path.normalize(patcher.packageInfo.rootPath)
+
+  let reason: string | undefined
   if (!recorded) {
-    return
+    reason = 'missing'
   }
-  const normalizedRecorded = path.normalize(recorded.record.tailwindPackagePath)
-  const normalizedRuntime = path.normalize(patcher.packageInfo.rootPath)
-  if (normalizedRecorded === normalizedRuntime) {
-    return
+  else {
+    const normalizedRecorded = path.normalize(recorded.record.tailwindPackagePath)
+    if (normalizedRecorded !== expectedPath) {
+      reason = 'mismatch'
+    }
+    else if (
+      path.normalize(recorded.path) !== path.normalize(location.recordPath)
+      || !recorded.record.recordKey
+      || recorded.record.recordKey !== location.recordKey
+    ) {
+      reason = 'migrate'
+    }
+    else if (!recorded.record.patchVersion || recorded.record.patchVersion !== WEAPP_TW_VERSION) {
+      reason = 'stale'
+    }
+    else if (
+      options?.cwd
+      && recorded.record.cwd
+      && path.normalize(recorded.record.cwd) !== path.normalize(options.cwd)
+    ) {
+      reason = 'metadata'
+    }
+    else if (!recorded.record.cwd && options?.cwd) {
+      reason = 'metadata'
+    }
   }
-  const runtimeBaseDisplay = formatRelativeToBase(path.normalize(baseDir), process.cwd())
-  const recordBaseDir = recorded.record.tailwindcssBasedir ?? recorded.baseDir
-  const recordBaseDisplay = formatRelativeToBase(recordBaseDir, baseDir)
-  const recordedDisplay = formatRelativeToBase(normalizedRecorded, recordBaseDir)
-  const runtimeDisplay = formatRelativeToBase(normalizedRuntime, baseDir)
-  const recordFileDisplay = formatRelativeToBase(recorded.path, recorded.baseDir)
-  logger.warn(
-    `检测到 ${runtimeBaseDisplay} 的 Tailwind CSS 目标不一致：CLI 在 ${recordBaseDisplay} 打补丁的是 ${recordedDisplay}，运行时读取的是 ${runtimeDisplay}。请在对应子包执行 "weapp-tw patch --cwd ${baseDir}" 或使用 pnpm --filter 针对该包执行，记录文件：${recordFileDisplay}。`,
-  )
+
+  const shouldPersist = options?.alwaysRecord || !recorded || Boolean(reason)
+  if (!shouldPersist) {
+    return undefined
+  }
+
+  let message: string | undefined
+  switch (reason) {
+    case 'mismatch':
+      message = '检测到 Tailwind CSS 目标记录与当前解析结果不一致，正在自动重新 patch 并刷新缓存。'
+      break
+    case 'migrate':
+    case 'stale':
+      message = '正在刷新当前子包的 Tailwind CSS 补丁记录，确保缓存隔离。'
+      break
+    case 'missing':
+      message = '未找到当前子包的 Tailwind CSS 目标记录，正在生成。'
+      break
+    default:
+      break
+  }
+
+  const onPatched = async () => saveCliPatchTargetRecord(normalizedBase, patcher, {
+    cwd: options?.cwd ?? normalizedBase,
+    source: options?.source ?? 'cli',
+    recordPath: location.recordPath,
+    recordKey: location.recordKey,
+    packageJsonPath: location.packageJsonPath,
+  })
+
+  return {
+    recordPath: location.recordPath,
+    message,
+    reason,
+    onPatched,
+  }
 }
 
 export function __resetPatchTargetRecordWarningsForTests() {

@@ -7,7 +7,8 @@ import process from 'node:process'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { setupPatchRecorder } from '@/tailwindcss/recorder'
+import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
 
 const debug = createDebug()
@@ -24,11 +25,17 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
+  const patchRecorderState = setupPatchRecorder(initialTwPatcher, opts.tailwindcssBasedir, {
+    source: 'runtime',
+    cwd: opts.tailwindcssBasedir ?? process.cwd(),
+  })
+
   let runtimeSet = new Set<string>()
   const runtimeState = {
     twPatcher: initialTwPatcher,
-    patchPromise: createTailwindPatchPromise(initialTwPatcher),
+    patchPromise: patchRecorderState.patchPromise,
     refreshTailwindcssPatcher,
+    onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']

@@ -1,7 +1,9 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
+import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
-import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { setupPatchRecorder } from '@/tailwindcss/recorder'
+import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
@@ -12,11 +14,17 @@ export function createContext(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
   const { templateHandler, styleHandler, jsHandler, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
+  const patchRecorderState = setupPatchRecorder(initialTwPatcher, opts.tailwindcssBasedir, {
+    source: 'runtime',
+    cwd: opts.tailwindcssBasedir ?? process.cwd(),
+  })
+
   let runtimeSet = new Set<string>()
   const runtimeState = {
     twPatcher: initialTwPatcher,
-    patchPromise: createTailwindPatchPromise(initialTwPatcher),
+    patchPromise: patchRecorderState.patchPromise,
     refreshTailwindcssPatcher,
+    onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
 
   async function refreshRuntimeState(force: boolean) {

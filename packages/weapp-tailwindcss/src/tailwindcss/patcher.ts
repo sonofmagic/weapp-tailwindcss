@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { logger } from '@weapp-tailwindcss/logger'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
+import { findNearestPackageRoot } from '@/context/workspace'
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
@@ -134,25 +135,6 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 }
 
 let hasLoggedMissingTailwind = false
-
-function findNearestPackageRoot(startDir?: string) {
-  if (!startDir) {
-    return undefined
-  }
-
-  let current = path.resolve(startDir)
-  while (true) {
-    const pkgPath = path.join(current, 'package.json')
-    if (existsSync(pkgPath)) {
-      return current
-    }
-    const parent = path.dirname(current)
-    if (parent === current) {
-      return undefined
-    }
-    current = parent
-  }
-}
 
 function appendNodeModules(paths: Set<string>, dir?: string) {
   if (!dir) {

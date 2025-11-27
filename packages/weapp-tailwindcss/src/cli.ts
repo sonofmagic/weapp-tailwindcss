@@ -20,9 +20,10 @@ import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
   generateVscodeIntellisenseEntry,
 } from './cli/vscode-entry'
+import { patchWorkspace } from './cli/workspace'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 import { logger } from './logger'
-import { logTailwindcssTarget, saveCliPatchTargetRecord } from './tailwindcss/targets'
+import { createPatchTargetRecorder, logTailwindcssTarget } from './tailwindcss/targets'
 
 type VscodeEntryCommandOptions = CommonCommandOptions & {
   css?: string
@@ -74,6 +75,10 @@ const mountOptions: TailwindcssPatchCliMountOptions = {
           flags: '--clear-cache',
           description: 'Clear tailwindcss-patch cache before patch (opt-in)',
         },
+        {
+          flags: '--workspace',
+          description: 'Scan pnpm workspace packages and patch each Tailwind CSS dependency',
+        },
       ],
     },
   },
@@ -81,14 +86,32 @@ const mountOptions: TailwindcssPatchCliMountOptions = {
     install: withCommandErrorHandling<'install'>(async (ctx) => {
       const shouldClearCache = toBoolean((ctx as any).args.clearCache, false)
       const shouldRecordTarget = toBoolean((ctx as any).args.recordTarget, true)
+      const runWorkspace = toBoolean((ctx as any).args.workspace, false)
+      if (runWorkspace) {
+        await patchWorkspace({
+          cwd: ctx.cwd,
+          clearCache: shouldClearCache,
+          recordTarget: shouldRecordTarget,
+        })
+        return
+      }
       const patcher = await ctx.createPatcher()
       if (shouldClearCache) {
         await clearTailwindcssPatcherCache(patcher, { removeDirectory: true })
       }
+      const recorder = createPatchTargetRecorder(ctx.cwd, patcher, {
+        source: 'cli',
+        cwd: ctx.cwd,
+        recordTarget: shouldRecordTarget,
+        alwaysRecord: true,
+      })
+      if (recorder?.message) {
+        logger.info(recorder.message)
+      }
       logTailwindcssTarget('cli', patcher, ctx.cwd)
       await patcher.patch()
-      if (shouldRecordTarget) {
-        const recordPath = await saveCliPatchTargetRecord(ctx.cwd, patcher)
+      if (recorder?.onPatched) {
+        const recordPath = await recorder.onPatched()
         if (recordPath) {
           logger.info(`记录 weapp-tw patch 目标 -> ${formatOutputPath(recordPath, ctx.cwd)}`)
         }

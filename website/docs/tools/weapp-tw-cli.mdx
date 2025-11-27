@@ -10,7 +10,8 @@ title: weapp-tw CLI 使用指南
 | --- | --- | --- |
 | 给 Tailwind CSS 打补丁、注入 `rpx` 支持 | `npx weapp-tw patch` | 运行一次即可，推荐写在 `postinstall`；支持 `--cwd` 指向子包目录。 |
 | 强制刷新补丁缓存后再打补丁 | `npx weapp-tw patch --clear-cache` | 默认不会清理缓存；仅在怀疑缓存导致补丁未生效或版本不一致时使用。 |
-| 在 monorepo 里批量补丁 | `pnpm -r --filter ./demo/* exec weapp-tw patch --cwd "$PWD"` | 每个 demo 都在自身目录补丁，避免和 hoist 后的 `node_modules` 不一致。 |
+| 在 monorepo 针对子包补丁 | `pnpm --filter <pkg> exec weapp-tw patch --cwd .` | `pnpm` 场景建议显式传 `--cwd .`，每个子包只写入自己的缓存，避免 hoist 后的 `node_modules` 不一致。 |
+| 一键扫描 workspace 并补丁 | `weapp-tw patch --workspace --cwd <repo-root>` | 自动读取 `pnpm-lock.yaml`/`pnpm-workspace.yaml` 批量补丁，跳过未安装 Tailwind 的包，并输出每个子包状态。 |
 | 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 适用于 Tailwind v3/v4，v4 需传入 `--css`，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
 | 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
 
@@ -27,19 +28,20 @@ title: weapp-tw CLI 使用指南
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
 | `--cwd <dir>` | 当前工作目录 | 指定要补丁的子包目录，等价于先 `cd`。 |
-| `--record-target` | `true` | 默认记录本次打补丁对应的 `tailwindcss` 根路径到 `./node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json`，方便之后核对；如需关闭请传 `--record-target false`。 |
+| `--record-target` | `true` | 默认记录本次打补丁对应的 `tailwindcss` 根路径到子包专属的 `node_modules/.cache/weapp-tailwindcss/<hash>/tailwindcss-target.json`，包含 `cwd`、Tailwind 路径、补丁版本与时间戳；如需关闭请传 `--record-target false`。 |
 | `--clear-cache` | `false` | 按需清理 `tailwindcss-patch` 缓存目录后再执行补丁。默认不清理，避免不必要的 IO 和 CI 侧效应。 |
+| `--workspace` | `false` | 批量扫描 workspace（`pnpm-lock.yaml`/`pnpm-workspace.yaml`/`workspaces`），逐个子包执行 patch 并输出“补丁/跳过/失败”状态。 |
 
 默认会记录补丁目标，运行日志类似：
 
 ```bash
 $ pnpm --filter demo/native-mina weapp-tw patch
 weapp-tw patch 绑定 Tailwind CSS -> ./node_modules/tailwindcss (v3.4.18)
-记录 weapp-tw patch 目标 -> ./node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json
+记录 weapp-tw patch 目标 -> ./node_modules/.cache/weapp-tailwindcss/<hash>/tailwindcss-target.json
 Tailwind CSS 运行时补丁已完成。
 ```
 
-随后每次启动构建工具，运行时会输出 `tailwindcss-patcher 绑定 Tailwind CSS -> ...`；若发现与 `tailwindcss-target.json` 不一致，会打印中文告警，提示你在对应子包重跑 `weapp-tw patch --cwd ...`。若不希望生成该文件，可在命令后追加 `--record-target false`。这样可避免 demo 被错误的 `node_modules` 污染，尤其是开启 `pnpm` hoist 或 `workspace:` 互相引用时。
+随后每次启动构建工具，运行时会输出 `tailwindcss-patcher 绑定 Tailwind CSS -> ...`；若检测到与缓存记录不一致，会自动重打补丁并刷新记录，无需手动清理跨包告警。若不希望生成记录，可在命令后追加 `--record-target false`。补丁记录按子包（package.json 路径 hash）隔离，避免 `pnpm` hoist 或 `workspace:` 互相引用时互相覆盖。
 
 ## `extract` 子命令
 
@@ -70,7 +72,7 @@ npx weapp-tw tokens --format grouped-json --group-key absolute
 
 1. **始终在子包目录执行 `weapp-tw patch`**：`pnpm --filter my-demo weapp-tw patch --cwd demo/my-demo`。
 2. **如确实不需要追踪，可传 `--record-target false`**，避免生成额外 JSON。
-3. **看到“目标不一致”告警**：按照提示在指定目录重跑 `weapp-tw patch --cwd ...`，直到日志里的 `weapp-tw patch/tailwindcss-patcher 绑定 Tailwind CSS` 输出相同路径。
+3. **看到自动重补丁/记录迁移提示**：确认日志里的 Tailwind 路径与子包一致，`pnpm --filter ... exec weapp-tw patch --cwd .` 或 `weapp-tw patch --workspace --cwd <repo-root>` 可避免 `INIT_CWD` 导致的跨包记录污染。
 4. **类名缺失**： 用 `weapp-tw extract` 或 `weapp-tw tokens --no-write` 辅助定位是哪段代码没有被 Tailwind `content` 收录。
 
 配合这些命令，可以更直观地观察 Tailwind 依赖解析与补丁状态，减少“rpx 被当成颜色” 等由于上下游不一致导致的问题。

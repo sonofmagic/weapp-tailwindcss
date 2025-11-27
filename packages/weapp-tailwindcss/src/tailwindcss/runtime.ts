@@ -49,9 +49,20 @@ export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
   runtimeClassSetCache.delete(twPatcher)
 }
 
-export function createTailwindPatchPromise(twPatcher: TailwindcssPatcherLike): Promise<unknown> {
-  return Promise.resolve(twPatcher.patch()).then((result) => {
+export function createTailwindPatchPromise(
+  twPatcher: TailwindcssPatcherLike,
+  onPatched?: () => Promise<void> | void,
+): Promise<unknown> {
+  return Promise.resolve(twPatcher.patch()).then(async (result) => {
     invalidateRuntimeClassSet(twPatcher)
+    if (onPatched) {
+      try {
+        await onPatched()
+      }
+      catch (error) {
+        debug('failed to persist patch target after patch(): %O', error)
+      }
+    }
     return result
   })
 }
@@ -60,6 +71,7 @@ export interface TailwindRuntimeState {
   twPatcher: TailwindcssPatcherLike
   patchPromise: Promise<unknown>
   refreshTailwindcssPatcher?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
+  onPatchCompleted?: () => Promise<void> | void
 }
 
 export async function refreshTailwindRuntimeState(
@@ -82,7 +94,7 @@ export async function refreshTailwindRuntimeState(
   }
 
   if (refreshed) {
-    state.patchPromise = createTailwindPatchPromise(state.twPatcher)
+    state.patchPromise = createTailwindPatchPromise(state.twPatcher, state.onPatchCompleted)
   }
 
   return refreshed

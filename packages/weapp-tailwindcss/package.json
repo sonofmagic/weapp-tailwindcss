@@ -199,6 +199,7 @@
     "@weapp-tailwindcss/shared": "workspace:*",
     "cac": "^6.7.14",
     "debug": "~4.4.3",
+    "fast-glob": "^3.3.3",
     "htmlparser2": "10.0.0",
     "loader-utils": "2.0.4",
     "local-pkg": "^1.1.2",
@@ -206,6 +207,7 @@
     "magic-string": "0.30.21",
     "semver": "~7.7.3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "webpack-sources": "3.3.3"
+    "webpack-sources": "3.3.3",
+    "yaml": "^2.8.1"
   }
 }

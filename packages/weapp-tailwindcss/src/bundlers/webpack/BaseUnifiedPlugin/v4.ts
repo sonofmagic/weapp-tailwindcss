@@ -8,7 +8,8 @@ import { ConcatSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { collectRuntimeClassSet, createTailwindPatchPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { setupPatchRecorder } from '@/tailwindcss/recorder'
+import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../../shared/cache'
@@ -65,10 +66,15 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         enabled: true,
       })
     }
+    const patchRecorderState = setupPatchRecorder(initialTwPatcher, this.options.tailwindcssBasedir, {
+      source: 'runtime',
+      cwd: this.options.tailwindcssBasedir ?? process.cwd(),
+    })
     const runtimeState = {
       twPatcher: initialTwPatcher,
-      patchPromise: createTailwindPatchPromise(initialTwPatcher),
+      patchPromise: patchRecorderState.patchPromise,
       refreshTailwindcssPatcher,
+      onPatchCompleted: patchRecorderState.onPatchCompleted,
     }
 
     const refreshRuntimeState = async (force: boolean) => {
