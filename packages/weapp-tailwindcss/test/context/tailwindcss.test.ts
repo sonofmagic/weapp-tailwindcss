@@ -1,5 +1,7 @@
 import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -63,7 +65,7 @@ describe('createTailwindcssPatcherFromContext', () => {
     vi.resetModules()
   })
 
-  it('creates multiple patchers when css entries resolve to different directories', async () => {
+  it('creates multiple patchers when css entries belong to different package roots', async () => {
     const calls: CreateTailwindcssPatcherOptions[] = []
     const createdPatchers: TailwindcssPatcherLike[] = []
     const classSets = [['foo'], ['bar']]
@@ -77,7 +79,6 @@ describe('createTailwindcssPatcherFromContext', () => {
           const stub: TailwindcssPatcherLike = {
             packageInfo: { version: '4.1.0' } as any,
             majorVersion: 4,
-            // 测试仅校验结构传递，避免在此处施加过严的类型约束
             options: options as any,
             patch: vi.fn(async () => ({})),
             getClassSet: vi.fn(async () => new Set(classes)),
@@ -93,39 +94,57 @@ describe('createTailwindcssPatcherFromContext', () => {
     })
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
-    const workspace = path.resolve('/workspace/project')
+
+    const workspaceTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-workspace-'))
+    const workspace = path.join(workspaceTemp, 'project')
+    mkdirSync(path.join(workspace, 'apps', 'alpha', 'src'), { recursive: true })
+    writeFileSync(path.join(workspace, 'package.json'), JSON.stringify({ name: 'workspace-root' }))
+    writeFileSync(path.join(workspace, 'pnpm-workspace.yaml'), 'packages:\n  - apps/*\n')
+    writeFileSync(path.join(workspace, 'apps', 'alpha', 'package.json'), JSON.stringify({ name: 'alpha' }))
     const entryA = path.join(workspace, 'apps', 'alpha', 'src', 'app.css')
-    const entryB = path.join(workspace, 'apps', 'beta', 'src', 'app.css')
-    const ctx = {
-      tailwindcssBasedir: workspace,
-      supportCustomLengthUnitsPatch: undefined,
-      tailwindcss: undefined,
-      tailwindcssPatcherOptions: undefined,
-      cssEntries: [entryA, entryB],
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions
 
-    const patcher = createTailwindcssPatcherFromContext(ctx)
+    const externalTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-external-'))
+    const externalRoot = path.join(externalTemp, 'external')
+    mkdirSync(path.join(externalRoot, 'src'), { recursive: true })
+    writeFileSync(path.join(externalRoot, 'package.json'), JSON.stringify({ name: 'external-app' }))
+    const entryB = path.join(externalRoot, 'src', 'app.css')
 
-    expect(calls).toHaveLength(2)
-    expect(calls.map(call => call.basedir)).toEqual([
-      path.dirname(entryA),
-      path.dirname(entryB),
-    ])
+    try {
+      const ctx = {
+        tailwindcssBasedir: workspace,
+        supportCustomLengthUnitsPatch: undefined,
+        tailwindcss: undefined,
+        tailwindcssPatcherOptions: undefined,
+        cssEntries: [entryA, entryB],
+        appType: 'taro',
+      } as unknown as InternalUserDefinedOptions
 
-    await patcher.patch()
-    expect(createdPatchers[0].patch).toHaveBeenCalledTimes(1)
-    expect(createdPatchers[1].patch).toHaveBeenCalledTimes(1)
+      const patcher = createTailwindcssPatcherFromContext(ctx)
 
-    const classSet = await patcher.getClassSet()
-    expect(Array.from(classSet)).toEqual(['foo', 'bar'])
+      expect(calls).toHaveLength(2)
+      expect(calls.map(call => call.basedir)).toEqual([
+        workspace,
+        externalRoot,
+      ])
 
-    const extracted = await patcher.extract({})
-    expect(Array.from(extracted.classSet)).toEqual(['foo', 'bar'])
-    expect(extracted.classList).toEqual(['foo', 'bar'])
+      await patcher.patch()
+      expect(createdPatchers[0].patch).toHaveBeenCalledTimes(1)
+      expect(createdPatchers[1].patch).toHaveBeenCalledTimes(1)
+
+      const classSet = await patcher.getClassSet()
+      expect(Array.from(classSet)).toEqual(['foo', 'bar'])
+
+      const extracted = await patcher.extract({})
+      expect(Array.from(extracted.classSet)).toEqual(['foo', 'bar'])
+      expect(extracted.classList).toEqual(['foo', 'bar'])
+    }
+    finally {
+      rmSync(workspaceTemp, { recursive: true, force: true })
+      rmSync(externalTemp, { recursive: true, force: true })
+    }
   })
 
-  it('returns a single patcher when css entries share the same base directory', async () => {
+  it('returns a single patcher when css entries share the same workspace base', async () => {
     const createdPatchers: TailwindcssPatcherLike[] = []
     const calls: CreateTailwindcssPatcherOptions[] = []
     const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
@@ -150,27 +169,44 @@ describe('createTailwindcssPatcherFromContext', () => {
     vi.doMock('@/tailwindcss', () => ({ createTailwindcssPatcher }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
-    const workspace = path.resolve('/workspace/project')
-    const baseDir = path.join(workspace, 'apps', 'alpha', 'src')
-    const ctx = {
-      tailwindcssBasedir: undefined,
-      supportCustomLengthUnitsPatch: undefined,
-      tailwindcss: undefined,
-      tailwindcssPatcherOptions: undefined,
-      cssEntries: [
-        path.join(baseDir, 'app.css'),
-        path.join(baseDir, 'other.css'),
-      ],
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions
+    const workspaceTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-single-'))
+    const workspace = path.join(workspaceTemp, 'project')
+    mkdirSync(path.join(workspace, 'apps', 'alpha', 'src'), { recursive: true })
+    mkdirSync(path.join(workspace, 'apps', 'beta', 'src'), { recursive: true })
+    writeFileSync(path.join(workspace, 'package.json'), JSON.stringify({ name: 'workspace-root' }))
+    writeFileSync(path.join(workspace, 'pnpm-workspace.yaml'), 'packages:\n  - apps/*\n')
+    writeFileSync(path.join(workspace, 'apps', 'alpha', 'package.json'), JSON.stringify({ name: 'alpha' }))
+    writeFileSync(path.join(workspace, 'apps', 'beta', 'package.json'), JSON.stringify({ name: 'beta' }))
+    const entryA = path.join(workspace, 'apps', 'alpha', 'src', 'app.css')
+    const entryB = path.join(workspace, 'apps', 'beta', 'src', 'other.css')
 
-    const patcher = createTailwindcssPatcherFromContext(ctx)
+    try {
+      const ctx = {
+        tailwindcssBasedir: workspace,
+        supportCustomLengthUnitsPatch: undefined,
+        tailwindcss: undefined,
+        tailwindcssPatcherOptions: undefined,
+        cssEntries: [entryA, entryB],
+        appType: 'taro',
+      } as unknown as InternalUserDefinedOptions
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
-    expect(patcher).toBe(createdPatchers[0])
-    expect(calls[0].tailwindcss?.v4?.cssEntries).toEqual([
-      path.join(baseDir, 'app.css'),
-      path.join(baseDir, 'other.css'),
-    ])
+      const patcher = createTailwindcssPatcherFromContext(ctx)
+
+      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+      expect(patcher).toBe(createdPatchers[0])
+      expect(calls[0].basedir).toBe(workspace)
+      expect(calls[0].tailwindcss?.v4?.base).toBe(workspace)
+      expect(calls[0].tailwindcss?.v4?.cssEntries).toEqual([
+        entryA,
+        entryB,
+      ])
+      expect(ctx.cssEntries).toEqual([
+        entryA,
+        entryB,
+      ])
+    }
+    finally {
+      rmSync(workspaceTemp, { recursive: true, force: true })
+    }
   })
 })

@@ -258,10 +258,44 @@ function normalizeCssEntries(entries: string[] | undefined, anchor: string): str
   return normalized.size > 0 ? [...normalized] : undefined
 }
 
-function groupCssEntriesByBase(entries: string[]) {
+interface GroupCssEntriesOptions {
+  preferredBaseDir?: string
+  workspaceRoot?: string
+}
+
+function isSubPath(parent: string | undefined, child: string | undefined) {
+  if (!parent || !child) {
+    return false
+  }
+  const relative = path.relative(parent, child)
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+}
+
+function resolveCssEntryBase(entryDir: string, options: GroupCssEntriesOptions): string {
+  const normalizedDir = path.normalize(entryDir)
+  const { preferredBaseDir, workspaceRoot } = options
+  if (preferredBaseDir && isSubPath(preferredBaseDir, normalizedDir)) {
+    return preferredBaseDir
+  }
+  if (workspaceRoot && isSubPath(workspaceRoot, normalizedDir)) {
+    return workspaceRoot
+  }
+  const packageRoot = findNearestPackageRoot(normalizedDir)
+  if (packageRoot) {
+    return path.normalize(packageRoot)
+  }
+  return normalizedDir
+}
+
+function groupCssEntriesByBase(entries: string[], options: GroupCssEntriesOptions = {}) {
+  const normalizedOptions: GroupCssEntriesOptions = {
+    preferredBaseDir: options.preferredBaseDir ? path.normalize(options.preferredBaseDir) : undefined,
+    workspaceRoot: options.workspaceRoot ? path.normalize(options.workspaceRoot) : undefined,
+  }
   const groups = new Map<string, string[]>()
   for (const entry of entries) {
-    const baseDir = path.normalize(path.dirname(entry))
+    const entryDir = path.dirname(entry)
+    const baseDir = resolveCssEntryBase(entryDir, normalizedOptions)
     const bucket = groups.get(baseDir)
     if (bucket) {
       bucket.push(entry)
@@ -537,8 +571,14 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     appType,
   }
 
+  const workspaceRoot = findWorkspaceRoot(resolvedTailwindcssBasedir)
+    ?? (absoluteCssEntryBasedir ? findWorkspaceRoot(absoluteCssEntryBasedir) : undefined)
+
   const groupedCssEntries = normalizedCssEntries
-    ? groupCssEntriesByBase(normalizedCssEntries)
+    ? groupCssEntriesByBase(normalizedCssEntries, {
+        preferredBaseDir: resolvedTailwindcssBasedir,
+        workspaceRoot,
+      })
     : undefined
 
   const multiPatcher = groupedCssEntries

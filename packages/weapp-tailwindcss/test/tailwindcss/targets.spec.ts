@@ -9,7 +9,7 @@ describe('tailwindcss targets', () => {
     vi.resetModules()
   })
 
-  it('aligns tailwind v4 base with css entry directory when entry lives in a subfolder', async () => {
+  it('keeps provided tailwindcss basedir when css entry lives in a subfolder', async () => {
     const classList = ['text-green-500']
     type PatchResult = Awaited<ReturnType<TailwindcssPatcherLike['patch']>>
     const patchResult: PatchResult = {
@@ -52,7 +52,7 @@ describe('tailwindcss targets', () => {
 
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
     const options = createTailwindcssPatcher.mock.calls[0][0]
-    expect(options.tailwindcss?.v4?.base).toBe(path.join(workspace, 'src'))
+    expect(options.tailwindcss?.v4?.base).toBe(workspace)
     expect(options.tailwindcss?.v4?.cssEntries).toEqual([
       path.join(workspace, 'src', 'app.css'),
     ])
