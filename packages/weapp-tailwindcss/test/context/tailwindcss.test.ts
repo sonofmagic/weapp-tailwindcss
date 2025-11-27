@@ -23,6 +23,38 @@ describe('resolveTailwindcssBasedir', () => {
 
     expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/apps/vite-native-skyline'))
   })
+
+  it('resolves relative base against generic env anchor (prefers INIT_CWD over PWD)', async () => {
+    process.env.PWD = '/anchor/from-pwd'
+    process.env.INIT_CWD = '/ignored-init-cwd'
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir('./apps/demo')).toBe(path.normalize('/ignored-init-cwd/apps/demo'))
+  })
+
+  it('falls back to PWD when INIT_CWD is absent', async () => {
+    process.env.PWD = '/anchor/from-pwd-only'
+    delete process.env.INIT_CWD
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir('./apps/demo')).toBe(path.normalize('/anchor/from-pwd-only/apps/demo'))
+  })
+
+  it('prefers specific base env over generic anchors', async () => {
+    process.env.PWD = '/generic/pwd'
+    process.env.WEAPP_TAILWINDCSS_BASEDIR = '/specific/base'
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir('./tailwind')).toBe(path.normalize('/specific/base/tailwind'))
+  })
+
+  it('falls back to provided fallback when env not set', async () => {
+    delete process.env.PWD
+    delete process.env.INIT_CWD
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir(undefined, '/custom/fallback')).toBe(path.normalize('/custom/fallback'))
+  })
 })
 
 describe('createTailwindcssPatcherFromContext', () => {
