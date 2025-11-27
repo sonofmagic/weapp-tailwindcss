@@ -49,7 +49,7 @@
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "prettier": "^3.6.2",
+    "prettier": "catalog:prettier371",
     "rax-app": "3.8.22",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",

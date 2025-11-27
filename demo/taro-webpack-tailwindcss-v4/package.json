@@ -70,7 +70,7 @@
     "@babel/core": "catalog:babelCore7285",
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/preset-react": "catalog:babelPresetReact7285",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/taro-loader": "catalog:taro4",

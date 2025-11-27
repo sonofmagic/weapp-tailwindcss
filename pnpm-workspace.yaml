@@ -34,6 +34,8 @@ catalogs:
     postcss-rem-to-responsive-pixel: ^6.1.0
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
+  prettier371:
+    prettier: ^3.7.1
   react18:
     '@types/react': 18.2.15
     '@types/react-dom': 18.2.7
@@ -44,6 +46,10 @@ catalogs:
     '@types/react-dom': 19.1.13
     react: 19.2.0
     react-dom: 19.2.0
+  lucideReact0555:
+    lucide-react: ^0.555.0
+  lucideVueNext0555:
+    lucide-vue-next: ^0.555.0
   reactRefresh018:
     react-refresh: ^0.18.0
   stylelint1625:
@@ -58,7 +64,7 @@ catalogs:
     tailwindcss: ^4.1.17
     tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssPatch:
-    tailwindcss-patch: ^8.4.0
+    tailwindcss-patch: ^8.4.1
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
@@ -102,7 +108,7 @@ catalogs:
   weappMerge:
     '@weapp-tailwindcss/merge': ^2.1.2
   weappVite:
-    weapp-vite: ^5.9.5
+    weapp-vite: ^5.10.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

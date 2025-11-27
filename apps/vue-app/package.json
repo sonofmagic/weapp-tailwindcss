@@ -11,7 +11,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-vue-next": "^0.554.0",
+    "lucide-vue-next": "catalog:lucideVueNext0555",
     "reka-ui": "^2.6.0",
     "tailwind-merge": "^3.4.0",
     "vue": "^3.5.24"

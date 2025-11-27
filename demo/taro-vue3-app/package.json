@@ -80,7 +80,7 @@
     "cross-env": "catalog:crossEnv",
     "eslint": "^9.39.1",
     "eslint-config-taro": "4.1.8",
-    "eslint-plugin-vue": "^10.6.0",
+    "eslint-plugin-vue": "^10.6.1",
     "less": "^4.4.1",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",

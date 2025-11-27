@@ -75,7 +75,7 @@
     "postcss-pxtransform": "^4.1.8",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "prettier": "^3.4.2",
+    "prettier": "catalog:prettier371",
     "sass": "^1.94.2",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
