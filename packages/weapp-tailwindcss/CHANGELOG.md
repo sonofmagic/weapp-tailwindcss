@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.8.5-alpha.0
+
+### Patch Changes
+
+- [`4bfc52b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4bfc52b147d39c52a42c5eaf10179f90a849ab49) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 增强 `weapp-tw patch` 在 pnpm monorepo 下的体验：按子包 hash 隔离缓存记录，检测不一致时自动重打补丁并刷新元数据；支持 `--workspace` 扫描工作区逐包补丁，默认读取 `pnpm-lock.yaml`/workspaces；新增 `--cwd` 优先级、记录中包含补丁版本与路径信息，避免跨包污染与告警。\*\*\*
+
+- [`f5fa2ca`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f5fa2ca71127c51c6e684310346192ff4053aaf1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 在 tailwindcss@4 未配置 cssEntries 时输出显眼警告，提示使用包含 tailwindcss 引用的 CSS 绝对路径。
+
+- [`b0300a4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b0300a4c4c150b929a2f066ed7a1bc7c7f93aee4) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复当 `cssEntries` 指向子目录文件时强制重写 Tailwind v4 `base` 的问题，优先沿用工作区/用户指定根目录并在多包场景下智能分组；补充整合测试确保通过 `getCompilerContext` 仍能识别子目录样式并正确重写 `bg-[#00aa55]` 这类动态类名。
+
+- [`2023d33`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2023d337102a413d8388ce4378528e9df62afe77) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 Vite 重写 `@import 'tailwindcss'` 的钩子顺序，确保 uni-app v4 构建时能提前改写为 `weapp-tailwindcss`。
+
 ## 4.8.4
 
 ### Patch Changes

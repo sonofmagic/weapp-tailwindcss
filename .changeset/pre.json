@@ -63,5 +63,11 @@
     "wetw": "0.0.0",
     "@weapp-tailwindcss/website": "1.0.11"
   },
-  "changesets": []
+  "changesets": [
+    "gengxin-weapp-tw-monorepo",
+    "tailwindcss4-missing-cssentries-warning",
+    "tiaozheng-cssentries-jichu",
+    "xiu-fu-vite-zhong-wen-chong-xie-shun-xu",
+    "zengjia-wetw-cli"
+  ]
 }

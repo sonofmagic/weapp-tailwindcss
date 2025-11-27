@@ -1,7 +1,7 @@
 {
   "name": "wetw",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "description": "tsdown bundler template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
