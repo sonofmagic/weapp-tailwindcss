@@ -1,10 +1,9 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 import { minVersion } from 'semver'
-import { parse as parseYaml } from 'yaml'
 import { ROOT } from './template-utils'
 
 type PnpmConfig = Record<string, unknown> & {
@@ -36,41 +35,14 @@ interface TargetPackage {
   ensurePnpmOnlyBuilt?: boolean
 }
 
-type PnpmLockDependencyEntry = string | { specifier?: string, version?: string }
-
-interface PnpmLockImporter {
-  dependencies?: Record<string, PnpmLockDependencyEntry>
-  devDependencies?: Record<string, PnpmLockDependencyEntry>
-  optionalDependencies?: Record<string, PnpmLockDependencyEntry>
-}
-
-interface PnpmLockfile {
-  importers?: Record<string, PnpmLockImporter | undefined>
-  packages?: Record<string, { version?: string } | null | undefined>
-}
-
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
+const TEMP_LOCK_ROOT = path.join(os.tmpdir(), 'weapp-tailwindcss-template-locks')
+const LOCK_UPDATE_TIMEOUT_MS = 30 * 60_000
+const DEFAULT_YARN_VERSION = '1.22.22'
+const COPY_IGNORE_DIRS = new Set(['node_modules', '.git', '.idea', '.turbo', 'dist'])
 const tailwindVersionCache = new Map<string, string>()
 const latestVersionCache = new Map<string, string>()
-const INSTALL_CONCURRENCY = 2
-const NETWORK_CONCURRENCY_ARGS = ['--network-concurrency', String(INSTALL_CONCURRENCY)]
-// Allow up to 30 minutes for isolated lockfile installs to finish on slow networks.
-const LOCKFILE_UPDATE_TIMEOUT_MS = 30 * 60_000
-const TEMPLATE_INSTALL_CACHE_ROOT = path.join(os.tmpdir(), 'weapp-tailwindcss-template-installs')
-const PNPM_TEMPLATE_STORE = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'pnpm-store')
-const NPM_TEMPLATE_CACHE = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'npm-cache')
-const YARN_TEMPLATE_CACHE = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'yarn-cache')
-const YARN_TEMPLATE_GLOBAL = path.join(TEMPLATE_INSTALL_CACHE_ROOT, 'yarn-global')
-const CPU_COUNT = os.cpus()?.length ?? 2
-const DEFAULT_TEMPLATE_CONCURRENCY = Math.min(Math.max(CPU_COUNT - 1, 1), 4)
-const TEMPLATE_PROCESS_CONCURRENCY = (() => {
-  const raw = process.env.SYNC_TEMPLATE_CONCURRENCY
-  if (!raw) {
-    return DEFAULT_TEMPLATE_CONCURRENCY
-  }
-  const parsed = Number.parseInt(raw, 10)
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_TEMPLATE_CONCURRENCY
-})()
+
 function buildCommandEnv(overrides: CommandEnv = {}): NodeJS.ProcessEnv {
   const baseEnv: NodeJS.ProcessEnv = { ...process.env }
   for (const [key, value] of Object.entries(overrides)) {
@@ -195,31 +167,6 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
       range: `^${typescriptVersion}`,
     },
   ]
-}
-
-async function prefetchBaseTargets(targets: TargetPackage[]): Promise<void> {
-  if (targets.length === 0) {
-    return
-  }
-  ensureDir(TEMPLATE_INSTALL_CACHE_ROOT)
-  ensureDir(PNPM_TEMPLATE_STORE)
-  const specs = Array.from(new Set(targets.map(target => `${target.name}@${target.version}`))).filter(Boolean)
-  if (specs.length === 0) {
-    return
-  }
-  const success = await runCommand('pnpm', ['fetch', ...specs], ROOT, {
-    allowFailure: true,
-    env: buildCommandEnv({
-      PNPM_STORE_DIR: PNPM_TEMPLATE_STORE,
-      NPM_CONFIG_STORE_DIR: PNPM_TEMPLATE_STORE,
-      PNPM_PREFER_WORKSPACE_PACKAGES: 'false',
-      PNPM_LINK_WORKSPACE_PACKAGES: 'false',
-    }),
-    timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
-  })
-  if (!success) {
-    console.warn('预拉取依赖失败，将在每个模板内回退到常规安装。')
-  }
 }
 
 function detectIndentation(source: string): string | number {
@@ -421,49 +368,6 @@ function detectManager(templateDir: string, pkg: PackageJson): ManagerInfo {
   return { name: 'pnpm' }
 }
 
-function lockNeedsUpdate(templateDir: string, manager: ManagerInfo, targets: TargetPackage[]): boolean {
-  if (targets.length === 0) {
-    return false
-  }
-  if (manager.name === 'pnpm') {
-    return pnpmLockNeedsUpdate(templateDir, targets)
-  }
-  if (manager.name === 'yarn') {
-    const lockPath = path.join(templateDir, 'yarn.lock')
-    if (!existsSync(lockPath)) {
-      return false
-    }
-    const content = readFileSync(lockPath, 'utf8')
-    return targets.some((target) => {
-      const version = target.version
-      return (
-        !content.includes(`${target.name}@^${version}`)
-        && !content.includes(`${target.name}@${version}`)
-        && !content.includes(`version "${version}`)
-      )
-    })
-  }
-  const lockPath = path.join(templateDir, 'package-lock.json')
-  if (!existsSync(lockPath)) {
-    return false
-  }
-  try {
-    const lock = JSON.parse(readFileSync(lockPath, 'utf8')) as Record<string, any>
-    return targets.some((target) => {
-      const pkgNode = lock.packages?.[`node_modules/${target.name}`]?.version
-      if (pkgNode === target.version) {
-        return false
-      }
-      const depNode = lock.dependencies?.[target.name]?.version
-      return depNode !== target.version
-    })
-  }
-  catch (error) {
-    console.warn(`无法解析 ${lockPath}，将尝试重新生成锁文件。`, error)
-    return true
-  }
-}
-
 function filterTargetsForPackage(pkg: PackageJson, targets: TargetPackage[]): TargetPackage[] {
   return targets.filter(target => target.forceInclude || hasPackageReference(pkg, target.name))
 }
@@ -474,89 +378,6 @@ function dedupeTargets(targets: TargetPackage[]): TargetPackage[] {
     map.set(target.name, target)
   })
   return [...map.values()]
-}
-
-function matchesPnpmResolvedVersion(resolved: string | undefined, version: string): boolean {
-  if (!resolved) {
-    return false
-  }
-  if (resolved === version) {
-    return true
-  }
-  return resolved.startsWith(`${version}(`)
-}
-
-function extractPnpmEntryVersion(entry: PnpmLockDependencyEntry | undefined): string | null {
-  if (!entry) {
-    return null
-  }
-  if (typeof entry === 'string') {
-    return entry
-  }
-  if (entry && typeof entry === 'object' && typeof entry.version === 'string') {
-    return entry.version
-  }
-  return null
-}
-
-function pnpmLockHasTarget(lock: PnpmLockfile | null, target: TargetPackage): boolean {
-  if (!lock || typeof lock !== 'object') {
-    return false
-  }
-  const importers = lock.importers
-  if (importers && typeof importers === 'object') {
-    for (const importer of Object.values(importers)) {
-      if (!importer || typeof importer !== 'object') {
-        continue
-      }
-      for (const field of ['dependencies', 'devDependencies', 'optionalDependencies'] as const) {
-        const section = importer[field]
-        if (!section || typeof section !== 'object') {
-          continue
-        }
-        const version = extractPnpmEntryVersion(section[target.name])
-        if (matchesPnpmResolvedVersion(version ?? undefined, target.version)) {
-          return true
-        }
-      }
-    }
-  }
-
-  const packages = lock.packages
-  if (packages && typeof packages === 'object') {
-    for (const [key, meta] of Object.entries(packages)) {
-      if (!key.startsWith(`${target.name}@`)) {
-        continue
-      }
-      const keyVersion = key.slice(target.name.length + 1)
-      if (matchesPnpmResolvedVersion(keyVersion, target.version)) {
-        return true
-      }
-      if (meta && typeof meta === 'object' && typeof meta.version === 'string') {
-        if (matchesPnpmResolvedVersion(meta.version, target.version)) {
-          return true
-        }
-      }
-    }
-  }
-
-  return false
-}
-
-function pnpmLockNeedsUpdate(templateDir: string, targets: TargetPackage[]): boolean {
-  const lockPath = path.join(templateDir, 'pnpm-lock.yaml')
-  if (!existsSync(lockPath)) {
-    return false
-  }
-  const content = readFileSync(lockPath, 'utf8')
-  try {
-    const parsed = parseYaml(content) as PnpmLockfile
-    return targets.some(target => !pnpmLockHasTarget(parsed, target))
-  }
-  catch (error) {
-    console.warn(`无法解析 ${lockPath}，将尝试重新生成锁文件。`, error)
-    return true
-  }
 }
 
 function getPackageRange(pkg: PackageJson, name: string): string | undefined {
@@ -649,7 +470,6 @@ async function runCommand(
         CI: '1',
         ...(env ?? {}),
       }),
-      // Avoid hanging forever when network is flaky or blocked.
       timeout: timeoutMs,
       killSignal: 'SIGTERM',
     })
@@ -666,140 +486,116 @@ async function runCommand(
   }
 }
 
-export async function formatTemplateCode(templateDir: string): Promise<void> {
-  const relative = path.relative(ROOT, templateDir) || '.'
-  const success = await runCommand('pnpm', ['exec', 'eslint', relative, '--fix'], ROOT, {
-    allowFailure: true,
-  })
-  if (!success) {
-    console.warn(`格式化 ${relative} 失败，可手动运行 pnpm exec eslint ${relative} --fix`)
-  }
-}
-
-// Older versions renamed pnpm-workspace.yaml so template installs wouldn't bleed into the workspace.
-// That rename makes git hooks/listeners hang, so keep the isolation purely via per-command envs.
-async function withWorkspaceIsolation<T>(operation: () => Promise<T> | T): Promise<T> {
-  return await Promise.resolve(operation())
-}
-
-async function updateLockfile(templateDir: string, manager: ManagerInfo): Promise<void> {
-  ensureDir(TEMPLATE_INSTALL_CACHE_ROOT)
-  ensureDir(PNPM_TEMPLATE_STORE)
-  ensureDir(NPM_TEMPLATE_CACHE)
-  const env = {
-    PNPM_WORKSPACE_DIR: templateDir,
-    NPM_CONFIG_WORKSPACE_DIR: templateDir,
-    PNPM_PREFER_WORKSPACE_PACKAGES: 'false',
-    PNPM_LINK_WORKSPACE_PACKAGES: 'false',
-    NPM_CONFIG_PREFER_WORKSPACE_PACKAGES: 'false',
-    NPM_CONFIG_LINK_WORKSPACE_PACKAGES: 'false',
-    NPM_CONFIG_FETCH_CONCURRENCY: String(INSTALL_CONCURRENCY),
-    PNPM_STORE_DIR: PNPM_TEMPLATE_STORE,
-    NPM_CONFIG_STORE_DIR: PNPM_TEMPLATE_STORE,
-    npm_config_store_dir: PNPM_TEMPLATE_STORE,
-    NPM_CONFIG_CACHE: NPM_TEMPLATE_CACHE,
-    npm_config_cache: NPM_TEMPLATE_CACHE,
-  }
-
+function getLockfileName(manager: ManagerInfo): string {
   if (manager.name === 'pnpm') {
-    const success = await withWorkspaceIsolation(() =>
-      runCommand(
+    return 'pnpm-lock.yaml'
+  }
+  if (manager.name === 'yarn') {
+    return 'yarn.lock'
+  }
+  return 'package-lock.json'
+}
+
+function shouldUpdateLockfile(templateDir: string, manager: ManagerInfo, depsChanged: boolean): boolean {
+  if (depsChanged) {
+    return true
+  }
+  const lockPath = path.join(templateDir, getLockfileName(manager))
+  return !existsSync(lockPath)
+}
+
+function shouldCopyEntry(templateDir: string, source: string): boolean {
+  if (source === templateDir) {
+    return true
+  }
+  const relative = path.relative(templateDir, source)
+  if (!relative || relative.startsWith('..')) {
+    return true
+  }
+  const segments = relative.split(path.sep).filter(Boolean)
+  return !segments.some(segment => COPY_IGNORE_DIRS.has(segment))
+}
+
+function createTemplateSandbox(templateDir: string): { directory: string, cleanup: () => void } {
+  ensureDir(TEMP_LOCK_ROOT)
+  const prefix = path.join(TEMP_LOCK_ROOT, `${path.basename(templateDir)}-`)
+  const tempRoot = mkdtempSync(prefix)
+  const sandboxDir = path.join(tempRoot, 'template')
+  cpSync(templateDir, sandboxDir, {
+    recursive: true,
+    filter: source => shouldCopyEntry(templateDir, source),
+  })
+  return {
+    directory: sandboxDir,
+    cleanup: () => {
+      rmSync(tempRoot, { recursive: true, force: true })
+    },
+  }
+}
+
+async function regenerateLockfile(templateDir: string, manager: ManagerInfo): Promise<boolean> {
+  const { directory, cleanup } = createTemplateSandbox(templateDir)
+  const relative = path.relative(ROOT, templateDir) || templateDir
+  try {
+    let success = false
+    if (manager.name === 'pnpm') {
+      success = await runCommand(
         'pnpm',
-        ['install', '--lockfile-only', '--ignore-workspace', '--ignore-scripts', ...NETWORK_CONCURRENCY_ARGS],
-        templateDir,
-        {
-          allowFailure: true,
-          env,
-          timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
-        },
-      ),
-    )
+        ['install', '--lockfile-only', '--ignore-scripts'],
+        directory,
+        { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
+      )
+    }
+    else if (manager.name === 'npm') {
+      success = await runCommand(
+        'npm',
+        ['install', '--package-lock-only', '--ignore-scripts'],
+        directory,
+        { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
+      )
+    }
+    else {
+      const yarnVersion = manager.version ?? DEFAULT_YARN_VERSION
+      const yarnMajor = Number.parseInt((yarnVersion.split('.')[0] ?? '1') as string, 10)
+      const args = [
+        'dlx',
+        `yarn@${yarnVersion}`,
+        'install',
+        '--ignore-scripts',
+        '--non-interactive',
+      ]
+      if (Number.isFinite(yarnMajor) && yarnMajor >= 2) {
+        args.push('--mode=update-lockfile')
+      }
+      else {
+        args.push('--prefer-offline', '--no-progress')
+      }
+      success = await runCommand(
+        'pnpm',
+        args,
+        directory,
+        { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
+      )
+    }
+
     if (!success) {
-      console.warn(
-        `跳过为 ${templateDir} 生成 pnpm-lock.yaml：pnpm 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
-        + ' 已更新 package.json，后续可在联网环境中于该模板目录执行 "pnpm install --lockfile-only --ignore-scripts --ignore-workspace" 来刷新锁文件。',
-      )
+      console.warn(`跳过为 ${relative} 更新 ${getLockfileName(manager)}，请在联网环境中手动刷新锁文件。`)
+      return false
     }
-    return
-  }
 
-  if (manager.name === 'npm') {
-    const success = await withWorkspaceIsolation(() =>
-      runCommand('npm', ['install', '--package-lock-only', '--ignore-scripts'], templateDir, {
-        allowFailure: true,
-        env,
-        timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
-      }),
-    )
-    if (!success) {
-      console.warn(
-        `跳过为 ${templateDir} 生成 package-lock.json：npm 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
-        + ' 已更新 package.json，后续可在联网环境中于该模板目录执行 "npm install --package-lock-only --ignore-scripts" 来刷新锁文件。',
-      )
+    const lockName = getLockfileName(manager)
+    const generated = path.join(directory, lockName)
+    if (!existsSync(generated)) {
+      console.warn(`未能在隔离环境中生成 ${lockName}，请在 ${relative} 内手动运行包管理器更新锁文件。`)
+      return false
     }
-    return
-  }
 
-  const yarnVersion = manager.version ?? '1.22.22'
-  // Prefer to keep yarn fully isolated from the repo to prevent hooks/workspace bleed.
-  // Place yarn caches outside the git repo to avoid choking git on huge untracked files.
-  ensureDir(YARN_TEMPLATE_CACHE)
-  ensureDir(YARN_TEMPLATE_GLOBAL)
-  const yarnCacheDir = YARN_TEMPLATE_CACHE
-  const yarnGlobalDir = YARN_TEMPLATE_GLOBAL
-
-  const yarnEnv: CommandEnv = {
-    ...env,
-    // Keep cache in temp dir to avoid polluting repo and triggering git watchers.
-    YARN_CACHE_FOLDER: yarnCacheDir,
-    YARN_GLOBAL_FOLDER: yarnGlobalDir,
-    // Reduce chances of "forever waiting" on slow/blocked registries.
-    YARN_NETWORK_TIMEOUT: '30000', // 30s per request
-    // Force https registry for yarn classic to avoid corporate proxies blocking http.
-    npm_config_registry: 'https://registry.npmjs.org/',
-    // Prefer IPv4 first to mitigate IPv6 DNS stalls on some networks.
-    NODE_OPTIONS: [process.env.NODE_OPTIONS, '--dns-result-order=ipv4first'].filter(Boolean).join(' '),
+    const content = readFileSync(generated, 'utf8')
+    writeFileSync(path.join(templateDir, lockName), content)
+    return true
   }
-  const yarnMajor = Number.parseInt((yarnVersion.split('.')[0] ?? '1') as string, 10)
-  const supportsLockfileOnly = Number.isFinite(yarnMajor) && yarnMajor >= 2
-  // Yarn classic flags
-  const baseArgs = [
-    'dlx',
-    `yarn@${yarnVersion}`,
-    'install',
-    '--ignore-scripts',
-    '--non-interactive',
-    '--prefer-offline',
-    '--no-progress',
-    ...NETWORK_CONCURRENCY_ARGS,
-  ]
-  let updated = false
-  if (supportsLockfileOnly) {
-    updated = await withWorkspaceIsolation(() =>
-      runCommand('pnpm', [...baseArgs, '--mode=update-lockfile'], templateDir, {
-        allowFailure: true,
-        env: yarnEnv,
-        timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
-      }),
-    )
-  }
-
-  if (!supportsLockfileOnly || !updated) {
-    // Fallback to a normal install-like resolution, still isolated and bounded by timeout.
-    const fallback = await withWorkspaceIsolation(() =>
-      runCommand('pnpm', baseArgs, templateDir, {
-        allowFailure: true,
-        env: yarnEnv,
-        timeoutMs: LOCKFILE_UPDATE_TIMEOUT_MS,
-      }),
-    )
-    // If we still fail (commonly due to blocked network), skip updating lock to avoid hanging the whole task.
-    if (!fallback) {
-      console.warn(
-        `跳过为 ${templateDir} 生成 yarn.lock：yarn 在当前环境下无法完成解析（可能是网络被代理/防火墙阻断）。`
-        + ` 已更新 package.json，后续可在联网环境中于该模板目录执行 "yarn install" 来刷新锁文件。`,
-      )
-    }
+  finally {
+    cleanup()
   }
 }
 
@@ -822,31 +618,25 @@ async function processTemplate(
     ...filterTargetsForPackage(pkg, baseTargets),
     ...tailwindTargets,
   ])
-  const lockTargets = relevantTargets.filter(target => hasPackageReference(pkg, target.name))
   const manager = detectManager(templateDir, pkg)
   const { changed: depsChanged, touched: changedTargets } = updateDependencyRange(pkg, relevantTargets)
   const pnpmChanged = ensurePnpmOnlyBuiltDependencies(pkg, relevantTargets, manager)
-  const needLock = lockTargets.length > 0 && lockNeedsUpdate(templateDir, manager, lockTargets)
-  const shouldUpdateLock = depsChanged || needLock
-
-  if (!depsChanged && !pnpmChanged && !needLock) {
-    return false
-  }
 
   if (depsChanged || pnpmChanged) {
     writeFileSync(pkgPath, `${JSON.stringify(pkg, null, indent)}\n`)
   }
 
-  if (shouldUpdateLock) {
-    console.log(`更新 ${templateName} 使用 ${manager.name} 生成锁文件...`)
-    await updateLockfile(templateDir, manager)
-    const summaryTargets = depsChanged ? changedTargets : lockTargets
-    summaryTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
+  let lockUpdated = false
+  if (shouldUpdateLockfile(templateDir, manager, depsChanged)) {
+    console.log(`更新 ${templateName} 的锁文件（${manager.name}）...`)
+    lockUpdated = await regenerateLockfile(templateDir, manager)
   }
 
-  // await formatTemplateCode(templateDir)
+  if (depsChanged) {
+    changedTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
+  }
 
-  return true
+  return depsChanged || pnpmChanged || lockUpdated
 }
 
 async function main(): Promise<void> {
@@ -856,37 +646,27 @@ async function main(): Promise<void> {
   }
 
   const baseTargets = await resolveBaseTargets()
-  await prefetchBaseTargets(baseTargets)
   const entries = readdirSync(TEMPLATES_DIR, { withFileTypes: true })
   const updated: string[] = []
   const summary = new Set<string>()
-  const templateNames = entries.filter(entry => entry.isDirectory()).map(entry => entry.name)
-  let cursor = 0
-  const workerCount = Math.min(TEMPLATE_PROCESS_CONCURRENCY, templateNames.length)
-  const workers = Array.from({ length: workerCount || 1 }, () =>
-    (async () => {
-      while (true) {
-        const index = cursor++
-        if (index >= templateNames.length) {
-          break
-        }
-        const name = templateNames[index]!
-        try {
-          if (await processTemplate(name, baseTargets, summary)) {
-            updated.push(name)
-          }
-        }
-        catch (error) {
-          if (error instanceof Error) {
-            error.message = `处理 ${name} 失败：${error.message}`
-            throw error
-          }
-          throw new Error(`处理 ${name} 失败：${String(error)}`)
-        }
+  for (const entry of entries) {
+    if (!entry.isDirectory()) {
+      continue
+    }
+    const name = entry.name
+    try {
+      if (await processTemplate(name, baseTargets, summary)) {
+        updated.push(name)
       }
-    })())
-
-  await Promise.all(workers)
+    }
+    catch (error) {
+      if (error instanceof Error) {
+        error.message = `处理 ${name} 失败：${error.message}`
+        throw error
+      }
+      throw new Error(`处理 ${name} 失败：${String(error)}`)
+    }
+  }
 
   if (updated.length === 0) {
     console.log('所有模板已是最新版本，无需更新。')
