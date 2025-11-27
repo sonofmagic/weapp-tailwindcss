@@ -16,8 +16,7 @@
   },
   "scripts": {
     "docusaurus": "cross-env NO_UPDATE_NOTIFIER=1 docusaurus",
-    "dev": "cross-env NO_UPDATE_NOTIFIER=1 docusaurus start --port 4000",
-    "dev:public": "node scripts/dev-public.mjs",
+    "dev": "node scripts/dev-public.mjs",
     "dev:type": "cross-env NO_UPDATE_NOTIFIER=1 TYPEDOC_WATCH=true docusaurus start --port 4000",
     "build": "cross-env NO_UPDATE_NOTIFIER=1 docusaurus build",
     "build:github": "cross-env NO_UPDATE_NOTIFIER=1 PROVIDER=GITHUB docusaurus build",

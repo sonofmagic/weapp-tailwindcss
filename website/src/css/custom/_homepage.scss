@@ -31,20 +31,33 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 .home-hero {
   position: relative;
   overflow: hidden;
-  border-radius: theme('borderRadius.3xl');
-  border: 1px solid rgb(148 163 184 / 22%);
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.82), rgba(226, 232, 240, 0.66), rgba(186, 230, 253, 0.3));
+  border-radius: clamp(1.75rem, 2vw, 2.5rem);
+  border: 1px solid rgb(241 245 249 / 18%);
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.95), rgba(226, 232, 240, 0.55) 45%, transparent 80%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.78), rgba(226, 232, 240, 0.55), rgba(186, 230, 253, 0.2));
   box-shadow:
-    0 40px 120px rgb(14 165 233 / 18%),
-    0 20px 60px rgb(15 23 42 / 18%);
+    0 60px 160px rgb(8 47 73 / 12%),
+    0 30px 90px rgb(14 165 233 / 12%);
   backdrop-filter: blur(24px);
-  padding: clamp(2.5rem, 4vw, 4rem);
+  padding: clamp(2.75rem, 4vw, 4.5rem);
   isolation: isolate;
 }
 
 [data-theme='dark'] .home-hero {
-  background: linear-gradient(135deg, rgb(15 23 42 / 0.85), rgb(30 41 59 / 0.78));
-  border: 1px solid rgb(148 163 184 / 18%);
+  background:
+    radial-gradient(circle at 24% 22%, rgb(34 197 94 / 0.12), rgb(14 165 233 / 0.12) 40%, transparent 75%),
+    linear-gradient(145deg, rgb(15 23 42 / 0.82), rgb(15 23 42 / 0.68), rgb(3 7 18 / 0.48));
+  border: 1px solid rgb(148 163 184 / 14%);
+  box-shadow:
+    0 70px 150px rgb(2 6 23 / 0.55),
+    0 35px 80px rgb(14 165 233 / 0.2);
+}
+
+@media (min-width: 1280px) {
+  .home-hero {
+    padding: clamp(3rem, 3.6vw, 5rem);
+  }
 }
 
 .home-hero::before,
