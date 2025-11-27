@@ -134,8 +134,11 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
-    const resolveId = rewritePlugin?.resolveId?.bind(rewritePlugin)
+    const resolveId = typeof rewritePlugin?.resolveId === 'function'
+      ? rewritePlugin.resolveId.bind(rewritePlugin)
+      : rewritePlugin?.resolveId?.handler?.bind(rewritePlugin)
     expect(resolveId).toBeTypeOf('function')
+    expect((rewritePlugin as Plugin).resolveId).toMatchObject({ order: 'pre' })
 
     const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
     const cssImporter = '/src/app.css'
@@ -160,8 +163,11 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
-    const transform = rewritePlugin?.transform?.bind(rewritePlugin)
+    const transform = typeof rewritePlugin?.transform === 'function'
+      ? rewritePlugin.transform.bind(rewritePlugin)
+      : rewritePlugin?.transform?.handler?.bind(rewritePlugin)
     expect(transform).toBeTypeOf('function')
+    expect((rewritePlugin as Plugin).transform).toMatchObject({ order: 'pre' })
 
     const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
     const source = `

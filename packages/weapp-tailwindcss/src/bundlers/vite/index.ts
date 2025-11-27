@@ -217,28 +217,34 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         {
           name: `${vitePluginName}:rewrite-css-imports`,
           enforce: 'pre',
-          resolveId(id, importer) {
-            const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, { join: joinPosixPath })
-            if (!replacement) {
-              return null
-            }
-            if (importer && !isCssLikeImporter(importer)) {
-              return null
-            }
-            return replacement
+          resolveId: {
+            order: 'pre',
+            handler(id, importer) {
+              const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, { join: joinPosixPath })
+              if (!replacement) {
+                return null
+              }
+              if (importer && !isCssLikeImporter(importer)) {
+                return null
+              }
+              return replacement
+            },
           },
-          transform(code, id) {
-            if (!isCSSRequest(id)) {
-              return null
-            }
-            const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, { join: joinPosixPath })
-            if (!rewritten) {
-              return null
-            }
-            return {
-              code: rewritten,
-              map: null,
-            }
+          transform: {
+            order: 'pre',
+            handler(code, id) {
+              if (!isCSSRequest(id)) {
+                return null
+              }
+              const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, { join: joinPosixPath })
+              if (!rewritten) {
+                return null
+              }
+              return {
+                code: rewritten,
+                map: null,
+              }
+            },
           },
         },
       ]
