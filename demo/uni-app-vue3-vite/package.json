@@ -72,7 +72,7 @@
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0",
     "uview-plus": "^3.6.17",
     "vk-uview-ui": "^1.5.2",
-    "vue": "^3.5.22",
+    "vue": "catalog:vue3",
     "vue-i18n": "^9.14.5",
     "vuex": "^4.1.0"
   },

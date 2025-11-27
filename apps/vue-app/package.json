@@ -14,7 +14,7 @@
     "lucide-vue-next": "catalog:lucideVueNext0555",
     "reka-ui": "^2.6.0",
     "tailwind-merge": "^3.4.0",
-    "vue": "^3.5.24"
+    "vue": "catalog:vue3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:tailwindcss4",

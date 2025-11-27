@@ -29,6 +29,14 @@ catalogs:
     cross-env:
       specifier: ^10.1.0
       version: 10.1.0
+  lucideReact0555:
+    lucide-react:
+      specifier: ^0.555.0
+      version: 0.555.0
+  lucideVueNext0555:
+    lucide-vue-next:
+      specifier: ^0.555.0
+      version: 0.555.0
   miniApiTypings:
     miniprogram-api-typings:
       specifier: ^4.1.0
@@ -74,18 +82,20 @@ catalogs:
     react-dom:
       specifier: 19.2.0
       version: 19.2.0
-  lucideReact0555:
-    lucide-react:
-      specifier: ^0.555.0
-      version: 0.555.0
-  lucideVueNext0555:
-    lucide-vue-next:
-      specifier: ^0.555.0
-      version: 0.555.0
   reactRefresh018:
     react-refresh:
       specifier: ^0.18.0
       version: 0.18.0
+  vue3:
+    '@vue/compiler-dom':
+      specifier: ^3.5.24
+      version: 3.5.24
+    '@vue/compiler-sfc':
+      specifier: ^3.5.24
+      version: 3.5.24
+    vue:
+      specifier: ^3.5.24
+      version: 3.5.24
   stylelint1625:
     stylelint:
       specifier: ^16.26.0
@@ -113,8 +123,8 @@ catalogs:
       version: 4.1.17
   tailwindcssPatch:
     tailwindcss-patch:
-      specifier: ^8.4.1
-      version: 8.4.1
+      specifier: ^8.4.2
+      version: 8.4.2
   tailwindcssRem:
     tailwindcss-rem2px-preset:
       specifier: ^1.0.3
@@ -907,7 +917,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -934,7 +944,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -952,7 +962,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -1108,7 +1118,7 @@ importers:
         specifier: ^3.4.0
         version: 3.4.0
       vue:
-        specifier: ^3.5.24
+        specifier: catalog:vue3
         version: 3.5.24(typescript@5.9.3)
     devDependencies:
       '@tailwindcss/postcss':
@@ -1152,7 +1162,7 @@ importers:
     dependencies:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.3(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1)
+        version: 8.4.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.3(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1)
     devDependencies:
       autoprefixer:
         specifier: catalog:autoprefixer10
@@ -1170,7 +1180,7 @@ importers:
   benchmark:
     dependencies:
       vue:
-        specifier: ^3.5.24
+        specifier: catalog:vue3
         version: 3.5.24(typescript@5.9.3)
       vue-router:
         specifier: ^4.6.3
@@ -1332,7 +1342,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1477,7 +1487,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1601,7 +1611,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -1631,7 +1641,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1740,7 +1750,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1791,7 +1801,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -1888,7 +1898,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2027,7 +2037,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2175,7 +2185,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2317,7 +2327,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       terser:
         specifier: ^5.44.1
         version: 5.44.1
@@ -2364,7 +2374,7 @@ importers:
         specifier: catalog:taro4
         version: 4.1.8(@tarojs/components@4.1.8(@tarojs/helper@4.1.8(@swc/helpers@0.5.17))(@types/react@18.3.26)(html-webpack-plugin@5.6.4(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)))(postcss@8.5.6)(rollup@3.29.5)(vue@3.5.24(typescript@5.9.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)))(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)))(@tarojs/helper@4.1.8(@swc/helpers@0.5.17))(@tarojs/shared@4.1.8)(@types/react@18.3.26)(html-webpack-plugin@5.6.4(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)))(postcss@8.5.6)(rollup@3.29.5)(vue@3.5.24(typescript@5.9.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)))(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0))
       vue:
-        specifier: ^3.5.24
+        specifier: catalog:vue3
         version: 3.5.24(typescript@5.9.3)
     devDependencies:
       '@babel/core':
@@ -2395,7 +2405,7 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1(@babel/core@7.28.5)
       '@vue/compiler-sfc':
-        specifier: ^3.5.24
+        specifier: catalog:vue3
         version: 3.5.24
       '@weapp-tailwindcss/merge':
         specifier: catalog:weappMerge
@@ -2438,7 +2448,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2592,7 +2602,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -2803,7 +2813,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -2883,7 +2893,7 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       vue:
-        specifier: 3.4.21
+        specifier: catalog:vue3
         version: 3.4.21(typescript@5.9.3)
       vue-i18n:
         specifier: ^9.14.5
@@ -2930,7 +2940,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -3040,7 +3050,7 @@ importers:
         specifier: ^1.5.2
         version: 1.5.2
       vue:
-        specifier: ^3.5.22
+        specifier: catalog:vue3
         version: 3.5.24(typescript@5.9.3)
       vue-i18n:
         specifier: ^9.14.5
@@ -3126,7 +3136,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -3316,7 +3326,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       typescript:
         specifier: catalog:typescript59tilde
         version: 5.9.3
@@ -3512,7 +3522,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -3548,7 +3558,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.1.0
@@ -3572,7 +3582,7 @@ importers:
         version: 4.1.17
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.1.0
@@ -3603,7 +3613,7 @@ importers:
         version: 3.4.18(tsx@4.20.6)(yaml@2.8.1)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1))
@@ -3627,7 +3637,7 @@ importers:
         version: 3.7.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
 
   packages-runtime/cva:
     dependencies:
@@ -3904,10 +3914,10 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0(magicast@0.5.1)
       '@vue/compiler-dom':
-        specifier: ^3.5.24
+        specifier: catalog:vue3
         version: 3.5.24
       '@vue/compiler-sfc':
-        specifier: ^3.5.24
+        specifier: catalog:vue3
         version: 3.5.24
       '@weapp-core/escape':
         specifier: ~5.0.1
@@ -3953,7 +3963,7 @@ importers:
         version: 7.7.3
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.4.1(magicast@0.5.1)(tailwindcss@4.1.17)
+        version: 8.4.2(magicast@0.5.1)(tailwindcss@4.1.17)
       webpack-sources:
         specifier: 3.3.3
         version: 3.3.3
@@ -26473,8 +26483,8 @@ packages:
   tailwindcss-core-plugins-extractor@0.2.0:
     resolution: {integrity: sha512-idLHKZ2Mc0YXauIQ/1Hx2/0Hx5VH8z+N6E++O+W6GF0b6+nHQPv6A27ySlQt+HQdlnSZ2tx0Cpzpx+F2ez8YQg==}
 
-  tailwindcss-patch@8.4.1:
-    resolution: {integrity: sha512-0nd3lMPgetDwdL+LQZdC78sGDe1du8xYdbAqTalFctWzEH87n2RmgMnqL/VMrMt7EO+eJBqxRzrjIGuUQMEmwQ==}
+  tailwindcss-patch@8.4.2:
+    resolution: {integrity: sha512-lfIF8g4LQtW/HGkmx3qYsZrwEY4H8vu7905s4vDm5V0/Uzv59vipgwSF1g0JIxmmERP1GpmgzuTW2Vwya3Zx/w==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -61103,7 +61113,7 @@ snapshots:
 
   tailwindcss-core-plugins-extractor@0.2.0: {}
 
-  tailwindcss-patch@8.4.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.3(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1):
+  tailwindcss-patch@8.4.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.3(@swc/helpers@0.5.17))(@types/node@24.10.1)(typescript@5.9.3)))(magicast@0.5.1):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -61125,7 +61135,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.4.1(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1)):
+  tailwindcss-patch@8.4.2(magicast@0.5.1)(tailwindcss@3.4.18(tsx@4.20.6)(yaml@2.8.1)):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -61147,7 +61157,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.4.1(magicast@0.5.1)(tailwindcss@4.1.17):
+  tailwindcss-patch@8.4.2(magicast@0.5.1)(tailwindcss@4.1.17):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5

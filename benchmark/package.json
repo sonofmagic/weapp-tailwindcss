@@ -21,7 +21,7 @@
     "sync:projects": "node ./scripts/sync-projects.mjs"
   },
   "dependencies": {
-    "vue": "^3.5.24",
+    "vue": "catalog:vue3",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {

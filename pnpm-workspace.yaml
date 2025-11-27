@@ -22,6 +22,10 @@ catalogs:
     '@babel/runtime': ~7.28.4
   crossEnv:
     cross-env: ^10.1.0
+  lucideReact0555:
+    lucide-react: ^0.555.0
+  lucideVueNext0555:
+    lucide-vue-next: ^0.555.0
   miniApiTypings:
     miniprogram-api-typings: ^4.1.0
   postcss85:
@@ -46,12 +50,12 @@ catalogs:
     '@types/react-dom': 19.1.13
     react: 19.2.0
     react-dom: 19.2.0
-  lucideReact0555:
-    lucide-react: ^0.555.0
-  lucideVueNext0555:
-    lucide-vue-next: ^0.555.0
   reactRefresh018:
     react-refresh: ^0.18.0
+  vue3:
+    '@vue/compiler-dom': ^3.5.24
+    '@vue/compiler-sfc': ^3.5.24
+    vue: ^3.5.24
   stylelint1625:
     stylelint: ^16.26.0
   tailwindMerge:
@@ -64,7 +68,7 @@ catalogs:
     tailwindcss: ^4.1.17
     tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssPatch:
-    tailwindcss-patch: ^8.4.1
+    tailwindcss-patch: ^8.4.2
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
