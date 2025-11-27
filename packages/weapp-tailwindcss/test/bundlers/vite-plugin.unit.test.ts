@@ -180,6 +180,65 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
   })
 
+  it('runs rewrite transform ahead of other pre plugins so tailwindcss imports are replaced first', async () => {
+    currentContext.twPatcher.majorVersion = 4
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeTruthy()
+
+    const tailwindLikePlugin: Plugin = {
+      name: '@tailwindcss/vite:generate',
+      enforce: 'pre',
+      transform(code) {
+        return { code: `tailwind:${code}`, map: null }
+      },
+    }
+
+    function collectOrderedTransforms(pluginList: Plugin[]) {
+      const pre: Array<{ name: string, handler: NonNullable<Plugin['transform']> }> = []
+      const normal: typeof pre = []
+      const post: typeof pre = []
+      for (const plugin of pluginList) {
+        const hook = plugin.transform
+        if (!hook) {
+          continue
+        }
+        const target = typeof hook === 'object'
+          ? hook.order === 'post'
+            ? post
+            : hook.order === 'pre'
+              ? pre
+              : normal
+          : normal
+        target.push({
+          name: plugin.name,
+          handler: typeof hook === 'object' ? hook.handler!.bind(plugin) : hook.bind(plugin),
+        })
+      }
+      return [...pre, ...normal, ...post]
+    }
+
+    const orderedTransforms = collectOrderedTransforms([tailwindLikePlugin, ...(plugins ?? [])])
+    expect(orderedTransforms.map(item => item.name)).toEqual([
+      `${vitePluginName}:rewrite-css-imports`,
+      '@tailwindcss/vite:generate',
+    ])
+
+    let source = '@import "tailwindcss";'
+    const id = '/src/app.css'
+    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
+
+    for (const { handler } of orderedTransforms) {
+      const result = await handler(source, id) as TransformResult
+      if (result?.code) {
+        source = result.code
+      }
+    }
+
+    expect(source).toContain(`@import "${pkgDir}/index.css";`)
+    expect(source.startsWith('tailwind:')).toBeTruthy()
+  })
+
   it('can disable css import rewriting through options', () => {
     ;(currentContext as any).rewriteCssImports = false
     currentContext.twPatcher.majorVersion = 4
