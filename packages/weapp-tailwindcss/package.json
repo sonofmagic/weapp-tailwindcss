@@ -208,6 +208,6 @@
     "semver": "~7.7.3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "webpack-sources": "3.3.3",
-    "yaml": "^2.8.1"
+    "yaml": "^2.8.2"
   }
 }

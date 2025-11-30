@@ -78,7 +78,7 @@
     "@types/react": "catalog:react18",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "workspace:*",
-    "babel-preset-taro": "4.1.8",
+    "babel-preset-taro": "catalog:taro4",
     "postcss": "catalog:postcss85",
     "react-refresh": "catalog:reactRefresh018",
     "tailwindcss": "catalog:tailwindcss4",
