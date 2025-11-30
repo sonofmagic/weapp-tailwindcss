@@ -154,7 +154,7 @@ function HomepageHeader() {
       </div>
       <div className={`
         container relative z-[1] flex min-h-svh flex-col justify-center gap-12
-        py-12
+        py-10 sm:py-12
       `}
       >
         <div className="home-hero mx-auto w-full max-w-[min(1320px,96vw)]">
@@ -230,14 +230,14 @@ function HomepageHeader() {
               一站式解决方案
             </h3>
             <div className={`
-              mt-8 flex flex-col items-center gap-4
-              sm:flex-row
+              mt-8 flex w-full flex-col gap-4
+              sm:w-auto sm:flex-row sm:items-center sm:justify-center
             `}
             >
               <a
                 className={`
                   ${ctaButton()}
-                  home-cta
+                  home-cta w-full justify-center text-center sm:w-auto
                 `}
                 href="/docs/intro"
               >

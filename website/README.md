@@ -12,6 +12,18 @@ pnpm install
 pnpm dev
 ```
 
+## Playwright 截图测试
+
+Playwright 用来对官网的所有路由做截图回归，现在同时覆盖桌面视口与移动端（Chromium 模拟 iPhone 12）。默认会访问生产站点 `https://tw.icebreaker.top/`，也可以通过 `PLAYWRIGHT_BASE_URL` 指定自己的预览地址（例如 `http://192.168.10.4:4000/`）来验证局域网环境。
+
+```bash
+# 在仓库根目录执行
+pnpm --filter @weapp-tailwindcss/website e2e
+
+# 指定移动端验证地址（如 192.168.10.4:4000）
+PLAYWRIGHT_BASE_URL=http://192.168.10.4:4000 pnpm --filter @weapp-tailwindcss/website e2e
+```
+
 ## 报错解决
 
 Module not found: Error: Can't resolve '@weapp-tailwindcss/merge' in '/Users/zzy/Projects/weapp-tailwindcss/website/src/theme/ReactLiveScope'

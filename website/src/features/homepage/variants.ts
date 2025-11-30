@@ -16,7 +16,7 @@ export const ctaButton = tv({
 
 export const interactionPill = tv({
   base: [
-    'inline-flex rounded-full',
+    'inline-flex w-full rounded-full sm:w-auto',
     'bg-[linear-gradient(120deg,rgba(255,255,255,0.75),rgba(226,232,240,0.5))]',
     'shadow-[0_18px_40px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.55)]',
     'backdrop-blur-[12px]',
@@ -30,7 +30,7 @@ export const interactionPill = tv({
 
 export const interactionPillLink = tv({
   base: [
-    'group inline-flex items-center gap-2.5 px-3 py-2',
+    'group inline-flex w-full items-center justify-between gap-2.5 px-3 py-2 sm:w-auto sm:justify-start',
     'text-[0.95rem] font-semibold tracking-[0.01em]',
     'text-slate-600 transition-colors duration-300',
     'hover:text-slate-900',
