@@ -183,6 +183,12 @@ catalogs:
     '@tarojs/webpack5-runner':
       specifier: ^4.1.9
       version: 4.1.9
+    babel-preset-taro:
+      specifier: ^4.1.9
+      version: 4.1.9
+    eslint-config-taro:
+      specifier: ^4.1.9
+      version: 4.1.9
   taroPxtransform:
     postcss-pxtransform:
       specifier: ^4.1.9
@@ -643,8 +649,8 @@ importers:
         specifier: ^0.33.0
         version: 0.33.0
       tsdown:
-        specifier: ^0.16.7
-        version: 0.16.7(oxc-resolver@11.7.1)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.5(typescript@5.9.3))
+        specifier: ^0.16.8
+        version: 0.16.8(oxc-resolver@11.7.1)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.5(typescript@5.9.3))
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -1889,7 +1895,7 @@ importers:
         version: 3.7.3
       rax-app:
         specifier: 3.8.22
-        version: 3.8.22(@babel/core@7.28.5)(debug@4.4.3)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(postcss@8.5.6)(rax@1.2.3)(react@19.2.0)(redux@4.2.1)(rolldown@1.0.0-beta.51)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)(typescript@5.9.3)(vue-template-compiler@2.7.16)(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0))
+        version: 3.8.22(@babel/core@7.28.5)(debug@4.4.3)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(postcss@8.5.6)(rax@1.2.3)(react@19.2.0)(redux@4.2.1)(rolldown@1.0.0-beta.52)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)(typescript@5.9.3)(vue-template-compiler@2.7.16)(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0))
       stylelint:
         specifier: catalog:stylelint1625
         version: 16.26.1(typescript@5.9.3)
@@ -14084,6 +14090,10 @@ packages:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
 
+  chokidar@5.0.0:
+    resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
+    engines: {node: '>= 20.19.0'}
+
   chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
 
@@ -24432,6 +24442,10 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
+  readdirp@5.0.0:
+    resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
+    engines: {node: '>= 20.19.0'}
+
   realpath-missing@1.1.0:
     resolution: {integrity: sha512-wnWtnywepjg/eHIgWR97R7UuM5i+qHLA195qdN9UPKvcMqfn60+67S8sPPW3vDlSEfYHoFkKU8IvpCNty3zQvQ==}
     engines: {node: '>=10'}
@@ -27055,6 +27069,31 @@ packages:
       unplugin-unused:
         optional: true
 
+  tsdown@0.16.8:
+    resolution: {integrity: sha512-6ANw9mgU9kk7SvTBKvpDu/DVJeAFECiLUSeL5M7f5Nm5H97E7ybxmXT4PQ23FySYn32y6OzjoAH/lsWCbGzfLA==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
+    peerDependencies:
+      '@arethetypeswrong/core': ^0.18.1
+      '@vitejs/devtools': ^0.0.0-alpha.18
+      publint: ^0.3.0
+      typescript: ^5.0.0
+      unplugin-lightningcss: ^0.4.0
+      unplugin-unused: ^0.5.0
+    peerDependenciesMeta:
+      '@arethetypeswrong/core':
+        optional: true
+      '@vitejs/devtools':
+        optional: true
+      publint:
+        optional: true
+      typescript:
+        optional: true
+      unplugin-lightningcss:
+        optional: true
+      unplugin-unused:
+        optional: true
+
   tslib@1.13.0:
     resolution: {integrity: sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==}
 
@@ -27553,6 +27592,16 @@ packages:
 
   unrun@0.2.11:
     resolution: {integrity: sha512-HjUuNLRGfRxMvxkwOuO/CpkSzdizTPPApbarLplsTzUm8Kex+nS9eomKU1qgVus6WGWkDYhtf/mgNxGEpyTR6A==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
+    peerDependencies:
+      synckit: ^0.11.11
+    peerDependenciesMeta:
+      synckit:
+        optional: true
+
+  unrun@0.2.15:
+    resolution: {integrity: sha512-UZ653WcLSK33meAX3nHXgD1JJ+t4RGa8WIzv9Dr4Y5ahhILZ5UIvObkVauKmtwwZ8Lsin3hUfso2UlzIwOiCNA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -30434,7 +30483,7 @@ snapshots:
       - vue-template-compiler
       - webpack
 
-  '@builder/vite-service@1.1.4(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.51)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)':
+  '@builder/vite-service@1.1.4(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.52)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)':
     dependencies:
       '@builder/app-helpers': 2.5.4(@babel/core@7.28.5)
       '@rollup/pluginutils': 4.2.1
@@ -30450,7 +30499,7 @@ snapshots:
       lodash: 4.17.21
       magic-string: 0.25.9
       npmlog: 4.1.2
-      rollup-plugin-visualizer: 5.14.0(rolldown@1.0.0-beta.51)(rollup@4.53.3)
+      rollup-plugin-visualizer: 5.14.0(rolldown@1.0.0-beta.52)(rollup@4.53.3)
       vite: 2.9.18(less@4.4.2)(sass@1.94.2)(stylus@0.64.0)
       vite-plugin-eslint-report: 1.0.1(eslint@9.39.1(jiti@2.6.1))
       vite-plugin-ts-types: 1.0.0
@@ -44677,6 +44726,10 @@ snapshots:
     dependencies:
       readdirp: 4.1.2
 
+  chokidar@5.0.0:
+    dependencies:
+      readdirp: 5.0.0
+
   chownr@1.1.4: {}
 
   chownr@2.0.0: {}
@@ -45405,9 +45458,9 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  create-cli-utils@1.0.0(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.51)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0):
+  create-cli-utils@1.0.0(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.52)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0):
     dependencies:
-      '@builder/vite-service': 1.1.4(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.51)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)
+      '@builder/vite-service': 1.1.4(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.52)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)
       build-scripts: 1.3.0
       chalk: 4.1.2
       chokidar: 3.6.0
@@ -57393,7 +57446,7 @@ snapshots:
     transitivePeerDependencies:
       - rax
 
-  rax-app@3.8.22(@babel/core@7.28.5)(debug@4.4.3)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(postcss@8.5.6)(rax@1.2.3)(react@19.2.0)(redux@4.2.1)(rolldown@1.0.0-beta.51)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)(typescript@5.9.3)(vue-template-compiler@2.7.16)(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)):
+  rax-app@3.8.22(@babel/core@7.28.5)(debug@4.4.3)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(postcss@8.5.6)(rax@1.2.3)(react@19.2.0)(redux@4.2.1)(rolldown@1.0.0-beta.52)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)(typescript@5.9.3)(vue-template-compiler@2.7.16)(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0)):
     dependencies:
       '@builder/pack': 0.6.8
       '@builder/webpack-dev-server': 1.0.0(webpack@5.103.0(@swc/core@1.15.3(@swc/helpers@0.5.17))(esbuild@0.27.0))
@@ -57413,7 +57466,7 @@ snapshots:
       build-scripts: 1.3.0
       chokidar: 3.6.0
       commander: 5.1.0
-      create-cli-utils: 1.0.0(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.51)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)
+      create-cli-utils: 1.0.0(@babel/core@7.28.5)(eslint@9.39.1(jiti@2.6.1))(less@4.4.2)(rolldown@1.0.0-beta.52)(rollup@4.53.3)(sass@1.94.2)(stylus@0.64.0)
       detect-port: 1.6.1
       inquirer: 7.3.3
       miniapp-builder-shared: 0.3.0(debug@4.4.3)
@@ -57918,6 +57971,8 @@ snapshots:
       picomatch: 2.3.1
 
   readdirp@4.1.2: {}
+
+  readdirp@5.0.0: {}
 
   realpath-missing@1.1.0: {}
 
@@ -58506,6 +58561,24 @@ snapshots:
     transitivePeerDependencies:
       - oxc-resolver
 
+  rolldown-plugin-dts@0.18.1(oxc-resolver@11.7.1)(rolldown@1.0.0-beta.52)(typescript@5.9.3)(vue-tsc@3.1.5(typescript@5.9.3)):
+    dependencies:
+      '@babel/generator': 7.28.5
+      '@babel/parser': 7.28.5
+      '@babel/types': 7.28.5
+      ast-kit: 2.2.0
+      birpc: 2.8.0
+      dts-resolver: 2.1.3(oxc-resolver@11.7.1)
+      get-tsconfig: 4.13.0
+      magic-string: 0.30.21
+      obug: 2.1.1
+      rolldown: 1.0.0-beta.52
+    optionalDependencies:
+      typescript: 5.9.3
+      vue-tsc: 3.1.5(typescript@5.9.3)
+    transitivePeerDependencies:
+      - oxc-resolver
+
   rolldown-require@1.0.5(rolldown@1.0.0-beta.52)(rollup@4.53.3):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.53.3)
@@ -58586,14 +58659,14 @@ snapshots:
     optionalDependencies:
       '@babel/code-frame': 7.27.1
 
-  rollup-plugin-visualizer@5.14.0(rolldown@1.0.0-beta.51)(rollup@4.53.3):
+  rollup-plugin-visualizer@5.14.0(rolldown@1.0.0-beta.52)(rollup@4.53.3):
     dependencies:
       open: 8.4.2
       picomatch: 4.0.3
       source-map: 0.7.6
       yargs: 17.7.2
     optionalDependencies:
-      rolldown: 1.0.0-beta.51
+      rolldown: 1.0.0-beta.52
       rollup: 4.53.3
 
   rollup@2.77.3:
@@ -61226,6 +61299,32 @@ snapshots:
       - synckit
       - vue-tsc
 
+  tsdown@0.16.8(oxc-resolver@11.7.1)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.5(typescript@5.9.3)):
+    dependencies:
+      ansis: 4.2.0
+      cac: 6.7.14
+      chokidar: 5.0.0
+      diff: 8.0.2
+      empathic: 2.0.0
+      hookable: 5.5.3
+      obug: 2.1.1
+      rolldown: 1.0.0-beta.52
+      rolldown-plugin-dts: 0.18.1(oxc-resolver@11.7.1)(rolldown@1.0.0-beta.52)(typescript@5.9.3)(vue-tsc@3.1.5(typescript@5.9.3))
+      semver: 7.7.3
+      tinyexec: 1.0.2
+      tinyglobby: 0.2.15
+      tree-kill: 1.2.2
+      unconfig-core: 7.4.1
+      unrun: 0.2.15(synckit@0.11.11)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - synckit
+      - vue-tsc
+
   tslib@1.13.0: {}
 
   tslib@1.14.1: {}
@@ -61836,6 +61935,13 @@ snapshots:
     dependencies:
       '@oxc-project/runtime': 0.96.0
       rolldown: 1.0.0-beta.51
+    optionalDependencies:
+      synckit: 0.11.11
+
+  unrun@0.2.15(synckit@0.11.11):
+    dependencies:
+      '@oxc-project/runtime': 0.99.0
+      rolldown: 1.0.0-beta.52
     optionalDependencies:
       synckit: 0.11.11
 
