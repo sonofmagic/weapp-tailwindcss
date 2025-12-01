@@ -93,6 +93,64 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
   }
 }
 
+function createCompilerWithLoaderTracking() {
+  let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+  const compilation = {
+    compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+    chunks: [],
+    hooks: {
+      processAssets: {
+        tapPromise: vi.fn(),
+      },
+    },
+    updateAsset: vi.fn(),
+    getAsset: vi.fn(),
+  }
+  const compiler = {
+    webpack: {
+      Compilation: {
+        PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+      },
+      sources: {
+        ConcatSource: FakeConcatSource,
+      },
+      NormalModule: {
+        getCompilationHooks: vi.fn(() => ({
+          loader: {
+            tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+              loaderHandler = handler
+            },
+          },
+        })),
+      },
+    },
+    hooks: {
+      normalModuleFactory: {
+        tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+          handler({
+            hooks: {
+              beforeResolve: {
+                tap: vi.fn(),
+              },
+            },
+          })
+        }),
+      },
+      compilation: {
+        tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+          handler(compilation)
+        }),
+      },
+    },
+  }
+
+  return {
+    compiler,
+    compilation,
+    getLoaderHandler: () => loaderHandler,
+  }
+}
+
 describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
   beforeEach(() => {
     currentContext = createContext()
@@ -319,6 +377,21 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const runtimeLoaderEntry = module.loaders.at(-1)
     expect(runtimeLoaderEntry?.loader).toBe(currentContext.runtimeLoaderPath)
     expect(runtimeLoaderEntry?.options?.rewriteCssImports?.pkgDir).toEqual(expect.any(String))
+  })
+
+  it('does not attach runtime loader when postcss loader is missing', () => {
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/css-loader.js' }],
+    }
+    handler?.({}, module)
+
+    expect(module.loaders).toHaveLength(1)
+    expect(module.loaders[0].loader).toBe('/path/css-loader.js')
   })
 
   it('keeps separate cache entries for js and wxs assets', async () => {

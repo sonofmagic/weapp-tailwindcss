@@ -108,19 +108,24 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module) => {
-        if (isExisted) {
-          // @ts-ignore
-          const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
-
-          if (idx > -1) {
-            // @ts-ignore
-            module.loaders.splice(idx + 1, 0, createRuntimeLoaderEntry())
-          }
-          else {
-            // @ts-ignore
-            module.loaders.push(createRuntimeLoaderEntry())
-          }
+        if (!isExisted) {
+          return
         }
+        // @ts-ignore
+        const loaderEntries = module.loaders || []
+        const idx = loaderEntries.findIndex((entry: any) => {
+          if (!entry?.loader) {
+            return false
+          }
+          return entry.loader.includes('postcss-loader')
+        })
+
+        if (idx === -1) {
+          return
+        }
+
+        // @ts-ignore
+        loaderEntries.splice(idx + 1, 0, createRuntimeLoaderEntry())
       })
     })
 

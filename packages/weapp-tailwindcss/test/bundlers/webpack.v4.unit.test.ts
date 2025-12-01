@@ -71,6 +71,51 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
   }
 }
 
+function createCompilerWithLoaderTracking() {
+  let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+  const compilation = {
+    chunks: [],
+    hooks: {
+      normalModuleLoader: {
+        tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+          loaderHandler = handler
+        },
+      },
+    },
+    assets: {},
+    updateAsset: vi.fn(),
+  }
+
+  const compiler = {
+    hooks: {
+      normalModuleFactory: {
+        tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+          handler({
+            hooks: {
+              beforeResolve: {
+                tap: vi.fn(),
+              },
+            },
+          })
+        }),
+      },
+      compilation: {
+        tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+          handler(compilation)
+        }),
+      },
+      emit: {
+        tapPromise: vi.fn(),
+      },
+    },
+  }
+
+  return {
+    compiler,
+    getLoaderHandler: () => loaderHandler,
+  }
+}
+
 describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
   beforeEach(() => {
     currentContext = createContext()
@@ -245,6 +290,22 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     const runtimeLoaderEntry = module.loaders.at(-1)
     expect(runtimeLoaderEntry?.loader).toBe(currentContext.runtimeLoaderPath)
     expect(runtimeLoaderEntry?.options?.rewriteCssImports?.pkgDir).toEqual(expect.any(String))
+  })
+
+  it('does not attach runtime loader when postcss loader is missing', () => {
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/css-loader.js' }],
+    }
+
+    handler?.({}, module)
+
+    expect(module.loaders).toHaveLength(1)
+    expect(module.loaders[0].loader).toBe('/path/css-loader.js')
   })
 
   it('keeps distinct cache entries for js and wxs assets', async () => {

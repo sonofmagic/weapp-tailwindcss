@@ -111,16 +111,21 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     // https://github.com/NervJS/taro/blob/next/packages/taro-webpack5-runner/src/webpack/MiniWebpackPlugin.ts
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
-        if (isExisted) {
-          const idx = module.loaders.findIndex(x => x.loader.includes('postcss-loader'))
-          const runtimeLoaderEntry = createRuntimeLoaderEntry()
-          if (idx > -1) {
-            module.loaders.splice(idx + 1, 0, runtimeLoaderEntry)
-          }
-          else {
-            module.loaders.push(runtimeLoaderEntry)
-          }
+        if (!isExisted) {
+          return
         }
+        const loaderEntries = module.loaders || []
+        const idx = loaderEntries.findIndex((entry) => {
+          if (!entry?.loader) {
+            return false
+          }
+          return entry.loader.includes('postcss-loader')
+        })
+        if (idx === -1) {
+          return
+        }
+        const runtimeLoaderEntry = createRuntimeLoaderEntry()
+        loaderEntries.splice(idx + 1, 0, runtimeLoaderEntry)
       })
 
       compilation.hooks.processAssets.tapPromise(
