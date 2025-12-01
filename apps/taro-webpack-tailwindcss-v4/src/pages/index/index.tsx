@@ -1,5 +1,6 @@
-import { Text, View } from '@tarojs/components'
+import { Image, Text, View } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
+import Logo from '../../assets/logo.png'
 import './index.css'
 
 export default function Index() {
@@ -9,6 +10,7 @@ export default function Index() {
 
   return (
     <>
+      <Image src={Logo}></Image>
       <View className="bg-[#2e2bcc] text-[100rpx] text-white">
         <Text>Hello world!</Text>
       </View>
