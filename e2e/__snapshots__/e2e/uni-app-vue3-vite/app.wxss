@@ -229,6 +229,9 @@ text,
 .w-10 {
   width: 80rpx;
 }
+.w-16 {
+  width: 128rpx;
+}
 .w-2 {
   width: 16rpx;
 }
