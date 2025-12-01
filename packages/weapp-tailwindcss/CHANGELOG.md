@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.8.7
+
+### Patch Changes
+
+- [`22b7af3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/22b7af321acfb58fba34a3e6dd935a5b8f23bd1f) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复运行时 loader 在某些构建链路中接管图片等二进制资源时会破坏文件内容的问题，确保仅在 postcss-loader 之后注入并跳过 Buffer 处理，避免 dist/assets/logo.png 等静态资产被损坏。
+
 ## 4.8.6
 
 ### Patch Changes
