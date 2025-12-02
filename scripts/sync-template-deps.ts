@@ -557,6 +557,8 @@ async function regenerateLockfile(templateDir: string, manager: ManagerInfo): Pr
     else {
       const yarnVersion = manager.version ?? DEFAULT_YARN_VERSION
       const yarnMajor = Number.parseInt((yarnVersion.split('.')[0] ?? '1') as string, 10)
+      const yarnCacheDir = path.join(directory, '.yarn-cache')
+      ensureDir(yarnCacheDir)
       const args = [
         'dlx',
         `yarn@${yarnVersion}`,
@@ -570,11 +572,18 @@ async function regenerateLockfile(templateDir: string, manager: ManagerInfo): Pr
       else {
         args.push('--prefer-offline', '--no-progress')
       }
+      args.push('--cache-folder', yarnCacheDir)
       success = await runCommand(
         'pnpm',
         args,
         directory,
-        { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
+        {
+          allowFailure: true,
+          timeoutMs: LOCK_UPDATE_TIMEOUT_MS,
+          env: {
+            YARN_CACHE_FOLDER: yarnCacheDir,
+          },
+        },
       )
     }
 
