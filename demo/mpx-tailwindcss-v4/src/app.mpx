@@ -6,10 +6,7 @@
   createApp({})
 </script>
 
-<style>
-  @import 'weapp-tailwindcss/index.css';
-  @source "../src";
-</style>
+<style src="./app.css" />
 
 <script type="application/json">
   {

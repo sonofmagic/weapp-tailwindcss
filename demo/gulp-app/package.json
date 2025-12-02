@@ -80,7 +80,7 @@
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "tsx": "^4.19.2",
+    "tsx": "^4.21.0",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
