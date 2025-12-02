@@ -283,7 +283,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
         timeTaken = performance.now() - timeStart
         console.log(`[common] case processAssets executed in ${timeTaken}ms`)
       },
-      runtimeLoaderPath: path.resolve(__dirname, '../dist/weapp-tw-runtime-loader.js'),
+      runtimeLoaderPath: path.resolve(__dirname, '../dist/weapp-tw-runtime-classset-loader.js'),
     }).apply(compiler)
 
     const stats = await compile(compiler)

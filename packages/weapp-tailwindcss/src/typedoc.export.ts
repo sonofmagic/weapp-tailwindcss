@@ -436,6 +436,14 @@ export interface UserDefinedOptions {
   runtimeLoaderPath?: string
 
   /**
+   * 内部使用的 CSS import 重写加载器路径。
+   *
+   * @ignore
+   * @internal
+   */
+  runtimeCssImportRewriteLoaderPath?: string
+
+  /**
    * 指定用于获取 Tailwind 上下文的路径。
    *
    * @group 3.一般配置

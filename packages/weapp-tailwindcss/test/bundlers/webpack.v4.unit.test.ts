@@ -30,6 +30,7 @@ interface TestContext {
   jsMatcher: (file: string) => boolean
   wxsMatcher: (file: string) => boolean
   runtimeLoaderPath: string
+  runtimeCssImportRewriteLoaderPath: string
 }
 
 let currentContext: TestContext
@@ -65,8 +66,9 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     cssMatcher: (file: string) => file.endsWith('.css'),
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),
-    wxsMatcher: () => false,
-    runtimeLoaderPath: '/virtual/weapp-tw-runtime-loader.js',
+    wxsMatcher: (_file: string) => false,
+    runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
+    runtimeCssImportRewriteLoaderPath: '/virtual/weapp-tw-css-import-rewrite-loader.js',
     ...overrides,
   }
 }
@@ -186,9 +188,10 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       loaders: [{ loader: '/path/postcss-loader.js' }],
     }
     loaderHandler?.({}, module)
-    const runtimeLoaderEntry = module.loaders.at(-1)
-    expect(runtimeLoaderEntry?.loader).toBe(currentContext.runtimeLoaderPath)
-    expect(runtimeLoaderEntry?.options?.rewriteCssImports).toBeUndefined()
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    expect(classSetLoaderEntry?.options?.rewriteCssImports).toBeUndefined()
+    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    expect(rewriteLoaderEntry).toBeUndefined()
 
     const html = '<view class="foo"></view>'
     const js = 'const foo = 1'
@@ -287,9 +290,16 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       loaders: [{ loader: '/path/postcss-loader.js' }],
     }
     loaderHandler?.({}, module)
-    const runtimeLoaderEntry = module.loaders.at(-1)
-    expect(runtimeLoaderEntry?.loader).toBe(currentContext.runtimeLoaderPath)
-    expect(runtimeLoaderEntry?.options?.rewriteCssImports?.pkgDir).toEqual(expect.any(String))
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    expect(classSetLoaderEntry).toBeDefined()
+    expect(rewriteLoaderEntry).toBeDefined()
+    expect(rewriteLoaderEntry?.options?.rewriteCssImports?.pkgDir).toEqual(expect.any(String))
+    const classSetIndex = module.loaders.indexOf(classSetLoaderEntry!)
+    const postcssIndex = module.loaders.findIndex(entry => entry.loader.includes('postcss-loader'))
+    const rewriteIndex = module.loaders.indexOf(rewriteLoaderEntry!)
+    expect(classSetIndex).toBeLessThan(postcssIndex)
+    expect(rewriteIndex).toBeGreaterThan(postcssIndex)
   })
 
   it('does not attach runtime loader when postcss loader is missing', () => {

@@ -30,11 +30,9 @@ export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
-  private readonly userSpecifiedRewriteCssImports: boolean
 
   constructor(options: UserDefinedOptions = {}) {
     this.options = getCompilerContext(options)
-    this.userSpecifiedRewriteCssImports = Object.prototype.hasOwnProperty.call(options, 'rewriteCssImports')
     this.appType = this.options.appType
   }
 
@@ -50,6 +48,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       templateHandler,
       jsHandler,
       runtimeLoaderPath,
+      runtimeCssImportRewriteLoaderPath,
       cache,
       twPatcher: initialTwPatcher,
       refreshTailwindcssPatcher,
@@ -58,8 +57,8 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     if (disabled) {
       return
     }
-    const shouldRewriteCssImports = this.options.rewriteCssImports !== false
-      && (this.userSpecifiedRewriteCssImports || (initialTwPatcher.majorVersion ?? 0) >= 4)
+    const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
+    const shouldRewriteCssImports = isTailwindcssV4 && this.options.rewriteCssImports !== false
     if (shouldRewriteCssImports) {
       applyTailwindcssCssImportRewrite(compiler, {
         pkgDir: weappTailwindcssPackageDir,
@@ -88,27 +87,51 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     }
 
     onLoad()
-    const loader = runtimeLoaderPath ?? path.resolve(__dirname, './weapp-tw-runtime-loader.js')
-    const isExisted = fs.existsSync(loader)
+    const runtimeClassSetLoader = runtimeLoaderPath
+      ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
+    const runtimeCssImportRewriteLoader = shouldRewriteCssImports
+      ? (runtimeCssImportRewriteLoaderPath
+        ?? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js'))
+      : undefined
+    const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
+    const runtimeCssImportRewriteLoaderExists = runtimeCssImportRewriteLoader
+      ? fs.existsSync(runtimeCssImportRewriteLoader)
+      : false
     const runtimeLoaderRewriteOptions = shouldRewriteCssImports
       ? {
           pkgDir: weappTailwindcssPackageDir,
         }
       : undefined
-    const runtimeLoaderOptions = {
+    const classSetLoaderOptions = {
       getClassSet: getClassSetInLoader,
-      rewriteCssImports: runtimeLoaderRewriteOptions,
     }
-    const createRuntimeLoaderEntry = () => ({
-      loader,
-      options: runtimeLoaderOptions,
+    const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
+      ? {
+          rewriteCssImports: runtimeLoaderRewriteOptions,
+        }
+      : undefined
+    const createRuntimeClassSetLoaderEntry = () => ({
+      loader: runtimeClassSetLoader,
+      options: classSetLoaderOptions,
       ident: null,
       type: null,
     })
+    const createCssImportRewriteLoaderEntry = () => {
+      if (!runtimeCssImportRewriteLoader) {
+        return null
+      }
+      return {
+        loader: runtimeCssImportRewriteLoader,
+        options: cssImportRewriteLoaderOptions,
+        ident: null,
+        type: null,
+      }
+    }
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module) => {
-        if (!isExisted) {
+        const hasRuntimeLoader = runtimeClassSetLoaderExists || runtimeCssImportRewriteLoaderExists
+        if (!hasRuntimeLoader) {
           return
         }
         // @ts-ignore
@@ -124,8 +147,17 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           return
         }
 
-        // @ts-ignore
-        loaderEntries.splice(idx + 1, 0, createRuntimeLoaderEntry())
+        if (runtimeLoaderRewriteOptions && runtimeCssImportRewriteLoaderExists && cssImportRewriteLoaderOptions) {
+          const rewriteEntry = createCssImportRewriteLoaderEntry()
+          if (rewriteEntry) {
+            // @ts-ignore
+            loaderEntries.splice(idx + 1, 0, rewriteEntry)
+          }
+        }
+        if (runtimeClassSetLoaderExists) {
+          // @ts-ignore
+          loaderEntries.splice(idx, 0, createRuntimeClassSetLoaderEntry())
+        }
       })
     })
 

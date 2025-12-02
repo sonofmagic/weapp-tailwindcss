@@ -4,8 +4,7 @@ import type webpack from 'webpack'
 import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 
-interface RuntimeLoaderOptions {
-  getClassSet?: () => void | Promise<void>
+interface CssImportRewriteLoaderOptions {
   rewriteCssImports?: {
     pkgDir: string
   }
@@ -22,7 +21,7 @@ function joinPosixPath(base: string, subpath: string) {
   return `${base}/${subpath}`
 }
 
-function applyCssImportRewrite(source: string, options: RuntimeLoaderOptions | undefined) {
+function applyCssImportRewrite(source: string, options: CssImportRewriteLoaderOptions | undefined) {
   const rewriteOptions = options?.rewriteCssImports
   const pkgDir = rewriteOptions?.pkgDir
   if (!pkgDir) {
@@ -34,23 +33,19 @@ function applyCssImportRewrite(source: string, options: RuntimeLoaderOptions | u
   return rewritten ?? source
 }
 
-function transformSource(source: string | Buffer, options: RuntimeLoaderOptions | undefined) {
+function transformSource(source: string | Buffer, options: CssImportRewriteLoaderOptions | undefined) {
   if (Buffer.isBuffer(source)) {
     return source
   }
   return applyCssImportRewrite(source, options)
 }
 
-const WeappTwRuntimeAopLoader: webpack.LoaderDefinitionFunction<RuntimeLoaderOptions> = function (
+const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportRewriteLoaderOptions> = function (
   this: webpack.LoaderContext<any>,
   source: string | Buffer,
 ) {
-  const opt = loaderUtils.getOptions(this) // 等同于 this.getCompilerContext()
-  const maybePromise = opt?.getClassSet?.()
-  if (maybePromise && typeof (maybePromise as PromiseLike<void>).then === 'function') {
-    return Promise.resolve(maybePromise).then(() => transformSource(source, opt))
-  }
+  const opt = loaderUtils.getOptions(this)
   return transformSource(source, opt)
 }
 
-export default WeappTwRuntimeAopLoader
+export default WeappTwCssImportRewriteLoader

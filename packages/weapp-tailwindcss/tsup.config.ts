@@ -44,7 +44,8 @@ export default defineConfig(
     },
     {
       entry: {
-        'weapp-tw-runtime-loader': 'src/bundlers/webpack/loaders/weapp-tw-runtime-loader.ts',
+        'weapp-tw-runtime-classset-loader': 'src/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader.ts',
+        'weapp-tw-css-import-rewrite-loader': 'src/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader.ts',
       },
       dts: true,
       clean: false,
