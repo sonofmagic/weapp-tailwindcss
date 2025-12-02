@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "mpx-cli-service serve",
     "build": "mpx-cli-service build",
+    "dev:debug-loader": "cross-env WEAPP_TW_LOADER_DEBUG=1 mpx-cli-service serve",
+    "build:debug-loader": "cross-env WEAPP_TW_LOADER_DEBUG=1 mpx-cli-service build",
     "lint": "eslint --ext .js,.ts,.mpx src/",
     "open": "weapp open -p dist/wx"
   },
