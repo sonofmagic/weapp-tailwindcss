@@ -31,6 +31,7 @@
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
     "dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
+    "debug:loader-order": "cross-env WEAPP_TW_LOADER_DEBUG=1 taro build --type weapp --watch",
     "open": "weapp open -p",
     "postinstall": "weapp-tw patch"
   },

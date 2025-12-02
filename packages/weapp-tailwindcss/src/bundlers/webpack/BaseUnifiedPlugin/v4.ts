@@ -150,13 +150,18 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         if (runtimeLoaderRewriteOptions && runtimeCssImportRewriteLoaderExists && cssImportRewriteLoaderOptions) {
           const rewriteEntry = createCssImportRewriteLoaderEntry()
           if (rewriteEntry) {
+            // 为了让 rewrite 在执行顺序上先于 postcss-loader，需要把它插到
+            // postcss-loader 的后方（数组索引更大，执行时更靠前）。
             // @ts-ignore
             loaderEntries.splice(idx + 1, 0, rewriteEntry)
           }
         }
         if (runtimeClassSetLoaderExists) {
+          const postcssIndex = loaderEntries.findIndex((entry: any) => entry?.loader?.includes?.('postcss-loader'))
+          const insertIndex = postcssIndex === -1 ? idx : postcssIndex
+          // 将 class-set 插在 postcss-loader 的当前位置（数组索引更小），这样在实际执行顺序里它会排在 postcss-loader 之后。
           // @ts-ignore
-          loaderEntries.splice(idx, 0, createRuntimeClassSetLoaderEntry())
+          loaderEntries.splice(insertIndex, 0, createRuntimeClassSetLoaderEntry())
         }
       })
     })

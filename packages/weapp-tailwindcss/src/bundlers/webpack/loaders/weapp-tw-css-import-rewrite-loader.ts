@@ -1,6 +1,7 @@
 // @ts-nocheck
 import type { Buffer } from 'node:buffer'
 import type webpack from 'webpack'
+import process from 'node:process'
 import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 
@@ -44,6 +45,10 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   this: webpack.LoaderContext<any>,
   source: string | Buffer,
 ) {
+  if (process.env.WEAPP_TW_LOADER_DEBUG) {
+    // eslint-disable-next-line no-console
+    console.log('[weapp-tw-css-import-rewrite-loader] executing for', this.resourcePath)
+  }
   const opt = loaderUtils.getOptions(this)
   return transformSource(source, opt)
 }
