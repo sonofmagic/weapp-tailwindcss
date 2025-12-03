@@ -1,4 +1,5 @@
 import type { AppType } from '@/types'
+import { isMpx } from '@/shared/mpx'
 
 export interface LoaderEntry { loader?: string }
 
@@ -15,7 +16,7 @@ function createFinder(candidates: string[]) {
 }
 
 export function createLoaderAnchorFinders(appType?: AppType) {
-  if (appType === 'mpx') {
+  if (isMpx(appType)) {
     return {
       // 重写需要尽量提前到 strip-conditional-loader 之前。
       findRewriteAnchor: createFinder([

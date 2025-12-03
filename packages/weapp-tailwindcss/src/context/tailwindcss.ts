@@ -7,6 +7,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { logger } from '@weapp-tailwindcss/logger'
 import { findNearestPackageRoot, findWorkspacePackageDir, findWorkspaceRoot } from '@/context/workspace'
+import { isMpx } from '@/shared/mpx'
 import { createTailwindcssPatcher } from '@/tailwindcss'
 import { defuOverrideArray } from '@/utils'
 
@@ -429,7 +430,7 @@ function createPatcherForBase(
 
   return createTailwindcssPatcher({
     basedir: baseDir,
-    cacheDir: appType === 'mpx' ? 'node_modules/tailwindcss-patch/.cache' : undefined,
+    cacheDir: isMpx(appType) ? 'node_modules/tailwindcss-patch/.cache' : undefined,
     supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
     tailwindcss: mergedTailwindOptions,
     tailwindcssPatcherOptions: patchedOptions,

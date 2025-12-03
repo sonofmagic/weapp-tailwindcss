@@ -1,5 +1,6 @@
 import type { AppType } from '@/types'
 import path from 'node:path'
+import { isMpx } from '@/shared/mpx'
 
 const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
 const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwindcss(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
@@ -32,7 +33,7 @@ export function resolveTailwindcssImport(
   if (!tailwindcssImportRE.test(normalized)) {
     return null
   }
-  if (options?.appType === 'mpx' && normalized === 'tailwindcss') {
+  if (isMpx(options?.appType) && normalized === 'tailwindcss') {
     return 'weapp-tailwindcss/index.css'
   }
   const join = options?.join ?? path.join

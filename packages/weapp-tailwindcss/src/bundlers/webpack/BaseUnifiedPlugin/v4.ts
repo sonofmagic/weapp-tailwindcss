@@ -8,6 +8,7 @@ import { ConcatSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
@@ -17,7 +18,6 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '../shared/mpx'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -150,7 +150,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         if (!hasRuntimeLoader) {
           return
         }
-        if (shouldRewriteCssImports && this.appType === 'mpx' && typeof _loaderContext.resolve === 'function') {
+        if (shouldRewriteCssImports && isMpx(this.appType) && typeof _loaderContext.resolve === 'function') {
           patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, true)
         }
         const loaderEntries: Array<{ loader?: string }> = module.loaders || []
